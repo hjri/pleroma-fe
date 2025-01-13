@@ -122,6 +122,7 @@ const PLEROMA_EMOJI_IMPORT_FS_URL = '/api/pleroma/emoji/packs/import'
 const PLEROMA_EMOJI_PACKS_URL = (page, pageSize) => `/api/v1/pleroma/emoji/packs?page=${page}&page_size=${pageSize}`
 const PLEROMA_EMOJI_PACK_URL = (name) => `/api/v1/pleroma/emoji/pack?name=${name}`
 const PLEROMA_EMOJI_PACKS_DL_REMOTE_URL = '/api/v1/pleroma/emoji/packs/download'
+const PLEROMA_EMOJI_PACKS_DL_REMOTE_ZIP_URL = '/api/v1/pleroma/emoji/packs/download_zip'
 const PLEROMA_EMOJI_PACKS_LS_REMOTE_URL =
   (url, page, pageSize) => `/api/v1/pleroma/emoji/packs/remote?url=${url}&page=${page}&page_size=${pageSize}`
 const PLEROMA_EMOJI_UPDATE_FILE_URL = (name) => `/api/v1/pleroma/emoji/packs/files?name=${name}`
@@ -1918,6 +1919,18 @@ const downloadRemoteEmojiPack = ({ instance, packName, as }) => {
   )
 }
 
+const downloadRemoteEmojiPackZIP = ({ url, packName, file }) => {
+  const data = new FormData()
+  if (file) data.set('file', file)
+  if (url) data.set('url', url)
+  data.set('name', packName)
+
+  return fetch(
+    PLEROMA_EMOJI_PACKS_DL_REMOTE_ZIP_URL,
+    { method: 'POST', body: data }
+  )
+}
+
 const saveEmojiPackMetadata = ({ name, newData }) => {
   return fetch(
     PLEROMA_EMOJI_PACK_URL(name),
@@ -2123,6 +2136,7 @@ const apiService = {
   deleteEmojiFile,
   listRemoteEmojiPacks,
   downloadRemoteEmojiPack,
+  downloadRemoteEmojiPackZIP,
   fetchBookmarkFolders,
   createBookmarkFolder,
   updateBookmarkFolder,
