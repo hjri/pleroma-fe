@@ -953,7 +953,9 @@
     "unsaved_post_action_confirm": "毎回尋ねる",
     "auto_save_draft": "編集中の投稿を自動で下書きに保存する",
     "absolute_time_format_12h": "時刻の表示形式",
-    "image_compression": "アップロード前に画像を圧縮する"
+    "image_compression": "アップロード前に画像を圧縮する",
+    "absolute_time_format_12h_12h": "12時間表記 (例: 午後10:00)",
+    "absolute_time_format_12h_24h": "24時間表記 (例: 22:00)"
   },
   "time": {
     "day": "{0}日",
@@ -1307,7 +1309,8 @@
         "reject": "拒否"
       }
     },
-    "staff": "スタッフ"
+    "staff": "スタッフ",
+    "terms": "利用規約"
   },
   "display_date": {
     "today": "今日"
