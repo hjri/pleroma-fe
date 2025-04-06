@@ -16,6 +16,7 @@
     <Notifications v-if="currentUser" />
     <div
       id="content"
+      ref="appContentRef"
       class="app-layout container"
       :class="classes"
     >
