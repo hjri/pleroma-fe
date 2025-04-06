@@ -102,7 +102,7 @@
     "shelljs": "0.9.2",
     "sinon": "20.0.0",
     "sinon-chai": "4.0.0",
-    "stylelint": "16.17.0",
+    "stylelint": "16.18.0",
     "stylelint-config-html": "^1.1.0",
     "stylelint-config-recommended": "^14.0.0",
     "stylelint-config-recommended-scss": "^14.0.0",
