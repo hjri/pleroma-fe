@@ -5,6 +5,7 @@ import Conversation from '../conversation/conversation.vue'
 import TimelineMenu from '../timeline_menu/timeline_menu.vue'
 import QuickFilterSettings from '../quick_filter_settings/quick_filter_settings.vue'
 import QuickViewSettings from '../quick_view_settings/quick_view_settings.vue'
+import ScrollTopButton from '../scroll_top_button/scroll_top_button.vue'
 import { debounce, throttle, keyBy } from 'lodash'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch, faCirclePlus, faCog, faMinus, faArrowUp, faCheck } from '@fortawesome/free-solid-svg-icons'
@@ -47,6 +48,7 @@ const Timeline = {
   },
   components: {
     Status,
+    ScrollTopButton,
     Conversation,
     TimelineMenu,
     QuickFilterSettings,
@@ -144,9 +146,6 @@ const Timeline = {
     this.$store.commit('setLoading', { timeline: this.timelineName, value: false })
   },
   methods: {
-    scrollToTop () {
-      window.scrollTo({ top: this.$el.offsetTop })
-    },
     stopBlockingClicks: debounce(function () {
       this.blockingClicks = false
     }, 1000),
@@ -251,7 +250,6 @@ const Timeline = {
       }
     },
     handleScroll: throttle(function (e) {
-      this.showScrollTop = this.$el.offsetTop < window.scrollY
       this.determineVisibleStatuses()
       this.scrollLoad(e)
     }, 200),
