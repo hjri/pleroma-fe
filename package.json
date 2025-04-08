@@ -71,7 +71,7 @@
     "babel-plugin-lodash": "3.3.4",
     "chai": "5.2.0",
     "chalk": "5.4.1",
-    "chromedriver": "134.0.5",
+    "chromedriver": "135.0.0",
     "connect-history-api-fallback": "2.0.0",
     "cross-spawn": "7.0.6",
     "custom-event-polyfill": "1.0.7",

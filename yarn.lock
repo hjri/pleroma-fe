@@ -2878,10 +2878,10 @@ chromatism@3.0.0:
   resolved "https://registry.yarnpkg.com/chromatism/-/chromatism-3.0.0.tgz#a7249d353c1e4f3577e444ac41171c4e2e624b12"
   integrity sha512-slVGC45odKFB6KzD/hpXP8XgS/Y+x72X1ckAhxU/9YZecCy8VwCJUSZsn0O4gQUwaTogun6IfrSiK3YuQaADFw==
 
-chromedriver@134.0.5:
-  version "134.0.5"
-  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-134.0.5.tgz#9432404d7da7412df4ea5ae4072b579bcc098ed7"
-  integrity sha512-edXbiuShAvH6Elx8Hobl4NQkgNRMIozcW7ZlEiE8TBynZHRazrepO9hfftQzZgztPvjMQiSWeWjZaDV3SecYaw==
+chromedriver@135.0.0:
+  version "135.0.0"
+  resolved "https://registry.yarnpkg.com/chromedriver/-/chromedriver-135.0.0.tgz#9bdbd8363d2ad0dae8f848ec7241fd58f4b9e221"
+  integrity sha512-ilE3cIrIieiRU/a6MNpt0CL0UZs2tu0lQAes+el5SV03MB1zYIEXy+dDeueid/g8AmT1loy7TB2fjWwcHLY8lg==
   dependencies:
     "@testim/chrome-version" "^1.1.4"
     axios "^1.7.4"
