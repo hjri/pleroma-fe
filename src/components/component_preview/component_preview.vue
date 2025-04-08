@@ -199,7 +199,7 @@ export default {
     inset: 0;
     display: grid;
     place-items: center center;
-    background-color: rgba(100 0 0 / 50%);
+    background-color: rgb(100 0 0 / 50%);
 
     .alert {
       padding: 0.5em 1em;
@@ -261,14 +261,14 @@ export default {
   .preview-window {
     --__grid-color1: rgb(102 102 102);
     --__grid-color2: rgb(153 153 153);
-    --__grid-color1-disabled: rgba(102 102 102 / 20%);
-    --__grid-color2-disabled: rgba(153 153 153 / 20%);
+    --__grid-color1-disabled: rgb(102 102 102 / 20%);
+    --__grid-color2-disabled: rgb(153 153 153 / 20%);
 
     &.-light-grid {
       --__grid-color1: rgb(205 205 205);
       --__grid-color2: rgb(255 255 255);
-      --__grid-color1-disabled: rgba(205 205 205 / 20%);
-      --__grid-color2-disabled: rgba(255 255 255 / 20%);
+      --__grid-color1-disabled: rgb(205 205 205 / 20%);
+      --__grid-color2-disabled: rgb(255 255 255 / 20%);
     }
 
     position: relative;
