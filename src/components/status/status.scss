@@ -1,8 +1,8 @@
 .Status {
   min-width: 0;
   white-space: normal;
-  word-wrap: break-word;
-  word-break: break-all;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
 
   &:hover {
     --_still-image-img-visibility: visible;
@@ -92,7 +92,10 @@
 
     a {
       display: inline-block;
-      word-break: break-all;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow-x: hidden;
+      width: 100%
     }
   }
 
@@ -283,8 +286,6 @@
 
     & .status-username,
     & .mute-reason {
-      word-wrap: normal;
-      word-break: normal;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;

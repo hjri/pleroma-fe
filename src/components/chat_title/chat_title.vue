@@ -39,7 +39,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     display: inline;
-    word-wrap: break-word;
     overflow: hidden;
   }
 

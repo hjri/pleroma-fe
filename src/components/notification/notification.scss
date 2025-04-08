@@ -2,8 +2,8 @@
 .Notification {
   border-bottom: 1px solid;
   border-color: var(--border);
-  word-wrap: break-word;
-  word-break: break-all;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
 
   &.Status {
     /* stylelint-disable-next-line declaration-no-important */
@@ -31,8 +31,6 @@
     & .status-username,
     & .mute-thread,
     & .mute-words {
-      word-wrap: normal;
-      word-break: normal;
       white-space: nowrap;
     }
 

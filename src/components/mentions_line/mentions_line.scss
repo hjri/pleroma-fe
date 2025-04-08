@@ -1,5 +1,6 @@
 .MentionsLine {
-  word-break: break-all;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
 
   .mention-link:not(:first-child)::before {
     content: " ";

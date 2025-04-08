@@ -68,7 +68,8 @@
     margin: 0.5em 0 0;
     overflow: hidden;
     text-overflow: ellipsis;
-    word-break: break-all;
+    overflow-wrap: break-word;
+    text-wrap: pretty;
     line-height: 1.2em;
 
     /* cap description at 3 lines, the 1px is to clean up some stray pixels
