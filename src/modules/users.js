@@ -641,7 +641,8 @@ const users = {
               declarations
                 .filter(x => {
                   return x.store === 'server-side' &&
-                    (x.migrationNum ?? x.migrationNum > configMigration)
+                    x.migrationNum > 0 &&
+                    x.migrationNum > configMigration
                 })
                 .toSorted((a, b) => a.configMigration - b.configMigration)
                 .forEach(value => {
