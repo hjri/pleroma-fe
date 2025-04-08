@@ -170,7 +170,8 @@ $modal-view-button-icon-margin: 0.5em;
     min-height: 1em;
     max-width: 500px;
     max-height: 9.5em;
-    word-break: break-all;
+    overflow-wrap: break-word;
+    text-wrap: pretty;
   }
 
   .modal-image {

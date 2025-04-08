@@ -177,7 +177,8 @@
     .text {
       flex: 2;
       margin: 8px;
-      word-break: break-all;
+      overflow-wrap: break-word;
+      text-wrap: pretty;
 
       h1 {
         font-size: 1rem;

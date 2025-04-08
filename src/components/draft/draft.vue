@@ -127,7 +127,6 @@
     max-width: 100%;
 
     p {
-      word-wrap: break-word;
       white-space: normal;
       overflow-x: hidden;
     }

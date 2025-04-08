@@ -14,8 +14,7 @@
   & .summary {
     white-space: pre-wrap;
     overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-all;
+    text-wrap: pretty;
     line-height: var(--post-line-height);
   }
 
@@ -54,19 +53,22 @@
   }
 
   .text-wrapper {
+    text-overflow: ellipsis;
+    overflow-wrap: break-word;
+    overflow: hidden;
     display: flex;
     flex-flow: column nowrap;
 
     &.-tall-status {
       position: relative;
-      height: 220px;
+      height: 16em;
       overflow: hidden;
       z-index: 1;
 
       .media-body {
         min-height: 0;
         mask:
-          linear-gradient(to top, white, transparent) bottom/100% 70px no-repeat,
+          linear-gradient(to top, white, transparent) bottom/100% 8em no-repeat,
           linear-gradient(to top, white, white);
 
         /* Autoprefixed seem to ignore this one, and also syntax is different */
@@ -87,16 +89,17 @@
   & .status-unhider,
   & .cw-status-hider {
     display: inline-block;
-    word-break: break-all;
+    overflow-wrap: break-word;
+    text-wrap: pretty;
     width: 100%;
     text-align: center;
   }
 
   .tall-status-hider {
     position: absolute;
-    height: 70px;
-    margin-top: 150px;
-    line-height: 110px;
+    height: 5em;
+    margin-top: 10em;
+    line-height: 8em;
     z-index: 2;
   }
 
@@ -107,7 +110,8 @@
 
   & .status-unhider,
   & .cw-status-hider {
-    word-break: break-all;
+    overflow-wrap: break-word;
+    text-wrap: pretty;
 
     svg {
       color: inherit;

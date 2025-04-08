@@ -2,21 +2,24 @@
   <div class="image-cropper">
     <div v-if="dataUrl">
       <cropper-canvas
+        ref="cropperCanvas"
         background
         class="image-cropper-canvas"
-        ref="cropperCanvas"
         height="25em"
       >
         <cropper-image
+          ref="cropperImage"
           :src="dataUrl"
           alt="Picture"
-          ref="cropperImage"
           class="image-cropper-image"
           translatable
           scalable
         />
         <cropper-shade hidden />
-        <cropper-handle action="select" plain />
+        <cropper-handle
+          action="select"
+          plain
+        />
         <cropper-selection
           ref="cropperSelection"
           initial-coverage="1"
@@ -25,17 +28,23 @@
           resizable
           @change="onCropperSelectionChange"
         >
-          <cropper-grid role="grid" covered></cropper-grid>
-          <cropper-crosshair centered></cropper-crosshair>
-          <cropper-handle action="move" theme-color="rgba(255, 255, 255, 0.35)"></cropper-handle>
-          <cropper-handle action="n-resize"></cropper-handle>
-          <cropper-handle action="e-resize"></cropper-handle>
-          <cropper-handle action="s-resize"></cropper-handle>
-          <cropper-handle action="w-resize"></cropper-handle>
-          <cropper-handle action="ne-resize"></cropper-handle>
-          <cropper-handle action="nw-resize"></cropper-handle>
-          <cropper-handle action="se-resize"></cropper-handle>
-          <cropper-handle action="sw-resize"></cropper-handle>
+          <cropper-grid
+            role="grid"
+            covered
+          />
+          <cropper-crosshair centered />
+          <cropper-handle
+            action="move"
+            theme-color="rgba(255, 255, 255, 0.35)"
+          />
+          <cropper-handle action="n-resize" />
+          <cropper-handle action="e-resize" />
+          <cropper-handle action="s-resize" />
+          <cropper-handle action="w-resize" />
+          <cropper-handle action="ne-resize" />
+          <cropper-handle action="nw-resize" />
+          <cropper-handle action="se-resize" />
+          <cropper-handle action="sw-resize" />
         </cropper-selection>
       </cropper-canvas>
       <div class="image-cropper-buttons-wrapper">

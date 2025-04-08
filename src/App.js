@@ -20,6 +20,8 @@ import { defineAsyncComponent } from 'vue'
 import { useShoutStore } from './stores/shout'
 import { useInterfaceStore } from './stores/interface'
 
+import { throttle } from 'lodash'
+
 export default {
   name: 'app',
   components: {
@@ -58,16 +60,23 @@ export default {
     // Load the locale from the storage
     const val = this.$store.getters.mergedConfig.interfaceLanguage
     this.$store.dispatch('setOption', { name: 'interfaceLanguage', value: val })
-    window.addEventListener('resize', this.updateMobileState)
     document.getElementById('modal').classList = ['-' + this.layoutType]
+
+    // Create bound handlers
+    this.updateScrollState = throttle(this.scrollHandler, 200)
+    this.updateMobileState = throttle(this.resizeHandler, 200)
   },
   mounted () {
+    window.addEventListener('resize', this.updateMobileState)
+    this.scrollParent.addEventListener('scroll', this.updateScrollState)
+
     if (useInterfaceStore().themeApplied) {
       this.removeSplash()
     }
   },
   unmounted () {
     window.removeEventListener('resize', this.updateMobileState)
+    this.scrollParent.removeEventListener('scroll', this.updateScrollState)
   },
   computed: {
     themeApplied () {
@@ -146,12 +155,22 @@ export default {
     },
     noSticky () { return this.$store.getters.mergedConfig.disableStickyHeaders },
     showScrollbars () { return this.$store.getters.mergedConfig.showScrollbars },
+    scrollParent () { return window; /* this.$refs.appContentRef */ },
     ...mapGetters(['mergedConfig'])
   },
   methods: {
-    updateMobileState () {
+    resizeHandler () {
       useInterfaceStore().setLayoutWidth(windowWidth())
       useInterfaceStore().setLayoutHeight(windowHeight())
+    },
+    scrollHandler () {
+      const scrollPosition = this.scrollParent === window ? window.scrollY : this.scrollParent.scrollTop
+
+      if (scrollPosition != 0) {
+        this.$refs.appContentRef.classList.add(['-scrolled'])
+      } else {
+        this.$refs.appContentRef.classList.remove(['-scrolled'])
+      }
     },
     removeSplash () {
       document.querySelector('#status').textContent = this.$t('splash.fun_' + Math.ceil(Math.random() * 4))
