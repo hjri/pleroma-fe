@@ -12,7 +12,7 @@
     margin: 0.5em;
     padding: 0.5em;
     display: grid;
-    grid-template-columns: fit-content() 1fr fit-content();
+    grid-template-columns: fit-content 1fr fit-content;
     align-items: baseline;
     grid-gap: 0.5em;
   }
@@ -33,6 +33,7 @@
     grid-column: 3;
     grid-row: 1;
     text-align: right;
+    line-height: 2;
   }
 
   .filter-field {
@@ -55,5 +56,17 @@
   .filter-buttons {
     grid-column: 1 / span 3;
     justify-self: end;
+    display: inline-grid;
+    grid-gap: 0.5em;
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 100%;
+    justify-content: end;
+  }
+}
+
+
+.settings-modal.-mobile .filtering-tab {
+  .filter-buttons {
+    grid-template-columns: repeat(1, 1fr);
   }
 }
