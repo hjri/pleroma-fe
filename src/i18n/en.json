@@ -432,6 +432,8 @@
       "export": "Export",
       "regexp_error": "Invalid Regular Expression",
       "never_expires": "Never",
+      "count": "{count} filter|{count} filters",
+      "import_failure": "The selected file is not a supported Pleroma filter.",
       "help": {
         "word": "Simple and RegExp filters test against post's content and subject.",
         "user": "User filter matches full user handle (user@domain) in the following: author, reply-to and mentions",

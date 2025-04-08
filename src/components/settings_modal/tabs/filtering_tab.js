@@ -1,7 +1,14 @@
 import { cloneDeep } from 'lodash'
 import { mapState, mapActions } from 'pinia'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import { v4 as uuidv4 } from 'uuid';
+
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import { useInterfaceStore } from 'src/stores/interface'
+
+import {
+  newImporter,
+  newExporter
+} from 'src/services/export_import/export_import.js'
 
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
@@ -13,9 +20,10 @@ import Select from 'src/components/select/select.vue'
 
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
+const SUPPORTED_TYPES = new Set(['word', 'regexp', 'user', 'user_regexp'])
+
 const FilteringTab = {
   data () {
-    console.log(cloneDeep(useServerSideStorageStore().prefsStorage.simple.muteFilters))
     return {
       replyVisibilityOptions: ['all', 'following', 'self'].map(mode => ({
         key: mode,
@@ -27,7 +35,44 @@ const FilteringTab = {
         Object.entries(
           useServerSideStorageStore().prefsStorage.simple.muteFilters
         ).map(([k]) => [k, false])
-      )
+      ),
+      exportedFilter: null,
+      filterImporter: newImporter({
+        validator (parsed) {
+          if (Array.isArray(parsed)) return false
+          if (!SUPPORTED_TYPES.has(parsed.type)) return false
+          return true
+        },
+        onImport: (data) => {
+          const {
+            enabled = true,
+            expires = null,
+            hide = false,
+            name = '',
+            value = ''
+          } = data
+
+          this.createFilter({
+            enabled,
+            expires,
+            hide,
+            name,
+            value
+          })
+        },
+        onImportFailure (result) {
+          console.error('Failure importing filter:', result)
+          useInterfaceStore()
+            .pushGlobalNotice({
+              messageKey: 'settings.filter.import_failure',
+              level: 'error'
+            })
+        }
+      }),
+      filterExporter: newExporter({
+        filename: 'pleromafe_mute-filter',
+        getExportedObject: () => this.exportedFilter
+      })
     }
   },
   components: {
@@ -83,21 +128,28 @@ const FilteringTab = {
       }
       return valid
     },
-    createFilter () {
-      const filter = {
-        type: 'word',
-        value: '',
-        name: 'New Filter',
-        enabled: true,
-        expires: null,
-        hide: false,
-        order: this.muteFilters.length + 2
-      }
+    createFilter (filter = {
+      type: 'word',
+      value: '',
+      name: 'New Filter',
+      enabled: true,
+      expires: null,
+      hide: false,
+    }) {
       const newId = uuidv4()
 
+      filter.order = this.muteFilters.length + 2
       this.muteFiltersDraftObject[newId] = filter
       this.setPreference({ path: 'simple.muteFilters.' + newId , value: filter })
       this.pushServerSideStorage()
+    },
+    exportFilter(id) {
+      this.exportedFilter = { ...this.muteFiltersDraftObject[id] }
+      delete this.exportedFilter.order
+      this.filterExporter.exportData()
+    },
+    importFilter() {
+      this.filterImporter.importData()
     },
     copyFilter (id) {
       const filter = { ...this.muteFiltersDraftObject[id] }
@@ -131,14 +183,12 @@ const FilteringTab = {
       }
       this.muteFiltersDraftObject[id] = filter
       this.muteFiltersDraftDirty[id] = true
-      console.log(this.muteFiltersDraftDirty)
     },
     saveFilter(id) {
       this.setPreference({ path: 'simple.muteFilters.' + id , value: this.muteFiltersDraftObject[id] })
       this.pushServerSideStorage()
       this.muteFiltersDraftDirty[id] = false
-      console.log(this.muteFiltersDraftDirty)
-    }
+    },
   },
   // Updating nested properties
   watch: {
