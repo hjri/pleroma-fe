@@ -93,4 +93,4 @@
 
 <script src="./login_form.js"></script>
 
-<style src="./login_form.scss"/>
+<style src="./login_form.scss" />
