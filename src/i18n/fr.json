@@ -58,7 +58,7 @@
     "yes": "Oui",
     "no": "Non",
     "unpin": "Dégrafer l'élément",
-    "scroll_to_top": "Défiler vers le haut",
+    "scroll_to_top": "Défiler jusqu'en haut",
     "pin": "Agrafer l'élément",
     "generic_error_message": "Une erreur est apparue : {0}",
     "never_show_again": "Ne plus afficher"
@@ -134,7 +134,8 @@
     "mobile_notifications_mark_as_seen": "Marquer tout comme vu",
     "quotes": "Citations",
     "all_bookmarks": "Tous les marque-pages",
-    "bookmark_folders": "Dossiers des marque-pages"
+    "bookmark_folders": "Dossiers des marque-pages",
+    "drafts": "Brouillons"
   },
   "notifications": {
     "broken_favorite": "Message inconnu, recherche en cours…",
@@ -207,7 +208,18 @@
     "reply_option": "Répondre à ce statut",
     "quote_option": "Citer ce statut",
     "scope_notice_dismiss": "Fermer ce message",
-    "content_type_selection": "Format du statut"
+    "content_type_selection": "Format du statut",
+    "more_post_actions": "Plus…",
+    "close_confirm_save_button": "Sauvegarder",
+    "close_confirm_discard_button": "Abandonner",
+    "close_confirm_continue_composing_button": "Rependre l'écriture",
+    "close_confirm_title": "Fermeture d'un post",
+    "close_confirm": "Que souhaitez vous faire de vos modifications ?",
+    "auto_save_nothing_new": "Rien à sauvegarder.",
+    "auto_save_saved": "Sauvegardé.",
+    "auto_save_saving": "Sauvegarde en cours…",
+    "save_to_drafts_button": "Sauvegarder comme brouillon",
+    "save_to_drafts_and_close_button": "Sauvegarder comme brouillon et fermer"
   },
   "registration": {
     "bio": "Biographie",
@@ -528,7 +540,14 @@
         "hintV3": "Pour les ombres vous pouvez aussi utiliser la notation {0} pour utiliser un autre emplacement de couleur.",
         "name": "Nom",
         "offset": "Décalage d'ombre",
-        "light_grid": "Utiliser un damier clair"
+        "light_grid": "Utiliser un damier clair",
+        "zoom": "Zoom",
+        "empty_expression": "Expression vide",
+        "color_override": "Utiliser une couleur différente",
+        "raw": "Ombre pleine",
+        "expression": "Expression (avancée)",
+        "offset-x": "x :",
+        "offset-y": "y :"
       },
       "fonts": {
         "_tab_label": "Polices",
@@ -589,12 +608,83 @@
           "select": "Choisir une police",
           "local-unavailable1": "Listes des polices indisponibles installées localement",
           "font_list_unavailable": "Impossible de trouver la police locale : {error}",
-          "group-local": "Polices installées localement"
+          "group-local": "Polices installées localement",
+          "label": "Police {label}"
+        },
+        "palette": {
+          "link": "Liens",
+          "cBlue": "Couleur pour le \"bleu\"",
+          "cGreen": "Couleur pour le \"vert\"",
+          "export": "Exporter la palette",
+          "apply": "Appliquer la palette",
+          "bg": "Arrière plan de panneau",
+          "fg": "Boutons, etc.",
+          "text": "Texte",
+          "imported": "Importée",
+          "cOrange": "Couleur pour le \"orange\"",
+          "accent": "Couleur de mise en avant",
+          "wallpaper": "Arrière plan",
+          "cRed": "Couleur pour le \"rouge\"",
+          "user": "Palette personnalisée",
+          "style": "Palettes fournies par le thème choisi",
+          "label": "Thèmes de couleurs",
+          "name_label": "Nom du thème de couleurs",
+          "import": "Importer une palette",
+          "bundled": "Palettes prédéfinies",
+          "v2_unsupported": "Les anciens thèmes v2 ne supportent pas les palettes. Passez au thème v3 pour utiliser les palettes"
+        },
+        "editor": {
+          "variables": {
+            "name_label": "Nom :",
+            "type_label": "Type :",
+            "type_shadow": "Ombre",
+            "label": "Variables",
+            "type_color": "Couleur",
+            "type_generic": "Générique",
+            "virtual_color": "Valeur de couleur de la variable"
+          },
+          "link_color": "Couleur de lien",
+          "contrast": "Contraste du texte",
+          "roundness": "Arrondi",
+          "border_color": "Couleur de bordure",
+          "include_in_rule": "Ajouter aux règles",
+          "test_string": "TEST",
+          "refresh_preview": "Mettre à jour l'aperçu",
+          "invalid": "Invalide",
+          "apply_preview": "Appliquer",
+          "text_auto": {
+            "label": "Contraste automatique",
+            "no-preserve": "Noir et blanc",
+            "preserve": "Garder la couleur",
+            "no-auto": "Désactivé"
+          },
+          "palette_tab": "Thèmes de couleurs",
+          "component_tab": "Style des composants",
+          "variables_tab": "Variables (avancé)",
+          "title": "Éditeur de thème (v3)",
+          "reset_style": "Réinitialiaser",
+          "variant_selector": "Variation",
+          "states_selector": "États",
+          "save_style": "Sauvegarder",
+          "load_style": "Importer depuis un fichier",
+          "style_name": "Nom de la feuille de style",
+          "component_selector": "Composant",
+          "style_author": "Faite par",
+          "style_license": "Licence",
+          "style_website": "Site web",
+          "main_tab": "Principal",
+          "shadows_tab": "Ombres",
+          "background": "Couleur de fond",
+          "text_color": "Couleur de texte",
+          "icon_color": "Couleur d'icône",
+          "opacity": "Opacité"
         }
       },
       "interface_font_user_override": "Écraser le thème ou les polices utilisées",
       "custom_theme_used": "(Thème personnalisé)",
-      "update_preview": "Mise à jour de l'aperçu"
+      "update_preview": "Mise à jour de l'aperçu",
+      "custom_style_used": "(Style personnalisé)",
+      "stock_theme_used": "(Thème original)"
     },
     "version": {
       "title": "Version",
@@ -836,7 +926,22 @@
     "visual_tweaks": "Ajustements visuels mineurs",
     "theme_debug": "Montrer ce que le moteur de thème de l'arrière-plan bricole lorsqu'il travaille avec la transparence (DEBUG)",
     "scale_and_layout": "Taille et disposition de l'interface",
-    "hide_scrobbles_after": "Masquer les scrobbles plus vieux que"
+    "hide_scrobbles_after": "Masquer les scrobbles plus vieux que",
+    "confirm_dialogs_mute_conversation": "Bloquer des conversations",
+    "confirm_dialogs_mute_domain": "Bloquer des domaines",
+    "theme_editor_min_width": "Largeur minimum de l'éditeur de thème (0 pour \"s'adapte au contenu\")",
+    "mobile_center_dialog": "Sur mobile, centrer verticalement les fenêtres de dialogue",
+    "unsaved_post_action": "Quand vous fermer un post non sauvegardé",
+    "unsaved_post_action_save": "le sauvegarder comme brouillon",
+    "unsaved_post_action_discard": "abandonner les modifications",
+    "unsaved_post_action_confirm": "Toujours demander",
+    "auto_save_draft": "Sauvegarder comme brouillon pendant l'écriture",
+    "absolute_time_format_12h_12h": "Format 12 heures (ex : 10:00 PM)",
+    "absolute_time_format_12h_24h": "Format 24 heurs (ex : 22:00)",
+    "absolute_time_format_12h": "Format de l'heure",
+    "theme_old": "Éditeur de thème (ancien)",
+    "image_compression": "Compresser les images avant de les téléverser",
+    "always_use_jpeg": "Toujours convertir les images au format JPEG"
   },
   "timeline": {
     "collapse": "Fermer",
@@ -854,7 +959,8 @@
     "socket_broke": "Connexion temps-réel perdue : CloseEvent code {0}",
     "socket_reconnected": "Connexion temps-réel établie",
     "quick_view_settings": "Afficher les réglages rapides",
-    "quick_filter_settings": "Afficher les filtres rapides"
+    "quick_filter_settings": "Afficher les filtres rapides",
+    "filter_settings": "Filtre"
   },
   "status": {
     "favorites": "Favoris",
@@ -928,7 +1034,17 @@
     "quotes": "Citations",
     "load_error": "Impossible de charger la publication : {error}",
     "loading": "En cours de chargement…",
-    "bot_muted": "Silencer le contenu de robots"
+    "bot_muted": "Silencer le contenu de robots",
+    "muted_user": "Utilisateur masqué",
+    "unmute_user": "Rendre visible l'utilisateur",
+    "mute_domain": "Bloquer le domaine",
+    "muted_words": "Mot filtré : {word} | Mot filtré : {word} et {numWordsMore} autres mots",
+    "mute_ellipsis": "Masquer…",
+    "reply_to_with_icon": "{icon} {replyTo}",
+    "reply_to_with_arg": "{replyToWithIcon} {user}",
+    "unmute_domain": "Débloquer le domaine",
+    "mute_user": "Masquer l'utilisateur",
+    "multi_reason_mute": "{main} + une autre raison | {main} + {numReasonsMore} autres raisons"
   },
   "user_card": {
     "approve": "Accepter",
@@ -1052,7 +1168,7 @@
   },
   "tool_tip": {
     "media_upload": "Envoyer un media",
-    "repeat": "Répéter",
+    "repeat": "Re-partager",
     "reply": "Répondre",
     "favorite": "Favoriser",
     "user_settings": "Paramètres utilisateur",
@@ -1062,7 +1178,10 @@
     "bookmark": "Favori",
     "autocomplete_available": "{number} résultat est disponible. Utilisez les touches haut et bas pour naviguer à l'intérieur. | {number} résultats sont disponibles. Utilisez les touches haut et bas pour naviguer à l'intérieur.",
     "toggle_expand": "Étendre ou réduire la notification pour montrer les messages en entier",
-    "toggle_mute": "Étendre ou réduire les notifications pour révéler le contenu masqué"
+    "toggle_mute": "Étendre ou réduire les notifications pour révéler le contenu masqué",
+    "mentions": "Mentions",
+    "unfavorite": "Retirer des favoris",
+    "unrepeat": "Annuler le partage"
   },
   "upload": {
     "error": {
@@ -1110,7 +1229,8 @@
       "mrf_policies": "Politiques MRF actives",
       "mrf_policies_desc": "Les politiques MRF modifient la fédération entre les instances. Les politiques suivantes sont activées :"
     },
-    "staff": "Équipe"
+    "staff": "Équipe",
+    "terms": "Conditions d'utilisation"
   },
   "domain_mute_card": {
     "mute": "Masqué",
@@ -1134,7 +1254,9 @@
     "people_voted_count": "{count} voteur | {count} voteurs",
     "votes_count": "{count} vote | {count} votes",
     "non_anonymous": "Sondage public",
-    "non_anonymous_title": "Certaines instances pourraient afficher ce pour quoi vous avez voté"
+    "non_anonymous_title": "Certaines instances pourraient afficher ce pour quoi vous avez voté",
+    "expires_at": "Fin du sondage dans {0}",
+    "expired_at": "Sondage fini depuis {0}"
   },
   "emoji": {
     "emoji": "Émoji",
@@ -1486,5 +1608,24 @@
     "error": "Erreur lors de la manipulation des dossiers de favoris : {0}",
     "creating_folder": "Création du dossier des favoris",
     "editing_folder": "Édition du dossier {folderName}"
+  },
+  "drafts": {
+    "empty": "(Vide)",
+    "poll_tooltip": "Le brouillon contient un sondage",
+    "no_drafts": "Vous n'avez aucun brouillon",
+    "abandon_confirm_title": "Confirmer la suppression",
+    "replying": "En réponse à {statusLink}",
+    "unavailable": "(indisponible)",
+    "abandon_confirm_cancel_button": "Conserver",
+    "editing": "Modification de {statusLink}",
+    "save": "Sauvegarder sans poster",
+    "drafts": "Brouillons",
+    "abandon": "Supprimer le brouillon",
+    "continue": "Reprendre l'écriture",
+    "abandon_confirm": "Êtes-vous sûr de vouloir supprimer ce brouillon ?",
+    "abandon_confirm_accept_button": "Supprimer"
+  },
+  "bookmarks": {
+    "manage_bookmark_folders": "Gérer les dossiers de marques page"
   }
 }
