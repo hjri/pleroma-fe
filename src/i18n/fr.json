@@ -58,7 +58,7 @@
     "yes": "Oui",
     "no": "Non",
     "unpin": "Dégrafer l'élément",
-    "scroll_to_top": "Défiler jusqu'en haut",
+    "scroll_to_top": "Retourner au début",
     "pin": "Agrafer l'élément",
     "generic_error_message": "Une erreur est apparue : {0}",
     "never_show_again": "Ne plus afficher"
@@ -138,7 +138,7 @@
     "drafts": "Brouillons"
   },
   "notifications": {
-    "broken_favorite": "Message inconnu, recherche en cours…",
+    "broken_favorite": "Post inconnu, recherche en cours…",
     "favorited_you": "a aimé votre statut",
     "followed_you": "vous suit",
     "load_older": "Charger les notifications précédentes",
@@ -808,7 +808,7 @@
     "mention_link_show_avatar": "Afficher les avatars à coté du lien",
     "mention_link_fade_domain": "Estomper les domaines (ex. {'@'}example.org en {'@'}foo{'@'}example.org)",
     "mention_link_bolden_you": "Surligner les mentions qui vous sont destinées",
-    "show_yous": "Afficher (Vous) / les (You)",
+    "show_yous": "Ajouter les \"(Vous)\"",
     "setting_server_side": "Cette préférence est liée au profil et affecte toutes les sessions et clients",
     "account_backup": "Sauvegarde de compte",
     "account_backup_description": "Ceci permet de télécharger une archive des informations du compte et vos messages, mais ils ne peuvent pas actuellement être importé dans un compte Pleroma.",
@@ -969,7 +969,7 @@
     "pin": "Agrafer sur le profil",
     "unpin": "Dégrafer du profil",
     "pinned": "Agraffé",
-    "delete_confirm": "Voulez-vous vraiment supprimer ce statuts ?",
+    "delete_confirm": "Voulez-vous vraiment supprimer ce post ?",
     "reply_to": "Réponse à",
     "replies_list": "Réponses :",
     "mute_conversation": "Masquer la conversation",
@@ -986,8 +986,8 @@
     "thread_muted_and_words": ", contient les mots :",
     "thread_muted": "Fil de discussion masqué",
     "external_source": "Source externe",
-    "unbookmark": "Supprimer des favoris",
-    "bookmark": "Ajouter aux favoris",
+    "unbookmark": "Retirer des marque-pages",
+    "bookmark": "Ajouter aux marque-pages",
     "plus_more": "plus +{number}",
     "many_attachments": "Message avec {number} pièce(s)-jointe(s)",
     "collapse_attachments": "Réduire les pièces jointes",
@@ -1170,7 +1170,7 @@
     "media_upload": "Envoyer un media",
     "repeat": "Re-partager",
     "reply": "Répondre",
-    "favorite": "Favoriser",
+    "favorite": "Ajouter aux favoris",
     "user_settings": "Paramètres utilisateur",
     "add_reaction": "Ajouter une réaction",
     "accept_follow_request": "Accepter la demande de suivit",
@@ -1597,7 +1597,7 @@
     "error": "Quelque chose s'est mal passé"
   },
   "bookmark_folders": {
-    "select_folder": "Sélectionnez le dossier des favoris",
+    "select_folder": "Sélectionnez le dossier des marques pages",
     "create": "Créer le dossier",
     "emoji": "Emoji",
     "name": "Nom du dossier",
@@ -1606,7 +1606,7 @@
     "update_folder": "Enregistrer les changements",
     "really_delete": "Voulez-vous vraiment supprimer le dossier ?",
     "error": "Erreur lors de la manipulation des dossiers de favoris : {0}",
-    "creating_folder": "Création du dossier des favoris",
+    "creating_folder": "Création du dossier de marques page",
     "editing_folder": "Édition du dossier {folderName}"
   },
   "drafts": {
