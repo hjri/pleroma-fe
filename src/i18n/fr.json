@@ -808,7 +808,7 @@
     "mention_link_show_avatar": "Afficher les avatars à coté du lien",
     "mention_link_fade_domain": "Estomper les domaines (ex. {'@'}example.org en {'@'}foo{'@'}example.org)",
     "mention_link_bolden_you": "Surligner les mentions qui vous sont destinées",
-    "show_yous": "Afficher (Vous)",
+    "show_yous": "Afficher (Vous) / les (You)",
     "setting_server_side": "Cette préférence est liée au profil et affecte toutes les sessions et clients",
     "account_backup": "Sauvegarde de compte",
     "account_backup_description": "Ceci permet de télécharger une archive des informations du compte et vos messages, mais ils ne peuvent pas actuellement être importé dans un compte Pleroma.",
