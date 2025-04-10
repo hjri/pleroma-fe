@@ -12,9 +12,12 @@
     margin: 0.5em;
     padding: 0.5em;
     display: grid;
-    grid-template-columns: fit-content 1fr fit-content;
     align-items: baseline;
     grid-gap: 0.5em;
+  }
+
+  .never {
+    margin-left: 0.5em;
   }
 
   .filter-name {

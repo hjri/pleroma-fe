@@ -275,7 +275,7 @@
                     :id="'filterExpiresNever' + filter[0]"
                     :model-value="filter[1].expires === null"
                     :name="'filterExpiresNever' + filter[0]"
-                    class="input-inset input-boolean"
+                    class="input-inset input-boolean never"
                     @update:model-value="updateFilter(filter[0], 'expires-never', $event)"
                   >
                     {{ $t('settings.filter.never_expires') }}
