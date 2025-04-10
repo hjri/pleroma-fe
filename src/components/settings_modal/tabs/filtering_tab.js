@@ -111,7 +111,7 @@ const FilteringTab = {
       const datetime = [
         date.getFullYear(),
         '-',
-        fmt.format(date.getMonth()),
+        fmt.format(date.getMonth() + 1),
         'T',
         fmt.format(date.getHours()),
         ':',
