@@ -123,7 +123,10 @@
     "search_close": "Fermi serĉujon",
     "mobile_sidebar": "(Mal)ŝalti flankan breton por telefonoj",
     "mobile_notifications_mark_as_seen": "Marki ĉion vidita",
-    "quotes": "Citoj"
+    "quotes": "Citoj",
+    "all_bookmarks": "Ĉiuj legosignoj",
+    "bookmark_folders": "Dosierujoj de legosignoj",
+    "drafts": "Malnetoj"
   },
   "notifications": {
     "broken_favorite": "Nekonata afiŝo, serĉante ĝin…",
@@ -145,7 +148,8 @@
     "configuration_tip": "Vi povas ŝanĝi, kio montriĝos ĉi tie en {theSettings}. {dismiss}",
     "configuration_tip_settings": "la agordoj",
     "unread_announcements": "{num} nelegita anonco | {num} nelegitaj anoncoj",
-    "configuration_tip_dismiss": "Ne remontri plu"
+    "configuration_tip_dismiss": "Ne remontri plu",
+    "subscribed_status": "afiŝita"
   },
   "post_status": {
     "new_status": "Afiŝi",
@@ -187,7 +191,18 @@
     "content_type_selection": "Formo de afiŝo",
     "scope_notice_dismiss": "Fermi ĉi tiun avizon",
     "reply_option": "Respondi al ĉi tiu afiŝo",
-    "quote_option": "Citi ĉi tiun afiŝon"
+    "quote_option": "Citi ĉi tiun afiŝon",
+    "close_confirm": "Kion vi volus fari pri via nuna skribaĵo?",
+    "close_confirm_discard_button": "Forĵeti",
+    "close_confirm_continue_composing_button": "Plu skribi",
+    "auto_save_nothing_new": "Nenio nova por konservi.",
+    "auto_save_saving": "Konservas…",
+    "auto_save_saved": "Konservinte.",
+    "save_to_drafts_button": "Konservi al malnetoj",
+    "save_to_drafts_and_close_button": "Konservi al malnetoj kaj fermi",
+    "close_confirm_title": "Fermo de afiŝo",
+    "close_confirm_save_button": "Konservi",
+    "more_post_actions": "Pliaj agoj…"
   },
   "registration": {
     "bio": "Priskribo",
@@ -774,7 +789,11 @@
     "confirm": "Konfirmi",
     "text_size": "Grandeco de teksto kaj fasado",
     "emoji_size": "Grandeco de bildosignoj",
-    "navbar_size": "Grandeco de supra breto"
+    "navbar_size": "Grandeco de supra breto",
+    "mobile_center_dialog": "Vertikale centrigi interagujojn telefone",
+    "text_size_tip2": "Valoroj aliaj ol {0} povus rompi kelkajn aferojn kaj haŭtojn",
+    "text_size_tip": "Uzu {0} por absolutaj valoroj. {1} grandiĝos laŭ implicita tekstograndeco de la foliumilo.",
+    "panel_header_size": "Grandeco de kapo de breto"
   },
   "timeline": {
     "collapse": "Maletendi",
@@ -966,7 +985,11 @@
     "add_option": "Aldoni elekteblon",
     "add_poll": "Aldoni enketon",
     "votes_count": "{count} voĉdono | {count} voĉdonoj",
-    "people_voted_count": "{count} persono voĉdonis | {count} personoj voĉdonis"
+    "people_voted_count": "{count} persono voĉdonis | {count} personoj voĉdonis",
+    "expires_at": "Enketo finiĝas je {0}",
+    "expired_at": "Enketo finiĝis je {0}",
+    "non_anonymous": "Publika enketo",
+    "non_anonymous_title": "Aliaj nodoj povus montri, por kio vi voĉdonis"
   },
   "importer": {
     "error": "Eraris enporto de ĉi tiu dosiero.",
@@ -1001,7 +1024,8 @@
         "simple_policies": "Specialaj politikoj de la nodo",
         "ftl_removal_desc": "Ĉi tiu nodo forigas la jenajn nodojn el la «Federa historio»:",
         "instance": "Nodo",
-        "reason": "Kialo"
+        "reason": "Kialo",
+        "not_applicable": "N/A"
       },
       "mrf_policies": "Ŝaltis politikon de Mesaĝa ŝanĝilaro (MRF)",
       "keyword": {
@@ -1013,7 +1037,8 @@
       },
       "federation": "Federado",
       "mrf_policies_desc": "Politikoj de Mesaĝa ŝanĝilaro (MRF) efikas sur federa konduto de la nodo.  La sekvaj politikoj estas ŝaltitaj:"
-    }
+    },
+    "terms": "Uzokondiĉoj"
   },
   "selectable_list": {
     "select_all": "Elekti ĉion"
