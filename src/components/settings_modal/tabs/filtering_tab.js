@@ -95,6 +95,12 @@ const FilteringTab = {
     ),
     muteFiltersDraft () {
       return Object.entries(this.muteFiltersDraftObject)
+    },
+    muteFiltersExpired () {
+      const now = Date.now()
+      return Object
+        .entries(this.muteFiltersDraftObject)
+        .filter(([, { expires }]) => expires != null && expires <= now)
     }
   },
   methods: {
@@ -162,6 +168,14 @@ const FilteringTab = {
     deleteFilter (id) {
       delete this.muteFiltersDraftObject[id]
       this.unsetPreference({ path: 'simple.muteFilters.' + id , value: null })
+      this.pushServerSideStorage()
+    },
+    purgeExpiredFilters () {
+      this.muteFiltersExpired.forEach(([id]) => {
+        console.log(id)
+        delete this.muteFiltersDraftObject[id]
+        this.unsetPreference({ path: 'simple.muteFilters.' + id , value: null })
+      })
       this.pushServerSideStorage()
     },
     updateFilter(id, field, value) {

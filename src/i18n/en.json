@@ -432,7 +432,10 @@
       "export": "Export",
       "regexp_error": "Invalid Regular Expression",
       "never_expires": "Never",
-      "count": "{count} filter|{count} filters",
+      "total_count": "Total {count} custom filter|Total {count} custom filters",
+      "expired_count": "{count} expired filter|{count} expired filters",
+      "custom_filters": "Custom filters",
+      "purge_expired": "Remove expired filters",
       "import_failure": "The selected file is not a supported Pleroma filter.",
       "help": {
         "word": "Simple and RegExp filters test against post's content and subject.",

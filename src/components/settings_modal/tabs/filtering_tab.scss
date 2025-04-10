@@ -63,8 +63,18 @@
     justify-content: end;
   }
 
-  .total {
-    text-align: center;
+  .muteFiltersActions,
+  .muteFiltersActionsBottom {
+    display: grid;
+    align-items: baseline;
+    grid-auto-flow: column;
+    grid-template-columns: 1fr;
+    grid-gap: 0.5em;
+    margin: 0.5em 0;
+
+    .total {
+      flex: 1;
+    }
   }
 }
 
