@@ -4,8 +4,8 @@
     class="filtering-tab"
   >
     <div class="setting-item">
+      <h2>{{ $t('settings.filter.clutter') }}</h2>
       <ul class="setting-list">
-        <h2>{{ $t('settings.filter.clutter') }}</h2>
         <li>
           <ChoiceSetting
             v-if="user"
@@ -70,8 +70,10 @@
           </BooleanSetting>
         </li>
       </ul>
+    </div>
+    <div class="setting-item">
+      <h2>{{ $t('settings.filter.mute_filter') }}</h2>
       <ul class="setting-list">
-        <h2>{{ $t('settings.filter.mute_filter') }}</h2>
         <li>
           <BooleanSetting path="hideFilteredStatuses">
             {{ $t('settings.hide_muted_statuses') }}
