@@ -1366,7 +1366,7 @@ const search2 = ({ credentials, q, resolve, limit, offset, following, type }) =>
   }
 
   if (type) {
-    params.push(['following', type])
+    params.push(['type', type])
   }
 
   params.push(['with_relationships', true])
