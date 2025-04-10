@@ -793,7 +793,8 @@
     "mobile_center_dialog": "Vertikale centrigi interagujojn telefone",
     "text_size_tip2": "Valoroj aliaj ol {0} povus rompi kelkajn aferojn kaj haŭtojn",
     "text_size_tip": "Uzu {0} por absolutaj valoroj. {1} grandiĝos laŭ implicita tekstograndeco de la foliumilo.",
-    "panel_header_size": "Grandeco de kapo de breto"
+    "panel_header_size": "Grandeco de kapo de breto",
+    "visual_tweaks": "Ŝanĝetoj de aspekto"
   },
   "timeline": {
     "collapse": "Maletendi",
