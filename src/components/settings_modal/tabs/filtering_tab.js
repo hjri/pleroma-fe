@@ -107,16 +107,15 @@ const FilteringTab = {
     ...mapActions(useServerSideStorageStore, ['setPreference', 'unsetPreference', 'pushServerSideStorage']),
     getDatetimeLocal (timestamp) {
       const date = new Date(timestamp)
+      let fmt = new Intl.NumberFormat("en-US", {minimumIntegerDigits: 2})
       const datetime = [
         date.getFullYear(),
         '-',
-        date.getMonth() < 9 ? ('0' + (date.getMonth() + 1)) : (date.getMonth() + 1),
-        '-',
-        date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate(),
+        fmt.format(date.getMonth()),
         'T',
-        date.getHours() < 10 ? ('0' + date.getHours()) : date.getHours(),
+        fmt.format(date.getHours()),
         ':',
-        date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes(),
+        fmt.format(date.getMinutes())
       ].join('')
       return datetime
     },
