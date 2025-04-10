@@ -17,12 +17,18 @@
           </ChoiceSetting>
         </li>
         <li>
-          <BooleanSetting expert="1" path="hidePostStats">
+          <BooleanSetting
+            expert="1"
+            path="hidePostStats"
+          >
             {{ $t('settings.hide_post_stats') }}
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting expert="1" path="hideUserStats">
+          <BooleanSetting
+            expert="1"
+            path="hideUserStats"
+          >
             {{ $t('settings.hide_user_stats') }}
           </BooleanSetting>
         </li>
