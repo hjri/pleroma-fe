@@ -180,7 +180,6 @@ const FilteringTab = {
     updateFilter(id, field, value) {
       const filter = { ...this.muteFiltersDraftObject[id] }
       if (field === 'expires-never') {
-        // filter[field] = value
         if (!value) {
           const offset = 1000 * 60 * 60 * 24 * 14 // 2 weeks
           const date = Date.now() + offset

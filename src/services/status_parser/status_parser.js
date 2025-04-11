@@ -5,7 +5,6 @@ export const muteFilterHits = (muteFilters, status) => {
   const poster = status.user.screen_name.toLowerCase()
   const mentions = (status.attentions || []).map(att => att.screen_name.toLowerCase())
 
-  console.log(status)
 
   return muteFilters.toSorted((a,b) => b.order - a.order).map(filter => {
     const { hide, expires, name, value, type, enabled} = filter
