@@ -88,12 +88,14 @@ export default {
     },
     currentTheme () {
       if (useInterfaceStore().styleDataUsed) {
-        const themeName = useInterfaceStore().styleDataUsed.find(x => x.component === '@meta').directives.name
+        const styleMeta = useInterfaceStore().styleDataUsed.find(x => x.component === '@meta')
 
-        return themeName.replaceAll(" ", "-").toLowerCase()
-      } else {
-        return 'stock'
+        if (styleMeta !== undefined) {
+          return styleMeta.directives.name.replaceAll(" ", "-").toLowerCase()
+        }
       }
+
+      return 'stock'
     },
     layoutModalClass () {
       return '-' + this.layoutType
