@@ -87,7 +87,13 @@ export default {
       return useInterfaceStore().themeApplied
     },
     currentTheme () {
-      return this.mergedConfig.style || this.$store.state.instance.style
+      if (useInterfaceStore().styleDataUsed) {
+        const themeName = useInterfaceStore().styleDataUsed.find(x => x.component === '@meta').directives.name
+
+        return themeName.replaceAll(" ", "-").toLowerCase()
+      } else {
+        return 'stock'
+      }
     },
     layoutModalClass () {
       return '-' + this.layoutType
