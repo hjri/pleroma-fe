@@ -315,7 +315,7 @@ const AppearanceTab = {
     },
     onImportFailure (result) {
       console.error('Failure importing theme:', result)
-      this.$store.useInterfaceStore().pushGlobalNotice({ messageKey: 'settings.invalid_theme_imported', level: 'error' })
+      useInterfaceStore().pushGlobalNotice({ messageKey: 'settings.invalid_theme_imported', level: 'error' })
     },
     importValidator (parsed, filename) {
       if (filename.endsWith('.json')) {

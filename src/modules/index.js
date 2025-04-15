@@ -5,7 +5,6 @@ import users from './users.js'
 import api from './api.js'
 import config from './config.js'
 import profileConfig from './profileConfig.js'
-import serverSideStorage from './serverSideStorage.js'
 import adminSettings from './adminSettings.js'
 import authFlow from './auth_flow.js'
 import oauthTokens from './oauth_tokens.js'
@@ -20,7 +19,6 @@ export default {
   api,
   config,
   profileConfig,
-  serverSideStorage,
   adminSettings,
   authFlow,
   oauthTokens,

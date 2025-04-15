@@ -1,11 +1,16 @@
+import { compact, map, each, mergeWith, last, concat, uniq, isArray } from 'lodash'
+
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import { windowWidth, windowHeight } from '../services/window_utils/window_utils'
 import apiService from '../services/api/api.service.js'
 import oauthApi from '../services/new_api/oauth.js'
-import { compact, map, each, mergeWith, last, concat, uniq, isArray } from 'lodash'
 import { registerPushNotifications, unregisterPushNotifications } from '../services/sw/sw.js'
+
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+
+import { declarations } from 'src/modules/config_declaration'
 
 // TODO: Unify with mergeOrAdd in statuses.js
 export const mergeOrAdd = (arr, obj, item) => {
@@ -605,7 +610,8 @@ const users = {
               user.muteIds = []
               user.domainMutes = []
               commit('setCurrentUser', user)
-              commit('setServerSideStorage', user)
+
+              useServerSideStorageStore().setServerSideStorage(user)
               commit('addNewUsers', [user])
 
               dispatch('fetchEmoji')
@@ -615,7 +621,35 @@ const users = {
 
               // Set our new backend interactor
               commit('setBackendInteractor', backendInteractorService(accessToken))
-              dispatch('pushServerSideStorage')
+
+              // Do server-side storage migrations
+
+              // Debug snippet to clean up storage and reset migrations
+              /*
+              // Reset wordfilter
+              Object.keys(
+                useServerSideStorageStore().prefsStorage.simple.muteFilters
+              ).forEach(key => {
+                useServerSideStorageStore().unsetPreference({ path: 'simple.muteFilters.' + key, value: null })
+              })
+
+              // Reset flag to 0 to re-run migrations
+              useServerSideStorageStore().setFlag({ flag: 'configMigration', value: 0 })
+              /**/
+
+              const { configMigration } = useServerSideStorageStore().flagStorage
+              declarations
+                .filter(x => {
+                  return x.store === 'server-side' &&
+                    x.migrationNum > 0 &&
+                    x.migrationNum > configMigration
+                })
+                .toSorted((a, b) => a.configMigration - b.configMigration)
+                .forEach(value => {
+                  value.migration(useServerSideStorageStore(), store.rootState)
+                  useServerSideStorageStore().setFlag({ flag: 'configMigration', value: value.migrationNum })
+                  useServerSideStorageStore().pushServerSideStorage()
+                })
 
               if (user.token) {
                 dispatch('setWsToken', user.token)

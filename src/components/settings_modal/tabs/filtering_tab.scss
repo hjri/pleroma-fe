@@ -1,0 +1,89 @@
+.filtering-tab {
+  .muteFilterContainer {
+    border: 1px solid var(--border);
+    border-radius: var(--roundness);
+    height: 33vh;
+    overflow-y: auto;
+  }
+
+  .mute-filter {
+    border: 1px solid var(--border);
+    border-radius: var(--roundness);
+    margin: 0.5em;
+    padding: 0.5em;
+    display: grid;
+    align-items: baseline;
+    grid-gap: 0.5em;
+  }
+
+  .never {
+    margin-left: 0.5em;
+  }
+
+  .filter-name {
+    grid-column: 1 / span 2;
+    grid-row: 1;
+  }
+
+  .alert,
+  .button-default {
+    display: inline-block;
+    line-height: 2;
+    padding: 0 0.5em;
+  }
+
+  .filter-enabled {
+    grid-column: 3;
+    grid-row: 1;
+    text-align: right;
+    line-height: 2;
+  }
+
+  .filter-field {
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-template-rows: subgrid;
+    grid-column: 1 / span 3;
+    align-items: baseline;
+
+    label {
+      grid-column: 1;
+      text-align: right;
+    }
+
+    .filter-field-value {
+      grid-column: 2 / span 2;
+    }
+  }
+
+  .filter-buttons {
+    grid-column: 1 / span 3;
+    justify-self: end;
+    display: inline-grid;
+    grid-gap: 0.5em;
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 100%;
+    justify-content: end;
+  }
+
+  .muteFiltersActions,
+  .muteFiltersActionsBottom {
+    display: grid;
+    align-items: baseline;
+    grid-auto-flow: column;
+    grid-template-columns: 1fr;
+    grid-gap: 0.5em;
+    margin: 0.5em 0;
+
+    .total {
+      flex: 1;
+    }
+  }
+}
+
+
+.settings-modal.-mobile .filtering-tab {
+  .filter-buttons {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}

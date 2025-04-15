@@ -8,6 +8,7 @@ import Popover from 'components/popover/popover.vue'
 import ConfirmModal from 'components/confirm_modal/confirm_modal.vue'
 import ModifiedIndicator from '../helpers/modified_indicator.vue'
 import EmojiEditingPopover from '../helpers/emoji_editing_popover.vue'
+import { useInterfaceStore } from 'src/stores/interface'
 
 const EmojiTab = {
   components: {
@@ -232,7 +233,7 @@ const EmojiTab = {
         })
     },
     displayError (msg) {
-      this.$store.useInterfaceStore().pushGlobalNotice({
+      useInterfaceStore().pushGlobalNotice({
         messageKey: 'admin_dash.emoji.error',
         messageArgs: [msg],
         level: 'error'

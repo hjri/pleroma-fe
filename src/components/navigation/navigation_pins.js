@@ -20,6 +20,7 @@ import {
 import { useListsStore } from 'src/stores/lists'
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
 library.add(
   faUsers,
@@ -54,15 +55,17 @@ const NavPanel = {
       supportsAnnouncements: store => store.supportsAnnouncements
     }),
     ...mapPiniaState(useBookmarkFoldersStore, {
-      bookmarks: getBookmarkFolderEntries
+      bookmarks: getBookmarkFolderEntries,
+    }),
+    ...mapPiniaState(useServerSideStorageStore, {
+      pinnedItems: store => new Set(store.prefsStorage.collections.pinnedNavItems)
     }),
     ...mapState({
       currentUser: state => state.users.currentUser,
       followRequestCount: state => state.api.followRequests.length,
       privateMode: state => state.instance.private,
       federating: state => state.instance.federating,
-      pleromaChatMessagesAvailable: state => state.instance.pleromaChatMessagesAvailable,
-      pinnedItems: state => new Set(state.serverSideStorage.prefsStorage.collections.pinnedNavItems)
+      pleromaChatMessagesAvailable: state => state.instance.pleromaChatMessagesAvailable
     }),
     pinnedList () {
       if (!this.currentUser) {

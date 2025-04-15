@@ -1,9 +1,11 @@
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import ActionButtonContainer from './action_button_container.vue'
 import Popover from 'src/components/popover/popover.vue'
 import genRandomSeed from 'src/services/random_seed/random_seed.service.js'
+
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
 import { BUTTONS } from './buttons_definitions.js'
 
@@ -36,8 +38,8 @@ const StatusActionButtons = {
     ActionButtonContainer
   },
   computed: {
-    ...mapState({
-      pinnedItems: state => new Set(state.serverSideStorage.prefsStorage.collections.pinnedStatusActions)
+    ...mapState(useServerSideStorageStore, {
+      pinnedItems: store => new Set(store.prefsStorage.collections.pinnedStatusActions)
     }),
     buttons () {
       return BUTTONS.filter(x => x.if ? x.if(this.funcArg) : true)
@@ -101,12 +103,12 @@ const StatusActionButtons = {
       return this.pinnedItems.has(button.name)
     },
     unpin (button) {
-      this.$store.commit('removeCollectionPreference', { path: 'collections.pinnedStatusActions', value: button.name })
-      this.$store.dispatch('pushServerSideStorage')
+      useServerSideStorageStore().removeCollectionPreference({ path: 'collections.pinnedStatusActions', value: button.name })
+      useServerSideStorageStore().pushServerSideStorage()
     },
     pin (button) {
-      this.$store.commit('addCollectionPreference', { path: 'collections.pinnedStatusActions', value: button.name })
-      this.$store.dispatch('pushServerSideStorage')
+      useServerSideStorageStore().addCollectionPreference({ path: 'collections.pinnedStatusActions', value: button.name })
+      useServerSideStorageStore().pushServerSideStorage()
     },
     getComponent (button) {
       if (!this.$store.state.users.currentUser && button.anonLink) {
