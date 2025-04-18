@@ -125,7 +125,7 @@
     "mobile_notifications_mark_as_seen": "Marki ĉion vidita",
     "quotes": "Citoj",
     "all_bookmarks": "Ĉiuj legosignoj",
-    "bookmark_folders": "Dosierujoj de legosignoj",
+    "bookmark_folders": "Legosignujoj",
     "drafts": "Malnetoj"
   },
   "notifications": {
@@ -481,7 +481,14 @@
           "buttonPressedHover": "Butono (je premo kaj ŝvebo)",
           "input": "Eniga kampo"
         },
-        "hintV3": "Kolorojn de ombroj vi ankaŭ povas skribi per la sistemo {0}."
+        "hintV3": "Kolorojn de ombroj vi ankaŭ povas skribi per la sistemo {0}.",
+        "offset": "Deŝovo de ombro",
+        "name": "Nomo",
+        "zoom": "Zomo",
+        "offset-x": "x:",
+        "offset-y": "y:",
+        "color_override": "Uzi alian koloron",
+        "raw": "Simpla ombro"
       },
       "fonts": {
         "_tab_label": "Tiparoj",
@@ -532,7 +539,14 @@
           },
           "group-local": "Loke instalitaj signoformoj",
           "local-unavailable1": "Listo de loke instalitaj signoformoj ne estas disponebla",
-          "font_list_unavailable": "Ne povis akiri loke instalitajn signoformojn: {error}"
+          "font_list_unavailable": "Ne povis akiri loke instalitajn signoformojn: {error}",
+          "lookup_local_fonts": "Enlegi liston de signoformaroj instalitaj sur ĉi tiu komputilo",
+          "enter_manually": "Enigi nomon de signoforma familio permane",
+          "entry": "Enigi {fontFamily}",
+          "select": "Elekti signoformojn",
+          "label": "Signoformaro {label}",
+          "group-builtin": "Implicitaj signoformoj de foliumilo",
+          "local-unavailable2": "Permane specifi propran signoformaron"
         },
         "editor": {
           "opacity": "Netravidebleco",
@@ -602,12 +616,13 @@
           "cGreen": "Verda koloro",
           "name_label": "Nomo de kolorskemo"
         },
-        "define": "Transapliki"
+        "define": "Superagordi"
       },
       "update_preview": "Ĝisdatigi antaŭrigardon",
       "custom_style_used": "(Propra stilo)",
       "stock_theme_used": "(Nepropra haŭto)",
-      "themes2_outdated": "La redaktilo por haŭtoj v2 estas forlasita, kaj eventuale anstataŭiĝos de nova redaktilo, kiu pli bone uzas la novan motoron por haŭtoj v3. La malnova ankoraŭ devus funkcii, sed eble ne plu same bone kaj kohere."
+      "themes2_outdated": "La redaktilo por haŭtoj v2 estas forlasita, kaj eventuale anstataŭiĝos de nova redaktilo, kiu pli bone uzas la novan motoron por haŭtoj v3. La malnova ankoraŭ devus funkcii, sed eble ne plu same bone kaj kohere.",
+      "interface_font_user_override": "Superagordi uzitajn haŭtojn kaj signoformojn de foliumilo"
     },
     "discoverable": "Permesi trovon de ĉi tiu konto en serĉrezultoj kaj aliaj servoj",
     "mutes_and_blocks": "Blokado kaj silentigoj",
@@ -894,7 +909,46 @@
     "image_compression": "Densigi bildojn antaŭ alŝuto",
     "notification_visibility_in_column": "Montri en sciiga kolumno/tirkesto",
     "always_use_jpeg": "Ĉiam transformi bildojn al JPEG",
-    "hide_scrobbles_after": "Kaŝi aŭskultnotojn pli malnovajn ol"
+    "hide_scrobbles_after": "Kaŝi aŭskultnotojn pli malnovajn ol",
+    "reset_value": "Remeti",
+    "enabled": "Ŝaltita",
+    "filter": {
+      "clutter": "Forigi bruon",
+      "mute_filter": "Silentigi filtrilojn",
+      "type": "Speco de filtrilo",
+      "regexp": "Regula esprimo",
+      "plain": "Simpla",
+      "user": "Uzantula (simpla)",
+      "user_regexp": "Uzantula (regula esprimo)",
+      "hide": "Kaŝi plene",
+      "name": "Nomo",
+      "value": "Valoro",
+      "expires": "Eksdatiĝo",
+      "expired": "Eksdata",
+      "copy": "Duobligi",
+      "save": "Konservi",
+      "delete": "Forigi",
+      "new": "Krei novan",
+      "import": "Enporti",
+      "export": "Elporti",
+      "regexp_error": "Nevalida regula esprimo",
+      "never_expires": "Neniam",
+      "total_count": "Sume {count} propra filtrilo|Sume {count} propraj filtriloj",
+      "expired_count": "{count} eksdata filtrilo|{count} eksdataj filtriloj",
+      "custom_filters": "Propraj filtriloj",
+      "purge_expired": "Forigi eksdatajn filtrilojn",
+      "import_failure": "La elektita dosiero ne estas subtenata filtrilo de Pleromo.",
+      "help": {
+        "word": "Simplaj kaj regulesprimaj filtriloj umas je temo kaj enhavo de afiŝoj.",
+        "user": "Uzantula filtrilo umas je plena adreso de uzanto (uzanto@retnomo) en: aŭtoro, respondato, kaj mencioj",
+        "regexp": "Regulesprimaj variaĵoj estas altnivelaj kaj uzas on {link} por trovi akordan tekston, anstataŭ simpla serĉado.",
+        "regexp_link": "Regulaj esprimoj",
+        "regexp_url": "https://www.esperanto.mv.ru/KompLeks/R.html#REGULESPRIMO"
+      }
+    },
+    "hard_reset_value": "Renuligi",
+    "hide_muted_statuses": "Plene kaŝi ĉiujn silentigitajn afiŝojn",
+    "reset_value_tooltip": "Remeti malneton"
   },
   "timeline": {
     "collapse": "Maletendi",
@@ -1030,7 +1084,10 @@
     "add_reaction": "Aldoni reagon",
     "toggle_expand": "Etendi aŭ maletendi sciigon por montri plenan afiŝon",
     "toggle_mute": "Etendi aŭ maletendi afiŝon por montri silentigitan enhavon",
-    "autocomplete_available": "{number} rezulto disponeblas. Uzu la sagajn klavojn supren kaj suben por foliumi ilin. | {number} rezulto disponeblas. Uzu la sagajn klavojn supren kaj suben por foliumi ilin."
+    "autocomplete_available": "{number} rezulto disponeblas. Uzu la sagajn klavojn supren kaj suben por foliumi ilin. | {number} rezulto disponeblas. Uzu la sagajn klavojn supren kaj suben por foliumi ilin.",
+    "mentions": "Mencioj",
+    "unrepeat": "Malfari ripeton",
+    "unfavorite": "Malfari ŝaton"
   },
   "upload": {
     "error": {
@@ -1228,7 +1285,9 @@
     "display_quote": "Montri la cititan afiŝon",
     "reaction_count_label": "{num} persono reagis | {num} personoj reagis",
     "invisible_quote": "Citita afiŝo ne disponeblas: {link}",
-    "quotes": "Citaĵoj"
+    "quotes": "Citaĵoj",
+    "reply_to_with_icon": "{icon} {replyTo}",
+    "reply_to_with_arg": "{replyToWithIcon} {user}"
   },
   "time": {
     "years_short": "{0}j",
@@ -1413,7 +1472,12 @@
       "repository": "Ligilo al deponejo",
       "is_default": "(Implicita)",
       "is_default_custom": "(Implicita, versio: {version})",
-      "set_default_version": "Agordi version {version} implicita"
+      "set_default_version": "Agordi version {version} implicita",
+      "failure_installing_frontend": "Malsukcesis instali fasadon {version}: {reason}",
+      "available_frontends": "Disponeblaj por instalado",
+      "default_frontend_unavail": "Implicita agordo de la fasado ne estas disponebla, ĉar tio postulas agordadon en la datumbazo",
+      "wip_notice": "Bonvolu scii, ke ĉi tiu sekcio ankoraŭ estas prilaborata, kaj mankas al ĝi iuj funkcioj, ĉar la administrado de la fasado ankoraŭ ne estas plene programita en la interna flanko.",
+      "success_installing_frontend": "Fasado {version} sukcese instaliĝis"
     },
     "emoji": {
       "download_as_name_full": "Nova nomo; lasu malplena por reuzi",
@@ -1432,7 +1496,32 @@
       "homepage": "Hejmpaĝo",
       "save": "Konservi",
       "revert": "Malfari",
-      "share": "Kunhavigi"
+      "share": "Kunhavigi",
+      "revert_meta": "Remeti pridatumojn",
+      "emoji_packs": "Pakoj de bildosignoj",
+      "remote_packs": "Foraj pakoj",
+      "remote_pack_instance": "Nodo de fora pako",
+      "new_filename": "Dosiernomo; lasu malplena por supozi",
+      "download": "Elŝuti",
+      "download_pack": "Elŝuti pakon",
+      "downloading_pack": "Elŝutas {0}",
+      "delete_title": "Ĉu forigi?",
+      "delete_confirm": "Ĉu vi certe volas forigi {0}?",
+      "delete_pack": "Forigi pakon",
+      "new_pack_name": "Nomo de nova pako",
+      "create_pack": "Krei pakon",
+      "adding_new": "Aldono de novaj bildosignoj",
+      "new_shortcode": "Kodo; lasu malplena por supozi",
+      "editing": "Redaktas {0}",
+      "global_actions": "Tutnodaj agoj",
+      "fallback_src": "Rezerva fonto",
+      "edit_pack": "Redakti pakon",
+      "emoji_pack": "Pako de bildosignoj",
+      "emoji_changed": "Nekonservitaj ŝanĝoj de bildosignoj; kontrolu la emfazitajn bildosignojn",
+      "metadata_changed": "Pridatumoj malsamas de la konservitaj",
+      "replace_warning": "Ĉi tio ANSTATAŬIGOS la lokan pakon kun la sama nomo",
+      "fallback_sha256": "Rezerva SHA256",
+      "shortcode": "Kodo"
     },
     "tabs": {
       "emoji": "Bildosignoj",
@@ -1460,7 +1549,9 @@
       "arbitrary_limits": "Arbitraj limoj"
     },
     "nodb": {
-      "documentation": "dokumentaĵo"
+      "documentation": "dokumentaĵo",
+      "text2": "Plejparto de agordebloj ne estos disponebla.",
+      "text": "Vi devas ŝanĝi agordajn dosierojn de la internaĵo tiel, ke {property} havu valoron {value}; vidu pliajn informojn en {documentation}."
     },
     "window_title": "Administrado",
     "wip_notice": "Ĉi tiu administra fasado estas eksperimenta kaj ankoraŭ prilaborata, {adminFeLink}.",
@@ -1478,6 +1569,9 @@
           ":description_limit": {
             "description": "Limo de signoj por priskriboj de kunsendaĵoj",
             "label": "Limo"
+          },
+          ":limit_to_local_content": {
+            "label": "Limigi serĉadon al loka enhavo"
           }
         }
       }
@@ -1485,6 +1579,48 @@
     "commit_all": "Konservi ĉion",
     "captcha": {
       "kocaptcha": "KoCaptcha"
-    }
+    },
+    "reset_all": "Remeti ĉion"
+  },
+  "splash": {
+    "loading": "Enlegas…",
+    "theme": "Aplikas haŭton; bonvolu pacienci…",
+    "fun_3": "Miaŭ…",
+    "fun_4": "Nia Pleromo pleromiĝas!",
+    "fun_2": "Trankviliĝu!",
+    "fun_1": "Trinku pli da akvo",
+    "error": "Eraris io"
+  },
+  "drafts": {
+    "no_drafts": "Vi havas neniujn malnetojn",
+    "drafts": "Malnetoj",
+    "empty": "(Neniu enhavo)",
+    "poll_tooltip": "Malneto enhavas enketon",
+    "abandon_confirm": "Ĉu vi certe volas forigi ĉi tiun malneton?",
+    "replying": "Responde al {statusLink}",
+    "editing": "Redakto de {statusLink}",
+    "unavailable": "(nedisponebla)",
+    "continue": "Daŭrigi skribadon",
+    "save": "Konservi sen afiŝado",
+    "abandon": "Forigi malneton",
+    "abandon_confirm_title": "Konfirmo de forigo",
+    "abandon_confirm_accept_button": "Forigi",
+    "abandon_confirm_cancel_button": "Konservi"
+  },
+  "bookmark_folders": {
+    "editing_folder": "Redaktado de legosignujo {folderName}",
+    "emoji": "Bildosignoj",
+    "name": "Nomo de legosignujo",
+    "update_folder": "Konservi ŝanĝojn",
+    "really_delete": "Ĉu vi certe volas forigi la legosignujon?",
+    "error": "Eraris ŝanĝado de legosignujoj: {0}",
+    "select_folder": "Elektu legosignujon",
+    "creating_folder": "Kreado de legosignujo",
+    "new": "Nova legosignujo",
+    "create": "Krei legosignujon",
+    "delete": "Forigi legosignujon"
+  },
+  "bookmarks": {
+    "manage_bookmark_folders": "Administri legosignujojn"
   }
 }
