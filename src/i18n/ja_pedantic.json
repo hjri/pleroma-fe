@@ -577,7 +577,10 @@
         "offset": "影のオフセット",
         "name": "名前",
         "light_grid": "背景のチェック模様を明るくする",
-        "zoom": "拡大率"
+        "zoom": "拡大率",
+        "offset-x": "x:",
+        "offset-y": "y:",
+        "raw": "通常の影"
       },
       "fonts": {
         "_tab_label": "フォント",
@@ -701,13 +704,17 @@
             "no-auto": "無効",
             "label": "コントラストの自動調整"
           },
-          "style_website": "ウェブサイト"
+          "style_website": "ウェブサイト",
+          "include_in_rule": "テーマ設定に追加",
+          "component_tab": "UI要素のスタイル"
         }
       },
       "custom_theme_used": "(カスタムテーマ)",
       "appearance_tab_note": "以下の設定はテーマには反映されないため、エクスポートしたテーマの見た目は今見えているものと異なる可能性があります",
       "update_preview": "プレビューを更新",
-      "interface_font_user_override": "フォント設定の上書き"
+      "interface_font_user_override": "フォント設定の上書き",
+      "stock_theme_used": "(基礎テーマ)",
+      "custom_style_used": "(カスタムスタイル)"
     },
     "version": {
       "title": "バージョン",
@@ -955,7 +962,44 @@
     "absolute_time_format_12h": "時刻の表示形式",
     "image_compression": "アップロード前に画像を圧縮する",
     "absolute_time_format_12h_12h": "12時間表記 (例: 午後10:00)",
-    "absolute_time_format_12h_24h": "24時間表記 (例: 22:00)"
+    "absolute_time_format_12h_24h": "24時間表記 (例: 22:00)",
+    "filter": {
+      "clutter": "非表示設定",
+      "type": "フィルタータイプ",
+      "regexp": "正規表現",
+      "plain": "シンプル",
+      "mute_filter": "ミュートフィルター",
+      "user": "ユーザー (シンプル)",
+      "user_regexp": "ユーザー (正規表現)",
+      "hide": "完全に非表示にする",
+      "name": "名前",
+      "value": "対象",
+      "expired": "有効期限切れ",
+      "expires": "有効期限",
+      "copy": "複製",
+      "save": "保存",
+      "delete": "削除",
+      "new": "新規作成",
+      "import": "インポート",
+      "export": "エクスポート",
+      "never_expires": "無期限",
+      "total_count": "計{count}件のカスタムフィルター",
+      "expired_count": "{count}件の有効期限切れフィルター",
+      "custom_filters": "カスタムフィルター",
+      "purge_expired": "有効期限切れのフィルターを一括削除",
+      "import_failure": "選択されたファイルはPleromaのフィルターファイルではありません。",
+      "help": {
+        "word": "「シンプル」と「正規表現」のフィルターは投稿の内容と注釈に対して機能します。",
+        "user": "「ユーザー」のフィルターは投稿者、返信先、メンションに含まれるユーザーのアカウントID (user@domain)に対して機能します。",
+        "regexp": "「正規表現」、「ユーザー (正規表現)」は単純な部分一致の代わりに{link}を使用する、より高度なフィルターです。",
+        "regexp_link": "正規表現",
+        "regexp_url": "https://ja.wikipedia.org/wiki/正規表現"
+      }
+    },
+    "enabled": "有効",
+    "hide_muted_statuses": "全てのミュートされた投稿を完全に非表示にする",
+    "notification_visibility_native_notifications": "ネイティブの通知を表示する",
+    "theme_editor_min_width": "テーマエディタの最小幅 (0で\"fit-content\")"
   },
   "time": {
     "day": "{0}日",
@@ -1105,8 +1149,9 @@
     "mute_user": "ユーザーをミュート",
     "unmute_user": "ユーザーのミュートを解除",
     "multi_reason_mute": "{main} + {numReasonsMore}件の理由",
-    "muted_words": "ワードフィルタにマッチ: {word} | ワードフィルタにマッチ: {word}とその他{numWordsMore}件の単語",
-    "unmute_domain": "ドメインのミュートを解除"
+    "muted_words": "ワードフィルターにマッチ: {word} | ワードフィルターにマッチ: {word}とその他{numWordsMore}件の単語",
+    "unmute_domain": "ドメインのミュートを解除",
+    "muted_filters": "カスタムフィルターにマッチ: {name} | カスタムフィルターにマッチ: {name}とその他{filtersMore}件のフィルター"
   },
   "user_card": {
     "approve": "承認",
