@@ -115,7 +115,7 @@
     "home_timeline": "Hejma historio",
     "edit_pinned": "Redakti fiksitajn erojn",
     "lists": "Listoj",
-    "edit_nav_mobile": "Adapti navigan breton",
+    "edit_nav_mobile": "Adapti breton kun ligilaro",
     "edit_finish": "Fini redakton",
     "mobile_notifications": "Malfermi sciigojn (estas nelegitaj)",
     "mobile_notifications_close": "Fermi sciigojn",
@@ -149,7 +149,7 @@
     "configuration_tip_settings": "la agordoj",
     "unread_announcements": "{num} nelegita anonco | {num} nelegitaj anoncoj",
     "configuration_tip_dismiss": "Ne remontri plu",
-    "subscribed_status": "afiŝita"
+    "subscribed_status": "afiŝis"
   },
   "post_status": {
     "new_status": "Afiŝi",
@@ -466,7 +466,8 @@
           "drop_shadow_syntax": "{0} ne subtenas parametron {1} kaj ĉefvorton {2}.",
           "avatar_inset": "Bonvolu rimarki, ke agordi ambaŭ internajn kaj eksterajn ombrojn por profilbildoj povas redoni neatenditajn rezultojn ĉe profilbildoj travideblaj.",
           "spread_zero": "Ombroj kun vastigo > 0 aperos kvazaŭ ĝi estus fakte nulo",
-          "inset_classic": "Internaj ombroj uzos {0}"
+          "inset_classic": "Internaj ombroj uzos {0}",
+          "avatar_inset_short": "Aparta ena ombro"
         },
         "components": {
           "panel": "Breto",
@@ -488,7 +489,10 @@
         "offset-x": "x:",
         "offset-y": "y:",
         "color_override": "Uzi alian koloron",
-        "raw": "Simpla ombro"
+        "raw": "Simpla ombro",
+        "light_grid": "Uzi helan kvadratan fonon",
+        "empty_expression": "Malplena esprimo",
+        "expression": "Esprimo (altnivela)"
       },
       "fonts": {
         "_tab_label": "Tiparoj",
@@ -528,7 +532,9 @@
           "forced_roundness_mode_nonsharp": "Devigi ne tiom akrajn randojn (rondigo je 1 bildero)",
           "forced_roundness_mode_round": "Devigi rondajn randojn",
           "underlay_override_mode_opaque": "Anstataŭigi per unueca koloro",
-          "underlay_override_mode_none": "Implicita de haŭto"
+          "underlay_override_mode_none": "Implicita de haŭto",
+          "force_interface_roundness": "Superagordi rondecon/akrecon de la fasado",
+          "underlay_overrides": "Ŝanĝi la fonon"
         },
         "font": {
           "builtin": {
@@ -622,7 +628,8 @@
       "custom_style_used": "(Propra stilo)",
       "stock_theme_used": "(Nepropra haŭto)",
       "themes2_outdated": "La redaktilo por haŭtoj v2 estas forlasita, kaj eventuale anstataŭiĝos de nova redaktilo, kiu pli bone uzas la novan motoron por haŭtoj v3. La malnova ankoraŭ devus funkcii, sed eble ne plu same bone kaj kohere.",
-      "interface_font_user_override": "Superagordi uzitajn haŭtojn kaj signoformojn de foliumilo"
+      "interface_font_user_override": "Superagordi uzitajn haŭtojn kaj signoformojn de foliumilo",
+      "appearance_tab_note": "Ŝanĝoj en tiu ĉi langeto ne tuŝas la uzatan haŭton; tial la elportota haŭto malsamos de la haŭto videbla sur la ekrano"
     },
     "discoverable": "Permesi trovon de ĉi tiu konto en serĉrezultoj kaj aliaj servoj",
     "mutes_and_blocks": "Blokado kaj silentigoj",
@@ -738,12 +745,12 @@
     "always_show_post_button": "Ĉiam montri ŝvebantan butonon por nova afiŝo",
     "mentions_new_style": "Pli mojosaj menciligiloj",
     "mentions_new_place": "Meti menciojn sur apartan linion",
-    "lists_navigation": "Montri listojn en navigiloj",
+    "lists_navigation": "Montri listojn en ligilaro",
     "account_backup": "Savkopio de konto",
     "account_backup_description": "Ĉi tio povigas vin elŝuti arĥivon de viaj afiŝoj kaj ĉiuj informoj pri via konto, sed ili ne jam povas enportiĝi en konton de Pleroma.",
     "list_aliases_error": "Eraris akirado de kromnomoj: {error}",
     "move_account_notes": "Se vi volas movi la konton aliloken, vi devas iri al via celata konto, kaj aldoni kromnomon ligitan al tie ĉi.",
-    "navbar_column_stretch": "Etendi navigan breton laŭ larĝeco de kolumnoj",
+    "navbar_column_stretch": "Etendi breton kun ligilaro laŭ larĝeco de kolumnoj",
     "posts": "Afiŝoj",
     "notification_visibility_polls": "Finoj de enketoj kun via voĉo",
     "conversation_display": "Aspekto de interparoloj",
@@ -794,7 +801,7 @@
     "column_sizes_sidebar": "Flanka breto",
     "column_sizes_content": "Enhavo",
     "column_sizes_notifs": "Sciigoj",
-    "tree_advanced": "Permesi pli flekseblan navigadon en arba vido",
+    "tree_advanced": "Permesi pli flekseblan esploradon en arba vido",
     "conversation_display_linear": "Linia stilo",
     "conversation_other_replies_button": "Montri la butonon pri «aliaj respondoj»",
     "conversation_other_replies_button_below": "Sub afiŝoj",
@@ -823,7 +830,7 @@
     "confirm_dialogs_delete": "forigo de afiŝo",
     "backup_running": "Ĉi tiu savkopiado progresas, traktis {number} datumon. | Ĉi tiu savkopiado progresas, traktis {number} datumojn.",
     "backup_failed": "Ĉi tiu savkopiado malsukcesis.",
-    "autocomplete_select_first": "Memage elekti unuan kandidaton kiam rezultoj de memaga konjektado disponeblas",
+    "autocomplete_select_first": "Memage elekti unuan kandidaton kiam rezultoj de tajpa konjektado disponeblas",
     "confirm_dialogs_logout": "adiaŭo",
     "user_popover_avatar_action": "Post klako sur profilbildon en ŝprucaĵo",
     "remove_language": "Forigi",
@@ -939,8 +946,8 @@
       "purge_expired": "Forigi eksdatajn filtrilojn",
       "import_failure": "La elektita dosiero ne estas subtenata filtrilo de Pleromo.",
       "help": {
-        "word": "Simplaj kaj regulesprimaj filtriloj umas je temo kaj enhavo de afiŝoj.",
-        "user": "Uzantula filtrilo umas je plena adreso de uzanto (uzanto@retnomo) en: aŭtoro, respondato, kaj mencioj",
+        "word": "Simplaj kaj regulesprimaj filtriloj aplikiĝos al temo kaj enhavo de afiŝo.",
+        "user": "Uzantula filtrilo aplikiĝos al plena adreso de uzanto (uzanto@retnomo) en: aŭtoro, respondato, kaj mencioj",
         "regexp": "Regulesprimaj variaĵoj estas altnivelaj kaj uzas on {link} por trovi akordan tekston, anstataŭ simpla serĉado.",
         "regexp_link": "Regulaj esprimoj",
         "regexp_url": "https://www.esperanto.mv.ru/KompLeks/R.html#REGULESPRIMO"
@@ -948,7 +955,10 @@
     },
     "hard_reset_value": "Renuligi",
     "hide_muted_statuses": "Plene kaŝi ĉiujn silentigitajn afiŝojn",
-    "reset_value_tooltip": "Remeti malneton"
+    "reset_value_tooltip": "Remeti malneton",
+    "hard_reset_value_tooltip": "Forigi agordon de memoro, devigante uzon de la implicita valoro",
+    "third_column_mode_postform": "Afiŝilo kaj ligilaro",
+    "enable_web_push_always_show_tip": "Iuj foliumiloj (Chromium, Chrome) postulas, ke pasivaj mesaĝoj ĉiam rezultigu sciigon, aŭ montriĝos la universala mesaĝo »Retejo ĝisdatiĝis fone«. Ŝaltu ĉi tion por malhelpi la aperadon de tiu mesaĝo, ĉar [Chrome] ŝajnas kaŝi pasivajn sciigojn se langeto estas en fokuso. En aliaj foliumiloj, ĉi tiu agordo povas rezultigi duoblajn sciigojn."
   },
   "timeline": {
     "collapse": "Maletendi",
@@ -964,7 +974,10 @@
     "reload": "Enlegi ree",
     "error": "Eraris akirado de historio: {0}",
     "socket_reconnected": "Realtempa konekto fariĝis",
-    "socket_broke": "Realtempa konekto perdiĝis: CloseEvent code {0}"
+    "socket_broke": "Realtempa konekto perdiĝis: CloseEvent code {0}",
+    "filter_settings": "Filtrado",
+    "quick_view_settings": "Rapida agordo de prezento",
+    "quick_filter_settings": "Rapida agordo de filtrado"
   },
   "user_card": {
     "approve": "Aprobi",
@@ -1061,7 +1074,8 @@
     "unfollow_confirm_title": "Konfirmo de malabono",
     "unfollow_confirm": "Ĉu vi certe volas malaboni uzanton {user}?",
     "unfollow_confirm_accept_button": "Malaboni",
-    "remove_follower_confirm_cancel_button": "Ne forigi"
+    "remove_follower_confirm_cancel_button": "Ne forigi",
+    "group": "Grupo"
   },
   "user_profile": {
     "timeline_title": "Historio de uzanto",
@@ -1287,7 +1301,21 @@
     "invisible_quote": "Citita afiŝo ne disponeblas: {link}",
     "quotes": "Citaĵoj",
     "reply_to_with_icon": "{icon} {replyTo}",
-    "reply_to_with_arg": "{replyToWithIcon} {user}"
+    "reply_to_with_arg": "{replyToWithIcon} {user}",
+    "muted_user": "Uzanto silentigita",
+    "bot_muted": "Silentigo de robota enhavo",
+    "mute_ellipsis": "Silentigi…",
+    "mute_user": "Silentigi uzanton",
+    "muted_words": "Filtrita vorto: {word} | Filtritaj vortoj: {word} kaj {numWordsMore} ekstraj",
+    "multi_reason_mute": "{main} + unu ekstra kialo | {main} + {numReasonsMore} ekstraj kialoj",
+    "unmute_domain": "Malsilentigi retnomon",
+    "load_error": "Ne povas enlegi afiŝon: {error}",
+    "loading": "Enlegado…",
+    "unmute_user": "Malsilentigi uzanton",
+    "mute_domain": "Silentigi retnomon",
+    "muted_filters": "Filtrita: {name} | Filtritaj vortoj: {name} kaj {filtersMore} ekstraj",
+    "sensitive_muted": "Silentigo de konsterna enhavo",
+    "more_actions": "Pliaj agoj pri la afiŝo"
   },
   "time": {
     "years_short": "{0}j",
@@ -1477,7 +1505,8 @@
       "available_frontends": "Disponeblaj por instalado",
       "default_frontend_unavail": "Implicita agordo de la fasado ne estas disponebla, ĉar tio postulas agordadon en la datumbazo",
       "wip_notice": "Bonvolu scii, ke ĉi tiu sekcio ankoraŭ estas prilaborata, kaj mankas al ĝi iuj funkcioj, ĉar la administrado de la fasado ankoraŭ ne estas plene programita en la interna flanko.",
-      "success_installing_frontend": "Fasado {version} sukcese instaliĝis"
+      "success_installing_frontend": "Fasado {version} sukcese instaliĝis",
+      "build_url": "URL de kompilaĵo"
     },
     "emoji": {
       "download_as_name_full": "Nova nomo; lasu malplena por reuzi",
@@ -1527,7 +1556,8 @@
       "emoji": "Bildosignoj",
       "frontends": "Fasadoj",
       "instance": "Nodo",
-      "limits": "Limoj"
+      "limits": "Limoj",
+      "nodb": "Neniu datumbaza agordo"
     },
     "instance": {
       "registrations": "Registriĝoj de uzantoj",
@@ -1535,10 +1565,13 @@
       "restrict": {
         "profiles": "Aliro al profiloj de uzantoj",
         "header": "Limigi aliron por sennomaj vizitantoj",
-        "timelines": "Aliro al historioj"
+        "timelines": "Aliro al historioj",
+        "activities": "Aliro al afiŝoj kaj agoj",
+        "description": "Detala agordo por (mal)permesi aliron al iuj partoj de la API. Implicite, ĝi malpermesos, se nodo ne estas publika. Markita elekto signifas malpermeson eĉ se la nodo estas publika; nemarkita elekto signifas permeson eĉ se la nodo estas privata. Bonvolu scii, ke konduto laŭ iuj elektoj povas esti neantaŭvidebla: ekzemple, se aliro al profiloj estas malŝaltita, afiŝoj montriĝos sen informoj pri profilo de la afiŝinto."
       },
       "access": "Aliro al nodo",
-      "kocaptcha": "Agordo de KoCaptcha"
+      "kocaptcha": "Agordo de KoCaptcha",
+      "captcha_header": "Senrobotilo"
     },
     "limits": {
       "users": "Limoj de profiloj de uzantoj",
@@ -1551,7 +1584,8 @@
     "nodb": {
       "documentation": "dokumentaĵo",
       "text2": "Plejparto de agordebloj ne estos disponebla.",
-      "text": "Vi devas ŝanĝi agordajn dosierojn de la internaĵo tiel, ke {property} havu valoron {value}; vidu pliajn informojn en {documentation}."
+      "text": "Vi devas ŝanĝi agordajn dosierojn de la internaĵo tiel, ke {property} havu valoron {value}; vidu pliajn informojn en {documentation}.",
+      "heading": "Datumbaza agordo estas malŝaltita"
     },
     "window_title": "Administrado",
     "wip_notice": "Ĉi tiu administra fasado estas eksperimenta kaj ankoraŭ prilaborata, {adminFeLink}.",
@@ -1560,7 +1594,8 @@
       ":pleroma": {
         ":instance": {
           ":public": {
-            "label": "Nodo estas publika"
+            "label": "Nodo estas publika",
+            "description": "Malŝalto permesos aliron al la tuta API nur al salutintaj uzantoj. Sennomaj vizitantoj do ne povos vidi la Nodan kaj Federan historiojn."
           },
           ":background_image": {
             "label": "Fonbildo",
@@ -1571,14 +1606,16 @@
             "label": "Limo"
           },
           ":limit_to_local_content": {
-            "label": "Limigi serĉadon al loka enhavo"
+            "label": "Limigi serĉadon al loka enhavo",
+            "description": "Malŝaltas tutretan serĉadon por uzantoj nesalutintaj (implicite), ĉiuj, aŭ neniuj"
           }
         }
       }
     },
     "commit_all": "Konservi ĉion",
     "captcha": {
-      "kocaptcha": "KoCaptcha"
+      "kocaptcha": "KoCaptcha",
+      "native": "Indiĝena"
     },
     "reset_all": "Remeti ĉion"
   },
