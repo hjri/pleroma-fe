@@ -2,6 +2,7 @@ import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Mfa from './mfa.vue'
 import localeService from 'src/services/locale/locale.service.js'
+import { useOAuthTokensStore } from 'src/stores/oauth_tokens'
 
 const SecurityTab = {
   data () {
@@ -28,7 +29,7 @@ const SecurityTab = {
     }
   },
   created () {
-    this.$store.dispatch('fetchTokens')
+    useOAuthTokensStore().fetchTokens()
     this.fetchAliases()
   },
   components: {
@@ -44,7 +45,7 @@ const SecurityTab = {
       return this.$store.state.instance.pleromaBackend
     },
     oauthTokens () {
-      return this.$store.state.oauthTokens.tokens.map(oauthToken => {
+      return useOAuthTokensStore().tokens.map(oauthToken => {
         return {
           id: oauthToken.id,
           appName: oauthToken.app_name,
@@ -151,7 +152,7 @@ const SecurityTab = {
     },
     revokeToken (id) {
       if (window.confirm(`${this.$i18n.t('settings.revoke_token')}?`)) {
-        this.$store.dispatch('revokeToken', id)
+        useOAuthTokensStore().revokeToken(id)
       }
     }
   }

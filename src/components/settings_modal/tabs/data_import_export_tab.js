@@ -2,6 +2,7 @@ import Importer from 'src/components/importer/importer.vue'
 import Exporter from 'src/components/exporter/exporter.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import { mapState } from 'vuex'
+import { useOAuthTokensStore } from 'src/stores/oauth_tokens'
 
 const DataImportExportTab = {
   data () {
@@ -15,7 +16,7 @@ const DataImportExportTab = {
     }
   },
   created () {
-    this.$store.dispatch('fetchTokens')
+    useOAuthTokensStore().fetchTokens()
     this.fetchBackups()
   },
   components: {
