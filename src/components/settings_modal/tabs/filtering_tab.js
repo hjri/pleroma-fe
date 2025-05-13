@@ -112,6 +112,8 @@ const FilteringTab = {
         date.getFullYear(),
         '-',
         fmt.format(date.getMonth() + 1),
+        '-',
+        fmt.format(date.getDate()),
         'T',
         fmt.format(date.getHours()),
         ':',
