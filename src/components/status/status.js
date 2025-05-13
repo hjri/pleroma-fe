@@ -536,6 +536,7 @@ const Status = {
       this.controlledToggleThreadDisplay()
     },
     scrollIfHighlighted (highlightId) {
+      if (this.$el.getBoundingClientRect == null) return
       const id = highlightId
       if (this.status.id === id) {
         const rect = this.$el.getBoundingClientRect()
