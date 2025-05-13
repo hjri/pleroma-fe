@@ -13,7 +13,8 @@ export const muteFilterHits = (muteFilters, status) => {
     if (expires !== null && expires < Date.now()) return false
     switch (type) {
       case 'word': {
-        if (statusText.includes(value) || statusSummary.includes(value)) {
+        const lowercaseValue = value.toLowerCase()
+        if (statusText.toLowerCase().includes(lowercaseValue) || statusSummary.toLowerCase().includes(lowercaseValue)) {
           return { hide, name }
         }
         break
