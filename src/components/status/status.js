@@ -313,6 +313,7 @@ const Status = {
         (relationshipReblog && relationshipReblog.muting)
     },
     shouldNotMute () {
+      if (this.isFocused) return true
       const { status } = this
       const { reblog } = status
       return (
