@@ -7,7 +7,7 @@
       :statusoid="status"
       :expandable="!isExpanded"
       :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
-      :focused="focused(status.id)"
+      :focused="isFocusedFunction(status.id)"
       :in-conversation="isExpanded"
       :highlight="highlight"
       :replies="getReplies(status.id)"
@@ -52,7 +52,7 @@
         :pinned-status-ids-object="pinnedStatusIdsObject"
         :profile-user-id="profileUserId"
 
-        :focused="focused"
+        :is-focused-function="isFocusedFunction"
         :get-replies="getReplies"
         :highlight="highlight"
         :set-highlight="setHighlight"
