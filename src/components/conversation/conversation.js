@@ -339,11 +339,6 @@ const conversation = {
     canDive () {
       return this.isTreeView && this.isExpanded
     },
-    focused () {
-      return (id) => {
-        return (this.isExpanded) && id === this.highlight
-      }
-    },
     maybeHighlight () {
       return this.isExpanded ? this.highlight : null
     },
@@ -405,6 +400,9 @@ const conversation = {
             this.loadStatusError = error
           })
       }
+    },
+    isFocused (id) {
+      return (this.isExpanded) && id === this.highlight
     },
     getReplies (id) {
       return this.replies[id] || []

@@ -439,7 +439,7 @@
       "import_failure": "The selected file is not a supported Pleroma filter.",
       "help": {
         "word": "Simple and RegExp filters test against post's content and subject.",
-        "user": "User filter matches full user handle (user@domain) in the following: author, reply-to and mentions",
+        "user": "User filter matches full user handle (user{'@'}domain) in the following: author, reply-to and mentions",
         "regexp": "Regex variants are more advanced and use {link} to match instead of simple substring search.",
         "regexp_link": "Regular Expressions",
         "regexp_url": "https://en.wikipedia.org/wiki/Regular_expression"

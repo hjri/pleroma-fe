@@ -313,6 +313,7 @@ const Status = {
         (relationshipReblog && relationshipReblog.muting)
     },
     shouldNotMute () {
+      if (this.isFocused) return true
       const { status } = this
       const { reblog } = status
       return (
@@ -535,6 +536,7 @@ const Status = {
       this.controlledToggleThreadDisplay()
     },
     scrollIfHighlighted (highlightId) {
+      if (this.$el.getBoundingClientRect == null) return
       const id = highlightId
       if (this.status.id === id) {
         const rect = this.$el.getBoundingClientRect()
