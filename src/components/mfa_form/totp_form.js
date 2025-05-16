@@ -1,7 +1,8 @@
 import mfaApi from '../../services/new_api/mfa.js'
-import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
-import { mapStores } from 'pinia'
+import { mapState } from 'vuex'
+import { mapStores, mapActions, mapState as mapPiniaState } from 'pinia'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useAuthFlowStore } from 'src/stores/auth_flow.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faTimes
@@ -17,8 +18,8 @@ export default {
     error: false
   }),
   computed: {
-    ...mapGetters({
-      authSettings: 'authFlow/settings'
+    ...mapPiniaState(useAuthFlowStore, {
+      authSettings: store => store.settings
     }),
     ...mapStores(useOAuthStore),
     ...mapState({
@@ -26,8 +27,7 @@ export default {
     })
   },
   methods: {
-    ...mapMutations('authFlow', ['requireRecovery', 'abortMFA']),
-    ...mapActions({ login: 'authFlow/login' }),
+    ...mapActions(useAuthFlowStore, ['requireRecovery', 'abortMFA', 'login']),
     clearError () { this.error = false },
 
     focusOnCodeInput () {

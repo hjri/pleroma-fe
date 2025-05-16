@@ -2,7 +2,8 @@ import { h, resolveComponent } from 'vue'
 import LoginForm from '../login_form/login_form.vue'
 import MFARecoveryForm from '../mfa_form/recovery_form.vue'
 import MFATOTPForm from '../mfa_form/totp_form.vue'
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
+import { useAuthFlowStore } from 'src/stores/auth_flow'
 
 const AuthForm = {
   name: 'AuthForm',
@@ -15,7 +16,7 @@ const AuthForm = {
       if (this.requiredRecovery) { return 'MFARecoveryForm' }
       return 'LoginForm'
     },
-    ...mapGetters('authFlow', ['requiredTOTP', 'requiredRecovery'])
+    ...mapState(useAuthFlowStore, ['requiredTOTP', 'requiredRecovery'])
   },
   components: {
     MFARecoveryForm,
