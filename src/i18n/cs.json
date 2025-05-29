@@ -122,7 +122,10 @@
     "edit_pinned": "Upravit připnuté položky",
     "edit_finish": "Dokončit úpravu",
     "mobile_notifications_mark_as_seen": "Označit vše jako přečtené",
-    "interactions": "Interakce"
+    "interactions": "Interakce",
+    "bookmark_folders": "Složky záložek",
+    "all_bookmarks": "Všechny záložky",
+    "drafts": "Koncepty"
   },
   "notifications": {
     "broken_favorite": "Neznámý příspěvek, hledám jej…",
@@ -139,7 +142,7 @@
     "unread_follow_requests": "{num} nový požadavek o sledování | {num} nových požadavků o sledování",
     "configuration_tip": "Může upravit co zde zobrazovat v {theSettings}. {dismiss}",
     "follow_request": "vás chce sledovat",
-    "migrated_to": "migroval na",
+    "migrated_to": "migroval/a na",
     "poll_ended": "anketa skončila",
     "reacted_with": "reagoval/a s {0}",
     "submitted_report": "Odeslal/a stížnost",
@@ -186,7 +189,17 @@
     "direct_warning_to_all": "Tento příspěvek budou vidět pouze zmínění uživatelé.",
     "direct_warning_to_first_only": "Tento příspěvek bude viditelný pouze pro zmíněné uživatele na začátku příspěvku.",
     "edit_remote_warning": "Jiné vzdálené instance nemusí podporovat úpravy a nemusí přijmout nejnovější verzi vašeho příspěvku.",
-    "preview": "Náhled"
+    "preview": "Náhled",
+    "auto_save_nothing_new": "Nic nového k uložení.",
+    "auto_save_saved": "Uloženo.",
+    "auto_save_saving": "Ukládání…",
+    "save_to_drafts_button": "Uložit do konceptů",
+    "save_to_drafts_and_close_button": "Uložit do konceptů a uzavřít",
+    "close_confirm": "Co chcete udělat s vaším konceptem?",
+    "close_confirm_save_button": "Uložit",
+    "close_confirm_discard_button": "Zahodit",
+    "close_confirm_continue_composing_button": "Pokračovat v psaní",
+    "more_post_actions": "Více akcí k příspěvku…"
   },
   "registration": {
     "bio": "O vás",
@@ -252,7 +265,7 @@
     "avatar_size_instruction": "Doporučená minimální velikost pro avatarové obrázky je 150x150 pixelů.",
     "export_theme": "Uložit přednastavení",
     "filtering": "Filtrování",
-    "filtering_explanation": "Všechny příspěvky obsahující tato slova budou skryty. Napište jedno slovo na každý řádek",
+    "filtering_explanation": "Všechny příspěvky obsahující tato slova budou ztlumeny. Napište jedno slovo na každý řádek",
     "follow_export": "Export sledovaných",
     "follow_export_button": "Exportovat vaše sledované do souboru CSV",
     "follow_export_processing": "Zpracovávám, brzy si budete moci stáhnout váš soubor",
@@ -284,7 +297,7 @@
     "lock_account_description": "Omezit váš účet pouze na schválené sledující",
     "loop_video": "Opakovat videa",
     "loop_video_silent_only": "Opakovat pouze videa beze zvuku (t.j. „GIFy“ na Mastodonu)",
-    "mutes_tab": "Ignorování",
+    "mutes_tab": "Ztlumení",
     "play_videos_in_modal": "Přehrávat videa přímo v prohlížeči médií",
     "use_contain_fit": "Neořezávat přílohu v miniaturách",
     "name": "Jméno",
@@ -297,7 +310,7 @@
     "notification_visibility_repeats": "Zopakování",
     "no_rich_text_description": "Odstranit ze všech příspěvků formátování textu",
     "no_blocks": "Žádná blokování",
-    "no_mutes": "Žádná ignorování",
+    "no_mutes": "Žádná ztlumení",
     "hide_follows_description": "Nezobrazovat, koho sleduji",
     "hide_followers_description": "Nezobrazovat, kdo mě sleduje",
     "show_admin_badge": "Zobrazovat v mém profilu odznak administrátora",
@@ -356,7 +369,7 @@
         "keep_opacity": "Ponechat průhlednost",
         "keep_roundness": "Ponechat kulatost",
         "keep_fonts": "Ponechat písma",
-        "save_load_hint": "Možnosti „Ponechat“ dočasně ponechávají aktuálně nastavené možností při volení či nahrávání motivů, také tyto možnosti ukládají při exportování motivu. Pokud není žádné pole zaškrtnuto, uloží export motivu všechno.",
+        "save_load_hint": "Možnosti „Ponechat“ dočasně ponechávají aktuálně nastavené možnosti při volbě či nahrávání motivů, tyto možnosti se také ukládají při exportování motivu. Pokud není zaškrtnuto žádné pole, export motivu uloží všechno.",
         "reset": "Resetovat",
         "clear_all": "Vymazat vše",
         "clear_opacity": "Vymazat průhlednost",
@@ -364,7 +377,7 @@
         "use_snapshot": "Stará verze",
         "help": {
           "migration_napshot_gone": "Z nějakého důvodu chyběl snímek, některé věci můžou vypadat jinak, než si pamatujete.",
-          "fe_upgraded": "Motiv engine PleromaFE byl aktualizován po aktualizaci verze.",
+          "fe_upgraded": "Jádro motivů PleromaFE bylo aktualizováno po aktualizaci verze.",
           "future_version_imported": "Soubor, který jste importoval/a byl vytvořen pro novější verzi FE.",
           "older_version_imported": "Soubor, který jste importoval/a byl vytvořen pro starší verzi FE.",
           "v2_imported": "Soubor, který jste importoval/a byl vytvořen pro starší verzi FE. Snažíme se zachovat maximální kompatibilitu, ale může dojít k nekonzistenci.",
@@ -372,7 +385,8 @@
           "upgraded_from_v2": "PleromaFE bylo aktualizováno, motiv může vypadat trochu jinak, než si pamatujete.",
           "snapshot_missing": "V souboru nebyl žádný snímek motivu, takže může vypadat jinak, než bylo původně zamýšleno.",
           "fe_downgraded": "Verze PleromaFE byla vrácena zpět.",
-          "migration_snapshot_ok": "Pro jistotu byl načten snímek motivu. Můžete zkusit načíst data motivu."
+          "migration_snapshot_ok": "Pro jistotu byl načten snímek motivu. Můžete zkusit načíst data motivu.",
+          "snapshot_source_mismatch": "Konflikt verzí: verze FE byla pravděpodobně vrácena zpět a znovu aktualizována. Pokud jste aktualizovali motiv ve staré verzi, pravděpodobně budete chtít používat starší verzi, jinak používejte novou."
         },
         "load_theme": "Načíst motiv",
         "use_source": "Nová verze"
@@ -397,7 +411,7 @@
         "_tab_label": "Obvyklé",
         "main": "Obvyklé barvy",
         "foreground_hint": "Pro detailnější kontrolu viz záložka „Pokročilé“",
-        "rgbo": "Ikony, odstíny, odznaky"
+        "rgbo": "Ikony, zvýraznění, odznaky"
       },
       "advanced_colors": {
         "_tab_label": "Pokročilé",
@@ -492,7 +506,89 @@
         "header_faint": "Tohle je v pohodě",
         "checkbox": "Pročetl/a jsem podmínky používání",
         "link": "hezký malý odkaz"
-      }
+      },
+      "themes3": {
+        "palette": {
+          "wallpaper": "Pozadí",
+          "v2_unsupported": "Starší V2 motivy nepodporují palety. Přejděte na V3 motivy pro využití palet",
+          "export": "Exportovat paletu",
+          "apply": "Aplikovat paletu",
+          "style": "Palety z vybraného stylu",
+          "label": "Barevné palety",
+          "name_label": "Název barevné palety",
+          "import": "Importovat paletu",
+          "bg": "Pozadí panelu",
+          "fg": "Tlačítka a podobné",
+          "text": "Text",
+          "link": "Odkazy",
+          "accent": "Barva zvýraznění",
+          "imported": "Importované",
+          "bundled": "Předvytvořené palety",
+          "user": "Vlastní paleta",
+          "cRed": "Červená barva",
+          "cBlue": "Modrá barva",
+          "cGreen": "Zelená barva",
+          "cOrange": "Oranžová barva"
+        },
+        "hacks": {
+          "underlay_override_mode_none": "Výchozí v motivu",
+          "forced_roundness_mode_disabled": "Použít výchozí nastavení motivu",
+          "underlay_override_mode_transparent": "Kompletně odstranit (může rozbít některé motivy)"
+        },
+        "editor": {
+          "include_in_rule": "Přidat do pravidel",
+          "variables": {
+            "label": "Proměnné",
+            "type_generic": "Běžný",
+            "type_shadow": "Stín",
+            "name_label": "Název:",
+            "type_label": "Typ:",
+            "type_color": "Barva"
+          },
+          "states_selector": "Stavy",
+          "main_tab": "Hlavní",
+          "shadows_tab": "Stíny",
+          "test_string": "TEST",
+          "background": "Barva pozadí",
+          "title": "Editor stylu",
+          "reset_style": "Resetovat",
+          "load_style": "Načíst ze souboru",
+          "contrast": "Kontrast textu",
+          "roundness": "Zaoblení",
+          "opacity": "Průhlednost",
+          "border_color": "Barva ohraničení",
+          "text_color": "Barva textu",
+          "icon_color": "Barva ikon",
+          "link_color": "Barva odkazů",
+          "text_auto": {
+            "label": "Auto-kontrast",
+            "no-preserve": "Černé nebo Bílé",
+            "preserve": "Zachovat barvu",
+            "no-auto": "Vypnuto"
+          },
+          "component_tab": "Styl komponentů",
+          "palette_tab": "Barevné schémata",
+          "component_selector": "Komponent",
+          "save_style": "Uložit",
+          "style_name": "Jméno stylu",
+          "style_author": "Autor",
+          "style_license": "Licence",
+          "style_website": "Webová stránka",
+          "invalid": "Neplatné",
+          "refresh_preview": "Aktualizovat náhled",
+          "apply_preview": "Aplikovat",
+          "variables_tab": "Proměnné (Pokročilé)",
+          "variant_selector": "Varianta"
+        },
+        "define": "Přepsat"
+      },
+      "themes2_outdated": "Editor pro Themes V2 se postupně vyřazován a nakonec nahrazen novým, který využívá nové Themes V3 jádro. Měl by stále fungovat, ale jeho chování může být místy rozbité nebo nekonzistentní.",
+      "appearance_tab_note": "Změny na této záložce nemají efekt na motiv, takže exportované motivy se budou lišit oproti tomu co je vidět v UI",
+      "update_preview": "Aktualizovat náhled",
+      "interface_font_user_override": "Přepsat písmo motivu/prohlížeče",
+      "custom_theme_used": "(Vlastní motiv)",
+      "stock_theme_used": "(Základní motiv)",
+      "custom_style_used": "(Vlastní styl)"
     },
     "added_alias": "Přezdívka přidána.",
     "emoji_reactions_scale": "Měřítko zvětšení reakcí",
@@ -607,7 +703,7 @@
     "notification_extra_tip": "Zobrazení tipu přizpůsobení pro další oznámení",
     "notification_visibility_native_notifications": "Zobrazit nativní oznámení",
     "notification_visibility_follow_requests": "Požadavky na sledování",
-    "mute_bot_posts": "Skrýt příspěvky od robotů",
+    "mute_bot_posts": "Ztlumit příspěvky od robotů",
     "hide_bot_indication": "Skrýt indikaci účtů robotů v příspěvcích",
     "auto_update": "Zobrazovat nové příspěvky automaticky",
     "url": "URL",
@@ -633,7 +729,7 @@
     "max_depth_in_thread": "Maximální počet zobrazených úrovní ve vlákně ve výchozím stavu",
     "add_backup_error": "Chyba při přidávání nové zálohy: {error}",
     "added_backup": "Přidána nová záloha.",
-    "word_filter_and_more": "Filtr slov a další...",
+    "word_filter_and_more": "Filtr slov a další…",
     "posts": "Příspěvky",
     "reset_banner_confirm": "Opravdu chcete resetovat banner?",
     "reset_background_confirm": "Opravdu chcete resetovat pozadí?",
@@ -738,7 +834,85 @@
     },
     "commit_value_tooltip": "Hodnota není uložena, stiskněte toto tlačítko pro potvrzení změn",
     "hard_reset_value_tooltip": "Odstranit nastavení z úložiště a vynutit výchozí hodnotu",
-    "accent": "Akcentní barva"
+    "accent": "Zvýraznění",
+    "units": {
+      "time": {
+        "m": "minuty",
+        "s": "sekundy",
+        "h": "hodiny",
+        "d": "dny"
+      }
+    },
+    "confirm_dialogs_mute_domain": "ztlumování domén",
+    "confirm_dialogs_mute_conversation": "ztlumování konverzací",
+    "text_size": "Text a velikost rozhraní",
+    "emoji_size": "Velikost emoji",
+    "text_size_tip": "Použijte {0} pro absolutní hodnoty, {1} bude škálovat dle výchozí velikosti textu v prohlížeči.",
+    "scale_and_layout": "Měřítko rozložení rozhraní",
+    "visual_tweaks": "Drobné vizuální úpravy",
+    "theme_debug": "Zobrazit s jakým motivem pozadí vykreslovací jádro počítá při práci s průhlednosti (DEBUG)",
+    "enabled": "Aktivováno",
+    "filter": {
+      "clutter": "Odstranit přebytečnosti",
+      "type": "Typ filtru",
+      "regexp": "Regulární výraz",
+      "mute_filter": "Filtry ztlumení",
+      "plain": "Jednoduchý",
+      "user": "Uživatel (Jednoduchý)",
+      "user_regexp": "Uživatel (Regulární výraz)",
+      "hide": "Kompletně schovat",
+      "name": "Název",
+      "value": "Hodnota",
+      "expires": "Expiruje v",
+      "expired": "Expirované",
+      "copy": "Duplikovat",
+      "save": "Uložit",
+      "delete": "Odstranit",
+      "new": "Vytvořit nový",
+      "import": "Importovat",
+      "export": "Exportovat",
+      "regexp_error": "Neplatné regulární výraz",
+      "never_expires": "Nikdy",
+      "total_count": "Celkově {count} vlastní filtr|Celkově{count} vlastních filtrů",
+      "expired_count": "{count} expirovaný filtr|{count} expirovaných filtrů",
+      "custom_filters": "Vlastní filtry",
+      "purge_expired": "Odstranit expirované filtry",
+      "import_failure": "Vybraný soubor není Pleromou podporovaný filtr.",
+      "help": {
+        "word": "Jednoduché filtry a filtry s regulárním výrazem filtrují na základě obsahu a předmětu.",
+        "user": "Uživatelské filtry hledají shodu na celém uživatelském jméně (uživatel{'@'}doména) v následujících případech: autor, odpověď na, zmínky",
+        "regexp_link": "Regulární výrazy",
+        "regexp_url": "https://cs.wikipedia.org/wiki/Regul%C3%A1rn%C3%AD_v%C3%BDraz",
+        "regexp": "Varianty s regulárními výrazy jsou více pokročilé a využívají {link} k hledání shody místo jednoduchého hledání podřetězců."
+      }
+    },
+    "hide_scrobbles_after": "Skrýt scrobbles starší než",
+    "hide_muted_statuses": "Kompletně skrýt všechny ztlumené příspěvky",
+    "absolute_time_format_min_age": "Používat pouze pro čas větší než tento",
+    "absolute_time_format": "Zobrazovat čas v absolutním formátu",
+    "navbar_size": "Velikost horní lišty",
+    "panel_header_size": "Velikost záhlaví panelu",
+    "mobile_center_dialog": "Dialogy na mobilu zarovnávat vertikálně",
+    "text_size_tip2": "Hodnoty větší než {0} mohou rozbít některé věci a motivy",
+    "unsaved_post_action_discard": "Zahodit",
+    "unsaved_post_action_confirm": "Vždy se zeptat",
+    "auto_save_draft": "Ukládat do konceptů při komponování",
+    "force_theme_recompilation_debug": "Vypnout mezipamět motivu, vynutit překlad při každém načtení (DEBUG)",
+    "theme_editor_min_width": "Minimální šířka editoru motivu (0 pro přizpůsobení k obsahu)",
+    "mute_sensitive_posts": "Ztlumit citlivé příspěvky",
+    "unsaved_post_action": "Při uzavírání neuloženého konceptu",
+    "absolute_time_format_12h_24h": "24 hodinový formát (22:00)",
+    "absolute_time_format_12h": "Formátu času",
+    "absolute_time_format_12h_12h": "12 hodinový formát (10:00 PM)",
+    "revert": "Vrátit zpět",
+    "appearance": "Vzhled",
+    "confirm_new_setting": "Potvrdit nové nastavení?",
+    "confirm_new_question": "Vypadá tohle v pořádku? Nastavení bude vráceno zpět za 10 sekund.",
+    "confirm": "Potvrdit",
+    "theme_old": "Editor motivu (starý)",
+    "image_compression": "Komprimovat obrázky před nahráním",
+    "unsaved_post_action_save": "Uložit do konceptů",
+    "always_use_jpeg": "Vždy konvertovat obrázky do JPEG formátu"
   },
   "time": {
     "day": "{0} day",
@@ -853,7 +1027,13 @@
     "expand": "Rozbalit",
     "show_all_attachments": "Zobrazit všechny přílohy",
     "move_up": "Posunout přílohu doleva",
-    "open_gallery": "Otevřít galerii"
+    "open_gallery": "Otevřít galerii",
+    "muted_user": "Uživatel ztlumen",
+    "mute_ellipsis": "Ztlumit…",
+    "unmute_user": "Zrušit ztlumení uživatele",
+    "mute_domain": "Ztlumit doménu",
+    "unmute_domain": "Zrušit ztlumení domény",
+    "mute_user": "Ztlumit uživatele"
   },
   "user_card": {
     "approve": "Schválit",
@@ -871,17 +1051,22 @@
     "follows_you": "Sleduje vás!",
     "its_you": "Jste to vy!",
     "media": "Média",
-    "mute": "Ignorovat",
-    "muted": "Ignorován/a",
+    "mute": "Ztlumit",
+    "muted": "Ztlumení",
     "per_day": "za den",
     "remote_follow": "Vzdálené sledování",
     "statuses": "Příspěvky",
     "unblock": "Odblokovat",
     "unblock_progress": "Odblokuji…",
     "block_progress": "Blokuji…",
-    "unmute": "Přestat ignorovat",
+    "unmute": "Přestat tlumit",
     "unmute_progress": "Ruším ignorování…",
-    "mute_progress": "Ignoruji…"
+    "mute_progress": "Ignoruji…",
+    "mute_duration_prompt": "Ztlumit tohoto uživatele na (0 pro neurčito):",
+    "mute_confirm_cancel_button": "Neztlumit",
+    "mute_confirm_accept_button": "Ztlumit",
+    "mute_confirm_title": "Ztlumit konverzaci",
+    "mute_confirm": "Opravdu chcete ztlumit {user}?"
   },
   "user_profile": {
     "timeline_title": "Uživatelská časová osa",
@@ -897,7 +1082,8 @@
     "repeat": "Zopakovat",
     "reply": "Odpovědět",
     "favorite": "Oblíbit",
-    "user_settings": "Uživatelské nastavení"
+    "user_settings": "Uživatelské nastavení",
+    "toggle_mute": "Rozbalit nebo sbalit notifikaci pro zobrazení ztlumeného obsahu"
   },
   "upload": {
     "error": {
@@ -968,7 +1154,11 @@
     "type": "Typ ankety",
     "expires_in": "Anketa končí za {0}",
     "expired": "Anketa skončila před {0}",
-    "not_enough_options": "Příliš málo jedinečných možností v anketě"
+    "not_enough_options": "Příliš málo jedinečných možností v anketě",
+    "expires_at": "Anketa končí za {0}",
+    "expired_at": "Anketa skončila před {0}",
+    "non_anonymous": "Veřejná anketa",
+    "non_anonymous_title": "Ostatní instance mohou zobrazit volbu pro kterou jste hlasoval/a"
   },
   "interactions": {
     "follows": "Nových sledujících",
@@ -976,7 +1166,8 @@
     "load_older": "Načíst starší interakce",
     "emoji_reactions": "Emoji reakce",
     "reports": "Stížnosti",
-    "favs_repeats": "Opakované a oblíbené"
+    "favs_repeats": "Opakované a oblíbené",
+    "statuses": "Odebírané"
   },
   "emoji": {
     "unicode_groups": {
@@ -1023,7 +1214,7 @@
     "page_header": "Oznámení",
     "title": "Oznámení",
     "post_form_header": "Vyvěsit oznámení",
-    "post_placeholder": "Zde napište obsah vašeho oznámení…",
+    "post_placeholder": "Zde napište vaše oznámení…",
     "post_action": "Odeslat",
     "post_error": "Chyba: {error}",
     "close_error": "Zavřít",
@@ -1177,5 +1368,8 @@
         }
       }
     }
+  },
+  "splash": {
+    "theme": "Aplikuji motiv, prosím o chvilku strpení…"
   }
 }
