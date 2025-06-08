@@ -947,7 +947,7 @@
       "import_failure": "La elektita dosiero ne estas subtenata filtrilo de Pleromo.",
       "help": {
         "word": "Simplaj kaj regulesprimaj filtriloj aplikiĝos al temo kaj enhavo de afiŝo.",
-        "user": "Uzantula filtrilo aplikiĝos al plena adreso de uzanto (uzanto@retnomo) en: aŭtoro, respondato, kaj mencioj",
+        "user": "Uzantula filtrilo aplikiĝos al plena adreso de uzanto (uzanto{'@'}retnomo) en: aŭtoro, respondato, kaj mencioj",
         "regexp": "Regulesprimaj variaĵoj estas altnivelaj kaj uzas on {link} por trovi akordan tekston, anstataŭ simpla serĉado.",
         "regexp_link": "Regulaj esprimoj",
         "regexp_url": "https://www.esperanto.mv.ru/KompLeks/R.html#REGULESPRIMO"
