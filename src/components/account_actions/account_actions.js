@@ -3,6 +3,7 @@ import ProgressButton from '../progress_button/progress_button.vue'
 import Popover from '../popover/popover.vue'
 import UserListMenu from 'src/components/user_list_menu/user_list_menu.vue'
 import ConfirmModal from '../confirm_modal/confirm_modal.vue'
+import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faEllipsisV
@@ -27,15 +28,10 @@ const AccountActions = {
     ProgressButton,
     Popover,
     UserListMenu,
-    ConfirmModal
+    ConfirmModal,
+    UserTimedFilterModal
   },
   methods: {
-    showConfirmBlock () {
-      this.showingConfirmBlock = true
-    },
-    hideConfirmBlock () {
-      this.showingConfirmBlock = false
-    },
     showConfirmRemoveUserFromFollowers () {
       this.showingConfirmRemoveFollower = true
     },
@@ -49,10 +45,14 @@ const AccountActions = {
       this.$store.dispatch('hideReblogs', this.user.id)
     },
     blockUser () {
-      if (!this.shouldConfirmBlock) {
-        this.doBlockUser()
+      if (this.$refs.timedBlockDialog) {
+        this.$refs.timedBlockDialog.optionallyPrompt()
       } else {
-        this.showConfirmBlock()
+        if (!this.shouldConfirmBlock) {
+          this.doBlockUser()
+        } else {
+          this.showingConfirmBlock = true
+        }
       }
     },
     doBlockUser () {
@@ -91,6 +91,7 @@ const AccountActions = {
       return this.$store.getters.mergedConfig.modalOnRemoveUserFromFollowers
     },
     ...mapState({
+      blockExpirationSupported: state => state.instance.blockExpiration,
       pleromaChatMessagesAvailable: state => state.instance.pleromaChatMessagesAvailable
     })
   }

@@ -247,6 +247,7 @@ const getNodeInfo = async ({ store }) => {
       const data = await res.json()
       const metadata = data.metadata
       const features = metadata.features
+      console.log(features)
       store.dispatch('setInstanceOption', { name: 'name', value: metadata.nodeName })
       store.dispatch('setInstanceOption', { name: 'registrationOpen', value: data.openRegistrations })
       store.dispatch('setInstanceOption', { name: 'mediaProxyAvailable', value: features.includes('media_proxy') })
@@ -262,6 +263,7 @@ const getNodeInfo = async ({ store }) => {
       store.dispatch('setInstanceOption', { name: 'mailerEnabled', value: metadata.mailerEnabled })
       store.dispatch('setInstanceOption', { name: 'quotingAvailable', value: features.includes('quote_posting') })
       store.dispatch('setInstanceOption', { name: 'groupActorAvailable', value: features.includes('pleroma:group_actors') })
+      store.dispatch('setInstanceOption', { name: 'blockExpiration', value: features.includes('pleroma:block_expiration') })
 
       const uploadLimits = metadata.uploadLimits
       store.dispatch('setInstanceOption', { name: 'uploadlimit', value: parseInt(uploadLimits.general) })

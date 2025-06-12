@@ -8,7 +8,8 @@ import UserNote from '../user_note/user_note.vue'
 import Select from '../select/select.vue'
 import UserLink from '../user_link/user_link.vue'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
-import MuteConfirm from '../confirm_modal/mute_confirm.vue'
+import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
+
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 import { mapGetters } from 'vuex'
 import { usePostStatusStore } from 'src/stores/post_status'
@@ -48,6 +49,19 @@ export default {
     'onClose',
     'hasNoteEditor'
   ],
+  components: {
+    UserAvatar,
+    RemoteFollow,
+    ModerationTools,
+    AccountActions,
+    ProgressButton,
+    FollowButton,
+    Select,
+    RichContent,
+    UserLink,
+    UserNote,
+    UserTimedFilterModal
+  },
   data () {
     return {
       followRequestInProgress: false,
@@ -63,6 +77,7 @@ export default {
       return this.$store.getters.findUser(this.userId)
     },
     relationship () {
+      console.log(this.$store.getters.relationship(this.userId))
       return this.$store.getters.relationship(this.userId)
     },
     classes () {
@@ -144,22 +159,9 @@ export default {
     },
     ...mapGetters(['mergedConfig'])
   },
-  components: {
-    UserAvatar,
-    RemoteFollow,
-    ModerationTools,
-    AccountActions,
-    ProgressButton,
-    FollowButton,
-    Select,
-    RichContent,
-    UserLink,
-    UserNote,
-    MuteConfirm
-  },
   methods: {
     muteUser () {
-      this.$refs.confirmation.optionallyPrompt()
+      this.$refs.timedMuteDialog.optionallyPrompt()
     },
     unmuteUser () {
       this.$store.dispatch('unmuteUser', this.user.id)

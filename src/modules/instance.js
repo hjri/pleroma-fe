@@ -162,6 +162,7 @@ const defaultState = {
   suggestionsWeb: '',
   quotingAvailable: false,
   groupActorAvailable: false,
+  blockExpiration: false,
 
   // Html stuff
   instanceSpecificPanelContent: '',

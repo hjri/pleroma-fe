@@ -8,6 +8,11 @@
     --_still-image-label-visibility: hidden;
   }
 
+  .btn-mute, .btn-mention {
+    display: block;
+    width: 100%;
+  }
+
   .panel-heading {
     padding: 0.5em 0;
     text-align: center;

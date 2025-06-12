@@ -107,7 +107,7 @@ const FilteringTab = {
     ...mapActions(useServerSideStorageStore, ['setPreference', 'unsetPreference', 'pushServerSideStorage']),
     getDatetimeLocal (timestamp) {
       const date = new Date(timestamp)
-      let fmt = new Intl.NumberFormat("en-US", {minimumIntegerDigits: 2})
+      const fmt = new Intl.NumberFormat("en-US", {minimumIntegerDigits: 2})
       const datetime = [
         date.getFullYear(),
         '-',
