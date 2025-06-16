@@ -156,6 +156,7 @@ const defaultState = {
   pleromaChatMessagesAvailable: false,
   pleromaCustomEmojiReactionsAvailable: false,
   pleromaBookmarkFoldersAvailable: false,
+  pleromaPublicFavouritesAvailable: true,
   gopherAvailable: false,
   mediaProxyAvailable: false,
   suggestionsEnabled: false,

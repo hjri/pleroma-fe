@@ -81,7 +81,7 @@ const UserProfile = {
       return this.isUs || !this.user.hide_followers
     },
     favoritesTabVisible () {
-      return this.isUs || !this.user.hide_favorites
+      return this.isUs || (this.$store.state.instance.pleromaPublicFavouritesAvailable && !this.user.hide_favorites)
     },
     formattedBirthday () {
       const browserLocale = localeService.internalToBrowserLocale(this.$i18n.locale)

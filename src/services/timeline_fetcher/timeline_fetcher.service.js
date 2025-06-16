@@ -63,6 +63,10 @@ const fetchAndUpdate = ({
   return apiService.fetchTimeline(args)
     .then(response => {
       if (response.errors) {
+        if (timeline === 'favorites') {
+          rootState.instance.pleromaPublicFavouritesAvailable = false
+          return
+        }
         throw new Error(`${response.status} ${response.statusText}`)
       }
 
