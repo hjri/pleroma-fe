@@ -242,7 +242,8 @@ const resolveStaffAccounts = ({ store, accounts }) => {
 
 const getNodeInfo = async ({ store }) => {
   try {
-    const res = await preloadFetch('/nodeinfo/2.1.json')
+    let res = await preloadFetch('/nodeinfo/2.1.json')
+    if (!res.ok) res = await preloadFetch('/nodeinfo/2.0.json')
     if (res.ok) {
       const data = await res.json()
       const metadata = data.metadata

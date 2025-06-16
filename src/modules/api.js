@@ -281,6 +281,7 @@ const api = {
     // Bookmark folders
     startFetchingBookmarkFolders (store) {
       if (store.state.fetchers.bookmarkFolders) return
+      if (!store.rootState.instance.pleromaBookmarkFoldersAvailable) return
       const fetcher = store.state.backendInteractor.startFetchingBookmarkFolders({ store })
       store.commit('addFetcher', { fetcherName: 'bookmarkFolders', fetcher })
     },

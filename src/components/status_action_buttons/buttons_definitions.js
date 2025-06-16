@@ -204,7 +204,7 @@ export const BUTTONS = [{
   if ({ status, loggedIn, currentUser }) {
     return loggedIn && (
       status.user.id === currentUser.id ||
-        currentUser.privileges.includes('messages_delete')
+        currentUser.privileges?.includes('messages_delete')
     )
   },
   confirm: ({ getters }) => getters.mergedConfig.modalOnDelete,

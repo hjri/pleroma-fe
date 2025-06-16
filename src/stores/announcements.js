@@ -25,7 +25,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
       }
 
       const currentUser = window.vuex.state.users.currentUser
-      const isAdmin = currentUser && currentUser.privileges.includes('announcements_manage_announcements')
+      const isAdmin = currentUser && currentUser.privileges?.includes('announcements_manage_announcements')
 
       const getAnnouncements = async () => {
         if (!isAdmin) {

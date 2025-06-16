@@ -38,6 +38,7 @@ export const defaultState = () => ({
   allStatusesObject: {},
   conversationsObject: {},
   maxId: 0,
+  scrobblesUnsupported: false,
   favorites: new Set(),
   timelines: {
     mentions: emptyTl(),
@@ -112,8 +113,14 @@ const getLatestScrobble = (state, user) => {
     return
   }
 
+  if (state.scrobblesUnsupported) return
+
   state.scrobblesNextFetch[user.id] = Date.now() + 24 * 60 * 60 * 1000
   apiService.fetchScrobbles({ accountId: user.id }).then((scrobbles) => {
+    if (scrobbles?.error?.status === 501) {
+      state.scrobblesUnsupported = true
+    }
+
     if (scrobbles.length > 0) {
       user.latestScrobble = scrobbles[0]
 

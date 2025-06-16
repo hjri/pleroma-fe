@@ -59,7 +59,7 @@ const ModerationTools = {
       return this.tagsSet.has(tagName)
     },
     privileged (privilege) {
-      return this.$store.state.users.currentUser.privileges.includes(privilege)
+      return this.$store.state.users.currentUser.privileges?.includes(privilege)
     },
     toggleTag (tag) {
       const store = this.$store
