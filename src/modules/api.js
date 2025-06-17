@@ -211,6 +211,7 @@ const api = {
       statusId = false,
       bookmarkFolderId = false
     }) {
+      if (timeline === 'favourites' && !store.rootState.instance.pleromaPublicFavouritesAvailable) return
       if (store.state.fetchers[timeline]) return
 
       const fetcher = store.state.backendInteractor.startFetchingTimeline({
