@@ -291,7 +291,8 @@
       "text/plain": "Plain text",
       "text/html": "HTML",
       "text/markdown": "Markdown",
-      "text/bbcode": "BBCode"
+      "text/bbcode": "BBCode",
+      "text/x.misskeymarkdown": "MFM"
     },
     "content_type_selection": "Post format",
     "content_warning": "Subject (optional)",
