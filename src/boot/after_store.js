@@ -79,6 +79,8 @@ const getInstanceConfig = async ({ store }) => {
     console.error('Could not load instance config, potentially fatal')
     console.error(error)
   }
+  // We should check for scrobbles support here but it requires userId
+  // so instead we check for it where it's fetched (statuses.js)
 }
 
 const getBackendProvidedConfig = async () => {
