@@ -143,7 +143,7 @@ const defaultState = {
   emoji: {},
   emojiFetched: false,
   unicodeEmojiAnnotations: {},
-  pleromaBackend: true,
+  pleromaExtensionsAvailable: true,
   postFormats: [],
   restrictedNicknames: [],
   safeDM: true,

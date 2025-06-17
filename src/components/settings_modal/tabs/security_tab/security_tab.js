@@ -41,8 +41,8 @@ const SecurityTab = {
     user () {
       return this.$store.state.users.currentUser
     },
-    pleromaBackend () {
-      return this.$store.state.instance.pleromaBackend
+    pleromaExtensionsAvailable () {
+      return this.$store.state.instance.pleromaExtensionsAvailable
     },
     oauthTokens () {
       return useOAuthTokensStore().tokens.map(oauthToken => {

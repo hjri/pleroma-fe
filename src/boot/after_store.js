@@ -63,10 +63,11 @@ const getInstanceConfig = async ({ store }) => {
       const textlimit = data.max_toot_chars
       const vapidPublicKey = data.pleroma.vapid_public_key
 
+      store.dispatch('setInstanceOption', { name: 'pleromaExtensionsAvailable', value: data.pleroma })
       store.dispatch('setInstanceOption', { name: 'textlimit', value: textlimit })
       store.dispatch('setInstanceOption', { name: 'accountApprovalRequired', value: data.approval_required })
-      store.dispatch('setInstanceOption', { name: 'birthdayRequired', value: !!data.pleroma.metadata.birthday_required })
-      store.dispatch('setInstanceOption', { name: 'birthdayMinAge', value: data.pleroma.metadata.birthday_min_age || 0 })
+      store.dispatch('setInstanceOption', { name: 'birthdayRequired', value: !!data.pleroma?.metadata.birthday_required })
+      store.dispatch('setInstanceOption', { name: 'birthdayMinAge', value: data.pleroma?.metadata.birthday_min_age || 0 })
 
       if (vapidPublicKey) {
         store.dispatch('setInstanceOption', { name: 'vapidPublicKey', value: vapidPublicKey })
@@ -281,7 +282,6 @@ const getNodeInfo = async ({ store }) => {
       const software = data.software
       store.dispatch('setInstanceOption', { name: 'backendVersion', value: software.version })
       store.dispatch('setInstanceOption', { name: 'backendRepository', value: software.repository })
-      store.dispatch('setInstanceOption', { name: 'pleromaBackend', value: software.name === 'pleroma' })
 
       const priv = metadata.private
       store.dispatch('setInstanceOption', { name: 'private', value: priv })
