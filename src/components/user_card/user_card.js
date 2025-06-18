@@ -135,9 +135,9 @@ export default {
     showModerationMenu () {
       const privileges = this.loggedIn.privileges
       return this.loggedIn.role === 'admin' ||
-        privileges?.includes('users_manage_activation_state') ||
-        privileges?.includes('users_delete')||
-        privileges?.includes('users_manage_tags')
+        privileges.includes('users_manage_activation_state') ||
+        privileges.includes('users_delete')||
+        privileges.includes('users_manage_tags')
     },
     hasNote () {
       return this.relationship.note
