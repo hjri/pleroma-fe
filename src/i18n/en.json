@@ -117,6 +117,7 @@
     "flash_security": "Note that this can be potentially dangerous since Flash content is still arbitrary code.",
     "flash_fail": "Failed to load flash content, see console for details.",
     "scope_in_timeline": {
+      "local": "Non-federated",
       "direct": "Direct",
       "private": "Followers-only",
       "public": "Public",
