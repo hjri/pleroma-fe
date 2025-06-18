@@ -24,7 +24,8 @@ export const timelineNames = (supportsBookmarkFolders) => {
     dms: 'nav.dms',
     'public-timeline': 'nav.public_tl',
     'public-external-timeline': 'nav.twkn',
-    quotes: 'nav.quotes'
+    quotes: 'nav.quotes',
+    bubble: 'nav.bubble'
   }
 }
 
@@ -58,7 +59,8 @@ const TimelineMenu = {
       currentUser: state => state.users.currentUser,
       privateMode: state => state.instance.private,
       federating: state => state.instance.federating,
-      bookmarkFolders: state => state.instance.pleromaBookmarkFoldersAvailable
+      bookmarkFolders: state => state.instance.pleromaBookmarkFoldersAvailable,
+      bubbleTimeline: state => state.instance.localBubbleInstances.length > 0
     }),
     timelinesList () {
       return filterNavigation(
@@ -68,7 +70,8 @@ const TimelineMenu = {
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser,
-          supportsBookmarkFolders: this.bookmarkFolders
+          supportsBookmarkFolders: this.bookmarkFolders,
+          supportsBubbleTimeline: this.bubbleTimeline
         }
       )
     }

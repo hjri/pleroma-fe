@@ -27,6 +27,12 @@ export const TIMELINES = {
     label: 'nav.public_tl',
     criteria: ['!private']
   },
+  bubble: {
+    route: 'bubble',
+    icon: 'city',
+    label: 'nav.bubble',
+    criteria: ['supportsBubbleTimeline']
+  },
   twkn: {
     route: 'public-external-timeline',
     anon: true,
