@@ -91,6 +91,8 @@ export const parseUser = (data) => {
 
     output.bot = data.bot
 
+    output.privileges = []
+
     if (data.pleroma) {
       if (data.pleroma.settings_store) {
         output.storage = data.pleroma.settings_store['pleroma-fe']
@@ -129,7 +131,7 @@ export const parseUser = (data) => {
       output.birthday = data.pleroma.birthday
 
       if (data.pleroma.privileges) {
-        output.privileges = data.pleroma.privileges ?? []
+        output.privileges = data.pleroma.privileges
       } else if (data.pleroma.is_admin) {
         output.privileges = [
           'users_read',
