@@ -1,4 +1,12 @@
-export const filterNavigation = (list = [], { hasChats, hasAnnouncements, isFederating, isPrivate, currentUser, supportsBookmarkFolders }) => {
+export const filterNavigation = (list = [], {
+  hasChats,
+  hasAnnouncements,
+  isFederating,
+  isPrivate,
+  currentUser,
+  supportsBookmarkFolders,
+  supportsBubbleTimeline
+}) => {
   return list.filter(({ criteria, anon, anonRoute }) => {
     const set = new Set(criteria || [])
     if (!isFederating && set.has('federating')) return false
@@ -8,6 +16,7 @@ export const filterNavigation = (list = [], { hasChats, hasAnnouncements, isFede
     if (!hasChats && set.has('chats')) return false
     if (!hasAnnouncements && set.has('announcements')) return false
     if (supportsBookmarkFolders && set.has('!supportsBookmarkFolders')) return false
+    if (supportsBubbleTimeline && set.has('!supportsBubbleTimeline')) return false
     return true
   })
 }
