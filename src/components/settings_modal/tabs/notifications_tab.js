@@ -18,7 +18,7 @@ const NotificationsTab = {
     },
     canReceiveReports () {
       if (!this.user) { return false }
-      return this.user.privileges?.includes('reports_manage_reports')
+      return this.user.privileges.includes('reports_manage_reports')
     },
     ...SharedComputedObject()
   },

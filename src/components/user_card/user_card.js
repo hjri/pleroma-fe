@@ -136,7 +136,7 @@ export default {
       const privileges = this.loggedIn.privileges
       return this.loggedIn.role === 'admin' ||
         privileges.includes('users_manage_activation_state') ||
-        privileges.includes('users_delete')||
+        privileges.includes('users_delete') ||
         privileges.includes('users_manage_tags')
     },
     hasNote () {
