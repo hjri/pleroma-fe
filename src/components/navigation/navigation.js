@@ -29,9 +29,10 @@ export const TIMELINES = {
   },
   bubble: {
     route: 'bubble',
+    anon: true,
     icon: 'city',
     label: 'nav.bubble',
-    criteria: ['supportsBubbleTimeline']
+    criteria: ['!private', 'federating', 'supportsBubbleTimeline']
   },
   twkn: {
     route: 'public-external-timeline',
@@ -44,7 +45,7 @@ export const TIMELINES = {
     route: 'bookmarks',
     icon: 'bookmark',
     label: 'nav.bookmarks',
-    criteria: ['!supportsBookmarkFolders']
+    criteria: ['supportsBookmarkFolders']
   },
   favorites: {
     routeObject: { name: 'user-profile', query: { tab: 'favorites' } },
