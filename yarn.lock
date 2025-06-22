@@ -2024,10 +2024,10 @@
   resolved "https://registry.yarnpkg.com/@rtsao/scc/-/scc-1.1.0.tgz#927dd2fae9bc3361403ac2c7a00c32ddce9ad7e8"
   integrity sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==
 
-"@ruffle-rs/ruffle@0.1.0-nightly.2025.1.13":
-  version "0.1.0-nightly.2025.1.13"
-  resolved "https://registry.yarnpkg.com/@ruffle-rs/ruffle/-/ruffle-0.1.0-nightly.2025.1.13.tgz#0d9c796b6b7f28c524f6ebbc356f3697ca0b7488"
-  integrity sha512-deFf2TE6UscMv5fRo3kjxJtpHCrS1kc2L7Hi8w2QSSbnvODJMqEGDYcp7+VI7R85lDOSze0YPJnDS4S71JHzkg==
+"@ruffle-rs/ruffle@0.1.0-nightly.2025.6.22":
+  version "0.1.0-nightly.2025.6.22"
+  resolved "https://registry.yarnpkg.com/@ruffle-rs/ruffle/-/ruffle-0.1.0-nightly.2025.6.22.tgz#3f7a3c8989c1781422e5ec0b5b74d428f62b6854"
+  integrity sha512-ECd7j0+CFY+BKyHsN049RIzSjHvsPJuwv8EMqpJ+2AKCy9F12852ziWoDlk89oKH3i0Da3sP2w1ij8wFKsAvtQ==
 
 "@sinonjs/commons@^3.0.1":
   version "3.0.1"
