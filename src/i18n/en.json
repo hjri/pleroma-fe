@@ -117,6 +117,7 @@
     "flash_security": "Note that this can be potentially dangerous since Flash content is still arbitrary code.",
     "flash_fail": "Failed to load flash content, see console for details.",
     "scope_in_timeline": {
+      "local": "Non-federated",
       "direct": "Direct",
       "private": "Followers-only",
       "public": "Public",
@@ -171,6 +172,7 @@
     "interactions": "Interactions",
     "dms": "Direct messages",
     "public_tl": "Public timeline",
+    "bubble": "Bubble timeline",
     "timeline": "Timeline",
     "home_timeline": "Home timeline",
     "twkn": "Known Network",
@@ -289,7 +291,8 @@
       "text/plain": "Plain text",
       "text/html": "HTML",
       "text/markdown": "Markdown",
-      "text/bbcode": "BBCode"
+      "text/bbcode": "BBCode",
+      "text/x.misskeymarkdown": "MFM"
     },
     "content_type_selection": "Post format",
     "content_warning": "Subject (optional)",

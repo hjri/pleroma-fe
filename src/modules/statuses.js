@@ -39,6 +39,7 @@ export const defaultState = () => ({
   conversationsObject: {},
   maxId: 0,
   favorites: new Set(),
+  pleromaScrobblesAvailable: true, // not reported in nodeinfo
   timelines: {
     mentions: emptyTl(),
     public: emptyTl(),
@@ -50,7 +51,8 @@ export const defaultState = () => ({
     tag: emptyTl(),
     dms: emptyTl(),
     bookmarks: emptyTl(),
-    list: emptyTl()
+    list: emptyTl(),
+    bubble: emptyTl()
   }
 })
 
@@ -108,12 +110,21 @@ const sortTimeline = (timeline) => {
 }
 
 const getLatestScrobble = (state, user) => {
+  const scrobbles = state.pleromaScrobblesAvailable
+  if (!scrobbles) return
+
   if (state.scrobblesNextFetch[user.id] && state.scrobblesNextFetch[user.id] > Date.now()) {
     return
   }
 
   state.scrobblesNextFetch[user.id] = Date.now() + 24 * 60 * 60 * 1000
+  if (!scrobbles) return
   apiService.fetchScrobbles({ accountId: user.id }).then((scrobbles) => {
+    if (scrobbles?.error?.status === 501) {
+      state.pleromaScrobblesAvailable = false
+      return
+    }
+
     if (scrobbles.length > 0) {
       user.latestScrobble = scrobbles[0]
 

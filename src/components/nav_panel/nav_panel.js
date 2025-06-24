@@ -15,6 +15,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faUsers,
   faGlobe,
+  faCity,
   faBookmark,
   faEnvelope,
   faChevronDown,
@@ -31,6 +32,7 @@ import {
 library.add(
   faUsers,
   faGlobe,
+  faCity,
   faBookmark,
   faEnvelope,
   faChevronDown,
@@ -108,12 +110,15 @@ const NavPanel = {
       privateMode: state => state.instance.private,
       federating: state => state.instance.federating,
       pleromaChatMessagesAvailable: state => state.instance.pleromaChatMessagesAvailable,
-      bookmarkFolders: state => state.instance.pleromaBookmarkFoldersAvailable
+      bookmarkFolders: state => state.instance.pleromaBookmarkFoldersAvailable,
+      bubbleTimeline: state => state.instance.localBubbleInstances.length > 0
     }),
     timelinesItems () {
       return filterNavigation(
         Object
           .entries({ ...TIMELINES })
+          // do not show in timeliens list since it's in a better place now
+          .filter(([key]) => key !== 'bookmarks')
           .map(([k, v]) => ({ ...v, name: k })),
         {
           hasChats: this.pleromaChatMessagesAvailable,
@@ -121,6 +126,7 @@ const NavPanel = {
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser,
+          supportsBubbleTimeline: this.bubbleTimeline,
           supportsBookmarkFolders: this.bookmarkFolders
         }
       )
@@ -136,6 +142,7 @@ const NavPanel = {
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser,
+          supportsBubbleTimeline: this.bubbleTimeline,
           supportsBookmarkFolders: this.bookmarkFolders
         }
       )
