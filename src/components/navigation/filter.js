@@ -15,8 +15,9 @@ export const filterNavigation = (list = [], {
     if ((!currentUser || !currentUser.locked) && set.has('lockedUser')) return false
     if (!hasChats && set.has('chats')) return false
     if (!hasAnnouncements && set.has('announcements')) return false
-    if (!supportsBookmarkFolders && set.has('supportsBookmarkFolders')) return false
     if (!supportsBubbleTimeline && set.has('supportsBubbleTimeline')) return false
+    if (!supportsBookmarkFolders && set.has('supportsBookmarkFolders')) return false
+    if (supportsBookmarkFolders && set.has('!supportsBookmarkFolders')) return false
     return true
   })
 }

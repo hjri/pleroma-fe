@@ -84,6 +84,7 @@ const NavPanel = {
           isPrivate: this.privateMode,
           currentUser: this.currentUser,
           supportsBubbleTimeline: this.bubbleTimeline,
+          supportsBookmarkFolders: this.bookmarks
         })
       }
       return filterNavigation(
@@ -103,6 +104,7 @@ const NavPanel = {
           hasChats: this.pleromaChatMessagesAvailable,
           hasAnnouncements: this.supportsAnnouncements,
           supportsBubbleTimeline: this.bubbleTimeline,
+          supportsBookmarkFolders: this.bookmarks,
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser

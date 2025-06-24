@@ -117,6 +117,8 @@ const NavPanel = {
       return filterNavigation(
         Object
           .entries({ ...TIMELINES })
+          // do not show in timeliens list since it's in a better place now
+          .filter(([key]) => key !== 'bookmarks')
           .map(([k, v]) => ({ ...v, name: k })),
         {
           hasChats: this.pleromaChatMessagesAvailable,
@@ -124,7 +126,6 @@ const NavPanel = {
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser,
-          supportsBookmarkFolders: this.bookmarkFolders,
           supportsBubbleTimeline: this.bubbleTimeline
         }
       )
@@ -140,8 +141,8 @@ const NavPanel = {
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser,
-          supportsBookmarkFolders: this.bookmarkFolders,
-          supportsBubbleTimeline: this.bubbleTimeline
+          supportsBubbleTimeline: this.bubbleTimeline,
+          supportsBookmarkFolders: this.bookmarkFolders
         }
       )
     },
