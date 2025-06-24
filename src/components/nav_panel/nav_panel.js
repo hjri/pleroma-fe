@@ -126,7 +126,8 @@ const NavPanel = {
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser,
-          supportsBubbleTimeline: this.bubbleTimeline
+          supportsBubbleTimeline: this.bubbleTimeline,
+          supportsBookmarkFolders: this.bookmarkFolders
         }
       )
     },
