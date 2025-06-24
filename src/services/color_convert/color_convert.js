@@ -96,6 +96,32 @@ export const getContrastRatioLayers = (text, layers, bedrock) => {
 }
 
 /**
+ * Blending of two solid colors with a user-defined operator: origin +- value
+ *
+ * @param {Object} origin - base color
+ * @param {Object} value - modification argument
+ * @param {string} operator - math operator to use
+ */
+export const arithmeticBlend = (origin, value, operator) => {
+  const func = (a, b) => {
+    switch (operator) {
+      case '+':
+        return Math.min(a + b, 255)
+      case '-':
+        return Math.max(a - b, 0)
+      default:
+        return a
+    }
+  }
+
+  return {
+    r: func(origin.r, value.r),
+    g: func(origin.g, value.g),
+    b: func(origin.b, value.b),
+  }
+}
+
+/**
  * This performs alpha blending between solid background and semi-transparent foreground
  *
  * @param {Object} fg - top layer color
