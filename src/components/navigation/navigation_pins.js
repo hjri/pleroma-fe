@@ -9,6 +9,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faUsers,
   faGlobe,
+  faCity,
   faBookmark,
   faEnvelope,
   faComments,
@@ -25,6 +26,7 @@ import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 library.add(
   faUsers,
   faGlobe,
+  faCity,
   faBookmark,
   faEnvelope,
   faComments,
@@ -65,7 +67,8 @@ const NavPanel = {
       followRequestCount: state => state.api.followRequests.length,
       privateMode: state => state.instance.private,
       federating: state => state.instance.federating,
-      pleromaChatMessagesAvailable: state => state.instance.pleromaChatMessagesAvailable
+      pleromaChatMessagesAvailable: state => state.instance.pleromaChatMessagesAvailable,
+      bubbleTimeline: state => state.instance.localBubbleInstances.length > 0
     }),
     pinnedList () {
       if (!this.currentUser) {
@@ -79,7 +82,8 @@ const NavPanel = {
           hasAnnouncements: this.supportsAnnouncements,
           isFederating: this.federating,
           isPrivate: this.privateMode,
-          currentUser: this.currentUser
+          currentUser: this.currentUser,
+          supportsBubbleTimeline: this.bubbleTimeline,
         })
       }
       return filterNavigation(
@@ -98,6 +102,7 @@ const NavPanel = {
         {
           hasChats: this.pleromaChatMessagesAvailable,
           hasAnnouncements: this.supportsAnnouncements,
+          supportsBubbleTimeline: this.bubbleTimeline,
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser

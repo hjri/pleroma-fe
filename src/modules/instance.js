@@ -163,6 +163,7 @@ const defaultState = {
   suggestionsWeb: '',
   quotingAvailable: false,
   groupActorAvailable: false,
+  localBubbleInstances: [], // Akkoma
 
   // Html stuff
   instanceSpecificPanelContent: '',
