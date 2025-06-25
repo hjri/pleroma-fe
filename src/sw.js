@@ -223,7 +223,8 @@ self.addEventListener('fetch', (event) => {
   // Do not mess up with remote things
   const isSameOrigin = (new URL(event.request.url)).origin === self.location.origin
   if (shouldCache && event.request.method === 'GET' && isSameOrigin && isNotMedia(event.request)) {
-    console.debug('[Service worker] fetch:', event.request.url)
+    // this is a bit spammy
+    // console.debug('[Service worker] fetch:', event.request.url)
     event.respondWith((async () => {
       const r = await caches.match(event.request)
       const isEmojiReq = isEmoji(event.request)
