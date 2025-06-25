@@ -102,4 +102,20 @@
       }
     }
   }
+
+  &.-extra {
+    .action-counter {
+      justify-self: end;
+      margin-right: 1em;
+    }
+
+    .chevron-icon {
+      justify-self: end;
+    }
+
+    .extra-button {
+      justify-self: end;
+      justify-content: end;
+    }
+  }
 }
