@@ -62,7 +62,6 @@
     &.-tall-status {
       position: relative;
       height: 16em;
-      overflow: hidden;
       z-index: 1;
 
       .media-body {
@@ -82,6 +81,10 @@
         mask-composite: exclude;
       }
     }
+
+    &.-expanded {
+      overflow: visible;
+    }
   }
 
   & .tall-status-hider,
@@ -93,6 +96,13 @@
     text-wrap: pretty;
     width: 100%;
     text-align: center;
+  }
+
+  .status-unhider {
+    margin-top: auto;
+    position: sticky;
+    bottom: 0;
+    padding-bottom: 1em;
   }
 
   .tall-status-hider {
@@ -116,6 +126,10 @@
     svg {
       color: inherit;
     }
+  }
+
+  .toggle-button {
+    padding: 0.5em;
   }
 
   &.-compact {
