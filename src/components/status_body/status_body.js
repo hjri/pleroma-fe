@@ -72,6 +72,23 @@ const StatusContent = {
     hideTallStatus () {
       return this.mightHideBecauseTall && !this.showingTall
     },
+    shouldShowToggle () {
+      return this.mightHideBecauseSubject || this.mightHideBecauseTall
+    },
+    toggleButtonClasses () {
+      return {
+        'cw-status-hider': !this.showingMore && this.mightHideBecauseSubject,
+        'tall-status-hider': !this.showingMore && this.mightHideBecauseTall,
+        'status-unhider': this.showingMore,
+      }
+    },
+    toggleText () {
+      if (this.showingMore) {
+        return this.mightHideBecauseSubject ? this.$t('status.hide_content') : this.$t('general.show_less')
+      } else {
+        return this.mightHideBecauseSubject ? this.$t('status.show_content') : this.$t('general.show_more')
+      }
+    },
     showingMore () {
       return (this.mightHideBecauseTall && this.showingTall) || (this.mightHideBecauseSubject && this.expandingSubject)
     },
