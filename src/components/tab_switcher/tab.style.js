@@ -3,7 +3,7 @@ export default {
   selector: '.tab', // CSS selector/prefix
   states: {
     active: '.active',
-    hover: ':hover:not(.disabled)',
+    hover: ':is(:hover, :focus-visible, :has(:focus-visible)):not(.disabled)',
     disabled: '.disabled'
   },
   validInnerComponents: [

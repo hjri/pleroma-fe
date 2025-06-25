@@ -2,7 +2,7 @@ export default {
   name: 'Input',
   selector: '.input',
   states: {
-    hover: ':hover:not(.disabled)',
+    hover: ':is(:hover, :focus-visible):not(.disabled)',
     focused: ':focus-within',
     disabled: '.disabled'
   },

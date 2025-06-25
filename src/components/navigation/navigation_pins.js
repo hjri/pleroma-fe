@@ -9,6 +9,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faUsers,
   faGlobe,
+  faCity,
   faBookmark,
   faEnvelope,
   faComments,
@@ -20,10 +21,12 @@ import {
 import { useListsStore } from 'src/stores/lists'
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
 library.add(
   faUsers,
   faGlobe,
+  faCity,
   faBookmark,
   faEnvelope,
   faComments,
@@ -54,7 +57,10 @@ const NavPanel = {
       supportsAnnouncements: store => store.supportsAnnouncements
     }),
     ...mapPiniaState(useBookmarkFoldersStore, {
-      bookmarks: getBookmarkFolderEntries
+      bookmarks: getBookmarkFolderEntries,
+    }),
+    ...mapPiniaState(useServerSideStorageStore, {
+      pinnedItems: store => new Set(store.prefsStorage.collections.pinnedNavItems)
     }),
     ...mapState({
       currentUser: state => state.users.currentUser,
@@ -62,7 +68,7 @@ const NavPanel = {
       privateMode: state => state.instance.private,
       federating: state => state.instance.federating,
       pleromaChatMessagesAvailable: state => state.instance.pleromaChatMessagesAvailable,
-      pinnedItems: state => new Set(state.serverSideStorage.prefsStorage.collections.pinnedNavItems)
+      bubbleTimeline: state => state.instance.localBubbleInstances.length > 0
     }),
     pinnedList () {
       if (!this.currentUser) {
@@ -76,7 +82,9 @@ const NavPanel = {
           hasAnnouncements: this.supportsAnnouncements,
           isFederating: this.federating,
           isPrivate: this.privateMode,
-          currentUser: this.currentUser
+          currentUser: this.currentUser,
+          supportsBubbleTimeline: this.bubbleTimeline,
+          supportsBookmarkFolders: this.bookmarks
         })
       }
       return filterNavigation(
@@ -95,6 +103,8 @@ const NavPanel = {
         {
           hasChats: this.pleromaChatMessagesAvailable,
           hasAnnouncements: this.supportsAnnouncements,
+          supportsBubbleTimeline: this.bubbleTimeline,
+          supportsBookmarkFolders: this.bookmarks,
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser

@@ -17,6 +17,7 @@
           :get-component="getComponent"
           :close="() => {}"
           :do-action="doAction"
+          @interacted="e => $emit('interacted')"
         />
         <button
           v-if="showPin && currentUser"
@@ -86,8 +87,9 @@
                 :func-arg="funcArg"
                 :get-class="getClass"
                 :get-component="getComponent"
-                :outerClose="close"
+                :outer-close="close"
                 :do-action="doAction"
+                @interacted="e => $emit('interacted')"
               />
               <button
                 v-if="showPin && currentUser"

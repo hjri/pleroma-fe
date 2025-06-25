@@ -143,7 +143,7 @@
     }
   }
 
-  @media all and (min-width: 801px) {
+  @media all and (width >= 801px) {
     .panel-body {
       flex-direction: row;
     }

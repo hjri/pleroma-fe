@@ -34,8 +34,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overscroll-behavior-y: none;
-  overflow-x: clip;
-  overflow-y: scroll;
+  overflow: clip scroll;
 
   &.hidden {
     display: none;
@@ -224,9 +223,8 @@ nav {
   grid-template-rows: 1fr;
   box-sizing: border-box;
   margin: 0 auto;
-  align-content: flex-start;
+  place-content: flex-start center;
   flex-wrap: wrap;
-  justify-content: center;
   min-height: 100vh;
   overflow-x: clip;
 
@@ -262,8 +260,7 @@ nav {
       position: sticky;
       top: var(--navbar-height);
       max-height: calc(100vh - var(--navbar-height));
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow: hidden auto;
       margin-left: calc(var(--___paddingIncrease) * -1);
       padding-left: calc(var(--___paddingIncrease) + var(--___columnMargin) / 2);
 
@@ -387,6 +384,10 @@ nav {
 
   &:disabled {
     cursor: not-allowed;
+  }
+
+  &:active {
+    transform: translate(1px, 1px);
   }
 }
 
@@ -828,7 +829,7 @@ option {
 .login-hint {
   text-align: center;
 
-  @media all and (min-width: 801px) {
+  @media all and (width >= 801px) {
     display: none;
   }
 
@@ -850,7 +851,7 @@ option {
   flex: 1;
 }
 
-@media all and (max-width: 800px) {
+@media all and (width <= 800px) {
   .mobile-hidden {
     display: none;
   }

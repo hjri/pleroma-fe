@@ -119,10 +119,13 @@
           :key="hashtag.url"
           class="status trend search-result"
         >
-          <div class="hashtag">
-            <router-link :to="{ name: 'tag-timeline', params: { tag: hashtag.name } }">
+          <router-link
+            class="list-item hashtag"
+            :to="{ name: 'tag-timeline', params: { tag: hashtag.name } }"
+          >
+            <span class="name">
               #{{ hashtag.name }}
-            </router-link>
+            </span>
             <div v-if="lastHistoryRecord(hashtag)">
               <span v-if="lastHistoryRecord(hashtag).accounts == 1">
                 {{ $t('search.person_talking', { count: lastHistoryRecord(hashtag).accounts }) }}
@@ -131,7 +134,7 @@
                 {{ $t('search.people_talking', { count: lastHistoryRecord(hashtag).accounts }) }}
               </span>
             </div>
-          </div>
+          </router-link>
           <div
             v-if="lastHistoryRecord(hashtag)"
             class="count"
@@ -154,7 +157,7 @@
   text-align: center;
 }
 
-@media all and (max-width: 800px) {
+@media all and (width <= 800px) {
   .search-nav-heading {
     .tab-switcher .tabs .tab-wrapper {
       display: block;
@@ -199,10 +202,13 @@
 
   .hashtag {
     flex: 1 1 auto;
-    color: var(--text);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    .name {
+      color: var(--link);
+    }
   }
 
   .count {

@@ -78,7 +78,6 @@ export default {
   },
   computed: {
     draft: {
-      // TODO allow passing shared draft object?
       get () {
         if (this.realSource === 'admin' || this.path == null) {
           return get(this.$store.state.adminSettings.draft, this.canonPath)

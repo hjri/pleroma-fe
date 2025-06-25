@@ -241,10 +241,7 @@ export default {
 
   .underlay-preview {
     position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 10px;
-    right: 10px;
+    inset: 0 10px;
   }
 }
  </style>

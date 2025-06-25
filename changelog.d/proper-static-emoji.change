@@ -1,1 +1,0 @@
-BREAKING: static/emoji.json is replaced with a properly hashed path under static/js in the production build, meaning server admins cannot provide their own set of unicode emojis by overriding this file (custom (image-based) emojis not affected)

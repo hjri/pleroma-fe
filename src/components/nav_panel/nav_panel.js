@@ -7,12 +7,15 @@ import { filterNavigation } from 'src/components/navigation/filter.js'
 import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
 import NavigationPins from 'src/components/navigation/navigation_pins.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
+
 import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faUsers,
   faGlobe,
+  faCity,
   faBookmark,
   faEnvelope,
   faChevronDown,
@@ -29,6 +32,7 @@ import {
 library.add(
   faUsers,
   faGlobe,
+  faCity,
   faBookmark,
   faEnvelope,
   faChevronDown,
@@ -76,19 +80,19 @@ const NavPanel = {
       this.editMode = !this.editMode
     },
     toggleCollapse () {
-      this.$store.commit('setPreference', { path: 'simple.collapseNav', value: !this.collapsed })
-      this.$store.dispatch('pushServerSideStorage')
+      useServerSideStorageStore().setPreference({ path: 'simple.collapseNav', value: !this.collapsed })
+      useServerSideStorageStore().pushServerSideStorage()
     },
     isPinned (item) {
       return this.pinnedItems.has(item)
     },
     togglePin (item) {
       if (this.isPinned(item)) {
-        this.$store.commit('removeCollectionPreference', { path: 'collections.pinnedNavItems', value: item })
+        useServerSideStorageStore().removeCollectionPreference({ path: 'collections.pinnedNavItems', value: item })
       } else {
-        this.$store.commit('addCollectionPreference', { path: 'collections.pinnedNavItems', value: item })
+        useServerSideStorageStore().addCollectionPreference({ path: 'collections.pinnedNavItems', value: item })
       }
-      this.$store.dispatch('pushServerSideStorage')
+      useServerSideStorageStore().pushServerSideStorage()
     }
   },
   computed: {
@@ -96,20 +100,25 @@ const NavPanel = {
       unreadAnnouncementCount: 'unreadAnnouncementCount',
       supportsAnnouncements: store => store.supportsAnnouncements
     }),
+    ...mapPiniaState(useServerSideStorageStore, {
+      collapsed: store => store.prefsStorage.simple.collapseNav,
+      pinnedItems: store => new Set(store.prefsStorage.collections.pinnedNavItems)
+    }),
     ...mapState({
       currentUser: state => state.users.currentUser,
       followRequestCount: state => state.api.followRequests.length,
       privateMode: state => state.instance.private,
       federating: state => state.instance.federating,
       pleromaChatMessagesAvailable: state => state.instance.pleromaChatMessagesAvailable,
-      pinnedItems: state => new Set(state.serverSideStorage.prefsStorage.collections.pinnedNavItems),
-      collapsed: state => state.serverSideStorage.prefsStorage.simple.collapseNav,
-      bookmarkFolders: state => state.instance.pleromaBookmarkFoldersAvailable
+      bookmarkFolders: state => state.instance.pleromaBookmarkFoldersAvailable,
+      bubbleTimeline: state => state.instance.localBubbleInstances.length > 0
     }),
     timelinesItems () {
       return filterNavigation(
         Object
           .entries({ ...TIMELINES })
+          // do not show in timeliens list since it's in a better place now
+          .filter(([key]) => key !== 'bookmarks')
           .map(([k, v]) => ({ ...v, name: k })),
         {
           hasChats: this.pleromaChatMessagesAvailable,
@@ -117,6 +126,7 @@ const NavPanel = {
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser,
+          supportsBubbleTimeline: this.bubbleTimeline,
           supportsBookmarkFolders: this.bookmarkFolders
         }
       )
@@ -132,6 +142,7 @@ const NavPanel = {
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser,
+          supportsBubbleTimeline: this.bubbleTimeline,
           supportsBookmarkFolders: this.bookmarkFolders
         }
       )

@@ -129,6 +129,21 @@ PanelHeader {
   background: --fg
 }
 
+PanelHeader ButtonUnstyled Icon {
+  textColor: --text;
+  textAuto: 'no-preserve'
+}
+
+PanelHeader Button Icon {
+  textColor: --text;
+  textAuto: 'no-preserve'
+}
+
+PanelHeader Button Text {
+  textColor: --text;
+  textAuto: 'no-preserve'
+}
+
 Tab:hover {
   background: --bg;
   shadow: --buttonDefaultBevel
@@ -169,6 +184,14 @@ TopBar Link {
 }
 
 MenuItem:hover {
+  background: --fg
+}
+
+MenuItem:active {
+  background: --fg
+}
+
+MenuItem:active:hover {
   background: --fg
 }
 

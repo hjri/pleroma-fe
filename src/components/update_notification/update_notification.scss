@@ -18,7 +18,7 @@
     padding-left: 1em;
   }
 
-  @media all and (max-width: 800px) {
+  @media all and (width <= 800px) {
     /* For mobile, the modal takes 100% of the available screen.
        This ensures the minimized modal is always 50px above the browser
        bottom bar regardless of whether or not it is visible.
@@ -26,7 +26,7 @@
     width: 100vw;
   }
 
-  @media all and (max-height: 600px) {
+  @media all and (height <= 600px) {
     display: none;
   }
 

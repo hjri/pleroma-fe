@@ -1,7 +1,9 @@
 import apiService from '../services/api/api.service.js'
 import { instanceDefaultProperties } from './config.js'
-import { langCodeToCldrName, ensureFinalFallback } from '../i18n/languages.js'
+import { ensureFinalFallback } from '../i18n/languages.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+// See build/emojis_plugin for more details
+import { annotationsLoader } from 'virtual:pleroma-fe/emoji-annotations'
 
 const SORTED_EMOJI_GROUP_IDS = [
   'smileys-and-emotion',
@@ -110,6 +112,7 @@ const defaultState = {
   emojiSize: '2.2rem',
   navbarSize: '3.5rem',
   panelHeaderSize: '3.2rem',
+  themeEditorMinWidth: '0rem',
   forcedRoundness: -1,
   fontsOverride: {},
   virtualScrolling: true,
@@ -140,7 +143,7 @@ const defaultState = {
   emoji: {},
   emojiFetched: false,
   unicodeEmojiAnnotations: {},
-  pleromaBackend: true,
+  pleromaExtensionsAvailable: true,
   postFormats: [],
   restrictedNicknames: [],
   safeDM: true,
@@ -153,12 +156,14 @@ const defaultState = {
   pleromaChatMessagesAvailable: false,
   pleromaCustomEmojiReactionsAvailable: false,
   pleromaBookmarkFoldersAvailable: false,
+  pleromaPublicFavouritesAvailable: true,
   gopherAvailable: false,
   mediaProxyAvailable: false,
   suggestionsEnabled: false,
   suggestionsWeb: '',
   quotingAvailable: false,
   groupActorAvailable: false,
+  localBubbleInstances: [], // Akkoma
 
   // Html stuff
   instanceSpecificPanelContent: '',
@@ -179,10 +184,7 @@ const defaultState = {
 }
 
 const loadAnnotations = (lang) => {
-  const code = langCodeToCldrName(lang)
-  return import(
-    `../../node_modules/@kazvmoe-infra/unicode-emoji-json/annotations/${code}.json`
-  )
+  return annotationsLoader[lang]()
     .then(k => k.default)
 }
 
@@ -340,7 +342,10 @@ const instance = {
 
     async getCustomEmoji ({ commit, state }) {
       try {
-        const res = await window.fetch('/api/pleroma/emoji.json')
+        let res = await window.fetch('/api/v1/pleroma/emoji')
+        if (!res.ok) {
+          res = await window.fetch('/api/pleroma/emoji.json')
+        }
         if (res.ok) {
           const result = await res.json()
           const values = Array.isArray(result) ? Object.assign({}, ...result) : result

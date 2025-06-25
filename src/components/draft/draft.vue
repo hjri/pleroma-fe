@@ -127,7 +127,6 @@
     max-width: 100%;
 
     p {
-      word-wrap: break-word;
       white-space: normal;
       overflow-x: hidden;
     }
@@ -135,8 +134,7 @@
     .poll-indicator-container {
       border-radius: var(--roundness);
       display: grid;
-      justify-items: center;
-      align-items: center;
+      place-items: center center;
       align-self: start;
       height: 0;
       padding-bottom: 62.5%;
@@ -147,13 +145,9 @@
       box-sizing: border-box;
       border: 1px solid var(--border);
       position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      inset: 0;
       display: grid;
-      justify-items: center;
-      align-items: center;
+      place-items: center center;
       width: 100%;
       height: 100%;
     }

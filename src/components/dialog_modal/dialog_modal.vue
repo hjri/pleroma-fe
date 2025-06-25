@@ -29,14 +29,11 @@
 // TODO: unify with other modals.
 .dark-overlay {
   &::before {
-    bottom: 0;
+    inset: 0;
     content: " ";
     display: block;
     cursor: default;
-    left: 0;
     position: fixed;
-    right: 0;
-    top: 0;
     background: rgb(27 31 35 / 50%);
     z-index: 2000;
   }
@@ -45,13 +42,9 @@
 .dialog-container {
   display: grid;
   position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  inset: 0;
   justify-content: center;
-  align-items: center;
-  justify-items: center;
+  place-items: center center;
 }
 
 .dialog-modal.panel {
@@ -98,8 +91,7 @@
 #modal.-mobile {
   .dialog-container {
     justify-content: stretch;
-    align-items: end;
-    justify-items: stretch;
+    place-items: end stretch;
 
     &.-center-mobile {
       align-items: center;
@@ -114,7 +106,6 @@
     flex-direction: column;
     justify-content: flex-end;
     grid-template-columns: 1fr;
-    grid-auto-columns: none;
     grid-auto-rows: auto;
     grid-auto-flow: row dense;
 

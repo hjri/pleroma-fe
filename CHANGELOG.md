@@ -2,6 +2,74 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+## 2.8.0
+### Changed
+- BREAKING: static/img/nsfw.2958239.png is now static/img/nsfw.DepQPhG0.png, which may affect people who specify exactly this path as the cover image
+- BREAKING: static/emoji.json is replaced with a properly hashed path under static/js in the production build, meaning server admins cannot provide their own set of unicode emojis by overriding this file (custom (image-based) emojis not affected)
+- Speed up initial boot.
+- Updated our build system to support browsers:
+  Safari >= 15
+  Firefox >= 115
+  Android > 4
+  no Opera Mini support
+  no IE support
+  no "dead" (unmaintained) browsers support
+
+This does not guarantee that browsers will or will not work.
+
+- Use /api/v1/accounts/:id/follow for account subscriptions instead of the deprecated routes
+- Modal layout for mobile has new layout to make it easy to use
+- Better display of mute reason on posts
+- Simplify the OAuth client_name to 'PleromaFE'
+- Partially migrated from vuex to pinia
+- Authenticate and subscribe to streaming after connection
+- Tabs now have indentation for better visibility of which tab is currently active
+- Upgraded Vue to version 3.5
+
+### Added
+- Support bookmark folders
+- Some new default color schemes
+- Added support for fetching /{resource}.custom.ext to allow adding instance-specific themes without altering sourcetree
+- Post actions customization
+- Support displaying time in absolute format
+- Add draft management system
+- Compress most kinds of images on upload.
+- Added option to always convert images to JPEG format instead of using WebP when compressing images. 
+- Added configurable image compression option in general settings, allowing users to control whether images are compressed before upload. 
+- Inform users that Smithereen public polls are public
+- Splash screen + loading indicator to make process of identifying initialization issues and load performance
+- UI for making v3 themes and palettes, support for bundling v3 themes
+- Make UserLink wrappable
+
+### Fixed
+- Fixed occasional overflows in emoji picker and made header scrollable
+- Updated shadow editor, hopefully fixed long-standing bugs, added ability to specify shadow's name.
+- Checkbox vertical alignment
+- Check for canvas extract permission when initializing favicon service
+- Fix some of the color manipulation functions
+- Fix draft saving when auto-save is off
+- Switch from class hack to normalButton attribute for emoji count popover
+- Fix emoji inconsistencies in notifications,
+- Fix some emoji not scaling with interface
+- Make sure hover style is also applied to :focus-visible
+- Improved ToS and registration
+- Fix small markup inconsistencies
+- Fixed modals buttons overflow
+- Fix whitespaces for multiple status mute reasons, display bot status reason
+- Create an OAuth app only when needed
+- Fix CSS compatibility issues in style_setter.js for older browsers like Palemoon
+- Proper sticky header for conversations on user page
+- Add text label for more actions button in post status form
+- Reply-or-quote buttons now take less space
+- Allow repeats of own posts with private scopes
+- Bookmarks visible again on mobile
+- Remove focusability on hidden popover in subject input
+- Show only month and day instead of weird "day, hour" format.
+
+### Removed
+- BREAKING: drop support for browsers that do not support `<script type="module">`
+- BREAKING: css source map does not work in production (see https://github.com/vitejs/vite/issues/2830 )
+- Remove emoji annotations code for unused languages from final build
 
 ## 2.7.1
 Bugfix release. Added small optimizations to emoji picker that should make it a bit more responsive, however it needs rather large change to make it more performant which might come in a major release.

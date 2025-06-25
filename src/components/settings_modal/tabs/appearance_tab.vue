@@ -336,6 +336,15 @@
             {{ $t('settings.show_scrollbars') }}
           </BooleanSetting>
         </li>
+        <li>
+          <UnitSetting
+            path="themeEditorMinWidth"
+            :units="['px', 'rem']"
+            expert="1"
+          >
+            {{ $t('settings.theme_editor_min_width') }}
+          </UnitSetting>
+        </li>
       </ul>
     </div>
     <div class="setting-item">

@@ -1,4 +1,7 @@
 import { useEditStatusStore } from 'src/stores/editStatus.js'
+import { useReportsStore } from 'src/stores/reports.js'
+import { useStatusHistoryStore } from 'src/stores/statusHistory.js'
+
 const PRIVATE_SCOPES = new Set(['private', 'direct'])
 const PUBLIC_SCOPES = new Set(['public', 'unlisted'])
 export const BUTTONS = [{
@@ -27,8 +30,8 @@ export const BUTTONS = [{
   label: ({ status }) => status.repeated
     ? 'tool_tip.unrepeat'
     : 'tool_tip.repeat',
-  icon ({ status }) {
-    if (PRIVATE_SCOPES.has(status.visibility)) {
+  icon ({ status, currentUser }) {
+    if (currentUser.id !== status.user.id && PRIVATE_SCOPES.has(status.visibility)) {
       return 'lock'
     }
     return 'retweet'
@@ -37,7 +40,7 @@ export const BUTTONS = [{
   active: ({ status }) => status.repeated,
   counter: ({ status }) => status.repeat_num,
   anonLink: true,
-  interactive: ({ status, loggedIn }) => loggedIn && !PRIVATE_SCOPES.has(status.visibility),
+  interactive: ({ status, currentUser }) => !!currentUser && (currentUser.id === status.user.id || !PRIVATE_SCOPES.has(status.visibility)),
   toggleable: true,
   confirm: ({ status, getters }) => !status.repeated && getters.mergedConfig.modalOnRepeat,
   confirmStrings: {
@@ -140,6 +143,34 @@ export const BUTTONS = [{
   }
 }, {
   // =========
+  // EDIT HISTORY
+  // =========
+  name: 'editHistory',
+  icon: 'history',
+  label: 'status.status_history',
+  if ({ status, state }) {
+    return state.instance.editingAvailable &&
+      status.edited_at !== null
+  },
+  action ({ status }) {
+    const originalStatus = { ...status }
+    const stripFieldsList = [
+      'attachments',
+      'created_at',
+      'emojis',
+      'text',
+      'raw_html',
+      'nsfw',
+      'poll',
+      'summary',
+      'summary_raw_html'
+    ]
+    stripFieldsList.forEach(p => delete originalStatus[p])
+    useStatusHistoryStore().openStatusHistoryModal(originalStatus)
+    return Promise.resolve()
+  }
+}, {
+  // =========
   // EDIT
   // =========
   name: 'edit',
@@ -216,8 +247,8 @@ export const BUTTONS = [{
   icon: 'flag',
   label: 'user_card.report',
   if: ({ loggedIn }) => loggedIn,
-  action ({ dispatch, status }) {
-    dispatch('openUserReportingModal', { userId: status.user.id, statusIds: [status.id] })
+  action ({ status }) {
+    return useReportsStore().openUserReportingModal({ userId: status.user.id, statusIds: [status.id] })
   }
 }].map(button => {
   return Object.fromEntries(

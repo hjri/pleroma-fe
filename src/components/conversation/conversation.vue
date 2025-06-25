@@ -94,7 +94,7 @@
               :statusoid="status"
               :expandable="!isExpanded"
               :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
-              :focused="focused(status.id)"
+              :focused="isFocused(status.id)"
               :in-conversation="isExpanded"
               :highlight="getHighlight()"
               :replies="getReplies(status.id)"
@@ -168,7 +168,7 @@
           :pinned-status-ids-object="pinnedStatusIdsObject"
           :profile-user-id="profileUserId"
 
-          :focused="focused"
+          :is-focused-function="isFocused"
           :get-replies="getReplies"
           :highlight="maybeHighlight"
           :set-highlight="setHighlight"
@@ -199,7 +199,7 @@
             :statusoid="status"
             :expandable="!isExpanded"
             :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
-            :focused="focused(status.id)"
+            :focused="isFocused(status.id)"
             :in-conversation="isExpanded"
             :highlight="getHighlight()"
             :replies="getReplies(status.id)"
@@ -322,10 +322,7 @@
       content: "";
       display: block;
       position: absolute;
-      top: calc(var(--___margin) * -1);
-      bottom: calc(var(--___margin) * -1);
-      left: calc(var(--___margin) * -1);
-      right: calc(var(--___margin) * -1);
+      inset: calc(var(--___margin) * -1);
       background: var(--background);
       backdrop-filter: var(--__panel-backdrop-filter);
     }

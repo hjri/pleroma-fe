@@ -59,7 +59,7 @@
     transition-timing-function: ease-out;
     transition-duration: 100ms;
 
-    @media all and (min-width: 800px) {
+    @media all and (width >= 800px) {
       /* stylelint-disable-next-line declaration-no-important */
       opacity: 1 !important;
     }
@@ -70,10 +70,7 @@
       mask-size: contain;
       background-color: var(--text);
       position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
+      inset: 0;
     }
 
     img {

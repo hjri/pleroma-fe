@@ -1,7 +1,7 @@
 import Timeago from 'components/timeago/timeago.vue'
 import genRandomSeed from '../../services/random_seed/random_seed.service.js'
 import RichContent from 'components/rich_content/rich_content.jsx'
-import { forEach, map } from 'lodash'
+import Checkbox from 'components/checkbox/checkbox.vue'
 import { usePollsStore } from 'src/stores/polls'
 
 export default {
@@ -9,7 +9,8 @@ export default {
   props: ['basePoll', 'emoji'],
   components: {
     Timeago,
-    RichContent
+    RichContent,
+    Checkbox
   },
   data () {
     return {
@@ -43,6 +44,13 @@ export default {
     },
     expired () {
       return (this.poll && this.poll.expired) || false
+    },
+    expirationLabel () {
+      if (this.$store.getters.mergedConfig.useAbsoluteTimeFormat) {
+        return this.expired ? 'polls.expired_at' : 'polls.expires_at'
+      } else {
+        return this.expired ? 'polls.expired' : 'polls.expires_in'
+      }
     },
     loggedIn () {
       return this.$store.state.users.currentUser
@@ -78,26 +86,15 @@ export default {
     resultTitle (option) {
       return `${option.votes_count}/${this.totalVotesCount} ${this.$t('polls.votes')}`
     },
-    activateOption (index) {
-      // forgive me father: doing checking the radio/checkboxes
-      // in code because of customized input elements need either
-      // a) an extra element for the actual graphic, or b) use a
-      // pseudo element for the label. We use b) which mandates
-      // using "for" and "id" matching which isn't nice when the
-      // same poll appears multiple times on the site (notifs and
-      // timeline for example). With code we can make sure it just
-      // works without altering the pseudo element implementation.
-      const allElements = this.$el.querySelectorAll('input')
-      const clickedElement = this.$el.querySelector(`input[value="${index}"]`)
+    activateOption (index, value) {
+      let result
       if (this.poll.multiple) {
-        // Checkboxes, toggle only the clicked one
-        clickedElement.checked = !clickedElement.checked
+        result = this.choices || this.options.map(() => false)
       } else {
-        // Radio button, uncheck everything and check the clicked one
-        forEach(allElements, element => { element.checked = false })
-        clickedElement.checked = true
+        result = this.options.map(() => false)
       }
-      this.choices = map(allElements, e => e.checked)
+      result[index] = value
+      this.choices = result
     },
     optionId (index) {
       return `poll${this.poll.id}-${index}`

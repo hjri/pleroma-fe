@@ -56,7 +56,7 @@
   .post-textarea {
     resize: vertical;
     height: 10em;
-    overflow: none;
+    overflow: visible;
     box-sizing: content-box;
   }
 }

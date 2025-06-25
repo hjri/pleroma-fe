@@ -11,6 +11,7 @@ import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import withSubscription from 'src/components/../hocs/with_subscription/with_subscription'
 import withLoadMore from 'src/components/../hocs/with_load_more/with_load_more'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
+import { useOAuthTokensStore } from 'src/stores/oauth_tokens'
 
 const BlockList = withLoadMore({
   fetch: (props, $store) => $store.dispatch('fetchBlocks'),
@@ -39,7 +40,7 @@ const MutesAndBlocks = {
     }
   },
   created () {
-    this.$store.dispatch('fetchTokens')
+    useOAuthTokensStore().fetchTokens()
     this.$store.dispatch('getKnownDomains')
   },
   components: {

@@ -1,5 +1,5 @@
 <template>
-  <div class="login panel panel-default">
+  <div class="login-panel panel panel-default">
     <!-- Default panel contents -->
 
     <div class="panel-heading">
@@ -19,6 +19,7 @@
           </label>
           <input
             id="code"
+            ref="codeInput"
             v-model="code"
             class="input form-control"
           >
@@ -74,4 +75,5 @@
     </div>
   </div>
 </template>
+
 <script src="./totp_form.js"></script>

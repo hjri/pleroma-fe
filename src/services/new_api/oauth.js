@@ -1,12 +1,20 @@
 import { reduce } from 'lodash'
+import { StatusCodeError } from 'src/services/errors/errors.js'
 
 const REDIRECT_URI = `${window.location.origin}/oauth-callback`
 
-export const getOrCreateApp = ({ clientId, clientSecret, instance, commit }) => {
-  if (clientId && clientSecret) {
-    return Promise.resolve({ clientId, clientSecret })
+export const getJsonOrError = async (response) => {
+  if (response.ok) {
+    return response.json()
+      .catch((error) => {
+        throw new StatusCodeError(response.status, error, {}, response)
+      })
+  } else {
+    throw new StatusCodeError(response.status, await response.text(), {}, response)
   }
+}
 
+export const createApp = (instance) => {
   const url = `${instance}/api/v1/apps`
   const form = new window.FormData()
 
@@ -19,9 +27,16 @@ export const getOrCreateApp = ({ clientId, clientSecret, instance, commit }) => 
     method: 'POST',
     body: form
   })
-    .then((data) => data.json())
+    .then(getJsonOrError)
     .then((app) => ({ clientId: app.client_id, clientSecret: app.client_secret }))
-    .then((app) => commit('setClientData', app) || app)
+}
+
+export const verifyAppToken = ({ instance, appToken }) => {
+  return window.fetch(`${instance}/api/v1/apps/verify_credentials`, {
+    method: 'GET',
+    headers: { Authorization: `Bearer ${appToken}` }
+  })
+    .then(getJsonOrError)
 }
 
 const login = ({ instance, clientId }) => {
@@ -92,7 +107,7 @@ export const getClientToken = ({ clientId, clientSecret, instance }) => {
   return window.fetch(url, {
     method: 'POST',
     body: form
-  }).then((data) => data.json())
+  }).then(getJsonOrError)
 }
 const verifyOTPCode = ({ app, instance, mfaToken, code }) => {
   const url = `${instance}/oauth/mfa/challenge`
@@ -144,7 +159,6 @@ const oauth = {
   login,
   getToken,
   getTokenWithCredentials,
-  getOrCreateApp,
   verifyOTPCode,
   verifyRecoveryCode,
   revokeToken

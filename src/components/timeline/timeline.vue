@@ -8,25 +8,7 @@
         v-if="!embedded"
         :timeline-name="timelineName"
       />
-      <div
-        v-if="showScrollTop"
-        class="rightside-button"
-      >
-        <button
-          class="button-unstyled scroll-to-top-button"
-          type="button"
-          :title="$t('general.scroll_to_top')"
-          @click="scrollToTop"
-        >
-          <FALayers class="fa-scale-110 fa-old-padding-layer">
-            <FAIcon icon="arrow-up" />
-            <FAIcon
-              icon="minus"
-              transform="up-7"
-            />
-          </FALayers>
-        </button>
-      </div>
+      <ScrollTopButton />
       <template v-if="mobileLayout">
         <div
           v-if="showLoadButton"

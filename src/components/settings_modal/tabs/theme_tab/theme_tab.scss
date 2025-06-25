@@ -1,4 +1,6 @@
 .theme-tab {
+  min-width: var(--themeEditorMinWidth, fit-content);
+
   .deprecation-warning {
     padding: 0.5em;
     margin: 2em;

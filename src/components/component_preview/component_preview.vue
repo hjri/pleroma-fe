@@ -190,21 +190,16 @@ export default {
 
   .header {
     grid-area: header;
-    justify-self: center;
-    align-self: baseline;
+    place-self: baseline center;
     line-height: 2;
   }
 
   .invalid-container {
     position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    inset: 0;
     display: grid;
-    align-items: center;
-    justify-items: center;
-    background-color: rgba(100 0 0 / 50%);
+    place-items: center center;
+    background-color: rgb(100 0 0 / 50%);
 
     .alert {
       padding: 0.5em 1em;
@@ -214,7 +209,7 @@ export default {
   .assists {
     grid-area: assists;
     display: grid;
-    grid-auto-flow: rows;
+    grid-auto-flow: row;
     grid-auto-rows: 2em;
     grid-gap: 0.5em;
   }
@@ -266,14 +261,14 @@ export default {
   .preview-window {
     --__grid-color1: rgb(102 102 102);
     --__grid-color2: rgb(153 153 153);
-    --__grid-color1-disabled: rgba(102 102 102 / 20%);
-    --__grid-color2-disabled: rgba(153 153 153 / 20%);
+    --__grid-color1-disabled: rgb(102 102 102 / 20%);
+    --__grid-color2-disabled: rgb(153 153 153 / 20%);
 
     &.-light-grid {
       --__grid-color1: rgb(205 205 205);
       --__grid-color2: rgb(255 255 255);
-      --__grid-color1-disabled: rgba(205 205 205 / 20%);
-      --__grid-color2-disabled: rgba(255 255 255 / 20%);
+      --__grid-color1-disabled: rgb(205 205 205 / 20%);
+      --__grid-color2-disabled: rgb(255 255 255 / 20%);
     }
 
     position: relative;

@@ -1,14 +1,19 @@
 import SideDrawer from '../side_drawer/side_drawer.vue'
 import Notifications from '../notifications/notifications.vue'
 import ConfirmModal from '../confirm_modal/confirm_modal.vue'
+import GestureService from '../../services/gesture_service/gesture_service'
+import NavigationPins from 'src/components/navigation/navigation_pins.vue'
+
 import {
   unseenNotificationsFromStore,
   countExtraNotifications
 } from '../../services/notification_utils/notification_utils'
-import GestureService from '../../services/gesture_service/gesture_service'
-import NavigationPins from 'src/components/navigation/navigation_pins.vue'
+
 import { mapGetters } from 'vuex'
 import { mapState } from 'pinia'
+import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faTimes,
@@ -18,7 +23,6 @@ import {
   faMinus,
   faCheckDouble
 } from '@fortawesome/free-solid-svg-icons'
-import { useAnnouncementsStore } from 'src/stores/announcements'
 
 library.add(
   faTimes,
@@ -71,10 +75,9 @@ const MobileNav = {
       return this.$route.name === 'chat'
     },
     ...mapState(useAnnouncementsStore, ['unreadAnnouncementCount']),
-    ...mapGetters(['unreadChatCount']),
-    chatsPinned () {
-      return new Set(this.$store.state.serverSideStorage.prefsStorage.collections.pinnedNavItems).has('chats')
-    },
+    ...mapState(useServerSideStorageStore, {
+      pinnedItems: store => new Set(store.prefsStorage.collections.pinnedNavItems).has('chats')
+    }),
     shouldConfirmLogout () {
       return this.$store.getters.mergedConfig.modalOnLogout
     },

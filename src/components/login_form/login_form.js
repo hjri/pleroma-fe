@@ -1,5 +1,7 @@
 import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
+import { mapStores } from 'pinia'
 import oauthApi from '../../services/new_api/oauth.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faTimes
@@ -17,11 +19,11 @@ const LoginForm = {
   computed: {
     isPasswordAuth () { return this.requiredPassword },
     isTokenAuth () { return this.requiredToken },
+    ...mapStores(useOAuthStore),
     ...mapState({
       registrationOpen: state => state.instance.registrationOpen,
       instance: state => state.instance,
       loggingIn: state => state.users.loggingIn,
-      oauth: state => state.oauth
     }),
     ...mapGetters(
       'authFlow', ['requiredPassword', 'requiredToken', 'requiredMFA']
@@ -34,32 +36,37 @@ const LoginForm = {
       this.isTokenAuth ? this.submitToken() : this.submitPassword()
     },
     submitToken () {
-      const { clientId, clientSecret } = this.oauth
       const data = {
-        clientId,
-        clientSecret,
         instance: this.instance.server,
         commit: this.$store.commit
       }
 
-      oauthApi.getOrCreateApp(data)
-        .then((app) => { oauthApi.login({ ...app, ...data }) })
+      // NOTE: we do not really need the app token, but obtaining a token and
+      // calling verify_credentials is the only way to ensure the app still works.
+      this.oauthStore.ensureAppToken()
+        .then(() => {
+          const app = {
+            clientId: this.oauthStore.clientId,
+            clientSecret: this.oauthStore.clientSecret,
+          }
+          oauthApi.login({ ...app, ...data })
+        })
     },
     submitPassword () {
-      const { clientId } = this.oauth
-      const data = {
-        clientId,
-        oauth: this.oauth,
-        instance: this.instance.server,
-        commit: this.$store.commit
-      }
       this.error = false
 
-      oauthApi.getOrCreateApp(data).then((app) => {
+      // NOTE: we do not really need the app token, but obtaining a token and
+      // calling verify_credentials is the only way to ensure the app still works.
+      this.oauthStore.ensureAppToken().then(() => {
+        const app = {
+          clientId: this.oauthStore.clientId,
+          clientSecret: this.oauthStore.clientSecret,
+        }
+
         oauthApi.getTokenWithCredentials(
           {
             ...app,
-            instance: data.instance,
+            instance: this.instance.server,
             username: this.user.username,
             password: this.user.password
           }

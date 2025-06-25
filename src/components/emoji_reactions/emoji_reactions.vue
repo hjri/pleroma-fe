@@ -52,6 +52,7 @@
       <UserListPopover
         :users="accountsForEmoji[reaction.name]"
         class="emoji-reaction-popover"
+        :normal-button="true"
         :trigger-attrs="counterTriggerAttrs(reaction)"
         @show="fetchEmojiReactionsByIfMissing()"
       >

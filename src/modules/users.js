@@ -1,9 +1,16 @@
+import { compact, map, each, mergeWith, last, concat, uniq, isArray } from 'lodash'
+
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import { windowWidth, windowHeight } from '../services/window_utils/window_utils'
+import apiService from '../services/api/api.service.js'
 import oauthApi from '../services/new_api/oauth.js'
-import { compact, map, each, mergeWith, last, concat, uniq, isArray } from 'lodash'
 import { registerPushNotifications, unregisterPushNotifications } from '../services/sw/sw.js'
+
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+
+import { declarations } from 'src/modules/config_declaration'
 
 // TODO: Unify with mergeOrAdd in statuses.js
 export const mergeOrAdd = (arr, obj, item) => {
@@ -525,18 +532,18 @@ const users = {
         })
     },
     async signUp (store, userInfo) {
+      const oauthStore = useOAuthStore()
       store.commit('signUpPending')
 
-      const rootState = store.rootState
-
       try {
-        const data = await rootState.api.backendInteractor.register(
-          { params: { ...userInfo } }
+        const token = await oauthStore.ensureAppToken()
+        const data = await apiService.register(
+          { credentials: token, params: { ...userInfo } }
         )
 
         if (data.access_token) {
           store.commit('signUpSuccess')
-          store.commit('setToken', data.access_token)
+          oauthStore.setToken(data.access_token)
           store.dispatch('loginUser', data.access_token)
           return 'ok'
         } else { // Request succeeded, but user cannot login yet.
@@ -554,19 +561,16 @@ const users = {
     },
 
     logout (store) {
-      const { oauth, instance } = store.rootState
+      const oauth = useOAuthStore()
+      const { instance } = store.rootState
 
-      const data = {
-        ...oauth,
-        commit: store.commit,
-        instance: instance.server
-      }
-
-      return oauthApi.getOrCreateApp(data)
+      // NOTE: No need to verify the app still exists, because if it doesn't,
+      // the token will be invalid too
+      return oauth.ensureApp()
         .then((app) => {
           const params = {
             app,
-            instance: data.instance,
+            instance: instance.server,
             token: oauth.userToken
           }
 
@@ -575,9 +579,9 @@ const users = {
         .then(() => {
           store.commit('clearCurrentUser')
           store.dispatch('disconnectFromSocket')
-          store.commit('clearToken')
+          oauth.clearToken()
           store.dispatch('stopFetchingTimeline', 'friends')
-          store.commit('setBackendInteractor', backendInteractorService(store.getters.getToken()))
+          store.commit('setBackendInteractor', backendInteractorService(oauth.getToken))
           store.dispatch('stopFetchingNotifications')
           store.dispatch('stopFetchingLists')
           store.dispatch('stopFetchingBookmarkFolders')
@@ -595,6 +599,7 @@ const users = {
       return new Promise((resolve, reject) => {
         const commit = store.commit
         const dispatch = store.dispatch
+        const rootState = store.rootState
         commit('beginLogin')
         store.rootState.api.backendInteractor.verifyCredentials(accessToken)
           .then((data) => {
@@ -606,7 +611,8 @@ const users = {
               user.muteIds = []
               user.domainMutes = []
               commit('setCurrentUser', user)
-              commit('setServerSideStorage', user)
+
+              useServerSideStorageStore().setServerSideStorage(user)
               commit('addNewUsers', [user])
 
               dispatch('fetchEmoji')
@@ -616,7 +622,35 @@ const users = {
 
               // Set our new backend interactor
               commit('setBackendInteractor', backendInteractorService(accessToken))
-              dispatch('pushServerSideStorage')
+
+              // Do server-side storage migrations
+
+              // Debug snippet to clean up storage and reset migrations
+              /*
+              // Reset wordfilter
+              Object.keys(
+                useServerSideStorageStore().prefsStorage.simple.muteFilters
+              ).forEach(key => {
+                useServerSideStorageStore().unsetPreference({ path: 'simple.muteFilters.' + key, value: null })
+              })
+
+              // Reset flag to 0 to re-run migrations
+              useServerSideStorageStore().setFlag({ flag: 'configMigration', value: 0 })
+              /**/
+
+              const { configMigration } = useServerSideStorageStore().flagStorage
+              declarations
+                .filter(x => {
+                  return x.store === 'server-side' &&
+                    x.migrationNum > 0 &&
+                    x.migrationNum > configMigration
+                })
+                .toSorted((a, b) => a.configMigration - b.configMigration)
+                .forEach(value => {
+                  value.migration(useServerSideStorageStore(), store.rootState)
+                  useServerSideStorageStore().setFlag({ flag: 'configMigration', value: value.migrationNum })
+                  useServerSideStorageStore().pushServerSideStorage()
+                })
 
               if (user.token) {
                 dispatch('setWsToken', user.token)
@@ -632,8 +666,10 @@ const users = {
                 // Start fetching notifications
                 dispatch('startFetchingNotifications')
 
-                // Start fetching chats
-                dispatch('startFetchingChats')
+                if (rootState.instance.pleromaChatMessagesAvailable) {
+                  // Start fetching chats
+                  dispatch('startFetchingChats')
+                }
               }
 
               dispatch('startFetchingLists')
@@ -672,7 +708,7 @@ const users = {
 
               // remove authentication token on client/authentication errors
               if ([400, 401, 403, 422].includes(response.status)) {
-                commit('clearToken')
+                useOAuthStore().clearToken()
               }
 
               if (response.status === 401) {

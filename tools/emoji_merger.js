@@ -9,7 +9,7 @@
 */
 
 // Existing emojis we have
-const oldEmojiFilename = '../static/emoji.json'
+const oldEmojiFilename = '../src/assets/emoji.json'
 
 // The file downloaded from https://gist.github.com/oliveratgithub/0bf11a9aff0d6da7b46f1490f86a71eb
 const newEmojiFilename = 'emojis.json'

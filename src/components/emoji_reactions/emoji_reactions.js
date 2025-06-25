@@ -84,8 +84,6 @@ const EmojiReactions = {
     counterTriggerAttrs (reaction) {
       return {
         class: [
-          'btn',
-          'button-default',
           'emoji-reaction-count-button',
           {
             '-picked-reaction': this.reactedWith(reaction.name),

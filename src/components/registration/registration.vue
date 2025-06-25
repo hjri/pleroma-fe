@@ -418,7 +418,7 @@
   margin: 0.6em;
 }
 
-@media all and (max-width: 800px) {
+@media all and (width <= 800px) {
   .registration-form .container {
     flex-direction: column-reverse;
 

@@ -15,7 +15,9 @@ export default {
     },
     {
       component: 'Button',
-      parent: { component: 'Attachment' },
+      parent: {
+        component: 'Attachment'
+      },
       directives: {
         background: '#FFFFFF',
         opacity: 0.5

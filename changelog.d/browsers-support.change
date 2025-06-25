@@ -1,9 +1,0 @@
-Updated our build system to support browsers:
-  Safari >= 15
-  Firefox >= 115
-  Android > 4
-  no Opera Mini support
-  no IE support
-  no "dead" (unmaintained) browsers support
-
-This does not guarantee that browsers will or will not work.

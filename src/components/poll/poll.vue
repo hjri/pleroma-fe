@@ -37,36 +37,56 @@
           :role="poll.multiple ? 'checkbox' : 'radio'"
           :aria-labelledby="`option-vote-${randomSeed}-${index}`"
           :aria-checked="choices[index]"
-          class="input unstyled"
-          @click="activateOption(index)"
         >
-          <!-- TODO: USE CHECKBOX -->
-          <input
-            v-if="poll.multiple"
-            type="checkbox"
-            class="input -checkbox poll-checkbox"
+          <Checkbox
+            :radio="!poll.multiple"
             :disabled="loading"
-            :value="index"
+            :model-value="choices[index]"
+            @update:model-value="value => activateOption(index, value)"
           >
-          <input
-            v-else
-            type="radio"
-            :disabled="loading"
-            :value="index"
-            class="input -radio"
-          >
-          <label class="option-vote">
             <RichContent
               :id="`option-vote-${randomSeed}-${index}`"
               :html="option.title_html"
               :handle-links="false"
               :emoji="emoji"
             />
-          </label>
+          </Checkbox>
         </div>
       </div>
     </div>
     <div class="footer faint">
+      <p>
+        <span
+          v-if="poll.pleroma?.non_anonymous"
+          :title="$t('polls.non_anonymous_title')"
+        >
+          {{ $t('polls.non_anonymous') }}
+          &nbsp;·&nbsp;
+        </span>
+        <span class="total">
+          <template v-if="typeof poll.voters_count === 'number'">
+            {{ $t("polls.people_voted_count", { count: poll.voters_count }, poll.voters_count) }}
+          </template>
+          <template v-else>
+            {{ $t("polls.votes_count", { count: poll.votes_count }, poll.votes_count) }}
+          </template>
+          <span v-if="expiresAt !== null">
+            &nbsp;·&nbsp;
+          </span>
+        </span>
+        <span v-if="expiresAt !== null">
+          <i18n-t
+            scope="global"
+            :keypath="expirationLabel"
+          >
+            <Timeago
+              :time="expiresAt"
+              :auto-update="60"
+              :now-threshold="0"
+            />
+          </i18n-t>
+        </span>
+      </p>
       <button
         v-if="!showResults"
         class="btn button-default poll-vote-button"
@@ -76,113 +96,10 @@
       >
         {{ $t('polls.vote') }}
       </button>
-      <span
-        v-if="poll.pleroma?.non_anonymous"
-        :title="$t('polls.non_anonymous_title')"
-      >
-        {{ $t('polls.non_anonymous') }}
-        &nbsp;·&nbsp;
-      </span>
-      <div class="total">
-        <template v-if="typeof poll.voters_count === 'number'">
-          {{ $t("polls.people_voted_count", { count: poll.voters_count }, poll.voters_count) }}
-        </template>
-        <template v-else>
-          {{ $t("polls.votes_count", { count: poll.votes_count }, poll.votes_count) }}
-        </template>
-        <span v-if="expiresAt !== null">
-          &nbsp;·&nbsp;
-        </span>
-      </div>
-      <span v-if="expiresAt !== null">
-        <i18n-t
-          scope="global"
-          :keypath="expired ? 'polls.expired' : 'polls.expires_in'"
-        >
-          <Timeago
-            :time="expiresAt"
-            :auto-update="60"
-            :now-threshold="0"
-          />
-        </i18n-t>
-      </span>
     </div>
   </div>
 </template>
 
 <script src="./poll.js"></script>
 
-<style lang="scss">
-.poll {
-  .votes {
-    display: flex;
-    flex-direction: column;
-    margin: 0 0 0.5em;
-  }
-
-  .poll-option {
-    margin: 0.75em 0.5em;
-
-    .input {
-      line-height: inherit;
-    }
-  }
-
-  .option-result {
-    height: 100%;
-    display: flex;
-    flex-direction: row;
-    position: relative;
-    color: var(--textLight);
-  }
-
-  .option-result-label {
-    display: flex;
-    align-items: center;
-    padding: 0.1em 0.25em;
-    z-index: 1;
-    word-break: break-word;
-  }
-
-  .result-percentage {
-    width: 3.5em;
-    flex-shrink: 0;
-  }
-
-  .result-fill {
-    height: 100%;
-    position: absolute;
-    border-radius: var(--roundness);
-    top: 0;
-    left: 0;
-    transition: width 0.5s;
-  }
-
-  .option-vote {
-    display: flex;
-    align-items: center;
-  }
-
-  input {
-    width: 3.5em;
-  }
-
-  .footer {
-    display: flex;
-    align-items: center;
-  }
-
-  &.loading * {
-    cursor: progress;
-  }
-
-  .poll-vote-button {
-    padding: 0 0.5em;
-    margin-right: 0.5em;
-  }
-
-  .poll-checkbox {
-    display: none;
-  }
-}
-</style>
+<style src="./poll.scss" lang="scss" />

@@ -9,9 +9,9 @@ export default {
     // However, cascading still works, so resulting state will be result of merging of all relevant states/variants
     // normal: '' // normal state is implicitly added, it is always included
     toggled: '.toggled',
-    focused: ':focus-visible',
+    focused: ':focus-within',
     pressed: ':focus:active',
-    hover: ':hover:not(:disabled)',
+    hover: ':is(:hover, :focus-visible):not(:disabled)',
     disabled: ':disabled'
   },
   // Variants are mutually exclusive, each component implicitly has "normal" variant, and all other variants inherit from it.
@@ -90,6 +90,13 @@ export default {
       }
     },
     {
+      state: ['toggled', 'focused'],
+      directives: {
+        background: '--accent,-24.2',
+        shadow: ['--buttonDefaultHoverGlow', '--buttonPressedBevel']
+      }
+    },
+    {
       state: ['toggled', 'disabled'],
       directives: {
         background: '$blend(--accent 0.25 --parent)',
@@ -99,7 +106,7 @@ export default {
     {
       state: ['disabled'],
       directives: {
-        background: '$blend(--accent 0.25 --parent)',
+        background: '$blend(--inheritedBackground 0.25 --parent)',
         shadow: ['--buttonDefaultBevel']
       }
     },

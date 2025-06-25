@@ -9,7 +9,7 @@
       class="popover-trigger-button"
       :class="normalButton ? 'button-default btn' : 'button-unstyled'"
       type="button"
-      v-bind="triggerAttrs"
+      v-bind="allTriggerAttrs"
       @click="onClick"
     >
       <slot name="trigger" />

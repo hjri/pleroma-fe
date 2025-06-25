@@ -1,5 +1,5 @@
 <template>
-  <div class="login panel panel-default">
+  <div class="login-panel panel panel-default">
     <!-- Default panel contents -->
 
     <div class="panel-heading">
@@ -70,14 +70,13 @@
           </div>
         </div>
       </form>
-    </div>
-
-    <div
-      v-if="error"
-      class="form-group"
-    >
-      <div class="alert error">
-        {{ error }}
+      <div
+        v-if="error"
+        class="login-error alert error"
+      >
+        <span class="error-message">
+          {{ error }}
+        </span>
         <button
           class="button-unstyled"
           @click="clearError"
@@ -94,57 +93,4 @@
 
 <script src="./login_form.js"></script>
 
-<style lang="scss">
-.login-form {
-  display: flex;
-  flex-direction: column;
-  padding: 0.6em;
-
-  .btn {
-    min-height: 2em;
-    width: 10em;
-  }
-
-  .register {
-    flex: 1 1;
-  }
-
-  .login-bottom {
-    margin-top: 1em;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    padding: 0.3em 0.5em 0.6em;
-    line-height: 24px;
-  }
-
-  .form-bottom {
-    display: flex;
-    padding: 0.5em;
-    height: 32px;
-
-    button {
-      width: 10em;
-    }
-
-    p {
-      margin: 0.35em;
-      padding: 0.35em;
-      display: flex;
-    }
-  }
-
-  .error {
-    text-align: center;
-    animation-name: shakeError;
-    animation-duration: 0.4s;
-    animation-timing-function: ease-in-out;
-  }
-}
-</style>
+<style src="./login_form.scss" />

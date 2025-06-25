@@ -1,10 +1,12 @@
 import oauth from '../../services/new_api/oauth.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 const oac = {
   props: ['code'],
   mounted () {
     if (this.code) {
-      const { clientId, clientSecret } = this.$store.state.oauth
+      const oauthStore = useOAuthStore()
+      const { clientId, clientSecret } = oauthStore
 
       oauth.getToken({
         clientId,
@@ -12,7 +14,7 @@ const oac = {
         instance: this.$store.state.instance.server,
         code: this.code
       }).then((result) => {
-        this.$store.commit('setToken', result.access_token)
+        oauthStore.setToken(result.access_token)
         this.$store.dispatch('loginUser', result.access_token)
         this.$router.push({ name: 'friends' })
       })

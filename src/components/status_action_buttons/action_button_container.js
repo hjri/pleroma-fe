@@ -22,6 +22,7 @@ export default {
     MuteConfirm
   },
   props: ['button', 'status'],
+  emits: ['interacted'],
   mounted () {
     if (this.button.name === 'mute') {
       this.$store.dispatch('fetchDomainMutes')

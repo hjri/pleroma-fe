@@ -1,1 +1,0 @@
-Use /api/v1/accounts/:id/follow for account subscriptions instead of the deprecated routes

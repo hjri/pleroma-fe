@@ -1,5 +1,4 @@
-import Cropper from 'cropperjs'
-import 'cropperjs/dist/cropper.css'
+import 'cropperjs' // This adds all of the cropperjs's components into DOM
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faCircleNotch
@@ -19,19 +18,6 @@ const ImageCropper = {
       type: Function,
       required: true
     },
-    cropperOptions: {
-      type: Object,
-      default () {
-        return {
-          aspectRatio: 1,
-          autoCropArea: 1,
-          viewMode: 1,
-          movable: false,
-          zoomable: false,
-          guides: false
-        }
-      }
-    },
     mimes: {
       type: String,
       default: 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon'
@@ -48,7 +34,6 @@ const ImageCropper = {
   },
   data () {
     return {
-      cropper: undefined,
       dataUrl: undefined,
       filename: undefined,
       submitting: false
@@ -67,26 +52,29 @@ const ImageCropper = {
   },
   methods: {
     destroy () {
-      if (this.cropper) {
-        this.cropper.destroy()
-      }
       this.$refs.input.value = ''
       this.dataUrl = undefined
       this.$emit('close')
     },
     submit (cropping = true) {
       this.submitting = true
-      this.submitHandler(cropping && this.cropper, this.file)
-        .then(() => this.destroy())
-        .finally(() => {
-          this.submitting = false
-        })
+
+      let cropperPromise
+      if (cropping) {
+        cropperPromise = this.$refs.cropperSelection.$toCanvas()
+      } else {
+        cropperPromise = Promise.resolve()
+      }
+      cropperPromise.then(canvas => {
+        this.submitHandler(canvas, this.file)
+            .then(() => this.destroy())
+            .finally(() => {
+              this.submitting = false
+            })
+      })
     },
     pickImage () {
       this.$refs.input.click()
-    },
-    createCropper () {
-      this.cropper = new Cropper(this.$refs.img, this.cropperOptions)
     },
     getTriggerDOM () {
       return typeof this.trigger === 'object' ? this.trigger : document.querySelector(this.trigger)
@@ -102,6 +90,29 @@ const ImageCropper = {
         }
         reader.readAsDataURL(this.file)
         this.$emit('changed', this.file, reader)
+      }
+    },
+    inSelection(selection, maxSelection) {
+      return (
+        selection.x >= maxSelection.x
+        && selection.y >= maxSelection.y
+        && (selection.x + selection.width) <= (maxSelection.x + maxSelection.width)
+        && (selection.y + selection.height) <= (maxSelection.y + maxSelection.height)
+      )
+    },
+    onCropperSelectionChange(event) {
+      const cropperCanvas = this.$refs.cropperCanvas
+      const cropperCanvasRect = cropperCanvas.getBoundingClientRect()
+      const selection = event.detail
+      const maxSelection = {
+        x: 0,
+        y: 0,
+        width: cropperCanvasRect.width,
+        height: cropperCanvasRect.height,
+      }
+
+      if (!this.inSelection(selection, maxSelection)) {
+        event.preventDefault();
       }
     }
   },

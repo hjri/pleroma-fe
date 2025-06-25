@@ -21,6 +21,8 @@ import { defineAsyncComponent } from 'vue'
 import { useShoutStore } from './stores/shout'
 import { useInterfaceStore } from './stores/interface'
 
+import { throttle } from 'lodash'
+
 export default {
   name: 'app',
   components: {
@@ -51,6 +53,9 @@ export default {
     themeApplied () {
       this.removeSplash()
     },
+    currentTheme () {
+      this.setThemeBodyClass()
+    },
     layoutType () {
       document.getElementById('modal').classList = ['-' + this.layoutType]
     }
@@ -59,21 +64,40 @@ export default {
     // Load the locale from the storage
     const val = this.$store.getters.mergedConfig.interfaceLanguage
     this.$store.dispatch('setOption', { name: 'interfaceLanguage', value: val })
-    window.addEventListener('resize', this.updateMobileState)
     document.getElementById('modal').classList = ['-' + this.layoutType]
+
+    // Create bound handlers
+    this.updateScrollState = throttle(this.scrollHandler, 200)
+    this.updateMobileState = throttle(this.resizeHandler, 200)
   },
   mounted () {
+    window.addEventListener('resize', this.updateMobileState)
+    this.scrollParent.addEventListener('scroll', this.updateScrollState)
+
     if (useInterfaceStore().themeApplied) {
+      this.setThemeBodyClass()
       this.removeSplash()
     }
     getOrCreateServiceWorker()
   },
   unmounted () {
     window.removeEventListener('resize', this.updateMobileState)
+    this.scrollParent.removeEventListener('scroll', this.updateScrollState)
   },
   computed: {
     themeApplied () {
       return useInterfaceStore().themeApplied
+    },
+    currentTheme () {
+      if (useInterfaceStore().styleDataUsed) {
+        const styleMeta = useInterfaceStore().styleDataUsed.find(x => x.component === '@meta')
+
+        if (styleMeta !== undefined) {
+          return styleMeta.directives.name.replaceAll(" ", "-").toLowerCase()
+        }
+      }
+
+      return 'stock'
     },
     layoutModalClass () {
       return '-' + this.layoutType
@@ -148,12 +172,41 @@ export default {
     },
     noSticky () { return this.$store.getters.mergedConfig.disableStickyHeaders },
     showScrollbars () { return this.$store.getters.mergedConfig.showScrollbars },
+    scrollParent () { return window; /* this.$refs.appContentRef */ },
     ...mapGetters(['mergedConfig'])
   },
   methods: {
-    updateMobileState () {
+    resizeHandler () {
       useInterfaceStore().setLayoutWidth(windowWidth())
       useInterfaceStore().setLayoutHeight(windowHeight())
+    },
+    scrollHandler () {
+      const scrollPosition = this.scrollParent === window ? window.scrollY : this.scrollParent.scrollTop
+
+      if (scrollPosition != 0) {
+        this.$refs.appContentRef.classList.add(['-scrolled'])
+      } else {
+        this.$refs.appContentRef.classList.remove(['-scrolled'])
+      }
+    },
+    setThemeBodyClass () {
+      const themeName = this.currentTheme
+      const classList = Array.from(document.body.classList)
+      const oldTheme = classList.filter(c => c.startsWith('theme-'))
+
+      if (themeName !== null && themeName !== '') {
+        const newTheme = `theme-${themeName.toLowerCase()}`
+
+        // remove old theme reference if there are any
+        if (oldTheme.length) {
+          document.body.classList.replace(oldTheme[0], newTheme)
+        } else {
+          document.body.classList.add(newTheme)
+        }
+      } else {
+        // remove theme reference if non-V3 theme is used
+        document.body.classList.remove(...oldTheme)
+      }
     },
     removeSplash () {
       document.querySelector('#status').textContent = this.$t('splash.fun_' + Math.ceil(Math.random() * 4))

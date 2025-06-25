@@ -1,3 +1,5 @@
+import { useOAuthStore } from 'src/stores/oauth.js'
+
 const PASSWORD_STRATEGY = 'password'
 const TOKEN_STRATEGY = 'token'
 
@@ -68,8 +70,8 @@ const mutations = {
 // actions
 const actions = {
 
-  async login ({ state, dispatch, commit }, { access_token: accessToken }) {
-    commit('setToken', accessToken, { root: true })
+  async login ({ state, dispatch }, { access_token: accessToken }) {
+    useOAuthStore().setToken(accessToken)
     await dispatch('loginUser', accessToken, { root: true })
     resetState(state)
   }

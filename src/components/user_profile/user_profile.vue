@@ -146,8 +146,13 @@
           {{ $t('settings.profile_tab') }}
         </h1>
       </div>
-      <div>
-        <span v-if="error">{{ error }}</span>
+      <div class="panel-body">
+        <div
+          v-if="error"
+          class="alert error"
+        >
+          <span class="error-message">{{ error }}</span>
+        </div>
         <FAIcon
           v-else
           spin
@@ -223,7 +228,7 @@
   .userlist-placeholder {
     display: flex;
     justify-content: center;
-    align-items: middle;
+    align-items: center;
     padding: 2em;
   }
 }
@@ -232,8 +237,18 @@
   .panel-body {
     display: flex;
     justify-content: center;
-    align-items: middle;
+    align-items: center;
     padding: 7em;
+  }
+
+  .alert {
+    padding: 0.75em 5em;
+    border-width: 2px;
+
+    .error-message {
+      color: var(--text);
+      font-weight: bold;
+    }
   }
 }
 

@@ -21,15 +21,18 @@
 
   .background-image {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     mask:
       linear-gradient(to top, white, transparent) bottom no-repeat,
       linear-gradient(to top, white, white);
     // Autoprefixer seem to ignore this one, and also syntax is different
+    /* stylelint-disable mask-composite */
+    /* stylelint-disable declaration-property-value-no-unknown */
+
+    /* TODO check if this is still needed */
     mask-composite: xor;
+    /* stylelint-enable declaration-property-value-no-unknown */
+    /* stylelint-enable mask-composite */
     mask-composite: exclude;
     background-size: cover;
     mask-size: 100% 60%;
@@ -125,10 +128,7 @@
 
     &.-overlay {
       position: absolute;
-      left: 0;
-      top: 0;
-      right: 0;
-      bottom: 0;
+      inset: 0;
       background-color: rgb(0 0 0 / 30%);
       display: flex;
       justify-content: center;
@@ -161,7 +161,7 @@
   }
 
   .bottom-line {
-    font-weight: light;
+    font-weight: lighter;
     font-size: 1.1em;
     align-items: baseline;
 

@@ -15,11 +15,7 @@
   &::after {
     content: "";
     position: absolute;
-    top: -1px;
-    bottom: -1px;
-    left: -1px;
-    right: -1px;
-    z-index: -1px;
+    inset: -1px;
     box-shadow: var(--_shadow);
     pointer-events: none;
   }

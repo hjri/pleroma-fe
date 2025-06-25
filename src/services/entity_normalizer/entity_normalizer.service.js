@@ -91,6 +91,8 @@ export const parseUser = (data) => {
 
     output.bot = data.bot
 
+    output.privileges = []
+
     if (data.pleroma) {
       if (data.pleroma.settings_store) {
         output.storage = data.pleroma.settings_store['pleroma-fe']
@@ -317,26 +319,30 @@ export const parseStatus = (data) => {
 
     output.edited_at = data.edited_at
 
+    const { pleroma } = data
+
     if (data.pleroma) {
-      const { pleroma } = data
       output.text = pleroma.content ? data.pleroma.content['text/plain'] : data.content
       output.summary = pleroma.spoiler_text ? data.pleroma.spoiler_text['text/plain'] : data.spoiler_text
       output.statusnet_conversation_id = data.pleroma.conversation_id
       output.is_local = pleroma.local
-      output.in_reply_to_screen_name = data.pleroma.in_reply_to_account_acct
+      output.in_reply_to_screen_name = pleroma.in_reply_to_account_acct
       output.thread_muted = pleroma.thread_muted
       output.emoji_reactions = pleroma.emoji_reactions
       output.parent_visible = pleroma.parent_visible === undefined ? true : pleroma.parent_visible
-      output.quote = pleroma.quote ? parseStatus(pleroma.quote) : undefined
-      output.quote_id = pleroma.quote_id ? pleroma.quote_id : (output.quote ? output.quote.id : undefined)
-      output.quote_url = pleroma.quote_url
-      output.quote_visible = pleroma.quote_visible
+      output.quote_visible = pleroma.quote_visible || true
       output.quotes_count = pleroma.quotes_count
       output.bookmark_folder_id = pleroma.bookmark_folder
     } else {
       output.text = data.content
       output.summary = data.spoiler_text
     }
+
+    const quoteRaw = pleroma?.quote || data.quote
+    const quoteData =  quoteRaw ? parseStatus(quoteRaw) : undefined
+    output.quote = quoteData
+    output.quote_id = data.quote?.id ?? data.quote_id ?? quoteData?.id ?? pleroma.quote_id
+    output.quote_url = data.quote?.url ?? quoteData?.url ?? pleroma.quote_url
 
     output.in_reply_to_status_id = data.in_reply_to_id
     output.in_reply_to_user_id = data.in_reply_to_account_id

@@ -1,5 +1,5 @@
 <template>
-  <div class="login panel panel-default">
+  <div class="login-panel panel panel-default">
     <!-- Default panel contents -->
 
     <div class="panel-heading">
@@ -17,6 +17,7 @@
           <label for="code">{{ $t('login.recovery_code') }}</label>
           <input
             id="code"
+            ref="codeInput"
             v-model="code"
             class="input form-control"
           >
@@ -71,4 +72,5 @@
     </div>
   </div>
 </template>
+
 <script src="./recovery_form.js"></script>

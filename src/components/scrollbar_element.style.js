@@ -34,7 +34,7 @@ export default {
   notEditable: true, // for now
   states: {
     pressed: ':active',
-    hover: ':hover:not(:disabled)',
+    hover: ':is(:hover, :focus-visible, :has(:focus-visible)):not(:disabled)',
     disabled: ':disabled'
   },
   validInnerComponents: [

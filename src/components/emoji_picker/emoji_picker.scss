@@ -64,8 +64,7 @@
     flex-grow: 1;
     display: flex;
     flex-flow: row nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow: auto hidden;
   }
 
   .additional-tabs {
@@ -153,7 +152,13 @@
       transition: mask-size 150ms;
       mask-size: 100% 20px, 100% 20px, auto;
       // Autoprefixed seem to ignore this one, and also syntax is different
+      /* stylelint-disable mask-composite */
+      /* stylelint-disable declaration-property-value-no-unknown */
+
+      /* TODO check if this is still needed */
       mask-composite: xor;
+      /* stylelint-enable declaration-property-value-no-unknown */
+      /* stylelint-enable mask-composite */
       mask-composite: exclude;
 
       &.scrolled {
@@ -197,8 +202,7 @@
     &-group {
       display: grid;
       grid-template-columns: repeat(var(--__amount), 1fr);
-      align-items: center;
-      justify-items: center;
+      place-items: center center;
       justify-content: center;
       grid-template-rows: repeat(1, auto);
 

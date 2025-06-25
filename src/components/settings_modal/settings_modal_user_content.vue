@@ -22,7 +22,7 @@
       <AppearanceTab />
     </div>
     <div
-      v-if="expertLevel > 0 && !isMobileLayout"
+      v-if="expertLevel > 0"
       :label="$t('settings.style.themes3.editor.title')"
       icon="palette"
       data-tab-name="style"
@@ -31,7 +31,7 @@
       <StyleTab />
     </div>
     <div
-      v-if="expertLevel > 0 && !isMobileLayout"
+      v-if="expertLevel > 0"
       :label="$t('settings.theme_old')"
       icon="paint-brush"
       data-tab-name="theme"

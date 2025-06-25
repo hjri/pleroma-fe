@@ -44,6 +44,17 @@ export const useInterfaceStore = defineStore('interface', {
     lastTimeline: null
   }),
   actions: {
+    setTemporaryChanges ({ timeoutId, confirm, revert }) {
+      this.temporaryChangesTimeoutId = timeoutId
+      this.temporaryChangesConfirm = confirm
+      this.temporaryChangesRevert = revert
+    },
+    clearTemporaryChanges () {
+      clearTimeout(this.temporaryChangesTimeoutId)
+      this.temporaryChangesTimeoutId = null
+      this.temporaryChangesConfirm = () => {}
+      this.temporaryChangesRevert = () => {}
+    },
     setPageTitle (option = '') {
       try {
         document.title = `${option} ${window.vuex.state.instance.name}`
@@ -510,16 +521,18 @@ export const useInterfaceStore = defineStore('interface', {
         theme3hacks
       } = window.vuex.state.config
       this.themeChangeInProgress = true
-      // If we're not not forced to recompile try using
+      // If we're not forced to recompile try using
       // cache (tryLoadCache return true if load successful)
 
       const forceRecompile = forceThemeRecompilation || recompile
+
+      await this.getThemeData()
+
       if (!forceRecompile && !themeDebug && await tryLoadCache()) {
         this.themeChangeInProgress = false
         return this.setThemeApplied()
       }
       window.splashUpdate('splash.theme')
-      await this.getThemeData()
 
       try {
         const paletteIss = (() => {

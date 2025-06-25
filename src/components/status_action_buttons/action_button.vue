@@ -12,7 +12,7 @@
       :title="$t(button.label(funcArg))"
       target="_blank"
       :tabindex="0"
-      :disabled="buttonClass.disabled"
+      :disabled="button.interactive ? !button.interactive(funcArg) : false"
       :href="getComponent(button) == 'a' ? button.link?.(funcArg) || remoteInteractionLink : undefined"
       @click="doActionWrap(button, outerClose)"
     >
@@ -24,7 +24,7 @@
           :style="{ '--fa-animation-duration': '750ms' }"
           fixed-width
         />
-        <template v-if="!buttonClass.disabled && button.toggleable?.(funcArg) && button.active">
+        <template v-if="!buttonClass.disabled && (!button.interactive || button?.interactive(funcArg)) && button.toggleable?.(funcArg) && button.active">
           <FAIcon
             v-if="button.active(funcArg)"
             class="active-marker"

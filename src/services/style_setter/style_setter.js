@@ -124,16 +124,33 @@ export const applyTheme = (
   const lazyStyles = createStyleSheet(LAZY_STYLE_ID)
 
   const insertRule = (styles, rule) => {
-    if (rule.indexOf('webkit') >= 0) {
+    try {
+      // Try to use modern syntax first
       try {
         styles.sheet.insertRule(rule, 'index-max')
         styles.rules.push(rule)
-      } catch (e) {
-        console.warn('Can\'t insert rule due to lack of support', e)
+      } catch {
+        // Fallback for older browsers that don't support 'index-max'
+        styles.sheet.insertRule(rule, styles.sheet.cssRules.length)
+        styles.rules.push(rule)
       }
-    } else {
-      styles.sheet.insertRule(rule, 'index-max')
-      styles.rules.push(rule)
+    } catch (e) {
+      console.warn('Can\'t insert rule due to lack of support', e, rule)
+
+      // Try to sanitize the rule for better compatibility
+      try {
+        // Remove any potentially problematic CSS features
+        let sanitizedRule = rule
+          .replace(/backdrop-filter:[^;]+;/g, '') // Remove backdrop-filter
+          .replace(/var\(--shadowFilter\)[^;]*;/g, '') // Remove shadowFilter references
+
+        if (sanitizedRule !== rule) {
+          styles.sheet.insertRule(sanitizedRule, styles.sheet.cssRules.length)
+          styles.rules.push(sanitizedRule)
+        }
+      } catch (e2) {
+        console.error('Failed to insert even sanitized rule', e2)
+      }
     }
   }
 
@@ -170,6 +187,7 @@ const extractStyleConfig = ({
   sidebarColumnWidth,
   contentColumnWidth,
   notifsColumnWidth,
+  themeEditorMinWidth,
   emojiReactionsScale,
   emojiSize,
   navbarSize,
@@ -181,6 +199,7 @@ const extractStyleConfig = ({
     sidebarColumnWidth,
     contentColumnWidth,
     notifsColumnWidth,
+    themeEditorMinWidth: parseInt(themeEditorMinWidth) === 0 ? 'fit-content' : themeEditorMinWidth,
     emojiReactionsScale,
     emojiSize,
     navbarSize,

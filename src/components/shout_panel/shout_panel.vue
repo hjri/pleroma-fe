@@ -107,8 +107,7 @@
   }
 
   .shout-window {
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden auto;
     max-height: 20em;
   }
 

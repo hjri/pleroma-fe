@@ -3,6 +3,8 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import pleromaTanMask from 'src/assets/pleromatan_apology_mask.png'
 import pleromaTanFoxMask from 'src/assets/pleromatan_apology_fox_mask.png'
 
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+
 import {
   faTimes
 } from '@fortawesome/free-solid-svg-icons'
@@ -36,8 +38,8 @@ const UpdateNotification = {
     shouldShow () {
       return !this.$store.state.instance.disableUpdateNotification &&
         this.$store.state.users.currentUser &&
-        this.$store.state.serverSideStorage.flagStorage.updateCounter < CURRENT_UPDATE_COUNTER &&
-        !this.$store.state.serverSideStorage.prefsStorage.simple.dontShowUpdateNotifs
+        useServerSideStorageStore().flagStorage.updateCounter < CURRENT_UPDATE_COUNTER &&
+        !useServerSideStorageStore().prefsStorage.simple.dontShowUpdateNotifs
     }
   },
   methods: {
@@ -46,13 +48,13 @@ const UpdateNotification = {
     },
     neverShowAgain () {
       this.toggleShow()
-      this.$store.commit('setFlag', { flag: 'updateCounter', value: CURRENT_UPDATE_COUNTER })
-      this.$store.commit('setPreference', { path: 'simple.dontShowUpdateNotifs', value: true })
-      this.$store.dispatch('pushServerSideStorage')
+      useServerSideStorageStore().setFlag({ flag: 'updateCounter', value: CURRENT_UPDATE_COUNTER })
+      useServerSideStorageStore().setPreference({ path: 'simple.dontShowUpdateNotifs', value: true })
+      useServerSideStorageStore().pushServerSideStorage()
     },
     dismiss () {
-      this.$store.commit('setFlag', { flag: 'updateCounter', value: CURRENT_UPDATE_COUNTER })
-      this.$store.dispatch('pushServerSideStorage')
+      useServerSideStorageStore().setFlag({ flag: 'updateCounter', value: CURRENT_UPDATE_COUNTER })
+      useServerSideStorageStore().pushServerSideStorage()
     }
   },
   mounted () {

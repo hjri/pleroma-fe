@@ -78,23 +78,24 @@ export const findColor = (color, { dynamicVars, staticVars }) => {
         targetColor = { r, g, b }
       } else if (variableSlot.startsWith('parent')) {
         if (variableSlot === 'parent') {
-          const { r, g, b } = dynamicVars.lowerLevelBackground
+          const { r, g, b } = dynamicVars.lowerLevelBackground ?? {}
           targetColor = { r, g, b }
         } else {
           const virtualSlot = variableSlot.replace(/^parent/, '')
           targetColor = convert(dynamicVars.lowerLevelVirtualDirectivesRaw[virtualSlot]).rgb
         }
       } else {
-        switch (variableSlot) {
-          case 'inheritedBackground':
-            targetColor = convert(dynamicVars.inheritedBackground).rgb
-            break
-          case 'background':
-            targetColor = convert(dynamicVars.background).rgb
-            break
-          default:
-            targetColor = convert(staticVars[variableSlot]).rgb
+        const staticVar = staticVars[variableSlot]
+        const dynamicVar = dynamicVars[variableSlot]
+        if (!staticVar && !dynamicVar) {
+          console.warn(dynamicVars, variableSlot, dynamicVars[variableSlot])
+          console.warn(`Couldn't find variable "${variableSlot}", falling back to magenta. Variables are:
+Static:
+${JSON.stringify(staticVars, null, 2)}
+Dynamic:
+${JSON.stringify(dynamicVars, null, 2)}`)
         }
+        targetColor = convert(staticVar ?? dynamicVar ?? '#FF00FF').rgb
       }
 
       if (modifier) {
@@ -109,7 +110,7 @@ export const findColor = (color, { dynamicVars, staticVars }) => {
       try {
         targetColor = process(color, colorFunctions, { findColor }, { dynamicVars, staticVars })
       } catch (e) {
-        console.error('Failure executing color function', e)
+        console.error('Failure executing color function', e ,'\n Function: ' + color)
         targetColor = '#FF00FF'
       }
     }
@@ -120,7 +121,7 @@ export const findColor = (color, { dynamicVars, staticVars }) => {
 Static:
 ${JSON.stringify(staticVars, null, 2)}
 Dynamic:
-${JSON.stringify(dynamicVars, null, 2)}`, e)
+${JSON.stringify(dynamicVars, null, 2)}\nError: ${e}`)
   }
 }
 
@@ -516,7 +517,7 @@ export const init = ({
         .filter(c => virtualComponents.has(c) && !nonEditableComponents.has(c))
     } else if (liteMode) {
       validInnerComponents = (component.validInnerComponentsLite || component.validInnerComponents || [])
-    } else if (component.name === 'Root') {
+    } else if (component.name === 'Root' || component.states != null || component.background?.includes('--parent')) {
       validInnerComponents = component.validInnerComponents || []
     } else {
       validInnerComponents = component

@@ -216,7 +216,7 @@ const ProfileTab = {
         this.submitBackground('')
       }
     },
-    submitAvatar (cropper, file) {
+    submitAvatar (canvas, file) {
       const that = this
       return new Promise((resolve, reject) => {
         function updateAvatar (avatar, avatarName) {
@@ -232,8 +232,8 @@ const ProfileTab = {
             })
         }
 
-        if (cropper) {
-          cropper.getCroppedCanvas().toBlob((data) => updateAvatar(data, file.name), file.type)
+        if (canvas) {
+          canvas.toBlob((data) => updateAvatar(data, file.name), file.type)
         } else {
           updateAvatar(file, file.name)
         }

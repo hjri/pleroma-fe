@@ -11,7 +11,7 @@ export default {
     'Avatar'
   ],
   states: {
-    hover: ':hover:not(.disabled)',
+    hover: ':is(:hover, :focus-visible, :has(:focus-visible)):not(.disabled)',
     active: '.-active',
     disabled: '.disabled'
   },

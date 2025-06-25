@@ -1,3 +1,4 @@
+/* global process */
 const Popover = {
   name: 'Popover',
   props: {
@@ -48,6 +49,12 @@ const Popover = {
     // Use styled button (to avoid nested buttons)
     normalButton: Boolean,
 
+    // Whether to hide the trigger totally
+    hideTrigger: {
+      type: Boolean,
+      default: false,
+    },
+
     triggerAttrs: {
       type: Object,
       default: {}
@@ -77,6 +84,26 @@ const Popover = {
       parentPopover: null,
       disableClickOutside: false,
       childrenShown: new Set()
+    }
+  },
+  computed: {
+    allTriggerAttrs () {
+      if (process.env.NODE_ENV === 'development') {
+        if ('aria-hidden' in this.triggerAttrs) {
+          throw new Error('Do not use aria-hidden in triggerAttrs. Instead set hideTrigger to true')
+        }
+      }
+
+      const attrs = {
+        ...this.triggerAttrs,
+      }
+
+      if (this.hideTrigger) {
+        attrs['aria-hidden'] = true
+        attrs.tabindex = 1
+      }
+
+      return attrs
     }
   },
   methods: {

@@ -5,9 +5,11 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import stylelint from 'vite-plugin-stylelint'
 import eslint from 'vite-plugin-eslint2'
+import emojisPlugin from './build/emojis_plugin.js'
 import { devSwPlugin, buildSwPlugin, swMessagesPlugin } from './build/sw_plugin.js'
 import copyPlugin from './build/copy_plugin.js'
 import { getCommitHash } from './build/commit_hash.js'
+import mswPlugin from './build/msw_plugin.js'
 
 const localConfigPath = '<projectRoot>/config/local.json'
 const getLocalDevSettings = async () => {
@@ -95,6 +97,9 @@ export default defineConfig(async ({ mode, command }) => {
               if (tag === 'pinch-zoom') {
                 return true
               }
+              if (tag.startsWith('cropper-')) {
+                return true
+              }
               return false
             }
           }
@@ -104,6 +109,7 @@ export default defineConfig(async ({ mode, command }) => {
       devSwPlugin({ swSrc, swDest, transformSW, alias }),
       buildSwPlugin({ swSrc, swDest }),
       swMessagesPlugin(),
+      emojisPlugin(),
       copyPlugin({
         inUrl: '/static/ruffle',
         inFs: resolve(projectRoot, 'node_modules/@ruffle-rs/ruffle')
@@ -117,7 +123,8 @@ export default defineConfig(async ({ mode, command }) => {
         lintInWorker: true,
         lintOnStart: true,
         cacheLocation: resolve(projectRoot, 'node_modules/.cache/stylelintcache')
-      })
+      }),
+      ...(mode === 'test' ? [mswPlugin()] : [])
     ],
     optimizeDeps: {
       // For unknown reasons, during vitest, vite will re-optimize the following

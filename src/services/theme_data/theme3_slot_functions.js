@@ -1,8 +1,8 @@
 import { convert, brightness } from 'chromatism'
-import { alphaBlend, getTextColor, relativeLuminance } from '../color_convert/color_convert.js'
+import { alphaBlend, arithmeticBlend, getTextColor, relativeLuminance } from '../color_convert/color_convert.js'
 
 export const process = (text, functions, { findColor, findShadow }, { dynamicVars, staticVars }) => {
-  const { funcName, argsString } = /\$(?<funcName>\w+)\((?<argsString>[#a-zA-Z0-9-,.'"\s]*)\)/.exec(text).groups
+  const { funcName, argsString } = /\$(?<funcName>\w+)\((?<argsString>[#a-zA-Z0-9-+,.'"\s]*)\)/.exec(text).groups
   const args = argsString.split(/ /g).map(a => a.trim())
 
   const func = functions[funcName]
@@ -81,6 +81,23 @@ export const colorFunctions = {
       return alphaBlend(background, amount, foreground)
     }
   },
+  shift: {
+    argsNeeded: 2,
+    documentation: 'Arithmetic blend between two colors',
+    args: [
+      'origin: base color',
+      'value: shift value',
+      'operator: math operator to use (+ or -)'
+    ],
+    exec: (args, { findColor }, { dynamicVars, staticVars }) => {
+      const [originArg, valueArg, operatorArg] = args
+
+      const origin = convert(findColor(originArg, { dynamicVars, staticVars })).rgb
+      const value = convert(findColor(valueArg, { dynamicVars, staticVars })).rgb
+
+      return arithmeticBlend(origin, value, operatorArg)
+    }
+  },
   boost: {
     argsNeeded: 2,
     documentation: 'If given color is dark makes it darker, if color is light - makes it lighter',
@@ -112,7 +129,7 @@ export const colorFunctions = {
       const color = convert(findColor(colorArg, { dynamicVars, staticVars })).rgb
       const amount = Number(amountArg)
 
-      const effectiveBackground = dynamicVars.lowerLevelBackground
+      const effectiveBackground = dynamicVars.lowerLevelBackground ?? color
       const isLightOnDark = relativeLuminance(convert(effectiveBackground).rgb) < 0.5
       const mod = isLightOnDark ? 1 : -1
       return brightness(amount * mod, color).rgb

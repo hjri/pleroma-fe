@@ -72,12 +72,11 @@
     flex: 1 1 0;
     line-height: 1.2;
     white-space: normal;
-    word-wrap: normal;
   }
 
   .hidden {
     display: none;
-    visibility: "hidden";
+    visibility: hidden;
   }
 }
 </style>

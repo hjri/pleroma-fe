@@ -1,3 +1,4 @@
+/* global process */
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import vClickOutside from 'click-outside-vue3'
@@ -11,12 +12,12 @@ import routes from './routes'
 import VBodyScrollLock from 'src/directives/body_scroll_lock'
 
 import { windowWidth, windowHeight } from '../services/window_utils/window_utils'
-import { getOrCreateApp, getClientToken } from '../services/new_api/oauth.js'
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import { applyConfig } from '../services/style_setter/style_setter.js'
 import FaviconService from '../services/favicon_service/favicon_service.js'
 import { initServiceWorker, updateFocus } from '../services/sw/sw.js'
 
+import { useOAuthStore } from 'src/stores/oauth'
 import { useI18nStore } from 'src/stores/i18n'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useAnnouncementsStore } from 'src/stores/announcements'
@@ -62,10 +63,11 @@ const getInstanceConfig = async ({ store }) => {
       const textlimit = data.max_toot_chars
       const vapidPublicKey = data.pleroma.vapid_public_key
 
+      store.dispatch('setInstanceOption', { name: 'pleromaExtensionsAvailable', value: data.pleroma })
       store.dispatch('setInstanceOption', { name: 'textlimit', value: textlimit })
       store.dispatch('setInstanceOption', { name: 'accountApprovalRequired', value: data.approval_required })
-      store.dispatch('setInstanceOption', { name: 'birthdayRequired', value: !!data.pleroma.metadata.birthday_required })
-      store.dispatch('setInstanceOption', { name: 'birthdayMinAge', value: data.pleroma.metadata.birthday_min_age || 0 })
+      store.dispatch('setInstanceOption', { name: 'birthdayRequired', value: !!data.pleroma?.metadata.birthday_required })
+      store.dispatch('setInstanceOption', { name: 'birthdayMinAge', value: data.pleroma?.metadata.birthday_min_age || 0 })
 
       if (vapidPublicKey) {
         store.dispatch('setInstanceOption', { name: 'vapidPublicKey', value: vapidPublicKey })
@@ -77,6 +79,8 @@ const getInstanceConfig = async ({ store }) => {
     console.error('Could not load instance config, potentially fatal')
     console.error(error)
   }
+  // We should check for scrobbles support here but it requires userId
+  // so instead we check for it where it's fetched (statuses.js)
 }
 
 const getBackendProvidedConfig = async () => {
@@ -228,17 +232,9 @@ const getStickers = async ({ store }) => {
 }
 
 const getAppSecret = async ({ store }) => {
-  const { state, commit } = store
-  const { oauth, instance } = state
+  const oauth = useOAuthStore()
   if (oauth.userToken) {
-    commit('setBackendInteractor', backendInteractorService(store.getters.getToken()))
-  } else {
-    return getOrCreateApp({ ...oauth, instance: instance.server, commit })
-      .then((app) => getClientToken({ ...app, instance: instance.server }))
-      .then((token) => {
-        commit('setAppToken', token.access_token)
-        commit('setBackendInteractor', backendInteractorService(store.getters.getToken()))
-      })
+    store.commit('setBackendInteractor', backendInteractorService(oauth.getToken))
   }
 }
 
@@ -249,7 +245,8 @@ const resolveStaffAccounts = ({ store, accounts }) => {
 
 const getNodeInfo = async ({ store }) => {
   try {
-    const res = await preloadFetch('/nodeinfo/2.1.json')
+    let res = await preloadFetch('/nodeinfo/2.1.json')
+    if (!res.ok) res = await preloadFetch('/nodeinfo/2.0.json')
     if (res.ok) {
       const data = await res.json()
       const metadata = data.metadata
@@ -269,6 +266,7 @@ const getNodeInfo = async ({ store }) => {
       store.dispatch('setInstanceOption', { name: 'mailerEnabled', value: metadata.mailerEnabled })
       store.dispatch('setInstanceOption', { name: 'quotingAvailable', value: features.includes('quote_posting') })
       store.dispatch('setInstanceOption', { name: 'groupActorAvailable', value: features.includes('pleroma:group_actors') })
+      store.dispatch('setInstanceOption', { name: 'localBubbleInstances', value: metadata.localBubbleInstances ?? [] })
 
       const uploadLimits = metadata.uploadLimits
       store.dispatch('setInstanceOption', { name: 'uploadlimit', value: parseInt(uploadLimits.general) })
@@ -287,7 +285,6 @@ const getNodeInfo = async ({ store }) => {
       const software = data.software
       store.dispatch('setInstanceOption', { name: 'backendVersion', value: software.version })
       store.dispatch('setInstanceOption', { name: 'backendRepository', value: software.repository })
-      store.dispatch('setInstanceOption', { name: 'pleromaBackend', value: software.name === 'pleroma' })
 
       const priv = metadata.private
       store.dispatch('setInstanceOption', { name: 'private', value: priv })
@@ -332,19 +329,64 @@ const setConfig = async ({ store }) => {
   const apiConfig = configInfos[0]
   const staticConfig = configInfos[1]
 
-  await setSettings({ store, apiConfig, staticConfig }).then(getAppSecret({ store }))
+  getAppSecret({ store })
+  await setSettings({ store, apiConfig, staticConfig })
 }
 
 const checkOAuthToken = async ({ store }) => {
-  if (store.getters.getUserToken()) {
-    return store.dispatch('loginUser', store.getters.getUserToken())
+  const oauth = useOAuthStore()
+  if (oauth.getUserToken) {
+    return store.dispatch('loginUser', oauth.getUserToken)
   }
   return Promise.resolve()
 }
 
 const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
   const app = createApp(App)
+  // Must have app use pinia before we do anything that touches the store
+  // https://pinia.vuejs.org/core-concepts/plugins.html#Introduction
+  // "Plugins are only applied to stores created after the plugins themselves, and after pinia is passed to the app, otherwise they won't be applied."
   app.use(pinia)
+
+  const waitForAllStoresToLoad = async () => {
+    // the stores that do not persist technically do not need to be awaited here,
+    // but that involves either hard-coding the stores in some place (prone to errors)
+    // or writing another vite plugin to analyze which stores needs persisting (++load time)
+    const allStores = import.meta.glob('../stores/*.js', { eager: true })
+    if (process.env.NODE_ENV === 'development') {
+      // do some checks to avoid common errors
+      if (!Object.keys(allStores).length) {
+        throw new Error('No stores are available. Check the code in src/boot/after_store.js')
+      }
+    }
+    await Promise.all(
+      Object.entries(allStores)
+        .map(async ([name, mod]) => {
+          const isStoreName = name => name.startsWith('use')
+          if (process.env.NODE_ENV === 'development') {
+            if (Object.keys(mod).filter(isStoreName).length !== 1) {
+              throw new Error('Each store file must export exactly one store as a named export. Check your code in src/stores/')
+            }
+          }
+          const storeFuncName = Object.keys(mod).find(isStoreName)
+          if (storeFuncName && typeof mod[storeFuncName] === 'function') {
+            const p = mod[storeFuncName]().$persistLoaded
+            if (!(p instanceof Promise)) {
+              throw new Error(`${name} store's $persistLoaded is not a Promise. The persist plugin is not applied.`)
+            }
+            await p
+          } else {
+            throw new Error(`Store module ${name} does not export a 'use...' function`)
+          }
+        }))
+  }
+
+  try {
+    await waitForAllStoresToLoad()
+  } catch (e) {
+    console.error('Cannot load stores:', e)
+    storageError = e
+  }
 
   if (storageError) {
     useInterfaceStore().pushGlobalNotice({ messageKey: 'errors.storage_unavailable', level: 'error' })

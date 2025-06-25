@@ -121,6 +121,7 @@ export const defaultState = {
   sidebarColumnWidth: '25rem',
   contentColumnWidth: '45rem',
   notifsColumnWidth: '25rem',
+  themeEditorMinWidth: undefined, // instance default
   emojiReactionsScale: undefined,
   textSize: undefined, // instance default
   emojiSize: undefined, // instance default

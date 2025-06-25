@@ -643,7 +643,7 @@ export default {
       parser (string) { return deserialize(string) },
       onImportFailure (result) {
         console.error('Failure importing style:', result)
-        this.$store.useInterfaceStore().pushGlobalNotice({ messageKey: 'settings.invalid_theme_imported', level: 'error' })
+        useInterfaceStore().pushGlobalNotice({ messageKey: 'settings.invalid_theme_imported', level: 'error' })
       },
       onImport
     })

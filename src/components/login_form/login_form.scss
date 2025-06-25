@@ -1,0 +1,44 @@
+.login-panel {
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    padding: 0.6em;
+  }
+
+  .btn {
+    min-height: 2em;
+    width: 10em;
+  }
+
+  .register {
+    flex: 1 1;
+  }
+
+  .login-bottom {
+    margin-top: 1em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    padding: 0.3em 0.5em 0.6em;
+    line-height: 24px;
+  }
+
+  .login-error {
+    display: flex;
+    line-height: 2;
+    margin: 0.5em;
+    animation-name: shakeError;
+    animation-duration: 0.4s;
+    animation-timing-function: ease-in-out;
+  }
+
+  .error-message {
+    flex: 1;
+  }
+}
