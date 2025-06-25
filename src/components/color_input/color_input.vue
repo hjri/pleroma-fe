@@ -26,7 +26,7 @@
         class="textColor unstyled"
         :class="{ disabled: !present || disabled }"
         type="text"
-        :value="modelValue || fallback"
+        :value="modelValue ?? fallback"
         :disabled="!present || disabled"
         @input="updateValue($event.target.value)"
       >

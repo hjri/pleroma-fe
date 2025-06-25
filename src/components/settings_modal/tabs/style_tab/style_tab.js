@@ -372,6 +372,9 @@ export default {
         const path = getPath(component, directive)
 
         usedRule = get(real, path) // get real
+        if (usedRule === '') {
+          return usedRule
+        }
         if (!usedRule) {
           usedRule = get(fallback, path)
         }
@@ -379,7 +382,7 @@ export default {
         return postProcess(usedRule)
       },
       set (value) {
-        if (value) {
+        if (value != null) {
           set(allEditedRules.value, getPath(component, directive), value)
         } else {
           unset(allEditedRules.value, getPath(component, directive))

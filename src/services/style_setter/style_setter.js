@@ -242,7 +242,7 @@ export const applyConfig = (input) => {
     .map(([k, v]) => `--${k}: ${v}`).join(';')
 
   document.getElementById('style-config')?.remove()
-  const styleEl = document.createElement('style')
+  const styleEl = document.getElementById('theme-holder')
   styleEl.id = 'style-config'
   head.appendChild(styleEl)
   const styleSheet = styleEl.sheet
