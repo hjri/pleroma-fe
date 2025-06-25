@@ -1,7 +1,8 @@
-import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
-import { mapStores } from 'pinia'
+import { mapState } from 'vuex'
+import { mapStores, mapActions, mapState as mapPiniaState } from 'pinia'
 import oauthApi from '../../services/new_api/oauth.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useAuthFlowStore } from 'src/stores/auth_flow.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faTimes
@@ -25,13 +26,10 @@ const LoginForm = {
       instance: state => state.instance,
       loggingIn: state => state.users.loggingIn,
     }),
-    ...mapGetters(
-      'authFlow', ['requiredPassword', 'requiredToken', 'requiredMFA']
-    )
+    ...mapPiniaState(useAuthFlowStore, ['requiredPassword', 'requiredToken', 'requiredMFA'])
   },
   methods: {
-    ...mapMutations('authFlow', ['requireMFA']),
-    ...mapActions({ login: 'authFlow/login' }),
+    ...mapActions(useAuthFlowStore, ['requireMFA', 'login']),
     submit () {
       this.isTokenAuth ? this.submitToken() : this.submitPassword()
     },

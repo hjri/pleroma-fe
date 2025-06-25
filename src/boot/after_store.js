@@ -21,6 +21,7 @@ import { useOAuthStore } from 'src/stores/oauth'
 import { useI18nStore } from 'src/stores/i18n'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useAuthFlowStore } from 'src/stores/auth_flow'
 
 let staticInitialResults = null
 
@@ -156,7 +157,7 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
       : config.logoMargin
   })
   copyInstanceOption('logoLeft')
-  store.commit('authFlow/setInitialStrategy', config.loginMethod)
+  useAuthFlowStore().setInitialStrategy(config.loginMethod)
 
   copyInstanceOption('redirectRootNoLogin')
   copyInstanceOption('redirectRootLogin')
