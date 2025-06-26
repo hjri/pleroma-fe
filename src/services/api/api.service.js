@@ -325,7 +325,6 @@ const blockUser = ({ id, expiresIn, credentials }) => {
     payload.expires_in = expiresIn
   }
 
-  console.log(payload)
   return promisedRequest({
     url: MASTODON_BLOCK_USER_URL(id),
     credentials,

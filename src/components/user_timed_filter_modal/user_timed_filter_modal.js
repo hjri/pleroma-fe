@@ -1,88 +1,95 @@
-import DialogModal from 'src/components/dialog_modal/dialog_modal.vue'
+import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
+import Select from 'src/components/select/select.vue'
+import { durationStrToMs } from 'src/services/date_utils/date_utils.js'
 
 const UserTimedFilterModal = {
   data () {
+    const action = this.isMute
+          ? this.$store.getters.mergedConfig.onMuteDefaultAction
+          : this.$store.getters.mergedConfig.onBlockDefaultAction
+    const doAsk = action === 'ask'
+    const defaultValues = {}
+
+    if (doAsk || action === 'forever') {
+      defaultValues.expiration = 14
+      defaultValues.expirationUnit = 'd'
+      if (action === 'forever') {
+        defaultValues.forever = true
+      }
+    } else {
+      const unit = action.replace(/[0-9,.]+/, '')
+      const value = action.replace(/[^0-9,.]+/, '')
+      defaultValues.expiration = value
+      defaultValues.expirationUnit = unit
+    }
+
     return {
       showing: false,
+      forever: false,
       dontAskAgain: false,
-      expiration: (() => {
-        const date = new Date()
-        const fmt = new Intl.NumberFormat("en-US", {minimumIntegerDigits: 2})
-        return [
-          date.getFullYear(),
-          '-',
-          fmt.format(date.getMonth() + 1),
-          '-',
-          fmt.format(date.getDate()),
-          'T',
-          fmt.format(date.getHours()),
-          ':',
-          fmt.format(date.getMinutes())
-        ].join('')
-      })()
+      ...defaultValues
     }
   },
   components: {
-    DialogModal,
+    ConfirmModal,
+    Select,
     Checkbox
   },
   props: {
     isMute: Boolean,
     user: Object
   },
-  emits: [
-    'timed',
-    'forever',
-    'user'
-  ],
   computed: {
-    dateValid () {
-      return (new Date(this.expiration).toJSON() != null) &&
-        new Date(this.expiration) > new Date()
-    },
-    expiryTime () {
-      return Math.floor((new Date(this.expiration).valueOf() - Date.now())  / 1000)
-    },
     shouldConfirm () {
       if (this.isMute) {
-        return this.mergedConfig.onMuteDefaultAction === 'ask'
+        return this.$store.getters.mergedConfig.onMuteDefaultAction === 'ask'
       } else {
-        return this.mergedConfig.onBlockDefaultAction === 'ask'
+        return this.$store.getters.mergedConfig.onBlockDefaultAction === 'ask'
+      }
+    },
+    expiryString () {
+      return this.expiration.toString() + this.expirationUnit
+    },
+    expirySeconds () {
+      return Math.floor(durationStrToMs(this.expiryString) / 1000)
+    },
+    requestBody () {
+      const object = { id: this.user.id }
+      if (!this.forever) {
+        object.expiresIn = this.expirySeconds
+      }
+      return object
+    }
+  },
+  watch: {
+    expiration (newVal) {
+      if (newVal <= 0) {
+        this.expiration = 1
       }
     }
   },
   methods: {
     optionallyPrompt () {
-      this.showing = true
-    },
-    temporarily () {
-      if (this.isMute) {
-        this.muteUserTemporarily()
+      if (this.shouldConfirm) {
+        this.showing = true
       } else {
-        this.blockUserTemporarily()
+        this.accept()
+      }
+    },
+    accept () {
+      if (this.isMute) {
+        this.$store.dispatch('muteUser', this.requestBody)
+        if (this.dontAskAgain) {
+          this.$store.dispatch('setOption', { name: 'onMuteDefaultAction', value: this.expiryString })
+        }
+      } else {
+        this.$store.dispatch('blockUser', this.requestBody)
+        if (this.dontAskAgain) {
+          this.$store.dispatch('setOption', { name: 'onBlockDefaultAction', value: this.expiryString })
+        }
       }
       this.showing = false
-    },
-    forever () {
-      if (this.isMute) {
-        this.muteUserForever()
-      } else {
-        this.blockUserForever()
-      }
-      this.showing = false
-    },
-    blockUserForever () {
-      this.$store.dispatch('blockUser', { id: this.user.id })
-    },
-    blockUserTemporarily () {
-      this.$store.dispatch('blockUser', { id: this.user.id, expiresIn: this.expiryTime })
-    },
-    muteUserForever () {
-      this.$store.dispatch('muteUser', { id: this.user.id })
-    },
-    muteUserTemporarily () {
-      this.$store.dispatch('muteUser', { id: this.user.id, expiresIn: this.expiryTime })
     },
     cancel () {
       this.showing = false
