@@ -169,6 +169,8 @@ const AppearanceTab = {
       }, {
         root: this.$refs.themeList
       })
+    } else {
+      this.availableStyles.forEach(theme => this.previewTheme(theme.key, theme.version, theme.data))
     }
   },
   updated () {
