@@ -155,13 +155,15 @@ const AppearanceTab = {
       }))
     })
 
+    this.previewTheme('stock', 'v3')
+
     if (window.IntersectionObserver) {
       this.intersectionObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(({ target, isIntersecting }) => {
           if (!isIntersecting) return
           const theme = this.availableStyles.find(x => x.key === target.dataset.themeKey)
           this.$nextTick(() => {
-            if (theme) theme.ready = true
+            if (theme) this.previewTheme(theme.key, theme.version, theme.data)
           })
           observer.unobserve(target)
         })
