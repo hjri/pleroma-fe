@@ -2,26 +2,26 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 import apiService from '../api/api.service.js'
 import { promiseInterval } from '../promise_interval/promise_interval.js'
 
-// For using include_types when fetching notifications.
-// Note: chat_mention excluded as pleroma-fe polls them separately
-const mastoApiNotificationTypes = [
-  'mention',
-  'status',
-  'favourite',
-  'reblog',
-  'follow',
-  'follow_request',
-  'move',
-  'poll',
-  'pleroma:emoji_reaction',
-  'pleroma:report'
-]
-
 const update = ({ store, notifications, older }) => {
   store.dispatch('addNewNotifications', { notifications, older })
 }
 
 const fetchAndUpdate = ({ store, credentials, older = false, since }) => {
+  // For using include_types when fetching notifications.
+  // Note: chat_mention excluded as pleroma-fe polls them separately
+  const mastoApiNotificationTypes = [
+    'mention',
+    'status',
+    'favourite',
+    'reblog',
+    'follow',
+    'follow_request',
+    'move',
+    'poll',
+    'pleroma:emoji_reaction',
+    'pleroma:report'
+  ]
+
   const args = { credentials }
   const { getters } = store
   const rootState = store.rootState || store.state
