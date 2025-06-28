@@ -28,7 +28,7 @@ const fetchAndUpdate = ({ store, credentials, older = false, since }) => {
   const timelineData = rootState.notifications
   const hideMutedPosts = getters.mergedConfig.hideMutedPosts
 
-  if (store.rootState.instance.pleromaChatMessagesAvailable) {
+  if (rootState.instance.pleromaChatMessagesAvailable) {
     mastoApiNotificationTypes.push('pleroma:chat_mention')
   }
 
