@@ -16,7 +16,7 @@
           :disabled="switchInProgress"
           @click="resetTheming"
         >
-          <preview id="theme-preview-stock"/>
+          <preview id="theme-preview-stock" />
           <h4 class="theme-name">
             {{ $t('settings.style.stock_theme_used') }}
             <span class="alert neutral version">v3</span>
@@ -53,7 +53,7 @@
           :disabled="switchInProgress"
           @click="style.version === 'v2' ? setTheme(style.key) : setStyle(style.key)"
         >
-          <preview :id="'theme-preview-' + style.key"/>
+          <preview :id="'theme-preview-' + style.key" />
           <h4 class="theme-name">
             {{ style.name }}
             <span class="alert neutral version">{{ style.version }}</span>
