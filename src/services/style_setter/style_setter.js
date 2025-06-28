@@ -234,20 +234,14 @@ export const applyConfig = (input) => {
     return
   }
 
-  const head = document.head
-
   const rules = Object
     .entries(config)
     .filter(([, v]) => v)
     .map(([k, v]) => `--${k}: ${v}`).join(';')
 
-  document.getElementById('style-config')?.remove()
   const styleEl = document.getElementById('theme-holder')
-  styleEl.id = 'style-config'
-  head.appendChild(styleEl)
   const styleSheet = styleEl.sheet
 
-  styleSheet.toString()
   styleSheet.insertRule(`:root { ${rules} }`, 'index-max')
 
   // TODO find a way to make this not apply to theme previews
