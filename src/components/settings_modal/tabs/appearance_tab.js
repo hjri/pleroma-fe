@@ -391,7 +391,6 @@ const AppearanceTab = {
             inputRuleset: [...input, paletteRule].filter(x => x),
             ultimateBackgroundColor: '#000000',
             liteMode: true,
-            debug: true,
             onlyNormalState: true
           })
         }
@@ -400,7 +399,6 @@ const AppearanceTab = {
           inputRuleset: [],
           ultimateBackgroundColor: '#000000',
           liteMode: true,
-          debug: true,
           onlyNormalState: true
         })
       }
@@ -409,10 +407,16 @@ const AppearanceTab = {
         this.compilationCache[key] = theme3
       }
 
-      return getScopedVersion(
-        getCssRules(theme3.eager),
-        '#theme-preview-' + key
-      ).join('\n')
+      const styleEl = document.getElementById('theme-holder')
+      const styleSheet = styleEl.sheet
+      styleSheet.insertRule([
+        '#theme-preview-',
+        key,
+        ' {\n',
+        getCssRules(theme3.eager).join('\n'),
+        '\n}'
+      ].join(''), 'index-max')
+
     }
   }
 }
