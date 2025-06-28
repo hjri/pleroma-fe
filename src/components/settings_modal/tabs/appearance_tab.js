@@ -12,8 +12,7 @@ import { newImporter } from 'src/services/export_import/export_import.js'
 import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
 import { init } from 'src/services/theme_data/theme_data_3.service.js'
 import {
-  getCssRules,
-  getScopedVersion
+  getCssRules
 } from 'src/services/theme_data/css_utils.js'
 import { deserialize } from 'src/services/theme_data/iss_deserializer.js'
 
@@ -155,19 +154,23 @@ const AppearanceTab = {
       }))
     })
 
+    this.previewTheme('stock', 'v3')
+
     if (window.IntersectionObserver) {
       this.intersectionObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(({ target, isIntersecting }) => {
           if (!isIntersecting) return
           const theme = this.availableStyles.find(x => x.key === target.dataset.themeKey)
           this.$nextTick(() => {
-            if (theme) theme.ready = true
+            if (theme) this.previewTheme(theme.key, theme.version, theme.data)
           })
           observer.unobserve(target)
         })
       }, {
         root: this.$refs.themeList
       })
+    } else {
+      this.availableStyles.forEach(theme => this.previewTheme(theme.key, theme.version, theme.data))
     }
   },
   updated () {
@@ -391,7 +394,6 @@ const AppearanceTab = {
             inputRuleset: [...input, paletteRule].filter(x => x),
             ultimateBackgroundColor: '#000000',
             liteMode: true,
-            debug: true,
             onlyNormalState: true
           })
         }
@@ -400,7 +402,6 @@ const AppearanceTab = {
           inputRuleset: [],
           ultimateBackgroundColor: '#000000',
           liteMode: true,
-          debug: true,
           onlyNormalState: true
         })
       }
@@ -409,10 +410,16 @@ const AppearanceTab = {
         this.compilationCache[key] = theme3
       }
 
-      return getScopedVersion(
-        getCssRules(theme3.eager),
-        '#theme-preview-' + key
-      ).join('\n')
+      const styleEl = document.getElementById('theme-holder')
+      const styleSheet = styleEl.sheet
+      styleSheet.insertRule([
+        '#theme-preview-',
+        key,
+        ' {\n',
+        getCssRules(theme3.eager).join('\n'),
+        '\n}'
+      ].join(''), 'index-max')
+
     }
   }
 }

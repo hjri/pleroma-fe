@@ -110,17 +110,17 @@ const sortTimeline = (timeline) => {
 }
 
 const getLatestScrobble = (state, user) => {
-  const scrobbles = state.pleromaScrobblesAvailable
-  if (!scrobbles) return
+  const scrobblesSupport = state.pleromaScrobblesAvailable
+  if (!scrobblesSupport) return
 
   if (state.scrobblesNextFetch[user.id] && state.scrobblesNextFetch[user.id] > Date.now()) {
     return
   }
 
   state.scrobblesNextFetch[user.id] = Date.now() + 24 * 60 * 60 * 1000
-  if (!scrobbles) return
+  if (!scrobblesSupport) return
   apiService.fetchScrobbles({ accountId: user.id }).then((scrobbles) => {
-    if (scrobbles?.error?.status === 501) {
+    if (scrobbles?.error) {
       state.pleromaScrobblesAvailable = false
       return
     }

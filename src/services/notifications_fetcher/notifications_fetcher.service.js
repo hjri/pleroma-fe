@@ -14,7 +14,6 @@ const mastoApiNotificationTypes = [
   'move',
   'poll',
   'pleroma:emoji_reaction',
-  'pleroma:chat_mention',
   'pleroma:report'
 ]
 
@@ -28,6 +27,10 @@ const fetchAndUpdate = ({ store, credentials, older = false, since }) => {
   const rootState = store.rootState || store.state
   const timelineData = rootState.notifications
   const hideMutedPosts = getters.mergedConfig.hideMutedPosts
+
+  if (store.rootState.instance.pleromaChatMessagesAvailable) {
+    mastoApiNotificationTypes.push('pleroma:chat_mention')
+  }
 
   args.includeTypes = mastoApiNotificationTypes
   args.withMuted = !hideMutedPosts
