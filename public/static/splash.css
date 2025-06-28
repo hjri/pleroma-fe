@@ -1,3 +1,8 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
 #splash {
   --scale: 1;
   width: 100vw;
