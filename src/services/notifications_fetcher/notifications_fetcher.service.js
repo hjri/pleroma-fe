@@ -5,22 +5,24 @@ import { promiseInterval } from '../promise_interval/promise_interval.js'
 const update = ({ store, notifications, older }) => {
   store.dispatch('addNewNotifications', { notifications, older })
 }
+//
+// For using include_types when fetching notifications.
+// Note: chat_mention excluded as pleroma-fe polls them separately
+const mastoApiNotificationTypes = new Set([
+  'mention',
+  'status',
+  'favourite',
+  'reblog',
+  'follow',
+  'follow_request',
+  'move',
+  'poll',
+  'pleroma:emoji_reaction',
+  'pleroma:report',
+  'test'
+])
 
 const fetchAndUpdate = ({ store, credentials, older = false, since }) => {
-  // For using include_types when fetching notifications.
-  // Note: chat_mention excluded as pleroma-fe polls them separately
-  const mastoApiNotificationTypes = [
-    'mention',
-    'status',
-    'favourite',
-    'reblog',
-    'follow',
-    'follow_request',
-    'move',
-    'poll',
-    'pleroma:emoji_reaction',
-    'pleroma:report'
-  ]
 
   const args = { credentials }
   const { getters } = store
@@ -29,7 +31,11 @@ const fetchAndUpdate = ({ store, credentials, older = false, since }) => {
   const hideMutedPosts = getters.mergedConfig.hideMutedPosts
 
   if (rootState.instance.pleromaChatMessagesAvailable) {
-    mastoApiNotificationTypes.push('pleroma:chat_mention')
+    mastoApiNotificationTypes.add('pleroma:chat_mention')
+  }
+
+  if (!rootState.instance.statusNotificationTypeAvailable) {
+    mastoApiNotificationTypes.delete('status')
   }
 
   args.includeTypes = mastoApiNotificationTypes
@@ -75,7 +81,16 @@ const fetchNotifications = ({ store, args, older }) => {
   return apiService.fetchTimeline(args)
     .then((response) => {
       if (response.errors) {
-        throw new Error(`${response.status} ${response.statusText}`)
+        if (response.status === 400) {
+          store.dispatch('setInstanceOption', {
+            name: 'statusNotificationTypeAvailable',
+            value: false
+          })
+          mastoApiNotificationTypes.delete('status')
+          return fetchNotifications({ store, args, older })
+        } else {
+          throw new Error(`${response.status} ${response.statusText}`)
+        }
       }
       const notifications = response.data
       update({ store, notifications, older })
