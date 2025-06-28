@@ -6,6 +6,8 @@ import VueVirtualScroller from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 import { FontAwesomeIcon, FontAwesomeLayers } from '@fortawesome/vue-fontawesome'
+import { config } from '@fortawesome/fontawesome-svg-core';
+config.autoAddCss = false
 
 import App from '../App.vue'
 import routes from './routes'
