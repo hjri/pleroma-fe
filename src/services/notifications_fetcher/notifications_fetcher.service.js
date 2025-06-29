@@ -34,10 +34,6 @@ const fetchAndUpdate = ({ store, credentials, older = false, since }) => {
     mastoApiNotificationTypes.add('pleroma:chat_mention')
   }
 
-  if (!rootState.instance.statusNotificationTypeAvailable) {
-    mastoApiNotificationTypes.delete('status')
-  }
-
   args.includeTypes = mastoApiNotificationTypes
   args.withMuted = !hideMutedPosts
 
@@ -81,12 +77,13 @@ const fetchNotifications = ({ store, args, older }) => {
   return apiService.fetchTimeline(args)
     .then((response) => {
       if (response.errors) {
-        if (response.status === 400 && mastoApiNotificationTypes.has('status')) {
-          store.dispatch('setInstanceOption', {
-            name: 'statusNotificationTypeAvailable',
-            value: false
-          })
-          mastoApiNotificationTypes.delete('status')
+        if (response.status === 400 && response.statusText.includes('Invalid value for enum')) {
+          response
+            .statusText
+            .matchAll(/(\w+) - Invalid value for enum./g)
+            .toArray()
+            .map(x => x[1])
+            .forEach(x => mastoApiNotificationTypes.delete(x))
           return fetchNotifications({ store, args, older })
         } else {
           throw new Error(`${response.status} ${response.statusText}`)

@@ -759,7 +759,7 @@ const fetchTimeline = ({
   if (replyVisibility !== 'all') {
     params.push(['reply_visibility', replyVisibility])
   }
-  if (includeTypes.length > 0) {
+  if (includeTypes.size > 0) {
     includeTypes.forEach(type => {
       params.push(['include_types[]', type])
     })
