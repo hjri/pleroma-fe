@@ -81,7 +81,7 @@ const fetchNotifications = ({ store, args, older }) => {
   return apiService.fetchTimeline(args)
     .then((response) => {
       if (response.errors) {
-        if (response.status === 400) {
+        if (response.status === 400 && mastoApiNotificationTypes.has('status')) {
           store.dispatch('setInstanceOption', {
             name: 'statusNotificationTypeAvailable',
             value: false
