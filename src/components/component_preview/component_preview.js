@@ -51,8 +51,8 @@ export default {
       const styleEl = document.getElementById('component-style-holder')
       const styleSheet = styleEl.sheet
 
-      for (let i = styleEl.sheet.cssRules.length - 1; i >= 0; --i) {
-        styleEl.sheet.deleteRule(i)
+      for (let i = styleSheet.cssRules.length - 1; i >= 0; --i) {
+        styleSheet.deleteRule(i)
       }
 
       const result = []
