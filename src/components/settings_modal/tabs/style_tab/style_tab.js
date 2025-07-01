@@ -729,7 +729,7 @@ export default {
     // Apart from "hover" we can't really show how component looks like in
     // certain states, so we have to fake them.
     const simulatePseudoSelectors = (css, prefix) => css
-      .replace(prefix, '.component-preview .preview-block')
+      .replace(prefix, '.preview-block')
       .replace(':active', '.preview-active')
       .replace(':hover', '.preview-hover')
       .replace(':active', '.preview-active')

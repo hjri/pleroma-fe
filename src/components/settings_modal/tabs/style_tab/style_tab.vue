@@ -155,12 +155,6 @@
           </ul>
         </div>
         <div class="preview-container">
-          <!-- eslint-disable vue/no-v-html vue/no-v-text-v-html-on-component -->
-          <component
-            :is="'style'"
-            v-html="previewCss"
-          />
-          <!-- eslint-enable vue/no-v-html vue/no-v-text-v-html-on-component -->
           <ComponentPreview
             class="component-preview"
             :show-text="componentHas('Text')"

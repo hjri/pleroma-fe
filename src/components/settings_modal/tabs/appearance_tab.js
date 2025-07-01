@@ -410,7 +410,7 @@ const AppearanceTab = {
         this.compilationCache[key] = theme3
       }
 
-      const styleEl = document.getElementById('theme-holder')
+      const styleEl = document.getElementById('theme-preview-holder')
       const styleSheet = styleEl.sheet
       styleSheet.insertRule([
         '#theme-preview-',
