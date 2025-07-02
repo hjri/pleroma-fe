@@ -15,6 +15,7 @@ import {
   getCssRules
 } from 'src/services/theme_data/css_utils.js'
 import { deserialize } from 'src/services/theme_data/iss_deserializer.js'
+import { createStyleSheet, adoptStyleSheets } from 'src/services/style_setter/style_setter.js'
 
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
@@ -410,16 +411,17 @@ const AppearanceTab = {
         this.compilationCache[key] = theme3
       }
 
-      const styleEl = document.getElementById('theme-preview-holder')
-      const styleSheet = styleEl.sheet
-      styleSheet.insertRule([
+
+      const sheet = createStyleSheet('appearance-tab-previews')
+      sheet.addRule([
         '#theme-preview-',
         key,
         ' {\n',
         getCssRules(theme3.eager).join('\n'),
         '\n}'
-      ].join(''), 'index-max')
-
+      ].join(''))
+      sheet.ready = true
+      adoptStyleSheets()
     }
   }
 }

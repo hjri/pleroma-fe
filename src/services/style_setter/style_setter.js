@@ -1,7 +1,7 @@
 import { init, getEngineChecksum } from '../theme_data/theme_data_3.service.js'
 import { getCssRules } from '../theme_data/css_utils.js'
 import { defaultState } from 'src/modules/default_config_state.js'
-import { chunk } from 'lodash'
+import { chunk, throttle } from 'lodash'
 import localforage from 'localforage'
 
 // On platforms where this is not supported, it will return undefined
@@ -10,10 +10,14 @@ const supportsAdoptedStyleSheets = !!document.adoptedStyleSheets
 
 const stylesheets = {}
 
-const createStyleSheet = (id) => {
+export const createStyleSheet = (id) => {
+  if (stylesheets[id]) return stylesheets[id]
   const newStyleSheet = {
     rules: [],
     ready: false,
+    clear () {
+      this.rules = []
+    },
     addRule (rule) {
       this.rules.push(
         rule
@@ -28,7 +32,7 @@ const createStyleSheet = (id) => {
 }
 
 
-export const adoptStyleSheets = () => {
+export const adoptStyleSheets = throttle(() => {
   if (supportsAdoptedStyleSheets) {
     document.adoptedStyleSheets = Object
       .values(stylesheets)
@@ -46,13 +50,12 @@ export const adoptStyleSheets = () => {
       .forEach(sheet => {
         sheet.rules.forEach(r => holder.sheet.insertRule(r))
       })
-
   }
   // Some older browsers do not support document.adoptedStyleSheets.
   // In this case, we use the <style> elements.
   // Since the <style> elements we need are already in the DOM, there
   // is nothing to do here.
-}
+}, 500)
 
 
 const EAGER_STYLE_ID = 'pleroma-eager-styles'

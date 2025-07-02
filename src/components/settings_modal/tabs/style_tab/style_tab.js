@@ -1,4 +1,4 @@
-import { ref, reactive, computed, watch, watchEffect, provide, getCurrentInstance } from 'vue'
+import { ref, reactive, computed, watch, provide, getCurrentInstance } from 'vue'
 import { useInterfaceStore } from 'src/stores/interface'
 import { get, set, unset, throttle } from 'lodash'
 
@@ -19,6 +19,7 @@ import Preview from '../theme_tab/theme_preview.vue'
 
 import VirtualDirectivesTab from './virtual_directives_tab.vue'
 
+import { createStyleSheet, adoptStyleSheets } from 'src/services/style_setter/style_setter.js'
 import { init, findColor } from 'src/services/theme_data/theme_data_3.service.js'
 import { getCssRules } from 'src/services/theme_data/css_utils.js'
 import { serialize } from 'src/services/theme_data/iss_serializer.js'
@@ -694,29 +695,19 @@ export default {
         return
       }
 
-      const styleEl = document.getElementById('editor-overall-holder')
-      const styleSheet = styleEl.sheet
+      const sheet = createStyleSheet('style-tab-overall-preview')
 
-      console.log(styleSheet)
-      console.log('BEFORE', styleSheet.cssRules)
-      for (let i = styleSheet.cssRules.length - 1; i >= 0; --i) {
-        styleSheet.deleteRule(i)
-      }
-
-      styleSheet.insertRule([
+      sheet.clear()
+      sheet.addRule([
         '#edited-style-preview {\n',
         css.join('\n'),
         '\n}'
-      ].join(''), 'index-max')
-      styleSheet.insertRule([
-        '#edited-style-preview {\n',
-        css.join('\n'),
-        '\n}'
-      ].join(''), 'index-max')
-      console.log('AFTER', styleSheet.cssRules)
+      ].join(''))
+      sheet.ready = true
+      adoptStyleSheets()
     })
 
-    const updateOverallPreview = () => {
+    const updateOverallPreview = throttle(() => {
       try {
         overallPreviewRules.value = init({
           inputRuleset: [
@@ -738,7 +729,7 @@ export default {
         console.error('Could not compile preview theme', e)
         return null
       }
-    }
+    }, 1000)
     //
     // Apart from "hover" we can't really show how component looks like in
     // certain states, so we have to fake them.

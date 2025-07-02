@@ -2,6 +2,7 @@ import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
 
 import genRandomSeed from 'src/services/random_seed/random_seed.service.js'
+import { createStyleSheet, adoptStyleSheets } from 'src/services/style_setter/style_setter.js'
 
 export default {
   components: {
@@ -51,15 +52,11 @@ export default {
       this.$emit('update:shadow', { axis, value: Number(value) })
     },
     update () {
-      const styleEl = document.getElementById('component-style-holder')
-      const styleSheet = styleEl.sheet
+      const sheet = createStyleSheet('style-component-preview')
 
-      for (let i = styleSheet.cssRules.length - 1; i >= 0; --i) {
-        styleSheet.deleteRule(i)
-      }
+      sheet.clear()
 
-      const result = []
-
+      const result = [this.previewCss]
       if (this.colorOverride) result.push(`--background: ${this.colorOverride}`)
 
       const styleRule = [
@@ -71,13 +68,15 @@ export default {
         '\n}'
       ].join('')
 
-      styleSheet.insertRule(styleRule)
-      styleSheet.insertRule([
+      sheet.addRule(styleRule)
+      sheet.addRule([
         '#component-preview-', this.randomSeed, ' {\n',
-        this.previewCss,
         ...result,
         '\n}'
-      ].join(''), 'index-max')
+      ].join(''))
+
+      sheet.ready = true
+      adoptStyleSheets()
     }
   }
 }
