@@ -667,7 +667,7 @@ export default {
     })
 
     exports.clearStyle = () => {
-      onImport(interfaceStore().styleDataUsed)
+      onImport(interfaceStore.styleDataUsed)
     }
 
     exports.exportStyle = () => {
