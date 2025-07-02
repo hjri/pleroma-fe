@@ -115,8 +115,8 @@ export const tryLoadCache = async () => {
       const eagerStyles = createStyleSheet(EAGER_STYLE_ID)
       const lazyStyles = createStyleSheet(LAZY_STYLE_ID)
 
-      cache.data[0].forEach(rule => eagerStyles.addRule(rule, 'index-max'))
-      cache.data[1].forEach(rule => lazyStyles.addRule(rule, 'index-max'))
+      cache.data[0].forEach(rule => eagerStyles.addRule(rule))
+      cache.data[1].forEach(rule => lazyStyles.addRule(rule))
 
       eagerStyles.ready = true
       lazyStyles.ready = true
@@ -234,13 +234,13 @@ export const applyConfig = (input) => {
 
   const styleSheet = createStyleSheet('theme-holder')
 
-  styleSheet.addRule(`:root { ${rules} }`, 'index-max')
+  styleSheet.addRule(`:root { ${rules} }`)
 
   // TODO find a way to make this not apply to theme previews
   if (Object.prototype.hasOwnProperty.call(config, 'forcedRoundness')) {
     styleSheet.addRule(` *:not(.preview-block) {
         --roundness: var(--forcedRoundness) !important;
-    }`, 'index-max')
+    }`)
   }
   styleSheet.ready = true
   adoptStyleSheets()
