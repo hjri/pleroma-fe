@@ -694,7 +694,7 @@ export default {
         return
       }
 
-      const styleEl = document.getElementById('editor-overall-preview-holder')
+      const styleEl = document.getElementById('editor-overall-holder')
       const styleSheet = styleEl.sheet
 
       console.log(styleSheet)
