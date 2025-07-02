@@ -1,8 +1,8 @@
 <template>
   <div
+    :id="'component-preview-' + randomSeed"
     class="ComponentPreview"
     :class="{ '-shadow-controls': shadowControl }"
-    :id="'component-preview-' + randomSeed"
   >
     <label
       v-show="shadowControl"
