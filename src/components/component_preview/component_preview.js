@@ -27,6 +27,9 @@ export default {
       randomSeed: genRandomSeed()
     }
   },
+  mounted () {
+    this.update()
+  },
   computed: {
     hideControls () {
       return typeof this.shadow === 'string'
