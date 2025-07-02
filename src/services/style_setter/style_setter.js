@@ -19,9 +19,12 @@ export const createStyleSheet = (id) => {
       this.rules = []
     },
     addRule (rule) {
+      let newRule = rule
+      if (!CSS.supports?.('backdrop-filter', 'blur()')) {
+          newRule = newRule.replace(/backdrop-filter:[^;]+;/g, '') // Remove backdrop-filter
+      }
       this.rules.push(
-        rule
-          .replace(/backdrop-filter:[^;]+;/g, '') // Remove backdrop-filter
+        newRule
           .replace(/var\(--shadowFilter\)[^;]*;/g, '') // Remove shadowFilter references
       )
     }

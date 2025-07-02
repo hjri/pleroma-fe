@@ -703,6 +703,7 @@ export default {
         '&'
       ).join('\n')
 
+      sheet.clear()
       sheet.addRule('#theme-preview {\n' + rule + '\n}')
       sheet.ready = true
       adoptStyleSheets()
