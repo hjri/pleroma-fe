@@ -44,7 +44,7 @@ export const adoptStyleSheets = throttle(() => {
       .sort((a, b) => a.priority - b.priority)
       .map(sheet => {
         const css = new CSSStyleSheet()
-        sheet.rules.forEach(r => css.insertRule(r, css.cssRules.length))
+        sheet.rules.forEach(r => css.insertRule(r))
         return css
       })
   } else {
