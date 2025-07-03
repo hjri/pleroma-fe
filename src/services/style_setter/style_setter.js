@@ -10,11 +10,12 @@ const supportsAdoptedStyleSheets = !!document.adoptedStyleSheets
 
 const stylesheets = {}
 
-export const createStyleSheet = (id) => {
+export const createStyleSheet = (id, priority) => {
   if (stylesheets[id]) return stylesheets[id]
   const newStyleSheet = {
     rules: [],
     ready: false,
+    priority,
     clear () {
       this.rules = []
     },
@@ -40,9 +41,10 @@ export const adoptStyleSheets = throttle(() => {
     document.adoptedStyleSheets = Object
       .values(stylesheets)
       .filter(x => x.ready)
-      .map(x => {
+      .sort((a, b) => a.priority - b.priority)
+      .map(sheet => {
         const css = new CSSStyleSheet()
-        x.rules.forEach(r => css.insertRule(r, css.cssRules.length))
+        sheet.rules.forEach(r => css.insertRule(r, css.cssRules.length))
         return css
       })
   } else {
@@ -50,8 +52,10 @@ export const adoptStyleSheets = throttle(() => {
 
     Object
       .values(stylesheets)
+      .filter(x => x.ready)
+      .sort((a, b) => a.priority - b.priority)
       .forEach(sheet => {
-        sheet.rules.forEach(r => holder.sheet.insertRule(r))
+        sheet.rules.forEach(r => holder.sheet.insertRule(r, holder.sheet.cssRules.length))
       })
   }
   // Some older browsers do not support document.adoptedStyleSheets.
@@ -115,8 +119,8 @@ export const tryLoadCache = async () => {
   if (!cache) return null
   try {
     if (cache.engineChecksum === getEngineChecksum()) {
-      const eagerStyles = createStyleSheet(EAGER_STYLE_ID)
-      const lazyStyles = createStyleSheet(LAZY_STYLE_ID)
+      const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
+      const lazyStyles = createStyleSheet(LAZY_STYLE_ID, 20)
 
       cache.data[0].forEach(rule => eagerStyles.addRule(rule))
       cache.data[1].forEach(rule => lazyStyles.addRule(rule))
@@ -144,8 +148,8 @@ export const applyTheme = (
   onFinish = () => {},
   debug
 ) => {
-  const eagerStyles = createStyleSheet(EAGER_STYLE_ID)
-  const lazyStyles = createStyleSheet(LAZY_STYLE_ID)
+  const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
+  const lazyStyles = createStyleSheet(LAZY_STYLE_ID, 20)
 
 
   const { lazyProcessFunc } = generateTheme(
@@ -165,7 +169,7 @@ export const applyTheme = (
         console.info('Eager part of theme finished, waiting for lazy part to finish to store cache')
       },
       onLazyFinished () {
-        eagerStyles.ready = true
+        lazyStyles.ready = true
         adoptStyleSheets()
         const cache = { engineChecksum: getEngineChecksum(), data: [eagerStyles.rules, lazyStyles.rules] }
         onFinish(cache)
@@ -235,7 +239,7 @@ export const applyConfig = (input) => {
     .filter(([, v]) => v)
     .map(([k, v]) => `--${k}: ${v}`).join(';')
 
-  const styleSheet = createStyleSheet('theme-holder')
+  const styleSheet = createStyleSheet('theme-holder', 30)
 
   styleSheet.addRule(`:root { ${rules} }`)
 

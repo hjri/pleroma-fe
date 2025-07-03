@@ -695,7 +695,7 @@ export default {
         return
       }
 
-      const sheet = createStyleSheet('style-tab-overall-preview')
+      const sheet = createStyleSheet('style-tab-overall-preview', 90)
 
       sheet.clear()
       sheet.addRule([
