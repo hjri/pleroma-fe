@@ -10,7 +10,7 @@ const supportsAdoptedStyleSheets = !!document.adoptedStyleSheets
 
 const stylesheets = {}
 
-export const createStyleSheet = (id, priority) => {
+export const createStyleSheet = (id, priority = 1000) => {
   if (stylesheets[id]) return stylesheets[id]
   const newStyleSheet = {
     rules: [],
@@ -55,7 +55,7 @@ export const adoptStyleSheets = throttle(() => {
       .filter(x => x.ready)
       .sort((a, b) => a.priority - b.priority)
       .forEach(sheet => {
-        sheet.rules.forEach(r => holder.sheet.insertRule(r, holder.sheet.cssRules.length))
+        sheet.rules.forEach(r => holder.sheet.insertRule(r))
       })
   }
   // Some older browsers do not support document.adoptedStyleSheets.
