@@ -697,7 +697,7 @@ export default {
         liteMode: true
       })
 
-      const sheet = createStyleSheet('theme-tab-overall-preview')
+      const sheet = createStyleSheet('theme-tab-overall-preview', 90)
       const rule = getScopedVersion(
         getCssRules(theme3.eager),
         '&'

@@ -52,7 +52,7 @@ export default {
       this.$emit('update:shadow', { axis, value: Number(value) })
     },
     update () {
-      const sheet = createStyleSheet('style-component-preview')
+      const sheet = createStyleSheet('style-component-preview', 90)
 
       sheet.clear()
 

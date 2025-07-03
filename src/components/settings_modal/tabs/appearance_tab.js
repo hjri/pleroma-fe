@@ -412,11 +412,9 @@ const AppearanceTab = {
       }
 
 
-      const sheet = createStyleSheet('appearance-tab-previews')
+      const sheet = createStyleSheet('appearance-tab-previews', 90)
       sheet.addRule([
-        '#theme-preview-',
-        key,
-        ' {\n',
+        '#theme-preview-', key, ' {\n',
         getCssRules(theme3.eager).join('\n'),
         '\n}'
       ].join(''))
