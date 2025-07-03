@@ -136,7 +136,7 @@ export default defineConfig(async ({ mode, command }) => {
         '@ungap/event-target',
         'lodash.merge',
         'body-scroll-lock',
-        '@floatingghost/pinch-zoom-element'
+        '@kazvmoe-infra/pinch-zoom-element'
       ]
     },
     css: {

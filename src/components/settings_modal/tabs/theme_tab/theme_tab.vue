@@ -123,12 +123,6 @@
       </div>
     </div>
 
-    <!-- eslint-disable vue/no-v-html vue/no-v-text-v-html-on-component -->
-    <component
-      :is="'style'"
-      v-html="themeV3Preview"
-    />
-    <!-- eslint-enable vue/no-v-html vue/no-v-text-v-html-on-component -->
     <preview id="theme-preview" />
 
     <div>

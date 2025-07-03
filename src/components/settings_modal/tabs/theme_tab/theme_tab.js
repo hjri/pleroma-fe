@@ -31,6 +31,7 @@ import {
   getCssRules,
   getScopedVersion
 } from 'src/services/theme_data/css_utils.js'
+import { createStyleSheet, adoptStyleSheets } from 'src/services/style_setter/style_setter.js'
 
 import ColorInput from 'src/components/color_input/color_input.vue'
 import RangeInput from 'src/components/range_input/range_input.vue'
@@ -68,7 +69,6 @@ const colorConvert = (color) => {
 export default {
   data () {
     return {
-      themeV3Preview: [],
       themeImporter: newImporter({
         validator: this.importValidator,
         onImport: this.onImport,
@@ -697,10 +697,16 @@ export default {
         liteMode: true
       })
 
-      this.themeV3Preview = getScopedVersion(
+      const sheet = createStyleSheet('theme-tab-overall-preview')
+      const rule = getScopedVersion(
         getCssRules(theme3.eager),
-        '#theme-preview'
+        '&'
       ).join('\n')
+
+      sheet.clear()
+      sheet.addRule('#theme-preview {\n' + rule + '\n}')
+      sheet.ready = true
+      adoptStyleSheets()
     }
   },
   watch: {
