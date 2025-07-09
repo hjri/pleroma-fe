@@ -50,6 +50,10 @@ export const adoptStyleSheets = throttle(() => {
   } else {
     const holder = document.getElementById('custom-styles-holder')
 
+    for (let i = holder.sheet.cssRules.length - 1; i >= 0; --i) {
+      holder.sheet.deleteRule(i)
+    }
+
     Object
       .values(stylesheets)
       .filter(x => x.ready)
@@ -128,7 +132,8 @@ export const tryLoadCache = async () => {
       eagerStyles.ready = true
       lazyStyles.ready = true
 
-      adoptStyleSheets()
+      // Don't do this, we need to wait until config adopts its styles first
+      //adoptStyleSheets()
 
       console.info(`Loaded theme from cache`)
       return true
