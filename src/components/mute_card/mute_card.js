@@ -26,9 +26,7 @@ const MuteCard = {
   methods: {
     unmuteUser () {
       this.progress = true
-      this.$store.dispatch('unmuteUser', this.userId).then(() => {
-        this.progress = false
-      })
+      this.$store.dispatch('unmuteUser', this.userId)
     },
     muteUser () {
       this.$refs.timedMuteDialog.optionallyPrompt()
