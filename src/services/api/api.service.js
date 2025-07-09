@@ -15,7 +15,7 @@ const TAG_USER_URL = '/api/pleroma/admin/users/tag'
 const PERMISSION_GROUP_URL = (screenName, right) => `/api/pleroma/admin/users/${screenName}/permission_group/${right}`
 const ACTIVATE_USER_URL = '/api/pleroma/admin/users/activate'
 const DEACTIVATE_USER_URL = '/api/pleroma/admin/users/deactivate'
-const ADMIN_USERS_URL = '/api/pleroma/admin/users'
+const ADMIN_USERS_URL = '/api/v1/pleroma/admin/users'
 const SUGGESTIONS_URL = '/api/v1/suggestions'
 const NOTIFICATION_SETTINGS_URL = '/api/pleroma/notification_settings'
 const NOTIFICATION_READ_URL = '/api/v1/pleroma/notifications/read'
@@ -61,6 +61,7 @@ const MASTODON_LIST_TIMELINE_URL = id => `/api/v1/timelines/list/${id}`
 const MASTODON_LIST_ACCOUNTS_URL = id => `/api/v1/lists/${id}/accounts`
 const MASTODON_TAG_TIMELINE_URL = tag => `/api/v1/timelines/tag/${tag}`
 const MASTODON_BOOKMARK_TIMELINE_URL = '/api/v1/bookmarks'
+const AKKOMA_BUBBLE_TIMELINE_URL = '/api/v1/timelines/bubble'
 const MASTODON_USER_BLOCKS_URL = '/api/v1/blocks/'
 const MASTODON_USER_MUTES_URL = '/api/v1/mutes/'
 const MASTODON_BLOCK_USER_URL = id => `/api/v1/accounts/${id}/block`
@@ -99,7 +100,7 @@ const PLEROMA_CHAT_URL = id => `/api/v1/pleroma/chats/by-account-id/${id}`
 const PLEROMA_CHAT_MESSAGES_URL = id => `/api/v1/pleroma/chats/${id}/messages`
 const PLEROMA_CHAT_READ_URL = id => `/api/v1/pleroma/chats/${id}/read`
 const PLEROMA_DELETE_CHAT_MESSAGE_URL = (chatId, messageId) => `/api/v1/pleroma/chats/${chatId}/messages/${messageId}`
-const PLEROMA_ADMIN_REPORTS = '/api/pleroma/admin/reports'
+const PLEROMA_ADMIN_REPORTS = '/api/v1/pleroma/admin/reports'
 const PLEROMA_BACKUP_URL = '/api/v1/pleroma/backups'
 const PLEROMA_ANNOUNCEMENTS_URL = '/api/v1/pleroma/admin/announcements'
 const PLEROMA_POST_ANNOUNCEMENT_URL = '/api/v1/pleroma/admin/announcements'
@@ -111,10 +112,10 @@ const PLEROMA_USER_FAVORITES_TIMELINE_URL = id => `/api/v1/pleroma/accounts/${id
 const PLEROMA_BOOKMARK_FOLDERS_URL = '/api/v1/pleroma/bookmark_folders'
 const PLEROMA_BOOKMARK_FOLDER_URL = id => `/api/v1/pleroma/bookmark_folders/${id}`
 
-const PLEROMA_ADMIN_CONFIG_URL = '/api/pleroma/admin/config'
-const PLEROMA_ADMIN_DESCRIPTIONS_URL = '/api/pleroma/admin/config/descriptions'
-const PLEROMA_ADMIN_FRONTENDS_URL = '/api/pleroma/admin/frontends'
-const PLEROMA_ADMIN_FRONTENDS_INSTALL_URL = '/api/pleroma/admin/frontends/install'
+const PLEROMA_ADMIN_CONFIG_URL = '/api/v1/pleroma/admin/config'
+const PLEROMA_ADMIN_DESCRIPTIONS_URL = '/api/v1/pleroma/admin/config/descriptions'
+const PLEROMA_ADMIN_FRONTENDS_URL = '/api/v1/pleroma/admin/frontends'
+const PLEROMA_ADMIN_FRONTENDS_INSTALL_URL = '/api/v1/pleroma/admin/frontends/install'
 
 const PLEROMA_EMOJI_RELOAD_URL = '/api/pleroma/admin/reload_emoji'
 const PLEROMA_EMOJI_IMPORT_FS_URL = '/api/pleroma/emoji/packs/import'
@@ -714,7 +715,8 @@ const fetchTimeline = ({
     publicFavorites: PLEROMA_USER_FAVORITES_TIMELINE_URL,
     tag: MASTODON_TAG_TIMELINE_URL,
     bookmarks: MASTODON_BOOKMARK_TIMELINE_URL,
-    quotes: PLEROMA_STATUS_QUOTES_URL
+    quotes: PLEROMA_STATUS_QUOTES_URL,
+    bubble: AKKOMA_BUBBLE_TIMELINE_URL
   }
   const isNotifications = timeline === 'notifications'
   const params = []
@@ -764,7 +766,7 @@ const fetchTimeline = ({
   if (replyVisibility !== 'all') {
     params.push(['reply_visibility', replyVisibility])
   }
-  if (includeTypes.length > 0) {
+  if (includeTypes.size > 0) {
     includeTypes.forEach(type => {
       params.push(['include_types[]', type])
     })

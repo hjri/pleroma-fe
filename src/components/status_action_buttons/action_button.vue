@@ -60,7 +60,7 @@
       />
     </component>
     <span
-      v-if="!extra && button.counter?.(funcArg) > 0"
+      v-if="button.counter?.(funcArg) > 0"
       class="action-counter"
     >
       {{ button.counter?.(funcArg) }}

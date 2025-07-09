@@ -1,47 +1,76 @@
 import { init, getEngineChecksum } from '../theme_data/theme_data_3.service.js'
 import { getCssRules } from '../theme_data/css_utils.js'
 import { defaultState } from 'src/modules/default_config_state.js'
-import { chunk } from 'lodash'
+import { chunk, throttle } from 'lodash'
 import localforage from 'localforage'
 
 // On platforms where this is not supported, it will return undefined
 // Otherwise it will return an array
 const supportsAdoptedStyleSheets = !!document.adoptedStyleSheets
 
-const createStyleSheet = (id) => {
-  if (supportsAdoptedStyleSheets) {
-    return {
-      el: null,
-      sheet: new CSSStyleSheet(),
-      rules: []
+const stylesheets = {}
+
+export const createStyleSheet = (id, priority = 1000) => {
+  if (stylesheets[id]) return stylesheets[id]
+  const newStyleSheet = {
+    rules: [],
+    ready: false,
+    priority,
+    clear () {
+      this.rules = []
+    },
+    addRule (rule) {
+      let newRule = rule
+      if (!CSS.supports?.('backdrop-filter', 'blur()')) {
+        newRule = newRule.replace(/backdrop-filter:[^;]+;/g, '') // Remove backdrop-filter
+      }
+      this.rules.push(
+        newRule
+          .replace(/var\(--shadowFilter\)[^;]*;/g, '') // Remove shadowFilter references
+      )
     }
   }
 
-  const el = document.getElementById(id)
-  // Clear all rules in it
-  for (let i = el.sheet.cssRules.length - 1; i >= 0; --i) {
-    el.sheet.deleteRule(i)
-  }
-
-  return {
-    el,
-    sheet: el.sheet,
-    rules: []
-  }
+  stylesheets[id] = newStyleSheet
+  return newStyleSheet
 }
 
-const EAGER_STYLE_ID = 'pleroma-eager-styles'
-const LAZY_STYLE_ID = 'pleroma-lazy-styles'
 
-const adoptStyleSheets = (styles) => {
+export const adoptStyleSheets = throttle(() => {
   if (supportsAdoptedStyleSheets) {
-    document.adoptedStyleSheets = styles.map(s => s.sheet)
+    document.adoptedStyleSheets = Object
+      .values(stylesheets)
+      .filter(x => x.ready)
+      .sort((a, b) => a.priority - b.priority)
+      .map(sheet => {
+        const css = new CSSStyleSheet()
+        sheet.rules.forEach(r => css.insertRule(r))
+        return css
+      })
+  } else {
+    const holder = document.getElementById('custom-styles-holder')
+
+    for (let i = holder.sheet.cssRules.length - 1; i >= 0; --i) {
+      holder.sheet.deleteRule(i)
+    }
+
+    Object
+      .values(stylesheets)
+      .filter(x => x.ready)
+      .sort((a, b) => a.priority - b.priority)
+      .forEach(sheet => {
+        sheet.rules.forEach(r => holder.sheet.insertRule(r))
+      })
   }
   // Some older browsers do not support document.adoptedStyleSheets.
   // In this case, we use the <style> elements.
   // Since the <style> elements we need are already in the DOM, there
   // is nothing to do here.
-}
+}, 500)
+
+
+const EAGER_STYLE_ID = 'pleroma-eager-styles'
+const LAZY_STYLE_ID = 'pleroma-lazy-styles'
 
 export const generateTheme = (inputRuleset, callbacks, debug) => {
   const {
@@ -94,13 +123,17 @@ export const tryLoadCache = async () => {
   if (!cache) return null
   try {
     if (cache.engineChecksum === getEngineChecksum()) {
-      const eagerStyles = createStyleSheet(EAGER_STYLE_ID)
-      const lazyStyles = createStyleSheet(LAZY_STYLE_ID)
+      const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
+      const lazyStyles = createStyleSheet(LAZY_STYLE_ID, 20)
 
-      cache.data[0].forEach(rule => eagerStyles.sheet.insertRule(rule, 'index-max'))
-      cache.data[1].forEach(rule => lazyStyles.sheet.insertRule(rule, 'index-max'))
+      cache.data[0].forEach(rule => eagerStyles.addRule(rule))
+      cache.data[1].forEach(rule => lazyStyles.addRule(rule))
 
-      adoptStyleSheets([eagerStyles, lazyStyles])
+      eagerStyles.ready = true
+      lazyStyles.ready = true
+
+      // Don't do this, we need to wait until config adopts its styles first
+      //adoptStyleSheets()
 
       console.info(`Loaded theme from cache`)
       return true
@@ -120,57 +153,29 @@ export const applyTheme = (
   onFinish = () => {},
   debug
 ) => {
-  const eagerStyles = createStyleSheet(EAGER_STYLE_ID)
-  const lazyStyles = createStyleSheet(LAZY_STYLE_ID)
+  const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
+  const lazyStyles = createStyleSheet(LAZY_STYLE_ID, 20)
 
-  const insertRule = (styles, rule) => {
-    try {
-      // Try to use modern syntax first
-      try {
-        styles.sheet.insertRule(rule, 'index-max')
-        styles.rules.push(rule)
-      } catch {
-        // Fallback for older browsers that don't support 'index-max'
-        styles.sheet.insertRule(rule, styles.sheet.cssRules.length)
-        styles.rules.push(rule)
-      }
-    } catch (e) {
-      console.warn('Can\'t insert rule due to lack of support', e, rule)
-
-      // Try to sanitize the rule for better compatibility
-      try {
-        // Remove any potentially problematic CSS features
-        let sanitizedRule = rule
-          .replace(/backdrop-filter:[^;]+;/g, '') // Remove backdrop-filter
-          .replace(/var\(--shadowFilter\)[^;]*;/g, '') // Remove shadowFilter references
-
-        if (sanitizedRule !== rule) {
-          styles.sheet.insertRule(sanitizedRule, styles.sheet.cssRules.length)
-          styles.rules.push(sanitizedRule)
-        }
-      } catch (e2) {
-        console.error('Failed to insert even sanitized rule', e2)
-      }
-    }
-  }
 
   const { lazyProcessFunc } = generateTheme(
     input,
     {
       onNewRule (rule, isLazy) {
         if (isLazy) {
-          insertRule(lazyStyles, rule)
+          lazyStyles.addRule(rule)
         } else {
-          insertRule(eagerStyles, rule)
+          eagerStyles.addRule(rule)
         }
       },
       onEagerFinished () {
-        adoptStyleSheets([eagerStyles])
+        eagerStyles.ready = true
+        adoptStyleSheets()
         onEagerFinish()
         console.info('Eager part of theme finished, waiting for lazy part to finish to store cache')
       },
       onLazyFinished () {
-        adoptStyleSheets([eagerStyles, lazyStyles])
+        lazyStyles.ready = true
+        adoptStyleSheets()
         const cache = { engineChecksum: getEngineChecksum(), data: [eagerStyles.rules, lazyStyles.rules] }
         onFinish(cache)
         localforage.setItem('pleromafe-theme-cache', cache)
@@ -234,28 +239,23 @@ export const applyConfig = (input) => {
     return
   }
 
-  const head = document.head
-
   const rules = Object
     .entries(config)
     .filter(([, v]) => v)
     .map(([k, v]) => `--${k}: ${v}`).join(';')
 
-  document.getElementById('style-config')?.remove()
-  const styleEl = document.createElement('style')
-  styleEl.id = 'style-config'
-  head.appendChild(styleEl)
-  const styleSheet = styleEl.sheet
+  const styleSheet = createStyleSheet('theme-holder', 30)
 
-  styleSheet.toString()
-  styleSheet.insertRule(`:root { ${rules} }`, 'index-max')
+  styleSheet.addRule(`:root { ${rules} }`)
 
   // TODO find a way to make this not apply to theme previews
   if (Object.prototype.hasOwnProperty.call(config, 'forcedRoundness')) {
-    styleSheet.insertRule(` *:not(.preview-block) {
+    styleSheet.addRule(` *:not(.preview-block) {
         --roundness: var(--forcedRoundness) !important;
-    }`, 'index-max')
+    }`)
   }
+  styleSheet.ready = true
+  adoptStyleSheets()
 }
 
 export const getResourcesIndex = async (url, parser = JSON.parse) => {

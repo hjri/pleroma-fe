@@ -27,6 +27,13 @@ export const TIMELINES = {
     label: 'nav.public_tl',
     criteria: ['!private']
   },
+  bubble: {
+    route: 'bubble',
+    anon: true,
+    icon: 'city',
+    label: 'nav.bubble',
+    criteria: ['!private', 'federating', 'supportsBubbleTimeline']
+  },
   twkn: {
     route: 'public-external-timeline',
     anon: true,
@@ -34,11 +41,11 @@ export const TIMELINES = {
     label: 'nav.twkn',
     criteria: ['!private', 'federating']
   },
+  // bookmarks are still technically a timeline so we should show it in the dropdown
   bookmarks: {
     route: 'bookmarks',
     icon: 'bookmark',
     label: 'nav.bookmarks',
-    criteria: ['!supportsBookmarkFolders']
   },
   favorites: {
     routeObject: { name: 'user-profile', query: { tab: 'favorites' } },
@@ -53,6 +60,15 @@ export const TIMELINES = {
 }
 
 export const ROOT_ITEMS = {
+  bookmarks: {
+    route: 'bookmarks',
+    icon: 'bookmark',
+    label: 'nav.bookmarks',
+    // shows bookmarks entry in a better suited location
+    // hides it when bookmark folders are supported since
+    // we show custom component instead of it
+    criteria: ['!supportsBookmarkFolders']
+  },
   interactions: {
     route: 'interactions',
     icon: 'bell',

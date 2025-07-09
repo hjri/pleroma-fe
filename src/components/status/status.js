@@ -24,6 +24,7 @@ import {
   faLock,
   faLockOpen,
   faGlobe,
+  faIgloo,
   faTimes,
   faRetweet,
   faReply,
@@ -43,6 +44,7 @@ import {
 library.add(
   faEnvelope,
   faGlobe,
+  faIgloo,
   faLock,
   faLockOpen,
   faTimes,
@@ -484,6 +486,8 @@ const Status = {
           return 'lock-open'
         case 'direct':
           return 'envelope'
+        case 'local':
+          return 'igloo'
         default:
           return 'globe'
       }

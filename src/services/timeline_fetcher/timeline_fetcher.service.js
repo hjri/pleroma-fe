@@ -54,7 +54,7 @@ const fetchAndUpdate = ({
   args.bookmarkFolderId = bookmarkFolderId
   args.tag = tag
   args.withMuted = !hideMutedPosts
-  if (loggedIn && ['friends', 'public', 'publicAndExternal'].includes(timeline)) {
+  if (loggedIn && ['friends', 'public', 'publicAndExternal', 'bubble'].includes(timeline)) {
     args.replyVisibility = replyVisibility
   }
 
@@ -63,6 +63,10 @@ const fetchAndUpdate = ({
   return apiService.fetchTimeline(args)
     .then(response => {
       if (response.errors) {
+        if (timeline === 'favorites') {
+          rootState.instance.pleromaPublicFavouritesAvailable = false
+          return
+        }
         throw new Error(`${response.status} ${response.statusText}`)
       }
 

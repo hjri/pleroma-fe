@@ -607,6 +607,7 @@ const users = {
       return new Promise((resolve, reject) => {
         const commit = store.commit
         const dispatch = store.dispatch
+        const rootState = store.rootState
         commit('beginLogin')
         store.rootState.api.backendInteractor.verifyCredentials(accessToken)
           .then((data) => {
@@ -673,8 +674,10 @@ const users = {
                 // Start fetching notifications
                 dispatch('startFetchingNotifications')
 
-                // Start fetching chats
-                dispatch('startFetchingChats')
+                if (rootState.instance.pleromaChatMessagesAvailable) {
+                  // Start fetching chats
+                  dispatch('startFetchingChats')
+                }
               }
 
               dispatch('startFetchingLists')

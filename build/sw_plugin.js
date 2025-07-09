@@ -11,6 +11,11 @@ const getSWMessagesAsText = async () => {
 }
 const projectRoot = dirname(dirname(fileURLToPath(import.meta.url)))
 
+const swEnvName = 'virtual:pleroma-fe/service_worker_env'
+const swEnvNameResolved = '\0' + swEnvName
+const getDevSwEnv = () => `self.serviceWorkerOption = { assets: [] };`
+const getProdSwEnv = ({ assets }) => `self.serviceWorkerOption = { assets: ${JSON.stringify(assets)} };`
+
 export const devSwPlugin = ({
   swSrc,
   swDest,
@@ -32,12 +37,16 @@ export const devSwPlugin = ({
       const name = id.startsWith('/') ? id.slice(1) : id
       if (name === swDest) {
         return swFullSrc
+      } else if (name === swEnvName) {
+        return swEnvNameResolved
       }
       return null
     },
     async load (id) {
       if (id === swFullSrc) {
         return readFile(swFullSrc, 'utf-8')
+      } else if (id === swEnvNameResolved) {
+        return getDevSwEnv()
       }
       return null
     },
@@ -77,6 +86,21 @@ export const devSwPlugin = ({
                 { filter: /.*/, namespace: 'sw-messages' },
                 async () => ({
                   contents: await getSWMessagesAsText()
+                }))
+            }
+          }, {
+            name: 'sw-env',
+            setup (b) {
+              b.onResolve(
+                { filter: new RegExp('^' + swEnvName + '$') },
+                args => ({
+                  path: args.path,
+                  namespace: 'sw-env'
+                }))
+              b.onLoad(
+                { filter: /.*/, namespace: 'sw-env' },
+                () => ({
+                  contents: getDevSwEnv()
                 }))
             }
           }]
@@ -124,6 +148,30 @@ export const buildSwPlugin = ({
           }
         },
         configFile: false
+      }
+    },
+    generateBundle: {
+      order: 'post',
+      sequential: true,
+      async handler (_, bundle) {
+        const assets = Object.keys(bundle)
+              .filter(name => !/\.map$/.test(name))
+              .map(name => '/' + name)
+        config.plugins.push({
+          name: 'build-sw-env-plugin',
+          resolveId (id) {
+            if (id === swEnvName) {
+              return swEnvNameResolved
+            }
+            return null
+          },
+          load (id) {
+            if (id === swEnvNameResolved) {
+              return getProdSwEnv({ assets })
+            }
+            return null
+          }
+        })
       }
     },
     closeBundle: {
