@@ -48,7 +48,7 @@ export const adoptStyleSheets = throttle(() => {
   } else {
     const holder = document.getElementById('custom-styles-holder')
 
-    for (let i = holder.cssRules.length - 1; i >= 0; --i) {
+    for (let i = holder.sheet.cssRules.length - 1; i >= 0; --i) {
       holder.sheet.deleteRule(i)
     }
 
