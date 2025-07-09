@@ -137,6 +137,18 @@
                 />
               </span>
               <span
+                v-if="relationship.muting"
+                class="alert neutral user-role"
+              >
+                {{ muteExpiry }}
+              </span>
+              <span
+                v-if="relationship.blocking"
+                class="alert neutral user-role"
+              >
+                {{ blockExpiry }}
+              </span>
+              <span
                 v-if="!mergedConfig.hideUserStats && !hideBio"
                 class="dailyAvg"
               >{{ dailyAvg }} {{ $t('user_card.per_day') }}</span>

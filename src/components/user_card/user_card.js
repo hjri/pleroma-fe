@@ -77,7 +77,6 @@ export default {
       return this.$store.getters.findUser(this.userId)
     },
     relationship () {
-      console.log(this.$store.getters.relationship(this.userId))
       return this.$store.getters.relationship(this.userId)
     },
     classes () {
@@ -159,6 +158,16 @@ export default {
     },
     supportsNote () {
       return 'note' in this.relationship
+    },
+    muteExpiry () {
+      return this.user.mute_expires_at == null
+        ? this.$t('user_card.mute_expires_forever')
+        : this.$t('user_card.mute_expires_at', [new Date(this.user.mute_expires_at).toLocaleString()])
+    },
+    blockExpiry () {
+      return this.user.block_expires_at == null
+        ? this.$t('user_card.block_expires_forever')
+        : this.$t('user_card.block_expires_at', [new Date(this.user.mute_expires_at).toLocaleString()])
     },
     ...mapGetters(['mergedConfig'])
   },
