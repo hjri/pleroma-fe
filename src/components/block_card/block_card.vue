@@ -1,33 +1,32 @@
 <template>
   <basic-user-card :user="user">
     <div class="block-card-content-container">
+      <span v-if="blocked" class="alert neutral">
+        {{ blockExpiry }}
+      </span>
+      {{ ' ' }}
       <button
         v-if="blocked"
         class="btn button-default"
-        :disabled="progress"
         @click="unblockUser"
       >
-        <template v-if="progress">
-          {{ $t('user_card.unblock_progress') }}
-        </template>
-        <template v-else>
-          {{ $t('user_card.unblock') }}
-        </template>
+        {{ $t('user_card.unblock') }}
       </button>
       <button
         v-else
         class="btn button-default"
-        :disabled="progress"
         @click="blockUser"
       >
-        <template v-if="progress">
-          {{ $t('user_card.block_progress') }}
-        </template>
-        <template v-else>
-          {{ $t('user_card.block') }}
-        </template>
+        {{ $t('user_card.block') }}
       </button>
     </div>
+    <teleport to="#modal">
+      <UserTimedFilterModal
+        :user="user"
+        :is-mute="false"
+        ref="timedBlockDialog"
+      />
+    </teleport>
   </basic-user-card>
 </template>
 

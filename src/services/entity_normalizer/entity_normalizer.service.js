@@ -51,6 +51,8 @@ export const parseUser = (data) => {
     output.screen_name = data.acct
     output.fqn = data.fqn
     output.statusnet_profile_url = data.url
+    output.mute_expires_at = data.mute_expires_at
+    output.block_expires_at = data.block_expires_at
 
     // There's nothing else to get
     if (mastoShort) {
