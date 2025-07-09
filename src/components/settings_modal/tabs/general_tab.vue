@@ -70,6 +70,66 @@
           </BooleanSetting>
         </li>
         <li>
+          {{ $t('user_card.default_mute_expiration') }}
+          <Select
+            id="onMuteDefaultActionLv1"
+            v-model="onMuteDefaultActionLv1"
+          >
+            <option
+              v-for="option in muteBlockLv1Options"
+              :key="option.key"
+              :value="option.value"
+            >
+              {{ option.label }}
+            </option>
+          </Select>
+          <ul
+            class="setting-list suboptions"
+            v-if="onMuteDefaultActionLv1 === 'temporarily'"
+          >
+            <li>
+              <UnitSetting
+                path="onMuteDefaultAction"
+                unit-set="time"
+                :units="['s', 'm', 'h', 'd']"
+                :min="0"
+              >
+                {{ $t('user_card.default_expiration_time') }}
+              </UnitSetting>
+            </li>
+          </ul>
+        </li>
+        <li v-if="blockExpirationSupported">
+          {{ $t('user_card.default_block_expiration') }}
+          <Select
+            id="onBlockDefaultActionLv1"
+            v-model="onBlockDefaultActionLv1"
+          >
+            <option
+              v-for="option in muteBlockLv1Options"
+              :key="option.key"
+              :value="option.value"
+            >
+              {{ option.label }}
+            </option>
+          </Select>
+          <ul
+            class="setting-list suboptions"
+            v-if="onBlockDefaultActionLv1 === 'temporarily'"
+          >
+            <li>
+              <UnitSetting
+                path="onBlockDefaultAction"
+                unit-set="time"
+                :units="['s', 'm', 'h', 'd']"
+                :min="0"
+              >
+                {{ $t('user_card.default_expiration_time') }}
+              </UnitSetting>
+            </li>
+          </ul>
+        </li>
+        <li>
           <BooleanSetting
             path="alwaysShowNewPostButton"
             expert="1"
@@ -107,13 +167,8 @@
               </BooleanSetting>
             </li>
             <li>
-              <BooleanSetting path="modalOnBlock">
+              <BooleanSetting v-if="!blockExpirationSupported" path="modalOnBlock">
                 {{ $t('settings.confirm_dialogs_block') }}
-              </BooleanSetting>
-            </li>
-            <li>
-              <BooleanSetting path="modalOnMute">
-                {{ $t('settings.confirm_dialogs_mute') }}
               </BooleanSetting>
             </li>
             <li>
