@@ -7,6 +7,10 @@ const SelectableList = {
     Checkbox
   },
   props: {
+    boxOnly: {
+       type: Boolean,
+       default: false
+    },
     items: {
       type: Array,
       default: () => []

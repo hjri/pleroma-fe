@@ -60,6 +60,9 @@ const adminSettingsStorage = {
     }
   },
   actions: {
+    fetchAdminUsers (store) {
+      store.rootState.api.backendInteractor.adminListUsers().then((users) => users.forEach(user => store.dispatch('fetchUserIfMissing', user.id)))
+    },
     loadFrontendsStuff ({ rootState, commit }) {
       rootState.api.backendInteractor.fetchAvailableFrontends()
         .then(frontends => commit('setAvailableFrontends', { frontends }))

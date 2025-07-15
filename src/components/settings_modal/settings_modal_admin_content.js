@@ -1,6 +1,7 @@
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 
 import InstanceTab from './admin_tabs/instance_tab.vue'
+import UsersTab from './admin_tabs/users_tab.vue'
 import LimitsTab from './admin_tabs/limits_tab.vue'
 import FrontendsTab from './admin_tabs/frontends_tab.vue'
 import EmojiTab from './admin_tabs/emoji_tab.vue'
@@ -34,6 +35,7 @@ const SettingsModalAdminContent = {
     TabSwitcher,
 
     InstanceTab,
+    UsersTab,
     LimitsTab,
     FrontendsTab,
     EmojiTab
