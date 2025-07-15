@@ -1099,6 +1099,7 @@
     "tabs": {
       "nodb": "No DB Config",
       "instance": "Instance",
+      "users": "Users",
       "limits": "Limits",
       "frontends": "Front-ends",
       "emoji": "Emoji"
@@ -1126,6 +1127,18 @@
         "profiles": "User profiles access",
         "activities": "Statuses/activities access"
       }
+    },
+    "users": {
+      "users": "User Management",
+      "search_users": "Search for users...",
+      "filters": {
+         "show_all": "show all",
+         "active_only": "active only",
+         "inactive_only": "inactive only",
+         "local_only": "local only",
+         "external_only": "external only"
+      },
+      "loading": "Loading..."
     },
     "limits": {
       "arbitrary_limits": "Arbitrary limits",

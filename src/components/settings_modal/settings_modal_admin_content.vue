@@ -50,6 +50,14 @@
     </div>
     <div
       v-if="adminDbLoaded"
+      :label="$t('admin_dash.tabs.users')"
+      icon="wrench"
+      data-tab-name="users"
+    >
+      <UsersTab />
+    </div>
+    <div
+      v-if="adminDbLoaded"
       :label="$t('admin_dash.tabs.limits')"
       icon="hand"
       data-tab-name="limits"

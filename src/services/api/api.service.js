@@ -115,6 +115,7 @@ const PLEROMA_ADMIN_CONFIG_URL = '/api/pleroma/admin/config'
 const PLEROMA_ADMIN_DESCRIPTIONS_URL = '/api/pleroma/admin/config/descriptions'
 const PLEROMA_ADMIN_FRONTENDS_URL = '/api/pleroma/admin/frontends'
 const PLEROMA_ADMIN_FRONTENDS_INSTALL_URL = '/api/pleroma/admin/frontends/install'
+const PLEROMA_ADMIN_USERS_URL = '/api/v1/pleroma/admin/users'
 
 const PLEROMA_EMOJI_RELOAD_URL = '/api/pleroma/admin/reload_emoji'
 const PLEROMA_EMOJI_IMPORT_FS_URL = '/api/pleroma/emoji/packs/import'
@@ -1440,6 +1441,12 @@ const dismissAnnouncement = ({ id, credentials }) => {
   })
 }
 
+const adminListUsers = ({ credentials }) => {
+   // the reported list is hardly useful because standards are for dating i guess,
+   // so make sure to fetchIfMissing right afterward using this call
+   return promisedRequest({ url: PLEROMA_ADMIN_USERS_URL, credentials }).then((data) => data.users.map(parseUser))
+}
+
 const announcementToPayload = ({ content, startsAt, endsAt, allDay }) => {
   const payload = { content }
 
@@ -2111,7 +2118,8 @@ const apiService = {
   fetchBookmarkFolders,
   createBookmarkFolder,
   updateBookmarkFolder,
-  deleteBookmarkFolder
+  deleteBookmarkFolder,
+  adminListUsers,
 }
 
 export default apiService
