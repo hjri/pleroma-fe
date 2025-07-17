@@ -24,6 +24,11 @@ export const createStyleSheet = (id, priority = 1000) => {
       if (!CSS.supports?.('backdrop-filter', 'blur()')) {
         newRule = newRule.replace(/backdrop-filter:[^;]+;/g, '') // Remove backdrop-filter
       }
+
+      // firefox doesn't like invalid selectors
+      if (!CSS.supports?.('selector(::-webkit-scrollbar)') && newRule.startsWith('::-webkit')) {
+        return
+      }
       this.rules.push(
         newRule
           .replace(/var\(--shadowFilter\)[^;]*;/g, '') // Remove shadowFilter references
@@ -156,6 +161,8 @@ export const applyTheme = (
   const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
   const lazyStyles = createStyleSheet(LAZY_STYLE_ID, 20)
 
+  eagerStyles.clear()
+  lazyStyles.clear()
 
   const { lazyProcessFunc } = generateTheme(
     input,
