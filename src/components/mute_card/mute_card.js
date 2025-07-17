@@ -13,6 +13,9 @@ const MuteCard = {
     muted () {
       return this.relationship.muting
     },
+    muteExpiryAvailable () {
+      return this.user.mute_expires_at !== undefined
+    },
     muteExpiry () {
       return this.user.mute_expires_at == null
         ? this.$t('user_card.mute_expires_forever')

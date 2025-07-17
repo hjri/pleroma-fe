@@ -1,7 +1,7 @@
 <template>
   <basic-user-card :user="user">
     <div class="block-card-content-container">
-      <span v-if="blocked" class="alert neutral">
+      <span v-if="blocked && blockExpiryAvailable" class="alert neutral">
         {{ blockExpiry }}
       </span>
       {{ ' ' }}

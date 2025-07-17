@@ -1,7 +1,7 @@
 <template>
   <basic-user-card :user="user">
     <div class="mute-card-content-container">
-      <span v-if="muted" class="alert neutral">
+      <span v-if="muted && muteExpiryAvailable" class="alert neutral">
         {{ muteExpiry }}
       </span>
       {{ ' ' }}

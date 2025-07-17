@@ -137,13 +137,13 @@
                 />
               </span>
               <span
-                v-if="relationship.muting"
+                v-if="relationship.muting && muteExpiryAvailable"
                 class="alert neutral user-role"
               >
                 {{ muteExpiry }}
               </span>
               <span
-                v-if="relationship.blocking"
+                v-if="relationship.blocking && blockExpiryAvailable"
                 class="alert neutral user-role"
               >
                 {{ blockExpiry }}

@@ -159,10 +159,16 @@ export default {
     supportsNote () {
       return 'note' in this.relationship
     },
+    muteExpiryAvailable () {
+      return this.user.mute_expires_at !== undefined
+    },
     muteExpiry () {
       return this.user.mute_expires_at == null
         ? this.$t('user_card.mute_expires_forever')
         : this.$t('user_card.mute_expires_at', [new Date(this.user.mute_expires_at).toLocaleString()])
+    },
+    blockExpiryAvailable () {
+      return this.user.block_expires_at !== undefined
     },
     blockExpiry () {
       return this.user.block_expires_at == null
