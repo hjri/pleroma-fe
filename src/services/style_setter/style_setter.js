@@ -26,7 +26,7 @@ export const createStyleSheet = (id, priority = 1000) => {
       }
 
       // firefox doesn't like invalid selectors
-      if (!CSS.supports?.('::-webkit') && newRule.startsWith('::-webkit')) {
+      if (!CSS.supports?.('selector(::-webkit-scrollbar)') && newRule.startsWith('::-webkit')) {
         return
       }
       this.rules.push(
