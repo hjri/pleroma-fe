@@ -28,7 +28,6 @@ const MuteCard = {
   },
   methods: {
     unmuteUser () {
-      this.progress = true
       this.$store.dispatch('unmuteUser', this.userId)
     },
     muteUser () {

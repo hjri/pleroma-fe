@@ -31,7 +31,6 @@ const BlockCard = {
   },
   methods: {
     unblockUser () {
-      this.progress = true
       this.$store.dispatch('unblockUser', this.user.id)
     },
     blockUser () {

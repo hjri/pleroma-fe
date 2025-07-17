@@ -53,7 +53,6 @@ const blockUser = (store, args) => {
 
   return store.rootState.api.backendInteractor.blockUser({ id, expiresIn })
     .then((relationship) => {
-      console.log(relationship)
       store.commit('updateUserRelationship', [relationship])
       store.commit('addBlockId', id)
 

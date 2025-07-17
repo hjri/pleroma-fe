@@ -254,7 +254,6 @@ const getNodeInfo = async ({ store }) => {
       const data = await res.json()
       const metadata = data.metadata
       const features = metadata.features
-      console.log(features)
       store.dispatch('setInstanceOption', { name: 'name', value: metadata.nodeName })
       store.dispatch('setInstanceOption', { name: 'registrationOpen', value: data.openRegistrations })
       store.dispatch('setInstanceOption', { name: 'mediaProxyAvailable', value: features.includes('media_proxy') })
