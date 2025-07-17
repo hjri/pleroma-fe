@@ -10,7 +10,6 @@ import Select from 'src/components/select/select.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
 
-import { mapState } from 'vuex'
 import { clearCache, cacheKey, emojiCacheKey } from 'src/services/sw/sw.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -59,11 +58,6 @@ const GeneralTab = {
         value: mode,
         label: this.$t(`settings.unsaved_post_action_${mode}`)
       })),
-      muteBlockLv1Options: ['ask', 'forever', 'temporarily'].map(mode => ({
-        key: mode,
-        value: mode,
-        label: this.$t(`user_card.mute_block_${mode}`)
-      })),
       loopSilentAvailable:
       // Firefox
       Object.getOwnPropertyDescriptor(HTMLVideoElement.prototype, 'mozHasAudio') ||
@@ -88,40 +82,6 @@ const GeneralTab = {
     postFormats () {
       return this.$store.state.instance.postFormats || []
     },
-    onMuteDefaultActionLv1: {
-      get () {
-        const value = this.$store.state.config.onMuteDefaultAction
-        if (value === 'ask' || value === 'forever') {
-          return value
-        } else {
-          return 'temporarily'
-        }
-      },
-      set (value) {
-        let realValue = value
-        if (value !== 'ask' && value !== 'forever') {
-          realValue = '14d'
-        }
-        this.$store.dispatch('setOption', { name: 'onMuteDefaultAction', value: realValue })
-      }
-    },
-    onBlockDefaultActionLv1: {
-      get () {
-        const value = this.$store.state.config.onBlockDefaultAction
-        if (value === 'ask' || value === 'forever') {
-          return value
-        } else {
-          return 'temporarily'
-        }
-      },
-      set (value) {
-        let realValue = value
-        if (value !== 'ask' && value !== 'forever') {
-          realValue = '14d'
-        }
-        this.$store.dispatch('setOption', { name: 'onBlockDefaultAction', value: realValue })
-      }
-    },
     postContentOptions () {
       return this.postFormats.map(format => ({
         key: format,
@@ -137,10 +97,7 @@ const GeneralTab = {
     },
     instanceShoutboxPresent () { return this.$store.state.instance.shoutAvailable },
     instanceSpecificPanelPresent () { return this.$store.state.instance.showInstanceSpecificPanel },
-    ...SharedComputedObject(),
-    ...mapState({
-      blockExpirationSupported: state => state.instance.blockExpiration
-    })
+    ...SharedComputedObject()
   },
   methods: {
     changeDefaultScope (value) {
