@@ -161,6 +161,8 @@ export const applyTheme = (
   const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
   const lazyStyles = createStyleSheet(LAZY_STYLE_ID, 20)
 
+  eagerStyles.clear()
+  lazyStyles.clear()
 
   const { lazyProcessFunc } = generateTheme(
     input,
