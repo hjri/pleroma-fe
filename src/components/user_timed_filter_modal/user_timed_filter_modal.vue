@@ -1,6 +1,7 @@
 <template>
   <confirm-modal
     v-if="showing"
+    class="UserTimedFilterModal"
     :title="$t(isMute ? $t('user_card.mute') : $t('user_card.block'))"
     :confirm-text="$t(isMute ? 'user_card.mute_confirm_accept_button' : 'user_card.block_confirm_accept_button')"
     :cancel-text="$t(isMute ? 'user_card.mute_confirm_cancel_button' : 'user_card.block_confirm_cancel_button')"
@@ -34,25 +35,30 @@
         <option key="d" value="d"> {{ $t('time.unit.days_suffix') }} </option>
       </Select>
 
-      <br />
+      {{ $t('user_card.mute_or') }}
+
       <Checkbox
         id="forever"
         v-model="forever"
         name="forever"
         class="input-forever"
       >
-        {{ $t('user_card.mute_block_forever') }}
+        {{ $t('user_card.mute_block_never') }}
       </Checkbox>
     </p>
 
-    <Checkbox
-      id="dontAskAgain"
-      v-model="dontAskAgain"
-      name="dontAskAgain"
-      class="input-dont-ask-again"
-    >
-      {{ $t(isMute ? 'user_card.dont_ask_again_mute' : 'user_card.dont_ask_again_block') }}
-    </Checkbox>
+    <template #footerLeft>
+      <div class="footer-left-checkbox">
+        <Checkbox
+          id="dontAskAgain"
+          v-model="dontAskAgain"
+          name="dontAskAgain"
+          class="input-dont-ask-again"
+        >
+          {{ $t(isMute ? 'user_card.dont_ask_again_mute' : 'user_card.dont_ask_again_block') }}
+        </Checkbox>
+      </div>
+    </template>
   </confirm-modal>
 </template>
 
