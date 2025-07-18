@@ -137,6 +137,18 @@
                 />
               </span>
               <span
+                v-if="relationship.muting && muteExpiryAvailable"
+                class="alert neutral user-role"
+              >
+                {{ muteExpiry }}
+              </span>
+              <span
+                v-if="relationship.blocking && blockExpiryAvailable"
+                class="alert neutral user-role"
+              >
+                {{ blockExpiry }}
+              </span>
+              <span
                 v-if="!mergedConfig.hideUserStats && !hideBio"
                 class="dailyAvg"
               >{{ dailyAvg }} {{ $t('user_card.per_day') }}</span>
@@ -232,7 +244,7 @@
           <div>
             <button
               v-if="relationship.muting"
-              class="btn button-default btn-block toggled"
+              class="btn button-default btn-mute toggled"
               :disabled="user.deactivated"
               @click="unmuteUser"
             >
@@ -240,7 +252,7 @@
             </button>
             <button
               v-else
-              class="btn button-default btn-block"
+              class="btn button-default btn-mute"
               :disabled="user.deactivated"
               @click="muteUser"
             >
@@ -249,7 +261,7 @@
           </div>
           <div>
             <button
-              class="btn button-default btn-block"
+              class="btn button-default btn-mention"
               :disabled="user.deactivated"
               @click="mentionUser"
             >
@@ -314,10 +326,10 @@
       />
     </div>
     <teleport to="#modal">
-      <MuteConfirm
-        ref="confirmation"
-        type="user"
+      <UserTimedFilterModal
         :user="user"
+        :is-mute="true"
+        ref="timedMuteDialog"
       />
     </teleport>
   </div>

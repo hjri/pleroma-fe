@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash'
 import { mapState, mapActions } from 'pinia'
+import { mapState as mapVuexState } from 'vuex'
 import { v4 as uuidv4 } from 'uuid';
 
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
@@ -29,6 +30,11 @@ const FilteringTab = {
         key: mode,
         value: mode,
         label: this.$t(`settings.reply_visibility_${mode}`)
+      })),
+      muteBlockLv1Options: ['ask', 'forever', 'temporarily'].map(mode => ({
+        key: mode,
+        value: mode,
+        label: this.$t(`user_card.mute_block_${mode}`)
       })),
       muteFiltersDraftObject: cloneDeep(useServerSideStorageStore().prefsStorage.simple.muteFilters),
       muteFiltersDraftDirty: Object.fromEntries(
@@ -93,6 +99,43 @@ const FilteringTab = {
         muteFiltersObject: store => store.prefsStorage.simple.muteFilters
       }
     ),
+    ...mapVuexState({
+      blockExpirationSupported: state => state.instance.blockExpiration
+    }),
+    onMuteDefaultActionLv1: {
+      get () {
+        const value = this.$store.state.config.onMuteDefaultAction
+        if (value === 'ask' || value === 'forever') {
+          return value
+        } else {
+          return 'temporarily'
+        }
+      },
+      set (value) {
+        let realValue = value
+        if (value !== 'ask' && value !== 'forever') {
+          realValue = '14d'
+        }
+        this.$store.dispatch('setOption', { name: 'onMuteDefaultAction', value: realValue })
+      }
+    },
+    onBlockDefaultActionLv1: {
+      get () {
+        const value = this.$store.state.config.onBlockDefaultAction
+        if (value === 'ask' || value === 'forever') {
+          return value
+        } else {
+          return 'temporarily'
+        }
+      },
+      set (value) {
+        let realValue = value
+        if (value !== 'ask' && value !== 'forever') {
+          realValue = '14d'
+        }
+        this.$store.dispatch('setOption', { name: 'onBlockDefaultAction', value: realValue })
+      }
+    },
     muteFiltersDraft () {
       return Object.entries(this.muteFiltersDraftObject)
     },
@@ -107,7 +150,7 @@ const FilteringTab = {
     ...mapActions(useServerSideStorageStore, ['setPreference', 'unsetPreference', 'pushServerSideStorage']),
     getDatetimeLocal (timestamp) {
       const date = new Date(timestamp)
-      let fmt = new Intl.NumberFormat("en-US", {minimumIntegerDigits: 2})
+      const fmt = new Intl.NumberFormat("en-US", {minimumIntegerDigits: 2})
       const datetime = [
         date.getFullYear(),
         '-',

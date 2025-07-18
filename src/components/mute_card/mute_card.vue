@@ -1,33 +1,32 @@
 <template>
   <basic-user-card :user="user">
     <div class="mute-card-content-container">
+      <span v-if="muted && muteExpiryAvailable" class="alert neutral">
+        {{ muteExpiry }}
+      </span>
+      {{ ' ' }}
       <button
         v-if="muted"
         class="btn button-default"
-        :disabled="progress"
         @click="unmuteUser"
       >
-        <template v-if="progress">
-          {{ $t('user_card.unmute_progress') }}
-        </template>
-        <template v-else>
-          {{ $t('user_card.unmute') }}
-        </template>
+        {{ $t('user_card.unmute') }}
       </button>
       <button
         v-else
         class="btn button-default"
-        :disabled="progress"
         @click="muteUser"
       >
-        <template v-if="progress">
-          {{ $t('user_card.mute_progress') }}
-        </template>
-        <template v-else>
-          {{ $t('user_card.mute') }}
-        </template>
+        {{ $t('user_card.mute') }}
       </button>
     </div>
+    <teleport to="#modal">
+      <UserTimedFilterModal
+        :user="user"
+        :is-mute="true"
+        ref="timedMuteDialog"
+      />
+    </teleport>
   </basic-user-card>
 </template>
 

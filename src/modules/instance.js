@@ -164,6 +164,7 @@ const defaultState = {
   suggestionsWeb: '',
   quotingAvailable: false,
   groupActorAvailable: false,
+  blockExpiration: false,
   localBubbleInstances: [], // Akkoma
 
   // Html stuff

@@ -43,11 +43,19 @@ const getNotificationPermission = () => {
   return Promise.resolve(Notification.permission)
 }
 
-const blockUser = (store, id) => {
-  return store.rootState.api.backendInteractor.blockUser({ id })
+const blockUser = (store, args) => {
+  const id = args.id
+  const expiresIn = typeof args === 'object' ? args.expiresIn : 0
+
+  const predictedRelationship = store.state.relationships[id] || { id }
+  store.commit('updateUserRelationship', [predictedRelationship])
+  store.commit('addBlockId', id)
+
+  return store.rootState.api.backendInteractor.blockUser({ id, expiresIn })
     .then((relationship) => {
       store.commit('updateUserRelationship', [relationship])
       store.commit('addBlockId', id)
+
       store.commit('removeStatus', { timeline: 'friends', userId: id })
       store.commit('removeStatus', { timeline: 'public', userId: id })
       store.commit('removeStatus', { timeline: 'publicAndExternal', userId: id })
@@ -74,7 +82,6 @@ const muteUser = (store, args) => {
   const expiresIn = typeof args === 'object' ? args.expiresIn : 0
 
   const predictedRelationship = store.state.relationships[id] || { id }
-  predictedRelationship.muting = true
   store.commit('updateUserRelationship', [predictedRelationship])
   store.commit('addMuteId', id)
 
@@ -360,20 +367,20 @@ const users = {
           return blocks
         })
     },
-    blockUser (store, id) {
-      return blockUser(store, id)
+    blockUser (store, data) {
+      return blockUser(store, data)
     },
-    unblockUser (store, id) {
-      return unblockUser(store, id)
+    unblockUser (store, data) {
+      return unblockUser(store, data)
     },
     removeUserFromFollowers (store, id) {
       return removeUserFromFollowers(store, id)
     },
-    blockUsers (store, ids = []) {
-      return Promise.all(ids.map(id => blockUser(store, id)))
+    blockUsers (store, data = []) {
+      return Promise.all(data.map(d => blockUser(store, d)))
     },
-    unblockUsers (store, ids = []) {
-      return Promise.all(ids.map(id => unblockUser(store, id)))
+    unblockUsers (store, data = []) {
+      return Promise.all(data.map(d => unblockUser(store, d)))
     },
     editUserNote (store, args) {
       return editUserNote(store, args)
@@ -396,8 +403,8 @@ const users = {
           return mutes
         })
     },
-    muteUser (store, id) {
-      return muteUser(store, id)
+    muteUser (store, data) {
+      return muteUser(store, data)
     },
     unmuteUser (store, id) {
       return unmuteUser(store, id)
@@ -408,11 +415,11 @@ const users = {
     showReblogs (store, id) {
       return showReblogs(store, id)
     },
-    muteUsers (store, ids = []) {
-      return Promise.all(ids.map(id => muteUser(store, id)))
+    muteUsers (store, data = []) {
+      return Promise.all(data.map(d => muteUser(store, d)))
     },
     unmuteUsers (store, ids = []) {
-      return Promise.all(ids.map(id => unmuteUser(store, id)))
+      return Promise.all(ids.map(d => unmuteUser(store, d)))
     },
     fetchDomainMutes (store) {
       return store.rootState.api.backendInteractor.fetchDomainMutes()

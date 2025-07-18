@@ -1,12 +1,8 @@
 import BasicUserCard from '../basic_user_card/basic_user_card.vue'
+import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
 
 const MuteCard = {
   props: ['userId'],
-  data () {
-    return {
-      progress: false
-    }
-  },
   computed: {
     user () {
       return this.$store.getters.findUser(this.userId)
@@ -16,23 +12,26 @@ const MuteCard = {
     },
     muted () {
       return this.relationship.muting
+    },
+    muteExpiryAvailable () {
+      return this.user.mute_expires_at !== undefined
+    },
+    muteExpiry () {
+      return this.user.mute_expires_at == null
+        ? this.$t('user_card.mute_expires_forever')
+        : this.$t('user_card.mute_expires_at', [new Date(this.user.mute_expires_at).toLocaleString()])
     }
   },
   components: {
-    BasicUserCard
+    BasicUserCard,
+    UserTimedFilterModal
   },
   methods: {
     unmuteUser () {
-      this.progress = true
-      this.$store.dispatch('unmuteUser', this.userId).then(() => {
-        this.progress = false
-      })
+      this.$store.dispatch('unmuteUser', this.userId)
     },
     muteUser () {
-      this.progress = true
-      this.$store.dispatch('muteUser', this.userId).then(() => {
-        this.progress = false
-      })
+      this.$refs.timedMuteDialog.optionallyPrompt()
     }
   }
 }

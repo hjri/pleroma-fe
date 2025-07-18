@@ -96,7 +96,8 @@
     </Popover>
     <teleport to="#modal">
       <confirm-modal
-        v-if="showingConfirmBlock"
+        v-if="showingConfirmBlock && !blockExpirationSupported"
+        ref="blockDialog"
         :title="$t('user_card.block_confirm_title')"
         :confirm-text="$t('user_card.block_confirm_accept_button')"
         :cancel-text="$t('user_card.block_confirm_cancel_button')"
@@ -137,6 +138,12 @@
           </template>
         </i18n-t>
       </confirm-modal>
+      <UserTimedFilterModal
+        v-if="blockExpirationSupported"
+        :is-mute="false"
+        :user="user"
+        ref="timedBlockDialog"
+      />
     </teleport>
   </div>
 </template>

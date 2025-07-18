@@ -18,36 +18,6 @@
         <span v-text="user.screen_name_ui" />
       </template>
     </i18n-t>
-    <div
-      v-if="type !== 'domain'"
-      class="mute-expiry"
-    >
-      <p>
-        <label>
-          {{ $t('user_card.mute_duration_prompt') }}
-        </label>
-        <input
-          v-model="muteExpiryAmount"
-          type="number"
-          class="input expiry-amount hide-number-spinner"
-          :min="0"
-        >
-        {{ ' ' }}
-        <Select
-          v-model="muteExpiryUnit"
-          unstyled="true"
-          class="expiry-unit"
-        >
-          <option
-            v-for="unit in muteExpiryUnits"
-            :key="unit"
-            :value="unit"
-          >
-            {{ $t(`time.unit.${unit}_short`, ['']) }}
-          </option>
-        </Select>
-      </p>
-    </div>
   </confirm-modal>
 </template>
 

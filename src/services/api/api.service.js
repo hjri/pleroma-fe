@@ -320,11 +320,18 @@ const unmuteConversation = ({ id, credentials }) => {
     .then((data) => parseStatus(data))
 }
 
-const blockUser = ({ id, credentials }) => {
-  return fetch(MASTODON_BLOCK_USER_URL(id), {
-    headers: authHeaders(credentials),
-    method: 'POST'
-  }).then((data) => data.json())
+const blockUser = ({ id, expiresIn, credentials }) => {
+  const payload = {}
+  if (expiresIn) {
+    payload.expires_in = expiresIn
+  }
+
+  return promisedRequest({
+    url: MASTODON_BLOCK_USER_URL(id),
+    credentials,
+    method: 'POST',
+    payload
+  })
 }
 
 const unblockUser = ({ id, credentials }) => {
@@ -1174,7 +1181,13 @@ const muteUser = ({ id, expiresIn, credentials }) => {
   if (expiresIn) {
     payload.expires_in = expiresIn
   }
-  return promisedRequest({ url: MASTODON_MUTE_USER_URL(id), credentials, method: 'POST', payload })
+
+  return promisedRequest({
+    url: MASTODON_MUTE_USER_URL(id),
+    credentials,
+    method: 'POST',
+    payload
+  })
 }
 
 const unmuteUser = ({ id, credentials }) => {

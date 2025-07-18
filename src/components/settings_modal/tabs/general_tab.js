@@ -5,9 +5,11 @@ import IntegerSetting from '../helpers/integer_setting.vue'
 import FloatSetting from '../helpers/float_setting.vue'
 import UnitSetting from '../helpers/unit_setting.vue'
 import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
+import Select from 'src/components/select/select.vue'
 
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
+
 import { clearCache, cacheKey, emojiCacheKey } from 'src/services/sw/sw.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -73,7 +75,8 @@ const GeneralTab = {
     UnitSetting,
     InterfaceLanguageSwitcher,
     ScopeSelector,
-    ProfileSettingIndicator
+    ProfileSettingIndicator,
+    Select
   },
   computed: {
     postFormats () {

@@ -107,13 +107,8 @@
               </BooleanSetting>
             </li>
             <li>
-              <BooleanSetting path="modalOnBlock">
+              <BooleanSetting v-if="!blockExpirationSupported" path="modalOnBlock">
                 {{ $t('settings.confirm_dialogs_block') }}
-              </BooleanSetting>
-            </li>
-            <li>
-              <BooleanSetting path="modalOnMute">
-                {{ $t('settings.confirm_dialogs_mute') }}
               </BooleanSetting>
             </li>
             <li>
