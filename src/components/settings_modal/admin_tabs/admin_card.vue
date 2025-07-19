@@ -1,4 +1,12 @@
 <template>
+  <div
+    v-if="!isLoaded"
+  >
+    loading user...
+  </div>
+  <div
+    v-else
+  >
   <BasicUserCard :user="user">
     <div class="admin-card-content-container">
       <!--<button
@@ -29,6 +37,7 @@
       </button>-->
     </div>
   </BasicUserCard>
+  </div>
 </template>
 
 <script src="./admin_card.js"></script>

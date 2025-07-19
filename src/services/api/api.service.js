@@ -117,6 +117,31 @@ const PLEROMA_ADMIN_DESCRIPTIONS_URL = '/api/v1/pleroma/admin/config/description
 const PLEROMA_ADMIN_FRONTENDS_URL = '/api/v1/pleroma/admin/frontends'
 const PLEROMA_ADMIN_FRONTENDS_INSTALL_URL = '/api/v1/pleroma/admin/frontends/install'
 const PLEROMA_ADMIN_USERS_URL = '/api/v1/pleroma/admin/users'
+const PLEROMA_ADMIN_USERS_URL = ({page, pageSize, filters = {}, query = '', name = '', email = ''}) => {
+   const {
+      local = false,
+      external = false,
+      active = false,
+      need_approval = false,
+      unconfirmed = false,
+      deactivated = false,
+      is_admin = true,
+      is_moderator = true,
+   } = filters
+   const filters_str = (local ? 'local,' : '')
+                     + (external ? 'external,' : '')
+                     + (active ? 'active,' : '')
+                     + (need_approval ? 'need_approval,' : '')
+                     + (unconfirmed ? 'unconfirmed,' : '')
+                     + (deactivated ? 'deactivated,' : '')
+                     + (is_admin ? 'is_admin,' : '')
+                     + (is_moderator ? 'is_moderator,' : '')
+   return `/api/v1/pleroma/admin/users?page=${page}&page_size=${pageSize}&filters=${filters_str}&query=${query}&name=${name}&email=${email}`
+}
+
+const PLEROMA_ADMIN_DELETE_USERS_URL = '/api/v1/pleroma/admin/users'
+const PLEROMA_ADMIN_ACTIVATE_USER_URL = '/api/v1/pleroma/admin/users/activate'
+const PLEROMA_ADMIN_DEACTIVATE_USER_URL = '/api/v1/pleroma/admin/users/deactivate'
 
 const PLEROMA_EMOJI_RELOAD_URL = '/api/pleroma/admin/reload_emoji'
 const PLEROMA_EMOJI_IMPORT_FS_URL = '/api/pleroma/emoji/packs/import'
@@ -1456,10 +1481,49 @@ const dismissAnnouncement = ({ id, credentials }) => {
   })
 }
 
-const adminListUsers = ({ credentials }) => {
+const adminListUsers = ({ opts, credentials }) => {
    // the reported list is hardly useful because standards are for dating i guess,
    // so make sure to fetchIfMissing right afterward using this call
-   return promisedRequest({ url: PLEROMA_ADMIN_USERS_URL, credentials }).then((data) => data.users.map(parseUser))
+   const url = PLEROMA_ADMIN_USERS_URL(opts)
+   console.log('admin api: ', url)
+   return promisedRequest({ url: url,
+      credentials,
+      method: 'GET'
+   }).then((data) => data.users.map(parseUser))
+}
+
+const adminDeleteUser = ({ nicknames, credentials }) => {
+   return promisedRequest({
+      url: PLEROMA_ADMIN_DELETE_USERS_URL,
+      credentials,
+      method: 'DELETE',
+      headers: {
+         'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({'nicknames': nicknames})
+   })
+}
+
+const adminActivateUser = ({ nicknames, credentials }) => {
+   return promisedRequest({ url: PLEROMA_ADMIN_ACTIVATE_USER_URL,
+      credentials,
+      method: 'PATCH',
+      headers: {
+         'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({'nicknames': nicknames})
+   })
+}
+
+const adminDeactivateUser = ({ nicknames, credentials }) => {
+   return promisedRequest({ url: PLEROMA_ADMIN_DEACTIVATE_USER_URL,
+      credentials,
+      method: 'PATCH',
+      headers: {
+         'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({'nicknames': nicknames})
+   })
 }
 
 const announcementToPayload = ({ content, startsAt, endsAt, allDay }) => {
@@ -2135,6 +2199,9 @@ const apiService = {
   updateBookmarkFolder,
   deleteBookmarkFolder,
   adminListUsers,
+  adminDeleteUser,
+  adminActivateUser,
+  adminDeactivateUser,
 }
 
 export default apiService
