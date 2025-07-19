@@ -376,6 +376,9 @@
   "selectable_list": {
     "select_all": "Select all"
   },
+  "page_list": {
+     "load_more": "Load more"
+  },
   "settings": {
     "add_language": "Add fallback language",
     "remove_language": "Remove",
@@ -1138,7 +1141,10 @@
          "local_only": "local only",
          "external_only": "external only"
       },
-      "loading": "Loading..."
+      "loading": "Loading...",
+      "deactivate": "deactivate",
+      "activate": "activate",
+      "delete": "delete"
     },
     "limits": {
       "arbitrary_limits": "Arbitrary limits",

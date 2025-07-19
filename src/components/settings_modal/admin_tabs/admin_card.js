@@ -8,6 +8,9 @@ const AdminCard = {
     }
   },
   computed: {
+    isLoaded () {
+      return typeof(this.user) !== 'undefined'
+    },
     user () {
       return this.$store.getters.findUser(this.userId)
     },
