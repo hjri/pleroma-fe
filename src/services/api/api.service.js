@@ -137,9 +137,11 @@ const PLEROMA_ADMIN_USERS_URL = ({page, pageSize, filters = {}, query = '', name
    return `/api/v1/pleroma/admin/users?page=${page}&page_size=${pageSize}&filters=${filters_str}&query=${query}&name=${name}&email=${email}`
 }
 const PLEROMA_ADMIN_MODIFY_GROUP_URL = (nickname, group) => `/api/v1/pleroma/admin/users/${nickname}/permission_group/${group}`
-const PLEROMA_ADMIN_DELETE_USERS_URL = '/api/v1/pleroma/admin/users'
+/*const PLEROMA_ADMIN_DELETE_USERS_URL = '/api/v1/pleroma/admin/users'
 const PLEROMA_ADMIN_ACTIVATE_USER_URL = '/api/v1/pleroma/admin/users/activate'
-const PLEROMA_ADMIN_DEACTIVATE_USER_URL = '/api/v1/pleroma/admin/users/deactivate'
+const PLEROMA_ADMIN_DEACTIVATE_USER_URL = '/api/v1/pleroma/admin/users/deactivate'*/
+const PLEROMA_ADMIN_CONFIRM_USER_URL = '/api/v1/pleroma/admin/users/confirm_email'
+const PLEROMA_ADMIN_RESEND_CONFIRMATION_EMAIL_URL = '/api/v1/pleroma/admin/users/resend_confirmation_email'
 
 const PLEROMA_EMOJI_RELOAD_URL = '/api/pleroma/admin/reload_emoji'
 const PLEROMA_EMOJI_IMPORT_FS_URL = '/api/pleroma/emoji/packs/import'
@@ -1508,6 +1510,29 @@ const adminRemoveUserFromModeratorGroup = ({ user, credentials }) => {
    })
 }
 
+const adminConfirmUser = ({user: { screen_name: nickname }, credentials }) => {
+   const url = PLEROMA_ADMIN_CONFIRM_USER_URL
+   console.log('confirming')
+   return promisedRequest({url: url,
+      credentials,
+      method: 'PATCH',
+      payload: {
+         nicknames: [nickname]
+      }
+   }).then(res => console.log('response', res))
+}
+
+const adminResendConfirmationEmail = ({user: { screen_name: nickname }, credentials }) => {
+   const url = PLEROMA_ADMIN_RESEND_CONFIRMATION_EMAIL_URL
+   return promisedRequest({url: url,
+      credentials,
+      method: 'PATCH',
+      payload: {
+         nicknames: [nickname]
+      }
+   })
+}
+
 const announcementToPayload = ({ content, startsAt, endsAt, allDay }) => {
   const payload = { content }
 
@@ -2185,6 +2210,8 @@ const apiService = {
   adminRemoveUserFromAdminGroup,
   adminAddUserToModeratorGroup,
   adminRemoveUserFromModeratorGroup,
+  adminConfirmUser,
+  adminResendConfirmationEmail,
 }
 
 export default apiService

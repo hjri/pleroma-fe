@@ -8,9 +8,24 @@
         <div class="setting-item">
           <h2> filter user search </h2>
           todo: query, name and email input<br>
+          <input
+              :model-value="filters_query"
+              placeholder="query"
+              @input="v => update_query(v.target.value)"
+              /><br>
+          <input
+              :model-value="filters_name"
+              placeholder="name"
+              @input="v => update_name(v.target.value)"
+              /><br>
+          <input
+              :model-value="filters_email"
+              placeholder="email"
+              @input="v => update_email(v.target.value)"
+              /><br>
           <Select
               :model-value="filters_origin"
-              @update:model-value="v => update_origin(v) "
+              @update:model-value="v => update_origin(v)"
               >
               <option
                   value="all"
@@ -30,7 +45,7 @@
           </Select>
           <Select
               :model-value="filters_activity"
-              @update:model-value="v => update_activity(v) "
+              @update:model-value="v => update_activity(v)"
               >
               <option
                   value="all"
@@ -50,7 +65,7 @@
           </Select>
           <Select
               :model-value="filters_permission"
-              @update:model-value="v => update_permission(v) "
+              @update:model-value="v => update_permission(v)"
               >
               <option
                   value="all"

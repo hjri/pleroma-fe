@@ -85,15 +85,21 @@ const adminSettingsStorage = {
     },
     adminActivateUser (store, user) {
        return store.rootState.api.backendInteractor.activateUser({ user })
-         .then(res => console.log(res))
+         .then(res => { const deactivated = !res.is_active; store.commit('updateActivationStatus', { user, deactivated })})
     },
     adminDeactivateUser (store, user) {
        return store.rootState.api.backendInteractor.deactivateUser({ user })
-         .then(res => console.log(res))
+         .then(res => { const deactivated = !res.is_active; store.commit('updateActivationStatus', { user, deactivated })})
     },
     adminDeleteUser (store, user) {
        return store.rootState.api.backendInteractor.deleteUser({ user })
-         .then(res => console.log(res))
+    },
+    adminConfirmUser (store, user) {
+       return store.rootState.api.backendInteractor.adminConfirmUser({ user })
+         .then(res => store.dispatch('fetchUser', user.id))
+    },
+    adminResendConfirmationEmail (store, user) {
+       return store.rootState.api.backendInteractor.adminResendConfirmationEmail({ user })
     },
     loadFrontendsStuff ({ rootState, commit }) {
       rootState.api.backendInteractor.fetchAvailableFrontends()
