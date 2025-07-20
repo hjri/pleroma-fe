@@ -70,12 +70,20 @@
                     >
                     is moderator
                 </Checkbox><br>
-                <Checkbox
-                    :model-value="is_confirmed"
-                    @update:model-value="v => toggle_confirmation(v)"
-                    >
+                <div v-if="!just_confirmed && !is_confirmed">
+                  <button class="button button-default btn"
+                        type="button"
+                        @click="confirm_user()"
+                        >
                     is confirmed
-                </Checkbox><br>
+                  </button><br>
+                  <button class="button button-default btn"
+                          type="button"
+                          @click="resend_confirmation_email()"
+                          >
+                          resend confirmation email
+                  </button><br>
+                </div>
                <Checkbox
                   :model-value="is_approved"
                   @update:model-value="v => toggle_approval(v)"

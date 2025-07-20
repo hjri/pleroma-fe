@@ -54,10 +54,12 @@ const AdminCard = {
          return false
       },
       is_confirmed () {
-         return (this.userDetails.is_confirmed === false) || (this.just_confirmed === true)
+         const u = this.$store.getters.findUser(this.userDetails.id)
+         return (u._original.pleroma.is_confirmed === false) || (this.just_confirmed === true)
       },
       is_approved () {
-         return (this.userDetails.is_approved === false) || (this.just_approved === true)
+         const u = this.$store.getters.findUser(this.userDetails.id)
+         return (u._original.pleroma.is_approved === false) || (this.just_approved === true)
       }
    },
    components: {
@@ -90,7 +92,15 @@ const AdminCard = {
             this.$store.dispatch('adminDeactivateUser', u)
          }
       },
-      toggle_confirmation () {},
+      confirm_user () {
+         const u = this.$store.getters.findUser(this.userDetails.id)
+         this.$store.dispatch('adminConfirmUser', u)
+         this.just_confirmed = true
+      },
+      resend_confirmation_email () {
+         const u = this.$store.getters.findUser(this.userDetails.id)
+         this.$store.dispatch('adminResendConfirmationEmail', u)
+      },
       toggle_approval () {},
       force_update_user () {
          this.$store.dispatch('fetchUser', this.userDetails.id)

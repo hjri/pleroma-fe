@@ -22,6 +22,9 @@ const UsersTab = {
          filters_origin: "local",
          filters_activity: "all",
          filters_permission: "all",
+         filters_query: '',
+         filters_name: '',
+         filters_email: '',
          filters: {
             local: true,
             external: false,
@@ -30,7 +33,7 @@ const UsersTab = {
             unconfirmed: false,
             deactivated: false,
             is_admin: false,
-            is_moderator: false
+            is_moderator: false,
          },
          expandedUser: null,
          loading: false
@@ -106,14 +109,26 @@ const UsersTab = {
          }
          this.reset()
       },
+      update_query (v) {
+         this.filters_query = v
+         this.reset()
+      },
+      update_name (v) {
+         this.filters_name = v
+         this.reset()
+      },
+      update_email (v) {
+         this.filters_email = v
+         this.reset()
+      },
       delete_selection () {
       },
       delete_user () {},
       fetch_page (store, opts) {
-         opts.query = ""
+         opts.query = this.filters_query
          opts.filters = this.filters
-         opts.name = ""
-         opts.email = ""
+         opts.name = this.filters_name
+         opts.email = this.filters_email
          const users = store.dispatch('fetchAdminUsers', opts)
          return users
       },
