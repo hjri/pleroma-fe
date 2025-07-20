@@ -57,7 +57,7 @@ const adminSettingsStorage = {
     },
     resetAdminDraft (state) {
       state.draft = cloneDeep(state.config)
-    }
+    },
   },
   actions: {
     async fetchAdminUsers (store, opts) {
@@ -66,6 +66,34 @@ const adminSettingsStorage = {
          users.map(user => store.dispatch('fetchUserIfMissing', user.id))
       //)
        return users
+    },
+    adminAddUserToAdminGroup (store, user) {
+       store.rootState.api.backendInteractor.adminAddUserToAdminGroup({ user })
+          .then(res => store.commit('updateRight', { user, right: 'admin', value: res.is_admin }))
+    },
+    adminRemoveUserFromAdminGroup (store, user) {
+       return store.rootState.api.backendInteractor.adminRemoveUserFromAdminGroup({ user })
+          .then(res => store.commit('updateRight', { user, right: 'admin', value: res.is_admin }))
+    },
+    adminAddUserToModeratorGroup (store, user) {
+       return store.rootState.api.backendInteractor.adminAddUserToModeratorGroup({ user })
+          .then(res => store.commit('updateRight', { user, right: 'moderator', value: res.is_moderator }))
+    },
+    adminRemoveUserFromModeratorGroup (store, user) {
+       return store.rootState.api.backendInteractor.adminRemoveUserFromModeratorGroup({ user })
+          .then(res => store.commit('updateRight', { user, right: 'moderator', value: res.is_moderator }))
+    },
+    adminActivateUser (store, user) {
+       return store.rootState.api.backendInteractor.activateUser({ user })
+         .then(res => console.log(res))
+    },
+    adminDeactivateUser (store, user) {
+       return store.rootState.api.backendInteractor.deactivateUser({ user })
+         .then(res => console.log(res))
+    },
+    adminDeleteUser (store, user) {
+       return store.rootState.api.backendInteractor.deleteUser({ user })
+         .then(res => console.log(res))
     },
     loadFrontendsStuff ({ rootState, commit }) {
       rootState.api.backendInteractor.fetchAvailableFrontends()
