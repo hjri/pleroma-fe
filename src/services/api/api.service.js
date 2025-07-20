@@ -136,6 +136,7 @@ const PLEROMA_ADMIN_USERS_URL = ({page, pageSize, filters = {}, query = '', name
                      + (is_moderator ? 'is_moderator,' : '')
    return `/api/v1/pleroma/admin/users?page=${page}&page_size=${pageSize}&filters=${filters_str}&query=${query}&name=${name}&email=${email}`
 }
+const PLEROMA_ADMIN_MODIFY_GROUP_URL = (nickname, group) => `/api/v1/pleroma/admin/users/${nickname}/permission_group/${group}`
 const PLEROMA_ADMIN_DELETE_USERS_URL = '/api/v1/pleroma/admin/users'
 const PLEROMA_ADMIN_ACTIVATE_USER_URL = '/api/v1/pleroma/admin/users/activate'
 const PLEROMA_ADMIN_DEACTIVATE_USER_URL = '/api/v1/pleroma/admin/users/deactivate'
@@ -1475,37 +1476,35 @@ const adminListUsers = ({ opts, credentials }) => {
    }).then((data) => data.users.map(parseUser))
 }
 
-const adminDeleteUser = ({ nicknames, credentials }) => {
-   return promisedRequest({
-      url: PLEROMA_ADMIN_DELETE_USERS_URL,
+const adminAddUserToAdminGroup = ({ user, credentials }) => {
+   const url = PLEROMA_ADMIN_MODIFY_GROUP_URL(user.name_html, 'admin')
+   return promisedRequest({ url: url,
       credentials,
-      method: 'DELETE',
-      headers: {
-         'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({'nicknames': nicknames})
+      method: 'POST'
    })
 }
 
-const adminActivateUser = ({ nicknames, credentials }) => {
-   return promisedRequest({ url: PLEROMA_ADMIN_ACTIVATE_USER_URL,
+const adminRemoveUserFromAdminGroup = ({ user, credentials }) => {
+   const url = PLEROMA_ADMIN_MODIFY_GROUP_URL(user.name_html, 'admin')
+   return promisedRequest({ url: url,
       credentials,
-      method: 'PATCH',
-      headers: {
-         'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({'nicknames': nicknames})
+      method: 'DELETE'
    })
 }
 
-const adminDeactivateUser = ({ nicknames, credentials }) => {
-   return promisedRequest({ url: PLEROMA_ADMIN_DEACTIVATE_USER_URL,
+const adminAddUserToModeratorGroup = ({ user, credentials }) => {
+   const url = PLEROMA_ADMIN_MODIFY_GROUP_URL(user.name_html, 'moderator')
+   return promisedRequest({ url: url,
       credentials,
-      method: 'PATCH',
-      headers: {
-         'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({'nicknames': nicknames})
+      method: 'POST'
+   })
+}
+
+const adminRemoveUserFromModeratorGroup = ({ user, credentials }) => {
+   const url = PLEROMA_ADMIN_MODIFY_GROUP_URL(user.name_html, 'moderator')
+   return promisedRequest({ url: url,
+      credentials,
+      method: 'DELETE'
    })
 }
 
@@ -2182,9 +2181,10 @@ const apiService = {
   updateBookmarkFolder,
   deleteBookmarkFolder,
   adminListUsers,
-  adminDeleteUser,
-  adminActivateUser,
-  adminDeactivateUser,
+  adminAddUserToAdminGroup,
+  adminRemoveUserFromAdminGroup,
+  adminAddUserToModeratorGroup,
+  adminRemoveUserFromModeratorGroup,
 }
 
 export default apiService

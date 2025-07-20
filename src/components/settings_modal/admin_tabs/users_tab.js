@@ -5,8 +5,7 @@ import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import AdminCard from 'src/components/settings_modal/admin_tabs/admin_card.vue'
 import PageList from 'src/components/page_list/page_list.vue'
-
-
+import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 
 const UsersTab = {
    provide () {
@@ -17,8 +16,14 @@ const UsersTab = {
    },
    data() {
       return {
+         /* filters must match the filter options below initially, or the ui is gonna have a computer moment
+          * no, i won't fix this
+          * */
+         filters_origin: "local",
+         filters_activity: "all",
+         filters_permission: "all",
          filters: {
-            local: false,
+            local: true,
             external: false,
             active: false,
             need_approval: false,
@@ -38,35 +43,89 @@ const UsersTab = {
       PageList,
       ProgressButton, 
       AdminCard,
+      TabSwitcher,
    },
    computed: {
    },
    methods: {
+   update_origin (v) {
+         switch (v) {
+            case 'local':
+            this.filters.local = true
+            this.filters.external = false
+            break;
+            case 'external':
+            this.filters.local = false
+            this.filters.external = true
+            break;
+            default:
+            case 'all':
+            this.filters.local = false
+            this.filters.external = false
+            break;
+         }
+         this.reset()
+      },
+   update_activity (v) {
+         switch (v) {
+            case 'active':
+            this.filters.active = true
+            this.filters.deactivated = false
+            break;
+            case 'deactivated':
+            this.filters.active = false
+            this.filters.deactivated = true
+            break;
+            default:
+            case 'all':
+            this.filters.active = false
+            this.filters.deactivated = false
+            break;
+         }
+         this.reset()
+      },
+      update_permission (v) {
+         switch (v) {
+            case 'admin':
+            this.filters.is_admin = true
+            this.filters.is_moderator = false
+            break;
+            case 'moderator':
+            this.filters.is_admin = false
+            this.filters.is_moderator = true
+            break;
+            case 'modsnadmins':
+            this.filters.is_admin = true
+            this.filters.is_moderator = true
+            break;
+            default:
+            case 'all':
+            this.filters.is_admin = false
+            this.filters.is_moderator = false
+            break;
+         }
+         this.reset()
+      },
       delete_selection () {
-         console.log('delete selection')
       },
       delete_user () {},
       fetch_page (store, opts) {
          opts.query = ""
-         console.log('current filters:', this.filters)
          opts.filters = this.filters
          opts.name = ""
          opts.email = ""
          const users = store.dispatch('fetchAdminUsers', opts)
-         console.log('users', users)
          return users
       },
       reset () {
         this.$refs.userList.reset()
       },
       toggleLocal () {
-         console.log('toggle local')
          this.filters.local = !this.filters.local
          this.reset()
       }
    },
    mounted() {
-      console.log("mounted")
    }
 }
 

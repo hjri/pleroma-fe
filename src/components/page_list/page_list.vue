@@ -5,6 +5,9 @@
         :get-key="i => i"
         :items="items"
     >
+    <template v-slot:header="slotProps">
+        <slot name="header" v-bind="slotProps"/>
+    </template>
       <template v-slot:item="slotProps">
         <slot name="item" v-bind="slotProps"/>
       </template>

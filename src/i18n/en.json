@@ -1132,7 +1132,8 @@
       }
     },
     "users": {
-      "users": "User Management",
+      "management": "Management",
+      "invitations": "Invitations",
       "search_users": "Search for users...",
       "filters": {
          "show_all": "show all",
