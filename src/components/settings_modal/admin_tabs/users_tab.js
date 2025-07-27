@@ -19,14 +19,14 @@ const UsersTab = {
          /* filters must match the filter options below initially, or the ui is gonna have a computer moment
           * no, i won't fix this
           * */
-         filters_origin: "local",
+         filters_origin: "all",
          filters_activity: "all",
          filters_permission: "all",
-         filters_query: '',
-         filters_name: '',
-         filters_email: '',
+         filters_query: "",
+         filters_name: "",
+         filters_email: "",
          filters: {
-            local: true,
+            local: false,
             external: false,
             active: false,
             need_approval: false,
@@ -121,8 +121,6 @@ const UsersTab = {
          this.filters_email = v
          this.reset()
       },
-      delete_selection () {
-      },
       delete_user () {},
       fetch_page (store, opts) {
          opts.query = this.filters_query
@@ -138,9 +136,21 @@ const UsersTab = {
       toggleLocal () {
          this.filters.local = !this.filters.local
          this.reset()
+      },
+      activate_selection () {
+         const s = this.$refs.userList.selected()
+         s.forEach(u => this.$store.dispatch('adminActivateUser', this.$store.getters.findUser(u.id)))
+      },
+      deactivate_selection () {
+         const s = this.$refs.userList.selected()
+         s.forEach(u => this.$store.dispatch('adminDeactivateUser', this.$store.getters.findUser(u.id)))
+      },
+      delete_selection () {
+         const s = this.$refs.userList.selected()
+         console.log(s)
+         s.forEach(u => this.$store.dispatch('adminDeleteUser', this.$store.getters.findUser(u.id)))
+         this.reset()
       }
-   },
-   mounted() {
    }
 }
 

@@ -1,5 +1,7 @@
 import BasicUserCard from '../../basic_user_card/basic_user_card.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
+import PageList from 'src/components/page_list/page_list.vue'
+import AdminStatusCard from 'src/components/settings_modal/admin_tabs/admin_status_card.vue'
 
 const AdminCard = {
    props: ['userDetails'],
@@ -8,6 +10,7 @@ const AdminCard = {
          progress: false,
          top_level_expanded: false,
          json_expanded: false,
+         timeline_expanded: false,
          just_approved: false,
          just_confirmed: false,
          just_deleted: false,
@@ -55,16 +58,17 @@ const AdminCard = {
       },
       is_confirmed () {
          const u = this.$store.getters.findUser(this.userDetails.id)
-         return (u._original.pleroma.is_confirmed === false) || (this.just_confirmed === true)
+         return (u._original.pleroma.is_confirmed === true) || (this.just_confirmed === true)
       },
       is_approved () {
-         const u = this.$store.getters.findUser(this.userDetails.id)
-         return (u._original.pleroma.is_approved === false) || (this.just_approved === true)
+         return (this.userDetails._original.is_approved === true) || (this.just_approved === true)
       }
    },
    components: {
       BasicUserCard,
-      Checkbox
+      Checkbox,
+      PageList,
+      AdminStatusCard,
    },
    methods: {
       toggle_admin (v) {
@@ -101,7 +105,10 @@ const AdminCard = {
          const u = this.$store.getters.findUser(this.userDetails.id)
          this.$store.dispatch('adminResendConfirmationEmail', u)
       },
-      toggle_approval () {},
+      toggle_approval () {
+         const u = this.$store.getters.findUser(this.userDetails.id)
+         this.$store.dispatch('adminApproveUser', u)
+      },
       force_update_user () {
          this.$store.dispatch('fetchUser', this.userDetails.id)
       },
@@ -111,6 +118,11 @@ const AdminCard = {
             this.$store.dispatch('adminDeleteUser', u)
             this.just_deleted = true
          }
+      },
+      fetch_statuses (store, opts) {
+         const u = this.$store.getters.findUser(this.userDetails.id)
+         const res = store.dispatch('adminListStatuses', { user: u,  opts: { page_size: opts.pageSize, godmode: true, with_reblogs: true}})
+         return Promise.resolve(res.then(r => r.activities))
       }
    }
 }

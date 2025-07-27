@@ -96,10 +96,19 @@ const adminSettingsStorage = {
     },
     adminConfirmUser (store, user) {
        return store.rootState.api.backendInteractor.adminConfirmUser({ user })
-         .then(res => store.dispatch('fetchUser', user.id))
+         .then(() => store.dispatch('fetchUser', user.id))
     },
     adminResendConfirmationEmail (store, user) {
        return store.rootState.api.backendInteractor.adminResendConfirmationEmail({ user })
+    },
+    adminApproveUser (store, user) {
+       return store.rootState.api.backendInteractor.adminApproveUser({ user })
+    },
+    adminListStatuses (store, { user, opts }) {
+       return store.rootState.api.backendInteractor.adminListStatuses({ user, opts })
+    },
+    adminChangeStatusScope (store, { opts }) {
+       return store.rootState.api.backendInteractor.adminChangeStatusScope({ opts })
     },
     loadFrontendsStuff ({ rootState, commit }) {
       rootState.api.backendInteractor.fetchAvailableFrontends()

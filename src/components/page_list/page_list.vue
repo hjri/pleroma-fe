@@ -1,26 +1,35 @@
 <template>
   <div class="page-list">
     <SelectableList
-        :box-only="true"
-        :get-key="i => i"
-        :items="items"
+      ref="list"
+      :box-only="true"
+      :get-key="i => i"
+      :items="items"
     >
-    <template v-slot:header="slotProps">
-        <slot name="header" v-bind="slotProps"/>
-    </template>
-      <template v-slot:item="slotProps">
-        <slot name="item" v-bind="slotProps"/>
+      <template #header="slotProps">
+        <slot
+          name="header"
+          v-bind="slotProps"
+        />
+      </template>
+      <template #item="slotProps">
+        <slot
+          name="item"
+          v-bind="slotProps"
+        />
       </template>
     </SelectableList>
-    <button
-      v-if="canLoadMore"
-      class="button button-default btn"
-      type="button"
-      @click="loadMore"
-    >
-      {{ $t('page_list.load_more') }}
-    </button>
-    <p> prev first next </p>
+    <div v-if="!singlePage">
+      <button
+        v-if="canLoadMore"
+        class="button button-default btn"
+        type="button"
+        @click="loadMore"
+      >
+        {{ $t('page_list.load_more') }}
+      </button>
+      <p> prev first next </p>
+    </div>
   </div>
 </template>
 
