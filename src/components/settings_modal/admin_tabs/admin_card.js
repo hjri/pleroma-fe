@@ -16,8 +16,6 @@ const AdminCard = {
          just_deleted: false,
       }
    },
-   mounted () {
-   },
    computed: {
       isLoaded () {
          return typeof(this.user) !== 'undefined'
@@ -73,9 +71,8 @@ const AdminCard = {
    methods: {
       toggle_admin (v) {
          const u = this.$store.getters.findUser(this.userDetails.id)
-         console.log('user', u)
          if (v === true) {
-            this.$store.dispatch('adminAddUserToAdminGroup', u).then(res => console.log("res: ", res))
+            this.$store.dispatch('adminAddUserToAdminGroup', u)
          } else {
             this.$store.dispatch('adminRemoveUserFromAdminGroup', u)
          }

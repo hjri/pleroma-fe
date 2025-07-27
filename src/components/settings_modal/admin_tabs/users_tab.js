@@ -1,4 +1,3 @@
-//import get from 'lodash/get'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Select from 'src/components/select/select.vue'
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
@@ -47,8 +46,6 @@ const UsersTab = {
       ProgressButton, 
       AdminCard,
       TabSwitcher,
-   },
-   computed: {
    },
    methods: {
    update_origin (v) {
@@ -147,7 +144,6 @@ const UsersTab = {
       },
       delete_selection () {
          const s = this.$refs.userList.selected()
-         console.log(s)
          s.forEach(u => this.$store.dispatch('adminDeleteUser', this.$store.getters.findUser(u.id)))
          this.reset()
       }
