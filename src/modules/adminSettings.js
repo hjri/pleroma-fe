@@ -57,14 +57,12 @@ const adminSettingsStorage = {
     },
     resetAdminDraft (state) {
       state.draft = cloneDeep(state.config)
-    },
+    }
   },
   actions: {
     async fetchAdminUsers (store, opts) {
       const users = await store.rootState.api.backendInteractor.adminListUsers({opts})
-       //await Promise.all(
-         users.map(user => store.dispatch('fetchUserIfMissing', user.id))
-      //)
+      users.forEach(user => store.dispatch('fetchUserIfMissing', user.id))
        return users
     },
     adminAddUserToAdminGroup (store, user) {

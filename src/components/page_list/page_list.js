@@ -1,4 +1,3 @@
-//import Checkbox from 'src/components/checkbox/checkbox.vue'
 import SelectableList from 'src/components/selectable_list/selectable_list.vue'
 
 const PageList = {
@@ -47,7 +46,6 @@ const PageList = {
          }).then((items) => {
             // ignore if another request was already dispatched
             if (iter == this.gliter) {
-               console.log('items', items)
                this.items = [...this.items, ...items]
             }
          })

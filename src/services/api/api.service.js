@@ -137,9 +137,6 @@ const PLEROMA_ADMIN_USERS_URL = ({page, pageSize, filters = {}, query = '', name
    return `/api/v1/pleroma/admin/users?page=${page}&page_size=${pageSize}&filters=${filters_str}&query=${query}&name=${name}&email=${email}`
 }
 const PLEROMA_ADMIN_MODIFY_GROUP_URL = (nickname, group) => `/api/v1/pleroma/admin/users/${nickname}/permission_group/${group}`
-/*const PLEROMA_ADMIN_DELETE_USERS_URL = '/api/v1/pleroma/admin/users'
-const PLEROMA_ADMIN_ACTIVATE_USER_URL = '/api/v1/pleroma/admin/users/activate'
-const PLEROMA_ADMIN_DEACTIVATE_USER_URL = '/api/v1/pleroma/admin/users/deactivate'*/
 const PLEROMA_ADMIN_CONFIRM_USER_URL = '/api/v1/pleroma/admin/users/confirm_email'
 const PLEROMA_ADMIN_RESEND_CONFIRMATION_EMAIL_URL = '/api/v1/pleroma/admin/users/resend_confirmation_email'
 const PLEROMA_ADMIN_APPROVE_URL = '/api/v1/pleroma/admin/users/approve'
@@ -708,7 +705,6 @@ const deleteUser = ({ credentials, user: { screen_name: nickname } }) => {
          nicknames: [nickname]
       }
    })
-   console.log(r)
    return r.then(response => get(response, 'users.0'))
 /*  const screenName = user.screen_name
   const headers = authHeaders(credentials)
@@ -1484,7 +1480,6 @@ const adminListUsers = ({ opts, credentials }) => {
    // the reported list is hardly useful because standards are for dating i guess,
    // so make sure to fetchIfMissing right afterward using this call
    const url = PLEROMA_ADMIN_USERS_URL(opts)
-   console.log('admin api: ', url)
    return promisedRequest({ url: url,
       credentials,
       method: 'GET'

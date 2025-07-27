@@ -35,7 +35,6 @@ const StatusContent = {
     'toggleShowingLongSubject'
   ],
   data () {
-     //console.log('status_content', this.status)
     return {
       postLength: this.status.text.length,
       parseReadyDone: false

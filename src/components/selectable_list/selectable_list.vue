@@ -45,7 +45,7 @@
           />
         </div>
         <div
-          v-if="boxOnly"
+          v-else
           class="selectable-list-item-inner"
           :class="{ 'selectable-list-item-selected-inner': isSelected(item) }"
         >
