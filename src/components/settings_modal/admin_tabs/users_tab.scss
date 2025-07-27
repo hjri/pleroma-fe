@@ -3,8 +3,7 @@
 }
 
 .stacked-container {
-  /* vite:stylelint complains about this, saying it's not important.
-  this is a mistake: it is important, so vite:stylelint should shut up */
+  // eslint-disable-next-line
   display: flex !important;
   flex-direction: column;
 }
