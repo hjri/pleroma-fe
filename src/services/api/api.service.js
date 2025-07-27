@@ -1,4 +1,4 @@
-import { each, map, concat, last, get } from 'lodash'
+import { each, map, concat, last, } from 'lodash'
 import { parseStatus, parseSource, parseUser, parseNotification, parseAttachment, parseChat, parseLinkHeaderPagination } from '../entity_normalizer/entity_normalizer.service.js'
 import { RegistrationError, StatusCodeError } from '../errors/errors'
 
@@ -692,7 +692,7 @@ const activateUser = ({ credentials, user: { screen_name: nickname } }) => {
     payload: {
       nicknames: [nickname]
     }
-  }).then(response => get(response, 'users.0'))
+  }).then(response => response.users[0])
 }
 
 const deactivateUser = ({ credentials, user: { screen_name: nickname } }) => {
@@ -703,7 +703,7 @@ const deactivateUser = ({ credentials, user: { screen_name: nickname } }) => {
     payload: {
       nicknames: [nickname]
     }
-  }).then(response => get(response, 'users.0'))
+  }).then(response => response.users[0])
 }
 
 const deleteUser = ({ credentials, user: { screen_name: nickname } }) => {
@@ -715,14 +715,7 @@ const deleteUser = ({ credentials, user: { screen_name: nickname } }) => {
          nicknames: [nickname]
       }
    })
-   return r.then(response => get(response, 'users.0'))
-/*  const screenName = user.screen_name
-  const headers = authHeaders(credentials)
-
-  return fetch(`${ADMIN_USERS_URL}?nickname=${screenName}`, {
-    method: 'DELETE',
-    headers
-  })*/
+   return r.then(response => response.users[0])
 }
 
 const fetchTimeline = ({
@@ -1497,9 +1490,10 @@ const adminListUsers = ({ opts, credentials }) => {
    // the reported list is hardly useful because standards are for dating i guess,
    // so make sure to fetchIfMissing right afterward using this call
    const url = PLEROMA_ADMIN_USERS_URL(opts)
-   return promisedRequest({ url: url,
-      credentials,
-      method: 'GET'
+   return promisedRequest({
+     url: url,
+     credentials,
+     method: 'GET'
    }).then((data) => data.users.map(parseUser))
 }
 
