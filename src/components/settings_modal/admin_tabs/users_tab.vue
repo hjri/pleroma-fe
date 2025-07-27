@@ -112,7 +112,7 @@
       :refresh="true"
       :get-key="i => i"
       :box_only="true"
-      :page_size="50"
+      :page_size="20"
       :fetch_page="(store, opts) => fetch_page(store, opts)"
     >
       <template #header>
