@@ -95,9 +95,9 @@
         :user="user"
       />
       <UserTimedFilterModal
+        ref="confirmUser"
         :is-mute="true"
         :user="user"
-        ref="confirmUser"
       />
     </teleport>
   </div>
