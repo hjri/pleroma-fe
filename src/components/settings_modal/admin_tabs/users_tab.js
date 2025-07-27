@@ -58,8 +58,7 @@ const UsersTab = {
           this.filters.local = false
           this.filters.external = true
           break;
-        default:
-        case 'all':
+        default: // 'all'
           this.filters.local = false
           this.filters.external = false
           break;
@@ -76,8 +75,7 @@ const UsersTab = {
           this.filters.active = false
           this.filters.deactivated = true
           break;
-        default:
-        case 'all':
+        default: // 'all'
           this.filters.active = false
           this.filters.deactivated = false
           break;
@@ -98,8 +96,7 @@ const UsersTab = {
           this.filters.is_admin = true
           this.filters.is_moderator = true
           break;
-        default:
-        case 'all':
+        default: // 'all'
           this.filters.is_admin = false
           this.filters.is_moderator = false
           break;
