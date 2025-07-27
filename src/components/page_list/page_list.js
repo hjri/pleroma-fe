@@ -17,14 +17,18 @@ const PageList = {
       fetchPage: {
          type: Function,
          default: async () => []
+      },
+      singlePage: {
+         type: Boolean,
+         default: false
       }
    },
    data () {
       return {
          pageIndex: 1,
          items: [],
-         selected: [],
-         canLoadMore: true
+         canLoadMore: true,
+         gliter: 0,
       }
    },
    methods: {
@@ -35,12 +39,21 @@ const PageList = {
          this.loadMore() // load one page
       },
       loadMore () {
+         this.gliter++
+         const iter = this.gliter
          this.fetchPage(this.$store, {
             page: this.pageIndex++,
             pageSize: this.pageSize
-         }).then((items) => this.items = [...this.items, ...items])
-         // fetch page, add to items
-         //this.$forceUpdate()
+         }).then((items) => {
+            // ignore if another request was already dispatched
+            if (iter == this.gliter) {
+               console.log('items', items)
+               this.items = [...this.items, ...items]
+            }
+         })
+      },
+      selected () {
+         return this.$refs.list.selected
       }
    },
    mounted () {

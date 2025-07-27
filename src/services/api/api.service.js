@@ -142,6 +142,9 @@ const PLEROMA_ADMIN_ACTIVATE_USER_URL = '/api/v1/pleroma/admin/users/activate'
 const PLEROMA_ADMIN_DEACTIVATE_USER_URL = '/api/v1/pleroma/admin/users/deactivate'*/
 const PLEROMA_ADMIN_CONFIRM_USER_URL = '/api/v1/pleroma/admin/users/confirm_email'
 const PLEROMA_ADMIN_RESEND_CONFIRMATION_EMAIL_URL = '/api/v1/pleroma/admin/users/resend_confirmation_email'
+const PLEROMA_ADMIN_APPROVE_URL = '/api/v1/pleroma/admin/users/approve'
+const PLEROMA_ADMIN_LIST_STATUSES_URL = (id, page_size, godmode, with_reblogs) => `/api/v1/pleroma/admin/users/${id}/statuses?page_size=${page_size}&godmode=${godmode}&with_reblogs=${with_reblogs}`
+const PLEROMA_ADMIN_CHANGE_STATUS_SCOPE_URL = (id) => `/api/v1/pleroma/admin/statuses/${id}`
 
 const PLEROMA_EMOJI_RELOAD_URL = '/api/pleroma/admin/reload_emoji'
 const PLEROMA_EMOJI_IMPORT_FS_URL = '/api/pleroma/emoji/packs/import'
@@ -696,14 +699,24 @@ const deactivateUser = ({ credentials, user: { screen_name: nickname } }) => {
   }).then(response => get(response, 'users.0'))
 }
 
-const deleteUser = ({ credentials, user }) => {
-  const screenName = user.screen_name
+const deleteUser = ({ credentials, user: { screen_name: nickname } }) => {
+   const r = promisedRequest({
+      url: ADMIN_USERS_URL,
+      method: 'DELETE',
+      credentials,
+      payload: {
+         nicknames: [nickname]
+      }
+   })
+   console.log(r)
+   return r.then(response => get(response, 'users.0'))
+/*  const screenName = user.screen_name
   const headers = authHeaders(credentials)
 
   return fetch(`${ADMIN_USERS_URL}?nickname=${screenName}`, {
     method: 'DELETE',
     headers
-  })
+  })*/
 }
 
 const fetchTimeline = ({
@@ -1533,6 +1546,45 @@ const adminResendConfirmationEmail = ({user: { screen_name: nickname }, credenti
    })
 }
 
+const adminApproveUser = ({user : { screen_name: nickname }, credentials }) => {
+   const url = PLEROMA_ADMIN_APPROVE_URL
+   const r = promisedRequest({url: url,
+      credentials,
+      method: 'PATCH',
+      payload: {
+         nicknames: [nickname]
+      }
+   })
+   r.catch(error => console.log('approve error', error))
+   console.log(r)
+   return r
+}
+
+const adminListStatuses = ({user: { id }, opts: { page_size, godmode, with_reblogs }, credentials }) => {
+   const url = PLEROMA_ADMIN_LIST_STATUSES_URL(id, page_size, godmode, with_reblogs)
+   return promisedRequest({url: url,
+      credentials,
+      method: 'GET'
+   })
+}
+
+const adminChangeStatusScope = ({opts: { id, sensitive, visibility}, credentials }) => {
+   const url = PLEROMA_ADMIN_CHANGE_STATUS_SCOPE_URL(id)
+   var payload = {}
+   if (typeof(sensitive) !== 'undefined') {
+      payload['sensitive'] = sensitive
+   }
+   if (typeof(visibility) !== 'undefined') {
+      payload['visibility'] = visibility
+   }
+   return promisedRequest({url: url,
+      credentials,
+      method: 'PUT',
+      payload
+   })
+}
+
+
 const announcementToPayload = ({ content, startsAt, endsAt, allDay }) => {
   const payload = { content }
 
@@ -2212,6 +2264,9 @@ const apiService = {
   adminRemoveUserFromModeratorGroup,
   adminConfirmUser,
   adminResendConfirmationEmail,
+  adminApproveUser,
+  adminListStatuses,
+  adminChangeStatusScope,
 }
 
 export default apiService
