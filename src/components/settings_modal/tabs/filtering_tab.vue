@@ -95,8 +95,8 @@
             </option>
           </Select>
           <ul
-            class="setting-list suboptions"
             v-if="onMuteDefaultActionLv1 === 'temporarily'"
+            class="setting-list suboptions"
           >
             <li>
               <UnitSetting
@@ -125,8 +125,8 @@
             </option>
           </Select>
           <ul
-            class="setting-list suboptions"
             v-if="onBlockDefaultActionLv1 === 'temporarily'"
+            class="setting-list suboptions"
           >
             <li>
               <UnitSetting

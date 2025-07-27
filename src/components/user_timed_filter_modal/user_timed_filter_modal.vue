@@ -8,17 +8,16 @@
     @accepted="accept"
     @cancelled="cancel"
   >
-
     <p>
       {{ $t(isMute ? 'user_card.expire_mute_message' : 'user_card.expire_block_message', [user.screen_name]) }}
     </p>
     <p>
-    {{ $t('user_card.expire_in') }}
+      {{ $t('user_card.expire_in') }}
       <input
         id="userFilterExpires"
+        v-model="expiration"
         class="input input-expire-in"
         :class="{ disabled: forever }"
-        v-model="expiration"
         :disabled="forever"
         min="1"
         type="number"
@@ -29,10 +28,30 @@
         class="input unit-input unstyled"
         :disabled="forever"
       >
-        <option key="s" value="s"> {{ $t('time.unit.seconds_suffix') }} </option>
-        <option key="m" value="m"> {{ $t('time.unit.minutes_suffix') }} </option>
-        <option key="h" value="h"> {{ $t('time.unit.hours_suffix') }} </option>
-        <option key="d" value="d"> {{ $t('time.unit.days_suffix') }} </option>
+        <option
+          key="s"
+          value="s"
+        >
+          {{ $t('time.unit.seconds_suffix') }}
+        </option>
+        <option
+          key="m"
+          value="m"
+        >
+          {{ $t('time.unit.minutes_suffix') }}
+        </option>
+        <option
+          key="h"
+          value="h"
+        >
+          {{ $t('time.unit.hours_suffix') }}
+        </option>
+        <option
+          key="d"
+          value="d"
+        >
+          {{ $t('time.unit.days_suffix') }}
+        </option>
       </Select>
 
       {{ $t('user_card.mute_or') }}

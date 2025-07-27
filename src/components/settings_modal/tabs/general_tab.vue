@@ -107,7 +107,10 @@
               </BooleanSetting>
             </li>
             <li>
-              <BooleanSetting v-if="!blockExpirationSupported" path="modalOnBlock">
+              <BooleanSetting
+                v-if="!blockExpirationSupported"
+                path="modalOnBlock"
+              >
                 {{ $t('settings.confirm_dialogs_block') }}
               </BooleanSetting>
             </li>

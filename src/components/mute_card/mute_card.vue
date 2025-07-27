@@ -1,7 +1,10 @@
 <template>
   <basic-user-card :user="user">
     <div class="mute-card-content-container">
-      <span v-if="muted && muteExpiryAvailable" class="alert neutral">
+      <span
+        v-if="muted && muteExpiryAvailable"
+        class="alert neutral"
+      >
         {{ muteExpiry }}
       </span>
       {{ ' ' }}
@@ -22,9 +25,9 @@
     </div>
     <teleport to="#modal">
       <UserTimedFilterModal
+        ref="timedMuteDialog"
         :user="user"
         :is-mute="true"
-        ref="timedMuteDialog"
       />
     </teleport>
   </basic-user-card>
