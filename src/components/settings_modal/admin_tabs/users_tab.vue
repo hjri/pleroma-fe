@@ -2,24 +2,28 @@
   <div :label="$t('admin_dash.users.management')">
     <div class="setting-item">
       <h2> filter user search </h2>
-      <input
-        v-model="filters_query"
-        :placeholder="$t('admin_dash.users.placeholder_query')"
-        class="input string-input"
-        @input="v => update_query(v.target.value)"
-      ><br>
-      <input
-        v-model="filters_name"
-        :placeholder="$t('admin_dash.users.placeholder_name')"
-        class="input string-input"
-        @input="v => update_name(v.target.value)"
-      ><br>
-      <input
-        v-model="filters_email"
-        :placeholder="$t('admin_dash.users.placeholder_email')"
-        class="input string-input"
-        @input="v => update_email(v.target.value)"
-      ><br>
+      <div
+        class="stacked-container"
+      >
+        <input
+          v-model="filters_query"
+          :placeholder="$t('admin_dash.users.placeholder_query')"
+          class="input string-input"
+          @input="reset()"
+        >
+        <input
+          v-model="filters_name"
+          :placeholder="$t('admin_dash.users.placeholder_name')"
+          class="input string-input"
+          @input="reset()"
+        >
+        <input
+          v-model="filters_email"
+          :placeholder="$t('admin_dash.users.placeholder_email')"
+          class="input string-input"
+          @input="reset()"
+        >
+      </div>
       <Select
         :model-value="filters_origin"
         @update:model-value="v => update_origin(v)"
@@ -94,7 +98,7 @@
         @update:model-value="v => {filters.unconfirmed = v; reset();}"
       >
         {{ $t('admin_dash.users.only_unconfirmed') }}
-      </Checkbox><br>
+      </Checkbox>
       <button
         class="button button-default btn"
         type="button"
@@ -107,9 +111,9 @@
       ref="userList"
       :refresh="true"
       :get-key="i => i"
-      :box-only="true"
-      :page-size="50"
-      :fetch-page="(store, opts) => fetch_page(store, opts)"
+      :box_only="true"
+      :page_size="50"
+      :fetch_page="(store, opts) => fetch_page(store, opts)"
     >
       <template #header>
         <button
@@ -135,7 +139,7 @@
         </button>
       </template>
       <template #item="{item}">
-        <AdminCard :user-details="item" />
+        <AdminCard :user_details="item" />
       </template>
     </PageList>
   </div>

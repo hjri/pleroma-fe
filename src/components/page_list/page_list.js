@@ -5,44 +5,44 @@ const PageList = {
       SelectableList
    },
    props: {
-      boxOnly: {
+      box_only: {
          type: Boolean,
          default: false
       },
-      pageSize: {
+      page_size: {
          type: Number,
          default: 50
       },
-      fetchPage: {
+      fetch_page: {
          type: Function,
          default: async () => []
       },
-      singlePage: {
+      single_page: {
          type: Boolean,
          default: false
       }
    },
    data () {
       return {
-         pageIndex: 1,
+         page_index: 1,
          items: [],
-         canLoadMore: true,
+         can_load_more: true,
          gliter: 0,
       }
    },
    methods: {
       reset () {
-         this.canLoadMore = true
-         this.pageIndex = 1
+         this.can_load_more = true
+         this.page_index = 1
          this.items = []
-         this.loadMore() // load one page
+         this.load_more() // load one page
       },
-      loadMore () {
+      load_more () {
          this.gliter++
          const iter = this.gliter
-         this.fetchPage(this.$store, {
-            page: this.pageIndex++,
-            pageSize: this.pageSize
+         this.fetch_page(this.$store, {
+            page: this.page_index++,
+            page_size: this.page_size
          }).then((items) => {
             // ignore if another request was already dispatched
             if (iter == this.gliter) {

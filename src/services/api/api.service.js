@@ -117,7 +117,7 @@ const PLEROMA_ADMIN_DESCRIPTIONS_URL = '/api/v1/pleroma/admin/config/description
 const PLEROMA_ADMIN_FRONTENDS_URL = '/api/v1/pleroma/admin/frontends'
 const PLEROMA_ADMIN_FRONTENDS_INSTALL_URL = '/api/v1/pleroma/admin/frontends/install'
 const PLEROMA_ADMIN_USERS_URL = '/api/v1/pleroma/admin/users'
-const PLEROMA_ADMIN_USERS_URL = ({page, pageSize, filters = {}, query = '', name = '', email = ''}) => {
+const PLEROMA_ADMIN_USERS_URL = ({page, page_size, filters = {}, query = '', name = '', email = ''}) => {
    const {
       local = false,
       external = false,
@@ -136,7 +136,7 @@ const PLEROMA_ADMIN_USERS_URL = ({page, pageSize, filters = {}, query = '', name
                      + (deactivated ? 'deactivated,' : '')
                      + (is_admin ? 'is_admin,' : '')
                      + (is_moderator ? 'is_moderator,' : '')
-   return `/api/v1/pleroma/admin/users?page=${page}&page_size=${pageSize}&filters=${filters_str}&query=${query}&name=${name}&email=${email}`
+   return `/api/v1/pleroma/admin/users?page=${page}&page_size=${page_size}&filters=${filters_str}&query=${query}&name=${name}&email=${email}`
 }
 const PLEROMA_ADMIN_MODIFY_GROUP_URL = (nickname, group) => `/api/v1/pleroma/admin/users/${nickname}/permission_group/${group}`
 const PLEROMA_ADMIN_CONFIRM_USER_URL = '/api/v1/pleroma/admin/users/confirm_email'
