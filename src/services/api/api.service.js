@@ -1548,7 +1548,7 @@ const adminConfirmUser = ({user: { screen_name: nickname }, credentials }) => {
       payload: {
          nicknames: [nickname]
       }
-   }).then(res => console.log('response', res))
+   })
 }
 
 const adminResendConfirmationEmail = ({user: { screen_name: nickname }, credentials }) => {
