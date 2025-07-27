@@ -1175,9 +1175,11 @@
       "scope_unlisted": "unlisted",
       "scope_private": "private",
       "scope_direct": "direct",
-      "title_info": "info",
-      "title_content": "content",
-      "link_source": "source"
+      "title_info": "Info",
+      "title_content": "Content",
+      "link_source": "source",
+      "title_database": "Database",
+      "title_details": "Details"
     },
     "limits": {
       "arbitrary_limits": "Arbitrary limits",

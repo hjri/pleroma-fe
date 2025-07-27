@@ -4,27 +4,27 @@ import StatusBody from 'src/components/status_body/status_body.vue'
 import { parseStatus } from 'src/services/entity_normalizer/entity_normalizer.service.js'
 
 const AdminStatusCard = {
-   props: ['statusDetails'],
+   props: ['status_details'],
    data () {
       return {
          json_expanded: false,
-         statusCache: undefined,
+         status_cache: undefined,
       }
    },
    computed: {
       is_sensitive () {
-         return this.statusDetails.sensitive === true
+         return this.status_details.sensitive === true
       },
       visibility () {
-         return this.statusDetails.visibility
+         return this.status_details.visibility
       }
    },
    methods: {
       change_sensitivity (v) {
-         this.$store.dispatch('adminChangeStatusScope', { opts: { id: this.statusDetails.id, sensitive: v }}).then(res => parseStatus(res)).then(p => p).then(s => this.statusCache = s)
+         this.$store.dispatch('adminChangeStatusScope', { opts: { id: this.status_details.id, sensitive: v }}).then(res => parseStatus(res)).then(s => this.status_cache = s)
       },
       change_visibility (v) {
-         this.$store.dispatch('adminChangeStatusScope', { opts: { id: this.statusDetails.id, visibility: v }}).then(res => parseStatus(res)).then(p => p).then(s => this.statusCache = s)
+         this.$store.dispatch('adminChangeStatusScope', { opts: { id: this.status_details.id, visibility: v }}).then(res => parseStatus(res)).then(s => this.status_cache = s)
       }
    },
    components: {
@@ -33,7 +33,7 @@ const AdminStatusCard = {
       StatusBody,
    },
    mounted () {
-      this.$store.dispatch('adminChangeStatusScope', { opts: { id: this.statusDetails.id }}).then(res => parseStatus(res)).then(p => p).then(s => this.statusCache = s)
+      this.$store.dispatch('adminChangeStatusScope', { opts: { id: this.status_details.id }}).then(res => parseStatus(res)).then(s => this.status_cache = s)
    }
 }
 

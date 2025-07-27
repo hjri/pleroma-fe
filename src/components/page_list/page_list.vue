@@ -19,12 +19,12 @@
         />
       </template>
     </SelectableList>
-    <div v-if="!singlePage">
+    <div v-if="!single_page">
       <button
-        v-if="canLoadMore"
+        v-if="can_load_more"
         class="button button-default btn"
         type="button"
-        @click="loadMore"
+        @click="load_more"
       >
         {{ $t('page_list.load_more') }}
       </button>
