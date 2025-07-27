@@ -116,7 +116,6 @@ const PLEROMA_ADMIN_CONFIG_URL = '/api/v1/pleroma/admin/config'
 const PLEROMA_ADMIN_DESCRIPTIONS_URL = '/api/v1/pleroma/admin/config/descriptions'
 const PLEROMA_ADMIN_FRONTENDS_URL = '/api/v1/pleroma/admin/frontends'
 const PLEROMA_ADMIN_FRONTENDS_INSTALL_URL = '/api/v1/pleroma/admin/frontends/install'
-const PLEROMA_ADMIN_USERS_URL = '/api/v1/pleroma/admin/users'
 const PLEROMA_ADMIN_USERS_URL = ({page, page_size, filters = {}, query = '', name = '', email = ''}) => {
    const {
       local = false,
