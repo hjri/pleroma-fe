@@ -117,25 +117,27 @@ const PLEROMA_ADMIN_DESCRIPTIONS_URL = '/api/v1/pleroma/admin/config/description
 const PLEROMA_ADMIN_FRONTENDS_URL = '/api/v1/pleroma/admin/frontends'
 const PLEROMA_ADMIN_FRONTENDS_INSTALL_URL = '/api/v1/pleroma/admin/frontends/install'
 const PLEROMA_ADMIN_USERS_URL = ({page, page_size, filters = {}, query = '', name = '', email = ''}) => {
-   const {
-      local = false,
-      external = false,
-      active = false,
-      need_approval = false,
-      unconfirmed = false,
-      deactivated = false,
-      is_admin = true,
-      is_moderator = true,
-   } = filters
-   const filters_str = (local ? 'local,' : '')
-                     + (external ? 'external,' : '')
-                     + (active ? 'active,' : '')
-                     + (need_approval ? 'need_approval,' : '')
-                     + (unconfirmed ? 'unconfirmed,' : '')
-                     + (deactivated ? 'deactivated,' : '')
-                     + (is_admin ? 'is_admin,' : '')
-                     + (is_moderator ? 'is_moderator,' : '')
-   return `/api/v1/pleroma/admin/users?page=${page}&page_size=${page_size}&filters=${filters_str}&query=${query}&name=${name}&email=${email}`
+  const {
+    local = false,
+    external = false,
+    active = false,
+    need_approval = false,
+    unconfirmed = false,
+    deactivated = false,
+    is_admin = true,
+    is_moderator = true,
+  } = filters
+  const filters_str = [
+    local && 'local',
+    external && 'external',
+    active && 'active',
+    need_approval && 'need_approval',
+    unconfirmed && 'unconfirmed',
+    deactivated && 'deactivated',
+    is_admin && 'is_admin',
+    is_moderator && 'is_moderator'
+  ].filter(x => x).join(',')
+  return `/api/v1/pleroma/admin/users?page=${page}&page_size=${page_size}&filters=${filters_str}&query=${query}&name=${name}&email=${email}`
 }
 const PLEROMA_ADMIN_MODIFY_GROUP_URL = (nickname, group) => `/api/v1/pleroma/admin/users/${nickname}/permission_group/${group}`
 const PLEROMA_ADMIN_CONFIRM_USER_URL = '/api/v1/pleroma/admin/users/confirm_email'
