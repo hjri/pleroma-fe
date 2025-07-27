@@ -1555,8 +1555,6 @@ const adminApproveUser = ({user : { screen_name: nickname }, credentials }) => {
          nicknames: [nickname]
       }
    })
-   r.catch(error => console.log('approve error', error))
-   console.log(r)
    return r
 }
 
