@@ -1525,7 +1525,6 @@ const adminRemoveUserFromModeratorGroup = ({ user, credentials }) => {
 
 const adminConfirmUser = ({user: { screen_name: nickname }, credentials }) => {
    const url = PLEROMA_ADMIN_CONFIRM_USER_URL
-   console.log('confirming')
    return promisedRequest({url: url,
       credentials,
       method: 'PATCH',
