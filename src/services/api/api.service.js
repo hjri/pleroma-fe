@@ -693,7 +693,7 @@ const fetchStatus = ({ id, credentials }) => {
       if (data.ok) {
         return data
       }
-      throw new Error('Error fetching timeline', data)
+      throw new Error('Error fetching timeline', { cause: data })
     })
     .then((data) => data.json())
     .then((data) => parseStatus(data))
@@ -706,7 +706,7 @@ const fetchStatusSource = ({ id, credentials }) => {
       if (data.ok) {
         return data
       }
-      throw new Error('Error fetching source', data)
+      throw new Error('Error fetching source', { cause: data })
     })
     .then((data) => data.json())
     .then((data) => parseSource(data))

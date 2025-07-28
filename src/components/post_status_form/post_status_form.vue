@@ -111,24 +111,26 @@
             <button
               :id="`reply-or-quote-option-${randomSeed}-reply`"
               class="btn button-default reply-or-quote-option"
-              :class="{ toggled: !newStatus.quoting }"
+              :class="{ toggled: !quoteThreadToggled }"
               tabindex="0"
               role="radio"
+              :disabled="quoteFormVisible"
               :aria-labelledby="`reply-or-quote-option-${randomSeed}-reply`"
-              :aria-checked="!newStatus.quoting"
-              @click="newStatus.quoting = false"
+              :aria-checked="!newStatus.quote.thread"
+              @click="setQuoteThread(false)"
             >
               {{ $t('post_status.reply_option') }}
             </button>
             <button
               :id="`reply-or-quote-option-${randomSeed}-quote`"
               class="btn button-default reply-or-quote-option"
-              :class="{ toggled: newStatus.quoting }"
+              :class="{ toggled: quoteThreadToggled }"
               tabindex="0"
               role="radio"
+              :disabled="quoteFormVisible"
               :aria-labelledby="`reply-or-quote-option-${randomSeed}-quote`"
-              :aria-checked="newStatus.quoting"
-              @click="newStatus.quoting = true"
+              :aria-checked="newStatus.quote.thread"
+              @click="setQuoteThread(true)"
             >
               {{ $t('post_status.quote_option') }}
             </button>
@@ -266,6 +268,13 @@
         :visible="pollFormVisible"
         :params="newStatus.poll"
       />
+      <quote-form
+        v-if="quotingAvailable"
+        ref="quoteForm"
+        :visible="quoteFormVisible"
+        :reply="isReply"
+        :params="newStatus.quote"
+      />
       <span
         v-if="!disableDraft && shouldAutoSaveDraft"
         class="auto-save-status"
@@ -295,6 +304,16 @@
             @click="togglePollForm"
           >
             <FAIcon icon="poll-h" />
+          </button>
+          <button
+            v-if="quotingAvailable"
+            class="quote-icon button-unstyled"
+            :disabled="newStatus.quote.thread"
+            :class="{ selected: quoteFormVisible }"
+            :title="$t('tool_tip.add_quote')"
+            @click="toggleQuoteForm"
+          >
+            <FAIcon icon="quote-right" />
           </button>
         </div>
         <div class="btn-group post-button-group">

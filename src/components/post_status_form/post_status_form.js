@@ -15,6 +15,7 @@ import EmojiInput from '../emoji_input/emoji_input.vue'
 import suggestor from '../emoji_input/suggestor.js'
 import MediaUpload from '../media_upload/media_upload.vue'
 import PollForm from '../poll/poll_form.vue'
+import QuoteForm from '../quote/quote_form.vue'
 import ScopeSelector from '../scope_selector/scope_selector.vue'
 import Select from '../select/select.vue'
 import StatusContent from '../status_content/status_content.vue'
@@ -35,6 +36,7 @@ import {
   faChevronRight,
   faCircleNotch,
   faPollH,
+  faQuoteRight,
   faSmileBeam,
   faTimes,
   faUpload,
@@ -44,6 +46,7 @@ library.add(
   faSmileBeam,
   faPollH,
   faUpload,
+  faQuoteRight,
   faBan,
   faTimes,
   faCircleNotch,
@@ -105,6 +108,7 @@ const PostStatusForm = {
     'disableNotice',
     'disableLockWarning',
     'disablePolls',
+    'disableQuotes',
     'disableSensitivityCheckbox',
     'disableSubmit',
     'disablePreview',
@@ -136,6 +140,7 @@ const PostStatusForm = {
     MediaUpload,
     EmojiInput,
     PollForm,
+    QuoteForm,
     ScopeSelector,
     Checkbox,
     Select,
@@ -144,6 +149,9 @@ const PostStatusForm = {
     Gallery,
     DraftCloser,
     Popover,
+  },
+  created() {
+    this.initQuote()
   },
   mounted() {
     this.updateIdempotencyKey()
@@ -203,6 +211,8 @@ const PostStatusForm = {
         files: [],
         poll: {},
         hasPoll: false,
+        hasQuote: false,
+        quote: {},
         mediaDescriptions: {},
         visibility: scope,
         contentType,
@@ -220,6 +230,8 @@ const PostStatusForm = {
           files: this.statusFiles || [],
           poll: this.statusPoll || {},
           hasPoll: false,
+          hasQuote: false,
+          quote: {},
           mediaDescriptions: this.statusMediaDescriptions || {},
           visibility: this.statusScope || scope,
           contentType: statusContentType,
@@ -345,12 +357,28 @@ const PostStatusForm = {
     isEdit() {
       return typeof this.statusId !== 'undefined' && this.statusId.trim() !== ''
     },
-    quotable() {
+    quotingAvailable() {
       if (!useInstanceCapabilitiesStore().quotingAvailable) {
         return false
       }
 
-      if (!this.replyTo) {
+      return this.disableQuotes !== true
+    },
+    isReply() {
+      return this.newStatus.type === 'reply'
+    },
+    quotable() {
+      return this.quotingAvailable && this.replyTo
+    },
+    quoteThreadToggled() {
+      return this.newStatus.hasQuote && this.newStatus.quote.thread
+    },
+    defaultQuotable() {
+      if (
+        !this.quotingAvailable ||
+        !this.isReply ||
+        !this.$store.getters.mergedConfig.quoteReply
+      ) {
         return false
       }
 
@@ -372,11 +400,24 @@ const PostStatusForm = {
 
       return false
     },
+    inReplyStatusId() {
+      return !this.newStatus.hasQuote ||
+        !this.newStatus.quote.thread ||
+        !this.newStatus.quote.id
+        ? this.replyTo
+        : undefined
+    },
+    quoteId() {
+      return this.newStatus.hasQuote ? this.newStatus.quote.id : undefined
+    },
     debouncedMaybeAutoSaveDraft() {
       return debounce(this.maybeAutoSaveDraft, 3000)
     },
     pollFormVisible() {
       return this.newStatus.hasPoll
+    },
+    quoteFormVisible() {
+      return this.newStatus.hasQuote && !this.newStatus.quote.thread
     },
     shouldAutoSaveDraft() {
       return this.$store.getters.mergedConfig.autoSaveDraft
@@ -395,7 +436,8 @@ const PostStatusForm = {
         (this.newStatus.status ||
           this.newStatus.spoilerText ||
           this.newStatus.files?.length ||
-          this.newStatus.hasPoll) &&
+          this.newStatus.hasPoll ||
+          this.newStatus.hasQuote) &&
         this.saveable
       )
     },
@@ -406,7 +448,8 @@ const PostStatusForm = {
           this.newStatus.status ||
           this.newStatus.spoilerText ||
           this.newStatus.files?.length ||
-          this.newStatus.hasPoll
+          this.newStatus.hasPoll ||
+          this.newStatus.hasQuote
         )
       )
     },
@@ -456,11 +499,13 @@ const PostStatusForm = {
         contentType: newStatus.contentType,
         poll: {},
         hasPoll: false,
+        hasQuote: false,
+        quote: {},
         mediaDescriptions: {},
-        quoting: false,
       }
       this.$refs.mediaUpload && this.$refs.mediaUpload.clearFile()
       this.clearPollForm()
+      this.clearQuoteForm()
       if (this.preserveFocus) {
         this.$nextTick(() => {
           this.$refs.textarea.focus()
@@ -500,9 +545,7 @@ const PostStatusForm = {
         return
       }
 
-      const poll = this.newStatus.hasPoll
-        ? pollFormToMasto(this.newStatus.poll)
-        : {}
+      const poll = newStatus.hasPoll ? pollFormToMasto(newStatus.poll) : {}
       if (this.pollContentError) {
         this.error = this.pollContentError
         return
@@ -518,10 +561,6 @@ const PostStatusForm = {
         return
       }
 
-      const replyOrQuoteAttr = newStatus.quoting
-        ? 'quoteId'
-        : 'inReplyToStatusId'
-
       const postingOptions = {
         status: newStatus.status,
         spoilerText: newStatus.spoilerText || null,
@@ -529,7 +568,8 @@ const PostStatusForm = {
         sensitive: newStatus.nsfw,
         media: newStatus.files,
         store: this.$store,
-        [replyOrQuoteAttr]: this.replyTo,
+        inReplyToStatusId: this.inReplyStatusId,
+        quoteId: this.quoteId,
         contentType: newStatus.contentType,
         poll,
         idempotencyKey: this.idempotencyKey,
@@ -558,9 +598,7 @@ const PostStatusForm = {
       }
       const newStatus = this.newStatus
       this.previewLoading = true
-      const replyOrQuoteAttr = newStatus.quoting
-        ? 'quoteId'
-        : 'inReplyToStatusId'
+
       statusPoster
         .postStatus({
           status: newStatus.status,
@@ -569,7 +607,8 @@ const PostStatusForm = {
           sensitive: newStatus.nsfw,
           media: [],
           store: this.$store,
-          [replyOrQuoteAttr]: this.replyTo,
+          inReplyToStatusId: this.inReplyStatusId,
+          quoteId: this.quoteId,
           contentType: newStatus.contentType,
           poll: {},
           preview: true,
@@ -812,6 +851,32 @@ const PostStatusForm = {
       if (this.$refs.pollForm) {
         this.$refs.pollForm.clear()
       }
+    },
+    initQuote() {
+      const quote = this.newStatus.quote
+
+      if (Object.keys(quote).length > 0) {
+        return
+      }
+
+      const quotable = this.defaultQuotable
+
+      quote.id = quotable ? this.replyTo : ''
+      quote.url = ''
+      quote.thread = quotable
+    },
+    setQuoteThread(v) {
+      this.newStatus.hasQuote = v
+      this.newStatus.quote.thread = v
+      this.newStatus.quote.id = v ? this.replyTo : ''
+    },
+    clearQuoteForm() {
+      if (this.$refs.quoteForm) {
+        this.$refs.quoteForm.clear()
+      }
+    },
+    toggleQuoteForm() {
+      this.newStatus.hasQuote = !this.newStatus.hasQuote
     },
     dismissScopeNotice() {
       this.$store.dispatch('setOption', {

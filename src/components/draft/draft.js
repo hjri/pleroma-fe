@@ -43,7 +43,12 @@ const Draft = {
       }
     },
     safeToSave() {
-      return this.draft.status || this.draft.files?.length || this.draft.hasPoll
+      return (
+        this.draft.status ||
+        this.draft.files?.length ||
+        this.draft.hasPoll ||
+        this.draft.hasQuote
+      )
     },
     postStatusFormProps() {
       return {

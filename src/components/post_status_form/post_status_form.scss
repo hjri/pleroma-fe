@@ -137,11 +137,17 @@
 
   .poll-icon {
     order: 3;
+    justify-content: center;
+  }
+
+  .quote-icon {
+    order: 4;
     justify-content: right;
   }
 
   .media-upload-icon,
   .poll-icon,
+  .quote-icon,
   .emoji-icon {
     font-size: 1.85em;
     line-height: 1.1;

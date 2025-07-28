@@ -6,7 +6,7 @@
     grid-template-columns: repeat(auto-fill, minmax(10%, 3em));
     grid-auto-flow: row dense;
     grid-auto-rows: 1fr;
-    grid-gap: 1.25em 1em;
+    grid-gap: 1.25em 0;
     margin-top: var(--status-margin);
   }
 
