@@ -51,7 +51,7 @@
     <div
       v-if="adminDbLoaded"
       :label="$t('admin_dash.tabs.users')"
-      icon="wrench"
+      icon="user"
       data-tab-name="users"
     >
       <UsersTab />

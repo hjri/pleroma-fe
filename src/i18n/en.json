@@ -1185,7 +1185,9 @@
       "title_content": "Content",
       "link_source": "source",
       "title_database": "Database",
-      "title_details": "Details"
+      "title_details": "Details",
+      "title_filter_user_search": "Filter User Search",
+      "title_users": "Users"
     },
     "limits": {
       "arbitrary_limits": "Arbitrary limits",
