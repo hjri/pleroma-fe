@@ -109,6 +109,12 @@ const AdminCard = {
       force_update_user () {
          this.$store.dispatch('fetchUser', this.user_details.id)
       },
+      delete_selection () {
+        const l = this.$refs.timelineList
+        const s = l.selected()
+        s.forEach(p => this.$store.dispatch('deleteStatus', p))
+        l.reset()
+      },
       delete_user () {
          if (!this.just_deleted) {
             const u = this.$store.getters.findUser(this.user_details.id)

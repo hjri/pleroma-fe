@@ -31,7 +31,7 @@ const UsersTab = {
         unconfirmed: false,
         deactivated: false,
         is_admin: false,
-        is_moderator: false,
+        is_moderator: false
       },
       expandedUser: null,
       loading: false

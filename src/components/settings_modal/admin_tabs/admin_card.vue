@@ -129,6 +129,15 @@
             :single_page="true"
             :fetch_page="(store, opts) => fetch_statuses(store, opts)"
           >
+            <template #header>
+              <button
+                class="button button-default btn"
+                type="button"
+                @click="delete_selection"
+              >
+                {{ $t('admin_dash.users.delete') }}
+              </button>
+            </template>
             <template #item="{item}">
               <AdminStatusCard :status_details="item" />
             </template>
