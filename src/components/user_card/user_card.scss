@@ -348,22 +348,44 @@
 }
 
 .user-extras {
-  display: grid;
-  place-items: center baseline;
-  justify-content: space-between;
-  grid-template-columns: minmax(max-content, 1fr);
-  grid-auto-columns: 1fr;
-  grid-auto-flow: column;
   padding: 1.2em 0.6em;
-}
+  line-height: 1.5;
 
-.birthday {
-  width: 100%;
-  text-align: right;
-}
+  .user-stats {
+    display: block;
+    text-align: center;
+    width: 100%;
 
-.user-birthday {
-  margin: 0 0.75em 0.5em;
+    dl {
+      display: inline;
+      margin-right: 1em;
+      white-space: nowrap;
+    }
+
+    dd {
+      font-weight: bolder;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    dd, dt {
+      display: inline
+    }
+
+    /* stylelint-disable-next-line no-descending-specificity */
+    a {
+      text-decoration: none;
+    }
+  }
+
+  .birthday {
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+
+    --icon: var(--text);
+  }
 }
 
 .user-profile-fields {
@@ -413,30 +435,5 @@
       padding-left: 0.6em;
       margin: 0;
     }
-  }
-}
-
-.user-stats {
-  display: block;
-  text-align: center;
-  width: 100%;
-
-  dl {
-    display: inline;
-    margin-right: 1em;
-  }
-
-  dd {
-    font-weight: bolder;
-    margin: 0;
-  }
-
-  dd, dt {
-    display: inline
-  }
-
-  /* stylelint-disable-next-line no-descending-specificity */
-  a {
-    text-decoration: none;
   }
 }
