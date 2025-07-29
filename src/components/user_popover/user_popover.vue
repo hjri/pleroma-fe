@@ -26,7 +26,9 @@
 <style lang="scss">
 /* popover styles load on-demand, so we need to override */
 /* stylelint-disable block-no-empty */
-.user-popover{
+.user-popover {
+  margin-bottom: 0.6em;
+
   .user-card-inner {
     display: flex;
   }
