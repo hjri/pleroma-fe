@@ -15,9 +15,8 @@ const UsersTab = {
   },
   data() {
     return {
-      /* filters must match the filter options below initially, or the ui is gonna have a computer moment
-       * no, i won't fix this
-       * */
+      init: false, /* avoid fetching before our filters got initialized */
+      /* adjust filters_... options here, mounted() will adjust the other flags accordingly */
       filters_origin: 'local',
       filters_activity: 'all',
       filters_permission: 'all',
@@ -104,6 +103,7 @@ const UsersTab = {
       this.reset()
     },
     fetch_page (store, opts) {
+      if(!this.init) return new Promise(() => [])
       const users = store.dispatch('fetchAdminUsers', { ...opts, ...{
         query: this.filters_query,
         filters: this.filters,
@@ -134,6 +134,8 @@ const UsersTab = {
     this.update_origin(this.filters_origin)
     this.update_activity(this.filters_activity)
     this.update_permission(this.filters_permission)
+    this.init = true
+    this.reset()
   }
 }
 

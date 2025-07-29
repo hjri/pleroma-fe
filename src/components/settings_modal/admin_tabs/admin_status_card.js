@@ -1,6 +1,6 @@
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Select from 'src/components/select/select.vue'
-import StatusBody from 'src/components/status_body/status_body.vue'
+import Status from 'src/components/status/status.vue'
 import { parseStatus } from 'src/services/entity_normalizer/entity_normalizer.service.js'
 
 const AdminStatusCard = {
@@ -30,7 +30,7 @@ const AdminStatusCard = {
    components: {
       Checkbox,
       Select,
-      StatusBody,
+      Status,
    },
    mounted () {
       this.$store.dispatch('adminChangeStatusScope', { opts: { id: this.status_details.id }}).then(res => parseStatus(res)).then(s => this.status_cache = s)

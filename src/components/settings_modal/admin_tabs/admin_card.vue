@@ -17,67 +17,88 @@
         </div>
         <div
           v-else
-          class="setting-item"
         >
-          <button
-            class="button button-default btn"
-            type="button"
-            @click="top_level_expanded = false"
-          >
-            {{ $t('admin_dash.users.collapse_user') }}
-          </button><br>
-          <div v-if="is_local">
-            <Checkbox
-              :model-value="is_admin"
-              @update:model-value="v => toggle_admin(v)"
+          <ul class="setting-list">
+            <li>
+              <button
+                class="button button-default btn"
+                type="button"
+                @click="top_level_expanded = false"
+              >
+                {{ $t('admin_dash.users.collapse_user') }}
+              </button>
+            </li>
+            <li
+              v-if="is_local"
             >
-              {{ $t('admin_dash.users.is_admin') }}
-            </Checkbox><br>
-            <Checkbox
-              :model-value="is_moderator"
-              @update:model-value="v => toggle_moderator(v)"
+              <Checkbox
+                :model-value="is_admin"
+                @update:model-value="v => toggle_admin(v)"
+              >
+                {{ $t('admin_dash.users.is_admin') }}
+              </Checkbox>
+            </li>
+            <li
+              v-if="is_local"
             >
-              {{ $t('admin_dash.users.is_moderator') }}
-            </Checkbox><br>
-            <div v-if="!just_confirmed && !is_confirmed">
+              <Checkbox
+                :model-value="is_moderator"
+                @update:model-value="v => toggle_moderator(v)"
+              >
+                {{ $t('admin_dash.users.is_moderator') }}
+              </Checkbox>
+            </li>
+            <li
+              v-if="is_local && !just_confirmed && !is_confirmed"
+            >
               <button
                 class="button button-default btn"
                 type="button"
                 @click="confirm_user()"
               >
                 {{ $t('admin_dash.users.is_confirmed') }}
-              </button><br>
+              </button>
+            </li>
+            <li
+              v-if="is_local && !just_confirmed && !is_confirmed"
+            >
               <button
                 class="button button-default btn"
                 type="button"
                 @click="resend_confirmation_email()"
               >
                 {{ $t('admin_dash.users.resend_confirmation_email') }}
-              </button><br>
-            </div>
-            <div v-if="!is_approved">
+              </button>
+            </li>
+            <li
+              v-if="is_local && !is_approved"
+            >
               <button
                 class="button button-default btn"
                 type="button"
                 @click="toggle_approval(true)"
               >
                 {{ $t('admin_dash.users.approve') }}
-              </button><br>
-            </div>
-          </div>
-          <Checkbox
-            :model-value="is_activated"
-            @update:model-value="v => toggle_activation(v)"
-          >
-            {{ $t('admin_dash.users.is_active') }}
-          </Checkbox><br>
-          <button
-            class="button button-default btn"
-            type="button"
-            @click="delete_user()"
-          >
-            {{ $t('admin_dash.users.delete_user') }}
-          </button>
+              </button>
+            </li>
+            <li>
+              <Checkbox
+                :model-value="is_activated"
+                @update:model-value="v => toggle_activation(v)"
+              >
+                {{ $t('admin_dash.users.is_active') }}
+              </Checkbox>
+            </li>
+            <li>
+              <button
+                class="button button-default btn"
+                type="button"
+                @click="delete_user()"
+              >
+                {{ $t('admin_dash.users.delete_user') }}
+              </button>
+            </li>
+          </ul>
         </div>
         <div v-if="!timeline_expanded">
           <button
@@ -110,6 +131,12 @@
           >
             <template #item="{item}">
               <AdminStatusCard :status_details="item" />
+            </template>
+            <template #empty>
+              <p> {{ $t('admin_dash.users.user_has_no_posts') }} </p>
+            </template>
+            <template #load>
+              <p> {{ $t('admin_dash.users.loading') }} </p>
             </template>
           </PageList>
         </div>
