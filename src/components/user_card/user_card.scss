@@ -149,6 +149,7 @@
     display: flex;
     align-items: flex-end;
     margin-bottom: 1em;
+    container: user-card / inline-size;
 
     > * {
       min-width: 0;
@@ -165,7 +166,9 @@
       --_avatarShadowInset: var(--avatarShadowInset);
 
       width: 7em;
+      width: calc(min(7em, 20cqw));
       height: 7em;
+      height: calc(min(7em, 20cqw));
       object-fit: cover;
     }
   }
@@ -267,10 +270,14 @@
       --link: var(--text) !important;
     }
 
-    .top-line, {
+    .top-line {
       display: flex;
+      // these two normalize position and height when custom emoji are used
       line-height: 2;
+      margin-bottom: -0.2em;
       font-weight: 600;
+      font-size: 110%;
+      font-size: calc(max(110%, 4cqw));
     }
 
     .bottom-line {
