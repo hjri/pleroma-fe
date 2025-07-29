@@ -38,9 +38,15 @@
         vertical-align: bottom;
         margin-left: -0.1em;
 
-        &.-none {
+        &.-none select {
           font-style: italic;
           color: var(--textFaint);
+
+          option {
+            font-style: initial;
+            color: var(--text);
+            background: var(--background);
+          }
         }
       }
 
