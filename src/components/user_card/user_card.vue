@@ -236,7 +236,7 @@
         </div>
       </div>
     </div>
-    <div class="personal-marks" v-if="loggedIn && isOtherUser && (hasNote || !hideBio)">
+    <div class="personal-marks" v-if="loggedIn && isOtherUser && (hasNote || !hideBio) && !mergedConfig.userCardHidePersonalMarks">
       <UserNote
         v-if="hasNote || (hasNoteEditor && supportsNote)"
         :user="user"
@@ -281,6 +281,7 @@
     <RichContent
       v-if="!hideBio"
       class="user-card-bio"
+      :class="{ '-justify-left': mergedConfig.userCardLeftJustify }"
       :html="user.description_html"
       :emoji="user.emoji"
       :handle-links="true"

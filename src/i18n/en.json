@@ -797,6 +797,8 @@
     "user_popover_avatar_action_close": "Close the popover",
     "user_popover_avatar_action_open": "Open profile",
     "user_popover_avatar_overlay": "Show user popover over user avatar",
+    "user_card_left_justify": "Justify user bio to the left",
+    "user_card_hide_personal_marks": "Hide personal marks (highlight/note) in user profiles",
     "fun": "Fun",
     "greentext": "Meme arrows",
     "show_yous": "Show (You)s",

@@ -6,6 +6,12 @@
     padding-bottom: 0;
   }
 
+  .user-card-bio {
+    &.-justify-left {
+      text-align: start;
+    }
+  }
+
   &:hover {
     --_still-image-img-visibility: visible;
     --_still-image-canvas-visibility: hidden;
