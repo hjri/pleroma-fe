@@ -21,13 +21,15 @@
     align-items: stretch;
     // create new stacking context
     position: relative;
-    overflow: hidden;
   }
 
   .personal-marks {
     margin: 0.6em;
     padding: 0.6em;
-    border-bottom: 1px solid var(--border);
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--border);
+    }
 
     .highlighter {
       h4 {
@@ -39,11 +41,9 @@
         margin-left: -0.1em;
 
         &.-none select {
-          font-style: italic;
           color: var(--textFaint);
 
           option {
-            font-style: initial;
             color: var(--text);
             background: var(--background);
           }
@@ -164,8 +164,8 @@
       --_avatarShadowFilter: var(--avatarShadowFilter);
       --_avatarShadowInset: var(--avatarShadowInset);
 
-      min-width: 6em;
-      height: 6em;
+      width: 7em;
+      height: 7em;
       object-fit: cover;
     }
   }

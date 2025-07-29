@@ -11,14 +11,14 @@ const UserNote = {
   },
   data () {
     return {
-      localNote: '',
+      localNote: this.relationship.note,
       editing: false,
       frozen: false
     }
   },
-  computed: {
-    shouldShow () {
-      return this.relationship.note || this.editing
+  watch: {
+    relationship () {
+      this.localNote = this.relationship.note
     }
   },
   methods: {
@@ -39,6 +39,7 @@ const UserNote = {
         })
         .catch(() => {
           this.frozen = false
+          this.editing = false
         })
     }
   }

@@ -28,8 +28,13 @@
     backdrop-filter: var(--backdrop-filter);
   }
 
+  .other-actions {
+    top: -0.6em;
+    right: -0.6em;
+  }
+
   .user-info {
-    margin-bottom: 0;
+    margin-bottom: -1em;
 
     .background-image {
       max-height: 5.6em;

@@ -5,19 +5,14 @@
   >
     <h4>{{ $t('user_card.personal_note') }}</h4>
     <textarea
-      v-show="editing"
       v-model="localNote"
       class="input note-text"
+      :class="{ unstyled: !editing }"
+      @focus="startEditing"
       @blur="finalizeEditing"
+      rows="1"
+      :placeholder="$t('user_card.note_blank_click')"
     />
-    <span
-      v-show="!editing"
-      class="note-text"
-      :class="{ '-blank': !relationship.note }"
-      @click="startEditing"
-    >
-      {{ relationship.note || $t('user_card.note_blank_click') }}
-    </span>
     <span
       class="overlay"
       v-if="frozen"
@@ -40,11 +35,8 @@
 
   .note-text {
     align-self: stretch;
-  }
-
-  .note-text.-blank {
-    font-style: italic;
-    color: var(--textFaint);
+    min-width: 100%;
+    margin: -0.6em;
   }
 
   .overlay {

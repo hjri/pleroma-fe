@@ -3,7 +3,6 @@
     <Popover
       trigger="click"
       placement="bottom"
-      :bound-to="{ x: 'container' }"
       remove-padding
     >
       <template #content>

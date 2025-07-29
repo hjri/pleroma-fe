@@ -83,6 +83,7 @@
           />
           <router-link
             v-else
+            class="user-info-avatar"
             :to="userProfileLink(user)"
           >
             <UserAvatar :user="user" />
@@ -312,52 +313,52 @@
           />
         </dd>
       </dl>
-      <div class="user-extras">
-        <span
-          v-if="!hideBio && !mergedConfig.hideUserStats"
-          class="user-stats"
+    </div>
+    <div class="user-extras" v-if="!hideBio">
+      <span
+        v-if="!mergedConfig.hideUserStats"
+        class="user-stats"
+      >
+        <dl
+          class="user-count"
+          @click.prevent="setProfileView('statuses')"
+          v-if="!mergedConfig.hideUserStats && !hideBio"
         >
-          <dl
-            class="user-count"
-            @click.prevent="setProfileView('statuses')"
-            v-if="!mergedConfig.hideUserStats && !hideBio"
-          >
-            <dd>{{ user.statuses_count }}</dd>
-            {{ ' ' }}
-            <dt>{{ $t('user_card.statuses') }}</dt>
-          </dl>
-          <dl
-            class="user-count"
-            @click.prevent="setProfileView('statuses')"
-          >
-            <dd>{{ dailyAvg }}</dd>
-            {{ ' ' }}
-            <dt>{{ $t('user_card.statuses_per_day') }}</dt>
-          </dl>
-          <dl
-            class="user-count"
-            @click.prevent="setProfileView('friends')"
-          >
-            <dd>{{ hideFollowsCount ? $t('user_card.hidden') : user.friends_count }}</dd>
-            {{ ' ' }}
-            <dt>{{ $t('user_card.followees') }}</dt>
-          </dl>
-          <dl
-            class="user-count"
-            @click.prevent="setProfileView('followers')"
-          >
-            <dd>{{ hideFollowersCount ? $t('user_card.hidden') : user.followers_count }}</dd>
-            {{ ' ' }}
-            <dt>{{ $t('user_card.followers') }}</dt>
-          </dl>
-        </span>
-        <div class="birthday" v-if="!hideBio && !!user.birthday">
-          <FAIcon
-            class="fa-old-padding"
-            icon="birthday-cake"
-          />
-          {{ $t('user_card.birthday', { birthday: formattedBirthday }) }}
-        </div>
+          <dd>{{ user.statuses_count }}</dd>
+          {{ ' ' }}
+          <dt>{{ $t('user_card.statuses') }}</dt>
+        </dl>
+        <dl
+          class="user-count"
+          @click.prevent="setProfileView('statuses')"
+        >
+          <dd>{{ dailyAvg }}</dd>
+          {{ ' ' }}
+          <dt>{{ $t('user_card.statuses_per_day') }}</dt>
+        </dl>
+        <dl
+          class="user-count"
+          @click.prevent="setProfileView('friends')"
+        >
+          <dd>{{ hideFollowsCount ? $t('user_card.hidden') : user.friends_count }}</dd>
+          {{ ' ' }}
+          <dt>{{ $t('user_card.followees') }}</dt>
+        </dl>
+        <dl
+          class="user-count"
+          @click.prevent="setProfileView('followers')"
+        >
+          <dd>{{ hideFollowersCount ? $t('user_card.hidden') : user.followers_count }}</dd>
+          {{ ' ' }}
+          <dt>{{ $t('user_card.followers') }}</dt>
+        </dl>
+      </span>
+      <div class="birthday" v-if="!hideBio && !!user.birthday">
+        <FAIcon
+          class="fa-old-padding"
+          icon="birthday-cake"
+        />
+        {{ $t('user_card.birthday', { birthday: formattedBirthday }) }}
       </div>
     </div>
     <teleport to="#modal">
