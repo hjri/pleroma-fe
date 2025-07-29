@@ -55,7 +55,7 @@ const PageList = {
     }
   },
   mounted () {
-    this.reset()
+    this.load_more()
   }
 }
 export default PageList
