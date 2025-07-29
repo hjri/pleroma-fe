@@ -15,26 +15,35 @@ const UsersTab = {
   },
   data() {
     return {
-      init: false, /* avoid fetching before our filters got initialized */
-      /* adjust filters_... options here, mounted() will adjust the other flags accordingly */
+      init: false,
       filters_origin: 'local',
       filters_activity: 'all',
       filters_permission: 'all',
       filters_query: '',
       filters_name: '',
       filters_email: '',
-      filters: {
-        local: false,
-        external: false,
-        active: false,
-        need_approval: false,
-        unconfirmed: false,
-        deactivated: false,
-        is_admin: false,
-        is_moderator: false
-      },
       expandedUser: null,
       loading: false
+    }
+  },
+  computed: {
+    filters_is_admin () {
+      return this.filters_permission === 'admin' || this.filters_permission === 'modsnadmins'
+    },
+    filters_is_moderator () {
+      return this.filters_permission === 'moderator' || this.filters_permission === 'modsnadmins'
+    },
+    filters_active () {
+      return this.filters_activity === 'active'
+    },
+    filters_deactivated () {
+      return this.filters_activity === 'deactivated'
+    },
+    filters_local () {
+      return this.filters_origin === 'local'
+    },
+    filters_external () {
+      return this.filters_origin === 'external'
     }
   },
   components: {
@@ -47,66 +56,19 @@ const UsersTab = {
     TabSwitcher,
   },
   methods: {
-    update_origin (v) {
-      switch (v) {
-        case 'local':
-          this.filters.local = true
-          this.filters.external = false
-          break;
-        case 'external':
-          this.filters.local = false
-          this.filters.external = true
-          break;
-        default: // 'all'
-          this.filters.local = false
-          this.filters.external = false
-          break;
-      }
-      this.reset()
-    },
-    update_activity (v) {
-      switch (v) {
-        case 'active':
-          this.filters.active = true
-          this.filters.deactivated = false
-          break;
-        case 'deactivated':
-          this.filters.active = false
-          this.filters.deactivated = true
-          break;
-        default: // 'all'
-          this.filters.active = false
-          this.filters.deactivated = false
-          break;
-      }
-      this.reset()
-    },
-    update_permission (v) {
-      switch (v) {
-        case 'admin':
-          this.filters.is_admin = true
-          this.filters.is_moderator = false
-          break;
-        case 'moderator':
-          this.filters.is_admin = false
-          this.filters.is_moderator = true
-          break;
-        case 'modsnadmins':
-          this.filters.is_admin = true
-          this.filters.is_moderator = true
-          break;
-        default: // 'all'
-          this.filters.is_admin = false
-          this.filters.is_moderator = false
-          break;
-      }
-      this.reset()
-    },
     fetch_page (store, opts) {
       if(!this.init) return new Promise(() => [])
+      const filters = {
+        is_admin: this.filters_is_admin,
+        is_moderator: this.filters_is_moderator,
+        active: this.filters_active,
+        deactivated: this.filters_deactivated,
+        local: this.filters_local,
+        external: this.filters_external
+      }
       const users = store.dispatch('fetchAdminUsers', { ...opts, ...{
         query: this.filters_query,
-        filters: this.filters,
+        filters,
         name: this.filters_name,
         email: this.filters_email
       }})
@@ -130,10 +92,6 @@ const UsersTab = {
     }
   },
   mounted () {
-    /* make sure init state is correct */
-    this.update_origin(this.filters_origin)
-    this.update_activity(this.filters_activity)
-    this.update_permission(this.filters_permission)
     this.init = true
     this.reset()
   }

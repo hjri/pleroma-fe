@@ -31,8 +31,8 @@
         </li>
         <li>
           <Select
-            :model-value="filters_origin"
-            @update:model-value="v => update_origin(v)"
+            v-model="filters_origin"
+            @update:model-value="reset"
           >
             <option
               value="all"
@@ -53,8 +53,8 @@
         </li>
         <li>
           <Select
-            :model-value="filters_activity"
-            @update:model-value="v => update_activity(v)"
+            v-model="filters_activity"
+            @update:model-value="reset"
           >
             <option
               value="all"
@@ -75,8 +75,8 @@
         </li>
         <li>
           <Select
-            :model-value="filters_permission"
-            @update:model-value="v => update_permission(v)"
+            v-model="filters_permission"
+            @update:model-value="reset"
           >
             <option
               value="all"
