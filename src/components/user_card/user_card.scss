@@ -2,34 +2,67 @@
   position: relative;
   z-index: 1;
 
+  .user-card-inner {
+    padding-bottom: 0;
+  }
+
   &:hover {
     --_still-image-img-visibility: visible;
     --_still-image-canvas-visibility: hidden;
     --_still-image-label-visibility: hidden;
   }
 
-  .btn-mute, .btn-mention {
-    display: block;
-    width: 100%;
-  }
-
   .panel-heading {
-    padding: 0.5em 0;
     text-align: center;
     box-shadow: none;
     background: transparent;
+    backdrop-filter: none;
     flex-direction: column;
     align-items: stretch;
     // create new stacking context
     position: relative;
+    overflow: hidden;
+  }
+
+  .personal-marks {
+    margin: 0.6em;
+    padding: 0.6em;
+    border-bottom: 1px solid var(--border);
+
+    .highlighter {
+      h4 {
+        margin-top: 0.6em;
+      }
+
+      .userHighlightSel {
+        vertical-align: bottom;
+        margin-left: -0.1em;
+
+        &.-none {
+          font-style: italic;
+          color: var(--textFaint);
+        }
+      }
+
+      .highlighter-color {
+        vertical-align: bottom;
+        margin-left: 0.6em;
+      }
+    }
   }
 
   .background-image {
-    position: absolute;
+    width: calc(100% + 2.4em);
+    margin-left: -1.2em;
+    margin-right: -1.2em;
+    margin-top: -1.2em;
+    margin-bottom: -4.5em;
+    aspect-ratio: 3;
+    padding: 0;
     inset: 0;
     mask:
-      linear-gradient(to top, white, transparent) bottom no-repeat,
-      linear-gradient(to top, white, white);
+      linear-gradient(to top, white 0%, transparent 20%) bottom no-repeat,
+      linear-gradient(to top, white 0%, white 100%);
     // Autoprefixer seem to ignore this one, and also syntax is different
     /* stylelint-disable mask-composite */
     /* stylelint-disable declaration-property-value-no-unknown */
@@ -42,7 +75,7 @@
     /* stylelint-enable mask-composite */
     mask-composite: exclude;
     background-size: cover;
-    mask-size: 100% 60%;
+    mask-size: 100%;
     border-top-left-radius: calc(var(--__roundnessTop, --panelRadius) - 1px);
     border-top-right-radius: calc(var(--__roundnessTop, --panelRadius) - 1px);
     border-bottom-left-radius: calc(var(--__roundnessBottom, --panelRadius) - 1px);
@@ -57,10 +90,11 @@
 
   &-bio {
     text-align: center;
+    color: var(--lightText);
     display: block;
     line-height: 1.3;
-    padding: 1em;
-    margin: 0;
+    padding: 0.6em;
+    margin: 0 0.6em;
 
     img {
       object-fit: contain;
@@ -100,14 +134,15 @@
 }
 
 .user-info {
-  padding: 0 26px;
+  position: relative;
+  margin: 0.6em;
+  margin-bottom: 0;
 
-  .container {
+  .user-identity {
     min-width: 0;
-    padding: 16px 0 6px;
     display: flex;
-    align-items: flex-start;
-    max-height: 56px;
+    align-items: flex-end;
+    margin-bottom: 1em;
 
     > * {
       min-width: 0;
@@ -123,19 +158,42 @@
       --_avatarShadowFilter: var(--avatarShadowFilter);
       --_avatarShadowInset: var(--avatarShadowInset);
 
-      width: 56px;
-      height: 56px;
+      min-width: 6em;
+      height: 6em;
       object-fit: cover;
+    }
+  }
+
+  .other-actions {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: grid;
+    grid-auto-flow: column;
+    grid-gap: 0.6em;
+
+    a, button {
+      text-align: center;
+      width: 2em;
+      height: 2em;
+      line-height: 2em;
+
+      &:not(:hover) .icon {
+        color: var(--lightText);
+      }
     }
   }
 
   &-avatar {
     position: relative;
     cursor: pointer;
+    margin-right: 0.6em;
 
     &.-overlay {
       position: absolute;
-      inset: 0;
+      inset: -0.6em;
+      left: -0.6em;
+      right: -1.2em;
       background-color: rgb(0 0 0 / 30%);
       display: flex;
       justify-content: center;
@@ -154,22 +212,9 @@
     }
   }
 
-  .external-link-button,
-  .edit-profile-button {
-    cursor: pointer;
-    width: 2.5em;
-    text-align: center;
-    margin: -0.5em 0;
-    padding: 0.5em 0;
-
-    &:not(:hover) .icon {
-      color: var(--lightText);
-    }
-  }
-
   .bottom-line {
     font-weight: lighter;
-    font-size: 1.1em;
+    font-size: 0.9em;
     align-items: baseline;
 
     .lock-icon {
@@ -184,16 +229,9 @@
       overflow: hidden;
     }
 
-    .dailyAvg {
-      min-width: 1px;
-      flex: 0 0 auto;
-      margin-left: 1em;
-      font-size: 0.7em;
-      color: var(--text);
-    }
-
     .user-role {
       flex: none;
+      align-self: baseline;
     }
   }
 
@@ -216,9 +254,16 @@
       --link: var(--text) !important;
     }
 
-    .top-line,
+    .top-line, {
+      display: flex;
+      line-height: 2;
+      font-weight: 600;
+    }
+
     .bottom-line {
       display: flex;
+      font-weight: 500;
+      line-height: 1.5;
     }
   }
 
@@ -230,9 +275,8 @@
     font-size: 1.1em;
   }
 
-  .user-meta {
-    margin-bottom: 0.15em;
-    display: flex;
+  .highlighter {
+    margin: 5em;
     align-items: baseline;
     line-height: 22px;
     flex-wrap: wrap;
@@ -279,23 +323,17 @@
 
   .user-interactions {
     position: relative;
-    display: flex;
-    flex-flow: row wrap;
-    margin-right: -0.75em;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17%, 7em));
+    grid-gap: 0.6em;
 
-    > * {
-      margin: 0 0.75em 0.6em 0;
+    .popover-trigger-button, .moderation-tools-button {
+      width: 100%;
+    }
+
+    > .btn-group, > button {
       white-space: nowrap;
-      min-width: 95px;
     }
-
-    button {
-      margin: 0;
-    }
-  }
-
-  .user-note {
-    margin: 0 0.75em 0.6em 0;
   }
 }
 
@@ -303,24 +341,92 @@
   display: none;
 }
 
-.user-counts {
-  display: flex;
-  line-height: 16px;
-  padding: 0.5em 1.5em 0;
-  text-align: center;
+.user-extras {
+  display: grid;
+  place-items: center baseline;
   justify-content: space-between;
-  flex-wrap: wrap;
+  grid-template-columns: minmax(max-content, 1fr);
+  grid-auto-columns: 1fr;
+  grid-auto-flow: column;
+  padding: 1.2em 0.6em;
 }
 
-.user-count {
-  flex: 1 0 auto;
-  padding: 0.5em 0;
+.birthday {
+  width: 100%;
+  text-align: right;
+}
+
+.user-birthday {
+  margin: 0 0.75em 0.5em;
+}
+
+.user-profile-fields {
   margin: 0 0.5em;
 
-  h5 {
-    font-size: 1em;
+  img {
+    object-fit: contain;
+    vertical-align: middle;
+    max-width: 100%;
+    max-height: 400px;
+
+    &.emoji {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  .user-profile-field {
+    display: flex;
+    margin: 0.25em;
+    border: 1px solid var(--border);
+    border-radius: var(--roundness);
+
+    .user-profile-field-name,
+    .user-profile-field-value {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      box-sizing: border-box;
+      line-height: 2em;
+    }
+
+    .user-profile-field-name {
+      flex: 0 1 50%;
+      font-weight: 600;
+      text-align: right;
+      color: var(--lightText);
+      min-width: 9em;
+      border-right: 1px solid var(--border);
+      padding-left: 1.2em;
+      padding-right: 0.6em;
+    }
+
+    .user-profile-field-value {
+      flex: 1 1 55%;
+      color: var(--text);
+      padding-left: 0.6em;
+      margin: 0;
+    }
+  }
+}
+
+.user-stats {
+  display: block;
+  text-align: center;
+  width: 100%;
+
+  dl {
+    display: inline;
+    margin-right: 1em;
+  }
+
+  dd {
     font-weight: bolder;
-    margin: 0 0 0.25em;
+    margin: 0;
+  }
+
+  dd, dt {
+    display: inline
   }
 
   /* stylelint-disable-next-line no-descending-specificity */

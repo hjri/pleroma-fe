@@ -3,14 +3,65 @@
     class="user-card"
     :class="classes"
   >
-    <div
-      :class="{ 'hide-bio': hideBio }"
-      :style="style"
-      class="background-image"
-    />
-    <div :class="onClose ? '' : 'panel-heading -flexible-height'">
+    <div :class="onClose ? '' : 'panel-heading -flexible-height'" class="user-card-inner">
       <div class="user-info">
-        <div class="container">
+        <div
+          :class="{ 'hide-bio': hideBio }"
+          :style="style"
+          class="background-image"
+        />
+        <div class="other-actions">
+          <button
+            v-if="!isOtherUser && user.is_local"
+            class="button-unstyled edit-profile-button"
+            @click.stop="openProfileTab"
+          >
+            <FAIcon
+              fixed-width
+              class="icon"
+              icon="edit"
+              :title="$t('user_card.edit_profile')"
+            />
+          </button>
+          <a
+            v-if="isOtherUser && !user.is_local"
+            :href="user.statusnet_profile_url"
+            target="_blank"
+            class="button-unstyled external-link-button"
+          >
+            <FAIcon
+              class="icon"
+              icon="external-link-alt"
+            />
+          </a>
+          <AccountActions
+            v-if="isOtherUser && loggedIn"
+            :user="user"
+            :relationship="relationship"
+          />
+          <router-link
+            v-if="onClose"
+            :to="userProfileLink(user)"
+            class="button-unstyled external-link-button"
+            @click="onClose"
+          >
+            <FAIcon
+              class="icon"
+              icon="expand-alt"
+            />
+          </router-link>
+          <button
+            v-if="onClose"
+            class="button-unstyled external-link-button"
+            @click="onClose"
+          >
+            <FAIcon
+              class="icon"
+              icon="times"
+            />
+          </button>
+        </div>
+        <div class="user-identity">
           <a
             v-if="avatarAction === 'zoom'"
             class="user-info-avatar -link"
@@ -48,55 +99,6 @@
                   :emoji="user.emoji"
                 />
               </router-link>
-              <button
-                v-if="!isOtherUser && user.is_local"
-                class="button-unstyled edit-profile-button"
-                @click.stop="openProfileTab"
-              >
-                <FAIcon
-                  fixed-width
-                  class="icon"
-                  icon="edit"
-                  :title="$t('user_card.edit_profile')"
-                />
-              </button>
-              <a
-                v-if="isOtherUser && !user.is_local"
-                :href="user.statusnet_profile_url"
-                target="_blank"
-                class="button-unstyled external-link-button"
-              >
-                <FAIcon
-                  class="icon"
-                  icon="external-link-alt"
-                />
-              </a>
-              <AccountActions
-                v-if="isOtherUser && loggedIn"
-                :user="user"
-                :relationship="relationship"
-              />
-              <router-link
-                v-if="onClose"
-                :to="userProfileLink(user)"
-                class="button-unstyled external-link-button"
-                @click="onClose"
-              >
-                <FAIcon
-                  class="icon"
-                  icon="expand-alt"
-                />
-              </router-link>
-              <button
-                v-if="onClose"
-                class="button-unstyled external-link-button"
-                @click="onClose"
-              >
-                <FAIcon
-                  class="icon"
-                  icon="times"
-                />
-              </button>
             </div>
             <div class="bottom-line">
               <user-link
@@ -148,58 +150,13 @@
               >
                 {{ blockExpiry }}
               </span>
-              <span
-                v-if="!mergedConfig.hideUserStats && !hideBio"
-                class="dailyAvg"
-              >{{ dailyAvg }} {{ $t('user_card.per_day') }}</span>
+              <div
+                v-if="relationship.followed_by && loggedIn && isOtherUser"
+                class="alert neutral user-role"
+              >
+                {{ $t('user_card.follows_you') }}
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="user-meta">
-          <div
-            v-if="relationship.followed_by && loggedIn && isOtherUser"
-            class="following"
-          >
-            {{ $t('user_card.follows_you') }}
-          </div>
-          <div
-            v-if="isOtherUser && (loggedIn || !switcher)"
-            class="highlighter"
-          >
-            <!-- id's need to be unique, otherwise vue confuses which user-card checkbox belongs to -->
-            <input
-              v-if="userHighlightType !== 'disabled'"
-              :id="'userHighlightColorTx'+user.id"
-              v-model="userHighlightColor"
-              class="input userHighlightText"
-              type="text"
-            >
-            <input
-              v-if="userHighlightType !== 'disabled'"
-              :id="'userHighlightColor'+user.id"
-              v-model="userHighlightColor"
-              class="input userHighlightCl"
-              type="color"
-            >
-            {{ ' ' }}
-            <Select
-              :id="'userHighlightSel'+user.id"
-              v-model="userHighlightType"
-              class="userHighlightSel"
-            >
-              <option value="disabled">
-                {{ $t('user_card.highlight.disabled') }}
-              </option>
-              <option value="solid">
-                {{ $t('user_card.highlight.solid') }}
-              </option>
-              <option value="striped">
-                {{ $t('user_card.highlight.striped') }}
-              </option>
-              <option value="side">
-                {{ $t('user_card.highlight.side') }}
-              </option>
-            </Select>
           </div>
         </div>
         <div
@@ -241,35 +198,32 @@
               </ProgressButton>
             </template>
           </div>
-          <div>
-            <button
-              v-if="relationship.muting"
-              class="btn button-default btn-mute toggled"
-              :disabled="user.deactivated"
-              @click="unmuteUser"
-            >
-              {{ $t('user_card.muted') }}
-            </button>
-            <button
-              v-else
-              class="btn button-default btn-mute"
-              :disabled="user.deactivated"
-              @click="muteUser"
-            >
-              {{ $t('user_card.mute') }}
-            </button>
-          </div>
-          <div>
-            <button
-              class="btn button-default btn-mention"
-              :disabled="user.deactivated"
-              @click="mentionUser"
-            >
-              {{ $t('user_card.mention') }}
-            </button>
-          </div>
+          <button
+            v-if="relationship.muting"
+            class="btn button-default btn-mute toggled"
+            :disabled="user.deactivated"
+            @click="unmuteUser"
+          >
+            {{ $t('user_card.muted') }}
+          </button>
+          <button
+            v-else
+            class="btn button-default btn-mute"
+            :disabled="user.deactivated"
+            @click="muteUser"
+          >
+            {{ $t('user_card.mute') }}
+          </button>
+          <button
+            class="btn button-default btn-mention"
+            :disabled="user.deactivated"
+            @click="mentionUser"
+          >
+            {{ $t('user_card.mention') }}
+          </button>
           <ModerationTools
             v-if="showModerationMenu"
+            class="moderation-menu"
             :user="user"
           />
         </div>
@@ -279,51 +233,132 @@
         >
           <RemoteFollow :user="user" />
         </div>
-        <UserNote
-          v-if="loggedIn && isOtherUser && (hasNote || (hasNoteEditor && supportsNote))"
-          :user="user"
-          :relationship="relationship"
-          :editable="hasNoteEditor"
+      </div>
+    </div>
+    <div class="personal-marks" v-if="loggedIn && isOtherUser && (hasNote || !hideBio)">
+      <UserNote
+        v-if="hasNote || (hasNoteEditor && supportsNote)"
+        :user="user"
+        :relationship="relationship"
+        :editable="hasNoteEditor"
+      />
+      <div
+        v-if="!hideBio"
+        class="highlighter"
+      >
+        <h4>{{ $t('user_card.highlight_header') }}</h4>
+        <Select
+          :id="'userHighlightSel'+user.id"
+          v-model="userHighlightType"
+          class="userHighlightSel unstyled"
+          :class="{ '-none': userHighlightType === 'disabled' }"
+        >
+          <option value="disabled">
+            {{ $t('user_card.highlight_new.disabled') }}
+          </option>
+          <option value="solid">
+            {{ $t('user_card.highlight_new.solid') }}
+          </option>
+          <option value="striped">
+            {{ $t('user_card.highlight_new.striped') }}
+          </option>
+          <option value="side">
+            {{ $t('user_card.highlight_new.side') }}
+          </option>
+        </Select>
+        <!-- id's need to be unique, otherwise vue confuses which user-card checkbox belongs to -->
+        <ColorInput
+          v-if="userHighlightType !== 'disabled'"
+          class="highlighter-color"
+          v-model="userHighlightColor"
+          :show-optional-checkbox="false"
+          name="'userHighlightColorTx'+user.id"
+          :unstyled="true"
         />
       </div>
     </div>
-    <div
+    <RichContent
       v-if="!hideBio"
-      class="user-bio"
+      class="user-card-bio"
+      :html="user.description_html"
+      :emoji="user.emoji"
+      :handle-links="true"
+    />
+    <div
+      v-if="!hideBio && user.fields_html && user.fields_html.length > 0"
+      class="user-profile-fields"
     >
-      <div
-        v-if="!mergedConfig.hideUserStats && switcher"
-        class="user-counts"
+      <dl
+        v-for="(field, index) in user.fields_html"
+        :key="index"
+        class="user-profile-field"
       >
-        <div
-          class="user-count"
-          @click.prevent="setProfileView('statuses')"
+        <dt
+          :title="user.fields_text[index].name"
+          class="user-profile-field-name"
         >
-          <h5>{{ $t('user_card.statuses') }}</h5>
-          <span>{{ user.statuses_count }} <br></span>
-        </div>
-        <div
-          class="user-count"
-          @click.prevent="setProfileView('friends')"
+          <RichContent
+            :html="field.name"
+            :emoji="user.emoji"
+          />
+        </dt>
+        <dd
+          :title="user.fields_text[index].value"
+          class="user-profile-field-value"
         >
-          <h5>{{ $t('user_card.followees') }}</h5>
-          <span>{{ hideFollowsCount ? $t('user_card.hidden') : user.friends_count }}</span>
-        </div>
-        <div
-          class="user-count"
-          @click.prevent="setProfileView('followers')"
+          <RichContent
+            :html="field.value"
+            :emoji="user.emoji"
+          />
+        </dd>
+      </dl>
+      <div class="user-extras">
+        <span
+          v-if="!hideBio && !mergedConfig.hideUserStats"
+          class="user-stats"
         >
-          <h5>{{ $t('user_card.followers') }}</h5>
-          <span>{{ hideFollowersCount ? $t('user_card.hidden') : user.followers_count }}</span>
+          <dl
+            class="user-count"
+            @click.prevent="setProfileView('statuses')"
+            v-if="!mergedConfig.hideUserStats && !hideBio"
+          >
+            <dd>{{ user.statuses_count }}</dd>
+            {{ ' ' }}
+            <dt>{{ $t('user_card.statuses') }}</dt>
+          </dl>
+          <dl
+            class="user-count"
+            @click.prevent="setProfileView('statuses')"
+          >
+            <dd>{{ dailyAvg }}</dd>
+            {{ ' ' }}
+            <dt>{{ $t('user_card.statuses_per_day') }}</dt>
+          </dl>
+          <dl
+            class="user-count"
+            @click.prevent="setProfileView('friends')"
+          >
+            <dd>{{ hideFollowsCount ? $t('user_card.hidden') : user.friends_count }}</dd>
+            {{ ' ' }}
+            <dt>{{ $t('user_card.followees') }}</dt>
+          </dl>
+          <dl
+            class="user-count"
+            @click.prevent="setProfileView('followers')"
+          >
+            <dd>{{ hideFollowersCount ? $t('user_card.hidden') : user.followers_count }}</dd>
+            {{ ' ' }}
+            <dt>{{ $t('user_card.followers') }}</dt>
+          </dl>
+        </span>
+        <div class="birthday" v-if="!hideBio && !!user.birthday">
+          <FAIcon
+            class="fa-old-padding"
+            icon="birthday-cake"
+          />
+          {{ $t('user_card.birthday', { birthday: formattedBirthday }) }}
         </div>
       </div>
-      <RichContent
-        v-if="!hideBio"
-        class="user-card-bio"
-        :html="user.description_html"
-        :emoji="user.emoji"
-        :handle-links="true"
-      />
     </div>
     <teleport to="#modal">
       <UserTimedFilterModal

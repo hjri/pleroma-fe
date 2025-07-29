@@ -28,8 +28,21 @@
     backdrop-filter: var(--backdrop-filter);
   }
 
+  .user-info {
+    margin-bottom: 0;
+
+    .background-image {
+      max-height: 5.6em;
+      margin-bottom: -4.6em;
+    }
+
+    .Avatar {
+      width: 5em;
+      height: 5em;
+    }
+  }
+
   .signed-in {
-    overflow: visible;
     z-index: 10;
   }
 }

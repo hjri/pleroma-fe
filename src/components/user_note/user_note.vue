@@ -1,46 +1,28 @@
 <template>
   <div
     class="user-note"
+    :class="{ '-frozen': frozen }"
   >
-    <div class="heading">
-      <span>{{ $t('user_card.note') }}</span>
-      <div class="buttons">
-        <button
-          v-show="!editing && editable"
-          class="button-default btn"
-          @click="startEditing"
-        >
-          {{ $t('user_card.edit_note') }}
-        </button>
-        <button
-          v-show="editing"
-          class="button-default btn"
-          :disabled="frozen"
-          @click="finalizeEditing"
-        >
-          {{ $t('user_card.edit_note_apply') }}
-        </button>
-        <button
-          v-show="editing"
-          class="button-default btn"
-          :disabled="frozen"
-          @click="cancelEditing"
-        >
-          {{ $t('user_card.edit_note_cancel') }}
-        </button>
-      </div>
-    </div>
+    <h4>{{ $t('user_card.personal_note') }}</h4>
     <textarea
       v-show="editing"
       v-model="localNote"
       class="input note-text"
+      @blur="finalizeEditing"
     />
     <span
       v-show="!editing"
       class="note-text"
       :class="{ '-blank': !relationship.note }"
+      @click="startEditing"
     >
-      {{ relationship.note || $t('user_card.note_blank') }}
+      {{ relationship.note || $t('user_card.note_blank_click') }}
+    </span>
+    <span
+      class="overlay"
+      v-if="frozen"
+    >
+      <PanelLoading />
     </span>
   </div>
 </template>
@@ -49,29 +31,11 @@
 
 <style lang="scss">
 .user-note {
-  display: flex;
-  flex-direction: column;
+  position: relative;
 
-  .heading {
-    display: flex;
-    flex-direction: row;
+  h4 {
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.75em;
-
-    .btn {
-      min-width: 95px;
-    }
-
-    .buttons {
-      display: flex;
-      flex-direction: row;
-      justify-content: right;
-
-      .btn {
-        margin-left: 0.5em;
-      }
-    }
+    margin-bottom: 0.5em;
   }
 
   .note-text {
@@ -81,6 +45,16 @@
   .note-text.-blank {
     font-style: italic;
     color: var(--textFaint);
+  }
+
+  .overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgb(0 0 0 / 30%);
+
+    .panel-loading {
+      font-size: 1em;
+    }
   }
 }
 </style>

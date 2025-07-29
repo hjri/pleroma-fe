@@ -1,8 +1,13 @@
+import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
+
 const UserNote = {
   props: {
     user: Object,
     relationship: Object,
     editable: Boolean
+  },
+  components: {
+    PanelLoading
   },
   data () {
     return {
@@ -20,9 +25,6 @@ const UserNote = {
     startEditing () {
       this.localNote = this.relationship.note
       this.editing = true
-    },
-    cancelEditing () {
-      this.editing = false
     },
     finalizeEditing () {
       this.frozen = true
