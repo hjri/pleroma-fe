@@ -114,48 +114,50 @@
                   />
                 </span>
               </div>
-              <span
-                v-if="user.deactivated"
-                class="alert neutral user-role"
-              >
-                {{ $t('user_card.deactivated') }}
-              </span>
-              <span
-                v-if="!!visibleRole"
-                class="alert neutral user-role"
-              >
-                {{ $t(`general.role.${visibleRole}`) }}
-              </span>
-              <span
-                v-if="user.actor_type === 'Service'"
-                class="alert neutral user-role"
-              >
-                {{ $t('user_card.bot') }}
-              </span>
-              <span
-                v-if="user.actor_type === 'Group'"
-                class="alert user-role"
-              >
-                {{ $t('user_card.group') }}
-              </span>
-              <span
-                v-if="relationship.muting && muteExpiryAvailable"
-                class="alert neutral user-role"
-              >
-                {{ muteExpiry }}
-              </span>
-              <span
-                v-if="relationship.blocking && blockExpiryAvailable"
-                class="alert neutral user-role"
-              >
-                {{ blockExpiry }}
-              </span>
-              <span
-                v-if="relationship.followed_by && loggedIn && isOtherUser"
-                class="alert neutral user-role"
-              >
-                {{ $t('user_card.follows_you') }}
-              </span>
+              <template v-if="!hideBio">
+                <span
+                  v-if="user.deactivated"
+                  class="alert neutral user-role"
+                >
+                  {{ $t('user_card.deactivated') }}
+                </span>
+                <span
+                  v-if="!!visibleRole"
+                  class="alert neutral user-role"
+                >
+                  {{ $t(`general.role.${visibleRole}`) }}
+                </span>
+                <span
+                  v-if="user.actor_type === 'Service'"
+                  class="alert neutral user-role"
+                >
+                  {{ $t('user_card.bot') }}
+                </span>
+                <span
+                  v-if="user.actor_type === 'Group'"
+                  class="alert user-role"
+                >
+                  {{ $t('user_card.group') }}
+                </span>
+                <span
+                  v-if="relationship.muting && muteExpiryAvailable"
+                  class="alert neutral user-role"
+                >
+                  {{ muteExpiry }}
+                </span>
+                <span
+                  v-if="relationship.blocking && blockExpiryAvailable"
+                  class="alert neutral user-role"
+                >
+                  {{ blockExpiry }}
+                </span>
+                <span
+                  v-if="relationship.followed_by && loggedIn && isOtherUser"
+                  class="alert neutral user-role"
+                >
+                  {{ $t('user_card.follows_you') }}
+                </span>
+              </template>
             </div>
           </div>
         </div>
