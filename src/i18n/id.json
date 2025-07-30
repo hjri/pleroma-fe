@@ -36,29 +36,34 @@
         "contrast": {
           "context": {
             "text": "untuk teks",
-            "18pt": "Untuk teks besar (18pt+)"
+            "18pt": "untuk teks besar (18pt+)"
           }
         },
-        "color": "Warna"
+        "color": "Warna",
+        "opacity": "Opasitas"
       },
       "switcher": {
         "help": {
           "upgraded_from_v2": "PleromaFE telah diperbarui, tema dapat terlihat sedikit berbeda dari apa yang Anda ingat.",
           "future_version_imported": "Berkas yang Anda impor dibuat pada versi FE yang lebih baru.",
           "older_version_imported": "Berkas yang Anda impor dibuat pada versi FE yang lebih lama.",
-          "fe_upgraded": "Mesin tema PleromaFE diperbarui setelah pembaruan versi."
+          "fe_upgraded": "Mesin tema PleromaFE diperbarui setelah pembaruan versi.",
+          "v2_imported": "Berkas yang Anda impor dibuat untuk FE versi lama. Kami berusaha memaksimalkan kompatibilitas, tapi mungkin akan ada beberapa kesalahan."
         },
         "use_source": "Versi baru",
         "use_snapshot": "Versi lama",
-        "load_theme": "Muat tema"
+        "load_theme": "Muat tema",
+        "reset": "Atur ulang",
+        "keep_as_is": "Biarkan",
+        "clear_all": "Hapus semua"
       },
       "fonts": {
-        "_tab_label": "Font",
+        "_tab_label": "Fonta",
         "components": {
           "interface": "Antarmuka",
           "post": "Teks postingan"
         },
-        "family": "Nama font",
+        "family": "Nama fonta",
         "size": "Ukuran (dalam px)",
         "weight": "Berat (ketebalan)"
       },
@@ -66,8 +71,65 @@
         "components": {
           "panel": "Panel",
           "panelHeader": "Header panel"
+        },
+        "name": "Nama"
+      },
+      "themes3": {
+        "editor": {
+          "reset_style": "Atur ulang",
+          "load_style": "Buka dari berkas",
+          "save_style": "Simpan",
+          "style_website": "Situs",
+          "background": "Warna latar belakang",
+          "link_color": "Warna tautan",
+          "contrast": "Kontras teks",
+          "opacity": "Opasitas",
+          "test_string": "TES",
+          "palette_tab": "Skema warna",
+          "style_author": "Dibuat oleh",
+          "style_license": "Lisensi",
+          "invalid": "Tidak valid",
+          "refresh_preview": "Segarkan pratinjau",
+          "apply_preview": "Terapkan",
+          "text_color": "Warna teks",
+          "icon_color": "Warna ikon",
+          "text_auto": {
+            "no-preserve": "Hitam atau Putih"
+          },
+          "variables": {
+            "type_color": "Warna",
+            "name_label": "Nama:",
+            "type_label": "Jenis:",
+            "type_shadow": "Bayangan"
+          }
+        },
+        "palette": {
+          "accent": "Warna aksen",
+          "cRed": "Warna merah",
+          "cGreen": "Warna hijau",
+          "cBlue": "Warna biru",
+          "cOrange": "Warna jingga",
+          "fg": "Tombol dll.",
+          "text": "Teks",
+          "label": "Skema warna",
+          "link": "Tautan",
+          "name_label": "Nama skema warna"
+        },
+        "define": "Timpa",
+        "font": {
+          "builtin": {
+            "serif": "Serif",
+            "sans-serif": "Sans-serif",
+            "monospace": "Monospace",
+            "inherit": "Tidak berubah"
+          },
+          "select": "Pilih fonta",
+          "group-local": "Fonta terpasang lokal"
         }
-      }
+      },
+      "custom_style_used": "(Gaya kustom)",
+      "custom_theme_used": "(Tema kustom)",
+      "update_preview": "Pratinjau pembaruan"
     },
     "notification_setting_privacy": "Privasi",
     "notifications": "Notifikasi",
@@ -134,7 +196,9 @@
     "attachments": "Lampiran",
     "mfa": {
       "scan": {
-        "title": "Pindai"
+        "title": "Pindai",
+        "secret_code": "Sandi",
+        "desc": "Dari aplikasi autentikasi dua-langkah, pindai kode QR ini atau masukkan sandi di bawah:"
       },
       "confirm_and_enable": "Konfirmasi & aktifkan OTP",
       "setup_otp": "Siapkan OTP",
@@ -215,7 +279,91 @@
     "composing": "Menulis",
     "no_blocks": "Tidak ada yang diblokir",
     "no_mutes": "Tidak ada yang dibisukan",
-    "remove_language": "Hapus"
+    "remove_language": "Hapus",
+    "backup_not_ready": "Cadangan ini belum siap.",
+    "emoji_size": "Ukuran emoji",
+    "account_backup_table_head": "Cadangan",
+    "enabled": "Diaktifkan",
+    "filter": {
+      "type": "Jenis filter",
+      "regexp": "Regex",
+      "plain": "Simpel",
+      "user": "Pengguna (Simpel)",
+      "user_regexp": "Pengguna (Regex)",
+      "hide": "Sembunyikan semua",
+      "name": "Nama",
+      "delete": "Hapus",
+      "save": "Simpan",
+      "new": "Buat baru",
+      "import": "Impor",
+      "export": "Ekspor",
+      "never_expires": "Tidak pernah",
+      "help": {
+        "regexp_link": "Ekspresi Reguler",
+        "regexp_url": "https://id.wikipedia.org/wiki/Ekspresi_reguler"
+      }
+    },
+    "file_export_import": {
+      "backup_settings_theme": "Cadangkan pengaturan dan tema ke sebuah berkas",
+      "restore_settings": "Pulihkan pengaturan dari sebuah berkas",
+      "errors": {
+        "invalid_file": "Berkas yang dipilih bukan berkas cadangan pengaturan Pleroma yang didukung. Tidak ada perubahan yang diterapkan."
+      },
+      "backup_restore": "Cadangan pengaturan",
+      "backup_settings": "Cadangkan pengaturan ke sebuah berkas"
+    },
+    "units": {
+      "time": {
+        "s": "detik",
+        "h": "jam",
+        "d": "hari",
+        "m": "menit"
+      }
+    },
+    "remove_backup": "Hapus",
+    "useStreamingApi": "Terima postingan dan notifikasi secara langsung",
+    "preview": "Pratinjau",
+    "url": "URL",
+    "birthday": {
+      "show_birthday": "Tampilkan ulang tahun saya",
+      "label": "Ulang Tahun"
+    },
+    "account_privacy": "Privasi",
+    "nsfw_clickthrough": "Sembunyikan media sensitif/NSFW",
+    "user_mutes": "Pengguna",
+    "type_domains_to_mute": "Cari domain untuk dibisukan",
+    "reset_banner_confirm": "Apakah yakin ingin mengatur ulang spanduk?",
+    "actor_type": "Akun ini adalah:",
+    "actor_type_Person": "pengguna biasa",
+    "actor_type_Service": "robot",
+    "actor_type_Group": "grup",
+    "account_backup": "Cadangan akun",
+    "account_backup_description": "Ini akan membuat cadangan informasi akun dan pos Anda, tapi ini masih belum bisa diimpor ke akun Pleroma.",
+    "add_backup": "Buat cadangan baru",
+    "primary_language": "Bahasa utama:",
+    "navbar_size": "Ukuran bilah atas",
+    "download_backup": "Unduh",
+    "user_profiles": "Profil Pengguna",
+    "refresh_token": "Segarkan token",
+    "reset_profile_banner": "Atur ulang spanduk profil",
+    "profile_banner": "Spanduk profil",
+    "show_yous": "Tampilkan (Anda)",
+    "notification_visibility_reports": "Laporan",
+    "email_language": "Bahasa yang digunakan ketika menerima surel dari peladen",
+    "reset_avatar_confirm": "Apakah yakin ingin mengatur ulang avatar?",
+    "reset_avatar": "Atur ulang avatar",
+    "appearance": "Tampilan",
+    "confirm_new_setting": "Setuju pengaturan baru?",
+    "confirm_new_question": "Apakah sudah bagus? Pengaturan akan diatur balik dalam 10 detik.",
+    "revert": "Atur balik",
+    "confirm": "Setuju",
+    "text_size": "Ukuran teks dan antarmuka",
+    "hide_list_aliases_error_action": "Tutup",
+    "confirm_dialogs": "Tanya konfirmasi ketika",
+    "use_websockets": "Gunakan websockets (pembaruan langsung)",
+    "theme_old": "Penyunting tema (lama)",
+    "reset_profile_background": "Atur ulang latar belakang profil",
+    "reset_background_confirm": "Apakah yakin ingin mengatur ulang latar belakang?"
   },
   "about": {
     "mrf": {
@@ -233,12 +381,15 @@
         "media_removal": "Penghapusan Media",
         "media_removal_desc": "Instansi ini menghapus media dari postingan yang berasal dari instansi-instansi berikut:",
         "instance": "Instance",
-        "reason": "Alasan"
+        "reason": "Alasan",
+        "simple_policies": "Kebijakan khusus peladen ini",
+        "not_applicable": "tidak ada"
       },
       "federation": "Federasi",
       "mrf_policies": "Kebijakan MRF yang diaktifkan"
     },
-    "staff": "Staf"
+    "staff": "Staf",
+    "terms": "Kebijakan Layanan"
   },
   "time": {
     "day": "{0} hari",
@@ -281,7 +432,10 @@
     "repeated": "diulangi",
     "reload": "Muat ulang",
     "no_more_statuses": "Tidak ada status lagi",
-    "no_statuses": "Tidak ada status"
+    "no_statuses": "Tidak ada status",
+    "up_to_date": "Terbarukan",
+    "load_older": "Muat status yang lebih tua",
+    "show_new": "Tampilkan yang terbaru"
   },
   "status": {
     "favorites": "Favorit",
@@ -297,10 +451,30 @@
     "unmute_conversation": "Berhenti membisikan percakapan",
     "status_unavailable": "Status tidak tersedia",
     "thread_muted_and_words": ", memiliki kata:",
-    "hide_content": "",
-    "show_content": "",
+    "hide_content": "Sembunyikan konten",
+    "show_content": "Tampilkan konten",
     "status_deleted": "Postingan ini telah dihapus",
-    "nsfw": "NSFW"
+    "nsfw": "NSFW",
+    "you": "(Anda)",
+    "bookmark": "Markahi",
+    "muted_user": "Pengguna dibisukan",
+    "hide_attachment": "Sembunyikan sematan",
+    "copy_link": "Salin tautan ke status",
+    "mute_user": "Bisukan pengguna",
+    "open_gallery": "Buka galeri",
+    "mute_domain": "Bisukan domain",
+    "edit": "Sunting status",
+    "unbookmark": "Batal markahi",
+    "show_all_attachments": "Tampilkan semua sematan",
+    "delete_confirm_accept_button": "Hapus",
+    "external_source": "Sumber eksternal",
+    "thread_muted": "Utas dibisukan",
+    "edited_at": "(terakhir disunting {time})",
+    "sensitive_muted": "Membisukan konten sensitif",
+    "bot_muted": "Membisukan konten bot",
+    "loading": "Memuat…",
+    "load_error": "Tidak dapat memuat status: {error}",
+    "remove_attachment": "Hapus sematan"
   },
   "user_card": {
     "block": "Blokir",
@@ -330,7 +504,11 @@
       "delete_account": "Hapus akun",
       "force_nsfw": "Tandai semua postingan sebagai NSFW",
       "strip_media": "Hapus media dari postingan-postingan",
-      "delete_user": "Hapus pengguna"
+      "delete_user": "Hapus pengguna",
+      "revoke_moderator": "Cabut Moderator",
+      "grant_moderator": "Beri Moderator",
+      "grant_admin": "Beri Admin",
+      "revoke_admin": "Cabut Admin"
     },
     "follow_unfollow": "Berhenti mengikuti",
     "followees": "Mengikuti",
@@ -341,7 +519,53 @@
     "its_you": "Ini Anda!",
     "media": "Media",
     "mention": "Sebut",
-    "message": "Kirimkan pesan"
+    "message": "Kirimkan pesan",
+    "remove_follower_confirm_accept_button": "Hapus",
+    "approve_confirm": "Apakah yakin ingin menerima permintaan mengikuti dari {user}?",
+    "deny_confirm_accept_button": "Tolak",
+    "deny_confirm_cancel_button": "Jangan tolak",
+    "deny_confirm": "Apakah yakin ingin menolak permintaan mengikuti dari {user}?",
+    "mute_or": "atau",
+    "expire_mute_message": "Apakah yakin ingin membisukan {0}?",
+    "expire_in": "Kedaluwarsa dalam",
+    "expire_block_message": "Apakah yakin ingin memblokir {0}?",
+    "note": "Catatan",
+    "note_blank": "(Kosong)",
+    "mute_block_temporarily": "Sementara",
+    "mute_block_forever": "Selamanya",
+    "mute_block_never": "Tidak pernah",
+    "mute_block_ask": "Tanya",
+    "default_mute_expiration": "Selalu bisukan pengguna",
+    "default_expiration_time": "Kedaluwarsa dalam",
+    "mute_expires_at": "Dibisukan sampai {0}",
+    "block_expires_forever": "Diblokir selamanya",
+    "block_expires_at": "Diblokir sampai {0}",
+    "birthday": "Lahir {birthday}",
+    "unmute_progress": "Berhenti membisukan…",
+    "edit_note": "Sunting catatan",
+    "mute_confirm": "Apakah yakin ingin membisukan {user}?",
+    "block_confirm_title": "Konfirmasi pemblokiran",
+    "mute_confirm_accept_button": "Bisukan",
+    "mute_confirm_cancel_button": "Jangan bisukan",
+    "follow_cancel": "Batalkan permintaan",
+    "block_confirm_accept_button": "Blokir",
+    "mute_duration_prompt": "Bisukan pengguna ini untuk (0 untuk waktu tak hingga)",
+    "subscribe": "Langgan",
+    "unsubscribe": "Batal berlanggan",
+    "unblock_progress": "Berhenti memblokir…",
+    "group": "Grup",
+    "edit_note_cancel": "Batal",
+    "block_confirm_cancel_button": "Jangan blokir",
+    "deny_confirm_title": "Konfirmasi penolakan",
+    "approve_confirm_cancel_button": "Jangan terima",
+    "mute_confirm_title": "Konfirmasi membisukan",
+    "default_block_expiration": "Selalu blokir pengguna",
+    "mute_expires_forever": "Dibisukan selamanya",
+    "edit_note_apply": "Terapkan",
+    "approve": "Terima",
+    "block_confirm": "Apakah yakin ingin memblokir {user}?",
+    "approve_confirm_accept_button": "Terima",
+    "approve_confirm_title": "Konfirmasi penerimaan"
   },
   "user_profile": {
     "timeline_title": "Linimasa pengguna",
@@ -368,10 +592,12 @@
     "error": "Terjadi kesalahan ketika memuat notifikasi: {0}",
     "migrated_to": "bermigrasi ke",
     "load_older": "Muat notifikasi yang lebih lama",
-    "broken_favorite": "Status tak diketahui, mencarinya…"
+    "broken_favorite": "Status tak diketahui, mencarinya…",
+    "configuration_tip_dismiss": "Jangan tampilkan kembali"
   },
   "who_to_follow": {
-    "more": "Lebih banyak"
+    "more": "Lebih banyak",
+    "who_to_follow": "Akun yang menarik untuk diikuti"
   },
   "tool_tip": {
     "media_upload": "Unggah media",
@@ -379,7 +605,10 @@
     "reply": "Balas",
     "favorite": "Favorit",
     "add_reaction": "Tambahkan Reaksi",
-    "user_settings": "Pengaturan Pengguna"
+    "user_settings": "Pengaturan Pengguna",
+    "accept_follow_request": "Terima permintaan mengikuti",
+    "bookmark": "Markah",
+    "reject_follow_request": "Tolak permintaan mengikuti"
   },
   "upload": {
     "error": {
@@ -401,7 +630,8 @@
     "hashtags": "Tagar",
     "person_talking": "{count} orang berbicara",
     "people_talking": "{count} orang berbicara",
-    "no_results": "Tidak ada hasil"
+    "no_results": "Tidak ada hasil",
+    "load_more": "Muat lebih banyak"
   },
   "password_reset": {
     "forgot_password": "Lupa kata sandi?",
@@ -412,7 +642,8 @@
     "password_reset": "Pengatur-ulangan kata sandi",
     "password_reset_disabled": "Pengatur-ulangan kata sandi dinonaktifkan. Hubungi administrator instansi Anda.",
     "password_reset_required": "Anda harus mengatur ulang kata sandi Anda untuk masuk.",
-    "password_reset_required_but_mailer_is_disabled": "Anda harus mengatur ulang kata sandi, tetapi pengatur-ulangan kata sandi dinonaktifkan. Silakan hubungi administrator instansi Anda."
+    "password_reset_required_but_mailer_is_disabled": "Anda harus mengatur ulang kata sandi, tetapi pengatur-ulangan kata sandi dinonaktifkan. Silakan hubungi administrator instansi Anda.",
+    "check_email": "Periksa surel Anda untuk tautan untuk mengatur ulang kata sandi Anda."
   },
   "chats": {
     "you": "Anda:",
@@ -461,7 +692,8 @@
     "email_optional": "Surel (opsional)",
     "birthday": "Ulang tahun:",
     "birthday_optional": "Ulang tahun (opsional):",
-    "bio_optional": "Bio (opsional)"
+    "bio_optional": "Bio (opsional)",
+    "fullname": "Nama tampilan"
   },
   "post_status": {
     "preview_empty": "Kosong",
@@ -494,7 +726,12 @@
     "account_not_locked_warning_link": "terkunci",
     "account_not_locked_warning": "Akun Anda tidak {0}. Siapapun dapat mengikuti Anda untuk melihat postingan hanya-pengikut Anda.",
     "new_status": "Posting status baru",
-    "edit_status": "Sunting status"
+    "edit_status": "Sunting status",
+    "reply_option": "Balas status ini",
+    "scope_notice_dismiss": "Tutup peringatan ini",
+    "close_confirm_save_button": "Simpan",
+    "auto_save_saved": "Tersimpan.",
+    "auto_save_saving": "Menyimpan…"
   },
   "general": {
     "apply": "Terapkan",
@@ -528,10 +765,14 @@
       "private": "Hanya pengikut",
       "public": "Publik"
     },
-    "generic_error_message": "Terjadi kesalahan: {0}"
+    "generic_error_message": "Terjadi kesalahan: {0}",
+    "never_show_again": "Jangan tampilkan kembali",
+    "undo": "Batal",
+    "scroll_to_top": "Gulir ke atas"
   },
   "remote_user_resolver": {
-    "error": "Tidak ditemukan."
+    "error": "Tidak ditemukan.",
+    "searching_for": "Mencari"
   },
   "emoji": {
     "load_all": "Memuat semua {emojiAmount} emoji",
@@ -588,7 +829,13 @@
     "twkn": "Jaringan Dikenal",
     "mobile_notifications_close": "Tutup notifikasi",
     "announcements": "Pengumuman",
-    "mobile_notifications": "Buka notifikasi (ada yang belum dibaca)"
+    "mobile_notifications": "Buka notifikasi (ada yang belum dibaca)",
+    "search_close": "Tutup bilah pencarian",
+    "who_to_follow": "Akun yang menarik untuk diikuti",
+    "all_bookmarks": "Semua markah",
+    "bookmark_folders": "Folder markah",
+    "lists": "Daftar",
+    "bookmarks": "Markah"
   },
   "media_modal": {
     "next": "Selanjutnya",
@@ -638,7 +885,8 @@
     "pleroma_chat_messages": "Pleroma Obrolan",
     "chat": "Obrolan",
     "upload_limit": "Batas unggahan",
-    "media_proxy": "Proxy media"
+    "media_proxy": "Proxy media",
+    "who_to_follow": "Akun yang menarik untuk diikuti"
   },
   "exporter": {
     "processing": "Memproses, Anda akan segera diminta untuk mengunduh berkas Anda",
@@ -662,7 +910,8 @@
     "favs_repeats": "Ulangan dan favorit",
     "load_older": "Muat interaksi yang lebih tua",
     "emoji_reactions": "Reaksi Emoji",
-    "reports": "Laporan"
+    "reports": "Laporan",
+    "statuses": "Langganan"
   },
   "errors": {
     "storage_unavailable": "Pleroma tidak dapat mengakses penyimpanan browser. Login Anda atau pengaturan lokal Anda tidak akan tersimpan dan masalah yang tidak terduga dapat terjadi. Coba mengaktifkan kuki."
@@ -695,6 +944,94 @@
     "end_time_display": "Berakhir pada {time}",
     "edit_action": "Sunting",
     "submit_edit_action": "Kirim",
-    "cancel_edit_action": "Batal"
+    "cancel_edit_action": "Batal",
+    "post_action": "Posting",
+    "post_form_header": "Pengumuman postingan"
+  },
+  "drafts": {
+    "unavailable": "(tidak tersedia)",
+    "save": "Simpan tanpa posting"
+  },
+  "bookmark_folders": {
+    "editing_folder": "Menyunting folder {folderName}",
+    "name": "Nama folder",
+    "new": "Folder baru",
+    "create": "Buat folder",
+    "delete": "Hapus folder",
+    "error": "Ada kesalahan dalam menyunting folder markah: {0}",
+    "select_folder": "Pilih folder markah",
+    "creating_folder": "Membuat folder markah",
+    "emoji": "Emoji",
+    "update_folder": "Simpan perubahan",
+    "really_delete": "Apakah yakin ingin menghapus folder ini?"
+  },
+  "admin_dash": {
+    "old_ui_link": "antarmuka administrasi lama tersedia di sini",
+    "reset_all": "Atur ulang semua",
+    "commit_all": "Simpan semua",
+    "instance": {
+      "kocaptcha": "Pengaturan KoCaptcha",
+      "captcha_header": "CAP"
+    },
+    "tabs": {
+      "emoji": "Emoji",
+      "instance": "Peladen",
+      "limits": "Batas",
+      "frontends": "Antarmuka"
+    },
+    "emoji": {
+      "filename": "Nama berkas",
+      "files": "Berkas",
+      "delete_title": "Hapus?",
+      "create": "Buat",
+      "save": "Simpan",
+      "add_file": "Tambahkan berkas",
+      "adding_new": "Tambahkan emoji baru",
+      "download_as_name": "Nama baru",
+      "error": "Kesalahan: {0}",
+      "delete": "Hapus",
+      "download": "Unduh"
+    },
+    "captcha": {
+      "kocaptcha": "KoCaptcha"
+    },
+    "frontend": {
+      "install_version": "Pasang versi {version}",
+      "more_install_options": "Pilihan pemasang lebih banyak",
+      "default_frontend": "Antarmuka baku",
+      "versions": "Versi yang tersedia",
+      "is_default": "(Baku)",
+      "repository": "Tautan repo",
+      "reinstall": "Pasang ulang",
+      "available_frontends": "Tersedia untuk dipasang",
+      "install": "Pasang",
+      "set_default": "Atur antarmuka baku",
+      "set_default_version": "Atur versi {version} sebagai yang baku"
+    },
+    "window_title": "Administrasi"
+  },
+  "lists": {
+    "save": "Simpan perubahan",
+    "is_in_list": "Telah ada di daftar",
+    "remove_from_list": "Hapus dari daftar",
+    "really_delete": "Yakin hapus daftar?",
+    "creating_list": "Membuat daftar baru",
+    "update_title": "Simpan Judul",
+    "create": "Buat",
+    "delete": "Hapus daftar",
+    "search": "Cari pengguna",
+    "add_to_list": "Tambahkan ke daftar",
+    "lists": "Daftar"
+  },
+  "update": {
+    "update_changelog_here": "daftar perubahan lengkap",
+    "update_changelog": "Untuk informasi lebih lanjut tentang apa yang berubah, lihat {theFullChangelog}.",
+    "art_by": "Gambar oleh {linkToArtist}",
+    "update_bugs_gitlab": "GitLab Pleroma"
+  },
+  "splash": {
+    "error": "Ada sesuatu yang salah",
+    "loading": "Memuat…",
+    "theme": "Menerapkan tema, silakan tunggu…"
   }
 }
