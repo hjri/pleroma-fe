@@ -5,11 +5,6 @@
   >
     <div :class="onClose ? '' : 'panel-heading -flexible-height'" class="user-card-inner">
       <div class="user-info">
-        <div
-          :class="{ 'hide-bio': hideBio }"
-          :style="style"
-          class="background-image"
-        />
         <div class="other-actions">
           <button
             v-if="!isOtherUser && user.is_local"
@@ -61,6 +56,11 @@
             />
           </button>
         </div>
+        <div
+          :class="{ 'hide-bio': hideBio }"
+          :style="style"
+          class="background-image"
+        />
         <div class="user-identity">
           <a
             v-if="avatarAction === 'zoom'"
@@ -106,7 +106,7 @@
                 class="user-screen-name"
                 :user="user"
               />
-              <template v-if="!hideBio">
+              <div class="tags" v-if="!hideBio">
                 <span
                   v-if="user.deactivated"
                   class="alert neutral user-role"
@@ -131,7 +131,7 @@
                 >
                   {{ $t('user_card.group') }}
                 </span>
-              </template>
+              </div>
               <span v-if="user.locked">
                 <FAIcon
                   class="lock-icon"

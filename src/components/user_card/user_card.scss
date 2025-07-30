@@ -67,7 +67,7 @@
     width: calc(100% + 2.4em);
     margin-left: -1.2em;
     margin-right: -1.2em;
-    margin-top: -1.2em;
+    margin-top: -3.2em;
     margin-bottom: -4.5em;
     aspect-ratio: 3;
     padding: 0;
@@ -149,6 +149,7 @@
   position: relative;
   margin: 0.6em;
   margin-bottom: 0;
+  text-align: right;
 
   .user-identity {
     min-width: 0;
@@ -180,13 +181,12 @@
   }
 
   .other-actions {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: grid;
+    position: relative;
+    display: inline-grid;
     grid-auto-flow: column;
     grid-gap: 0.6em;
     font-size: 110%;
+    z-index: 2;
 
     a, button, div {
       text-align: center;
@@ -350,8 +350,9 @@
   .user-interactions {
     position: relative;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(17%, min-content));
+    grid-template-columns: repeat(auto-fit, minmax(7.5em, 20%));
     grid-gap: 0.6em;
+    max-width: 98vw;
 
     .popover-trigger-button, .moderation-tools-button {
       width: 100%;
