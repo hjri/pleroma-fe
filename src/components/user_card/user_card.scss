@@ -234,29 +234,6 @@
     }
   }
 
-  .bottom-line {
-    font-weight: lighter;
-    font-size: 0.9em;
-    align-items: baseline;
-
-    .lock-icon {
-      margin-left: 0.5em;
-    }
-
-    .user-screen-name {
-      color: var(--text);
-      min-width: 1px;
-      flex: 0 1 auto;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    .user-role {
-      flex: none;
-      align-self: baseline;
-    }
-  }
-
   .user-summary {
     display: block;
     margin-left: 0.6em;
@@ -287,9 +264,27 @@
     }
 
     .bottom-line {
-      display: flex;
+      white-space: normal;
       font-weight: 500;
+      font-size: 0.9em;
       line-height: 1.5;
+    }
+
+    .lock-icon {
+      margin-left: 0.5em;
+    }
+
+    .user-screen-name {
+      color: var(--text);
+      min-width: 5em;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: inline-block;
+    }
+
+    .user-role {
+      display: inline-block;
+      vertical-align: baseline;
     }
   }
 
