@@ -102,18 +102,19 @@
               </router-link>
             </div>
             <div class="bottom-line">
-              <div class="user-screen-name">
-                <user-link
-                  :user="user"
+              <user-link
+                class="user-screen-name"
+                :user="user"
+              />
+              <span
+                v-if="user.locked"
+                class="lock-icon"
+              >
+                <FAIcon
+                  icon="lock"
+                  size="sm"
                 />
-                <span v-if="user.locked">
-                  <FAIcon
-                    class="lock-icon"
-                    icon="lock"
-                    size="sm"
-                  />
-                </span>
-              </div>
+              </span>
               <template v-if="!hideBio">
                 <span
                   v-if="user.deactivated"
