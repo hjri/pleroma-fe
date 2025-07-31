@@ -167,8 +167,7 @@
     display: inline-grid;
     grid-auto-flow: column;
     grid-gap: 0.6em;
-    flex: 1;
-    font-size: 110%;
+    font-size: 1.25rem;
     z-index: 2;
     align-self: end;
 
@@ -242,6 +241,7 @@
     .top-line {
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       flex: 1;
       // these two normalize position and height when custom emoji are used
       line-height: 2;
