@@ -252,6 +252,9 @@
     }
 
     .bottom-line {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
       white-space: normal;
       font-weight: 500;
       font-size: 0.9em;

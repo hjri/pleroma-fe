@@ -115,6 +115,12 @@
                   size="sm"
                 />
               </span>
+              <span
+                v-if="relationship.followed_by && loggedIn && isOtherUser"
+                class="alert neutral user-role"
+              >
+                {{ $t('user_card.follows_you') }}
+              </span>
               <template v-if="!hideBio">
                 <span
                   v-if="user.deactivated"
@@ -151,12 +157,6 @@
                   class="alert neutral user-role"
                 >
                   {{ blockExpiry }}
-                </span>
-                <span
-                  v-if="relationship.followed_by && loggedIn && isOtherUser"
-                  class="alert neutral user-role"
-                >
-                  {{ $t('user_card.follows_you') }}
                 </span>
               </template>
             </div>
