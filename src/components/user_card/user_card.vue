@@ -39,16 +39,6 @@
           </router-link>
           <div class="user-summary">
             <div class="top-line">
-              <router-link
-                :to="userProfileLink(user)"
-                class="user-name"
-              >
-                <RichContent
-                  :title="user.name"
-                  :html="user.name"
-                  :emoji="user.emoji"
-                />
-              </router-link>
               <div class="other-actions">
                 <button
                   v-if="!isOtherUser && user.is_local"
@@ -100,6 +90,16 @@
                   />
                 </button>
               </div>
+              <router-link
+                :to="userProfileLink(user)"
+                class="user-name"
+              >
+                <RichContent
+                  :title="user.name"
+                  :html="user.name"
+                  :emoji="user.emoji"
+                />
+              </router-link>
             </div>
             <div class="bottom-line">
               <div class="user-screen-name">

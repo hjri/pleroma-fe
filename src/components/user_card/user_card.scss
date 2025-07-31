@@ -167,9 +167,10 @@
     display: inline-grid;
     grid-auto-flow: column;
     grid-gap: 0.6em;
+    flex: 1;
     font-size: 110%;
     z-index: 2;
-    align-self: start;
+    align-self: end;
 
     a, button, div {
       text-align: center;
@@ -240,6 +241,7 @@
 
     .top-line {
       display: flex;
+      flex-direction: column;
       flex: 1;
       // these two normalize position and height when custom emoji are used
       line-height: 2;
@@ -274,10 +276,8 @@
   }
 
   .user-name {
-    align-self: end;
     text-overflow: ellipsis;
     overflow: hidden;
-    flex: 1 1 auto;
     margin-right: 1em;
     font-size: 1.1em;
   }
