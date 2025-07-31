@@ -17,7 +17,7 @@
         "alert_warning": "Peringatan",
         "alert_error": "Kesalahan",
         "_tab_label": "Lanjutan",
-        "post": "Postingan/Bio pengguna",
+        "post": "Pos/Bio pengguna",
         "popover": "Tooltip, menu, popover",
         "badge_notification": "Notifikasi",
         "top_bar": "Bar atas",
@@ -26,7 +26,8 @@
         "wallpaper": "Latar belakang",
         "panel_header": "Header panel",
         "icons": "Ikon-ikon",
-        "disabled": "Dinonaktifkan"
+        "disabled": "Dinonaktifkan",
+        "poll": "Grafik japat"
       },
       "common_colors": {
         "main": "Warna umum",
@@ -37,7 +38,8 @@
           "context": {
             "text": "untuk teks",
             "18pt": "untuk teks besar (18pt+)"
-          }
+          },
+          "hint": "Rasio kontras adalah {ratio}, ini adalah {level} {context}"
         },
         "color": "Warna",
         "opacity": "Opasitas"
@@ -55,13 +57,18 @@
         "load_theme": "Muat tema",
         "reset": "Atur ulang",
         "keep_as_is": "Biarkan",
-        "clear_all": "Hapus semua"
+        "clear_all": "Hapus semua",
+        "keep_color": "Biarkan warna",
+        "keep_shadows": "Biarkan bayangan",
+        "keep_fonts": "Biarkan fonta",
+        "keep_opacity": "Biarkan opasitas",
+        "save_load_hint": "Pilihan \"Biarkan\" akan menyimpan pilihan yang dipilih saat ini ketika memilih atau memuat tema, ini juga akan menyimpan pilihan tersebut ketika mengekspor tema. Ketika semua kotak tidak dicentang, mengekspor tema akan menyimpan semuanya."
       },
       "fonts": {
         "_tab_label": "Fonta",
         "components": {
           "interface": "Antarmuka",
-          "post": "Teks postingan"
+          "post": "Teks pos"
         },
         "family": "Nama fonta",
         "size": "Ukuran (dalam px)",
@@ -94,14 +101,24 @@
           "text_color": "Warna teks",
           "icon_color": "Warna ikon",
           "text_auto": {
-            "no-preserve": "Hitam atau Putih"
+            "no-preserve": "Hitam atau Putih",
+            "label": "Otomatis kontras",
+            "no-auto": "Dinonaktifikan"
           },
           "variables": {
             "type_color": "Warna",
             "name_label": "Nama:",
             "type_label": "Jenis:",
-            "type_shadow": "Bayangan"
-          }
+            "type_shadow": "Bayangan",
+            "type_generic": "Generik"
+          },
+          "title": "Penyunting gaya",
+          "component_selector": "Komponen",
+          "shadows_tab": "Bayangan",
+          "include_in_rule": "Tambahkan ke aturan",
+          "style_name": "Nama gaya",
+          "variant_selector": "Variasi",
+          "component_tab": "Gaya komponen"
         },
         "palette": {
           "accent": "Warna aksen",
@@ -113,7 +130,8 @@
           "text": "Teks",
           "label": "Skema warna",
           "link": "Tautan",
-          "name_label": "Nama skema warna"
+          "name_label": "Nama skema warna",
+          "wallpaper": "Latar belakang"
         },
         "define": "Timpa",
         "font": {
@@ -124,7 +142,16 @@
             "inherit": "Tidak berubah"
           },
           "select": "Pilih fonta",
-          "group-local": "Fonta terpasang lokal"
+          "group-local": "Fonta terpasang lokal",
+          "local-unavailable2": "Gunakan secara manual untuk memakai fonta kustom",
+          "enter_manually": "Masukkan nama keluarga fonta secara manual",
+          "group-builtin": "Fonta baku peramban",
+          "lookup_local_fonts": "Muat daftar fonta yang terpasang di komputer ini"
+        },
+        "hacks": {
+          "underlay_override_mode_none": "Bawaan tema",
+          "underlay_override_mode_transparent": "Hapus semuanya (mungkin akan merusak beberapa tema)",
+          "forced_roundness_mode_disabled": "Gunakan bawaan tema"
         }
       },
       "custom_style_used": "(Gaya kustom)",
@@ -166,7 +193,7 @@
     "instance_default_simple": "(bawaan)",
     "instance_default": "(bawaan: {value})",
     "general": "Umum",
-    "delete_account_error": "Ada masalah ketika menghapus akun Anda. Jika ini terus terjadi harap hubungi adminstrator instansi Anda.",
+    "delete_account_error": "Ada masalah ketika menghapus akun Anda. Jika ini terus terjadi harap hubungi adminstrator peladen Anda.",
     "delete_account_description": "Hapus data Anda secara permanen dan menonaktifkan akun Anda.",
     "delete_account": "Hapus akun",
     "data_import_export_tab": "Impor / ekspor data",
@@ -222,7 +249,7 @@
     "chatMessageRadius": "Pesan obrolan",
     "cOrange": "Jingga (Favorit)",
     "avatarAltRadius": "Avatar (notifikasi)",
-    "hide_shoutbox": "Sembunyikan kotak suara instansi",
+    "hide_shoutbox": "Sembunyikan kotak suara peladen",
     "hide_followers_count_description": "Jangan tampilkan jumlah pengikut",
     "hide_follows_count_description": "Jangan tampilkan jumlah mengikuti",
     "hide_followers_description": "Jangan tampilkan siapa yang mengikuti saya",
@@ -236,9 +263,9 @@
     "notification_visibility": "Jenis notifikasi yang perlu ditampilkan",
     "links": "Tautan",
     "hide_user_stats": "Sembunyikan statistik pengguna (contoh. jumlah pengikut)",
-    "hide_post_stats": "Sembunyikan statistik postingan (contoh. jumlah favorit)",
+    "hide_post_stats": "Sembunyikan statistik pos (contoh. jumlah favorit)",
     "use_one_click_nsfw": "Buka lampiran NSFW hanya dengan satu klik",
-    "hide_wallpaper": "Sembunyikan latar belakang instansi",
+    "hide_wallpaper": "Sembunyikan latar belakang peladen",
     "blocks_imported": "Blokiran diimpor! Pemrosesannya mungkin memakan sedikit waktu.",
     "block_import_error": "Terjadi kesalahan ketika mengimpor blokiran",
     "block_import": "Impor blokiran",
@@ -252,17 +279,17 @@
     "avatar_size_instruction": "Ukuran minimum gambar avatar yang disarankan adalah 150x150 piksel.",
     "attachmentRadius": "Lampiran",
     "cGreen": "Hijau (Retweet)",
-    "max_thumbnails": "Jumlah thumbnail maksimum per postingan",
+    "max_thumbnails": "Jumlah thumbnail maksimum per pos",
     "loop_video": "Ulang-ulang video",
     "loop_video_silent_only": "Ulang-ulang video tanpa suara (seperti \"gif\" Mastodon)",
     "pause_on_unfocused": "Jeda aliran ketika tab di dalam fokus",
-    "reply_visibility_following": "Hanya tampilkan balasan yang ditujukan kepada saya atau orang yang saya ikuti",
+    "reply_visibility_following": "Tampilkan balasan yang ditujukan kepada saya atau orang yang saya ikuti saja",
     "reply_visibility_following_short": "Tampilkan balasan ke orang yang saya ikuti",
     "saving_err": "Terjadi kesalahan ketika menyimpan pengaturan",
     "search_user_to_block": "Cari siapa yang Anda ingin blokir",
     "search_user_to_mute": "Cari siapa yang ingin Anda bisukan",
-    "set_new_avatar": "Tetapkan avatar baru",
-    "set_new_profile_background": "Tetapkan latar belakang profil baru",
+    "set_new_avatar": "Atur avatar baru",
+    "set_new_profile_background": "Atur latar belakang profil baru",
     "subject_line_behavior": "Salin subyek ketika membalas",
     "subject_line_email": "Seperti surel: \"re: subyek\"",
     "subject_line_mastodon": "Seperti mastodon: salin saja",
@@ -272,8 +299,8 @@
     "enable_web_push_notifications": "Aktifkan notifikasi push web",
     "more_settings": "Lebih banyak pengaturan",
     "reply_visibility_all": "Tampilkan semua balasan",
-    "reply_visibility_self": "Hanya tampilkan balasan yang ditujukan kepada saya",
-    "hide_muted_posts": "Sembunyikan postingan-postingan dari pengguna yang dibisukan",
+    "reply_visibility_self": "Tampilkan balasan yang ditujukan kepada saya saja",
+    "hide_muted_posts": "Sembunyikan pos dari pengguna yang dibisukan",
     "import_blocks_from_a_csv_file": "Impor blokiran dari berkas csv",
     "domain_mutes": "Domain",
     "composing": "Menulis",
@@ -301,7 +328,11 @@
       "help": {
         "regexp_link": "Ekspresi Reguler",
         "regexp_url": "https://id.wikipedia.org/wiki/Ekspresi_reguler"
-      }
+      },
+      "value": "Nilai",
+      "expires": "Kedaluwarsa",
+      "copy": "Duplikasi",
+      "regexp_error": "Regex tidak valid"
     },
     "file_export_import": {
       "backup_settings_theme": "Cadangkan pengaturan dan tema ke sebuah berkas",
@@ -321,7 +352,7 @@
       }
     },
     "remove_backup": "Hapus",
-    "useStreamingApi": "Terima postingan dan notifikasi secara langsung",
+    "useStreamingApi": "Terima pos dan notifikasi secara langsung",
     "preview": "Pratinjau",
     "url": "URL",
     "birthday": {
@@ -363,30 +394,107 @@
     "use_websockets": "Gunakan websockets (pembaruan langsung)",
     "theme_old": "Penyunting tema (lama)",
     "reset_profile_background": "Atur ulang latar belakang profil",
-    "reset_background_confirm": "Apakah yakin ingin mengatur ulang latar belakang?"
+    "reset_background_confirm": "Apakah yakin ingin mengatur ulang latar belakang?",
+    "notification_show_extra": "Tampilkan notifikasi tambahan di kolom notifikasi",
+    "notification_extra_chats": "Tampilkan percakapan yang belum dibaca",
+    "notification_extra_announcements": "Tampilkan pengumuman yang belum dibaca",
+    "notification_visibility_native_notifications": "Tampilkan notifikasi bawaan",
+    "added_alias": "Alias ditambahkan.",
+    "hide_muted_statuses": "Sembunyikan semua pos yang dibisukan",
+    "mutes_tab": "Bisu",
+    "subject_input_always_show": "Selalu tampilkan baris subjek",
+    "use_at_icon": "Tampilkan simbol {'@'} sebagai ikon daripada sebagai teks",
+    "revoke_token": "Cabut",
+    "foreground": "Latar depan",
+    "hide_favorites_description": "Jangan tampilkan daftar favorit saya (pengguna lain tetap diberitahu)",
+    "replies_in_timeline": "Balasan di linimasa",
+    "set_new_profile_banner": "Atur spanduk profil baru",
+    "auto_update": "Tampilkan pos baru secara otomatis",
+    "account_alias": "Alias akun",
+    "new_alias_target": "Tambah alias baru (contoh: {example})",
+    "add_alias_error": "Gagal menambahkan alias: {error}",
+    "move_account_notes": "Jika Anda ingin memindahkan akun ke suatu tempat, Anda harus pergi ke akun tujuan Anda dan tambahkan alias yang ditujukan ke sini.",
+    "hide_actor_type_indication": "Sembunyikan jenis peran (bot, grup, dll.) di pos",
+    "hide_all_muted_posts": "Sembunyikan pos yang dibisukan",
+    "posts": "Pos",
+    "column_sizes": "Ukuran kolom",
+    "column_sizes_sidebar": "Bilah sisi",
+    "notification_visibility_in_column": "Tampilkan di kolom notifikasi",
+    "third_column_mode": "Ketika ada ruang, tampilkan kolom ketiga yang mengandung",
+    "columns": "Kolom",
+    "column_sizes_content": "Konten",
+    "column_sizes_notifs": "Notifikasi",
+    "streaming": "Tampilkan secara otomatis pos baru ketika bergulir ke paling atas",
+    "move_account": "Pindahkan akun",
+    "reply_visibility_self_short": "Tampilkan balasan ke saya saja",
+    "autohide_floating_post_button": "Sembunyikan secara otomatis tombol Pos Baru (ponsel)",
+    "notification_setting_filters": "Filter",
+    "accent": "Aksen",
+    "hide_muted_threads": "Sembunyikan utas yang dibisukan",
+    "move_account_error": "Gagal memindahkan akun: {error}",
+    "discoverable": "Perbolehkan pencarian akun ini di hasil pencarian dan layanan lainnya",
+    "moved_account": "Akun sudah berpindah.",
+    "move_account_target": "Akun target (contoh: {example})",
+    "notification_visibility_statuses": "Langganan",
+    "add_language": "Tambahkan bahasa cadangan",
+    "mention_link_display_short": "selalu pendek (contoh: {'@'}foo)",
+    "setting_server_side": "Pengaturan ini terhubung dengan profil Anda dan memengaruhi semua sesi dan klien",
+    "setting_changed": "Pengaturan berbeda dengan yang baku",
+    "third_column_mode_none": "Jangan tampilkan kolom ketiga",
+    "third_column_mode_notifications": "Kolom notifikasi",
+    "hide_attachments_in_convo": "Sembunyikan sematan di percakapan",
+    "hide_attachments_in_tl": "Sembunyikan sematan di linimasa",
+    "confirm_dialogs_delete": "menghapus status",
+    "confirm_dialogs_logout": "keluar",
+    "unsaved_post_action_confirm": "Tanya setiap saat",
+    "filtering_explanation": "Semua status yang mengandung kata-kata ini akan dibisukan, satu kata per satu baris",
+    "lock_account_description": "Batasi akun Anda ke pengikut yang telah disetujui saja",
+    "use_contain_fit": "Jangan potong sematan di keluku",
+    "mention_link_display_full": "selalu panjang (contoh: {'@'}foo{'@'}example.org)",
+    "absolute_time_format_12h": "Format waktu",
+    "absolute_time_format_12h_12h": "Format 12 jam (contoh: 10:00 PM)",
+    "absolute_time_format_12h_24h": "Format 24 jam (contoh: 22:00)",
+    "mute_sensitive_posts": "Bisukan pos sensitif",
+    "mention_link_display_full_for_remote": "panjang hanya untuk pengguna peladen lain (contoh: {'@'}foo{'@'}example.org)",
+    "greentext": "Panah meme",
+    "hide_isp": "Sembunyikan panel khusus peladen ini",
+    "account_alias_table_head": "Alias",
+    "list_aliases_error": "Gagal mendapatkan alias: {error}",
+    "remove_alias": "Hapus alias ini",
+    "sensitive_by_default": "Tandai secara baku pos sebagai sensitif",
+    "image_compression": "Kompres gambar sebelum diunggah",
+    "hide_media_previews": "Sembunyikan pratinjau media",
+    "mute_bot_posts": "Bisukan pos bot",
+    "hide_filtered_statuses": "Sembunyikan semua pos yang difilter",
+    "always_use_jpeg": "Selalu konversikan gambar ke format JPEG"
   },
   "about": {
     "mrf": {
       "keyword": {
         "reject": "Tolak",
-        "is_replaced_by": "→"
+        "is_replaced_by": "→",
+        "keyword_policies": "Kebijakan kata-kata",
+        "replace": "Ganti"
       },
       "simple": {
-        "quarantine_desc": "Instansi ini hanya akan mengirim postingan publik ke instansi-instansi berikut:",
+        "quarantine_desc": "Peladen ini hanya akan mengirim pos publik ke peladen berikut:",
         "quarantine": "Karantina",
-        "reject_desc": "Instansi ini tidak akan menerima pesan dari instansi-instansi berikut:",
+        "reject_desc": "Peladen ini tidak akan menerima pesan dari peladen berikut:",
         "reject": "Tolak",
-        "accept_desc": "Instansi ini hanya menerima pesan dari instansi-instansi berikut:",
+        "accept_desc": "Peladen ini hanya menerima pesan dari peladen berikut:",
         "accept": "Terima",
         "media_removal": "Penghapusan Media",
-        "media_removal_desc": "Instansi ini menghapus media dari postingan yang berasal dari instansi-instansi berikut:",
+        "media_removal_desc": "Peladen ini menghapus media dari pos yang berasal dari peladen berikut:",
         "instance": "Instance",
         "reason": "Alasan",
         "simple_policies": "Kebijakan khusus peladen ini",
-        "not_applicable": "tidak ada"
+        "not_applicable": "tidak ada",
+        "media_nsfw": "Paksa media diatur sebagai sensitif",
+        "media_nsfw_desc": "Peladen ini memaksa media untuk diatur sebagai sensitif pada peladen ini:"
       },
       "federation": "Federasi",
-      "mrf_policies": "Kebijakan MRF yang diaktifkan"
+      "mrf_policies": "Kebijakan MRF yang diaktifkan",
+      "mrf_policies_desc": "Kebijakan MRF mengubah tindakan federasi dari peladen ini.  Kebijakan berikut diaktifkan:"
     },
     "staff": "Staf",
     "terms": "Kebijakan Layanan"
@@ -428,7 +536,7 @@
   "timeline": {
     "conversation": "Percakapan",
     "error": "Terjadi kesalahan memuat linimasa: {0}",
-    "no_retweet_hint": "Postingan ditandai sebagai hanya-pengikut atau langsung dan tidak dapat diulang",
+    "no_retweet_hint": "Pos ditandai sebagai hanya-pengikut atau langsung dan tidak dapat diulang",
     "repeated": "diulangi",
     "reload": "Muat ulang",
     "no_more_statuses": "Tidak ada status lagi",
@@ -453,7 +561,7 @@
     "thread_muted_and_words": ", memiliki kata:",
     "hide_content": "Sembunyikan konten",
     "show_content": "Tampilkan konten",
-    "status_deleted": "Postingan ini telah dihapus",
+    "status_deleted": "Pos ini telah dihapus",
     "nsfw": "NSFW",
     "you": "(Anda)",
     "bookmark": "Markahi",
@@ -502,8 +610,8 @@
       "activate_account": "Aktifkan akun",
       "deactivate_account": "Nonaktifkan akun",
       "delete_account": "Hapus akun",
-      "force_nsfw": "Tandai semua postingan sebagai NSFW",
-      "strip_media": "Hapus media dari postingan-postingan",
+      "force_nsfw": "Tandai semua pos sebagai NSFW",
+      "strip_media": "Hapus media dari pos",
       "delete_user": "Hapus pengguna",
       "revoke_moderator": "Cabut Moderator",
       "grant_moderator": "Beri Moderator",
@@ -574,7 +682,7 @@
   },
   "user_reporting": {
     "title": "Melaporkan {0}",
-    "add_comment_description": "Laporan ini akan dikirim ke moderator instansi Anda. Anda dapat menyediakan penjelasan mengapa Anda melaporkan akun ini di bawah:",
+    "add_comment_description": "Laporan ini akan dikirim ke moderator peladen Anda. Anda dapat menyediakan penjelasan mengapa Anda melaporkan akun ini di bawah:",
     "additional_comments": "Komentar tambahan",
     "forward_description": "Akun ini berada di server lain. Kirim salinan dari laporannya juga?",
     "submit": "Kirim",
@@ -640,9 +748,9 @@
     "too_many_requests": "Anda telah mencapai batas percobaan, coba lagi nanti.",
     "instruction": "Masukkan surel atau nama pengguna Anda. Kami akan mengirimkan Anda tautan untuk mengatur ulang kata sandi.",
     "password_reset": "Pengatur-ulangan kata sandi",
-    "password_reset_disabled": "Pengatur-ulangan kata sandi dinonaktifkan. Hubungi administrator instansi Anda.",
+    "password_reset_disabled": "Atur ulang kata sandi dinonaktifkan. Hubungi administrator peladen Anda.",
     "password_reset_required": "Anda harus mengatur ulang kata sandi Anda untuk masuk.",
-    "password_reset_required_but_mailer_is_disabled": "Anda harus mengatur ulang kata sandi, tetapi pengatur-ulangan kata sandi dinonaktifkan. Silakan hubungi administrator instansi Anda.",
+    "password_reset_required_but_mailer_is_disabled": "Anda harus mengatur ulang kata sandi, tetapi atur ulang kata sandi dinonaktifkan. Silakan hubungi administrator peladen Anda.",
     "check_email": "Periksa surel Anda untuk tautan untuk mengatur ulang kata sandi Anda."
   },
   "chats": {
@@ -651,7 +759,7 @@
     "delete": "Hapus",
     "chats": "Obrolan",
     "new": "Obrolan Baru",
-    "empty_message_error": "Tidak dapat memposting pesan yang kosong",
+    "empty_message_error": "Tidak dapat mempos pesan yang kosong",
     "more": "Lebih banyak",
     "delete_confirm": "Apakah Anda benar-benar ingin menghapus pesan ini?",
     "error_loading_chat": "Sesuatu yang salah terjadi ketika memuat obrolan.",
@@ -685,7 +793,7 @@
     "password_confirm": "Konfirmasi kata sandi",
     "email": "Surel",
     "bio": "Bio",
-    "reason_placeholder": "Instansi ini menerima pendaftaran secara manual.\nBeritahu administrasinya mengapa Anda ingin mendaftar.",
+    "reason_placeholder": "Peladen ini menerima pendaftaran secara manual.\nBeritahu administrasinya mengapa Anda ingin mendaftar.",
     "reason": "Alasan mendaftar",
     "registration": "Pendaftaran",
     "email_language": "Dalam bahasa apa kamu ingin menerima surel dari server ini?",
@@ -703,35 +811,41 @@
       "text/bbcode": "BBCode",
       "text/markdown": "Markdown",
       "text/html": "HTML",
-      "text/plain": "Teks biasa"
+      "text/plain": "Teks biasa",
+      "text/x.misskeymarkdown": "MFM"
     },
     "media_description": "Keterangan media",
     "attachments_sensitive": "Tandai lampiran sebagai sensitif",
     "scope": {
-      "public": "Publik - posting ke linimasa publik",
-      "private": "Hanya-pengikut - posting hanya kepada pengikut",
-      "direct": "Langsung - posting hanya kepada pengguna yang disebut"
+      "public": "Publik - pos ke linimasa publik",
+      "private": "Hanya-pengikut - pos hanya kepada pengikut",
+      "direct": "Langsung - pos hanya kepada pengguna yang disebut"
     },
     "preview": "Pratinjau",
-    "post": "Posting",
-    "posting": "Memposting",
-    "direct_warning_to_first_only": "Postingan ini akan terlihat oleh pengguna yang disebutkan di awal pesan.",
-    "direct_warning_to_all": "Postingan ini akan terlihat oleh pengguna yang disebutkan.",
+    "post": "Pos",
+    "posting": "Mempos",
+    "direct_warning_to_first_only": "Pos ini akan terlihat oleh pengguna yang disebutkan di awal pesan.",
+    "direct_warning_to_all": "Pos ini akan terlihat oleh pengguna yang disebutkan.",
     "scope_notice": {
-      "private": "Postingan ini akan terlihat hanya oleh pengikut Anda",
-      "public": "Postingan ini akan terlihat oleh siapa saja"
+      "private": "Pos ini akan terlihat hanya oleh pengikut Anda",
+      "public": "Pos ini akan terlihat oleh siapa saja"
     },
     "media_description_error": "Gagal memperbarui media, coba lagi",
-    "empty_status_error": "Tidak dapat memposting status kosong tanpa berkas",
+    "empty_status_error": "Tidak dapat mempos status kosong tanpa berkas",
     "account_not_locked_warning_link": "terkunci",
-    "account_not_locked_warning": "Akun Anda tidak {0}. Siapapun dapat mengikuti Anda untuk melihat postingan hanya-pengikut Anda.",
-    "new_status": "Posting status baru",
+    "account_not_locked_warning": "Akun Anda tidak {0}. Siapapun dapat mengikuti Anda untuk melihat pos hanya-pengikut Anda.",
+    "new_status": "Pos status baru",
     "edit_status": "Sunting status",
     "reply_option": "Balas status ini",
     "scope_notice_dismiss": "Tutup peringatan ini",
     "close_confirm_save_button": "Simpan",
     "auto_save_saved": "Tersimpan.",
-    "auto_save_saving": "Menyimpan…"
+    "auto_save_saving": "Menyimpan…",
+    "more_post_actions": "Lebih banyak tindakan pos…",
+    "content_type_selection": "Format pos",
+    "edit_remote_warning": "Peladen lainnya mungkin tidak mendukung penyuntingan dan tidak dapat menerima versi terbaru dari pos Anda.",
+    "close_confirm_discard_button": "Hapus",
+    "close_confirm_continue_composing_button": "Lanjut menulis"
   },
   "general": {
     "apply": "Terapkan",
@@ -763,12 +877,15 @@
     "scope_in_timeline": {
       "direct": "Langsung",
       "private": "Hanya pengikut",
-      "public": "Publik"
+      "public": "Publik",
+      "local": "Tidak terfederasi"
     },
     "generic_error_message": "Terjadi kesalahan: {0}",
     "never_show_again": "Jangan tampilkan kembali",
     "undo": "Batal",
-    "scroll_to_top": "Gulir ke atas"
+    "scroll_to_top": "Gulir ke atas",
+    "pin": "Sematkan item",
+    "unpin": "Lepaskan item"
   },
   "remote_user_resolver": {
     "error": "Tidak ditemukan.",
@@ -808,7 +925,8 @@
     "option": "Opsi",
     "add_option": "Tambahkan opsi",
     "add_poll": "Tambahkan japat",
-    "not_enough_options": "Terlalu sedikit opsi yang unik pada japat"
+    "not_enough_options": "Terlalu sedikit opsi yang unik pada japat",
+    "non_anonymous": "Japat publik"
   },
   "nav": {
     "preferences": "Preferensi",
@@ -835,7 +953,9 @@
     "all_bookmarks": "Semua markah",
     "bookmark_folders": "Folder markah",
     "lists": "Daftar",
-    "bookmarks": "Markah"
+    "bookmarks": "Markah",
+    "mobile_notifications_mark_as_seen": "Tandai semua sebagai sudah dilihat",
+    "edit_finish": "Selesai menyunting"
   },
   "media_modal": {
     "next": "Selanjutnya",
@@ -856,12 +976,14 @@
     "description": "Masuk dengan OAuth",
     "login": "Masuk",
     "heading": {
-      "totp": "Otentikasi dua-faktor"
+      "totp": "Otentikasi dua langkah",
+      "recovery": "Pemulihan dua langkah"
     },
-    "enter_two_factor_code": "Masukkan kode dua-faktor",
+    "enter_two_factor_code": "Masukkan kode dua langkah",
     "logout_confirm": "Apa kamu yakin ingin keluar?",
     "logout_confirm_accept_button": "Keluar",
-    "logout_confirm_cancel_button": "Jangan keluar"
+    "logout_confirm_cancel_button": "Jangan keluar",
+    "logout_confirm_title": "Konfirmasi keluar"
   },
   "importer": {
     "error": "Terjadi kesalahan ketika mnengimpor berkas ini.",
@@ -885,7 +1007,7 @@
     "pleroma_chat_messages": "Pleroma Obrolan",
     "chat": "Obrolan",
     "upload_limit": "Batas unggahan",
-    "media_proxy": "Proxy media",
+    "media_proxy": "Proksi media",
     "who_to_follow": "Akun yang menarik untuk diikuti"
   },
   "exporter": {
@@ -945,12 +1067,14 @@
     "edit_action": "Sunting",
     "submit_edit_action": "Kirim",
     "cancel_edit_action": "Batal",
-    "post_action": "Posting",
-    "post_form_header": "Pengumuman postingan"
+    "post_action": "Pos",
+    "post_form_header": "Pengumuman pos",
+    "all_day_prompt": "Ini adalah acara satu hari penuh",
+    "inactive_message": "Pengumuman ini tidak aktif"
   },
   "drafts": {
     "unavailable": "(tidak tersedia)",
-    "save": "Simpan tanpa posting"
+    "save": "Simpan tanpa pos"
   },
   "bookmark_folders": {
     "editing_folder": "Menyunting folder {folderName}",
