@@ -70,7 +70,7 @@
     left: -1.2em;
     top: -1.4em;
     padding: 0;
-    mask: linear-gradient(to top, transparent 1em, white 5em) bottom no-repeat;
+    mask: linear-gradient(to top, transparent 0, white 5em) bottom no-repeat;
     background-size: cover;
     border-top-left-radius: calc(var(--__roundnessTop, --panelRadius) - 1px);
     border-top-right-radius: calc(var(--__roundnessTop, --panelRadius) - 1px);
@@ -132,6 +132,7 @@
   text-align: right;
 
   .user-identity {
+    position: relative;
     aspect-ratio: 3;
     min-width: 0;
     display: flex;
