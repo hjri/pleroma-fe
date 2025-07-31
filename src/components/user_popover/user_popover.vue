@@ -29,6 +29,10 @@
 .user-popover {
   margin-bottom: 0.6em;
 
+  .user-identity {
+    aspect-ratio: unset;
+  }
+
   .user-card-inner {
     display: flex;
   }
