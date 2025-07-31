@@ -28,24 +28,7 @@
     backdrop-filter: var(--backdrop-filter);
   }
 
-  .other-actions {
-    top: -0.6em;
-    right: -0.6em;
-
-    a, button, div {
-      width: 2em;
-      height: 2em;
-      line-height: 2em;
-    }
-  }
-
   .user-info {
-    margin-bottom: -1em;
-
-    .background-image {
-      max-height: 5.6em;
-      margin-bottom: -4.6em;
-    }
 
     .Avatar {
       width: 5em;

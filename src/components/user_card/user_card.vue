@@ -5,63 +5,12 @@
   >
     <div :class="onClose ? '' : 'panel-heading -flexible-height'" class="user-card-inner">
       <div class="user-info">
-        <div class="other-actions">
-          <button
-            v-if="!isOtherUser && user.is_local"
-            class="button-unstyled edit-profile-button"
-            @click.stop="openProfileTab"
-          >
-            <FAIcon
-              fixed-width
-              class="icon"
-              icon="edit"
-              :title="$t('user_card.edit_profile')"
-            />
-          </button>
-          <a
-            v-if="isOtherUser && !user.is_local"
-            :href="user.statusnet_profile_url"
-            target="_blank"
-            class="button-unstyled external-link-button"
-          >
-            <FAIcon
-              class="icon"
-              icon="external-link-alt"
-            />
-          </a>
-          <AccountActions
-            v-if="isOtherUser && loggedIn"
-            :user="user"
-            :relationship="relationship"
-          />
-          <router-link
-            v-if="onClose"
-            :to="userProfileLink(user)"
-            class="button-unstyled external-link-button"
-            @click="onClose"
-          >
-            <FAIcon
-              class="icon"
-              icon="expand-alt"
-            />
-          </router-link>
-          <button
-            v-if="onClose"
-            class="button-unstyled external-link-button"
-            @click="onClose"
-          >
-            <FAIcon
-              class="icon"
-              icon="times"
-            />
-          </button>
-        </div>
-        <div
-          :class="{ 'hide-bio': hideBio }"
-          :style="style"
-          class="background-image"
-        />
         <div class="user-identity">
+          <div
+            :class="{ 'hide-bio': hideBio }"
+            :style="style"
+            class="background-image"
+          />
           <a
             v-if="avatarAction === 'zoom'"
             class="user-info-avatar -link"
@@ -100,6 +49,57 @@
                   :emoji="user.emoji"
                 />
               </router-link>
+              <div class="other-actions">
+                <button
+                  v-if="!isOtherUser && user.is_local"
+                  class="button-unstyled edit-profile-button"
+                  @click.stop="openProfileTab"
+                >
+                  <FAIcon
+                    fixed-width
+                    class="icon"
+                    icon="edit"
+                    :title="$t('user_card.edit_profile')"
+                  />
+                </button>
+                <a
+                  v-if="isOtherUser && !user.is_local"
+                  :href="user.statusnet_profile_url"
+                  target="_blank"
+                  class="button-unstyled external-link-button"
+                >
+                  <FAIcon
+                    class="icon"
+                    icon="external-link-alt"
+                  />
+                </a>
+                <AccountActions
+                  v-if="isOtherUser && loggedIn"
+                  :user="user"
+                  :relationship="relationship"
+                />
+                <router-link
+                  v-if="onClose"
+                  :to="userProfileLink(user)"
+                  class="button-unstyled external-link-button"
+                  @click="onClose"
+                >
+                  <FAIcon
+                    class="icon"
+                    icon="expand-alt"
+                  />
+                </router-link>
+                <button
+                  v-if="onClose"
+                  class="button-unstyled external-link-button"
+                  @click="onClose"
+                >
+                  <FAIcon
+                    class="icon"
+                    icon="times"
+                  />
+                </button>
+              </div>
             </div>
             <div class="bottom-line">
               <div class="user-screen-name">

@@ -36,11 +36,6 @@
   &.popover {
     overflow: hidden;
     padding: 0.6em;
-
-    .background-image {
-      max-height: 6em;
-      margin-bottom: -4.5em;
-    }
   }
 }
 /* stylelint-enable block-no-empty */

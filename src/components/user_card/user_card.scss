@@ -64,40 +64,20 @@
   }
 
   .background-image {
-    width: calc(100% + 2.4em);
-    margin-left: -1.2em;
-    margin-right: -1.2em;
-    margin-top: -3.4em;
-    margin-bottom: -4.5em;
-    aspect-ratio: 3;
-    padding: 0;
+    position: absolute;
     inset: 0;
-    mask:
-      linear-gradient(to top, white 0%, transparent 20%) bottom no-repeat,
-      linear-gradient(to top, white 0%, white 100%);
-    // Autoprefixer seem to ignore this one, and also syntax is different
-    /* stylelint-disable mask-composite */
-    /* stylelint-disable declaration-property-value-no-unknown */
-    /* stylelint-disable scss/declaration-property-value-no-unknown */
-
-    /* TODO check if this is still needed */
-    mask-composite: xor;
-    /* stylelint-enable scss/declaration-property-value-no-unknown */
-    /* stylelint-enable declaration-property-value-no-unknown */
-    /* stylelint-enable mask-composite */
-    mask-composite: exclude;
+    right: -1.2em;
+    left: -1.2em;
+    top: -1.4em;
+    padding: 0;
+    mask: linear-gradient(to top, transparent 1em, white 5em) bottom no-repeat;
     background-size: cover;
-    mask-size: 100%;
     border-top-left-radius: calc(var(--__roundnessTop, --panelRadius) - 1px);
     border-top-right-radius: calc(var(--__roundnessTop, --panelRadius) - 1px);
     border-bottom-left-radius: calc(var(--__roundnessBottom, --panelRadius) - 1px);
     border-bottom-right-radius: calc(var(--__roundnessBottom, --panelRadius) - 1px);
     background-color: var(--profileBg);
     z-index: -2;
-
-    &.hide-bio {
-      mask-size: 100% 40px;
-    }
   }
 
   &-bio {
@@ -152,6 +132,7 @@
   text-align: right;
 
   .user-identity {
+    aspect-ratio: 3;
     min-width: 0;
     display: flex;
     align-items: flex-end;
@@ -187,6 +168,7 @@
     grid-gap: 0.6em;
     font-size: 110%;
     z-index: 2;
+    align-self: start;
 
     a, button, div {
       text-align: center;
@@ -235,7 +217,9 @@
   }
 
   .user-summary {
-    display: block;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
     margin-left: 0.6em;
     text-align: left;
     text-overflow: ellipsis;
@@ -255,6 +239,7 @@
 
     .top-line {
       display: flex;
+      flex: 1;
       // these two normalize position and height when custom emoji are used
       line-height: 2;
       margin-bottom: -0.2em;
@@ -289,6 +274,7 @@
   }
 
   .user-name {
+    align-self: end;
     text-overflow: ellipsis;
     overflow: hidden;
     flex: 1 1 auto;
