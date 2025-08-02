@@ -323,7 +323,7 @@ const unmuteConversation = ({ id, credentials }) => {
 const blockUser = ({ id, expiresIn, credentials }) => {
   const payload = {}
   if (expiresIn) {
-    payload.expires_in = expiresIn
+    payload.duration = expiresIn
   }
 
   return promisedRequest({
