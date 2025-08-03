@@ -10,7 +10,9 @@
         "faint_link": "manual berguna",
         "fine_print": "Baca {0} kami untuk belajar sesuatu yang tak ada gunanya!",
         "header_faint": "Ini baik-baik saja",
-        "checkbox": "Saya telah membaca sekilas syarat dan ketentuan"
+        "checkbox": "Saya telah membaca sekilas syarat dan ketentuan",
+        "content": "Konten",
+        "mono": "konten"
       },
       "advanced_colors": {
         "alert_neutral": "Neutral",
@@ -27,7 +29,14 @@
         "panel_header": "Header panel",
         "icons": "Ikon-ikon",
         "disabled": "Dinonaktifkan",
-        "poll": "Grafik japat"
+        "poll": "Grafik japat",
+        "chat": {
+          "incoming": "Masuk",
+          "outgoing": "Keluar"
+        },
+        "selectedPost": "Pos yang dipilih",
+        "selectedMenu": "Item menu yang dipilih",
+        "inputs": "Bidang masukan"
       },
       "common_colors": {
         "main": "Warna umum",
@@ -62,24 +71,41 @@
         "keep_shadows": "Biarkan bayangan",
         "keep_fonts": "Biarkan fonta",
         "keep_opacity": "Biarkan opasitas",
-        "save_load_hint": "Pilihan \"Biarkan\" akan menyimpan pilihan yang dipilih saat ini ketika memilih atau memuat tema, ini juga akan menyimpan pilihan tersebut ketika mengekspor tema. Ketika semua kotak tidak dicentang, mengekspor tema akan menyimpan semuanya."
+        "save_load_hint": "Pilihan \"Biarkan\" akan menyimpan pilihan yang dipilih saat ini ketika memilih atau memuat tema, ini juga akan menyimpan pilihan tersebut ketika mengekspor tema. Ketika semua kotak tidak dicentang, mengekspor tema akan menyimpan semuanya.",
+        "clear_opacity": "Hapus opasitas"
       },
       "fonts": {
         "_tab_label": "Fonta",
         "components": {
           "interface": "Antarmuka",
-          "post": "Teks pos"
+          "post": "Teks pos",
+          "input": "Bidang masukan",
+          "monospace": "Teks monospace"
         },
         "family": "Nama fonta",
         "size": "Ukuran (dalam px)",
-        "weight": "Berat (ketebalan)"
+        "weight": "Berat (ketebalan)",
+        "help": "Pilih fonta untuk digunakan untuk antarmuka. Untuk \"kustom\", Anda harus mengetik nama fonta yang sesuai dengan apa yang terlihat di sistem.",
+        "custom": "Kustom"
       },
       "shadows": {
         "components": {
           "panel": "Panel",
-          "panelHeader": "Header panel"
+          "panelHeader": "Header panel",
+          "topBar": "Bilah atas",
+          "avatar": "Avatar pengguna (di tampilan profil)",
+          "avatarStatus": "Avatar pengguna (di tampilan pos)",
+          "button": "Tombol",
+          "input": "Bidang masuk",
+          "buttonPressed": "Tombol (ditekan)"
         },
-        "name": "Nama"
+        "name": "Nama",
+        "_tab_label": "Bayangan dan pencahayaan",
+        "component": "Komponen",
+        "offset-x": "x:",
+        "offset-y": "y:",
+        "color_override": "Gunakan warna yang berbeda",
+        "override": "Timpa"
       },
       "themes3": {
         "editor": {
@@ -118,7 +144,8 @@
           "include_in_rule": "Tambahkan ke aturan",
           "style_name": "Nama gaya",
           "variant_selector": "Variasi",
-          "component_tab": "Gaya komponen"
+          "component_tab": "Gaya komponen",
+          "main_tab": "Utama"
         },
         "palette": {
           "accent": "Warna aksen",
@@ -131,7 +158,8 @@
           "label": "Skema warna",
           "link": "Tautan",
           "name_label": "Nama skema warna",
-          "wallpaper": "Latar belakang"
+          "wallpaper": "Latar belakang",
+          "imported": "Terimpor"
         },
         "define": "Timpa",
         "font": {
@@ -146,7 +174,9 @@
           "local-unavailable2": "Gunakan secara manual untuk memakai fonta kustom",
           "enter_manually": "Masukkan nama keluarga fonta secara manual",
           "group-builtin": "Fonta baku peramban",
-          "lookup_local_fonts": "Muat daftar fonta yang terpasang di komputer ini"
+          "lookup_local_fonts": "Muat daftar fonta yang terpasang di komputer ini",
+          "local-unavailable1": "Daftar fonta yang dipasang lokal tidak tersedia",
+          "font_list_unavailable": "Gagal mendapatkan fonta yang dipasang lokal: {error}"
         },
         "hacks": {
           "underlay_override_mode_none": "Bawaan tema",
@@ -156,7 +186,8 @@
       },
       "custom_style_used": "(Gaya kustom)",
       "custom_theme_used": "(Tema kustom)",
-      "update_preview": "Pratinjau pembaruan"
+      "update_preview": "Pratinjau pembaruan",
+      "interface_font_user_override": "Timpa fonta yang digunakan tema atau peramban"
     },
     "notification_setting_privacy": "Privasi",
     "notifications": "Notifikasi",
@@ -442,14 +473,14 @@
     "setting_changed": "Pengaturan berbeda dengan yang baku",
     "third_column_mode_none": "Jangan tampilkan kolom ketiga",
     "third_column_mode_notifications": "Kolom notifikasi",
-    "hide_attachments_in_convo": "Sembunyikan sematan di percakapan",
-    "hide_attachments_in_tl": "Sembunyikan sematan di linimasa",
+    "hide_attachments_in_convo": "Sembunyikan lampiran di percakapan",
+    "hide_attachments_in_tl": "Sembunyikan lampiran di linimasa",
     "confirm_dialogs_delete": "menghapus status",
     "confirm_dialogs_logout": "keluar",
     "unsaved_post_action_confirm": "Tanya setiap saat",
     "filtering_explanation": "Semua status yang mengandung kata-kata ini akan dibisukan, satu kata per satu baris",
     "lock_account_description": "Batasi akun Anda ke pengikut yang telah disetujui saja",
-    "use_contain_fit": "Jangan potong sematan di keluku",
+    "use_contain_fit": "Jangan potong lampiran di keluku",
     "mention_link_display_full": "selalu panjang (contoh: {'@'}foo{'@'}example.org)",
     "absolute_time_format_12h": "Format waktu",
     "absolute_time_format_12h_12h": "Format 12 jam (contoh: 10:00 PM)",
@@ -466,7 +497,15 @@
     "hide_media_previews": "Sembunyikan pratinjau media",
     "mute_bot_posts": "Bisukan pos bot",
     "hide_filtered_statuses": "Sembunyikan semua pos yang difilter",
-    "always_use_jpeg": "Selalu konversikan gambar ke format JPEG"
+    "always_use_jpeg": "Selalu konversikan gambar ke format JPEG",
+    "notification_blocks": "Memblokir seorang pengguna akan menghentikan semua notifikasi dan juga membatalkan langgan mereka.",
+    "hard_reset_value_tooltip": "Hapus pengaturan dari penyimpanan, akan memaksa menggunakan pengaturan baku",
+    "commit_value": "Simpan",
+    "reset_value": "Atur ulang",
+    "hard_reset_value": "Atur ulang paksa",
+    "cache": "Tembolok",
+    "clear_asset_cache": "Bersihkan tembolok aset",
+    "clear_emoji_cache": "Bersihkan tembolok emoji"
   },
   "about": {
     "mrf": {
@@ -531,7 +570,29 @@
     "year": "{0} tahun",
     "years": "{0} tahun",
     "year_short": "{0}t",
-    "years_short": "{0}t"
+    "years_short": "{0}t",
+    "unit": {
+      "hours": "{0} jam",
+      "days_suffix": "hari",
+      "hours_short": "{0}jam",
+      "hours_suffix": "jam",
+      "minutes": "{0} menit",
+      "minutes_suffix": "menit",
+      "months_short": "{0}bln",
+      "days": "{0} hari",
+      "years": "tahun",
+      "years_short": "{0}thn",
+      "weeks": "{0} pekan",
+      "minutes_short": "{0}mnt",
+      "weeks_short": "{0}pkn",
+      "months": "{0} bulan",
+      "seconds": "{0} detik",
+      "days_short": "{0}hari",
+      "seconds_short": "{0}dtk",
+      "months_suffix": "bulan",
+      "seconds_suffix": "detik",
+      "weeks_suffix": "pekan"
+    }
   },
   "timeline": {
     "conversation": "Percakapan",
@@ -543,7 +604,8 @@
     "no_statuses": "Tidak ada status",
     "up_to_date": "Terbarukan",
     "load_older": "Muat status yang lebih tua",
-    "show_new": "Tampilkan yang terbaru"
+    "show_new": "Tampilkan yang terbaru",
+    "collapse": "Sembunyikan"
   },
   "status": {
     "favorites": "Favorit",
@@ -566,14 +628,14 @@
     "you": "(Anda)",
     "bookmark": "Markahi",
     "muted_user": "Pengguna dibisukan",
-    "hide_attachment": "Sembunyikan sematan",
+    "hide_attachment": "Sembunyikan lampiran",
     "copy_link": "Salin tautan ke status",
     "mute_user": "Bisukan pengguna",
     "open_gallery": "Buka galeri",
     "mute_domain": "Bisukan domain",
     "edit": "Sunting status",
     "unbookmark": "Batal markahi",
-    "show_all_attachments": "Tampilkan semua sematan",
+    "show_all_attachments": "Tampilkan semua lampiran",
     "delete_confirm_accept_button": "Hapus",
     "external_source": "Sumber eksternal",
     "thread_muted": "Utas dibisukan",
@@ -582,7 +644,20 @@
     "bot_muted": "Membisukan konten bot",
     "loading": "Memuat…",
     "load_error": "Tidak dapat memuat status: {error}",
-    "remove_attachment": "Hapus sematan"
+    "remove_attachment": "Hapus lampiran",
+    "collapse_attachments": "Sembunyikan lampiran",
+    "show_full_subject": "Tampilkan subjek penuh",
+    "delete_error": "Gagal menghapus status: {0}",
+    "many_attachments": "Pos ini memiliki {number} lampiran",
+    "unmute_domain": "Batal bisukan domain",
+    "hide_full_subject": "Sembunyikan subjek penuh",
+    "thread_hide": "Sembunyikan utas ini",
+    "thread_show": "Tampilkan utas ini",
+    "unmute_user": "Batal bisukan pengguna",
+    "delete_confirm_cancel_button": "Biarkan",
+    "attachment_stop_flash": "Berhentikan pemuta Flash",
+    "delete_confirm_title": "Konfirmasi penghapusan",
+    "expand": "Tampilkan"
   },
   "user_card": {
     "block": "Blokir",
@@ -673,7 +748,12 @@
     "approve": "Terima",
     "block_confirm": "Apakah yakin ingin memblokir {user}?",
     "approve_confirm_accept_button": "Terima",
-    "approve_confirm_title": "Konfirmasi penerimaan"
+    "approve_confirm_title": "Konfirmasi penerimaan",
+    "remove_follower_confirm_cancel_button": "Biarkan",
+    "dont_ask_again_mute": "Selalu bisukan pengguna dengan cara ini",
+    "dont_ask_again_block": "Selalu blokir pengguna dengan cara ini",
+    "remove_follower_confirm": "Apakah yakin ingin menghapus {user} dari pengikut Anda?",
+    "deactivated": "Dinonaktifkan"
   },
   "user_profile": {
     "timeline_title": "Linimasa pengguna",
@@ -686,7 +766,8 @@
     "additional_comments": "Komentar tambahan",
     "forward_description": "Akun ini berada di server lain. Kirim salinan dari laporannya juga?",
     "submit": "Kirim",
-    "generic_error": "Sebuah kesalahan terjadi ketika memproses permintaan Anda."
+    "generic_error": "Sebuah kesalahan terjadi ketika memproses permintaan Anda.",
+    "forward_to": "Teruskan ke {0}"
   },
   "notifications": {
     "favorited_you": "memfavoritkan status Anda",
@@ -701,7 +782,9 @@
     "migrated_to": "bermigrasi ke",
     "load_older": "Muat notifikasi yang lebih lama",
     "broken_favorite": "Status tak diketahui, mencarinya…",
-    "configuration_tip_dismiss": "Jangan tampilkan kembali"
+    "configuration_tip_dismiss": "Jangan tampilkan kembali",
+    "submitted_report": "kirim laporan",
+    "configuration_tip_settings": "pengaturan"
   },
   "who_to_follow": {
     "more": "Lebih banyak",
@@ -716,7 +799,8 @@
     "user_settings": "Pengaturan Pengguna",
     "accept_follow_request": "Terima permintaan mengikuti",
     "bookmark": "Markah",
-    "reject_follow_request": "Tolak permintaan mengikuti"
+    "reject_follow_request": "Tolak permintaan mengikuti",
+    "unfavorite": "Batal favorit"
   },
   "upload": {
     "error": {
@@ -739,7 +823,8 @@
     "person_talking": "{count} orang berbicara",
     "people_talking": "{count} orang berbicara",
     "no_results": "Tidak ada hasil",
-    "load_more": "Muat lebih banyak"
+    "load_more": "Muat lebih banyak",
+    "no_more_results": "Tidak ada hasil lagi"
   },
   "password_reset": {
     "forgot_password": "Lupa kata sandi?",
@@ -885,7 +970,8 @@
     "undo": "Batal",
     "scroll_to_top": "Gulir ke atas",
     "pin": "Sematkan item",
-    "unpin": "Lepaskan item"
+    "unpin": "Lepaskan item",
+    "dismiss": "Abaikan"
   },
   "remote_user_resolver": {
     "error": "Tidak ditemukan.",
@@ -911,7 +997,8 @@
       "smileys-and-emotion": "Emosi",
       "symbols": "Simbol",
       "travel-and-places": "Perjalanan & Tempat-tempat"
-    }
+    },
+    "hide_custom_emoji": "Sembunyikan emoji kustom"
   },
   "polls": {
     "expired": "Japat berakhir {0} yang lalu",
@@ -926,7 +1013,9 @@
     "add_option": "Tambahkan opsi",
     "add_poll": "Tambahkan japat",
     "not_enough_options": "Terlalu sedikit opsi yang unik pada japat",
-    "non_anonymous": "Japat publik"
+    "non_anonymous": "Japat publik",
+    "multiple_choices": "Pilihan ganda",
+    "single_choice": "Satu pilihan"
   },
   "nav": {
     "preferences": "Preferensi",
@@ -955,7 +1044,8 @@
     "lists": "Daftar",
     "bookmarks": "Markah",
     "mobile_notifications_mark_as_seen": "Tandai semua sebagai sudah dilihat",
-    "edit_finish": "Selesai menyunting"
+    "edit_finish": "Selesai menyunting",
+    "edit_pinned": "Suntin item yang disematkan"
   },
   "media_modal": {
     "next": "Selanjutnya",
@@ -1008,7 +1098,8 @@
     "chat": "Obrolan",
     "upload_limit": "Batas unggahan",
     "media_proxy": "Proksi media",
-    "who_to_follow": "Akun yang menarik untuk diikuti"
+    "who_to_follow": "Akun yang menarik untuk diikuti",
+    "scope_options": "Pilihan jangkauan"
   },
   "exporter": {
     "processing": "Memproses, Anda akan segera diminta untuk mengunduh berkas Anda",
@@ -1074,7 +1165,10 @@
   },
   "drafts": {
     "unavailable": "(tidak tersedia)",
-    "save": "Simpan tanpa pos"
+    "save": "Simpan tanpa pos",
+    "abandon_confirm_cancel_button": "Biarkan",
+    "replying": "Membalas ke {statusLink}",
+    "editing": "Menyunting {statusLink}"
   },
   "bookmark_folders": {
     "editing_folder": "Menyunting folder {folderName}",
@@ -1082,7 +1176,7 @@
     "new": "Folder baru",
     "create": "Buat folder",
     "delete": "Hapus folder",
-    "error": "Ada kesalahan dalam menyunting folder markah: {0}",
+    "error": "Gagal menyunting folder markah: {0}",
     "select_folder": "Pilih folder markah",
     "creating_folder": "Membuat folder markah",
     "emoji": "Emoji",
@@ -1095,13 +1189,23 @@
     "commit_all": "Simpan semua",
     "instance": {
       "kocaptcha": "Pengaturan KoCaptcha",
-      "captcha_header": "CAP"
+      "captcha_header": "CAPTCHA",
+      "restrict": {
+        "activities": "Akses status/aktivitas",
+        "timelines": "Akses linimasa",
+        "profiles": "Akses profil pengguna",
+        "header": "Batasi akses ke pengunjung awanama"
+      },
+      "registrations": "Pendaftaran pengguna",
+      "instance": "Informasi peladen",
+      "access": "Akses peladen"
     },
     "tabs": {
       "emoji": "Emoji",
       "instance": "Peladen",
       "limits": "Batas",
-      "frontends": "Antarmuka"
+      "frontends": "Antarmuka",
+      "nodb": "Tidak ada konfigurasi basis data"
     },
     "emoji": {
       "filename": "Nama berkas",
@@ -1114,7 +1218,19 @@
       "download_as_name": "Nama baru",
       "error": "Kesalahan: {0}",
       "delete": "Hapus",
-      "download": "Unduh"
+      "download": "Unduh",
+      "do_list": "Daftar",
+      "shortcode": "Kode pendek",
+      "delete_confirm": "Apakah yakin ingin menghapus {0}?",
+      "editing": "Menyunting {0}",
+      "description": "Deskripsi",
+      "share": "Bagikan",
+      "downloading_pack": "Mengunduh {0}",
+      "homepage": "Situs",
+      "save_meta": "Simpan metadata",
+      "global_actions": "Tindakan global",
+      "reload": "Muat ulang emoji",
+      "importFS": "Impor emoji dari berkas sistem"
     },
     "captcha": {
       "kocaptcha": "KoCaptcha"
@@ -1130,9 +1246,48 @@
       "available_frontends": "Tersedia untuk dipasang",
       "install": "Pasang",
       "set_default": "Atur antarmuka baku",
-      "set_default_version": "Atur versi {version} sebagai yang baku"
+      "set_default_version": "Atur versi {version} sebagai yang baku",
+      "failure_installing_frontend": "Gagal memasang antarmuka {version}: {reason}",
+      "success_installing_frontend": "Antarmuka {version} berhasil dipasang",
+      "is_default_custom": "(Baku, versi: {version})",
+      "more_default_options": "Banyak pilihan pengaturan baku",
+      "default_frontend_tip": "Antarmuka baku akan ditampilkan ke seluruh pengguna. Untuk sekarang, tidak bisa pengguna untuk memilih antarmuka sendiri. Jika Anda meninggalkan PleromaFE, maka Anda mungkin harus menggunakan AdminFE yang lawas untuk melakukan konfigurasi peladen hingga kami menggantinya.",
+      "default_frontend_unavail": "Pengaturan antarmuka baku tidak tersedia, dikarenakan ini memerlukan konfigurasi di basis data"
     },
-    "window_title": "Administrasi"
+    "window_title": "Administrasi",
+    "limits": {
+      "uploads": "Batas lampiran",
+      "users": "Batas profil pengguna",
+      "posts": "Batas pos",
+      "user_uploads": "Batas media profil"
+    },
+    "temp_overrides": {
+      ":pleroma": {
+        ":instance": {
+          ":limit_to_local_content": {
+            "label": "Batasi pencarian ke konten lokal",
+            "description": "Matikan pencarian global jaringan untuk pengguna tak terotentikasi (baku), semua pengguna, atau tidak usah"
+          },
+          ":description_limit": {
+            "label": "Batas",
+            "description": "Batas karakter untuk deskripsi lampiran"
+          },
+          ":background_image": {
+            "description": "Gambar latar belakang (dipakai utama oleh PleromaFE)",
+            "label": "Gambar latar belakang"
+          },
+          ":public": {
+            "label": "Peladen ini publik",
+            "description": "Mematikan ini akan membuat semua API bisa diakses hanya untuk pengguna terdaftar, ini akan membuat linimasa Publik dan Terfederasi tidak dapat diakses oleh pengunjung awanama."
+          }
+        }
+      }
+    },
+    "nodb": {
+      "documentation": "dokumentasi",
+      "heading": "Konfigurasi basis data dimatikan"
+    },
+    "wip_notice": "Antarmuka administrasi ini masih dalam pengembangan, {adminFeLink}"
   },
   "lists": {
     "save": "Simpan perubahan",
@@ -1145,7 +1300,14 @@
     "delete": "Hapus daftar",
     "search": "Cari pengguna",
     "add_to_list": "Tambahkan ke daftar",
-    "lists": "Daftar"
+    "lists": "Daftar",
+    "manage_lists": "Kelola daftar",
+    "editing_list": "Menyunting daftar {listTitle}",
+    "new": "Daftar Baru",
+    "manage_members": "Kelola anggota daftar",
+    "title": "Judul daftar",
+    "error": "Gagal menyunting daftar: {0}",
+    "add_members": "Cari lebih banyak pengguna"
   },
   "update": {
     "update_changelog_here": "daftar perubahan lengkap",
@@ -1157,5 +1319,8 @@
     "error": "Ada sesuatu yang salah",
     "loading": "Memuat…",
     "theme": "Menerapkan tema, silakan tunggu…"
+  },
+  "unicode_domain_indicator": {
+    "tooltip": "Domain ini mengandung karakter non-ascii."
   }
 }
