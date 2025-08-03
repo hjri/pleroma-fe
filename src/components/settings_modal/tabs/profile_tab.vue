@@ -2,6 +2,12 @@
   <div class="profile-tab">
     <div class="setting-item">
       <h2>{{ $t('settings.name_bio') }}</h2>
+      <UserCard
+        :user-id="user.id"
+        :editable="true"
+        :switcher="false"
+        rounded="top"
+      />
       <p>{{ $t('settings.name') }}</p>
       <EmojiInput
         v-model="newName"
@@ -41,75 +47,6 @@
           </template>
         </Checkbox>
       </p>
-      <div>
-        <p>{{ $t('settings.birthday.label') }}</p>
-        <input
-          id="birthday"
-          v-model="newBirthday"
-          type="date"
-          class="input birthday-input"
-        >
-        <Checkbox v-model="showBirthday">
-          {{ $t('settings.birthday.show_birthday') }}
-        </Checkbox>
-      </div>
-      <div v-if="maxFields > 0">
-        <p>{{ $t('settings.profile_fields.label') }}</p>
-        <div
-          v-for="(_, i) in newFields"
-          :key="i"
-          class="profile-fields"
-        >
-          <EmojiInput
-            v-model="newFields[i].name"
-            enable-emoji-picker
-            hide-emoji-button
-            :suggest="userSuggestor"
-          >
-            <template #default="inputProps">
-              <input
-                v-model="newFields[i].name"
-                :placeholder="$t('settings.profile_fields.name')"
-                v-bind="propsToNative(inputProps)"
-                class="input"
-              >
-            </template>
-          </EmojiInput>
-          <EmojiInput
-            v-model="newFields[i].value"
-            enable-emoji-picker
-            hide-emoji-button
-            :suggest="userSuggestor"
-          >
-            <template #default="inputProps">
-              <input
-                v-model="newFields[i].value"
-                :placeholder="$t('settings.profile_fields.value')"
-                v-bind="propsToNative(inputProps)"
-                class="input"
-              >
-            </template>
-          </EmojiInput>
-          <button
-            class="delete-field button-unstyled -hover-highlight"
-            @click="deleteField(i)"
-          >
-            <!-- TODO something is wrong with v-show here -->
-            <FAIcon
-              v-if="newFields.length > 1"
-              icon="times"
-            />
-          </button>
-        </div>
-        <button
-          v-if="newFields.length < maxFields"
-          class="add-field faint button-unstyled -hover-highlight"
-          @click="addField"
-        >
-          <FAIcon icon="plus" />
-          {{ $t("settings.profile_fields.add_field") }}
-        </button>
-      </div>
       <p>
         <label>
           {{ $t('settings.actor_type') }}

@@ -1,12 +1,12 @@
 import unescape from 'lodash/unescape'
 import merge from 'lodash/merge'
+import UserCard from 'src/components/user_card/user_card.vue'
 import ImageCropper from 'src/components/image_cropper/image_cropper.vue'
 import ScopeSelector from 'src/components/scope_selector/scope_selector.vue'
 import fileSizeFormatService from 'src/components/../services/file_size_format/file_size_format.js'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
 import suggestor from 'src/components/emoji_input/suggestor.js'
-import Autosuggest from 'src/components/autosuggest/autosuggest.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
 import Select from 'src/components/select/select.vue'
@@ -53,10 +53,10 @@ const ProfileTab = {
     }
   },
   components: {
+    UserCard,
     ScopeSelector,
     ImageCropper,
     EmojiInput,
-    Autosuggest,
     ProgressButton,
     Checkbox,
     BooleanSetting,
@@ -87,12 +87,6 @@ const ProfileTab = {
     },
     userSuggestor () {
       return suggestor({ store: this.$store })
-    },
-    fieldsLimits () {
-      return this.$store.state.instance.fieldsLimits
-    },
-    maxFields () {
-      return this.fieldsLimits ? this.fieldsLimits.maxFields : 0
     },
     defaultAvatar () {
       return this.$store.state.instance.server + this.$store.state.instance.defaultAvatar

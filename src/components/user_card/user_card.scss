@@ -2,6 +2,17 @@
   position: relative;
   z-index: 1;
 
+  // editing headers
+  h4 {
+    line-height: 2;
+    display: flex;
+    padding: 0 1.0em;
+
+    span {
+      flex: 1;
+    }
+  }
+
   .user-card-inner {
     padding-bottom: 0;
   }
@@ -178,6 +189,10 @@
       line-height: 2em;
       padding: 0.6em;
       margin: -0.6em;
+
+      &.save-profile-button {
+        width: auto;
+      }
 
       &:hover .icon {
         color: var(--textFaint);
@@ -400,37 +415,64 @@
 .user-profile-fields {
   margin: 0 0.5em;
 
+  --emoji-size: 1.8em;
+
   img {
     object-fit: contain;
     vertical-align: middle;
     max-width: 100%;
     max-height: 400px;
-
-    &.emoji {
-      width: 18px;
-      height: 18px;
-    }
   }
 
+  .user-profile-field-add,
   .user-profile-field {
     display: flex;
+    align-items: baseline;
     margin: 0.25em;
     border: 1px solid var(--border);
     border-radius: var(--roundness);
+    line-height: 2em;
+  }
+
+  .user-profile-field-add {
+    justify-content: center;
+  }
+
+  .user-profile-field {
+    .input {
+      text-align: inherit;
+      flex: 1;
+    }
+
+    .delete-field {
+      display: inline-block;
+      text-align: center;
+      width: 2em;
+    }
 
     .user-profile-field-name,
-    .user-profile-field-value {
+    .user-profile-field-value,
+    .user-profile-field-add {
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
       box-sizing: border-box;
-      line-height: 2em;
+      display: inline-flex;
+
+      &.-edit {
+        padding: 0;
+
+        input {
+          font-weight: inherit;
+        }
+      }
     }
 
     .user-profile-field-name {
       flex: 0 1 50%;
       font-weight: 600;
       text-align: right;
+      justify-content: end;
       color: var(--lightText);
       min-width: 9em;
       border-right: 1px solid var(--border);

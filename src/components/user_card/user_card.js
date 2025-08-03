@@ -1,3 +1,6 @@
+import merge from 'lodash/merge'
+import unescape from 'lodash/unescape'
+
 import ColorInput from 'src/components/color_input/color_input.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
 import RemoteFollow from '../remote_follow/remote_follow.vue'
@@ -10,11 +13,17 @@ import Select from '../select/select.vue'
 import UserLink from '../user_link/user_link.vue'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
+import Checkbox from 'src/components/checkbox/checkbox.vue'
+import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
+
 import localeService from 'src/services/locale/locale.service.js'
+import suggestor from 'src/components/emoji_input/suggestor.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 import { mapGetters } from 'vuex'
 import { usePostStatusStore } from 'src/stores/post_status'
+import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faBell,
@@ -24,13 +33,15 @@ import {
   faEdit,
   faTimes,
   faExpandAlt,
-  faBirthdayCake
+  faBirthdayCake,
+  faSave
 } from '@fortawesome/free-solid-svg-icons'
 
 import { useMediaViewerStore } from '../../stores/media_viewer'
 import { useInterfaceStore } from '../../stores/interface'
 
 library.add(
+  faSave,
   faRss,
   faBell,
   faSearchPlus,
@@ -43,6 +54,7 @@ library.add(
 
 export default {
   props: [
+    'editable',
     'userId',
     'switcher',
     'selected',
@@ -55,6 +67,7 @@ export default {
   ],
   components: {
     UserAvatar,
+    Checkbox,
     RemoteFollow,
     ModerationTools,
     AccountActions,
@@ -65,13 +78,27 @@ export default {
     UserLink,
     UserNote,
     UserTimedFilterModal,
-    ColorInput
+    ColorInput,
+    EmojiInput
   },
   data () {
+    const user = this.$store.state.users.currentUser
+
     return {
       followRequestInProgress: false,
       muteExpiryAmount: 0,
-      muteExpiryUnit: 'minutes'
+      muteExpiryUnit: 'minutes',
+
+      // Editable stuff
+      newName: user.name_unescaped,
+      newActorType: user.actor_type,
+      newBio: unescape(user.description),
+      newBirthday: user.birthday,
+      newShowBirthday: user.show_birthday,
+      newFields: user.fields.map(field => ({ name: field.name, value: field.value })),
+      editingFields: false,
+      newLocked: user.locked,
+      newShowRole: user.show_role,
     }
   },
   created () {
@@ -113,6 +140,13 @@ export default {
     dailyAvg () {
       const days = Math.ceil((new Date() - new Date(this.user.created_at)) / (60 * 60 * 24 * 1000))
       return Math.round(this.user.statuses_count / days)
+    },
+    emoji () {
+      return this.$store.state.instance.customEmoji.map(e => ({
+        shortcode: e.displayText,
+        static_url: e.imageUrl,
+        url: e.imageUrl
+      }))
     },
     userHighlightType: {
       get () {
@@ -184,6 +218,31 @@ export default {
       const browserLocale = localeService.internalToBrowserLocale(this.$i18n.locale)
       return this.user.birthday && new Date(Date.parse(this.user.birthday)).toLocaleDateString(browserLocale, { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' })
     },
+
+    // Editable stuff
+    fieldsLimits () {
+      return this.$store.state.instance.fieldsLimits
+    },
+    maxFields () {
+      return this.fieldsLimits ? this.fieldsLimits.maxFields : 0
+    },
+    emojiUserSuggestor () {
+      return suggestor({
+        emoji: [
+          ...this.$store.getters.standardEmojiList,
+          ...this.$store.state.instance.customEmoji
+        ],
+        store: this.$store
+      })
+    },
+    emojiSuggestor () {
+      return suggestor({
+        emoji: [
+          ...this.$store.getters.standardEmojiList,
+          ...this.$store.state.instance.customEmoji
+        ]
+      })
+    },
     ...mapGetters(['mergedConfig'])
   },
   methods: {
@@ -238,6 +297,48 @@ export default {
         e.preventDefault()
         this.onAvatarClick()
       }
-    }
+    },
+
+    // Editable stuff
+    addField () {
+      if (this.newFields.length < this.maxFields) {
+        this.newFields.push({ name: '', value: '' })
+        return true
+      }
+      return false
+    },
+    deleteField (index) {
+      this.newFields.splice(index, 1)
+    },
+    propsToNative (props) {
+      return propsToNative(props)
+    },
+    updateProfile () {
+      const params = {
+        note: this.newBio,
+        locked: this.newLocked,
+
+        // Backend notation.
+        display_name: this.newName,
+        fields_attributes: this.newFields.filter(el => el != null),
+        actor_type: this.actorType,
+        show_role: this.showRole,
+        birthday: this.newBirthday || '',
+        show_birthday: this.showBirthday
+      }
+
+      if (this.emailLanguage) {
+        params.language = localeService.internalToBackendLocaleMulti(this.emailLanguage)
+      }
+
+      this.$store.state.api.backendInteractor
+        .updateProfile({ params })
+        .then((user) => {
+          this.newFields.splice(user.fields.length)
+          merge(this.newFields, user.fields)
+          this.$store.commit('addNewUsers', [user])
+          this.$store.commit('setCurrentUser', user)
+        })
+    },
   }
 }

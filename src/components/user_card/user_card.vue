@@ -27,6 +27,19 @@
               />
             </div>
           </a>
+          <button
+            v-else-if="editable"
+            class="user-info-avatar button-unstyled -link"
+            @click="editAvatar"
+          >
+            <UserAvatar :user="user" />
+            <div class="user-info-avatar -link -overlay">
+              <FAIcon
+                class="fa-scale-110 fa-old-padding"
+                icon="pencil"
+              />
+            </div>
+          </button>
           <UserAvatar
             v-else-if="typeof avatarAction === 'function'"
             class="user-info-avatar"
@@ -42,9 +55,25 @@
           </router-link>
           <div class="user-summary">
             <div class="top-line">
-              <div class="other-actions">
+              <div
+                class="other-actions"
+              >
                 <button
-                  v-if="!isOtherUser && user.is_local"
+                  v-if="editable"
+                  :disabled="newName && newName.length === 0"
+                  class="btn button-unstyled save-profile-button"
+                  @click="updateProfile"
+                >
+                  {{ $t('settings.save') }}
+                  <FAIcon
+                    fixed-width
+                    class="icon"
+                    icon="save"
+                    :title="$t('user_card.edit_profile')"
+                  />
+                </button>
+                <button
+                  v-else-if="!editable && !isOtherUser && user.is_local"
                   class="button-unstyled edit-profile-button"
                   @click.stop="openProfileTab"
                 >
@@ -100,7 +129,7 @@
                 <RichContent
                   :title="user.name"
                   :html="user.name"
-                  :emoji="user.emoji"
+                  :emoji="editable ? emoji : user.emoji"
                 />
               </router-link>
             </div>
@@ -166,7 +195,7 @@
           </div>
         </div>
         <div
-          v-if="loggedIn && isOtherUser"
+          v-if="!editable && loggedIn && isOtherUser"
           class="user-interactions"
         >
           <div class="btn-group">
@@ -242,7 +271,7 @@
       </div>
     </div>
     <div
-      v-if="loggedIn && isOtherUser && (hasNote || !hideBio) && !mergedConfig.userCardHidePersonalMarks"
+      v-if="!editable && loggedIn && isOtherUser && (hasNote || !hideBio) && !mergedConfig.userCardHidePersonalMarks"
       class="personal-marks"
     >
       <UserNote
@@ -291,44 +320,127 @@
       class="user-card-bio"
       :class="{ '-justify-left': mergedConfig.userCardLeftJustify }"
       :html="user.description_html"
-      :emoji="user.emoji"
+      :emoji="editable ? emoji : user.emoji"
       :handle-links="true"
     />
-    <div
-      v-if="!hideBio && user.fields_html && user.fields_html.length > 0"
-      class="user-profile-fields"
-    >
-      <dl
-        v-for="(field, index) in user.fields_html"
-        :key="index"
-        class="user-profile-field"
+    <h4 v-if="editable">
+      <span>
+        {{ $t('settings.profile_fields.label') }}
+      </span>
+      <button
+        class="button-default"
+        @click="editingFields = !editingFields"
       >
-        <dt
-          :title="user.fields_text[index].name"
-          class="user-profile-field-name"
+        {{ $t('settings.toggle_edit') }}
+      </button>
+    </h4>
+    <template v-if="!editable || !editingFields">
+      <div
+        v-if="!hideBio && user.fields_html && user.fields_html.length > 0"
+        class="user-profile-fields"
+      >
+        <dl
+          v-for="(field, index) in newFields"
+          :key="index"
+          class="user-profile-field"
         >
-          <RichContent
-            :html="field.name"
-            :emoji="user.emoji"
-          />
-        </dt>
-        <dd
-          :title="user.fields_text[index].value"
-          class="user-profile-field-value"
+          <dt
+            :title="field.name"
+            class="user-profile-field-name"
+          >
+            <RichContent
+              :html="field.name"
+              :emoji="editable ? emoji : user.emoji"
+            />
+          </dt>
+          <dd
+            :title="field.value"
+            class="user-profile-field-value"
+          >
+            <RichContent
+              :html="field.value"
+              :emoji="editable ? emoji : user.emoji"
+            />
+          </dd>
+        </dl>
+      </div>
+    </template>
+    <template v-else-if="editingFields">
+      <div
+        v-if="maxFields > 0"
+        class="user-profile-fields"
+      >
+        <dl
+          v-for="(_, i) in newFields"
+          :key="i"
+          class="user-profile-field"
         >
-          <RichContent
-            :html="field.value"
-            :emoji="user.emoji"
-          />
-        </dd>
-      </dl>
-    </div>
+          <dt
+            class="user-profile-field-name -edit"
+          >
+            <EmojiInput
+              v-model="newFields[i].name"
+              enable-emoji-picker
+              :suggest="emojiSuggestor"
+            >
+              <template #default="inputProps">
+                <input
+                  v-model="newFields[i].name"
+                  :placeholder="$t('settings.profile_fields.name')"
+                  v-bind="propsToNative(inputProps)"
+                  class="input"
+                >
+              </template>
+            </EmojiInput>
+          </dt>
+          <dd
+            class="user-profile-field-value -edit"
+          >
+            <EmojiInput
+              v-model="newFields[i].value"
+              enable-emoji-picker
+              :suggest="emojiSuggestor"
+            >
+              <template #default="inputProps">
+                <input
+                  v-model="newFields[i].value"
+                  :placeholder="$t('settings.profile_fields.value')"
+                  v-bind="propsToNative(inputProps)"
+                  class="input input"
+                >
+              </template>
+            </EmojiInput>
+            <button
+              class="delete-field button-unstyled -hover-highlight"
+              @click="deleteField(i)"
+            >
+              <!-- TODO something is wrong with v-show here -->
+              <FAIcon
+                v-if="newFields.length > 1"
+                icon="times"
+              />
+            </button>
+          </dd>
+        </dl>
+        <p class="user-profile-field-add">
+          <button
+            v-if="newFields.length < maxFields"
+            class="add-field faint button-unstyled -hover-highlight"
+            @click="addField"
+          >
+            <FAIcon icon="plus" />
+            {{ ' ' }}
+            {{ $t("settings.profile_fields.add_field") }}
+          </button>
+        </p>
+      </div>
+    </template>
     <div
-      v-if="!hideBio"
       class="user-extras"
+      v-if="!hideBio"
     >
       <span
-        v-if="!mergedConfig.hideUserStats"
+        v-if="!editable && !mergedConfig.hideUserStats"
         class="user-stats"
       >
         <dl
@@ -365,16 +477,38 @@
           <dt>{{ $t('user_card.followers') }}</dt>
         </dl>
       </span>
-      <div
-        v-if="!hideBio && !!user.birthday"
-        class="birthday"
-      >
-        <FAIcon
-          class="fa-old-padding"
-          icon="birthday-cake"
-        />
-        {{ $t('user_card.birthday', { birthday: formattedBirthday }) }}
-      </div>
+      <template v-if="!hideBio">
+        <div
+          v-if="user.birthday && !editable"
+          class="birthday"
+        >
+          <FAIcon
+            class="fa-old-padding"
+            icon="birthday-cake"
+          />
+          {{ $t('user_card.birthday', { birthday: formattedBirthday }) }}
+        </div>
+        <div
+          v-else-if="editable"
+          class="birthday"
+        >
+          <FAIcon
+            class="fa-old-padding"
+            icon="birthday-cake"
+          />
+          <input
+            id="birthday"
+            v-model="newBirthday"
+            type="date"
+            class="input birthday-input"
+          >
+          <div>
+            <Checkbox v-model="showBirthday">
+              {{ $t('settings.birthday.show_birthday') }}
+            </Checkbox>
+          </div>
+        </div>
+      </template>
     </div>
     <teleport to="#modal">
       <UserTimedFilterModal

@@ -115,6 +115,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  display: flex;
 
   .emoji-picker-icon {
     position: absolute;
