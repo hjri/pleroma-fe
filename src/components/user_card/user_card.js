@@ -91,12 +91,13 @@ export default {
 
       // Editable stuff
       newName: user.name_unescaped,
-      editingName: true,
+      editingName: false,
       newActorType: user.actor_type,
       newBio: unescape(user.description),
       editingBio: false,
       newBirthday: user.birthday,
       newShowBirthday: user.show_birthday,
+      newCoverPhoto: user.cover_photo,
       newFields: user.fields.map(field => ({ name: field.name, value: field.value })),
       editingFields: false,
       newLocked: user.locked,
@@ -125,7 +126,7 @@ export default {
       return {
         backgroundImage: [
           'linear-gradient(to bottom, var(--profileTint), var(--profileTint))',
-          `url(${this.user.cover_photo})`
+          `url(${this.newCoverPhoto})`
         ].join(', ')
       }
     },

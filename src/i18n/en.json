@@ -395,6 +395,7 @@
     "save": "Save changes",
     "security": "Security",
     "toggle_edit": "Toggle edit",
+    "change_banner": "Change banner",
     "setting_changed": "Setting is different from default",
     "setting_server_side": "This setting is tied to your profile and affects all sessions and clients",
     "enter_current_password_to_confirm": "Enter your current password to confirm your identity",

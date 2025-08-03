@@ -30,6 +30,7 @@
           <button
             v-else-if="editable"
             class="user-info-avatar button-unstyled -link"
+            :class="{ '-editable': editable }"
             @click="editAvatar"
           >
             <UserAvatar :user="user" />
@@ -61,6 +62,20 @@
                 <button
                   v-if="editable"
                   :disabled="newName && newName.length === 0"
+                  class="btn button-unstyled edit-banner-button"
+                  @click="updateProfile"
+                >
+                  {{ $t('settings.change_banner') }}
+                  <FAIcon
+                    fixed-width
+                    class="icon"
+                    icon="pencil"
+                    :title="$t('user_card.change_banner')"
+                  />
+                </button>
+                <button
+                  v-if="editable"
+                  :disabled="somethingToSave"
                   class="btn button-unstyled save-profile-button"
                   @click="updateProfile"
                 >
@@ -487,9 +502,10 @@
           class="user-profile-field-add add-field button-default -hover-highlight"
           @click="addField"
         >
-          <FAIcon icon="plus" />
-          {{ ' ' }}
-          {{ $t("settings.profile_fields.add_field") }}
+          <FAIcon icon="plus" class="icon" />
+          <span class="label">
+            {{ $t("settings.profile_fields.add_field") }}
+          </span>
         </button>
       </div>
     </template>
