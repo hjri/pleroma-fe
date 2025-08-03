@@ -1,7 +1,6 @@
 <template>
   <div class="profile-tab">
     <div class="setting-item">
-      <h2>{{ $t('settings.name_bio') }}</h2>
       <UserCard
         :user-id="user.id"
         :editable="true"
@@ -21,20 +20,6 @@
             class="input name-changer"
             v-bind="propsToNative(inputProps)"
           >
-        </template>
-      </EmojiInput>
-      <p>{{ $t('settings.bio') }}</p>
-      <EmojiInput
-        v-model="newBio"
-        enable-emoji-picker
-        :suggest="emojiUserSuggestor"
-      >
-        <template #default="inputProps">
-          <textarea
-            v-model="newBio"
-            class="input bio resize-height"
-            v-bind="propsToNative(inputProps)"
-          />
         </template>
       </EmojiInput>
       <p v-if="role === 'admin' || role === 'moderator'">

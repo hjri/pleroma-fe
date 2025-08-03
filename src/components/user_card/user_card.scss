@@ -13,11 +13,21 @@
     }
   }
 
+  .input.bio {
+    height: auto; // override settings default textarea size
+  }
+
   .user-card-inner {
     padding-bottom: 0;
   }
 
   .user-card-bio {
+    margin: 0.6em;
+
+    &, * {
+      line-height: 1.5;
+    }
+
     &.-justify-left {
       text-align: start;
     }

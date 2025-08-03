@@ -93,6 +93,7 @@ export default {
       newName: user.name_unescaped,
       newActorType: user.actor_type,
       newBio: unescape(user.description),
+      editingBio: false,
       newBirthday: user.birthday,
       newShowBirthday: user.show_birthday,
       newFields: user.fields.map(field => ({ name: field.name, value: field.value })),

@@ -315,14 +315,45 @@
         />
       </div>
     </div>
-    <RichContent
-      v-if="!hideBio"
-      class="user-card-bio"
-      :class="{ '-justify-left': mergedConfig.userCardLeftJustify }"
-      :html="user.description_html"
-      :emoji="editable ? emoji : user.emoji"
-      :handle-links="true"
-    />
+    <h4 v-if="editable">
+      <span>
+        {{ $t('settings.bio') }}
+      </span>
+      <button
+        class="button-default"
+        @click="editingBio = !editingBio"
+      >
+        {{ $t('settings.toggle_edit') }}
+      </button>
+    </h4>
+    <template v-if="!editable || !editingBio">
+      <RichContent
+        v-if="!hideBio"
+        class="user-card-bio"
+        :class="{ '-justify-left': mergedConfig.userCardLeftJustify }"
+        :html="user.description_html"
+        :emoji="editable ? emoji : user.emoji"
+        :handle-links="true"
+      />
+    </template>
+    <template v-else-if="editingBio">
+      <EmojiInput
+        v-model="newBio"
+        enable-emoji-picker
+        class="user-card-bio"
+        :class="{ '-justify-left': mergedConfig.userCardLeftJustify }"
+        :suggest="emojiUserSuggestor"
+      >
+        <template #default="inputProps">
+          <textarea
+            v-model="newBio"
+            class="input bio resize-height"
+            v-bind="propsToNative(inputProps)"
+            :rows="newBio.split(/\n/g).length"
+          />
+        </template>
+      </EmojiInput>
+    </template>
     <h4 v-if="editable">
       <span>
         {{ $t('settings.profile_fields.label') }}
