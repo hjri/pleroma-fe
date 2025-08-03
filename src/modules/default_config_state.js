@@ -126,6 +126,8 @@ export const defaultState = {
   showScrollbars: false,
   userPopoverAvatarAction: 'open',
   userPopoverOverlay: false,
+  userCardLeftJustify: false,
+  userCardHidePersonalMarks: false,
   sidebarColumnWidth: '25rem',
   contentColumnWidth: '45rem',
   notifsColumnWidth: '25rem',

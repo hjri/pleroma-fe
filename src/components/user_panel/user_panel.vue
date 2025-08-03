@@ -28,8 +28,16 @@
     backdrop-filter: var(--backdrop-filter);
   }
 
+  .user-info {
+    .Avatar {
+      width: 5em;
+      width: calc(min(5em, 20cqw));
+      height: 5em;
+      height: calc(min(5em, 20cqw));
+    }
+  }
+
   .signed-in {
-    overflow: visible;
     z-index: 10;
   }
 }

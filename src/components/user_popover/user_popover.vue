@@ -26,7 +26,22 @@
 <style lang="scss">
 /* popover styles load on-demand, so we need to override */
 /* stylelint-disable block-no-empty */
-.user-popover.popover {
+.user-popover {
+  margin-bottom: 0.6em;
+
+  .user-identity {
+    aspect-ratio: unset;
+    min-width: calc(min(30em, 98vw));
+  }
+
+  .user-card-inner {
+    display: flex;
+  }
+
+  &.popover {
+    overflow: hidden;
+    padding: 0.6em;
+  }
 }
 /* stylelint-enable block-no-empty */
 

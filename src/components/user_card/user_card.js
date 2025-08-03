@@ -1,3 +1,4 @@
+import ColorInput from 'src/components/color_input/color_input.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
 import RemoteFollow from '../remote_follow/remote_follow.vue'
 import ProgressButton from '../progress_button/progress_button.vue'
@@ -9,6 +10,7 @@ import Select from '../select/select.vue'
 import UserLink from '../user_link/user_link.vue'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
+import localeService from 'src/services/locale/locale.service.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 import { mapGetters } from 'vuex'
@@ -21,7 +23,8 @@ import {
   faExternalLinkAlt,
   faEdit,
   faTimes,
-  faExpandAlt
+  faExpandAlt,
+  faBirthdayCake
 } from '@fortawesome/free-solid-svg-icons'
 
 import { useMediaViewerStore } from '../../stores/media_viewer'
@@ -34,7 +37,8 @@ library.add(
   faExternalLinkAlt,
   faEdit,
   faTimes,
-  faExpandAlt
+  faExpandAlt,
+  faBirthdayCake
 )
 
 export default {
@@ -60,7 +64,8 @@ export default {
     RichContent,
     UserLink,
     UserNote,
-    UserTimedFilterModal
+    UserTimedFilterModal,
+    ColorInput
   },
   data () {
     return {
@@ -174,6 +179,10 @@ export default {
       return this.user.block_expires_at == null
         ? this.$t('user_card.block_expires_forever')
         : this.$t('user_card.block_expires_at', [new Date(this.user.mute_expires_at).toLocaleString()])
+    },
+    formattedBirthday () {
+      const browserLocale = localeService.internalToBrowserLocale(this.$i18n.locale)
+      return this.user.birthday && new Date(Date.parse(this.user.birthday)).toLocaleDateString(browserLocale, { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' })
     },
     ...mapGetters(['mergedConfig'])
   },

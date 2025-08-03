@@ -1,28 +1,30 @@
+import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
+
 const UserNote = {
   props: {
     user: Object,
     relationship: Object,
     editable: Boolean
   },
+  components: {
+    PanelLoading
+  },
   data () {
     return {
-      localNote: '',
+      localNote: this.relationship.note,
       editing: false,
       frozen: false
     }
   },
-  computed: {
-    shouldShow () {
-      return this.relationship.note || this.editing
+  watch: {
+    relationship () {
+      this.localNote = this.relationship.note
     }
   },
   methods: {
     startEditing () {
       this.localNote = this.relationship.note
       this.editing = true
-    },
-    cancelEditing () {
-      this.editing = false
     },
     finalizeEditing () {
       this.frozen = true
@@ -37,6 +39,7 @@ const UserNote = {
         })
         .catch(() => {
           this.frozen = false
+          this.editing = false
         })
     }
   }
