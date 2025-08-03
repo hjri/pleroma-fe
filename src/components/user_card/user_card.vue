@@ -3,7 +3,10 @@
     class="user-card"
     :class="classes"
   >
-    <div :class="onClose ? '' : 'panel-heading -flexible-height'" class="user-card-inner">
+    <div
+      :class="onClose ? '' : 'panel-heading -flexible-height'"
+      class="user-card-inner"
+    >
       <div class="user-info">
         <div class="user-identity">
           <div
@@ -238,7 +241,10 @@
         </div>
       </div>
     </div>
-    <div class="personal-marks" v-if="loggedIn && isOtherUser && (hasNote || !hideBio) && !mergedConfig.userCardHidePersonalMarks">
+    <div
+      v-if="loggedIn && isOtherUser && (hasNote || !hideBio) && !mergedConfig.userCardHidePersonalMarks"
+      class="personal-marks"
+    >
       <UserNote
         v-if="hasNote || (hasNoteEditor && supportsNote)"
         :user="user"
@@ -272,8 +278,8 @@
         <!-- id's need to be unique, otherwise vue confuses which user-card checkbox belongs to -->
         <ColorInput
           v-if="userHighlightType !== 'disabled'"
-          class="highlighter-color"
           v-model="userHighlightColor"
+          class="highlighter-color"
           :show-optional-checkbox="false"
           name="'userHighlightColorTx'+user.id"
           :unstyled="true"
@@ -317,15 +323,18 @@
         </dd>
       </dl>
     </div>
-    <div class="user-extras" v-if="!hideBio">
+    <div
+      v-if="!hideBio"
+      class="user-extras"
+    >
       <span
         v-if="!mergedConfig.hideUserStats"
         class="user-stats"
       >
         <dl
+          v-if="!mergedConfig.hideUserStats && !hideBio"
           class="user-count"
           @click.prevent="setProfileView('statuses')"
-          v-if="!mergedConfig.hideUserStats && !hideBio"
         >
           <dd>{{ user.statuses_count }}</dd>
           {{ ' ' }}
@@ -356,7 +365,10 @@
           <dt>{{ $t('user_card.followers') }}</dt>
         </dl>
       </span>
-      <div class="birthday" v-if="!hideBio && !!user.birthday">
+      <div
+        v-if="!hideBio && !!user.birthday"
+        class="birthday"
+      >
         <FAIcon
           class="fa-old-padding"
           icon="birthday-cake"
@@ -366,9 +378,9 @@
     </div>
     <teleport to="#modal">
       <UserTimedFilterModal
+        ref="timedMuteDialog"
         :user="user"
         :is-mute="true"
-        ref="timedMuteDialog"
       />
     </teleport>
   </div>

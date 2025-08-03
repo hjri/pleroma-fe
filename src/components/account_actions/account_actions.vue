@@ -139,9 +139,9 @@
       </confirm-modal>
       <UserTimedFilterModal
         v-if="blockExpirationSupported"
+        ref="timedBlockDialog"
         :is-mute="false"
         :user="user"
-        ref="timedBlockDialog"
       />
     </teleport>
   </div>

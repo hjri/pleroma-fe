@@ -8,14 +8,14 @@
       v-model="localNote"
       class="input note-text"
       :class="{ unstyled: !editing }"
-      @focus="startEditing"
-      @blur="finalizeEditing"
       rows="1"
       :placeholder="$t('user_card.note_blank_click')"
+      @focus="startEditing"
+      @blur="finalizeEditing"
     />
     <span
-      class="overlay"
       v-if="frozen"
+      class="overlay"
     >
       <PanelLoading />
     </span>
