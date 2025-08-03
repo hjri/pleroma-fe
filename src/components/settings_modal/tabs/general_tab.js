@@ -1,3 +1,5 @@
+import { mapState } from 'vuex'
+
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import ScopeSelector from 'src/components/scope_selector/scope_selector.vue'
@@ -97,7 +99,10 @@ const GeneralTab = {
     },
     instanceShoutboxPresent () { return this.$store.state.instance.shoutAvailable },
     instanceSpecificPanelPresent () { return this.$store.state.instance.showInstanceSpecificPanel },
-    ...SharedComputedObject()
+    ...SharedComputedObject(),
+    ...mapState({
+      blockExpirationSupported: state => state.instance.blockExpiration,
+    })
   },
   methods: {
     changeDefaultScope (value) {
