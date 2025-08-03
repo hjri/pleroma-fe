@@ -91,6 +91,7 @@ export default {
 
       // Editable stuff
       newName: user.name_unescaped,
+      editingName: true,
       newActorType: user.actor_type,
       newBio: unescape(user.description),
       editingBio: false,

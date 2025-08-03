@@ -7,21 +7,6 @@
         :switcher="false"
         rounded="top"
       />
-      <p>{{ $t('settings.name') }}</p>
-      <EmojiInput
-        v-model="newName"
-        enable-emoji-picker
-        :suggest="emojiSuggestor"
-      >
-        <template #default="inputProps">
-          <input
-            id="username"
-            v-model="newName"
-            class="input name-changer"
-            v-bind="propsToNative(inputProps)"
-          >
-        </template>
-      </EmojiInput>
       <p v-if="role === 'admin' || role === 'moderator'">
         <Checkbox v-model="showRole">
           <template v-if="role === 'admin'">

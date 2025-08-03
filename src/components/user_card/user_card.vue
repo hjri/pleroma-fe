@@ -122,16 +122,45 @@
                   />
                 </button>
               </div>
-              <router-link
-                :to="userProfileLink(user)"
-                class="user-name"
-              >
-                <RichContent
-                  :title="user.name"
-                  :html="user.name"
-                  :emoji="editable ? emoji : user.emoji"
-                />
-              </router-link>
+              <div class="name-wrapper">
+                <router-link
+                  v-if="!editable || !editingName"
+                  :to="userProfileLink(user)"
+                  class="user-name"
+                >
+                  <RichContent
+                    :title="newName"
+                    :html="newName"
+                    :emoji="editable ? emoji : user.emoji"
+                  />
+                </router-link>
+                <EmojiInput
+                  v-else-if="editingName"
+                  v-model="newName"
+                  enable-emoji-picker
+                  :suggest="emojiSuggestor"
+                >
+                  <template #default="inputProps">
+                    <input
+                      id="username"
+                      v-model="newName"
+                      class="input name-changer"
+                      v-bind="propsToNative(inputProps)"
+                    >
+                  </template>
+                </EmojiInput>
+                <button
+                  v-if="editable"
+                  class="button-unstyled edit-button"
+                  @click="editingName = !editingName"
+                  :title="$t('settings.toggle_edit')"
+                >
+                  <FAIcon
+                    class="icon"
+                    icon="pencil"
+                  />
+                </button>
+              </div>
             </div>
             <div class="bottom-line">
               <user-link

@@ -124,7 +124,7 @@
     margin: 0.2em 0.25em;
     font-size: 1.3em;
     cursor: pointer;
-    line-height: 24px;
+    line-height: 1.2em;
 
     &:hover i {
       color: var(--text);
@@ -134,7 +134,7 @@
   .emoji-picker-panel {
     position: absolute;
     z-index: 20;
-    margin-top: 2px;
+    margin-top: 0.2em;
 
     &.hide {
       display: none;
@@ -153,7 +153,7 @@
   }
 
   &.with-picker input {
-    padding-right: 30px;
+    padding-right: 2em;
   }
 
   .hidden-overlay {
@@ -216,8 +216,8 @@
       }
 
       .detailText {
-        font-size: 9px;
-        line-height: 9px;
+        font-size: 0.6em;
+        line-height: 0.6em;
       }
     }
   }
