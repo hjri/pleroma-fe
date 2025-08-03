@@ -442,7 +442,7 @@
               </template>
             </EmojiInput>
             <button
-              class="delete-field button-unstyled -hover-highlight"
+              class="delete-field button-default -hover-highlight"
               @click="deleteField(i)"
             >
               <!-- TODO something is wrong with v-show here -->
@@ -453,17 +453,15 @@
             </button>
           </dd>
         </dl>
-        <p class="user-profile-field-add">
-          <button
-            v-if="newFields.length < maxFields"
-            class="add-field faint button-unstyled -hover-highlight"
-            @click="addField"
-          >
-            <FAIcon icon="plus" />
-            {{ ' ' }}
-            {{ $t("settings.profile_fields.add_field") }}
-          </button>
-        </p>
+        <button
+          v-if="newFields.length < maxFields"
+          class="user-profile-field-add add-field button-default -hover-highlight"
+          @click="addField"
+        >
+          <FAIcon icon="plus" />
+          {{ ' ' }}
+          {{ $t("settings.profile_fields.add_field") }}
+        </button>
       </div>
     </template>
     <div

@@ -424,6 +424,8 @@
 
 .user-profile-fields {
   margin: 0 0.5em;
+  display: flex;
+  flex-direction: column;
 
   --emoji-size: 1.8em;
 
@@ -446,6 +448,7 @@
 
   .user-profile-field-add {
     justify-content: center;
+    margin: 0.25em;
   }
 
   .user-profile-field {
