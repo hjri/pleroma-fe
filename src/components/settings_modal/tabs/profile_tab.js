@@ -1,7 +1,6 @@
 import UserCard from 'src/components/user_card/user_card.vue'
 import ImageCropper from 'src/components/image_cropper/image_cropper.vue'
 import ScopeSelector from 'src/components/scope_selector/scope_selector.vue'
-import fileSizeFormatService from 'src/components/../services/file_size_format/file_size_format.js'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
 import suggestor from 'src/components/emoji_input/suggestor.js'
@@ -20,7 +19,6 @@ import {
   faPlus,
   faCircleNotch
 } from '@fortawesome/free-solid-svg-icons'
-import { useInterfaceStore } from 'src/stores/interface'
 
 library.add(
   faTimes,
@@ -32,10 +30,6 @@ const ProfileTab = {
   data () {
     return {
       locked: this.$store.state.users.currentUser.locked,
-      backgroundUploading: false,
-      background: null,
-      backgroundPreview: null,
-      emailLanguage: this.$store.state.users.currentUser.language || ['']
     }
   },
   components: {
@@ -83,54 +77,6 @@ const ProfileTab = {
   methods: {
     changeVis (visibility) {
       this.newDefaultScope = visibility
-    },
-    uploadFile (slot, e) {
-      const file = e.target.files[0]
-      if (!file) { return }
-      if (file.size > this.$store.state.instance[slot + 'limit']) {
-        const filesize = fileSizeFormatService.fileSizeFormat(file.size)
-        const allowedsize = fileSizeFormatService.fileSizeFormat(this.$store.state.instance[slot + 'limit'])
-        useInterfaceStore().pushGlobalNotice({
-          messageKey: 'upload.error.message',
-          messageArgs: [
-            this.$t('upload.error.file_too_big', {
-              filesize: filesize.num,
-              filesizeunit: filesize.unit,
-              allowedsize: allowedsize.num,
-              allowedsizeunit: allowedsize.unit
-            })
-          ],
-          level: 'error'
-        })
-        return
-      }
-
-      const reader = new FileReader()
-      reader.onload = ({ target }) => {
-        const img = target.result
-        this[slot + 'Preview'] = img
-        this[slot] = file
-      }
-      reader.readAsDataURL(file)
-    },
-    resetBackground () {
-      const confirmed = window.confirm(this.$t('settings.reset_background_confirm'))
-      if (confirmed) {
-        this.submitBackground('')
-      }
-    },
-    submitBackground (background) {
-      if (!this.backgroundPreview && background !== '') { return }
-
-      this.backgroundUploading = true
-      this.$store.state.api.backendInteractor.updateProfileImages({ background })
-        .then((data) => {
-          this.$store.commit('addNewUsers', [data])
-          this.$store.commit('setCurrentUser', data)
-          this.backgroundPreview = null
-        })
-        .catch(this.displayUploadError)
-        .finally(() => { this.backgroundUploading = false })
     },
     updateProfile () {
       const params = {

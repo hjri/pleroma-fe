@@ -8,49 +8,6 @@
       >
     </UserCard>
     <div class="setting-item">
-      <h2>{{ $t('settings.profile_background') }}</h2>
-      <div class="banner-background-preview">
-        <img :src="user.background_image">
-        <button
-          v-if="!isDefaultBackground"
-          class="button-unstyled reset-button"
-          :title="$t('settings.reset_profile_background')"
-          @click="resetBackground"
-        >
-          <FAIcon
-            icon="times"
-            type="button"
-          />
-        </button>
-      </div>
-      <p>{{ $t('settings.set_new_profile_background') }}</p>
-      <img
-        v-if="backgroundPreview"
-        class="banner-background-preview"
-        :src="backgroundPreview"
-      >
-      <div>
-        <input
-          type="file"
-          class="input"
-          @change="uploadFile('background', $event)"
-        >
-      </div>
-      <FAIcon
-        v-if="backgroundUploading"
-        class="uploading"
-        spin
-        icon="circle-notch"
-      />
-      <button
-        v-else-if="backgroundPreview"
-        class="btn button-default"
-        @click="submitBackground(background)"
-      >
-        {{ $t('settings.save') }}
-      </button>
-    </div>
-    <div class="setting-item">
       <h2>{{ $t('settings.account_privacy') }}</h2>
       <ul class="setting-list">
         <li>
