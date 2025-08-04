@@ -592,21 +592,22 @@
           v-else-if="editable"
           class="birthday"
         >
+          <div>
+            <Checkbox v-model="showBirthday">
+              {{ $t('settings.birthday.show_birthday') }}
+            </Checkbox>
+          </div>
           <FAIcon
             class="fa-old-padding"
             icon="birthday-cake"
           />
+          {{ $t('settings.birthday.label') }}
           <input
             id="birthday"
             v-model="newBirthday"
             type="date"
             class="input birthday-input"
           >
-          <div>
-            <Checkbox v-model="showBirthday">
-              {{ $t('settings.birthday.show_birthday') }}
-            </Checkbox>
-          </div>
         </div>
       </template>
     </div>

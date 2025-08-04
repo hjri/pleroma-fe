@@ -1,14 +1,14 @@
 <template>
   <div class="profile-tab">
-    <div class="setting-item">
-      <UserCard
-        :user-id="user.id"
-        :editable="true"
-        :switcher="false"
-        rounded="top"
-      />
-      <p>{{ $t('settings.name') }}</p>
-      <p v-if="role === 'admin' || role === 'moderator'">
+    <UserCard
+      :user-id="user.id"
+      :editable="true"
+      :switcher="false"
+      rounded="top"
+    >
+      <template v-if="role === 'admin' || role === 'moderator'">
+      <h4>{{ $t('settings.show_labels') }}</h4>
+      <p class="user-card-setting">
         <Checkbox v-model="showRole">
           <template v-if="role === 'admin'">
             {{ $t('settings.show_admin_badge') }}
@@ -18,7 +18,9 @@
           </template>
         </Checkbox>
       </p>
-      <p>
+      </template>
+      <h4>{{ $t('settings.user_type') }}</h4>
+      <p class="user-card-setting">
         <label>
           {{ $t('settings.actor_type') }}
           <Select v-model="actorType">
@@ -30,13 +32,15 @@
               {{ $t('settings.actor_type_' + option) }}
             </option>
           </Select>
+          <div v-if="groupActorAvailable">
+            <small>
+              {{ $t('settings.actor_type_description') }}
+            </small>
+          </div>
         </label>
       </p>
-      <div v-if="groupActorAvailable">
-        <small>
-          {{ $t('settings.actor_type_description') }}
-        </small>
-      </div>
+    </UserCard>
+    <div class="setting-item">
       <p>
         <interface-language-switcher
           :prompt-text="$t('settings.email_language')"
@@ -48,87 +52,6 @@
         :disabled="newName && newName.length === 0"
         class="btn button-default"
         @click="updateProfile"
-      >
-        {{ $t('settings.save') }}
-      </button>
-    </div>
-    <div class="setting-item">
-      <h2>{{ $t('settings.avatar') }}</h2>
-      <p class="visibility-notice">
-        {{ $t('settings.avatar_size_instruction') }}
-      </p>
-      <div class="current-avatar-container">
-        <img
-          :src="user.profile_image_url_original"
-          class="current-avatar"
-        >
-        <button
-          v-if="!isDefaultAvatar && pickAvatarBtnVisible"
-          :title="$t('settings.reset_avatar')"
-          class="button-unstyled reset-button"
-          @click="resetAvatar"
-        >
-          <FAIcon
-            icon="times"
-            type="button"
-          />
-        </button>
-      </div>
-      <p>{{ $t('settings.set_new_avatar') }}</p>
-      <button
-        v-show="pickAvatarBtnVisible"
-        id="pick-avatar"
-        class="button-default btn"
-        type="button"
-      >
-        {{ $t('settings.upload_a_photo') }}
-      </button>
-      <image-cropper
-        trigger="#pick-avatar"
-        :submit-handler="submitAvatar"
-        @open="pickAvatarBtnVisible=false"
-        @close="pickAvatarBtnVisible=true"
-      />
-    </div>
-    <div class="setting-item">
-      <h2>{{ $t('settings.profile_banner') }}</h2>
-      <div class="banner-background-preview">
-        <img :src="user.cover_photo">
-        <button
-          v-if="!isDefaultBanner"
-          class="button-unstyled reset-button"
-          :title="$t('settings.reset_profile_banner')"
-          @click="resetBanner"
-        >
-          <FAIcon
-            icon="times"
-            type="button"
-          />
-        </button>
-      </div>
-      <p>{{ $t('settings.set_new_profile_banner') }}</p>
-      <img
-        v-if="bannerPreview"
-        class="banner-background-preview"
-        :src="bannerPreview"
-      >
-      <div>
-        <input
-          type="file"
-          class="input"
-          @change="uploadFile('banner', $event)"
-        >
-      </div>
-      <FAIcon
-        v-if="bannerUploading"
-        class="uploading"
-        spin
-        icon="circle-notch"
-      />
-      <button
-        v-else-if="bannerPreview"
-        class="btn button-default"
-        @click="submitBanner(banner)"
       >
         {{ $t('settings.save') }}
       </button>
