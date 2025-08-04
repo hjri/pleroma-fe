@@ -338,6 +338,7 @@
       white-space: normal;
       font-weight: 500;
       font-size: 0.9em;
+      font-size: calc(max(90%, 2.5cqw));
       line-height: 1.5;
     }
 
