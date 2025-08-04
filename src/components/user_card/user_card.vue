@@ -31,7 +31,7 @@
             v-else-if="editable"
             class="user-info-avatar button-unstyled -link"
             :class="{ '-editable': editable }"
-            @click="editAvatar"
+            @click="changeAvatar"
           >
             <UserAvatar :user="user" />
             <div class="user-info-avatar -link -overlay">
@@ -63,7 +63,7 @@
                   v-if="editable"
                   :disabled="newName && newName.length === 0"
                   class="btn button-unstyled edit-banner-button"
-                  @click="updateProfile"
+                  @click="changeBanner"
                 >
                   {{ $t('settings.change_banner') }}
                   <FAIcon
@@ -590,6 +590,85 @@
         :user="user"
         :is-mute="true"
       />
+    </teleport>
+    <teleport to="#modal">
+      <Modal
+        v-if="editImage"
+        :is-mute="true"
+        class="edit-image"
+        @backdrop-clicked="editImage = false"
+      >
+        <div class="panel">
+          <div class="panel-heading">
+            <h1 class="title">
+              {{ editImage === 'avatar' ? $t('settings.change_avatar') : $t('settings.change_banner') }}
+            </h1>
+          </div>
+          <div class="panel-body">
+            <div class="images-container">
+              <img
+                :src="editImage === 'avatar' ? user.profile_image_url_original : newBanner"
+                class="current-avatar"
+              />
+              <FAIcon
+                class="separator"
+                icon="chevron-right"
+              />
+              <image-cropper
+                ref="cropper"
+                class="cropper"
+                @submit="submitImage"
+              />
+            </div>
+            <button
+              id="pick-image"
+              class="button-default btn"
+              type="button"
+              @click="() => this.$refs.cropper.pickImage()"
+            >
+              {{ $t('settings.upload_picture') }}
+            </button>
+            <p class="visibility-notice">
+              {{ $t('settings.avatar_size_instruction') }}
+            </p>
+            <button
+              :title="editImage === 'avatar' ? $t('settings.reset_avatar') : $t('settings.reset_banner')"
+              class="button-unstyled reset-button"
+              @click="resetImage"
+            >
+            </button>
+            <div class="panel-footer">
+              <div/>
+              <button
+                class="button-default btn"
+                type="button"
+                @click="destroy"
+              >
+                {{ this.$t('image_cropper.cancel') }}
+              </button>
+              <button
+                class="button-default btn"
+                type="button"
+                @click="this.$refs.cropper.submit(true)"
+              >
+                {{ $t('image_cropper.save') }}
+              </button>
+              <button
+                class="button-default btn"
+                type="button"
+                @click="this.$refs.cropper.submit(false)"
+              >
+                {{ $t('image_cropper.save_without_cropping') }}
+              </button>
+              <FAIcon
+                v-if="submitting"
+                spin
+                icon="circle-notch"
+              />
+            </div>
+          </div>
+        </div>
+      </Modal>
     </teleport>
   </div>
 </template>

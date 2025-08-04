@@ -396,6 +396,7 @@
     "security": "Security",
     "toggle_edit": "Toggle edit",
     "change_banner": "Change banner",
+    "change_avatar": "Change avatar",
     "setting_changed": "Setting is different from default",
     "setting_server_side": "This setting is tied to your profile and affects all sessions and clients",
     "enter_current_password_to_confirm": "Enter your current password to confirm your identity",
@@ -726,6 +727,7 @@
     "set_new_profile_background": "Set new profile background",
     "set_new_profile_banner": "Set new profile banner",
     "reset_avatar": "Reset avatar",
+    "reset_banner": "Reset banner",
     "reset_profile_background": "Reset profile background",
     "reset_profile_banner": "Reset profile banner",
     "reset_avatar_confirm": "Do you really want to reset the avatar?",
@@ -778,6 +780,7 @@
     "tooltipRadius": "Tooltips/alerts",
     "type_domains_to_mute": "Search domains to mute",
     "upload_a_photo": "Upload a photo",
+    "upload_picture": "Upload picture",
     "user_settings": "User Settings",
     "values": {
       "false": "no",

@@ -42,7 +42,6 @@ const ProfileTab = {
       role: this.$store.state.users.currentUser.role,
       bot: this.$store.state.users.currentUser.bot,
       actorType: this.$store.state.users.currentUser.actor_type,
-      pickAvatarBtnVisible: true,
       bannerUploading: false,
       backgroundUploading: false,
       banner: null,
@@ -88,29 +87,6 @@ const ProfileTab = {
     userSuggestor () {
       return suggestor({ store: this.$store })
     },
-    defaultAvatar () {
-      return this.$store.state.instance.server + this.$store.state.instance.defaultAvatar
-    },
-    defaultBanner () {
-      return this.$store.state.instance.server + this.$store.state.instance.defaultBanner
-    },
-    isDefaultAvatar () {
-      const baseAvatar = this.$store.state.instance.defaultAvatar
-      return !(this.$store.state.users.currentUser.profile_image_url) ||
-      this.$store.state.users.currentUser.profile_image_url.includes(baseAvatar)
-    },
-    isDefaultBanner () {
-      const baseBanner = this.$store.state.instance.defaultBanner
-      return !(this.$store.state.users.currentUser.cover_photo) ||
-      this.$store.state.users.currentUser.cover_photo.includes(baseBanner)
-    },
-    isDefaultBackground () {
-      return !(this.$store.state.users.currentUser.background_image)
-    },
-    avatarImgSrc () {
-      const src = this.$store.state.users.currentUser.profile_image_url_original
-      return (!src) ? this.defaultAvatar : src
-    },
     bannerImgSrc () {
       const src = this.$store.state.users.currentUser.cover_photo
       return (!src) ? this.defaultBanner : src
@@ -153,16 +129,6 @@ const ProfileTab = {
     changeVis (visibility) {
       this.newDefaultScope = visibility
     },
-    addField () {
-      if (this.newFields.length < this.maxFields) {
-        this.newFields.push({ name: '', value: '' })
-        return true
-      }
-      return false
-    },
-    deleteField (index) {
-      this.newFields.splice(index, 1)
-    },
     uploadFile (slot, e) {
       const file = e.target.files[0]
       if (!file) { return }
@@ -191,73 +157,6 @@ const ProfileTab = {
         this[slot] = file
       }
       reader.readAsDataURL(file)
-    },
-    resetAvatar () {
-      const confirmed = window.confirm(this.$t('settings.reset_avatar_confirm'))
-      if (confirmed) {
-        this.submitAvatar(undefined, '')
-      }
-    },
-    resetBanner () {
-      const confirmed = window.confirm(this.$t('settings.reset_banner_confirm'))
-      if (confirmed) {
-        this.submitBanner('')
-      }
-    },
-    resetBackground () {
-      const confirmed = window.confirm(this.$t('settings.reset_background_confirm'))
-      if (confirmed) {
-        this.submitBackground('')
-      }
-    },
-    submitAvatar (canvas, file) {
-      const that = this
-      return new Promise((resolve, reject) => {
-        function updateAvatar (avatar, avatarName) {
-          that.$store.state.api.backendInteractor.updateProfileImages({ avatar, avatarName })
-            .then((user) => {
-              that.$store.commit('addNewUsers', [user])
-              that.$store.commit('setCurrentUser', user)
-              resolve()
-            })
-            .catch((error) => {
-              that.displayUploadError(error)
-              reject(error)
-            })
-        }
-
-        if (canvas) {
-          canvas.toBlob((data) => updateAvatar(data, file.name), file.type)
-        } else {
-          updateAvatar(file, file.name)
-        }
-      })
-    },
-    submitBanner (banner) {
-      if (!this.bannerPreview && banner !== '') { return }
-
-      this.bannerUploading = true
-      this.$store.state.api.backendInteractor.updateProfileImages({ banner })
-        .then((user) => {
-          this.$store.commit('addNewUsers', [user])
-          this.$store.commit('setCurrentUser', user)
-          this.bannerPreview = null
-        })
-        .catch(this.displayUploadError)
-        .finally(() => { this.bannerUploading = false })
-    },
-    submitBackground (background) {
-      if (!this.backgroundPreview && background !== '') { return }
-
-      this.backgroundUploading = true
-      this.$store.state.api.backendInteractor.updateProfileImages({ background })
-        .then((data) => {
-          this.$store.commit('addNewUsers', [data])
-          this.$store.commit('setCurrentUser', data)
-          this.backgroundPreview = null
-        })
-        .catch(this.displayUploadError)
-        .finally(() => { this.backgroundUploading = false })
     },
     displayUploadError (error) {
       useInterfaceStore().pushGlobalNotice({

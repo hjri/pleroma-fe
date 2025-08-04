@@ -1,13 +1,14 @@
 <template>
   <div class="image-cropper">
-    <div v-if="dataUrl">
+    <div class="image">
       <cropper-canvas
         ref="cropperCanvas"
         background
         class="image-cropper-canvas"
-        height="25em"
+        height="100%"
       >
         <cropper-image
+          v-if="dataUrl"
           ref="cropperImage"
           :src="dataUrl"
           alt="Picture"
@@ -47,41 +48,13 @@
           <cropper-handle action="sw-resize" />
         </cropper-selection>
       </cropper-canvas>
-      <div class="image-cropper-buttons-wrapper">
-        <button
-          class="button-default btn"
-          type="button"
-          :disabled="submitting"
-          @click="submit()"
-          v-text="saveText"
-        />
-        <button
-          class="button-default btn"
-          type="button"
-          :disabled="submitting"
-          @click="destroy"
-          v-text="cancelText"
-        />
-        <button
-          class="button-default btn"
-          type="button"
-          :disabled="submitting"
-          @click="submit(false)"
-          v-text="saveWithoutCroppingText"
-        />
-        <FAIcon
-          v-if="submitting"
-          spin
-          icon="circle-notch"
-        />
-      </div>
     </div>
     <input
       ref="input"
       type="file"
       class="input image-cropper-img-input"
       :accept="mimes"
-    >
+    />
   </div>
 </template>
 
@@ -89,13 +62,15 @@
 
 <style lang="scss">
 .image-cropper {
-  &-img-input {
-    display: none;
+  display: flex;
+  flex-direction: column;
+
+  &-canvas, .image {
+    height: 100%;
   }
 
-  &-canvas {
-    height: 25em;
-    width: 25em;
+  & &-img-input {
+    display: none;
   }
 
   &-buttons-wrapper {

@@ -15,6 +15,8 @@ import RichContent from 'src/components/rich_content/rich_content.jsx'
 import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
+import Modal from 'src/components/modal/modal.vue'
+import ImageCropper from 'src/components/image_cropper/image_cropper.vue'
 
 import localeService from 'src/services/locale/locale.service.js'
 import suggestor from 'src/components/emoji_input/suggestor.js'
@@ -34,7 +36,8 @@ import {
   faTimes,
   faExpandAlt,
   faBirthdayCake,
-  faSave
+  faSave,
+  faChevronRight
 } from '@fortawesome/free-solid-svg-icons'
 
 import { useMediaViewerStore } from '../../stores/media_viewer'
@@ -49,7 +52,8 @@ library.add(
   faEdit,
   faTimes,
   faExpandAlt,
-  faBirthdayCake
+  faBirthdayCake,
+  faChevronRight
 )
 
 export default {
@@ -66,6 +70,7 @@ export default {
     'hasNoteEditor'
   ],
   components: {
+    Modal,
     UserAvatar,
     Checkbox,
     RemoteFollow,
@@ -79,7 +84,8 @@ export default {
     UserNote,
     UserTimedFilterModal,
     ColorInput,
-    EmojiInput
+    EmojiInput,
+    ImageCropper
   },
   data () {
     const user = this.$store.state.users.currentUser
@@ -93,6 +99,7 @@ export default {
       newName: user.name_unescaped,
       editingName: false,
       newActorType: user.actor_type,
+      editImage: false,
       newBio: unescape(user.description),
       editingBio: false,
       newBirthday: user.birthday,
@@ -223,6 +230,29 @@ export default {
     },
 
     // Editable stuff
+    defaultAvatar () {
+      return this.$store.state.instance.server + this.$store.state.instance.defaultAvatar
+    },
+    defaultBanner () {
+      return this.$store.state.instance.server + this.$store.state.instance.defaultBanner
+    },
+    isDefaultAvatar () {
+      const baseAvatar = this.$store.state.instance.defaultAvatar
+      return !(this.$store.state.users.currentUser.profile_image_url) ||
+      this.$store.state.users.currentUser.profile_image_url.includes(baseAvatar)
+    },
+    isDefaultBanner () {
+      const baseBanner = this.$store.state.instance.defaultBanner
+      return !(this.$store.state.users.currentUser.cover_photo) ||
+      this.$store.state.users.currentUser.cover_photo.includes(baseBanner)
+    },
+    isDefaultBackground () {
+      return !(this.$store.state.users.currentUser.background_image)
+    },
+    avatarImgSrc () {
+      const src = this.$store.state.users.currentUser.profile_image_url_original
+      return (!src) ? this.defaultAvatar : src
+    },
     fieldsLimits () {
       return this.$store.state.instance.fieldsLimits
     },
@@ -303,6 +333,52 @@ export default {
     },
 
     // Editable stuff
+    changeAvatar () {
+      this.editImage = 'avatar'
+    },
+    changeBanner () {
+      this.editImage = 'banner'
+    },
+    resetAvatar () {
+      const confirmed = window.confirm(this.$t('settings.reset_avatar_confirm'))
+      if (confirmed) {
+        this.submitAvatar(undefined, '')
+      }
+    },
+    resetBanner () {
+      const confirmed = window.confirm(this.$t('settings.reset_banner_confirm'))
+      if (confirmed) {
+        this.submitBanner('')
+      }
+    },
+    resetBackground () {
+      const confirmed = window.confirm(this.$t('settings.reset_background_confirm'))
+      if (confirmed) {
+        this.submitBackground('')
+      }
+    },
+    submitImage ({ canvas, file }) {
+      const reqData = {}
+      if (this.editImage === 'avatar') {
+        if (canvas) {
+          return canvas.toBlob((data) => this.submitImage({ canvas: null, file: data }))
+        }
+        reqData.avatar = file
+        reqData.avatarName = file.name
+      } else {
+        reqData.banner = file
+      }
+
+      return this.$store.state.api.backendInteractor.updateProfileImages(reqData)
+        .then((user) => {
+          this.$store.commit('addNewUsers', [user])
+          this.$store.commit('setCurrentUser', user)
+          this.editImage = false
+        })
+        .catch((error) => {
+          this.displayUploadError(error)
+        })
+    },
     addField () {
       if (this.newFields.length < this.maxFields) {
         this.newFields.push({ name: '', value: '' })
@@ -315,6 +391,9 @@ export default {
     },
     propsToNative (props) {
       return propsToNative(props)
+    },
+    cancelImageText () {
+      return
     },
     updateProfile () {
       const params = {

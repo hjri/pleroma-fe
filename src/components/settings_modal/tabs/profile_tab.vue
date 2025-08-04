@@ -7,6 +7,7 @@
         :switcher="false"
         rounded="top"
       />
+      <p>{{ $t('settings.name') }}</p>
       <p v-if="role === 'admin' || role === 'moderator'">
         <Checkbox v-model="showRole">
           <template v-if="role === 'admin'">
