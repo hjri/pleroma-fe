@@ -199,6 +199,7 @@ export default {
       }
     },
     visibleRole () {
+      if (!this.newShowRole) { return }
       const rights = this.user.rights
       if (!rights) { return }
       const validRole = rights.admin || rights.moderator
