@@ -92,7 +92,7 @@ export default {
     ImageCropper
   },
   data () {
-    const user = this.$store.state.users.currentUser
+    const user = this.$store.getters.findUser(this.userId)
 
     return {
       followRequestInProgress: false,
@@ -113,7 +113,7 @@ export default {
       newBirthday: user.birthday,
       newShowBirthday: user.show_birthday,
       newCoverPhoto: user.cover_photo,
-      newFields: user.fields.map(field => ({ name: field.name, value: field.value })),
+      newFields: user.fields?.map(field => ({ name: field.name, value: field.value })),
       editingFields: false,
       newShowRole: user.show_role,
     }
@@ -248,11 +248,11 @@ export default {
     // Editable stuff
     avatarImgSrc () {
       const src = this.newAvatar
-      return (!src) ? this.defaultAvatar : src
+      return (!src) ? (this.user.profile_image_url_original || this.defaultAvatar) : src
     },
     bannerImgSrc () {
       const src = this.newBanner
-      return (!src) ? this.defaultBanner : src
+      return (!src) ? (this.user.cover_photo || this.defaultBanner) : src
     },
     defaultAvatar () {
       if (this.isDefaultAvatar) {
@@ -445,7 +445,7 @@ export default {
         // Backend notation.
         display_name: this.newName,
         fields_attributes: this.newFields.filter(el => el != null),
-        show_role: !!this.showRole,
+        show_role: !!this.newShowRole,
         birthday: this.newBirthday || '',
         show_birthday: !!this.showBirthday,
       }
