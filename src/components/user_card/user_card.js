@@ -15,7 +15,7 @@ import RichContent from 'src/components/rich_content/rich_content.jsx'
 import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
-import Modal from 'src/components/modal/modal.vue'
+import DialogModal from 'src/components/dialog_modal/dialog_modal.vue'
 import ImageCropper from 'src/components/image_cropper/image_cropper.vue'
 
 import localeService from 'src/services/locale/locale.service.js'
@@ -37,8 +37,6 @@ import {
   faExpandAlt,
   faBirthdayCake,
   faSave,
-  faChevronRight,
-  faChevronDown,
   faClockRotateLeft
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -55,8 +53,6 @@ library.add(
   faTimes,
   faExpandAlt,
   faBirthdayCake,
-  faChevronRight,
-  faChevronDown,
   faClockRotateLeft
 )
 
@@ -74,7 +70,7 @@ export default {
     'hasNoteEditor'
   ],
   components: {
-    Modal,
+    DialogModal,
     UserAvatar,
     Checkbox,
     RemoteFollow,
@@ -100,22 +96,27 @@ export default {
       muteExpiryUnit: 'minutes',
 
       // Editable stuff
+      editImage: false,
+
       newName: user.name_unescaped,
       editingName: false,
-      editImage: false,
-      newAvatar: '',
-      newAvatarFile: null,
-      newBanner: '',
-      newBannerFile: null,
-      newActorType: user.actor_type,
+
       newBio: unescape(user.description),
       editingBio: false,
+
+      newAvatar: null,
+      newAvatarFile: null,
+
+      newBanner: null,
+      newBannerFile: null,
+
+      newActorType: user.actor_type,
       newBirthday: user.birthday,
       newShowBirthday: user.show_birthday,
-      newCoverPhoto: user.cover_photo,
+      newShowRole: user.show_role,
+
       newFields: user.fields?.map(field => ({ name: field.name, value: field.value })),
       editingFields: false,
-      newShowRole: user.show_role,
     }
   },
   created () {
@@ -248,24 +249,20 @@ export default {
 
     // Editable stuff
     avatarImgSrc () {
-      const src = this.newAvatar
-      return (!src) ? (this.user.profile_image_url_original || this.defaultAvatar) : src
+      const currentUrl = this.user.profile_image_url_original || this.defaultAvatar
+      const newUrl = this.newAvatar === '' ? this.defaultAvatar : this.newAvatar
+      return (this.newAvatar === null) ? currentUrl : newUrl
     },
     bannerImgSrc () {
-      const src = this.newBanner
-      return (!src) ? (this.user.cover_photo || this.defaultBanner) : src
+      const currentUrl = this.user.cover_photo || this.defaultBanner
+      const newUrl = this.newBanner === '' ? this.defaultBanner : this.newBanner
+      return (this.newBanner === null) ? currentUrl : newUrl
     },
     defaultAvatar () {
-      if (this.isDefaultAvatar) {
-        return this.$store.state.instance.server + this.$store.state.instance.defaultAvatar
-      }
-      return this.user.profile_image_url
+      return this.$store.state.instance.server + this.$store.state.instance.defaultAvatar
     },
     defaultBanner () {
-      if (this.isDefaultBanner) {
-        return this.$store.state.instance.server + this.$store.state.instance.defaultBanner
-      }
-      return this.user.cover_photo
+      return this.$store.state.instance.server + this.$store.state.instance.defaultBanner
     },
     isDefaultAvatar () {
       const baseAvatar = this.$store.state.instance.defaultAvatar
@@ -366,24 +363,6 @@ export default {
     changeBanner () {
       this.editImage = 'banner'
     },
-    resetAvatar () {
-      const confirmed = window.confirm(this.$t('settings.reset_avatar_confirm'))
-      if (confirmed) {
-        this.submitAvatar(undefined, '')
-      }
-    },
-    resetBanner () {
-      const confirmed = window.confirm(this.$t('settings.reset_banner_confirm'))
-      if (confirmed) {
-        this.submitBanner('')
-      }
-    },
-    resetBackground () {
-      const confirmed = window.confirm(this.$t('settings.reset_background_confirm'))
-      if (confirmed) {
-        this.submitBackground('')
-      }
-    },
     submitImage ({ canvas, file }) {
       if (canvas) {
         return canvas.toBlob((data) => this.submitImage({ canvas: null, file: data }))
@@ -407,6 +386,16 @@ export default {
       reader.readAsDataURL(file)
 
     },
+    resetImage () {
+      if (this.editImage === 'avatar') {
+        this.newAvatar = ''
+        this.newAvatarFile = ''
+      } else {
+        this.newBanner = ''
+        this.newBannerFile = ''
+      }
+      this.editImage = false
+    },
     addField () {
       if (this.newFields.length < this.maxFields) {
         this.newFields.push({ name: '', value: '' })
@@ -423,21 +412,24 @@ export default {
     cancelImageText () {
       return
     },
-    resetNews () {
+    resetState () {
       const user = this.$store.state.users.currentUser
 
       this.newName = user.name_unescaped
-      this.newAvatar = ''
-      this.newAvatarFile = null
-      this.newBanner = ''
-      this.newBannerFile = null
-      this.newActorType = user.actor_type
       this.newBio = unescape(user.description)
+
+      this.newAvatar = null
+      this.newAvatarFile = null
+
+      this.newBanner = null
+      this.newBannerFile = null
+
+      this.newActorType = user.actor_type
       this.newBirthday = user.birthday
       this.newShowBirthday = user.show_birthday
-      this.newCoverPhoto = user.cover_photo
-      this.newFields = user.fields.map(field => ({ name: field.name, value: field.value }))
       this.newShowRole = user.show_role
+
+      this.newFields = user.fields.map(field => ({ name: field.name, value: field.value }))
     },
     updateProfile () {
       const params = {
@@ -455,11 +447,11 @@ export default {
         params.actor_type = this.actorType
       }
 
-      if (this.newAvatar) {
+      if (this.newAvatarFile !== null) {
         params.avatar = this.newAvatarFile
       }
 
-      if (this.newBanner) {
+      if (this.newBannerFile !== null) {
         params.header = this.newBannerFile
       }
 
@@ -474,7 +466,7 @@ export default {
           merge(this.newFields, user.fields)
           this.$store.commit('addNewUsers', [user])
           this.$store.commit('setCurrentUser', user)
-          this.resetNews()
+          this.resetState()
         })
         .catch((error) => {
           this.displayUploadError(error)

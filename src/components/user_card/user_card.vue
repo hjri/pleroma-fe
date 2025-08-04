@@ -19,10 +19,7 @@
             class="user-info-avatar -link"
             @click="zoomAvatar"
           >
-            <UserAvatar
-              :user="user"
-              :url="avatarImgSrc"
-            />
+            <UserAvatar :user="user" />
             <div class="user-info-avatar -link -overlay">
               <FAIcon
                 class="fa-scale-110 fa-old-padding"
@@ -36,7 +33,10 @@
             :class="{ '-editable': editable }"
             @click="changeAvatar"
           >
-            <UserAvatar :user="user" />
+            <UserAvatar
+              :user="user"
+              :url="avatarImgSrc"
+            />
             <div class="user-info-avatar -link -overlay">
               <FAIcon
                 class="fa-scale-110 fa-old-padding"
@@ -74,34 +74,6 @@
                     class="icon"
                     icon="pencil"
                     :title="$t('user_card.change_banner')"
-                  />
-                </button>
-                <button
-                  v-if="editable"
-                  :disabled="somethingToSave"
-                  class="btn button-unstyled reset-profile-button"
-                  @click="resetNews"
-                >
-                  {{ $t('settings.reset') }}
-                  <FAIcon
-                    fixed-width
-                    class="icon"
-                    icon="clock-rotate-left"
-                    :title="$t('user_card.edit_profile')"
-                  />
-                </button>
-                <button
-                  v-if="editable"
-                  :disabled="somethingToSave"
-                  class="btn button-unstyled save-profile-button"
-                  @click="updateProfile"
-                >
-                  {{ $t('settings.save') }}
-                  <FAIcon
-                    fixed-width
-                    class="icon"
-                    icon="save"
-                    :title="$t('user_card.edit_profile')"
                   />
                 </button>
                 <button
@@ -256,72 +228,102 @@
           </div>
         </div>
         <div
-          v-if="!editable && loggedIn && isOtherUser"
+          v-if="loggedIn"
           class="user-interactions"
         >
-          <div class="btn-group">
-            <FollowButton
-              :relationship="relationship"
+          <template v-if="isOtherUser">
+            <div class="btn-group">
+              <FollowButton
+                :relationship="relationship"
+                :user="user"
+              />
+              <template v-if="relationship.following">
+                <ProgressButton
+                  v-if="!relationship.notifying"
+                  class="btn button-default"
+                  :click="subscribeUser"
+                  :title="$t('user_card.subscribe')"
+                >
+                  <FAIcon icon="bell" />
+                </ProgressButton>
+                <ProgressButton
+                  v-else
+                  class="btn button-default toggled"
+                  :click="unsubscribeUser"
+                  :title="$t('user_card.unsubscribe')"
+                >
+                  <FALayers>
+                    <FAIcon
+                      icon="rss"
+                      transform="left-5 shrink-6 up-3 rotate-20"
+                      flip="horizontal"
+                    />
+                    <FAIcon
+                      icon="rss"
+                      transform="right-5 shrink-6 up-3 rotate-20"
+                    />
+                    <FAIcon icon="bell" />
+                  </FALayers>
+                </ProgressButton>
+              </template>
+            </div>
+            <button
+              v-if="relationship.muting"
+              class="btn button-default btn-mute toggled"
+              :disabled="user.deactivated"
+              @click="unmuteUser"
+            >
+              {{ $t('user_card.muted') }}
+            </button>
+            <button
+              v-else
+              class="btn button-default btn-mute"
+              :disabled="user.deactivated"
+              @click="muteUser"
+            >
+              {{ $t('user_card.mute') }}
+            </button>
+            <button
+              class="btn button-default btn-mention"
+              :disabled="user.deactivated"
+              @click="mentionUser"
+            >
+              {{ $t('user_card.mention') }}
+            </button>
+            <ModerationTools
+              v-if="showModerationMenu"
+              class="moderation-menu"
               :user="user"
             />
-            <template v-if="relationship.following">
-              <ProgressButton
-                v-if="!relationship.notifying"
-                class="btn button-default"
-                :click="subscribeUser"
-                :title="$t('user_card.subscribe')"
-              >
-                <FAIcon icon="bell" />
-              </ProgressButton>
-              <ProgressButton
-                v-else
-                class="btn button-default toggled"
-                :click="unsubscribeUser"
-                :title="$t('user_card.unsubscribe')"
-              >
-                <FALayers>
-                  <FAIcon
-                    icon="rss"
-                    transform="left-5 shrink-6 up-3 rotate-20"
-                    flip="horizontal"
-                  />
-                  <FAIcon
-                    icon="rss"
-                    transform="right-5 shrink-6 up-3 rotate-20"
-                  />
-                  <FAIcon icon="bell" />
-                </FALayers>
-              </ProgressButton>
-            </template>
-          </div>
+          </template>
           <button
-            v-if="relationship.muting"
-            class="btn button-default btn-mute toggled"
-            :disabled="user.deactivated"
-            @click="unmuteUser"
+            v-if="editable"
+            :disabled="somethingToSave"
+            class="btn button-default reset-profile-button"
+            @click="resetState"
           >
-            {{ $t('user_card.muted') }}
+            {{ $t('settings.reset') }}
+            <FAIcon
+              fixed-width
+              class="icon"
+              icon="clock-rotate-left"
+              :title="$t('user_card.edit_profile')"
+            />
           </button>
           <button
-            v-else
-            class="btn button-default btn-mute"
-            :disabled="user.deactivated"
-            @click="muteUser"
+            v-if="editable"
+            :disabled="somethingToSave"
+            class="btn button-default save-profile-button"
+            @click="updateProfile"
           >
-            {{ $t('user_card.mute') }}
+            {{ $t('settings.save') }}
+            <FAIcon
+              fixed-width
+              class="icon"
+              icon="save"
+              :title="$t('user_card.edit_profile')"
+            />
           </button>
-          <button
-            class="btn button-default btn-mention"
-            :disabled="user.deactivated"
-            @click="mentionUser"
-          >
-            {{ $t('user_card.mention') }}
-          </button>
-          <ModerationTools
-            v-if="showModerationMenu"
-            class="moderation-menu"
-            :user="user"
-          />
         </div>
         <div
           v-if="!loggedIn && user.is_local"
@@ -355,7 +357,7 @@
               :key="option"
               :value="option"
             >
-              {{ $t('settings.actor_type_' + option) }}
+              {{ $t('settings.actor_type_' + (option === 'Person' ? 'person_proper' : option)) }}
             </option>
           </Select>
           <div v-if="groupActorAvailable">
@@ -653,85 +655,63 @@
       />
     </teleport>
     <teleport to="#modal">
-      <Modal
+      <DialogModal
         v-if="editImage"
-        :is-mute="true"
         class="edit-image"
-        :class="{ '-banner': editImage === 'banner' }"
-        @backdrop-clicked="editImage = false"
       >
-        <div class="panel">
-          <div class="panel-heading">
-            <h1 class="title">
-              {{ editImage === 'avatar' ? $t('settings.change_avatar') : $t('settings.change_banner') }}
-            </h1>
-          </div>
-          <div class="panel-body">
-            <div class="images-container">
-              <img
-                :src="editImage === 'avatar' ? avatarImgSrc : bannerImgSrc"
-                class="current-avatar"
-              />
-              <FAIcon
-                class="separator"
-                :icon="editImage === 'avatar' ? 'chevron-right' : 'chevron-down'"
-              />
-              <image-cropper
-                ref="cropper"
-                class="cropper"
-                :aspect-ratio="editImage === 'avatar' ? 1 : 3"
-                @submit="submitImage"
-              />
-            </div>
-            <button
-              id="pick-image"
-              class="button-default btn"
-              type="button"
-              @click="() => this.$refs.cropper.pickImage()"
-            >
-              {{ $t('settings.upload_picture') }}
-            </button>
-            <p class="visibility-notice">
-              {{ $t('settings.avatar_size_instruction') }}
-            </p>
-            <button
-              :title="editImage === 'avatar' ? $t('settings.reset_avatar') : $t('settings.reset_banner')"
-              class="button-unstyled reset-button"
-              @click="resetImage"
-            >
-            </button>
-            <div class="panel-footer">
-              <div/>
-              <button
-                class="button-default btn"
-                type="button"
-                @click="editImage = false"
-              >
-                {{ this.$t('image_cropper.cancel') }}
-              </button>
-              <button
-                class="button-default btn"
-                type="button"
-                @click="this.$refs.cropper.submit(true)"
-              >
-                {{ $t('image_cropper.save') }}
-              </button>
-              <button
-                class="button-default btn"
-                type="button"
-                @click="this.$refs.cropper.submit(false)"
-              >
-                {{ $t('image_cropper.save_without_cropping') }}
-              </button>
-              <FAIcon
-                v-if="submitting"
-                spin
-                icon="circle-notch"
-              />
-            </div>
-          </div>
+        <template #header>
+          {{ editImage === 'avatar' ? $t('settings.change_avatar') : $t('settings.change_banner') }}
+        </template>
+        <div class="image-container">
+          <image-cropper
+            ref="cropper"
+            class="cropper"
+            :aspect-ratio="editImage === 'avatar' ? 1 : 3"
+            @submit="submitImage"
+          />
         </div>
-      </Modal>
+        <button
+          id="pick-image"
+          class="button-default btn"
+          type="button"
+          @click="() => this.$refs.cropper.pickImage()"
+        >
+          {{ $t('settings.upload_picture') }}
+        </button>
+        <p class="visibility-notice">
+          {{ editImage === 'avatar' ? $t('settings.avatar_size_instruction') : $t('settings.banner_size_instruction' )}}
+        </p>
+        <template #footer>
+          <button
+            class="button-default btn"
+            type="button"
+            @click="editImage = false"
+          >
+            {{ this.$t('image_cropper.cancel') }}
+          </button>
+          <button
+            :title="editImage === 'avatar' ? $t('settings.reset_avatar') : $t('settings.reset_banner')"
+            class="button-default btn reset-button"
+            @click="resetImage"
+          >
+            {{ editImage === 'avatar' ? $t('settings.reset_avatar') : $t('settings.reset_banner' )}}
+          </button>
+          <button
+            class="button-default btn"
+            type="button"
+            @click="this.$refs.cropper.submit(false)"
+          >
+            {{ $t('image_cropper.save_without_cropping') }}
+          </button>
+          <button
+            class="button-default btn"
+            type="button"
+            @click="this.$refs.cropper.submit(true)"
+          >
+            {{ $t('image_cropper.save') }}
+          </button>
+        </template>
+      </DialogModal>
     </teleport>
   </div>
 </template>

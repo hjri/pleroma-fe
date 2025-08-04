@@ -410,7 +410,7 @@
   .user-interactions {
     position: relative;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(7.5em, 20%));
+    grid-template-columns: repeat(auto-fit, minmax(5em, 40%));
     grid-gap: 0.6em;
     max-width: 98vw;
     margin-bottom: 0.6em;
@@ -568,11 +568,9 @@
     object-fit: contain;
   }
 
-  .images-container {
-    display: grid;
-    margin: 1em;
-    grid-template-columns: 1fr 5em 1fr;
-    grid-template-rows: 20em;
+  .image-container {
+    display: flex;
+    margin: 0 1em 0.5em;
     gap: 0.5em;
 
     .new-image {
