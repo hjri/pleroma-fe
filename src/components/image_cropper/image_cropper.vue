@@ -23,8 +23,8 @@
         />
         <cropper-selection
           ref="cropperSelection"
-          initial-coverage="1"
-          aspect-ratio="1"
+          initial-coverage="0.9"
+          :aspect-ratio="aspectRatio"
           movable
           resizable
           @change="onCropperSelectionChange"

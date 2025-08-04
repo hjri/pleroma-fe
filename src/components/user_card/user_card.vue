@@ -19,7 +19,10 @@
             class="user-info-avatar -link"
             @click="zoomAvatar"
           >
-            <UserAvatar :user="user" />
+            <UserAvatar
+              :user="user"
+              :url="avatarImgSrc"
+            />
             <div class="user-info-avatar -link -overlay">
               <FAIcon
                 class="fa-scale-110 fa-old-padding"
@@ -71,6 +74,20 @@
                     class="icon"
                     icon="pencil"
                     :title="$t('user_card.change_banner')"
+                  />
+                </button>
+                <button
+                  v-if="editable"
+                  :disabled="somethingToSave"
+                  class="btn button-unstyled reset-profile-button"
+                  @click="resetNews"
+                >
+                  {{ $t('settings.reset') }}
+                  <FAIcon
+                    fixed-width
+                    class="icon"
+                    icon="clock-rotate-left"
+                    :title="$t('user_card.edit_profile')"
                   />
                 </button>
                 <button
@@ -144,8 +161,8 @@
                   class="user-name"
                 >
                   <RichContent
-                    :title="newName"
-                    :html="newName"
+                    :title="editable ? newName : user.name_unescaped"
+                    :html="editable ? newName : user.name_unescaped"
                     :emoji="editable ? emoji : user.emoji"
                   />
                 </router-link>
@@ -314,6 +331,7 @@
         </div>
       </div>
     </div>
+    <slot />
     <div
       v-if="!editable && loggedIn && isOtherUser && (hasNote || !hideBio) && !mergedConfig.userCardHidePersonalMarks"
       class="personal-marks"
@@ -368,6 +386,10 @@
         @click="editingBio = !editingBio"
       >
         {{ $t('settings.toggle_edit') }}
+        <FAIcon
+          class="fa-scale-110 fa-old-padding"
+          icon="pencil"
+        />
       </button>
     </h4>
     <template v-if="!editable || !editingBio">
@@ -375,7 +397,7 @@
         v-if="!hideBio"
         class="user-card-bio"
         :class="{ '-justify-left': mergedConfig.userCardLeftJustify }"
-        :html="user.description_html"
+        :html="editable ? newBio.replace(/\n/g, '<br>') : user.description_html"
         :emoji="editable ? emoji : user.emoji"
         :handle-links="true"
       />
@@ -407,6 +429,10 @@
         @click="editingFields = !editingFields"
       >
         {{ $t('settings.toggle_edit') }}
+        <FAIcon
+          class="fa-scale-110 fa-old-padding"
+          icon="pencil"
+        />
       </button>
     </h4>
     <template v-if="!editable || !editingFields">
@@ -415,7 +441,7 @@
         class="user-profile-fields"
       >
         <dl
-          v-for="(field, index) in newFields"
+          v-for="(field, index) in (editable ? newFields : user.fields_html)"
           :key="index"
           class="user-profile-field"
         >
@@ -596,6 +622,7 @@
         v-if="editImage"
         :is-mute="true"
         class="edit-image"
+        :class="{ '-banner': editImage === 'banner' }"
         @backdrop-clicked="editImage = false"
       >
         <div class="panel">
@@ -607,16 +634,17 @@
           <div class="panel-body">
             <div class="images-container">
               <img
-                :src="editImage === 'avatar' ? user.profile_image_url_original : newBanner"
+                :src="editImage === 'avatar' ? avatarImgSrc : bannerImgSrc"
                 class="current-avatar"
               />
               <FAIcon
                 class="separator"
-                icon="chevron-right"
+                :icon="editImage === 'avatar' ? 'chevron-right' : 'chevron-down'"
               />
               <image-cropper
                 ref="cropper"
                 class="cropper"
+                :aspect-ratio="editImage === 'avatar' ? 1 : 3"
                 @submit="submitImage"
               />
             </div>

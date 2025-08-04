@@ -393,6 +393,7 @@
     "app_name": "App name",
     "expert_mode": "Show advanced",
     "save": "Save changes",
+    "reset": "Reset changes",
     "security": "Security",
     "toggle_edit": "Toggle edit",
     "change_banner": "Change banner",

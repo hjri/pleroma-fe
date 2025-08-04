@@ -37,7 +37,9 @@ import {
   faExpandAlt,
   faBirthdayCake,
   faSave,
-  faChevronRight
+  faChevronRight,
+  faChevronDown,
+  faClockRotateLeft
 } from '@fortawesome/free-solid-svg-icons'
 
 import { useMediaViewerStore } from '../../stores/media_viewer'
@@ -53,7 +55,9 @@ library.add(
   faTimes,
   faExpandAlt,
   faBirthdayCake,
-  faChevronRight
+  faChevronRight,
+  faChevronDown,
+  faClockRotateLeft
 )
 
 export default {
@@ -98,8 +102,12 @@ export default {
       // Editable stuff
       newName: user.name_unescaped,
       editingName: false,
-      newActorType: user.actor_type,
       editImage: false,
+      newAvatar: '',
+      newAvatarFile: null,
+      newBanner: '',
+      newBannerFile: null,
+      newActorType: user.actor_type,
       newBio: unescape(user.description),
       editingBio: false,
       newBirthday: user.birthday,
@@ -133,7 +141,7 @@ export default {
       return {
         backgroundImage: [
           'linear-gradient(to bottom, var(--profileTint), var(--profileTint))',
-          `url(${this.newCoverPhoto})`
+          `url(${this.bannerImgSrc})`
         ].join(', ')
       }
     },
@@ -230,11 +238,25 @@ export default {
     },
 
     // Editable stuff
+    avatarImgSrc () {
+      const src = this.newAvatar
+      return (!src) ? this.defaultAvatar : src
+    },
+    bannerImgSrc () {
+      const src = this.newBanner
+      return (!src) ? this.defaultBanner : src
+    },
     defaultAvatar () {
-      return this.$store.state.instance.server + this.$store.state.instance.defaultAvatar
+      if (this.isDefaultAvatar) {
+        return this.$store.state.instance.server + this.$store.state.instance.defaultAvatar
+      }
+      return this.user.profile_image_url
     },
     defaultBanner () {
-      return this.$store.state.instance.server + this.$store.state.instance.defaultBanner
+      if (this.isDefaultBanner) {
+        return this.$store.state.instance.server + this.$store.state.instance.defaultBanner
+      }
+      return this.user.cover_photo
     },
     isDefaultAvatar () {
       const baseAvatar = this.$store.state.instance.defaultAvatar
@@ -248,10 +270,6 @@ export default {
     },
     isDefaultBackground () {
       return !(this.$store.state.users.currentUser.background_image)
-    },
-    avatarImgSrc () {
-      const src = this.$store.state.users.currentUser.profile_image_url_original
-      return (!src) ? this.defaultAvatar : src
     },
     fieldsLimits () {
       return this.$store.state.instance.fieldsLimits
@@ -358,26 +376,27 @@ export default {
       }
     },
     submitImage ({ canvas, file }) {
-      const reqData = {}
-      if (this.editImage === 'avatar') {
-        if (canvas) {
-          return canvas.toBlob((data) => this.submitImage({ canvas: null, file: data }))
-        }
-        reqData.avatar = file
-        reqData.avatarName = file.name
-      } else {
-        reqData.banner = file
+      if (canvas) {
+        return canvas.toBlob((data) => this.submitImage({ canvas: null, file: data }))
       }
 
-      return this.$store.state.api.backendInteractor.updateProfileImages(reqData)
-        .then((user) => {
-          this.$store.commit('addNewUsers', [user])
-          this.$store.commit('setCurrentUser', user)
-          this.editImage = false
-        })
-        .catch((error) => {
-          this.displayUploadError(error)
-        })
+      const reader = new window.FileReader()
+      reader.onload = (e) => {
+        const dataUrl = e.target.result
+
+        if (this.editImage === 'avatar') {
+          this.newAvatar = dataUrl
+          this.newAvatarFile = file
+        } else {
+          this.newBanner = dataUrl
+          this.newBannerFile = file
+        }
+
+        this.editImage = false
+      }
+
+      reader.readAsDataURL(file)
+
     },
     addField () {
       if (this.newFields.length < this.maxFields) {
@@ -395,6 +414,23 @@ export default {
     cancelImageText () {
       return
     },
+    resetNews () {
+      const user = this.$store.state.users.currentUser
+
+      this.newName = user.name_unescaped
+      this.newAvatar = ''
+      this.newAvatarFile = null
+      this.newBanner = ''
+      this.newBannerFile = null
+      this.newActorType = user.actor_type
+      this.newBio = unescape(user.description)
+      this.newBirthday = user.birthday
+      this.newShowBirthday = user.show_birthday
+      this.newCoverPhoto = user.cover_photo
+      this.newFields = user.fields.map(field => ({ name: field.name, value: field.value }))
+      this.newLocked = user.locked
+      this.newShowRole = user.show_role
+    },
     updateProfile () {
       const params = {
         note: this.newBio,
@@ -403,10 +439,21 @@ export default {
         // Backend notation.
         display_name: this.newName,
         fields_attributes: this.newFields.filter(el => el != null),
-        actor_type: this.actorType,
-        show_role: this.showRole,
+        show_role: !!this.showRole,
         birthday: this.newBirthday || '',
-        show_birthday: this.showBirthday
+        show_birthday: !!this.showBirthday,
+      }
+
+      if (this.actorType) {
+        params.actor_type = this.actorType
+      }
+
+      if (this.newAvatar) {
+        params.avatar = this.newAvatarFile
+      }
+
+      if (this.newBanner) {
+        params.header = this.newBannerFile
       }
 
       if (this.emailLanguage) {
@@ -416,11 +463,22 @@ export default {
       this.$store.state.api.backendInteractor
         .updateProfile({ params })
         .then((user) => {
-          this.newFields.splice(user.fields.length)
+          this.newFields.splice(this.newFields.length)
           merge(this.newFields, user.fields)
           this.$store.commit('addNewUsers', [user])
           this.$store.commit('setCurrentUser', user)
+          this.resetNews()
+        })
+        .catch((error) => {
+          this.displayUploadError(error)
         })
     },
+    displayUploadError (error) {
+      useInterfaceStore().pushGlobalNotice({
+        messageKey: 'upload.error.message',
+        messageArgs: [error.message],
+        level: 'error'
+      })
+    }
   }
 }

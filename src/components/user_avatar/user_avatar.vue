@@ -8,7 +8,7 @@
       class="avatar"
       :alt="user.screen_name_ui"
       :title="user.screen_name_ui"
-      :src="imgSrc(user.profile_image_url_original)"
+      :src="url ? url : imgSrc(user.profile_image_url_original)"
       :image-load-error="imageLoadError"
       :class="{ '-compact': compact, '-better-shadow': betterShadow }"
     />

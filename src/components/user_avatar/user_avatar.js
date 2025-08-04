@@ -17,7 +17,8 @@ const UserAvatar = {
   props: [
     'user',
     'compact',
-    'showActorTypeIndicator'
+    'showActorTypeIndicator',
+    'url'
   ],
   data () {
     return {

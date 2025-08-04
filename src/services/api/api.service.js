@@ -215,12 +215,26 @@ const updateProfileImages = ({ credentials, avatar = null, avatarName = null, ba
 }
 
 const updateProfile = ({ credentials, params }) => {
-  return promisedRequest({
-    url: MASTODON_PROFILE_UPDATE_URL,
+  const formData = new FormData();
+
+  for(const name in params) {
+    if (name === 'fields_attributes') {
+      params[name].forEach((param, i) => {
+        formData.append(name + `[${i}][name]`, param.name)
+        formData.append(name + `[${i}][value]`, param.value)
+      })
+    } else {
+      formData.append(name, params[name]);
+    }
+  }
+
+  return fetch(MASTODON_PROFILE_UPDATE_URL, {
+    headers: authHeaders(credentials),
     method: 'PATCH',
-    payload: params,
-    credentials
-  }).then((data) => parseUser(data))
+    body: formData
+  })
+    .then((data) => data.json())
+    .then((data) => parseUser(data))
 }
 
 // Params needed:

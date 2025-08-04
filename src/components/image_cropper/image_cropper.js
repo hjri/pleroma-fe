@@ -22,6 +22,9 @@ const ImageCropper = {
     },
     cancelButtonLabel: {
       type: String
+    },
+    aspectRatio: {
+      type: Number
     }
   },
   data () {

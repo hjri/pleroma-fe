@@ -158,12 +158,24 @@ const ProfileTab = {
       }
       reader.readAsDataURL(file)
     },
-    displayUploadError (error) {
-      useInterfaceStore().pushGlobalNotice({
-        messageKey: 'upload.error.message',
-        messageArgs: [error.message],
-        level: 'error'
-      })
+    resetBackground () {
+      const confirmed = window.confirm(this.$t('settings.reset_background_confirm'))
+      if (confirmed) {
+        this.submitBackground('')
+      }
+    },
+    submitBackground (background) {
+      if (!this.backgroundPreview && background !== '') { return }
+
+      this.backgroundUploading = true
+      this.$store.state.api.backendInteractor.updateProfileImages({ background })
+        .then((data) => {
+          this.$store.commit('addNewUsers', [data])
+          this.$store.commit('setCurrentUser', data)
+          this.backgroundPreview = null
+        })
+        .catch(this.displayUploadError)
+        .finally(() => { this.backgroundUploading = false })
     },
     propsToNative (props) {
       return propsToNative(props)
