@@ -10,8 +10,8 @@ import InterfaceLanguageSwitcher from 'src/components/interface_language_switche
 import Select from 'src/components/select/select.vue'
 
 import SharedComputedObject from '../helpers/shared_computed_object.js'
-import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
 
+import localeService from 'src/services/locale/locale.service.js'
 import { clearCache, cacheKey, emojiCacheKey } from 'src/services/sw/sw.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -77,7 +77,6 @@ const GeneralTab = {
     UnitSetting,
     InterfaceLanguageSwitcher,
     ScopeSelector,
-    ProfileSettingIndicator,
     Select
   },
   computed: {
@@ -122,7 +121,19 @@ const GeneralTab = {
     },
     clearEmojiCache () {
       this.clearCache(emojiCacheKey)
-    }
+    },
+    updateProfile () {
+      const params = {
+        language: localeService.internalToBackendLocaleMulti(this.emailLanguage)
+      }
+
+      this.$store.state.api.backendInteractor
+        .updateProfile({ params })
+        .then((user) => {
+          this.$store.commit('addNewUsers', [user])
+          this.$store.commit('setCurrentUser', user)
+        })
+    },
   }
 }
 

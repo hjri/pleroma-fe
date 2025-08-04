@@ -115,7 +115,6 @@ export default {
       newCoverPhoto: user.cover_photo,
       newFields: user.fields.map(field => ({ name: field.name, value: field.value })),
       editingFields: false,
-      newLocked: user.locked,
       newShowRole: user.show_role,
     }
   },
@@ -123,8 +122,17 @@ export default {
     this.$store.dispatch('fetchUserRelationship', this.user.id)
   },
   computed: {
+    groupActorAvailable () {
+      return this.$store.state.instance.groupActorAvailable
+    },
+    availableActorTypes () {
+      return this.groupActorAvailable ? ['Person', 'Service', 'Group'] : ['Person', 'Service']
+    },
     user () {
       return this.$store.getters.findUser(this.userId)
+    },
+    role () {
+      return this.user.role
     },
     relationship () {
       return this.$store.getters.relationship(this.userId)
@@ -428,13 +436,11 @@ export default {
       this.newShowBirthday = user.show_birthday
       this.newCoverPhoto = user.cover_photo
       this.newFields = user.fields.map(field => ({ name: field.name, value: field.value }))
-      this.newLocked = user.locked
       this.newShowRole = user.show_role
     },
     updateProfile () {
       const params = {
         note: this.newBio,
-        locked: this.newLocked,
 
         // Backend notation.
         display_name: this.newName,

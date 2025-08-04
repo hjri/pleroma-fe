@@ -7,7 +7,15 @@
           <interface-language-switcher
             :prompt-text="$t('settings.interfaceLanguage')"
             :language="language"
-            :set-language="val => language = val"
+            @update="val => language = val"
+          />
+        </li>
+        <li>
+          <interface-language-switcher
+            :prompt-text="$t('settings.email_language')"
+            :language="emailLanguage"
+            :profile="true"
+            @update="val => { emailLanguage = val; updateProfile() }"
           />
         </li>
         <li v-if="instanceSpecificPanelPresent">

@@ -331,7 +331,41 @@
         </div>
       </div>
     </div>
-    <slot />
+    <template v-if="editable">
+      <h4>{{ $t('settings.user_preferences') }}</h4>
+      <p
+        v-if="role === 'admin' || role === 'moderator'"
+        class="user-card-setting"
+      >
+        <Checkbox v-model="newShowRole">
+          <template v-if="role === 'admin'">
+            {{ $t('settings.show_admin_badge') }}
+          </template>
+          <template v-if="role === 'moderator'">
+            {{ $t('settings.show_moderator_badge') }}
+          </template>
+        </Checkbox>
+      </p>
+      <p class="user-card-setting">
+        <label>
+          {{ $t('settings.actor_type') }}
+          <Select v-model="newActorType">
+            <option
+              v-for="option in availableActorTypes"
+              :key="option"
+              :value="option"
+            >
+              {{ $t('settings.actor_type_' + option) }}
+            </option>
+          </Select>
+          <div v-if="groupActorAvailable">
+            <small>
+              {{ $t('settings.actor_type_description') }}
+            </small>
+          </div>
+        </label>
+      </p>
+    </template>
     <div
       v-if="!editable && loggedIn && isOtherUser && (hasNote || !hideBio) && !mergedConfig.userCardHidePersonalMarks"
       class="personal-marks"
@@ -671,7 +705,7 @@
               <button
                 class="button-default btn"
                 type="button"
-                @click="destroy"
+                @click="editImage = false"
               >
                 {{ this.$t('image_cropper.cancel') }}
               </button>

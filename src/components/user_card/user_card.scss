@@ -27,7 +27,6 @@
     display: block;
     line-height: 1.3;
     padding: 0 0.6em;
-    margin: 0 0.6em;
 
     img {
       object-fit: contain;
@@ -37,8 +36,14 @@
     }
   }
 
+  .user-card-setting {
+    margin-left: 0.6em;
+    margin-right: 0.6em;
+  }
+
   .user-card-bio {
     text-align: center;
+    margin: 0 0.6em;
 
     &.input {
       margin: 0 1em;

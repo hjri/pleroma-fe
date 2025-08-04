@@ -2,6 +2,7 @@
   <div class="interface-language-switcher">
     <label>
       {{ promptText }}
+      <ProfileSettingIndicator :is-profile="profile" />
     </label>
     <ul class="setting-list">
       <li
@@ -46,12 +47,15 @@
 
 <script>
 import localeService from '../../services/locale/locale.service.js'
+
 import Select from '../select/select.vue'
+import ProfileSettingIndicator from 'src/components/settings_modal/helpers/profile_setting_indicator.vue'
 
 export default {
   components: {
     // eslint-disable-next-line vue/no-reserved-component-names
-    Select
+    Select,
+    ProfileSettingIndicator
   },
   props: {
     promptText: {
@@ -62,11 +66,12 @@ export default {
       type: [Array, String],
       required: true
     },
-    setLanguage: {
-      type: Function,
-      required: true
+    profile: {
+      type: Boolean,
+      default: false
     }
   },
+  emits: ['update'],
   computed: {
     languages () {
       return localeService.languages
@@ -77,7 +82,7 @@ export default {
         return Array.isArray(this.language) ? this.language : [this.language]
       },
       set: function (val) {
-        this.setLanguage(val)
+        this.$emit('update', val)
       }
     }
   },
