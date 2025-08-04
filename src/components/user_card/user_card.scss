@@ -163,7 +163,7 @@
   position: relative;
   margin: 0.6em;
   margin-bottom: 0;
-  text-align: right;
+  text-align: left;
 
   .user-identity {
     position: relative;
@@ -409,11 +409,13 @@
 
   .user-interactions {
     position: relative;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(5em, 40%));
-    grid-gap: 0.6em;
-    max-width: 98vw;
-    margin-bottom: 0.6em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6em;
+
+    > * {
+      flex: 0 0 10%;
+    }
 
     .popover-trigger-button, .moderation-tools-button {
       width: 100%;
