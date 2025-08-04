@@ -47,6 +47,10 @@
 
     &.input {
       margin: 0 1em;
+
+      textarea {
+        text-align: inherit;
+      }
     }
 
     &, * {
