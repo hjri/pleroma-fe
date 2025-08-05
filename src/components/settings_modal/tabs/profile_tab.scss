@@ -1,4 +1,18 @@
 .profile-tab {
+  // overriding global for better look
+  div.profile-edit {
+    margin: 0;
+
+    h2 {
+      margin-left: 1rem;
+    }
+
+    .user-card {
+      padding: 1.2em;
+      overflow: hidden;
+    }
+  }
+
   .bio {
     margin: 0;
   }

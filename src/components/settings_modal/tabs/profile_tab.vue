@@ -1,12 +1,15 @@
 <template>
   <div class="profile-tab">
-    <UserCard
-      :user-id="user.id"
-      :editable="true"
-      :switcher="false"
-      rounded="top"
-      >
-    </UserCard>
+    <div class="setting-item profile-edit">
+      <h2>{{ $t('settings.account_profile_edit') }}</h2>
+      <UserCard
+        :user-id="user.id"
+        :editable="true"
+        :switcher="false"
+        rounded="top"
+        >
+      </UserCard>
+    </div>
     <div class="setting-item">
       <h2>{{ $t('settings.account_privacy') }}</h2>
       <ul class="setting-list">

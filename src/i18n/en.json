@@ -493,7 +493,7 @@
     "avatarRadius": "Avatars",
     "background": "Background",
     "bio": "Bio",
-    "user_preferences": "Profile settings",
+    "profile_other": "Other",
     "email_language": "Language for receiving emails from the server",
     "block_export": "Block export",
     "block_export_button": "Export your blocks to a csv file",
@@ -664,6 +664,7 @@
       "label": "Birthday",
       "show_birthday": "Show my birthday"
     },
+    "account_profile_edit": "Edit Profile",
     "account_privacy": "Privacy",
     "use_contain_fit": "Don't crop the attachment in thumbnails",
     "name": "Name",

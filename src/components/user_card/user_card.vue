@@ -330,41 +330,6 @@
         </div>
       </div>
     </div>
-    <template v-if="editable">
-      <h3>{{ $t('settings.user_preferences') }}</h3>
-      <p
-        v-if="role === 'admin' || role === 'moderator'"
-        class="user-card-setting"
-      >
-        <Checkbox v-model="newShowRole">
-          <template v-if="role === 'admin'">
-            {{ $t('settings.show_admin_badge') }}
-          </template>
-          <template v-if="role === 'moderator'">
-            {{ $t('settings.show_moderator_badge') }}
-          </template>
-        </Checkbox>
-      </p>
-      <p class="user-card-setting">
-        <label>
-          {{ $t('settings.actor_type') }}
-          <Select v-model="newActorType">
-            <option
-              v-for="option in availableActorTypes"
-              :key="option"
-              :value="option"
-            >
-              {{ $t('settings.actor_type_' + (option === 'Person' ? 'person_proper' : option)) }}
-            </option>
-          </Select>
-          <div v-if="groupActorAvailable">
-            <small>
-              {{ $t('settings.actor_type_description') }}
-            </small>
-          </div>
-        </label>
-      </p>
-    </template>
     <div
       v-if="!editable && loggedIn && isOtherUser && (hasNote || !hideBio) && !mergedConfig.userCardHidePersonalMarks"
       class="personal-marks"
@@ -646,6 +611,41 @@
         </div>
       </template>
     </div>
+    <template v-if="editable">
+      <h3>{{ $t('settings.profile_other') }}</h3>
+      <p
+        v-if="role === 'admin' || role === 'moderator'"
+        class="user-card-setting"
+      >
+        <Checkbox v-model="newShowRole">
+          <template v-if="role === 'admin'">
+            {{ $t('settings.show_admin_badge') }}
+          </template>
+          <template v-if="role === 'moderator'">
+            {{ $t('settings.show_moderator_badge') }}
+          </template>
+        </Checkbox>
+      </p>
+      <p class="user-card-setting">
+        <label>
+          {{ $t('settings.actor_type') }}
+          <Select v-model="newActorType">
+            <option
+              v-for="option in availableActorTypes"
+              :key="option"
+              :value="option"
+            >
+              {{ $t('settings.actor_type_' + (option === 'Person' ? 'person_proper' : option)) }}
+            </option>
+          </Select>
+          <div v-if="groupActorAvailable">
+            <small>
+              {{ $t('settings.actor_type_description') }}
+            </small>
+          </div>
+        </label>
+      </p>
+    </template>
     <teleport to="#modal">
       <UserTimedFilterModal
         ref="timedMuteDialog"
