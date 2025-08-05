@@ -15,7 +15,7 @@
           <interface-language-switcher
             v-model="emailLanguage"
             :profile="true"
-            @update:modelValue="updateProfile()"
+            @update:model-value="updateProfile()"
           >
             {{ $t('settings.email_language') }}
           </interface-language-switcher>
