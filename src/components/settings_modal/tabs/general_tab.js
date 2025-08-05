@@ -66,7 +66,8 @@ const GeneralTab = {
       // Chrome-likes
       Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'webkitAudioDecodedByteCount') ||
       // Future spec, still not supported in Nightly 63 as of 08/2018
-      Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'audioTracks')
+      Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'audioTracks'),
+      emailLanguage: this.$store.state.users.currentUser.language || ['']
     }
   },
   components: {

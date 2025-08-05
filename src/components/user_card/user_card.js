@@ -472,10 +472,6 @@ export default {
         params.header = this.newBannerFile
       }
 
-      if (this.emailLanguage) {
-        params.language = localeService.internalToBackendLocaleMulti(this.emailLanguage)
-      }
-
       this.$store.state.api.backendInteractor
         .updateProfile({ params })
         .then((user) => {
