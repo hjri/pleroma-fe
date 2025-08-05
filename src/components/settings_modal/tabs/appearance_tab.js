@@ -191,6 +191,9 @@ const AppearanceTab = {
     }
   },
   computed: {
+    isDefaultBackground () {
+      return !(this.$store.state.users.currentUser.background_image)
+    },
     switchInProgress () {
       return useInterfaceStore().themeChangeInProgress
     },

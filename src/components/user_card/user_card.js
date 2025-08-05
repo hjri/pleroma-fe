@@ -314,9 +314,6 @@ export default {
       return !(this.$store.state.users.currentUser.cover_photo) ||
       this.$store.state.users.currentUser.cover_photo.includes(baseBanner)
     },
-    isDefaultBackground () {
-      return !(this.$store.state.users.currentUser.background_image)
-    },
     fieldsLimits () {
       return this.$store.state.instance.fieldsLimits
     },
