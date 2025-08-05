@@ -153,6 +153,11 @@
     border-style: solid;
     border-color: var(--border);
   }
+
+  .bottom-buttons {
+    display: flex;
+    gap: 0.5em;
+  }
 }
 
 .user-info {

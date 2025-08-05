@@ -293,34 +293,6 @@
               :user="user"
             />
           </template>
-          <button
-            v-if="editable"
-            :disabled="somethingToSave"
-            class="btn button-default reset-profile-button"
-            @click="resetState"
-          >
-            {{ $t('settings.reset') }}
-            <FAIcon
-              fixed-width
-              class="icon"
-              icon="clock-rotate-left"
-              :title="$t('user_card.edit_profile')"
-            />
-          </button>
-          <button
-            v-if="editable"
-            :disabled="somethingToSave"
-            class="btn button-default save-profile-button"
-            @click="updateProfile"
-          >
-            {{ $t('settings.save') }}
-            <FAIcon
-              fixed-width
-              class="icon"
-              icon="save"
-              :title="$t('user_card.edit_profile')"
-            />
-          </button>
         </div>
         <div
           v-if="!loggedIn && user.is_local"
@@ -645,6 +617,36 @@
           </div>
         </label>
       </p>
+      <div class="bottom-buttons">
+        <button
+          v-if="editable"
+          :disabled="!somethingToSave"
+          class="btn button-default reset-profile-button"
+          @click="resetState"
+        >
+          {{ $t('settings.reset') }}
+          <FAIcon
+            fixed-width
+            class="icon"
+            icon="clock-rotate-left"
+            :title="$t('user_card.edit_profile')"
+          />
+        </button>
+        <button
+          v-if="editable"
+          :disabled="!somethingToSave"
+          class="btn button-default save-profile-button"
+          @click="updateProfile"
+        >
+          {{ $t('settings.save') }}
+          <FAIcon
+            fixed-width
+            class="icon"
+            icon="save"
+            :title="$t('user_card.edit_profile')"
+          />
+        </button>
+      </div>
     </template>
     <teleport to="#modal">
       <UserTimedFilterModal

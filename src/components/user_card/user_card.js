@@ -1,4 +1,5 @@
 import merge from 'lodash/merge'
+import isEqual from 'lodash/isEqual'
 import unescape from 'lodash/unescape'
 
 import ColorInput from 'src/components/color_input/color_input.vue'
@@ -116,6 +117,7 @@ export default {
       newShowRole: user.show_role,
 
       newFields: user.fields?.map(field => ({ name: field.name, value: field.value })),
+
       editingFields: false,
     }
   },
@@ -123,6 +125,21 @@ export default {
     this.$store.dispatch('fetchUserRelationship', this.user.id)
   },
   computed: {
+    somethingToSave () {
+      if (this.newName !== this.user.name_unescaped) return true
+      if (this.newBio !== unescape(this.user.description)) return true
+      if (this.newAvatar !== null) return true
+      if (this.newBanner !== null) return true
+      if (this.newActorType !== this.user.actor_type) return true
+      if (this.newBirthday !== this.user.birthday) return true
+      if (this.newShowBirthday !== this.user.show_birthday) return true
+      if (this.newShowRole !== this.user.show_role) return true
+      if (!isEqual(
+        this.newFields,
+        this.user.fields?.map(field => ({ name: field.name, value: field.value }))
+      )) return true
+      return false
+    },
     groupActorAvailable () {
       return this.$store.state.instance.groupActorAvailable
     },
