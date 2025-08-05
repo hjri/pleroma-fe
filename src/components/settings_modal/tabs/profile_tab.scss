@@ -1,6 +1,6 @@
 .profile-tab {
   // overriding global for better look
-  div.profile-edit {
+  .setting-item.profile-edit {
     margin: 0;
 
     h2 {
@@ -11,18 +11,5 @@
       padding: 1.2em;
       overflow: hidden;
     }
-  }
-
-  .bio {
-    margin: 0;
-  }
-
-  .uploading {
-    font-size: 1.5em;
-    margin: 0.25em;
-  }
-
-  .setting-subitem {
-    margin-left: 1.75em;
   }
 }
