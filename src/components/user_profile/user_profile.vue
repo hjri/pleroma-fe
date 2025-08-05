@@ -129,7 +129,6 @@
 <style lang="scss">
 .user-profile {
   flex: 2;
-  flex-basis: 500px;
 
   // No sticky header on user profile
   --currentPanelStack: 0;
@@ -142,7 +141,7 @@
   }
 
   .user-info {
-    margin: 0.6em;
+    margin: 1.2em;
   }
 }
 

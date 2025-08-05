@@ -3,10 +3,7 @@
     class="user-card"
     :class="classes"
   >
-    <div
-      :class="onClose ? '' : 'panel-heading -flexible-height'"
-      class="user-card-inner"
-    >
+    <div class="user-card-inner">
       <div class="user-info">
         <div class="user-identity">
           <div
