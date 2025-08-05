@@ -430,9 +430,7 @@ export default {
     addField () {
       if (this.newFields.length < this.maxFields) {
         this.newFields.push({ name: '', value: '' })
-        return true
       }
-      return false
     },
     deleteField (index) {
       this.newFields.splice(index, 1)

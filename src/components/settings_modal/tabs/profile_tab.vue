@@ -6,7 +6,6 @@
         :user-id="user.id"
         :editable="true"
         :switcher="false"
-        rounded="top"
       />
     </div>
     <div class="setting-item">
