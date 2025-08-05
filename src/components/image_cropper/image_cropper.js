@@ -10,19 +10,12 @@ library.add(
 
 const ImageCropper = {
   props: {
+    // Mime-types to accept, i.e. which filetypes to accept (.gif, .png, etc.)
     mimes: {
       type: String,
       default: 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon'
     },
-    saveButtonLabel: {
-      type: String
-    },
-    saveWithoutCroppingButtonlabel: {
-      type: String
-    },
-    cancelButtonLabel: {
-      type: String
-    },
+    // Fixed aspect-ratio for selection box
     aspectRatio: {
       type: Number
     }
@@ -30,11 +23,13 @@ const ImageCropper = {
   data () {
     return {
       dataUrl: undefined,
-      filename: undefined,
-      submitting: false
+      filename: undefined
     }
   },
-  emits: ['submit'],
+  emits: [
+    'submit', // cropping complete or uncropped image returned
+    'close', // cropper is closed
+  ],
   methods: {
     destroy () {
       this.$refs.input.value = ''
@@ -42,8 +37,6 @@ const ImageCropper = {
       this.$emit('close')
     },
     submit (cropping = true) {
-      this.submitting = true
-
       let cropperPromise
       if (cropping) {
         cropperPromise = this.$refs.cropperSelection.$toCanvas()
@@ -53,7 +46,6 @@ const ImageCropper = {
 
       cropperPromise.then(canvas => {
         this.$emit('submit', { canvas, file: this.file })
-        this.submitting = false
       })
     },
     pickImage () {
