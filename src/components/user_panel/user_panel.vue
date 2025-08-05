@@ -29,6 +29,8 @@
   }
 
   .user-info {
+    margin: 0.6em;
+
     .Avatar {
       width: 5em;
       width: calc(min(5em, 20cqw));

@@ -27,7 +27,11 @@
 /* popover styles load on-demand, so we need to override */
 /* stylelint-disable block-no-empty */
 .user-popover {
-  margin-bottom: 0.6em;
+  margin: 0;
+
+  .user-info {
+    margin: 1.2em;
+  }
 
   .user-identity {
     aspect-ratio: unset;
@@ -40,7 +44,6 @@
 
   &.popover {
     overflow: hidden;
-    padding: 0.6em;
   }
 }
 /* stylelint-enable block-no-empty */

@@ -140,6 +140,10 @@
     align-items: center;
     padding: 2em;
   }
+
+  .user-info {
+    margin: 0.6em;
+  }
 }
 
 .user-profile-placeholder {

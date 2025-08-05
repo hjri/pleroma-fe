@@ -1,6 +1,7 @@
 .user-card {
   position: relative;
   z-index: 1;
+  overflow: hidden;
 
   // editing headers
   h4 {
@@ -161,9 +162,10 @@
 
 .user-info {
   position: relative;
-  margin: 0.6em;
-  margin-bottom: 0;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 
   .user-identity {
     position: relative;
@@ -171,7 +173,6 @@
     min-height: 6em;
     display: flex;
     align-items: flex-end;
-    margin-bottom: 1em;
     container: user-card / inline-size;
 
     > * {
