@@ -12,10 +12,12 @@
     <template #content="{close}">
       <UserCard
         class="user-popover"
+        :show-close="true"
+        :show-expand="true"
         :user-id="userId"
         :hide-bio="true"
         :avatar-action="userPopoverAvatarAction == 'close' ? close : userPopoverAvatarAction"
-        :on-close="close"
+        @close="close"
       />
     </template>
   </Popover>

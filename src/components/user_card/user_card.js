@@ -58,18 +58,49 @@ library.add(
 )
 
 export default {
-  props: [
-    'editable',
-    'userId',
-    'switcher',
-    'selected',
-    'hideBio',
-    'rounded',
-    'bordered',
-    'avatarAction', // default - open profile, 'zoom' - zoom, function - call function
-    'onClose',
-    'hasNoteEditor'
-  ],
+  props: {
+    // Enables all the options for profile editing, used in settings -> profile tab
+    editable: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+    // ID of user to show data of
+    userId: {
+      required: true,
+      type: String
+    },
+    // Use a compact layout that hides bio, stats etc.
+    hideBio: {
+      required: false,
+      default: false,
+      type: Boolean
+    },
+    // default - open profile, 'zoom' - zoom, function - call function
+    avatarAction: {
+      required: false,
+      type: String,
+      default: 'default'
+    },
+    // Show note editor if supported
+    hasNoteEditor: {
+      required: false,
+      type: Boolean,
+      default: false
+    },
+    // Show close icon (for popovers)
+    showClose: {
+      required: false,
+      type: Boolean,
+      default: false
+    },
+    // Show close icon (for popovers)
+    showExpand: {
+      required: false,
+      type: Boolean,
+      default: false
+    }
+  },
   components: {
     DialogModal,
     UserAvatar,
@@ -154,14 +185,6 @@ export default {
     },
     relationship () {
       return this.$store.getters.relationship(this.userId)
-    },
-    classes () {
-      return [{
-        '-rounded-t': this.rounded === 'top', // set border-top-left-radius and border-top-right-radius
-        '-rounded': this.rounded === true, // set border-radius for all sides
-        '-bordered': this.bordered === true, // set border for all sides
-        '-popover': !!this.onClose // set popover rounding
-      }]
     },
     style () {
       return {
@@ -332,12 +355,6 @@ export default {
     unsubscribeUser () {
       return this.$store.dispatch('unsubscribeUser', this.user.id)
     },
-    setProfileView (v) {
-      if (this.switcher) {
-        const store = this.$store
-        store.commit('setProfileView', { v })
-      }
-    },
     linkClicked ({ target }) {
       if (target.tagName === 'SPAN') {
         target = target.parentNode
@@ -457,7 +474,7 @@ export default {
         fields_attributes: this.newFields.filter(el => el != null),
         show_role: !!this.newShowRole,
         birthday: this.newBirthday || '',
-        show_birthday: !!this.showBirthday,
+        show_birthday: !!this.newShowBirthday,
       }
 
       if (this.actorType) {

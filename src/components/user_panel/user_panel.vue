@@ -8,7 +8,6 @@
       <UserCard
         :user-id="user.id"
         :hide-bio="true"
-        rounded="top"
       />
       <PostStatusForm />
     </div>

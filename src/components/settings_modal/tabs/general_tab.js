@@ -8,6 +8,7 @@ import FloatSetting from '../helpers/float_setting.vue'
 import UnitSetting from '../helpers/unit_setting.vue'
 import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
 import Select from 'src/components/select/select.vue'
+import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
 
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
@@ -77,6 +78,7 @@ const GeneralTab = {
     FloatSetting,
     UnitSetting,
     InterfaceLanguageSwitcher,
+    ProfileSettingIndicator,
     ScopeSelector,
     Select
   },

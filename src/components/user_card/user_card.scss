@@ -3,6 +3,9 @@
   z-index: 1;
   overflow: hidden;
 
+  border-top-left-radius: calc(var(--roundness) - 1px);
+  border-top-right-radius: calc(var(--roundness) - 1px);
+
   // editing headers
   h4 {
     line-height: 2;
@@ -118,40 +121,10 @@
     padding: 0;
     mask: linear-gradient(to top, transparent 0, white 5em) bottom no-repeat;
     background-size: cover;
-    border-top-left-radius: calc(var(--__roundnessTop, --panelRadius) - 1px);
-    border-top-right-radius: calc(var(--__roundnessTop, --panelRadius) - 1px);
-    border-bottom-left-radius: calc(var(--__roundnessBottom, --panelRadius) - 1px);
-    border-bottom-right-radius: calc(var(--__roundnessBottom, --panelRadius) - 1px);
     background-color: var(--profileBg);
+    border-top-left-radius: calc(var(--roundness) - 1px);
+    border-top-right-radius: calc(var(--roundness) - 1px);
     z-index: -2;
-  }
-
-  &.-rounded-t {
-    border-top-left-radius: var(--roundness);
-    border-top-right-radius: var(--roundness);
-
-    --__roundnessTop: var(--roundness);
-    --__roundnessBottom: 0;
-  }
-
-  &.-rounded {
-    border-radius: var(--roundness);
-
-    --__roundnessTop: var(--roundness);
-    --__roundnessBottom: var(--roundness);
-  }
-
-  &.-popover {
-    border-radius: var(--roundness);
-
-    --__roundnessTop: var(--roundness);
-    --__roundnessBottom: var(--roundness);
-  }
-
-  &.-bordered {
-    border-width: 1px;
-    border-style: solid;
-    border-color: var(--border);
   }
 
   .bottom-buttons {

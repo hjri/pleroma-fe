@@ -4,13 +4,12 @@
       v-if="user"
       class="user-profile panel panel-default"
     >
-      <div class="panel-body">
+      <div class="panel-body card-wrapper">
         <UserCard
           :user-id="userId"
           :switcher="true"
           :selected="timeline.viewing"
           avatar-action="zoom"
-          rounded="top"
           :has-note-editor="true"
         />
       </div>
@@ -129,6 +128,16 @@
 <style lang="scss">
 .user-profile {
   flex: 2;
+
+  .card-wrapper {
+    border-top-left-radius: var(--roundness);
+    border-top-right-radius: var(--roundness);
+  }
+
+  .panel-footer {
+    border-bottom-left-radius: var(--roundness);
+    border-bottom-right-radius: var(--roundness);
+  }
 
   // No sticky header on user profile
   --currentPanelStack: 0;

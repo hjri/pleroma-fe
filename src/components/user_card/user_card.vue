@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="user-card"
-    :class="classes"
-  >
+  <div class="user-card">
     <div class="user-card-inner">
       <div class="user-info">
         <div class="user-identity">
@@ -70,7 +67,7 @@
                     fixed-width
                     class="icon"
                     icon="pencil"
-                    :title="$t('user_card.change_banner')"
+                    :title="$t('settings.change_banner')"
                   />
                 </button>
                 <button
@@ -102,10 +99,10 @@
                   :relationship="relationship"
                 />
                 <router-link
-                  v-if="onClose"
+                  v-if="showExpand"
                   :to="userProfileLink(user)"
                   class="button-unstyled external-link-button"
-                  @click="onClose"
+                  @click="$emit('close')"
                 >
                   <FAIcon
                     class="icon"
@@ -113,9 +110,9 @@
                   />
                 </router-link>
                 <button
-                  v-if="onClose"
+                  v-if="showClose"
                   class="button-unstyled external-link-button"
-                  @click="onClose"
+                  @click="$emit('close')"
                 >
                   <FAIcon
                     class="icon"
@@ -164,7 +161,7 @@
               </div>
             </div>
             <div class="bottom-line">
-              <user-link
+              <UserLink
                 class="user-screen-name"
                 :user="user"
               />
@@ -521,32 +518,22 @@
         <dl
           v-if="!mergedConfig.hideUserStats && !hideBio"
           class="user-count"
-          @click.prevent="setProfileView('statuses')"
         >
           <dd>{{ user.statuses_count }}</dd>
           {{ ' ' }}
           <dt>{{ $t('user_card.statuses') }}</dt>
         </dl>
-        <dl
-          class="user-count"
-          @click.prevent="setProfileView('statuses')"
-        >
+        <dl class="user-count">
           <dd>{{ dailyAvg }}</dd>
           {{ ' ' }}
           <dt>{{ $t('user_card.statuses_per_day') }}</dt>
         </dl>
-        <dl
-          class="user-count"
-          @click.prevent="setProfileView('friends')"
-        >
+        <dl class="user-count">
           <dd>{{ hideFollowsCount ? $t('user_card.hidden') : user.friends_count }}</dd>
           {{ ' ' }}
           <dt>{{ $t('user_card.followees') }}</dt>
         </dl>
-        <dl
-          class="user-count"
-          @click.prevent="setProfileView('followers')"
-        >
+        <dl class="user-count">
           <dd>{{ hideFollowersCount ? $t('user_card.hidden') : user.followers_count }}</dd>
           {{ ' ' }}
           <dt>{{ $t('user_card.followers') }}</dt>
@@ -568,7 +555,7 @@
           class="birthday"
         >
           <div>
-            <Checkbox v-model="showBirthday">
+            <Checkbox v-model="newShowBirthday">
               {{ $t('settings.birthday.show_birthday') }}
             </Checkbox>
           </div>
