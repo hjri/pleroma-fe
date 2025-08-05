@@ -54,7 +54,7 @@
       type="file"
       class="input image-cropper-img-input"
       :accept="mimes"
-    />
+    >
   </div>
 </template>
 

@@ -153,8 +153,8 @@
                 <button
                   v-if="editable"
                   class="button-unstyled edit-button"
-                  @click="editingName = !editingName"
                   :title="$t('settings.toggle_edit')"
+                  @click="editingName = !editingName"
                 >
                   <FAIcon
                     class="icon"
@@ -500,7 +500,10 @@
           class="user-profile-field-add add-field button-default -hover-highlight"
           @click="addField"
         >
-          <FAIcon icon="plus" class="icon" />
+          <FAIcon
+            icon="plus"
+            class="icon"
+          />
           <span class="label">
             {{ $t("settings.profile_fields.add_field") }}
           </span>
@@ -508,8 +511,8 @@
       </div>
     </template>
     <div
-      class="user-extras"
       v-if="!hideBio"
+      class="user-extras"
     >
       <span
         v-if="!editable && !mergedConfig.hideUserStats"
@@ -675,12 +678,12 @@
           id="pick-image"
           class="button-default btn"
           type="button"
-          @click="() => this.$refs.cropper.pickImage()"
+          @click="() => $refs.cropper.pickImage()"
         >
           {{ $t('settings.upload_picture') }}
         </button>
         <p class="visibility-notice">
-          {{ editImage === 'avatar' ? $t('settings.avatar_size_instruction') : $t('settings.banner_size_instruction' )}}
+          {{ editImage === 'avatar' ? $t('settings.avatar_size_instruction') : $t('settings.banner_size_instruction' ) }}
         </p>
         <template #footer>
           <button
@@ -688,26 +691,26 @@
             type="button"
             @click="editImage = false"
           >
-            {{ this.$t('image_cropper.cancel') }}
+            {{ $t('image_cropper.cancel') }}
           </button>
           <button
             :title="editImage === 'avatar' ? $t('settings.reset_avatar') : $t('settings.reset_banner')"
             class="button-default btn reset-button"
             @click="resetImage"
           >
-            {{ editImage === 'avatar' ? $t('settings.reset_avatar') : $t('settings.reset_banner' )}}
+            {{ editImage === 'avatar' ? $t('settings.reset_avatar') : $t('settings.reset_banner' ) }}
           </button>
           <button
             class="button-default btn"
             type="button"
-            @click="this.$refs.cropper.submit(false)"
+            @click="$refs.cropper.submit(false)"
           >
             {{ $t('image_cropper.save_without_cropping') }}
           </button>
           <button
             class="button-default btn"
             type="button"
-            @click="this.$refs.cropper.submit(true)"
+            @click="$refs.cropper.submit(true)"
           >
             {{ $t('image_cropper.save') }}
           </button>

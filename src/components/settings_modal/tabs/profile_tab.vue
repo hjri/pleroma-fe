@@ -7,8 +7,7 @@
         :editable="true"
         :switcher="false"
         rounded="top"
-        >
-      </UserCard>
+      />
     </div>
     <div class="setting-item">
       <h2>{{ $t('settings.account_privacy') }}</h2>
