@@ -334,7 +334,7 @@
       </div>
     </div>
     <template v-if="editable">
-      <h4>{{ $t('settings.user_preferences') }}</h4>
+      <h3>{{ $t('settings.user_preferences') }}</h3>
       <p
         v-if="role === 'admin' || role === 'moderator'"
         class="user-card-setting"
@@ -413,10 +413,11 @@
         />
       </div>
     </div>
-    <h4 v-if="editable">
+    <h3 v-if="editable">
       <span>
         {{ $t('settings.bio') }}
       </span>
+      {{ ' ' }}
       <button
         class="button-default"
         @click="editingBio = !editingBio"
@@ -427,7 +428,7 @@
           icon="pencil"
         />
       </button>
-    </h4>
+    </h3>
     <template v-if="!editable || !editingBio">
       <RichContent
         v-if="!hideBio"
@@ -456,10 +457,11 @@
         </template>
       </EmojiInput>
     </template>
-    <h4 v-if="editable">
+    <h3 v-if="editable">
       <span>
         {{ $t('settings.profile_fields.label') }}
       </span>
+      {{ ' ' }}
       <button
         class="button-default"
         @click="editingFields = !editingFields"
@@ -470,7 +472,7 @@
           icon="pencil"
         />
       </button>
-    </h4>
+    </h3>
     <template v-if="!editable || !editingFields">
       <div
         v-if="!hideBio && user.fields_html && user.fields_html.length > 0"

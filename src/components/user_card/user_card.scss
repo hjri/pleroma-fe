@@ -7,10 +7,16 @@
   h4 {
     line-height: 2;
     display: flex;
-    padding: 0 1.0em;
+  }
 
-    span {
-      flex: 1;
+  h3 {
+    padding-left: 0.6em;
+    margin-bottom: 0;
+
+    .button-default {
+      font-size: 1rem;
+      line-height: 2;
+      padding: 0 0.6em;
     }
   }
 
