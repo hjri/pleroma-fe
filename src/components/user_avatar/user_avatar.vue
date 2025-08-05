@@ -40,12 +40,12 @@
 
   display: inline-block;
   position: relative;
-  width: 48px;
+  width: 3.5em;
   height: 48px;
 
   &.-compact {
-    width: 32px;
-    height: 32px;
+    width: 2.2em;
+    height: 2.2em;
     border-radius: var(--roundness);
   }
 
