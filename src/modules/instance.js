@@ -139,7 +139,6 @@ const defaultState = {
 
   // Nasty stuff
   customEmoji: [],
-  rawCustomEmoji: [],
   customEmojiFetched: false,
   emoji: {},
   emojiFetched: false,
