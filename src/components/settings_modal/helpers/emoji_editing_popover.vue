@@ -7,7 +7,6 @@
     popover-class="emoji-tab-edit-popover popover-default"
     :bound-to="{ x: 'container' }"
     :offset="{ y: 5 }"
-    :disabled="disabled"
     :class="{'emoji-unsaved': isEdited}"
   >
     <template #trigger>
@@ -63,16 +62,47 @@
           </label>
         </div>
 
+        <div class="emoji-tab-popover-input" v-if="remote !== undefined">
+          <label>
+            {{ $t('admin_dash.emoji.copy_to') }}
+
+            <Select
+              v-model="copyToPack"
+              class="form-control"
+            >
+              <option
+                value=""
+                disabled
+                hidden
+              >
+                {{ $t('admin_dash.emoji.emoji_pack') }}
+              </option>
+              <option
+                v-for="(pack, listPackName) in knownLocalPacks"
+                :key="listPackName"
+                :label="listPackName"
+              >
+                {{ listPackName }}
+              </option>
+            </Select>
+          </label>
+        </div>
+
+        <!--
+             For local emojis, disable the button if nothing was edited.
+             For remote emojis, also disable it if a local pack is not selected.
+             Remote emojis are processed by the same function that uploads new ones, as that is effectively what it does
+        -->
         <button
           class="button button-default btn"
           type="button"
-          :disabled="newUpload ? uploadFile.length == 0 : !isEdited"
-          @click="newUpload ? uploadEmoji() : saveEditedEmoji()"
+          :disabled="saveButtonDisabled"
+          @click="(newUpload || this.remote !== undefined) ? uploadEmoji() : saveEditedEmoji()"
         >
           {{ $t('admin_dash.emoji.save') }}
         </button>
 
-        <template v-if="!newUpload">
+        <template v-if="!newUpload && remote === undefined">
           <button
             class="button button-default btn emoji-tab-popover-button"
             type="button"
@@ -107,18 +137,15 @@
 import Popover from 'components/popover/popover.vue'
 import ConfirmModal from 'components/confirm_modal/confirm_modal.vue'
 import StillImage from 'components/still-image/still-image.vue'
+import Select from 'components/select/select.vue'
 
 export default {
-  components: { Popover, ConfirmModal, StillImage },
+  components: { Popover, ConfirmModal, StillImage, Select },
   inject: ['emojiAddr'],
   props: {
     placement: {
       type: String,
       required: true
-    },
-    disabled: {
-      type: Boolean,
-      default: false
     },
 
     newUpload: Boolean,
@@ -140,6 +167,14 @@ export default {
       type: String,
       // Only exists when this is not a new upload
       default: ''
+    },
+
+    // Only exists for emojis from remote packs
+    remote: {
+      type: Object
+    },
+    knownLocalPacks: {
+      type: Object
     }
   },
   emits: ['updatePackFiles', 'displayError'],
@@ -148,7 +183,8 @@ export default {
       uploadFile: [],
       editedShortcode: this.shortcode,
       editedFile: this.file,
-      deleteModalVisible: false
+      deleteModalVisible: false,
+      copyToPack: ""
     }
   },
   computed: {
@@ -163,6 +199,12 @@ export default {
     },
     isEdited () {
       return !this.newUpload && (this.editedShortcode !== this.shortcode || this.editedFile !== this.file)
+    },
+    saveButtonDisabled() {
+      if (this.remote === undefined)
+        return this.newUpload ? this.uploadFile.length == 0 : !this.isEdited
+      else
+        return this.copyToPack === ""
     }
   },
   methods: {
@@ -181,9 +223,10 @@ export default {
       }).then(resp => this.$emit('updatePackFiles', resp))
     },
     uploadEmoji () {
+      let packName = this.remote === undefined ? this.packName : this.copyToPack
       this.$store.state.api.backendInteractor.addNewEmojiFile({
-        packName: this.packName,
-        file: this.uploadFile[0],
+        packName: packName,
+        file: this.remote === undefined ? this.uploadFile[0] : this.emojiAddr(this.file),
         shortcode: this.editedShortcode,
         filename: this.editedFile
       }).then(resp => resp.json()).then(resp => {
@@ -192,7 +235,7 @@ export default {
           return
         }
 
-        this.$emit('updatePackFiles', resp)
+        this.$emit('updatePackFiles', resp, packName)
         this.$refs.emojiPopover.hidePopover()
 
         this.editedFile = ''
@@ -215,7 +258,7 @@ export default {
           return
         }
 
-        this.$emit('updatePackFiles', resp)
+        this.$emit('updatePackFiles', resp, this.packName)
       })
     }
   }
@@ -231,6 +274,10 @@ export default {
     .emoji {
       width: 32px;
       height: 32px;
+    }
+
+    .Select {
+      display: inline-block;
     }
   }
 </style>

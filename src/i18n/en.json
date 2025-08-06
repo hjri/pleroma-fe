@@ -1215,6 +1215,8 @@
       "download_as_name_full": "New name, leave blank to reuse",
       "files": "Files",
       "editing": "Editing {0}",
+      "copying": "Copying {0}",
+      "copy_to": "Copy to",
       "delete_title": "Delete?",
       "metadata_changed": "Metadata different from saved",
       "emoji_changed": "Unsaved emoji file changes, check highlighted emoji",
