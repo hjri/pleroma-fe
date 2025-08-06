@@ -298,7 +298,7 @@ export default {
       height: 32px;
     }
 
-    .SelectComponent {
+    .Select {
       display: inline-block;
     }
 

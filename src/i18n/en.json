@@ -1219,6 +1219,7 @@
       "editing": "Editing {0}",
       "copying": "Copying {0}",
       "copy_to": "Copy to",
+      "copy_to_pack": "Copy to local pack",
       "delete_title": "Delete?",
       "metadata_changed": "Metadata different from saved",
       "emoji_changed": "Unsaved emoji file changes, check highlighted emoji",
