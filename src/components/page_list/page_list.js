@@ -50,7 +50,7 @@ const PageList = {
         })
       }
     },
-    selected () {
+    getSelected () {
       return this.$refs.list.selected
     }
   },

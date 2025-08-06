@@ -111,7 +111,7 @@ const AdminCard = {
       },
       delete_selection () {
         const l = this.$refs.timelineList
-        const s = l.selected()
+        const s = l.getSelected()
         s.forEach(p => this.$store.dispatch('deleteStatus', p))
         l.reset()
       },

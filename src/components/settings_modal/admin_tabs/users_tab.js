@@ -78,15 +78,15 @@ const UsersTab = {
       this.$refs.userList.reset()
     },
     activate_selection () {
-      const s = this.$refs.userList.selected()
+      const s = this.$refs.userList.getSelected()
       s.forEach(u => this.$store.dispatch('adminActivateUser', this.$store.getters.findUser(u.id)))
     },
     deactivate_selection () {
-      const s = this.$refs.userList.selected()
+      const s = this.$refs.userList.getSelected()
       s.forEach(u => this.$store.dispatch('adminDeactivateUser', this.$store.getters.findUser(u.id)))
     },
     delete_selection () {
-      const s = this.$refs.userList.selected()
+      const s = this.$refs.userList.getSelected()
       s.forEach(u => this.$store.dispatch('adminDeleteUser', this.$store.getters.findUser(u.id)))
       this.reset()
     }
