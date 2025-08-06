@@ -3,7 +3,6 @@
     <Popover
       trigger="click"
       placement="bottom"
-      :bound-to="{ x: 'container' }"
       remove-padding
     >
       <template #content>
@@ -140,9 +139,9 @@
       </confirm-modal>
       <UserTimedFilterModal
         v-if="blockExpirationSupported"
+        ref="timedBlockDialog"
         :is-mute="false"
         :user="user"
-        ref="timedBlockDialog"
       />
     </teleport>
   </div>

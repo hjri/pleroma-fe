@@ -12,6 +12,8 @@
     "custom-property-pattern": null,
     "keyframes-name-pattern": null,
     "scss/operator-no-newline-after": null,
+    "declaration-property-value-no-unknown": true,
+    "scss/declaration-property-value-no-unknown": true,
     "declaration-block-no-redundant-longhand-properties": [
       true,
       {

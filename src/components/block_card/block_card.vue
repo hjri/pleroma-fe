@@ -1,7 +1,10 @@
 <template>
   <basic-user-card :user="user">
     <div class="block-card-content-container">
-      <span v-if="blocked && blockExpiryAvailable" class="alert neutral">
+      <span
+        v-if="blocked && blockExpiryAvailable"
+        class="alert neutral"
+      >
         {{ blockExpiry }}
       </span>
       {{ ' ' }}
@@ -22,9 +25,9 @@
     </div>
     <teleport to="#modal">
       <UserTimedFilterModal
+        ref="timedBlockDialog"
         :user="user"
         :is-mute="false"
-        ref="timedBlockDialog"
       />
     </teleport>
   </basic-user-card>

@@ -800,6 +800,8 @@
     "user_popover_avatar_action_close": "Close the popover",
     "user_popover_avatar_action_open": "Open profile",
     "user_popover_avatar_overlay": "Show user popover over user avatar",
+    "user_card_left_justify": "Justify user bio to the left",
+    "user_card_hide_personal_marks": "Hide personal marks (highlight/note) in user profiles",
     "fun": "Fun",
     "greentext": "Meme arrows",
     "show_yous": "Show (You)s",
@@ -1480,7 +1482,7 @@
     "block_expires_forever": "Blocked forever",
     "block_expires_at": "Blocked until {0}",
     "mute_duration_prompt": "Mute this user for (0 for indefinite time):",
-    "per_day": "per day",
+    "statuses_per_day": "Statuses per day",
     "remote_follow": "Remote follow",
     "remove_follower": "Remove follower",
     "remove_follower_confirm_title": "Remove follower confirmation",
@@ -1521,17 +1523,15 @@
       "delete_user": "Delete user",
       "delete_user_data_and_deactivate_confirmation": "This will permanently delete the data from this account and deactivate it. Are you absolutely sure?"
     },
-    "highlight": {
-      "disabled": "No highlight",
-      "solid": "Solid bg",
-      "striped": "Striped bg",
+    "highlight_new": {
+      "disabled": "Don't highlight",
+      "solid": "Solid background",
+      "striped": "Striped background",
       "side": "Side stripe"
     },
-    "note": "Note",
-    "note_blank": "(None)",
-    "edit_note": "Edit note",
-    "edit_note_apply": "Apply",
-    "edit_note_cancel": "Cancel"
+    "personal_note": "Personal note",
+    "note_blank_click": "Click to add note",
+    "highlight_header": "Highlight user's posts and mentions"
   },
   "user_profile": {
     "timeline_title": "User timeline",

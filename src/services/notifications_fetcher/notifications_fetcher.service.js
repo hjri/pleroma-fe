@@ -18,8 +18,7 @@ const mastoApiNotificationTypes = new Set([
   'move',
   'poll',
   'pleroma:emoji_reaction',
-  'pleroma:report',
-  'test'
+  'pleroma:report'
 ])
 
 const fetchAndUpdate = ({ store, credentials, older = false, since }) => {

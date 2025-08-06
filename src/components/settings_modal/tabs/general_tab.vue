@@ -71,6 +71,22 @@
         </li>
         <li>
           <BooleanSetting
+            path="userCardLeftJustify"
+            expert="1"
+          >
+            {{ $t('settings.user_card_left_justify') }}
+          </BooleanSetting>
+        </li>
+        <li>
+          <BooleanSetting
+            path="userCardHidePersonalMarks"
+            expert="1"
+          >
+            {{ $t('settings.user_card_hide_personal_marks') }}
+          </BooleanSetting>
+        </li>
+        <li>
+          <BooleanSetting
             path="alwaysShowNewPostButton"
             expert="1"
           >
@@ -107,7 +123,10 @@
               </BooleanSetting>
             </li>
             <li>
-              <BooleanSetting v-if="!blockExpirationSupported" path="modalOnBlock">
+              <BooleanSetting
+                v-if="!blockExpirationSupported"
+                path="modalOnBlock"
+              >
                 {{ $t('settings.confirm_dialogs_block') }}
               </BooleanSetting>
             </li>
