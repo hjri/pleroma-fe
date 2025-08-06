@@ -3,7 +3,6 @@
     ref="emojiPopover"
     trigger="click"
     placement="top"
-    bound-to-selector=".status-container"
     :bound-to="{ x: 'container' }"
     :offset="{ y: 10 }"
     @show="fetchEmojiPacksIfAdmin"
@@ -22,7 +21,7 @@
           />
         </div>
 
-        <div v-if="isUserAdmin">
+        <div v-if="isUserAdmin && !isLocal">
           <button
             class="button button-default btn emoji-popover-button"
             type="button"
@@ -66,6 +65,16 @@
 
   export default {
     components: { StillImage, Popover, SelectComponent },
+    props: {
+      shortcode: {
+        type: String,
+        required: true
+      },
+      isLocal: {
+        type: Boolean,
+        required: true
+      }
+    },
     data() {
       return {
         knownLocalPacks: { },

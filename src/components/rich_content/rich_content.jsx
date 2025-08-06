@@ -86,6 +86,12 @@ export default {
       required: false,
       type: Boolean,
       default: false
+    },
+    // Assume is local to be true if unspecified, so the button isn't show where it probably should not be
+    isLocal: {
+      required: false,
+      type: Boolean,
+      default: true
     }
   },
   // NEVER EVER TOUCH DATA INSIDE RENDER
@@ -165,9 +171,11 @@ export default {
               return <StillImageEmojiPopover
                 class="emoji img"
                 src={url}
-                shortcode={shortcode}
                 title={`:${shortcode}:`}
                 alt={`:${shortcode}:`}
+
+                shortcode={shortcode}
+                isLocal={this.isLocal}
               />
             }
           )]
