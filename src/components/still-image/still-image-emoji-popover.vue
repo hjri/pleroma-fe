@@ -167,7 +167,7 @@
 
 <style>
   .emoji-popover {
-    margin: 0 0.5em 0.5em 0.5em;
+    margin: 0 0.5em 0.5em;
     text-align: center;
 
     .emoji {
