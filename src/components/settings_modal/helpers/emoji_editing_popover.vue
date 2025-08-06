@@ -27,17 +27,26 @@
         class="emoji"
       />
 
-      <div
-        v-if="newUpload"
-        class="emoji-tab-popover-input"
-      >
-        <input
-          type="file"
-          accept="image/*"
-          class="emoji-tab-popover-file input"
-          @change="uploadFile = $event.target.files"
-        >
+      <div v-if="newUpload" class="emoji-tab-popover-new-upload">
+        <h4>{{ $t('admin_dash.emoji.emoji_source') }}</h4>
+
+        <div class="emoji-tab-popover-input">
+          <input
+            type="file"
+            accept="image/*"
+            class="emoji-tab-popover-file input"
+            @change="uploadFile = $event.target.files"
+          >
+        </div>
+        <div class="emoji-tab-popover-input ">
+          <input
+            v-model="uploadURL"
+            :placeholder="$t('admin_dash.emoji.upload_url')"
+            class="emoji-data-input input"
+          >
+        </div>
       </div>
+
       <div>
         <div class="emoji-tab-popover-input">
           <label>
@@ -62,11 +71,14 @@
           </label>
         </div>
 
-        <div class="emoji-tab-popover-input" v-if="remote !== undefined">
+        <div
+          v-if="remote !== undefined"
+          class="emoji-tab-popover-input"
+        >
           <label>
             {{ $t('admin_dash.emoji.copy_to') }}
 
-            <Select
+            <SelectComponent
               v-model="copyToPack"
               class="form-control"
             >
@@ -84,7 +96,7 @@
               >
                 {{ listPackName }}
               </option>
-            </Select>
+            </SelectComponent>
           </label>
         </div>
 
@@ -97,7 +109,7 @@
           class="button button-default btn"
           type="button"
           :disabled="saveButtonDisabled"
-          @click="(newUpload || this.remote !== undefined) ? uploadEmoji() : saveEditedEmoji()"
+          @click="(newUpload || remote !== undefined) ? uploadEmoji() : saveEditedEmoji()"
         >
           {{ $t('admin_dash.emoji.save') }}
         </button>
@@ -137,10 +149,10 @@
 import Popover from 'components/popover/popover.vue'
 import ConfirmModal from 'components/confirm_modal/confirm_modal.vue'
 import StillImage from 'components/still-image/still-image.vue'
-import Select from 'components/select/select.vue'
+import SelectComponent from 'components/select/select.vue'
 
 export default {
-  components: { Popover, ConfirmModal, StillImage, Select },
+  components: { Popover, ConfirmModal, StillImage, SelectComponent },
   inject: ['emojiAddr'],
   props: {
     placement: {
@@ -171,16 +183,19 @@ export default {
 
     // Only exists for emojis from remote packs
     remote: {
-      type: Object
+      type: Object,
+      default: undefined
     },
     knownLocalPacks: {
-      type: Object
+      type: Object,
+      default: undefined
     }
   },
   emits: ['updatePackFiles', 'displayError'],
   data () {
     return {
       uploadFile: [],
+      uploadURL: "",
       editedShortcode: this.shortcode,
       editedFile: this.file,
       deleteModalVisible: false,
@@ -191,6 +206,8 @@ export default {
     emojiPreview () {
       if (this.newUpload && this.uploadFile.length > 0) {
         return URL.createObjectURL(this.uploadFile[0])
+      } else if (this.newUpload && this.uploadURL != "") {
+        return this.uploadURL
       } else if (!this.newUpload) {
         return this.emojiAddr(this.file)
       }
@@ -202,7 +219,7 @@ export default {
     },
     saveButtonDisabled() {
       if (this.remote === undefined)
-        return this.newUpload ? this.uploadFile.length == 0 : !this.isEdited
+        return this.newUpload ? (this.uploadURL === "" && this.uploadFile.length == 0) : !this.isEdited
       else
         return this.copyToPack === ""
     }
@@ -226,7 +243,8 @@ export default {
       let packName = this.remote === undefined ? this.packName : this.copyToPack
       this.$store.state.api.backendInteractor.addNewEmojiFile({
         packName: packName,
-        file: this.remote === undefined ? this.uploadFile[0] : this.emojiAddr(this.file),
+        file: this.remote === undefined ?
+              (this.uploadURL !== "" ? this.uploadURL : this.uploadFile[0]) : this.emojiAddr(this.file),
         shortcode: this.editedShortcode,
         filename: this.editedFile
       }).then(resp => resp.json()).then(resp => {
@@ -271,13 +289,22 @@ export default {
     padding-right: 0.5em;
     padding-bottom: 0.5em;
 
+    .emoji-tab-popover-new-upload {
+      margin-bottom: 2em;
+    }
+
     .emoji {
       width: 32px;
       height: 32px;
     }
 
-    .Select {
+    .SelectComponent {
       display: inline-block;
+    }
+
+    h4 {
+      margin-bottom: 1em;
+      margin-top: 1em;
     }
   }
 </style>
