@@ -438,6 +438,9 @@ export default {
     propsToNative (props) {
       return propsToNative(props)
     },
+    cancelImageText () {
+      return
+    },
     resetState () {
       const user = this.$store.state.users.currentUser
 

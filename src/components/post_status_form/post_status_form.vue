@@ -13,7 +13,7 @@
           v-if="!$store.state.users.currentUser.locked && newStatus.visibility == 'private' && !disableLockWarning"
           keypath="post_status.account_not_locked_warning"
           tag="p"
-          class="alert neutral"
+          class="visibility-notice"
           scope="global"
         >
           <button
@@ -25,52 +25,52 @@
         </i18n-t>
         <p
           v-if="!hideScopeNotice && newStatus.visibility === 'public'"
-          class="alert neutral notice-dismissible"
+          class="visibility-notice notice-dismissible"
         >
           <span>{{ $t('post_status.scope_notice.public') }}</span>
-          <button
-            class="fa-scale-110 button-unstyled fa-old-padding dismiss"
+          <a
+            class="fa-scale-110 fa-old-padding dismiss"
             :title="$t('post_status.scope_notice_dismiss')"
             role="button"
             tabindex="0"
             @click.prevent="dismissScopeNotice()"
           >
             <FAIcon icon="times" />
-          </button>
+          </a>
         </p>
         <p
           v-else-if="!hideScopeNotice && newStatus.visibility === 'unlisted'"
-          class="alert neutral notice-dismissible"
+          class="visibility-notice notice-dismissible"
         >
           <span>{{ $t('post_status.scope_notice.unlisted') }}</span>
-          <button
-            class="fa-scale-110 button-unstyled fa-old-padding dismiss"
+          <a
+            class="fa-scale-110 fa-old-padding dismiss"
             :title="$t('post_status.scope_notice_dismiss')"
             role="button"
             tabindex="0"
             @click.prevent="dismissScopeNotice()"
           >
             <FAIcon icon="times" />
-          </button>
+          </a>
         </p>
         <p
           v-else-if="!hideScopeNotice && newStatus.visibility === 'private' && $store.state.users.currentUser.locked"
-          class="alert neutral notice-dismissible"
+          class="visibility-notice notice-dismissible"
         >
           <span>{{ $t('post_status.scope_notice.private') }}</span>
-          <button
-            class="fa-scale-110 button-unstyled fa-old-padding dismiss"
+          <a
+            class="fa-scale-110 fa-old-padding dismiss"
             :title="$t('post_status.scope_notice_dismiss')"
             role="button"
             tabindex="0"
             @click.prevent="dismissScopeNotice()"
           >
             <FAIcon icon="times" />
-          </button>
+          </a>
         </p>
         <p
           v-else-if="newStatus.visibility === 'direct'"
-          class="alert neutral"
+          class="visibility-notice"
         >
           <span v-if="safeDMEnabled">{{ $t('post_status.direct_warning_to_first_only') }}</span>
           <span v-else>{{ $t('post_status.direct_warning_to_all') }}</span>
