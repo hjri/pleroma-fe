@@ -227,74 +227,72 @@
           </div>
         </div>
         <div
-          v-if="loggedIn"
+          v-if="loggedIn && isOtherUser"
           class="user-interactions"
         >
-          <template v-if="isOtherUser">
-            <div class="btn-group">
-              <FollowButton
-                :relationship="relationship"
-                :user="user"
-              />
-              <template v-if="relationship.following">
-                <ProgressButton
-                  v-if="!relationship.notifying"
-                  class="btn button-default"
-                  :click="subscribeUser"
-                  :title="$t('user_card.subscribe')"
-                >
-                  <FAIcon icon="bell" />
-                </ProgressButton>
-                <ProgressButton
-                  v-else
-                  class="btn button-default toggled"
-                  :click="unsubscribeUser"
-                  :title="$t('user_card.unsubscribe')"
-                >
-                  <FALayers>
-                    <FAIcon
-                      icon="rss"
-                      transform="left-5 shrink-6 up-3 rotate-20"
-                      flip="horizontal"
-                    />
-                    <FAIcon
-                      icon="rss"
-                      transform="right-5 shrink-6 up-3 rotate-20"
-                    />
-                    <FAIcon icon="bell" />
-                  </FALayers>
-                </ProgressButton>
-              </template>
-            </div>
-            <button
-              v-if="relationship.muting"
-              class="btn button-default btn-mute toggled"
-              :disabled="user.deactivated"
-              @click="unmuteUser"
-            >
-              {{ $t('user_card.muted') }}
-            </button>
-            <button
-              v-else
-              class="btn button-default btn-mute"
-              :disabled="user.deactivated"
-              @click="muteUser"
-            >
-              {{ $t('user_card.mute') }}
-            </button>
-            <button
-              class="btn button-default btn-mention"
-              :disabled="user.deactivated"
-              @click="mentionUser"
-            >
-              {{ $t('user_card.mention') }}
-            </button>
-            <ModerationTools
-              v-if="showModerationMenu"
-              class="moderation-menu"
+          <div class="btn-group">
+            <FollowButton
+              :relationship="relationship"
               :user="user"
             />
-          </template>
+            <template v-if="relationship.following">
+              <ProgressButton
+                v-if="!relationship.notifying"
+                class="btn button-default"
+                :click="subscribeUser"
+                :title="$t('user_card.subscribe')"
+              >
+                <FAIcon icon="bell" />
+              </ProgressButton>
+              <ProgressButton
+                v-else
+                class="btn button-default toggled"
+                :click="unsubscribeUser"
+                :title="$t('user_card.unsubscribe')"
+              >
+                <FALayers>
+                  <FAIcon
+                    icon="rss"
+                    transform="left-5 shrink-6 up-3 rotate-20"
+                    flip="horizontal"
+                  />
+                  <FAIcon
+                    icon="rss"
+                    transform="right-5 shrink-6 up-3 rotate-20"
+                  />
+                  <FAIcon icon="bell" />
+                </FALayers>
+              </ProgressButton>
+            </template>
+          </div>
+          <button
+            v-if="relationship.muting"
+            class="btn button-default btn-mute toggled"
+            :disabled="user.deactivated"
+            @click="unmuteUser"
+          >
+            {{ $t('user_card.muted') }}
+          </button>
+          <button
+            v-else
+            class="btn button-default btn-mute"
+            :disabled="user.deactivated"
+            @click="muteUser"
+          >
+            {{ $t('user_card.mute') }}
+          </button>
+          <button
+            class="btn button-default btn-mention"
+            :disabled="user.deactivated"
+            @click="mentionUser"
+          >
+            {{ $t('user_card.mention') }}
+          </button>
+          <ModerationTools
+            v-if="showModerationMenu"
+            class="moderation-menu"
+            :user="user"
+          />
         </div>
         <div
           v-if="!loggedIn && user.is_local"
