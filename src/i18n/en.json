@@ -787,6 +787,7 @@
     "type_domains_to_mute": "Search domains to mute",
     "upload_a_photo": "Upload a photo",
     "upload_picture": "Upload picture",
+    "select_picture": "Select picture",
     "user_settings": "User Settings",
     "values": {
       "false": "no",

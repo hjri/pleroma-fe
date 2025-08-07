@@ -672,7 +672,7 @@
           type="button"
           @click="() => $refs.cropper.pickImage()"
         >
-          {{ $t('settings.upload_picture') }}
+          {{ $t('settings.select_picture') }}
         </button>
         <template #footer>
           <button
