@@ -1,16 +1,16 @@
 <template>
-  <div v-if="!just_deleted">
+  <div v-if="!justDeleted">
     <div v-if="!isLoaded">
       {{ $t('admin_dash.users.loading_user') }}
     </div>
     <div v-else>
-      <div v-if="user_details.id !== $store.state.users.currentUser.id">
+      <div v-if="userDetails.id !== $store.state.users.currentUser.id">
         <BasicUserCard :user="user" />
-        <div v-if="!top_level_expanded">
+        <div v-if="!topLevelExpanded">
           <button
             class="button button-default btn"
             type="button"
-            @click="top_level_expanded = true"
+            @click="topLevelExpanded = true"
           >
             {{ $t('admin_dash.users.expand_user') }}
           </button>
@@ -23,68 +23,68 @@
               <button
                 class="button button-default btn"
                 type="button"
-                @click="top_level_expanded = false"
+                @click="topLevelExpanded = false"
               >
                 {{ $t('admin_dash.users.collapse_user') }}
               </button>
             </li>
             <li
-              v-if="is_local"
+              v-if="isLocal"
             >
               <Checkbox
-                :model-value="is_admin"
-                @update:model-value="v => toggle_admin(v)"
+                :model-value="isAdmin"
+                @update:model-value="v => toggleAdmin(v)"
               >
                 {{ $t('admin_dash.users.is_admin') }}
               </Checkbox>
             </li>
             <li
-              v-if="is_local"
+              v-if="isLocal"
             >
               <Checkbox
-                :model-value="is_moderator"
-                @update:model-value="v => toggle_moderator(v)"
+                :model-value="isModerator"
+                @update:model-value="v => toggleModerator(v)"
               >
                 {{ $t('admin_dash.users.is_moderator') }}
               </Checkbox>
             </li>
             <li
-              v-if="is_local && !just_confirmed && !is_confirmed"
+              v-if="isLocal && !justConfirmed && !isConfirmed"
             >
               <button
                 class="button button-default btn"
                 type="button"
-                @click="confirm_user()"
+                @click="confirmUser()"
               >
                 {{ $t('admin_dash.users.is_confirmed') }}
               </button>
             </li>
             <li
-              v-if="is_local && !just_confirmed && !is_confirmed"
+              v-if="isLocal && !justConfirmed && !isConfirmed"
             >
               <button
                 class="button button-default btn"
                 type="button"
-                @click="resend_confirmation_email()"
+                @click="resendConfirmationEmail()"
               >
                 {{ $t('admin_dash.users.resend_confirmation_email') }}
               </button>
             </li>
             <li
-              v-if="is_local && !is_approved"
+              v-if="isLocal && !isApproved"
             >
               <button
                 class="button button-default btn"
                 type="button"
-                @click="toggle_approval(true)"
+                @click="toggleApproval(true)"
               >
                 {{ $t('admin_dash.users.approve') }}
               </button>
             </li>
             <li>
               <Checkbox
-                :model-value="is_activated"
-                @update:model-value="v => toggle_activation(v)"
+                :model-value="isActivated"
+                @update:model-value="v => toggleActivation(v)"
               >
                 {{ $t('admin_dash.users.is_active') }}
               </Checkbox>
@@ -93,18 +93,18 @@
               <button
                 class="button button-default btn"
                 type="button"
-                @click="delete_user()"
+                @click="deleteUser()"
               >
                 {{ $t('admin_dash.users.delete_user') }}
               </button>
             </li>
           </ul>
         </div>
-        <div v-if="!timeline_expanded">
+        <div v-if="!timelineExpanded">
           <button
             class="button button-default btn"
             type="button"
-            @click="timeline_expanded = true"
+            @click="timelineExpanded = true"
           >
             {{ $t('admin_dash.users.expand_timeline') }}
           </button>
@@ -116,7 +116,7 @@
           <button
             class="button button-default btn"
             type="button"
-            @click="timeline_expanded = false"
+            @click="timelineExpanded = false"
           >
             {{ $t('admin_dash.users.collapse_timeline') }}
           </button>
@@ -124,22 +124,22 @@
             ref="timelineList"
             :refresh="true"
             :get-key="i => i"
-            :box_only="true"
-            :page_size="20"
-            :single_page="true"
-            :fetch_page="(store, opts) => fetch_statuses(store, opts)"
+            :box-only="true"
+            :page-size="20"
+            :single-page="true"
+            :fetch-page="(store, opts) => fetchStatuses(store, opts)"
           >
             <template #header>
               <button
                 class="button button-default btn"
                 type="button"
-                @click="delete_selection"
+                @click="deleteSelection"
               >
                 {{ $t('admin_dash.users.delete') }}
               </button>
             </template>
             <template #item="{item}">
-              <AdminStatusCard :status_details="item" />
+              <AdminStatusCard :status-details="item" />
             </template>
             <template #empty>
               <p> {{ $t('admin_dash.users.user_has_no_posts') }} </p>
@@ -149,11 +149,11 @@
             </template>
           </PageList>
         </div>
-        <div v-if="!json_expanded">
+        <div v-if="!jsonExpanded">
           <button
             class="button button-default btn"
             type="button"
-            @click="json_expanded = true"
+            @click="jsonExpanded = true"
           >
             {{ $t('admin_dash.users.expand_raw_info') }}
           </button>
@@ -165,7 +165,7 @@
           <button
             class="button button-default btn"
             type="button"
-            @click="json_expanded = false"
+            @click="jsonExpanded = false"
           >
             {{ $t('admin_dash.users.collapse_raw_info') }}
           </button>

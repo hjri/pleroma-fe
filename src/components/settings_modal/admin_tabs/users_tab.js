@@ -16,34 +16,36 @@ const UsersTab = {
   data() {
     return {
       init: false,
-      filters_origin: 'local',
-      filters_activity: 'all',
-      filters_permission: 'all',
-      filters_query: '',
-      filters_name: '',
-      filters_email: '',
+      filtersOrigin: 'local',
+      filtersActivity: 'all',
+      filtersPermission: 'all',
+      filtersNeedApproval: false,
+      filtersUnconfirmed: false,
+      filtersQuery: '',
+      filtersName: '',
+      filtersEmail: '',
       expandedUser: null,
       loading: false
     }
   },
   computed: {
-    filters_is_admin () {
-      return this.filters_permission === 'admin' || this.filters_permission === 'modsnadmins'
+    filtersIsAdmin () {
+      return this.filtersPermission === 'admin' || this.filtersPermission === 'modsnadmins'
     },
-    filters_is_moderator () {
-      return this.filters_permission === 'moderator' || this.filters_permission === 'modsnadmins'
+    filtersIsModerator () {
+      return this.filtersPermission === 'moderator' || this.filtersPermission === 'modsnadmins'
     },
-    filters_active () {
-      return this.filters_activity === 'active'
+    filtersActive () {
+      return this.filtersActivity === 'active'
     },
-    filters_deactivated () {
-      return this.filters_activity === 'deactivated'
+    filtersDeactivated () {
+      return this.filtersActivity === 'deactivated'
     },
-    filters_local () {
-      return this.filters_origin === 'local'
+    filtersLocal () {
+      return this.filtersOrigin === 'local'
     },
-    filters_external () {
-      return this.filters_origin === 'external'
+    filtersExternal () {
+      return this.filtersOrigin === 'external'
     }
   },
   components: {
@@ -56,36 +58,38 @@ const UsersTab = {
     TabSwitcher,
   },
   methods: {
-    fetch_page (store, opts) {
+    fetchPage (store, opts) {
       if(!this.init) return new Promise(() => [])
       const filters = {
-        is_admin: this.filters_is_admin,
-        is_moderator: this.filters_is_moderator,
-        active: this.filters_active,
-        deactivated: this.filters_deactivated,
-        local: this.filters_local,
-        external: this.filters_external
+        isAdmin: this.filtersIsAdmin,
+        isModerator: this.filtersIsModerator,
+        active: this.filtersActive,
+        deactivated: this.filtersDeactivated,
+        local: this.filtersLocal,
+        external: this.filtersExternal,
+        needApproval: this.filtersNeedApproval,
+        unconfirmed: this.filtersUnconfirmeUnconfirmed
       }
       const users = store.dispatch('fetchAdminUsers', { ...opts, ...{
-        query: this.filters_query,
+        query: this.filtersQuery,
         filters,
-        name: this.filters_name,
-        email: this.filters_email
+        name: this.filtersName,
+        email: this.filtersEmail
       }})
       return users
     },
     reset () {
       this.$refs.userList.reset()
     },
-    activate_selection () {
+    activateSelection () {
       const s = this.$refs.userList.getSelected()
       s.forEach(u => this.$store.dispatch('adminActivateUser', this.$store.getters.findUser(u.id)))
     },
-    deactivate_selection () {
+    deactivateSelection () {
       const s = this.$refs.userList.getSelected()
       s.forEach(u => this.$store.dispatch('adminDeactivateUser', this.$store.getters.findUser(u.id)))
     },
-    delete_selection () {
+    deleteSelection () {
       const s = this.$refs.userList.getSelected()
       s.forEach(u => this.$store.dispatch('adminDeleteUser', this.$store.getters.findUser(u.id)))
       this.reset()

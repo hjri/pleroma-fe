@@ -5,13 +5,13 @@
       class="setting-list"
     >
       <li>
-        <span> {{ $t('admin_dash.users.status_id') }}: {{ status_details.id }} </span>
+        <span> {{ $t('admin_dash.users.status_id') }}: {{ statusDetails.id }} </span>
       </li>
       <li>
-        <span> {{ $t('admin_dash.users.created_at') }}: {{ new Date(status_details.created_at).toLocaleString() }} </span>
+        <span> {{ $t('admin_dash.users.created_at') }}: {{ new Date(statusDetails.created_at).toLocaleString() }} </span>
       </li>
       <li>
-        <span v-if="status_details.edited_at !== null"> {{ $t('admin_dash.users.edited_at') }}: {{ new Date(status_details.edited_at).toLocaleString() }} </span>
+        <span v-if="statusDetails.edited_at !== null"> {{ $t('admin_dash.users.edited_at') }}: {{ new Date(statusDetails.edited_at).toLocaleString() }} </span>
       </li>
     </ul>
     <h2> {{ $t('admin_dash.users.title_content') }}: </h2>
@@ -20,10 +20,10 @@
     >
       <li>
         <Status
-          v-if="typeof(status_cache) !== 'undefined'"
+          v-if="typeof(statusCache) !== 'undefined'"
           class="Notification"
           :compact="true"
-          :statusoid="status_cache"
+          :statusoid="statusCache"
           @interacted="false"
         />
       </li>
@@ -31,15 +31,15 @@
         <button
           class="button button-default btn"
           type="button"
-          @click="delete_status(status.id)"
+          @click="deleteStatus(status.id)"
         >
           {{ $t('admin_dash.users.delete_status') }}
         </button>
       </li>
       <li>
         <Checkbox
-          :model-value="is_sensitive"
-          @update:model-value="v => change_sensitivity(v)"
+          :model-value="isSensitive"
+          @update:model-value="v => changeSensitivity(v)"
         >
           {{ $t('admin_dash.users.content_nsfw') }}
         </Checkbox>
@@ -47,7 +47,7 @@
       <li>
         <Select
           :model-value="visibility"
-          @update:model-value="v => change_visibility(v)"
+          @update:model-value="v => changeVisibility(v)"
         >
           <option
             value="public"
@@ -72,14 +72,14 @@
         </Select>
       </li>
       <li>
-        <a :href="status_details.url"> {{ $t('admin_dash.users.link_source') }} </a>
+        <a :href="statusDetails.url"> {{ $t('admin_dash.users.link_source') }} </a>
       </li>
     </ul>
-    <div v-if="!json_expanded">
+    <div v-if="!jsonExpanded">
       <button
         class="button button-default btn"
         type="button"
-        @click="json_expanded = !json_expanded"
+        @click="jsonExpanded = !jsonExpanded"
       >
         {{ $t('admin_dash.users.expand_raw_info') }}
       </button>
@@ -88,12 +88,12 @@
       <button
         class="button button-default btn"
         type="button"
-        @click="json_expanded = !json_expanded"
+        @click="jsonExpanded = !jsonExpanded"
       >
         {{ $t('admin_dash.users.collapse_raw_info') }}
       </button>
       <h2> {{ $t('admin_dash.users.title_details') }} </h2>
-      <pre> {{ JSON.stringify(status_details, null, 2) }} </pre>
+      <pre> {{ JSON.stringify(statusDetails, null, 2) }} </pre>
     </div>
   </div>
 </template>

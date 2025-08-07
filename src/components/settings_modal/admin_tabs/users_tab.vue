@@ -7,7 +7,7 @@
       >
         <li>
           <input
-            v-model="filters_query"
+            v-model="filtersQuery"
             :placeholder="$t('admin_dash.users.placeholder_query')"
             class="input string-input"
             @input="reset()"
@@ -15,7 +15,7 @@
         </li>
         <li>
           <input
-            v-model="filters_name"
+            v-model="filtersName"
             :placeholder="$t('admin_dash.users.placeholder_name')"
             class="input string-input"
             @input="reset()"
@@ -23,7 +23,7 @@
         </li>
         <li>
           <input
-            v-model="filters_email"
+            v-model="filtersEmail"
             :placeholder="$t('admin_dash.users.placeholder_email')"
             class="input string-input"
             @input="reset()"
@@ -31,7 +31,7 @@
         </li>
         <li>
           <Select
-            v-model="filters_origin"
+            v-model="filtersOrigin"
             @update:model-value="reset"
           >
             <option
@@ -53,7 +53,7 @@
         </li>
         <li>
           <Select
-            v-model="filters_activity"
+            v-model="filtersActivity"
             @update:model-value="reset"
           >
             <option
@@ -75,7 +75,7 @@
         </li>
         <li>
           <Select
-            v-model="filters_permission"
+            v-model="filtersPermission"
             @update:model-value="reset"
           >
             <option
@@ -102,14 +102,14 @@
         </li>
         <li>
           <Checkbox
-            @update:model-value="v => {filters.need_approval = v; reset();}"
+            @update:model-value="v => {filtersNneedApproval = v; reset();}"
           >
             {{ $t('admin_dash.users.only_unapproved') }}
           </Checkbox>
         </li>
         <li>
           <Checkbox
-            @update:model-value="v => {filters.unconfirmed = v; reset();}"
+            @update:model-value="v => {filtersUnconfirmed = v; reset();}"
           >
             {{ $t('admin_dash.users.only_unconfirmed') }}
           </Checkbox>
@@ -133,35 +133,35 @@
         ref="userList"
         :refresh="true"
         :get-key="i => i"
-        :box_only="true"
-        :page_size="20"
-        :fetch_page="(store, opts) => fetch_page(store, opts)"
+        :box-only="true"
+        :page-size="20"
+        :fetch-page="(store, opts) => fetchPage(store, opts)"
       >
         <template #header>
           <button
             class="button button-default btn"
             type="button"
-            @click="activate_selection"
+            @click="activateSelection"
           >
             {{ $t('admin_dash.users.activate') }}
           </button>
           <button
             class="button button-default btn"
             type="button"
-            @click="deactivate_selection"
+            @click="deactivateSelection"
           >
             {{ $t('admin_dash.users.deactivate') }}
           </button>
           <button
             class="button button-default btn"
             type="button"
-            @click="delete_selection"
+            @click="deleteSelection"
           >
             {{ $t('admin_dash.users.delete') }}
           </button>
         </template>
         <template #item="{item}">
-          <AdminCard :user_details="item" />
+          <AdminCard :user-details="item" />
         </template>
       </PageList>
     </div>

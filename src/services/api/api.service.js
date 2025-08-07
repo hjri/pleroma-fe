@@ -116,34 +116,34 @@ const PLEROMA_ADMIN_CONFIG_URL = '/api/v1/pleroma/admin/config'
 const PLEROMA_ADMIN_DESCRIPTIONS_URL = '/api/v1/pleroma/admin/config/descriptions'
 const PLEROMA_ADMIN_FRONTENDS_URL = '/api/v1/pleroma/admin/frontends'
 const PLEROMA_ADMIN_FRONTENDS_INSTALL_URL = '/api/v1/pleroma/admin/frontends/install'
-const PLEROMA_ADMIN_USERS_URL = ({page, page_size, filters = {}, query = '', name = '', email = ''}) => {
+const PLEROMA_ADMIN_USERS_URL = ({page, pageSize, filters = {}, query = '', name = '', email = ''}) => {
   const {
     local = false,
     external = false,
     active = false,
-    need_approval = false,
+    needApproval = false,
     unconfirmed = false,
     deactivated = false,
-    is_admin = true,
-    is_moderator = true,
+    isAdmin = true,
+    isModerator = true,
   } = filters
   const filters_str = [
     local && 'local',
     external && 'external',
     active && 'active',
-    need_approval && 'need_approval',
+    needApproval && 'need_approval',
     unconfirmed && 'unconfirmed',
     deactivated && 'deactivated',
-    is_admin && 'is_admin',
-    is_moderator && 'is_moderator'
+    isAdmin && 'is_admin',
+    isModerator && 'is_moderator'
   ].filter(x => x).join(',')
-  return `/api/v1/pleroma/admin/users?page=${page}&page_size=${page_size}&filters=${filters_str}&query=${query}&name=${name}&email=${email}`
+  return `/api/v1/pleroma/admin/users?page=${page}&page_size=${pageSize}&filters=${filters_str}&query=${query}&name=${name}&email=${email}`
 }
 const PLEROMA_ADMIN_MODIFY_GROUP_URL = (nickname, group) => `/api/v1/pleroma/admin/users/${nickname}/permission_group/${group}`
 const PLEROMA_ADMIN_CONFIRM_USER_URL = '/api/v1/pleroma/admin/users/confirm_email'
 const PLEROMA_ADMIN_RESEND_CONFIRMATION_EMAIL_URL = '/api/v1/pleroma/admin/users/resend_confirmation_email'
 const PLEROMA_ADMIN_APPROVE_URL = '/api/v1/pleroma/admin/users/approve'
-const PLEROMA_ADMIN_LIST_STATUSES_URL = (id, page_size, godmode, with_reblogs) => `/api/v1/pleroma/admin/users/${id}/statuses?page_size=${page_size}&godmode=${godmode}&with_reblogs=${with_reblogs}`
+const PLEROMA_ADMIN_LIST_STATUSES_URL = (id, page_size, godmode, with_reblogs) => `/api/v1/pleroma/admin/users/${id}/statuses?page_size=${pageSize}&godmode=${godmode}&with_reblogs=${withReblogs}`
 const PLEROMA_ADMIN_CHANGE_STATUS_SCOPE_URL = (id) => `/api/v1/pleroma/admin/statuses/${id}`
 
 const PLEROMA_EMOJI_RELOAD_URL = '/api/pleroma/admin/reload_emoji'
@@ -1563,8 +1563,8 @@ const adminApproveUser = ({user : { screen_name: nickname }, credentials }) => {
    return r
 }
 
-const adminListStatuses = ({user: { id }, opts: { page_size, godmode, with_reblogs }, credentials }) => {
-   const url = PLEROMA_ADMIN_LIST_STATUSES_URL(id, page_size, godmode, with_reblogs)
+const adminListStatuses = ({user: { id }, opts: { pageSize, godmode, withReblogs }, credentials }) => {
+   const url = PLEROMA_ADMIN_LIST_STATUSES_URL(id, pageSize, godmode, withReblogs)
    return promisedRequest({url: url,
       credentials,
       method: 'GET'

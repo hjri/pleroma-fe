@@ -5,48 +5,48 @@ const PageList = {
     SelectableList
   },
   props: {
-    box_only: {
+    boxOnly: {
       type: Boolean,
       default: false
     },
-    page_size: {
+    pageSize: {
       type: Number,
       default: 50
     },
-    fetch_page: {
+    fetchPage: {
       type: Function,
       default: async () => []
     },
-    single_page: {
+    singlePage: {
       type: Boolean,
       default: false
     }
   },
   data () {
     return {
-      page_index: 1,
+      pageIndex: 1,
       items: [],
-      can_load_more: true,
-      is_loading: false
+      canLoadMore: true,
+      isLoading: false
     }
   },
   methods: {
     reset () {
-      this.can_load_more = true
-      this.page_index = 1
+      this.canLoadMore = true
+      this.pageIndex = 1
       this.items = []
-      this.is_loading = false
-      this.load_more() // load one page
+      this.isLoading = false
+      this.loadMore() // load one page
     },
-    load_more () {
-      if (!this.is_loading && this.can_load_more) {
-        this.is_loading = true
-        this.fetch_page(this.$store, {
-          page: this.page_index++,
-          page_size: this.page_size
+    loadMore () {
+      if (!this.isLoading && this.canLoadMore) {
+        this.isLoading = true
+        this.fetchPage(this.$store, {
+          page: this.pageIndex++,
+          pageSize: this.pageSize
         }).then(items => {
           this.items = [...this.items, ...items]
-          this.is_loading = false
+          this.isLoading = false
         })
       }
     },
@@ -55,7 +55,7 @@ const PageList = {
     }
   },
   mounted () {
-    this.load_more()
+    this.loadMore()
   }
 }
 export default PageList

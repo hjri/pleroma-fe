@@ -20,25 +20,25 @@
       </template>
       <template #load="slotProps">
         <slot
-          v-if="is_loading"
+          v-if="isLoading"
           name="load"
           v-bind="slotProps"
         />
       </template>
       <template #empty="slotProps">
         <slot
-          v-if="items.length == 0 && !is_loading"
+          v-if="items.length == 0 && !isLoading"
           name="empty"
           v-bind="slotProps"
         />
       </template>
     </SelectableList>
-    <div v-if="!single_page">
+    <div v-if="!singlePage">
       <button
-        v-if="can_load_more"
+        v-if="canLoadMore"
         class="button button-default btn"
         type="button"
-        @click="load_more"
+        @click="loadMore"
       >
         {{ $t('page_list.load_more') }}
       </button>
