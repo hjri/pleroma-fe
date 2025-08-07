@@ -111,7 +111,8 @@
     }
   }
 
-  .background-image {
+  .banner-overlay,
+  .banner-image {
     position: absolute;
     inset: 0;
     right: -1.2em;
@@ -119,11 +120,24 @@
     top: -1.4em;
     padding: 0;
     mask: linear-gradient(to top, transparent 0, white 5em) bottom no-repeat;
-    background-size: cover;
-    background-color: var(--profileBg);
     border-top-left-radius: calc(var(--roundness) - 1px);
     border-top-right-radius: calc(var(--roundness) - 1px);
+  }
+
+  .banner-image {
     z-index: -2;
+
+    img {
+      object-fit: cover;
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  .banner-overlay {
+    background-color: var(--profileTint);
+    pointer-events: none; // let user copy bg url
+    z-index: -1;
   }
 
   .bottom-buttons {

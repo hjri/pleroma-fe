@@ -186,14 +186,6 @@ export default {
     relationship () {
       return this.$store.getters.relationship(this.userId)
     },
-    style () {
-      return {
-        backgroundImage: [
-          'linear-gradient(to bottom, var(--profileTint), var(--profileTint))',
-          `url(${this.bannerImgSrc})`
-        ].join(', ')
-      }
-    },
     isOtherUser () {
       return this.user.id !== this.$store.state.users.currentUser.id
     },
@@ -419,11 +411,11 @@ export default {
     },
     resetImage () {
       if (this.editImage === 'avatar') {
-        this.newAvatar = ''
-        this.newAvatarFile = ''
+        this.newAvatar = null
+        this.newAvatarFile = null
       } else {
-        this.newBanner = ''
-        this.newBannerFile = ''
+        this.newBanner = null
+        this.newBannerFile = null
       }
       this.editImage = false
     },
