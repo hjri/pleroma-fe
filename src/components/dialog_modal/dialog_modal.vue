@@ -45,10 +45,10 @@
   inset: 0;
   justify-content: center;
   place-items: center center;
+  overflow: auto;
 }
 
 .dialog-modal.panel {
-  max-height: 80vh;
   max-width: 90vw;
   z-index: 2001;
   cursor: default;
