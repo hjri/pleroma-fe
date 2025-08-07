@@ -16,7 +16,8 @@ import {
   faBell,
   faDownload,
   faEyeSlash,
-  faInfo
+  faInfo,
+  faUser
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -27,7 +28,8 @@ library.add(
   faBell,
   faDownload,
   faEyeSlash,
-  faInfo
+  faInfo,
+  faUser
 )
 
 const SettingsModalAdminContent = {

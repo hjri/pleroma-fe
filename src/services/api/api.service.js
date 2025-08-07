@@ -143,7 +143,7 @@ const PLEROMA_ADMIN_MODIFY_GROUP_URL = (nickname, group) => `/api/v1/pleroma/adm
 const PLEROMA_ADMIN_CONFIRM_USER_URL = '/api/v1/pleroma/admin/users/confirm_email'
 const PLEROMA_ADMIN_RESEND_CONFIRMATION_EMAIL_URL = '/api/v1/pleroma/admin/users/resend_confirmation_email'
 const PLEROMA_ADMIN_APPROVE_URL = '/api/v1/pleroma/admin/users/approve'
-const PLEROMA_ADMIN_LIST_STATUSES_URL = (id, page_size, godmode, with_reblogs) => `/api/v1/pleroma/admin/users/${id}/statuses?page_size=${pageSize}&godmode=${godmode}&with_reblogs=${withReblogs}`
+const PLEROMA_ADMIN_LIST_STATUSES_URL = (id, pageSize, godmode, withReblogs) => `/api/v1/pleroma/admin/users/${id}/statuses?page_size=${pageSize}&godmode=${godmode}&with_reblogs=${withReblogs}`
 const PLEROMA_ADMIN_CHANGE_STATUS_SCOPE_URL = (id) => `/api/v1/pleroma/admin/statuses/${id}`
 
 const PLEROMA_EMOJI_RELOAD_URL = '/api/pleroma/admin/reload_emoji'
