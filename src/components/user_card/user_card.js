@@ -282,12 +282,14 @@ export default {
     // Editable stuff
     avatarImgSrc () {
       const currentUrl = this.user.profile_image_url_original || this.defaultAvatar
-      const newUrl = this.newAvatar === '' ? this.defaultAvatar : this.newAvatar
+      if (!this.editable) return currentUrl
+      const newUrl = this.newAvatar === null ? this.defaultAvatar : this.newAvatar
       return (this.newAvatar === null) ? currentUrl : newUrl
     },
     bannerImgSrc () {
       const currentUrl = this.user.cover_photo || this.defaultBanner
-      const newUrl = this.newBanner === '' ? this.defaultBanner : this.newBanner
+      if (!this.editable) return currentUrl
+      const newUrl = this.newBanner === null ? this.defaultBanner : this.newBanner
       return (this.newBanner === null) ? currentUrl : newUrl
     },
     defaultAvatar () {
