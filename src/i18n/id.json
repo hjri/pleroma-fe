@@ -29,7 +29,7 @@
         "panel_header": "Header panel",
         "icons": "Ikon-ikon",
         "disabled": "Dinonaktifkan",
-        "poll": "Grafik japat",
+        "poll": "Grafik jajak pendapat",
         "chat": {
           "incoming": "Masuk",
           "outgoing": "Keluar"
@@ -215,7 +215,8 @@
     "profile_fields": {
       "value": "Isi",
       "name": "Label",
-      "label": "Metadata profil"
+      "label": "Metadata profil",
+      "add_field": "Tambah bidang"
     },
     "limited_availability": "Tidak tersedia di browser Anda",
     "invalid_theme_imported": "Berkas yang dipilih bukan sebuah tema yang didukung Pleroma. Tidak ada perbuahan yang dibuat pada tema Anda.",
@@ -363,13 +364,16 @@
       "value": "Nilai",
       "expires": "Kedaluwarsa",
       "copy": "Duplikasi",
-      "regexp_error": "Regex tidak valid"
+      "regexp_error": "Regex tidak valid",
+      "mute_filter": "Filter bisu",
+      "expired": "Kedaluwarsa"
     },
     "file_export_import": {
       "backup_settings_theme": "Cadangkan pengaturan dan tema ke sebuah berkas",
       "restore_settings": "Pulihkan pengaturan dari sebuah berkas",
       "errors": {
-        "invalid_file": "Berkas yang dipilih bukan berkas cadangan pengaturan Pleroma yang didukung. Tidak ada perubahan yang diterapkan."
+        "invalid_file": "Berkas yang dipilih bukan berkas cadangan pengaturan Pleroma yang didukung. Tidak ada perubahan yang diterapkan.",
+        "file_slightly_new": "Berkas dari versi minor yang berbeda, beberapa pengaturan mungkin tidak disimpan"
       },
       "backup_restore": "Cadangan pengaturan",
       "backup_settings": "Cadangkan pengaturan ke sebuah berkas"
@@ -505,7 +509,36 @@
     "hard_reset_value": "Atur ulang paksa",
     "cache": "Tembolok",
     "clear_asset_cache": "Bersihkan tembolok aset",
-    "clear_emoji_cache": "Bersihkan tembolok emoji"
+    "clear_emoji_cache": "Bersihkan tembolok emoji",
+    "backup_failed": "Cadangan ini ada masalah.",
+    "confirm_dialogs_mute_conversation": "membisukan percakapan",
+    "confirm_dialogs_deny_follow": "menolak pengikut",
+    "notification_visibility_follow_requests": "Permintaan ikut",
+    "backup_running": "Pencadangan sedang berjalan, memproses {number} rekaman.",
+    "follow_export_button": "Ekspor daftar akun yang diikuti Anda ke berkas csv",
+    "follow_import": "Impor daftar akun yang diikuti",
+    "confirm_dialogs_mute_domain": "membisukan domain",
+    "mute_import": "Impor daftar bisu",
+    "mute_import_error": "Gagal mengimpor daftar bisu",
+    "preload_images": "Pemuatan gambar",
+    "confirm_dialogs_remove_follower": "menghapus pengikut",
+    "mutes_imported": "Daftar bisu diimpor! Memproses mereka akan memakan waktu.",
+    "add_backup_error": "Gagal menambahkan cadangan baru: {error}",
+    "follow_export": "Ekspor daftar akun yang diikuti",
+    "panelRadius": "Panel",
+    "unsaved_post_action": "Ketika ingin menutup formulir pos yang belum disimpan",
+    "expert_mode": "Tampilkan Lanjutan",
+    "confirm_dialogs_mute": "membisukan pengguna",
+    "confirm_dialogs_approve_follow": "menerima pengikut",
+    "mute_export": "Ekspor daftar bisu",
+    "unsaved_post_action_discard": "Hapus",
+    "fallback_language": "Bahasa cadangan {index}:",
+    "post_look_feel": "Tampilan Pos",
+    "confirm_dialogs_block": "memblokir pengguna",
+    "mute_export_button": "Ekspor daftar bisu Anda ke berkas csv",
+    "import_mutes_from_a_csv_file": "Impor daftar bisu dari berkas csv",
+    "added_backup": "Menambahkan cadangan baru.",
+    "follows_imported": "Daftar akun yang diikuti diimpor! Memproses mereka akan memakan waktu."
   },
   "about": {
     "mrf": {
@@ -784,7 +817,8 @@
     "broken_favorite": "Status tak diketahui, mencarinya…",
     "configuration_tip_dismiss": "Jangan tampilkan kembali",
     "submitted_report": "kirim laporan",
-    "configuration_tip_settings": "pengaturan"
+    "configuration_tip_settings": "pengaturan",
+    "subscribed_status": "dipos"
   },
   "who_to_follow": {
     "more": "Lebih banyak",
@@ -930,7 +964,10 @@
     "content_type_selection": "Format pos",
     "edit_remote_warning": "Peladen lainnya mungkin tidak mendukung penyuntingan dan tidak dapat menerima versi terbaru dari pos Anda.",
     "close_confirm_discard_button": "Hapus",
-    "close_confirm_continue_composing_button": "Lanjut menulis"
+    "close_confirm_continue_composing_button": "Lanjut menulis",
+    "close_confirm_title": "Menutup formulir pos",
+    "close_confirm": "Apa yang ingin Anda lakukan dengan tulisan Anda saat ini?",
+    "auto_save_nothing_new": "Tidak ada yang baru untuk disimpan."
   },
   "general": {
     "apply": "Terapkan",
@@ -1001,19 +1038,19 @@
     "hide_custom_emoji": "Sembunyikan emoji kustom"
   },
   "polls": {
-    "expired": "Japat berakhir {0} yang lalu",
-    "expires_in": "Japat berakhir dalam {0}",
-    "expiry": "Usia japat",
-    "type": "Jenis japat",
+    "expired": "Jajak pendapat berakhir {0} yang lalu",
+    "expires_in": "Jajak pendapat berakhir dalam {0}",
+    "expiry": "Usia jajak pendapat",
+    "type": "Jenis jajak pendapat",
     "vote": "Pilih",
     "votes_count": "{count} suara | {count} suara",
     "people_voted_count": "{count} orang memilih | {count} orang memilih",
     "votes": "suara",
     "option": "Opsi",
     "add_option": "Tambahkan opsi",
-    "add_poll": "Tambahkan japat",
-    "not_enough_options": "Terlalu sedikit opsi yang unik pada japat",
-    "non_anonymous": "Japat publik",
+    "add_poll": "Tambahkan jajak pendapat",
+    "not_enough_options": "Terlalu sedikit opsi yang unik pada jajak pendapat",
+    "non_anonymous": "Jajak pendapat publik",
     "multiple_choices": "Pilihan ganda",
     "single_choice": "Satu pilihan"
   },
@@ -1045,7 +1082,8 @@
     "bookmarks": "Markah",
     "mobile_notifications_mark_as_seen": "Tandai semua sebagai sudah dilihat",
     "edit_finish": "Selesai menyunting",
-    "edit_pinned": "Suntin item yang disematkan"
+    "edit_pinned": "Suntin item yang disematkan",
+    "edit_nav_mobile": "Atur bilah navigasi"
   },
   "media_modal": {
     "next": "Selanjutnya",
@@ -1148,7 +1186,7 @@
     "page_header": "Pengumuman",
     "title": "Pengumuman",
     "mark_as_read_action": "Tandai telah dibaca",
-    "post_placeholder": "Ketik isi pengumumanmu di sini...",
+    "post_placeholder": "Ketik isi pengumuman di sini…",
     "close_error": "Tutup",
     "delete_action": "Hapus",
     "start_time_prompt": "Waktu mulai: ",
