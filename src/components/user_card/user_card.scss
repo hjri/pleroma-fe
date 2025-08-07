@@ -491,6 +491,8 @@
 .edit-image {
   .panel-body {
     text-align: center;
+    display: flex;
+    flex-direction: column;
   }
 
   .current-avatar {
@@ -499,8 +501,18 @@
 
   .image-container {
     display: flex;
-    margin: 0 1em 0.5em;
+    align-self: center;
+    margin: 0 0 1em;
+    max-height: 30em;
+    max-width: 100%;
+    flex: 1 0 20em;
+    aspect-ratio: 1;
     gap: 0.5em;
+
+    &.-banner {
+      aspect-ratio: 3;
+      max-width: 100%;
+    }
 
     .new-image {
       display: flex;
@@ -509,6 +521,7 @@
 
     .cropper {
       flex: 1;
+      overflow-x: auto;
     }
 
     > * {
@@ -544,6 +557,18 @@
       justify-self: center;
       flex: 0 1 5em;
       aspect-ratio: unset;
+    }
+  }
+
+  #modal.-mobile & {
+    #pick-image {
+      height: 3em;
+    }
+
+    .image-container {
+      &.-banner {
+        max-height: 10em;
+      }
     }
   }
 }

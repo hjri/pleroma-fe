@@ -455,8 +455,7 @@
             >
               <template #default="inputProps">
                 <input
-                  v-model="newFields[i].name"
-                  :placeholder="$t('settings.profile_fields.name')"
+                  v-model="newFields[i].name" :placeholder="$t('settings.profile_fields.name')"
                   v-bind="propsToNative(inputProps)"
                   class="input"
                 >
@@ -653,7 +652,13 @@
         <template #header>
           {{ editImage === 'avatar' ? $t('settings.change_avatar') : $t('settings.change_banner') }}
         </template>
-        <div class="image-container">
+        <p>
+          {{ editImage === 'avatar' ? $t('settings.avatar_size_instruction') : $t('settings.banner_size_instruction' ) }}
+        </p>
+        <div
+          class="image-container"
+          :class="{ '-banner': editImage === 'banner' }"
+        >
           <image-cropper
             ref="cropper"
             class="cropper"
@@ -669,9 +674,6 @@
         >
           {{ $t('settings.upload_picture') }}
         </button>
-        <p class="visibility-notice">
-          {{ editImage === 'avatar' ? $t('settings.avatar_size_instruction') : $t('settings.banner_size_instruction' ) }}
-        </p>
         <template #footer>
           <button
             class="button-default btn"
