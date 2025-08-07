@@ -195,18 +195,18 @@ export default {
   data () {
     return {
       uploadFile: [],
-      uploadURL: "",
+      uploadURL: '',
       editedShortcode: this.shortcode,
       editedFile: this.file,
       deleteModalVisible: false,
-      copyToPack: ""
+      copyToPack: ''
     }
   },
   computed: {
     emojiPreview () {
       if (this.newUpload && this.uploadFile.length > 0) {
         return URL.createObjectURL(this.uploadFile[0])
-      } else if (this.newUpload && this.uploadURL != "") {
+      } else if (this.newUpload && this.uploadURL !== '') {
         return this.uploadURL
       } else if (!this.newUpload) {
         return this.emojiAddr(this.file)
@@ -243,8 +243,9 @@ export default {
       let packName = this.remote === undefined ? this.packName : this.copyToPack
       this.$store.state.api.backendInteractor.addNewEmojiFile({
         packName: packName,
-        file: this.remote === undefined ?
-              (this.uploadURL !== "" ? this.uploadURL : this.uploadFile[0]) : this.emojiAddr(this.file),
+        file: this.remote === undefined
+            ? (this.uploadURL !== "" ? this.uploadURL : this.uploadFile[0])
+            : this.emojiAddr(this.file),
         shortcode: this.editedShortcode,
         filename: this.editedFile
       }).then(resp => resp.json()).then(resp => {

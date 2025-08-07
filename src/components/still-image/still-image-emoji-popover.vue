@@ -58,7 +58,7 @@
 <script>
   import { assign } from 'lodash'
 
-  import StillImage from "./still-image.vue"
+  import StillImage from './still-image.vue'
   import Popover from 'components/popover/popover.vue'
   import SelectComponent from 'components/select/select.vue'
   import { useInterfaceStore } from 'src/stores/interface'
@@ -95,8 +95,6 @@
         })
       },
       copyToLocalPack() {
-        console.log(this.packName)
-
         this.$store.state.api.backendInteractor.addNewEmojiFile({
           packName: this.packName,
           file: this.$attrs.src,
@@ -171,8 +169,8 @@
     text-align: center;
 
     .emoji {
-      width: 64px;
-      height: 64px;
+      width: 4.6em;
+      height: 4.6em;
     }
 
     .emoji-popover-centered {
