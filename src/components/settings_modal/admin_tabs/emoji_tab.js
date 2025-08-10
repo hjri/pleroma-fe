@@ -249,7 +249,7 @@ const EmojiTab = {
             this.displayError(resp.error)
             return Promise.reject(resp)
           }
-        }).then(_done => {
+        }).then(() => {
           this.packName = this.newPackName
           this.newPackName = ''
           this.remotePackURL = ''
@@ -269,7 +269,7 @@ const EmojiTab = {
             this.displayError(resp.error)
             return Promise.reject(resp)
           }
-        }).then(_done => {
+        }).then((_done)) => {
           this.packName = this.newPackName
           this.newPackName = ''
           this.remotePackURL = ''
