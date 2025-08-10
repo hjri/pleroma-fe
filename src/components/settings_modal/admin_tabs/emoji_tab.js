@@ -269,7 +269,7 @@ const EmojiTab = {
             this.displayError(resp.error)
             return Promise.reject(resp)
           }
-        }).then(()) => {
+        }).then(() => {
           this.packName = this.newPackName
           this.newPackName = ''
           this.remotePackURL = ''
