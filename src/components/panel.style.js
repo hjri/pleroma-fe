@@ -6,9 +6,10 @@ export default {
     'Link',
     'Icon',
     'Border',
-    'Button',
-    'ButtonUnstyled',
-    'Input',
+    // Optimization: don't put heavy components unless needed
+    // 'Button',
+    // 'ButtonUnstyled',
+    // 'Input',
     'PanelHeader',
     'MenuItem',
     'Post',
@@ -16,7 +17,6 @@ export default {
     'Alert',
     'UserCard',
     'Chat',
-    'Attachment',
     'Tab',
     'ListItem'
   ],
@@ -25,8 +25,9 @@ export default {
     'Link',
     'Icon',
     'Border',
-    'Button',
-    'Input',
+    // Optimization: don't put heavy components unless needed
+    // 'Button',
+    // 'Input',
     'PanelHeader',
     'Alert'
   ],

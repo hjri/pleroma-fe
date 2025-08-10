@@ -8,9 +8,9 @@ export default {
     'Text',
     'Icon',
     'Border',
-    'Button',
+    // Optimization: don't put heavy components unless needed
+    // 'Button',
     'RichContent',
-    'Attachment',
     'PollGraph'
   ],
   defaultRules: [
