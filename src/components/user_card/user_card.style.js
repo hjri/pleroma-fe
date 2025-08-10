@@ -2,11 +2,6 @@ export default {
   name: 'UserCard',
   selector: '.user-card',
   notEditable: true,
-  validInnerComponents: [
-    'Text',
-    'Link',
-    'Icon',
-  ],
   defaultRules: [
     {
       directives: {

@@ -8,7 +8,8 @@ export default {
     'Border',
     'PanelHeader',
     'Post',
-    'Notification'
+    'Notification',
+    'MenuItem'
   ],
   validInnerComponentsLite: [
     'Text',

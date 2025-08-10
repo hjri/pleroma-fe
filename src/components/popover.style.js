@@ -6,14 +6,6 @@ export default {
     modal: '.modal'
   },
   validInnerComponents: [
-    'Text',
-    'Link',
-    'Icon',
-    'Border',
-    // Optimization: don't put heavy components unless needed
-    // 'Button',
-    // 'ButtonUnstyled',
-    // 'Input',
     'MenuItem'
   ],
   defaultRules: [

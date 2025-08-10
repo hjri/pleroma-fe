@@ -8,8 +8,6 @@ export default {
     'Text',
     'Icon',
     'Border',
-    // Optimization: don't put heavy components unless needed
-    // 'Button',
     'PollGraph'
   ],
   defaultRules: [

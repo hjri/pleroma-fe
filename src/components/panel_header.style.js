@@ -7,7 +7,6 @@ export default {
     'Icon',
     'Button',
     'ButtonUnstyled',
-    'Badge',
     'Alert'
   ],
   defaultRules: [

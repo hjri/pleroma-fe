@@ -6,8 +6,8 @@ export default {
     'Text',
     'Icon',
     // Optimization: don't put heavy components unless needed
-    // 'Button',
-    // 'ButtonUnstyled',
+    'Button',
+    'ButtonUnstyled',
     'Input',
     'Badge'
   ],
