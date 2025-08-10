@@ -224,6 +224,9 @@ const updateProfile = ({ credentials, params }) => {
         formData.append(name + `[${i}][value]`, param.value)
       })
     } else {
+      if (typeof params[name] === 'object') {
+        console.warning('Object detected in updateProfile API call. This will not work, use updateProfileJSON instead.')
+      }
       formData.append(name, params[name]);
     }
   }
@@ -232,6 +235,17 @@ const updateProfile = ({ credentials, params }) => {
     headers: authHeaders(credentials),
     method: 'PATCH',
     body: formData
+  })
+    .then((data) => data.json())
+    .then((data) => parseUser(data))
+}
+
+const updateProfileJSON = ({ credentials, params }) => {
+  return promisedRequest({
+    url: MASTODON_PROFILE_UPDATE_URL,
+    credentials,
+    payload: params ,
+    method: 'PATCH'
   })
     .then((data) => data.json())
     .then((data) => parseUser(data))
@@ -2060,6 +2074,7 @@ const apiService = {
   getCaptcha,
   updateProfileImages,
   updateProfile,
+  updateProfileJSON,
   importMutes,
   importBlocks,
   importFollows,
