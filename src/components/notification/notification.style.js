@@ -6,10 +6,6 @@ export default {
     'Link',
     'Icon',
     'Border',
-    // Optimization: don't put heavy components unless needed
-    // 'Button',
-    // 'ButtonUnstyled',
-    // 'Input',
     'Avatar',
     'PollGraph'
   ],

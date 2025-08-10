@@ -2,6 +2,7 @@
   font-family: var(--font);
 
   &.-faint {
+    color: var(--text);
     /* stylelint-disable declaration-no-important */
     --text: var(--textFaint) !important;
     --link: var(--linkFaint) !important;
