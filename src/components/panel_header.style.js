@@ -8,8 +8,7 @@ export default {
     'Button',
     'ButtonUnstyled',
     'Badge',
-    'Alert',
-    'Avatar'
+    'Alert'
   ],
   defaultRules: [
     {
