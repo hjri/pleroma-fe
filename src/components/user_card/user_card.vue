@@ -458,7 +458,8 @@
             >
               <template #default="inputProps">
                 <input
-                  v-model="newFields[i].name" :placeholder="$t('settings.profile_fields.name')"
+                  v-model="newFields[i].name"
+                  :placeholder="$t('settings.profile_fields.name')"
                   v-bind="propsToNative(inputProps)"
                   class="input"
                 >
