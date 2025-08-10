@@ -215,12 +215,40 @@ const updateProfileImages = ({ credentials, avatar = null, avatarName = null, ba
 }
 
 const updateProfile = ({ credentials, params }) => {
+  const formData = new FormData();
+
+  for(const name in params) {
+    if (name === 'fields_attributes') {
+      params[name].forEach((param, i) => {
+        formData.append(name + `[${i}][name]`, param.name)
+        formData.append(name + `[${i}][value]`, param.value)
+      })
+    } else {
+      if (typeof params[name] === 'object') {
+        console.warning('Object detected in updateProfile API call. This will not work, use updateProfileJSON instead.')
+      }
+      formData.append(name, params[name]);
+    }
+  }
+
+  return fetch(MASTODON_PROFILE_UPDATE_URL, {
+    headers: authHeaders(credentials),
+    method: 'PATCH',
+    body: formData
+  })
+    .then((data) => data.json())
+    .then((data) => parseUser(data))
+}
+
+const updateProfileJSON = ({ credentials, params }) => {
   return promisedRequest({
     url: MASTODON_PROFILE_UPDATE_URL,
-    method: 'PATCH',
-    payload: params,
-    credentials
-  }).then((data) => parseUser(data))
+    credentials,
+    payload: params ,
+    method: 'PATCH'
+  })
+    .then((data) => data.json())
+    .then((data) => parseUser(data))
 }
 
 // Params needed:
@@ -2046,6 +2074,7 @@ const apiService = {
   getCaptcha,
   updateProfileImages,
   updateProfile,
+  updateProfileJSON,
   importMutes,
   importBlocks,
   importFollows,

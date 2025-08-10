@@ -1,12 +1,71 @@
 .user-card {
   position: relative;
   z-index: 1;
+  overflow: hidden;
+  border-top-left-radius: calc(var(--roundness) - 1px);
+  border-top-right-radius: calc(var(--roundness) - 1px);
+
+  // editing headers
+  h4 {
+    line-height: 2;
+    display: flex;
+  }
+
+  h3 {
+    padding-left: 0.6em;
+    margin-bottom: 0;
+
+    .button-default {
+      font-size: 1rem;
+      line-height: 2;
+      padding: 0 0.6em;
+    }
+  }
+
+  .input.bio {
+    height: auto; // override settings default textarea size
+  }
 
   .user-card-inner {
     padding-bottom: 0;
   }
 
+  &-setting,
+  &-bio {
+    color: var(--lightText);
+    display: block;
+    line-height: 1.3;
+    padding: 0 0.6em;
+
+    img {
+      object-fit: contain;
+      vertical-align: middle;
+      max-width: 100%;
+      max-height: 400px;
+    }
+  }
+
+  .user-card-setting {
+    margin-left: 0.6em;
+    margin-right: 0.6em;
+  }
+
   .user-card-bio {
+    text-align: center;
+    margin: 0 0.6em;
+
+    &.input {
+      margin: 0 1em;
+
+      textarea {
+        text-align: inherit;
+      }
+    }
+
+    &, * {
+      line-height: 1.5;
+    }
+
     &.-justify-left {
       text-align: start;
     }
@@ -16,17 +75,6 @@
     --_still-image-img-visibility: visible;
     --_still-image-canvas-visibility: hidden;
     --_still-image-label-visibility: hidden;
-  }
-
-  .panel-heading {
-    text-align: center;
-    box-shadow: none;
-    background: transparent;
-    backdrop-filter: none;
-    flex-direction: column;
-    align-items: stretch;
-    // create new stacking context
-    position: relative;
   }
 
   .personal-marks {
@@ -63,7 +111,8 @@
     }
   }
 
-  .background-image {
+  .banner-overlay,
+  .banner-image {
     position: absolute;
     inset: 0;
     right: -1.2em;
@@ -71,65 +120,38 @@
     top: -1.4em;
     padding: 0;
     mask: linear-gradient(to top, transparent 0, white 5em) bottom no-repeat;
-    background-size: cover;
-    border-top-left-radius: calc(var(--__roundnessTop, --panelRadius) - 1px);
-    border-top-right-radius: calc(var(--__roundnessTop, --panelRadius) - 1px);
-    border-bottom-left-radius: calc(var(--__roundnessBottom, --panelRadius) - 1px);
-    border-bottom-right-radius: calc(var(--__roundnessBottom, --panelRadius) - 1px);
-    background-color: var(--profileBg);
-    z-index: -2;
+    border-top-left-radius: calc(var(--roundness) - 1px);
+    border-top-right-radius: calc(var(--roundness) - 1px);
   }
 
-  &-bio {
-    text-align: center;
-    color: var(--lightText);
-    display: block;
-    line-height: 1.3;
-    padding: 0.6em;
-    margin: 0 0.6em;
+  .banner-image {
+    z-index: -2;
 
     img {
-      object-fit: contain;
-      vertical-align: middle;
-      max-width: 100%;
-      max-height: 400px;
+      object-fit: cover;
+      height: 100%;
+      width: 100%;
     }
   }
 
-  &.-rounded-t {
-    border-top-left-radius: var(--roundness);
-    border-top-right-radius: var(--roundness);
-
-    --__roundnessTop: var(--roundness);
-    --__roundnessBottom: 0;
+  .banner-overlay {
+    background-color: var(--profileTint);
+    pointer-events: none; // let user copy bg url
+    z-index: -1;
   }
 
-  &.-rounded {
-    border-radius: var(--roundness);
-
-    --__roundnessTop: var(--roundness);
-    --__roundnessBottom: var(--roundness);
-  }
-
-  &.-popover {
-    border-radius: var(--roundness);
-
-    --__roundnessTop: var(--roundness);
-    --__roundnessBottom: var(--roundness);
-  }
-
-  &.-bordered {
-    border-width: 1px;
-    border-style: solid;
-    border-color: var(--border);
+  .bottom-buttons {
+    display: flex;
+    gap: 0.5em;
   }
 }
 
 .user-info {
   position: relative;
-  margin: 0.6em;
-  margin-bottom: 0;
-  text-align: right;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 
   .user-identity {
     position: relative;
@@ -137,7 +159,6 @@
     min-height: 6em;
     display: flex;
     align-items: flex-end;
-    margin-bottom: 1em;
     container: user-card / inline-size;
 
     > * {
@@ -179,6 +200,12 @@
       padding: 0.6em;
       margin: -0.6em;
 
+      &.save-profile-button,
+      &.reset-profile-button,
+      &.edit-banner-button {
+        width: auto;
+      }
+
       &:hover .icon {
         color: var(--textFaint);
       }
@@ -199,7 +226,6 @@
       inset: -0.6em;
       left: -0.6em;
       right: -1.2em;
-      background-color: rgb(0 0 0 / 30%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -209,11 +235,21 @@
 
       svg {
         color: #fff;
+        margin: 0.5em;
       }
     }
 
     &:hover &.-overlay {
       opacity: 1;
+      background-color: rgb(0 0 0 / 30%);
+    }
+  }
+
+  .user-info-avatar.-editable {
+    .-overlay {
+      opacity: 1;
+      place-items: start end;
+      justify-content: end;
     }
   }
 
@@ -238,6 +274,39 @@
       --link: var(--text) !important;
     }
 
+    .name-wrapper {
+      display: flex;
+      align-items: baseline;
+
+      .edit-button {
+        width: 3em;
+        text-align: center;
+
+        &:hover .icon {
+          color: var(--textFaint);
+        }
+
+        &:not(:hover) .icon {
+          color: var(--lightText);
+        }
+      }
+
+      .input,
+      .user-name {
+        flex: 1;
+        font-weight: 600;
+        line-height: 2;
+        margin-right: 1em;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      .input {
+        margin: 0 -0.5em;
+        padding: 0 0.5em;
+      }
+    }
+
     .top-line {
       display: flex;
       flex-direction: column;
@@ -246,8 +315,6 @@
       // these two normalize position and height when custom emoji are used
       line-height: 2;
       margin-bottom: -0.2em;
-      font-weight: 600;
-      font-size: 110%;
       font-size: calc(max(110%, 4cqw));
     }
 
@@ -258,6 +325,7 @@
       white-space: normal;
       font-weight: 500;
       font-size: 0.9em;
+      font-size: calc(max(90%, 2.5cqw));
       line-height: 1.5;
     }
 
@@ -281,65 +349,15 @@
     }
   }
 
-  .user-name {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    margin-right: 1em;
-    font-size: 1.1em;
-  }
-
-  .highlighter {
-    margin: 5em;
-    align-items: baseline;
-    line-height: 22px;
-    flex-wrap: wrap;
-
-    .following {
-      flex: 1 0 auto;
-      margin: 0;
-      margin-bottom: 0.25em;
-      text-align: left;
-    }
-
-    .highlighter {
-      flex: 0 1 auto;
-      display: flex;
-      flex-wrap: wrap;
-      margin-right: -0.5em;
-      align-self: start;
-
-      .userHighlightCl {
-        padding: 2px 10px;
-        flex: 1 0 auto;
-      }
-
-      .userHighlightSel {
-        padding-top: 0;
-        padding-bottom: 0;
-        flex: 1 0 auto;
-      }
-
-      .userHighlightText {
-        width: 70px;
-        flex: 1 0 auto;
-      }
-
-      .userHighlightCl,
-      .userHighlightText,
-      .userHighlightSel {
-        vertical-align: top;
-        margin-right: 0.5em;
-        margin-bottom: 0.25em;
-      }
-    }
-  }
-
   .user-interactions {
     position: relative;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(7.5em, 20%));
-    grid-gap: 0.6em;
-    max-width: 98vw;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6em;
+
+    > * {
+      flex: 0 0 8em;
+    }
 
     .popover-trigger-button, .moderation-tools-button {
       width: 100%;
@@ -399,38 +417,70 @@
 
 .user-profile-fields {
   margin: 0 0.5em;
+  padding: 0 0.5em;
+  display: flex;
+  flex-direction: column;
 
-  img {
-    object-fit: contain;
-    vertical-align: middle;
-    max-width: 100%;
-    max-height: 400px;
+  --emoji-size: 1.8em;
 
-    &.emoji {
-      width: 18px;
-      height: 18px;
-    }
-  }
-
+  .user-profile-field-add,
   .user-profile-field {
     display: flex;
+    align-items: center;
     margin: 0.25em;
     border: 1px solid var(--border);
     border-radius: var(--roundness);
+    line-height: 2em;
+
+    .label {
+      margin-left: 0.5em;
+    }
+  }
+
+  .user-profile-field-add {
+    justify-content: center;
+    margin: 0.25em;
+  }
+
+  .user-profile-field {
+
+    /* stylelint-disable no-descending-specificity */
+    // input is a generic class
+    .input {
+      text-align: inherit;
+      flex: 1;
+    }
+    /* stylelint-enable no-descending-specificity */
+
+    .delete-field {
+      display: inline-block;
+      text-align: center;
+      width: 2em;
+    }
 
     .user-profile-field-name,
-    .user-profile-field-value {
+    .user-profile-field-value,
+    .user-profile-field-add {
       text-overflow: ellipsis;
       white-space: nowrap;
       overflow: hidden;
       box-sizing: border-box;
-      line-height: 2em;
+      display: inline-flex;
+
+      &.-edit {
+        padding: 0;
+
+        input {
+          font-weight: inherit;
+        }
+      }
     }
 
     .user-profile-field-name {
       flex: 0 1 50%;
       font-weight: 600;
       text-align: right;
+      justify-content: end;
       color: var(--lightText);
       min-width: 9em;
       border-right: 1px solid var(--border);
@@ -443,6 +493,91 @@
       color: var(--text);
       padding-left: 0.6em;
       margin: 0;
+    }
+  }
+}
+
+.edit-image {
+  .panel-body {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .current-avatar {
+    object-fit: contain;
+  }
+
+  .image-container {
+    display: flex;
+    align-self: center;
+    margin: 0 0 1em;
+    max-height: 30em;
+    max-width: 100%;
+    flex: 1 0 20em;
+    aspect-ratio: 1;
+    gap: 0.5em;
+
+    &.-banner {
+      aspect-ratio: 3;
+      max-width: 100%;
+    }
+
+    .new-image {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cropper {
+      flex: 1;
+      overflow-x: auto;
+    }
+
+    > * {
+      flex: 1 0 10em;
+      max-height: 100%;
+      aspect-ratio: 1;
+    }
+
+    .separator {
+      min-width: 1.1em;
+      font-size: 500%;
+      align-self: center;
+      flex: 0 1 5em;
+      aspect-ratio: unset;
+    }
+  }
+
+  &.-banner {
+    .images-container {
+      grid-template-rows: 20em 5em 20em;
+      grid-template-columns: 1fr;
+
+      > * {
+        flex: 1 0 10em;
+        width: 100%;
+        aspect-ratio: 3;
+      }
+    }
+
+    .separator {
+      min-height: 1.1em;
+      font-size: 500%;
+      justify-self: center;
+      flex: 0 1 5em;
+      aspect-ratio: unset;
+    }
+  }
+
+  #modal.-mobile & {
+    #pick-image {
+      height: 3em;
+    }
+
+    .image-container {
+      &.-banner {
+        max-height: 10em;
+      }
     }
   }
 }

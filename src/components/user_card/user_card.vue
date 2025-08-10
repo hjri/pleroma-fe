@@ -1,18 +1,17 @@
 <template>
-  <div
-    class="user-card"
-    :class="classes"
-  >
-    <div
-      :class="onClose ? '' : 'panel-heading -flexible-height'"
-      class="user-card-inner"
-    >
+  <div class="user-card">
+    <div class="user-card-inner">
       <div class="user-info">
         <div class="user-identity">
+          <div class="banner-image">
+            <img
+              :src="bannerImgSrc"
+              :class="{ 'hide-bio': hideBio }"
+            >
+          </div>
           <div
+            class="banner-overlay"
             :class="{ 'hide-bio': hideBio }"
-            :style="style"
-            class="background-image"
           />
           <a
             v-if="avatarAction === 'zoom'"
@@ -27,6 +26,23 @@
               />
             </div>
           </a>
+          <button
+            v-else-if="editable"
+            class="user-info-avatar button-unstyled -link"
+            :class="{ '-editable': editable }"
+            @click="changeAvatar"
+          >
+            <UserAvatar
+              :user="user"
+              :url="avatarImgSrc"
+            />
+            <div class="user-info-avatar -link -overlay">
+              <FAIcon
+                class="fa-scale-110 fa-old-padding"
+                icon="pencil"
+              />
+            </div>
+          </button>
           <UserAvatar
             v-else-if="typeof avatarAction === 'function'"
             class="user-info-avatar"
@@ -42,9 +58,25 @@
           </router-link>
           <div class="user-summary">
             <div class="top-line">
-              <div class="other-actions">
+              <div
+                class="other-actions"
+              >
                 <button
-                  v-if="!isOtherUser && user.is_local"
+                  v-if="editable"
+                  :disabled="newName && newName.length === 0"
+                  class="btn button-unstyled edit-banner-button"
+                  @click="changeBanner"
+                >
+                  {{ $t('settings.change_banner') }}
+                  <FAIcon
+                    fixed-width
+                    class="icon"
+                    icon="pencil"
+                    :title="$t('settings.change_banner')"
+                  />
+                </button>
+                <button
+                  v-else-if="!editable && !isOtherUser && user.is_local"
                   class="button-unstyled edit-profile-button"
                   @click.stop="openProfileTab"
                 >
@@ -72,10 +104,10 @@
                   :relationship="relationship"
                 />
                 <router-link
-                  v-if="onClose"
+                  v-if="showExpand"
                   :to="userProfileLink(user)"
                   class="button-unstyled external-link-button"
-                  @click="onClose"
+                  @click="$emit('close')"
                 >
                   <FAIcon
                     class="icon"
@@ -83,9 +115,9 @@
                   />
                 </router-link>
                 <button
-                  v-if="onClose"
+                  v-if="showClose"
                   class="button-unstyled external-link-button"
-                  @click="onClose"
+                  @click="$emit('close')"
                 >
                   <FAIcon
                     class="icon"
@@ -93,19 +125,48 @@
                   />
                 </button>
               </div>
-              <router-link
-                :to="userProfileLink(user)"
-                class="user-name"
-              >
-                <RichContent
-                  :title="user.name"
-                  :html="user.name"
-                  :emoji="user.emoji"
-                />
-              </router-link>
+              <div class="name-wrapper">
+                <router-link
+                  v-if="!editable || !editingName"
+                  :to="userProfileLink(user)"
+                  class="user-name"
+                >
+                  <RichContent
+                    :title="editable ? newName : user.name_unescaped"
+                    :html="editable ? newName : user.name_unescaped"
+                    :emoji="editable ? emoji : user.emoji"
+                  />
+                </router-link>
+                <EmojiInput
+                  v-else-if="editingName"
+                  v-model="newName"
+                  enable-emoji-picker
+                  :suggest="emojiSuggestor"
+                >
+                  <template #default="inputProps">
+                    <input
+                      id="username"
+                      v-model="newName"
+                      class="input name-changer"
+                      v-bind="propsToNative(inputProps)"
+                    >
+                  </template>
+                </EmojiInput>
+                <button
+                  v-if="editable"
+                  class="button-unstyled edit-button"
+                  :title="$t('settings.toggle_edit')"
+                  @click="editingName = !editingName"
+                >
+                  <FAIcon
+                    class="icon"
+                    icon="pencil"
+                  />
+                </button>
+              </div>
             </div>
             <div class="bottom-line">
-              <user-link
+              <UserLink
                 class="user-screen-name"
                 :user="user"
               />
@@ -242,7 +303,7 @@
       </div>
     </div>
     <div
-      v-if="loggedIn && isOtherUser && (hasNote || !hideBio) && !mergedConfig.userCardHidePersonalMarks"
+      v-if="!editable && loggedIn && isOtherUser && (hasNote || !hideBio) && !mergedConfig.userCardHidePersonalMarks"
       class="personal-marks"
     >
       <UserNote
@@ -286,102 +347,368 @@
         />
       </div>
     </div>
-    <RichContent
-      v-if="!hideBio"
-      class="user-card-bio"
-      :class="{ '-justify-left': mergedConfig.userCardLeftJustify }"
-      :html="user.description_html"
-      :emoji="user.emoji"
-      :handle-links="true"
-    />
-    <div
-      v-if="!hideBio && user.fields_html && user.fields_html.length > 0"
-      class="user-profile-fields"
-    >
-      <dl
-        v-for="(field, index) in user.fields_html"
-        :key="index"
-        class="user-profile-field"
+    <h3 v-if="editable">
+      <span>
+        {{ $t('settings.bio') }}
+      </span>
+      {{ ' ' }}
+      <button
+        class="button-default"
+        @click="editingBio = !editingBio"
       >
-        <dt
-          :title="user.fields_text[index].name"
-          class="user-profile-field-name"
-        >
-          <RichContent
-            :html="field.name"
-            :emoji="user.emoji"
+        {{ $t('settings.toggle_edit') }}
+        <FAIcon
+          class="fa-scale-110 fa-old-padding"
+          icon="pencil"
+        />
+      </button>
+    </h3>
+    <template v-if="!editable || !editingBio">
+      <RichContent
+        v-if="!hideBio"
+        class="user-card-bio"
+        :class="{ '-justify-left': mergedConfig.userCardLeftJustify }"
+        :html="editable ? newBio.replace(/\n/g, '<br>') : user.description_html"
+        :emoji="editable ? emoji : user.emoji"
+        :handle-links="true"
+      />
+    </template>
+    <template v-else-if="editingBio">
+      <EmojiInput
+        v-model="newBio"
+        enable-emoji-picker
+        class="user-card-bio"
+        :class="{ '-justify-left': mergedConfig.userCardLeftJustify }"
+        :suggest="emojiUserSuggestor"
+      >
+        <template #default="inputProps">
+          <textarea
+            v-model="newBio"
+            class="input bio resize-height"
+            v-bind="propsToNative(inputProps)"
+            :rows="newBio.split(/\n/g).length"
           />
-        </dt>
-        <dd
-          :title="user.fields_text[index].value"
-          class="user-profile-field-value"
+        </template>
+      </EmojiInput>
+    </template>
+    <h3 v-if="editable">
+      <span>
+        {{ $t('settings.profile_fields.label') }}
+      </span>
+      {{ ' ' }}
+      <button
+        class="button-default"
+        @click="editingFields = !editingFields"
+      >
+        {{ $t('settings.toggle_edit') }}
+        <FAIcon
+          class="fa-scale-110 fa-old-padding"
+          icon="pencil"
+        />
+      </button>
+    </h3>
+    <template v-if="!editable || !editingFields">
+      <div
+        v-if="!hideBio && user.fields_html && user.fields_html.length > 0"
+        class="user-profile-fields"
+      >
+        <dl
+          v-for="(field, index) in (editable ? newFields : user.fields_html)"
+          :key="index"
+          class="user-profile-field"
         >
-          <RichContent
-            :html="field.value"
-            :emoji="user.emoji"
+          <dt
+            :title="field.name"
+            class="user-profile-field-name"
+          >
+            <RichContent
+              :html="field.name"
+              :emoji="editable ? emoji : user.emoji"
+            />
+          </dt>
+          <dd
+            :title="field.value"
+            class="user-profile-field-value"
+          >
+            <RichContent
+              :html="field.value"
+              :emoji="editable ? emoji : user.emoji"
+            />
+          </dd>
+        </dl>
+      </div>
+    </template>
+    <template v-else-if="editingFields">
+      <div
+        v-if="maxFields > 0"
+        class="user-profile-fields"
+      >
+        <dl
+          v-for="(_, i) in newFields"
+          :key="i"
+          class="user-profile-field"
+        >
+          <dt
+            class="user-profile-field-name -edit"
+          >
+            <EmojiInput
+              v-model="newFields[i].name"
+              enable-emoji-picker
+              :suggest="emojiSuggestor"
+            >
+              <template #default="inputProps">
+                <input
+                  v-model="newFields[i].name"
+                  :placeholder="$t('settings.profile_fields.name')"
+                  v-bind="propsToNative(inputProps)"
+                  class="input"
+                >
+              </template>
+            </EmojiInput>
+          </dt>
+          <dd
+            class="user-profile-field-value -edit"
+          >
+            <EmojiInput
+              v-model="newFields[i].value"
+              enable-emoji-picker
+              :suggest="emojiSuggestor"
+            >
+              <template #default="inputProps">
+                <input
+                  v-model="newFields[i].value"
+                  :placeholder="$t('settings.profile_fields.value')"
+                  v-bind="propsToNative(inputProps)"
+                  class="input input"
+                >
+              </template>
+            </EmojiInput>
+            <button
+              class="delete-field button-default -hover-highlight"
+              @click="deleteField(i)"
+            >
+              <!-- TODO something is wrong with v-show here -->
+              <FAIcon
+                v-if="newFields.length > 1"
+                icon="times"
+              />
+            </button>
+          </dd>
+        </dl>
+        <button
+          v-if="newFields.length < maxFields"
+          class="user-profile-field-add add-field button-default -hover-highlight"
+          @click="addField"
+        >
+          <FAIcon
+            icon="plus"
+            class="icon"
           />
-        </dd>
-      </dl>
-    </div>
+          <span class="label">
+            {{ $t("settings.profile_fields.add_field") }}
+          </span>
+        </button>
+      </div>
+    </template>
     <div
       v-if="!hideBio"
       class="user-extras"
     >
       <span
-        v-if="!mergedConfig.hideUserStats"
+        v-if="!editable && !mergedConfig.hideUserStats"
         class="user-stats"
       >
         <dl
           v-if="!mergedConfig.hideUserStats && !hideBio"
           class="user-count"
-          @click.prevent="setProfileView('statuses')"
         >
           <dd>{{ user.statuses_count }}</dd>
           {{ ' ' }}
           <dt>{{ $t('user_card.statuses') }}</dt>
         </dl>
-        <dl
-          class="user-count"
-          @click.prevent="setProfileView('statuses')"
-        >
+        <dl class="user-count">
           <dd>{{ dailyAvg }}</dd>
           {{ ' ' }}
           <dt>{{ $t('user_card.statuses_per_day') }}</dt>
         </dl>
-        <dl
-          class="user-count"
-          @click.prevent="setProfileView('friends')"
-        >
+        <dl class="user-count">
           <dd>{{ hideFollowsCount ? $t('user_card.hidden') : user.friends_count }}</dd>
           {{ ' ' }}
           <dt>{{ $t('user_card.followees') }}</dt>
         </dl>
-        <dl
-          class="user-count"
-          @click.prevent="setProfileView('followers')"
-        >
+        <dl class="user-count">
           <dd>{{ hideFollowersCount ? $t('user_card.hidden') : user.followers_count }}</dd>
           {{ ' ' }}
           <dt>{{ $t('user_card.followers') }}</dt>
         </dl>
       </span>
-      <div
-        v-if="!hideBio && !!user.birthday"
-        class="birthday"
-      >
-        <FAIcon
-          class="fa-old-padding"
-          icon="birthday-cake"
-        />
-        {{ $t('user_card.birthday', { birthday: formattedBirthday }) }}
-      </div>
+      <template v-if="!hideBio">
+        <div
+          v-if="user.birthday && !editable"
+          class="birthday"
+        >
+          <FAIcon
+            class="fa-old-padding"
+            icon="birthday-cake"
+          />
+          {{ $t('user_card.birthday', { birthday: formattedBirthday }) }}
+        </div>
+        <div
+          v-else-if="editable"
+          class="birthday"
+        >
+          <div>
+            <Checkbox v-model="newShowBirthday">
+              {{ $t('settings.birthday.show_birthday') }}
+            </Checkbox>
+          </div>
+          <FAIcon
+            class="fa-old-padding"
+            icon="birthday-cake"
+          />
+          {{ $t('settings.birthday.label') }}
+          <input
+            id="birthday"
+            v-model="newBirthday"
+            type="date"
+            class="input birthday-input"
+          >
+        </div>
+      </template>
     </div>
+    <template v-if="editable">
+      <h3>{{ $t('settings.profile_other') }}</h3>
+      <p
+        v-if="role === 'admin' || role === 'moderator'"
+        class="user-card-setting"
+      >
+        <Checkbox v-model="newShowRole">
+          <template v-if="role === 'admin'">
+            {{ $t('settings.show_admin_badge') }}
+          </template>
+          <template v-if="role === 'moderator'">
+            {{ $t('settings.show_moderator_badge') }}
+          </template>
+        </Checkbox>
+      </p>
+      <p class="user-card-setting">
+        <label>
+          {{ $t('settings.actor_type') }}
+          <Select v-model="newActorType">
+            <option
+              v-for="option in availableActorTypes"
+              :key="option"
+              :value="option"
+            >
+              {{ $t('settings.actor_type_' + (option === 'Person' ? 'person_proper' : option)) }}
+            </option>
+          </Select>
+          <div v-if="groupActorAvailable">
+            <small>
+              {{ $t('settings.actor_type_description') }}
+            </small>
+          </div>
+        </label>
+      </p>
+      <div class="bottom-buttons">
+        <button
+          v-if="editable"
+          :disabled="!somethingToSave"
+          class="btn button-default reset-profile-button"
+          @click="resetState"
+        >
+          {{ $t('settings.reset') }}
+          <FAIcon
+            fixed-width
+            class="icon"
+            icon="clock-rotate-left"
+            :title="$t('user_card.edit_profile')"
+          />
+        </button>
+        <button
+          v-if="editable"
+          :disabled="!somethingToSave"
+          class="btn button-default save-profile-button"
+          @click="updateProfile"
+        >
+          {{ $t('settings.save') }}
+          <FAIcon
+            fixed-width
+            class="icon"
+            icon="save"
+            :title="$t('user_card.edit_profile')"
+          />
+        </button>
+      </div>
+    </template>
     <teleport to="#modal">
       <UserTimedFilterModal
         ref="timedMuteDialog"
         :user="user"
         :is-mute="true"
       />
+    </teleport>
+    <teleport to="#modal">
+      <DialogModal
+        v-if="editImage"
+        class="edit-image"
+      >
+        <template #header>
+          {{ editImage === 'avatar' ? $t('settings.change_avatar') : $t('settings.change_banner') }}
+        </template>
+        <p>
+          {{ editImage === 'avatar' ? $t('settings.avatar_size_instruction') : $t('settings.banner_size_instruction' ) }}
+        </p>
+        <div
+          class="image-container"
+          :class="{ '-banner': editImage === 'banner' }"
+        >
+          <image-cropper
+            ref="cropper"
+            class="cropper"
+            :aspect-ratio="editImage === 'avatar' ? 1 : 3"
+            @submit="submitImage"
+          />
+        </div>
+        <button
+          id="pick-image"
+          class="button-default btn"
+          type="button"
+          @click="() => $refs.cropper.pickImage()"
+        >
+          {{ $t('settings.select_picture') }}
+        </button>
+        <template #footer>
+          <button
+            class="button-default btn"
+            type="button"
+            @click="editImage = false"
+          >
+            {{ $t('image_cropper.cancel') }}
+          </button>
+          <button
+            :title="editImage === 'avatar' ? $t('settings.reset_avatar') : $t('settings.reset_banner')"
+            class="button-default btn reset-button"
+            @click="resetImage"
+          >
+            {{ editImage === 'avatar' ? $t('settings.reset_avatar') : $t('settings.reset_banner' ) }}
+          </button>
+          <button
+            class="button-default btn"
+            type="button"
+            @click="$refs.cropper.submit(false)"
+          >
+            {{ $t('image_cropper.save_without_cropping') }}
+          </button>
+          <button
+            class="button-default btn"
+            type="button"
+            @click="$refs.cropper.submit(true)"
+          >
+            {{ $t('image_cropper.save') }}
+          </button>
+        </template>
+      </DialogModal>
     </teleport>
   </div>
 </template>

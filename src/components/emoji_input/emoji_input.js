@@ -205,12 +205,6 @@ const EmojiInput = {
         return emoji.displayText
       }
     },
-    onInputScroll () {
-      this.$refs.hiddenOverlay.scrollTo({
-        top: this.input.scrollTop,
-        left: this.input.scrollLeft
-      })
-    },
     suggestionListId () {
       return `suggestions-${this.randomSeed}`
     },
@@ -239,7 +233,6 @@ const EmojiInput = {
     this.overlayStyle.fontSize = style.fontSize
     this.overlayStyle.wordWrap = style.wordWrap
     this.overlayStyle.whiteSpace = style.whiteSpace
-    this.resize()
     input.addEventListener('blur', this.onBlur)
     input.addEventListener('focus', this.onFocus)
     input.addEventListener('paste', this.onPaste)
@@ -302,6 +295,13 @@ const EmojiInput = {
     }
   },
   methods: {
+    onInputScroll (e) {
+      this.$refs.hiddenOverlay.scrollTo({
+        top: this.input.scrollTop,
+        left: this.input.scrollLeft
+      })
+      this.setCaret(e)
+    },
     triggerShowPicker () {
       this.$nextTick(() => {
         this.$refs.picker.showPicker()
@@ -560,8 +560,6 @@ const EmojiInput = {
       this.$nextTick(() => {
         this.$refs.suggestorPopover.updateStyles()
       })
-    },
-    resize () {
     },
     autoCompleteItemLabel (suggestion) {
       if (suggestion.user) {

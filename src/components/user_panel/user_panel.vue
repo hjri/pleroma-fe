@@ -8,7 +8,6 @@
       <UserCard
         :user-id="user.id"
         :hide-bio="true"
-        rounded="top"
       />
       <PostStatusForm />
     </div>
@@ -29,11 +28,19 @@
   }
 
   .user-info {
+    margin: 0.6em 0.6em 0;
+
     .Avatar {
       width: 5em;
       width: calc(min(5em, 20cqw));
       height: 5em;
       height: calc(min(5em, 20cqw));
+    }
+  }
+
+  .post-status-form {
+    form {
+      margin-top: 0;
     }
   }
 

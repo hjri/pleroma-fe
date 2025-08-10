@@ -12,10 +12,12 @@
     <template #content="{close}">
       <UserCard
         class="user-popover"
+        :show-close="true"
+        :show-expand="true"
         :user-id="userId"
         :hide-bio="true"
         :avatar-action="userPopoverAvatarAction == 'close' ? close : userPopoverAvatarAction"
-        :on-close="close"
+        @close="close"
       />
     </template>
   </Popover>
@@ -27,7 +29,11 @@
 /* popover styles load on-demand, so we need to override */
 /* stylelint-disable block-no-empty */
 .user-popover {
-  margin-bottom: 0.6em;
+  margin: 0;
+
+  .user-info {
+    margin: 1.2em;
+  }
 
   .user-identity {
     aspect-ratio: unset;
@@ -40,7 +46,6 @@
 
   &.popover {
     overflow: hidden;
-    padding: 0.6em;
   }
 }
 /* stylelint-enable block-no-empty */
