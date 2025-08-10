@@ -9,7 +9,6 @@ export default {
     // Optimization: don't put heavy components unless needed
     // 'Button',
     // 'ButtonUnstyled',
-    'RichContent',
     // 'Input',
     'Avatar',
     'PollGraph'

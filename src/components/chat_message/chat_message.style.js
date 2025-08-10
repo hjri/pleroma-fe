@@ -10,7 +10,6 @@ export default {
     'Border',
     // Optimization: don't put heavy components unless needed
     // 'Button',
-    'RichContent',
     'PollGraph'
   ],
   defaultRules: [

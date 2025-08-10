@@ -12,8 +12,7 @@ export default {
     // Optimization: don't put heavy components unless needed
     // 'Button',
     // 'ButtonUnstyled',
-    'RichContent',
-    'Input',
+    // 'Input',
     'Avatar',
     'PollGraph'
   ],
@@ -23,7 +22,6 @@ export default {
     'Icon',
     'Border',
     'ButtonUnstyled',
-    'RichContent',
     'Avatar'
   ],
   defaultRules: [

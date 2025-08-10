@@ -13,8 +13,7 @@ export default {
     // Optimization: don't put heavy components unless needed
     // 'Button',
     // 'ButtonUnstyled',
-    'RichContent',
-    'Input',
+    // 'Input',
     'Avatar'
   ],
   defaultRules: [

@@ -9,8 +9,7 @@ export default {
     // Optimization: don't put heavy components unless needed
     // 'Button',
     // 'ButtonUnstyled',
-    'Input',
-    'RichContent',
+    // 'Input',
     'Alert'
   ],
   defaultRules: [
