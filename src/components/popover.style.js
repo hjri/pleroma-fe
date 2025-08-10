@@ -14,9 +14,7 @@ export default {
     // 'Button',
     // 'ButtonUnstyled',
     // 'Input',
-    'MenuItem',
-    'Post',
-    'UserCard'
+    'MenuItem'
   ],
   defaultRules: [
     {

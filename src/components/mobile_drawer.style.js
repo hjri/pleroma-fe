@@ -10,11 +10,9 @@ export default {
     // 'Button',
     // 'ButtonUnstyled',
     // 'Input',
-    'PanelHeader',
     'MenuItem',
     'Notification',
-    'Alert',
-    'UserCard'
+    'Alert'
   ],
   defaultRules: [
     {

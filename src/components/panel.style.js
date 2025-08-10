@@ -6,30 +6,16 @@ export default {
     'Link',
     'Icon',
     'Border',
-    // Optimization: don't put heavy components unless needed
-    // 'Button',
-    // 'ButtonUnstyled',
-    // 'Input',
     'PanelHeader',
-    'MenuItem',
     'Post',
-    'Notification',
-    'Alert',
-    'UserCard',
-    'Chat',
-    'Tab',
-    'ListItem'
+    'Notification'
   ],
   validInnerComponentsLite: [
     'Text',
     'Link',
     'Icon',
     'Border',
-    // Optimization: don't put heavy components unless needed
-    // 'Button',
-    // 'Input',
-    'PanelHeader',
-    'Alert'
+    'PanelHeader'
   ],
   defaultRules: [
     {

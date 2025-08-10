@@ -86,7 +86,7 @@ export const generateTheme = (inputRuleset, callbacks, debug) => {
 
   const themes3 = init({
     inputRuleset,
-    debug
+    debug: true
   })
 
   getCssRules(themes3.eager, debug).forEach(rule => {
