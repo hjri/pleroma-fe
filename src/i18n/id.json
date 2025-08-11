@@ -23,7 +23,7 @@
         "popover": "Tooltip, menu, popover",
         "badge_notification": "Notifikasi",
         "top_bar": "Bar atas",
-        "borders": "",
+        "borders": "Batas",
         "buttons": "Tombol",
         "wallpaper": "Latar belakang",
         "panel_header": "Header panel",
@@ -32,15 +32,21 @@
         "poll": "Grafik jajak pendapat",
         "chat": {
           "incoming": "Masuk",
-          "outgoing": "Keluar"
+          "outgoing": "Keluar",
+          "border": "Batas"
         },
         "selectedPost": "Pos yang dipilih",
         "selectedMenu": "Item menu yang dipilih",
-        "inputs": "Bidang masukan"
+        "inputs": "Bidang masukan",
+        "alert": "Latar belakang peringatan",
+        "badge": "Latar belakang lencana",
+        "faint_text": "Teks buram"
       },
       "common_colors": {
         "main": "Warna umum",
-        "_tab_label": "Umum"
+        "_tab_label": "Umum",
+        "rgbo": "Ikon, aksen, lencana",
+        "foreground_hint": "Lihat bilah \"Lanjutan\" untuk pengaturan lebih banyak"
       },
       "common": {
         "contrast": {
@@ -48,7 +54,10 @@
             "text": "untuk teks",
             "18pt": "untuk teks besar (18pt+)"
           },
-          "hint": "Rasio kontras adalah {ratio}, ini adalah {level} {context}"
+          "hint": "Rasio kontras adalah {ratio}, ini adalah {level} {context}",
+          "level": {
+            "bad": "tidak memenuhi standar aksesibilitas"
+          }
         },
         "color": "Warna",
         "opacity": "Opasitas"
@@ -72,7 +81,8 @@
         "keep_fonts": "Biarkan fonta",
         "keep_opacity": "Biarkan opasitas",
         "save_load_hint": "Pilihan \"Biarkan\" akan menyimpan pilihan yang dipilih saat ini ketika memilih atau memuat tema, ini juga akan menyimpan pilihan tersebut ketika mengekspor tema. Ketika semua kotak tidak dicentang, mengekspor tema akan menyimpan semuanya.",
-        "clear_opacity": "Hapus opasitas"
+        "clear_opacity": "Hapus opasitas",
+        "keep_roundness": "Biarkan ujung bulat"
       },
       "fonts": {
         "_tab_label": "Fonta",
@@ -105,7 +115,8 @@
         "offset-x": "x:",
         "offset-y": "y:",
         "color_override": "Gunakan warna yang berbeda",
-        "override": "Timpa"
+        "override": "Timpa",
+        "blur": "Buram"
       },
       "themes3": {
         "editor": {
@@ -129,7 +140,8 @@
           "text_auto": {
             "no-preserve": "Hitam atau Putih",
             "label": "Otomatis kontras",
-            "no-auto": "Dinonaktifikan"
+            "no-auto": "Dinonaktifikan",
+            "preserve": "Biarkan warna"
           },
           "variables": {
             "type_color": "Warna",
@@ -145,7 +157,8 @@
           "style_name": "Nama gaya",
           "variant_selector": "Variasi",
           "component_tab": "Gaya komponen",
-          "main_tab": "Utama"
+          "main_tab": "Utama",
+          "border_color": "Warna garis batas"
         },
         "palette": {
           "accent": "Warna aksen",
@@ -176,18 +189,23 @@
           "group-builtin": "Fonta baku peramban",
           "lookup_local_fonts": "Muat daftar fonta yang terpasang di komputer ini",
           "local-unavailable1": "Daftar fonta yang dipasang lokal tidak tersedia",
-          "font_list_unavailable": "Gagal mendapatkan fonta yang dipasang lokal: {error}"
+          "font_list_unavailable": "Gagal mendapatkan fonta yang dipasang lokal: {error}",
+          "entry": "{fontFamily}"
         },
         "hacks": {
           "underlay_override_mode_none": "Bawaan tema",
           "underlay_override_mode_transparent": "Hapus semuanya (mungkin akan merusak beberapa tema)",
-          "forced_roundness_mode_disabled": "Gunakan bawaan tema"
+          "forced_roundness_mode_disabled": "Gunakan bawaan tema",
+          "forced_roundness_mode_nonsharp": "Paksa ujung tidak terlalu lancip (bulat 1 piksel)",
+          "forced_roundness_mode_sharp": "Paksa ujung lancip",
+          "forced_roundness_mode_round": "Paksa ujung bulat"
         }
       },
       "custom_style_used": "(Gaya kustom)",
       "custom_theme_used": "(Tema kustom)",
       "update_preview": "Pratinjau pembaruan",
-      "interface_font_user_override": "Timpa fonta yang digunakan tema atau peramban"
+      "interface_font_user_override": "Timpa fonta yang digunakan tema atau peramban",
+      "appearance_tab_note": "Perubahan di tab ini tidak akan memengaruhi tema yang digunakan, jadi tema yang diekspor akan berbeda dari apa yang dilihat di antarmuka"
     },
     "notification_setting_privacy": "Privasi",
     "notifications": "Notifikasi",
@@ -538,7 +556,19 @@
     "mute_export_button": "Ekspor daftar bisu Anda ke berkas csv",
     "import_mutes_from_a_csv_file": "Impor daftar bisu dari berkas csv",
     "added_backup": "Menambahkan cadangan baru.",
-    "follows_imported": "Daftar akun yang diikuti diimpor! Memproses mereka akan memakan waktu."
+    "follows_imported": "Daftar akun yang diikuti diimpor! Memproses mereka akan memakan waktu.",
+    "show_scrollbars": "Tampilkan bilah gulir kolom samping",
+    "conversation_display": "Gaya tampilan percakapan",
+    "notification_setting_hide_notification_contents": "Sembunyikan pengirim dan konten dari notifikasi web",
+    "commit_value_tooltip": "Belum disimpan, tekan tombol ini untuk menyimpan perubahan Anda",
+    "stop_gifs": "Jeda gambar beranimasi hingga Anda menempatkan kursor di mereka",
+    "notification_mutes": "Untuk berhenti menerima notifikasi dari seorang pengguna, gunakan pembisuan.",
+    "enable_web_push_always_show": "Selalu tampilkan notifikasi web",
+    "mention_link_show_avatar": "Tampilkan avatar pengguna di sebelah tautan",
+    "user_popover_avatar_action_open": "Buka profil",
+    "mention_link_fade_domain": "Buramkan domain (contoh: {'@'}example.org di {'@'}foo{'@'}example.org)",
+    "notification_setting_annoyance": "Gangguan",
+    "notification_setting_block_from_strangers": "Blokir notifikasi dari pengguna yang tidak Anda ikuti"
   },
   "about": {
     "mrf": {
@@ -690,7 +720,13 @@
     "delete_confirm_cancel_button": "Biarkan",
     "attachment_stop_flash": "Berhentikan pemuta Flash",
     "delete_confirm_title": "Konfirmasi penghapusan",
-    "expand": "Tampilkan"
+    "expand": "Tampilkan",
+    "show_attachment_description": "Deskripsi tinjauan (buka lampiran untuk deskripsi penuh)",
+    "move_up": "Geser lampiran ke kanan",
+    "move_down": "Geser lampiran ke kiri",
+    "more_actions": "Tindakan lebih lanjut pada status ini",
+    "show_only_conversation_under_this": "Hanya tampilkan balasan ke status ini",
+    "status_history": "Riwayat status"
   },
   "user_card": {
     "block": "Blokir",
@@ -834,7 +870,8 @@
     "accept_follow_request": "Terima permintaan mengikuti",
     "bookmark": "Markah",
     "reject_follow_request": "Tolak permintaan mengikuti",
-    "unfavorite": "Batal favorit"
+    "unfavorite": "Batal favorit",
+    "autocomplete_available": "{number} hasil tersedia. Gunakan tombol panah atas atau bawah untuk menavigasinya."
   },
   "upload": {
     "error": {
@@ -1206,7 +1243,9 @@
     "save": "Simpan tanpa pos",
     "abandon_confirm_cancel_button": "Biarkan",
     "replying": "Membalas ke {statusLink}",
-    "editing": "Menyunting {statusLink}"
+    "editing": "Menyunting {statusLink}",
+    "empty": "(Tidak ada konten)",
+    "abandon_confirm_accept_button": "Tinggalkan"
   },
   "bookmark_folders": {
     "editing_folder": "Menyunting folder {folderName}",
@@ -1268,10 +1307,17 @@
       "save_meta": "Simpan metadata",
       "global_actions": "Tindakan global",
       "reload": "Muat ulang emoji",
-      "importFS": "Impor emoji dari berkas sistem"
+      "importFS": "Impor emoji dari berkas sistem",
+      "revert_meta": "Atur balik metadata",
+      "metadata_changed": "Metadata berbeda dari yang disimpan",
+      "fallback_src": "Sumber cadangan",
+      "download_as_name_full": "Nama baru, biarkan kosong untuk gunakan balik nama lama",
+      "revert": "Atur balik",
+      "fallback_sha256": "SHA256 cadangan"
     },
     "captcha": {
-      "kocaptcha": "KoCaptcha"
+      "kocaptcha": "KoCaptcha",
+      "native": "Bawaan"
     },
     "frontend": {
       "install_version": "Pasang versi {version}",
@@ -1290,14 +1336,16 @@
       "is_default_custom": "(Baku, versi: {version})",
       "more_default_options": "Banyak pilihan pengaturan baku",
       "default_frontend_tip": "Antarmuka baku akan ditampilkan ke seluruh pengguna. Untuk sekarang, tidak bisa pengguna untuk memilih antarmuka sendiri. Jika Anda meninggalkan PleromaFE, maka Anda mungkin harus menggunakan AdminFE yang lawas untuk melakukan konfigurasi peladen hingga kami menggantinya.",
-      "default_frontend_unavail": "Pengaturan antarmuka baku tidak tersedia, dikarenakan ini memerlukan konfigurasi di basis data"
+      "default_frontend_unavail": "Pengaturan antarmuka baku tidak tersedia, dikarenakan ini memerlukan konfigurasi di basis data",
+      "build_url": "URL Build"
     },
     "window_title": "Administrasi",
     "limits": {
       "uploads": "Batas lampiran",
       "users": "Batas profil pengguna",
       "posts": "Batas pos",
-      "user_uploads": "Batas media profil"
+      "user_uploads": "Batas media profil",
+      "profile_fields": "Batas bidang profil"
     },
     "temp_overrides": {
       ":pleroma": {
@@ -1323,7 +1371,8 @@
     },
     "nodb": {
       "documentation": "dokumentasi",
-      "heading": "Konfigurasi basis data dimatikan"
+      "heading": "Konfigurasi basis data dimatikan",
+      "text2": "Banyak pengaturan yang tidak akan tersedia."
     },
     "wip_notice": "Antarmuka administrasi ini masih dalam pengembangan, {adminFeLink}"
   },
@@ -1351,14 +1400,24 @@
     "update_changelog_here": "daftar perubahan lengkap",
     "update_changelog": "Untuk informasi lebih lanjut tentang apa yang berubah, lihat {theFullChangelog}.",
     "art_by": "Gambar oleh {linkToArtist}",
-    "update_bugs_gitlab": "GitLab Pleroma"
+    "update_bugs_gitlab": "GitLab Pleroma",
+    "big_update_title": "Mohon bersabar",
+    "big_update_content": "Kami telah lama tidak ada rilisan, jadi mungkin tampilannya berbeda dari apa yang biasa dilihat.",
+    "update_bugs": "Silakan laporkan masalah ke {pleromaGitlab} karena kami telah mengubah banyak hal, dan meski kami telah tes dan menggunakan versi pengembangan, kami mungkin melewati satu atau dua hal. Kami menunggu pendapat dan laporan Anda di masalah yang ditemukan dan untuk mengembangkan Pleroma dan Pleroma-FE lebih baik."
   },
   "splash": {
     "error": "Ada sesuatu yang salah",
     "loading": "Memuat…",
-    "theme": "Menerapkan tema, silakan tunggu…"
+    "theme": "Menerapkan tema, silakan tunggu…",
+    "fun_1": "Minum dulu yuk",
+    "fun_2": "Tenang saja!",
+    "fun_3": "Suya~",
+    "fun_4": "Pleroma Saya Kuat!"
   },
   "unicode_domain_indicator": {
     "tooltip": "Domain ini mengandung karakter non-ascii."
+  },
+  "bookmarks": {
+    "manage_bookmark_folders": "Kelola folder markah"
   }
 }
