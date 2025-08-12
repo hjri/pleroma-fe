@@ -2015,6 +2015,15 @@
     estree-walker "^2.0.2"
     picomatch "^4.0.2"
 
+"@rollup/pluginutils@^5.2.0":
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/@rollup/pluginutils/-/pluginutils-5.2.0.tgz#eac25ca5b0bdda4ba735ddaca5fbf26bd435f602"
+  integrity sha512-qWJ2ZTbmumwiLFomfzTyt5Kng4hwPi9rwCYN4SHb6eaRU1KNO4ccxINHr/VhH4GgPlt1XfSTLX2LBTme8ne4Zw==
+  dependencies:
+    "@types/estree" "^1.0.0"
+    estree-walker "^2.0.2"
+    picomatch "^4.0.2"
+
 "@rollup/rollup-android-arm-eabi@4.40.2":
   version "4.40.2"
   resolved "https://registry.yarnpkg.com/@rollup/rollup-android-arm-eabi/-/rollup-android-arm-eabi-4.40.2.tgz#c228d00a41f0dbd6fb8b7ea819bbfbf1c1157a10"
@@ -2192,10 +2201,15 @@
   resolved "https://registry.yarnpkg.com/@types/cookie/-/cookie-0.6.0.tgz#eac397f28bf1d6ae0ae081363eca2f425bedf0d5"
   integrity sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==
 
-"@types/estree@1.0.7", "@types/estree@^1.0.0", "@types/estree@^1.0.6":
+"@types/estree@1.0.7", "@types/estree@^1.0.6":
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.7.tgz#4158d3105276773d5b7695cd4834b1722e4f37a8"
   integrity sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==
+
+"@types/estree@^1.0.0":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@types/estree/-/estree-1.0.8.tgz#958b91c991b1867ced318bedea0e215ee050726e"
+  integrity sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==
 
 "@types/http-proxy@^1.17.15":
   version "1.17.16"
@@ -6437,9 +6451,9 @@ picomatch@^2.0.4, picomatch@^2.2.1, picomatch@^2.3.1:
   integrity sha512-JU3teHTNjmE2VCGFzuY8EXzCDVwEqB2a8fsIvwaStHhAWJEeVd1o1QD80CU6+ZdEXXSLbSsuLwJjkCBWqRQUVA==
 
 picomatch@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-4.0.2.tgz#77c742931e8f3b8820946c76cd0c1f13730d1dab"
-  integrity sha512-M7BAV6Rlcy5u+m6oPhAPFgJTzAioX/6B0DxyvDlo9l8+T3nLKbrczg2WLUyzd45L8RqfUMyGPzekbMvX2Ldkwg==
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-4.0.3.tgz#796c76136d1eead715db1e7bad785dedd695a042"
+  integrity sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==
 
 pify@^4.0.1:
   version "4.0.1"
@@ -7934,12 +7948,12 @@ vite-node@3.1.3:
     vite "^5.0.0 || ^6.0.0"
 
 vite-plugin-eslint2@^5.0.3:
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/vite-plugin-eslint2/-/vite-plugin-eslint2-5.0.3.tgz#677b6563e00b96fdc4f3f2ea49e2e2008430ca52"
-  integrity sha512-kbjjbSyxSYK1oK0kOnSVs2er8DhqNbVA5pNN21SJo8AldQIOgG4LVQvwp6ISYMDXQaaBMOCrmXFTfGkQUjIZ1g==
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/vite-plugin-eslint2/-/vite-plugin-eslint2-5.0.4.tgz#7276c9179742d3c19faa94f30f9eb5cb7ac04888"
+  integrity sha512-3Yc7K2R/RrONB9JtwEh2Y40YP3tQi/3UiNHrwcYDsDBKDKnEu7B8PwmXLm7piDFRbxcnTPvgrV2LZnBpKP8JUw==
   dependencies:
-    "@rollup/pluginutils" "^5.1.3"
-    debug "^4.3.7"
+    "@rollup/pluginutils" "^5.2.0"
+    debug "^4.4.1"
 
 vite-plugin-stylelint@^6.0.0:
   version "6.0.0"
