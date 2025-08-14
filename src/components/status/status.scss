@@ -76,9 +76,10 @@
   }
 
   .status-favicon {
-    height: 18px;
-    width: 18px;
+    height: 1.2em;
+    width: 1.2em;
     margin-right: 0.4em;
+    object-fit: contain;
   }
 
   .status-heading {
@@ -100,7 +101,8 @@
   }
 
   .account-name {
-    min-width: 1.6em;
+    display: inline-block;
+    min-width: 1em;
     margin-right: 0.4em;
     white-space: nowrap;
     overflow: hidden;
@@ -119,8 +121,8 @@
     align-self: baseline;
 
     .button-unstyled {
-      padding: 5px;
-      margin: -5px;
+      padding: 0.2em;
+      margin: -0.2em;
     }
 
     .svg-inline--fa {
