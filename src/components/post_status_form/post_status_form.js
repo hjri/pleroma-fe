@@ -726,10 +726,6 @@ const PostStatusForm = {
         scrollerRef.scrollTop = targetScroll
       }
     },
-    showEmojiPicker () {
-      this.$refs.textarea.focus()
-      this.$refs['emoji-input'].triggerShowPicker()
-    },
     clearError () {
       this.error = null
     },

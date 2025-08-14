@@ -184,7 +184,6 @@
             class="input form-control main-input unstyled"
             enable-sticker-picker
             enable-emoji-picker
-            hide-emoji-button
             :newline-on-ctrl-enter="submitOnEnter"
             @input="onEmojiInputInput"
             @sticker-uploaded="addMediaFile"
@@ -288,13 +287,6 @@
             @upload-failed="uploadFailed"
             @all-uploaded="finishedUploadingFiles"
           />
-          <button
-            class="emoji-icon button-unstyled"
-            :title="$t('emoji.add_emoji')"
-            @click="showEmojiPicker"
-          >
-            <FAIcon icon="smile-beam" />
-          </button>
           <button
             v-if="pollsAvailable"
             class="poll-icon button-unstyled"
