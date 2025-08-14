@@ -53,6 +53,7 @@ const StatusContent = {
   props: [
     'status',
     'compact',
+    'collapse',
     'focused',
     'noHeading',
     'fullContent',

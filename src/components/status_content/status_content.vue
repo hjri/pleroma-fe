@@ -14,7 +14,7 @@
       :toggle-showing-tall="toggleShowingTall"
       :toggle-expanding-subject="toggleExpandingSubject"
       :toggle-showing-long-subject="toggleShowingLongSubject"
-      :collapse="true"
+      :collapse="collapse"
       @parse-ready="$emit('parseReady', $event)"
     >
       <div v-if="status.poll && status.poll.options && !compact">

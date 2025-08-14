@@ -64,6 +64,7 @@ const Notification = {
   },
   methods: {
     toggleStatusExpanded () {
+      if (!this.expandable) return
       this.statusExpanded = !this.statusExpanded
     },
     generateUserProfileLink (user) {
@@ -135,6 +136,9 @@ const Notification = {
       const highlight = this.$store.getters.mergedConfig.highlight
       const user = this.notification.from_profile
       return highlightStyle(highlight[user.screen_name])
+    },
+    expandable () {
+      return (new Set(['like', '-pleroma:emoji_reaction', 'repeat'])).has(this.notification.type)
     },
     user () {
       return this.$store.getters.findUser(this.notification.from_profile.id)

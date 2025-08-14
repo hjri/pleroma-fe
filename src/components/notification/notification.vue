@@ -9,9 +9,17 @@
       @interacted="interacted"
     />
   </article>
-  <article v-else>
+  <article
+    class="NotificationParent"
+    :class="{ '-expandable': expandable }"
+    :aria-controls="'notif-' +notification.id"
+    @click="toggleStatusExpanded()"
+    v-else
+  >
     <div
       v-if="needMute && !unmuted"
+      :id="'notif-' +notification.id"
+      :aria-expanded="statusExpanded"
       class="Notification container -muted"
     >
       <small>
@@ -247,7 +255,7 @@
           <StatusContent
             :compact="!statusExpanded"
             :status="notification.status"
-            :collapse="true"
+            :collapse="statusExpanded"
           />
         </template>
       </div>
