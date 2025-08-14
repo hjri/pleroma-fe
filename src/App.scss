@@ -929,12 +929,7 @@ option {
 
 #splash {
   pointer-events: none;
-  transition: opacity 0.5s;
-  opacity: 1;
-
-  &.hidden {
-    opacity: 0;
-  }
+  // transition: opacity 0.5s;
 
   #status {
     &.css-ok {

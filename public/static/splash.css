@@ -21,6 +21,13 @@ body {
   position: absolute;
   z-index: 9999;
   font-size: calc(1vw + 1vh + 1vmin);
+  opacity: 1;
+  transition: opacity 500ms ease-out 0.5s;
+}
+
+#splash.hidden,
+#splash.initial-hidden {
+  opacity: 0;
 }
 
 #splash-credit {
