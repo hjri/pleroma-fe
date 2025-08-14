@@ -116,6 +116,7 @@
   .heading-right {
     display: flex;
     flex-shrink: 0;
+    align-self: baseline;
 
     .button-unstyled {
       padding: 5px;
