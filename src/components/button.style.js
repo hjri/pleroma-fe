@@ -53,6 +53,18 @@ export default {
       }
     },
     {
+      variant: 'danger',
+      directives: {
+        background: '--cRed'
+      }
+    },
+    {
+      variant: 'transparent',
+      directives: {
+        opacity: 0.5
+      }
+    },
+    {
       state: ['hover'],
       directives: {
         shadow: ['--buttonDefaultHoverGlow', '--buttonDefaultBevel']
