@@ -42,6 +42,7 @@ export const createStyleSheet = (id, priority = 1000) => {
 
 
 export const adoptStyleSheets = throttle(() => {
+  console.log('adopt')
   if (supportsAdoptedStyleSheets) {
     document.adoptedStyleSheets = Object
       .values(stylesheets)
@@ -86,7 +87,7 @@ export const generateTheme = (inputRuleset, callbacks, debug) => {
 
   const themes3 = init({
     inputRuleset,
-    debug: true
+    debug
   })
 
   getCssRules(themes3.eager, debug).forEach(rule => {
@@ -137,8 +138,7 @@ export const tryLoadCache = async () => {
       eagerStyles.ready = true
       lazyStyles.ready = true
 
-      // Don't do this, we need to wait until config adopts its styles first
-      //adoptStyleSheets()
+      adoptStyleSheets()
 
       console.info(`Loaded theme from cache`)
       return true
@@ -253,6 +253,7 @@ export const applyConfig = (input) => {
 
   const styleSheet = createStyleSheet('theme-holder', 30)
 
+  styleSheet.clear()
   styleSheet.addRule(`:root { ${rules} }`)
 
   // TODO find a way to make this not apply to theme previews
