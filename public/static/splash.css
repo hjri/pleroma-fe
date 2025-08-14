@@ -5,15 +5,14 @@ body {
 
 #splash {
   --scale: 1;
+
   width: 100vw;
   height: 100vh;
   display: grid;
   grid-template-rows: auto;
   grid-template-columns: auto;
   align-content: center;
-  align-items: center;
-  justify-content: center;
-  justify-items: center;
+  place-items: center;
   flex-direction: column;
   background: #0f161e;
   font-family: sans-serif;
@@ -22,7 +21,7 @@ body {
   z-index: 9999;
   font-size: calc(1vw + 1vh + 1vmin);
   opacity: 1;
-  transition: opacity 500ms ease-out 0.5s;
+  transition: opacity 500ms ease-out 2s;
 }
 
 #splash.hidden,
@@ -32,9 +31,9 @@ body {
 
 #splash-credit {
   position: absolute;
-  font-size: 14px;
-  bottom: 16px;
-  right: 16px;
+  font-size: 1em;
+  bottom: 1em;
+  right: 1em;
 }
 
 #splash-container {
