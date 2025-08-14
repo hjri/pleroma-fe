@@ -212,6 +212,10 @@
                 drop-shadow(0 0 0.2em var(--profileTint));
       }
 
+      &.edit-banner-button {
+        width: auto;
+      }
+
       &:hover .icon {
         color: var(--textFaint);
       }
