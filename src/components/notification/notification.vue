@@ -247,6 +247,7 @@
           <StatusContent
             :compact="!statusExpanded"
             :status="notification.status"
+            :collapse="true"
           />
         </template>
       </div>

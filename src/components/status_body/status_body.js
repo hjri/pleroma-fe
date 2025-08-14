@@ -22,6 +22,7 @@ const StatusContent = {
   name: 'StatusContent',
   props: [
     'compact',
+    'collapse', // replaces newlines with spaces
     'status',
     'focused',
     'noHeading',
@@ -94,6 +95,9 @@ const StatusContent = {
     },
     attachmentTypes () {
       return this.status.attachments.map(file => fileType.fileType(file.mimetype))
+    },
+    collapsedStatus () {
+      return this.status.raw_html.replace(/(\n|<br\s?\/?>)/g, ' ')
     },
     ...mapGetters(['mergedConfig'])
   },

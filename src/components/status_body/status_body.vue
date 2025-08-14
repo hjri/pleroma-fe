@@ -38,7 +38,7 @@
           v-if="!hideSubjectStatus && !(singleLine && status.summary_raw_html)"
           :class="{ '-single-line': singleLine }"
           class="text media-body"
-          :html="status.raw_html"
+          :html="collapse ? collapsedStatus : status.raw_html"
           :emoji="status.emojis"
           :handle-links="true"
           :faint="compact"
