@@ -172,7 +172,7 @@
                 :disabled="posting && !optimisticPosting"
                 v-bind="propsToNative(inputProps)"
                 size="1"
-                class="input form-post-subject"
+                class="input form-post-subject unstyled"
               >
             </template>
           </EmojiInput>
@@ -237,7 +237,7 @@
           >
             <Select
               v-model="newStatus.contentType"
-              class="input form-control"
+              class="input form-control unstyled"
               :attrs="{ 'aria-label': $t('post_status.content_type_selection') }"
               unstyled="true"
             >
