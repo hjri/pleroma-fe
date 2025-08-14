@@ -216,6 +216,10 @@
     position: relative;
   }
 
+  .subject-input {
+    border-bottom: 1px solid var(--border);
+  }
+
   .character-counter {
     position: absolute;
     bottom: 0;

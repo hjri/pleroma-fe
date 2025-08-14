@@ -156,67 +156,69 @@
             class="preview-status"
           />
         </div>
-        <EmojiInput
-          v-if="!disableSubject && (newStatus.spoilerText || alwaysShowSubject)"
-          v-model="newStatus.spoilerText"
-          enable-emoji-picker
-          :suggest="emojiSuggestor"
-          class="input form-control"
-        >
-          <template #default="inputProps">
-            <input
-              v-model="newStatus.spoilerText"
-              type="text"
-              :placeholder="$t('post_status.content_warning')"
-              :disabled="posting && !optimisticPosting"
-              v-bind="propsToNative(inputProps)"
-              size="1"
-              class="input form-post-subject"
-            >
-          </template>
-        </EmojiInput>
-        <EmojiInput
-          ref="emoji-input"
-          v-model="newStatus.status"
-          :suggest="emojiUserSuggestor"
-          :placement="emojiPickerPlacement"
-          class="input form-control main-input"
-          enable-sticker-picker
-          enable-emoji-picker
-          hide-emoji-button
-          :newline-on-ctrl-enter="submitOnEnter"
-          @input="onEmojiInputInput"
-          @sticker-uploaded="addMediaFile"
-          @sticker-upload-failed="uploadFailed"
-          @shown="handleEmojiInputShow"
-        >
-          <template #default="inputProps">
-            <textarea
-              ref="textarea"
-              v-model="newStatus.status"
-              :placeholder="placeholder || $t('post_status.default')"
-              rows="1"
-              cols="1"
-              :disabled="posting && !optimisticPosting"
-              class="input form-post-body"
-              :class="{ 'scrollable-form': !!maxHeight }"
-              v-bind="propsToNative(inputProps)"
-              @keydown.exact.enter="submitOnEnter && postStatus($event, newStatus)"
-              @keydown.meta.enter="postStatus($event, newStatus)"
-              @keydown.ctrl.enter="!submitOnEnter && postStatus($event, newStatus)"
-              @input="resize"
-              @compositionupdate="resize"
-              @paste="paste"
-            />
-            <p
-              v-if="hasStatusLengthLimit"
-              class="character-counter faint"
-              :class="{ error: isOverLengthLimit }"
-            >
-              {{ charactersLeft }}
-            </p>
-          </template>
-        </EmojiInput>
+        <div class="input">
+          <EmojiInput
+            v-if="!disableSubject && (newStatus.spoilerText || alwaysShowSubject)"
+            v-model="newStatus.spoilerText"
+            enable-emoji-picker
+            :suggest="emojiSuggestor"
+            class="input form-control subject-input unstyled"
+          >
+            <template #default="inputProps">
+              <input
+                v-model="newStatus.spoilerText"
+                type="text"
+                :placeholder="$t('post_status.content_warning')"
+                :disabled="posting && !optimisticPosting"
+                v-bind="propsToNative(inputProps)"
+                size="1"
+                class="input form-post-subject"
+              >
+            </template>
+          </EmojiInput>
+          <EmojiInput
+            ref="emoji-input"
+            v-model="newStatus.status"
+            :suggest="emojiUserSuggestor"
+            :placement="emojiPickerPlacement"
+            class="input form-control main-input unstyled"
+            enable-sticker-picker
+            enable-emoji-picker
+            hide-emoji-button
+            :newline-on-ctrl-enter="submitOnEnter"
+            @input="onEmojiInputInput"
+            @sticker-uploaded="addMediaFile"
+            @sticker-upload-failed="uploadFailed"
+            @shown="handleEmojiInputShow"
+          >
+            <template #default="inputProps">
+              <textarea
+                ref="textarea"
+                v-model="newStatus.status"
+                :placeholder="placeholder || $t('post_status.default')"
+                rows="1"
+                cols="1"
+                :disabled="posting && !optimisticPosting"
+                class="input form-post-body"
+                :class="{ 'scrollable-form': !!maxHeight }"
+                v-bind="propsToNative(inputProps)"
+                @keydown.exact.enter="submitOnEnter && postStatus($event, newStatus)"
+                @keydown.meta.enter="postStatus($event, newStatus)"
+                @keydown.ctrl.enter="!submitOnEnter && postStatus($event, newStatus)"
+                @input="resize"
+                @compositionupdate="resize"
+                @paste="paste"
+              />
+              <p
+                v-if="hasStatusLengthLimit"
+                class="character-counter faint"
+                :class="{ error: isOverLengthLimit }"
+              >
+                {{ charactersLeft }}
+              </p>
+            </template>
+          </EmojiInput>
+        </div>
         <div
           v-if="!disableScopeSelector"
           class="visibility-tray"
@@ -238,6 +240,7 @@
               v-model="newStatus.contentType"
               class="input form-control"
               :attrs="{ 'aria-label': $t('post_status.content_type_selection') }"
+              unstyled="true"
             >
               <option
                 v-for="postFormat in postFormats"

@@ -1,7 +1,7 @@
 <template>
   <div
     ref="root"
-    class="input emoji-input"
+    class="emoji-input"
     :class="{ 'with-picker': !hideEmojiButton }"
   >
     <slot
