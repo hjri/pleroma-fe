@@ -244,9 +244,6 @@ export const convertTheme2To3 = (data) => {
         case 'tooltip':
           rule.component = 'Popover'
           break
-        case 'attachment':
-          rule.component = 'Attachment'
-          break
         case 'ChatMessage':
           rule.component = 'Button'
           break

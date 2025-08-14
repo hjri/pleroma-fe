@@ -4,11 +4,7 @@ export default {
   validInnerComponents: [
     'Text',
     'Icon',
-    'Input',
-    'Border',
-    'ButtonUnstyled',
-    'Badge',
-    'Avatar'
+    'Border'
   ],
   states: {
     hover: ':is(:hover, :focus-visible, :has(:focus-visible)):not(.disabled)',

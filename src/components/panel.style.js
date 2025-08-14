@@ -6,29 +6,17 @@ export default {
     'Link',
     'Icon',
     'Border',
-    'Button',
-    'ButtonUnstyled',
-    'Input',
     'PanelHeader',
-    'MenuItem',
     'Post',
     'Notification',
-    'Alert',
-    'UserCard',
-    'Chat',
-    'Attachment',
-    'Tab',
-    'ListItem'
+    'MenuItem'
   ],
   validInnerComponentsLite: [
     'Text',
     'Link',
     'Icon',
     'Border',
-    'Button',
-    'Input',
-    'PanelHeader',
-    'Alert'
+    'PanelHeader'
   ],
   defaultRules: [
     {

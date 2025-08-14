@@ -10,7 +10,7 @@ export default {
     // normal: '' // normal state is implicitly added, it is always included
     toggled: '.toggled',
     focused: ':focus-within',
-    pressed: ':focus:active',
+    pressed: ':active',
     hover: ':is(:hover, :focus-visible):not(:disabled)',
     disabled: ':disabled'
   },
@@ -18,7 +18,8 @@ export default {
   variants: {
     // Variants save on computation time since adding new variant just adds one more "set".
     // normal: '', // you can override normal variant, it will be appenended to the main class
-    danger: '.danger'
+    danger: '.-danger',
+    transparent: '.-transparent'
     // Overall the compuation difficulty is N*((1/6)M^3+M) where M is number of distinct states and N is number of variants.
     // This (currently) is further multipled by number of places where component can exist.
   },
@@ -49,6 +50,18 @@ export default {
         background: '--fg',
         shadow: ['--buttonDefaultShadow', '--buttonDefaultBevel'],
         roundness: 3
+      }
+    },
+    {
+      variant: 'danger',
+      directives: {
+        background: '--cRed'
+      }
+    },
+    {
+      variant: 'transparent',
+      directives: {
+        opacity: 0.5
       }
     },
     {
