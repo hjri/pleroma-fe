@@ -272,6 +272,11 @@
     // big one
     z-index: 1;
     line-height: 2em;
+    text-shadow:
+      0 0 5em var(--profileTint),
+      0 0 1em var(--profileTint),
+      0 0 0.5em var(--profileTint),
+      0 0 0.2em var(--profileTint);
 
     --emoji-size: 1.7em;
 
