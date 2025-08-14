@@ -206,10 +206,10 @@
       padding: 0.6em;
       margin: -0.6em;
 
-      &.save-profile-button,
-      &.reset-profile-button,
-      &.edit-banner-button {
-        width: auto;
+      .icon {
+        filter: drop-shadow(0 0 5em var(--profileTint))
+                drop-shadow(0 0 0.5em var(--profileTint))
+                drop-shadow(0 0 0.2em var(--profileTint));
       }
 
       &:hover .icon {
@@ -273,10 +273,14 @@
     z-index: 1;
     line-height: 2em;
     text-shadow:
-      0 0 5em var(--profileTint),
       0 0 1em var(--profileTint),
       0 0 0.5em var(--profileTint),
       0 0 0.2em var(--profileTint);
+
+    .alert {
+      text-shadow: none;
+    }
+
 
     --emoji-size: 1.7em;
 
