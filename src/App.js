@@ -214,6 +214,9 @@ export default {
       splashscreenRoot.addEventListener('transitionend', () => {
         splashscreenRoot.remove()
       })
+      setTimeout(() => {
+        splashscreenRoot.remove() // forcibly remove it, should fix my plasma browser widget t. HJ
+      }, 600)
       splashscreenRoot.classList.add('hidden')
       document.querySelector('#app').classList.remove('hidden')
     }
