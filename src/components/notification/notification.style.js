@@ -6,12 +6,7 @@ export default {
     'Link',
     'Icon',
     'Border',
-    'Button',
-    'ButtonUnstyled',
-    'RichContent',
-    'Input',
     'Avatar',
-    'Attachment',
     'PollGraph'
   ],
   defaultRules: []

@@ -111,15 +111,20 @@
     }
   }
 
-  .banner-overlay,
-  .banner-image {
+  .header-overlay {
     position: absolute;
     inset: 0;
     right: -1.2em;
     left: -1.2em;
     top: -1.4em;
-    padding: 0;
     mask: linear-gradient(to top, transparent 0, white 5em) bottom no-repeat;
+  }
+
+  .banner-overlay,
+  .banner-image {
+    position: absolute;
+    inset: 0;
+    padding: 0;
     border-top-left-radius: calc(var(--roundness) - 1px);
     border-top-right-radius: calc(var(--roundness) - 1px);
   }
@@ -136,6 +141,7 @@
 
   .banner-overlay {
     background-color: var(--profileTint);
+    opacity: 0.5;
     pointer-events: none; // let user copy bg url
     z-index: -1;
   }

@@ -3,16 +3,18 @@
     <div class="user-card-inner">
       <div class="user-info">
         <div class="user-identity">
-          <div class="banner-image">
-            <img
-              :src="bannerImgSrc"
+          <div class="header-overlay">
+            <div class="banner-image">
+              <img
+                :src="bannerImgSrc"
+                :class="{ 'hide-bio': hideBio }"
+              >
+            </div>
+            <div
+              class="banner-overlay"
               :class="{ 'hide-bio': hideBio }"
-            >
+            />
           </div>
-          <div
-            class="banner-overlay"
-            :class="{ 'hide-bio': hideBio }"
-          />
           <a
             v-if="avatarAction === 'zoom'"
             class="user-info-avatar -link"

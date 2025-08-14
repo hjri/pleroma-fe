@@ -9,22 +9,8 @@ export default {
     'Link',
     'Icon',
     'Border',
-    'Button',
-    'ButtonUnstyled',
-    'RichContent',
-    'Input',
     'Avatar',
-    'Attachment',
     'PollGraph'
-  ],
-  validInnerComponentsLite: [
-    'Text',
-    'Link',
-    'Icon',
-    'Border',
-    'ButtonUnstyled',
-    'RichContent',
-    'Avatar'
   ],
   defaultRules: [
     {
