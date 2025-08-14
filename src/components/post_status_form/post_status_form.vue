@@ -156,7 +156,7 @@
             class="preview-status"
           />
         </div>
-        <div class="input">
+        <div class="input inputs-wrapper">
           <EmojiInput
             v-if="!disableSubject && (newStatus.spoilerText || alwaysShowSubject)"
             v-model="newStatus.spoilerText"
