@@ -41,7 +41,7 @@
   display: inline-block;
   position: relative;
   width: 3.5em;
-  height: 48px;
+  height: 3.5em;
 
   &.-compact {
     width: 2.2em;
