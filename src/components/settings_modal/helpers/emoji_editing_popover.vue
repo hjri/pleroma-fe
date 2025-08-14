@@ -229,8 +229,8 @@ export default {
     padding-bottom: 0.5em;
 
     .emoji {
-      width: 32px;
-      height: 32px;
+      width: 2.3em;
+      height: 2.3em;
     }
   }
 </style>

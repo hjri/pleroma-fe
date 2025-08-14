@@ -168,7 +168,7 @@ $modal-view-button-icon-margin: 0.5em;
     flex: 0 0 auto;
     overflow-y: auto;
     min-height: 1em;
-    max-width: 500px;
+    max-width: 35.8em;
     max-height: 9.5em;
     overflow-wrap: break-word;
     text-wrap: pretty;

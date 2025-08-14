@@ -741,17 +741,17 @@ option {
   }
 
   &.-dot {
-    min-height: 8px;
-    max-height: 8px;
-    min-width: 8px;
-    max-width: 8px;
+    min-height: 0.6em;
+    max-height: 0.6em;
+    min-width: 0.6em;
+    max-width: 0.6em;
     padding: 0;
     line-height: 0;
     font-size: 0;
-    left: calc(50% - 4px);
-    top: calc(50% - 4px);
-    margin-left: 6px;
-    margin-top: -6px;
+    left: calc(50% - 0.6em);
+    top: calc(50% - 0.6em);
+    margin-left: 0.4em;
+    margin-top: -0.4em;
   }
 
   &.-counter {
