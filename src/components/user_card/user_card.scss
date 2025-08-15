@@ -205,9 +205,6 @@
       line-height: 2em;
       padding: 0.6em;
       margin: -0.6em;
-      filter: drop-shadow(0 0 5em var(--profileTint))
-              drop-shadow(0 0 0.5em var(--profileTint))
-              drop-shadow(0 0 0.2em var(--profileTint));
 
       &.edit-banner-button {
         width: auto;
@@ -273,10 +270,9 @@
     // big one
     z-index: 1;
     line-height: 2em;
-    text-shadow:
-      0 0 1em var(--profileTint),
-      0 0 0.5em var(--profileTint),
-      0 0 0.2em var(--profileTint);
+    filter: drop-shadow(0 0 5em var(--profileTint))
+            drop-shadow(0 0 0.5em var(--profileTint))
+            drop-shadow(0 0 0.2em var(--profileTint));
 
     .alert {
       text-shadow: none;
@@ -343,6 +339,7 @@
       font-size: 0.9em;
       font-size: calc(max(90%, 2.5cqw));
       line-height: 1.5;
+      margin-top: 0.5em;
     }
 
     .lock-icon {
