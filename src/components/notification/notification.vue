@@ -252,6 +252,7 @@
         />
         <template v-else>
           <StatusContent
+            class="status-content"
             :compact="!statusExpanded"
             :status="notification.status"
             :collapse="statusExpanded"

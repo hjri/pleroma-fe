@@ -1,9 +1,4 @@
 // TODO Copypaste from Status, should unify it somehow
-.NotificationParent {
-  &.-expandable {
-    cursor: pointer;
-  }
-}
 
 .Notification {
   border-bottom: 1px solid;
@@ -11,6 +6,9 @@
   overflow-wrap: break-word;
   text-wrap: pretty;
 
+  .status-content {
+    cursor: pointer;
+  }
 
   &.Status {
     /* stylelint-disable-next-line declaration-no-important */
