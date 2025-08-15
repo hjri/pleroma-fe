@@ -12,13 +12,13 @@
   <article
     class="NotificationParent"
     :class="{ '-expandable': expandable }"
-    :aria-controls="'notif-' +notification.id"
     v-else
   >
     <div
       v-if="needMute && !unmuted"
       :id="'notif-' +notification.id"
       :aria-expanded="statusExpanded"
+      :aria-controls="'notif-' +notification.id"
       class="Notification container -muted"
     >
       <small>
