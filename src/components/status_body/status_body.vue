@@ -57,32 +57,6 @@
             @click.prevent="toggleShowMore"
           >
             {{ toggleText }}
-            <template v-if="!showingMore">
-              <FAIcon
-                v-if="attachmentTypes.includes('image')"
-                icon="image"
-              />
-              <FAIcon
-                v-if="attachmentTypes.includes('video')"
-                icon="video"
-              />
-              <FAIcon
-                v-if="attachmentTypes.includes('audio')"
-                icon="music"
-              />
-              <FAIcon
-                v-if="attachmentTypes.includes('unknown')"
-                icon="file"
-              />
-              <FAIcon
-                v-if="status.poll && status.poll.options"
-                icon="poll-h"
-              />
-              <FAIcon
-                v-if="status.card"
-                icon="link"
-              />
-            </template>
           </button>
         </div>
       </div>
