@@ -24,7 +24,7 @@
         />
       </div>
 
-      <div v-else-if="status.poll && status.poll.options && compact">
+      <div class="poll-icon" v-else-if="status.poll && status.poll.options && compact">
         <FAIcon
           icon="poll-h"
           size="2x"
@@ -63,5 +63,9 @@
 .StatusContent {
   flex: 1;
   min-width: 0;
+
+  .poll-icon {
+    margin: 0.5em;
+  }
 }
 </style>
