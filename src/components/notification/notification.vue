@@ -13,7 +13,6 @@
     class="NotificationParent"
     :class="{ '-expandable': expandable }"
     :aria-controls="'notif-' +notification.id"
-    @click="toggleStatusExpanded()"
     v-else
   >
     <div
@@ -256,6 +255,7 @@
             :compact="!statusExpanded"
             :status="notification.status"
             :collapse="statusExpanded"
+            @click="toggleStatusExpanded()"
           />
         </template>
       </div>
