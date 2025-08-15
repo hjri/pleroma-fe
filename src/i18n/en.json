@@ -1223,7 +1223,8 @@
       "delete_title": "Delete?",
       "metadata_changed": "Metadata different from saved",
       "emoji_changed": "Unsaved emoji file changes, check highlighted emoji",
-      "replace_warning": "This will REPLACE the local pack of the same name"
+      "replace_warning": "This will REPLACE the local pack of the same name",
+      "copied_successfully": "Successfully copied emoji \"{0}\" to pack \"{1}\""
     },
     "temp_overrides": {
       ":pleroma": {
