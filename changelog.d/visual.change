@@ -2,3 +2,4 @@ Combined subject and content fields in post form (visually)
 Fixes for some elements not scaling with user UI scale
 Moved post form's emoji button into input field
 Minor visual changes and fixes
+Clicking on fav/rt/emoji notifications' contents expands/collapses it
