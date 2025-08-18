@@ -2,6 +2,7 @@ import BasicUserCard from '../../basic_user_card/basic_user_card.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import PageList from 'src/components/page_list/page_list.vue'
 import AdminStatusCard from 'src/components/settings_modal/admin_tabs/admin_status_card.vue'
+import Modal from 'src/components/modal/modal.vue'
 
 const AdminCard = {
   props: {
@@ -80,6 +81,7 @@ const AdminCard = {
     Checkbox,
     PageList,
     AdminStatusCard,
+    Modal
   },
   methods: {
     toggleAdmin (v) {

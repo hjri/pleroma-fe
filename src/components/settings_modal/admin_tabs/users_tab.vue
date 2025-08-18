@@ -1,35 +1,32 @@
 <template>
   <div :label="$t('admin_dash.users.management')">
-    <div class="setting-item">
-      <h2> {{ $t('admin_dash.users.title_filter_user_search') }} </h2>
-      <ul
-        class="setting-list"
-      >
+    <div
+      class="setting-item"
+    >
+      <h2> {{ $t('admin_dash.users.title_users') }} </h2>
+      <ul class="setting-list">
         <li>
+          <label class="query-label"> {{ $t('admin_dash.users.label_query') }} </label>
           <input
             v-model="filtersQuery"
-            :placeholder="$t('admin_dash.users.placeholder_query')"
-            class="input string-input"
+            class="input string-input filter-input"
             @input="reset()"
           >
-        </li>
-        <li>
+          <label class="query-label"> {{ $t('admin_dash.users.label_name') }} </label>
           <input
             v-model="filtersName"
-            :placeholder="$t('admin_dash.users.placeholder_name')"
-            class="input string-input"
+            class="input string-input filter-input"
             @input="reset()"
           >
-        </li>
-        <li>
+          <label class="query-label"> {{ $t('admin_dash.users.label_email') }} </label>
           <input
             v-model="filtersEmail"
-            :placeholder="$t('admin_dash.users.placeholder_email')"
-            class="input string-input"
+            class="input string-input filter-input"
             @input="reset()"
           >
         </li>
         <li>
+          <label class="query-label"> {{ $t('admin_dash.users.label_origin') }} </label>
           <Select
             v-model="filtersOrigin"
             @update:model-value="reset"
@@ -50,8 +47,7 @@
               {{ $t('admin_dash.users.only_external') }}
             </option>
           </Select>
-        </li>
-        <li>
+          <label class="query-label"> {{ $t('admin_dash.users.label_activity') }} </label>
           <Select
             v-model="filtersActivity"
             @update:model-value="reset"
@@ -72,10 +68,9 @@
               {{ $t('admin_dash.users.only_deactivated') }}
             </option>
           </Select>
-        </li>
-        <li>
+          <label class="query-label"> {{ $t('admin_dash.users.label_privileges') }} </label>
           <Select
-            v-model="filtersPermission"
+            v-model="filtersPrivileges"
             @update:model-value="reset"
           >
             <option
@@ -102,33 +97,19 @@
         </li>
         <li>
           <Checkbox
-            @update:model-value="v => {filtersNneedApproval = v; reset();}"
+            class="query-label"
+            @update:model-value="v => {filtersNeedApproval = v; reset();}"
           >
             {{ $t('admin_dash.users.only_unapproved') }}
           </Checkbox>
-        </li>
-        <li>
           <Checkbox
-            @update:model-value="v => {filtersUnconfirmed = v; reset();}"
+            class="query-label"
+            @update:model-value="v => {filtersUncomfirmed = v; reset();}"
           >
             {{ $t('admin_dash.users.only_unconfirmed') }}
           </Checkbox>
         </li>
-        <li>
-          <button
-            class="button button-default btn"
-            type="button"
-            @click="reset"
-          >
-            {{ $t('admin_dash.users.refresh') }}
-          </button>
-        </li>
       </ul>
-    </div>
-    <div
-      class="setting-item"
-    >
-      <h2> {{ $t('admin_dash.users.title_users') }} </h2>
       <PageList
         ref="userList"
         :refresh="true"
@@ -138,33 +119,179 @@
         :fetch-page="(store, opts) => fetchPage(store, opts)"
       >
         <template #header>
-          <button
-            class="button button-default btn"
-            type="button"
-            @click="activateSelection"
+          <Popover
+            ref="dropdown"
+            trigger="click"
+            placement="bottom"
           >
-            {{ $t('admin_dash.users.activate') }}
-          </button>
-          <button
-            class="button button-default btn"
-            type="button"
-            @click="deactivateSelection"
-          >
-            {{ $t('admin_dash.users.deactivate') }}
-          </button>
-          <button
-            class="button button-default btn"
-            type="button"
-            @click="deleteSelection"
-          >
-            {{ $t('admin_dash.users.delete') }}
-          </button>
+            <template #trigger>
+              <button
+                class="button button-default btn"
+              >
+                {{ $t('admin_dash.users.bulk_actions.title') }}
+              </button>
+            </template>
+            <template #content>
+              <div class="dropdown-menu">
+                <div class="menu-item dropdown-item">
+                  <button
+                    class="main-button"
+                    @click="activateSelection"
+                  >
+                    {{ $t('admin_dash.users.activate') }}
+                  </button>
+                </div>
+                <div class="menu-item dropdown-item">
+                  <button
+                    class="main-button"
+                    @click="deactivateSelection"
+                  >
+                    {{ $t('admin_dash.users.deactivate') }}
+                  </button>
+                </div>
+                <div class="menu-item dropdown-item">
+                  <button
+                    class="main-button"
+                    @click="deleteSelection"
+                  >
+                    {{ $t('admin_dash.users.delete') }}
+                  </button>
+                </div>
+                <div class="menu-item dropdown-item">
+                  <button
+                    class="main-button"
+                    @click="grantAdminSelection"
+                  >
+                    {{ $t('admin_dash.users.grant_admin') }}
+                  </button>
+                </div>
+                <div class="menu-item dropdown-item">
+                  <button
+                    class="main-button"
+                    @click="revokeAdminSelection"
+                  >
+                    {{ $t('admin_dash.users.revoke_admin') }}
+                  </button>
+                </div>
+                <div class="menu-item dropdown-item">
+                  <button
+                    class="main-button"
+                    @click="grantModeratorSelection"
+                  >
+                    {{ $t('admin_dash.users.grant_moderator') }}
+                  </button>
+                </div>
+                <div class="menu-item dropdown-item">
+                  <button
+                    class="main-button"
+                    @click="revokeModeratorSelection"
+                  >
+                    {{ $t('admin_dash.users.revoke_moderator') }}
+                  </button>
+                </div>
+                <div class="menu-item dropdown-item">
+                  <button
+                    class="main-button"
+                    @click="approveSelection"
+                  >
+                    {{ $t('admin_dash.users.approve') }}
+                  </button>
+                </div>
+                <div class="menu-item dropdown-item">
+                  <button
+                    class="main-button"
+                    @click="confirmUserSelection"
+                  >
+                    {{ $t('admin_dash.users.confirm_user') }}
+                  </button>
+                </div>
+                <div class="menu-item dropdown-item">
+                  <button
+                    class="main-button"
+                    @click="requirePasswordChangeSelection"
+                  >
+                    {{ $t('admin_dash.users.require_password_change') }}
+                  </button>
+                </div>
+              </div>
+            </template>
+          </Popover>
         </template>
         <template #item="{item}">
           <AdminCard :user-details="item" />
         </template>
       </PageList>
     </div>
+    <GenericConfirm
+      ref="confirmActivate"
+      :title="$t('admin_dash.users.bulk_actions.activate')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="activateSelectedConfirmed"
+    />
+    <GenericConfirm
+      ref="confirmDeactivate"
+      :title="$t('admin_dash.users.bulk_actions.deactivate')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="deactivateSelectionConfirmed"
+    />
+    <GenericConfirm
+      ref="confirmDelete"
+      :title="$t('admin_dash.users.bulk_actions.delete')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="deleteSelectionConfirmed"
+    />
+    <GenericConfirm
+      ref="confirmGrantAdmin"
+      :title="$t('admin_dash.users.bulk_actions.grant_admin')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="grantAdminSelectionConfirmed"
+    />
+    <GenericConfirm
+      ref="confirmRevokeAdmin"
+      :title="$t('admin_dash.users.bulk_actions.revoke_admin')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="revokeAdminSelectionConfirmed"
+    />
+    <GenericConfirm
+      ref="confirmGrantModerator"
+      :title="$t('admin_dash.users.bulk_actions.grant_moderator')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="grantModeratorSelectionConfirmed"
+    />
+    <GenericConfirm
+      ref="confirmRevokeModerator"
+      :title="$t('admin_dash.users.bulk_actions.revoke_moderator')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="revokeModeratorSelectionConfirmed"
+    />
+    <GenericConfirm
+      ref="confirmConfirmUser"
+      :title="$t('admin_dash.users.bulk_actions.confirmUser')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="confirmUserSelectionConfirmed"
+    />
+    <GenericConfirm
+      ref="confirmResendEmail"
+      :title="$t('admin_dash.users.bulk_actions.resend_confirmation_email')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="resendEmailSelectionConfirmed"
+    />
+    <GenericConfirm
+      ref="confirmRequirePasswordChange"
+      :title="$t('admin_dash.users.bulk_actions.require_password_change')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="requirePasswordChangeSelectionConfirmed"
+    />
   </div>
 </template>
 <script src="./users_tab.js"></script>

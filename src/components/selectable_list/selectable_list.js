@@ -8,8 +8,8 @@ const SelectableList = {
   },
   props: {
     boxOnly: {
-       type: Boolean,
-       default: false
+      type: Boolean,
+      default: false
     },
     items: {
       type: Array,

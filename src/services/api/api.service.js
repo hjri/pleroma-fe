@@ -145,7 +145,7 @@ const PLEROMA_ADMIN_RESEND_CONFIRMATION_EMAIL_URL = '/api/v1/pleroma/admin/users
 const PLEROMA_ADMIN_APPROVE_URL = '/api/v1/pleroma/admin/users/approve'
 const PLEROMA_ADMIN_LIST_STATUSES_URL = (id, pageSize, godmode, withReblogs) => `/api/v1/pleroma/admin/users/${id}/statuses?page_size=${pageSize}&godmode=${godmode}&with_reblogs=${withReblogs}`
 const PLEROMA_ADMIN_CHANGE_STATUS_SCOPE_URL = (id) => `/api/v1/pleroma/admin/statuses/${id}`
-
+const PLEROMA_ADMIN_REQUIRE_PASSWORD_CHANGE_URL = '/api/v1/pleroma/admin/users/force_password_reset'
 const PLEROMA_EMOJI_RELOAD_URL = '/api/pleroma/admin/reload_emoji'
 const PLEROMA_EMOJI_IMPORT_FS_URL = '/api/pleroma/emoji/packs/import'
 const PLEROMA_EMOJI_PACKS_URL = (page, pageSize) => `/api/v1/pleroma/emoji/packs?page=${page}&page_size=${pageSize}`
@@ -1489,104 +1489,116 @@ const dismissAnnouncement = ({ id, credentials }) => {
 const adminListUsers = ({ opts, credentials }) => {
    // the reported list is hardly useful because standards are for dating i guess,
    // so make sure to fetchIfMissing right afterward using this call
-   const url = PLEROMA_ADMIN_USERS_URL(opts)
-   return promisedRequest({
-     url: url,
-     credentials,
-     method: 'GET'
-   }).then((data) => data.users.map(parseUser))
+  const url = PLEROMA_ADMIN_USERS_URL(opts)
+  return promisedRequest({
+    url: url,
+    credentials,
+    method: 'GET'
+  }).then((data) => data.users.map(parseUser))
 }
 
 const adminAddUserToAdminGroup = ({ user, credentials }) => {
-   const url = PLEROMA_ADMIN_MODIFY_GROUP_URL(user.name_html, 'admin')
-   return promisedRequest({ url: url,
-      credentials,
-      method: 'POST'
-   })
+  const url = PLEROMA_ADMIN_MODIFY_GROUP_URL(user.name_html, 'admin')
+  return promisedRequest({ url: url,
+    credentials,
+    method: 'POST'
+  })
 }
 
 const adminRemoveUserFromAdminGroup = ({ user, credentials }) => {
-   const url = PLEROMA_ADMIN_MODIFY_GROUP_URL(user.name_html, 'admin')
-   return promisedRequest({ url: url,
-      credentials,
-      method: 'DELETE'
-   })
+  const url = PLEROMA_ADMIN_MODIFY_GROUP_URL(user.name_html, 'admin')
+  return promisedRequest({ url: url,
+    credentials,
+    method: 'DELETE'
+  })
 }
 
 const adminAddUserToModeratorGroup = ({ user, credentials }) => {
-   const url = PLEROMA_ADMIN_MODIFY_GROUP_URL(user.name_html, 'moderator')
-   return promisedRequest({ url: url,
-      credentials,
-      method: 'POST'
-   })
+  const url = PLEROMA_ADMIN_MODIFY_GROUP_URL(user.name_html, 'moderator')
+  return promisedRequest({ url: url,
+    credentials,
+    method: 'POST'
+  })
 }
 
 const adminRemoveUserFromModeratorGroup = ({ user, credentials }) => {
-   const url = PLEROMA_ADMIN_MODIFY_GROUP_URL(user.name_html, 'moderator')
-   return promisedRequest({ url: url,
-      credentials,
-      method: 'DELETE'
-   })
+  const url = PLEROMA_ADMIN_MODIFY_GROUP_URL(user.name_html, 'moderator')
+  return promisedRequest({ url: url,
+    credentials,
+    method: 'DELETE'
+  })
 }
 
 const adminConfirmUser = ({user: { screen_name: nickname }, credentials }) => {
-   const url = PLEROMA_ADMIN_CONFIRM_USER_URL
-   return promisedRequest({url: url,
-      credentials,
-      method: 'PATCH',
-      payload: {
-         nicknames: [nickname]
-      }
-   })
+  const url = PLEROMA_ADMIN_CONFIRM_USER_URL
+  return promisedRequest({url: url,
+    credentials,
+    method: 'PATCH',
+    payload: {
+      nicknames: [nickname]
+    }
+  })
 }
 
 const adminResendConfirmationEmail = ({user: { screen_name: nickname }, credentials }) => {
-   const url = PLEROMA_ADMIN_RESEND_CONFIRMATION_EMAIL_URL
-   return promisedRequest({url: url,
-      credentials,
-      method: 'PATCH',
-      payload: {
-         nicknames: [nickname]
-      }
-   })
+  const url = PLEROMA_ADMIN_RESEND_CONFIRMATION_EMAIL_URL
+  return promisedRequest({url: url,
+    credentials,
+    method: 'PATCH',
+    payload: {
+      nicknames: [nickname]
+    }
+  })
 }
 
 const adminApproveUser = ({user : { screen_name: nickname }, credentials }) => {
-   const url = PLEROMA_ADMIN_APPROVE_URL
-   const r = promisedRequest({url: url,
-      credentials,
-      method: 'PATCH',
-      payload: {
-         nicknames: [nickname]
-      }
-   })
-   return r
+  const url = PLEROMA_ADMIN_APPROVE_URL
+  const r = promisedRequest({url: url,
+    credentials,
+    method: 'PATCH',
+    payload: {
+      nicknames: [nickname]
+    }
+  })
+  return r
 }
 
 const adminListStatuses = ({user: { id }, opts: { pageSize, godmode, withReblogs }, credentials }) => {
-   const url = PLEROMA_ADMIN_LIST_STATUSES_URL(id, pageSize, godmode, withReblogs)
-   return promisedRequest({url: url,
-      credentials,
-      method: 'GET'
-   })
+  const url = PLEROMA_ADMIN_LIST_STATUSES_URL(id, pageSize, godmode, withReblogs)
+  return promisedRequest({url: url,
+    credentials,
+    method: 'GET'
+  })
 }
 
 const adminChangeStatusScope = ({opts: { id, sensitive, visibility}, credentials }) => {
-   const url = PLEROMA_ADMIN_CHANGE_STATUS_SCOPE_URL(id)
-   var payload = {}
-   if (typeof(sensitive) !== 'undefined') {
-      payload['sensitive'] = sensitive
-   }
-   if (typeof(visibility) !== 'undefined') {
-      payload['visibility'] = visibility
-   }
-   return promisedRequest({url: url,
-      credentials,
-      method: 'PUT',
-      payload
-   })
+  const url = PLEROMA_ADMIN_CHANGE_STATUS_SCOPE_URL(id)
+  var payload = {}
+  if (typeof(sensitive) !== 'undefined') {
+    payload['sensitive'] = sensitive
+  }
+  if (typeof(visibility) !== 'undefined') {
+    payload['visibility'] = visibility
+  }
+  return promisedRequest({
+    url,
+    credentials,
+    method: 'PUT',
+    payload
+  })
 }
 
+const adminRequirePasswordChange = ({ user: { screen_name: nickname }, credentials }) => {
+  const url = PLEROMA_ADMIN_REQUIRE_PASSWORD_CHANGE_URL
+  return promisedRequest({
+    url,
+    credentials,
+    method: 'PATCH',
+    payload: {
+      nicknames: [nickname]
+    }
+  })
+}
 
 const announcementToPayload = ({ content, startsAt, endsAt, allDay }) => {
   const payload = { content }
@@ -2270,6 +2282,7 @@ const apiService = {
   adminApproveUser,
   adminListStatuses,
   adminChangeStatusScope,
+  adminRequirePasswordChange
 }
 
 export default apiService

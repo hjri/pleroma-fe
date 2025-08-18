@@ -4,19 +4,21 @@
       {{ $t('admin_dash.users.loading_user') }}
     </div>
     <div v-else>
-      <div v-if="userDetails.id !== $store.state.users.currentUser.id">
-        <BasicUserCard :user="user" />
-        <div v-if="!topLevelExpanded">
-          <button
-            class="button button-default btn"
-            type="button"
-            @click="topLevelExpanded = true"
-          >
-            {{ $t('admin_dash.users.expand_user') }}
-          </button>
-        </div>
-        <div
-          v-else
+      <BasicUserCard :user="user" />
+      <div v-if="!topLevelExpanded">
+        <button
+          class="button button-default btn"
+          type="button"
+          @click="topLevelExpanded = true"
+        >
+          {{ $t('admin_dash.users.expand_user') }}
+        </button>
+      </div>
+      <div
+        v-else
+      >
+        <Modal
+          @backdrop-clicked="() => { topLevelExpanded = false }"
         >
           <ul class="setting-list">
             <li>
@@ -99,81 +101,81 @@
               </button>
             </li>
           </ul>
-        </div>
-        <div v-if="!timelineExpanded">
-          <button
-            class="button button-default btn"
-            type="button"
-            @click="timelineExpanded = true"
-          >
-            {{ $t('admin_dash.users.expand_timeline') }}
-          </button>
-        </div>
-        <div
-          v-else
-          class="setting-item"
+        </Modal>
+      </div>
+      <div v-if="!timelineExpanded">
+        <button
+          class="button button-default btn"
+          type="button"
+          @click="timelineExpanded = true"
         >
-          <button
-            class="button button-default btn"
-            type="button"
-            @click="timelineExpanded = false"
-          >
-            {{ $t('admin_dash.users.collapse_timeline') }}
-          </button>
-          <PageList
-            ref="timelineList"
-            :refresh="true"
-            :get-key="i => i"
-            :box-only="true"
-            :page-size="20"
-            :single-page="true"
-            :fetch-page="(store, opts) => fetchStatuses(store, opts)"
-          >
-            <template #header>
-              <button
-                class="button button-default btn"
-                type="button"
-                @click="deleteSelection"
-              >
-                {{ $t('admin_dash.users.delete') }}
-              </button>
-            </template>
-            <template #item="{item}">
-              <AdminStatusCard :status-details="item" />
-            </template>
-            <template #empty>
-              <p> {{ $t('admin_dash.users.user_has_no_posts') }} </p>
-            </template>
-            <template #load>
-              <p> {{ $t('admin_dash.users.loading') }} </p>
-            </template>
-          </PageList>
-        </div>
-        <div v-if="!jsonExpanded">
-          <button
-            class="button button-default btn"
-            type="button"
-            @click="jsonExpanded = true"
-          >
-            {{ $t('admin_dash.users.expand_raw_info') }}
-          </button>
-        </div>
-        <div 
-          v-else
-          class="setting-item"
+          {{ $t('admin_dash.users.expand_timeline') }}
+        </button>
+      </div>
+      <div
+        v-else
+        class="setting-item"
+      >
+        <button
+          class="button button-default btn"
+          type="button"
+          @click="timelineExpanded = false"
         >
-          <button
-            class="button button-default btn"
-            type="button"
-            @click="jsonExpanded = false"
-          >
-            {{ $t('admin_dash.users.collapse_raw_info') }}
-          </button>
-          <h2> {{ $t('admin_dash.users.title_database') }} </h2>
-          <pre> {{ JSON.stringify(user, null, 2) }} </pre>
-          <h2> {{ $t('admin_dash.users.title_details') }} </h2>
-          <pre> {{ JSON.stringify(user_details, null, 2) }} </pre>
-        </div>
+          {{ $t('admin_dash.users.collapse_timeline') }}
+        </button>
+        <PageList
+          ref="timelineList"
+          :refresh="true"
+          :get-key="i => i"
+          :box-only="true"
+          :page-size="20"
+          :single-page="true"
+          :fetch-page="(store, opts) => fetchStatuses(store, opts)"
+        >
+          <template #header>
+            <button
+              class="button button-default btn"
+              type="button"
+              @click="deleteSelection"
+            >
+              {{ $t('admin_dash.users.delete') }}
+            </button>
+          </template>
+          <template #item="{item}">
+            <AdminStatusCard :status-details="item" />
+          </template>
+          <template #empty>
+            <p> {{ $t('admin_dash.users.user_has_no_posts') }} </p>
+          </template>
+          <template #load>
+            <p> {{ $t('admin_dash.users.loading') }} </p>
+          </template>
+        </PageList>
+      </div>
+      <div v-if="!jsonExpanded">
+        <button
+          class="button button-default btn"
+          type="button"
+          @click="jsonExpanded = true"
+        >
+          {{ $t('admin_dash.users.expand_raw_info') }}
+        </button>
+      </div>
+      <div 
+        v-else
+        class="setting-item"
+      >
+        <button
+          class="button button-default btn"
+          type="button"
+          @click="jsonExpanded = false"
+        >
+          {{ $t('admin_dash.users.collapse_raw_info') }}
+        </button>
+        <h2> {{ $t('admin_dash.users.title_database') }} </h2>
+        <pre> {{ JSON.stringify(user, null, 2) }} </pre>
+        <h2> {{ $t('admin_dash.users.title_details') }} </h2>
+        <pre> {{ JSON.stringify(user_details, null, 2) }} </pre>
       </div>
     </div>
   </div>

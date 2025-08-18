@@ -70,16 +70,22 @@ const adminSettingsStorage = {
           .then(res => store.commit('updateRight', { user, right: 'admin', value: res.is_admin }))
     },
     adminRemoveUserFromAdminGroup (store, user) {
-       return store.rootState.api.backendInteractor.adminRemoveUserFromAdminGroup({ user })
-          .then(res => store.commit('updateRight', { user, right: 'admin', value: res.is_admin }))
+       // prevent revokation of own rights
+       if (user.id !== store.state.users.currentUser.id) {
+          return store.rootState.api.backendInteractor.adminRemoveUserFromAdminGroup({ user })
+             .then(res => store.commit('updateRight', { user, right: 'admin', value: res.is_admin }))
+       }
     },
     adminAddUserToModeratorGroup (store, user) {
        return store.rootState.api.backendInteractor.adminAddUserToModeratorGroup({ user })
           .then(res => store.commit('updateRight', { user, right: 'moderator', value: res.is_moderator }))
     },
     adminRemoveUserFromModeratorGroup (store, user) {
-       return store.rootState.api.backendInteractor.adminRemoveUserFromModeratorGroup({ user })
-          .then(res => store.commit('updateRight', { user, right: 'moderator', value: res.is_moderator }))
+       // prevent revokation of own rights
+       if (user.id !== store.state.users.currentUser.id) {
+          return store.rootState.api.backendInteractor.adminRemoveUserFromModeratorGroup({ user })
+             .then(res => store.commit('updateRight', { user, right: 'moderator', value: res.is_moderator }))
+       }
     },
     adminActivateUser (store, user) {
        return store.rootState.api.backendInteractor.activateUser({ user })

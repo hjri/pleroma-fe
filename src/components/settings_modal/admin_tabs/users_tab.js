@@ -5,6 +5,8 @@ import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import AdminCard from 'src/components/settings_modal/admin_tabs/admin_card.vue'
 import PageList from 'src/components/page_list/page_list.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+import Popover from 'src/components/popover/popover.vue'
+import GenericConfirm from 'src/components/confirm_modal/generic_confirm.vue'
 
 const UsersTab = {
   provide () {
@@ -18,7 +20,7 @@ const UsersTab = {
       init: false,
       filtersOrigin: 'local',
       filtersActivity: 'all',
-      filtersPermission: 'all',
+      filtersPrivileges: 'all',
       filtersNeedApproval: false,
       filtersUnconfirmed: false,
       filtersQuery: '',
@@ -30,10 +32,10 @@ const UsersTab = {
   },
   computed: {
     filtersIsAdmin () {
-      return this.filtersPermission === 'admin' || this.filtersPermission === 'modsnadmins'
+      return this.filtersPrivileges === 'admin' || this.filtersPrivileges === 'modsnadmins'
     },
     filtersIsModerator () {
-      return this.filtersPermission === 'moderator' || this.filtersPermission === 'modsnadmins'
+      return this.filtersPrivileges === 'moderator' || this.filtersPrivileges === 'modsnadmins'
     },
     filtersActive () {
       return this.filtersActivity === 'active'
@@ -56,6 +58,8 @@ const UsersTab = {
     ProgressButton, 
     AdminCard,
     TabSwitcher,
+    Popover,
+    GenericConfirm
   },
   methods: {
     fetchPage (store, opts) {
@@ -70,28 +74,134 @@ const UsersTab = {
         needApproval: this.filtersNeedApproval,
         unconfirmed: this.filtersUnconfirmeUnconfirmed
       }
-      const users = store.dispatch('fetchAdminUsers', { ...opts, ...{
+      const nopts = { ...opts, ...{
         query: this.filtersQuery,
         filters,
         name: this.filtersName,
         email: this.filtersEmail
-      }})
+      }}
+      const users = store.dispatch('fetchAdminUsers', nopts)
       return users
     },
     reset () {
       this.$refs.userList.reset()
     },
     activateSelection () {
+      this.$refs.confirmActivate.show()
+      this.$refs.dropdown.hidePopover()
+    },
+    activateSelectionConfirmed () {
       const s = this.$refs.userList.getSelected()
       s.forEach(u => this.$store.dispatch('adminActivateUser', this.$store.getters.findUser(u.id)))
+      this.reset()
     },
     deactivateSelection () {
+      this.$refs.confirmDeactivate.show()
+      this.$refs.dropdown.hidePopover()
+    },
+    deactivateSelectionConfirmed () {
       const s = this.$refs.userList.getSelected()
-      s.forEach(u => this.$store.dispatch('adminDeactivateUser', this.$store.getters.findUser(u.id)))
+      s.forEach(u => {
+        // avoid deactivating yourself
+        if (u.id !== this.$store.state.users.currentUser.id) {
+          this.$store.dispatch('adminDeactivateUser', this.$store.getters.findUser(u.id))
+        }
+      })
+      this.reset()
     },
     deleteSelection () {
+      this.$refs.confirmDelete.show()
+      this.$refs.dropdown.hidePopover()
+    },
+    deleteSelectionConfirmed () {
       const s = this.$refs.userList.getSelected()
-      s.forEach(u => this.$store.dispatch('adminDeleteUser', this.$store.getters.findUser(u.id)))
+      s.forEach(u => {
+        // avoid deleting yourself
+        if (u.id !== this.$store.state.users.currentUser.id) {
+          this.$store.dispatch('adminDeleteUser', this.$store.getters.findUser(u.id))
+        }
+      })
+      this.reset()
+    },
+    grantAdminSelection () {
+      this.$refs.confirmGrantAdmin.show()
+      this.$refs.dropdown.hidePopover()
+    },
+    grantAdminSelectionConfirmed () {
+      const s = this.$refs.userList.getSelected()
+      s.forEach(u => this.$store.dispatch('adminAddUserToAdminGroup', this.$store.getters.findUser(u.id)))
+      this.reset()
+    },
+    revokeAdminSelection () {
+      this.$refs.confirmRevokeAdminSelection.show()
+      this.$refs.dropdown.hidePopover()
+    },
+    revokeAdminSelectionConfirmed () {
+      const s = this.$refs.userList.getSelected()
+      s.forEach(u => {
+        // avoid shooting yourself in the foot
+        if (u.id !== this.$store.state.users.currentUser.id) {
+          this.$store.dispatch('adminRemoveUserToAdminGroup', this.$store.getters.findUser(u.id))
+        }
+      })
+      this.reset()
+    },
+    grantModeratorSelection () {
+      this.$refs.confirmGrantModeratorSelection.show()
+      this.$refs.dropdown.hidePopover()
+    },
+    grantModeratorSelectionConfirmed () {
+      const s = this.$refs.userList.getSelected()
+      s.forEach(u => this.$store.dispatch('adminAddUserToModeratorGroup', this.$store.getters.findUser(u.id)))
+      this.reset()
+    },
+    revokeModeratorSelection () {
+      this.$refs.confirmRevokeModeratorSelection.show()
+      this.$refs.dropdown.hidePopover()
+    },
+    revokeModeratorSelectionConfirmed () {
+      const s = this.$refs.userList.getSelected()
+      s.forEach(u => {
+        // you know the drill
+        if (u.id !== this.$store.state.users.currentUser.id) {
+          this.$store.dispatch('adminRemoveUserToModeratorGroup', this.$store.getters.findUser(u.id))
+        }
+      })
+      this.reset()
+    },
+    approveSelection () {
+      this.$refs.confirmApproveSelection.show()
+      this.$refs.dropdown.hidePopover()
+    },
+    approveSelectionConfirmed () {
+      const s = this.$refs.userList.getSelected()
+      s.forEach(u => this.$store.dispatch('adminApproveUser', this.$store.getters.findUser(u.id)))
+      this.reset()
+    },
+    confirmUserSelection () {
+      this.$refs.confirmSelection
+    },
+    confirmUserSelectionConfirmed () {
+      const s = this.$refs.userList.getSelected()
+      s.forEach(u => this.$store.dispatch('adminConfirmUser', this.$store.getters.findUser(u.id)))
+      this.reset()
+    },
+    resendEmailSelection () {
+      this.$refs.resendEmailSelection.show()
+      this.$refs.dropdown.hidePopover()
+    },
+    resendEmailSelectionConfirmed () {
+      const s = this.$refs.userList.getSelected()
+      s.forEach(u => this.$store.dispatch('adminResendConfirmationEmail', this.$store.getters.findUser(u.id)))
+      this.reset()
+    },
+    requirePasswordChangeSelection () {
+      this.$refs.requirePasswordChangeSelection.show()
+      this.$refs.dropdown.hidePopover()
+    },
+    requirePasswordChangeSelectionConfirmed () {
+      const s = this.$refs.userList.getSelected()
+      s.forEach(u => this.$store.dispatch('adminRequirePasswordChange', this.$store.getters.findUser(u.id)))
       this.reset()
     }
   },
