@@ -42,6 +42,7 @@ library.add(
 const Notification = {
   data () {
     return {
+      selecting: false,
       statusExpanded: false,
       unmuted: false,
       showingApproveConfirmDialog: false,
@@ -62,10 +63,34 @@ const Notification = {
     UserLink,
     ConfirmModal
   },
+  mounted () {
+    document.addEventListener('selectionchange', this.onContentSelect)
+  },
+  unmounted () {
+    document.removeEventListener('selectionchange', this.onContentSelect)
+  },
   methods: {
     toggleStatusExpanded () {
       if (!this.expandable) return
       this.statusExpanded = !this.statusExpanded
+    },
+    onContentSelect () {
+      const { isCollapsed, anchorNode, offsetNode } = document.getSelection()
+      if (isCollapsed) {
+        this.selecting = false
+        return
+      }
+      const within = this.$refs.root.contains(anchorNode) || this.$refs.root.contains(offsetNode)
+      if (within) {
+        this.selecting = true
+      } else {
+        this.selecting = false
+      }
+    },
+    onContentClick (e) {
+      if (!this.selecting && !e.target.closest('a') && !e.target.closest('button')) {
+        this.toggleStatusExpanded()
+      }
     },
     generateUserProfileLink (user) {
       return generateProfileLink(user.id, user.screen_name, this.$store.state.instance.restrictedNicknames)

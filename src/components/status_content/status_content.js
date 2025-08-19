@@ -65,6 +65,7 @@ const StatusContent = {
     'controlledShowingLongSubject',
     'controlledToggleShowingLongSubject'
   ],
+  emits: ['parseReady', 'mediaplay', 'mediapause'],
   data () {
     return {
       uncontrolledShowingTall: this.fullContent || (this.inConversation && this.focused),

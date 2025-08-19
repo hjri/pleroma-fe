@@ -41,6 +41,7 @@ const StatusContent = {
       parseReadyDone: false
     }
   },
+  emits: ['parseReady'],
   computed: {
     localCollapseSubjectDefault () {
       return this.mergedConfig.collapseMessageWithSubject

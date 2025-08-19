@@ -1,6 +1,7 @@
 <template>
   <article
     v-if="notification.type === 'mention' || notification.type === 'status'"
+    ref="root"
   >
     <Status
       class="Notification"
@@ -12,6 +13,7 @@
   <article
     class="NotificationParent"
     :class="{ '-expandable': expandable }"
+    ref="root"
     v-else
   >
     <div
@@ -256,7 +258,7 @@
             :compact="!statusExpanded"
             :status="notification.status"
             :collapse="!statusExpanded"
-            @click="toggleStatusExpanded()"
+            @click="onContentClick"
           />
         </template>
       </div>
