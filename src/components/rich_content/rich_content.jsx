@@ -86,6 +86,12 @@ export default {
       required: false,
       type: Boolean,
       default: false
+    },
+    // Collapse newlines
+    collapse: {
+      required: false,
+      type: Boolean,
+      default: false
     }
   },
   // NEVER EVER TOUCH DATA INSIDE RENDER
@@ -281,11 +287,20 @@ export default {
 
     const pass1 = convertHtmlToTree(html).map(processItem)
     const pass2 = [...pass1].reverse().map(processItemReverse).reverse()
+
     // DO NOT USE SLOTS they cause a re-render feedback loop here.
     // slots updated -> rerender -> emit -> update up the tree -> rerender -> ...
     // at least until vue3?
-    const result = <span class={['RichContent', this.faint ? '-faint' : '']}>
-      { pass2 }
+    const result =
+    <span class={['RichContent', this.faint ? '-faint' : '']}>
+      {
+        this.collapse
+          ? pass2.map(x => {
+            if (!Array.isArray(x)) return x.replace(/\n/g, ' ')
+            return x.map(y => y.type === 'br' ? ' ' : y)
+          })
+          : pass2
+      }
     </span>
 
     const event = {
