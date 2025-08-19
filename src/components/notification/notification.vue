@@ -255,7 +255,7 @@
             class="status-content"
             :compact="!statusExpanded"
             :status="notification.status"
-            :collapse="statusExpanded"
+            :collapse="!statusExpanded"
             @click="toggleStatusExpanded()"
           />
         </template>
