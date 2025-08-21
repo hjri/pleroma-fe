@@ -10,7 +10,10 @@
           keypath="user_reporting.title"
           class="title"
         >
-          <UserLink class="user-link" :user="user" />
+          <UserLink
+            class="user-link"
+            :user="user"
+          />
         </i18n-t>
       </div>
       <div class="panel-body">

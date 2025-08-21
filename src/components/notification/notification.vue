@@ -11,10 +11,10 @@
     />
   </article>
   <article
+    v-else
+    ref="root"
     class="NotificationParent"
     :class="{ '-expandable': expandable }"
-    ref="root"
-    v-else
   >
     <div
       v-if="needMute && !unmuted"

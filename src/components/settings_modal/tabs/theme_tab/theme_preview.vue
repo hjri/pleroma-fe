@@ -21,7 +21,10 @@
       </div>
       <div class="panel-body theme-preview-content">
         <div class="post">
-          <div class="avatar still-image" aria-hidden="true">
+          <div
+            class="avatar still-image"
+            aria-hidden="true"
+          >
             ( ͡° ͜ʖ ͡°)
           </div>
           <div class="content">
@@ -71,7 +74,10 @@
         </div>
 
         <div class="after-post">
-          <div class="avatar-alt" aria-hidden="true">
+          <div
+            class="avatar-alt"
+            aria-hidden="true"
+          >
             :^)
           </div>
           <div class="content">
