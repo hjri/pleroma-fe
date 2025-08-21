@@ -64,6 +64,11 @@
 
   .img {
     display: inline-block;
+
+    // fix vertical alignment of stealable emoji
+    button {
+      display: inline-flex;
+    }
   }
 
   .emoji {
@@ -78,11 +83,6 @@
     max-height: 400px;
     vertical-align: middle;
     object-fit: contain;
-
-    // fix vertical alignment of stealable emoji
-    button {
-      display: inline-flex;
-    }
   }
 
   .greentext {
