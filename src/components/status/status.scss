@@ -235,9 +235,9 @@
 
   .repeater-avatar {
     border-radius: var(--roundness);
-    margin-left: 28px;
-    width: 20px;
-    height: 20px;
+    margin-left: 2em; // 3.5 (poster avatar size) - 1.5 (repeater avatar size)
+    width: 1.5em;
+    height: 1.5em;
   }
 
   .repeater-name {
