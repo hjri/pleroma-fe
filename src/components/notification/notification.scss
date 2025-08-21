@@ -1,9 +1,14 @@
 // TODO Copypaste from Status, should unify it somehow
+
 .Notification {
   border-bottom: 1px solid;
   border-color: var(--border);
   overflow-wrap: break-word;
   text-wrap: pretty;
+
+  .status-content {
+    cursor: pointer;
+  }
 
   &.Status {
     /* stylelint-disable-next-line declaration-no-important */

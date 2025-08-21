@@ -206,8 +206,6 @@
       padding: 0.6em;
       margin: -0.6em;
 
-      &.save-profile-button,
-      &.reset-profile-button,
       &.edit-banner-button {
         width: auto;
       }
@@ -272,6 +270,14 @@
     // big one
     z-index: 1;
     line-height: 2em;
+    filter: drop-shadow(0 0 5em var(--profileTint))
+            drop-shadow(0 0 0.5em var(--profileTint))
+            drop-shadow(0 0 0.2em var(--profileTint));
+
+    .alert {
+      text-shadow: none;
+    }
+
 
     --emoji-size: 1.7em;
 
@@ -333,6 +339,7 @@
       font-size: 0.9em;
       font-size: calc(max(90%, 2.5cqw));
       line-height: 1.5;
+      margin-top: 0.5em;
     }
 
     .lock-icon {

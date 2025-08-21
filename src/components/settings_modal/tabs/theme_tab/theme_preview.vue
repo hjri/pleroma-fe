@@ -21,7 +21,10 @@
       </div>
       <div class="panel-body theme-preview-content">
         <div class="post">
-          <div class="avatar still-image">
+          <div
+            class="avatar still-image"
+            aria-hidden="true"
+          >
             ( ͡° ͜ʖ ͡°)
           </div>
           <div class="content">
@@ -71,7 +74,10 @@
         </div>
 
         <div class="after-post">
-          <div class="avatar-alt">
+          <div
+            class="avatar-alt"
+            aria-hidden="true"
+          >
             :^)
           </div>
           <div class="content">
@@ -149,7 +155,7 @@ export default {
   background-position: 50% 50%;
 
   .theme-preview-content {
-    padding: 20px;
+    padding: 1.5em;
   }
 
   .dummy {
@@ -203,19 +209,21 @@ export default {
 
     .avatar-alt {
       flex: 0 auto;
-      margin-left: 28px;
-      font-size: 12px;
-      min-width: 20px;
-      min-height: 20px;
-      line-height: 20px;
+      margin-left: 2em;
+      font-size: 0.85em;
+      min-width: 2.2rem;
+      min-height: 2.2rem;
+      line-height: 1.5em;
+      align-content: center;
     }
 
     .avatar {
       flex: 0 auto;
-      width: 48px;
-      height: 48px;
-      font-size: 14px;
-      line-height: 48px;
+      width: 3.5em;
+      height: 3.5em;
+      font-size: 1rem;
+      line-height: 3.5em;
+      justify-content: center;
     }
 
     .actions {
@@ -241,7 +249,7 @@ export default {
 
   .underlay-preview {
     position: absolute;
-    inset: 0 10px;
+    inset: 0 0.9em;
   }
 }
  </style>

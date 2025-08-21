@@ -22,6 +22,7 @@ const StatusBody = {
   name: 'StatusBody',
   props: [
     'compact',
+    'collapse', // replaces newlines with spaces
     'status',
     'focused',
     'noHeading',
@@ -40,6 +41,7 @@ const StatusBody = {
       parseReadyDone: false
     }
   },
+  emits: ['parseReady'],
   computed: {
     localCollapseSubjectDefault () {
       return this.mergedConfig.collapseMessageWithSubject
@@ -94,6 +96,9 @@ const StatusBody = {
     },
     attachmentTypes () {
       return this.status.attachments.map(file => fileType.fileType(file.mimetype))
+    },
+    collapsedStatus () {
+      return this.status.raw_html.replace(/(\n|<br\s?\/?>)/g, ' ')
     },
     ...mapGetters(['mergedConfig'])
   },

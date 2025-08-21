@@ -27,7 +27,10 @@
         class="emoji"
       />
 
-      <div v-if="newUpload" class="emoji-tab-popover-new-upload">
+      <div
+        v-if="newUpload"
+        class="emoji-tab-popover-new-upload"
+      >
         <h4>{{ $t('admin_dash.emoji.emoji_source') }}</h4>
 
         <div class="emoji-tab-popover-input">
@@ -295,8 +298,8 @@ export default {
     }
 
     .emoji {
-      width: 32px;
-      height: 32px;
+      width: 2.3em;
+      height: 2.3em;
     }
 
     .Select {

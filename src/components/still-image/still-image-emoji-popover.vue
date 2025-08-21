@@ -25,8 +25,8 @@
           <button
             class="button button-default btn emoji-popover-button"
             type="button"
-            @click="copyToLocalPack"
             :disabled="packName == ''"
+            @click="copyToLocalPack"
           >
             {{ $t('admin_dash.emoji.copy_to_pack') }}
           </button>

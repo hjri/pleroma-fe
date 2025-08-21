@@ -14,6 +14,7 @@
       :toggle-showing-tall="toggleShowingTall"
       :toggle-expanding-subject="toggleExpandingSubject"
       :toggle-showing-long-subject="toggleShowingLongSubject"
+      :collapse="collapse"
       @parse-ready="$emit('parseReady', $event)"
     >
       <div v-if="status.poll && status.poll.options && !compact">
@@ -23,7 +24,10 @@
         />
       </div>
 
-      <div v-else-if="status.poll && status.poll.options && compact">
+      <div
+        v-else-if="status.poll && status.poll.options && compact"
+        class="poll-icon"
+      >
         <FAIcon
           icon="poll-h"
           size="2x"
@@ -62,5 +66,9 @@
 .StatusContent {
   flex: 1;
   min-width: 0;
+
+  .poll-icon {
+    margin: 0.5em;
+  }
 }
 </style>

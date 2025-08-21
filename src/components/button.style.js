@@ -65,6 +65,26 @@ export default {
       }
     },
     {
+      component: 'Text',
+      parent: {
+        component: 'Button',
+        variant: 'transparent'
+      },
+      directives: {
+        textColor: '--text'
+      }
+    },
+    {
+      component: 'Icon',
+      parent: {
+        component: 'Button',
+        variant: 'transparent'
+      },
+      directives: {
+        textColor: '--text'
+      }
+    },
+    {
       state: ['hover'],
       directives: {
         shadow: ['--buttonDefaultHoverGlow', '--buttonDefaultBevel']

@@ -1,6 +1,7 @@
 <template>
   <article
     v-if="notification.type === 'mention' || notification.type === 'status'"
+    ref="root"
   >
     <Status
       class="Notification"
@@ -9,9 +10,17 @@
       @interacted="interacted"
     />
   </article>
-  <article v-else>
+  <article
+    v-else
+    ref="root"
+    class="NotificationParent"
+    :class="{ '-expandable': expandable }"
+  >
     <div
       v-if="needMute && !unmuted"
+      :id="'notif-' +notification.id"
+      :aria-expanded="statusExpanded"
+      :aria-controls="'notif-' +notification.id"
       class="Notification container -muted"
     >
       <small>
@@ -246,8 +255,11 @@
         />
         <template v-else>
           <StatusContent
+            class="status-content"
             :compact="!statusExpanded"
             :status="notification.status"
+            :collapse="!statusExpanded"
+            @click="onContentClick"
           />
         </template>
       </div>
