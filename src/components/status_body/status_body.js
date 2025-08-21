@@ -18,8 +18,8 @@ library.add(
   faPollH
 )
 
-const StatusContent = {
-  name: 'StatusContent',
+const StatusBody = {
+  name: 'StatusBody',
   props: [
     'compact',
     'status',
@@ -145,4 +145,4 @@ const StatusContent = {
   }
 }
 
-export default StatusContent
+export default StatusBody

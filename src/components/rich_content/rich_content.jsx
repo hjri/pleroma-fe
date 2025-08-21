@@ -2,7 +2,7 @@ import { unescape, flattenDeep } from 'lodash'
 import { getTagName, processTextForEmoji, getAttrs } from 'src/services/html_converter/utility.service.js'
 import { convertHtmlToTree } from 'src/services/html_converter/html_tree_converter.service.js'
 import { convertHtmlToLines } from 'src/services/html_converter/html_line_converter.service.js'
-import StillImage from 'src/components/still-image/still-image.vue'
+import StillImageEmojiPopover from 'src/components/still-image/still-image-emoji-popover.vue'
 import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
 import { MENTIONS_LIMIT } from 'src/components/mentions_line/mentions_line.js'
 import HashtagLink from 'src/components/hashtag_link/hashtag_link.vue'
@@ -86,6 +86,12 @@ export default {
       required: false,
       type: Boolean,
       default: false
+    },
+    // Assume is local to be true if unspecified, so the button isn't show where it probably should not be
+    isLocal: {
+      required: false,
+      type: Boolean,
+      default: true
     }
   },
   // NEVER EVER TOUCH DATA INSIDE RENDER
@@ -162,11 +168,14 @@ export default {
             item,
             this.emoji,
             ({ shortcode, url }) => {
-              return <StillImage
+              return <StillImageEmojiPopover
                 class="emoji img"
                 src={url}
                 title={`:${shortcode}:`}
                 alt={`:${shortcode}:`}
+
+                shortcode={shortcode}
+                isLocal={this.isLocal}
               />
             }
           )]

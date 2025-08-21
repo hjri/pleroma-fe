@@ -14,6 +14,7 @@
           :faint="compact"
           :html="status.summary_raw_html"
           :emoji="status.emojis"
+          :is-local="status.isLocal"
         />
         <button
           v-show="longSubject && showingLongSubject"
@@ -44,6 +45,7 @@
           :faint="compact"
           :greentext="mergedConfig.greentext"
           :attentions="status.attentions"
+          :is-local="status.is_local"
           @parse-ready="onParseReady"
         />
         <div

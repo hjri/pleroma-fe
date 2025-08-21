@@ -79,6 +79,7 @@
               <RichContent
                 :html="retweeterHtml"
                 :emoji="retweeterUser.emoji"
+                :is-local="retweeterUser.is_local"
               />
             </router-link>
             <router-link
@@ -139,6 +140,7 @@
                   <RichContent
                     :html="status.user.name"
                     :emoji="status.user.emoji"
+                    :is-local="status.user.is_local"
                   />
                 </h4>
                 <h4
