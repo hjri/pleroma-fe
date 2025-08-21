@@ -145,9 +145,9 @@ const EmojiTab = {
       })
     },
 
-    updatePackFiles (newFiles) {
-      this.pack.files = newFiles
-      this.sortPackFiles(this.packName)
+    updatePackFiles (newFiles, packName) {
+      this.knownPacks[packName].files = newFiles
+      this.sortPackFiles(packName)
     },
 
     loadPacksPaginated (listFunction) {

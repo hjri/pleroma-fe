@@ -18,8 +18,8 @@ library.add(
   faPollH
 )
 
-const StatusContent = {
-  name: 'StatusContent',
+const StatusBody = {
+  name: 'StatusBody',
   props: [
     'compact',
     'collapse', // replaces newlines with spaces
@@ -150,4 +150,4 @@ const StatusContent = {
   }
 }
 
-export default StatusContent
+export default StatusBody
