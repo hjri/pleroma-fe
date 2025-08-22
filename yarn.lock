@@ -6507,10 +6507,10 @@ perfect-debounce@^1.0.0:
   resolved "https://registry.yarnpkg.com/perfect-debounce/-/perfect-debounce-1.0.0.tgz#9c2e8bc30b169cc984a58b7d5b28049839591d2a"
   integrity sha512-xCy9V055GLEqoFaHoC1SoLIaLmWctgCUaBaWxDZ7/Zx4CTyX7cJQLJOok/orfjZAh9kEYpjJa4d0KcJmCbctZA==
 
-phoenix@1.7.21:
-  version "1.7.21"
-  resolved "https://registry.yarnpkg.com/phoenix/-/phoenix-1.7.21.tgz#b1ff7d21f5bd8ceee35953f3ca3921e31d15d88a"
-  integrity sha512-8wOvJ8pQXRxNbyFlMI+wQhK3bvX4Ps3FtUX2+0cV6lkcebe9VTIl+xS60FLAeaPieFg80djor5z/AKofnwqAUw==
+phoenix@1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/phoenix/-/phoenix-1.8.0.tgz#b651a3f4c45531acf181b53158d412bf330ecb0f"
+  integrity sha512-hRBoaOuxQIGrN/JPbCYjC5Xkdz83sbkzBLT41lSROsQmkFUyE+w3ElhwaW4z/i2nkPtrLYoXyVunvntE6Zm1DA==
 
 picocolors@^1.0.0, picocolors@^1.1.1:
   version "1.1.1"
