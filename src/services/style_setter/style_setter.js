@@ -42,7 +42,6 @@ export const createStyleSheet = (id, priority = 1000) => {
 
 
 export const adoptStyleSheets = throttle(() => {
-  console.log('adopt')
   if (supportsAdoptedStyleSheets) {
     document.adoptedStyleSheets = Object
       .values(stylesheets)
