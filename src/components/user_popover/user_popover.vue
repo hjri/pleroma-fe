@@ -32,6 +32,7 @@
   margin: 0;
 
   .user-info {
+    width: 100%;
     margin: 1.2em;
   }
 
