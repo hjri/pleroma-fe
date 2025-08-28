@@ -138,8 +138,6 @@ export const tryLoadCache = async () => {
       eagerStyles.ready = true
       lazyStyles.ready = true
 
-      adoptStyleSheets()
-
       console.info(`Loaded theme from cache`)
       return true
     } else {
