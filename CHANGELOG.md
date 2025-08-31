@@ -2,6 +2,42 @@
 All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+## 2.9.2
+### Changed
+- BREAKING: due to some internal technical changes logging into AdminFE through PleromaFE is no longer possible
+- User card/profile got an overhaul
+- Profile editing overhaul
+- Visually combined subject and content fields in post form
+- Moved post form's emoji button into input field
+- Minor visual changes and fixes
+- Clicking on fav/rt/emoji notifications' contents expands/collapses it
+- Reduced time taken processing theme by half
+- Splash screen only appears if loading takes more than 2 seconds
+
+### Added
+- Mutes received an update, adding support for regex, muting based on username and expiration time.
+- Mutes are now synchronized across sessions
+- Support for expiring mutes and blocks (if available)
+- Clicking on emoji shows bigger version of it alongside with its shortcode
+  - Admins also are able to copy it into a local pack
+- Added support for Akkoma and IceShrimp.NET backends
+- Compatibility with stricter CSP (Akkoma backend)
+- Added a way to upload new packs from a URL or ZIP file via the Admin Dashboard
+- Unify show/hide content buttons
+- Add support for detachable scrollTop button
+- Option to left-align user bio
+- Cache assets and emojis with service worker
+- Indicate currently active V3 theme as a body element class
+- Add arithmetic blend ISS function
+
+### Fixed
+- Display counter for status action buttons when they are in the menu
+- Fix bookmark button alignment in the extra actions menu
+- Instance favicons are no longer stretched
+- A lot more scalable UI fixes
+  - Emoji picker now should work fine when emoji size is increased
+
 ## 2.8.0
 ### Changed
 - BREAKING: static/img/nsfw.2958239.png is now static/img/nsfw.DepQPhG0.png, which may affect people who specify exactly this path as the cover image
