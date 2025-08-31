@@ -26,8 +26,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Compatibility with stricter CSP (Akkoma backend)
 - Added a way to upload new packs from a URL or ZIP file via the Admin Dashboard
 - Unify show/hide content buttons
-- Cache assets and emojis with service worker
 - Add support for detachable scrollTop button
+- Option to left-align user bio
+- Cache assets and emojis with service worker
 - Indicate currently active V3 theme as a body element class
 - Add arithmetic blend ISS function
 
