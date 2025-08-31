@@ -107,8 +107,7 @@
   .outgoing {
     display: flex;
     flex-flow: row wrap;
-    align-content: end;
-    justify-content: flex-end;
+    place-content: end flex-end;
 
     .chat-message-inner {
       align-items: flex-end;

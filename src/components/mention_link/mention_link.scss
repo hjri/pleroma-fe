@@ -7,7 +7,6 @@
   & .new,
   & .original {
     display: inline;
-    border-radius: 2px;
   }
 
   .mention-avatar {
@@ -27,7 +26,6 @@
     top: 100%;
     left: 0;
     height: 100%;
-    word-wrap: normal;
     white-space: nowrap;
     transition: opacity 0.2s ease;
     z-index: 1;

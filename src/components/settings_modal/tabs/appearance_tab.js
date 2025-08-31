@@ -12,10 +12,11 @@ import { newImporter } from 'src/services/export_import/export_import.js'
 import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
 import { init } from 'src/services/theme_data/theme_data_3.service.js'
 import {
-  getCssRules,
-  getScopedVersion
+  getCssRules
 } from 'src/services/theme_data/css_utils.js'
 import { deserialize } from 'src/services/theme_data/iss_deserializer.js'
+import { createStyleSheet, adoptStyleSheets } from 'src/services/style_setter/style_setter.js'
+import fileSizeFormatService from 'src/components/../services/file_size_format/file_size_format.js'
 
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
@@ -72,7 +73,10 @@ const AppearanceTab = {
         key: mode,
         value: mode,
         label: this.$t(`settings.style.themes3.hacks.underlay_override_mode_${mode}`)
-      }))
+      })),
+      backgroundUploading: false,
+      background: null,
+      backgroundPreview: null,
     }
   },
   components: {
@@ -155,19 +159,23 @@ const AppearanceTab = {
       }))
     })
 
+    this.previewTheme('stock', 'v3')
+
     if (window.IntersectionObserver) {
       this.intersectionObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(({ target, isIntersecting }) => {
           if (!isIntersecting) return
           const theme = this.availableStyles.find(x => x.key === target.dataset.themeKey)
           this.$nextTick(() => {
-            if (theme) theme.ready = true
+            if (theme) this.previewTheme(theme.key, theme.version, theme.data)
           })
           observer.unobserve(target)
         })
       }, {
         root: this.$refs.themeList
       })
+    } else {
+      this.availableStyles.forEach(theme => this.previewTheme(theme.key, theme.version, theme.data))
     }
   },
   updated () {
@@ -183,6 +191,9 @@ const AppearanceTab = {
     }
   },
   computed: {
+    isDefaultBackground () {
+      return !(this.$store.state.users.currentUser.background_image)
+    },
     switchInProgress () {
       return useInterfaceStore().themeChangeInProgress
     },
@@ -315,7 +326,7 @@ const AppearanceTab = {
     },
     onImportFailure (result) {
       console.error('Failure importing theme:', result)
-      this.$store.useInterfaceStore().pushGlobalNotice({ messageKey: 'settings.invalid_theme_imported', level: 'error' })
+      useInterfaceStore().pushGlobalNotice({ messageKey: 'settings.invalid_theme_imported', level: 'error' })
     },
     importValidator (parsed, filename) {
       if (filename.endsWith('.json')) {
@@ -391,7 +402,6 @@ const AppearanceTab = {
             inputRuleset: [...input, paletteRule].filter(x => x),
             ultimateBackgroundColor: '#000000',
             liteMode: true,
-            debug: true,
             onlyNormalState: true
           })
         }
@@ -400,7 +410,6 @@ const AppearanceTab = {
           inputRuleset: [],
           ultimateBackgroundColor: '#000000',
           liteMode: true,
-          debug: true,
           onlyNormalState: true
         })
       }
@@ -409,11 +418,64 @@ const AppearanceTab = {
         this.compilationCache[key] = theme3
       }
 
-      return getScopedVersion(
-        getCssRules(theme3.eager),
-        '#theme-preview-' + key
-      ).join('\n')
-    }
+
+      const sheet = createStyleSheet('appearance-tab-previews', 90)
+      sheet.addRule([
+        '#theme-preview-', key, ' {\n',
+        getCssRules(theme3.eager).join('\n'),
+        '\n}'
+      ].join(''))
+      sheet.ready = true
+      adoptStyleSheets()
+    },
+    uploadFile (slot, e) {
+      const file = e.target.files[0]
+      if (!file) { return }
+      if (file.size > this.$store.state.instance[slot + 'limit']) {
+        const filesize = fileSizeFormatService.fileSizeFormat(file.size)
+        const allowedsize = fileSizeFormatService.fileSizeFormat(this.$store.state.instance[slot + 'limit'])
+        useInterfaceStore().pushGlobalNotice({
+          messageKey: 'upload.error.message',
+          messageArgs: [
+            this.$t('upload.error.file_too_big', {
+              filesize: filesize.num,
+              filesizeunit: filesize.unit,
+              allowedsize: allowedsize.num,
+              allowedsizeunit: allowedsize.unit
+            })
+          ],
+          level: 'error'
+        })
+        return
+      }
+
+      const reader = new FileReader()
+      reader.onload = ({ target }) => {
+        const img = target.result
+        this[slot + 'Preview'] = img
+        this[slot] = file
+      }
+      reader.readAsDataURL(file)
+    },
+    resetBackground () {
+      const confirmed = window.confirm(this.$t('settings.reset_background_confirm'))
+      if (confirmed) {
+        this.submitBackground('')
+      }
+    },
+    submitBackground (background) {
+      if (!this.backgroundPreview && background !== '') { return }
+
+      this.backgroundUploading = true
+      this.$store.state.api.backendInteractor.updateProfileImages({ background })
+        .then((data) => {
+          this.$store.commit('addNewUsers', [data])
+          this.$store.commit('setCurrentUser', data)
+          this.backgroundPreview = null
+        })
+        .catch(this.displayUploadError)
+        .finally(() => { this.backgroundUploading = false })
+    },
   }
 }
 

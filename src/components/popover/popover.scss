@@ -15,11 +15,7 @@
   &::after {
     content: "";
     position: absolute;
-    top: -1px;
-    bottom: -1px;
-    left: -1px;
-    right: -1px;
-    z-index: -1px;
+    inset: -1px;
     box-shadow: var(--_shadow);
     pointer-events: none;
   }
@@ -64,11 +60,14 @@
     }
 
     .extra-button {
-      border-left: 1px solid var(--icon);
+      border-left: 1px solid;
+      border-image-source: linear-gradient(to bottom, transparent 0%, var(--icon) var(--__horizontal-gap) calc(100% - var(--__horizontal-gap)), transparent 100%);
+      border-image-slice: 1;
       padding-left: calc(var(--__horizontal-gap) - 1px);
-      border-right: var(--__horizontal-gap) solid transparent;
-      border-top: var(--__horizontal-gap) solid transparent;
-      border-bottom: var(--__horizontal-gap) solid transparent;
+      padding-right: var(--__horizontal-gap);
+      padding-top: var(--__horizontal-gap);
+      padding-bottom: var(--__horizontal-gap);
+      max-width: fit-content;
     }
 
     .main-button {

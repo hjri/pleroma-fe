@@ -1,5 +1,4 @@
-import Cropper from 'cropperjs'
-import 'cropperjs/dist/cropper.css'
+import 'cropperjs' // This adds all of the cropperjs's components into DOM
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faCircleNotch
@@ -11,85 +10,46 @@ library.add(
 
 const ImageCropper = {
   props: {
-    trigger: {
-      type: [String, window.Element],
-      required: true
-    },
-    submitHandler: {
-      type: Function,
-      required: true
-    },
-    cropperOptions: {
-      type: Object,
-      default () {
-        return {
-          aspectRatio: 1,
-          autoCropArea: 1,
-          viewMode: 1,
-          movable: false,
-          zoomable: false,
-          guides: false
-        }
-      }
-    },
+    // Mime-types to accept, i.e. which filetypes to accept (.gif, .png, etc.)
     mimes: {
       type: String,
       default: 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon'
     },
-    saveButtonLabel: {
-      type: String
-    },
-    saveWithoutCroppingButtonlabel: {
-      type: String
-    },
-    cancelButtonLabel: {
-      type: String
+    // Fixed aspect-ratio for selection box
+    aspectRatio: {
+      type: Number
     }
   },
   data () {
     return {
-      cropper: undefined,
       dataUrl: undefined,
-      filename: undefined,
-      submitting: false
+      filename: undefined
     }
   },
-  computed: {
-    saveText () {
-      return this.saveButtonLabel || this.$t('image_cropper.save')
-    },
-    saveWithoutCroppingText () {
-      return this.saveWithoutCroppingButtonlabel || this.$t('image_cropper.save_without_cropping')
-    },
-    cancelText () {
-      return this.cancelButtonLabel || this.$t('image_cropper.cancel')
-    }
-  },
+  emits: [
+    'submit', // cropping complete or uncropped image returned
+    'close', // cropper is closed
+  ],
   methods: {
     destroy () {
-      if (this.cropper) {
-        this.cropper.destroy()
-      }
       this.$refs.input.value = ''
       this.dataUrl = undefined
       this.$emit('close')
     },
     submit (cropping = true) {
-      this.submitting = true
-      this.submitHandler(cropping && this.cropper, this.file)
-        .then(() => this.destroy())
-        .finally(() => {
-          this.submitting = false
-        })
+      let cropperPromise
+      if (cropping) {
+        cropperPromise = this.$refs.cropperSelection.$toCanvas()
+      } else {
+        cropperPromise = Promise.resolve()
+      }
+
+      cropperPromise.then(canvas => {
+        this.$emit('submit', { canvas, file: this.file })
+      })
     },
     pickImage () {
       this.$refs.input.click()
-    },
-    createCropper () {
-      this.cropper = new Cropper(this.$refs.img, this.cropperOptions)
-    },
-    getTriggerDOM () {
-      return typeof this.trigger === 'object' ? this.trigger : document.querySelector(this.trigger)
     },
     readFile () {
       const fileInput = this.$refs.input
@@ -103,26 +63,37 @@ const ImageCropper = {
         reader.readAsDataURL(this.file)
         this.$emit('changed', this.file, reader)
       }
+    },
+    inSelection(selection, maxSelection) {
+      return (
+        selection.x >= maxSelection.x
+        && selection.y >= maxSelection.y
+        && (selection.x + selection.width) <= (maxSelection.x + maxSelection.width)
+        && (selection.y + selection.height) <= (maxSelection.y + maxSelection.height)
+      )
+    },
+    onCropperSelectionChange(event) {
+      const cropperCanvas = this.$refs.cropperCanvas
+      const cropperCanvasRect = cropperCanvas.getBoundingClientRect()
+      const selection = event.detail
+      const maxSelection = {
+        x: 0,
+        y: 0,
+        width: cropperCanvasRect.width,
+        height: cropperCanvasRect.height,
+      }
+
+      if (!this.inSelection(selection, maxSelection)) {
+        event.preventDefault();
+      }
     }
   },
   mounted () {
-    // listen for click event on trigger
-    const trigger = this.getTriggerDOM()
-    if (!trigger) {
-      this.$emit('error', 'No image make trigger found.', 'user')
-    } else {
-      trigger.addEventListener('click', this.pickImage)
-    }
     // listen for input file changes
     const fileInput = this.$refs.input
     fileInput.addEventListener('change', this.readFile)
   },
   beforeUnmount: function () {
-    // remove the event listeners
-    const trigger = this.getTriggerDOM()
-    if (trigger) {
-      trigger.removeEventListener('click', this.pickImage)
-    }
     const fileInput = this.$refs.input
     fileInput.removeEventListener('change', this.readFile)
   }

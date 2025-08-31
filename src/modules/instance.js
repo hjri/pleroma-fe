@@ -108,7 +108,7 @@ const defaultState = {
   palette: null,
   style: null,
   emojiReactionsScale: 0.5,
-  textSize: '14px',
+  textSize: '1rem',
   emojiSize: '2.2rem',
   navbarSize: '3.5rem',
   panelHeaderSize: '3.2rem',
@@ -143,7 +143,7 @@ const defaultState = {
   emoji: {},
   emojiFetched: false,
   unicodeEmojiAnnotations: {},
-  pleromaBackend: true,
+  pleromaExtensionsAvailable: true,
   postFormats: [],
   restrictedNicknames: [],
   safeDM: true,
@@ -156,12 +156,16 @@ const defaultState = {
   pleromaChatMessagesAvailable: false,
   pleromaCustomEmojiReactionsAvailable: false,
   pleromaBookmarkFoldersAvailable: false,
+  pleromaPublicFavouritesAvailable: true,
+  statusNotificationTypeAvailable: true,
   gopherAvailable: false,
   mediaProxyAvailable: false,
   suggestionsEnabled: false,
   suggestionsWeb: '',
   quotingAvailable: false,
   groupActorAvailable: false,
+  blockExpiration: false,
+  localBubbleInstances: [], // Akkoma
 
   // Html stuff
   instanceSpecificPanelContent: '',
@@ -340,7 +344,10 @@ const instance = {
 
     async getCustomEmoji ({ commit, state }) {
       try {
-        const res = await window.fetch('/api/pleroma/emoji.json')
+        let res = await window.fetch('/api/v1/pleroma/emoji')
+        if (!res.ok) {
+          res = await window.fetch('/api/pleroma/emoji.json')
+        }
         if (res.ok) {
           const result = await res.json()
           const values = Array.isArray(result) ? Object.assign({}, ...result) : result

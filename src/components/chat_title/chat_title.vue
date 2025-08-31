@@ -19,6 +19,7 @@
       :title="'@'+(user && user.screen_name_ui)"
       :html="htmlTitle"
       :emoji="user.emoji || []"
+      :is-local="user.is_local"
     />
   </div>
 </template>
@@ -39,7 +40,6 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     display: inline;
-    word-wrap: break-word;
     overflow: hidden;
   }
 

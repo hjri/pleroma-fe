@@ -1,56 +1,41 @@
 .user-card {
   position: relative;
   z-index: 1;
+  overflow: hidden;
+  border-top-left-radius: calc(var(--roundness) - 1px);
+  border-top-right-radius: calc(var(--roundness) - 1px);
 
-  &:hover {
-    --_still-image-img-visibility: visible;
-    --_still-image-canvas-visibility: hidden;
-    --_still-image-label-visibility: hidden;
+  // editing headers
+  h4 {
+    line-height: 2;
+    display: flex;
   }
 
-  .panel-heading {
-    padding: 0.5em 0;
-    text-align: center;
-    box-shadow: none;
-    background: transparent;
-    flex-direction: column;
-    align-items: stretch;
-    // create new stacking context
-    position: relative;
-  }
+  h3 {
+    padding-left: 0.6em;
+    margin-bottom: 0;
 
-  .background-image {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    mask:
-      linear-gradient(to top, white, transparent) bottom no-repeat,
-      linear-gradient(to top, white, white);
-    // Autoprefixer seem to ignore this one, and also syntax is different
-    mask-composite: xor;
-    mask-composite: exclude;
-    background-size: cover;
-    mask-size: 100% 60%;
-    border-top-left-radius: calc(var(--__roundnessTop, --panelRadius) - 1px);
-    border-top-right-radius: calc(var(--__roundnessTop, --panelRadius) - 1px);
-    border-bottom-left-radius: calc(var(--__roundnessBottom, --panelRadius) - 1px);
-    border-bottom-right-radius: calc(var(--__roundnessBottom, --panelRadius) - 1px);
-    background-color: var(--profileBg);
-    z-index: -2;
-
-    &.hide-bio {
-      mask-size: 100% 40px;
+    .button-default {
+      font-size: 1rem;
+      line-height: 2;
+      padding: 0 0.6em;
     }
   }
 
+  .input.bio {
+    height: auto; // override settings default textarea size
+  }
+
+  .user-card-inner {
+    padding-bottom: 0;
+  }
+
+  &-setting,
   &-bio {
-    text-align: center;
+    color: var(--lightText);
     display: block;
     line-height: 1.3;
-    padding: 1em;
-    margin: 0;
+    padding: 0 0.6em;
 
     img {
       object-fit: contain;
@@ -60,44 +45,127 @@
     }
   }
 
-  &.-rounded-t {
-    border-top-left-radius: var(--roundness);
-    border-top-right-radius: var(--roundness);
-
-    --__roundnessTop: var(--roundness);
-    --__roundnessBottom: 0;
+  .user-card-setting {
+    margin-left: 0.6em;
+    margin-right: 0.6em;
   }
 
-  &.-rounded {
-    border-radius: var(--roundness);
+  .user-card-bio {
+    text-align: center;
+    margin: 0 0.6em;
 
-    --__roundnessTop: var(--roundness);
-    --__roundnessBottom: var(--roundness);
+    &.input {
+      margin: 0 1em;
+
+      textarea {
+        text-align: inherit;
+      }
+    }
+
+    &, * {
+      line-height: 1.5;
+    }
+
+    &.-justify-left {
+      text-align: start;
+    }
   }
 
-  &.-popover {
-    border-radius: var(--roundness);
-
-    --__roundnessTop: var(--roundness);
-    --__roundnessBottom: var(--roundness);
+  &:hover {
+    --_still-image-img-visibility: visible;
+    --_still-image-canvas-visibility: hidden;
+    --_still-image-label-visibility: hidden;
   }
 
-  &.-bordered {
-    border-width: 1px;
-    border-style: solid;
-    border-color: var(--border);
+  .personal-marks {
+    margin: 0.6em;
+    padding: 0.6em;
+
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .highlighter {
+      h4 {
+        margin-top: 0.6em;
+      }
+
+      .userHighlightSel {
+        vertical-align: bottom;
+        margin-left: -0.1em;
+
+        &.-none select {
+          color: var(--textFaint);
+
+          option {
+            color: var(--text);
+            background: var(--background);
+          }
+        }
+      }
+
+      .highlighter-color {
+        vertical-align: bottom;
+        margin-left: 0.6em;
+      }
+    }
+  }
+
+  .header-overlay {
+    position: absolute;
+    inset: 0;
+    right: -1.2em;
+    left: -1.2em;
+    top: -1.4em;
+    mask: linear-gradient(to top, transparent 0, white 5em) bottom no-repeat;
+  }
+
+  .banner-overlay,
+  .banner-image {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    border-top-left-radius: calc(var(--roundness) - 1px);
+    border-top-right-radius: calc(var(--roundness) - 1px);
+  }
+
+  .banner-image {
+    z-index: -2;
+
+    img {
+      object-fit: cover;
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  .banner-overlay {
+    background-color: var(--profileTint);
+    opacity: 0.5;
+    pointer-events: none; // let user copy bg url
+    z-index: -1;
+  }
+
+  .bottom-buttons {
+    display: flex;
+    gap: 0.5em;
   }
 }
 
 .user-info {
-  padding: 0 26px;
+  position: relative;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 
-  .container {
-    min-width: 0;
-    padding: 16px 0 6px;
+  .user-identity {
+    position: relative;
+    aspect-ratio: 3;
+    min-height: 6em;
     display: flex;
-    align-items: flex-start;
-    max-height: 56px;
+    align-items: flex-end;
+    container: user-card / inline-size;
 
     > * {
       min-width: 0;
@@ -113,23 +181,55 @@
       --_avatarShadowFilter: var(--avatarShadowFilter);
       --_avatarShadowInset: var(--avatarShadowInset);
 
-      width: 56px;
-      height: 56px;
+      width: 7em;
+      width: calc(min(7em, 20cqw));
+      height: 7em;
+      height: calc(min(7em, 20cqw));
       object-fit: cover;
+    }
+  }
+
+  .other-actions {
+    position: relative;
+    display: inline-grid;
+    grid-auto-flow: column;
+    grid-gap: 0.6em;
+    font-size: 1.25rem;
+    z-index: 2;
+    align-self: end;
+
+    a, button, div {
+      text-align: center;
+      width: 2em;
+      height: 2em;
+      line-height: 2em;
+      padding: 0.6em;
+      margin: -0.6em;
+
+      &.edit-banner-button {
+        width: auto;
+      }
+
+      &:hover .icon {
+        color: var(--textFaint);
+      }
+
+      &:not(:hover) .icon {
+        color: var(--lightText);
+      }
     }
   }
 
   &-avatar {
     position: relative;
     cursor: pointer;
+    margin-right: 0.6em;
 
     &.-overlay {
       position: absolute;
-      left: 0;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgb(0 0 0 / 30%);
+      inset: -0.6em;
+      left: -0.6em;
+      right: -1.2em;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -139,59 +239,28 @@
 
       svg {
         color: #fff;
+        margin: 0.5em;
       }
     }
 
     &:hover &.-overlay {
       opacity: 1;
+      background-color: rgb(0 0 0 / 30%);
     }
   }
 
-  .external-link-button,
-  .edit-profile-button {
-    cursor: pointer;
-    width: 2.5em;
-    text-align: center;
-    margin: -0.5em 0;
-    padding: 0.5em 0;
-
-    &:not(:hover) .icon {
-      color: var(--lightText);
-    }
-  }
-
-  .bottom-line {
-    font-weight: light;
-    font-size: 1.1em;
-    align-items: baseline;
-
-    .lock-icon {
-      margin-left: 0.5em;
-    }
-
-    .user-screen-name {
-      color: var(--text);
-      min-width: 1px;
-      flex: 0 1 auto;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    .dailyAvg {
-      min-width: 1px;
-      flex: 0 0 auto;
-      margin-left: 1em;
-      font-size: 0.7em;
-      color: var(--text);
-    }
-
-    .user-role {
-      flex: none;
+  .user-info-avatar.-editable {
+    .-overlay {
+      opacity: 1;
+      place-items: start end;
+      justify-content: end;
     }
   }
 
   .user-summary {
-    display: block;
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
     margin-left: 0.6em;
     text-align: left;
     text-overflow: ellipsis;
@@ -201,6 +270,14 @@
     // big one
     z-index: 1;
     line-height: 2em;
+    filter: drop-shadow(0 0 5em var(--profileTint))
+            drop-shadow(0 0 0.5em var(--profileTint))
+            drop-shadow(0 0 0.2em var(--profileTint));
+
+    .alert {
+      text-shadow: none;
+    }
+
 
     --emoji-size: 1.7em;
 
@@ -209,86 +286,99 @@
       --link: var(--text) !important;
     }
 
-    .top-line,
+    .name-wrapper {
+      display: flex;
+      align-items: baseline;
+
+      .edit-button {
+        width: 3em;
+        text-align: center;
+
+        &:hover .icon {
+          color: var(--textFaint);
+        }
+
+        &:not(:hover) .icon {
+          color: var(--lightText);
+        }
+      }
+
+      .input,
+      .user-name {
+        flex: 1;
+        font-weight: 600;
+        line-height: 2;
+        margin-right: 1em;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      .input {
+        margin: 0 -0.5em;
+        padding: 0 0.5em;
+      }
+    }
+
+    .top-line {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex: 1;
+      // these two normalize position and height when custom emoji are used
+      line-height: 2;
+      margin-bottom: -0.2em;
+      font-size: calc(max(110%, 4cqw));
+    }
+
     .bottom-line {
       display: flex;
-    }
-  }
-
-  .user-name {
-    text-overflow: ellipsis;
-    overflow: hidden;
-    flex: 1 1 auto;
-    margin-right: 1em;
-    font-size: 1.1em;
-  }
-
-  .user-meta {
-    margin-bottom: 0.15em;
-    display: flex;
-    align-items: baseline;
-    line-height: 22px;
-    flex-wrap: wrap;
-
-    .following {
-      flex: 1 0 auto;
-      margin: 0;
-      margin-bottom: 0.25em;
-      text-align: left;
-    }
-
-    .highlighter {
-      flex: 0 1 auto;
-      display: flex;
+      align-items: baseline;
       flex-wrap: wrap;
-      margin-right: -0.5em;
-      align-self: start;
+      white-space: normal;
+      font-weight: 500;
+      font-size: 0.9em;
+      font-size: calc(max(90%, 2.5cqw));
+      line-height: 1.5;
+      margin-top: 0.5em;
+    }
 
-      .userHighlightCl {
-        padding: 2px 10px;
-        flex: 1 0 auto;
-      }
+    .lock-icon {
+      display: inline-block;
+      vertical-align: baseline;
+      overflow-x: hidden;
+      margin: 0 0.35em 0 0.5em;
+    }
 
-      .userHighlightSel {
-        padding-top: 0;
-        padding-bottom: 0;
-        flex: 1 0 auto;
-      }
+    .user-screen-name {
+      color: var(--text);
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: inline-block;
+    }
 
-      .userHighlightText {
-        width: 70px;
-        flex: 1 0 auto;
-      }
-
-      .userHighlightCl,
-      .userHighlightText,
-      .userHighlightSel {
-        vertical-align: top;
-        margin-right: 0.5em;
-        margin-bottom: 0.25em;
-      }
+    .user-role {
+      display: inline-block;
+      vertical-align: baseline;
     }
   }
 
   .user-interactions {
     position: relative;
     display: flex;
-    flex-flow: row wrap;
-    margin-right: -0.75em;
+    flex-wrap: wrap;
+    gap: 0.6em;
 
     > * {
-      margin: 0 0.75em 0.6em 0;
+      flex: 0 0 8em;
+    }
+
+    .popover-trigger-button, .moderation-tools-button {
+      width: 100%;
+    }
+
+    > .btn-group, > button {
       white-space: nowrap;
-      min-width: 95px;
     }
-
-    button {
-      margin: 0;
-    }
-  }
-
-  .user-note {
-    margin: 0 0.75em 0.6em 0;
   }
 }
 
@@ -296,28 +386,211 @@
   display: none;
 }
 
-.user-counts {
-  display: flex;
-  line-height: 16px;
-  padding: 0.5em 1.5em 0;
-  text-align: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
+.user-extras {
+  padding: 1.2em 0.6em;
+  line-height: 1.5;
 
-.user-count {
-  flex: 1 0 auto;
-  padding: 0.5em 0;
-  margin: 0 0.5em;
+  .user-stats {
+    display: block;
+    text-align: center;
+    word-wrap: break-word;
+    width: 100%;
 
-  h5 {
-    font-size: 1em;
-    font-weight: bolder;
-    margin: 0 0 0.25em;
+    dl {
+      display: inline;
+      margin-right: 1em;
+      white-space: nowrap;
+    }
+
+    dd {
+      font-weight: bolder;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      margin: 0;
+    }
+
+    dd, dt {
+      display: inline
+    }
+
+    /* stylelint-disable-next-line no-descending-specificity */
+    a {
+      text-decoration: none;
+    }
   }
 
-  /* stylelint-disable-next-line no-descending-specificity */
-  a {
-    text-decoration: none;
+  .birthday {
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+
+    --icon: var(--text);
+  }
+}
+
+.user-profile-fields {
+  margin: 0 0.5em;
+  padding: 0 0.5em;
+  display: flex;
+  flex-direction: column;
+
+  --emoji-size: 1.8em;
+
+  .user-profile-field-add,
+  .user-profile-field {
+    display: flex;
+    align-items: center;
+    margin: 0.25em;
+    border: 1px solid var(--border);
+    border-radius: var(--roundness);
+    line-height: 2em;
+
+    .label {
+      margin-left: 0.5em;
+    }
+  }
+
+  .user-profile-field-add {
+    justify-content: center;
+    margin: 0.25em;
+  }
+
+  .user-profile-field {
+
+    /* stylelint-disable no-descending-specificity */
+    // input is a generic class
+    .input {
+      text-align: inherit;
+      flex: 1;
+    }
+    /* stylelint-enable no-descending-specificity */
+
+    .delete-field {
+      display: inline-block;
+      text-align: center;
+      width: 2em;
+    }
+
+    .user-profile-field-name,
+    .user-profile-field-value,
+    .user-profile-field-add {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      box-sizing: border-box;
+      display: inline-flex;
+
+      &.-edit {
+        padding: 0;
+
+        input {
+          font-weight: inherit;
+        }
+      }
+    }
+
+    .user-profile-field-name {
+      flex: 0 1 50%;
+      font-weight: 600;
+      text-align: right;
+      justify-content: end;
+      color: var(--lightText);
+      min-width: 9em;
+      border-right: 1px solid var(--border);
+      padding-left: 1.2em;
+      padding-right: 0.6em;
+    }
+
+    .user-profile-field-value {
+      flex: 1 1 55%;
+      color: var(--text);
+      padding-left: 0.6em;
+      margin: 0;
+    }
+  }
+}
+
+.edit-image {
+  .panel-body {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .current-avatar {
+    object-fit: contain;
+  }
+
+  .image-container {
+    display: flex;
+    align-self: center;
+    margin: 0 0 1em;
+    max-height: 30em;
+    max-width: 100%;
+    flex: 1 0 20em;
+    aspect-ratio: 1;
+    gap: 0.5em;
+
+    &.-banner {
+      aspect-ratio: 3;
+      max-width: 100%;
+    }
+
+    .new-image {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .cropper {
+      flex: 1;
+      overflow-x: auto;
+    }
+
+    > * {
+      flex: 1 0 10em;
+      max-height: 100%;
+      aspect-ratio: 1;
+    }
+
+    .separator {
+      min-width: 1.1em;
+      font-size: 500%;
+      align-self: center;
+      flex: 0 1 5em;
+      aspect-ratio: unset;
+    }
+  }
+
+  &.-banner {
+    .images-container {
+      grid-template-rows: 20em 5em 20em;
+      grid-template-columns: 1fr;
+
+      > * {
+        flex: 1 0 10em;
+        width: 100%;
+        aspect-ratio: 3;
+      }
+    }
+
+    .separator {
+      min-height: 1.1em;
+      font-size: 500%;
+      justify-self: center;
+      flex: 0 1 5em;
+      aspect-ratio: unset;
+    }
+  }
+
+  #modal.-mobile & {
+    #pick-image {
+      height: 3em;
+    }
+
+    .image-container {
+      &.-banner {
+        max-height: 10em;
+      }
+    }
   }
 }

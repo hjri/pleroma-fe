@@ -5,10 +5,20 @@
       <ul class="setting-list">
         <li>
           <interface-language-switcher
-            :prompt-text="$t('settings.interfaceLanguage')"
-            :language="language"
-            :set-language="val => language = val"
-          />
+            v-model="language"
+            @update="val => language = val"
+          >
+            {{ $t('settings.interfaceLanguage') }}
+          </interface-language-switcher>
+        </li>
+        <li>
+          <interface-language-switcher
+            v-model="emailLanguage"
+            :profile="true"
+            @update:model-value="updateProfile()"
+          >
+            {{ $t('settings.email_language') }}
+          </interface-language-switcher>
         </li>
         <li v-if="instanceSpecificPanelPresent">
           <BooleanSetting path="hideISP">
@@ -71,6 +81,22 @@
         </li>
         <li>
           <BooleanSetting
+            path="userCardLeftJustify"
+            expert="1"
+          >
+            {{ $t('settings.user_card_left_justify') }}
+          </BooleanSetting>
+        </li>
+        <li>
+          <BooleanSetting
+            path="userCardHidePersonalMarks"
+            expert="1"
+          >
+            {{ $t('settings.user_card_hide_personal_marks') }}
+          </BooleanSetting>
+        </li>
+        <li>
+          <BooleanSetting
             path="alwaysShowNewPostButton"
             expert="1"
           >
@@ -107,13 +133,11 @@
               </BooleanSetting>
             </li>
             <li>
-              <BooleanSetting path="modalOnBlock">
+              <BooleanSetting
+                v-if="!blockExpirationSupported"
+                path="modalOnBlock"
+              >
                 {{ $t('settings.confirm_dialogs_block') }}
-              </BooleanSetting>
-            </li>
-            <li>
-              <BooleanSetting path="modalOnMute">
-                {{ $t('settings.confirm_dialogs_mute') }}
               </BooleanSetting>
             </li>
             <li>
@@ -506,6 +530,29 @@
           >
             {{ $t('settings.unsaved_post_action') }}
           </ChoiceSetting>
+        </li>
+      </ul>
+    </div>
+    <div
+      class="setting-item"
+    >
+      <h2>{{ $t('settings.cache') }}</h2>
+      <ul class="setting-list">
+        <li>
+          <button
+            class="btn button-default"
+            @click="clearAssetCache"
+          >
+            {{ $t('settings.clear_asset_cache') }}
+          </button>
+        </li>
+        <li>
+          <button
+            class="btn button-default"
+            @click="clearEmojiCache"
+          >
+            {{ $t('settings.clear_emoji_cache') }}
+          </button>
         </li>
       </ul>
     </div>

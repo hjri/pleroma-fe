@@ -1,11 +1,16 @@
+import { compact, map, each, mergeWith, last, concat, uniq, isArray } from 'lodash'
+
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import { windowWidth, windowHeight } from '../services/window_utils/window_utils'
 import apiService from '../services/api/api.service.js'
 import oauthApi from '../services/new_api/oauth.js'
-import { compact, map, each, mergeWith, last, concat, uniq, isArray } from 'lodash'
 import { registerPushNotifications, unregisterPushNotifications } from '../services/sw/sw.js'
+
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+
+import { declarations } from 'src/modules/config_declaration'
 
 // TODO: Unify with mergeOrAdd in statuses.js
 export const mergeOrAdd = (arr, obj, item) => {
@@ -38,11 +43,19 @@ const getNotificationPermission = () => {
   return Promise.resolve(Notification.permission)
 }
 
-const blockUser = (store, id) => {
-  return store.rootState.api.backendInteractor.blockUser({ id })
+const blockUser = (store, args) => {
+  const id = args.id
+  const expiresIn = typeof args === 'object' ? args.expiresIn : 0
+
+  const predictedRelationship = store.state.relationships[id] || { id }
+  store.commit('updateUserRelationship', [predictedRelationship])
+  store.commit('addBlockId', id)
+
+  return store.rootState.api.backendInteractor.blockUser({ id, expiresIn })
     .then((relationship) => {
       store.commit('updateUserRelationship', [relationship])
       store.commit('addBlockId', id)
+
       store.commit('removeStatus', { timeline: 'friends', userId: id })
       store.commit('removeStatus', { timeline: 'public', userId: id })
       store.commit('removeStatus', { timeline: 'publicAndExternal', userId: id })
@@ -69,7 +82,6 @@ const muteUser = (store, args) => {
   const expiresIn = typeof args === 'object' ? args.expiresIn : 0
 
   const predictedRelationship = store.state.relationships[id] || { id }
-  predictedRelationship.muting = true
   store.commit('updateUserRelationship', [predictedRelationship])
   store.commit('addMuteId', id)
 
@@ -355,20 +367,20 @@ const users = {
           return blocks
         })
     },
-    blockUser (store, id) {
-      return blockUser(store, id)
+    blockUser (store, data) {
+      return blockUser(store, data)
     },
-    unblockUser (store, id) {
-      return unblockUser(store, id)
+    unblockUser (store, data) {
+      return unblockUser(store, data)
     },
     removeUserFromFollowers (store, id) {
       return removeUserFromFollowers(store, id)
     },
-    blockUsers (store, ids = []) {
-      return Promise.all(ids.map(id => blockUser(store, id)))
+    blockUsers (store, data = []) {
+      return Promise.all(data.map(d => blockUser(store, d)))
     },
-    unblockUsers (store, ids = []) {
-      return Promise.all(ids.map(id => unblockUser(store, id)))
+    unblockUsers (store, data = []) {
+      return Promise.all(data.map(d => unblockUser(store, d)))
     },
     editUserNote (store, args) {
       return editUserNote(store, args)
@@ -391,8 +403,8 @@ const users = {
           return mutes
         })
     },
-    muteUser (store, id) {
-      return muteUser(store, id)
+    muteUser (store, data) {
+      return muteUser(store, data)
     },
     unmuteUser (store, id) {
       return unmuteUser(store, id)
@@ -403,11 +415,11 @@ const users = {
     showReblogs (store, id) {
       return showReblogs(store, id)
     },
-    muteUsers (store, ids = []) {
-      return Promise.all(ids.map(id => muteUser(store, id)))
+    muteUsers (store, data = []) {
+      return Promise.all(data.map(d => muteUser(store, d)))
     },
     unmuteUsers (store, ids = []) {
-      return Promise.all(ids.map(id => unmuteUser(store, id)))
+      return Promise.all(ids.map(d => unmuteUser(store, d)))
     },
     fetchDomainMutes (store) {
       return store.rootState.api.backendInteractor.fetchDomainMutes()
@@ -594,6 +606,7 @@ const users = {
       return new Promise((resolve, reject) => {
         const commit = store.commit
         const dispatch = store.dispatch
+        const rootState = store.rootState
         commit('beginLogin')
         store.rootState.api.backendInteractor.verifyCredentials(accessToken)
           .then((data) => {
@@ -605,7 +618,8 @@ const users = {
               user.muteIds = []
               user.domainMutes = []
               commit('setCurrentUser', user)
-              commit('setServerSideStorage', user)
+
+              useServerSideStorageStore().setServerSideStorage(user)
               commit('addNewUsers', [user])
 
               dispatch('fetchEmoji')
@@ -615,7 +629,35 @@ const users = {
 
               // Set our new backend interactor
               commit('setBackendInteractor', backendInteractorService(accessToken))
-              dispatch('pushServerSideStorage')
+
+              // Do server-side storage migrations
+
+              // Debug snippet to clean up storage and reset migrations
+              /*
+              // Reset wordfilter
+              Object.keys(
+                useServerSideStorageStore().prefsStorage.simple.muteFilters
+              ).forEach(key => {
+                useServerSideStorageStore().unsetPreference({ path: 'simple.muteFilters.' + key, value: null })
+              })
+
+              // Reset flag to 0 to re-run migrations
+              useServerSideStorageStore().setFlag({ flag: 'configMigration', value: 0 })
+              /**/
+
+              const { configMigration } = useServerSideStorageStore().flagStorage
+              declarations
+                .filter(x => {
+                  return x.store === 'server-side' &&
+                    x.migrationNum > 0 &&
+                    x.migrationNum > configMigration
+                })
+                .toSorted((a, b) => a.configMigration - b.configMigration)
+                .forEach(value => {
+                  value.migration(useServerSideStorageStore(), store.rootState)
+                  useServerSideStorageStore().setFlag({ flag: 'configMigration', value: value.migrationNum })
+                  useServerSideStorageStore().pushServerSideStorage()
+                })
 
               if (user.token) {
                 dispatch('setWsToken', user.token)
@@ -631,8 +673,10 @@ const users = {
                 // Start fetching notifications
                 dispatch('startFetchingNotifications')
 
-                // Start fetching chats
-                dispatch('startFetchingChats')
+                if (rootState.instance.pleromaChatMessagesAvailable) {
+                  // Start fetching chats
+                  dispatch('startFetchingChats')
+                }
               }
 
               dispatch('startFetchingLists')

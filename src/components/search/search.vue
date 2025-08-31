@@ -157,7 +157,7 @@
   text-align: center;
 }
 
-@media all and (max-width: 800px) {
+@media all and (width <= 800px) {
   .search-nav-heading {
     .tab-switcher .tabs .tab-wrapper {
       display: block;

@@ -33,7 +33,6 @@ const components = {
   Icon: null,
   Border: null,
   PanelHeader: null,
-  Attachment: null,
   Panel: null,
   Chat: null,
   ChatMessage: null,

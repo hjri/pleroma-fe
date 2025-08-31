@@ -1,4 +1,4 @@
-import { muteWordHits } from '../status_parser/status_parser.js'
+import { muteFilterHits } from '../status_parser/status_parser.js'
 import { showDesktopNotification } from '../desktop_notification_utils/desktop_notification_utils.js'
 import { useI18nStore } from 'src/stores/i18n.js'
 import { useAnnouncementsStore } from 'src/stores/announcements'
@@ -58,10 +58,10 @@ const sortById = (a, b) => {
   }
 }
 
-const isMutedNotification = (store, notification) => {
-  if (!notification.status) return
-  const rootGetters = store.rootGetters || store.getters
-  return notification.status.muted || muteWordHits(notification.status, rootGetters.mergedConfig.muteWords).length > 0
+const isMutedNotification = (notification) => {
+  if (!notification.status) return false
+  if (notification.status.muted) return true
+  return muteFilterHits(notification.status).length > 0
 }
 
 export const maybeShowNotification = (store, notification) => {
@@ -69,7 +69,7 @@ export const maybeShowNotification = (store, notification) => {
 
   if (notification.seen) return
   if (!visibleTypes(store).includes(notification.type)) return
-  if (notification.type === 'mention' && isMutedNotification(store, notification)) return
+  if (notification.type === 'mention' && isMutedNotification(notification)) return
 
   const notificationObject = prepareNotificationObject(notification, useI18nStore().i18n)
   showDesktopNotification(rootState, notificationObject)

@@ -1,3 +1,5 @@
+import { mapState } from 'vuex'
+
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import ScopeSelector from 'src/components/scope_selector/scope_selector.vue'
@@ -5,9 +7,13 @@ import IntegerSetting from '../helpers/integer_setting.vue'
 import FloatSetting from '../helpers/float_setting.vue'
 import UnitSetting from '../helpers/unit_setting.vue'
 import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
+import Select from 'src/components/select/select.vue'
+import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
 
 import SharedComputedObject from '../helpers/shared_computed_object.js'
-import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
+
+import localeService from 'src/services/locale/locale.service.js'
+import { clearCache, cacheKey, emojiCacheKey } from 'src/services/sw/sw.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faGlobe
@@ -61,7 +67,8 @@ const GeneralTab = {
       // Chrome-likes
       Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'webkitAudioDecodedByteCount') ||
       // Future spec, still not supported in Nightly 63 as of 08/2018
-      Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'audioTracks')
+      Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'audioTracks'),
+      emailLanguage: this.$store.state.users.currentUser.language || ['']
     }
   },
   components: {
@@ -71,8 +78,9 @@ const GeneralTab = {
     FloatSetting,
     UnitSetting,
     InterfaceLanguageSwitcher,
+    ProfileSettingIndicator,
     ScopeSelector,
-    ProfileSettingIndicator
+    Select
   },
   computed: {
     postFormats () {
@@ -93,12 +101,42 @@ const GeneralTab = {
     },
     instanceShoutboxPresent () { return this.$store.state.instance.shoutAvailable },
     instanceSpecificPanelPresent () { return this.$store.state.instance.showInstanceSpecificPanel },
-    ...SharedComputedObject()
+    ...SharedComputedObject(),
+    ...mapState({
+      blockExpirationSupported: state => state.instance.blockExpiration,
+    })
   },
   methods: {
     changeDefaultScope (value) {
       this.$store.dispatch('setProfileOption', { name: 'defaultScope', value })
-    }
+    },
+    clearCache (key) {
+      clearCache(key)
+        .then(() => {
+          this.$store.dispatch('settingsSaved', { success: true })
+        })
+        .catch(error => {
+          this.$store.dispatch('settingsSaved', { error })
+        })
+    },
+    clearAssetCache () {
+      this.clearCache(cacheKey)
+    },
+    clearEmojiCache () {
+      this.clearCache(emojiCacheKey)
+    },
+    updateProfile () {
+      const params = {
+        language: localeService.internalToBackendLocaleMulti(this.emailLanguage)
+      }
+
+      this.$store.state.api.backendInteractor
+        .updateProfile({ params })
+        .then((user) => {
+          this.$store.commit('addNewUsers', [user])
+          this.$store.commit('setCurrentUser', user)
+        })
+    },
   }
 }
 

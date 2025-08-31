@@ -14,6 +14,7 @@
           :faint="compact"
           :html="status.summary_raw_html"
           :emoji="status.emojis"
+          :is-local="status.isLocal"
         />
         <button
           v-show="longSubject && showingLongSubject"
@@ -31,68 +32,36 @@
         </button>
       </div>
       <div
-        :class="{'-tall-status': hideTallStatus}"
         class="text-wrapper"
+        :class="{'-tall-status': hideTallStatus, '-expanded': showingMore}"
       >
-        <button
-          v-show="hideTallStatus"
-          class="button-unstyled -link tall-status-hider"
-          :class="{ '-focused': focused }"
-          @click.prevent="toggleShowMore"
-        >
-          {{ $t("general.show_more") }}
-        </button>
         <RichContent
           v-if="!hideSubjectStatus && !(singleLine && status.summary_raw_html)"
           :class="{ '-single-line': singleLine }"
           class="text media-body"
           :html="status.raw_html"
+          :collapse="collapse"
           :emoji="status.emojis"
           :handle-links="true"
           :faint="compact"
           :greentext="mergedConfig.greentext"
           :attentions="status.attentions"
+          :is-local="status.is_local"
           @parse-ready="onParseReady"
         />
-
-        <button
-          v-show="hideSubjectStatus"
-          class="button-unstyled -link cw-status-hider"
-          @click.prevent="toggleShowMore"
+        <div
+          v-show="shouldShowToggle"
+          :class="toggleButtonClasses"
         >
-          {{ $t("status.show_content") }}
-          <FAIcon
-            v-if="attachmentTypes.includes('image')"
-            icon="image"
-          />
-          <FAIcon
-            v-if="attachmentTypes.includes('video')"
-            icon="video"
-          />
-          <FAIcon
-            v-if="attachmentTypes.includes('audio')"
-            icon="music"
-          />
-          <FAIcon
-            v-if="attachmentTypes.includes('unknown')"
-            icon="file"
-          />
-          <FAIcon
-            v-if="status.poll && status.poll.options"
-            icon="poll-h"
-          />
-          <FAIcon
-            v-if="status.card"
-            icon="link"
-          />
-        </button>
-        <button
-          v-show="showingMore && !fullContent"
-          class="button-unstyled -link status-unhider"
-          @click.prevent="toggleShowMore"
-        >
-          {{ tallStatus ? $t("general.show_less") : $t("status.hide_content") }}
-        </button>
+          <button
+            class="btn button-default toggle-button"
+            :class="{ '-focused': focused }"
+            :aria-expanded="showingMore"
+            @click.prevent="toggleShowMore"
+          >
+            {{ toggleText }}
+          </button>
+        </div>
       </div>
     </div>
     <slot v-if="!hideSubjectStatus" />

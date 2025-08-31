@@ -18,10 +18,11 @@ library.add(
   faPollH
 )
 
-const StatusContent = {
-  name: 'StatusContent',
+const StatusBody = {
+  name: 'StatusBody',
   props: [
     'compact',
+    'collapse', // replaces newlines with spaces
     'status',
     'focused',
     'noHeading',
@@ -40,6 +41,7 @@ const StatusContent = {
       parseReadyDone: false
     }
   },
+  emits: ['parseReady'],
   computed: {
     localCollapseSubjectDefault () {
       return this.mergedConfig.collapseMessageWithSubject
@@ -72,11 +74,31 @@ const StatusContent = {
     hideTallStatus () {
       return this.mightHideBecauseTall && !this.showingTall
     },
+    shouldShowToggle () {
+      return this.mightHideBecauseSubject || this.mightHideBecauseTall
+    },
+    toggleButtonClasses () {
+      return {
+        'cw-status-hider': !this.showingMore && this.mightHideBecauseSubject,
+        'tall-status-hider': !this.showingMore && this.mightHideBecauseTall,
+        'status-unhider': this.showingMore,
+      }
+    },
+    toggleText () {
+      if (this.showingMore) {
+        return this.mightHideBecauseSubject ? this.$t('status.hide_content') : this.$t('general.show_less')
+      } else {
+        return this.mightHideBecauseSubject ? this.$t('status.show_content') : this.$t('general.show_more')
+      }
+    },
     showingMore () {
       return (this.mightHideBecauseTall && this.showingTall) || (this.mightHideBecauseSubject && this.expandingSubject)
     },
     attachmentTypes () {
       return this.status.attachments.map(file => fileType.fileType(file.mimetype))
+    },
+    collapsedStatus () {
+      return this.status.raw_html.replace(/(\n|<br\s?\/?>)/g, ' ')
     },
     ...mapGetters(['mergedConfig'])
   },
@@ -128,4 +150,4 @@ const StatusContent = {
   }
 }
 
-export default StatusContent
+export default StatusBody

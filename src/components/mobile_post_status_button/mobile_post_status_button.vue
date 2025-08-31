@@ -42,7 +42,7 @@
   }
 }
 
-@media all and (min-width: 801px) {
+@media all and (width >= 801px) {
   .new-status-button:not(.always-show) {
     display: none;
   }

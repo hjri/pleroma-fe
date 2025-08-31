@@ -218,7 +218,7 @@ describe('RichContent', () => {
     const html = p('Ebin :DDDD :spurdo:')
     const expected = p(
       'Ebin :DDDD ',
-      '<anonymous-stub src="about:blank" alt=":spurdo:" class="emoji img" title=":spurdo:"></anonymous-stub>'
+      '<anonymous-stub shortcode="spurdo" islocal="true" class="emoji img" src="about:blank" title=":spurdo:" alt=":spurdo:"></anonymous-stub>'
     )
 
     const wrapper = shallowMount(RichContent, {

@@ -26,8 +26,8 @@
     align-self: stretch;
     width: 1px;
     background-color: var(--icon);
-    margin-left: 1em;
-    margin-right: 0.5em;
+    margin-left: 0.75em;
+    margin-right: 0.125em;
   }
 
   &.-pin {
@@ -100,6 +100,22 @@
           color: var(--cOrange);
         }
       }
+    }
+  }
+
+  &.-extra {
+    .action-counter {
+      justify-self: end;
+      margin-right: 1em;
+    }
+
+    .chevron-icon {
+      justify-self: end;
+    }
+
+    .extra-button {
+      justify-self: end;
+      justify-content: end;
     }
   }
 }

@@ -26,7 +26,7 @@ const ThreadTree = {
     pinnedStatusIdsObject: Object,
     profileUserId: String,
 
-    focused: Function,
+    isFocusedFunction: Function,
     highlight: String,
     getReplies: Function,
     setHighlight: Function,

@@ -1,4 +1,4 @@
-import { ref, reactive, computed, watch, watchEffect, provide, getCurrentInstance } from 'vue'
+import { ref, reactive, computed, watch, provide, getCurrentInstance } from 'vue'
 import { useInterfaceStore } from 'src/stores/interface'
 import { get, set, unset, throttle } from 'lodash'
 
@@ -19,11 +19,9 @@ import Preview from '../theme_tab/theme_preview.vue'
 
 import VirtualDirectivesTab from './virtual_directives_tab.vue'
 
+import { createStyleSheet, adoptStyleSheets } from 'src/services/style_setter/style_setter.js'
 import { init, findColor } from 'src/services/theme_data/theme_data_3.service.js'
-import {
-  getCssRules,
-  getScopedVersion
-} from 'src/services/theme_data/css_utils.js'
+import { getCssRules } from 'src/services/theme_data/css_utils.js'
 import { serialize } from 'src/services/theme_data/iss_serializer.js'
 import { deserializeShadow, deserialize } from 'src/services/theme_data/iss_deserializer.js'
 import {
@@ -372,6 +370,9 @@ export default {
         const path = getPath(component, directive)
 
         usedRule = get(real, path) // get real
+        if (usedRule === '') {
+          return usedRule
+        }
         if (!usedRule) {
           usedRule = get(fallback, path)
         }
@@ -379,7 +380,7 @@ export default {
         return postProcess(usedRule)
       },
       set (value) {
-        if (value) {
+        if (value != null) {
           set(allEditedRules.value, getPath(component, directive), value)
         } else {
           unset(allEditedRules.value, getPath(component, directive))
@@ -643,7 +644,7 @@ export default {
       parser (string) { return deserialize(string) },
       onImportFailure (result) {
         console.error('Failure importing style:', result)
-        this.$store.useInterfaceStore().pushGlobalNotice({ messageKey: 'settings.invalid_theme_imported', level: 'error' })
+        useInterfaceStore().pushGlobalNotice({ messageKey: 'settings.invalid_theme_imported', level: 'error' })
       },
       onImport
     })
@@ -667,7 +668,7 @@ export default {
     })
 
     exports.clearStyle = () => {
-      onImport(interfaceStore().styleDataUsed)
+      onImport(interfaceStore.styleDataUsed)
     }
 
     exports.exportStyle = () => {
@@ -685,19 +686,26 @@ export default {
     const overallPreviewRules = ref([])
     exports.overallPreviewRules = overallPreviewRules
 
-    const overallPreviewCssRules = ref([])
-    watchEffect(throttle(() => {
+    watch([overallPreviewRules], () => {
+      let css = null
       try {
-        overallPreviewCssRules.value = getScopedVersion(
-          getCssRules(overallPreviewRules.value),
-          '#edited-style-preview'
-        ).join('\n')
+        css = getCssRules(overallPreviewRules.value).map(r => r.replace('html', '&'))
       } catch (e) {
         console.error(e)
+        return
       }
-    }, 500))
 
-    exports.overallPreviewCssRules = overallPreviewCssRules
+      const sheet = createStyleSheet('style-tab-overall-preview', 90)
+
+      sheet.clear()
+      sheet.addRule([
+        '#edited-style-preview {\n',
+        css.join('\n'),
+        '\n}'
+      ].join(''))
+      sheet.ready = true
+      adoptStyleSheets()
+    })
 
     const updateOverallPreview = throttle(() => {
       try {
@@ -721,12 +729,12 @@ export default {
         console.error('Could not compile preview theme', e)
         return null
       }
-    }, 5000)
+    }, 1000)
     //
     // Apart from "hover" we can't really show how component looks like in
     // certain states, so we have to fake them.
     const simulatePseudoSelectors = (css, prefix) => css
-      .replace(prefix, '.component-preview .preview-block')
+      .replace(prefix, '.preview-block')
       .replace(':active', '.preview-active')
       .replace(':hover', '.preview-hover')
       .replace(':active', '.preview-active')

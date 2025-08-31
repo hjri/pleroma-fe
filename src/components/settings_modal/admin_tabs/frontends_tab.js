@@ -5,6 +5,7 @@ import StringSetting from '../helpers/string_setting.vue'
 import GroupSetting from '../helpers/group_setting.vue'
 import Popover from 'src/components/popover/popover.vue'
 import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
+import { useInterfaceStore } from 'src/stores/interface'
 
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -80,7 +81,7 @@ const FrontendsTab = {
           this.$store.dispatch('loadFrontendsStuff')
           if (response.error) {
             const reason = await response.error.json()
-            this.$store.useInterfaceStore().pushGlobalNotice({
+            useInterfaceStore().pushGlobalNotice({
               level: 'error',
               messageKey: 'admin_dash.frontend.failure_installing_frontend',
               messageArgs: {
@@ -90,7 +91,7 @@ const FrontendsTab = {
               timeout: 5000
             })
           } else {
-            this.$store.useInterfaceStore().pushGlobalNotice({
+            useInterfaceStore().pushGlobalNotice({
               level: 'success',
               messageKey: 'admin_dash.frontend.success_installing_frontend',
               messageArgs: {

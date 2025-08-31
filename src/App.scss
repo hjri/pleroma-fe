@@ -2,6 +2,9 @@
 /* stylelint-disable no-descending-specificity */
 @use "panel";
 
+@import '@fortawesome/fontawesome-svg-core/styles.css';
+@import '@kazvmoe-infra/pinch-zoom-element/dist/pinch-zoom.css';
+
 :root {
   --status-margin: 0.75em;
   --post-line-height: 1.4;
@@ -18,7 +21,7 @@
 }
 
 html {
-  font-size: var(--textSize, 14px);
+  font-size: var(--textSize, 1rem);
 
   --navbar-height: var(--navbarSize, 3.5rem);
   --emoji-size: var(--emojiSize, 32px);
@@ -30,12 +33,12 @@ body {
   font-family: sans-serif;
   font-family: var(--font);
   margin: 0;
+  padding: 0;
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overscroll-behavior-y: none;
-  overflow-x: clip;
-  overflow-y: scroll;
+  overflow: clip scroll;
 
   &.hidden {
     display: none;
@@ -224,9 +227,8 @@ nav {
   grid-template-rows: 1fr;
   box-sizing: border-box;
   margin: 0 auto;
-  align-content: flex-start;
+  place-content: flex-start center;
   flex-wrap: wrap;
-  justify-content: center;
   min-height: 100vh;
   overflow-x: clip;
 
@@ -262,8 +264,7 @@ nav {
       position: sticky;
       top: var(--navbar-height);
       max-height: calc(100vh - var(--navbar-height));
-      overflow-y: auto;
-      overflow-x: hidden;
+      overflow: hidden auto;
       margin-left: calc(var(--___paddingIncrease) * -1);
       padding-left: calc(var(--___paddingIncrease) + var(--___columnMargin) / 2);
 
@@ -380,6 +381,10 @@ nav {
   font-size: 1em;
   font-family: sans-serif;
   font-family: var(--font);
+
+  &.-transparent {
+    backdrop-filter: blur(0.125em) contrast(60%);
+  }
 
   &::-moz-focus-inner {
     border: none;
@@ -522,6 +527,10 @@ textarea {
     background: none !important;
     box-shadow: none;
     height: unset;
+  }
+
+  &::placeholder {
+    color: var(--textFaint)
   }
 
   --_padding: 0.5em;
@@ -678,11 +687,6 @@ option {
   }
 }
 
-.btn-block {
-  display: block;
-  width: 100%;
-}
-
 .btn-group {
   position: relative;
   display: inline-flex;
@@ -741,17 +745,17 @@ option {
   }
 
   &.-dot {
-    min-height: 8px;
-    max-height: 8px;
-    min-width: 8px;
-    max-width: 8px;
+    min-height: 0.6em;
+    max-height: 0.6em;
+    min-width: 0.6em;
+    max-width: 0.6em;
     padding: 0;
     line-height: 0;
     font-size: 0;
-    left: calc(50% - 4px);
-    top: calc(50% - 4px);
-    margin-left: 6px;
-    margin-top: -6px;
+    left: calc(50% - 0.6em);
+    top: calc(50% - 0.6em);
+    margin-left: 0.4em;
+    margin-top: -0.4em;
   }
 
   &.-counter {
@@ -780,12 +784,6 @@ option {
   --link: var(--linkFaint);
 
   color: var(--text);
-}
-
-.visibility-notice {
-  padding: 0.5em;
-  border: 1px solid var(--textFaint);
-  border-radius: var(--roundness);
 }
 
 .notice-dismissible {
@@ -832,7 +830,7 @@ option {
 .login-hint {
   text-align: center;
 
-  @media all and (min-width: 801px) {
+  @media all and (width >= 801px) {
     display: none;
   }
 
@@ -854,7 +852,7 @@ option {
   flex: 1;
 }
 
-@media all and (max-width: 800px) {
+@media all and (width <= 800px) {
   .mobile-hidden {
     display: none;
   }
@@ -935,12 +933,7 @@ option {
 
 #splash {
   pointer-events: none;
-  transition: opacity 0.5s;
-  opacity: 1;
-
-  &.hidden {
-    opacity: 0;
-  }
+  // transition: opacity 0.5s;
 
   #status {
     &.css-ok {
@@ -1079,7 +1072,7 @@ option {
         scale: 1.0063 0.9938;
         translate: 0 -10%;
         transform: rotateZ(var(--defaultZ));
-        animation-timing-function: ease-in-ou;
+        animation-timing-function: ease-in-out;
       }
 
       90% {

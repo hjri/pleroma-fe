@@ -208,6 +208,8 @@
 }
 
 .moderation-tools-button {
+  white-space: nowrap;
+
   svg,
   i {
     font-size: 0.8em;

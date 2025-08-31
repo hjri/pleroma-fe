@@ -220,8 +220,7 @@
     margin-top: 3.5em;
     width: 100vw;
     height: calc(100vh - var(--navbar-height));
-    overflow-x: hidden;
-    overflow-y: scroll;
+    overflow: hidden scroll;
 
     .notifications {
       padding: 0;

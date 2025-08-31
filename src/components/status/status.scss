@@ -1,8 +1,8 @@
 .Status {
   min-width: 0;
   white-space: normal;
-  word-wrap: break-word;
-  word-break: break-word;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
 
   &:hover {
     --_still-image-img-visibility: visible;
@@ -76,9 +76,10 @@
   }
 
   .status-favicon {
-    height: 18px;
-    width: 18px;
+    height: 1.2em;
+    width: 1.2em;
     margin-right: 0.4em;
+    object-fit: contain;
   }
 
   .status-heading {
@@ -92,12 +93,16 @@
 
     a {
       display: inline-block;
-      word-break: break-all;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow-x: hidden;
+      width: 100%
     }
   }
 
   .account-name {
-    min-width: 1.6em;
+    display: inline-block;
+    min-width: 1em;
     margin-right: 0.4em;
     white-space: nowrap;
     overflow: hidden;
@@ -113,10 +118,11 @@
   .heading-right {
     display: flex;
     flex-shrink: 0;
+    align-self: baseline;
 
     .button-unstyled {
-      padding: 5px;
-      margin: -5px;
+      padding: 0.2em;
+      margin: -0.2em;
     }
 
     .svg-inline--fa {
@@ -229,9 +235,9 @@
 
   .repeater-avatar {
     border-radius: var(--roundness);
-    margin-left: 28px;
-    width: 20px;
-    height: 20px;
+    margin-left: 2em; // 3.5 (poster avatar size) - 1.5 (repeater avatar size)
+    width: 1.5em;
+    height: 1.5em;
   }
 
   .repeater-name {
@@ -239,8 +245,8 @@
     margin-right: 0;
 
     .emoji {
-      width: 14px;
-      height: 14px;
+      width: 1em;
+      height: 1em;
       vertical-align: middle;
       object-fit: contain;
     }
@@ -283,8 +289,6 @@
 
     & .status-username,
     & .mute-reason {
-      word-wrap: normal;
-      word-break: normal;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
@@ -364,7 +368,7 @@
     }
   }
 
-  @media all and (max-width: 800px) {
+  @media all and (width <= 800px) {
     .repeater-avatar {
       margin-left: 20px;
     }
@@ -374,7 +378,6 @@
       height: 40px;
 
       // TODO define those other way somehow?
-      // stylelint-disable rscss/class-format
       &.-compact {
         width: 32px;
         height: 32px;

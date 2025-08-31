@@ -1,4 +1,3 @@
-import { unitToSeconds } from 'src/services/date_utils/date_utils.js'
 import { mapGetters } from 'vuex'
 
 import ConfirmModal from './confirm_modal.vue'
@@ -8,21 +7,13 @@ export default {
   props: ['type', 'user', 'status'],
   emits: ['hide', 'show', 'muted'],
   data: () => ({
-    showing: false,
-    muteExpiryAmount: 2,
-    muteExpiryUnit: 'hours'
+    showing: false
   }),
   components: {
     ConfirmModal,
     Select
   },
   computed: {
-    muteExpiryValue () {
-      unitToSeconds(this.muteExpiryUnit, this.muteExpiryAmount)
-    },
-    muteExpiryUnits () {
-      return ['minutes', 'hours', 'days']
-    },
     domain () {
       return this.user.fqn.split('@')[1]
     },
@@ -31,12 +22,7 @@ export default {
         return 'status.mute_domain_confirm'
       } else if (this.type === 'conversation') {
         return 'status.mute_conversation_confirm'
-      } else {
-        return 'user_card.mute_confirm'
       }
-    },
-    userIsMuted () {
-      return this.$store.getters.relationship(this.user.id).muting
     },
     conversationIsMuted () {
       return this.status.conversation_muted
@@ -49,11 +35,8 @@ export default {
         case 'domain': {
           return this.mergedConfig.modalOnMuteDomain
         }
-        case 'conversation': {
+        default: { // conversation
           return this.mergedConfig.modalOnMuteConversation
-        }
-        default: {
-          return this.mergedConfig.modalOnMute
         }
       }
     },
@@ -79,7 +62,7 @@ export default {
       switch (this.type) {
         case 'domain': {
           if (!this.domainIsMuted) {
-            this.$store.dispatch('muteDomain', { id: this.domain, expiresIn: this.muteExpiryValue })
+            this.$store.dispatch('muteDomain', { id: this.domain })
           } else {
             this.$store.dispatch('unmuteDomain', { id: this.domain })
           }
@@ -87,17 +70,9 @@ export default {
         }
         case 'conversation': {
           if (!this.conversationIsMuted) {
-            this.$store.dispatch('muteConversation', { id: this.status.id, expiresIn: this.muteExpiryValue })
+            this.$store.dispatch('muteConversation', { id: this.status.id })
           } else {
             this.$store.dispatch('unmuteConversation', { id: this.status.id })
-          }
-          break
-        }
-        default: {
-          if (!this.userIsMuted) {
-            this.$store.dispatch('muteUser', { id: this.user.id, expiresIn: this.muteExpiryValue })
-          } else {
-            this.$store.dispatch('unmuteUser', { id: this.user.id })
           }
           break
         }

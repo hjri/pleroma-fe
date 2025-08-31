@@ -1,6 +1,7 @@
 import ActionButton from './action_button.vue'
 import Popover from 'src/components/popover/popover.vue'
 import MuteConfirm from 'src/components/confirm_modal/mute_confirm.vue'
+import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -19,7 +20,8 @@ export default {
   components: {
     ActionButton,
     Popover,
-    MuteConfirm
+    MuteConfirm,
+    UserTimedFilterModal
   },
   props: ['button', 'status'],
   emits: ['interacted'],

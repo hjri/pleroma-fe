@@ -97,6 +97,9 @@ export default defineConfig(async ({ mode, command }) => {
               if (tag === 'pinch-zoom') {
                 return true
               }
+              if (tag.startsWith('cropper-')) {
+                return true
+              }
               return false
             }
           }
@@ -169,7 +172,14 @@ export default defineConfig(async ({ mode, command }) => {
               return 'static/js/[name].[hash].js'
             }
           },
-          chunkFileNames () {
+          chunkFileNames (chunkInfo) {
+            if (chunkInfo.facadeModuleId) {
+              if (chunkInfo.facadeModuleId.includes('node_modules/@kazvmoe-infra/unicode-emoji-json/annotations/')) {
+                return 'static/js/emoji-annotations/[name].[hash].js'
+              } else if (chunkInfo.facadeModuleId.includes('src/i18n/')) {
+                return 'static/js/i18n/[name].[hash].js'
+              }
+            }
             return 'static/js/[name].[hash].js'
           },
           assetFileNames (assetInfo) {

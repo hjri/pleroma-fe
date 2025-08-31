@@ -10,7 +10,10 @@
           keypath="user_reporting.title"
           class="title"
         >
-          <UserLink :user="user" />
+          <UserLink
+            class="user-link"
+            :user="user"
+          />
         </i18n-t>
       </div>
       <div class="panel-body">
@@ -74,9 +77,13 @@
 <style lang="scss">
 .user-reporting-panel {
   width: 90vw;
-  max-width: 700px;
+  max-width: 50rem;
   min-height: 20vh;
   max-height: 80vh;
+
+  .user-link {
+    display: inline
+  }
 
   .panel-body {
     display: flex;
@@ -104,7 +111,7 @@
     }
 
     textarea.form-control {
-      line-height: 16px;
+      line-height: 1.1;
       resize: none;
       overflow: hidden;
       transition: min-height 200ms 100ms;
@@ -143,7 +150,7 @@
     }
   }
 
-  @media all and (min-width: 801px) {
+  @media all and (width >= 801px) {
     .panel-body {
       flex-direction: row;
     }

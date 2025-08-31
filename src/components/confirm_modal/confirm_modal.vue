@@ -11,6 +11,7 @@
     <slot />
 
     <template #footer>
+      <slot name="footerLeft" />
       <button
         class="btn button-default"
         @click.prevent="onAccept"

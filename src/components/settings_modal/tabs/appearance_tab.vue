@@ -16,14 +16,6 @@
           :disabled="switchInProgress"
           @click="resetTheming"
         >
-          <!-- eslint-disable vue/no-v-text-v-html-on-component -->
-          <!-- eslint-disable vue/no-v-html -->
-          <component
-            :is="'style'"
-            v-html="previewTheme('stock', 'v3')"
-          />
-          <!-- eslint-enable vue/no-v-html -->
-          <!-- eslint-enable vue/no-v-text-v-html-on-component -->
           <preview id="theme-preview-stock" />
           <h4 class="theme-name">
             {{ $t('settings.style.stock_theme_used') }}
@@ -61,16 +53,6 @@
           :disabled="switchInProgress"
           @click="style.version === 'v2' ? setTheme(style.key) : setStyle(style.key)"
         >
-          <!-- eslint-disable vue/no-v-text-v-html-on-component -->
-          <!-- eslint-disable vue/no-v-html -->
-          <div v-if="style.ready || noIntersectionObserver">
-            <component
-              :is="'style'"
-              v-html="previewTheme(style.key, style.version, style.data)"
-            />
-          </div>
-          <!-- eslint-enable vue/no-v-html -->
-          <!-- eslint-enable vue/no-v-text-v-html-on-component -->
           <preview :id="'theme-preview-' + style.key" />
           <h4 class="theme-name">
             {{ style.name }}
@@ -168,6 +150,49 @@
           </template>
         </div>
       </div>
+    </div>
+    <div class="setting-item">
+      <h2>{{ $t('settings.background') }}</h2>
+      <div class="banner-background-preview">
+        <img :src="user.background_image">
+        <button
+          v-if="!isDefaultBackground"
+          class="button-unstyled reset-button"
+          :title="$t('settings.reset_profile_background')"
+          @click="resetBackground"
+        >
+          <FAIcon
+            icon="times"
+            type="button"
+          />
+        </button>
+      </div>
+      <p>{{ $t('settings.set_new_background') }}</p>
+      <img
+        v-if="backgroundPreview"
+        class="banner-background-preview"
+        :src="backgroundPreview"
+      >
+      <div>
+        <input
+          type="file"
+          class="input"
+          @change="uploadFile('background', $event)"
+        >
+      </div>
+      <FAIcon
+        v-if="backgroundUploading"
+        class="uploading"
+        spin
+        icon="circle-notch"
+      />
+      <button
+        v-else-if="backgroundPreview"
+        class="btn button-default"
+        @click="submitBackground(background)"
+      >
+        {{ $t('settings.save') }}
+      </button>
     </div>
     <div class="setting-item">
       <h2>{{ $t('settings.scale_and_layout') }}</h2>

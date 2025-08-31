@@ -23,7 +23,7 @@
     >
       <button
         v-if="remove"
-        class="button-default attachment-button"
+        class="button-default attachment-button -transparent"
         @click.prevent="onRemove"
       >
         <FAIcon icon="trash-alt" />
@@ -81,7 +81,7 @@
       >
         <button
           v-if="type === 'flash' && flashLoaded"
-          class="button-default attachment-button"
+          class="button-default attachment-button -transparent"
           :title="$t('status.attachment_stop_flash')"
           @click.prevent="stopFlash"
         >
@@ -89,7 +89,7 @@
         </button>
         <button
           v-if="attachment.description && size !== 'small' && !edit && type !== 'unknown'"
-          class="button-default attachment-button"
+          class="button-default attachment-button -transparent"
           :title="$t('status.show_attachment_description')"
           @click.prevent="toggleDescription"
         >
@@ -97,7 +97,7 @@
         </button>
         <button
           v-if="!useModal && type !== 'unknown'"
-          class="button-default attachment-button"
+          class="button-default attachment-button -transparent"
           :title="$t('status.show_attachment_in_modal')"
           @click.prevent="openModalForce"
         >
@@ -105,7 +105,7 @@
         </button>
         <button
           v-if="nsfw && hideNsfwLocal"
-          class="button-default attachment-button"
+          class="button-default attachment-button -transparent"
           :title="$t('status.hide_attachment')"
           @click.prevent="toggleHidden"
         >
@@ -113,7 +113,7 @@
         </button>
         <button
           v-if="shiftUp"
-          class="button-default attachment-button"
+          class="button-default attachment-button -transparent"
           :title="$t('status.move_up')"
           @click.prevent="onShiftUp"
         >
@@ -121,7 +121,7 @@
         </button>
         <button
           v-if="shiftDn"
-          class="button-default attachment-button"
+          class="button-default attachment-button -transparent"
           :title="$t('status.move_down')"
           @click.prevent="onShiftDn"
         >
@@ -129,7 +129,7 @@
         </button>
         <button
           v-if="remove"
-          class="button-default attachment-button"
+          class="button-default attachment-button -transparent"
           :title="$t('status.remove_attachment')"
           @click.prevent="onRemove"
         >

@@ -94,10 +94,9 @@
         :status="status"
         :user="user"
       />
-      <MuteConfirm
+      <UserTimedFilterModal
         ref="confirmUser"
-        type="user"
-        :status="status"
+        :is-mute="true"
         :user="user"
       />
     </teleport>

@@ -1,4 +1,5 @@
 import apiService from '../services/api/api.service.js'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
 import {
   isStatusNotification,
@@ -112,7 +113,11 @@ export const notifications = {
           commit('updateNotificationsMinMaxId', notification.id)
           commit('addNewNotifications', { notifications: [notification] })
 
-          maybeShowNotification(store, notification)
+          maybeShowNotification(
+            store,
+            Object.values(useServerSideStorageStore().prefsStorage.simple.muteFilters),
+            notification
+          )
         } else if (notification.seen) {
           state.idStore[notification.id].seen = true
         }

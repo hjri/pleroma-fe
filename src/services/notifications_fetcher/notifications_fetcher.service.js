@@ -2,9 +2,13 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 import apiService from '../api/api.service.js'
 import { promiseInterval } from '../promise_interval/promise_interval.js'
 
+const update = ({ store, notifications, older }) => {
+  store.dispatch('addNewNotifications', { notifications, older })
+}
+//
 // For using include_types when fetching notifications.
 // Note: chat_mention excluded as pleroma-fe polls them separately
-const mastoApiNotificationTypes = [
+const mastoApiNotificationTypes = new Set([
   'mention',
   'status',
   'favourite',
@@ -14,20 +18,20 @@ const mastoApiNotificationTypes = [
   'move',
   'poll',
   'pleroma:emoji_reaction',
-  'pleroma:chat_mention',
   'pleroma:report'
-]
-
-const update = ({ store, notifications, older }) => {
-  store.dispatch('addNewNotifications', { notifications, older })
-}
+])
 
 const fetchAndUpdate = ({ store, credentials, older = false, since }) => {
+
   const args = { credentials }
   const { getters } = store
   const rootState = store.rootState || store.state
   const timelineData = rootState.notifications
   const hideMutedPosts = getters.mergedConfig.hideMutedPosts
+
+  if (rootState.instance.pleromaChatMessagesAvailable) {
+    mastoApiNotificationTypes.add('pleroma:chat_mention')
+  }
 
   args.includeTypes = mastoApiNotificationTypes
   args.withMuted = !hideMutedPosts
@@ -72,7 +76,17 @@ const fetchNotifications = ({ store, args, older }) => {
   return apiService.fetchTimeline(args)
     .then((response) => {
       if (response.errors) {
-        throw new Error(`${response.status} ${response.statusText}`)
+        if (response.status === 400 && response.statusText.includes('Invalid value for enum')) {
+          response
+            .statusText
+            .matchAll(/(\w+) - Invalid value for enum./g)
+            .toArray()
+            .map(x => x[1])
+            .forEach(x => mastoApiNotificationTypes.delete(x))
+          return fetchNotifications({ store, args, older })
+        } else {
+          throw new Error(`${response.status} ${response.statusText}`)
+        }
       }
       const notifications = response.data
       update({ store, notifications, older })

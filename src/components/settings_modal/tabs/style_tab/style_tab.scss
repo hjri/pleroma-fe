@@ -187,7 +187,7 @@
     .state-selector,
     .variant-selector {
       display: grid;
-      grid-template-columns: 1fr minmax(1fr, 10em);
+      grid-template-columns: 1fr minmax(10em, 1fr);
       grid-template-rows: auto;
       grid-auto-flow: column;
       grid-gap: 0.5em;

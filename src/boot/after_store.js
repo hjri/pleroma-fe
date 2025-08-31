@@ -6,6 +6,8 @@ import VueVirtualScroller from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 import { FontAwesomeIcon, FontAwesomeLayers } from '@fortawesome/vue-fontawesome'
+import { config } from '@fortawesome/fontawesome-svg-core';
+config.autoAddCss = false
 
 import App from '../App.vue'
 import routes from './routes'
@@ -21,6 +23,7 @@ import { useOAuthStore } from 'src/stores/oauth'
 import { useI18nStore } from 'src/stores/i18n'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useAuthFlowStore } from 'src/stores/auth_flow'
 
 let staticInitialResults = null
 
@@ -63,10 +66,11 @@ const getInstanceConfig = async ({ store }) => {
       const textlimit = data.max_toot_chars
       const vapidPublicKey = data.pleroma.vapid_public_key
 
+      store.dispatch('setInstanceOption', { name: 'pleromaExtensionsAvailable', value: data.pleroma })
       store.dispatch('setInstanceOption', { name: 'textlimit', value: textlimit })
       store.dispatch('setInstanceOption', { name: 'accountApprovalRequired', value: data.approval_required })
-      store.dispatch('setInstanceOption', { name: 'birthdayRequired', value: !!data.pleroma.metadata.birthday_required })
-      store.dispatch('setInstanceOption', { name: 'birthdayMinAge', value: data.pleroma.metadata.birthday_min_age || 0 })
+      store.dispatch('setInstanceOption', { name: 'birthdayRequired', value: !!data.pleroma?.metadata.birthday_required })
+      store.dispatch('setInstanceOption', { name: 'birthdayMinAge', value: data.pleroma?.metadata.birthday_min_age || 0 })
 
       if (vapidPublicKey) {
         store.dispatch('setInstanceOption', { name: 'vapidPublicKey', value: vapidPublicKey })
@@ -78,6 +82,8 @@ const getInstanceConfig = async ({ store }) => {
     console.error('Could not load instance config, potentially fatal')
     console.error(error)
   }
+  // We should check for scrobbles support here but it requires userId
+  // so instead we check for it where it's fetched (statuses.js)
 }
 
 const getBackendProvidedConfig = async () => {
@@ -153,7 +159,7 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
       : config.logoMargin
   })
   copyInstanceOption('logoLeft')
-  store.commit('authFlow/setInitialStrategy', config.loginMethod)
+  useAuthFlowStore().setInitialStrategy(config.loginMethod)
 
   copyInstanceOption('redirectRootNoLogin')
   copyInstanceOption('redirectRootLogin')
@@ -242,7 +248,8 @@ const resolveStaffAccounts = ({ store, accounts }) => {
 
 const getNodeInfo = async ({ store }) => {
   try {
-    const res = await preloadFetch('/nodeinfo/2.1.json')
+    let res = await preloadFetch('/nodeinfo/2.1.json')
+    if (!res.ok) res = await preloadFetch('/nodeinfo/2.0.json')
     if (res.ok) {
       const data = await res.json()
       const metadata = data.metadata
@@ -253,7 +260,12 @@ const getNodeInfo = async ({ store }) => {
       store.dispatch('setInstanceOption', { name: 'safeDM', value: features.includes('safe_dm_mentions') })
       store.dispatch('setInstanceOption', { name: 'shoutAvailable', value: features.includes('chat') })
       store.dispatch('setInstanceOption', { name: 'pleromaChatMessagesAvailable', value: features.includes('pleroma_chat_messages') })
-      store.dispatch('setInstanceOption', { name: 'pleromaCustomEmojiReactionsAvailable', value: features.includes('pleroma_custom_emoji_reactions') })
+      store.dispatch('setInstanceOption', {
+        name: 'pleromaCustomEmojiReactionsAvailable',
+        value:
+          features.includes('pleroma_custom_emoji_reactions') ||
+          features.includes('custom_emoji_reactions')
+      })
       store.dispatch('setInstanceOption', { name: 'pleromaBookmarkFoldersAvailable', value: features.includes('pleroma:bookmark_folders') })
       store.dispatch('setInstanceOption', { name: 'gopherAvailable', value: features.includes('gopher') })
       store.dispatch('setInstanceOption', { name: 'pollsAvailable', value: features.includes('polls') })
@@ -262,6 +274,8 @@ const getNodeInfo = async ({ store }) => {
       store.dispatch('setInstanceOption', { name: 'mailerEnabled', value: metadata.mailerEnabled })
       store.dispatch('setInstanceOption', { name: 'quotingAvailable', value: features.includes('quote_posting') })
       store.dispatch('setInstanceOption', { name: 'groupActorAvailable', value: features.includes('pleroma:group_actors') })
+      store.dispatch('setInstanceOption', { name: 'blockExpiration', value: features.includes('pleroma:block_expiration') })
+      store.dispatch('setInstanceOption', { name: 'localBubbleInstances', value: metadata.localBubbleInstances ?? [] })
 
       const uploadLimits = metadata.uploadLimits
       store.dispatch('setInstanceOption', { name: 'uploadlimit', value: parseInt(uploadLimits.general) })
@@ -280,7 +294,6 @@ const getNodeInfo = async ({ store }) => {
       const software = data.software
       store.dispatch('setInstanceOption', { name: 'backendVersion', value: software.version })
       store.dispatch('setInstanceOption', { name: 'backendRepository', value: software.repository })
-      store.dispatch('setInstanceOption', { name: 'pleromaBackend', value: software.name === 'pleroma' })
 
       const priv = metadata.private
       store.dispatch('setInstanceOption', { name: 'private', value: priv })

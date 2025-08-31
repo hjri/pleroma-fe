@@ -363,12 +363,6 @@ const PostStatusForm = {
       }
     },
     safeToSaveDraft () {
-      console.log('safe', (
-        this.newStatus.status ||
-        this.newStatus.spoilerText ||
-        this.newStatus.files?.length ||
-        this.newStatus.hasPoll
-      ) && this.saveable)
       return (
         this.newStatus.status ||
         this.newStatus.spoilerText ||
@@ -731,10 +725,6 @@ const PostStatusForm = {
       } else {
         scrollerRef.scrollTop = targetScroll
       }
-    },
-    showEmojiPicker () {
-      this.$refs.textarea.focus()
-      this.$refs['emoji-input'].triggerShowPicker()
     },
     clearError () {
       this.error = null

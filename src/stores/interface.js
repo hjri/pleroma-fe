@@ -515,22 +515,25 @@ export const useInterfaceStore = defineStore('interface', {
     async applyTheme (
       { recompile = false } = {}
     ) {
+      console.log('Apply')
       const {
         forceThemeRecompilation,
         themeDebug,
         theme3hacks
       } = window.vuex.state.config
       this.themeChangeInProgress = true
-      // If we're not not forced to recompile try using
+      // If we're not forced to recompile try using
       // cache (tryLoadCache return true if load successful)
 
       const forceRecompile = forceThemeRecompilation || recompile
+
+      await this.getThemeData()
+
       if (!forceRecompile && !themeDebug && await tryLoadCache()) {
         this.themeChangeInProgress = false
         return this.setThemeApplied()
       }
       window.splashUpdate('splash.theme')
-      await this.getThemeData()
 
       try {
         const paletteIss = (() => {

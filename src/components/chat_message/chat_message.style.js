@@ -8,9 +8,6 @@ export default {
     'Text',
     'Icon',
     'Border',
-    'Button',
-    'RichContent',
-    'Attachment',
     'PollGraph'
   ],
   defaultRules: [

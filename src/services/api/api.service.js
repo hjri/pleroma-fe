@@ -15,7 +15,7 @@ const TAG_USER_URL = '/api/pleroma/admin/users/tag'
 const PERMISSION_GROUP_URL = (screenName, right) => `/api/pleroma/admin/users/${screenName}/permission_group/${right}`
 const ACTIVATE_USER_URL = '/api/pleroma/admin/users/activate'
 const DEACTIVATE_USER_URL = '/api/pleroma/admin/users/deactivate'
-const ADMIN_USERS_URL = '/api/pleroma/admin/users'
+const ADMIN_USERS_URL = '/api/v1/pleroma/admin/users'
 const SUGGESTIONS_URL = '/api/v1/suggestions'
 const NOTIFICATION_SETTINGS_URL = '/api/pleroma/notification_settings'
 const NOTIFICATION_READ_URL = '/api/v1/pleroma/notifications/read'
@@ -61,6 +61,7 @@ const MASTODON_LIST_TIMELINE_URL = id => `/api/v1/timelines/list/${id}`
 const MASTODON_LIST_ACCOUNTS_URL = id => `/api/v1/lists/${id}/accounts`
 const MASTODON_TAG_TIMELINE_URL = tag => `/api/v1/timelines/tag/${tag}`
 const MASTODON_BOOKMARK_TIMELINE_URL = '/api/v1/bookmarks'
+const AKKOMA_BUBBLE_TIMELINE_URL = '/api/v1/timelines/bubble'
 const MASTODON_USER_BLOCKS_URL = '/api/v1/blocks/'
 const MASTODON_USER_MUTES_URL = '/api/v1/mutes/'
 const MASTODON_BLOCK_USER_URL = id => `/api/v1/accounts/${id}/block`
@@ -99,7 +100,7 @@ const PLEROMA_CHAT_URL = id => `/api/v1/pleroma/chats/by-account-id/${id}`
 const PLEROMA_CHAT_MESSAGES_URL = id => `/api/v1/pleroma/chats/${id}/messages`
 const PLEROMA_CHAT_READ_URL = id => `/api/v1/pleroma/chats/${id}/read`
 const PLEROMA_DELETE_CHAT_MESSAGE_URL = (chatId, messageId) => `/api/v1/pleroma/chats/${chatId}/messages/${messageId}`
-const PLEROMA_ADMIN_REPORTS = '/api/pleroma/admin/reports'
+const PLEROMA_ADMIN_REPORTS = '/api/v1/pleroma/admin/reports'
 const PLEROMA_BACKUP_URL = '/api/v1/pleroma/backups'
 const PLEROMA_ANNOUNCEMENTS_URL = '/api/v1/pleroma/admin/announcements'
 const PLEROMA_POST_ANNOUNCEMENT_URL = '/api/v1/pleroma/admin/announcements'
@@ -111,16 +112,17 @@ const PLEROMA_USER_FAVORITES_TIMELINE_URL = id => `/api/v1/pleroma/accounts/${id
 const PLEROMA_BOOKMARK_FOLDERS_URL = '/api/v1/pleroma/bookmark_folders'
 const PLEROMA_BOOKMARK_FOLDER_URL = id => `/api/v1/pleroma/bookmark_folders/${id}`
 
-const PLEROMA_ADMIN_CONFIG_URL = '/api/pleroma/admin/config'
-const PLEROMA_ADMIN_DESCRIPTIONS_URL = '/api/pleroma/admin/config/descriptions'
-const PLEROMA_ADMIN_FRONTENDS_URL = '/api/pleroma/admin/frontends'
-const PLEROMA_ADMIN_FRONTENDS_INSTALL_URL = '/api/pleroma/admin/frontends/install'
+const PLEROMA_ADMIN_CONFIG_URL = '/api/v1/pleroma/admin/config'
+const PLEROMA_ADMIN_DESCRIPTIONS_URL = '/api/v1/pleroma/admin/config/descriptions'
+const PLEROMA_ADMIN_FRONTENDS_URL = '/api/v1/pleroma/admin/frontends'
+const PLEROMA_ADMIN_FRONTENDS_INSTALL_URL = '/api/v1/pleroma/admin/frontends/install'
 
 const PLEROMA_EMOJI_RELOAD_URL = '/api/pleroma/admin/reload_emoji'
 const PLEROMA_EMOJI_IMPORT_FS_URL = '/api/pleroma/emoji/packs/import'
 const PLEROMA_EMOJI_PACKS_URL = (page, pageSize) => `/api/v1/pleroma/emoji/packs?page=${page}&page_size=${pageSize}`
 const PLEROMA_EMOJI_PACK_URL = (name) => `/api/v1/pleroma/emoji/pack?name=${name}`
 const PLEROMA_EMOJI_PACKS_DL_REMOTE_URL = '/api/v1/pleroma/emoji/packs/download'
+const PLEROMA_EMOJI_PACKS_DL_REMOTE_ZIP_URL = '/api/v1/pleroma/emoji/packs/download_zip'
 const PLEROMA_EMOJI_PACKS_LS_REMOTE_URL =
   (url, page, pageSize) => `/api/v1/pleroma/emoji/packs/remote?url=${url}&page=${page}&page_size=${pageSize}`
 const PLEROMA_EMOJI_UPDATE_FILE_URL = (name) => `/api/v1/pleroma/emoji/packs/files?name=${name}`
@@ -214,12 +216,40 @@ const updateProfileImages = ({ credentials, avatar = null, avatarName = null, ba
 }
 
 const updateProfile = ({ credentials, params }) => {
+  const formData = new FormData();
+
+  for(const name in params) {
+    if (name === 'fields_attributes') {
+      params[name].forEach((param, i) => {
+        formData.append(name + `[${i}][name]`, param.name)
+        formData.append(name + `[${i}][value]`, param.value)
+      })
+    } else {
+      if (typeof params[name] === 'object') {
+        console.warning('Object detected in updateProfile API call. This will not work, use updateProfileJSON instead.')
+      }
+      formData.append(name, params[name]);
+    }
+  }
+
+  return fetch(MASTODON_PROFILE_UPDATE_URL, {
+    headers: authHeaders(credentials),
+    method: 'PATCH',
+    body: formData
+  })
+    .then((data) => data.json())
+    .then((data) => parseUser(data))
+}
+
+const updateProfileJSON = ({ credentials, params }) => {
   return promisedRequest({
     url: MASTODON_PROFILE_UPDATE_URL,
-    method: 'PATCH',
-    payload: params,
-    credentials
-  }).then((data) => parseUser(data))
+    credentials,
+    payload: params ,
+    method: 'PATCH'
+  })
+    .then((data) => data.json())
+    .then((data) => parseUser(data))
 }
 
 // Params needed:
@@ -319,11 +349,18 @@ const unmuteConversation = ({ id, credentials }) => {
     .then((data) => parseStatus(data))
 }
 
-const blockUser = ({ id, credentials }) => {
-  return fetch(MASTODON_BLOCK_USER_URL(id), {
-    headers: authHeaders(credentials),
-    method: 'POST'
-  }).then((data) => data.json())
+const blockUser = ({ id, expiresIn, credentials }) => {
+  const payload = {}
+  if (expiresIn) {
+    payload.duration = expiresIn
+  }
+
+  return promisedRequest({
+    url: MASTODON_BLOCK_USER_URL(id),
+    credentials,
+    method: 'POST',
+    payload
+  })
 }
 
 const unblockUser = ({ id, credentials }) => {
@@ -707,7 +744,8 @@ const fetchTimeline = ({
     publicFavorites: PLEROMA_USER_FAVORITES_TIMELINE_URL,
     tag: MASTODON_TAG_TIMELINE_URL,
     bookmarks: MASTODON_BOOKMARK_TIMELINE_URL,
-    quotes: PLEROMA_STATUS_QUOTES_URL
+    quotes: PLEROMA_STATUS_QUOTES_URL,
+    bubble: AKKOMA_BUBBLE_TIMELINE_URL
   }
   const isNotifications = timeline === 'notifications'
   const params = []
@@ -757,7 +795,7 @@ const fetchTimeline = ({
   if (replyVisibility !== 'all') {
     params.push(['reply_visibility', replyVisibility])
   }
-  if (includeTypes.length > 0) {
+  if (includeTypes.size > 0) {
     includeTypes.forEach(type => {
       params.push(['include_types[]', type])
     })
@@ -1172,7 +1210,13 @@ const muteUser = ({ id, expiresIn, credentials }) => {
   if (expiresIn) {
     payload.expires_in = expiresIn
   }
-  return promisedRequest({ url: MASTODON_MUTE_USER_URL(id), credentials, method: 'POST', payload })
+
+  return promisedRequest({
+    url: MASTODON_MUTE_USER_URL(id),
+    credentials,
+    method: 'POST',
+    payload
+  })
 }
 
 const unmuteUser = ({ id, credentials }) => {
@@ -1366,7 +1410,7 @@ const search2 = ({ credentials, q, resolve, limit, offset, following, type }) =>
   }
 
   if (type) {
-    params.push(['following', type])
+    params.push(['type', type])
   }
 
   params.push(['with_relationships', true])
@@ -1903,6 +1947,18 @@ const downloadRemoteEmojiPack = ({ instance, packName, as }) => {
   )
 }
 
+const downloadRemoteEmojiPackZIP = ({ url, packName, file }) => {
+  const data = new FormData()
+  if (file) data.set('file', file)
+  if (url) data.set('url', url)
+  data.set('name', packName)
+
+  return fetch(
+    PLEROMA_EMOJI_PACKS_DL_REMOTE_ZIP_URL,
+    { method: 'POST', body: data }
+  )
+}
+
 const saveEmojiPackMetadata = ({ name, newData }) => {
   return fetch(
     PLEROMA_EMOJI_PACK_URL(name),
@@ -2031,6 +2087,7 @@ const apiService = {
   getCaptcha,
   updateProfileImages,
   updateProfile,
+  updateProfileJSON,
   importMutes,
   importBlocks,
   importFollows,
@@ -2108,6 +2165,7 @@ const apiService = {
   deleteEmojiFile,
   listRemoteEmojiPacks,
   downloadRemoteEmojiPack,
+  downloadRemoteEmojiPackZIP,
   fetchBookmarkFolders,
   createBookmarkFolder,
   updateBookmarkFolder,

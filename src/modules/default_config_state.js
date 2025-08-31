@@ -97,8 +97,11 @@ export const defaultState = {
   alwaysShowSubjectInput: undefined, // instance default
   postContentType: undefined, // instance default
   minimalScopesMode: undefined, // instance default
+
   // This hides statuses filtered via a word filter
   hideFilteredStatuses: undefined, // instance default
+
+  // Confirmations
   modalOnRepeat: undefined, // instance default
   modalOnUnfollow: undefined, // instance default
   modalOnBlock: undefined, // instance default
@@ -110,6 +113,11 @@ export const defaultState = {
   modalOnApproveFollow: undefined, // instance default
   modalOnDenyFollow: undefined, // instance default
   modalOnRemoveUserFromFollowers: undefined, // instance default
+
+  // Expiry confirmations/default actions
+  onMuteDefaultAction: 'ask',
+  onBlockDefaultAction: 'ask',
+
   modalMobileCenter: undefined,
   playVideosInModal: false,
   useOneClickNsfw: false,
@@ -118,6 +126,8 @@ export const defaultState = {
   showScrollbars: false,
   userPopoverAvatarAction: 'open',
   userPopoverOverlay: false,
+  userCardLeftJustify: false,
+  userCardHidePersonalMarks: false,
   sidebarColumnWidth: '25rem',
   contentColumnWidth: '45rem',
   notifsColumnWidth: '25rem',

@@ -2,39 +2,13 @@ export default {
   name: 'MobileDrawer',
   selector: '.mobile-drawer',
   validInnerComponents: [
-    'Text',
-    'Link',
-    'Icon',
-    'Border',
-    'Button',
-    'ButtonUnstyled',
-    'Input',
-    'PanelHeader',
-    'MenuItem',
-    'Notification',
-    'Alert',
-    'UserCard'
+    'MenuItem'
   ],
   defaultRules: [
     {
       directives: {
         background: '--bg',
         backgroundNoCssColor: 'yes'
-      }
-    },
-    {
-      component: 'PanelHeader',
-      parent: { component: 'MobileDrawer' },
-      directives: {
-        background: '--fg',
-        shadow: [{
-          x: 0,
-          y: 0,
-          blur: 4,
-          spread: 0,
-          color: '#000000',
-          alpha: 0.6
-        }]
       }
     }
   ]

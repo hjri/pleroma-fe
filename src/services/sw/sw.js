@@ -18,6 +18,7 @@ function isPushSupported () {
 }
 
 function getOrCreateServiceWorker () {
+  if (!isSWSupported()) return
   const swType = process.env.HAS_MODULE_SERVICE_WORKER ? 'module' : 'classic'
   return navigator.serviceWorker.register('/sw-pleroma.js', { type: swType })
     .catch((err) => console.error('Unable to get or create a service worker.', err))
@@ -146,3 +147,11 @@ export function unregisterPushNotifications (token) {
     ]).catch((e) => console.warn(`Failed to disable Web Push Notifications: ${e.message}`))
   }
 }
+
+export const shouldCache = process.env.NODE_ENV === 'production'
+export const cacheKey = 'pleroma-fe'
+export const emojiCacheKey = 'pleroma-fe-emoji'
+
+export const clearCache = (key) => caches.delete(key)
+
+export { getOrCreateServiceWorker }

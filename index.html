@@ -5,140 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
     <link rel="preload" href="/static/config.json" as="fetch" crossorigin />
     <link rel="preload" href="/api/pleroma/frontend_configurations" as="fetch" crossorigin />
+    <link rel="preload" href="/nodeinfo/2.0.json" as="fetch" crossorigin />
     <link rel="preload" href="/nodeinfo/2.1.json" as="fetch" crossorigin />
     <link rel="preload" href="/api/v1/instance" as="fetch" crossorigin />
     <link rel="preload" href="/static/pleromatan_apology_fox_small.webp" as="image" />
     <!-- putting styles here to avoid having to wait for styles to load up -->
-    <style id="splashscreen">
-     #splash {
-       --scale: 1;
-       width: 100vw;
-       height: 100vh;
-       display: grid;
-       grid-template-rows: auto;
-       grid-template-columns: auto;
-       align-content: center;
-       align-items: center;
-       justify-content: center;
-       justify-items: center;
-       flex-direction: column;
-       background: #0f161e;
-       font-family: sans-serif;
-       color: #b9b9ba;
-       position: absolute;
-       z-index: 9999;
-       font-size: calc(1vw + 1vh + 1vmin);
-     }
-
-     #splash-credit {
-       position: absolute;
-       font-size: 14px;
-       bottom: 16px;
-       right: 16px;
-     }
-
-     #splash-container {
-       align-items: center;
-     }
-
-     #mascot-container {
-       display: flex;
-       align-items: flex-end;
-       justify-content: center;
-       perspective: 60em;
-       perspective-origin: 0 -15em;
-       transform-style: preserve-3d;
-     }
-
-     #mascot {
-       width: calc(10em * var(--scale));
-       height: calc(10em * var(--scale));
-       object-fit: contain;
-       object-position: bottom;
-       transform: translateZ(-2em);
-     }
-
-     #throbber {
-       display: grid;
-       width: calc(5em * 0.5 * var(--scale));
-       height: calc(8em * 0.5 * var(--scale));
-       margin-left: 4.1em;
-       z-index: 2;
-       grid-template-rows: repeat(8, 1fr);
-       grid-template-columns: repeat(5, 1fr);
-       grid-template-areas: "P P . L L"
-                            "P P . L L"
-                            "P P . L L"
-                            "P P . L L"
-                            "P P . . ."
-                            "P P . . ."
-                            "P P . E E"
-                            "P P . E E";
-
-       --logoChunkSize: calc(2em * 0.5 * var(--scale))
-     }
-
-     .chunk {
-       background-color: #e2b188;
-       box-shadow: 0.01em 0.01em 0.1em 0 #e2b188;
-     }
-
-     #chunk-P {
-       grid-area: P;
-       border-top-left-radius:  calc(var(--logoChunkSize) / 2);
-     }
-
-     #chunk-L {
-       grid-area: L;
-       border-bottom-right-radius: calc(var(--logoChunkSize) / 2);
-     }
-
-     #chunk-E {
-       grid-area: E;
-       border-bottom-right-radius: calc(var(--logoChunkSize) / 2);
-     }
-
-     #status {
-       margin-top: 1em;
-       line-height: 2;
-       width: 100%;
-       text-align: center;
-     }
-
-     #statusError {
-       display: none;
-       margin-top: 1em;
-       font-size: calc(1vw + 1vh + 1vmin);
-       line-height: 2;
-       width: 100%;
-       text-align: center;
-     }
-
-     #statusStack {
-       display: none;
-       margin-top: 1em;
-       font-size: calc((1vw + 1vh + 1vmin) / 2.5);
-       width: calc(100vw - 5em);
-       padding: 1em;
-       text-overflow: ellipsis;
-       overflow-x: hidden;
-       text-align: left;
-       line-height: 2;
-     }
-
-     @media (prefers-reduced-motion) {
-       #throbber {
-         animation: none !important;
-       }
-     }
-    </style>
-    <style id="pleroma-eager-styles" type="text/css"></style>
-    <style id="pleroma-lazy-styles" type="text/css"></style>
+    <link rel="stylesheet" id="splashscreen" href="/static/splash.css" />
+    <link rel="stylesheet" id="custom-styles-holder" type="text/css" href="/static/empty.css" />
     <!--server-generated-meta-->
   </head>
-  <body style="margin: 0; padding: 0">
+  <body>
     <noscript>To use Pleroma, please enable JavaScript.</noscript>
-    <div id="splash">
+    <div id="splash" class="initial-hidden">
       <!-- we are hiding entire graphic so no point showing credit -->
       <div aria-hidden="true" id="splash-credit">
         Art by pipivovott

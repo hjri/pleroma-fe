@@ -412,6 +412,10 @@
   display: flex;
   padding: 0;
   margin: 0;
+
+  .user-info {
+    margin: 1em;
+  }
 }
 
 .side-drawer ul {

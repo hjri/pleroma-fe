@@ -1,42 +1,53 @@
 <template>
   <div class="image-cropper">
-    <div v-if="dataUrl">
-      <div class="image-cropper-image-container">
-        <img
-          ref="img"
+    <div class="image">
+      <cropper-canvas
+        ref="cropperCanvas"
+        background
+        class="image-cropper-canvas"
+        height="100%"
+      >
+        <cropper-image
+          v-if="dataUrl"
+          ref="cropperImage"
           :src="dataUrl"
-          alt=""
-          @load.stop="createCropper"
+          alt="Picture"
+          class="image-cropper-image"
+          translatable
+          scalable
+        />
+        <cropper-shade hidden />
+        <cropper-handle
+          action="select"
+          plain
+        />
+        <cropper-selection
+          ref="cropperSelection"
+          initial-coverage="0.9"
+          :aspect-ratio="aspectRatio"
+          movable
+          resizable
+          @change="onCropperSelectionChange"
         >
-      </div>
-      <div class="image-cropper-buttons-wrapper">
-        <button
-          class="button-default btn"
-          type="button"
-          :disabled="submitting"
-          @click="submit()"
-          v-text="saveText"
-        />
-        <button
-          class="button-default btn"
-          type="button"
-          :disabled="submitting"
-          @click="destroy"
-          v-text="cancelText"
-        />
-        <button
-          class="button-default btn"
-          type="button"
-          :disabled="submitting"
-          @click="submit(false)"
-          v-text="saveWithoutCroppingText"
-        />
-        <FAIcon
-          v-if="submitting"
-          spin
-          icon="circle-notch"
-        />
-      </div>
+          <cropper-grid
+            role="grid"
+            covered
+          />
+          <cropper-crosshair centered />
+          <cropper-handle
+            action="move"
+            theme-color="rgba(255, 255, 255, 0.35)"
+          />
+          <cropper-handle action="n-resize" />
+          <cropper-handle action="e-resize" />
+          <cropper-handle action="s-resize" />
+          <cropper-handle action="w-resize" />
+          <cropper-handle action="ne-resize" />
+          <cropper-handle action="nw-resize" />
+          <cropper-handle action="se-resize" />
+          <cropper-handle action="sw-resize" />
+        </cropper-selection>
+      </cropper-canvas>
     </div>
     <input
       ref="input"
@@ -51,24 +62,24 @@
 
 <style lang="scss">
 .image-cropper {
-  &-img-input {
+  display: flex;
+  flex-direction: column;
+
+  &-canvas, .image {
+    height: 100%;
+  }
+
+  & &-img-input {
     display: none;
   }
 
-  &-image-container {
-    position: relative;
-
-    img {
-      display: block;
-      max-width: 100%;
-    }
-  }
-
   &-buttons-wrapper {
-    margin-top: 10px;
+    display: grid;
+    grid-gap: 0.5em;
+    grid-template-columns: 1fr 1fr 1fr;
 
     button {
-      margin-top: 5px;
+      margin-top: 1em;
     }
   }
 }

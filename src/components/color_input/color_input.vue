@@ -19,14 +19,14 @@
     />
     <div
       class="input color-input-field"
-      :class="{ disabled: !present || disabled }"
+      :class="{ disabled: !present || disabled, unstyled }"
     >
       <input
         :id="name + '-t'"
         class="textColor unstyled"
         :class="{ disabled: !present || disabled }"
         type="text"
-        :value="modelValue || fallback"
+        :value="modelValue ?? fallback"
         :disabled="!present || disabled"
         @input="updateValue($event.target.value)"
       >
@@ -91,6 +91,11 @@ export default {
     label: {
       required: true,
       type: String
+    },
+    // use unstyled, uh, style
+    unstyled: {
+      required: false,
+      type: Boolean
     },
     // Color value, should be required but vue cannot tell the difference
     // between "property missing" and "property set to undefined"

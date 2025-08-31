@@ -12,7 +12,7 @@
       :title="$t(button.label(funcArg))"
       target="_blank"
       :tabindex="0"
-      :disabled="this.button.interactive ? !this.button.interactive(this.funcArg) : false"
+      :disabled="button.interactive ? !button.interactive(funcArg) : false"
       :href="getComponent(button) == 'a' ? button.link?.(funcArg) || remoteInteractionLink : undefined"
       @click="doActionWrap(button, outerClose)"
     >
@@ -60,7 +60,7 @@
       />
     </component>
     <span
-      v-if="!extra && button.counter?.(funcArg) > 0"
+      v-if="button.counter?.(funcArg) > 0"
       class="action-counter"
     >
       {{ button.counter?.(funcArg) }}

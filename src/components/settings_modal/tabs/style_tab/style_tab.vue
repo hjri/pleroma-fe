@@ -6,14 +6,6 @@
     <div class="setting-item heading">
       <h2> {{ $t('settings.style.themes3.editor.title') }} </h2>
       <div class="meta-preview">
-        <!-- eslint-disable vue/no-v-text-v-html-on-component -->
-        <!-- eslint-disable vue/no-v-html -->
-        <component
-          :is="'style'"
-          v-html="overallPreviewCssRules"
-        />
-        <!-- eslint-enable vue/no-v-html -->
-        <!-- eslint-enable vue/no-v-text-v-html-on-component -->
         <Preview id="edited-style-preview" />
         <teleport
           v-if="isActive"
@@ -155,12 +147,6 @@
           </ul>
         </div>
         <div class="preview-container">
-          <!-- eslint-disable vue/no-v-html vue/no-v-text-v-html-on-component -->
-          <component
-            :is="'style'"
-            v-html="previewCss"
-          />
-          <!-- eslint-enable vue/no-v-html vue/no-v-text-v-html-on-component -->
           <ComponentPreview
             class="component-preview"
             :show-text="componentHas('Text')"

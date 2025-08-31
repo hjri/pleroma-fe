@@ -41,10 +41,12 @@
 
   .form-bottom-left {
     display: flex;
-    flex: 1;
-    padding-right: 7px;
-    margin-right: 7px;
-    max-width: 10em;
+    gap: 1.5em;
+
+    button {
+      padding: 0.5em;
+      margin: -0.5em;
+    }
   }
 
   .preview-heading {
@@ -102,8 +104,14 @@
   .visibility-tray {
     display: flex;
     justify-content: space-between;
-    padding-top: 5px;
+    padding-top: 0.5em;
     align-items: baseline;
+  }
+
+  .visibility-notice {
+    border: 1px solid var(--border);
+    border-radius: var(--roundness);
+    padding: 0.5em 1em
   }
 
   .visibility-notice.edit-warning {
@@ -193,6 +201,10 @@
     line-height: 1.85;
   }
 
+  .inputs-wrapper {
+    padding: 0;
+  }
+
   .input.form-post-body {
     // TODO: make a resizable textarea component?
     box-sizing: content-box; // needed for easier computation of dynamic size
@@ -200,11 +212,13 @@
     transition: min-height 200ms 100ms;
     // stock padding + 1 line of text (for counter)
     padding-bottom: calc(var(--_padding) + var(--post-line-height) * 1em);
+    padding-right: 1.5em;
     // two lines of text
     height: calc(var(--post-line-height) * 1em);
     min-height: calc(var(--post-line-height) * 1em);
     resize: none;
     background: transparent;
+    text-wrap: stable;
 
     &.scrollable-form {
       overflow-y: auto;
@@ -213,6 +227,10 @@
 
   .main-input {
     position: relative;
+  }
+
+  .subject-input {
+    border-bottom: 1px solid var(--border);
   }
 
   .character-counter {

@@ -101,10 +101,7 @@
 
     .gallery-row-inner {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      inset: 0;
       display: flex;
       flex-flow: row wrap;
       align-content: stretch;
@@ -132,7 +129,7 @@
 
         .gallery-item {
           margin: 0;
-          height: 200px;
+          height: 15em;
         }
       }
     }
@@ -160,7 +157,15 @@
         linear-gradient(to top, white, white);
 
       /* Autoprefixed seem to ignore this one, and also syntax is different */
+      /* stylelint-disable mask-composite */
+      /* stylelint-disable declaration-property-value-no-unknown */
+      /* stylelint-disable scss/declaration-property-value-no-unknown */
+
+      /* TODO check if this is still needed */
       mask-composite: xor;
+      /* stylelint-enable scss/declaration-property-value-no-unknown */
+      /* stylelint-enable declaration-property-value-no-unknown */
+      /* stylelint-enable mask-composite */
       mask-composite: exclude;
     }
   }

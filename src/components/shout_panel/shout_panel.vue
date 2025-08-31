@@ -107,8 +107,7 @@
   }
 
   .shout-window {
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden auto;
     max-height: 20em;
   }
 
@@ -123,8 +122,8 @@
 
   .shout-avatar {
     img {
-      height: 24px;
-      width: 24px;
+      height: 0.6em;
+      width: 0.6em;
       border-radius: var(--roundness);
       margin-right: 0.5em;
       margin-top: 0.25em;
