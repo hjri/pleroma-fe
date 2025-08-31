@@ -9,7 +9,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - User card/profile got an overhaul
 - Profile editing overhaul
 - Visually combined subject and content fields in post form
-- Fixes for some elements not scaling with user UI scale
 - Moved post form's emoji button into input field
 - Minor visual changes and fixes
 - Clicking on fav/rt/emoji notifications' contents expands/collapses it
