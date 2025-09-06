@@ -140,7 +140,7 @@ const AdminCard = {
     fetchStatuses (store, opts) {
       const u = this.$store.getters.findUser(this.userDetails.id)
       const res = store.dispatch('adminListStatuses', { user: u,  opts: { pageSize: opts.pageSize, godmode: true, withReblogs: true}})
-      return Promise.resolve(res.then(r => r.activities))
+      return res.then(r => r.activities)
     }
   }
 }

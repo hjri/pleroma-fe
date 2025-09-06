@@ -114,6 +114,9 @@ const adminSettingsStorage = {
     adminChangeStatusScope (store, { opts }) {
        return store.rootState.api.backendInteractor.adminChangeStatusScope({ opts })
     },
+    adminDisableMFA (store, { opts }) {
+      return store.rootState.api.backendInteractor.adminDisableMFA({ opts })
+    },
     loadFrontendsStuff ({ rootState, commit }) {
       rootState.api.backendInteractor.fetchAvailableFrontends()
         .then(frontends => commit('setAvailableFrontends', { frontends }))

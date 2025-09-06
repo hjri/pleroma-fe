@@ -146,6 +146,7 @@ const PLEROMA_ADMIN_APPROVE_URL = '/api/v1/pleroma/admin/users/approve'
 const PLEROMA_ADMIN_LIST_STATUSES_URL = (id, pageSize, godmode, withReblogs) => `/api/v1/pleroma/admin/users/${id}/statuses?page_size=${pageSize}&godmode=${godmode}&with_reblogs=${withReblogs}`
 const PLEROMA_ADMIN_CHANGE_STATUS_SCOPE_URL = (id) => `/api/v1/pleroma/admin/statuses/${id}`
 const PLEROMA_ADMIN_REQUIRE_PASSWORD_CHANGE_URL = '/api/v1/pleroma/admin/users/force_password_reset'
+const PLEROMA_ADMIN_DISABLE_MFA_URL = '/api/v1/pleroma/admin/users/disable_mfa'
 const PLEROMA_EMOJI_RELOAD_URL = '/api/pleroma/admin/reload_emoji'
 const PLEROMA_EMOJI_IMPORT_FS_URL = '/api/pleroma/emoji/packs/import'
 const PLEROMA_EMOJI_PACKS_URL = (page, pageSize) => `/api/v1/pleroma/emoji/packs?page=${page}&page_size=${pageSize}`
@@ -1600,6 +1601,18 @@ const adminRequirePasswordChange = ({ user: { screen_name: nickname }, credentia
   })
 }
 
+const adminDisableMFA = ({ user : { screen_name: nickname }, credentials }) => {
+  const url = PLEROMA_ADMIN_DISABLE_MFA_URL
+  return promisedRequest({
+    url,
+    credentials,
+    method: 'PUT',
+    payload: {
+      nickname
+    }
+  })
+}
+
 const announcementToPayload = ({ content, startsAt, endsAt, allDay }) => {
   const payload = { content }
 
@@ -2282,7 +2295,8 @@ const apiService = {
   adminApproveUser,
   adminListStatuses,
   adminChangeStatusScope,
-  adminRequirePasswordChange
+  adminRequirePasswordChange,
+  adminDisableMFA
 }
 
 export default apiService

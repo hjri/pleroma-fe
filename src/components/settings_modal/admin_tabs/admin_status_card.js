@@ -25,6 +25,22 @@ const AdminStatusCard = {
       },
       changeVisibility (v) {
          this.$store.dispatch('adminChangeStatusScope', { opts: { id: this.statusDetails.id, visibility: v }}).then(res => parseStatus(res)).then(s => this.statusCache = s)
+      },
+     // show popup
+      confirmSelection(box) {
+        this.$refs[box].show()
+        this.$refs.dropdown.hidePopover()
+      },
+      // do the thing
+      selectionConfirmed(action, opts) {
+        const restricted = []
+        const s = this.$refs.userList.getSelected()
+        s.forEach(u => {
+          if (restricted.includes(action) !== false || u.id !== this.$store.state.users.currentUser.id) {
+            this.$store.dispatch(action, { id: this.statusDetails.id, ...(opts || {}) })
+          }
+        })
+        this.reset()
       }
    },
    components: {

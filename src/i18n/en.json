@@ -1173,7 +1173,9 @@
         "revoke_moderator": "Revoke Moderator Privileges From Selected Users?",
         "approve": "Approve Selected Users?",
         "confirm": "Confirm Selected Users?",
-        "require_password_change": "Require Password Change For Selected Users?"
+        "require_password_change": "Require Password Change For Selected Users?",
+        "resend_confirmation_email": "Resend Confirmation Email For Selected Users?",
+        "disable_mfa": "Disable MFA For Selected Users?"
       },
       "activate": "Activate",
       "deactivate": "Deactivate",
@@ -1186,6 +1188,7 @@
       "confirm_user": "Confirm",
       "resend_confirmation_email": "Resend Confirmation Email",
       "require_password_change": "Require Password Change",
+      "disable_mfa": "Disable MFA",
       "delete": "Delete",
       "loading_user": "Loading user...",
       "delete_user": "Delete User",

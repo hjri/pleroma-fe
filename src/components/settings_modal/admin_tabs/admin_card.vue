@@ -133,13 +133,47 @@
           :fetch-page="(store, opts) => fetchStatuses(store, opts)"
         >
           <template #header>
-            <button
-              class="button button-default btn"
-              type="button"
-              @click="deleteSelection"
+            <Popover
+              ref="dropdown"
+              trigger="click"
+              placement="bottom"
             >
-              {{ $t('admin_dash.users.delete') }}
-            </button>
+              <template #trigger>
+                <button
+                  class="button button-default btn"
+                >
+                  {{ $t('admin_dash.users.bulk_actions.title') }}
+                </button>
+              </template>
+              <template #content>
+                <div class="dropdown-menu">
+                  <div class="menu-item dropdown-item">
+                    <button
+                      class="main-button"
+                      @click="confirmSelection('confirmDelete')"
+                    >
+                      {{ $t('admin_dash.users.delete') }}
+                    </button>
+                  </div>
+                  <div class="menu-item dropdown-item">
+                    <button
+                      class="main-button"
+                      @click="confirmSelection('confirmSetSensitive')"
+                    >
+                      {{ $t('admin_dash.users.set_sensitive') }}
+                    </button>
+                  </div>
+                  <div class="menu-item dropdown-item">
+                    <button
+                      class="main-button"
+                      @click="confirmSelection('confirmUnsetSensitive')"
+                    >
+                      {{ $t('admin_dash.users.unset_sensitive') }}
+                    </button>
+                  </div>
+                </div>
+              </template>
+            </Popover>
           </template>
           <template #item="{item}">
             <AdminStatusCard :status-details="item" />
@@ -178,6 +212,55 @@
         <pre> {{ JSON.stringify(user_details, null, 2) }} </pre>
       </div>
     </div>
+    <GenericConfirm
+      ref="confirmDelete"
+      :title="$t('admin_dash.users.bulk_actions.activate')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="selectionConfirmed('adminDeleteStatus')"
+    />
+    <GenericConfirm
+      ref="confirmSetSensitive"
+      :title="$t('admin_dash.users.bulk_actions.change_sensitivity')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="selectionConfirmed('adminChangeStatusScope', { sensitive: true })"
+    />
+    <GenericConfirm
+      ref="confirmUnsetSensitive"
+      :title="$t('admin_dash.users.bulk_actions.unmark_as_sensitive')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="selectionConfirmed('adminChangeStatusScope', { sensitive: false })"
+    />
+    <GenericConfirm
+      ref="confirmSetPublic"
+      :title="$t('admin_dash.users.bulk_actions.mark_as_public')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="selectionConfirmed('adminChangeStatusScope', { visiblity: 'public' })"
+    />
+    <GenericConfirm
+      ref="confirmSetUnlisted"
+      :title="$t('admin_dash.users.bulk_actions.mark_as_unlisted')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="selectionConfirmed('adminChangeStatusScope', { visiblity: 'unlisted' })"
+    />
+    <GenericConfirm
+      ref="confirmSetPrivate"
+      :title="$t('admin_dash.users.bulk_actions.mark_as_private')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="selectionConfirmed('adminChangeStatusScope', { visiblity: 'private' })"
+    />
+    <GenericConfirm
+      ref="confirmSetDirect"
+      :title="$t('admin_dash.users.bulk_actions.mark_as_direct')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="selectionConfirmed('adminChangeStatusScope', { visiblity: 'direct' })"
+    />
   </div>
 </template>
 

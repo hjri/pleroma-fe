@@ -136,7 +136,7 @@
                 <div class="menu-item dropdown-item">
                   <button
                     class="main-button"
-                    @click="activateSelection"
+                    @click="confirmSelection('confirmActivate')"
                   >
                     {{ $t('admin_dash.users.activate') }}
                   </button>
@@ -144,7 +144,7 @@
                 <div class="menu-item dropdown-item">
                   <button
                     class="main-button"
-                    @click="deactivateSelection"
+                    @click="confirmSelection('confirmDeactivate')"
                   >
                     {{ $t('admin_dash.users.deactivate') }}
                   </button>
@@ -152,7 +152,7 @@
                 <div class="menu-item dropdown-item">
                   <button
                     class="main-button"
-                    @click="deleteSelection"
+                    @click="confirmSelection('confirmDelete')"
                   >
                     {{ $t('admin_dash.users.delete') }}
                   </button>
@@ -160,7 +160,7 @@
                 <div class="menu-item dropdown-item">
                   <button
                     class="main-button"
-                    @click="grantAdminSelection"
+                    @click="confirmSelection('confirmGrantAdmin')"
                   >
                     {{ $t('admin_dash.users.grant_admin') }}
                   </button>
@@ -168,7 +168,7 @@
                 <div class="menu-item dropdown-item">
                   <button
                     class="main-button"
-                    @click="revokeAdminSelection"
+                    @click="confirmSelection('confirmRevokeAdmin')"
                   >
                     {{ $t('admin_dash.users.revoke_admin') }}
                   </button>
@@ -176,7 +176,7 @@
                 <div class="menu-item dropdown-item">
                   <button
                     class="main-button"
-                    @click="grantModeratorSelection"
+                    @click="confirmSelection('confirmGrantModerator')"
                   >
                     {{ $t('admin_dash.users.grant_moderator') }}
                   </button>
@@ -184,7 +184,7 @@
                 <div class="menu-item dropdown-item">
                   <button
                     class="main-button"
-                    @click="revokeModeratorSelection"
+                    @click="confirmSelection('confirmRevokeModerator')"
                   >
                     {{ $t('admin_dash.users.revoke_moderator') }}
                   </button>
@@ -192,7 +192,7 @@
                 <div class="menu-item dropdown-item">
                   <button
                     class="main-button"
-                    @click="approveSelection"
+                    @click="confirmSelection('confirmApprove')"
                   >
                     {{ $t('admin_dash.users.approve') }}
                   </button>
@@ -200,7 +200,7 @@
                 <div class="menu-item dropdown-item">
                   <button
                     class="main-button"
-                    @click="confirmUserSelection"
+                    @click="confirmSelection('confirmConfirm')"
                   >
                     {{ $t('admin_dash.users.confirm_user') }}
                   </button>
@@ -208,9 +208,25 @@
                 <div class="menu-item dropdown-item">
                   <button
                     class="main-button"
-                    @click="requirePasswordChangeSelection"
+                    @click="confirmSelection('confirmResendEmail')"
+                  >
+                    {{ $t('admin_dash.users.resend_confirmation_email') }}
+                  </button>
+                </div>
+                <div class="menu-item dropdown-item">
+                  <button
+                    class="main-button"
+                    @click="confirmSelection('confirmRequirePasswordChange')"
                   >
                     {{ $t('admin_dash.users.require_password_change') }}
+                  </button>
+                </div>
+                <div class="menu-item dropdown-item">
+                  <button
+                    class="main-button"
+                    @click="confirmSelection('adminDisableMFA')"
+                  >
+                    {{ $t('admin_dash.users.disable_mfa') }}
                   </button>
                 </div>
               </div>
@@ -227,70 +243,84 @@
       :title="$t('admin_dash.users.bulk_actions.activate')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="activateSelectedConfirmed"
+      @callback="selectionConfirmed('adminActivateUser')"
     />
     <GenericConfirm
       ref="confirmDeactivate"
       :title="$t('admin_dash.users.bulk_actions.deactivate')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="deactivateSelectionConfirmed"
+      @callback="selectionConfirmed('adminDeactivateUser')"
     />
     <GenericConfirm
       ref="confirmDelete"
       :title="$t('admin_dash.users.bulk_actions.delete')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="deleteSelectionConfirmed"
+      @callback="selectionConfirmed('adminDeleteUser')"
     />
     <GenericConfirm
       ref="confirmGrantAdmin"
       :title="$t('admin_dash.users.bulk_actions.grant_admin')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="grantAdminSelectionConfirmed"
+      @callback="selectionConfirmed('adminAddUserToAdminGroup')"
     />
     <GenericConfirm
       ref="confirmRevokeAdmin"
       :title="$t('admin_dash.users.bulk_actions.revoke_admin')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="revokeAdminSelectionConfirmed"
+      @callback="selectionConfirmed('adminRemoveUserFromAdminGroup')"
     />
     <GenericConfirm
       ref="confirmGrantModerator"
       :title="$t('admin_dash.users.bulk_actions.grant_moderator')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="grantModeratorSelectionConfirmed"
+      @callback="selectionConfirmed('adminAddUserToModeratorGroup')"
     />
     <GenericConfirm
       ref="confirmRevokeModerator"
       :title="$t('admin_dash.users.bulk_actions.revoke_moderator')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="revokeModeratorSelectionConfirmed"
+      @callback="selectionConfirmed('adminRemoveUserFromModeratorGroup')"
     />
     <GenericConfirm
-      ref="confirmConfirmUser"
-      :title="$t('admin_dash.users.bulk_actions.confirmUser')"
+      ref="confirmApprove"
+      :title="$t('admin_dash.users.bulk_actions.approve')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="confirmUserSelectionConfirmed"
+      @callback="selectionConfirmed('adminApproveUser')"
+    />
+    <GenericConfirm
+      ref="confirmConfirm"
+      :title="$t('admin_dash.users.bulk_actions.confirm')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="selectionConfirmed('adminConfirmUser')"
     />
     <GenericConfirm
       ref="confirmResendEmail"
       :title="$t('admin_dash.users.bulk_actions.resend_confirmation_email')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="resendEmailSelectionConfirmed"
+      @callback="selectionConfirmed('adminResendConfirmationEmail')"
     />
     <GenericConfirm
       ref="confirmRequirePasswordChange"
       :title="$t('admin_dash.users.bulk_actions.require_password_change')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="requirePasswordChangeSelectionConfirmed"
+      @callback="selectionConfirmed('adminRequirePasswordChange')"
+    />
+    <GenericConfirm
+      ref="confirmDisableMFA"
+      :title="$t('admin_dash.users.bulk_actions.disable_mfa')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @callback="selectionConfirmed('adminDisableMFA')"
     />
   </div>
 </template>
