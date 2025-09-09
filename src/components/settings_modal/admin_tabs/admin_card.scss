@@ -1,0 +1,15 @@
+.inline-layout {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+}
+
+.alert {
+  text-shadow: none;
+}
+
+.user-role {
+  display: inline-block;
+  vertical-align: baseline;
+}

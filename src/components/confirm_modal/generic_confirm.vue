@@ -4,7 +4,7 @@
     :title="title"
     :cancel-text="cancelText"
     :confirm-text="confirmText"
-    @accepted="callback"
+    @accepted="doGeneric"
     @cancelled="hide"
   />
 </template>

@@ -1229,7 +1229,14 @@
       "title_database": "Database",
       "title_details": "Details",
       "title_users": "Users",
-      "user_has_no_posts": "User has no posts"
+      "title_actions": "Actions",
+      "user_has_no_posts": "User has no posts",
+      "indicator_admin": "Admin",
+      "indicator_moderator": "Moderator",
+      "indicator_active": "Active",
+      "indicator_deactivated": "Deactivated",
+      "indicator_approved": "Approved",
+      "indicator_confirmed": "Confirmed"
     },
     "limits": {
       "arbitrary_limits": "Arbitrary limits",

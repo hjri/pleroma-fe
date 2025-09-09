@@ -3,8 +3,9 @@ import ConfirmModal from './confirm_modal.vue'
 
 export default {
   props: {
-    callback: {
-      type: Function
+    action: {
+      type: Function,
+      require: true
     },
     title: {
       type: String
@@ -31,6 +32,10 @@ export default {
     hide () {
       this.showing = false
       this.$emit('hide')
+    },
+    doGeneric () {
+      this.action()
+      this.hide()
     }
   }
 }

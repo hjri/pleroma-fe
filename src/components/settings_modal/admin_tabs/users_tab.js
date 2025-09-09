@@ -109,8 +109,7 @@ const UsersTab = {
         name: this.filtersName,
         email: this.filtersEmail
       }}
-      const users = store.dispatch('fetchAdminUsers', nopts)
-      return users
+      return store.dispatch('fetchAdminUsers', nopts)
     },
     /**
      * reset the userlist explicitly

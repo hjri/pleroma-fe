@@ -3,6 +3,8 @@ import Checkbox from 'src/components/checkbox/checkbox.vue'
 import PageList from 'src/components/page_list/page_list.vue'
 import AdminStatusCard from 'src/components/settings_modal/admin_tabs/admin_status_card.vue'
 import Modal from 'src/components/modal/modal.vue'
+import Popover from 'src/components/popover/popover.vue'
+import GenericConfirm from 'src/components/confirm_modal/generic_confirm.vue'
 
 const AdminCard = {
   props: {
@@ -124,7 +126,9 @@ const AdminCard = {
     Checkbox,
     PageList,
     AdminStatusCard,
-    Modal
+    Modal,
+    Popover,
+    GenericConfirm
   },
   methods: {
     /**
@@ -217,6 +221,20 @@ const AdminCard = {
       const u = this.$store.getters.findUser(this.userDetails.id)
       const res = store.dispatch('adminListStatuses', { user: u,  opts: { pageSize: opts.pageSize, godmode: true, withReblogs: true}})
       return res.then(r => r.activities)
+    },
+    /**
+     * ...
+     */
+    confirmAction (box) {
+      this.$refs[box].show()
+      this.$refs.dropdownuser.hidePopover()
+    },
+    /**
+     * ...
+     */
+    actionConfirmed (action) {
+      console.log(action)
+      this.$store.dispatch(action, this.$store.getters.findUser(this.userDetails.id))
     }
   }
 }
