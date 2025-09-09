@@ -31,21 +31,45 @@ const UsersTab = {
     }
   },
   computed: {
+    /**
+     * do we filter for admins?
+     * @returns {boolean}
+     */
     filtersIsAdmin () {
       return this.filtersPrivileges === 'admin' || this.filtersPrivileges === 'modsnadmins'
     },
+    /**
+     * do we filter for moderators?
+     * @returns {boolean}
+     */
     filtersIsModerator () {
       return this.filtersPrivileges === 'moderator' || this.filtersPrivileges === 'modsnadmins'
     },
+    /**
+     * do we filter for active users?
+     * @returns {boolean}
+     */
     filtersActive () {
       return this.filtersActivity === 'active'
     },
+    /**
+     * do we filter for deactivated users?
+     * @returns {boolean}
+     */
     filtersDeactivated () {
       return this.filtersActivity === 'deactivated'
     },
+    /**
+     * do we filter for local users?
+     * @returns {boolean}
+     */
     filtersLocal () {
       return this.filtersOrigin === 'local'
     },
+    /**
+     * do we filter for external users?
+     * @return {boolean}
+     */
     filtersExternal () {
       return this.filtersOrigin === 'external'
     }
@@ -55,13 +79,18 @@ const UsersTab = {
     Select,
     BasicUserCard,
     PageList,
-    ProgressButton, 
+    ProgressButton,
     AdminCard,
     TabSwitcher,
     Popover,
     GenericConfirm
   },
   methods: {
+    /**
+     * fetch a new page of users via admin-api
+     * @param {object} store
+     * @param {object} opts
+     */
     fetchPage (store, opts) {
       if(!this.init) return new Promise(() => [])
       const filters = {
@@ -83,15 +112,24 @@ const UsersTab = {
       const users = store.dispatch('fetchAdminUsers', nopts)
       return users
     },
+    /**
+     * reset the userlist explicitly
+     */
     reset () {
       this.$refs.userList.reset()
     },
-    // show popup
+    /**
+     * show the confirmation box for bulk actions.
+     * @param {string} box ref name specified for the confirm component
+     */
     confirmSelection(box) {
       this.$refs[box].show()
       this.$refs.dropdown.hidePopover()
     },
-    // do the thing
+    /**
+     * called when a bulk action was confirmed
+     * @param {string} action
+     */
     selectionConfirmed(action) {
       const restricted = []
       const s = this.$refs.userList.getSelected()
@@ -103,6 +141,9 @@ const UsersTab = {
       this.reset()
     }
   },
+  /**
+   * mark as initialized and reset user list
+   */
   mounted () {
     this.init = true
     this.reset()

@@ -5,18 +5,30 @@ const PageList = {
     SelectableList
   },
   props: {
+    /**
+     * only make the checkbox clickable to toggle, not the whole area
+     */
     boxOnly: {
       type: Boolean,
       default: false
     },
+    /**
+     * how many entries to fetch at once
+     */
     pageSize: {
       type: Number,
       default: 50
     },
+    /**
+     * the function/callback used to fetch new entries (one page)
+     */
     fetchPage: {
       type: Function,
       default: async () => []
     },
+    /**
+     * wether or not this is a single page list (so it won't allow fetching more pages)
+     */
     singlePage: {
       type: Boolean,
       default: false
@@ -31,6 +43,9 @@ const PageList = {
     }
   },
   methods: {
+    /**
+     * reset and load first page
+     */
     reset () {
       this.canLoadMore = true
       this.pageIndex = 1
@@ -38,6 +53,9 @@ const PageList = {
       this.isLoading = false
       this.loadMore() // load one page
     },
+    /**
+     * load another page
+     */
     loadMore () {
       if (!this.isLoading && this.canLoadMore) {
         this.isLoading = true
@@ -50,10 +68,17 @@ const PageList = {
         })
       }
     },
+    /**
+     * get currently selected elements
+     * @returns {Array}
+     */
     getSelected () {
       return this.$refs.list.selected
     }
   },
+  /**
+   * auto-load first page when mounted
+   */
   mounted () {
     this.loadMore()
   }

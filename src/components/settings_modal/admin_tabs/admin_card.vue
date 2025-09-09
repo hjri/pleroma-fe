@@ -5,37 +5,26 @@
     </div>
     <div v-else>
       <BasicUserCard :user="user" />
-      <div v-if="!topLevelExpanded">
-        <button
-          class="button button-default btn"
-          type="button"
-          @click="topLevelExpanded = true"
-        >
-          {{ $t('admin_dash.users.expand_user') }}
-        </button>
-      </div>
+      <button
+        class="button button-default btn"
+        type="button"
+        @click="detailsExpanded = true"
+      >
+        {{ $t('admin_dash.users.details') }}
+      </button>
       <div
-        v-else
+        v-if="detailsExpanded"
       >
         <Modal
-          @backdrop-clicked="() => { topLevelExpanded = false }"
+          @backdrop-clicked="() => { detailsExpanded = false }"
         >
           <ul class="setting-list">
-            <li>
-              <button
-                class="button button-default btn"
-                type="button"
-                @click="topLevelExpanded = false"
-              >
-                {{ $t('admin_dash.users.collapse_user') }}
-              </button>
-            </li>
             <li
               v-if="isLocal"
             >
               <Checkbox
                 :model-value="isAdmin"
-                @update:model-value="v => toggleAdmin(v)"
+                @update:model-value="v => setAdmin(v)"
               >
                 {{ $t('admin_dash.users.is_admin') }}
               </Checkbox>
@@ -45,7 +34,7 @@
             >
               <Checkbox
                 :model-value="isModerator"
-                @update:model-value="v => toggleModerator(v)"
+                @update:model-value="v => setModerator(v)"
               >
                 {{ $t('admin_dash.users.is_moderator') }}
               </Checkbox>
@@ -78,7 +67,7 @@
               <button
                 class="button button-default btn"
                 type="button"
-                @click="toggleApproval(true)"
+                @click="approveUser()"
               >
                 {{ $t('admin_dash.users.approve') }}
               </button>
@@ -86,7 +75,7 @@
             <li>
               <Checkbox
                 :model-value="isActivated"
-                @update:model-value="v => toggleActivation(v)"
+                @update:model-value="v => setActivation(v)"
               >
                 {{ $t('admin_dash.users.is_active') }}
               </Checkbox>
@@ -195,7 +184,7 @@
           {{ $t('admin_dash.users.expand_raw_info') }}
         </button>
       </div>
-      <div 
+      <div
         v-else
         class="setting-item"
       >
