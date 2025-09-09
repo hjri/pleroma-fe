@@ -18,10 +18,11 @@ library.add(
   faPollH
 )
 
-const StatusContent = {
-  name: 'StatusContent',
+const StatusBody = {
+  name: 'StatusBody',
   props: [
     'compact',
+    'collapse', // replaces newlines with spaces
     'status',
     'focused',
     'noHeading',
@@ -40,6 +41,7 @@ const StatusContent = {
       parseReadyDone: false
     }
   },
+  emits: ['parseReady'],
   computed: {
     localCollapseSubjectDefault () {
       return this.mergedConfig.collapseMessageWithSubject
@@ -95,6 +97,9 @@ const StatusContent = {
     attachmentTypes () {
       return this.status.attachments.map(file => fileType.fileType(file.mimetype))
     },
+    collapsedStatus () {
+      return this.status.raw_html.replace(/(\n|<br\s?\/?>)/g, ' ')
+    },
     ...mapGetters(['mergedConfig'])
   },
   components: {
@@ -145,4 +150,4 @@ const StatusContent = {
   }
 }
 
-export default StatusContent
+export default StatusBody

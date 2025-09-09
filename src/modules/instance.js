@@ -108,7 +108,7 @@ const defaultState = {
   palette: null,
   style: null,
   emojiReactionsScale: 0.5,
-  textSize: '14px',
+  textSize: '1rem',
   emojiSize: '2.2rem',
   navbarSize: '3.5rem',
   panelHeaderSize: '3.2rem',

@@ -53,6 +53,7 @@ const StatusContent = {
   props: [
     'status',
     'compact',
+    'collapse',
     'focused',
     'noHeading',
     'fullContent',
@@ -64,6 +65,7 @@ const StatusContent = {
     'controlledShowingLongSubject',
     'controlledToggleShowingLongSubject'
   ],
+  emits: ['parseReady', 'mediaplay', 'mediapause'],
   data () {
     return {
       uncontrolledShowingTall: this.fullContent || (this.inConversation && this.focused),

@@ -21,7 +21,7 @@
 }
 
 html {
-  font-size: var(--textSize, 14px);
+  font-size: var(--textSize, 1rem);
 
   --navbar-height: var(--navbarSize, 3.5rem);
   --emoji-size: var(--emojiSize, 32px);
@@ -382,6 +382,10 @@ nav {
   font-family: sans-serif;
   font-family: var(--font);
 
+  &.-transparent {
+    backdrop-filter: blur(0.125em) contrast(60%);
+  }
+
   &::-moz-focus-inner {
     border: none;
   }
@@ -741,17 +745,15 @@ option {
   }
 
   &.-dot {
-    min-height: 8px;
-    max-height: 8px;
-    min-width: 8px;
-    max-width: 8px;
-    padding: 0;
+    min-height: 0.6em;
+    max-height: 0.6em;
+    min-width: 0.6em;
+    max-width: 0.6em;
+    left: calc(50% + 0.5em);
+    top: calc(50% - 1em);
     line-height: 0;
-    font-size: 0;
-    left: calc(50% - 4px);
-    top: calc(50% - 4px);
-    margin-left: 6px;
-    margin-top: -6px;
+    padding: 0;
+    margin: 0;
   }
 
   &.-counter {
@@ -780,12 +782,6 @@ option {
   --link: var(--linkFaint);
 
   color: var(--text);
-}
-
-.visibility-notice {
-  padding: 0.5em;
-  border: 1px solid var(--textFaint);
-  border-radius: var(--roundness);
 }
 
 .notice-dismissible {
@@ -935,12 +931,7 @@ option {
 
 #splash {
   pointer-events: none;
-  transition: opacity 0.5s;
-  opacity: 1;
-
-  &.hidden {
-    opacity: 0;
-  }
+  // transition: opacity 0.5s;
 
   #status {
     &.css-ok {

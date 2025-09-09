@@ -14,6 +14,7 @@
           :faint="compact"
           :html="status.summary_raw_html"
           :emoji="status.emojis"
+          :is-local="status.isLocal"
         />
         <button
           v-show="longSubject && showingLongSubject"
@@ -39,11 +40,13 @@
           :class="{ '-single-line': singleLine }"
           class="text media-body"
           :html="status.raw_html"
+          :collapse="collapse"
           :emoji="status.emojis"
           :handle-links="true"
           :faint="compact"
           :greentext="mergedConfig.greentext"
           :attentions="status.attentions"
+          :is-local="status.is_local"
           @parse-ready="onParseReady"
         />
         <div
@@ -57,32 +60,6 @@
             @click.prevent="toggleShowMore"
           >
             {{ toggleText }}
-            <template v-if="!showingMore">
-              <FAIcon
-                v-if="attachmentTypes.includes('image')"
-                icon="image"
-              />
-              <FAIcon
-                v-if="attachmentTypes.includes('video')"
-                icon="video"
-              />
-              <FAIcon
-                v-if="attachmentTypes.includes('audio')"
-                icon="music"
-              />
-              <FAIcon
-                v-if="attachmentTypes.includes('unknown')"
-                icon="file"
-              />
-              <FAIcon
-                v-if="status.poll && status.poll.options"
-                icon="poll-h"
-              />
-              <FAIcon
-                v-if="status.card"
-                icon="link"
-              />
-            </template>
           </button>
         </div>
       </div>

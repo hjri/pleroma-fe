@@ -8,7 +8,7 @@
       class="avatar"
       :alt="user.screen_name_ui"
       :title="user.screen_name_ui"
-      :src="imgSrc(user.profile_image_url_original)"
+      :src="url ? url : imgSrc(user.profile_image_url_original)"
       :image-load-error="imageLoadError"
       :class="{ '-compact': compact, '-better-shadow': betterShadow }"
     />
@@ -40,12 +40,12 @@
 
   display: inline-block;
   position: relative;
-  width: 48px;
-  height: 48px;
+  width: 3.5em;
+  height: 3.5em;
 
   &.-compact {
-    width: 32px;
-    height: 32px;
+    width: 2.2em;
+    height: 2.2em;
     border-radius: var(--roundness);
   }
 

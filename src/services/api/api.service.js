@@ -152,6 +152,7 @@ const PLEROMA_EMOJI_IMPORT_FS_URL = '/api/pleroma/emoji/packs/import'
 const PLEROMA_EMOJI_PACKS_URL = (page, pageSize) => `/api/v1/pleroma/emoji/packs?page=${page}&page_size=${pageSize}`
 const PLEROMA_EMOJI_PACK_URL = (name) => `/api/v1/pleroma/emoji/pack?name=${name}`
 const PLEROMA_EMOJI_PACKS_DL_REMOTE_URL = '/api/v1/pleroma/emoji/packs/download'
+const PLEROMA_EMOJI_PACKS_DL_REMOTE_ZIP_URL = '/api/v1/pleroma/emoji/packs/download_zip'
 const PLEROMA_EMOJI_PACKS_LS_REMOTE_URL =
   (url, page, pageSize) => `/api/v1/pleroma/emoji/packs/remote?url=${url}&page=${page}&page_size=${pageSize}`
 const PLEROMA_EMOJI_UPDATE_FILE_URL = (name) => `/api/v1/pleroma/emoji/packs/files?name=${name}`
@@ -245,12 +246,40 @@ const updateProfileImages = ({ credentials, avatar = null, avatarName = null, ba
 }
 
 const updateProfile = ({ credentials, params }) => {
+  const formData = new FormData();
+
+  for(const name in params) {
+    if (name === 'fields_attributes') {
+      params[name].forEach((param, i) => {
+        formData.append(name + `[${i}][name]`, param.name)
+        formData.append(name + `[${i}][value]`, param.value)
+      })
+    } else {
+      if (typeof params[name] === 'object') {
+        console.warning('Object detected in updateProfile API call. This will not work, use updateProfileJSON instead.')
+      }
+      formData.append(name, params[name]);
+    }
+  }
+
+  return fetch(MASTODON_PROFILE_UPDATE_URL, {
+    headers: authHeaders(credentials),
+    method: 'PATCH',
+    body: formData
+  })
+    .then((data) => data.json())
+    .then((data) => parseUser(data))
+}
+
+const updateProfileJSON = ({ credentials, params }) => {
   return promisedRequest({
     url: MASTODON_PROFILE_UPDATE_URL,
-    method: 'PATCH',
-    payload: params,
-    credentials
-  }).then((data) => parseUser(data))
+    credentials,
+    payload: params ,
+    method: 'PATCH'
+  })
+    .then((data) => data.json())
+    .then((data) => parseUser(data))
 }
 
 // Params needed:
@@ -2076,6 +2105,18 @@ const downloadRemoteEmojiPack = ({ instance, packName, as }) => {
   )
 }
 
+const downloadRemoteEmojiPackZIP = ({ url, packName, file }) => {
+  const data = new FormData()
+  if (file) data.set('file', file)
+  if (url) data.set('url', url)
+  data.set('name', packName)
+
+  return fetch(
+    PLEROMA_EMOJI_PACKS_DL_REMOTE_ZIP_URL,
+    { method: 'POST', body: data }
+  )
+}
+
 const saveEmojiPackMetadata = ({ name, newData }) => {
   return fetch(
     PLEROMA_EMOJI_PACK_URL(name),
@@ -2204,6 +2245,7 @@ const apiService = {
   getCaptcha,
   updateProfileImages,
   updateProfile,
+  updateProfileJSON,
   importMutes,
   importBlocks,
   importFollows,
@@ -2281,6 +2323,7 @@ const apiService = {
   deleteEmojiFile,
   listRemoteEmojiPacks,
   downloadRemoteEmojiPack,
+  downloadRemoteEmojiPackZIP,
   fetchBookmarkFolders,
   createBookmarkFolder,
   updateBookmarkFolder,

@@ -508,7 +508,7 @@ export const useServerSideStorageStore = defineStore('serverSideStorage', {
       this.updateCache({ username: window.vuex.state.users.currentUser.fqn })
       const params = { pleroma_settings_store: { 'pleroma-fe': this.cache } }
       window.vuex.state.api.backendInteractor
-        .updateProfile({ params })
+        .updateProfileJSON({ params })
         .then((user) => {
           this.setServerSideStorage(user)
           this.dirty = false

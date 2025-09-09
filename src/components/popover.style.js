@@ -6,16 +6,7 @@ export default {
     modal: '.modal'
   },
   validInnerComponents: [
-    'Text',
-    'Link',
-    'Icon',
-    'Border',
-    'Button',
-    'ButtonUnstyled',
-    'Input',
-    'MenuItem',
-    'Post',
-    'UserCard'
+    'MenuItem'
   ],
   defaultRules: [
     {

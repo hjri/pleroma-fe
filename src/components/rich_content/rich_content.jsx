@@ -2,7 +2,7 @@ import { unescape, flattenDeep } from 'lodash'
 import { getTagName, processTextForEmoji, getAttrs } from 'src/services/html_converter/utility.service.js'
 import { convertHtmlToTree } from 'src/services/html_converter/html_tree_converter.service.js'
 import { convertHtmlToLines } from 'src/services/html_converter/html_line_converter.service.js'
-import StillImage from 'src/components/still-image/still-image.vue'
+import StillImageEmojiPopover from 'src/components/still-image/still-image-emoji-popover.vue'
 import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
 import { MENTIONS_LIMIT } from 'src/components/mentions_line/mentions_line.js'
 import HashtagLink from 'src/components/hashtag_link/hashtag_link.vue'
@@ -86,6 +86,24 @@ export default {
       required: false,
       type: Boolean,
       default: false
+    },
+    // Collapse newlines
+    collapse: {
+      required: false,
+      type: Boolean,
+      default: false
+    },
+    /* Content comes from current instance
+     *
+     * This is used for emoji stealing popover.
+     * By default we assume it is, so that steal
+     * emoji button isn't shown where it probably
+     * should not be.
+     */
+    isLocal: {
+      required: false,
+      type: Boolean,
+      default: true
     }
   },
   // NEVER EVER TOUCH DATA INSIDE RENDER
@@ -162,11 +180,14 @@ export default {
             item,
             this.emoji,
             ({ shortcode, url }) => {
-              return <StillImage
+              return <StillImageEmojiPopover
                 class="emoji img"
                 src={url}
                 title={`:${shortcode}:`}
                 alt={`:${shortcode}:`}
+
+                shortcode={shortcode}
+                isLocal={this.isLocal}
               />
             }
           )]
@@ -281,11 +302,20 @@ export default {
 
     const pass1 = convertHtmlToTree(html).map(processItem)
     const pass2 = [...pass1].reverse().map(processItemReverse).reverse()
+
     // DO NOT USE SLOTS they cause a re-render feedback loop here.
     // slots updated -> rerender -> emit -> update up the tree -> rerender -> ...
     // at least until vue3?
-    const result = <span class={['RichContent', this.faint ? '-faint' : '']}>
-      { pass2 }
+    const result =
+    <span class={['RichContent', this.faint ? '-faint' : '']}>
+      {
+        this.collapse
+          ? pass2.map(x => {
+            if (!Array.isArray(x)) return x.replace(/\n/g, ' ')
+            return x.map(y => y.type === 'br' ? ' ' : y)
+          })
+          : pass2
+      }
     </span>
 
     const event = {

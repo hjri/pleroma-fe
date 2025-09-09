@@ -1,7 +1,8 @@
 <template>
   <div class="interface-language-switcher">
     <label>
-      {{ promptText }}
+      <slot />
+      <ProfileSettingIndicator :is-profile="profile" />
     </label>
     <ul class="setting-list">
       <li
@@ -44,64 +45,7 @@
   </div>
 </template>
 
-<script>
-import localeService from '../../services/locale/locale.service.js'
-import Select from '../select/select.vue'
-
-export default {
-  components: {
-    // eslint-disable-next-line vue/no-reserved-component-names
-    Select
-  },
-  props: {
-    promptText: {
-      type: String,
-      required: true
-    },
-    language: {
-      type: [Array, String],
-      required: true
-    },
-    setLanguage: {
-      type: Function,
-      required: true
-    }
-  },
-  computed: {
-    languages () {
-      return localeService.languages
-    },
-
-    controlledLanguage: {
-      get: function () {
-        return Array.isArray(this.language) ? this.language : [this.language]
-      },
-      set: function (val) {
-        this.setLanguage(val)
-      }
-    }
-  },
-
-  methods: {
-    getLanguageName (code) {
-      return localeService.getLanguageName(code)
-    },
-    addLanguage () {
-      this.controlledLanguage = [...this.controlledLanguage, '']
-    },
-    setLanguageAt (index, val) {
-      const lang = [...this.controlledLanguage]
-      lang[index] = val
-      this.controlledLanguage = lang
-    },
-    removeLanguageAt (index) {
-      const lang = [...this.controlledLanguage]
-      lang.splice(index, 1)
-      this.controlledLanguage = lang
-    }
-  }
-}
-</script>
+<script src="./interface_language_switcher.js"></script>
 
 <style lang="scss">
 .interface-language-switcher {

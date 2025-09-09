@@ -1,6 +1,7 @@
 <template>
   <article
     v-if="notification.type === 'mention' || notification.type === 'status'"
+    ref="root"
   >
     <Status
       class="Notification"
@@ -9,9 +10,17 @@
       @interacted="interacted"
     />
   </article>
-  <article v-else>
+  <article
+    v-else
+    ref="root"
+    class="NotificationParent"
+    :class="{ '-expandable': expandable }"
+  >
     <div
       v-if="needMute && !unmuted"
+      :id="'notif-' +notification.id"
+      :aria-expanded="statusExpanded"
+      :aria-controls="'notif-' +notification.id"
       class="Notification container -muted"
     >
       <small>
@@ -62,6 +71,7 @@
                 :title="'@'+notification.from_profile.screen_name_ui"
                 :html="notification.from_profile.name_html"
                 :emoji="notification.from_profile.emoji"
+                :is-local="notification.from_profile.is_local"
               />
             </bdi>
             <!-- eslint-enable vue/no-v-html -->
@@ -245,8 +255,11 @@
         />
         <template v-else>
           <StatusContent
+            class="status-content"
             :compact="!statusExpanded"
             :status="notification.status"
+            :collapse="!statusExpanded"
+            @click="onContentClick"
           />
         </template>
       </div>

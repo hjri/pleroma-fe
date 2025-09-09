@@ -159,10 +159,16 @@
 
     .qr-code {
       flex: 1;
-      padding-right: 10px;
+      padding-right: 0.7em;
     }
-    .verify { flex: 1; }
-    .error { margin: 4px 0 0; }
+
+    .verify {
+      flex: 1;
+    }
+
+    .error {
+      margin: 0.3em 0 0;
+    }
 
     .confirm-otp-actions {
       button {

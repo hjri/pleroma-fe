@@ -5,10 +5,20 @@
       <ul class="setting-list">
         <li>
           <interface-language-switcher
-            :prompt-text="$t('settings.interfaceLanguage')"
-            :language="language"
-            :set-language="val => language = val"
-          />
+            v-model="language"
+            @update="val => language = val"
+          >
+            {{ $t('settings.interfaceLanguage') }}
+          </interface-language-switcher>
+        </li>
+        <li>
+          <interface-language-switcher
+            v-model="emailLanguage"
+            :profile="true"
+            @update:model-value="updateProfile()"
+          >
+            {{ $t('settings.email_language') }}
+          </interface-language-switcher>
         </li>
         <li v-if="instanceSpecificPanelPresent">
           <BooleanSetting path="hideISP">

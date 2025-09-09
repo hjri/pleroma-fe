@@ -32,7 +32,10 @@ const EmojiTab = {
       newPackName: '',
       deleteModalVisible: false,
       remotePackInstance: '',
-      remotePackDownloadAs: ''
+      remotePackDownloadAs: '',
+
+      remotePackURL: '',
+      remotePackFile: null
     }
   },
 
@@ -142,9 +145,9 @@ const EmojiTab = {
       })
     },
 
-    updatePackFiles (newFiles) {
-      this.pack.files = newFiles
-      this.sortPackFiles(this.packName)
+    updatePackFiles (newFiles, packName) {
+      this.knownPacks[packName].files = newFiles
+      this.sortPackFiles(packName)
     },
 
     loadPacksPaginated (listFunction) {
@@ -220,7 +223,7 @@ const EmojiTab = {
         .then(data => data.json())
         .then(resp => {
           if (resp === 'ok') {
-            this.$refs.dlPackPopover.hidePopover()
+            this.$refs.downloadPackPopover.hidePopover()
 
             return this.refreshPackList()
           } else {
@@ -232,6 +235,47 @@ const EmojiTab = {
           this.remotePackDownloadAs = ''
         })
     },
+    downloadRemoteURLPack () {
+      this.$store.state.api.backendInteractor.downloadRemoteEmojiPackZIP({
+        url: this.remotePackURL, packName: this.newPackName
+      })
+        .then(data => data.json())
+        .then(resp => {
+          if (resp === 'ok') {
+            this.$refs.additionalRemotePopover.hidePopover()
+
+            return this.refreshPackList()
+          } else {
+            this.displayError(resp.error)
+            return Promise.reject(resp)
+          }
+        }).then(() => {
+          this.packName = this.newPackName
+          this.newPackName = ''
+          this.remotePackURL = ''
+        })
+    },
+    downloadRemoteFilePack () {
+      this.$store.state.api.backendInteractor.downloadRemoteEmojiPackZIP({
+        file: this.remotePackFile[0], packName: this.newPackName
+      })
+        .then(data => data.json())
+        .then(resp => {
+          if (resp === 'ok') {
+            this.$refs.additionalRemotePopover.hidePopover()
+
+            return this.refreshPackList()
+          } else {
+            this.displayError(resp.error)
+            return Promise.reject(resp)
+          }
+        }).then(() => {
+          this.packName = this.newPackName
+          this.newPackName = ''
+          this.remotePackURL = ''
+        })
+    },
+
     displayError (msg) {
       useInterfaceStore().pushGlobalNotice({
         messageKey: 'admin_dash.emoji.error',

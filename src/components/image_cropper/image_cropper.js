@@ -10,46 +10,26 @@ library.add(
 
 const ImageCropper = {
   props: {
-    trigger: {
-      type: [String, window.Element],
-      required: true
-    },
-    submitHandler: {
-      type: Function,
-      required: true
-    },
+    // Mime-types to accept, i.e. which filetypes to accept (.gif, .png, etc.)
     mimes: {
       type: String,
       default: 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon'
     },
-    saveButtonLabel: {
-      type: String
-    },
-    saveWithoutCroppingButtonlabel: {
-      type: String
-    },
-    cancelButtonLabel: {
-      type: String
+    // Fixed aspect-ratio for selection box
+    aspectRatio: {
+      type: Number
     }
   },
   data () {
     return {
       dataUrl: undefined,
-      filename: undefined,
-      submitting: false
+      filename: undefined
     }
   },
-  computed: {
-    saveText () {
-      return this.saveButtonLabel || this.$t('image_cropper.save')
-    },
-    saveWithoutCroppingText () {
-      return this.saveWithoutCroppingButtonlabel || this.$t('image_cropper.save_without_cropping')
-    },
-    cancelText () {
-      return this.cancelButtonLabel || this.$t('image_cropper.cancel')
-    }
-  },
+  emits: [
+    'submit', // cropping complete or uncropped image returned
+    'close', // cropper is closed
+  ],
   methods: {
     destroy () {
       this.$refs.input.value = ''
@@ -57,27 +37,19 @@ const ImageCropper = {
       this.$emit('close')
     },
     submit (cropping = true) {
-      this.submitting = true
-
       let cropperPromise
       if (cropping) {
         cropperPromise = this.$refs.cropperSelection.$toCanvas()
       } else {
         cropperPromise = Promise.resolve()
       }
+
       cropperPromise.then(canvas => {
-        this.submitHandler(canvas, this.file)
-            .then(() => this.destroy())
-            .finally(() => {
-              this.submitting = false
-            })
+        this.$emit('submit', { canvas, file: this.file })
       })
     },
     pickImage () {
       this.$refs.input.click()
-    },
-    getTriggerDOM () {
-      return typeof this.trigger === 'object' ? this.trigger : document.querySelector(this.trigger)
     },
     readFile () {
       const fileInput = this.$refs.input
@@ -117,23 +89,11 @@ const ImageCropper = {
     }
   },
   mounted () {
-    // listen for click event on trigger
-    const trigger = this.getTriggerDOM()
-    if (!trigger) {
-      this.$emit('error', 'No image make trigger found.', 'user')
-    } else {
-      trigger.addEventListener('click', this.pickImage)
-    }
     // listen for input file changes
     const fileInput = this.$refs.input
     fileInput.addEventListener('change', this.readFile)
   },
   beforeUnmount: function () {
-    // remove the event listeners
-    const trigger = this.getTriggerDOM()
-    if (trigger) {
-      trigger.removeEventListener('click', this.pickImage)
-    }
     const fileInput = this.$refs.input
     fileInput.removeEventListener('change', this.readFile)
   }
