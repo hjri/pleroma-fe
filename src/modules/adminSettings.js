@@ -71,7 +71,7 @@ const adminSettingsStorage = {
     },
     adminRemoveUserFromAdminGroup (store, user) {
        // prevent revokation of own rights
-       if (user.id !== store.state.users.currentUser.id) {
+       if (user.id !== store.rootState.users.currentUser.id) {
           return store.rootState.api.backendInteractor.adminRemoveUserFromAdminGroup({ user })
              .then(res => store.commit('updateRight', { user, right: 'admin', value: res.is_admin }))
        }

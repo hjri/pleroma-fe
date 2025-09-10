@@ -3,10 +3,6 @@ import ConfirmModal from './confirm_modal.vue'
 
 export default {
   props: {
-    action: {
-      type: Function,
-      require: true
-    },
     title: {
       type: String
     },
@@ -17,7 +13,7 @@ export default {
       type: String
     }
   },
-  emits: ['hide', 'show'],
+  emits: ['hide', 'show', 'action'],
   data: () => ({
     showing: false
   }),
@@ -34,7 +30,7 @@ export default {
       this.$emit('hide')
     },
     doGeneric () {
-      this.action()
+      this.$emit('action')
       this.hide()
     }
   }

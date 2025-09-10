@@ -56,7 +56,10 @@
             </button>
           </template>
           <template #content>
-            <div class="dropdown-menu">
+            <div
+              v-if="!isActivated"
+              class="dropdown-menu"
+            >
               <div class="menu-item dropdown-item">
                 <button
                   class="main-button"
@@ -66,7 +69,10 @@
                 </button>
               </div>
             </div>
-            <div class="dropdown-menu">
+            <div
+              v-if="isActivated"
+              class="dropdown-menu"
+            >
               <div class="menu-item dropdown-item">
                 <button
                   class="main-button"
@@ -86,7 +92,10 @@
                 </button>
               </div>
             </div>
-            <div class="dropdown-menu">
+            <div
+                v-if="!isAdmin"
+              class="dropdown-menu"
+            >
               <div class="menu-item dropdown-item">
                 <button
                   class="main-button"
@@ -96,7 +105,10 @@
                 </button>
               </div>
             </div>
-            <div class="dropdown-menu">
+            <div
+              v-if="isAdmin"
+              class="dropdown-menu"
+            >
               <div class="menu-item dropdown-item">
                 <button
                   class="main-button"
@@ -106,7 +118,10 @@
                 </button>
               </div>
             </div>
-            <div class="dropdown-menu">
+            <div
+              v-if="!isModerator"
+              class="dropdown-menu"
+            >
               <div class="menu-item dropdown-item">
                 <button
                   class="main-button"
@@ -116,7 +131,10 @@
                 </button>
               </div>
             </div>
-            <div class="dropdown-menu">
+            <div
+              v-if="isModerator"
+              class="dropdown-menu"
+            >
               <div class="menu-item dropdown-item">
                 <button
                   class="main-button"
@@ -126,7 +144,10 @@
                 </button>
               </div>
             </div>
-            <div class="dropdown-menu">
+            <div
+              v-if="isApproved"
+              class="dropdown-menu"
+            >
               <div class="menu-item dropdown-item">
                 <button
                   class="main-button"
@@ -136,7 +157,10 @@
                 </button>
               </div>
             </div>
-            <div class="dropdown-menu">
+            <div
+              v-if="isConfirmed"
+              class="dropdown-menu"
+            >
               <div class="menu-item dropdown-item">
                 <button
                   class="main-button"
@@ -186,10 +210,60 @@
           :no-background="false"
           @backdrop-clicked="() => { detailsExpanded = false }"
         >
-          <div style="background-color: rgb(0 0 0 / 50%)">
-            <ul class="setting-list">
-              <li> show statuses </li>
-            </ul>
+          <div style="background-color: rgb(80 80 80 / 100%); width: 80%; height: 60%; overflow-y: auto;">
+            <PageList
+              ref="timelineList"
+              :refresh="true"
+              :get-key="i => i"
+              :box-only="true"
+              :page-size="20"
+              :single-page="true"
+              :fetch-page="(store, opts) => fetchStatuses(store, opts)"
+            >
+              <template #header>
+                <p> add options to sort statuses </p>
+                <Popover
+                  ref="dropdownstatus"
+                  trigger="click"
+                  placement="top"
+                >
+                  <template #trigger>
+                    <button
+                      class="button button-default btn"
+                    >
+                      {{ $t('admin_dash.user.title_actions') }}
+                    </button>
+                  </template>
+                  <template #content>
+                    <div class="dropdown-menu">
+                      <div class="menu-item dropdown-item">
+                        <button
+                          class="main-button"
+                          @click="confirmAction('confirmDeleteStatus')"
+                        >
+                          {{ $t('admin_dash.users.delete_status') }}
+                        </button>
+                      </div>
+                      <p> set sensitive </p>
+                      <p> unset sensitive </p>
+                      <p> make public </p>
+                      <p> make unlisted </p>
+                      <p> make private </p>
+                      <p> make direct </p>
+                    </div>
+                  </template>
+                </Popover>
+              </template>
+              <template #item="{item}">
+                <AdminStatusCard :status-details="item" />
+              </template>
+              <template #empty>
+                <p> {{ $t('admin_dash.users.user_has_no_posts') }} </p>
+              </template>
+              <template #load>
+                <p> {{ $t('admin_dash.users.loading') }} </p>
+              </template>
+            </PageList>
           </div>
           <!--
           <ul class="setting-list">
@@ -380,67 +454,100 @@
     </div>
     <GenericConfirm
       ref="confirmActivate"
+      style="z-index: 10000;"
       :title="$t('admin_dash.users.bulk_actions.activate')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      :action="() => actionConfirmed('adminActivateUser')"
+      @action="userActionConfirmed('adminActivateUser')"
     />
     <GenericConfirm
       ref="confirmDeactivate"
+      style="z-index: 10000;"
       :title="$t('admin_dash.users.bulk_actions.deactivate')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      :action="() => actionConfirmed('adminDeactivateUser')"
-    />
-    <!--<GenericConfirm
-      ref="confirmDelete"
-      :title="$t('admin_dash.users.bulk_actions.activate')"
-      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
-      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminDeleteStatus')"
+      @action="userActionConfirmed('adminDeactivateUser')"
     />
     <GenericConfirm
-      ref="confirmSetSensitive"
-      :title="$t('admin_dash.users.bulk_actions.change_sensitivity')"
+      ref="confirmDeleteUser"
+      style="z-index: 10000;"
+      :title="$t('admin_dash.users.bulk_actions.delete_user')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminChangeStatusScope', { sensitive: true })"
+      @action="userActionConfirmed('adminDeleteUser')"
     />
     <GenericConfirm
-      ref="confirmUnsetSensitive"
-      :title="$t('admin_dash.users.bulk_actions.unmark_as_sensitive')"
+      ref="confirmGrantAdmin"
+      style="z-index: 10000;"
+      :title="$t('admin_dash.users.bulk_actions.grant_moderator')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminChangeStatusScope', { sensitive: false })"
+      @action="userActionConfirmed('adminAddUserToAdminGroup')"
     />
     <GenericConfirm
-      ref="confirmSetPublic"
-      :title="$t('admin_dash.users.bulk_actions.mark_as_public')"
+      ref="confirmRevokeAdmin"
+      style="z-index: 10000;"
+      :title="$t('admin_dash.users.bulk_actions.revoke_admin')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminChangeStatusScope', { visiblity: 'public' })"
+      @action="userActionConfirmed('adminRemoveUserFromAdminGroup')"
     />
     <GenericConfirm
-      ref="confirmSetUnlisted"
-      :title="$t('admin_dash.users.bulk_actions.mark_as_unlisted')"
+      ref="confirmGrantModerator"
+      style="z-index: 10000;"
+      :title="$t('admin_dash.users.bulk_actions.grant_moderator')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminChangeStatusScope', { visiblity: 'unlisted' })"
+      @action="userActionConfirmed('adminAddUserToModeratorGroup')"
     />
     <GenericConfirm
-      ref="confirmSetPrivate"
-      :title="$t('admin_dash.users.bulk_actions.mark_as_private')"
+      ref="confirmRevokeModerator"
+      style="z-index: 10000;"
+      :title="$t('admin_dash.users.bulk_actions.revoke_moderator')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminChangeStatusScope', { visiblity: 'private' })"
+      @action="userActionConfirmed('adminRemoveUserFromModeratorGroup')"
     />
     <GenericConfirm
-      ref="confirmSetDirect"
-      :title="$t('admin_dash.users.bulk_actions.mark_as_direct')"
+      ref="confirmApprove"
+      style="z-index: 10000;"
+      :title="$t('admin_dash.users.bulk_actions.approve')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminChangeStatusScope', { visiblity: 'direct' })"
-    />-->
+      @action="userActionConfirmed('adminApproveUser')"
+    />
+    <GenericConfirm
+      ref="confirmConfirm"
+      style="z-index: 10000;"
+      :title="$t('admin_dash.users.bulk_actions.confirm')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @action="userActionConfirmed('adminConfirmUser')"
+    />
+    <GenericConfirm
+      ref="confirmResendConfirmationEmail"
+      style="z-index: 10000;"
+      :title="$t('admin_dash.users.bulk_actions.resend_confirmation_email')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @action="userActionConfirmed('adminResendConfirmationEmail')"
+    />
+    <GenericConfirm
+      ref="confirmRequirePasswordChange"
+      style="z-index: 10000;"
+      :title="$t('admin_dash.users.bulk_actions.require_password_change')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @action="userActionConfirmed('adminRequirePasswordChange')"
+    />
+    <GenericConfirm
+      ref="confirmDisableMFA"
+      style="z-index: 10000;"
+      :title="$t('admin_dash.users.bulk_actions.disable_mfa')"
+      :cancel-text="$t('admin_dash.users.bulk_actions.no')"
+      :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+      @action="userActionConfirmed('adminDisableMFA')"
+    />
   </div>
 </template>
 

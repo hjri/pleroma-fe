@@ -27,6 +27,8 @@
           @interacted="false"
         />
       </li>
+      <p> action dropdown thingy </p>
+      <!--
       <li>
         <button
           class="button button-default btn"
@@ -74,7 +76,9 @@
       <li>
         <a :href="statusDetails.url"> {{ $t('admin_dash.users.link_source') }} </a>
       </li>
+      -->
     </ul>
+    <!--
     <div v-if="!jsonExpanded">
       <button
         class="button button-default btn"
@@ -95,6 +99,7 @@
       <h2> {{ $t('admin_dash.users.title_details') }} </h2>
       <pre> {{ JSON.stringify(statusDetails, null, 2) }} </pre>
     </div>
+    -->
   </div>
 </template>
 

@@ -243,84 +243,84 @@
       :title="$t('admin_dash.users.bulk_actions.activate')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminActivateUser')"
+      @action="selectionConfirmed('adminActivateUser')"
     />
     <GenericConfirm
       ref="confirmDeactivate"
       :title="$t('admin_dash.users.bulk_actions.deactivate')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminDeactivateUser')"
+      @action="selectionConfirmed('adminDeactivateUser')"
     />
     <GenericConfirm
       ref="confirmDelete"
       :title="$t('admin_dash.users.bulk_actions.delete')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminDeleteUser')"
+      @action="selectionConfirmed('adminDeleteUser')"
     />
     <GenericConfirm
       ref="confirmGrantAdmin"
       :title="$t('admin_dash.users.bulk_actions.grant_admin')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminAddUserToAdminGroup')"
+      @action="selectionConfirmed('adminAddUserToAdminGroup')"
     />
     <GenericConfirm
       ref="confirmRevokeAdmin"
       :title="$t('admin_dash.users.bulk_actions.revoke_admin')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminRemoveUserFromAdminGroup')"
+      @action="selectionConfirmed('adminRemoveUserFromAdminGroup')"
     />
     <GenericConfirm
       ref="confirmGrantModerator"
       :title="$t('admin_dash.users.bulk_actions.grant_moderator')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminAddUserToModeratorGroup')"
+      @action="selectionConfirmed('adminAddUserToModeratorGroup')"
     />
     <GenericConfirm
       ref="confirmRevokeModerator"
       :title="$t('admin_dash.users.bulk_actions.revoke_moderator')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminRemoveUserFromModeratorGroup')"
+      @action="selectionConfirmed('adminRemoveUserFromModeratorGroup')"
     />
     <GenericConfirm
       ref="confirmApprove"
       :title="$t('admin_dash.users.bulk_actions.approve')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminApproveUser')"
+      @action="selectionConfirmed('adminApproveUser')"
     />
     <GenericConfirm
       ref="confirmConfirm"
       :title="$t('admin_dash.users.bulk_actions.confirm')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminConfirmUser')"
+      @action="selectionConfirmed('adminConfirmUser')"
     />
     <GenericConfirm
       ref="confirmResendEmail"
       :title="$t('admin_dash.users.bulk_actions.resend_confirmation_email')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminResendConfirmationEmail')"
+      @action="selectionConfirmed('adminResendConfirmationEmail')"
     />
     <GenericConfirm
       ref="confirmRequirePasswordChange"
       :title="$t('admin_dash.users.bulk_actions.require_password_change')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminRequirePasswordChange')"
+      @action="selectionConfirmed('adminRequirePasswordChange')"
     />
     <GenericConfirm
       ref="confirmDisableMFA"
       :title="$t('admin_dash.users.bulk_actions.disable_mfa')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
-      @callback="selectionConfirmed('adminDisableMFA')"
+      @action="selectionConfirmed('adminDisableMFA')"
     />
   </div>
 </template>

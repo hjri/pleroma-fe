@@ -222,19 +222,19 @@ const AdminCard = {
       const res = store.dispatch('adminListStatuses', { user: u,  opts: { pageSize: opts.pageSize, godmode: true, withReblogs: true}})
       return res.then(r => r.activities)
     },
-    /**
-     * ...
-     */
     confirmAction (box) {
       this.$refs[box].show()
       this.$refs.dropdownuser.hidePopover()
     },
-    /**
-     * ...
-     */
-    actionConfirmed (action) {
-      console.log(action)
+    userActionConfirmed (action) {
       this.$store.dispatch(action, this.$store.getters.findUser(this.userDetails.id))
+    },
+    statusActionConfirmed (action, opts) {
+      const s = this.$refs.statusList.getSelected()
+      s.forEach(p => {
+        this.$store.dispatch(action, { id: p.id, ...(opts || {})})
+      })
+      this.reset()
     }
   }
 }
