@@ -207,10 +207,11 @@
         v-if="detailsExpanded"
       >
         <Modal
+          class="settings-modal"
           :no-background="false"
           @backdrop-clicked="() => { detailsExpanded = false }"
         >
-          <div style="background-color: rgb(80 80 80 / 100%); width: 80%; height: 60%; overflow-y: auto;">
+        <div class="settings-modal-panel panel" style="width: 80%; height: 60%; overflow-y: auto;">
             <ul class="setting-list" style="columns: 2;">
               <li>
                 {{ $t('admin_dash.users.details.id') }}
@@ -622,6 +623,7 @@
 
 <script src="./admin_card.js"></script>
 <style lang="scss" src="./admin_card.scss"></style>
+<style lang="scss" src="../settings_modal.scss"></style>
 <!--<style lang="scss">
 .admin-card-content-container {
   margin-top: 0.5em;

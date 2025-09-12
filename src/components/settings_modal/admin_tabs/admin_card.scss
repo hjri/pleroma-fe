@@ -13,3 +13,7 @@
   display: inline-block;
   vertical-align: baseline;
 }
+
+.modalfix::before {
+  opacity: 1.0;
+}
