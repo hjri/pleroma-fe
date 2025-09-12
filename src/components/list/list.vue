@@ -20,6 +20,7 @@
       class="list-empty-content faint"
     >
       <slot name="empty" />
+      <slot name="load" />
     </div>
   </div>
 </template>

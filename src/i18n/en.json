@@ -1154,7 +1154,6 @@
     "users": {
       "management": "Management",
       "search_users": "Search for users...",
-      "loading": "Loading...",
       "label_query": "Query",
       "label_name": "Name",
       "label_email": "Email",
@@ -1172,7 +1171,12 @@
       "only_unapproved": "Unapproved Only",
       "only_unconfirmed": "Unconfirmed Only",
       "refresh": "Refresh",
-
+      "filters": {
+        "show_direct": "Show Direct Posts",
+        "show_reblogs": "Show Reblogs",
+        "ascending": "Oldest First",
+        "descending": "Newest First"
+      },
       "actions": {
         "button": {
           "title": "Actions",
@@ -1224,7 +1228,25 @@
 
         }
       },
-
+      "details": {
+        "id": "ID",
+        "actor_type": "Actor Type",
+        "actor_types": {
+          "person": "Person",
+          "service": "Service",
+          "application": "Application"
+        },
+        "admin": "Admin",
+        "moderator": "Moderator",
+        "local": "Local",
+        "active": "Active",
+        "inactive": "Inactive",
+        "tags": "Tags",
+        "roles": "Roles",
+        "status": "Status",
+        "remote": "Remote",
+        "account_type": "Account Type"
+      },
       "bulk_actions": {
         "title": "Bulk Actions",
         "yes": "Yes",

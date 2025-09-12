@@ -6,6 +6,9 @@ export default {
     title: {
       type: String
     },
+    message: {
+      type: String
+    },
     cancelText: {
       type: String
     },

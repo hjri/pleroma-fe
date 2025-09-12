@@ -5,6 +5,7 @@ import AdminStatusCard from 'src/components/settings_modal/admin_tabs/admin_stat
 import Modal from 'src/components/modal/modal.vue'
 import Popover from 'src/components/popover/popover.vue'
 import GenericConfirm from 'src/components/confirm_modal/generic_confirm.vue'
+import Select from 'src/components/select/select.vue'
 
 const AdminCard = {
   props: {
@@ -45,6 +46,9 @@ const AdminCard = {
       justApproved: false,
       justConfirmed: false,
       justDeleted: false,
+      showDirect: false,
+      showReblogs: false,
+      timelineSorting: "des"
     }
   },
   computed: {
@@ -128,7 +132,8 @@ const AdminCard = {
     AdminStatusCard,
     Modal,
     Popover,
-    GenericConfirm
+    GenericConfirm,
+    Select
   },
   methods: {
     /**
@@ -219,8 +224,16 @@ const AdminCard = {
      */
     async fetchStatuses (store, opts) {
       const u = this.$store.getters.findUser(this.userDetails.id)
-      const res = store.dispatch('adminListStatuses', { user: u,  opts: { pageSize: opts.pageSize, godmode: true, withReblogs: true}})
-      return res.then(r => r.activities)
+      const res = store.dispatch('adminListStatuses', { user: u,  opts: { pageSize: opts.pageSize, godmode: this.showDirect, withReblogs: this.showReblogs}})
+      return res.then(r => {
+        const a = r.activities
+        console.log(this.timelineSorting)
+        if (this.timelineSorting === 'des') {
+          return [...a].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        } else if (this.timelineSorting === 'asc') {
+          return [...a].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        } else return []
+      })
     },
     confirmAction (box) {
       this.$refs[box].show()

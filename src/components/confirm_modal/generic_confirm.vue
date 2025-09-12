@@ -6,7 +6,11 @@
     :confirm-text="confirmText"
     @accepted="doGeneric"
     @cancelled="hide"
-  />
+  >
+    <template #default>
+      <span v-text="message" />
+    </template>
+  </ConfirmModal>
 </template>
 
 <script src="./generic_confirm.js" />

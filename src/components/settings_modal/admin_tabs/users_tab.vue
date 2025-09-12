@@ -236,6 +236,12 @@
         <template #item="{item}">
           <AdminCard :user-details="item" />
         </template>
+        <template #load>
+          <span> loading </span>
+        </template>
+        <template #empty>
+          <span> no users </span>
+        </template>
       </PageList>
     </div>
     <GenericConfirm
@@ -317,7 +323,8 @@
     />
     <GenericConfirm
       ref="confirmDisableMFA"
-      :title="$t('admin_dash.users.bulk_actions.disable_mfa')"
+      :title="$t('admin_dash.users.title_confirm')"
+      :message="$t('admin_dash.users.bulk_actions.disable_mfa')"
       :cancel-text="$t('admin_dash.users.bulk_actions.no')"
       :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
       @action="selectionConfirmed('adminDisableMFA')"

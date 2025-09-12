@@ -211,6 +211,48 @@
           @backdrop-clicked="() => { detailsExpanded = false }"
         >
           <div style="background-color: rgb(80 80 80 / 100%); width: 80%; height: 60%; overflow-y: auto;">
+            <ul class="setting-list" style="columns: 2;">
+              <li>
+                {{ $t('admin_dash.users.details.id') }}
+              </li>
+              <li>
+                {{ $t('admin_dash.users.details.actor_type') }}
+              </li>
+              <li>
+                {{ $t('admin_dash.users.details.tags') }}
+              </li>
+              <li>
+                {{ $t('admin_dash.users.details.roles') }}
+              </li>
+              <li>
+                {{ $t('admin_dash.users.details.account_type') }}
+              </li>
+              <li>
+                {{ $t('admin_dash.users.details.status') }}
+              </li>
+              <li>
+                {{ user.id }}
+              </li>
+              <li>
+                {{ $t('admin_dash.users.details.actor_types.' + user.actor_type.toLowerCase()) }}
+              </li>
+              <li>
+                {{ user.tags }}
+              </li>
+              <li>
+                <span v-if="user.rights.admin === true"> {{ $t('admin_dash.users.details.admin') }} </span>
+                <span v-if="user.rights.admin === true && user.rights.moderator === true"> ,&nbsp; </span>
+                <span v-if="user.rights.moderator === true"> {{ $t('admin_dash.users.details.moderator') }} </span>
+              </li>
+              <li>
+                <span v-if="user.is_local"> {{ $t('admin_dash.users.details.local') }} </span>
+                <span v-else> {{ $t('admin_dash.users.details.remote') }} </span>
+              </li>
+              <li>
+                <span v-if="user.deactivated === false"> {{ $t('admin_dash.users.details.active') }} </span>
+                <span v-else> {{ $t('admin_dash.users.details.inactive') }} </span>
+              </li>
+            </ul>
             <PageList
               ref="timelineList"
               :refresh="true"
@@ -221,7 +263,29 @@
               :fetch-page="(store, opts) => fetchStatuses(store, opts)"
             >
               <template #header>
-                <p> add options to sort statuses </p>
+                <Checkbox
+                  v-model="showDirect"
+                  @update:model-value="() => this.$refs.timelineList.reset()"
+                >
+                  {{ $t('admin_dash.users.filters.show_direct') }}
+                </Checkbox>
+                <Checkbox
+                  v-model="showReblogs"
+                  @update:model-value="() => this.$refs.timelineList.reset()"
+                >
+                  {{ $t('admin_dash.users.filters.show_reblogs') }}
+                </Checkbox>
+                <Select
+                  v-model="timelineSorting"
+                  @update:model-value="() => this.$refs.timelineList.reset()"
+                >
+                  <option value="asc">
+                    {{ $t('admin_dash.users.filters.ascending') }}
+                  </option>
+                  <option value="des">
+                    {{ $t('admin_dash.users.filters.descending') }}
+                  </option>
+                </Select>
                 <Popover
                   ref="dropdownstatus"
                   trigger="click"
@@ -231,9 +295,10 @@
                     <button
                       class="button button-default btn"
                     >
-                      {{ $t('admin_dash.user.title_actions') }}
+                      {{ $t('admin_dash.users.actions.button.title') }}
                     </button>
                   </template>
+                  <p> wrap </p>
                   <template #content>
                     <div class="dropdown-menu">
                       <div class="menu-item dropdown-item">
@@ -255,13 +320,17 @@
                 </Popover>
               </template>
               <template #item="{item}">
-                <AdminStatusCard :status-details="item" />
+                <AdminStatusCard :status-details="item" style="width: 100%"/>
               </template>
               <template #empty>
                 <p> {{ $t('admin_dash.users.user_has_no_posts') }} </p>
               </template>
               <template #load>
-                <p> {{ $t('admin_dash.users.loading') }} </p>
+                <FAIcon
+                  icon="circle-notch"
+                  spin
+                  size="lg"
+                />
               </template>
             </PageList>
           </div>

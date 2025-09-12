@@ -68,6 +68,9 @@
       <template #empty>
         <slot name="empty" />
       </template>
+      <template #load>
+        <slot name="load" />
+      </template>
     </List>
   </div>
 </template>

@@ -59,6 +59,7 @@ const PageList = {
     loadMore () {
       if (!this.isLoading && this.canLoadMore) {
         this.isLoading = true
+        console.log("is loading = true")
         this.fetchPage(this.$store, {
           page: this.pageIndex++,
           pageSize: this.pageSize
