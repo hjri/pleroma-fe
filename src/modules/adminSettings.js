@@ -117,6 +117,12 @@ const adminSettingsStorage = {
     adminDisableMFA (store, { opts }) {
       return store.rootState.api.backendInteractor.adminDisableMFA({ opts })
     },
+    adminTagUser (store, { user, tag }) {
+      return store.rootState.api.backendInteractor.tagUser({ user, tag })
+    },
+    adminUntagUser (store, { user, tag }) {
+      return store.rootState.api.backendInteractor.untagUser({ user, tag })
+    },
     loadFrontendsStuff ({ rootState, commit }) {
       rootState.api.backendInteractor.fetchAvailableFrontends()
         .then(frontends => commit('setAvailableFrontends', { frontends }))

@@ -6,6 +6,7 @@ import Modal from 'src/components/modal/modal.vue'
 import Popover from 'src/components/popover/popover.vue'
 import GenericConfirm from 'src/components/confirm_modal/generic_confirm.vue'
 import Select from 'src/components/select/select.vue'
+import TextConfirm from 'src/components/confirm_modal/text_confirm.vue'
 
 const AdminCard = {
   props: {
@@ -133,7 +134,8 @@ const AdminCard = {
     Modal,
     Popover,
     GenericConfirm,
-    Select
+    Select,
+    TextConfirm
   },
   methods: {
     /**
@@ -216,6 +218,22 @@ const AdminCard = {
         this.$store.dispatch('adminDeleteUser', u)
         this.justDeleted = true
       }
+    },
+    /**
+     * @param {string} text name of tag to be added to user
+     */
+    addUserTag (text) {
+      const u = this.$store.getters.findUser(this.userDetails.id)
+      this.$store.dispatch('adminTagUser', { user: u, tag: text })
+        .then(() => this.$store.dispatch('fetchUser', this.userDetails.id))
+    },
+    /**
+     * @param {string} text name of tag to be removed from user
+     */
+    removeUserTag (text) {
+      const u = this.$store.getters.findUser(this.userDetails.id)
+      this.$store.dispatch('adminUntagUser', { user: u, tag: text })
+        .then(() => this.$store.dispatch('fetchUser', this.userDetails.id))
     },
     /**
      * @param {object} store

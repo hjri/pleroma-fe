@@ -1,6 +1,10 @@
 <template>
   <div v-if="!isLoaded">
-    {{ $t('admin_dash.users.loading_user') }}
+    <FAIcon
+      icon="circle-notch"
+      spin
+      size="lg"
+    />
   </div>
   <div v-else>
     <div class="inline-layout">
@@ -9,38 +13,38 @@
         v-if="isAdmin"
         class="alert neutral user-role"
       >
-        {{ $t('admin_dash.users.indicator_admin') }}
+        {{ $t('admin_dash.users.indicator.admin') }}
       </label>
       <label
         v-if="isModerator"
         class="alert neutral user-role"
       >
-        {{ $t('admin_dash.users.indicator_moderator') }}
+        {{ $t('admin_dash.users.indicator.moderator') }}
       </label>
       <label
         v-if="isActivated"
         class="alert info user-role"
       >
-        {{ $t('admin_dash.users.indicator_active') }}
+        {{ $t('admin_dash.users.indicator.active') }}
       </label>
       <label
         v-if="!isActivated"
         class="alert error user-role"
       >
-        {{ $t('admin_dash.users.indicator_deactivated') }}
+        {{ $t('admin_dash.users.indicator.deactivated') }}
       </label>
       <label
         v-if="isConfirmed"
         class="alert neutral user-role"
       >
-        {{ $t('admin_dash.users.indicator_confirmed') }}
+        {{ $t('admin_dash.users.indicator.confirmed') }}
       </label>
       <button
         class="button button-default btn"
         type="button"
         @click="detailsExpanded = true"
       >
-        {{ $t('admin_dash.users.title_details') }}
+        {{ $t('admin_dash.users.details.button') }}
       </button>
       <Popover
         ref="dropdownuser"
@@ -51,7 +55,7 @@
           <button
             class="button button-default btn"
           >
-            {{ $t('admin_dash.users.title_actions') }}
+            {{ $t('admin_dash.users.actions.title') }}
           </button>
         </template>
         <template #content>
@@ -230,6 +234,9 @@
             class="panel-body"
             style="overflow-y: auto;"
           >
+            <h2 class="title">
+              {{ $t('admin_dash.users.details.overview') }}
+            </h2>
             <ul
               class="setting-list"
               style="columns: 2;"
@@ -239,9 +246,6 @@
               </li>
               <li>
                 {{ $t('admin_dash.users.details.actor_type') }}
-              </li>
-              <li>
-                {{ $t('admin_dash.users.details.tags') }}
               </li>
               <li>
                 {{ $t('admin_dash.users.details.roles') }}
@@ -259,9 +263,6 @@
                 {{ $t('admin_dash.users.details.actor_types.' + user.actor_type.toLowerCase()) }}
               </li>
               <li>
-                {{ user.tags }}
-              </li>
-              <li>
                 <span v-if="user.rights.admin === true"> {{ $t('admin_dash.users.details.admin') }} </span>
                 <span v-if="user.rights.admin === true && user.rights.moderator === true"> ,&nbsp; </span>
                 <span v-if="user.rights.moderator === true"> {{ $t('admin_dash.users.details.moderator') }} </span>
@@ -275,6 +276,36 @@
                 <span v-else> {{ $t('admin_dash.users.details.inactive') }} </span>
               </li>
             </ul>
+            <h2 class="title">
+              {{ $t('admin_dash.users.details.tags') }}
+            </h2>
+            <ul class="setting-list">
+              <li
+                v-for="tag in user.tags"
+                :key="tag"
+              >
+                {{ tag }}
+                <button
+                  class="button button-default btn"
+                  @click="removeUserTag(tag)"
+                >
+                  <FAIcon
+                    icon="minus"
+                    size="lg"
+                  />
+                </button>
+              </li>
+            </ul>
+            <button
+              class="button button-default btn"
+              @click="$refs.addTextBox.show()"
+            >
+              {{ $t('admin_dash.users.tags.add_new') }}
+              <FAIcon
+                icon="plus"
+                size="lg"
+              />
+            </button>
             <PageList
               ref="timelineList"
               :refresh="true"
@@ -317,7 +348,7 @@
                     <button
                       class="button button-default btn"
                     >
-                      {{ $t('admin_dash.users.actions.button.title') }}
+                      {{ $t('admin_dash.users.actions.title') }}
                     </button>
                   </template>
                   <p> wrap </p>
@@ -458,6 +489,14 @@
     :cancel-text="$t('admin_dash.users.bulk_actions.no')"
     :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
     @action="userActionConfirmed('adminDisableMFA')"
+  />
+  <TextConfirm
+    ref="addTextBox"
+    style="z-index: 10001;"
+    :title="$t('admin_dash.users.tags.new_title')"
+    :cancel-text="$t('admin_dash.users.tags.no')"
+    :confirm-text="$t('admin_dash.users.tags.yes')"
+    @action="addUserTag"
   />
 </template>
 
