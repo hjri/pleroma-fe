@@ -114,8 +114,8 @@ const adminSettingsStorage = {
     adminChangeStatusScope (store, { opts }) {
        return store.rootState.api.backendInteractor.adminChangeStatusScope({ opts })
     },
-    adminDisableMFA (store, { opts }) {
-      return store.rootState.api.backendInteractor.adminDisableMFA({ opts })
+    adminDisableMFA (store, user) {
+      return store.rootState.api.backendInteractor.adminDisableMFA({ user })
     },
     adminTagUser (store, { user, tag }) {
       return store.rootState.api.backendInteractor.tagUser({ user, tag })

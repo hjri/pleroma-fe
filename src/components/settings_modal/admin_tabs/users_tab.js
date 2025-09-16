@@ -134,6 +134,8 @@ const UsersTab = {
       const s = this.$refs.userList.getSelected()
       s.forEach(u => {
         if (restricted.includes(action) !== false || u.id !== this.$store.state.users.currentUser.id) {
+          const uf = this.$store.getters.findUser(u.id)
+          console.log('user: ', uf)
           this.$store.dispatch(action, this.$store.getters.findUser(u.id))
         }
       })

@@ -335,7 +335,7 @@
     <GenericConfirm
       ref="confirmDisableMFA"
       :title="$t('admin_dash.users.actions.confirm_multi.title')"
-      :message="$t('admin_dash.users.actions.disable_mfa')"
+      :message="$t('admin_dash.users.actions.confirm_multi.disable_mfa')"
       :cancel-text="$t('admin_dash.users.actions.no')"
       :confirm-text="$t('admin_dash.users.actions.yes')"
       @action="selectionConfirmed('adminDisableMFA')"

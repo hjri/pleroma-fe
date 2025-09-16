@@ -81,7 +81,7 @@
                 class="main-button"
                 @click="confirmAction('confirmDeactivate')"
               >
-                {{ $t('admin_dash.users.deactivate') }}
+                {{ $t('admin_dash.users.actions.deactivate') }}
               </button>
             </div>
           </div>
@@ -91,7 +91,7 @@
                 class="main-button"
                 @click="confirmAction('confirmDeleteUser')"
               >
-                {{ $t('admin_dash.users.delete') }}
+                {{ $t('admin_dash.users.actions.delete_user') }}
               </button>
             </div>
           </div>
@@ -104,7 +104,7 @@
                 class="main-button"
                 @click="confirmAction('confirmGrantAdmin')"
               >
-                {{ $t('admin_dash.users.grant_admin') }}
+                {{ $t('admin_dash.users.actions.grant_admin') }}
               </button>
             </div>
           </div>
@@ -117,7 +117,7 @@
                 class="main-button"
                 @click="confirmAction('confirmRevokeAdmin')"
               >
-                {{ $t('admin_dash.users.revoke_admin') }}
+                {{ $t('admin_dash.users.actions.revoke_admin') }}
               </button>
             </div>
           </div>
@@ -130,7 +130,7 @@
                 class="main-button"
                 @click="confirmAction('confirmGrantModerator')"
               >
-                {{ $t('admin_dash.users.grant_moderator') }}
+                {{ $t('admin_dash.users.actions.grant_moderator') }}
               </button>
             </div>
           </div>
@@ -143,7 +143,7 @@
                 class="main-button"
                 @click="confirmAction('confirmRevokeModerator')"
               >
-                {{ $t('admin_dash.users.revoke_moderator') }}
+                {{ $t('admin_dash.users.actions.revoke_moderator') }}
               </button>
             </div>
           </div>
@@ -156,7 +156,7 @@
                 class="main-button"
                 @click="confirmAction('confirmApprove')"
               >
-                {{ $t('admin_dash.users.approve') }}
+                {{ $t('admin_dash.users.actions.approve') }}
               </button>
             </div>
           </div>
@@ -169,7 +169,7 @@
                 class="main-button"
                 @click="confirmAction('confirmConfirm')"
               >
-                {{ $t('admin_dash.users.confirm') }}
+                {{ $t('admin_dash.users.actions.confirm') }}
               </button>
             </div>
           </div>
@@ -179,7 +179,7 @@
                 class="main-button"
                 @click="confirmAction('confirmResendConfirmationEmail')"
               >
-                {{ $t('admin_dash.users.resend_confirmation_email') }}
+                {{ $t('admin_dash.users.actions.resend_confirmation_email') }}
               </button>
             </div>
           </div>
@@ -189,7 +189,7 @@
                 class="main-button"
                 @click="confirmAction('confirmRequirePasswordChange')"
               >
-                {{ $t('admin_dash.users.require_password_change') }}
+                {{ $t('admin_dash.users.actions.require_password_change') }}
               </button>
             </div>
           </div>
@@ -199,7 +199,7 @@
                 class="main-button"
                 @click="confirmAction('confirmDisableMFA')"
               >
-                {{ $t('admin_dash.users.disable_mfa') }}
+                {{ $t('admin_dash.users.actions.disable_mfa') }}
               </button>
             </div>
           </div>
@@ -397,105 +397,118 @@
   <GenericConfirm
     ref="confirmActivate"
     style="z-index: 10000;"
-    :title="$t('admin_dash.users.bulk_actions.activate')"
-    :cancel-text="$t('admin_dash.users.bulk_actions.no')"
-    :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+    :title="$t('admin_dash.users.actions.confirm_single.title')"
+    :message="$t('admin_dash.users.actions.confirm_single.activate')"
+    :cancel-text="$t('admin_dash.users.actions.no')"
+    :confirm-text="$t('admin_dash.users.actions.yes')"
     @action="userActionConfirmed('adminActivateUser')"
   />
   <GenericConfirm
     ref="confirmDeactivate"
     style="z-index: 10000;"
-    :title="$t('admin_dash.users.bulk_actions.deactivate')"
-    :cancel-text="$t('admin_dash.users.bulk_actions.no')"
-    :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+    :title="$t('admin_dash.users.actions.confirm_single.title')"
+    :message="$t('admin_dash.users.actions.confirm_single.deactivate')"
+    :cancel-text="$t('admin_dash.users.actions.no')"
+    :confirm-text="$t('admin_dash.users.actions.yes')"
     @action="userActionConfirmed('adminDeactivateUser')"
   />
   <GenericConfirm
     ref="confirmDeleteUser"
     style="z-index: 10000;"
-    :title="$t('admin_dash.users.bulk_actions.delete_user')"
-    :cancel-text="$t('admin_dash.users.bulk_actions.no')"
-    :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+    :title="$t('admin_dash.users.actions.confirm_single.title')"
+    :message="$t('admin_dash.users.actions.confirm_single.delete_user')"
+    :cancel-text="$t('admin_dash.users.actions.no')"
+    :confirm-text="$t('admin_dash.users.actions.yes')"
     @action="userActionConfirmed('adminDeleteUser')"
   />
   <GenericConfirm
     ref="confirmGrantAdmin"
     style="z-index: 10000;"
-    :title="$t('admin_dash.users.bulk_actions.grant_moderator')"
-    :cancel-text="$t('admin_dash.users.bulk_actions.no')"
-    :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+    :title="$t('admin_dash.users.actions.confirm_single.title')"
+    :message="$t('admin_dash.users.actions.confirm_single.grant_admin')"
+    :cancel-text="$t('admin_dash.users.actions.no')"
+    :confirm-text="$t('admin_dash.users.actions.yes')"
     @action="userActionConfirmed('adminAddUserToAdminGroup')"
   />
   <GenericConfirm
     ref="confirmRevokeAdmin"
     style="z-index: 10000;"
-    :title="$t('admin_dash.users.bulk_actions.revoke_admin')"
-    :cancel-text="$t('admin_dash.users.bulk_actions.no')"
-    :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+    :title="$t('admin_dash.users.actions.confirm_single.title')"
+    :message="$t('admin_dash.users.actions.confirm_single.revoke_admin')"
+    :cancel-text="$t('admin_dash.users.actions.no')"
+    :confirm-text="$t('admin_dash.users.actions.yes')"
     @action="userActionConfirmed('adminRemoveUserFromAdminGroup')"
   />
   <GenericConfirm
     ref="confirmGrantModerator"
     style="z-index: 10000;"
-    :title="$t('admin_dash.users.bulk_actions.grant_moderator')"
-    :cancel-text="$t('admin_dash.users.bulk_actions.no')"
-    :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+    :title="$t('admin_dash.users.actions.confirm_single.title')"
+    :message="$t('admin_dash.users.actions.confirm_single.grant_moderator')"
+    :cancel-text="$t('admin_dash.users.actions.no')"
+    :confirm-text="$t('admin_dash.users.actions.yes')"
     @action="userActionConfirmed('adminAddUserToModeratorGroup')"
   />
   <GenericConfirm
     ref="confirmRevokeModerator"
     style="z-index: 10000;"
-    :title="$t('admin_dash.users.bulk_actions.revoke_moderator')"
-    :cancel-text="$t('admin_dash.users.bulk_actions.no')"
-    :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+    :title="$t('admin_dash.users.actions.confirm_single.title')"
+    :message="$t('admin_dash.users.actions.confirm_single.revoke_moderator')"
+    :cancel-text="$t('admin_dash.users.actions.no')"
+    :confirm-text="$t('admin_dash.users.actions.yes')"
     @action="userActionConfirmed('adminRemoveUserFromModeratorGroup')"
   />
   <GenericConfirm
     ref="confirmApprove"
     style="z-index: 10000;"
-    :title="$t('admin_dash.users.bulk_actions.approve')"
-    :cancel-text="$t('admin_dash.users.bulk_actions.no')"
-    :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+    :title="$t('admin_dash.users.actions.confirm_single.title')"
+    :message="$t('admin_dash.users.actions.confirm_single.approve')"
+    :cancel-text="$t('admin_dash.users.actions.no')"
+    :confirm-text="$t('admin_dash.users.actions.yes')"
     @action="userActionConfirmed('adminApproveUser')"
   />
   <GenericConfirm
     ref="confirmConfirm"
     style="z-index: 10000;"
-    :title="$t('admin_dash.users.bulk_actions.confirm')"
-    :cancel-text="$t('admin_dash.users.bulk_actions.no')"
-    :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+    :title="$t('admin_dash.users.actions.confirm_single.title')"
+    :message="$t('admin_dash.users.actions.confirm_single.confirm')"
+    :cancel-text="$t('admin_dash.users.actions.no')"
+    :confirm-text="$t('admin_dash.users.actions.yes')"
     @action="userActionConfirmed('adminConfirmUser')"
   />
   <GenericConfirm
     ref="confirmResendConfirmationEmail"
     style="z-index: 10000;"
-    :title="$t('admin_dash.users.bulk_actions.resend_confirmation_email')"
-    :cancel-text="$t('admin_dash.users.bulk_actions.no')"
-    :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+    :title="$t('admin_dash.users.actions.confirm_single.title')"
+    :message="$t('admin_dash.users.actions.confirm_single.resend_confirmation_email')"
+    :cancel-text="$t('admin_dash.users.actions.no')"
+    :confirm-text="$t('admin_dash.users.actions.yes')"
     @action="userActionConfirmed('adminResendConfirmationEmail')"
   />
   <GenericConfirm
     ref="confirmRequirePasswordChange"
     style="z-index: 10000;"
-    :title="$t('admin_dash.users.bulk_actions.require_password_change')"
-    :cancel-text="$t('admin_dash.users.bulk_actions.no')"
-    :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+    :title="$t('admin_dash.users.actions.confirm_single.title')"
+    :message="$t('admin_dash.users.actions.confirm_single.require_password_change')"
+    :cancel-text="$t('admin_dash.users.actions.no')"
+    :confirm-text="$t('admin_dash.users.actions.yes')"
     @action="userActionConfirmed('adminRequirePasswordChange')"
   />
   <GenericConfirm
     ref="confirmDisableMFA"
     style="z-index: 10000;"
-    :title="$t('admin_dash.users.bulk_actions.disable_mfa')"
-    :cancel-text="$t('admin_dash.users.bulk_actions.no')"
-    :confirm-text="$t('admin_dash.users.bulk_actions.yes')"
+    :title="$t('admin_dash.users.actions.confirm_single.title')"
+    :message="$t('admin_dash.users.actions.confirm_single.disable_mfa')"
+    :cancel-text="$t('admin_dash.users.actions.no')"
+    :confirm-text="$t('admin_dash.users.actions.yes')"
     @action="userActionConfirmed('adminDisableMFA')"
   />
   <TextConfirm
     ref="addTextBox"
     style="z-index: 10001;"
-    :title="$t('admin_dash.users.tags.new_title')"
-    :cancel-text="$t('admin_dash.users.tags.no')"
-    :confirm-text="$t('admin_dash.users.tags.yes')"
+    :title="$t('admin_dash.users.tags.add_new')"
+    :message="$t('admin_dash.users.tags.new_title')"
+    :cancel-text="$t('admin_dash.users.actions.no')"
+    :confirm-text="$t('admin_dash.users.actions.yes')"
     @action="addUserTag"
   />
 </template>
