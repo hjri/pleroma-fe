@@ -226,7 +226,8 @@ const updateProfile = ({ credentials, params }) => {
       })
     } else {
       if (typeof params[name] === 'object') {
-        console.warning('Object detected in updateProfile API call. This will not work, use updateProfileJSON instead.')
+        console.warn('Object detected in updateProfile API call. This will not work, use updateProfileJSON instead.')
+        console.warn('Object:\n' + JSON.stringify(params[name], null, 2))
       }
       formData.append(name, params[name]);
     }

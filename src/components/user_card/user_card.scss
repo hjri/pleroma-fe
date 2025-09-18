@@ -270,8 +270,7 @@
     // big one
     z-index: 1;
     line-height: 2em;
-    filter: drop-shadow(0 0 5em var(--profileTint))
-            drop-shadow(0 0 0.5em var(--profileTint))
+    filter: drop-shadow(0 0 0.5em var(--profileTint))
             drop-shadow(0 0 0.2em var(--profileTint));
 
     .alert {

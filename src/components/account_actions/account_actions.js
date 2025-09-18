@@ -38,6 +38,9 @@ const AccountActions = {
     hideConfirmRemoveUserFromFollowers () {
       this.showingConfirmRemoveFollower = false
     },
+    hideConfirmBlock () {
+      this.showingConfirmBlock = false
+    },
     showRepeats () {
       this.$store.dispatch('showReblogs', this.user.id)
     },
@@ -56,7 +59,7 @@ const AccountActions = {
       }
     },
     doBlockUser () {
-      this.$store.dispatch('blockUser', this.user.id)
+      this.$store.dispatch('blockUser', { id: this.user.id })
       this.hideConfirmBlock()
     },
     unblockUser () {

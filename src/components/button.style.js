@@ -130,6 +130,13 @@ export default {
       }
     },
     {
+      state: ['toggled', 'hover', 'focused'],
+      directives: {
+        background: '--accent,-24.2',
+        shadow: ['--buttonDefaultHoverGlow', '--buttonPressedBevel']
+      }
+    },
+    {
       state: ['toggled', 'disabled'],
       directives: {
         background: '$blend(--accent 0.25 --parent)',

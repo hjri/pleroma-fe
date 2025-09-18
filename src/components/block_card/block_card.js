@@ -37,7 +37,7 @@ const BlockCard = {
       if (this.blockExpirationSupported) {
         this.$refs.timedBlockDialog.optionallyPrompt()
       } else {
-        this.$store.dispatch('blockUser', this.user.id)
+        this.$store.dispatch('blockUser', { id: this.user.id })
       }
     }
   }

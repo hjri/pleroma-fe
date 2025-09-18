@@ -42,7 +42,6 @@ export const createStyleSheet = (id, priority = 1000) => {
 
 
 export const adoptStyleSheets = throttle(() => {
-  console.log('adopt')
   if (supportsAdoptedStyleSheets) {
     document.adoptedStyleSheets = Object
       .values(stylesheets)
@@ -137,8 +136,6 @@ export const tryLoadCache = async () => {
 
       eagerStyles.ready = true
       lazyStyles.ready = true
-
-      adoptStyleSheets()
 
       console.info(`Loaded theme from cache`)
       return true
