@@ -57,7 +57,8 @@
       "direct": "ダイレクト",
       "private": "フォロワー限定",
       "public": "パブリック",
-      "unlisted": "アンリステッド"
+      "unlisted": "アンリステッド",
+      "local": "連合なし"
     },
     "generic_error_message": "エラーが発生しました: {0}",
     "never_show_again": "二度と表示しない",
@@ -135,7 +136,8 @@
     "bookmark_folders": "ブックマークフォルダ",
     "mobile_sidebar": "モバイルのサイドバーを開く",
     "quotes": "引用",
-    "drafts": "下書き"
+    "drafts": "下書き",
+    "bubble": "バブルタイムライン"
   },
   "notifications": {
     "broken_favorite": "ステータスが見つかりません。探しています…",
@@ -210,7 +212,8 @@
       "text/plain": "プレーンテキスト",
       "text/html": "HTML",
       "text/markdown": "Markdown",
-      "text/bbcode": "BBCode"
+      "text/bbcode": "BBCode",
+      "text/x.misskeymarkdown": "MFM"
     },
     "content_warning": "件名 (任意)",
     "default": "羽田空港に着きました。",
@@ -251,7 +254,8 @@
     "close_confirm_continue_composing_button": "編集を続ける",
     "close_confirm_save_button": "保存する",
     "close_confirm": "編集中の内容を下書きに保存しますか？",
-    "close_confirm_title": "保存の確認"
+    "close_confirm_title": "保存の確認",
+    "more_post_actions": "その他の操作"
   },
   "registration": {
     "bio": "プロフィール",
@@ -317,7 +321,7 @@
     "avatar": "アイコン",
     "avatarAltRadius": "通知内のアイコン",
     "avatarRadius": "アイコン",
-    "background": "バックグラウンド",
+    "background": "背景",
     "bio": "プロフィール",
     "block_export": "ブロックのエクスポート",
     "block_export_button": "ブロックをCSVファイルにエクスポートする",
@@ -346,7 +350,7 @@
     "delete_account_error": "アカウントの削除中にエラーが発生しました。継続して発生する場合、管理者に問い合せてください。",
     "delete_account_instructions": "アカウント削除の確認のため、パスワードを入力してください。",
     "discoverable": "検索などのサービスでこのアカウントを見つけることを許可する",
-    "avatar_size_instruction": "アイコン画像のサイズは150x150以上を推奨します。",
+    "avatar_size_instruction": "アイコン画像のサイズは150x150以上を推奨します。アスペクト比は1:1が推奨です",
     "pad_emoji": "絵文字ピッカーから絵文字を挿入するとき、絵文字の前後に空白を挿入する",
     "export_theme": "ファイルにテーマを出力",
     "filtering": "フィルタリング",
@@ -706,7 +710,8 @@
           },
           "style_website": "ウェブサイト",
           "include_in_rule": "テーマ設定に追加",
-          "component_tab": "UI要素のスタイル"
+          "component_tab": "UI要素のスタイル",
+          "test_string": "123abcあいう"
         }
       },
       "custom_theme_used": "(カスタムテーマ)",
@@ -794,7 +799,7 @@
     "confirm_dialogs_unfollow": "ユーザーのフォローを解除するとき",
     "confirm_dialogs_block": "ユーザーをブロックするとき",
     "confirm_dialogs_mute": "ユーザーをミュートするとき",
-    "confirm_dialogs_delete": "投稿を削除するとき",
+    "confirm_dialogs_delete": "ステータスを削除するとき",
     "confirm_dialogs_logout": "ログアウトするとき",
     "confirm_dialogs_deny_follow": "フォローリクエストを却下するとき",
     "confirm_dialogs_remove_follower": "フォロワーを解除するとき",
@@ -870,8 +875,8 @@
     "reset_value": "リセット",
     "reset_value_tooltip": "編集中の値を破棄します",
     "hard_reset_value": "デフォルトに戻す",
-    "conversation_other_replies_button_below": "投稿の下",
-    "conversation_other_replies_button_inside": "投稿の中",
+    "conversation_other_replies_button_below": "ステータスの下",
+    "conversation_other_replies_button_inside": "ステータスの中",
     "add_language": "代替言語を追加",
     "remove_language": "削除",
     "account_alias_table_head": "エイリアス",
@@ -904,7 +909,7 @@
     "user_popover_avatar_action_close": "ユーザーカードを閉じる",
     "tree_advanced": "高度なナビゲーションボタンを表示する",
     "tree_fade_ancestors": "スレッド上で祖先にあたるステータスを薄いテキストで表示する",
-    "actor_type_description": "グループとして設定されたアカウントは、メンションのついたステータスを自動的にリピートします。",
+    "actor_type_description": "グループアカウントとして設定されたアカウントは、メンションのついたステータスを自動的にリピートします。",
     "actor_type_Person": "通常アカウント",
     "actor_type_Service": "BOTアカウント",
     "actor_type_Group": "グループアカウント",
@@ -990,16 +995,34 @@
       "import_failure": "選択されたファイルはPleromaのフィルターファイルではありません。",
       "help": {
         "word": "「シンプル」と「正規表現」のフィルターは投稿の内容と件名に対して機能します。",
-        "user": "「ユーザー」のフィルターは投稿者、返信先、メンションに含まれるユーザーのアカウントID (user@domain)に対して機能します。",
+        "user": "「ユーザー」のフィルターは投稿者、返信先、メンションに含まれるユーザーのアカウントID (user{'@'}domain)に対して機能します。",
         "regexp": "「正規表現」、「ユーザー (正規表現)」は単純な部分一致の代わりに{link}を使用する、より高度なフィルターです。",
         "regexp_link": "正規表現",
         "regexp_url": "https://ja.wikipedia.org/wiki/正規表現"
-      }
+      },
+      "regexp_error": "不正な正規表現です"
     },
     "enabled": "有効",
     "hide_muted_statuses": "全てのミュートされた投稿を完全に非表示にする",
     "notification_visibility_native_notifications": "ネイティブの通知を表示する",
-    "theme_editor_min_width": "テーマエディタの最小幅 (0で\"fit-content\")"
+    "theme_editor_min_width": "テーマエディタの最小幅 (0で\"fit-content\")",
+    "actor_type_person_proper": "通常アカウント",
+    "toggle_edit": "編集",
+    "reset": "変更を破棄",
+    "change_banner": "バナー画像を変更",
+    "change_avatar": "アイコン画像を変更",
+    "banner_size_instruction": "バナー画像のサイズは450x150以上を推奨します。アスペクト比は3:1が推奨です",
+    "profile_other": "その他",
+    "account_profile_edit": "プロフィール編集",
+    "reset_banner": "バナーをリセット",
+    "set_new_background": "背景画像を設定",
+    "upload_picture": "画像をアップロード",
+    "select_picture": "画像を選択",
+    "cache": "キャッシュ",
+    "clear_asset_cache": "アセットのキャッシュを削除",
+    "clear_emoji_cache": "絵文字のキャッシュを削除",
+    "user_card_left_justify": "ユーザーのプロフィール文を左寄せで表示する",
+    "user_card_hide_personal_marks": "ユーザープロフィールに自分用設定(自分用メモ/ハイライト設定)を表示しない"
   },
   "time": {
     "day": "{0}日",
@@ -1038,7 +1061,7 @@
       "seconds_short": "{0}秒",
       "weeks": "{0} 週間",
       "weeks_short": "{0}週",
-      "years": "{0} 年",
+      "years": "年",
       "years_short": "{0}年",
       "days": "{0} 日",
       "hours": "{0} 時間",
@@ -1048,7 +1071,13 @@
       "months": "{0} ヶ月",
       "months_short": "{0}ヶ月",
       "seconds": "{0} 秒",
-      "days_short": "{0}日"
+      "days_short": "{0}日",
+      "days_suffix": "日",
+      "hours_suffix": "時間",
+      "minutes_suffix": "分",
+      "months_suffix": "ヶ月",
+      "seconds_suffix": "秒",
+      "weeks_suffix": "週間"
     }
   },
   "timeline": {
@@ -1122,7 +1151,7 @@
     "attachment_stop_flash": "Flashプレーヤーを停止",
     "move_up": "ファイルを左へ移動",
     "move_down": "ファイルを右へ移動",
-    "thread_follow": "このスレッドの残りを表示 (全部で{numStatus}件の投稿があります)",
+    "thread_follow": "このスレッドの残りを表示 (全部で{numStatus}件のステータスがあります)",
     "thread_follow_with_icon": "{icon} {text}",
     "hide_quote": "引用先を隠す",
     "display_quote": "引用先を表示",
@@ -1130,7 +1159,7 @@
     "show_all_conversation": "スレッドの全体を表示 ({numStatus}件のステータス)",
     "replies_list_with_others": "返信 (+{numReplies}人):",
     "more_actions": "その他のアクション",
-    "thread_show_full": "このスレッドを全て表示 (全部で{depth}層、{numStatus}件の投稿があります)",
+    "thread_show_full": "このスレッドを全て表示 (全部で{depth}層、{numStatus}件のステータスがあります)",
     "thread_show_full_with_icon": "{icon} {text}",
     "show_attachment_in_modal": "メディアビューアで開く",
     "show_attachment_description": "メディアの説明文をポップアップで表示 (全文を読むにはメディアを開いてください)",
@@ -1139,7 +1168,7 @@
     "open_gallery": "メディアビューアで開く",
     "status_history": "編集履歴",
     "sensitive_muted": "閲覧注意な投稿のためミュートされています",
-    "load_error": "投稿の読み込みに失敗しました: {error}",
+    "load_error": "ステータスの読み込みに失敗しました: {error}",
     "loading": "読み込み中…",
     "quotes": "引用",
     "bot_muted": "BOTによる投稿のためミュートされています",
@@ -1151,7 +1180,9 @@
     "multi_reason_mute": "{main} + {numReasonsMore}件の理由",
     "muted_words": "ワードフィルターにマッチ: {word} | ワードフィルターにマッチ: {word}とその他{numWordsMore}件の単語",
     "unmute_domain": "ドメインのミュートを解除",
-    "muted_filters": "カスタムフィルターにマッチ: {name} | カスタムフィルターにマッチ: {name}とその他{filtersMore}件のフィルター"
+    "muted_filters": "カスタムフィルターにマッチ: {name} | カスタムフィルターにマッチ: {name}とその他{filtersMore}件のフィルター",
+    "reply_to_with_icon": "{icon} {replyTo}",
+    "reply_to_with_arg": "{replyToWithIcon} {user}"
   },
   "user_card": {
     "approve": "承認",
@@ -1253,7 +1284,33 @@
     "mute_confirm_title": "ミュートの確認",
     "deactivated": "無効化済み",
     "group": "グループ",
-    "mute_duration_prompt": "ミュート期間 (0で無期限):"
+    "mute_duration_prompt": "ミュート期間 (0で無期限):",
+    "mute_block_ask": "毎回確認する",
+    "default_mute_expiration": "デフォルトのミュート期間:",
+    "default_block_expiration": "デフォルトのブロック期間:",
+    "default_expiration_time": "期限:",
+    "mute_expires_forever": "永久ミュート",
+    "highlight_new": {
+      "disabled": "ハイライトしない",
+      "solid": "単色の背景を表示する",
+      "striped": "縞々の背景を表示する",
+      "side": "帯をつける"
+    },
+    "personal_note": "自分用メモ",
+    "dont_ask_again_block": "常にこの設定でブロックする",
+    "block_expires_forever": "永久ブロック",
+    "block_expires_at": "{0}までブロック",
+    "statuses_per_day": "ステータス/日",
+    "note_blank_click": "クリックでメモを追加する",
+    "highlight_header": "投稿とメンションのハイライト表示",
+    "mute_expires_at": "{0}までミュート",
+    "expire_block_message": "本当に{0}をブロックしますか？",
+    "dont_ask_again_mute": "常にこの設定でミュートする",
+    "mute_block_temporarily": "一時的",
+    "mute_block_forever": "永久",
+    "expire_in": "期限付き:",
+    "expire_mute_message": "本当に{0}をミュートしますか？",
+    "mute_or": "または"
   },
   "user_profile": {
     "timeline_title": "ユーザータイムライン",
@@ -1286,7 +1343,8 @@
     "toggle_mute": "ミュートされた通知を開く/閉じる",
     "toggle_expand": "この投稿を開く/閉じる",
     "unrepeat": "リピート解除",
-    "unfavorite": "お気に入り解除"
+    "unfavorite": "お気に入り解除",
+    "mentions": "メンション"
   },
   "upload": {
     "error": {
@@ -1523,7 +1581,9 @@
       "remote_pack_instance": "リモートパックを取得するインスタンス",
       "download_as_name": "パック名",
       "download_as_name_full": "名前を入力 (空にするとリモートの名前を使用)",
-      "replace_warning": "続行するとローカルにある同名のパックが上書きされます"
+      "replace_warning": "続行するとローカルにある同名のパックが上書きされます",
+      "emoji_source": "絵文字にするファイル",
+      "upload_url": "URLでアップロード"
     }
   },
   "lists": {
