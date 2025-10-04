@@ -76,7 +76,7 @@
     "connect-history-api-fallback": "2.0.0",
     "cross-spawn": "7.0.6",
     "custom-event-polyfill": "1.0.7",
-    "eslint": "9.33.0",
+    "eslint": "9.37.0",
     "vue-eslint-parser": "10.2.0",
     "eslint-config-standard": "17.1.0",
     "eslint-formatter-friendly": "7.0.0",
