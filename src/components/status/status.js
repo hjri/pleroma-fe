@@ -452,7 +452,7 @@ const Status = {
     },
     scrobblePresent () {
       if (this.mergedConfig.hideScrobbles) return false
-      if (!this.status.user.latestScrobble) return false
+      if (!this.status.user?.latestScrobble) return false
       const value = this.mergedConfig.hideScrobblesAfter.match(/\d+/gs)[0]
       const unit = this.mergedConfig.hideScrobblesAfter.match(/\D+/gs)[0]
       let multiplier = 60 * 1000 // minutes is smallest unit
@@ -474,7 +474,7 @@ const Status = {
       return this.status.user.latestScrobble.artist
     },
     scrobble () {
-      return this.status.user.latestScrobble
+      return this.status.user?.latestScrobble
     }
   },
   methods: {
