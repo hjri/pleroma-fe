@@ -108,6 +108,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 1 1 0;
+
+    &.unknown {
+      min-width: 8em;
+    }
   }
 
   .heading-left {

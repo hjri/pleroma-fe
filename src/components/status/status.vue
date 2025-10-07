@@ -109,6 +109,7 @@
           class="left-side"
         >
           <a
+            v-if="status.user?.name"
             :href="$router.resolve(userProfileLink).href"
             @click.prevent
           >
@@ -120,10 +121,17 @@
                 class="post-avatar"
                 :show-actor-type-indicator="showActorTypeIndicator"
                 :compact="compact"
-                :user="status.user"
+                :user="status?.user"
               />
             </UserPopover>
           </a>
+          <UserAvatar
+            v-else
+            :user="status?.user"
+            class="post-avatar"
+            :compact="compact"
+            :title="$t('status.unknown_user_info')"
+          />
         </div>
         <div class="right-side">
           <div
@@ -133,29 +141,31 @@
             <div class="heading-name-row">
               <div class="heading-left">
                 <h4
-                  v-if="status.user.name_html"
                   class="status-username"
-                  :title="status.user.name"
+                  :title="status.user?.name ?? $t('status.unknown_user_info')"
                 >
-                  <RichContent
-                    :html="status.user.name"
-                    :emoji="status.user.emoji"
-                    :is-local="status.user.is_local"
-                  />
+                  <user-link
+                    v-if="status.user?.name"
+                    class="account-name"
+                    :title="status.user?.screen_name_ui"
+                    :user="status?.user"
+                    :at="false"
+                  >
+                    <RichContent
+                      v-if="status.user.name_html"
+                      :html="status.user.name"
+                      :emoji="status.user.emoji"
+                      :is-local="status.user.is_local"
+                    />
+                    <span v-else>{{ status.user.name }}</span>
+                  </user-link>
+                  <span
+                    v-else
+                    class="account-name unknown"
+                  >
+                    {{ $t('status.unknown_user') }}
+                  </span>
                 </h4>
-                <h4
-                  v-else
-                  class="status-username"
-                  :title="status.user.name"
-                >
-                  {{ status.user.name }}
-                </h4>
-                <user-link
-                  class="account-name"
-                  :title="status.user.screen_name_ui"
-                  :user="status.user"
-                  :at="false"
-                />
                 <img
                   v-if="!!(status.user && status.user.favicon)"
                   class="status-favicon"

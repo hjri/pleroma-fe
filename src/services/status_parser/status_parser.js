@@ -2,7 +2,7 @@ export const muteFilterHits = (muteFilters, status) => {
   const statusText = status.text.toLowerCase()
   const statusSummary = status.summary.toLowerCase()
   const replyToUser = status.in_reply_to_screen_name?.toLowerCase()
-  const poster = status.user.screen_name.toLowerCase()
+  const poster = status.user.screen_name?.toLowerCase()
   const mentions = (status.attentions || []).map(att => att.screen_name.toLowerCase())
 
 

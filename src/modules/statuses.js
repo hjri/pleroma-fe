@@ -111,7 +111,10 @@ const sortTimeline = (timeline) => {
 
 const getLatestScrobble = (state, user) => {
   const scrobblesSupport = state.pleromaScrobblesAvailable
-  if (!scrobblesSupport) return
+
+  if (!scrobblesSupport || !user.name || user.id === 'undefined') {
+    return
+  }
 
   if (state.scrobblesNextFetch[user.id] && state.scrobblesNextFetch[user.id] > Date.now()) {
     return

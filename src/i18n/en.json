@@ -1346,6 +1346,8 @@
     "show_content": "Show content",
     "hide_content": "Hide content",
     "status_deleted": "This post was deleted",
+    "unknown_user": "unknown user",
+    "unknown_user_info": "Unable to fetch information about this user",
     "nsfw": "NSFW",
     "expand": "Expand",
     "you": "(You)",
