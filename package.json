@@ -17,7 +17,7 @@
     "lint-fix": "eslint --fix src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
-    "@babel/runtime": "7.28.3",
+    "@babel/runtime": "7.28.4",
     "@chenfengyuan/vue-qrcode": "2.0.0",
     "@fortawesome/fontawesome-svg-core": "6.7.2",
     "@fortawesome/free-regular-svg-icons": "6.7.2",
@@ -54,8 +54,8 @@
     "vuex": "4.1.0"
   },
   "devDependencies": {
-    "@babel/core": "7.28.3",
-    "@babel/eslint-parser": "7.28.0",
+    "@babel/core": "7.28.4",
+    "@babel/eslint-parser": "7.28.4",
     "@babel/plugin-transform-runtime": "7.28.3",
     "@babel/preset-env": "7.28.3",
     "@babel/register": "7.28.3",
