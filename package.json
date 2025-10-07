@@ -102,7 +102,7 @@
     "serve-static": "2.2.0",
     "shelljs": "0.10.0",
     "sinon": "20.0.0",
-    "sinon-chai": "4.0.0",
+    "sinon-chai": "4.0.1",
     "stylelint": "16.25.0",
     "stylelint-config-html": "^1.1.0",
     "stylelint-config-recommended": "^16.0.0",
