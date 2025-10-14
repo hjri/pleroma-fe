@@ -24,6 +24,7 @@ import { useI18nStore } from 'src/stores/i18n'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useAuthFlowStore } from 'src/stores/auth_flow'
+import { staticOrApiConfigDefault, instanceDefaultConfig } from 'src/modules/default_config_state.js'
 
 let staticInitialResults = null
 
@@ -130,50 +131,15 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
   }
 
   const copyInstanceOption = (name) => {
-    store.dispatch('setInstanceOption', { name, value: config[name] })
+    if (typeof config[name] !== 'undefined') {
+      store.dispatch('setInstanceOption', { name, value: config[name] })
+    }
   }
 
-  copyInstanceOption('theme')
-  copyInstanceOption('style')
-  copyInstanceOption('palette')
-  copyInstanceOption('embeddedToS')
-  copyInstanceOption('nsfwCensorImage')
-  copyInstanceOption('background')
-  copyInstanceOption('hidePostStats')
-  copyInstanceOption('hideBotIndication')
-  copyInstanceOption('hideUserStats')
-  copyInstanceOption('hideFilteredStatuses')
-  copyInstanceOption('logo')
+  Object.keys(staticOrApiConfigDefault).forEach(copyInstanceOption)
+  Object.keys(instanceDefaultConfig).forEach(copyInstanceOption)
 
-  store.dispatch('setInstanceOption', {
-    name: 'logoMask',
-    value: typeof config.logoMask === 'undefined'
-      ? true
-      : config.logoMask
-  })
-
-  store.dispatch('setInstanceOption', {
-    name: 'logoMargin',
-    value: typeof config.logoMargin === 'undefined'
-      ? 0
-      : config.logoMargin
-  })
-  copyInstanceOption('logoLeft')
   useAuthFlowStore().setInitialStrategy(config.loginMethod)
-
-  copyInstanceOption('redirectRootNoLogin')
-  copyInstanceOption('redirectRootLogin')
-  copyInstanceOption('showInstanceSpecificPanel')
-  copyInstanceOption('minimalScopesMode')
-  copyInstanceOption('hideMutedPosts')
-  copyInstanceOption('collapseMessageWithSubject')
-  copyInstanceOption('scopeCopy')
-  copyInstanceOption('subjectLineBehavior')
-  copyInstanceOption('postContentType')
-  copyInstanceOption('alwaysShowSubjectInput')
-  copyInstanceOption('showFeaturesPanel')
-  copyInstanceOption('hideSitename')
-  copyInstanceOption('sidebarRight')
 }
 
 const getTOS = async ({ store }) => {
