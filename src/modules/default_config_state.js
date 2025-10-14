@@ -1,45 +1,43 @@
 const browserLocale = (window.navigator.language || 'en').split('-')[0]
 
-export const defaultState = {
-  expertLevel: 0, // used to track which settings to show and hide
-
-  // Theme  stuff
-  theme: undefined, // Very old theme store, stores preset name, still in use
-
-  // V1
-  colors: {}, // VERY old theme store, just colors of V1, probably not even used anymore
-
-  // V2
-  customTheme: undefined, // "snapshot", previously was used as actual theme store for V2 so it's still used in case of PleromaFE downgrade event.
-  customThemeSource: undefined, // "source", stores original theme data
-
-  // V3
-  style: null,
-  styleCustomData: null,
+/// Instance config entries provided by static config or pleroma api
+/// Put settings here only if it does not make sense for a normal user
+/// to override it.
+export const staticOrApiConfigDefault = {
+  theme: 'pleroma-dark',
   palette: null,
-  paletteCustomData: null,
-  themeDebug: false, // debug mode that uses computed backgrounds instead of real ones to debug contrast functions
-  forceThemeRecompilation: false, //  flag that forces recompilation on boot even if cache exists
-  theme3hacks: { // Hacks, user overrides that are independent of theme used
-    underlay: 'none',
-    fonts: {
-      interface: undefined,
-      input: undefined,
-      post: undefined,
-      monospace: undefined
-    }
-  },
+  style: null,
+  defaultAvatar: '/images/avi.png',
+  defaultBanner: '/images/banner.png',
+  background: '/static/aurora_borealis.jpg',
+  embeddedToS: true,
+  logo: '/static/logo.svg',
+  logoMargin: '.2em',
+  logoMask: true,
+  logoLeft: false,
+  redirectRootLogin: '/main/friends',
+  redirectRootNoLogin: '/main/all',
+  hideSitename: false,
+  nsfwCensorImage: undefined,
+  showFeaturesPanel: true,
+  showInstanceSpecificPanel: false,
+}
 
+/// This object contains setting entries that makes sense
+/// at the user level. The defaults can also be overriden by
+/// instance admins in the frontend_configuration endpoint or static config.
+export const instanceDefaultConfig = {
+  expertLevel: 0, // used to track which settings to show and hide
   hideISP: false,
   hideInstanceWallpaper: false,
   hideShoutbox: false,
   // bad name: actually hides posts of muted USERS
-  hideMutedPosts: undefined, // instance default
-  hideMutedThreads: undefined, // instance default
-  hideWordFilteredPosts: undefined, // instance default
-  muteBotStatuses: undefined, // instance default
-  muteSensitiveStatuses: undefined, // instance default
-  collapseMessageWithSubject: undefined, // instance default
+  hideMutedPosts: false,
+  hideMutedThreads: true,
+  hideWordFilteredPosts: false,
+  muteBotStatuses: false,
+  muteSensitiveStatuses: false,
+  collapseMessageWithSubject: false,
   padEmoji: true,
   hideAttachments: false,
   hideAttachmentsInConv: false,
@@ -50,6 +48,9 @@ export const defaultState = {
   preloadImage: true,
   loopVideo: true,
   loopVideoSilentOnly: true,
+  /// This is not the streaming API configuration, but rather an option
+  /// for automatically loading new posts into the timeline without
+  /// the user clicking the Show New button.
   streaming: false,
   emojiReactionsOnTimeline: true,
   alwaysShowNewPostButton: false,
@@ -86,39 +87,37 @@ export const defaultState = {
   },
   webPushNotifications: false,
   webPushAlwaysShowNotifications: false,
-  muteWords: [],
-  highlight: {},
   interfaceLanguage: browserLocale,
   hideScopeNotice: false,
   useStreamingApi: false,
-  sidebarRight: undefined, // instance default
-  scopeCopy: undefined, // instance default
-  subjectLineBehavior: undefined, // instance default
-  alwaysShowSubjectInput: undefined, // instance default
-  postContentType: undefined, // instance default
-  minimalScopesMode: undefined, // instance default
+  sidebarRight: false,
+  scopeCopy: true,
+  subjectLineBehavior: 'email',
+  alwaysShowSubjectInput: true,
+  postContentType: 'text/plain',
+  minimalScopesMode: false,
 
   // This hides statuses filtered via a word filter
-  hideFilteredStatuses: undefined, // instance default
+  hideFilteredStatuses: false,
 
   // Confirmations
-  modalOnRepeat: undefined, // instance default
-  modalOnUnfollow: undefined, // instance default
-  modalOnBlock: undefined, // instance default
-  modalOnMute: undefined, // instance default
-  modalOnMuteConversation: undefined, // instance default
-  modalOnMuteDomain: undefined, // instance default
-  modalOnDelete: undefined, // instance default
-  modalOnLogout: undefined, // instance default
-  modalOnApproveFollow: undefined, // instance default
-  modalOnDenyFollow: undefined, // instance default
-  modalOnRemoveUserFromFollowers: undefined, // instance default
+  modalOnRepeat: false,
+  modalOnUnfollow: false,
+  modalOnBlock: true,
+  modalOnMute: false,
+  modalOnMuteConversation: false,
+  modalOnMuteDomain: true,
+  modalOnDelete: true,
+  modalOnLogout: true,
+  modalOnApproveFollow: false,
+  modalOnDenyFollow: false,
+  modalOnRemoveUserFromFollowers: false,
 
   // Expiry confirmations/default actions
   onMuteDefaultAction: 'ask',
   onBlockDefaultAction: 'ask',
 
-  modalMobileCenter: undefined,
+  modalMobileCenter: false,
   playVideosInModal: false,
   useOneClickNsfw: false,
   useContainFit: true,
@@ -131,45 +130,93 @@ export const defaultState = {
   sidebarColumnWidth: '25rem',
   contentColumnWidth: '45rem',
   notifsColumnWidth: '25rem',
-  themeEditorMinWidth: undefined, // instance default
-  emojiReactionsScale: undefined,
-  textSize: undefined, // instance default
-  emojiSize: undefined, // instance default
-  navbarSize: undefined, // instance default
-  panelHeaderSize: undefined, // instance default
-  forcedRoundness: undefined, // instance default
+  themeEditorMinWidth: '0rem',
+  emojiReactionsScale: 0.5,
+  textSize: '1rem',
+  emojiSize: '2.2rem',
+  navbarSize: '3.5rem',
+  panelHeaderSize: '3.2rem',
+  forcedRoundness: -1,
   navbarColumnStretch: false,
-  greentext: undefined, // instance default
-  mentionLinkDisplay: undefined, // instance default
-  mentionLinkShowTooltip: undefined, // instance default
-  mentionLinkShowAvatar: undefined, // instance default
-  mentionLinkFadeDomain: undefined, // instance default
-  mentionLinkShowYous: undefined, // instance default
-  mentionLinkBoldenYou: undefined, // instance default
-  hidePostStats: undefined, // instance default
-  hideBotIndication: undefined, // instance default
-  hideUserStats: undefined, // instance default
-  virtualScrolling: undefined, // instance default
-  sensitiveByDefault: undefined, // instance default
-  conversationDisplay: undefined, // instance default
-  conversationTreeAdvanced: undefined, // instance default
-  conversationOtherRepliesButton: undefined, // instance default
-  conversationTreeFadeAncestors: undefined, // instance default
-  showExtraNotifications: undefined, // instance default
-  showExtraNotificationsTip: undefined, // instance default
-  showChatsInExtraNotifications: undefined, // instance default
-  showAnnouncementsInExtraNotifications: undefined, // instance default
-  showFollowRequestsInExtraNotifications: undefined, // instance default
-  maxDepthInThread: undefined, // instance default
-  autocompleteSelect: undefined, // instance default
-  closingDrawerMarksAsSeen: undefined, // instance default
-  unseenAtTop: undefined, // instance default
-  ignoreInactionableSeen: undefined, // instance default
-  unsavedPostAction: undefined, // instance default
-  autoSaveDraft: undefined, // instance default
-  useAbsoluteTimeFormat: undefined, // instance default
-  absoluteTimeFormatMinAge: undefined, // instance default
-  absoluteTime12h: undefined, // instance default
+  greentext: false,
+  mentionLinkDisplay: 'short',
+  mentionLinkShowTooltip: true,
+  mentionLinkShowAvatar: false,
+  mentionLinkFadeDomain: true,
+  mentionLinkShowYous: false,
+  mentionLinkBoldenYou: true,
+  hidePostStats: false,
+  hideBotIndication: false,
+  hideUserStats: false,
+  virtualScrolling: true,
+  sensitiveByDefault: false,
+  conversationDisplay: 'linear',
+  conversationTreeAdvanced: false,
+  conversationOtherRepliesButton: 'below',
+  conversationTreeFadeAncestors: false,
+  showExtraNotifications: true,
+  showExtraNotificationsTip: true,
+  showChatsInExtraNotifications: true,
+  showAnnouncementsInExtraNotifications: true,
+  showFollowRequestsInExtraNotifications: true,
+  maxDepthInThread: 6,
+  autocompleteSelect: false,
+  closingDrawerMarksAsSeen: true,
+  unseenAtTop: false,
+  ignoreInactionableSeen: false,
+  unsavedPostAction: 'confirm',
+  autoSaveDraft: false,
+  useAbsoluteTimeFormat: false,
+  absoluteTimeFormatMinAge: '0d',
+  absoluteTime12h: '24h',
   imageCompression: true,
   alwaysUseJpeg: false
+}
+
+export const makeUndefined = c => Object.fromEntries(Object.keys(c).map(key => [key, undefined]))
+
+/// For properties with special processing or properties that does not
+/// make sense to be overriden on a instance-wide level.
+export const defaultState = {
+  // Set these to undefined so it does not interfere with default settings check
+  ...makeUndefined(instanceDefaultConfig),
+
+  // Special processing
+  // Theme  stuff
+  theme: undefined, // Very old theme store, stores preset name, still in use
+
+  // V1
+  colors: {}, // VERY old theme store, just colors of V1, probably not even used anymore
+
+  // V2
+  customTheme: undefined, // "snapshot", previously was used as actual theme store for V2 so it's still used in case of PleromaFE downgrade event.
+  customThemeSource: undefined, // "source", stores original theme data
+
+  // V3
+  style: null,
+  styleCustomData: null,
+  palette: null,
+  paletteCustomData: null,
+  themeDebug: false, // debug mode that uses computed backgrounds instead of real ones to debug contrast functions
+  forceThemeRecompilation: false, //  flag that forces recompilation on boot even if cache exists
+  theme3hacks: { // Hacks, user overrides that are independent of theme used
+    underlay: 'none',
+    fonts: {
+      interface: undefined,
+      input: undefined,
+      post: undefined,
+      monospace: undefined
+    }
+  },
+
+  // Special handling: These fields are not of a primitive type, and
+  // might cause problems with current code because it specifically checks
+  // them in state.config (not getters.mergedConfig).
+
+  // Specifically, muteWords is now deprecated in favour of a server-side configuration.
+  muteWords: [],
+  highlight: {},
+
+  // If there are any configurations that does not make sense to
+  // have instance-wide default, put it here and explain why.
 }

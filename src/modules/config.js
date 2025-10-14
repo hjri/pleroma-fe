@@ -6,7 +6,7 @@ import localeService from '../services/locale/locale.service.js'
 import { useI18nStore } from 'src/stores/i18n.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 
-import { defaultState } from './default_config_state.js'
+import { instanceDefaultConfig, defaultState } from './default_config_state.js'
 
 const BACKEND_LANGUAGE_COOKIE_NAME = 'userLanguage'
 const APPEARANCE_SETTINGS_KEYS = new Set([
@@ -38,9 +38,7 @@ export const multiChoiceProperties = [
 ]
 
 // caching the instance default properties
-export const instanceDefaultProperties = Object.entries(defaultState)
-  .filter(([, value]) => value === undefined)
-  .map(([key]) => key)
+export const instanceDefaultProperties = Object.keys(instanceDefaultConfig)
 
 const config = {
   state: { ...defaultState },
