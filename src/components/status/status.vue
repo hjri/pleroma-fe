@@ -152,12 +152,11 @@
                     :at="false"
                   >
                     <RichContent
-                      v-if="status.user.name_html"
                       :html="status.user.name"
                       :emoji="status.user.emoji"
                       :is-local="status.user.is_local"
                     />
-                    <span v-else>{{ status.user.name }}</span>
+                    <span>{{ status.user.name }}</span>
                   </user-link>
                   <span
                     v-else

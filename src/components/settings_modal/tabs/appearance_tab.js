@@ -1,3 +1,5 @@
+import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import IntegerSetting from '../helpers/integer_setting.vue'
@@ -26,11 +28,17 @@ import { useInterfaceStore, normalizeThemeData } from 'src/stores/interface'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-  faGlobe
+  faGlobe,
+  faDashboard,
+  faPaintRoller,
+  faTableColumns
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
-  faGlobe
+  faGlobe,
+  faPaintRoller,
+  faDashboard,
+  faTableColumns
 )
 
 const AppearanceTab = {
@@ -88,7 +96,8 @@ const AppearanceTab = {
     ProfileSettingIndicator,
     FontControl,
     Preview,
-    PaletteEditor
+    PaletteEditor,
+    TabSwitcher
   },
   mounted () {
     useInterfaceStore().getThemeData()
@@ -200,6 +209,8 @@ const AppearanceTab = {
     paletteDataUsed () {
       return useInterfaceStore().paletteDataUsed
     },
+    instanceSpecificPanelPresent () { return this.$store.state.instance.showInstanceSpecificPanel },
+    instanceShoutboxPresent () { return this.$store.state.instance.shoutAvailable },
     availableStyles () {
       return [
         ...this.availableThemesV3,

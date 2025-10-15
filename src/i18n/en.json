@@ -403,6 +403,7 @@
     "setting_server_side": "This setting is tied to your profile and affects all sessions and clients",
     "enter_current_password_to_confirm": "Enter your current password to confirm your identity",
     "post_look_feel": "Posts Look & Feel",
+    "posts": "Posts",
     "mention_links": "Mention links",
     "appearance": "Appearance",
     "confirm_new_setting": "Confirm new setting?",
@@ -418,6 +419,8 @@
     "visual_tweaks": "Minor visual tweaks",
     "theme_debug": "Show what background theme engine assumes when dealing with transparancy (DEBUG)",
     "scale_and_layout": "Interface scale and layout",
+    "behavior": "Behavior",
+    "layout": "Layout",
     "enabled": "Enabled",
     "filter": {
       "clutter": "Remove clutter",
@@ -832,6 +835,7 @@
     "enable_web_push_always_show_tip": "Some browsers (Chromium, Chrome) require that push messages always result in a notification, otherwise generic 'Website was updated in background' is shown, enable this to prevent this notification from showing, as Chrome seem to hide push notifications if tab is in focus. Can result in showing duplicate notifications on other browsers.",
     "more_settings": "More settings",
     "style": {
+      "style_section": "Style",
       "custom_theme_used": "(Custom theme)",
       "custom_style_used": "(Custom style)",
       "stock_theme_used": "(Stock theme)",

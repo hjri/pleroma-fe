@@ -1,8 +1,17 @@
 <template>
-  <div :label="$t('settings.general')">
-    <div class="setting-item">
-      <h2>{{ $t('settings.interface') }}</h2>
+  <tab-switcher
+    :label="$t('settings.general')"
+    ref="tabSwitcher"
+    class="settings_tab-switcher"
+    :side-tab-bar="true"
+    :scrollable-tabs="true"
+  >
+    <div
+      :label="$t('settings.behavior')"
+      icon="sliders"
+    >
       <ul class="setting-list">
+        <h3>{{ $t('settings.general') }}</h3>
         <li>
           <interface-language-switcher
             v-model="language"
@@ -20,14 +29,12 @@
             {{ $t('settings.email_language') }}
           </interface-language-switcher>
         </li>
-        <li v-if="instanceSpecificPanelPresent">
-          <BooleanSetting path="hideISP">
-            {{ $t('settings.hide_isp') }}
-          </BooleanSetting>
-        </li>
         <li>
-          <BooleanSetting path="stopGifs">
-            {{ $t('settings.stop_gifs') }}
+          <BooleanSetting
+            path="useAbsoluteTimeFormat"
+            expert="1"
+          >
+            {{ $t('settings.absolute_time_format') }}
           </BooleanSetting>
         </li>
         <li>
@@ -62,40 +69,6 @@
           </BooleanSetting>
         </li>
         <li>
-          <ChoiceSetting
-            id="userPopoverAvatarAction"
-            path="userPopoverAvatarAction"
-            :options="userPopoverAvatarActionOptions"
-            expert="1"
-          >
-            {{ $t('settings.user_popover_avatar_action') }}
-          </ChoiceSetting>
-        </li>
-        <li>
-          <BooleanSetting
-            path="userPopoverOverlay"
-            expert="1"
-          >
-            {{ $t('settings.user_popover_avatar_overlay') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting
-            path="userCardLeftJustify"
-            expert="1"
-          >
-            {{ $t('settings.user_card_left_justify') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting
-            path="userCardHidePersonalMarks"
-            expert="1"
-          >
-            {{ $t('settings.user_card_hide_personal_marks') }}
-          </BooleanSetting>
-        </li>
-        <li>
           <BooleanSetting
             path="alwaysShowNewPostButton"
             expert="1"
@@ -111,13 +84,15 @@
             {{ $t('settings.autohide_floating_post_button') }}
           </BooleanSetting>
         </li>
-        <li v-if="instanceShoutboxPresent">
-          <BooleanSetting
-            path="hideShoutbox"
+        <li>
+          <ChoiceSetting
+            id="userPopoverAvatarAction"
+            path="userPopoverAvatarAction"
+            :options="userPopoverAvatarActionOptions"
             expert="1"
           >
-            {{ $t('settings.hide_shoutbox') }}
-          </BooleanSetting>
+            {{ $t('settings.user_popover_avatar_action') }}
+          </ChoiceSetting>
         </li>
         <li class="select-multiple">
           <span class="label">{{ $t('settings.confirm_dialogs') }}</span>
@@ -179,9 +154,12 @@
         </li>
       </ul>
     </div>
-    <div class="setting-item">
-      <h2>{{ $t('settings.post_look_feel') }}</h2>
+    <div
+      :label="$t('settings.posts')"
+      icon="message"
+    >
       <ul class="setting-list">
+        <h3>{{ $t('settings.general') }}</h3>
         <li>
           <ChoiceSetting
             id="conversationDisplay"
@@ -190,6 +168,24 @@
           >
             {{ $t('settings.conversation_display') }}
           </ChoiceSetting>
+        </li>
+        <li>
+          <FontControl
+            :model-value="mergedConfig.theme3hacks.fonts.post"
+            name="post"
+            :fallback="{ family: 'inherit' }"
+            :label="$t('settings.style.fonts.components.post')"
+            @update:model-value="v => updateFont('post', v)"
+          />
+        </li>
+        <li>
+          <FontControl
+            :model-value="mergedConfig.theme3hacks.fonts.monospace"
+            name="postCode"
+            :fallback="{ family: 'monospace' }"
+            :label="$t('settings.style.fonts.components.monospace')"
+            @update:model-value="v => updateFont('monospace', v)"
+          />
         </li>
         <ul
           v-if="mergedConfig.conversationDisplay !== 'linear'"
@@ -241,6 +237,45 @@
             {{ $t('settings.emoji_reactions_on_timeline') }}
           </BooleanSetting>
         </li>
+        <h3>{{ $t('settings.mention_links') }}</h3>
+        <li>
+          <ChoiceSetting
+            id="mentionLinkDisplay"
+            path="mentionLinkDisplay"
+            :options="mentionLinkDisplayOptions"
+          >
+            {{ $t('settings.mention_link_display') }}
+          </ChoiceSetting>
+        </li>
+        <li>
+          <BooleanSetting
+            path="mentionLinkShowTooltip"
+            expert="1"
+          >
+            {{ $t('settings.mention_link_use_tooltip') }}
+          </BooleanSetting>
+        </li>
+        <li>
+          <BooleanSetting path="mentionLinkShowAvatar">
+            {{ $t('settings.mention_link_show_avatar') }}
+          </BooleanSetting>
+        </li>
+        <li>
+          <BooleanSetting
+            path="mentionLinkFadeDomain"
+            expert="1"
+          >
+            {{ $t('settings.mention_link_fade_domain') }}
+          </BooleanSetting>
+        </li>
+        <li v-if="user">
+          <BooleanSetting
+            path="mentionLinkBoldenYou"
+            expert="1"
+          >
+            {{ $t('settings.mention_link_bolden_you') }}
+          </BooleanSetting>
+        </li>
         <li>
           <BooleanSetting
             v-if="user"
@@ -249,14 +284,6 @@
             expert="1"
           >
             {{ $t('settings.no_rich_text_description') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting
-            path="useAbsoluteTimeFormat"
-            expert="1"
-          >
-            {{ $t('settings.absolute_time_format') }}
           </BooleanSetting>
         </li>
         <ul
@@ -286,30 +313,8 @@
         </ul>
         <h3>{{ $t('settings.attachments') }}</h3>
         <li>
-          <BooleanSetting
-            path="imageCompression"
-            expert="1"
-          >
-            {{ $t('settings.image_compression') }}
-          </BooleanSetting>
-        </li>
-        <ul class="setting-list suboptions">
-          <li>
-            <BooleanSetting
-              path="alwaysUseJpeg"
-              expert="1"
-              parent-path="imageCompression"
-            >
-              {{ $t('settings.always_use_jpeg') }}
-            </BooleanSetting>
-          </li>
-        </ul>
-        <li>
-          <BooleanSetting
-            path="useContainFit"
-            expert="1"
-          >
-            {{ $t('settings.use_contain_fit') }}
+          <BooleanSetting path="stopGifs">
+            {{ $t('settings.stop_gifs') }}
           </BooleanSetting>
         </li>
         <li>
@@ -371,43 +376,12 @@
             {{ $t('settings.play_videos_in_modal') }}
           </BooleanSetting>
         </li>
-        <h3>{{ $t('settings.mention_links') }}</h3>
-        <li>
-          <ChoiceSetting
-            id="mentionLinkDisplay"
-            path="mentionLinkDisplay"
-            :options="mentionLinkDisplayOptions"
-          >
-            {{ $t('settings.mention_link_display') }}
-          </ChoiceSetting>
-        </li>
         <li>
           <BooleanSetting
-            path="mentionLinkShowTooltip"
+            path="useContainFit"
             expert="1"
           >
-            {{ $t('settings.mention_link_use_tooltip') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting path="mentionLinkShowAvatar">
-            {{ $t('settings.mention_link_show_avatar') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting
-            path="mentionLinkFadeDomain"
-            expert="1"
-          >
-            {{ $t('settings.mention_link_fade_domain') }}
-          </BooleanSetting>
-        </li>
-        <li v-if="user">
-          <BooleanSetting
-            path="mentionLinkBoldenYou"
-            expert="1"
-          >
-            {{ $t('settings.mention_link_bolden_you') }}
+            {{ $t('settings.use_contain_fit') }}
           </BooleanSetting>
         </li>
         <h3 v-if="expertLevel > 0">
@@ -431,13 +405,13 @@
         </li>
       </ul>
     </div>
-
     <div
       v-if="user"
-      class="setting-item"
+      :label="$t('settings.composing')"
+      icon="pen-alt"
     >
-      <h2>{{ $t('settings.composing') }}</h2>
       <ul class="setting-list">
+      <h3>{{ $t('settings.composing') }}</h3>
         <li>
           <label for="default-vis">
             {{ $t('settings.default_vis') }} <ProfileSettingIndicator :is-profile="true" />
@@ -531,12 +505,33 @@
             {{ $t('settings.unsaved_post_action') }}
           </ChoiceSetting>
         </li>
+        <h3>{{ $t('settings.attachments') }}</h3>
+        <li>
+          <BooleanSetting
+            path="imageCompression"
+            expert="1"
+          >
+            {{ $t('settings.image_compression') }}
+          </BooleanSetting>
+        </li>
+        <ul class="setting-list suboptions">
+          <li>
+            <BooleanSetting
+              path="alwaysUseJpeg"
+              expert="1"
+              parent-path="imageCompression"
+            >
+              {{ $t('settings.always_use_jpeg') }}
+            </BooleanSetting>
+          </li>
+        </ul>
       </ul>
     </div>
     <div
-      class="setting-item"
+      :label="$t('settings.cache')"
+      icon="database"
+      v-if="expertLevel > 0"
     >
-      <h2>{{ $t('settings.cache') }}</h2>
       <ul class="setting-list">
         <li>
           <button
@@ -556,7 +551,7 @@
         </li>
       </ul>
     </div>
-  </div>
+  </tab-switcher>
 </template>
 
 <script src="./general_tab.js"></script>
