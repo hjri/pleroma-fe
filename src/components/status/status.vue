@@ -139,7 +139,10 @@
             class="status-heading"
           >
             <div class="heading-name-row">
-              <div class="heading-left">
+              <div
+                v-if="status.user"
+                class="heading-left"
+              >
                 <h4
                   v-if="status.user.name_html"
                   class="status-username"
