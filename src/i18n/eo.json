@@ -48,7 +48,8 @@
       "direct": "Persona",
       "private": "Nur abonantoj",
       "public": "Publika",
-      "unlisted": "Nelistigita"
+      "unlisted": "Nelistigita",
+      "local": "Nefedera"
     },
     "generic_error_message": "Eraris: {0}",
     "never_show_again": "Neniam remontri",
@@ -160,7 +161,8 @@
       "text/plain": "Plata teksto",
       "text/bbcode": "BBCode",
       "text/markdown": "Markdown",
-      "text/html": "HTML"
+      "text/html": "HTML",
+      "text/x.misskeymarkdown": "Miskia Markdaŭno"
     },
     "content_warning": "Temo (malnepra)",
     "default": "Ĵus alvenis Esperantujon!",
@@ -265,7 +267,7 @@
     "delete_account_description": "Por ĉiam forigi viajn datumojn kaj malaktivigi vian konton.",
     "delete_account_error": "Eraris forigo de via kanto. Se tio daŭre ripetiĝos, bonvolu kontakti la administranton de via nodo.",
     "delete_account_instructions": "Entajpu sube vian pasvorton por konfirmi forigon de konto.",
-    "avatar_size_instruction": "La rekomendata minimuma grando de profilbildoj estas 150×150 bilderoj.",
+    "avatar_size_instruction": "La rekomendata minimuma grando de profilbildoj estas 150×150 bilderoj. Rekomendata proporcio estas 1:1.",
     "export_theme": "Konservi antaŭagordon",
     "filtering": "Filtrado",
     "filtering_explanation": "Ĉiuj afiŝoj kun tiuj ĉi vortoj silentiĝos; skribu po unu linie",
@@ -958,7 +960,21 @@
     "reset_value_tooltip": "Remeti malneton",
     "hard_reset_value_tooltip": "Forigi agordon de memoro, devigante uzon de la implicita valoro",
     "third_column_mode_postform": "Afiŝilo kaj ligilaro",
-    "enable_web_push_always_show_tip": "Iuj foliumiloj (Chromium, Chrome) postulas, ke pasivaj mesaĝoj ĉiam rezultigu sciigon, aŭ montriĝos la universala mesaĝo »Retejo ĝisdatiĝis fone«. Ŝaltu ĉi tion por malhelpi la aperadon de tiu mesaĝo, ĉar [Chrome] ŝajnas kaŝi pasivajn sciigojn se langeto estas en fokuso. En aliaj foliumiloj, ĉi tiu agordo povas rezultigi duoblajn sciigojn."
+    "enable_web_push_always_show_tip": "Iuj foliumiloj (Chromium, Chrome) postulas, ke pasivaj mesaĝoj ĉiam rezultigu sciigon, aŭ montriĝos la universala mesaĝo »Retejo ĝisdatiĝis fone«. Ŝaltu ĉi tion por malhelpi la aperadon de tiu mesaĝo, ĉar [Chrome] ŝajnas kaŝi pasivajn sciigojn se langeto estas en fokuso. En aliaj foliumiloj, ĉi tiu agordo povas rezultigi duoblajn sciigojn.",
+    "actor_type_person_proper": "persono",
+    "reset": "Nuligi ŝanĝojn",
+    "toggle_edit": "Redakti",
+    "change_banner": "Ŝanĝi rubandon",
+    "change_avatar": "Ŝanĝi profilbildon",
+    "banner_size_instruction": "La rekomendata minimuma grando por rubandoj estas 450×150 bilderoj. Rekomendata proporcio estas 3:1.",
+    "account_profile_edit": "Redakti profilon",
+    "set_new_background": "Agordi novan fonbildon",
+    "reset_banner": "Renuligi rubandon",
+    "upload_picture": "Alŝuti bildon",
+    "select_picture": "Elekti bildon",
+    "clear_emoji_cache": "Vakigi kaŝmemoron por bildosignoj",
+    "cache": "Kaŝmemoro",
+    "clear_asset_cache": "Vakigi kaŝmemoron por diversaĵoj"
   },
   "timeline": {
     "collapse": "Maletendi",
