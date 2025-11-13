@@ -101,7 +101,7 @@
     "friend_requests": "Petoj pri abono",
     "mentions": "Mencioj",
     "dms": "Rektaj mesaĝoj",
-    "public_tl": "Noda historio",
+    "public_tl": "Loka historio",
     "timeline": "Historio",
     "twkn": "Federa historio",
     "user_search": "Serĉi uzantojn",
@@ -127,7 +127,8 @@
     "quotes": "Citoj",
     "all_bookmarks": "Ĉiuj legosignoj",
     "bookmark_folders": "Legosignujoj",
-    "drafts": "Malnetoj"
+    "drafts": "Malnetoj",
+    "bubble": "Elstarigita historio"
   },
   "notifications": {
     "broken_favorite": "Nekonata afiŝo, serĉante ĝin…",
@@ -175,7 +176,7 @@
       "unlisted": "Nelistigita – ne afiŝi al publikaj historioj"
     },
     "scope_notice": {
-      "unlisted": "Ĉi tiu afiŝo ne estos videbla en la Noda kaj la Federa historioj",
+      "unlisted": "Ĉi tiu afiŝo ne estos videbla en la Loka kaj la Federa historioj",
       "private": "Ĉi tiu afiŝo estos videbla nur al viaj abonantoj",
       "public": "Ĉi tiu afiŝo estos videbla al ĉiuj"
     },
@@ -974,7 +975,10 @@
     "select_picture": "Elekti bildon",
     "clear_emoji_cache": "Vakigi kaŝmemoron por bildosignoj",
     "cache": "Kaŝmemoro",
-    "clear_asset_cache": "Vakigi kaŝmemoron por diversaĵoj"
+    "clear_asset_cache": "Vakigi kaŝmemoron por diversaĵoj",
+    "profile_other": "Alia",
+    "user_card_hide_personal_marks": "Kaŝi personajn markojn (emfazo/noto) en profiloj de uzantoj",
+    "user_card_left_justify": "Ĝisrandigi prion de uzanto maldekstren"
   },
   "timeline": {
     "collapse": "Maletendi",
@@ -1091,7 +1095,34 @@
     "unfollow_confirm": "Ĉu vi certe volas malaboni uzanton {user}?",
     "unfollow_confirm_accept_button": "Malaboni",
     "remove_follower_confirm_cancel_button": "Ne forigi",
-    "group": "Grupo"
+    "group": "Grupo",
+    "mute_block_never": "Neniam",
+    "highlight_new": {
+      "solid": "Plena fono",
+      "disabled": "Ne emfazi",
+      "side": "Flanka strio",
+      "striped": "Stria fono"
+    },
+    "mute_or": "aŭ",
+    "expire_in": "Eksdatiĝos je",
+    "expire_mute_message": "Ĉu vi certe volas silentigi on {0}?",
+    "expire_block_message": "Ĉu vi certe volas bloki on {0}?",
+    "dont_ask_again_block": "Ĉiam bloki uzantojn ĉi tiel",
+    "mute_block_temporarily": "Provizore",
+    "mute_block_forever": "Daŭre",
+    "dont_ask_again_mute": "Ĉiam silentigi uzantojn ĉi tiel",
+    "mute_expires_at": "Silentigita ĝis {0}",
+    "mute_block_ask": "Pridemandi",
+    "default_mute_expiration": "Ĉiam silentigi uzantojn",
+    "default_block_expiration": "Ĉiam bloki uzantojn",
+    "default_expiration_time": "Eksdatiĝos je",
+    "mute_expires_forever": "Daŭre silentigita",
+    "block_expires_forever": "Daŭre blokita",
+    "block_expires_at": "Blokita ĝis {0}",
+    "statuses_per_day": "Afiŝoj tage",
+    "personal_note": "Persona noto",
+    "note_blank_click": "Klaku por aldoni noton",
+    "highlight_header": "Emfazi afiŝojn kaj menciojn de uzanto"
   },
   "user_profile": {
     "timeline_title": "Historio de uzanto",
@@ -1331,7 +1362,9 @@
     "mute_domain": "Silentigi retnomon",
     "muted_filters": "Filtrita: {name} | Filtritaj vortoj: {name} kaj {filtersMore} ekstraj",
     "sensitive_muted": "Silentigo de konsterna enhavo",
-    "more_actions": "Pliaj agoj pri la afiŝo"
+    "more_actions": "Pliaj agoj pri la afiŝo",
+    "unknown_user": "nekonata uzanto",
+    "unknown_user_info": "Ne povas akiri informojn pri tiu ĉi uzanto"
   },
   "time": {
     "years_short": "{0}j",
@@ -1379,8 +1412,14 @@
       "seconds_short": "{0}sek",
       "weeks": "{0} semajno | {0} semajnoj",
       "weeks_short": "{0}sem",
-      "years": "{0} jaro | {0} jaroj",
-      "years_short": "{0}j"
+      "years": "jaro(j)",
+      "years_short": "{0}j",
+      "minutes_suffix": "minuto(j)",
+      "days_suffix": "tago(j)",
+      "hours_suffix": "horo(j)",
+      "months_suffix": "monato(j)",
+      "seconds_suffix": "sekundo(j)",
+      "weeks_suffix": "semajno(j)"
     }
   },
   "search": {
@@ -1566,7 +1605,13 @@
       "metadata_changed": "Pridatumoj malsamas de la konservitaj",
       "replace_warning": "Ĉi tio ANSTATAŬIGOS la lokan pakon kun la sama nomo",
       "fallback_sha256": "Rezerva SHA256",
-      "shortcode": "Kodo"
+      "shortcode": "Kodo",
+      "upload_url": "Alŝuti de URL",
+      "emoji_source": "Fonto de dosiero de bildosignoj",
+      "copying": "Kopiado de {0}",
+      "copy_to": "Kopii al",
+      "copy_to_pack": "Kopii al loka pako",
+      "copied_successfully": "Sukcese kopiis bildosignon «{0}» al pako «{1}»"
     },
     "tabs": {
       "emoji": "Bildosignoj",
@@ -1611,7 +1656,7 @@
         ":instance": {
           ":public": {
             "label": "Nodo estas publika",
-            "description": "Malŝalto permesos aliron al la tuta API nur al salutintaj uzantoj. Sennomaj vizitantoj do ne povos vidi la Nodan kaj Federan historiojn."
+            "description": "Malŝalto permesos aliron al la tuta API nur al salutintaj uzantoj. Sennomaj vizitantoj do ne povos vidi la Lokan kaj Federan historiojn."
           },
           ":background_image": {
             "label": "Fonbildo",
