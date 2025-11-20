@@ -121,6 +121,7 @@ export default {
       if (this.navSide !== side) {
         this.navSide = side
         this.$emit('sideSwitch', side)
+        this.onResize()
       }
     },
     getNavMode () {
@@ -128,11 +129,13 @@ export default {
     },
     onResize () {
       // All other tabs are hidden and their width is most likely 0
-      const tabContent = this.$refs.contents.querySelector('.tab-content-wrapper.-active .tab-content')
+      const activeTab = this.$refs.root.querySelector('.tab-content-wrapper.-active')
+      const tabContent = activeTab.querySelector('.tab-content')
       const tabContentWidth = tabContent.clientWidth
 
+      const rootWidth = this.$refs.root.clientWidth
       const navWidth = this.$refs.nav.clientWidth
-      const contentsWidth = this.$refs.contents.clientWidth
+      const contentsWidth = rootWidth - navWidth
 
       // if contents takes more space than its container
       if (contentsWidth < tabContentWidth) {
@@ -141,6 +144,7 @@ export default {
         } else {
           this.$emit('tooSmall')
         }
+      // FIXME wrong again??
       // If we (theoretically) have enough space to fit it in
       } else if (contentsWidth - navWidth >= tabContentWidth){
         // First expand the inner layer, then outer
@@ -205,7 +209,6 @@ export default {
 
       const headerClasses = ['tab-content-label']
       if (this.hideHeader === true) {
-        console.log('A', this.hideHeader)
         headerClasses.push('-hidden')
       }
       const header = (
