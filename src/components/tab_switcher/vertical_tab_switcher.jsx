@@ -34,10 +34,12 @@ export default {
       default: false
     }
   },
+  emits: ['tooBig', 'tooSmall'],
   data () {
     return {
       active: findFirstUsable(this.slots()),
-      resizeHandler: null
+      resizeHandler: null,
+      navMode: false
     }
   },
   computed: {
@@ -59,6 +61,16 @@ export default {
       mobileLayout: store => store.layoutType === 'mobile'
     }),
   },
+  created () {
+    this.resizeHandler = throttle(this.onResize, 200)
+    window.addEventListener('resize', this.resizeHandler)
+  },
+  mounted () {
+    this.resizeHandler()
+  },
+  unmounted () {
+    window.removeEventListener('resize', this.resizeHandler)
+  },
   beforeUpdate () {
     const currentSlot = this.slots()[this.active]
     if (!currentSlot.props) {
@@ -70,7 +82,20 @@ export default {
       return (e) => {
         e.preventDefault()
         this.setTab(index)
-        console.log(index)
+      }
+    },
+    onResize (index) {
+      const tabContent = this.$refs.contents?.querySelector('.tab-content-wrapper.-active .tab-content')
+      const tabContentWidth = tabContent.clientWidth
+      const rootWidth = this.$refs.root?.clientWidth
+      const navWidth = this.$refs.nav?.clientWidth
+      const contentsWidth = this.$refs.contents?.clientWidth
+
+
+      if (contentsWidth < tabContentWidth) {
+        this.$emit('tooSmall')
+      } else if (contentsWidth - navWidth >= tabContentWidth){
+        this.$emit('tooBig')
       }
     },
     // DO NOT put it to computed, it doesn't work (caching?)
@@ -85,7 +110,12 @@ export default {
         this.onSwitch.call(null, this.slots()[index].key)
       }
       this.active = index
-      this.$refs.contents.scrollTop = 0
+    },
+    showNav () {
+      this.navMode = false
+    },
+    hideNav () {
+      this.navMode = true
     }
   },
   render () {
@@ -93,7 +123,7 @@ export default {
       .map((slot, index) => {
         const props = slot.props
         if (!props) return
-        const classesTab = ['vertical-tab menu-item']
+        const classesTab = ['vertical-tab', 'menu-item']
         if (this.activeIndex === index) {
           classesTab.push('-active')
         }
@@ -104,6 +134,7 @@ export default {
             class={classesTab.join(' ')}
             type="button"
             role="tab"
+            title={props.label}
           >
             {!props.icon ? '' : (<FAIcon class="tab-icon" size="1x" fixed-width icon={props.icon}/>)}
             <span class="text">
@@ -117,9 +148,9 @@ export default {
       const props = slot.props
       if (!props) return
       const active = this.activeIndex === index
-      const classes = [ active ? 'active' : 'hidden' ]
+      const classes = ['tab-content-wrapper', active ? '-active' : '-hidden' ]
       if (props.fullHeight) {
-        classes.push('full-height')
+        classes.push('-full-height')
       }
       let delayRender = slot.props['delay-render']
       if (delayRender && active) {
@@ -137,17 +168,25 @@ export default {
       )
 
       return (
-        <div ref="contents" class={classes}>
+        <div class={classes} >
           {header}
-          {renderSlot}
+          <div class={ ['tab-content', props['full-width'] ? '-full-width' : null].join(' ') } >
+            {renderSlot}
+          </div>
         </div>
       )
     })
 
+    const rootClasses = ['vertical-tab-switcher']
+    if (this.navMode) {
+      rootClasses.push('-nav-mode')
+      rootClasses.push('-nav-content')
+    }
+
     return (
-      <div ref="root" class="vertical-tab-switcher">
+      <div ref="root" class={ rootClasses.join(' ') }>
         <div
-          class="tabs -navigation-mode -tabs"
+          class="tabs"
           role="tablist"
           ref="nav"
         >
@@ -157,6 +196,7 @@ export default {
           role="tabpanel"
           class={'contents' + (this.scrollableTabs ? ' scrollable-tabs' : '')}
           v-body-scroll-lock={this.bodyScrollLock}
+          ref="contents"
         >
           {contents}
         </div>

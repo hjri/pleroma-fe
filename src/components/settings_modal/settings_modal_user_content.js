@@ -88,6 +88,12 @@ const SettingsModalContent = {
       // Clear the state of target tab, so that next time settings is opened
       // it doesn't force it.
       useInterfaceStore().clearSettingsModalTargetTab()
+    },
+    nestedTooBig () {
+      this.$refs.tabSwitcher.showNav()
+    },
+    nestedTooSmall () {
+      this.$refs.tabSwitcher.hideNav()
     }
   },
   mounted () {

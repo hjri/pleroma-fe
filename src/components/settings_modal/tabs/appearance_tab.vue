@@ -5,6 +5,8 @@
     ref="tabSwitcher"
     :side-tab-bar="true"
     :scrollable-tabs="true"
+    @too-small="() => console.log('small') || $emit('tooSmall')"
+    @too-big="() => $emit('tooBig')"
   >
     <div
       :label="$t('settings.interface')"

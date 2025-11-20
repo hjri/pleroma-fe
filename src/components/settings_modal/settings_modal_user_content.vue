@@ -2,24 +2,33 @@
   <vertical-tab-switcher
     ref="tabSwitcher"
     class="settings_tab-switcher"
-    :side-tab-bar="true"
     :scrollable-tabs="true"
     :body-scroll-lock="bodyLock"
   >
     <div
+      :full-width="true"
       :label="$t('settings.general')"
       icon="wrench"
       data-tab-name="general"
     >
-      <GeneralTab />
+      <GeneralTab
+        class="inner-tab -middle"
+        @too-small="() => nestedTooSmall()"
+        @too-big="() => nestedTooBig()"
+      />
     </div>
     <div
+      :full-width="true"
       :label="$t('settings.appearance')"
       icon="window-restore"
       data-tab-name="appearance"
       :delay-render="true"
     >
-      <AppearanceTab />
+      <AppearanceTab
+        class="inner-tab -middle"
+        @too-small="() => nestedTooSmall()"
+        @too-big="() => nestedTooBig()"
+      />
     </div>
     <div
       v-if="expertLevel > 0"

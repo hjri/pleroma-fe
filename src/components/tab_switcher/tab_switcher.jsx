@@ -158,7 +158,10 @@ export default {
     })
 
     return (
-      <div class="tab-switcher top-tabs">
+      <div
+        class="tab-switcher top-tabs"
+        ref="root"
+      >
         <div
           class="tabs"
           role="tablist"
@@ -170,6 +173,7 @@ export default {
           role="tabpanel"
           class={'contents' + (this.scrollableTabs ? ' scrollable-tabs' : '')}
           v-body-scroll-lock={this.bodyScrollLock}
+          ref="content"
         >
           {contents}
         </div>

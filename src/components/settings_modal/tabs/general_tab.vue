@@ -3,6 +3,8 @@
     :label="$t('settings.general')"
     ref="tabSwitcher"
     class="settings_tab-switcher"
+    @too-small="() => $emit('tooSmall')"
+    @too-big="() => $emit('tooBig')"
   >
     <div
       :label="$t('settings.behavior')"
