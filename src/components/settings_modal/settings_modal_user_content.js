@@ -73,6 +73,11 @@ const SettingsModalContent = {
       return useInterfaceStore().layoutType === 'mobile'
     }
   },
+  data () {
+    return {
+      navCollapsed: false
+    }
+  },
   methods: {
     onOpen () {
       const targetTab = useInterfaceStore().settingsModalTargetTab
@@ -90,9 +95,11 @@ const SettingsModalContent = {
       useInterfaceStore().clearSettingsModalTargetTab()
     },
     nestedTooBig () {
+      this.navCollapsed = false
       this.$refs.tabSwitcher.showNav()
     },
     nestedTooSmall () {
+      this.navCollapsed = true
       this.$refs.tabSwitcher.hideNav()
     }
   },

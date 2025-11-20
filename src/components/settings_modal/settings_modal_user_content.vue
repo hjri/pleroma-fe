@@ -13,6 +13,7 @@
     >
       <GeneralTab
         class="inner-tab -middle"
+        :parent-collapsed="navCollapsed"
         @too-small="() => nestedTooSmall()"
         @too-big="() => nestedTooBig()"
       />

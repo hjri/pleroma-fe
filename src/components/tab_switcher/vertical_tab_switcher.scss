@@ -26,6 +26,10 @@
     flex: 1 1 auto;
     overflow-x: hidden;
 
+    .tab-content-label {
+      display: none
+    }
+
     .tab-content {
       align-self: center;
 
@@ -77,6 +81,14 @@
     }
 
     &.-nav-content {
+      > .contents {
+        > .tab-content-wrapper {
+          > .tab-content-label {
+            display: block;
+          }
+        }
+      }
+
       > .tabs {
         position: absolute;
         pointer-events: none;

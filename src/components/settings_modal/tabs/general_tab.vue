@@ -3,6 +3,7 @@
     :label="$t('settings.general')"
     ref="tabSwitcher"
     class="settings_tab-switcher"
+    :parent-collapsed="parentCollapsed"
     @too-small="() => $emit('tooSmall')"
     @too-big="() => $emit('tooBig')"
   >

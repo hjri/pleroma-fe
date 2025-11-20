@@ -32,6 +32,11 @@ export default {
       required: false,
       type: Boolean,
       default: false
+    },
+    parentCollapsed: {
+      required: false,
+      type: Boolean,
+      default: false
     }
   },
   emits: ['tooBig', 'tooSmall'],
@@ -91,11 +96,18 @@ export default {
       const navWidth = this.$refs.nav?.clientWidth
       const contentsWidth = this.$refs.contents?.clientWidth
 
-
       if (contentsWidth < tabContentWidth) {
-        this.$emit('tooSmall')
+        if (this.parentCollapsed) {
+          this.hideNav()
+        } else {
+          this.$emit('tooSmall')
+        }
       } else if (contentsWidth - navWidth >= tabContentWidth){
-        this.$emit('tooBig')
+        if (this.parentCollapsed) {
+          this.$emit('tooBig')
+        } else {
+          this.showNav()
+        }
       }
     },
     // DO NOT put it to computed, it doesn't work (caching?)

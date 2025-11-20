@@ -35,6 +35,12 @@ library.add(
 )
 
 const GeneralTab = {
+  props: {
+    parentCollapsed: {
+      required: true,
+      type: Boolean
+    }
+  },
   data () {
     return {
       subjectLineOptions: ['email', 'noop', 'masto'].map(mode => ({
