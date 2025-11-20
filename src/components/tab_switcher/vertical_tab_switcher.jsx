@@ -104,24 +104,35 @@ export default {
       this.changeNavSide('content')
     },
     showNav () {
-      this.navMode = false
+      if (this.navMode) {
+        this.navMode = false
+        this.changeNavSide(null)
+        this.onResize()
+      }
     },
     hideNav () {
-      this.navMode = true
+      if (!this.navMode) {
+        this.navMode = true
+        this.changeNavSide('content')
+        this.onResize()
+      }
     },
     changeNavSide (side) {
-      this.navSide = side
-      this.$emit('sideSwitch', side)
+      if (this.navSide !== side) {
+        this.navSide = side
+        this.$emit('sideSwitch', side)
+      }
     },
     getNavMode () {
       return this.navMode
     },
     onResize () {
       // All other tabs are hidden and their width is most likely 0
-      const tabContent = this.$refs.contents?.querySelector('.tab-content-wrapper.-active .tab-content')
+      const tabContent = this.$refs.contents.querySelector('.tab-content-wrapper.-active .tab-content')
       const tabContentWidth = tabContent.clientWidth
-      const navWidth = this.$refs.nav?.clientWidth
-      const contentsWidth = this.$refs.contents?.clientWidth
+
+      const navWidth = this.$refs.nav.clientWidth
+      const contentsWidth = this.$refs.contents.clientWidth
 
       // if contents takes more space than its container
       if (contentsWidth < tabContentWidth) {
@@ -193,8 +204,8 @@ export default {
         : ''
 
       const headerClasses = ['tab-content-label']
-      console.log(this.hideHeader)
-      if (this.hideHeader) {
+      if (this.hideHeader === true) {
+        console.log('A', this.hideHeader)
         headerClasses.push('-hidden')
       }
       const header = (

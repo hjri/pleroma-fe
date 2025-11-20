@@ -96,15 +96,18 @@ const SettingsModalContent = {
       useInterfaceStore().clearSettingsModalTargetTab()
     },
     nestedTooBig () {
-      this.navCollapsed = false
-      this.$refs.tabSwitcher.showNav()
+      if (this.navCollapsed) {
+        this.navCollapsed = false
+        this.$refs.tabSwitcher.showNav()
+      }
     },
     nestedTooSmall () {
-      this.navCollapsed = true
-      this.$refs.tabSwitcher.hideNav()
+      if (!this.navCollapsed) {
+        this.navCollapsed = true
+        this.$refs.tabSwitcher.hideNav()
+      }
     },
     nestedNavSide (side) {
-      console.log('SWITCH')
       this.navHideHeader = side === 'content'
     }
   },
