@@ -37,6 +37,11 @@ export default {
       required: false,
       type: Boolean,
       default: false
+    },
+    childCollapsed: {
+      required: false,
+      type: Boolean,
+      default: false
     }
   },
   emits: ['tooBig', 'tooSmall'],
@@ -44,7 +49,8 @@ export default {
     return {
       active: findFirstUsable(this.slots()),
       resizeHandler: null,
-      navMode: false
+      navMode: false,
+      navSide: 'content'
     }
   },
   computed: {
@@ -103,7 +109,7 @@ export default {
           this.$emit('tooSmall')
         }
       } else if (contentsWidth - navWidth >= tabContentWidth){
-        if (this.parentCollapsed) {
+        if (!this.navMode) {
           this.$emit('tooBig')
         } else {
           this.showNav()
@@ -122,12 +128,16 @@ export default {
         this.onSwitch.call(null, this.slots()[index].key)
       }
       this.active = index
+      this.navSide = 'content'
     },
     showNav () {
       this.navMode = false
     },
     hideNav () {
       this.navMode = true
+    },
+    getNavMode () {
+      return this.navMode
     }
   },
   render () {
@@ -173,8 +183,13 @@ export default {
         ? slot
         : ''
 
+      const headerClasses = ['tab-content-label']
+      if (this.childCollapsed) {
+        headerClasses.push('-hidden')
+      }
       const header = (
-        <h1 class="tab-content-label">
+        <h1 class={headerClasses}>
+          <button type="button" onClick={() => this.navSide = 'tabs'}>LOL</button>
           {props.label}
         </h1>
       )
@@ -192,7 +207,11 @@ export default {
     const rootClasses = ['vertical-tab-switcher']
     if (this.navMode) {
       rootClasses.push('-nav-mode')
-      rootClasses.push('-nav-content')
+      if (this.navSide === 'content') {
+        rootClasses.push('-nav-content')
+      } else {
+        rootClasses.push('-nav-tabs')
+      }
     }
 
     return (

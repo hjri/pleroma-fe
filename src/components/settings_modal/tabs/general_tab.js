@@ -136,6 +136,15 @@ const GeneralTab = {
           this.$store.dispatch('settingsSaved', { error })
         })
     },
+    tooSmall () {
+      this.$emit('tooSmall')
+    },
+    tooBig () {
+      this.$emit('tooBig')
+    },
+    getNavMode () {
+      return this.$refs.tabSwitcher.getNavMode()
+    },
     clearAssetCache () {
       this.clearCache(cacheKey)
     },

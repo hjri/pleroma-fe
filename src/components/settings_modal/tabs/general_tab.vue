@@ -4,8 +4,8 @@
     ref="tabSwitcher"
     class="settings_tab-switcher"
     :parent-collapsed="parentCollapsed"
-    @too-small="() => $emit('tooSmall')"
-    @too-big="() => $emit('tooBig')"
+    @too-small="tooSmall"
+    @too-big="tooBig"
   >
     <div
       :label="$t('settings.behavior')"

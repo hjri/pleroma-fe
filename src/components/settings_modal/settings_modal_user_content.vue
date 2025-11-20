@@ -3,6 +3,7 @@
     ref="tabSwitcher"
     class="settings_tab-switcher"
     :scrollable-tabs="true"
+    :child-collapsed="childCollapsed"
     :body-scroll-lock="bodyLock"
   >
     <div
@@ -13,6 +14,7 @@
     >
       <GeneralTab
         class="inner-tab -middle"
+        ref="generalTab"
         :parent-collapsed="navCollapsed"
         @too-small="() => nestedTooSmall()"
         @too-big="() => nestedTooBig()"
@@ -27,6 +29,7 @@
     >
       <AppearanceTab
         class="inner-tab -middle"
+        :parent-collapsed="navCollapsed"
         @too-small="() => nestedTooSmall()"
         @too-big="() => nestedTooBig()"
       />
