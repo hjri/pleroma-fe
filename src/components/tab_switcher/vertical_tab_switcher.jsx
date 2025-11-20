@@ -36,18 +36,14 @@ export default {
     parentCollapsed: {
       required: false,
       type: Boolean,
-      default: false
-    },
-    childCollapsed: {
-      required: false,
-      type: Boolean,
-      default: false
+      default: null
     }
   },
   emits: ['tooBig', 'tooSmall'],
   data () {
     return {
       active: findFirstUsable(this.slots()),
+      childCollapsed: null,
       resizeHandler: null,
       navMode: false,
       navSide: 'content'
@@ -93,35 +89,8 @@ export default {
       return (e) => {
         e.preventDefault()
         this.setTab(index)
+        onResize()
       }
-    },
-    onResize (index) {
-      const tabContent = this.$refs.contents?.querySelector('.tab-content-wrapper.-active .tab-content')
-      const tabContentWidth = tabContent.clientWidth
-      const rootWidth = this.$refs.root?.clientWidth
-      const navWidth = this.$refs.nav?.clientWidth
-      const contentsWidth = this.$refs.contents?.clientWidth
-
-      if (contentsWidth < tabContentWidth) {
-        if (this.parentCollapsed) {
-          this.hideNav()
-        } else {
-          this.$emit('tooSmall')
-        }
-      } else if (contentsWidth - navWidth >= tabContentWidth){
-        if (!this.navMode) {
-          this.$emit('tooBig')
-        } else {
-          this.showNav()
-        }
-      }
-    },
-    // DO NOT put it to computed, it doesn't work (caching?)
-    slots () {
-      if (this.$slots.default()[0].type === Fragment) {
-        return this.$slots.default()[0].children
-      }
-      return this.$slots.default()
     },
     setTab (index) {
       if (typeof this.onSwitch === 'function') {
@@ -138,6 +107,43 @@ export default {
     },
     getNavMode () {
       return this.navMode
+    },
+    onResize () {
+      // All other tabs are hidden and their width is most likely 0
+      const tabContent = this.$refs.contents?.querySelector('.tab-content-wrapper.-active .tab-content')
+      const tabContentWidth = tabContent.clientWidth
+      const navWidth = this.$refs.nav?.clientWidth
+      const contentsWidth = this.$refs.contents?.clientWidth
+
+      const nestedSwitcher = this.$refs.contents?.querySelector('.vertical-tab-switcher')
+      if (nestedSwitcher) {
+        const childHeader = nestedSwitcher.querySelector('.tab-content-label')
+        this.childCollapsed = childHeader?.checkVisibility()
+      }
+      // if contents takes more space than its container
+      if (contentsWidth < tabContentWidth) {
+        if (this.parentCollapsed) {
+          this.hideNav()
+        } else {
+          this.$emit('tooSmall')
+        }
+      // If we (theoretically) have enough space to fit it in
+      } else if (contentsWidth - navWidth >= tabContentWidth){
+        // First expand the inner layer, then outer
+        // if use same logic as above order will be reversed
+        if (!this.navMode) {
+          this.$emit('tooBig')
+        } else {
+          this.showNav()
+        }
+      }
+    },
+    // DO NOT put it to computed, it doesn't work (caching?)
+    slots () {
+      if (this.$slots.default()[0].type === Fragment) {
+        return this.$slots.default()[0].children
+      }
+      return this.$slots.default()
     }
   },
   render () {
