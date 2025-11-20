@@ -1,10 +1,8 @@
 <template>
-  <tab-switcher
+  <vertical-tab-switcher
     :label="$t('settings.general')"
     ref="tabSwitcher"
     class="settings_tab-switcher"
-    :side-tab-bar="true"
-    :scrollable-tabs="true"
   >
     <div
       :label="$t('settings.behavior')"
@@ -551,7 +549,7 @@
         </li>
       </ul>
     </div>
-  </tab-switcher>
+  </vertical-tab-switcher>
 </template>
 
 <script src="./general_tab.js"></script>

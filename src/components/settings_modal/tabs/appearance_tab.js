@@ -1,4 +1,4 @@
-import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+import VerticalTabSwitcher from 'src/components/tab_switcher/vertical_tab_switcher.jsx'
 
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
@@ -97,7 +97,7 @@ const AppearanceTab = {
     FontControl,
     Preview,
     PaletteEditor,
-    TabSwitcher
+    VerticalTabSwitcher
   },
   mounted () {
     useInterfaceStore().getThemeData()

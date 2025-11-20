@@ -1,5 +1,5 @@
 <template>
-  <tab-switcher
+  <vertical-tab-switcher
     ref="tabSwitcher"
     class="settings_tab-switcher"
     :side-tab-bar="true"
@@ -94,7 +94,7 @@
     >
       <VersionTab />
     </div>
-  </tab-switcher>
+  </vertical-tab-switcher>
 </template>
 
 <script src="./settings_modal_user_content.js"></script>

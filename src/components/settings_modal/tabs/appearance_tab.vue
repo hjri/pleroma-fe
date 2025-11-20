@@ -1,5 +1,5 @@
 <template>
-  <tab-switcher
+  <vertical-tab-switcher
     class="appearance-tab"
     :label="$t('settings.appearance')"
     ref="tabSwitcher"
@@ -446,7 +446,7 @@
         </ul>
       </div>
     </div>
-  </tab-switcher>
+  </vertical-tab-switcher>
 </template>
 
 <script src="./appearance_tab.js"></script>
