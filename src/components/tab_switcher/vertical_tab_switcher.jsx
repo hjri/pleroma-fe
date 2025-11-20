@@ -37,13 +37,17 @@ export default {
       required: false,
       type: Boolean,
       default: null
+    },
+    hideHeader: {
+      required: false,
+      type: Boolean,
+      default: null
     }
   },
-  emits: ['tooBig', 'tooSmall'],
+  emits: ['tooBig', 'tooSmall', 'sideSwitch'],
   data () {
     return {
       active: findFirstUsable(this.slots()),
-      childCollapsed: null,
       resizeHandler: null,
       navMode: false,
       navSide: 'content'
@@ -89,7 +93,7 @@ export default {
       return (e) => {
         e.preventDefault()
         this.setTab(index)
-        onResize()
+        this.onResize()
       }
     },
     setTab (index) {
@@ -97,13 +101,17 @@ export default {
         this.onSwitch.call(null, this.slots()[index].key)
       }
       this.active = index
-      this.navSide = 'content'
+      this.changeNavSide('content')
     },
     showNav () {
       this.navMode = false
     },
     hideNav () {
       this.navMode = true
+    },
+    changeNavSide (side) {
+      this.navSide = side
+      this.$emit('sideSwitch', side)
     },
     getNavMode () {
       return this.navMode
@@ -115,11 +123,6 @@ export default {
       const navWidth = this.$refs.nav?.clientWidth
       const contentsWidth = this.$refs.contents?.clientWidth
 
-      const nestedSwitcher = this.$refs.contents?.querySelector('.vertical-tab-switcher')
-      if (nestedSwitcher) {
-        const childHeader = nestedSwitcher.querySelector('.tab-content-label')
-        this.childCollapsed = childHeader?.checkVisibility()
-      }
       // if contents takes more space than its container
       if (contentsWidth < tabContentWidth) {
         if (this.parentCollapsed) {
@@ -190,12 +193,13 @@ export default {
         : ''
 
       const headerClasses = ['tab-content-label']
-      if (this.childCollapsed) {
+      console.log(this.hideHeader)
+      if (this.hideHeader) {
         headerClasses.push('-hidden')
       }
       const header = (
         <h1 class={headerClasses}>
-          <button type="button" onClick={() => this.navSide = 'tabs'}>LOL</button>
+          <button type="button" onClick={() => this.changeNavSide('tabs')}>LOL</button>
           {props.label}
         </h1>
       )

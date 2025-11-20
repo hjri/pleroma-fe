@@ -76,7 +76,7 @@ const SettingsModalContent = {
   data () {
     return {
       navCollapsed: false,
-      childCollapsed: false
+      navHideHeader: false
     }
   },
   methods: {
@@ -97,15 +97,15 @@ const SettingsModalContent = {
     },
     nestedTooBig () {
       this.navCollapsed = false
-      this.childCollapsed = this.$refs.generalTab.getNavMode()
-      console.log(this.navCollapsed, this.childCollapsed)
       this.$refs.tabSwitcher.showNav()
     },
     nestedTooSmall () {
       this.navCollapsed = true
-      this.childCollapsed = this.$refs.generalTab.getNavMode()
-      console.log(this.navCollapsed, this.childCollapsed)
       this.$refs.tabSwitcher.hideNav()
+    },
+    nestedNavSide (side) {
+      console.log('SWITCH')
+      this.navHideHeader = side === 'content'
     }
   },
   mounted () {

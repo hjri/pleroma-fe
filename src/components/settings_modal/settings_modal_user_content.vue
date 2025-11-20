@@ -5,6 +5,7 @@
     :scrollable-tabs="true"
     :child-collapsed="childCollapsed"
     :body-scroll-lock="bodyLock"
+    :hide-header="navHideHeader"
   >
     <div
       :full-width="true"
@@ -16,6 +17,7 @@
         class="inner-tab -middle"
         ref="generalTab"
         :parent-collapsed="navCollapsed"
+        @side-switch="(side) => nestedNavSide(side)"
         @too-small="() => nestedTooSmall()"
         @too-big="() => nestedTooBig()"
       />
