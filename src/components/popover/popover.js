@@ -299,8 +299,8 @@ const Popover = {
       if (this.trigger === 'click') {
         document.removeEventListener('click', this.onClickOutside)
       }
-      this.scrollable.removeEventListener('scroll', this.onScroll)
-      this.scrollable.removeEventListener('resize', this.onResize)
+      this.scrollable?.removeEventListener('scroll', this.onScroll)
+      this.scrollable?.removeEventListener('resize', this.onResize)
     },
     resizePopover () {
       setTimeout(() => {
