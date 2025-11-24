@@ -1,4 +1,8 @@
 .appearance-tab {
+  h3 {
+    border: none
+  }
+
   .palette,
   .theme-notice {
     padding: 0.5em;
@@ -10,14 +14,6 @@
     padding-bottom: 0.5em;
   }
 
-  h4 {
-    margin: 2em 0;
-    line-height: 1.5;
-  }
-
-  h5 {
-    display: block;
-  }
 
   input[type="file"] {
     padding: 0.25em;

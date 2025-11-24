@@ -233,9 +233,11 @@
             {{ $t('settings.use_contain_fit') }}
           </BooleanSetting>
         </li>
-        <h3 v-if="expertLevel > 0">
-          {{ $t('settings.fun') }}
-        </h3>
+      </ul>
+      <h3 v-if="expertLevel > 0">
+        {{ $t('settings.fun') }}
+      </h3>
+      <ul class="setting-list">
         <li v-if="user">
           <BooleanSetting
             path="mentionLinkShowYous"

@@ -1,32 +1,31 @@
 <template>
-  <div :label="$t('settings.developer')">
+  <div
+    :label="$t('settings.developer')"
+    class="developer-tab"
+  >
     <div class="setting-item">
-      <ul class="setting-list">
-        <li>
-          <p>{{ $t('settings.version.backend_version') }}</p>
-          <ul class="option-list">
-            <li>
-              <a
-                :href="backendRepository"
-                target="_blank"
-              >{{ backendVersion }}</a>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <p>{{ $t('settings.version.frontend_version') }}</p>
-          <ul class="option-list">
-            <li>
-              <a
-                :href="frontendVersionLink"
-                target="_blank"
-              >{{ frontendVersion }}</a>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-    <div class="setting-item">
+      <h3>{{ $t('settings.version.title')}}</h3>
+      <dl class="setting-list">
+        <dt>{{ $t('settings.version.backend_version') }}</dt>
+        <dd>
+          <a
+            :href="backendRepository"
+            target="_blank"
+          >
+            {{ backendVersion }}
+          </a>
+        </dd>
+        <dt>{{ $t('settings.version.frontend_version') }}</dt>
+        <dd>
+          <a
+            :href="frontendVersionLink"
+            target="_blank"
+            >
+            {{ frontendVersion }}
+          </a>
+        </dd>
+      </dl>
+      <h3>{{ $t('settings.debug')}}</h3>
       <ul class="setting-list">
         <li>
           <BooleanSetting path="virtualScrolling">
@@ -70,3 +69,4 @@
   </div>
 </template>
 <script src="./developer_tab.js" />
+<style lang="scss" src="./developer_tab.scss"></style>

@@ -1,7 +1,7 @@
 <template>
   <div class="profile-tab">
     <div class="setting-item profile-edit">
-      <h2>{{ $t('settings.account_profile_edit') }}</h2>
+      <h3>{{ $t('settings.account_profile_edit') }}</h3>
       <UserCard
         :user-id="user.id"
         :editable="true"
@@ -9,7 +9,7 @@
       />
     </div>
     <div class="setting-item">
-      <h2>{{ $t('settings.account_privacy') }}</h2>
+      <h3>{{ $t('settings.account_privacy') }}</h3>
       <ul class="setting-list">
         <li>
           <Checkbox v-model="locked">

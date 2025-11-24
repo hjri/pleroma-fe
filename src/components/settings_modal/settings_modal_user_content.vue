@@ -8,7 +8,6 @@
     :hide-header="navHideHeader"
   >
     <div
-      :full-width="true"
       :label="$t('settings.general')"
       icon="wrench"
       data-tab-name="general"
@@ -16,16 +15,15 @@
       <GeneralTab />
     </div>
     <div
+      v-if="isLoggedIn"
+      :label="$t('settings.profile_tab')"
+      icon="user"
+      data-tab-name="profile"
       :full-width="true"
-      :label="$t('settings.posts')"
-      icon="message"
-      data-tab-name="posts"
-      :delay-render="true"
     >
-      <PostsTab />
+      <ProfileTab />
     </div>
     <div
-      :full-width="true"
       :label="$t('settings.composing')"
       icon="pen-alt"
       data-tab-name="composing"
@@ -34,13 +32,12 @@
       <ComposingTab />
     </div>
     <div
-      :full-width="true"
-      :label="$t('settings.layout')"
-      icon="table-columns"
-      data-tab-name="layout"
+      :label="$t('settings.posts')"
+      icon="message"
+      data-tab-name="posts"
       :delay-render="true"
     >
-      <LayoutTab />
+      <PostsTab />
     </div>
     <div
       :full-width="true"
@@ -52,15 +49,17 @@
       <AppearanceTab />
     </div>
     <div
-      v-if="isLoggedIn"
-      :label="$t('settings.profile_tab')"
-      icon="user"
-      data-tab-name="profile"
+      :full-width="true"
+      :label="$t('settings.layout')"
+      icon="table-columns"
+      data-tab-name="layout"
+      :delay-render="true"
     >
-      <ProfileTab />
+      <LayoutTab />
     </div>
     <div
       v-if="isLoggedIn"
+      :full-width="true"
       :label="$t('settings.notifications')"
       icon="bell"
       data-tab-name="notifications"
@@ -68,23 +67,8 @@
       <NotificationsTab />
     </div>
     <div
-      v-if="isLoggedIn"
-      :label="$t('settings.security_tab')"
-      icon="lock"
-      data-tab-name="security"
-    >
-      <SecurityTab />
-    </div>
-    <div
-      :label="$t('settings.clutter')"
-      :fullHeight="true"
-      icon="broom"
-      data-tab-name="mutesAndBlocks"
-    >
-      <ClutterTab />
-    </div>
-    <div
       :label="$t('settings.filtering')"
+      :full-width="true"
       icon="filter"
       data-tab-name="filtering"
     >
@@ -98,6 +82,22 @@
       data-tab-name="mutesAndBlocks"
     >
       <MutesAndBlocksTab />
+    </div>
+    <div
+      :label="$t('settings.clutter')"
+      :fullHeight="true"
+      icon="broom"
+      data-tab-name="clutter"
+    >
+      <ClutterTab />
+    </div>
+    <div
+      v-if="isLoggedIn"
+      :label="$t('settings.security_tab')"
+      icon="lock"
+      data-tab-name="security"
+    >
+      <SecurityTab />
     </div>
     <div
       v-if="isLoggedIn"
@@ -123,7 +123,7 @@
       data-tab-name="theme"
       :delay-render="true"
     >
-      <ThemeTab />
+      <OldThemeTab />
     </div>
     <div
       v-if="expertLevel > 0"

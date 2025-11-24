@@ -37,19 +37,13 @@ export default {
       required: false,
       type: Boolean,
       default: null
-    },
-    hideHeader: {
-      required: false,
-      type: Boolean,
-      default: null
     }
   },
   data () {
     return {
       active: findFirstUsable(this.slots()),
       resizeHandler: null,
-      navMode: false,
-      navSide: 'content'
+      navSide: 'tabs'
     }
   },
   computed: {
@@ -71,16 +65,6 @@ export default {
       mobileLayout: store => store.layoutType === 'mobile'
     }),
   },
-  created () {
-    this.resizeHandler = throttle(this.onResize, 200)
-    window.addEventListener('resize', this.resizeHandler)
-  },
-  mounted () {
-    this.resizeHandler()
-  },
-  unmounted () {
-    window.removeEventListener('resize', this.resizeHandler)
-  },
   beforeUpdate () {
     const currentSlot = this.slots()[this.active]
     if (!currentSlot.props) {
@@ -92,7 +76,6 @@ export default {
       return (e) => {
         e.preventDefault()
         this.setTab(index)
-        this.onResize()
       }
     },
     setTab (index) {
@@ -105,30 +88,6 @@ export default {
     changeNavSide (side) {
       if (this.navSide !== side) {
         this.navSide = side
-        this.onResize()
-      }
-    },
-    getNavMode () {
-      return this.navMode
-    },
-    onResize () {
-      // All other tabs are hidden and their width is most likely 0
-      const activeTab = this.$refs.root.querySelector('.tab-content-wrapper.-active')
-      const tabContent = activeTab.querySelector('.tab-content')
-      const tabContentWidth = tabContent.clientWidth
-
-      const rootWidth = this.$refs.root.clientWidth
-      const navWidth = this.$refs.nav.clientWidth
-      const contentsWidth = rootWidth - navWidth
-
-      // if contents takes more space than its container
-      if (contentsWidth < tabContentWidth) {
-        this.hideNav()
-      // If we (theoretically) have enough space to fit it in
-      } else if (contentsWidth - navWidth >= tabContentWidth){
-        // First expand the inner layer, then outer
-        // if use same logic as above order will be reversed
-        this.showNav()
       }
     },
     // DO NOT put it to computed, it doesn't work (caching?)
@@ -145,7 +104,7 @@ export default {
         const props = slot.props
         if (!props) return
         const classesTab = ['vertical-tab', 'menu-item']
-        if (this.activeIndex === index) {
+        if (this.activeIndex === index && useInterfaceStore().layoutType !== 'mobile') {
           classesTab.push('-active')
         }
         return (
@@ -183,14 +142,21 @@ export default {
         : ''
 
       const headerClasses = ['tab-content-label']
-      if (this.hideHeader === true) {
-        headerClasses.push('-hidden')
-      }
       const header = (
-        <h1 class={headerClasses}>
-          <button type="button" onClick={() => this.changeNavSide('tabs')}>LOL</button>
+        <h2 class={headerClasses}>
+          <button
+            type="button"
+            onClick={() => this.changeNavSide('tabs')}
+            class="button-unstyled"
+          >
+            <FAIcon
+              size="lg"
+              class="back-button-icon"
+              icon="chevron-left"
+            />
+          </button>
           {props.label}
-        </h1>
+        </h2>
       )
 
       return (
@@ -204,13 +170,14 @@ export default {
     })
 
     const rootClasses = ['vertical-tab-switcher']
-    if (this.navMode) {
-      rootClasses.push('-nav-mode')
-      if (this.navSide === 'content') {
-        rootClasses.push('-nav-content')
-      } else {
-        rootClasses.push('-nav-tabs')
-      }
+    if (useInterfaceStore().layoutType === 'mobile') {
+      rootClasses.push('-mobile')
+    }
+
+    if (this.navSide === 'tabs') {
+      rootClasses.push('-nav-tabs')
+    } else {
+      rootClasses.push('-nav-contents')
     }
 
     return (

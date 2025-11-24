@@ -82,9 +82,6 @@ const SettingsModalContent = {
     },
     expertLevel () {
       return this.$store.state.config.expertLevel
-    },
-    isMobileLayout () {
-      return useInterfaceStore().layoutType === 'mobile'
     }
   },
   data () {
@@ -108,21 +105,6 @@ const SettingsModalContent = {
       // Clear the state of target tab, so that next time settings is opened
       // it doesn't force it.
       useInterfaceStore().clearSettingsModalTargetTab()
-    },
-    nestedTooBig () {
-      if (this.navCollapsed) {
-        this.navCollapsed = false
-        this.$refs.tabSwitcher.showNav()
-      }
-    },
-    nestedTooSmall () {
-      if (!this.navCollapsed) {
-        this.navCollapsed = true
-        this.$refs.tabSwitcher.hideNav()
-      }
-    },
-    nestedNavSide (side) {
-      this.navHideHeader = side === 'content'
     }
   },
   mounted () {

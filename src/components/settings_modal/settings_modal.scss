@@ -1,14 +1,26 @@
 .settings-modal {
   overflow: hidden;
 
-  h3 {
-    font-size: 1.4rem;
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 500;
     margin-top: 1em;
     margin-bottom: 1em;
   }
 
-  h4 {
+  h3 {
     font-size: 1.2rem;
+    font-weight: 500;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.25em;
+    box-sizing: border-box;
+    padding-left: 0.5em;
+  }
+
+  h4 {
+    font-size: 1.1rem;
     margin-top: 1em;
     margin-bottom: 0.5em;
   }
@@ -16,19 +28,21 @@
   h5 {
     font-size: 1rem;
     margin-bottom: 0.5em;
+    margin-top: 0;
   }
 
   .setting-list,
   .option-list {
     list-style-type: none;
     padding-left: 2em;
+    margin: 0;
 
     .btn:not(.dropdown-button) {
       padding: 0 2em;
     }
 
     li {
-      margin-bottom: 0.5em;
+      margin: 1em 0;
     }
 
     .suboptions {
@@ -55,7 +69,7 @@
     transition: transform;
     transition-timing-function: ease-in-out;
     transition-duration: 300ms;
-    width: 1000px;
+    width: 70em;
     max-width: 90vw;
     height: 90vh;
 
@@ -90,6 +104,12 @@
   }
 
   &.-mobile {
+    .tabs {
+      .menu-item {
+        font-size: 1.2em
+      }
+    }
+
     .setting-list,
     .option-list {
       padding-left: 0.25em;
