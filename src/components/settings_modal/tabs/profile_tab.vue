@@ -1,7 +1,6 @@
 <template>
   <div class="profile-tab">
     <div class="setting-item profile-edit">
-      <h3>{{ $t('settings.account_profile_edit') }}</h3>
       <UserCard
         :user-id="user.id"
         :editable="true"
