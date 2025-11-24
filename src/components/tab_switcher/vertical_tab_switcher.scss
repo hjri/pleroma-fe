@@ -68,16 +68,6 @@
       &.-hidden {
         display: none;
       }
-
-      &.-full-height:not(.-hidden) {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-
-        > *:not(.tab-content-label) {
-          flex: 1;
-        }
-      }
     }
   }
 

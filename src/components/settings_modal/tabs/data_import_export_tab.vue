@@ -4,57 +4,57 @@
     :label="$t('settings.data_import_export_tab')"
   >
     <div class="setting-item">
-      <h3>{{ $t('settings.follow_import') }}</h3>
-      <p>{{ $t('settings.import_followers_from_a_csv_file') }}</p>
-      <Importer
-        :submit-handler="importFollows"
-        :success-message="$t('settings.follows_imported')"
-        :error-message="$t('settings.follow_import_error')"
-      />
-    </div>
-    <div class="setting-item">
-      <h3>{{ $t('settings.follow_export') }}</h3>
-      <Exporter
-        :get-content="getFollowsContent"
-        filename="friends.csv"
-        :export-button-label="$t('settings.follow_export_button')"
-      />
-    </div>
-    <div class="setting-item">
-      <h3>{{ $t('settings.block_import') }}</h3>
-      <p>{{ $t('settings.import_blocks_from_a_csv_file') }}</p>
-      <Importer
-        :submit-handler="importBlocks"
-        :success-message="$t('settings.blocks_imported')"
-        :error-message="$t('settings.block_import_error')"
-      />
-    </div>
-    <div class="setting-item">
-      <h3>{{ $t('settings.block_export') }}</h3>
-      <Exporter
-        :get-content="getBlocksContent"
-        filename="blocks.csv"
-        :export-button-label="$t('settings.block_export_button')"
-      />
-    </div>
-    <div class="setting-item">
-      <h3>{{ $t('settings.mute_import') }}</h3>
-      <p>{{ $t('settings.import_mutes_from_a_csv_file') }}</p>
-      <Importer
-        :submit-handler="importMutes"
-        :success-message="$t('settings.mutes_imported')"
-        :error-message="$t('settings.mute_import_error')"
-      />
-    </div>
-    <div class="setting-item">
-      <h3>{{ $t('settings.mute_export') }}</h3>
-      <Exporter
-        :get-content="getMutesContent"
-        filename="mutes.csv"
-        :export-button-label="$t('settings.mute_export_button')"
-      />
-    </div>
-    <div class="setting-item">
+      <h3>{{ $t('settings.import_export.title') }}</h3>
+      <ul class="setting-list">
+        <li>
+          <h4>{{ $t('settings.import_export.follows') }}</h4>
+          <p>{{ $t('settings.import_followers_from_a_csv_file') }}</p>
+          <div class="importer-exporter">
+            <Importer
+              :submit-handler="importFollows"
+              :success-message="$t('settings.follows_imported')"
+              :error-message="$t('settings.follow_import_error')"
+            />
+            <Exporter
+              :get-content="getFollowsContent"
+              filename="friends.csv"
+              :export-button-label="$t('settings.follow_export_button')"
+            />
+          </div>
+        </li>
+        <li>
+          <h4>{{ $t('settings.import_export.mutes') }}</h4>
+          <p>{{ $t('settings.import_mutes_from_a_csv_file') }}</p>
+          <div class="importer-exporter">
+            <Importer
+              :submit-handler="importMutes"
+              :success-message="$t('settings.mutes_imported')"
+              :error-message="$t('settings.mute_import_error')"
+            />
+            <Exporter
+              :get-content="getMutesContent"
+              filename="friends.csv"
+              :export-button-label="$t('settings.mute_export_button')"
+            />
+          </div>
+        </li>
+        <li>
+          <h4>{{ $t('settings.import_export.blocks') }}</h4>
+          <p>{{ $t('settings.import_blocks_from_a_csv_file') }}</p>
+          <div class="importer-exporter">
+            <Importer
+              :submit-handler="importBlocks"
+              :success-message="$t('settings.blocks_imported')"
+              :error-message="$t('settings.block_import_error')"
+            />
+            <Exporter
+              :get-content="getBlocksContent"
+              filename="friends.csv"
+              :export-button-label="$t('settings.block_export_button')"
+            />
+          </div>
+        </li>
+      </ul>
       <h3>{{ $t('settings.account_backup') }}</h3>
       <p>{{ $t('settings.account_backup_description') }}</p>
       <table>

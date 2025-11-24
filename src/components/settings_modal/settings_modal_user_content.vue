@@ -77,15 +77,14 @@
     <div
       v-if="isLoggedIn"
       :label="$t('settings.mutes_and_blocks')"
-      :fullHeight="true"
       icon="eye-slash"
       data-tab-name="mutesAndBlocks"
+      :full-width="true"
     >
       <MutesAndBlocksTab />
     </div>
     <div
       :label="$t('settings.clutter')"
-      :fullHeight="true"
       icon="broom"
       data-tab-name="clutter"
     >
@@ -96,6 +95,7 @@
       :label="$t('settings.security_tab')"
       icon="lock"
       data-tab-name="security"
+      :full-width="true"
     >
       <SecurityTab />
     </div>
@@ -113,6 +113,7 @@
       icon="palette"
       data-tab-name="style"
       :delay-render="true"
+      :full-width="true"
     >
       <StyleTab />
     </div>
@@ -122,6 +123,7 @@
       icon="paint-brush"
       data-tab-name="theme"
       :delay-render="true"
+      :full-width="true"
     >
       <OldThemeTab />
     </div>

@@ -132,6 +132,7 @@
   },
   "importer": {
     "submit": "Submit",
+    "import": "Import",
     "success": "Imported successfully.",
     "error": "An error occured while importing this file."
   },
@@ -603,6 +604,12 @@
     "follow_export_button": "Export your follows to a csv file",
     "follow_import": "Follow import",
     "follow_import_error": "Error importing followers",
+    "import_export": {
+      "title": "Import / Export",
+      "follows": "List of users you follow",
+      "blocks": "List of users you block",
+      "mutes": "List of users you mute"
+    },
     "follows_imported": "Follows imported! Processing them will take a while.",
     "accent": "Accent",
     "foreground": "Foreground",
