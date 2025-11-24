@@ -1079,6 +1079,13 @@
           "post": "Post text",
           "monospace": "Monospaced text"
         },
+        "components_inline": {
+          "interface": "interface",
+          "input": "input fields",
+          "post": "post text",
+          "monospace": "monospaced text"
+        },
+        "override": "Override {0} font",
         "family": "Font name",
         "size": "Size (in px)",
         "weight": "Weight (boldness)",
