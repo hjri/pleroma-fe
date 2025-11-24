@@ -1,15 +1,8 @@
-import { cloneDeep } from 'lodash'
 import { mapState, mapActions } from 'pinia'
 import { mapState as mapVuexState } from 'vuex'
 import { v4 as uuidv4 } from 'uuid';
 
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
-import { useInterfaceStore } from 'src/stores/interface'
-
-import {
-  newImporter,
-  newExporter
-} from 'src/services/export_import/export_import.js'
 
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
@@ -21,66 +14,8 @@ import Select from 'src/components/select/select.vue'
 
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
-const SUPPORTED_TYPES = new Set(['word', 'regexp', 'user', 'user_regexp'])
 
-const FilteringTab = {
-  data () {
-    return {
-      replyVisibilityOptions: ['all', 'following', 'self'].map(mode => ({
-        key: mode,
-        value: mode,
-        label: this.$t(`settings.reply_visibility_${mode}`)
-      })),
-      muteBlockLv1Options: ['ask', 'forever', 'temporarily'].map(mode => ({
-        key: mode,
-        value: mode,
-        label: this.$t(`user_card.mute_block_${mode}`)
-      })),
-      muteFiltersDraftObject: cloneDeep(useServerSideStorageStore().prefsStorage.simple.muteFilters),
-      muteFiltersDraftDirty: Object.fromEntries(
-        Object.entries(
-          useServerSideStorageStore().prefsStorage.simple.muteFilters
-        ).map(([k]) => [k, false])
-      ),
-      exportedFilter: null,
-      filterImporter: newImporter({
-        validator (parsed) {
-          if (Array.isArray(parsed)) return false
-          if (!SUPPORTED_TYPES.has(parsed.type)) return false
-          return true
-        },
-        onImport: (data) => {
-          const {
-            enabled = true,
-            expires = null,
-            hide = false,
-            name = '',
-            value = ''
-          } = data
-
-          this.createFilter({
-            enabled,
-            expires,
-            hide,
-            name,
-            value
-          })
-        },
-        onImportFailure (result) {
-          console.error('Failure importing filter:', result)
-          useInterfaceStore()
-            .pushGlobalNotice({
-              messageKey: 'settings.filter.import_failure',
-              level: 'error'
-            })
-        }
-      }),
-      filterExporter: newExporter({
-        filename: 'pleromafe_mute-filter',
-        getExportedObject: () => this.exportedFilter
-      })
-    }
-  },
+const ClutterTab = {
   components: {
     BooleanSetting,
     ChoiceSetting,
@@ -256,4 +191,4 @@ const FilteringTab = {
   }
 }
 
-export default FilteringTab
+export default ClutterTab

@@ -7,15 +7,20 @@ import FilteringTab from './tabs/filtering_tab.vue'
 import SecurityTab from './tabs/security_tab/security_tab.vue'
 import ProfileTab from './tabs/profile_tab.vue'
 import GeneralTab from './tabs/general_tab.vue'
+import PostsTab from './tabs/posts_tab.vue'
+import ComposingTab from './tabs/composing_tab.vue'
+import ClutterTab from './tabs/clutter_tab.vue'
+import LayoutTab from './tabs/layout_tab.vue'
 import AppearanceTab from './tabs/appearance_tab.vue'
-import VersionTab from './tabs/version_tab.vue'
-import ThemeTab from './tabs/theme_tab/theme_tab.vue'
+import DeveloperTab from './tabs/developer_tab.vue'
+import OldThemeTab from './tabs/old_theme_tab/old_theme_tab.vue'
 import StyleTab from './tabs/style_tab/style_tab.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faWrench,
   faUser,
+  faMessage,
   faFilter,
   faPaintBrush,
   faPalette,
@@ -23,13 +28,16 @@ import {
   faDownload,
   faEyeSlash,
   faInfo,
-  faWindowRestore
+  faWindowRestore,
+  faCode,
+  faBroom
 } from '@fortawesome/free-solid-svg-icons'
 import { useInterfaceStore } from 'src/stores/interface'
 
 library.add(
   faWrench,
   faUser,
+  faMessage,
   faFilter,
   faPaintBrush,
   faPalette,
@@ -37,7 +45,9 @@ library.add(
   faDownload,
   faEyeSlash,
   faInfo,
-  faWindowRestore
+  faWindowRestore,
+  faBroom,
+  faCode
 )
 
 const SettingsModalContent = {
@@ -51,10 +61,14 @@ const SettingsModalContent = {
     SecurityTab,
     ProfileTab,
     GeneralTab,
+    PostsTab,
+    ComposingTab,
+    ClutterTab,
+    LayoutTab,
     AppearanceTab,
     StyleTab,
-    VersionTab,
-    ThemeTab
+    DeveloperTab,
+    OldThemeTab
   },
   computed: {
     isLoggedIn () {

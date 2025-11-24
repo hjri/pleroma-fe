@@ -44,7 +44,6 @@ export default {
       default: null
     }
   },
-  emits: ['tooBig', 'tooSmall', 'sideSwitch'],
   data () {
     return {
       active: findFirstUsable(this.slots()),
@@ -103,24 +102,9 @@ export default {
       this.active = index
       this.changeNavSide('content')
     },
-    showNav () {
-      if (this.navMode) {
-        this.navMode = false
-        this.changeNavSide(null)
-        this.onResize()
-      }
-    },
-    hideNav () {
-      if (!this.navMode) {
-        this.navMode = true
-        this.changeNavSide('content')
-        this.onResize()
-      }
-    },
     changeNavSide (side) {
       if (this.navSide !== side) {
         this.navSide = side
-        this.$emit('sideSwitch', side)
         this.onResize()
       }
     },
@@ -139,21 +123,12 @@ export default {
 
       // if contents takes more space than its container
       if (contentsWidth < tabContentWidth) {
-        if (this.parentCollapsed) {
-          this.hideNav()
-        } else {
-          this.$emit('tooSmall')
-        }
-      // FIXME wrong again??
+        this.hideNav()
       // If we (theoretically) have enough space to fit it in
       } else if (contentsWidth - navWidth >= tabContentWidth){
         // First expand the inner layer, then outer
         // if use same logic as above order will be reversed
-        if (!this.navMode) {
-          this.$emit('tooBig')
-        } else {
-          this.showNav()
-        }
+        this.showNav()
       }
     },
     // DO NOT put it to computed, it doesn't work (caching?)

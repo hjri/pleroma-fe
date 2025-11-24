@@ -13,14 +13,34 @@
       icon="wrench"
       data-tab-name="general"
     >
-      <GeneralTab
-        class="inner-tab -middle"
-        ref="generalTab"
-        :parent-collapsed="navCollapsed"
-        @side-switch="(side) => nestedNavSide(side)"
-        @too-small="() => nestedTooSmall()"
-        @too-big="() => nestedTooBig()"
-      />
+      <GeneralTab />
+    </div>
+    <div
+      :full-width="true"
+      :label="$t('settings.posts')"
+      icon="message"
+      data-tab-name="posts"
+      :delay-render="true"
+    >
+      <PostsTab />
+    </div>
+    <div
+      :full-width="true"
+      :label="$t('settings.composing')"
+      icon="pen-alt"
+      data-tab-name="composing"
+      :delay-render="true"
+    >
+      <ComposingTab />
+    </div>
+    <div
+      :full-width="true"
+      :label="$t('settings.layout')"
+      icon="table-columns"
+      data-tab-name="layout"
+      :delay-render="true"
+    >
+      <LayoutTab />
     </div>
     <div
       :full-width="true"
@@ -29,30 +49,7 @@
       data-tab-name="appearance"
       :delay-render="true"
     >
-      <AppearanceTab
-        class="inner-tab -middle"
-        :parent-collapsed="navCollapsed"
-        @too-small="() => nestedTooSmall()"
-        @too-big="() => nestedTooBig()"
-      />
-    </div>
-    <div
-      v-if="expertLevel > 0"
-      :label="$t('settings.style.themes3.editor.title')"
-      icon="palette"
-      data-tab-name="style"
-      :delay-render="true"
-    >
-      <StyleTab />
-    </div>
-    <div
-      v-if="expertLevel > 0"
-      :label="$t('settings.theme_old')"
-      icon="paint-brush"
-      data-tab-name="theme"
-      :delay-render="true"
-    >
-      <ThemeTab />
+      <AppearanceTab />
     </div>
     <div
       v-if="isLoggedIn"
@@ -79,6 +76,14 @@
       <SecurityTab />
     </div>
     <div
+      :label="$t('settings.clutter')"
+      :fullHeight="true"
+      icon="broom"
+      data-tab-name="mutesAndBlocks"
+    >
+      <ClutterTab />
+    </div>
+    <div
       :label="$t('settings.filtering')"
       icon="filter"
       data-tab-name="filtering"
@@ -103,11 +108,30 @@
       <DataImportExportTab />
     </div>
     <div
-      :label="$t('settings.version.title')"
-      icon="info"
-      data-tab-name="version"
+      v-if="expertLevel > 0"
+      :label="$t('settings.style.themes3.editor.title')"
+      icon="palette"
+      data-tab-name="style"
+      :delay-render="true"
     >
-      <VersionTab />
+      <StyleTab />
+    </div>
+    <div
+      v-if="expertLevel > 0"
+      :label="$t('settings.theme_old')"
+      icon="paint-brush"
+      data-tab-name="theme"
+      :delay-render="true"
+    >
+      <ThemeTab />
+    </div>
+    <div
+      v-if="expertLevel > 0"
+      :label="$t('settings.developer')"
+      icon="code"
+      data-tab-name="developer"
+    >
+      <DeveloperTab />
     </div>
   </vertical-tab-switcher>
 </template>
