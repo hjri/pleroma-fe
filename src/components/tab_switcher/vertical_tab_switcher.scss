@@ -30,6 +30,7 @@
 
     .tab-content {
       align-self: center;
+      height: 100%;
 
       &:not(.-full-width) {
         max-width: 40em;
@@ -52,10 +53,16 @@
       }
     }
 
-    .tab-content-wrapper {
+    .tab-slot-wrapper {
+      flex: 1 1 auto;
+      height: 100%;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
-      overflow-y: auto;
+    }
+
+    .tab-content-wrapper {
+      flex: 1 1 auto;
       height: 100%;
 
       &.-hidden {
@@ -85,6 +92,7 @@
       > .contents {
         display: block;
         flex-grow: 1;
+        flex-shrink: 1;
       }
 
       > .tabs {

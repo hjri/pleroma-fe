@@ -161,9 +161,13 @@ export default {
 
       return (
         <div class={classes} >
-          {header}
-          <div class={ ['tab-content', props['full-width'] ? '-full-width' : null].join(' ') } >
-            {renderSlot}
+          <div class="tab-mobile-header">
+            {header}
+          </div>
+          <div class="tab-slot-wrapper">
+            <div class={ ['tab-content', props['full-width'] ? '-full-width' : null].join(' ') } >
+              {renderSlot}
+            </div>
           </div>
         </div>
       )
