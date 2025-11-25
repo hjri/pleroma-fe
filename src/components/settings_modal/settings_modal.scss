@@ -118,11 +118,15 @@
     .option-list {
       padding-left: 0.25em;
 
+
+      /* stylelint-disable no-descending-specificity */
+      // it makes no sense
       > li {
         margin: 1em 0;
         line-height: 1.5em;
         vertical-align: middle;
       }
+      /* stylelint-enable no-descending-specificity */
 
       &.two-column {
         grid-template-columns: 1fr;
