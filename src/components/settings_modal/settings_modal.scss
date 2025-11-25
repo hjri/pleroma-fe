@@ -110,7 +110,7 @@
       }
     }
 
-    .setting-list,
+    .setting-list:not(.suboptions),
     .option-list {
       padding-left: 0.25em;
 
