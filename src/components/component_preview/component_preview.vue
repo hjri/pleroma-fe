@@ -104,6 +104,7 @@
         v-model="colorOverride"
         class="input-color-input"
         fallback="#606060"
+        :compact="true"
         :label="$t('settings.style.shadows.color_override')"
       />
     </div>

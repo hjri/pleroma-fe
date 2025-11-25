@@ -2,11 +2,10 @@
   display: inline-flex;
   flex-wrap: wrap;
   max-width: 10em;
-  grid-template-columns: 1fr auto;
-  grid-template-rows: auto auto;
-  grid-template-areas:
-    "label checkbox"
-    "input input";
+
+  &.-compact {
+    max-width: none;
+  }
 
   .label {
     flex: 1 1 auto;

@@ -1,7 +1,7 @@
 <template>
   <div
     class="color-input style-control"
-    :class="{ disabled: !present || disabled }"
+    :class="{ disabled: !present || disabled, '-compact': compact }"
   >
     <label
       :for="name"
@@ -127,6 +127,10 @@ export default {
       required: false,
       type: Boolean,
       default: false
+    },
+    compact: {
+      required: false,
+      type: Boolean
     }
   },
   emits: ['update:modelValue'],
