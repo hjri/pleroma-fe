@@ -13,7 +13,8 @@
               :user-default="$store.state.profileConfig.defaultScope"
               :initial-scope="$store.state.profileConfig.defaultScope"
               :on-scope-change="changeDefaultScope"
-              :unstyled="false"uns
+              :unstyled="false"
+              uns
             />
             <ProfileSettingIndicator :is-profile="true" />
           </label>
@@ -82,7 +83,9 @@
           </ChoiceSetting>
         </li>
       </ul>
-      <h3 v-if="expertLevel > 0">{{ $t('settings.attachments') }}</h3>
+      <h3 v-if="expertLevel > 0">
+        {{ $t('settings.attachments') }}
+      </h3>
       <ul class="setting-list">
         <li>
           <BooleanSetting

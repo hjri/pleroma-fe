@@ -4,7 +4,7 @@
     class="developer-tab"
   >
     <div class="setting-item">
-      <h3>{{ $t('settings.version.title')}}</h3>
+      <h3>{{ $t('settings.version.title') }}</h3>
       <dl class="setting-list">
         <dt>{{ $t('settings.version.backend_version') }}</dt>
         <dd>
@@ -20,12 +20,12 @@
           <a
             :href="frontendVersionLink"
             target="_blank"
-            >
+          >
             {{ frontendVersion }}
           </a>
         </dd>
       </dl>
-      <h3>{{ $t('settings.debug')}}</h3>
+      <h3>{{ $t('settings.debug') }}</h3>
       <ul class="setting-list">
         <li>
           <BooleanSetting path="virtualScrolling">

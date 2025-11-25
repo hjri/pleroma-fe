@@ -7,12 +7,10 @@ import FloatSetting from '../helpers/float_setting.vue'
 import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
 import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
 import FontControl from 'src/components/font_control/font_control.vue'
-import { defaultHorizontalUnits } from '../helpers/unit_setting.js'
 
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
 import localeService from 'src/services/locale/locale.service.js'
-import { clearCache, cacheKey, emojiCacheKey } from 'src/services/sw/sw.js'
 
 const GeneralTab = {
   props: {

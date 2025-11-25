@@ -136,8 +136,13 @@
           </BooleanSetting>
         </li>
       </ul>
-      <h3 v-if="expertLevel > 0">{{ $t('settings.confirmations') }}</h3>
-      <ul v-if="expertLevel > 0" class="setting-list">
+      <h3 v-if="expertLevel > 0">
+        {{ $t('settings.confirmations') }}
+      </h3>
+      <ul
+        v-if="expertLevel > 0"
+        class="setting-list"
+      >
         <li class="select-multiple">
           <span class="label">{{ $t('settings.confirm_dialogs') }}</span>
           <ul class="option-list">

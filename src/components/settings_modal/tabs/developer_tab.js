@@ -23,6 +23,23 @@ const VersionTab = {
       return pleromaFeCommitUrl + this.frontendVersion
     },
     ...SharedComputedObject(),
+  },
+  methods: {
+    clearAssetCache () {
+      this.clearCache(cacheKey)
+    },
+    clearEmojiCache () {
+      this.clearCache(emojiCacheKey)
+    },
+    clearCache (key) {
+      clearCache(key)
+        .then(() => {
+          this.$store.dispatch('settingsSaved', { success: true })
+        })
+        .catch(error => {
+          this.$store.dispatch('settingsSaved', { error })
+        })
+    }
   }
 }
 
