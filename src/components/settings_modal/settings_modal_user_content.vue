@@ -96,7 +96,6 @@
       :label="$t('settings.security_tab')"
       icon="lock"
       data-tab-name="security"
-      :full-width="true"
     >
       <SecurityTab />
     </div>
