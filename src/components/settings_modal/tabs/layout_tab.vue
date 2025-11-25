@@ -33,10 +33,7 @@
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting
-            path="userCardLeftJustify"
-            expert="1"
-          >
+          <BooleanSetting path="userCardLeftJustify">
             {{ $t('settings.user_card_left_justify') }}
           </BooleanSetting>
         </li>

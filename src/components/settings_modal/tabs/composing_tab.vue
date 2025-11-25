@@ -59,6 +59,7 @@
             id="unsavedPostAction"
             path="unsavedPostAction"
             :options="unsavedPostActionOptions"
+            expert="1"
           >
             {{ $t('settings.unsaved_post_action') }}
           </ChoiceSetting>
