@@ -380,8 +380,8 @@
         key="variables"
         :label="$t('settings.style.themes3.editor.variables_tab')"
         :model-value="virtualDirectives"
-        @update:model-value="updateVirtualDirectives"
         :full-width="true"
+        @update:model-value="updateVirtualDirectives"
       />
     </tab-switcher>
   </div>

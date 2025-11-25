@@ -6,8 +6,9 @@
     margin-bottom: 0.5em;
 
     .label {
+      display: inline-block;
       margin-right: 0.5em;
-      flex: 1 1 0;
+      flex: 1 1 auto;
       line-height: 2;
       min-height: 2em;
     }

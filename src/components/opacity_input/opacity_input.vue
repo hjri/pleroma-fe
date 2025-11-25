@@ -8,7 +8,7 @@
       class="label"
       :class="{ faint: !present || disabled }"
     >
-      {{ label }}
+      {{ label || $t('settings.style.themes3.editor.opacity') }}
     </label>
     <Checkbox
       v-if="typeof fallback !== 'undefined'"
