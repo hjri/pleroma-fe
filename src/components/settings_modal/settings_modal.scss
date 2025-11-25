@@ -50,9 +50,11 @@
     }
 
     &.two-column {
-      column-count: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
 
       > li {
+        margin: 0;
         break-inside: avoid;
       }
     }
@@ -123,7 +125,7 @@
       }
 
       &.two-column {
-        column-count: 1;
+        grid-template-columns: 1fr;
       }
     }
   }
