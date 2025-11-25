@@ -16,44 +16,44 @@
           >
             {{ $t('settings.conversation_display') }}
           </ChoiceSetting>
+          <ul
+            v-if="mergedConfig.conversationDisplay !== 'linear'"
+            class="setting-list suboptions"
+          >
+            <li>
+              <BooleanSetting path="conversationTreeAdvanced">
+                {{ $t('settings.tree_advanced') }}
+              </BooleanSetting>
+            </li>
+            <li>
+              <BooleanSetting
+                path="conversationTreeFadeAncestors"
+                :expert="1"
+              >
+                {{ $t('settings.tree_fade_ancestors') }}
+              </BooleanSetting>
+            </li>
+            <li>
+              <IntegerSetting
+                path="maxDepthInThread"
+                :min="3"
+                :expert="1"
+              >
+                {{ $t('settings.max_depth_in_thread') }}
+              </IntegerSetting>
+            </li>
+            <li>
+              <ChoiceSetting
+                id="conversationOtherRepliesButton"
+                path="conversationOtherRepliesButton"
+                :options="conversationOtherRepliesButtonOptions"
+                :expert="1"
+              >
+                {{ $t('settings.conversation_other_replies_button') }}
+              </ChoiceSetting>
+            </li>
+          </ul>
         </li>
-        <ul
-          v-if="mergedConfig.conversationDisplay !== 'linear'"
-          class="setting-list suboptions"
-        >
-          <li>
-            <BooleanSetting path="conversationTreeAdvanced">
-              {{ $t('settings.tree_advanced') }}
-            </BooleanSetting>
-          </li>
-          <li>
-            <BooleanSetting
-              path="conversationTreeFadeAncestors"
-              :expert="1"
-            >
-              {{ $t('settings.tree_fade_ancestors') }}
-            </BooleanSetting>
-          </li>
-          <li>
-            <IntegerSetting
-              path="maxDepthInThread"
-              :min="3"
-              :expert="1"
-            >
-              {{ $t('settings.max_depth_in_thread') }}
-            </IntegerSetting>
-          </li>
-          <li>
-            <ChoiceSetting
-              id="conversationOtherRepliesButton"
-              path="conversationOtherRepliesButton"
-              :options="conversationOtherRepliesButtonOptions"
-              :expert="1"
-            >
-              {{ $t('settings.conversation_other_replies_button') }}
-            </ChoiceSetting>
-          </li>
-        </ul>
         <li>
           <FontControl
             :model-value="mergedConfig.theme3hacks.fonts.post"
@@ -103,6 +103,16 @@
           >
             {{ $t('settings.mention_link_display') }}
           </ChoiceSetting>
+          <ul class="setting-list suboptions">
+            <li>
+              <BooleanSetting
+                v-if="mergedConfig.mentionLinkDisplay !== 'short'"
+                path="mentionLinkFadeDomain"
+              >
+                {{ $t('settings.mention_link_fade_domain') }}
+              </BooleanSetting>
+            </li>
+          </ul>
         </li>
         <li>
           <BooleanSetting
@@ -115,14 +125,6 @@
         <li>
           <BooleanSetting path="mentionLinkShowAvatar">
             {{ $t('settings.mention_link_show_avatar') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting
-            v-if="mergedConfig.mentionLinkDisplay !== 'short'"
-            path="mentionLinkFadeDomain"
-          >
-            {{ $t('settings.mention_link_fade_domain') }}
           </BooleanSetting>
         </li>
         <li v-if="user">
@@ -142,22 +144,22 @@
           >
             {{ $t('settings.no_rich_text_description') }}
           </BooleanSetting>
+          <ul
+            v-if="mergedConfig.useAbsoluteTimeFormat"
+            class="setting-list suboptions"
+          >
+            <li>
+              <UnitSetting
+                path="absoluteTimeFormatMinAge"
+                unit-set="time"
+                :units="['s', 'm', 'h', 'd']"
+                :min="0"
+              >
+                {{ $t('settings.absolute_time_format_min_age') }}
+              </UnitSetting>
+            </li>
+          </ul>
         </li>
-        <ul
-          v-if="mergedConfig.useAbsoluteTimeFormat"
-          class="setting-list suboptions"
-        >
-          <li>
-            <UnitSetting
-              path="absoluteTimeFormatMinAge"
-              unit-set="time"
-              :units="['s', 'm', 'h', 'd']"
-              :min="0"
-            >
-              {{ $t('settings.absolute_time_format_min_age') }}
-            </UnitSetting>
-          </li>
-        </ul>
       </ul>
       <h3>{{ $t('settings.attachments') }}</h3>
       <ul class="setting-list">
@@ -170,27 +172,27 @@
           <BooleanSetting path="hideNsfw">
             {{ $t('settings.nsfw_clickthrough') }}
           </BooleanSetting>
+          <ul class="setting-list suboptions">
+            <li>
+              <BooleanSetting
+                path="preloadImage"
+                expert="1"
+                parent-path="hideNsfw"
+              >
+                {{ $t('settings.preload_images') }}
+              </BooleanSetting>
+            </li>
+            <li>
+              <BooleanSetting
+                path="useOneClickNsfw"
+                expert="1"
+                parent-path="hideNsfw"
+              >
+                {{ $t('settings.use_one_click_nsfw') }}
+              </BooleanSetting>
+            </li>
+          </ul>
         </li>
-        <ul class="setting-list suboptions">
-          <li>
-            <BooleanSetting
-              path="preloadImage"
-              expert="1"
-              parent-path="hideNsfw"
-            >
-              {{ $t('settings.preload_images') }}
-            </BooleanSetting>
-          </li>
-          <li>
-            <BooleanSetting
-              path="useOneClickNsfw"
-              expert="1"
-              parent-path="hideNsfw"
-            >
-              {{ $t('settings.use_one_click_nsfw') }}
-            </BooleanSetting>
-          </li>
-        </ul>
         <li>
           <BooleanSetting
             path="loopVideo"

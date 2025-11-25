@@ -201,8 +201,6 @@
           <BooleanSetting path="showExtraNotifications">
             {{ $t('settings.notification_show_extra') }}
           </BooleanSetting>
-        </li>
-        <li>
           <ul class="setting-list suboptions">
             <li>
               <BooleanSetting

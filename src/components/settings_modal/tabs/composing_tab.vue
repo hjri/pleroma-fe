@@ -94,18 +94,18 @@
           >
             {{ $t('settings.image_compression') }}
           </BooleanSetting>
+          <ul class="setting-list suboptions">
+            <li>
+              <BooleanSetting
+                path="alwaysUseJpeg"
+                expert="1"
+                parent-path="imageCompression"
+              >
+                {{ $t('settings.always_use_jpeg') }}
+              </BooleanSetting>
+            </li>
+          </ul>
         </li>
-        <ul class="setting-list suboptions">
-          <li>
-            <BooleanSetting
-              path="alwaysUseJpeg"
-              expert="1"
-              parent-path="imageCompression"
-            >
-              {{ $t('settings.always_use_jpeg') }}
-            </BooleanSetting>
-          </li>
-        </ul>
       </ul>
     </div>
   </div>
