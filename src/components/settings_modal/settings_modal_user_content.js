@@ -1,4 +1,4 @@
-import VerticalTabSwitcher from 'src/components/tab_switcher/vertical_tab_switcher.jsx'
+import VerticalTabSwitcher from './helpers/vertical_tab_switcher.jsx'
 
 import DataImportExportTab from './tabs/data_import_export_tab.vue'
 import MutesAndBlocksTab from './tabs/mutes_and_blocks_tab.vue'

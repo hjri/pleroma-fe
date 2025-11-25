@@ -1,5 +1,3 @@
-import VerticalTabSwitcher from 'src/components/tab_switcher/vertical_tab_switcher.jsx'
-
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import IntegerSetting from '../helpers/integer_setting.vue'
@@ -88,8 +86,7 @@ const AppearanceTab = {
     UnitSetting,
     ProfileSettingIndicator,
     Preview,
-    PaletteEditor,
-    VerticalTabSwitcher
+    PaletteEditor
   },
   mounted () {
     useInterfaceStore().getThemeData()
