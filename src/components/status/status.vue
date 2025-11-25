@@ -139,32 +139,34 @@
             class="status-heading"
           >
             <div class="heading-name-row">
-              <div class="heading-left">
+              <div
+                v-if="status.user"
+                class="heading-left"
+              >
                 <h4
+                  v-if="status.user.name_html"
                   class="status-username"
-                  :title="status.user?.name ?? $t('status.unknown_user_info')"
+                  :title="status.user.name"
                 >
-                  <user-link
-                    v-if="status.user?.name"
-                    class="account-name"
-                    :title="status.user?.screen_name_ui"
-                    :user="status?.user"
-                    :at="false"
-                  >
-                    <RichContent
-                      :html="status.user.name"
-                      :emoji="status.user.emoji"
-                      :is-local="status.user.is_local"
-                    />
-                    <span>{{ status.user.name }}</span>
-                  </user-link>
-                  <span
-                    v-else
-                    class="account-name unknown"
-                  >
-                    {{ $t('status.unknown_user') }}
-                  </span>
+                  <RichContent
+                    :html="status.user.name"
+                    :emoji="status.user.emoji"
+                    :is-local="status.user.is_local"
+                  />
                 </h4>
+                <h4
+                  v-else
+                  class="status-username"
+                  :title="status.user.name"
+                >
+                  {{ status.user.name }}
+                </h4>
+                <user-link
+                  class="account-name"
+                  :title="status.user.screen_name_ui"
+                  :user="status.user"
+                  :at="false"
+                />
                 <img
                   v-if="!!(status.user && status.user.favicon)"
                   class="status-favicon"
