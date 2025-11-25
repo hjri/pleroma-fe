@@ -17,24 +17,6 @@
             {{ $t('settings.conversation_display') }}
           </ChoiceSetting>
         </li>
-        <li>
-          <FontControl
-            :model-value="mergedConfig.theme3hacks.fonts.post"
-            name="post"
-            :fallback="{ family: 'inherit' }"
-            :label="$t('settings.style.fonts.components.post')"
-            @update:model-value="v => updateFont('post', v)"
-          />
-        </li>
-        <li>
-          <FontControl
-            :model-value="mergedConfig.theme3hacks.fonts.monospace"
-            name="postCode"
-            :fallback="{ family: 'monospace' }"
-            :label="$t('settings.style.fonts.components.monospace')"
-            @update:model-value="v => updateFont('monospace', v)"
-          />
-        </li>
         <ul
           v-if="mergedConfig.conversationDisplay !== 'linear'"
           class="setting-list suboptions"
@@ -72,6 +54,24 @@
             </ChoiceSetting>
           </li>
         </ul>
+        <li>
+          <FontControl
+            :model-value="mergedConfig.theme3hacks.fonts.post"
+            name="post"
+            :fallback="{ family: 'inherit' }"
+            :label="$t('settings.style.fonts.components.post')"
+            @update:model-value="v => updateFont('post', v)"
+          />
+        </li>
+        <li>
+          <FontControl
+            :model-value="mergedConfig.theme3hacks.fonts.monospace"
+            name="postCode"
+            :fallback="{ family: 'monospace' }"
+            :label="$t('settings.style.fonts.components.monospace')"
+            @update:model-value="v => updateFont('monospace', v)"
+          />
+        </li>
         <li>
           <BooleanSetting path="greentext">
             <i18n-t
