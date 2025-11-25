@@ -25,16 +25,6 @@
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting path="disableStickyHeaders">
-            {{ $t('settings.disable_sticky_headers') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting path="showScrollbars">
-            {{ $t('settings.show_scrollbars') }}
-          </BooleanSetting>
-        </li>
-        <li>
           <BooleanSetting
             path="userPopoverOverlay"
             expert="1"
@@ -59,9 +49,6 @@
             {{ $t('settings.theme_editor_min_width') }}
           </UnitSetting>
         </li>
-      </ul>
-      <h3>{{ $t('settings.columns') }}</h3>
-      <ul class="setting-list">
         <li>
           <UnitSetting
             path="navbarSize"
@@ -71,6 +58,19 @@
           >
             {{ $t('settings.navbar_size') }}
           </UnitSetting>
+        </li>
+      </ul>
+      <h3>{{ $t('settings.columns') }}</h3>
+      <ul class="setting-list">
+        <li>
+          <BooleanSetting path="disableStickyHeaders">
+            {{ $t('settings.disable_sticky_headers') }}
+          </BooleanSetting>
+        </li>
+        <li>
+          <BooleanSetting path="showScrollbars">
+            {{ $t('settings.show_scrollbars') }}
+          </BooleanSetting>
         </li>
         <li v-if="instanceSpecificPanelPresent">
           <BooleanSetting path="hideISP">
@@ -109,7 +109,7 @@
           </ChoiceSetting>
         </li>
         <li v-if="expertLevel > 0">
-          {{ $t('settings.column_sizes') }}
+          <h4> {{ $t('settings.column_sizes') }} </h4>
           <div class="column-settings">
             <UnitSetting
               v-for="column in columns"
