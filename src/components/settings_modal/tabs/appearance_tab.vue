@@ -75,8 +75,6 @@
           <FAIcon icon="folder-open" />
           {{ $t('settings.style.themes3.editor.load_style') }}
         </button>
-      </div>
-      <div class="setting-item">
         <h4>{{ $t('settings.style.themes3.palette.label') }}</h4>
         <div
           v-if="customThemeVersion === 'v3'"

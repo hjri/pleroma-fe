@@ -128,7 +128,6 @@ export default {
       const props = slot.props
       if (!props) return
       const active = this.activeIndex === index
-      const wrapperClasses = ['tab-content-wrapper', active ? '-active' : '-hidden' ]
 
       let delayRender = slot.props['delay-render']
       if (delayRender && active) {
@@ -157,6 +156,7 @@ export default {
         </h2>
       )
 
+      const wrapperClasses = ['tab-content-wrapper', active ? '-active' : '-hidden' ]
       const contentClasses = ['tab-content']
       if (props['full-width']) {
         contentClasses.push('-full-width')

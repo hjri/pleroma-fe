@@ -6,14 +6,12 @@
   .palette,
   .theme-notice {
     padding: 0.5em;
-    margin: 1em;
   }
 
   .theme-name {
     font-weight: 900;
     padding-bottom: 0.5em;
   }
-
 
   input[type="file"] {
     padding: 0.25em;
@@ -61,7 +59,7 @@
     scrollbar-gutter: stable;
     border-radius: var(--roundness);
     border: 1px solid var(--border);
-    margin: -0.5em;
+    margin-bottom: 0.5em;
     margin-top: 0;
   }
 

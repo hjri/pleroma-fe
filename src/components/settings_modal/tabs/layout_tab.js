@@ -31,6 +31,7 @@ const GeneralTab = {
     postFormats () {
       return this.$store.state.instance.postFormats || []
     },
+    instanceShoutboxPresent () { return this.$store.state.instance.shoutAvailable },
     columns () {
       const mode = this.$store.getters.mergedConfig.thirdColumnMode
 

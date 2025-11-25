@@ -4,7 +4,6 @@
 <template>
   <div class="StyleTab">
     <div class="setting-item heading">
-      <h2> {{ $t('settings.style.themes3.editor.title') }} </h2>
       <div class="meta-preview">
         <Preview id="edited-style-preview" />
         <teleport
@@ -85,6 +84,7 @@
         key="component"
         class="setting-item component-editor"
         :label="$t('settings.style.themes3.editor.component_tab')"
+        :full-width="true"
       >
         <div class="component-selector">
           <label for="component-selector">
@@ -332,6 +332,7 @@
         key="palette"
         :label="$t('settings.style.themes3.editor.palette_tab')"
         class="setting-item list-editor palette-editor"
+        :full-width="true"
       >
         <label
           class="list-select-label"
@@ -380,6 +381,7 @@
         :label="$t('settings.style.themes3.editor.variables_tab')"
         :model-value="virtualDirectives"
         @update:model-value="updateVirtualDirectives"
+        :full-width="true"
       />
     </tab-switcher>
   </div>

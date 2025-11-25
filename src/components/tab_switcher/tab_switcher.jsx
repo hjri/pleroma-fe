@@ -138,8 +138,11 @@ export default {
       if (!props) return
       const active = this.activeIndex === index
       const classes = [ active ? 'active' : 'hidden' ]
-      if (props.fullHeight) {
-        classes.push('full-height')
+      if (props.fullHeight || props['full-height']) {
+        classes.push('-full-height')
+      }
+      if (props.fullWidth || props['full-width']) {
+        classes.push('-full-width')
       }
       let delayRender = slot.props['delay-render']
       if (delayRender && active) {

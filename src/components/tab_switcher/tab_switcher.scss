@@ -60,13 +60,22 @@
       display: none;
     }
 
-    .full-height:not(.hidden) {
+    .-full-height:not(.hidden) {
       height: 100%;
       display: flex;
       flex-direction: column;
 
       > *:not(.mobile-label) {
         flex: 1;
+      }
+    }
+
+    .-full-width:not(.hidden) {
+      display: flex;
+      flex-direction: column;
+
+      > *:not(.mobile-label) {
+        width: auto;
       }
     }
 
