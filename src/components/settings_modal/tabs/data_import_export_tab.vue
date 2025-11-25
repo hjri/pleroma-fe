@@ -56,8 +56,22 @@
         </li>
       </ul>
       <h3>{{ $t('settings.account_backup') }}</h3>
-      <p>{{ $t('settings.account_backup_description') }}</p>
-      <table>
+      <div class="setting-list">
+        <p>{{ $t('settings.account_backup_description') }}</p>
+        <button
+          class="btn button-default"
+          @click="addBackup"
+        >
+          {{ $t('settings.add_backup') }}
+        </button>
+        <p v-if="addedBackup">
+          {{ $t('settings.added_backup') }}
+        </p>
+        <template v-if="addBackupError !== false">
+          <p>{{ $t('settings.add_backup_error', { error: addBackupError }) }}</p>
+        </template>
+      </div>
+      <table class="setting-list">
         <thead>
           <tr>
             <th>{{ $t('settings.account_backup_table_head') }}</th>
@@ -112,18 +126,6 @@
           />
         </button>
       </div>
-      <button
-        class="btn button-default"
-        @click="addBackup"
-      >
-        {{ $t('settings.add_backup') }}
-      </button>
-      <p v-if="addedBackup">
-        {{ $t('settings.added_backup') }}
-      </p>
-      <template v-if="addBackupError !== false">
-        <p>{{ $t('settings.add_backup_error', { error: addBackupError }) }}</p>
-      </template>
     </div>
   </div>
 </template>
