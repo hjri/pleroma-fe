@@ -39,6 +39,10 @@
       &.-full-width {
         align-self: stretch;
       }
+
+      &.-full-height {
+        flex: 1;
+      }
     }
 
     .tab-content-label {

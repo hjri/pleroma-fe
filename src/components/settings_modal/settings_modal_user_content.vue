@@ -80,6 +80,7 @@
       icon="eye-slash"
       data-tab-name="mutesAndBlocks"
       :full-width="true"
+      :full-height="true"
     >
       <MutesAndBlocksTab />
     </div>

@@ -128,10 +128,8 @@ export default {
       const props = slot.props
       if (!props) return
       const active = this.activeIndex === index
-      const classes = ['tab-content-wrapper', active ? '-active' : '-hidden' ]
-      if (props.fullHeight) {
-        classes.push('-full-height')
-      }
+      const wrapperClasses = ['tab-content-wrapper', active ? '-active' : '-hidden' ]
+
       let delayRender = slot.props['delay-render']
       if (delayRender && active) {
         slot.props['delay-render'] = false
@@ -159,13 +157,20 @@ export default {
         </h2>
       )
 
+      const contentClasses = ['tab-content']
+      if (props['full-width']) {
+        contentClasses.push('-full-width')
+      }
+      if (props['full-height']) {
+        contentClasses.push('-full-height')
+      }
       return (
-        <div class={classes} >
+        <div class={wrapperClasses} >
           <div class="tab-mobile-header">
             {header}
           </div>
           <div class="tab-slot-wrapper">
-            <div class={ ['tab-content', props['full-width'] ? '-full-width' : null].join(' ') } >
+            <div class={contentClasses} >
               {renderSlot}
             </div>
           </div>

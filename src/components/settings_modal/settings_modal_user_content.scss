@@ -1,6 +1,10 @@
 .settings_tab-switcher {
   height: 100%;
 
+  [full-height="true"] {
+    height: 100%
+  }
+
   .setting-item {
     margin: 1em 1em 1.4em;
     padding-bottom: 1.4em;
