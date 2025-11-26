@@ -27,10 +27,11 @@ import {
   faBell,
   faDownload,
   faEyeSlash,
-  faInfo,
   faWindowRestore,
   faCode,
-  faBroom
+  faBroom,
+  faLock,
+  faColumns
 } from '@fortawesome/free-solid-svg-icons'
 import { useInterfaceStore } from 'src/stores/interface'
 
@@ -38,15 +39,16 @@ library.add(
   faWrench,
   faUser,
   faMessage,
-  faFilter,
-  faPaintBrush,
-  faPalette,
-  faBell,
-  faDownload,
-  faEyeSlash,
-  faInfo,
   faWindowRestore,
+  faColumns,
+  faBell,
+  faFilter,
+  faEyeSlash,
   faBroom,
+  faLock,
+  faDownload,
+  faPalette,
+  faPaintBrush,
   faCode
 )
 

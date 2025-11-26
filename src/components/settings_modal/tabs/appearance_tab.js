@@ -22,21 +22,6 @@ import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
 import { mapActions } from 'pinia'
 import { useInterfaceStore, normalizeThemeData } from 'src/stores/interface'
 
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faGlobe,
-  faDashboard,
-  faPaintRoller,
-  faTableColumns
-} from '@fortawesome/free-solid-svg-icons'
-
-library.add(
-  faGlobe,
-  faPaintRoller,
-  faDashboard,
-  faTableColumns
-)
-
 const AppearanceTab = {
   data () {
     return {
