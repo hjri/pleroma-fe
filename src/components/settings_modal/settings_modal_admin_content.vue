@@ -71,6 +71,22 @@
     >
       <EmojiTab />
     </div>
+
+    <div
+      :label="$t('admin_dash.tabs.mailer')"
+      icon="envelope"
+      data-tab-name="mailer"
+    >
+      <MailerTab />
+    </div>
+
+    <div
+      :label="$t('admin_dash.tabs.monitoring')"
+      icon="chart-line"
+      data-tab-name="monitoring"
+    >
+      <MonitoringTab />
+    </div>
   </vertical-tab-switcher>
 </template>
 

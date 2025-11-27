@@ -18,6 +18,10 @@ export default {
       type: [String, Array],
       required: false
     },
+    subgroup: {
+      type: String,
+      required: false
+    },
     disabled: {
       type: Boolean,
       default: false
@@ -114,7 +118,7 @@ export default {
       return typeof this.draftMode === 'undefined' ? this.defaultDraftMode : this.draftMode
     },
     backendDescription () {
-      return get(this.$store.state.adminSettings.descriptions, this.path)
+      return get(this.$store.state.adminSettings.descriptions, this.descriptionPath)
     },
     backendDescriptionLabel () {
       if (this.realSource !== 'admin') return ''
@@ -208,6 +212,18 @@ export default {
     canonPath () {
       if (this.path == null) return null
       return Array.isArray(this.path) ? this.path : this.path.split('.')
+    },
+    descriptionPath () {
+      if (this.path == null) return null
+      const path = Array.isArray(this.path) ? this.path : this.path.split('.')
+      if (this.subgroup) {
+        return [
+            ...path.slice(0, path.length - 1), 
+            ':subgroup,' + this.subgroup,
+            ...path.slice(path.length - 1)
+        ]
+      }
+      return path
     },
     isDirty () {
       if (this.path == null) return false

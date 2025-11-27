@@ -105,6 +105,7 @@ const adminSettingsStorage = {
         }
         set(config, path, convert(c.value))
       })
+      console.log('CONFIG', config)
       commit('updateAdminSettings', { config, modifiedPaths })
       commit('resetAdminDraft')
     },
@@ -122,6 +123,7 @@ const adminSettingsStorage = {
 
       const descriptions = {}
       backendDescriptions.forEach(d => convert(d, '', descriptions))
+      console.log('DESCRIPTIONS', descriptions)
       commit('updateAdminDescriptions', { descriptions })
     },
 

@@ -1152,6 +1152,7 @@
       "instance": "Instance",
       "limits": "Limits",
       "frontends": "Front-ends",
+      "mailer": "EMails",
       "emoji": "Emoji"
     },
     "nodb": {
@@ -1177,6 +1178,10 @@
         "profiles": "User profiles access",
         "activities": "Statuses/activities access"
       }
+    },
+    "mailer": {
+      "adapter": "Mailing Adapter",
+      "auth": "Authentication"
     },
     "limits": {
       "arbitrary_limits": "Arbitrary limits",
@@ -1256,6 +1261,11 @@
       "emoji_changed": "Unsaved emoji file changes, check highlighted emoji",
       "replace_warning": "This will REPLACE the local pack of the same name",
       "copied_successfully": "Successfully copied emoji \"{0}\" to pack \"{1}\""
+    },
+    "generic_enforcement": {
+      "if_available": "If available",
+      "always": "Always",
+      "never": "Never"
     },
     "temp_overrides": {
       ":pleroma": {
