@@ -239,12 +239,12 @@
       <h3 v-if="expertLevel > 0">
         {{ $t('settings.fun') }}
       </h3>
-      <ul class="setting-list">
+      <ul
+        v-if="expertLevel > 0"
+        class="setting-list"
+      >
         <li v-if="user">
-          <BooleanSetting
-            path="mentionLinkShowYous"
-            expert="1"
-          >
+          <BooleanSetting path="mentionLinkShowYous">
             {{ $t('settings.show_yous') }}
           </BooleanSetting>
         </li>
