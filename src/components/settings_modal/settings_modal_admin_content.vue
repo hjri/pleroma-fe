@@ -48,14 +48,23 @@
     >
       <InstanceTab />
     </div>
+
     <div
-      v-if="adminDbLoaded"
-      :label="$t('admin_dash.tabs.limits')"
-      icon="hand"
-      data-tab-name="limits"
+      :label="$t('admin_dash.tabs.registrations')"
+      icon="door-open"
+      data-tab-name="registrations"
     >
-      <LimitsTab />
+      <RegistrationsTab />
     </div>
+
+    <div
+      :label="$t('admin_dash.tabs.emoji')"
+      icon="face-smile-beam"
+      data-tab-name="emoji"
+    >
+      <EmojiTab />
+    </div>
+
     <div
       :label="$t('admin_dash.tabs.frontends')"
       icon="laptop-code"
@@ -65,11 +74,12 @@
     </div>
 
     <div
-      :label="$t('admin_dash.tabs.emoji')"
-      icon="face-smile-beam"
-      data-tab-name="emoji"
+      v-if="adminDbLoaded"
+      :label="$t('admin_dash.tabs.limits')"
+      icon="hand"
+      data-tab-name="limits"
     >
-      <EmojiTab />
+      <LimitsTab />
     </div>
 
     <div

@@ -6,6 +6,7 @@ import FrontendsTab from './admin_tabs/frontends_tab.vue'
 import EmojiTab from './admin_tabs/emoji_tab.vue'
 import MailerTab from './admin_tabs/mailer_tab.vue'
 import MonitoringTab from './admin_tabs/monitoring_tab.vue'
+import RegistrationsTab from './admin_tabs/registrations_tab.vue'
 import { useInterfaceStore } from 'src/stores/interface'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -14,7 +15,8 @@ import {
   faHand,
   faLaptopCode,
   faEnvelope,
-  faChartLine
+  faChartLine,
+  faDoorOpen
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -22,7 +24,8 @@ library.add(
   faHand,
   faLaptopCode,
   faEnvelope,
-  faChartLine
+  faChartLine,
+  faDoorOpen
 )
 
 const SettingsModalAdminContent = {
@@ -34,7 +37,8 @@ const SettingsModalAdminContent = {
     FrontendsTab,
     MailerTab,
     EmojiTab,
-    MonitoringTab
+    MonitoringTab,
+    RegistrationsTab
   },
   computed: {
     user () {

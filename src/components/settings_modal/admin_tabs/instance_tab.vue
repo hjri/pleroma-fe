@@ -1,7 +1,7 @@
 <template>
   <div :label="$t('admin_dash.tabs.instance')">
     <div class="setting-item">
-      <h2>{{ $t('admin_dash.instance.instance') }}</h2>
+      <h3>{{ $t('admin_dash.instance.instance') }}</h3>
       <ul class="setting-list">
         <li>
           <StringSetting path=":pleroma.:instance.:name" />
@@ -34,75 +34,7 @@
       </ul>
     </div>
     <div class="setting-item">
-      <h2>{{ $t('admin_dash.instance.registrations') }}</h2>
-      <ul class="setting-list">
-        <li>
-          <BooleanSetting path=":pleroma.:instance.:registrations_open" />
-          <ul class="setting-list suboptions">
-            <li>
-              <BooleanSetting
-                path=":pleroma.:instance.:invites_enabled"
-                parent-path=":pleroma.:instance.:registrations_open"
-                parent-invert
-              />
-            </li>
-          </ul>
-        </li>
-        <li>
-          <BooleanSetting path=":pleroma.:instance.:birthday_required" />
-          <ul class="setting-list suboptions">
-            <li>
-              <IntegerSetting
-                path=":pleroma.:instance.:birthday_min_age"
-                parent-path=":pleroma.:instance.:birthday_required"
-              />
-            </li>
-          </ul>
-        </li>
-        <li>
-          <BooleanSetting path=":pleroma.:instance.:account_activation_required" />
-        </li>
-        <li>
-          <BooleanSetting path=":pleroma.:instance.:account_approval_required" />
-        </li>
-        <li>
-          <h3>{{ $t('admin_dash.instance.captcha_header') }}</h3>
-          <ul class="setting-list">
-            <li>
-              <BooleanSetting :path="[':pleroma', 'Pleroma.Captcha', ':enabled']" />
-              <ul class="setting-list suboptions">
-                <li>
-                  <ChoiceSetting
-                    :path="[':pleroma', 'Pleroma.Captcha', ':method']"
-                    :parent-path="[':pleroma', 'Pleroma.Captcha', ':enabled']"
-                    :option-label-map="{
-                      'Pleroma.Captcha.Native': $t('admin_dash.captcha.native'),
-                      'Pleroma.Captcha.Kocaptcha': $t('admin_dash.captcha.kocaptcha')
-                    }"
-                  />
-                  <IntegerSetting
-                    :path="[':pleroma', 'Pleroma.Captcha', ':seconds_valid']"
-                    :parent-path="[':pleroma', 'Pleroma.Captcha', ':enabled']"
-                  />
-                </li>
-                <li
-                  v-if="adminDraft[':pleroma']['Pleroma.Captcha'][':enabled'] && adminDraft[':pleroma']['Pleroma.Captcha'][':method'] === 'Pleroma.Captcha.Kocaptcha'"
-                >
-                  <h4>{{ $t('admin_dash.instance.kocaptcha') }}</h4>
-                  <ul class="setting-list">
-                    <li>
-                      <StringSetting :path="[':pleroma', 'Pleroma.Captcha.Kocaptcha', ':endpoint']" />
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-    <div class="setting-item">
-      <h2>{{ $t('admin_dash.instance.access') }}</h2>
+      <h3>{{ $t('admin_dash.instance.access') }}</h3>
       <ul class="setting-list">
         <li>
           <BooleanSetting

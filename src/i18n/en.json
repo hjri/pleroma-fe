@@ -1153,7 +1153,9 @@
       "limits": "Limits",
       "frontends": "Front-ends",
       "mailer": "EMails",
-      "emoji": "Emoji"
+      "emoji": "Emoji",
+      "monitoring": "Monitoring",
+      "registrations": "Registrations"
     },
     "nodb": {
       "heading": "Database config is disabled",
@@ -1177,6 +1179,15 @@
         "timelines": "Timelines access",
         "profiles": "User profiles access",
         "activities": "Statuses/activities access"
+      }
+    },
+    "registrations": {
+      "welcome": {
+        "title": "Welcome message",
+        "description": "Send new users a message when they sign up",
+        "direct_message": "Via direct message",
+        "chat_message": "Via chat",
+        "email_message": "Via email"
       }
     },
     "mailer": {
