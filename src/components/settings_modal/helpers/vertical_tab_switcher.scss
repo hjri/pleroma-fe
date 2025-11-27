@@ -65,8 +65,9 @@
     }
 
     .tab-content-wrapper {
+      display: flex;
+      flex-direction: column;
       flex: 1 1 auto;
-      height: 100%;
 
       &.-hidden {
         display: none;
