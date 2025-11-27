@@ -43,7 +43,7 @@ export default {
     return {
       active: findFirstUsable(this.slots()),
       resizeHandler: null,
-      navSide: 'tabs'
+      navSide: 'tabs',
     }
   },
   computed: {
@@ -144,6 +144,7 @@ export default {
           <button
             type="button"
             onClick={() => this.changeNavSide('tabs')}
+            title={this.$t('nav.back')}
             class="button-unstyled"
           >
             <FAIcon
