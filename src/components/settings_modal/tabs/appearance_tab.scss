@@ -18,7 +18,31 @@
     height: auto;
   }
 
+  .banner-background {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+
+    h4 {
+      margin: 0;
+    }
+  }
+
+  .banner-background-input {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+
+    .custom-bg-control {
+      display: grid;
+      gap: 0.5em;
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
   .banner-background-preview {
+    display: flex;
     max-width: 100%;
     width: 300px;
     position: relative;
@@ -26,32 +50,85 @@
     img {
       width: 100%;
     }
-  }
 
-  .reset-button {
-    position: absolute;
-    top: 0.2em;
-    right: 0.2em;
-    border-radius: var(--roundness);
-    background-color: rgb(0 0 0 / 60%);
-    opacity: 0.7;
-    width: 1.5em;
-    height: 1.5em;
-    text-align: center;
-    line-height: 1.5em;
-    font-size: 1.5em;
-    cursor: pointer;
+    .fun-monitor {
+      position: relative;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
 
-    &:hover {
-      opacity: 1;
+      * {
+        line-height: 1;
+      }
+
+      &-display-bezel,
+      &-display-screen {
+        aspect-ratio: 16 / 9;
+        width: 16em;
+      }
+         
+      img {
+        object-fit: cover;
+      }
+
+      .wallpaper {
+        position: absolute;
+        inset: 0;
+        background-color: var(--wallpaper);
+      }
+
+      &-display-uploading {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        display: flex;
+        place-items: center;
+        place-content: center;
+        background-color: rgb(0 0 0 / 60%);
+        font-size: 4em;
+      }
+
+      &-display-screen {
+        padding: 0;
+        overflow: hidden;
+        position: relative;
+
+        &-overlay {
+          background: transparent;
+          position: absolute;
+          inset: 0;
+          z-index: 2;
+        }
+
+        &-image {
+          aspect-ratio: 16 / 9
+        }
+      }
+
+      &-display-bezel {
+        padding: 1em;
+        margin: 0;
+        order: 1;
+        z-index: 3;
+      }
+
+      &-neck {
+        width: 5em;
+        height: 3em;
+        margin-top: -1em;
+        margin-bottom: -0.5em;
+        order: 2
+      }
+
+      &-stand {
+        width: 8em;
+        height: 1em;
+        order: 3;
+        z-index: 1
+      }
     }
-
-    svg {
-      color: white;
-    }
   }
-
-
 
   .palettes-container {
     height: 15em;
