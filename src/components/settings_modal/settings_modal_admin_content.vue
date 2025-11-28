@@ -91,6 +91,14 @@
     </div>
 
     <div
+      :label="$t('admin_dash.tabs.uploads')"
+      icon="upload"
+      data-tab-name="uploads"
+    >
+      <UploadsTab />
+    </div>
+
+    <div
       :label="$t('admin_dash.tabs.monitoring')"
       icon="chart-line"
       data-tab-name="monitoring"
