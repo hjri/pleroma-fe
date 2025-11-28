@@ -4,14 +4,14 @@
     :label="$t('admin_dash.tabs.frontends')"
   >
     <div class="setting-item">
-      <h2>{{ $t('admin_dash.tabs.frontends') }}</h2>
+      <h3>{{ $t('admin_dash.frontend.title') }}</h3>
       <p>{{ $t('admin_dash.frontend.wip_notice') }}</p>
       <ul
         v-if="adminDraft"
         class="setting-list"
       >
         <li>
-          <h3>{{ $t('admin_dash.frontend.default_frontend') }}</h3>
+          <h4>{{ $t('admin_dash.frontend.default_frontend') }}</h4>
           <p>{{ $t('admin_dash.frontend.default_frontend_tip') }}</p>
           <ul class="setting-list">
             <li>
@@ -38,7 +38,7 @@
           v-if="working"
           class="overlay"
         />
-        <h3>{{ $t('admin_dash.frontend.available_frontends') }}</h3>
+        <h4>{{ $t('admin_dash.frontend.available_frontends') }}</h4>
         <ul class="cards-list">
           <li
             v-for="frontend in frontends"

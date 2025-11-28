@@ -1209,6 +1209,7 @@
       "user_uploads": "Profile media limits"
     },
     "frontend": {
+      "title": "Frontend management",
       "repository": "Repository link",
       "versions": "Available versions",
       "build_url": "Build URL",
