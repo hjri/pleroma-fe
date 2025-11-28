@@ -553,6 +553,7 @@ textarea {
   &[disabled="disabled"],
   &.disabled {
     cursor: not-allowed;
+    color: var(--textFaint);
   }
 
   &[type="range"] {

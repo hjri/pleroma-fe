@@ -2,6 +2,7 @@
   <label
     v-if="matchesExpertLevel"
     class="ChoiceSetting"
+    :class="{ 'faint': shouldBeDisabled }"
   >
     <template v-if="backendDescriptionLabel">
       {{ backendDescriptionLabel }}
@@ -12,7 +13,7 @@
     {{ ' ' }}
     <Select
       :model-value="realDraftMode ? draft : state"
-      :disabled="disabled"
+      :disabled="shouldBeDisabled"
       @update:model-value="update"
     >
       <option

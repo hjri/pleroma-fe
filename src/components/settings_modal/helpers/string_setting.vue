@@ -20,6 +20,7 @@
     <input
       :id="path"
       class="input string-input"
+      :class="{ disabled: shouldBeDisabled }"
       :disabled="shouldBeDisabled"
       :value="realDraftMode ? draft : state"
       @change="update"
