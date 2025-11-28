@@ -1154,6 +1154,7 @@
       "frontends": "Front-ends",
       "mailer": "EMails",
       "emoji": "Emoji",
+      "uploads": "Uploads",
       "monitoring": "Monitoring",
       "registrations": "Registrations"
     },
@@ -1189,6 +1190,11 @@
         "chat_message": "Via chat",
         "email_message": "Via email"
       }
+    },
+    "uploads": {
+      "general": "General settings",
+      "filenames": "Filenames, Titles and Descriptions",
+      "uploader_settings": "Uploader settings"
     },
     "mailer": {
       "adapter": "Mailing Adapter",
@@ -1280,6 +1286,18 @@
     },
     "temp_overrides": {
       ":pleroma": {
+        "Pleroma_DOT_Uploaders_DOT_Uploader": {
+          ":timeout": {
+            "label": "Timeout",
+            "description": "Amount of milliseconds before dropping connection"
+          }
+        },
+        "Pleroma_DOT_Upload": {
+          ":default_description": {
+            "label": "Default description",
+            "description": "Default description to give to a file. Setting it to ':filename' will use file's filename as description."
+          }
+        },
         ":instance": {
           ":public": {
             "label": "Instance is public",
