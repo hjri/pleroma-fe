@@ -3,6 +3,7 @@ import VerticalTabSwitcher from './helpers/vertical_tab_switcher.jsx'
 import InstanceTab from './admin_tabs/instance_tab.vue'
 import LimitsTab from './admin_tabs/limits_tab.vue'
 import FrontendsTab from './admin_tabs/frontends_tab.vue'
+import MediaProxyTab from './admin_tabs/media_proxy_tab.vue'
 import EmojiTab from './admin_tabs/emoji_tab.vue'
 import UploadsTab from './admin_tabs/uploads_tab.vue'
 import MailerTab from './admin_tabs/mailer_tab.vue'
@@ -15,6 +16,7 @@ import {
   faWrench,
   faHand,
   faLaptopCode,
+  faTowerBroadcast,
   faEnvelope,
   faChartLine,
   faDoorOpen,
@@ -25,6 +27,7 @@ library.add(
   faWrench,
   faHand,
   faLaptopCode,
+  faTowerBroadcast,
   faEnvelope,
   faChartLine,
   faDoorOpen,
@@ -38,6 +41,7 @@ const SettingsModalAdminContent = {
     InstanceTab,
     LimitsTab,
     FrontendsTab,
+    MediaProxyTab,
     MailerTab,
     EmojiTab,
     UploadsTab,

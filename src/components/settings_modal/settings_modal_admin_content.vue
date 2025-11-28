@@ -99,6 +99,14 @@
     </div>
 
     <div
+      :label="$t('admin_dash.tabs.media_proxy')"
+      icon="tower-broadcast"
+      data-tab-name="media_proxy"
+    >
+      <MediaProxyTab />
+    </div>
+
+    <div
       :label="$t('admin_dash.tabs.monitoring')"
       icon="chart-line"
       data-tab-name="monitoring"
