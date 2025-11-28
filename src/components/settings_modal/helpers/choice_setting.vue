@@ -11,7 +11,7 @@
     </template>
     {{ ' ' }}
     <Select
-      :model-value="realDraftMode ? draft :state"
+      :model-value="realDraftMode ? draft : state"
       :disabled="disabled"
       @update:model-value="update"
     >

@@ -67,8 +67,6 @@
           </ul>
         </li>
       </ul>
-    </div>
-    <div class="setting-item">
       <h3>{{ $t('admin_dash.registrations.welcome.title') }}</h3>
       <ul class="setting-list">
         <p>{{ $t('admin_dash.registrations.welcome.description') }}</p>

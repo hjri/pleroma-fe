@@ -1,10 +1,10 @@
 <template>
   <div :label="$t('admin_dash.tabs.limits')">
     <div class="setting-item">
-      <h2>{{ $t('admin_dash.limits.arbitrary_limits') }}</h2>
+      <h3>{{ $t('admin_dash.limits.arbitrary_limits') }}</h3>
       <ul class="setting-list">
         <li>
-          <h3>{{ $t('admin_dash.limits.posts') }}</h3>
+          <h4>{{ $t('admin_dash.limits.posts') }}</h4>
           <ul class="setting-list">
             <li>
               <IntegerSetting
@@ -24,7 +24,7 @@
           </ul>
         </li>
         <li>
-          <h3>{{ $t('admin_dash.limits.uploads') }}</h3>
+          <h4>{{ $t('admin_dash.limits.uploads') }}</h4>
           <ul class="setting-list">
             <li>
               <IntegerSetting
@@ -50,7 +50,7 @@
           </ul>
         </li>
         <li>
-          <h3>{{ $t('admin_dash.limits.users') }}</h3>
+          <h4>{{ $t('admin_dash.limits.users') }}</h4>
           <ul class="setting-list">
             <li>
               <IntegerSetting
@@ -74,7 +74,7 @@
               />
             </li>
             <li>
-              <h4>{{ $t('admin_dash.limits.profile_fields') }}</h4>
+              <h5>{{ $t('admin_dash.limits.profile_fields') }}</h5>
               <ul class="setting-list">
                 <li>
                   <IntegerSetting
@@ -108,7 +108,7 @@
               </ul>
             </li>
             <li>
-              <h4>{{ $t('admin_dash.limits.user_uploads') }}</h4>
+              <h5>{{ $t('admin_dash.limits.user_uploads') }}</h5>
               <ul class="setting-list">
                 <li>
                   <IntegerSetting

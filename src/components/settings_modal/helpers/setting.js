@@ -218,7 +218,7 @@ export default {
       const path = Array.isArray(this.path) ? this.path : this.path.split('.')
       if (this.subgroup) {
         return [
-            ...path.slice(0, path.length - 1), 
+            ...path.slice(0, path.length - 1),
             ':subgroup,' + this.subgroup,
             ...path.slice(path.length - 1)
         ]
