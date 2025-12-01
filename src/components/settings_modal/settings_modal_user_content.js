@@ -1,4 +1,4 @@
-import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+import VerticalTabSwitcher from './helpers/vertical_tab_switcher.jsx'
 
 import DataImportExportTab from './tabs/data_import_export_tab.vue'
 import MutesAndBlocksTab from './tabs/mutes_and_blocks_tab.vue'
@@ -7,42 +7,54 @@ import FilteringTab from './tabs/filtering_tab.vue'
 import SecurityTab from './tabs/security_tab/security_tab.vue'
 import ProfileTab from './tabs/profile_tab.vue'
 import GeneralTab from './tabs/general_tab.vue'
+import PostsTab from './tabs/posts_tab.vue'
+import ComposingTab from './tabs/composing_tab.vue'
+import ClutterTab from './tabs/clutter_tab.vue'
+import LayoutTab from './tabs/layout_tab.vue'
 import AppearanceTab from './tabs/appearance_tab.vue'
-import VersionTab from './tabs/version_tab.vue'
-import ThemeTab from './tabs/theme_tab/theme_tab.vue'
+import DeveloperTab from './tabs/developer_tab.vue'
+import OldThemeTab from './tabs/old_theme_tab/old_theme_tab.vue'
 import StyleTab from './tabs/style_tab/style_tab.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faWrench,
   faUser,
+  faMessage,
   faFilter,
   faPaintBrush,
   faPalette,
   faBell,
   faDownload,
   faEyeSlash,
-  faInfo,
-  faWindowRestore
+  faWindowRestore,
+  faCode,
+  faBroom,
+  faLock,
+  faColumns
 } from '@fortawesome/free-solid-svg-icons'
 import { useInterfaceStore } from 'src/stores/interface'
 
 library.add(
   faWrench,
   faUser,
-  faFilter,
-  faPaintBrush,
-  faPalette,
+  faMessage,
+  faWindowRestore,
+  faColumns,
   faBell,
-  faDownload,
+  faFilter,
   faEyeSlash,
-  faInfo,
-  faWindowRestore
+  faBroom,
+  faLock,
+  faDownload,
+  faPalette,
+  faPaintBrush,
+  faCode
 )
 
 const SettingsModalContent = {
   components: {
-    TabSwitcher,
+    VerticalTabSwitcher,
 
     DataImportExportTab,
     MutesAndBlocksTab,
@@ -51,10 +63,14 @@ const SettingsModalContent = {
     SecurityTab,
     ProfileTab,
     GeneralTab,
+    PostsTab,
+    ComposingTab,
+    ClutterTab,
+    LayoutTab,
     AppearanceTab,
     StyleTab,
-    VersionTab,
-    ThemeTab
+    DeveloperTab,
+    OldThemeTab
   },
   computed: {
     isLoggedIn () {
@@ -68,9 +84,12 @@ const SettingsModalContent = {
     },
     expertLevel () {
       return this.$store.state.config.expertLevel
-    },
-    isMobileLayout () {
-      return useInterfaceStore().layoutType === 'mobile'
+    }
+  },
+  data () {
+    return {
+      navCollapsed: false,
+      navHideHeader: false
     }
   },
   methods: {

@@ -1,5 +1,5 @@
 <template>
-  <tab-switcher
+  <vertical-tab-switcher
     v-if="adminDescriptionsLoaded && (noDb || adminDbLoaded)"
     ref="tabSwitcher"
     class="settings_tab-switcher"
@@ -71,7 +71,7 @@
     >
       <EmojiTab />
     </div>
-  </tab-switcher>
+  </vertical-tab-switcher>
 </template>
 
 <script src="./settings_modal_admin_content.js"></script>

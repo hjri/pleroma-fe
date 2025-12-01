@@ -6,6 +6,10 @@
   grid-gap: 0.5em;
   justify-content: stretch;
 
+  .style-control {
+    display: flex;
+  }
+
   &.-compact {
     grid-template-columns: 10em 1fr;
     grid-template-rows: auto auto;
@@ -110,7 +114,6 @@
 
   .shadow-preview {
     grid-area: preview;
-    min-width: 25em;
     margin-left: 0.125em;
     place-self: start center;
   }

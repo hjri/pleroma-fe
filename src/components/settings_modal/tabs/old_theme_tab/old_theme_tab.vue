@@ -1,5 +1,5 @@
 <template>
-  <div class="theme-tab">
+  <div class="old-theme-tab">
     <div class="alert warning deprecation-warning">
       {{ $t("settings.style.themes2_outdated") }}
     </div>
@@ -1020,6 +1020,6 @@
   </div>
 </template>
 
-<script src="./theme_tab.js"></script>
+<script src="./old_theme_tab.js"></script>
 
-<style src="./theme_tab.scss" lang="scss"></style>
+<style src="./old_theme_tab.scss" lang="scss"></style>

@@ -1,11 +1,11 @@
 <template>
   <div
     v-if="!showNothing"
-    class="ScopeSelector"
+    class="ScopeSelector btn-group"
   >
     <button
       v-if="showDirect"
-      class="button-unstyled scope"
+      class="scope"
       :class="css.direct"
       :title="$t('post_status.scope.direct')"
       type="button"
@@ -19,7 +19,7 @@
     {{ ' ' }}
     <button
       v-if="showPrivate"
-      class="button-unstyled scope"
+      class="scope"
       :class="css.private"
       :title="$t('post_status.scope.private')"
       type="button"
@@ -33,7 +33,7 @@
     {{ ' ' }}
     <button
       v-if="showUnlisted"
-      class="button-unstyled scope"
+      class="scope"
       :class="css.unlisted"
       :title="$t('post_status.scope.unlisted')"
       type="button"
@@ -47,7 +47,7 @@
     {{ ' ' }}
     <button
       v-if="showPublic"
-      class="button-unstyled scope"
+      class="scope"
       :class="css.public"
       :title="$t('post_status.scope.public')"
       type="button"
@@ -65,12 +65,14 @@
 
 <style lang="scss">
 .ScopeSelector {
+  display: inline-block;
+
   .scope {
     display: inline-block;
-    cursor: pointer;
     min-width: 1.3em;
     min-height: 1.3em;
     text-align: center;
+    padding: 0.5em 0.25em
   }
 }
 </style>

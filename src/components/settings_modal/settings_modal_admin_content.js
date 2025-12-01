@@ -1,4 +1,4 @@
-import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+import VerticalTabSwitcher from './helpers/vertical_tab_switcher.jsx'
 
 import InstanceTab from './admin_tabs/instance_tab.vue'
 import LimitsTab from './admin_tabs/limits_tab.vue'
@@ -31,7 +31,7 @@ library.add(
 
 const SettingsModalAdminContent = {
   components: {
-    TabSwitcher,
+    VerticalTabSwitcher,
 
     InstanceTab,
     LimitsTab,

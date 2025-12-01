@@ -3,10 +3,8 @@ import ChoiceSetting from '../helpers/choice_setting.vue'
 import IntegerSetting from '../helpers/integer_setting.vue'
 import FloatSetting from '../helpers/float_setting.vue'
 import UnitSetting from '../helpers/unit_setting.vue'
-import { defaultHorizontalUnits } from '../helpers/unit_setting.js'
 import PaletteEditor from 'src/components/palette_editor/palette_editor.vue'
-import Preview from './theme_tab/theme_preview.vue'
-import FontControl from 'src/components/font_control/font_control.vue'
+import Preview from './old_theme_tab/theme_preview.vue'
 
 import { newImporter } from 'src/services/export_import/export_import.js'
 import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
@@ -23,15 +21,6 @@ import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
 
 import { mapActions } from 'pinia'
 import { useInterfaceStore, normalizeThemeData } from 'src/stores/interface'
-
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faGlobe
-} from '@fortawesome/free-solid-svg-icons'
-
-library.add(
-  faGlobe
-)
 
 const AppearanceTab = {
   data () {
@@ -59,11 +48,6 @@ const AppearanceTab = {
       ],
       userPalette: {},
       intersectionObserver: null,
-      thirdColumnModeOptions: ['none', 'notifications', 'postform'].map(mode => ({
-        key: mode,
-        value: mode,
-        label: this.$t(`settings.third_column_mode_${mode}`)
-      })),
       forcedRoundnessOptions: ['disabled', 'sharp', 'nonsharp', 'round'].map((mode, i) => ({
         key: mode,
         value: i - 1,
@@ -86,7 +70,6 @@ const AppearanceTab = {
     FloatSetting,
     UnitSetting,
     ProfileSettingIndicator,
-    FontControl,
     Preview,
     PaletteEditor
   },
@@ -253,32 +236,13 @@ const AppearanceTab = {
     noIntersectionObserver () {
       return !window.IntersectionObserver
     },
-    horizontalUnits () {
-      return defaultHorizontalUnits
-    },
-    fontsOverride () {
-      return this.$store.getters.mergedConfig.fontsOverride
-    },
-    columns () {
-      const mode = this.$store.getters.mergedConfig.thirdColumnMode
-
-      const notif = mode === 'none' ? [] : ['notifs']
-
-      if (this.$store.getters.mergedConfig.sidebarRight || mode === 'postform') {
-        return [...notif, 'content', 'sidebar']
-      } else {
-        return ['sidebar', 'content', ...notif]
-      }
+    instanceWallpaper () {
+      console.log(this.$store.state.instance.background)
+      this.$store.state.instance.background
     },
     instanceWallpaperUsed () {
       return this.$store.state.instance.background &&
         !this.$store.state.users.currentUser.background_image
-    },
-    language: {
-      get: function () { return this.$store.getters.mergedConfig.interfaceLanguage },
-      set: function (val) {
-        this.$store.dispatch('setOption', { name: 'interfaceLanguage', value: val })
-      }
     },
     customThemeVersion () {
       const { themeVersion } = useInterfaceStore()
@@ -295,18 +259,6 @@ const AppearanceTab = {
     ...SharedComputedObject()
   },
   methods: {
-    updateFont (key, value) {
-      this.$store.dispatch('setOption', {
-        name: 'theme3hacks',
-        value: {
-          ...this.mergedConfig.theme3hacks,
-          fonts: {
-            ...this.mergedConfig.theme3hacks.fonts,
-            [key]: value
-          }
-        }
-      })
-    },
     importFile () {
       this.fileImporter.importData()
     },
@@ -462,6 +414,9 @@ const AppearanceTab = {
       if (confirmed) {
         this.submitBackground('')
       }
+    },
+    resetUploadedBackground () {
+      this.backgroundPreview = null
     },
     submitBackground (background) {
       if (!this.backgroundPreview && background !== '') { return }

@@ -15,7 +15,7 @@ import RoundnessInput from 'src/components/roundness_input/roundness_input.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 import Tooltip from 'src/components/tooltip/tooltip.vue'
 import ContrastRatio from 'src/components/contrast_ratio/contrast_ratio.vue'
-import Preview from '../theme_tab/theme_preview.vue'
+import Preview from '../old_theme_tab/theme_preview.vue'
 
 import VirtualDirectivesTab from './virtual_directives_tab.vue'
 

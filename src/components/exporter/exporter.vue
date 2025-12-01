@@ -23,6 +23,9 @@
 
 <style lang="scss">
 .exporter {
+  display: flex;
+  flex-direction: column;
+
   &-processing {
     margin: 0.25em;
   }

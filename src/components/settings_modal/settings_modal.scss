@@ -1,21 +1,48 @@
 .settings-modal {
   overflow: hidden;
 
-  h4 {
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 500;
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin-top: 1em;
     margin-bottom: 0.5em;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.25em;
+    box-sizing: border-box;
+    padding-left: 0.5em;
+  }
+
+  h4 {
+    font-size: 1.1rem;
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+  }
+
+  h5 {
+    font-size: 1rem;
+    margin-bottom: 0.5em;
+    margin-top: 0;
   }
 
   .setting-list,
   .option-list {
     list-style-type: none;
     padding-left: 2em;
+    margin: 0;
 
     .btn:not(.dropdown-button) {
       padding: 0 2em;
     }
 
     li {
-      margin-bottom: 0.5em;
+      margin: 1em 0;
     }
 
     .suboptions {
@@ -23,9 +50,11 @@
     }
 
     &.two-column {
-      column-count: 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
 
       > li {
+        margin: 0;
         break-inside: avoid;
       }
     }
@@ -42,7 +71,7 @@
     transition: transform;
     transition-timing-function: ease-in-out;
     transition-duration: 300ms;
-    width: 1000px;
+    width: 70em;
     max-width: 90vw;
     height: 90vh;
 
@@ -77,18 +106,30 @@
   }
 
   &.-mobile {
-    .setting-list,
+    .tabs {
+      .menu-item {
+        font-size: 1.2em;
+        padding-top: 0.75em;
+        padding-bottom: 0.75em;
+      }
+    }
+
+    .setting-list:not(.suboptions),
     .option-list {
       padding-left: 0.25em;
 
+
+      /* stylelint-disable no-descending-specificity */
+      // it makes no sense
       > li {
         margin: 1em 0;
         line-height: 1.5em;
         vertical-align: middle;
       }
+      /* stylelint-enable no-descending-specificity */
 
       &.two-column {
-        column-count: 1;
+        grid-template-columns: 1fr;
       }
     }
   }

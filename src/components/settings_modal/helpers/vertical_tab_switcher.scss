@@ -1,0 +1,181 @@
+.vertical-tab-switcher {
+  display: flex;
+  flex-direction: row;
+  container-type: inline-size;
+
+  > .tabs {
+    flex: 0 0 15em;
+    flex-direction: column;
+    overflow: hidden auto;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 15em;
+    min-width: 15em;
+    border-right: 1px solid;
+    border-right-color: var(--border);
+    box-sizing: border-box;
+
+    > .menu-item {
+      padding: 0.5em 1em;
+
+      .tab-icon {
+        vertical-align: middle;
+        margin-right: 0.75em;
+      }
+    }
+  }
+
+  > .contents {
+    flex: 1 0 35em;
+
+    .tab-content {
+      align-self: center;
+
+      &:not(.-full-width) {
+        max-width: 40em;
+      }
+
+      &.-full-width {
+        align-self: stretch;
+      }
+
+      &.-full-height {
+        flex: 1;
+      }
+    }
+
+    .tab-content-label {
+      box-sizing: border-box;
+      margin: 0;
+      border-bottom: 1px solid var(--border);
+      display: none;
+
+      button {
+        box-sizing: border-box;
+        padding: 0.5em;
+      }
+    }
+
+    .tab-slot-wrapper {
+      flex: 1 1 auto;
+      height: 100%;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tab-content-wrapper {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      flex: 1 1 auto;
+
+      &.-hidden {
+        display: none;
+      }
+    }
+  }
+
+  &.-mobile {
+    > .contents {
+      .tab-content-label {
+        display: block
+      }
+    }
+
+    &.-nav-contents {
+      > .contents {
+        display: block;
+        flex-grow: 1;
+        flex-shrink: 1;
+      }
+
+      > .tabs {
+        display: none;
+        flex-grow: 0;
+        flex-shrink: 1;
+      }
+    }
+
+    &.-nav-tabs {
+      > .tabs {
+        display: block;
+        flex-grow: 1;
+      }
+
+      > .contents {
+        display: none;
+        flex-grow: 0;
+        flex-shrink: 1;
+      }
+    }
+  }
+
+  @supports (container-type: inline-size) {
+    &,
+    &.-mobile {
+      &.-nav-contents,
+      &.-nav-tabs {
+        /* I THINK it's a false positive and eslint doesn't understand the @-rule */
+        /* stylelint-disable no-descending-specificity */
+        > .contents {
+          display: block;
+          flex-grow: 1;
+        }
+
+        > .tabs {
+          display: block;
+          flex-grow: 0;
+        }
+        /* stylelint-enable no-descending-specificity */
+      }
+    }
+
+    @container (width < 50em) {
+      > .contents {
+        .tab-content-label {
+          display: block
+        }
+      }
+
+      &.-mobile {
+        > .contents {
+          .tab-content-label {
+            display: block
+          }
+        }
+      }
+
+      &,
+      &.-mobile {
+        &.-nav-contents {
+          > .contents {
+            display: block;
+            flex-grow: 1;
+          }
+
+          > .tabs {
+            display: none;
+            flex-grow: 0;
+            flex-shrink: 1;
+          }
+        }
+
+        &.-nav-tabs {
+          /* stylelint-disable no-descending-specificity */
+          > .tabs {
+            display: block;
+            flex-grow: 1;
+          }
+
+          > .contents {
+            display: none;
+            flex-grow: 0;
+            flex-shrink: 1;
+          }
+          /* stylelint-enable no-descending-specificity */
+        }
+      }
+    }
+  }
+}

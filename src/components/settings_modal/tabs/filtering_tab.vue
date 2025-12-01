@@ -1,10 +1,7 @@
 <template>
-  <div
-    :label="$t('settings.filtering')"
-    class="filtering-tab"
-  >
+  <div class="filtering-tab">
     <div class="setting-item">
-      <h2>{{ $t('settings.filter.clutter') }}</h2>
+      <h3>{{ $t('settings.filter.mute_filter') }}</h3>
       <ul class="setting-list">
         <li>
           <ChoiceSetting
@@ -16,70 +13,6 @@
             {{ $t('settings.replies_in_timeline') }}
           </ChoiceSetting>
         </li>
-        <li>
-          <BooleanSetting
-            expert="1"
-            path="hidePostStats"
-          >
-            {{ $t('settings.hide_post_stats') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting
-            expert="1"
-            path="hideUserStats"
-          >
-            {{ $t('settings.hide_user_stats') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting path="hideBotIndication">
-            {{ $t('settings.hide_actor_type_indication') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting path="hideScrobbles">
-            {{ $t('settings.hide_scrobbles') }}
-          </BooleanSetting>
-          <ul class="setting-list suboptions">
-            <li>
-              <UnitSetting
-                key="hideScrobblesAfter"
-                path="hideScrobblesAfter"
-                :units="['m', 'h', 'd']"
-                unit-set="time"
-                expert="1"
-              >
-                {{ $t('settings.hide_scrobbles_after') }}
-              </UnitSetting>
-            </li>
-          </ul>
-        </li>
-        <h3>{{ $t('settings.attachments') }}</h3>
-        <li>
-          <IntegerSetting
-            path="maxThumbnails"
-            expert="1"
-            :min="0"
-          >
-            {{ $t('settings.max_thumbnails') }}
-          </IntegerSetting>
-        </li>
-        <li>
-          <BooleanSetting path="hideAttachments">
-            {{ $t('settings.hide_attachments_in_tl') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting path="hideAttachmentsInConv">
-            {{ $t('settings.hide_attachments_in_convo') }}
-          </BooleanSetting>
-        </li>
-      </ul>
-    </div>
-    <div class="setting-item">
-      <h2>{{ $t('settings.filter.mute_filter') }}</h2>
-      <ul class="setting-list">
         <li>
           {{ $t('user_card.default_mute_expiration') }}
           <Select

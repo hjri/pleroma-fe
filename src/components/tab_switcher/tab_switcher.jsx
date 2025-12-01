@@ -31,11 +31,6 @@ export default {
       type: Boolean,
       default: false
     },
-    sideTabBar: {
-      required: false,
-      type: Boolean,
-      default: false
-    },
     bodyScrollLock: {
       required: false,
       type: Boolean,
@@ -143,8 +138,11 @@ export default {
       if (!props) return
       const active = this.activeIndex === index
       const classes = [ active ? 'active' : 'hidden' ]
-      if (props.fullHeight) {
-        classes.push('full-height')
+      if (props.fullHeight || props['full-height']) {
+        classes.push('-full-height')
+      }
+      if (props.fullWidth || props['full-width']) {
+        classes.push('-full-width')
       }
       let delayRender = slot.props['delay-render']
       if (delayRender && active) {
@@ -157,29 +155,28 @@ export default {
 
       return (
         <div class={classes}>
-          {
-            this.sideTabBar
-              ? <h1 class="mobile-label">{props.label}</h1>
-              : ''
-          }
           {renderSlot}
         </div>
       )
     })
 
     return (
-      <div class={'tab-switcher ' + (this.sideTabBar ? 'side-tabs' : 'top-tabs')}>
+      <div
+        class="tab-switcher top-tabs"
+        ref="root"
+      >
         <div
           class="tabs"
           role="tablist"
+          ref="nav"
         >
           {tabs}
         </div>
         <div
-          ref="contents"
           role="tabpanel"
           class={'contents' + (this.scrollableTabs ? ' scrollable-tabs' : '')}
           v-body-scroll-lock={this.bodyScrollLock}
+          ref="content"
         >
           {contents}
         </div>

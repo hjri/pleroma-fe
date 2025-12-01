@@ -1,7 +1,7 @@
 <template>
   <div :label="$t('settings.notifications')">
     <div class="setting-item">
-      <h2>{{ $t('settings.notification_setting_annoyance') }}</h2>
+      <h3>{{ $t('settings.notification_setting_annoyance') }}</h3>
       <ul class="setting-list">
         <li>
           <BooleanSetting path="closingDrawerMarksAsSeen">
@@ -29,7 +29,7 @@
       </ul>
     </div>
     <div class="setting-item">
-      <h2>{{ $t('settings.notification_setting_filters') }}</h2>
+      <h3>{{ $t('settings.notification_setting_filters') }}</h3>
       <ul class="setting-list">
         <li>
           <BooleanSetting
@@ -40,13 +40,13 @@
           </BooleanSetting>
         </li>
         <li>
-          <h3> {{ $t('settings.notification_visibility') }}</h3>
+          <h4> {{ $t('settings.notification_visibility') }}</h4>
           <p v-if="expertLevel > 0">
             {{ $t('settings.notification_setting_filters_chrome_push') }}
           </p>
           <ul class="setting-list two-column">
             <li>
-              <h4> {{ $t('settings.notification_visibility_mentions') }}</h4>
+              <h5> {{ $t('settings.notification_visibility_mentions') }}</h5>
               <ul class="setting-list">
                 <li>
                   <BooleanSetting path="notificationVisibility.mentions">
@@ -61,7 +61,7 @@
               </ul>
             </li>
             <li>
-              <h4> {{ $t('settings.notification_visibility_statuses') }}</h4>
+              <h5> {{ $t('settings.notification_visibility_statuses') }}</h5>
               <ul class="setting-list">
                 <li>
                   <BooleanSetting path="notificationVisibility.statuses">
@@ -76,7 +76,7 @@
               </ul>
             </li>
             <li>
-              <h4> {{ $t('settings.notification_visibility_likes') }}</h4>
+              <h5> {{ $t('settings.notification_visibility_likes') }}</h5>
               <ul class="setting-list">
                 <li>
                   <BooleanSetting path="notificationVisibility.likes">
@@ -91,7 +91,7 @@
               </ul>
             </li>
             <li>
-              <h4> {{ $t('settings.notification_visibility_repeats') }}</h4>
+              <h5> {{ $t('settings.notification_visibility_repeats') }}</h5>
               <ul class="setting-list">
                 <li>
                   <BooleanSetting path="notificationVisibility.repeats">
@@ -106,7 +106,7 @@
               </ul>
             </li>
             <li>
-              <h4> {{ $t('settings.notification_visibility_emoji_reactions') }}</h4>
+              <h5> {{ $t('settings.notification_visibility_emoji_reactions') }}</h5>
               <ul class="setting-list">
                 <li>
                   <BooleanSetting path="notificationVisibility.emojiReactions">
@@ -121,7 +121,7 @@
               </ul>
             </li>
             <li>
-              <h4> {{ $t('settings.notification_visibility_follows') }}</h4>
+              <h5> {{ $t('settings.notification_visibility_follows') }}</h5>
               <ul class="setting-list">
                 <li>
                   <BooleanSetting path="notificationVisibility.follows">
@@ -136,7 +136,7 @@
               </ul>
             </li>
             <li>
-              <h4> {{ $t('settings.notification_visibility_follow_requests') }}</h4>
+              <h5> {{ $t('settings.notification_visibility_follow_requests') }}</h5>
               <ul class="setting-list">
                 <li>
                   <BooleanSetting path="notificationVisibility.followRequest">
@@ -151,7 +151,7 @@
               </ul>
             </li>
             <li>
-              <h4> {{ $t('settings.notification_visibility_moves') }}</h4>
+              <h5> {{ $t('settings.notification_visibility_moves') }}</h5>
               <ul class="setting-list">
                 <li>
                   <BooleanSetting path="notificationVisibility.moves">
@@ -166,7 +166,7 @@
               </ul>
             </li>
             <li>
-              <h4> {{ $t('settings.notification_visibility_polls') }}</h4>
+              <h5> {{ $t('settings.notification_visibility_polls') }}</h5>
               <ul class="setting-list">
                 <li>
                   <BooleanSetting path="notificationVisibility.polls">
@@ -181,7 +181,7 @@
               </ul>
             </li>
             <li v-if="canReceiveReports">
-              <h4> {{ $t('settings.notification_visibility_reports') }}</h4>
+              <h5> {{ $t('settings.notification_visibility_reports') }}</h5>
               <ul class="setting-list">
                 <li>
                   <BooleanSetting path="notificationVisibility.reports">
@@ -201,8 +201,6 @@
           <BooleanSetting path="showExtraNotifications">
             {{ $t('settings.notification_show_extra') }}
           </BooleanSetting>
-        </li>
-        <li>
           <ul class="setting-list suboptions">
             <li>
               <BooleanSetting
@@ -245,7 +243,7 @@
       v-if="expertLevel > 0"
       class="setting-item"
     >
-      <h2>{{ $t('settings.notification_setting_privacy') }}</h2>
+      <h3>{{ $t('settings.notification_setting_privacy') }}</h3>
       <ul class="setting-list">
         <li>
           <BooleanSetting

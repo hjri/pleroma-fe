@@ -14,13 +14,33 @@ library.add(
 )
 
 const ScopeSelector = {
-  props: [
-    'showAll',
-    'userDefault',
-    'originalScope',
-    'initialScope',
-    'onScopeChange'
-  ],
+  props: {
+    showAll: {
+      required: true,
+      type: Boolean
+    },
+    userDefault: {
+      required: true,
+      type: String
+    },
+    originalScope: {
+      required: false,
+      type: String
+    },
+    initialScope: {
+      required: false,
+      type: String
+    },
+    onScopeChange: {
+      required: true,
+      type: Function
+    },
+    unstyled: {
+      required: false,
+      type: Boolean,
+      default: true
+    }
+  },
   data () {
     return {
       currentScope: this.initialScope
@@ -43,11 +63,12 @@ const ScopeSelector = {
       return this.shouldShow('direct')
     },
     css () {
+      const style = this.unstyled ? 'button-unstyled' : 'button-default'
       return {
-        public: { toggled: this.currentScope === 'public' },
-        unlisted: { toggled: this.currentScope === 'unlisted' },
-        private: { toggled: this.currentScope === 'private' },
-        direct: { toggled: this.currentScope === 'direct' }
+        public: [style, { toggled: this.currentScope === 'public' }],
+        unlisted: [style, { toggled: this.currentScope === 'unlisted' }],
+        private: [style, { toggled: this.currentScope === 'private' }],
+        direct: [style, { toggled: this.currentScope === 'direct' }]
       }
     }
   },
