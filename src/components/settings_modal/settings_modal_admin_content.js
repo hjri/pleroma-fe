@@ -1,6 +1,7 @@
 import VerticalTabSwitcher from './helpers/vertical_tab_switcher.jsx'
 
 import InstanceTab from './admin_tabs/instance_tab.vue'
+import LinksTab from './admin_tabs/links_tab.vue'
 import LimitsTab from './admin_tabs/limits_tab.vue'
 import FrontendsTab from './admin_tabs/frontends_tab.vue'
 import MediaProxyTab from './admin_tabs/media_proxy_tab.vue'
@@ -15,6 +16,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faWrench,
   faHand,
+  faChain,
   faLaptopCode,
   faTowerBroadcast,
   faEnvelope,
@@ -26,6 +28,7 @@ import {
 library.add(
   faWrench,
   faHand,
+  faChain,
   faLaptopCode,
   faTowerBroadcast,
   faEnvelope,
@@ -45,6 +48,7 @@ const SettingsModalAdminContent = {
     MailerTab,
     EmojiTab,
     UploadsTab,
+    LinksTab,
     MonitoringTab,
     RegistrationsTab
   },

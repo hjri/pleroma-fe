@@ -131,6 +131,19 @@
           </ul>
         </li>
       </ul>
+      <h3>{{ $t('admin_dash.instance.rich_metadata') }}</h3>
+      <ul class="setting-list">
+        <li>
+          <MultiCheckboxSetting
+            :path="[':pleroma','Pleroma.Web.Metadata', ':providers']"
+            />
+        </li>
+        <li>
+          <BooleanSetting
+            :path="[':pleroma','Pleroma.Web.Metadata', ':unfurl_nsfw']"
+            />
+        </li>
+      </ul>
     </div>
   </div>
 </template>

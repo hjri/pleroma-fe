@@ -1,10 +1,9 @@
 <template>
-  <label
+  <div
     v-if="matchesExpertLevel"
-    class="StringSetting"
+    class="ListSetting"
   >
     <label
-      :for="path"
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
@@ -16,22 +15,6 @@
       </template>
       <slot v-else />
     </label>
-    {{ ' ' }}
-    <Checkbox
-      v-for="option in value"
-      :model-value="value"
-      :disabled="shouldBeDisabled"
-      @update:model-value="update"
-    >
-      {{ value }}
-    </Checkbox>
-    {{ ' ' }}
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
-    <ProfileSettingIndicator :is-profile="isProfileSetting" />
-    <DraftButtons />
     <p
       v-if="backendDescriptionDescription"
       class="setting-description"
@@ -39,7 +22,53 @@
     >
       {{ backendDescriptionDescription + ' ' }}
     </p>
-  </label>
+    <ul class="setting-list">
+      <li
+        class="btn-group"
+        v-for="(item, index) in visibleState"
+      >
+        <input
+          class="input string-input"
+          :class="{ disabled: shouldBeDisabled }"
+          :value="item"
+          @change="e => update({event: e, index })"
+        >
+        <button
+          class="button-default"
+          @click="e => update({ remove: true, index })"
+        >
+          <FAIcon icon="times" />
+        </button>
+      </li>
+      <li class="btn-group">
+        <input
+          class="input string-input"
+          :class="{ disabled: shouldBeDisabled }"
+          :disabled="shouldBeDisabled"
+          v-model="newValue"
+        >
+        <button
+          class="button-default"
+          @click="addNew"
+        >
+          <FAIcon icon="plus" />
+        </button>
+      </li>
+    </ul>
+    <ModifiedIndicator
+      :changed="isChanged"
+      :onclick="reset"
+    />
+    <ProfileSettingIndicator :is-profile="isProfileSetting" />
+    <DraftButtons />
+  </div>
 </template>
 
-<script src="./string_setting.js"></script>
+<style lang="scss">
+.ListSetting {
+  li.btn-group {
+    display: flex
+  }
+}
+</style>
+<script src="./list_setting.js"></script>

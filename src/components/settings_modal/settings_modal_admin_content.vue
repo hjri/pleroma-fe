@@ -107,6 +107,14 @@
     </div>
 
     <div
+      :label="$t('admin_dash.tabs.links')"
+      icon="chain"
+      data-tab-name="links"
+    >
+      <LinksTab />
+    </div>
+
+    <div
       :label="$t('admin_dash.tabs.monitoring')"
       icon="chart-line"
       data-tab-name="monitoring"

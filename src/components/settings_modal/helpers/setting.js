@@ -1,7 +1,7 @@
 import ModifiedIndicator from './modified_indicator.vue'
 import ProfileSettingIndicator from './profile_setting_indicator.vue'
 import DraftButtons from './draft_buttons.vue'
-import { get, set, cloneDeep } from 'lodash'
+import { get, set, cloneDeep, isEqual } from 'lodash'
 
 export default {
   components: {
@@ -237,7 +237,7 @@ export default {
       if (this.realSource === 'admin' && this.canonPath.length > 3) {
         return false // should not show draft buttons for "grouped" values
       } else {
-        return this.realDraftMode && this.draft !== this.state
+        return this.realDraftMode && !isEqual(this.draft, this.state)
       }
     },
     canHardReset () {
