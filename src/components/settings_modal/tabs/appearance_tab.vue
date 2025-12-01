@@ -154,46 +154,67 @@
         </div>
       </div>
       <h3>{{ $t('settings.background') }}</h3>
-      <div class="banner-background-preview">
-        <img :src="user.background_image">
-        <button
-          v-if="!isDefaultBackground"
-          class="button-unstyled reset-button"
-          :title="$t('settings.reset_profile_background')"
-          @click="resetBackground"
-        >
-          <FAIcon
-            icon="times"
-            type="button"
-          />
-        </button>
+      <div class="banner-background">
+        <div class="banner-background-preview">
+          <div class="fun-monitor">
+            <div class="fun-monitor-stand button-default" />
+            <div class="fun-monitor-neck button-default" />
+            <div class="fun-monitor-display-bezel button-default">
+              <div class="fun-monitor-display-screen input">
+              <img
+                v-if="backgroundPreview || user.background_image || instanceWallpaper"
+                class="fun-monitor-display-screen-image"
+                :src="backgroundPreview || user.background_image || instanceWallpaper"
+              />
+              <div v-else class="wallpaper" />
+              <div class="fun-monitor-display-screen-overlay input" />
+                <div
+                  v-if="backgroundUploading"
+                  class="fun-monitor-display-uploading"
+                >
+                  <FAIcon
+                    class="fun-monitor-display-screen-uploading"
+                    spin
+                    icon="circle-notch"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="banner-background-input">
+          <h4>{{ $t('settings.set_new_background') }}</h4>
+          <input
+            type="file"
+            class="input"
+            @change="uploadFile('background', $event)"
+          >
+          <div class="custom-bg-control">
+            <button
+              :disabled="!backgroundPreview"
+              class="btn button-default"
+              @click="submitBackground(background)"
+            >
+              {{ $t('settings.save') }}
+            </button>
+            <button
+              :disabled="!backgroundPreview"
+              class="btn button-default"
+              @click="resetUploadedBackground"
+            >
+              {{ $t('settings.reset') }}
+            </button>
+          </div>
+          <button
+            v-if="!isDefaultBackground"
+            class="btn button-default reset-button"
+            :title="$t('settings.reset_profile_background')"
+            @click="resetBackground"
+          >
+            {{ $t('settings.reset_profile_background') }}
+          </button>
+        </div>
       </div>
-      <p>{{ $t('settings.set_new_background') }}</p>
-      <img
-        v-if="backgroundPreview"
-        class="banner-background-preview"
-        :src="backgroundPreview"
-      >
-      <div>
-        <input
-          type="file"
-          class="input"
-          @change="uploadFile('background', $event)"
-        >
-      </div>
-      <FAIcon
-        v-if="backgroundUploading"
-        class="uploading"
-        spin
-        icon="circle-notch"
-      />
-      <button
-        v-else-if="backgroundPreview"
-        class="btn button-default"
-        @click="submitBackground(background)"
-      >
-        {{ $t('settings.save') }}
-      </button>
       <h3>{{ $t('settings.visual_tweaks') }}</h3>
       <div class="alert neutral theme-notice">
         {{ $t("settings.style.visual_tweaks_section_note") }}

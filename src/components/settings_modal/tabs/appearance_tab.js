@@ -236,6 +236,10 @@ const AppearanceTab = {
     noIntersectionObserver () {
       return !window.IntersectionObserver
     },
+    instanceWallpaper () {
+      console.log(this.$store.state.instance.background)
+      this.$store.state.instance.background
+    },
     instanceWallpaperUsed () {
       return this.$store.state.instance.background &&
         !this.$store.state.users.currentUser.background_image
@@ -410,6 +414,9 @@ const AppearanceTab = {
       if (confirmed) {
         this.submitBackground('')
       }
+    },
+    resetUploadedBackground () {
+      this.backgroundPreview = null
     },
     submitBackground (background) {
       if (!this.backgroundPreview && background !== '') { return }
