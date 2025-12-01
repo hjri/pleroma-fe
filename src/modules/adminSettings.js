@@ -105,7 +105,7 @@ const adminSettingsStorage = {
         }
         set(config, path, convert(c.value))
       })
-      console.log('CONFIG', config)
+      console.log('CONFIG', JSON.parse(JSON.stringify(config)))
       commit('updateAdminSettings', { config, modifiedPaths })
       commit('resetAdminDraft')
     },
@@ -208,7 +208,7 @@ const adminSettingsStorage = {
         .then(backendDbConfig => dispatch('setInstanceAdminSettings', { backendDbConfig }))
     },
     resetAdminSetting ({ rootState, state, dispatch }, { path }) {
-      const [group, key, subkey] = path.split(/\./g)
+      const [group, key, subkey] = Array.isArray(path) ? path : path.split(/\./g)
 
       state.modifiedPaths.delete(path)
 

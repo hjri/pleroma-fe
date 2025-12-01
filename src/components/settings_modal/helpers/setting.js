@@ -77,7 +77,7 @@ export default {
   },
   created () {
     if (this.realDraftMode && (this.realSource !== 'admin' || this.path == null)) {
-      this.draft = this.state
+      this.draft = cloneDeep(this.state)
     }
   },
   computed: {
@@ -158,7 +158,14 @@ export default {
       if (this.path == null) {
         return this.disabled
       }
-      const parentValue = this.parentPath !== undefined ? get(this.configSource, this.parentPath) : null
+      let parentValue = null
+      if (this.parentPath !== undefined && this.realSource === 'admin') {
+        if (this.realDraftMode) {
+          parentValue = get(this.$store.state.adminSettings.draft, this.parentPath)
+        } else {
+          parentValue = get(this.configSource, this.parentPath)
+        }
+      }
       return this.disabled || (parentValue !== null ? (this.parentInvert ? parentValue : !parentValue) : false)
     },
     configSource () {

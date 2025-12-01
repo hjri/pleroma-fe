@@ -45,6 +45,9 @@ const MailerTab = {
     adapter () {
       return this.$store.state.adminSettings.draft[':pleroma']['Pleroma.Emails.Mailer'][':adapter']
     },
+    mailerEnabled () {
+      return this.$store.state.adminSettings.draft[':pleroma']['Pleroma.Emails.Mailer'][':enabled']
+    },
     ...SharedComputedObject()
   },
   methods: {

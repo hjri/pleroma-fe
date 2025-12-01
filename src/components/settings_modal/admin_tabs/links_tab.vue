@@ -5,12 +5,11 @@
       <ul class="setting-list">
         <li>
           <BooleanSetting path=":pleroma.:media_proxy.:enabled" />
-          <ul
-            v-if="mediaProxyEnabled"
-            class="setting-list suboptions"
-          >
+          <ul class="setting-list suboptions">
             <li>
-              <StringSetting path=":pleroma.:media_proxy.:base_url" />
+              <StringSetting
+                path=":pleroma.:media_proxy.:base_url"
+                />
             </li>
           </ul>
         </li>
@@ -36,7 +35,7 @@
                     <StringSetting
                       :path="[':pleroma', 'Pleroma.Web.MediaProxy.Invalidation.Http', ':method']"
                       parent-path=":pleroma.:media_proxy.:invalidation.:enabled"
-                    />
+                      />
                   </li>
                   <!-- TODO: you know the drill by now - list component AGAIN -->
                 </template>
