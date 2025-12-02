@@ -7,7 +7,7 @@
           <BooleanSetting path=":pleroma.:rich_media.:enabled" />
         </li>
         <li>
-          <MultiCheckboxSetting
+          <ListSetting
             :override-available-options="parsersOptions"
             path=":pleroma.:rich_media.:parsers"
           />
@@ -18,13 +18,16 @@
           />
         </li>
         <li>
-          <MultiCheckboxSetting
+          <ListSetting
             :override-available-options="ttlSettersOptions"
             path=":pleroma.:rich_media.:ttl_setters"
           />
         </li>
         <li>
-          <ListSetting path=":pleroma.:rich_media.:ignore_tld" />
+          <ListSetting
+            path=":pleroma.:rich_media.:ignore_tld"
+            ignore-suggestions
+          />
         </li>
         <li>
           <ListSetting path=":pleroma.:rich_media.:ignore_hosts" />

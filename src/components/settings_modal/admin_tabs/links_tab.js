@@ -5,7 +5,6 @@ import StringSetting from '../helpers/string_setting.vue'
 import GroupSetting from '../helpers/group_setting.vue'
 import AttachmentSetting from '../helpers/attachment_setting.vue'
 import ListSetting from '../helpers/list_setting.vue'
-import MultiCheckboxSetting from '../helpers/multicheckbox_setting.vue'
 
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import { get } from 'lodash'
@@ -24,13 +23,12 @@ const MediaProxyTab = {
     StringSetting,
     AttachmentSetting,
     GroupSetting,
-    ListSetting,
-    MultiCheckboxSetting
+    ListSetting
   },
   computed: {
     ttlSettersOptions () {
       const desc = get(this.$store.state.adminSettings.descriptions, ':pleroma.:rich_media.:ttl_setters')
-      return new Set([...desc.suggestions, 'Pleroma.Web.RichMedia.Parser.TTL.Opengraph'].map(option => ({
+      return new Set(desc.suggestions.map(option => ({
         label: option.replace('Pleroma.Web.RichMedia.Parser.TTL.', ''),
         value: option
       })))

@@ -4,17 +4,10 @@ import IntegerSetting from '../helpers/integer_setting.vue'
 import StringSetting from '../helpers/string_setting.vue'
 import GroupSetting from '../helpers/group_setting.vue'
 import AttachmentSetting from '../helpers/attachment_setting.vue'
-import MultiCheckboxSetting from '../helpers/multicheckbox_setting.vue'
+import ListSetting from '../helpers/list_setting.vue'
 
 import SharedComputedObject from '../helpers/shared_computed_object.js'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faGlobe
-} from '@fortawesome/free-solid-svg-icons'
-
-library.add(
-  faGlobe
-)
+import { get } from 'lodash'
 
 const InstanceTab = {
   provide () {
@@ -29,11 +22,18 @@ const InstanceTab = {
     IntegerSetting,
     StringSetting,
     AttachmentSetting,
-    MultiCheckboxSetting,
+    ListSetting,
     GroupSetting
   },
   computed: {
-    ...SharedComputedObject()
+    ...SharedComputedObject(),
+    providersOptions () {
+      const desc = get(this.$store.state.adminSettings.descriptions, [':pleroma', 'Pleroma.Web.Metadata', ':providers'])
+      return new Set(desc.suggestions.map(option => ({
+        label: option.replace('Pleroma.Web.Metadata.Providers.', ''),
+        value: option
+      })))
+    },
   }
 }
 

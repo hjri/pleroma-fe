@@ -23,36 +23,46 @@
       {{ backendDescriptionDescription + ' ' }}
     </p>
     <ul class="setting-list">
-      <li
-        class="btn-group"
-        v-for="(item, index) in visibleState"
-      >
-        <input
-          class="input string-input"
-          :class="{ disabled: shouldBeDisabled }"
-          :value="item"
-          @change="e => update({event: e, index })"
-        >
-        <button
-          class="button-default"
-          @click="e => update({ remove: true, index })"
-        >
-          <FAIcon icon="times" />
-        </button>
-      </li>
-      <li class="btn-group">
-        <input
-          class="input string-input"
-          :class="{ disabled: shouldBeDisabled }"
+      <li v-for="item in builtinEntries">
+        <Checkbox
           :disabled="shouldBeDisabled"
-          v-model="newValue"
+          :model-value="optionPresent(item.value)"
+          @update:model-value="e => update({ event, eventType: 'toggle' })"
         >
-        <button
-          class="button-default"
-          @click="addNew"
-        >
-          <FAIcon icon="plus" />
-        </button>
+          {{ item.label }}
+        </Checkbox>
+      </li>
+      <li v-for="(item, index) in extraEntries">
+        <div class="btn-group">
+          <input
+            class="input string-input"
+            :class="{ disabled: shouldBeDisabled }"
+            :value="item"
+            @change="e => update({ event: e, index, eventType: 'edit' })"
+          >
+          <button
+            class="button-default"
+            @click="e => update({ index, eventType: 'remove' })"
+          >
+            <FAIcon icon="times" />
+          </button>
+        </div>
+      </li>
+      <li v-if="allowNew">
+        <div class="btn-group">
+          <input
+            class="input string-input"
+            :class="{ disabled: shouldBeDisabled }"
+            :disabled="shouldBeDisabled"
+            v-model="newValue"
+          >
+          <button
+            class="button-default"
+            @click="e => update({ eventType: 'add' })"
+          >
+            <FAIcon icon="plus" />
+          </button>
+        </div>
       </li>
     </ul>
     <ModifiedIndicator
@@ -66,7 +76,7 @@
 
 <style lang="scss">
 .ListSetting {
-  li.btn-group {
+  .btn-group {
     display: flex
   }
 }

@@ -134,7 +134,8 @@
       <h3>{{ $t('admin_dash.instance.rich_metadata') }}</h3>
       <ul class="setting-list">
         <li>
-          <MultiCheckboxSetting
+          <ListSetting
+            :override-available-options="providersOptions"
             :path="[':pleroma','Pleroma.Web.Metadata', ':providers']"
             />
         </li>
