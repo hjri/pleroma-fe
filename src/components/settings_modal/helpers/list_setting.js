@@ -44,7 +44,7 @@ export default {
     extraEntries () {
       if (this.ignoreSuggestions) return [...this.valueSet.values()]
       return [...this.valueSet.values()].filter((x) => {
-        return !this.suggestions.has(x)
+        return !this.suggestions?.has(x)
       })
     },
     builtinEntries () {

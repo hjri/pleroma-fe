@@ -1,7 +1,7 @@
 <template>
-  <span
+  <label
     v-if="matchesExpertLevel"
-    class="NumberSetting"
+    class="TupleSetting"
   >
     <label
       v-if="!hideLabel"
@@ -20,14 +20,22 @@
     {{ ' ' }}
     <input
       :id="path"
-      class="input number-input"
-      type="number"
-      :step="step || 1"
+      class="input string-input"
+      :class="{ disabled: shouldBeDisabled }"
       :disabled="shouldBeDisabled"
-      :placeholder="backendDescriptionSuggestions"
-      :min="min || 0"
-      :value="realDraftMode ? draft :state"
-      @change="update"
+      :placeholder="backendDescriptionSuggestions?.[0]?.[0]"
+      :value="visibleState?.[0]"
+      @change="e => update({ e, side: 0 })"
+    >
+    {{ ' ' }}
+    <input
+      :id="path"
+      class="input string-input"
+      :class="{ disabled: shouldBeDisabled }"
+      :disabled="shouldBeDisabled"
+      :placeholder="backendDescriptionSuggestions?.[0]?.[1]"
+      :value="visibleState?.[1]"
+      @change="e => update({ e, side: 1 })"
     >
     {{ ' ' }}
     <ModifiedIndicator
@@ -43,7 +51,7 @@
     >
       {{ backendDescriptionDescription + ' ' }}
     </p>
-  </span>
+  </label>
 </template>
 
-<script src="./number_setting.js"></script>
+<script src="./tuple_setting.js"></script>

@@ -1158,7 +1158,12 @@
       "uploads": "Uploads",
       "monitoring": "Monitoring",
       "registrations": "Registrations",
-      "links": "Links"
+      "links": "Links",
+      "job_queues": "Job Queues"
+    },
+    "job_queues": {
+      "Oban": "Oban queues",
+      "queues": "Queues"
     },
     "nodb": {
       "heading": "Database config is disabled",
@@ -1305,6 +1310,18 @@
     },
     "temp_overrides": {
       ":pleroma": {
+        "Oban": {
+          ":queues": {
+            ":scheduled_activites": {
+              "label": "Scheduled activities",
+              "description": "Scheduled activites queue"
+            },
+            ":slow": {
+              "label": "Slow",
+              "description": "idk"
+            }
+          }
+        },
         "Pleroma_DOT_Formatter": {
           ":attribute_toggle": {
             "label": "Set {attr} attribute"

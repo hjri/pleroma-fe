@@ -18,6 +18,10 @@ export default {
       type: [String, Array],
       required: false
     },
+    suggestions: {
+      type: [String, Array],
+      required: false
+    },
     subgroup: {
       type: String,
       required: false
@@ -52,6 +56,9 @@ export default {
     },
     swapDescriptionAndLabel: {
       type: Boolean
+    },
+    backendDescriptionPath: {
+      type: [String, Array]
     },
     overrideBackendDescription: {
       type: Boolean
@@ -158,7 +165,7 @@ export default {
       }
     },
     backendDescriptionSuggestions () {
-      return this.backendDescription?.suggestions
+      return this.backendDescription?.suggestions || this.suggestions
     },
     shouldBeDisabled () {
       if (this.path == null) {
@@ -228,6 +235,7 @@ export default {
     },
     descriptionPath () {
       if (this.path == null) return null
+      if (this.backendDescriptionPath) return this.backendDescriptionPath
       const path = Array.isArray(this.path) ? this.path : this.path.split('.')
       if (this.subgroup) {
         return [

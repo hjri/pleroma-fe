@@ -74,7 +74,7 @@
           />
         </li>
       </ul>
-      <!-- TODO confirm with backend on how filters work -->
+      <!-- CONFIRM how filters work -->
       <h3>{{ $t('admin_dash.uploads.filenames') }}</h3>
       <ul class="setting-list">
         <li>

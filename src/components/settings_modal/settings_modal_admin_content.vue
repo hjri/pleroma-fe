@@ -115,6 +115,14 @@
     </div>
 
     <div
+      :label="$t('admin_dash.tabs.job_queues')"
+      icon="gears"
+      data-tab-name="job_queues"
+    >
+      <JobQueuesTab />
+    </div>
+
+    <div
       :label="$t('admin_dash.tabs.monitoring')"
       icon="chart-line"
       data-tab-name="monitoring"
