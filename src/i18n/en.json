@@ -1206,7 +1206,8 @@
       "basic": "Basic Settings",
       "invalidation": "Cache Invalidation",
       "limits": "Limits",
-      "thumbnails": "Thumbnail Generation"
+      "thumbnails": "Thumbnail Generation",
+      "invalidation_settings": "Cache Invalidation"
     },
     "mailer": {
       "adapter": "Mailing Adapter",

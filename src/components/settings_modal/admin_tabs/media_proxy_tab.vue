@@ -30,15 +30,24 @@
               <h4>{{ $t('admin_dash.media_proxy.invalidation_settings') }}</h4>
               <ul class="setting-list suboptions">
                 <template v-if="mediaInvalidationProvider === 'Pleroma.Web.MediaProxy.Invalidation.Http'">
-                  <!-- TODO: you know the drill by now - list component -->
                   <li>
-                    <!-- choice maybe? -->
                     <StringSetting
                       :path="[':pleroma', 'Pleroma.Web.MediaProxy.Invalidation.Http', ':method']"
                       parent-path=":pleroma.:media_proxy.:invalidation.:enabled"
                     />
                   </li>
-                  <!-- TODO: you know the drill by now - list component AGAIN -->
+                  <li>
+                    <ListSetting
+                      :path="[':pleroma', 'Pleroma.Web.MediaProxy.Invalidation.Http', ':headers']"
+                      parent-path=":pleroma.:media_proxy.:invalidation.:enabled"
+                    />
+                  </li>
+                  <li>
+                    <ListSetting
+                      :path="[':pleroma', 'Pleroma.Web.MediaProxy.Invalidation.Http', ':options']"
+                      parent-path=":pleroma.:media_proxy.:invalidation.:enabled"
+                    />
+                  </li>
                 </template>
                 <template v-if="mediaInvalidationProvider === 'Pleroma.Web.MediaProxy.Invalidation.Script'">
                   <!-- TODO: you know the drill by now - list component -->
@@ -73,6 +82,9 @@
           </li>
           <li>
             <BooleanSetting path=":pleroma.:media_proxy.:proxy_opts.:redirect_on_failure" />
+          </li>
+          <li>
+            <GroupSetting path=":pleroma.:media_proxy.:proxy_opts" />
           </li>
         </ul>
         <!-- TODO: add whitelist when we have list component (hehe) -->

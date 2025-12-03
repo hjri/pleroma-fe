@@ -4,6 +4,7 @@ import IntegerSetting from '../helpers/integer_setting.vue'
 import StringSetting from '../helpers/string_setting.vue'
 import GroupSetting from '../helpers/group_setting.vue'
 import AttachmentSetting from '../helpers/attachment_setting.vue'
+import ListSetting from '../helpers/list_setting.vue'
 
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
@@ -20,7 +21,8 @@ const MediaProxyTab = {
     IntegerSetting,
     StringSetting,
     AttachmentSetting,
-    GroupSetting
+    GroupSetting,
+    ListSetting
   },
   computed: {
     mediaProxyEnabled () {
