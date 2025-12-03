@@ -1194,6 +1194,7 @@
       }
     },
     "links": {
+      "no_scheme": "No scheme",
       "link_previews": "Link previews",
       "link_formatter": "Link formatter"
     },

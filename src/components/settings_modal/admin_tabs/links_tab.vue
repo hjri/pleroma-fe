@@ -101,8 +101,9 @@
         </li>
         <li>
           <ChoiceSetting
-            :options="validateTLDOptions"
             :path="[':pleroma', 'Pleroma.Formatter', ':validate_tld']"
+            :options="validateTLDOptions"
+            override-options
           />
         </li>
         <li>

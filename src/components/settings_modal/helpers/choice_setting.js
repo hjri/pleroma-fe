@@ -9,6 +9,10 @@ export default {
   },
   props: {
     ...Setting.props,
+    overrideOptions: {
+      type: Boolean,
+      required: false
+    },
     options: {
       type: Array,
       required: false
@@ -22,6 +26,9 @@ export default {
   computed: {
     ...Setting.computed,
     realOptions () {
+      if (this.overrideOptions) {
+        return this.options
+      }
       if (this.realSource === 'admin') {
         if (
           !this.backendDescriptionSuggestions?.length ||
