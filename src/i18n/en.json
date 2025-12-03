@@ -1157,7 +1157,8 @@
       "emoji": "Emoji",
       "uploads": "Uploads",
       "monitoring": "Monitoring",
-      "registrations": "Registrations"
+      "registrations": "Registrations",
+      "links": "Links"
     },
     "nodb": {
       "heading": "Database config is disabled",
@@ -1191,6 +1192,10 @@
         "chat_message": "Via chat",
         "email_message": "Via email"
       }
+    },
+    "links": {
+      "link_previews": "Link previews",
+      "link_formatter": "Link formatter"
     },
     "uploads": {
       "general": "General settings",
@@ -1294,6 +1299,20 @@
     },
     "temp_overrides": {
       ":pleroma": {
+        "Pleroma_DOT_Formatter": {
+          ":attribute_toggle": {
+            "label": "Set {attr} attribute"
+          },
+          ":truncate_toggle": {
+            "label": "Truncate"
+          },
+          ":class": {
+            "label": "Value"
+          },
+          ":rel": {
+            "label": "Value"
+          }
+        },
         "Pleroma_DOT_Uploaders_DOT_Uploader": {
           ":timeout": {
             "label": "Timeout",

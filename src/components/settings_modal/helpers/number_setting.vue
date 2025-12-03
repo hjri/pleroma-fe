@@ -4,7 +4,9 @@
     class="NumberSetting"
   >
     <label
+      v-if="!hideLabel"
       :for="path"
+      class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
       <template v-if="backendDescriptionLabel">
@@ -32,7 +34,7 @@
       :onclick="reset"
     />
     <ProfileSettingIndicator :is-profile="isProfileSetting" />
-    <DraftButtons />
+    <DraftButtons v-if="!hideDraftButtons" />
     <p
       v-if="backendDescriptionDescription"
       class="setting-description"

@@ -41,6 +41,12 @@ export default {
       type: String,
       default: undefined
     },
+    hideDraftButtons: { // this is for the weird backend hybrid (Boolean|String or Boolean|Number) settings
+      type: Boolean
+    },
+    hideLabel: {
+      type: Boolean
+    },
     hideDescription: {
       type: Boolean
     },
@@ -265,6 +271,7 @@ export default {
       }
     },
     reset () {
+      console.log('RS', this.state, this.draft)
       if (this.realDraftMode) {
         this.draft = cloneDeep(this.state)
       } else {

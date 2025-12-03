@@ -3,6 +3,7 @@
 <template>
   <span
     class="DraftButtons"
+    v-if="$parent.isDirty"
   >
     <Popover
       v-if="$parent.isDirty"
@@ -74,10 +75,8 @@ export default {
 .DraftButtons {
   display: inline-block;
   position: relative;
-
-  .button-default {
-    margin-left: 0.5em;
-  }
+  display: inline-flex;
+  gap: 0.5em;
 }
 
 .draft-tooltip {

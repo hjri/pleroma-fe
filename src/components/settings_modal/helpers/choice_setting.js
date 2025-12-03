@@ -23,7 +23,10 @@ export default {
     ...Setting.computed,
     realOptions () {
       if (this.realSource === 'admin') {
-        if (!(this.backendDescriptionSuggestions?.length !== 0)) {
+        if (
+          !this.backendDescriptionSuggestions?.length ||
+            this.backendDescriptionSuggestions?.length === 0
+        ) {
           return this.options
         }
         return this.backendDescriptionSuggestions.map(x => ({

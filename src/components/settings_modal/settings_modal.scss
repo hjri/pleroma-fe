@@ -42,7 +42,14 @@
     }
 
     li {
-      margin: 1em 0;
+      display: block;
+      margin: 0.75em 0;
+
+      > label {
+        display: block;
+        margin: 0.75em 0;
+        padding: 0.5em 0;
+      }
     }
 
     .suboptions {
@@ -62,7 +69,7 @@
 
   .setting-description {
     margin-top: 0.2em;
-    margin-bottom: 2em;
+    margin-bottom: 0;
     font-size: 70%;
   }
 

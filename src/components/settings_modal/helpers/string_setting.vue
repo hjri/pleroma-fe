@@ -4,6 +4,7 @@
     class="StringSetting"
   >
     <label
+      v-if="!hideLabel"
       :for="path"
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
@@ -31,7 +32,7 @@
       :onclick="reset"
     />
     <ProfileSettingIndicator :is-profile="isProfileSetting" />
-    <DraftButtons />
+    <DraftButtons v-if="!hideDraftButtons" />
     <p
       v-if="backendDescriptionDescription"
       class="setting-description"
