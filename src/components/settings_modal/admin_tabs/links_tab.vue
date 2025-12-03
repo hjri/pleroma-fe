@@ -127,6 +127,13 @@
             </li>
           </div>
         </li>
+        <li>
+          <!-- CONFIRM backend what's difference between here and :extra -->
+          <ListSetting
+            ignore-suggestions
+            path=":pleroma.:uri_schemes.:valid_schemes"
+          />
+        </li>
       </ul>
     </div>
   </div>

@@ -14,6 +14,9 @@
           />
         </li>
         <li>
+          <StringSetting path=":pleroma.:instance.:contact_username" />
+        </li>
+        <li>
           <StringSetting path=":pleroma.:instance.:email" />
         </li>
         <li>
