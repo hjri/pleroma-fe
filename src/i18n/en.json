@@ -1199,7 +1199,8 @@
       "link_formatter": "Link formatter"
     },
     "uploads": {
-      "general": "General settings",
+      "attachments": "Attachments settings",
+      "upload": "Upload",
       "filenames": "Filenames, Titles and Descriptions",
       "uploader_settings": "Uploader settings"
     },

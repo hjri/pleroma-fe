@@ -1,7 +1,7 @@
 <template>
   <div :label="$t('admin_dash.tabs.uploads')">
     <div class="setting-item">
-      <h3>{{ $t('admin_dash.uploads.general') }}</h3>
+      <h3>{{ $t('admin_dash.uploads.upload') }}</h3>
       <ul class="setting-list">
         <li>
           <ChoiceSetting
@@ -57,6 +57,21 @@
               />
             </li>
           </ul>
+        </li>
+      </ul>
+      <h3>{{ $t('admin_dash.uploads.attachments') }}</h3>
+      <ul class="setting-list">
+        <li>
+          <BooleanSetting
+            path=":pleroma.:instance.:attachment_links"
+            :options="uploaders"
+          />
+        </li>
+        <li>
+          <BooleanSetting
+            path=":pleroma.:instance.:cleanup_attachments"
+            :options="uploaders"
+          />
         </li>
       </ul>
       <!-- TODO confirm with backend on how filters work -->
