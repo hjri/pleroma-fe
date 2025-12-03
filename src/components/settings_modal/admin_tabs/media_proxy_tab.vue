@@ -12,6 +12,12 @@
             <li>
               <StringSetting path=":pleroma.:media_proxy.:base_url" />
             </li>
+            <li>
+              <BooleanSetting path=":pleroma.:media_proxy.:proxy_opts.:redirect_on_failure" />
+            </li>
+            <li>
+              <ListSetting path=":pleroma.:media_proxy.:whitelist" />
+            </li>
           </ul>
         </li>
       </ul>
@@ -79,9 +85,6 @@
             <IntegerSetting
               path=":pleroma.:media_proxy.:proxy_opts.:max_read_duration"
             />
-          </li>
-          <li>
-            <BooleanSetting path=":pleroma.:media_proxy.:proxy_opts.:redirect_on_failure" />
           </li>
           <li>
             <GroupSetting path=":pleroma.:media_proxy.:proxy_opts" />

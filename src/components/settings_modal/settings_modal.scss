@@ -41,6 +41,12 @@
       padding: 0 2em;
     }
 
+    .btn-group {
+      .button-default {
+        flex: 0 1 auto;
+      }
+    }
+
     li {
       display: block;
       margin: 0.75em 0;

@@ -23,6 +23,7 @@
       class="input string-input"
       :class="{ disabled: shouldBeDisabled }"
       :disabled="shouldBeDisabled"
+      :placeholder="backendDescriptionSuggestions"
       :value="realDraftMode ? draft : state"
       @change="update"
     >
