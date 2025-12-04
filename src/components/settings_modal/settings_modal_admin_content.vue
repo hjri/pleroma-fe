@@ -58,6 +58,14 @@
     </div>
 
     <div
+      :label="$t('admin_dash.tabs.auth')"
+      icon="key"
+      data-tab-name="monitoring"
+    >
+      <AuthTab />
+    </div>
+
+    <div
       :label="$t('admin_dash.tabs.emoji')"
       icon="face-smile-beam"
       data-tab-name="emoji"

@@ -53,6 +53,7 @@ export default {
     },
     suggestionsSet () {
       const suggestions = this.backendDescriptionSuggestions
+      console.log(suggestions)
       if (suggestions) {
         return new Set(suggestions)
       } else {
@@ -93,6 +94,7 @@ export default {
         }
 
         case 'add': {
+          if (!this.newValue) return this.visibleState
           const res = [...this.visibleState, this.newValue]
           this.newValue = ''
           return res
@@ -108,7 +110,8 @@ export default {
         case 'edit': {
           const pre = this.visibleState.slice(0, index)
           const post = this.visibleState.slice(index + 1)
-          const string = event?.target?.value
+          const string = event.target.value
+          if (!string) return this.visibleState
 
           return [...pre, string, ...post]
         }

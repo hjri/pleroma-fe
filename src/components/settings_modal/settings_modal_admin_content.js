@@ -10,6 +10,7 @@ import UploadsTab from './admin_tabs/uploads_tab.vue'
 import MailerTab from './admin_tabs/mailer_tab.vue'
 import MonitoringTab from './admin_tabs/monitoring_tab.vue'
 import RegistrationsTab from './admin_tabs/registrations_tab.vue'
+import AuthTab from './admin_tabs/auth_tab.vue'
 import JobQueuesTab from './admin_tabs/job_queues_tab.vue'
 import { useInterfaceStore } from 'src/stores/interface'
 
@@ -24,6 +25,7 @@ import {
   faChartLine,
   faDoorOpen,
   faGears,
+  faKey,
   faUpload
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -37,6 +39,7 @@ library.add(
   faChartLine,
   faDoorOpen,
   faGears,
+  faKey,
   faUpload
 )
 
@@ -54,6 +57,7 @@ const SettingsModalAdminContent = {
     MediaProxyTab,
     LinksTab,
     JobQueuesTab,
+    AuthTab,
     MonitoringTab,
   },
   computed: {

@@ -1159,7 +1159,12 @@
       "monitoring": "Monitoring",
       "registrations": "Registrations",
       "links": "Links",
-      "job_queues": "Job Queues"
+      "job_queues": "Job Queues",
+      "auth": "Auth"
+    },
+    "auth": {
+      "LDAP": "LDAP Settings",
+      "OAuth": "Oauth2 settings"
     },
     "job_queues": {
       "Oban": "Oban queues",
