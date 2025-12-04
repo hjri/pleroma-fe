@@ -1164,7 +1164,9 @@
     },
     "auth": {
       "LDAP": "LDAP Settings",
-      "OAuth": "Oauth2 settings"
+      "OAuth": "Oauth2 settings",
+      "TOTP": "One-time Passwords (TOTP)",
+      "backup_codes": "Backup codes"
     },
     "job_queues": {
       "Oban": "Oban queues",
