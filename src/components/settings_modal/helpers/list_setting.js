@@ -24,27 +24,46 @@ export default {
     },
     allowNew: {
       required: false,
-      type: Set,
+      type: Boolean,
       default: true
+    },
+    forceNew: {
+      required: false,
+      type: Boolean,
+      default: false
     }
   },
   computed: {
     ...Setting.computed,
+    showNew () {
+      if (this.forceNew) return true
+      if (!this.allowNew) return false
+
+      const isExpert = this.$store.state.config.expertLevel > 0
+      const hasBuiltins = this.builtinEntries.length > 0
+
+      if (hasBuiltins) {
+        return isExpert
+      } else {
+        return true
+      }
+    },
     valueSet () {
       return new Set(this.visibleState)
     },
-    suggestions () {
-      const suggestions = this.backendDescription?.suggestions
+    suggestionsSet () {
+      const suggestions = this.backendDescriptionSuggestions
       if (suggestions) {
-        return new Set(this.backendDescription.suggestions)
+        return new Set(suggestions)
       } else {
         return new Set()
       }
     },
     extraEntries () {
       if (this.ignoreSuggestions) return [...this.valueSet.values()]
+      if (!this.suggestionsSet) return []
       return [...this.valueSet.values()].filter((x) => {
-        return !this.suggestions?.has(x)
+        return !this.suggestionsSet?.has(x)
       })
     },
     builtinEntries () {
@@ -52,14 +71,12 @@ export default {
       if (this.overrideAvailableOptions) {
         return [...this.overrideAvailableOptions]
       }
+      if (!this.suggestionsSet) return []
 
-      const builtins = [...this.valueSet.values()].filter((x) => {
-        return this.suggestions.has(x)
-      })
-
+      const builtins = [...this.suggestionsSet.values()]
       return builtins.map((option) => ({
         label: option,
-        value: option
+        value: this.valueSet.has(option)
       }))
     }
   },

@@ -16,7 +16,10 @@
               <BooleanSetting path=":pleroma.:media_proxy.:proxy_opts.:redirect_on_failure" />
             </li>
             <li>
-              <ListSetting path=":pleroma.:media_proxy.:whitelist" />
+              <ListSetting
+                ignore-suggestions
+                path=":pleroma.:media_proxy.:whitelist"
+              />
             </li>
           </ul>
         </li>
@@ -44,6 +47,7 @@
                   </li>
                   <li>
                     <ListSetting
+                      ignore-suggestions
                       :path="[':pleroma', 'Pleroma.Web.MediaProxy.Invalidation.Http', ':headers']"
                       parent-path=":pleroma.:media_proxy.:invalidation.:enabled"
                     />

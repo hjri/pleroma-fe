@@ -48,7 +48,7 @@
           </button>
         </div>
       </li>
-      <li v-if="allowNew">
+      <li v-if="showNew">
         <div class="btn-group">
           <input
             class="input string-input"

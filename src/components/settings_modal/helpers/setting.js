@@ -235,7 +235,6 @@ export default {
     },
     descriptionPath () {
       if (this.path == null) return null
-      if (this.backendDescriptionPath) return this.backendDescriptionPath
       const path = Array.isArray(this.path) ? this.path : this.path.split('.')
       if (this.subgroup) {
         return [
@@ -279,7 +278,6 @@ export default {
       }
     },
     reset () {
-      console.log('RS', this.state, this.draft)
       if (this.realDraftMode) {
         this.draft = cloneDeep(this.state)
       } else {
