@@ -1163,6 +1163,25 @@
     },
     "job_queues": {
       "Oban": "Oban queues",
+      "Gun": {
+        "title": "Gun queues",
+        "connections_pools": "Gun connections pool",
+        "pools": {
+          "title": "Gun worker pools",
+          "default": "Default pool",
+          "federation": "Federation pool",
+          "media": "Media pool",
+          "rich_media": "Rich media pool",
+          "upload": "Upload pool"
+        }
+      },
+      "Hackney": {
+        "title": "Hackney pools",
+        "federation": "Federation",
+        "media": "Media",
+        "rich_media": "Rich media",
+        "upload": "Upload"
+      },
       "queues": "Queues"
     },
     "nodb": {
@@ -1320,6 +1339,22 @@
               "label": "Slow",
               "description": "idk"
             }
+          }
+        },
+        ":connections_pool": {
+          ":max_idle_time": {
+            "label": "Maximum idle time",
+            "description": "idk"
+          },
+          ":retry": {
+            "label": "Retry",
+            "description": "idk"
+          }
+        },
+        ":pools": {
+          ":rich_media": {
+            "label": "Rich media",
+            "description": "idk"
           }
         },
         "Pleroma_DOT_Formatter": {
