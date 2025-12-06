@@ -7,9 +7,9 @@ export default {
     getValue ({ e, side }) {
       const [a, b] = this.visibleState || []
       if (side === 0) {
-        return [e.target.value, b]
+        return { tuple: [e.target.value, b]}
       } else {
-        return [a, e.target.value]
+        return { tuple: [a, e.target.value]}
       }
     }
   }

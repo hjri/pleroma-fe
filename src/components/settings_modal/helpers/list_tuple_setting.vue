@@ -28,13 +28,13 @@
           <input
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
-            :value="item[0]"
+            :value="item.tuple[0]"
             @change="e => update({ event: e, index, eventType: 'edit', tuple: 0 })"
           >
           <input
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
-            :value="item[1]"
+            :value="item.tuple[1]"
             @change="e => update({ event: e, index, eventType: 'edit', tuple: 1 })"
           >
           <button

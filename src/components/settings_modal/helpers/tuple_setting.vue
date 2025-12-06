@@ -24,7 +24,7 @@
       :class="{ disabled: shouldBeDisabled }"
       :disabled="shouldBeDisabled"
       :placeholder="backendDescriptionSuggestions?.[0]?.[0]"
-      :value="visibleState?.[0]"
+      :value="visibleState?.tuple?.[0]"
       @change="e => update({ e, side: 0 })"
     >
     {{ ' ' }}
@@ -34,7 +34,7 @@
       :class="{ disabled: shouldBeDisabled }"
       :disabled="shouldBeDisabled"
       :placeholder="backendDescriptionSuggestions?.[0]?.[1]"
-      :value="visibleState?.[1]"
+      :value="visibleState?.tuple?.[1]"
       @change="e => update({ e, side: 1 })"
     >
     {{ ' ' }}
