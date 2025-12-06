@@ -67,13 +67,21 @@
             <BooleanSetting path=":pleroma.:ldap.:tls" />
           </li>
           <li>
-            <ListTupleSetting tuple path=":pleroma.:ldap.:tlsopts" />
+            <!-- CONFIRM old admin FE only supports ONE setting which is Verify, is that correct or should we allow more than one? -->
+            <MapSetting
+              :allow-new="false"
+              path=":pleroma.:ldap.:tlsopts"
+            />
           </li>
           <li>
             <BooleanSetting path=":pleroma.:ldap.:ssl" />
           </li>
           <li>
-            <ListTupleSetting tuple path=":pleroma.:ldap.:sslopts" />
+            <!-- CONFIRM old admin FE only supports ONE setting which is Verify, is that correct or should we allow more than one? -->
+            <MapSetting
+              :allow-new="false"
+              path=":pleroma.:ldap.:sslopts"
+            />
           </li>
           <li>
             <StringSetting path=":pleroma.:ldap.:base" />

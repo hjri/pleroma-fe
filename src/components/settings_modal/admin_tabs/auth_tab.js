@@ -6,7 +6,7 @@ import TupleSetting from '../helpers/tuple_setting.vue'
 import GroupSetting from '../helpers/group_setting.vue'
 import AttachmentSetting from '../helpers/attachment_setting.vue'
 import ListSetting from '../helpers/list_setting.vue'
-import ListTupleSetting from '../helpers/list_tuple_setting.vue'
+import MapSetting from '../helpers/map_setting.vue'
 
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
@@ -26,7 +26,7 @@ const AuthTab = {
     AttachmentSetting,
     GroupSetting,
     ListSetting,
-    ListTupleSetting
+    MapSetting
   },
   computed: {
     ...SharedComputedObject(),
