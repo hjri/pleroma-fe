@@ -1,6 +1,6 @@
 <template>
   <div
-    class="frontends-tab"
+    class="FrontendsTab"
     :label="$t('admin_dash.tabs.frontends')"
   >
     <div class="setting-item">
@@ -42,9 +42,10 @@
         <ul class="cards-list">
           <li
             v-for="frontend in frontends"
+            class="frontend-card"
             :key="frontend.name"
           >
-            <strong>{{ frontend.name }}</strong>
+            <h5>{{ frontend.name }}</h5>
             {{ ' ' }}
             <span v-if="adminDraft && adminDraft[':pleroma'][':frontends'][':primary']?.name === frontend.name">
               <i18n-t
@@ -89,7 +90,7 @@
                 >{{ frontend.build_url }}</a>
               </dd>
             </dl>
-            <div>
+            <div class="frontend-buttons">
               <span class="btn-group">
                 <button
                   class="button button-default btn"

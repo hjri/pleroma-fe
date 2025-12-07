@@ -678,7 +678,8 @@ option {
   list-style: none;
   display: grid;
   grid-auto-flow: row dense;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
+  grid-gap: 0.5em;
 
   li {
     border: 1px solid var(--border);

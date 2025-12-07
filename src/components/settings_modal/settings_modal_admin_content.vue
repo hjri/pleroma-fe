@@ -69,6 +69,7 @@
       :label="$t('admin_dash.tabs.emoji')"
       icon="face-smile-beam"
       data-tab-name="emoji"
+      full-width
     >
       <EmojiTab />
     </div>
@@ -77,6 +78,7 @@
       :label="$t('admin_dash.tabs.frontends')"
       icon="laptop-code"
       data-tab-name="frontends"
+      full-width
     >
       <FrontendsTab />
     </div>

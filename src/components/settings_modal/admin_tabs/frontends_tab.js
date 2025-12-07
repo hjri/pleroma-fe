@@ -44,10 +44,10 @@ const FrontendsTab = {
     }
   },
   computed: {
+    ...SharedComputedObject(),
     frontends () {
       return this.$store.state.adminSettings.frontends
-    },
-    ...SharedComputedObject()
+    }
   },
   methods: {
     canInstall (frontend) {

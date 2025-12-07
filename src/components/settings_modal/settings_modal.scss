@@ -32,8 +32,11 @@
   }
 
   p {
-    width: 40em;
     line-height: 1.5;
+  }
+
+  .setting-item > p {
+    margin-left: 1em;
   }
 
   .setting-list,
