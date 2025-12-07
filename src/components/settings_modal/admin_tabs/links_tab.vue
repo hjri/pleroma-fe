@@ -11,7 +11,8 @@
         </li>
         <li>
           <ListSetting
-            :override-available-options="parsersOptions"
+            override-available-options
+            :options="parsersOptions"
             path=":pleroma.:rich_media.:parsers"
           />
         </li>
@@ -22,7 +23,8 @@
         </li>
         <li>
           <ListSetting
-            :override-available-options="ttlSettersOptions"
+            override-available-options
+            :options="ttlSettersOptions"
             path=":pleroma.:rich_media.:ttl_setters"
           />
         </li>

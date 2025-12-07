@@ -50,6 +50,8 @@
           <ChoiceSetting
             override-backend-description
             override-backend-description-label
+            override-available-options
+            :options="limitLocalContentOptions"
             path=":pleroma.:instance.:limit_to_local_content"
           />
         </li>
@@ -138,9 +140,10 @@
       <ul class="setting-list">
         <li>
           <ListSetting
-            :override-available-options="providersOptions"
+            override-available-options
+            :options="providersOptions"
             :path="[':pleroma','Pleroma.Web.Metadata', ':providers']"
-            />
+          />
         </li>
         <li>
           <BooleanSetting

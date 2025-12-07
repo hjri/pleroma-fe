@@ -34,6 +34,13 @@ const InstanceTab = {
         value: option
       })))
     },
+    limitLocalContentOptions () {
+      const desc = get(this.$store.state.adminSettings.descriptions, [':pleroma', ':instance', ':limit_to_local_content'])
+      return new Set(desc.suggestions.map(option => ({
+        label: option !== 'false' ? this.$t('admin_dash.instance.' + option) : this.$t('general.no'),
+        value: option
+      })))
+    }
   }
 }
 

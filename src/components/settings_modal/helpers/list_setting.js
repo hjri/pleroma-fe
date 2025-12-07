@@ -20,6 +20,10 @@ export default {
     },
     overrideAvailableOptions: {
       required: false,
+      type: Boolean
+    },
+    options: {
+      required: false,
       type: Set
     },
     allowNew: {
@@ -70,7 +74,7 @@ export default {
     builtinEntries () {
       if (this.ignoreSuggestions) return []
       if (this.overrideAvailableOptions) {
-        return [...this.overrideAvailableOptions]
+        return [...this.options]
       }
       if (!this.suggestionsSet) return []
 

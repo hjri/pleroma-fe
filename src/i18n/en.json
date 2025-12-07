@@ -1214,7 +1214,9 @@
         "timelines": "Timelines access",
         "profiles": "User profiles access",
         "activities": "Statuses/activities access"
-      }
+      },
+      ":unauthenticated": "Unauthenticated",
+      ":all": "Everyone"
     },
     "registrations": {
       "welcome": {
