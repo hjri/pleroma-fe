@@ -1,131 +1,122 @@
 <template>
   <div
-    class="emoji-tab"
+    class="EmojiTab"
     :label="$t('admin_dash.tabs.emoji')"
   >
     <div class="setting-item">
-      <h2>{{ $t('admin_dash.tabs.emoji') }}</h2>
+      <h3 class="toolbar">
+        <span class="header-text">
+          {{ $t('admin_dash.emoji.emoji_packs') }}
+        </span>
 
-      <ul class="setting-list">
-        <h3>{{ $t('admin_dash.emoji.global_actions') }}</h3>
-
-        <li class="btn-group setting-item">
+        <span class="header-buttons btn-group">
           <button
-            class="button button-default btn"
+            class="button button-default"
             type="button"
             @click="reloadEmoji"
+            :title="$t('admin_dash.emoji.reload')"
           >
-            {{ $t('admin_dash.emoji.reload') }}
+            <FAIcon icon="arrows-rotate" />
+            {{ $t('admin_dash.emoji.reload_short') }}
           </button>
-          <button
-            class="button button-default btn"
-            type="button"
-            @click="importFromFS"
+          <Popover
+            popover-class="emoji-tab-edit-popover popover-default"
+            trigger="click"
+            placement="bottom"
           >
-            {{ $t('admin_dash.emoji.importFS') }}
-          </button>
-        </li>
+            <template #trigger>
+              <button
+                class="button button-default"
+                type="button"
+                :title="$t('admin_dash.emoji.remote_packs')"
+              >
+                <FAIcon icon="download" />
+                {{ $t('admin_dash.emoji.remote_packs_short') }}
+              </button>
+            </template>
+            <template #content>
+              <div class="emoji-tab-popover-input">
+                <h3>{{ $t('admin_dash.emoji.remote_pack_instance') }}</h3>
+                <input
+                  v-model="remotePackInstance"
+                  class="input"
+                  :placeholder="$t('admin_dash.emoji.remote_pack_instance')"
+                >
+                <button
+                  class="button button-default btn emoji-tab-popover-button"
+                  type="button"
+                  @click="listRemotePacks"
+                >
+                  {{ $t('admin_dash.emoji.do_list') }}
+                </button>
+              </div>
+            </template>
+          </Popover>
 
-        <li class="btn-group setting-item">
-          <button
-            class="button button-default btn"
-            type="button"
-            @click="$refs.remotePackPopover.showPopover"
+          <Popover
+            ref="additionalRemotePopover"
+            popover-class="emoji-tab-edit-popover popover-default"
+            trigger="click"
+            placement="bottom"
           >
-            {{ $t('admin_dash.emoji.remote_packs') }}
+            <template #trigger>
+              <button
+                class="button button-default emoji-panel-additional-actions"
+                @click="$refs.additionalRemotePopover.showPopover"
+                :title="$t('admin_dash.emoji.import_pack')"
+              >
+                <FAIcon icon="folder-open" />
+                {{ $t('admin_dash.emoji.import_pack_short') }}
+              </button>
+            </template>
 
-            <Popover
-              ref="remotePackPopover"
-              popover-class="emoji-tab-edit-popover popover-default"
-              trigger="click"
-              placement="bottom"
-              bound-to-selector=".emoji-tab"
-              :bound-to="{ x: 'container' }"
-              :offset="{ y: 5 }"
-            >
-              <template #content>
-                <div class="emoji-tab-popover-input">
-                  <h3>{{ $t('admin_dash.emoji.remote_pack_instance') }}</h3>
-                  <input
-                    v-model="remotePackInstance"
-                    class="input"
-                    :placeholder="$t('admin_dash.emoji.remote_pack_instance')"
-                  >
-                  <button
-                    class="button button-default btn emoji-tab-popover-button"
-                    type="button"
-                    @click="listRemotePacks"
-                  >
-                    {{ $t('admin_dash.emoji.do_list') }}
-                  </button>
-                </div>
-              </template>
-            </Popover>
-          </button>
-          <button
-            class="button button-default emoji-panel-additional-actions"
-            @click="$refs.additionalRemotePopover.showPopover"
-          >
-            <FAIcon
-              icon="chevron-down"
-            />
-
-            <Popover
-              ref="additionalRemotePopover"
-              popover-class="emoji-tab-edit-popover popover-default"
-              trigger="click"
-              placement="bottom"
-              bound-to-selector=".emoji-tab"
-              :bound-to="{ x: 'container' }"
-              :offset="{ y: 5 }"
-            >
-              <template #content>
-                <div class="emoji-tab-popover-input">
-                  <h3>{{ $t('admin_dash.emoji.new_pack_name') }}</h3>
-                  <input
-                    v-model="newPackName"
-                    :placeholder="$t('admin_dash.emoji.new_pack_name')"
-                    class="input"
-                  >
-                  <h3>Import pack from URL</h3>
-                  <input
-                    v-model="remotePackURL"
-                    class="input"
-                    placeholder="Pack .zip URL"
-                  >
-                  <button
-                    class="button button-default btn emoji-tab-popover-button"
-                    type="button"
-                    :disabled="newPackName.trim() === '' || remotePackURL.trim() === ''"
-                    @click="downloadRemoteURLPack"
-                  >
-                    Import
-                  </button>
-                  <h3>Import pack from a file</h3>
-                  <input
-                    type="file"
-                    accept="application/zip"
-                    class="emoji-tab-popover-file input"
-                    @change="remotePackFile = $event.target.files"
-                  >
-                  <button
-                    class="button button-default btn emoji-tab-popover-button"
-                    type="button"
-                    :disabled="newPackName.trim() === '' || remotePackFile === null || remotePackFile.length === 0"
-                    @click="downloadRemoteFilePack"
-                  >
-                    Import
-                  </button>
-                </div>
-              </template>
-            </Popover>
-          </button>
-        </li>
-
-        <h3>{{ $t('admin_dash.emoji.emoji_packs') }}</h3>
-
+            <template #content>
+              <div class="emoji-tab-popover-input">
+                <h3>{{ $t('admin_dash.emoji.new_pack_name') }}</h3>
+                <input
+                  v-model="newPackName"
+                  :placeholder="$t('admin_dash.emoji.new_pack_name')"
+                  class="input"
+                >
+                <h3>Import pack from URL</h3>
+                <input
+                  v-model="remotePackURL"
+                  class="input"
+                  placeholder="Pack .zip URL"
+                >
+                <button
+                  class="button button-default btn emoji-tab-popover-button"
+                  type="button"
+                  :disabled="newPackName.trim() === '' || remotePackURL.trim() === ''"
+                  @click="downloadRemoteURLPack"
+                >
+                  Import
+                </button>
+                <h3>Import pack from a file</h3>
+                <input
+                  type="file"
+                  accept="application/zip"
+                  class="emoji-tab-popover-file input"
+                  @change="remotePackFile = $event.target.files"
+                >
+                <button
+                  class="button button-default btn emoji-tab-popover-button"
+                  type="button"
+                  :disabled="newPackName.trim() === '' || remotePackFile === null || remotePackFile.length === 0"
+                  @click="downloadRemoteFilePack"
+                >
+                  Import
+                </button>
+              </div>
+            </template>
+          </Popover>
+        </span>
+      </h3>
+      <ul class="setting-list">
         <li>
-          <h4>{{ $t('admin_dash.emoji.edit_pack') }}</h4>
+          <h4>
+            {{ $t('admin_dash.emoji.edit_pack') }}
+          </h4>
 
           <Select
             v-model="packName"
@@ -255,8 +246,6 @@
                 :changed="metaEdited('share-files')"
                 message-key="admin_dash.emoji.metadata_changed"
               />
-            </li>
-            <li class="btn-group">
               <button
                 v-if="pack.remote === undefined"
                 class="button button-default btn"
@@ -408,6 +397,20 @@
           </div>
         </ul>
       </div>
+      <h3>{{ $t('admin_dash.emoji.advanced') }}</h3>
+      <li
+        class="toolbar"
+      >
+        <button
+
+          class="button button-default btn"
+          type="button"
+          @click="importFromFS"
+        >
+          <FAIcon icon="server" />
+          {{ $t('admin_dash.emoji.importFS') }}
+        </button>
+      </li>
     </div>
   </div>
 </template>

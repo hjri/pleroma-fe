@@ -10,6 +10,22 @@ import ModifiedIndicator from '../helpers/modified_indicator.vue'
 import EmojiEditingPopover from '../helpers/emoji_editing_popover.vue'
 import { useInterfaceStore } from 'src/stores/interface'
 
+import SharedComputedObject from '../helpers/shared_computed_object.js'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+  faArrowsRotate,
+  faFolderOpen,
+  faServer,
+  faDownload
+} from '@fortawesome/free-solid-svg-icons'
+
+library.add(
+  faArrowsRotate,
+  faFolderOpen,
+  faDownload,
+  faServer
+)
+
 const EmojiTab = {
   components: {
     TabSwitcher,
@@ -44,6 +60,7 @@ const EmojiTab = {
   },
 
   computed: {
+    ...SharedComputedObject(),
     pack () {
       return this.packName !== '' ? this.knownPacks[this.packName] : undefined
     },

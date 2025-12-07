@@ -1,10 +1,18 @@
-.emoji-tab {
-  .btn-group .btn:not(:first-child) {
-    margin-left: 0.5em;
-  }
+.EmojiTab {
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
 
-  .pack-info-wrapper {
-    margin-top: 1em;
+    .header-text {
+      flex: 1 0 auto;
+    }
+
+    .button-default {
+      flex: 0 0 auto;
+      padding: 0.33em;
+      font-size: 1rem;
+    }
   }
 
   .emoji-info-input {
