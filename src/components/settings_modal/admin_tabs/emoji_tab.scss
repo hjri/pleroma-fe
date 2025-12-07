@@ -2,10 +2,20 @@
   .toolbar {
     display: flex;
     flex-wrap: wrap;
-    align-items: end;
+    gap: 0.5em;
 
-    .header-text {
+    .header-buttons {
+      display: flex;
       flex: 1 0 auto;
+      justify-content: end;
+
+      &:not(.btn-group) {
+        gap: 0.5em;
+      }
+
+      .header-text {
+        flex: 1 0 auto;
+      }
     }
 
     .button-default {
@@ -13,6 +23,19 @@
       padding: 0.33em;
       font-size: 1rem;
     }
+  }
+
+  .meta-buttons {
+    display: flex;
+    gap: 0.5em;
+  }
+
+  h3.toolbar {
+    align-items: end;
+  }
+
+  h4.toolbar {
+    align-items: baseline;
   }
 
   .emoji-info-input {
@@ -26,8 +49,8 @@
   }
 
   .emoji {
-    width: 32px;
-    height: 32px;
+    width: 2em;
+    height: 2em;
   }
 
   .emoji-unsaved {
@@ -38,6 +61,14 @@
     display: flex;
     flex-wrap: wrap;
     gap: 1em;
+
+    .placeholder {
+      background: var(--textFaint);
+      border-radius: 0.5em;
+      width: 2em;
+      height: 2em;
+      opacity: 0.5;
+    }
   }
 }
 

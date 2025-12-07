@@ -513,6 +513,12 @@ nav {
   }
 }
 
+label {
+  &.-disabled {
+    color: var(--textFaint);
+  }
+}
+
 input,
 textarea {
   border: none;
@@ -554,6 +560,7 @@ textarea {
   &.disabled {
     cursor: not-allowed;
     color: var(--textFaint);
+    background-color: transparent;
   }
 
   &[type="range"] {
@@ -579,6 +586,8 @@ textarea {
       & + label::before {
         opacity: 0.5;
       }
+
+      background-color: var(--background);
     }
 
     + label::before {
@@ -694,13 +703,16 @@ option {
   display: inline-flex;
   vertical-align: middle;
 
+  .Select select {
+    line-height: 1;
+  }
+
   > *,
   > * .button-default {
     --_roundness-left: 0;
     --_roundness-right: 0;
 
     position: relative;
-    flex: 1 1 auto;
   }
 
   > *:first-child,

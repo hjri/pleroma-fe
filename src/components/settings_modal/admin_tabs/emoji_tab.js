@@ -65,6 +65,7 @@ const EmojiTab = {
       return this.packName !== '' ? this.knownPacks[this.packName] : undefined
     },
     packMeta () {
+      if (this.packName === '') return {}
       if (this.editedMetadata[this.packName] === undefined) {
         this.editedMetadata[this.packName] = clone(this.pack.pack)
       }
@@ -115,8 +116,6 @@ const EmojiTab = {
           return Promise.reject(resp)
         }
       }).then(() => {
-        this.$refs.createPackPopover.hidePopover()
-
         this.packName = this.newPackName
         this.newPackName = ''
       })
@@ -222,8 +221,6 @@ const EmojiTab = {
           for (const pack in this.knownRemotePacks[inst]) {
             this.sortPackFiles(`${pack}@${inst}`)
           }
-
-          this.$refs.remotePackPopover.hidePopover()
         })
         .catch(data => {
           this.displayError(data)
@@ -240,8 +237,6 @@ const EmojiTab = {
         .then(data => data.json())
         .then(resp => {
           if (resp === 'ok') {
-            this.$refs.downloadPackPopover.hidePopover()
-
             return this.refreshPackList()
           } else {
             this.displayError(resp.error)
@@ -259,8 +254,6 @@ const EmojiTab = {
         .then(data => data.json())
         .then(resp => {
           if (resp === 'ok') {
-            this.$refs.additionalRemotePopover.hidePopover()
-
             return this.refreshPackList()
           } else {
             this.displayError(resp.error)
@@ -279,8 +272,6 @@ const EmojiTab = {
         .then(data => data.json())
         .then(resp => {
           if (resp === 'ok') {
-            this.$refs.additionalRemotePopover.hidePopover()
-
             return this.refreshPackList()
           } else {
             this.displayError(resp.error)

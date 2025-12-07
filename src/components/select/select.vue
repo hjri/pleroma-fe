@@ -26,6 +26,7 @@
 /* TODO fix order of styles */
 label.Select {
   padding: 0;
+  display: flex;
 
   select {
     appearance: none;
@@ -33,13 +34,12 @@ label.Select {
     border: none;
     color: var(--text);
     margin: 0;
-    padding: 0 2em 0 0.2em;
+    padding: 0 2em 0 0.5em;
     font-family: var(--font);
     font-size: 1em;
     width: 100%;
     z-index: 1;
-    height: 2em;
-    line-height: 16px;
+    line-height: 2;
 
     &[multiple],
     &[size] {
@@ -79,7 +79,7 @@ label.Select {
     position: absolute;
     top: 0;
     bottom: 0;
-    right: 5px;
+    right: 0.5em;
     height: 100%;
     width: 0.875em;
     font-family: var(--font);
