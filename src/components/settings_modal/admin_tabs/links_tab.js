@@ -11,7 +11,7 @@ import Checkbox from 'src/components/checkbox/checkbox.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import { get } from 'lodash'
 
-const MediaProxyTab = {
+const LinksTab = {
   provide () {
     return {
       defaultDraftMode: true,
@@ -106,4 +106,4 @@ const MediaProxyTab = {
   }
 }
 
-export default MediaProxyTab
+export default LinksTab

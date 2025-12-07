@@ -1161,6 +1161,7 @@
       "links": "Links",
       "job_queues": "Job Queues",
       "auth": "Auth",
+      "http": "HTTP",
       "federation": "Federation"
     },
     "federation": {
@@ -1168,7 +1169,12 @@
       "restrictions": "Restrictions",
       "activitypub": "ActivityPub"
     },
+    "http": {
+      "outbound": "Outbound HTTP requests",
+      "socks5": "SOCKS5"
+    },
     "auth": {
+      "MFA": "Multi-factor Authentication",
       "LDAP": "LDAP Settings",
       "OAuth": "Oauth2 settings",
       "TOTP": "One-time Passwords (TOTP)",

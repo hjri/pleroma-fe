@@ -11,6 +11,7 @@ import MailerTab from './admin_tabs/mailer_tab.vue'
 import MonitoringTab from './admin_tabs/monitoring_tab.vue'
 import RegistrationsTab from './admin_tabs/registrations_tab.vue'
 import AuthTab from './admin_tabs/auth_tab.vue'
+import HTTPTab from './admin_tabs/http_tab.vue'
 import FederationTab from './admin_tabs/federation_tab.vue'
 import JobQueuesTab from './admin_tabs/job_queues_tab.vue'
 import { useInterfaceStore } from 'src/stores/interface'
@@ -20,6 +21,7 @@ import {
   faWrench,
   faHand,
   faChain,
+  faGlobe,
   faLaptopCode,
   faTowerBroadcast,
   faEnvelope,
@@ -35,6 +37,7 @@ library.add(
   faWrench,
   faHand,
   faChain,
+  faGlobe,
   faLaptopCode,
   faTowerBroadcast,
   faEnvelope,
@@ -62,6 +65,7 @@ const SettingsModalAdminContent = {
     LinksTab,
     JobQueuesTab,
     AuthTab,
+    HTTPTab,
     MonitoringTab
   },
   computed: {

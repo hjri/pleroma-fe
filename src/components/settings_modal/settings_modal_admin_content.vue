@@ -93,14 +93,6 @@
     </div>
 
     <div
-      :label="$t('admin_dash.tabs.mailer')"
-      icon="envelope"
-      data-tab-name="mailer"
-    >
-      <MailerTab />
-    </div>
-
-    <div
       :label="$t('admin_dash.tabs.uploads')"
       icon="upload"
       data-tab-name="uploads"
@@ -125,11 +117,27 @@
     </div>
 
     <div
+      :label="$t('admin_dash.tabs.mailer')"
+      icon="envelope"
+      data-tab-name="mailer"
+    >
+      <MailerTab />
+    </div>
+
+    <div
       :label="$t('admin_dash.tabs.federation')"
       icon="circle-nodes"
       data-tab-name="monitoring"
     >
       <FederationTab />
+    </div>
+
+    <div
+      :label="$t('admin_dash.tabs.http')"
+      icon="globe"
+      data-tab-name="http"
+    >
+      <HTTPTab />
     </div>
 
     <div

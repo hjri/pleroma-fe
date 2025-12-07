@@ -38,6 +38,16 @@
       @change="e => update({ e, side: 1 })"
     >
     {{ ' ' }}
+    <input
+      :id="path"
+      class="input string-input"
+      :class="{ disabled: shouldBeDisabled }"
+      :disabled="shouldBeDisabled"
+      :placeholder="backendDescriptionSuggestions?.[0]?.[1]"
+      :value="visibleState?.tuple?.[2]"
+      @change="e => update({ e, side: 2 })"
+    >
+    {{ ' ' }}
     <ModifiedIndicator
       :changed="isChanged"
       :onclick="reset"

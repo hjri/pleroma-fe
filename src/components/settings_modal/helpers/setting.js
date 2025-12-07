@@ -46,6 +46,7 @@ export default {
       default: undefined
     },
     hideDraftButtons: { // this is for the weird backend hybrid (Boolean|String or Boolean|Number) settings
+      required: false,
       type: Boolean
     },
     hideLabel: {
@@ -254,8 +255,8 @@ export default {
       }
     },
     canHardReset () {
-      return this.realSource === 'admin' && this.$store.state.adminSettings.modifiedPaths &&
-             this.$store.state.adminSettings.modifiedPaths.has(this.canonPath.join(' -> '))
+      console.log('MP', this.$store.state.adminSettings.modifiedPaths.has)
+      return this.realSource === 'admin' && this.$store.state.adminSettings.modifiedPaths?.has(this.canonPath.join(' -> '))
     },
     matchesExpertLevel () {
       return (this.expert || 0) <= this.$store.state.config.expertLevel > 0
