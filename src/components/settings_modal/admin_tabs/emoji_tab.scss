@@ -1,4 +1,8 @@
 .EmojiTab {
+  .setting-list {
+    padding-left: 0.75em;
+  }
+
   .toolbar {
     display: flex;
     flex-wrap: wrap;
@@ -20,22 +24,25 @@
 
     .button-default {
       flex: 0 0 auto;
-      padding: 0.33em;
+      padding: 0.5em;
       font-size: 1rem;
     }
   }
 
+  .selector-buttons,
   .meta-buttons {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5em;
+  }
+
+  h5 {
+    margin-top: 1em;
+    margin-bottom: 0.25em;
   }
 
   h3.toolbar {
     align-items: end;
-  }
-
-  h4.toolbar {
-    align-items: baseline;
   }
 
   .emoji-info-input {

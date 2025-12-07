@@ -1307,6 +1307,7 @@
       "remote_pack_instance": "Remote pack instance",
       "emoji_pack": "Emoji pack",
       "edit_pack": "Edit pack",
+      "metadata": "Metadata",
       "description": "Description",
       "homepage": "Homepage",
       "fallback_src": "Fallback source",

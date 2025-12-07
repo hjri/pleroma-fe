@@ -560,7 +560,9 @@ textarea {
   &.disabled {
     cursor: not-allowed;
     color: var(--textFaint);
-    background-color: transparent;
+
+    /* stylelint-disable-next-line declaration-no-important */
+    background-color: transparent !important;
   }
 
   &[type="range"] {
