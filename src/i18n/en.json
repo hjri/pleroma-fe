@@ -1160,7 +1160,13 @@
       "registrations": "Registrations",
       "links": "Links",
       "job_queues": "Job Queues",
-      "auth": "Auth"
+      "auth": "Auth",
+      "federation": "Federation"
+    },
+    "federation": {
+      "global": "Global settings",
+      "restrictions": "Restrictions",
+      "activitypub": "ActivityPub"
     },
     "auth": {
       "LDAP": "LDAP Settings",

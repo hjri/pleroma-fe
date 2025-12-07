@@ -123,6 +123,14 @@
     </div>
 
     <div
+      :label="$t('admin_dash.tabs.federation')"
+      icon="circle-nodes"
+      data-tab-name="monitoring"
+    >
+      <FederationTab />
+    </div>
+
+    <div
       :label="$t('admin_dash.tabs.job_queues')"
       icon="gears"
       data-tab-name="job_queues"
