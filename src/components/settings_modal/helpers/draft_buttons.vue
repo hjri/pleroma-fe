@@ -3,7 +3,7 @@
 <template>
   <span
     class="DraftButtons"
-    v-if="$parent.isDirty"
+    v-if="$parent.isDirty || $parent.canHardReset"
   >
     <Popover
       v-if="$parent.isDirty"
