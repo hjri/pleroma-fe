@@ -1213,6 +1213,16 @@
       "native": "Native",
       "kocaptcha": "KoCaptcha"
     },
+    "http": {
+      "outbound": "Outgoing connections",
+      "incoming": "Incoming connections",
+      "security": "HTTP Security",
+      "cors": "Cross-origin Resource Sharing (CORS)",
+      "web_cache_ttl": "Web Cache TTL",
+      "web_cache_ttl_description": "Amount of milliseconds until web response cache is cleared. Use `nil` to disable expiration entirely.",
+      "web_push": "Web Push",
+      "web_push_description": "Web Push VAPID settings. You can use the mix task web_push.gen.keypair to generate it."
+    },
     "instance": {
       "instance": "Instance information",
       "registrations": "User sign-ups",
@@ -1249,6 +1259,7 @@
     "uploads": {
       "attachments": "Attachments settings",
       "upload": "Upload",
+      "local_uploader": "Local files",
       "filenames": "Filenames, Titles and Descriptions",
       "uploader_settings": "Uploader settings"
     },
@@ -1426,6 +1437,16 @@
           ":background_image": {
             "label": "Background image",
             "description": "Background image (primarily used by PleromaFE)"
+          }
+        },
+        ":http_security": {
+          ":allow_unsafe_eval": {
+            "label": "Allow unsafe-eval",
+            "description": "Allow unsafe evaluation of scripts (required for Flash support)"
+          },
+          ":report_url": {
+            "label": "Report URL",
+            "description": "URL to report security violations to"
           }
         }
       }

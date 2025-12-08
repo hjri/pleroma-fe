@@ -18,6 +18,10 @@ export default {
       type: [String, Array],
       required: false
     },
+    descriptionPathOverride: {
+      type: [String, Array],
+      required: false
+    },
     suggestions: {
       type: [String, Array],
       required: false
@@ -236,7 +240,9 @@ export default {
     },
     descriptionPath () {
       if (this.path == null) return null
+      if (this.descriptionPathOverride) return this.descriptionPathOverride
       const path = Array.isArray(this.path) ? this.path : this.path.split('.')
+      console.log(this.path, this.subgroup)
       if (this.subgroup) {
         return [
             ...path.slice(0, path.length - 1),

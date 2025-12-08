@@ -131,6 +131,7 @@ const adminSettingsStorage = {
       }
 
       const descriptions = {}
+
       backendDescriptions.forEach(d => convert(d, '', descriptions))
       console.log('DESCRIPTIONS', descriptions)
       commit('updateAdminDescriptions', { descriptions })
