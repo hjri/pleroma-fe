@@ -163,7 +163,7 @@
         <li>
           <BooleanSetting
             :path="[':pleroma','Pleroma.Web.Metadata', ':unfurl_nsfw']"
-            />
+          />
         </li>
       </ul>
     </div>

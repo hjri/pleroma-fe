@@ -44,6 +44,7 @@
   </label>
 </template>
 
+<script src="./color_setting.js"></script>
 <style lang="scss">
 .ColorSetting {
   .color-setting-input {
@@ -51,4 +52,3 @@
   }
 }
 </style>
-<script src="./color_setting.js"></script>

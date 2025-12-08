@@ -15,7 +15,6 @@
             <h4>{{ $t('admin_dash.mailer.auth') }}</h4>
             <ul class="setting-list suboptions">
               <li v-if="adapterHasKey(':api_key')">
-
                 <!-- authentication info -->
                 <StringSetting
                   :path="[':pleroma','Pleroma.Emails.Mailer',':api_key']"
@@ -38,7 +37,8 @@
                 />
               </li>
               <li v-if="adapterHasKey(':username')">
-                <StringSetting :path="[':pleroma','Pleroma.Emails.Mailer',':username']"
+                <StringSetting
+                  :path="[':pleroma','Pleroma.Emails.Mailer',':username']"
                   :subgroup="adapter"
                 />
               </li>
@@ -137,7 +137,7 @@
                 <IntegerSetting
                   :path="[':pleroma','Pleroma.Emails.Mailer',':retries']"
                   :subgroup="adapter"
-                  />
+                />
               </li>
             </ul>
           </li>

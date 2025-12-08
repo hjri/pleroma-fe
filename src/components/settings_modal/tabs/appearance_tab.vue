@@ -161,13 +161,16 @@
             <div class="fun-monitor-neck button-default" />
             <div class="fun-monitor-display-bezel button-default">
               <div class="fun-monitor-display-screen input">
-              <img
-                v-if="backgroundPreview || user.background_image || instanceWallpaper"
-                class="fun-monitor-display-screen-image"
-                :src="backgroundPreview || user.background_image || instanceWallpaper"
-              />
-              <div v-else class="wallpaper" />
-              <div class="fun-monitor-display-screen-overlay input" />
+                <img
+                  v-if="backgroundPreview || user.background_image || instanceWallpaper"
+                  class="fun-monitor-display-screen-image"
+                  :src="backgroundPreview || user.background_image || instanceWallpaper"
+                >
+                <div
+                  v-else
+                  class="wallpaper"
+                />
+                <div class="fun-monitor-display-screen-overlay input" />
                 <div
                   v-if="backgroundUploading"
                   class="fun-monitor-display-uploading"

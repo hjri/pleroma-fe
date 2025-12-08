@@ -23,7 +23,10 @@
       {{ backendDescriptionDescription + ' ' }}
     </p>
     <ul class="setting-list">
-      <li v-for="item in displayState">
+      <li
+        v-for="(item, i) in displayState"
+        :key="i"
+      >
         <div class="btn-group">
           <input
             class="input string-input"
@@ -48,18 +51,18 @@
       <li v-if="allowNew">
         <div class="btn-group">
           <input
+            v-model="newValue[0]"
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :disabled="shouldBeDisabled"
             :placeholder="backendDescriptionSuggestions[0][0]"
-            v-model="newValue[0]"
           >
           <input
+            v-model="newValue[1]"
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :disabled="shouldBeDisabled"
             :placeholder="backendDescriptionSuggestions[0][1]"
-            v-model="newValue[1]"
           >
           <button
             class="button-default"
@@ -79,6 +82,7 @@
   </div>
 </template>
 
+<script src="./map_setting.js"></script>
 <style lang="scss">
 .ListSetting {
   .btn-group {
@@ -106,4 +110,3 @@
   }
 }
 </style>
-<script src="./map_setting.js"></script>

@@ -7,7 +7,7 @@
           <ChoiceSetting
             :path="[':pleroma','Pleroma.Upload']"
             :option-label-map="adaptersLabels"
-           />
+          />
         </li>
         <h4>{{ $t('admin_dash.mailer.auth') }}</h4>
         <li>

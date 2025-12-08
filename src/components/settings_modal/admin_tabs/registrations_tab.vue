@@ -33,7 +33,7 @@
           <BooleanSetting path=":pleroma.:instance.:account_approval_required" />
         </li>
         <li>
-        <h4>{{ $t('admin_dash.instance.captcha_header') }}</h4>
+          <h4>{{ $t('admin_dash.instance.captcha_header') }}</h4>
           <ul class="setting-list">
             <li>
               <BooleanSetting :path="[':pleroma', 'Pleroma.Captcha', ':enabled']" />

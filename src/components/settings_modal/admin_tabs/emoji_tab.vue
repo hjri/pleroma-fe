@@ -13,8 +13,8 @@
           <button
             class="button button-default"
             type="button"
-            @click="reloadEmoji"
             :title="$t('admin_dash.emoji.reload')"
+            @click="reloadEmoji"
           >
             <FAIcon icon="arrows-rotate" />
             {{ $t('admin_dash.emoji.reload_short') }}
@@ -62,8 +62,8 @@
             <template #trigger>
               <button
                 class="button button-default emoji-panel-additional-actions"
-                @click="$refs.additionalRemotePopover.showPopover"
                 :title="$t('admin_dash.emoji.import_pack')"
+                @click="$refs.additionalRemotePopover.showPopover"
               >
                 <FAIcon icon="folder-open" />
                 {{ $t('admin_dash.emoji.import_pack_short') }}
@@ -372,8 +372,9 @@
           </EmojiEditingPopover>
           <template v-if="!pack">
             <div
+              v-for="(_, i) in new Array(20)"
+              :key="i"
               class="placeholder"
-              v-for="_ in new Array(20)"
             />
           </template>
 

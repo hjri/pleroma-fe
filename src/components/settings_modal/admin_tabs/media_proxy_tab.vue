@@ -65,13 +65,13 @@
                     <StringSetting
                       :path="[':pleroma', 'Pleroma.Web.MediaProxy.Invalidation.Script', ':script_path']"
                       parent-path=":pleroma.:media_proxy.:invalidation.:enabled"
-                                   />
+                    />
                   </li>
                   <li>
                     <StringSetting
                       :path="[':pleroma', 'Pleroma.Web.MediaProxy.Invalidation.Script', ':url_format']"
                       parent-path=":pleroma.:media_proxy.:invalidation.:enabled"
-                                   />
+                    />
                   </li>
                 </template>
               </ul>

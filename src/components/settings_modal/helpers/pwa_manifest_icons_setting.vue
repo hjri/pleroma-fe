@@ -23,7 +23,10 @@
       {{ backendDescriptionDescription + ' ' }}
     </p>
     <ul class="setting-list">
-      <li v-for="(item, index) in visibleState">
+      <li
+        v-for="(item, index) in visibleState"
+        :key="index"
+      >
         <div>
           <dl>
             <dt><code>purpose</code></dt>
@@ -90,6 +93,7 @@
   </div>
 </template>
 
+<script src="./pwa_manifest_icons_setting.js"></script>
 <style lang="scss">
 .PWAManifestIconsSetting {
   display: inline-block;
@@ -132,4 +136,3 @@
   }
 }
 </style>
-<script src="./pwa_manifest_icons_setting.js"></script>

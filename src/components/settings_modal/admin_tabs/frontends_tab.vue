@@ -42,8 +42,8 @@
         <ul class="cards-list">
           <li
             v-for="frontend in frontends"
-            class="frontend-card"
             :key="frontend.name"
+            class="frontend-card"
           >
             <h5>{{ frontend.name }}</h5>
             {{ ' ' }}

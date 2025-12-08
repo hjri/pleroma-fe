@@ -23,7 +23,10 @@
       {{ backendDescriptionDescription + ' ' }}
     </p>
     <ul class="setting-list">
-      <li v-for="item in builtinEntries">
+      <li
+        v-for="(item, i) in builtinEntries"
+        :key="i"
+      >
         <Checkbox
           :disabled="shouldBeDisabled"
           :model-value="optionPresent(item.value)"
@@ -32,7 +35,10 @@
           {{ item.label }}
         </Checkbox>
       </li>
-      <li v-for="(item, index) in extraEntries">
+      <li
+        v-for="(item, index) in extraEntries"
+        :key="index"
+      >
         <div class="btn-group">
           <input
             class="input string-input"
@@ -51,10 +57,10 @@
       <li v-if="showNew">
         <div class="btn-group">
           <input
+            v-model="newValue"
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :disabled="shouldBeDisabled"
-            v-model="newValue"
           >
           <button
             class="button-default"
@@ -74,6 +80,7 @@
   </div>
 </template>
 
+<script src="./list_setting.js"></script>
 <style lang="scss">
 .ListSetting {
   .btn-group {
@@ -81,4 +88,3 @@
   }
 }
 </style>
-<script src="./list_setting.js"></script>

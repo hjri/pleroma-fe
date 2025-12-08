@@ -2,8 +2,8 @@
 <!-- TODO make it reusable -->
 <template>
   <span
-    class="DraftButtons"
     v-if="$parent.isDirty || $parent.canHardReset"
+    class="DraftButtons"
   >
     <Popover
       v-if="$parent.isDirty"

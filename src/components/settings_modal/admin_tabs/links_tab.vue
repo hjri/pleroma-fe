@@ -70,15 +70,15 @@
             :model-value="relIsPresent"
             @update:model-value="checkRel"
           >
-          <i18n-t
-            keypath="admin_dash.temp_overrides.:pleroma.Pleroma_DOT_Formatter.:attribute_toggle.label"
-            tag="span"
-            scope="global"
-          >
-            <template #attr>
-              <code>rel</code>
-            </template>
-          </i18n-t>
+            <i18n-t
+              keypath="admin_dash.temp_overrides.:pleroma.Pleroma_DOT_Formatter.:attribute_toggle.label"
+              tag="span"
+              scope="global"
+            >
+              <template #attr>
+                <code>rel</code>
+              </template>
+            </i18n-t>
           </Checkbox>
           <div class="setting-list suboptions weird-suboptions">
             <StringSetting
@@ -141,6 +141,6 @@
   </div>
 </template>
 
-<style lang="scss" src="./links_tab.scss"></style>
-
 <script src="./links_tab.js"></script>
+
+<style lang="scss" src="./links_tab.scss"></style>

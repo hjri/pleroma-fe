@@ -23,7 +23,10 @@
       {{ backendDescriptionDescription + ' ' }}
     </p>
     <ul class="setting-list">
-      <li v-for="(item, index) in visibleState">
+      <li
+        v-for="(item, index) in visibleState"
+        :key="index"
+      >
         <div class="btn-group">
           <input
             class="input string-input"
@@ -48,18 +51,18 @@
       <li>
         <div class="btn-group">
           <input
+            v-model="newValue[0]"
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :disabled="shouldBeDisabled"
             :placeholder="backendDescriptionSuggestions[0][0]"
-            v-model="newValue[0]"
           >
           <input
+            v-model="newValue[1]"
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :disabled="shouldBeDisabled"
             :placeholder="backendDescriptionSuggestions[0][1]"
-            v-model="newValue[1]"
           >
           <button
             class="button-default"
@@ -79,6 +82,7 @@
   </div>
 </template>
 
+<script src="./list_tuple_setting.js"></script>
 <style lang="scss">
 .ListTupleSetting {
   .btn-group {
@@ -107,4 +111,3 @@
   }
 }
 </style>
-<script src="./list_tuple_setting.js"></script>

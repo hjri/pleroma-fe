@@ -8,7 +8,7 @@
             :path="[':pleroma','Pleroma.Upload',':uploader']"
             :options="uploaders"
           />
-          <h4>{{ $t('admin_dash.uploads.uploader_settings')}}</h4>
+          <h4>{{ $t('admin_dash.uploads.uploader_settings') }}</h4>
           <ul class="setting-list suboptions">
             <template v-if="uploader === 'Pleroma.Uploaders.Local'">
               <li>
