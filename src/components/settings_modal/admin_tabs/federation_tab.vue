@@ -9,6 +9,9 @@
         <li>
           <BooleanSetting path=":pleroma.:instance.:skip_thread_containment" />
         </li>
+        <li>
+          <BooleanSetting path=":pleroma.:instance.:external_user_synchronization" />
+        </li>
       </ul>
       <h3>{{ $t('admin_dash.federation.restrictions') }}</h3>
       <ul class="setting-list">
@@ -17,9 +20,6 @@
         </li>
         <li>
           <MapSetting path=":pleroma.:instance.:rejected_instances" />
-        </li>
-        <li>
-          <IntegerSetting path=":pleroma.:instance.:remote_post_retention_days" />
         </li>
       </ul>
       <h3>{{ $t('admin_dash.federation.activitypub') }}</h3>
@@ -44,6 +44,12 @@
         </li>
         <li>
           <IntegerSetting path=":pleroma.:instance.:federation_incoming_replies_max_depth" />
+        </li>
+        <li>
+          <IntegerSetting path=":pleroma.:instance.:federation_reachability_timeout_days" />
+        </li>
+        <li>
+          <BooleanSetting path=":pleroma.:instance.:allow_relay" />
         </li>
         <li>
           <BooleanSetting path=":pleroma.:activitypub.:sign_object_fetches" />

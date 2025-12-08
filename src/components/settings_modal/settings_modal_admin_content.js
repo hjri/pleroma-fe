@@ -12,6 +12,8 @@ import MonitoringTab from './admin_tabs/monitoring_tab.vue'
 import RegistrationsTab from './admin_tabs/registrations_tab.vue'
 import AuthTab from './admin_tabs/auth_tab.vue'
 import HTTPTab from './admin_tabs/http_tab.vue'
+import OtherTab from './admin_tabs/other_tab.vue'
+import PostsTab from './admin_tabs/posts_tab.vue'
 import FederationTab from './admin_tabs/federation_tab.vue'
 import JobQueuesTab from './admin_tabs/job_queues_tab.vue'
 import { useInterfaceStore } from 'src/stores/interface'
@@ -30,7 +32,9 @@ import {
   faGears,
   faKey,
   faCircleNodes,
-  faUpload
+  faUpload,
+  faMessage,
+  faEllipsis
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -46,7 +50,9 @@ library.add(
   faGears,
   faKey,
   faCircleNodes,
-  faUpload
+  faUpload,
+  faMessage,
+  faEllipsis
 )
 
 const SettingsModalAdminContent = {
@@ -66,7 +72,9 @@ const SettingsModalAdminContent = {
     JobQueuesTab,
     AuthTab,
     HTTPTab,
-    MonitoringTab
+    MonitoringTab,
+    OtherTab,
+    PostsTab
   },
   computed: {
     user () {

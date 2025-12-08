@@ -109,6 +109,14 @@
     </div>
 
     <div
+      :label="$t('admin_dash.tabs.posts')"
+      icon="message"
+      data-tab-name="other"
+    >
+      <PostsTab />
+    </div>
+
+    <div
       :label="$t('admin_dash.tabs.links')"
       icon="chain"
       data-tab-name="links"
@@ -154,6 +162,14 @@
       data-tab-name="monitoring"
     >
       <MonitoringTab />
+    </div>
+
+    <div
+      :label="$t('admin_dash.tabs.other')"
+      icon="ellipsis"
+      data-tab-name="other"
+    >
+      <OtherTab />
     </div>
   </vertical-tab-switcher>
 </template>

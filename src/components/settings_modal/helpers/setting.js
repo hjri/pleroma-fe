@@ -140,6 +140,9 @@ export default {
     },
     backendDescriptionLabel () {
       if (this.realSource !== 'admin') return ''
+      if (this.overrideBackendDescriptionLabel !== '' && typeof this.overrideBackendDescriptionLabel === 'string') {
+        return this.overrideBackendDescriptionLabel
+      }
       if (!this.backendDescription || this.overrideBackendDescriptionLabel) {
         return this.$t([
           'admin_dash',

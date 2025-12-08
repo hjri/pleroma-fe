@@ -13,13 +13,20 @@
           <StringSetting path=":pleroma.:instance.:email" />
         </li>
         <li>
-          <StringSetting path=":pleroma.:instance.:status_page" />
-        </li>
-        <li>
           <StringSetting path=":pleroma.:instance.:description" />
         </li>
         <li>
           <StringSetting path=":pleroma.:instance.:short_description" />
+        </li>
+        <li>
+          <ListSetting
+            force-new
+            ignore-suggestions
+            path=":pleroma.:instance.:languages"
+          />
+        </li>
+        <li>
+          <StringSetting path=":pleroma.:instance.:status_page" />
         </li>
       </ul>
       <h3>{{ $t('admin_dash.instance.branding') }}</h3>
@@ -48,6 +55,21 @@
         </li>
         <li>
           <AttachmentSetting path=":pleroma.:instance.:background_image" />
+        </li>
+      </ul>
+      <h3>{{ $t('admin_dash.instance.rich_metadata') }}</h3>
+      <ul class="setting-list">
+        <li>
+          <ListSetting
+            override-available-options
+            :options="providersOptions"
+            :path="[':pleroma','Pleroma.Web.Metadata', ':providers']"
+          />
+        </li>
+        <li>
+          <BooleanSetting
+            :path="[':pleroma','Pleroma.Web.Metadata', ':unfurl_nsfw']"
+          />
         </li>
       </ul>
     </div>
@@ -149,21 +171,6 @@
               </ul>
             </li>
           </ul>
-        </li>
-      </ul>
-      <h3>{{ $t('admin_dash.instance.rich_metadata') }}</h3>
-      <ul class="setting-list">
-        <li>
-          <ListSetting
-            override-available-options
-            :options="providersOptions"
-            :path="[':pleroma','Pleroma.Web.Metadata', ':providers']"
-          />
-        </li>
-        <li>
-          <BooleanSetting
-            :path="[':pleroma','Pleroma.Web.Metadata', ':unfurl_nsfw']"
-          />
         </li>
       </ul>
     </div>

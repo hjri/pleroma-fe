@@ -128,6 +128,25 @@
             </li>
           </ul>
         </li>
+        <li>
+          <h4>{{ $t('admin_dash.limits.other') }}</h4>
+          <ul class="setting-list">
+            <li>
+              <IntegerSetting
+                source="admin"
+                path=":pleroma.:instance.:max_report_comment_size"
+                draft-mode
+              />
+            </li>
+            <li>
+              <IntegerSetting
+                source="admin"
+                path=":pleroma.:instance.:max_endorsed_users"
+                draft-mode
+              />
+            </li>
+          </ul>
+        </li>
       </ul>
     </div>
   </div>

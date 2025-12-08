@@ -1161,8 +1161,32 @@
       "links": "Links",
       "job_queues": "Job Queues",
       "auth": "Auth",
+      "posts": "Posts",
       "http": "HTTP",
-      "federation": "Federation"
+      "federation": "Federation",
+      "other": "Other"
+    },
+    "posts": {
+      "global": "Global settings",
+      "local": "Local posts",
+      "scheduled_activites": "Scheduled posts",
+      "remote": "Remote posts"
+    },
+    "other": {
+      "uncategorized": "Uncategorized",
+      "user_backup": "User Backup",
+      "reports": "Reports",
+      "feed": "RSS Feed",
+      "feed_title": "Article Title",
+      "mime": "MIME Types",
+      "remote_ip": "Reverse Proxy / Remote IP",
+      "remote_ip_description": "This should be disabled only if your instance is NOT behind a reverse proxy",
+      "streamer": "Notifications Streamer",
+      "privileges": "Privileges"
+    },
+    "monitoring": {
+      "builtins": "Built-in Tools",
+      "prometheus": "Prometheus Exporter"
     },
     "federation": {
       "global": "Global settings",
@@ -1278,6 +1302,7 @@
     "limits": {
       "arbitrary_limits": "Arbitrary limits",
       "posts": "Post limits",
+      "other": "Misc. limits",
       "uploads": "Attachments limits",
       "users": "User profile limits",
       "profile_fields": "Profile fields limits",
