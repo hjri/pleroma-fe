@@ -73,9 +73,8 @@ export default {
 
 <style lang="scss">
 .DraftButtons {
-  display: inline-block;
-  position: relative;
   display: inline-flex;
+  position: relative;
   gap: 0.5em;
   margin-top: 0.5em
 }

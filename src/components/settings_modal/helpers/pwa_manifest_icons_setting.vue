@@ -97,6 +97,7 @@
 <style lang="scss">
 .PWAManifestIconsSetting {
   display: inline-block;
+
   .setting-list {
     display: grid;
     gap: 0.5em;
