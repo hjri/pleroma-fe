@@ -6,6 +6,24 @@
         <li>
           <StringSetting path=":pleroma.:instance.:name" />
         </li>
+        <li>
+          <StringSetting path=":pleroma.:instance.:contact_username" />
+        </li>
+        <li>
+          <StringSetting path=":pleroma.:instance.:email" />
+        </li>
+        <li>
+          <StringSetting path=":pleroma.:instance.:status_page" />
+        </li>
+        <li>
+          <StringSetting path=":pleroma.:instance.:description" />
+        </li>
+        <li>
+          <StringSetting path=":pleroma.:instance.:short_description" />
+        </li>
+      </ul>
+      <h3>{{ $t('admin_dash.instance.branding') }}</h3>
+      <ul class="setting-list">
         <!-- See https://git.pleroma.social/pleroma/pleroma/-/merge_requests/3963 -->
         <li v-if="adminDraft[':pleroma'][':instance'][':favicon'] !== undefined">
           <AttachmentSetting
@@ -14,22 +32,19 @@
           />
         </li>
         <li>
-          <StringSetting path=":pleroma.:instance.:contact_username" />
-        </li>
-        <li>
-          <StringSetting path=":pleroma.:instance.:email" />
-        </li>
-        <li>
-          <StringSetting path=":pleroma.:instance.:description" />
-        </li>
-        <li>
-          <StringSetting path=":pleroma.:instance.:short_description" />
-        </li>
-        <li>
           <AttachmentSetting
             compact
             path=":pleroma.:instance.:instance_thumbnail"
           />
+        </li>
+        <li>
+          <PWAManifestIconsSetting path=":pleroma.:manifest.:icons" />
+        </li>
+        <li>
+          <ColorSetting path=":pleroma.:manifest.:theme_color" />
+        </li>
+        <li>
+          <ColorSetting path=":pleroma.:manifest.:background_color" />
         </li>
         <li>
           <AttachmentSetting path=":pleroma.:instance.:background_image" />

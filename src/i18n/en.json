@@ -1225,6 +1225,7 @@
     },
     "instance": {
       "instance": "Instance information",
+      "branding": "Branding",
       "registrations": "User sign-ups",
       "captcha_header": "CAPTCHA",
       "kocaptcha": "KoCaptcha settings",

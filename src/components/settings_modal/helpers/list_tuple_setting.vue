@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="matchesExpertLevel"
-    class="ListSetting"
+    class="ListTupleSetting"
   >
     <label
       class="setting-label"
@@ -80,7 +80,7 @@
 </template>
 
 <style lang="scss">
-.ListSetting {
+.ListTupleSetting {
   .btn-group {
     display: flex
   }
@@ -89,6 +89,7 @@
     display: inline-grid;
     grid-template-columns: auto auto;
     gap: 0.5em;
+    align-items: baseline;
 
     dt {
       display: inline;
