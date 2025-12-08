@@ -27,7 +27,7 @@
         <Checkbox
           :disabled="shouldBeDisabled"
           :model-value="optionPresent(item.value)"
-          @update:model-value="e => update({ event, eventType: 'toggle' })"
+          @update:model-value="event => update({ event, value: item.value, eventType: 'toggle' })"
         >
           {{ item.label }}
         </Checkbox>

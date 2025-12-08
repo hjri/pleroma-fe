@@ -57,7 +57,6 @@ export default {
     },
     suggestionsSet () {
       const suggestions = this.backendDescriptionSuggestions
-      console.log(suggestions)
       if (suggestions) {
         return new Set(suggestions)
       } else {
@@ -68,7 +67,7 @@ export default {
       if (this.ignoreSuggestions) return [...this.valueSet.values()]
       if (!this.suggestionsSet) return []
       return [...this.valueSet.values()].filter((x) => {
-        return !this.suggestionsSet?.has(x)
+        return !this.builtinEntriesValueSet.has(x)
       })
     },
     builtinEntries () {
@@ -81,8 +80,11 @@ export default {
       const builtins = [...this.suggestionsSet.values()]
       return builtins.map((option) => ({
         label: option,
-        value: this.valueSet.has(option)
+        value: option
       }))
+    },
+    builtinEntriesValueSet () {
+      return new Set(this.builtinEntries.map(x => x.value))
     }
   },
   methods: {
@@ -90,32 +92,38 @@ export default {
     optionPresent (option) {
       return this.valueSet.has(option)
     },
-    getValue ({ event, index, eventType }) {
+    getValue ({ event, value, index, eventType }) {
       switch (eventType) {
         case 'toggle': {
           this.newValue = ''
-          return [...this.visibleState, event]
+          const newSet = new Set(this.valueSet.values())
+          if (event) {
+            newSet.add(value)
+          } else {
+            newSet.delete(value)
+          }
+          return [...newSet.values()]
         }
 
         case 'add': {
-          if (!this.newValue) return this.visibleState
-          const res = [...this.visibleState, this.newValue]
+          if (!this.newValue) return this.valueSet.values()
+          const res = [...this.valueSet.values(), this.newValue]
           this.newValue = ''
           return res
         }
 
         case 'remove': {
-          const pre = this.visibleState.slice(0, index)
-          const post = this.visibleState.slice(index + 1)
+          const pre = [...this.valueSet.values()].slice(0, index)
+          const post = [...this.valueSet.values()].slice(index + 1)
 
           return [...pre, ...post]
         }
 
         case 'edit': {
-          const pre = this.visibleState.slice(0, index)
-          const post = this.visibleState.slice(index + 1)
+          const pre = [...this.valueSet.values()].slice(0, index)
+          const post = [...this.valueSet.values()].slice(index + 1)
           const string = event.target.value
-          if (!string) return this.visibleState
+          if (!string) return [...this.valueSet.values()]
 
           return [...pre, string, ...post]
         }

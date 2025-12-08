@@ -106,6 +106,15 @@ const adminSettingsStorage = {
         set(config, path, convert(c.value))
       })
       console.log('CONFIG', JSON.parse(JSON.stringify(config)))
+      // patching http adapter config to be easier to handle
+      const adapter = config[':pleroma'][':http'][':adapter']
+      if (Array.isArray(adapter)) {
+        config[':pleroma'][':http'][':adapter'] = {
+          [':ssl_options']: {
+            [':versions']: []
+          }
+        }
+      }
       commit('updateAdminSettings', { config, modifiedPaths })
       commit('resetAdminDraft')
     },
