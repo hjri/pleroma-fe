@@ -22,6 +22,7 @@
         <slot v-else />
       </span>
     </Checkbox>
+    {{ ' ' }}
     <ModifiedIndicator
       :changed="isChanged"
       :onclick="reset"

@@ -77,6 +77,7 @@ export default {
   position: relative;
   display: inline-flex;
   gap: 0.5em;
+  margin-top: 0.5em
 }
 
 .draft-tooltip {
