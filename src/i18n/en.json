@@ -1162,6 +1162,7 @@
       "job_queues": "Job Queues",
       "auth": "Auth",
       "posts": "Posts",
+      "rate_limit": "Rate Limits",
       "http": "HTTP",
       "federation": "Federation",
       "other": "Other"
@@ -1226,6 +1227,14 @@
         "upload": "Upload"
       },
       "queues": "Queues"
+    },
+    "rate_limit": {
+      "rate_limit": "Rate Limit",
+      "amount": "Amount",
+      "unauthenticated": "Unauthenticated",
+      "authenticated": "Authenticated",
+      "period": "Time period",
+      "separate": "Separate rate limits for authenticated/unauthenticated users"
     },
     "nodb": {
       "heading": "Database config is disabled",
@@ -1419,6 +1428,12 @@
           ":rich_media": {
             "label": "Rich media",
             "description": "idk"
+          }
+        },
+        ":rate_limit": {
+          ":oauth_app_creation": {
+            "label": "OAuth app creation",
+            "description": "For registering new OAuth App ID"
           }
         },
         "Pleroma_DOT_Formatter": {

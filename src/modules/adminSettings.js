@@ -87,6 +87,7 @@ const adminSettingsStorage = {
     setInstanceAdminSettings ({ state, commit }, { backendDbConfig }) {
       const config = state.config || {}
       const modifiedPaths = new Set()
+
       backendDbConfig.configs.forEach(c => {
         const path = [c.group, c.key]
         if (c.db) {
@@ -94,16 +95,33 @@ const adminSettingsStorage = {
           // Using strings for modified paths for easier searching
           c.db.forEach(x => modifiedPaths.add([...path, x].join(' -> ')))
         }
-        const convert = (value) => {
+
+        // we need to preserve tuples on second level only, possibly third
+        // but it's not a case right now.
+        const convert = (value, preserveTuples, preserveTuplesLv2) => {
           if (Array.isArray(value) && value.length > 0 && value[0].tuple) {
-            return value.reduce((acc, c) => {
-              return { ...acc, [c.tuple[0]]: convert(c.tuple[1]) }
-            }, {})
+            if (!preserveTuples) {
+              return value.reduce((acc, c) => {
+                return { ...acc, [c.tuple[0]]: convert(c.tuple[1], preserveTuplesLv2) }
+              }, {})
+            } else {
+              return value.map(x => x.tuple)
+            }
           } else {
-            return value
+            if (!preserveTuples) {
+              return value
+            } else {
+              return value.tuple
+            }
           }
         }
-        set(config, path, convert(c.value))
+        // for most stuff we want maps since those are more convenient
+        // however this doesn't allow for multiple values per same key
+        // so for those cases we want to preserve tuples as-is
+        // right now it's made exclusively for :pleroma.:rate_limit
+        // so it might not work properly elsewhere
+        const preserveTuples = path.find(x => x === ':rate_limit')
+        set(config, path, convert(c.value, false, preserveTuples))
       })
       console.log('CONFIG', JSON.parse(JSON.stringify(config)))
       // patching http adapter config to be easier to handle

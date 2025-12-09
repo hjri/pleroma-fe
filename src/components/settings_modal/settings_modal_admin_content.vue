@@ -93,6 +93,15 @@
     </div>
 
     <div
+      v-if="adminDbLoaded"
+      :label="$t('admin_dash.tabs.rate_limit')"
+      icon="gauge"
+      data-tab-name="rate_limits"
+    >
+      <RatesTab />
+    </div>
+
+    <div
       :label="$t('admin_dash.tabs.uploads')"
       icon="upload"
       data-tab-name="uploads"
