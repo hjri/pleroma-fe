@@ -13,8 +13,10 @@
             {{ $t('settings.replies_in_timeline') }}
           </ChoiceSetting>
         </li>
-        <li>
-          {{ $t('user_card.default_mute_expiration') }}
+        <li class="setting-item">
+          <span class="setting-label">
+            {{ $t('user_card.default_mute_expiration') }}
+          </span>
           <Select
             id="onMuteDefaultActionLv1"
             v-model="onMuteDefaultActionLv1"
@@ -43,10 +45,16 @@
             </li>
           </ul>
         </li>
-        <li v-if="blockExpirationSupported">
-          {{ $t('user_card.default_block_expiration') }}
+        <li
+          class="setting-item"
+          v-if="blockExpirationSupported"
+        >
+          <span class="setting-label">
+            {{ $t('user_card.default_block_expiration') }}
+          </span>
           <Select
             id="onBlockDefaultActionLv1"
+            class="setting-control"
             v-model="onBlockDefaultActionLv1"
           >
             <option

@@ -11,5 +11,28 @@
       padding: 1.2em;
       overflow: hidden;
     }
+
+  }
+
+  .setting-item {
+    .custom-boolean-setting {
+      display: grid;
+      grid-template-columns: subgrid;
+
+      .label {
+        grid-area: label;
+        text-align: right;
+      }
+
+      .-mobile & {
+        .label {
+          text-align: left;
+        }
+      }
+
+      .checkbox-indicator {
+        grid-area: control;
+      }
+    }
   }
 }

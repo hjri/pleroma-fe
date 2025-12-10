@@ -11,13 +11,15 @@
       <h3>{{ $t('settings.account_privacy') }}</h3>
       <ul class="setting-list">
         <li>
-          <Checkbox
-            class="setting-item"
-            v-model="locked"
-          >
-            {{ $t('settings.lock_account_description') }}
-          </Checkbox>
-          <ProfileSettingIndicator :is-profile="true" />
+          <div class="setting-item">
+            <Checkbox
+              class="setting-label setting-control custom-boolean-setting"
+              v-model="locked"
+            >
+              <ProfileSettingIndicator :is-profile="true" />
+              {{ $t('settings.lock_account_description') }}
+            </Checkbox>
+          </div>
         </li>
         <li>
           <BooleanSetting
