@@ -33,37 +33,6 @@
     <div class="setting-item">
       <h3>{{ $t('admin_dash.http.incoming') }}</h3>
       <ul class="setting-list">
-        <h4>{{ $t('admin_dash.http.cors') }}</h4>
-        <li>
-          <IntegerSetting
-            :description-path-override="[':cors_plug', '<ROOT>', ':max_age']"
-            path=":cors_plug.:max_age"
-          />
-        </li>
-        <li>
-          <BooleanSetting
-            :description-path-override="[':cors_plug', '<ROOT>', ':credentials']"
-            path=":cors_plug.:credentials"
-          />
-        </li>
-        <li>
-          <ListSetting
-            path=":cors_plug.:methods"
-            :description-path-override="[':cors_plug', '<ROOT>', ':methods']"
-          />
-        </li>
-        <li>
-          <ListSetting
-            :description-path-override="[':cors_plug', '<ROOT>', ':expose']"
-            path=":cors_plug.:expose"
-          />
-        </li>
-        <li>
-          <ListSetting
-            :description-path-override="[':cors_plug', '<ROOT>', ':headers']"
-            path=":cors_plug.:headers"
-          />
-        </li>
         <h4>{{ $t('admin_dash.http.security') }}</h4>
         <li>
           <BooleanSetting path=":pleroma.:http_security.:enabled" />
@@ -85,14 +54,6 @@
         </li>
         <li>
           <StringSetting path=":pleroma.:http_security.:report_url" />
-        </li>
-        <h4>{{ $t('admin_dash.http.web_cache_ttl') }}</h4>
-        <p>{{ $t('admin_dash.http.web_cache_ttl_description') }}</p>
-        <li>
-          <StringSetting path=":pleroma.:web_cache_ttl.:activity_pub" />
-        </li>
-        <li>
-          <StringSetting path=":pleroma.:web_cache_ttl.:activity_pub_question" />
         </li>
       </ul>
       <h3>{{ $t('admin_dash.http.web_push') }}</h3>
@@ -116,7 +77,6 @@
       </ul>
       <!-- CONFIRM admin_token should go there but something is wrong with both data and description. -->
       <!-- given the nature of the setting it's probably better to not expose it and deprecate it on backend side -->
-      <!-- CONFIRM :pleroma.:streamer should also PROBABLY? go here but it's completely MIA from backend besides references to config description -->
     </div>
   </div>
 </template>

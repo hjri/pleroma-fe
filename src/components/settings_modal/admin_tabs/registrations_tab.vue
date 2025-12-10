@@ -171,12 +171,6 @@
         <li>
           <ListSetting
             ignore-suggestions
-            :path="[':pleroma', 'Pleroma.User', ':restricted_nicknames']"
-          />
-        </li>
-        <li>
-          <ListSetting
-            ignore-suggestions
             :path="[':pleroma', 'Pleroma.User', ':email_blacklist']"
           />
         </li>

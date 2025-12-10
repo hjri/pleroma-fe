@@ -1179,10 +1179,6 @@
       "reports": "Reports",
       "feed": "RSS Feed",
       "feed_title": "Article Title",
-      "mime": "MIME Types",
-      "remote_ip": "Reverse Proxy / Remote IP",
-      "remote_ip_description": "This should be disabled only if your instance is NOT behind a reverse proxy",
-      "streamer": "Notifications Streamer",
       "privileges": "Privileges"
     },
     "monitoring": {
@@ -1250,9 +1246,6 @@
       "outbound": "Outgoing connections",
       "incoming": "Incoming connections",
       "security": "HTTP Security",
-      "cors": "Cross-origin Resource Sharing (CORS)",
-      "web_cache_ttl": "Web Cache TTL",
-      "web_cache_ttl_description": "Amount of milliseconds until web response cache is cleared. Use `nil` to disable expiration entirely.",
       "web_push": "Web Push",
       "web_push_description": "Web Push VAPID settings. You can use the mix task web_push.gen.keypair to generate it."
     },
@@ -1402,18 +1395,6 @@
     },
     "temp_overrides": {
       ":pleroma": {
-        "Oban": {
-          ":queues": {
-            ":scheduled_activites": {
-              "label": "Scheduled activities",
-              "description": "Scheduled activites queue"
-            },
-            ":slow": {
-              "label": "Slow",
-              "description": "idk"
-            }
-          }
-        },
         ":connections_pool": {
           ":max_idle_time": {
             "label": "Maximum idle time",

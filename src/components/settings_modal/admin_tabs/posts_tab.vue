@@ -12,20 +12,6 @@
         <li>
           <ListSetting path=":pleroma.:instance.:allowed_post_formats" />
         </li>
-        <li>
-          <h4>{{ $t('admin_dash.posts.scheduled_activites') }}</h4>
-          <ul class="setting-list">
-            <li>
-              <BooleanSetting :path="[':pleroma', 'Pleroma.ScheduledActivity', ':enabled']" />
-            </li>
-            <li>
-              <IntegerSetting :path="[':pleroma', 'Pleroma.ScheduledActivity', ':daily_user_limit']" />
-            </li>
-            <li>
-              <IntegerSetting :path="[':pleroma', 'Pleroma.ScheduledActivity', ':total_user_limit']" />
-            </li>
-          </ul>
-        </li>
       </ul>
       <h3>{{ $t('admin_dash.posts.remote') }}</h3>
       <ul class="setting-list">
