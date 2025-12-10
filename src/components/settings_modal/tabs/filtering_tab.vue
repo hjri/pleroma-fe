@@ -13,22 +13,24 @@
             {{ $t('settings.replies_in_timeline') }}
           </ChoiceSetting>
         </li>
-        <li class="setting-item">
-          <span class="setting-label">
-            {{ $t('user_card.default_mute_expiration') }}
-          </span>
-          <Select
-            id="onMuteDefaultActionLv1"
-            v-model="onMuteDefaultActionLv1"
-          >
-            <option
-              v-for="option in muteBlockLv1Options"
-              :key="option.key"
-              :value="option.value"
+        <li>
+          <span class="setting-item">
+            <span class="setting-label">
+              {{ $t('user_card.default_mute_expiration') }}
+            </span>
+            <Select
+              id="onMuteDefaultActionLv1"
+              v-model="onMuteDefaultActionLv1"
             >
-              {{ option.label }}
-            </option>
-          </Select>
+              <option
+                v-for="option in muteBlockLv1Options"
+                :key="option.key"
+                :value="option.value"
+              >
+                {{ option.label }}
+              </option>
+            </Select>
+          </span>
           <ul
             v-if="onMuteDefaultActionLv1 === 'temporarily'"
             class="setting-list suboptions"
@@ -45,26 +47,25 @@
             </li>
           </ul>
         </li>
-        <li
-          class="setting-item"
-          v-if="blockExpirationSupported"
-        >
-          <span class="setting-label">
-            {{ $t('user_card.default_block_expiration') }}
-          </span>
-          <Select
-            id="onBlockDefaultActionLv1"
-            class="setting-control"
-            v-model="onBlockDefaultActionLv1"
-          >
-            <option
-              v-for="option in muteBlockLv1Options"
-              :key="option.key"
-              :value="option.value"
+        <li v-if="blockExpirationSupported">
+          <span class="setting-item">
+            <span class="setting-label">
+              {{ $t('user_card.default_block_expiration') }}
+            </span>
+            <Select
+              id="onBlockDefaultActionLv1"
+              class="setting-control"
+              v-model="onBlockDefaultActionLv1"
             >
-              {{ option.label }}
-            </option>
-          </Select>
+              <option
+                v-for="option in muteBlockLv1Options"
+                :key="option.key"
+                :value="option.value"
+              >
+                {{ option.label }}
+              </option>
+            </Select>
+          </span>
           <ul
             v-if="onBlockDefaultActionLv1 === 'temporarily'"
             class="setting-list suboptions"

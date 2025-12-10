@@ -7,9 +7,13 @@
       :for="path"
       class="setting-label size-label"
     >
+      <ModifiedIndicator
+        :changed="isChanged"
+        :onclick="reset"
+      />
+      {{ ' ' }}
       <slot />
     </label>
-    {{ ' ' }}
     <span class="no-break setting-control">
       <input
         :id="path"
@@ -38,10 +42,6 @@
       </Select>
     </span>
     {{ ' ' }}
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
   </span>
 </template>
 
