@@ -1,6 +1,6 @@
 <template>
   <div :label="$t('admin_dash.tabs.posts')">
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('admin_dash.posts.global') }}</h3>
       <ul class="setting-list">
         <li>

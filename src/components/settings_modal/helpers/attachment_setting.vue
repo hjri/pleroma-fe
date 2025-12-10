@@ -1,10 +1,11 @@
 <template>
   <span
     v-if="matchesExpertLevel"
-    class="AttachmentSetting"
+    class="AttachmentSetting setting-item"
     :class="{ '-compact': compact }"
   >
     <label
+      class="setting-label"
       :for="path"
       :class="{ 'faint': shouldBeDisabled }"
     >

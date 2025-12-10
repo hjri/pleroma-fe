@@ -1,6 +1,6 @@
 <template>
   <div :label="$t('settings.notifications')">
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.notification_setting_annoyance') }}</h3>
       <ul class="setting-list">
         <li>
@@ -28,7 +28,7 @@
         </li>
       </ul>
     </div>
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.notification_setting_filters') }}</h3>
       <ul class="setting-list">
         <li>
@@ -241,7 +241,7 @@
 
     <div
       v-if="expertLevel > 0"
-      class="setting-item"
+      class="setting-section"
     >
       <h3>{{ $t('settings.notification_setting_privacy') }}</h3>
       <ul class="setting-list">
@@ -279,7 +279,7 @@
         </li>
       </ul>
     </div>
-    <div class="setting-item">
+    <div class="setting-section">
       <p>{{ $t('settings.notification_mutes') }}</p>
       <p>{{ $t('settings.notification_blocks') }}</p>
     </div>

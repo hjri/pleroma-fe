@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="matchesExpertLevel"
-    class="MapSetting"
+    class="MapSetting setting-item"
   >
     <label
       class="setting-label"

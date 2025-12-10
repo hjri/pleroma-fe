@@ -1,6 +1,6 @@
 <template>
   <div :label="$t('settings.security_tab')">
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.change_email') }}</h3>
       <ul class="setting-list">
         <li>
@@ -41,7 +41,7 @@
       </ul>
     </div>
 
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.change_password') }}</h3>
       <ul class="setting-list">
         <li>
@@ -90,7 +90,7 @@
       </ul>
     </div>
 
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.account_alias') }}</h3>
       <table>
         <thead>
@@ -160,7 +160,7 @@
     </div>
 
 
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.oauth_tokens') }}</h3>
       <table class="oauth-tokens">
         <thead>
@@ -191,7 +191,7 @@
     </div>
     <mfa />
 
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.move_account') }}</h3>
       <p>{{ $t('settings.move_account_notes') }}</p>
       <div>
@@ -234,7 +234,7 @@
       </template>
     </div>
 
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.delete_account') }}</h3>
       <p v-if="!deletingAccount">
         {{ $t('settings.delete_account_description') }}

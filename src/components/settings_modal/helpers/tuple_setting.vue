@@ -1,7 +1,7 @@
 <template>
-  <label
+  <span
+    class="setting-item"
     v-if="matchesExpertLevel"
-    class="TupleSetting"
   >
     <label
       v-if="!hideLabel"
@@ -9,6 +9,12 @@
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
+      <ModifiedIndicator
+        :changed="isChanged"
+        :onclick="reset"
+      />
+      <ProfileSettingIndicator :is-profile="isProfileSetting" />
+      {{ ' ' }}
       <template v-if="backendDescriptionLabel">
         {{ backendDescriptionLabel + ' ' }}
       </template>
@@ -17,42 +23,27 @@
       </template>
       <slot v-else />
     </label>
-    {{ ' ' }}
-    <input
-      :id="path"
-      class="input string-input"
-      :class="{ disabled: shouldBeDisabled }"
-      :disabled="shouldBeDisabled"
-      :placeholder="backendDescriptionSuggestions?.[0]?.[0]"
-      :value="visibleState?.tuple?.[0]"
-      @change="e => update({ e, side: 0 })"
-    >
-    {{ ' ' }}
-    <input
-      :id="path"
-      class="input string-input"
-      :class="{ disabled: shouldBeDisabled }"
-      :disabled="shouldBeDisabled"
-      :placeholder="backendDescriptionSuggestions?.[0]?.[1]"
-      :value="visibleState?.tuple?.[1]"
-      @change="e => update({ e, side: 1 })"
-    >
-    {{ ' ' }}
-    <input
-      :id="path"
-      class="input string-input"
-      :class="{ disabled: shouldBeDisabled }"
-      :disabled="shouldBeDisabled"
-      :placeholder="backendDescriptionSuggestions?.[0]?.[1]"
-      :value="visibleState?.tuple?.[2]"
-      @change="e => update({ e, side: 2 })"
-    >
-    {{ ' ' }}
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
-    <ProfileSettingIndicator :is-profile="isProfileSetting" />
+    <span class="setting-control">
+      <input
+        :id="path"
+        class="input string-input"
+        :class="{ disabled: shouldBeDisabled }"
+        :disabled="shouldBeDisabled"
+        :placeholder="backendDescriptionSuggestions?.[0]?.[0]"
+        :value="visibleState?.tuple?.[0]"
+        @change="e => update({ e, side: 0 })"
+      >
+      {{ ' ' }}
+      <input
+        :id="path"
+        class="input string-input"
+        :class="{ disabled: shouldBeDisabled }"
+        :disabled="shouldBeDisabled"
+        :placeholder="backendDescriptionSuggestions?.[0]?.[1]"
+        :value="visibleState?.tuple?.[1]"
+        @change="e => update({ e, side: 1 })"
+      >
+    </span>
     <DraftButtons v-if="!hideDraftButtons" />
     <p
       v-if="backendDescriptionDescription"
@@ -61,7 +52,7 @@
     >
       {{ backendDescriptionDescription + ' ' }}
     </p>
-  </label>
+  </span>
 </template>
 
 <script src="./tuple_setting.js"></script>

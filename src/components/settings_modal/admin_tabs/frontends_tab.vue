@@ -3,7 +3,7 @@
     class="FrontendsTab"
     :label="$t('admin_dash.tabs.frontends')"
   >
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('admin_dash.frontend.title') }}</h3>
       <p>{{ $t('admin_dash.frontend.wip_notice') }}</p>
       <ul

@@ -3,7 +3,7 @@
     class="LinksTab"
     :label="$t('admin_dash.tabs.http')"
   >
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('admin_dash.http.outbound') }}</h3>
       <ul class="setting-list">
         <li>
@@ -30,7 +30,7 @@
         </li>
       </ul>
     </div>
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('admin_dash.http.incoming') }}</h3>
       <ul class="setting-list">
         <h4>{{ $t('admin_dash.http.security') }}</h4>

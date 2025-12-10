@@ -1,6 +1,6 @@
 <template>
   <div :label="$t('admin_dash.tabs.media_proxy')">
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('admin_dash.media_proxy.basic') }}</h3>
       <ul class="setting-list">
         <li>

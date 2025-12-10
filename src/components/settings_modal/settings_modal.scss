@@ -35,14 +35,53 @@
     line-height: 1.5;
   }
 
-  .setting-item > p {
-    margin-left: 1em;
+  .setting-item {
+    display: grid;
+    grid-template-areas:
+      "label control"
+      ".    desc"
+      ".   draft";
+    grid-template-columns: 1fr 1fr;
+    column-gap: 0.5em;
+    align-items: baseline;
+    padding: 0.5em 0;
+
+    .setting-label {
+      grid-area: label;
+      text-align: right;
+    }
+
+    .ModifiedIndicator,
+    .ProfileSettingIndicator {
+      grid-area: indicator;
+    }
+
+    .setting-control {
+      grid-area: control;
+    }
+
+    .setting-control.setting-label {
+      grid-column: 1 / 3;
+      text-align: left;
+    }
+
+    .setting-description {
+      grid-area: desc;
+    }
+
+    .DraftButtons {
+      grid-area: draft;
+    }
+  }
+
+  .vertical-tab-switcher {
+    height: 100%;
   }
 
   .setting-list,
   .option-list {
     list-style-type: none;
-    padding-left: 2em;
+    padding-left: 0;
     margin: 0;
 
     .btn:not(.dropdown-button) {
@@ -53,21 +92,6 @@
       .button-default {
         flex: 0 1 auto;
       }
-    }
-
-    li {
-      display: block;
-      margin: 0.75em 0;
-
-      > label {
-        display: block;
-        margin: 0.75em 0;
-        padding: 0.5em 0;
-      }
-    }
-
-    .suboptions {
-      margin-top: 0.3em;
     }
 
     &.two-column {
@@ -135,20 +159,24 @@
       }
     }
 
+    .setting-item {
+      border-bottom: 1px solid var(--border);
+      grid-template-columns: 1fr min-content;
+      column-gap: 0.5em;
+      padding: 1em 0;
+      align-items: center;
+
+      .setting-label {
+        text-align: left;
+      }
+    }
+
+    ul {
+      padding: 0;
+    }
+
     .setting-list:not(.suboptions),
     .option-list {
-      padding-left: 0.25em;
-
-
-      /* stylelint-disable no-descending-specificity */
-      // it makes no sense
-      > li {
-        margin: 1em 0;
-        line-height: 1.5em;
-        vertical-align: middle;
-      }
-      /* stylelint-enable no-descending-specificity */
-
       &.two-column {
         grid-template-columns: 1fr;
       }

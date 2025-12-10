@@ -1,24 +1,28 @@
 <template>
   <div class="font-control">
-    <Checkbox
-      v-if="typeof fallback !== 'undefined'"
-      :id="name + '-o'"
-      class="font-checkbox"
-      :model-value="present"
-      @change="$emit('update:modelValue', typeof modelValue === 'undefined' ? fallback : undefined)"
-    >
-      <i18n-t
-        scope="global"
-        keypath="settings.style.fonts.override"
-        tag="span"
+    <div class="setting-item">
+      <Checkbox
+        v-if="typeof fallback !== 'undefined'"
+        :id="name + '-o'"
+        class="font-checkbox setting-control setting-label"
+        :model-value="present"
+        @change="$emit('update:modelValue', typeof modelValue === 'undefined' ? fallback : undefined)"
       >
-        {{ label }}
-      </i18n-t>
-    </Checkbox>
+        <i18n-t
+          scope="global"
+          keypath="settings.style.fonts.override"
+          tag="span"
+        >
+          <span class="label">
+            {{ label }}
+          </span>
+        </i18n-t>
+      </Checkbox>
+    </div>
     {{ ' ' }}
     <div
       v-if="modelValue?.family"
-      class="font-input"
+      class="font-input setting-item"
     >
       <label
         v-if="manualEntry"
@@ -132,15 +136,29 @@
 <script src="./font_control.js"></script>
 
 <style lang="scss">
+// Copy-paste of BooleanSetting
 .font-control {
-  .custom-font {
-    min-width: 20em;
-    max-width: 20em;
+  display: grid;
+  grid-template-columns: subgrid;
+
+  .checkbox {
+    display: grid;
+    grid-template-columns: subgrid;
   }
 
-  .font-input {
-    margin-left: 2em;
-    margin-top: 0.5em;
+  .label {
+    grid-area: label;
+    text-align: right;
+  }
+
+  .-mobile & {
+    .label {
+      text-align: left;
+    }
+  }
+
+  .checkbox-indicator {
+    grid-area: control;
   }
 }
 

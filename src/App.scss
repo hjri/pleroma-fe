@@ -704,6 +704,7 @@ option {
   position: relative;
   display: inline-flex;
   vertical-align: middle;
+  min-height: 2em;
 
   .Select select {
     line-height: 1;

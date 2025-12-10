@@ -3,7 +3,7 @@
     class="EmojiTab"
     :label="$t('admin_dash.tabs.emoji')"
   >
-    <div class="setting-item">
+    <div class="setting-section">
       <h3 class="toolbar">
         <span class="header-text">
           {{ $t('admin_dash.emoji.emoji_packs') }}

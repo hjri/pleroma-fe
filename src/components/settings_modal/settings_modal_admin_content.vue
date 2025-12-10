@@ -2,7 +2,7 @@
   <vertical-tab-switcher
     v-if="adminDescriptionsLoaded && (noDb || adminDbLoaded)"
     ref="tabSwitcher"
-    class="settings_tab-switcher"
+    class="settings-admin-content settings_tab-switcher"
     :side-tab-bar="true"
     :scrollable-tabs="true"
     :render-only-focused="true"
@@ -15,7 +15,7 @@
       data-tab-name="nodb-notice"
     >
       <div :label="$t('admin_dash.tabs.nodb')">
-        <div class="setting-item">
+        <div class="setting-section">
           <h2>{{ $t('admin_dash.nodb.heading') }}</h2>
           <i18n-t
             scope="global"
@@ -185,4 +185,10 @@
 
 <script src="./settings_modal_admin_content.js"></script>
 
-<style src="./settings_modal_admin_content.scss" lang="scss"></style>
+<style lang="scss">
+.settings-admin-content {
+  .setting-item {
+    grid-template-columns: 1fr 3fr;
+  }
+}
+</style>

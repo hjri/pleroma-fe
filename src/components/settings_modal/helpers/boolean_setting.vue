@@ -1,9 +1,10 @@
 <template>
   <label
     v-if="matchesExpertLevel"
-    class="BooleanSetting"
+    class="BooleanSetting setting-item"
   >
     <Checkbox
+      class="setting-control setting-label"
       :model-value="visibleState"
       :disabled="shouldBeDisabled"
       :indeterminate="isIndeterminate"
@@ -13,6 +14,12 @@
         class="label"
         :class="{ 'faint': shouldBeDisabled }"
       >
+        <ModifiedIndicator
+          :changed="isChanged"
+          :onclick="reset"
+        />
+        <ProfileSettingIndicator :is-profile="isProfileSetting" />
+        {{ ' ' }}
         <template v-if="backendDescriptionLabel">
           {{ backendDescriptionLabel }}
         </template>
@@ -22,13 +29,6 @@
         <slot v-else />
       </span>
     </Checkbox>
-    {{ ' ' }}
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
-    <ProfileSettingIndicator :is-profile="isProfileSetting" />
-    <DraftButtons />
     <p
       v-if="backendDescriptionDescription"
       class="setting-description"
@@ -36,7 +36,35 @@
     >
       {{ backendDescriptionDescription + ' ' }}
     </p>
+    <DraftButtons />
   </label>
 </template>
 
 <script src="./boolean_setting.js"></script>
+
+<style lang="scss">
+.BooleanSetting {
+  display: grid;
+  grid-template-columns: subgrid;
+
+  .checkbox {
+    display: grid;
+    grid-template-columns: subgrid;
+  }
+
+  .label {
+    grid-area: label;
+    text-align: right;
+  }
+
+  .-mobile & {
+    .label {
+      text-align: left;
+    }
+  }
+
+  .checkbox-indicator {
+    grid-area: control;
+  }
+}
+</style>

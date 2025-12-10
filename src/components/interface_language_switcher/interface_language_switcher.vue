@@ -1,30 +1,32 @@
 <template>
-  <div class="interface-language-switcher">
-    <label>
-      <slot />
-      <ProfileSettingIndicator :is-profile="profile" />
-    </label>
-    <ul class="setting-list">
-      <li
-        v-for="index of controlledLanguage.keys()"
-        :key="index"
+  <ul class="interface-language-switcher setting-list">
+    <li
+      v-for="index of controlledLanguage.keys()"
+      :key="index"
+      class="setting-item"
+    >
+      <label
+        class="setting-label"
+        :for="uniqueId+index"
       >
-        <label>
-          {{ index === 0 ? $t('settings.primary_language') : $t('settings.fallback_language', { index }, index) }}
-          <Select
-            class="language-select"
-            :model-value="controlledLanguage[index]"
-            @update:model-value="val => setLanguageAt(index, val)"
+        {{ index === 0 ? $t('settings.primary_language') : $t('settings.fallback_language', { index }, index) }}
+      </label>
+      <span class="setting-control btn-group">
+        <Select
+          :name="uniqueId+index"
+          :id="uniqueId+index"
+          class="language-select"
+          :model-value="controlledLanguage[index]"
+          @update:model-value="val => setLanguageAt(index, val)"
+        >
+          <option
+            v-for="lang in languages"
+            :key="lang.code"
+            :value="lang.code"
           >
-            <option
-              v-for="lang in languages"
-              :key="lang.code"
-              :value="lang.code"
-            >
-              {{ lang.name }}
-            </option>
-          </Select>
-        </label>
+            {{ lang.name }}
+          </option>
+        </Select>
         <button
           v-if="controlledLanguage.length > 1 && index !== 0"
           class="button-default btn"
@@ -32,25 +34,38 @@
         >
           {{ $t('settings.remove_language') }}
         </button>
-      </li>
-      <li>
-        <button
-          class="button-default btn"
-          @click="addLanguage"
-        >
-          {{ $t('settings.add_language') }}
-        </button>
-      </li>
-    </ul>
-  </div>
+      </span>
+    </li>
+    <li class="add-button">
+      <button
+        class="button-default btn"
+        @click="addLanguage"
+      >
+        {{ $t('settings.add_language') }}
+      </button>
+    </li>
+  </ul>
 </template>
 
 <script src="./interface_language_switcher.js"></script>
 
 <style lang="scss">
 .interface-language-switcher {
-  .language-select {
-    margin-right: 1em;
+  .setting-list {
+    .setting-item {
+      display: grid;
+      grid-template-columns: subgrid;
+    }
+  }
+
+  .add-button {
+    display: block;
+    text-align: center;
+
+    .default-button {
+      display: block;
+      width: auto;
+    }
   }
 }
 </style>

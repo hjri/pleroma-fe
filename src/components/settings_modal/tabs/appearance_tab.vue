@@ -5,7 +5,7 @@
     icon="table-columns"
   >
     <div
-      class="setting-item"
+      class="setting-section"
       :label="$t('settings.theme')"
       icon="paintbrush"
     >

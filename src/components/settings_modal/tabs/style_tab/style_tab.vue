@@ -3,7 +3,7 @@
 
 <template>
   <div class="StyleTab">
-    <div class="setting-item heading">
+    <div class="setting-section heading">
       <div class="meta-preview">
         <Preview id="edited-style-preview" />
         <teleport
@@ -82,7 +82,7 @@
     <tab-switcher>
       <div
         key="component"
-        class="setting-item component-editor"
+        class="setting-section component-editor"
         :label="$t('settings.style.themes3.editor.component_tab')"
         :full-width="true"
       >
@@ -331,7 +331,7 @@
       <div
         key="palette"
         :label="$t('settings.style.themes3.editor.palette_tab')"
-        class="setting-item list-editor palette-editor"
+        class="setting-section list-editor palette-editor"
         :full-width="true"
       >
         <label

@@ -1,7 +1,7 @@
 <template>
   <span
     v-if="matchesExpertLevel"
-    class="NumberSetting"
+    class="NumberSetting setting-item"
   >
     <label
       v-if="!hideLabel"
@@ -20,7 +20,7 @@
     {{ ' ' }}
     <input
       :id="path"
-      class="input number-input"
+      class="input number-input setting-control"
       type="number"
       :step="step || 1"
       :disabled="shouldBeDisabled"

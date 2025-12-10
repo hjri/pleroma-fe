@@ -161,9 +161,11 @@ export default {
       const contentClasses = ['tab-content']
       if (props['full-width'] || props['full-width'] === '') {
         contentClasses.push('-full-width')
+        wrapperClasses.push('-full-width')
       }
       if (props['full-height'] || props['full-width'] === '') {
         contentClasses.push('-full-height')
+        wrapperClasses.push('-full-height')
       }
       return (
         <div class={wrapperClasses} >

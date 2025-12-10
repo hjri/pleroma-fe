@@ -1,6 +1,6 @@
 <template>
   <div :label="$t('admin_dash.tabs.other')">
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('admin_dash.other.uncategorized') }}</h3>
       <ul class="setting-list">
         <li>

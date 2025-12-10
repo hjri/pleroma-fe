@@ -1,7 +1,7 @@
 <template>
   <label
     v-if="matchesExpertLevel"
-    class="ProxySetting"
+    class="ProxySetting setting-item"
   >
     <label
       v-if="!hideLabel"

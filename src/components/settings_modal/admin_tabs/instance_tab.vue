@@ -1,6 +1,6 @@
 <template>
   <div :label="$t('admin_dash.tabs.instance')">
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('admin_dash.instance.instance') }}</h3>
       <ul class="setting-list">
         <li>
@@ -73,7 +73,7 @@
         </li>
       </ul>
     </div>
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('admin_dash.instance.access') }}</h3>
       <ul class="setting-list">
         <li>

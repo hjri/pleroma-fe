@@ -1,6 +1,6 @@
 <template>
   <div :label="$t('admin_dash.tabs.job_queues')">
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('admin_dash.auth.MFA') }}</h3>
       <ul class="setting-list">
         <li>

@@ -1,6 +1,6 @@
 <template>
   <div :label="$t('admin_dash.tabs.limits')">
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('admin_dash.limits.arbitrary_limits') }}</h3>
       <ul class="setting-list">
         <li>

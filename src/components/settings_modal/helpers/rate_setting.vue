@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="matchesExpertLevel"
-    class="RateSetting"
+    class="RateSetting setting-item"
   >
     <label
       class="setting-label"

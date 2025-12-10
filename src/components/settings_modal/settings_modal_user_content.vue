@@ -49,7 +49,7 @@
       <AppearanceTab />
     </div>
     <div
-      :full-width="true"
+      :full-width="$store.getters.mergedConfig.expertLevel > 0"
       :label="$t('settings.layout')"
       icon="table-columns"
       data-tab-name="layout"
@@ -68,7 +68,6 @@
     </div>
     <div
       :label="$t('settings.filtering')"
-      :full-width="true"
       icon="filter"
       data-tab-name="filtering"
     >
@@ -139,5 +138,3 @@
 </template>
 
 <script src="./settings_modal_user_content.js"></script>
-
-<style src="./settings_modal_user_content.scss" lang="scss"></style>

@@ -1,25 +1,25 @@
 <template>
   <div>
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.format_and_language') }}</h3>
       <ul class="setting-list">
-        <li>
-          <interface-language-switcher
-            v-model="language"
-            @update="val => language = val"
-          >
-            {{ $t('settings.interfaceLanguage') }}
-          </interface-language-switcher>
-        </li>
-        <li>
-          <interface-language-switcher
-            v-model="emailLanguage"
-            :profile="true"
-            @update:model-value="updateProfile()"
-          >
-            {{ $t('settings.email_language') }}
-          </interface-language-switcher>
-        </li>
+        <h4>{{ $t('settings.interfaceLanguage') }}</h4>
+        <interface-language-switcher
+          v-model="language"
+          class="lang-selector"
+          @update="val => language = val"
+        />
+        <h4>
+          {{ $t('settings.email_language') }}
+          {{ ' ' }}
+          <ProfileSettingIndicator :is-profile="true" />
+        </h4>
+        <interface-language-switcher
+          v-model="emailLanguage"
+          class="lang-selector"
+          :profile="true"
+          @update:model-value="updateProfile()"
+        />
         <li>
           <BooleanSetting path="useAbsoluteTimeFormat">
             {{ $t('settings.absolute_time_format') }}

@@ -1,7 +1,7 @@
 <template>
   <label
     v-if="matchesExpertLevel"
-    class="ColorSetting"
+    class="ColorSetting setting-item"
   >
     <label
       v-if="!hideLabel"

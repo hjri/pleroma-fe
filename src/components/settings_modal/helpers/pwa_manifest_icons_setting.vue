@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="matchesExpertLevel"
-    class="PWAManifestIconsSetting"
+    class="PWAManifestIconsSetting setting-item"
   >
     <label
       class="setting-label"

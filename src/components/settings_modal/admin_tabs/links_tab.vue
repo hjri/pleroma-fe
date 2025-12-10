@@ -3,7 +3,7 @@
     class="LinksTab"
     :label="$t('admin_dash.tabs.media_proxy')"
   >
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('admin_dash.links.link_previews') }}</h3>
       <ul class="setting-list">
         <li>
@@ -43,5 +43,3 @@
 </template>
 
 <script src="./links_tab.js"></script>
-
-<style lang="scss" src="./links_tab.scss"></style>

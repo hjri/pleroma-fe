@@ -1,7 +1,7 @@
 <template>
-  <label
+  <span
     v-if="matchesExpertLevel"
-    class="StringSetting"
+    class="StringSetting setting-item"
   >
     <label
       v-if="!hideLabel"
@@ -9,6 +9,12 @@
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
+      <ModifiedIndicator
+        :changed="isChanged"
+        :onclick="reset"
+      />
+      <ProfileSettingIndicator :is-profile="isProfileSetting" />
+      {{ ' ' }}
       <template v-if="backendDescriptionLabel">
         {{ backendDescriptionLabel + ' ' }}
       </template>
@@ -17,10 +23,9 @@
       </template>
       <slot v-else />
     </label>
-    {{ ' ' }}
     <input
       :id="path"
-      class="input string-input"
+      class="setting-control input string-input"
       :class="{ disabled: shouldBeDisabled }"
       :disabled="shouldBeDisabled"
       :placeholder="backendDescriptionSuggestions"
@@ -28,11 +33,6 @@
       @change="update"
     >
     {{ ' ' }}
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
-    <ProfileSettingIndicator :is-profile="isProfileSetting" />
     <DraftButtons v-if="!hideDraftButtons" />
     <p
       v-if="backendDescriptionDescription"
@@ -41,7 +41,7 @@
     >
       {{ backendDescriptionDescription + ' ' }}
     </p>
-  </label>
+  </span>
 </template>
 
 <script src="./string_setting.js"></script>

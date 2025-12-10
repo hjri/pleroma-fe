@@ -3,7 +3,7 @@
     :label="$t('settings.developer')"
     class="developer-tab"
   >
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.version.title') }}</h3>
       <dl class="setting-list">
         <dt>{{ $t('settings.version.backend_version') }}</dt>

@@ -1,16 +1,16 @@
 <template>
   <span
     v-if="matchesExpertLevel"
-    class="UnitSetting"
+    class="UnitSetting setting-item"
   >
     <label
       :for="path"
-      class="size-label"
+      class="setting-label size-label"
     >
       <slot />
     </label>
     {{ ' ' }}
-    <span class="no-break">
+    <span class="no-break setting-control">
       <input
         :id="path"
         class="input number-input"
@@ -50,7 +50,7 @@
 <style lang="scss">
 .UnitSetting {
   .no-break {
-    display: inline-block;
+    display: inline-flex;
   }
 
   .number-input {
