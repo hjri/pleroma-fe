@@ -47,26 +47,24 @@
           >
             {{ $t('settings.text_size') }}
           </UnitSetting>
-          <div>
-            <small>
-              <i18n-t
-                scope="global"
-                keypath="settings.text_size_tip"
-                tag="span"
-              >
-                <code>px</code>
-                <code>rem</code>
-              </i18n-t>
-              <br>
-              <i18n-t
-                scope="global"
-                keypath="settings.text_size_tip2"
-                tag="span"
-              >
-                <code>14px</code>
-              </i18n-t>
-            </small>
-          </div>
+          <p class="sidenote">
+            <i18n-t
+              scope="global"
+              keypath="settings.text_size_tip"
+              tag="span"
+            >
+              <code>px</code>
+              <code>rem</code>
+            </i18n-t>
+            <br>
+            <i18n-t
+              scope="global"
+              keypath="settings.text_size_tip2"
+              tag="span"
+            >
+              <code>14px</code>
+            </i18n-t>
+          </p>
         </li>
         <li>
           <FontControl
@@ -144,7 +142,7 @@
         class="setting-list"
       >
         <li class="select-multiple">
-          <span class="label">{{ $t('settings.confirm_dialogs') }}</span>
+          <h4 class="label">{{ $t('settings.confirm_dialogs') }}</h4>
           <ul class="option-list">
             <li>
               <BooleanSetting path="modalOnRepeat">
@@ -156,9 +154,10 @@
                 {{ $t('settings.confirm_dialogs_unfollow') }}
               </BooleanSetting>
             </li>
-            <li>
+            <li
+              v-if="!blockExpirationSupported"
+            >
               <BooleanSetting
-                v-if="!blockExpirationSupported"
                 path="modalOnBlock"
               >
                 {{ $t('settings.confirm_dialogs_block') }}

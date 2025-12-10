@@ -61,10 +61,25 @@
   .add-button {
     display: block;
     text-align: center;
+    padding-bottom: 1em;
 
     .default-button {
       display: block;
       width: auto;
+    }
+  }
+
+  .-mobile & {
+    li.setting-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5em;
+      align-items: stretch;
+      border-bottom: none;
+    }
+
+    .add-button {
+      border-bottom: 1px solid var(--border);
     }
   }
 }

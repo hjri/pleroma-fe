@@ -30,11 +30,13 @@
       </span>
     </Checkbox>
     <p
-      v-if="backendDescriptionDescription"
+      v-if="backendDescriptionDescription || showDescription"
       class="setting-description"
       :class="{ 'faint': shouldBeDisabled }"
     >
-      {{ backendDescriptionDescription + ' ' }}
+      <slot name="description">
+        {{ backendDescriptionDescription + ' ' }}
+      </slot>
     </p>
     <DraftButtons />
   </label>

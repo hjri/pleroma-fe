@@ -13,7 +13,7 @@
           keypath="settings.style.fonts.override"
           tag="span"
         >
-          <span class="label">
+          <span>
             {{ label }}
           </span>
         </i18n-t>
@@ -73,7 +73,7 @@
       </span>
       <span
         v-else
-        class="btn-group"
+        class="font-selector btn-group"
       >
         <button
           class="btn button-default"
@@ -152,6 +152,14 @@
   }
 
   .-mobile & {
+    .font-input {
+      display: block;
+    }
+
+    .font-selector {
+      margin-top: 0.5em;
+    }
+
     .label {
       text-align: left;
     }

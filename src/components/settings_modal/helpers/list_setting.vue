@@ -83,8 +83,10 @@
 <script src="./list_setting.js"></script>
 <style lang="scss">
 .ListSetting {
-  .btn-group {
-    display: flex
+  .setting-list {
+    .checkbox {
+      padding: 0.5em 0;
+    }
   }
 }
 </style>

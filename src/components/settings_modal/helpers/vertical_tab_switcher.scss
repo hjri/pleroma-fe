@@ -107,6 +107,10 @@
         flex-shrink: 1;
       }
     }
+
+    .tab-slot-wrapper {
+      grid-template-columns: 0 minmax(min-content, 45em) 0;
+    }
   }
 
   @supports (container-type: inline-size) {

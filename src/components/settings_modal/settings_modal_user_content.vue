@@ -49,7 +49,6 @@
       <AppearanceTab />
     </div>
     <div
-      :full-width="$store.getters.mergedConfig.expertLevel > 0"
       :label="$t('settings.layout')"
       icon="table-columns"
       data-tab-name="layout"

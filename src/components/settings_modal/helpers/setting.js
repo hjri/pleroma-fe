@@ -18,6 +18,10 @@ export default {
       type: [String, Array],
       required: false
     },
+    showDescription: {
+      type: Boolean,
+      required: false
+    },
     descriptionPathOverride: {
       type: [String, Array],
       required: false
@@ -69,7 +73,7 @@ export default {
       type: Boolean
     },
     overrideBackendDescriptionLabel: {
-      type: Boolean
+      type: [Boolean, String]
     },
     draftMode: {
       type: Boolean,
@@ -157,6 +161,8 @@ export default {
       }
     },
     backendDescriptionDescription () {
+      console.log('LOL', this.description)
+      if (this.description) return this.description
       if (this.realSource !== 'admin') return ''
       if (this.hideDescription) return null
       if (!this.backendDescription || this.overrideBackendDescription) {
