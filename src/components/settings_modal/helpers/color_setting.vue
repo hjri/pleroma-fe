@@ -20,7 +20,7 @@
     {{ ' ' }}
     <ColorInput
       :id="path"
-      class="color-setting-input"
+      class="setting-control color-setting-input"
       :class="{ disabled: shouldBeDisabled }"
       :disabled="shouldBeDisabled"
       :placeholder="backendDescriptionSuggestions"
@@ -47,8 +47,25 @@
 <script src="./color_setting.js"></script>
 <style lang="scss">
 .ColorSetting {
+  &.setting-item {
+    display: grid;
+    grid-template-areas:
+      "label control"
+      ". desc"
+      ". draft";
+
+    .setting-label {
+      text-align: right;
+      align-self: center;
+    }
+
+    .setting-control {
+      align-self: end;
+    }
+  }
+
   .color-setting-input {
-    vertical-align: middle;
+    align-self: baseline;
   }
 }
 </style>
