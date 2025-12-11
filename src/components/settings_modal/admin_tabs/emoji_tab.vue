@@ -116,7 +116,7 @@
         <h4 class="toolbar">
           {{ $t('admin_dash.emoji.edit_pack') }}
         </h4>
-        <div class="selector-buttons">
+        <div class="setting-item selector-buttons">
           <button
             :disabled="!pack || pack.remote !== undefined"
             class="button button-default btn"
@@ -265,13 +265,12 @@
                 />
                 {{ $t('admin_dash.emoji.description') }}
               </span>
-              <div>
-                <textarea
-                  v-model="packMeta.description"
-                  :disabled="!pack || pack.remote !== undefined"
-                  class="bio resize-height input setting-control"
-                />
-              </div>
+              <textarea
+                v-model="packMeta.description"
+                :disabled="!pack || pack.remote !== undefined"
+                height="4"
+                class="bio resize-height input textarea setting-control"
+              />
             </label>
           </li>
           <li>
@@ -337,10 +336,10 @@
                 :disabled="!pack || pack.remote !== undefined"
                 class="setting-label setting-control"
               >
-              <ModifiedIndicator
-                :changed="metaEdited('share-files')"
-                message-key="admin_dash.emoji.metadata_changed"
-              />
+                <ModifiedIndicator
+                  :changed="metaEdited('share-files')"
+                  message-key="admin_dash.emoji.metadata_changed"
+                />
                 {{ $t('admin_dash.emoji.share') }}
               </Checkbox>
             </div>
@@ -380,6 +379,7 @@
         >
           <EmojiEditingPopover
             v-if="pack && pack.remote === undefined"
+            class="emoji-item"
             placement="bottom"
             new-upload
             :title="$t('admin_dash.emoji.adding_new')"

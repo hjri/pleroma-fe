@@ -1,6 +1,6 @@
 .EmojiTab {
   .setting-list {
-    padding-left: 0.75em;
+    margin: 0.5em 2em;
   }
 
   .toolbar {
@@ -39,6 +39,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.5em;
+    margin-left: 1em;
   }
 
   h5 {
@@ -74,12 +75,20 @@
     flex-wrap: wrap;
     gap: 1em;
 
+    .button-unstyled {
+      display: flex;
+    }
+
+    .emoji-item,
     .placeholder {
-      background: var(--textFaint);
-      border-radius: 0.5em;
       width: 2em;
       height: 2em;
       opacity: 0.5;
+    }
+
+    .placeholder {
+      background: var(--textFaint);
+      border-radius: 0.5em;
     }
   }
 }

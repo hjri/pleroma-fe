@@ -31,7 +31,7 @@
 
   h5 {
     font-size: 1rem;
-    margin-right: 1em;
+    margin-left: 1em;
     margin-bottom: 0.25em;
     margin-top: 0.75em;
   }
@@ -70,6 +70,7 @@
     .setting-label {
       grid-area: label;
       text-align: right;
+      align-self: baseline;
     }
 
     .ModifiedIndicator,
@@ -79,6 +80,11 @@
 
     .setting-control {
       grid-area: control;
+
+      &.textarea {
+        align-self: baseline;
+        overflow: auto;
+      }
 
       &.checkbox {
         display: grid;
