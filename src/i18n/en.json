@@ -1413,6 +1413,14 @@
           ":oauth_app_creation": {
             "label": "OAuth app creation",
             "description": "For registering new OAuth App ID"
+          },
+          ":ap_routes": {
+            "label": "ActivityPub",
+            "description": "Federation endpoints"
+          },
+          ":account_confirmation_resend": {
+            "label": "Account confirmation resend",
+            "description": "How often user can resend confirmation mail"
           }
         },
         "Pleroma_DOT_Formatter": {
