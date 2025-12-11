@@ -1391,6 +1391,32 @@
       "always": "Always",
       "never": "Never"
     },
+    "instance": {
+      "instance": "Instance information",
+      "pwa": {
+        "manifest": "PWA Manifest",
+        "optional": "(optional)",
+        "no_icons": "No icons defined",
+        "icon": {
+          "purpose": "Icon purpose",
+          "any": "Any",
+          "monochrome": "Monochrome",
+          "maskable": "Maskable"
+        }
+      },
+      "branding": "Branding",
+      "access": "Instance access",
+      "rich_metadata": "Metadata",
+      "restrict": {
+        "header": "Restrict access for anonymous visitors",
+        "description": "Detailed setting for allowing/disallowing access to certain aspects of API. By default (indeterminate state) it will disallow if instance is not public, ticked checkbox means disallow access even if instance is public, unticked means allow access even if instance is private. Please note that unexpected behavior might happen if some settings are set, i.e. if profile access is disabled posts will show without profile information.",
+        "timelines": "Timelines access",
+        "profiles": "User profiles access",
+        "activities": "Statuses/activities access"
+      },
+      ":unauthenticated": "Unauthenticated",
+      ":all": "Everyone"
+    },
     "temp_overrides": {
       ":pleroma": {
         ":connections_pool": {

@@ -161,7 +161,6 @@ export default {
       }
     },
     backendDescriptionDescription () {
-      console.log('LOL', this.description)
       if (this.description) return this.description
       if (this.realSource !== 'admin') return ''
       if (this.hideDescription) return null

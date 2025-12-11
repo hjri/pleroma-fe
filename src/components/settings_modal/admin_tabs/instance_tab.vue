@@ -44,6 +44,7 @@
             path=":pleroma.:instance.:instance_thumbnail"
           />
         </li>
+        <h4>{{ $t('admin_dash.instance.pwa.manifest') }}</H4>
         <li>
           <PWAManifestIconsSetting path=":pleroma.:manifest.:icons" />
         </li>

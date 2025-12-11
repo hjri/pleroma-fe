@@ -7,6 +7,12 @@
       class="pwa-label setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
+      <ModifiedIndicator
+        :changed="isChanged"
+        :onclick="reset"
+      />
+      <ProfileSettingIndicator :is-profile="isProfileSetting" />
+      {{ ' ' }}
       <template v-if="backendDescriptionLabel">
         {{ backendDescriptionLabel + ' ' }}
       </template>
@@ -22,106 +28,130 @@
     >
       {{ backendDescriptionDescription + ' ' }}
     </p>
-    <ul class="setting-list setting-control">
-      <li
-        v-for="(item, index) in visibleState"
-        :key="index"
-      >
-        <div class="setting-item">
-          <dl>
-            <dt><code>purpose</code></dt>
-            <dd>
-              <input
-                class="input string-input"
+    <div class="setting-control">
+      <ul class="item-list">
+        <li
+          class="no_items"
+          v-if="visibleState.length === 0"
+        >
+          {{ $t('admin_dash.instance.pwa.no_icons') }}
+          <button
+            v-if="visibleState.length === 0"
+            class="button-default add-button"
+            @click="e => update({ eventType: 'add' })"
+          >
+            <FAIcon icon="plus" />
+          </button>
+        </li>
+        <li
+          v-for="(item, index) in visibleState"
+          :key="index"
+        >
+          <div class="icon-element">
+            <div class="src-field">
+              <Attachment
+                class="src-attachment"
+                :compact="compact"
+                :attachment="attachment(item)"
+                size="small"
+                hide-description
+              />
+              <div class="src-url">
+                <label for="path">{{ $t('settings.url') }}</label>
+                <input
+                  class="input string-input"
+                  :id="path"
+                  :disabled="shouldBeDisabled"
+                  :value="item[':src']"
+                  @change="event => update({ event, index, eventType: 'edit', field: ':src' })"
+                >
+              </div>
+              <MediaUpload
+                ref="mediaUpload"
+                class="src-upload media-upload-icon"
                 :class="{ disabled: shouldBeDisabled }"
-                :value="item[':purpose']"
-                @change="e => update({ event: e, index, eventType: 'edit', field: ':purpose' })"
+                normal-button
+                :accept-types="acceptTypes"
+                @uploaded="event => setMediaFile({ event, index })"
+              />
+            </div>
+            <dl>
+              <dt>{{ $t('admin_dash.instance.pwa.icon.purpose') }}</dt>
+              <dd>
+                <Select
+                  :class="{ disabled: shouldBeDisabled }"
+                  :disabled="shouldBeDisabled"
+                  :model-value="item[':purpose']"
+                  @update:model-value="event => setPurpose({ event, index })"
+                >
+                  <option
+                    v-for="(purpose, index) in purposeOptions"
+                    :key="index"
+                    :value="purpose.value"
+                  >
+                    {{ purpose.label }}
+                  </option>
+                </Select>
+              </dd>
+              <dt><code>sizes</code>{{ $t('admin_dash.instance.pwa.optional') }}</dt>
+              <dd>
+                <input
+                  class="input string-input"
+                  :class="{ disabled: shouldBeDisabled }"
+                  :value="item[':sizes']"
+                  @change="e => update({ event: e, index, eventType: 'edit', field: ':sizes' })"
+                >
+              </dd>
+              <dt><code>type</code>{{ $t('admin_dash.instance.pwa.optional') }}</dt>
+              <dd>
+                <input
+                  class="input string-input"
+                  :class="{ disabled: shouldBeDisabled }"
+                  :value="item[':type']"
+                  @change="e => update({ event: e, index, eventType: 'edit', field: ':type' })"
+                >
+              </dd>
+            </dl>
+            <div class="buttons">
+              <button
+                v-if="index === visibleState.length - 1"
+                class="button-default add-button"
+                @click="e => update({ eventType: 'add' })"
               >
-            </dd>
-            <dt><code>sizes</code></dt>
-            <dd>
-              <input
-                class="input string-input"
-                :class="{ disabled: shouldBeDisabled }"
-                :value="item[':sizes']"
-                @change="e => update({ event: e, index, eventType: 'edit', field: ':sizes' })"
+                <FAIcon icon="plus" />
+              </button>
+              <button
+                class="button-default delete-button"
+                @click="e => update({ index, eventType: 'remove' })"
               >
-            </dd>
-            <dt><code>src</code></dt>
-            <dd>
-              <input
-                class="input string-input"
-                :class="{ disabled: shouldBeDisabled }"
-                :value="item[':src']"
-                @change="e => update({ event: e, index, eventType: 'edit', field: ':src' })"
-              >
-            </dd>
-            <dt><code>type</code></dt>
-            <dd>
-              <input
-                class="input string-input"
-                :class="{ disabled: shouldBeDisabled }"
-                :value="item[':type']"
-                @change="e => update({ event: e, index, eventType: 'edit', field: ':type' })"
-              >
-            </dd>
-          </dl>
-          <div class="buttons">
-            <button
-              v-if="index === visibleState.length - 1"
-              class="button-default add-button"
-              @click="e => update({ eventType: 'add' })"
-            >
-              <FAIcon icon="plus" />
-            </button>
-            <button
-              class="button-default delete-button"
-              @click="e => update({ index, eventType: 'remove' })"
-            >
-              <FAIcon icon="times" />
-            </button>
+                <FAIcon icon="times" />
+              </button>
+            </div>
           </div>
-        </div>
-      </li>
-    </ul>
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
-    <ProfileSettingIndicator :is-profile="isProfileSetting" />
+        </li>
+      </ul>
+    </div>
     <DraftButtons />
   </div>
 </template>
 
 <script src="./pwa_manifest_icons_setting.js"></script>
 <style lang="scss">
-.PWAManifestIconsSetting {
+div.PWAManifestIconsSetting {
   &.setting-item {
     display: grid;
     grid-template-areas:
-      "label control"
-      "desc control"
-      ". draft";
+      "label"
+      "desc"
+      "control"
+      "draft";
     grid-template-rows: 2em auto 1fr;
+    grid-template-columns: 1fr;
   }
 
   .pwa-label.setting-label {
     align-self: end;
-
-  }
-
-  .setting-description {
-    text-align: right;
-    align-self: start;
-  }
-
-  .setting-list {
-    display: grid;
-    gap: 0.5em;
-  }
-
-  .setting-item {
-    display: inline-block;
+    text-align: left;
   }
 
   .buttons {
@@ -135,16 +165,22 @@
     }
   }
 
+  ul {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 12em);
+    grid-gap: 2em;
+  }
+
   dl {
-    display: inline-grid;
-    grid-template-columns: auto auto;
-    gap: 0.5em;
+    display: grid;
+    grid-template-columns: 1fr;
+    margin-top: 0.5em;
+    gap: 0.25em;
     align-items: baseline;
 
     dt {
-      display: inline;
       font-weight: 800;
-      text-align: right;
 
       &::after {
         content: ':'
@@ -152,8 +188,37 @@
     }
 
     dd {
-      display: inline;
       margin: 0
+    }
+  }
+
+  .src-field {
+    display: grid;
+    grid-template-columns: auto;
+    justify-items: center;
+    gap: 0.5em;
+
+    .src-attachment {
+      width: 10em;
+      height: 10em;
+      display: block;
+      margin-bottom: 0.5em;
+    }
+
+    .src-upload {
+      display: block;
+      width: 100%;
+    }
+
+    .src-url {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25em;
+      width: 100%;
+
+      label {
+        display: block;
+      }
     }
   }
 }

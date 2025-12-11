@@ -1,12 +1,69 @@
 import { clone } from 'lodash'
+import { fileTypeExt } from 'src/services/file_type/file_type.service.js'
+
 import Setting from './setting.js'
+import Select from 'src/components/select/select.vue'
+import Attachment from 'src/components/attachment/attachment.vue'
+import MediaUpload from 'src/components/media_upload/media_upload.vue'
 
 export default {
   ...Setting,
+  components: {
+    ...Setting.components,
+    Select,
+    Attachment,
+    MediaUpload
+  },
+  computed: {
+    ...Setting.computed,
+    purposeOptions () {
+      return ['any','monochrome','maskable'].map(value => ({
+        value,
+        key: value,
+        label: this.$t('admin_dash.instance.pwa.icon.' + value)
+      }))
+    }
+  },
   methods: {
     ...Setting.methods,
-    optionPresent (option) {
-      return this.valueSet.has(option)
+    attachment (e) {
+      const path = e[':src']
+      if (!path) {
+        return {
+          mimetype: '',
+          url: ''
+        }
+      }
+      const url = path.includes('://') ? path : this.$store.state.instance.server + path
+
+      return {
+        mimetype: fileTypeExt(url),
+        url
+      }
+    },
+    setMediaFile ({ event, index }) {
+      this.update({
+        event: {
+          target: {
+            value: event.url
+          },
+        },
+        index,
+        eventType: 'edit',
+        field: ':src'
+      })
+    },
+    setPurpose ({ event, index }) {
+      this.update({
+        event: {
+          target: {
+            value: event
+          },
+        },
+        index,
+        eventType: 'edit',
+        field: ':purpose'
+      })
     },
     getValue ({ event, field, index, eventType }) {
       switch (eventType) {
@@ -27,15 +84,12 @@ export default {
           const post = this.visibleState.slice(index + 1)
           const item = clone(this.visibleState[index])
           const string = event.target.value
-          console.log(item)
 
           if (!string)  {
             delete item[field]
           } else {
             item[field] = string
           }
-
-          console.log(item)
 
           return [...pre, item, ...post]
         }
