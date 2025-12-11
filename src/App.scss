@@ -381,7 +381,6 @@ nav {
   font-size: 1em;
   font-family: sans-serif;
   font-family: var(--font);
-  height: 2em;
 
   &.-transparent {
     backdrop-filter: blur(0.125em) contrast(60%);
@@ -705,12 +704,7 @@ option {
   position: relative;
   display: inline-flex;
   vertical-align: middle;
-  min-height: 2em;
   align-items: end;
-
-  .input {
-    height: 2em;
-  }
 
   > *,
   > * .button-default {
