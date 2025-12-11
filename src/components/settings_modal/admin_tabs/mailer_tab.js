@@ -3,6 +3,7 @@ import ChoiceSetting from '../helpers/choice_setting.vue'
 import IntegerSetting from '../helpers/integer_setting.vue'
 import StringSetting from '../helpers/string_setting.vue'
 import GroupSetting from '../helpers/group_setting.vue'
+import ColorSetting from '../helpers/color_setting.vue'
 import AttachmentSetting from '../helpers/attachment_setting.vue'
 
 import SharedComputedObject from '../helpers/shared_computed_object.js'
@@ -20,6 +21,7 @@ const MailerTab = {
     IntegerSetting,
     StringSetting,
     AttachmentSetting,
+    ColorSetting,
     GroupSetting
   },
   computed: {

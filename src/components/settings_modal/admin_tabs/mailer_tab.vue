@@ -1,6 +1,35 @@
 <template>
   <div :label="$t('admin_dash.tabs.mailer')">
     <div class="setting-section">
+      <h3>{{ $t('admin_dash.mailer.styling') }}</h3>
+      <ul class="setting-list">
+        <h4>{{ $t('admin_dash.mailer.assets') }}</h4>
+        <li>
+          <StringSetting :path="[':pleroma','Pleroma.Emails.UserEmail', ':logo']" />
+        </li>
+        <h4>{{ $t('admin_dash.mailer.colors') }}</h4>
+        <li>
+          <ColorSetting :path="[':pleroma','Pleroma.Emails.UserEmail', ':styling', ':background_color']" />
+        </li>
+        <li>
+          <ColorSetting :path="[':pleroma','Pleroma.Emails.UserEmail', ':styling', ':content_background_color']" />
+        </li>
+        <li>
+          <ColorSetting :path="[':pleroma','Pleroma.Emails.UserEmail', ':styling', ':header_color']" />
+        </li>
+        <li>
+          <ColorSetting :path="[':pleroma','Pleroma.Emails.UserEmail', ':styling', ':text_color']" />
+        </li>
+        <li>
+          <ColorSetting :path="[':pleroma','Pleroma.Emails.UserEmail', ':styling', ':link_color']" />
+        </li>
+        <li>
+          <ColorSetting :path="[':pleroma','Pleroma.Emails.UserEmail', ':styling', ':text_muted_color']" />
+        </li>
+        <li>
+          <GroupSetting :path="[':pleroma','Pleroma.Emails.UserEmail', ':styling']" />
+        </li>
+      </ul>
       <h3>{{ $t('admin_dash.mailer.adapter') }}</h3>
       <ul class="setting-list">
         <li>

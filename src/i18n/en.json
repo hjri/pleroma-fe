@@ -1293,6 +1293,9 @@
       "invalidation_settings": "Cache Invalidation"
     },
     "mailer": {
+      "styling": "Styling",
+      "assets": "Assets",
+      "colors": "Color palette",
       "adapter": "Mailing Adapter",
       "auth": "Authentication"
     },
