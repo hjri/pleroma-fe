@@ -79,6 +79,26 @@
 
     .setting-control {
       grid-area: control;
+
+      &.checkbox {
+        display: grid;
+        grid-template-columns: subgrid;
+
+        .label {
+          grid-area: label;
+          text-align: right;
+        }
+
+        .checkbox-indicator {
+          grid-area: control;
+        }
+
+        .-mobile & {
+          .label {
+            text-align: left;
+          }
+        }
+      }
     }
 
     .setting-control.setting-label {

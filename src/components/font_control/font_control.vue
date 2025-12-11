@@ -136,40 +136,6 @@
 <script src="./font_control.js"></script>
 
 <style lang="scss">
-// Copy-paste of BooleanSetting
-.font-control {
-  display: grid;
-  grid-template-columns: subgrid;
-
-  .checkbox {
-    display: grid;
-    grid-template-columns: subgrid;
-  }
-
-  .label {
-    grid-area: label;
-    text-align: right;
-  }
-
-  .-mobile & {
-    .font-input {
-      display: block;
-    }
-
-    .font-selector {
-      margin-top: 0.5em;
-    }
-
-    .label {
-      text-align: left;
-    }
-  }
-
-  .checkbox-indicator {
-    grid-area: control;
-  }
-}
-
 .invalid-tooltip {
   margin: 0.5em 1em;
   min-width: 10em;

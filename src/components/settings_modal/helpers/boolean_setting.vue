@@ -43,30 +43,3 @@
 </template>
 
 <script src="./boolean_setting.js"></script>
-
-<style lang="scss">
-.BooleanSetting {
-  display: grid;
-  grid-template-columns: subgrid;
-
-  .checkbox {
-    display: grid;
-    grid-template-columns: subgrid;
-  }
-
-  .label {
-    grid-area: label;
-    text-align: right;
-  }
-
-  .-mobile & {
-    .label {
-      text-align: left;
-    }
-  }
-
-  .checkbox-indicator {
-    grid-area: control;
-  }
-}
-</style>

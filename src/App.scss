@@ -381,6 +381,7 @@ nav {
   font-size: 1em;
   font-family: sans-serif;
   font-family: var(--font);
+  height: 2em;
 
   &.-transparent {
     backdrop-filter: blur(0.125em) contrast(60%);
@@ -705,9 +706,10 @@ option {
   display: inline-flex;
   vertical-align: middle;
   min-height: 2em;
+  align-items: baseline;
 
-  .Select select {
-    line-height: 1;
+  .input {
+    height: 2em;
   }
 
   > *,

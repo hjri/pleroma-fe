@@ -43,7 +43,7 @@
                   :placeholder="$t('admin_dash.emoji.remote_pack_instance')"
                 >
                 <button
-                  class="button button-default btn emoji-tab-popover-button"
+                  class="button button-default emoji-tab-popover-button"
                   type="button"
                   @click="listRemotePacks"
                 >
@@ -112,11 +112,11 @@
           </Popover>
         </span>
       </h3>
-      <div class="setting-list">
+      <div class="setting-section">
         <h4 class="toolbar">
           {{ $t('admin_dash.emoji.edit_pack') }}
         </h4>
-        <div class="selector-buttons setting-list">
+        <div class="selector-buttons">
           <button
             :disabled="!pack || pack.remote !== undefined"
             class="button button-default btn"
@@ -254,73 +254,98 @@
         </h5>
         <ul class="setting-list">
           <li>
-            <label :class="{ ['-disabled']: !pack || pack.remote !== undefined }">
-              {{ $t('admin_dash.emoji.description') }}
-              <ModifiedIndicator
-                :changed="metaEdited('description')"
-                message-key="admin_dash.emoji.metadata_changed"
-              />
-
-              <textarea
-                v-model="packMeta.description"
-                :disabled="!pack || pack.remote !== undefined"
-                class="bio resize-height input"
-              />
+            <label
+              class="setting-item"
+              :class="{ ['-disabled']: !pack || pack.remote !== undefined }"
+            >
+              <span class="setting-label">
+                <ModifiedIndicator
+                  :changed="metaEdited('description')"
+                  message-key="admin_dash.emoji.metadata_changed"
+                />
+                {{ $t('admin_dash.emoji.description') }}
+              </span>
+              <div>
+                <textarea
+                  v-model="packMeta.description"
+                  :disabled="!pack || pack.remote !== undefined"
+                  class="bio resize-height input setting-control"
+                />
+              </div>
             </label>
           </li>
           <li>
-            <label :class="{ ['-disabled']: !pack || pack.remote !== undefined }">
-              {{ $t('admin_dash.emoji.homepage') }}
-              <ModifiedIndicator
-                :changed="metaEdited('homepage')"
-                message-key="admin_dash.emoji.metadata_changed"
-              />
+            <label
+              class="setting-item"
+              :class="{ ['-disabled']: !pack || pack.remote !== undefined }"
+            >
+              <span class="setting-label">
+                <ModifiedIndicator
+                  :changed="metaEdited('homepage')"
+                  message-key="admin_dash.emoji.metadata_changed"
+                />
+                {{ $t('admin_dash.emoji.homepage') }}
+              </span>
 
               <input
                 v-model="packMeta.homepage"
-                class="emoji-info-input input"
+                class="emoji-info-input input setting-control"
                 :disabled="!pack || pack.remote !== undefined"
               >
             </label>
           </li>
           <li>
-            <label :class="{ ['-disabled']: !pack || pack.remote !== undefined }">
-              {{ $t('admin_dash.emoji.fallback_src') }}
-              <ModifiedIndicator
-                :changed="metaEdited('fallback-src')"
-                message-key="admin_dash.emoji.metadata_changed"
-              />
+            <label
+              class="setting-item"
+              :class="{ ['-disabled']: !pack || pack.remote !== undefined }"
+            >
+              <span class="setting-label">
+                <ModifiedIndicator
+                  :changed="metaEdited('fallback-src')"
+                  message-key="admin_dash.emoji.metadata_changed"
+                />
+                {{ $t('admin_dash.emoji.fallback_src') }}
+              </span>
 
               <input
                 v-model="packMeta['fallback-src']"
-                class="emoji-info-input input"
+                class="emoji-info-input input setting-control"
                 :disabled="!pack || pack.remote !== undefined"
               >
             </label>
           </li>
           <li>
-            <label :class="{ ['-disabled']: !pack || pack.remote !== undefined }">
-              {{ $t('admin_dash.emoji.fallback_sha256') }}
+            <label
+              class="setting-item"
+              :class="{ ['-disabled']: !pack || pack.remote !== undefined }"
+            >
+              <span class="setting-label">
+                {{ $t('admin_dash.emoji.fallback_sha256') }}
+              </span>
 
               <input
                 v-model="packMeta['fallback-src-sha256']"
                 :disabled="!pack || pack.remote !== undefined"
-                class="emoji-info-input input"
+                class="emoji-info-input input setting-control"
               >
             </label>
           </li>
           <li>
-            <Checkbox
-              v-model="packMeta['share-files']"
-              :disabled="!pack || pack.remote !== undefined"
-            >
-              {{ $t('admin_dash.emoji.share') }}
-            </Checkbox>
-
-            <ModifiedIndicator
-              :changed="metaEdited('share-files')"
-              message-key="admin_dash.emoji.metadata_changed"
-            />
+            <div class="setting-item">
+              <Checkbox
+                v-model="packMeta['share-files']"
+                :disabled="!pack || pack.remote !== undefined"
+                class="setting-label setting-control"
+              >
+              <ModifiedIndicator
+                :changed="metaEdited('share-files')"
+                message-key="admin_dash.emoji.metadata_changed"
+              />
+                {{ $t('admin_dash.emoji.share') }}
+              </Checkbox>
+            </div>
+          </li>
+          <li>
             <div class="meta-buttons">
               <button
                 v-if="pack && pack.remote === undefined"
