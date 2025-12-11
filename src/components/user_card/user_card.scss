@@ -26,6 +26,10 @@
     height: auto; // override settings default textarea size
   }
 
+  .follow-button {
+    flex: 1 0 auto;
+  }
+
   .user-card-inner {
     padding-bottom: 0;
   }
