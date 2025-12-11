@@ -208,10 +208,11 @@
       }
     }
 
+    /* stylelint-disable no-descending-specificity */
     .setting-item {
       grid-template-columns: 1fr min-content;
       column-gap: 0.5em;
-      padding: 1em 1em;
+      padding: 1em;
       align-items: center;
 
       .setting-label {
@@ -228,6 +229,8 @@
         }
       }
     }
+
+
 
     .setting-list:not(.suboptions),
     .option-list {

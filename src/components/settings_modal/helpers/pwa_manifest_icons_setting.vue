@@ -31,8 +31,8 @@
     <div class="setting-control">
       <ul class="item-list">
         <li
-          class="no_items"
           v-if="visibleState.length === 0"
+          class="no_items"
         >
           {{ $t('admin_dash.instance.pwa.no_icons') }}
           <button
@@ -59,8 +59,8 @@
               <div class="src-url">
                 <label for="path">{{ $t('settings.url') }}</label>
                 <input
-                  class="input string-input"
                   :id="path"
+                  class="input string-input"
                   :disabled="shouldBeDisabled"
                   :value="item[':src']"
                   @change="event => update({ event, index, eventType: 'edit', field: ':src' })"

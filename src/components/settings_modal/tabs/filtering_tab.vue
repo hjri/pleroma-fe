@@ -54,8 +54,8 @@
             </span>
             <Select
               id="onBlockDefaultActionLv1"
-              class="setting-control"
               v-model="onBlockDefaultActionLv1"
+              class="setting-control"
             >
               <option
                 v-for="option in muteBlockLv1Options"

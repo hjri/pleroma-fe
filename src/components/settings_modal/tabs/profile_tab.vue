@@ -13,8 +13,8 @@
         <li>
           <div class="setting-item">
             <Checkbox
-              class="setting-label setting-control custom-boolean-setting"
               v-model="locked"
+              class="setting-label setting-control custom-boolean-setting"
             >
               <ProfileSettingIndicator :is-profile="true" />
               {{ $t('settings.lock_account_description') }}

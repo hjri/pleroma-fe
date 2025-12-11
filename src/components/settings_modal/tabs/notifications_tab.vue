@@ -40,8 +40,8 @@
         <li>
           <h4> {{ $t('settings.notification_visibility') }}</h4>
           <p
-            class="sidenote"
             v-if="expertLevel > 0"
+            class="sidenote"
           >
             {{ $t('settings.notification_setting_filters_chrome_push') }}
           </p>

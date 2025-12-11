@@ -13,8 +13,8 @@
       </label>
       <span class="setting-control btn-group">
         <Select
-          :name="uniqueId+index"
           :id="uniqueId+index"
+          :name="uniqueId+index"
           class="language-select"
           :model-value="controlledLanguage[index]"
           @update:model-value="val => setLanguageAt(index, val)"

@@ -4,7 +4,10 @@
       <h3>{{ $t('settings.general') }}</h3>
       <ul class="setting-list">
         <li>
-          <label class="setting-item " for="default-vis">
+          <label
+            class="setting-item "
+            for="default-vis"
+          >
             <span class="setting-label">
               <ProfileSettingIndicator :is-profile="true" />
               {{ $t('settings.default_vis') }}

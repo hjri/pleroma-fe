@@ -142,7 +142,9 @@
         class="setting-list"
       >
         <li class="select-multiple">
-          <h4 class="label">{{ $t('settings.confirm_dialogs') }}</h4>
+          <h4 class="label">
+            {{ $t('settings.confirm_dialogs') }}
+          </h4>
           <ul class="option-list">
             <li>
               <BooleanSetting path="modalOnRepeat">

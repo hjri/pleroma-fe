@@ -1,7 +1,7 @@
 <template>
   <span
-    class="setting-item"
     v-if="matchesExpertLevel"
+    class="setting-item"
   >
     <label
       v-if="!hideLabel"

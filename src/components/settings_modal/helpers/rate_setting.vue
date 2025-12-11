@@ -87,13 +87,13 @@
       </table>
       <Checkbox
         :model-value="isSeparate"
-        @update:model-value="event => update({ event: event ? 'join' : 'split',  eventType: 'toggleMode' })"
+        @update:model-value="event => update({ event: event ? 'join' : 'split', eventType: 'toggleMode' })"
       >
         {{ $t('admin_dash.rate_limit.separate') }}
       </Checkbox>
     </div>
-  <DraftButtons />
-</div>
+    <DraftButtons />
+  </div>
 </template>
 
 <script src="./rate_setting.js"></script>
