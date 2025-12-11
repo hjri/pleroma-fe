@@ -18,25 +18,27 @@
       <slot v-else />
     </label>
     {{ ' ' }}
-    <input
-      :id="path"
-      class="input string-input"
-      :class="{ disabled: shouldBeDisabled }"
-      :disabled="shouldBeDisabled"
-      :placeholder="backendDescriptionSuggestions[0]"
-      :value="displayState"
-      @change="event => update({ event })"
-    >
-    {{ ' ' }}
-    <Checkbox
-      :model-value="socksState"
-      :disabled="shouldBeDisabled"
-      :indeterminate="isIndeterminate"
-      @update:model-value="event => update({ event, isProxy: true})"
-    >
-      {{ $t('admin_dash.http.socks5') }}
+    <div class="setting-control">
+      <input
+        :id="path"
+        class="input string-input"
+        :class="{ disabled: shouldBeDisabled }"
+        :disabled="shouldBeDisabled"
+        :placeholder="backendDescriptionSuggestions[0]"
+        :value="displayState"
+        @change="event => update({ event })"
+      >
       {{ ' ' }}
-    </Checkbox>
+      <Checkbox
+        :model-value="socksState"
+        :disabled="shouldBeDisabled"
+        :indeterminate="isIndeterminate"
+        @update:model-value="event => update({ event, isProxy: true})"
+      >
+        SOCKS5
+        {{ ' ' }}
+      </Checkbox>
+    </div>
     {{ ' ' }}
     <ModifiedIndicator
       :changed="isChanged"

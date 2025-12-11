@@ -84,7 +84,7 @@
 
 <script src="./map_setting.js"></script>
 <style lang="scss">
-.ListSetting {
+.MapSetting {
   .btn-group {
     display: flex
   }

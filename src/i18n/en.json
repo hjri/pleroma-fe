@@ -1170,15 +1170,12 @@
     "posts": {
       "global": "Global settings",
       "local": "Local posts",
-      "scheduled_activites": "Scheduled posts",
       "remote": "Remote posts"
     },
     "other": {
       "uncategorized": "Uncategorized",
       "user_backup": "User Backup",
       "reports": "Reports",
-      "feed": "RSS Feed",
-      "feed_title": "Article Title",
       "privileges": "Privileges"
     },
     "monitoring": {
@@ -1191,8 +1188,7 @@
       "activitypub": "ActivityPub"
     },
     "http": {
-      "outbound": "Outbound HTTP requests",
-      "socks5": "SOCKS5"
+      "outbound": "Outbound HTTP requests"
     },
     "auth": {
       "MFA": "Multi-factor Authentication",
@@ -1202,7 +1198,6 @@
       "backup_codes": "Backup codes"
     },
     "job_queues": {
-      "Oban": "Oban queues",
       "Gun": {
         "title": "Gun queues",
         "connections_pools": "Gun connections pool",
@@ -1398,11 +1393,11 @@
         ":connections_pool": {
           ":max_idle_time": {
             "label": "Maximum idle time",
-            "description": "idk"
+            "description": "Maximum idle time before CONFIRM"
           },
           ":retry": {
             "label": "Retry",
-            "description": "idk"
+            "description": "Number of retries for making a connection CONFIRM"
           }
         },
         ":pools": {
