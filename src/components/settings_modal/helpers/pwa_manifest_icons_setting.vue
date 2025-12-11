@@ -4,7 +4,7 @@
     class="PWAManifestIconsSetting setting-item"
   >
     <label
-      class="setting-label"
+      class="pwa-label setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
       <template v-if="backendDescriptionLabel">
@@ -22,12 +22,12 @@
     >
       {{ backendDescriptionDescription + ' ' }}
     </p>
-    <ul class="setting-list">
+    <ul class="setting-list setting-control">
       <li
         v-for="(item, index) in visibleState"
         :key="index"
       >
-        <div>
+        <div class="setting-item">
           <dl>
             <dt><code>purpose</code></dt>
             <dd>
@@ -96,11 +96,32 @@
 <script src="./pwa_manifest_icons_setting.js"></script>
 <style lang="scss">
 .PWAManifestIconsSetting {
-  display: inline-block;
+  &.setting-item {
+    display: grid;
+    grid-template-areas:
+      "label control"
+      "desc control"
+      ". draft";
+    grid-template-rows: 2em auto 1fr;
+  }
+
+  .pwa-label.setting-label {
+    align-self: end;
+
+  }
+
+  .setting-description {
+    text-align: right;
+    align-self: start;
+  }
 
   .setting-list {
     display: grid;
     gap: 0.5em;
+  }
+
+  .setting-item {
+    display: inline-block;
   }
 
   .buttons {
