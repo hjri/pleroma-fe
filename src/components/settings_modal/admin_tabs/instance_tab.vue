@@ -57,6 +57,7 @@
         <li>
           <GroupSetting path=":pleroma.:manifest" />
         </li>
+        <h4>{{ $t('admin_dash.instance.misc_brand') }}</H4>
         <li>
           <AttachmentSetting path=":pleroma.:instance.:background_image" />
         </li>

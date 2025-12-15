@@ -137,6 +137,8 @@
 <script src="./pwa_manifest_icons_setting.js"></script>
 <style lang="scss">
 div.PWAManifestIconsSetting {
+  margin-left: 3em;
+
   &.setting-item {
     display: grid;
     grid-template-areas:

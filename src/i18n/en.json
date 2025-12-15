@@ -1404,6 +1404,7 @@
           "maskable": "Maskable"
         }
       },
+      "misc_brand": "Miscellaneous elements",
       "branding": "Branding",
       "access": "Instance access",
       "rich_metadata": "Metadata",
