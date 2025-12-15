@@ -411,6 +411,7 @@
     "appearance": "Appearance",
     "confirm_new_setting": "Confirm new setting?",
     "confirm_new_question": "Does this look ok? Setting will be reverted in 10 seconds.",
+    "confirm_new_question_countdown": "Does this look ok? Setting will be reverted in 1 second. | Does this look ok? Setting will be reverted in {count} seconds.",
     "revert": "Revert",
     "confirm": "Confirm",
     "text_size": "Text and interface size",
