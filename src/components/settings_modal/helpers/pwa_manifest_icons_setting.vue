@@ -131,7 +131,6 @@
         </li>
       </ul>
     </div>
-    <DraftButtons />
   </div>
 </template>
 

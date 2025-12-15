@@ -49,10 +49,13 @@
           <PWAManifestIconsSetting path=":pleroma.:manifest.:icons" />
         </li>
         <li>
-          <ColorSetting path=":pleroma.:manifest.:theme_color" />
+          <ColorSetting hide-draft-buttons path=":pleroma.:manifest.:theme_color" />
         </li>
         <li>
-          <ColorSetting path=":pleroma.:manifest.:background_color" />
+          <ColorSetting hide-draft-buttons path=":pleroma.:manifest.:background_color" />
+        </li>
+        <li>
+          <GroupSetting path=":pleroma.:manifest" />
         </li>
         <li>
           <AttachmentSetting path=":pleroma.:instance.:background_image" />
