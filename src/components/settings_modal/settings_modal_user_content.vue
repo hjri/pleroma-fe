@@ -24,6 +24,7 @@
       <ProfileTab />
     </div>
     <div
+      v-if="isLoggedIn"
       :label="$t('settings.composing')"
       icon="pen-alt"
       data-tab-name="composing"
