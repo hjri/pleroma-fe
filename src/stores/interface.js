@@ -527,7 +527,6 @@ export const useInterfaceStore = defineStore('interface', {
     async applyTheme (
       { recompile = false } = {}
     ) {
-      console.log('Apply')
       const {
         forceThemeRecompilation,
         themeDebug,

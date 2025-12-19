@@ -10,7 +10,6 @@ export default {
   methods: {
     ...Setting.methods,
     getValue (e) {
-      console.log(e)
       return e
     }
   }

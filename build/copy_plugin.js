@@ -29,9 +29,9 @@ const copyPlugin = ({ inUrl, inFs }) => {
       order: 'post',
       sequential: true,
       async handler () {
-        console.log(`Copying '${inFs}' to ${copyTarget}...`)
+        console.info(`Copying '${inFs}' to ${copyTarget}...`)
         await cp(inFs, copyTarget, { recursive: true })
-        console.log('Done.')
+        console.info('Done.')
       }
     }
   }]

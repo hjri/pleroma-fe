@@ -178,7 +178,7 @@ export const buildSwPlugin = ({
       order: 'post',
       sequential: true,
       async handler () {
-        console.log('Building service worker for production')
+        console.info('Building service worker for production')
         await build(config)
       }
     }

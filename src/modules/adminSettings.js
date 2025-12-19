@@ -123,7 +123,6 @@ const adminSettingsStorage = {
         const preserveTuples = path.find(x => x === ':rate_limit')
         set(config, path, convert(c.value, false, preserveTuples))
       })
-      console.log('CONFIG', JSON.parse(JSON.stringify(config)))
       // patching http adapter config to be easier to handle
       const adapter = config[':pleroma'][':http'][':adapter']
       if (Array.isArray(adapter)) {
@@ -151,7 +150,6 @@ const adminSettingsStorage = {
       const descriptions = {}
 
       backendDescriptions.forEach(d => convert(d, '', descriptions))
-      console.log('DESCRIPTIONS', descriptions)
       commit('updateAdminDescriptions', { descriptions })
     },
 

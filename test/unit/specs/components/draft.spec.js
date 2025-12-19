@@ -145,7 +145,7 @@ describe('Draft saving', () => {
     const saveButton = wrapper.findByText('button', $t('post_status.close_confirm_save_button'))
     expect(saveButton).to.be.ok
     await saveButton.trigger('click')
-    console.log('clicked')
+    console.info('clicked')
     expect(wrapper.vm.$store.getters.draftCount).to.equal(1)
     await flushPromises()
     await waitForEvent(wrapper, 'can-close')

@@ -152,7 +152,6 @@ const ClutterTab = {
     },
     purgeExpiredFilters () {
       this.muteFiltersExpired.forEach(([id]) => {
-        console.log(id)
         delete this.muteFiltersDraftObject[id]
         this.unsetPreference({ path: 'simple.muteFilters.' + id , value: null })
       })
