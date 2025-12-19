@@ -1,14 +1,19 @@
 <template>
   <div :label="$t('settings.posts')">
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.general') }}</h3>
       <ul class="setting-list">
         <li>
-          <label for="default-vis">
-            {{ $t('settings.default_vis') }}
-            {{ ' ' }}
+          <label
+            class="setting-item "
+            for="default-vis"
+          >
+            <span class="setting-label">
+              <ProfileSettingIndicator :is-profile="true" />
+              {{ $t('settings.default_vis') }}
+            </span>
             <ScopeSelector
-              class="scope-selector"
+              class="scope-selector setting-control"
               :show-all="true"
               :user-default="$store.state.profileConfig.defaultScope"
               :initial-scope="$store.state.profileConfig.defaultScope"
@@ -16,7 +21,6 @@
               :unstyled="false"
               uns
             />
-            <ProfileSettingIndicator :is-profile="true" />
           </label>
         </li>
         <li>

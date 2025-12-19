@@ -158,14 +158,14 @@
     </div>
     <teleport to="#modal">
       <ConfirmModal
-        v-if="temporaryChangesTimeoutId"
+        v-if="temporaryChangesCountdown > 0"
         :title="$t('settings.confirm_new_setting')"
         :cancel-text="$t('settings.revert')"
         :confirm-text="$t('settings.confirm')"
         @cancelled="temporaryChangesRevert"
         @accepted="temporaryChangesConfirm"
       >
-        {{ $t('settings.confirm_new_question') }}
+        {{ $t('settings.confirm_new_question_countdown', temporaryChangesCountdown) }}
       </ConfirmModal>
     </teleport>
   </Modal>

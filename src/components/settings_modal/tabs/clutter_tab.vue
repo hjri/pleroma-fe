@@ -1,6 +1,6 @@
 <template>
   <div class="clutter-tab">
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.interface') }}</h3>
       <ul class="setting-list">
         <li>

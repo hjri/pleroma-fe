@@ -1,32 +1,61 @@
 import VerticalTabSwitcher from './helpers/vertical_tab_switcher.jsx'
 
 import InstanceTab from './admin_tabs/instance_tab.vue'
+import LinksTab from './admin_tabs/links_tab.vue'
 import LimitsTab from './admin_tabs/limits_tab.vue'
 import FrontendsTab from './admin_tabs/frontends_tab.vue'
+import MediaProxyTab from './admin_tabs/media_proxy_tab.vue'
 import EmojiTab from './admin_tabs/emoji_tab.vue'
+import UploadsTab from './admin_tabs/uploads_tab.vue'
+import MailerTab from './admin_tabs/mailer_tab.vue'
+import MonitoringTab from './admin_tabs/monitoring_tab.vue'
+import RegistrationsTab from './admin_tabs/registrations_tab.vue'
+import AuthTab from './admin_tabs/auth_tab.vue'
+import HTTPTab from './admin_tabs/http_tab.vue'
+import OtherTab from './admin_tabs/other_tab.vue'
+import RatesTab from './admin_tabs/rates_tab.vue'
+import PostsTab from './admin_tabs/posts_tab.vue'
+import FederationTab from './admin_tabs/federation_tab.vue'
+import JobQueuesTab from './admin_tabs/job_queues_tab.vue'
 import { useInterfaceStore } from 'src/stores/interface'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faWrench,
   faHand,
+  faChain,
+  faGlobe,
   faLaptopCode,
-  faPaintBrush,
-  faBell,
-  faDownload,
-  faEyeSlash,
-  faInfo
+  faTowerBroadcast,
+  faEnvelope,
+  faChartLine,
+  faDoorOpen,
+  faGears,
+  faKey,
+  faCircleNodes,
+  faUpload,
+  faMessage,
+  faEllipsis,
+  faGauge
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
   faWrench,
   faHand,
+  faChain,
+  faGlobe,
   faLaptopCode,
-  faPaintBrush,
-  faBell,
-  faDownload,
-  faEyeSlash,
-  faInfo
+  faTowerBroadcast,
+  faEnvelope,
+  faChartLine,
+  faDoorOpen,
+  faGears,
+  faKey,
+  faCircleNodes,
+  faUpload,
+  faMessage,
+  faEllipsis,
+  faGauge
 )
 
 const SettingsModalAdminContent = {
@@ -34,9 +63,22 @@ const SettingsModalAdminContent = {
     VerticalTabSwitcher,
 
     InstanceTab,
-    LimitsTab,
+    RegistrationsTab,
+    EmojiTab,
     FrontendsTab,
-    EmojiTab
+    FederationTab,
+    LimitsTab,
+    MailerTab,
+    UploadsTab,
+    MediaProxyTab,
+    LinksTab,
+    JobQueuesTab,
+    AuthTab,
+    HTTPTab,
+    MonitoringTab,
+    RatesTab,
+    OtherTab,
+    PostsTab
   },
   computed: {
     user () {

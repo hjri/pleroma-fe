@@ -1,10 +1,12 @@
 <template>
   <span
     v-if="matchesExpertLevel"
-    class="NumberSetting"
+    class="NumberSetting setting-item"
   >
     <label
+      v-if="!hideLabel"
       :for="path"
+      class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
       <template v-if="backendDescriptionLabel">
@@ -18,10 +20,11 @@
     {{ ' ' }}
     <input
       :id="path"
-      class="input number-input"
+      class="input number-input setting-control"
       type="number"
       :step="step || 1"
       :disabled="shouldBeDisabled"
+      :placeholder="backendDescriptionSuggestions"
       :min="min || 0"
       :value="realDraftMode ? draft :state"
       @change="update"
@@ -32,7 +35,7 @@
       :onclick="reset"
     />
     <ProfileSettingIndicator :is-profile="isProfileSetting" />
-    <DraftButtons />
+    <DraftButtons v-if="!hideDraftButtons" />
     <p
       v-if="backendDescriptionDescription"
       class="setting-description"

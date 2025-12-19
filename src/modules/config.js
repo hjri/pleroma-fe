@@ -116,7 +116,6 @@ const config = {
       }
 
       useInterfaceStore().setTemporaryChanges({
-        timeoutId: setTimeout(revert, 10000),
         confirm,
         revert
       })

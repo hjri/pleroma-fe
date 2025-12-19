@@ -170,7 +170,7 @@ const SettingsModal = {
   },
   computed: {
     ...mapState(useInterfaceStore, {
-      temporaryChangesTimeoutId: store => store.temporaryChangesTimeoutId,
+      temporaryChangesCountdown: store => store.temporaryChangesCountdown,
       currentSaveStateNotice: store => store.settings.currentSaveStateNotice,
       modalActivated: store => store.settingsModalState !== 'hidden',
       modalMode: store => store.settingsModalMode,

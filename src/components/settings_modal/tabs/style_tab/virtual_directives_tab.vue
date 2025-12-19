@@ -1,7 +1,7 @@
 <script src="./virtual_directives_tab.js"></script>
 
 <template>
-  <div class="setting-item list-editor variables-editor">
+  <div class="setting-section list-editor variables-editor">
     <label
       class="list-select-label"
       for="variables-selector"

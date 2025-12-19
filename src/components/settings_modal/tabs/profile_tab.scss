@@ -1,6 +1,6 @@
 .profile-tab {
   // overriding global for better look
-  .setting-item.profile-edit {
+  .setting-section.profile-edit {
     margin: 0;
 
     h2 {
@@ -10,6 +10,29 @@
     .user-card {
       padding: 1.2em;
       overflow: hidden;
+    }
+
+  }
+
+  .setting-item {
+    .custom-boolean-setting {
+      display: grid;
+      grid-template-columns: subgrid;
+
+      .label {
+        grid-area: label;
+        text-align: right;
+      }
+
+      .-mobile & {
+        .label {
+          text-align: left;
+        }
+      }
+
+      .checkbox-indicator {
+        grid-area: control;
+      }
     }
   }
 }

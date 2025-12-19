@@ -18,9 +18,10 @@ export const useInterfaceStore = defineStore('interface', {
     paletteDataUsed: null,
     themeNameUsed: null,
     themeDataUsed: null,
-    temporaryChangesTimeoutId: null, // used for temporary options that revert after a timeout
+    temporaryChangesTimeoutId: null,
+    temporaryChangesCountdown: -1,     // used for temporary options that revert after a timeout
     temporaryChangesConfirm: () => {}, // used for applying temporary options
-    temporaryChangesRevert: () => {}, // used for reverting temporary options
+    temporaryChangesRevert: () => {},  // used for reverting temporary options
     settingsModalState: 'hidden',
     settingsModalLoadedUser: false,
     settingsModalLoadedAdmin: false,
@@ -44,14 +45,25 @@ export const useInterfaceStore = defineStore('interface', {
     lastTimeline: null
   }),
   actions: {
-    setTemporaryChanges ({ timeoutId, confirm, revert }) {
-      this.temporaryChangesTimeoutId = timeoutId
+    setTemporaryChanges ({ confirm, revert }) {
+      this.temporaryChangesCountdown = 10
       this.temporaryChangesConfirm = confirm
       this.temporaryChangesRevert = revert
+      const countdownFunc = () => {
+        if (this.temporaryChangesCountdown === 1) {
+          this.temporaryChangesRevert()
+          this.clearTemporaryChanges()
+        } else {
+          this.temporaryChangesCountdown--
+          this.temporaryChangesTimeoutId = setTimeout(countdownFunc, 1000)
+        }
+      }
+      this.temporaryChangesTimeoutId = setTimeout(countdownFunc, 1000)
     },
     clearTemporaryChanges () {
-      clearTimeout(this.temporaryChangesTimeoutId)
+      this.temporaryChangesTimeoutId ?? clearTimeout(this.temporaryChangesTimeoutId)
       this.temporaryChangesTimeoutId = null
+      this.temporaryChangesCountdown = -1
       this.temporaryChangesConfirm = () => {}
       this.temporaryChangesRevert = () => {}
     },
@@ -515,7 +527,6 @@ export const useInterfaceStore = defineStore('interface', {
     async applyTheme (
       { recompile = false } = {}
     ) {
-      console.log('Apply')
       const {
         forceThemeRecompilation,
         themeDebug,

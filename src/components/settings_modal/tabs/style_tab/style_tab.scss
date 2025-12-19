@@ -1,5 +1,6 @@
 .StyleTab {
   min-width: var(--themeEditorMinWidth, fit-content);
+  margin: 1em;
 
   .style-control {
     align-items: baseline;
@@ -45,7 +46,7 @@
     }
   }
 
-  .setting-item.heading {
+  .setting-section.heading {
     padding: 0;
   }
 
@@ -84,8 +85,9 @@
     }
   }
 
-  .setting-item {
+  .setting-section {
     padding-bottom: 0;
+    margin-top: 1em;
 
     .btn {
       padding: 0 0.5em;

@@ -1,7 +1,7 @@
 <template>
   <label
     class="checkbox"
-    :class="[{ disabled, indeterminate, 'indeterminate-fix': indeterminateTransitionFix }, radio ? '-radio' : '-checkbox']"
+    :class="[{ ['-disabled']: disabled, indeterminate, 'indeterminate-fix': indeterminateTransitionFix }, radio ? '-radio' : '-checkbox']"
   >
     <span
       v-if="!!$slots.before"
@@ -123,7 +123,7 @@ export default {
 
   .disabled {
     .checkbox-indicator::before {
-      background-color: var(--background);
+      background-color: transparent;
     }
   }
 

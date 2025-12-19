@@ -10,11 +10,11 @@ const getMockStorage = () => {
 
   return {
     getItem: vi.fn(async key => {
-      console.log('get:', key, state[key])
+      console.info('get:', key, state[key])
       return state[key]
     }),
     setItem: vi.fn(async (key, value) => {
-      console.log('set:', key, value)
+      console.info('set:', key, value)
       state[key] = value
     }),
     _clear: () => {

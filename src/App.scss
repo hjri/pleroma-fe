@@ -513,6 +513,12 @@ nav {
   }
 }
 
+label {
+  &.-disabled {
+    color: var(--textFaint);
+  }
+}
+
 input,
 textarea {
   border: none;
@@ -553,6 +559,10 @@ textarea {
   &[disabled="disabled"],
   &.disabled {
     cursor: not-allowed;
+    color: var(--textFaint);
+
+    /* stylelint-disable-next-line declaration-no-important */
+    background-color: transparent !important;
   }
 
   &[type="range"] {
@@ -578,6 +588,8 @@ textarea {
       & + label::before {
         opacity: 0.5;
       }
+
+      background-color: var(--background);
     }
 
     + label::before {
@@ -677,7 +689,8 @@ option {
   list-style: none;
   display: grid;
   grid-auto-flow: row dense;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
+  grid-gap: 0.5em;
 
   li {
     border: 1px solid var(--border);
@@ -698,7 +711,6 @@ option {
     --_roundness-right: 0;
 
     position: relative;
-    flex: 1 1 auto;
   }
 
   > *:first-child,

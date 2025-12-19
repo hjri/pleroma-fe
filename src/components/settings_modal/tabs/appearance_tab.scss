@@ -1,4 +1,6 @@
 .appearance-tab {
+  margin: 1em;
+
   h3 {
     border: none
   }
@@ -67,7 +69,7 @@
         aspect-ratio: 16 / 9;
         width: 16em;
       }
-         
+
       img {
         object-fit: cover;
       }
@@ -138,6 +140,7 @@
     border: 1px solid var(--border);
     margin-bottom: 0.5em;
     margin-top: 0;
+    padding: 0.5em;
   }
 
   .palettes {

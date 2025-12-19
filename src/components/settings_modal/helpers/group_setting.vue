@@ -1,7 +1,7 @@
 <template>
   <span
     v-if="matchesExpertLevel"
-    class="GroupSetting"
+    class="GroupSetting setting-item"
   >
     <ModifiedIndicator
       :changed="isChanged"

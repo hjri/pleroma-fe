@@ -2,7 +2,7 @@
   <vertical-tab-switcher
     v-if="adminDescriptionsLoaded && (noDb || adminDbLoaded)"
     ref="tabSwitcher"
-    class="settings_tab-switcher"
+    class="settings-admin-content settings_tab-switcher"
     :side-tab-bar="true"
     :scrollable-tabs="true"
     :render-only-focused="true"
@@ -15,7 +15,7 @@
       data-tab-name="nodb-notice"
     >
       <div :label="$t('admin_dash.tabs.nodb')">
-        <div class="setting-item">
+        <div class="setting-section">
           <h2>{{ $t('admin_dash.nodb.heading') }}</h2>
           <i18n-t
             scope="global"
@@ -48,6 +48,41 @@
     >
       <InstanceTab />
     </div>
+
+    <div
+      :label="$t('admin_dash.tabs.registrations')"
+      icon="door-open"
+      data-tab-name="registrations"
+    >
+      <RegistrationsTab />
+    </div>
+
+    <div
+      :label="$t('admin_dash.tabs.auth')"
+      icon="key"
+      data-tab-name="monitoring"
+    >
+      <AuthTab />
+    </div>
+
+    <div
+      :label="$t('admin_dash.tabs.emoji')"
+      icon="face-smile-beam"
+      data-tab-name="emoji"
+      full-width
+    >
+      <EmojiTab />
+    </div>
+
+    <div
+      :label="$t('admin_dash.tabs.frontends')"
+      icon="laptop-code"
+      data-tab-name="frontends"
+      full-width
+    >
+      <FrontendsTab />
+    </div>
+
     <div
       v-if="adminDbLoaded"
       :label="$t('admin_dash.tabs.limits')"
@@ -56,24 +91,104 @@
     >
       <LimitsTab />
     </div>
+
     <div
-      :label="$t('admin_dash.tabs.frontends')"
-      icon="laptop-code"
-      data-tab-name="frontends"
+      v-if="adminDbLoaded"
+      :label="$t('admin_dash.tabs.rate_limit')"
+      icon="gauge"
+      data-tab-name="rate_limits"
     >
-      <FrontendsTab />
+      <RatesTab />
     </div>
 
     <div
-      :label="$t('admin_dash.tabs.emoji')"
-      icon="face-smile-beam"
-      data-tab-name="emoji"
+      :label="$t('admin_dash.tabs.uploads')"
+      icon="upload"
+      data-tab-name="uploads"
     >
-      <EmojiTab />
+      <UploadsTab />
+    </div>
+
+    <div
+      :label="$t('admin_dash.tabs.media_proxy')"
+      icon="tower-broadcast"
+      data-tab-name="media_proxy"
+    >
+      <MediaProxyTab />
+    </div>
+
+    <div
+      :label="$t('admin_dash.tabs.posts')"
+      icon="message"
+      data-tab-name="other"
+    >
+      <PostsTab />
+    </div>
+
+    <div
+      :label="$t('admin_dash.tabs.links')"
+      icon="chain"
+      data-tab-name="links"
+    >
+      <LinksTab />
+    </div>
+
+    <div
+      :label="$t('admin_dash.tabs.mailer')"
+      icon="envelope"
+      data-tab-name="mailer"
+    >
+      <MailerTab />
+    </div>
+
+    <div
+      :label="$t('admin_dash.tabs.federation')"
+      icon="circle-nodes"
+      data-tab-name="monitoring"
+    >
+      <FederationTab />
+    </div>
+
+    <div
+      :label="$t('admin_dash.tabs.http')"
+      icon="globe"
+      data-tab-name="http"
+    >
+      <HTTPTab />
+    </div>
+
+    <div
+      :label="$t('admin_dash.tabs.job_queues')"
+      icon="gears"
+      data-tab-name="job_queues"
+    >
+      <JobQueuesTab />
+    </div>
+
+    <div
+      :label="$t('admin_dash.tabs.monitoring')"
+      icon="chart-line"
+      data-tab-name="monitoring"
+    >
+      <MonitoringTab />
+    </div>
+
+    <div
+      :label="$t('admin_dash.tabs.other')"
+      icon="ellipsis"
+      data-tab-name="other"
+    >
+      <OtherTab />
     </div>
   </vertical-tab-switcher>
 </template>
 
 <script src="./settings_modal_admin_content.js"></script>
 
-<style src="./settings_modal_admin_content.scss" lang="scss"></style>
+<style lang="scss">
+.settings-admin-content {
+  .setting-item {
+    grid-template-columns: 1fr 3fr;
+  }
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
   <div :label="$t('settings.layout')">
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.general') }}</h3>
       <ul class="setting-list">
         <li>

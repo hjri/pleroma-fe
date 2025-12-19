@@ -411,6 +411,7 @@
     "appearance": "Appearance",
     "confirm_new_setting": "Confirm new setting?",
     "confirm_new_question": "Does this look ok? Setting will be reverted in 10 seconds.",
+    "confirm_new_question_countdown": "Does this look ok? Setting will be reverted in 1 second. | Does this look ok? Setting will be reverted in {count} seconds.",
     "revert": "Revert",
     "confirm": "Confirm",
     "text_size": "Text and interface size",
@@ -1152,7 +1153,80 @@
       "instance": "Instance",
       "limits": "Limits",
       "frontends": "Front-ends",
-      "emoji": "Emoji"
+      "mailer": "EMails",
+      "media_proxy": "Media Proxy",
+      "emoji": "Emoji",
+      "uploads": "Uploads",
+      "monitoring": "Monitoring",
+      "registrations": "Registrations",
+      "links": "Links",
+      "job_queues": "Job Queues",
+      "auth": "Auth",
+      "posts": "Posts",
+      "rate_limit": "Rate Limits",
+      "http": "HTTP",
+      "federation": "Federation",
+      "other": "Other"
+    },
+    "posts": {
+      "global": "Global settings",
+      "local": "Local posts",
+      "remote": "Remote posts"
+    },
+    "other": {
+      "uncategorized": "Uncategorized",
+      "user_backup": "User Backup",
+      "reports": "Reports",
+      "privileges": "Privileges"
+    },
+    "monitoring": {
+      "builtins": "Built-in Tools",
+      "prometheus": "Prometheus Exporter"
+    },
+    "federation": {
+      "global": "Global settings",
+      "restrictions": "Restrictions",
+      "activitypub": "ActivityPub"
+    },
+    "http": {
+      "outbound": "Outbound HTTP requests"
+    },
+    "auth": {
+      "MFA": "Multi-factor Authentication",
+      "LDAP": "LDAP Settings",
+      "OAuth": "Oauth2 settings",
+      "TOTP": "One-time Passwords (TOTP)",
+      "backup_codes": "Backup codes"
+    },
+    "job_queues": {
+      "Gun": {
+        "title": "Gun queues",
+        "connections_pools": "Gun connections pool",
+        "pools": {
+          "title": "Gun worker pools",
+          "default": "Default pool",
+          "federation": "Federation pool",
+          "media": "Media pool",
+          "rich_media": "Rich media pool",
+          "upload": "Upload pool"
+        }
+      },
+      "Hackney": {
+        "title": "Hackney pools",
+        "federation": "Federation",
+        "media": "Media",
+        "rich_media": "Rich media",
+        "upload": "Upload"
+      },
+      "queues": "Queues"
+    },
+    "rate_limit": {
+      "rate_limit": "Rate Limit",
+      "amount": "Amount",
+      "unauthenticated": "Unauthenticated",
+      "authenticated": "Authenticated",
+      "period": "Time period",
+      "separate": "Separate rate limits for authenticated/unauthenticated users"
     },
     "nodb": {
       "heading": "Database config is disabled",
@@ -1164,29 +1238,79 @@
       "native": "Native",
       "kocaptcha": "KoCaptcha"
     },
+    "http": {
+      "outbound": "Outgoing connections",
+      "incoming": "Incoming connections",
+      "security": "HTTP Security",
+      "web_push": "Web Push",
+      "web_push_description": "Web Push VAPID settings. You can use the mix task web_push.gen.keypair to generate it."
+    },
     "instance": {
       "instance": "Instance information",
+      "branding": "Branding",
       "registrations": "User sign-ups",
       "captcha_header": "CAPTCHA",
       "kocaptcha": "KoCaptcha settings",
       "access": "Instance access",
+      "rich_metadata": "Metadata",
       "restrict": {
         "header": "Restrict access for anonymous visitors",
         "description": "Detailed setting for allowing/disallowing access to certain aspects of API. By default (indeterminate state) it will disallow if instance is not public, ticked checkbox means disallow access even if instance is public, unticked means allow access even if instance is private. Please note that unexpected behavior might happen if some settings are set, i.e. if profile access is disabled posts will show without profile information.",
         "timelines": "Timelines access",
         "profiles": "User profiles access",
         "activities": "Statuses/activities access"
-      }
+      },
+      ":unauthenticated": "Unauthenticated",
+      ":all": "Everyone"
+    },
+    "registrations": {
+      "welcome": {
+        "title": "Welcome message",
+        "description": "Send new users a message when they sign up",
+        "direct_message": "Via direct message",
+        "chat_message": "Via chat",
+        "email_message": "Via email"
+      },
+      "restrictions": "Restrictions",
+      "autofollow": "Autofollow"
+    },
+    "links": {
+      "no_scheme": "No scheme",
+      "link_previews": "Link previews",
+      "link_formatter": "Link formatter"
+    },
+    "uploads": {
+      "attachments": "Attachments settings",
+      "upload": "Upload",
+      "local_uploader": "Local files",
+      "filenames": "Filenames, Titles and Descriptions",
+      "uploader_settings": "Uploader settings"
+    },
+    "media_proxy": {
+      "basic": "Basic Settings",
+      "invalidation": "Cache Invalidation",
+      "limits": "Limits",
+      "thumbnails": "Thumbnail Generation",
+      "invalidation_settings": "Cache Invalidation"
+    },
+    "mailer": {
+      "styling": "Styling",
+      "assets": "Assets",
+      "colors": "Color palette",
+      "adapter": "Mailing Adapter",
+      "auth": "Authentication"
     },
     "limits": {
       "arbitrary_limits": "Arbitrary limits",
       "posts": "Post limits",
+      "other": "Misc. limits",
       "uploads": "Attachments limits",
       "users": "User profile limits",
       "profile_fields": "Profile fields limits",
       "user_uploads": "Profile media limits"
     },
     "frontend": {
+      "title": "Frontend management",
       "repository": "Repository link",
       "versions": "Available versions",
       "build_url": "Build URL",
@@ -1210,7 +1334,11 @@
     "emoji": {
       "global_actions": "Global actions",
       "reload": "Reload emoji",
+      "reload_short": "Refresh",
+      "advanced": "Advanced",
       "importFS": "Import emoji from filesystem",
+      "import_pack": "Upload emoji pack",
+      "import_pack_short": "Import",
       "error": "Error: {0}",
       "create_pack": "Create pack",
       "delete_pack": "Delete pack",
@@ -1218,10 +1346,12 @@
       "create": "Create",
       "emoji_packs": "Emoji packs",
       "remote_packs": "Remote packs",
+      "remote_packs_short": "Remote",
       "do_list": "List",
       "remote_pack_instance": "Remote pack instance",
       "emoji_pack": "Emoji pack",
       "edit_pack": "Edit pack",
+      "metadata": "Metadata",
       "description": "Description",
       "homepage": "Homepage",
       "fallback_src": "Fallback source",
@@ -1257,8 +1387,96 @@
       "replace_warning": "This will REPLACE the local pack of the same name",
       "copied_successfully": "Successfully copied emoji \"{0}\" to pack \"{1}\""
     },
+    "generic_enforcement": {
+      "if_available": "If available",
+      "always": "Always",
+      "never": "Never"
+    },
+    "instance": {
+      "instance": "Instance information",
+      "pwa": {
+        "manifest": "PWA Manifest",
+        "optional": "(optional)",
+        "no_icons": "No icons defined",
+        "icon": {
+          "purpose": "Icon purpose",
+          "any": "Any",
+          "monochrome": "Monochrome",
+          "maskable": "Maskable"
+        }
+      },
+      "misc_brand": "Miscellaneous elements",
+      "branding": "Branding",
+      "access": "Instance access",
+      "rich_metadata": "Metadata",
+      "restrict": {
+        "header": "Restrict access for anonymous visitors",
+        "description": "Detailed setting for allowing/disallowing access to certain aspects of API. By default (indeterminate state) it will disallow if instance is not public, ticked checkbox means disallow access even if instance is public, unticked means allow access even if instance is private. Please note that unexpected behavior might happen if some settings are set, i.e. if profile access is disabled posts will show without profile information.",
+        "timelines": "Timelines access",
+        "profiles": "User profiles access",
+        "activities": "Statuses/activities access"
+      },
+      ":unauthenticated": "Unauthenticated",
+      ":all": "Everyone"
+    },
     "temp_overrides": {
       ":pleroma": {
+        ":connections_pool": {
+          ":max_idle_time": {
+            "label": "Maximum idle time",
+            "description": "Maximum idle time before CONFIRM"
+          },
+          ":retry": {
+            "label": "Retry",
+            "description": "Number of retries for making a connection CONFIRM"
+          }
+        },
+        ":pools": {
+          ":rich_media": {
+            "label": "Rich media",
+            "description": "idk"
+          }
+        },
+        ":rate_limit": {
+          ":oauth_app_creation": {
+            "label": "OAuth app creation",
+            "description": "For registering new OAuth App ID"
+          },
+          ":ap_routes": {
+            "label": "ActivityPub",
+            "description": "Federation endpoints"
+          },
+          ":account_confirmation_resend": {
+            "label": "Account confirmation resend",
+            "description": "How often user can resend confirmation mail"
+          }
+        },
+        "Pleroma_DOT_Formatter": {
+          ":attribute_toggle": {
+            "label": "Set {attr} attribute"
+          },
+          ":truncate_toggle": {
+            "label": "Truncate"
+          },
+          ":class": {
+            "label": "Value"
+          },
+          ":rel": {
+            "label": "Value"
+          }
+        },
+        "Pleroma_DOT_Uploaders_DOT_Uploader": {
+          ":timeout": {
+            "label": "Timeout",
+            "description": "Amount of milliseconds before dropping connection"
+          }
+        },
+        "Pleroma_DOT_Upload": {
+          ":default_description": {
+            "label": "Default description",
+            "description": "Default description to give to a file. Setting it to ':filename' will use file's filename as description."
+          }
+        },
         ":instance": {
           ":public": {
             "label": "Instance is public",
@@ -1275,6 +1493,16 @@
           ":background_image": {
             "label": "Background image",
             "description": "Background image (primarily used by PleromaFE)"
+          }
+        },
+        ":http_security": {
+          ":allow_unsafe_eval": {
+            "label": "Allow unsafe-eval",
+            "description": "Allow unsafe evaluation of scripts (required for Flash support)"
+          },
+          ":report_url": {
+            "label": "Report URL",
+            "description": "URL to report security violations to"
           }
         }
       }

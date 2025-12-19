@@ -1,7 +1,7 @@
 import ModifiedIndicator from './modified_indicator.vue'
 import ProfileSettingIndicator from './profile_setting_indicator.vue'
 import DraftButtons from './draft_buttons.vue'
-import { get, set, cloneDeep } from 'lodash'
+import { get, set, cloneDeep, isEqual } from 'lodash'
 
 export default {
   components: {
@@ -16,6 +16,22 @@ export default {
     },
     path: {
       type: [String, Array],
+      required: false
+    },
+    showDescription: {
+      type: Boolean,
+      required: false
+    },
+    descriptionPathOverride: {
+      type: [String, Array],
+      required: false
+    },
+    suggestions: {
+      type: [String, Array],
+      required: false
+    },
+    subgroup: {
+      type: String,
       required: false
     },
     disabled: {
@@ -37,17 +53,27 @@ export default {
       type: String,
       default: undefined
     },
+    hideDraftButtons: { // this is for the weird backend hybrid (Boolean|String or Boolean|Number) settings
+      required: false,
+      type: Boolean
+    },
+    hideLabel: {
+      type: Boolean
+    },
     hideDescription: {
       type: Boolean
     },
     swapDescriptionAndLabel: {
       type: Boolean
     },
+    backendDescriptionPath: {
+      type: [String, Array]
+    },
     overrideBackendDescription: {
       type: Boolean
     },
     overrideBackendDescriptionLabel: {
-      type: Boolean
+      type: [Boolean, String]
     },
     draftMode: {
       type: Boolean,
@@ -73,7 +99,7 @@ export default {
   },
   created () {
     if (this.realDraftMode && (this.realSource !== 'admin' || this.path == null)) {
-      this.draft = this.state
+      this.draft = cloneDeep(this.state)
     }
   },
   computed: {
@@ -114,10 +140,13 @@ export default {
       return typeof this.draftMode === 'undefined' ? this.defaultDraftMode : this.draftMode
     },
     backendDescription () {
-      return get(this.$store.state.adminSettings.descriptions, this.path)
+      return get(this.$store.state.adminSettings.descriptions, this.descriptionPath)
     },
     backendDescriptionLabel () {
       if (this.realSource !== 'admin') return ''
+      if (this.overrideBackendDescriptionLabel !== '' && typeof this.overrideBackendDescriptionLabel === 'string') {
+        return this.overrideBackendDescriptionLabel
+      }
       if (!this.backendDescription || this.overrideBackendDescriptionLabel) {
         return this.$t([
           'admin_dash',
@@ -132,6 +161,7 @@ export default {
       }
     },
     backendDescriptionDescription () {
+      if (this.description) return this.description
       if (this.realSource !== 'admin') return ''
       if (this.hideDescription) return null
       if (!this.backendDescription || this.overrideBackendDescription) {
@@ -148,13 +178,20 @@ export default {
       }
     },
     backendDescriptionSuggestions () {
-      return this.backendDescription?.suggestions
+      return this.backendDescription?.suggestions || this.suggestions
     },
     shouldBeDisabled () {
       if (this.path == null) {
         return this.disabled
       }
-      const parentValue = this.parentPath !== undefined ? get(this.configSource, this.parentPath) : null
+      let parentValue = null
+      if (this.parentPath !== undefined && this.realSource === 'admin') {
+        if (this.realDraftMode) {
+          parentValue = get(this.$store.state.adminSettings.draft, this.parentPath)
+        } else {
+          parentValue = get(this.configSource, this.parentPath)
+        }
+      }
       return this.disabled || (parentValue !== null ? (this.parentInvert ? parentValue : !parentValue) : false)
     },
     configSource () {
@@ -209,17 +246,29 @@ export default {
       if (this.path == null) return null
       return Array.isArray(this.path) ? this.path : this.path.split('.')
     },
+    descriptionPath () {
+      if (this.path == null) return null
+      if (this.descriptionPathOverride) return this.descriptionPathOverride
+      const path = Array.isArray(this.path) ? this.path : this.path.split('.')
+      if (this.subgroup) {
+        return [
+            ...path.slice(0, path.length - 1),
+            ':subgroup,' + this.subgroup,
+            ...path.slice(path.length - 1)
+        ]
+      }
+      return path
+    },
     isDirty () {
       if (this.path == null) return false
       if (this.realSource === 'admin' && this.canonPath.length > 3) {
         return false // should not show draft buttons for "grouped" values
       } else {
-        return this.realDraftMode && this.draft !== this.state
+        return this.realDraftMode && !isEqual(this.draft, this.state)
       }
     },
     canHardReset () {
-      return this.realSource === 'admin' && this.$store.state.adminSettings.modifiedPaths &&
-             this.$store.state.adminSettings.modifiedPaths.has(this.canonPath.join(' -> '))
+      return this.realSource === 'admin' && this.$store.state.adminSettings.modifiedPaths?.has(this.canonPath.join(' -> '))
     },
     matchesExpertLevel () {
       return (this.expert || 0) <= this.$store.state.config.expertLevel > 0

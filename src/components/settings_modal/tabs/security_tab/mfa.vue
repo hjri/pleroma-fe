@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="readyInit && settings.available"
-    class="setting-item mfa-settings"
+    class="setting-section mfa-settings"
   >
     <div class="mfa-heading">
       <h2>{{ $t('settings.mfa.title') }}</h2>
@@ -10,7 +10,7 @@
     <div>
       <div
         v-if="!setupInProgress"
-        class="setting-item"
+        class="setting-section"
       >
         <!-- Enabled methods -->
         <h3>{{ $t('settings.mfa.authentication_methods') }}</h3>

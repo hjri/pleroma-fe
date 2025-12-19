@@ -3,7 +3,7 @@
     class="data-import-export-tab"
     :label="$t('settings.data_import_export_tab')"
   >
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.import_export.title') }}</h3>
       <ul class="setting-list">
         <li>

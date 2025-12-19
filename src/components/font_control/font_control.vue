@@ -1,24 +1,28 @@
 <template>
   <div class="font-control">
-    <Checkbox
-      v-if="typeof fallback !== 'undefined'"
-      :id="name + '-o'"
-      class="font-checkbox"
-      :model-value="present"
-      @change="$emit('update:modelValue', typeof modelValue === 'undefined' ? fallback : undefined)"
-    >
-      <i18n-t
-        scope="global"
-        keypath="settings.style.fonts.override"
-        tag="span"
+    <div class="setting-item">
+      <Checkbox
+        v-if="typeof fallback !== 'undefined'"
+        :id="name + '-o'"
+        class="font-checkbox setting-control setting-label"
+        :model-value="present"
+        @change="$emit('update:modelValue', typeof modelValue === 'undefined' ? fallback : undefined)"
       >
-        {{ label }}
-      </i18n-t>
-    </Checkbox>
+        <i18n-t
+          scope="global"
+          keypath="settings.style.fonts.override"
+          tag="span"
+        >
+          <span>
+            {{ label }}
+          </span>
+        </i18n-t>
+      </Checkbox>
+    </div>
     {{ ' ' }}
     <div
       v-if="modelValue?.family"
-      class="font-input"
+      class="font-input setting-item"
     >
       <label
         v-if="manualEntry"
@@ -69,7 +73,7 @@
       </span>
       <span
         v-else
-        class="btn-group"
+        class="font-selector btn-group"
       >
         <button
           class="btn button-default"
@@ -132,18 +136,6 @@
 <script src="./font_control.js"></script>
 
 <style lang="scss">
-.font-control {
-  .custom-font {
-    min-width: 20em;
-    max-width: 20em;
-  }
-
-  .font-input {
-    margin-left: 2em;
-    margin-top: 0.5em;
-  }
-}
-
 .invalid-tooltip {
   margin: 0.5em 1em;
   min-width: 10em;

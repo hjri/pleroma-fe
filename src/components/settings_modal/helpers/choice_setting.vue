@@ -1,18 +1,27 @@
 <template>
   <label
     v-if="matchesExpertLevel"
-    class="ChoiceSetting"
+    class="ChoiceSetting setting-item"
+    :class="{ 'faint': shouldBeDisabled }"
   >
-    <template v-if="backendDescriptionLabel">
-      {{ backendDescriptionLabel }}
-    </template>
-    <template v-else>
-      <slot />
-    </template>
-    {{ ' ' }}
+    <span class="setting-label">
+      <ModifiedIndicator
+        :changed="isChanged"
+        :onclick="reset"
+      />
+      <ProfileSettingIndicator :is-profile="isProfileSetting" />
+      {{ ' ' }}
+      <template v-if="backendDescriptionLabel">
+        {{ backendDescriptionLabel }}
+      </template>
+      <template v-else>
+        <slot />
+      </template>
+    </span>
     <Select
-      :model-value="realDraftMode ? draft :state"
-      :disabled="disabled"
+      class="setting-control"
+      :model-value="realDraftMode ? draft : state"
+      :disabled="shouldBeDisabled"
       @update:model-value="update"
     >
       <option
@@ -24,11 +33,6 @@
         {{ option.value === defaultState ? $t('settings.instance_default_simple') : '' }}
       </option>
     </Select>
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
-    <ProfileSettingIndicator :is-profile="isProfileSetting" />
     <DraftButtons />
     <p
       v-if="backendDescriptionDescription"
@@ -40,3 +44,16 @@
 </template>
 
 <script src="./choice_setting.js"></script>
+
+<style lang="scss">
+.ChoiceSetting.setting-item {
+  .-mobile & {
+    display: block;
+
+    .setting-label {
+      display: block;
+      margin-bottom: 0.5em
+    }
+  }
+}
+</style>

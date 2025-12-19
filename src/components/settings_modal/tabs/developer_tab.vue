@@ -3,7 +3,7 @@
     :label="$t('settings.developer')"
     class="developer-tab"
   >
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.version.title') }}</h3>
       <dl class="setting-list">
         <dt>{{ $t('settings.version.backend_version') }}</dt>
@@ -33,22 +33,6 @@
           </BooleanSetting>
         </li>
         <li>
-          <button
-            class="btn button-default"
-            @click="clearAssetCache"
-          >
-            {{ $t('settings.clear_asset_cache') }}
-          </button>
-        </li>
-        <li>
-          <button
-            class="btn button-default"
-            @click="clearEmojiCache"
-          >
-            {{ $t('settings.clear_emoji_cache') }}
-          </button>
-        </li>
-        <li>
           <BooleanSetting
             path="themeDebug"
             :expert="1"
@@ -63,6 +47,25 @@
           >
             {{ $t('settings.force_theme_recompilation_debug') }}
           </BooleanSetting>
+        </li>
+        <h4>{{ $t('settings.cache') }}</h4>
+        <li>
+          <div class="setting-item">
+            <div class="cache-buttons">
+              <button
+                class="btn button-default"
+                @click="clearAssetCache"
+              >
+                {{ $t('settings.clear_asset_cache') }}
+              </button>
+              <button
+                class="btn button-default"
+                @click="clearEmojiCache"
+              >
+                {{ $t('settings.clear_emoji_cache') }}
+              </button>
+            </div>
+          </div>
         </li>
       </ul>
     </div>

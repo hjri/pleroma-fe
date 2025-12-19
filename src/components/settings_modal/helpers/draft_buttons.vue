@@ -2,6 +2,7 @@
 <!-- TODO make it reusable -->
 <template>
   <span
+    v-if="$parent.isDirty || $parent.canHardReset"
     class="DraftButtons"
   >
     <Popover
@@ -72,12 +73,10 @@ export default {
 
 <style lang="scss">
 .DraftButtons {
-  display: inline-block;
+  display: inline-flex;
   position: relative;
-
-  .button-default {
-    margin-left: 0.5em;
-  }
+  gap: 0.5em;
+  margin-top: 0.5em
 }
 
 .draft-tooltip {

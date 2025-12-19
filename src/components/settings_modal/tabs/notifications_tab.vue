@@ -1,6 +1,6 @@
 <template>
   <div :label="$t('settings.notifications')">
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.notification_setting_annoyance') }}</h3>
       <ul class="setting-list">
         <li>
@@ -12,11 +12,9 @@
           <BooleanSetting path="ignoreInactionableSeen">
             {{ $t('settings.notification_setting_ignore_inactionable_seen') }}
           </BooleanSetting>
-          <div>
-            <small>
-              {{ $t('settings.notification_setting_ignore_inactionable_seen_tip') }}
-            </small>
-          </div>
+          <p class="sidenote">
+            {{ $t('settings.notification_setting_ignore_inactionable_seen_tip') }}
+          </p>
         </li>
         <li>
           <BooleanSetting
@@ -28,7 +26,7 @@
         </li>
       </ul>
     </div>
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.notification_setting_filters') }}</h3>
       <ul class="setting-list">
         <li>
@@ -41,7 +39,10 @@
         </li>
         <li>
           <h4> {{ $t('settings.notification_visibility') }}</h4>
-          <p v-if="expertLevel > 0">
+          <p
+            v-if="expertLevel > 0"
+            class="sidenote"
+          >
             {{ $t('settings.notification_setting_filters_chrome_push') }}
           </p>
           <ul class="setting-list two-column">
@@ -241,7 +242,7 @@
 
     <div
       v-if="expertLevel > 0"
-      class="setting-item"
+      class="setting-section"
     >
       <h3>{{ $t('settings.notification_setting_privacy') }}</h3>
       <ul class="setting-list">
@@ -260,11 +261,12 @@
               >
                 {{ $t('settings.enable_web_push_always_show') }}
               </BooleanSetting>
-              <div :class="{ faint: !mergedConfig.webPushNotifications }">
-                <small>
-                  {{ $t('settings.enable_web_push_always_show_tip') }}
-                </small>
-              </div>
+              <p
+                :class="{ faint: !mergedConfig.webPushNotifications }"
+                class="sidenote"
+              >
+                {{ $t('settings.enable_web_push_always_show_tip') }}
+              </p>
             </li>
           </ul>
         </li>
@@ -279,10 +281,12 @@
         </li>
       </ul>
     </div>
-    <div class="setting-item">
-      <p>{{ $t('settings.notification_mutes') }}</p>
-      <p>{{ $t('settings.notification_blocks') }}</p>
-    </div>
+    <p class="sidenote">
+      <ul>
+        <li>{{ $t('settings.notification_mutes') }}</li>
+        <li>{{ $t('settings.notification_blocks') }}</li>
+      </ul>
+    </p>
   </div>
 </template>
 

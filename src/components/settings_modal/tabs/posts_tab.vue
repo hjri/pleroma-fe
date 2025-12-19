@@ -1,6 +1,6 @@
 <template>
   <div class="posts-tab">
-    <div class="setting-item">
+    <div class="setting-section">
       <h3>{{ $t('settings.posts_appearance') }}</h3>
       <ul class="setting-list">
         <li>
