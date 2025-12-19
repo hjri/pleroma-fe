@@ -271,7 +271,10 @@ export default {
       return this.realSource === 'admin' && this.$store.state.adminSettings.modifiedPaths?.has(this.canonPath.join(' -> '))
     },
     matchesExpertLevel () {
-      return (this.expert || 0) <= this.$store.state.config.expertLevel > 0
+      const settingExpertLevel = this.expert || 0
+      const userToggleExpert = this.$store.state.config.expertLevel || 0
+
+      return settingExpertLevel <= userToggleExpert
     }
   },
   methods: {
