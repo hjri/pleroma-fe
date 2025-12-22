@@ -116,9 +116,7 @@ const ListsNew = {
     },
     updateListTitle () {
       useListsStore().setList({ listId: this.id, title: this.titleDraft })
-        .then(() => {
-          this.title = this.findListTitle(this.id)
-        })
+      this.title = this.findListTitle(this.id)
     },
     createList () {
       useListsStore().createList({ title: this.titleDraft })
