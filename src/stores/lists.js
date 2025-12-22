@@ -43,6 +43,8 @@ export const useListsStore = defineStore('lists', {
         })
     },
     setList ({ listId, title }) {
+      window.vuex.state.api.backendInteractor.updateList({ listId, title })
+
       if (!this.allListsObject[listId]) {
         this.allListsObject[listId] = { accountIds: [] }
       }
