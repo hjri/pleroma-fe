@@ -63,11 +63,6 @@
       flex-direction: column;
       margin-left: 0.5em;
       min-width: 5em;
-
-      img {
-        width: 1em;
-        height: 1em;
-      }
     }
 
     .user-list-screen-name {
