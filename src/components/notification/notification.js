@@ -163,7 +163,7 @@ const Notification = {
       return highlightStyle(highlight[user.screen_name])
     },
     expandable () {
-      return (new Set(['like', 'pleroma:emoji_reaction', 'repeat'])).has(this.notification.type)
+      return (new Set(['like', 'pleroma:emoji_reaction', 'repeat', 'poll'])).has(this.notification.type)
     },
     user () {
       return this.$store.getters.findUser(this.notification.from_profile.id)
