@@ -3,6 +3,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2.10.0
+### Changed
+- Temporary changes modal now shows actual countdown instead of fixed timeout
+- Disabled elements are more disabled now
+- Rearranged and split settings to make more sense and be less of a wall of text
+- On mobile settings now take up full width and presented in navigation style
+improved styles for settings
+
+### Added
+- Most of the remaining AdminFE tabs were added into Admin Dashboard
+- It's now possible to customize PWA Manfiest from PleromaFE
+- Make every configuration option default-overridable by instance admins
+
+### Fixed
+- Fixed settings not appearing if user never touched "show advanced" toggle
+- Fix display of the broken/deleted/banned users
+- Fixed incorrect emoji display in post interaction lists
+- Fixed list title not being saved when editing
+- Fixed poll notifications not being expandable
+
+
 ## 2.9.3
 ### Fixed
 - Being unable to update profile
@@ -74,8 +95,8 @@ This does not guarantee that browsers will or will not work.
 - Support displaying time in absolute format
 - Add draft management system
 - Compress most kinds of images on upload.
-- Added option to always convert images to JPEG format instead of using WebP when compressing images. 
-- Added configurable image compression option in general settings, allowing users to control whether images are compressed before upload. 
+- Added option to always convert images to JPEG format instead of using WebP when compressing images.
+- Added configurable image compression option in general settings, allowing users to control whether images are compressed before upload.
 - Inform users that Smithereen public polls are public
 - Splash screen + loading indicator to make process of identifying initialization issues and load performance
 - UI for making v3 themes and palettes, support for bundling v3 themes
