@@ -51,8 +51,9 @@
     "scope_in_timeline": {
       "direct": "Direct",
       "public": "Publique",
-      "private": "Abonné⋅e⋅s seulement",
-      "unlisted": "Non-listé"
+      "private": "Abonné·es seulement",
+      "unlisted": "Non-listé",
+      "local": "Non-fédéré"
     },
     "undo": "Défaire",
     "yes": "Oui",
@@ -72,7 +73,8 @@
   "importer": {
     "submit": "Envoyer",
     "success": "Importé avec succès.",
-    "error": "Une erreur est survenue pendant l'import de ce fichier."
+    "error": "Une erreur est survenue pendant l'import de ce fichier.",
+    "import": "Importer"
   },
   "login": {
     "login": "Connexion",
@@ -135,7 +137,8 @@
     "quotes": "Citations",
     "all_bookmarks": "Tous les marque-pages",
     "bookmark_folders": "Dossiers des marque-pages",
-    "drafts": "Brouillons"
+    "drafts": "Brouillons",
+    "bubble": "Timeline bulle"
   },
   "notifications": {
     "broken_favorite": "Post inconnu, recherche en cours…",
@@ -178,7 +181,8 @@
       "text/plain": "Texte brut",
       "text/html": "HTML",
       "text/markdown": "Markdown",
-      "text/bbcode": "BBCode"
+      "text/bbcode": "BBCode",
+      "text/x.misskeymarkdown": "MFM"
     },
     "content_warning": "Sujet (optionnel)",
     "default": "Je viens d'atterrir en Tchéquie.",
@@ -187,7 +191,7 @@
     "posting": "Envoi en cours",
     "scope_notice": {
       "public": "Ce statut sera visible par tout le monde",
-      "private": "Ce statut sera visible par seulement vos abonné⋅e⋅s",
+      "private": "Ce statut sera visible par seulement vos abonné·es",
       "unlisted": "Ce statut ne sera pas visible dans le Flux Public et le Flux Fédéré"
     },
     "scope": {
@@ -282,9 +286,9 @@
     },
     "attachmentRadius": "Pièces jointes",
     "attachments": "Pièces jointes",
-    "avatar": "Avatar",
-    "avatarAltRadius": "Avatars (Notifications)",
-    "avatarRadius": "Avatars",
+    "avatar": "Image de profil",
+    "avatarAltRadius": "Images de profils (Notifications)",
+    "avatarRadius": "Images de profils",
     "background": "Arrière-plan",
     "bio": "Biographie",
     "block_export": "Export des comptes bloqués",
@@ -313,7 +317,7 @@
     "delete_account_description": "Supprimer définitivement vos données et désactiver votre compte.",
     "delete_account_error": "Il y a eu un problème lors de la tentative de suppression de votre compte. Si le problème persiste, contactez l'administration de cette instance.",
     "delete_account_instructions": "Indiquez votre mot de passe ci-dessous pour confirmer la suppression de votre compte.",
-    "avatar_size_instruction": "La taille minimale recommandée pour l'image de l'avatar est de 150x150 pixels.",
+    "avatar_size_instruction": "La taille minimale recommandée pour l'image de profil est de 150x150 pixels. Avec un ration recommandé de 1:1",
     "export_theme": "Enregistrer le thème",
     "filtering": "Filtrage",
     "filtering_explanation": "Tous les statuts contenant ces mots seront masqués. Un mot par ligne",
@@ -326,14 +330,14 @@
     "general": "Général",
     "hide_attachments_in_convo": "Masquer les pièces jointes dans les conversations",
     "hide_attachments_in_tl": "Masquer les pièces jointes dans le flux",
-    "hide_muted_posts": "Masquer les statuts des comptes masqués",
+    "hide_muted_posts": "Masquer les statuts des comptes silenciés",
     "max_thumbnails": "Nombre maximum de miniatures par statuts",
     "hide_isp": "Masquer le panneau de l'instance",
     "preload_images": "Précharger les images",
     "use_one_click_nsfw": "Ouvrir les pièces-jointes sensibles avec un seul clic",
     "hide_post_stats": "Masquer les statistiques des messages (ex. le nombre de favoris)",
     "hide_user_stats": "Masquer les statistiques de compte (ex. le nombre de suivis)",
-    "hide_filtered_statuses": "Masquer les statuts filtrés",
+    "hide_filtered_statuses": "Masquer les messages filtrés",
     "import_blocks_from_a_csv_file": "Import de blocages depuis un fichier CSV",
     "import_followers_from_a_csv_file": "Import de suivis depuis un fichier CSV",
     "import_theme": "Charger le thème",
@@ -388,11 +392,11 @@
     "saving_err": "Erreur lors de l'enregistrement des paramètres",
     "saving_ok": "Paramètres enregistrés",
     "search_user_to_block": "Rechercher qui vous voulez bloquer",
-    "search_user_to_mute": "Rechercher qui vous voulez masquer",
+    "search_user_to_mute": "Rechercher qui vous voulez silencier",
     "security_tab": "Sécurité",
     "scope_copy": "Garder la même visibilité en répondant (les DMs restent toujours des DMs)",
     "minimal_scopes_mode": "Rétrécir les options de séléction de la portée",
-    "set_new_avatar": "Changer d'avatar",
+    "set_new_avatar": "Changer d'image de profil",
     "set_new_profile_background": "Changer d'image de fond",
     "set_new_profile_banner": "Changer de bannière",
     "settings": "Paramètres",
@@ -411,14 +415,14 @@
     "theme_help_v2_2": "Les icônes sous certaines des entrées ont un indicateur de contraste du fond/texte, survolez les pour plus d'informations détailles. Veuillez garder a l'esprit que lors de l'utilisation de transparence l'indicateur de contraste indique le pire des cas.",
     "tooltipRadius": "Info-bulles/alertes",
     "upload_a_photo": "Envoyer une photo",
-    "user_settings": "Paramètres utilisateur",
+    "user_settings": "Paramètres utilisateur·ice",
     "values": {
       "false": "non",
       "true": "oui"
     },
     "notifications": "Notifications",
-    "notification_mutes": "Pour stopper la réception de notifications d’un utilisateur particulier, utilisez la fonction « masquer ».",
-    "notification_blocks": "Bloquer un utilisateur stoppe toute notification et se désabonne de lui.",
+    "notification_mutes": "Pour stopper la réception de notifications d’un·e utilisateur·ice en particulier, utilisez la fonction « silencier ».",
+    "notification_blocks": "Bloquer un·e utilisateur·ice stoppe toute notification et se désabonne d'ellui.",
     "enable_web_push_notifications": "Activer les notifications de push web",
     "style": {
       "switcher": {
@@ -519,7 +523,7 @@
         "filter_hint": {
           "always_drop_shadow": "Attention, cette ombre utilise toujours {0} quand le navigateur le supporte.",
           "drop_shadow_syntax": "{0} ne supporte pas le paramètre {1} et mot-clé {2}.",
-          "avatar_inset": "Veuillez noter que combiner à la fois les ombres internes et non-internes sur les avatars peut fournir des résultats inattendus avec la transparence des avatars.",
+          "avatar_inset": "Veuillez noter que combiner à la fois les ombres internes et non-internes sur les images de profils peut fournir des résultats inattendus avec la transparence des images de profils.",
           "spread_zero": "Les ombres avec une dispersion > 0 apparaitrons comme si ils étaient à zéro",
           "inset_classic": "L'ombre interne utilisera toujours {0}",
           "avatar_inset_short": "Séparer l'ombre incrustée"
@@ -528,8 +532,8 @@
           "panel": "Panneau",
           "panelHeader": "En-tête de panneau",
           "topBar": "Barre du haut",
-          "avatar": "Avatar utilisateur⋅ice (dans la vue de profil)",
-          "avatarStatus": "Avatar utilisateur⋅ice (dans la vue de statuts)",
+          "avatar": "Image de profil utilisateur·ice (dans la vue de profil)",
+          "avatarStatus": "Image de profil utilisateur·ice (dans la vue de statuts)",
           "popup": "Popups et infobulles",
           "button": "Bouton",
           "buttonHover": "Bouton (survol)",
@@ -562,7 +566,14 @@
         "family": "Nom de la police",
         "size": "Taille (en px)",
         "weight": "Poid (gras)",
-        "custom": "Personnalisé"
+        "custom": "Personnalisé",
+        "components_inline": {
+          "interface": "interface",
+          "monospace": "texte à espacement fixe",
+          "input": "zones de saisies",
+          "post": "texte de message"
+        },
+        "override": "Remplacer la police {0}"
       },
       "preview": {
         "header": "Prévisualisation",
@@ -684,7 +695,9 @@
       "custom_theme_used": "(Thème personnalisé)",
       "update_preview": "Mise à jour de l'aperçu",
       "custom_style_used": "(Style personnalisé)",
-      "stock_theme_used": "(Thème original)"
+      "stock_theme_used": "(Thème original)",
+      "style_section": "Style",
+      "visual_tweaks_section_note": "Les changements dans cette partie n'affectent pas le thème utilisé, les thèmes exportés seront différents de ce que vous avez vu dans l'interface"
     },
     "version": {
       "title": "Version",
@@ -697,7 +710,7 @@
     "notification_visibility_emoji_reactions": "Réactions",
     "hide_follows_count_description": "Masquer le nombre de suivis",
     "useStreamingApiWarning": "(Non recommandé, expérimental, connu pour rater des messages)",
-    "type_domains_to_mute": "Chercher les domaines à masquer",
+    "type_domains_to_mute": "Chercher les domaines à silencier",
     "fun": "Rigolo",
     "greentext": "greentexting",
     "allow_following_move": "Activer le suivit automatique à la migration des comptes",
@@ -723,14 +736,14 @@
     "mute_export_button": "Exporter vos masquages dans un fichier CSV",
     "mute_export": "Export des masquages",
     "notification_setting_hide_notification_contents": "Masquer l’expéditeur et le contenu des notifications « push »",
-    "notification_setting_block_from_strangers": "Bloquer les notifications des utilisateur⋅ice⋅s que vous ne suivez pas",
+    "notification_setting_block_from_strangers": "Bloquer les notifications des utilisateur·ices que vous ne suivez pas",
     "virtual_scrolling": "Optimiser le rendu des flux",
     "reset_background_confirm": "Voulez-vraiment réinitialiser l'arrière-plan ?",
     "reset_banner_confirm": "Voulez-vraiment réinitialiser la bannière ?",
-    "reset_avatar_confirm": "Voulez-vraiment réinitialiser l'avatar ?",
+    "reset_avatar_confirm": "Voulez-vraiment réinitialiser l'image de profil ?",
     "reset_profile_banner": "Réinitialiser la bannière du profil",
     "reset_profile_background": "Réinitialiser le fond du profil",
-    "reset_avatar": "Réinitialiser l'avatar",
+    "reset_avatar": "Réinitialiser l'image de profil",
     "profile_fields": {
       "value": "Contenu",
       "name": "Nom du champ",
@@ -785,7 +798,7 @@
     "moved_account": "Compte déplacé.",
     "move_account_error": "Erreur au déplacement du compte : {error}",
     "wordfilter": "Filtrage de mots",
-    "mute_bot_posts": "Masquer les messages des robots",
+    "mute_bot_posts": "Silencier les messages des robots",
     "hide_bot_indication": "Cacher l'indication d'un robot avec les messages",
     "always_show_post_button": "Toujours montrer le bouton flottant Nouveau Message",
     "hide_muted_threads": "Cacher les fils masqués",
@@ -805,7 +818,7 @@
     "mention_link_display": "Afficher les mentions",
     "mention_link_display_full_for_remote": "complet pour les comptes distants (ex. {'@'}foo{'@'}example.org)",
     "mention_link_display_full": "toujours complet (ex. {'@'}foo{'@'}example.org)",
-    "mention_link_show_avatar": "Afficher les avatars à coté du lien",
+    "mention_link_show_avatar": "Afficher les images de profils à coté du lien",
     "mention_link_fade_domain": "Estomper les domaines (ex. {'@'}example.org en {'@'}foo{'@'}example.org)",
     "mention_link_bolden_you": "Surligner les mentions qui vous sont destinées",
     "show_yous": "Ajouter les \"(Vous)\"",
@@ -816,7 +829,7 @@
     "move_account": "Déplacer le compte",
     "move_account_notes": "Si vous voulez déplacer le compte ailleurs, vous devez aller sur votre compte cible et y créer un alias pointant ici.",
     "hide_wordfiltered_statuses": "Cacher les messages filtré par un mot",
-    "user_profiles": "Profils des utilisateur⋅ice⋅s",
+    "user_profiles": "Profils des utilisateur·ices",
     "notification_visibility_polls": "Fins de sondage auquel vous avez voté·e",
     "hide_favorites_description": "Ne pas montrer ma liste de favoris (les personnes sont quand même notifiés)",
     "conversation_display": "Style d'affichage des conversations",
@@ -830,8 +843,8 @@
     "word_filter_and_more": "Filtrer par mots et plus…",
     "columns": "Colonnes",
     "auto_update": "Afficher automatiquement les nouveaux posts",
-    "mention_link_use_tooltip": "Montrer le profil utilisateur en cliquant sur les liens de mentions",
-    "mention_link_show_avatar_quick": "Afficher l'avatar de l'utilisateur à côté des mentions",
+    "mention_link_use_tooltip": "Montrer le profil utilisateur·ice en cliquant sur les liens de mentions",
+    "mention_link_show_avatar_quick": "Afficher l'image de profil de l'utilisateur·ice à côté des mentions",
     "navbar_column_stretch": "Élargir la barre de navigation à la taille des colonnes",
     "column_sizes": "Taille des colonnes",
     "column_sizes_sidebar": "Barre latérale",
@@ -839,17 +852,17 @@
     "column_sizes_notifs": "Notifications",
     "conversation_display_linear_quick": "Vue linéaire",
     "use_websockets": "Utiliser les websockets (mises à jour en temps réel)",
-    "user_popover_avatar_action_zoom": "Zoomer sur l'avatar",
+    "user_popover_avatar_action_zoom": "Zoomer sur l'image de profil",
     "user_popover_avatar_action_open": "Ouvrir le profil",
     "conversation_display_tree_quick": "Vue arborescente",
     "emoji_reactions_scale": "Taille des réactions",
     "backup_running": "Cette sauvegarde est en cours, {number} enregistrement effectué. | Cette sauvegarde est en cours, {number} enregistrements effectués.",
     "backup_failed": "Cette sauvegarde a échoué.",
     "autocomplete_select_first": "Sélectionner automatiquement la première occurrence lorsque les résultats de l'autocomplétion sont disponibles",
-    "confirm_dialogs_unfollow": "arrête de suivre un utilisateur",
+    "confirm_dialogs_unfollow": "arrête de suivre un·e utilisateur·ice",
     "confirm_dialogs_repeat": "reposte un statut",
     "actor_type": "Ce compte est :",
-    "actor_type_Person": "un utilisateur normal",
+    "actor_type_Person": "un·e utilisateur·ice normal·e",
     "actor_type_Service": "un robot",
     "actor_type_Group": "un groupe",
     "confirm_dialogs_logout": "à la déconnexion",
@@ -862,8 +875,8 @@
     "primary_language": "Langue principale :",
     "fallback_language": "Langue de remplacement {index} :",
     "confirm_dialogs": "Demande de confirmation quand",
-    "confirm_dialogs_block": "bloque un utilisateur",
-    "confirm_dialogs_mute": "mute un utilisateur",
+    "confirm_dialogs_block": "bloque un·e utilisateur·ice",
+    "confirm_dialogs_mute": "silencie un·e utilisateur·ice",
     "confirm_dialogs_delete": "supprime un statut",
     "url": "URL",
     "preview": "Aperçu",
@@ -873,7 +886,7 @@
     "hard_reset_value": "Remise à zéro",
     "hide_actor_type_indication": "Cacher le type (robots, groupes, etc.) dans les statuts",
     "notification_extra_follow_requests": "Afficher les nouvelles demandes de suivi",
-    "user_popover_avatar_action": "Action lors du clic sur la fenêtre Avatar",
+    "user_popover_avatar_action": "Action lors du clic sur la fenêtre Image de profil",
     "user_popover_avatar_action_close": "Fermer la fenêtre contextuelle",
     "notification_setting_ignore_inactionable_seen": "Ignorer les statuts de lecture des notifications non actionnables (favoris, répétitions, etc)",
     "notification_setting_ignore_inactionable_seen_tip": "Ceci ne marquera pas ces notifications comme lues, et vous recevrez encore les notifications de bureau si vous le décidez",
@@ -895,8 +908,8 @@
     "notification_extra_chats": "Afficher les discussions non lues",
     "notification_extra_announcements": "Afficher les annonces non lues",
     "notification_extra_tip": "Afficher les astuces de personnalisation pour les notifications extras",
-    "enable_web_push_always_show_tip": "Certains navigateurs (Chromium, Chrome) exigent que les messages push donnent toujours lieu à une notification, sinon le message générique « Le site web a été mis à jour en arrière-plan » s’affiche : activez cette option pour empêcher l’affichage de cette notification, car Chrome semble masquer les notifications push si l’onglet est au centre de l’attention. Ceci peut entraîner l’affichage de notifications en double sur d’autres navigateurs.",
-    "user_popover_avatar_overlay": "Afficher la fiche de l’utilisateur au survol de l’avatar",
+    "enable_web_push_always_show_tip": "Certains navigateurs web (Chromium, Chrome) exigent que les messages push donnent toujours lieu à une notification, sinon le message générique « Le site web a été mis à jour en arrière-plan » s’affiche : activez cette option pour empêcher l’affichage de cette notification, car Chrome semble masquer les notifications push si l’onglet est au centre de l’attention. Ceci peut entraîner l’affichage de notifications en double sur d’autres navigateurs web.",
+    "user_popover_avatar_overlay": "Afficher la fiche de l’utilisateur·ice au survol de l’image de profil",
     "notification_visibility_in_column": "Afficher la colonne / le tiroir de notifications",
     "notification_show_extra": "Afficher les extras dans la colonne de notifications",
     "units": {
@@ -907,11 +920,11 @@
         "d": "jours"
       }
     },
-    "force_theme_recompilation_debug": "Désactiver le cache du thème, forcer la recompilation à chaque démarrage (DEBUG)",
+    "force_theme_recompilation_debug": "Désactiver le cache du thème, force la recompilation à chaque démarrage",
     "absolute_time_format": "Utiliser le format UTC",
     "absolute_time_format_min_age": "À n'utiliser que pour les périodes plus anciennes que cette durée",
     "notification_visibility_statuses": "Abonnements",
-    "mute_sensitive_posts": "Masquer les postes sensibles",
+    "mute_sensitive_posts": "Silencier les messages sensibles",
     "appearance": "Apparence",
     "confirm_new_setting": "Confirmer le nouveau réglage ?",
     "confirm_new_question": "Est-ce que tout est ok ? Le réglage sera rétabli dans dix secondes.",
@@ -924,7 +937,7 @@
     "navbar_size": "Taille de la barre supérieure",
     "panel_header_size": "Taille du panneau d'en-tête",
     "visual_tweaks": "Ajustements visuels mineurs",
-    "theme_debug": "Montrer ce que le moteur de thème de l'arrière-plan bricole lorsqu'il travaille avec la transparence (DEBUG)",
+    "theme_debug": "Montrer ce que le moteur de thème d'arrière-plan assume lorsqu'il travaille avec la transparence",
     "scale_and_layout": "Taille et disposition de l'interface",
     "hide_scrobbles_after": "Masquer les scrobbles plus vieux que",
     "confirm_dialogs_mute_conversation": "Bloquer des conversations",
@@ -941,7 +954,80 @@
     "absolute_time_format_12h": "Format de l'heure",
     "theme_old": "Éditeur de thème (ancien)",
     "image_compression": "Compresser les images avant de les téléverser",
-    "always_use_jpeg": "Toujours convertir les images au format JPEG"
+    "always_use_jpeg": "Toujours convertir les images au format JPEG",
+    "filter": {
+      "regexp": "RegExp",
+      "plain": "Simple",
+      "user": "Utilisateur·ice (Simple)",
+      "user_regexp": "Utilisateur·ice (RegExp)",
+      "hide": "Cacher complétement",
+      "expires": "Expirations",
+      "expired": "Expiré",
+      "copy": "Dupliquer",
+      "save": "Enregistrer",
+      "regexp_error": "Expression rationelle invalide",
+      "export": "Exporter",
+      "purge_expired": "Retirer les filtres expirés",
+      "import_failure": "Le fichier sélectionné n'est pas un filtre supporté par Pleroma.",
+      "help": {
+        "word": "Les filtres Simple et RegExp testent le contenu et le sujet de la publication.",
+        "user": "Les filtres utilisateur·ice font correspondre les identifiants complet (utilisateur·ice{'@'}domaine) dans l'ordre suivant : auteur·ice, répondre à et mentions",
+        "regexp": "Les variantes Regex sont plus avancées et utilisent {link} pour les correspondances au lieu de simple recherches de sous-chaînes.",
+        "regexp_link": "Expressions rationelles",
+        "regexp_url": "https://fr.wikipedia.org/wiki/Expression_r%C3%A9guli%C3%A8re"
+      },
+      "type": "Type de filtre",
+      "custom_filters": "Filtres personnalisés",
+      "expired_count": "{count} filtre expiré|{count} filtres expirés",
+      "mute_filter": "Filtres de silenciation",
+      "name": "Nom",
+      "value": "Valeur",
+      "delete": "Retirer",
+      "clutter": "Retirer clutter",
+      "new": "Créer un nouveau",
+      "import": "Importer",
+      "never_expires": "Jamais",
+      "total_count": "Total de {count} filtre personnalisé|Total de {count} filtres personnalisés"
+    },
+    "hide_muted_statuses": "Masquer complétement les messages silenciés",
+    "actor_type_person_proper": "une personne",
+    "reset": "Réinitialiser les changements",
+    "toggle_edit": "Éditer",
+    "change_banner": "Changer la bannière",
+    "change_avatar": "Changer l'image de profil",
+    "banner_size_instruction": "La taille minimale recommandé pour les bannières est de 450x150 pixels. Le ratio recommandé est de 3:1",
+    "confirm_new_question_countdown": "Est-ce que ça semble bien ? Ce paramètre sera réinversé dans 1 seconde. | Est-ce que ça semble bien ? Ce paramètre sera réinversé dans {count} secondes.",
+    "format_and_language": "Format et langue",
+    "confirmations": "Confirmations",
+    "layout": "Disposition",
+    "enabled": "Activé",
+    "clutter": "Clutter",
+    "profile_other": "Autre",
+    "account_profile_edit": "Éditer le profil",
+    "select_picture": "Sélectionner une image",
+    "developer": "Développeur·euse",
+    "debug": "Débug",
+    "timelines": "Timelines",
+    "replies": "Répondre",
+    "import_export": {
+      "title": "Importer / Exporter",
+      "follows": "Liste des utilisateur·ices que vous suivez",
+      "blocks": "Liste des utilisateur·ices que vous bloquez",
+      "mutes": "Liste des utilisateur·ices que vous silenciez"
+    },
+    "default_post_status_content_type": "Type de contenu de statut de publication par défaut",
+    "posts_appearance": "Apparence des messages",
+    "scale_and_font": "Échelle et Police",
+    "plaintext_quotes": "Mettre en évidence le texte brut {0}",
+    "greentext_quotes": ">citations",
+    "cache": "Cache",
+    "clear_asset_cache": "Nettoyer les éléments du cache",
+    "clear_emoji_cache": "Nettoyer les emojis du cache",
+    "user_card_left_justify": "Justifier la bio des utilisateur·ice à gauche",
+    "user_card_hide_personal_marks": "Masquer les marques personnelles (mise en évidence/note) dans les profils utilisateur·ice",
+    "set_new_background": "Définir un nouveau fond",
+    "reset_banner": "Réinitialiser la bannière",
+    "upload_picture": "Téléverser une image"
   },
   "timeline": {
     "collapse": "Fermer",
@@ -972,8 +1058,8 @@
     "delete_confirm": "Voulez-vous vraiment supprimer ce post ?",
     "reply_to": "Réponse à",
     "replies_list": "Réponses :",
-    "mute_conversation": "Masquer la conversation",
-    "unmute_conversation": "Démasquer la conversation",
+    "mute_conversation": "Silencier la conversation",
+    "unmute_conversation": "Ne plus silencier la conversation",
     "status_unavailable": "Statut indisponible",
     "copy_link": "Copier le lien au statut",
     "expand": "Développer",
@@ -1035,16 +1121,19 @@
     "load_error": "Impossible de charger la publication : {error}",
     "loading": "En cours de chargement…",
     "bot_muted": "Silencer le contenu de robots",
-    "muted_user": "Utilisateur masqué",
-    "unmute_user": "Rendre visible l'utilisateur",
+    "muted_user": "Utilisateur·ice silencié·e",
+    "unmute_user": "Rendre visible l'utilisateur·ice",
     "mute_domain": "Bloquer le domaine",
     "muted_words": "Mot filtré : {word} | Mot filtré : {word} et {numWordsMore} autres mots",
-    "mute_ellipsis": "Masquer…",
+    "mute_ellipsis": "Silencier…",
     "reply_to_with_icon": "{icon} {replyTo}",
     "reply_to_with_arg": "{replyToWithIcon} {user}",
     "unmute_domain": "Débloquer le domaine",
-    "mute_user": "Masquer l'utilisateur",
-    "multi_reason_mute": "{main} + une autre raison | {main} + {numReasonsMore} autres raisons"
+    "mute_user": "Silencier l'utilisateur·ice",
+    "multi_reason_mute": "{main} + une autre raison | {main} + {numReasonsMore} autres raisons",
+    "muted_filters": "Filtré : {name} | Filtré par mot : {name} et {filtersMore} mots en plus",
+    "unknown_user_info": "Impossible de récupérer des informations sur cet·te utilisateur·ice",
+    "unknown_user": "utilisateur·ice inconnu·e"
   },
   "user_card": {
     "approve": "Accepter",
@@ -1062,7 +1151,7 @@
     "follows_you": "Vous suit !",
     "its_you": "C'est vous !",
     "media": "Media",
-    "mute": "Masquer",
+    "mute": "Silencier",
     "muted": "Masqué",
     "per_day": "par jour",
     "remote_follow": "Suivre d'une autre instance",
@@ -1071,26 +1160,26 @@
     "unblock": "Débloquer",
     "unblock_progress": "Déblocage…",
     "block_progress": "Blocage…",
-    "unmute": "Démasquer",
+    "unmute": "Ne plus silencier",
     "unmute_progress": "Démasquage…",
     "mute_progress": "Masquage…",
     "admin_menu": {
       "moderation": "Modération",
-      "grant_admin": "Promouvoir Administrateur⋅ice",
-      "revoke_admin": "Dégrader L'administrateur⋅ice",
-      "grant_moderator": "Promouvoir Modérateur⋅ice",
-      "revoke_moderator": "Dégrader la·e modérateur⋅ice",
+      "grant_admin": "Promouvoir Administrateur·ice",
+      "revoke_admin": "Dégrader l'Administrateur·ice",
+      "grant_moderator": "Promouvoir Modérateur·ice",
+      "revoke_moderator": "Dégrader læ Modérateur·ice",
       "activate_account": "Activer le compte",
       "deactivate_account": "Désactiver le compte",
       "delete_account": "Supprimer le compte",
       "force_nsfw": "Marquer tous les statuts comme NSFW",
       "strip_media": "Supprimer les medias des statuts",
       "force_unlisted": "Forcer les statuts à être délistés",
-      "sandbox": "Forcer les statuts à être visibles seuleument pour les abonné⋅e⋅s",
-      "disable_remote_subscription": "Interdir de s'abonner a l'utilisateur depuis l'instance distante",
-      "disable_any_subscription": "Interdir de s'abonner à l'utilisateur tout court",
-      "quarantine": "Interdir les statuts de l'utilisateur à fédérer",
-      "delete_user": "Supprimer l'utilisateur",
+      "sandbox": "Forcer les statuts à être visibles seuleument pour les abonné·es",
+      "disable_remote_subscription": "Interdir de s'abonner a l'utilisateur·ice depuis l'instance distante",
+      "disable_any_subscription": "Interdir de s'abonner à l'utilisateur·ice tout court",
+      "quarantine": "Interdir les statuts de l'utilisateur·ice à fédérer",
+      "delete_user": "Supprimer l'utilisateur·ice",
       "delete_user_data_and_deactivate_confirmation": "Ceci va supprimer les données du compte de manière permanente et le désactivé. Êtes-vous vraiment sûr ?"
     },
     "mention": "Mention",
@@ -1135,8 +1224,8 @@
     "deny_confirm": "Voulez-vous refuser la demande de suivi de {user} ?",
     "deny_confirm_title": "Refuser la confirmation",
     "remove_follower_confirm_cancel_button": "Conserver",
-    "mute_duration_prompt": "Mettre cet utilisateur en sourdine pour (0 pour une durée indéterminée) :",
-    "remove_follower_confirm_title": "Confirmation de suppression d'utilisateur",
+    "mute_duration_prompt": "Silencier cet·te utilisateur·ice pour (0 pour une durée indéterminée) :",
+    "remove_follower_confirm_title": "Retirer la confirmation de suivis",
     "note_blank": "(vide)",
     "mute_confirm": "Voulez-vous vraiment mettre {user} en sourdine ?",
     "mute_confirm_accept_button": "Mettre en sourdine",
@@ -1146,7 +1235,34 @@
     "approve_confirm": "Voulez-vous approuver la demande de suivi de {user} ?",
     "block_confirm": "Voulez-vous vraiment bloquer {user} ?",
     "approve_confirm_title": "Approuver confirmation",
-    "unfollow_confirm_cancel_button": "Ne pas arrêter le suivi"
+    "unfollow_confirm_cancel_button": "Ne pas arrêter le suivi",
+    "expire_in": "Expire dans",
+    "default_block_expiration": "Toujours bloquer les utilisateur·ices",
+    "dont_ask_again_block": "Toujours bloquer les utilisateur·ices ainsi",
+    "dont_ask_again_mute": "Toujours silencier les utilisateur·ices ainsi",
+    "default_expiration_time": "Expire dans",
+    "mute_block_ask": "Demander",
+    "expire_mute_message": "Êtes-vous sûr de vouloir silencier {0} ?",
+    "expire_block_message": "Êtes-vous sûr de vouloir bloquer {0} ?",
+    "mute_block_temporarily": "Temporairement",
+    "mute_block_forever": "Pour toujours",
+    "mute_block_never": "Jamais",
+    "mute_or": "ou",
+    "default_mute_expiration": "Toujours silencier les utilisateur·ices",
+    "mute_expires_forever": "Silencier pour toujours",
+    "block_expires_at": "Bloquer jusqu'à {0}",
+    "statuses_per_day": "Messages par jour",
+    "mute_expires_at": "Silencier jusqu'à {0}",
+    "block_expires_forever": "Bloquer pour toujours",
+    "highlight_new": {
+      "disabled": "Ne pas mettre en évidence",
+      "striped": "Fond rayé",
+      "side": "Bande latérale",
+      "solid": "Fond uni"
+    },
+    "personal_note": "Note personnelle",
+    "note_blank_click": "Cliquez pour ajouter une note",
+    "highlight_header": "Mettre en évidence les messages et mentions de l'utilisateur·ice"
   },
   "user_profile": {
     "timeline_title": "Flux du compte",
@@ -1155,7 +1271,7 @@
   },
   "user_reporting": {
     "title": "Signaler {0}",
-    "add_comment_description": "Ce signalement sera envoyé aux modérateur⋅ice⋅s de votre instance. Vous pouvez fournir une explication de pourquoi vous signalez ce compte ci-dessous :",
+    "add_comment_description": "Ce signalement sera envoyé aux modérateur·ices de votre instance. Vous pouvez fournir une explication de pourquoi vous signalez ce compte ci-dessous :",
     "additional_comments": "Commentaires additionnels",
     "forward_description": "Le compte vient d'un autre serveur. Envoyer une copie du signalement à celui-ci aussi ?",
     "forward_to": "Transmettre à {0}",
@@ -1171,7 +1287,7 @@
     "repeat": "Re-partager",
     "reply": "Répondre",
     "favorite": "Ajouter aux favoris",
-    "user_settings": "Paramètres utilisateur",
+    "user_settings": "Paramètres utilisateur·ice",
     "add_reaction": "Ajouter une réaction",
     "accept_follow_request": "Accepter la demande de suivit",
     "reject_follow_request": "Rejeter la demande de suivit",
@@ -1235,7 +1351,7 @@
   "domain_mute_card": {
     "mute": "Masqué",
     "mute_progress": "Masquage…",
-    "unmute": "Démasquer",
+    "unmute": "Ne plus silencier",
     "unmute_progress": "Démasquage…"
   },
   "polls": {
@@ -1322,7 +1438,7 @@
     "year_short": "{0}a",
     "years_short": "{0}a",
     "unit": {
-      "years": "{0} année | {0} années",
+      "years": "année(s)",
       "years_short": "{0}ans",
       "days_short": "{0}j",
       "hours": "{0} heure | {0} heures",
@@ -1335,7 +1451,13 @@
       "weeks": "{0} semaine | {0} semaines",
       "days": "{0} jour | {0} jours",
       "months": "{0} mois | {0} mois",
-      "weeks_short": "{0}semaine"
+      "weeks_short": "{0}semaine",
+      "seconds_suffix": "seconde(s)",
+      "weeks_suffix": "semaine(s)",
+      "days_suffix": "jour(s)",
+      "hours_suffix": "heure(s)",
+      "minutes_suffix": "minute(s)",
+      "months_suffix": "mois"
     }
   },
   "search": {
@@ -1353,8 +1475,8 @@
     "password_reset_disabled": "Le changement de mot de passe est désactivé. Veuillez contacter l'administration de votre instance.",
     "password_reset_required_but_mailer_is_disabled": "Vous devez changer votre mot de passe mais sont changement est désactivé. Veuillez contacter l’administration de votre instance.",
     "password_reset": "Nouveau mot de passe",
-    "instruction": "Entrer votre address de courriel ou votre nom utilisateur. Nous enverrons un lien pour changer votre mot de passe.",
-    "placeholder": "Votre email ou nom d'utilisateur",
+    "instruction": "Entrer votre address de courriel ou votre nom utilisateur·ice. Nous enverrons un lien pour changer votre mot de passe.",
+    "placeholder": "Votre email ou nom d'utilisateur·ice",
     "return_home": "Retourner à la page d'accueil",
     "too_many_requests": "Vos avez atteint la limite d'essais, essayez plus tard.",
     "password_reset_required": "Vous devez changer votre mot de passe pour vous authentifier."
@@ -1395,7 +1517,7 @@
     "delete": "Supprimer la liste",
     "following_only": "Limiter aux abonné·e·s",
     "manage_lists": "Gérer les listes",
-    "add_members": "Rechercher plus d'utilisateurs",
+    "add_members": "Rechercher plus d'utilisateur·ices",
     "remove_from_list": "Retirer de la liste",
     "add_to_list": "Ajouter à la liste",
     "is_in_list": "Déjà dans la liste",
@@ -1404,7 +1526,7 @@
     "really_delete": "Êtes-vous sûr·e de vouloir supprimer la liste ?",
     "error": "Erreur en manipulant les listes : {0}",
     "lists": "Listes",
-    "search": "Rechercher des utilisateurs",
+    "search": "Rechercher des utilisateur·ices",
     "manage_members": "Gérer les membres des listes",
     "update_title": "Sauvegarder le titre"
   },
@@ -1460,7 +1582,7 @@
       "reinstall": "Réinstaller",
       "repository": "Lien du dépôt",
       "versions": "Versions disponibles",
-      "default_frontend_tip": "L'interface par défaut sera affichée à tous les utilisateurs. Si vous décidez de quitter PleromaFE, vous devrez utiliser l'ancienne AdminFE buguée pour configurer votre instance jusqu'à ce que nous la remplacions.",
+      "default_frontend_tip": "L'interface par défaut sera affichée à tous les utilisateur·ices. Si vous décidez de quitter PleromaFE, vous devrez utiliser l'ancienne AdminFE buguée pour configurer votre instance jusqu'à ce que nous la remplacions.",
       "is_default": "(Défaut)",
       "is_default_custom": "(Défaut, version : {version})",
       "install": "Installation",
@@ -1471,18 +1593,19 @@
       "set_default_version": "Définir la version {version} comme version par défaut",
       "wip_notice": "Veuillez noter que cette section est en cours de développement et que certaines fonctionnalités de l'interface ne sont pas implémentées côté serveur.",
       "default_frontend": "Interface par défaut",
-      "available_frontends": "Disponible pour installation"
+      "available_frontends": "Disponible pour installation",
+      "title": "Gestion de frontend"
     },
     "temp_overrides": {
       ":pleroma": {
         ":instance": {
           ":public": {
             "label": "Cette instance est publique",
-            "description": "En désactivant cette option, toutes les API ne seront accessibles qu'aux utilisateurs connectés, ce qui rendra les chronologies publiques et fédérées inaccessibles aux visiteurs anonymes."
+            "description": "En désactivant cette option, toutes les API ne seront accessibles qu'aux utilisateur·ices connectés, ce qui rendra les chronologies publiques et fédérées inaccessibles aux visiteur·ices anonymes."
           },
           ":limit_to_local_content": {
             "label": "Limitez la recherche au contenu local",
-            "description": "Désactive la recherche globale sur le réseau pour les utilisateurs non authentifiés (par défaut), tous les utilisateurs ou aucun"
+            "description": "Désactive la recherche globale sur le réseau pour les utilisateur·ices non authentifiés (par défaut), tous les utilisateur·ices ou aucun"
           },
           ":description_limit": {
             "label": "Limite",
@@ -1492,6 +1615,72 @@
             "description": "Image de fond (principalement utilisé par PleromaFE)",
             "label": "Image de fond d'écran"
           }
+        },
+        ":connections_pool": {
+          ":max_idle_time": {
+            "label": "Temps d'inactivité maximal",
+            "description": "Temps d'inactivité maximal avant CONFIRMATION"
+          },
+          ":retry": {
+            "label": "Réessayer",
+            "description": "Nombre de tentatives pour CONFIRMER une connexion"
+          }
+        },
+        ":pools": {
+          ":rich_media": {
+            "label": "Média riche",
+            "description": "je ne sais pas"
+          }
+        },
+        ":rate_limit": {
+          ":oauth_app_creation": {
+            "label": "Création d'application Oauth",
+            "description": "Pour enregistrer un nouvel identifiant d'application Oauth"
+          },
+          ":ap_routes": {
+            "label": "ActivityPub",
+            "description": "Endpoints de fédération"
+          },
+          ":account_confirmation_resend": {
+            "label": "Confirmation de compte renvoyée",
+            "description": "Tous les combien un·e utilisateur·ice peut renvoyer un mail de confirmation"
+          }
+        },
+        "Pleroma_DOT_Formatter": {
+          ":attribute_toggle": {
+            "label": "Définir l'attribut {attr}"
+          },
+          ":truncate_toggle": {
+            "label": "Tronquer"
+          },
+          ":class": {
+            "label": "Valeur"
+          },
+          ":rel": {
+            "label": "Valeur"
+          }
+        },
+        "Pleroma_DOT_Uploaders_DOT_Uploader": {
+          ":timeout": {
+            "label": "Dépassement du délai d'attente",
+            "description": "Nombre de millisecondes avant de couper la connexion"
+          }
+        },
+        "Pleroma_DOT_Upload": {
+          ":default_description": {
+            "label": "Description par défaut",
+            "description": "Description par défaut à donner à un fichier. Le définir à ':filename' utilisera le nom du fichier comme description."
+          }
+        },
+        ":http_security": {
+          ":allow_unsafe_eval": {
+            "label": "Autoriser unsafe-eval",
+            "description": "Autorise l'évaluation non-sécurisé des scripts (nécessaire pour le support de Flash)"
+          },
+          ":report_url": {
+            "label": "URL de signalement",
+            "description": "URL pour signaler les infractions de sécurité"
+          }
         }
       }
     },
@@ -1500,21 +1689,50 @@
       "limits": "Limites",
       "frontends": "Interfaces",
       "instance": "Instance",
-      "nodb": "Pas de configuration de base de données"
+      "nodb": "Pas de configuration de base de données",
+      "mailer": "Mails",
+      "media_proxy": "Proxy Média",
+      "uploads": "Téléversements",
+      "monitoring": "Surveillance",
+      "registrations": "Inscriptions",
+      "links": "Liens",
+      "job_queues": "Files d'Attente",
+      "auth": "Authentification",
+      "posts": "Messages",
+      "rate_limit": "Limites de débit",
+      "http": "HTTP",
+      "federation": "Fédération",
+      "other": "Autre"
     },
     "instance": {
       "kocaptcha": "Réglages KoCaptcha",
       "access": "Accès à l'instance",
       "restrict": {
         "header": "Restreindre l'accès aux visiteurs anonymes",
-        "profiles": "Accès aux profils d'utilisateur",
+        "profiles": "Accès aux profils d'utilisateur·ice",
         "activities": "Accès aux statuts/activités",
         "description": "Paramètre détaillé permettant d'autoriser/interdire l'accès à certains aspects de l'API. Par défaut (état indéterminé), l'accès est interdit si l'instance n'est pas publique ; si la case est cochée, l'accès est interdit même si l'instance est publique ; si la case n'est pas cochée, l'accès est autorisé même si l'instance est privée. Veuillez noter qu'un comportement inattendu peut se produire si certains paramètres sont définis, par exemple si l'accès au profil est désactivé, les messages s'afficheront sans les informations relatives au profil.",
         "timelines": "Accès aux flux"
       },
       "registrations": "Inscription des utilisateurs",
       "captcha_header": "CAPTCHA",
-      "instance": "Informations sur l'instance"
+      "instance": "Informations sur l'instance",
+      "pwa": {
+        "manifest": "Manifeste PWA",
+        "optional": "(optionnel)",
+        "no_icons": "Aucune icône définie",
+        "icon": {
+          "purpose": "But de l'icône",
+          "any": "N'importe",
+          "monochrome": "Monochrome",
+          "maskable": "Masquable"
+        }
+      },
+      "misc_brand": "Éléments divers",
+      "branding": "Image de marque",
+      "rich_metadata": "Metadonnée",
+      ":unauthenticated": "Non authentifié",
+      ":all": "Tout le monde"
     },
     "emoji": {
       "global_actions": "Actions globales",
@@ -1558,7 +1776,19 @@
       "metadata_changed": "Métadonnées différentes de celles sauvegardées",
       "emoji_changed": "Modifications du fichier émoji non sauvegardées, vérifier l'émoji surligné",
       "replace_warning": "Vous allez REMPLACER le pack local qui porte ce nom",
-      "new_shortcode": "Shortcode, laissez vide pour déduire"
+      "new_shortcode": "Shortcode, laissez vide pour déduire",
+      "reload_short": "Actualiser",
+      "advanced": "Avancé",
+      "import_pack": "Téléverser un paquet d'emoji",
+      "import_pack_short": "Importer",
+      "remote_packs_short": "Distant",
+      "metadata": "Metadonnée",
+      "emoji_source": "Fichier source d'emoji",
+      "upload_url": "Téléverser depuis une URL",
+      "copy_to_pack": "Copie vers le paquet local",
+      "copying": "Copie en cours de {0}",
+      "copy_to": "Copie vers",
+      "copied_successfully": "Emoji \"{0}\" copiés avec succès vers le paquet \"{1}\""
     },
     "window_title": "Administration",
     "nodb": {
@@ -1571,9 +1801,10 @@
       "arbitrary_limits": "Limites arbitraires",
       "posts": "Limites des statuts",
       "uploads": "Limites des pièces jointes",
-      "users": "Limites du profil d'utilisateur",
+      "users": "Limites du profil d'utilisateur·ice",
       "profile_fields": "Limites des champs du profile",
-      "user_uploads": "Limites des médias du profil"
+      "user_uploads": "Limites des médias du profil",
+      "other": "Limites diverses"
     },
     "captcha": {
       "native": "Natif",
@@ -1582,7 +1813,113 @@
     "wip_notice": "Ce tableau de bord d'administration est expérimental et en cours de développement, {adminFeLink}.",
     "old_ui_link": "L'ancien espace d'administration est disponible ici",
     "reset_all": "Tout réinitialiser",
-    "commit_all": "Tout sauvegarder"
+    "commit_all": "Tout sauvegarder",
+    "posts": {
+      "global": "Paramètres généraux",
+      "local": "Messages locaux",
+      "remote": "Messages distants"
+    },
+    "other": {
+      "uncategorized": "Sans catégorie",
+      "user_backup": "Sauvegarde Utilisateur·ice",
+      "reports": "Signalements",
+      "privileges": "Privilèges"
+    },
+    "monitoring": {
+      "builtins": "Outils intégrés",
+      "prometheus": "Exporteur Prometheus"
+    },
+    "federation": {
+      "global": "Paramètres généraux",
+      "restrictions": "Restrictions",
+      "activitypub": "ActivityPub"
+    },
+    "http": {
+      "outbound": "Connexions sortantes",
+      "incoming": "Connexions entrantes",
+      "security": "Sécurité HTTP",
+      "web_push": "Web Push",
+      "web_push_description": "Paramètres Web Push VAPID. Vous pouvez utiliser la tâche mix web_push.gen.keypair pour le générer."
+    },
+    "auth": {
+      "MFA": "Authentification multi-facteurs",
+      "LDAP": "Paramètres LDAP",
+      "OAuth": "Paramètres Oauth2",
+      "TOTP": "Mot de passe unique (TOTP)",
+      "backup_codes": "Codes de secours"
+    },
+    "job_queues": {
+      "Gun": {
+        "title": "File Gun",
+        "connections_pools": "Pool de connexions Gun",
+        "pools": {
+          "title": "Pools de workers Gun",
+          "default": "Pool par défaut",
+          "federation": "Pool de fédération",
+          "media": "Pool de média",
+          "rich_media": "Pool de média riches",
+          "upload": "Pool de téléversement"
+        }
+      },
+      "Hackney": {
+        "title": "Pools Hackney",
+        "federation": "Fédération",
+        "media": "Média",
+        "rich_media": "Média riche",
+        "upload": "Téléversement"
+      },
+      "queues": "Files"
+    },
+    "rate_limit": {
+      "rate_limit": "Limite de débit",
+      "amount": "Quantité",
+      "unauthenticated": "Non authentifié",
+      "authenticated": "Authentifié",
+      "period": "Période temporelle",
+      "separate": "Limite de débit séparées pour les utilisateur·ices authentifiés/non authentifiés"
+    },
+    "registrations": {
+      "welcome": {
+        "title": "Message de bienvenue",
+        "description": "Envoyer un messages aux nouveaux utilisateur·ices quand iels s'inscrivent",
+        "direct_message": "Via message direct",
+        "chat_message": "Via le tchat",
+        "email_message": "Via mail"
+      },
+      "restrictions": "Restrictions",
+      "autofollow": "Suivis automatique"
+    },
+    "links": {
+      "no_scheme": "Aucun schema",
+      "link_previews": "Prévisualisation des liens",
+      "link_formatter": "Formateur de lien"
+    },
+    "uploads": {
+      "attachments": "Paramètres des pièces jointes",
+      "upload": "Téléversement",
+      "local_uploader": "Fichiers locaux",
+      "filenames": "Noms de fichiers, Titres et Descriptions",
+      "uploader_settings": "Paramètres de téléverseur"
+    },
+    "media_proxy": {
+      "basic": "Paramètres de base",
+      "invalidation": "Invalidation du cache",
+      "limits": "Limites",
+      "thumbnails": "Génération de miniature",
+      "invalidation_settings": "Invalidation de cache"
+    },
+    "mailer": {
+      "styling": "Style",
+      "assets": "Assets",
+      "colors": "Palette de couleur",
+      "adapter": "Adaptateur mail",
+      "auth": "Authentication"
+    },
+    "generic_enforcement": {
+      "if_available": "Si disponible",
+      "always": "Toujours",
+      "never": "Jamais"
+    }
   },
   "splash": {
     "settings": "Application des paramètres…",
