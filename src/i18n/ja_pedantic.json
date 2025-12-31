@@ -343,7 +343,7 @@
     "current_avatar": "現在のアバター",
     "current_password": "現在のパスワード",
     "current_profile_banner": "現在のプロフィールバナー",
-    "data_import_export_tab": "インポートとエクスポート",
+    "data_import_export_tab": "インポート・エクスポート",
     "default_vis": "デフォルトの公開範囲",
     "delete_account": "アカウントの削除",
     "delete_account_description": "アカウントのデータを永久的に削除し、アカウントを無効化します。",
@@ -719,7 +719,9 @@
       "update_preview": "プレビューを更新",
       "interface_font_user_override": "フォント設定の上書き",
       "stock_theme_used": "(基礎テーマ)",
-      "custom_style_used": "(カスタムスタイル)"
+      "custom_style_used": "(カスタムスタイル)",
+      "style_section": "スタイル",
+      "visual_tweaks_section_note": "このセクションへの変更はテーマに影響しません。そのため、テーマをエクスポートした際、今見えているものとは異なる見た目になる場合があります"
     },
     "version": {
       "title": "バージョン",
@@ -853,7 +855,7 @@
     "notification_visibility_polls": "投票結果の確定",
     "user_popover_avatar_action_zoom": "アイコンを拡大する",
     "post_look_feel": "投稿の表示形式",
-    "mention_links": "メンションのリンク",
+    "mention_links": "メンションリンク",
     "setting_server_side": "この設定はサーバー側に保存され、すべてのセッションとクライアントに影響します",
     "word_filter_and_more": "ワードフィルターとその他の設定",
     "notification_extra_announcements": "未読のお知らせを表示する",
@@ -936,7 +938,7 @@
       }
     },
     "hide_scrobbles_after": "これより古いScrobbleを表示しない:",
-    "force_theme_recompilation_debug": "テーマのキャッシュを無効化し、起動の度にコンパイルし直す (デバッグ用)",
+    "force_theme_recompilation_debug": "テーマのキャッシュを無効化し、起動の度にコンパイルし直す",
     "scale_and_layout": "インターフェースの表示サイズとレイアウト",
     "appearance": "見た目",
     "confirm_new_setting": "設定を適用しますか？",
@@ -953,7 +955,7 @@
     "visual_tweaks": "細かい外観の変更",
     "absolute_time_format": "時間の表示に絶対表記を使用する",
     "absolute_time_format_min_age": "これより古い日時に対してのみ使用する:",
-    "theme_debug": "テーマエンジンが透明度を処理する際に見ているものを表示する (デバッグ用)",
+    "theme_debug": "テーマエンジンが透明度を処理する際に見ているものを表示する",
     "always_use_jpeg": "画像を常にJPEG形式に変換する",
     "theme_old": "テーマエディタ (V2)",
     "confirm_dialogs_mute_domain": "ドメインをミュートするとき",
@@ -1022,7 +1024,26 @@
     "clear_asset_cache": "アセットのキャッシュを削除",
     "clear_emoji_cache": "絵文字のキャッシュを削除",
     "user_card_left_justify": "ユーザーのプロフィール文を左寄せで表示する",
-    "user_card_hide_personal_marks": "ユーザープロフィールに自分用設定(自分用メモ/ハイライト設定)を表示しない"
+    "user_card_hide_personal_marks": "ユーザープロフィールに自分用設定(自分用メモ/ハイライト設定)を表示しない",
+    "developer": "開発者",
+    "debug": "デバッグ",
+    "confirmations": "確認ダイアログ",
+    "timelines": "タイムライン",
+    "format_and_language": "言語と表示形式",
+    "clutter": "UIの非表示",
+    "layout": "レイアウト",
+    "import_export": {
+      "title": "インポート・エクスポート",
+      "blocks": "ブロックリスト",
+      "follows": "フォローリスト",
+      "mutes": "ミュートリスト"
+    },
+    "scale_and_font": "フォントと拡大率",
+    "posts_appearance": "投稿の見た目",
+    "default_post_status_content_type": "デフォルトの投稿形式",
+    "plaintext_quotes": "プレーンテキストの{0}をハイライトする",
+    "greentext_quotes": ">引用",
+    "replies": "返信"
   },
   "time": {
     "day": "{0}日",
@@ -1310,7 +1331,8 @@
     "mute_block_forever": "永久",
     "expire_in": "期限付き:",
     "expire_mute_message": "本当に{0}をミュートしますか？",
-    "mute_or": "または"
+    "mute_or": "または",
+    "mute_block_never": "永久"
   },
   "user_profile": {
     "timeline_title": "ユーザータイムライン",
@@ -1478,7 +1500,21 @@
       "registrations": "ユーザー登録",
       "access": "インスタンスへのアクセス",
       "captcha_header": "CAPTCHA",
-      "kocaptcha": "KoCaptchaの設定"
+      "kocaptcha": "KoCaptchaの設定",
+      "pwa": {
+        "manifest": "ウェブアプリマニフェスト",
+        "optional": "(任意)",
+        "no_icons": "アイコン未設定",
+        "icon": {
+          "purpose": "アイコンの用途 (purpose)",
+          "any": "any",
+          "maskable": "マスク可能 (maskable)",
+          "monochrome": "単色 (monochrome)"
+        }
+      },
+      "misc_brand": "その他の要素",
+      "branding": "ブランディング",
+      "rich_metadata": "メタデータ"
     },
     "frontend": {
       "available_frontends": "インストール可能なフロントエンド",
@@ -1497,7 +1533,8 @@
       "wip_notice": "このセクションは開発段階です。バックエンド側の実装が未完成であるため、一部の機能は欠けています。",
       "set_default": "デフォルトに設定",
       "set_default_version": "バージョン {version} をデフォルトに設定",
-      "default_frontend_tip": "デフォルトのフロントエンドはすべてのユーザーに表示されます。現時点で、ユーザーがフロントエンドを選択する方法はありません。デフォルトのフロントエンドをPleromaFE以外に設定した場合、インスタンスの設定を変更するには古いAdminFEを使用する必要があります。"
+      "default_frontend_tip": "デフォルトのフロントエンドはすべてのユーザーに表示されます。現時点で、ユーザーがフロントエンドを選択する方法はありません。デフォルトのフロントエンドをPleromaFE以外に設定した場合、インスタンスの設定を変更するには古いAdminFEを使用する必要があります。",
+      "title": "フロントエンドの管理"
     },
     "temp_overrides": {
       ":pleroma": {
@@ -1518,6 +1555,33 @@
             "description": "ファイルの説明欄に対する文字数制限",
             "label": "制限"
           }
+        },
+        ":connections_pool": {
+          ":max_idle_time": {
+            "label": "最大待機時間"
+          },
+          ":retry": {
+            "label": "リトライ回数"
+          }
+        },
+        ":pools": {
+          ":rich_media": {
+            "label": "リッチメディア"
+          }
+        },
+        ":rate_limit": {
+          ":oauth_app_creation": {
+            "label": "OAuth Appの作成"
+          },
+          ":ap_routes": {
+            "label": "ActivityPub"
+          }
+        },
+        "Pleroma_DOT_Upload": {
+          ":default_description": {
+            "label": "デフォルトの説明文",
+            "description": "ファイルに付与するデフォルトの説明文。「:filename」にするとファイル名を用います。"
+          }
         }
       }
     },
@@ -1529,7 +1593,20 @@
       "limits": "制限",
       "instance": "インスタンス",
       "frontends": "フロントエンド",
-      "emoji": "絵文字"
+      "emoji": "絵文字",
+      "mailer": "メール",
+      "media_proxy": "メディアプロキシ",
+      "uploads": "アップロード",
+      "monitoring": "監視",
+      "registrations": "登録",
+      "links": "リンク",
+      "job_queues": "ジョブキュー",
+      "auth": "認証・認可",
+      "posts": "投稿",
+      "rate_limit": "レートリミット",
+      "http": "HTTP",
+      "federation": "連合",
+      "other": "その他"
     },
     "limits": {
       "arbitrary_limits": "任意の制限",
@@ -1537,7 +1614,8 @@
       "uploads": "ファイルの制限",
       "profile_fields": "追加情報欄の制限",
       "user_uploads": "プロフィール画像の制限",
-      "users": "ユーザープロフィールの設定"
+      "users": "ユーザープロフィールの設定",
+      "other": "その他の制限"
     },
     "emoji": {
       "create_pack": "パックを作成",
@@ -1554,9 +1632,9 @@
       "filename": "ファイル名",
       "delete_confirm": "{0}を削除してもよろしいですか？",
       "download_pack": "パックをダウンロード",
-      "downloading_pack": "{0}をダウンロード中",
+      "downloading_pack": "{0}をダウンロード",
       "download": "ダウンロード",
-      "editing": "{0}を編集中",
+      "editing": "{0}を編集",
       "error": "エラー: {0}",
       "delete": "削除",
       "global_actions": "グローバルアクション",
@@ -1583,7 +1661,111 @@
       "download_as_name_full": "名前を入力 (空にするとリモートの名前を使用)",
       "replace_warning": "続行するとローカルにある同名のパックが上書きされます",
       "emoji_source": "絵文字にするファイル",
-      "upload_url": "URLでアップロード"
+      "upload_url": "URLでアップロード",
+      "reload_short": "再読み込み",
+      "advanced": "高度",
+      "import_pack": "絵文字パックをアップロード",
+      "import_pack_short": "インポート",
+      "metadata": "メタデータ",
+      "remote_packs_short": "リモートから取得",
+      "copying": "{0}をコピー",
+      "copy_to": "コピー先:",
+      "copy_to_pack": "ローカルのパックにコピー",
+      "copied_successfully": "絵文字「{0}」がパック「{1}」に正常にコピーされました"
+    },
+    "posts": {
+      "local": "ローカルの投稿",
+      "remote": "リモートの投稿"
+    },
+    "other": {
+      "uncategorized": "カテゴリなし",
+      "user_backup": "ユーザーバックアップ",
+      "reports": "通報",
+      "privileges": "権限"
+    },
+    "federation": {
+      "restrictions": "制限",
+      "activitypub": "ActivityPub"
+    },
+    "http": {
+      "outbound": "外向き通信",
+      "incoming": "内向き通信",
+      "security": "HTTPセキュリティ",
+      "web_push": "Web Push",
+      "web_push_description": "Web PushのVAPIDの設定です。mix task web_push.gen.keypairで生成できます。"
+    },
+    "auth": {
+      "MFA": "多要素認証",
+      "LDAP": "LDAPの設定",
+      "OAuth": "OAuth2の設定",
+      "TOTP": "ワンタイムパスワード (TOTP)",
+      "backup_codes": "バックアップコード"
+    },
+    "job_queues": {
+      "Gun": {
+        "title": "Gunキュー",
+        "connections_pools": "Gunコネクションプール",
+        "pools": {
+          "title": "Gunワーカープール",
+          "default": "デフォルトプール",
+          "federation": "連合プール",
+          "media": "メディアプール",
+          "rich_media": "リッチメディアプール",
+          "upload": "アップロードプール"
+        }
+      },
+      "Hackney": {
+        "title": "Hackneyプール",
+        "federation": "連合",
+        "media": "メディア",
+        "rich_media": "リッチメディア",
+        "upload": "アップロード"
+      },
+      "queues": "キュー"
+    },
+    "rate_limit": {
+      "rate_limit": "レートリミット",
+      "amount": "回数",
+      "unauthenticated": "未ログイン",
+      "authenticated": "ログイン済",
+      "period": "期間",
+      "separate": "ログイン状態によってレートリミットを個別設定する"
+    },
+    "registrations": {
+      "welcome": {
+        "title": "ウェルカムメッセージ",
+        "description": "新規ユーザーに対してメッセージを送信します",
+        "direct_message": "ダイレクトメッセージ",
+        "chat_message": "チャット",
+        "email_message": "メール"
+      },
+      "restrictions": "制限",
+      "autofollow": "自動フォロー"
+    },
+    "links": {
+      "link_previews": "リンクプレビュー",
+      "link_formatter": "リンクフォーマッタ"
+    },
+    "uploads": {
+      "attachments": "ファイル設定",
+      "upload": "アップロード",
+      "local_uploader": "ローカル",
+      "filenames": "ファイル名と説明欄",
+      "uploader_settings": "アップローダ設定"
+    },
+    "media_proxy": {
+      "basic": "基本設定",
+      "invalidation": "キャッシュ破棄",
+      "limits": "制限",
+      "thumbnails": "サムネイル生成",
+      "invalidation_settings": "キャッシュ破棄"
+    },
+    "mailer": {
+      "styling": "スタイル",
+      "assets": "アセット",
+      "colors": "カラーパレット",
+      "adapter": "メールアダプタ",
+      "auth": "認証"
     }
   },
   "lists": {
@@ -1658,7 +1840,8 @@
     "error": "問題が発生しました",
     "fun_3": "( ˘ω˘)ｽﾔｧ…",
     "almost": "少女祈祷中…",
-    "fun_4": "俺のPleromaが火を吹くぜ！"
+    "fun_4": "俺のPleromaが火を吹くぜ！",
+    "fun_1": "お水のんで"
   },
   "bookmark_folders": {
     "emoji": "絵文字",
