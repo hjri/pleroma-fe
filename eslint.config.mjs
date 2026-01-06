@@ -1,13 +1,11 @@
 import js from '@eslint/js'
-import { defineConfig, globalIgnores } from "eslint/config";
+import { defineConfig, globalIgnores } from 'eslint/config'
 import vue from 'eslint-plugin-vue'
 import globals from 'globals'
 
 export default defineConfig([
   ...vue.configs['flat/recommended'],
-  globalIgnores([
-    '**/*.js', 'build/', 'dist/', 'config/',
-  ]),
+  globalIgnores(['**/*.js', 'build/', 'dist/', 'config/']),
   {
     files: ['src/**/*.vue'],
     plugins: { js },
@@ -32,5 +30,5 @@ export default defineConfig([
       'vue/require-prop-types': 0,
       'vue/multi-word-component-names': 0,
     },
-  }
+  },
 ])
