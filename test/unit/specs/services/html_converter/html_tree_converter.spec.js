@@ -6,43 +6,19 @@ describe('html_tree_converter', () => {
       const input = '1 <p>2</p> <b>3<img src="a">4</b>5'
       expect(convertHtmlToTree(input)).to.eql([
         '1 ',
-        [
-          '<p>',
-          ['2'],
-          '</p>'
-        ],
+        ['<p>', ['2'], '</p>'],
         ' ',
-        [
-          '<b>',
-          [
-            '3',
-            ['<img src="a">'],
-            '4'
-          ],
-          '</b>'
-        ],
-        '5'
+        ['<b>', ['3', ['<img src="a">'], '4'], '</b>'],
+        '5',
       ])
     })
     it('converts html to tree while preserving tag formatting', () => {
       const input = '1 <p >2</p><b >3<img   src="a">4</b>5'
       expect(convertHtmlToTree(input)).to.eql([
         '1 ',
-        [
-          '<p >',
-          ['2'],
-          '</p>'
-        ],
-        [
-          '<b >',
-          [
-            '3',
-            ['<img   src="a">'],
-            '4'
-          ],
-          '</b>'
-        ],
-        '5'
+        ['<p >', ['2'], '</p>'],
+        ['<b >', ['3', ['<img   src="a">'], '4'], '</b>'],
+        '5',
       ])
     })
     it('converts semi-broken html', () => {
@@ -51,14 +27,12 @@ describe('html_tree_converter', () => {
         '1 ',
         ['<br>'],
         ' 2 ',
-        [
-          '<p>',
-          [' 42']
-        ]
+        ['<p>', [' 42']],
       ])
     })
     it('realistic case 1', () => {
-      const input = '<p><span class="h-card"><a class="u-url mention" data-user="9wRC6T2ZZiKWJ0vUi8" href="https://cawfee.club/users/benis" rel="ugc">@<span>benis</span></a></span> <span class="h-card"><a class="u-url mention" data-user="194" href="https://shigusegubu.club/users/hj" rel="ugc">@<span>hj</span></a></span> nice</p>'
+      const input =
+        '<p><span class="h-card"><a class="u-url mention" data-user="9wRC6T2ZZiKWJ0vUi8" href="https://cawfee.club/users/benis" rel="ugc">@<span>benis</span></a></span> <span class="h-card"><a class="u-url mention" data-user="194" href="https://shigusegubu.club/users/hj" rel="ugc">@<span>hj</span></a></span> nice</p>'
       expect(convertHtmlToTree(input)).to.eql([
         [
           '<p>',
@@ -68,20 +42,11 @@ describe('html_tree_converter', () => {
               [
                 [
                   '<a class="u-url mention" data-user="9wRC6T2ZZiKWJ0vUi8" href="https://cawfee.club/users/benis" rel="ugc">',
-                  [
-                    '@',
-                    [
-                      '<span>',
-                      [
-                        'benis'
-                      ],
-                      '</span>'
-                    ]
-                  ],
-                  '</a>'
-                ]
+                  ['@', ['<span>', ['benis'], '</span>']],
+                  '</a>',
+                ],
               ],
-              '</span>'
+              '</span>',
             ],
             ' ',
             [
@@ -89,43 +54,29 @@ describe('html_tree_converter', () => {
               [
                 [
                   '<a class="u-url mention" data-user="194" href="https://shigusegubu.club/users/hj" rel="ugc">',
-                  [
-                    '@',
-                    [
-                      '<span>',
-                      [
-                        'hj'
-                      ],
-                      '</span>'
-                    ]
-                  ],
-                  '</a>'
-                ]
+                  ['@', ['<span>', ['hj'], '</span>']],
+                  '</a>',
+                ],
               ],
-              '</span>'
+              '</span>',
             ],
-            ' nice'
+            ' nice',
           ],
-          '</p>'
-        ]
+          '</p>',
+        ],
       ])
     })
     it('realistic case 2', () => {
-      const inputOutput = 'Country improv: give me a city<br/>Audience: Memphis<br/>Improv troupe: come on, a better one<br/>Audience: el paso'
+      const inputOutput =
+        'Country improv: give me a city<br/>Audience: Memphis<br/>Improv troupe: come on, a better one<br/>Audience: el paso'
       expect(convertHtmlToTree(inputOutput)).to.eql([
         'Country improv: give me a city',
-        [
-          '<br/>'
-        ],
+        ['<br/>'],
         'Audience: Memphis',
-        [
-          '<br/>'
-        ],
+        ['<br/>'],
         'Improv troupe: come on, a better one',
-        [
-          '<br/>'
-        ],
-        'Audience: el paso'
+        ['<br/>'],
+        'Audience: el paso',
       ])
     })
   })

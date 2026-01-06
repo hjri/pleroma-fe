@@ -1,29 +1,25 @@
 import 'cropperjs' // This adds all of the cropperjs's components into DOM
 import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faCircleNotch
-} from '@fortawesome/free-solid-svg-icons'
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faCircleNotch
-)
+library.add(faCircleNotch)
 
 const ImageCropper = {
   props: {
     // Mime-types to accept, i.e. which filetypes to accept (.gif, .png, etc.)
     mimes: {
       type: String,
-      default: 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon'
+      default: 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon',
     },
     // Fixed aspect-ratio for selection box
     aspectRatio: {
-      type: Number
-    }
+      type: Number,
+    },
   },
-  data () {
+  data() {
     return {
       dataUrl: undefined,
-      filename: undefined
+      filename: undefined,
     }
   },
   emits: [
@@ -31,12 +27,12 @@ const ImageCropper = {
     'close', // cropper is closed
   ],
   methods: {
-    destroy () {
+    destroy() {
       this.$refs.input.value = ''
       this.dataUrl = undefined
       this.$emit('close')
     },
-    submit (cropping = true) {
+    submit(cropping = true) {
       let cropperPromise
       if (cropping) {
         cropperPromise = this.$refs.cropperSelection.$toCanvas()
@@ -44,14 +40,14 @@ const ImageCropper = {
         cropperPromise = Promise.resolve()
       }
 
-      cropperPromise.then(canvas => {
+      cropperPromise.then((canvas) => {
         this.$emit('submit', { canvas, file: this.file })
       })
     },
-    pickImage () {
+    pickImage() {
       this.$refs.input.click()
     },
-    readFile () {
+    readFile() {
       const fileInput = this.$refs.input
       if (fileInput.files != null && fileInput.files[0] != null) {
         this.file = fileInput.files[0]
@@ -66,10 +62,10 @@ const ImageCropper = {
     },
     inSelection(selection, maxSelection) {
       return (
-        selection.x >= maxSelection.x
-        && selection.y >= maxSelection.y
-        && (selection.x + selection.width) <= (maxSelection.x + maxSelection.width)
-        && (selection.y + selection.height) <= (maxSelection.y + maxSelection.height)
+        selection.x >= maxSelection.x &&
+        selection.y >= maxSelection.y &&
+        selection.x + selection.width <= maxSelection.x + maxSelection.width &&
+        selection.y + selection.height <= maxSelection.y + maxSelection.height
       )
     },
     onCropperSelectionChange(event) {
@@ -84,11 +80,11 @@ const ImageCropper = {
       }
 
       if (!this.inSelection(selection, maxSelection)) {
-        event.preventDefault();
+        event.preventDefault()
       }
-    }
+    },
   },
-  mounted () {
+  mounted() {
     // listen for input file changes
     const fileInput = this.$refs.input
     fileInput.addEventListener('change', this.readFile)
@@ -96,7 +92,7 @@ const ImageCropper = {
   beforeUnmount: function () {
     const fileInput = this.$refs.input
     fileInput.removeEventListener('change', this.readFile)
-  }
+  },
 }
 
 export default ImageCropper

@@ -5,26 +5,24 @@ import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_i
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faCircleNotch
-)
+library.add(faCircleNotch)
 
 const UserListPopover = {
   name: 'UserListPopover',
-  props: [
-    'users'
-  ],
+  props: ['users'],
   components: {
     RichContent,
     UnicodeDomainIndicator,
     Popover: defineAsyncComponent(() => import('../popover/popover.vue')),
-    UserAvatar: defineAsyncComponent(() => import('../user_avatar/user_avatar.vue'))
+    UserAvatar: defineAsyncComponent(
+      () => import('../user_avatar/user_avatar.vue'),
+    ),
   },
   computed: {
-    usersCapped () {
+    usersCapped() {
       return this.users.slice(0, 16)
-    }
-  }
+    },
+  },
 }
 
 export default UserListPopover

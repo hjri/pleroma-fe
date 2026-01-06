@@ -1,4 +1,9 @@
-import { replaceWord, addPositionToWords, wordAtPosition, splitByWhitespaceBoundary } from '../../../../../src/services/completion/completion.js'
+import {
+  replaceWord,
+  addPositionToWords,
+  wordAtPosition,
+  splitByWhitespaceBoundary,
+} from '../../../../../src/services/completion/completion.js'
 
 describe('addPositiontoWords', () => {
   it('adds the position to a word list', () => {
@@ -8,38 +13,38 @@ describe('addPositiontoWords', () => {
       {
         word: 'hey',
         start: 0,
-        end: 3
+        end: 3,
       },
       {
         word: ' ',
         start: 3,
-        end: 4
+        end: 4,
       },
       {
         word: 'this',
         start: 4,
-        end: 8
+        end: 8,
       },
       {
         word: ' ',
         start: 8,
-        end: 9
+        end: 9,
       },
       {
         word: 'is',
         start: 9,
-        end: 11
+        end: 11,
       },
       {
         word: ' ',
         start: 11,
-        end: 12
+        end: 12,
       },
       {
         word: 'fun',
         start: 12,
-        end: 15
-      }
+        end: 15,
+      },
     ]
 
     const res = addPositionToWords(words)
@@ -51,7 +56,23 @@ describe('addPositiontoWords', () => {
 describe('splitByWhitespaceBoundary', () => {
   it('splits at whitespace boundaries', () => {
     const str = 'This is a #nice @test for you,    @idiot@idiot.com'
-    const expected = ['This', ' ', 'is', ' ', 'a', ' ', '#nice', ' ', '@test', ' ', 'for', ' ', 'you,', '    ', '@idiot@idiot.com']
+    const expected = [
+      'This',
+      ' ',
+      'is',
+      ' ',
+      'a',
+      ' ',
+      '#nice',
+      ' ',
+      '@test',
+      ' ',
+      'for',
+      ' ',
+      'you,',
+      '    ',
+      '@idiot@idiot.com',
+    ]
     const res = splitByWhitespaceBoundary(str)
 
     expect(res).to.eql(expected)

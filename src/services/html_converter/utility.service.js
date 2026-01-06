@@ -22,7 +22,9 @@ export const getAttrs = (tag, filter) => {
     .replace(new RegExp('^' + getTagName(tag)), '')
     .replace(/\/?$/, '')
     .trim()
-  const attrs = Array.from(innertag.matchAll(/([a-z]+[a-z0-9-]*)(?:=("[^"]+?"|'[^']+?'))?/gi))
+  const attrs = Array.from(
+    innertag.matchAll(/([a-z]+[a-z0-9-]*)(?:=("[^"]+?"|'[^']+?'))?/gi),
+  )
     .map(([, key, value]) => [key, value])
     .map(([k, v]) => {
       if (!v) return [k, true]
@@ -59,7 +61,10 @@ export const processTextForEmoji = (text, emojis, processor) => {
       const next = text.slice(i + 1)
       let found = false
       for (const emoji of emojis) {
-        if (next.slice(0, emoji.shortcode.length + 1) === (emoji.shortcode + ':')) {
+        if (
+          next.slice(0, emoji.shortcode.length + 1) ===
+          emoji.shortcode + ':'
+        ) {
           found = emoji
           break
         }

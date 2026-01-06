@@ -3,43 +3,43 @@ import Setting from './setting.js'
 
 export default {
   ...Setting,
-  data () {
+  data() {
     return {
       newValue: '',
     }
   },
   components: {
     ...Setting.components,
-    Checkbox
+    Checkbox,
   },
   props: {
     ...Setting.props,
     ignoreSuggestions: {
       required: false,
-      type: Boolean
+      type: Boolean,
     },
     overrideAvailableOptions: {
       required: false,
-      type: Boolean
+      type: Boolean,
     },
     options: {
       required: false,
-      type: Set
+      type: Set,
     },
     allowNew: {
       required: false,
       type: Boolean,
-      default: true
+      default: true,
     },
     forceNew: {
       required: false,
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
     ...Setting.computed,
-    showNew () {
+    showNew() {
       if (this.forceNew) return true
       if (!this.allowNew) return false
 
@@ -52,10 +52,10 @@ export default {
         return true
       }
     },
-    valueSet () {
+    valueSet() {
       return new Set(this.visibleState)
     },
-    suggestionsSet () {
+    suggestionsSet() {
       const suggestions = this.backendDescriptionSuggestions
       if (suggestions) {
         return new Set(suggestions)
@@ -63,14 +63,14 @@ export default {
         return new Set()
       }
     },
-    extraEntries () {
+    extraEntries() {
       if (this.ignoreSuggestions) return [...this.valueSet.values()]
       if (!this.suggestionsSet) return []
       return [...this.valueSet.values()].filter((x) => {
         return !this.builtinEntriesValueSet.has(x)
       })
     },
-    builtinEntries () {
+    builtinEntries() {
       if (this.ignoreSuggestions) return []
       if (this.overrideAvailableOptions) {
         return [...this.options]
@@ -80,19 +80,19 @@ export default {
       const builtins = [...this.suggestionsSet.values()]
       return builtins.map((option) => ({
         label: option,
-        value: option
+        value: option,
       }))
     },
-    builtinEntriesValueSet () {
-      return new Set(this.builtinEntries.map(x => x.value))
-    }
+    builtinEntriesValueSet() {
+      return new Set(this.builtinEntries.map((x) => x.value))
+    },
   },
   methods: {
     ...Setting.methods,
-    optionPresent (option) {
+    optionPresent(option) {
       return this.valueSet.has(option)
     },
-    getValue ({ event, value, index, eventType }) {
+    getValue({ event, value, index, eventType }) {
       switch (eventType) {
         case 'toggle': {
           this.newValue = ''
@@ -128,6 +128,6 @@ export default {
           return [...pre, string, ...post]
         }
       }
-    }
-  }
+    },
+  },
 }

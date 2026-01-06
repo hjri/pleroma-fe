@@ -5,30 +5,27 @@ import fileSizeFormatService from '../../services/file_size_format/file_size_for
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faUpload, faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faUpload,
-  faCircleNotch
-)
+library.add(faUpload, faCircleNotch)
 
 const mediaUpload = {
-  data () {
+  data() {
     return {
       uploadCount: 0,
-      uploadReady: true
+      uploadReady: true,
     }
   },
   computed: {
-    uploading () {
+    uploading() {
       return this.uploadCount > 0
-    }
+    },
   },
   methods: {
-    onClick () {
+    onClick() {
       if (this.uploadReady) {
         this.$refs.input.click()
       }
     },
-    async resizeImage (file) {
+    async resizeImage(file) {
       // Skip if not an image or if it's a GIF
       if (!file.type.startsWith('image/') || file.type === 'image/gif') {
         return file
@@ -74,46 +71,67 @@ const mediaUpload = {
 
           // Check WebP support by trying to create a WebP canvas
           const testCanvas = document.createElement('canvas')
-          const supportsWebP = testCanvas.toDataURL('image/webp').startsWith('data:image/webp')
+          const supportsWebP = testCanvas
+            .toDataURL('image/webp')
+            .startsWith('data:image/webp')
 
           // Convert to WebP if supported and alwaysUseJpeg is false, otherwise JPEG
-          const type = (!this.$store.getters.mergedConfig.alwaysUseJpeg && supportsWebP) ? 'image/webp' : 'image/jpeg'
+          const type =
+            !this.$store.getters.mergedConfig.alwaysUseJpeg && supportsWebP
+              ? 'image/webp'
+              : 'image/jpeg'
           const extension = type === 'image/webp' ? '.webp' : '.jpg'
 
           // Remove the original extension and add new one
           const newFileName = file.name.replace(/\.[^/.]+$/, '') + extension
 
-          canvas.toBlob((blob) => {
-            resolve(new File([blob], newFileName, {
-              type,
-              lastModified: Date.now()
-            }))
-          }, type, 0.85)
+          canvas.toBlob(
+            (blob) => {
+              resolve(
+                new File([blob], newFileName, {
+                  type,
+                  lastModified: Date.now(),
+                }),
+              )
+            },
+            type,
+            0.85,
+          )
         }
         img.src = URL.createObjectURL(file)
       })
     },
-    async isAnimatedPng (file) {
+    async isAnimatedPng(file) {
       const buffer = await file.arrayBuffer()
       const view = new Uint8Array(buffer)
       // Look for animated PNG chunks (acTL)
       for (let i = 0; i < view.length - 8; i++) {
-        if (view[i] === 0x61 && // a
-            view[i + 1] === 0x63 && // c
-            view[i + 2] === 0x54 && // T
-            view[i + 3] === 0x4C) { // L
+        if (
+          view[i] === 0x61 && // a
+          view[i + 1] === 0x63 && // c
+          view[i + 2] === 0x54 && // T
+          view[i + 3] === 0x4c
+        ) {
+          // L
           return true
         }
       }
       return false
     },
-    async uploadFile (file) {
+    async uploadFile(file) {
       const self = this
       const store = this.$store
       if (file.size > store.state.instance.uploadlimit) {
         const filesize = fileSizeFormatService.fileSizeFormat(file.size)
-        const allowedsize = fileSizeFormatService.fileSizeFormat(store.state.instance.uploadlimit)
-        self.$emit('upload-failed', 'file_too_big', { filesize: filesize.num, filesizeunit: filesize.unit, allowedsize: allowedsize.num, allowedsizeunit: allowedsize.unit })
+        const allowedsize = fileSizeFormatService.fileSizeFormat(
+          store.state.instance.uploadlimit,
+        )
+        self.$emit('upload-failed', 'file_too_big', {
+          filesize: filesize.num,
+          filesizeunit: filesize.unit,
+          allowedsize: allowedsize.num,
+          allowedsizeunit: allowedsize.unit,
+        })
         return
       }
 
@@ -125,36 +143,38 @@ const mediaUpload = {
       self.$emit('uploading')
       self.uploadCount++
 
-      statusPosterService.uploadMedia({ store, formData })
-        .then((fileData) => {
+      statusPosterService.uploadMedia({ store, formData }).then(
+        (fileData) => {
           self.$emit('uploaded', fileData)
           self.decreaseUploadCount()
-        }, (error) => {
+        },
+        (error) => {
           console.error('Error uploading file', error)
           self.$emit('upload-failed', 'default')
           self.decreaseUploadCount()
-        })
+        },
+      )
     },
-    decreaseUploadCount () {
+    decreaseUploadCount() {
       this.uploadCount--
       if (this.uploadCount === 0) {
         this.$emit('all-uploaded')
       }
     },
-    clearFile () {
+    clearFile() {
       this.uploadReady = false
       this.$nextTick(() => {
         this.uploadReady = true
       })
     },
-    multiUpload (files) {
+    multiUpload(files) {
       for (const file of files) {
         this.uploadFile(file)
       }
     },
-    change ({ target }) {
+    change({ target }) {
       this.multiUpload(target.files)
-    }
+    },
   },
   props: {
     dropFiles: Object,
@@ -162,16 +182,16 @@ const mediaUpload = {
     normalButton: Boolean,
     acceptTypes: {
       type: String,
-      default: '*/*'
-    }
+      default: '*/*',
+    },
   },
   watch: {
     dropFiles: function (fileInfos) {
       if (!this.uploading) {
         this.multiUpload(fileInfos)
       }
-    }
-  }
+    },
+  },
 }
 
 export default mediaUpload

@@ -2,17 +2,9 @@ import UserAvatar from '../user_avatar/user_avatar.vue'
 import UserListPopover from '../user_list_popover/user_list_popover.vue'
 import StillImage from 'src/components/still-image/still-image.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faPlus,
-  faMinus,
-  faCheck
-} from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faMinus, faCheck } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faPlus,
-  faMinus,
-  faCheck
-)
+library.add(faPlus, faMinus, faCheck)
 
 const EMOJI_REACTION_COUNT_CUTOFF = 12
 
@@ -21,57 +13,62 @@ const EmojiReactions = {
   components: {
     UserAvatar,
     UserListPopover,
-    StillImage
+    StillImage,
   },
   props: ['status'],
   data: () => ({
-    showAll: false
+    showAll: false,
   }),
   computed: {
-    tooManyReactions () {
+    tooManyReactions() {
       return this.status.emoji_reactions.length > EMOJI_REACTION_COUNT_CUTOFF
     },
-    emojiReactions () {
+    emojiReactions() {
       return this.showAll
         ? this.status.emoji_reactions
         : this.status.emoji_reactions.slice(0, EMOJI_REACTION_COUNT_CUTOFF)
     },
-    showMoreString () {
+    showMoreString() {
       return `+${this.status.emoji_reactions.length - EMOJI_REACTION_COUNT_CUTOFF}`
     },
-    accountsForEmoji () {
+    accountsForEmoji() {
       return this.status.emoji_reactions.reduce((acc, reaction) => {
         acc[reaction.name] = reaction.accounts || []
         return acc
       }, {})
     },
-    loggedIn () {
+    loggedIn() {
       return !!this.$store.state.users.currentUser
     },
-    remoteInteractionLink () {
-      return this.$store.getters.remoteInteractionLink({ statusId: this.status.id })
-    }
+    remoteInteractionLink() {
+      return this.$store.getters.remoteInteractionLink({
+        statusId: this.status.id,
+      })
+    },
   },
   methods: {
-    toggleShowAll () {
+    toggleShowAll() {
       this.showAll = !this.showAll
     },
-    reactedWith (emoji) {
-      return this.status.emoji_reactions.find(r => r.name === emoji).me
+    reactedWith(emoji) {
+      return this.status.emoji_reactions.find((r) => r.name === emoji).me
     },
-    async fetchEmojiReactionsByIfMissing () {
-      const hasNoAccounts = this.status.emoji_reactions.find(r => !r.accounts)
+    async fetchEmojiReactionsByIfMissing() {
+      const hasNoAccounts = this.status.emoji_reactions.find((r) => !r.accounts)
       if (hasNoAccounts) {
-        return await this.$store.dispatch('fetchEmojiReactionsBy', this.status.id)
+        return await this.$store.dispatch(
+          'fetchEmojiReactionsBy',
+          this.status.id,
+        )
       }
     },
-    reactWith (emoji) {
+    reactWith(emoji) {
       this.$store.dispatch('reactWithEmoji', { id: this.status.id, emoji })
     },
-    unreact (emoji) {
+    unreact(emoji) {
       this.$store.dispatch('unreactWithEmoji', { id: this.status.id, emoji })
     },
-    async emojiOnClick (emoji) {
+    async emojiOnClick(emoji) {
       if (!this.loggedIn) return
 
       await this.fetchEmojiReactionsByIfMissing()
@@ -81,19 +78,23 @@ const EmojiReactions = {
         this.reactWith(emoji)
       }
     },
-    counterTriggerAttrs (reaction) {
+    counterTriggerAttrs(reaction) {
       return {
         class: [
           'emoji-reaction-count-button',
           {
             '-picked-reaction': this.reactedWith(reaction.name),
-            toggled: this.reactedWith(reaction.name)
-          }
+            toggled: this.reactedWith(reaction.name),
+          },
         ],
-        'aria-label': this.$t('status.reaction_count_label', { num: reaction.count }, reaction.count)
+        'aria-label': this.$t(
+          'status.reaction_count_label',
+          { num: reaction.count },
+          reaction.count,
+        ),
       }
-    }
-  }
+    },
+  },
 }
 
 export default EmojiReactions

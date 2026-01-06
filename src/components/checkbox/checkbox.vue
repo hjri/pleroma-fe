@@ -36,30 +36,25 @@
 
 <script>
 export default {
-  props: [
-    'radio',
-    'modelValue',
-    'indeterminate',
-    'disabled'
-  ],
+  props: ['radio', 'modelValue', 'indeterminate', 'disabled'],
   emits: ['update:modelValue'],
   data: (vm) => ({
-    indeterminateTransitionFix: vm.indeterminate
+    indeterminateTransitionFix: vm.indeterminate,
   }),
   watch: {
-    indeterminate (e) {
+    indeterminate(e) {
       if (e) {
         this.indeterminateTransitionFix = true
       }
-    }
+    },
   },
   methods: {
-    onTransitionEnd () {
+    onTransitionEnd() {
       if (!this.indeterminate) {
         this.indeterminateTransitionFix = false
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

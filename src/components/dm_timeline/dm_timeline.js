@@ -2,13 +2,13 @@ import Timeline from '../timeline/timeline.vue'
 
 const DMs = {
   computed: {
-    timeline () {
+    timeline() {
       return this.$store.state.statuses.timelines.dms
-    }
+    },
   },
   components: {
-    Timeline
-  }
+    Timeline,
+  },
 }
 
 export default DMs

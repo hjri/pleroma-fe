@@ -7,91 +7,86 @@ export default {
     toggled: '.toggled',
     disabled: ':disabled',
     hover: ':is(:hover, :focus-visible):not(:disabled)',
-    focused: ':focus-within:not(:is(:focus-visible))'
+    focused: ':focus-within:not(:is(:focus-visible))',
   },
-  validInnerComponents: [
-    'Text',
-    'Link',
-    'Icon',
-    'Badge'
-  ],
+  validInnerComponents: ['Text', 'Link', 'Icon', 'Badge'],
   defaultRules: [
     {
       directives: {
-        shadow: []
-      }
+        shadow: [],
+      },
     },
     {
       component: 'Icon',
       parent: {
         component: 'ButtonUnstyled',
-        state: ['hover']
+        state: ['hover'],
       },
       directives: {
-        textColor: '--parent--text'
-      }
+        textColor: '--parent--text',
+      },
     },
     {
       component: 'Icon',
       parent: {
         component: 'ButtonUnstyled',
-        state: ['toggled']
+        state: ['toggled'],
       },
       directives: {
-        textColor: '--parent--text'
-      }
+        textColor: '--parent--text',
+      },
     },
     {
       component: 'Icon',
       parent: {
         component: 'ButtonUnstyled',
-        state: ['toggled', 'hover']
+        state: ['toggled', 'hover'],
       },
       directives: {
-        textColor: '--parent--text'
-      }
+        textColor: '--parent--text',
+      },
     },
     {
       component: 'Icon',
       parent: {
         component: 'ButtonUnstyled',
-        state: ['toggled', 'focused']
+        state: ['toggled', 'focused'],
       },
       directives: {
-        textColor: '--parent--text'
-      }
+        textColor: '--parent--text',
+      },
     },
     {
       component: 'Icon',
       parent: {
         component: 'ButtonUnstyled',
-        state: ['toggled', 'focused', 'hover']
+        state: ['toggled', 'focused', 'hover'],
       },
       directives: {
-        textColor: '--parent--text'
-      }
+        textColor: '--parent--text',
+      },
     },
     {
       component: 'Text',
       parent: {
         component: 'ButtonUnstyled',
-        state: ['disabled']
+        state: ['disabled'],
       },
       directives: {
         textOpacity: 0.25,
-        textOpacityMode: 'blend'
-      }
+        textOpacityMode: 'blend',
+      },
     },
     {
       component: 'Icon',
       parent: {
         component: 'ButtonUnstyled',
-        state: ['disabled']
+        state: ['disabled'],
       },
       directives: {
         textOpacity: 0.25,
-        textOpacityMode: 'blend'
-      }
-    }
-  ]
+        textOpacityMode: 'blend',
+      },
+    },
+  ],
 }

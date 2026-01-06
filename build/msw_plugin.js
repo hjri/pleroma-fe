@@ -8,10 +8,10 @@ const mswPlugin = () => {
   return {
     name: 'msw-plugin',
     apply: 'serve',
-    configResolved (conf) {
+    configResolved(conf) {
       projectRoot = conf.root
     },
-    configureServer (server) {
+    configureServer(server) {
       server.middlewares.use(async (req, res, next) => {
         if (req.path === '/mockServiceWorker.js') {
           const file = await readFile(resolve(projectRoot, target))
@@ -21,7 +21,7 @@ const mswPlugin = () => {
           next()
         }
       })
-    }
+    },
   }
 }
 

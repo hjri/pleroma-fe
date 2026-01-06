@@ -16,11 +16,11 @@ export default {
     Select,
     SelectMotion,
     ShadowControl,
-    ColorInput
+    ColorInput,
   },
   props: ['modelValue'],
   emits: ['update:modelValue'],
-  setup (props, context) {
+  setup(props, context) {
     const exports = {}
     const emit = context.emit
 
@@ -32,23 +32,23 @@ export default {
     exports.selectedVirtualDirectiveId = selectedVirtualDirectiveId
 
     const selectedVirtualDirective = computed({
-      get () {
+      get() {
         return props.modelValue[selectedVirtualDirectiveId.value]
       },
-      set (value) {
+      set(value) {
         const newVD = [...props.modelValue]
         newVD[selectedVirtualDirectiveId.value] = value
 
         emit('update:modelValue', newVD)
-      }
+      },
     })
     exports.selectedVirtualDirective = selectedVirtualDirective
 
     exports.selectedVirtualDirectiveValType = computed({
-      get () {
+      get() {
         return props.modelValue[selectedVirtualDirectiveId.value].valType
       },
-      set (value) {
+      set(value) {
         const newValType = value
         let newValue
         switch (value) {
@@ -65,9 +65,9 @@ export default {
         props.modelValue[selectedVirtualDirectiveId.value] = {
           name: newName,
           value: newValue,
-          valType: newValType
+          valType: newValType,
         }
-      }
+      },
     })
 
     const draftVirtualDirectiveValid = ref(true)
@@ -83,7 +83,9 @@ export default {
             if (Array.isArray(directive.value)) {
               draftVirtualDirective.value = normalizeShadows(directive.value)
             } else {
-              const splitShadow = directive.value.split(/,/g).map(x => x.trim())
+              const splitShadow = directive.value
+                .split(/,/g)
+                .map((x) => x.trim())
               draftVirtualDirective.value = normalizeShadows(splitShadow)
             }
             break
@@ -96,7 +98,7 @@ export default {
             break
         }
       },
-      { immediate: true }
+      { immediate: true },
     )
 
     watch(
@@ -106,11 +108,12 @@ export default {
           switch (selectedVirtualDirective.value.valType) {
             case 'shadow': {
               props.modelValue[selectedVirtualDirectiveId.value].value =
-                directive.map(x => serializeShadow(x)).join(', ')
+                directive.map((x) => serializeShadow(x)).join(', ')
               break
             }
             default:
-              props.modelValue[selectedVirtualDirectiveId.value].value = directive
+              props.modelValue[selectedVirtualDirectiveId.value].value =
+                directive
           }
           draftVirtualDirectiveValid.value = true
         } catch (e) {
@@ -118,15 +121,15 @@ export default {
           draftVirtualDirectiveValid.value = false
         }
       },
-      { immediate: true }
+      { immediate: true },
     )
 
     exports.getNewVirtualDirective = () => ({
       name: 'newDirective',
       valType: 'generic',
-      value: 'foobar'
+      value: 'foobar',
     })
 
     return exports
-  }
+  },
 }

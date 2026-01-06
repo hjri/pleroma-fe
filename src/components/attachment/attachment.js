@@ -16,7 +16,7 @@ import {
   faSearchPlus,
   faTrashAlt,
   faPencilAlt,
-  faAlignRight
+  faAlignRight,
 } from '@fortawesome/free-solid-svg-icons'
 import { useMediaViewerStore } from 'src/stores/media_viewer'
 
@@ -31,7 +31,7 @@ library.add(
   faSearchPlus,
   faTrashAlt,
   faPencilAlt,
-  faAlignRight
+  faAlignRight,
 )
 
 const Attachment = {
@@ -46,72 +46,74 @@ const Attachment = {
     'remove',
     'shiftUp',
     'shiftDn',
-    'edit'
+    'edit',
   ],
-  data () {
+  data() {
     return {
       localDescription: this.description || this.attachment.description,
       nsfwImage: this.$store.state.instance.nsfwCensorImage || nsfwImage,
       hideNsfwLocal: this.$store.getters.mergedConfig.hideNsfw,
       preloadImage: this.$store.getters.mergedConfig.preloadImage,
       loading: false,
-      img: fileTypeService.fileType(this.attachment.mimetype) === 'image' && document.createElement('img'),
+      img:
+        fileTypeService.fileType(this.attachment.mimetype) === 'image' &&
+        document.createElement('img'),
       modalOpen: false,
       showHidden: false,
       flashLoaded: false,
-      showDescription: false
+      showDescription: false,
     }
   },
   components: {
     Flash,
     StillImage,
-    VideoAttachment
+    VideoAttachment,
   },
   computed: {
-    classNames () {
+    classNames() {
       return [
         {
           '-loading': this.loading,
           '-nsfw-placeholder': this.hidden,
           '-editable': this.edit !== undefined,
-          '-compact': this.compact
+          '-compact': this.compact,
         },
         '-type-' + this.type,
         this.size && '-size-' + this.size,
-        `-${this.useContainFit ? 'contain' : 'cover'}-fit`
+        `-${this.useContainFit ? 'contain' : 'cover'}-fit`,
       ]
     },
-    usePlaceholder () {
+    usePlaceholder() {
       return this.size === 'hide'
     },
-    useContainFit () {
+    useContainFit() {
       return this.$store.getters.mergedConfig.useContainFit
     },
-    placeholderName () {
+    placeholderName() {
       if (this.attachment.description === '' || !this.attachment.description) {
         return this.type.toUpperCase()
       }
       return this.attachment.description
     },
-    placeholderIconClass () {
+    placeholderIconClass() {
       if (this.type === 'image') return 'image'
       if (this.type === 'video') return 'video'
       if (this.type === 'audio') return 'music'
       return 'file'
     },
-    referrerpolicy () {
+    referrerpolicy() {
       return this.$store.state.instance.mediaProxyAvailable ? '' : 'no-referrer'
     },
-    type () {
+    type() {
       return fileTypeService.fileType(this.attachment.mimetype)
     },
-    hidden () {
+    hidden() {
       return this.nsfw && this.hideNsfwLocal && !this.showHidden
     },
-    isEmpty () {
-      return (this.type === 'html' && !this.attachment.oembed)
+    isEmpty() {
+      return this.type === 'html' && !this.attachment.oembed
     },
-    useModal () {
+    useModal() {
       let modalTypes = []
       switch (this.size) {
         case 'hide':
@@ -126,26 +128,26 @@ const Attachment = {
       }
       return modalTypes.includes(this.type)
     },
-    videoTag () {
+    videoTag() {
       return this.useModal ? 'button' : 'span'
     },
-    ...mapGetters(['mergedConfig'])
+    ...mapGetters(['mergedConfig']),
   },
   watch: {
-    'attachment.description' (newVal) {
+    'attachment.description'(newVal) {
       this.localDescription = newVal
     },
-    localDescription (newVal) {
+    localDescription(newVal) {
       this.onEdit(newVal)
-    }
+    },
   },
   methods: {
-    linkClicked ({ target }) {
+    linkClicked({ target }) {
       if (target.tagName === 'A') {
         window.open(target.href, '_blank')
       }
     },
-    openModal () {
+    openModal() {
       if (this.useModal) {
         this.$emit('setMedia')
         useMediaViewerStore().setCurrentMedia(this.attachment)
@@ -153,34 +155,35 @@ const Attachment = {
         window.open(this.attachment.url)
       }
     },
-    openModalForce () {
+    openModalForce() {
       this.$emit('setMedia')
       useMediaViewerStore().setCurrentMedia(this.attachment)
     },
-    onEdit (event) {
+    onEdit(event) {
       this.edit && this.edit(this.attachment, event)
     },
-    onRemove () {
+    onRemove() {
       this.remove && this.remove(this.attachment)
     },
-    onShiftUp () {
+    onShiftUp() {
       this.shiftUp && this.shiftUp(this.attachment)
     },
-    onShiftDn () {
+    onShiftDn() {
       this.shiftDn && this.shiftDn(this.attachment)
     },
-    stopFlash () {
+    stopFlash() {
       this.$refs.flash.closePlayer()
     },
-    setFlashLoaded (event) {
+    setFlashLoaded(event) {
       this.flashLoaded = event
     },
-    toggleDescription () {
+    toggleDescription() {
       this.showDescription = !this.showDescription
     },
-    toggleHidden (event) {
+    toggleHidden(event) {
       if (
-        (this.mergedConfig.useOneClickNsfw && !this.showHidden) &&
+        this.mergedConfig.useOneClickNsfw &&
+        !this.showHidden &&
         (this.type !== 'video' || this.mergedConfig.playVideosInModal)
       ) {
         this.openModal(event)
@@ -201,12 +204,12 @@ const Attachment = {
         this.showHidden = !this.showHidden
       }
     },
-    onImageLoad (image) {
+    onImageLoad(image) {
       const width = image.naturalWidth
       const height = image.naturalHeight
       this.$emit('naturalSizeLoad', { id: this.attachment.id, width, height })
-    }
-  }
+    },
+  },
 }
 
 export default Attachment

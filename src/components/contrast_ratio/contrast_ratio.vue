@@ -63,54 +63,66 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faAdjust,
   faExclamationTriangle,
-  faThumbsUp
+  faThumbsUp,
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faAdjust,
-  faExclamationTriangle,
-  faThumbsUp
-)
+library.add(faAdjust, faExclamationTriangle, faThumbsUp)
 
 export default {
   components: {
-    Tooltip
+    Tooltip,
   },
   props: {
     large: {
       required: false,
       type: Boolean,
-      default: false
+      default: false,
     },
     // TODO: Make theme switcher compute theme initially so that contrast
     // component won't be called without contrast data
     contrast: {
       required: false,
       type: Object,
-      default: () => ({})
+      default: () => ({}),
     },
     showRatio: {
       required: false,
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
-    hint () {
-      const levelVal = this.contrast.aaa ? 'aaa' : (this.contrast.aa ? 'aa' : 'bad')
+    hint() {
+      const levelVal = this.contrast.aaa
+        ? 'aaa'
+        : this.contrast.aa
+          ? 'aa'
+          : 'bad'
       const level = this.$t(`settings.style.common.contrast.level.${levelVal}`)
       const context = this.$t('settings.style.common.contrast.context.text')
       const ratio = this.contrast.text
-      return this.$t('settings.style.common.contrast.hint', { level, context, ratio })
+      return this.$t('settings.style.common.contrast.hint', {
+        level,
+        context,
+        ratio,
+      })
     },
-    hint_18pt () {
-      const levelVal = this.contrast.laaa ? 'aaa' : (this.contrast.laa ? 'aa' : 'bad')
+    hint_18pt() {
+      const levelVal = this.contrast.laaa
+        ? 'aaa'
+        : this.contrast.laa
+          ? 'aa'
+          : 'bad'
       const level = this.$t(`settings.style.common.contrast.level.${levelVal}`)
       const context = this.$t('settings.style.common.contrast.context.18pt')
       const ratio = this.contrast.text
-      return this.$t('settings.style.common.contrast.hint', { level, context, ratio })
-    }
-  }
+      return this.$t('settings.style.common.contrast.hint', {
+        level,
+        context,
+        ratio,
+      })
+    },
+  },
 }
 </script>
 

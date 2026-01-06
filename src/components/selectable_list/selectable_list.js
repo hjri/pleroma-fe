@@ -4,45 +4,45 @@ import Checkbox from '../checkbox/checkbox.vue'
 const SelectableList = {
   components: {
     List,
-    Checkbox
+    Checkbox,
   },
   props: {
     items: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     getKey: {
       type: Function,
-      default: item => item.id
-    }
+      default: (item) => item.id,
+    },
   },
-  data () {
+  data() {
     return {
-      selected: []
+      selected: [],
     }
   },
   computed: {
-    allKeys () {
+    allKeys() {
       return this.items.map(this.getKey)
     },
-    filteredSelected () {
-      return this.allKeys.filter(key => this.selected.indexOf(key) !== -1)
+    filteredSelected() {
+      return this.allKeys.filter((key) => this.selected.indexOf(key) !== -1)
     },
-    allSelected () {
+    allSelected() {
       return this.filteredSelected.length === this.items.length
     },
-    noneSelected () {
+    noneSelected() {
       return this.filteredSelected.length === 0
     },
-    someSelected () {
+    someSelected() {
       return !this.allSelected && !this.noneSelected
-    }
+    },
   },
   methods: {
-    isSelected (item) {
+    isSelected(item) {
       return this.filteredSelected.indexOf(this.getKey(item)) !== -1
     },
-    toggle (checked, item) {
+    toggle(checked, item) {
       const key = this.getKey(item)
       const oldChecked = this.isSelected(key)
       if (checked !== oldChecked) {
@@ -53,14 +53,14 @@ const SelectableList = {
         }
       }
     },
-    toggleAll (value) {
+    toggleAll(value) {
       if (value) {
         this.selected = this.allKeys.slice(0)
       } else {
         this.selected = []
       }
-    }
-  }
+    },
+  },
 }
 
 export default SelectableList

@@ -4,43 +4,44 @@ import SharedComputedObject from '../helpers/shared_computed_object.js'
 
 import { clearCache, cacheKey, emojiCacheKey } from 'src/services/sw/sw.js'
 
-const pleromaFeCommitUrl = 'https://git.pleroma.social/pleroma/pleroma-fe/commit/'
+const pleromaFeCommitUrl =
+  'https://git.pleroma.social/pleroma/pleroma-fe/commit/'
 
 const VersionTab = {
-  data () {
+  data() {
     const instance = this.$store.state.instance
     return {
       backendVersion: instance.backendVersion,
       backendRepository: instance.backendRepository,
-      frontendVersion: instance.frontendVersion
+      frontendVersion: instance.frontendVersion,
     }
   },
   components: {
-    BooleanSetting
+    BooleanSetting,
   },
   computed: {
-    frontendVersionLink () {
+    frontendVersionLink() {
       return pleromaFeCommitUrl + this.frontendVersion
     },
     ...SharedComputedObject(),
   },
   methods: {
-    clearAssetCache () {
+    clearAssetCache() {
       this.clearCache(cacheKey)
     },
-    clearEmojiCache () {
+    clearEmojiCache() {
       this.clearCache(emojiCacheKey)
     },
-    clearCache (key) {
+    clearCache(key) {
       clearCache(key)
         .then(() => {
           this.$store.dispatch('settingsSaved', { success: true })
         })
-        .catch(error => {
+        .catch((error) => {
           this.$store.dispatch('settingsSaved', { error })
         })
-    }
-  }
+    },
+  },
 }
 
 export default VersionTab

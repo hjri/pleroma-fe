@@ -13,36 +13,43 @@ library.add(faThumbtack)
 const NavigationEntry = {
   props: ['item', 'showPin'],
   components: {
-    OptionalRouterLink
+    OptionalRouterLink,
   },
   methods: {
-    isPinned (value) {
+    isPinned(value) {
       return this.pinnedItems.has(value)
     },
-    togglePin (value) {
+    togglePin(value) {
       if (this.isPinned(value)) {
-        useServerSideStorageStore().removeCollectionPreference({ path: 'collections.pinnedNavItems', value })
+        useServerSideStorageStore().removeCollectionPreference({
+          path: 'collections.pinnedNavItems',
+          value,
+        })
       } else {
-        useServerSideStorageStore().addCollectionPreference({ path: 'collections.pinnedNavItems', value })
+        useServerSideStorageStore().addCollectionPreference({
+          path: 'collections.pinnedNavItems',
+          value,
+        })
       }
       useServerSideStorageStore().pushServerSideStorage()
-    }
+    },
   },
   computed: {
-    routeTo () {
+    routeTo() {
       return routeTo(this.item, this.currentUser)
     },
-    getters () {
+    getters() {
       return this.$store.getters
     },
     ...mapStores(useAnnouncementsStore),
     ...mapState({
-      currentUser: state => state.users.currentUser
+      currentUser: (state) => state.users.currentUser,
     }),
     ...mapPiniaState(useServerSideStorageStore, {
-      pinnedItems: store => new Set(store.prefsStorage.collections.pinnedNavItems)
+      pinnedItems: (store) =>
+        new Set(store.prefsStorage.collections.pinnedNavItems),
     }),
-  }
+  },
 }
 
 export default NavigationEntry

@@ -5,20 +5,20 @@ const HashtagLink = {
   props: {
     url: {
       required: true,
-      type: String
+      type: String,
     },
     content: {
       required: true,
-      type: String
+      type: String,
     },
     tag: {
       required: false,
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   methods: {
-    onClick () {
+    onClick() {
       const tag = this.tag || extractTagFromUrl(this.url)
       if (tag) {
         const link = this.generateTagLink(tag)
@@ -27,10 +27,10 @@ const HashtagLink = {
         window.open(this.url, '_blank')
       }
     },
-    generateTagLink (tag) {
+    generateTagLink(tag) {
       return `/tag/${tag}`
-    }
-  }
+    },
+  },
 }
 
 export default HashtagLink

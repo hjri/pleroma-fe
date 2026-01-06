@@ -6,54 +6,60 @@ import { useAnnouncementsStore } from 'src/stores/announcements'
 const AnnouncementsPage = {
   components: {
     Announcement,
-    AnnouncementEditor
+    AnnouncementEditor,
   },
-  data () {
+  data() {
     return {
       newAnnouncement: {
         content: '',
         startsAt: undefined,
         endsAt: undefined,
-        allDay: false
+        allDay: false,
       },
       posting: false,
-      error: undefined
+      error: undefined,
     }
   },
-  mounted () {
+  mounted() {
     useAnnouncementsStore().fetchAnnouncements()
   },
   computed: {
     ...mapState({
-      currentUser: state => state.users.currentUser
+      currentUser: (state) => state.users.currentUser,
     }),
-    announcements () {
+    announcements() {
       return useAnnouncementsStore().announcements
     },
-    canPostAnnouncement () {
-      return this.currentUser && this.currentUser.privileges.includes('announcements_manage_announcements')
-    }
+    canPostAnnouncement() {
+      return (
+        this.currentUser &&
+        this.currentUser.privileges.includes(
+          'announcements_manage_announcements',
+        )
+      )
+    },
   },
   methods: {
-    postAnnouncement () {
+    postAnnouncement() {
       this.posting = true
-      useAnnouncementsStore().postAnnouncement(this.newAnnouncement)
+      useAnnouncementsStore()
+        .postAnnouncement(this.newAnnouncement)
         .then(() => {
           this.newAnnouncement.content = ''
           this.startsAt = undefined
           this.endsAt = undefined
         })
-        .catch(error => {
+        .catch((error) => {
           this.error = error.error
         })
         .finally(() => {
           this.posting = false
         })
     },
-    clearError () {
+    clearError() {
       this.error = undefined
-    }
-  }
+    },
+  },
 }
 
 export default AnnouncementsPage

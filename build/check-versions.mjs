@@ -7,8 +7,8 @@ var versionRequirements = [
   {
     name: 'node',
     currentVersion: semver.clean(process.version),
-    versionRequirement: packageConfig.engines.node
-  }
+    versionRequirement: packageConfig.engines.node,
+  },
 ]
 
 export default function () {
@@ -16,15 +16,22 @@ export default function () {
   for (let i = 0; i < versionRequirements.length; i++) {
     const mod = versionRequirements[i]
     if (!semver.satisfies(mod.currentVersion, mod.versionRequirement)) {
-      warnings.push(mod.name + ': ' +
-        chalk.red(mod.currentVersion) + ' should be ' +
-        chalk.green(mod.versionRequirement)
+      warnings.push(
+        mod.name +
+          ': ' +
+          chalk.red(mod.currentVersion) +
+          ' should be ' +
+          chalk.green(mod.versionRequirement),
       )
     }
   }
 
   if (warnings.length) {
-    console.warn(chalk.yellow('\nTo use this template, you must update following to modules:\n'))
+    console.warn(
+      chalk.yellow(
+        '\nTo use this template, you must update following to modules:\n',
+      ),
+    )
     for (let i = 0; i < warnings.length; i++) {
       const warning = warnings[i]
       console.warn('  ' + warning)

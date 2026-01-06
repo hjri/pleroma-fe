@@ -5,12 +5,12 @@ export default {
   ...Setting,
   components: {
     ...Setting.components,
-    ColorInput
+    ColorInput,
   },
   methods: {
     ...Setting.methods,
-    getValue (e) {
+    getValue(e) {
       return e
-    }
-  }
+    },
+  },
 }

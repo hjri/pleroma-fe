@@ -2,13 +2,13 @@ import Timeline from '../timeline/timeline.vue'
 
 const Mentions = {
   computed: {
-    timeline () {
+    timeline() {
       return this.$store.state.statuses.timelines.mentions
-    }
+    },
   },
   components: {
-    Timeline
-  }
+    Timeline,
+  },
 }
 
 export default Mentions

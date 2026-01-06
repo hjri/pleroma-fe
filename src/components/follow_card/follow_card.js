@@ -4,27 +4,24 @@ import FollowButton from '../follow_button/follow_button.vue'
 import RemoveFollowerButton from '../remove_follower_button/remove_follower_button.vue'
 
 const FollowCard = {
-  props: [
-    'user',
-    'noFollowsYou'
-  ],
+  props: ['user', 'noFollowsYou'],
   components: {
     BasicUserCard,
     RemoteFollow,
     FollowButton,
-    RemoveFollowerButton
+    RemoveFollowerButton,
   },
   computed: {
-    isMe () {
+    isMe() {
       return this.$store.state.users.currentUser.id === this.user.id
     },
-    loggedIn () {
+    loggedIn() {
       return this.$store.state.users.currentUser
     },
-    relationship () {
+    relationship() {
       return this.$store.getters.relationship(this.user.id)
-    }
-  }
+    },
+  },
 }
 
 export default FollowCard

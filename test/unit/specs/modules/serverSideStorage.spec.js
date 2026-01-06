@@ -25,7 +25,7 @@ describe('The serverSideStorage module', () => {
     describe('setServerSideStorage', () => {
       const user = {
         created_at: new Date('1999-02-09'),
-        storage: {}
+        storage: {},
       }
 
       it('should initialize storage if none present', () => {
@@ -51,29 +51,27 @@ describe('The serverSideStorage module', () => {
         store.cache = {
           _timestamp: Date.now(),
           _version: VERSION,
-          ...cloneDeep(defaultState)
+          ...cloneDeep(defaultState),
         }
 
-        store.setServerSideStorage(
-          {
-            ...user,
-            storage: {
-              _timestamp: 123,
-              _version: VERSION,
-              flagStorage: {
-                ...defaultState.flagStorage,
-                updateCounter: 1
-              },
-              prefsStorage: {
-                ...defaultState.prefsStorage
-              }
-            }
-          }
-        )
+        store.setServerSideStorage({
+          ...user,
+          storage: {
+            _timestamp: 123,
+            _version: VERSION,
+            flagStorage: {
+              ...defaultState.flagStorage,
+              updateCounter: 1,
+            },
+            prefsStorage: {
+              ...defaultState.prefsStorage,
+            },
+          },
+        })
 
         expect(store.cache.flagStorage).to.eql({
           ...defaultState.flagStorage,
-          updateCounter: 1
+          updateCounter: 1,
         })
       })
 
@@ -81,19 +79,17 @@ describe('The serverSideStorage module', () => {
         const store = useServerSideStorageStore()
         store.cache = null
 
-        store.setServerSideStorage(
-          {
-            ...user,
-            storage: {
-              _timestamp: 123,
-              _version: VERSION,
-              flagStorage: {
-                ...defaultState.flagStorage,
-                updateCounter: 999
-              }
-            }
-          }
-        )
+        store.setServerSideStorage({
+          ...user,
+          storage: {
+            _timestamp: 123,
+            _version: VERSION,
+            flagStorage: {
+              ...defaultState.flagStorage,
+              updateCounter: 999,
+            },
+          },
+        })
         expect(store.cache._timestamp).to.eql(123)
         expect(store.flagStorage.updateCounter).to.eql(999)
         expect(store.cache.flagStorage.updateCounter).to.eql(999)
@@ -118,7 +114,7 @@ describe('The serverSideStorage module', () => {
           operation: 'set',
           args: [1],
           // should have A timestamp, we don't really care what it is
-          timestamp: store.prefsStorage._journal[0].timestamp
+          timestamp: store.prefsStorage._journal[0].timestamp,
         })
       })
 
@@ -127,7 +123,10 @@ describe('The serverSideStorage module', () => {
         store.setPreference({ path: 'simple.testing', value: 1 })
         store.setPreference({ path: 'simple.testing', value: 2 })
         store.addCollectionPreference({ path: 'collections.testing', value: 2 })
-        store.removeCollectionPreference({ path: 'collections.testing', value: 2 })
+        store.removeCollectionPreference({
+          path: 'collections.testing',
+          value: 2,
+        })
         store.updateCache({ username: 'test' })
         expect(store.prefsStorage.simple.testing).to.eql(2)
         expect(store.prefsStorage.collections.testing).to.eql([])
@@ -137,14 +136,14 @@ describe('The serverSideStorage module', () => {
           operation: 'set',
           args: [2],
           // should have A timestamp, we don't really care what it is
-          timestamp: store.prefsStorage._journal[0].timestamp
+          timestamp: store.prefsStorage._journal[0].timestamp,
         })
         expect(store.prefsStorage._journal[1]).to.eql({
           path: 'collections.testing',
           operation: 'removeFromCollection',
           args: [2],
           // should have A timestamp, we don't really care what it is
-          timestamp: store.prefsStorage._journal[1].timestamp
+          timestamp: store.prefsStorage._journal[1].timestamp,
         })
       })
 
@@ -173,16 +172,26 @@ describe('The serverSideStorage module', () => {
         const store = useServerSideStorageStore()
         store.setPreference({ path: 'simple.object.foo', value: 1 })
         expect(() => store.unsetPreference({ path: 'simple' })).to.throw()
-        expect(() => store.unsetPreference({ path: 'simple.object' })).to.throw()
+        expect(() =>
+          store.unsetPreference({ path: 'simple.object' }),
+        ).to.throw()
       })
 
       it('should not allow (un)setting depth > 3', () => {
         const store = useServerSideStorageStore()
         store.setPreference({ path: 'simple.object', value: {} })
-        expect(() => store.setPreference({ path: 'simple.object.lv3', value: 1 })).to.not.throw()
-        expect(() => store.setPreference({ path: 'simple.object.lv3.lv4', value: 1})).to.throw()
-        expect(() => store.unsetPreference({ path: 'simple.object.lv3', value: 1 })).to.not.throw()
-        expect(() => store.unsetPreference({ path: 'simple.object.lv3.lv4', value: 1})).to.throw()
+        expect(() =>
+          store.setPreference({ path: 'simple.object.lv3', value: 1 }),
+        ).to.not.throw()
+        expect(() =>
+          store.setPreference({ path: 'simple.object.lv3.lv4', value: 1 }),
+        ).to.throw()
+        expect(() =>
+          store.unsetPreference({ path: 'simple.object.lv3', value: 1 }),
+        ).to.not.throw()
+        expect(() =>
+          store.unsetPreference({ path: 'simple.object.lv3.lv4', value: 1 }),
+        ).to.throw()
       })
     })
   })
@@ -200,33 +209,65 @@ describe('The serverSideStorage module', () => {
     })
     describe('_getRecentData', () => {
       it('should handle nulls correctly', () => {
-        expect(_getRecentData(null, null, true)).to.eql({ recent: null, stale: null, needUpload: true })
+        expect(_getRecentData(null, null, true)).to.eql({
+          recent: null,
+          stale: null,
+          needUpload: true,
+        })
       })
 
-      it('doesn\'t choke on invalid data', () => {
-        expect(_getRecentData({ a: 1 }, { b: 2 }, true)).to.eql({ recent: null, stale: null, needUpload: true })
+      it("doesn't choke on invalid data", () => {
+        expect(_getRecentData({ a: 1 }, { b: 2 }, true)).to.eql({
+          recent: null,
+          stale: null,
+          needUpload: true,
+        })
       })
 
       it('should prefer the valid non-null correctly, needUpload works properly', () => {
         const nonNull = { _version: VERSION, _timestamp: 1 }
-        expect(_getRecentData(nonNull, null, true)).to.eql({ recent: nonNull, stale: null, needUpload: true })
-        expect(_getRecentData(null, nonNull, true)).to.eql({ recent: nonNull, stale: null, needUpload: false })
+        expect(_getRecentData(nonNull, null, true)).to.eql({
+          recent: nonNull,
+          stale: null,
+          needUpload: true,
+        })
+        expect(_getRecentData(null, nonNull, true)).to.eql({
+          recent: nonNull,
+          stale: null,
+          needUpload: false,
+        })
       })
 
       it('should prefer the one with higher timestamp', () => {
         const a = { _version: VERSION, _timestamp: 1 }
         const b = { _version: VERSION, _timestamp: 2 }
 
-        expect(_getRecentData(a, b, true)).to.eql({ recent: b, stale: a, needUpload: false })
-        expect(_getRecentData(b, a, true)).to.eql({ recent: b, stale: a, needUpload: false })
+        expect(_getRecentData(a, b, true)).to.eql({
+          recent: b,
+          stale: a,
+          needUpload: false,
+        })
+        expect(_getRecentData(b, a, true)).to.eql({
+          recent: b,
+          stale: a,
+          needUpload: false,
+        })
       })
 
       it('case where both are same', () => {
         const a = { _version: VERSION, _timestamp: 3 }
         const b = { _version: VERSION, _timestamp: 3 }
 
-        expect(_getRecentData(a, b, true)).to.eql({ recent: b, stale: a, needUpload: false })
-        expect(_getRecentData(b, a, true)).to.eql({ recent: b, stale: a, needUpload: false })
+        expect(_getRecentData(a, b, true)).to.eql({
+          recent: b,
+          stale: a,
+          needUpload: false,
+        })
+        expect(_getRecentData(b, a, true)).to.eql({
+          recent: b,
+          stale: a,
+          needUpload: false,
+        })
       })
     })
 
@@ -235,10 +276,17 @@ describe('The serverSideStorage module', () => {
         expect(_getAllFlags(null, null)).to.eql([])
       })
       it('should output list of keys if passed single object', () => {
-        expect(_getAllFlags({ flagStorage: { a: 1, b: 1, c: 1 } }, null)).to.eql(['a', 'b', 'c'])
+        expect(
+          _getAllFlags({ flagStorage: { a: 1, b: 1, c: 1 } }, null),
+        ).to.eql(['a', 'b', 'c'])
       })
       it('should union keys of both objects', () => {
-        expect(_getAllFlags({ flagStorage: { a: 1, b: 1, c: 1 } }, { flagStorage: { c: 1, d: 1 } })).to.eql(['a', 'b', 'c', 'd'])
+        expect(
+          _getAllFlags(
+            { flagStorage: { a: 1, b: 1, c: 1 } },
+            { flagStorage: { c: 1, d: 1 } },
+          ),
+        ).to.eql(['a', 'b', 'c', 'd'])
       })
     })
 
@@ -248,7 +296,8 @@ describe('The serverSideStorage module', () => {
           _mergeFlags(
             { flagStorage: { a: 0, b: 3 } },
             { flagStorage: { b: 1, c: 4, d: 9 } },
-            ['a', 'b', 'c', 'd'])
+            ['a', 'b', 'c', 'd'],
+          ),
         ).to.eql({ a: 0, b: 3, c: 4, d: 9 })
       })
     })
@@ -262,25 +311,30 @@ describe('The serverSideStorage module', () => {
               simple: { a: 1, b: 0, c: true },
               _journal: [
                 { path: 'simple.b', operation: 'set', args: [0], timestamp: 2 },
-                { path: 'simple.c', operation: 'set', args: [true], timestamp: 4 }
-              ]
+                {
+                  path: 'simple.c',
+                  operation: 'set',
+                  args: [true],
+                  timestamp: 4,
+                },
+              ],
             },
             // STALE
             {
               simple: { a: 1, b: 1, c: false },
               _journal: [
                 { path: 'simple.a', operation: 'set', args: [1], timestamp: 1 },
-                { path: 'simple.b', operation: 'set', args: [1], timestamp: 3 }
-              ]
-            }
-          )
+                { path: 'simple.b', operation: 'set', args: [1], timestamp: 3 },
+              ],
+            },
+          ),
         ).to.eql({
           simple: { a: 1, b: 1, c: true },
           _journal: [
             { path: 'simple.a', operation: 'set', args: [1], timestamp: 1 },
             { path: 'simple.b', operation: 'set', args: [1], timestamp: 3 },
-            { path: 'simple.c', operation: 'set', args: [true], timestamp: 4 }
-          ]
+            { path: 'simple.c', operation: 'set', args: [true], timestamp: 4 },
+          ],
         })
       })
 
@@ -292,25 +346,30 @@ describe('The serverSideStorage module', () => {
               simple: { a: 1, b: 0, c: false },
               _journal: [
                 { path: 'simple.b', operation: 'set', args: [0], timestamp: 2 },
-                { path: 'simple.c', operation: 'set', args: [false], timestamp: 4 }
-              ]
+                {
+                  path: 'simple.c',
+                  operation: 'set',
+                  args: [false],
+                  timestamp: 4,
+                },
+              ],
             },
             // STALE
             {
               simple: { a: 0, b: 0, c: true },
               _journal: [
                 { path: 'simple.a', operation: 'set', args: [0], timestamp: 1 },
-                { path: 'simple.b', operation: 'set', args: [0], timestamp: 3 }
-              ]
-            }
-          )
+                { path: 'simple.b', operation: 'set', args: [0], timestamp: 3 },
+              ],
+            },
+          ),
         ).to.eql({
           simple: { a: 0, b: 0, c: false },
           _journal: [
             { path: 'simple.a', operation: 'set', args: [0], timestamp: 1 },
             { path: 'simple.b', operation: 'set', args: [0], timestamp: 3 },
-            { path: 'simple.c', operation: 'set', args: [false], timestamp: 4 }
-          ]
+            { path: 'simple.c', operation: 'set', args: [false], timestamp: 4 },
+          ],
         })
       })
 
@@ -321,22 +380,32 @@ describe('The serverSideStorage module', () => {
             {
               simple: { a: 'foo' },
               _journal: [
-                { path: 'simple.a', operation: 'set', args: ['foo'], timestamp: 2 }
-              ]
+                {
+                  path: 'simple.a',
+                  operation: 'set',
+                  args: ['foo'],
+                  timestamp: 2,
+                },
+              ],
             },
             // STALE
             {
               simple: { a: 'bar' },
               _journal: [
-                { path: 'simple.a', operation: 'set', args: ['bar'], timestamp: 4 }
-              ]
-            }
-          )
+                {
+                  path: 'simple.a',
+                  operation: 'set',
+                  args: ['bar'],
+                  timestamp: 4,
+                },
+              ],
+            },
+          ),
         ).to.eql({
           simple: { a: 'bar' },
           _journal: [
-            { path: 'simple.a', operation: 'set', args: ['bar'], timestamp: 4 }
-          ]
+            { path: 'simple.a', operation: 'set', args: ['bar'], timestamp: 4 },
+          ],
         })
       })
 
@@ -347,22 +416,37 @@ describe('The serverSideStorage module', () => {
             {
               simple: { lv2: { lv3: 'foo' } },
               _journal: [
-                { path: 'simple.lv2.lv3', operation: 'set', args: ['foo'], timestamp: 2 }
-              ]
+                {
+                  path: 'simple.lv2.lv3',
+                  operation: 'set',
+                  args: ['foo'],
+                  timestamp: 2,
+                },
+              ],
             },
             // STALE
             {
               simple: { lv2: { lv3: 'bar' } },
               _journal: [
-                { path: 'simple.lv2.lv3', operation: 'set', args: ['bar'], timestamp: 4 }
-              ]
-            }
-          )
+                {
+                  path: 'simple.lv2.lv3',
+                  operation: 'set',
+                  args: ['bar'],
+                  timestamp: 4,
+                },
+              ],
+            },
+          ),
         ).to.eql({
           simple: { lv2: { lv3: 'bar' } },
           _journal: [
-            { path: 'simple.lv2.lv3', operation: 'set', args: ['bar'], timestamp: 4 }
-          ]
+            {
+              path: 'simple.lv2.lv3',
+              operation: 'set',
+              args: ['bar'],
+              timestamp: 4,
+            },
+          ],
         })
       })
 
@@ -373,22 +457,37 @@ describe('The serverSideStorage module', () => {
             {
               simple: { lv2: { lv3: 'foo' } },
               _journal: [
-                { path: 'simple.lv2.lv3', operation: 'set', args: ['foo'], timestamp: 2 }
-              ]
+                {
+                  path: 'simple.lv2.lv3',
+                  operation: 'set',
+                  args: ['foo'],
+                  timestamp: 2,
+                },
+              ],
             },
             // STALE
             {
               simple: { lv2: {} },
               _journal: [
-                { path: 'simple.lv2.lv3', operation: 'unset', args: [], timestamp: 4 }
-              ]
-            }
-          )
+                {
+                  path: 'simple.lv2.lv3',
+                  operation: 'unset',
+                  args: [],
+                  timestamp: 4,
+                },
+              ],
+            },
+          ),
         ).to.eql({
           simple: { lv2: {} },
           _journal: [
-            { path: 'simple.lv2.lv3', operation: 'unset', args: [], timestamp: 4 }
-          ]
+            {
+              path: 'simple.lv2.lv3',
+              operation: 'unset',
+              args: [],
+              timestamp: 4,
+            },
+          ],
         })
       })
     })
@@ -402,12 +501,25 @@ describe('The serverSideStorage module', () => {
       it('should trim all flags to known when reset is set to 1000', () => {
         const totalFlags = { a: 0, b: 3, c: 33, reset: COMMAND_TRIM_FLAGS }
 
-        expect(_resetFlags(totalFlags, { a: 0, b: 0, reset: 0 })).to.eql({ a: 0, b: 3, reset: 0 })
+        expect(_resetFlags(totalFlags, { a: 0, b: 0, reset: 0 })).to.eql({
+          a: 0,
+          b: 3,
+          reset: 0,
+        })
       })
       it('should trim all flags to known and reset when reset is set to 1001', () => {
-        const totalFlags = { a: 0, b: 3, c: 33, reset: COMMAND_TRIM_FLAGS_AND_RESET }
+        const totalFlags = {
+          a: 0,
+          b: 3,
+          c: 33,
+          reset: COMMAND_TRIM_FLAGS_AND_RESET,
+        }
 
-        expect(_resetFlags(totalFlags, { a: 0, b: 0, reset: 0 })).to.eql({ a: 0, b: 0, reset: 0 })
+        expect(_resetFlags(totalFlags, { a: 0, b: 0, reset: 0 })).to.eql({
+          a: 0,
+          b: 0,
+          reset: 0,
+        })
       })
     })
   })

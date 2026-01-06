@@ -5,7 +5,7 @@ import localeService from 'src/services/locale/locale.service.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens'
 
 const SecurityTab = {
-  data () {
+  data() {
     return {
       newEmail: '',
       changeEmailError: false,
@@ -25,41 +25,44 @@ const SecurityTab = {
       listAliasesError: false,
       addAliasTarget: '',
       addedAlias: false,
-      addAliasError: false
+      addAliasError: false,
     }
   },
-  created () {
+  created() {
     useOAuthTokensStore().fetchTokens()
     this.fetchAliases()
   },
   components: {
     ProgressButton,
     Mfa,
-    Checkbox
+    Checkbox,
   },
   computed: {
-    user () {
+    user() {
       return this.$store.state.users.currentUser
     },
-    pleromaExtensionsAvailable () {
+    pleromaExtensionsAvailable() {
       return this.$store.state.instance.pleromaExtensionsAvailable
     },
-    oauthTokens () {
-      return useOAuthTokensStore().tokens.map(oauthToken => {
+    oauthTokens() {
+      return useOAuthTokensStore().tokens.map((oauthToken) => {
         return {
           id: oauthToken.id,
           appName: oauthToken.app_name,
-          validUntil: new Date(oauthToken.valid_until).toLocaleDateString(localeService.internalToBrowserLocale(this.$i18n.locale))
+          validUntil: new Date(oauthToken.valid_until).toLocaleDateString(
+            localeService.internalToBrowserLocale(this.$i18n.locale),
+          ),
         }
       })
-    }
+    },
   },
   methods: {
-    confirmDelete () {
+    confirmDelete() {
       this.deletingAccount = true
     },
-    deleteAccount () {
-      this.$store.state.api.backendInteractor.deleteAccount({ password: this.deleteAccountConfirmPasswordInput })
+    deleteAccount() {
+      this.$store.state.api.backendInteractor
+        .deleteAccount({ password: this.deleteAccountConfirmPasswordInput })
         .then((res) => {
           if (res.status === 'success') {
             this.$store.dispatch('logout')
@@ -69,13 +72,14 @@ const SecurityTab = {
           }
         })
     },
-    changePassword () {
+    changePassword() {
       const params = {
         password: this.changePasswordInputs[0],
         newPassword: this.changePasswordInputs[1],
-        newPasswordConfirmation: this.changePasswordInputs[2]
+        newPasswordConfirmation: this.changePasswordInputs[2],
       }
-      this.$store.state.api.backendInteractor.changePassword(params)
+      this.$store.state.api.backendInteractor
+        .changePassword(params)
         .then((res) => {
           if (res.status === 'success') {
             this.changedPassword = true
@@ -87,12 +91,13 @@ const SecurityTab = {
           }
         })
     },
-    changeEmail () {
+    changeEmail() {
       const params = {
         email: this.newEmail,
-        password: this.changeEmailPassword
+        password: this.changeEmailPassword,
       }
-      this.$store.state.api.backendInteractor.changeEmail(params)
+      this.$store.state.api.backendInteractor
+        .changeEmail(params)
         .then((res) => {
           if (res.status === 'success') {
             this.changedEmail = true
@@ -103,12 +108,13 @@ const SecurityTab = {
           }
         })
     },
-    moveAccount () {
+    moveAccount() {
       const params = {
         targetAccount: this.moveAccountTarget,
-        password: this.moveAccountPassword
+        password: this.moveAccountPassword,
       }
-      this.$store.state.api.backendInteractor.moveAccount(params)
+      this.$store.state.api.backendInteractor
+        .moveAccount(params)
         .then((res) => {
           if (res.status === 'success') {
             this.movedAccount = true
@@ -119,12 +125,14 @@ const SecurityTab = {
           }
         })
     },
-    removeAlias (alias) {
-      this.$store.state.api.backendInteractor.deleteAlias({ alias })
+    removeAlias(alias) {
+      this.$store.state.api.backendInteractor
+        .deleteAlias({ alias })
         .then(() => this.fetchAliases())
     },
-    addAlias () {
-      this.$store.state.api.backendInteractor.addAlias({ alias: this.addAliasTarget })
+    addAlias() {
+      this.$store.state.api.backendInteractor
+        .addAlias({ alias: this.addAliasTarget })
         .then(() => {
           this.addedAlias = true
           this.addAliasError = false
@@ -136,8 +144,9 @@ const SecurityTab = {
         })
         .then(() => this.fetchAliases())
     },
-    fetchAliases () {
-      this.$store.state.api.backendInteractor.listAliases()
+    fetchAliases() {
+      this.$store.state.api.backendInteractor
+        .listAliases()
         .then((res) => {
           this.aliases = res.aliases
           this.listAliasesError = false
@@ -146,16 +155,16 @@ const SecurityTab = {
           this.listAliasesError = error.error
         })
     },
-    logout () {
+    logout() {
       this.$store.dispatch('logout')
       this.$router.replace('/')
     },
-    revokeToken (id) {
+    revokeToken(id) {
       if (window.confirm(`${this.$i18n.t('settings.revoke_token')}?`)) {
         useOAuthTokensStore().revokeToken(id)
       }
-    }
-  }
+    },
+  },
 }
 
 export default SecurityTab

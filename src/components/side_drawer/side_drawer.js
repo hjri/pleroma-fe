@@ -19,7 +19,7 @@ import {
   faInfoCircle,
   faCompass,
   faList,
-  faFilePen
+  faFilePen,
 } from '@fortawesome/free-solid-svg-icons'
 import { useShoutStore } from 'src/stores/shout'
 import { useInterfaceStore } from 'src/stores/interface'
@@ -39,17 +39,20 @@ library.add(
   faInfoCircle,
   faCompass,
   faList,
-  faFilePen
+  faFilePen,
 )
 
 const SideDrawer = {
   props: ['logout'],
   data: () => ({
     closed: true,
-    closeGesture: undefined
+    closeGesture: undefined,
   }),
-  created () {
-    this.closeGesture = GestureService.swipeGesture(GestureService.DIRECTION_LEFT, this.toggleDrawer)
+  created() {
+    this.closeGesture = GestureService.swipeGesture(
+      GestureService.DIRECTION_LEFT,
+      this.toggleDrawer,
+    )
 
     if (this.currentUser && this.currentUser.locked) {
       this.$store.dispatch('startFetchingFollowRequests')
@@ -57,38 +60,40 @@ const SideDrawer = {
   },
   components: { UserCard },
   computed: {
-    currentUser () {
+    currentUser() {
       return this.$store.state.users.currentUser
     },
-    shout () { return useShoutStore().joined },
-    unseenNotifications () {
+    shout() {
+      return useShoutStore().joined
+    },
+    unseenNotifications() {
       return unseenNotificationsFromStore(this.$store)
     },
-    unseenNotificationsCount () {
+    unseenNotificationsCount() {
       return this.unseenNotifications.length
     },
-    suggestionsEnabled () {
+    suggestionsEnabled() {
       return this.$store.state.instance.suggestionsEnabled
     },
-    logo () {
+    logo() {
       return this.$store.state.instance.logo
     },
-    hideSitename () {
+    hideSitename() {
       return this.$store.state.instance.hideSitename
     },
-    sitename () {
+    sitename() {
       return this.$store.state.instance.name
     },
-    followRequestCount () {
+    followRequestCount() {
       return this.$store.state.api.followRequests.length
     },
-    privateMode () {
+    privateMode() {
       return this.$store.state.instance.private
     },
-    federating () {
+    federating() {
       return this.$store.state.instance.federating
     },
-    timelinesRoute () {
+    timelinesRoute() {
       let name
       if (useInterfaceStore().lastTimeline) {
         name = useInterfaceStore().lastTimeline
@@ -101,35 +106,36 @@ const SideDrawer = {
       }
     },
     ...mapPiniaState(useAnnouncementsStore, {
-      supportsAnnouncements: store => store.supportsAnnouncements,
-      unreadAnnouncementCount: 'unreadAnnouncementCount'
+      supportsAnnouncements: (store) => store.supportsAnnouncements,
+      unreadAnnouncementCount: 'unreadAnnouncementCount',
     }),
     ...mapState({
-      pleromaChatMessagesAvailable: state => state.instance.pleromaChatMessagesAvailable
+      pleromaChatMessagesAvailable: (state) =>
+        state.instance.pleromaChatMessagesAvailable,
     }),
-    ...mapGetters(['unreadChatCount', 'draftCount'])
+    ...mapGetters(['unreadChatCount', 'draftCount']),
   },
   methods: {
-    toggleDrawer () {
+    toggleDrawer() {
       this.closed = !this.closed
     },
-    doLogout () {
+    doLogout() {
       this.logout()
       this.toggleDrawer()
     },
-    touchStart (e) {
+    touchStart(e) {
       GestureService.beginSwipe(e, this.closeGesture)
     },
-    touchMove (e) {
+    touchMove(e) {
       GestureService.updateSwipe(e, this.closeGesture)
     },
-    openSettingsModal () {
+    openSettingsModal() {
       useInterfaceStore().openSettingsModal('user')
     },
-    openAdminModal () {
+    openAdminModal() {
       useInterfaceStore().openSettingsModal('admin')
-    }
-  }
+    },
+  },
 }
 
 export default SideDrawer

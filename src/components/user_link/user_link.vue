@@ -22,20 +22,21 @@ const UserLink = {
     user: Object,
     at: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   components: {
-    UnicodeDomainIndicator
+    UnicodeDomainIndicator,
   },
   methods: {
-    userProfileLink (user) {
+    userProfileLink(user) {
       return generateProfileLink(
-        user.id, user.screen_name,
-        this.$store.state.instance.restrictedNicknames
+        user.id,
+        user.screen_name,
+        this.$store.state.instance.restrictedNicknames,
       )
-    }
-  }
+    },
+  },
 }
 
 export default UserLink

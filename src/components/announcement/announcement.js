@@ -7,103 +7,122 @@ import { useAnnouncementsStore } from 'src/stores/announcements'
 const Announcement = {
   components: {
     AnnouncementEditor,
-    RichContent
+    RichContent,
   },
-  data () {
+  data() {
     return {
       editing: false,
       editedAnnouncement: {
         content: '',
         startsAt: undefined,
         endsAt: undefined,
-        allDay: undefined
+        allDay: undefined,
       },
-      editError: ''
+      editError: '',
     }
   },
   props: {
-    announcement: Object
+    announcement: Object,
   },
   computed: {
     ...mapState({
-      currentUser: state => state.users.currentUser
+      currentUser: (state) => state.users.currentUser,
     }),
-    canEditAnnouncement () {
-      return this.currentUser && this.currentUser.privileges.includes('announcements_manage_announcements')
+    canEditAnnouncement() {
+      return (
+        this.currentUser &&
+        this.currentUser.privileges.includes(
+          'announcements_manage_announcements',
+        )
+      )
     },
-    content () {
+    content() {
       return this.announcement.content
     },
-    isRead () {
+    isRead() {
       return this.announcement.read
     },
-    publishedAt () {
+    publishedAt() {
       const time = this.announcement.published_at
       if (!time) {
         return
       }
 
-      return this.formatTimeOrDate(time, localeService.internalToBrowserLocale(this.$i18n.locale))
+      return this.formatTimeOrDate(
+        time,
+        localeService.internalToBrowserLocale(this.$i18n.locale),
+      )
     },
-    startsAt () {
+    startsAt() {
       const time = this.announcement.starts_at
       if (!time) {
         return
       }
 
-      return this.formatTimeOrDate(time, localeService.internalToBrowserLocale(this.$i18n.locale))
+      return this.formatTimeOrDate(
+        time,
+        localeService.internalToBrowserLocale(this.$i18n.locale),
+      )
     },
-    endsAt () {
+    endsAt() {
       const time = this.announcement.ends_at
       if (!time) {
         return
       }
 
-      return this.formatTimeOrDate(time, localeService.internalToBrowserLocale(this.$i18n.locale))
+      return this.formatTimeOrDate(
+        time,
+        localeService.internalToBrowserLocale(this.$i18n.locale),
+      )
     },
-    inactive () {
+    inactive() {
       return this.announcement.inactive
-    }
+    },
   },
   methods: {
-    markAsRead () {
+    markAsRead() {
       if (!this.isRead) {
-        return useAnnouncementsStore().markAnnouncementAsRead(this.announcement.id)
+        return useAnnouncementsStore().markAnnouncementAsRead(
+          this.announcement.id,
+        )
       }
     },
-    deleteAnnouncement () {
+    deleteAnnouncement() {
       return useAnnouncementsStore().deleteAnnouncement(this.announcement.id)
     },
-    formatTimeOrDate (time, locale) {
+    formatTimeOrDate(time, locale) {
       const d = new Date(time)
-      return this.announcement.all_day ? d.toLocaleDateString(locale) : d.toLocaleString(locale)
+      return this.announcement.all_day
+        ? d.toLocaleDateString(locale)
+        : d.toLocaleString(locale)
     },
-    enterEditMode () {
+    enterEditMode() {
       this.editedAnnouncement.content = this.announcement.pleroma.raw_content
       this.editedAnnouncement.startsAt = this.announcement.starts_at
       this.editedAnnouncement.endsAt = this.announcement.ends_at
       this.editedAnnouncement.allDay = this.announcement.all_day
       this.editing = true
     },
-    submitEdit () {
-      useAnnouncementsStore().editAnnouncement({
-        id: this.announcement.id,
-        ...this.editedAnnouncement
-      })
+    submitEdit() {
+      useAnnouncementsStore()
+        .editAnnouncement({
+          id: this.announcement.id,
+          ...this.editedAnnouncement,
+        })
         .then(() => {
           this.editing = false
         })
-        .catch(error => {
+        .catch((error) => {
           this.editError = error.error
         })
     },
-    cancelEdit () {
+    cancelEdit() {
       this.editing = false
     },
-    clearError () {
+    clearError() {
       this.editError = undefined
-    }
-  }
+    },
+  },
 }
 
 export default Announcement

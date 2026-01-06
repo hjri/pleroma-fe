@@ -31,7 +31,7 @@ import {
   faCode,
   faBroom,
   faLock,
-  faColumns
+  faColumns,
 } from '@fortawesome/free-solid-svg-icons'
 import { useInterfaceStore } from 'src/stores/interface'
 
@@ -49,7 +49,7 @@ library.add(
   faDownload,
   faPalette,
   faPaintBrush,
-  faCode
+  faCode,
 )
 
 const SettingsModalContent = {
@@ -70,36 +70,38 @@ const SettingsModalContent = {
     AppearanceTab,
     StyleTab,
     DeveloperTab,
-    OldThemeTab
+    OldThemeTab,
   },
   computed: {
-    isLoggedIn () {
+    isLoggedIn() {
       return !!this.$store.state.users.currentUser
     },
-    open () {
+    open() {
       return useInterfaceStore().settingsModalState !== 'hidden'
     },
-    bodyLock () {
+    bodyLock() {
       return useInterfaceStore().settingsModalState === 'visible'
     },
-    expertLevel () {
+    expertLevel() {
       return this.$store.state.config.expertLevel
-    }
+    },
   },
-  data () {
+  data() {
     return {
       navCollapsed: false,
-      navHideHeader: false
+      navHideHeader: false,
     }
   },
   methods: {
-    onOpen () {
+    onOpen() {
       const targetTab = useInterfaceStore().settingsModalTargetTab
       // We're being told to open in specific tab
       if (targetTab) {
-        const tabIndex = this.$refs.tabSwitcher.$slots.default().findIndex(elm => {
-          return elm.props && elm.props['data-tab-name'] === targetTab
-        })
+        const tabIndex = this.$refs.tabSwitcher.$slots
+          .default()
+          .findIndex((elm) => {
+            return elm.props && elm.props['data-tab-name'] === targetTab
+          })
         if (tabIndex >= 0) {
           this.$refs.tabSwitcher.setTab(tabIndex)
         }
@@ -107,16 +109,16 @@ const SettingsModalContent = {
       // Clear the state of target tab, so that next time settings is opened
       // it doesn't force it.
       useInterfaceStore().clearSettingsModalTargetTab()
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.onOpen()
   },
   watch: {
     open: function (value) {
       if (value) this.onOpen()
-    }
-  }
+    },
+  },
 }
 
 export default SettingsModalContent

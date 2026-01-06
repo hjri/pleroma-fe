@@ -61,13 +61,11 @@ import Popover from 'src/components/popover/popover.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faWrench
-)
+library.add(faWrench)
 
 export default {
   components: { Popover },
-  props: ['changed']
+  props: ['changed'],
 }
 </script>
 

@@ -5,7 +5,7 @@ const checkColors = (output) => {
   Object.entries(output.colors).forEach(([key, v]) => {
     expect(v, key).to.be.an('object')
     expect(v, key).to.include.all.keys('r', 'g', 'b')
-    'rgba'.split('').forEach(k => {
+    'rgba'.split('').forEach((k) => {
       if ((k === 'a' && Object.hasOwn(v, 'a')) || k !== 'a') {
         expect(v[k], key + '.' + k).to.be.a('number')
         expect(v[k], key + '.' + k).to.be.least(0)
@@ -16,7 +16,10 @@ const checkColors = (output) => {
 }
 
 describe('Theme Data utility functions', () => {
-  const context = import.meta.glob('/public/static/themes/*.json', { import: 'default', eager: true })
+  const context = import.meta.glob('/public/static/themes/*.json', {
+    import: 'default',
+    eager: true,
+  })
   Object.keys(context).forEach((key) => {
     it(`Should render all colors for ${key} properly`, () => {
       const { theme, source } = context[key]

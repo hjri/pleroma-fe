@@ -4,19 +4,21 @@ const mockTouchEvent = (x, y) => ({
   touches: [
     {
       screenX: x,
-      screenY: y
-    }
-  ]
+      screenY: y,
+    },
+  ],
 })
 
 describe('GestureService', () => {
   describe('swipeGesture', () => {
     it('calls the callback on a successful swipe', () => {
       let swiped = false
-      const callback = () => { swiped = true }
+      const callback = () => {
+        swiped = true
+      }
       const gesture = GestureService.swipeGesture(
         GestureService.DIRECTION_RIGHT,
-        callback
+        callback,
       )
 
       GestureService.beginSwipe(mockTouchEvent(100, 100), gesture)
@@ -27,10 +29,12 @@ describe('GestureService', () => {
 
     it('calls the callback only once per begin', () => {
       let hits = 0
-      const callback = () => { hits += 1 }
+      const callback = () => {
+        hits += 1
+      }
       const gesture = GestureService.swipeGesture(
         GestureService.DIRECTION_RIGHT,
-        callback
+        callback,
       )
 
       GestureService.beginSwipe(mockTouchEvent(100, 100), gesture)
@@ -40,12 +44,14 @@ describe('GestureService', () => {
       expect(hits).to.eql(1)
     })
 
-    it('doesn\'t call the callback on an opposite swipe', () => {
+    it("doesn't call the callback on an opposite swipe", () => {
       let swiped = false
-      const callback = () => { swiped = true }
+      const callback = () => {
+        swiped = true
+      }
       const gesture = GestureService.swipeGesture(
         GestureService.DIRECTION_RIGHT,
-        callback
+        callback,
       )
 
       GestureService.beginSwipe(mockTouchEvent(100, 100), gesture)
@@ -54,13 +60,15 @@ describe('GestureService', () => {
       expect(swiped).to.eql(false)
     })
 
-    it('doesn\'t call the callback on a swipe below threshold', () => {
+    it("doesn't call the callback on a swipe below threshold", () => {
       let swiped = false
-      const callback = () => { swiped = true }
+      const callback = () => {
+        swiped = true
+      }
       const gesture = GestureService.swipeGesture(
         GestureService.DIRECTION_RIGHT,
         callback,
-        100
+        100,
       )
 
       GestureService.beginSwipe(mockTouchEvent(100, 100), gesture)
@@ -69,14 +77,16 @@ describe('GestureService', () => {
       expect(swiped).to.eql(false)
     })
 
-    it('doesn\'t call the callback on a perpendicular swipe', () => {
+    it("doesn't call the callback on a perpendicular swipe", () => {
       let swiped = false
-      const callback = () => { swiped = true }
+      const callback = () => {
+        swiped = true
+      }
       const gesture = GestureService.swipeGesture(
         GestureService.DIRECTION_RIGHT,
         callback,
         30,
-        0.5
+        0.5,
       )
 
       GestureService.beginSwipe(mockTouchEvent(100, 100), gesture)
@@ -87,12 +97,14 @@ describe('GestureService', () => {
 
     it('calls the callback on perpendicular swipe if within tolerance', () => {
       let swiped = false
-      const callback = () => { swiped = true }
+      const callback = () => {
+        swiped = true
+      }
       const gesture = GestureService.swipeGesture(
         GestureService.DIRECTION_RIGHT,
         callback,
         30,
-        2.0
+        2.0,
       )
 
       GestureService.beginSwipe(mockTouchEvent(100, 100), gesture)
@@ -103,13 +115,10 @@ describe('GestureService', () => {
 
     it('works with any arbitrary 2d directions', () => {
       let swiped = false
-      const callback = () => { swiped = true }
-      const gesture = GestureService.swipeGesture(
-        [-1, -1],
-        callback,
-        30,
-        0.1
-      )
+      const callback = () => {
+        swiped = true
+      }
+      const gesture = GestureService.swipeGesture([-1, -1], callback, 30, 0.1)
 
       GestureService.beginSwipe(mockTouchEvent(100, 100), gesture)
       GestureService.updateSwipe(mockTouchEvent(60, 60), gesture)

@@ -13,10 +13,10 @@ import SharedComputedObject from '../helpers/shared_computed_object.js'
 import { get } from 'lodash'
 
 const InstanceTab = {
-  provide () {
+  provide() {
     return {
       defaultDraftMode: true,
-      defaultSource: 'admin'
+      defaultSource: 'admin',
     }
   },
   components: {
@@ -29,25 +29,40 @@ const InstanceTab = {
     ListSetting,
     PWAManifestIconsSetting,
     MapSetting,
-    GroupSetting
+    GroupSetting,
   },
   computed: {
     ...SharedComputedObject(),
-    providersOptions () {
-      const desc = get(this.$store.state.adminSettings.descriptions, [':pleroma', 'Pleroma.Web.Metadata', ':providers'])
-      return new Set(desc.suggestions.map(option => ({
-        label: option.replace('Pleroma.Web.Metadata.Providers.', ''),
-        value: option
-      })))
+    providersOptions() {
+      const desc = get(this.$store.state.adminSettings.descriptions, [
+        ':pleroma',
+        'Pleroma.Web.Metadata',
+        ':providers',
+      ])
+      return new Set(
+        desc.suggestions.map((option) => ({
+          label: option.replace('Pleroma.Web.Metadata.Providers.', ''),
+          value: option,
+        })),
+      )
     },
-    limitLocalContentOptions () {
-      const desc = get(this.$store.state.adminSettings.descriptions, [':pleroma', ':instance', ':limit_to_local_content'])
-      return new Set(desc.suggestions.map(option => ({
-        label: option !== 'false' ? this.$t('admin_dash.instance.' + option) : this.$t('general.no'),
-        value: option
-      })))
-    }
-  }
+    limitLocalContentOptions() {
+      const desc = get(this.$store.state.adminSettings.descriptions, [
+        ':pleroma',
+        ':instance',
+        ':limit_to_local_content',
+      ])
+      return new Set(
+        desc.suggestions.map((option) => ({
+          label:
+            option !== 'false'
+              ? this.$t('admin_dash.instance.' + option)
+              : this.$t('general.no'),
+          value: option,
+        })),
+      )
+    },
+  },
 }
 
 export default InstanceTab

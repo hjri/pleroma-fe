@@ -7,119 +7,126 @@ export default {
   components: {
     ModifiedIndicator,
     DraftButtons,
-    ProfileSettingIndicator
+    ProfileSettingIndicator,
   },
   props: {
     modelValue: {
       type: String,
-      default: null
+      default: null,
     },
     path: {
       type: [String, Array],
-      required: false
+      required: false,
     },
     showDescription: {
       type: Boolean,
-      required: false
+      required: false,
     },
     descriptionPathOverride: {
       type: [String, Array],
-      required: false
+      required: false,
     },
     suggestions: {
       type: [String, Array],
-      required: false
+      required: false,
     },
     subgroup: {
       type: String,
-      required: false
+      required: false,
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     parentPath: {
-      type: [String, Array]
+      type: [String, Array],
     },
     parentInvert: {
       type: Boolean,
-      default: false
+      default: false,
     },
     expert: {
       type: [Number, String],
-      default: 0
+      default: 0,
     },
     source: {
       type: String,
-      default: undefined
+      default: undefined,
     },
-    hideDraftButtons: { // this is for the weird backend hybrid (Boolean|String or Boolean|Number) settings
+    hideDraftButtons: {
+      // this is for the weird backend hybrid (Boolean|String or Boolean|Number) settings
       required: false,
-      type: Boolean
+      type: Boolean,
     },
     hideLabel: {
-      type: Boolean
+      type: Boolean,
     },
     hideDescription: {
-      type: Boolean
+      type: Boolean,
     },
     swapDescriptionAndLabel: {
-      type: Boolean
+      type: Boolean,
     },
     backendDescriptionPath: {
-      type: [String, Array]
+      type: [String, Array],
     },
     overrideBackendDescription: {
-      type: Boolean
+      type: Boolean,
     },
     overrideBackendDescriptionLabel: {
-      type: [Boolean, String]
+      type: [Boolean, String],
     },
     draftMode: {
       type: Boolean,
-      default: undefined
+      default: undefined,
     },
     timedApplyMode: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   inject: {
     defaultSource: {
-      default: 'default'
+      default: 'default',
     },
     defaultDraftMode: {
-      default: false
-    }
+      default: false,
+    },
   },
-  data () {
+  data() {
     return {
-      localDraft: null
+      localDraft: null,
     }
   },
-  created () {
-    if (this.realDraftMode && (this.realSource !== 'admin' || this.path == null)) {
+  created() {
+    if (
+      this.realDraftMode &&
+      (this.realSource !== 'admin' || this.path == null)
+    ) {
       this.draft = cloneDeep(this.state)
     }
   },
   computed: {
     draft: {
-      get () {
+      get() {
         if (this.realSource === 'admin' || this.path == null) {
           return get(this.$store.state.adminSettings.draft, this.canonPath)
         } else {
           return this.localDraft
         }
       },
-      set (value) {
+      set(value) {
         if (this.realSource === 'admin' || this.path == null) {
-          this.$store.commit('updateAdminDraft', { path: this.canonPath, value })
+          this.$store.commit('updateAdminDraft', {
+            path: this.canonPath,
+            value,
+          })
         } else {
           this.localDraft = value
         }
-      }
+      },
     },
-    state () {
+    state() {
       if (this.path == null) {
         return this.modelValue
       }
@@ -130,71 +137,93 @@ export default {
         return value
       }
     },
-    visibleState () {
+    visibleState() {
       return this.realDraftMode ? this.draft : this.state
     },
-    realSource () {
+    realSource() {
       return this.source || this.defaultSource
     },
-    realDraftMode () {
-      return typeof this.draftMode === 'undefined' ? this.defaultDraftMode : this.draftMode
+    realDraftMode() {
+      return typeof this.draftMode === 'undefined'
+        ? this.defaultDraftMode
+        : this.draftMode
     },
-    backendDescription () {
-      return get(this.$store.state.adminSettings.descriptions, this.descriptionPath)
+    backendDescription() {
+      return get(
+        this.$store.state.adminSettings.descriptions,
+        this.descriptionPath,
+      )
     },
-    backendDescriptionLabel () {
+    backendDescriptionLabel() {
       if (this.realSource !== 'admin') return ''
-      if (this.overrideBackendDescriptionLabel !== '' && typeof this.overrideBackendDescriptionLabel === 'string') {
+      if (
+        this.overrideBackendDescriptionLabel !== '' &&
+        typeof this.overrideBackendDescriptionLabel === 'string'
+      ) {
         return this.overrideBackendDescriptionLabel
       }
       if (!this.backendDescription || this.overrideBackendDescriptionLabel) {
-        return this.$t([
-          'admin_dash',
-          'temp_overrides',
-          ...this.canonPath.map(p => p.replace(/\./g, '_DOT_')),
-          'label'
-        ].join('.'))
+        return this.$t(
+          [
+            'admin_dash',
+            'temp_overrides',
+            ...this.canonPath.map((p) => p.replace(/\./g, '_DOT_')),
+            'label',
+          ].join('.'),
+        )
       } else {
         return this.swapDescriptionAndLabel
           ? this.backendDescription?.description
           : this.backendDescription?.label
       }
     },
-    backendDescriptionDescription () {
+    backendDescriptionDescription() {
       if (this.description) return this.description
       if (this.realSource !== 'admin') return ''
       if (this.hideDescription) return null
       if (!this.backendDescription || this.overrideBackendDescription) {
-        return this.$t([
-          'admin_dash',
-          'temp_overrides',
-          ...this.canonPath.map(p => p.replace(/\./g, '_DOT_')),
-          'description'
-        ].join('.'))
+        return this.$t(
+          [
+            'admin_dash',
+            'temp_overrides',
+            ...this.canonPath.map((p) => p.replace(/\./g, '_DOT_')),
+            'description',
+          ].join('.'),
+        )
       } else {
         return this.swapDescriptionAndLabel
           ? this.backendDescription?.label
           : this.backendDescription?.description
       }
     },
-    backendDescriptionSuggestions () {
+    backendDescriptionSuggestions() {
       return this.backendDescription?.suggestions || this.suggestions
     },
-    shouldBeDisabled () {
+    shouldBeDisabled() {
       if (this.path == null) {
         return this.disabled
       }
       let parentValue = null
       if (this.parentPath !== undefined && this.realSource === 'admin') {
         if (this.realDraftMode) {
-          parentValue = get(this.$store.state.adminSettings.draft, this.parentPath)
+          parentValue = get(
+            this.$store.state.adminSettings.draft,
+            this.parentPath,
+          )
         } else {
           parentValue = get(this.configSource, this.parentPath)
         }
       }
-      return this.disabled || (parentValue !== null ? (this.parentInvert ? parentValue : !parentValue) : false)
+      return (
+        this.disabled ||
+        (parentValue !== null
+          ? this.parentInvert
+            ? parentValue
+            : !parentValue
+          : false)
+      )
     },
-    configSource () {
+    configSource() {
       switch (this.realSource) {
         case 'profile':
           return this.$store.state.profileConfig
@@ -204,24 +233,31 @@ export default {
           return this.$store.getters.mergedConfig
       }
     },
-    configSink () {
+    configSink() {
       if (this.path == null) {
         return (k, v) => this.$emit('update:modelValue', v)
       }
       switch (this.realSource) {
         case 'profile':
-          return (k, v) => this.$store.dispatch('setProfileOption', { name: k, value: v })
+          return (k, v) =>
+            this.$store.dispatch('setProfileOption', { name: k, value: v })
         case 'admin':
-          return (k, v) => this.$store.dispatch('pushAdminSetting', { path: k, value: v })
+          return (k, v) =>
+            this.$store.dispatch('pushAdminSetting', { path: k, value: v })
         default:
           if (this.timedApplyMode) {
-            return (k, v) => this.$store.dispatch('setOptionTemporarily', { name: k, value: v })
+            return (k, v) =>
+              this.$store.dispatch('setOptionTemporarily', {
+                name: k,
+                value: v,
+              })
           } else {
-            return (k, v) => this.$store.dispatch('setOption', { name: k, value: v })
+            return (k, v) =>
+              this.$store.dispatch('setOption', { name: k, value: v })
           }
       }
     },
-    defaultState () {
+    defaultState() {
       switch (this.realSource) {
         case 'profile':
           return {}
@@ -229,10 +265,10 @@ export default {
           return get(this.$store.getters.defaultConfig, this.path)
       }
     },
-    isProfileSetting () {
+    isProfileSetting() {
       return this.realSource === 'profile'
     },
-    isChanged () {
+    isChanged() {
       if (this.path == null) return false
       switch (this.realSource) {
         case 'profile':
@@ -242,24 +278,24 @@ export default {
           return this.state !== this.defaultState
       }
     },
-    canonPath () {
+    canonPath() {
       if (this.path == null) return null
       return Array.isArray(this.path) ? this.path : this.path.split('.')
     },
-    descriptionPath () {
+    descriptionPath() {
       if (this.path == null) return null
       if (this.descriptionPathOverride) return this.descriptionPathOverride
       const path = Array.isArray(this.path) ? this.path : this.path.split('.')
       if (this.subgroup) {
         return [
-            ...path.slice(0, path.length - 1),
-            ':subgroup,' + this.subgroup,
-            ...path.slice(path.length - 1)
+          ...path.slice(0, path.length - 1),
+          ':subgroup,' + this.subgroup,
+          ...path.slice(path.length - 1),
         ]
       }
       return path
     },
-    isDirty () {
+    isDirty() {
       if (this.path == null) return false
       if (this.realSource === 'admin' && this.canonPath.length > 3) {
         return false // should not show draft buttons for "grouped" values
@@ -267,47 +303,59 @@ export default {
         return this.realDraftMode && !isEqual(this.draft, this.state)
       }
     },
-    canHardReset () {
-      return this.realSource === 'admin' && this.$store.state.adminSettings.modifiedPaths?.has(this.canonPath.join(' -> '))
+    canHardReset() {
+      return (
+        this.realSource === 'admin' &&
+        this.$store.state.adminSettings.modifiedPaths?.has(
+          this.canonPath.join(' -> '),
+        )
+      )
     },
-    matchesExpertLevel () {
+    matchesExpertLevel() {
       const settingExpertLevel = this.expert || 0
       const userToggleExpert = this.$store.state.config.expertLevel || 0
 
       return settingExpertLevel <= userToggleExpert
-    }
+    },
   },
   methods: {
-    getValue (e) {
+    getValue(e) {
       return e.target.value
     },
-    update (e) {
+    update(e) {
       if (this.realDraftMode) {
         this.draft = this.getValue(e)
       } else {
         this.configSink(this.path, this.getValue(e))
       }
     },
-    commitDraft () {
+    commitDraft() {
       if (this.realDraftMode) {
         this.configSink(this.path, this.draft)
       }
     },
-    reset () {
+    reset() {
       if (this.realDraftMode) {
         this.draft = cloneDeep(this.state)
       } else {
-        set(this.$store.getters.mergedConfig, this.path, cloneDeep(this.defaultState))
+        set(
+          this.$store.getters.mergedConfig,
+          this.path,
+          cloneDeep(this.defaultState),
+        )
       }
     },
-    hardReset () {
+    hardReset() {
       switch (this.realSource) {
         case 'admin':
-          return this.$store.dispatch('resetAdminSetting', { path: this.path })
-            .then(() => { this.draft = this.state })
+          return this.$store
+            .dispatch('resetAdminSetting', { path: this.path })
+            .then(() => {
+              this.draft = this.state
+            })
         default:
           console.warn('Hard reset not implemented yet!')
       }
-    }
-  }
+    },
+  },
 }

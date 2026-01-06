@@ -3,80 +3,106 @@ import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filt
 import { mapGetters } from 'vuex'
 import { mapState } from 'pinia'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faList, faFolderTree, faBars, faWrench } from '@fortawesome/free-solid-svg-icons'
-import { useInterfaceStore } from 'src/stores/interface'
-
-library.add(
+import {
   faList,
   faFolderTree,
   faBars,
-  faWrench
-)
+  faWrench,
+} from '@fortawesome/free-solid-svg-icons'
+import { useInterfaceStore } from 'src/stores/interface'
+
+library.add(faList, faFolderTree, faBars, faWrench)
 
 const QuickViewSettings = {
   props: {
-    conversation: Boolean
+    conversation: Boolean,
   },
   components: {
     Popover,
-    QuickFilterSettings
+    QuickFilterSettings,
   },
   methods: {
-    setConversationDisplay (visibility) {
-      this.$store.dispatch('setOption', { name: 'conversationDisplay', value: visibility })
+    setConversationDisplay(visibility) {
+      this.$store.dispatch('setOption', {
+        name: 'conversationDisplay',
+        value: visibility,
+      })
     },
-    openTab (tab) {
+    openTab(tab) {
       useInterfaceStore().openSettingsModalTab(tab)
-    }
+    },
   },
   computed: {
     ...mapGetters(['mergedConfig']),
     ...mapState(useInterfaceStore, {
-      mobileLayout: state => state.layoutType === 'mobile'
+      mobileLayout: (state) => state.layoutType === 'mobile',
     }),
-    loggedIn () {
+    loggedIn() {
       return !!this.$store.state.users.currentUser
     },
     conversationDisplay: {
-      get () { return this.mergedConfig.conversationDisplay },
-      set (newVal) { this.setConversationDisplay(newVal) }
+      get() {
+        return this.mergedConfig.conversationDisplay
+      },
+      set(newVal) {
+        this.setConversationDisplay(newVal)
+      },
     },
     autoUpdate: {
-      get () { return this.mergedConfig.streaming },
-      set () {
+      get() {
+        return this.mergedConfig.streaming
+      },
+      set() {
         const value = !this.autoUpdate
         this.$store.dispatch('setOption', { name: 'streaming', value })
-      }
+      },
     },
     collapseWithSubjects: {
-      get () { return this.mergedConfig.collapseMessageWithSubject },
-      set () {
+      get() {
+        return this.mergedConfig.collapseMessageWithSubject
+      },
+      set() {
         const value = !this.collapseWithSubjects
-        this.$store.dispatch('setOption', { name: 'collapseMessageWithSubject', value })
-      }
+        this.$store.dispatch('setOption', {
+          name: 'collapseMessageWithSubject',
+          value,
+        })
+      },
     },
     showUserAvatars: {
-      get () { return this.mergedConfig.mentionLinkShowAvatar },
-      set () {
+      get() {
+        return this.mergedConfig.mentionLinkShowAvatar
+      },
+      set() {
         const value = !this.showUserAvatars
-        this.$store.dispatch('setOption', { name: 'mentionLinkShowAvatar', value })
-      }
+        this.$store.dispatch('setOption', {
+          name: 'mentionLinkShowAvatar',
+          value,
+        })
+      },
     },
     muteBotStatuses: {
-      get () { return this.mergedConfig.muteBotStatuses },
-      set () {
+      get() {
+        return this.mergedConfig.muteBotStatuses
+      },
+      set() {
         const value = !this.muteBotStatuses
         this.$store.dispatch('setOption', { name: 'muteBotStatuses', value })
-      }
+      },
     },
     muteSensitiveStatuses: {
-      get () { return this.mergedConfig.muteSensitiveStatuses },
-      set () {
+      get() {
+        return this.mergedConfig.muteSensitiveStatuses
+      },
+      set() {
         const value = !this.muteSensitiveStatuses
-        this.$store.dispatch('setOption', { name: 'muteSensitiveStatuses', value })
-      }
-    }
-  }
+        this.$store.dispatch('setOption', {
+          name: 'muteSensitiveStatuses',
+          value,
+        })
+      },
+    },
+  },
 }
 
 export default QuickViewSettings

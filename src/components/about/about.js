@@ -10,16 +10,20 @@ const About = {
     FeaturesPanel,
     TermsOfServicePanel,
     StaffPanel,
-    MRFTransparencyPanel
+    MRFTransparencyPanel,
   },
   computed: {
-    showFeaturesPanel () { return this.$store.state.instance.showFeaturesPanel },
-    showInstanceSpecificPanel () {
-      return this.$store.state.instance.showInstanceSpecificPanel &&
+    showFeaturesPanel() {
+      return this.$store.state.instance.showFeaturesPanel
+    },
+    showInstanceSpecificPanel() {
+      return (
+        this.$store.state.instance.showInstanceSpecificPanel &&
         !this.$store.getters.mergedConfig.hideISP &&
         this.$store.state.instance.instanceSpecificPanelContent
-    }
-  }
+      )
+    },
+  },
 }
 
 export default About

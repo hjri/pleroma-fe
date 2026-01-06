@@ -160,53 +160,53 @@ export default {
   props: {
     placement: {
       type: String,
-      required: true
+      required: true,
     },
 
     newUpload: Boolean,
 
     title: {
       type: String,
-      required: true
+      required: true,
     },
     packName: {
       type: String,
-      required: true
+      required: true,
     },
     shortcode: {
       type: String,
       // Only exists when this is not a new upload
-      default: ''
+      default: '',
     },
     file: {
       type: String,
       // Only exists when this is not a new upload
-      default: ''
+      default: '',
     },
 
     // Only exists for emojis from remote packs
     remote: {
       type: Object,
-      default: undefined
+      default: undefined,
     },
     knownLocalPacks: {
       type: Object,
-      default: undefined
-    }
+      default: undefined,
+    },
   },
   emits: ['updatePackFiles', 'displayError'],
-  data () {
+  data() {
     return {
       uploadFile: [],
       uploadURL: '',
       editedShortcode: this.shortcode,
       editedFile: this.file,
       deleteModalVisible: false,
-      copyToPack: ''
+      copyToPack: '',
     }
   },
   computed: {
-    emojiPreview () {
+    emojiPreview() {
       if (this.newUpload && this.uploadFile.length > 0) {
         return URL.createObjectURL(this.uploadFile[0])
       } else if (this.newUpload && this.uploadURL !== '') {
@@ -217,73 +217,92 @@ export default {
 
       return null
     },
-    isEdited () {
-      return !this.newUpload && (this.editedShortcode !== this.shortcode || this.editedFile !== this.file)
+    isEdited() {
+      return (
+        !this.newUpload &&
+        (this.editedShortcode !== this.shortcode ||
+          this.editedFile !== this.file)
+      )
     },
     saveButtonDisabled() {
       if (this.remote === undefined)
-        return this.newUpload ? (this.uploadURL === "" && this.uploadFile.length == 0) : !this.isEdited
-      else
-        return this.copyToPack === ""
-    }
+        return this.newUpload
+          ? this.uploadURL === '' && this.uploadFile.length == 0
+          : !this.isEdited
+      else return this.copyToPack === ''
+    },
   },
   methods: {
-    saveEditedEmoji () {
+    saveEditedEmoji() {
       if (!this.isEdited) return
 
-      this.$store.state.api.backendInteractor.updateEmojiFile(
-        { packName: this.packName, shortcode: this.shortcode, newShortcode: this.editedShortcode, newFilename: this.editedFile, force: false }
-      ).then(resp => {
-        if (resp.error !== undefined) {
-          this.$emit('displayError', resp.error)
-          return Promise.reject(resp.error)
-        }
+      this.$store.state.api.backendInteractor
+        .updateEmojiFile({
+          packName: this.packName,
+          shortcode: this.shortcode,
+          newShortcode: this.editedShortcode,
+          newFilename: this.editedFile,
+          force: false,
+        })
+        .then((resp) => {
+          if (resp.error !== undefined) {
+            this.$emit('displayError', resp.error)
+            return Promise.reject(resp.error)
+          }
 
-        return resp.json()
-      }).then(resp => this.$emit('updatePackFiles', resp))
+          return resp.json()
+        })
+        .then((resp) => this.$emit('updatePackFiles', resp))
     },
-    uploadEmoji () {
+    uploadEmoji() {
       let packName = this.remote === undefined ? this.packName : this.copyToPack
-      this.$store.state.api.backendInteractor.addNewEmojiFile({
-        packName: packName,
-        file: this.remote === undefined
-            ? (this.uploadURL !== "" ? this.uploadURL : this.uploadFile[0])
-            : this.emojiAddr(this.file),
-        shortcode: this.editedShortcode,
-        filename: this.editedFile
-      }).then(resp => resp.json()).then(resp => {
-        if (resp.error !== undefined) {
-          this.$emit('displayError', resp.error)
-          return
-        }
+      this.$store.state.api.backendInteractor
+        .addNewEmojiFile({
+          packName: packName,
+          file:
+            this.remote === undefined
+              ? this.uploadURL !== ''
+                ? this.uploadURL
+                : this.uploadFile[0]
+              : this.emojiAddr(this.file),
+          shortcode: this.editedShortcode,
+          filename: this.editedFile,
+        })
+        .then((resp) => resp.json())
+        .then((resp) => {
+          if (resp.error !== undefined) {
+            this.$emit('displayError', resp.error)
+            return
+          }
 
-        this.$emit('updatePackFiles', resp, packName)
-        this.$refs.emojiPopover.hidePopover()
+          this.$emit('updatePackFiles', resp, packName)
+          this.$refs.emojiPopover.hidePopover()
 
-        this.editedFile = ''
-        this.editedShortcode = ''
-        this.uploadFile = []
-      })
+          this.editedFile = ''
+          this.editedShortcode = ''
+          this.uploadFile = []
+        })
     },
-    revertEmoji () {
+    revertEmoji() {
       this.editedFile = this.file
       this.editedShortcode = this.shortcode
     },
-    deleteEmoji () {
+    deleteEmoji() {
       this.deleteModalVisible = false
 
-      this.$store.state.api.backendInteractor.deleteEmojiFile(
-        { packName: this.packName, shortcode: this.shortcode }
-      ).then(resp => resp.json()).then(resp => {
-        if (resp.error !== undefined) {
-          this.$emit('displayError', resp.error)
-          return
-        }
+      this.$store.state.api.backendInteractor
+        .deleteEmojiFile({ packName: this.packName, shortcode: this.shortcode })
+        .then((resp) => resp.json())
+        .then((resp) => {
+          if (resp.error !== undefined) {
+            this.$emit('displayError', resp.error)
+            return
+          }
 
-        this.$emit('updatePackFiles', resp, this.packName)
-      })
-    }
-  }
+          this.$emit('updatePackFiles', resp, this.packName)
+        })
+    },
+  },
 }
 </script>
 

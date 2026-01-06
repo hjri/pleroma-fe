@@ -5,24 +5,24 @@ describe('fileSizeFormat', () => {
     const expected = [
       {
         num: 1,
-        unit: 'B'
+        unit: 'B',
       },
       {
         num: 1,
-        unit: 'KiB'
+        unit: 'KiB',
       },
       {
         num: 1,
-        unit: 'MiB'
+        unit: 'MiB',
       },
       {
         num: 1,
-        unit: 'GiB'
+        unit: 'GiB',
       },
       {
         num: 1,
-        unit: 'TiB'
-      }
+        unit: 'TiB',
+      },
     ]
 
     const res = []

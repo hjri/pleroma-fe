@@ -7,23 +7,24 @@ import { defineAsyncComponent, shallowReactive, h } from 'vue'
  * this should be done from error component but could be done from loading or
  * actual target component itself if needs to be.
  */
-function getResettableAsyncComponent (asyncComponent, options) {
-  const asyncComponentFactory = () => () => defineAsyncComponent({
-    loader: asyncComponent,
-    ...options
-  })
+function getResettableAsyncComponent(asyncComponent, options) {
+  const asyncComponentFactory = () => () =>
+    defineAsyncComponent({
+      loader: asyncComponent,
+      ...options,
+    })
 
   const observe = shallowReactive({ c: asyncComponentFactory() })
 
   return {
-    render () {
+    render() {
       //  emit event resetAsyncComponent to reloading
       return h(observe.c(), {
-        onResetAsyncComponent () {
+        onResetAsyncComponent() {
           observe.c = asyncComponentFactory()
-        }
+        },
       })
-    }
+    },
   }
 }
 

@@ -5,8 +5,8 @@ export default {
   defaultRules: [
     {
       directives: {
-        '--profileTint': 'color | $alpha(--background 1)'
-      }
-    }
-  ]
+        '--profileTint': 'color | $alpha(--background 1)',
+      },
+    },
+  ],
 }

@@ -1,26 +1,36 @@
 import Timeline from '../timeline/timeline.vue'
 
 const TagTimeline = {
-  created () {
+  created() {
     this.$store.commit('clearTimeline', { timeline: 'tag' })
-    this.$store.dispatch('startFetchingTimeline', { timeline: 'tag', tag: this.tag })
+    this.$store.dispatch('startFetchingTimeline', {
+      timeline: 'tag',
+      tag: this.tag,
+    })
   },
   components: {
-    Timeline
+    Timeline,
   },
   computed: {
-    tag () { return this.$route.params.tag },
-    timeline () { return this.$store.state.statuses.timelines.tag }
+    tag() {
+      return this.$route.params.tag
+    },
+    timeline() {
+      return this.$store.state.statuses.timelines.tag
+    },
   },
   watch: {
-    tag () {
+    tag() {
       this.$store.commit('clearTimeline', { timeline: 'tag' })
-      this.$store.dispatch('startFetchingTimeline', { timeline: 'tag', tag: this.tag })
-    }
+      this.$store.dispatch('startFetchingTimeline', {
+        timeline: 'tag',
+        tag: this.tag,
+      })
+    },
   },
-  unmounted () {
+  unmounted() {
     this.$store.dispatch('stopFetchingTimeline', 'tag')
-  }
+  },
 }
 
 export default TagTimeline

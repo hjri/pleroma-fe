@@ -36,7 +36,7 @@ import {
   faUpload,
   faMessage,
   faEllipsis,
-  faGauge
+  faGauge,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -55,7 +55,7 @@ library.add(
   faUpload,
   faMessage,
   faEllipsis,
-  faGauge
+  faGauge,
 )
 
 const SettingsModalAdminContent = {
@@ -78,44 +78,46 @@ const SettingsModalAdminContent = {
     MonitoringTab,
     RatesTab,
     OtherTab,
-    PostsTab
+    PostsTab,
   },
   computed: {
-    user () {
+    user() {
       return this.$store.state.users.currentUser
     },
-    isLoggedIn () {
+    isLoggedIn() {
       return !!this.$store.state.users.currentUser
     },
-    open () {
+    open() {
       return useInterfaceStore().settingsModalState !== 'hidden'
     },
-    bodyLock () {
+    bodyLock() {
       return useInterfaceStore().settingsModalState === 'visible'
     },
-    adminDbLoaded () {
+    adminDbLoaded() {
       return this.$store.state.adminSettings.loaded
     },
-    adminDescriptionsLoaded () {
+    adminDescriptionsLoaded() {
       return this.$store.state.adminSettings.descriptions !== null
     },
-    noDb () {
+    noDb() {
       return this.$store.state.adminSettings.dbConfigEnabled === false
-    }
+    },
   },
-  created () {
+  created() {
     if (this.user.rights.admin) {
       this.$store.dispatch('loadAdminStuff')
     }
   },
   methods: {
-    onOpen () {
+    onOpen() {
       const targetTab = useInterfaceStore().settingsModalTargetTab
       // We're being told to open in specific tab
       if (targetTab) {
-        const tabIndex = this.$refs.tabSwitcher.$slots.default().findIndex(elm => {
-          return elm.props && elm.props['data-tab-name'] === targetTab
-        })
+        const tabIndex = this.$refs.tabSwitcher.$slots
+          .default()
+          .findIndex((elm) => {
+            return elm.props && elm.props['data-tab-name'] === targetTab
+          })
         if (tabIndex >= 0) {
           this.$refs.tabSwitcher.setTab(tabIndex)
         }
@@ -123,16 +125,16 @@ const SettingsModalAdminContent = {
       // Clear the state of target tab, so that next time settings is opened
       // it doesn't force it.
       useInterfaceStore().clearSettingsModalTargetTab()
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.onOpen()
   },
   watch: {
     open: function (value) {
       if (value) this.onOpen()
-    }
-  }
+    },
+  },
 }
 
 export default SettingsModalAdminContent

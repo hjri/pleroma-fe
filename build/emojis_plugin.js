@@ -4,18 +4,19 @@ import { languages, langCodeToCldrName } from '../src/i18n/languages.js'
 
 const annotationsImportPrefix = '@kazvmoe-infra/unicode-emoji-json/annotations/'
 const specialAnnotationsLocale = {
-  ja_easy: 'ja'
+  ja_easy: 'ja',
 }
 
-const internalToAnnotationsLocale = (internal) => specialAnnotationsLocale[internal] || internal
+const internalToAnnotationsLocale = (internal) =>
+  specialAnnotationsLocale[internal] || internal
 
 // This gets all the annotations that are accessible (whose language
 // can be chosen in the settings). Data for other languages are
 // discarded because there is no way for it to be fetched.
 const getAllAccessibleAnnotations = async (projectRoot) => {
-  const imports = (await Promise.all(
-    languages
-      .map(async lang => {
+  const imports = (
+    await Promise.all(
+      languages.map(async (lang) => {
         const destLang = internalToAnnotationsLocale(lang)
         const importModule = `${annotationsImportPrefix}${destLang}.json`
         const importFile = resolve(projectRoot, 'node_modules', importModule)
@@ -25,9 +26,11 @@ const getAllAccessibleAnnotations = async (projectRoot) => {
         } catch (e) {
           return
         }
-      })))
-        .filter(k => k)
-        .join(',\n')
+      }),
+    )
+  )
+    .filter((k) => k)
+    .join(',\n')
 
   return `
 export const annotationsLoader = {
@@ -43,21 +46,21 @@ const emojisPlugin = () => {
   let projectRoot
   return {
     name: 'emojis-plugin',
-    configResolved (conf) {
+    configResolved(conf) {
       projectRoot = conf.root
     },
-    resolveId (id) {
+    resolveId(id) {
       if (id === emojiAnnotationsId) {
         return emojiAnnotationsIdResolved
       }
       return null
     },
-    async load (id) {
+    async load(id) {
       if (id === emojiAnnotationsIdResolved) {
         return await getAllAccessibleAnnotations(projectRoot)
       }
       return null
-    }
+    },
   }
 }
 

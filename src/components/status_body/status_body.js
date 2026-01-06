@@ -7,16 +7,10 @@ import {
   faMusic,
   faImage,
   faLink,
-  faPollH
+  faPollH,
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faFile,
-  faMusic,
-  faImage,
-  faLink,
-  faPollH
-)
+library.add(faFile, faMusic, faImage, faLink, faPollH)
 
 const StatusBody = {
   name: 'StatusBody',
@@ -33,17 +27,17 @@ const StatusBody = {
     'showingLongSubject',
     'toggleShowingTall',
     'toggleExpandingSubject',
-    'toggleShowingLongSubject'
+    'toggleShowingLongSubject',
   ],
-  data () {
+  data() {
     return {
       postLength: this.status.text.length,
-      parseReadyDone: false
+      parseReadyDone: false,
     }
   },
   emits: ['parseReady'],
   computed: {
-    localCollapseSubjectDefault () {
+    localCollapseSubjectDefault() {
       return this.mergedConfig.collapseMessageWithSubject
     },
     // This is a bit hacky, but we want to approximate post height before rendering
@@ -53,73 +47,87 @@ const StatusBody = {
     //
     // Using max-height + overflow: auto for status components resulted in false positives
     // very often with japanese characters, and it was very annoying.
-    tallStatus () {
+    tallStatus() {
       if (this.singleLine || this.compact) return false
-      const lengthScore = this.status.raw_html.split(/<p|<br/).length + this.postLength / 80
+      const lengthScore =
+        this.status.raw_html.split(/<p|<br/).length + this.postLength / 80
       return lengthScore > 20
     },
-    longSubject () {
+    longSubject() {
       return this.status.summary.length > 240
     },
     // When a status has a subject and is also tall, we should only have one show more/less button. If the default is to collapse statuses with subjects, we just treat it like a status with a subject; otherwise, we just treat it like a tall status.
-    mightHideBecauseSubject () {
+    mightHideBecauseSubject() {
       return !!this.status.summary && this.localCollapseSubjectDefault
     },
-    mightHideBecauseTall () {
-      return this.tallStatus && !(this.status.summary && this.localCollapseSubjectDefault)
+    mightHideBecauseTall() {
+      return (
+        this.tallStatus &&
+        !(this.status.summary && this.localCollapseSubjectDefault)
+      )
     },
-    hideSubjectStatus () {
+    hideSubjectStatus() {
       return this.mightHideBecauseSubject && !this.expandingSubject
     },
-    hideTallStatus () {
+    hideTallStatus() {
       return this.mightHideBecauseTall && !this.showingTall
     },
-    shouldShowToggle () {
+    shouldShowToggle() {
       return this.mightHideBecauseSubject || this.mightHideBecauseTall
     },
-    toggleButtonClasses () {
+    toggleButtonClasses() {
       return {
         'cw-status-hider': !this.showingMore && this.mightHideBecauseSubject,
         'tall-status-hider': !this.showingMore && this.mightHideBecauseTall,
         'status-unhider': this.showingMore,
       }
     },
-    toggleText () {
+    toggleText() {
       if (this.showingMore) {
-        return this.mightHideBecauseSubject ? this.$t('status.hide_content') : this.$t('general.show_less')
+        return this.mightHideBecauseSubject
+          ? this.$t('status.hide_content')
+          : this.$t('general.show_less')
       } else {
-        return this.mightHideBecauseSubject ? this.$t('status.show_content') : this.$t('general.show_more')
+        return this.mightHideBecauseSubject
+          ? this.$t('status.show_content')
+          : this.$t('general.show_more')
       }
     },
-    showingMore () {
-      return (this.mightHideBecauseTall && this.showingTall) || (this.mightHideBecauseSubject && this.expandingSubject)
+    showingMore() {
+      return (
+        (this.mightHideBecauseTall && this.showingTall) ||
+        (this.mightHideBecauseSubject && this.expandingSubject)
+      )
     },
-    attachmentTypes () {
-      return this.status.attachments.map(file => fileType.fileType(file.mimetype))
+    attachmentTypes() {
+      return this.status.attachments.map((file) =>
+        fileType.fileType(file.mimetype),
+      )
     },
-    collapsedStatus () {
+    collapsedStatus() {
       return this.status.raw_html.replace(/(\n|<br\s?\/?>)/g, ' ')
     },
-    ...mapGetters(['mergedConfig'])
+    ...mapGetters(['mergedConfig']),
   },
   components: {
-    RichContent
+    RichContent,
   },
-  mounted () {
-    this.status.attentions && this.status.attentions.forEach(attn => {
-      const { id } = attn
-      this.$store.dispatch('fetchUserIfMissing', id)
-    })
+  mounted() {
+    this.status.attentions &&
+      this.status.attentions.forEach((attn) => {
+        const { id } = attn
+        this.$store.dispatch('fetchUserIfMissing', id)
+      })
   },
   methods: {
-    onParseReady (event) {
+    onParseReady(event) {
       if (this.parseReadyDone) return
       this.parseReadyDone = true
       this.$emit('parseReady', event)
       const { writtenMentions, invisibleMentions } = event
       writtenMentions
-        .filter(mention => !mention.notifying)
-        .forEach(mention => {
+        .filter((mention) => !mention.notifying)
+        .forEach((mention) => {
           const { content, url } = mention
           const cleanedString = content.replace(/<[^>]+?>/gi, '') // remove all tags
           if (!cleanedString.startsWith('@')) return
@@ -137,17 +145,17 @@ const StatusBody = {
         return acc - mention.textContent.length - 1
       }, this.postLength)
     },
-    toggleShowMore () {
+    toggleShowMore() {
       if (this.mightHideBecauseTall) {
         this.toggleShowingTall()
       } else if (this.mightHideBecauseSubject) {
         this.toggleExpandingSubject()
       }
     },
-    generateTagLink (tag) {
+    generateTagLink(tag) {
       return `/tag/${tag}`
-    }
-  }
+    },
+  },
 }
 
 export default StatusBody

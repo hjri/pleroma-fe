@@ -1,4 +1,11 @@
-import { ref, reactive, computed, watch, provide, getCurrentInstance } from 'vue'
+import {
+  ref,
+  reactive,
+  computed,
+  watch,
+  provide,
+  getCurrentInstance,
+} from 'vue'
 import { useInterfaceStore } from 'src/stores/interface'
 import { get, set, unset, throttle } from 'lodash'
 
@@ -19,19 +26,28 @@ import Preview from '../old_theme_tab/theme_preview.vue'
 
 import VirtualDirectivesTab from './virtual_directives_tab.vue'
 
-import { createStyleSheet, adoptStyleSheets } from 'src/services/style_setter/style_setter.js'
-import { init, findColor } from 'src/services/theme_data/theme_data_3.service.js'
+import {
+  createStyleSheet,
+  adoptStyleSheets,
+} from 'src/services/style_setter/style_setter.js'
+import {
+  init,
+  findColor,
+} from 'src/services/theme_data/theme_data_3.service.js'
 import { getCssRules } from 'src/services/theme_data/css_utils.js'
 import { serialize } from 'src/services/theme_data/iss_serializer.js'
-import { deserializeShadow, deserialize } from 'src/services/theme_data/iss_deserializer.js'
+import {
+  deserializeShadow,
+  deserialize,
+} from 'src/services/theme_data/iss_deserializer.js'
 import {
   rgb2hex,
   hex2rgb,
-  getContrastRatio
+  getContrastRatio,
 } from 'src/services/color_convert/color_convert.js'
 import {
   newImporter,
-  newExporter
+  newExporter,
 } from 'src/services/export_import/export_import.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -40,7 +56,7 @@ import {
   faFolderOpen,
   faFile,
   faArrowsRotate,
-  faCheck
+  faCheck,
 } from '@fortawesome/free-solid-svg-icons'
 
 // helper for debugging
@@ -48,15 +64,10 @@ import {
 const toValue = (x) => JSON.parse(JSON.stringify(x === undefined ? 'null' : x))
 
 // helper to make states comparable
-const normalizeStates = (states) => ['normal', ...(states?.filter(x => x !== 'normal') || [])].join(':')
+const normalizeStates = (states) =>
+  ['normal', ...(states?.filter((x) => x !== 'normal') || [])].join(':')
 
-library.add(
-  faFile,
-  faFloppyDisk,
-  faFolderOpen,
-  faArrowsRotate,
-  faCheck
-)
+library.add(faFile, faFloppyDisk, faFolderOpen, faArrowsRotate, faCheck)
 
 export default {
   components: {
@@ -74,18 +85,22 @@ export default {
     RoundnessInput,
     ContrastRatio,
     Preview,
-    VirtualDirectivesTab
+    VirtualDirectivesTab,
   },
-  setup () {
+  setup() {
     const exports = {}
     const interfaceStore = useInterfaceStore()
     // All rules that are made by editor
     const allEditedRules = ref(interfaceStore.styleDataUsed || {})
     const styleDataUsed = computed(() => interfaceStore.styleDataUsed)
 
-    watch([styleDataUsed], () => {
-      onImport(interfaceStore.styleDataUsed)
-    }, { once: true })
+    watch(
+      [styleDataUsed],
+      () => {
+        onImport(interfaceStore.styleDataUsed)
+      },
+      { once: true },
+    )
 
     exports.isActive = computed(() => {
       const tabSwitcher = getCurrentInstance().parent.ctx
@@ -105,7 +120,7 @@ export default {
         `  author: ${exports.author.value};`,
         `  license: ${exports.license.value};`,
         `  website: ${exports.website.value};`,
-        '}'
+        '}',
       ].join('\n')
     })
 
@@ -115,8 +130,8 @@ export default {
         name: exports.name.value,
         author: exports.author.value,
         license: exports.license.value,
-        website: exports.website.value
-      }
+        website: exports.website.value,
+      },
     }))
 
     // ## Palette stuff
@@ -131,7 +146,7 @@ export default {
         cRed: '#FF0000',
         cBlue: '#0095ff',
         cGreen: '#0fa00f',
-        cOrange: '#ffa500'
+        cOrange: '#ffa500',
       },
       {
         name: 'light',
@@ -144,8 +159,8 @@ export default {
         cRed: '#d31014',
         cGreen: '#0fa00f',
         cOrange: '#ffa500',
-        border: '#d8e6f9'
-      }
+        border: '#d8e6f9',
+      },
     ])
     exports.palettes = palettes
 
@@ -163,12 +178,12 @@ export default {
 
     const selectedPaletteId = ref(0)
     const selectedPalette = computed({
-      get () {
+      get() {
         return palettes[selectedPaletteId.value]
       },
-      set (newPalette) {
+      set(newPalette) {
         palettes[selectedPaletteId.value] = newPalette
-      }
+      },
     })
     exports.selectedPaletteId = selectedPaletteId
     exports.selectedPalette = selectedPalette
@@ -186,49 +201,50 @@ export default {
       cRed: '#FF0000',
       cBlue: '#0095ff',
       cGreen: '#0fa00f',
-      cOrange: '#ffa500'
+      cOrange: '#ffa500',
     })
 
     // Raw format
     const palettesRule = computed(() => {
-      return palettes.map(palette => {
+      return palettes.map((palette) => {
         const { name, ...rest } = palette
         return {
           component: '@palette',
           variant: name,
-          directives: Object
-            .entries(rest)
+          directives: Object.entries(rest)
             .filter(([k, v]) => v && k)
-            .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {})
+            .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {}),
         }
       })
     })
 
     // Text format
     const palettesOut = computed(() => {
-      return palettes.map(({ name, ...palette }) => {
-        const entries = Object
-          .entries(palette)
-          .filter(([k, v]) => v && k)
-          .map(([slot, data]) => `  ${slot}: ${data};`)
-          .join('\n')
+      return palettes
+        .map(({ name, ...palette }) => {
+          const entries = Object.entries(palette)
+            .filter(([k, v]) => v && k)
+            .map(([slot, data]) => `  ${slot}: ${data};`)
+            .join('\n')
 
-        return `@palette.${name} {\n${entries}\n}`
-      }).join('\n\n')
+          return `@palette.${name} {\n${entries}\n}`
+        })
+        .join('\n\n')
     })
 
     // ## Components stuff
     // Getting existing components
     const componentsContext = import.meta.glob(
       ['/src/**/*.style.js', '/src/**/*.style.json'],
-      { eager: true }
+      { eager: true },
     )
     const componentKeysAll = Object.keys(componentsContext)
     const componentsMap = new Map(
       componentKeysAll
-        .map(
-          key => [key, componentsContext[key].default]
-        ).filter(([, component]) => !component.virtual && !component.notEditable)
+        .map((key) => [key, componentsContext[key].default])
+        .filter(
+          ([, component]) => !component.virtual && !component.notEditable,
+        ),
     )
     exports.componentsMap = componentsMap
     const componentKeys = [...componentsMap.keys()]
@@ -238,16 +254,24 @@ export default {
     const selectedComponentKey = ref(componentsMap.keys().next().value)
     exports.selectedComponentKey = selectedComponentKey
 
-    const selectedComponent = computed(() => componentsMap.get(selectedComponentKey.value))
+    const selectedComponent = computed(() =>
+      componentsMap.get(selectedComponentKey.value),
+    )
     const selectedComponentName = computed(() => selectedComponent.value.name)
 
     // Selection basis
     exports.selectedComponentVariants = computed(() => {
-      return Object.keys({ normal: null, ...(selectedComponent.value.variants || {}) })
+      return Object.keys({
+        normal: null,
+        ...(selectedComponent.value.variants || {}),
+      })
     })
     exports.selectedComponentStates = computed(() => {
-      const all = Object.keys({ normal: null, ...(selectedComponent.value.states || {}) })
-      return all.filter(x => x !== 'normal')
+      const all = Object.keys({
+        normal: null,
+        ...(selectedComponent.value.states || {}),
+      })
+      return all.filter((x) => x !== 'normal')
     })
 
     // selection
@@ -269,51 +293,49 @@ export default {
       selectedState.clear()
     }
 
-    watch(
-      selectedComponentName,
-      updateSelectedComponent
-    )
+    watch(selectedComponentName, updateSelectedComponent)
 
     // ### Rules stuff aka meat and potatoes
     // The native structure of separate rules and the child -> parent
     // relation isn't very convenient for editor, we replace the array
     // and child -> parent structure with map and parent -> child structure
-    const rulesToEditorFriendly = (rules, root = {}) => rules.reduce((acc, rule) => {
-      const { parent: rParent, component: rComponent } = rule
-      const parent = rParent ?? rule
-      const hasChildren = !!rParent
-      const child = hasChildren ? rule : null
+    const rulesToEditorFriendly = (rules, root = {}) =>
+      rules.reduce((acc, rule) => {
+        const { parent: rParent, component: rComponent } = rule
+        const parent = rParent ?? rule
+        const hasChildren = !!rParent
+        const child = hasChildren ? rule : null
 
-      const {
-        component: pComponent,
-        variant: pVariant = 'normal',
-        state: pState = [] // no relation to Intel CPUs whatsoever
-      } = parent
-
-      const pPath = `${hasChildren ? pComponent : rComponent}.${pVariant}.${normalizeStates(pState)}`
-
-      let output = get(acc, pPath)
-      if (!output) {
-        set(acc, pPath, {})
-        output = get(acc, pPath)
-      }
-
-      if (hasChildren) {
-        output._children = output._children ?? {}
         const {
-          component: cComponent,
-          variant: cVariant = 'normal',
-          state: cState = [],
-          directives
-        } = child
+          component: pComponent,
+          variant: pVariant = 'normal',
+          state: pState = [], // no relation to Intel CPUs whatsoever
+        } = parent
 
-        const cPath = `${cComponent}.${cVariant}.${normalizeStates(cState)}`
-        set(output._children, cPath, { directives })
-      } else {
-        output.directives = parent.directives
-      }
-      return acc
-    }, root)
+        const pPath = `${hasChildren ? pComponent : rComponent}.${pVariant}.${normalizeStates(pState)}`
+
+        let output = get(acc, pPath)
+        if (!output) {
+          set(acc, pPath, {})
+          output = get(acc, pPath)
+        }
+
+        if (hasChildren) {
+          output._children = output._children ?? {}
+          const {
+            component: cComponent,
+            variant: cVariant = 'normal',
+            state: cState = [],
+            directives,
+          } = child
+
+          const cPath = `${cComponent}.${cVariant}.${normalizeStates(cState)}`
+          set(output._children, cPath, { directives })
+        } else {
+          output.directives = parent.directives
+        }
+        return acc
+      }, root)
 
     const editorFriendlyFallbackStructure = computed(() => {
       const root = {}
@@ -323,7 +345,7 @@ export default {
         const { defaultRules, name } = componentValue
         rulesToEditorFriendly(
           defaultRules.map((rule) => ({ ...rule, component: name })),
-          root
+          root,
         )
       })
 
@@ -333,79 +355,111 @@ export default {
     // Checking whether component can support some "directives" which
     // are actually virtual subcomponents, i.e. Text, Link etc
     exports.componentHas = (subComponent) => {
-      return !!selectedComponent.value.validInnerComponents?.find(x => x === subComponent)
+      return !!selectedComponent.value.validInnerComponents?.find(
+        (x) => x === subComponent,
+      )
     }
 
     // Path for lodash's get and set
     const getPath = (component, directive) => {
-      const pathSuffix = component ? `._children.${component}.normal.normal` : ''
+      const pathSuffix = component
+        ? `._children.${component}.normal.normal`
+        : ''
       const path = `${selectedComponentName.value}.${selectedVariant.value}.${normalizeStates([...selectedState])}${pathSuffix}.directives.${directive}`
       return path
     }
 
     // Templates for directives
-    const isElementPresent = (component, directive, defaultValue = '') => computed({
-      get () {
-        return get(allEditedRules.value, getPath(component, directive)) != null
-      },
-      set (value) {
-        if (value) {
-          const fallback = get(
-            editorFriendlyFallbackStructure.value,
-            getPath(component, directive)
+    const isElementPresent = (component, directive, defaultValue = '') =>
+      computed({
+        get() {
+          return (
+            get(allEditedRules.value, getPath(component, directive)) != null
           )
-          set(allEditedRules.value, getPath(component, directive), fallback ?? defaultValue)
-        } else {
-          unset(allEditedRules.value, getPath(component, directive))
-        }
-        exports.updateOverallPreview()
-      }
-    })
+        },
+        set(value) {
+          if (value) {
+            const fallback = get(
+              editorFriendlyFallbackStructure.value,
+              getPath(component, directive),
+            )
+            set(
+              allEditedRules.value,
+              getPath(component, directive),
+              fallback ?? defaultValue,
+            )
+          } else {
+            unset(allEditedRules.value, getPath(component, directive))
+          }
+          exports.updateOverallPreview()
+        },
+      })
 
-    const getEditedElement = (component, directive, postProcess = x => x) => computed({
-      get () {
-        let usedRule
-        const fallback = editorFriendlyFallbackStructure.value
-        const real = allEditedRules.value
-        const path = getPath(component, directive)
+    const getEditedElement = (component, directive, postProcess = (x) => x) =>
+      computed({
+        get() {
+          let usedRule
+          const fallback = editorFriendlyFallbackStructure.value
+          const real = allEditedRules.value
+          const path = getPath(component, directive)
 
-        usedRule = get(real, path) // get real
-        if (usedRule === '') {
-          return usedRule
-        }
-        if (!usedRule) {
-          usedRule = get(fallback, path)
-        }
+          usedRule = get(real, path) // get real
+          if (usedRule === '') {
+            return usedRule
+          }
+          if (!usedRule) {
+            usedRule = get(fallback, path)
+          }
 
-        return postProcess(usedRule)
-      },
-      set (value) {
-        if (value != null) {
-          set(allEditedRules.value, getPath(component, directive), value)
-        } else {
-          unset(allEditedRules.value, getPath(component, directive))
-        }
-        exports.updateOverallPreview()
-      }
-    })
+          return postProcess(usedRule)
+        },
+        set(value) {
+          if (value != null) {
+            set(allEditedRules.value, getPath(component, directive), value)
+          } else {
+            unset(allEditedRules.value, getPath(component, directive))
+          }
+          exports.updateOverallPreview()
+        },
+      })
 
     // All the editable stuff for the component
     exports.editedBackgroundColor = getEditedElement(null, 'background')
-    exports.isBackgroundColorPresent = isElementPresent(null, 'background', '#FFFFFF')
+    exports.isBackgroundColorPresent = isElementPresent(
+      null,
+      'background',
+      '#FFFFFF',
+    )
     exports.editedOpacity = getEditedElement(null, 'opacity')
     exports.isOpacityPresent = isElementPresent(null, 'opacity', 1)
     exports.editedRoundness = getEditedElement(null, 'roundness')
     exports.isRoundnessPresent = isElementPresent(null, 'roundness', '0')
     exports.editedTextColor = getEditedElement('Text', 'textColor')
-    exports.isTextColorPresent = isElementPresent('Text', 'textColor', '#000000')
+    exports.isTextColorPresent = isElementPresent(
+      'Text',
+      'textColor',
+      '#000000',
+    )
     exports.editedTextAuto = getEditedElement('Text', 'textAuto')
     exports.isTextAutoPresent = isElementPresent('Text', 'textAuto', '#000000')
     exports.editedLinkColor = getEditedElement('Link', 'textColor')
-    exports.isLinkColorPresent = isElementPresent('Link', 'textColor', '#000080')
+    exports.isLinkColorPresent = isElementPresent(
+      'Link',
+      'textColor',
+      '#000080',
+    )
     exports.editedIconColor = getEditedElement('Icon', 'textColor')
-    exports.isIconColorPresent = isElementPresent('Icon', 'textColor', '#909090')
+    exports.isIconColorPresent = isElementPresent(
+      'Icon',
+      'textColor',
+      '#909090',
+    )
     exports.editedBorderColor = getEditedElement('Border', 'textColor')
-    exports.isBorderColorPresent = isElementPresent('Border', 'textColor', '#909090')
+    exports.isBorderColorPresent = isElementPresent(
+      'Border',
+      'textColor',
+      '#909090',
+    )
 
     const getContrast = (bg, text) => {
       try {
@@ -422,7 +476,7 @@ export default {
           aaa: ratio >= 7,
           // same but for 18pt+ texts
           laa: ratio >= 3,
-          laaa: ratio >= 4.5
+          laaa: ratio >= 4.5,
         }
       } catch (e) {
         console.warn('Failure computing contrast', e)
@@ -431,7 +485,7 @@ export default {
     }
 
     const normalizeShadows = (shadows) => {
-      return shadows?.map(shadow => {
+      return shadows?.map((shadow) => {
         if (typeof shadow === 'object') {
           return shadow
         }
@@ -455,7 +509,8 @@ export default {
     const editedSubShadowId = ref(null)
     exports.editedSubShadowId = editedSubShadowId
     const editedSubShadow = computed(() => {
-      if (editedShadow.value == null || editedSubShadowId.value == null) return null
+      if (editedShadow.value == null || editedSubShadowId.value == null)
+        return null
       return editedShadow.value[editedSubShadowId.value]
     })
     exports.editedSubShadow = editedSubShadow
@@ -473,7 +528,7 @@ export default {
 
       newEditedShadow[editedSubShadowId.value] = {
         ...newEditedShadow[editedSubShadowId.value],
-        [axis]: value
+        [axis]: value,
       }
 
       editedShadow.value = newEditedShadow
@@ -513,12 +568,12 @@ export default {
               component,
               variant,
               state,
-              directives: stateData.directives || {}
+              directives: stateData.directives || {},
             }
 
             if (parent) {
               result.parent = {
-                component: parent
+                component: parent,
               }
             }
 
@@ -526,13 +581,15 @@ export default {
 
             // Currently we only support single depth for simplicity's sake
             if (!parent) {
-              Object.entries(stateData._children || {}).forEach(([cName, child]) => convert(cName, child, component))
+              Object.entries(stateData._children || {}).forEach(
+                ([cName, child]) => convert(cName, child, component),
+              )
             }
           })
         })
       }
 
-      [...componentsMap.values()].forEach(({ name }) => {
+      ;[...componentsMap.values()].forEach(({ name }) => {
         convert(name, allEditedRules.value[name])
       })
 
@@ -540,21 +597,20 @@ export default {
     })
 
     const allCustomVirtualDirectives = [...componentsMap.values()]
-      .map(c => {
-        return c
-          .defaultRules
-          .filter(c => c.component === 'Root')
-          .map(x => Object.entries(x.directives))
+      .map((c) => {
+        return c.defaultRules
+          .filter((c) => c.component === 'Root')
+          .map((x) => Object.entries(x.directives))
           .flat()
       })
-      .filter(x => x)
+      .filter((x) => x)
       .flat()
       .map(([name, value]) => {
         const [valType, valVal] = value.split('|')
         return {
           name: name.substring(2),
           valType: valType?.trim(),
-          value: valVal?.trim()
+          value: valVal?.trim(),
         }
       })
 
@@ -568,8 +624,11 @@ export default {
     const virtualDirectivesRule = computed(() => ({
       component: 'Root',
       directives: Object.fromEntries(
-        virtualDirectives.value.map(vd => [`--${vd.name}`, `${vd.valType} | ${vd.value}`])
-      )
+        virtualDirectives.value.map((vd) => [
+          `--${vd.name}`,
+          `${vd.valType} | ${vd.value}`,
+        ]),
+      ),
     }))
 
     // Text format
@@ -577,16 +636,19 @@ export default {
       return [
         'Root {',
         ...virtualDirectives.value
-          .filter(vd => vd.name && vd.valType && vd.value)
-          .map(vd => `  --${vd.name}: ${vd.valType} | ${vd.value};`),
-        '}'
+          .filter((vd) => vd.name && vd.valType && vd.value)
+          .map((vd) => `  --${vd.name}: ${vd.valType} | ${vd.value};`),
+        '}',
       ].join('\n')
     })
 
     exports.computeColor = (color) => {
       let computedColor
       try {
-        computedColor = findColor(color, { dynamicVars: dynamicVars.value, staticVars: staticVars.value })
+        computedColor = findColor(color, {
+          dynamicVars: dynamicVars.value,
+          staticVars: staticVars.value,
+        })
         if (computedColor) {
           return rgb2hex(computedColor)
         }
@@ -600,7 +662,7 @@ export default {
     exports.contrast = computed(() => {
       return getContrast(
         exports.computeColor(previewColors.value.background),
-        exports.computeColor(previewColors.value.text)
+        exports.computeColor(previewColors.value.text),
       )
     })
 
@@ -609,30 +671,38 @@ export default {
       filename: () => exports.name.value ?? 'pleroma_theme',
       mime: 'text/plain',
       extension: 'iss',
-      getExportedObject: () => exportStyleData.value
+      getExportedObject: () => exportStyleData.value,
     })
 
-    const onImport = parsed => {
-      const editorComponents = parsed.filter(x => x.component.startsWith('@'))
-      const rootComponent = parsed.find(x => x.component === 'Root')
-      const rules = parsed.filter(x => !x.component.startsWith('@') && x.component !== 'Root')
-      const metaIn = editorComponents.find(x => x.component === '@meta').directives
-      const palettesIn = editorComponents.filter(x => x.component === '@palette')
+    const onImport = (parsed) => {
+      const editorComponents = parsed.filter((x) => x.component.startsWith('@'))
+      const rootComponent = parsed.find((x) => x.component === 'Root')
+      const rules = parsed.filter(
+        (x) => !x.component.startsWith('@') && x.component !== 'Root',
+      )
+      const metaIn = editorComponents.find(
+        (x) => x.component === '@meta',
+      ).directives
+      const palettesIn = editorComponents.filter(
+        (x) => x.component === '@palette',
+      )
 
       exports.name.value = metaIn.name
       exports.license.value = metaIn.license
       exports.author.value = metaIn.author
       exports.website.value = metaIn.website
 
-      const newVirtualDirectives = Object
-        .entries(rootComponent.directives)
-        .map(([name, value]) => {
-          const [valType, valVal] = value.split('|').map(x => x.trim())
+      const newVirtualDirectives = Object.entries(rootComponent.directives).map(
+        ([name, value]) => {
+          const [valType, valVal] = value.split('|').map((x) => x.trim())
           return { name: name.substring(2), valType, value: valVal }
-        })
+        },
+      )
       virtualDirectives.value = newVirtualDirectives
 
-      onPalettesUpdate(palettesIn.map(x => ({ name: x.variant, ...x.directives })))
+      onPalettesUpdate(
+        palettesIn.map((x) => ({ name: x.variant, ...x.directives })),
+      )
 
       allEditedRules.value = rulesToEditorFriendly(rules)
 
@@ -641,12 +711,17 @@ export default {
 
     const styleImporter = newImporter({
       accept: '.iss',
-      parser (string) { return deserialize(string) },
-      onImportFailure (result) {
-        console.error('Failure importing style:', result)
-        useInterfaceStore().pushGlobalNotice({ messageKey: 'settings.invalid_theme_imported', level: 'error' })
+      parser(string) {
+        return deserialize(string)
       },
-      onImport
+      onImportFailure(result) {
+        console.error('Failure importing style:', result)
+        useInterfaceStore().pushGlobalNotice({
+          messageKey: 'settings.invalid_theme_imported',
+          level: 'error',
+        })
+      },
+      onImport,
     })
 
     // Raw format
@@ -654,7 +729,7 @@ export default {
       metaRule.value,
       ...palettesRule.value,
       virtualDirectivesRule.value,
-      ...editorFriendlyToOriginal.value
+      ...editorFriendlyToOriginal.value,
     ])
 
     // Text format
@@ -663,7 +738,7 @@ export default {
         metaOut.value,
         palettesOut.value,
         virtualDirectivesOut.value,
-        serialize(editorFriendlyToOriginal.value)
+        serialize(editorFriendlyToOriginal.value),
       ].join('\n\n')
     })
 
@@ -689,7 +764,9 @@ export default {
     watch([overallPreviewRules], () => {
       let css = null
       try {
-        css = getCssRules(overallPreviewRules.value).map(r => r.replace('html', '&'))
+        css = getCssRules(overallPreviewRules.value).map((r) =>
+          r.replace('html', '&'),
+        )
       } catch (e) {
         console.error(e)
         return
@@ -698,11 +775,9 @@ export default {
       const sheet = createStyleSheet('style-tab-overall-preview', 90)
 
       sheet.clear()
-      sheet.addRule([
-        '#edited-style-preview {\n',
-        css.join('\n'),
-        '\n}'
-      ].join(''))
+      sheet.addRule(
+        ['#edited-style-preview {\n', css.join('\n'), '\n}'].join(''),
+      )
       sheet.ready = true
       adoptStyleSheets()
     })
@@ -715,15 +790,14 @@ export default {
             {
               component: 'Root',
               directives: Object.fromEntries(
-                Object
-                  .entries(selectedPalette.value)
+                Object.entries(selectedPalette.value)
                   .filter(([k, v]) => k && v && k !== 'name')
-                  .map(([k, v]) => [`--${k}`, `color | ${v}`])
-              )
-            }
+                  .map(([k, v]) => [`--${k}`, `color | ${v}`]),
+              ),
+            },
           ],
           ultimateBackgroundColor: '#000000',
-          debug: true
+          debug: true,
         }).eager
       } catch (e) {
         console.error('Could not compile preview theme', e)
@@ -733,30 +807,32 @@ export default {
     //
     // Apart from "hover" we can't really show how component looks like in
     // certain states, so we have to fake them.
-    const simulatePseudoSelectors = (css, prefix) => css
-      .replace(prefix, '.preview-block')
-      .replace(':active', '.preview-active')
-      .replace(':hover', '.preview-hover')
-      .replace(':active', '.preview-active')
-      .replace(':focus', '.preview-focus')
-      .replace(':focus-within', '.preview-focus-within')
-      .replace(':disabled', '.preview-disabled')
+    const simulatePseudoSelectors = (css, prefix) =>
+      css
+        .replace(prefix, '.preview-block')
+        .replace(':active', '.preview-active')
+        .replace(':hover', '.preview-hover')
+        .replace(':active', '.preview-active')
+        .replace(':focus', '.preview-focus')
+        .replace(':focus-within', '.preview-focus-within')
+        .replace(':disabled', '.preview-disabled')
 
     const previewRules = computed(() => {
-      const filtered = overallPreviewRules.value.filter(r => {
+      const filtered = overallPreviewRules.value.filter((r) => {
         const componentMatch = r.component === selectedComponentName.value
-        const parentComponentMatch = r.parent?.component === selectedComponentName.value
+        const parentComponentMatch =
+          r.parent?.component === selectedComponentName.value
         if (!componentMatch && !parentComponentMatch) return false
         const rule = parentComponentMatch ? r.parent : r
         if (rule.component !== selectedComponentName.value) return false
         if (rule.variant !== selectedVariant.value) return false
-        const ruleState = new Set(rule.state.filter(x => x !== 'normal'))
-        const differenceA = [...ruleState].filter(x => !selectedState.has(x))
-        const differenceB = [...selectedState].filter(x => !ruleState.has(x))
-        return (differenceA.length + differenceB.length) === 0
+        const ruleState = new Set(rule.state.filter((x) => x !== 'normal'))
+        const differenceA = [...ruleState].filter((x) => !selectedState.has(x))
+        const differenceB = [...selectedState].filter((x) => !ruleState.has(x))
+        return differenceA.length + differenceB.length === 0
       })
       const sorted = [...filtered]
-        .filter(x => x.component === selectedComponentName.value)
+        .filter((x) => x.component === selectedComponentName.value)
         .sort((a, b) => {
           const aSelectorLength = a.selector.split(/ /g).length
           const bSelectorLength = b.selector.split(/ /g).length
@@ -765,27 +841,32 @@ export default {
 
       const prefix = sorted[0].selector
 
-      return filtered.filter(x => x.selector.startsWith(prefix))
+      return filtered.filter((x) => x.selector.startsWith(prefix))
     })
 
     exports.previewClass = computed(() => {
       const selectors = []
-      if (!!selectedComponent.value.variants?.normal || selectedVariant.value !== 'normal') {
+      if (
+        !!selectedComponent.value.variants?.normal ||
+        selectedVariant.value !== 'normal'
+      ) {
         selectors.push(selectedComponent.value.variants[selectedVariant.value])
       }
       if (selectedState.size > 0) {
-        selectedState.forEach(state => {
+        selectedState.forEach((state) => {
           const original = selectedComponent.value.states[state]
           selectors.push(simulatePseudoSelectors(original))
         })
       }
-      return selectors.map(x => x.substring(1)).join('')
+      return selectors.map((x) => x.substring(1)).join('')
     })
 
     exports.previewCss = computed(() => {
       try {
         const prefix = previewRules.value[0].selector
-        const scoped = getCssRules(previewRules.value).map(x => simulatePseudoSelectors(x, prefix))
+        const scoped = getCssRules(previewRules.value).map((x) =>
+          simulatePseudoSelectors(x, prefix),
+        )
         return scoped.join('\n')
       } catch (e) {
         console.error('Invalid ruleset', e)
@@ -798,7 +879,7 @@ export default {
     })
 
     const staticVars = computed(() => {
-      const rootComponent = overallPreviewRules.value.find(r => {
+      const rootComponent = overallPreviewRules.value.find((r) => {
         return r.component === 'Root'
       })
       const rootDirectivesEntries = Object.entries(rootComponent.directives)
@@ -807,7 +888,10 @@ export default {
         .filter(([k, v]) => k.startsWith('--') && v.startsWith('color | '))
         .map(([k, v]) => [k.substring(2), v.substring('color | '.length)])
         .forEach(([k, v]) => {
-          directives[k] = findColor(v, { dynamicVars: {}, staticVars: directives })
+          directives[k] = findColor(v, {
+            dynamicVars: {},
+            staticVars: directives,
+          })
         })
       return directives
     })
@@ -816,13 +900,18 @@ export default {
 
     const previewColors = computed(() => {
       const stacked = dynamicVars.value.stacked
-      const background = typeof stacked === 'string' ? stacked : rgb2hex(stacked)
+      const background =
+        typeof stacked === 'string' ? stacked : rgb2hex(stacked)
       return {
-        text: previewRules.value.find(r => r.component === 'Text')?.virtualDirectives['--text'],
-        link: previewRules.value.find(r => r.component === 'Link')?.virtualDirectives['--link'],
-        border: previewRules.value.find(r => r.component === 'Border')?.virtualDirectives['--border'],
-        icon: previewRules.value.find(r => r.component === 'Icon')?.virtualDirectives['--icon'],
-        background
+        text: previewRules.value.find((r) => r.component === 'Text')
+          ?.virtualDirectives['--text'],
+        link: previewRules.value.find((r) => r.component === 'Link')
+          ?.virtualDirectives['--link'],
+        border: previewRules.value.find((r) => r.component === 'Border')
+          ?.virtualDirectives['--border'],
+        icon: previewRules.value.find((r) => r.component === 'Icon')
+          ?.virtualDirectives['--icon'],
+        background,
       }
     })
     exports.previewColors = previewColors
@@ -836,11 +925,11 @@ export default {
         palettes,
         selectedPalette,
         selectedState,
-        selectedVariant
+        selectedVariant,
       ],
-      updateOverallPreview
+      updateOverallPreview,
     )
 
     return exports
-  }
+  },
 }

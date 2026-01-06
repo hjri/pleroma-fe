@@ -7,22 +7,26 @@ import { useAuthFlowStore } from 'src/stores/auth_flow'
 
 const AuthForm = {
   name: 'AuthForm',
-  render () {
+  render() {
     return h(resolveComponent(this.authForm))
   },
   computed: {
-    authForm () {
-      if (this.requiredTOTP) { return 'MFATOTPForm' }
-      if (this.requiredRecovery) { return 'MFARecoveryForm' }
+    authForm() {
+      if (this.requiredTOTP) {
+        return 'MFATOTPForm'
+      }
+      if (this.requiredRecovery) {
+        return 'MFARecoveryForm'
+      }
       return 'LoginForm'
     },
-    ...mapState(useAuthFlowStore, ['requiredTOTP', 'requiredRecovery'])
+    ...mapState(useAuthFlowStore, ['requiredTOTP', 'requiredRecovery']),
   },
   components: {
     MFARecoveryForm,
     MFATOTPForm,
-    LoginForm
-  }
+    LoginForm,
+  },
 }
 
 export default AuthForm

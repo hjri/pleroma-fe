@@ -5,23 +5,17 @@ import UserListMenu from 'src/components/user_list_menu/user_list_menu.vue'
 import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faEllipsisV
-} from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { useReportsStore } from 'src/stores/reports'
 
-library.add(
-  faEllipsisV
-)
+library.add(faEllipsisV)
 
 const AccountActions = {
-  props: [
-    'user', 'relationship'
-  ],
-  data () {
+  props: ['user', 'relationship'],
+  data() {
     return {
       showingConfirmBlock: false,
-      showingConfirmRemoveFollower: false
+      showingConfirmRemoveFollower: false,
     }
   },
   components: {
@@ -29,25 +23,25 @@ const AccountActions = {
     Popover,
     UserListMenu,
     ConfirmModal,
-    UserTimedFilterModal
+    UserTimedFilterModal,
   },
   methods: {
-    showConfirmRemoveUserFromFollowers () {
+    showConfirmRemoveUserFromFollowers() {
       this.showingConfirmRemoveFollower = true
     },
-    hideConfirmRemoveUserFromFollowers () {
+    hideConfirmRemoveUserFromFollowers() {
       this.showingConfirmRemoveFollower = false
     },
-    hideConfirmBlock () {
+    hideConfirmBlock() {
       this.showingConfirmBlock = false
     },
-    showRepeats () {
+    showRepeats() {
       this.$store.dispatch('showReblogs', this.user.id)
     },
-    hideRepeats () {
+    hideRepeats() {
       this.$store.dispatch('hideReblogs', this.user.id)
     },
-    blockUser () {
+    blockUser() {
       if (this.$refs.timedBlockDialog) {
         this.$refs.timedBlockDialog.optionallyPrompt()
       } else {
@@ -58,46 +52,50 @@ const AccountActions = {
         }
       }
     },
-    doBlockUser () {
+    doBlockUser() {
       this.$store.dispatch('blockUser', { id: this.user.id })
       this.hideConfirmBlock()
     },
-    unblockUser () {
+    unblockUser() {
       this.$store.dispatch('unblockUser', this.user.id)
     },
-    removeUserFromFollowers () {
+    removeUserFromFollowers() {
       if (!this.shouldConfirmRemoveUserFromFollowers) {
         this.doRemoveUserFromFollowers()
       } else {
         this.showConfirmRemoveUserFromFollowers()
       }
     },
-    doRemoveUserFromFollowers () {
+    doRemoveUserFromFollowers() {
       this.$store.dispatch('removeUserFromFollowers', this.user.id)
       this.hideConfirmRemoveUserFromFollowers()
     },
-    reportUser () {
+    reportUser() {
       useReportsStore().openUserReportingModal({ userId: this.user.id })
     },
-    openChat () {
+    openChat() {
       this.$router.push({
         name: 'chat',
-        params: { username: this.$store.state.users.currentUser.screen_name, recipient_id: this.user.id }
+        params: {
+          username: this.$store.state.users.currentUser.screen_name,
+          recipient_id: this.user.id,
+        },
       })
-    }
+    },
   },
   computed: {
-    shouldConfirmBlock () {
+    shouldConfirmBlock() {
       return this.$store.getters.mergedConfig.modalOnBlock
     },
-    shouldConfirmRemoveUserFromFollowers () {
+    shouldConfirmRemoveUserFromFollowers() {
       return this.$store.getters.mergedConfig.modalOnRemoveUserFromFollowers
     },
     ...mapState({
-      blockExpirationSupported: state => state.instance.blockExpiration,
-      pleromaChatMessagesAvailable: state => state.instance.pleromaChatMessagesAvailable
-    })
-  }
+      blockExpirationSupported: (state) => state.instance.blockExpiration,
+      pleromaChatMessagesAvailable: (state) =>
+        state.instance.pleromaChatMessagesAvailable,
+    }),
+  },
 }
 
 export default AccountActions

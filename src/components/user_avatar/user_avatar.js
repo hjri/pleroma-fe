@@ -3,60 +3,54 @@ import { useInterfaceStore } from 'src/stores/interface'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 
-import {
-  faRobot,
-  faPeopleGroup
-} from '@fortawesome/free-solid-svg-icons'
+import { faRobot, faPeopleGroup } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faRobot,
-  faPeopleGroup
-)
+library.add(faRobot, faPeopleGroup)
 
 const UserAvatar = {
   props: {
     // User object to show avatar of
     user: {
       required: true,
-      type: Object
+      type: Object,
     },
     // Use less space and use alternative roundness
     compact: {
       required: false,
       type: Boolean,
-      default: false
+      default: false,
     },
     // Show small icon indicating if account is a bot or group
-    showActorTypeIndicator : {
+    showActorTypeIndicator: {
       required: false,
       type: Boolean,
-      default: false
+      default: false,
     },
     // Override avatar image URL, useful for profile editing
     url: {
       required: false,
       type: String,
-      default: null
-    }
+      default: null,
+    },
   },
-  data () {
+  data() {
     return {
       showPlaceholder: false,
       defaultAvatar: `${this.$store.state.instance.server + this.$store.state.instance.defaultAvatar}`,
-      betterShadow: useInterfaceStore().browserSupport.cssFilter
+      betterShadow: useInterfaceStore().browserSupport.cssFilter,
     }
   },
   components: {
-    StillImage
+    StillImage,
   },
   methods: {
-    imgSrc (src) {
-      return (!src || this.showPlaceholder) ? this.defaultAvatar : src
+    imgSrc(src) {
+      return !src || this.showPlaceholder ? this.defaultAvatar : src
     },
-    imageLoadError () {
+    imageLoadError() {
       this.showPlaceholder = true
-    }
-  }
+    },
+  },
 }
 
 export default UserAvatar

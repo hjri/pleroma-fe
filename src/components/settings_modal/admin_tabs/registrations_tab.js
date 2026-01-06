@@ -10,10 +10,10 @@ import ListSetting from '../helpers/list_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
 const RegistrationsTab = {
-  provide () {
+  provide() {
     return {
       defaultDraftMode: true,
-      defaultSource: 'admin'
+      defaultSource: 'admin',
     }
   },
   components: {
@@ -24,11 +24,11 @@ const RegistrationsTab = {
     TupleSetting,
     AttachmentSetting,
     GroupSetting,
-    ListSetting
+    ListSetting,
   },
   computed: {
-    ...SharedComputedObject()
-  }
+    ...SharedComputedObject(),
+  },
 }
 
 export default RegistrationsTab

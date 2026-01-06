@@ -3,23 +3,23 @@ import { defineStore } from 'pinia'
 
 export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {
   state: () => ({
-    allFolders: []
+    allFolders: [],
   }),
   getters: {
-    findBookmarkFolderName () {
+    findBookmarkFolderName() {
       return (id) => {
-        const folder = this.allFolders.find(folder => folder.id === id)
-  
+        const folder = this.allFolders.find((folder) => folder.id === id)
+
         if (!folder) return
         return folder.name
       }
-    }
+    },
   },
   actions: {
-    setBookmarkFolders (value) {
+    setBookmarkFolders(value) {
       this.allFolders = value
     },
-    setBookmarkFolder ({ id, name, emoji, emoji_url: emojiUrl }) {
+    setBookmarkFolder({ id, name, emoji, emoji_url: emojiUrl }) {
       const entry = find(this.allFolders, { id })
       if (!entry) {
         this.allFolders.push({ id, name, emoji, emoji_url: emojiUrl })
@@ -29,23 +29,25 @@ export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {
         entry.emoji_url = emojiUrl
       }
     },
-    createBookmarkFolder ({ name, emoji }) {
-      return window.vuex.state.api.backendInteractor.createBookmarkFolder({ name, emoji })
+    createBookmarkFolder({ name, emoji }) {
+      return window.vuex.state.api.backendInteractor
+        .createBookmarkFolder({ name, emoji })
         .then((folder) => {
           this.setBookmarkFolder(folder)
           return folder
         })
     },
-    updateBookmarkFolder ({ folderId, name, emoji }) {
-      return window.vuex.state.api.backendInteractor.updateBookmarkFolder({ folderId, name, emoji })
+    updateBookmarkFolder({ folderId, name, emoji }) {
+      return window.vuex.state.api.backendInteractor
+        .updateBookmarkFolder({ folderId, name, emoji })
         .then((folder) => {
           this.setBookmarkFolder(folder)
           return folder
         })
     },
-    deleteBookmarkFolder ({ folderId }) {
+    deleteBookmarkFolder({ folderId }) {
       window.vuex.state.api.backendInteractor.deleteBookmarkFolder({ folderId })
-      remove(this.allFolders, folder => folder.id === folderId)
-    }
-  }
+      remove(this.allFolders, (folder) => folder.id === folderId)
+    },
+  },
 })

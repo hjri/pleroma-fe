@@ -1,6 +1,10 @@
 import { cloneDeep } from 'lodash'
 
-import { defaultState, mutations, getters } from '../../../../src/modules/users.js'
+import {
+  defaultState,
+  mutations,
+  getters,
+} from '../../../../src/modules/users.js'
 
 describe('The users module', () => {
   describe('mutations', () => {
@@ -23,22 +27,18 @@ describe('The users module', () => {
       const state = cloneDeep(defaultState)
       const user = {
         id: '1',
-        fields: [
-          { name: 'Label 1', value: 'Content 1' }
-        ]
+        fields: [{ name: 'Label 1', value: 'Content 1' }],
       }
       const firstModUser = {
         id: '1',
         fields: [
           { name: 'Label 2', value: 'Content 2' },
-          { name: 'Label 3', value: 'Content 3' }
-        ]
+          { name: 'Label 3', value: 'Content 3' },
+        ],
       }
       const secondModUser = {
         id: '1',
-        fields: [
-          { name: 'Label 4', value: 'Content 4' }
-        ]
+        fields: [{ name: 'Label 4', value: 'Content 4' }],
       }
 
       mutations.addNewUsers(state, [user])
@@ -61,11 +61,11 @@ describe('The users module', () => {
       const user = { screen_name: 'Guy', id: '1' }
       const state = {
         usersObject: {
-          1: user
+          1: user,
         },
         usersByNameObject: {
-          guy: user
-        }
+          guy: user,
+        },
       }
       const name = 'Guy'
       expect(getters.findUser(state)(name)).to.eql(undefined)
@@ -75,11 +75,11 @@ describe('The users module', () => {
       const user = { screen_name: 'Guy', id: '1' }
       const state = {
         usersObject: {
-          1: user
+          1: user,
         },
         usersByNameObject: {
-          guy: user
-        }
+          guy: user,
+        },
       }
       const id = '1'
       const expected = { screen_name: 'Guy', id: '1' }
@@ -92,11 +92,11 @@ describe('The users module', () => {
       const user = { screen_name: 'Guy', id: '1' }
       const state = {
         usersObject: {
-          1: user
+          1: user,
         },
         usersByNameObject: {
-          guy: user
-        }
+          guy: user,
+        },
       }
       const name = 'Guy'
       const expected = { screen_name: 'Guy', id: '1' }
@@ -107,11 +107,11 @@ describe('The users module', () => {
       const user = { screen_name: 'Guy', id: '1' }
       const state = {
         usersObject: {
-          1: user
+          1: user,
         },
         usersByNameObject: {
-          guy: user
-        }
+          guy: user,
+        },
       }
       const id = '1'
       expect(getters.findUserByName(state)(id)).to.eql(undefined)

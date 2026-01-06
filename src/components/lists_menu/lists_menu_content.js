@@ -5,22 +5,20 @@ import { getListEntries } from 'src/components/navigation/filter.js'
 import { useListsStore } from 'src/stores/lists'
 
 export const ListsMenuContent = {
-  props: [
-    'showPin'
-  ],
+  props: ['showPin'],
   components: {
-    NavigationEntry
+    NavigationEntry,
   },
   computed: {
     ...mapPiniaState(useListsStore, {
-      lists: getListEntries
+      lists: getListEntries,
     }),
     ...mapState({
-      currentUser: state => state.users.currentUser,
-      privateMode: state => state.instance.private,
-      federating: state => state.instance.federating
-    })
-  }
+      currentUser: (state) => state.users.currentUser,
+      privateMode: (state) => state.instance.private,
+      federating: (state) => state.instance.federating,
+    }),
+  },
 }
 
 export default ListsMenuContent

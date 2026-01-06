@@ -3,10 +3,14 @@ import apiService from '../api/api.service.js'
 import { promiseInterval } from '../promise_interval/promise_interval.js'
 
 const fetchAndUpdate = ({ credentials }) => {
-  return apiService.fetchLists({ credentials })
-    .then(lists => {
-      useListsStore().setLists(lists)
-    }, () => {})
+  return apiService
+    .fetchLists({ credentials })
+    .then(
+      (lists) => {
+        useListsStore().setLists(lists)
+      },
+      () => {},
+    )
     .catch(() => {})
 }
 
@@ -17,7 +21,7 @@ const startFetching = ({ credentials, store }) => {
 }
 
 const listsFetcher = {
-  startFetching
+  startFetching,
 }
 
 export default listsFetcher

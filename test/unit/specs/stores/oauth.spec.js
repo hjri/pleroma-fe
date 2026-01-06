@@ -3,16 +3,20 @@ import { createStore } from 'vuex'
 import { createPinia, setActivePinia } from 'pinia'
 import { http, HttpResponse } from 'msw'
 import { useOAuthStore } from 'src/stores/oauth.js'
-import { injectMswToTest, authApis, testServer } from '/test/fixtures/mock_api.js'
+import {
+  injectMswToTest,
+  authApis,
+  testServer,
+} from '/test/fixtures/mock_api.js'
 
 const test = injectMswToTest(authApis)
 
 const vuexStore = createStore({
   modules: {
     instance: {
-      state: () => ({ server: testServer })
-    }
-  }
+      state: () => ({ server: testServer }),
+    },
+  },
 })
 const app = createApp({})
 app.use(vuexStore)
@@ -29,7 +33,6 @@ const getStore = (defaultStateInjection) => {
   return useOAuthStore()
 }
 
-
 describe('createApp', () => {
   test('it should use create an app and record client id and secret', async () => {
     const store = getStore()
@@ -44,7 +47,7 @@ describe('createApp', () => {
     worker.use(
       http.post(`${testServer}/api/v1/apps`, () => {
         return HttpResponse.text('Throttled', { status: 429 })
-      })
+      }),
     )
 
     const store = getStore()
@@ -69,12 +72,12 @@ describe('ensureApp', () => {
     worker.use(
       http.post(`${testServer}/api/v1/apps`, () => {
         return HttpResponse.text('Should not call this API', { status: 400 })
-      })
+      }),
     )
 
     const store = getStore({
       clientId: 'another-id',
-      clientSecret: 'another-secret'
+      clientSecret: 'another-secret',
     })
     const app = await store.ensureApp()
     expect(store.clientId).to.eql('another-id')
@@ -88,7 +91,7 @@ describe('getAppToken', () => {
   test('it should get app token and set it in state', async () => {
     const store = getStore({
       clientId: 'test-id',
-      clientSecret: 'test-secret'
+      clientSecret: 'test-secret',
     })
     const token = await store.getAppToken()
     expect(token).to.eql('test-app-token')
@@ -98,7 +101,7 @@ describe('getAppToken', () => {
   test('it should throw and not set state if it cannot get app token', async () => {
     const store = getStore({
       clientId: 'bad-id',
-      clientSecret: 'bad-secret'
+      clientSecret: 'bad-secret',
     })
     await expect(store.getAppToken()).rejects.toThrowError('400')
     expect(store.appToken).to.eql(false)
@@ -115,38 +118,42 @@ describe('ensureAppToken', () => {
 
   test('it should work if we already have a working token', async () => {
     const store = getStore({
-      appToken: 'also-good-app-token'
+      appToken: 'also-good-app-token',
     })
     const token = await store.ensureAppToken()
     expect(token).to.eql('also-good-app-token')
     expect(store.appToken).to.eql('also-good-app-token')
   })
 
-  test('it should work if we have a bad token but good app credentials', async ({ worker }) => {
+  test('it should work if we have a bad token but good app credentials', async ({
+    worker,
+  }) => {
     worker.use(
       http.post(`${testServer}/api/v1/apps`, () => {
         return HttpResponse.text('Should not call this API', { status: 400 })
-      })
+      }),
     )
     const store = getStore({
       appToken: 'bad-app-token',
       clientId: 'test-id',
-      clientSecret: 'test-secret'
+      clientSecret: 'test-secret',
     })
     const token = await store.ensureAppToken()
     expect(token).to.eql('test-app-token')
     expect(store.appToken).to.eql('test-app-token')
   })
 
-  test('it should work if we have no token but good app credentials', async ({ worker }) => {
+  test('it should work if we have no token but good app credentials', async ({
+    worker,
+  }) => {
     worker.use(
       http.post(`${testServer}/api/v1/apps`, () => {
         return HttpResponse.text('Should not call this API', { status: 400 })
-      })
+      }),
     )
     const store = getStore({
       clientId: 'test-id',
-      clientSecret: 'test-secret'
+      clientSecret: 'test-secret',
     })
     const token = await store.ensureAppToken()
     expect(token).to.eql('test-app-token')
@@ -156,7 +163,7 @@ describe('ensureAppToken', () => {
   test('it should work if we have no token and bad app credentials', async () => {
     const store = getStore({
       clientId: 'bad-id',
-      clientSecret: 'bad-secret'
+      clientSecret: 'bad-secret',
     })
     const token = await store.ensureAppToken()
     expect(token).to.eql('test-app-token')
@@ -169,7 +176,7 @@ describe('ensureAppToken', () => {
     const store = getStore({
       appToken: 'bad-app-token',
       clientId: 'bad-id',
-      clientSecret: 'bad-secret'
+      clientSecret: 'bad-secret',
     })
     const token = await store.ensureAppToken()
     expect(token).to.eql('test-app-token')
@@ -182,7 +189,7 @@ describe('ensureAppToken', () => {
     worker.use(
       http.post(`${testServer}/api/v1/apps`, () => {
         return HttpResponse.text('Throttled', { status: 429 })
-      })
+      }),
     )
 
     const store = getStore()
@@ -193,7 +200,7 @@ describe('ensureAppToken', () => {
     worker.use(
       http.post(`${testServer}/oauth/token`, () => {
         return HttpResponse.text('Throttled', { status: 429 })
-      })
+      }),
     )
 
     const store = getStore()

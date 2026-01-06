@@ -9,25 +9,22 @@ import {
   faCheck,
   faTimes,
   faWrench,
-
   faChevronRight,
   faChevronUp,
-
   faReply,
   faRetweet,
   faStar,
   faSmileBeam,
-
   faBookmark,
   faEyeSlash,
   faThumbtack,
   faShareAlt,
   faExternalLinkAlt,
-  faHistory
+  faHistory,
 } from '@fortawesome/free-solid-svg-icons'
 import {
   faStar as faStarRegular,
-  faBookmark as faBookmarkRegular
+  faBookmark as faBookmarkRegular,
 } from '@fortawesome/free-regular-svg-icons'
 
 library.add(
@@ -52,7 +49,7 @@ library.add(
   faThumbtack,
   faShareAlt,
   faExternalLinkAlt,
-  faHistory
+  faHistory,
 )
 
 export default {
@@ -65,66 +62,73 @@ export default {
     'getClass',
     'getComponent',
     'doAction',
-    'outerClose'
+    'outerClose',
   ],
-  emits: [
-    'interacted'
-  ],
+  emits: ['interacted'],
   components: {
     StatusBookmarkFolderMenu,
     EmojiPicker,
-    Popover
+    Popover,
   },
   data: () => ({
-    animationState: false
+    animationState: false,
   }),
   computed: {
-    buttonClass () {
+    buttonClass() {
       return [
         this.button.name + '-button',
         {
           '-with-extra': this.button.name === 'bookmark',
           '-extra': this.extra,
-          '-quick': !this.extra
-        }
+          '-quick': !this.extra,
+        },
       ]
     },
-    userIsMuted () {
+    userIsMuted() {
       return this.$store.getters.relationship(this.status.user.id).muting
     },
-    threadIsMuted () {
+    threadIsMuted() {
       return this.status.thread_muted
     },
-    hideCustomEmoji () {
+    hideCustomEmoji() {
       return !this.$store.state.instance.pleromaCustomEmojiReactionsAvailable
     },
-    buttonInnerClass () {
+    buttonInnerClass() {
       return [
         this.button.name + '-button',
         {
           'main-button': this.extra,
           'button-unstyled': !this.extra,
           '-active': this.button.active?.(this.funcArg),
-          disabled: this.button.interactive ? !this.button.interactive(this.funcArg) : false
-        }
+          disabled: this.button.interactive
+            ? !this.button.interactive(this.funcArg)
+            : false,
+        },
       ]
     },
-    remoteInteractionLink () {
-      return this.$store.getters.remoteInteractionLink({ statusId: this.status.id })
-    }
+    remoteInteractionLink() {
+      return this.$store.getters.remoteInteractionLink({
+        statusId: this.status.id,
+      })
+    },
   },
   methods: {
-    addReaction (event) {
+    addReaction(event) {
       const emoji = event.insertion
-      const existingReaction = this.status.emoji_reactions.find(r => r.name === emoji)
+      const existingReaction = this.status.emoji_reactions.find(
+        (r) => r.name === emoji,
+      )
       if (existingReaction && existingReaction.me) {
         this.$store.dispatch('unreactWithEmoji', { id: this.status.id, emoji })
       } else {
         this.$store.dispatch('reactWithEmoji', { id: this.status.id, emoji })
       }
     },
-    doActionWrap (button, close = () => {}) {
-      if (this.button.interactive ? !this.button.interactive(this.funcArg) : false) return
+    doActionWrap(button, close = () => {}) {
+      if (
+        this.button.interactive ? !this.button.interactive(this.funcArg) : false
+      )
+        return
       this.$emit('interacted')
       if (button.name === 'emoji') {
         this.$refs.picker.showPicker()
@@ -136,6 +140,6 @@ export default {
         }, 500)
         close()
       }
-    }
-  }
+    },
+  },
 }

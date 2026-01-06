@@ -9,18 +9,22 @@ export const useReportsStore = defineStore('reports', {
       userId: null,
       statuses: [],
       preTickedIds: [],
-      activated: false
+      activated: false,
     },
-    reports: {}
+    reports: {},
   }),
   actions: {
-    openUserReportingModal ({ userId, statusIds = [] }) {
-      const preTickedStatuses = statusIds.map(id => window.vuex.state.statuses.allStatusesObject[id])
+    openUserReportingModal({ userId, statusIds = [] }) {
+      const preTickedStatuses = statusIds.map(
+        (id) => window.vuex.state.statuses.allStatusesObject[id],
+      )
       const preTickedIds = statusIds
       const statuses = preTickedStatuses.concat(
-        filter(window.vuex.state.statuses.allStatuses,
-          status => status.user.id === userId && !preTickedIds.includes(status.id)
-        )
+        filter(
+          window.vuex.state.statuses.allStatuses,
+          (status) =>
+            status.user.id === userId && !preTickedIds.includes(status.id),
+        ),
       )
 
       this.reportModal.userId = userId
@@ -28,25 +32,27 @@ export const useReportsStore = defineStore('reports', {
       this.reportModal.preTickedIds = preTickedIds
       this.reportModal.activated = true
     },
-    closeUserReportingModal () {
+    closeUserReportingModal() {
       this.reportModal.activated = false
     },
-    setReportState ({ id, state }) {
+    setReportState({ id, state }) {
       const oldState = this.reports[id].state
       this.reports[id].state = state
-      window.vuex.state.api.backendInteractor.setReportState({ id, state }).catch(e => {
-        console.error('Failed to set report state', e)
-        useInterfaceStore().pushGlobalNotice({
-          level: 'error',
-          messageKey: 'general.generic_error_message',
-          messageArgs: [e.message],
-          timeout: 5000
+      window.vuex.state.api.backendInteractor
+        .setReportState({ id, state })
+        .catch((e) => {
+          console.error('Failed to set report state', e)
+          useInterfaceStore().pushGlobalNotice({
+            level: 'error',
+            messageKey: 'general.generic_error_message',
+            messageArgs: [e.message],
+            timeout: 5000,
+          })
+          this.reports[id].state = oldState
         })
-        this.reports[id].state = oldState
-      })
     },
-    addReport (report) {
+    addReport(report) {
       this.reports[report.id] = report
-    }
-  }
+    },
+  },
 })

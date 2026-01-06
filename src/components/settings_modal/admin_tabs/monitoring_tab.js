@@ -8,19 +8,15 @@ import ListSetting from '../helpers/list_setting.vue'
 
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faGlobe
-} from '@fortawesome/free-solid-svg-icons'
+import { faGlobe } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faGlobe
-)
+library.add(faGlobe)
 
 const MonitoringTab = {
-  provide () {
+  provide() {
     return {
       defaultDraftMode: true,
-      defaultSource: 'admin'
+      defaultSource: 'admin',
     }
   },
   components: {
@@ -30,13 +26,12 @@ const MonitoringTab = {
     StringSetting,
     AttachmentSetting,
     GroupSetting,
-    ListSetting
+    ListSetting,
   },
   computed: {
-    ...SharedComputedObject()
+    ...SharedComputedObject(),
   },
-  methods: {
-  }
+  methods: {},
 }
 
 export default MonitoringTab

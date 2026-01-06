@@ -5,7 +5,7 @@ const pollFallbackValues = {
   pollType: 'single',
   options: ['', ''],
   expiryAmount: 10,
-  expiryUnit: 'minutes'
+  expiryUnit: 'minutes',
 }
 
 const pollFallback = (object, attr) => {
@@ -15,10 +15,12 @@ const pollFallback = (object, attr) => {
 const pollFormToMasto = (poll) => {
   const expiresIn = DateUtils.unitToSeconds(
     pollFallback(poll, 'expiryUnit'),
-    pollFallback(poll, 'expiryAmount')
+    pollFallback(poll, 'expiryAmount'),
   )
 
-  const options = uniq(pollFallback(poll, 'options').filter(option => option !== ''))
+  const options = uniq(
+    pollFallback(poll, 'options').filter((option) => option !== ''),
+  )
   if (options.length < 2) {
     return { errorKey: 'polls.not_enough_options' }
   }
@@ -26,11 +28,8 @@ const pollFormToMasto = (poll) => {
   return {
     options,
     multiple: pollFallback(poll, 'pollType') === 'multiple',
-    expiresIn
+    expiresIn,
   }
 }
 
-export {
-  pollFallback,
-  pollFormToMasto
-}
+export { pollFallback, pollFormToMasto }

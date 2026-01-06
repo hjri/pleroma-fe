@@ -7,34 +7,38 @@ export default {
     error: false,
     currentPassword: '',
     deactivate: false,
-    inProgress: false // progress peform request to disable otp method
+    inProgress: false, // progress peform request to disable otp method
   }),
   components: {
-    confirm: Confirm
+    confirm: Confirm,
   },
   computed: {
-    isActivated () {
+    isActivated() {
       return this.settings.totp
     },
     ...mapState({
-      backendInteractor: (state) => state.api.backendInteractor
-    })
+      backendInteractor: (state) => state.api.backendInteractor,
+    }),
   },
   methods: {
-    doActivate () {
+    doActivate() {
       this.$emit('activate')
     },
-    cancelDeactivate () { this.deactivate = false },
-    doDeactivate () {
+    cancelDeactivate() {
+      this.deactivate = false
+    },
+    doDeactivate() {
       this.error = null
       this.deactivate = true
     },
-    confirmDeactivate () { // confirm deactivate TOTP method
+    confirmDeactivate() {
+      // confirm deactivate TOTP method
       this.error = null
       this.inProgress = true
-      this.backendInteractor.mfaDisableOTP({
-        password: this.currentPassword
-      })
+      this.backendInteractor
+        .mfaDisableOTP({
+          password: this.currentPassword,
+        })
         .then((res) => {
           this.inProgress = false
           if (res.error) {
@@ -44,6 +48,6 @@ export default {
           this.deactivate = false
           this.$emit('deactivate')
         })
-    }
-  }
+    },
+  },
 }

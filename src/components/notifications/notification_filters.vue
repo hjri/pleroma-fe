@@ -110,27 +110,25 @@ import Popover from '../popover/popover.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faFilter
-)
+library.add(faFilter)
 
 export default {
   components: { Popover },
   computed: {
-    filters () {
+    filters() {
       return this.$store.getters.mergedConfig.notificationVisibility
-    }
+    },
   },
   methods: {
-    toggleNotificationFilter (type) {
+    toggleNotificationFilter(type) {
       this.$store.dispatch('setOption', {
         name: 'notificationVisibility',
         value: {
           ...this.filters,
-          [type]: !this.filters[type]
-        }
+          [type]: !this.filters[type],
+        },
       })
-    }
-  }
+    },
+  },
 }
 </script>

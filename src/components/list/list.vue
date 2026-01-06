@@ -29,20 +29,20 @@ export default {
   props: {
     items: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     getKey: {
       type: Function,
-      default: item => item.id
+      default: (item) => item.id,
     },
     getClass: {
       type: Function,
-      default: () => ''
+      default: () => '',
     },
     nonInteractive: {
       type: Boolean,
-      default: false
-    }
-  }
+      default: false,
+    },
+  },
 }
 </script>

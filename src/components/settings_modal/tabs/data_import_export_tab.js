@@ -5,81 +5,84 @@ import { mapState } from 'vuex'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens'
 
 const DataImportExportTab = {
-  data () {
+  data() {
     return {
       activeTab: 'profile',
       newDomainToMute: '',
       listBackupsError: false,
       addBackupError: false,
       addedBackup: false,
-      backups: []
+      backups: [],
     }
   },
-  created () {
+  created() {
     useOAuthTokensStore().fetchTokens()
     this.fetchBackups()
   },
   components: {
     Importer,
     Exporter,
-    Checkbox
+    Checkbox,
   },
   computed: {
     ...mapState({
       backendInteractor: (state) => state.api.backendInteractor,
-      user: (state) => state.users.currentUser
-    })
+      user: (state) => state.users.currentUser,
+    }),
   },
   methods: {
-    getFollowsContent () {
-      return this.backendInteractor.exportFriends({ id: this.user.id })
+    getFollowsContent() {
+      return this.backendInteractor
+        .exportFriends({ id: this.user.id })
         .then(this.generateExportableUsersContent)
     },
-    getBlocksContent () {
-      return this.backendInteractor.fetchBlocks()
+    getBlocksContent() {
+      return this.backendInteractor
+        .fetchBlocks()
         .then(this.generateExportableUsersContent)
     },
-    getMutesContent () {
-      return this.backendInteractor.fetchMutes()
+    getMutesContent() {
+      return this.backendInteractor
+        .fetchMutes()
         .then(this.generateExportableUsersContent)
     },
-    importFollows (file) {
-      return this.backendInteractor.importFollows({ file })
-        .then((status) => {
-          if (!status) {
-            throw new Error('failed')
-          }
-        })
-    },
-    importBlocks (file) {
-      return this.backendInteractor.importBlocks({ file })
-        .then((status) => {
-          if (!status) {
-            throw new Error('failed')
-          }
-        })
-    },
-    importMutes (file) {
-      return this.backendInteractor.importMutes({ file })
-        .then((status) => {
-          if (!status) {
-            throw new Error('failed')
-          }
-        })
-    },
-    generateExportableUsersContent (users) {
-      // Get addresses
-      return users.map((user) => {
-        // check is it's a local user
-        if (user && user.is_local) {
-          // append the instance address
-          return user.screen_name + '@' + location.hostname
+    importFollows(file) {
+      return this.backendInteractor.importFollows({ file }).then((status) => {
+        if (!status) {
+          throw new Error('failed')
         }
-        return user.screen_name
-      }).join('\n')
+      })
     },
-    addBackup () {
-      this.$store.state.api.backendInteractor.addBackup()
+    importBlocks(file) {
+      return this.backendInteractor.importBlocks({ file }).then((status) => {
+        if (!status) {
+          throw new Error('failed')
+        }
+      })
+    },
+    importMutes(file) {
+      return this.backendInteractor.importMutes({ file }).then((status) => {
+        if (!status) {
+          throw new Error('failed')
+        }
+      })
+    },
+    generateExportableUsersContent(users) {
+      // Get addresses
+      return users
+        .map((user) => {
+          // check is it's a local user
+          if (user && user.is_local) {
+            // append the instance address
+            return user.screen_name + '@' + location.hostname
+          }
+          return user.screen_name
+        })
+        .join('\n')
+    },
+    addBackup() {
+      this.$store.state.api.backendInteractor
+        .addBackup()
         .then(() => {
           this.addedBackup = true
           this.addBackupError = false
@@ -90,8 +93,9 @@ const DataImportExportTab = {
         })
         .then(() => this.fetchBackups())
     },
-    fetchBackups () {
-      this.$store.state.api.backendInteractor.listBackups()
+    fetchBackups() {
+      this.$store.state.api.backendInteractor
+        .listBackups()
         .then((res) => {
           this.backups = res
           this.listBackupsError = false
@@ -99,8 +103,8 @@ const DataImportExportTab = {
         .catch((error) => {
           this.listBackupsError = error.error
         })
-    }
-  }
+    },
+  },
 }
 
 export default DataImportExportTab

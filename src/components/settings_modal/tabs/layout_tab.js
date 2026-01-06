@@ -9,42 +9,49 @@ const GeneralTab = {
   props: {
     parentCollapsed: {
       required: true,
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
-  data () {
+  data() {
     return {
-      thirdColumnModeOptions: ['none', 'notifications', 'postform'].map(mode => ({
-        key: mode,
-        value: mode,
-        label: this.$t(`settings.third_column_mode_${mode}`)
-      }))
+      thirdColumnModeOptions: ['none', 'notifications', 'postform'].map(
+        (mode) => ({
+          key: mode,
+          value: mode,
+          label: this.$t(`settings.third_column_mode_${mode}`),
+        }),
+      ),
     }
   },
   components: {
     BooleanSetting,
     ChoiceSetting,
     UnitSetting,
-    ProfileSettingIndicator
+    ProfileSettingIndicator,
   },
   computed: {
-    postFormats () {
+    postFormats() {
       return this.$store.state.instance.postFormats || []
     },
-    instanceShoutboxPresent () { return this.$store.state.instance.shoutAvailable },
-    columns () {
+    instanceShoutboxPresent() {
+      return this.$store.state.instance.shoutAvailable
+    },
+    columns() {
       const mode = this.$store.getters.mergedConfig.thirdColumnMode
 
       const notif = mode === 'none' ? [] : ['notifs']
 
-      if (this.$store.getters.mergedConfig.sidebarRight || mode === 'postform') {
+      if (
+        this.$store.getters.mergedConfig.sidebarRight ||
+        mode === 'postform'
+      ) {
         return [...notif, 'content', 'sidebar']
       } else {
         return ['sidebar', 'content', ...notif]
       }
     },
     ...SharedComputedObject(),
-  }
+  },
 }
 
 export default GeneralTab

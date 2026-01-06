@@ -45,46 +45,124 @@ export default (store) => {
       name: 'root',
       path: '/',
       redirect: () => {
-        return (store.state.users.currentUser
-          ? store.state.instance.redirectRootLogin
-          : store.state.instance.redirectRootNoLogin) || '/main/all'
-      }
+        return (
+          (store.state.users.currentUser
+            ? store.state.instance.redirectRootLogin
+            : store.state.instance.redirectRootNoLogin) || '/main/all'
+        )
+      },
     },
-    { name: 'public-external-timeline', path: '/main/all', component: PublicAndExternalTimeline },
-    { name: 'public-timeline', path: '/main/public', component: PublicTimeline },
-    { name: 'friends', path: '/main/friends', component: FriendsTimeline, beforeEnter: validateAuthenticatedRoute },
+    {
+      name: 'public-external-timeline',
+      path: '/main/all',
+      component: PublicAndExternalTimeline,
+    },
+    {
+      name: 'public-timeline',
+      path: '/main/public',
+      component: PublicTimeline,
+    },
+    {
+      name: 'friends',
+      path: '/main/friends',
+      component: FriendsTimeline,
+      beforeEnter: validateAuthenticatedRoute,
+    },
     { name: 'tag-timeline', path: '/tag/:tag', component: TagTimeline },
     { name: 'bookmarks', path: '/bookmarks', component: BookmarkTimeline },
     { name: 'bubble', path: '/bubble', component: BubbleTimeline },
-    { name: 'conversation', path: '/notice/:id', component: ConversationPage, meta: { dontScroll: true } },
+    {
+      name: 'conversation',
+      path: '/notice/:id',
+      component: ConversationPage,
+      meta: { dontScroll: true },
+    },
     { name: 'quotes', path: '/notice/:id/quotes', component: QuotesTimeline },
     {
       name: 'remote-user-profile-acct',
       path: '/remote-users/:_(@)?:username([^/@]+)@:hostname([^/@]+)',
       component: RemoteUserResolver,
-      beforeEnter: validateAuthenticatedRoute
+      beforeEnter: validateAuthenticatedRoute,
     },
     {
       name: 'remote-user-profile',
       path: '/remote-users/:hostname/:username',
       component: RemoteUserResolver,
-      beforeEnter: validateAuthenticatedRoute
+      beforeEnter: validateAuthenticatedRoute,
     },
-    { name: 'external-user-profile', path: '/users/$:id', component: UserProfile },
-    { name: 'interactions', path: '/users/:username/interactions', component: Interactions, beforeEnter: validateAuthenticatedRoute },
-    { name: 'dms', path: '/users/:username/dms', component: DMs, beforeEnter: validateAuthenticatedRoute },
+    {
+      name: 'external-user-profile',
+      path: '/users/$:id',
+      component: UserProfile,
+    },
+    {
+      name: 'interactions',
+      path: '/users/:username/interactions',
+      component: Interactions,
+      beforeEnter: validateAuthenticatedRoute,
+    },
+    {
+      name: 'dms',
+      path: '/users/:username/dms',
+      component: DMs,
+      beforeEnter: validateAuthenticatedRoute,
+    },
     { name: 'registration', path: '/registration', component: Registration },
-    { name: 'password-reset', path: '/password-reset', component: PasswordReset, props: true },
-    { name: 'registration-token', path: '/registration/:token', component: Registration },
-    { name: 'friend-requests', path: '/friend-requests', component: FollowRequests, beforeEnter: validateAuthenticatedRoute },
-    { name: 'notifications', path: '/:username/notifications', component: Notifications, props: () => ({ disableTeleport: true }), beforeEnter: validateAuthenticatedRoute },
+    {
+      name: 'password-reset',
+      path: '/password-reset',
+      component: PasswordReset,
+      props: true,
+    },
+    {
+      name: 'registration-token',
+      path: '/registration/:token',
+      component: Registration,
+    },
+    {
+      name: 'friend-requests',
+      path: '/friend-requests',
+      component: FollowRequests,
+      beforeEnter: validateAuthenticatedRoute,
+    },
+    {
+      name: 'notifications',
+      path: '/:username/notifications',
+      component: Notifications,
+      props: () => ({ disableTeleport: true }),
+      beforeEnter: validateAuthenticatedRoute,
+    },
     { name: 'login', path: '/login', component: AuthForm },
-    { name: 'shout-panel', path: '/shout-panel', component: ShoutPanel, props: () => ({ floating: false }) },
-    { name: 'oauth-callback', path: '/oauth-callback', component: OAuthCallback, props: (route) => ({ code: route.query.code }) },
-    { name: 'search', path: '/search', component: Search, props: (route) => ({ query: route.query.query }) },
-    { name: 'who-to-follow', path: '/who-to-follow', component: WhoToFollow, beforeEnter: validateAuthenticatedRoute },
+    {
+      name: 'shout-panel',
+      path: '/shout-panel',
+      component: ShoutPanel,
+      props: () => ({ floating: false }),
+    },
+    {
+      name: 'oauth-callback',
+      path: '/oauth-callback',
+      component: OAuthCallback,
+      props: (route) => ({ code: route.query.code }),
+    },
+    {
+      name: 'search',
+      path: '/search',
+      component: Search,
+      props: (route) => ({ query: route.query.query }),
+    },
+    {
+      name: 'who-to-follow',
+      path: '/who-to-follow',
+      component: WhoToFollow,
+      beforeEnter: validateAuthenticatedRoute,
+    },
     { name: 'about', path: '/about', component: About },
-    { name: 'announcements', path: '/announcements', component: AnnouncementsPage },
+    {
+      name: 'announcements',
+      path: '/announcements',
+      component: AnnouncementsPage,
+    },
     { name: 'drafts', path: '/drafts', component: Drafts },
     { name: 'user-profile', path: '/users/:name', component: UserProfile },
     { name: 'legacy-user-profile', path: '/:name', component: UserProfile },
@@ -92,17 +170,51 @@ export default (store) => {
     { name: 'lists-timeline', path: '/lists/:id', component: ListsTimeline },
     { name: 'lists-edit', path: '/lists/:id/edit', component: ListsEdit },
     { name: 'lists-new', path: '/lists/new', component: ListsEdit },
-    { name: 'edit-navigation', path: '/nav-edit', component: NavPanel, props: () => ({ forceExpand: true, forceEditMode: true }), beforeEnter: validateAuthenticatedRoute },
-    { name: 'bookmark-folders', path: '/bookmark_folders', component: BookmarkFolders },
-    { name: 'bookmark-folder-new', path: '/bookmarks/new-folder', component: BookmarkFolderEdit },
-    { name: 'bookmark-folder', path: '/bookmarks/:id', component: BookmarkTimeline },
-    { name: 'bookmark-folder-edit', path: '/bookmarks/:id/edit', component: BookmarkFolderEdit }
+    {
+      name: 'edit-navigation',
+      path: '/nav-edit',
+      component: NavPanel,
+      props: () => ({ forceExpand: true, forceEditMode: true }),
+      beforeEnter: validateAuthenticatedRoute,
+    },
+    {
+      name: 'bookmark-folders',
+      path: '/bookmark_folders',
+      component: BookmarkFolders,
+    },
+    {
+      name: 'bookmark-folder-new',
+      path: '/bookmarks/new-folder',
+      component: BookmarkFolderEdit,
+    },
+    {
+      name: 'bookmark-folder',
+      path: '/bookmarks/:id',
+      component: BookmarkTimeline,
+    },
+    {
+      name: 'bookmark-folder-edit',
+      path: '/bookmarks/:id/edit',
+      component: BookmarkFolderEdit,
+    },
   ]
 
   if (store.state.instance.pleromaChatMessagesAvailable) {
     routes = routes.concat([
-      { name: 'chat', path: '/users/:username/chats/:recipient_id', component: Chat, meta: { dontScroll: false }, beforeEnter: validateAuthenticatedRoute },
-      { name: 'chats', path: '/users/:username/chats', component: ChatList, meta: { dontScroll: false }, beforeEnter: validateAuthenticatedRoute }
+      {
+        name: 'chat',
+        path: '/users/:username/chats/:recipient_id',
+        component: Chat,
+        meta: { dontScroll: false },
+        beforeEnter: validateAuthenticatedRoute,
+      },
+      {
+        name: 'chats',
+        path: '/users/:username/chats',
+        component: ChatList,
+        meta: { dontScroll: false },
+        beforeEnter: validateAuthenticatedRoute,
+      },
     ])
   }
 

@@ -4,13 +4,13 @@ import List from 'src/components/list/list.vue'
 const Drafts = {
   components: {
     Draft,
-    List
+    List,
   },
   computed: {
-    drafts () {
+    drafts() {
       return this.$store.getters.draftsArray
-    }
-  }
+    },
+  },
 }
 
 export default Drafts

@@ -15,17 +15,18 @@ const i18n = createI18n({
   // By default, use the browser locale, we will update it if neccessary
   locale: 'en',
   fallbackLocale: 'en',
-  messages
+  messages,
 })
 
 const state = {
   lastFocused: null,
   notificationIds: new Set(),
-  allowedNotificationTypes: null
+  allowedNotificationTypes: null,
 }
 
-function getWindowClients () {
-  return clients.matchAll({ includeUncontrolled: true })
+function getWindowClients() {
+  return clients
+    .matchAll({ includeUncontrolled: true })
     .then((clientList) => clientList.filter(({ type }) => type === 'window'))
 }
 
@@ -33,8 +34,11 @@ const setSettings = async () => {
   const vuexState = await storage.getItem('vuex-lz')
   const locale = vuexState.config.interfaceLanguage || 'en'
   i18n.locale = locale
-  const notificationsNativeArray = Object.entries(vuexState.config.notificationNative)
-  state.webPushAlwaysShowNotifications = vuexState.config.webPushAlwaysShowNotifications
+  const notificationsNativeArray = Object.entries(
+    vuexState.config.notificationNative,
+  )
+  state.webPushAlwaysShowNotifications =
+    vuexState.config.webPushAlwaysShowNotifications
 
   state.allowedNotificationTypes = new Set(
     notificationsNativeArray
@@ -62,7 +66,7 @@ const setSettings = async () => {
           default:
             return k
         }
-      })
+      }),
   )
 }
 
@@ -74,13 +78,18 @@ const showPushNotification = async (event) => {
     const data = event.data.json()
 
     const url = `${self.registration.scope}api/v1/notifications/${data.notification_id}`
-    const notification = await fetch(url, { headers: { Authorization: 'Bearer ' + data.access_token } })
+    const notification = await fetch(url, {
+      headers: { Authorization: 'Bearer ' + data.access_token },
+    })
     const notificationJson = await notification.json()
     const parsedNotification = parseNotification(notificationJson)
 
     const res = prepareNotificationObject(parsedNotification, i18n)
 
-    if (state.webPushAlwaysShowNotifications || state.allowedNotificationTypes.has(parsedNotification.type)) {
+    if (
+      state.webPushAlwaysShowNotifications ||
+      state.allowedNotificationTypes.has(parsedNotification.type)
+    ) {
       return self.registration.showNotification(res.title, res)
     }
   }
@@ -88,7 +97,7 @@ const showPushNotification = async (event) => {
 }
 
 const cacheFiles = self.serviceWorkerOption.assets
-const isEmoji = req => {
+const isEmoji = (req) => {
   if (req.method !== 'GET') {
     return false
   }
@@ -96,14 +105,14 @@ const isEmoji = req => {
 
   return url.pathname.startsWith('/emoji/')
 }
-const isNotMedia = req => {
+const isNotMedia = (req) => {
   if (req.method !== 'GET') {
     return false
   }
   const url = new URL(req.url)
   return !url.pathname.startsWith('/media/')
 }
-const isAsset = req => {
+const isAsset = (req) => {
   const url = new URL(req.url)
   return cacheFiles.includes(url.pathname)
 }
@@ -112,7 +121,7 @@ const isSuccessful = (resp) => {
   if (!resp.ok) {
     return false
   }
-  if ((new URL(resp.url)).pathname === '/index.html') {
+  if (new URL(resp.url).pathname === '/index.html') {
     // For index.html itself, there is no fallback possible.
     return true
   }
@@ -123,41 +132,52 @@ const isSuccessful = (resp) => {
 
 self.addEventListener('install', async (event) => {
   if (shouldCache) {
-    event.waitUntil((async () => {
-      // Do not preload i18n and emoji annotations to speed up loading
-      const shouldPreload = (route) => {
-        return !route.startsWith('/static/js/i18n/') && !route.startsWith('/static/js/emoji-annotations/')
-      }
-      const cache = await caches.open(cacheKey)
-      await Promise.allSettled(cacheFiles.filter(shouldPreload).map(async (route) => {
-        // https://developer.mozilla.org/en-US/docs/Web/API/Cache/add
-        // originally we used addAll() but it will raise a problem in one edge case:
-        // when the file for the route is not found, backend will return index.html with code 200
-        // but it's wrong, and it's cached, so we end up with a bad cache.
-        // this can happen when you refresh when you are in the process of upgrading
-        // the frontend.
-        const resp = await fetch(route)
-        if (isSuccessful(resp)) {
-          await cache.put(route, resp)
+    event.waitUntil(
+      (async () => {
+        // Do not preload i18n and emoji annotations to speed up loading
+        const shouldPreload = (route) => {
+          return (
+            !route.startsWith('/static/js/i18n/') &&
+            !route.startsWith('/static/js/emoji-annotations/')
+          )
         }
-      }))
-    })())
+        const cache = await caches.open(cacheKey)
+        await Promise.allSettled(
+          cacheFiles.filter(shouldPreload).map(async (route) => {
+            // https://developer.mozilla.org/en-US/docs/Web/API/Cache/add
+            // originally we used addAll() but it will raise a problem in one edge case:
+            // when the file for the route is not found, backend will return index.html with code 200
+            // but it's wrong, and it's cached, so we end up with a bad cache.
+            // this can happen when you refresh when you are in the process of upgrading
+            // the frontend.
+            const resp = await fetch(route)
+            if (isSuccessful(resp)) {
+              await cache.put(route, resp)
+            }
+          }),
+        )
+      })(),
+    )
   }
 })
 
 self.addEventListener('activate', async (event) => {
   if (shouldCache) {
-    event.waitUntil((async () => {
-      const cache = await caches.open(cacheKey)
-      const keys = await cache.keys()
-      await Promise.all(
-        keys.filter(request => {
-          const url = new URL(request.url)
-          const shouldKeep = cacheFiles.includes(url.pathname)
-          return !shouldKeep
-        }).map(k => cache.delete(k))
-      )
-    })())
+    event.waitUntil(
+      (async () => {
+        const cache = await caches.open(cacheKey)
+        const keys = await cache.keys()
+        await Promise.all(
+          keys
+            .filter((request) => {
+              const url = new URL(request.url)
+              const shouldKeep = cacheFiles.includes(url.pathname)
+              return !shouldKeep
+            })
+            .map((k) => cache.delete(k)),
+        )
+      })(),
+    )
   }
 })
 
@@ -188,66 +208,86 @@ self.addEventListener('message', async (event) => {
     const { id, all } = content
     const search = all ? null : { tag: id }
     const notifications = await self.registration.getNotifications(search)
-    notifications.forEach(n => n.close())
+    notifications.forEach((n) => n.close())
   }
 
   if (type === 'updateFocus') {
     state.lastFocused = event.source.id
 
     const notifications = await self.registration.getNotifications()
-    notifications.forEach(n => n.close())
+    notifications.forEach((n) => n.close())
   }
 })
 
 self.addEventListener('notificationclick', (event) => {
   event.notification.close()
 
-  event.waitUntil(getWindowClients().then((list) => {
-    for (let i = 0; i < list.length; i++) {
-      const client = list[i]
-      client.postMessage({ type: 'notificationClicked', id: event.notification.tag })
-    }
-
-    for (let i = 0; i < list.length; i++) {
-      const client = list[i]
-      if (state.lastFocused === null || client.id === state.lastFocused) {
-        if ('focus' in client) return client.focus()
+  event.waitUntil(
+    getWindowClients().then((list) => {
+      for (let i = 0; i < list.length; i++) {
+        const client = list[i]
+        client.postMessage({
+          type: 'notificationClicked',
+          id: event.notification.tag,
+        })
       }
-    }
 
-    if (clients.openWindow) return clients.openWindow('/')
-  }))
+      for (let i = 0; i < list.length; i++) {
+        const client = list[i]
+        if (state.lastFocused === null || client.id === state.lastFocused) {
+          if ('focus' in client) return client.focus()
+        }
+      }
+
+      if (clients.openWindow) return clients.openWindow('/')
+    }),
+  )
 })
 
 self.addEventListener('fetch', (event) => {
   // Do not mess up with remote things
-  const isSameOrigin = (new URL(event.request.url)).origin === self.location.origin
-  if (shouldCache && event.request.method === 'GET' && isSameOrigin && isNotMedia(event.request)) {
+  const isSameOrigin =
+    new URL(event.request.url).origin === self.location.origin
+  if (
+    shouldCache &&
+    event.request.method === 'GET' &&
+    isSameOrigin &&
+    isNotMedia(event.request)
+  ) {
     // this is a bit spammy
     // console.debug('[Service worker] fetch:', event.request.url)
-    event.respondWith((async () => {
-      const r = await caches.match(event.request)
-      const isEmojiReq = isEmoji(event.request)
+    event.respondWith(
+      (async () => {
+        const r = await caches.match(event.request)
+        const isEmojiReq = isEmoji(event.request)
 
-      if (r && isSuccessful(r)) {
-        console.debug('[Service worker] already cached:', event.request.url)
-        return r
-      }
-
-      try {
-        const response = await fetch(event.request)
-        if (response.ok &&
-            isSuccessful(response) &&
-            (isEmojiReq || isAsset(event.request))) {
-          console.debug(`[Service worker] caching ${isEmojiReq ? 'emoji' : 'asset'}:`, event.request.url)
-          const cache = await caches.open(isEmojiReq ? emojiCacheKey : cacheKey)
-          await cache.put(event.request.clone(), response.clone())
+        if (r && isSuccessful(r)) {
+          console.debug('[Service worker] already cached:', event.request.url)
+          return r
         }
-        return response
-      } catch (e) {
-        console.error('[Service worker] error when caching emoji:', e)
-        throw e
-      }
-    })())
+
+        try {
+          const response = await fetch(event.request)
+          if (
+            response.ok &&
+            isSuccessful(response) &&
+            (isEmojiReq || isAsset(event.request))
+          ) {
+            console.debug(
+              `[Service worker] caching ${isEmojiReq ? 'emoji' : 'asset'}:`,
+              event.request.url,
+            )
+            const cache = await caches.open(
+              isEmojiReq ? emojiCacheKey : cacheKey,
+            )
+            await cache.put(event.request.clone(), response.clone())
+          }
+          return response
+        } catch (e) {
+          console.error('[Service worker] error when caching emoji:', e)
+          throw e
+        }
+      })(),
+    )
   }
 })

@@ -11,33 +11,33 @@ const generateInput = (value, padEmoji = true) => {
         $store: {
           getters: {
             mergedConfig: {
-              padEmoji
-            }
-          }
+              padEmoji,
+            },
+          },
         },
-        $t: (msg) => msg
+        $t: (msg) => msg,
       },
       stubs: {
         FAIcon: true,
         Popover: {
           template: `<div><slot trigger /></div>`,
           methods: {
-            updateStyles () {}
-          }
-        }
+            updateStyles() {},
+          },
+        },
       },
       directives: {
-        'click-outside': vClickOutside
-      }
+        'click-outside': vClickOutside,
+      },
     },
     props: {
       suggest: () => [],
       enableEmojiPicker: true,
-      modelValue: value
+      modelValue: value,
     },
     slots: {
-      default: () => h('input', '')
-    }
+      default: () => h('input', ''),
+    },
   })
   return wrapper
 }
@@ -85,7 +85,9 @@ describe('EmojiInput', () => {
       wrapper.setData({ caret: 6 })
       wrapper.vm.insert({ insertion: ':ebin:', keepOpen: false })
       const inputEvents = wrapper.emitted()['update:modelValue']
-      expect(inputEvents[inputEvents.length - 1][0]).to.eql('Spurdo :ebin: Sparde')
+      expect(inputEvents[inputEvents.length - 1][0]).to.eql(
+        'Spurdo :ebin: Sparde',
+      )
     })
 
     it('inserts string between words without creating extra spaces (other caret)', () => {
@@ -96,7 +98,9 @@ describe('EmojiInput', () => {
       wrapper.setData({ caret: 7 })
       wrapper.vm.insert({ insertion: ':ebin:', keepOpen: false })
       const inputEvents = wrapper.emitted()['update:modelValue']
-      expect(inputEvents[inputEvents.length - 1][0]).to.eql('Spurdo :ebin: Sparde')
+      expect(inputEvents[inputEvents.length - 1][0]).to.eql(
+        'Spurdo :ebin: Sparde',
+      )
     })
 
     it('inserts string without any padding if padEmoji setting is set to false', () => {
@@ -107,7 +111,9 @@ describe('EmojiInput', () => {
       wrapper.setData({ caret: initialString.length, keepOpen: false })
       wrapper.vm.insert({ insertion: ':spam:' })
       const inputEvents = wrapper.emitted()['update:modelValue']
-      expect(inputEvents[inputEvents.length - 1][0]).to.eql('Eat some spam!:spam:')
+      expect(inputEvents[inputEvents.length - 1][0]).to.eql(
+        'Eat some spam!:spam:',
+      )
     })
 
     it('correctly sets caret after insertion at beginning', async () => {

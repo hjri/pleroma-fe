@@ -4,7 +4,10 @@ import { ensureFinalFallback } from '../i18n/languages.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 // See build/emojis_plugin for more details
 import { annotationsLoader } from 'virtual:pleroma-fe/emoji-annotations'
-import { staticOrApiConfigDefault, instanceDefaultConfig } from './default_config_state.js';
+import {
+  staticOrApiConfigDefault,
+  instanceDefaultConfig,
+} from './default_config_state.js'
 
 const SORTED_EMOJI_GROUP_IDS = [
   'smileys-and-emotion',
@@ -15,12 +18,12 @@ const SORTED_EMOJI_GROUP_IDS = [
   'activities',
   'objects',
   'symbols',
-  'flags'
+  'flags',
 ]
 
 const REGIONAL_INDICATORS = (() => {
-  const start = 0x1F1E6
-  const end = 0x1F1FF
+  const start = 0x1f1e6
+  const end = 0x1f1ff
   const A = 'A'.codePointAt(0)
   const res = new Array(end - start + 1)
   for (let i = start; i <= end; ++i) {
@@ -31,8 +34,8 @@ const REGIONAL_INDICATORS = (() => {
       displayText: 'regional_indicator_' + letter,
       displayTextI18n: {
         key: 'emoji.regional_indicator',
-        args: { letter }
-      }
+        args: { letter },
+      },
     }
   }
   return res
@@ -107,13 +110,12 @@ const defaultState = {
     max_options: 4,
     max_option_chars: 255,
     min_expiration: 60,
-    max_expiration: 60 * 60 * 24
-  }
+    max_expiration: 60 * 60 * 24,
+  },
 }
 
 const loadAnnotations = (lang) => {
-  return annotationsLoader[lang]()
-    .then(k => k.default)
+  return annotationsLoader[lang]().then((k) => k.default)
 }
 
 const injectAnnotations = (emoji, annotations) => {
@@ -124,11 +126,11 @@ const injectAnnotations = (emoji, annotations) => {
     annotations: availableLangs.reduce((acc, cur) => {
       acc[cur] = annotations[cur][emoji.replacement]
       return acc
-    }, {})
+    }, {}),
   }
 }
 
-const injectRegionalIndicators = groups => {
+const injectRegionalIndicators = (groups) => {
   groups.symbols.push(...REGIONAL_INDICATORS)
   return groups
 }
@@ -136,77 +138,84 @@ const injectRegionalIndicators = groups => {
 const instance = {
   state: defaultState,
   mutations: {
-    setInstanceOption (state, { name, value }) {
+    setInstanceOption(state, { name, value }) {
       if (typeof value !== 'undefined') {
         state[name] = value
       }
     },
-    setKnownDomains (state, domains) {
+    setKnownDomains(state, domains) {
       state.knownDomains = domains
     },
-    setUnicodeEmojiAnnotations (state, { lang, annotations }) {
+    setUnicodeEmojiAnnotations(state, { lang, annotations }) {
       state.unicodeEmojiAnnotations[lang] = annotations
-    }
+    },
   },
   getters: {
-    instanceDefaultConfig (state) {
+    instanceDefaultConfig(state) {
       return instanceDefaultProperties
-        .map(key => [key, state[key]])
+        .map((key) => [key, state[key]])
         .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
     },
-    groupedCustomEmojis (state) {
-      const packsOf = emoji => {
+    groupedCustomEmojis(state) {
+      const packsOf = (emoji) => {
         const packs = emoji.tags
-          .filter(k => k.startsWith('pack:'))
-          .map(k => {
+          .filter((k) => k.startsWith('pack:'))
+          .map((k) => {
             const packName = k.slice(5) // remove 'pack:' prefix
             return {
               id: `custom-${packName}`,
-              text: packName
+              text: packName,
             }
           })
 
         if (!packs.length) {
-          return [{
-            id: 'unpacked'
-          }]
+          return [
+            {
+              id: 'unpacked',
+            },
+          ]
         } else {
           return packs
         }
       }
 
-      return state.customEmoji
-        .reduce((res, emoji) => {
-          packsOf(emoji).forEach(({ id: packId, text: packName }) => {
-            if (!res[packId]) {
-              res[packId] = ({
-                id: packId,
-                text: packName,
-                image: emoji.imageUrl,
-                emojis: []
-              })
+      return state.customEmoji.reduce((res, emoji) => {
+        packsOf(emoji).forEach(({ id: packId, text: packName }) => {
+          if (!res[packId]) {
+            res[packId] = {
+              id: packId,
+              text: packName,
+              image: emoji.imageUrl,
+              emojis: [],
             }
-            res[packId].emojis.push(emoji)
-          })
-          return res
-        }, {})
+          }
+          res[packId].emojis.push(emoji)
+        })
+        return res
+      }, {})
     },
-    standardEmojiList (state) {
-      return SORTED_EMOJI_GROUP_IDS
-        .map(groupId => (state.emoji[groupId] || []).map(k => injectAnnotations(k, state.unicodeEmojiAnnotations)))
-        .reduce((a, b) => a.concat(b), [])
+    standardEmojiList(state) {
+      return SORTED_EMOJI_GROUP_IDS.map((groupId) =>
+        (state.emoji[groupId] || []).map((k) =>
+          injectAnnotations(k, state.unicodeEmojiAnnotations),
+        ),
+      ).reduce((a, b) => a.concat(b), [])
     },
-    standardEmojiGroupList (state) {
-      return SORTED_EMOJI_GROUP_IDS.map(groupId => ({
+    standardEmojiGroupList(state) {
+      return SORTED_EMOJI_GROUP_IDS.map((groupId) => ({
         id: groupId,
-        emojis: (state.emoji[groupId] || []).map(k => injectAnnotations(k, state.unicodeEmojiAnnotations))
+        emojis: (state.emoji[groupId] || []).map((k) =>
+          injectAnnotations(k, state.unicodeEmojiAnnotations),
+        ),
       }))
     },
-    instanceDomain (state) {
+    instanceDomain(state) {
       return new URL(state.server).hostname
     },
-    remoteInteractionLink (state) {
-      const server = state.server.endsWith('/') ? state.server.slice(0, -1) : state.server
+    remoteInteractionLink(state) {
+      const server = state.server.endsWith('/')
+        ? state.server.slice(0, -1)
+        : state.server
       const link = server + REMOTE_INTERACTION_URL
 
       return ({ statusId, nickname }) => {
@@ -216,10 +225,10 @@ const instance = {
           return `${link}?nickname=${nickname}`
         }
       }
-    }
+    },
   },
   actions: {
-    setInstanceOption ({ commit, dispatch }, { name, value }) {
+    setInstanceOption({ commit, dispatch }, { name, value }) {
       commit('setInstanceOption', { name, value })
       switch (name) {
         case 'name':
@@ -232,43 +241,49 @@ const instance = {
           break
       }
     },
-    async getStaticEmoji ({ commit }) {
+    async getStaticEmoji({ commit }) {
       try {
         const values = (await import('/src/assets/emoji.json')).default
 
         const emoji = Object.keys(values).reduce((res, groupId) => {
-          res[groupId] = values[groupId].map(e => ({
+          res[groupId] = values[groupId].map((e) => ({
             displayText: e.slug,
             imageUrl: false,
-            replacement: e.emoji
+            replacement: e.emoji,
           }))
           return res
         }, {})
-        commit('setInstanceOption', { name: 'emoji', value: injectRegionalIndicators(emoji) })
+        commit('setInstanceOption', {
+          name: 'emoji',
+          value: injectRegionalIndicators(emoji),
+        })
       } catch (e) {
         console.warn("Can't load static emoji\n", e)
       }
     },
 
-    loadUnicodeEmojiData ({ commit, state }, language) {
+    loadUnicodeEmojiData({ commit, state }, language) {
       const langList = ensureFinalFallback(language)
 
       return Promise.all(
-        langList
-          .map(async lang => {
-            if (!state.unicodeEmojiAnnotations[lang]) {
-              try {
-                const annotations = await loadAnnotations(lang)
-                commit('setUnicodeEmojiAnnotations', { lang, annotations })
-              } catch (e) {
-                console.warn(`Error loading unicode emoji annotations for ${lang}: `, e)
-                // ignore
-              }
+        langList.map(async (lang) => {
+          if (!state.unicodeEmojiAnnotations[lang]) {
+            try {
+              const annotations = await loadAnnotations(lang)
+              commit('setUnicodeEmojiAnnotations', { lang, annotations })
+            } catch (e) {
+              console.warn(
+                `Error loading unicode emoji annotations for ${lang}: `,
+                e,
+              )
+              // ignore
             }
-          }))
+          }
+        }),
+      )
     },
 
-    async getCustomEmoji ({ commit, state }) {
+    async getCustomEmoji({ commit, state }) {
       try {
         let res = await window.fetch('/api/v1/pleroma/emoji')
         if (!res.ok) {
@@ -276,11 +291,13 @@ const instance = {
         }
         if (res.ok) {
           const result = await res.json()
-          const values = Array.isArray(result) ? Object.assign({}, ...result) : result
+          const values = Array.isArray(result)
+            ? Object.assign({}, ...result)
+            : result
           const caseInsensitiveStrCmp = (a, b) => {
             const la = a.toLowerCase()
             const lb = b.toLowerCase()
-            return la > lb ? 1 : (la < lb ? -1 : 0)
+            return la > lb ? 1 : la < lb ? -1 : 0
           }
           const noPackLast = (a, b) => {
             const aNull = a === ''
@@ -294,32 +311,43 @@ const instance = {
             }
           }
           const byPackThenByName = (a, b) => {
-            const packOf = emoji => (emoji.tags.filter(k => k.startsWith('pack:'))[0] || '').slice(5)
+            const packOf = (emoji) =>
+              (emoji.tags.filter((k) => k.startsWith('pack:'))[0] || '').slice(
+                5,
+              )
             const packOfA = packOf(a)
             const packOfB = packOf(b)
-            return noPackLast(packOfA, packOfB) || caseInsensitiveStrCmp(packOfA, packOfB) || caseInsensitiveStrCmp(a.displayText, b.displayText)
+            return (
+              noPackLast(packOfA, packOfB) ||
+              caseInsensitiveStrCmp(packOfA, packOfB) ||
+              caseInsensitiveStrCmp(a.displayText, b.displayText)
+            )
           }
 
-          const emoji = Object.entries(values).map(([key, value]) => {
-            const imageUrl = value.image_url
-            return {
-              displayText: key,
-              imageUrl: imageUrl ? state.server + imageUrl : value,
-              tags: imageUrl ? value.tags.sort((a, b) => a > b ? 1 : 0) : ['utf'],
-              replacement: `:${key}: `
-            }
-            // Technically could use tags but those are kinda useless right now,
-            // should have been "pack" field, that would be more useful
-          }).sort(byPackThenByName)
+          const emoji = Object.entries(values)
+            .map(([key, value]) => {
+              const imageUrl = value.image_url
+              return {
+                displayText: key,
+                imageUrl: imageUrl ? state.server + imageUrl : value,
+                tags: imageUrl
+                  ? value.tags.sort((a, b) => (a > b ? 1 : 0))
+                  : ['utf'],
+                replacement: `:${key}: `,
+              }
+              // Technically could use tags but those are kinda useless right now,
+              // should have been "pack" field, that would be more useful
+            })
+            .sort(byPackThenByName)
           commit('setInstanceOption', { name: 'customEmoji', value: emoji })
         } else {
-          throw (res)
+          throw res
         }
       } catch (e) {
         console.warn("Can't load custom emojis\n", e)
       }
     },
-    fetchEmoji ({ dispatch, state }) {
+    fetchEmoji({ dispatch, state }) {
       if (!state.customEmojiFetched) {
         state.customEmojiFetched = true
         dispatch('getCustomEmoji')
@@ -330,17 +358,17 @@ const instance = {
       }
     },
 
-    async getKnownDomains ({ commit, rootState }) {
+    async getKnownDomains({ commit, rootState }) {
       try {
         const result = await apiService.fetchKnownDomains({
-          credentials: rootState.users.currentUser.credentials
+          credentials: rootState.users.currentUser.credentials,
         })
         commit('setKnownDomains', result)
       } catch (e) {
         console.warn("Can't load known domains\n", e)
       }
-    }
-  }
+    },
+  },
 }
 
 export default instance

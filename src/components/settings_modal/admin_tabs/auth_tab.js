@@ -11,10 +11,10 @@ import MapSetting from '../helpers/map_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
 const AuthTab = {
-  provide () {
+  provide() {
     return {
       defaultDraftMode: true,
-      defaultSource: 'admin'
+      defaultSource: 'admin',
     }
   },
   components: {
@@ -26,14 +26,16 @@ const AuthTab = {
     AttachmentSetting,
     GroupSetting,
     ListSetting,
-    MapSetting
+    MapSetting,
   },
   computed: {
     ...SharedComputedObject(),
-    LDAPEnabled () {
-      return this.$store.state.adminSettings.draft[':pleroma'][':ldap'][':enabled']
+    LDAPEnabled() {
+      return this.$store.state.adminSettings.draft[':pleroma'][':ldap'][
+        ':enabled'
+      ]
     },
-  }
+  },
 }
 
 export default AuthTab

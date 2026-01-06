@@ -28,7 +28,9 @@ export default {
   components: {
     UserPanel,
     NavPanel,
-    Notifications: defineAsyncComponent(() => import('./components/notifications/notifications.vue')),
+    Notifications: defineAsyncComponent(
+      () => import('./components/notifications/notifications.vue'),
+    ),
     InstanceSpecificPanel,
     FeaturesPanel,
     WhoToFollowPanel,
@@ -38,29 +40,33 @@ export default {
     MobilePostStatusButton,
     MobileNav,
     DesktopNav,
-    SettingsModal: defineAsyncComponent(() => import('./components/settings_modal/settings_modal.vue')),
-    UpdateNotification: defineAsyncComponent(() => import('./components/update_notification/update_notification.vue')),
+    SettingsModal: defineAsyncComponent(
+      () => import('./components/settings_modal/settings_modal.vue'),
+    ),
+    UpdateNotification: defineAsyncComponent(
+      () => import('./components/update_notification/update_notification.vue'),
+    ),
     UserReportingModal,
     PostStatusModal,
     EditStatusModal,
     StatusHistoryModal,
-    GlobalNoticeList
+    GlobalNoticeList,
   },
   data: () => ({
-    mobileActivePanel: 'timeline'
+    mobileActivePanel: 'timeline',
   }),
   watch: {
-    themeApplied () {
+    themeApplied() {
       this.removeSplash()
     },
-    currentTheme () {
+    currentTheme() {
       this.setThemeBodyClass()
     },
-    layoutType () {
+    layoutType() {
       document.getElementById('modal').classList = ['-' + this.layoutType]
-    }
+    },
   },
-  created () {
+  created() {
     // Load the locale from the storage
     const val = this.$store.getters.mergedConfig.interfaceLanguage
     this.$store.dispatch('setOption', { name: 'interfaceLanguage', value: val })
@@ -70,7 +76,7 @@ export default {
     this.updateScrollState = throttle(this.scrollHandler, 200)
     this.updateMobileState = throttle(this.resizeHandler, 200)
   },
-  mounted () {
+  mounted() {
     window.addEventListener('resize', this.updateMobileState)
     this.scrollParent.addEventListener('scroll', this.updateScrollState)
 
@@ -80,108 +86,145 @@ export default {
     }
     getOrCreateServiceWorker()
   },
-  unmounted () {
+  unmounted() {
     window.removeEventListener('resize', this.updateMobileState)
     this.scrollParent.removeEventListener('scroll', this.updateScrollState)
   },
   computed: {
-    themeApplied () {
+    themeApplied() {
       return useInterfaceStore().themeApplied
     },
-    currentTheme () {
+    currentTheme() {
       if (useInterfaceStore().styleDataUsed) {
-        const styleMeta = useInterfaceStore().styleDataUsed.find(x => x.component === '@meta')
+        const styleMeta = useInterfaceStore().styleDataUsed.find(
+          (x) => x.component === '@meta',
+        )
 
         if (styleMeta !== undefined) {
-          return styleMeta.directives.name.replaceAll(" ", "-").toLowerCase()
+          return styleMeta.directives.name.replaceAll(' ', '-').toLowerCase()
         }
       }
 
       return 'stock'
     },
-    layoutModalClass () {
+    layoutModalClass() {
       return '-' + this.layoutType
     },
-    classes () {
+    classes() {
       return [
         {
           '-reverse': this.reverseLayout,
           '-no-sticky-headers': this.noSticky,
-          '-has-new-post-button': this.newPostButtonShown
+          '-has-new-post-button': this.newPostButtonShown,
         },
-        '-' + this.layoutType
+        '-' + this.layoutType,
       ]
     },
-    navClasses () {
+    navClasses() {
       const { navbarColumnStretch } = this.$store.getters.mergedConfig
       return [
         '-' + this.layoutType,
-        ...(navbarColumnStretch ? ['-column-stretch'] : [])
+        ...(navbarColumnStretch ? ['-column-stretch'] : []),
       ]
     },
-    currentUser () { return this.$store.state.users.currentUser },
-    userBackground () { return this.currentUser.background_image },
-    instanceBackground () {
+    currentUser() {
+      return this.$store.state.users.currentUser
+    },
+    userBackground() {
+      return this.currentUser.background_image
+    },
+    instanceBackground() {
       return this.mergedConfig.hideInstanceWallpaper
         ? null
         : this.$store.state.instance.background
     },
-    background () { return this.userBackground || this.instanceBackground },
-    bgStyle () {
+    background() {
+      return this.userBackground || this.instanceBackground
+    },
+    bgStyle() {
       if (this.background) {
         return {
-          '--body-background-image': `url(${this.background})`
+          '--body-background-image': `url(${this.background})`,
         }
       }
     },
-    shout () { return useShoutStore().joined },
-    suggestionsEnabled () { return this.$store.state.instance.suggestionsEnabled },
-    showInstanceSpecificPanel () {
-      return this.$store.state.instance.showInstanceSpecificPanel &&
+    shout() {
+      return useShoutStore().joined
+    },
+    suggestionsEnabled() {
+      return this.$store.state.instance.suggestionsEnabled
+    },
+    showInstanceSpecificPanel() {
+      return (
+        this.$store.state.instance.showInstanceSpecificPanel &&
         !this.$store.getters.mergedConfig.hideISP &&
         this.$store.state.instance.instanceSpecificPanelContent
+      )
     },
-    isChats () {
+    isChats() {
       return this.$route.name === 'chat' || this.$route.name === 'chats'
     },
-    isListEdit () {
+    isListEdit() {
       return this.$route.name === 'lists-edit'
     },
-    newPostButtonShown () {
+    newPostButtonShown() {
       if (this.isChats) return false
       if (this.isListEdit) return false
-      return this.$store.getters.mergedConfig.alwaysShowNewPostButton || this.layoutType === 'mobile'
+      return (
+        this.$store.getters.mergedConfig.alwaysShowNewPostButton ||
+        this.layoutType === 'mobile'
+      )
     },
-    showFeaturesPanel () { return this.$store.state.instance.showFeaturesPanel },
-    editingAvailable () { return this.$store.state.instance.editingAvailable },
-    shoutboxPosition () {
+    showFeaturesPanel() {
+      return this.$store.state.instance.showFeaturesPanel
+    },
+    editingAvailable() {
+      return this.$store.state.instance.editingAvailable
+    },
+    shoutboxPosition() {
       return this.$store.getters.mergedConfig.alwaysShowNewPostButton || false
     },
-    hideShoutbox () {
+    hideShoutbox() {
       return this.$store.getters.mergedConfig.hideShoutbox
     },
-    layoutType () { return useInterfaceStore().layoutType },
-    privateMode () { return this.$store.state.instance.private },
-    reverseLayout () {
-      const { thirdColumnMode, sidebarRight: reverseSetting } = this.$store.getters.mergedConfig
+    layoutType() {
+      return useInterfaceStore().layoutType
+    },
+    privateMode() {
+      return this.$store.state.instance.private
+    },
+    reverseLayout() {
+      const { thirdColumnMode, sidebarRight: reverseSetting } =
+        this.$store.getters.mergedConfig
       if (this.layoutType !== 'wide') {
         return reverseSetting
       } else {
-        return thirdColumnMode === 'notifications' ? reverseSetting : !reverseSetting
+        return thirdColumnMode === 'notifications'
+          ? reverseSetting
+          : !reverseSetting
       }
     },
-    noSticky () { return this.$store.getters.mergedConfig.disableStickyHeaders },
-    showScrollbars () { return this.$store.getters.mergedConfig.showScrollbars },
-    scrollParent () { return window; /* this.$refs.appContentRef */ },
-    ...mapGetters(['mergedConfig'])
+    noSticky() {
+      return this.$store.getters.mergedConfig.disableStickyHeaders
+    },
+    showScrollbars() {
+      return this.$store.getters.mergedConfig.showScrollbars
+    },
+    scrollParent() {
+      return window /* this.$refs.appContentRef */
+    },
+    ...mapGetters(['mergedConfig']),
   },
   methods: {
-    resizeHandler () {
+    resizeHandler() {
       useInterfaceStore().setLayoutWidth(windowWidth())
       useInterfaceStore().setLayoutHeight(windowHeight())
     },
-    scrollHandler () {
-      const scrollPosition = this.scrollParent === window ? window.scrollY : this.scrollParent.scrollTop
+    scrollHandler() {
+      const scrollPosition =
+        this.scrollParent === window
+          ? window.scrollY
+          : this.scrollParent.scrollTop
 
       if (scrollPosition != 0) {
         this.$refs.appContentRef.classList.add(['-scrolled'])
@@ -189,10 +232,10 @@ export default {
         this.$refs.appContentRef.classList.remove(['-scrolled'])
       }
     },
-    setThemeBodyClass () {
+    setThemeBodyClass() {
       const themeName = this.currentTheme
       const classList = Array.from(document.body.classList)
-      const oldTheme = classList.filter(c => c.startsWith('theme-'))
+      const oldTheme = classList.filter((c) => c.startsWith('theme-'))
 
       if (themeName !== null && themeName !== '') {
         const newTheme = `theme-${themeName.toLowerCase()}`
@@ -208,8 +251,10 @@ export default {
         document.body.classList.remove(...oldTheme)
       }
     },
-    removeSplash () {
-      document.querySelector('#status').textContent = this.$t('splash.fun_' + Math.ceil(Math.random() * 4))
+    removeSplash() {
+      document.querySelector('#status').textContent = this.$t(
+        'splash.fun_' + Math.ceil(Math.random() * 4),
+      )
       const splashscreenRoot = document.querySelector('#splash')
       splashscreenRoot.addEventListener('transitionend', () => {
         splashscreenRoot.remove()
@@ -219,6 +264,6 @@ export default {
       }, 600)
       splashscreenRoot.classList.add('hidden')
       document.querySelector('#app').classList.remove('hidden')
-    }
-  }
+    },
+  },
 }

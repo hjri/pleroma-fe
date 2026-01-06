@@ -57,15 +57,16 @@ const Popover = {
 
     triggerAttrs: {
       type: Object,
-      default: {}
-    }
+      default: {},
+    },
   },
-  inject: { // override popover z layer
+  inject: {
+    // override popover z layer
     popoversZLayer: {
-      default: ''
-    }
+      default: '',
+    },
   },
-  data () {
+  data() {
     return {
       // lockReEntry is a flag that is set when mouse cursor is leaving the popover's content
       // so that if mouse goes back into popover it won't be re-shown again to prevent annoyance
@@ -83,14 +84,16 @@ const Popover = {
       graceTimeout: null,
       parentPopover: null,
       disableClickOutside: false,
-      childrenShown: new Set()
+      childrenShown: new Set(),
     }
   },
   computed: {
-    allTriggerAttrs () {
+    allTriggerAttrs() {
       if (process.env.NODE_ENV === 'development') {
         if ('aria-hidden' in this.triggerAttrs) {
-          throw new Error('Do not use aria-hidden in triggerAttrs. Instead set hideTrigger to true')
+          throw new Error(
+            'Do not use aria-hidden in triggerAttrs. Instead set hideTrigger to true',
+          )
         }
       }
 
@@ -104,18 +107,20 @@ const Popover = {
       }
 
       return attrs
-    }
+    },
   },
   methods: {
-    setAnchorEl (el) {
+    setAnchorEl(el) {
       this.anchorEl = el
       this.updateStyles()
     },
-    containerBoundingClientRect () {
-      const container = this.boundToSelector ? this.$el.closest(this.boundToSelector) : this.$el.offsetParent
+    containerBoundingClientRect() {
+      const container = this.boundToSelector
+        ? this.$el.closest(this.boundToSelector)
+        : this.$el.offsetParent
       return container.getBoundingClientRect()
     },
-    updateStyles () {
+    updateStyles() {
       if (this.hidden) {
         this.styles = {}
         return
@@ -123,7 +128,10 @@ const Popover = {
 
       // Popover will be anchored around this element, trigger ref is the container, so
       // its children are what are inside the slot. Expect only one v-slot:trigger.
-      const anchorEl = this.anchorEl || (this.$refs.trigger && this.$refs.trigger.children[0]) || this.$el
+      const anchorEl =
+        this.anchorEl ||
+        (this.$refs.trigger && this.$refs.trigger.children[0]) ||
+        this.$el
       // SVGs don't have offsetWidth/Height, use fallback
       const anchorHeight = anchorEl.offsetHeight || anchorEl.clientHeight
       const anchorWidth = anchorEl.offsetWidth || anchorEl.clientWidth
@@ -138,7 +146,7 @@ const Popover = {
       // Screen position of the origin point for popover = center of the anchor
       const origin = {
         x: anchorScreenBox.left + anchorWidth * 0.5,
-        y: anchorScreenBox.top + anchorHeight * 0.5
+        y: anchorScreenBox.top + anchorHeight * 0.5,
       }
       const content = this.$refs.content
       const overlayCenter = this.overlayCenters
@@ -146,7 +154,8 @@ const Popover = {
         : null
 
       // Minor optimization, don't call a slow reflow call if we don't have to
-      const parentScreenBox = this.boundTo &&
+      const parentScreenBox =
+        this.boundTo &&
         (this.boundTo.x === 'container' || this.boundTo.y === 'container') &&
         this.containerBoundingClientRect()
 
@@ -154,25 +163,27 @@ const Popover = {
 
       // What are the screen bounds for the popover? Viewport vs container
       // when using viewport, using default margin values to dodge the navbar
-      const xBounds = this.boundTo && this.boundTo.x === 'container'
-        ? {
-            min: parentScreenBox.left + (margin.left || 0),
-            max: parentScreenBox.right - (margin.right || 0)
-          }
-        : {
-            min: 0 + (margin.left || 10),
-            max: window.innerWidth - (margin.right || 10)
-          }
+      const xBounds =
+        this.boundTo && this.boundTo.x === 'container'
+          ? {
+              min: parentScreenBox.left + (margin.left || 0),
+              max: parentScreenBox.right - (margin.right || 0),
+            }
+          : {
+              min: 0 + (margin.left || 10),
+              max: window.innerWidth - (margin.right || 10),
+            }
 
-      const yBounds = this.boundTo && this.boundTo.y === 'container'
-        ? {
-            min: parentScreenBox.top + (margin.top || 0),
-            max: parentScreenBox.bottom - (margin.bottom || 0)
-          }
-        : {
-            min: 0 + (margin.top || 50),
-            max: window.innerHeight - (margin.bottom || 5)
-          }
+      const yBounds =
+        this.boundTo && this.boundTo.y === 'container'
+          ? {
+              min: parentScreenBox.top + (margin.top || 0),
+              max: parentScreenBox.bottom - (margin.bottom || 0),
+            }
+          : {
+              min: 0 + (margin.top || 50),
+              max: window.innerHeight - (margin.bottom || 5),
+            }
 
       let horizOffset = 0
       let vertOffset = 0
@@ -227,8 +238,12 @@ const Popover = {
         // Handle special cases, first force to displaying on top if there's no space on bottom,
         // regardless of what placement value was. Then check if there's no space on top, and
         // force to bottom, again regardless of what placement value was.
-        const topBoundary = origin.y - anchorHeight * 0.5 + (this.removePadding ? topPadding : 0)
-        const bottomBoundary = origin.y + anchorHeight * 0.5 - (this.removePadding ? bottomPadding : 0)
+        const topBoundary =
+          origin.y - anchorHeight * 0.5 + (this.removePadding ? topPadding : 0)
+        const bottomBoundary =
+          origin.y +
+          anchorHeight * 0.5 -
+          (this.removePadding ? bottomPadding : 0)
         if (bottomBoundary + content.offsetHeight > yBounds.max) usingTop = true
         if (topBoundary - content.offsetHeight < yBounds.min) usingTop = false
 
@@ -246,8 +261,10 @@ const Popover = {
         // Handle special cases, first force to displaying on left if there's no space on right,
         // regardless of what placement value was. Then check if there's no space on right, and
         // force to left, again regardless of what placement value was.
-        const leftBoundary = origin.x - anchorWidth * 0.5 + (this.removePadding ? leftPadding : 0)
-        const rightBoundary = origin.x + anchorWidth * 0.5 - (this.removePadding ? rightPadding : 0)
+        const leftBoundary =
+          origin.x - anchorWidth * 0.5 + (this.removePadding ? leftPadding : 0)
+        const rightBoundary =
+          origin.x + anchorWidth * 0.5 - (this.removePadding ? rightPadding : 0)
         if (rightBoundary + content.offsetWidth > xBounds.max) usingLeft = true
         if (leftBoundary - content.offsetWidth < xBounds.min) usingLeft = false
 
@@ -262,17 +279,18 @@ const Popover = {
 
       this.styles = {
         left: `${Math.round(translateX)}px`,
-        top: `${Math.round(translateY)}px`
+        top: `${Math.round(translateY)}px`,
       }
 
       if (this.popoversZLayer) {
-        this.styles['--ZI_popover_override'] = `var(--ZI_${this.popoversZLayer}_popovers)`
+        this.styles['--ZI_popover_override'] =
+          `var(--ZI_${this.popoversZLayer}_popovers)`
       }
       if (parentScreenBox) {
         this.styles.maxWidth = `${Math.round(parentScreenBox.width)}px`
       }
     },
-    showPopover () {
+    showPopover() {
       if (this.disabled) return
       this.disableClickOutside = true
       setTimeout(() => {
@@ -291,7 +309,7 @@ const Popover = {
         this.updateStyles()
       })
     },
-    hidePopover () {
+    hidePopover() {
       if (this.disabled) return
       if (!this.hidden) this.$emit('close')
       this.hidden = true
@@ -302,12 +320,12 @@ const Popover = {
       this.scrollable?.removeEventListener('scroll', this.onScroll)
       this.scrollable?.removeEventListener('resize', this.onResize)
     },
-    resizePopover () {
+    resizePopover() {
       setTimeout(() => {
         this.updateStyles()
       }, 1)
     },
-    onMouseenter () {
+    onMouseenter() {
       if (this.trigger === 'hover') {
         this.lockReEntry = false
         clearTimeout(this.graceTimeout)
@@ -315,12 +333,12 @@ const Popover = {
         this.showPopover()
       }
     },
-    onMouseleave () {
+    onMouseleave() {
       if (this.trigger === 'hover' && this.childrenShown.size === 0) {
         this.graceTimeout = setTimeout(() => this.hidePopover(), 1)
       }
     },
-    onMouseenterContent () {
+    onMouseenterContent() {
       if (this.trigger === 'hover' && !this.lockReEntry) {
         this.lockReEntry = true
         clearTimeout(this.graceTimeout)
@@ -328,12 +346,12 @@ const Popover = {
         this.showPopover()
       }
     },
-    onMouseleaveContent () {
+    onMouseleaveContent() {
       if (this.trigger === 'hover' && this.childrenShown.size === 0) {
         this.graceTimeout = setTimeout(() => this.hidePopover(), 1)
       }
     },
-    onClick () {
+    onClick() {
       if (this.trigger === 'click') {
         if (this.hidden) {
           this.showPopover()
@@ -342,7 +360,7 @@ const Popover = {
         }
       }
     },
-    onClickOutside (e) {
+    onClickOutside(e) {
       if (this.disableClickOutside) return
       if (this.hidden) return
       if (this.$refs.content && this.$refs.content.contains(e.target)) return
@@ -351,35 +369,42 @@ const Popover = {
       this.hidePopover()
       if (this.parentPopover) this.parentPopover.onClickOutside(e)
     },
-    onScroll () {
+    onScroll() {
       this.updateStyles()
     },
-    onResize () {
+    onResize() {
       const content = this.$refs.content
       if (!content) return
-      if (this.oldSize.width !== content.offsetWidth || this.oldSize.height !== content.offsetHeight) {
+      if (
+        this.oldSize.width !== content.offsetWidth ||
+        this.oldSize.height !== content.offsetHeight
+      ) {
         this.updateStyles()
-        this.oldSize = { width: content.offsetWidth, height: content.offsetHeight }
+        this.oldSize = {
+          width: content.offsetWidth,
+          height: content.offsetHeight,
+        }
       }
     },
-    onChildPopoverState (childRef, state) {
+    onChildPopoverState(childRef, state) {
       if (state) {
         this.childrenShown.add(childRef)
       } else {
         this.childrenShown.delete(childRef)
       }
-    }
+    },
   },
-  updated () {
+  updated() {
     // Monitor changes to content size, update styles only when content sizes have changed,
     // that should be the only time we need to move the popover box if we don't care about scroll
     // or resize
     this.onResize()
   },
-  mounted () {
+  mounted() {
     this.teleport = true
-    let scrollable = this.$refs.trigger.closest('.column.-scrollable') ||
-        this.$refs.trigger.closest('.mobile-notifications')
+    let scrollable =
+      this.$refs.trigger.closest('.column.-scrollable') ||
+      this.$refs.trigger.closest('.mobile-notifications')
     if (!scrollable) scrollable = window
     this.scrollable = scrollable
     let parent = this.$parent
@@ -388,9 +413,9 @@ const Popover = {
     }
     this.parentPopover = parent
   },
-  beforeUnmount () {
+  beforeUnmount() {
     this.hidePopover()
-  }
+  },
 }
 
 export default Popover

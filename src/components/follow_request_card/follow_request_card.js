@@ -6,41 +6,43 @@ const FollowRequestCard = {
   props: ['user'],
   components: {
     BasicUserCard,
-    ConfirmModal
+    ConfirmModal,
   },
-  data () {
+  data() {
     return {
       showingApproveConfirmDialog: false,
-      showingDenyConfirmDialog: false
+      showingDenyConfirmDialog: false,
     }
   },
   methods: {
-    findFollowRequestNotificationId () {
+    findFollowRequestNotificationId() {
       const notif = notificationsFromStore(this.$store).find(
-        (notif) => notif.from_profile.id === this.user.id && notif.type === 'follow_request'
+        (notif) =>
+          notif.from_profile.id === this.user.id &&
+          notif.type === 'follow_request',
       )
       return notif && notif.id
     },
-    showApproveConfirmDialog () {
+    showApproveConfirmDialog() {
       this.showingApproveConfirmDialog = true
     },
-    hideApproveConfirmDialog () {
+    hideApproveConfirmDialog() {
       this.showingApproveConfirmDialog = false
     },
-    showDenyConfirmDialog () {
+    showDenyConfirmDialog() {
       this.showingDenyConfirmDialog = true
     },
-    hideDenyConfirmDialog () {
+    hideDenyConfirmDialog() {
       this.showingDenyConfirmDialog = false
     },
-    approveUser () {
+    approveUser() {
       if (this.shouldConfirmApprove) {
         this.showApproveConfirmDialog()
       } else {
         this.doApprove()
       }
     },
-    doApprove () {
+    doApprove() {
       this.$store.state.api.backendInteractor.approveUser({ id: this.user.id })
       this.$store.dispatch('removeFollowRequest', this.user)
 
@@ -48,40 +50,41 @@ const FollowRequestCard = {
       this.$store.dispatch('markSingleNotificationAsSeen', { id: notifId })
       this.$store.dispatch('updateNotification', {
         id: notifId,
-        updater: notification => {
+        updater: (notification) => {
           notification.type = 'follow'
-        }
+        },
       })
       this.hideApproveConfirmDialog()
     },
-    denyUser () {
+    denyUser() {
       if (this.shouldConfirmDeny) {
         this.showDenyConfirmDialog()
       } else {
         this.doDeny()
       }
     },
-    doDeny () {
+    doDeny() {
       const notifId = this.findFollowRequestNotificationId()
-      this.$store.state.api.backendInteractor.denyUser({ id: this.user.id })
+      this.$store.state.api.backendInteractor
+        .denyUser({ id: this.user.id })
         .then(() => {
           this.$store.dispatch('dismissNotificationLocal', { id: notifId })
           this.$store.dispatch('removeFollowRequest', this.user)
         })
       this.hideDenyConfirmDialog()
-    }
+    },
   },
   computed: {
-    mergedConfig () {
+    mergedConfig() {
       return this.$store.getters.mergedConfig
     },
-    shouldConfirmApprove () {
+    shouldConfirmApprove() {
       return this.mergedConfig.modalOnApproveFollow
     },
-    shouldConfirmDeny () {
+    shouldConfirmDeny() {
       return this.mergedConfig.modalOnDenyFollow
-    }
-  }
+    },
+  },
 }
 
 export default FollowRequestCard

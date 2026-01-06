@@ -1,19 +1,19 @@
 import { storage } from 'src/lib/storage.js'
 
 export const defaultState = {
-  drafts: {}
+  drafts: {},
 }
 
 export const mutations = {
-  addOrSaveDraft (state, { draft }) {
+  addOrSaveDraft(state, { draft }) {
     state.drafts[draft.id] = draft
   },
-  abandonDraft (state, { id }) {
+  abandonDraft(state, { id }) {
     delete state.drafts[id]
   },
-  loadDrafts (state, data) {
+  loadDrafts(state, data) {
     state.drafts = data
-  }
+  },
 }
 
 const storageKey = 'pleroma-fe-drafts'
@@ -30,7 +30,7 @@ const storageKey = 'pleroma-fe-drafts'
  * different keys, which will just pollute the whole storage.
  * It is indeed best to have backend support for this.
  */
-const getStorageData = async () => ((await storage.getItem(storageKey)) || {})
+const getStorageData = async () => (await storage.getItem(storageKey)) || {}
 
 const saveDraftToStorage = async (draft) => {
   const currentData = await getStorageData()
@@ -45,42 +45,44 @@ const deleteDraftFromStorage = async (id) => {
 }
 
 export const actions = {
-  async addOrSaveDraft (store, { draft }) {
-    const id = draft.id || (new Date().getTime()).toString()
+  async addOrSaveDraft(store, { draft }) {
+    const id = draft.id || new Date().getTime().toString()
     const draftWithId = { ...draft, id }
     store.commit('addOrSaveDraft', { draft: draftWithId })
     await saveDraftToStorage(draftWithId)
     return id
   },
-  async abandonDraft (store, { id }) {
+  async abandonDraft(store, { id }) {
     store.commit('abandonDraft', { id })
     await deleteDraftFromStorage(id)
   },
-  async loadDrafts (store) {
+  async loadDrafts(store) {
     const currentData = await getStorageData()
     store.commit('loadDrafts', currentData)
-  }
+  },
 }
 
 export const getters = {
-  draftsByTypeAndRefId (state) {
+  draftsByTypeAndRefId(state) {
     return (type, refId) => {
-      return Object.values(state.drafts).filter(draft => draft.type === type && draft.refId === refId)
+      return Object.values(state.drafts).filter(
+        (draft) => draft.type === type && draft.refId === refId,
+      )
     }
   },
-  draftsArray (state) {
+  draftsArray(state) {
     return Object.values(state.drafts)
   },
-  draftCount (state) {
+  draftCount(state) {
     return Object.values(state.drafts).length
-  }
+  },
 }
 
 const drafts = {
   state: defaultState,
   mutations,
   getters,
-  actions
+  actions,
 }
 
 export default drafts

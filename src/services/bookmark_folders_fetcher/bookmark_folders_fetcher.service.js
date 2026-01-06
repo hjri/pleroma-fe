@@ -3,10 +3,14 @@ import { promiseInterval } from '../promise_interval/promise_interval.js'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
 
 const fetchAndUpdate = ({ credentials }) => {
-  return apiService.fetchBookmarkFolders({ credentials })
-    .then(bookmarkFolders => {
-      useBookmarkFoldersStore().setBookmarkFolders(bookmarkFolders)
-    }, () => {})
+  return apiService
+    .fetchBookmarkFolders({ credentials })
+    .then(
+      (bookmarkFolders) => {
+        useBookmarkFoldersStore().setBookmarkFolders(bookmarkFolders)
+      },
+      () => {},
+    )
     .catch(() => {})
 }
 
@@ -17,7 +21,7 @@ const startFetching = ({ credentials, store }) => {
 }
 
 const bookmarkFoldersFetcher = {
-  startFetching
+  startFetching,
 }
 
 export default bookmarkFoldersFetcher

@@ -4,17 +4,15 @@ import { getBookmarkFolderEntries } from 'src/components/navigation/filter.js'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
 
 export const BookmarkFoldersMenuContent = {
-  props: [
-    'showPin'
-  ],
+  props: ['showPin'],
   components: {
-    NavigationEntry
+    NavigationEntry,
   },
   computed: {
     ...mapState(useBookmarkFoldersStore, {
-      folders: getBookmarkFolderEntries
-    })
-  }
+      folders: getBookmarkFolderEntries,
+    }),
+  },
 }
 
 export default BookmarkFoldersMenuContent

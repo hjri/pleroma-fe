@@ -10,10 +10,10 @@ import MapSetting from '../helpers/map_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
 const FederationTab = {
-  provide () {
+  provide() {
     return {
       defaultDraftMode: true,
-      defaultSource: 'admin'
+      defaultSource: 'admin',
     }
   },
   components: {
@@ -24,11 +24,11 @@ const FederationTab = {
     ListSetting,
     ListTupleSetting,
     GroupSetting,
-    MapSetting
+    MapSetting,
   },
   computed: {
-    ...SharedComputedObject()
-  }
+    ...SharedComputedObject(),
+  },
 }
 
 export default FederationTab

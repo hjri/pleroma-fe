@@ -11,16 +11,11 @@ import {
   faChevronLeft,
   faChevronRight,
   faCircleNotch,
-  faTimes
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons'
 import { useMediaViewerStore } from 'src/stores/media_viewer'
 
-library.add(
-  faChevronLeft,
-  faChevronRight,
-  faCircleNotch,
-  faTimes
-)
+library.add(faChevronLeft, faChevronRight, faCircleNotch, faTimes)
 
 const MediaModal = {
   components: {
@@ -29,9 +24,9 @@ const MediaModal = {
     PinchZoom,
     SwipeClick,
     Modal,
-    Flash
+    Flash,
   },
-  data () {
+  data() {
     return {
       loading: false,
       swipeDirection: GestureService.DIRECTION_LEFT,
@@ -40,42 +35,42 @@ const MediaModal = {
         return window.innerWidth * considerableMoveRatio
       },
       pinchZoomMinScale: 1,
-      pinchZoomScaleResetLimit: 1.2
+      pinchZoomScaleResetLimit: 1.2,
     }
   },
   computed: {
-    showing () {
+    showing() {
       return useMediaViewerStore().activated
     },
-    media () {
+    media() {
       return useMediaViewerStore().media
     },
-    description () {
+    description() {
       return this.currentMedia.description
     },
-    currentIndex () {
+    currentIndex() {
       return useMediaViewerStore().currentIndex
     },
-    currentMedia () {
+    currentMedia() {
       return this.media[this.currentIndex]
     },
-    canNavigate () {
+    canNavigate() {
       return this.media.length > 1
     },
-    type () {
+    type() {
       return this.currentMedia ? this.getType(this.currentMedia) : null
     },
-    swipeDisableClickThreshold () {
+    swipeDisableClickThreshold() {
       // If there is only one media, allow more mouse movements to close the modal
       // because there is less chance that the user wants to switch to another image
-      return () => this.canNavigate ? 1 : 30
-    }
+      return () => (this.canNavigate ? 1 : 30)
+    },
   },
   methods: {
-    getType (media) {
+    getType(media) {
       return fileTypeService.fileType(media.mimetype)
     },
-    hide () {
+    hide() {
       // HACK: Closing immediately via a touch will cause the click
       // to be processed on the content below the overlay
       const transitionTime = 100 // ms
@@ -83,7 +78,7 @@ const MediaModal = {
         useMediaViewerStore().closeMediaViewer()
       }, transitionTime)
     },
-    hideIfNotSwiped (event) {
+    hideIfNotSwiped(event) {
       // If we have swiped over SwipeClick, do not trigger hide
       const comp = this.$refs.swipeClick
       if (!comp) {
@@ -92,9 +87,12 @@ const MediaModal = {
         comp.$gesture.click(event)
       }
     },
-    goPrev () {
+    goPrev() {
       if (this.canNavigate) {
-        const prevIndex = this.currentIndex === 0 ? this.media.length - 1 : (this.currentIndex - 1)
+        const prevIndex =
+          this.currentIndex === 0
+            ? this.media.length - 1
+            : this.currentIndex - 1
         const newMedia = this.media[prevIndex]
         if (this.getType(newMedia) === 'image') {
           this.loading = true
@@ -102,9 +100,12 @@ const MediaModal = {
         useMediaViewerStore().setCurrentMedia(newMedia)
       }
     },
-    goNext () {
+    goNext() {
       if (this.canNavigate) {
-        const nextIndex = this.currentIndex === this.media.length - 1 ? 0 : (this.currentIndex + 1)
+        const nextIndex =
+          this.currentIndex === this.media.length - 1
+            ? 0
+            : this.currentIndex + 1
         const newMedia = this.media[nextIndex]
         if (this.getType(newMedia) === 'image') {
           this.loading = true
@@ -112,13 +113,13 @@ const MediaModal = {
         useMediaViewerStore().setCurrentMedia(newMedia)
       }
     },
-    onImageLoaded () {
+    onImageLoaded() {
       this.loading = false
     },
-    handleSwipePreview (offsets) {
+    handleSwipePreview(offsets) {
       this.$refs.pinchZoom.setTransform({ scale: 1, x: offsets[0], y: 0 })
     },
-    handleSwipeEnd (sign) {
+    handleSwipeEnd(sign) {
       this.$refs.pinchZoom.setTransform({ scale: 1, x: 0, y: 0 })
       if (sign > 0) {
         this.goNext()
@@ -126,33 +127,36 @@ const MediaModal = {
         this.goPrev()
       }
     },
-    handleKeyupEvent (e) {
-      if (this.showing && e.keyCode === 27) { // escape
+    handleKeyupEvent(e) {
+      if (this.showing && e.keyCode === 27) {
+        // escape
         this.hide()
       }
     },
-    handleKeydownEvent (e) {
+    handleKeydownEvent(e) {
       if (!this.showing) {
         return
       }
 
-      if (e.keyCode === 39) { // arrow right
+      if (e.keyCode === 39) {
+        // arrow right
         this.goNext()
-      } else if (e.keyCode === 37) { // arrow left
+      } else if (e.keyCode === 37) {
+        // arrow left
         this.goPrev()
       }
-    }
+    },
   },
-  mounted () {
+  mounted() {
     window.addEventListener('popstate', this.hide)
     document.addEventListener('keyup', this.handleKeyupEvent)
     document.addEventListener('keydown', this.handleKeydownEvent)
   },
-  unmounted () {
+  unmounted() {
     window.removeEventListener('popstate', this.hide)
     document.removeEventListener('keyup', this.handleKeyupEvent)
     document.removeEventListener('keydown', this.handleKeydownEvent)
-  }
+  },
 }
 
 export default MediaModal

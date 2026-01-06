@@ -4,49 +4,50 @@ import TabSwitcher from '../tab_switcher/tab_switcher.jsx'
 
 const StickerPicker = {
   components: {
-    TabSwitcher
+    TabSwitcher,
   },
-  data () {
+  data() {
     return {
       meta: {
-        stickers: []
+        stickers: [],
       },
-      path: ''
+      path: '',
     }
   },
   computed: {
-    pack () {
+    pack() {
       return this.$store.state.instance.stickers || []
-    }
+    },
   },
   methods: {
-    clear () {
+    clear() {
       this.meta = {
-        stickers: []
+        stickers: [],
       }
     },
-    pick (sticker, name) {
+    pick(sticker, name) {
       const store = this.$store
       // TODO remove this workaround by finding a way to bypass reuploads
-      fetch(sticker)
-        .then((res) => {
-          res.blob().then((blob) => {
-            const file = new File([blob], name, { mimetype: 'image/png' })
-            const formData = new FormData()
-            formData.append('file', file)
-            statusPosterService.uploadMedia({ store, formData })
-              .then((fileData) => {
-                this.$emit('uploaded', fileData)
-                this.clear()
-              }, (error) => {
-                console.warn("Can't attach sticker")
-                console.warn(error)
-                this.$emit('upload-failed', 'default')
-              })
-          })
+      fetch(sticker).then((res) => {
+        res.blob().then((blob) => {
+          const file = new File([blob], name, { mimetype: 'image/png' })
+          const formData = new FormData()
+          formData.append('file', file)
+          statusPosterService.uploadMedia({ store, formData }).then(
+            (fileData) => {
+              this.$emit('uploaded', fileData)
+              this.clear()
+            },
+            (error) => {
+              console.warn("Can't attach sticker")
+              console.warn(error)
+              this.$emit('upload-failed', 'default')
+            },
+          )
         })
-    }
-  }
+      })
+    },
+  },
 }
 
 export default StickerPicker

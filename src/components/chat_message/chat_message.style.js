@@ -2,26 +2,21 @@ export default {
   name: 'ChatMessage',
   selector: '.chat-message',
   variants: {
-    outgoing: '.outgoing'
+    outgoing: '.outgoing',
   },
-  validInnerComponents: [
-    'Text',
-    'Icon',
-    'Border',
-    'PollGraph'
-  ],
+  validInnerComponents: ['Text', 'Icon', 'Border', 'PollGraph'],
   defaultRules: [
     {
       directives: {
         background: '--bg, 2',
-        backgroundNoCssColor: 'yes'
-      }
+        backgroundNoCssColor: 'yes',
+      },
     },
     {
       variant: 'outgoing',
       directives: {
-        background: '--bg, 5'
-      }
-    }
-  ]
+        background: '--bg, 5',
+      },
+    },
+  ],
 }

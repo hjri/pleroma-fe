@@ -8,30 +8,30 @@ const MentionsLine = {
   props: {
     mentions: {
       required: true,
-      type: Array
-    }
+      type: Array,
+    },
   },
   data: () => ({ expanded: false }),
   components: {
-    MentionLink
+    MentionLink,
   },
   computed: {
-    mentionsComputed () {
+    mentionsComputed() {
       return this.mentions.slice(0, MENTIONS_LIMIT)
     },
-    extraMentions () {
+    extraMentions() {
       return this.mentions.slice(MENTIONS_LIMIT)
     },
-    manyMentions () {
+    manyMentions() {
       return this.extraMentions.length > 0
     },
-    ...mapGetters(['mergedConfig'])
+    ...mapGetters(['mergedConfig']),
   },
   methods: {
-    toggleShowMore () {
+    toggleShowMore() {
       this.expanded = !this.expanded
-    }
-  }
+    },
+  },
 }
 
 export default MentionsLine

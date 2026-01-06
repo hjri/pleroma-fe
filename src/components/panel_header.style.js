@@ -7,7 +7,7 @@ export default {
     'Icon',
     'Button',
     'ButtonUnstyled',
-    'Alert'
+    'Alert',
   ],
   defaultRules: [
     {
@@ -15,24 +15,26 @@ export default {
       directives: {
         backgroundNoCssColor: 'yes',
         background: '--fg',
-        shadow: [{
-          x: 0,
-          y: 1,
-          blur: 3,
-          spread: 0,
-          color: '#000000',
-          alpha: 0.4
-        },
-        {
-          x: 0,
-          y: 1,
-          blur: 0,
-          spread: 0,
-          color: '#ffffff',
-          alpha: 0.2,
-          inset: true
-        }]
-      }
-    }
-  ]
+        shadow: [
+          {
+            x: 0,
+            y: 1,
+            blur: 3,
+            spread: 0,
+            color: '#000000',
+            alpha: 0.4,
+          },
+          {
+            x: 0,
+            y: 1,
+            blur: 0,
+            spread: 0,
+            color: '#ffffff',
+            alpha: 0.2,
+            inset: true,
+          },
+        ],
+      },
+    },
+  ],
 }

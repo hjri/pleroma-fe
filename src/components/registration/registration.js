@@ -7,7 +7,9 @@ import { DAY } from 'src/services/date_utils/date_utils.js'
 import TermsOfServicePanel from '../terms_of_service_panel/terms_of_service_panel.vue'
 
 const registration = {
-  setup () { return { v$: useVuelidate() } },
+  setup() {
+    return { v$: useVuelidate() }
+  },
   data: () => ({
     user: {
       email: '',
@@ -17,15 +19,15 @@ const registration = {
       confirm: '',
       birthday: '',
       reason: '',
-      language: ['']
+      language: [''],
     },
-    captcha: {}
+    captcha: {},
   }),
   components: {
     InterfaceLanguageSwitcher,
-    TermsOfServicePanel
+    TermsOfServicePanel,
   },
-  validations () {
+  validations() {
     return {
       user: {
         email: { required: requiredIf(() => this.accountActivationRequired) },
@@ -34,20 +36,23 @@ const registration = {
         password: { required },
         confirm: {
           required,
-          sameAs: sameAs(this.user.password)
+          sameAs: sameAs(this.user.password),
         },
         birthday: {
           required: requiredIf(() => this.birthdayRequired),
-          maxValue: value => {
-            return !this.birthdayRequired || new Date(value).getTime() <= this.birthdayMin.getTime()
-          }
+          maxValue: (value) => {
+            return (
+              !this.birthdayRequired ||
+              new Date(value).getTime() <= this.birthdayMin.getTime()
+            )
+          },
         },
         reason: { required: requiredIf(() => this.accountApprovalRequired) },
-        language: {}
-      }
+        language: {},
+      },
     }
   },
-  created () {
+  created() {
     if ((!this.registrationOpen && !this.token) || this.signedIn) {
       this.$router.push({ name: 'root' })
     }
@@ -55,14 +60,16 @@ const registration = {
     this.setCaptcha()
   },
   computed: {
-    token () { return this.$route.params.token },
-    bioPlaceholder () {
+    token() {
+      return this.$route.params.token
+    },
+    bioPlaceholder() {
       return this.replaceNewlines(this.$t('registration.bio_placeholder'))
     },
-    reasonPlaceholder () {
+    reasonPlaceholder() {
       return this.replaceNewlines(this.$t('registration.reason_placeholder'))
     },
-    birthdayMin () {
+    birthdayMin() {
       const minAge = this.birthdayMinAge
       const today = new Date()
       today.setUTCMilliseconds(0)
@@ -73,12 +80,20 @@ const registration = {
       minDate.setTime(today.getTime() - minAge * DAY)
       return minDate
     },
-    birthdayMinAttr () {
+    birthdayMinAttr() {
       return this.birthdayMin.toJSON().replace(/T.+$/, '')
     },
-    birthdayMinFormatted () {
-      const browserLocale = localeService.internalToBrowserLocale(this.$i18n.locale)
-      return this.user.birthday && new Date(Date.parse(this.birthdayMin)).toLocaleDateString(browserLocale, { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' })
+    birthdayMinFormatted() {
+      const browserLocale = localeService.internalToBrowserLocale(
+        this.$i18n.locale,
+      )
+      return (
+        this.user.birthday &&
+        new Date(Date.parse(this.birthdayMin)).toLocaleDateString(
+          browserLocale,
+          { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' },
+        )
+      )
     },
     ...mapState({
       registrationOpen: (state) => state.instance.registrationOpen,
@@ -89,15 +104,17 @@ const registration = {
       hasSignUpNotice: (state) => !!state.users.signUpNotice.message,
       termsOfService: (state) => state.instance.tos,
       embeddedToS: (state) => state.instance.embeddedToS,
-      accountActivationRequired: (state) => state.instance.accountActivationRequired,
-      accountApprovalRequired: (state) => state.instance.accountApprovalRequired,
+      accountActivationRequired: (state) =>
+        state.instance.accountActivationRequired,
+      accountApprovalRequired: (state) =>
+        state.instance.accountApprovalRequired,
       birthdayRequired: (state) => state.instance.birthdayRequired,
-      birthdayMinAge: (state) => state.instance.birthdayMinAge
-    })
+      birthdayMinAge: (state) => state.instance.birthdayMinAge,
+    }),
   },
   methods: {
     ...mapActions(['signUp', 'getCaptcha']),
-    async submit () {
+    async submit() {
       this.user.nickname = this.user.username
       this.user.token = this.token
 
@@ -105,7 +122,9 @@ const registration = {
       this.user.captcha_token = this.captcha.token
       this.user.captcha_answer_data = this.captcha.answer_data
       if (this.user.language) {
-        this.user.language = localeService.internalToBackendLocaleMulti(this.user.language.filter(k => k))
+        this.user.language = localeService.internalToBackendLocaleMulti(
+          this.user.language.filter((k) => k),
+        )
       }
 
       this.v$.$touch()
@@ -124,13 +143,15 @@ const registration = {
         }
       }
     },
-    setCaptcha () {
-      this.getCaptcha().then(cpt => { this.captcha = cpt })
+    setCaptcha() {
+      this.getCaptcha().then((cpt) => {
+        this.captcha = cpt
+      })
     },
-    replaceNewlines (str) {
+    replaceNewlines(str) {
       return str.replace(/\s*\n\s*/g, ' \n')
-    }
-  }
+    },
+  },
 }
 
 export default registration

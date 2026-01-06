@@ -1,8 +1,12 @@
 import { defineStore } from 'pinia'
-import { createApp, getClientToken, verifyAppToken } from 'src/services/new_api/oauth.js'
+import {
+  createApp,
+  getClientToken,
+  verifyAppToken,
+} from 'src/services/new_api/oauth.js'
 
 // status codes about verifyAppToken (GET /api/v1/apps/verify_credentials)
-const isAppTokenRejected = error => (
+const isAppTokenRejected = (error) =>
   // Pleroma API docs say it returns 422 when unauthorized
   error.statusCode === 422 ||
   // but it actually returns 400 (as of 2.9.0)
@@ -10,16 +14,14 @@ const isAppTokenRejected = error => (
   error.statusCode === 400 ||
   // and Mastodon docs say it returns 401
   error.statusCode === 401
-)
 
 // status codes about getAppToken (GET /oauth/token)
-const isClientDataRejected = error => (
+const isClientDataRejected = (error) =>
   // Mastodon docs say it returns 401
   error.statusCode === 401 ||
   // but Pleroma actually returns 400 (as of 2.9.0)
   // NOTE: don't try to match against the error message, it is translatable
   error.statusCode === 400
-)
 
 export const useOAuthStore = defineStore('oauth', {
   state: () => ({
@@ -33,31 +35,31 @@ export const useOAuthStore = defineStore('oauth', {
     /* User token is authentication for app with user, this is for every calls
      * that need authorized user to be successful (i.e. posting, liking etc)
      */
-    userToken: false
+    userToken: false,
   }),
   getters: {
-    getToken () {
+    getToken() {
       return this.userToken || this.appToken
     },
-    getUserToken () {
+    getUserToken() {
       return this.userToken
-    }
+    },
   },
   actions: {
-    setClientData ({ clientId, clientSecret }) {
+    setClientData({ clientId, clientSecret }) {
       this.clientId = clientId
       this.clientSecret = clientSecret
     },
-    setAppToken (token) {
+    setAppToken(token) {
       this.appToken = token
     },
-    setToken (token) {
+    setToken(token) {
       this.userToken = token
     },
-    clearToken () {
+    clearToken() {
       this.userToken = false
     },
-    async createApp () {
+    async createApp() {
       const { state } = window.vuex
       const instance = state.instance.server
       const app = await createApp(instance)
@@ -67,36 +69,36 @@ export const useOAuthStore = defineStore('oauth', {
     /// Use this if you want to get the client id and secret but are not interested
     /// in whether they are valid.
     /// @return {{ clientId: string, clientSecret: string }} An object representing the app
-    async ensureApp () {
+    async ensureApp() {
       if (this.clientId && this.clientSecret) {
         return {
           clientId: this.clientId,
-          clientSecret: this.clientSecret
+          clientSecret: this.clientSecret,
         }
       } else {
         return this.createApp()
       }
     },
-    async getAppToken () {
+    async getAppToken() {
       const { state } = window.vuex
       const instance = state.instance.server
       const res = await getClientToken({
         clientId: this.clientId,
         clientSecret: this.clientSecret,
-        instance
+        instance,
       })
       this.setAppToken(res.access_token)
       return res.access_token
     },
     /// Use this if you want to ensure the app is still valid to use.
     /// @return {string} The access token to the app (not attached to any user)
-    async ensureAppToken () {
+    async ensureAppToken() {
       const { state } = window.vuex
       if (this.appToken) {
         try {
           await verifyAppToken({
             instance: state.instance.server,
-            appToken: this.appToken
+            appToken: this.appToken,
           })
           return this.appToken
         } catch (e) {
@@ -133,17 +135,17 @@ export const useOAuthStore = defineStore('oauth', {
           // and re-create our app
           this.setClientData({
             clientId: false,
-            clientSecret: false
+            clientSecret: false,
           })
           await this.createApp()
           // try once again to get the token
           return await this.getAppToken()
         }
       }
-    }
+    },
   },
   persist: {
-    afterLoad (state) {
+    afterLoad(state) {
       // state.token is userToken with older name, coming from persistent state
       if (state.token && !state.userToken) {
         state.userToken = state.token
@@ -152,6 +154,6 @@ export const useOAuthStore = defineStore('oauth', {
         delete state.token
       }
       return state
-    }
-  }
+    },
+  },
 })

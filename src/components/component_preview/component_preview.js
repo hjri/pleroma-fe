@@ -2,12 +2,15 @@ import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
 
 import genRandomSeed from 'src/services/random_seed/random_seed.service.js'
-import { createStyleSheet, adoptStyleSheets } from 'src/services/style_setter/style_setter.js'
+import {
+  createStyleSheet,
+  adoptStyleSheets,
+} from 'src/services/style_setter/style_setter.js'
 
 export default {
   components: {
     Checkbox,
-    ColorInput
+    ColorInput,
   },
   props: [
     'shadow',
@@ -17,41 +20,41 @@ export default {
     'previewCss',
     'disabled',
     'invalid',
-    'noColorControl'
+    'noColorControl',
   ],
   emits: ['update:shadow'],
-  data () {
+  data() {
     return {
       colorOverride: undefined,
       lightGrid: false,
       zoom: 100,
-      randomSeed: genRandomSeed()
+      randomSeed: genRandomSeed(),
     }
   },
-  mounted () {
+  mounted() {
     this.update()
   },
   computed: {
-    hideControls () {
+    hideControls() {
       return typeof this.shadow === 'string'
-    }
+    },
   },
   watch: {
-    previewCss () {
+    previewCss() {
       this.update()
     },
-    previewStyle () {
+    previewStyle() {
       this.update()
     },
-    zoom () {
+    zoom() {
       this.update()
-    }
+    },
   },
   methods: {
-    updateProperty (axis, value) {
+    updateProperty(axis, value) {
       this.$emit('update:shadow', { axis, value: Number(value) })
     },
-    update () {
+    update() {
       const sheet = createStyleSheet('style-component-preview', 90)
 
       sheet.clear()
@@ -60,23 +63,25 @@ export default {
       if (this.colorOverride) result.push(`--background: ${this.colorOverride}`)
 
       const styleRule = [
-        '#component-preview-', this.randomSeed, ' {\n',
+        '#component-preview-',
+        this.randomSeed,
+        ' {\n',
         '.preview-block {\n',
         `zoom: ${this.zoom / 100};`,
         this.previewStyle,
         '\n}',
-        '\n}'
+        '\n}',
       ].join('')
 
       sheet.addRule(styleRule)
-      sheet.addRule([
-        '#component-preview-', this.randomSeed, ' {\n',
-        ...result,
-        '\n}'
-      ].join(''))
+      sheet.addRule(
+        ['#component-preview-', this.randomSeed, ' {\n', ...result, '\n}'].join(
+          '',
+        ),
+      )
 
       sheet.ready = true
       adoptStyleSheets()
-    }
-  }
+    },
+  },
 }

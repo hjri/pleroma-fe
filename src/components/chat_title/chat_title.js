@@ -7,17 +7,17 @@ export default {
   components: {
     UserAvatar,
     RichContent,
-    UserPopover: defineAsyncComponent(() => import('../user_popover/user_popover.vue'))
+    UserPopover: defineAsyncComponent(
+      () => import('../user_popover/user_popover.vue'),
+    ),
   },
-  props: [
-    'user', 'withAvatar'
-  ],
+  props: ['user', 'withAvatar'],
   computed: {
-    title () {
+    title() {
       return this.user ? this.user.screen_name_ui : ''
     },
-    htmlTitle () {
+    htmlTitle() {
       return this.user ? this.user.name_html : ''
-    }
-  }
+    },
+  },
 }

@@ -16,40 +16,40 @@ export const createStyleSheet = (id, priority = 1000) => {
     rules: [],
     ready: false,
     priority,
-    clear () {
+    clear() {
       this.rules = []
     },
-    addRule (rule) {
+    addRule(rule) {
       let newRule = rule
       if (!CSS.supports?.('backdrop-filter', 'blur()')) {
         newRule = newRule.replace(/backdrop-filter:[^;]+;/g, '') // Remove backdrop-filter
       }
 
       // firefox doesn't like invalid selectors
-      if (!CSS.supports?.('selector(::-webkit-scrollbar)') && newRule.startsWith('::-webkit')) {
+      if (
+        !CSS.supports?.('selector(::-webkit-scrollbar)') &&
+        newRule.startsWith('::-webkit')
+      ) {
         return
       }
       this.rules.push(
-        newRule
-          .replace(/var\(--shadowFilter\)[^;]*;/g, '') // Remove shadowFilter references
+        newRule.replace(/var\(--shadowFilter\)[^;]*;/g, ''), // Remove shadowFilter references
       )
-    }
+    },
   }
 
   stylesheets[id] = newStyleSheet
   return newStyleSheet
 }
 
-
 export const adoptStyleSheets = throttle(() => {
   if (supportsAdoptedStyleSheets) {
-    document.adoptedStyleSheets = Object
-      .values(stylesheets)
-      .filter(x => x.ready)
+    document.adoptedStyleSheets = Object.values(stylesheets)
+      .filter((x) => x.ready)
       .sort((a, b) => a.priority - b.priority)
-      .map(sheet => {
+      .map((sheet) => {
         const css = new CSSStyleSheet()
-        sheet.rules.forEach(r => css.insertRule(r))
+        sheet.rules.forEach((r) => css.insertRule(r))
         return css
       })
   } else {
@@ -59,12 +59,11 @@ export const adoptStyleSheets = throttle(() => {
       holder.sheet.deleteRule(i)
     }
 
-    Object
-      .values(stylesheets)
-      .filter(x => x.ready)
+    Object.values(stylesheets)
+      .filter((x) => x.ready)
       .sort((a, b) => a.priority - b.priority)
-      .forEach(sheet => {
-        sheet.rules.forEach(r => holder.sheet.insertRule(r))
+      .forEach((sheet) => {
+        sheet.rules.forEach((r) => holder.sheet.insertRule(r))
       })
   }
   // Some older browsers do not support document.adoptedStyleSheets.
@@ -73,7 +72,6 @@ export const adoptStyleSheets = throttle(() => {
   // is nothing to do here.
 }, 500)
 
-
 const EAGER_STYLE_ID = 'pleroma-eager-styles'
 const LAZY_STYLE_ID = 'pleroma-lazy-styles'
 
@@ -81,15 +79,15 @@ export const generateTheme = (inputRuleset, callbacks, debug) => {
   const {
     onNewRule = () => {},
     onLazyFinished = () => {},
-    onEagerFinished = () => {}
+    onEagerFinished = () => {},
   } = callbacks
 
   const themes3 = init({
     inputRuleset,
-    debug
+    debug,
   })
 
-  getCssRules(themes3.eager, debug).forEach(rule => {
+  getCssRules(themes3.eager, debug).forEach((rule) => {
     // Hacks to support multiple selectors on same component
     onNewRule(rule, false)
   })
@@ -103,8 +101,11 @@ export const generateTheme = (inputRuleset, callbacks, debug) => {
   // let t0 = performance.now()
   const processChunk = () => {
     const chunk = chunks[counter]
-    Promise.all(chunk.map(x => x())).then(result => {
-      getCssRules(result.filter(x => x), debug).forEach(rule => {
+    Promise.all(chunk.map((x) => x())).then((result) => {
+      getCssRules(
+        result.filter((x) => x),
+        debug,
+      ).forEach((rule) => {
         onNewRule(rule, true)
       })
       // const t1 = performance.now()
@@ -131,8 +132,8 @@ export const tryLoadCache = async () => {
       const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
       const lazyStyles = createStyleSheet(LAZY_STYLE_ID, 20)
 
-      cache.data[0].forEach(rule => eagerStyles.addRule(rule))
-      cache.data[1].forEach(rule => lazyStyles.addRule(rule))
+      cache.data[0].forEach((rule) => eagerStyles.addRule(rule))
+      cache.data[1].forEach((rule) => lazyStyles.addRule(rule))
 
       eagerStyles.ready = true
       lazyStyles.ready = true
@@ -140,7 +141,7 @@ export const tryLoadCache = async () => {
       console.info(`Loaded theme from cache`)
       return true
     } else {
-      console.warn('Engine checksum doesn\'t match, cache not usable, clearing')
+      console.warn("Engine checksum doesn't match, cache not usable, clearing")
       localStorage.removeItem('pleroma-fe-theme-cache')
     }
   } catch (e) {
@@ -153,7 +154,7 @@ export const applyTheme = (
   input,
   onEagerFinish = () => {},
   onFinish = () => {},
-  debug
+  debug,
 ) => {
   const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
   const lazyStyles = createStyleSheet(LAZY_STYLE_ID, 20)
@@ -164,29 +165,34 @@ export const applyTheme = (
   const { lazyProcessFunc } = generateTheme(
     input,
     {
-      onNewRule (rule, isLazy) {
+      onNewRule(rule, isLazy) {
         if (isLazy) {
           lazyStyles.addRule(rule)
         } else {
           eagerStyles.addRule(rule)
         }
       },
-      onEagerFinished () {
+      onEagerFinished() {
         eagerStyles.ready = true
         adoptStyleSheets()
         onEagerFinish()
-        console.info('Eager part of theme finished, waiting for lazy part to finish to store cache')
+        console.info(
+          'Eager part of theme finished, waiting for lazy part to finish to store cache',
+        )
       },
-      onLazyFinished () {
+      onLazyFinished() {
         lazyStyles.ready = true
         adoptStyleSheets()
-        const cache = { engineChecksum: getEngineChecksum(), data: [eagerStyles.rules, lazyStyles.rules] }
+        const cache = {
+          engineChecksum: getEngineChecksum(),
+          data: [eagerStyles.rules, lazyStyles.rules],
+        }
         onFinish(cache)
         localforage.setItem('pleromafe-theme-cache', cache)
         console.info('Theme cache stored')
-      }
+      },
     },
-    debug
+    debug,
   )
 
   setTimeout(lazyProcessFunc, 0)
@@ -202,18 +208,19 @@ const extractStyleConfig = ({
   navbarSize,
   panelHeaderSize,
   textSize,
-  forcedRoundness
+  forcedRoundness,
 }) => {
   const result = {
     sidebarColumnWidth,
     contentColumnWidth,
     notifsColumnWidth,
-    themeEditorMinWidth: parseInt(themeEditorMinWidth) === 0 ? 'fit-content' : themeEditorMinWidth,
+    themeEditorMinWidth:
+      parseInt(themeEditorMinWidth) === 0 ? 'fit-content' : themeEditorMinWidth,
     emojiReactionsScale,
     emojiSize,
     navbarSize,
     panelHeaderSize,
-    textSize
+    textSize,
   }
 
   switch (forcedRoundness) {
@@ -243,10 +250,10 @@ export const applyConfig = (input) => {
     return
   }
 
-  const rules = Object
-    .entries(config)
+  const rules = Object.entries(config)
     .filter(([, v]) => v)
-    .map(([k, v]) => `--${k}: ${v}`).join(';')
+    .map(([k, v]) => `--${k}: ${v}`)
+    .join(';')
 
   const styleSheet = createStyleSheet('theme-holder', 30)
 
@@ -270,28 +277,27 @@ export const getResourcesIndex = async (url, parser = JSON.parse) => {
   let custom
 
   const resourceTransform = (resources) => {
-    return Object
-      .entries(resources)
-      .map(([k, v]) => {
-        if (typeof v === 'object') {
-          return [k, () => Promise.resolve(v)]
-        } else if (typeof v === 'string') {
-          return [
-            k,
-            () => window
+    return Object.entries(resources).map(([k, v]) => {
+      if (typeof v === 'object') {
+        return [k, () => Promise.resolve(v)]
+      } else if (typeof v === 'string') {
+        return [
+          k,
+          () =>
+            window
               .fetch(v, { cache })
-              .then(data => data.text())
-              .then(text => parser(text))
-              .catch(e => {
+              .then((data) => data.text())
+              .then((text) => parser(text))
+              .catch((e) => {
                 console.error(e)
                 return null
-              })
-          ]
-        } else {
-          console.error(`Unknown resource format - ${k} is a ${typeof v}`)
-          return [k, null]
-        }
-      })
+              }),
+        ]
+      } else {
+        console.error(`Unknown resource format - ${k} is a ${typeof v}`)
+        return [k, null]
+      }
+    })
   }
 
   try {
@@ -314,7 +320,11 @@ export const getResourcesIndex = async (url, parser = JSON.parse) => {
 
   const total = [...custom, ...builtin]
   if (total.length === 0) {
-    return Promise.reject(new Error(`Resource at ${url} and ${customUrl} completely unavailable. Panicking`))
+    return Promise.reject(
+      new Error(
+        `Resource at ${url} and ${customUrl} completely unavailable. Panicking`,
+      ),
+    )
   }
   return Promise.resolve(Object.fromEntries(total))
 }

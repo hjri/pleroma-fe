@@ -16,23 +16,26 @@
 export default {
   props: {
     disabled: {
-      type: Boolean
+      type: Boolean,
     },
-    click: { // click event handler. Must return a promise
+    click: {
+      // click event handler. Must return a promise
       type: Function,
-      default: () => Promise.resolve()
-    }
+      default: () => Promise.resolve(),
+    },
   },
-  data () {
+  data() {
     return {
-      progress: false
+      progress: false,
     }
   },
   methods: {
-    onClick () {
+    onClick() {
       this.progress = true
-      this.click().then(() => { this.progress = false })
-    }
-  }
+      this.click().then(() => {
+        this.progress = false
+      })
+    },
+  },
 }
 </script>

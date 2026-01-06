@@ -5,14 +5,16 @@ import { mapState } from 'vuex'
 
 const UserPanel = {
   computed: {
-    signedIn () { return this.user },
-    ...mapState({ user: state => state.users.currentUser })
+    signedIn() {
+      return this.user
+    },
+    ...mapState({ user: (state) => state.users.currentUser }),
   },
   components: {
     AuthForm,
     PostStatusForm,
-    UserCard
-  }
+    UserCard,
+  },
 }
 
 export default UserPanel

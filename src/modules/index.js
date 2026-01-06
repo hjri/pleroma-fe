@@ -19,5 +19,5 @@ export default {
   profileConfig,
   adminSettings,
   drafts,
-  chats
+  chats,
 }

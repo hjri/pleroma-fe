@@ -12,10 +12,10 @@ import SharedComputedObject from '../helpers/shared_computed_object.js'
 import { get } from 'lodash'
 
 const LinksTab = {
-  provide () {
+  provide() {
     return {
       defaultDraftMode: true,
-      defaultSource: 'admin'
+      defaultSource: 'admin',
     }
   },
   components: {
@@ -26,84 +26,109 @@ const LinksTab = {
     AttachmentSetting,
     GroupSetting,
     ListSetting,
-    Checkbox
+    Checkbox,
   },
   computed: {
-    classIsPresent () {
-      return this.$store.state.adminSettings.draft[':pleroma']['Pleroma.Formatter'][':class'] !== false
+    classIsPresent() {
+      return (
+        this.$store.state.adminSettings.draft[':pleroma']['Pleroma.Formatter'][
+          ':class'
+        ] !== false
+      )
     },
-    relIsPresent () {
-      return this.$store.state.adminSettings.draft[':pleroma']['Pleroma.Formatter'][':rel'] !== false
+    relIsPresent() {
+      return (
+        this.$store.state.adminSettings.draft[':pleroma']['Pleroma.Formatter'][
+          ':rel'
+        ] !== false
+      )
     },
-    truncateIsPresent () {
-      return this.$store.state.adminSettings.draft[':pleroma']['Pleroma.Formatter'][':truncate'] !== false
+    truncateIsPresent() {
+      return (
+        this.$store.state.adminSettings.draft[':pleroma']['Pleroma.Formatter'][
+          ':truncate'
+        ] !== false
+      )
     },
-    truncateDescription () {
-      return get(this.$store.state.adminSettings.descriptions, [':pleroma', 'Pleroma.Formatter', ':truncate'])
+    truncateDescription() {
+      return get(this.$store.state.adminSettings.descriptions, [
+        ':pleroma',
+        'Pleroma.Formatter',
+        ':truncate',
+      ])
     },
-    ttlSettersOptions () {
-      const desc = get(this.$store.state.adminSettings.descriptions, ':pleroma.:rich_media.:ttl_setters')
-      return new Set(desc.suggestions.map(option => ({
-        label: option.replace('Pleroma.Web.RichMedia.Parser.TTL.', ''),
-        value: option
-      })))
+    ttlSettersOptions() {
+      const desc = get(
+        this.$store.state.adminSettings.descriptions,
+        ':pleroma.:rich_media.:ttl_setters',
+      )
+      return new Set(
+        desc.suggestions.map((option) => ({
+          label: option.replace('Pleroma.Web.RichMedia.Parser.TTL.', ''),
+          value: option,
+        })),
+      )
     },
-    parsersOptions () {
-      const desc = get(this.$store.state.adminSettings.descriptions, ':pleroma.:rich_media.:parsers')
-      return new Set(desc.suggestions.map(option => ({
-        label: option.replace('Pleroma.Web.RichMedia.Parsers.', ''),
-        value: option
-      })))
+    parsersOptions() {
+      const desc = get(
+        this.$store.state.adminSettings.descriptions,
+        ':pleroma.:rich_media.:parsers',
+      )
+      return new Set(
+        desc.suggestions.map((option) => ({
+          label: option.replace('Pleroma.Web.RichMedia.Parsers.', ''),
+          value: option,
+        })),
+      )
     },
-    validateTLDOptions () {
-      return [{
-        label: this.$t('general.yes'),
-        value: true
-      }, {
-        label: this.$t('general.no'),
-        value: false
-      }, {
-        label: this.$t('admin_dash.links.no_scheme'),
-        value: ':no_scheme'
-      }]
+    validateTLDOptions() {
+      return [
+        {
+          label: this.$t('general.yes'),
+          value: true,
+        },
+        {
+          label: this.$t('general.no'),
+          value: false,
+        },
+        {
+          label: this.$t('admin_dash.links.no_scheme'),
+          value: ':no_scheme',
+        },
+      ]
     },
-    mediaProxyEnabled () {
-      return this.$store.state.adminSettings.draft[':pleroma'][':media_proxy'][':enabled']
+    mediaProxyEnabled() {
+      return this.$store.state.adminSettings.draft[':pleroma'][':media_proxy'][
+        ':enabled'
+      ]
     },
-    mediaInvalidationProvider () {
-      return this.$store.state.adminSettings.draft[':pleroma'][':media_proxy'][':invalidation'][':provider']
+    mediaInvalidationProvider() {
+      return this.$store.state.adminSettings.draft[':pleroma'][':media_proxy'][
+        ':invalidation'
+      ][':provider']
     },
-    ...SharedComputedObject()
+    ...SharedComputedObject(),
   },
   methods: {
-    checkRel (e) {
-      this.$store.commit(
-        'updateAdminDraft',
-        {
-          path: [':pleroma','Pleroma.Formatter',':rel'],
-          value: e ? '' : false
-        }
-      )
+    checkRel(e) {
+      this.$store.commit('updateAdminDraft', {
+        path: [':pleroma', 'Pleroma.Formatter', ':rel'],
+        value: e ? '' : false,
+      })
     },
-    checkClass (e) {
-      this.$store.commit(
-        'updateAdminDraft',
-        {
-          path: [':pleroma','Pleroma.Formatter',':class'],
-          value: e ? '' : false
-        }
-      )
+    checkClass(e) {
+      this.$store.commit('updateAdminDraft', {
+        path: [':pleroma', 'Pleroma.Formatter', ':class'],
+        value: e ? '' : false,
+      })
     },
-    checkTruncate (e) {
-      this.$store.commit(
-        'updateAdminDraft',
-        {
-          path: [':pleroma','Pleroma.Formatter',':truncate'],
-          value: e ? 20 : false
-        }
-      )
-    }
-  }
+    checkTruncate(e) {
+      this.$store.commit('updateAdminDraft', {
+        path: [':pleroma', 'Pleroma.Formatter', ':truncate'],
+        value: e ? 20 : false,
+      })
+    },
+  },
 }
 
 export default LinksTab

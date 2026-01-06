@@ -9,10 +9,10 @@ import ListSetting from '../helpers/list_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
 const MediaProxyTab = {
-  provide () {
+  provide() {
     return {
       defaultDraftMode: true,
-      defaultSource: 'admin'
+      defaultSource: 'admin',
     }
   },
   components: {
@@ -22,17 +22,21 @@ const MediaProxyTab = {
     StringSetting,
     AttachmentSetting,
     GroupSetting,
-    ListSetting
+    ListSetting,
   },
   computed: {
-    mediaProxyEnabled () {
-      return this.$store.state.adminSettings.draft[':pleroma'][':media_proxy'][':enabled']
+    mediaProxyEnabled() {
+      return this.$store.state.adminSettings.draft[':pleroma'][':media_proxy'][
+        ':enabled'
+      ]
     },
-    mediaInvalidationProvider () {
-      return this.$store.state.adminSettings.draft[':pleroma'][':media_proxy'][':invalidation'][':provider']
+    mediaInvalidationProvider() {
+      return this.$store.state.adminSettings.draft[':pleroma'][':media_proxy'][
+        ':invalidation'
+      ][':provider']
     },
-    ...SharedComputedObject()
-  }
+    ...SharedComputedObject(),
+  },
 }
 
 export default MediaProxyTab

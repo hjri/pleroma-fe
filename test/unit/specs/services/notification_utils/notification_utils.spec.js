@@ -10,44 +10,46 @@ describe('NotificationUtils', () => {
               {
                 id: 1,
                 action: { id: '1' },
-                type: 'like'
+                type: 'like',
               },
               {
                 id: 2,
                 action: { id: '2' },
-                type: 'mention'
+                type: 'mention',
               },
               {
                 id: 3,
                 action: { id: '3' },
-                type: 'repeat'
-              }
-            ]
-          }
+                type: 'repeat',
+              },
+            ],
+          },
         },
         getters: {
           mergedConfig: {
             notificationVisibility: {
               likes: true,
               repeats: true,
-              mentions: false
-            }
-          }
-        }
+              mentions: false,
+            },
+          },
+        },
       }
       const expected = [
         {
           action: { id: '3' },
           id: 3,
-          type: 'repeat'
+          type: 'repeat',
         },
         {
           action: { id: '1' },
           id: 1,
-          type: 'like'
-        }
+          type: 'like',
+        },
       ]
-      expect(NotificationUtils.filteredNotificationsFromStore(store)).to.eql(expected)
+      expect(NotificationUtils.filteredNotificationsFromStore(store)).to.eql(
+        expected,
+      )
     })
   })
 
@@ -60,34 +62,36 @@ describe('NotificationUtils', () => {
               {
                 action: { id: '1' },
                 type: 'like',
-                seen: false
+                seen: false,
               },
               {
                 action: { id: '2' },
                 type: 'mention',
-                seen: true
-              }
-            ]
-          }
+                seen: true,
+              },
+            ],
+          },
         },
         getters: {
           mergedConfig: {
             notificationVisibility: {
               likes: true,
               repeats: true,
-              mentions: false
-            }
-          }
-        }
+              mentions: false,
+            },
+          },
+        },
       }
       const expected = [
         {
           action: { id: '1' },
           type: 'like',
-          seen: false
-        }
+          seen: false,
+        },
       ]
-      expect(NotificationUtils.unseenNotificationsFromStore(store)).to.eql(expected)
+      expect(NotificationUtils.unseenNotificationsFromStore(store)).to.eql(
+        expected,
+      )
     })
   })
 })

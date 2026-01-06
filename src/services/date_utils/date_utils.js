@@ -47,17 +47,23 @@ export const relativeTimeShort = (date, nowThreshold = 1) => {
 
 export const unitToSeconds = (unit, amount) => {
   switch (unit) {
-    case 'minutes': return 0.001 * amount * MINUTE
-    case 'hours': return 0.001 * amount * HOUR
-    case 'days': return 0.001 * amount * DAY
+    case 'minutes':
+      return 0.001 * amount * MINUTE
+    case 'hours':
+      return 0.001 * amount * HOUR
+    case 'days':
+      return 0.001 * amount * DAY
   }
 }
 
 export const secondsToUnit = (unit, amount) => {
   switch (unit) {
-    case 'minutes': return (1000 * amount) / MINUTE
-    case 'hours': return (1000 * amount) / HOUR
-    case 'days': return (1000 * amount) / DAY
+    case 'minutes':
+      return (1000 * amount) / MINUTE
+    case 'hours':
+      return (1000 * amount) / HOUR
+    case 'days':
+      return (1000 * amount) / DAY
   }
 }
 
@@ -66,14 +72,15 @@ export const isSameYear = (a, b) => {
 }
 
 export const isSameMonth = (a, b) => {
-  return a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth()
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth()
 }
 
 export const isSameDay = (a, b) => {
-  return a.getFullYear() === b.getFullYear() &&
+  return (
+    a.getFullYear() === b.getFullYear() &&
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate()
+  )
 }
 
 export const durationStrToMs = (str) => {

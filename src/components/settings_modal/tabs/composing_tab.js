@@ -21,69 +21,78 @@ import {
   faMessage,
   faPenAlt,
   faDatabase,
-  faSliders
+  faSliders,
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faGlobe,
-  faMessage,
-  faPenAlt,
-  faDatabase,
-  faSliders
-)
+library.add(faGlobe, faMessage, faPenAlt, faDatabase, faSliders)
 
 const ComposingTab = {
   props: {
     parentCollapsed: {
       required: true,
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
-  data () {
+  data() {
     return {
-      subjectLineOptions: ['email', 'noop', 'masto'].map(mode => ({
+      subjectLineOptions: ['email', 'noop', 'masto'].map((mode) => ({
         key: mode,
         value: mode,
-        label: this.$t(`settings.subject_line_${mode === 'masto' ? 'mastodon' : mode}`)
+        label: this.$t(
+          `settings.subject_line_${mode === 'masto' ? 'mastodon' : mode}`,
+        ),
       })),
-      conversationDisplayOptions: ['tree', 'linear'].map(mode => ({
+      conversationDisplayOptions: ['tree', 'linear'].map((mode) => ({
         key: mode,
         value: mode,
-        label: this.$t(`settings.conversation_display_${mode}`)
+        label: this.$t(`settings.conversation_display_${mode}`),
       })),
-      absoluteTime12hOptions: ['24h', '12h'].map(mode => ({
+      absoluteTime12hOptions: ['24h', '12h'].map((mode) => ({
         key: mode,
         value: mode,
-        label: this.$t(`settings.absolute_time_format_12h_${mode}`)
+        label: this.$t(`settings.absolute_time_format_12h_${mode}`),
       })),
-      conversationOtherRepliesButtonOptions: ['below', 'inside'].map(mode => ({
+      conversationOtherRepliesButtonOptions: ['below', 'inside'].map(
+        (mode) => ({
+          key: mode,
+          value: mode,
+          label: this.$t(`settings.conversation_other_replies_button_${mode}`),
+        }),
+      ),
+      mentionLinkDisplayOptions: ['short', 'full_for_remote', 'full'].map(
+        (mode) => ({
+          key: mode,
+          value: mode,
+          label: this.$t(`settings.mention_link_display_${mode}`),
+        }),
+      ),
+      userPopoverAvatarActionOptions: ['close', 'zoom', 'open'].map((mode) => ({
         key: mode,
         value: mode,
-        label: this.$t(`settings.conversation_other_replies_button_${mode}`)
+        label: this.$t(`settings.user_popover_avatar_action_${mode}`),
       })),
-      mentionLinkDisplayOptions: ['short', 'full_for_remote', 'full'].map(mode => ({
+      unsavedPostActionOptions: ['save', 'discard', 'confirm'].map((mode) => ({
         key: mode,
         value: mode,
-        label: this.$t(`settings.mention_link_display_${mode}`)
-      })),
-      userPopoverAvatarActionOptions: ['close', 'zoom', 'open'].map(mode => ({
-        key: mode,
-        value: mode,
-        label: this.$t(`settings.user_popover_avatar_action_${mode}`)
-      })),
-      unsavedPostActionOptions: ['save', 'discard', 'confirm'].map(mode => ({
-        key: mode,
-        value: mode,
-        label: this.$t(`settings.unsaved_post_action_${mode}`)
+        label: this.$t(`settings.unsaved_post_action_${mode}`),
       })),
       loopSilentAvailable:
-      // Firefox
-      Object.getOwnPropertyDescriptor(HTMLVideoElement.prototype, 'mozHasAudio') ||
-      // Chrome-likes
-      Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'webkitAudioDecodedByteCount') ||
-      // Future spec, still not supported in Nightly 63 as of 08/2018
-      Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'audioTracks'),
-      emailLanguage: this.$store.state.users.currentUser.language || ['']
+        // Firefox
+        Object.getOwnPropertyDescriptor(
+          HTMLVideoElement.prototype,
+          'mozHasAudio',
+        ) ||
+        // Chrome-likes
+        Object.getOwnPropertyDescriptor(
+          HTMLMediaElement.prototype,
+          'webkitAudioDecodedByteCount',
+        ) ||
+        // Future spec, still not supported in Nightly 63 as of 08/2018
+        Object.getOwnPropertyDescriptor(
+          HTMLMediaElement.prototype,
+          'audioTracks',
+        ),
+      emailLanguage: this.$store.state.users.currentUser.language || [''],
     }
   },
   components: {
@@ -96,61 +105,68 @@ const ComposingTab = {
     ProfileSettingIndicator,
     ScopeSelector,
     Select,
-    FontControl
+    FontControl,
   },
   computed: {
-    postFormats () {
+    postFormats() {
       return this.$store.state.instance.postFormats || []
     },
-    postContentOptions () {
-      return this.postFormats.map(format => ({
+    postContentOptions() {
+      return this.postFormats.map((format) => ({
         key: format,
         value: format,
-        label: this.$t(`post_status.content_type["${format}"]`)
+        label: this.$t(`post_status.content_type["${format}"]`),
       }))
     },
     language: {
-      get: function () { return this.$store.getters.mergedConfig.interfaceLanguage },
+      get: function () {
+        return this.$store.getters.mergedConfig.interfaceLanguage
+      },
       set: function (val) {
-        this.$store.dispatch('setOption', { name: 'interfaceLanguage', value: val })
-      }
+        this.$store.dispatch('setOption', {
+          name: 'interfaceLanguage',
+          value: val,
+        })
+      },
     },
     ...SharedComputedObject(),
     ...mapState({
-      blockExpirationSupported: state => state.instance.blockExpiration,
-    })
+      blockExpirationSupported: (state) => state.instance.blockExpiration,
+    }),
   },
   methods: {
-    changeDefaultScope (value) {
+    changeDefaultScope(value) {
       this.$store.dispatch('setProfileOption', { name: 'defaultScope', value })
     },
-    clearCache (key) {
+    clearCache(key) {
       clearCache(key)
         .then(() => {
           this.$store.dispatch('settingsSaved', { success: true })
         })
-        .catch(error => {
+        .catch((error) => {
           this.$store.dispatch('settingsSaved', { error })
         })
     },
-    tooSmall () {
+    tooSmall() {
       this.$emit('tooSmall')
     },
-    tooBig () {
+    tooBig() {
       this.$emit('tooBig')
     },
-    getNavMode () {
+    getNavMode() {
       return this.$refs.tabSwitcher.getNavMode()
     },
-    clearAssetCache () {
+    clearAssetCache() {
       this.clearCache(cacheKey)
     },
-    clearEmojiCache () {
+    clearEmojiCache() {
       this.clearCache(emojiCacheKey)
     },
-    updateProfile () {
+    updateProfile() {
       const params = {
-        language: localeService.internalToBackendLocaleMulti(this.emailLanguage)
+        language: localeService.internalToBackendLocaleMulti(
+          this.emailLanguage,
+        ),
       }
 
       this.$store.state.api.backendInteractor
@@ -160,19 +176,19 @@ const ComposingTab = {
           this.$store.commit('setCurrentUser', user)
         })
     },
-    updateFont (key, value) {
+    updateFont(key, value) {
       this.$store.dispatch('setOption', {
         name: 'theme3hacks',
         value: {
           ...this.mergedConfig.theme3hacks,
           fonts: {
             ...this.mergedConfig.theme3hacks.fonts,
-            [key]: value
-          }
-        }
+            [key]: value,
+          },
+        },
       })
     },
-  }
+  },
 }
 
 export default ComposingTab

@@ -3,40 +3,40 @@ import Setting from './setting.js'
 
 export default {
   ...Setting,
-  data () {
+  data() {
     return {
       newValue: '',
     }
   },
   components: {
     ...Setting.components,
-    Checkbox
+    Checkbox,
   },
   props: {
-    ...Setting.props
+    ...Setting.props,
   },
   computed: {
     ...Setting.computed,
-    isSeparate () {
+    isSeparate() {
       // [[a1, b1], [a2, b2]] vs [a, b]
       return Array.isArray(this.visibleState[0])
     },
-    normalizedState () {
+    normalizedState() {
       if (this.isSeparate) {
-        return this.visibleState.map(y => y.map(x => Number(x) || 0))
+        return this.visibleState.map((y) => y.map((x) => Number(x) || 0))
       } else {
-        return [this.visibleState.map(x => Number(x) || 0)]
+        return [this.visibleState.map((x) => Number(x) || 0)]
       }
-    }
+    },
   },
   methods: {
     ...Setting.methods,
-    getValue ({ event, side, index, eventType }) {
+    getValue({ event, side, index, eventType }) {
       if (eventType === 'edit') {
         const value = Number(event.target.value)
         if (Number.isNaN(value)) return this.visibleState
 
-        const newVal = [...this.normalizedState.map(x => [...x])]
+        const newVal = [...this.normalizedState.map((x) => [...x])]
         newVal[side][index] = value
         return newVal
       }
@@ -48,6 +48,6 @@ export default {
           return [this.normalizedState[0]]
         }
       }
-    }
-  }
+    },
+  },
 }

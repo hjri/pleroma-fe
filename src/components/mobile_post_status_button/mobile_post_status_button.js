@@ -1,57 +1,53 @@
 import { debounce } from 'lodash'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faPen
-} from '@fortawesome/free-solid-svg-icons'
+import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { usePostStatusStore } from 'src/stores/post_status'
 
-library.add(
-  faPen
-)
+library.add(faPen)
 
-const HIDDEN_FOR_PAGES = new Set([
-  'chats',
-  'chat',
-  'lists-edit'
-])
+const HIDDEN_FOR_PAGES = new Set(['chats', 'chat', 'lists-edit'])
 
 const MobilePostStatusButton = {
-  data () {
+  data() {
     return {
       hidden: false,
       scrollingDown: false,
       inputActive: false,
       oldScrollPos: 0,
-      amountScrolled: 0
+      amountScrolled: 0,
     }
   },
-  created () {
+  created() {
     if (this.autohideFloatingPostButton) {
       this.activateFloatingPostButtonAutohide()
     }
     window.addEventListener('resize', this.handleOSK)
   },
-  unmounted () {
+  unmounted() {
     if (this.autohideFloatingPostButton) {
       this.deactivateFloatingPostButtonAutohide()
     }
     window.removeEventListener('resize', this.handleOSK)
   },
   computed: {
-    isLoggedIn () {
+    isLoggedIn() {
       return !!this.$store.state.users.currentUser
     },
-    isHidden () {
-      if (HIDDEN_FOR_PAGES.has(this.$route.name)) { return true }
+    isHidden() {
+      if (HIDDEN_FOR_PAGES.has(this.$route.name)) {
+        return true
+      }
 
-      return this.autohideFloatingPostButton && (this.hidden || this.inputActive)
+      return (
+        this.autohideFloatingPostButton && (this.hidden || this.inputActive)
+      )
     },
-    isPersistent () {
+    isPersistent() {
       return !!this.$store.getters.mergedConfig.alwaysShowNewPostButton
     },
-    autohideFloatingPostButton () {
+    autohideFloatingPostButton() {
       return !!this.$store.getters.mergedConfig.autohideFloatingPostButton
-    }
+    },
   },
   watch: {
     autohideFloatingPostButton: function (isEnabled) {
@@ -60,21 +56,21 @@ const MobilePostStatusButton = {
       } else {
         this.deactivateFloatingPostButtonAutohide()
       }
-    }
+    },
   },
   methods: {
-    activateFloatingPostButtonAutohide () {
+    activateFloatingPostButtonAutohide() {
       window.addEventListener('scroll', this.handleScrollStart)
       window.addEventListener('scroll', this.handleScrollEnd)
     },
-    deactivateFloatingPostButtonAutohide () {
+    deactivateFloatingPostButtonAutohide() {
       window.removeEventListener('scroll', this.handleScrollStart)
       window.removeEventListener('scroll', this.handleScrollEnd)
     },
-    openPostForm () {
+    openPostForm() {
       usePostStatusStore().openPostStatusModal()
     },
-    handleOSK () {
+    handleOSK() {
       // This is a big hack: we're guessing from changed window sizes if the
       // on-screen keyboard is active or not. This is only really important
       // for phones in portrait mode and it's more important to show the button
@@ -94,20 +90,28 @@ const MobilePostStatusButton = {
         this.inputActive = false
       }
     },
-    handleScrollStart: debounce(function () {
-      if (window.scrollY > this.oldScrollPos) {
-        this.hidden = true
-      } else {
-        this.hidden = false
-      }
-      this.oldScrollPos = window.scrollY
-    }, 100, { leading: true, trailing: false }),
+    handleScrollStart: debounce(
+      function () {
+        if (window.scrollY > this.oldScrollPos) {
+          this.hidden = true
+        } else {
+          this.hidden = false
+        }
+        this.oldScrollPos = window.scrollY
+      },
+      100,
+      { leading: true, trailing: false },
+    ),
 
-    handleScrollEnd: debounce(function () {
-      this.hidden = false
-      this.oldScrollPos = window.scrollY
-    }, 100, { leading: false, trailing: true })
-  }
+    handleScrollEnd: debounce(
+      function () {
+        this.hidden = false
+        this.oldScrollPos = window.scrollY
+      },
+      100,
+      { leading: false, trailing: true },
+    ),
+  },
 }
 
 export default MobilePostStatusButton

@@ -3,15 +3,15 @@ import { defineStore } from 'pinia'
 export const useStatusHistoryStore = defineStore('statusHistory', {
   state: () => ({
     params: {},
-    modalActivated: false
+    modalActivated: false,
   }),
   actions: {
-    openStatusHistoryModal (params) {
+    openStatusHistoryModal(params) {
       this.params = params
       this.modalActivated = true
     },
-    closeStatusHistoryModal () {
+    closeStatusHistoryModal() {
       this.modalActivated = false
-    }
-  }
+    },
+  },
 })

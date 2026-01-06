@@ -13,10 +13,10 @@ import SharedComputedObject from '../helpers/shared_computed_object.js'
 import { get } from 'lodash'
 
 const HTTPTab = {
-  provide () {
+  provide() {
     return {
       defaultDraftMode: true,
-      defaultSource: 'admin'
+      defaultSource: 'admin',
     }
   },
   components: {
@@ -29,18 +29,23 @@ const HTTPTab = {
     GroupSetting,
     ListSetting,
     TupleSetting,
-    ProxySetting
+    ProxySetting,
   },
   computed: {
     ...SharedComputedObject(),
-    sslOptions () {
-      const desc = get(this.$store.state.adminSettings.descriptions, ':pleroma.:http.:adapter.:ssl_options.:versions')
-      return new Set(desc.suggestions.map(option => ({
-        label: option.replace(':tlsv', 'TLS v'),
-        value: option
-      })))
+    sslOptions() {
+      const desc = get(
+        this.$store.state.adminSettings.descriptions,
+        ':pleroma.:http.:adapter.:ssl_options.:versions',
+      )
+      return new Set(
+        desc.suggestions.map((option) => ({
+          label: option.replace(':tlsv', 'TLS v'),
+          value: option,
+        })),
+      )
     },
-  }
+  },
 }
 
 export default HTTPTab

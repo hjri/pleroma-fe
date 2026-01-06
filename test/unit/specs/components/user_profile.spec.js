@@ -5,39 +5,39 @@ import backendInteractorService from 'src/services/backend_interactor_service/ba
 import { getters } from 'src/modules/users.js'
 
 const mutations = {
-  clearTimeline: () => {}
+  clearTimeline: () => {},
 }
 
 const actions = {
   fetchUser: () => {},
-  fetchUserByScreenName: () => {}
+  fetchUserByScreenName: () => {},
 }
 
 const testGetters = {
-  findUser: state => getters.findUser(state.users),
-  findUserByName: state => getters.findUserByName(state.users),
-  relationship: state => getters.relationship(state.users),
+  findUser: (state) => getters.findUser(state.users),
+  findUserByName: (state) => getters.findUserByName(state.users),
+  relationship: (state) => getters.relationship(state.users),
   mergedConfig: () => ({
     colors: '',
     highlight: {},
     customTheme: {
-      colors: []
-    }
-  })
+      colors: [],
+    },
+  }),
 }
 
 const localUser = {
   id: 100,
   is_local: true,
   screen_name: 'testUser',
-  screen_name_ui: 'testUser'
+  screen_name_ui: 'testUser',
 }
 
 const extUser = {
   id: 100,
   is_local: false,
   screen_name: 'testUser@test.instance',
-  screen_name_ui: 'testUser@test.instance'
+  screen_name_ui: 'testUser@test.instance',
 }
 
 const externalProfileStore = createStore({
@@ -47,13 +47,13 @@ const externalProfileStore = createStore({
   state: {
     api: {
       fetchers: {},
-      backendInteractor: backendInteractorService('')
+      backendInteractor: backendInteractorService(''),
     },
     interface: {
-      browserSupport: ''
+      browserSupport: '',
     },
     instance: {
-      hideUserStats: true
+      hideUserStats: true,
     },
     statuses: {
       timelines: {
@@ -71,7 +71,7 @@ const externalProfileStore = createStore({
           friends: [],
           viewing: 'statuses',
           userId: 100,
-          flushMarker: 0
+          flushMarker: 0,
         },
         media: {
           statuses: [],
@@ -87,20 +87,20 @@ const externalProfileStore = createStore({
           friends: [],
           viewing: 'statuses',
           userId: 100,
-          flushMarker: 0
-        }
-      }
+          flushMarker: 0,
+        },
+      },
     },
     users: {
       currentUser: {
-        credentials: ''
+        credentials: '',
       },
       usersObject: { 100: extUser },
       usersByNameObject: {},
       users: [extUser],
-      relationships: {}
-    }
-  }
+      relationships: {},
+    },
+  },
 })
 
 const localProfileStore = createStore({
@@ -110,20 +110,20 @@ const localProfileStore = createStore({
   state: {
     api: {
       fetchers: {},
-      backendInteractor: backendInteractorService('')
+      backendInteractor: backendInteractorService(''),
     },
     interface: {
-      browserSupport: ''
+      browserSupport: '',
     },
     config: {
       colors: '',
       highlight: {},
       customTheme: {
-        colors: []
-      }
+        colors: [],
+      },
     },
     instance: {
-      hideUserStats: true
+      hideUserStats: true,
     },
     statuses: {
       timelines: {
@@ -141,7 +141,7 @@ const localProfileStore = createStore({
           friends: [],
           viewing: 'statuses',
           userId: 100,
-          flushMarker: 0
+          flushMarker: 0,
         },
         media: {
           statuses: [],
@@ -157,20 +157,20 @@ const localProfileStore = createStore({
           friends: [],
           viewing: 'statuses',
           userId: 100,
-          flushMarker: 0
-        }
-      }
+          flushMarker: 0,
+        },
+      },
     },
     users: {
       currentUser: {
-        credentials: ''
+        credentials: '',
       },
       usersObject: { 100: localUser },
       usersByNameObject: { testuser: localUser },
       users: [localUser],
-      relationships: {}
-    }
-  }
+      relationships: {},
+    },
+  },
 })
 
 // https://github.com/vuejs/test-utils/issues/1382
@@ -182,14 +182,16 @@ describe.skip('UserProfile', () => {
         mocks: {
           $route: {
             params: { id: 100 },
-            name: 'external-user-profile'
+            name: 'external-user-profile',
           },
-          $t: (msg) => msg
-        }
-      }
+          $t: (msg) => msg,
+        },
+      },
     })
 
-    expect(wrapper.find('.user-screen-name').text()).to.eql('@testUser@test.instance')
+    expect(wrapper.find('.user-screen-name').text()).to.eql(
+      '@testUser@test.instance',
+    )
   })
 
   it('renders local profile', () => {
@@ -199,11 +201,11 @@ describe.skip('UserProfile', () => {
         mocks: {
           $route: {
             params: { name: 'testUser' },
-            name: 'user-profile'
+            name: 'user-profile',
           },
-          $t: (msg) => msg
-        }
-      }
+          $t: (msg) => msg,
+        },
+      },
     })
 
     expect(wrapper.find('.user-screen-name').text()).to.eql('@testUser')

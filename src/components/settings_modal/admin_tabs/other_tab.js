@@ -12,10 +12,10 @@ import MapSetting from '../helpers/map_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
 const OtherTab = {
-  provide () {
+  provide() {
     return {
       defaultDraftMode: true,
-      defaultSource: 'admin'
+      defaultSource: 'admin',
     }
   },
   components: {
@@ -28,11 +28,11 @@ const OtherTab = {
     ListSetting,
     PWAManifestIconsSetting,
     MapSetting,
-    GroupSetting
+    GroupSetting,
   },
   computed: {
-    ...SharedComputedObject()
-  }
+    ...SharedComputedObject(),
+  },
 }
 
 export default OtherTab

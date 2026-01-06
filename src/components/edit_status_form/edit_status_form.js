@@ -3,19 +3,19 @@ import statusPosterService from '../../services/status_poster/status_poster.serv
 
 const EditStatusForm = {
   components: {
-    PostStatusForm
+    PostStatusForm,
   },
   props: {
     params: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
-    requestClose () {
+    requestClose() {
       this.$refs.postStatusForm.requestClose()
     },
-    doEditStatus ({ status, spoilerText, sensitive, media, contentType, poll }) {
+    doEditStatus({ status, spoilerText, sensitive, media, contentType, poll }) {
       const params = {
         store: this.$store,
         statusId: this.params.statusId,
@@ -24,21 +24,22 @@ const EditStatusForm = {
         sensitive,
         poll,
         media,
-        contentType
+        contentType,
       }
 
-      return statusPosterService.editStatus(params)
+      return statusPosterService
+        .editStatus(params)
         .then((data) => {
           return data
         })
         .catch((err) => {
           console.error('Error editing status', err)
           return {
-            error: err.message
+            error: err.message,
           }
         })
-    }
-  }
+    },
+  },
 }
 
 export default EditStatusForm

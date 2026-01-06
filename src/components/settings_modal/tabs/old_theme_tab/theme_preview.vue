@@ -124,20 +124,15 @@ import {
   faTimes,
   faStar,
   faRetweet,
-  faReply
+  faReply,
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faTimes,
-  faStar,
-  faRetweet,
-  faReply
-)
+library.add(faTimes, faStar, faRetweet, faReply)
 
 export default {
   components: {
-    Checkbox
-  }
+    Checkbox,
+  },
 }
 </script>
 

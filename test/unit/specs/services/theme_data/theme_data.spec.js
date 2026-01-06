@@ -1,4 +1,7 @@
-import { getLayersArray, topoSort } from 'src/services/theme_data/theme_data.service.js'
+import {
+  getLayersArray,
+  topoSort,
+} from 'src/services/theme_data/theme_data.service.js'
 
 describe('Theme Data utility functions', () => {
   describe('getLayersArray', () => {
@@ -6,7 +9,7 @@ describe('Theme Data utility functions', () => {
       layer1: null,
       layer2: 'layer1',
       layer3a: 'layer2',
-      layer3b: 'layer2'
+      layer3b: 'layer2',
     }
 
     it('should expand layers properly (3b)', () => {
@@ -38,7 +41,7 @@ describe('Theme Data utility functions', () => {
       layerB: [],
       layer1B: ['layerB'],
       layer2B: ['layer1B'],
-      layer3AB: ['layer2B', 'layer2A']
+      layer3AB: ['layer2B', 'layer2A'],
     }
 
     // Same thing but messed up order
@@ -49,7 +52,7 @@ describe('Theme Data utility functions', () => {
       layerB: [],
       layer3AB: ['layer2B', 'layer2A'],
       layer2B: ['layer1B'],
-      layerA: []
+      layerA: [],
     }
 
     it('should make a topologically sorted array', () => {
@@ -63,7 +66,7 @@ describe('Theme Data utility functions', () => {
       expect(out.indexOf('layer2B')).to.be.below(out.indexOf('layer3AB'))
     })
 
-    it('order in object shouldn\'t matter', () => {
+    it("order in object shouldn't matter", () => {
       const out = topoSort(fixture2, (node, inheritance) => inheritance[node])
       // This basically checks all ordering that matters
       expect(out.indexOf('layerA')).to.be.below(out.indexOf('layer1A'))
@@ -82,7 +85,9 @@ describe('Theme Data utility functions', () => {
     })
 
     it('ignores cyclic dependencies', () => {
-      const out = topoSort({ a: 'b', b: 'a', c: 'a' }, (node, inheritance) => [inheritance[node]])
+      const out = topoSort({ a: 'b', b: 'a', c: 'a' }, (node, inheritance) => [
+        inheritance[node],
+      ])
       expect(out.indexOf('a')).to.be.below(out.indexOf('c'))
     })
   })

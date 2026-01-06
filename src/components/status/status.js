@@ -13,7 +13,10 @@ import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
 import MentionLink from 'src/components/mention_link/mention_link.vue'
 import StatusActionButtons from 'src/components/status_action_buttons/status_action_buttons.vue'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
-import { highlightClass, highlightStyle } from '../../services/user_highlighter/user_highlighter.js'
+import {
+  highlightClass,
+  highlightStyle,
+} from '../../services/user_highlighter/user_highlighter.js'
 import { muteFilterHits } from '../../services/status_parser/status_parser.js'
 import { unescape, uniqBy } from 'lodash'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
@@ -38,7 +41,7 @@ import {
   faChevronUp,
   faChevronDown,
   faAngleDoubleRight,
-  faPlay
+  faPlay,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -60,21 +63,26 @@ library.add(
   faChevronUp,
   faChevronDown,
   faAngleDoubleRight,
-  faPlay
+  faPlay,
 )
 
-const camelCase = name => name.charAt(0).toUpperCase() + name.slice(1)
+const camelCase = (name) => name.charAt(0).toUpperCase() + name.slice(1)
 
-const controlledOrUncontrolledGetters = list => list.reduce((res, name) => {
-  const camelized = camelCase(name)
-  const toggle = `controlledToggle${camelized}`
-  const controlledName = `controlled${camelized}`
-  const uncontrolledName = `uncontrolled${camelized}`
-  res[name] = function () {
-    return ((this.$data[toggle] !== undefined || this.$props[toggle] !== undefined) && this[toggle]) ? this[controlledName] : this[uncontrolledName]
-  }
-  return res
-}, {})
+const controlledOrUncontrolledGetters = (list) =>
+  list.reduce((res, name) => {
+    const camelized = camelCase(name)
+    const toggle = `controlledToggle${camelized}`
+    const controlledName = `controlled${camelized}`
+    const uncontrolledName = `uncontrolled${camelized}`
+    res[name] = function () {
+      return (this.$data[toggle] !== undefined ||
+        this.$props[toggle] !== undefined) &&
+        this[toggle]
+        ? this[controlledName]
+        : this[uncontrolledName]
+    }
+    return res
+  }, {})
 
 const controlledOrUncontrolledToggle = (obj, name) => {
   const camelized = camelCase(name)
@@ -114,7 +122,7 @@ const Status = {
     MentionsLine,
     UserPopover,
     UserLink,
-    StatusActionButtons
+    StatusActionButtons,
   },
   props: [
     'statusoid',
@@ -147,10 +155,10 @@ const Status = {
     'controlledToggleReplying',
     'controlledMediaPlaying',
     'controlledSetMediaPlaying',
-    'dive'
+    'dive',
   ],
   emits: ['interacted'],
-  data () {
+  data() {
     return {
       uncontrolledReplying: false,
       unmuted: false,
@@ -159,128 +167,164 @@ const Status = {
       suspendable: true,
       error: null,
       headTailLinks: null,
-      displayQuote: !this.inQuote
+      displayQuote: !this.inQuote,
     }
   },
   computed: {
     ...controlledOrUncontrolledGetters(['replying', 'mediaPlaying']),
-    showReasonMutedThread () {
+    showReasonMutedThread() {
       return (
-        this.status.thread_muted ||
-          (this.status.reblog && this.status.reblog.thread_muted)
-      ) && !this.inConversation
+        (this.status.thread_muted ||
+          (this.status.reblog && this.status.reblog.thread_muted)) &&
+        !this.inConversation
+      )
     },
-    repeaterClass () {
+    repeaterClass() {
       const user = this.statusoid.user
       return highlightClass(user)
     },
-    userClass () {
-      const user = this.retweet ? (this.statusoid.retweeted_status.user) : this.statusoid.user
+    userClass() {
+      const user = this.retweet
+        ? this.statusoid.retweeted_status.user
+        : this.statusoid.user
       return highlightClass(user)
     },
-    deleted () {
+    deleted() {
       return this.statusoid.deleted
     },
-    repeaterStyle () {
+    repeaterStyle() {
       const user = this.statusoid.user
       const highlight = this.mergedConfig.highlight
       return highlightStyle(highlight[user.screen_name])
     },
-    userStyle () {
+    userStyle() {
       if (this.noHeading) return
-      const user = this.retweet ? (this.statusoid.retweeted_status.user) : this.statusoid.user
+      const user = this.retweet
+        ? this.statusoid.retweeted_status.user
+        : this.statusoid.user
       const highlight = this.mergedConfig.highlight
       return highlightStyle(highlight[user.screen_name])
     },
-    userProfileLink () {
-      return this.generateUserProfileLink(this.status.user.id, this.status.user.screen_name)
+    userProfileLink() {
+      return this.generateUserProfileLink(
+        this.status.user.id,
+        this.status.user.screen_name,
+      )
     },
-    replyProfileLink () {
+    replyProfileLink() {
       if (this.isReply) {
-        const user = this.$store.getters.findUser(this.status.in_reply_to_user_id)
+        const user = this.$store.getters.findUser(
+          this.status.in_reply_to_user_id,
+        )
         // FIXME Why user not found sometimes???
         return user ? user.statusnet_profile_url : 'NOT_FOUND'
       }
     },
-    retweet () { return !!this.statusoid.retweeted_status },
-    retweeterUser () { return this.statusoid.user },
-    retweeter () { return this.statusoid.user.name || this.statusoid.user.screen_name_ui },
-    retweeterHtml () { return this.statusoid.user.name },
-    retweeterProfileLink () { return this.generateUserProfileLink(this.statusoid.user.id, this.statusoid.user.screen_name) },
-    status () {
+    retweet() {
+      return !!this.statusoid.retweeted_status
+    },
+    retweeterUser() {
+      return this.statusoid.user
+    },
+    retweeter() {
+      return this.statusoid.user.name || this.statusoid.user.screen_name_ui
+    },
+    retweeterHtml() {
+      return this.statusoid.user.name
+    },
+    retweeterProfileLink() {
+      return this.generateUserProfileLink(
+        this.statusoid.user.id,
+        this.statusoid.user.screen_name,
+      )
+    },
+    status() {
       if (this.retweet) {
         return this.statusoid.retweeted_status
       } else {
         return this.statusoid
       }
     },
-    statusFromGlobalRepository () {
+    statusFromGlobalRepository() {
       // NOTE: Consider to replace status with statusFromGlobalRepository
       return this.$store.state.statuses.allStatusesObject[this.status.id]
     },
-    loggedIn () {
+    loggedIn() {
       return !!this.currentUser
     },
-    muteFilterHits () {
+    muteFilterHits() {
       return muteFilterHits(
-        Object.values(useServerSideStorageStore().prefsStorage.simple.muteFilters),
-        this.status
+        Object.values(
+          useServerSideStorageStore().prefsStorage.simple.muteFilters,
+        ),
+        this.status,
       )
     },
-    botStatus () {
+    botStatus() {
       return this.status.user.actor_type === 'Service'
     },
-    showActorTypeIndicator () {
+    showActorTypeIndicator() {
       return !this.hideBotIndication
     },
-    sensitiveStatus () {
+    sensitiveStatus() {
       return this.status.nsfw
     },
-    mentionsLine () {
+    mentionsLine() {
       if (!this.headTailLinks) return []
-      const writtenSet = new Set(this.headTailLinks.writtenMentions.map(_ => _.url))
-      return this.status.attentions.filter(attn => {
-        // no reply user
-        return attn.id !== this.status.in_reply_to_user_id &&
-          // no self-replies
-          attn.statusnet_profile_url !== this.status.user.statusnet_profile_url &&
-          // don't include if mentions is written
-          !writtenSet.has(attn.statusnet_profile_url)
-      }).map(attn => ({
-        url: attn.statusnet_profile_url,
-        content: attn.screen_name,
-        userId: attn.id
-      }))
+      const writtenSet = new Set(
+        this.headTailLinks.writtenMentions.map((_) => _.url),
+      )
+      return this.status.attentions
+        .filter((attn) => {
+          // no reply user
+          return (
+            attn.id !== this.status.in_reply_to_user_id &&
+            // no self-replies
+            attn.statusnet_profile_url !==
+              this.status.user.statusnet_profile_url &&
+            // don't include if mentions is written
+            !writtenSet.has(attn.statusnet_profile_url)
+          )
+        })
+        .map((attn) => ({
+          url: attn.statusnet_profile_url,
+          content: attn.screen_name,
+          userId: attn.id,
+        }))
     },
-    hasMentionsLine () {
+    hasMentionsLine() {
       return this.mentionsLine.length > 0
     },
-    muteReasons () {
+    muteReasons() {
       return [
         this.userIsMuted ? 'user' : null,
         this.status.thread_muted ? 'thread' : null,
-        (this.muteFilterHits.length > 0) ? 'filtered' : null,
-        (this.muteBotStatuses && this.botStatus) ? 'bot' : null,
-        (this.muteSensitiveStatuses && this.sensitiveStatus) ? 'nsfw' : null
-      ].filter(_ => _)
+        this.muteFilterHits.length > 0 ? 'filtered' : null,
+        this.muteBotStatuses && this.botStatus ? 'bot' : null,
+        this.muteSensitiveStatuses && this.sensitiveStatus ? 'nsfw' : null,
+      ].filter((_) => _)
     },
-    muteLocalized () {
+    muteLocalized() {
       if (this.muteReasons.length === 0) return null
       const mainReason = () => {
         switch (this.muteReasons[0]) {
-          case 'user': return this.$t('status.muted_user')
-          case 'thread': return this.$t('status.thread_muted')
+          case 'user':
+            return this.$t('status.muted_user')
+          case 'thread':
+            return this.$t('status.thread_muted')
           case 'filtered':
             return this.$t(
               'status.muted_filters',
               {
                 name: this.muteFilterHits[0].name,
-                filterMore: this.muteFilterHits.length - 1
+                filterMore: this.muteFilterHits.length - 1,
               },
-              this.muteFilterHits.length
+              this.muteFilterHits.length,
             )
-          case 'bot': return this.$t('status.bot_muted')
-          case 'nsfw': return this.$t('status.sensitive_muted')
+          case 'bot':
+            return this.$t('status.bot_muted')
+          case 'nsfw':
+            return this.$t('status.sensitive_muted')
         }
       }
       if (this.muteReasons.length > 1) {
@@ -288,72 +332,74 @@ const Status = {
           'status.multi_reason_mute',
           {
             main: mainReason(),
-            numReasonsMore: this.muteReasons.length - 1
+            numReasonsMore: this.muteReasons.length - 1,
           },
-          this.muteReasons.length - 1
+          this.muteReasons.length - 1,
         )
       } else {
         return mainReason()
       }
     },
-    muted () {
+    muted() {
       if (this.statusoid.user.id === this.currentUser.id) return false
       return !this.unmuted && !this.shouldNotMute && this.muteReasons.length > 0
     },
-    userIsMuted () {
+    userIsMuted() {
       if (this.statusoid.user.id === this.currentUser.id) return false
       const { status } = this
       const { reblog } = status
       const relationship = this.$store.getters.relationship(status.user.id)
-      const relationshipReblog = reblog && this.$store.getters.relationship(reblog.user.id)
-      return (status.muted && !status.thread_muted) ||
+      const relationshipReblog =
+        reblog && this.$store.getters.relationship(reblog.user.id)
+      return (
+        (status.muted && !status.thread_muted) ||
         // Reprööt of a muted post according to BE
         (reblog && reblog.muted && !reblog.thread_muted) ||
         // Muted user
         relationship.muting ||
         // Muted user of a reprööt
         (relationshipReblog && relationshipReblog.muting)
+      )
     },
-    shouldNotMute () {
+    shouldNotMute() {
       if (this.isFocused) return true
       const { status } = this
       const { reblog } = status
       return (
-        (
-          this.inProfile && (
-            // Don't mute user's posts on user timeline (except reblogs)
-            (!reblog && status.user.id === this.profileUserId) ||
+        ((this.inProfile &&
+          // Don't mute user's posts on user timeline (except reblogs)
+          ((!reblog && status.user.id === this.profileUserId) ||
             // Same as above but also allow self-reblogs
-            (reblog && reblog.user.id === this.profileUserId)
-          )
-        ) ||
-        // Don't mute statuses in muted conversation when said conversation is opened
-        (this.inConversation && status.thread_muted)
+            (reblog && reblog.user.id === this.profileUserId))) ||
+          // Don't mute statuses in muted conversation when said conversation is opened
+          (this.inConversation && status.thread_muted)) &&
         // No excuses if post has muted words
-      ) && !this.muteFilterHits.length > 0
-    },
-    hideMutedUsers () {
-      return this.mergedConfig.hideMutedPosts
-    },
-    hideMutedThreads () {
-      return this.mergedConfig.hideMutedThreads
-    },
-    hideFilteredStatuses () {
-      return this.mergedConfig.hideFilteredStatuses
-    },
-    hideWordFilteredPosts () {
-      return this.mergedConfig.hideWordFilteredPosts
-    },
-    hideStatus () {
-      return (!this.shouldNotMute) && (
-        (this.muted && this.hideFilteredStatuses) ||
-        (this.userIsMuted && this.hideMutedUsers) ||
-        (this.status.thread_muted && this.hideMutedThreads) ||
-        (this.muteFilterHits.length > 0 && this.hideWordFilteredPosts) ||
-          (this.muteFilterHits.some(x => x.hide))
+        !this.muteFilterHits.length > 0
       )
     },
-    isFocused () {
+    hideMutedUsers() {
+      return this.mergedConfig.hideMutedPosts
+    },
+    hideMutedThreads() {
+      return this.mergedConfig.hideMutedThreads
+    },
+    hideFilteredStatuses() {
+      return this.mergedConfig.hideFilteredStatuses
+    },
+    hideWordFilteredPosts() {
+      return this.mergedConfig.hideWordFilteredPosts
+    },
+    hideStatus() {
+      return (
+        !this.shouldNotMute &&
+        ((this.muted && this.hideFilteredStatuses) ||
+          (this.userIsMuted && this.hideMutedUsers) ||
+          (this.status.thread_muted && this.hideMutedThreads) ||
+          (this.muteFilterHits.length > 0 && this.hideWordFilteredPosts) ||
+          this.muteFilterHits.some((x) => x.hide))
+      )
+    },
+    isFocused() {
       // retweet or root of an expanded conversation
       if (this.focused) {
         return true
@@ -363,18 +409,22 @@ const Status = {
       // use conversation highlight only when in conversation
       return this.status.id === this.highlight
     },
-    isReply () {
-      return !!(this.status.in_reply_to_status_id && this.status.in_reply_to_user_id)
+    isReply() {
+      return !!(
+        this.status.in_reply_to_status_id && this.status.in_reply_to_user_id
+      )
     },
-    replyToName () {
+    replyToName() {
       if (this.status.in_reply_to_screen_name) {
         return this.status.in_reply_to_screen_name
       } else {
-        const user = this.$store.getters.findUser(this.status.in_reply_to_user_id)
+        const user = this.$store.getters.findUser(
+          this.status.in_reply_to_user_id,
+        )
         return user && user.screen_name_ui
       }
     },
-    replySubject () {
+    replySubject() {
       if (!this.status.summary) return ''
       const decodedSummary = unescape(this.status.summary)
       const behavior = this.mergedConfig.subjectLineBehavior
@@ -387,70 +437,80 @@ const Status = {
         return ''
       }
     },
-    combinedFavsAndRepeatsUsers () {
+    combinedFavsAndRepeatsUsers() {
       // Use the status from the global status repository since favs and repeats are saved in it
       const combinedUsers = [].concat(
         this.statusFromGlobalRepository.favoritedBy,
-        this.statusFromGlobalRepository.rebloggedBy
+        this.statusFromGlobalRepository.rebloggedBy,
       )
       return uniqBy(combinedUsers, 'id')
     },
-    tags () {
+    tags() {
       // eslint-disable-next-line no-prototype-builtins
-      return this.status.tags.filter(tagObj => Object.hasOwn(tagObj, 'name')).map(tagObj => tagObj.name).join(' ')
+      return this.status.tags
+        .filter((tagObj) => Object.hasOwn(tagObj, 'name'))
+        .map((tagObj) => tagObj.name)
+        .join(' ')
     },
-    hidePostStats () {
+    hidePostStats() {
       return this.mergedConfig.hidePostStats
     },
-    shouldDisplayFavsAndRepeats () {
-      return !this.hidePostStats && this.isFocused && (this.combinedFavsAndRepeatsUsers.length > 0 || this.statusFromGlobalRepository.quotes_count)
+    shouldDisplayFavsAndRepeats() {
+      return (
+        !this.hidePostStats &&
+        this.isFocused &&
+        (this.combinedFavsAndRepeatsUsers.length > 0 ||
+          this.statusFromGlobalRepository.quotes_count)
+      )
     },
-    muteBotStatuses () {
+    muteBotStatuses() {
       return this.mergedConfig.muteBotStatuses
     },
-    muteSensitiveStatuses () {
+    muteSensitiveStatuses() {
       return this.mergedConfig.muteSensitiveStatuses
     },
-    hideBotIndication () {
+    hideBotIndication() {
       return this.mergedConfig.hideBotIndication
     },
-    currentUser () {
+    currentUser() {
       return this.$store.state.users.currentUser
     },
-    mergedConfig () {
+    mergedConfig() {
       return this.$store.getters.mergedConfig
     },
-    isSuspendable () {
+    isSuspendable() {
       return !this.replying && this.mediaPlaying.length === 0
     },
-    inThreadForest () {
+    inThreadForest() {
       return !!this.controlledThreadDisplayStatus
     },
-    threadShowing () {
+    threadShowing() {
       return this.controlledThreadDisplayStatus === 'showing'
     },
-    visibilityLocalized () {
+    visibilityLocalized() {
       return this.$i18n.t('general.scope_in_timeline.' + this.status.visibility)
     },
-    isEdited () {
+    isEdited() {
       return this.status.edited_at !== null
     },
-    editingAvailable () {
+    editingAvailable() {
       return this.$store.state.instance.editingAvailable
     },
-    hasVisibleQuote () {
+    hasVisibleQuote() {
       return this.status.quote_url && this.status.quote_visible
     },
-    hasInvisibleQuote () {
+    hasInvisibleQuote() {
       return this.status.quote_url && !this.status.quote_visible
     },
-    quotedStatus () {
-      return this.status.quote_id ? this.$store.state.statuses.allStatusesObject[this.status.quote_id] : undefined
+    quotedStatus() {
+      return this.status.quote_id
+        ? this.$store.state.statuses.allStatusesObject[this.status.quote_id]
+        : undefined
     },
-    shouldDisplayQuote () {
+    shouldDisplayQuote() {
       return this.quotedStatus && this.displayQuote
     },
-    scrobblePresent () {
+    scrobblePresent() {
       if (this.mergedConfig.hideScrobbles) return false
       if (!this.status.user?.latestScrobble) return false
       const value = this.mergedConfig.hideScrobblesAfter.match(/\d+/gs)[0]
@@ -473,12 +533,12 @@ const Status = {
       if (age > maxAge) return false
       return this.status.user.latestScrobble.artist
     },
-    scrobble () {
+    scrobble() {
       return this.status.user?.latestScrobble
-    }
+    },
   },
   methods: {
-    visibilityIcon (visibility) {
+    visibilityIcon(visibility) {
       switch (visibility) {
         case 'private':
           return 'lock'
@@ -492,14 +552,14 @@ const Status = {
           return 'globe'
       }
     },
-    showError (error) {
+    showError(error) {
       this.error = error
     },
-    clearError () {
+    clearError() {
       this.$emit('interacted')
       this.error = undefined
     },
-    toggleReplying () {
+    toggleReplying() {
       this.$emit('interacted')
       if (this.replying) {
         this.$refs.postStatusForm.requestClose()
@@ -507,39 +567,51 @@ const Status = {
         this.doToggleReplying()
       }
     },
-    doToggleReplying () {
+    doToggleReplying() {
       controlledOrUncontrolledToggle(this, 'replying')
     },
-    gotoOriginal (id) {
+    gotoOriginal(id) {
       if (this.inConversation) {
         this.$emit('goto', id)
       }
     },
-    toggleExpanded () {
+    toggleExpanded() {
       this.$emit('toggleExpanded')
     },
-    toggleMute () {
+    toggleMute() {
       this.unmuted = !this.unmuted
     },
-    toggleUserExpanded () {
+    toggleUserExpanded() {
       this.userExpanded = !this.userExpanded
     },
-    generateUserProfileLink (id, name) {
-      return generateProfileLink(id, name, this.$store.state.instance.restrictedNicknames)
+    generateUserProfileLink(id, name) {
+      return generateProfileLink(
+        id,
+        name,
+        this.$store.state.instance.restrictedNicknames,
+      )
     },
-    addMediaPlaying (id) {
-      controlledOrUncontrolledSet(this, 'mediaPlaying', this.mediaPlaying.concat(id))
+    addMediaPlaying(id) {
+      controlledOrUncontrolledSet(
+        this,
+        'mediaPlaying',
+        this.mediaPlaying.concat(id),
+      )
     },
-    removeMediaPlaying (id) {
-      controlledOrUncontrolledSet(this, 'mediaPlaying', this.mediaPlaying.filter(mediaId => mediaId !== id))
+    removeMediaPlaying(id) {
+      controlledOrUncontrolledSet(
+        this,
+        'mediaPlaying',
+        this.mediaPlaying.filter((mediaId) => mediaId !== id),
+      )
     },
-    setHeadTailLinks (headTailLinks) {
+    setHeadTailLinks(headTailLinks) {
       this.headTailLinks = headTailLinks
     },
-    toggleThreadDisplay () {
+    toggleThreadDisplay() {
       this.controlledToggleThreadDisplay()
     },
-    scrollIfHighlighted (highlightId) {
+    scrollIfHighlighted(highlightId) {
       if (this.$el.getBoundingClientRect == null) return
       const id = highlightId
       if (this.status.id === id) {
@@ -547,7 +619,7 @@ const Status = {
         if (rect.top < 100) {
           // Post is above screen, match its top to screen top
           window.scrollBy(0, rect.top - 100)
-        } else if (rect.height >= (window.innerHeight - 50)) {
+        } else if (rect.height >= window.innerHeight - 50) {
           // Post we want to see is taller than screen so match its top to screen top
           window.scrollBy(0, rect.top - 100)
         } else if (rect.bottom > window.innerHeight - 50) {
@@ -556,18 +628,17 @@ const Status = {
         }
       }
     },
-    toggleDisplayQuote () {
+    toggleDisplayQuote() {
       if (this.shouldDisplayQuote) {
         this.displayQuote = false
       } else if (!this.quotedStatus) {
-        this.$store.dispatch('fetchStatus', this.status.quote_id)
-          .then(() => {
-            this.displayQuote = true
-          })
+        this.$store.dispatch('fetchStatus', this.status.quote_id).then(() => {
+          this.displayQuote = true
+        })
       } else {
         this.displayQuote = true
       }
-    }
+    },
   },
   watch: {
     highlight: function (id) {
@@ -575,20 +646,28 @@ const Status = {
     },
     'status.repeat_num': function (num) {
       // refetch repeats when repeat_num is changed in any way
-      if (this.isFocused && this.statusFromGlobalRepository.rebloggedBy && this.statusFromGlobalRepository.rebloggedBy.length !== num) {
+      if (
+        this.isFocused &&
+        this.statusFromGlobalRepository.rebloggedBy &&
+        this.statusFromGlobalRepository.rebloggedBy.length !== num
+      ) {
         this.$store.dispatch('fetchRepeats', this.status.id)
       }
     },
     'status.fave_num': function (num) {
       // refetch favs when fave_num is changed in any way
-      if (this.isFocused && this.statusFromGlobalRepository.favoritedBy && this.statusFromGlobalRepository.favoritedBy.length !== num) {
+      if (
+        this.isFocused &&
+        this.statusFromGlobalRepository.favoritedBy &&
+        this.statusFromGlobalRepository.favoritedBy.length !== num
+      ) {
         this.$store.dispatch('fetchFavs', this.status.id)
       }
     },
     isSuspendable: function (val) {
       this.suspendable = val
-    }
-  }
+    },
+  },
 }
 
 export default Status

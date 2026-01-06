@@ -9,10 +9,10 @@ import AttachmentSetting from '../helpers/attachment_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
 const MailerTab = {
-  provide () {
+  provide() {
     return {
       defaultDraftMode: true,
-      defaultSource: 'admin'
+      defaultSource: 'admin',
     }
   },
   components: {
@@ -22,44 +22,50 @@ const MailerTab = {
     StringSetting,
     AttachmentSetting,
     ColorSetting,
-    GroupSetting
+    GroupSetting,
   },
   computed: {
-    adaptersLabels () {
+    adaptersLabels() {
       const prefix = 'Swoosh.Adapters.'
       const descriptions = this.$store.state.adminSettings.descriptions
-      const options = descriptions[':pleroma']['Pleroma.Emails.Mailer'][':adapter'].suggestions
+      const options =
+        descriptions[':pleroma']['Pleroma.Emails.Mailer'][':adapter']
+          .suggestions
 
-      return Object.fromEntries(options.map(value => [
-        value, value.replace(prefix, '')
-      ]))
+      return Object.fromEntries(
+        options.map((value) => [value, value.replace(prefix, '')]),
+      )
     },
-    startTLSLabels () {
+    startTLSLabels() {
       return {
         ':always': this.$t('admin_dash.generic_enforcement.always'),
         ':if_available': this.$t('admin_dash.generic_enforcement.if_available'),
-        ':never': this.$t('admin_dash.generic_enforcement.never')
+        ':never': this.$t('admin_dash.generic_enforcement.never'),
       }
       // return Object.fromEntries(options.map(value => [
       //   value, value.replace(prefix, '')
       // ]))
     },
-    adapter () {
-      return this.$store.state.adminSettings.draft[':pleroma']['Pleroma.Emails.Mailer'][':adapter']
+    adapter() {
+      return this.$store.state.adminSettings.draft[':pleroma'][
+        'Pleroma.Emails.Mailer'
+      ][':adapter']
     },
-    mailerEnabled () {
-      return this.$store.state.adminSettings.draft[':pleroma']['Pleroma.Emails.Mailer'][':enabled']
+    mailerEnabled() {
+      return this.$store.state.adminSettings.draft[':pleroma'][
+        'Pleroma.Emails.Mailer'
+      ][':enabled']
     },
-    ...SharedComputedObject()
+    ...SharedComputedObject(),
   },
   methods: {
-    adapterHasKey (key) {
+    adapterHasKey(key) {
       const descriptions = this.$store.state.adminSettings.descriptions
       const mailerStuff = descriptions[':pleroma']['Pleroma.Emails.Mailer']
       const adapterStuff = mailerStuff[':subgroup,' + this.adapter]
       return Object.hasOwn(adapterStuff, key)
-    }
-  }
+    },
+  },
 }
 
 export default MailerTab

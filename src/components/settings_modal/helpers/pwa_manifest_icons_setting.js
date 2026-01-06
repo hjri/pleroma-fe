@@ -12,60 +12,62 @@ export default {
     ...Setting.components,
     Select,
     Attachment,
-    MediaUpload
+    MediaUpload,
   },
   computed: {
     ...Setting.computed,
-    purposeOptions () {
-      return ['any','monochrome','maskable'].map(value => ({
+    purposeOptions() {
+      return ['any', 'monochrome', 'maskable'].map((value) => ({
         value,
         key: value,
-        label: this.$t('admin_dash.instance.pwa.icon.' + value)
+        label: this.$t('admin_dash.instance.pwa.icon.' + value),
       }))
-    }
+    },
   },
   methods: {
     ...Setting.methods,
-    attachment (e) {
+    attachment(e) {
       const path = e[':src']
       if (!path) {
         return {
           mimetype: '',
-          url: ''
+          url: '',
         }
       }
-      const url = path.includes('://') ? path : this.$store.state.instance.server + path
+      const url = path.includes('://')
+        ? path
+        : this.$store.state.instance.server + path
 
       return {
         mimetype: fileTypeExt(url),
-        url
+        url,
       }
     },
-    setMediaFile ({ event, index }) {
+    setMediaFile({ event, index }) {
       this.update({
         event: {
           target: {
-            value: event.url
+            value: event.url,
           },
         },
         index,
         eventType: 'edit',
-        field: ':src'
+        field: ':src',
       })
     },
-    setPurpose ({ event, index }) {
+    setPurpose({ event, index }) {
       this.update({
         event: {
           target: {
-            value: event
+            value: event,
           },
         },
         index,
         eventType: 'edit',
-        field: ':purpose'
+        field: ':purpose',
       })
     },
-    getValue ({ event, field, index, eventType }) {
+    getValue({ event, field, index, eventType }) {
       switch (eventType) {
         case 'add': {
           const res = [...this.visibleState, {}]
@@ -85,7 +87,7 @@ export default {
           const item = clone(this.visibleState[index])
           const string = event.target.value
 
-          if (!string)  {
+          if (!string) {
             delete item[field]
           } else {
             item[field] = string
@@ -94,6 +96,6 @@ export default {
           return [...pre, item, ...post]
         }
       }
-    }
-  }
+    },
+  },
 }

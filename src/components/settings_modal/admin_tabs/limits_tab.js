@@ -10,11 +10,11 @@ const LimitsTab = {
     BooleanSetting,
     ChoiceSetting,
     IntegerSetting,
-    StringSetting
+    StringSetting,
   },
   computed: {
-    ...SharedComputedObject()
-  }
+    ...SharedComputedObject(),
+  },
 }
 
 export default LimitsTab
