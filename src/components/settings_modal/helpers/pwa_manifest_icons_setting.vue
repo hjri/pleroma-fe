@@ -85,8 +85,8 @@
                   @update:model-value="event => setPurpose({ event, index })"
                 >
                   <option
-                    v-for="(purpose, index) in purposeOptions"
-                    :key="index"
+                    v-for="(purpose, index2) in purposeOptions"
+                    :key="index2"
                     :value="purpose.value"
                   >
                     {{ purpose.label }}
