@@ -170,10 +170,10 @@ const _mergeJournal = (...journals) => {
   const allJournals = flatten(
     journals.map(j => Array.isArray(j) ? j : [])
   ).filter(entry =>
-    Object.prototype.hasOwnProperty.call(entry, 'path') &&
-    Object.prototype.hasOwnProperty.call(entry, 'operation') &&
-    Object.prototype.hasOwnProperty.call(entry, 'args') &&
-    Object.prototype.hasOwnProperty.call(entry, 'timestamp')
+    Object.hasOwn(entry, 'path') &&
+    Object.hasOwn(entry, 'operation') &&
+    Object.hasOwn(entry, 'args') &&
+    Object.hasOwn(entry, 'timestamp')
   )
   const grouped = groupBy(allJournals, 'path')
   const trimmedGrouped = Object.entries(grouped).map(([path, journal]) => {

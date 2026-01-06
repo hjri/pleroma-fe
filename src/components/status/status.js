@@ -397,7 +397,7 @@ const Status = {
     },
     tags () {
       // eslint-disable-next-line no-prototype-builtins
-      return this.status.tags.filter(tagObj => tagObj.hasOwnProperty('name')).map(tagObj => tagObj.name).join(' ')
+      return this.status.tags.filter(tagObj => Object.hasOwn(tagObj, 'name')).map(tagObj => tagObj.name).join(' ')
     },
     hidePostStats () {
       return this.mergedConfig.hidePostStats

@@ -37,7 +37,7 @@ export class RegistrationError extends Error {
       if (typeof error === 'string') {
         error = JSON.parse(error)
         // eslint-disable-next-line
-        if (error.hasOwnProperty('error')) {
+        if (Object.hasOwn(error, 'error')) {
           error = JSON.parse(error.error)
         }
       }

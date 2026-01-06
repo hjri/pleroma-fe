@@ -6,7 +6,7 @@ const checkColors = (output) => {
     expect(v, key).to.be.an('object')
     expect(v, key).to.include.all.keys('r', 'g', 'b')
     'rgba'.split('').forEach(k => {
-      if ((k === 'a' && Object.prototype.hasOwnProperty.call(v, 'a')) || k !== 'a') {
+      if ((k === 'a' && Object.hasOwn(v, 'a')) || k !== 'a') {
         expect(v[k], key + '.' + k).to.be.a('number')
         expect(v[k], key + '.' + k).to.be.least(0)
         expect(v[k], key + '.' + k).to.be.most(k === 'a' ? 1 : 255)

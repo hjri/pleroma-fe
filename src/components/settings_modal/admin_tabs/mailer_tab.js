@@ -57,7 +57,7 @@ const MailerTab = {
       const descriptions = this.$store.state.adminSettings.descriptions
       const mailerStuff = descriptions[':pleroma']['Pleroma.Emails.Mailer']
       const adapterStuff = mailerStuff[':subgroup,' + this.adapter]
-      return Object.prototype.hasOwnProperty.call(adapterStuff, key)
+      return Object.hasOwn(adapterStuff, key)
     }
   }
 }

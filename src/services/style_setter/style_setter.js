@@ -254,7 +254,7 @@ export const applyConfig = (input) => {
   styleSheet.addRule(`:root { ${rules} }`)
 
   // TODO find a way to make this not apply to theme previews
-  if (Object.prototype.hasOwnProperty.call(config, 'forcedRoundness')) {
+  if (Object.hasOwn(config, 'forcedRoundness')) {
     styleSheet.addRule(` *:not(.preview-block) {
         --roundness: var(--forcedRoundness) !important;
     }`)

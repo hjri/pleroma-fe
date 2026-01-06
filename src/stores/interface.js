@@ -668,16 +668,16 @@ export const normalizeThemeData = (input) => {
     // this might not be even used at all, some leftover of unimplemented code in V2 editor
     return generatePreset(input).theme
   } else if (
-    Object.prototype.hasOwnProperty.call(input, '_pleroma_theme_version') ||
-      Object.prototype.hasOwnProperty.call(input, 'source') ||
-      Object.prototype.hasOwnProperty.call(input, 'theme')
+    Object.hasOwn(input, '_pleroma_theme_version') ||
+      Object.hasOwn(input, 'source') ||
+      Object.hasOwn(input, 'theme')
   ) {
     // We got passed a full theme file
     themeData = input.theme
     themeSource = input.source
   } else if (
-    Object.prototype.hasOwnProperty.call(input, 'themeEngineVersion') ||
-      Object.prototype.hasOwnProperty.call(input, 'colors')
+    Object.hasOwn(input, 'themeEngineVersion') ||
+      Object.hasOwn(input, 'colors')
   ) {
     // We got passed a source/snapshot
     themeData = input

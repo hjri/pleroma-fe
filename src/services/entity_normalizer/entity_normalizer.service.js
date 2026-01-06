@@ -39,9 +39,9 @@ const qvitterStatusType = (status) => {
 
 export const parseUser = (data) => {
   const output = {}
-  const masto = Object.prototype.hasOwnProperty.call(data, 'acct')
+  const masto = Object.hasOwn(data, 'acct')
   // case for users in "mentions" property for statuses in MastoAPI
-  const mastoShort = masto && !Object.prototype.hasOwnProperty.call(data, 'avatar')
+  const mastoShort = masto && !Object.hasOwn(data, 'avatar')
 
   output.inLists = null
   output.id = String(data.id)
@@ -269,7 +269,7 @@ export const parseUser = (data) => {
 
 export const parseAttachment = (data) => {
   const output = {}
-  const masto = !Object.prototype.hasOwnProperty.call(data, 'oembed')
+  const masto = !Object.hasOwn(data, 'oembed')
 
   if (masto) {
     // Not exactly same...
@@ -300,7 +300,7 @@ export const parseSource = (data) => {
 
 export const parseStatus = (data) => {
   const output = {}
-  const masto = Object.prototype.hasOwnProperty.call(data, 'account')
+  const masto = Object.hasOwn(data, 'account')
 
   if (masto) {
     output.favorited = data.favourited
@@ -432,7 +432,7 @@ export const parseStatus = (data) => {
   output.favoritedBy = []
   output.rebloggedBy = []
 
-  if (Object.prototype.hasOwnProperty.call(data, 'originalStatus')) {
+  if (Object.hasOwn(data, 'originalStatus')) {
     Object.assign(output, data.originalStatus)
   }
 
@@ -444,7 +444,7 @@ export const parseNotification = (data) => {
     favourite: 'like',
     reblog: 'repeat'
   }
-  const masto = !Object.prototype.hasOwnProperty.call(data, 'ntype')
+  const masto = !Object.hasOwn(data, 'ntype')
   const output = {}
 
   if (masto) {
