@@ -1,6 +1,6 @@
 {
   "name": "pleroma_fe",
-  "version": "2.9.3",
+  "version": "2.10.0",
   "description": "Pleroma frontend, the default frontend of Pleroma social network server",
   "author": "Pleroma contributors <https://git.pleroma.social/pleroma/pleroma-fe/-/blob/develop/CONTRIBUTORS.md>",
   "private": false,
@@ -13,8 +13,8 @@
     "e2e": "node test/e2e/runner.js",
     "test": "yarn run unit && yarn run e2e",
     "stylelint": "yarn exec stylelint '**/*.scss' '**/*.vue'",
-    "lint": "eslint src test/unit/specs test/e2e/specs",
-    "lint-fix": "eslint --fix src test/unit/specs test/e2e/specs"
+    "lint": "yarn exec eslint src",
+    "lint-fix": "yarn eslint --fix src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
     "@babel/runtime": "7.28.4",

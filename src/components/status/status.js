@@ -445,7 +445,6 @@ const Status = {
       return uniqBy(combinedUsers, 'id')
     },
     tags() {
-      // eslint-disable-next-line no-prototype-builtins
       return this.status.tags
         .filter((tagObj) => Object.hasOwn(tagObj, 'name'))
         .map((tagObj) => tagObj.name)

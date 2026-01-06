@@ -113,7 +113,6 @@ export const notifications = {
         }
 
         // Only add a new notification if we don't have one for the same action
-        // eslint-disable-next-line no-prototype-builtins
         if (!Object.hasOwn(state.idStore, notification.id)) {
           commit('updateNotificationsMinMaxId', notification.id)
           commit('addNewNotifications', { notifications: [notification] })

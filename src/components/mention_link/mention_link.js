@@ -105,14 +105,12 @@ const MentionLink = {
     },
     style() {
       if (this.highlight) {
-        /* eslint-disable no-unused-vars */
         const {
           backgroundColor,
           backgroundPosition,
           backgroundImage,
           ...rest
         } = highlightStyle(this.highlight)
-        /* eslint-enable no-unused-vars */
         return rest
       }
     },

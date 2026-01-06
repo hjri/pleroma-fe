@@ -19,7 +19,6 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    // eslint-disable-next-line no-prototype-builtins
     expect(
       Object.hasOwn(
         matchedComponents[0].components.default.components,
@@ -33,7 +32,6 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    // eslint-disable-next-line no-prototype-builtins
     expect(
       Object.hasOwn(
         matchedComponents[0].components.default.components,
@@ -47,7 +45,6 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    // eslint-disable-next-line no-prototype-builtins
     expect(
       Object.hasOwn(
         matchedComponents[0].components.default.components,

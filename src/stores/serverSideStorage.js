@@ -591,10 +591,8 @@ export const useServerSideStorageStore = defineStore('serverSideStorage', {
       if (!needUpload && recent && stale) {
         console.debug('Checking if data needs merging...')
         // discarding timestamps and versions
-        /* eslint-disable no-unused-vars */
         const { _timestamp: _0, _version: _1, ...recentData } = recent
         const { _timestamp: _2, _version: _3, ...staleData } = stale
-        /* eslint-enable no-unused-vars */
         dirty = !isEqual(recentData, staleData)
         console.debug(`Data ${dirty ? 'needs' : "doesn't need"} merging`)
       }
