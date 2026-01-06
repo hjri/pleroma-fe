@@ -8,7 +8,8 @@ export const injectMswToTest = (defaultHandlers) => {
 
   return testBase.extend({
     worker: [
-      async (_, use) => {
+      // biome-ignore lint: required by vitest
+      async ({}, use) => {
         await worker.start()
 
         await use(worker)
