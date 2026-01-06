@@ -9,9 +9,13 @@ const fetchAndUpdate = ({ credentials }) => {
       (bookmarkFolders) => {
         useBookmarkFoldersStore().setBookmarkFolders(bookmarkFolders)
       },
-      () => {},
+      (rej) => {
+        console.error(rej)
+      },
     )
-    .catch(() => {})
+    .catch((e) => {
+      console.error(e)
+    })
 }
 
 const startFetching = ({ credentials, store }) => {

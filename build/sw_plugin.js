@@ -30,7 +30,9 @@ export const devSwPlugin = ({ swSrc, swDest, transformSW, alias }) => {
   return {
     name: 'dev-sw-plugin',
     apply: 'serve',
-    configResolved(conf) {},
+    configResolved() {
+      /* no-op */
+    },
     resolveId(id) {
       const name = id.startsWith('/') ? id.slice(1) : id
       if (name === swDest) {

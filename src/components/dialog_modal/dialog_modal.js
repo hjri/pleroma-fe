@@ -5,7 +5,9 @@ const DialogModal = {
       type: Boolean,
     },
     onCancel: {
-      default: () => {},
+      default: () => {
+        /* no-op */
+      },
       type: Function,
     },
   },

@@ -54,10 +54,15 @@ const ThreadTree = {
       return selfSuspendable
     },
     reverseLookupTable() {
-      return this.conversation.reduce((table, status, index) => {
-        table[status.id] = index
-        return table
-      }, {})
+      return this.conversation.reduce(
+        (table, status, index) => {
+          table[status.id] = index
+          return table
+        },
+        {
+          /* no-op */
+        },
+      )
     },
     currentReplies() {
       return this.getReplies(this.status.id).map(({ id }) =>
@@ -75,9 +80,15 @@ const ThreadTree = {
     statusById(id) {
       return this.conversation[this.reverseLookupTable[id]]
     },
-    collapseThread() {},
-    showThread() {},
-    showAllSubthreads() {},
+    collapseThread() {
+      /* no-op */
+    },
+    showThread() {
+      /* no-op */
+    },
+    showAllSubthreads() {
+      /* no-op */
+    },
     toggleCurrentProp(name) {
       this.toggleStatusContentProperty(this.status.id, name)
     },

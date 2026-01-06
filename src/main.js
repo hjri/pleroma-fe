@@ -104,7 +104,8 @@ const persistedStateOptions = {
 })()
 
 // These are inlined by webpack's DefinePlugin
-/* eslint-disable */
+// biome-ignore-start lint: added in build process
 window.___pleromafe_mode = process.env
 window.___pleromafe_commit_hash = COMMIT_HASH
 window.___pleromafe_dev_overrides = DEV_OVERRIDES
+// biome-ignore-end lint: added in build process

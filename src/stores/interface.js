@@ -27,8 +27,12 @@ export const useInterfaceStore = defineStore('interface', {
     themeDataUsed: null,
     temporaryChangesTimeoutId: null,
     temporaryChangesCountdown: -1, // used for temporary options that revert after a timeout
-    temporaryChangesConfirm: () => {}, // used for applying temporary options
-    temporaryChangesRevert: () => {}, // used for reverting temporary options
+    temporaryChangesConfirm: () => {
+      /* no-op */
+    }, // used for applying temporary options
+    temporaryChangesRevert: () => {
+      /* no-op */
+    }, // used for reverting temporary options
     settingsModalState: 'hidden',
     settingsModalLoadedUser: false,
     settingsModalLoadedAdmin: false,
@@ -73,8 +77,12 @@ export const useInterfaceStore = defineStore('interface', {
         clearTimeout(this.temporaryChangesTimeoutId)
       this.temporaryChangesTimeoutId = null
       this.temporaryChangesCountdown = -1
-      this.temporaryChangesConfirm = () => {}
-      this.temporaryChangesRevert = () => {}
+      this.temporaryChangesConfirm = () => {
+        /* no-op */
+      }
+      this.temporaryChangesRevert = () => {
+        /* no-op */
+      }
     },
     setPageTitle(option = '') {
       try {

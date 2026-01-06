@@ -22,7 +22,9 @@ const generateInput = (value, padEmoji = true) => {
         Popover: {
           template: `<div><slot trigger /></div>`,
           methods: {
-            updateStyles() {},
+            updateStyles() {
+              /* no-op */
+            },
           },
         },
       },

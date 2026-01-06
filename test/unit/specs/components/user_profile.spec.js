@@ -5,12 +5,18 @@ import backendInteractorService from 'src/services/backend_interactor_service/ba
 import { createStore } from 'vuex'
 
 const mutations = {
-  clearTimeline: () => {},
+  clearTimeline: () => {
+    /* no-op */
+  },
 }
 
 const actions = {
-  fetchUser: () => {},
-  fetchUserByScreenName: () => {},
+  fetchUser: () => {
+    /* no-op */
+  },
+  fetchUserByScreenName: () => {
+    /* no-op */
+  },
 }
 
 const testGetters = {

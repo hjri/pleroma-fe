@@ -550,7 +550,7 @@ const fetchFriends = ({ id, maxId, sinceId, limit = 20, credentials }) => {
 }
 
 const exportFriends = ({ id, credentials }) => {
-  // eslint-disable-next-line no-async-promise-executor
+  // biome-ignore lint/suspicious/noAsyncPromiseExecutor: TODO refactor this
   return new Promise(async (resolve, reject) => {
     try {
       let friends = []
@@ -1794,7 +1794,14 @@ export const ProcessedWS = ({
   return eventTarget
 }
 
-export const handleMastoWS = (wsEvent, { onAuthenticated = () => {} } = {}) => {
+export const handleMastoWS = (
+  wsEvent,
+  {
+    onAuthenticated = () => {
+      /* no-op */
+    },
+  } = {},
+) => {
   const { data } = wsEvent
   if (!data) return
   const parsedEvent = JSON.parse(data)

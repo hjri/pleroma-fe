@@ -20,7 +20,9 @@ const StatusActionButtons = {
       currentConfirmTitle: '',
       currentConfirmOkText: '',
       currentConfirmCancelText: '',
-      currentConfirmAction: () => {},
+      currentConfirmAction: () => {
+        /* no-op */
+      },
       randomSeed: genRandomSeed(),
     }
   },

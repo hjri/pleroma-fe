@@ -7,8 +7,7 @@ import { serializeShadow } from 'src/services/theme_data/iss_serializer.js'
 import { computed, inject, ref, watch } from 'vue'
 
 // helper for debugging
-// eslint-disable-next-line no-unused-vars
-const toValue = (x) => JSON.parse(JSON.stringify(x === undefined ? 'null' : x))
+// const toValue = (x) => JSON.parse(JSON.stringify(x === undefined ? 'null' : x))
 
 export default {
   components: {

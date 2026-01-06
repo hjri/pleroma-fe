@@ -30,7 +30,11 @@ const storageKey = 'pleroma-fe-drafts'
  * different keys, which will just pollute the whole storage.
  * It is indeed best to have backend support for this.
  */
-const getStorageData = async () => (await storage.getItem(storageKey)) || {}
+const getStorageData = async () =>
+  (await storage.getItem(storageKey)) ||
+  {
+    /* no-op */
+  }
 
 const saveDraftToStorage = async (draft) => {
   const currentData = await getStorageData()

@@ -9,9 +9,13 @@ const fetchAndUpdate = ({ store, credentials }) => {
         store.commit('setFollowRequests', requests)
         store.commit('addNewUsers', requests)
       },
-      () => {},
+      (rej) => {
+        console.error(rej)
+      },
     )
-    .catch(() => {})
+    .catch((e) => {
+      console.error(e)
+    })
 }
 
 const startFetching = ({ credentials, store }) => {

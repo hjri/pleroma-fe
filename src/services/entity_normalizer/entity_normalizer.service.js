@@ -1,5 +1,5 @@
 import { parseLinkHeader } from '@web3-storage/parse-link-header'
-import escape from 'escape-html'
+import escapeHtml from 'escape-html'
 import punycode from 'punycode.js'
 import { isStatusNotification } from '../notification_utils/notification_utils.js'
 
@@ -69,7 +69,7 @@ export const parseUser = (data) => {
     }
 
     output.emoji = data.emojis
-    output.name = escape(data.display_name)
+    output.name = escapeHtml(data.display_name)
     output.name_html = output.name
     output.name_unescaped = data.display_name
 
@@ -80,7 +80,7 @@ export const parseUser = (data) => {
     output.fields = data.fields
     output.fields_html = data.fields.map((field) => {
       return {
-        name: escape(field.name),
+        name: escapeHtml(field.name),
         value: field.value,
       }
     })
@@ -367,13 +367,13 @@ export const parseStatus = (data) => {
       output.retweeted_status = parseStatus(data.reblog)
     }
 
-    output.summary_raw_html = escape(data.spoiler_text)
+    output.summary_raw_html = escapeHtml(data.spoiler_text)
     output.external_url = data.url
     output.poll = data.poll
     if (output.poll) {
       output.poll.options = (output.poll.options || []).map((field) => ({
         ...field,
-        title_html: escape(field.title),
+        title_html: escapeHtml(field.title),
       }))
     }
     output.pinned = data.pinned

@@ -8,7 +8,7 @@ export const injectMswToTest = (defaultHandlers) => {
 
   return testBase.extend({
     worker: [
-      async ({}, use) => {
+      async (_, use) => {
         await worker.start()
 
         await use(worker)

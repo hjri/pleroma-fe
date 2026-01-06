@@ -12,7 +12,11 @@ const applyAfterStore = (store, afterStore) => {
   return store
 }
 
-const getDefaultOpts = ({ afterStore = () => {} } = {}) => ({
+const getDefaultOpts = ({
+  afterStore = () => {
+    /* no-op */
+  },
+} = {}) => ({
   global: {
     plugins: [
       applyAfterStore(makeMockStore(), afterStore),

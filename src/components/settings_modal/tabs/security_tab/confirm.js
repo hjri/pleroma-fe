@@ -1,6 +1,8 @@
 const Confirm = {
   props: ['disabled'],
-  data: () => ({}),
+  data: () => ({
+    /* no-op */
+  }),
   methods: {
     confirm() {
       this.$emit('confirm')

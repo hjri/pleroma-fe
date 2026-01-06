@@ -13,7 +13,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import isEqual from 'lodash/isEqual'
 import merge from 'lodash/merge'
-import unescape from 'lodash/unescape'
+import ldUnescape from 'lodash/unescape'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
 import DialogModal from 'src/components/dialog_modal/dialog_modal.vue'
@@ -128,7 +128,7 @@ export default {
       newName: user.name_unescaped,
       editingName: false,
 
-      newBio: unescape(user.description),
+      newBio: ldUnescape(user.description),
       editingBio: false,
 
       newAvatar: null,

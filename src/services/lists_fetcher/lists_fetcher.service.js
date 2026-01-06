@@ -9,9 +9,13 @@ const fetchAndUpdate = ({ credentials }) => {
       (lists) => {
         useListsStore().setLists(lists)
       },
-      () => {},
+      (rej) => {
+        console.error(rej)
+      },
     )
-    .catch(() => {})
+    .catch((e) => {
+      console.error(e)
+    })
 }
 
 const startFetching = ({ credentials, store }) => {

@@ -688,7 +688,6 @@
     "name_bio": "Name & bio",
     "new_email": "New email",
     "new_password": "New password",
-    "posts": "Posts",
     "user_profiles": "User Profiles",
     "notification_visibility": "Types of notifications to show",
     "notification_visibility_in_column": "Show in notifications column/drawer",
@@ -777,7 +776,6 @@
     "column_sizes_sidebar": "Sidebar",
     "column_sizes_content": "Content",
     "column_sizes_notifs": "Notifications",
-    "layout": "Layout",
     "scale_and_font": "Scale and Font",
     "theme_editor_min_width": "Minimum width of theme editor (0 for \"fit-content\")",
     "tree_advanced": "Allow more flexible navigation in tree view",
@@ -1188,9 +1186,6 @@
       "restrictions": "Restrictions",
       "activitypub": "ActivityPub"
     },
-    "http": {
-      "outbound": "Outbound HTTP requests"
-    },
     "auth": {
       "MFA": "Multi-factor Authentication",
       "LDAP": "LDAP Settings",
@@ -1244,24 +1239,6 @@
       "security": "HTTP Security",
       "web_push": "Web Push",
       "web_push_description": "Web Push VAPID settings. You can use the mix task web_push.gen.keypair to generate it."
-    },
-    "instance": {
-      "instance": "Instance information",
-      "branding": "Branding",
-      "registrations": "User sign-ups",
-      "captcha_header": "CAPTCHA",
-      "kocaptcha": "KoCaptcha settings",
-      "access": "Instance access",
-      "rich_metadata": "Metadata",
-      "restrict": {
-        "header": "Restrict access for anonymous visitors",
-        "description": "Detailed setting for allowing/disallowing access to certain aspects of API. By default (indeterminate state) it will disallow if instance is not public, ticked checkbox means disallow access even if instance is public, unticked means allow access even if instance is private. Please note that unexpected behavior might happen if some settings are set, i.e. if profile access is disabled posts will show without profile information.",
-        "timelines": "Timelines access",
-        "profiles": "User profiles access",
-        "activities": "Statuses/activities access"
-      },
-      ":unauthenticated": "Unauthenticated",
-      ":all": "Everyone"
     },
     "registrations": {
       "welcome": {
@@ -1394,6 +1371,9 @@
     },
     "instance": {
       "instance": "Instance information",
+      "registrations": "User sign-ups",
+      "captcha_header": "CAPTCHA",
+      "kocaptcha": "KoCaptcha settings",
       "pwa": {
         "manifest": "PWA Manifest",
         "optional": "(optional)",
@@ -1530,7 +1510,7 @@
       "weeks_suffix": "week(s)",
       "years": "{0} year | {0} years",
       "years_short": "{0}y",
-      "years": "year(s)"
+      "years_suffix": "year(s)"
     },
     "in_future": "in {0}",
     "in_past": "{0} ago",
@@ -1779,7 +1759,6 @@
     "repeat": "Repeat",
     "unrepeat": "Unrepeat",
     "reply": "Reply",
-    "add_reaction": "Add reaction",
     "favorite": "Favorite",
     "unfavorite": "Unfavorite",
     "add_reaction": "Add Reaction",

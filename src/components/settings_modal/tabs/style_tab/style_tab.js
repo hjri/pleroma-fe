@@ -56,8 +56,7 @@ import Preview from '../old_theme_tab/theme_preview.vue'
 import VirtualDirectivesTab from './virtual_directives_tab.vue'
 
 // helper for debugging
-// eslint-disable-next-line no-unused-vars
-const toValue = (x) => JSON.parse(JSON.stringify(x === undefined ? 'null' : x))
+// const toValue = (x) => JSON.parse(JSON.stringify(x === undefined ? 'null' : x))
 
 // helper to make states comparable
 const normalizeStates = (states) =>

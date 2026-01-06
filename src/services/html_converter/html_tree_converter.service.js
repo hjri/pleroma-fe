@@ -1,4 +1,4 @@
-import { unescape } from 'lodash'
+import { unescape as ldUnescape } from 'lodash'
 import { getTagName } from './utility.service.js'
 
 /**
@@ -64,7 +64,7 @@ export const convertHtmlToTree = (html = '') => {
 
   const handleOpen = (tag) => {
     const curBuf = getCurrentBuffer()
-    const newLevel = [unescape(tag), []]
+    const newLevel = [ldUnescape(tag), []]
     levels.push(newLevel)
     curBuf.push(newLevel)
   }

@@ -82,7 +82,9 @@ export default {
     contrast: {
       required: false,
       type: Object,
-      default: () => ({}),
+      default: () => ({
+        /* no-op */
+      }),
     },
     showRatio: {
       required: false,

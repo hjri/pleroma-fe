@@ -93,12 +93,14 @@ class SwipeAndClickGesture {
     perpendicularTolerance = 1.0,
     disableClickThreshold = 1,
   }) {
-    const nop = () => {}
+    const noop = () => {
+      /* no-op */
+    }
     this.direction = direction
-    this.swipePreviewCallback = swipePreviewCallback || nop
-    this.swipeEndCallback = swipeEndCallback || nop
-    this.swipeCancelCallback = swipeCancelCallback || nop
-    this.swipelessClickCallback = swipelessClickCallback || nop
+    this.swipePreviewCallback = swipePreviewCallback || noop
+    this.swipeEndCallback = swipeEndCallback || noop
+    this.swipeCancelCallback = swipeCancelCallback || noop
+    this.swipelessClickCallback = swipelessClickCallback || noop
     this.threshold =
       typeof threshold === 'function' ? threshold : () => threshold
     this.disableClickThreshold =

@@ -77,9 +77,15 @@ const LAZY_STYLE_ID = 'pleroma-lazy-styles'
 
 export const generateTheme = (inputRuleset, callbacks, debug) => {
   const {
-    onNewRule = () => {},
-    onLazyFinished = () => {},
-    onEagerFinished = () => {},
+    onNewRule = () => {
+      /* no-op */
+    },
+    onLazyFinished = () => {
+      /* no-op */
+    },
+    onEagerFinished = () => {
+      /* no-op */
+    },
   } = callbacks
 
   const themes3 = init({
@@ -152,8 +158,12 @@ export const tryLoadCache = async () => {
 
 export const applyTheme = (
   input,
-  onEagerFinish = () => {},
-  onFinish = () => {},
+  onEagerFinish = () => {
+    /* no-op */
+  },
+  onFinish = () => {
+    /* no-op */
+  },
   debug,
 ) => {
   const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)

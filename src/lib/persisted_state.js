@@ -166,8 +166,12 @@ export const piniaPersistPlugin =
       afterLoad,
       paths = [],
       saveImmediatelyActions,
-      onSaveSuccess = () => {},
-      onSaveError = () => {},
+      onSaveSuccess = () => {
+        /* no-op */
+      },
+      onSaveError = () => {
+        /* no-op */
+      },
     } = options.persist || {}
 
     const loadedGuard = { loaded: false }

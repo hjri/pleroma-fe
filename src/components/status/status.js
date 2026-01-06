@@ -20,7 +20,7 @@ import {
   faThumbtack,
   faTimes,
 } from '@fortawesome/free-solid-svg-icons'
-import { unescape, uniqBy } from 'lodash'
+import { unescape as ldUnescape, uniqBy } from 'lodash'
 import MentionLink from 'src/components/mention_link/mention_link.vue'
 import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
@@ -425,7 +425,7 @@ const Status = {
     },
     replySubject() {
       if (!this.status.summary) return ''
-      const decodedSummary = unescape(this.status.summary)
+      const decodedSummary = ldUnescape(this.status.summary)
       const behavior = this.mergedConfig.subjectLineBehavior
       const startsWithRe = decodedSummary.match(/^re[: ]/i)
       if ((behavior !== 'noop' && startsWithRe) || behavior === 'masto') {

@@ -17,14 +17,18 @@ const BlockList = withLoadMore({
   fetch: (props, $store) => $store.dispatch('fetchBlocks'),
   select: (props, $store) =>
     get($store.state.users.currentUser, 'blockIds', []),
-  destroy: () => {},
+  destroy: () => {
+    /* no-op */
+  },
   childPropName: 'items',
 })(SelectableList)
 
 const MuteList = withLoadMore({
   fetch: (props, $store) => $store.dispatch('fetchMutes'),
   select: (props, $store) => get($store.state.users.currentUser, 'muteIds', []),
-  destroy: () => {},
+  destroy: () => {
+    /* no-op */
+  },
   childPropName: 'items',
 })(SelectableList)
 

@@ -8,7 +8,9 @@ export default {
       }),
     },
   },
-  data: () => ({}),
+  data: () => ({
+    /* no-op */
+  }),
   computed: {
     inProgress() {
       return this.backupCodes.inProgress

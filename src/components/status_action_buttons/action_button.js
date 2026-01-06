@@ -123,7 +123,12 @@ export default {
         this.$store.dispatch('reactWithEmoji', { id: this.status.id, emoji })
       }
     },
-    doActionWrap(button, close = () => {}) {
+    doActionWrap(
+      button,
+      close = () => {
+        /* no-op */
+      },
+    ) {
       if (
         this.button.interactive ? !this.button.interactive(this.funcArg) : false
       )

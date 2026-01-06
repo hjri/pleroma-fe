@@ -1,6 +1,6 @@
 import { access } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { langCodeToCldrName, languages } from '../src/i18n/languages.js'
+import { languages } from '../src/i18n/languages.js'
 
 const annotationsImportPrefix = '@kazvmoe-infra/unicode-emoji-json/annotations/'
 const specialAnnotationsLocale = {
@@ -24,6 +24,7 @@ const getAllAccessibleAnnotations = async (projectRoot) => {
           await access(importFile)
           return `'${lang}': () => import('${importModule}')`
         } catch (e) {
+          console.error(e)
           return
         }
       }),

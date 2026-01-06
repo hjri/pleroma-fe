@@ -45,7 +45,6 @@ library.add(
 )
 const NavPanel = {
   props: ['forceExpand', 'forceEditMode'],
-  created() {},
   components: {
     BookmarkFoldersMenuContent,
     ListsMenuContent,
