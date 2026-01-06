@@ -4,12 +4,12 @@ import {
   CURRENT_VERSION,
   generatePreset,
 } from 'src/services/theme_data/theme_data.service.js'
+import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
 import {
-  getResourcesIndex,
   applyTheme,
+  getResourcesIndex,
   tryLoadCache,
 } from '../services/style_setter/style_setter.js'
-import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
 import { deserialize } from '../services/theme_data/iss_deserializer.js'
 
 export const useInterfaceStore = defineStore('interface', {

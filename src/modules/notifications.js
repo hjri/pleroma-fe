@@ -1,18 +1,16 @@
-import apiService from '../services/api/api.service.js'
+import { useReportsStore } from 'src/stores/reports.js'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import apiService from '../services/api/api.service.js'
 
+import {
+  closeAllDesktopNotifications,
+  closeDesktopNotification,
+} from '../services/desktop_notification_utils/desktop_notification_utils.js'
 import {
   isStatusNotification,
   isValidNotification,
   maybeShowNotification,
 } from '../services/notification_utils/notification_utils.js'
-
-import {
-  closeDesktopNotification,
-  closeAllDesktopNotifications,
-} from '../services/desktop_notification_utils/desktop_notification_utils.js'
-
-import { useReportsStore } from 'src/stores/reports.js'
 
 const emptyNotifications = () => ({
   desktopNotificationSilence: true,

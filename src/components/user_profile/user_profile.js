@@ -1,14 +1,14 @@
-import get from 'lodash/get'
-import UserCard from '../user_card/user_card.vue'
-import FollowCard from '../follow_card/follow_card.vue'
-import Timeline from '../timeline/timeline.vue'
-import Conversation from '../conversation/conversation.vue'
-import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
-import RichContent from 'src/components/rich_content/rich_content.jsx'
-import List from '../list/list.vue'
-import withLoadMore from '../../hocs/with_load_more/with_load_more'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import get from 'lodash/get'
+import RichContent from 'src/components/rich_content/rich_content.jsx'
+import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+import withLoadMore from '../../hocs/with_load_more/with_load_more'
+import Conversation from '../conversation/conversation.vue'
+import FollowCard from '../follow_card/follow_card.vue'
+import List from '../list/list.vue'
+import Timeline from '../timeline/timeline.vue'
+import UserCard from '../user_card/user_card.vue'
 
 library.add(faCircleNotch)
 

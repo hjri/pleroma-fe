@@ -1,4 +1,4 @@
-import { convert, brightness } from 'chromatism'
+import { brightness, convert } from 'chromatism'
 import {
   alphaBlend,
   arithmeticBlend,

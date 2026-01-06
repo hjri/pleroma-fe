@@ -1,12 +1,12 @@
-import apiService from '../services/api/api.service.js'
-import { instanceDefaultProperties } from './config.js'
-import { ensureFinalFallback } from '../i18n/languages.js'
-import { useInterfaceStore } from 'src/stores/interface.js'
 // See build/emojis_plugin for more details
 import { annotationsLoader } from 'virtual:pleroma-fe/emoji-annotations'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { ensureFinalFallback } from '../i18n/languages.js'
+import apiService from '../services/api/api.service.js'
+import { instanceDefaultProperties } from './config.js'
 import {
-  staticOrApiConfigDefault,
   instanceDefaultConfig,
+  staticOrApiConfigDefault,
 } from './default_config_state.js'
 
 const SORTED_EMOJI_GROUP_IDS = [

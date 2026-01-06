@@ -1,6 +1,6 @@
 import {
-  processTextForEmoji,
   getAttrs,
+  processTextForEmoji,
 } from 'src/services/html_converter/utility.service.js'
 
 describe('html_converter utility', () => {

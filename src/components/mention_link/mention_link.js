@@ -1,14 +1,14 @@
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faAt } from '@fortawesome/free-solid-svg-icons'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import { defineAsyncComponent } from 'vue'
 import { mapGetters, mapState } from 'vuex'
 import {
   highlightClass,
   highlightStyle,
 } from '../../services/user_highlighter/user_highlighter.js'
-import UserAvatar from '../user_avatar/user_avatar.vue'
 import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
-import { defineAsyncComponent } from 'vue'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faAt } from '@fortawesome/free-solid-svg-icons'
+import UserAvatar from '../user_avatar/user_avatar.vue'
 
 library.add(faAt)
 

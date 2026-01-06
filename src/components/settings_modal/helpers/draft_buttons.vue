@@ -57,9 +57,9 @@
 </template>
 
 <script>
-import Popover from 'src/components/popover/popover.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
+import Popover from 'src/components/popover/popover.vue'
 
 library.add(faWrench)
 

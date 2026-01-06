@@ -1,7 +1,8 @@
 // eslint-disable-next-line no-unused
-import { h, Fragment } from 'vue'
-import { mapState } from 'pinia'
+
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/vue-fontawesome'
+import { mapState } from 'pinia'
+import { Fragment, h } from 'vue'
 
 import './tab_switcher.scss'
 import { useInterfaceStore } from 'src/stores/interface'

@@ -1,33 +1,33 @@
-import StatusContent from '../status_content/status_content.vue'
-import { mapState } from 'vuex'
-import Status from '../status/status.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
-import UserCard from '../user_card/user_card.vue'
-import Timeago from '../timeago/timeago.vue'
-import Report from '../report/report.vue'
-import UserLink from '../user_link/user_link.vue'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+  faCheck,
+  faCompressAlt,
+  faExpandAlt,
+  faEyeSlash,
+  faRetweet,
+  faStar,
+  faSuitcaseRolling,
+  faTimes,
+  faUser,
+  faUserPlus,
+} from '@fortawesome/free-solid-svg-icons'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
-import UserPopover from '../user_popover/user_popover.vue'
-import ConfirmModal from '../confirm_modal/confirm_modal.vue'
+import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import { mapState } from 'vuex'
 import { isStatusNotification } from '../../services/notification_utils/notification_utils.js'
 import {
   highlightClass,
   highlightStyle,
 } from '../../services/user_highlighter/user_highlighter.js'
-import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faCheck,
-  faTimes,
-  faStar,
-  faRetweet,
-  faUserPlus,
-  faEyeSlash,
-  faUser,
-  faSuitcaseRolling,
-  faExpandAlt,
-  faCompressAlt,
-} from '@fortawesome/free-solid-svg-icons'
+import ConfirmModal from '../confirm_modal/confirm_modal.vue'
+import Report from '../report/report.vue'
+import Status from '../status/status.vue'
+import StatusContent from '../status_content/status_content.vue'
+import Timeago from '../timeago/timeago.vue'
+import UserAvatar from '../user_avatar/user_avatar.vue'
+import UserCard from '../user_card/user_card.vue'
+import UserLink from '../user_link/user_link.vue'
+import UserPopover from '../user_popover/user_popover.vue'
 
 library.add(
   faCheck,

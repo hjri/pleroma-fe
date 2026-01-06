@@ -1,8 +1,9 @@
 import {
-  showDesktopNotification as swDesktopNotification,
-  closeDesktopNotification as swCloseDesktopNotification,
   isSWSupported,
+  closeDesktopNotification as swCloseDesktopNotification,
+  showDesktopNotification as swDesktopNotification,
 } from '../sw/sw.js'
+
 const state = { failCreateNotif: false }
 
 export const showDesktopNotification = (rootState, desktopNotificationOpts) => {

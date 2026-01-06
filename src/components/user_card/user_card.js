@@ -1,48 +1,43 @@
-import merge from 'lodash/merge'
-import isEqual from 'lodash/isEqual'
-import unescape from 'lodash/unescape'
-
-import ColorInput from 'src/components/color_input/color_input.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
-import RemoteFollow from '../remote_follow/remote_follow.vue'
-import ProgressButton from '../progress_button/progress_button.vue'
-import FollowButton from '../follow_button/follow_button.vue'
-import ModerationTools from '../moderation_tools/moderation_tools.vue'
-import AccountActions from '../account_actions/account_actions.vue'
-import UserNote from '../user_note/user_note.vue'
-import Select from '../select/select.vue'
-import UserLink from '../user_link/user_link.vue'
-import RichContent from 'src/components/rich_content/rich_content.jsx'
-import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
-import Checkbox from 'src/components/checkbox/checkbox.vue'
-import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
-import DialogModal from 'src/components/dialog_modal/dialog_modal.vue'
-import ImageCropper from 'src/components/image_cropper/image_cropper.vue'
-
-import localeService from 'src/services/locale/locale.service.js'
-import suggestor from 'src/components/emoji_input/suggestor.js'
-
-import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
-import { mapGetters } from 'vuex'
-import { usePostStatusStore } from 'src/stores/post_status'
-import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faBell,
-  faRss,
-  faSearchPlus,
-  faExternalLinkAlt,
-  faEdit,
-  faTimes,
-  faExpandAlt,
   faBirthdayCake,
-  faSave,
   faClockRotateLeft,
+  faEdit,
+  faExpandAlt,
+  faExternalLinkAlt,
+  faRss,
+  faSave,
+  faSearchPlus,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons'
-
-import { useMediaViewerStore } from '../../stores/media_viewer'
+import isEqual from 'lodash/isEqual'
+import merge from 'lodash/merge'
+import unescape from 'lodash/unescape'
+import Checkbox from 'src/components/checkbox/checkbox.vue'
+import ColorInput from 'src/components/color_input/color_input.vue'
+import DialogModal from 'src/components/dialog_modal/dialog_modal.vue'
+import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
+import suggestor from 'src/components/emoji_input/suggestor.js'
+import ImageCropper from 'src/components/image_cropper/image_cropper.vue'
+import RichContent from 'src/components/rich_content/rich_content.jsx'
+import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
+import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
+import localeService from 'src/services/locale/locale.service.js'
+import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import { usePostStatusStore } from 'src/stores/post_status'
+import { mapGetters } from 'vuex'
 import { useInterfaceStore } from '../../stores/interface'
+import { useMediaViewerStore } from '../../stores/media_viewer'
+import AccountActions from '../account_actions/account_actions.vue'
+import FollowButton from '../follow_button/follow_button.vue'
+import ModerationTools from '../moderation_tools/moderation_tools.vue'
+import ProgressButton from '../progress_button/progress_button.vue'
+import RemoteFollow from '../remote_follow/remote_follow.vue'
+import Select from '../select/select.vue'
+import UserAvatar from '../user_avatar/user_avatar.vue'
+import UserLink from '../user_link/user_link.vue'
+import UserNote from '../user_note/user_note.vue'
 
 library.add(
   faSave,

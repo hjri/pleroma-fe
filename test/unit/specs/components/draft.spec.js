@@ -1,7 +1,7 @@
-import { mount, flushPromises } from '@vue/test-utils'
-import { nextTick } from 'vue'
+import { flushPromises, mount } from '@vue/test-utils'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
-import { mountOpts, waitForEvent, $t } from '../../../fixtures/setup_test'
+import { nextTick } from 'vue'
+import { $t, mountOpts, waitForEvent } from '../../../fixtures/setup_test'
 
 const autoSaveOrNot = (caseFn, caseTitle, runFn) => {
   caseFn(`${caseTitle} with auto-save`, function () {

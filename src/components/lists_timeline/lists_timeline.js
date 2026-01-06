@@ -1,5 +1,6 @@
 import { useListsStore } from 'src/stores/lists'
 import Timeline from '../timeline/timeline.vue'
+
 const ListsTimeline = {
   data() {
     return {

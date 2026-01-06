@@ -1,4 +1,5 @@
 export const CONFIG_MIGRATION = 1
+
 import { v4 as uuidv4 } from 'uuid'
 
 // for future use

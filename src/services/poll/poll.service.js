@@ -1,5 +1,5 @@
-import * as DateUtils from 'src/services/date_utils/date_utils.js'
 import { uniq } from 'lodash'
+import * as DateUtils from 'src/services/date_utils/date_utils.js'
 
 const pollFallbackValues = {
   pollType: 'single',

@@ -1,11 +1,11 @@
-import { reactive } from 'vue'
 import { find, omitBy, orderBy, sumBy } from 'lodash'
+import { reactive } from 'vue'
 import chatService from '../services/chat_service/chat_service.js'
+import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'
 import {
   parseChat,
   parseChatMessage,
 } from '../services/entity_normalizer/entity_normalizer.service.js'
-import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'
 import { promiseInterval } from '../services/promise_interval/promise_interval.js'
 
 const emptyChatList = () => ({

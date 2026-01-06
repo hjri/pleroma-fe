@@ -14,8 +14,8 @@
 </template>
 
 <script>
-import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
 
 const UserLink = {
   props: {

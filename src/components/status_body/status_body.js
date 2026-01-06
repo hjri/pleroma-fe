@@ -1,14 +1,14 @@
-import fileType from 'src/services/file_type/file_type.service'
-import RichContent from 'src/components/rich_content/rich_content.jsx'
-import { mapGetters } from 'vuex'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faFile,
-  faMusic,
   faImage,
   faLink,
+  faMusic,
   faPollH,
 } from '@fortawesome/free-solid-svg-icons'
+import RichContent from 'src/components/rich_content/rich_content.jsx'
+import fileType from 'src/services/file_type/file_type.service'
+import { mapGetters } from 'vuex'
 
 library.add(faFile, faMusic, faImage, faLink, faPollH)
 

@@ -1,4 +1,5 @@
 import { hex2rgb } from '../color_convert/color_convert.js'
+
 const highlightStyle = (prefs) => {
   if (prefs === undefined) return
   const { color, type } = prefs

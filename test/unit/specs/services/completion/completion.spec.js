@@ -1,8 +1,8 @@
 import {
-  replaceWord,
   addPositionToWords,
-  wordAtPosition,
+  replaceWord,
   splitByWhitespaceBoundary,
+  wordAtPosition,
 } from '../../../../../src/services/completion/completion.js'
 
 describe('addPositiontoWords', () => {

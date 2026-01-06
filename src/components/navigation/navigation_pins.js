@@ -1,35 +1,33 @@
-import { mapState } from 'vuex'
-import { mapState as mapPiniaState } from 'pinia'
-import {
-  TIMELINES,
-  ROOT_ITEMS,
-  routeTo,
-} from 'src/components/navigation/navigation.js'
-import {
-  getBookmarkFolderEntries,
-  getListEntries,
-  filterNavigation,
-} from 'src/components/navigation/filter.js'
-
-import StillImage from 'src/components/still-image/still-image.vue'
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-  faUsers,
-  faGlobe,
-  faCity,
-  faBookmark,
-  faEnvelope,
-  faComments,
   faBell,
+  faBookmark,
+  faCity,
+  faComments,
+  faEnvelope,
+  faGlobe,
   faInfoCircle,
-  faStream,
   faList,
+  faStream,
+  faUsers,
 } from '@fortawesome/free-solid-svg-icons'
-import { useListsStore } from 'src/stores/lists'
+import { mapState as mapPiniaState } from 'pinia'
+import {
+  filterNavigation,
+  getBookmarkFolderEntries,
+  getListEntries,
+} from 'src/components/navigation/filter.js'
+import {
+  ROOT_ITEMS,
+  routeTo,
+  TIMELINES,
+} from 'src/components/navigation/navigation.js'
+import StillImage from 'src/components/still-image/still-image.vue'
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
+import { useListsStore } from 'src/stores/lists'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import { mapState } from 'vuex'
 
 library.add(
   faUsers,

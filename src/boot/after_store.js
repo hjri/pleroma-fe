@@ -1,39 +1,39 @@
 /* global process */
+
+import vClickOutside from 'click-outside-vue3'
 import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import vClickOutside from 'click-outside-vue3'
 import VueVirtualScroller from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
+import { config } from '@fortawesome/fontawesome-svg-core'
 import {
   FontAwesomeIcon,
   FontAwesomeLayers,
 } from '@fortawesome/vue-fontawesome'
-import { config } from '@fortawesome/fontawesome-svg-core'
+
 config.autoAddCss = false
 
-import App from '../App.vue'
-import routes from './routes'
 import VBodyScrollLock from 'src/directives/body_scroll_lock'
-
 import {
-  windowWidth,
-  windowHeight,
-} from '../services/window_utils/window_utils'
-import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
-import { applyConfig } from '../services/style_setter/style_setter.js'
-import FaviconService from '../services/favicon_service/favicon_service.js'
-import { initServiceWorker, updateFocus } from '../services/sw/sw.js'
-
-import { useOAuthStore } from 'src/stores/oauth'
-import { useI18nStore } from 'src/stores/i18n'
-import { useInterfaceStore } from 'src/stores/interface'
+  instanceDefaultConfig,
+  staticOrApiConfigDefault,
+} from 'src/modules/default_config_state.js'
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useAuthFlowStore } from 'src/stores/auth_flow'
+import { useI18nStore } from 'src/stores/i18n'
+import { useInterfaceStore } from 'src/stores/interface'
+import { useOAuthStore } from 'src/stores/oauth'
+import App from '../App.vue'
+import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
+import FaviconService from '../services/favicon_service/favicon_service.js'
+import { applyConfig } from '../services/style_setter/style_setter.js'
+import { initServiceWorker, updateFocus } from '../services/sw/sw.js'
 import {
-  staticOrApiConfigDefault,
-  instanceDefaultConfig,
-} from 'src/modules/default_config_state.js'
+  windowHeight,
+  windowWidth,
+} from '../services/window_utils/window_utils'
+import routes from './routes'
 
 let staticInitialResults = null
 

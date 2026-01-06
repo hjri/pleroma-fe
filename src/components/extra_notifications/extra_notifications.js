@@ -1,15 +1,13 @@
-import { mapGetters } from 'vuex'
-import { mapState as mapPiniaState } from 'pinia'
-import { useAnnouncementsStore } from 'src/stores/announcements'
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-  faUserPlus,
-  faComments,
   faBullhorn,
+  faComments,
+  faUserPlus,
 } from '@fortawesome/free-solid-svg-icons'
-
+import { mapState as mapPiniaState } from 'pinia'
+import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useInterfaceStore } from 'src/stores/interface'
+import { mapGetters } from 'vuex'
 
 library.add(faUserPlus, faComments, faBullhorn)
 

@@ -1,9 +1,8 @@
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
-import UnitSetting from '../helpers/unit_setting.vue'
 import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
-
 import SharedComputedObject from '../helpers/shared_computed_object.js'
+import UnitSetting from '../helpers/unit_setting.vue'
 
 const GeneralTab = {
   props: {

@@ -1,9 +1,9 @@
-import RuffleService from '../../services/ruffle_service/ruffle_service.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-  faStop,
   faExclamationTriangle,
+  faStop,
 } from '@fortawesome/free-solid-svg-icons'
+import RuffleService from '../../services/ruffle_service/ruffle_service.js'
 
 library.add(faStop, faExclamationTriangle)
 

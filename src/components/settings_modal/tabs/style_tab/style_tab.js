@@ -1,63 +1,59 @@
-import {
-  ref,
-  reactive,
-  computed,
-  watch,
-  provide,
-  getCurrentInstance,
-} from 'vue'
-import { useInterfaceStore } from 'src/stores/interface'
-import { get, set, unset, throttle } from 'lodash'
-
-import Select from 'src/components/select/select.vue'
-import SelectMotion from 'src/components/select/select_motion.vue'
-import Checkbox from 'src/components/checkbox/checkbox.vue'
-import ComponentPreview from 'src/components/component_preview/component_preview.vue'
-import StringSetting from '../../helpers/string_setting.vue'
-import ShadowControl from 'src/components/shadow_control/shadow_control.vue'
-import ColorInput from 'src/components/color_input/color_input.vue'
-import PaletteEditor from 'src/components/palette_editor/palette_editor.vue'
-import OpacityInput from 'src/components/opacity_input/opacity_input.vue'
-import RoundnessInput from 'src/components/roundness_input/roundness_input.vue'
-import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
-import Tooltip from 'src/components/tooltip/tooltip.vue'
-import ContrastRatio from 'src/components/contrast_ratio/contrast_ratio.vue'
-import Preview from '../old_theme_tab/theme_preview.vue'
-
-import VirtualDirectivesTab from './virtual_directives_tab.vue'
-
-import {
-  createStyleSheet,
-  adoptStyleSheets,
-} from 'src/services/style_setter/style_setter.js'
-import {
-  init,
-  findColor,
-} from 'src/services/theme_data/theme_data_3.service.js'
-import { getCssRules } from 'src/services/theme_data/css_utils.js'
-import { serialize } from 'src/services/theme_data/iss_serializer.js'
-import {
-  deserializeShadow,
-  deserialize,
-} from 'src/services/theme_data/iss_deserializer.js'
-import {
-  rgb2hex,
-  hex2rgb,
-  getContrastRatio,
-} from 'src/services/color_convert/color_convert.js'
-import {
-  newImporter,
-  newExporter,
-} from 'src/services/export_import/export_import.js'
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-  faFloppyDisk,
-  faFolderOpen,
-  faFile,
   faArrowsRotate,
   faCheck,
+  faFile,
+  faFloppyDisk,
+  faFolderOpen,
 } from '@fortawesome/free-solid-svg-icons'
+import { get, set, throttle, unset } from 'lodash'
+import Checkbox from 'src/components/checkbox/checkbox.vue'
+import ColorInput from 'src/components/color_input/color_input.vue'
+import ComponentPreview from 'src/components/component_preview/component_preview.vue'
+import ContrastRatio from 'src/components/contrast_ratio/contrast_ratio.vue'
+import OpacityInput from 'src/components/opacity_input/opacity_input.vue'
+import PaletteEditor from 'src/components/palette_editor/palette_editor.vue'
+import RoundnessInput from 'src/components/roundness_input/roundness_input.vue'
+import Select from 'src/components/select/select.vue'
+import SelectMotion from 'src/components/select/select_motion.vue'
+import ShadowControl from 'src/components/shadow_control/shadow_control.vue'
+import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+import Tooltip from 'src/components/tooltip/tooltip.vue'
+import {
+  getContrastRatio,
+  hex2rgb,
+  rgb2hex,
+} from 'src/services/color_convert/color_convert.js'
+import {
+  newExporter,
+  newImporter,
+} from 'src/services/export_import/export_import.js'
+import {
+  adoptStyleSheets,
+  createStyleSheet,
+} from 'src/services/style_setter/style_setter.js'
+import { getCssRules } from 'src/services/theme_data/css_utils.js'
+import {
+  deserialize,
+  deserializeShadow,
+} from 'src/services/theme_data/iss_deserializer.js'
+import { serialize } from 'src/services/theme_data/iss_serializer.js'
+import {
+  findColor,
+  init,
+} from 'src/services/theme_data/theme_data_3.service.js'
+import { useInterfaceStore } from 'src/stores/interface'
+import {
+  computed,
+  getCurrentInstance,
+  provide,
+  reactive,
+  ref,
+  watch,
+} from 'vue'
+import StringSetting from '../../helpers/string_setting.vue'
+import Preview from '../old_theme_tab/theme_preview.vue'
+import VirtualDirectivesTab from './virtual_directives_tab.vue'
 
 // helper for debugging
 // eslint-disable-next-line no-unused-vars

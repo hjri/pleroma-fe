@@ -1,6 +1,6 @@
-import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faBullhorn, faTimes } from '@fortawesome/free-solid-svg-icons'
+import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 import { useShoutStore } from 'src/stores/shout'
 
 library.add(faBullhorn, faTimes)

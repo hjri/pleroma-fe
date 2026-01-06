@@ -1,9 +1,8 @@
-import { muteFilterHits } from '../status_parser/status_parser.js'
-import { showDesktopNotification } from '../desktop_notification_utils/desktop_notification_utils.js'
-import { useI18nStore } from 'src/stores/i18n.js'
-import { useAnnouncementsStore } from 'src/stores/announcements'
-
 import FaviconService from 'src/services/favicon_service/favicon_service.js'
+import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useI18nStore } from 'src/stores/i18n.js'
+import { showDesktopNotification } from '../desktop_notification_utils/desktop_notification_utils.js'
+import { muteFilterHits } from '../status_parser/status_parser.js'
 
 export const ACTIONABLE_NOTIFICATION_TYPES = new Set([
   'mention',

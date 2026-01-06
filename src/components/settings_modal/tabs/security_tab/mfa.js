@@ -1,8 +1,8 @@
-import RecoveryCodes from './mfa_backup_codes.vue'
-import TOTP from './mfa_totp.vue'
-import Confirm from './confirm.vue'
 import VueQrcode from '@chenfengyuan/vue-qrcode'
 import { mapState } from 'vuex'
+import Confirm from './confirm.vue'
+import RecoveryCodes from './mfa_backup_codes.vue'
+import TOTP from './mfa_totp.vue'
 
 const Mfa = {
   data: () => ({

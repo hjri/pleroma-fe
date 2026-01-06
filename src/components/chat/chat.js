@@ -1,22 +1,22 @@
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faChevronDown, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import _ from 'lodash'
-import { WSConnectionStatus } from '../../services/api/api.service.js'
-import { mapGetters, mapState } from 'vuex'
 import { mapState as mapPiniaState } from 'pinia'
-import ChatMessage from '../chat_message/chat_message.vue'
-import PostStatusForm from '../post_status_form/post_status_form.vue'
-import ChatTitle from '../chat_title/chat_title.vue'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { mapGetters, mapState } from 'vuex'
+import { WSConnectionStatus } from '../../services/api/api.service.js'
 import chatService from '../../services/chat_service/chat_service.js'
+import { buildFakeMessage } from '../../services/chat_utils/chat_utils.js'
 import { promiseInterval } from '../../services/promise_interval/promise_interval.js'
+import ChatMessage from '../chat_message/chat_message.vue'
+import ChatTitle from '../chat_title/chat_title.vue'
+import PostStatusForm from '../post_status_form/post_status_form.vue'
 import {
-  getScrollPosition,
   getNewTopPosition,
+  getScrollPosition,
   isBottomedOut,
   isScrollable,
 } from './chat_layout_utils.js'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faChevronDown, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
-import { buildFakeMessage } from '../../services/chat_utils/chat_utils.js'
-import { useInterfaceStore } from 'src/stores/interface.js'
 
 library.add(faChevronDown, faChevronLeft)
 

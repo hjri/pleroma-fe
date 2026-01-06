@@ -1,10 +1,9 @@
 import { clone } from 'lodash'
-import { fileTypeExt } from 'src/services/file_type/file_type.service.js'
-
-import Setting from './setting.js'
-import Select from 'src/components/select/select.vue'
 import Attachment from 'src/components/attachment/attachment.vue'
 import MediaUpload from 'src/components/media_upload/media_upload.vue'
+import Select from 'src/components/select/select.vue'
+import { fileTypeExt } from 'src/services/file_type/file_type.service.js'
+import Setting from './setting.js'
 
 export default {
   ...Setting,

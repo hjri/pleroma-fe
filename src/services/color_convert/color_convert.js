@@ -1,4 +1,4 @@
-import { invertLightness, contrastRatio, convert } from 'chromatism'
+import { contrastRatio, convert, invertLightness } from 'chromatism'
 
 // useful for visualizing color when debugging
 // const consoleColor = (color) => console.debug('%c##########', 'background: ' + color + '; color: ' + color)

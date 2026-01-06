@@ -1,40 +1,38 @@
-import statusPoster from '../../services/status_poster/status_poster.service.js'
-import genRandomSeed from '../../services/random_seed/random_seed.service.js'
-import MediaUpload from '../media_upload/media_upload.vue'
-import ScopeSelector from '../scope_selector/scope_selector.vue'
-import EmojiInput from '../emoji_input/emoji_input.vue'
-import PollForm from '../poll/poll_form.vue'
-import Attachment from '../attachment/attachment.vue'
-import Gallery from 'src/components/gallery/gallery.vue'
-import StatusContent from '../status_content/status_content.vue'
-import Popover from 'src/components/popover/popover.vue'
-import fileTypeService from '../../services/file_type/file_type.service.js'
-import { findOffset } from '../../services/offset_finder/offset_finder.service.js'
-import { propsToNative } from '../../services/attributes_helper/attributes_helper.service.js'
-import { pollFormToMasto } from 'src/services/poll/poll.service.js'
-import { reject, map, uniqBy, debounce } from 'lodash'
-import suggestor from '../emoji_input/suggestor.js'
-import { mapGetters } from 'vuex'
-import { mapState, mapActions } from 'pinia'
-import Checkbox from '../checkbox/checkbox.vue'
-import Select from '../select/select.vue'
-import DraftCloser from 'src/components/draft_closer/draft_closer.vue'
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-  faSmileBeam,
-  faPollH,
-  faUpload,
   faBan,
-  faTimes,
-  faCircleNotch,
   faChevronDown,
   faChevronLeft,
   faChevronRight,
+  faCircleNotch,
+  faPollH,
+  faSmileBeam,
+  faTimes,
+  faUpload,
 } from '@fortawesome/free-solid-svg-icons'
-
+import { debounce, map, reject, uniqBy } from 'lodash'
+import { mapActions, mapState } from 'pinia'
+import DraftCloser from 'src/components/draft_closer/draft_closer.vue'
+import Gallery from 'src/components/gallery/gallery.vue'
+import Popover from 'src/components/popover/popover.vue'
+import { pollFormToMasto } from 'src/services/poll/poll.service.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
+import { mapGetters } from 'vuex'
+import { propsToNative } from '../../services/attributes_helper/attributes_helper.service.js'
+import fileTypeService from '../../services/file_type/file_type.service.js'
+import { findOffset } from '../../services/offset_finder/offset_finder.service.js'
+import genRandomSeed from '../../services/random_seed/random_seed.service.js'
+import statusPoster from '../../services/status_poster/status_poster.service.js'
+import Attachment from '../attachment/attachment.vue'
+import Checkbox from '../checkbox/checkbox.vue'
+import EmojiInput from '../emoji_input/emoji_input.vue'
+import suggestor from '../emoji_input/suggestor.js'
+import MediaUpload from '../media_upload/media_upload.vue'
+import PollForm from '../poll/poll_form.vue'
+import ScopeSelector from '../scope_selector/scope_selector.vue'
+import Select from '../select/select.vue'
+import StatusContent from '../status_content/status_content.vue'
 
 library.add(
   faSmileBeam,

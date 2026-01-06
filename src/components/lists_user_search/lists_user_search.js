@@ -1,5 +1,5 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faSearch, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { debounce } from 'lodash'
 import Checkbox from '../checkbox/checkbox.vue'
 

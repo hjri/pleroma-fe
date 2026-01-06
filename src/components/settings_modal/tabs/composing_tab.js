@@ -1,28 +1,25 @@
-import { mapState } from 'vuex'
-
-import BooleanSetting from '../helpers/boolean_setting.vue'
-import ChoiceSetting from '../helpers/choice_setting.vue'
-import ScopeSelector from 'src/components/scope_selector/scope_selector.vue'
-import IntegerSetting from '../helpers/integer_setting.vue'
-import FloatSetting from '../helpers/float_setting.vue'
-import UnitSetting from '../helpers/unit_setting.vue'
-import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
-import Select from 'src/components/select/select.vue'
-import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
-import FontControl from 'src/components/font_control/font_control.vue'
-
-import SharedComputedObject from '../helpers/shared_computed_object.js'
-
-import localeService from 'src/services/locale/locale.service.js'
-import { clearCache, cacheKey, emojiCacheKey } from 'src/services/sw/sw.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
+  faDatabase,
   faGlobe,
   faMessage,
   faPenAlt,
-  faDatabase,
   faSliders,
 } from '@fortawesome/free-solid-svg-icons'
+import FontControl from 'src/components/font_control/font_control.vue'
+import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
+import ScopeSelector from 'src/components/scope_selector/scope_selector.vue'
+import Select from 'src/components/select/select.vue'
+import localeService from 'src/services/locale/locale.service.js'
+import { cacheKey, clearCache, emojiCacheKey } from 'src/services/sw/sw.js'
+import { mapState } from 'vuex'
+import BooleanSetting from '../helpers/boolean_setting.vue'
+import ChoiceSetting from '../helpers/choice_setting.vue'
+import FloatSetting from '../helpers/float_setting.vue'
+import IntegerSetting from '../helpers/integer_setting.vue'
+import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
+import SharedComputedObject from '../helpers/shared_computed_object.js'
+import UnitSetting from '../helpers/unit_setting.vue'
 
 library.add(faGlobe, faMessage, faPenAlt, faDatabase, faSliders)
 

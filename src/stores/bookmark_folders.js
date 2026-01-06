@@ -1,4 +1,4 @@
-import { remove, find } from 'lodash'
+import { find, remove } from 'lodash'
 import { defineStore } from 'pinia'
 
 export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {

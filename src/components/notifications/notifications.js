@@ -1,26 +1,26 @@
-import { computed } from 'vue'
-import { mapGetters } from 'vuex'
-import { mapState } from 'pinia'
-import Notification from '../notification/notification.vue'
-import ExtraNotifications from '../extra_notifications/extra_notifications.vue'
-import NotificationFilters from './notification_filters.vue'
-import notificationsFetcher from '../../services/notifications_fetcher/notifications_fetcher.service.js'
-import {
-  notificationsFromStore,
-  filteredNotificationsFromStore,
-  unseenNotificationsFromStore,
-  countExtraNotifications,
-  ACTIONABLE_NOTIFICATION_TYPES,
-} from '../../services/notification_utils/notification_utils.js'
-import FaviconService from '../../services/favicon_service/favicon_service.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-  faCircleNotch,
   faArrowUp,
+  faCircleNotch,
   faMinus,
 } from '@fortawesome/free-solid-svg-icons'
-import { useInterfaceStore } from 'src/stores/interface'
+import { mapState } from 'pinia'
 import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useInterfaceStore } from 'src/stores/interface'
+import { computed } from 'vue'
+import { mapGetters } from 'vuex'
+import FaviconService from '../../services/favicon_service/favicon_service.js'
+import {
+  ACTIONABLE_NOTIFICATION_TYPES,
+  countExtraNotifications,
+  filteredNotificationsFromStore,
+  notificationsFromStore,
+  unseenNotificationsFromStore,
+} from '../../services/notification_utils/notification_utils.js'
+import notificationsFetcher from '../../services/notifications_fetcher/notifications_fetcher.service.js'
+import ExtraNotifications from '../extra_notifications/extra_notifications.vue'
+import Notification from '../notification/notification.vue'
+import NotificationFilters from './notification_filters.vue'
 
 library.add(faCircleNotch, faArrowUp, faMinus)
 

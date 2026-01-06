@@ -1,7 +1,7 @@
-import escape from 'escape-html'
 import { parseLinkHeader } from '@web3-storage/parse-link-header'
-import { isStatusNotification } from '../notification_utils/notification_utils.js'
+import escape from 'escape-html'
 import punycode from 'punycode.js'
+import { isStatusNotification } from '../notification_utils/notification_utils.js'
 
 /** NOTICE! **
  * Do not initialize UI-generated data here.

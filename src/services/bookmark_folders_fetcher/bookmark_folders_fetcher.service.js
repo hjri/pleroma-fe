@@ -1,6 +1,6 @@
+import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
 import apiService from '../api/api.service.js'
 import { promiseInterval } from '../promise_interval/promise_interval.js'
-import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
 
 const fetchAndUpdate = ({ credentials }) => {
   return apiService

@@ -1,7 +1,7 @@
-import Setting from './setting.js'
-import { fileTypeExt } from 'src/services/file_type/file_type.service.js'
-import MediaUpload from 'src/components/media_upload/media_upload.vue'
 import Attachment from 'src/components/attachment/attachment.vue'
+import MediaUpload from 'src/components/media_upload/media_upload.vue'
+import { fileTypeExt } from 'src/services/file_type/file_type.service.js'
+import Setting from './setting.js'
 
 export default {
   ...Setting,

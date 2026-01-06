@@ -1,25 +1,25 @@
-import Modal from 'src/components/modal/modal.vue'
-import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faWindowMinimize } from '@fortawesome/free-regular-svg-icons'
+import {
+  faChevronDown,
+  faFileDownload,
+  faFileUpload,
+  faTimes,
+} from '@fortawesome/free-solid-svg-icons'
+import { cloneDeep, isEqual } from 'lodash'
+import { mapActions, mapState } from 'pinia'
 import AsyncComponentError from 'src/components/async_component_error/async_component_error.vue'
-import getResettableAsyncComponent from 'src/services/resettable_async_component.js'
-import Popover from '../popover/popover.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { cloneDeep, isEqual } from 'lodash'
-import { mapState, mapActions } from 'pinia'
+import Modal from 'src/components/modal/modal.vue'
+import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
 import {
-  newImporter,
   newExporter,
+  newImporter,
 } from 'src/services/export_import/export_import.js'
-import {
-  faTimes,
-  faFileUpload,
-  faFileDownload,
-  faChevronDown,
-} from '@fortawesome/free-solid-svg-icons'
-import { faWindowMinimize } from '@fortawesome/free-regular-svg-icons'
+import getResettableAsyncComponent from 'src/services/resettable_async_component.js'
 import { useInterfaceStore } from 'src/stores/interface'
+import Popover from '../popover/popover.vue'
 
 const PLEROMAFE_SETTINGS_MAJOR_VERSION = 1
 const PLEROMAFE_SETTINGS_MINOR_VERSION = 0

@@ -1,8 +1,8 @@
+import FontControl from 'src/components/font_control/font_control.vue'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import IntegerSetting from '../helpers/integer_setting.vue'
 import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
-import FontControl from 'src/components/font_control/font_control.vue'
 
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 

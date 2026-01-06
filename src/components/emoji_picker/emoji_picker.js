@@ -1,24 +1,24 @@
-import { defineAsyncComponent } from 'vue'
-import Checkbox from '../checkbox/checkbox.vue'
-import Popover from 'src/components/popover/popover.vue'
-import StillImage from '../still-image/still-image.vue'
-import { ensureFinalFallback } from '../../i18n/languages.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-  faBoxOpen,
-  faStickyNote,
-  faSmileBeam,
-  faSmile,
-  faUser,
-  faPaw,
-  faIceCream,
-  faBus,
   faBasketballBall,
-  faLightbulb,
+  faBoxOpen,
+  faBus,
   faCode,
   faFlag,
+  faIceCream,
+  faLightbulb,
+  faPaw,
+  faSmile,
+  faSmileBeam,
+  faStickyNote,
+  faUser,
 } from '@fortawesome/free-solid-svg-icons'
-import { debounce, trim, chunk } from 'lodash'
+import { chunk, debounce, trim } from 'lodash'
+import Popover from 'src/components/popover/popover.vue'
+import { defineAsyncComponent } from 'vue'
+import { ensureFinalFallback } from '../../i18n/languages.js'
+import Checkbox from '../checkbox/checkbox.vue'
+import StillImage from '../still-image/still-image.vue'
 
 library.add(
   faBoxOpen,

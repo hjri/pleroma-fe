@@ -1,6 +1,6 @@
-import apiService from '../../services/api/api.service.js'
-import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 import { shuffle } from 'lodash'
+import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import apiService from '../../services/api/api.service.js'
 
 function showWhoToFollow(panel, reply) {
   const shuffled = shuffle(reply)

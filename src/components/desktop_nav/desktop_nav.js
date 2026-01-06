@@ -1,20 +1,20 @@
-import SearchBar from 'components/search_bar/search_bar.vue'
-import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
+  faBell,
+  faBullhorn,
+  faCog,
+  faComments,
+  faHome,
+  faInfoCircle,
+  faSearch,
   faSignInAlt,
   faSignOutAlt,
-  faHome,
-  faComments,
-  faBell,
-  faUserPlus,
-  faBullhorn,
-  faSearch,
   faTachometerAlt,
-  faCog,
-  faInfoCircle,
+  faUserPlus,
 } from '@fortawesome/free-solid-svg-icons'
+import SearchBar from 'components/search_bar/search_bar.vue'
 import { useInterfaceStore } from 'src/stores/interface'
+import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 
 library.add(
   faSignInAlt,

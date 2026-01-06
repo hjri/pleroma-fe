@@ -1,8 +1,8 @@
 import {
+  parseLinkHeaderPagination,
+  parseNotification,
   parseStatus,
   parseUser,
-  parseNotification,
-  parseLinkHeaderPagination,
 } from '../../../../../src/services/entity_normalizer/entity_normalizer.service.js'
 import mastoapidata from '../../../../fixtures/mastoapi.json'
 import qvitterapidata from '../../../../fixtures/statuses.json'

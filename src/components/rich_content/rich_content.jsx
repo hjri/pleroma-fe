@@ -1,15 +1,15 @@
-import { unescape, flattenDeep } from 'lodash'
+import { flattenDeep, unescape } from 'lodash'
+import HashtagLink from 'src/components/hashtag_link/hashtag_link.vue'
+import { MENTIONS_LIMIT } from 'src/components/mentions_line/mentions_line.js'
+import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
+import StillImageEmojiPopover from 'src/components/still-image/still-image-emoji-popover.vue'
+import { convertHtmlToLines } from 'src/services/html_converter/html_line_converter.service.js'
+import { convertHtmlToTree } from 'src/services/html_converter/html_tree_converter.service.js'
 import {
+  getAttrs,
   getTagName,
   processTextForEmoji,
-  getAttrs,
 } from 'src/services/html_converter/utility.service.js'
-import { convertHtmlToTree } from 'src/services/html_converter/html_tree_converter.service.js'
-import { convertHtmlToLines } from 'src/services/html_converter/html_line_converter.service.js'
-import StillImageEmojiPopover from 'src/components/still-image/still-image-emoji-popover.vue'
-import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
-import { MENTIONS_LIMIT } from 'src/components/mentions_line/mentions_line.js'
-import HashtagLink from 'src/components/hashtag_link/hashtag_link.vue'
 
 import './rich_content.scss'
 

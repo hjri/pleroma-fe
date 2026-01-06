@@ -1,7 +1,7 @@
-import { mapState } from 'vuex'
-import passwordResetApi from '../../services/new_api/password_reset.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { mapState } from 'vuex'
+import passwordResetApi from '../../services/new_api/password_reset.js'
 
 library.add(faTimes)
 

@@ -1,31 +1,28 @@
 import {
   compact,
-  map,
-  each,
-  mergeWith,
-  last,
   concat,
-  uniq,
+  each,
   isArray,
+  last,
+  map,
+  mergeWith,
+  uniq,
 } from 'lodash'
-
-import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
-import {
-  windowWidth,
-  windowHeight,
-} from '../services/window_utils/window_utils'
+import { declarations } from 'src/modules/config_declaration'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import apiService from '../services/api/api.service.js'
+import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import oauthApi from '../services/new_api/oauth.js'
 import {
   registerPushNotifications,
   unregisterPushNotifications,
 } from '../services/sw/sw.js'
-
-import { useInterfaceStore } from 'src/stores/interface.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
-
-import { declarations } from 'src/modules/config_declaration'
+import {
+  windowHeight,
+  windowWidth,
+} from '../services/window_utils/window_utils'
 
 // TODO: Unify with mergeOrAdd in statuses.js
 export const mergeOrAdd = (arr, obj, item) => {

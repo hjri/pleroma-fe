@@ -1,28 +1,27 @@
-import { convert, brightness } from 'chromatism'
+import { brightness, convert } from 'chromatism'
 import sum from 'hash-sum'
 import { flattenDeep, sortBy } from 'lodash'
 import {
   alphaBlend,
   getTextColor,
-  rgba2css,
   mixrgb,
   relativeLuminance,
+  rgba2css,
 } from '../color_convert/color_convert.js'
+import { deserializeShadow } from './iss_deserializer.js'
 
+import {
+  findRules,
+  genericRuleToSelector,
+  getAllPossibleCombinations,
+  normalizeCombination,
+  unroll,
+} from './iss_utils.js'
 import {
   colorFunctions,
-  shadowFunctions,
   process,
+  shadowFunctions,
 } from './theme3_slot_functions.js'
-
-import {
-  unroll,
-  getAllPossibleCombinations,
-  genericRuleToSelector,
-  normalizeCombination,
-  findRules,
-} from './iss_utils.js'
-import { deserializeShadow } from './iss_deserializer.js'
 
 // Ensuring the order of components
 const components = {

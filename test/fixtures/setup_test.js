@@ -1,7 +1,7 @@
 import { config } from '@vue/test-utils'
-import { createRouter, createMemoryHistory } from 'vue-router'
-import VueVirtualScroller from 'vue-virtual-scroller'
 import routes from 'src/boot/routes'
+import { createMemoryHistory, createRouter } from 'vue-router'
+import VueVirtualScroller from 'vue-virtual-scroller'
 import makeMockStore from './mock_store'
 
 export const $t = (msg) => msg

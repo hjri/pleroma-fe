@@ -1,4 +1,4 @@
-import { set, get, cloneDeep, differenceWith, isEqual, flatten } from 'lodash'
+import { cloneDeep, differenceWith, flatten, get, isEqual, set } from 'lodash'
 
 export const defaultState = {
   frontends: [],

@@ -1,4 +1,4 @@
-import { reduce, find } from 'lodash'
+import { find, reduce } from 'lodash'
 
 export const replaceWord = (str, toReplace, replacement) => {
   return str.slice(0, toReplace.start) + replacement + str.slice(toReplace.end)

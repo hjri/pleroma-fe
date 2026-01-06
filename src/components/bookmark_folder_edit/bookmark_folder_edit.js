@@ -1,7 +1,7 @@
-import EmojiPicker from '../emoji_picker/emoji_picker.vue'
-import apiService from '../../services/api/api.service'
-import { useInterfaceStore } from 'src/stores/interface'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
+import { useInterfaceStore } from 'src/stores/interface'
+import apiService from '../../services/api/api.service'
+import EmojiPicker from '../emoji_picker/emoji_picker.vue'
 
 const BookmarkFolderEdit = {
   data() {

@@ -1,27 +1,24 @@
-import BooleanSetting from '../helpers/boolean_setting.vue'
-import ChoiceSetting from '../helpers/choice_setting.vue'
-import IntegerSetting from '../helpers/integer_setting.vue'
-import FloatSetting from '../helpers/float_setting.vue'
-import UnitSetting from '../helpers/unit_setting.vue'
+import { mapActions } from 'pinia'
+import fileSizeFormatService from 'src/components/../services/file_size_format/file_size_format.js'
 import PaletteEditor from 'src/components/palette_editor/palette_editor.vue'
-import Preview from './old_theme_tab/theme_preview.vue'
-
 import { newImporter } from 'src/services/export_import/export_import.js'
-import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
-import { init } from 'src/services/theme_data/theme_data_3.service.js'
+import {
+  adoptStyleSheets,
+  createStyleSheet,
+} from 'src/services/style_setter/style_setter.js'
 import { getCssRules } from 'src/services/theme_data/css_utils.js'
 import { deserialize } from 'src/services/theme_data/iss_deserializer.js'
-import {
-  createStyleSheet,
-  adoptStyleSheets,
-} from 'src/services/style_setter/style_setter.js'
-import fileSizeFormatService from 'src/components/../services/file_size_format/file_size_format.js'
-
-import SharedComputedObject from '../helpers/shared_computed_object.js'
+import { init } from 'src/services/theme_data/theme_data_3.service.js'
+import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
+import { normalizeThemeData, useInterfaceStore } from 'src/stores/interface'
+import BooleanSetting from '../helpers/boolean_setting.vue'
+import ChoiceSetting from '../helpers/choice_setting.vue'
+import FloatSetting from '../helpers/float_setting.vue'
+import IntegerSetting from '../helpers/integer_setting.vue'
 import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
-
-import { mapActions } from 'pinia'
-import { useInterfaceStore, normalizeThemeData } from 'src/stores/interface'
+import SharedComputedObject from '../helpers/shared_computed_object.js'
+import UnitSetting from '../helpers/unit_setting.vue'
+import Preview from './old_theme_tab/theme_preview.vue'
 
 const AppearanceTab = {
   data() {

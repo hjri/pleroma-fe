@@ -1,7 +1,7 @@
+import { cloneDeep, get, isEqual, set } from 'lodash'
+import DraftButtons from './draft_buttons.vue'
 import ModifiedIndicator from './modified_indicator.vue'
 import ProfileSettingIndicator from './profile_setting_indicator.vue'
-import DraftButtons from './draft_buttons.vue'
-import { get, set, cloneDeep, isEqual } from 'lodash'
 
 export default {
   components: {

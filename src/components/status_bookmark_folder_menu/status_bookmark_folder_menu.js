@@ -1,10 +1,9 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronRight, faFolder } from '@fortawesome/free-solid-svg-icons'
 import { mapState } from 'pinia'
-import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
-
 import Popover from 'src/components/popover/popover.vue'
 import StillImage from 'src/components/still-image/still-image.vue'
+import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
 
 library.add(faChevronRight, faFolder)
 

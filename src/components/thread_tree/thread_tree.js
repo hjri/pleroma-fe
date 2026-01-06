@@ -1,10 +1,9 @@
-import Status from '../status/status.vue'
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faAngleDoubleDown,
   faAngleDoubleRight,
 } from '@fortawesome/free-solid-svg-icons'
+import Status from '../status/status.vue'
 
 library.add(faAngleDoubleDown, faAngleDoubleRight)
 

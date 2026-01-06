@@ -1,29 +1,29 @@
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+  faChevronDown,
+  faChevronUp,
+  faPlus,
+  faTimes,
+} from '@fortawesome/free-solid-svg-icons'
+import { flattenDeep, throttle } from 'lodash'
+import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
+import ComponentPreview from 'src/components/component_preview/component_preview.vue'
 import OpacityInput from 'src/components/opacity_input/opacity_input.vue'
+import Popover from 'src/components/popover/popover.vue'
 import Select from 'src/components/select/select.vue'
 import SelectMotion from 'src/components/select/select_motion.vue'
-import Checkbox from 'src/components/checkbox/checkbox.vue'
-import Popover from 'src/components/popover/popover.vue'
-import ComponentPreview from 'src/components/component_preview/component_preview.vue'
 import { rgb2hex } from 'src/services/color_convert/color_convert.js'
-import { serializeShadow } from 'src/services/theme_data/iss_serializer.js'
-import { deserializeShadow } from 'src/services/theme_data/iss_deserializer.js'
 import {
   getCssShadow,
   getCssShadowFilter,
 } from 'src/services/theme_data/css_utils.js'
+import { deserializeShadow } from 'src/services/theme_data/iss_deserializer.js'
+import { serializeShadow } from 'src/services/theme_data/iss_serializer.js'
 import {
-  findShadow,
   findColor,
+  findShadow,
 } from 'src/services/theme_data/theme_data_3.service.js'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { throttle, flattenDeep } from 'lodash'
-import {
-  faTimes,
-  faChevronDown,
-  faChevronUp,
-  faPlus,
-} from '@fortawesome/free-solid-svg-icons'
 
 library.add(faChevronDown, faChevronUp, faTimes, faPlus)
 

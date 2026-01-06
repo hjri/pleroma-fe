@@ -1,12 +1,11 @@
-import { mapState } from 'vuex'
-import { routeTo } from 'src/components/navigation/navigation.js'
-import OptionalRouterLink from 'src/components/optional_router_link/optional_router_link.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faThumbtack } from '@fortawesome/free-solid-svg-icons'
-import { mapStores, mapState as mapPiniaState } from 'pinia'
-
+import { mapState as mapPiniaState, mapStores } from 'pinia'
+import { routeTo } from 'src/components/navigation/navigation.js'
+import OptionalRouterLink from 'src/components/optional_router_link/optional_router_link.vue'
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import { mapState } from 'vuex'
 
 library.add(faThumbtack)
 

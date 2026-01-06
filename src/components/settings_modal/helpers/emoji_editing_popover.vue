@@ -149,10 +149,10 @@
 </template>
 
 <script>
-import Popover from 'components/popover/popover.vue'
 import ConfirmModal from 'components/confirm_modal/confirm_modal.vue'
-import StillImage from 'components/still-image/still-image.vue'
+import Popover from 'components/popover/popover.vue'
 import SelectComponent from 'components/select/select.vue'
+import StillImage from 'components/still-image/still-image.vue'
 
 export default {
   components: { Popover, ConfirmModal, StillImage, SelectComponent },

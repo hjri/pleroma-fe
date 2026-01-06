@@ -1,15 +1,14 @@
-import UserCard from 'src/components/user_card/user_card.vue'
-import Checkbox from 'src/components/checkbox/checkbox.vue'
-import BooleanSetting from '../helpers/boolean_setting.vue'
-import SharedComputedObject from '../helpers/shared_computed_object.js'
-import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-  faTimes,
-  faPlus,
   faCircleNotch,
+  faPlus,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons'
+import Checkbox from 'src/components/checkbox/checkbox.vue'
+import UserCard from 'src/components/user_card/user_card.vue'
+import BooleanSetting from '../helpers/boolean_setting.vue'
+import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
+import SharedComputedObject from '../helpers/shared_computed_object.js'
 
 library.add(faTimes, faPlus, faCircleNotch)
 

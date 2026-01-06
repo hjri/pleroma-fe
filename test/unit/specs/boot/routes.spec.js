@@ -1,5 +1,5 @@
 import routes from 'src/boot/routes'
-import { createRouter, createMemoryHistory } from 'vue-router'
+import { createMemoryHistory, createRouter } from 'vue-router'
 import { createStore } from 'vuex'
 
 const store = createStore({

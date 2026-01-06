@@ -1,6 +1,6 @@
-import serveStatic from 'serve-static'
-import { resolve } from 'node:path'
 import { cp } from 'node:fs/promises'
+import { resolve } from 'node:path'
+import serveStatic from 'serve-static'
 
 const getPrefix = (s) => {
   const padEnd = s.endsWith('/') ? s : s + '/'

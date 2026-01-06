@@ -1,5 +1,5 @@
-import semver from 'semver'
 import chalk from 'chalk'
+import semver from 'semver'
 
 import packageConfig from '../package.json' with { type: 'json' }
 

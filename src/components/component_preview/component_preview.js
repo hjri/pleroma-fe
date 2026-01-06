@@ -3,8 +3,8 @@ import ColorInput from 'src/components/color_input/color_input.vue'
 
 import genRandomSeed from 'src/services/random_seed/random_seed.service.js'
 import {
-  createStyleSheet,
   adoptStyleSheets,
+  createStyleSheet,
 } from 'src/services/style_setter/style_setter.js'
 
 export default {

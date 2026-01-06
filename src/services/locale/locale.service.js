@@ -1,6 +1,6 @@
-import languagesObject from '../../i18n/messages'
 import ISO6391 from 'iso-639-1'
 import _ from 'lodash'
+import languagesObject from '../../i18n/messages'
 
 const specialLanguageCodes = {
   pdc: 'en',

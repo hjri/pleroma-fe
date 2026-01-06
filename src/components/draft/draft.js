@@ -1,12 +1,11 @@
-import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
-import EditStatusForm from 'src/components/edit_status_form/edit_status_form.vue'
-import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
-import StatusContent from 'src/components/status_content/status_content.vue'
-import Gallery from 'src/components/gallery/gallery.vue'
-import { cloneDeep } from 'lodash'
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPollH } from '@fortawesome/free-solid-svg-icons'
+import { cloneDeep } from 'lodash'
+import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
+import EditStatusForm from 'src/components/edit_status_form/edit_status_form.vue'
+import Gallery from 'src/components/gallery/gallery.vue'
+import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
+import StatusContent from 'src/components/status_content/status_content.vue'
 
 library.add(faPollH)
 

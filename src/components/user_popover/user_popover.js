@@ -1,5 +1,5 @@
-import UserCard from '../user_card/user_card.vue'
 import { defineAsyncComponent } from 'vue'
+import UserCard from '../user_card/user_card.vue'
 
 const UserPopover = {
   name: 'UserPopover',

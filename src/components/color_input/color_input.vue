@@ -64,12 +64,11 @@
   </div>
 </template>
 <script>
-import Checkbox from '../checkbox/checkbox.vue'
-import { hex2rgb } from '../../services/color_convert/color_convert.js'
-import { throttle } from 'lodash'
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEyeDropper } from '@fortawesome/free-solid-svg-icons'
+import { throttle } from 'lodash'
+import { hex2rgb } from '../../services/color_convert/color_convert.js'
+import Checkbox from '../checkbox/checkbox.vue'
 
 library.add(faEyeDropper)
 

@@ -1,11 +1,11 @@
+import { HttpResponse, http } from 'msw'
+import { createPinia, setActivePinia } from 'pinia'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { createApp } from 'vue'
 import { createStore } from 'vuex'
-import { createPinia, setActivePinia } from 'pinia'
-import { http, HttpResponse } from 'msw'
-import { useOAuthStore } from 'src/stores/oauth.js'
 import {
-  injectMswToTest,
   authApis,
+  injectMswToTest,
   testServer,
 } from '/test/fixtures/mock_api.js'
 

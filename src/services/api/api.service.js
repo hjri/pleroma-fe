@@ -1,12 +1,12 @@
-import { each, map, concat, last, get } from 'lodash'
+import { concat, each, get, last, map } from 'lodash'
 import {
-  parseStatus,
-  parseSource,
-  parseUser,
-  parseNotification,
   parseAttachment,
   parseChat,
   parseLinkHeaderPagination,
+  parseNotification,
+  parseSource,
+  parseStatus,
+  parseUser,
 } from '../entity_normalizer/entity_normalizer.service.js'
 import { RegistrationError, StatusCodeError } from '../errors/errors'
 

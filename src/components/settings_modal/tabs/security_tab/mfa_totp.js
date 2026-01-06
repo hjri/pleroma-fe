@@ -1,5 +1,5 @@
-import Confirm from './confirm.vue'
 import { mapState } from 'vuex'
+import Confirm from './confirm.vue'
 
 export default {
   props: ['settings'],

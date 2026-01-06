@@ -1,29 +1,29 @@
-import { mapState, mapGetters } from 'vuex'
-import { mapState as mapPiniaState } from 'pinia'
-import UserCard from '../user_card/user_card.vue'
-import { unseenNotificationsFromStore } from '../../services/notification_utils/notification_utils'
-import GestureService from '../../services/gesture_service/gesture_service'
-import { USERNAME_ROUTES } from 'src/components/navigation/navigation.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
+  faBell,
+  faBullhorn,
+  faCog,
+  faComments,
+  faCompass,
+  faFilePen,
+  faHome,
+  faInfoCircle,
+  faList,
+  faSearch,
   faSignInAlt,
   faSignOutAlt,
-  faHome,
-  faComments,
-  faBell,
-  faUserPlus,
-  faBullhorn,
-  faSearch,
   faTachometerAlt,
-  faCog,
-  faInfoCircle,
-  faCompass,
-  faList,
-  faFilePen,
+  faUserPlus,
 } from '@fortawesome/free-solid-svg-icons'
-import { useShoutStore } from 'src/stores/shout'
-import { useInterfaceStore } from 'src/stores/interface'
+import { mapState as mapPiniaState } from 'pinia'
+import { USERNAME_ROUTES } from 'src/components/navigation/navigation.js'
 import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useInterfaceStore } from 'src/stores/interface'
+import { useShoutStore } from 'src/stores/shout'
+import { mapGetters, mapState } from 'vuex'
+import GestureService from '../../services/gesture_service/gesture_service'
+import { unseenNotificationsFromStore } from '../../services/notification_utils/notification_utils'
+import UserCard from '../user_card/user_card.vue'
 
 library.add(
   faSignInAlt,

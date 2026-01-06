@@ -2,8 +2,8 @@ import { cloneDeep } from 'lodash'
 
 import {
   defaultState,
-  mutations,
   getters,
+  mutations,
 } from '../../../../src/modules/users.js'
 
 describe('The users module', () => {

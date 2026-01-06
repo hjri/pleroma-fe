@@ -1,20 +1,20 @@
-import { defineStore } from 'pinia'
-import { toRaw } from 'vue'
 import {
-  isEqual,
-  cloneDeep,
-  set,
-  unset,
-  get,
+  merge as _merge,
   clamp,
-  flatten,
-  groupBy,
+  cloneDeep,
   findLastIndex,
+  flatten,
+  get,
+  groupBy,
+  isEqual,
+  set,
   takeRight,
   uniqWith,
-  merge as _merge,
+  unset,
 } from 'lodash'
+import { defineStore } from 'pinia'
 import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
+import { toRaw } from 'vue'
 
 export const VERSION = 1
 export const NEW_USER_DATE = new Date('2022-08-04') // date of writing this, basically

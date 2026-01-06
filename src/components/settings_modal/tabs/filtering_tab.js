@@ -1,25 +1,21 @@
 import { cloneDeep } from 'lodash'
-import { mapState, mapActions } from 'pinia'
-import { mapState as mapVuexState } from 'vuex'
-import { v4 as uuidv4 } from 'uuid'
-
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
-import { useInterfaceStore } from 'src/stores/interface'
-
-import {
-  newImporter,
-  newExporter,
-} from 'src/services/export_import/export_import.js'
-
-import BooleanSetting from '../helpers/boolean_setting.vue'
-import ChoiceSetting from '../helpers/choice_setting.vue'
-import UnitSetting from '../helpers/unit_setting.vue'
-import IntegerSetting from '../helpers/integer_setting.vue'
-import HelpIndicator from '../helpers/help_indicator.vue'
+import { mapActions, mapState } from 'pinia'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Select from 'src/components/select/select.vue'
-
+import {
+  newExporter,
+  newImporter,
+} from 'src/services/export_import/export_import.js'
+import { useInterfaceStore } from 'src/stores/interface'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import { v4 as uuidv4 } from 'uuid'
+import { mapState as mapVuexState } from 'vuex'
+import BooleanSetting from '../helpers/boolean_setting.vue'
+import ChoiceSetting from '../helpers/choice_setting.vue'
+import HelpIndicator from '../helpers/help_indicator.vue'
+import IntegerSetting from '../helpers/integer_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
+import UnitSetting from '../helpers/unit_setting.vue'
 
 const SUPPORTED_TYPES = new Set(['word', 'regexp', 'user', 'user_regexp'])
 

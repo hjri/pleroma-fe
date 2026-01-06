@@ -1,7 +1,6 @@
-import { mapGetters } from 'vuex'
-
-import ConfirmModal from './confirm_modal.vue'
 import Select from 'src/components/select/select.vue'
+import { mapGetters } from 'vuex'
+import ConfirmModal from './confirm_modal.vue'
 
 export default {
   props: ['type', 'user', 'status'],

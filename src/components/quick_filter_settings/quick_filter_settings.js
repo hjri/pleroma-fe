@@ -1,9 +1,9 @@
-import Popover from '../popover/popover.vue'
-import { mapGetters } from 'vuex'
-import { mapState } from 'pinia'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faFilter, faFont, faWrench } from '@fortawesome/free-solid-svg-icons'
+import { mapState } from 'pinia'
 import { useInterfaceStore } from 'src/stores/interface'
+import { mapGetters } from 'vuex'
+import Popover from '../popover/popover.vue'
 
 library.add(faFilter, faFont, faWrench)
 

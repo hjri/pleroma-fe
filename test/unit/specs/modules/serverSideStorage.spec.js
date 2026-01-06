@@ -1,19 +1,19 @@
 import { cloneDeep } from 'lodash'
-import { setActivePinia, createPinia } from 'pinia'
+import { createPinia, setActivePinia } from 'pinia'
 
 import {
-  VERSION,
-  COMMAND_TRIM_FLAGS,
-  COMMAND_TRIM_FLAGS_AND_RESET,
-  _moveItemInArray,
-  _getRecentData,
   _getAllFlags,
+  _getRecentData,
   _mergeFlags,
   _mergePrefs,
+  _moveItemInArray,
   _resetFlags,
+  COMMAND_TRIM_FLAGS,
+  COMMAND_TRIM_FLAGS_AND_RESET,
   defaultState,
   newUserFlags,
   useServerSideStorageStore,
+  VERSION,
 } from 'src/stores/serverSideStorage.js'
 
 describe('The serverSideStorage module', () => {

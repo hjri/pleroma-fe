@@ -1,5 +1,5 @@
-import map from 'lodash/map'
 import groupBy from 'lodash/groupBy'
+import map from 'lodash/map'
 import { mapGetters, mapState } from 'vuex'
 import BasicUserCard from '../basic_user_card/basic_user_card.vue'
 

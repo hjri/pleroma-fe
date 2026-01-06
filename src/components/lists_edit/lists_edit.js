@@ -1,14 +1,14 @@
-import { mapState, mapGetters } from 'vuex'
-import { mapState as mapPiniaState } from 'pinia'
-import BasicUserCard from '../basic_user_card/basic_user_card.vue'
-import ListsUserSearch from '../lists_user_search/lists_user_search.vue'
-import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
-import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faSearch, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { mapState as mapPiniaState } from 'pinia'
+import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
+import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useListsStore } from 'src/stores/lists'
+import { mapGetters, mapState } from 'vuex'
+import BasicUserCard from '../basic_user_card/basic_user_card.vue'
+import ListsUserSearch from '../lists_user_search/lists_user_search.vue'
+import UserAvatar from '../user_avatar/user_avatar.vue'
 
 library.add(faSearch, faChevronLeft)
 

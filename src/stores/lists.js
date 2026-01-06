@@ -1,6 +1,5 @@
+import { find, remove } from 'lodash'
 import { defineStore } from 'pinia'
-
-import { remove, find } from 'lodash'
 
 export const useListsStore = defineStore('lists', {
   state: () => ({

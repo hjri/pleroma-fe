@@ -1,8 +1,8 @@
-import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
-import Mfa from './mfa.vue'
+import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import localeService from 'src/services/locale/locale.service.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens'
+import Mfa from './mfa.vue'
 
 const SecurityTab = {
   data() {

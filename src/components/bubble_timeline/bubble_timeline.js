@@ -1,4 +1,5 @@
 import Timeline from '../timeline/timeline.vue'
+
 const BubbleTimeline = {
   components: {
     Timeline,

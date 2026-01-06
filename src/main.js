@@ -1,6 +1,7 @@
 /* global process */
-import { createStore } from 'vuex'
+
 import { createPinia } from 'pinia'
+import { createStore } from 'vuex'
 
 import 'custom-event-polyfill'
 import './lib/event_target_polyfill.js'
@@ -12,18 +13,14 @@ if (!Array.prototype.toSorted) {
   }
 }
 
-import vuexModules from './modules/index.js'
-
 import { createI18n } from 'vue-i18n'
-
+import afterStoreSetup from './boot/after_store.js'
+import messages from './i18n/messages.js'
 import createPersistedState, {
   piniaPersistPlugin,
 } from './lib/persisted_state.js'
 import pushNotifications from './lib/push_notifications_plugin.js'
-
-import messages from './i18n/messages.js'
-
-import afterStoreSetup from './boot/after_store.js'
+import vuexModules from './modules/index.js'
 
 const currentLocale = (window.navigator.language || 'en').split('-')[0]
 

@@ -1,14 +1,13 @@
-import Select from '../select/select.vue'
-import Checkbox from 'src/components/checkbox/checkbox.vue'
-import Popover from 'src/components/popover/popover.vue'
-import { useInterfaceStore } from 'src/stores/interface'
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faExclamationTriangle,
-  faKeyboard,
   faFont,
+  faKeyboard,
 } from '@fortawesome/free-solid-svg-icons'
+import Checkbox from 'src/components/checkbox/checkbox.vue'
+import Popover from 'src/components/popover/popover.vue'
+import { useInterfaceStore } from 'src/stores/interface'
+import Select from '../select/select.vue'
 
 library.add(faExclamationTriangle, faKeyboard, faFont)
 

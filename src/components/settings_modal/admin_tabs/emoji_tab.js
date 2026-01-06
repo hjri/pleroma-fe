@@ -1,23 +1,22 @@
-import { clone, assign } from 'lodash'
-import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
-import StringSetting from '../helpers/string_setting.vue'
-import Checkbox from 'components/checkbox/checkbox.vue'
-import StillImage from 'components/still-image/still-image.vue'
-import Select from 'components/select/select.vue'
-import Popover from 'components/popover/popover.vue'
-import ConfirmModal from 'components/confirm_modal/confirm_modal.vue'
-import ModifiedIndicator from '../helpers/modified_indicator.vue'
-import EmojiEditingPopover from '../helpers/emoji_editing_popover.vue'
-import { useInterfaceStore } from 'src/stores/interface'
-
-import SharedComputedObject from '../helpers/shared_computed_object.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faArrowsRotate,
+  faDownload,
   faFolderOpen,
   faServer,
-  faDownload,
 } from '@fortawesome/free-solid-svg-icons'
+import Checkbox from 'components/checkbox/checkbox.vue'
+import ConfirmModal from 'components/confirm_modal/confirm_modal.vue'
+import Popover from 'components/popover/popover.vue'
+import Select from 'components/select/select.vue'
+import StillImage from 'components/still-image/still-image.vue'
+import { assign, clone } from 'lodash'
+import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+import { useInterfaceStore } from 'src/stores/interface'
+import EmojiEditingPopover from '../helpers/emoji_editing_popover.vue'
+import ModifiedIndicator from '../helpers/modified_indicator.vue'
+import SharedComputedObject from '../helpers/shared_computed_object.js'
+import StringSetting from '../helpers/string_setting.vue'
 
 library.add(faArrowsRotate, faFolderOpen, faDownload, faServer)
 

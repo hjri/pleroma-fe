@@ -45,18 +45,15 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faFileExport, faFileImport } from '@fortawesome/free-solid-svg-icons'
 import ColorInput from 'src/components/color_input/color_input.vue'
 import {
-  newImporter,
   newExporter,
+  newImporter,
 } from 'src/services/export_import/export_import.js'
-
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faFileImport, faFileExport } from '@fortawesome/free-solid-svg-icons'
-
 import { useInterfaceStore } from 'src/stores/interface'
+import { computed } from 'vue'
 
 library.add(faFileImport, faFileExport)
 

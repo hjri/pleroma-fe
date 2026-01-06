@@ -1,19 +1,19 @@
-import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
-import { defineConfig } from 'vite'
+import { fileURLToPath } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import stylelint from 'vite-plugin-stylelint'
+import { defineConfig } from 'vite'
 import eslint from 'vite-plugin-eslint2'
+import stylelint from 'vite-plugin-stylelint'
+import { getCommitHash } from './build/commit_hash.js'
+import copyPlugin from './build/copy_plugin.js'
 import emojisPlugin from './build/emojis_plugin.js'
+import mswPlugin from './build/msw_plugin.js'
 import {
-  devSwPlugin,
   buildSwPlugin,
+  devSwPlugin,
   swMessagesPlugin,
 } from './build/sw_plugin.js'
-import copyPlugin from './build/copy_plugin.js'
-import { getCommitHash } from './build/commit_hash.js'
-import mswPlugin from './build/msw_plugin.js'
 
 const localConfigPath = '<projectRoot>/config/local.json'
 const getLocalDevSettings = async () => {

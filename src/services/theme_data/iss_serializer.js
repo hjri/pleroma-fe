@@ -1,5 +1,5 @@
-import { unroll } from './iss_utils.js'
 import { deserializeShadow } from './iss_deserializer.js'
+import { unroll } from './iss_utils.js'
 
 export const serializeShadow = (s) => {
   if (typeof s === 'object') {

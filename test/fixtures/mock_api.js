@@ -1,6 +1,6 @@
-import { test as testBase } from 'vitest'
+import { HttpResponse, http } from 'msw'
 import { setupWorker } from 'msw/browser'
-import { http, HttpResponse } from 'msw'
+import { test as testBase } from 'vitest'
 
 // https://mswjs.io/docs/recipes/vitest-browser-mode
 export const injectMswToTest = (defaultHandlers) => {

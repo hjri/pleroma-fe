@@ -1,6 +1,6 @@
+import { notificationsFromStore } from '../../services/notification_utils/notification_utils.js'
 import BasicUserCard from '../basic_user_card/basic_user_card.vue'
 import ConfirmModal from '../confirm_modal/confirm_modal.vue'
-import { notificationsFromStore } from '../../services/notification_utils/notification_utils.js'
 
 const FollowRequestCard = {
   props: ['user'],

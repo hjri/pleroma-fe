@@ -1,12 +1,13 @@
 // eslint-disable-next-line no-unused
-import { h } from 'vue'
+
 import isEmpty from 'lodash/isEmpty'
+import { h } from 'vue'
 import { getComponentProps } from '../../services/component_utils/component_utils'
 import './with_subscription.scss'
 
-import { FontAwesomeIcon as FAIcon } from '@fortawesome/vue-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon as FAIcon } from '@fortawesome/vue-fontawesome'
 
 library.add(faCircleNotch)
 

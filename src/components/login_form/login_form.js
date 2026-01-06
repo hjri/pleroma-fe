@@ -1,10 +1,10 @@
-import { mapState } from 'vuex'
-import { mapStores, mapActions, mapState as mapPiniaState } from 'pinia'
-import oauthApi from '../../services/new_api/oauth.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
-import { useAuthFlowStore } from 'src/stores/auth_flow.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { mapActions, mapState as mapPiniaState, mapStores } from 'pinia'
+import { useAuthFlowStore } from 'src/stores/auth_flow.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
+import { mapState } from 'vuex'
+import oauthApi from '../../services/new_api/oauth.js'
 
 library.add(faTimes)
 

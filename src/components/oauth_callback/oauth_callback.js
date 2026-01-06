@@ -1,5 +1,5 @@
-import oauth from '../../services/new_api/oauth.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import oauth from '../../services/new_api/oauth.js'
 
 const oac = {
   props: ['code'],

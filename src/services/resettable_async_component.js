@@ -1,4 +1,4 @@
-import { defineAsyncComponent, shallowReactive, h } from 'vue'
+import { defineAsyncComponent, h, shallowReactive } from 'vue'
 
 /* By default async components don't have any way to recover, if component is
  * failed, it is failed forever. This helper tries to remedy that by recreating

@@ -1,5 +1,5 @@
-import { getTagName } from './utility.service.js'
 import { unescape } from 'lodash'
+import { getTagName } from './utility.service.js'
 
 /**
  * This is a not-so-tiny purpose-built HTML parser/processor. This parses html

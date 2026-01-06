@@ -1,11 +1,3 @@
-import StillImage from '../still-image/still-image.vue'
-import VideoAttachment from '../video_attachment/video_attachment.vue'
-import Modal from '../modal/modal.vue'
-import PinchZoom from '../pinch_zoom/pinch_zoom.vue'
-import SwipeClick from '../swipe_click/swipe_click.vue'
-import GestureService from '../../services/gesture_service/gesture_service'
-import Flash from 'src/components/flash/flash.vue'
-import fileTypeService from '../../services/file_type/file_type.service.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faChevronLeft,
@@ -13,7 +5,15 @@ import {
   faCircleNotch,
   faTimes,
 } from '@fortawesome/free-solid-svg-icons'
+import Flash from 'src/components/flash/flash.vue'
 import { useMediaViewerStore } from 'src/stores/media_viewer'
+import fileTypeService from '../../services/file_type/file_type.service.js'
+import GestureService from '../../services/gesture_service/gesture_service'
+import Modal from '../modal/modal.vue'
+import PinchZoom from '../pinch_zoom/pinch_zoom.vue'
+import StillImage from '../still-image/still-image.vue'
+import SwipeClick from '../swipe_click/swipe_click.vue'
+import VideoAttachment from '../video_attachment/video_attachment.vue'
 
 library.add(faChevronLeft, faChevronRight, faCircleNotch, faTimes)
 

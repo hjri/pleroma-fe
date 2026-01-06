@@ -1,9 +1,7 @@
-import localeService from '../../services/locale/locale.service.js'
-
-import Select from '../select/select.vue'
 import ProfileSettingIndicator from 'src/components/settings_modal/helpers/profile_setting_indicator.vue'
-
 import { v4 as uuidv4 } from 'uuid'
+import localeService from '../../services/locale/locale.service.js'
+import Select from '../select/select.vue'
 
 export default {
   components: {

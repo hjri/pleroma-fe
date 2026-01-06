@@ -1,9 +1,9 @@
 // eslint-disable-next-line no-unused
-import { h, Fragment } from 'vue'
-import { mapState } from 'pinia'
-import { throttle } from 'lodash'
-import { mapState as mapPiniaState } from 'pinia'
+
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/vue-fontawesome'
+import { throttle } from 'lodash'
+import { mapState as mapPiniaState, mapState } from 'pinia'
+import { Fragment, h } from 'vue'
 
 import './vertical_tab_switcher.scss'
 import { useInterfaceStore } from 'src/stores/interface'

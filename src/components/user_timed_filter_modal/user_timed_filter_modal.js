@@ -1,5 +1,5 @@
-import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
+import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import Select from 'src/components/select/select.vue'
 import { durationStrToMs } from 'src/services/date_utils/date_utils.js'
 

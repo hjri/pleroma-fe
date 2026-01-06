@@ -1,19 +1,19 @@
 import {
+  each,
+  find,
+  findIndex,
+  first,
+  isArray,
+  last,
+  maxBy,
+  merge,
+  minBy,
+  omitBy,
   remove,
   slice,
-  each,
-  findIndex,
-  find,
-  maxBy,
-  minBy,
-  merge,
-  first,
-  last,
-  isArray,
-  omitBy,
 } from 'lodash'
-import apiService from '../services/api/api.service.js'
 import { useInterfaceStore } from 'src/stores/interface'
+import apiService from '../services/api/api.service.js'
 
 const emptyTl = (userId = 0) => ({
   statuses: [],

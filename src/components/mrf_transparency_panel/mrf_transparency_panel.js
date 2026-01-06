@@ -1,5 +1,5 @@
-import { mapState } from 'vuex'
 import { get } from 'lodash'
+import { mapState } from 'vuex'
 
 /**
  * This is for backwards compatibility. We originally didn't recieve

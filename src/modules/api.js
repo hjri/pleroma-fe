@@ -1,9 +1,9 @@
-import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
-import { WSConnectionStatus } from '../services/api/api.service.js'
-import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'
 import { Socket } from 'phoenix'
-import { useShoutStore } from 'src/stores/shout.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useShoutStore } from 'src/stores/shout.js'
+import { WSConnectionStatus } from '../services/api/api.service.js'
+import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
+import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'
 
 const retryTimeout = (multiplier) => 1000 * multiplier
 

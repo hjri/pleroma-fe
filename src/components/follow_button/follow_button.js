@@ -1,8 +1,8 @@
-import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 import {
   requestFollow,
   requestUnfollow,
 } from '../../services/follow_manipulate/follow_manipulate'
+import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 export default {
   props: ['relationship', 'user', 'labelFollowing', 'buttonClass'],
   components: {

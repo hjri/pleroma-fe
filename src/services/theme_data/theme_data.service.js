@@ -1,13 +1,13 @@
-import { convert, brightness, contrastRatio } from 'chromatism'
+import { brightness, contrastRatio, convert } from 'chromatism'
 import {
-  rgb2hex,
-  rgba2css,
   alphaBlendLayers,
+  getCssColor,
   getTextColor,
   relativeLuminance,
-  getCssColor,
+  rgb2hex,
+  rgba2css,
 } from '../color_convert/color_convert.js'
-import { LAYERS, DEFAULT_OPACITY, SLOT_INHERITANCE } from './pleromafe.js'
+import { DEFAULT_OPACITY, LAYERS, SLOT_INHERITANCE } from './pleromafe.js'
 
 /*
  * # What's all this?
