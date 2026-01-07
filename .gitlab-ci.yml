@@ -62,27 +62,126 @@ test:
 
 e2e-pleroma:
   stage: test
-  image: docker:26
+  image: mcr.microsoft.com/playwright:v1.55.0-jammy
   services:
-    - name: docker:26-dind
+    - name: postgres:15-alpine
+      alias: db
+    - name: $PLEROMA_IMAGE
+      alias: pleroma
+      entrypoint: ["/bin/ash", "-c"]
+      command:
+        - |
+          set -eu
+
+          SEED_SENTINEL_PATH=/var/lib/pleroma/.e2e_seeded
+          CONFIG_OVERRIDE_PATH=/var/lib/pleroma/config.exs
+
+          echo '-- Waiting for database...'
+          while ! pg_isready -U ${DB_USER:-pleroma} -d postgres://${DB_HOST:-db}:${DB_PORT:-5432}/${DB_NAME:-pleroma} -t 1; do
+            sleep 1s
+          done
+
+          echo '-- Writing E2E config overrides...'
+          cat > $CONFIG_OVERRIDE_PATH <<EOF
+          import Config
+
+          config :pleroma, Pleroma.Captcha,
+            enabled: false
+
+          config :pleroma, :instance,
+            registrations_open: true,
+            account_activation_required: false,
+            approval_required: false
+          EOF
+
+          echo '-- Running migrations...'
+          /opt/pleroma/bin/pleroma_ctl migrate
+
+          echo '-- Starting!'
+          /opt/pleroma/bin/pleroma start &
+          PLEROMA_PID=$!
+
+          cleanup() {
+            if kill -0 $PLEROMA_PID 2>/dev/null; then
+              kill -TERM $PLEROMA_PID
+              wait $PLEROMA_PID || true
+            fi
+          }
+
+          trap cleanup INT TERM
+
+          echo '-- Waiting for API...'
+          api_ok=false
+          for _i in $(seq 1 120); do
+            if wget -qO- http://127.0.0.1:4000/api/v1/instance >/dev/null 2>&1; then
+              api_ok=true
+              break
+            fi
+            sleep 1s
+          done
+
+          if [ $api_ok != true ]; then
+            echo 'Timed out waiting for Pleroma API to become available'
+            exit 1
+          fi
+
+          if [ ! -f $SEED_SENTINEL_PATH ]; then
+            if [ -n ${E2E_ADMIN_USERNAME:-} ] && [ -n ${E2E_ADMIN_PASSWORD:-} ] && [ -n ${E2E_ADMIN_EMAIL:-} ]; then
+              echo '-- Seeding admin user' $E2E_ADMIN_USERNAME '...'
+              if ! /opt/pleroma/bin/pleroma_ctl user new $E2E_ADMIN_USERNAME $E2E_ADMIN_EMAIL --admin --password $E2E_ADMIN_PASSWORD -y; then
+                echo '-- User already exists or creation failed, ensuring admin + confirmed...'
+                /opt/pleroma/bin/pleroma_ctl user set $E2E_ADMIN_USERNAME --admin --confirmed
+              fi
+            else
+              echo '-- Skipping admin seeding (missing E2E_ADMIN_* env)'
+            fi
+
+            touch $SEED_SENTINEL_PATH
+          fi
+
+          wait $PLEROMA_PID
   tags:
     - amd64
     - himem
   variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
-    DOCKER_DRIVER: overlay2
-    COMPOSE_MENU: "false"
+    PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+    PLEROMA_IMAGE: git.pleroma.social:5050/pleroma/pleroma:stable
+    POSTGRES_USER: pleroma
+    POSTGRES_PASSWORD: pleroma
+    POSTGRES_DB: pleroma
+    DB_USER: pleroma
+    DB_PASS: pleroma
+    DB_NAME: pleroma
+    DB_HOST: db
+    DB_PORT: 5432
+    DOMAIN: localhost
+    INSTANCE_NAME: Pleroma E2E
+    E2E_ADMIN_USERNAME: admin
+    E2E_ADMIN_PASSWORD: adminadmin
+    E2E_ADMIN_EMAIL: admin@example.com
+    ADMIN_EMAIL: $E2E_ADMIN_EMAIL
+    NOTIFY_EMAIL: $E2E_ADMIN_EMAIL
+    VITE_PROXY_TARGET: http://pleroma:4000
+    VITE_PROXY_ORIGIN: http://localhost:4000
+    E2E_BASE_URL: http://localhost:8080
   script:
-    - docker version
-    - docker compose version
-    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
-    - export PLEROMA_IMAGE="${PLEROMA_IMAGE:-$CI_REGISTRY/pleroma/pleroma:stable}"
-    - docker compose -f docker-compose.e2e.yml up --build --remove-orphans --attach e2e --no-log-prefix --abort-on-container-exit --exit-code-from e2e
-  after_script:
-    - docker compose -f docker-compose.e2e.yml cp e2e:/app/test/e2e-playwright/test-results test/e2e-playwright/test-results || true
-    - docker compose -f docker-compose.e2e.yml cp e2e:/app/test/e2e-playwright/playwright-report test/e2e-playwright/playwright-report || true
-    - docker compose -f docker-compose.e2e.yml down -v --remove-orphans || true
+    - npm install -g yarn@1.22.22
+    - yarn --frozen-lockfile
+    - |
+      echo "-- Waiting for Pleroma API..."
+      api_ok="false"
+      for _i in $(seq 1 120); do
+        if wget -qO- http://pleroma:4000/api/v1/instance >/dev/null 2>&1; then
+          api_ok="true"
+          break
+        fi
+        sleep 1s
+      done
+      if [ "$api_ok" != "true" ]; then
+        echo "Timed out waiting for Pleroma API to become available"
+        exit 1
+      fi
+    - yarn e2e:pw
   artifacts:
     when: on_failure
     paths:
