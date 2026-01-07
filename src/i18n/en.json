@@ -1684,6 +1684,7 @@
     "muted": "Muted",
     "mute_confirm_title": "Mute confirmation",
     "mute_confirm": "Do you really want to mute {user}?",
+    "mute_domain_confirm": "Do you really want to mute entire {domain}?",
     "mute_confirm_accept_button": "Mute",
     "mute_confirm_cancel_button": "Do not mute",
     "mute_or": "or",
