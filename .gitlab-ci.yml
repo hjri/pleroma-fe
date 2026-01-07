@@ -72,12 +72,13 @@ e2e-pleroma:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
     DOCKER_DRIVER: overlay2
+    COMPOSE_MENU: "false"
   script:
     - docker version
     - docker compose version
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
     - export PLEROMA_IMAGE="${PLEROMA_IMAGE:-$CI_REGISTRY/pleroma/pleroma:stable}"
-    - docker compose -f docker-compose.e2e.yml up --build --remove-orphans --abort-on-container-exit --exit-code-from e2e
+    - docker compose -f docker-compose.e2e.yml up --build --remove-orphans --attach e2e --no-log-prefix --abort-on-container-exit --exit-code-from e2e
   after_script:
     - docker compose -f docker-compose.e2e.yml cp e2e:/app/test/e2e-playwright/test-results test/e2e-playwright/test-results || true
     - docker compose -f docker-compose.e2e.yml cp e2e:/app/test/e2e-playwright/playwright-report test/e2e-playwright/playwright-report || true
