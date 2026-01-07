@@ -3,11 +3,25 @@
 set -eu
 
 SEED_SENTINEL_PATH="/var/lib/pleroma/.e2e_seeded"
+CONFIG_OVERRIDE_PATH="/var/lib/pleroma/config.exs"
 
 echo "-- Waiting for database..."
 while ! pg_isready -U "${DB_USER:-pleroma}" -d "postgres://${DB_HOST:-db}:${DB_PORT:-5432}/${DB_NAME:-pleroma}" -t 1; do
   sleep 1s
 done
+
+echo "-- Writing E2E config overrides..."
+cat > "$CONFIG_OVERRIDE_PATH" <<'EOF'
+import Config
+
+config :pleroma, Pleroma.Captcha,
+  enabled: false
+
+config :pleroma, :instance,
+  registrations_open: true,
+  account_activation_required: false,
+  approval_required: false
+EOF
 
 echo "-- Running migrations..."
 /opt/pleroma/bin/pleroma_ctl migrate

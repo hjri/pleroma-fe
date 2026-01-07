@@ -24,10 +24,10 @@ result="$?"
 set -e
 
 if [ "$result" -ne 0 ]; then
+  docker compose -f "$COMPOSE_FILE" cp e2e:/app/test/e2e-playwright/test-results test/e2e-playwright >/dev/null 2>&1 || true
+  docker compose -f "$COMPOSE_FILE" cp e2e:/app/test/e2e-playwright/playwright-report test/e2e-playwright >/dev/null 2>&1 || true
   mkdir -p test/e2e-playwright/test-results
   docker compose -f "$COMPOSE_FILE" logs --no-color pleroma db > test/e2e-playwright/test-results/docker-compose.log 2>/dev/null || true
-  docker compose -f "$COMPOSE_FILE" cp e2e:/app/test/e2e-playwright/test-results test/e2e-playwright/test-results >/dev/null 2>&1 || true
-  docker compose -f "$COMPOSE_FILE" cp e2e:/app/test/e2e-playwright/playwright-report test/e2e-playwright/playwright-report >/dev/null 2>&1 || true
 fi
 
 cleanup
