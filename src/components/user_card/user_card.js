@@ -122,6 +122,8 @@ export default {
   data () {
     const user = this.$store.getters.findUser(this.userId)
 
+    console.log('LOL', JSON.parse(JSON.stringify(user)))
+
     return {
       followRequestInProgress: false,
       muteExpiryAmount: 0,
@@ -466,8 +468,8 @@ export default {
         show_birthday: !!this.newShowBirthday,
       }
 
-      if (this.actorType) {
-        params.actor_type = this.actorType
+      if (this.newActorType) {
+        params.actor_type = this.newActorType
       }
 
       if (this.newAvatarFile !== null) {
