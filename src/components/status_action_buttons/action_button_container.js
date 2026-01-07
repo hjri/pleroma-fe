@@ -65,7 +65,7 @@ export default {
       return this.$store.dispatch('unmuteConversation', { id: this.status.id })
     },
     unmuteDomain () {
-      return this.$store.dispatch('unmuteDomain', this.user.id)
+      return this.$store.dispatch('unmuteDomain', this.domain)
     },
     toggleUserMute () {
       if (this.userIsMuted) {

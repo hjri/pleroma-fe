@@ -19,9 +19,9 @@ export default {
     },
     keypath () {
       if (this.type === 'domain') {
-        return 'status.mute_domain_confirm'
+        return 'user_card.mute_domain_confirm'
       } else if (this.type === 'conversation') {
-        return 'status.mute_conversation_confirm'
+        return 'user_card.mute_conversation_confirm'
       }
     },
     conversationIsMuted () {
@@ -62,9 +62,9 @@ export default {
       switch (this.type) {
         case 'domain': {
           if (!this.domainIsMuted) {
-            this.$store.dispatch('muteDomain', { id: this.domain })
+            this.$store.dispatch('muteDomain', this.domain)
           } else {
-            this.$store.dispatch('unmuteDomain', { id: this.domain })
+            this.$store.dispatch('unmuteDomain', this.domain)
           }
           break
         }
