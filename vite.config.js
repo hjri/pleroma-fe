@@ -12,20 +12,32 @@ import { getCommitHash } from './build/commit_hash.js'
 import mswPlugin from './build/msw_plugin.js'
 
 const localConfigPath = '<projectRoot>/config/local.json'
+const normalizeTarget = (target) => {
+  if (!target || typeof target !== 'string') return target
+  return target.endsWith('/') ? target.replace(/\/$/, '') : target
+}
+
 const getLocalDevSettings = async () => {
+  const envTarget = normalizeTarget(process.env.VITE_PROXY_TARGET)
+  const envOrigin = normalizeTarget(process.env.VITE_PROXY_ORIGIN)
   try {
     const settings = (await import('./config/local.json')).default
-    if (settings.target && settings.target.endsWith('/')) {
-      // replacing trailing slash since it can conflict with some apis
-      // and that's how actual BE reports its url
-      settings.target = settings.target.replace(/\/$/, '')
-    }
+    settings.target = normalizeTarget(settings.target)
+    settings.origin = normalizeTarget(settings.origin)
+    if (envTarget) settings.target = envTarget
+    if (envOrigin) settings.origin = envOrigin
     console.info(`Using local dev server settings (${localConfigPath}):`)
     console.info(JSON.stringify(settings, null, 2))
     return settings
   } catch (e) {
-    console.info(`Local dev server settings not found (${localConfigPath}), using default`, e)
-    return {}
+    if (!envTarget && !envOrigin) {
+      console.info(`Local dev server settings not found (${localConfigPath}), using default`, e)
+      return {}
+    }
+    const settings = { target: envTarget, origin: envOrigin }
+    console.info('Using dev server settings from VITE_PROXY_TARGET/VITE_PROXY_ORIGIN:')
+    console.info(JSON.stringify(settings, null, 2))
+    return settings
   }
 }
 
@@ -51,6 +63,7 @@ const getTransformSWSettings = (settings) => {
 export default defineConfig(async ({ mode, command }) => {
   const settings = await getLocalDevSettings()
   const target = settings.target || 'http://localhost:4000/'
+  const origin = settings.origin || target
   const transformSW = getTransformSWSettings(settings)
   const proxy = {
     '/api': {
@@ -70,7 +83,7 @@ export default defineConfig(async ({ mode, command }) => {
       cookieDomainRewrite: 'localhost',
       ws: true,
       headers: {
-        'Origin': target
+        'Origin': origin
       }
     },
     '/oauth': {
