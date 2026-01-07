@@ -15,10 +15,10 @@ const BlockCard = {
       return this.relationship.blocking
     },
     blockExpiryAvailable () {
-      return this.user.block_expires_at !== undefined
+      return Object.hasOwn(this.user, 'block_expires_at')
     },
     blockExpiry () {
-      return this.user.block_expires_at == null
+      return this.user.block_expires_at === false
         ? this.$t('user_card.block_expires_forever')
         : this.$t('user_card.block_expires_at', [new Date(this.user.mute_expires_at).toLocaleString()])
     },

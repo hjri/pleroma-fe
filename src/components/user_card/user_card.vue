@@ -212,18 +212,6 @@
                 >
                   {{ $t('user_card.group') }}
                 </span>
-                <span
-                  v-if="relationship.muting && muteExpiryAvailable"
-                  class="alert neutral user-role"
-                >
-                  {{ muteExpiry }}
-                </span>
-                <span
-                  v-if="relationship.blocking && blockExpiryAvailable"
-                  class="alert neutral user-role"
-                >
-                  {{ blockExpiry }}
-                </span>
               </template>
             </div>
           </div>

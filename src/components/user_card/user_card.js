@@ -122,12 +122,8 @@ export default {
   data () {
     const user = this.$store.getters.findUser(this.userId)
 
-    console.log('LOL', JSON.parse(JSON.stringify(user)))
-
     return {
       followRequestInProgress: false,
-      muteExpiryAmount: 0,
-      muteExpiryUnit: 'minutes',
 
       // Editable stuff
       editImage: false,
@@ -261,15 +257,15 @@ export default {
       return 'note' in this.relationship
     },
     muteExpiryAvailable () {
-      return this.user.mute_expires_at !== undefined
+      return Object.hasOwn(this.user, 'mute_expires_at')
     },
     muteExpiry () {
-      return this.user.mute_expires_at == null
+      return this.user.mute_expires_at === false
         ? this.$t('user_card.mute_expires_forever')
         : this.$t('user_card.mute_expires_at', [new Date(this.user.mute_expires_at).toLocaleString()])
     },
     blockExpiryAvailable () {
-      return this.user.block_expires_at !== undefined
+      return Object.hasOwn(this.user, 'block_expires_at')
     },
     blockExpiry () {
       return this.user.block_expires_at == null

@@ -14,10 +14,10 @@ const MuteCard = {
       return this.relationship.muting
     },
     muteExpiryAvailable () {
-      return this.user.mute_expires_at !== undefined
+      return Object.hasOwn(this.user, 'mute_expires_at')
     },
     muteExpiry () {
-      return this.user.mute_expires_at == null
+      return this.user.mute_expires_at === false
         ? this.$t('user_card.mute_expires_forever')
         : this.$t('user_card.mute_expires_at', [new Date(this.user.mute_expires_at).toLocaleString()])
     }
