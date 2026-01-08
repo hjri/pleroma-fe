@@ -98,7 +98,7 @@ const StatusActionButtons = {
     },
     doActionReal(button) {
       button
-        .action(this.funcArg)
+        .action?.(this.funcArg)
         .then(() => this.$emit('onSuccess'))
         .catch((err) => this.$emit('onError', err.error.error))
     },
