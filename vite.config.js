@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 import { defineConfig } from 'vite'
+import { configDefaults } from 'vitest/config'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import stylelint from 'vite-plugin-stylelint'
@@ -217,6 +218,10 @@ export default defineConfig(async ({ mode, command }) => {
     },
     test: {
       globals: true,
+      exclude: [
+        ...configDefaults.exclude,
+        'test/e2e-playwright/**'
+      ],
       browser: {
         enabled: true,
         provider: 'playwright',
