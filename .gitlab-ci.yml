@@ -62,7 +62,7 @@ test:
 
 e2e-pleroma:
   stage: test
-  image: mcr.microsoft.com/playwright:v1.55.0-jammy
+  image: mcr.microsoft.com/playwright:v1.57.0-jammy
   services:
     - name: postgres:15-alpine
       alias: db
