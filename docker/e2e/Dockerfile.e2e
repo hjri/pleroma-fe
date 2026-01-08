@@ -1,0 +1,17 @@
+FROM mcr.microsoft.com/playwright:v1.55.0-jammy
+
+WORKDIR /app
+
+ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
+
+RUN npm install -g yarn@1.22.22
+
+COPY package.json yarn.lock ./
+RUN yarn --frozen-lockfile
+
+COPY . .
+
+ENV CI=1
+
+CMD ["yarn", "e2e:pw"]
+
