@@ -1,23 +1,24 @@
-import UserAvatar from '../user_avatar/user_avatar.vue'
-import RichContent from 'src/components/rich_content/rich_content.jsx'
 import { defineAsyncComponent } from 'vue'
+
+import RichContent from 'src/components/rich_content/rich_content.jsx'
+import UserAvatar from '../user_avatar/user_avatar.vue'
 
 export default {
   name: 'ChatTitle',
   components: {
     UserAvatar,
     RichContent,
-    UserPopover: defineAsyncComponent(() => import('../user_popover/user_popover.vue'))
+    UserPopover: defineAsyncComponent(
+      () => import('../user_popover/user_popover.vue'),
+    ),
   },
-  props: [
-    'user', 'withAvatar'
-  ],
+  props: ['user', 'withAvatar'],
   computed: {
-    title () {
+    title() {
       return this.user ? this.user.screen_name_ui : ''
     },
-    htmlTitle () {
+    htmlTitle() {
       return this.user ? this.user.name_html : ''
-    }
-  }
+    },
+  },
 }

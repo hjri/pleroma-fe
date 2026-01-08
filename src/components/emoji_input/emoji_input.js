@@ -1,20 +1,18 @@
-import Completion from '../../services/completion/completion.js'
-import genRandomSeed from '../../services/random_seed/random_seed.service.js'
-import EmojiPicker from '../emoji_picker/emoji_picker.vue'
+import { take } from 'lodash'
+
 import Popover from 'src/components/popover/popover.vue'
 import ScreenReaderNotice from 'src/components/screen_reader_notice/screen_reader_notice.vue'
-import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
-import { take } from 'lodash'
-import { findOffset } from '../../services/offset_finder/offset_finder.service.js'
 import { ensureFinalFallback } from '../../i18n/languages.js'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faSmileBeam
-} from '@fortawesome/free-regular-svg-icons'
+import Completion from '../../services/completion/completion.js'
+import { findOffset } from '../../services/offset_finder/offset_finder.service.js'
+import genRandomSeed from '../../services/random_seed/random_seed.service.js'
+import EmojiPicker from '../emoji_picker/emoji_picker.vue'
+import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
 
-library.add(
-  faSmileBeam
-)
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faSmileBeam } from '@fortawesome/free-regular-svg-icons'
+
+library.add(faSmileBeam)
 
 /**
  * EmojiInput - augmented inputs for emoji and autocomplete support in inputs
@@ -60,14 +58,14 @@ const EmojiInput = {
        * For commonly used suggestors (emoji, users, both) use suggestor.js
        */
       required: true,
-      type: Function
+      type: Function,
     },
     modelValue: {
       /**
        * Used for v-model
        */
       required: true,
-      type: String
+      type: String,
     },
     enableEmojiPicker: {
       /**
@@ -75,7 +73,7 @@ const EmojiInput = {
        */
       required: false,
       type: Boolean,
-      default: false
+      default: false,
     },
     hideEmojiButton: {
       /**
@@ -84,7 +82,7 @@ const EmojiInput = {
        */
       required: false,
       type: Boolean,
-      default: false
+      default: false,
     },
     enableStickerPicker: {
       /**
@@ -92,7 +90,7 @@ const EmojiInput = {
        */
       required: false,
       type: Boolean,
-      default: false
+      default: false,
     },
     placement: {
       /**
@@ -101,15 +99,15 @@ const EmojiInput = {
        */
       required: false,
       type: String, // 'auto', 'top', 'bottom'
-      default: 'auto'
+      default: 'auto',
     },
     newlineOnCtrlEnter: {
       required: false,
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  data () {
+  data() {
     return {
       randomSeed: genRandomSeed(),
       input: undefined,
@@ -122,58 +120,65 @@ const EmojiInput = {
       disableClickOutside: false,
       suggestions: [],
       overlayStyle: {},
-      pickerShown: false
+      pickerShown: false,
     }
   },
   components: {
     Popover,
     EmojiPicker,
     UnicodeDomainIndicator,
-    ScreenReaderNotice
+    ScreenReaderNotice,
   },
   computed: {
-    padEmoji () {
+    padEmoji() {
       return this.$store.getters.mergedConfig.padEmoji
     },
-    defaultCandidateIndex () {
+    defaultCandidateIndex() {
       return this.$store.getters.mergedConfig.autocompleteSelect ? 0 : -1
     },
-    preText () {
+    preText() {
       return this.modelValue.slice(0, this.caret)
     },
-    postText () {
+    postText() {
       return this.modelValue.slice(this.caret)
     },
-    showSuggestions () {
-      return this.focused &&
+    showSuggestions() {
+      return (
+        this.focused &&
         this.suggestions &&
         this.suggestions.length > 0 &&
         !this.pickerShown &&
         !this.temporarilyHideSuggestions
+      )
     },
-    textAtCaret () {
+    textAtCaret() {
       return this.wordAtCaret?.word
     },
-    wordAtCaret () {
+    wordAtCaret() {
       if (this.modelValue && this.caret) {
-        const word = Completion.wordAtPosition(this.modelValue, this.caret - 1) || {}
+        const word =
+          Completion.wordAtPosition(this.modelValue, this.caret - 1) || {}
         return word
       }
     },
-    languages () {
-      return ensureFinalFallback(this.$store.getters.mergedConfig.interfaceLanguage)
+    languages() {
+      return ensureFinalFallback(
+        this.$store.getters.mergedConfig.interfaceLanguage,
+      )
     },
-    maybeLocalizedEmojiNamesAndKeywords () {
-      return emoji => {
+    maybeLocalizedEmojiNamesAndKeywords() {
+      return (emoji) => {
         const names = [emoji.displayText]
         const keywords = []
 
         if (emoji.displayTextI18n) {
-          names.push(this.$t(emoji.displayTextI18n.key, emoji.displayTextI18n.args))
+          names.push(
+            this.$t(emoji.displayTextI18n.key, emoji.displayTextI18n.args),
+          )
         }
 
         if (emoji.annotations) {
-          this.languages.forEach(lang => {
+          this.languages.forEach((lang) => {
             names.push(emoji.annotations[lang]?.name)
 
             keywords.push(...(emoji.annotations[lang]?.keywords || []))
@@ -181,13 +186,13 @@ const EmojiInput = {
         }
 
         return {
-          names: names.filter(k => k),
-          keywords: keywords.filter(k => k)
+          names: names.filter((k) => k),
+          keywords: keywords.filter((k) => k),
         }
       }
     },
-    maybeLocalizedEmojiName () {
-      return emoji => {
+    maybeLocalizedEmojiName() {
+      return (emoji) => {
         if (!emoji.annotations) {
           return emoji.displayText
         }
@@ -205,16 +210,18 @@ const EmojiInput = {
         return emoji.displayText
       }
     },
-    suggestionListId () {
+    suggestionListId() {
       return `suggestions-${this.randomSeed}`
     },
-    suggestionItemId () {
+    suggestionItemId() {
       return (index) => `suggestion-item-${index}-${this.randomSeed}`
-    }
+    },
   },
-  mounted () {
+  mounted() {
     const { root, hiddenOverlayCaret, suggestorPopover } = this.$refs
-    const input = root.querySelector('.emoji-input > input') || root.querySelector('.emoji-input > textarea')
+    const input =
+      root.querySelector('.emoji-input > input') ||
+      root.querySelector('.emoji-input > textarea')
     if (!input) return
     this.input = input
     this.caretEl = hiddenOverlayCaret
@@ -243,7 +250,7 @@ const EmojiInput = {
     input.addEventListener('input', this.onInput)
     input.addEventListener('scroll', this.onInputScroll)
   },
-  unmounted () {
+  unmounted() {
     const { input } = this
     if (input) {
       input.removeEventListener('blur', this.onBlur)
@@ -273,36 +280,40 @@ const EmojiInput = {
         this.suggestions = []
         return
       }
-      const matchedSuggestions = await this.suggest(newWord, this.maybeLocalizedEmojiNamesAndKeywords)
+      const matchedSuggestions = await this.suggest(
+        newWord,
+        this.maybeLocalizedEmojiNamesAndKeywords,
+      )
       // Async: cancel if textAtCaret has changed during wait
       if (this.textAtCaret !== newWord || matchedSuggestions.length <= 0) {
         this.suggestions = []
         return
       }
-      this.suggestions = take(matchedSuggestions, 5)
-        .map(({ imageUrl, ...rest }) => ({
+      this.suggestions = take(matchedSuggestions, 5).map(
+        ({ imageUrl, ...rest }) => ({
           ...rest,
-          img: imageUrl || ''
-        }))
+          img: imageUrl || '',
+        }),
+      )
       this.highlighted = this.defaultCandidateIndex
       this.$refs.screenReaderNotice.announce(
         this.$t(
           'tool_tip.autocomplete_available',
           { number: this.suggestions.length },
-          this.suggestions.length
-        )
+          this.suggestions.length,
+        ),
       )
-    }
+    },
   },
   methods: {
-    onInputScroll (e) {
+    onInputScroll(e) {
       this.$refs.hiddenOverlay.scrollTo({
         top: this.input.scrollTop,
-        left: this.input.scrollLeft
+        left: this.input.scrollLeft,
       })
       this.setCaret(e)
     },
-    triggerShowPicker () {
+    triggerShowPicker() {
       this.$nextTick(() => {
         this.$refs.picker.showPicker()
         this.scrollIntoView()
@@ -315,7 +326,7 @@ const EmojiInput = {
         this.disableClickOutside = false
       }, 0)
     },
-    togglePicker () {
+    togglePicker() {
       this.input.focus()
       if (!this.pickerShown) {
         this.scrollIntoView()
@@ -325,12 +336,16 @@ const EmojiInput = {
         this.$refs.picker.hidePicker()
       }
     },
-    replace (replacement) {
-      const newValue = Completion.replaceWord(this.modelValue, this.wordAtCaret, replacement)
+    replace(replacement) {
+      const newValue = Completion.replaceWord(
+        this.modelValue,
+        this.wordAtCaret,
+        replacement,
+      )
       this.$emit('update:modelValue', newValue)
       this.caret = 0
     },
-    insert ({ insertion, keepOpen, surroundingSpace = true }) {
+    insert({ insertion, keepOpen, surroundingSpace = true }) {
       const before = this.modelValue.substring(0, this.caret) || ''
       const after = this.modelValue.substring(this.caret) || ''
 
@@ -349,18 +364,24 @@ const EmojiInput = {
        * them, masto seem to be rendering :emoji::emoji: correctly now so why not
        */
       const isSpaceRegex = /\s/
-      const spaceBefore = (surroundingSpace && !isSpaceRegex.exec(before.slice(-1)) && before.length && this.padEmoji > 0) ? ' ' : ''
-      const spaceAfter = (surroundingSpace && !isSpaceRegex.exec(after[0]) && this.padEmoji) ? ' ' : ''
+      const spaceBefore =
+        surroundingSpace &&
+        !isSpaceRegex.exec(before.slice(-1)) &&
+        before.length &&
+        this.padEmoji > 0
+          ? ' '
+          : ''
+      const spaceAfter =
+        surroundingSpace && !isSpaceRegex.exec(after[0]) && this.padEmoji
+          ? ' '
+          : ''
 
-      const newValue = [
-        before,
-        spaceBefore,
-        insertion,
-        spaceAfter,
-        after
-      ].join('')
+      const newValue = [before, spaceBefore, insertion, spaceAfter, after].join(
+        '',
+      )
       this.$emit('update:modelValue', newValue)
-      const position = this.caret + (insertion + spaceAfter + spaceBefore).length
+      const position =
+        this.caret + (insertion + spaceAfter + spaceBefore).length
       if (!keepOpen) {
         this.input.focus()
       }
@@ -372,13 +393,20 @@ const EmojiInput = {
         this.caret = position
       })
     },
-    replaceText (e, suggestion) {
+    replaceText(e, suggestion) {
       const len = this.suggestions.length || 0
-      if (this.textAtCaret.length === 1) { return }
+      if (this.textAtCaret.length === 1) {
+        return
+      }
       if (len > 0 || suggestion) {
-        const chosenSuggestion = suggestion || this.suggestions[this.highlighted]
+        const chosenSuggestion =
+          suggestion || this.suggestions[this.highlighted]
         const replacement = chosenSuggestion.replacement
-        const newValue = Completion.replaceWord(this.modelValue, this.wordAtCaret, replacement)
+        const newValue = Completion.replaceWord(
+          this.modelValue,
+          this.wordAtCaret,
+          replacement,
+        )
         this.$emit('update:modelValue', newValue)
         this.highlighted = 0
         const position = this.wordAtCaret.start + replacement.length
@@ -393,7 +421,7 @@ const EmojiInput = {
         e.preventDefault()
       }
     },
-    cycleBackward (e) {
+    cycleBackward(e) {
       const len = this.suggestions.length || 0
 
       this.highlighted -= 1
@@ -406,7 +434,7 @@ const EmojiInput = {
         e.preventDefault()
       }
     },
-    cycleForward (e) {
+    cycleForward(e) {
       const len = this.suggestions.length || 0
 
       this.highlighted += 1
@@ -418,26 +446,28 @@ const EmojiInput = {
         e.preventDefault()
       }
     },
-    scrollIntoView () {
+    scrollIntoView() {
       const rootRef = this.$refs.picker.$el
       /* Scroller is either `window` (replies in TL), sidebar (main post form,
        * replies in notifs) or mobile post form. Note that getting and setting
        * scroll is different for `Window` and `Element`s
        */
-      const scrollerRef = this.$el.closest('.sidebar-scroller') ||
-            this.$el.closest('.post-form-modal-view') ||
-            window
-      const currentScroll = scrollerRef === window
-        ? scrollerRef.scrollY
-        : scrollerRef.scrollTop
-      const scrollerHeight = scrollerRef === window
-        ? scrollerRef.innerHeight
-        : scrollerRef.offsetHeight
+      const scrollerRef =
+        this.$el.closest('.sidebar-scroller') ||
+        this.$el.closest('.post-form-modal-view') ||
+        window
+      const currentScroll =
+        scrollerRef === window ? scrollerRef.scrollY : scrollerRef.scrollTop
+      const scrollerHeight =
+        scrollerRef === window
+          ? scrollerRef.innerHeight
+          : scrollerRef.offsetHeight
 
       const scrollerBottomBorder = currentScroll + scrollerHeight
       // We check where the bottom border of root element is, this uses findOffset
       // to find offset relative to scrollable container (scroller)
-      const rootBottomBorder = rootRef.offsetHeight + findOffset(rootRef, scrollerRef).top
+      const rootBottomBorder =
+        rootRef.offsetHeight + findOffset(rootRef, scrollerRef).top
 
       const bottomDelta = Math.max(0, rootBottomBorder - scrollerBottomBorder)
       // could also check top delta but there's no case for it
@@ -459,13 +489,13 @@ const EmojiInput = {
         }
       })
     },
-    onPickerShown () {
+    onPickerShown() {
       this.pickerShown = true
     },
-    onPickerClosed () {
+    onPickerClosed() {
       this.pickerShown = false
     },
-    onBlur (e) {
+    onBlur(e) {
       // Clicking on any suggestion removes focus from autocomplete,
       // preventing click handler ever executing.
       this.blurTimeout = setTimeout(() => {
@@ -473,10 +503,10 @@ const EmojiInput = {
         this.setCaret(e)
       }, 200)
     },
-    onClick (e, suggestion) {
+    onClick(e, suggestion) {
       this.replaceText(e, suggestion)
     },
-    onFocus (e) {
+    onFocus(e) {
       if (this.blurTimeout) {
         clearTimeout(this.blurTimeout)
         this.blurTimeout = null
@@ -486,7 +516,7 @@ const EmojiInput = {
       this.setCaret(e)
       this.temporarilyHideSuggestions = false
     },
-    onKeyUp (e) {
+    onKeyUp(e) {
       const { key } = e
       this.setCaret(e)
 
@@ -498,10 +528,10 @@ const EmojiInput = {
         this.temporarilyHideSuggestions = false
       }
     },
-    onPaste (e) {
+    onPaste(e) {
       this.setCaret(e)
     },
-    onKeyDown (e) {
+    onKeyDown(e) {
       const { ctrlKey, shiftKey, key } = e
       if (this.newlineOnCtrlEnter && ctrlKey && key === 'Enter') {
         this.insert({ insertion: '\n', surroundingSpace: false })
@@ -545,30 +575,30 @@ const EmojiInput = {
         }
       }
     },
-    onInput (e) {
+    onInput(e) {
       this.setCaret(e)
       this.$emit('update:modelValue', e.target.value)
     },
-    onStickerUploaded (e) {
+    onStickerUploaded(e) {
       this.$emit('sticker-uploaded', e)
     },
-    onStickerUploadFailed (e) {
+    onStickerUploadFailed(e) {
       this.$emit('sticker-upload-Failed', e)
     },
-    setCaret ({ target: { selectionStart } }) {
+    setCaret({ target: { selectionStart } }) {
       this.caret = selectionStart
       this.$nextTick(() => {
         this.$refs.suggestorPopover.updateStyles()
       })
     },
-    autoCompleteItemLabel (suggestion) {
+    autoCompleteItemLabel(suggestion) {
       if (suggestion.user) {
         return suggestion.displayText + ' ' + suggestion.detailText
       } else {
         return this.maybeLocalizedEmojiName(suggestion)
       }
-    }
-  }
+    },
+  },
 }
 
 export default EmojiInput

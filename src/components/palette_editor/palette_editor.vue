@@ -49,22 +49,15 @@ import { computed } from 'vue'
 
 import ColorInput from 'src/components/color_input/color_input.vue'
 import {
+  newExporter,
   newImporter,
-  newExporter
 } from 'src/services/export_import/export_import.js'
-
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faFileImport,
-  faFileExport
-} from '@fortawesome/free-solid-svg-icons'
-
 import { useInterfaceStore } from 'src/stores/interface'
 
-library.add(
-  faFileImport,
-  faFileExport
-)
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faFileExport, faFileImport } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faFileImport, faFileExport)
 
 const paletteKeys = [
   'bg',
@@ -76,30 +69,31 @@ const paletteKeys = [
   'cBlue',
   'cGreen',
   'cOrange',
-  'wallpaper'
+  'wallpaper',
 ]
 
 const props = defineProps(['modelValue', 'compact', 'apply', 'disabled'])
 const emit = defineEmits(['update:modelValue', 'applyPalette'])
-const getExportedObject = () => paletteKeys.reduce((acc, key) => {
-  const value = props.modelValue[key]
-  if (value == null) {
-    return acc
-  } else {
-    return { ...acc, [key]: props.modelValue[key] }
-  }
-}, {})
+const getExportedObject = () =>
+  paletteKeys.reduce((acc, key) => {
+    const value = props.modelValue[key]
+    if (value == null) {
+      return acc
+    } else {
+      return { ...acc, [key]: props.modelValue[key] }
+    }
+  }, {})
 
 const paletteExporter = newExporter({
   filename: 'pleroma_palette',
   extension: 'json',
-  getExportedObject
+  getExportedObject,
 })
 const paletteImporter = newImporter({
   accept: '.json',
-  onImport (parsed) {
+  onImport(parsed) {
     emit('update:modelValue', parsed)
-  }
+  },
 })
 
 const exportPalette = () => {
@@ -136,7 +130,7 @@ const fallback = (key) => {
 const updatePalette = (paletteKey, value) => {
   emit('update:modelValue', {
     ...props.modelValue,
-    [paletteKey]: value
+    [paletteKey]: value,
   })
 }
 </script>

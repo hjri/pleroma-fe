@@ -70,7 +70,7 @@ export const instanceDefaultConfig = {
     followRequest: true,
     reports: true,
     chatMention: true,
-    polls: true
+    polls: true,
   },
   notificationNative: {
     follows: true,
@@ -83,7 +83,7 @@ export const instanceDefaultConfig = {
     followRequest: true,
     reports: true,
     chatMention: true,
-    polls: true
+    polls: true,
   },
   webPushNotifications: false,
   webPushAlwaysShowNotifications: false,
@@ -170,10 +170,11 @@ export const instanceDefaultConfig = {
   absoluteTimeFormatMinAge: '0d',
   absoluteTime12h: '24h',
   imageCompression: true,
-  alwaysUseJpeg: false
+  alwaysUseJpeg: false,
 }
 
-export const makeUndefined = c => Object.fromEntries(Object.keys(c).map(key => [key, undefined]))
+export const makeUndefined = (c) =>
+  Object.fromEntries(Object.keys(c).map((key) => [key, undefined]))
 
 /// For properties with special processing or properties that does not
 /// make sense to be overriden on a instance-wide level.
@@ -199,14 +200,15 @@ export const defaultState = {
   paletteCustomData: null,
   themeDebug: false, // debug mode that uses computed backgrounds instead of real ones to debug contrast functions
   forceThemeRecompilation: false, //  flag that forces recompilation on boot even if cache exists
-  theme3hacks: { // Hacks, user overrides that are independent of theme used
+  theme3hacks: {
+    // Hacks, user overrides that are independent of theme used
     underlay: 'none',
     fonts: {
       interface: undefined,
       input: undefined,
       post: undefined,
-      monospace: undefined
-    }
+      monospace: undefined,
+    },
   },
 
   // Special handling: These fields are not of a primitive type, and

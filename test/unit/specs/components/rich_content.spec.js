@@ -1,4 +1,5 @@
 import { mount, shallowMount } from '@vue/test-utils'
+
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 
 const attentions = []
@@ -8,15 +9,15 @@ const global = {
       state: {},
       getters: {
         mergedConfig: () => ({
-          mentionLinkShowTooltip: true
+          mentionLinkShowTooltip: true,
         }),
-        findUserByUrl: () => null
-      }
-    }
+        findUserByUrl: () => null,
+      },
+    },
   },
   stubs: {
-    FAIcon: true
-  }
+    FAIcon: true,
+  },
 }
 
 const makeMention = (who, noClass) => {
@@ -26,12 +27,14 @@ const makeMention = (who, noClass) => {
     : `<span class="h-card"><a class="u-url mention" href="https://fake.tld/@${who}">@<span>${who}</span></a></span>`
 }
 const p = (...data) => `<p>${data.join('')}</p>`
-const compwrap = (...data) => `<span class="RichContent">${data.join('')}</span>`
-const mentionsLine = (times) => [
-  '<mentions-line-stub mentions="',
-  new Array(times).fill('[object Object]').join(','),
-  '"></mentions-line-stub>'
-].join('')
+const compwrap = (...data) =>
+  `<span class="RichContent">${data.join('')}</span>`
+const mentionsLine = (times) =>
+  [
+    '<mentions-line-stub mentions="',
+    new Array(times).fill('[object Object]').join(','),
+    '"></mentions-line-stub>',
+  ].join('')
 
 describe('RichContent', () => {
   it('renders simple post without exploding', () => {
@@ -43,22 +46,16 @@ describe('RichContent', () => {
         handleLinks: true,
         greentext: true,
         emoji: [],
-        html
-      }
+        html,
+      },
     })
 
     expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(html))
   })
 
   it('unescapes everything as needed', () => {
-    const html = [
-      p('Testing &#39;em all'),
-      'Testing &#39;em all'
-    ].join('')
-    const expected = [
-      p('Testing \'em all'),
-      'Testing \'em all'
-    ].join('')
+    const html = [p('Testing &#39;em all'), 'Testing &#39;em all'].join('')
+    const expected = [p("Testing 'em all"), "Testing 'em all"].join('')
     const wrapper = shallowMount(RichContent, {
       global,
       props: {
@@ -66,18 +63,15 @@ describe('RichContent', () => {
         handleLinks: true,
         greentext: true,
         emoji: [],
-        html
-      }
+        html,
+      },
     })
 
     expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
   })
 
   it('replaces mention with mentionsline', () => {
-    const html = p(
-      makeMention('John'),
-      ' how are you doing today?'
-    )
+    const html = p(makeMention('John'), ' how are you doing today?')
     const wrapper = shallowMount(RichContent, {
       global,
       props: {
@@ -85,37 +79,30 @@ describe('RichContent', () => {
         handleLinks: true,
         greentext: true,
         emoji: [],
-        html
-      }
+        html,
+      },
     })
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(p(
-      mentionsLine(1),
-      ' how are you doing today?'
-    )))
+    expect(wrapper.html().replace(/\n/g, '')).to.eql(
+      compwrap(p(mentionsLine(1), ' how are you doing today?')),
+    )
   })
 
   it('replaces mentions at the end of the hellpost', () => {
     const html = [
       p('How are you doing today, fine gentlemen?'),
-      p(
-        makeMention('John'),
-        makeMention('Josh'),
-        makeMention('Jeremy')
-      )
+      p(makeMention('John'), makeMention('Josh'), makeMention('Jeremy')),
     ].join('')
     const expected = [
-      p(
-        'How are you doing today, fine gentlemen?'
-      ),
+      p('How are you doing today, fine gentlemen?'),
       // TODO fix this extra line somehow?
       p(
         '<mentions-line-stub mentions="',
         '[object Object],',
         '[object Object],',
         '[object Object]',
-        '"></mentions-line-stub>'
-      )
+        '"></mentions-line-stub>',
+      ),
     ].join('')
 
     const wrapper = shallowMount(RichContent, {
@@ -125,8 +112,8 @@ describe('RichContent', () => {
         handleLinks: true,
         greentext: true,
         emoji: [],
-        html
-      }
+        html,
+      },
     })
 
     expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
@@ -134,26 +121,24 @@ describe('RichContent', () => {
 
   it('Does not touch links if link handling is disabled', () => {
     const html = [
-      [
-        makeMention('Jack'),
-        'let\'s meet up with ',
-        makeMention('Janet')
-      ].join(''),
-      [
-        makeMention('John'),
-        makeMention('Josh'), makeMention('Jeremy')
-      ].join('')
+      [makeMention('Jack'), "let's meet up with ", makeMention('Janet')].join(
+        '',
+      ),
+      [makeMention('John'), makeMention('Josh'), makeMention('Jeremy')].join(
+        '',
+      ),
     ].join('\n')
     const strippedHtml = [
       [
         makeMention('Jack', true),
-        'let\'s meet up with ',
-        makeMention('Janet', true)
+        "let's meet up with ",
+        makeMention('Janet', true),
       ].join(''),
       [
         makeMention('John', true),
-        makeMention('Josh', true), makeMention('Jeremy', true)
-      ].join('')
+        makeMention('Josh', true),
+        makeMention('Jeremy', true),
+      ].join(''),
     ].join('\n')
 
     const wrapper = shallowMount(RichContent, {
@@ -163,21 +148,18 @@ describe('RichContent', () => {
         handleLinks: false,
         greentext: true,
         emoji: [],
-        html
-      }
+        html,
+      },
     })
 
     expect(wrapper.html()).to.eql(compwrap(strippedHtml))
   })
 
   it('Adds greentext and cyantext to the post', () => {
-    const html = [
-      '&gt;preordering videogames',
-      '&gt;any year'
-    ].join('\n')
+    const html = ['&gt;preordering videogames', '&gt;any year'].join('\n')
     const expected = [
       '<span class="greentext">&gt;preordering videogames</span>',
-      '<span class="greentext">&gt;any year</span>'
+      '<span class="greentext">&gt;any year</span>',
     ].join('\n')
 
     const wrapper = shallowMount(RichContent, {
@@ -187,18 +169,15 @@ describe('RichContent', () => {
         handleLinks: false,
         greentext: true,
         emoji: [],
-        html
-      }
+        html,
+      },
     })
 
     expect(wrapper.html()).to.eql(compwrap(expected))
   })
 
   it('Does not add greentext and cyantext if setting is set to false', () => {
-    const html = [
-      '&gt;preordering videogames',
-      '&gt;any year'
-    ].join('\n')
+    const html = ['&gt;preordering videogames', '&gt;any year'].join('\n')
 
     const wrapper = shallowMount(RichContent, {
       global,
@@ -207,8 +186,8 @@ describe('RichContent', () => {
         handleLinks: false,
         greentext: false,
         emoji: [],
-        html
-      }
+        html,
+      },
     })
 
     expect(wrapper.html()).to.eql(compwrap(html))
@@ -218,7 +197,7 @@ describe('RichContent', () => {
     const html = p('Ebin :DDDD :spurdo:')
     const expected = p(
       'Ebin :DDDD ',
-      '<anonymous-stub shortcode="spurdo" islocal="true" class="emoji img" src="about:blank" title=":spurdo:" alt=":spurdo:"></anonymous-stub>'
+      '<anonymous-stub shortcode="spurdo" islocal="true" class="emoji img" src="about:blank" title=":spurdo:" alt=":spurdo:"></anonymous-stub>',
     )
 
     const wrapper = shallowMount(RichContent, {
@@ -228,14 +207,14 @@ describe('RichContent', () => {
         handleLinks: false,
         greentext: false,
         emoji: [{ url: 'about:blank', shortcode: 'spurdo' }],
-        html
-      }
+        html,
+      },
     })
 
     expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
   })
 
-  it('Doesn\'t add nonexistent emoji to post', () => {
+  it("Doesn't add nonexistent emoji to post", () => {
     const html = p('Lol :lol:')
 
     const wrapper = shallowMount(RichContent, {
@@ -245,8 +224,8 @@ describe('RichContent', () => {
         handleLinks: false,
         greentext: false,
         emoji: [],
-        html
-      }
+        html,
+      },
     })
 
     expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(html))
@@ -257,13 +236,13 @@ describe('RichContent', () => {
       '&gt;quote',
       makeMention('lol'),
       '&gt;quote',
-      '&gt;quote'
+      '&gt;quote',
     ].join('\n')
     const expected = [
       '<span class="greentext">&gt;quote</span>',
       mentionsLine(1),
       '<span class="greentext">&gt;quote</span>',
-      '<span class="greentext">&gt;quote</span>'
+      '<span class="greentext">&gt;quote</span>',
     ].join('\n')
 
     const wrapper = shallowMount(RichContent, {
@@ -273,8 +252,8 @@ describe('RichContent', () => {
         handleLinks: true,
         greentext: true,
         emoji: [],
-        html
-      }
+        html,
+      },
     })
 
     expect(wrapper.html()).to.eql(compwrap(expected))
@@ -284,19 +263,10 @@ describe('RichContent', () => {
     const html = [
       'Bruh',
       'Bruh',
-      [
-        makeMention('foo'),
-        makeMention('bar'),
-        makeMention('baz')
-      ].join(''),
-      'Bruh'
-    ].join('<br>')
-    const expected = [
+      [makeMention('foo'), makeMention('bar'), makeMention('baz')].join(''),
       'Bruh',
-      'Bruh',
-      mentionsLine(3),
-      'Bruh'
     ].join('<br>')
+    const expected = ['Bruh', 'Bruh', mentionsLine(3), 'Bruh'].join('<br>')
 
     const wrapper = shallowMount(RichContent, {
       global,
@@ -305,8 +275,8 @@ describe('RichContent', () => {
         handleLinks: true,
         greentext: true,
         emoji: [],
-        html
-      }
+        html,
+      },
     })
 
     expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
@@ -321,7 +291,7 @@ describe('RichContent', () => {
       '#nou</a>',
       ' <a class="hashtag" data-tag="screencap" href="https://shitposter.club/tag/screencap">',
       '#screencap</a>',
-      ' </p>'
+      ' </p>',
     ].join('')
     const expected = [
       '<p>',
@@ -331,7 +301,7 @@ describe('RichContent', () => {
       '</hashtag-link-stub>',
       ' <hashtag-link-stub url="https://shitposter.club/tag/screencap" content="#screencap" tag="screencap">',
       '</hashtag-link-stub>',
-      ' </p>'
+      ' </p>',
     ].join('')
 
     const wrapper = shallowMount(RichContent, {
@@ -341,8 +311,8 @@ describe('RichContent', () => {
         handleLinks: true,
         greentext: true,
         emoji: [],
-        html
-      }
+        html,
+      },
     })
 
     expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
@@ -359,11 +329,9 @@ describe('RichContent', () => {
         'lol.tld/</span>',
         '<span>',
         '</span>',
-        '</a>'
+        '</a>',
       ),
-      p(
-        'Testing'
-      )
+      p('Testing'),
     ].join('')
     const expected = [
       p(
@@ -378,11 +346,9 @@ describe('RichContent', () => {
         '</span>',
         '</a>',
         '</span>',
-        '</span>'
+        '</span>',
       ),
-      p(
-        'Testing'
-      )
+      p('Testing'),
     ].join('')
 
     const wrapper = mount(RichContent, {
@@ -392,11 +358,16 @@ describe('RichContent', () => {
         handleLinks: true,
         greentext: true,
         emoji: [],
-        html
-      }
+        html,
+      },
     })
 
-    expect(wrapper.html().replace(/\n/g, '').replace(/<!--.*?-->/g, '')).to.eql(compwrap(expected))
+    expect(
+      wrapper
+        .html()
+        .replace(/\n/g, '')
+        .replace(/<!--.*?-->/g, ''),
+    ).to.eql(compwrap(expected))
   })
 
   it('rich contents of nested mentions are handled properly', () => {
@@ -422,7 +393,7 @@ describe('RichContent', () => {
       '</a>',
       ' ',
       '</span>',
-      'Testing'
+      'Testing',
     ].join('')
     const expected = [
       '<span>',
@@ -450,7 +421,7 @@ describe('RichContent', () => {
       '</span>',
       ' ',
       '</span>',
-      'Testing'
+      'Testing',
     ].join('')
 
     const wrapper = mount(RichContent, {
@@ -460,11 +431,16 @@ describe('RichContent', () => {
         handleLinks: true,
         greentext: true,
         emoji: [],
-        html
-      }
+        html,
+      },
     })
 
-    expect(wrapper.html().replace(/\n/g, '').replace(/<!--.*?-->/g, '')).to.eql(compwrap(expected))
+    expect(
+      wrapper
+        .html()
+        .replace(/\n/g, '')
+        .replace(/<!--.*?-->/g, ''),
+    ).to.eql(compwrap(expected))
   })
 
   it('rich contents of a link are handled properly', () => {
@@ -480,7 +456,7 @@ describe('RichContent', () => {
       '<span>',
       '</span>',
       '</a>',
-      '</p>'
+      '</p>',
     ].join('')
     const expected = [
       '<p>',
@@ -494,7 +470,7 @@ describe('RichContent', () => {
       '<span>',
       '</span>',
       '</a>',
-      '</p>'
+      '</p>',
     ].join('')
 
     const wrapper = shallowMount(RichContent, {
@@ -504,8 +480,8 @@ describe('RichContent', () => {
         handleLinks: true,
         greentext: true,
         emoji: [],
-        html
-      }
+        html,
+      },
     })
 
     expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
@@ -525,7 +501,7 @@ describe('RichContent', () => {
       makeMention('Lain'),
       makeMention('Lain'),
       makeMention('Lain'),
-      ' i just landed in l a where are you'
+      ' i just landed in l a where are you',
     )
 
     const TestComponent = {
@@ -537,7 +513,7 @@ describe('RichContent', () => {
         ${new Array(amount).fill(`<div v-html="${onePost}"/>`)}
       </div>
       `,
-      props: ['handleLinks', 'attentions', 'vhtml']
+      props: ['handleLinks', 'attentions', 'vhtml'],
     }
 
     const ptest = (handleLinks, vhtml) => {
@@ -548,8 +524,8 @@ describe('RichContent', () => {
         props: {
           attentions,
           handleLinks,
-          vhtml
-        }
+          vhtml,
+        },
       })
 
       const t1 = performance.now()

@@ -5,7 +5,7 @@ const border = (top, shadow) => ({
   spread: 0,
   color: shadow ? '#000000' : '#FFFFFF',
   alpha: 0.2,
-  inset: true
+  inset: true,
 })
 
 const buttonInsetFakeBorders = [border(true, false), border(false, true)]
@@ -16,7 +16,7 @@ const buttonOuterShadow = {
   blur: 2,
   spread: 0,
   color: '#000000',
-  alpha: 1
+  alpha: 1,
 }
 
 const hoverGlow = {
@@ -25,7 +25,7 @@ const hoverGlow = {
   blur: 4,
   spread: 0,
   color: '--text',
-  alpha: 1
+  alpha: 1,
 }
 
 export default {
@@ -35,68 +35,66 @@ export default {
   states: {
     pressed: ':active',
     hover: ':is(:hover, :focus-visible, :has(:focus-visible)):not(:disabled)',
-    disabled: ':disabled'
+    disabled: ':disabled',
   },
-  validInnerComponents: [
-    'Text'
-  ],
+  validInnerComponents: ['Text'],
   defaultRules: [
     {
       directives: {
         background: '--fg',
         shadow: [buttonOuterShadow, ...buttonInsetFakeBorders],
-        roundness: 3
-      }
+        roundness: 3,
+      },
     },
     {
       state: ['hover'],
       directives: {
-        shadow: [hoverGlow, ...buttonInsetFakeBorders]
-      }
+        shadow: [hoverGlow, ...buttonInsetFakeBorders],
+      },
     },
     {
       state: ['pressed'],
       directives: {
-        shadow: [buttonOuterShadow, ...inputInsetFakeBorders]
-      }
+        shadow: [buttonOuterShadow, ...inputInsetFakeBorders],
+      },
     },
     {
       state: ['hover', 'pressed'],
       directives: {
-        shadow: [hoverGlow, ...inputInsetFakeBorders]
-      }
+        shadow: [hoverGlow, ...inputInsetFakeBorders],
+      },
     },
     {
       state: ['toggled'],
       directives: {
         background: '--accent,-24.2',
-        shadow: [buttonOuterShadow, ...inputInsetFakeBorders]
-      }
+        shadow: [buttonOuterShadow, ...inputInsetFakeBorders],
+      },
     },
     {
       state: ['toggled', 'hover'],
       directives: {
         background: '--accent,-24.2',
-        shadow: [hoverGlow, ...inputInsetFakeBorders]
-      }
+        shadow: [hoverGlow, ...inputInsetFakeBorders],
+      },
     },
     {
       state: ['disabled'],
       directives: {
         background: '$blend(--inheritedBackground 0.25 --parent)',
-        shadow: [...buttonInsetFakeBorders]
-      }
+        shadow: [...buttonInsetFakeBorders],
+      },
     },
     {
       component: 'Text',
       parent: {
         component: 'Button',
-        state: ['disabled']
+        state: ['disabled'],
       },
       directives: {
         textOpacity: 0.25,
-        textOpacityMode: 'blend'
-      }
-    }
-  ]
+        textOpacityMode: 'blend',
+      },
+    },
+  ],
 }

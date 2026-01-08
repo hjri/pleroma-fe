@@ -3,11 +3,9 @@ import { get, set } from 'lodash'
 const defaultApi = ({ rootState, commit }, { path, value }) => {
   const params = {}
   set(params, path, value)
-  return rootState
-    .api
-    .backendInteractor
+  return rootState.api.backendInteractor
     .updateProfile({ params })
-    .then(result => {
+    .then((result) => {
       commit('addNewUsers', [result])
       commit('setCurrentUser', result)
     })
@@ -16,11 +14,9 @@ const defaultApi = ({ rootState, commit }, { path, value }) => {
 const notificationsApi = ({ rootState, commit }, { path, value, oldValue }) => {
   const settings = {}
   set(settings, path, value)
-  return rootState
-    .api
-    .backendInteractor
+  return rootState.api.backendInteractor
     .updateNotificationSettings({ settings })
-    .then(result => {
+    .then((result) => {
       if (result.status === 'success') {
         commit('confirmProfileOption', { name, value })
       } else {
@@ -43,98 +39,99 @@ export const settingsMap = {
   defaultNSFW: 'source.sensitive', // BROKEN: pleroma/pleroma#2837
   stripRichContent: {
     get: 'source.pleroma.no_rich_text',
-    set: 'no_rich_text'
+    set: 'no_rich_text',
   },
   // Privacy
   locked: 'locked',
   acceptChatMessages: {
     get: 'pleroma.accepts_chat_messages',
-    set: 'accepts_chat_messages'
+    set: 'accepts_chat_messages',
   },
   allowFollowingMove: {
     get: 'pleroma.allow_following_move',
-    set: 'allow_following_move'
+    set: 'allow_following_move',
   },
   discoverable: {
     get: 'source.pleroma.discoverable',
-    set: 'discoverable'
+    set: 'discoverable',
   },
   hideFavorites: {
     get: 'pleroma.hide_favorites',
-    set: 'hide_favorites'
+    set: 'hide_favorites',
   },
   hideFollowers: {
     get: 'pleroma.hide_followers',
-    set: 'hide_followers'
+    set: 'hide_followers',
   },
   hideFollows: {
     get: 'pleroma.hide_follows',
-    set: 'hide_follows'
+    set: 'hide_follows',
   },
   hideFollowersCount: {
     get: 'pleroma.hide_followers_count',
-    set: 'hide_followers_count'
+    set: 'hide_followers_count',
   },
   hideFollowsCount: {
     get: 'pleroma.hide_follows_count',
-    set: 'hide_follows_count'
+    set: 'hide_follows_count',
   },
   // NotificationSettingsAPIs
   webPushHideContents: {
     get: 'pleroma.notification_settings.hide_notification_contents',
     set: 'hide_notification_contents',
-    api: notificationsApi
+    api: notificationsApi,
   },
   blockNotificationsFromStrangers: {
     get: 'pleroma.notification_settings.block_from_strangers',
     set: 'block_from_strangers',
-    api: notificationsApi
-  }
+    api: notificationsApi,
+  },
 }
 
-export const defaultState = Object.fromEntries(Object.keys(settingsMap).map(key => [key, null]))
+export const defaultState = Object.fromEntries(
+  Object.keys(settingsMap).map((key) => [key, null]),
+)
 
 const profileConfig = {
   state: { ...defaultState },
   mutations: {
-    confirmProfileOption (state, { name, value }) {
+    confirmProfileOption(state, { name, value }) {
       set(state, name, value)
     },
-    wipeProfileOption (state, { name }) {
+    wipeProfileOption(state, { name }) {
       set(state, name, null)
     },
-    wipeAllProfileOptions (state) {
-      Object.keys(settingsMap).forEach(key => {
+    wipeAllProfileOptions(state) {
+      Object.keys(settingsMap).forEach((key) => {
         set(state, key, null)
       })
     },
     // Set the settings based on their path location
-    setCurrentUser (state, user) {
+    setCurrentUser(state, user) {
       Object.entries(settingsMap).forEach((map) => {
         const [name, value] = map
         const { get: path = value } = value
         set(state, name, get(user._original, path))
       })
-    }
+    },
   },
   actions: {
-    setProfileOption ({ rootState, state, commit }, { name, value }) {
+    setProfileOption({ rootState, state, commit }, { name, value }) {
       const oldValue = get(state, name)
       const map = settingsMap[name]
       if (!map) throw new Error('Invalid server-side setting')
       const { set: path = map, api = defaultApi } = map
       commit('wipeProfileOption', { name })
 
-      api({ rootState, commit }, { path, value, oldValue })
-        .catch((e) => {
-          console.warn('Error setting server-side option:', e)
-          commit('confirmProfileOption', { name, value: oldValue })
-        })
+      api({ rootState, commit }, { path, value, oldValue }).catch((e) => {
+        console.warn('Error setting server-side option:', e)
+        commit('confirmProfileOption', { name, value: oldValue })
+      })
     },
-    logout ({ commit }) {
+    logout({ commit }) {
       commit('wipeAllProfileOptions')
-    }
-  }
+    },
+  },
 }
 
 export default profileConfig

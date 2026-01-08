@@ -15,7 +15,7 @@
           :func-arg="funcArg"
           :get-class="getClass"
           :get-component="getComponent"
-          :close="() => {}"
+          :close="() => { /* no-op */ }"
           :do-action="doAction"
           @interacted="e => $emit('interacted')"
         />

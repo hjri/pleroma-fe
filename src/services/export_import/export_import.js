@@ -4,9 +4,9 @@ export const newExporter = ({
   filename = 'data',
   mime = 'application/json',
   extension = 'json',
-  getExportedObject
+  getExportedObject,
 }) => ({
-  exportData () {
+  exportData() {
     let stringified
     if (mime === 'application/json') {
       stringified = utf8.encode(JSON.stringify(getExportedObject(), null, 2)) // Pretty-print and indent with 2 spaces
@@ -24,7 +24,7 @@ export const newExporter = ({
     document.body.appendChild(e)
     e.click()
     document.body.removeChild(e)
-  }
+  },
 })
 
 export const newImporter = ({
@@ -32,14 +32,14 @@ export const newImporter = ({
   parser = (string) => JSON.parse(string),
   onImport,
   onImportFailure,
-  validator = () => true
+  validator = () => true,
 }) => ({
-  importData () {
+  importData() {
     const filePicker = document.createElement('input')
     filePicker.setAttribute('type', 'file')
     filePicker.setAttribute('accept', accept)
 
-    filePicker.addEventListener('change', event => {
+    filePicker.addEventListener('change', (event) => {
       if (event.target.files[0]) {
         const filename = event.target.files[0].name
 
@@ -64,5 +64,5 @@ export const newImporter = ({
     document.body.appendChild(filePicker)
     filePicker.click()
     document.body.removeChild(filePicker)
-  }
+  },
 })

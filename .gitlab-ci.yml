@@ -34,12 +34,23 @@ check-changelog:
     - apk add git
     - sh ./tools/check-changelog
 
-lint:
+lint-eslint:
   stage: lint
   script:
     - yarn
-    - yarn lint
-    - yarn stylelint
+    - yarn ci-eslint
+
+lint-biome:
+  stage: lint
+  script:
+    - yarn
+    - yarn ci-biome
+
+lint-stylelint:
+  stage: lint
+  script:
+    - yarn
+    - yarn ci-stylelint
 
 test:
   stage: test
@@ -62,7 +73,7 @@ test:
 
 e2e-pleroma:
   stage: test
-  image: mcr.microsoft.com/playwright:v1.55.0-jammy
+  image: mcr.microsoft.com/playwright:v1.57.0-jammy
   services:
     - name: postgres:15-alpine
       alias: db

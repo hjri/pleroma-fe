@@ -18,7 +18,9 @@ if (opts.indexOf('--env') === -1) {
 }
 
 const spawn = require('cross-spawn')
-const runner = spawn('./node_modules/.bin/nightwatch', opts, { stdio: 'inherit' })
+const runner = spawn('./node_modules/.bin/nightwatch', opts, {
+  stdio: 'inherit',
+})
 
 runner.on('exit', function (code) {
   server.close()

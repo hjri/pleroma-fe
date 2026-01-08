@@ -2,23 +2,27 @@ import { defineStore } from 'pinia'
 
 export const useOAuthTokensStore = defineStore('oauthTokens', {
   state: () => ({
-    tokens: []
+    tokens: [],
   }),
   actions: {
-    fetchTokens () {
-      window.vuex.state.api.backendInteractor.fetchOAuthTokens().then((tokens) => {
-        this.swapTokens(tokens)
-      })
+    fetchTokens() {
+      window.vuex.state.api.backendInteractor
+        .fetchOAuthTokens()
+        .then((tokens) => {
+          this.swapTokens(tokens)
+        })
     },
-    revokeToken (id) {
-      window.vuex.state.api.backendInteractor.revokeOAuthToken({ id }).then((response) => {
-        if (response.status === 201) {
-          this.swapTokens(this.tokens.filter(token => token.id !== id))
-        }
-      })
+    revokeToken(id) {
+      window.vuex.state.api.backendInteractor
+        .revokeOAuthToken({ id })
+        .then((response) => {
+          if (response.status === 201) {
+            this.swapTokens(this.tokens.filter((token) => token.id !== id))
+          }
+        })
     },
-    swapTokens (tokens) {
+    swapTokens(tokens) {
       this.tokens = tokens
-    }
-  }
-});
+    },
+  },
+})

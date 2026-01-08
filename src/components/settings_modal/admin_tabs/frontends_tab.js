@@ -1,32 +1,28 @@
+import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
+import Popover from 'src/components/popover/popover.vue'
+import { useInterfaceStore } from 'src/stores/interface'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
-import IntegerSetting from '../helpers/integer_setting.vue'
-import StringSetting from '../helpers/string_setting.vue'
 import GroupSetting from '../helpers/group_setting.vue'
-import Popover from 'src/components/popover/popover.vue'
-import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
-import { useInterfaceStore } from 'src/stores/interface'
-
+import IntegerSetting from '../helpers/integer_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faGlobe
-} from '@fortawesome/free-solid-svg-icons'
+import StringSetting from '../helpers/string_setting.vue'
 
-library.add(
-  faGlobe
-)
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faGlobe } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faGlobe)
 
 const FrontendsTab = {
-  provide () {
+  provide() {
     return {
       defaultDraftMode: true,
-      defaultSource: 'admin'
+      defaultSource: 'admin',
     }
   },
-  data () {
+  data() {
     return {
-      working: false
+      working: false,
     }
   },
   components: {
@@ -36,26 +32,26 @@ const FrontendsTab = {
     StringSetting,
     GroupSetting,
     PanelLoading,
-    Popover
+    Popover,
   },
-  created () {
+  created() {
     if (this.user.rights.admin) {
       this.$store.dispatch('loadFrontendsStuff')
     }
   },
   computed: {
     ...SharedComputedObject(),
-    frontends () {
+    frontends() {
       return this.$store.state.adminSettings.frontends
-    }
+    },
   },
   methods: {
-    canInstall (frontend) {
-      const fe = this.frontends.find(f => f.name === frontend.name)
+    canInstall(frontend) {
+      const fe = this.frontends.find((f) => f.name === frontend.name)
       if (!fe) return false
       return fe.refs.includes(frontend.ref)
     },
-    getSuggestedRef (frontend) {
+    getSuggestedRef(frontend) {
       if (this.adminDraft) {
         const defaultFe = this.adminDraft[':pleroma'][':frontends'][':primary']
         if (defaultFe?.name === frontend.name && this.canInstall(defaultFe)) {
@@ -67,13 +63,14 @@ const FrontendsTab = {
         return frontend.refs[0]
       }
     },
-    update (frontend, suggestRef) {
+    update(frontend, suggestRef) {
       const ref = suggestRef || this.getSuggestedRef(frontend)
       const { name } = frontend
       const payload = { name, ref }
 
       this.working = true
-      this.$store.state.api.backendInteractor.installFrontend({ payload })
+      this.$store.state.api.backendInteractor
+        .installFrontend({ payload })
         .finally(() => {
           this.working = false
         })
@@ -86,29 +83,32 @@ const FrontendsTab = {
               messageKey: 'admin_dash.frontend.failure_installing_frontend',
               messageArgs: {
                 version: name + '/' + ref,
-                reason: reason.error
+                reason: reason.error,
               },
-              timeout: 5000
+              timeout: 5000,
             })
           } else {
             useInterfaceStore().pushGlobalNotice({
               level: 'success',
               messageKey: 'admin_dash.frontend.success_installing_frontend',
               messageArgs: {
-                version: name + '/' + ref
+                version: name + '/' + ref,
               },
-              timeout: 2000
+              timeout: 2000,
             })
           }
         })
     },
-    setDefault (frontend, suggestRef) {
+    setDefault(frontend, suggestRef) {
       const ref = suggestRef || this.getSuggestedRef(frontend)
       const { name } = frontend
 
-      this.$store.commit('updateAdminDraft', { path: [':pleroma', ':frontends', ':primary'], value: { name, ref } })
-    }
-  }
+      this.$store.commit('updateAdminDraft', {
+        path: [':pleroma', ':frontends', ':primary'],
+        value: { name, ref },
+      })
+    },
+  },
 }
 
 export default FrontendsTab

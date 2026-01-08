@@ -1,17 +1,17 @@
-import Popover from '../popover/popover.vue'
-import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
 import { mapState } from 'vuex'
-import ListsMenuContent from '../lists_menu/lists_menu_content.vue'
-import BookmarkFoldersMenuContent from '../bookmark_folders_menu/bookmark_folders_menu_content.vue'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { TIMELINES } from 'src/components/navigation/navigation.js'
+
 import { filterNavigation } from 'src/components/navigation/filter.js'
-import {
-  faChevronDown
-} from '@fortawesome/free-solid-svg-icons'
+import { TIMELINES } from 'src/components/navigation/navigation.js'
+import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
+import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useListsStore } from 'src/stores/lists'
-import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
+import BookmarkFoldersMenuContent from '../bookmark_folders_menu/bookmark_folders_menu_content.vue'
+import ListsMenuContent from '../lists_menu/lists_menu_content.vue'
+import Popover from '../popover/popover.vue'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faChevronDown)
 
@@ -25,7 +25,7 @@ export const timelineNames = (supportsBookmarkFolders) => {
     'public-timeline': 'nav.public_tl',
     'public-external-timeline': 'nav.twkn',
     quotes: 'nav.quotes',
-    bubble: 'nav.bubble'
+    bubble: 'nav.bubble',
   }
 }
 
@@ -34,35 +34,39 @@ const TimelineMenu = {
     Popover,
     NavigationEntry,
     ListsMenuContent,
-    BookmarkFoldersMenuContent
+    BookmarkFoldersMenuContent,
   },
-  data () {
+  data() {
     return {
-      isOpen: false
+      isOpen: false,
     }
   },
-  created () {
+  created() {
     if (timelineNames(this.bookmarkFolders)[this.$route.name]) {
       useInterfaceStore().setLastTimeline(this.$route.name)
     }
   },
   computed: {
-    useListsMenu () {
+    useListsMenu() {
       const route = this.$route.name
       return route === 'lists-timeline'
     },
-    useBookmarkFoldersMenu () {
+    useBookmarkFoldersMenu() {
       const route = this.$route.name
-      return this.bookmarkFolders && (route === 'bookmark-folder' || route === 'bookmarks')
+      return (
+        this.bookmarkFolders &&
+        (route === 'bookmark-folder' || route === 'bookmarks')
+      )
     },
     ...mapState({
-      currentUser: state => state.users.currentUser,
-      privateMode: state => state.instance.private,
-      federating: state => state.instance.federating,
-      bookmarkFolders: state => state.instance.pleromaBookmarkFoldersAvailable,
-      bubbleTimeline: state => state.instance.localBubbleInstances.length > 0
+      currentUser: (state) => state.users.currentUser,
+      privateMode: (state) => state.instance.private,
+      federating: (state) => state.instance.federating,
+      bookmarkFolders: (state) =>
+        state.instance.pleromaBookmarkFoldersAvailable,
+      bubbleTimeline: (state) => state.instance.localBubbleInstances.length > 0,
     }),
-    timelinesList () {
+    timelinesList() {
       return filterNavigation(
         Object.entries(TIMELINES).map(([k, v]) => ({ ...v, name: k })),
         {
@@ -71,13 +75,13 @@ const TimelineMenu = {
           isPrivate: this.privateMode,
           currentUser: this.currentUser,
           supportsBookmarkFolders: this.bookmarkFolders,
-          supportsBubbleTimeline: this.bubbleTimeline
-        }
+          supportsBubbleTimeline: this.bubbleTimeline,
+        },
       )
-    }
+    },
   },
   methods: {
-    openMenu () {
+    openMenu() {
       // $nextTick is too fast, animation won't play back but
       // instead starts in fully open position. Low values
       // like 1-5 work on fast machines but not on mobile, 25
@@ -87,7 +91,7 @@ const TimelineMenu = {
         this.isOpen = true
       }, 25)
     },
-    blockOpen (event) {
+    blockOpen(event) {
       // For the blank area inside the button element.
       // Just setting @click.stop="" makes unintuitive behavior when
       // menu is open and clicking on the blank area doesn't close it.
@@ -95,7 +99,7 @@ const TimelineMenu = {
         event.stopPropagation()
       }
     },
-    timelineName () {
+    timelineName() {
       const route = this.$route.name
       if (route === 'tag-timeline') {
         return '#' + this.$route.params.tag
@@ -104,12 +108,14 @@ const TimelineMenu = {
         return useListsStore().findListTitle(this.$route.params.id)
       }
       if (route === 'bookmark-folder') {
-        return useBookmarkFoldersStore().findBookmarkFolderName(this.$route.params.id)
+        return useBookmarkFoldersStore().findBookmarkFolderName(
+          this.$route.params.id,
+        )
       }
       const i18nkey = timelineNames(this.bookmarkFolders)[this.$route.name]
       return i18nkey ? this.$t(i18nkey) : route
-    }
-  }
+    },
+  },
 }
 
 export default TimelineMenu

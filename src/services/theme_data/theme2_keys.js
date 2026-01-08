@@ -173,5 +173,5 @@ export default [
   'chatMessageOutgoingBg',
   'chatMessageOutgoingText',
   'chatMessageOutgoingLink',
-  'chatMessageOutgoingBorder'
+  'chatMessageOutgoingBorder',
 ]

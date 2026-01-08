@@ -9,7 +9,7 @@ const empty = (chatId) => {
     lastSeenMessageId: '0',
     chatId,
     minId: undefined,
-    maxId: undefined
+    maxId: undefined,
   }
 }
 
@@ -25,7 +25,9 @@ const clear = (storage) => {
     }
   }
 
-  storage.messages = storage.messages.filter(m => failedMessageIds.includes(m.id))
+  storage.messages = storage.messages.filter((m) =>
+    failedMessageIds.includes(m.id),
+  )
   storage.newMessageCount = 0
   storage.lastSeenMessageId = '0'
   storage.minId = undefined
@@ -33,8 +35,10 @@ const clear = (storage) => {
 }
 
 const deleteMessage = (storage, messageId) => {
-  if (!storage) { return }
-  storage.messages = storage.messages.filter(m => m.id !== messageId)
+  if (!storage) {
+    return
+  }
+  storage.messages = storage.messages.filter((m) => m.id !== messageId)
   delete storage.idIndex[messageId]
 
   if (storage.maxId === messageId) {
@@ -65,14 +69,20 @@ const cullOlderMessages = (storage) => {
 }
 
 const handleMessageError = (storage, fakeId, isRetry) => {
-  if (!storage) { return }
+  if (!storage) {
+    return
+  }
   const fakeMessage = storage.idIndex[fakeId]
   if (fakeMessage) {
     fakeMessage.error = true
     fakeMessage.pending = false
     if (!isRetry) {
       // Ensure the failed message doesn't stay at the bottom of the list.
-      const lastPersistedMessage = _.orderBy(storage.messages, ['pending', 'id'], ['asc', 'desc'])[0]
+      const lastPersistedMessage = _.orderBy(
+        storage.messages,
+        ['pending', 'id'],
+        ['asc', 'desc'],
+      )[0]
       if (lastPersistedMessage) {
         const oldId = fakeMessage.id
         fakeMessage.id = `${lastPersistedMessage.id}-${new Date().getTime()}`
@@ -84,12 +94,16 @@ const handleMessageError = (storage, fakeId, isRetry) => {
 }
 
 const add = (storage, { messages: newMessages, updateMaxId = true }) => {
-  if (!storage) { return }
+  if (!storage) {
+    return
+  }
   for (let i = 0; i < newMessages.length; i++) {
     const message = newMessages[i]
 
     // sanity check
-    if (message.chat_id !== storage.chatId) { return }
+    if (message.chat_id !== storage.chatId) {
+      return
+    }
 
     if (message.fakeId) {
       const fakeMessage = storage.idIndex[message.fakeId]
@@ -98,7 +112,9 @@ const add = (storage, { messages: newMessages, updateMaxId = true }) => {
         // make sure to remove the older duplicate message.
         if (storage.idIndex[message.id]) {
           delete storage.idIndex[message.id]
-          storage.messages = storage.messages.filter(msg => msg.id !== message.id)
+          storage.messages = storage.messages.filter(
+            (msg) => msg.id !== message.id,
+          )
         }
         Object.assign(fakeMessage, message, { error: false })
         delete fakeMessage.fakeId
@@ -136,17 +152,25 @@ const isConfirmation = (storage, message) => {
 }
 
 const resetNewMessageCount = (storage) => {
-  if (!storage) { return }
+  if (!storage) {
+    return
+  }
   storage.newMessageCount = 0
   storage.lastSeenMessageId = storage.maxId
 }
 
 // Inserts date separators and marks the head and tail if it's the chain of messages made by the same user
 const getView = (storage) => {
-  if (!storage) { return [] }
+  if (!storage) {
+    return []
+  }
 
   const result = []
-  const messages = _.orderBy(storage.messages, ['pending', 'id'], ['asc', 'asc'])
+  const messages = _.orderBy(
+    storage.messages,
+    ['pending', 'id'],
+    ['asc', 'asc'],
+  )
   const firstMessage = messages[0]
   let previousMessage = messages[messages.length - 1]
   let currentMessageChainId
@@ -157,7 +181,7 @@ const getView = (storage) => {
     result.push({
       type: 'date',
       date,
-      id: date.getTime().toString()
+      id: date.getTime().toString(),
     })
   }
 
@@ -175,7 +199,7 @@ const getView = (storage) => {
       result.push({
         type: 'date',
         date,
-        id: date.getTime().toString()
+        id: date.getTime().toString(),
       })
 
       previousMessage.isTail = true
@@ -188,7 +212,7 @@ const getView = (storage) => {
       data: message,
       date,
       id: message.id,
-      messageChainId: currentMessageChainId
+      messageChainId: currentMessageChainId,
     }
 
     // end a message chian
@@ -198,7 +222,12 @@ const getView = (storage) => {
     }
 
     // start a new message chain
-    if ((previousMessage && previousMessage.data && previousMessage.data.account_id) !== message.account_id || afterDate) {
+    if (
+      (previousMessage &&
+        previousMessage.data &&
+        previousMessage.data.account_id) !== message.account_id ||
+      afterDate
+    ) {
       currentMessageChainId = _.uniqueId()
       object.isHead = true
       object.messageChainId = currentMessageChainId
@@ -220,7 +249,7 @@ const ChatService = {
   cullOlderMessages,
   resetNewMessageCount,
   clear,
-  handleMessageError
+  handleMessageError,
 }
 
 export default ChatService

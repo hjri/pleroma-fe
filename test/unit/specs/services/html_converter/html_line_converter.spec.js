@@ -2,7 +2,7 @@ import { convertHtmlToLines } from 'src/services/html_converter/html_line_conver
 
 const greentextHandle = new Set(['p', 'div'])
 const mapOnlyText = (processor) => (input) => {
-  if (input.text && input.level.every(l => greentextHandle.has(l))) {
+  if (input.text && input.level.every((l) => greentextHandle.has(l))) {
     return processor(input.text)
   } else if (input.text) {
     return input.text
@@ -15,7 +15,8 @@ describe('html_line_converter', () => {
   describe('with processor that keeps original line should not make any changes to HTML when', () => {
     const processorKeep = (line) => line
     it('fed with regular HTML with newlines', () => {
-      const inputOutput = '1<br/>2<p class="lol">3 4</p> 5 \n 6 <p > 7 <br> 8 </p> <br>\n<br/>'
+      const inputOutput =
+        '1<br/>2<p class="lol">3 4</p> 5 \n 6 <p > 7 <br> 8 </p> <br>\n<br/>'
       const result = convertHtmlToLines(inputOutput)
       const comparableResult = result.map(mapOnlyText(processorKeep)).join('')
       expect(comparableResult).to.eql(inputOutput)
@@ -35,14 +36,14 @@ describe('html_line_converter', () => {
       expect(comparableResult).to.eql(inputOutput)
     })
 
-    it('fed with sorta valid HTML but tags aren\'t closed', () => {
+    it("fed with sorta valid HTML but tags aren't closed", () => {
       const inputOutput = 'just leaving a <div> hanging'
       const result = convertHtmlToLines(inputOutput)
       const comparableResult = result.map(mapOnlyText(processorKeep)).join('')
       expect(comparableResult).to.eql(inputOutput)
     })
 
-    it('fed with not really HTML at this point... tags that aren\'t finished', () => {
+    it("fed with not really HTML at this point... tags that aren't finished", () => {
       const inputOutput = 'do you expect me to finish this <div class='
       const result = convertHtmlToLines(inputOutput)
       const comparableResult = result.map(mapOnlyText(processorKeep)).join('')
@@ -50,14 +51,16 @@ describe('html_line_converter', () => {
     })
 
     it('fed with dubiously valid HTML (p within p and also div inside p)', () => {
-      const inputOutput = 'look ma <p> p \nwithin <p> p! </p> and a <br/><div>div!</div></p>'
+      const inputOutput =
+        'look ma <p> p \nwithin <p> p! </p> and a <br/><div>div!</div></p>'
       const result = convertHtmlToLines(inputOutput)
       const comparableResult = result.map(mapOnlyText(processorKeep)).join('')
       expect(comparableResult).to.eql(inputOutput)
     })
 
     it('fed with maybe valid HTML? self-closing divs and ps', () => {
-      const inputOutput = 'a <div class="what"/> what now <p aria-label="wtf"/> ?'
+      const inputOutput =
+        'a <div class="what"/> what now <p aria-label="wtf"/> ?'
       const result = convertHtmlToLines(inputOutput)
       const comparableResult = result.map(mapOnlyText(processorKeep)).join('')
       expect(comparableResult).to.eql(inputOutput)
@@ -80,10 +83,13 @@ describe('html_line_converter', () => {
   describe('with processor that replaces lines with word "_" should match expected line when', () => {
     const processorReplace = () => '_'
     it('fed with regular HTML with newlines', () => {
-      const input = '1<br/>2<p class="lol">3 4</p> 5 \n 6 <p > 7 <br> 8 </p> <br>\n<br/>'
+      const input =
+        '1<br/>2<p class="lol">3 4</p> 5 \n 6 <p > 7 <br> 8 </p> <br>\n<br/>'
       const output = '_<br/>_<p class="lol">_</p>_\n_<p >_<br>_</p> <br>\n<br/>'
       const result = convertHtmlToLines(input)
-      const comparableResult = result.map(mapOnlyText(processorReplace)).join('')
+      const comparableResult = result
+        .map(mapOnlyText(processorReplace))
+        .join('')
       expect(comparableResult).to.eql(output)
     })
 
@@ -91,7 +97,9 @@ describe('html_line_converter', () => {
       const input = '<feeee dwdwddddddw> <i>ayy<b>lm</i>ao</b> </section>'
       const output = '_'
       const result = convertHtmlToLines(input)
-      const comparableResult = result.map(mapOnlyText(processorReplace)).join('')
+      const comparableResult = result
+        .map(mapOnlyText(processorReplace))
+        .join('')
       expect(comparableResult).to.eql(output)
     })
 
@@ -99,31 +107,40 @@ describe('html_line_converter', () => {
       const input = '</p> lmao what </div> whats going on <div> wha <p>'
       const output = '_<div>_<p>'
       const result = convertHtmlToLines(input)
-      const comparableResult = result.map(mapOnlyText(processorReplace)).join('')
+      const comparableResult = result
+        .map(mapOnlyText(processorReplace))
+        .join('')
       expect(comparableResult).to.eql(output)
     })
 
-    it('fed with sorta valid HTML but tags aren\'t closed', () => {
+    it("fed with sorta valid HTML but tags aren't closed", () => {
       const input = 'just leaving a <div> hanging'
       const output = '_<div>_'
       const result = convertHtmlToLines(input)
-      const comparableResult = result.map(mapOnlyText(processorReplace)).join('')
+      const comparableResult = result
+        .map(mapOnlyText(processorReplace))
+        .join('')
       expect(comparableResult).to.eql(output)
     })
 
-    it('fed with not really HTML at this point... tags that aren\'t finished', () => {
+    it("fed with not really HTML at this point... tags that aren't finished", () => {
       const input = 'do you expect me to finish this <div class='
       const output = '_'
       const result = convertHtmlToLines(input)
-      const comparableResult = result.map(mapOnlyText(processorReplace)).join('')
+      const comparableResult = result
+        .map(mapOnlyText(processorReplace))
+        .join('')
       expect(comparableResult).to.eql(output)
     })
 
     it('fed with dubiously valid HTML (p within p and also div inside p)', () => {
-      const input = 'look ma <p> p \nwithin <p> p! </p> and a <br/><div>div!</div></p>'
+      const input =
+        'look ma <p> p \nwithin <p> p! </p> and a <br/><div>div!</div></p>'
       const output = '_<p>_\n_<p>_</p>_<br/><div>_</div></p>'
       const result = convertHtmlToLines(input)
-      const comparableResult = result.map(mapOnlyText(processorReplace)).join('')
+      const comparableResult = result
+        .map(mapOnlyText(processorReplace))
+        .join('')
       expect(comparableResult).to.eql(output)
     })
 
@@ -131,7 +148,9 @@ describe('html_line_converter', () => {
       const input = 'a <div class="what"/> what now <p aria-label="wtf"/> ?'
       const output = '_<div class="what"/>_<p aria-label="wtf"/>_'
       const result = convertHtmlToLines(input)
-      const comparableResult = result.map(mapOnlyText(processorReplace)).join('')
+      const comparableResult = result
+        .map(mapOnlyText(processorReplace))
+        .join('')
       expect(comparableResult).to.eql(output)
     })
 
@@ -139,7 +158,9 @@ describe('html_line_converter', () => {
       const input = 'Yes, it is me, <![CDATA[DIO]]>'
       const output = '_'
       const result = convertHtmlToLines(input)
-      const comparableResult = result.map(mapOnlyText(processorReplace)).join('')
+      const comparableResult = result
+        .map(mapOnlyText(processorReplace))
+        .join('')
       expect(comparableResult).to.eql(output)
     })
 
@@ -153,7 +174,9 @@ describe('html_line_converter', () => {
       false</code></pre><blockquote>That, christian-like JS diagram but it’s evangelion instead.</blockquote>
       `
       const result = convertHtmlToLines(input)
-      const comparableResult = result.map(mapOnlyText(processorReplace)).join('')
+      const comparableResult = result
+        .map(mapOnlyText(processorReplace))
+        .join('')
       expect(comparableResult).to.eql(input)
     })
     it('Testing handling ignored blocks 2', () => {
@@ -164,7 +187,9 @@ describe('html_line_converter', () => {
       <blockquote>An SSL error has happened.</blockquote><p>_</p>
       `
       const result = convertHtmlToLines(input)
-      const comparableResult = result.map(mapOnlyText(processorReplace)).join('')
+      const comparableResult = result
+        .map(mapOnlyText(processorReplace))
+        .join('')
       expect(comparableResult).to.eql(output)
     })
   })

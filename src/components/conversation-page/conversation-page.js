@@ -2,13 +2,13 @@ import Conversation from '../conversation/conversation.vue'
 
 const conversationPage = {
   components: {
-    Conversation
+    Conversation,
   },
   computed: {
-    statusId () {
+    statusId() {
       return this.$route.params.id
-    }
-  }
+    },
+  },
 }
 
 export default conversationPage

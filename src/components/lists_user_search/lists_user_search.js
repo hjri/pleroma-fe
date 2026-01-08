@@ -1,33 +1,29 @@
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faSearch,
-  faChevronLeft
-} from '@fortawesome/free-solid-svg-icons'
 import { debounce } from 'lodash'
+
 import Checkbox from '../checkbox/checkbox.vue'
 
-library.add(
-  faSearch,
-  faChevronLeft
-)
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faSearch, faChevronLeft)
 
 const ListsUserSearch = {
   components: {
-    Checkbox
+    Checkbox,
   },
   emits: ['loading', 'loadingDone', 'results'],
-  data () {
+  data() {
     return {
       loading: false,
       query: '',
-      followingOnly: true
+      followingOnly: true,
     }
   },
   methods: {
     onInput: debounce(function () {
       this.search(this.query)
     }, 2000),
-    search (query) {
+    search(query) {
       if (!query) {
         this.loading = false
         return
@@ -36,16 +32,25 @@ const ListsUserSearch = {
       this.loading = true
       this.$emit('loading')
       this.userIds = []
-      this.$store.dispatch('search', { q: query, resolve: true, type: 'accounts', following: this.followingOnly })
-        .then(data => {
-          this.$emit('results', data.accounts.map(a => a.id))
+      this.$store
+        .dispatch('search', {
+          q: query,
+          resolve: true,
+          type: 'accounts',
+          following: this.followingOnly,
+        })
+        .then((data) => {
+          this.$emit(
+            'results',
+            data.accounts.map((a) => a.id),
+          )
         })
         .finally(() => {
           this.loading = false
           this.$emit('loadingDone')
         })
-    }
-  }
+    },
+  },
 }
 
 export default ListsUserSearch

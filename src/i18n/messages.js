@@ -8,8 +8,9 @@
 // There's only problem that apostrophe character ' gets replaced by \\ so you have to fix it manually, sorry.
 
 import { isEqual } from 'lodash'
-import { languages, langCodeToJsonName } from './languages.js'
+
 import enMessages from './en.json'
+import { langCodeToJsonName, languages } from './languages.js'
 
 const ULTIMATE_FALLBACK_LOCALE = 'en'
 
@@ -25,10 +26,12 @@ const loadLanguageFile = (code) => {
 const messages = {
   languages,
   default: {
-    en: enMessages
+    en: enMessages,
   },
   setLanguage: async (i18n, language) => {
-    const languages = (Array.isArray(language) ? language : [language]).filter(k => k)
+    const languages = (Array.isArray(language) ? language : [language]).filter(
+      (k) => k,
+    )
 
     if (!languages.includes(ULTIMATE_FALLBACK_LOCALE)) {
       languages.push(ULTIMATE_FALLBACK_LOCALE)
@@ -48,7 +51,7 @@ const messages = {
 
     i18n.fallbackLocale = rest
     i18n.locale = first
-  }
+  },
 }
 
 export default messages

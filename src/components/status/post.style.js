@@ -2,7 +2,7 @@ export default {
   name: 'Post',
   selector: '.Status',
   states: {
-    selected: '.-focused'
+    selected: '.-focused',
   },
   validInnerComponents: [
     'Text',
@@ -10,19 +10,19 @@ export default {
     'Icon',
     'Border',
     'Avatar',
-    'PollGraph'
+    'PollGraph',
   ],
   defaultRules: [
     {
       directives: {
-        background: '--bg'
-      }
+        background: '--bg',
+      },
     },
     {
       state: ['selected'],
       directives: {
-        background: '--inheritedBackground, 10'
-      }
-    }
-  ]
+        background: '--inheritedBackground, 10',
+      },
+    },
+  ],
 }

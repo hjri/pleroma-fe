@@ -1,6 +1,6 @@
 import { capitalize } from 'lodash'
 
-function humanizeErrors (errors) {
+function humanizeErrors(errors) {
   return Object.entries(errors).reduce((errs, [k, val]) => {
     const message = val.reduce((acc, message) => {
       const key = capitalize(k.replace(/_/g, ' '))
@@ -10,15 +10,17 @@ function humanizeErrors (errors) {
   }, [])
 }
 
-export function StatusCodeError (statusCode, body, options, response) {
+export function StatusCodeError(statusCode, body, options, response) {
   this.name = 'StatusCodeError'
   this.statusCode = statusCode
-  this.message = statusCode + ' - ' + (JSON && JSON.stringify ? JSON.stringify(body) : body)
+  this.message =
+    statusCode + ' - ' + (JSON && JSON.stringify ? JSON.stringify(body) : body)
   this.error = body // legacy attribute
   this.options = options
   this.response = response
 
-  if (Error.captureStackTrace) { // required for non-V8 environments
+  if (Error.captureStackTrace) {
+    // required for non-V8 environments
     Error.captureStackTrace(this)
   }
 }
@@ -26,7 +28,7 @@ StatusCodeError.prototype = Object.create(Error.prototype)
 StatusCodeError.prototype.constructor = StatusCodeError
 
 export class RegistrationError extends Error {
-  constructor (error) {
+  constructor(error) {
     super()
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this)
@@ -37,7 +39,7 @@ export class RegistrationError extends Error {
       if (typeof error === 'string') {
         error = JSON.parse(error)
         // eslint-disable-next-line
-        if (error.hasOwnProperty('error')) {
+        if (Object.hasOwn(error, 'error')) {
           error = JSON.parse(error.error)
         }
       }

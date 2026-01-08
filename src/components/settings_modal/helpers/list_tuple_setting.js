@@ -2,14 +2,14 @@ import ListSetting from './list_setting.js'
 
 export default {
   ...ListSetting,
-  data () {
+  data() {
     return {
-      newValue: ['','']
+      newValue: ['', ''],
     }
   },
   methods: {
     ...ListSetting.methods,
-    getValue ({ event, index, eventType, tuple }) {
+    getValue({ event, index, eventType, tuple }) {
       switch (eventType) {
         case 'add': {
           if (!this.newValue[0] || !this.newValue[1]) return this.visibleState
@@ -39,6 +39,6 @@ export default {
           }
         }
       }
-    }
-  }
+    },
+  },
 }

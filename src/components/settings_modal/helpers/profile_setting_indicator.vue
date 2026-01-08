@@ -24,16 +24,15 @@
 
 <script>
 import Popover from 'src/components/popover/popover.vue'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faServer } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faServer
-)
+library.add(faServer)
 
 export default {
   components: { Popover },
-  props: ['isProfile']
+  props: ['isProfile'],
 }
 </script>
 

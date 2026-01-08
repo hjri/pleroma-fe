@@ -2,12 +2,12 @@ import PinchZoom from '@kazvmoe-infra/pinch-zoom-element'
 
 export default {
   methods: {
-    setTransform ({ scale, x, y }) {
+    setTransform({ scale, x, y }) {
       this.$el.setTransform({ scale, x, y })
-    }
+    },
   },
-  created () {
+  created() {
     // Make lint happy
-    (() => PinchZoom)()
-  }
+    ;(() => PinchZoom)()
+  },
 }

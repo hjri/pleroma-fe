@@ -5,15 +5,13 @@ export default {
   // i.e. it's a separate absolutely-positioned component, so we need to treat it differently depending on whether
   // we are searching for underlay specifically or for whatever is laid on top of it.
   outOfTreeSelector: '.underlay',
-  validInnerComponents: [
-    'Panel'
-  ],
+  validInnerComponents: ['Panel'],
   defaultRules: [
     {
       directives: {
         background: '#000000',
-        opacity: 0.2
-      }
-    }
-  ]
+        opacity: 0.2,
+      },
+    },
+  ],
 }

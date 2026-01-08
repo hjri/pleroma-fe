@@ -1,6 +1,7 @@
-import { setActivePinia, createPinia, defineStore } from 'pinia'
-import { createApp } from 'vue'
 import { flushPromises } from '@vue/test-utils'
+import { createPinia, defineStore, setActivePinia } from 'pinia'
+import { createApp } from 'vue'
+
 import { piniaPersistPlugin } from 'src/lib/persisted_state.js'
 
 const app = createApp({})
@@ -9,7 +10,7 @@ const getMockStorage = () => {
   let state = {}
 
   return {
-    getItem: vi.fn(async key => {
+    getItem: vi.fn(async (key) => {
       console.info('get:', key, state[key])
       return state[key]
     }),
@@ -19,7 +20,7 @@ const getMockStorage = () => {
     }),
     _clear: () => {
       state = {}
-    }
+    },
   }
 }
 
@@ -34,11 +35,11 @@ beforeEach(() => {
 
 describe('piniaPersistPlugin', () => {
   describe('initial state', () => {
-    test('it does not load anything if it is not enabled', async () => {
+    it('does not load anything if it is not enabled', async () => {
       await mockStorage.setItem('pinia-local-test', { a: 3 })
 
       const useTestStore = defineStore('test', {
-        state: () => ({ a: 1, b: 2 })
+        state: () => ({ a: 1, b: 2 }),
       })
 
       const test = useTestStore()
@@ -55,20 +56,20 @@ describe('piniaPersistPlugin', () => {
 
       const useTestStore = defineStore('test', {
         state: () => ({ a: 1, b: 2, c: { d: 4, e: 5 } }),
-        persist: {}
+        persist: {},
       })
 
       const test = useTestStore()
       await expect(test.$persistLoaded).rejects.toThrowError(error)
     })
 
-    test('it loads from pinia storage', async () => {
+    it('loads from pinia storage', async () => {
       await mockStorage.setItem('pinia-local-test', { a: 3, c: { d: 0 } })
       await mockStorage.setItem('vuex-lz', { test: { a: 4 } })
 
       const useTestStore = defineStore('test', {
         state: () => ({ a: 1, b: 2, c: { d: 4, e: 5 } }),
-        persist: {}
+        persist: {},
       })
 
       const test = useTestStore()
@@ -79,12 +80,12 @@ describe('piniaPersistPlugin', () => {
       expect(test.c.e).to.eql(5)
     })
 
-    test('it loads from vuex storage as fallback', async () => {
+    it('loads from vuex storage as fallback', async () => {
       await mockStorage.setItem('vuex-lz', { test: { a: 4, c: { d: 0 } } })
 
       const useTestStore = defineStore('test', {
         state: () => ({ a: 1, b: 2, c: { d: 4, e: 5 } }),
-        persist: {}
+        persist: {},
       })
 
       const test = useTestStore()
@@ -95,36 +96,39 @@ describe('piniaPersistPlugin', () => {
       expect(test.c.e).to.eql(5)
     })
 
-    test('it loads from vuex storage and writes it into pinia storage', async () => {
+    it('loads from vuex storage and writes it into pinia storage', async () => {
       await mockStorage.setItem('vuex-lz', { test: { a: 4, c: { d: 0 } } })
 
       const useTestStore = defineStore('test', {
         state: () => ({ a: 1, b: 2, c: { d: 4, e: 5 } }),
         persist: {
-          afterLoad (state) {
+          afterLoad(state) {
             return {
               ...state,
-              a: 5
+              a: 5,
             }
-          }
-        }
+          },
+        },
       })
 
       const test = useTestStore()
       await test.$persistLoaded
-      expect(await mockStorage.getItem('pinia-local-test')).to.eql({ a: 4, c: { d: 0 } })
+      expect(await mockStorage.getItem('pinia-local-test')).to.eql({
+        a: 4,
+        c: { d: 0 },
+      })
       expect(test.a).to.eql(5)
       expect(test.b).to.eql(2)
       expect(test.c.d).to.eql(0)
       expect(test.c.e).to.eql(5)
     })
 
-    test('it does not modify state if there is nothing to load', async () => {
+    it('does not modify state if there is nothing to load', async () => {
       await mockStorage.setItem('vuex-lz', { test2: { a: 4 } })
 
       const useTestStore = defineStore('test', {
         state: () => ({ a: 1, b: 2 }),
-        persist: {}
+        persist: {},
       })
 
       const test = useTestStore()
@@ -135,44 +139,50 @@ describe('piniaPersistPlugin', () => {
   })
 
   describe('paths', () => {
-    test('it saves everything if paths is unspecified', async () => {
+    it('saves everything if paths is unspecified', async () => {
       const useTestStore = defineStore('test', {
         state: () => ({ a: 1, b: 2 }),
-        persist: {}
+        persist: {},
       })
 
       const test = useTestStore()
       await test.$persistLoaded
       test.$patch({ a: 3 })
       await flushPromises()
-      expect(await mockStorage.getItem('pinia-local-test')).to.eql({ a: 3, b: 2 })
+      expect(await mockStorage.getItem('pinia-local-test')).to.eql({
+        a: 3,
+        b: 2,
+      })
     })
 
-    test('it saves only specified paths', async () => {
+    it('saves only specified paths', async () => {
       const useTestStore = defineStore('test', {
         state: () => ({ a: 1, b: 2, c: { d: 4, e: 5 } }),
         persist: {
-          paths: ['a', 'c.d']
-        }
+          paths: ['a', 'c.d'],
+        },
       })
 
       const test = useTestStore()
       await test.$persistLoaded
       test.$patch({ a: 3 })
       await flushPromises()
-      expect(await mockStorage.getItem('pinia-local-test')).to.eql({ a: 3, c: { d: 4 } })
+      expect(await mockStorage.getItem('pinia-local-test')).to.eql({
+        a: 3,
+        c: { d: 4 },
+      })
     })
   })
 
-  test('it only saves after load', async () => {
+  it('only saves after load', async () => {
     const onSaveError = vi.fn()
     const onSaveSuccess = vi.fn()
     const useTestStore = defineStore('test', {
       state: () => ({ a: 1, b: 2 }),
       persist: {
         onSaveSuccess,
-        onSaveError
-      }
+        onSaveError,
+      },
     })
 
     const test = useTestStore()
@@ -190,30 +200,39 @@ describe('piniaPersistPlugin', () => {
   })
 
   describe('saveImmediatelyActions', () => {
-    test('it should only persist state after specified actions', async () => {
+    it('should only persist state after specified actions', async () => {
       const useTestStore = defineStore('test', {
         state: () => ({ a: 1, b: 2 }),
         actions: {
-          increaseA () {
+          increaseA() {
             ++this.a
           },
-          increaseB () {
+          increaseB() {
             ++this.b
-          }
+          },
         },
         persist: {
-          saveImmediatelyActions: ['increaseA']
-        }
+          saveImmediatelyActions: ['increaseA'],
+        },
       })
 
       const test = useTestStore()
       await test.$persistLoaded
       await test.increaseA()
-      expect(await mockStorage.getItem('pinia-local-test')).to.eql({ a: 2, b: 2 })
+      expect(await mockStorage.getItem('pinia-local-test')).to.eql({
+        a: 2,
+        b: 2,
+      })
       await test.increaseB()
-      expect(await mockStorage.getItem('pinia-local-test')).to.eql({ a: 2, b: 2 })
+      expect(await mockStorage.getItem('pinia-local-test')).to.eql({
+        a: 2,
+        b: 2,
+      })
       await test.increaseA()
-      expect(await mockStorage.getItem('pinia-local-test')).to.eql({ a: 3, b: 3 })
+      expect(await mockStorage.getItem('pinia-local-test')).to.eql({
+        a: 3,
+        b: 3,
+      })
     })
   })
 
@@ -225,8 +244,8 @@ describe('piniaPersistPlugin', () => {
         state: () => ({ a: 1, b: 2 }),
         persist: {
           onSaveSuccess,
-          onSaveError
-        }
+          onSaveError,
+        },
       })
 
       const test = useTestStore()
@@ -251,8 +270,8 @@ describe('piniaPersistPlugin', () => {
         state: () => ({ a: 1, b: 2 }),
         persist: {
           onSaveSuccess,
-          onSaveError
-        }
+          onSaveError,
+        },
       })
 
       const test = useTestStore()
@@ -267,17 +286,17 @@ describe('piniaPersistPlugin', () => {
   })
 
   describe('afterLoad', () => {
-    test('it is called with the saved state object', async () => {
+    it('is called with the saved state object', async () => {
       await mockStorage.setItem('pinia-local-test', { a: 2 })
-      const afterLoad = vi.fn(async orig => {
+      const afterLoad = vi.fn(async (orig) => {
         return { a: orig.a + 1 }
       })
 
       const useTestStore = defineStore('test', {
         state: () => ({ a: 1, b: 2 }),
         persist: {
-          afterLoad
-        }
+          afterLoad,
+        },
       })
       const test = useTestStore()
       await test.$persistLoaded
@@ -286,7 +305,7 @@ describe('piniaPersistPlugin', () => {
       expect(test.a).to.eql(3)
     })
 
-    test('it is called with empty object if there is no saved state', async () => {
+    it('is called with empty object if there is no saved state', async () => {
       const afterLoad = vi.fn(async () => {
         return { a: 3 }
       })
@@ -294,8 +313,8 @@ describe('piniaPersistPlugin', () => {
       const useTestStore = defineStore('test', {
         state: () => ({ a: 1, b: 2 }),
         persist: {
-          afterLoad
-        }
+          afterLoad,
+        },
       })
       const test = useTestStore()
       await test.$persistLoaded

@@ -54,20 +54,20 @@ import { computed, defineEmits, defineProps, nextTick } from 'vue'
 const props = defineProps({
   modelValue: {
     type: Array,
-    required: true
+    required: true,
   },
   selectedId: {
     type: Number,
-    required: true
+    required: true,
   },
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   getAddValue: {
     type: Function,
-    required: true
-  }
+    required: true,
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'update:selectedId'])
@@ -116,7 +116,10 @@ const del = async () => {
 
   emit('update:modelValue', newModel)
   await nextTick()
-  emit('update:selectedId', newModel.length === 0 ? undefined : Math.max(props.selectedId - 1, 0))
+  emit(
+    'update:selectedId',
+    newModel.length === 0 ? undefined : Math.max(props.selectedId - 1, 0),
+  )
 }
 </script>
 

@@ -1,4 +1,7 @@
-import { processTextForEmoji, getAttrs } from 'src/services/html_converter/utility.service.js'
+import {
+  getAttrs,
+  processTextForEmoji,
+} from 'src/services/html_converter/utility.service.js'
 
 describe('html_converter utility', () => {
   describe('processTextForEmoji', () => {
@@ -6,22 +9,22 @@ describe('html_converter utility', () => {
       const input = 'Hello from finland! :lol: We have best water! :lmao:'
       const emojis = [
         { shortcode: 'lol', src: 'LOL' },
-        { shortcode: 'lmao', src: 'LMAO' }
+        { shortcode: 'lmao', src: 'LMAO' },
       ]
       const processor = ({ shortcode, src }) => ({ shortcode, src })
       expect(processTextForEmoji(input, emojis, processor)).to.eql([
         'Hello from finland! ',
         { shortcode: 'lol', src: 'LOL' },
         ' We have best water! ',
-        { shortcode: 'lmao', src: 'LMAO' }
+        { shortcode: 'lmao', src: 'LMAO' },
       ])
     })
     it('leaves text as is', () => {
-      const input = 'Number one: that\'s terror'
+      const input = "Number one: that's terror"
       const emojis = []
       const processor = ({ shortcode, src }) => ({ shortcode, src })
       expect(processTextForEmoji(input, emojis, processor)).to.eql([
-        'Number one: that\'s terror'
+        "Number one: that's terror",
       ])
     })
   })

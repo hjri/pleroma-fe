@@ -1,33 +1,27 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faTimes,
-  faSearch
-} from '@fortawesome/free-solid-svg-icons'
+import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faTimes,
-  faSearch
-)
+library.add(faTimes, faSearch)
 
 const SearchBar = {
   data: () => ({
     searchTerm: undefined,
     hidden: true,
-    error: false
+    error: false,
   }),
   watch: {
     $route: function (route) {
       if (route.name === 'search') {
         this.searchTerm = route.query.query
       }
-    }
+    },
   },
   methods: {
-    find (searchTerm) {
+    find(searchTerm) {
       this.$router.push({ name: 'search', query: { query: searchTerm } })
       this.$refs.searchInput.focus()
     },
-    toggleHidden () {
+    toggleHidden() {
       this.hidden = !this.hidden
       this.$emit('toggled', this.hidden)
       this.$nextTick(() => {
@@ -35,8 +29,8 @@ const SearchBar = {
           this.$refs.searchInput.focus()
         }
       })
-    }
-  }
+    },
+  },
 }
 
 export default SearchBar

@@ -1,5 +1,6 @@
+import { unescape as ldUnescape } from 'lodash'
+
 import { getTagName } from './utility.service.js'
-import { unescape } from 'lodash'
 
 /**
  * This is a not-so-tiny purpose-built HTML parser/processor. This parses html
@@ -24,8 +25,21 @@ export const convertHtmlToTree = (html = '') => {
   // Elements that are implicitly self-closing
   // https://developer.mozilla.org/en-US/docs/Glossary/empty_element
   const emptyElements = new Set([
-    'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
-    'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'
+    'area',
+    'base',
+    'br',
+    'col',
+    'embed',
+    'hr',
+    'img',
+    'input',
+    'keygen',
+    'link',
+    'meta',
+    'param',
+    'source',
+    'track',
+    'wbr',
   ])
   // TODO For future - also parse HTML5 multi-source components?
 
@@ -38,7 +52,8 @@ export const convertHtmlToTree = (html = '') => {
     return levels[levels.length - 1][1]
   }
 
-  const flushText = () => { // Processes current line buffer, adds it to output buffer and clears line buffer
+  const flushText = () => {
+    // Processes current line buffer, adds it to output buffer and clears line buffer
     if (textBuffer === '') return
     getCurrentBuffer().push(textBuffer)
     textBuffer = ''
@@ -50,7 +65,7 @@ export const convertHtmlToTree = (html = '') => {
 
   const handleOpen = (tag) => {
     const curBuf = getCurrentBuffer()
-    const newLevel = [unescape(tag), []]
+    const newLevel = [ldUnescape(tag), []]
     levels.push(newLevel)
     curBuf.push(newLevel)
   }
@@ -79,7 +94,10 @@ export const convertHtmlToTree = (html = '') => {
       const tagName = getTagName(tagFull)
       if (tagFull[1] === '/') {
         handleClose(tagFull)
-      } else if (emptyElements.has(tagName) || tagFull[tagFull.length - 2] === '/') {
+      } else if (
+        emptyElements.has(tagName) ||
+        tagFull[tagFull.length - 2] === '/'
+      ) {
         // self-closing
         handleSelfClosing(tagFull)
       } else {

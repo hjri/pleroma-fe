@@ -1,18 +1,20 @@
 import Timeline from '../timeline/timeline.vue'
+
 const PublicTimeline = {
   components: {
-    Timeline
+    Timeline,
   },
   computed: {
-    timeline () { return this.$store.state.statuses.timelines.public }
+    timeline() {
+      return this.$store.state.statuses.timelines.public
+    },
   },
-  created () {
+  created() {
     this.$store.dispatch('startFetchingTimeline', { timeline: 'public' })
   },
-  unmounted () {
+  unmounted() {
     this.$store.dispatch('stopFetchingTimeline', 'public')
-  }
-
+  },
 }
 
 export default PublicTimeline

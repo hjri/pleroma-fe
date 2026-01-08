@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto'
-import { test, expect } from 'playwright/test'
+import { expect, test } from 'playwright/test'
 
 const createTestUser = () => {
   const id = randomUUID().slice(0, 8)
@@ -7,7 +7,7 @@ const createTestUser = () => {
     username: `e2e_${id}`,
     fullname: `E2E ${id}`,
     email: `e2e_${id}@example.com`,
-    password: 'e2e-password'
+    password: 'e2e-password',
   }
 }
 
@@ -19,20 +19,25 @@ const register = async (page, user) => {
   await registrationForm.locator('#sign-up-fullname').fill(user.fullname)
   await registrationForm.locator('#email').fill(user.email)
   await registrationForm.locator('#sign-up-password').fill(user.password)
-  await registrationForm.locator('#sign-up-password-confirmation').fill(user.password)
+  await registrationForm
+    .locator('#sign-up-password-confirmation')
+    .fill(user.password)
   await Promise.all([
     page.waitForURL(/\/main\/friends/),
-    registrationForm.getByRole('button', { name: 'Register' }).click()
+    registrationForm.getByRole('button', { name: 'Register' }).click(),
   ])
 }
 
 const logout = async (page) => {
   await page.getByTitle('Log out').click()
-  const confirmLogout = page.getByRole('button', { name: 'Logout', exact: true })
+  const confirmLogout = page.getByRole('button', {
+    name: 'Logout',
+    exact: true,
+  })
   if (await confirmLogout.isVisible()) {
     await Promise.all([
       page.waitForURL(/\/main\/(public|all)/),
-      confirmLogout.click()
+      confirmLogout.click(),
     ])
   } else {
     await page.waitForURL(/\/main\/(public|all)/)
@@ -71,8 +76,13 @@ test('user can post a status', async ({ page }) => {
   const composer = page.locator('#sidebar .user-panel .post-status-form')
   await composer.locator('textarea.form-post-body').fill(statusText)
   await Promise.all([
-    page.waitForResponse((resp) => resp.request().method() === 'POST' && resp.url().includes('/api/v1/statuses') && resp.ok()),
-    composer.getByRole('button', { name: 'Post', exact: true }).click()
+    page.waitForResponse(
+      (resp) =>
+        resp.request().method() === 'POST' &&
+        resp.url().includes('/api/v1/statuses') &&
+        resp.ok(),
+    ),
+    composer.getByRole('button', { name: 'Post', exact: true }).click(),
   ])
 
   await page.goto(`/users/${user.username}`)

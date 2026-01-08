@@ -3,21 +3,21 @@ import chatService from '../../../../../src/services/chat_service/chat_service.j
 const message1 = {
   id: '9wLkdcmQXD21Oy8lEX',
   idempotency_key: '1',
-  created_at: (new Date('2020-06-22T18:45:53.000Z'))
+  created_at: new Date('2020-06-22T18:45:53.000Z'),
 }
 
 const message2 = {
   id: '9wLkdp6ihaOVdNj8Wu',
   idempotency_key: '2',
   account_id: '9vmRb29zLQReckr5ay',
-  created_at: (new Date('2020-06-22T18:45:56.000Z'))
+  created_at: new Date('2020-06-22T18:45:56.000Z'),
 }
 
 const message3 = {
   id: '9wLke9zL4Dy4OZR2RM',
   idempotency_key: '3',
   account_id: '9vmRb29zLQReckr5ay',
-  created_at: (new Date('2020-07-22T18:45:59.000Z'))
+  created_at: new Date('2020-07-22T18:45:59.000Z'),
 }
 
 describe('chatService', () => {
@@ -85,7 +85,13 @@ describe('chatService', () => {
       chatService.add(chat, { messages: [message3] })
 
       const view = chatService.getView(chat)
-      expect(view.map(i => i.type)).to.eql(['date', 'message', 'message', 'date', 'message'])
+      expect(view.map((i) => i.type)).to.eql([
+        'date',
+        'message',
+        'message',
+        'date',
+        'message',
+      ])
     })
   })
 
@@ -95,7 +101,15 @@ describe('chatService', () => {
 
       for (let i = 100; i > 0; i--) {
         // Use decimal values with toFixed to hack together constant length predictable strings
-        chatService.add(chat, { messages: [{ ...message1, id: 'a' + (i / 1000).toFixed(3), idempotency_key: i }] })
+        chatService.add(chat, {
+          messages: [
+            {
+              ...message1,
+              id: 'a' + (i / 1000).toFixed(3),
+              idempotency_key: i,
+            },
+          ],
+        })
       }
       chatService.cullOlderMessages(chat)
       expect(chat.messages.length).to.eql(50)

@@ -30,7 +30,7 @@ const messages = {
   sk: require('../lib/notification-i18n-loader.js!./sk.json'),
   te: require('../lib/notification-i18n-loader.js!./te.json'),
   zh: require('../lib/notification-i18n-loader.js!./zh.json'),
-  en: require('../lib/notification-i18n-loader.js!./en.json')
+  en: require('../lib/notification-i18n-loader.js!./en.json'),
 }
 
 export default messages

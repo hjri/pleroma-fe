@@ -1,32 +1,30 @@
 import { mapState } from 'vuex'
 
+import FontControl from 'src/components/font_control/font_control.vue'
+import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
+import localeService from 'src/services/locale/locale.service.js'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
-import UnitSetting from '../helpers/unit_setting.vue'
 import FloatSetting from '../helpers/float_setting.vue'
-import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
 import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
-import FontControl from 'src/components/font_control/font_control.vue'
-
 import SharedComputedObject from '../helpers/shared_computed_object.js'
-
-import localeService from 'src/services/locale/locale.service.js'
+import UnitSetting from '../helpers/unit_setting.vue'
 
 const GeneralTab = {
   props: {
     parentCollapsed: {
       required: true,
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
-  data () {
+  data() {
     return {
-      absoluteTime12hOptions: ['24h', '12h'].map(mode => ({
+      absoluteTime12hOptions: ['24h', '12h'].map((mode) => ({
         key: mode,
         value: mode,
-        label: this.$t(`settings.absolute_time_format_12h_${mode}`)
+        label: this.$t(`settings.absolute_time_format_12h_${mode}`),
       })),
-      emailLanguage: this.$store.state.users.currentUser.language || ['']
+      emailLanguage: this.$store.state.users.currentUser.language || [''],
     }
   },
   components: {
@@ -36,24 +34,31 @@ const GeneralTab = {
     FloatSetting,
     FontControl,
     InterfaceLanguageSwitcher,
-    ProfileSettingIndicator
+    ProfileSettingIndicator,
   },
   computed: {
     language: {
-      get: function () { return this.$store.getters.mergedConfig.interfaceLanguage },
+      get: function () {
+        return this.$store.getters.mergedConfig.interfaceLanguage
+      },
       set: function (val) {
-        this.$store.dispatch('setOption', { name: 'interfaceLanguage', value: val })
-      }
+        this.$store.dispatch('setOption', {
+          name: 'interfaceLanguage',
+          value: val,
+        })
+      },
     },
     ...SharedComputedObject(),
     ...mapState({
-      blockExpirationSupported: state => state.instance.blockExpiration,
-    })
+      blockExpirationSupported: (state) => state.instance.blockExpiration,
+    }),
   },
   methods: {
-    updateProfile () {
+    updateProfile() {
       const params = {
-        language: localeService.internalToBackendLocaleMulti(this.emailLanguage)
+        language: localeService.internalToBackendLocaleMulti(
+          this.emailLanguage,
+        ),
       }
 
       this.$store.state.api.backendInteractor
@@ -63,19 +68,19 @@ const GeneralTab = {
           this.$store.commit('setCurrentUser', user)
         })
     },
-    updateFont (key, value) {
+    updateFont(key, value) {
       this.$store.dispatch('setOption', {
         name: 'theme3hacks',
         value: {
           ...this.mergedConfig.theme3hacks,
           fonts: {
             ...this.mergedConfig.theme3hacks.fonts,
-            [key]: value
-          }
-        }
+            [key]: value,
+          },
+        },
       })
     },
-  }
+  },
 }
 
 export default GeneralTab

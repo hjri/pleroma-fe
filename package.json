@@ -1,6 +1,6 @@
 {
   "name": "pleroma_fe",
-  "version": "2.9.3",
+  "version": "2.10.0",
   "description": "Pleroma frontend, the default frontend of Pleroma social network server",
   "author": "Pleroma contributors <https://git.pleroma.social/pleroma/pleroma-fe/-/blob/develop/CONTRIBUTORS.md>",
   "private": false,
@@ -13,9 +13,11 @@
     "e2e:pw": "playwright test --config test/e2e-playwright/playwright.config.mjs",
     "e2e": "sh ./tools/e2e/run.sh",
     "test": "yarn run unit && yarn run e2e",
-    "stylelint": "yarn exec stylelint '**/*.scss' '**/*.vue'",
-    "lint": "eslint src test/unit/specs test/e2e/specs test/e2e-playwright/specs test/e2e-playwright/playwright.config.mjs",
-    "lint-fix": "eslint --fix src test/unit/specs test/e2e/specs test/e2e-playwright/specs test/e2e-playwright/playwright.config.mjs"
+    "ci-biome": "yarn exec biome check",
+    "ci-eslint": "yarn exec eslint",
+    "ci-stylelint": "yarn exec stylelint '**/*.scss' '**/*.vue'",
+    "lint": "yarn ci-biome; yarn ci-eslint; yarn ci-stylelint",
+    "lint-fix": "yarn exec eslint --fix; yarn exec stylelint '**/*.scss' '**/*.vue' --fix; biome check --write"
   },
   "dependencies": {
     "@babel/runtime": "7.28.4",
@@ -60,6 +62,7 @@
     "@babel/plugin-transform-runtime": "7.28.5",
     "@babel/preset-env": "7.28.5",
     "@babel/register": "7.28.3",
+    "@biomejs/biome": "2.3.11",
     "@ungap/event-target": "0.2.4",
     "@vitejs/plugin-vue": "^5.2.1",
     "@vitejs/plugin-vue-jsx": "^4.1.1",
@@ -78,7 +81,6 @@
     "cross-spawn": "7.0.6",
     "custom-event-polyfill": "1.0.7",
     "eslint": "9.39.2",
-    "vue-eslint-parser": "10.2.0",
     "eslint-config-standard": "17.1.0",
     "eslint-formatter-friendly": "7.0.0",
     "eslint-plugin-import": "2.32.0",
@@ -113,7 +115,8 @@
     "vite": "^6.1.0",
     "vite-plugin-eslint2": "^5.0.3",
     "vite-plugin-stylelint": "^6.0.0",
-    "vitest": "^3.0.7"
+    "vitest": "^3.0.7",
+    "vue-eslint-parser": "10.2.0"
   },
   "type": "module",
   "engines": {

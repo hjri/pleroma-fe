@@ -1,7 +1,8 @@
-import escape from 'escape-html'
 import { parseLinkHeader } from '@web3-storage/parse-link-header'
-import { isStatusNotification } from '../notification_utils/notification_utils.js'
+import escapeHtml from 'escape-html'
 import punycode from 'punycode.js'
+
+import { isStatusNotification } from '../notification_utils/notification_utils.js'
 
 /** NOTICE! **
  * Do not initialize UI-generated data here.
@@ -21,16 +22,25 @@ const qvitterStatusType = (status) => {
     return 'retweet'
   }
 
-  if ((typeof status.uri === 'string' && status.uri.match(/(fave|objectType=Favourite)/)) ||
-      (typeof status.text === 'string' && status.text.match(/favorited/))) {
+  if (
+    (typeof status.uri === 'string' &&
+      status.uri.match(/(fave|objectType=Favourite)/)) ||
+    (typeof status.text === 'string' && status.text.match(/favorited/))
+  ) {
     return 'favorite'
   }
 
-  if (status.text.match(/deleted notice {{tag/) || status.qvitter_delete_notice) {
+  if (
+    status.text.match(/deleted notice {{tag/) ||
+    status.qvitter_delete_notice
+  ) {
     return 'deletion'
   }
 
-  if (status.text.match(/started following/) || status.activity_type === 'follow') {
+  if (
+    status.text.match(/started following/) ||
+    status.activity_type === 'follow'
+  ) {
     return 'follow'
   }
 
@@ -39,9 +49,9 @@ const qvitterStatusType = (status) => {
 
 export const parseUser = (data) => {
   const output = {}
-  const masto = Object.prototype.hasOwnProperty.call(data, 'acct')
+  const masto = Object.hasOwn(data, 'acct')
   // case for users in "mentions" property for statuses in MastoAPI
-  const mastoShort = masto && !Object.prototype.hasOwnProperty.call(data, 'avatar')
+  const mastoShort = masto && !Object.hasOwn(data, 'avatar')
 
   output.inLists = null
   output.id = String(data.id)
@@ -53,11 +63,13 @@ export const parseUser = (data) => {
     output.statusnet_profile_url = data.url
 
     if (Object.hasOwn(data, 'mute_expires_at')) {
-      output.mute_expires_at = data.mute_expires_at == null ? false : data.mute_expires_at
+      output.mute_expires_at =
+        data.mute_expires_at == null ? false : data.mute_expires_at
     }
 
     if (Object.hasOwn(data, 'block_expires_at')) {
-      output.block_expires_at = data.block_expires_at == null ? false : data.block_expires_at
+      output.block_expires_at =
+        data.block_expires_at == null ? false : data.block_expires_at
     }
 
     // There's nothing else to get
@@ -66,7 +78,7 @@ export const parseUser = (data) => {
     }
 
     output.emoji = data.emojis
-    output.name = escape(data.display_name)
+    output.name = escapeHtml(data.display_name)
     output.name_html = output.name
     output.name_unescaped = data.display_name
 
@@ -75,16 +87,16 @@ export const parseUser = (data) => {
     output.description_html = data.note
 
     output.fields = data.fields
-    output.fields_html = data.fields.map(field => {
+    output.fields_html = data.fields.map((field) => {
       return {
-        name: escape(field.name),
-        value: field.value
+        name: escapeHtml(field.name),
+        value: field.value,
       }
     })
-    output.fields_text = data.fields.map(field => {
+    output.fields_text = data.fields.map((field) => {
       return {
         name: unescape(field.name.replace(/<[^>]*>/g, '')),
-        value: unescape(field.value.replace(/<[^>]*>/g, ''))
+        value: unescape(field.value.replace(/<[^>]*>/g, '')),
       }
     })
 
@@ -125,7 +137,7 @@ export const parseUser = (data) => {
 
       output.rights = {
         moderator: data.pleroma.is_moderator,
-        admin: data.pleroma.is_admin
+        admin: data.pleroma.is_admin,
       }
       // TODO: Clean up in UI? This is duplication from what BE does for qvitterapi
       if (output.rights.admin) {
@@ -155,13 +167,10 @@ export const parseUser = (data) => {
           'moderation_log_read',
           'announcements_manage_announcements',
           'emoji_manage_emoji',
-          'statistics_read'
+          'statistics_read',
         ]
       } else if (data.pleroma.is_moderator) {
-        output.privileges = [
-          'messages_delete',
-          'reports_manage_reports'
-        ]
+        output.privileges = ['messages_delete', 'reports_manage_reports']
       } else {
         output.privileges = []
       }
@@ -209,7 +218,7 @@ export const parseUser = (data) => {
     if (data.rights) {
       output.rights = {
         moderator: data.rights.delete_others_notice,
-        admin: data.rights.admin
+        admin: data.rights.admin,
       }
     }
     output.no_rich_text = data.no_rich_text
@@ -227,7 +236,7 @@ export const parseUser = (data) => {
       muting: data.muted,
       blocking: data.statusnet_blocking,
       followed_by: data.follows_you,
-      following: data.following
+      following: data.following,
     }
   }
 
@@ -243,9 +252,10 @@ export const parseUser = (data) => {
 
     // deactivated was changed to is_active in Pleroma 2.3.0
     // so check if is_active is present
-    output.deactivated = typeof data.pleroma.is_active !== 'undefined'
-      ? !data.pleroma.is_active // new backend
-      : data.pleroma.deactivated // old backend
+    output.deactivated =
+      typeof data.pleroma.is_active !== 'undefined'
+        ? !data.pleroma.is_active // new backend
+        : data.pleroma.deactivated // old backend
 
     output.notification_settings = data.pleroma.notification_settings
     output.unread_chat_count = data.pleroma.unread_chat_count
@@ -275,7 +285,7 @@ export const parseUser = (data) => {
 
 export const parseAttachment = (data) => {
   const output = {}
-  const masto = !Object.prototype.hasOwnProperty.call(data, 'oembed')
+  const masto = !Object.hasOwn(data, 'oembed')
 
   if (masto) {
     // Not exactly same...
@@ -306,7 +316,7 @@ export const parseSource = (data) => {
 
 export const parseStatus = (data) => {
   const output = {}
-  const masto = Object.prototype.hasOwnProperty.call(data, 'account')
+  const masto = Object.hasOwn(data, 'account')
 
   if (masto) {
     output.favorited = data.favourited
@@ -330,14 +340,19 @@ export const parseStatus = (data) => {
     const { pleroma } = data
 
     if (data.pleroma) {
-      output.text = pleroma.content ? data.pleroma.content['text/plain'] : data.content
-      output.summary = pleroma.spoiler_text ? data.pleroma.spoiler_text['text/plain'] : data.spoiler_text
+      output.text = pleroma.content
+        ? data.pleroma.content['text/plain']
+        : data.content
+      output.summary = pleroma.spoiler_text
+        ? data.pleroma.spoiler_text['text/plain']
+        : data.spoiler_text
       output.statusnet_conversation_id = data.pleroma.conversation_id
       output.is_local = pleroma.local
       output.in_reply_to_screen_name = pleroma.in_reply_to_account_acct
       output.thread_muted = pleroma.thread_muted
       output.emoji_reactions = pleroma.emoji_reactions
-      output.parent_visible = pleroma.parent_visible === undefined ? true : pleroma.parent_visible
+      output.parent_visible =
+        pleroma.parent_visible === undefined ? true : pleroma.parent_visible
       output.quote_visible = pleroma.quote_visible || true
       output.quotes_count = pleroma.quotes_count
       output.bookmark_folder_id = pleroma.bookmark_folder
@@ -347,9 +362,10 @@ export const parseStatus = (data) => {
     }
 
     const quoteRaw = pleroma?.quote || data.quote
-    const quoteData =  quoteRaw ? parseStatus(quoteRaw) : undefined
+    const quoteData = quoteRaw ? parseStatus(quoteRaw) : undefined
     output.quote = quoteData
-    output.quote_id = data.quote?.id ?? data.quote_id ?? quoteData?.id ?? pleroma.quote_id
+    output.quote_id =
+      data.quote?.id ?? data.quote_id ?? quoteData?.id ?? pleroma.quote_id
     output.quote_url = data.quote?.url ?? quoteData?.url ?? pleroma.quote_url
 
     output.in_reply_to_status_id = data.in_reply_to_id
@@ -360,13 +376,13 @@ export const parseStatus = (data) => {
       output.retweeted_status = parseStatus(data.reblog)
     }
 
-    output.summary_raw_html = escape(data.spoiler_text)
+    output.summary_raw_html = escapeHtml(data.spoiler_text)
     output.external_url = data.url
     output.poll = data.poll
     if (output.poll) {
-      output.poll.options = (output.poll.options || []).map(field => ({
+      output.poll.options = (output.poll.options || []).map((field) => ({
         ...field,
-        title_html: escape(field.title)
+        title_html: escapeHtml(field.title),
       }))
     }
     output.pinned = data.pinned
@@ -425,10 +441,13 @@ export const parseStatus = (data) => {
 
   output.user = parseUser(masto ? data.account : data.user)
 
-  output.attentions = ((masto ? data.mentions : data.attentions) || []).map(parseUser)
+  output.attentions = ((masto ? data.mentions : data.attentions) || []).map(
+    parseUser,
+  )
 
-  output.attachments = ((masto ? data.media_attachments : data.attachments) || [])
-    .map(parseAttachment)
+  output.attachments = (
+    (masto ? data.media_attachments : data.attachments) || []
+  ).map(parseAttachment)
 
   const retweetedStatus = masto ? data.reblog : data.retweeted_status
   if (retweetedStatus) {
@@ -438,7 +457,7 @@ export const parseStatus = (data) => {
   output.favoritedBy = []
   output.rebloggedBy = []
 
-  if (Object.prototype.hasOwnProperty.call(data, 'originalStatus')) {
+  if (Object.hasOwn(data, 'originalStatus')) {
     Object.assign(output, data.originalStatus)
   }
 
@@ -448,9 +467,9 @@ export const parseStatus = (data) => {
 export const parseNotification = (data) => {
   const mastoDict = {
     favourite: 'like',
-    reblog: 'repeat'
+    reblog: 'repeat',
   }
-  const masto = !Object.prototype.hasOwnProperty.call(data, 'ntype')
+  const masto = !Object.hasOwn(data, 'ntype')
   const output = {}
 
   if (masto) {
@@ -458,10 +477,11 @@ export const parseNotification = (data) => {
     output.seen = data.pleroma.is_seen
     // TODO: null check should be a temporary fix, I guess.
     // Investigate why backend does this.
-    output.status = isStatusNotification(output.type) && data.status !== null ? parseStatus(data.status) : null
-    output.target = output.type !== 'move'
-      ? null
-      : parseUser(data.target)
+    output.status =
+      isStatusNotification(output.type) && data.status !== null
+        ? parseStatus(data.status)
+        : null
+    output.target = output.type !== 'move' ? null : parseUser(data.target)
     output.from_profile = parseUser(data.account)
     output.emoji = data.emoji
     output.emoji_url = data.emoji_url
@@ -476,11 +496,15 @@ export const parseNotification = (data) => {
     const parsedNotice = parseStatus(data.notice)
     output.type = data.ntype
     output.seen = Boolean(data.is_seen)
-    output.status = output.type === 'like'
-      ? parseStatus(data.notice.favorited_status)
-      : parsedNotice
+    output.status =
+      output.type === 'like'
+        ? parseStatus(data.notice.favorited_status)
+        : parsedNotice
     output.action = parsedNotice
-    output.from_profile = output.type === 'pleroma:chat_mention' ? parseUser(data.account) : parseUser(data.from_profile)
+    output.from_profile =
+      output.type === 'pleroma:chat_mention'
+        ? parseUser(data.account)
+        : parseUser(data.from_profile)
   }
 
   output.created_at = new Date(data.created_at)
@@ -491,7 +515,10 @@ export const parseNotification = (data) => {
 
 const isNsfw = (status) => {
   const nsfwRegex = /#nsfw/i
-  return (status.tags || []).includes('nsfw') || !!(status.text || '').match(nsfwRegex)
+  return (
+    (status.tags || []).includes('nsfw') ||
+    !!(status.text || '').match(nsfwRegex)
+  )
 }
 
 export const parseLinkHeaderPagination = (linkHeader, opts = {}) => {
@@ -503,7 +530,7 @@ export const parseLinkHeaderPagination = (linkHeader, opts = {}) => {
 
   return {
     maxId: flakeId ? maxId : parseInt(maxId, 10),
-    minId: flakeId ? minId : parseInt(minId, 10)
+    minId: flakeId ? minId : parseInt(minId, 10),
   }
 }
 
@@ -518,8 +545,12 @@ export const parseChat = (chat) => {
 }
 
 export const parseChatMessage = (message) => {
-  if (!message) { return }
-  if (message.isNormalized) { return message }
+  if (!message) {
+    return
+  }
+  if (message.isNormalized) {
+    return message
+  }
   const output = message
   output.id = message.id
   output.created_at = new Date(message.created_at)

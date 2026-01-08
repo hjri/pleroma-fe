@@ -1,32 +1,29 @@
 import DialogModal from 'src/components/dialog_modal/dialog_modal.vue'
 
 const DraftCloser = {
-  data () {
+  data() {
     return {
-      showing: false
+      showing: false,
     }
   },
   components: {
-    DialogModal
+    DialogModal,
   },
-  emits: [
-    'save',
-    'discard'
-  ],
+  emits: ['save', 'discard'],
   computed: {
-    action () {
+    action() {
       if (this.$store.getters.mergedConfig.autoSaveDraft) {
         return 'save'
       } else {
         return this.$store.getters.mergedConfig.unsavedPostAction
       }
     },
-    shouldConfirm () {
+    shouldConfirm() {
       return this.action === 'confirm'
-    }
+    },
   },
   methods: {
-    requestClose () {
+    requestClose() {
       if (this.shouldConfirm) {
         this.showing = true
       } else if (this.action === 'save') {
@@ -35,18 +32,18 @@ const DraftCloser = {
         this.discard()
       }
     },
-    save () {
+    save() {
       this.$emit('save')
       this.showing = false
     },
-    discard () {
+    discard() {
       this.$emit('discard')
       this.showing = false
     },
-    cancel () {
+    cancel() {
       this.showing = false
-    }
-  }
+    },
+  },
 }
 
 export default DraftCloser
