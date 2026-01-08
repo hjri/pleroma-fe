@@ -145,6 +145,7 @@ e2e-pleroma:
     - himem
   variables:
     PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+    FF_NETWORK_PER_BUILD: "true"
     PLEROMA_IMAGE: git.pleroma.social:5050/pleroma/pleroma:stable
     POSTGRES_USER: pleroma
     POSTGRES_PASSWORD: pleroma
