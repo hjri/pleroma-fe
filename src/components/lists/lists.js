@@ -2,27 +2,27 @@ import { useListsStore } from 'src/stores/lists'
 import ListsCard from '../lists_card/lists_card.vue'
 
 const Lists = {
-  data () {
+  data() {
     return {
-      isNew: false
+      isNew: false,
     }
   },
   components: {
-    ListsCard
+    ListsCard,
   },
   computed: {
-    lists () {
+    lists() {
       return useListsStore().allLists
-    }
+    },
   },
   methods: {
-    cancelNewList () {
+    cancelNewList() {
       this.isNew = false
     },
-    newList () {
+    newList() {
       this.isNew = true
-    }
-  }
+    },
+  },
 }
 
 export default Lists

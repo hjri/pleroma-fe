@@ -1,23 +1,26 @@
-import { muteFilterHits } from '../status_parser/status_parser.js'
-import { showDesktopNotification } from '../desktop_notification_utils/desktop_notification_utils.js'
-import { useI18nStore } from 'src/stores/i18n.js'
-import { useAnnouncementsStore } from 'src/stores/announcements'
-
 import FaviconService from 'src/services/favicon_service/favicon_service.js'
+import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useI18nStore } from 'src/stores/i18n.js'
+import { showDesktopNotification } from '../desktop_notification_utils/desktop_notification_utils.js'
+import { muteFilterHits } from '../status_parser/status_parser.js'
 
-export const ACTIONABLE_NOTIFICATION_TYPES = new Set(['mention', 'pleroma:report', 'follow_request'])
+export const ACTIONABLE_NOTIFICATION_TYPES = new Set([
+  'mention',
+  'pleroma:report',
+  'follow_request',
+])
 
 let cachedBadgeUrl = null
 
-export const notificationsFromStore = store => store.state.notifications.data
+export const notificationsFromStore = (store) => store.state.notifications.data
 
-export const visibleTypes = store => {
+export const visibleTypes = (store) => {
   // When called from within a module we need rootGetters to access wider scope
   // however when called from a component (i.e. this.$store) we already have wider scope
   const rootGetters = store.rootGetters || store.getters
   const { notificationVisibility } = rootGetters.mergedConfig
 
-  return ([
+  return [
     notificationVisibility.likes && 'like',
     notificationVisibility.mentions && 'mention',
     notificationVisibility.statuses && 'status',
@@ -27,11 +30,18 @@ export const visibleTypes = store => {
     notificationVisibility.moves && 'move',
     notificationVisibility.emojiReactions && 'pleroma:emoji_reaction',
     notificationVisibility.reports && 'pleroma:report',
-    notificationVisibility.polls && 'poll'
-  ].filter(_ => _))
+    notificationVisibility.polls && 'poll',
+  ].filter((_) => _)
 }
 
-const statusNotifications = new Set(['like', 'mention', 'status', 'repeat', 'pleroma:emoji_reaction', 'poll'])
+const statusNotifications = new Set([
+  'like',
+  'mention',
+  'status',
+  'repeat',
+  'pleroma:emoji_reaction',
+  'poll',
+])
 
 export const isStatusNotification = (type) => statusNotifications.has(type)
 
@@ -69,22 +79,28 @@ export const maybeShowNotification = (store, notification) => {
 
   if (notification.seen) return
   if (!visibleTypes(store).includes(notification.type)) return
-  if (notification.type === 'mention' && isMutedNotification(notification)) return
+  if (notification.type === 'mention' && isMutedNotification(notification))
+    return
 
-  const notificationObject = prepareNotificationObject(notification, useI18nStore().i18n)
+  const notificationObject = prepareNotificationObject(
+    notification,
+    useI18nStore().i18n,
+  )
   showDesktopNotification(rootState, notificationObject)
 }
 
 export const filteredNotificationsFromStore = (store, types) => {
   // map is just to clone the array since sort mutates it and it causes some issues
-  const sortedNotifications = notificationsFromStore(store).map(_ => _).sort(sortById)
+  const sortedNotifications = notificationsFromStore(store)
+    .map((_) => _)
+    .sort(sortById)
   // TODO implement sorting elsewhere and make it optional
-  return sortedNotifications.filter(
-    (notification) => (types || visibleTypes(store)).includes(notification.type)
+  return sortedNotifications.filter((notification) =>
+    (types || visibleTypes(store)).includes(notification.type),
   )
 }
 
-export const unseenNotificationsFromStore = store => {
+export const unseenNotificationsFromStore = (store) => {
   const rootGetters = store.rootGetters || store.getters
   const ignoreInactionableSeen = rootGetters.mergedConfig.ignoreInactionableSeen
 
@@ -109,7 +125,7 @@ export const prepareNotificationObject = (notification, i18n) => {
   const notifObj = {
     tag: notification.id,
     type: notification.type,
-    badge: cachedBadgeUrl
+    badge: cachedBadgeUrl,
   }
   const status = notification.status
   const title = notification.from_profile.name
@@ -152,8 +168,13 @@ export const prepareNotificationObject = (notification, i18n) => {
   }
 
   // Shows first attached non-nsfw image, if any. Should add configuration for this somehow...
-  if (status && status.attachments && status.attachments.length > 0 && !status.nsfw &&
-    status.attachments[0].mimetype.startsWith('image/')) {
+  if (
+    status &&
+    status.attachments &&
+    status.attachments.length > 0 &&
+    !status.nsfw &&
+    status.attachments[0].mimetype.startsWith('image/')
+  ) {
     notifObj.image = status.attachments[0].url
   }
 
@@ -169,8 +190,14 @@ export const countExtraNotifications = (store) => {
   }
 
   return [
-    mergedConfig.showChatsInExtraNotifications ? rootGetters.unreadChatCount : 0,
-    mergedConfig.showAnnouncementsInExtraNotifications ? useAnnouncementsStore().unreadAnnouncementCount : 0,
-    mergedConfig.showFollowRequestsInExtraNotifications ? rootGetters.followRequestCount : 0
+    mergedConfig.showChatsInExtraNotifications
+      ? rootGetters.unreadChatCount
+      : 0,
+    mergedConfig.showAnnouncementsInExtraNotifications
+      ? useAnnouncementsStore().unreadAnnouncementCount
+      : 0,
+    mergedConfig.showFollowRequestsInExtraNotifications
+      ? rootGetters.followRequestCount
+      : 0,
   ].reduce((a, c) => a + c, 0)
 }

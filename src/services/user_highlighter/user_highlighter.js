@@ -1,4 +1,5 @@
 import { hex2rgb } from '../color_convert/color_convert.js'
+
 const highlightStyle = (prefs) => {
   if (prefs === undefined) return
   const { color, type } = prefs
@@ -11,7 +12,7 @@ const highlightStyle = (prefs) => {
   const customProps = {
     '--____highlight-solidColor': solidColor,
     '--____highlight-tintColor': tintColor,
-    '--____highlight-tintColor2': tintColor2
+    '--____highlight-tintColor2': tintColor2,
   }
   if (type === 'striped') {
     return {
@@ -20,15 +21,15 @@ const highlightStyle = (prefs) => {
         `${tintColor} ,`,
         `${tintColor} 20px,`,
         `${tintColor2} 20px,`,
-        `${tintColor2} 40px`
+        `${tintColor2} 40px`,
       ].join(' '),
       backgroundPosition: '0 0',
-      ...customProps
+      ...customProps,
     }
   } else if (type === 'solid') {
     return {
       backgroundColor: tintColor2,
-      ...customProps
+      ...customProps,
     }
   } else if (type === 'side') {
     return {
@@ -36,21 +37,18 @@ const highlightStyle = (prefs) => {
         'linear-gradient(to right,',
         `${solidColor} ,`,
         `${solidColor} 2px,`,
-        'transparent 6px'
+        'transparent 6px',
       ].join(' '),
       backgroundPosition: '0 0',
-      ...customProps
+      ...customProps,
     }
   }
 }
 
 const highlightClass = (user) => {
-  return 'USER____' + user.screen_name
-    ?.replace(/\./g, '_')
-    .replace(/@/g, '_AT_')
+  return (
+    'USER____' + user.screen_name?.replace(/\./g, '_').replace(/@/g, '_AT_')
+  )
 }
 
-export {
-  highlightClass,
-  highlightStyle
-}
+export { highlightClass, highlightStyle }

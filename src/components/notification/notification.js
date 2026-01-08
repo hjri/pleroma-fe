@@ -1,29 +1,34 @@
-import StatusContent from '../status_content/status_content.vue'
 import { mapState } from 'vuex'
+
+import RichContent from 'src/components/rich_content/rich_content.jsx'
+import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import { isStatusNotification } from '../../services/notification_utils/notification_utils.js'
+import {
+  highlightClass,
+  highlightStyle,
+} from '../../services/user_highlighter/user_highlighter.js'
+import ConfirmModal from '../confirm_modal/confirm_modal.vue'
+import Report from '../report/report.vue'
 import Status from '../status/status.vue'
+import StatusContent from '../status_content/status_content.vue'
+import Timeago from '../timeago/timeago.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
 import UserCard from '../user_card/user_card.vue'
-import Timeago from '../timeago/timeago.vue'
-import Report from '../report/report.vue'
 import UserLink from '../user_link/user_link.vue'
-import RichContent from 'src/components/rich_content/rich_content.jsx'
 import UserPopover from '../user_popover/user_popover.vue'
-import ConfirmModal from '../confirm_modal/confirm_modal.vue'
-import { isStatusNotification } from '../../services/notification_utils/notification_utils.js'
-import { highlightClass, highlightStyle } from '../../services/user_highlighter/user_highlighter.js'
-import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faCheck,
-  faTimes,
-  faStar,
-  faRetweet,
-  faUserPlus,
-  faEyeSlash,
-  faUser,
-  faSuitcaseRolling,
+  faCompressAlt,
   faExpandAlt,
-  faCompressAlt
+  faEyeSlash,
+  faRetweet,
+  faStar,
+  faSuitcaseRolling,
+  faTimes,
+  faUser,
+  faUserPlus,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -36,17 +41,17 @@ library.add(
   faEyeSlash,
   faSuitcaseRolling,
   faExpandAlt,
-  faCompressAlt
+  faCompressAlt,
 )
 
 const Notification = {
-  data () {
+  data() {
     return {
       selecting: false,
       statusExpanded: false,
       unmuted: false,
       showingApproveConfirmDialog: false,
-      showingDenyConfirmDialog: false
+      showingDenyConfirmDialog: false,
     }
   },
   props: ['notification'],
@@ -61,141 +66,158 @@ const Notification = {
     RichContent,
     UserPopover,
     UserLink,
-    ConfirmModal
+    ConfirmModal,
   },
-  mounted () {
+  mounted() {
     document.addEventListener('selectionchange', this.onContentSelect)
   },
-  unmounted () {
+  unmounted() {
     document.removeEventListener('selectionchange', this.onContentSelect)
   },
   methods: {
-    toggleStatusExpanded () {
+    toggleStatusExpanded() {
       if (!this.expandable) return
       this.statusExpanded = !this.statusExpanded
     },
-    onContentSelect () {
+    onContentSelect() {
       const { isCollapsed, anchorNode, offsetNode } = document.getSelection()
       if (isCollapsed) {
         this.selecting = false
         return
       }
-      const within = this.$refs.root.contains(anchorNode) || this.$refs.root.contains(offsetNode)
+      const within =
+        this.$refs.root.contains(anchorNode) ||
+        this.$refs.root.contains(offsetNode)
       if (within) {
         this.selecting = true
       } else {
         this.selecting = false
       }
     },
-    onContentClick (e) {
-      if (!this.selecting && !e.target.closest('a') && !e.target.closest('button')) {
+    onContentClick(e) {
+      if (
+        !this.selecting &&
+        !e.target.closest('a') &&
+        !e.target.closest('button')
+      ) {
         this.toggleStatusExpanded()
       }
     },
-    generateUserProfileLink (user) {
-      return generateProfileLink(user.id, user.screen_name, this.$store.state.instance.restrictedNicknames)
+    generateUserProfileLink(user) {
+      return generateProfileLink(
+        user.id,
+        user.screen_name,
+        this.$store.state.instance.restrictedNicknames,
+      )
     },
-    getUser (notification) {
+    getUser(notification) {
       return this.$store.state.users.usersObject[notification.from_profile.id]
     },
-    interacted () {
+    interacted() {
       this.$emit('interacted')
     },
-    toggleMute () {
+    toggleMute() {
       this.unmuted = !this.unmuted
     },
-    showApproveConfirmDialog () {
+    showApproveConfirmDialog() {
       this.showingApproveConfirmDialog = true
     },
-    hideApproveConfirmDialog () {
+    hideApproveConfirmDialog() {
       this.showingApproveConfirmDialog = false
     },
-    showDenyConfirmDialog () {
+    showDenyConfirmDialog() {
       this.showingDenyConfirmDialog = true
     },
-    hideDenyConfirmDialog () {
+    hideDenyConfirmDialog() {
       this.showingDenyConfirmDialog = false
     },
-    approveUser () {
+    approveUser() {
       if (this.shouldConfirmApprove) {
         this.showApproveConfirmDialog()
       } else {
         this.doApprove()
       }
     },
-    doApprove () {
+    doApprove() {
       this.$emit('interacted')
       this.$store.state.api.backendInteractor.approveUser({ id: this.user.id })
       this.$store.dispatch('removeFollowRequest', this.user)
-      this.$store.dispatch('markSingleNotificationAsSeen', { id: this.notification.id })
+      this.$store.dispatch('markSingleNotificationAsSeen', {
+        id: this.notification.id,
+      })
       this.$store.dispatch('updateNotification', {
         id: this.notification.id,
-        updater: notification => {
+        updater: (notification) => {
           notification.type = 'follow'
-        }
+        },
       })
       this.hideApproveConfirmDialog()
     },
-    denyUser () {
+    denyUser() {
       if (this.shouldConfirmDeny) {
         this.showDenyConfirmDialog()
       } else {
         this.doDeny()
       }
     },
-    doDeny () {
+    doDeny() {
       this.$emit('interacted')
-      this.$store.state.api.backendInteractor.denyUser({ id: this.user.id })
+      this.$store.state.api.backendInteractor
+        .denyUser({ id: this.user.id })
         .then(() => {
-          this.$store.dispatch('dismissNotificationLocal', { id: this.notification.id })
+          this.$store.dispatch('dismissNotificationLocal', {
+            id: this.notification.id,
+          })
           this.$store.dispatch('removeFollowRequest', this.user)
         })
       this.hideDenyConfirmDialog()
-    }
+    },
   },
   computed: {
-    userClass () {
+    userClass() {
       return highlightClass(this.notification.from_profile)
     },
-    userStyle () {
+    userStyle() {
       const highlight = this.$store.getters.mergedConfig.highlight
       const user = this.notification.from_profile
       return highlightStyle(highlight[user.screen_name])
     },
-    expandable () {
-      return (new Set(['like', 'pleroma:emoji_reaction', 'repeat', 'poll'])).has(this.notification.type)
+    expandable() {
+      return new Set(['like', 'pleroma:emoji_reaction', 'repeat', 'poll']).has(
+        this.notification.type,
+      )
     },
-    user () {
+    user() {
       return this.$store.getters.findUser(this.notification.from_profile.id)
     },
-    userProfileLink () {
+    userProfileLink() {
       return this.generateUserProfileLink(this.user)
     },
-    targetUser () {
+    targetUser() {
       return this.$store.getters.findUser(this.notification.target.id)
     },
-    targetUserProfileLink () {
+    targetUserProfileLink() {
       return this.generateUserProfileLink(this.targetUser)
     },
-    needMute () {
+    needMute() {
       return this.$store.getters.relationship(this.user.id).muting
     },
-    isStatusNotification () {
+    isStatusNotification() {
       return isStatusNotification(this.notification.type)
     },
-    mergedConfig () {
+    mergedConfig() {
       return this.$store.getters.mergedConfig
     },
-    shouldConfirmApprove () {
+    shouldConfirmApprove() {
       return this.mergedConfig.modalOnApproveFollow
     },
-    shouldConfirmDeny () {
+    shouldConfirmDeny() {
       return this.mergedConfig.modalOnDenyFollow
     },
     ...mapState({
-      currentUser: state => state.users.currentUser
-    })
-  }
+      currentUser: (state) => state.users.currentUser,
+    }),
+  },
 }
 
 export default Notification

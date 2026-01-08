@@ -6,8 +6,8 @@ export default {
     {
       directives: {
         textColor: '$mod(--parent 10)',
-        textAuto: 'no-auto'
-      }
-    }
-  ]
+        textAuto: 'no-auto',
+      },
+    },
+  ],
 }

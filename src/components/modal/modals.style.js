@@ -3,8 +3,6 @@ export default {
   selector: ['.modal-view', '#modal', '.shout-panel'],
   lazy: true,
   notEditable: true,
-  validInnerComponents: [
-    'Panel'
-  ],
-  defaultRules: []
+  validInnerComponents: ['Panel'],
+  defaultRules: [],
 }

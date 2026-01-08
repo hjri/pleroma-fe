@@ -1,37 +1,34 @@
-import vue from "eslint-plugin-vue";
-import js from "@eslint/js";
-import globals from "globals";
+import js from '@eslint/js'
+import { defineConfig, globalIgnores } from 'eslint/config'
+import vue from 'eslint-plugin-vue'
+import globals from 'globals'
 
-
-export default [
+export default defineConfig([
   ...vue.configs['flat/recommended'],
-  js.configs.recommended,
+  globalIgnores(['**/*.js', 'build/', 'dist/', 'config/']),
   {
-    files: ["**/*.js", "**/*.mjs", "**/*.vue"],
-    ignores: ["build/*.js", "config/*.js"],
-
+    files: ['src/**/*.vue'],
+    plugins: { js },
+    extends: ['js/recommended'],
     languageOptions: {
       ecmaVersion: 2024,
-      sourceType: "module",
+      sourceType: 'module',
 
       parserOptions: {
-        parser: "@babel/eslint-parser",
+        parser: '@babel/eslint-parser',
       },
       globals: {
         ...globals.browser,
         ...globals.vitest,
         ...globals.chai,
         ...globals.commonjs,
-        ...globals.serviceworker
-      }
+        ...globals.serviceworker,
+      },
     },
 
     rules: {
-      'arrow-parens': 0,
-      'generator-star-spacing': 0,
-      'no-debugger': 0,
       'vue/require-prop-types': 0,
       'vue/multi-word-component-names': 0,
-    }
-  }
-]
+    },
+  },
+])

@@ -1,16 +1,12 @@
-import Modal from 'src/components/modal/modal.vue'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import pleromaTanMask from 'src/assets/pleromatan_apology_mask.png'
 import pleromaTanFoxMask from 'src/assets/pleromatan_apology_fox_mask.png'
-
+import pleromaTanMask from 'src/assets/pleromatan_apology_mask.png'
+import Modal from 'src/components/modal/modal.vue'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
-import {
-  faTimes
-} from '@fortawesome/free-solid-svg-icons'
-library.add(
-  faTimes
-)
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faTimes)
 
 export const CURRENT_UPDATE_COUNTER = 1
 
@@ -18,55 +14,73 @@ const pleromaTan = '/static/pleromatan_apology.png'
 const pleromaTanFox = '/static/pleromatan_apology_fox.png'
 
 const UpdateNotification = {
-  data () {
+  data() {
     return {
       showingImage: false,
       pleromaTanVariant: Math.random() > 0.5 ? pleromaTan : pleromaTanFox,
-      showingMore: false
+      showingMore: false,
     }
   },
   components: {
-    Modal
+    Modal,
   },
   computed: {
-    pleromaTanStyles () {
-      const mask = this.pleromaTanVariant === pleromaTan ? pleromaTanMask : pleromaTanFoxMask
+    pleromaTanStyles() {
+      const mask =
+        this.pleromaTanVariant === pleromaTan
+          ? pleromaTanMask
+          : pleromaTanFoxMask
       return {
-        'shape-outside': 'url(' + mask + ')'
+        'shape-outside': 'url(' + mask + ')',
       }
     },
-    shouldShow () {
-      return !this.$store.state.instance.disableUpdateNotification &&
+    shouldShow() {
+      return (
+        !this.$store.state.instance.disableUpdateNotification &&
         this.$store.state.users.currentUser &&
-        useServerSideStorageStore().flagStorage.updateCounter < CURRENT_UPDATE_COUNTER &&
+        useServerSideStorageStore().flagStorage.updateCounter <
+          CURRENT_UPDATE_COUNTER &&
         !useServerSideStorageStore().prefsStorage.simple.dontShowUpdateNotifs
-    }
+      )
+    },
   },
   methods: {
-    toggleShow () {
+    toggleShow() {
       this.showingMore = !this.showingMore
     },
-    neverShowAgain () {
+    neverShowAgain() {
       this.toggleShow()
-      useServerSideStorageStore().setFlag({ flag: 'updateCounter', value: CURRENT_UPDATE_COUNTER })
-      useServerSideStorageStore().setPreference({ path: 'simple.dontShowUpdateNotifs', value: true })
+      useServerSideStorageStore().setFlag({
+        flag: 'updateCounter',
+        value: CURRENT_UPDATE_COUNTER,
+      })
+      useServerSideStorageStore().setPreference({
+        path: 'simple.dontShowUpdateNotifs',
+        value: true,
+      })
       useServerSideStorageStore().pushServerSideStorage()
     },
-    dismiss () {
-      useServerSideStorageStore().setFlag({ flag: 'updateCounter', value: CURRENT_UPDATE_COUNTER })
+    dismiss() {
+      useServerSideStorageStore().setFlag({
+        flag: 'updateCounter',
+        value: CURRENT_UPDATE_COUNTER,
+      })
       useServerSideStorageStore().pushServerSideStorage()
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.contentHeightNoImage = this.$refs.animatedText.scrollHeight
 
     // Workaround to get the text height only after mask loaded. A bit hacky.
     const newImg = new Image()
     newImg.onload = () => {
-      setTimeout(() => { this.showingImage = true }, 100)
+      setTimeout(() => {
+        this.showingImage = true
+      }, 100)
     }
-    newImg.src = this.pleromaTanVariant === pleromaTan ? pleromaTanMask : pleromaTanFoxMask
-  }
+    newImg.src =
+      this.pleromaTanVariant === pleromaTan ? pleromaTanMask : pleromaTanFoxMask
+  },
 }
 
 export default UpdateNotification

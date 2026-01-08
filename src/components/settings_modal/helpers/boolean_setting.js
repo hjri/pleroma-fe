@@ -5,27 +5,27 @@ export default {
   ...Setting,
   props: {
     ...Setting.props,
-    indeterminateState: [String, Object]
+    indeterminateState: [String, Object],
   },
   components: {
     ...Setting.components,
-    Checkbox
+    Checkbox,
   },
   computed: {
     ...Setting.computed,
-    isIndeterminate () {
+    isIndeterminate() {
       return this.visibleState === this.indeterminateState
-    }
+    },
   },
   methods: {
     ...Setting.methods,
-    getValue (e) {
+    getValue(e) {
       // Basic tri-state toggle implementation
       if (!!this.indeterminateState && !e && this.visibleState === true) {
         // If we have indeterminate state, switching from true to false first goes through indeterminate
         return this.indeterminateState
       }
       return e
-    }
-  }
+    },
+  },
 }

@@ -21,53 +21,44 @@ describe('Gallery', () => {
 
   it('one audio attachment', () => {
     local = {
-      attachments: [
-        { mimetype: 'audio/mpeg' }
-      ]
+      attachments: [{ mimetype: 'audio/mpeg' }],
     }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { audio: true, items: [{ mimetype: 'audio/mpeg' }] }
+      { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
     ])
   })
 
   it('one image attachment', () => {
     local = {
-      attachments: [
-        { mimetype: 'image/png' }
-      ]
+      attachments: [{ mimetype: 'image/png' }],
     }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { items: [{ mimetype: 'image/png' }] }
+      { items: [{ mimetype: 'image/png' }] },
     ])
   })
 
   it('one audio attachment and one image attachment', () => {
     local = {
-      attachments: [
-        { mimetype: 'audio/mpeg' },
-        { mimetype: 'image/png' }
-      ]
+      attachments: [{ mimetype: 'audio/mpeg' }, { mimetype: 'image/png' }],
     }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
       { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
-      { items: [{ mimetype: 'image/png' }] }
+      { items: [{ mimetype: 'image/png' }] },
     ])
   })
 
   it('has "size" key set to "hide"', () => {
     let local
     local = {
-      attachments: [
-        { mimetype: 'audio/mpeg' }
-      ],
-      size: 'hide'
+      attachments: [{ mimetype: 'audio/mpeg' }],
+      size: 'hide',
     }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { minimal: true, items: [{ mimetype: 'audio/mpeg' }] }
+      { minimal: true, items: [{ mimetype: 'audio/mpeg' }] },
     ])
 
     local = {
@@ -80,9 +71,9 @@ describe('Gallery', () => {
         { mimetype: 'audio/mpeg' },
         { mimetype: 'image/jpg' },
         { mimetype: 'image/png' },
-        { mimetype: 'image/jpg' }
+        { mimetype: 'image/jpg' },
       ],
-      size: 'hide'
+      size: 'hide',
     }
 
     // When defining `size: hide`, the `items` aren't
@@ -96,7 +87,7 @@ describe('Gallery', () => {
       { minimal: true, items: [{ mimetype: 'audio/mpeg' }] },
       { minimal: true, items: [{ mimetype: 'image/jpg' }] },
       { minimal: true, items: [{ mimetype: 'image/png' }] },
-      { minimal: true, items: [{ mimetype: 'image/jpg' }] }
+      { minimal: true, items: [{ mimetype: 'image/jpg' }] },
     ])
   })
 
@@ -104,12 +95,10 @@ describe('Gallery', () => {
   it('non-image/audio', () => {
     let local
     local = {
-      attachments: [
-        { mimetype: 'plain/text' }
-      ]
+      attachments: [{ mimetype: 'plain/text' }],
     }
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { minimal: true, items: [{ mimetype: 'plain/text' }] }
+      { minimal: true, items: [{ mimetype: 'plain/text' }] },
     ])
 
     // No grouping of non-image/audio items
@@ -117,13 +106,13 @@ describe('Gallery', () => {
       attachments: [
         { mimetype: 'plain/text' },
         { mimetype: 'plain/text' },
-        { mimetype: 'plain/text' }
-      ]
+        { mimetype: 'plain/text' },
+      ],
     }
     expect(Gallery.computed.rows.call(local)).to.eql([
       { minimal: true, items: [{ mimetype: 'plain/text' }] },
       { minimal: true, items: [{ mimetype: 'plain/text' }] },
-      { minimal: true, items: [{ mimetype: 'plain/text' }] }
+      { minimal: true, items: [{ mimetype: 'plain/text' }] },
     ])
 
     local = {
@@ -131,8 +120,8 @@ describe('Gallery', () => {
         { mimetype: 'image/png' },
         { mimetype: 'plain/text' },
         { mimetype: 'image/jpg' },
-        { mimetype: 'audio/mpeg' }
-      ]
+        { mimetype: 'audio/mpeg' },
+      ],
     }
     // NOTE / TODO: When defining `size: hide`, the `items` aren't
     // grouped and `audio` isn't set
@@ -140,7 +129,7 @@ describe('Gallery', () => {
       { items: [{ mimetype: 'image/png' }] },
       { minimal: true, items: [{ mimetype: 'plain/text' }] },
       { items: [{ mimetype: 'image/jpg' }] },
-      { audio: true, items: [{ mimetype: 'audio/mpeg' }] }
+      { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
     ])
   })
 
@@ -153,15 +142,22 @@ describe('Gallery', () => {
         { mimetype: 'image/jpg' },
         { mimetype: 'image/png' },
         { mimetype: 'image/jpg' },
-        { mimetype: 'image/jpg' }
-      ]
+        { mimetype: 'image/jpg' },
+      ],
     }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
       { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
       { items: [{ mimetype: 'image/png' }] },
       { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
-      { items: [{ mimetype: 'image/jpg' }, { mimetype: 'image/png' }, { mimetype: 'image/jpg' }, { mimetype: 'image/jpg' }] }
+      {
+        items: [
+          { mimetype: 'image/jpg' },
+          { mimetype: 'image/png' },
+          { mimetype: 'image/jpg' },
+          { mimetype: 'image/jpg' },
+        ],
+      },
     ])
 
     local = {
@@ -172,16 +168,22 @@ describe('Gallery', () => {
         { mimetype: 'image/jpg' },
         { mimetype: 'audio/mpeg' },
         { mimetype: 'image/png' },
-        { mimetype: 'audio/mpeg' }
-      ]
+        { mimetype: 'audio/mpeg' },
+      ],
     }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { items: [{ mimetype: 'image/jpg' }, { mimetype: 'image/png' }, { mimetype: 'image/jpg' }] },
+      {
+        items: [
+          { mimetype: 'image/jpg' },
+          { mimetype: 'image/png' },
+          { mimetype: 'image/jpg' },
+        ],
+      },
       { items: [{ mimetype: 'image/jpg' }] },
       { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
       { items: [{ mimetype: 'image/png' }] },
-      { audio: true, items: [{ mimetype: 'audio/mpeg' }] }
+      { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
     ])
 
     local = {
@@ -192,15 +194,28 @@ describe('Gallery', () => {
         { mimetype: 'image/jpg' },
         { mimetype: 'image/png' },
         { mimetype: 'image/png' },
-        { mimetype: 'image/jpg' }
-      ]
+        { mimetype: 'image/jpg' },
+      ],
     }
 
     // Group by three-per-row, unless there's one dangling, then stick it on the end of the last row
     // https://git.pleroma.social/pleroma/pleroma-fe/-/merge_requests/1785#note_98514
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { items: [{ mimetype: 'image/jpg' }, { mimetype: 'image/png' }, { mimetype: 'image/jpg' }] },
-      { items: [{ mimetype: 'image/jpg' }, { mimetype: 'image/png' }, { mimetype: 'image/png' }, { mimetype: 'image/jpg' }] }
+      {
+        items: [
+          { mimetype: 'image/jpg' },
+          { mimetype: 'image/png' },
+          { mimetype: 'image/jpg' },
+        ],
+      },
+      {
+        items: [
+          { mimetype: 'image/jpg' },
+          { mimetype: 'image/png' },
+          { mimetype: 'image/png' },
+          { mimetype: 'image/jpg' },
+        ],
+      },
     ])
 
     local = {
@@ -212,14 +227,26 @@ describe('Gallery', () => {
         { mimetype: 'image/png' },
         { mimetype: 'image/png' },
         { mimetype: 'image/jpg' },
-        { mimetype: 'image/png' }
-      ]
+        { mimetype: 'image/png' },
+      ],
     }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { items: [{ mimetype: 'image/jpg' }, { mimetype: 'image/png' }, { mimetype: 'image/jpg' }] },
-      { items: [{ mimetype: 'image/jpg' }, { mimetype: 'image/png' }, { mimetype: 'image/png' }] },
-      { items: [{ mimetype: 'image/jpg' }, { mimetype: 'image/png' }] }
+      {
+        items: [
+          { mimetype: 'image/jpg' },
+          { mimetype: 'image/png' },
+          { mimetype: 'image/jpg' },
+        ],
+      },
+      {
+        items: [
+          { mimetype: 'image/jpg' },
+          { mimetype: 'image/png' },
+          { mimetype: 'image/png' },
+        ],
+      },
+      { items: [{ mimetype: 'image/jpg' }, { mimetype: 'image/png' }] },
     ])
   })
 
@@ -231,13 +258,13 @@ describe('Gallery', () => {
       { mimetype: 'image/jpg' },
       { mimetype: 'image/png' },
       { mimetype: 'image/jpg' },
-      { mimetype: 'image/jpg' }
+      { mimetype: 'image/jpg' },
     ]
 
     local = { grid: true, attachments }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { grid: true, items: attachments }
+      { grid: true, items: attachments },
     ])
   })
 
@@ -247,7 +274,7 @@ describe('Gallery', () => {
       { mimetype: 'image/png' },
       { mimetype: 'image/jpg' },
       { mimetype: 'audio/mpeg' },
-      { mimetype: 'image/jpg' }
+      { mimetype: 'image/jpg' },
     ]
 
     let local
@@ -255,14 +282,14 @@ describe('Gallery', () => {
 
     expect(Gallery.computed.rows.call(local)).to.eql([
       { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
-      { items: [{ mimetype: 'image/png' }] }
+      { items: [{ mimetype: 'image/png' }] },
     ])
 
     local = { attachments, limit: 3 }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
       { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
-      { items: [{ mimetype: 'image/png' }, { mimetype: 'image/jpg' }] }
+      { items: [{ mimetype: 'image/png' }, { mimetype: 'image/jpg' }] },
     ])
 
     local = { attachments, limit: 4 }
@@ -270,7 +297,7 @@ describe('Gallery', () => {
     expect(Gallery.computed.rows.call(local)).to.eql([
       { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
       { items: [{ mimetype: 'image/png' }, { mimetype: 'image/jpg' }] },
-      { audio: true, items: [{ mimetype: 'audio/mpeg' }] }
+      { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
     ])
   })
 })

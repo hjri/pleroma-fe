@@ -1,24 +1,27 @@
+import {
+  requestFollow,
+  requestUnfollow,
+} from '../../services/follow_manipulate/follow_manipulate'
 import ConfirmModal from '../confirm_modal/confirm_modal.vue'
-import { requestFollow, requestUnfollow } from '../../services/follow_manipulate/follow_manipulate'
 export default {
   props: ['relationship', 'user', 'labelFollowing', 'buttonClass'],
   components: {
-    ConfirmModal
+    ConfirmModal,
   },
-  data () {
+  data() {
     return {
       inProgress: false,
-      showingConfirmUnfollow: false
+      showingConfirmUnfollow: false,
     }
   },
   computed: {
-    shouldConfirmUnfollow () {
+    shouldConfirmUnfollow() {
       return this.$store.getters.mergedConfig.modalOnUnfollow
     },
-    isPressed () {
+    isPressed() {
       return this.inProgress || this.relationship.following
     },
-    title () {
+    title() {
       if (this.inProgress || this.relationship.following) {
         return this.$t('user_card.follow_unfollow')
       } else if (this.relationship.requested) {
@@ -27,7 +30,7 @@ export default {
         return this.$t('user_card.follow')
       }
     },
-    label () {
+    label() {
       if (this.inProgress) {
         return this.$t('user_card.follow_progress')
       } else if (this.relationship.following) {
@@ -38,42 +41,47 @@ export default {
         return this.$t('user_card.follow')
       }
     },
-    disabled () {
+    disabled() {
       return this.inProgress || this.user.deactivated
-    }
+    },
   },
   methods: {
-    showConfirmUnfollow () {
+    showConfirmUnfollow() {
       this.showingConfirmUnfollow = true
     },
-    hideConfirmUnfollow () {
+    hideConfirmUnfollow() {
       this.showingConfirmUnfollow = false
     },
-    onClick () {
-      this.relationship.following || this.relationship.requested ? this.unfollow() : this.follow()
+    onClick() {
+      this.relationship.following || this.relationship.requested
+        ? this.unfollow()
+        : this.follow()
     },
-    follow () {
+    follow() {
       this.inProgress = true
       requestFollow(this.relationship.id, this.$store).then(() => {
         this.inProgress = false
       })
     },
-    unfollow () {
+    unfollow() {
       if (this.shouldConfirmUnfollow) {
         this.showConfirmUnfollow()
       } else {
         this.doUnfollow()
       }
     },
-    doUnfollow () {
+    doUnfollow() {
       const store = this.$store
       this.inProgress = true
       requestUnfollow(this.relationship.id, store).then(() => {
         this.inProgress = false
-        store.commit('removeStatus', { timeline: 'friends', userId: this.relationship.id })
+        store.commit('removeStatus', {
+          timeline: 'friends',
+          userId: this.relationship.id,
+        })
       })
 
       this.hideConfirmUnfollow()
-    }
-  }
+    },
+  },
 }

@@ -30,18 +30,18 @@ const languages = [
   'te',
   'uk',
   'zh',
-  'zh_Hant'
+  'zh_Hant',
 ]
 
 const specialJsonName = {
-  ja: 'ja_pedantic'
+  ja: 'ja_pedantic',
 }
 
 const langCodeToJsonName = (code) => specialJsonName[code] || code
 
 const langCodeToCldrName = (code) => code
 
-const ensureFinalFallback = codes => {
+const ensureFinalFallback = (codes) => {
   const codeList = Array.isArray(codes) ? codes : [codes]
   return codeList.includes('en') ? codeList : codeList.concat(['en'])
 }
@@ -50,5 +50,5 @@ export {
   languages,
   langCodeToJsonName,
   langCodeToCldrName,
-  ensureFinalFallback
+  ensureFinalFallback,
 }

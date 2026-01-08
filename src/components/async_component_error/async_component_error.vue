@@ -21,10 +21,10 @@
 export default {
   emits: ['resetAsyncComponent'],
   methods: {
-    retry () {
+    retry() {
       this.$emit('resetAsyncComponent')
-    }
-  }
+    },
+  },
 }
 </script>
 

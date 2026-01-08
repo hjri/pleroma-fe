@@ -1,28 +1,27 @@
-import { convert, brightness } from 'chromatism'
+import { brightness, convert } from 'chromatism'
 import sum from 'hash-sum'
 import { flattenDeep, sortBy } from 'lodash'
+
 import {
   alphaBlend,
   getTextColor,
-  rgba2css,
   mixrgb,
-  relativeLuminance
+  relativeLuminance,
+  rgba2css,
 } from '../color_convert/color_convert.js'
-
+import { deserializeShadow } from './iss_deserializer.js'
+import {
+  findRules,
+  genericRuleToSelector,
+  getAllPossibleCombinations,
+  normalizeCombination,
+  unroll,
+} from './iss_utils.js'
 import {
   colorFunctions,
+  process,
   shadowFunctions,
-  process
 } from './theme3_slot_functions.js'
-
-import {
-  unroll,
-  getAllPossibleCombinations,
-  genericRuleToSelector,
-  normalizeCombination,
-  findRules
-} from './iss_utils.js'
-import { deserializeShadow } from './iss_deserializer.js'
 
 // Ensuring the order of components
 const components = {
@@ -36,15 +35,20 @@ const components = {
   Panel: null,
   Chat: null,
   ChatMessage: null,
-  Button: null
+  Button: null,
 }
 
 export const findShadow = (shadows, { dynamicVars, staticVars }) => {
-  return (shadows || []).map(shadow => {
+  return (shadows || []).map((shadow) => {
     let targetShadow
     if (typeof shadow === 'string') {
       if (shadow.startsWith('$')) {
-        targetShadow = process(shadow, shadowFunctions, { findColor, findShadow }, { dynamicVars, staticVars })
+        targetShadow = process(
+          shadow,
+          shadowFunctions,
+          { findColor, findShadow },
+          { dynamicVars, staticVars },
+        )
       } else if (shadow.startsWith('--')) {
         // modifiers are completely unsupported here
         const variableSlot = shadow.substring(2)
@@ -56,21 +60,27 @@ export const findShadow = (shadows, { dynamicVars, staticVars }) => {
       targetShadow = shadow
     }
 
-    const shadowArray = Array.isArray(targetShadow) ? targetShadow : [targetShadow]
-    return shadowArray.map(s => ({
+    const shadowArray = Array.isArray(targetShadow)
+      ? targetShadow
+      : [targetShadow]
+    return shadowArray.map((s) => ({
       ...s,
-      color: findColor(s.color, { dynamicVars, staticVars })
+      color: findColor(s.color, { dynamicVars, staticVars }),
     }))
   })
 }
 
 export const findColor = (color, { dynamicVars, staticVars }) => {
   try {
-    if (typeof color !== 'string' || (!color.startsWith('--') && !color.startsWith('$'))) return color
+    if (
+      typeof color !== 'string' ||
+      (!color.startsWith('--') && !color.startsWith('$'))
+    )
+      return color
     let targetColor = null
     if (color.startsWith('--')) {
       // Modifier support is pretty much for v2 themes only
-      const [variable, modifier] = color.split(/,/g).map(str => str.trim())
+      const [variable, modifier] = color.split(/,/g).map((str) => str.trim())
       const variableSlot = variable.substring(2)
       if (variableSlot === 'stack') {
         const { r, g, b } = dynamicVars.stacked
@@ -81,7 +91,9 @@ export const findColor = (color, { dynamicVars, staticVars }) => {
           targetColor = { r, g, b }
         } else {
           const virtualSlot = variableSlot.replace(/^parent/, '')
-          targetColor = convert(dynamicVars.lowerLevelVirtualDirectivesRaw[virtualSlot]).rgb
+          targetColor = convert(
+            dynamicVars.lowerLevelVirtualDirectivesRaw[virtualSlot],
+          ).rgb
         }
       } else {
         const staticVar = staticVars[variableSlot]
@@ -98,18 +110,32 @@ ${JSON.stringify(dynamicVars, null, 2)}`)
       }
 
       if (modifier) {
-        const effectiveBackground = dynamicVars.lowerLevelBackground ?? targetColor
-        const isLightOnDark = relativeLuminance(convert(effectiveBackground).rgb) < 0.5
+        const effectiveBackground =
+          dynamicVars.lowerLevelBackground ?? targetColor
+        const isLightOnDark =
+          relativeLuminance(convert(effectiveBackground).rgb) < 0.5
         const mod = isLightOnDark ? 1 : -1
-        targetColor = brightness(Number.parseFloat(modifier) * mod, targetColor).rgb
+        targetColor = brightness(
+          Number.parseFloat(modifier) * mod,
+          targetColor,
+        ).rgb
       }
     }
 
     if (color.startsWith('$')) {
       try {
-        targetColor = process(color, colorFunctions, { findColor }, { dynamicVars, staticVars })
+        targetColor = process(
+          color,
+          colorFunctions,
+          { findColor },
+          { dynamicVars, staticVars },
+        )
       } catch (e) {
-        console.error('Failure executing color function', e ,'\n Function: ' + color)
+        console.error(
+          'Failure executing color function',
+          e,
+          '\n Function: ' + color,
+        )
         targetColor = '#FF00FF'
       }
     }
@@ -124,10 +150,17 @@ ${JSON.stringify(dynamicVars, null, 2)}\nError: ${e}`)
   }
 }
 
-const getTextColorAlpha = (directives, intendedTextColor, dynamicVars, staticVars) => {
+const getTextColorAlpha = (
+  directives,
+  intendedTextColor,
+  dynamicVars,
+  staticVars,
+) => {
   const opacity = directives.textOpacity
   const backgroundColor = convert(dynamicVars.lowerLevelBackground).rgb
-  const textColor = convert(findColor(intendedTextColor, { dynamicVars, staticVars })).rgb
+  const textColor = convert(
+    findColor(intendedTextColor, { dynamicVars, staticVars }),
+  ).rgb
   if (opacity === null || opacity === undefined || opacity >= 1) {
     return convert(textColor).hex
   }
@@ -148,26 +181,29 @@ const getTextColorAlpha = (directives, intendedTextColor, dynamicVars, staticVar
 // Loading all style.js[on] files dynamically
 const componentsContext = import.meta.glob(
   ['/src/**/*.style.js', '/src/**/*.style.json'],
-  { eager: true }
+  { eager: true },
 )
-Object.keys(componentsContext).forEach(key => {
+Object.keys(componentsContext).forEach((key) => {
   const component = componentsContext[key].default
   if (components[component.name] != null) {
-    console.warn(`Component in file ${key} is trying to override existing component ${component.name}! You have collisions/duplicates!`)
+    console.warn(
+      `Component in file ${key} is trying to override existing component ${component.name}! You have collisions/duplicates!`,
+    )
   }
   components[component.name] = component
 })
 
-Object.keys(components).forEach(key => {
+Object.keys(components).forEach((key) => {
   if (key === 'Root') return
-  components.Root.validInnerComponents = components.Root.validInnerComponents || []
+  components.Root.validInnerComponents =
+    components.Root.validInnerComponents || []
   components.Root.validInnerComponents.push(key)
 })
 
-Object.keys(components).forEach(key => {
+Object.keys(components).forEach((key) => {
   const component = components[key]
   const { validInnerComponents = [] } = component
-  validInnerComponents.forEach(inner => {
+  validInnerComponents.forEach((inner) => {
     const child = components[inner]
     component.possibleChildren = component.possibleChildren || []
     component.possibleChildren.push(child)
@@ -175,7 +211,6 @@ Object.keys(components).forEach(key => {
     child.possibleParents.push(component)
   })
 })
-
 
 const engineChecksum = sum(components)
 
@@ -206,7 +241,7 @@ export const init = ({
   liteMode = false,
   editMode = false,
   onlyNormalState = false,
-  initialStaticVars = {}
+  initialStaticVars = {},
 }) => {
   const rootComponentName = 'Root'
   if (!inputRuleset) throw new Error('Ruleset is null or undefined!')
@@ -216,10 +251,16 @@ export const init = ({
 
   const rulesetUnsorted = [
     ...Object.values(components)
-      .map(c => (c.defaultRules || []).map(r => ({ source: 'Built-in', component: c.name, ...r })))
+      .map((c) =>
+        (c.defaultRules || []).map((r) => ({
+          source: 'Built-in',
+          component: c.name,
+          ...r,
+        })),
+      )
       .reduce((acc, arr) => [...acc, ...arr], []),
-    ...inputRuleset
-  ].map(rule => {
+    ...inputRuleset,
+  ].map((rule) => {
     normalizeCombination(rule)
     let currentParent = rule.parent
     while (currentParent) {
@@ -245,8 +286,8 @@ export const init = ({
       aScore += a.variant !== 'normal' ? 100 : 0
       bScore += b.variant !== 'normal' ? 100 : 0
 
-      aScore += a.state.filter(x => x !== 'normal').length * 1000
-      bScore += b.state.filter(x => x !== 'normal').length * 1000
+      aScore += a.state.filter((x) => x !== 'normal').length * 1000
+      bScore += b.state.filter((x) => x !== 'normal').length * 1000
 
       aScore += a.component === 'Text' ? 1 : 0
       bScore += b.component === 'Text' ? 1 : 0
@@ -263,24 +304,44 @@ export const init = ({
     .map(({ data }) => data)
 
   if (!ultimateBackgroundColor) {
-    console.warn('No ultimate background color provided, falling back to panel color')
-    const rootRule = ruleset.findLast((x) => (x.component === 'Root' && x.directives?.['--bg']))
+    console.warn(
+      'No ultimate background color provided, falling back to panel color',
+    )
+    const rootRule = ruleset.findLast(
+      (x) => x.component === 'Root' && x.directives?.['--bg'],
+    )
     ultimateBackgroundColor = rootRule.directives['--bg'].split('|')[1].trim()
   }
 
-  const virtualComponents = new Set(Object.values(components).filter(c => c.virtual).map(c => c.name))
-  const transparentComponents = new Set(Object.values(components).filter(c => c.transparent).map(c => c.name))
-  const nonEditableComponents = new Set(Object.values(components).filter(c => c.notEditable).map(c => c.name))
+  const virtualComponents = new Set(
+    Object.values(components)
+      .filter((c) => c.virtual)
+      .map((c) => c.name),
+  )
+  const transparentComponents = new Set(
+    Object.values(components)
+      .filter((c) => c.transparent)
+      .map((c) => c.name),
+  )
+  const nonEditableComponents = new Set(
+    Object.values(components)
+      .filter((c) => c.notEditable)
+      .map((c) => c.name),
+  )
   const extraCompileComponents = new Set([])
 
-  Object.values(components).forEach(component => {
-    const relevantRules = ruleset.filter(r => r.component === component.name)
-    const backgrounds = relevantRules.map(r => r.directives.background).filter(x => x)
-    const opacities = relevantRules.map(r => r.directives.opacity).filter(x => x)
+  Object.values(components).forEach((component) => {
+    const relevantRules = ruleset.filter((r) => r.component === component.name)
+    const backgrounds = relevantRules
+      .map((r) => r.directives.background)
+      .filter((x) => x)
+    const opacities = relevantRules
+      .map((r) => r.directives.opacity)
+      .filter((x) => x)
     if (
-      backgrounds.some(x => x.match(/--parent/)) ||
-        opacities.some(x => x != null && x < 1))
-    {
+      backgrounds.some((x) => x.match(/--parent/)) ||
+      opacities.some((x) => x != null && x < 1)
+    ) {
       extraCompileComponents.add(component.name)
     }
   })
@@ -299,25 +360,26 @@ export const init = ({
         // FIXME hack for editor until it supports handling component backgrounds
         lowerLevelBackground = '#00FFFF'
       }
-      const lowerLevelVirtualDirectives = computed[lowerLevelSelector]?.virtualDirectives
-      const lowerLevelVirtualDirectivesRaw = computed[lowerLevelSelector]?.virtualDirectivesRaw
+      const lowerLevelVirtualDirectives =
+        computed[lowerLevelSelector]?.virtualDirectives
+      const lowerLevelVirtualDirectivesRaw =
+        computed[lowerLevelSelector]?.virtualDirectivesRaw
 
       const dynamicVars = computed[selector] || {
         lowerLevelSelector,
         lowerLevelBackground,
         lowerLevelVirtualDirectives,
-        lowerLevelVirtualDirectivesRaw
+        lowerLevelVirtualDirectivesRaw,
       }
 
       // Inheriting all of the applicable rules
       const existingRules = ruleset.filter(findRules(combination))
-      const computedDirectives =
-            existingRules
-              .map(r => r.directives)
-              .reduce((acc, directives) => ({ ...acc, ...directives }), {})
+      const computedDirectives = existingRules
+        .map((r) => r.directives)
+        .reduce((acc, directives) => ({ ...acc, ...directives }), {})
       const computedRule = {
         ...combination,
-        directives: computedDirectives
+        directives: computedDirectives,
       }
 
       computed[selector] = computed[selector] || {}
@@ -327,7 +389,8 @@ export const init = ({
       // avoid putting more stuff into actual CSS
       computed[selector].virtualDirectives = {}
       // but still be able to access it i.e. from --parent
-      computed[selector].virtualDirectivesRaw = computed[lowerLevelSelector]?.virtualDirectivesRaw || {}
+      computed[selector].virtualDirectivesRaw =
+        computed[lowerLevelSelector]?.virtualDirectivesRaw || {}
 
       if (virtualComponents.has(combination.component)) {
         const virtualName = [
@@ -335,22 +398,37 @@ export const init = ({
           combination.component.toLowerCase(),
           combination.variant === 'normal'
             ? ''
-            : combination.variant[0].toUpperCase() + combination.variant.slice(1).toLowerCase(),
-          ...sortBy(combination.state.filter(x => x !== 'normal')).map(state => state[0].toUpperCase() + state.slice(1).toLowerCase())
+            : combination.variant[0].toUpperCase() +
+              combination.variant.slice(1).toLowerCase(),
+          ...sortBy(combination.state.filter((x) => x !== 'normal')).map(
+            (state) => state[0].toUpperCase() + state.slice(1).toLowerCase(),
+          ),
         ].join('')
 
         let inheritedTextColor = computedDirectives.textColor
         let inheritedTextAuto = computedDirectives.textAuto
         let inheritedTextOpacity = computedDirectives.textOpacity
         let inheritedTextOpacityMode = computedDirectives.textOpacityMode
-        const lowerLevelTextSelector = [...selector.split(/ /g).slice(0, -1), soloSelector].join(' ')
+        const lowerLevelTextSelector = [
+          ...selector.split(/ /g).slice(0, -1),
+          soloSelector,
+        ].join(' ')
         const lowerLevelTextRule = computed[lowerLevelTextSelector]
 
-        if (inheritedTextColor == null || inheritedTextOpacity == null || inheritedTextOpacityMode == null) {
-          inheritedTextColor = computedDirectives.textColor ?? lowerLevelTextRule.textColor
-          inheritedTextAuto = computedDirectives.textAuto ?? lowerLevelTextRule.textAuto
-          inheritedTextOpacity = computedDirectives.textOpacity ?? lowerLevelTextRule.textOpacity
-          inheritedTextOpacityMode = computedDirectives.textOpacityMode ?? lowerLevelTextRule.textOpacityMode
+        if (
+          inheritedTextColor == null ||
+          inheritedTextOpacity == null ||
+          inheritedTextOpacityMode == null
+        ) {
+          inheritedTextColor =
+            computedDirectives.textColor ?? lowerLevelTextRule.textColor
+          inheritedTextAuto =
+            computedDirectives.textAuto ?? lowerLevelTextRule.textAuto
+          inheritedTextOpacity =
+            computedDirectives.textOpacity ?? lowerLevelTextRule.textOpacity
+          inheritedTextOpacityMode =
+            computedDirectives.textOpacityMode ??
+            lowerLevelTextRule.textOpacityMode
         }
 
         const newTextRule = {
@@ -360,26 +438,37 @@ export const init = ({
             textColor: inheritedTextColor,
             textAuto: inheritedTextAuto ?? 'preserve',
             textOpacity: inheritedTextOpacity,
-            textOpacityMode: inheritedTextOpacityMode
-          }
+            textOpacityMode: inheritedTextOpacityMode,
+          },
         }
 
         dynamicVars.inheritedBackground = lowerLevelBackground
         dynamicVars.stacked = convert(stacked[lowerLevelSelector]).rgb
 
-        const intendedTextColor = convert(findColor(inheritedTextColor, { dynamicVars, staticVars })).rgb
-        const textColor = newTextRule.directives.textAuto === 'no-auto'
-          ? intendedTextColor
-          : getTextColor(
-            convert(stacked[lowerLevelSelector]).rgb,
-            intendedTextColor,
-            newTextRule.directives.textAuto === 'preserve'
-          )
-        const virtualDirectives = { ...(computed[lowerLevelSelector].virtualDirectives || {}) }
-        const virtualDirectivesRaw = { ...(computed[lowerLevelSelector].virtualDirectivesRaw || {}) }
+        const intendedTextColor = convert(
+          findColor(inheritedTextColor, { dynamicVars, staticVars }),
+        ).rgb
+        const textColor =
+          newTextRule.directives.textAuto === 'no-auto'
+            ? intendedTextColor
+            : getTextColor(
+                convert(stacked[lowerLevelSelector]).rgb,
+                intendedTextColor,
+                newTextRule.directives.textAuto === 'preserve',
+              )
+        const virtualDirectives = {
+          ...(computed[lowerLevelSelector].virtualDirectives || {}),
+        }
+        const virtualDirectivesRaw = {
+          ...(computed[lowerLevelSelector].virtualDirectivesRaw || {}),
+        }
 
         // Storing color data in lower layer to use as custom css properties
-        virtualDirectives[virtualName] = getTextColorAlpha(newTextRule.directives, textColor, dynamicVars)
+        virtualDirectives[virtualName] = getTextColorAlpha(
+          newTextRule.directives,
+          textColor,
+          dynamicVars,
+        )
         virtualDirectivesRaw[virtualName] = textColor
 
         computed[lowerLevelSelector].virtualDirectives = virtualDirectives
@@ -391,13 +480,14 @@ export const init = ({
           ...combination,
           directives: {},
           virtualDirectives,
-          virtualDirectivesRaw
+          virtualDirectivesRaw,
         }
       } else {
         computed[selector] = computed[selector] || {}
 
         // TODO: DEFAULT TEXT COLOR
-        const lowerLevelStackedBackground = stacked[lowerLevelSelector] || convert(ultimateBackgroundColor).rgb
+        const lowerLevelStackedBackground =
+          stacked[lowerLevelSelector] || convert(ultimateBackgroundColor).rgb
 
         if (computedDirectives.background) {
           let inheritRule = null
@@ -405,27 +495,37 @@ export const init = ({
             findRules({
               component: combination.component,
               variant: combination.variant,
-              parent: combination.parent
-            })
+              parent: combination.parent,
+            }),
           )
           const lastVariantRule = variantRules[variantRules.length - 1]
           if (lastVariantRule) {
             inheritRule = lastVariantRule
           } else {
-            const normalRules = ruleset.filter(findRules({
-              component: combination.component,
-              parent: combination.parent
-            }))
+            const normalRules = ruleset.filter(
+              findRules({
+                component: combination.component,
+                parent: combination.parent,
+              }),
+            )
             const lastNormalRule = normalRules[normalRules.length - 1]
             inheritRule = lastNormalRule
           }
 
-          const inheritSelector = ruleToSelector({ ...inheritRule, parent: combination.parent }, true)
+          const inheritSelector = ruleToSelector(
+            { ...inheritRule, parent: combination.parent },
+            true,
+          )
           const inheritedBackground = computed[inheritSelector].background
 
           dynamicVars.inheritedBackground = inheritedBackground
 
-          const rgb = convert(findColor(computedDirectives.background, { dynamicVars, staticVars })).rgb
+          const rgb = convert(
+            findColor(computedDirectives.background, {
+              dynamicVars,
+              staticVars,
+            }),
+          ).rgb
 
           if (!stacked[selector]) {
             let blend
@@ -435,31 +535,48 @@ export const init = ({
             } else if (alpha <= 0) {
               blend = lowerLevelStackedBackground
             } else {
-              blend = alphaBlend(rgb, computedDirectives.opacity, lowerLevelStackedBackground)
+              blend = alphaBlend(
+                rgb,
+                computedDirectives.opacity,
+                lowerLevelStackedBackground,
+              )
             }
             stacked[selector] = blend
-            computed[selector].background = { ...rgb, a: computedDirectives.opacity ?? 1 }
+            computed[selector].background = {
+              ...rgb,
+              a: computedDirectives.opacity ?? 1,
+            }
           }
         }
 
         if (computedDirectives.shadow) {
-          dynamicVars.shadow = flattenDeep(findShadow(flattenDeep(computedDirectives.shadow), { dynamicVars, staticVars }))
+          dynamicVars.shadow = flattenDeep(
+            findShadow(flattenDeep(computedDirectives.shadow), {
+              dynamicVars,
+              staticVars,
+            }),
+          )
         }
 
         if (!stacked[selector]) {
           computedDirectives.background = 'transparent'
           computedDirectives.opacity = 0
           stacked[selector] = lowerLevelStackedBackground
-          computed[selector].background = { ...lowerLevelStackedBackground, a: 0 }
+          computed[selector].background = {
+            ...lowerLevelStackedBackground,
+            a: 0,
+          }
         }
 
         dynamicVars.stacked = stacked[selector]
         dynamicVars.background = computed[selector].background
 
-        const dynamicSlots = Object.entries(computedDirectives).filter(([k]) => k.startsWith('--'))
+        const dynamicSlots = Object.entries(computedDirectives).filter(([k]) =>
+          k.startsWith('--'),
+        )
 
         dynamicSlots.forEach(([k, v]) => {
-          const [type, value] = v.split('|').map(x => x.trim()) // woah, Extreme!
+          const [type, value] = v.split('|').map((x) => x.trim()) // woah, Extreme!
           switch (type) {
             case 'color': {
               const color = findColor(value, { dynamicVars, staticVars })
@@ -470,7 +587,10 @@ export const init = ({
               break
             }
             case 'shadow': {
-              const shadow = value.split(/,/g).map(s => s.trim()).filter(x => x)
+              const shadow = value
+                .split(/,/g)
+                .map((s) => s.trim())
+                .filter((x) => x)
               dynamicVars[k] = shadow
               if (combination.component === rootComponentName) {
                 staticVars[k.substring(2)] = shadow
@@ -491,81 +611,97 @@ export const init = ({
           dynamicVars,
           selector: cssSelector,
           ...combination,
-          directives: computedDirectives
+          directives: computedDirectives,
         }
 
         return rule
       }
     } catch (e) {
       const { component, variant, state } = combination
-      throw new Error(`Error processing combination ${component}.${variant}:${state.join(':')}: ${e}`)
+      throw new Error(
+        `Error processing combination ${component}.${variant}:${state.join(':')}: ${e}`,
+      )
     }
   }
 
   const processInnerComponent = (component, parent) => {
     const combinations = []
-    const {
-      states: originalStates = {},
-      variants: originalVariants = {}
-    } = component
+    const { states: originalStates = {}, variants: originalVariants = {} } =
+      component
 
     let validInnerComponents
     if (editMode) {
-      const temp = (component.validInnerComponentsLite || component.validInnerComponents || [])
-      validInnerComponents = temp
-        .filter(c => virtualComponents.has(c) && !nonEditableComponents.has(c))
+      const temp =
+        component.validInnerComponentsLite ||
+        component.validInnerComponents ||
+        []
+      validInnerComponents = temp.filter(
+        (c) => virtualComponents.has(c) && !nonEditableComponents.has(c),
+      )
     } else if (liteMode) {
-      validInnerComponents = (component.validInnerComponentsLite || component.validInnerComponents || [])
-    } else if (component.name === 'Root' || component.states != null || component.background?.includes('--parent')) {
+      validInnerComponents =
+        component.validInnerComponentsLite ||
+        component.validInnerComponents ||
+        []
+    } else if (
+      component.name === 'Root' ||
+      component.states != null ||
+      component.background?.includes('--parent')
+    ) {
       validInnerComponents = component.validInnerComponents || []
     } else {
-      validInnerComponents = component
-        .validInnerComponents
-          ?.filter(
-            c => virtualComponents.has(c)
-              || transparentComponents.has(c)
-              || extraCompileComponents.has(c)
-          )
-          || []
+      validInnerComponents =
+        component.validInnerComponents?.filter(
+          (c) =>
+            virtualComponents.has(c) ||
+            transparentComponents.has(c) ||
+            extraCompileComponents.has(c),
+        ) || []
     }
 
     // Normalizing states and variants to always include "normal"
     const states = { normal: '', ...originalStates }
     const variants = { normal: '', ...originalVariants }
-    const innerComponents = (validInnerComponents).map(name => {
+    const innerComponents = validInnerComponents.map((name) => {
       const result = components[name]
-      if (result === undefined) console.error(`Component ${component.name} references a component ${name} which does not exist!`)
+      if (result === undefined)
+        console.error(
+          `Component ${component.name} references a component ${name} which does not exist!`,
+        )
       return result
     })
 
     // Optimization: we only really need combinations without "normal" because all states implicitly have it
-    const permutationStateKeys = Object.keys(states).filter(s => s !== 'normal')
-    const stateCombinations = (onlyNormalState && !virtualComponents.has(component.name))
-      ? [
-          ['normal']
-        ]
-      : [
-          ['normal'],
-          ...getAllPossibleCombinations(permutationStateKeys)
-            .map(combination => ['normal', ...combination])
-            .filter(combo => {
-              // Optimization: filter out some hard-coded combinations that don't make sense
-              if (combo.indexOf('disabled') >= 0) {
-                return !(
-                  combo.indexOf('hover') >= 0 ||
+    const permutationStateKeys = Object.keys(states).filter(
+      (s) => s !== 'normal',
+    )
+    const stateCombinations =
+      onlyNormalState && !virtualComponents.has(component.name)
+        ? [['normal']]
+        : [
+            ['normal'],
+            ...getAllPossibleCombinations(permutationStateKeys)
+              .map((combination) => ['normal', ...combination])
+              .filter((combo) => {
+                // Optimization: filter out some hard-coded combinations that don't make sense
+                if (combo.indexOf('disabled') >= 0) {
+                  return !(
+                    combo.indexOf('hover') >= 0 ||
                     combo.indexOf('focused') >= 0 ||
                     combo.indexOf('pressed') >= 0
-                )
-              }
-              return true
-            })
-        ]
+                  )
+                }
+                return true
+              }),
+          ]
 
-    const stateVariantCombination = Object.keys(variants).map(variant => {
-      return stateCombinations.map(state => ({ variant, state }))
-    }).reduce((acc, x) => [...acc, ...x], [])
+    const stateVariantCombination = Object.keys(variants)
+      .map((variant) => {
+        return stateCombinations.map((state) => ({ variant, state }))
+      })
+      .reduce((acc, x) => [...acc, ...x], [])
 
-    stateVariantCombination.forEach(combination => {
+    stateVariantCombination.forEach((combination) => {
       combination.component = component.name
       combination.lazy = component.lazy || parent?.lazy
       combination.parent = parent
@@ -576,16 +712,16 @@ export const init = ({
       if (
         !liteMode &&
         parent?.component !== 'Root' &&
-          !virtualComponents.has(component.name) &&
-          !transparentComponents.has(component.name) &&
-          extraCompileComponents.has(component.name)
+        !virtualComponents.has(component.name) &&
+        !transparentComponents.has(component.name) &&
+        extraCompileComponents.has(component.name)
       ) {
         combination.lazy = true
       }
 
       combinations.push(combination)
 
-      innerComponents.forEach(innerComponent => {
+      innerComponents.forEach((innerComponent) => {
         combinations.push(...processInnerComponent(innerComponent, combination))
       })
     })
@@ -594,19 +730,23 @@ export const init = ({
   }
 
   const t0 = performance.now()
-  const combinations = processInnerComponent(components[rootComponentName] ?? components.Root)
+  const combinations = processInnerComponent(
+    components[rootComponentName] ?? components.Root,
+  )
   const t1 = performance.now()
   if (debug) {
     console.debug('Tree traveral took ' + (t1 - t0) + ' ms')
   }
 
-  const result = combinations.map((combination) => {
-    if (combination.lazy) {
-      return async () => processCombination(combination)
-    } else {
-      return processCombination(combination)
-    }
-  }).filter(x => x)
+  const result = combinations
+    .map((combination) => {
+      if (combination.lazy) {
+        return async () => processCombination(combination)
+      } else {
+        return processCombination(combination)
+      }
+    })
+    .filter((x) => x)
   const t2 = performance.now()
   if (debug) {
     console.debug('Eager processing took ' + (t2 - t1) + ' ms')
@@ -616,7 +756,7 @@ export const init = ({
   const eager = []
   const lazy = []
 
-  result.forEach(x => {
+  result.forEach((x) => {
     if (typeof x === 'function') {
       lazy.push(x)
     } else {
@@ -629,6 +769,6 @@ export const init = ({
     eager,
     staticVars,
     engineChecksum,
-    themeChecksum: sum([lazy, eager])
+    themeChecksum: sum([lazy, eager]),
   }
 }

@@ -1,5 +1,5 @@
-import Notifications from '../notifications/notifications.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+import Notifications from '../notifications/notifications.vue'
 
 const tabModeDict = {
   mentions: ['mention'],
@@ -8,26 +8,29 @@ const tabModeDict = {
   follows: ['follow'],
   reactions: ['pleroma:emoji_reaction'],
   reports: ['pleroma:report'],
-  moves: ['move']
+  moves: ['move'],
 }
 
 const Interactions = {
-  data () {
+  data() {
     return {
-      allowFollowingMove: this.$store.state.users.currentUser.allow_following_move,
+      allowFollowingMove:
+        this.$store.state.users.currentUser.allow_following_move,
       filterMode: tabModeDict.mentions,
-      canSeeReports: this.$store.state.users.currentUser.privileges.includes('reports_manage_reports')
+      canSeeReports: this.$store.state.users.currentUser.privileges.includes(
+        'reports_manage_reports',
+      ),
     }
   },
   methods: {
-    onModeSwitch (key) {
+    onModeSwitch(key) {
       this.filterMode = tabModeDict[key]
-    }
+    },
   },
   components: {
     Notifications,
-    TabSwitcher
-  }
+    TabSwitcher,
+  },
 }
 
 export default Interactions

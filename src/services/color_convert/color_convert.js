@@ -1,4 +1,4 @@
-import { invertLightness, contrastRatio, convert } from 'chromatism'
+import { contrastRatio, convert, invertLightness } from 'chromatism'
 
 // useful for visualizing color when debugging
 // const consoleColor = (color) => console.debug('%c##########', 'background: ' + color + '; color: ' + color)
@@ -19,9 +19,9 @@ export const rgb2hex = (r, g, b) => {
     return r
   }
   if (typeof r === 'object') {
-    ({ r, g, b } = r)
+    ;({ r, g, b } = r)
   }
-  [r, g, b] = [r, g, b].map(val => {
+  ;[r, g, b] = [r, g, b].map((val) => {
     val = Math.ceil(val)
     val = val < 0 ? 0 : val
     val = val > 255 ? 255 : val
@@ -137,9 +137,9 @@ export const alphaBlend = (fg, fga, bg) => {
   // Simplified https://en.wikipedia.org/wiki/Alpha_compositing#Alpha_blending
   // for opaque bg and transparent fg
   return {
-    r: (fg.r * fga + bg.r * (1 - fga)),
-    g: (fg.g * fga + bg.g * (1 - fga)),
-    b: (fg.b * fga + bg.b * (1 - fga))
+    r: fg.r * fga + bg.r * (1 - fga),
+    g: fg.g * fga + bg.g * (1 - fga),
+    b: fg.b * fga + bg.b * (1 - fga),
   }
 }
 
@@ -149,15 +149,16 @@ export const alphaBlend = (fg, fga, bg) => {
  * @param {Object} bedrock - layer at the very bottom
  * @param {[Object, Number]} layers[] - layers between text and bedrock
  */
-export const alphaBlendLayers = (bedrock, layers) => layers.reduce((acc, [color, opacity]) => {
-  return alphaBlend(color, opacity, acc)
-}, bedrock)
+export const alphaBlendLayers = (bedrock, layers) =>
+  layers.reduce((acc, [color, opacity]) => {
+    return alphaBlend(color, opacity, acc)
+  }, bedrock)
 
 export const invert = (rgb) => {
   return {
     r: 255 - rgb.r,
     g: 255 - rgb.g,
-    b: 255 - rgb.b
+    b: 255 - rgb.b,
   }
 }
 
@@ -174,7 +175,7 @@ export const hex2rgb = (hex) => {
     ? {
         r: parseInt(result[1], 16),
         g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16)
+        b: parseInt(result[3], 16),
       }
     : null
 }
@@ -190,7 +191,7 @@ export const mixrgb = (a, b) => {
   return {
     r: (a.r + b.r) / 2,
     g: (a.g + b.g) / 2,
-    b: (a.b + b.b) / 2
+    b: (a.b + b.b) / 2,
   }
 }
 
@@ -205,7 +206,7 @@ export const rgba2css = function (rgba) {
     r: 0,
     g: 0,
     b: 0,
-    a: 1
+    a: 1,
   }
 
   if (rgba !== null) {

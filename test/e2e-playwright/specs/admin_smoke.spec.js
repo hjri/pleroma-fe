@@ -1,5 +1,5 @@
 /* global process */
-import { test, expect } from 'playwright/test'
+import { expect, test } from 'playwright/test'
 
 const adminUsername = process.env.E2E_ADMIN_USERNAME || 'admin'
 const adminPassword = process.env.E2E_ADMIN_PASSWORD || 'adminadmin'
@@ -18,7 +18,9 @@ test('admin can open the admin settings modal', async ({ page }) => {
   await page.getByTitle('Administration').click()
 
   const modal = page.locator('.settings-modal-panel')
-  await expect(modal.getByRole('heading', { name: 'Administration' })).toBeVisible()
+  await expect(
+    modal.getByRole('heading', { name: 'Administration' }),
+  ).toBeVisible()
 
   await modal.getByRole('tab', { name: 'Emoji' }).click()
   await expect(modal.getByText('Emoji packs')).toBeVisible()

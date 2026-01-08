@@ -3,7 +3,10 @@ export const mentionMatchesUrl = (attention, url) => {
     return true
   }
   const [namepart, instancepart] = attention.screen_name.split('@')
-  const matchstring = new RegExp('://' + instancepart + '/.*' + namepart + '$', 'g')
+  const matchstring = new RegExp(
+    '://' + instancepart + '/.*' + namepart + '$',
+    'g',
+  )
 
   return !!url.match(matchstring)
 }
@@ -17,7 +20,8 @@ export const extractTagFromUrl = (url) => {
   const decoded = decodeURI(url)
   // https://git.pleroma.social/pleroma/elixir-libraries/linkify/-/blob/master/lib/linkify/parser.ex
   // https://www.pcre.org/original/doc/html/pcrepattern.html
-  const regex = /tag[s]*\/([\p{L}\p{N}_]*[\p{Alphabetic}_·\u{200c}][\p{L}\p{N}_·\p{M}\u{200c}]*)$/ug
+  const regex =
+    /tag[s]*\/([\p{L}\p{N}_]*[\p{Alphabetic}_·\u{200c}][\p{L}\p{N}_·\p{M}\u{200c}]*)$/gu
   const result = regex.exec(decoded)
   if (!result) {
     return false

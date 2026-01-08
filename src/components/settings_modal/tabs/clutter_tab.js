@@ -1,19 +1,16 @@
-import { mapState, mapActions } from 'pinia'
+import { mapActions, mapState } from 'pinia'
+import { v4 as uuidv4 } from 'uuid'
 import { mapState as mapVuexState } from 'vuex'
-import { v4 as uuidv4 } from 'uuid';
 
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
-
-import BooleanSetting from '../helpers/boolean_setting.vue'
-import ChoiceSetting from '../helpers/choice_setting.vue'
-import UnitSetting from '../helpers/unit_setting.vue'
-import IntegerSetting from '../helpers/integer_setting.vue'
-import HelpIndicator from '../helpers/help_indicator.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Select from 'src/components/select/select.vue'
-
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import BooleanSetting from '../helpers/boolean_setting.vue'
+import ChoiceSetting from '../helpers/choice_setting.vue'
+import HelpIndicator from '../helpers/help_indicator.vue'
+import IntegerSetting from '../helpers/integer_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
-
+import UnitSetting from '../helpers/unit_setting.vue'
 
 const ClutterTab = {
   components: {
@@ -23,23 +20,23 @@ const ClutterTab = {
     IntegerSetting,
     Checkbox,
     Select,
-    HelpIndicator
+    HelpIndicator,
   },
   computed: {
-    instanceSpecificPanelPresent () { return this.$store.state.instance.showInstanceSpecificPanel },
+    instanceSpecificPanelPresent() {
+      return this.$store.state.instance.showInstanceSpecificPanel
+    },
     ...SharedComputedObject(),
-    ...mapState(
-      useServerSideStorageStore,
-      {
-        muteFilters: store => Object.entries(store.prefsStorage.simple.muteFilters),
-        muteFiltersObject: store => store.prefsStorage.simple.muteFilters
-      }
-    ),
+    ...mapState(useServerSideStorageStore, {
+      muteFilters: (store) =>
+        Object.entries(store.prefsStorage.simple.muteFilters),
+      muteFiltersObject: (store) => store.prefsStorage.simple.muteFilters,
+    }),
     ...mapVuexState({
-      blockExpirationSupported: state => state.instance.blockExpiration
+      blockExpirationSupported: (state) => state.instance.blockExpiration,
     }),
     onMuteDefaultActionLv1: {
-      get () {
+      get() {
         const value = this.$store.state.config.onMuteDefaultAction
         if (value === 'ask' || value === 'forever') {
           return value
@@ -47,16 +44,19 @@ const ClutterTab = {
           return 'temporarily'
         }
       },
-      set (value) {
+      set(value) {
         let realValue = value
         if (value !== 'ask' && value !== 'forever') {
           realValue = '14d'
         }
-        this.$store.dispatch('setOption', { name: 'onMuteDefaultAction', value: realValue })
-      }
+        this.$store.dispatch('setOption', {
+          name: 'onMuteDefaultAction',
+          value: realValue,
+        })
+      },
     },
     onBlockDefaultActionLv1: {
-      get () {
+      get() {
         const value = this.$store.state.config.onBlockDefaultAction
         if (value === 'ask' || value === 'forever') {
           return value
@@ -64,29 +64,36 @@ const ClutterTab = {
           return 'temporarily'
         }
       },
-      set (value) {
+      set(value) {
         let realValue = value
         if (value !== 'ask' && value !== 'forever') {
           realValue = '14d'
         }
-        this.$store.dispatch('setOption', { name: 'onBlockDefaultAction', value: realValue })
-      }
+        this.$store.dispatch('setOption', {
+          name: 'onBlockDefaultAction',
+          value: realValue,
+        })
+      },
     },
-    muteFiltersDraft () {
+    muteFiltersDraft() {
       return Object.entries(this.muteFiltersDraftObject)
     },
-    muteFiltersExpired () {
+    muteFiltersExpired() {
       const now = Date.now()
-      return Object
-        .entries(this.muteFiltersDraftObject)
-        .filter(([, { expires }]) => expires != null && expires <= now)
-    }
+      return Object.entries(this.muteFiltersDraftObject).filter(
+        ([, { expires }]) => expires != null && expires <= now,
+      )
+    },
   },
   methods: {
-    ...mapActions(useServerSideStorageStore, ['setPreference', 'unsetPreference', 'pushServerSideStorage']),
-    getDatetimeLocal (timestamp) {
+    ...mapActions(useServerSideStorageStore, [
+      'setPreference',
+      'unsetPreference',
+      'pushServerSideStorage',
+    ]),
+    getDatetimeLocal(timestamp) {
       const date = new Date(timestamp)
-      const fmt = new Intl.NumberFormat("en-US", {minimumIntegerDigits: 2})
+      const fmt = new Intl.NumberFormat('en-US', { minimumIntegerDigits: 2 })
       const datetime = [
         date.getFullYear(),
         '-',
@@ -96,11 +103,11 @@ const ClutterTab = {
         'T',
         fmt.format(date.getHours()),
         ':',
-        fmt.format(date.getMinutes())
+        fmt.format(date.getMinutes()),
       ].join('')
       return datetime
     },
-    checkRegexValid (id) {
+    checkRegexValid(id) {
       const filter = this.muteFiltersObject[id]
       if (filter.type !== 'regexp') return true
       if (filter.type !== 'user_regexp') return true
@@ -114,19 +121,21 @@ const ClutterTab = {
       }
       return valid
     },
-    createFilter (filter = {
-      type: 'word',
-      value: '',
-      name: 'New Filter',
-      enabled: true,
-      expires: null,
-      hide: false,
-    }) {
+    createFilter(
+      filter = {
+        type: 'word',
+        value: '',
+        name: 'New Filter',
+        enabled: true,
+        expires: null,
+        hide: false,
+      },
+    ) {
       const newId = uuidv4()
 
       filter.order = this.muteFilters.length + 2
       this.muteFiltersDraftObject[newId] = filter
-      this.setPreference({ path: 'simple.muteFilters.' + newId , value: filter })
+      this.setPreference({ path: 'simple.muteFilters.' + newId, value: filter })
       this.pushServerSideStorage()
     },
     exportFilter(id) {
@@ -137,23 +146,23 @@ const ClutterTab = {
     importFilter() {
       this.filterImporter.importData()
     },
-    copyFilter (id) {
+    copyFilter(id) {
       const filter = { ...this.muteFiltersDraftObject[id] }
       const newId = uuidv4()
 
       this.muteFiltersDraftObject[newId] = filter
-      this.setPreference({ path: 'simple.muteFilters.' + newId , value: filter })
+      this.setPreference({ path: 'simple.muteFilters.' + newId, value: filter })
       this.pushServerSideStorage()
     },
-    deleteFilter (id) {
+    deleteFilter(id) {
       delete this.muteFiltersDraftObject[id]
-      this.unsetPreference({ path: 'simple.muteFilters.' + id , value: null })
+      this.unsetPreference({ path: 'simple.muteFilters.' + id, value: null })
       this.pushServerSideStorage()
     },
-    purgeExpiredFilters () {
+    purgeExpiredFilters() {
       this.muteFiltersExpired.forEach(([id]) => {
         delete this.muteFiltersDraftObject[id]
-        this.unsetPreference({ path: 'simple.muteFilters.' + id , value: null })
+        this.unsetPreference({ path: 'simple.muteFilters.' + id, value: null })
       })
       this.pushServerSideStorage()
     },
@@ -177,17 +186,20 @@ const ClutterTab = {
       this.muteFiltersDraftDirty[id] = true
     },
     saveFilter(id) {
-      this.setPreference({ path: 'simple.muteFilters.' + id , value: this.muteFiltersDraftObject[id] })
+      this.setPreference({
+        path: 'simple.muteFilters.' + id,
+        value: this.muteFiltersDraftObject[id],
+      })
       this.pushServerSideStorage()
       this.muteFiltersDraftDirty[id] = false
     },
   },
   // Updating nested properties
   watch: {
-    replyVisibility () {
+    replyVisibility() {
       this.$store.dispatch('queueFlushAll')
-    }
-  }
+    },
+  },
 }
 
 export default ClutterTab

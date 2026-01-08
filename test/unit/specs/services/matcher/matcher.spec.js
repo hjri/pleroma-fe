@@ -5,7 +5,7 @@ const localAttn = () => ({
   is_local: true,
   name: 'Guy',
   screen_name: 'person',
-  statusnet_profile_url: 'https://instance.com/users/person'
+  statusnet_profile_url: 'https://instance.com/users/person',
 })
 
 const externalAttn = () => ({
@@ -13,7 +13,7 @@ const externalAttn = () => ({
   is_local: false,
   name: 'Guy',
   screen_name: 'person@instance.com',
-  statusnet_profile_url: 'https://instance.com/users/person'
+  statusnet_profile_url: 'https://instance.com/users/person',
 })
 
 describe('MatcherService', () => {

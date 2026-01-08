@@ -36,16 +36,14 @@
 import Checkbox from '../checkbox/checkbox.vue'
 export default {
   components: {
-    Checkbox
+    Checkbox,
   },
-  props: [
-    'name', 'label', 'modelValue', 'fallback', 'disabled'
-  ],
+  props: ['name', 'label', 'modelValue', 'fallback', 'disabled'],
   emits: ['update:modelValue'],
   computed: {
-    present () {
+    present() {
       return typeof this.modelValue !== 'undefined'
-    }
-  }
+    },
+  },
 }
 </script>

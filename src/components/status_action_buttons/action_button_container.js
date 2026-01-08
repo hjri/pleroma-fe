@@ -1,92 +1,90 @@
-import ActionButton from './action_button.vue'
-import Popover from 'src/components/popover/popover.vue'
 import MuteConfirm from 'src/components/confirm_modal/mute_confirm.vue'
+import Popover from 'src/components/popover/popover.vue'
 import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
+import ActionButton from './action_button.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-  faUser,
+  faFolderTree,
   faGlobe,
-  faFolderTree
+  faUser,
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faUser,
-  faGlobe,
-  faFolderTree
-)
+library.add(faUser, faGlobe, faFolderTree)
 
 export default {
   components: {
     ActionButton,
     Popover,
     MuteConfirm,
-    UserTimedFilterModal
+    UserTimedFilterModal,
   },
   props: ['button', 'status'],
   emits: ['interacted'],
-  mounted () {
+  mounted() {
     if (this.button.name === 'mute') {
       this.$store.dispatch('fetchDomainMutes')
     }
   },
   computed: {
-    buttonClass () {
+    buttonClass() {
       return [
         this.button.name + '-button',
         {
           '-with-extra': this.button.name === 'bookmark',
           '-extra': this.extra,
-          '-quick': !this.extra
-        }
+          '-quick': !this.extra,
+        },
       ]
     },
-    user () {
+    user() {
       return this.status.user
     },
-    userIsMuted () {
+    userIsMuted() {
       return this.$store.getters.relationship(this.user.id).muting
     },
-    conversationIsMuted () {
+    conversationIsMuted() {
       return this.status.thread_muted
     },
-    domain () {
+    domain() {
       return this.user.fqn.split('@')[1]
     },
-    domainIsMuted () {
-      return new Set(this.$store.state.users.currentUser.domainMutes).has(this.domain)
-    }
+    domainIsMuted() {
+      return new Set(this.$store.state.users.currentUser.domainMutes).has(
+        this.domain,
+      )
+    },
   },
   methods: {
-    unmuteUser () {
+    unmuteUser() {
       return this.$store.dispatch('unmuteUser', this.user.id)
     },
-    unmuteConversation () {
+    unmuteConversation() {
       return this.$store.dispatch('unmuteConversation', { id: this.status.id })
     },
-    unmuteDomain () {
+    unmuteDomain() {
       return this.$store.dispatch('unmuteDomain', this.user.id)
     },
-    toggleUserMute () {
+    toggleUserMute() {
       if (this.userIsMuted) {
         this.unmuteUser()
       } else {
         this.$refs.confirmUser.optionallyPrompt()
       }
     },
-    toggleConversationMute () {
+    toggleConversationMute() {
       if (this.conversationIsMuted) {
         this.unmuteConversation()
       } else {
         this.$refs.confirmConversation.optionallyPrompt()
       }
     },
-    toggleDomainMute () {
+    toggleDomainMute() {
       if (this.domainIsMuted) {
         this.unmuteDomain()
       } else {
         this.$refs.confirmDomain.optionallyPrompt()
       }
-    }
-  }
+    },
+  },
 }

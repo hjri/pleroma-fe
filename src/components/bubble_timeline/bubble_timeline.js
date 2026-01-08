@@ -1,18 +1,20 @@
 import Timeline from '../timeline/timeline.vue'
+
 const BubbleTimeline = {
   components: {
-    Timeline
+    Timeline,
   },
   computed: {
-    timeline () { return this.$store.state.statuses.timelines.bubble }
+    timeline() {
+      return this.$store.state.statuses.timelines.bubble
+    },
   },
-  created () {
+  created() {
     this.$store.dispatch('startFetchingTimeline', { timeline: 'bubble' })
   },
-  unmounted () {
+  unmounted() {
     this.$store.dispatch('stopFetchingTimeline', 'bubble')
-  }
-
+  },
 }
 
 export default BubbleTimeline

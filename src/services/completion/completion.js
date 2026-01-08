@@ -1,4 +1,4 @@
-import { reduce, find } from 'lodash'
+import { find, reduce } from 'lodash'
 
 export const replaceWord = (str, toReplace, replacement) => {
   return str.slice(0, toReplace.start) + replacement + str.slice(toReplace.end)
@@ -12,26 +12,30 @@ export const wordAtPosition = (str, pos) => {
 }
 
 export const addPositionToWords = (words) => {
-  return reduce(words, (result, word) => {
-    const data = {
-      word,
-      start: 0,
-      end: word.length
-    }
+  return reduce(
+    words,
+    (result, word) => {
+      const data = {
+        word,
+        start: 0,
+        end: word.length,
+      }
 
-    if (result.length > 0) {
-      const previous = result.pop()
+      if (result.length > 0) {
+        const previous = result.pop()
 
-      data.start += previous.end
-      data.end += previous.end
+        data.start += previous.end
+        data.end += previous.end
 
-      result.push(previous)
-    }
+        result.push(previous)
+      }
 
-    result.push(data)
+      result.push(data)
 
-    return result
-  }, [])
+      return result
+    },
+    [],
+  )
 }
 
 export const splitByWhitespaceBoundary = (str) => {
@@ -64,7 +68,7 @@ const completion = {
   wordAtPosition,
   addPositionToWords,
   splitByWhitespaceBoundary,
-  replaceWord
+  replaceWord,
 }
 
 export default completion

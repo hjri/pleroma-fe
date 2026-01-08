@@ -1,4 +1,5 @@
-import { invertLightness, brightness } from 'chromatism'
+import { brightness, invertLightness } from 'chromatism'
+
 import { alphaBlend, mixrgb } from '../color_convert/color_convert.js'
 /* This is a definition of all layer combinations
  * each key is a topmost layer, each value represents layer underneath
@@ -25,7 +26,7 @@ export const LAYERS = {
   alertPanel: 'panel',
   poll: 'bg',
   chatBg: 'underlay',
-  chatMessage: 'chatBg'
+  chatMessage: 'chatBg',
 }
 
 /* By default opacity slots have 1 as default opacity
@@ -37,7 +38,7 @@ export const DEFAULT_OPACITY = {
   input: 0.5,
   faint: 0.5,
   underlay: 0.15,
-  alertPopup: 0.95
+  alertPopup: 0.95,
 }
 
 /**  SUBJECT TO CHANGE IN THE FUTURE, this is all beta
@@ -82,45 +83,45 @@ export const SLOT_INHERITANCE = {
   bg: {
     depends: [],
     opacity: 'bg',
-    priority: 1
+    priority: 1,
   },
   wallpaper: {
     depends: ['bg'],
-    color: (mod, bg) => brightness(-2 * mod, bg).rgb
+    color: (mod, bg) => brightness(-2 * mod, bg).rgb,
   },
   fg: {
     depends: [],
-    priority: 1
+    priority: 1,
   },
   text: {
     depends: [],
     layer: 'bg',
     opacity: null,
-    priority: 1
+    priority: 1,
   },
   underlay: {
     default: '#000000',
-    opacity: 'underlay'
+    opacity: 'underlay',
   },
   link: {
     depends: ['accent'],
-    priority: 1
+    priority: 1,
   },
   accent: {
     depends: ['link'],
-    priority: 1
+    priority: 1,
   },
   faint: {
     depends: ['text'],
-    opacity: 'faint'
+    opacity: 'faint',
   },
   faintLink: {
     depends: ['link'],
-    opacity: 'faint'
+    opacity: 'faint',
   },
   postFaintLink: {
     depends: ['postLink'],
-    opacity: 'faint'
+    opacity: 'faint',
   },
 
   cBlue: '#0000ff',
@@ -133,101 +134,101 @@ export const SLOT_INHERITANCE = {
     color: (mod, bg) => ({
       r: Math.floor(bg.r * 0.53),
       g: Math.floor(bg.g * 0.56),
-      b: Math.floor(bg.b * 0.59)
-    })
+      b: Math.floor(bg.b * 0.59),
+    }),
   },
   profileTint: {
     depends: ['bg'],
     layer: 'profileTint',
-    opacity: 'profileTint'
+    opacity: 'profileTint',
   },
 
   highlight: {
     depends: ['bg'],
-    color: (mod, bg) => brightness(5 * mod, bg).rgb
+    color: (mod, bg) => brightness(5 * mod, bg).rgb,
   },
   highlightLightText: {
     depends: ['lightText'],
     layer: 'highlight',
-    textColor: true
+    textColor: true,
   },
   highlightPostLink: {
     depends: ['postLink'],
     layer: 'highlight',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
   highlightFaintText: {
     depends: ['faint'],
     layer: 'highlight',
-    textColor: true
+    textColor: true,
   },
   highlightFaintLink: {
     depends: ['faintLink'],
     layer: 'highlight',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
   highlightPostFaintLink: {
     depends: ['postFaintLink'],
     layer: 'highlight',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
   highlightText: {
     depends: ['text'],
     layer: 'highlight',
-    textColor: true
+    textColor: true,
   },
   highlightLink: {
     depends: ['link'],
     layer: 'highlight',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
   highlightIcon: {
     depends: ['highlight', 'highlightText'],
-    color: (mod, bg, text) => mixrgb(bg, text)
+    color: (mod, bg, text) => mixrgb(bg, text),
   },
 
   popover: {
     depends: ['bg'],
-    opacity: 'popover'
+    opacity: 'popover',
   },
   popoverLightText: {
     depends: ['lightText'],
     layer: 'popover',
-    textColor: true
+    textColor: true,
   },
   popoverPostLink: {
     depends: ['postLink'],
     layer: 'popover',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
   popoverFaintText: {
     depends: ['faint'],
     layer: 'popover',
-    textColor: true
+    textColor: true,
   },
   popoverFaintLink: {
     depends: ['faintLink'],
     layer: 'popover',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
   popoverPostFaintLink: {
     depends: ['postFaintLink'],
     layer: 'popover',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
   popoverText: {
     depends: ['text'],
     layer: 'popover',
-    textColor: true
+    textColor: true,
   },
   popoverLink: {
     depends: ['link'],
     layer: 'popover',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
   popoverIcon: {
     depends: ['popover', 'popoverText'],
-    color: (mod, bg, text) => mixrgb(bg, text)
+    color: (mod, bg, text) => mixrgb(bg, text),
   },
 
   selectedPost: '--highlight',
@@ -235,201 +236,201 @@ export const SLOT_INHERITANCE = {
     depends: ['highlightFaintText'],
     layer: 'highlight',
     variant: 'selectedPost',
-    textColor: true
+    textColor: true,
   },
   selectedPostLightText: {
     depends: ['highlightLightText'],
     layer: 'highlight',
     variant: 'selectedPost',
-    textColor: true
+    textColor: true,
   },
   selectedPostPostLink: {
     depends: ['highlightPostLink'],
     layer: 'highlight',
     variant: 'selectedPost',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
   selectedPostFaintLink: {
     depends: ['highlightFaintLink'],
     layer: 'highlight',
     variant: 'selectedPost',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
   selectedPostText: {
     depends: ['highlightText'],
     layer: 'highlight',
     variant: 'selectedPost',
-    textColor: true
+    textColor: true,
   },
   selectedPostLink: {
     depends: ['highlightLink'],
     layer: 'highlight',
     variant: 'selectedPost',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
   selectedPostIcon: {
     depends: ['selectedPost', 'selectedPostText'],
-    color: (mod, bg, text) => mixrgb(bg, text)
+    color: (mod, bg, text) => mixrgb(bg, text),
   },
 
   selectedMenu: {
     depends: ['bg'],
-    color: (mod, bg) => brightness(5 * mod, bg).rgb
+    color: (mod, bg) => brightness(5 * mod, bg).rgb,
   },
   selectedMenuLightText: {
     depends: ['highlightLightText'],
     layer: 'selectedMenu',
     variant: 'selectedMenu',
-    textColor: true
+    textColor: true,
   },
   selectedMenuFaintText: {
     depends: ['highlightFaintText'],
     layer: 'selectedMenu',
     variant: 'selectedMenu',
-    textColor: true
+    textColor: true,
   },
   selectedMenuFaintLink: {
     depends: ['highlightFaintLink'],
     layer: 'selectedMenu',
     variant: 'selectedMenu',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
   selectedMenuText: {
     depends: ['highlightText'],
     layer: 'selectedMenu',
     variant: 'selectedMenu',
-    textColor: true
+    textColor: true,
   },
   selectedMenuLink: {
     depends: ['highlightLink'],
     layer: 'selectedMenu',
     variant: 'selectedMenu',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
   selectedMenuIcon: {
     depends: ['selectedMenu', 'selectedMenuText'],
-    color: (mod, bg, text) => mixrgb(bg, text)
+    color: (mod, bg, text) => mixrgb(bg, text),
   },
 
   selectedMenuPopover: {
     depends: ['popover'],
-    color: (mod, bg) => brightness(5 * mod, bg).rgb
+    color: (mod, bg) => brightness(5 * mod, bg).rgb,
   },
   selectedMenuPopoverLightText: {
     depends: ['selectedMenuLightText'],
     layer: 'selectedMenuPopover',
     variant: 'selectedMenuPopover',
-    textColor: true
+    textColor: true,
   },
   selectedMenuPopoverFaintText: {
     depends: ['selectedMenuFaintText'],
     layer: 'selectedMenuPopover',
     variant: 'selectedMenuPopover',
-    textColor: true
+    textColor: true,
   },
   selectedMenuPopoverFaintLink: {
     depends: ['selectedMenuFaintLink'],
     layer: 'selectedMenuPopover',
     variant: 'selectedMenuPopover',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
   selectedMenuPopoverText: {
     depends: ['selectedMenuText'],
     layer: 'selectedMenuPopover',
     variant: 'selectedMenuPopover',
-    textColor: true
+    textColor: true,
   },
   selectedMenuPopoverLink: {
     depends: ['selectedMenuLink'],
     layer: 'selectedMenuPopover',
     variant: 'selectedMenuPopover',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
   selectedMenuPopoverIcon: {
     depends: ['selectedMenuPopover', 'selectedMenuText'],
-    color: (mod, bg, text) => mixrgb(bg, text)
+    color: (mod, bg, text) => mixrgb(bg, text),
   },
 
   lightText: {
     depends: ['text'],
     layer: 'bg',
     textColor: 'preserve',
-    color: (mod, text) => brightness(20 * mod, text).rgb
+    color: (mod, text) => brightness(20 * mod, text).rgb,
   },
 
   postLink: {
     depends: ['link'],
     layer: 'bg',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
 
   postGreentext: {
     depends: ['cGreen'],
     layer: 'bg',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
 
   postCyantext: {
     depends: ['cBlue'],
     layer: 'bg',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
 
   border: {
     depends: ['fg'],
     opacity: 'border',
-    color: (mod, fg) => brightness(2 * mod, fg).rgb
+    color: (mod, fg) => brightness(2 * mod, fg).rgb,
   },
 
   poll: {
     depends: ['accent', 'bg'],
     copacity: 'poll',
-    color: (mod, accent, bg) => alphaBlend(accent, 0.4, bg)
+    color: (mod, accent, bg) => alphaBlend(accent, 0.4, bg),
   },
   pollText: {
     depends: ['text'],
     layer: 'poll',
-    textColor: true
+    textColor: true,
   },
 
   icon: {
     depends: ['bg', 'text'],
     inheritsOpacity: false,
-    color: (mod, bg, text) => mixrgb(bg, text)
+    color: (mod, bg, text) => mixrgb(bg, text),
   },
 
   // Foreground
   fgText: {
     depends: ['text'],
     layer: 'fg',
-    textColor: true
+    textColor: true,
   },
   fgLink: {
     depends: ['link'],
     layer: 'fg',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
 
   // Panel header
   panel: {
     depends: ['fg'],
-    opacity: 'panel'
+    opacity: 'panel',
   },
   panelText: {
     depends: ['text'],
     layer: 'panel',
-    textColor: true
+    textColor: true,
   },
   panelFaint: {
     depends: ['fgText'],
     layer: 'panel',
     opacity: 'faint',
-    textColor: true
+    textColor: true,
   },
   panelLink: {
     depends: ['fgLink'],
     layer: 'panel',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
 
   // Top bar
@@ -437,268 +438,268 @@ export const SLOT_INHERITANCE = {
   topBarText: {
     depends: ['fgText'],
     layer: 'topBar',
-    textColor: true
+    textColor: true,
   },
   topBarLink: {
     depends: ['fgLink'],
     layer: 'topBar',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
 
   // Tabs
   tab: {
-    depends: ['btn']
+    depends: ['btn'],
   },
   tabText: {
     depends: ['btnText'],
     layer: 'btn',
-    textColor: true
+    textColor: true,
   },
   tabActiveText: {
     depends: ['text'],
     layer: 'bg',
-    textColor: true
+    textColor: true,
   },
 
   // Buttons
   btn: {
     depends: ['fg'],
     variant: 'btn',
-    opacity: 'btn'
+    opacity: 'btn',
   },
   btnText: {
     depends: ['fgText'],
     layer: 'btn',
-    textColor: true
+    textColor: true,
   },
   btnPanelText: {
     depends: ['btnText'],
     layer: 'btnPanel',
     variant: 'btn',
-    textColor: true
+    textColor: true,
   },
   btnTopBarText: {
     depends: ['btnText'],
     layer: 'btnTopBar',
     variant: 'btn',
-    textColor: true
+    textColor: true,
   },
 
   // Buttons: pressed
   btnPressed: {
     depends: ['btn'],
-    layer: 'btn'
+    layer: 'btn',
   },
   btnPressedText: {
     depends: ['btnText'],
     layer: 'btn',
     variant: 'btnPressed',
-    textColor: true
+    textColor: true,
   },
   btnPressedPanel: {
     depends: ['btnPressed'],
-    layer: 'btn'
+    layer: 'btn',
   },
   btnPressedPanelText: {
     depends: ['btnPanelText'],
     layer: 'btnPanel',
     variant: 'btnPressed',
-    textColor: true
+    textColor: true,
   },
   btnPressedTopBar: {
     depends: ['btnPressed'],
-    layer: 'btn'
+    layer: 'btn',
   },
   btnPressedTopBarText: {
     depends: ['btnTopBarText'],
     layer: 'btnTopBar',
     variant: 'btnPressed',
-    textColor: true
+    textColor: true,
   },
 
   // Buttons: toggled
   btnToggled: {
     depends: ['btn'],
     layer: 'btn',
-    color: (mod, btn) => brightness(mod * 20, btn).rgb
+    color: (mod, btn) => brightness(mod * 20, btn).rgb,
   },
   btnToggledText: {
     depends: ['btnText'],
     layer: 'btn',
     variant: 'btnToggled',
-    textColor: true
+    textColor: true,
   },
   btnToggledPanelText: {
     depends: ['btnPanelText'],
     layer: 'btnPanel',
     variant: 'btnToggled',
-    textColor: true
+    textColor: true,
   },
   btnToggledTopBarText: {
     depends: ['btnTopBarText'],
     layer: 'btnTopBar',
     variant: 'btnToggled',
-    textColor: true
+    textColor: true,
   },
 
   // Buttons: disabled
   btnDisabled: {
     depends: ['btn', 'bg'],
-    color: (mod, btn, bg) => alphaBlend(btn, 0.25, bg)
+    color: (mod, btn, bg) => alphaBlend(btn, 0.25, bg),
   },
   btnDisabledText: {
     depends: ['btnText', 'btnDisabled'],
     layer: 'btn',
     variant: 'btnDisabled',
-    color: (mod, text, btn) => alphaBlend(text, 0.25, btn)
+    color: (mod, text, btn) => alphaBlend(text, 0.25, btn),
   },
   btnDisabledPanelText: {
     depends: ['btnPanelText', 'btnDisabled'],
     layer: 'btnPanel',
     variant: 'btnDisabled',
-    color: (mod, text, btn) => alphaBlend(text, 0.25, btn)
+    color: (mod, text, btn) => alphaBlend(text, 0.25, btn),
   },
   btnDisabledTopBarText: {
     depends: ['btnTopBarText', 'btnDisabled'],
     layer: 'btnTopBar',
     variant: 'btnDisabled',
-    color: (mod, text, btn) => alphaBlend(text, 0.25, btn)
+    color: (mod, text, btn) => alphaBlend(text, 0.25, btn),
   },
 
   // Input fields
   input: {
     depends: ['fg'],
-    opacity: 'input'
+    opacity: 'input',
   },
   inputText: {
     depends: ['text'],
     layer: 'input',
-    textColor: true
+    textColor: true,
   },
   inputPanelText: {
     depends: ['panelText'],
     layer: 'inputPanel',
     variant: 'input',
-    textColor: true
+    textColor: true,
   },
   inputTopbarText: {
     depends: ['topBarText'],
     layer: 'inputTopBar',
     variant: 'input',
-    textColor: true
+    textColor: true,
   },
 
   alertError: {
     depends: ['cRed'],
-    opacity: 'alert'
+    opacity: 'alert',
   },
   alertErrorText: {
     depends: ['text'],
     layer: 'alert',
     variant: 'alertError',
-    textColor: true
+    textColor: true,
   },
   alertErrorPanelText: {
     depends: ['panelText'],
     layer: 'alertPanel',
     variant: 'alertError',
-    textColor: true
+    textColor: true,
   },
 
   alertWarning: {
     depends: ['cOrange'],
-    opacity: 'alert'
+    opacity: 'alert',
   },
   alertWarningText: {
     depends: ['text'],
     layer: 'alert',
     variant: 'alertWarning',
-    textColor: true
+    textColor: true,
   },
   alertWarningPanelText: {
     depends: ['panelText'],
     layer: 'alertPanel',
     variant: 'alertWarning',
-    textColor: true
+    textColor: true,
   },
 
   alertSuccess: {
     depends: ['cGreen'],
-    opacity: 'alert'
+    opacity: 'alert',
   },
   alertSuccessText: {
     depends: ['text'],
     layer: 'alert',
     variant: 'alertSuccess',
-    textColor: true
+    textColor: true,
   },
   alertSuccessPanelText: {
     depends: ['panelText'],
     layer: 'alertPanel',
     variant: 'alertSuccess',
-    textColor: true
+    textColor: true,
   },
 
   alertNeutral: {
     depends: ['text'],
-    opacity: 'alert'
+    opacity: 'alert',
   },
   alertNeutralText: {
     depends: ['text'],
     layer: 'alert',
     variant: 'alertNeutral',
     color: (mod, text) => invertLightness(text).rgb,
-    textColor: true
+    textColor: true,
   },
   alertNeutralPanelText: {
     depends: ['panelText'],
     layer: 'alertPanel',
     variant: 'alertNeutral',
-    textColor: true
+    textColor: true,
   },
 
   alertPopupError: {
     depends: ['alertError'],
-    opacity: 'alertPopup'
+    opacity: 'alertPopup',
   },
   alertPopupErrorText: {
     depends: ['alertErrorText'],
     layer: 'popover',
     variant: 'alertPopupError',
-    textColor: true
+    textColor: true,
   },
 
   alertPopupWarning: {
     depends: ['alertWarning'],
-    opacity: 'alertPopup'
+    opacity: 'alertPopup',
   },
   alertPopupWarningText: {
     depends: ['alertWarningText'],
     layer: 'popover',
     variant: 'alertPopupWarning',
-    textColor: true
+    textColor: true,
   },
 
   alertPopupSuccess: {
     depends: ['alertSuccess'],
-    opacity: 'alertPopup'
+    opacity: 'alertPopup',
   },
   alertPopupSuccessText: {
     depends: ['alertSuccessText'],
     layer: 'popover',
     variant: 'alertPopupSuccess',
-    textColor: true
+    textColor: true,
   },
 
   alertPopupNeutral: {
     depends: ['alertNeutral'],
-    opacity: 'alertPopup'
+    opacity: 'alertPopup',
   },
   alertPopupNeutralText: {
     depends: ['alertNeutralText'],
     layer: 'popover',
     variant: 'alertPopupNeutral',
-    textColor: true
+    textColor: true,
   },
 
   badgeNotification: '--cRed',
@@ -706,7 +707,7 @@ export const SLOT_INHERITANCE = {
     depends: ['text', 'badgeNotification'],
     layer: 'badge',
     variant: 'badgeNotification',
-    textColor: 'bw'
+    textColor: 'bw',
   },
 
   badgeNeutral: '--cGreen',
@@ -714,59 +715,59 @@ export const SLOT_INHERITANCE = {
     depends: ['text', 'badgeNeutral'],
     layer: 'badge',
     variant: 'badgeNeutral',
-    textColor: 'bw'
+    textColor: 'bw',
   },
 
   chatBg: {
-    depends: ['bg']
+    depends: ['bg'],
   },
 
   chatMessageIncomingBg: {
-    depends: ['chatBg']
+    depends: ['chatBg'],
   },
 
   chatMessageIncomingText: {
     depends: ['text'],
     layer: 'chatMessage',
     variant: 'chatMessageIncomingBg',
-    textColor: true
+    textColor: true,
   },
 
   chatMessageIncomingLink: {
     depends: ['link'],
     layer: 'chatMessage',
     variant: 'chatMessageIncomingBg',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
 
   chatMessageIncomingBorder: {
     depends: ['border'],
     opacity: 'border',
-    color: (mod, border) => brightness(2 * mod, border).rgb
+    color: (mod, border) => brightness(2 * mod, border).rgb,
   },
 
   chatMessageOutgoingBg: {
     depends: ['chatMessageIncomingBg'],
-    color: (mod, chatMessage) => brightness(5 * mod, chatMessage).rgb
+    color: (mod, chatMessage) => brightness(5 * mod, chatMessage).rgb,
   },
 
   chatMessageOutgoingText: {
     depends: ['text'],
     layer: 'chatMessage',
     variant: 'chatMessageOutgoingBg',
-    textColor: true
+    textColor: true,
   },
 
   chatMessageOutgoingLink: {
     depends: ['link'],
     layer: 'chatMessage',
     variant: 'chatMessageOutgoingBg',
-    textColor: 'preserve'
+    textColor: 'preserve',
   },
 
   chatMessageOutgoingBorder: {
     depends: ['chatMessageOutgoingBg'],
     opacity: 'border',
-    color: (mod, border) => brightness(2 * mod, border).rgb
-  }
+    color: (mod, border) => brightness(2 * mod, border).rgb,
+  },
 }

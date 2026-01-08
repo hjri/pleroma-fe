@@ -1,7 +1,7 @@
 // TODO this func might as well take the entire file and use its mimetype
 // or the entire service could be just mimetype service that only operates
 // on mimetypes and not files. Currently the naming is confusing.
-export const fileType = mimetype => {
+export const fileType = (mimetype) => {
   if (mimetype.match(/flash/)) {
     return 'flash'
   }
@@ -25,26 +25,30 @@ export const fileType = mimetype => {
   return 'unknown'
 }
 
-export const fileTypeExt = url => {
+export const fileTypeExt = (url) => {
   if (url.match(/\.(a?png|jpe?g|gif|webp|avif)$/)) {
     return 'image'
   }
   if (url.match(/\.(ogv|mp4|webm|mov)$/)) {
     return 'video'
   }
-  if (url.match(/\.(it|s3m|mod|umx|mp3|aac|m4a|flac|alac|ogg|oga|opus|wav|ape|midi?)$/)) {
+  if (
+    url.match(
+      /\.(it|s3m|mod|umx|mp3|aac|m4a|flac|alac|ogg|oga|opus|wav|ape|midi?)$/,
+    )
+  ) {
     return 'audio'
   }
   return 'unknown'
 }
 
 export const fileMatchesSomeType = (types, file) =>
-  types.some(type => fileType(file.mimetype) === type)
+  types.some((type) => fileType(file.mimetype) === type)
 
 const fileTypeService = {
   fileType,
   fileTypeExt,
-  fileMatchesSomeType
+  fileMatchesSomeType,
 }
 
 export default fileTypeService

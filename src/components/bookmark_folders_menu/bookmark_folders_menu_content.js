@@ -1,20 +1,19 @@
 import { mapState } from 'pinia'
-import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
+
 import { getBookmarkFolderEntries } from 'src/components/navigation/filter.js'
+import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
 
 export const BookmarkFoldersMenuContent = {
-  props: [
-    'showPin'
-  ],
+  props: ['showPin'],
   components: {
-    NavigationEntry
+    NavigationEntry,
   },
   computed: {
     ...mapState(useBookmarkFoldersStore, {
-      folders: getBookmarkFolderEntries
-    })
-  }
+      folders: getBookmarkFolderEntries,
+    }),
+  },
 }
 
 export default BookmarkFoldersMenuContent

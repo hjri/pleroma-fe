@@ -1,9 +1,9 @@
-import Status from '../status/status.vue'
-import List from '../list/list.vue'
-import Checkbox from '../checkbox/checkbox.vue'
-import Modal from '../modal/modal.vue'
-import UserLink from '../user_link/user_link.vue'
 import { useReportsStore } from 'src/stores/reports'
+import Checkbox from '../checkbox/checkbox.vue'
+import List from '../list/list.vue'
+import Modal from '../modal/modal.vue'
+import Status from '../status/status.vue'
+import UserLink from '../user_link/user_link.vue'
 
 const UserReportingModal = {
   components: {
@@ -11,51 +11,54 @@ const UserReportingModal = {
     List,
     Checkbox,
     Modal,
-    UserLink
+    UserLink,
   },
-  data () {
+  data() {
     return {
       comment: '',
       forward: false,
       statusIdsToReport: [],
       processing: false,
-      error: false
+      error: false,
     }
   },
   computed: {
-    reportModal () {
+    reportModal() {
       return useReportsStore().reportModal
     },
-    isLoggedIn () {
+    isLoggedIn() {
       return !!this.$store.state.users.currentUser
     },
-    isOpen () {
+    isOpen() {
       return this.isLoggedIn && this.reportModal.activated
     },
-    userId () {
+    userId() {
       return this.reportModal.userId
     },
-    user () {
+    user() {
       return this.$store.getters.findUser(this.userId)
     },
-    remoteInstance () {
-      return !this.user.is_local && this.user.screen_name.substr(this.user.screen_name.indexOf('@') + 1)
+    remoteInstance() {
+      return (
+        !this.user.is_local &&
+        this.user.screen_name.substr(this.user.screen_name.indexOf('@') + 1)
+      )
     },
-    statuses () {
+    statuses() {
       return this.reportModal.statuses
     },
-    preTickedIds () {
+    preTickedIds() {
       return this.reportModal.preTickedIds
-    }
+    },
   },
   watch: {
     userId: 'resetState',
-    preTickedIds (newValue) {
+    preTickedIds(newValue) {
       this.statusIdsToReport = newValue
-    }
+    },
   },
   methods: {
-    resetState () {
+    resetState() {
       // Reset state
       this.comment = ''
       this.forward = false
@@ -63,19 +66,20 @@ const UserReportingModal = {
       this.processing = false
       this.error = false
     },
-    closeModal () {
+    closeModal() {
       useReportsStore().closeUserReportingModal()
     },
-    reportUser () {
+    reportUser() {
       this.processing = true
       this.error = false
       const params = {
         userId: this.userId,
         comment: this.comment,
         forward: this.forward,
-        statusIds: this.statusIdsToReport
+        statusIds: this.statusIdsToReport,
       }
-      this.$store.state.api.backendInteractor.reportUser({ ...params })
+      this.$store.state.api.backendInteractor
+        .reportUser({ ...params })
         .then(() => {
           this.processing = false
           this.resetState()
@@ -86,13 +90,13 @@ const UserReportingModal = {
           this.error = true
         })
     },
-    clearError () {
+    clearError() {
       this.error = false
     },
-    isChecked (statusId) {
+    isChecked(statusId) {
       return this.statusIdsToReport.indexOf(statusId) !== -1
     },
-    toggleStatus (checked, statusId) {
+    toggleStatus(checked, statusId) {
       if (checked === this.isChecked(statusId)) {
         return
       }
@@ -100,20 +104,25 @@ const UserReportingModal = {
       if (checked) {
         this.statusIdsToReport.push(statusId)
       } else {
-        this.statusIdsToReport.splice(this.statusIdsToReport.indexOf(statusId), 1)
+        this.statusIdsToReport.splice(
+          this.statusIdsToReport.indexOf(statusId),
+          1,
+        )
       }
     },
-    resize (e) {
+    resize(e) {
       const target = e.target || e
-      if (!(target instanceof window.Element)) { return }
+      if (!(target instanceof window.Element)) {
+        return
+      }
       // Auto is needed to make textbox shrink when removing lines
       target.style.height = 'auto'
       target.style.height = `${target.scrollHeight}px`
       if (target.value === '') {
         target.style.height = null
       }
-    }
-  }
+    },
+  },
 }
 
 export default UserReportingModal

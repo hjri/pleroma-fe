@@ -1,23 +1,22 @@
-import UserCard from '../user_card/user_card.vue'
 import { defineAsyncComponent } from 'vue'
+
+import UserCard from '../user_card/user_card.vue'
 
 const UserPopover = {
   name: 'UserPopover',
-  props: [
-    'userId', 'overlayCenters', 'disabled', 'overlayCentersSelector'
-  ],
+  props: ['userId', 'overlayCenters', 'disabled', 'overlayCentersSelector'],
   components: {
     UserCard,
-    Popover: defineAsyncComponent(() => import('../popover/popover.vue'))
+    Popover: defineAsyncComponent(() => import('../popover/popover.vue')),
   },
   computed: {
-    userPopoverAvatarAction () {
+    userPopoverAvatarAction() {
       return this.$store.getters.mergedConfig.userPopoverAvatarAction
     },
-    userPopoverOverlay () {
+    userPopoverOverlay() {
       return this.$store.getters.mergedConfig.userPopoverOverlay
-    }
-  }
+    },
+  },
 }
 
 export default UserPopover

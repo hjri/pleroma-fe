@@ -7,8 +7,8 @@ export default {
       component: 'Icon',
       directives: {
         textColor: '$blend(--stack 0.5 --parent--text)',
-        textAuto: 'no-auto'
-      }
-    }
-  ]
+        textAuto: 'no-auto',
+      },
+    },
+  ],
 }

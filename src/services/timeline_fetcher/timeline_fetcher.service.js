@@ -1,10 +1,18 @@
 import { camelCase } from 'lodash'
 
+import { useInterfaceStore } from 'src/stores/interface.js'
 import apiService from '../api/api.service.js'
 import { promiseInterval } from '../promise_interval/promise_interval.js'
-import { useInterfaceStore } from 'src/stores/interface.js'
 
-const update = ({ store, statuses, timeline, showImmediately, userId, listId, pagination }) => {
+const update = ({
+  store,
+  statuses,
+  timeline,
+  showImmediately,
+  userId,
+  listId,
+  pagination,
+}) => {
   const ccTimeline = camelCase(timeline)
 
   store.dispatch('addNewStatuses', {
@@ -13,7 +21,7 @@ const update = ({ store, statuses, timeline, showImmediately, userId, listId, pa
     listId,
     statuses,
     showImmediately,
-    pagination
+    pagination,
   })
 }
 
@@ -29,7 +37,7 @@ const fetchAndUpdate = ({
   bookmarkFolderId = false,
   tag = false,
   until,
-  since
+  since,
 }) => {
   const args = { timeline, credentials }
   const rootState = store.rootState || store.state
@@ -54,14 +62,18 @@ const fetchAndUpdate = ({
   args.bookmarkFolderId = bookmarkFolderId
   args.tag = tag
   args.withMuted = !hideMutedPosts
-  if (loggedIn && ['friends', 'public', 'publicAndExternal', 'bubble'].includes(timeline)) {
+  if (
+    loggedIn &&
+    ['friends', 'public', 'publicAndExternal', 'bubble'].includes(timeline)
+  ) {
     args.replyVisibility = replyVisibility
   }
 
   const numStatusesBeforeFetch = timelineData.statuses.length
 
-  return apiService.fetchTimeline(args)
-    .then(response => {
+  return apiService
+    .fetchTimeline(args)
+    .then((response) => {
       if (response.errors) {
         if (timeline === 'favorites') {
           rootState.instance.pleromaPublicFavouritesAvailable = false
@@ -71,10 +83,23 @@ const fetchAndUpdate = ({
       }
 
       const { data: statuses, pagination } = response
-      if (!older && statuses.length >= 20 && !timelineData.loading && numStatusesBeforeFetch > 0) {
+      if (
+        !older &&
+        statuses.length >= 20 &&
+        !timelineData.loading &&
+        numStatusesBeforeFetch > 0
+      ) {
         store.dispatch('queueFlush', { timeline, id: timelineData.maxId })
       }
-      update({ store, statuses, timeline, showImmediately, userId, listId, pagination })
+      update({
+        store,
+        statuses,
+        timeline,
+        showImmediately,
+        userId,
+        listId,
+        pagination,
+      })
       return { statuses, pagination }
     })
     .catch((error) => {
@@ -82,26 +107,54 @@ const fetchAndUpdate = ({
         level: 'error',
         messageKey: 'timeline.error',
         messageArgs: [error.message],
-        timeout: 5000
+        timeout: 5000,
       })
     })
 }
 
-const startFetching = ({ timeline = 'friends', credentials, store, userId = false, listId = false, statusId = false, bookmarkFolderId = false, tag = false }) => {
+const startFetching = ({
+  timeline = 'friends',
+  credentials,
+  store,
+  userId = false,
+  listId = false,
+  statusId = false,
+  bookmarkFolderId = false,
+  tag = false,
+}) => {
   const rootState = store.rootState || store.state
   const timelineData = rootState.statuses.timelines[camelCase(timeline)]
   const showImmediately = timelineData.visibleStatuses.length === 0
   timelineData.userId = userId
   timelineData.listId = listId
   timelineData.bookmarkFolderId = bookmarkFolderId
-  fetchAndUpdate({ timeline, credentials, store, showImmediately, userId, listId, statusId, bookmarkFolderId, tag })
+  fetchAndUpdate({
+    timeline,
+    credentials,
+    store,
+    showImmediately,
+    userId,
+    listId,
+    statusId,
+    bookmarkFolderId,
+    tag,
+  })
   const boundFetchAndUpdate = () =>
-    fetchAndUpdate({ timeline, credentials, store, userId, listId, statusId, bookmarkFolderId, tag })
+    fetchAndUpdate({
+      timeline,
+      credentials,
+      store,
+      userId,
+      listId,
+      statusId,
+      bookmarkFolderId,
+      tag,
+    })
   return promiseInterval(boundFetchAndUpdate, 10000)
 }
 const timelineFetcher = {
   fetchAndUpdate,
-  startFetching
+  startFetching,
 }
 
 export default timelineFetcher
