@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: pleroma
+      POSTGRES_PASSWORD: pleroma
+      POSTGRES_DB: pleroma
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pleroma -d pleroma"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+
+  pleroma:
+    image: ${PLEROMA_IMAGE:-git.pleroma.social:5050/pleroma/pleroma:stable}
+    environment:
+      DB_USER: pleroma
+      DB_PASS: pleroma
+      DB_NAME: pleroma
+      DB_HOST: db
+      DB_PORT: 5432
+      DOMAIN: localhost
+      INSTANCE_NAME: Pleroma E2E
+      ADMIN_EMAIL: ${E2E_ADMIN_EMAIL:-admin@example.com}
+      NOTIFY_EMAIL: ${E2E_ADMIN_EMAIL:-admin@example.com}
+      E2E_ADMIN_USERNAME: ${E2E_ADMIN_USERNAME:-admin}
+      E2E_ADMIN_PASSWORD: ${E2E_ADMIN_PASSWORD:-adminadmin}
+      E2E_ADMIN_EMAIL: ${E2E_ADMIN_EMAIL:-admin@example.com}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./docker/pleroma/entrypoint.e2e.sh:/opt/pleroma/entrypoint.e2e.sh:ro
+    entrypoint: ["/bin/ash", "/opt/pleroma/entrypoint.e2e.sh"]
+    healthcheck:
+      # NOTE: "localhost" may resolve to ::1 in some images (IPv6) while Pleroma only
+      # listens on IPv4 in this container. Use 127.0.0.1 to avoid false negatives.
+      test: ["CMD-SHELL", "test -f /var/lib/pleroma/.e2e_seeded && wget -qO- http://127.0.0.1:4000/api/v1/instance >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 60
+
+  e2e:
+    build:
+      context: .
+      dockerfile: docker/e2e/Dockerfile.e2e
+    depends_on:
+      pleroma:
+        condition: service_healthy
+    environment:
+      CI: "1"
+      VITE_PROXY_TARGET: http://pleroma:4000
+      VITE_PROXY_ORIGIN: http://localhost:4000
+      E2E_BASE_URL: http://localhost:8080
+      E2E_ADMIN_USERNAME: ${E2E_ADMIN_USERNAME:-admin}
+      E2E_ADMIN_PASSWORD: ${E2E_ADMIN_PASSWORD:-adminadmin}
+    command: ["yarn", "e2e:pw"]
