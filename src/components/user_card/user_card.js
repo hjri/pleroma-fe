@@ -1,6 +1,6 @@
 import isEqual from 'lodash/isEqual'
 import merge from 'lodash/merge'
-import unescape from 'lodash/unescape'
+import ldUnescape from 'lodash/unescape'
 import { mapGetters } from 'vuex'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
@@ -128,7 +128,7 @@ export default {
       newName: user.name_unescaped,
       editingName: false,
 
-      newBio: unescape(user.description),
+      newBio: ldUnescape(user.description),
       editingBio: false,
 
       newAvatar: null,
@@ -156,7 +156,7 @@ export default {
   computed: {
     somethingToSave() {
       if (this.newName !== this.user.name_unescaped) return true
-      if (this.newBio !== unescape(this.user.description)) return true
+      if (this.newBio !== ldUnescape(this.user.description)) return true
       if (this.newAvatar !== null) return true
       if (this.newBanner !== null) return true
       if (this.newActorType !== this.user.actor_type) return true
@@ -498,7 +498,7 @@ export default {
       const user = this.$store.state.users.currentUser
 
       this.newName = user.name_unescaped
-      this.newBio = unescape(user.description)
+      this.newBio = ldUnescape(user.description)
 
       this.newAvatar = null
       this.newAvatarFile = null
