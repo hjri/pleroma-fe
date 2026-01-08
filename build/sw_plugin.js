@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import * as esbuild from 'esbuild'
 import { build } from 'vite'
+
 import {
   generateServiceWorkerMessages,
   i18nFiles,

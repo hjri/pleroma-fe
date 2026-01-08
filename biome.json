@@ -124,6 +124,22 @@
   ],
   "assist": {
     "enabled": true,
-    "actions": { "source": { "organizeImports": "on" } }
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              [":NODE:", ":PACKAGE:", "!src/**", "!@fortawesome/**"],
+              ":BLANK_LINE:",
+              [":PATH:", "src/**"],
+              ":BLANK_LINE:",
+              "@fortawesome/fontawesome-svg-core",
+              "@fortawesome/*"
+            ]
+          }
+        }
+      }
+    }
   }
 }

@@ -1,17 +1,6 @@
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faBell,
-  faBookmark,
-  faCity,
-  faComments,
-  faEnvelope,
-  faGlobe,
-  faInfoCircle,
-  faList,
-  faStream,
-  faUsers,
-} from '@fortawesome/free-solid-svg-icons'
 import { mapState as mapPiniaState } from 'pinia'
+import { mapState } from 'vuex'
+
 import {
   filterNavigation,
   getBookmarkFolderEntries,
@@ -27,7 +16,20 @@ import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
 import { useListsStore } from 'src/stores/lists'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
-import { mapState } from 'vuex'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+  faBell,
+  faBookmark,
+  faCity,
+  faComments,
+  faEnvelope,
+  faGlobe,
+  faInfoCircle,
+  faList,
+  faStream,
+  faUsers,
+} from '@fortawesome/free-solid-svg-icons'
 
 library.add(
   faUsers,

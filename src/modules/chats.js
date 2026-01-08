@@ -1,5 +1,6 @@
 import { find, omitBy, orderBy, sumBy } from 'lodash'
 import { reactive } from 'vue'
+
 import chatService from '../services/chat_service/chat_service.js'
 import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'
 import {

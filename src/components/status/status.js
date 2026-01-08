@@ -1,3 +1,27 @@
+import { unescape as ldUnescape, uniqBy } from 'lodash'
+
+import MentionLink from 'src/components/mention_link/mention_link.vue'
+import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
+import RichContent from 'src/components/rich_content/rich_content.jsx'
+import StatusActionButtons from 'src/components/status_action_buttons/status_action_buttons.vue'
+import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import { muteFilterHits } from '../../services/status_parser/status_parser.js'
+import {
+  highlightClass,
+  highlightStyle,
+} from '../../services/user_highlighter/user_highlighter.js'
+import AvatarList from '../avatar_list/avatar_list.vue'
+import EmojiReactions from '../emoji_reactions/emoji_reactions.vue'
+import PostStatusForm from '../post_status_form/post_status_form.vue'
+import StatusContent from '../status_content/status_content.vue'
+import StatusPopover from '../status_popover/status_popover.vue'
+import Timeago from '../timeago/timeago.vue'
+import UserAvatar from '../user_avatar/user_avatar.vue'
+import UserLink from '../user_link/user_link.vue'
+import UserListPopover from '../user_list_popover/user_list_popover.vue'
+import UserPopover from '../user_popover/user_popover.vue'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faAngleDoubleRight,
@@ -20,28 +44,6 @@ import {
   faThumbtack,
   faTimes,
 } from '@fortawesome/free-solid-svg-icons'
-import { unescape as ldUnescape, uniqBy } from 'lodash'
-import MentionLink from 'src/components/mention_link/mention_link.vue'
-import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
-import RichContent from 'src/components/rich_content/rich_content.jsx'
-import StatusActionButtons from 'src/components/status_action_buttons/status_action_buttons.vue'
-import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
-import { muteFilterHits } from '../../services/status_parser/status_parser.js'
-import {
-  highlightClass,
-  highlightStyle,
-} from '../../services/user_highlighter/user_highlighter.js'
-import AvatarList from '../avatar_list/avatar_list.vue'
-import EmojiReactions from '../emoji_reactions/emoji_reactions.vue'
-import PostStatusForm from '../post_status_form/post_status_form.vue'
-import StatusContent from '../status_content/status_content.vue'
-import StatusPopover from '../status_popover/status_popover.vue'
-import Timeago from '../timeago/timeago.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
-import UserLink from '../user_link/user_link.vue'
-import UserListPopover from '../user_list_popover/user_list_popover.vue'
-import UserPopover from '../user_popover/user_popover.vue'
 
 library.add(
   faEnvelope,

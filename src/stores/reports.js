@@ -1,5 +1,6 @@
 import filter from 'lodash/filter'
 import { defineStore } from 'pinia'
+
 import { useInterfaceStore } from 'src/stores/interface'
 
 export const useReportsStore = defineStore('reports', {

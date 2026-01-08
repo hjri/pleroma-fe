@@ -1,4 +1,5 @@
 import 'cropperjs' // This adds all of the cropperjs's components into DOM
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 

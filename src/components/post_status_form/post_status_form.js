@@ -1,24 +1,13 @@
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faBan,
-  faChevronDown,
-  faChevronLeft,
-  faChevronRight,
-  faCircleNotch,
-  faPollH,
-  faSmileBeam,
-  faTimes,
-  faUpload,
-} from '@fortawesome/free-solid-svg-icons'
 import { debounce, map, reject, uniqBy } from 'lodash'
 import { mapActions, mapState } from 'pinia'
+import { mapGetters } from 'vuex'
+
 import DraftCloser from 'src/components/draft_closer/draft_closer.vue'
 import Gallery from 'src/components/gallery/gallery.vue'
 import Popover from 'src/components/popover/popover.vue'
 import { pollFormToMasto } from 'src/services/poll/poll.service.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
-import { mapGetters } from 'vuex'
 import { propsToNative } from '../../services/attributes_helper/attributes_helper.service.js'
 import fileTypeService from '../../services/file_type/file_type.service.js'
 import { findOffset } from '../../services/offset_finder/offset_finder.service.js'
@@ -33,6 +22,19 @@ import PollForm from '../poll/poll_form.vue'
 import ScopeSelector from '../scope_selector/scope_selector.vue'
 import Select from '../select/select.vue'
 import StatusContent from '../status_content/status_content.vue'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+  faBan,
+  faChevronDown,
+  faChevronLeft,
+  faChevronRight,
+  faCircleNotch,
+  faPollH,
+  faSmileBeam,
+  faTimes,
+  faUpload,
+} from '@fortawesome/free-solid-svg-icons'
 
 library.add(
   faSmileBeam,

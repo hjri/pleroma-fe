@@ -1,5 +1,6 @@
 import { access } from 'node:fs/promises'
 import { resolve } from 'node:path'
+
 import { languages } from '../src/i18n/languages.js'
 
 const annotationsImportPrefix = '@kazvmoe-infra/unicode-emoji-json/annotations/'

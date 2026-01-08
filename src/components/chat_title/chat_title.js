@@ -1,5 +1,6 @@
-import RichContent from 'src/components/rich_content/rich_content.jsx'
 import { defineAsyncComponent } from 'vue'
+
+import RichContent from 'src/components/rich_content/rich_content.jsx'
 import UserAvatar from '../user_avatar/user_avatar.vue'
 
 export default {

@@ -1,7 +1,8 @@
 import { shallowMount } from '@vue/test-utils'
 import vClickOutside from 'click-outside-vue3'
-import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
 import { h } from 'vue'
+
+import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
 
 const generateInput = (value, padEmoji = true) => {
   const wrapper = shallowMount(EmojiInput, {

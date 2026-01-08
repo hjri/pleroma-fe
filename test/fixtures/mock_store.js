@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash'
-import vuexModules from 'src/modules/index.js'
 import { createStore } from 'vuex'
+
+import vuexModules from 'src/modules/index.js'
 
 const tweakModules = (modules) => {
   const res = {}

@@ -1,12 +1,13 @@
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faArrowsRotate,
-  faCheck,
-  faFile,
-  faFloppyDisk,
-  faFolderOpen,
-} from '@fortawesome/free-solid-svg-icons'
 import { get, set, throttle, unset } from 'lodash'
+import {
+  computed,
+  getCurrentInstance,
+  provide,
+  reactive,
+  ref,
+  watch,
+} from 'vue'
+
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
 import ComponentPreview from 'src/components/component_preview/component_preview.vue'
@@ -43,17 +44,18 @@ import {
   init,
 } from 'src/services/theme_data/theme_data_3.service.js'
 import { useInterfaceStore } from 'src/stores/interface'
-import {
-  computed,
-  getCurrentInstance,
-  provide,
-  reactive,
-  ref,
-  watch,
-} from 'vue'
 import StringSetting from '../../helpers/string_setting.vue'
 import Preview from '../old_theme_tab/theme_preview.vue'
 import VirtualDirectivesTab from './virtual_directives_tab.vue'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+  faArrowsRotate,
+  faCheck,
+  faFile,
+  faFloppyDisk,
+  faFolderOpen,
+} from '@fortawesome/free-solid-svg-icons'
 
 // helper for debugging
 // const toValue = (x) => JSON.parse(JSON.stringify(x === undefined ? 'null' : x))

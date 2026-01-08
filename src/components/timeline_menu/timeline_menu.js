@@ -1,15 +1,17 @@
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { mapState } from 'vuex'
+
 import { filterNavigation } from 'src/components/navigation/filter.js'
 import { TIMELINES } from 'src/components/navigation/navigation.js'
 import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useListsStore } from 'src/stores/lists'
-import { mapState } from 'vuex'
 import BookmarkFoldersMenuContent from '../bookmark_folders_menu/bookmark_folders_menu_content.vue'
 import ListsMenuContent from '../lists_menu/lists_menu_content.vue'
 import Popover from '../popover/popover.vue'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faChevronDown)
 

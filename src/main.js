@@ -14,6 +14,7 @@ if (!Array.prototype.toSorted) {
 }
 
 import { createI18n } from 'vue-i18n'
+
 import afterStoreSetup from './boot/after_store.js'
 import messages from './i18n/messages.js'
 import createPersistedState, {

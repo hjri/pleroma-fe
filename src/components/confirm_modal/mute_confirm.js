@@ -1,5 +1,6 @@
-import Select from 'src/components/select/select.vue'
 import { mapGetters } from 'vuex'
+
+import Select from 'src/components/select/select.vue'
 import ConfirmModal from './confirm_modal.vue'
 
 export default {

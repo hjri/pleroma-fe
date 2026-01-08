@@ -1,6 +1,7 @@
 import Checkbox from 'components/checkbox/checkbox.vue'
 import RichContent from 'components/rich_content/rich_content.jsx'
 import Timeago from 'components/timeago/timeago.vue'
+
 import { usePollsStore } from 'src/stores/polls'
 import genRandomSeed from '../../services/random_seed/random_seed.service.js'
 

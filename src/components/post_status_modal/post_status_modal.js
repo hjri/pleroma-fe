@@ -1,4 +1,5 @@
 import get from 'lodash/get'
+
 import { usePostStatusStore } from 'src/stores/post_status'
 import Modal from '../modal/modal.vue'
 import PostStatusForm from '../post_status_form/post_status_form.vue'

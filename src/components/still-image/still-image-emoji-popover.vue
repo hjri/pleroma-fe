@@ -59,6 +59,7 @@
 import Popover from 'components/popover/popover.vue'
 import SelectComponent from 'components/select/select.vue'
 import { assign } from 'lodash'
+
 import { useInterfaceStore } from 'src/stores/interface'
 import StillImage from './still-image.vue'
 

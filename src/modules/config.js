@@ -1,11 +1,11 @@
 import Cookies from 'js-cookie'
 import { set } from 'lodash'
+
 import { useI18nStore } from 'src/stores/i18n.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import messages from '../i18n/messages'
 import localeService from '../services/locale/locale.service.js'
 import { applyConfig } from '../services/style_setter/style_setter.js'
-
 import { defaultState, instanceDefaultConfig } from './default_config_state.js'
 
 const BACKEND_LANGUAGE_COOKIE_NAME = 'userLanguage'

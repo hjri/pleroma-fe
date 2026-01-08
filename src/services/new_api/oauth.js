@@ -1,4 +1,5 @@
 import { reduce } from 'lodash'
+
 import { StatusCodeError } from 'src/services/errors/errors.js'
 
 const REDIRECT_URI = `${window.location.origin}/oauth-callback`

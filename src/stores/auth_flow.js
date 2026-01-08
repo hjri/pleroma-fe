@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+
 import { useOAuthStore } from 'src/stores/oauth.js'
 
 const PASSWORD_STRATEGY = 'password'

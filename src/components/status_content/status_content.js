@@ -1,3 +1,12 @@
+import { mapGetters, mapState } from 'vuex'
+
+import StatusBody from 'src/components/status_body/status_body.vue'
+import { useMediaViewerStore } from 'src/stores/media_viewer'
+import Attachment from '../attachment/attachment.vue'
+import Gallery from '../gallery/gallery.vue'
+import LinkPreview from '../link-preview/link-preview.vue'
+import Poll from '../poll/poll.vue'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faCircleNotch,
@@ -7,13 +16,6 @@ import {
   faMusic,
   faPollH,
 } from '@fortawesome/free-solid-svg-icons'
-import StatusBody from 'src/components/status_body/status_body.vue'
-import { useMediaViewerStore } from 'src/stores/media_viewer'
-import { mapGetters, mapState } from 'vuex'
-import Attachment from '../attachment/attachment.vue'
-import Gallery from '../gallery/gallery.vue'
-import LinkPreview from '../link-preview/link-preview.vue'
-import Poll from '../poll/poll.vue'
 
 library.add(faCircleNotch, faFile, faMusic, faImage, faLink, faPollH)
 

@@ -1,3 +1,16 @@
+import { mapState as mapPiniaState } from 'pinia'
+import { mapGetters, mapState } from 'vuex'
+
+import BookmarkFoldersMenuContent from 'src/components/bookmark_folders_menu/bookmark_folders_menu_content.vue'
+import Checkbox from 'src/components/checkbox/checkbox.vue'
+import ListsMenuContent from 'src/components/lists_menu/lists_menu_content.vue'
+import { filterNavigation } from 'src/components/navigation/filter.js'
+import { ROOT_ITEMS, TIMELINES } from 'src/components/navigation/navigation.js'
+import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
+import NavigationPins from 'src/components/navigation/navigation_pins.vue'
+import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faBell,
@@ -15,17 +28,6 @@ import {
   faStream,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons'
-import { mapState as mapPiniaState } from 'pinia'
-import BookmarkFoldersMenuContent from 'src/components/bookmark_folders_menu/bookmark_folders_menu_content.vue'
-import Checkbox from 'src/components/checkbox/checkbox.vue'
-import ListsMenuContent from 'src/components/lists_menu/lists_menu_content.vue'
-import { filterNavigation } from 'src/components/navigation/filter.js'
-import { ROOT_ITEMS, TIMELINES } from 'src/components/navigation/navigation.js'
-import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
-import NavigationPins from 'src/components/navigation/navigation_pins.vue'
-import { useAnnouncementsStore } from 'src/stores/announcements'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
-import { mapGetters, mapState } from 'vuex'
 
 library.add(
   faUsers,

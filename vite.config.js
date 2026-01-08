@@ -6,6 +6,7 @@ import { defineConfig } from 'vite'
 import eslint from 'vite-plugin-eslint2'
 import stylelint from 'vite-plugin-stylelint'
 import { configDefaults } from 'vitest/config'
+
 import { getCommitHash } from './build/commit_hash.js'
 import copyPlugin from './build/copy_plugin.js'
 import emojisPlugin from './build/emojis_plugin.js'

@@ -1,8 +1,9 @@
 import { HttpResponse, http } from 'msw'
 import { createPinia, setActivePinia } from 'pinia'
-import { useOAuthStore } from 'src/stores/oauth.js'
 import { createApp } from 'vue'
 import { createStore } from 'vuex'
+
+import { useOAuthStore } from 'src/stores/oauth.js'
 import {
   authApis,
   injectMswToTest,

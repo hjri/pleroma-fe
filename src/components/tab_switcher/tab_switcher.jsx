@@ -1,10 +1,12 @@
 // eslint-disable-next-line no-unused
 
-import { FontAwesomeIcon as FAIcon } from '@fortawesome/vue-fontawesome'
 import { mapState } from 'pinia'
 import { Fragment, h } from 'vue'
 
+import { FontAwesomeIcon as FAIcon } from '@fortawesome/vue-fontawesome'
+
 import './tab_switcher.scss'
+
 import { useInterfaceStore } from 'src/stores/interface'
 
 const findFirstUsable = (slots) => slots.findIndex((_) => _.props)

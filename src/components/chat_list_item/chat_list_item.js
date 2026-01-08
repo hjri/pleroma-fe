@@ -1,5 +1,6 @@
-import fileType from 'src/services/file_type/file_type.service'
 import { mapState } from 'vuex'
+
+import fileType from 'src/services/file_type/file_type.service'
 import AvatarList from '../avatar_list/avatar_list.vue'
 import ChatTitle from '../chat_title/chat_title.vue'
 import StatusBody from '../status_content/status_content.vue'

@@ -1,22 +1,3 @@
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faChain,
-  faChartLine,
-  faCircleNodes,
-  faDoorOpen,
-  faEllipsis,
-  faEnvelope,
-  faGauge,
-  faGears,
-  faGlobe,
-  faHand,
-  faKey,
-  faLaptopCode,
-  faMessage,
-  faTowerBroadcast,
-  faUpload,
-  faWrench,
-} from '@fortawesome/free-solid-svg-icons'
 import { useInterfaceStore } from 'src/stores/interface'
 import AuthTab from './admin_tabs/auth_tab.vue'
 import EmojiTab from './admin_tabs/emoji_tab.vue'
@@ -36,6 +17,26 @@ import RatesTab from './admin_tabs/rates_tab.vue'
 import RegistrationsTab from './admin_tabs/registrations_tab.vue'
 import UploadsTab from './admin_tabs/uploads_tab.vue'
 import VerticalTabSwitcher from './helpers/vertical_tab_switcher.jsx'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+  faChain,
+  faChartLine,
+  faCircleNodes,
+  faDoorOpen,
+  faEllipsis,
+  faEnvelope,
+  faGauge,
+  faGears,
+  faGlobe,
+  faHand,
+  faKey,
+  faLaptopCode,
+  faMessage,
+  faTowerBroadcast,
+  faUpload,
+  faWrench,
+} from '@fortawesome/free-solid-svg-icons'
 
 library.add(
   faWrench,

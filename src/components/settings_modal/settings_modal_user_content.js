@@ -1,20 +1,3 @@
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faBell,
-  faBroom,
-  faCode,
-  faColumns,
-  faDownload,
-  faEyeSlash,
-  faFilter,
-  faLock,
-  faMessage,
-  faPaintBrush,
-  faPalette,
-  faUser,
-  faWindowRestore,
-  faWrench,
-} from '@fortawesome/free-solid-svg-icons'
 import { useInterfaceStore } from 'src/stores/interface'
 import VerticalTabSwitcher from './helpers/vertical_tab_switcher.jsx'
 import AppearanceTab from './tabs/appearance_tab.vue'
@@ -32,6 +15,24 @@ import PostsTab from './tabs/posts_tab.vue'
 import ProfileTab from './tabs/profile_tab.vue'
 import SecurityTab from './tabs/security_tab/security_tab.vue'
 import StyleTab from './tabs/style_tab/style_tab.vue'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+  faBell,
+  faBroom,
+  faCode,
+  faColumns,
+  faDownload,
+  faEyeSlash,
+  faFilter,
+  faLock,
+  faMessage,
+  faPaintBrush,
+  faPalette,
+  faUser,
+  faWindowRestore,
+  faWrench,
+} from '@fortawesome/free-solid-svg-icons'
 
 library.add(
   faWrench,

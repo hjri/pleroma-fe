@@ -1,6 +1,7 @@
 import { flushPromises, mount } from '@vue/test-utils'
-import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import { nextTick } from 'vue'
+
+import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import { $t, mountOpts, waitForEvent } from '../../../fixtures/setup_test'
 
 const autoSaveOrNot = (caseFn, caseTitle, runFn) => {

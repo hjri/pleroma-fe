@@ -1,5 +1,8 @@
 import { cloneDeep } from 'lodash'
 import { mapActions, mapState } from 'pinia'
+import { v4 as uuidv4 } from 'uuid'
+import { mapState as mapVuexState } from 'vuex'
+
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Select from 'src/components/select/select.vue'
 import {
@@ -8,8 +11,6 @@ import {
 } from 'src/services/export_import/export_import.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
-import { v4 as uuidv4 } from 'uuid'
-import { mapState as mapVuexState } from 'vuex'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import HelpIndicator from '../helpers/help_indicator.vue'

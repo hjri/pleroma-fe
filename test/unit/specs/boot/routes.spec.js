@@ -1,6 +1,7 @@
-import routes from 'src/boot/routes'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { createStore } from 'vuex'
+
+import routes from 'src/boot/routes'
 
 const store = createStore({
   state: {

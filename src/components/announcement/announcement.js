@@ -1,5 +1,6 @@
-import { useAnnouncementsStore } from 'src/stores/announcements'
 import { mapState } from 'vuex'
+
+import { useAnnouncementsStore } from 'src/stores/announcements'
 import localeService from '../../services/locale/locale.service.js'
 import AnnouncementEditor from '../announcement_editor/announcement_editor.vue'
 import RichContent from '../rich_content/rich_content.jsx'

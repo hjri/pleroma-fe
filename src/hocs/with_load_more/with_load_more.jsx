@@ -2,6 +2,7 @@
 
 import isEmpty from 'lodash/isEmpty'
 import { h } from 'vue'
+
 import { getComponentProps } from '../../services/component_utils/component_utils'
 import './with_load_more.scss'
 

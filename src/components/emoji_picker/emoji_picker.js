@@ -1,3 +1,11 @@
+import { chunk, debounce, trim } from 'lodash'
+import { defineAsyncComponent } from 'vue'
+
+import Popover from 'src/components/popover/popover.vue'
+import { ensureFinalFallback } from '../../i18n/languages.js'
+import Checkbox from '../checkbox/checkbox.vue'
+import StillImage from '../still-image/still-image.vue'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faBasketballBall,
@@ -13,12 +21,6 @@ import {
   faStickyNote,
   faUser,
 } from '@fortawesome/free-solid-svg-icons'
-import { chunk, debounce, trim } from 'lodash'
-import Popover from 'src/components/popover/popover.vue'
-import { defineAsyncComponent } from 'vue'
-import { ensureFinalFallback } from '../../i18n/languages.js'
-import Checkbox from '../checkbox/checkbox.vue'
-import StillImage from '../still-image/still-image.vue'
 
 library.add(
   faBoxOpen,

@@ -1,3 +1,12 @@
+import { mapGetters } from 'vuex'
+
+import { useMediaViewerStore } from 'src/stores/media_viewer'
+import nsfwImage from '../../assets/nsfw.png'
+import fileTypeService from '../../services/file_type/file_type.service.js'
+import Flash from '../flash/flash.vue'
+import StillImage from '../still-image/still-image.vue'
+import VideoAttachment from '../video_attachment/video_attachment.vue'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faAlignRight,
@@ -12,13 +21,6 @@ import {
   faTrashAlt,
   faVideo,
 } from '@fortawesome/free-solid-svg-icons'
-import { useMediaViewerStore } from 'src/stores/media_viewer'
-import { mapGetters } from 'vuex'
-import nsfwImage from '../../assets/nsfw.png'
-import fileTypeService from '../../services/file_type/file_type.service.js'
-import Flash from '../flash/flash.vue'
-import StillImage from '../still-image/still-image.vue'
-import VideoAttachment from '../video_attachment/video_attachment.vue'
 
 library.add(
   faFile,

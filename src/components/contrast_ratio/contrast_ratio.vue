@@ -57,13 +57,14 @@
 </template>
 
 <script>
+import Tooltip from 'src/components/tooltip/tooltip.vue'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faAdjust,
   faExclamationTriangle,
   faThumbsUp,
 } from '@fortawesome/free-solid-svg-icons'
-import Tooltip from 'src/components/tooltip/tooltip.vue'
 
 library.add(faAdjust, faExclamationTriangle, faThumbsUp)
 

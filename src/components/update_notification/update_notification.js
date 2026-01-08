@@ -1,9 +1,10 @@
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import pleromaTanFoxMask from 'src/assets/pleromatan_apology_fox_mask.png'
 import pleromaTanMask from 'src/assets/pleromatan_apology_mask.png'
 import Modal from 'src/components/modal/modal.vue'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faTimes)
 

@@ -1,6 +1,7 @@
 import { brightness, convert } from 'chromatism'
 import sum from 'hash-sum'
 import { flattenDeep, sortBy } from 'lodash'
+
 import {
   alphaBlend,
   getTextColor,
@@ -9,7 +10,6 @@ import {
   rgba2css,
 } from '../color_convert/color_convert.js'
 import { deserializeShadow } from './iss_deserializer.js'
-
 import {
   findRules,
   genericRuleToSelector,

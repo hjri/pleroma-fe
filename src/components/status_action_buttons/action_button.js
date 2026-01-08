@@ -1,3 +1,7 @@
+import EmojiPicker from 'src/components/emoji_picker/emoji_picker.vue'
+import Popover from 'src/components/popover/popover.vue'
+import StatusBookmarkFolderMenu from 'src/components/status_bookmark_folder_menu/status_bookmark_folder_menu.vue'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faBookmark as faBookmarkRegular,
@@ -22,9 +26,6 @@ import {
   faTimes,
   faWrench,
 } from '@fortawesome/free-solid-svg-icons'
-import EmojiPicker from 'src/components/emoji_picker/emoji_picker.vue'
-import Popover from 'src/components/popover/popover.vue'
-import StatusBookmarkFolderMenu from 'src/components/status_bookmark_folder_menu/status_bookmark_folder_menu.vue'
 
 library.add(
   faPlus,

@@ -1,6 +1,7 @@
 import { throttle } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 import { mapGetters } from 'vuex'
+
 import DesktopNav from './components/desktop_nav/desktop_nav.vue'
 import EditStatusModal from './components/edit_status_modal/edit_status_modal.vue'
 import FeaturesPanel from './components/features_panel/features_panel.vue'

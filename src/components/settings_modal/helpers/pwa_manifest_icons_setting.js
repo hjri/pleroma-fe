@@ -1,4 +1,5 @@
 import { clone } from 'lodash'
+
 import Attachment from 'src/components/attachment/attachment.vue'
 import MediaUpload from 'src/components/media_upload/media_upload.vue'
 import Select from 'src/components/select/select.vue'

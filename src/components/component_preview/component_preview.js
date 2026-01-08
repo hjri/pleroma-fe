@@ -1,6 +1,5 @@
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
-
 import genRandomSeed from 'src/services/random_seed/random_seed.service.js'
 import {
   adoptStyleSheets,

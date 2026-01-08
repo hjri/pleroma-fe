@@ -1,10 +1,10 @@
 import { mapActions, mapState } from 'pinia'
-import Checkbox from 'src/components/checkbox/checkbox.vue'
-import Select from 'src/components/select/select.vue'
-
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import { v4 as uuidv4 } from 'uuid'
 import { mapState as mapVuexState } from 'vuex'
+
+import Checkbox from 'src/components/checkbox/checkbox.vue'
+import Select from 'src/components/select/select.vue'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import HelpIndicator from '../helpers/help_indicator.vue'

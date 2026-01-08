@@ -1,4 +1,5 @@
 import { concat, each, get, last, map } from 'lodash'
+
 import {
   parseAttachment,
   parseChat,

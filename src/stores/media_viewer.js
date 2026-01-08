@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+
 import fileTypeService from '../services/file_type/file_type.service.js'
 
 const supportedTypes = new Set(['image', 'video', 'audio', 'flash'])

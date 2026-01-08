@@ -1,4 +1,5 @@
 import { mapState } from 'vuex'
+
 import Confirm from './confirm.vue'
 
 export default {

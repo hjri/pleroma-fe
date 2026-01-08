@@ -1,7 +1,8 @@
 import { createPinia, setActivePinia } from 'pinia'
+import { createStore } from 'vuex'
+
 import apiModule from 'src/modules/api.js'
 import { useListsStore } from 'src/stores/lists.js'
-import { createStore } from 'vuex'
 
 setActivePinia(createPinia())
 const store = useListsStore()

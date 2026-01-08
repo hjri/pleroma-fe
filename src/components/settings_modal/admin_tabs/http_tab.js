@@ -1,4 +1,5 @@
 import { get } from 'lodash'
+
 import AttachmentSetting from '../helpers/attachment_setting.vue'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'

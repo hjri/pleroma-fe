@@ -1,7 +1,8 @@
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faPeopleGroup, faRobot } from '@fortawesome/free-solid-svg-icons'
 import { useInterfaceStore } from 'src/stores/interface'
 import StillImage from '../still-image/still-image.vue'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faPeopleGroup, faRobot } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faRobot, faPeopleGroup)
 

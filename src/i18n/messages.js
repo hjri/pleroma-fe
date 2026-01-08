@@ -8,6 +8,7 @@
 // There's only problem that apostrophe character ' gets replaced by \\ so you have to fix it manually, sorry.
 
 import { isEqual } from 'lodash'
+
 import enMessages from './en.json'
 import { langCodeToJsonName, languages } from './languages.js'
 

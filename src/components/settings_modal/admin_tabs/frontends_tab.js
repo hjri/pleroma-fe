@@ -1,5 +1,3 @@
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faGlobe } from '@fortawesome/free-solid-svg-icons'
 import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
 import Popover from 'src/components/popover/popover.vue'
 import { useInterfaceStore } from 'src/stores/interface'
@@ -9,6 +7,9 @@ import GroupSetting from '../helpers/group_setting.vue'
 import IntegerSetting from '../helpers/integer_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import StringSetting from '../helpers/string_setting.vue'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faGlobe } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faGlobe)
 

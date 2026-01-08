@@ -1,5 +1,6 @@
-import MentionLink from 'src/components/mention_link/mention_link.vue'
 import { mapGetters } from 'vuex'
+
+import MentionLink from 'src/components/mention_link/mention_link.vue'
 
 export const MENTIONS_LIMIT = 5
 

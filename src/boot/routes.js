@@ -26,6 +26,7 @@ import ShoutPanel from 'components/shout_panel/shout_panel.vue'
 import TagTimeline from 'components/tag_timeline/tag_timeline.vue'
 import UserProfile from 'components/user_profile/user_profile.vue'
 import WhoToFollow from 'components/who_to_follow/who_to_follow.vue'
+
 import NavPanel from 'src/components/nav_panel/nav_panel.vue'
 import BookmarkFolderEdit from '../components/bookmark_folder_edit/bookmark_folder_edit.vue'
 import BookmarkFolders from '../components/bookmark_folders/bookmark_folders.vue'

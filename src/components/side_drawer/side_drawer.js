@@ -1,3 +1,14 @@
+import { mapState as mapPiniaState } from 'pinia'
+import { mapGetters, mapState } from 'vuex'
+
+import { USERNAME_ROUTES } from 'src/components/navigation/navigation.js'
+import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useInterfaceStore } from 'src/stores/interface'
+import { useShoutStore } from 'src/stores/shout'
+import GestureService from '../../services/gesture_service/gesture_service'
+import { unseenNotificationsFromStore } from '../../services/notification_utils/notification_utils'
+import UserCard from '../user_card/user_card.vue'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faBell,
@@ -15,15 +26,6 @@ import {
   faTachometerAlt,
   faUserPlus,
 } from '@fortawesome/free-solid-svg-icons'
-import { mapState as mapPiniaState } from 'pinia'
-import { USERNAME_ROUTES } from 'src/components/navigation/navigation.js'
-import { useAnnouncementsStore } from 'src/stores/announcements'
-import { useInterfaceStore } from 'src/stores/interface'
-import { useShoutStore } from 'src/stores/shout'
-import { mapGetters, mapState } from 'vuex'
-import GestureService from '../../services/gesture_service/gesture_service'
-import { unseenNotificationsFromStore } from '../../services/notification_utils/notification_utils'
-import UserCard from '../user_card/user_card.vue'
 
 library.add(
   faSignInAlt,

@@ -1,4 +1,5 @@
 import { mapActions } from 'pinia'
+
 import fileSizeFormatService from 'src/components/../services/file_size_format/file_size_format.js'
 import PaletteEditor from 'src/components/palette_editor/palette_editor.vue'
 import { newImporter } from 'src/services/export_import/export_import.js'

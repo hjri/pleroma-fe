@@ -8,6 +8,7 @@ import {
   mergeWith,
   uniq,
 } from 'lodash'
+
 import { declarations } from 'src/modules/config_declaration'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'

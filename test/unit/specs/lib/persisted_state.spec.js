@@ -1,7 +1,8 @@
 import { flushPromises } from '@vue/test-utils'
 import { createPinia, defineStore, setActivePinia } from 'pinia'
-import { piniaPersistPlugin } from 'src/lib/persisted_state.js'
 import { createApp } from 'vue'
+
+import { piniaPersistPlugin } from 'src/lib/persisted_state.js'
 
 const app = createApp({})
 

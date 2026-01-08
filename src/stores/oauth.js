@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+
 import {
   createApp,
   getClientToken,

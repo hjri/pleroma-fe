@@ -1,8 +1,9 @@
 import { mount } from '@vue/test-utils'
+import { createStore } from 'vuex'
+
 import UserProfile from 'src/components/user_profile/user_profile.vue'
 import { getters } from 'src/modules/users.js'
 import backendInteractorService from 'src/services/backend_interactor_service/backend_interactor_service.js'
-import { createStore } from 'vuex'
 
 const mutations = {
   clearTimeline: () => {

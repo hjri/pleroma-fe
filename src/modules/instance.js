@@ -1,5 +1,5 @@
 // See build/emojis_plugin for more details
-import { annotationsLoader } from 'virtual:pleroma-fe/emoji-annotations'
+
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { ensureFinalFallback } from '../i18n/languages.js'
 import apiService from '../services/api/api.service.js'
@@ -8,6 +8,8 @@ import {
   instanceDefaultConfig,
   staticOrApiConfigDefault,
 } from './default_config_state.js'
+
+import { annotationsLoader } from 'virtual:pleroma-fe/emoji-annotations'
 
 const SORTED_EMOJI_GROUP_IDS = [
   'smileys-and-emotion',

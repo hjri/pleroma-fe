@@ -1,4 +1,5 @@
 import { brightness, invertLightness } from 'chromatism'
+
 import { alphaBlend, mixrgb } from '../color_convert/color_convert.js'
 /* This is a definition of all layer combinations
  * each key is a topmost layer, each value represents layer underneath

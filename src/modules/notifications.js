@@ -1,7 +1,6 @@
 import { useReportsStore } from 'src/stores/reports.js'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import apiService from '../services/api/api.service.js'
-
 import {
   closeAllDesktopNotifications,
   closeDesktopNotification,

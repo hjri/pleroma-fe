@@ -1,7 +1,9 @@
+import { debounce } from 'lodash'
+
+import { usePostStatusStore } from 'src/stores/post_status'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
-import { debounce } from 'lodash'
-import { usePostStatusStore } from 'src/stores/post_status'
 
 library.add(faPen)
 

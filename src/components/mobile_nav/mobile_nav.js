@@ -1,3 +1,18 @@
+import { mapState } from 'pinia'
+import { mapGetters } from 'vuex'
+
+import NavigationPins from 'src/components/navigation/navigation_pins.vue'
+import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import GestureService from '../../services/gesture_service/gesture_service'
+import {
+  countExtraNotifications,
+  unseenNotificationsFromStore,
+} from '../../services/notification_utils/notification_utils'
+import ConfirmModal from '../confirm_modal/confirm_modal.vue'
+import Notifications from '../notifications/notifications.vue'
+import SideDrawer from '../side_drawer/side_drawer.vue'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faArrowUp,
@@ -7,20 +22,6 @@ import {
   faMinus,
   faTimes,
 } from '@fortawesome/free-solid-svg-icons'
-import { mapState } from 'pinia'
-import NavigationPins from 'src/components/navigation/navigation_pins.vue'
-import { useAnnouncementsStore } from 'src/stores/announcements'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
-
-import { mapGetters } from 'vuex'
-import GestureService from '../../services/gesture_service/gesture_service'
-import {
-  countExtraNotifications,
-  unseenNotificationsFromStore,
-} from '../../services/notification_utils/notification_utils'
-import ConfirmModal from '../confirm_modal/confirm_modal.vue'
-import Notifications from '../notifications/notifications.vue'
-import SideDrawer from '../side_drawer/side_drawer.vue'
 
 library.add(faTimes, faBell, faBars, faArrowUp, faMinus, faCheckDouble)
 

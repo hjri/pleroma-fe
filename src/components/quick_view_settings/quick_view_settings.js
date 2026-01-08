@@ -1,3 +1,10 @@
+import { mapState } from 'pinia'
+import { mapGetters } from 'vuex'
+
+import Popover from 'src/components/popover/popover.vue'
+import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
+import { useInterfaceStore } from 'src/stores/interface'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faBars,
@@ -5,11 +12,6 @@ import {
   faList,
   faWrench,
 } from '@fortawesome/free-solid-svg-icons'
-import { mapState } from 'pinia'
-import Popover from 'src/components/popover/popover.vue'
-import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
-import { useInterfaceStore } from 'src/stores/interface'
-import { mapGetters } from 'vuex'
 
 library.add(faList, faFolderTree, faBars, faWrench)
 

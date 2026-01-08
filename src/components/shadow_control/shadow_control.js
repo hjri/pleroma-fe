@@ -1,11 +1,5 @@
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faChevronDown,
-  faChevronUp,
-  faPlus,
-  faTimes,
-} from '@fortawesome/free-solid-svg-icons'
 import { flattenDeep, throttle } from 'lodash'
+
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
 import ComponentPreview from 'src/components/component_preview/component_preview.vue'
@@ -24,6 +18,14 @@ import {
   findColor,
   findShadow,
 } from 'src/services/theme_data/theme_data_3.service.js'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+  faChevronDown,
+  faChevronUp,
+  faPlus,
+  faTimes,
+} from '@fortawesome/free-solid-svg-icons'
 
 library.add(faChevronDown, faChevronUp, faTimes, faPlus)
 

@@ -1,10 +1,10 @@
-import ColorInput from 'src/components/color_input/color_input.vue'
+import { computed, inject, ref, watch } from 'vue'
 
+import ColorInput from 'src/components/color_input/color_input.vue'
 import Select from 'src/components/select/select.vue'
 import SelectMotion from 'src/components/select/select_motion.vue'
 import ShadowControl from 'src/components/shadow_control/shadow_control.vue'
 import { serializeShadow } from 'src/services/theme_data/iss_serializer.js'
-import { computed, inject, ref, watch } from 'vue'
 
 // helper for debugging
 // const toValue = (x) => JSON.parse(JSON.stringify(x === undefined ? 'null' : x))

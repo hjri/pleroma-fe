@@ -1,4 +1,5 @@
 import { shuffle } from 'lodash'
+
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 import apiService from '../../services/api/api.service.js'
 

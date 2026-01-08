@@ -1,12 +1,14 @@
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
+import { mapState } from 'vuex'
+
 import UserListMenu from 'src/components/user_list_menu/user_list_menu.vue'
 import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
 import { useReportsStore } from 'src/stores/reports'
-import { mapState } from 'vuex'
 import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 import Popover from '../popover/popover.vue'
 import ProgressButton from '../progress_button/progress_button.vue'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faEllipsisV)
 

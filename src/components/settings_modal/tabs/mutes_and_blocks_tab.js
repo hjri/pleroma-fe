@@ -1,6 +1,7 @@
 import get from 'lodash/get'
 import map from 'lodash/map'
 import reject from 'lodash/reject'
+
 import withLoadMore from 'src/components/../hocs/with_load_more/with_load_more'
 import withSubscription from 'src/components/../hocs/with_subscription/with_subscription'
 import Autosuggest from 'src/components/autosuggest/autosuggest.vue'

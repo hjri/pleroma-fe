@@ -1,18 +1,20 @@
+import { clone, filter, findIndex, get, reduce } from 'lodash'
+import { mapState as mapPiniaState } from 'pinia'
+import { mapGetters, mapState } from 'vuex'
+
+import { useInterfaceStore } from 'src/stores/interface'
+import { WSConnectionStatus } from '../../services/api/api.service.js'
+import QuickFilterSettings from '../quick_filter_settings/quick_filter_settings.vue'
+import QuickViewSettings from '../quick_view_settings/quick_view_settings.vue'
+import Status from '../status/status.vue'
+import ThreadTree from '../thread_tree/thread_tree.vue'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faAngleDoubleDown,
   faAngleDoubleLeft,
   faChevronLeft,
 } from '@fortawesome/free-solid-svg-icons'
-import { clone, filter, findIndex, get, reduce } from 'lodash'
-import { mapState as mapPiniaState } from 'pinia'
-import { useInterfaceStore } from 'src/stores/interface'
-import { mapGetters, mapState } from 'vuex'
-import { WSConnectionStatus } from '../../services/api/api.service.js'
-import QuickFilterSettings from '../quick_filter_settings/quick_filter_settings.vue'
-import QuickViewSettings from '../quick_view_settings/quick_view_settings.vue'
-import Status from '../status/status.vue'
-import ThreadTree from '../thread_tree/thread_tree.vue'
 
 library.add(faAngleDoubleDown, faAngleDoubleLeft, faChevronLeft)
 

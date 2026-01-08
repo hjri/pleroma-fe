@@ -1,4 +1,5 @@
 import { mount, shallowMount } from '@vue/test-utils'
+
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 
 const attentions = []

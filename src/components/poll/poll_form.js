@@ -1,8 +1,9 @@
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
 import * as DateUtils from 'src/services/date_utils/date_utils.js'
 import { pollFallback } from 'src/services/poll/poll.service.js'
 import Select from '../select/select.vue'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faTimes, faPlus)
 
