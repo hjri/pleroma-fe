@@ -1,0 +1,12 @@
+node_modules/
+dist/
+logs/
+.DS_Store
+.git/
+config/local.json
+pleroma-backend/
+test/e2e/reports/
+test/e2e-playwright/test-results/
+test/e2e-playwright/playwright-report/
+__screenshots__/
+

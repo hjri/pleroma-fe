@@ -551,7 +551,7 @@ const users = {
         if (data.access_token) {
           store.commit('signUpSuccess')
           oauthStore.setToken(data.access_token)
-          store.dispatch('loginUser', data.access_token)
+          await store.dispatch('loginUser', data.access_token)
           return 'ok'
         } else { // Request succeeded, but user cannot login yet.
           store.commit('signUpNotice', data)

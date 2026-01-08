@@ -10,11 +10,12 @@
     "unit": "node build/update-emoji.js && vitest --run",
     "unit-ci": "node build/update-emoji.js && vitest --run --browser.headless",
     "unit:watch": "node build/update-emoji.js && vitest",
-    "e2e": "node test/e2e/runner.js",
+    "e2e:pw": "playwright test --config test/e2e-playwright/playwright.config.mjs",
+    "e2e": "sh ./tools/e2e/run.sh",
     "test": "yarn run unit && yarn run e2e",
     "stylelint": "yarn exec stylelint '**/*.scss' '**/*.vue'",
-    "lint": "eslint src test/unit/specs test/e2e/specs",
-    "lint-fix": "eslint --fix src test/unit/specs test/e2e/specs"
+    "lint": "eslint src test/unit/specs test/e2e/specs test/e2e-playwright/specs test/e2e-playwright/playwright.config.mjs",
+    "lint-fix": "eslint --fix src test/unit/specs test/e2e/specs test/e2e-playwright/specs test/e2e-playwright/playwright.config.mjs"
   },
   "dependencies": {
     "@babel/runtime": "7.28.4",
