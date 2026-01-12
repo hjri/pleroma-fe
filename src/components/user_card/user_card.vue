@@ -208,21 +208,9 @@
                 </span>
                 <span
                   v-if="user.actor_type === 'Group'"
-                  class="alert user-role"
+                  class="alert neutral user-role"
                 >
                   {{ $t('user_card.group') }}
-                </span>
-                <span
-                  v-if="relationship.muting && muteExpiryAvailable"
-                  class="alert neutral user-role"
-                >
-                  {{ muteExpiry }}
-                </span>
-                <span
-                  v-if="relationship.blocking && blockExpiryAvailable"
-                  class="alert neutral user-role"
-                >
-                  {{ blockExpiry }}
                 </span>
               </template>
             </div>

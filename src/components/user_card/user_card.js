@@ -121,8 +121,6 @@ export default {
 
     return {
       followRequestInProgress: false,
-      muteExpiryAmount: 0,
-      muteExpiryUnit: 'minutes',
 
       // Editable stuff
       editImage: false,
@@ -158,7 +156,7 @@ export default {
   computed: {
     somethingToSave() {
       if (this.newName !== this.user.name_unescaped) return true
-      if (this.newBio !== unescape(this.user.description)) return true
+      if (this.newBio !== ldUnescape(this.user.description)) return true
       if (this.newAvatar !== null) return true
       if (this.newBanner !== null) return true
       if (this.newActorType !== this.user.actor_type) return true
@@ -288,17 +286,17 @@ export default {
       return 'note' in this.relationship
     },
     muteExpiryAvailable() {
-      return this.user.mute_expires_at !== undefined
+      return Object.hasOwn(this.user, 'mute_expires_at')
     },
     muteExpiry() {
-      return this.user.mute_expires_at == null
+      return this.user.mute_expires_at === false
         ? this.$t('user_card.mute_expires_forever')
         : this.$t('user_card.mute_expires_at', [
             new Date(this.user.mute_expires_at).toLocaleString(),
           ])
     },
     blockExpiryAvailable() {
-      return this.user.block_expires_at !== undefined
+      return Object.hasOwn(this.user, 'block_expires_at')
     },
     blockExpiry() {
       return this.user.block_expires_at == null
@@ -500,7 +498,7 @@ export default {
       const user = this.$store.state.users.currentUser
 
       this.newName = user.name_unescaped
-      this.newBio = unescape(user.description)
+      this.newBio = ldUnescape(user.description)
 
       this.newAvatar = null
       this.newAvatarFile = null
@@ -530,8 +528,8 @@ export default {
         show_birthday: !!this.newShowBirthday,
       }
 
-      if (this.actorType) {
-        params.actor_type = this.actorType
+      if (this.newActorType) {
+        params.actor_type = this.newActorType
       }
 
       if (this.newAvatarFile !== null) {
