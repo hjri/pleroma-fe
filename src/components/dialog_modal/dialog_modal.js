@@ -2,18 +2,20 @@ const DialogModal = {
   props: {
     darkOverlay: {
       default: true,
-      type: Boolean
+      type: Boolean,
     },
     onCancel: {
-      default: () => {},
-      type: Function
-    }
+      default: () => {
+        /* no-op */
+      },
+      type: Function,
+    },
   },
   computed: {
-    mobileCenter () {
+    mobileCenter() {
       return this.$store.getters.mergedConfig.modalMobileCenter
-    }
-  }
+    },
+  },
 }
 
 export default DialogModal

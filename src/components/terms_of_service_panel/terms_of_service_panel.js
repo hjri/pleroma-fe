@@ -1,12 +1,12 @@
 const TermsOfServicePanel = {
   computed: {
-    content () {
+    content() {
       return this.$store.state.instance.tos
     },
-    embedded () {
+    embedded() {
       return this.$store.state.instance.embeddedToS
-    }
-  }
+    },
+  },
 }
 
 export default TermsOfServicePanel

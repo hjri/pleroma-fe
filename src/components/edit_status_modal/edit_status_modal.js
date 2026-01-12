@@ -1,34 +1,35 @@
+import get from 'lodash/get'
+
+import { useEditStatusStore } from 'src/stores/editStatus'
 import EditStatusForm from '../edit_status_form/edit_status_form.vue'
 import Modal from '../modal/modal.vue'
-import get from 'lodash/get'
-import { useEditStatusStore } from 'src/stores/editStatus'
 
 const EditStatusModal = {
   components: {
     EditStatusForm,
-    Modal
+    Modal,
   },
-  data () {
+  data() {
     return {
-      resettingForm: false
+      resettingForm: false,
     }
   },
   computed: {
-    isLoggedIn () {
+    isLoggedIn() {
       return !!this.$store.state.users.currentUser
     },
-    modalActivated () {
+    modalActivated() {
       return useEditStatusStore().modalActivated
     },
-    isFormVisible () {
+    isFormVisible() {
       return this.isLoggedIn && !this.resettingForm && this.modalActivated
     },
-    params () {
+    params() {
       return useEditStatusStore().params || {}
-    }
+    },
   },
   watch: {
-    params (newVal, oldVal) {
+    params(newVal, oldVal) {
       if (get(newVal, 'statusId') !== get(oldVal, 'statusId')) {
         this.resettingForm = true
         this.$nextTick(() => {
@@ -36,20 +37,22 @@ const EditStatusModal = {
         })
       }
     },
-    isFormVisible (val) {
+    isFormVisible(val) {
       if (val) {
-        this.$nextTick(() => this.$el && this.$el.querySelector('textarea').focus())
+        this.$nextTick(
+          () => this.$el && this.$el.querySelector('textarea').focus(),
+        )
       }
-    }
+    },
   },
   methods: {
-    closeModal () {
+    closeModal() {
       this.$refs.editStatusForm.requestClose()
     },
-    doCloseModal () {
+    doCloseModal() {
       useEditStatusStore().closeEditStatusModal()
-    }
-  }
+    },
+  },
 }
 
 export default EditStatusModal

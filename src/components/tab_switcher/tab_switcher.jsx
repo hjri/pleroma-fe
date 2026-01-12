@@ -1,12 +1,15 @@
 // eslint-disable-next-line no-unused
-import { h, Fragment } from 'vue'
+
 import { mapState } from 'pinia'
+import { Fragment, h } from 'vue'
+
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/vue-fontawesome'
 
 import './tab_switcher.scss'
+
 import { useInterfaceStore } from 'src/stores/interface'
 
-const findFirstUsable = (slots) => slots.findIndex(_ => _.props)
+const findFirstUsable = (slots) => slots.findIndex((_) => _.props)
 
 export default {
   name: 'TabSwitcher',
@@ -14,71 +17,74 @@ export default {
     renderOnlyFocused: {
       required: false,
       type: Boolean,
-      default: false
+      default: false,
     },
     onSwitch: {
       required: false,
       type: Function,
-      default: undefined
+      default: undefined,
     },
     activeTab: {
       required: false,
       type: String,
-      default: undefined
+      default: undefined,
     },
     scrollableTabs: {
       required: false,
       type: Boolean,
-      default: false
+      default: false,
     },
     bodyScrollLock: {
       required: false,
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
-  data () {
+  data() {
     return {
-      active: findFirstUsable(this.slots())
+      active: findFirstUsable(this.slots()),
     }
   },
   computed: {
-    activeIndex () {
+    activeIndex() {
       // In case of controlled component
       if (this.activeTab) {
-        return this.slots().findIndex(slot => slot && slot.props && this.activeTab === slot.props.key)
+        return this.slots().findIndex(
+          (slot) => slot && slot.props && this.activeTab === slot.props.key,
+        )
       } else {
         return this.active
       }
     },
-    isActive () {
-      return tabName => {
-        const isWanted = slot => slot.props && slot.props['data-tab-name'] === tabName
+    isActive() {
+      return (tabName) => {
+        const isWanted = (slot) =>
+          slot.props && slot.props['data-tab-name'] === tabName
         return this.$slots.default().findIndex(isWanted) === this.activeIndex
       }
-    }
+    },
   },
-  beforeUpdate () {
+  beforeUpdate() {
     const currentSlot = this.slots()[this.active]
     if (!currentSlot.props) {
       this.active = findFirstUsable(this.slots())
     }
   },
   methods: {
-    clickTab (index) {
+    clickTab(index) {
       return (e) => {
         e.preventDefault()
         this.setTab(index)
       }
     },
     // DO NOT put it to computed, it doesn't work (caching?)
-    slots () {
+    slots() {
       if (this.$slots.default()[0].type === Fragment) {
         return this.$slots.default()[0].children
       }
       return this.$slots.default()
     },
-    setTab (index) {
+    setTab(index) {
       if (typeof this.onSwitch === 'function') {
         this.onSwitch.call(null, this.slots()[index].key)
       }
@@ -86,35 +92,19 @@ export default {
       if (this.scrollableTabs) {
         this.$refs.contents.scrollTop = 0
       }
-    }
+    },
   },
-  render () {
-    const tabs = this.slots()
-      .map((slot, index) => {
-        const props = slot.props
-        if (!props) return
-        const classesTab = ['tab']
-        const classesWrapper = ['tab-wrapper']
-        if (this.activeIndex === index) {
-          classesTab.push('active')
-          classesWrapper.push('active')
-        }
-        if (props.image) {
-          return (
-            <div class={classesWrapper.join(' ')}>
-              <button
-                disabled={props.disabled}
-                onClick={this.clickTab(index)}
-                class={classesTab.join(' ')}
-                type="button"
-                role="tab"
-              >
-                <img src={props.image} title={props['image-tooltip']}/>
-                {props.label ? '' : props.label}
-              </button>
-            </div>
-          )
-        }
+  render() {
+    const tabs = this.slots().map((slot, index) => {
+      const props = slot.props
+      if (!props) return
+      const classesTab = ['tab']
+      const classesWrapper = ['tab-wrapper']
+      if (this.activeIndex === index) {
+        classesTab.push('active')
+        classesWrapper.push('active')
+      }
+      if (props.image) {
         return (
           <div class={classesWrapper.join(' ')}>
             <button
@@ -124,20 +114,42 @@ export default {
               type="button"
               role="tab"
             >
-              {!props.icon ? '' : (<FAIcon class="tab-icon" size="2x" fixed-width icon={props.icon}/>)}
-              <span class="text">
-                {props.label}
-              </span>
+              <img src={props.image} title={props['image-tooltip']} />
+              {props.label ? '' : props.label}
             </button>
           </div>
         )
-      })
+      }
+      return (
+        <div class={classesWrapper.join(' ')}>
+          <button
+            disabled={props.disabled}
+            onClick={this.clickTab(index)}
+            class={classesTab.join(' ')}
+            type="button"
+            role="tab"
+          >
+            {!props.icon ? (
+              ''
+            ) : (
+              <FAIcon
+                class="tab-icon"
+                size="2x"
+                fixed-width
+                icon={props.icon}
+              />
+            )}
+            <span class="text">{props.label}</span>
+          </button>
+        </div>
+      )
+    })
 
     const contents = this.slots().map((slot, index) => {
       const props = slot.props
       if (!props) return
       const active = this.activeIndex === index
-      const classes = [ active ? 'active' : 'hidden' ]
+      const classes = [active ? 'active' : 'hidden']
       if (props.fullHeight || props['full-height']) {
         classes.push('-full-height')
       }
@@ -149,27 +161,15 @@ export default {
         slot.props['delay-render'] = false
         delayRender = false
       }
-      const renderSlot = (!delayRender && (!this.renderOnlyFocused || active))
-        ? slot
-        : ''
+      const renderSlot =
+        !delayRender && (!this.renderOnlyFocused || active) ? slot : ''
 
-      return (
-        <div class={classes}>
-          {renderSlot}
-        </div>
-      )
+      return <div class={classes}>{renderSlot}</div>
     })
 
     return (
-      <div
-        class="tab-switcher top-tabs"
-        ref="root"
-      >
-        <div
-          class="tabs"
-          role="tablist"
-          ref="nav"
-        >
+      <div class="tab-switcher top-tabs" ref="root">
+        <div class="tabs" role="tablist" ref="nav">
           {tabs}
         </div>
         <div
@@ -182,5 +182,5 @@ export default {
         </div>
       </div>
     )
-  }
+  },
 }

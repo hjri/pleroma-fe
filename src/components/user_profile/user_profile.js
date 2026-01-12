@@ -1,91 +1,102 @@
 import get from 'lodash/get'
-import UserCard from '../user_card/user_card.vue'
-import FollowCard from '../follow_card/follow_card.vue'
-import Timeline from '../timeline/timeline.vue'
-import Conversation from '../conversation/conversation.vue'
-import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
-import RichContent from 'src/components/rich_content/rich_content.jsx'
-import List from '../list/list.vue'
-import withLoadMore from '../../hocs/with_load_more/with_load_more'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faCircleNotch
-} from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faCircleNotch
-)
+import RichContent from 'src/components/rich_content/rich_content.jsx'
+import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+import withLoadMore from '../../hocs/with_load_more/with_load_more'
+import Conversation from '../conversation/conversation.vue'
+import FollowCard from '../follow_card/follow_card.vue'
+import List from '../list/list.vue'
+import Timeline from '../timeline/timeline.vue'
+import UserCard from '../user_card/user_card.vue'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faCircleNotch)
 
 const FollowerList = withLoadMore({
   fetch: (props, $store) => $store.dispatch('fetchFollowers', props.userId),
-  select: (props, $store) => get($store.getters.findUser(props.userId), 'followerIds', []).map(id => $store.getters.findUser(id)),
+  select: (props, $store) =>
+    get($store.getters.findUser(props.userId), 'followerIds', []).map((id) =>
+      $store.getters.findUser(id),
+    ),
   destroy: (props, $store) => $store.dispatch('clearFollowers', props.userId),
   childPropName: 'items',
-  additionalPropNames: ['userId']
+  additionalPropNames: ['userId'],
 })(List)
 
 const FriendList = withLoadMore({
   fetch: (props, $store) => $store.dispatch('fetchFriends', props.userId),
-  select: (props, $store) => get($store.getters.findUser(props.userId), 'friendIds', []).map(id => $store.getters.findUser(id)),
+  select: (props, $store) =>
+    get($store.getters.findUser(props.userId), 'friendIds', []).map((id) =>
+      $store.getters.findUser(id),
+    ),
   destroy: (props, $store) => $store.dispatch('clearFriends', props.userId),
   childPropName: 'items',
-  additionalPropNames: ['userId']
+  additionalPropNames: ['userId'],
 })(List)
 
 const defaultTabKey = 'statuses'
 
 const UserProfile = {
-  data () {
+  data() {
     return {
       error: false,
       userId: null,
       tab: defaultTabKey,
-      footerRef: null
+      footerRef: null,
     }
   },
-  created () {
+  created() {
     const routeParams = this.$route.params
     this.load({ name: routeParams.name, id: routeParams.id })
     this.tab = get(this.$route, 'query.tab', defaultTabKey)
   },
-  unmounted () {
+  unmounted() {
     this.stopFetching()
   },
   computed: {
-    timeline () {
+    timeline() {
       return this.$store.state.statuses.timelines.user
     },
-    favorites () {
+    favorites() {
       return this.$store.state.statuses.timelines.favorites
     },
-    media () {
+    media() {
       return this.$store.state.statuses.timelines.media
     },
-    isUs () {
-      return this.userId && this.$store.state.users.currentUser.id &&
+    isUs() {
+      return (
+        this.userId &&
+        this.$store.state.users.currentUser.id &&
         this.userId === this.$store.state.users.currentUser.id
+      )
     },
-    user () {
+    user() {
       return this.$store.getters.findUser(this.userId)
     },
-    isExternal () {
+    isExternal() {
       return this.$route.name === 'external-user-profile'
     },
-    followsTabVisible () {
+    followsTabVisible() {
       return this.isUs || !this.user.hide_follows
     },
-    followersTabVisible () {
+    followersTabVisible() {
       return this.isUs || !this.user.hide_followers
     },
-    favoritesTabVisible () {
-      return this.isUs || (this.$store.state.instance.pleromaPublicFavouritesAvailable && !this.user.hide_favorites)
-    }
+    favoritesTabVisible() {
+      return (
+        this.isUs ||
+        (this.$store.state.instance.pleromaPublicFavouritesAvailable &&
+          !this.user.hide_favorites)
+      )
+    },
   },
   methods: {
-    setFooterRef (el) {
+    setFooterRef(el) {
       this.footerRef = el
     },
-    load (userNameOrId) {
+    load(userNameOrId) {
       const startFetchingTimeline = (timeline, userId) => {
         // Clear timeline only if load another user's profile
         if (userId !== this.$store.state.statuses.timelines[timeline].userId) {
@@ -115,17 +126,21 @@ const UserProfile = {
       const maybeName = userNameOrId.name
 
       // Check if user data is already loaded in store
-      const user = maybeId ? this.$store.getters.findUser(maybeId) : this.$store.getters.findUserByName(maybeName)
+      const user = maybeId
+        ? this.$store.getters.findUser(maybeId)
+        : this.$store.getters.findUserByName(maybeName)
       if (user) {
         loadById(user.id)
       } else {
-        (maybeId
+        ;(maybeId
           ? this.$store.dispatch('fetchUser', maybeId)
-          : this.$store.dispatch('fetchUserByName', maybeName))
+          : this.$store.dispatch('fetchUserByName', maybeName)
+        )
           .then(({ id }) => loadById(id))
           .catch((reason) => {
             const errorMessage = get(reason, 'error.error')
-            if (errorMessage === 'No user with such user_id') { // Known error
+            if (errorMessage === 'No user with such user_id') {
+              // Known error
               this.error = this.$t('user_profile.profile_does_not_exist')
             } else if (errorMessage) {
               this.error = errorMessage
@@ -135,27 +150,27 @@ const UserProfile = {
           })
       }
     },
-    stopFetching () {
+    stopFetching() {
       this.$store.dispatch('stopFetchingTimeline', 'user')
       this.$store.dispatch('stopFetchingTimeline', 'favorites')
       this.$store.dispatch('stopFetchingTimeline', 'media')
     },
-    switchUser (userNameOrId) {
+    switchUser(userNameOrId) {
       this.stopFetching()
       this.load(userNameOrId)
     },
-    onTabSwitch (tab) {
+    onTabSwitch(tab) {
       this.tab = tab
       this.$router.replace({ query: { tab } })
     },
-    linkClicked ({ target }) {
+    linkClicked({ target }) {
       if (target.tagName === 'SPAN') {
         target = target.parentNode
       }
       if (target.tagName === 'A') {
         window.open(target.href, '_blank')
       }
-    }
+    },
   },
   watch: {
     '$route.params.id': function (newVal) {
@@ -170,7 +185,7 @@ const UserProfile = {
     },
     '$route.query': function (newVal) {
       this.tab = newVal.tab || defaultTabKey
-    }
+    },
   },
   components: {
     UserCard,
@@ -180,8 +195,8 @@ const UserProfile = {
     FollowCard,
     TabSwitcher,
     Conversation,
-    RichContent
-  }
+    RichContent,
+  },
 }
 
 export default UserProfile

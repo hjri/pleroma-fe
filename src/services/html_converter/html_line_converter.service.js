@@ -22,16 +22,58 @@ export const convertHtmlToLines = (html = '') => {
   // Elements that are implicitly self-closing
   // https://developer.mozilla.org/en-US/docs/Glossary/empty_element
   const emptyElements = new Set([
-    'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
-    'keygen', 'link', 'meta', 'param', 'source', 'track', 'wbr'
+    'area',
+    'base',
+    'br',
+    'col',
+    'embed',
+    'hr',
+    'img',
+    'input',
+    'keygen',
+    'link',
+    'meta',
+    'param',
+    'source',
+    'track',
+    'wbr',
   ])
   // Block-level element (they make a visual line)
   // https://developer.mozilla.org/en-US/docs/Web/HTML/Block-level_elements
   const blockElements = new Set([
-    'address', 'article', 'aside', 'blockquote', 'details', 'dialog', 'dd',
-    'div', 'dl', 'dt', 'fieldset', 'figcaption', 'figure', 'footer', 'form',
-    'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'header', 'hgroup', 'hr', 'li', 'main',
-    'nav', 'ol', 'p', 'pre', 'section', 'table', 'ul'
+    'address',
+    'article',
+    'aside',
+    'blockquote',
+    'details',
+    'dialog',
+    'dd',
+    'div',
+    'dl',
+    'dt',
+    'fieldset',
+    'figcaption',
+    'figure',
+    'footer',
+    'form',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    'header',
+    'hgroup',
+    'hr',
+    'li',
+    'main',
+    'nav',
+    'ol',
+    'p',
+    'pre',
+    'section',
+    'table',
+    'ul',
   ])
   // br is very weird in a way that it's technically not block-level, it's
   // essentially converted to a \n (or \r\n). There's also wbr but it doesn't
@@ -40,7 +82,7 @@ export const convertHtmlToLines = (html = '') => {
 
   const visualLineElements = new Set([
     ...blockElements.values(),
-    ...linebreakElements.values()
+    ...linebreakElements.values(),
   ])
 
   // All block-level elements that aren't empty elements, i.e. not <hr>
@@ -53,7 +95,7 @@ export const convertHtmlToLines = (html = '') => {
   // All elements that we are recognizing
   const allElements = new Set([
     ...nonEmptyElements.values(),
-    ...emptyElements.values()
+    ...emptyElements.values(),
   ])
 
   const buffer = [] // Current output buffer
@@ -61,7 +103,8 @@ export const convertHtmlToLines = (html = '') => {
   let textBuffer = '' // Current line content
   let tagBuffer = null // Current tag buffer, if null = we are not currently reading a tag
 
-  const flush = () => { // Processes current line buffer, adds it to output buffer and clears line buffer
+  const flush = () => {
+    // Processes current line buffer, adds it to output buffer and clears line buffer
     if (textBuffer.trim().length > 0) {
       buffer.push({ level: [...level], text: textBuffer })
     } else {
@@ -70,23 +113,27 @@ export const convertHtmlToLines = (html = '') => {
     textBuffer = ''
   }
 
-  const handleBr = (tag) => { // handles single newlines/linebreaks/selfclosing
+  const handleBr = (tag) => {
+    // handles single newlines/linebreaks/selfclosing
     flush()
     buffer.push(tag)
   }
 
-  const handleOpen = (tag) => { // handles opening tags
+  const handleOpen = (tag) => {
+    // handles opening tags
     flush()
     buffer.push(tag)
     level.unshift(getTagName(tag))
   }
 
-  const handleClose = (tag) => { // handles closing tags
+  const handleClose = (tag) => {
+    // handles closing tags
     if (level[0] === getTagName(tag)) {
       flush()
       buffer.push(tag)
       level.shift()
-    } else { // Broken case
+    } else {
+      // Broken case
       textBuffer += tag
     }
   }

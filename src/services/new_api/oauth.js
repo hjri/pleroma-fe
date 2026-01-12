@@ -1,16 +1,21 @@
 import { reduce } from 'lodash'
+
 import { StatusCodeError } from 'src/services/errors/errors.js'
 
 const REDIRECT_URI = `${window.location.origin}/oauth-callback`
 
 export const getJsonOrError = async (response) => {
   if (response.ok) {
-    return response.json()
-      .catch((error) => {
-        throw new StatusCodeError(response.status, error, {}, response)
-      })
+    return response.json().catch((error) => {
+      throw new StatusCodeError(response.status, error, {}, response)
+    })
   } else {
-    throw new StatusCodeError(response.status, await response.text(), {}, response)
+    throw new StatusCodeError(
+      response.status,
+      await response.text(),
+      {},
+      response,
+    )
   }
 }
 
@@ -23,19 +28,24 @@ export const createApp = (instance) => {
   form.append('redirect_uris', REDIRECT_URI)
   form.append('scopes', 'read write follow push admin')
 
-  return window.fetch(url, {
-    method: 'POST',
-    body: form
-  })
+  return window
+    .fetch(url, {
+      method: 'POST',
+      body: form,
+    })
     .then(getJsonOrError)
-    .then((app) => ({ clientId: app.client_id, clientSecret: app.client_secret }))
+    .then((app) => ({
+      clientId: app.client_id,
+      clientSecret: app.client_secret,
+    }))
 }
 
 export const verifyAppToken = ({ instance, appToken }) => {
-  return window.fetch(`${instance}/api/v1/apps/verify_credentials`, {
-    method: 'GET',
-    headers: { Authorization: `Bearer ${appToken}` }
-  })
+  return window
+    .fetch(`${instance}/api/v1/apps/verify_credentials`, {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${appToken}` },
+    })
     .then(getJsonOrError)
 }
 
@@ -44,17 +54,21 @@ const login = ({ instance, clientId }) => {
     response_type: 'code',
     client_id: clientId,
     redirect_uri: REDIRECT_URI,
-    scope: 'read write follow push admin'
+    scope: 'read write follow push admin',
   }
 
-  const dataString = reduce(data, (acc, v, k) => {
-    const encoded = `${k}=${encodeURIComponent(v)}`
-    if (!acc) {
-      return encoded
-    } else {
-      return `${acc}&${encoded}`
-    }
-  }, false)
+  const dataString = reduce(
+    data,
+    (acc, v, k) => {
+      const encoded = `${k}=${encodeURIComponent(v)}`
+      if (!acc) {
+        return encoded
+      } else {
+        return `${acc}&${encoded}`
+      }
+    },
+    false,
+  )
 
   // Do the redirect...
   const url = `${instance}/oauth/authorize?${dataString}`
@@ -62,7 +76,13 @@ const login = ({ instance, clientId }) => {
   window.location.href = url
 }
 
-const getTokenWithCredentials = ({ clientId, clientSecret, instance, username, password }) => {
+const getTokenWithCredentials = ({
+  clientId,
+  clientSecret,
+  instance,
+  username,
+  password,
+}) => {
   const url = `${instance}/oauth/token`
   const form = new window.FormData()
 
@@ -72,10 +92,12 @@ const getTokenWithCredentials = ({ clientId, clientSecret, instance, username, p
   form.append('username', username)
   form.append('password', password)
 
-  return window.fetch(url, {
-    method: 'POST',
-    body: form
-  }).then((data) => data.json())
+  return window
+    .fetch(url, {
+      method: 'POST',
+      body: form,
+    })
+    .then((data) => data.json())
 }
 
 const getToken = ({ clientId, clientSecret, instance, code }) => {
@@ -88,10 +110,11 @@ const getToken = ({ clientId, clientSecret, instance, code }) => {
   form.append('code', code)
   form.append('redirect_uri', `${window.location.origin}/oauth-callback`)
 
-  return window.fetch(url, {
-    method: 'POST',
-    body: form
-  })
+  return window
+    .fetch(url, {
+      method: 'POST',
+      body: form,
+    })
     .then((data) => data.json())
 }
 
@@ -104,10 +127,12 @@ export const getClientToken = ({ clientId, clientSecret, instance }) => {
   form.append('grant_type', 'client_credentials')
   form.append('redirect_uri', `${window.location.origin}/oauth-callback`)
 
-  return window.fetch(url, {
-    method: 'POST',
-    body: form
-  }).then(getJsonOrError)
+  return window
+    .fetch(url, {
+      method: 'POST',
+      body: form,
+    })
+    .then(getJsonOrError)
 }
 const verifyOTPCode = ({ app, instance, mfaToken, code }) => {
   const url = `${instance}/oauth/mfa/challenge`
@@ -119,10 +144,12 @@ const verifyOTPCode = ({ app, instance, mfaToken, code }) => {
   form.append('code', code)
   form.append('challenge_type', 'totp')
 
-  return window.fetch(url, {
-    method: 'POST',
-    body: form
-  }).then((data) => data.json())
+  return window
+    .fetch(url, {
+      method: 'POST',
+      body: form,
+    })
+    .then((data) => data.json())
 }
 
 const verifyRecoveryCode = ({ app, instance, mfaToken, code }) => {
@@ -135,10 +162,12 @@ const verifyRecoveryCode = ({ app, instance, mfaToken, code }) => {
   form.append('code', code)
   form.append('challenge_type', 'recovery')
 
-  return window.fetch(url, {
-    method: 'POST',
-    body: form
-  }).then((data) => data.json())
+  return window
+    .fetch(url, {
+      method: 'POST',
+      body: form,
+    })
+    .then((data) => data.json())
 }
 
 const revokeToken = ({ app, instance, token }) => {
@@ -149,10 +178,12 @@ const revokeToken = ({ app, instance, token }) => {
   form.append('client_secret', app.clientSecret)
   form.append('token', token)
 
-  return window.fetch(url, {
-    method: 'POST',
-    body: form
-  }).then((data) => data.json())
+  return window
+    .fetch(url, {
+      method: 'POST',
+      body: form,
+    })
+    .then((data) => data.json())
 }
 
 const oauth = {
@@ -161,7 +192,7 @@ const oauth = {
   getTokenWithCredentials,
   verifyOTPCode,
   verifyRecoveryCode,
-  revokeToken
+  revokeToken,
 }
 
 export default oauth

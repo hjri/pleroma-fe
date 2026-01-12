@@ -1,28 +1,28 @@
-import BookmarkFolderCard from '../bookmark_folder_card/bookmark_folder_card.vue'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
+import BookmarkFolderCard from '../bookmark_folder_card/bookmark_folder_card.vue'
 
 const BookmarkFolders = {
-  data () {
+  data() {
     return {
-      isNew: false
+      isNew: false,
     }
   },
   components: {
-    BookmarkFolderCard
+    BookmarkFolderCard,
   },
   computed: {
-    bookmarkFolders () {
+    bookmarkFolders() {
       return useBookmarkFoldersStore().allFolders
-    }
+    },
   },
   methods: {
-    cancelNewFolder () {
+    cancelNewFolder() {
       this.isNew = false
     },
-    newFolder () {
+    newFolder() {
       this.isNew = true
-    }
-  }
+    },
+  },
 }
 
 export default BookmarkFolders

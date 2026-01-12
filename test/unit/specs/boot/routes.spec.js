@@ -1,17 +1,18 @@
-import routes from 'src/boot/routes'
-import { createRouter, createMemoryHistory } from 'vue-router'
+import { createMemoryHistory, createRouter } from 'vue-router'
 import { createStore } from 'vuex'
+
+import routes from 'src/boot/routes'
 
 const store = createStore({
   state: {
-    instance: {}
-  }
+    instance: {},
+  },
 })
 
 describe('routes', () => {
   const router = createRouter({
     history: createMemoryHistory(),
-    routes: routes(store)
+    routes: routes(store),
   })
 
   it('root path', async () => {
@@ -19,26 +20,38 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    // eslint-disable-next-line no-prototype-builtins
-    expect(matchedComponents[0].components.default.components.hasOwnProperty('Timeline')).to.eql(true)
+    expect(
+      Object.hasOwn(
+        matchedComponents[0].components.default.components,
+        'Timeline',
+      ),
+    ).to.eql(true)
   })
 
-  it('user\'s profile', async () => {
+  it("user's profile", async () => {
     await router.push('/fake-user-name')
 
     const matchedComponents = router.currentRoute.value.matched
 
-    // eslint-disable-next-line no-prototype-builtins
-    expect(matchedComponents[0].components.default.components.hasOwnProperty('UserCard')).to.eql(true)
+    expect(
+      Object.hasOwn(
+        matchedComponents[0].components.default.components,
+        'UserCard',
+      ),
+    ).to.eql(true)
   })
 
-  it('user\'s profile at /users', async () => {
+  it("user's profile at /users", async () => {
     await router.push('/users/fake-user-name')
 
     const matchedComponents = router.currentRoute.value.matched
 
-    // eslint-disable-next-line no-prototype-builtins
-    expect(matchedComponents[0].components.default.components.hasOwnProperty('UserCard')).to.eql(true)
+    expect(
+      Object.hasOwn(
+        matchedComponents[0].components.default.components,
+        'UserCard',
+      ),
+    ).to.eql(true)
   })
 
   it('list view', async () => {
@@ -46,7 +59,12 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(Object.prototype.hasOwnProperty.call(matchedComponents[0].components.default.components, 'ListsCard')).to.eql(true)
+    expect(
+      Object.hasOwn(
+        matchedComponents[0].components.default.components,
+        'ListsCard',
+      ),
+    ).to.eql(true)
   })
 
   it('list timeline', async () => {
@@ -54,7 +72,12 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(Object.prototype.hasOwnProperty.call(matchedComponents[0].components.default.components, 'Timeline')).to.eql(true)
+    expect(
+      Object.hasOwn(
+        matchedComponents[0].components.default.components,
+        'Timeline',
+      ),
+    ).to.eql(true)
   })
 
   it('list edit', async () => {
@@ -62,6 +85,11 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(Object.prototype.hasOwnProperty.call(matchedComponents[0].components.default.components, 'BasicUserCard')).to.eql(true)
+    expect(
+      Object.hasOwn(
+        matchedComponents[0].components.default.components,
+        'BasicUserCard',
+      ),
+    ).to.eql(true)
   })
 })

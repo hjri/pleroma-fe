@@ -1,31 +1,25 @@
-import FollowCard from '../follow_card/follow_card.vue'
-import Conversation from '../conversation/conversation.vue'
-import Status from '../status/status.vue'
-import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
-import map from 'lodash/map'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faCircleNotch,
-  faSearch
-} from '@fortawesome/free-solid-svg-icons'
 import { uniqBy } from 'lodash'
+import map from 'lodash/map'
 
-library.add(
-  faCircleNotch,
-  faSearch
-)
+import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+import Conversation from '../conversation/conversation.vue'
+import FollowCard from '../follow_card/follow_card.vue'
+import Status from '../status/status.vue'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCircleNotch, faSearch } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faCircleNotch, faSearch)
 
 const Search = {
   components: {
     FollowCard,
     Conversation,
     Status,
-    TabSwitcher
+    TabSwitcher,
   },
-  props: [
-    'query'
-  ],
-  data () {
+  props: ['query'],
+  data() {
     return {
       loaded: false,
       loading: false,
@@ -37,36 +31,37 @@ const Search = {
 
       statusesOffset: 0,
       lastStatusFetchCount: 0,
-      lastQuery: ''
+      lastQuery: '',
     }
   },
   computed: {
-    users () {
-      return this.userIds.map(userId => this.$store.getters.findUser(userId))
+    users() {
+      return this.userIds.map((userId) => this.$store.getters.findUser(userId))
     },
-    visibleStatuses () {
+    visibleStatuses() {
       const allStatusesObject = this.$store.state.statuses.allStatusesObject
 
-      return this.statuses.filter(status =>
-        allStatusesObject[status.id] && !allStatusesObject[status.id].deleted
+      return this.statuses.filter(
+        (status) =>
+          allStatusesObject[status.id] && !allStatusesObject[status.id].deleted,
       )
-    }
+    },
   },
-  mounted () {
+  mounted() {
     this.search(this.query)
   },
   watch: {
-    query (newValue) {
+    query(newValue) {
       this.searchTerm = newValue
       this.search(newValue)
-    }
+    },
   },
   methods: {
-    newQuery (query) {
+    newQuery(query) {
       this.$router.push({ name: 'search', query: { query } })
       this.$refs.searchInput.focus()
     },
-    search (query, searchType = null) {
+    search(query, searchType = null) {
       if (!query) {
         this.loading = false
         return
@@ -83,8 +78,14 @@ const Search = {
         this.lastStatusFetchCount = 0
       }
 
-      this.$store.dispatch('search', { q: query, resolve: true, offset: this.statusesOffset, type: searchType })
-        .then(data => {
+      this.$store
+        .dispatch('search', {
+          q: query,
+          resolve: true,
+          offset: this.statusesOffset,
+          type: searchType,
+        })
+        .then((data) => {
           this.loading = false
 
           const oldLength = this.statuses.length
@@ -104,14 +105,14 @@ const Search = {
           this.lastQuery = query
         })
     },
-    resultCount (tabName) {
+    resultCount(tabName) {
       const length = this[tabName].length
       return length === 0 ? '' : ` (${length})`
     },
-    onResultTabSwitch (key) {
+    onResultTabSwitch(key) {
       this.currenResultTab = key
     },
-    getActiveTab () {
+    getActiveTab() {
       if (this.visibleStatuses.length > 0) {
         return 'statuses'
       } else if (this.users.length > 0) {
@@ -122,10 +123,10 @@ const Search = {
 
       return 'statuses'
     },
-    lastHistoryRecord (hashtag) {
+    lastHistoryRecord(hashtag) {
       return hashtag.history && hashtag.history[0]
-    }
-  }
+    },
+  },
 }
 
 export default Search

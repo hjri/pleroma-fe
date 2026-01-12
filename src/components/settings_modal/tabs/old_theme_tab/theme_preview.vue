@@ -119,25 +119,21 @@
 
 <script>
 import Checkbox from 'src/components/checkbox/checkbox.vue'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-  faTimes,
-  faStar,
+  faReply,
   faRetweet,
-  faReply
+  faStar,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faTimes,
-  faStar,
-  faRetweet,
-  faReply
-)
+library.add(faTimes, faStar, faRetweet, faReply)
 
 export default {
   components: {
-    Checkbox
-  }
+    Checkbox,
+  },
 }
 </script>
 

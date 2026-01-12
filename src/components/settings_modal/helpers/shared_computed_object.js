@@ -1,19 +1,19 @@
 const SharedComputedObject = () => ({
-  user () {
+  user() {
     return this.$store.state.users.currentUser
   },
-  expertLevel () {
+  expertLevel() {
     return this.$store.getters.mergedConfig.expertLevel > 0
   },
-  mergedConfig () {
+  mergedConfig() {
     return this.$store.getters.mergedConfig
   },
-  adminConfig () {
+  adminConfig() {
     return this.$store.state.adminSettings.config
   },
-  adminDraft () {
+  adminDraft() {
     return this.$store.state.adminSettings.draft
-  }
+  },
 })
 
 export default SharedComputedObject

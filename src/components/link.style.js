@@ -3,22 +3,22 @@ export default {
   selector: 'a',
   virtual: true,
   states: {
-    faint: '.faint'
+    faint: '.faint',
   },
   defaultRules: [
     {
       component: 'Link',
       directives: {
-        textColor: '--link'
-      }
+        textColor: '--link',
+      },
     },
     {
       component: 'Link',
       state: ['faint'],
       directives: {
         textOpacity: 0.5,
-        textOpacityMode: 'fake'
-      }
-    }
-  ]
+        textOpacityMode: 'fake',
+      },
+    },
+  ],
 }

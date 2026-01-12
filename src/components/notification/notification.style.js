@@ -7,7 +7,7 @@ export default {
     'Icon',
     'Border',
     'Avatar',
-    'PollGraph'
+    'PollGraph',
   ],
-  defaultRules: []
+  defaultRules: [],
 }

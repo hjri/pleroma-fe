@@ -30,60 +30,61 @@
     </p>
     <div class="setting-control">
       <table>
-        <tr>
-          <th>&nbsp;</th>
-          <th>
-            {{ $t('admin_dash.rate_limit.period') }}
-          </th>
-          <th>
-            {{ $t('admin_dash.rate_limit.amount') }}
-          </th>
-        </tr>
-        <tr>
-          <td v-if="isSeparate">
-            {{ $t('admin_dash.rate_limit.unauthenticated') }}
-          </td>
-          <td v-else>
-            {{ $t('admin_dash.rate_limit.rate_limit') }}
-          </td>
-          <td>
-            <input
-              class="input string-input"
-              type="number"
-              :value="normalizedState[0][0]"
-              @change="e => update({ event: e, index: 0, side: 0, eventType: 'edit' })"
-            >
-          </td>
-          <td>
-            <input
-              class="input string-input"
-              type="number"
-              :value="normalizedState[0][1]"
-              @change="e => update({ event: e, index: 1, side: 0, eventType: 'edit' })"
-            >
-          </td>
-        </tr>
-        <tr v-if="isSeparate">
-          <td>
-            {{ $t('admin_dash.rate_limit.authenticated') }}
-          </td>
-          <td>
-            <input
-              class="input string-input"
-              type="number"
-              :value="normalizedState[1][0]"
-              @change="e => update({ event: e, index: 0, side: 1, eventType: 'edit' })"
-            >
-          </td>
-          <td>
-            <input
-              class="input string-input"
-              type="number"
-              :value="normalizedState[1][1]"
-              @change="e => update({ event: e, index: 1, side: 1, eventType: 'edit' })"
-            >
-          </td>
-        </tr>
+        <thead>
+          <tr>
+            <th>&nbsp;</th>
+            <th>
+              {{ $t('admin_dash.rate_limit.period') }}
+            </th>
+            <th>
+              {{ $t('admin_dash.rate_limit.amount') }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              {{ isSeparate ? $t('admin_dash.rate_limit.unauthenticated') : $t('admin_dash.rate_limit.rate_limit') }}
+            </td>
+            <td>
+              <input
+                class="input string-input"
+                type="number"
+                :value="normalizedState[0][0]"
+                @change="e => update({ event: e, index: 0, side: 0, eventType: 'edit' })"
+              >
+            </td>
+            <td>
+              <input
+                class="input string-input"
+                type="number"
+                :value="normalizedState[0][1]"
+                @change="e => update({ event: e, index: 1, side: 0, eventType: 'edit' })"
+              >
+            </td>
+          </tr>
+          <tr v-if="isSeparate">
+            <td>
+              {{ $t('admin_dash.rate_limit.authenticated') }}
+            </td>
+            <td>
+              <input
+                class="input string-input"
+                type="number"
+                :value="normalizedState[1][0]"
+                @change="e => update({ event: e, index: 0, side: 1, eventType: 'edit' })"
+              >
+            </td>
+            <td>
+              <input
+                class="input string-input"
+                type="number"
+                :value="normalizedState[1][1]"
+                @change="e => update({ event: e, index: 1, side: 1, eventType: 'edit' })"
+              >
+            </td>
+          </tr>
+        </tbody>
       </table>
       <Checkbox
         :model-value="isSeparate"

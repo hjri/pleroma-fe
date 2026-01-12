@@ -9,30 +9,29 @@ import DialogModal from '../dialog_modal/dialog_modal.vue'
  */
 const ConfirmModal = {
   components: {
-    DialogModal
+    DialogModal,
   },
   props: {
     title: {
-      type: String
+      type: String,
     },
     cancelText: {
-      type: String
+      type: String,
     },
     confirmText: {
-      type: String
-    }
+      type: String,
+    },
   },
   emits: ['cancelled', 'accepted'],
-  computed: {
-  },
+  computed: {},
   methods: {
-    onCancel () {
+    onCancel() {
       this.$emit('cancelled')
     },
-    onAccept () {
+    onAccept() {
       this.$emit('accepted')
-    }
-  }
+    },
+  },
 }
 
 export default ConfirmModal

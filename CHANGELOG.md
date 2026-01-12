@@ -3,6 +3,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2.10.1
+### Fixed
+- fixed being unable to set actor type from profile page
+- fixed error when clicking mute menu itself (instead of submenu items)
+- fixed mute -> domain status submenu not working
+
+### Internal
+- Add playwright E2E-tests with an optional docker-based backend
+
 ## 2.10.0
 ### Changed
 - Temporary changes modal now shows actual countdown instead of fixed timeout

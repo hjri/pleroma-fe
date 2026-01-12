@@ -4,37 +4,37 @@ export default {
   virtual: true,
   variants: {
     greentext: '.greentext',
-    cyantext: '.cyantext'
+    cyantext: '.cyantext',
   },
   states: {
-    faint: '.faint'
+    faint: '.faint',
   },
   defaultRules: [
     {
       directives: {
         textColor: '--text',
-        textAuto: 'preserve'
-      }
+        textAuto: 'preserve',
+      },
     },
     {
       state: ['faint'],
       directives: {
-        textOpacity: 0.5
-      }
+        textOpacity: 0.5,
+      },
     },
     {
       variant: 'greentext',
       directives: {
         textColor: '--cGreen',
-        textAuto: 'preserve'
-      }
+        textAuto: 'preserve',
+      },
     },
     {
       variant: 'cyantext',
       directives: {
         textColor: '--cBlue',
-        textAuto: 'preserve'
-      }
-    }
-  ]
+        textAuto: 'preserve',
+      },
+    },
+  ],
 }

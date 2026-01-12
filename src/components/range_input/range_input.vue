@@ -54,13 +54,22 @@
 <script>
 export default {
   props: [
-    'name', 'modelValue', 'fallback', 'disabled', 'label', 'max', 'min', 'step', 'hardMin', 'hardMax'
+    'name',
+    'modelValue',
+    'fallback',
+    'disabled',
+    'label',
+    'max',
+    'min',
+    'step',
+    'hardMin',
+    'hardMax',
   ],
   emits: ['update:modelValue'],
   computed: {
-    present () {
+    present() {
       return typeof this.modelValue !== 'undefined'
-    }
-  }
+    },
+  },
 }
 </script>

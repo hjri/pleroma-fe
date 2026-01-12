@@ -1,155 +1,165 @@
-import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
-import { mapGetters, mapState } from 'vuex'
-import { highlightClass, highlightStyle } from '../../services/user_highlighter/user_highlighter.js'
-import UserAvatar from '../user_avatar/user_avatar.vue'
-import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
 import { defineAsyncComponent } from 'vue'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faAt
-} from '@fortawesome/free-solid-svg-icons'
+import { mapGetters, mapState } from 'vuex'
 
-library.add(
-  faAt
-)
+import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import {
+  highlightClass,
+  highlightStyle,
+} from '../../services/user_highlighter/user_highlighter.js'
+import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
+import UserAvatar from '../user_avatar/user_avatar.vue'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faAt } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faAt)
 
 const MentionLink = {
   name: 'MentionLink',
   components: {
     UserAvatar,
     UnicodeDomainIndicator,
-    UserPopover: defineAsyncComponent(() => import('../user_popover/user_popover.vue'))
+    UserPopover: defineAsyncComponent(
+      () => import('../user_popover/user_popover.vue'),
+    ),
   },
   props: {
     url: {
       required: true,
-      type: String
+      type: String,
     },
     content: {
       required: true,
-      type: String
+      type: String,
     },
     userId: {
       required: false,
-      type: String
+      type: String,
     },
     userScreenName: {
       required: false,
-      type: String
-    }
+      type: String,
+    },
   },
-  data () {
+  data() {
     return {
-      hasSelection: false
+      hasSelection: false,
     }
   },
   methods: {
-    onClick () {
+    onClick() {
       if (this.shouldShowTooltip) return
       const link = generateProfileLink(
         this.userId || this.user.id,
-        this.userScreenName || this.user.screen_name
+        this.userScreenName || this.user.screen_name,
       )
       this.$router.push(link)
     },
-    handleSelection () {
+    handleSelection() {
       if (this.$refs.full) {
-        this.hasSelection = document.getSelection().containsNode(this.$refs.full, true)
+        this.hasSelection = document
+          .getSelection()
+          .containsNode(this.$refs.full, true)
       }
-    }
+    },
   },
-  mounted () {
+  mounted() {
     document.addEventListener('selectionchange', this.handleSelection)
   },
-  unmounted () {
+  unmounted() {
     document.removeEventListener('selectionchange', this.handleSelection)
   },
   computed: {
-    user () {
-      return this.url && this.$store && this.$store.getters.findUserByUrl(this.url)
+    user() {
+      return (
+        this.url && this.$store && this.$store.getters.findUserByUrl(this.url)
+      )
     },
-    isYou () {
+    isYou() {
       // FIXME why user !== currentUser???
       return this.user && this.user.id === this.currentUser.id
     },
-    userName () {
+    userName() {
       return this.user && this.userNameFullUi.split('@')[0]
     },
-    serverName () {
+    serverName() {
       // XXX assumed that domain does not contain @
-      return this.user && (this.userNameFullUi.split('@')[1] || this.$store.getters.instanceDomain)
+      return (
+        this.user &&
+        (this.userNameFullUi.split('@')[1] ||
+          this.$store.getters.instanceDomain)
+      )
     },
-    userNameFull () {
+    userNameFull() {
       return this.user && this.user.screen_name
     },
-    userNameFullUi () {
+    userNameFullUi() {
       return this.user && this.user.screen_name_ui
     },
-    highlight () {
+    highlight() {
       return this.user && this.mergedConfig.highlight[this.user.screen_name]
     },
-    highlightType () {
-      return this.highlight && ('-' + this.highlight.type)
+    highlightType() {
+      return this.highlight && '-' + this.highlight.type
     },
-    highlightClass () {
+    highlightClass() {
       if (this.highlight) return highlightClass(this.user)
     },
-    style () {
+    style() {
       if (this.highlight) {
-        /* eslint-disable no-unused-vars */
         const {
           backgroundColor,
           backgroundPosition,
           backgroundImage,
           ...rest
         } = highlightStyle(this.highlight)
-        /* eslint-enable no-unused-vars */
         return rest
       }
     },
-    classnames () {
+    classnames() {
       return [
         {
           '-you': this.isYou && this.shouldBoldenYou,
           '-highlighted': this.highlight,
-          '-has-selection': this.hasSelection
+          '-has-selection': this.hasSelection,
         },
-        this.highlightType
+        this.highlightType,
       ]
     },
-    isRemote () {
+    isRemote() {
       return this.userName !== this.userNameFull
     },
-    shouldShowFullUserName () {
+    shouldShowFullUserName() {
       const conf = this.mergedConfig.mentionLinkDisplay
       if (conf === 'short') {
         return false
       } else if (conf === 'full') {
         return true
-      } else { // full_for_remote
+      } else {
+        // full_for_remote
         return this.isRemote
       }
     },
-    shouldShowTooltip () {
+    shouldShowTooltip() {
       return this.mergedConfig.mentionLinkShowTooltip
     },
-    shouldShowAvatar () {
+    shouldShowAvatar() {
       return this.mergedConfig.mentionLinkShowAvatar
     },
-    shouldShowYous () {
+    shouldShowYous() {
       return this.mergedConfig.mentionLinkShowYous
     },
-    shouldBoldenYou () {
+    shouldBoldenYou() {
       return this.mergedConfig.mentionLinkBoldenYou
     },
-    shouldFadeDomain () {
+    shouldFadeDomain() {
       return this.mergedConfig.mentionLinkFadeDomain
     },
     ...mapGetters(['mergedConfig']),
     ...mapState({
-      currentUser: state => state.users.currentUser
-    })
-  }
+      currentUser: (state) => state.users.currentUser,
+    }),
+  },
 }
 
 export default MentionLink

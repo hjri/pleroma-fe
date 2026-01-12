@@ -3,17 +3,17 @@
     "title": "Messatjariá"
   },
   "exporter": {
-     "export": "Exportar",
-     "processing": "Tractament, vos demandarem lèu de telecargar lo fichièr"
+    "export": "Exportar",
+    "processing": "Tractament, vos demandarem lèu de telecargar lo fichièr"
   },
-    "features_panel": {
-      "chat": "Chat",
-      "gopher": "Gopher",
-      "media_proxy": "Servidor mandatari mèdia",
-      "scope_options": "Nivèls de confidencialitat",
-      "text_limit": "Limita de tèxte",
-      "title": "Foncionalitats",
-      "who_to_follow": "Qual seguir"
+  "features_panel": {
+    "chat": "Chat",
+    "gopher": "Gopher",
+    "media_proxy": "Servidor mandatari mèdia",
+    "scope_options": "Nivèls de confidencialitat",
+    "text_limit": "Limita de tèxte",
+    "title": "Foncionalitats",
+    "who_to_follow": "Qual seguir"
   },
   "finder": {
     "error_fetching_user": "Error pendent la cèrca d’un utilizaire",
@@ -520,7 +520,7 @@
     "favorite": "aimar",
     "user_settings": "Paramètres utilizaire"
   },
-  "upload":{
+  "upload": {
     "error": {
       "base": "Mandadís fracassat.",
       "file_too_big": "Fichièr tròp grand [{filesize}{filesizeunit} / {allowedsize}{allowedsizeunit}]",

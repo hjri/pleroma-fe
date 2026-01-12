@@ -2,51 +2,55 @@ const debounceMilliseconds = 500
 
 export default {
   props: {
-    query: { // function to query results and return a promise
+    query: {
+      // function to query results and return a promise
       type: Function,
-      required: true
+      required: true,
     },
-    filter: { // function to filter results in real time
-      type: Function
+    filter: {
+      // function to filter results in real time
+      type: Function,
     },
     placeholder: {
       type: String,
-      default: 'Search...'
-    }
+      default: 'Search...',
+    },
   },
-  data () {
+  data() {
     return {
       term: '',
       timeout: null,
       results: [],
-      resultsVisible: false
+      resultsVisible: false,
     }
   },
   computed: {
-    filtered () {
+    filtered() {
       return this.filter ? this.filter(this.results) : this.results
-    }
+    },
   },
   watch: {
-    term (val) {
+    term(val) {
       this.fetchResults(val)
-    }
+    },
   },
   methods: {
-    fetchResults (term) {
+    fetchResults(term) {
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
         this.results = []
         if (term) {
-          this.query(term).then((results) => { this.results = results })
+          this.query(term).then((results) => {
+            this.results = results
+          })
         }
       }, debounceMilliseconds)
     },
-    onInputClick () {
+    onInputClick() {
       this.resultsVisible = true
     },
-    onClickOutside () {
+    onClickOutside() {
       this.resultsVisible = false
-    }
-  }
+    },
+  },
 }

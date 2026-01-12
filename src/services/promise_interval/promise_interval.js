@@ -13,7 +13,9 @@ export const promiseInterval = (promiseCall, interval) => {
     // something unexpected happened and promiseCall did not
     // return a promise, abort the loop.
     if (!(promise && promise.finally)) {
-      console.warn('promiseInterval: promise call did not return a promise, stopping interval.')
+      console.warn(
+        'promiseInterval: promise call did not return a promise, stopping interval.',
+      )
       return
     }
     promise.finally(() => {

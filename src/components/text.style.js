@@ -3,20 +3,20 @@ export default {
   selector: '/*text*/',
   virtual: true,
   states: {
-    faint: '.faint'
+    faint: '.faint',
   },
   defaultRules: [
     {
       directives: {
         textColor: '--text',
-        textAuto: 'no-preserve'
-      }
+        textAuto: 'no-preserve',
+      },
     },
     {
       state: ['faint'],
       directives: {
-        textOpacity: 0.5
-      }
-    }
-  ]
+        textOpacity: 0.5,
+      },
+    },
+  ],
 }

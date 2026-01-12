@@ -2,24 +2,35 @@ import { showDesktopNotification } from '../desktop_notification_utils/desktop_n
 
 export const maybeShowChatNotification = (store, chat) => {
   if (!chat.lastMessage) return
-  if (store.rootState.chats.currentChatId === chat.id && !document.hidden) return
-  if (store.rootState.users.currentUser.id === chat.lastMessage.account_id) return
+  if (store.rootState.chats.currentChatId === chat.id && !document.hidden)
+    return
+  if (store.rootState.users.currentUser.id === chat.lastMessage.account_id)
+    return
 
   const opts = {
     tag: chat.lastMessage.id,
     title: chat.account.name,
     icon: chat.account.profile_image_url,
-    body: chat.lastMessage.content
+    body: chat.lastMessage.content,
   }
 
-  if (chat.lastMessage.attachment && chat.lastMessage.attachment.type === 'image') {
+  if (
+    chat.lastMessage.attachment &&
+    chat.lastMessage.attachment.type === 'image'
+  ) {
     opts.image = chat.lastMessage.attachment.preview_url
   }
 
   showDesktopNotification(store.rootState, opts)
 }
 
-export const buildFakeMessage = ({ content, chatId, attachments, userId, idempotencyKey }) => {
+export const buildFakeMessage = ({
+  content,
+  chatId,
+  attachments,
+  userId,
+  idempotencyKey,
+}) => {
   const fakeMessage = {
     content,
     chat_id: chatId,
@@ -30,7 +41,7 @@ export const buildFakeMessage = ({ content, chatId, attachments, userId, idempot
     idempotency_key: idempotencyKey,
     emojis: [],
     pending: true,
-    isNormalized: true
+    isNormalized: true,
   }
 
   if (attachments[0]) {

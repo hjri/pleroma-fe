@@ -1,62 +1,63 @@
-import localeService from '../../services/locale/locale.service.js'
+import { v4 as uuidv4 } from 'uuid'
 
-import Select from '../select/select.vue'
 import ProfileSettingIndicator from 'src/components/settings_modal/helpers/profile_setting_indicator.vue'
-
-import { v4 as uuidv4 } from 'uuid';
+import localeService from '../../services/locale/locale.service.js'
+import Select from '../select/select.vue'
 
 export default {
   components: {
     Select,
-    ProfileSettingIndicator
+    ProfileSettingIndicator,
   },
   props: {
     // List of languages (or just one language)
     modelValue: {
       type: [Array, String],
-      required: true
+      required: true,
     },
     // Is this setting stored in user profile (true) or elsewhere (false)
     // Doesn't affect storage, just shows an icon if true
     profile: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ['update:modelValue'],
   computed: {
-    languages () {
+    languages() {
       return localeService.languages
     },
-    uniqueId () {
-        return uuidv4()
+    uniqueId() {
+      return uuidv4()
     },
     controlledLanguage: {
       get: function () {
-        return Array.isArray(this.modelValue) ? this.modelValue : [this.modelValue]
+        return Array.isArray(this.modelValue)
+          ? this.modelValue
+          : [this.modelValue]
       },
       set: function (val) {
         this.$emit('update:modelValue', val)
-      }
-    }
+      },
+    },
   },
 
   methods: {
-    getLanguageName (code) {
+    getLanguageName(code) {
       return localeService.getLanguageName(code)
     },
-    addLanguage () {
+    addLanguage() {
       this.controlledLanguage = [...this.controlledLanguage, '']
     },
-    setLanguageAt (index, val) {
+    setLanguageAt(index, val) {
       const lang = [...this.controlledLanguage]
       lang[index] = val
       this.controlledLanguage = lang
     },
-    removeLanguageAt (index) {
+    removeLanguageAt(index) {
       const lang = [...this.controlledLanguage]
       lang.splice(index, 1)
       this.controlledLanguage = lang
-    }
-  }
+    },
+  },
 }

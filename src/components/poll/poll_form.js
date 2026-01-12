@@ -1,35 +1,34 @@
 import * as DateUtils from 'src/services/date_utils/date_utils.js'
 import { pollFallback } from 'src/services/poll/poll.service.js'
-import { library } from '@fortawesome/fontawesome-svg-core'
 import Select from '../select/select.vue'
-import {
-  faTimes,
-  faPlus
-} from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faTimes,
-  faPlus
-)
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faTimes, faPlus)
 
 export default {
   components: {
-    Select
+    Select,
   },
   name: 'PollForm',
   props: {
     visible: {},
     params: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     pollType: {
-      get () { return pollFallback(this.params, 'pollType') },
-      set (newVal) { this.params.pollType = newVal }
+      get() {
+        return pollFallback(this.params, 'pollType')
+      },
+      set(newVal) {
+        this.params.pollType = newVal
+      },
     },
-    options () {
+    options() {
       const hasOptions = !!this.params.options
       if (!hasOptions) {
         this.params.options = pollFallback(this.params, 'options')
@@ -37,54 +36,62 @@ export default {
       return this.params.options
     },
     expiryAmount: {
-      get () { return pollFallback(this.params, 'expiryAmount') },
-      set (newVal) { this.params.expiryAmount = newVal }
+      get() {
+        return pollFallback(this.params, 'expiryAmount')
+      },
+      set(newVal) {
+        this.params.expiryAmount = newVal
+      },
     },
     expiryUnit: {
-      get () { return pollFallback(this.params, 'expiryUnit') },
-      set (newVal) { this.params.expiryUnit = newVal }
+      get() {
+        return pollFallback(this.params, 'expiryUnit')
+      },
+      set(newVal) {
+        this.params.expiryUnit = newVal
+      },
     },
-    pollLimits () {
+    pollLimits() {
       return this.$store.state.instance.pollLimits
     },
-    maxOptions () {
+    maxOptions() {
       return this.pollLimits.max_options
     },
-    maxLength () {
+    maxLength() {
       return this.pollLimits.max_option_chars
     },
-    expiryUnits () {
+    expiryUnits() {
       const allUnits = ['minutes', 'hours', 'days']
       const expiry = this.convertExpiryFromUnit
       return allUnits.filter(
-        unit => this.pollLimits.max_expiration >= expiry(unit, 1)
+        (unit) => this.pollLimits.max_expiration >= expiry(unit, 1),
       )
     },
-    minExpirationInCurrentUnit () {
+    minExpirationInCurrentUnit() {
       return Math.ceil(
         this.convertExpiryToUnit(
           this.expiryUnit,
-          this.pollLimits.min_expiration
-        )
+          this.pollLimits.min_expiration,
+        ),
       )
     },
-    maxExpirationInCurrentUnit () {
+    maxExpirationInCurrentUnit() {
       return Math.floor(
         this.convertExpiryToUnit(
           this.expiryUnit,
-          this.pollLimits.max_expiration
-        )
+          this.pollLimits.max_expiration,
+        ),
       )
-    }
+    },
   },
   methods: {
-    clear () {
+    clear() {
       this.pollType = 'single'
       this.options = ['', '']
       this.expiryAmount = 10
       this.expiryUnit = 'minutes'
     },
-    nextOption (index) {
+    nextOption(index) {
       const element = this.$el.querySelector(`#poll-${index + 1}`)
       if (element) {
         element.focus()
@@ -98,30 +105,34 @@ export default {
         }
       }
     },
-    addOption () {
+    addOption() {
       if (this.options.length < this.maxOptions) {
         this.options.push('')
         return true
       }
       return false
     },
-    deleteOption (index) {
+    deleteOption(index) {
       if (this.options.length > 2) {
         this.options.splice(index, 1)
       }
     },
-    convertExpiryToUnit (unit, amount) {
+    convertExpiryToUnit(unit, amount) {
       // Note: we want seconds and not milliseconds
       return DateUtils.secondsToUnit(unit, amount)
     },
-    convertExpiryFromUnit (unit, amount) {
+    convertExpiryFromUnit(unit, amount) {
       return DateUtils.unitToSeconds(unit, amount)
     },
-    expiryAmountChange () {
-      this.expiryAmount =
-        Math.max(this.minExpirationInCurrentUnit, this.expiryAmount)
-      this.expiryAmount =
-        Math.min(this.maxExpirationInCurrentUnit, this.expiryAmount)
-    }
-  }
+    expiryAmountChange() {
+      this.expiryAmount = Math.max(
+        this.minExpirationInCurrentUnit,
+        this.expiryAmount,
+      )
+      this.expiryAmount = Math.min(
+        this.maxExpirationInCurrentUnit,
+        this.expiryAmount,
+      )
+    },
+  },
 }

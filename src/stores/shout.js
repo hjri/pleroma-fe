@@ -4,10 +4,10 @@ export const useShoutStore = defineStore('shout', {
   state: () => ({
     messages: [],
     channel: { state: '' },
-    joined: false
+    joined: false,
   }),
   actions: {
-    initializeShout (socket) {
+    initializeShout(socket) {
       const channel = socket.channel('chat:public')
       channel.joinPush.receive('ok', () => {
         this.joined = true
@@ -27,6 +27,6 @@ export const useShoutStore = defineStore('shout', {
       })
       channel.join()
       this.channel = channel
-    }
-  }
+    },
+  },
 })

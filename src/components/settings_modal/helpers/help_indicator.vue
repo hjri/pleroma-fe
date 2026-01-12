@@ -19,15 +19,14 @@
 
 <script>
 import Popover from 'src/components/popover/popover.vue'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faCircleQuestion
-)
+library.add(faCircleQuestion)
 
 export default {
-  components: { Popover }
+  components: { Popover },
 }
 </script>
 

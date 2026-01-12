@@ -2,12 +2,20 @@ import apiService from '../api/api.service.js'
 import { promiseInterval } from '../promise_interval/promise_interval.js'
 
 const fetchAndUpdate = ({ store, credentials }) => {
-  return apiService.fetchFollowRequests({ credentials })
-    .then((requests) => {
-      store.commit('setFollowRequests', requests)
-      store.commit('addNewUsers', requests)
-    }, () => {})
-    .catch(() => {})
+  return apiService
+    .fetchFollowRequests({ credentials })
+    .then(
+      (requests) => {
+        store.commit('setFollowRequests', requests)
+        store.commit('addNewUsers', requests)
+      },
+      (rej) => {
+        console.error(rej)
+      },
+    )
+    .catch((e) => {
+      console.error(e)
+    })
 }
 
 const startFetching = ({ credentials, store }) => {
@@ -17,7 +25,7 @@ const startFetching = ({ credentials, store }) => {
 }
 
 const followRequestFetcher = {
-  startFetching
+  startFetching,
 }
 
 export default followRequestFetcher

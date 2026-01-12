@@ -1,28 +1,33 @@
+import { mapState } from 'pinia'
 import { h, resolveComponent } from 'vue'
+
+import { useAuthFlowStore } from 'src/stores/auth_flow'
 import LoginForm from '../login_form/login_form.vue'
 import MFARecoveryForm from '../mfa_form/recovery_form.vue'
 import MFATOTPForm from '../mfa_form/totp_form.vue'
-import { mapState } from 'pinia'
-import { useAuthFlowStore } from 'src/stores/auth_flow'
 
 const AuthForm = {
   name: 'AuthForm',
-  render () {
+  render() {
     return h(resolveComponent(this.authForm))
   },
   computed: {
-    authForm () {
-      if (this.requiredTOTP) { return 'MFATOTPForm' }
-      if (this.requiredRecovery) { return 'MFARecoveryForm' }
+    authForm() {
+      if (this.requiredTOTP) {
+        return 'MFATOTPForm'
+      }
+      if (this.requiredRecovery) {
+        return 'MFARecoveryForm'
+      }
       return 'LoginForm'
     },
-    ...mapState(useAuthFlowStore, ['requiredTOTP', 'requiredRecovery'])
+    ...mapState(useAuthFlowStore, ['requiredTOTP', 'requiredRecovery']),
   },
   components: {
     MFARecoveryForm,
     MFATOTPForm,
-    LoginForm
-  }
+    LoginForm,
+  },
 }
 
 export default AuthForm

@@ -26,10 +26,10 @@ const run = () => {
   let data = fs.readFileSync(newEmojiFilename, 'utf8')
 
   // First filter out anything that's more than one codepoint
-  const newEmojis = JSON.parse(data).emojis.filter(e => e.emoji.length <= 2)
+  const newEmojis = JSON.parse(data).emojis.filter((e) => e.emoji.length <= 2)
 
   // Create a table with format { shortname: emoji }, remove the :
-  newEmojis.forEach(e => {
+  newEmojis.forEach((e) => {
     const name = e.shortname.slice(1, e.shortname.length - 1).toLowerCase()
     if (name.length > 0) {
       newEmojisObject[name] = e.emoji
@@ -41,27 +41,34 @@ const run = () => {
   emojisObject = JSON.parse(data)
 
   // Get rid of longer emojis that don't play nice with reactions
-  Object.keys(emojisObject).forEach(e => {
+  Object.keys(emojisObject).forEach((e) => {
     if (emojisObject[e].length > 2) emojisObject[e] = undefined
   })
 
   // Add new emojis from the new tables to the old table
-  Object.keys(newEmojisObject).forEach(e => {
+  Object.keys(newEmojisObject).forEach((e) => {
     if (!emojisObject[e] && newEmojisObject[e].length <= 2) {
       emojisObject[e] = newEmojisObject[e]
     }
   })
 
   // Sort by key
-  const sorted = Object.keys(emojisObject).sort().reduce((acc, key) => {
-    if (key.length === 0) return acc
-    acc[key] = emojisObject[key]
-    return acc
-  }, {})
+  const sorted = Object.keys(emojisObject)
+    .sort()
+    .reduce((acc, key) => {
+      if (key.length === 0) return acc
+      acc[key] = emojisObject[key]
+      return acc
+    }, {})
 
-  fs.writeFile(outputFilename, JSON.stringify(sorted, null, 2), 'utf8', (err) => {
-    if (err) console.error('Error writing file', err)
-  })
+  fs.writeFile(
+    outputFilename,
+    JSON.stringify(sorted, null, 2),
+    'utf8',
+    (err) => {
+      if (err) console.error('Error writing file', err)
+    },
+  )
 }
 
 run()

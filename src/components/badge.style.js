@@ -1,30 +1,27 @@
 export default {
   name: 'Badge',
   selector: '.badge',
-  validInnerComponents: [
-    'Text',
-    'Icon'
-  ],
+  validInnerComponents: ['Text', 'Icon'],
   variants: {
-    notification: '.-notification'
+    notification: '.-notification',
   },
   defaultRules: [
     {
       component: 'Root',
       directives: {
-        '--badgeNotification': 'color | --cRed'
-      }
+        '--badgeNotification': 'color | --cRed',
+      },
     },
     {
       directives: {
-        background: '--cGreen'
-      }
+        background: '--cGreen',
+      },
     },
     {
       variant: 'notification',
       directives: {
-        background: '--cRed'
-      }
-    }
-  ]
+        background: '--cRed',
+      },
+    },
+  ],
 }

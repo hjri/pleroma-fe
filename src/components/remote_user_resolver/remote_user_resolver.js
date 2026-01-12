@@ -1,14 +1,16 @@
 const RemoteUserResolver = {
   data: () => ({
-    error: false
+    error: false,
   }),
-  mounted () {
+  mounted() {
     this.redirect()
   },
   methods: {
-    redirect () {
-      const acct = this.$route.params.username + '@' + this.$route.params.hostname
-      this.$store.state.api.backendInteractor.fetchUser({ id: acct })
+    redirect() {
+      const acct =
+        this.$route.params.username + '@' + this.$route.params.hostname
+      this.$store.state.api.backendInteractor
+        .fetchUser({ id: acct })
         .then((externalUser) => {
           if (externalUser.error) {
             this.error = true
@@ -17,15 +19,15 @@ const RemoteUserResolver = {
             const id = externalUser.id
             this.$router.replace({
               name: 'external-user-profile',
-              params: { id }
+              params: { id },
             })
           }
         })
         .catch(() => {
           this.error = true
         })
-    }
-  }
+    },
+  },
 }
 
 export default RemoteUserResolver
