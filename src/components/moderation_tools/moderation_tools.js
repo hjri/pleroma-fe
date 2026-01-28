@@ -1,3 +1,4 @@
+import { useInstanceStore } from 'src/stores/instance.js'
 import DialogModal from '../dialog_modal/dialog_modal.vue'
 import Popover from '../popover/popover.vue'
 
@@ -54,7 +55,7 @@ const ModerationTools = {
     },
     canUseTagPolicy() {
       return (
-        this.$store.state.instance.tagPolicyAvailable &&
+        useInstanceStore().tagPolicyAvailable &&
         this.privileged('users_manage_tags')
       )
     },

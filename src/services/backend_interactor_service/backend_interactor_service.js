@@ -1,3 +1,4 @@
+import { useInstanceStore } from 'src/stores/instance.js'
 import bookmarkFoldersFetcher from '../../services/bookmark_folders_fetcher/bookmark_folders_fetcher.service.js'
 import followRequestFetcher from '../../services/follow_request_fetcher/follow_request_fetcher.service'
 import listsFetcher from '../../services/lists_fetcher/lists_fetcher.service.js'
@@ -55,7 +56,7 @@ const backendInteractorService = (credentials) => ({
   },
 
   startUserSocket({ store }) {
-    const serv = store.rootState.instance.server.replace('http', 'ws')
+    const serv = useInstanceStore().server.replace('http', 'ws')
     const url = getMastodonSocketURI({}, serv)
     return ProcessedWS({ url, id: 'Unified', credentials })
   },

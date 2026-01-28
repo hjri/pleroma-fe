@@ -5,6 +5,7 @@ import {
   getClientToken,
   verifyAppToken,
 } from 'src/services/new_api/oauth.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 
 // status codes about verifyAppToken (GET /api/v1/apps/verify_credentials)
 const isAppTokenRejected = (error) =>
@@ -61,8 +62,7 @@ export const useOAuthStore = defineStore('oauth', {
       this.userToken = false
     },
     async createApp() {
-      const { state } = window.vuex
-      const instance = state.instance.server
+      const instance = useInstanceStore().server
       const app = await createApp(instance)
       this.setClientData(app)
       return app
@@ -81,8 +81,7 @@ export const useOAuthStore = defineStore('oauth', {
       }
     },
     async getAppToken() {
-      const { state } = window.vuex
-      const instance = state.instance.server
+      const instance = useInstanceStore().server
       const res = await getClientToken({
         clientId: this.clientId,
         clientSecret: this.clientSecret,
@@ -94,11 +93,10 @@ export const useOAuthStore = defineStore('oauth', {
     /// Use this if you want to ensure the app is still valid to use.
     /// @return {string} The access token to the app (not attached to any user)
     async ensureAppToken() {
-      const { state } = window.vuex
       if (this.appToken) {
         try {
           await verifyAppToken({
-            instance: state.instance.server,
+            instance: useInstanceStore().server,
             appToken: this.appToken,
           })
           return this.appToken

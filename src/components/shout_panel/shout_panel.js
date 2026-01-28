@@ -1,4 +1,5 @@
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useShoutStore } from 'src/stores/shout'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -32,7 +33,7 @@ const shoutPanel = {
       return generateProfileLink(
         user.id,
         user.username,
-        this.$store.state.instance.restrictedNicknames,
+        useInstanceStore().restrictedNicknames,
       )
     },
   },

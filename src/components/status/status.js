@@ -5,6 +5,7 @@ import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import StatusActionButtons from 'src/components/status_action_buttons/status_action_buttons.vue'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import { muteFilterHits } from '../../services/status_parser/status_parser.js'
 import {
@@ -494,7 +495,7 @@ const Status = {
       return this.status.edited_at !== null
     },
     editingAvailable() {
-      return this.$store.state.instance.editingAvailable
+      return useInstanceStore().editingAvailable
     },
     hasVisibleQuote() {
       return this.status.quote_url && this.status.quote_visible
@@ -588,7 +589,7 @@ const Status = {
       return generateProfileLink(
         id,
         name,
-        this.$store.state.instance.restrictedNicknames,
+        useInstanceStore().restrictedNicknames,
       )
     },
     addMediaPlaying(id) {

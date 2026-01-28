@@ -1,10 +1,12 @@
+import { useInstanceStore } from 'src/stores/instance.js'
+
 const TermsOfServicePanel = {
   computed: {
     content() {
-      return this.$store.state.instance.tos
+      return useInstanceStore().tos
     },
     embedded() {
-      return this.$store.state.instance.embeddedToS
+      return useInstanceStore().embeddedToS
     },
   },
 }

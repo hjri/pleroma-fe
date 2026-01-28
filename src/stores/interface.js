@@ -5,6 +5,7 @@ import {
   generatePreset,
 } from 'src/services/theme_data/theme_data.service.js'
 import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 import {
   applyTheme,
   getResourcesIndex,
@@ -86,7 +87,7 @@ export const useInterfaceStore = defineStore('interface', {
     },
     setPageTitle(option = '') {
       try {
-        document.title = `${option} ${window.vuex.state.instance.name}`
+        document.title = `${option} ${window.vuex.useInstanceStore().name}`
       } catch (error) {
         console.error(`${error}`)
       }
@@ -385,14 +386,14 @@ export const useInterfaceStore = defineStore('interface', {
       }
 
       const { style: instanceStyleName, palette: instancePaletteName } =
-        window.vuex.state.instance
+        window.vuex.useInstanceStore()
 
       let {
         theme: instanceThemeV2Name,
         themesIndex,
         stylesIndex,
         palettesIndex,
-      } = window.vuex.state.instance
+      } = window.vuex.useInstanceStore()
 
       const {
         style: userStyleName,

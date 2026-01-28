@@ -10,6 +10,7 @@ import {
 } from 'lodash'
 
 import { declarations } from 'src/modules/config_declaration'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
@@ -547,7 +548,7 @@ const users = {
     },
     registerPushNotifications(store) {
       const token = store.state.currentUser.credentials
-      const vapidPublicKey = store.rootState.instance.vapidPublicKey
+      const vapidPublicKey = useInstanceStore().vapidPublicKey
       const isEnabled = store.rootState.config.webPushNotifications
       const notificationVisibility =
         store.rootState.config.notificationVisibility
@@ -685,7 +686,6 @@ const users = {
       return new Promise((resolve, reject) => {
         const commit = store.commit
         const dispatch = store.dispatch
-        const rootState = store.rootState
         commit('beginLogin')
         store.rootState.api.backendInteractor
           .verifyCredentials(accessToken)
@@ -763,7 +763,7 @@ const users = {
                 // Start fetching notifications
                 dispatch('startFetchingNotifications')
 
-                if (rootState.instance.pleromaChatMessagesAvailable) {
+                if (useInstanceStore().pleromaChatMessagesAvailable) {
                   // Start fetching chats
                   dispatch('startFetchingChats')
                 }

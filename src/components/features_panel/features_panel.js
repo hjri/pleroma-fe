@@ -1,31 +1,32 @@
+import { useInstanceStore } from 'src/stores/instance.js'
 import fileSizeFormatService from '../../services/file_size_format/file_size_format.js'
 
 const FeaturesPanel = {
   computed: {
     shout: function () {
-      return this.$store.state.instance.shoutAvailable
+      return useInstanceStore().shoutAvailable
     },
     pleromaChatMessages: function () {
-      return this.$store.state.instance.pleromaChatMessagesAvailable
+      return useInstanceStore().pleromaChatMessagesAvailable
     },
     gopher: function () {
-      return this.$store.state.instance.gopherAvailable
+      return useInstanceStore().gopherAvailable
     },
     whoToFollow: function () {
-      return this.$store.state.instance.suggestionsEnabled
+      return useInstanceStore().suggestionsEnabled
     },
     mediaProxy: function () {
-      return this.$store.state.instance.mediaProxyAvailable
+      return useInstanceStore().mediaProxyAvailable
     },
     minimalScopesMode: function () {
-      return this.$store.state.instance.minimalScopesMode
+      return useInstanceStore().minimalScopesMode
     },
     textlimit: function () {
-      return this.$store.state.instance.textlimit
+      return useInstanceStore().textlimit
     },
     uploadlimit: function () {
       return fileSizeFormatService.fileSizeFormat(
-        this.$store.state.instance.uploadlimit,
+        useInstanceStore().uploadlimit,
       )
     },
   },

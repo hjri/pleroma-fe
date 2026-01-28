@@ -60,6 +60,7 @@ import Popover from 'components/popover/popover.vue'
 import SelectComponent from 'components/select/select.vue'
 import { assign } from 'lodash'
 
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import StillImage from './still-image.vue'
 
@@ -125,7 +126,7 @@ export default {
       const allPacks = {}
 
       return listFunction({
-        instance: this.$store.state.instance.server,
+        instance: useInstanceStore().server,
         page: 1,
         pageSize: 0,
       })
@@ -140,7 +141,7 @@ export default {
             resultingPromise = resultingPromise
               .then(() =>
                 listFunction({
-                  instance: this.$store.state.instance.server,
+                  instance: useInstanceStore().server,
                   page: i,
                   pageSize,
                 }),

@@ -2,6 +2,7 @@ import { mapState as mapPiniaState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 import { mapGetters, mapState } from 'vuex'
 
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import Attachment from '../attachment/attachment.vue'
 import ChatMessageDate from '../chat_message_date/chat_message_date.vue'
@@ -74,7 +75,7 @@ const ChatMessage = {
     }),
     ...mapState({
       currentUser: (state) => state.users.currentUser,
-      restrictedNicknames: (state) => state.instance.restrictedNicknames,
+      restrictedNicknames: (state) => useInstanceStore().restrictedNicknames,
     }),
     popoverMarginStyle() {
       if (this.isCurrentUser) {

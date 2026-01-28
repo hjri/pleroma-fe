@@ -3,6 +3,7 @@ import { mapGetters, mapState } from 'vuex'
 
 import { USERNAME_ROUTES } from 'src/components/navigation/navigation.js'
 import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useShoutStore } from 'src/stores/shout'
 import GestureService from '../../services/gesture_service/gesture_service'
@@ -75,25 +76,25 @@ const SideDrawer = {
       return this.unseenNotifications.length
     },
     suggestionsEnabled() {
-      return this.$store.state.instance.suggestionsEnabled
+      return useInstanceStore().suggestionsEnabled
     },
     logo() {
-      return this.$store.state.instance.logo
+      return useInstanceStore().logo
     },
     hideSitename() {
-      return this.$store.state.instance.hideSitename
+      return useInstanceStore().hideSitename
     },
     sitename() {
-      return this.$store.state.instance.name
+      return useInstanceStore().name
     },
     followRequestCount() {
       return this.$store.state.api.followRequests.length
     },
     privateMode() {
-      return this.$store.state.instance.private
+      return useInstanceStore().private
     },
     federating() {
-      return this.$store.state.instance.federating
+      return useInstanceStore().federating
     },
     timelinesRoute() {
       let name
@@ -113,7 +114,7 @@ const SideDrawer = {
     }),
     ...mapState({
       pleromaChatMessagesAvailable: (state) =>
-        state.instance.pleromaChatMessagesAvailable,
+        useInstanceStore().pleromaChatMessagesAvailable,
     }),
     ...mapGetters(['unreadChatCount', 'draftCount']),
   },

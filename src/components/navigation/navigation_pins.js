@@ -14,6 +14,7 @@ import {
 import StillImage from 'src/components/still-image/still-image.vue'
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useListsStore } from 'src/stores/lists'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
@@ -74,11 +75,12 @@ const NavPanel = {
     ...mapState({
       currentUser: (state) => state.users.currentUser,
       followRequestCount: (state) => state.api.followRequests.length,
-      privateMode: (state) => state.instance.private,
-      federating: (state) => state.instance.federating,
+      privateMode: (state) => useInstanceStore().private,
+      federating: (state) => useInstanceStore().federating,
       pleromaChatMessagesAvailable: (state) =>
-        state.instance.pleromaChatMessagesAvailable,
-      bubbleTimeline: (state) => state.instance.localBubbleInstances.length > 0,
+        useInstanceStore().pleromaChatMessagesAvailable,
+      bubbleTimeline: (state) =>
+        useInstanceStore().localBubbleInstances.length > 0,
     }),
     pinnedList() {
       if (!this.currentUser) {

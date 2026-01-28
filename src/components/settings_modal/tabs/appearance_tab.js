@@ -11,6 +11,7 @@ import { getCssRules } from 'src/services/theme_data/css_utils.js'
 import { deserialize } from 'src/services/theme_data/iss_deserializer.js'
 import { init } from 'src/services/theme_data/theme_data_3.service.js'
 import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { normalizeThemeData, useInterfaceStore } from 'src/stores/interface'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
@@ -83,7 +84,7 @@ const AppearanceTab = {
 
     const updateIndex = (resource) => {
       const capitalizedResource = resource[0].toUpperCase() + resource.slice(1)
-      const currentIndex = this.$store.state.instance[`${resource}sIndex`]
+      const currentIndex = useInstanceStore()[`${resource}sIndex`]
 
       let promise
       if (currentIndex) {
@@ -273,11 +274,11 @@ const AppearanceTab = {
       return !window.IntersectionObserver
     },
     instanceWallpaper() {
-      this.$store.state.instance.background
+      useInstanceStore().background
     },
     instanceWallpaperUsed() {
       return (
-        this.$store.state.instance.background &&
+        useInstanceStore().background &&
         !this.$store.state.users.currentUser.background_image
       )
     },
@@ -332,20 +333,13 @@ const AppearanceTab = {
       }
     },
     isThemeActive(key) {
-      return (
-        key === (this.mergedConfig.theme || this.$store.state.instance.theme)
-      )
+      return key === (this.mergedConfig.theme || useInstanceStore().theme)
     },
     isStyleActive(key) {
-      return (
-        key === (this.mergedConfig.style || this.$store.state.instance.style)
-      )
+      return key === (this.mergedConfig.style || useInstanceStore().style)
     },
     isPaletteActive(key) {
-      return (
-        key ===
-        (this.mergedConfig.palette || this.$store.state.instance.palette)
-      )
+      return key === (this.mergedConfig.palette || useInstanceStore().palette)
     },
     ...mapActions(useInterfaceStore, ['setStyle', 'setTheme']),
     setPalette(name, data) {
@@ -431,10 +425,10 @@ const AppearanceTab = {
       if (!file) {
         return
       }
-      if (file.size > this.$store.state.instance[slot + 'limit']) {
+      if (file.size > useInstanceStore()[slot + 'limit']) {
         const filesize = fileSizeFormatService.fileSizeFormat(file.size)
         const allowedsize = fileSizeFormatService.fileSizeFormat(
-          this.$store.state.instance[slot + 'limit'],
+          useInstanceStore()[slot + 'limit'],
         )
         useInterfaceStore().pushGlobalNotice({
           messageKey: 'upload.error.message',

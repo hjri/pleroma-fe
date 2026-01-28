@@ -1,5 +1,6 @@
 import SearchBar from 'components/search_bar/search_bar.vue'
 
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 
@@ -51,7 +52,7 @@ export default {
   }),
   computed: {
     enableMask() {
-      return this.supportsMask && this.$store.state.instance.logoMask
+      return this.supportsMask && useInstanceStore().logoMask
     },
     logoStyle() {
       return {
@@ -61,7 +62,7 @@ export default {
     logoMaskStyle() {
       return this.enableMask
         ? {
-            'mask-image': `url(${this.$store.state.instance.logo})`,
+            'mask-image': `url(${useInstanceStore().logo})`,
           }
         : {
             'background-color': this.enableMask ? '' : 'transparent',
@@ -70,7 +71,7 @@ export default {
     logoBgStyle() {
       return Object.assign(
         {
-          margin: `${this.$store.state.instance.logoMargin} 0`,
+          margin: `${useInstanceStore().logoMargin} 0`,
           opacity: this.searchBarHidden ? 1 : 0,
         },
         this.enableMask
@@ -81,22 +82,22 @@ export default {
       )
     },
     logo() {
-      return this.$store.state.instance.logo
+      return useInstanceStore().logo
     },
     sitename() {
-      return this.$store.state.instance.name
+      return useInstanceStore().name
     },
     hideSitename() {
-      return this.$store.state.instance.hideSitename
+      return useInstanceStore().hideSitename
     },
     logoLeft() {
-      return this.$store.state.instance.logoLeft
+      return useInstanceStore().logoLeft
     },
     currentUser() {
       return this.$store.state.users.currentUser
     },
     privateMode() {
-      return this.$store.state.instance.private
+      return useInstanceStore().private
     },
     shouldConfirmLogout() {
       return this.$store.getters.mergedConfig.modalOnLogout

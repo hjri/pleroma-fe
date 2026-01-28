@@ -9,6 +9,7 @@ import {
   newExporter,
   newImporter,
 } from 'src/services/export_import/export_import.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import BooleanSetting from '../helpers/boolean_setting.vue'
@@ -90,7 +91,7 @@ const FilteringTab = {
   },
   computed: {
     instanceSpecificPanelPresent() {
-      return this.$store.state.instance.showInstanceSpecificPanel
+      return useInstanceStore().showInstanceSpecificPanel
     },
     ...SharedComputedObject(),
     ...mapState(useServerSideStorageStore, {
@@ -99,7 +100,7 @@ const FilteringTab = {
       muteFiltersObject: (store) => store.prefsStorage.simple.muteFilters,
     }),
     ...mapVuexState({
-      blockExpirationSupported: (state) => state.instance.blockExpiration,
+      blockExpirationSupported: (state) => useInstanceStore().blockExpiration,
     }),
     onMuteDefaultActionLv1: {
       get() {

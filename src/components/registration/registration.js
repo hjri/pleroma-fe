@@ -1,8 +1,10 @@
 import useVuelidate from '@vuelidate/core'
 import { required, requiredIf, sameAs } from '@vuelidate/validators'
+import { mapState as mapPiniaState } from 'pinia'
 import { mapActions, mapState } from 'vuex'
 
 import { DAY } from 'src/services/date_utils/date_utils.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 import localeService from '../../services/locale/locale.service.js'
 import InterfaceLanguageSwitcher from '../interface_language_switcher/interface_language_switcher.vue'
 import TermsOfServicePanel from '../terms_of_service_panel/terms_of_service_panel.vue'
@@ -96,21 +98,21 @@ const registration = {
         )
       )
     },
+    ...mapPiniaState(useInstanceStore, {
+      registrationOpen: (store) => store.registrationOpen,
+      embeddedToS: (store) => store.embeddedToS,
+      termsOfService: (store) => store.tos,
+      accountActivationRequired: (store) => store.accountActivationRequired,
+      accountApprovalRequired: (store) => store.accountApprovalRequired,
+      birthdayRequired: (store) => store.birthdayRequired,
+      birthdayMinAge: (store) => store.birthdayMinAge,
+    }),
     ...mapState({
-      registrationOpen: (state) => state.instance.registrationOpen,
       signedIn: (state) => !!state.users.currentUser,
       isPending: (state) => state.users.signUpPending,
       serverValidationErrors: (state) => state.users.signUpErrors,
       signUpNotice: (state) => state.users.signUpNotice,
       hasSignUpNotice: (state) => !!state.users.signUpNotice.message,
-      termsOfService: (state) => state.instance.tos,
-      embeddedToS: (state) => state.instance.embeddedToS,
-      accountActivationRequired: (state) =>
-        state.instance.accountActivationRequired,
-      accountApprovalRequired: (state) =>
-        state.instance.accountApprovalRequired,
-      birthdayRequired: (state) => state.instance.birthdayRequired,
-      birthdayMinAge: (state) => state.instance.birthdayMinAge,
     }),
   },
   methods: {

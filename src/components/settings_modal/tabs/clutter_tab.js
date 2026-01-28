@@ -4,6 +4,7 @@ import { mapState as mapVuexState } from 'vuex'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Select from 'src/components/select/select.vue'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
@@ -24,7 +25,7 @@ const ClutterTab = {
   },
   computed: {
     instanceSpecificPanelPresent() {
-      return this.$store.state.instance.showInstanceSpecificPanel
+      return useInstanceStore().showInstanceSpecificPanel
     },
     ...SharedComputedObject(),
     ...mapState(useServerSideStorageStore, {
@@ -33,7 +34,7 @@ const ClutterTab = {
       muteFiltersObject: (store) => store.prefsStorage.simple.muteFilters,
     }),
     ...mapVuexState({
-      blockExpirationSupported: (state) => state.instance.blockExpiration,
+      blockExpirationSupported: (state) => useInstanceStore().blockExpiration,
     }),
     onMuteDefaultActionLv1: {
       get() {

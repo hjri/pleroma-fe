@@ -3,6 +3,7 @@ import { mapState } from 'vuex'
 import FontControl from 'src/components/font_control/font_control.vue'
 import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
 import localeService from 'src/services/locale/locale.service.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import FloatSetting from '../helpers/float_setting.vue'
@@ -50,7 +51,7 @@ const GeneralTab = {
     },
     ...SharedComputedObject(),
     ...mapState({
-      blockExpirationSupported: (state) => state.instance.blockExpiration,
+      blockExpirationSupported: (state) => useInstanceStore().blockExpiration,
     }),
   },
   methods: {

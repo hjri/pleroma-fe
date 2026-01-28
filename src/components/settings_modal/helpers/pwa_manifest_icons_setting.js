@@ -4,6 +4,7 @@ import Attachment from 'src/components/attachment/attachment.vue'
 import MediaUpload from 'src/components/media_upload/media_upload.vue'
 import Select from 'src/components/select/select.vue'
 import { fileTypeExt } from 'src/services/file_type/file_type.service.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 import Setting from './setting.js'
 
 export default {
@@ -34,9 +35,7 @@ export default {
           url: '',
         }
       }
-      const url = path.includes('://')
-        ? path
-        : this.$store.state.instance.server + path
+      const url = path.includes('://') ? path : useInstanceStore().server + path
 
       return {
         mimetype: fileTypeExt(url),

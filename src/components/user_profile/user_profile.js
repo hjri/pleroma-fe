@@ -2,6 +2,7 @@ import get from 'lodash/get'
 
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+import { useInstanceStore } from 'src/stores/instance.js'
 import withLoadMore from '../../hocs/with_load_more/with_load_more'
 import Conversation from '../conversation/conversation.vue'
 import FollowCard from '../follow_card/follow_card.vue'
@@ -87,7 +88,7 @@ const UserProfile = {
     favoritesTabVisible() {
       return (
         this.isUs ||
-        (this.$store.state.instance.pleromaPublicFavouritesAvailable &&
+        (useInstanceStore().pleromaPublicFavouritesAvailable &&
           !this.user.hide_favorites)
       )
     },

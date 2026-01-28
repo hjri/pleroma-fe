@@ -1,4 +1,5 @@
 /* eslint-env browser */
+import { useInstanceStore } from 'src/stores/instance.js'
 import statusPosterService from '../../services/status_poster/status_poster.service.js'
 import TabSwitcher from '../tab_switcher/tab_switcher.jsx'
 
@@ -16,7 +17,7 @@ const StickerPicker = {
   },
   computed: {
     pack() {
-      return this.$store.state.instance.stickers || []
+      return useInstanceStore().stickers || []
     },
   },
   methods: {

@@ -28,6 +28,7 @@ import UserProfile from 'components/user_profile/user_profile.vue'
 import WhoToFollow from 'components/who_to_follow/who_to_follow.vue'
 
 import NavPanel from 'src/components/nav_panel/nav_panel.vue'
+import { useInstanceStore } from 'src/stores/instance.js'
 import BookmarkFolderEdit from '../components/bookmark_folder_edit/bookmark_folder_edit.vue'
 import BookmarkFolders from '../components/bookmark_folders/bookmark_folders.vue'
 import QuotesTimeline from '../components/quotes_timeline/quotes_timeline.vue'
@@ -37,7 +38,7 @@ export default (store) => {
     if (store.state.users.currentUser) {
       next()
     } else {
-      next(store.state.instance.redirectRootNoLogin || '/main/all')
+      next(useInstanceStore().redirectRootNoLogin || '/main/all')
     }
   }
 
@@ -48,8 +49,8 @@ export default (store) => {
       redirect: () => {
         return (
           (store.state.users.currentUser
-            ? store.state.instance.redirectRootLogin
-            : store.state.instance.redirectRootNoLogin) || '/main/all'
+            ? useInstanceStore().redirectRootLogin
+            : useInstanceStore().redirectRootNoLogin) || '/main/all'
         )
       },
     },
@@ -200,7 +201,7 @@ export default (store) => {
     },
   ]
 
-  if (store.state.instance.pleromaChatMessagesAvailable) {
+  if (useInstanceStore().pleromaChatMessagesAvailable) {
     routes = routes.concat([
       {
         name: 'chat',

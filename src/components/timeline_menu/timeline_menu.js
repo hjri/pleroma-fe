@@ -4,6 +4,7 @@ import { filterNavigation } from 'src/components/navigation/filter.js'
 import { TIMELINES } from 'src/components/navigation/navigation.js'
 import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useListsStore } from 'src/stores/lists'
 import BookmarkFoldersMenuContent from '../bookmark_folders_menu/bookmark_folders_menu_content.vue'
@@ -60,11 +61,12 @@ const TimelineMenu = {
     },
     ...mapState({
       currentUser: (state) => state.users.currentUser,
-      privateMode: (state) => state.instance.private,
-      federating: (state) => state.instance.federating,
+      privateMode: (state) => useInstanceStore().private,
+      federating: (state) => useInstanceStore().federating,
       bookmarkFolders: (state) =>
-        state.instance.pleromaBookmarkFoldersAvailable,
-      bubbleTimeline: (state) => state.instance.localBubbleInstances.length > 0,
+        useInstanceStore().pleromaBookmarkFoldersAvailable,
+      bubbleTimeline: (state) =>
+        useInstanceStore().localBubbleInstances.length > 0,
     }),
     timelinesList() {
       return filterNavigation(

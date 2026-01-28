@@ -6,6 +6,7 @@ import StillImage from 'components/still-image/still-image.vue'
 import { assign, clone } from 'lodash'
 
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import EmojiEditingPopover from '../helpers/emoji_editing_popover.vue'
 import ModifiedIndicator from '../helpers/modified_indicator.vue'
@@ -102,7 +103,7 @@ const EmojiTab = {
         // Remote pack
         return `${this.pack.remote.instance}/emoji/${encodeURIComponent(this.pack.remote.baseName)}/${name}`
       } else {
-        return `${this.$store.state.instance.server}/emoji/${encodeURIComponent(this.packName)}/${name}`
+        return `${useInstanceStore().server}/emoji/${encodeURIComponent(this.packName)}/${name}`
       }
     },
 

@@ -1,6 +1,7 @@
 import pleromaTanFoxMask from 'src/assets/pleromatan_apology_fox_mask.png'
 import pleromaTanMask from 'src/assets/pleromatan_apology_mask.png'
 import Modal from 'src/components/modal/modal.vue'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -36,7 +37,7 @@ const UpdateNotification = {
     },
     shouldShow() {
       return (
-        !this.$store.state.instance.disableUpdateNotification &&
+        !useInstanceStore().disableUpdateNotification &&
         this.$store.state.users.currentUser &&
         useServerSideStorageStore().flagStorage.updateCounter <
           CURRENT_UPDATE_COUNTER &&

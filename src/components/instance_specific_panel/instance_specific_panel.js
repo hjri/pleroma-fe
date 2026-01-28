@@ -1,7 +1,9 @@
+import { useInstanceStore } from 'src/stores/instance.js'
+
 const InstanceSpecificPanel = {
   computed: {
     instanceSpecificPanelContent() {
-      return this.$store.state.instance.instanceSpecificPanelContent
+      return useInstanceStore().instanceSpecificPanelContent
     },
   },
 }

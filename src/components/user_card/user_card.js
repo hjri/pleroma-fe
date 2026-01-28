@@ -14,6 +14,7 @@ import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_ti
 import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
 import localeService from 'src/services/locale/locale.service.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { usePostStatusStore } from 'src/stores/post_status'
 import { useInterfaceStore } from '../../stores/interface'
 import { useMediaViewerStore } from '../../stores/media_viewer'
@@ -176,7 +177,7 @@ export default {
       return false
     },
     groupActorAvailable() {
-      return this.$store.state.instance.groupActorAvailable
+      return useInstanceStore().groupActorAvailable
     },
     availableActorTypes() {
       return this.groupActorAvailable
@@ -209,7 +210,7 @@ export default {
       return Math.round(this.user.statuses_count / days)
     },
     emoji() {
-      return this.$store.state.instance.customEmoji.map((e) => ({
+      return useInstanceStore().customEmoji.map((e) => ({
         shortcode: e.displayText,
         static_url: e.imageUrl,
         url: e.imageUrl,
@@ -335,19 +336,13 @@ export default {
       return this.newBanner === null ? currentUrl : newUrl
     },
     defaultAvatar() {
-      return (
-        this.$store.state.instance.server +
-        this.$store.state.instance.defaultAvatar
-      )
+      return useInstanceStore().server + useInstanceStore().defaultAvatar
     },
     defaultBanner() {
-      return (
-        this.$store.state.instance.server +
-        this.$store.state.instance.defaultBanner
-      )
+      return useInstanceStore().server + useInstanceStore().defaultBanner
     },
     isDefaultAvatar() {
-      const baseAvatar = this.$store.state.instance.defaultAvatar
+      const baseAvatar = useInstanceStore().defaultAvatar
       return (
         !this.$store.state.users.currentUser.profile_image_url ||
         this.$store.state.users.currentUser.profile_image_url.includes(
@@ -356,14 +351,14 @@ export default {
       )
     },
     isDefaultBanner() {
-      const baseBanner = this.$store.state.instance.defaultBanner
+      const baseBanner = useInstanceStore().defaultBanner
       return (
         !this.$store.state.users.currentUser.cover_photo ||
         this.$store.state.users.currentUser.cover_photo.includes(baseBanner)
       )
     },
     fieldsLimits() {
-      return this.$store.state.instance.fieldsLimits
+      return useInstanceStore().fieldsLimits
     },
     maxFields() {
       return this.fieldsLimits ? this.fieldsLimits.maxFields : 0
@@ -372,7 +367,7 @@ export default {
       return suggestor({
         emoji: [
           ...this.$store.getters.standardEmojiList,
-          ...this.$store.state.instance.customEmoji,
+          ...useInstanceStore().customEmoji,
         ],
         store: this.$store,
       })
@@ -381,7 +376,7 @@ export default {
       return suggestor({
         emoji: [
           ...this.$store.getters.standardEmojiList,
-          ...this.$store.state.instance.customEmoji,
+          ...useInstanceStore().customEmoji,
         ],
       })
     },
@@ -412,7 +407,7 @@ export default {
       return generateProfileLink(
         user.id,
         user.screen_name,
-        this.$store.state.instance.restrictedNicknames,
+        useInstanceStore().restrictedNicknames,
       )
     },
     openProfileTab() {

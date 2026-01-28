@@ -2,6 +2,7 @@ import { chunk, debounce, trim } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 
 import Popover from 'src/components/popover/popover.vue'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { ensureFinalFallback } from '../../i18n/languages.js'
 import Checkbox from '../checkbox/checkbox.vue'
 import StillImage from '../still-image/still-image.vue'
@@ -349,8 +350,8 @@ const EmojiPicker = {
       return this.showingStickers ? '' : this.activeGroup
     },
     stickersAvailable() {
-      if (this.$store.state.instance.stickers) {
-        return this.$store.state.instance.stickers.length > 0
+      if (useInstanceStore().stickers) {
+        return useInstanceStore().stickers.length > 0
       }
       return 0
     },
@@ -381,7 +382,7 @@ const EmojiPicker = {
         .concat(this.unicodeEmojiGroups)
     },
     stickerPickerEnabled() {
-      return (this.$store.state.instance.stickers || []).length !== 0
+      return (useInstanceStore().stickers || []).length !== 0
     },
     debouncedHandleKeywordChange() {
       return debounce(() => {

@@ -6,6 +6,7 @@ import ScopeSelector from 'src/components/scope_selector/scope_selector.vue'
 import Select from 'src/components/select/select.vue'
 import localeService from 'src/services/locale/locale.service.js'
 import { cacheKey, clearCache, emojiCacheKey } from 'src/services/sw/sw.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import FloatSetting from '../helpers/float_setting.vue'
@@ -108,7 +109,7 @@ const ComposingTab = {
   },
   computed: {
     postFormats() {
-      return this.$store.state.instance.postFormats || []
+      return useInstanceStore().postFormats || []
     },
     postContentOptions() {
       return this.postFormats.map((format) => ({
@@ -130,7 +131,7 @@ const ComposingTab = {
     },
     ...SharedComputedObject(),
     ...mapState({
-      blockExpirationSupported: (state) => state.instance.blockExpiration,
+      blockExpirationSupported: (state) => useInstanceStore().blockExpiration,
     }),
   },
   methods: {

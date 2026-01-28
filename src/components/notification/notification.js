@@ -2,6 +2,7 @@ import { mapState } from 'vuex'
 
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { isStatusNotification } from '../../services/notification_utils/notification_utils.js'
 import {
   highlightClass,
@@ -107,7 +108,7 @@ const Notification = {
       return generateProfileLink(
         user.id,
         user.screen_name,
-        this.$store.state.instance.restrictedNicknames,
+        useInstanceStore().restrictedNicknames,
       )
     },
     getUser(notification) {

@@ -6,6 +6,7 @@ import DraftCloser from 'src/components/draft_closer/draft_closer.vue'
 import Gallery from 'src/components/gallery/gallery.vue'
 import Popover from 'src/components/popover/popover.vue'
 import { pollFormToMasto } from 'src/services/poll/poll.service.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 import { propsToNative } from '../../services/attributes_helper/attributes_helper.service.js'
@@ -259,7 +260,7 @@ const PostStatusForm = {
       return suggestor({
         emoji: [
           ...this.$store.getters.standardEmojiList,
-          ...this.$store.state.instance.customEmoji,
+          ...useInstanceStore().customEmoji,
         ],
         store: this.$store,
       })
@@ -268,7 +269,7 @@ const PostStatusForm = {
       return suggestor({
         emoji: [
           ...this.$store.getters.standardEmojiList,
-          ...this.$store.state.instance.customEmoji,
+          ...useInstanceStore().customEmoji,
         ],
       })
     },
@@ -276,7 +277,7 @@ const PostStatusForm = {
       return this.$store.getters.standardEmojiList || []
     },
     customEmoji() {
-      return this.$store.state.instance.customEmoji || []
+      return useInstanceStore().customEmoji || []
     },
     statusLength() {
       return this.newStatus.status.length
@@ -285,7 +286,7 @@ const PostStatusForm = {
       return this.newStatus.spoilerText.length
     },
     statusLengthLimit() {
-      return this.$store.state.instance.textlimit
+      return useInstanceStore().textlimit
     },
     hasStatusLengthLimit() {
       return this.statusLengthLimit > 0
@@ -299,21 +300,21 @@ const PostStatusForm = {
       return this.hasStatusLengthLimit && this.charactersLeft < 0
     },
     minimalScopesMode() {
-      return this.$store.state.instance.minimalScopesMode
+      return useInstanceStore().minimalScopesMode
     },
     alwaysShowSubject() {
       return this.mergedConfig.alwaysShowSubjectInput
     },
     postFormats() {
-      return this.$store.state.instance.postFormats || []
+      return useInstanceStore().postFormats || []
     },
     safeDMEnabled() {
-      return this.$store.state.instance.safeDM
+      return useInstanceStore().safeDM
     },
     pollsAvailable() {
       return (
-        this.$store.state.instance.pollsAvailable &&
-        this.$store.state.instance.pollLimits.max_options >= 2 &&
+        useInstanceStore().pollsAvailable &&
+        useInstanceStore().pollLimits.max_options >= 2 &&
         this.disablePolls !== true
       )
     },
@@ -342,7 +343,7 @@ const PostStatusForm = {
       return typeof this.statusId !== 'undefined' && this.statusId.trim() !== ''
     },
     quotable() {
-      if (!this.$store.state.instance.quotingAvailable) {
+      if (!useInstanceStore().quotingAvailable) {
         return false
       }
 

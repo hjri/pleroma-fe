@@ -2,6 +2,7 @@ import { mapActions, mapState as mapPiniaState, mapStores } from 'pinia'
 import { mapState } from 'vuex'
 
 import { useAuthFlowStore } from 'src/stores/auth_flow.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import oauthApi from '../../services/new_api/oauth.js'
 
@@ -24,8 +25,8 @@ const LoginForm = {
     },
     ...mapStores(useOAuthStore),
     ...mapState({
-      registrationOpen: (state) => state.instance.registrationOpen,
-      instance: (state) => state.instance,
+      registrationOpen: (state) => useInstanceStore().registrationOpen,
+      instance: (state) => useInstanceStore(),
       loggingIn: (state) => state.users.loggingIn,
     }),
     ...mapPiniaState(useAuthFlowStore, [

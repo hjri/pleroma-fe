@@ -41,6 +41,7 @@ import {
 } from 'src/services/theme_data/theme_data.service.js'
 import { init } from 'src/services/theme_data/theme_data_3.service.js'
 import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import Preview from './theme_preview.vue'
 
@@ -125,7 +126,7 @@ export default {
     }
   },
   created() {
-    const currentIndex = this.$store.state.instance.themesIndex
+    const currentIndex = useInstanceStore().themesIndex
 
     let promise
     if (currentIndex) {

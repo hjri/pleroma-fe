@@ -1,6 +1,7 @@
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import localeService from 'src/services/locale/locale.service.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens'
 import Mfa from './mfa.vue'
 
@@ -42,7 +43,7 @@ const SecurityTab = {
       return this.$store.state.users.currentUser
     },
     pleromaExtensionsAvailable() {
-      return this.$store.state.instance.pleromaExtensionsAvailable
+      return useInstanceStore().pleromaExtensionsAvailable
     },
     oauthTokens() {
       return useOAuthTokensStore().tokens.map((oauthToken) => {

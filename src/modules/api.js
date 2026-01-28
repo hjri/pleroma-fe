@@ -1,5 +1,6 @@
 import { Socket } from 'phoenix'
 
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useShoutStore } from 'src/stores/shout.js'
 import { WSConnectionStatus } from '../services/api/api.service.js'
@@ -237,7 +238,7 @@ const api = {
     ) {
       if (
         timeline === 'favourites' &&
-        !store.rootState.instance.pleromaPublicFavouritesAvailable
+        !useInstanceStore().pleromaPublicFavouritesAvailable
       )
         return
       if (store.state.fetchers[timeline]) return
@@ -322,7 +323,7 @@ const api = {
     // Bookmark folders
     startFetchingBookmarkFolders(store) {
       if (store.state.fetchers.bookmarkFolders) return
-      if (!store.rootState.instance.pleromaBookmarkFoldersAvailable) return
+      if (!useInstanceStore().pleromaBookmarkFoldersAvailable) return
       const fetcher =
         store.state.backendInteractor.startFetchingBookmarkFolders({ store })
       store.commit('addFetcher', { fetcherName: 'bookmarkFolders', fetcher })
@@ -341,7 +342,7 @@ const api = {
       // Set up websocket connection
       const token = state.wsToken
       if (
-        rootState.instance.shoutAvailable &&
+        useInstanceStore().shoutAvailable &&
         typeof token !== 'undefined' &&
         state.socket === null
       ) {

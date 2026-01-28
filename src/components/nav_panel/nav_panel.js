@@ -9,6 +9,7 @@ import { ROOT_ITEMS, TIMELINES } from 'src/components/navigation/navigation.js'
 import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
 import NavigationPins from 'src/components/navigation/navigation_pins.vue'
 import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -118,13 +119,14 @@ const NavPanel = {
     ...mapState({
       currentUser: (state) => state.users.currentUser,
       followRequestCount: (state) => state.api.followRequests.length,
-      privateMode: (state) => state.instance.private,
-      federating: (state) => state.instance.federating,
+      privateMode: (state) => useInstanceStore().private,
+      federating: (state) => useInstanceStore().federating,
       pleromaChatMessagesAvailable: (state) =>
-        state.instance.pleromaChatMessagesAvailable,
+        useInstanceStore().pleromaChatMessagesAvailable,
       bookmarkFolders: (state) =>
-        state.instance.pleromaBookmarkFoldersAvailable,
-      bubbleTimeline: (state) => state.instance.localBubbleInstances.length > 0,
+        useInstanceStore().pleromaBookmarkFoldersAvailable,
+      bubbleTimeline: (state) =>
+        useInstanceStore().localBubbleInstances.length > 0,
     }),
     timelinesItems() {
       return filterNavigation(

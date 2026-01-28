@@ -1,3 +1,4 @@
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import StillImage from '../still-image/still-image.vue'
 
@@ -35,7 +36,7 @@ const UserAvatar = {
   data() {
     return {
       showPlaceholder: false,
-      defaultAvatar: `${this.$store.state.instance.server + this.$store.state.instance.defaultAvatar}`,
+      defaultAvatar: `${useInstanceStore().server + useInstanceStore().defaultAvatar}`,
       betterShadow: useInterfaceStore().browserSupport.cssFilter,
     }
   },

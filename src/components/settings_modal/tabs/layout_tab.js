@@ -1,3 +1,4 @@
+import { useInstanceStore } from 'src/stores/instance.js'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
@@ -30,10 +31,10 @@ const GeneralTab = {
   },
   computed: {
     postFormats() {
-      return this.$store.state.instance.postFormats || []
+      return useInstanceStore().postFormats || []
     },
     instanceShoutboxPresent() {
-      return this.$store.state.instance.shoutAvailable
+      return useInstanceStore().shoutAvailable
     },
     columns() {
       const mode = this.$store.getters.mergedConfig.thirdColumnMode

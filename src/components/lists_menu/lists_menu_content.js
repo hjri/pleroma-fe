@@ -3,6 +3,7 @@ import { mapState } from 'vuex'
 
 import { getListEntries } from 'src/components/navigation/filter.js'
 import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useListsStore } from 'src/stores/lists'
 
 export const ListsMenuContent = {
@@ -16,8 +17,8 @@ export const ListsMenuContent = {
     }),
     ...mapState({
       currentUser: (state) => state.users.currentUser,
-      privateMode: (state) => state.instance.private,
-      federating: (state) => state.instance.federating,
+      privateMode: (state) => useInstanceStore().private,
+      federating: (state) => useInstanceStore().federating,
     }),
   },
 }

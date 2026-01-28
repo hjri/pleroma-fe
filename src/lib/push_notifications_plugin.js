@@ -1,8 +1,9 @@
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
 
 export default (store) => {
   store.subscribe((mutation, state) => {
-    const vapidPublicKey = state.instance.vapidPublicKey
+    const vapidPublicKey = useInstanceStore().vapidPublicKey
     const webPushNotification = state.config.webPushNotifications
     const permission = useInterfaceStore().notificationPermission === 'granted'
     const user = state.users.currentUser

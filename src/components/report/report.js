@@ -1,5 +1,6 @@
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useReportsStore } from 'src/stores/reports'
 import Select from '../select/select.vue'
 import StatusContent from '../status_content/status_content.vue'
@@ -31,7 +32,7 @@ const Report = {
       return generateProfileLink(
         user.id,
         user.screen_name,
-        this.$store.state.instance.restrictedNicknames,
+        useInstanceStore().restrictedNicknames,
       )
     },
     setReportState(state) {

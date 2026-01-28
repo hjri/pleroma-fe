@@ -2,6 +2,7 @@ import { throttle } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 import { mapGetters } from 'vuex'
 
+import { useInstanceStore } from 'src/stores/instance.js'
 import DesktopNav from './components/desktop_nav/desktop_nav.vue'
 import EditStatusModal from './components/edit_status_modal/edit_status_modal.vue'
 import FeaturesPanel from './components/features_panel/features_panel.vue'
@@ -136,7 +137,7 @@ export default {
     instanceBackground() {
       return this.mergedConfig.hideInstanceWallpaper
         ? null
-        : this.$store.state.instance.background
+        : useInstanceStore().background
     },
     background() {
       return this.userBackground || this.instanceBackground
@@ -152,13 +153,13 @@ export default {
       return useShoutStore().joined
     },
     suggestionsEnabled() {
-      return this.$store.state.instance.suggestionsEnabled
+      return useInstanceStore().suggestionsEnabled
     },
     showInstanceSpecificPanel() {
       return (
-        this.$store.state.instance.showInstanceSpecificPanel &&
+        useInstanceStore().showInstanceSpecificPanel &&
         !this.$store.getters.mergedConfig.hideISP &&
-        this.$store.state.instance.instanceSpecificPanelContent
+        useInstanceStore().instanceSpecificPanelContent
       )
     },
     isChats() {
@@ -176,10 +177,10 @@ export default {
       )
     },
     showFeaturesPanel() {
-      return this.$store.state.instance.showFeaturesPanel
+      return useInstanceStore().showFeaturesPanel
     },
     editingAvailable() {
-      return this.$store.state.instance.editingAvailable
+      return useInstanceStore().editingAvailable
     },
     shoutboxPosition() {
       return this.$store.getters.mergedConfig.alwaysShowNewPostButton || false
@@ -191,7 +192,7 @@ export default {
       return useInterfaceStore().layoutType
     },
     privateMode() {
-      return this.$store.state.instance.private
+      return useInstanceStore().private
     },
     reverseLayout() {
       const { thirdColumnMode, sidebarRight: reverseSetting } =

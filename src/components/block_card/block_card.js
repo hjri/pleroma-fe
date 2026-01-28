@@ -1,5 +1,6 @@
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
 
+import { useInstanceStore } from 'src/stores/instance.js'
 import BasicUserCard from '../basic_user_card/basic_user_card.vue'
 
 const BlockCard = {
@@ -25,7 +26,7 @@ const BlockCard = {
           ])
     },
     ...mapState({
-      blockExpirationSupported: (state) => state.instance.blockExpiration,
+      blockExpirationSupported: (store) => store.blockExpiration,
     }),
   },
   components: {

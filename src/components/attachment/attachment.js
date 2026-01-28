@@ -1,5 +1,6 @@
 import { mapGetters } from 'vuex'
 
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useMediaViewerStore } from 'src/stores/media_viewer'
 import nsfwImage from '../../assets/nsfw.png'
 import fileTypeService from '../../services/file_type/file_type.service.js'
@@ -53,7 +54,7 @@ const Attachment = {
   data() {
     return {
       localDescription: this.description || this.attachment.description,
-      nsfwImage: this.$store.state.instance.nsfwCensorImage || nsfwImage,
+      nsfwImage: useInstanceStore().nsfwCensorImage || nsfwImage,
       hideNsfwLocal: this.$store.getters.mergedConfig.hideNsfw,
       preloadImage: this.$store.getters.mergedConfig.preloadImage,
       loading: false,
@@ -104,7 +105,7 @@ const Attachment = {
       return 'file'
     },
     referrerpolicy() {
-      return this.$store.state.instance.mediaProxyAvailable ? '' : 'no-referrer'
+      return useInstanceStore().mediaProxyAvailable ? '' : 'no-referrer'
     },
     type() {
       return fileTypeService.fileType(this.attachment.mimetype)
