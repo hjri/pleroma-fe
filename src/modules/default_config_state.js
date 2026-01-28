@@ -18,7 +18,7 @@ export const staticOrApiConfigDefault = {
   redirectRootLogin: '/main/friends',
   redirectRootNoLogin: '/main/all',
   hideSitename: false,
-  nsfwCensorImage: undefined,
+  nsfwCensorImage: null,
   showFeaturesPanel: true,
   showInstanceSpecificPanel: false,
 }

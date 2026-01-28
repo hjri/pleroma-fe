@@ -129,10 +129,10 @@ export const useInstanceStore = defineStore('instance', {
     },
   },
   actions: {
-    set({ path, value }) {
-      if (get(defaultState, path) === undefined)
-        console.error(`Unknown instance option ${path}, value: ${value}`)
-      set(this, path, value)
+    set({ path, name, value }) {
+      if (get(defaultState, path ?? name) === undefined)
+        console.error(`Unknown instance option ${path ?? name}, value: ${value}`)
+      set(this, path ?? name, value)
       switch (name) {
         case 'name':
           useInterfaceStore().setPageTitle()

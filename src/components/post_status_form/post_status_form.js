@@ -7,6 +7,7 @@ import Gallery from 'src/components/gallery/gallery.vue'
 import Popover from 'src/components/popover/popover.vue'
 import { pollFormToMasto } from 'src/services/poll/poll.service.js'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 import { propsToNative } from '../../services/attributes_helper/attributes_helper.service.js'
@@ -259,8 +260,8 @@ const PostStatusForm = {
     emojiUserSuggestor() {
       return suggestor({
         emoji: [
-          ...this.$store.getters.standardEmojiList,
-          ...useInstanceStore().customEmoji,
+          ...useEmojiStore().standardEmojiList,
+          ...useEmojiStore().customEmoji,
         ],
         store: this.$store,
       })
@@ -268,16 +269,16 @@ const PostStatusForm = {
     emojiSuggestor() {
       return suggestor({
         emoji: [
-          ...this.$store.getters.standardEmojiList,
-          ...useInstanceStore().customEmoji,
+          ...useEmojiStore().standardEmojiList,
+          ...useEmojiStore().customEmoji,
         ],
       })
     },
     emoji() {
-      return this.$store.getters.standardEmojiList || []
+      return useEmojiStore().standardEmojiList || []
     },
     customEmoji() {
-      return useInstanceStore().customEmoji || []
+      return useEmojiStore().customEmoji || []
     },
     statusLength() {
       return this.newStatus.status.length

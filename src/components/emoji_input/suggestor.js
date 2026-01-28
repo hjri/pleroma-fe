@@ -2,7 +2,7 @@
  * suggest - generates a suggestor function to be used by emoji-input
  * data: object providing source information for specific types of suggestions:
  * data.emoji - optional, an array of all emoji available i.e.
- *   (getters.standardEmojiList + state.instance.customEmoji)
+ *   (useEmojiStore().standardEmojiList + state.instance.customEmoji)
  * data.users - optional, an array of all known users
  * updateUsersList - optional, a function to search and append to users
  *

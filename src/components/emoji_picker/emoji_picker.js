@@ -3,6 +3,7 @@ import { defineAsyncComponent } from 'vue'
 
 import Popover from 'src/components/popover/popover.vue'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useEmojiStore } from 'src/stores/emoji.js'
 import { ensureFinalFallback } from '../../i18n/languages.js'
 import Checkbox from '../checkbox/checkbox.vue'
 import StillImage from '../still-image/still-image.vue'
@@ -359,7 +360,7 @@ const EmojiPicker = {
       if (this.hideCustomEmoji || this.hideCustomEmojiInPicker) {
         return {}
       }
-      const emojis = this.$store.getters.groupedCustomEmojis
+      const emojis = useEmojiStore().groupedCustomEmojis
       if (emojis.unpacked) {
         emojis.unpacked.text = this.$t('emoji.unpacked')
       }
@@ -369,7 +370,7 @@ const EmojiPicker = {
       return Object.keys(this.allCustomGroups)[0]
     },
     unicodeEmojiGroups() {
-      return this.$store.getters.standardEmojiGroupList.map((group) => ({
+      return useEmojiStore().standardEmojiGroupList.map((group) => ({
         id: `standard-${group.id}`,
         text: this.$t(`emoji.unicode_groups.${group.id}`),
         icon: UNICODE_EMOJI_GROUP_ICON[group.id],

@@ -3,6 +3,8 @@ import { set } from 'lodash'
 
 import { useI18nStore } from 'src/stores/i18n.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useEmojiStore } from 'src/stores/emoji.js'
 import messages from '../i18n/messages'
 import localeService from '../services/locale/locale.service.js'
 import { applyConfig } from '../services/style_setter/style_setter.js'
@@ -43,24 +45,23 @@ export const instanceDefaultProperties = Object.keys(instanceDefaultConfig)
 const config = {
   state: { ...defaultState },
   getters: {
-    defaultConfig(state, getters, rootState) {
-      const { instance } = rootState
+    defaultConfig() {
       return {
         ...defaultState,
         ...Object.fromEntries(
-          instanceDefaultProperties.map((key) => [key, instance[key]]),
+          instanceDefaultProperties.map((key) => [key, useInstanceStore()[key]]),
         ),
       }
     },
-    mergedConfig(state, getters, rootState, rootGetters) {
-      const { defaultConfig } = rootGetters
-      return {
-        ...defaultConfig,
-        // Do not override with undefined
-        ...Object.fromEntries(
-          Object.entries(state).filter(([, v]) => v !== undefined),
-        ),
-      }
+    mergedConfig(state) {
+      const instancePrefs = useInstanceStore().prefsStorage
+      const result = Object.fromEntries(
+        Object.entries(defaultState).map(([k, v]) => [
+          k,
+          v ?? instancePrefs[k],
+        ]),
+      )
+      return result
     },
   },
   mutations: {
@@ -177,7 +178,7 @@ const config = {
           }
           case 'interfaceLanguage':
             messages.setLanguage(useI18nStore().i18n, value)
-            dispatch('loadUnicodeEmojiData', value)
+            useEmojiStore().loadUnicodeEmojiData(value)
             Cookies.set(
               BACKEND_LANGUAGE_COOKIE_NAME,
               localeService.internalToBackendLocaleMulti(value),

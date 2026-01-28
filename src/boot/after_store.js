@@ -22,7 +22,8 @@ import {
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useAuthFlowStore } from 'src/stores/auth_flow'
 import { useI18nStore } from 'src/stores/i18n'
-import { useInterfaceStore } from 'src/stores/interface'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth'
 import App from '../App.vue'
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
@@ -78,29 +79,29 @@ const getInstanceConfig = async ({ store }) => {
       const textlimit = data.max_toot_chars
       const vapidPublicKey = data.pleroma.vapid_public_key
 
-      store.dispatch('setInstanceOption', {
-        name: 'pleromaExtensionsAvailable',
+      useInstanceStore().set({
+        name: 'featureSet.pleromaExtensionsAvailable',
         value: data.pleroma,
       })
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'textlimit',
         value: textlimit,
       })
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'accountApprovalRequired',
         value: data.approval_required,
       })
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'birthdayRequired',
         value: !!data.pleroma?.metadata.birthday_required,
       })
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'birthdayMinAge',
         value: data.pleroma?.metadata.birthday_min_age || 0,
       })
 
       if (vapidPublicKey) {
-        store.dispatch('setInstanceOption', {
+        useInstanceStore().set({
           name: 'vapidPublicKey',
           value: vapidPublicKey,
         })
@@ -161,14 +162,14 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
     config = Object.assign({}, staticConfig, apiConfig)
   }
 
-  const copyInstanceOption = (name) => {
+  const copyInstanceOption = (path) => {
     if (typeof config[name] !== 'undefined') {
-      store.dispatch('setInstanceOption', { name, value: config[name] })
+      useInstanceStore().set({ path, value: config[name] })
     }
   }
 
-  Object.keys(staticOrApiConfigDefault).forEach(copyInstanceOption)
-  Object.keys(instanceDefaultConfig).forEach(copyInstanceOption)
+  Object.keys(staticOrApiConfigDefault).map(k => `instanceIdentity.${k}`).forEach(copyInstanceOption)
+  Object.keys(instanceDefaultConfig).map(k => `prefsStorage.${k}`).forEach(copyInstanceOption)
 
   useAuthFlowStore().setInitialStrategy(config.loginMethod)
 }
@@ -178,7 +179,7 @@ const getTOS = async ({ store }) => {
     const res = await window.fetch('/static/terms-of-service.html')
     if (res.ok) {
       const html = await res.text()
-      store.dispatch('setInstanceOption', { name: 'tos', value: html })
+      useInstanceStore().set({ name: 'tos', value: html })
     } else {
       throw res
     }
@@ -192,7 +193,7 @@ const getInstancePanel = async ({ store }) => {
     const res = await preloadFetch('/instance/panel.html')
     if (res.ok) {
       const html = await res.text()
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'instanceSpecificPanelContent',
         value: html,
       })
@@ -227,7 +228,7 @@ const getStickers = async ({ store }) => {
       ).sort((a, b) => {
         return a.meta.title.localeCompare(b.meta.title)
       })
-      store.dispatch('setInstanceOption', { name: 'stickers', value: stickers })
+      useInstanceStore().set({ name: 'stickers', value: stickers })
     } else {
       throw res
     }
@@ -248,7 +249,7 @@ const getAppSecret = async ({ store }) => {
 
 const resolveStaffAccounts = ({ store, accounts }) => {
   const nicknames = accounts.map((uri) => uri.split('/').pop())
-  store.dispatch('setInstanceOption', {
+  useInstanceStore().set({
     name: 'staffAccounts',
     value: nicknames,
   })
@@ -262,159 +263,163 @@ const getNodeInfo = async ({ store }) => {
       const data = await res.json()
       const metadata = data.metadata
       const features = metadata.features
-      store.dispatch('setInstanceOption', {
-        name: 'name',
+      useInstanceStore().set({
+        path: 'name',
         value: metadata.nodeName,
       })
-      store.dispatch('setInstanceOption', {
-        name: 'registrationOpen',
+      useInstanceStore().set({
+        path: 'registrationOpen',
         value: data.openRegistrations,
       })
-      store.dispatch('setInstanceOption', {
-        name: 'mediaProxyAvailable',
+      useInstanceStore().set({
+        path: 'featureSet.mediaProxyAvailable',
         value: features.includes('media_proxy'),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'safeDM',
+      useInstanceStore().set({
+        path: 'featureSet.safeDM',
         value: features.includes('safe_dm_mentions'),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'shoutAvailable',
+      useInstanceStore().set({
+        path: 'featureSet.shoutAvailable',
         value: features.includes('chat'),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'pleromaChatMessagesAvailable',
+      useInstanceStore().set({
+        path: 'featureSet.pleromaChatMessagesAvailable',
         value: features.includes('pleroma_chat_messages'),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'pleromaCustomEmojiReactionsAvailable',
+      useInstanceStore().set({
+        path: 'featureSet.pleromaCustomEmojiReactionsAvailable',
         value:
           features.includes('pleroma_custom_emoji_reactions') ||
           features.includes('custom_emoji_reactions'),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'pleromaBookmarkFoldersAvailable',
+      useInstanceStore().set({
+        path: 'featureSet.pleromaBookmarkFoldersAvailable',
         value: features.includes('pleroma:bookmark_folders'),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'gopherAvailable',
+      useInstanceStore().set({
+        path: 'featureSet.gopherAvailable',
         value: features.includes('gopher'),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'pollsAvailable',
+      useInstanceStore().set({
+        path: 'featureSet.pollsAvailable',
         value: features.includes('polls'),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'editingAvailable',
+      useInstanceStore().set({
+        path: 'featureSet.editingAvailable',
         value: features.includes('editing'),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'pollLimits',
-        value: metadata.pollLimits,
-      })
-      store.dispatch('setInstanceOption', {
-        name: 'mailerEnabled',
+      useInstanceStore().set({
+        path: 'featureSet.mailerEnabled',
         value: metadata.mailerEnabled,
       })
-      store.dispatch('setInstanceOption', {
-        name: 'quotingAvailable',
+      useInstanceStore().set({
+        path: 'featureSet.quotingAvailable',
         value: features.includes('quote_posting'),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'groupActorAvailable',
+      useInstanceStore().set({
+        path: 'featureSet.groupActorAvailable',
         value: features.includes('pleroma:group_actors'),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'blockExpiration',
+      useInstanceStore().set({
+        path: 'featureSet.blockExpiration',
         value: features.includes('pleroma:block_expiration'),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'localBubbleInstances',
+      useInstanceStore().set({
+        path: 'localBubbleInstances',
         value: metadata.localBubbleInstances ?? [],
       })
+      useInstanceStore().set({
+        path: 'featureSet.localBubble',
+        value: (metadata.localBubbleInstances ?? []).length > 0,
+      })
 
+      useInstanceStore().set({
+        path: 'limits.pollLimits',
+        value: metadata.pollLimits,
+      })
       const uploadLimits = metadata.uploadLimits
-      store.dispatch('setInstanceOption', {
-        name: 'uploadlimit',
+      useInstanceStore().set({
+        name: 'limits.uploadlimit',
         value: parseInt(uploadLimits.general),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'avatarlimit',
+      useInstanceStore().set({
+        name: 'limits.avatarlimit',
         value: parseInt(uploadLimits.avatar),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'backgroundlimit',
+      useInstanceStore().set({
+        name: 'limits.backgroundlimit',
         value: parseInt(uploadLimits.background),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'bannerlimit',
+      useInstanceStore().set({
+        name: 'limits.bannerlimit',
         value: parseInt(uploadLimits.banner),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'fieldsLimits',
+      useInstanceStore().set({
+        name: 'limits.fieldsLimits',
         value: metadata.fieldsLimits,
       })
 
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'restrictedNicknames',
         value: metadata.restrictedNicknames,
       })
-      store.dispatch('setInstanceOption', {
-        name: 'postFormats',
+      useInstanceStore().set({
+        name: 'featureSet.postFormats',
         value: metadata.postFormats,
       })
 
       const suggestions = metadata.suggestions
-      store.dispatch('setInstanceOption', {
-        name: 'suggestionsEnabled',
+      useInstanceStore().set({
+        name: 'featureSet.suggestionsEnabled',
         value: suggestions.enabled,
       })
-      store.dispatch('setInstanceOption', {
-        name: 'suggestionsWeb',
+      useInstanceStore().set({
+        name: 'featureSet.suggestionsWeb',
         value: suggestions.web,
       })
 
       const software = data.software
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'backendVersion',
         value: software.version,
       })
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'backendRepository',
         value: software.repository,
       })
 
       const priv = metadata.private
-      store.dispatch('setInstanceOption', { name: 'private', value: priv })
+      useInstanceStore().set({ name: 'private', value: priv })
 
       const frontendVersion = window.___pleromafe_commit_hash
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'frontendVersion',
         value: frontendVersion,
       })
 
       const federation = metadata.federation
 
-      store.dispatch('setInstanceOption', {
-        name: 'tagPolicyAvailable',
+      useInstanceStore().set({
+        name: 'featureSet.tagPolicyAvailable',
         value:
           typeof federation.mrf_policies === 'undefined'
             ? false
             : metadata.federation.mrf_policies.includes('TagPolicy'),
       })
 
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'federationPolicy',
         value: federation,
       })
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'federating',
         value:
           typeof federation.enabled === 'undefined' ? true : federation.enabled,
       })
 
       const accountActivationRequired = metadata.accountActivationRequired
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'accountActivationRequired',
         value: accountActivationRequired,
       })
@@ -526,7 +531,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     typeof overrides.target !== 'undefined'
       ? overrides.target
       : window.location.origin
-  store.dispatch('setInstanceOption', { name: 'server', value: server })
+  useInstanceStore().set({ name: 'server', value: server })
 
   await setConfig({ store })
   try {

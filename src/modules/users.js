@@ -12,6 +12,7 @@ import {
 import { declarations } from 'src/modules/config_declaration'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useEmojiStore } from 'src/stores/emoji.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import apiService from '../services/api/api.service.js'
@@ -702,7 +703,7 @@ const users = {
               useServerSideStorageStore().setServerSideStorage(user)
               commit('addNewUsers', [user])
 
-              dispatch('fetchEmoji')
+              useEmojiStore().fetchEmoji()
 
               getNotificationPermission().then((permission) =>
                 useInterfaceStore().setNotificationPermission(permission),

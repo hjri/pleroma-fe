@@ -131,7 +131,7 @@ const EmojiInput = {
   },
   computed: {
     padEmoji() {
-      return this.$store.getters.mergedConfig.padEmoji
+      return useEmojiStore().mergedConfig.padEmoji
     },
     defaultCandidateIndex() {
       return this.$store.getters.mergedConfig.autocompleteSelect ? 0 : -1
