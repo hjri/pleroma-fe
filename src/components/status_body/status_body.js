@@ -1,6 +1,7 @@
 import { mapGetters } from 'vuex'
 
 import RichContent from 'src/components/rich_content/rich_content.jsx'
+
 import fileType from 'src/services/file_type/file_type.service'
 
 import { library } from '@fortawesome/fontawesome-svg-core'

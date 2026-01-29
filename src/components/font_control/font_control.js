@@ -1,7 +1,8 @@
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Popover from 'src/components/popover/popover.vue'
-import { useInterfaceStore } from 'src/stores/interface'
 import Select from '../select/select.vue'
+
+import { useInterfaceStore } from 'src/stores/interface'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

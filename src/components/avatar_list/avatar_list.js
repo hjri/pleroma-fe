@@ -1,6 +1,8 @@
-import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
-import { useInstanceStore } from 'src/stores/instance.js'
 import UserAvatar from '../user_avatar/user_avatar.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+
+import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 const AvatarList = {
   props: ['users'],

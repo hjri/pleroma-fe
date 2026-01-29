@@ -2,8 +2,6 @@ import { mapState } from 'pinia'
 import { computed } from 'vue'
 import { mapGetters } from 'vuex'
 
-import { useAnnouncementsStore } from 'src/stores/announcements'
-import { useInterfaceStore } from 'src/stores/interface'
 import FaviconService from '../../services/favicon_service/favicon_service.js'
 import {
   ACTIONABLE_NOTIFICATION_TYPES,
@@ -16,6 +14,9 @@ import notificationsFetcher from '../../services/notifications_fetcher/notificat
 import ExtraNotifications from '../extra_notifications/extra_notifications.vue'
 import Notification from '../notification/notification.vue'
 import NotificationFilters from './notification_filters.vue'
+
+import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useInterfaceStore } from 'src/stores/interface'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

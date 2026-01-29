@@ -1,7 +1,8 @@
 import { mapState } from 'pinia'
 
-import { useInstanceStore } from 'src/stores/instance.js'
 import BasicUserCard from '../basic_user_card/basic_user_card.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
 
 const BlockCard = {
   props: ['userId'],

@@ -1,8 +1,9 @@
 import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
-import { useInstanceStore } from 'src/stores/instance.js'
 import passwordResetApi from '../../services/new_api/password_reset.js'
+
+import { useInstanceStore } from 'src/stores/instance.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'

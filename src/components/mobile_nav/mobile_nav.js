@@ -2,9 +2,6 @@ import { mapState } from 'pinia'
 import { mapGetters } from 'vuex'
 
 import NavigationPins from 'src/components/navigation/navigation_pins.vue'
-import { useAnnouncementsStore } from 'src/stores/announcements'
-import { useInstanceStore } from 'src/stores/instance.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import GestureService from '../../services/gesture_service/gesture_service'
 import {
   countExtraNotifications,
@@ -13,6 +10,10 @@ import {
 import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 import Notifications from '../notifications/notifications.vue'
 import SideDrawer from '../side_drawer/side_drawer.vue'
+
+import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

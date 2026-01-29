@@ -3,11 +3,13 @@ import { required, requiredIf, sameAs } from '@vuelidate/validators'
 import { mapState as mapPiniaState } from 'pinia'
 import { mapActions, mapState } from 'vuex'
 
-import { DAY } from 'src/services/date_utils/date_utils.js'
-import { useInstanceStore } from 'src/stores/instance.js'
 import localeService from '../../services/locale/locale.service.js'
 import InterfaceLanguageSwitcher from '../interface_language_switcher/interface_language_switcher.vue'
 import TermsOfServicePanel from '../terms_of_service_panel/terms_of_service_panel.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+
+import { DAY } from 'src/services/date_utils/date_utils.js'
 
 const registration = {
   setup() {

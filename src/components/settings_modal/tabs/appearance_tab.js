@@ -2,6 +2,18 @@ import { mapActions } from 'pinia'
 
 import fileSizeFormatService from 'src/components/../services/file_size_format/file_size_format.js'
 import PaletteEditor from 'src/components/palette_editor/palette_editor.vue'
+import BooleanSetting from '../helpers/boolean_setting.vue'
+import ChoiceSetting from '../helpers/choice_setting.vue'
+import FloatSetting from '../helpers/float_setting.vue'
+import IntegerSetting from '../helpers/integer_setting.vue'
+import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
+import SharedComputedObject from '../helpers/shared_computed_object.js'
+import UnitSetting from '../helpers/unit_setting.vue'
+import Preview from './old_theme_tab/theme_preview.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { normalizeThemeData, useInterfaceStore } from 'src/stores/interface'
+
 import { newImporter } from 'src/services/export_import/export_import.js'
 import {
   adoptStyleSheets,
@@ -11,16 +23,6 @@ import { getCssRules } from 'src/services/theme_data/css_utils.js'
 import { deserialize } from 'src/services/theme_data/iss_deserializer.js'
 import { init } from 'src/services/theme_data/theme_data_3.service.js'
 import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
-import { useInstanceStore } from 'src/stores/instance.js'
-import { normalizeThemeData, useInterfaceStore } from 'src/stores/interface'
-import BooleanSetting from '../helpers/boolean_setting.vue'
-import ChoiceSetting from '../helpers/choice_setting.vue'
-import FloatSetting from '../helpers/float_setting.vue'
-import IntegerSetting from '../helpers/integer_setting.vue'
-import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
-import SharedComputedObject from '../helpers/shared_computed_object.js'
-import UnitSetting from '../helpers/unit_setting.vue'
-import Preview from './old_theme_tab/theme_preview.vue'
 
 const AppearanceTab = {
   data() {

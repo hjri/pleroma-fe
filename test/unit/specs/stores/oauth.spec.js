@@ -3,12 +3,13 @@ import { createPinia, setActivePinia } from 'pinia'
 import { createApp } from 'vue'
 import { createStore } from 'vuex'
 
-import { useOAuthStore } from 'src/stores/oauth.js'
 import {
   authApis,
   injectMswToTest,
   testServer,
 } from '/test/fixtures/mock_api.js'
+
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 const test = injectMswToTest(authApis)
 

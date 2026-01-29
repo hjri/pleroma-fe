@@ -9,12 +9,6 @@ import {
   uniq,
 } from 'lodash'
 
-import { declarations } from 'src/modules/config_declaration'
-import { useEmojiStore } from 'src/stores/emoji.js'
-import { useInstanceStore } from 'src/stores/instance.js'
-import { useInterfaceStore } from 'src/stores/interface.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import apiService from '../services/api/api.service.js'
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import oauthApi from '../services/new_api/oauth.js'
@@ -26,6 +20,14 @@ import {
   windowHeight,
   windowWidth,
 } from '../services/window_utils/window_utils'
+
+import { useEmojiStore } from 'src/stores/emoji.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+
+import { declarations } from 'src/modules/config_declaration'
 
 // TODO: Unify with mergeOrAdd in statuses.js
 export const mergeOrAdd = (arr, obj, item) => {

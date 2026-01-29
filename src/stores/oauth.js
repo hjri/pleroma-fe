@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
 
+import { useInstanceStore } from 'src/stores/instance.js'
+
 import {
   createApp,
   getClientToken,
   verifyAppToken,
 } from 'src/services/new_api/oauth.js'
-import { useInstanceStore } from 'src/stores/instance.js'
 
 // status codes about verifyAppToken (GET /api/v1/apps/verify_credentials)
 const isAppTokenRejected = (error) =>

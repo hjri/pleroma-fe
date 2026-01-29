@@ -7,6 +7,11 @@ import RangeInput from 'src/components/range_input/range_input.vue'
 import Select from 'src/components/select/select.vue'
 import ShadowControl from 'src/components/shadow_control/shadow_control.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+import Preview from './theme_preview.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInterfaceStore } from 'src/stores/interface'
+
 import {
   getContrastRatioLayers,
   hex2rgb,
@@ -41,9 +46,6 @@ import {
 } from 'src/services/theme_data/theme_data.service.js'
 import { init } from 'src/services/theme_data/theme_data_3.service.js'
 import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
-import { useInstanceStore } from 'src/stores/instance.js'
-import { useInterfaceStore } from 'src/stores/interface'
-import Preview from './theme_preview.vue'
 
 // List of color values used in v1
 const v1OnlyNames = [

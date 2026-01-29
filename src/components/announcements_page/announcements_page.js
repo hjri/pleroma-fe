@@ -1,8 +1,9 @@
 import { mapState } from 'vuex'
 
-import { useAnnouncementsStore } from 'src/stores/announcements'
 import Announcement from '../announcement/announcement.vue'
 import AnnouncementEditor from '../announcement_editor/announcement_editor.vue'
+
+import { useAnnouncementsStore } from 'src/stores/announcements'
 
 const AnnouncementsPage = {
   components: {

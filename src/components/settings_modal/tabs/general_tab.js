@@ -2,14 +2,16 @@ import { mapState } from 'pinia'
 
 import FontControl from 'src/components/font_control/font_control.vue'
 import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
-import localeService from 'src/services/locale/locale.service.js'
-import { useInstanceStore } from 'src/stores/instance.js'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import FloatSetting from '../helpers/float_setting.vue'
 import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+
+import localeService from 'src/services/locale/locale.service.js'
 
 const GeneralTab = {
   props: {

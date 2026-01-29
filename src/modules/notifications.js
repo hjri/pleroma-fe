@@ -1,5 +1,3 @@
-import { useReportsStore } from 'src/stores/reports.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import apiService from '../services/api/api.service.js'
 import {
   closeAllDesktopNotifications,
@@ -10,6 +8,9 @@ import {
   isValidNotification,
   maybeShowNotification,
 } from '../services/notification_utils/notification_utils.js'
+
+import { useReportsStore } from 'src/stores/reports.js'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
 const emptyNotifications = () => ({
   desktopNotificationSilence: true,

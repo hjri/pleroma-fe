@@ -6,12 +6,13 @@ import StillImage from 'components/still-image/still-image.vue'
 import { assign, clone } from 'lodash'
 
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
-import { useInstanceStore } from 'src/stores/instance.js'
-import { useInterfaceStore } from 'src/stores/interface'
 import EmojiEditingPopover from '../helpers/emoji_editing_popover.vue'
 import ModifiedIndicator from '../helpers/modified_indicator.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import StringSetting from '../helpers/string_setting.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInterfaceStore } from 'src/stores/interface'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

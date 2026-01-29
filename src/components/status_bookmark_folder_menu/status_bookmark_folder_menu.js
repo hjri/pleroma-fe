@@ -2,6 +2,7 @@ import { mapState } from 'pinia'
 
 import Popover from 'src/components/popover/popover.vue'
 import StillImage from 'src/components/still-image/still-image.vue'
+
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
 
 import { library } from '@fortawesome/fontawesome-svg-core'

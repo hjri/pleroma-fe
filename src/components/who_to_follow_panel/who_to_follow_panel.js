@@ -1,8 +1,10 @@
 import { shuffle } from 'lodash'
 
-import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
-import { useInstanceStore } from 'src/stores/instance.js'
 import apiService from '../../services/api/api.service.js'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+
+import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 function showWhoToFollow(panel, reply) {
   const shuffled = shuffle(reply)

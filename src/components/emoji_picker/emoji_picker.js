@@ -2,11 +2,12 @@ import { chunk, debounce, trim } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 
 import Popover from 'src/components/popover/popover.vue'
-import { useEmojiStore } from 'src/stores/emoji.js'
-import { useInstanceStore } from 'src/stores/instance.js'
 import { ensureFinalFallback } from '../../i18n/languages.js'
 import Checkbox from '../checkbox/checkbox.vue'
 import StillImage from '../still-image/still-image.vue'
+
+import { useEmojiStore } from 'src/stores/emoji.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

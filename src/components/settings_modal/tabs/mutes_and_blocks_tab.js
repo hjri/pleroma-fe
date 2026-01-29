@@ -12,6 +12,7 @@ import MuteCard from 'src/components/mute_card/mute_card.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import SelectableList from 'src/components/selectable_list/selectable_list.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens'
 

@@ -1,14 +1,16 @@
 import { get, set } from 'lodash'
 import { defineStore } from 'pinia'
 
-import { ensureFinalFallback } from 'src/i18n/languages.js'
-import { useInterfaceStore } from 'src/stores/interface.js'
 import { instanceDefaultProperties } from '../modules/config.js'
 import {
   instanceDefaultConfig,
   staticOrApiConfigDefault,
 } from '../modules/default_config_state.js'
 import apiService from '../services/api/api.service.js'
+
+import { useInterfaceStore } from 'src/stores/interface.js'
+
+import { ensureFinalFallback } from 'src/i18n/languages.js'
 
 const REMOTE_INTERACTION_URL = '/main/ostatus'
 

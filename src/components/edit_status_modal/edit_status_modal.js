@@ -1,8 +1,9 @@
 import get from 'lodash/get'
 
-import { useEditStatusStore } from 'src/stores/editStatus'
 import EditStatusForm from '../edit_status_form/edit_status_form.vue'
 import Modal from '../modal/modal.vue'
+
+import { useEditStatusStore } from 'src/stores/editStatus'
 
 const EditStatusModal = {
   components: {

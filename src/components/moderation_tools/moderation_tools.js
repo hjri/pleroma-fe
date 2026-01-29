@@ -1,6 +1,7 @@
-import { useInstanceStore } from 'src/stores/instance.js'
 import DialogModal from '../dialog_modal/dialog_modal.vue'
 import Popover from '../popover/popover.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'

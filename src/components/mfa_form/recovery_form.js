@@ -1,9 +1,10 @@
 import { mapActions, mapState, mapStores } from 'pinia'
 
+import mfaApi from '../../services/new_api/mfa.js'
+
 import { useAuthFlowStore } from 'src/stores/auth_flow.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
-import mfaApi from '../../services/new_api/mfa.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'

@@ -6,13 +6,15 @@ import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import Modal from 'src/components/modal/modal.vue'
 import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
+import Popover from '../popover/popover.vue'
+
+import { useInterfaceStore } from 'src/stores/interface'
+
 import {
   newExporter,
   newImporter,
 } from 'src/services/export_import/export_import.js'
 import getResettableAsyncComponent from 'src/services/resettable_async_component.js'
-import { useInterfaceStore } from 'src/stores/interface'
-import Popover from '../popover/popover.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faWindowMinimize } from '@fortawesome/free-regular-svg-icons'

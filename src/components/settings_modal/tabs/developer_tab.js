@@ -1,7 +1,9 @@
-import { cacheKey, clearCache, emojiCacheKey } from 'src/services/sw/sw.js'
-import { useInstanceStore } from 'src/stores/instance.js'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+
+import { cacheKey, clearCache, emojiCacheKey } from 'src/services/sw/sw.js'
 
 const pleromaFeCommitUrl =
   'https://git.pleroma.social/pleroma/pleroma-fe/commit/'

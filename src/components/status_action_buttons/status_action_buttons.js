@@ -2,10 +2,12 @@ import { mapState } from 'pinia'
 
 import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import Popover from 'src/components/popover/popover.vue'
-import genRandomSeed from 'src/services/random_seed/random_seed.service.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import ActionButtonContainer from './action_button_container.vue'
 import { BUTTONS } from './buttons_definitions.js'
+
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+
+import genRandomSeed from 'src/services/random_seed/random_seed.service.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'

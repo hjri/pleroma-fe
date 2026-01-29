@@ -14,18 +14,6 @@ import {
 
 config.autoAddCss = false
 
-import VBodyScrollLock from 'src/directives/body_scroll_lock'
-import {
-  instanceDefaultConfig,
-  staticOrApiConfigDefault,
-} from 'src/modules/default_config_state.js'
-import { useAnnouncementsStore } from 'src/stores/announcements'
-import { useAuthFlowStore } from 'src/stores/auth_flow'
-import { useEmojiStore } from 'src/stores/emoji.js'
-import { useI18nStore } from 'src/stores/i18n'
-import { useInstanceStore } from 'src/stores/instance.js'
-import { useInterfaceStore } from 'src/stores/interface.js'
-import { useOAuthStore } from 'src/stores/oauth'
 import App from '../App.vue'
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import FaviconService from '../services/favicon_service/favicon_service.js'
@@ -36,6 +24,20 @@ import {
   windowWidth,
 } from '../services/window_utils/window_utils'
 import routes from './routes'
+
+import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useAuthFlowStore } from 'src/stores/auth_flow'
+import { useEmojiStore } from 'src/stores/emoji.js'
+import { useI18nStore } from 'src/stores/i18n'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useOAuthStore } from 'src/stores/oauth'
+
+import VBodyScrollLock from 'src/directives/body_scroll_lock'
+import {
+  instanceDefaultConfig,
+  staticOrApiConfigDefault,
+} from 'src/modules/default_config_state.js'
 
 let staticInitialResults = null
 

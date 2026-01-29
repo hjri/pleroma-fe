@@ -1,8 +1,9 @@
 import { mapState } from 'pinia'
 import { mapGetters } from 'vuex'
 
-import { useInterfaceStore } from 'src/stores/interface'
 import Popover from '../popover/popover.vue'
+
+import { useInterfaceStore } from 'src/stores/interface'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faFilter, faFont, faWrench } from '@fortawesome/free-solid-svg-icons'

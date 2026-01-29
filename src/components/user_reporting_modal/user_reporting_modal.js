@@ -1,9 +1,10 @@
-import { useReportsStore } from 'src/stores/reports'
 import Checkbox from '../checkbox/checkbox.vue'
 import List from '../list/list.vue'
 import Modal from '../modal/modal.vue'
 import Status from '../status/status.vue'
 import UserLink from '../user_link/user_link.vue'
+
+import { useReportsStore } from 'src/stores/reports'
 
 const UserReportingModal = {
   components: {

@@ -13,8 +13,9 @@ import {
   slice,
 } from 'lodash'
 
-import { useInterfaceStore } from 'src/stores/interface'
 import apiService from '../services/api/api.service.js'
+
+import { useInterfaceStore } from 'src/stores/interface'
 
 const emptyTl = (userId = 0) => ({
   statuses: [],

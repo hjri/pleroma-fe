@@ -1,9 +1,10 @@
 import SearchBar from 'components/search_bar/search_bar.vue'
 import { mapActions, mapState } from 'pinia'
 
+import ConfirmModal from '../confirm_modal/confirm_modal.vue'
+
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
-import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

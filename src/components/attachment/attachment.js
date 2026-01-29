@@ -1,12 +1,13 @@
 import { mapGetters } from 'vuex'
 
-import { useInstanceStore } from 'src/stores/instance.js'
-import { useMediaViewerStore } from 'src/stores/media_viewer'
 import nsfwImage from '../../assets/nsfw.png'
 import fileTypeService from '../../services/file_type/file_type.service.js'
 import Flash from '../flash/flash.vue'
 import StillImage from '../still-image/still-image.vue'
 import VideoAttachment from '../video_attachment/video_attachment.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useMediaViewerStore } from 'src/stores/media_viewer'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

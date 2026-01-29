@@ -1,7 +1,9 @@
+import Select from '../select/select.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+
 import * as DateUtils from 'src/services/date_utils/date_utils.js'
 import { pollFallback } from 'src/services/poll/poll.service.js'
-import { useInstanceStore } from 'src/stores/instance.js'
-import Select from '../select/select.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'

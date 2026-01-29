@@ -8,6 +8,7 @@ import { filterNavigation } from 'src/components/navigation/filter.js'
 import { ROOT_ITEMS, TIMELINES } from 'src/components/navigation/navigation.js'
 import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
 import NavigationPins from 'src/components/navigation/navigation_pins.vue'
+
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'

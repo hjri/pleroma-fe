@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 
-import { ensureFinalFallback } from 'src/i18n/languages.js'
 import { useInstanceStore } from 'src/stores/instance.js'
+
+import { ensureFinalFallback } from 'src/i18n/languages.js'
 
 import { annotationsLoader } from 'virtual:pleroma-fe/emoji-annotations'
 

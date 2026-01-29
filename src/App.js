@@ -3,7 +3,6 @@ import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 import { mapGetters } from 'vuex'
 
-import { useInstanceStore } from 'src/stores/instance.js'
 import DesktopNav from './components/desktop_nav/desktop_nav.vue'
 import EditStatusModal from './components/edit_status_modal/edit_status_modal.vue'
 import FeaturesPanel from './components/features_panel/features_panel.vue'
@@ -24,6 +23,8 @@ import { getOrCreateServiceWorker } from './services/sw/sw'
 import { windowHeight, windowWidth } from './services/window_utils/window_utils'
 import { useInterfaceStore } from './stores/interface'
 import { useShoutStore } from './stores/shout'
+
+import { useInstanceStore } from 'src/stores/instance.js'
 
 export default {
   name: 'app',

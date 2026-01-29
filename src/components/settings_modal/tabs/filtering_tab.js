@@ -4,19 +4,21 @@ import { v4 as uuidv4 } from 'uuid'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Select from 'src/components/select/select.vue'
-import {
-  newExporter,
-  newImporter,
-} from 'src/services/export_import/export_import.js'
-import { useInstanceStore } from 'src/stores/instance.js'
-import { useInterfaceStore } from 'src/stores/interface'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import HelpIndicator from '../helpers/help_indicator.vue'
 import IntegerSetting from '../helpers/integer_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInterfaceStore } from 'src/stores/interface'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+
+import {
+  newExporter,
+  newImporter,
+} from 'src/services/export_import/export_import.js'
 
 const SUPPORTED_TYPES = new Set(['word', 'regexp', 'user', 'user_regexp'])
 

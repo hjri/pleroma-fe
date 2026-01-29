@@ -1,7 +1,8 @@
 import { mapState } from 'pinia'
 
-import { useInstanceStore } from 'src/stores/instance.js'
 import fileSizeFormatService from '../../services/file_size_format/file_size_format.js'
+
+import { useInstanceStore } from 'src/stores/instance.js'
 
 const FeaturesPanel = {
   computed: {

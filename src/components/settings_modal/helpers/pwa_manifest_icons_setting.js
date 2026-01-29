@@ -3,9 +3,11 @@ import { clone } from 'lodash'
 import Attachment from 'src/components/attachment/attachment.vue'
 import MediaUpload from 'src/components/media_upload/media_upload.vue'
 import Select from 'src/components/select/select.vue'
-import { fileTypeExt } from 'src/services/file_type/file_type.service.js'
-import { useInstanceStore } from 'src/stores/instance.js'
 import Setting from './setting.js'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+
+import { fileTypeExt } from 'src/services/file_type/file_type.service.js'
 
 export default {
   ...Setting,

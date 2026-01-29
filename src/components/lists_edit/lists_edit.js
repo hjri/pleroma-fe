@@ -3,11 +3,12 @@ import { mapGetters, mapState } from 'vuex'
 
 import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
-import { useInterfaceStore } from 'src/stores/interface'
-import { useListsStore } from 'src/stores/lists'
 import BasicUserCard from '../basic_user_card/basic_user_card.vue'
 import ListsUserSearch from '../lists_user_search/lists_user_search.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
+
+import { useInterfaceStore } from 'src/stores/interface'
+import { useListsStore } from 'src/stores/lists'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons'

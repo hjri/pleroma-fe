@@ -2,8 +2,9 @@ import groupBy from 'lodash/groupBy'
 import map from 'lodash/map'
 import { mapGetters, mapState } from 'vuex'
 
-import { useInstanceStore } from 'src/stores/instance.js'
 import BasicUserCard from '../basic_user_card/basic_user_card.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
 
 const StaffPanel = {
   created() {

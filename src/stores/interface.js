@@ -1,17 +1,19 @@
 import { defineStore } from 'pinia'
 
 import {
-  CURRENT_VERSION,
-  generatePreset,
-} from 'src/services/theme_data/theme_data.service.js'
-import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
-import { useInstanceStore } from 'src/stores/instance.js'
-import {
   applyTheme,
   getResourcesIndex,
   tryLoadCache,
 } from '../services/style_setter/style_setter.js'
 import { deserialize } from '../services/theme_data/iss_deserializer.js'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+
+import {
+  CURRENT_VERSION,
+  generatePreset,
+} from 'src/services/theme_data/theme_data.service.js'
+import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
 
 export const useInterfaceStore = defineStore('interface', {
   state: () => ({
