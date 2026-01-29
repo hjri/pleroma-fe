@@ -83,7 +83,7 @@ export default {
     window.addEventListener('resize', this.updateMobileState)
     this.scrollParent.addEventListener('scroll', this.updateScrollState)
 
-    if (useInterfaceStore().themeApplied) {
+    if (this.themeApplied) {
       this.setThemeBodyClass()
       this.removeSplash()
     }
