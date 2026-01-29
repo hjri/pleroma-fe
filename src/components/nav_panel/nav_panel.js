@@ -117,8 +117,8 @@ const NavPanel = {
       pleromaChatMessagesAvailable: (store) =>
         store.featureSet.pleromaChatMessagesAvailable,
       bookmarkFolders: (store) =>
-        store.fetaureSet.pleromaBookmarkFoldersAvailable,
-      bubbleTimeline: (store) => store.fetaureSet.localBubble,
+        store.featureSet.pleromaBookmarkFoldersAvailable,
+      bubbleTimeline: (store) => store.featureSet.localBubble,
     }),
     ...mapPiniaState(useServerSideStorageStore, {
       collapsed: (store) => store.prefsStorage.simple.collapseNav,
