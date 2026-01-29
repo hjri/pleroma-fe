@@ -17,12 +17,11 @@ const LoginForm = {
     error: false,
   }),
   computed: {
-    ...mapState(useInstanceStore, ['server'])
-    ...mapStores(useOAuthStore),
     ...mapState({
-      registrationOpen: (state) => useInstanceStore().registrationOpen,
       loggingIn: (state) => state.users.loggingIn,
     }),
+    ...mapPiniaState(useOAuthStore, ['clientId', 'clientSecret']),
+    ...mapPiniaState(useInstanceStore, ['server', 'registrationOpen']),
     ...mapPiniaState(useAuthFlowStore, {
       isTokenAuth: (store) => store.requiredToken,
       isPasswordAuth: (store) => !store.requiredToken,
@@ -30,6 +29,7 @@ const LoginForm = {
   },
   methods: {
     ...mapActions(useAuthFlowStore, ['requireMFA', 'login']),
+    ...mapActions(useOAuthStore, ['ensureAppToken']),
     submit() {
       this.isTokenAuth ? this.submitToken() : this.submitPassword()
     },
@@ -41,10 +41,10 @@ const LoginForm = {
 
       // NOTE: we do not really need the app token, but obtaining a token and
       // calling verify_credentials is the only way to ensure the app still works.
-      this.oauthStore.ensureAppToken().then(() => {
+      this.ensureAppToken().then(() => {
         const app = {
-          clientId: this.oauthStore.clientId,
-          clientSecret: this.oauthStore.clientSecret,
+          clientId: this.clientId,
+          clientSecret: this.clientSecret,
         }
         oauthApi.login({ ...app, ...data })
       })
@@ -54,10 +54,10 @@ const LoginForm = {
 
       // NOTE: we do not really need the app token, but obtaining a token and
       // calling verify_credentials is the only way to ensure the app still works.
-      this.oauthStore.ensureAppToken().then(() => {
+      this.ensureAppToken().then(() => {
         const app = {
-          clientId: this.oauthStore.clientId,
-          clientSecret: this.oauthStore.clientSecret,
+          clientId: this.clientId,
+          clientSecret: this.clientSecret,
         }
 
         oauthApi

@@ -22,8 +22,8 @@ import {
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useAuthFlowStore } from 'src/stores/auth_flow'
 import { useI18nStore } from 'src/stores/i18n'
-import { useInterfaceStore } from 'src/stores/interface.js'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth'
 import App from '../App.vue'
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
@@ -168,8 +168,12 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
     }
   }
 
-  Object.keys(staticOrApiConfigDefault).map(k => `instanceIdentity.${k}`).forEach(copyInstanceOption)
-  Object.keys(instanceDefaultConfig).map(k => `prefsStorage.${k}`).forEach(copyInstanceOption)
+  Object.keys(staticOrApiConfigDefault)
+    .map((k) => `instanceIdentity.${k}`)
+    .forEach(copyInstanceOption)
+  Object.keys(instanceDefaultConfig)
+    .map((k) => `prefsStorage.${k}`)
+    .forEach(copyInstanceOption)
 
   useAuthFlowStore().setInitialStrategy(config.loginMethod)
 }

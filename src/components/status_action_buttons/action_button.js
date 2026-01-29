@@ -108,7 +108,7 @@ export default {
       ]
     },
     remoteInteractionLink() {
-      return this.$store.getters.remoteInteractionLink({
+      return useInstanceStore().getRemoteInteractionLink({
         statusId: this.status.id,
       })
     },

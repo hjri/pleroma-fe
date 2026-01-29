@@ -113,25 +113,13 @@ export const useInstanceStore = defineStore('instance', {
     instanceDomain(state) {
       return new URL(this.server).hostname
     },
-    remoteInteractionLink(state) {
-      const server = this.server.endsWith('/')
-        ? this.server.slice(0, -1)
-        : this.server
-      const link = server + REMOTE_INTERACTION_URL
-
-      return ({ statusId, nickname }) => {
-        if (statusId) {
-          return `${link}?status_id=${statusId}`
-        } else {
-          return `${link}?nickname=${nickname}`
-        }
-      }
-    },
   },
   actions: {
     set({ path, name, value }) {
       if (get(defaultState, path ?? name) === undefined)
-        console.error(`Unknown instance option ${path ?? name}, value: ${value}`)
+        console.error(
+          `Unknown instance option ${path ?? name}, value: ${value}`,
+        )
       set(this, path ?? name, value)
       switch (name) {
         case 'name':
@@ -151,6 +139,18 @@ export const useInstanceStore = defineStore('instance', {
         })
       } catch (e) {
         console.warn("Can't load known domains\n", e)
+      }
+    },
+    getRemoteInteractionLink({ statusId, nickname }) {
+      const server = this.server.endsWith('/')
+        ? this.server.slice(0, -1)
+        : this.server
+      const link = server + REMOTE_INTERACTION_URL
+
+      if (statusId) {
+        return `${link}?status_id=${statusId}`
+      } else {
+        return `${link}?nickname=${nickname}`
       }
     },
   },

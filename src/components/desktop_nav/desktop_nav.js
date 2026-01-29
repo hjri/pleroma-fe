@@ -1,4 +1,5 @@
 import SearchBar from 'components/search_bar/search_bar.vue'
+import { mapState } from 'pinia'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
@@ -52,7 +53,7 @@ export default {
   }),
   computed: {
     enableMask() {
-      return this.supportsMask && useInstanceStore().logoMask
+      return this.supportsMask && this.logoMask
     },
     logoStyle() {
       return {
@@ -62,7 +63,7 @@ export default {
     logoMaskStyle() {
       return this.enableMask
         ? {
-            'mask-image': `url(${useInstanceStore().logo})`,
+            'mask-image': `url(${this.logo})`,
           }
         : {
             'background-color': this.enableMask ? '' : 'transparent',
@@ -71,7 +72,7 @@ export default {
     logoBgStyle() {
       return Object.assign(
         {
-          margin: `${useInstanceStore().logoMargin} 0`,
+          margin: `${this.logoMargin} 0`,
           opacity: this.searchBarHidden ? 1 : 0,
         },
         this.enableMask
@@ -81,23 +82,17 @@ export default {
             },
       )
     },
-    logo() {
-      return useInstanceStore().logo
-    },
-    sitename() {
-      return useInstanceStore().name
-    },
-    hideSitename() {
-      return useInstanceStore().hideSitename
-    },
-    logoLeft() {
-      return useInstanceStore().logoLeft
-    },
+    ...mapState(useInstanceStore, ['private']),
+    ...mapState(useInstanceStore, {
+      logoMask: (store) => store.instanceIdentity.logoMask,
+      logo: (store) => store.instanceIdentity.logo,
+      logoLeft: (store) => store.instanceIdentity.logoLeft,
+      logoMargin: (store) => store.instanceIdentity.logoMargin,
+      name: (store) => store.instanceIdentity.name,
+      hideSitename: (store) => store.instanceIdentity.hideSitename,
+    }),
     currentUser() {
       return this.$store.state.users.currentUser
-    },
-    privateMode() {
-      return useInstanceStore().private
     },
     shouldConfirmLogout() {
       return this.$store.getters.mergedConfig.modalOnLogout

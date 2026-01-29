@@ -17,7 +17,7 @@ export default {
   }),
   computed: {
     ...mapStores(useOAuthStore),
-    ...mapState(useOAuthStore, ['clientId','clientSecret']),
+    ...mapState(useOAuthStore, ['clientId', 'clientSecret']),
     ...mapState(useAuthFlowStore, ['settings']),
     ...mapState(useInstanceStore, ['server']),
   },

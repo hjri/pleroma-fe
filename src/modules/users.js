@@ -10,9 +10,9 @@ import {
 } from 'lodash'
 
 import { declarations } from 'src/modules/config_declaration'
+import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
-import { useEmojiStore } from 'src/stores/emoji.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import apiService from '../services/api/api.service.js'

@@ -1,4 +1,5 @@
 import { throttle } from 'lodash'
+import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 import { mapGetters } from 'vuex'
 
@@ -92,12 +93,9 @@ export default {
     this.scrollParent.removeEventListener('scroll', this.updateScrollState)
   },
   computed: {
-    themeApplied() {
-      return useInterfaceStore().themeApplied
-    },
     currentTheme() {
-      if (useInterfaceStore().styleDataUsed) {
-        const styleMeta = useInterfaceStore().styleDataUsed.find(
+      if (this.styleDataUsed) {
+        const styleMeta = this.styleDataUsed.find(
           (x) => x.component === '@meta',
         )
 
@@ -135,9 +133,7 @@ export default {
       return this.currentUser.background_image
     },
     instanceBackground() {
-      return this.mergedConfig.hideInstanceWallpaper
-        ? null
-        : useInstanceStore().background
+      return this.mergedConfig.hideInstanceWallpaper ? null : this.background
     },
     background() {
       return this.userBackground || this.instanceBackground
@@ -152,14 +148,11 @@ export default {
     shout() {
       return useShoutStore().joined
     },
-    suggestionsEnabled() {
-      return useInstanceStore().suggestionsEnabled
-    },
     showInstanceSpecificPanel() {
       return (
-        useInstanceStore().showInstanceSpecificPanel &&
+        this.showInstanceSpecificPanel &&
         !this.$store.getters.mergedConfig.hideISP &&
-        useInstanceStore().instanceSpecificPanelContent
+        this.instanceSpecificPanelContent
       )
     },
     isChats() {
@@ -176,23 +169,11 @@ export default {
         this.layoutType === 'mobile'
       )
     },
-    showFeaturesPanel() {
-      return useInstanceStore().showFeaturesPanel
-    },
-    editingAvailable() {
-      return useInstanceStore().editingAvailable
-    },
     shoutboxPosition() {
       return this.$store.getters.mergedConfig.alwaysShowNewPostButton || false
     },
     hideShoutbox() {
       return this.$store.getters.mergedConfig.hideShoutbox
-    },
-    layoutType() {
-      return useInterfaceStore().layoutType
-    },
-    privateMode() {
-      return useInstanceStore().private
     },
     reverseLayout() {
       const { thirdColumnMode, sidebarRight: reverseSetting } =
@@ -215,6 +196,24 @@ export default {
       return window /* this.$refs.appContentRef */
     },
     ...mapGetters(['mergedConfig']),
+    ...mapState(useInterfaceStore, [
+      'themeApplied',
+      'styleDataUsed',
+      'layoutType',
+    ]),
+    ...mapState(useInstanceStore, [
+      'styleDataUsed',
+      'instanceSpecificPanelContent',
+      'private',
+    ]),
+    ...mapState(useInstanceStore, {
+      background: (store) => store.instanceIdentity.background,
+      showFeaturesPanel: (store) => store.instanceIdentity.showFeaturesPanel,
+      showInstanceSpecificPanel: (store) =>
+        store.instanceIdentity.showInstanceSpecificPanel,
+      suggestionsEnabled: (store) => store.featureSet.suggestionsEnabled,
+      editingAvailable: (store) => store.featureSet.editingAvailable,
+    }),
   },
   methods: {
     resizeHandler() {

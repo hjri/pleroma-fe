@@ -1,10 +1,10 @@
 import Cookies from 'js-cookie'
 import { set } from 'lodash'
 
-import { useI18nStore } from 'src/stores/i18n.js'
-import { useInterfaceStore } from 'src/stores/interface.js'
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
+import { useI18nStore } from 'src/stores/i18n.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 import messages from '../i18n/messages'
 import localeService from '../services/locale/locale.service.js'
 import { applyConfig } from '../services/style_setter/style_setter.js'
@@ -49,7 +49,10 @@ const config = {
       return {
         ...defaultState,
         ...Object.fromEntries(
-          instanceDefaultProperties.map((key) => [key, useInstanceStore()[key]]),
+          instanceDefaultProperties.map((key) => [
+            key,
+            useInstanceStore()[key],
+          ]),
         ),
       }
     },

@@ -19,11 +19,8 @@ export default {
     ...mapState(useAuthFlowStore, {
       authSettings: (store) => store.settings,
     }),
-    ...mapState(useInstanceStore, ['server'])
+    ...mapState(useInstanceStore, ['server']),
     ...mapStores(useOAuthStore),
-    ...mapState({
-      instance: 'instance',
-    }),
   },
   methods: {
     ...mapActions(useAuthFlowStore, ['requireRecovery', 'abortMFA', 'login']),
