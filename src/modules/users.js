@@ -646,7 +646,6 @@ const users = {
 
     logout(store) {
       const oauth = useOAuthStore()
-      const { instance } = store.rootState
 
       // NOTE: No need to verify the app still exists, because if it doesn't,
       // the token will be invalid too
@@ -655,7 +654,7 @@ const users = {
         .then((app) => {
           const params = {
             app,
-            instance: instance.server,
+            instance: useInstanceStore().server,
             token: oauth.userToken,
           }
 

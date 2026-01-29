@@ -23,9 +23,9 @@ const passwordReset = {
     ...mapState({
       signedIn: (state) => !!state.users.currentUser,
     }),
-    ...mapPiniaState(useInstanceStore, ['server']),
+    ...mapPiniaState(useInstanceStore, ['server', 'mailerEnabled']),
     mailerEnabled() {
-      return this.instance.mailerEnabled
+      return this.mailerEnabled
     },
   },
   created() {

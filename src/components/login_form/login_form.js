@@ -17,23 +17,16 @@ const LoginForm = {
     error: false,
   }),
   computed: {
-    isPasswordAuth() {
-      return this.requiredPassword
-    },
-    isTokenAuth() {
-      return this.requiredToken
-    },
+    ...mapState(useInstanceStore, ['server'])
     ...mapStores(useOAuthStore),
     ...mapState({
       registrationOpen: (state) => useInstanceStore().registrationOpen,
-      instance: (state) => useInstanceStore(),
       loggingIn: (state) => state.users.loggingIn,
     }),
-    ...mapPiniaState(useAuthFlowStore, [
-      'requiredPassword',
-      'requiredToken',
-      'requiredMFA',
-    ]),
+    ...mapPiniaState(useAuthFlowStore, {
+      isTokenAuth: (store) => store.requiredToken,
+      isPasswordAuth: (store) => !store.requiredToken,
+    }),
   },
   methods: {
     ...mapActions(useAuthFlowStore, ['requireMFA', 'login']),
@@ -42,7 +35,7 @@ const LoginForm = {
     },
     submitToken() {
       const data = {
-        instance: this.instance.server,
+        instance: this.server,
         commit: this.$store.commit,
       }
 
@@ -70,7 +63,7 @@ const LoginForm = {
         oauthApi
           .getTokenWithCredentials({
             ...app,
-            instance: this.instance.server,
+            instance: this.server,
             username: this.user.username,
             password: this.user.password,
           })
