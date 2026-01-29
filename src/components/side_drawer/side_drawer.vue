@@ -47,7 +47,7 @@
           </router-link>
         </li>
         <li
-          v-if="currentUser || !privateMode"
+          v-if="currentUser || !private"
           @click="toggleDrawer"
         >
           <router-link
@@ -166,7 +166,7 @@
       </ul>
       <ul>
         <li
-          v-if="currentUser || !privateMode"
+          v-if="currentUser || !private"
           @click="toggleDrawer"
         >
           <router-link

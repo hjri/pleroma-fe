@@ -112,8 +112,9 @@ const NavPanel = {
       unreadAnnouncementCount: 'unreadAnnouncementCount',
       supportsAnnouncements: (store) => store.supportsAnnouncements,
     }),
-    ...mapPiniaState(useInstanceStore, ['private', 'federating']),
+    ...mapPiniaState(useInstanceStore, ['federating']),
     ...mapPiniaState(useInstanceStore, {
+      privateMode: (store) => store.private,
       pleromaChatMessagesAvailable: (store) =>
         store.featureSet.pleromaChatMessagesAvailable,
       bookmarkFolders: (store) =>

@@ -79,12 +79,6 @@ const SideDrawer = {
     followRequestCount() {
       return this.$store.state.api.followRequests.length
     },
-    privateMode() {
-      return useInstanceStore().private
-    },
-    federating() {
-      return useInstanceStore().federating
-    },
     timelinesRoute() {
       let name
       if (useInterfaceStore().lastTimeline) {
