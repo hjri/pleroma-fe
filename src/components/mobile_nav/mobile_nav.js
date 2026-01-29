@@ -11,9 +11,9 @@ import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 import Notifications from '../notifications/notifications.vue'
 import SideDrawer from '../side_drawer/side_drawer.vue'
 
-import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

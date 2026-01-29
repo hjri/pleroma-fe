@@ -7,8 +7,8 @@ import BasicUserCard from '../basic_user_card/basic_user_card.vue'
 import ListsUserSearch from '../lists_user_search/lists_user_search.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
 
-import { useInterfaceStore } from 'src/stores/interface'
-import { useListsStore } from 'src/stores/lists'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useListsStore } from 'src/stores/lists.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons'

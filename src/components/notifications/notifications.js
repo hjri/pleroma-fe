@@ -15,8 +15,8 @@ import ExtraNotifications from '../extra_notifications/extra_notifications.vue'
 import Notification from '../notification/notification.vue'
 import NotificationFilters from './notification_filters.vue'
 
-import { useAnnouncementsStore } from 'src/stores/announcements'
-import { useInterfaceStore } from 'src/stores/interface'
+import { useAnnouncementsStore } from 'src/stores/announcements.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

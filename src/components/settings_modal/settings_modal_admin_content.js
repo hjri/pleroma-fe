@@ -17,7 +17,7 @@ import RegistrationsTab from './admin_tabs/registrations_tab.vue'
 import UploadsTab from './admin_tabs/uploads_tab.vue'
 import VerticalTabSwitcher from './helpers/vertical_tab_switcher.jsx'
 
-import { useInterfaceStore } from 'src/stores/interface'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

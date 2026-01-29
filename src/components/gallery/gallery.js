@@ -2,7 +2,7 @@ import { set, sumBy } from 'lodash'
 
 import Attachment from '../attachment/attachment.vue'
 
-import { useMediaViewerStore } from 'src/stores/media_viewer'
+import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 
 const Gallery = {
   props: [

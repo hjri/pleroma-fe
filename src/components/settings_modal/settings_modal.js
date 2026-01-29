@@ -8,7 +8,7 @@ import Modal from 'src/components/modal/modal.vue'
 import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
 import Popover from '../popover/popover.vue'
 
-import { useInterfaceStore } from 'src/stores/interface'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 import {
   newExporter,

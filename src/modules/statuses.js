@@ -15,7 +15,7 @@ import {
 
 import apiService from '../services/api/api.service.js'
 
-import { useInterfaceStore } from 'src/stores/interface'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 const emptyTl = (userId = 0) => ({
   statuses: [],

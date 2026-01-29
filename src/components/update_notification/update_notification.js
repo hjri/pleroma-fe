@@ -1,7 +1,7 @@
 import Modal from 'src/components/modal/modal.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage.js'
 
 import pleromaTanFoxMask from 'src/assets/pleromatan_apology_fox_mask.png'
 import pleromaTanMask from 'src/assets/pleromatan_apology_mask.png'

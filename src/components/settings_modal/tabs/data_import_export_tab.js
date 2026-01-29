@@ -4,7 +4,7 @@ import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Exporter from 'src/components/exporter/exporter.vue'
 import Importer from 'src/components/importer/importer.vue'
 
-import { useOAuthTokensStore } from 'src/stores/oauth_tokens'
+import { useOAuthTokensStore } from 'src/stores/oauth_tokens.js'
 
 const DataImportExportTab = {
   data() {

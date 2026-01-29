@@ -7,7 +7,7 @@ import { FontAwesomeIcon as FAIcon } from '@fortawesome/vue-fontawesome'
 
 import './tab_switcher.scss'
 
-import { useInterfaceStore } from 'src/stores/interface'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 const findFirstUsable = (slots) => slots.findIndex((_) => _.props)
 

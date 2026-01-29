@@ -1,5 +1,5 @@
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useInterfaceStore } from 'src/stores/interface'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 export default (store) => {
   store.subscribe((mutation, state) => {

@@ -15,7 +15,7 @@ import ProfileTab from './tabs/profile_tab.vue'
 import SecurityTab from './tabs/security_tab/security_tab.vue'
 import StyleTab from './tabs/style_tab/style_tab.vue'
 
-import { useInterfaceStore } from 'src/stores/interface'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

@@ -14,7 +14,7 @@ import SelectableList from 'src/components/selectable_list/selectable_list.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useOAuthTokensStore } from 'src/stores/oauth_tokens'
+import { useOAuthTokensStore } from 'src/stores/oauth_tokens.js'
 
 const BlockList = withLoadMore({
   fetch: (props, $store) => $store.dispatch('fetchBlocks'),

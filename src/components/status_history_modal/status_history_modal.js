@@ -3,7 +3,7 @@ import { get } from 'lodash'
 import Modal from '../modal/modal.vue'
 import Status from '../status/status.vue'
 
-import { useStatusHistoryStore } from 'src/stores/statusHistory'
+import { useStatusHistoryStore } from 'src/stores/statusHistory.js'
 
 const StatusHistoryModal = {
   components: {

@@ -5,7 +5,7 @@ import { getListEntries } from 'src/components/navigation/filter.js'
 import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useListsStore } from 'src/stores/lists'
+import { useListsStore } from 'src/stores/lists.js'
 
 export const ListsMenuContent = {
   props: ['showPin'],

@@ -6,7 +6,7 @@ import Gallery from '../gallery/gallery.vue'
 import LinkPreview from '../link-preview/link-preview.vue'
 import Poll from '../poll/poll.vue'
 
-import { useMediaViewerStore } from 'src/stores/media_viewer'
+import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

@@ -12,7 +12,7 @@ import UnitSetting from '../helpers/unit_setting.vue'
 import Preview from './old_theme_tab/theme_preview.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
-import { normalizeThemeData, useInterfaceStore } from 'src/stores/interface'
+import { normalizeThemeData, useInterfaceStore } from 'src/stores/interface.js'
 
 import { newImporter } from 'src/services/export_import/export_import.js'
 import {

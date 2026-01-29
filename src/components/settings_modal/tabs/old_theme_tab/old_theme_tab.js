@@ -10,7 +10,7 @@ import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 import Preview from './theme_preview.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useInterfaceStore } from 'src/stores/interface'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 import {
   getContrastRatioLayers,

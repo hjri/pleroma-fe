@@ -1,5 +1,5 @@
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useShoutStore } from 'src/stores/shout'
+import { useShoutStore } from 'src/stores/shout.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 

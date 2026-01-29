@@ -49,7 +49,7 @@ import { computed } from 'vue'
 
 import ColorInput from 'src/components/color_input/color_input.vue'
 
-import { useInterfaceStore } from 'src/stores/interface'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 import {
   newExporter,

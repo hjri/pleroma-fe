@@ -5,7 +5,7 @@ import Popover from 'src/components/popover/popover.vue'
 import ActionButtonContainer from './action_button_container.vue'
 import { BUTTONS } from './buttons_definitions.js'
 
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage.js'
 
 import genRandomSeed from 'src/services/random_seed/random_seed.service.js'
 

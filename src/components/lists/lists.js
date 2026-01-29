@@ -1,6 +1,6 @@
 import ListsCard from '../lists_card/lists_card.vue'
 
-import { useListsStore } from 'src/stores/lists'
+import { useListsStore } from 'src/stores/lists.js'
 
 const Lists = {
   data() {

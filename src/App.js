@@ -21,10 +21,10 @@ import UserReportingModal from './components/user_reporting_modal/user_reporting
 import WhoToFollowPanel from './components/who_to_follow_panel/who_to_follow_panel.vue'
 import { getOrCreateServiceWorker } from './services/sw/sw'
 import { windowHeight, windowWidth } from './services/window_utils/window_utils'
-import { useInterfaceStore } from './stores/interface'
-import { useShoutStore } from './stores/shout'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useShoutStore } from 'src/stores/shout.js'
 
 export default {
   name: 'app',

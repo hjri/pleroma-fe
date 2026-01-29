@@ -8,7 +8,7 @@ import ScrollTopButton from '../scroll_top_button/scroll_top_button.vue'
 import Status from '../status/status.vue'
 import TimelineMenu from '../timeline_menu/timeline_menu.vue'
 
-import { useInterfaceStore } from 'src/stores/interface'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 import timelineFetcher from 'src/services/timeline_fetcher/timeline_fetcher.service.js'
 

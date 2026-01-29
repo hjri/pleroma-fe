@@ -4,7 +4,7 @@ import Timeago from 'components/timeago/timeago.vue'
 
 import genRandomSeed from '../../services/random_seed/random_seed.service.js'
 
-import { usePollsStore } from 'src/stores/polls'
+import { usePollsStore } from 'src/stores/polls.js'
 
 export default {
   name: 'Poll',

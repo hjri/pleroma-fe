@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex'
 
 import Popover from '../popover/popover.vue'
 
-import { useInterfaceStore } from 'src/stores/interface'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faFilter, faFont, faWrench } from '@fortawesome/free-solid-svg-icons'

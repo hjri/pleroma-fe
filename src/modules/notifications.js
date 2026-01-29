@@ -10,7 +10,7 @@ import {
 } from '../services/notification_utils/notification_utils.js'
 
 import { useReportsStore } from 'src/stores/reports.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage.js'
 
 const emptyNotifications = () => ({
   desktopNotificationSilence: true,

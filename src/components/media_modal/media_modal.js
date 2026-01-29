@@ -7,7 +7,7 @@ import StillImage from '../still-image/still-image.vue'
 import SwipeClick from '../swipe_click/swipe_click.vue'
 import VideoAttachment from '../video_attachment/video_attachment.vue'
 
-import { useMediaViewerStore } from 'src/stores/media_viewer'
+import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
