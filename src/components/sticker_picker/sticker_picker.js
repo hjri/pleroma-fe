@@ -17,7 +17,7 @@ const StickerPicker = {
   },
   computed: {
     pack() {
-      return useInstanceStore().stickers || []
+      return useEmojiStore().stickers || []
     },
   },
   methods: {

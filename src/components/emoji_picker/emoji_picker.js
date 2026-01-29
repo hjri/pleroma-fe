@@ -351,8 +351,8 @@ const EmojiPicker = {
       return this.showingStickers ? '' : this.activeGroup
     },
     stickersAvailable() {
-      if (useInstanceStore().stickers) {
-        return useInstanceStore().stickers.length > 0
+      if (useEmojiStore().stickers) {
+        return useEmojiStore().stickers.length > 0
       }
       return 0
     },
@@ -383,7 +383,7 @@ const EmojiPicker = {
         .concat(this.unicodeEmojiGroups)
     },
     stickerPickerEnabled() {
-      return (useInstanceStore().stickers || []).length !== 0
+      return (useEmojiStore().stickers || []).length !== 0
     },
     debouncedHandleKeywordChange() {
       return debounce(() => {

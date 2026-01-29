@@ -14,6 +14,9 @@ const defaultState = {
   emoji: {},
   emojiFetched: false,
   unicodeEmojiAnnotations: {},
+
+  // Stickers
+  stickers: null
 }
 
 const SORTED_EMOJI_GROUP_IDS = [
@@ -127,6 +130,9 @@ export const useEmojiStore = defineStore('emoji', {
     },
   },
   actions: {
+    setStickers (stickers) {
+      this.stickers = stickers
+    },
     async getStaticEmoji() {
       try {
         // See build/emojis_plugin for more details

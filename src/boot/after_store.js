@@ -232,7 +232,7 @@ const getStickers = async ({ store }) => {
       ).sort((a, b) => {
         return a.meta.title.localeCompare(b.meta.title)
       })
-      useInstanceStore().set({ name: 'stickers', value: stickers })
+      useEmojiStore().setStickers(stickers)
     } else {
       throw res
     }
