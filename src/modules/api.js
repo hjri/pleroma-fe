@@ -238,7 +238,7 @@ const api = {
     ) {
       if (
         timeline === 'favourites' &&
-        !useInstanceStore().pleromaPublicFavouritesAvailable
+        !useInstanceStore().featureSet.pleromaPublicFavouritesAvailable
       )
         return
       if (store.state.fetchers[timeline]) return
@@ -323,7 +323,7 @@ const api = {
     // Bookmark folders
     startFetchingBookmarkFolders(store) {
       if (store.state.fetchers.bookmarkFolders) return
-      if (!useInstanceStore().pleromaBookmarkFoldersAvailable) return
+      if (!useInstanceStore().featureSet.pleromaBookmarkFoldersAvailable) return
       const fetcher =
         store.state.backendInteractor.startFetchingBookmarkFolders({ store })
       store.commit('addFetcher', { fetcherName: 'bookmarkFolders', fetcher })

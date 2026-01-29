@@ -307,15 +307,15 @@ const PostStatusForm = {
       return this.mergedConfig.alwaysShowSubjectInput
     },
     postFormats() {
-      return useInstanceStore().postFormats || []
+      return useInstanceStore().featureSet.postFormats || []
     },
     safeDMEnabled() {
-      return useInstanceStore().safeDM
+      return useInstanceStore().featureSet.safeDM
     },
     pollsAvailable() {
       return (
-        useInstanceStore().pollsAvailable &&
-        useInstanceStore().pollLimits.max_options >= 2 &&
+        useInstanceStore().featureSet.pollsAvailable &&
+        useInstanceStore().limits.pollLimits.max_options >= 2 &&
         this.disablePolls !== true
       )
     },
@@ -344,7 +344,7 @@ const PostStatusForm = {
       return typeof this.statusId !== 'undefined' && this.statusId.trim() !== ''
     },
     quotable() {
-      if (!useInstanceStore().quotingAvailable) {
+      if (!useInstanceStore().featureSet.quotingAvailable) {
         return false
       }
 

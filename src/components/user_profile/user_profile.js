@@ -88,7 +88,7 @@ const UserProfile = {
     favoritesTabVisible() {
       return (
         this.isUs ||
-        (useInstanceStore().pleromaPublicFavouritesAvailable &&
+        (useInstanceStore().featureSet.pleromaPublicFavouritesAvailable &&
           !this.user.hide_favorites)
       )
     },

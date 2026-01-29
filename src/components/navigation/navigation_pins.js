@@ -72,15 +72,16 @@ const NavPanel = {
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems),
     }),
+    ...mapPiniaState(useInstanceStore, {
+      bookmarks: getBookmarkFolderEntries,
+      pleromaChatMessagesAvailable: (store) =>
+        store.featureSet.pleromaChatMessagesAvailable,
+      bubbleTimeline: (store) => store.featureSet.localBubble,
+    }),
+    ...mapPiniaState(useInstanceStore, ['private', 'federating']),
     ...mapState({
       currentUser: (state) => state.users.currentUser,
       followRequestCount: (state) => state.api.followRequests.length,
-      privateMode: (state) => useInstanceStore().private,
-      federating: (state) => useInstanceStore().federating,
-      pleromaChatMessagesAvailable: (state) =>
-        useInstanceStore().pleromaChatMessagesAvailable,
-      bubbleTimeline: (state) =>
-        useInstanceStore().localBubbleInstances.length > 0,
     }),
     pinnedList() {
       if (!this.currentUser) {
@@ -94,7 +95,7 @@ const NavPanel = {
             hasChats: this.pleromaChatMessagesAvailable,
             hasAnnouncements: this.supportsAnnouncements,
             isFederating: this.federating,
-            isPrivate: this.privateMode,
+            isPrivate: this.private,
             currentUser: this.currentUser,
             supportsBubbleTimeline: this.bubbleTimeline,
             supportsBookmarkFolders: this.bookmarks,
@@ -118,7 +119,7 @@ const NavPanel = {
           supportsBubbleTimeline: this.bubbleTimeline,
           supportsBookmarkFolders: this.bookmarks,
           isFederating: this.federating,
-          isPrivate: this.privateMode,
+          isPrivate: this.private,
           currentUser: this.currentUser,
         },
       ).slice(0, this.limit)

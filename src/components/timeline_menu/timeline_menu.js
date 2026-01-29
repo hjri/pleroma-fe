@@ -1,3 +1,4 @@
+import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
 import { filterNavigation } from 'src/components/navigation/filter.js'
@@ -59,14 +60,16 @@ const TimelineMenu = {
         (route === 'bookmark-folder' || route === 'bookmarks')
       )
     },
+    ...mapPiniaState(useInstanceStore, ['private', 'federating']),
+    ...mapPiniaState(useInstanceStore, {
+      pleromaChatMessagesAvailable: (store) =>
+        store.featureSet.pleromaChatMessagesAvailable,
+      bookmarkFolders: (store) =>
+        store.featureSet.pleromaBookmarkFoldersAvailable,
+      bubbleTimeline: (store) => store.featureSet.localBubble,
+    }),
     ...mapState({
       currentUser: (state) => state.users.currentUser,
-      privateMode: (state) => useInstanceStore().private,
-      federating: (state) => useInstanceStore().federating,
-      bookmarkFolders: (state) =>
-        useInstanceStore().pleromaBookmarkFoldersAvailable,
-      bubbleTimeline: (state) =>
-        useInstanceStore().localBubbleInstances.length > 0,
     }),
     timelinesList() {
       return filterNavigation(
@@ -74,7 +77,7 @@ const TimelineMenu = {
         {
           hasChats: this.pleromaChatMessagesAvailable,
           isFederating: this.federating,
-          isPrivate: this.privateMode,
+          isPrivate: this.private,
           currentUser: this.currentUser,
           supportsBookmarkFolders: this.bookmarkFolders,
           supportsBubbleTimeline: this.bubbleTimeline,

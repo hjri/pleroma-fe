@@ -16,7 +16,7 @@ const defaultState = {
   unicodeEmojiAnnotations: {},
 
   // Stickers
-  stickers: null
+  stickers: null,
 }
 
 const SORTED_EMOJI_GROUP_IDS = [
@@ -130,7 +130,7 @@ export const useEmojiStore = defineStore('emoji', {
     },
   },
   actions: {
-    setStickers (stickers) {
+    setStickers(stickers) {
       this.stickers = stickers
     },
     async getStaticEmoji() {

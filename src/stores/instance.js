@@ -92,10 +92,6 @@ const defaultState = {
     localBubble: false, // Akkoma
   },
 
-  // Html stuff
-  instanceSpecificPanelContent: '',
-  tos: '',
-
   // Version Information
   backendVersion: '',
   backendRepository: '',

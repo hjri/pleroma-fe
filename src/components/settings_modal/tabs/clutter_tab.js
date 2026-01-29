@@ -1,6 +1,5 @@
 import { mapActions, mapState } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
-import { mapState as mapVuexState } from 'vuex'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Select from 'src/components/select/select.vue'
@@ -33,8 +32,8 @@ const ClutterTab = {
         Object.entries(store.prefsStorage.simple.muteFilters),
       muteFiltersObject: (store) => store.prefsStorage.simple.muteFilters,
     }),
-    ...mapVuexState({
-      blockExpirationSupported: (state) => useInstanceStore().blockExpiration,
+    ...mapState(useInstanceStore, {
+      blockExpirationSupported: (store) => store.featureSet.blockExpiration,
     }),
     onMuteDefaultActionLv1: {
       get() {

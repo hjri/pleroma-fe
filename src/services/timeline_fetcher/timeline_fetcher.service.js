@@ -77,7 +77,7 @@ const fetchAndUpdate = ({
     .then((response) => {
       if (response.errors) {
         if (timeline === 'favorites') {
-          useInstanceStore().pleromaPublicFavouritesAvailable = false
+          useInstanceStore().featureSet.pleromaPublicFavouritesAvailable = false
           return
         }
         throw new Error(`${response.status} ${response.statusText}`)

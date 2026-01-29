@@ -53,7 +53,7 @@ export default {
       },
     },
     pollLimits() {
-      return useInstanceStore().pollLimits
+      return useInstanceStore().limits.pollLimits
     },
     maxOptions() {
       return this.pollLimits.max_options

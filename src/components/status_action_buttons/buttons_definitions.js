@@ -160,7 +160,10 @@ export const BUTTONS = [
     icon: 'history',
     label: 'status.status_history',
     if({ status, state }) {
-      return useInstanceStore().editingAvailable && status.edited_at !== null
+      return (
+        useInstanceStore().featureSet.editingAvailable &&
+        status.edited_at !== null
+      )
     },
     action({ status }) {
       const originalStatus = { ...status }
@@ -190,7 +193,7 @@ export const BUTTONS = [
     if({ status, loggedIn, currentUser, state }) {
       return (
         loggedIn &&
-        useInstanceStore().editingAvailable &&
+        useInstanceStore().featureSet.editingAvailable &&
         status.user.id === currentUser.id
       )
     },

@@ -111,6 +111,14 @@ const NavPanel = {
       unreadAnnouncementCount: 'unreadAnnouncementCount',
       supportsAnnouncements: (store) => store.supportsAnnouncements,
     }),
+    ...mapPiniaState(useInstanceStore, ['private', 'federating']),
+    ...mapPiniaState(useInstanceStore, {
+      pleromaChatMessagesAvailable: (store) =>
+        store.featureSet.pleromaChatMessagesAvailable,
+      bookmarkFolders: (store) =>
+        store.fetaureSet.pleromaBookmarkFoldersAvailable,
+      bubbleTimeline: (store) => store.fetaureSet.localBubble,
+    }),
     ...mapPiniaState(useServerSideStorageStore, {
       collapsed: (store) => store.prefsStorage.simple.collapseNav,
       pinnedItems: (store) =>
@@ -119,14 +127,6 @@ const NavPanel = {
     ...mapState({
       currentUser: (state) => state.users.currentUser,
       followRequestCount: (state) => state.api.followRequests.length,
-      privateMode: (state) => useInstanceStore().private,
-      federating: (state) => useInstanceStore().federating,
-      pleromaChatMessagesAvailable: (state) =>
-        useInstanceStore().pleromaChatMessagesAvailable,
-      bookmarkFolders: (state) =>
-        useInstanceStore().pleromaBookmarkFoldersAvailable,
-      bubbleTimeline: (state) =>
-        useInstanceStore().localBubbleInstances.length > 0,
     }),
     timelinesItems() {
       return filterNavigation(

@@ -43,7 +43,7 @@ const SecurityTab = {
       return this.$store.state.users.currentUser
     },
     pleromaExtensionsAvailable() {
-      return useInstanceStore().pleromaExtensionsAvailable
+      return useInstanceStore().featureSet.pleromaExtensionsAvailable
     },
     oauthTokens() {
       return useOAuthTokensStore().tokens.map((oauthToken) => {

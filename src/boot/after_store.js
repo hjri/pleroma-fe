@@ -21,6 +21,7 @@ import {
 } from 'src/modules/default_config_state.js'
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useAuthFlowStore } from 'src/stores/auth_flow'
+import { useEmojiStore } from 'src/stores/emoji.js'
 import { useI18nStore } from 'src/stores/i18n'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
@@ -169,10 +170,10 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
   }
 
   Object.keys(staticOrApiConfigDefault)
-    .map((k) => ({ source: k, destination: `instanceIdentity.${k}`}))
+    .map((k) => ({ source: k, destination: `instanceIdentity.${k}` }))
     .forEach(copyInstanceOption)
   Object.keys(instanceDefaultConfig)
-    .map((k) => ({ source: k, destination: `prefsStorage.${k}`}))
+    .map((k) => ({ source: k, destination: `prefsStorage.${k}` }))
     .forEach(copyInstanceOption)
 
   useAuthFlowStore().setInitialStrategy(config.loginMethod)

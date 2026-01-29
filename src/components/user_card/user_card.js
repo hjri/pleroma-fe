@@ -178,7 +178,7 @@ export default {
       return false
     },
     groupActorAvailable() {
-      return useInstanceStore().groupActorAvailable
+      return useInstanceStore().featureSet.groupActorAvailable
     },
     availableActorTypes() {
       return this.groupActorAvailable

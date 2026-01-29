@@ -130,8 +130,8 @@ const ComposingTab = {
       },
     },
     ...SharedComputedObject(),
-    ...mapState({
-      blockExpirationSupported: (state) => useInstanceStore().blockExpiration,
+    ...mapState(useInstanceStore, {
+      blockExpirationSupported: (store) => store.featureSet.blockExpiration,
     }),
   },
   methods: {

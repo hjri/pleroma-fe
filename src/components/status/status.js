@@ -495,7 +495,7 @@ const Status = {
       return this.status.edited_at !== null
     },
     editingAvailable() {
-      return useInstanceStore().editingAvailable
+      return useInstanceStore().featureSet.editingAvailable
     },
     hasVisibleQuote() {
       return this.status.quote_url && this.status.quote_visible

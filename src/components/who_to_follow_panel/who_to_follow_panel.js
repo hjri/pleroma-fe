@@ -47,7 +47,7 @@ const WhoToFollowPanel = {
       return this.$store.state.users.currentUser.screen_name
     },
     suggestionsEnabled() {
-      return useInstanceStore().suggestionsEnabled
+      return useInstanceStore().featureSet.suggestionsEnabled
     },
   },
   methods: {

@@ -31,10 +31,10 @@ const GeneralTab = {
   },
   computed: {
     postFormats() {
-      return useInstanceStore().postFormats || []
+      return useInstanceStore().featureSet.postFormats || []
     },
     instanceShoutboxPresent() {
-      return useInstanceStore().shoutAvailable
+      return useInstanceStore().featureSet.shoutAvailable
     },
     columns() {
       const mode = this.$store.getters.mergedConfig.thirdColumnMode

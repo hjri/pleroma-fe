@@ -201,11 +201,7 @@ export default {
       'styleDataUsed',
       'layoutType',
     ]),
-    ...mapState(useInstanceStore, [
-      'styleDataUsed',
-      'instanceSpecificPanelContent',
-      'private',
-    ]),
+    ...mapState(useInstanceStore, ['styleDataUsed', 'private']),
     ...mapState(useInstanceStore, {
       background: (store) => store.instanceIdentity.background,
       showFeaturesPanel: (store) => store.instanceIdentity.showFeaturesPanel,
@@ -213,6 +209,8 @@ export default {
         store.instanceIdentity.showInstanceSpecificPanel,
       suggestionsEnabled: (store) => store.featureSet.suggestionsEnabled,
       editingAvailable: (store) => store.featureSet.editingAvailable,
+      instanceSpecificPanelContent: (store) =>
+        store.instanceIdentity.instanceSpecificPanelContent,
     }),
   },
   methods: {

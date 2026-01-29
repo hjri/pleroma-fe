@@ -1,4 +1,4 @@
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import UserListMenu from 'src/components/user_list_menu/user_list_menu.vue'
 import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
@@ -93,10 +93,10 @@ const AccountActions = {
     shouldConfirmRemoveUserFromFollowers() {
       return this.$store.getters.mergedConfig.modalOnRemoveUserFromFollowers
     },
-    ...mapState({
-      blockExpirationSupported: (state) => useInstanceStore().blockExpiration,
-      pleromaChatMessagesAvailable: (state) =>
-        useInstanceStore().pleromaChatMessagesAvailable,
+    ...mapState(useInstanceStore, {
+      blockExpirationSupported: (store) => store.featureSet.blockExpiration,
+      pleromaChatMessagesAvailable: (store) =>
+        store.featureSet.pleromaChatMessagesAvailable,
     }),
   },
 }

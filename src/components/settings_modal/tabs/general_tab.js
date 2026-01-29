@@ -1,4 +1,4 @@
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import FontControl from 'src/components/font_control/font_control.vue'
 import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
@@ -50,8 +50,8 @@ const GeneralTab = {
       },
     },
     ...SharedComputedObject(),
-    ...mapState({
-      blockExpirationSupported: (state) => useInstanceStore().blockExpiration,
+    ...mapState(useInstanceStore, {
+      blockExpirationSupported: (store) => store.featureSet.blockExpiration,
     }),
   },
   methods: {

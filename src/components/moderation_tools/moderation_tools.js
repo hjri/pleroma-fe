@@ -55,7 +55,7 @@ const ModerationTools = {
     },
     canUseTagPolicy() {
       return (
-        useInstanceStore().tagPolicyAvailable &&
+        useInstanceStore().featureSet.tagPolicyAvailable &&
         this.privileged('users_manage_tags')
       )
     },
