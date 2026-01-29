@@ -74,7 +74,6 @@ const NavPanel = {
         new Set(store.prefsStorage.collections.pinnedNavItems),
     }),
     ...mapPiniaState(useInstanceStore, {
-      bookmarks: getBookmarkFolderEntries,
       pleromaChatMessagesAvailable: (store) =>
         store.featureSet.pleromaChatMessagesAvailable,
       bubbleTimeline: (store) => store.featureSet.localBubble,
@@ -103,6 +102,8 @@ const NavPanel = {
           },
         )
       }
+      console.log([...this.pinnedItems])
+      console.log([...this.bookmarks])
       return filterNavigation(
         [
           ...Object.entries({ ...TIMELINES })
