@@ -14,6 +14,7 @@ import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_ti
 import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
 import localeService from 'src/services/locale/locale.service.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { usePostStatusStore } from 'src/stores/post_status'
 import { useInterfaceStore } from '../../stores/interface'
@@ -210,7 +211,7 @@ export default {
       return Math.round(this.user.statuses_count / days)
     },
     emoji() {
-      return useInstanceStore().customEmoji.map((e) => ({
+      return useEmojiStore().customEmoji.map((e) => ({
         shortcode: e.displayText,
         static_url: e.imageUrl,
         url: e.imageUrl,
@@ -358,7 +359,7 @@ export default {
       )
     },
     fieldsLimits() {
-      return useInstanceStore().fieldsLimits
+      return useInstanceStore().limits.fieldsLimits
     },
     maxFields() {
       return this.fieldsLimits ? this.fieldsLimits.maxFields : 0
@@ -367,7 +368,7 @@ export default {
       return suggestor({
         emoji: [
           ...this.$store.getters.standardEmojiList,
-          ...useInstanceStore().customEmoji,
+          ...useEmojiStore().customEmoji,
         ],
         store: this.$store,
       })
@@ -376,7 +377,7 @@ export default {
       return suggestor({
         emoji: [
           ...this.$store.getters.standardEmojiList,
-          ...useInstanceStore().customEmoji,
+          ...useEmojiStore().customEmoji,
         ],
       })
     },

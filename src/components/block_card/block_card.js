@@ -25,8 +25,8 @@ const BlockCard = {
             new Date(this.user.mute_expires_at).toLocaleString(),
           ])
     },
-    ...mapState({
-      blockExpirationSupported: (store) => store.blockExpiration,
+    ...mapState(useInstanceStore, {
+      blockExpirationSupported: (store) => store.featureSet.blockExpiration,
     }),
   },
   components: {

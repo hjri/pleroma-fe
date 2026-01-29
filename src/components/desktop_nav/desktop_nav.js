@@ -1,5 +1,5 @@
 import SearchBar from 'components/search_bar/search_bar.vue'
-import { mapState } from 'pinia'
+import { mapState, mapActions } from 'pinia'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
@@ -88,7 +88,7 @@ export default {
       logo: (store) => store.instanceIdentity.logo,
       logoLeft: (store) => store.instanceIdentity.logoLeft,
       logoMargin: (store) => store.instanceIdentity.logoMargin,
-      name: (store) => store.instanceIdentity.name,
+      sitename: (store) => store.instanceIdentity.name,
       hideSitename: (store) => store.instanceIdentity.hideSitename,
     }),
     currentUser() {
@@ -123,11 +123,6 @@ export default {
     onSearchBarToggled(hidden) {
       this.searchBarHidden = hidden
     },
-    openSettingsModal() {
-      useInterfaceStore().openSettingsModal('user')
-    },
-    openAdminModal() {
-      useInterfaceStore().openSettingsModal('admin')
-    },
+    ...mapActions(useInterfaceStore, ['openSettingsModal'])
   },
 }

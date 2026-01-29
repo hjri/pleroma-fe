@@ -1,5 +1,5 @@
-import { mapState as mapPiniaState } from 'pinia'
-import { mapGetters, mapState } from 'vuex'
+import { mapState, mapActions } from 'pinia'
+import { mapGetters } from 'vuex'
 
 import { USERNAME_ROUTES } from 'src/components/navigation/navigation.js'
 import { useAnnouncementsStore } from 'src/stores/announcements'
@@ -75,18 +75,6 @@ const SideDrawer = {
     unseenNotificationsCount() {
       return this.unseenNotifications.length
     },
-    suggestionsEnabled() {
-      return useInstanceStore().suggestionsEnabled
-    },
-    logo() {
-      return useInstanceStore().logo
-    },
-    hideSitename() {
-      return useInstanceStore().hideSitename
-    },
-    sitename() {
-      return useInstanceStore().name
-    },
     followRequestCount() {
       return this.$store.state.api.followRequests.length
     },
@@ -108,13 +96,17 @@ const SideDrawer = {
         return { name }
       }
     },
-    ...mapPiniaState(useAnnouncementsStore, {
-      supportsAnnouncements: (store) => store.supportsAnnouncements,
-      unreadAnnouncementCount: 'unreadAnnouncementCount',
-    }),
-    ...mapState({
-      pleromaChatMessagesAvailable: (state) =>
-        useInstanceStore().pleromaChatMessagesAvailable,
+    ...mapState(useAnnouncementsStore, [
+      'supportsAnnouncements',
+      'unreadAnnouncementCount',
+    ]),
+    ...mapState(useInstanceStore, ['private', 'federating']),
+    ...mapState(useInstanceStore, {
+      logo: (store) => store.instanceIdentity.logo,
+      sitename: (store) => store.instanceIdentity.name,
+      hideSitename: (store) => store.instanceIdentity.hideSitename,
+      pleromaChatMessagesAvailable: (store) => store.featureSet.pleromaChatMessagesAvailable,
+      suggestionsEnabled: (store) => store.featureSet.suggestionsEnabled,
     }),
     ...mapGetters(['unreadChatCount', 'draftCount']),
   },
@@ -132,12 +124,7 @@ const SideDrawer = {
     touchMove(e) {
       GestureService.updateSwipe(e, this.closeGesture)
     },
-    openSettingsModal() {
-      useInterfaceStore().openSettingsModal('user')
-    },
-    openAdminModal() {
-      useInterfaceStore().openSettingsModal('admin')
-    },
+    ...mapActions(useInterfaceStore, ['openSettingsModal'])
   },
 }
 

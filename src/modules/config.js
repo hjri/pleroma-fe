@@ -51,17 +51,18 @@ const config = {
         ...Object.fromEntries(
           instanceDefaultProperties.map((key) => [
             key,
-            useInstanceStore()[key],
+            useInstanceStore().prefsStorage[key],
           ]),
         ),
       }
     },
     mergedConfig(state) {
       const instancePrefs = useInstanceStore().prefsStorage
+      console.log(state)
       const result = Object.fromEntries(
-        Object.entries(defaultState).map(([k, v]) => [
-          k,
-          v ?? instancePrefs[k],
+        Object.keys(defaultState).map((key) => [
+          key,
+          state[key] ?? instancePrefs[key],
         ]),
       )
       return result

@@ -40,7 +40,7 @@
         <button
           class="button-unstyled nav-icon"
           :title="$t('nav.preferences')"
-          @click.stop="openSettingsModal"
+          @click.stop="openSettingsModal('user')"
         >
           <FAIcon
             fixed-width
@@ -53,7 +53,7 @@
           class="button-unstyled nav-icon"
           target="_blank"
           :title="$t('nav.administration')"
-          @click.stop="openAdminModal"
+          @click.stop="openSettingsModal('admin')"
         >
           <FAIcon
             fixed-width

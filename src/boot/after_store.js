@@ -162,17 +162,17 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
     config = Object.assign({}, staticConfig, apiConfig)
   }
 
-  const copyInstanceOption = (path) => {
-    if (typeof config[name] !== 'undefined') {
-      useInstanceStore().set({ path, value: config[name] })
+  const copyInstanceOption = ({ source, destination }) => {
+    if (typeof config[source] !== 'undefined') {
+      useInstanceStore().set({ path: destination, value: config[source] })
     }
   }
 
   Object.keys(staticOrApiConfigDefault)
-    .map((k) => `instanceIdentity.${k}`)
+    .map((k) => ({ source: k, destination: `instanceIdentity.${k}`}))
     .forEach(copyInstanceOption)
   Object.keys(instanceDefaultConfig)
-    .map((k) => `prefsStorage.${k}`)
+    .map((k) => ({ source: k, destination: `prefsStorage.${k}`}))
     .forEach(copyInstanceOption)
 
   useAuthFlowStore().setInitialStrategy(config.loginMethod)

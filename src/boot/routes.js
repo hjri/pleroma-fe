@@ -38,7 +38,7 @@ export default (store) => {
     if (store.state.users.currentUser) {
       next()
     } else {
-      next(useInstanceStore().redirectRootNoLogin || '/main/all')
+      next(useInstanceStore().instanceIdentity.redirectRootNoLogin || '/main/all')
     }
   }
 
@@ -49,8 +49,8 @@ export default (store) => {
       redirect: () => {
         return (
           (store.state.users.currentUser
-            ? useInstanceStore().redirectRootLogin
-            : useInstanceStore().redirectRootNoLogin) || '/main/all'
+            ? useInstanceStore().instanceIdentity.redirectRootLogin
+            : useInstanceStore().instanceIdentity.redirectRootNoLogin) || '/main/all'
         )
       },
     },
@@ -201,7 +201,7 @@ export default (store) => {
     },
   ]
 
-  if (useInstanceStore().pleromaChatMessagesAvailable) {
+  if (useInstanceStore().featureSet.pleromaChatMessagesAvailable) {
     routes = routes.concat([
       {
         name: 'chat',
