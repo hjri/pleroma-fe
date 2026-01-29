@@ -201,7 +201,7 @@ const getInstancePanel = async ({ store }) => {
     if (res.ok) {
       const html = await res.text()
       useInstanceStore().set({
-        name: 'instanceIdentity.instanceSpecificPanelContent',
+        path: 'instanceIdentity.instanceSpecificPanelContent',
         value: html,
       })
     } else {
