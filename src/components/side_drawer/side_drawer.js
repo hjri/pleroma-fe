@@ -1,4 +1,4 @@
-import { mapState, mapActions } from 'pinia'
+import { mapActions, mapState } from 'pinia'
 import { mapGetters } from 'vuex'
 
 import { USERNAME_ROUTES } from 'src/components/navigation/navigation.js'
@@ -105,7 +105,8 @@ const SideDrawer = {
       logo: (store) => store.instanceIdentity.logo,
       sitename: (store) => store.instanceIdentity.name,
       hideSitename: (store) => store.instanceIdentity.hideSitename,
-      pleromaChatMessagesAvailable: (store) => store.featureSet.pleromaChatMessagesAvailable,
+      pleromaChatMessagesAvailable: (store) =>
+        store.featureSet.pleromaChatMessagesAvailable,
       suggestionsEnabled: (store) => store.featureSet.suggestionsEnabled,
     }),
     ...mapGetters(['unreadChatCount', 'draftCount']),
@@ -124,7 +125,7 @@ const SideDrawer = {
     touchMove(e) {
       GestureService.updateSwipe(e, this.closeGesture)
     },
-    ...mapActions(useInterfaceStore, ['openSettingsModal'])
+    ...mapActions(useInterfaceStore, ['openSettingsModal']),
   },
 }
 

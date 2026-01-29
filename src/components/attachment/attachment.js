@@ -54,7 +54,8 @@ const Attachment = {
   data() {
     return {
       localDescription: this.description || this.attachment.description,
-      nsfwImage: useInstanceStore().nsfwCensorImage || nsfwImage,
+      nsfwImage:
+        useInstanceStore().instanceIdentity.nsfwCensorImage || nsfwImage,
       hideNsfwLocal: this.$store.getters.mergedConfig.hideNsfw,
       preloadImage: this.$store.getters.mergedConfig.preloadImage,
       loading: false,
@@ -105,7 +106,9 @@ const Attachment = {
       return 'file'
     },
     referrerpolicy() {
-      return useInstanceStore().mediaProxyAvailable ? '' : 'no-referrer'
+      return useInstanceStore().featureSet.mediaProxyAvailable
+        ? ''
+        : 'no-referrer'
     },
     type() {
       return fileTypeService.fileType(this.attachment.mimetype)

@@ -1,5 +1,5 @@
 import SearchBar from 'components/search_bar/search_bar.vue'
-import { mapState, mapActions } from 'pinia'
+import { mapActions, mapState } from 'pinia'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
@@ -123,6 +123,6 @@ export default {
     onSearchBarToggled(hidden) {
       this.searchBarHidden = hidden
     },
-    ...mapActions(useInterfaceStore, ['openSettingsModal'])
+    ...mapActions(useInterfaceStore, ['openSettingsModal']),
   },
 }

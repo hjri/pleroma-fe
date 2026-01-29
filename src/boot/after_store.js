@@ -183,7 +183,7 @@ const getTOS = async ({ store }) => {
     const res = await window.fetch('/static/terms-of-service.html')
     if (res.ok) {
       const html = await res.text()
-      useInstanceStore().set({ name: 'tos', value: html })
+      useInstanceStore().set({ name: 'instanceIdentity.tos', value: html })
     } else {
       throw res
     }
@@ -198,7 +198,7 @@ const getInstancePanel = async ({ store }) => {
     if (res.ok) {
       const html = await res.text()
       useInstanceStore().set({
-        name: 'instanceSpecificPanelContent',
+        name: 'instanceIdentity.instanceSpecificPanelContent',
         value: html,
       })
     } else {

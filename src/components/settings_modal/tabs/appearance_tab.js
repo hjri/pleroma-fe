@@ -274,11 +274,11 @@ const AppearanceTab = {
       return !window.IntersectionObserver
     },
     instanceWallpaper() {
-      useInstanceStore().background
+      useInstanceStore().instanceIdentity.background
     },
     instanceWallpaperUsed() {
       return (
-        useInstanceStore().background &&
+        useInstanceStore().instanceIdentity.background &&
         !this.$store.state.users.currentUser.background_image
       )
     },
@@ -333,13 +333,23 @@ const AppearanceTab = {
       }
     },
     isThemeActive(key) {
-      return key === (this.mergedConfig.theme || useInstanceStore().theme)
+      return (
+        key ===
+        (this.mergedConfig.theme || useInstanceStore().instanceIdentity.theme)
+      )
     },
     isStyleActive(key) {
-      return key === (this.mergedConfig.style || useInstanceStore().style)
+      return (
+        key ===
+        (this.mergedConfig.style || useInstanceStore().instanceIdentity.style)
+      )
     },
     isPaletteActive(key) {
-      return key === (this.mergedConfig.palette || useInstanceStore().palette)
+      return (
+        key ===
+        (this.mergedConfig.palette ||
+          useInstanceStore().instanceIdentity.palette)
+      )
     },
     ...mapActions(useInterfaceStore, ['setStyle', 'setTheme']),
     setPalette(name, data) {

@@ -21,6 +21,10 @@ export const staticOrApiConfigDefault = {
   nsfwCensorImage: null,
   showFeaturesPanel: true,
   showInstanceSpecificPanel: false,
+
+  // Html stuff
+  instanceSpecificPanelContent: '',
+  tos: '',
 }
 
 /// This object contains setting entries that makes sense

@@ -91,7 +91,7 @@ const FilteringTab = {
   },
   computed: {
     instanceSpecificPanelPresent() {
-      return useInstanceStore().showInstanceSpecificPanel
+      return useInstanceStore().instanceIdentity.showInstanceSpecificPanel
     },
     ...SharedComputedObject(),
     ...mapState(useServerSideStorageStore, {

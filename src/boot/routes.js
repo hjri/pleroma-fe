@@ -38,7 +38,9 @@ export default (store) => {
     if (store.state.users.currentUser) {
       next()
     } else {
-      next(useInstanceStore().instanceIdentity.redirectRootNoLogin || '/main/all')
+      next(
+        useInstanceStore().instanceIdentity.redirectRootNoLogin || '/main/all',
+      )
     }
   }
 
@@ -50,7 +52,8 @@ export default (store) => {
         return (
           (store.state.users.currentUser
             ? useInstanceStore().instanceIdentity.redirectRootLogin
-            : useInstanceStore().instanceIdentity.redirectRootNoLogin) || '/main/all'
+            : useInstanceStore().instanceIdentity.redirectRootNoLogin) ||
+          '/main/all'
         )
       },
     },

@@ -337,10 +337,16 @@ export default {
       return this.newBanner === null ? currentUrl : newUrl
     },
     defaultAvatar() {
-      return useInstanceStore().server + useInstanceStore().defaultAvatar
+      return (
+        useInstanceStore().server +
+        useInstanceStore().instanceIdentity.defaultAvatar
+      )
     },
     defaultBanner() {
-      return useInstanceStore().server + useInstanceStore().defaultBanner
+      return (
+        useInstanceStore().server +
+        useInstanceStore().instanceIdentity.defaultBanner
+      )
     },
     isDefaultAvatar() {
       const baseAvatar = useInstanceStore().defaultAvatar

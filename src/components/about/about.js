@@ -15,13 +15,13 @@ const About = {
   },
   computed: {
     showFeaturesPanel() {
-      return useInstanceStore().showFeaturesPanel
+      return useInstanceStore().instanceIdentity.showFeaturesPanel
     },
     showInstanceSpecificPanel() {
       return (
-        useInstanceStore().showInstanceSpecificPanel &&
+        useInstanceStore().instanceIdentity.showInstanceSpecificPanel &&
         !this.$store.getters.mergedConfig.hideISP &&
-        useInstanceStore().instanceSpecificPanelContent
+        useInstanceStore().instanceIdentity.instanceSpecificPanelContent
       )
     },
   },
