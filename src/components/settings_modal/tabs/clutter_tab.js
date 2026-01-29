@@ -24,9 +24,6 @@ const ClutterTab = {
     HelpIndicator,
   },
   computed: {
-    instanceSpecificPanelPresent() {
-      return useInstanceStore().showInstanceSpecificPanel
-    },
     ...SharedComputedObject(),
     ...mapState(useServerSideStorageStore, {
       muteFilters: (store) =>

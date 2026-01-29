@@ -91,9 +91,6 @@ const FilteringTab = {
     HelpIndicator,
   },
   computed: {
-    instanceSpecificPanelPresent() {
-      return useInstanceStore().instanceIdentity.showInstanceSpecificPanel
-    },
     ...SharedComputedObject(),
     ...mapState(useServerSideStorageStore, {
       muteFilters: (store) =>

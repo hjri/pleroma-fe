@@ -1,3 +1,5 @@
+import { mapState } from 'pinia'
+
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
@@ -31,12 +33,12 @@ const GeneralTab = {
     ProfileSettingIndicator,
   },
   computed: {
-    postFormats() {
-      return useInstanceStore().featureSet.postFormats || []
-    },
-    instanceShoutboxPresent() {
-      return useInstanceStore().featureSet.shoutAvailable
-    },
+    ...mapState(useInstanceStore, {
+      postFormats: (store) => store.featureSet.postFormats || [],
+      instanceSpecificPanelPresent: (store) =>
+        store.instanceIdentity.instanceSpecificPanelPresent,
+      instanceShoutboxPresent: (store) => store.featureSet.shoutAvailable,
+    }),
     columns() {
       const mode = this.$store.getters.mergedConfig.thirdColumnMode
 
