@@ -5,7 +5,6 @@
     class="settings-admin-content settings_tab-switcher"
     :side-tab-bar="true"
     :scrollable-tabs="true"
-    :child-collapsed="false"
     :render-only-focused="true"
     :body-scroll-lock="bodyLock"
   >
