@@ -50,7 +50,7 @@ const MutesAndBlocks = {
   },
   created() {
     useOAuthTokensStore().fetchTokens()
-    this.$store.dispatch('getKnownDomains')
+    useInstanceStore().getKnownDomains()
   },
   components: {
     TabSwitcher,
