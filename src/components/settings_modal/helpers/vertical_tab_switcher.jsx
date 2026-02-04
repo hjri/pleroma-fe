@@ -197,6 +197,7 @@ export default {
         </div>
         <div
           role="tabpanel"
+          class="contents"
           v-body-scroll-lock={this.bodyScrollLock}
           ref="contents"
         >
