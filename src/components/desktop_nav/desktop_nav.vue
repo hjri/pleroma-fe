@@ -33,7 +33,7 @@
       </router-link>
       <div class="item right actions">
         <search-bar
-          v-if="currentUser || !private"
+          v-if="currentUser || !privateMode"
           @toggled="onSearchBarToggled"
           @click.stop
         />

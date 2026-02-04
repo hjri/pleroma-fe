@@ -393,7 +393,7 @@ const getNodeInfo = async ({ store }) => {
       })
 
       const priv = metadata.private
-      useInstanceStore().set({ name: 'private', value: priv })
+      useInstanceStore().set({ name: 'privateMode', value: priv })
 
       const frontendVersion = window.___pleromafe_commit_hash
       useInstanceStore().set({

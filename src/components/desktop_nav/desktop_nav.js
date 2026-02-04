@@ -83,7 +83,7 @@ export default {
             },
       )
     },
-    ...mapState(useInstanceStore, ['private']),
+    ...mapState(useInstanceStore, ['privateMode']),
     ...mapState(useInstanceStore, {
       logoMask: (store) => store.instanceIdentity.logoMask,
       logo: (store) => store.instanceIdentity.logo,

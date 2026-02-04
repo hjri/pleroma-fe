@@ -100,7 +100,7 @@ const SideDrawer = {
       'pleromaChatMessagesAvailable',
       'suggestionsEnabled',
     ]),
-    ...mapState(useInstanceStore, ['private', 'federating']),
+    ...mapState(useInstanceStore, ['privateMode', 'federating']),
     ...mapState(useInstanceStore, {
       logo: (store) => store.instanceIdentity.logo,
       sitename: (store) => store.instanceIdentity.name,

@@ -20,7 +20,7 @@ const defaultState = {
   registrationOpen: true,
   server: 'http://localhost:4040/',
   textlimit: 5000,
-  private: false,
+  privateMode: false,
   federating: true,
   federationPolicy: null,
   themesIndex: null,

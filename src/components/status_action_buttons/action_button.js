@@ -94,7 +94,8 @@ export default {
       return this.status.thread_muted
     },
     hideCustomEmoji() {
-      return !useInstanceCapabilitiesStore().pleromaCustomEmojiReactionsAvailable
+      return !useInstanceCapabilitiesStore()
+        .pleromaCustomEmojiReactionsAvailable
     },
     buttonInnerClass() {
       return [
