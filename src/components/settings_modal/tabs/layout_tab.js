@@ -6,15 +6,9 @@ import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
 
-import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 
 const GeneralTab = {
-  props: {
-    parentCollapsed: {
-      required: true,
-      type: Boolean,
-    },
-  },
   data() {
     return {
       thirdColumnModeOptions: ['none', 'notifications', 'postform'].map(
@@ -33,12 +27,11 @@ const GeneralTab = {
     ProfileSettingIndicator,
   },
   computed: {
-    ...mapState(useInstanceStore, {
-      postFormats: (store) => store.featureSet.postFormats || [],
-      instanceSpecificPanelPresent: (store) =>
-        store.instanceIdentity.instanceSpecificPanelPresent,
-      instanceShoutboxPresent: (store) => store.featureSet.shoutAvailable,
-    }),
+    ...mapState(useInstanceCapabilitiesStore, [
+      'instanceSpecificPanelPresent',
+      'postFormats',
+      'suggestionsEnabled',
+    ]),
     columns() {
       const mode = this.$store.getters.mergedConfig.thirdColumnMode
 

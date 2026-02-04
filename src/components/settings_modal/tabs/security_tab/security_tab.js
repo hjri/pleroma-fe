@@ -3,6 +3,7 @@ import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import Mfa from './mfa.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens'
 
 import localeService from 'src/services/locale/locale.service.js'
@@ -45,7 +46,7 @@ const SecurityTab = {
       return this.$store.state.users.currentUser
     },
     pleromaExtensionsAvailable() {
-      return useInstanceStore().featureSet.pleromaExtensionsAvailable
+      return useInstanceCapabilitiesStore().pleromaExtensionsAvailable
     },
     oauthTokens() {
       return useOAuthTokensStore().tokens.map((oauthToken) => {

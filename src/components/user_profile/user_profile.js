@@ -10,6 +10,7 @@ import Timeline from '../timeline/timeline.vue'
 import UserCard from '../user_card/user_card.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
@@ -89,7 +90,7 @@ const UserProfile = {
     favoritesTabVisible() {
       return (
         this.isUs ||
-        (useInstanceStore().featureSet.pleromaPublicFavouritesAvailable &&
+        (useInstanceCapabilitiesStore().pleromaPublicFavouritesAvailable &&
           !this.user.hide_favorites)
       )
     },

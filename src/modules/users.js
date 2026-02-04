@@ -23,6 +23,7 @@ import {
 
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
@@ -766,7 +767,7 @@ const users = {
                 dispatch('startFetchingNotifications')
 
                 if (
-                  useInstanceStore().featureSet.pleromaChatMessagesAvailable
+                  useInstanceCapabilitiesStore().pleromaChatMessagesAvailable
                 ) {
                   // Start fetching chats
                   dispatch('startFetchingChats')

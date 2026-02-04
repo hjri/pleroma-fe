@@ -30,6 +30,7 @@ import { useAuthFlowStore } from 'src/stores/auth_flow'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useI18nStore } from 'src/stores/i18n'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth'
 
@@ -82,10 +83,10 @@ const getInstanceConfig = async ({ store }) => {
       const textlimit = data.max_toot_chars
       const vapidPublicKey = data.pleroma.vapid_public_key
 
-      useInstanceStore().set({
-        name: 'featureSet.pleromaExtensionsAvailable',
-        value: data.pleroma,
-      })
+      useInstanceCapabilitiesStore().set(
+        'pleromaExtensionsAvailable',
+        data.pleroma,
+      )
       useInstanceStore().set({
         name: 'textlimit',
         value: textlimit,
@@ -278,68 +279,68 @@ const getNodeInfo = async ({ store }) => {
         path: 'registrationOpen',
         value: data.openRegistrations,
       })
-      useInstanceStore().set({
-        path: 'featureSet.mediaProxyAvailable',
-        value: features.includes('media_proxy'),
-      })
-      useInstanceStore().set({
-        path: 'featureSet.safeDM',
-        value: features.includes('safe_dm_mentions'),
-      })
-      useInstanceStore().set({
-        path: 'featureSet.shoutAvailable',
-        value: features.includes('chat'),
-      })
-      useInstanceStore().set({
-        path: 'featureSet.pleromaChatMessagesAvailable',
-        value: features.includes('pleroma_chat_messages'),
-      })
-      useInstanceStore().set({
-        path: 'featureSet.pleromaCustomEmojiReactionsAvailable',
-        value:
-          features.includes('pleroma_custom_emoji_reactions') ||
+      useInstanceCapabilitiesStore().set(
+        'mediaProxyAvailable',
+        features.includes('media_proxy'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'safeDM',
+        features.includes('safe_dm_mentions'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'shoutAvailable',
+        features.includes('chat'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'pleromaChatMessagesAvailable',
+        features.includes('pleroma_chat_messages'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'pleromaCustomEmojiReactionsAvailable',
+
+        features.includes('pleroma_custom_emoji_reactions') ||
           features.includes('custom_emoji_reactions'),
-      })
-      useInstanceStore().set({
-        path: 'featureSet.pleromaBookmarkFoldersAvailable',
-        value: features.includes('pleroma:bookmark_folders'),
-      })
-      useInstanceStore().set({
-        path: 'featureSet.gopherAvailable',
-        value: features.includes('gopher'),
-      })
-      useInstanceStore().set({
-        path: 'featureSet.pollsAvailable',
-        value: features.includes('polls'),
-      })
-      useInstanceStore().set({
-        path: 'featureSet.editingAvailable',
-        value: features.includes('editing'),
-      })
-      useInstanceStore().set({
-        path: 'featureSet.mailerEnabled',
-        value: metadata.mailerEnabled,
-      })
-      useInstanceStore().set({
-        path: 'featureSet.quotingAvailable',
-        value: features.includes('quote_posting'),
-      })
-      useInstanceStore().set({
-        path: 'featureSet.groupActorAvailable',
-        value: features.includes('pleroma:group_actors'),
-      })
-      useInstanceStore().set({
-        path: 'featureSet.blockExpiration',
-        value: features.includes('pleroma:block_expiration'),
-      })
+      )
+      useInstanceCapabilitiesStore().set(
+        'pleromaBookmarkFoldersAvailable',
+        features.includes('pleroma:bookmark_folders'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'gopherAvailable',
+        features.includes('gopher'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'pollsAvailable',
+        features.includes('polls'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'editingAvailable',
+        features.includes('editing'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'mailerEnabled',
+        metadata.mailerEnabled,
+      )
+      useInstanceCapabilitiesStore().set(
+        'quotingAvailable',
+        features.includes('quote_posting'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'groupActorAvailable',
+        features.includes('pleroma:group_actors'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'blockExpiration',
+        features.includes('pleroma:block_expiration'),
+      )
       useInstanceStore().set({
         path: 'localBubbleInstances',
         value: metadata.localBubbleInstances ?? [],
       })
-      useInstanceStore().set({
-        path: 'featureSet.localBubble',
-        value: (metadata.localBubbleInstances ?? []).length > 0,
-      })
+      useInstanceCapabilitiesStore().set(
+        'localBubble',
+        (metadata.localBubbleInstances ?? []).length > 0,
+      )
 
       useInstanceStore().set({
         path: 'limits.pollLimits',
@@ -347,44 +348,39 @@ const getNodeInfo = async ({ store }) => {
       })
       const uploadLimits = metadata.uploadLimits
       useInstanceStore().set({
-        name: 'limits.uploadlimit',
+        path: 'limits.uploadlimit',
         value: parseInt(uploadLimits.general),
       })
       useInstanceStore().set({
-        name: 'limits.avatarlimit',
+        path: 'limits.avatarlimit',
         value: parseInt(uploadLimits.avatar),
       })
       useInstanceStore().set({
-        name: 'limits.backgroundlimit',
+        path: 'limits.backgroundlimit',
         value: parseInt(uploadLimits.background),
       })
       useInstanceStore().set({
-        name: 'limits.bannerlimit',
+        path: 'limits.bannerlimit',
         value: parseInt(uploadLimits.banner),
       })
       useInstanceStore().set({
-        name: 'limits.fieldsLimits',
+        path: 'limits.fieldsLimits',
         value: metadata.fieldsLimits,
       })
 
       useInstanceStore().set({
-        name: 'restrictedNicknames',
+        path: 'restrictedNicknames',
         value: metadata.restrictedNicknames,
       })
-      useInstanceStore().set({
-        name: 'featureSet.postFormats',
-        value: metadata.postFormats,
-      })
+      useInstanceCapabilitiesStore().set('postFormats', metadata.postFormats)
 
       const suggestions = metadata.suggestions
-      useInstanceStore().set({
-        name: 'featureSet.suggestionsEnabled',
-        value: suggestions.enabled,
-      })
-      useInstanceStore().set({
-        name: 'featureSet.suggestionsWeb',
-        value: suggestions.web,
-      })
+      useInstanceCapabilitiesStore().set(
+        'suggestionsEnabled',
+        suggestions.enabled,
+      )
+      // this is unused, why?
+      useInstanceCapabilitiesStore().set('suggestionsWeb', suggestions.web)
 
       const software = data.software
       useInstanceStore().set({
@@ -407,27 +403,26 @@ const getNodeInfo = async ({ store }) => {
 
       const federation = metadata.federation
 
-      useInstanceStore().set({
-        name: 'featureSet.tagPolicyAvailable',
-        value:
-          typeof federation.mrf_policies === 'undefined'
-            ? false
-            : metadata.federation.mrf_policies.includes('TagPolicy'),
-      })
+      useInstanceCapabilitiesStore().set(
+        'tagPolicyAvailable',
+        typeof federation.mrf_policies === 'undefined'
+          ? false
+          : metadata.federation.mrf_policies.includes('TagPolicy'),
+      )
 
       useInstanceStore().set({
-        name: 'federationPolicy',
+        path: 'federationPolicy',
         value: federation,
       })
       useInstanceStore().set({
-        name: 'federating',
+        path: 'federating',
         value:
           typeof federation.enabled === 'undefined' ? true : federation.enabled,
       })
 
       const accountActivationRequired = metadata.accountActivationRequired
       useInstanceStore().set({
-        name: 'accountActivationRequired',
+        path: 'accountActivationRequired',
         value: accountActivationRequired,
       })
 

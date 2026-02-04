@@ -59,7 +59,6 @@ const config = {
     },
     mergedConfig(state) {
       const instancePrefs = useInstanceStore().prefsStorage
-      console.log(state)
       const result = Object.fromEntries(
         Object.keys(defaultState).map((key) => [
           key,

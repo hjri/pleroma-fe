@@ -11,6 +11,7 @@ import NavigationPins from 'src/components/navigation/navigation_pins.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -112,14 +113,14 @@ const NavPanel = {
       unreadAnnouncementCount: 'unreadAnnouncementCount',
       supportsAnnouncements: (store) => store.supportsAnnouncements,
     }),
+    ...mapPiniaState(useInstanceCapabilitiesStore, [
+      'pleromaChatMessagesAvailable',
+      'pleromaBookmarkFoldersAvailable',
+      'localBubble',
+    ]),
     ...mapPiniaState(useInstanceStore, ['federating']),
     ...mapPiniaState(useInstanceStore, {
       privateMode: (store) => store.private,
-      pleromaChatMessagesAvailable: (store) =>
-        store.featureSet.pleromaChatMessagesAvailable,
-      bookmarkFolders: (store) =>
-        store.featureSet.pleromaBookmarkFoldersAvailable,
-      bubbleTimeline: (store) => store.featureSet.localBubble,
     }),
     ...mapPiniaState(useServerSideStorageStore, {
       collapsed: (store) => store.prefsStorage.simple.collapseNav,
@@ -142,8 +143,8 @@ const NavPanel = {
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser,
-          supportsBubbleTimeline: this.bubbleTimeline,
-          supportsBookmarkFolders: this.bookmarkFolders,
+          supportsBubbleTimeline: this.localBubble,
+          supportsBookmarkFolders: this.pleromaBookmarkFoldersAvailable,
         },
       )
     },
@@ -156,8 +157,8 @@ const NavPanel = {
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser,
-          supportsBubbleTimeline: this.bubbleTimeline,
-          supportsBookmarkFolders: this.bookmarkFolders,
+          supportsBubbleTimeline: this.localBubble,
+          supportsBookmarkFolders: this.pleromaBookmarkFoldersAvailable,
         },
       )
     },

@@ -16,6 +16,7 @@ import StillImage from 'src/components/still-image/still-image.vue'
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useListsStore } from 'src/stores/lists'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
@@ -73,12 +74,11 @@ const NavPanel = {
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems),
     }),
-    ...mapPiniaState(useInstanceStore, {
-      pleromaChatMessagesAvailable: (store) =>
-        store.featureSet.pleromaChatMessagesAvailable,
-      bubbleTimeline: (store) => store.featureSet.localBubble,
-    }),
     ...mapPiniaState(useInstanceStore, ['private', 'federating']),
+    ...mapPiniaState(useInstanceCapabilitiesStore, [
+      'pleromaChatMessagesAvailable',
+      'localBubble',
+    ]),
     ...mapState({
       currentUser: (state) => state.users.currentUser,
       followRequestCount: (state) => state.api.followRequests.length,
@@ -97,13 +97,11 @@ const NavPanel = {
             isFederating: this.federating,
             isPrivate: this.private,
             currentUser: this.currentUser,
-            supportsBubbleTimeline: this.bubbleTimeline,
+            supportsBubbleTimeline: this.localBubble,
             supportsBookmarkFolders: this.bookmarks,
           },
         )
       }
-      console.log([...this.pinnedItems])
-      console.log([...this.bookmarks])
       return filterNavigation(
         [
           ...Object.entries({ ...TIMELINES })
@@ -118,7 +116,7 @@ const NavPanel = {
         {
           hasChats: this.pleromaChatMessagesAvailable,
           hasAnnouncements: this.supportsAnnouncements,
-          supportsBubbleTimeline: this.bubbleTimeline,
+          supportsBubbleTimeline: this.localBubble,
           supportsBookmarkFolders: this.bookmarks,
           isFederating: this.federating,
           isPrivate: this.private,

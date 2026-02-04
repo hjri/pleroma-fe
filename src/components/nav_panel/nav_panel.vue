@@ -84,7 +84,7 @@
           />
         </div>
         <NavigationEntry
-          v-if="currentUser && bookmarkFolders"
+          v-if="currentUser && pleromaBookmarkFoldersAvailable"
           :show-pin="false"
           :item="{ icon: 'bookmark', label: 'nav.bookmarks' }"
           :aria-expanded="showBookmarkFolders ? 'true' : 'false'"

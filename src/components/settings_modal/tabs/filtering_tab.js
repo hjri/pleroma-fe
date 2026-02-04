@@ -11,7 +11,7 @@ import IntegerSetting from '../helpers/integer_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
 
-import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
@@ -97,9 +97,7 @@ const FilteringTab = {
         Object.entries(store.prefsStorage.simple.muteFilters),
       muteFiltersObject: (store) => store.prefsStorage.simple.muteFilters,
     }),
-    ...mapState(useInstanceStore, {
-      blockExpirationSupported: (store) => store.featureSet.blockExpiration,
-    }),
+    ...mapState(useInstanceCapabilitiesStore, ['blockExpiration']),
     onMuteDefaultActionLv1: {
       get() {
         const value = this.$store.state.config.onMuteDefaultAction

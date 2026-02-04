@@ -1,5 +1,6 @@
 import { useEditStatusStore } from 'src/stores/editStatus.js'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useReportsStore } from 'src/stores/reports.js'
 import { useStatusHistoryStore } from 'src/stores/statusHistory.js'
 
@@ -161,7 +162,7 @@ export const BUTTONS = [
     label: 'status.status_history',
     if({ status, state }) {
       return (
-        useInstanceStore().featureSet.editingAvailable &&
+        useInstanceCapabilitiesStore().editingAvailable &&
         status.edited_at !== null
       )
     },
@@ -193,7 +194,7 @@ export const BUTTONS = [
     if({ status, loggedIn, currentUser, state }) {
       return (
         loggedIn &&
-        useInstanceStore().featureSet.editingAvailable &&
+        useInstanceCapabilitiesStore().editingAvailable &&
         status.user.id === currentUser.id
       )
     },

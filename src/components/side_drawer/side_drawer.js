@@ -8,6 +8,7 @@ import UserCard from '../user_card/user_card.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useShoutStore } from 'src/stores/shout'
 
@@ -95,14 +96,15 @@ const SideDrawer = {
       'supportsAnnouncements',
       'unreadAnnouncementCount',
     ]),
+    ...mapState(useInstanceCapabilitiesStore, [
+      'pleromaChatMessagesAvailable',
+      'suggestionsEnabled',
+    ]),
     ...mapState(useInstanceStore, ['private', 'federating']),
     ...mapState(useInstanceStore, {
       logo: (store) => store.instanceIdentity.logo,
       sitename: (store) => store.instanceIdentity.name,
       hideSitename: (store) => store.instanceIdentity.hideSitename,
-      pleromaChatMessagesAvailable: (store) =>
-        store.featureSet.pleromaChatMessagesAvailable,
-      suggestionsEnabled: (store) => store.featureSet.suggestionsEnabled,
     }),
     ...mapGetters(['unreadChatCount', 'draftCount']),
   },

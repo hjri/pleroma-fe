@@ -10,16 +10,11 @@ import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 
 import localeService from 'src/services/locale/locale.service.js'
 
 const GeneralTab = {
-  props: {
-    parentCollapsed: {
-      required: true,
-      type: Boolean,
-    },
-  },
   data() {
     return {
       absoluteTime12hOptions: ['24h', '12h'].map((mode) => ({
@@ -52,9 +47,7 @@ const GeneralTab = {
       },
     },
     ...SharedComputedObject(),
-    ...mapState(useInstanceStore, {
-      blockExpirationSupported: (store) => store.featureSet.blockExpiration,
-    }),
+    ...mapState(useInstanceCapabilitiesStore, ['blockExpiration']),
   },
   methods: {
     updateProfile() {

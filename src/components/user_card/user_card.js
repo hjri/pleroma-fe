@@ -25,6 +25,7 @@ import UserNote from '../user_note/user_note.vue'
 
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { usePostStatusStore } from 'src/stores/post_status'
 
 import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
@@ -180,7 +181,7 @@ export default {
       return false
     },
     groupActorAvailable() {
-      return useInstanceStore().featureSet.groupActorAvailable
+      return useInstanceCapabilitiesStore().groupActorAvailable
     },
     availableActorTypes() {
       return this.groupActorAvailable

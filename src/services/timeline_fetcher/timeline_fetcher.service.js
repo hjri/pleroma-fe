@@ -4,6 +4,7 @@ import apiService from '../api/api.service.js'
 import { promiseInterval } from '../promise_interval/promise_interval.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 
 const update = ({
@@ -78,7 +79,7 @@ const fetchAndUpdate = ({
     .then((response) => {
       if (response.errors) {
         if (timeline === 'favorites') {
-          useInstanceStore().featureSet.pleromaPublicFavouritesAvailable = false
+          useInstanceCapabilitiesStore().pleromaPublicFavouritesAvailable = false
           return
         }
         throw new Error(`${response.status} ${response.statusText}`)

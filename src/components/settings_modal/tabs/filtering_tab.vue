@@ -47,7 +47,7 @@
             </li>
           </ul>
         </li>
-        <li v-if="blockExpirationSupported">
+        <li v-if="blockExpiration">
           <span class="setting-item">
             <span class="setting-label">
               {{ $t('user_card.default_block_expiration') }}

@@ -5,6 +5,7 @@ import backendInteractorService from '../services/backend_interactor_service/bac
 import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useShoutStore } from 'src/stores/shout.js'
 
@@ -239,7 +240,7 @@ const api = {
     ) {
       if (
         timeline === 'favourites' &&
-        !useInstanceStore().featureSet.pleromaPublicFavouritesAvailable
+        !useInstanceCapabilitiesStore().pleromaPublicFavouritesAvailable
       )
         return
       if (store.state.fetchers[timeline]) return
@@ -324,7 +325,8 @@ const api = {
     // Bookmark folders
     startFetchingBookmarkFolders(store) {
       if (store.state.fetchers.bookmarkFolders) return
-      if (!useInstanceStore().featureSet.pleromaBookmarkFoldersAvailable) return
+      if (!useInstanceCapabilitiesStore().pleromaBookmarkFoldersAvailable)
+        return
       const fetcher =
         store.state.backendInteractor.startFetchingBookmarkFolders({ store })
       store.commit('addFetcher', { fetcherName: 'bookmarkFolders', fetcher })

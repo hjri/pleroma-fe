@@ -6,7 +6,7 @@ import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 import Popover from '../popover/popover.vue'
 import ProgressButton from '../progress_button/progress_button.vue'
 
-import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useReportsStore } from 'src/stores/reports'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -94,11 +94,10 @@ const AccountActions = {
     shouldConfirmRemoveUserFromFollowers() {
       return this.$store.getters.mergedConfig.modalOnRemoveUserFromFollowers
     },
-    ...mapState(useInstanceStore, {
-      blockExpirationSupported: (store) => store.featureSet.blockExpiration,
-      pleromaChatMessagesAvailable: (store) =>
-        store.featureSet.pleromaChatMessagesAvailable,
-    }),
+    ...mapState(useInstanceCapabilitiesStore, [
+      'blockExpiration',
+      'pleromaChatMessagesAvailable',
+    ]),
   },
 }
 

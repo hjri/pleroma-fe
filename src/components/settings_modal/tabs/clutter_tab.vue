@@ -73,7 +73,7 @@
             {{ $t('settings.user_card_hide_personal_marks') }}
           </BooleanSetting>
         </li>
-        <li v-if="instanceShoutboxPresent">
+        <li v-if="shoutAvailable">
           <BooleanSetting
             path="hideShoutbox"
           >

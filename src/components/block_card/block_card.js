@@ -1,8 +1,9 @@
 import { mapState } from 'pinia'
 
+import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
 import BasicUserCard from '../basic_user_card/basic_user_card.vue'
 
-import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 
 const BlockCard = {
   props: ['userId'],
@@ -26,19 +27,18 @@ const BlockCard = {
             new Date(this.user.mute_expires_at).toLocaleString(),
           ])
     },
-    ...mapState(useInstanceStore, {
-      blockExpirationSupported: (store) => store.featureSet.blockExpiration,
-    }),
+    ...mapState(useInstanceCapabilitiesStore, ['blockExpiration']),
   },
   components: {
     BasicUserCard,
+    UserTimedFilterModal,
   },
   methods: {
     unblockUser() {
       this.$store.dispatch('unblockUser', this.user.id)
     },
     blockUser() {
-      if (this.blockExpirationSupported) {
+      if (this.blockExpiration) {
         this.$refs.timedBlockDialog.optionallyPrompt()
       } else {
         this.$store.dispatch('blockUser', { id: this.user.id })

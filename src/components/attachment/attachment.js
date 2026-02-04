@@ -7,6 +7,7 @@ import StillImage from '../still-image/still-image.vue'
 import VideoAttachment from '../video_attachment/video_attachment.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMediaViewerStore } from 'src/stores/media_viewer'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -107,7 +108,7 @@ const Attachment = {
       return 'file'
     },
     referrerpolicy() {
-      return useInstanceStore().featureSet.mediaProxyAvailable
+      return useInstanceCapabilitiesStore().mediaProxyAvailable
         ? ''
         : 'no-referrer'
     },

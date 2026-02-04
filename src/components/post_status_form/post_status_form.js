@@ -22,6 +22,7 @@ import StatusContent from '../status_content/status_content.vue'
 
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 
@@ -309,14 +310,14 @@ const PostStatusForm = {
       return this.mergedConfig.alwaysShowSubjectInput
     },
     postFormats() {
-      return useInstanceStore().featureSet.postFormats || []
+      return useInstanceCapabilitiesStore().postFormats || []
     },
     safeDMEnabled() {
-      return useInstanceStore().featureSet.safeDM
+      return useInstanceCapabilitiesStore().safeDM
     },
     pollsAvailable() {
       return (
-        useInstanceStore().featureSet.pollsAvailable &&
+        useInstanceCapabilitiesStore().pollsAvailable &&
         useInstanceStore().limits.pollLimits.max_options >= 2 &&
         this.disablePolls !== true
       )
@@ -346,7 +347,7 @@ const PostStatusForm = {
       return typeof this.statusId !== 'undefined' && this.statusId.trim() !== ''
     },
     quotable() {
-      if (!useInstanceStore().featureSet.quotingAvailable) {
+      if (!useInstanceCapabilitiesStore().quotingAvailable) {
         return false
       }
 

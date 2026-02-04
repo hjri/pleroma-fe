@@ -10,6 +10,7 @@ import Popover from '../popover/popover.vue'
 
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useListsStore } from 'src/stores/lists'
 
@@ -61,14 +62,13 @@ const TimelineMenu = {
         (route === 'bookmark-folder' || route === 'bookmarks')
       )
     },
+    ...mapPiniaState(useInstanceCapabilitiesStore, [
+      'pleromaChatMessagesAvailable',
+      'pleromaBookmarkFoldersAvailable',
+      'bookmarkFolders',
+      'localBubble',
+    ]),
     ...mapPiniaState(useInstanceStore, ['private', 'federating']),
-    ...mapPiniaState(useInstanceStore, {
-      pleromaChatMessagesAvailable: (store) =>
-        store.featureSet.pleromaChatMessagesAvailable,
-      bookmarkFolders: (store) =>
-        store.featureSet.pleromaBookmarkFoldersAvailable,
-      bubbleTimeline: (store) => store.featureSet.localBubble,
-    }),
     ...mapState({
       currentUser: (state) => state.users.currentUser,
     }),
@@ -80,8 +80,8 @@ const TimelineMenu = {
           isFederating: this.federating,
           isPrivate: this.private,
           currentUser: this.currentUser,
-          supportsBookmarkFolders: this.bookmarkFolders,
-          supportsBubbleTimeline: this.bubbleTimeline,
+          supportsBookmarkFolders: this.pleromaBookmarkFoldersAvailable,
+          supportsBubbleTimeline: this.localBubble,
         },
       )
     },

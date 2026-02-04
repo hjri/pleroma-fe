@@ -23,6 +23,7 @@ import { getOrCreateServiceWorker } from './services/sw/sw'
 import { windowHeight, windowWidth } from './services/window_utils/window_utils'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useShoutStore } from 'src/stores/shout.js'
 
@@ -203,13 +204,15 @@ export default {
       'layoutType',
     ]),
     ...mapState(useInstanceStore, ['styleDataUsed', 'private']),
+    ...mapState(useInstanceCapabilitiesStore, [
+      'suggestionsEnabled',
+      'editingAvailable',
+    ]),
     ...mapState(useInstanceStore, {
       background: (store) => store.instanceIdentity.background,
       showFeaturesPanel: (store) => store.instanceIdentity.showFeaturesPanel,
       showInstanceSpecificPanel: (store) =>
         store.instanceIdentity.showInstanceSpecificPanel,
-      suggestionsEnabled: (store) => store.featureSet.suggestionsEnabled,
-      editingAvailable: (store) => store.featureSet.editingAvailable,
       instanceSpecificPanelContent: (store) =>
         store.instanceIdentity.instanceSpecificPanelContent,
     }),

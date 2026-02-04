@@ -69,31 +69,6 @@ const defaultState = {
   restrictedNicknames: [],
   localBubbleInstances: [], // Akkoma
 
-  // Feature-set, apparently, not everything here is reported...
-  featureSet: {
-    postFormats: [],
-    mailerEnabled: false,
-    safeDM: true,
-    shoutAvailable: false,
-    pleromaExtensionsAvailable: true,
-    pleromaChatMessagesAvailable: false,
-    pleromaCustomEmojiReactionsAvailable: false,
-    pleromaBookmarkFoldersAvailable: false,
-    pleromaPublicFavouritesAvailable: true,
-    statusNotificationTypeAvailable: true,
-    gopherAvailable: false,
-    editingAvailable: false,
-    mediaProxyAvailable: false,
-    suggestionsEnabled: false,
-    suggestionsWeb: '',
-    quotingAvailable: false,
-    groupActorAvailable: false,
-    blockExpiration: false,
-    tagPolicyAvailable: false,
-    pollsAvailable: false,
-    localBubble: false, // Akkoma
-  },
-
   // Version Information
   backendVersion: '',
   backendRepository: '',
@@ -118,17 +93,10 @@ export const useInstanceStore = defineStore('instance', {
         console.error(
           `Unknown instance option ${path ?? name}, value: ${value}`,
         )
+
       set(this, path ?? name, value)
-      switch (name) {
-        case 'name':
-          useInterfaceStore().setPageTitle()
-          break
-        case 'shoutAvailable':
-          if (value) {
-            window.vuex.dispatch('initializeSocket')
-          }
-          break
-      }
+
+      if ((path ?? name) === 'name') useInterfaceStore().setPageTitle()
     },
     async getKnownDomains() {
       try {

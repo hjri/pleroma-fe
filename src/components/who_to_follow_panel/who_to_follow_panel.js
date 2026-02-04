@@ -3,6 +3,7 @@ import { shuffle } from 'lodash'
 import apiService from '../../services/api/api.service.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
@@ -49,7 +50,7 @@ const WhoToFollowPanel = {
       return this.$store.state.users.currentUser.screen_name
     },
     suggestionsEnabled() {
-      return useInstanceStore().featureSet.suggestionsEnabled
+      return useInstanceCapabilitiesStore().suggestionsEnabled
     },
   },
   methods: {

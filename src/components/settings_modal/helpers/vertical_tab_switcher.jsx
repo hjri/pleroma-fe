@@ -35,11 +35,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    parentCollapsed: {
-      required: false,
-      type: Boolean,
-      default: null,
-    },
   },
   data() {
     return {
@@ -202,7 +197,6 @@ export default {
         </div>
         <div
           role="tabpanel"
-          class={'contents' + (this.scrollableTabs ? ' scrollable-tabs' : '')}
           v-body-scroll-lock={this.bodyScrollLock}
           ref="contents"
         >

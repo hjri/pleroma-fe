@@ -33,6 +33,7 @@ import BookmarkFolders from '../components/bookmark_folders/bookmark_folders.vue
 import QuotesTimeline from '../components/quotes_timeline/quotes_timeline.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 
 export default (store) => {
   const validateAuthenticatedRoute = (to, from, next) => {
@@ -205,7 +206,7 @@ export default (store) => {
     },
   ]
 
-  if (useInstanceStore().featureSet.pleromaChatMessagesAvailable) {
+  if (useInstanceCapabilitiesStore().pleromaChatMessagesAvailable) {
     routes = routes.concat([
       {
         name: 'chat',
