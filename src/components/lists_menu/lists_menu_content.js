@@ -16,7 +16,6 @@ export const ListsMenuContent = {
     ...mapPiniaState(useListsStore, {
       lists: getListEntries,
     }),
-    ...mapPiniaState(useInstanceStore, ['private', 'federating']),
     ...mapState({
       currentUser: (state) => state.users.currentUser,
     }),

@@ -68,7 +68,7 @@ const TimelineMenu = {
       'bookmarkFolders',
       'localBubble',
     ]),
-    ...mapPiniaState(useInstanceStore, ['private', 'federating']),
+    ...mapPiniaState(useInstanceStore, ['privateMode', 'federating']),
     ...mapState({
       currentUser: (state) => state.users.currentUser,
     }),
@@ -78,7 +78,7 @@ const TimelineMenu = {
         {
           hasChats: this.pleromaChatMessagesAvailable,
           isFederating: this.federating,
-          isPrivate: this.private,
+          isPrivate: this.privateMode,
           currentUser: this.currentUser,
           supportsBookmarkFolders: this.pleromaBookmarkFoldersAvailable,
           supportsBubbleTimeline: this.localBubble,

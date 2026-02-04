@@ -202,7 +202,7 @@ export default {
       'styleDataUsed',
       'layoutType',
     ]),
-    ...mapState(useInstanceStore, ['styleDataUsed', 'private']),
+    ...mapState(useInstanceStore, ['styleDataUsed']),
     ...mapState(useInstanceCapabilitiesStore, [
       'suggestionsEnabled',
       'editingAvailable',
