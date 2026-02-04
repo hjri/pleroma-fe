@@ -22,6 +22,7 @@ const defaultState = {
   tagPolicyAvailable: false,
   pollsAvailable: false,
   localBubble: false, // Akkoma
+  scrobblesSupport: false,
 }
 
 export const useInstanceCapabilitiesStore = defineStore(
