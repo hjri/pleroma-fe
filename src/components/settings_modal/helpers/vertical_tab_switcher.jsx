@@ -35,6 +35,11 @@ export default {
       type: Boolean,
       default: false,
     },
+    parentCollapsed: {
+      required: false,
+      type: Boolean,
+      default: null,
+    },
   },
   data() {
     return {
@@ -146,6 +151,7 @@ export default {
         <h2 class={headerClasses}>
           <button
             type="button"
+            class="contents"
             onClick={() => this.changeNavSide('tabs')}
             title={this.$t('nav.back')}
             class="button-unstyled"
