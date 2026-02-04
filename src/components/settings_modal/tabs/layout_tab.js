@@ -28,7 +28,6 @@ const GeneralTab = {
   },
   computed: {
     ...mapState(useInstanceCapabilitiesStore, [
-      'instanceSpecificPanelPresent',
       'postFormats',
       'suggestionsEnabled',
     ]),

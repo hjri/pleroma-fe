@@ -150,13 +150,6 @@ export default {
     shout() {
       return useShoutStore().joined
     },
-    showInstanceSpecificPanel() {
-      return (
-        this.showInstanceSpecificPanel &&
-        !this.$store.getters.mergedConfig.hideISP &&
-        this.instanceSpecificPanelContent
-      )
-    },
     isChats() {
       return this.$route.name === 'chat' || this.$route.name === 'chats'
     },
@@ -197,6 +190,12 @@ export default {
     scrollParent() {
       return window /* this.$refs.appContentRef */
     },
+    showInstanceSpecificPanel() {
+      return (
+        this.instanceSpecificPanelPresent &&
+        !this.$store.getters.mergedConfig.hideISP
+      )
+    },
     ...mapGetters(['mergedConfig']),
     ...mapState(useInterfaceStore, [
       'themeApplied',
@@ -211,9 +210,8 @@ export default {
     ...mapState(useInstanceStore, {
       background: (store) => store.instanceIdentity.background,
       showFeaturesPanel: (store) => store.instanceIdentity.showFeaturesPanel,
-      showInstanceSpecificPanel: (store) =>
-        store.instanceIdentity.showInstanceSpecificPanel,
-      instanceSpecificPanelContent: (store) =>
+      instanceSpecificPanelPresent: (store) =>
+        store.instanceIdentity.showInstanceSpecificPanel &&
         store.instanceIdentity.instanceSpecificPanelContent,
     }),
   },

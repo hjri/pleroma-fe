@@ -15,8 +15,8 @@ import {
 
 import apiService from '../services/api/api.service.js'
 
-import { useInterfaceStore } from 'src/stores/interface.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 const emptyTl = (userId = 0) => ({
   statuses: [],
@@ -115,7 +115,8 @@ const sortTimeline = (timeline) => {
 }
 
 const getLatestScrobble = (state, user) => {
-  const scrobblesSupport = useInstanceCapabilitiesStore().pleromaScrobblesAvailable
+  const scrobblesSupport =
+    useInstanceCapabilitiesStore().pleromaScrobblesAvailable
 
   if (!scrobblesSupport || !user.name || user.id === 'undefined') {
     return

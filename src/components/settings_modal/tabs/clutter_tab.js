@@ -10,6 +10,7 @@ import IntegerSetting from '../helpers/integer_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
 
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
@@ -26,6 +27,12 @@ const ClutterTab = {
   computed: {
     ...SharedComputedObject(),
     ...mapState(useInstanceCapabilitiesStore, ['shoutAvailable']),
+    ...mapState(useInstanceStore, {
+      showFeaturesPanel: (store) => store.instanceIdentity.showFeaturesPanel,
+      instanceSpecificPanelPresent: (store) =>
+        store.instanceIdentity.showInstanceSpecificPanel &&
+        store.instanceIdentity.instanceSpecificPanelContent,
+    }),
     ...mapState(useServerSideStorageStore, {
       muteFilters: (store) =>
         Object.entries(store.prefsStorage.simple.muteFilters),
