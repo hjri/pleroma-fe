@@ -3,6 +3,8 @@ import {
   mutations,
   prepareStatus,
 } from '../../../../src/modules/statuses.js'
+import { createTestingPinia } from '@pinia/testing'
+  createTestingPinia()
 
 const makeMockStatus = ({ id, text, type = 'status' }) => {
   return {

@@ -9,8 +9,6 @@ import genRandomSeed from '../../services/random_seed/random_seed.service.js'
 import EmojiPicker from '../emoji_picker/emoji_picker.vue'
 import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
 
-import { useEmojiStore } from 'src/stores/emoji.js'
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faSmileBeam } from '@fortawesome/free-regular-svg-icons'
 
@@ -133,7 +131,7 @@ const EmojiInput = {
   },
   computed: {
     padEmoji() {
-      return useEmojiStore().mergedConfig.padEmoji
+      return this.$store.getters.mergedConfig.padEmoji
     },
     defaultCandidateIndex() {
       return this.$store.getters.mergedConfig.autocompleteSelect ? 0 : -1

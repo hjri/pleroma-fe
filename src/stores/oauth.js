@@ -83,6 +83,7 @@ export const useOAuthStore = defineStore('oauth', {
     },
     async getAppToken() {
       const instance = useInstanceStore().server
+      console.log(this.clientId)
       const res = await getClientToken({
         clientId: this.clientId,
         clientSecret: this.clientSecret,
