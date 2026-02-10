@@ -107,6 +107,12 @@ const adminSettingsStorage = {
           if (Array.isArray(value) && value.length > 0 && value[0].tuple) {
             if (!preserveTuples) {
               return value.reduce((acc, c) => {
+                if (c.tuple == null) {
+                  return {
+                    ...acc,
+                    [c]: c,
+                  }
+                }
                 return {
                   ...acc,
                   [c.tuple[0]]: convert(c.tuple[1], preserveTuplesLv2),
