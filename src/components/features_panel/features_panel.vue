@@ -11,9 +11,6 @@
           <li v-if="shoutAvailable">
             {{ $t('features_panel.shout') }}
           </li>
-          <li v-if="shout">
-            {{ $t('features_panel.shout') }}
-          </li>
           <li v-if="pleromaChatMessagesAvailable">
             {{ $t('features_panel.pleroma_chat_messages') }}
           </li>
