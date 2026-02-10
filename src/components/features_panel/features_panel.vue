@@ -8,19 +8,22 @@
       </div>
       <div class="panel-body">
         <ul>
+          <li v-if="shoutAvailable">
+            {{ $t('features_panel.shout') }}
+          </li>
           <li v-if="shout">
             {{ $t('features_panel.shout') }}
           </li>
-          <li v-if="pleromaChatMessages">
+          <li v-if="pleromaChatMessagesAvailable">
             {{ $t('features_panel.pleroma_chat_messages') }}
           </li>
-          <li v-if="gopher">
+          <li v-if="gopherAvailable">
             {{ $t('features_panel.gopher') }}
           </li>
-          <li v-if="whoToFollow">
+          <li v-if="suggestionsEnabled">
             {{ $t('features_panel.who_to_follow') }}
           </li>
-          <li v-if="mediaProxy">
+          <li v-if="mediaProxyAvailable">
             {{ $t('features_panel.media_proxy') }}
           </li>
           <li>{{ $t('features_panel.scope_options') }}</li>
