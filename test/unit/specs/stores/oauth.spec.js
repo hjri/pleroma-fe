@@ -1,6 +1,6 @@
-import { HttpResponse, http } from 'msw'
-import { setActivePinia, createPinia } from 'pinia'
 import { createTestingPinia } from '@pinia/testing'
+import { HttpResponse, http } from 'msw'
+import { createPinia, setActivePinia } from 'pinia'
 
 import {
   authApis,
@@ -8,8 +8,8 @@ import {
   testServer,
 } from '/test/fixtures/mock_api.js'
 
-import { useOAuthStore } from 'src/stores/oauth.js'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 const test = injectMswToTest(authApis)
 
@@ -60,7 +60,6 @@ describe('oauth store', () => {
           return HttpResponse.text('Should not call this API', { status: 400 })
         }),
       )
-
 
       const store = useOAuthStore()
       store.clientId = 'another-id'
@@ -183,7 +182,9 @@ describe('oauth store', () => {
       await expect(store.ensureAppToken()).rejects.toThrowError('Throttled')
     })
 
-    test('it should throw if we cannot obtain app token', async ({ worker }) => {
+    test('it should throw if we cannot obtain app token', async ({
+      worker,
+    }) => {
       worker.use(
         http.post(`${testServer}/oauth/token`, () => {
           return HttpResponse.text('Throttled', { status: 429 })

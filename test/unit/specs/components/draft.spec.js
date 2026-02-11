@@ -1,6 +1,6 @@
+import { createTestingPinia } from '@pinia/testing'
 import { flushPromises, mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
-import { createTestingPinia } from '@pinia/testing'
 
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import { $t, mountOpts, waitForEvent } from '../../../fixtures/setup_test'

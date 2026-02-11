@@ -1,10 +1,12 @@
+import { createTestingPinia } from '@pinia/testing'
+
 import {
   defaultState,
   mutations,
   prepareStatus,
 } from '../../../../src/modules/statuses.js'
-import { createTestingPinia } from '@pinia/testing'
-  createTestingPinia()
+
+createTestingPinia()
 
 const makeMockStatus = ({ id, text, type = 'status' }) => {
   return {
