@@ -1,8 +1,9 @@
 import { mapState } from 'pinia'
 
-import { useListsStore } from 'src/stores/lists'
 import DialogModal from '../dialog_modal/dialog_modal.vue'
 import Popover from '../popover/popover.vue'
+
+import { useListsStore } from 'src/stores/lists.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons'

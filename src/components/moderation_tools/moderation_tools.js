@@ -1,6 +1,9 @@
 import DialogModal from '../dialog_modal/dialog_modal.vue'
 import Popover from '../popover/popover.vue'
 
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 
@@ -54,7 +57,7 @@ const ModerationTools = {
     },
     canUseTagPolicy() {
       return (
-        this.$store.state.instance.tagPolicyAvailable &&
+        useInstanceCapabilitiesStore().tagPolicyAvailable &&
         this.privileged('users_manage_tags')
       )
     },

@@ -1,13 +1,16 @@
-import { cacheKey, clearCache, emojiCacheKey } from 'src/services/sw/sw.js'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+
+import { cacheKey, clearCache, emojiCacheKey } from 'src/services/sw/sw.js'
 
 const pleromaFeCommitUrl =
   'https://git.pleroma.social/pleroma/pleroma-fe/commit/'
 
 const VersionTab = {
   data() {
-    const instance = this.$store.state.instance
+    const instance = useInstanceStore()
     return {
       backendVersion: instance.backendVersion,
       backendRepository: instance.backendRepository,

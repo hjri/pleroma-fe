@@ -1,10 +1,13 @@
 import { Socket } from 'phoenix'
 
-import { useInterfaceStore } from 'src/stores/interface.js'
-import { useShoutStore } from 'src/stores/shout.js'
 import { WSConnectionStatus } from '../services/api/api.service.js'
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useShoutStore } from 'src/stores/shout.js'
 
 const retryTimeout = (multiplier) => 1000 * multiplier
 
@@ -237,7 +240,7 @@ const api = {
     ) {
       if (
         timeline === 'favourites' &&
-        !store.rootState.instance.pleromaPublicFavouritesAvailable
+        !useInstanceCapabilitiesStore().pleromaPublicFavouritesAvailable
       )
         return
       if (store.state.fetchers[timeline]) return
@@ -322,7 +325,8 @@ const api = {
     // Bookmark folders
     startFetchingBookmarkFolders(store) {
       if (store.state.fetchers.bookmarkFolders) return
-      if (!store.rootState.instance.pleromaBookmarkFoldersAvailable) return
+      if (!useInstanceCapabilitiesStore().pleromaBookmarkFoldersAvailable)
+        return
       const fetcher =
         store.state.backendInteractor.startFetchingBookmarkFolders({ store })
       store.commit('addFetcher', { fetcherName: 'bookmarkFolders', fetcher })
@@ -341,7 +345,7 @@ const api = {
       // Set up websocket connection
       const token = state.wsToken
       if (
-        rootState.instance.shoutAvailable &&
+        useInstanceStore().shoutAvailable &&
         typeof token !== 'undefined' &&
         state.socket === null
       ) {

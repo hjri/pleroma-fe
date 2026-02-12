@@ -88,6 +88,11 @@ export default defineConfig(async ({ mode, command }) => {
       changeOrigin: true,
       cookieDomainRewrite: 'localhost',
     },
+    '/instance': {
+      target,
+      changeOrigin: true,
+      cookieDomainRewrite: 'localhost',
+    },
     '/socket': {
       target,
       changeOrigin: true,

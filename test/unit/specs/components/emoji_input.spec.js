@@ -1,6 +1,9 @@
+import { createTestingPinia } from '@pinia/testing'
 import { shallowMount } from '@vue/test-utils'
 import vClickOutside from 'click-outside-vue3'
 import { h } from 'vue'
+
+createTestingPinia()
 
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
 

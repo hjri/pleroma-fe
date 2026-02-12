@@ -5,9 +5,6 @@ import { mapGetters } from 'vuex'
 import DraftCloser from 'src/components/draft_closer/draft_closer.vue'
 import Gallery from 'src/components/gallery/gallery.vue'
 import Popover from 'src/components/popover/popover.vue'
-import { pollFormToMasto } from 'src/services/poll/poll.service.js'
-import { useInterfaceStore } from 'src/stores/interface.js'
-import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 import { propsToNative } from '../../services/attributes_helper/attributes_helper.service.js'
 import fileTypeService from '../../services/file_type/file_type.service.js'
 import { findOffset } from '../../services/offset_finder/offset_finder.service.js'
@@ -22,6 +19,14 @@ import PollForm from '../poll/poll_form.vue'
 import ScopeSelector from '../scope_selector/scope_selector.vue'
 import Select from '../select/select.vue'
 import StatusContent from '../status_content/status_content.vue'
+
+import { useEmojiStore } from 'src/stores/emoji.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMediaViewerStore } from 'src/stores/media_viewer.js'
+
+import { pollFormToMasto } from 'src/services/poll/poll.service.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -258,8 +263,8 @@ const PostStatusForm = {
     emojiUserSuggestor() {
       return suggestor({
         emoji: [
-          ...this.$store.getters.standardEmojiList,
-          ...this.$store.state.instance.customEmoji,
+          ...useEmojiStore().standardEmojiList,
+          ...useEmojiStore().customEmoji,
         ],
         store: this.$store,
       })
@@ -267,16 +272,16 @@ const PostStatusForm = {
     emojiSuggestor() {
       return suggestor({
         emoji: [
-          ...this.$store.getters.standardEmojiList,
-          ...this.$store.state.instance.customEmoji,
+          ...useEmojiStore().standardEmojiList,
+          ...useEmojiStore().customEmoji,
         ],
       })
     },
     emoji() {
-      return this.$store.getters.standardEmojiList || []
+      return useEmojiStore().standardEmojiList || []
     },
     customEmoji() {
-      return this.$store.state.instance.customEmoji || []
+      return useEmojiStore().customEmoji || []
     },
     statusLength() {
       return this.newStatus.status.length
@@ -285,7 +290,7 @@ const PostStatusForm = {
       return this.newStatus.spoilerText.length
     },
     statusLengthLimit() {
-      return this.$store.state.instance.textlimit
+      return useInstanceStore().textlimit
     },
     hasStatusLengthLimit() {
       return this.statusLengthLimit > 0
@@ -299,21 +304,21 @@ const PostStatusForm = {
       return this.hasStatusLengthLimit && this.charactersLeft < 0
     },
     minimalScopesMode() {
-      return this.$store.state.instance.minimalScopesMode
+      return useInstanceStore().minimalScopesMode
     },
     alwaysShowSubject() {
       return this.mergedConfig.alwaysShowSubjectInput
     },
     postFormats() {
-      return this.$store.state.instance.postFormats || []
+      return useInstanceCapabilitiesStore().postFormats || []
     },
     safeDMEnabled() {
-      return this.$store.state.instance.safeDM
+      return useInstanceCapabilitiesStore().safeDM
     },
     pollsAvailable() {
       return (
-        this.$store.state.instance.pollsAvailable &&
-        this.$store.state.instance.pollLimits.max_options >= 2 &&
+        useInstanceCapabilitiesStore().pollsAvailable &&
+        useInstanceStore().limits.pollLimits.max_options >= 2 &&
         this.disablePolls !== true
       )
     },
@@ -342,7 +347,7 @@ const PostStatusForm = {
       return typeof this.statusId !== 'undefined' && this.statusId.trim() !== ''
     },
     quotable() {
-      if (!this.$store.state.instance.quotingAvailable) {
+      if (!useInstanceCapabilitiesStore().quotingAvailable) {
         return false
       }
 

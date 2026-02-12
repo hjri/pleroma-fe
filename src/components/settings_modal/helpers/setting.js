@@ -15,6 +15,10 @@ export default {
       type: String,
       default: null,
     },
+    description: {
+      type: String,
+      default: null,
+    },
     path: {
       type: [String, Array],
       required: false,

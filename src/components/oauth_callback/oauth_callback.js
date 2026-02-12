@@ -1,5 +1,7 @@
-import { useOAuthStore } from 'src/stores/oauth.js'
 import oauth from '../../services/new_api/oauth.js'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 const oac = {
   props: ['code'],
@@ -12,7 +14,7 @@ const oac = {
         .getToken({
           clientId,
           clientSecret,
-          instance: this.$store.state.instance.server,
+          instance: useInstanceStore().server,
           code: this.code,
         })
         .then((result) => {

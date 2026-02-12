@@ -3,7 +3,6 @@
     ref="tabSwitcher"
     class="settings_tab-switcher"
     :scrollable-tabs="true"
-    :child-collapsed="childCollapsed"
     :body-scroll-lock="bodyLock"
     :hide-header="navHideHeader"
   >

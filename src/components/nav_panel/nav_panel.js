@@ -8,7 +8,10 @@ import { filterNavigation } from 'src/components/navigation/filter.js'
 import { ROOT_ITEMS, TIMELINES } from 'src/components/navigation/navigation.js'
 import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
 import NavigationPins from 'src/components/navigation/navigation_pins.vue'
+
 import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -110,6 +113,15 @@ const NavPanel = {
       unreadAnnouncementCount: 'unreadAnnouncementCount',
       supportsAnnouncements: (store) => store.supportsAnnouncements,
     }),
+    ...mapPiniaState(useInstanceCapabilitiesStore, [
+      'pleromaChatMessagesAvailable',
+      'pleromaBookmarkFoldersAvailable',
+      'localBubble',
+    ]),
+    ...mapPiniaState(useInstanceStore, ['federating']),
+    ...mapPiniaState(useInstanceStore, {
+      privateMode: (store) => store.private,
+    }),
     ...mapPiniaState(useServerSideStorageStore, {
       collapsed: (store) => store.prefsStorage.simple.collapseNav,
       pinnedItems: (store) =>
@@ -118,13 +130,6 @@ const NavPanel = {
     ...mapState({
       currentUser: (state) => state.users.currentUser,
       followRequestCount: (state) => state.api.followRequests.length,
-      privateMode: (state) => state.instance.private,
-      federating: (state) => state.instance.federating,
-      pleromaChatMessagesAvailable: (state) =>
-        state.instance.pleromaChatMessagesAvailable,
-      bookmarkFolders: (state) =>
-        state.instance.pleromaBookmarkFoldersAvailable,
-      bubbleTimeline: (state) => state.instance.localBubbleInstances.length > 0,
     }),
     timelinesItems() {
       return filterNavigation(
@@ -138,8 +143,8 @@ const NavPanel = {
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser,
-          supportsBubbleTimeline: this.bubbleTimeline,
-          supportsBookmarkFolders: this.bookmarkFolders,
+          supportsBubbleTimeline: this.localBubble,
+          supportsBookmarkFolders: this.pleromaBookmarkFoldersAvailable,
         },
       )
     },
@@ -152,8 +157,8 @@ const NavPanel = {
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser,
-          supportsBubbleTimeline: this.bubbleTimeline,
-          supportsBookmarkFolders: this.bookmarkFolders,
+          supportsBubbleTimeline: this.localBubble,
+          supportsBookmarkFolders: this.pleromaBookmarkFoldersAvailable,
         },
       )
     },

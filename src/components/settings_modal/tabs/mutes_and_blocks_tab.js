@@ -12,7 +12,9 @@ import MuteCard from 'src/components/mute_card/mute_card.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import SelectableList from 'src/components/selectable_list/selectable_list.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
-import { useOAuthTokensStore } from 'src/stores/oauth_tokens'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useOAuthTokensStore } from 'src/stores/oauth_tokens.js'
 
 const BlockList = withLoadMore({
   fetch: (props, $store) => $store.dispatch('fetchBlocks'),
@@ -48,7 +50,7 @@ const MutesAndBlocks = {
   },
   created() {
     useOAuthTokensStore().fetchTokens()
-    this.$store.dispatch('getKnownDomains')
+    useInstanceStore().getKnownDomains()
   },
   components: {
     TabSwitcher,
@@ -64,7 +66,7 @@ const MutesAndBlocks = {
   },
   computed: {
     knownDomains() {
-      return this.$store.state.instance.knownDomains
+      return useInstanceStore().knownDomains
     },
     user() {
       return this.$store.state.users.currentUser

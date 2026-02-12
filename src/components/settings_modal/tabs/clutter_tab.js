@@ -1,16 +1,18 @@
 import { mapActions, mapState } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
-import { mapState as mapVuexState } from 'vuex'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Select from 'src/components/select/select.vue'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import HelpIndicator from '../helpers/help_indicator.vue'
 import IntegerSetting from '../helpers/integer_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
 const ClutterTab = {
   components: {
@@ -23,17 +25,18 @@ const ClutterTab = {
     HelpIndicator,
   },
   computed: {
-    instanceSpecificPanelPresent() {
-      return this.$store.state.instance.showInstanceSpecificPanel
-    },
     ...SharedComputedObject(),
+    ...mapState(useInstanceCapabilitiesStore, ['shoutAvailable']),
+    ...mapState(useInstanceStore, {
+      showFeaturesPanel: (store) => store.instanceIdentity.showFeaturesPanel,
+      instanceSpecificPanelPresent: (store) =>
+        store.instanceIdentity.showInstanceSpecificPanel &&
+        store.instanceIdentity.instanceSpecificPanelContent,
+    }),
     ...mapState(useServerSideStorageStore, {
       muteFilters: (store) =>
         Object.entries(store.prefsStorage.simple.muteFilters),
       muteFiltersObject: (store) => store.prefsStorage.simple.muteFilters,
-    }),
-    ...mapVuexState({
-      blockExpirationSupported: (state) => state.instance.blockExpiration,
     }),
     onMuteDefaultActionLv1: {
       get() {

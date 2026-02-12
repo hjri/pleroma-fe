@@ -69,11 +69,6 @@
             {{ $t('settings.show_scrollbars') }}
           </BooleanSetting>
         </li>
-        <li v-if="instanceSpecificPanelPresent">
-          <BooleanSetting path="hideISP">
-            {{ $t('settings.hide_isp') }}
-          </BooleanSetting>
-        </li>
         <li>
           <UnitSetting
             path="panelHeaderSize"

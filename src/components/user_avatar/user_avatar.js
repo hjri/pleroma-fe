@@ -1,5 +1,7 @@
-import { useInterfaceStore } from 'src/stores/interface'
 import StillImage from '../still-image/still-image.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPeopleGroup, faRobot } from '@fortawesome/free-solid-svg-icons'
@@ -35,7 +37,7 @@ const UserAvatar = {
   data() {
     return {
       showPlaceholder: false,
-      defaultAvatar: `${this.$store.state.instance.server + this.$store.state.instance.defaultAvatar}`,
+      defaultAvatar: `${useInstanceStore().server + useInstanceStore().defaultAvatar}`,
       betterShadow: useInterfaceStore().browserSupport.cssFilter,
     }
   },

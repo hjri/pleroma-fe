@@ -4,6 +4,8 @@ import MRFTransparencyPanel from '../mrf_transparency_panel/mrf_transparency_pan
 import StaffPanel from '../staff_panel/staff_panel.vue'
 import TermsOfServicePanel from '../terms_of_service_panel/terms_of_service_panel.vue'
 
+import { useInstanceStore } from 'src/stores/instance.js'
+
 const About = {
   components: {
     InstanceSpecificPanel,
@@ -14,13 +16,13 @@ const About = {
   },
   computed: {
     showFeaturesPanel() {
-      return this.$store.state.instance.showFeaturesPanel
+      return useInstanceStore().instanceIdentity.showFeaturesPanel
     },
     showInstanceSpecificPanel() {
       return (
-        this.$store.state.instance.showInstanceSpecificPanel &&
+        useInstanceStore().instanceIdentity.showInstanceSpecificPanel &&
         !this.$store.getters.mergedConfig.hideISP &&
-        this.$store.state.instance.instanceSpecificPanelContent
+        useInstanceStore().instanceIdentity.instanceSpecificPanelContent
       )
     },
   },

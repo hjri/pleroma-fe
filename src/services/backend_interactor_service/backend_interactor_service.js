@@ -8,6 +8,8 @@ import apiService, {
 import notificationsFetcher from '../notifications_fetcher/notifications_fetcher.service.js'
 import timelineFetcher from '../timeline_fetcher/timeline_fetcher.service.js'
 
+import { useInstanceStore } from 'src/stores/instance.js'
+
 const backendInteractorService = (credentials) => ({
   startFetchingTimeline({
     timeline,
@@ -55,7 +57,7 @@ const backendInteractorService = (credentials) => ({
   },
 
   startUserSocket({ store }) {
-    const serv = store.rootState.instance.server.replace('http', 'ws')
+    const serv = useInstanceStore().server.replace('http', 'ws')
     const url = getMastodonSocketURI({}, serv)
     return ProcessedWS({ url, id: 'Unified', credentials })
   },

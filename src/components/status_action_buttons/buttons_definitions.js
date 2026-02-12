@@ -1,4 +1,6 @@
 import { useEditStatusStore } from 'src/stores/editStatus.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useReportsStore } from 'src/stores/reports.js'
 import { useStatusHistoryStore } from 'src/stores/statusHistory.js'
 
@@ -159,7 +161,10 @@ export const BUTTONS = [
     icon: 'history',
     label: 'status.status_history',
     if({ status, state }) {
-      return state.instance.editingAvailable && status.edited_at !== null
+      return (
+        useInstanceCapabilitiesStore().editingAvailable &&
+        status.edited_at !== null
+      )
     },
     action({ status }) {
       const originalStatus = { ...status }
@@ -189,7 +194,7 @@ export const BUTTONS = [
     if({ status, loggedIn, currentUser, state }) {
       return (
         loggedIn &&
-        state.instance.editingAvailable &&
+        useInstanceCapabilitiesStore().editingAvailable &&
         status.user.id === currentUser.id
       )
     },
@@ -243,7 +248,7 @@ export const BUTTONS = [
     action({ state, status, router }) {
       navigator.clipboard.writeText(
         [
-          state.instance.server,
+          useInstanceStore().server,
           router.resolve({ name: 'conversation', params: { id: status.id } })
             .href,
         ].join(''),

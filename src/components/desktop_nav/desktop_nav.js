@@ -1,7 +1,10 @@
 import SearchBar from 'components/search_bar/search_bar.vue'
+import { mapActions, mapState } from 'pinia'
 
-import { useInterfaceStore } from 'src/stores/interface'
 import ConfirmModal from '../confirm_modal/confirm_modal.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInterfaceStore } from 'src/stores/interface'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -51,7 +54,7 @@ export default {
   }),
   computed: {
     enableMask() {
-      return this.supportsMask && this.$store.state.instance.logoMask
+      return this.supportsMask && this.logoMask
     },
     logoStyle() {
       return {
@@ -61,7 +64,7 @@ export default {
     logoMaskStyle() {
       return this.enableMask
         ? {
-            'mask-image': `url(${this.$store.state.instance.logo})`,
+            'mask-image': `url(${this.logo})`,
           }
         : {
             'background-color': this.enableMask ? '' : 'transparent',
@@ -70,7 +73,7 @@ export default {
     logoBgStyle() {
       return Object.assign(
         {
-          margin: `${this.$store.state.instance.logoMargin} 0`,
+          margin: `${this.logoMargin} 0`,
           opacity: this.searchBarHidden ? 1 : 0,
         },
         this.enableMask
@@ -80,23 +83,17 @@ export default {
             },
       )
     },
-    logo() {
-      return this.$store.state.instance.logo
-    },
-    sitename() {
-      return this.$store.state.instance.name
-    },
-    hideSitename() {
-      return this.$store.state.instance.hideSitename
-    },
-    logoLeft() {
-      return this.$store.state.instance.logoLeft
-    },
+    ...mapState(useInstanceStore, ['privateMode']),
+    ...mapState(useInstanceStore, {
+      logoMask: (store) => store.instanceIdentity.logoMask,
+      logo: (store) => store.instanceIdentity.logo,
+      logoLeft: (store) => store.instanceIdentity.logoLeft,
+      logoMargin: (store) => store.instanceIdentity.logoMargin,
+      sitename: (store) => store.instanceIdentity.name,
+      hideSitename: (store) => store.instanceIdentity.hideSitename,
+    }),
     currentUser() {
       return this.$store.state.users.currentUser
-    },
-    privateMode() {
-      return this.$store.state.instance.private
     },
     shouldConfirmLogout() {
       return this.$store.getters.mergedConfig.modalOnLogout
@@ -127,11 +124,6 @@ export default {
     onSearchBarToggled(hidden) {
       this.searchBarHidden = hidden
     },
-    openSettingsModal() {
-      useInterfaceStore().openSettingsModal('user')
-    },
-    openAdminModal() {
-      useInterfaceStore().openSettingsModal('admin')
-    },
+    ...mapActions(useInterfaceStore, ['openSettingsModal']),
   },
 }

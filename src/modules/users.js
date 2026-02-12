@@ -9,10 +9,6 @@ import {
   uniq,
 } from 'lodash'
 
-import { declarations } from 'src/modules/config_declaration'
-import { useInterfaceStore } from 'src/stores/interface.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import apiService from '../services/api/api.service.js'
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import oauthApi from '../services/new_api/oauth.js'
@@ -24,6 +20,15 @@ import {
   windowHeight,
   windowWidth,
 } from '../services/window_utils/window_utils'
+
+import { useEmojiStore } from 'src/stores/emoji.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+
+import { declarations } from 'src/modules/config_declaration'
 
 // TODO: Unify with mergeOrAdd in statuses.js
 export const mergeOrAdd = (arr, obj, item) => {
@@ -547,7 +552,7 @@ const users = {
     },
     registerPushNotifications(store) {
       const token = store.state.currentUser.credentials
-      const vapidPublicKey = store.rootState.instance.vapidPublicKey
+      const vapidPublicKey = useInstanceStore().vapidPublicKey
       const isEnabled = store.rootState.config.webPushNotifications
       const notificationVisibility =
         store.rootState.config.notificationVisibility
@@ -644,7 +649,6 @@ const users = {
 
     logout(store) {
       const oauth = useOAuthStore()
-      const { instance } = store.rootState
 
       // NOTE: No need to verify the app still exists, because if it doesn't,
       // the token will be invalid too
@@ -653,7 +657,7 @@ const users = {
         .then((app) => {
           const params = {
             app,
-            instance: instance.server,
+            instance: useInstanceStore().server,
             token: oauth.userToken,
           }
 
@@ -685,7 +689,6 @@ const users = {
       return new Promise((resolve, reject) => {
         const commit = store.commit
         const dispatch = store.dispatch
-        const rootState = store.rootState
         commit('beginLogin')
         store.rootState.api.backendInteractor
           .verifyCredentials(accessToken)
@@ -702,7 +705,7 @@ const users = {
               useServerSideStorageStore().setServerSideStorage(user)
               commit('addNewUsers', [user])
 
-              dispatch('fetchEmoji')
+              useEmojiStore().fetchEmoji()
 
               getNotificationPermission().then((permission) =>
                 useInterfaceStore().setNotificationPermission(permission),
@@ -763,7 +766,9 @@ const users = {
                 // Start fetching notifications
                 dispatch('startFetchingNotifications')
 
-                if (rootState.instance.pleromaChatMessagesAvailable) {
+                if (
+                  useInstanceCapabilitiesStore().pleromaChatMessagesAvailable
+                ) {
                   // Start fetching chats
                   dispatch('startFetchingChats')
                 }

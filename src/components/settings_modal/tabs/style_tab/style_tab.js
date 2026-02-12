@@ -20,6 +20,12 @@ import SelectMotion from 'src/components/select/select_motion.vue'
 import ShadowControl from 'src/components/shadow_control/shadow_control.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 import Tooltip from 'src/components/tooltip/tooltip.vue'
+import StringSetting from '../../helpers/string_setting.vue'
+import Preview from '../old_theme_tab/theme_preview.vue'
+import VirtualDirectivesTab from './virtual_directives_tab.vue'
+
+import { useInterfaceStore } from 'src/stores/interface'
+
 import {
   getContrastRatio,
   hex2rgb,
@@ -43,10 +49,6 @@ import {
   findColor,
   init,
 } from 'src/services/theme_data/theme_data_3.service.js'
-import { useInterfaceStore } from 'src/stores/interface'
-import StringSetting from '../../helpers/string_setting.vue'
-import Preview from '../old_theme_tab/theme_preview.vue'
-import VirtualDirectivesTab from './virtual_directives_tab.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

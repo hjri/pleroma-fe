@@ -1,3 +1,7 @@
+import { createTestingPinia } from '@pinia/testing'
+
+createTestingPinia()
+
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { createStore } from 'vuex'
 

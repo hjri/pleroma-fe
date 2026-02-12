@@ -48,11 +48,13 @@
 import { computed } from 'vue'
 
 import ColorInput from 'src/components/color_input/color_input.vue'
+
+import { useInterfaceStore } from 'src/stores/interface.js'
+
 import {
   newExporter,
   newImporter,
 } from 'src/services/export_import/export_import.js'
-import { useInterfaceStore } from 'src/stores/interface'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faFileExport, faFileImport } from '@fortawesome/free-solid-svg-icons'

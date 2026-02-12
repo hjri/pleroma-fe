@@ -14,16 +14,6 @@ import {
 
 config.autoAddCss = false
 
-import VBodyScrollLock from 'src/directives/body_scroll_lock'
-import {
-  instanceDefaultConfig,
-  staticOrApiConfigDefault,
-} from 'src/modules/default_config_state.js'
-import { useAnnouncementsStore } from 'src/stores/announcements'
-import { useAuthFlowStore } from 'src/stores/auth_flow'
-import { useI18nStore } from 'src/stores/i18n'
-import { useInterfaceStore } from 'src/stores/interface'
-import { useOAuthStore } from 'src/stores/oauth'
 import App from '../App.vue'
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import FaviconService from '../services/favicon_service/favicon_service.js'
@@ -34,6 +24,21 @@ import {
   windowWidth,
 } from '../services/window_utils/window_utils'
 import routes from './routes'
+
+import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useAuthFlowStore } from 'src/stores/auth_flow'
+import { useEmojiStore } from 'src/stores/emoji.js'
+import { useI18nStore } from 'src/stores/i18n'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useOAuthStore } from 'src/stores/oauth'
+
+import VBodyScrollLock from 'src/directives/body_scroll_lock'
+import {
+  instanceDefaultConfig,
+  staticOrApiConfigDefault,
+} from 'src/modules/default_config_state.js'
 
 let staticInitialResults = null
 
@@ -78,29 +83,29 @@ const getInstanceConfig = async ({ store }) => {
       const textlimit = data.max_toot_chars
       const vapidPublicKey = data.pleroma.vapid_public_key
 
-      store.dispatch('setInstanceOption', {
-        name: 'pleromaExtensionsAvailable',
-        value: data.pleroma,
-      })
-      store.dispatch('setInstanceOption', {
+      useInstanceCapabilitiesStore().set(
+        'pleromaExtensionsAvailable',
+        data.pleroma,
+      )
+      useInstanceStore().set({
         name: 'textlimit',
         value: textlimit,
       })
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'accountApprovalRequired',
         value: data.approval_required,
       })
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'birthdayRequired',
         value: !!data.pleroma?.metadata.birthday_required,
       })
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'birthdayMinAge',
         value: data.pleroma?.metadata.birthday_min_age || 0,
       })
 
       if (vapidPublicKey) {
-        store.dispatch('setInstanceOption', {
+        useInstanceStore().set({
           name: 'vapidPublicKey',
           value: vapidPublicKey,
         })
@@ -161,14 +166,18 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
     config = Object.assign({}, staticConfig, apiConfig)
   }
 
-  const copyInstanceOption = (name) => {
-    if (typeof config[name] !== 'undefined') {
-      store.dispatch('setInstanceOption', { name, value: config[name] })
+  const copyInstanceOption = ({ source, destination }) => {
+    if (typeof config[source] !== 'undefined') {
+      useInstanceStore().set({ path: destination, value: config[source] })
     }
   }
 
-  Object.keys(staticOrApiConfigDefault).forEach(copyInstanceOption)
-  Object.keys(instanceDefaultConfig).forEach(copyInstanceOption)
+  Object.keys(staticOrApiConfigDefault)
+    .map((k) => ({ source: k, destination: `instanceIdentity.${k}` }))
+    .forEach(copyInstanceOption)
+  Object.keys(instanceDefaultConfig)
+    .map((k) => ({ source: k, destination: `prefsStorage.${k}` }))
+    .forEach(copyInstanceOption)
 
   useAuthFlowStore().setInitialStrategy(config.loginMethod)
 }
@@ -178,7 +187,7 @@ const getTOS = async ({ store }) => {
     const res = await window.fetch('/static/terms-of-service.html')
     if (res.ok) {
       const html = await res.text()
-      store.dispatch('setInstanceOption', { name: 'tos', value: html })
+      useInstanceStore().set({ name: 'instanceIdentity.tos', value: html })
     } else {
       throw res
     }
@@ -192,8 +201,8 @@ const getInstancePanel = async ({ store }) => {
     const res = await preloadFetch('/instance/panel.html')
     if (res.ok) {
       const html = await res.text()
-      store.dispatch('setInstanceOption', {
-        name: 'instanceSpecificPanelContent',
+      useInstanceStore().set({
+        path: 'instanceIdentity.instanceSpecificPanelContent',
         value: html,
       })
     } else {
@@ -227,7 +236,7 @@ const getStickers = async ({ store }) => {
       ).sort((a, b) => {
         return a.meta.title.localeCompare(b.meta.title)
       })
-      store.dispatch('setInstanceOption', { name: 'stickers', value: stickers })
+      useEmojiStore().setStickers(stickers)
     } else {
       throw res
     }
@@ -248,7 +257,7 @@ const getAppSecret = async ({ store }) => {
 
 const resolveStaffAccounts = ({ store, accounts }) => {
   const nicknames = accounts.map((uri) => uri.split('/').pop())
-  store.dispatch('setInstanceOption', {
+  useInstanceStore().set({
     name: 'staffAccounts',
     value: nicknames,
   })
@@ -262,160 +271,158 @@ const getNodeInfo = async ({ store }) => {
       const data = await res.json()
       const metadata = data.metadata
       const features = metadata.features
-      store.dispatch('setInstanceOption', {
-        name: 'name',
+      useInstanceStore().set({
+        path: 'name',
         value: metadata.nodeName,
       })
-      store.dispatch('setInstanceOption', {
-        name: 'registrationOpen',
+      useInstanceStore().set({
+        path: 'registrationOpen',
         value: data.openRegistrations,
       })
-      store.dispatch('setInstanceOption', {
-        name: 'mediaProxyAvailable',
-        value: features.includes('media_proxy'),
-      })
-      store.dispatch('setInstanceOption', {
-        name: 'safeDM',
-        value: features.includes('safe_dm_mentions'),
-      })
-      store.dispatch('setInstanceOption', {
-        name: 'shoutAvailable',
-        value: features.includes('chat'),
-      })
-      store.dispatch('setInstanceOption', {
-        name: 'pleromaChatMessagesAvailable',
-        value: features.includes('pleroma_chat_messages'),
-      })
-      store.dispatch('setInstanceOption', {
-        name: 'pleromaCustomEmojiReactionsAvailable',
-        value:
-          features.includes('pleroma_custom_emoji_reactions') ||
+      useInstanceCapabilitiesStore().set(
+        'mediaProxyAvailable',
+        features.includes('media_proxy'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'safeDM',
+        features.includes('safe_dm_mentions'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'shoutAvailable',
+        features.includes('chat'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'pleromaChatMessagesAvailable',
+        features.includes('pleroma_chat_messages'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'pleromaCustomEmojiReactionsAvailable',
+
+        features.includes('pleroma_custom_emoji_reactions') ||
           features.includes('custom_emoji_reactions'),
-      })
-      store.dispatch('setInstanceOption', {
-        name: 'pleromaBookmarkFoldersAvailable',
-        value: features.includes('pleroma:bookmark_folders'),
-      })
-      store.dispatch('setInstanceOption', {
-        name: 'gopherAvailable',
-        value: features.includes('gopher'),
-      })
-      store.dispatch('setInstanceOption', {
-        name: 'pollsAvailable',
-        value: features.includes('polls'),
-      })
-      store.dispatch('setInstanceOption', {
-        name: 'editingAvailable',
-        value: features.includes('editing'),
-      })
-      store.dispatch('setInstanceOption', {
-        name: 'pollLimits',
-        value: metadata.pollLimits,
-      })
-      store.dispatch('setInstanceOption', {
-        name: 'mailerEnabled',
-        value: metadata.mailerEnabled,
-      })
-      store.dispatch('setInstanceOption', {
-        name: 'quotingAvailable',
-        value: features.includes('quote_posting'),
-      })
-      store.dispatch('setInstanceOption', {
-        name: 'groupActorAvailable',
-        value: features.includes('pleroma:group_actors'),
-      })
-      store.dispatch('setInstanceOption', {
-        name: 'blockExpiration',
-        value: features.includes('pleroma:block_expiration'),
-      })
-      store.dispatch('setInstanceOption', {
-        name: 'localBubbleInstances',
+      )
+      useInstanceCapabilitiesStore().set(
+        'pleromaBookmarkFoldersAvailable',
+        features.includes('pleroma:bookmark_folders'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'gopherAvailable',
+        features.includes('gopher'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'pollsAvailable',
+        features.includes('polls'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'editingAvailable',
+        features.includes('editing'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'mailerEnabled',
+        metadata.mailerEnabled,
+      )
+      useInstanceCapabilitiesStore().set(
+        'quotingAvailable',
+        features.includes('quote_posting'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'groupActorAvailable',
+        features.includes('pleroma:group_actors'),
+      )
+      useInstanceCapabilitiesStore().set(
+        'blockExpiration',
+        features.includes('pleroma:block_expiration'),
+      )
+      useInstanceStore().set({
+        path: 'localBubbleInstances',
         value: metadata.localBubbleInstances ?? [],
       })
+      useInstanceCapabilitiesStore().set(
+        'localBubble',
+        (metadata.localBubbleInstances ?? []).length > 0,
+      )
 
+      useInstanceStore().set({
+        path: 'limits.pollLimits',
+        value: metadata.pollLimits,
+      })
       const uploadLimits = metadata.uploadLimits
-      store.dispatch('setInstanceOption', {
-        name: 'uploadlimit',
+      useInstanceStore().set({
+        path: 'limits.uploadlimit',
         value: parseInt(uploadLimits.general),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'avatarlimit',
+      useInstanceStore().set({
+        path: 'limits.avatarlimit',
         value: parseInt(uploadLimits.avatar),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'backgroundlimit',
+      useInstanceStore().set({
+        path: 'limits.backgroundlimit',
         value: parseInt(uploadLimits.background),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'bannerlimit',
+      useInstanceStore().set({
+        path: 'limits.bannerlimit',
         value: parseInt(uploadLimits.banner),
       })
-      store.dispatch('setInstanceOption', {
-        name: 'fieldsLimits',
+      useInstanceStore().set({
+        path: 'limits.fieldsLimits',
         value: metadata.fieldsLimits,
       })
 
-      store.dispatch('setInstanceOption', {
-        name: 'restrictedNicknames',
+      useInstanceStore().set({
+        path: 'restrictedNicknames',
         value: metadata.restrictedNicknames,
       })
-      store.dispatch('setInstanceOption', {
-        name: 'postFormats',
-        value: metadata.postFormats,
-      })
+      useInstanceCapabilitiesStore().set('postFormats', metadata.postFormats)
 
       const suggestions = metadata.suggestions
-      store.dispatch('setInstanceOption', {
-        name: 'suggestionsEnabled',
-        value: suggestions.enabled,
-      })
-      store.dispatch('setInstanceOption', {
-        name: 'suggestionsWeb',
-        value: suggestions.web,
-      })
+      useInstanceCapabilitiesStore().set(
+        'suggestionsEnabled',
+        suggestions.enabled,
+      )
+      // this is unused, why?
+      useInstanceCapabilitiesStore().set('suggestionsWeb', suggestions.web)
 
       const software = data.software
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'backendVersion',
         value: software.version,
       })
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'backendRepository',
         value: software.repository,
       })
 
       const priv = metadata.private
-      store.dispatch('setInstanceOption', { name: 'private', value: priv })
+      useInstanceStore().set({ name: 'privateMode', value: priv })
 
       const frontendVersion = window.___pleromafe_commit_hash
-      store.dispatch('setInstanceOption', {
+      useInstanceStore().set({
         name: 'frontendVersion',
         value: frontendVersion,
       })
 
       const federation = metadata.federation
 
-      store.dispatch('setInstanceOption', {
-        name: 'tagPolicyAvailable',
-        value:
-          typeof federation.mrf_policies === 'undefined'
-            ? false
-            : metadata.federation.mrf_policies.includes('TagPolicy'),
-      })
+      useInstanceCapabilitiesStore().set(
+        'tagPolicyAvailable',
+        typeof federation.mrf_policies === 'undefined'
+          ? false
+          : metadata.federation.mrf_policies.includes('TagPolicy'),
+      )
 
-      store.dispatch('setInstanceOption', {
-        name: 'federationPolicy',
+      useInstanceStore().set({
+        path: 'federationPolicy',
         value: federation,
       })
-      store.dispatch('setInstanceOption', {
-        name: 'federating',
+      useInstanceStore().set({
+        path: 'federating',
         value:
           typeof federation.enabled === 'undefined' ? true : federation.enabled,
       })
 
       const accountActivationRequired = metadata.accountActivationRequired
-      store.dispatch('setInstanceOption', {
-        name: 'accountActivationRequired',
+      useInstanceStore().set({
+        path: 'accountActivationRequired',
         value: accountActivationRequired,
       })
 
@@ -526,7 +533,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     typeof overrides.target !== 'undefined'
       ? overrides.target
       : window.location.origin
-  store.dispatch('setInstanceOption', { name: 'server', value: server })
+  useInstanceStore().set({ name: 'server', value: server })
 
   await setConfig({ store })
   try {

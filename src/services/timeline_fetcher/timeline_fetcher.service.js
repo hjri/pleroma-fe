@@ -1,8 +1,11 @@
 import { camelCase } from 'lodash'
 
-import { useInterfaceStore } from 'src/stores/interface.js'
 import apiService from '../api/api.service.js'
 import { promiseInterval } from '../promise_interval/promise_interval.js'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 const update = ({
   store,
@@ -76,7 +79,7 @@ const fetchAndUpdate = ({
     .then((response) => {
       if (response.errors) {
         if (timeline === 'favorites') {
-          rootState.instance.pleromaPublicFavouritesAvailable = false
+          useInstanceCapabilitiesStore().pleromaPublicFavouritesAvailable = false
           return
         }
         throw new Error(`${response.status} ${response.statusText}`)

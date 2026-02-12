@@ -1,8 +1,8 @@
 import { mapState as mapPiniaState } from 'pinia'
 import { mapGetters } from 'vuex'
 
-import { useAnnouncementsStore } from 'src/stores/announcements'
-import { useInterfaceStore } from 'src/stores/interface'
+import { useAnnouncementsStore } from 'src/stores/announcements.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

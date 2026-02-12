@@ -45,6 +45,11 @@
                 {{ $t('settings.hide_scrobbles_after') }}
               </UnitSetting>
             </li>
+            <li v-if="instanceSpecificPanelPresent">
+              <BooleanSetting path="hideISP">
+                {{ $t('settings.hide_isp') }}
+              </BooleanSetting>
+            </li>
           </ul>
         </li>
       </ul>
@@ -73,7 +78,7 @@
             {{ $t('settings.user_card_hide_personal_marks') }}
           </BooleanSetting>
         </li>
-        <li v-if="instanceShoutboxPresent">
+        <li v-if="shoutAvailable">
           <BooleanSetting
             path="hideShoutbox"
           >

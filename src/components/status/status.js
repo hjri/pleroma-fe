@@ -4,8 +4,6 @@ import MentionLink from 'src/components/mention_link/mention_link.vue'
 import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import StatusActionButtons from 'src/components/status_action_buttons/status_action_buttons.vue'
-import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import { muteFilterHits } from '../../services/status_parser/status_parser.js'
 import {
   highlightClass,
@@ -21,6 +19,12 @@ import UserAvatar from '../user_avatar/user_avatar.vue'
 import UserLink from '../user_link/user_link.vue'
 import UserListPopover from '../user_list_popover/user_list_popover.vue'
 import UserPopover from '../user_popover/user_popover.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+
+import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -494,7 +498,7 @@ const Status = {
       return this.status.edited_at !== null
     },
     editingAvailable() {
-      return this.$store.state.instance.editingAvailable
+      return useInstanceCapabilitiesStore().editingAvailable
     },
     hasVisibleQuote() {
       return this.status.quote_url && this.status.quote_visible
@@ -588,7 +592,7 @@ const Status = {
       return generateProfileLink(
         id,
         name,
-        this.$store.state.instance.restrictedNicknames,
+        useInstanceStore().restrictedNicknames,
       )
     },
     addMediaPlaying(id) {

@@ -8,7 +8,7 @@ import { FontAwesomeIcon as FAIcon } from '@fortawesome/vue-fontawesome'
 
 import './vertical_tab_switcher.scss'
 
-import { useInterfaceStore } from 'src/stores/interface'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 const findFirstUsable = (slots) => slots.findIndex((_) => _.props)
 
@@ -34,11 +34,6 @@ export default {
       required: false,
       type: Boolean,
       default: false,
-    },
-    parentCollapsed: {
-      required: false,
-      type: Boolean,
-      default: null,
     },
   },
   data() {
@@ -202,7 +197,7 @@ export default {
         </div>
         <div
           role="tabpanel"
-          class={'contents' + (this.scrollableTabs ? ' scrollable-tabs' : '')}
+          class="contents"
           v-body-scroll-lock={this.bodyScrollLock}
           ref="contents"
         >

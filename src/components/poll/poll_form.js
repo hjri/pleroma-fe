@@ -1,6 +1,9 @@
+import Select from '../select/select.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+
 import * as DateUtils from 'src/services/date_utils/date_utils.js'
 import { pollFallback } from 'src/services/poll/poll.service.js'
-import Select from '../select/select.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -52,7 +55,7 @@ export default {
       },
     },
     pollLimits() {
-      return this.$store.state.instance.pollLimits
+      return useInstanceStore().limits.pollLimits
     },
     maxOptions() {
       return this.pollLimits.max_options

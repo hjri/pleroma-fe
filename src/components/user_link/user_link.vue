@@ -14,8 +14,11 @@
 </template>
 
 <script>
-import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+
+import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 const UserLink = {
   props: {
@@ -33,7 +36,7 @@ const UserLink = {
       return generateProfileLink(
         user.id,
         user.screen_name,
-        this.$store.state.instance.restrictedNicknames,
+        useInstanceStore().restrictedNicknames,
       )
     },
   },

@@ -13,8 +13,10 @@ import {
   slice,
 } from 'lodash'
 
-import { useInterfaceStore } from 'src/stores/interface'
 import apiService from '../services/api/api.service.js'
+
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 const emptyTl = (userId = 0) => ({
   statuses: [],
@@ -40,7 +42,6 @@ export const defaultState = () => ({
   conversationsObject: {},
   maxId: 0,
   favorites: new Set(),
-  pleromaScrobblesAvailable: true, // not reported in nodeinfo
   timelines: {
     mentions: emptyTl(),
     public: emptyTl(),
@@ -114,7 +115,8 @@ const sortTimeline = (timeline) => {
 }
 
 const getLatestScrobble = (state, user) => {
-  const scrobblesSupport = state.pleromaScrobblesAvailable
+  const scrobblesSupport =
+    useInstanceCapabilitiesStore().pleromaScrobblesAvailable
 
   if (!scrobblesSupport || !user.name || user.id === 'undefined') {
     return
@@ -133,7 +135,7 @@ const getLatestScrobble = (state, user) => {
     .fetchScrobbles({ accountId: user.id })
     .then((scrobbles) => {
       if (scrobbles?.error) {
-        state.pleromaScrobblesAvailable = false
+        useInstanceCapabilitiesStore().set('pleromaScrobblesAvailable', false)
         return
       }
 

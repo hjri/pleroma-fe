@@ -2,7 +2,6 @@ import _ from 'lodash'
 import { mapState as mapPiniaState } from 'pinia'
 import { mapGetters, mapState } from 'vuex'
 
-import { useInterfaceStore } from 'src/stores/interface.js'
 import { WSConnectionStatus } from '../../services/api/api.service.js'
 import chatService from '../../services/chat_service/chat_service.js'
 import { buildFakeMessage } from '../../services/chat_utils/chat_utils.js'
@@ -16,6 +15,8 @@ import {
   isBottomedOut,
   isScrollable,
 } from './chat_layout_utils.js'
+
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronDown, faChevronLeft } from '@fortawesome/free-solid-svg-icons'

@@ -157,7 +157,7 @@
               </BooleanSetting>
             </li>
             <li
-              v-if="!blockExpirationSupported"
+              v-if="!blockExpiration"
             >
               <BooleanSetting
                 path="modalOnBlock"

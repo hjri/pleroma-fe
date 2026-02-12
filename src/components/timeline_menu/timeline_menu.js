@@ -1,14 +1,18 @@
+import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
 import { filterNavigation } from 'src/components/navigation/filter.js'
 import { TIMELINES } from 'src/components/navigation/navigation.js'
 import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
-import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
-import { useInterfaceStore } from 'src/stores/interface'
-import { useListsStore } from 'src/stores/lists'
 import BookmarkFoldersMenuContent from '../bookmark_folders_menu/bookmark_folders_menu_content.vue'
 import ListsMenuContent from '../lists_menu/lists_menu_content.vue'
 import Popover from '../popover/popover.vue'
+
+import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface'
+import { useListsStore } from 'src/stores/lists'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
@@ -58,13 +62,15 @@ const TimelineMenu = {
         (route === 'bookmark-folder' || route === 'bookmarks')
       )
     },
+    ...mapPiniaState(useInstanceCapabilitiesStore, [
+      'pleromaChatMessagesAvailable',
+      'pleromaBookmarkFoldersAvailable',
+      'bookmarkFolders',
+      'localBubble',
+    ]),
+    ...mapPiniaState(useInstanceStore, ['privateMode', 'federating']),
     ...mapState({
       currentUser: (state) => state.users.currentUser,
-      privateMode: (state) => state.instance.private,
-      federating: (state) => state.instance.federating,
-      bookmarkFolders: (state) =>
-        state.instance.pleromaBookmarkFoldersAvailable,
-      bubbleTimeline: (state) => state.instance.localBubbleInstances.length > 0,
     }),
     timelinesList() {
       return filterNavigation(
@@ -74,8 +80,8 @@ const TimelineMenu = {
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser,
-          supportsBookmarkFolders: this.bookmarkFolders,
-          supportsBubbleTimeline: this.bubbleTimeline,
+          supportsBookmarkFolders: this.pleromaBookmarkFoldersAvailable,
+          supportsBubbleTimeline: this.localBubble,
         },
       )
     },

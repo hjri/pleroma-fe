@@ -4,9 +4,11 @@ import { mapGetters, mapState } from 'vuex'
 
 import BasicUserCard from '../basic_user_card/basic_user_card.vue'
 
+import { useInstanceStore } from 'src/stores/instance.js'
+
 const StaffPanel = {
   created() {
-    const nicknames = this.$store.state.instance.staffAccounts
+    const nicknames = useInstanceStore().staffAccounts
     nicknames.forEach((nickname) =>
       this.$store.dispatch('fetchUserIfMissing', nickname),
     )
@@ -28,7 +30,7 @@ const StaffPanel = {
     },
     ...mapGetters(['findUserByName']),
     ...mapState({
-      staffAccounts: (state) => state.instance.staffAccounts,
+      staffAccounts: (state) => useInstanceStore().staffAccounts,
     }),
   },
 }

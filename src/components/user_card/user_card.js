@@ -11,10 +11,6 @@ import suggestor from 'src/components/emoji_input/suggestor.js'
 import ImageCropper from 'src/components/image_cropper/image_cropper.vue'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
-import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
-import localeService from 'src/services/locale/locale.service.js'
-import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
-import { usePostStatusStore } from 'src/stores/post_status'
 import { useInterfaceStore } from '../../stores/interface'
 import { useMediaViewerStore } from '../../stores/media_viewer'
 import AccountActions from '../account_actions/account_actions.vue'
@@ -26,6 +22,15 @@ import Select from '../select/select.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
 import UserLink from '../user_link/user_link.vue'
 import UserNote from '../user_note/user_note.vue'
+
+import { useEmojiStore } from 'src/stores/emoji.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { usePostStatusStore } from 'src/stores/post_status'
+
+import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
+import localeService from 'src/services/locale/locale.service.js'
+import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -176,7 +181,7 @@ export default {
       return false
     },
     groupActorAvailable() {
-      return this.$store.state.instance.groupActorAvailable
+      return useInstanceCapabilitiesStore().groupActorAvailable
     },
     availableActorTypes() {
       return this.groupActorAvailable
@@ -209,7 +214,7 @@ export default {
       return Math.round(this.user.statuses_count / days)
     },
     emoji() {
-      return this.$store.state.instance.customEmoji.map((e) => ({
+      return useEmojiStore().customEmoji.map((e) => ({
         shortcode: e.displayText,
         static_url: e.imageUrl,
         url: e.imageUrl,
@@ -336,18 +341,18 @@ export default {
     },
     defaultAvatar() {
       return (
-        this.$store.state.instance.server +
-        this.$store.state.instance.defaultAvatar
+        useInstanceStore().server +
+        useInstanceStore().instanceIdentity.defaultAvatar
       )
     },
     defaultBanner() {
       return (
-        this.$store.state.instance.server +
-        this.$store.state.instance.defaultBanner
+        useInstanceStore().server +
+        useInstanceStore().instanceIdentity.defaultBanner
       )
     },
     isDefaultAvatar() {
-      const baseAvatar = this.$store.state.instance.defaultAvatar
+      const baseAvatar = useInstanceStore().defaultAvatar
       return (
         !this.$store.state.users.currentUser.profile_image_url ||
         this.$store.state.users.currentUser.profile_image_url.includes(
@@ -356,14 +361,14 @@ export default {
       )
     },
     isDefaultBanner() {
-      const baseBanner = this.$store.state.instance.defaultBanner
+      const baseBanner = useInstanceStore().defaultBanner
       return (
         !this.$store.state.users.currentUser.cover_photo ||
         this.$store.state.users.currentUser.cover_photo.includes(baseBanner)
       )
     },
     fieldsLimits() {
-      return this.$store.state.instance.fieldsLimits
+      return useInstanceStore().limits.fieldsLimits
     },
     maxFields() {
       return this.fieldsLimits ? this.fieldsLimits.maxFields : 0
@@ -372,7 +377,7 @@ export default {
       return suggestor({
         emoji: [
           ...this.$store.getters.standardEmojiList,
-          ...this.$store.state.instance.customEmoji,
+          ...useEmojiStore().customEmoji,
         ],
         store: this.$store,
       })
@@ -381,7 +386,7 @@ export default {
       return suggestor({
         emoji: [
           ...this.$store.getters.standardEmojiList,
-          ...this.$store.state.instance.customEmoji,
+          ...useEmojiStore().customEmoji,
         ],
       })
     },
@@ -412,7 +417,7 @@ export default {
       return generateProfileLink(
         user.id,
         user.screen_name,
-        this.$store.state.instance.restrictedNicknames,
+        useInstanceStore().restrictedNicknames,
       )
     },
     openProfileTab() {

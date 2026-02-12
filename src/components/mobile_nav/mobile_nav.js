@@ -2,8 +2,6 @@ import { mapState } from 'pinia'
 import { mapGetters } from 'vuex'
 
 import NavigationPins from 'src/components/navigation/navigation_pins.vue'
-import { useAnnouncementsStore } from 'src/stores/announcements'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import GestureService from '../../services/gesture_service/gesture_service'
 import {
   countExtraNotifications,
@@ -12,6 +10,10 @@ import {
 import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 import Notifications from '../notifications/notifications.vue'
 import SideDrawer from '../side_drawer/side_drawer.vue'
+
+import { useAnnouncementsStore } from 'src/stores/announcements.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useServerSideStorageStore } from 'src/stores/serverSideStorage.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -64,10 +66,10 @@ const MobileNav = {
       return `${this.unseenCount ? this.unseenCount : ''}`
     },
     hideSitename() {
-      return this.$store.state.instance.hideSitename
+      return useInstanceStore().hideSitename
     },
     sitename() {
-      return this.$store.state.instance.name
+      return useInstanceStore().name
     },
     isChat() {
       return this.$route.name === 'chat'

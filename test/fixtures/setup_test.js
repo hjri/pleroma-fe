@@ -2,8 +2,9 @@ import { config } from '@vue/test-utils'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import VueVirtualScroller from 'vue-virtual-scroller'
 
-import routes from 'src/boot/routes'
 import makeMockStore from './mock_store'
+
+import routes from 'src/boot/routes'
 
 export const $t = (msg) => msg
 const $i18n = { t: (msg) => msg }

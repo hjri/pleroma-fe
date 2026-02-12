@@ -6,12 +6,6 @@ import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
 const GeneralTab = {
-  props: {
-    parentCollapsed: {
-      required: true,
-      type: Boolean,
-    },
-  },
   data() {
     return {
       conversationDisplayOptions: ['tree', 'linear'].map((mode) => ({

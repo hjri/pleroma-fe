@@ -1,13 +1,16 @@
-import { mapState as mapPiniaState } from 'pinia'
-import { mapGetters, mapState } from 'vuex'
+import { mapActions, mapState } from 'pinia'
+import { mapGetters } from 'vuex'
 
 import { USERNAME_ROUTES } from 'src/components/navigation/navigation.js'
-import { useAnnouncementsStore } from 'src/stores/announcements'
-import { useInterfaceStore } from 'src/stores/interface'
-import { useShoutStore } from 'src/stores/shout'
 import GestureService from '../../services/gesture_service/gesture_service'
 import { unseenNotificationsFromStore } from '../../services/notification_utils/notification_utils'
 import UserCard from '../user_card/user_card.vue'
+
+import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface'
+import { useShoutStore } from 'src/stores/shout'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -74,26 +77,8 @@ const SideDrawer = {
     unseenNotificationsCount() {
       return this.unseenNotifications.length
     },
-    suggestionsEnabled() {
-      return this.$store.state.instance.suggestionsEnabled
-    },
-    logo() {
-      return this.$store.state.instance.logo
-    },
-    hideSitename() {
-      return this.$store.state.instance.hideSitename
-    },
-    sitename() {
-      return this.$store.state.instance.name
-    },
     followRequestCount() {
       return this.$store.state.api.followRequests.length
-    },
-    privateMode() {
-      return this.$store.state.instance.private
-    },
-    federating() {
-      return this.$store.state.instance.federating
     },
     timelinesRoute() {
       let name
@@ -107,13 +92,19 @@ const SideDrawer = {
         return { name }
       }
     },
-    ...mapPiniaState(useAnnouncementsStore, {
-      supportsAnnouncements: (store) => store.supportsAnnouncements,
-      unreadAnnouncementCount: 'unreadAnnouncementCount',
-    }),
-    ...mapState({
-      pleromaChatMessagesAvailable: (state) =>
-        state.instance.pleromaChatMessagesAvailable,
+    ...mapState(useAnnouncementsStore, [
+      'supportsAnnouncements',
+      'unreadAnnouncementCount',
+    ]),
+    ...mapState(useInstanceCapabilitiesStore, [
+      'pleromaChatMessagesAvailable',
+      'suggestionsEnabled',
+    ]),
+    ...mapState(useInstanceStore, ['privateMode', 'federating']),
+    ...mapState(useInstanceStore, {
+      logo: (store) => store.instanceIdentity.logo,
+      sitename: (store) => store.instanceIdentity.name,
+      hideSitename: (store) => store.instanceIdentity.hideSitename,
     }),
     ...mapGetters(['unreadChatCount', 'draftCount']),
   },
@@ -131,12 +122,7 @@ const SideDrawer = {
     touchMove(e) {
       GestureService.updateSwipe(e, this.closeGesture)
     },
-    openSettingsModal() {
-      useInterfaceStore().openSettingsModal('user')
-    },
-    openAdminModal() {
-      useInterfaceStore().openSettingsModal('admin')
-    },
+    ...mapActions(useInterfaceStore, ['openSettingsModal']),
   },
 }
 

@@ -1,7 +1,7 @@
-/* eslint-env browser */
-
 import fileSizeFormatService from '../../services/file_size_format/file_size_format.js'
 import statusPosterService from '../../services/status_poster/status_poster.service.js'
+
+import { useInstanceStore } from 'src/stores/instance.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch, faUpload } from '@fortawesome/free-solid-svg-icons'
@@ -122,10 +122,10 @@ const mediaUpload = {
     async uploadFile(file) {
       const self = this
       const store = this.$store
-      if (file.size > store.state.instance.uploadlimit) {
+      if (file.size > useInstanceStore().uploadlimit) {
         const filesize = fileSizeFormatService.fileSizeFormat(file.size)
         const allowedsize = fileSizeFormatService.fileSizeFormat(
-          store.state.instance.uploadlimit,
+          useInstanceStore().uploadlimit,
         )
         self.$emit('upload-failed', 'file_too_big', {
           filesize: filesize.num,

@@ -1,16 +1,19 @@
 import { defineStore } from 'pinia'
 
 import {
-  CURRENT_VERSION,
-  generatePreset,
-} from 'src/services/theme_data/theme_data.service.js'
-import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
-import {
   applyTheme,
   getResourcesIndex,
   tryLoadCache,
 } from '../services/style_setter/style_setter.js'
 import { deserialize } from '../services/theme_data/iss_deserializer.js'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+
+import {
+  CURRENT_VERSION,
+  generatePreset,
+} from 'src/services/theme_data/theme_data.service.js'
+import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
 
 export const useInterfaceStore = defineStore('interface', {
   state: () => ({
@@ -86,7 +89,7 @@ export const useInterfaceStore = defineStore('interface', {
     },
     setPageTitle(option = '') {
       try {
-        document.title = `${option} ${window.vuex.state.instance.name}`
+        document.title = `${option} ${useInstanceStore().name}`
       } catch (error) {
         console.error(`${error}`)
       }
@@ -221,14 +224,14 @@ export const useInterfaceStore = defineStore('interface', {
     async fetchPalettesIndex() {
       try {
         const value = await getResourcesIndex('/static/palettes/index.json')
-        window.vuex.commit('setInstanceOption', {
+        useInstanceStore().set({
           name: 'palettesIndex',
           value,
         })
         return value
       } catch (e) {
         console.error('Could not fetch palettes index', e)
-        window.vuex.commit('setInstanceOption', {
+        useInstanceStore().set({
           name: 'palettesIndex',
           value: { _error: e },
         })
@@ -257,11 +260,11 @@ export const useInterfaceStore = defineStore('interface', {
           '/static/styles/index.json',
           deserialize,
         )
-        window.vuex.commit('setInstanceOption', { name: 'stylesIndex', value })
+        useInstanceStore().set({ name: 'stylesIndex', value })
         return value
       } catch (e) {
         console.error('Could not fetch styles index', e)
-        window.vuex.commit('setInstanceOption', {
+        useInstanceStore().set({
           name: 'stylesIndex',
           value: { _error: e },
         })
@@ -295,11 +298,11 @@ export const useInterfaceStore = defineStore('interface', {
     async fetchThemesIndex() {
       try {
         const value = await getResourcesIndex('/static/styles.json')
-        window.vuex.commit('setInstanceOption', { name: 'themesIndex', value })
+        useInstanceStore().set({ name: 'themesIndex', value })
         return value
       } catch (e) {
         console.error('Could not fetch themes index', e)
-        window.vuex.commit('setInstanceOption', {
+        useInstanceStore().set({
           name: 'themesIndex',
           value: { _error: e },
         })
@@ -385,14 +388,14 @@ export const useInterfaceStore = defineStore('interface', {
       }
 
       const { style: instanceStyleName, palette: instancePaletteName } =
-        window.vuex.state.instance
+        useInstanceStore()
 
       let {
         theme: instanceThemeV2Name,
         themesIndex,
         stylesIndex,
         palettesIndex,
-      } = window.vuex.state.instance
+      } = useInstanceStore()
 
       const {
         style: userStyleName,

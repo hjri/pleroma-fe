@@ -1,3 +1,4 @@
+import { createTestingPinia } from '@pinia/testing'
 import { flushPromises, mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 
@@ -35,6 +36,8 @@ afterEach(() => {
 })
 
 describe('Draft saving', () => {
+  createTestingPinia()
+
   autoSaveOrNot(
     it,
     'should save when the button is clicked',

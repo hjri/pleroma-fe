@@ -1,4 +1,5 @@
 import { throttle } from 'lodash'
+import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 import { mapGetters } from 'vuex'
 
@@ -20,8 +21,11 @@ import UserReportingModal from './components/user_reporting_modal/user_reporting
 import WhoToFollowPanel from './components/who_to_follow_panel/who_to_follow_panel.vue'
 import { getOrCreateServiceWorker } from './services/sw/sw'
 import { windowHeight, windowWidth } from './services/window_utils/window_utils'
-import { useInterfaceStore } from './stores/interface'
-import { useShoutStore } from './stores/shout'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useShoutStore } from 'src/stores/shout.js'
 
 export default {
   name: 'app',
@@ -80,7 +84,7 @@ export default {
     window.addEventListener('resize', this.updateMobileState)
     this.scrollParent.addEventListener('scroll', this.updateScrollState)
 
-    if (useInterfaceStore().themeApplied) {
+    if (this.themeApplied) {
       this.setThemeBodyClass()
       this.removeSplash()
     }
@@ -91,12 +95,9 @@ export default {
     this.scrollParent.removeEventListener('scroll', this.updateScrollState)
   },
   computed: {
-    themeApplied() {
-      return useInterfaceStore().themeApplied
-    },
     currentTheme() {
-      if (useInterfaceStore().styleDataUsed) {
-        const styleMeta = useInterfaceStore().styleDataUsed.find(
+      if (this.styleDataUsed) {
+        const styleMeta = this.styleDataUsed.find(
           (x) => x.component === '@meta',
         )
 
@@ -134,9 +135,7 @@ export default {
       return this.currentUser.background_image
     },
     instanceBackground() {
-      return this.mergedConfig.hideInstanceWallpaper
-        ? null
-        : this.$store.state.instance.background
+      return this.mergedConfig.hideInstanceWallpaper ? null : this.background
     },
     background() {
       return this.userBackground || this.instanceBackground
@@ -150,16 +149,6 @@ export default {
     },
     shout() {
       return useShoutStore().joined
-    },
-    suggestionsEnabled() {
-      return this.$store.state.instance.suggestionsEnabled
-    },
-    showInstanceSpecificPanel() {
-      return (
-        this.$store.state.instance.showInstanceSpecificPanel &&
-        !this.$store.getters.mergedConfig.hideISP &&
-        this.$store.state.instance.instanceSpecificPanelContent
-      )
     },
     isChats() {
       return this.$route.name === 'chat' || this.$route.name === 'chats'
@@ -175,23 +164,11 @@ export default {
         this.layoutType === 'mobile'
       )
     },
-    showFeaturesPanel() {
-      return this.$store.state.instance.showFeaturesPanel
-    },
-    editingAvailable() {
-      return this.$store.state.instance.editingAvailable
-    },
     shoutboxPosition() {
       return this.$store.getters.mergedConfig.alwaysShowNewPostButton || false
     },
     hideShoutbox() {
       return this.$store.getters.mergedConfig.hideShoutbox
-    },
-    layoutType() {
-      return useInterfaceStore().layoutType
-    },
-    privateMode() {
-      return this.$store.state.instance.private
     },
     reverseLayout() {
       const { thirdColumnMode, sidebarRight: reverseSetting } =
@@ -213,7 +190,30 @@ export default {
     scrollParent() {
       return window /* this.$refs.appContentRef */
     },
+    showInstanceSpecificPanel() {
+      return (
+        this.instanceSpecificPanelPresent &&
+        !this.$store.getters.mergedConfig.hideISP
+      )
+    },
     ...mapGetters(['mergedConfig']),
+    ...mapState(useInterfaceStore, [
+      'themeApplied',
+      'styleDataUsed',
+      'layoutType',
+    ]),
+    ...mapState(useInstanceStore, ['styleDataUsed']),
+    ...mapState(useInstanceCapabilitiesStore, [
+      'suggestionsEnabled',
+      'editingAvailable',
+    ]),
+    ...mapState(useInstanceStore, {
+      background: (store) => store.instanceIdentity.background,
+      showFeaturesPanel: (store) => store.instanceIdentity.showFeaturesPanel,
+      instanceSpecificPanelPresent: (store) =>
+        store.instanceIdentity.showInstanceSpecificPanel &&
+        store.instanceIdentity.instanceSpecificPanelContent,
+    }),
   },
   methods: {
     resizeHandler() {

@@ -18,9 +18,13 @@ export const staticOrApiConfigDefault = {
   redirectRootLogin: '/main/friends',
   redirectRootNoLogin: '/main/all',
   hideSitename: false,
-  nsfwCensorImage: undefined,
+  nsfwCensorImage: null,
   showFeaturesPanel: true,
   showInstanceSpecificPanel: false,
+
+  // Html stuff
+  instanceSpecificPanelContent: '',
+  tos: '',
 }
 
 /// This object contains setting entries that makes sense
