@@ -22,7 +22,7 @@ import UserPopover from '../user_popover/user_popover.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
@@ -259,9 +259,7 @@ const Status = {
     },
     muteFilterHits() {
       return muteFilterHits(
-        Object.values(
-          useServerSideStorageStore().prefsStorage.simple.muteFilters,
-        ),
+        Object.values(useSyncConfigStore().prefsStorage.simple.muteFilters),
         this.status,
       )
     },

@@ -12,7 +12,7 @@ import UnitSetting from '../helpers/unit_setting.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 const ClutterTab = {
   components: {
@@ -33,7 +33,7 @@ const ClutterTab = {
         store.instanceIdentity.showInstanceSpecificPanel &&
         store.instanceIdentity.instanceSpecificPanelContent,
     }),
-    ...mapState(useServerSideStorageStore, {
+    ...mapState(useSyncConfigStore, {
       muteFilters: (store) =>
         Object.entries(store.prefsStorage.simple.muteFilters),
       muteFiltersObject: (store) => store.prefsStorage.simple.muteFilters,
@@ -89,10 +89,10 @@ const ClutterTab = {
     },
   },
   methods: {
-    ...mapActions(useServerSideStorageStore, [
+    ...mapActions(useSyncConfigStore, [
       'setPreference',
       'unsetPreference',
-      'pushServerSideStorage',
+      'pushSyncConfig',
     ]),
     getDatetimeLocal(timestamp) {
       const date = new Date(timestamp)
@@ -139,7 +139,7 @@ const ClutterTab = {
       filter.order = this.muteFilters.length + 2
       this.muteFiltersDraftObject[newId] = filter
       this.setPreference({ path: 'simple.muteFilters.' + newId, value: filter })
-      this.pushServerSideStorage()
+      this.pushSyncConfig()
     },
     exportFilter(id) {
       this.exportedFilter = { ...this.muteFiltersDraftObject[id] }
@@ -155,19 +155,19 @@ const ClutterTab = {
 
       this.muteFiltersDraftObject[newId] = filter
       this.setPreference({ path: 'simple.muteFilters.' + newId, value: filter })
-      this.pushServerSideStorage()
+      this.pushSyncConfig()
     },
     deleteFilter(id) {
       delete this.muteFiltersDraftObject[id]
       this.unsetPreference({ path: 'simple.muteFilters.' + id, value: null })
-      this.pushServerSideStorage()
+      this.pushSyncConfig()
     },
     purgeExpiredFilters() {
       this.muteFiltersExpired.forEach(([id]) => {
         delete this.muteFiltersDraftObject[id]
         this.unsetPreference({ path: 'simple.muteFilters.' + id, value: null })
       })
-      this.pushServerSideStorage()
+      this.pushSyncConfig()
     },
     updateFilter(id, field, value) {
       const filter = { ...this.muteFiltersDraftObject[id] }
@@ -193,7 +193,7 @@ const ClutterTab = {
         path: 'simple.muteFilters.' + id,
         value: this.muteFiltersDraftObject[id],
       })
-      this.pushServerSideStorage()
+      this.pushSyncConfig()
       this.muteFiltersDraftDirty[id] = false
     },
   },

@@ -13,7 +13,7 @@ import SideDrawer from '../side_drawer/side_drawer.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -75,15 +75,15 @@ const MobileNav = {
       return this.$route.name === 'chat'
     },
     ...mapState(useAnnouncementsStore, ['unreadAnnouncementCount']),
-    ...mapState(useServerSideStorageStore, {
+    ...mapState(useSyncConfigStore, {
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems).has('chats'),
     }),
     shouldConfirmLogout() {
-      return this.$store.getters.mergedConfig.modalOnLogout
+      return useSyncConfigStore().mergedConfig.modalOnLogout
     },
     closingDrawerMarksAsSeen() {
-      return this.$store.getters.mergedConfig.closingDrawerMarksAsSeen
+      return useSyncConfigStore().mergedConfig.closingDrawerMarksAsSeen
     },
     ...mapGetters(['unreadChatCount']),
   },

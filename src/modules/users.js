@@ -26,7 +26,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { declarations } from 'src/modules/config_declaration'
 
@@ -682,7 +682,7 @@ const users = {
           useInterfaceStore().setLastTimeline('public-timeline')
           useInterfaceStore().setLayoutWidth(windowWidth())
           useInterfaceStore().setLayoutHeight(windowHeight())
-          store.commit('clearServerSideStorage')
+          //useSyncConfigStore().clearSyncConfig()
         })
     },
     loginUser(store, accessToken) {
@@ -702,7 +702,7 @@ const users = {
               user.domainMutes = []
               commit('setCurrentUser', user)
 
-              useServerSideStorageStore().setServerSideStorage(user)
+              useSyncConfigStore().setSyncConfig(user)
               commit('addNewUsers', [user])
 
               useEmojiStore().fetchEmoji()
@@ -723,17 +723,16 @@ const users = {
               /*
               // Reset wordfilter
               Object.keys(
-                useServerSideStorageStore().prefsStorage.simple.muteFilters
+                useSyncConfigStore().prefsStorage.simple.muteFilters
               ).forEach(key => {
-                useServerSideStorageStore().unsetPreference({ path: 'simple.muteFilters.' + key, value: null })
+                useSyncConfigStore().unsetPreference({ path: 'simple.muteFilters.' + key, value: null })
               })
 
               // Reset flag to 0 to re-run migrations
-              useServerSideStorageStore().setFlag({ flag: 'configMigration', value: 0 })
+              useSyncConfigStore().setFlag({ flag: 'configMigration', value: 0 })
               /**/
 
-              const { configMigration } =
-                useServerSideStorageStore().flagStorage
+              const { configMigration } = useSyncConfigStore().flagStorage
               declarations
                 .filter((x) => {
                   return (
@@ -744,12 +743,12 @@ const users = {
                 })
                 .toSorted((a, b) => a.configMigration - b.configMigration)
                 .forEach((value) => {
-                  value.migration(useServerSideStorageStore(), store.rootState)
-                  useServerSideStorageStore().setFlag({
+                  value.migration(useSyncConfigStore(), store.rootState)
+                  useSyncConfigStore().setFlag({
                     flag: 'configMigration',
                     value: value.migrationNum,
                   })
-                  useServerSideStorageStore().pushServerSideStorage()
+                  useSyncConfigStore().pushSyncConfig()
                 })
 
               if (user.token) {

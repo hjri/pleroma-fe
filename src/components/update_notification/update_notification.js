@@ -1,7 +1,7 @@
 import Modal from 'src/components/modal/modal.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import pleromaTanFoxMask from 'src/assets/pleromatan_apology_fox_mask.png'
 import pleromaTanMask from 'src/assets/pleromatan_apology_mask.png'
@@ -41,9 +41,9 @@ const UpdateNotification = {
       return (
         !useInstanceStore().disableUpdateNotification &&
         this.$store.state.users.currentUser &&
-        useServerSideStorageStore().flagStorage.updateCounter <
+        useSyncConfigStore().flagStorage.updateCounter <
           CURRENT_UPDATE_COUNTER &&
-        !useServerSideStorageStore().prefsStorage.simple.dontShowUpdateNotifs
+        !useSyncConfigStore().prefsStorage.simple.dontShowUpdateNotifs
       )
     },
   },
@@ -53,22 +53,22 @@ const UpdateNotification = {
     },
     neverShowAgain() {
       this.toggleShow()
-      useServerSideStorageStore().setFlag({
+      useSyncConfigStore().setFlag({
         flag: 'updateCounter',
         value: CURRENT_UPDATE_COUNTER,
       })
-      useServerSideStorageStore().setPreference({
+      useSyncConfigStore().setPreference({
         path: 'simple.dontShowUpdateNotifs',
         value: true,
       })
-      useServerSideStorageStore().pushServerSideStorage()
+      useSyncConfigStore().pushSyncConfig()
     },
     dismiss() {
-      useServerSideStorageStore().setFlag({
+      useSyncConfigStore().setFlag({
         flag: 'updateCounter',
         value: CURRENT_UPDATE_COUNTER,
       })
-      useServerSideStorageStore().pushServerSideStorage()
+      useSyncConfigStore().pushSyncConfig()
     },
   },
   mounted() {

@@ -12,25 +12,25 @@ import {
   COMMAND_TRIM_FLAGS_AND_RESET,
   defaultState,
   newUserFlags,
-  useServerSideStorageStore,
+  useSyncConfigStore,
   VERSION,
-} from 'src/stores/serverSideStorage.js'
+} from 'src/stores/sync_config.js'
 
-describe('The serverSideStorage module', () => {
+describe('The SyncConfig module', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
   })
 
   describe('mutations', () => {
-    describe('setServerSideStorage', () => {
+    describe('setSyncConfig', () => {
       const user = {
         created_at: new Date('1999-02-09'),
         storage: {},
       }
 
       it('should initialize storage if none present', () => {
-        const store = useServerSideStorageStore()
-        store.setServerSideStorage(store, user)
+        const store = useSyncConfigStore()
+        store.setSyncConfig({ ...user })
         expect(store.cache._version).to.eql(VERSION)
         expect(store.cache._timestamp).to.be.a('number')
         expect(store.cache.flagStorage).to.eql(defaultState.flagStorage)
@@ -38,8 +38,8 @@ describe('The serverSideStorage module', () => {
       })
 
       it('should initialize storage with proper flags for new users if none present', () => {
-        const store = useServerSideStorageStore()
-        store.setServerSideStorage({ ...user, created_at: new Date() })
+        const store = useSyncConfigStore()
+        store.setSyncConfig({ ...user, created_at: new Date() })
         expect(store.cache._version).to.eql(VERSION)
         expect(store.cache._timestamp).to.be.a('number')
         expect(store.cache.flagStorage).to.eql(newUserFlags)
@@ -47,14 +47,14 @@ describe('The serverSideStorage module', () => {
       })
 
       it('should merge flags even if remote timestamp is older', () => {
-        const store = useServerSideStorageStore()
+        const store = useSyncConfigStore()
         store.cache = {
           _timestamp: Date.now(),
           _version: VERSION,
           ...cloneDeep(defaultState),
         }
 
-        store.setServerSideStorage({
+        store.setSyncConfig({
           ...user,
           storage: {
             _timestamp: 123,
@@ -76,10 +76,10 @@ describe('The serverSideStorage module', () => {
       })
 
       it('should reset local timestamp to remote if contents are the same', () => {
-        const store = useServerSideStorageStore()
+        const store = useSyncConfigStore()
         store.cache = null
 
-        store.setServerSideStorage({
+        store.setSyncConfig({
           ...user,
           storage: {
             _timestamp: 123,
@@ -95,9 +95,9 @@ describe('The serverSideStorage module', () => {
         expect(store.cache.flagStorage.updateCounter).to.eql(999)
       })
 
-      it('should remote version if local missing', () => {
-        const store = useServerSideStorageStore()
-        store.setServerSideStorage(store, user)
+      it('should use remote version if local missing', () => {
+        const store = useSyncConfigStore()
+        store.setSyncConfig(store, user)
         expect(store.cache._version).to.eql(VERSION)
         expect(store.cache._timestamp).to.be.a('number')
         expect(store.cache.flagStorage).to.eql(defaultState.flagStorage)
@@ -105,7 +105,7 @@ describe('The serverSideStorage module', () => {
     })
     describe('setPreference', () => {
       it('should set preference and update journal log accordingly', () => {
-        const store = useServerSideStorageStore()
+        const store = useSyncConfigStore()
         store.setPreference({ path: 'simple.testing', value: 1 })
         expect(store.prefsStorage.simple.testing).to.eql(1)
         expect(store.prefsStorage._journal.length).to.eql(1)
@@ -119,18 +119,34 @@ describe('The serverSideStorage module', () => {
       })
 
       it('should keep journal to a minimum', () => {
-        const store = useServerSideStorageStore()
+        const store = useSyncConfigStore()
         store.setPreference({ path: 'simple.testing', value: 1 })
         store.setPreference({ path: 'simple.testing', value: 2 })
         store.addCollectionPreference({ path: 'collections.testing', value: 2 })
+        store.addCollectionPreference({
+          path: 'objectCollections.testing',
+          value: { _key: 'a', foo: 1 },
+        })
+        expect(store.prefsStorage.objectCollections.testing).to.eql({
+          data: { a: { _key: 'a', foo: 1 } },
+          index: ['a'],
+        })
         store.removeCollectionPreference({
           path: 'collections.testing',
           value: 2,
         })
+        store.removeCollectionPreference({
+          path: 'objectCollections.testing',
+          value: { _key: 'a' },
+        })
         store.updateCache({ username: 'test' })
         expect(store.prefsStorage.simple.testing).to.eql(2)
         expect(store.prefsStorage.collections.testing).to.eql([])
-        expect(store.prefsStorage._journal.length).to.eql(2)
+        expect(store.prefsStorage.objectCollections.testing).to.eql({
+          data: {},
+          index: [],
+        })
+        expect(store.prefsStorage._journal.length).to.eql(3)
         expect(store.prefsStorage._journal[0]).to.eql({
           path: 'simple.testing',
           operation: 'set',
@@ -145,22 +161,41 @@ describe('The serverSideStorage module', () => {
           // should have A timestamp, we don't really care what it is
           timestamp: store.prefsStorage._journal[1].timestamp,
         })
+        expect(store.prefsStorage._journal[2]).to.eql({
+          path: 'objectCollections.testing',
+          operation: 'removeFromCollection',
+          args: [{ _key: 'a' }],
+          // should have A timestamp, we don't really care what it is
+          timestamp: store.prefsStorage._journal[2].timestamp,
+        })
       })
 
       it('should remove duplicate entries from journal', () => {
-        const store = useServerSideStorageStore()
+        const store = useSyncConfigStore()
         store.setPreference({ path: 'simple.testing', value: 1 })
         store.setPreference({ path: 'simple.testing', value: 1 })
         store.addCollectionPreference({ path: 'collections.testing', value: 2 })
         store.addCollectionPreference({ path: 'collections.testing', value: 2 })
+        store.addCollectionPreference({
+          path: 'objectCollections.testing',
+          value: { _key: 'a', foo: 1 },
+        })
+        store.addCollectionPreference({
+          path: 'objectCollections.testing',
+          value: { _key: 'a', foo: 1 },
+        })
         store.updateCache({ username: 'test' })
         expect(store.prefsStorage.simple.testing).to.eql(1)
         expect(store.prefsStorage.collections.testing).to.eql([2])
-        expect(store.prefsStorage._journal.length).to.eql(2)
+        expect(store.prefsStorage.objectCollections.testing).to.eql({
+          data: { a: { _key: 'a', foo: 1 } },
+          index: ['a'],
+        })
+        expect(store.prefsStorage._journal.length).to.eql(4)
       })
 
       it('should remove depth = 3 set/unset entries from journal', () => {
-        const store = useServerSideStorageStore()
+        const store = useSyncConfigStore()
         store.setPreference({ path: 'simple.object.foo', value: 1 })
         store.unsetPreference({ path: 'simple.object.foo' })
         store.updateCache(store, { username: 'test' })
@@ -169,7 +204,7 @@ describe('The serverSideStorage module', () => {
       })
 
       it('should not allow unsetting depth <= 2', () => {
-        const store = useServerSideStorageStore()
+        const store = useSyncConfigStore()
         store.setPreference({ path: 'simple.object.foo', value: 1 })
         expect(() => store.unsetPreference({ path: 'simple' })).to.throw()
         expect(() =>
@@ -178,7 +213,7 @@ describe('The serverSideStorage module', () => {
       })
 
       it('should not allow (un)setting depth > 3', () => {
-        const store = useServerSideStorageStore()
+        const store = useSyncConfigStore()
         store.setPreference({ path: 'simple.object', value: {} })
         expect(() =>
           store.setPreference({ path: 'simple.object.lv3', value: 1 }),

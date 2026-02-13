@@ -17,7 +17,11 @@ import { toRaw } from 'vue'
 
 import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
 
-export const VERSION = 1
+import { useInstanceStore } from 'src/stores/instance'
+
+import { defaultState as configDefaultState } from 'src/modules/default_config_state'
+
+export const VERSION = 2
 export const NEW_USER_DATE = new Date('2022-08-04') // date of writing this, basically
 
 export const COMMAND_TRIM_FLAGS = 1000
@@ -41,6 +45,7 @@ export const defaultState = {
       dontShowUpdateNotifs: false,
       collapseNav: false,
       muteFilters: {},
+      ...configDefaultState,
     },
     collections: {
       pinnedStatusActions: ['reply', 'retweet', 'favorite', 'emoji'],
@@ -128,13 +133,13 @@ export const _getRecentData = (cache, live, isTest) => {
       live._version === cache._version
     ) {
       console.debug(
-        'Same version/timestamp on both source, source of truth irrelevant',
+        'Same version/timestamp on both sources, source of truth irrelevant',
       )
       result.recent = cache
       result.stale = live
     } else {
       console.debug(
-        'Different timestamp, figuring out which one is more recent',
+        'Different timestamp or version, figuring out which one is more recent',
       )
       if (live._timestamp < cache._timestamp) {
         result.recent = cache
@@ -208,7 +213,7 @@ const _mergeJournal = (...journals) => {
     // side effect
     journal.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
 
-    if (path.startsWith('collections')) {
+    if (path.startsWith('collections') || path.startsWith('objectCollection')) {
       const lastRemoveIndex = findLastIndex(
         journal,
         ({ operation }) => operation === 'removeFromCollection',
@@ -229,6 +234,7 @@ const _mergeJournal = (...journals) => {
           return false
         }
         if (a.operation === 'addToCollection') {
+          // TODO check how objectCollections behaves here
           return a.args[0] === b.args[0]
         }
         return false
@@ -368,21 +374,21 @@ export const _resetFlags = (
   return result
 }
 
-export const _doMigrations = (cache) => {
-  if (!cache) return cache
+export const _doMigrations = (cache, live) => {
+  const data = cache ?? live
 
-  if (cache._version < VERSION) {
+  if (data._version < VERSION) {
     console.debug(
-      'Local cached data has older version, seeing if there any migrations that can be applied',
+      'Data has older version, seeing if there any migrations that can be applied',
     )
 
     // no migrations right now since we only have one version
     console.debug('No migrations found')
   }
 
-  if (cache._version > VERSION) {
+  if (data._version > VERSION) {
     console.debug(
-      'Local cached data has newer version, seeing if there any reverse migrations that can be applied',
+      'Data has newer version, seeing if there any reverse migrations that can be applied',
     )
 
     // no reverse migrations right now but we leave a possibility of loading a hotpatch if need be
@@ -391,9 +397,9 @@ export const _doMigrations = (cache) => {
         console.debug('Found hotpatch migration, applying')
         return window._PLEROMA_HOTPATCH.reverseMigrations.call(
           {},
-          'serverSideStorage',
-          { from: cache._version, to: VERSION },
-          cache,
+          'syncConfigStore',
+          { from: data._version, to: VERSION },
+          data,
         )
       }
     }
@@ -402,7 +408,7 @@ export const _doMigrations = (cache) => {
   return cache
 }
 
-export const useServerSideStorageStore = defineStore('serverSideStorage', {
+export const useSyncConfigStore = defineStore('sync_config', {
   state() {
     return cloneDeep(defaultState)
   },
@@ -510,19 +516,40 @@ export const useServerSideStorageStore = defineStore('serverSideStorage', {
           `tried to edit internal (starts with _) field '${path}', ignoring.`,
         )
       }
-      const collection = new Set(get(this.prefsStorage, path))
-      collection.delete(value)
-      set(this.prefsStorage, path, [...collection])
-      this.prefsStorage._journal = [
-        ...this.prefsStorage._journal,
-        {
-          operation: 'removeFromCollection',
-          path,
-          args: [value],
-          timestamp: Date.now(),
-        },
-      ]
-      this.dirty = true
+
+      const { _key } = value
+      if (path.startsWith('collection')) {
+        const collection = new Set(get(this.prefsStorage, path))
+        collection.delete(value)
+        set(this.prefsStorage, path, [...collection])
+
+        this.prefsStorage._journal = [
+          ...this.prefsStorage._journal,
+          {
+            operation: 'removeFromCollection',
+            path,
+            args: [value],
+            timestamp: Date.now(),
+          },
+        ]
+        this.dirty = true
+      } else if (path.startsWith('objectCollection')) {
+        const collection = new Set(get(this.prefsStorage, path + '.index'))
+        collection.delete(_key)
+        set(this.prefsStorage, path + '.index', [...collection])
+        const data = get(this.prefsStorage, path + '.data')
+        delete data[_key]
+
+        this.prefsStorage._journal = [
+          ...this.prefsStorage._journal,
+          {
+            operation: 'removeFromCollection',
+            path,
+            args: [{ _key }],
+            timestamp: Date.now(),
+          },
+        ]
+      }
     },
     reorderCollectionPreference({ path, value, movement }) {
       if (path.startsWith('_')) {
@@ -554,24 +581,23 @@ export const useServerSideStorageStore = defineStore('serverSideStorage', {
         username,
       )
     },
-    clearServerSideStorage() {
+    clearSyncConfig() {
       const blankState = { ...cloneDeep(defaultState) }
       Object.keys(this).forEach((k) => {
         this[k] = blankState[k]
       })
     },
-    setServerSideStorage(userData) {
+    setSyncConfig(userData) {
       const live = userData.storage
       this.raw = live
       let cache = this.cache
-      if (cache && cache._user !== userData.fqn) {
+      if (cache?._user !== userData.fqn) {
         console.warn(
           'Cache belongs to another user! reinitializing local cache!',
         )
         cache = null
       }
-
-      cache = _doMigrations(cache)
+      console.log(cache, live)
 
       let { recent, stale, needUpload } = _getRecentData(cache, live)
 
@@ -588,6 +614,9 @@ export const useServerSideStorageStore = defineStore('serverSideStorage', {
           prefsStorage: { ...defaultState.prefsStorage },
         })
       }
+
+      recent = recent && _doMigrations(recent)
+      stale = stale && _doMigrations(stale)
 
       if (!needUpload && recent && stale) {
         console.debug('Checking if data needs merging...')
@@ -627,7 +656,7 @@ export const useServerSideStorageStore = defineStore('serverSideStorage', {
       this.flagStorage = this.cache.flagStorage
       this.prefsStorage = this.cache.prefsStorage
     },
-    pushServerSideStorage({ force = false } = {}) {
+    pushSyncConfig({ force = false } = {}) {
       const needPush = this.dirty || force
       if (!needPush) return
       this.updateCache({ username: window.vuex.state.users.currentUser.fqn })
@@ -635,9 +664,26 @@ export const useServerSideStorageStore = defineStore('serverSideStorage', {
       window.vuex.state.api.backendInteractor
         .updateProfileJSON({ params })
         .then((user) => {
-          this.setServerSideStorage(user)
+          this.setSyncConfig(user)
           this.dirty = false
         })
+    },
+  },
+  getters: {
+    mergedConfig: (state) => {
+      const instancePrefs = useInstanceStore().prefsStorage
+      const result = Object.fromEntries(
+        Object.entries(state.prefsStorage.simple).map(([k, v]) => [
+          k,
+          v ?? instancePrefs[k],
+        ]),
+      )
+      return result
+    },
+  },
+  persist: {
+    afterLoad(state) {
+      return state
     },
   },
 })
