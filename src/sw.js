@@ -4,11 +4,10 @@ import 'virtual:pleroma-fe/service_worker_env'
 
 import { createI18n } from 'vue-i18n'
 
-import { parseNotification } from './services/entity_normalizer/entity_normalizer.service.js'
-import { prepareNotificationObject } from './services/notification_utils/notification_utils.js'
-import { cacheKey, emojiCacheKey, shouldCache } from './services/sw/sw.js'
-
 import { storage } from 'src/lib/storage.js'
+import { parseNotification } from 'src/services/entity_normalizer/entity_normalizer.service.js'
+import { prepareNotificationObject } from 'src/services/notification_utils/notification_utils.js'
+import { cacheKey, emojiCacheKey, shouldCache } from 'src/services/sw/sw.js'
 
 // Collects all messages for service workers
 // Needed because service workers cannot use dynamic imports
