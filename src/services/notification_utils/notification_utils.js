@@ -3,6 +3,7 @@ import { muteFilterHits } from '../status_parser/status_parser.js'
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useI18nStore } from 'src/stores/i18n.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import FaviconService from 'src/services/favicon_service/favicon_service.js'
 
@@ -19,8 +20,7 @@ export const notificationsFromStore = (store) => store.state.notifications.data
 export const visibleTypes = (store) => {
   // When called from within a module we need rootGetters to access wider scope
   // however when called from a component (i.e. this.$store) we already have wider scope
-  const rootGetters = store.rootGetters || store.getters
-  const { notificationVisibility } = rootGetters.mergedConfig
+  const { notificationVisibility } = useSyncConfigStore().mergedConfig
 
   return [
     notificationVisibility.likes && 'like',
