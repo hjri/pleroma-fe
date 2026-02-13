@@ -17,7 +17,7 @@ config.autoAddCss = false
 import App from '../App.vue'
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import FaviconService from '../services/favicon_service/favicon_service.js'
-import { applyConfig } from '../services/style_setter/style_setter.js'
+import { applyStyleConfig } from '../services/style_setter/style_setter.js'
 import { initServiceWorker, updateFocus } from '../services/sw/sw.js'
 import {
   windowHeight,
@@ -547,7 +547,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     return Promise.reject(e)
   }
 
-  applyConfig(store.state.config, i18n.global)
+  applyStyleConfig(store.state.config, i18n.global)
 
   // Now we can try getting the server settings and logging in
   // Most of these are preloaded into the index.html so blocking is minimized
