@@ -33,6 +33,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import VBodyScrollLock from 'src/directives/body_scroll_lock'
 import {
@@ -547,7 +548,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     return Promise.reject(e)
   }
 
-  applyConfig(store.state.config, i18n.global)
+  applyStyleConfig(useSyncConfigStore().mergedConfig, i18n.global)
 
   // Now we can try getting the server settings and logging in
   // Most of these are preloaded into the index.html so blocking is minimized
