@@ -553,9 +553,9 @@ const users = {
     registerPushNotifications(store) {
       const token = store.state.currentUser.credentials
       const vapidPublicKey = useInstanceStore().vapidPublicKey
-      const isEnabled = store.rootState.config.webPushNotifications
+      const isEnabled = useSyncConfigStore().mergedConfig.webPushNotifications
       const notificationVisibility =
-        store.rootState.config.notificationVisibility
+        useSyncConfigStore().mergedConfig.notificationVisibility
 
       registerPushNotifications(
         isEnabled,
