@@ -3,7 +3,7 @@ import { set } from 'lodash'
 
 import messages from '../i18n/messages'
 import localeService from '../services/locale/locale.service.js'
-import { applyConfig } from '../services/style_setter/style_setter.js'
+import { applyStyleConfig } from '../services/style_setter/style_setter.js'
 import { defaultState, instanceDefaultConfig } from './default_config_state.js'
 
 import { useEmojiStore } from 'src/stores/emoji.js'
@@ -71,7 +71,7 @@ const config = {
   mutations: {
     setOptionTemporarily(state, { name, value }) {
       set(state, name, value)
-      applyConfig(state)
+      applyStyleConfig(state)
     },
     setOption(state, { name, value }) {
       set(state, name, value)
@@ -162,7 +162,7 @@ const config = {
       } else {
         commit('setOption', { name, value })
         if (APPEARANCE_SETTINGS_KEYS.has(name)) {
-          applyConfig(state)
+          applyStyleConfig(state)
         }
         if (name.startsWith('theme3hacks')) {
           dispatch('applyTheme', { recompile: true })

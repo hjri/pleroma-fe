@@ -17,7 +17,7 @@ config.autoAddCss = false
 import App from '../App.vue'
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import FaviconService from '../services/favicon_service/favicon_service.js'
-import { applyConfig } from '../services/style_setter/style_setter.js'
+import { applyStyleConfig } from '../services/style_setter/style_setter.js'
 import { initServiceWorker, updateFocus } from '../services/sw/sw.js'
 import {
   windowHeight,
@@ -89,25 +89,25 @@ const getInstanceConfig = async ({ store }) => {
         data.pleroma,
       )
       useInstanceStore().set({
-        name: 'textlimit',
+        path: 'textlimit',
         value: textlimit,
       })
       useInstanceStore().set({
-        name: 'accountApprovalRequired',
+        path: 'accountApprovalRequired',
         value: data.approval_required,
       })
       useInstanceStore().set({
-        name: 'birthdayRequired',
+        path: 'birthdayRequired',
         value: !!data.pleroma?.metadata.birthday_required,
       })
       useInstanceStore().set({
-        name: 'birthdayMinAge',
+        path: 'birthdayMinAge',
         value: data.pleroma?.metadata.birthday_min_age || 0,
       })
 
       if (vapidPublicKey) {
         useInstanceStore().set({
-          name: 'vapidPublicKey',
+          path: 'vapidPublicKey',
           value: vapidPublicKey,
         })
       }
@@ -259,7 +259,7 @@ const getAppSecret = async ({ store }) => {
 const resolveStaffAccounts = ({ store, accounts }) => {
   const nicknames = accounts.map((uri) => uri.split('/').pop())
   useInstanceStore().set({
-    name: 'staffAccounts',
+    path: 'staffAccounts',
     value: nicknames,
   })
 }
@@ -385,20 +385,20 @@ const getNodeInfo = async ({ store }) => {
 
       const software = data.software
       useInstanceStore().set({
-        name: 'backendVersion',
+        path: 'backendVersion',
         value: software.version,
       })
       useInstanceStore().set({
-        name: 'backendRepository',
+        path: 'backendRepository',
         value: software.repository,
       })
 
       const priv = metadata.private
-      useInstanceStore().set({ name: 'privateMode', value: priv })
+      useInstanceStore().set({ path: 'privateMode', value: priv })
 
       const frontendVersion = window.___pleromafe_commit_hash
       useInstanceStore().set({
-        name: 'frontendVersion',
+        path: 'frontendVersion',
         value: frontendVersion,
       })
 

@@ -318,9 +318,7 @@ const updateProfileJSON = ({ credentials, params }) => {
     credentials,
     payload: params,
     method: 'PATCH',
-  })
-    .then((data) => data.json())
-    .then((data) => parseUser(data))
+  }).then((data) => parseUser(data))
 }
 
 // Params needed:

@@ -255,7 +255,7 @@ const extractStyleConfig = ({
 
 const defaultStyleConfig = extractStyleConfig(defaultState)
 
-export const applyConfig = (input) => {
+export const applyStyleConfig = (input) => {
   const config = extractStyleConfig(input)
 
   if (config === defaultStyleConfig) {
