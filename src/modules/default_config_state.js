@@ -1,9 +1,10 @@
-const browserLocale = (window.navigator.language || 'en').split('-')[0]
+const browserLocale = (navigator.language || 'en').split('-')[0]
 
 /// Instance config entries provided by static config or pleroma api
 /// Put settings here only if it does not make sense for a normal user
 /// to override it.
 export const staticOrApiConfigDefault = {
+  name: 'PleromaFE',
   theme: 'pleroma-dark',
   palette: null,
   style: null,
