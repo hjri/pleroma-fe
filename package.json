@@ -17,7 +17,7 @@
     "ci-eslint": "yarn exec eslint",
     "ci-stylelint": "yarn exec stylelint '**/*.scss' '**/*.vue'",
     "lint": "yarn ci-biome; yarn ci-eslint; yarn ci-stylelint",
-    "lint-fix": "yarn exec eslint --fix; yarn exec stylelint '**/*.scss' '**/*.vue' --fix; biome check --write"
+    "lint-fix": "yarn exec eslint -- --fix; yarn exec stylelint '**/*.scss' '**/*.vue' --fix; biome check --write"
   },
   "dependencies": {
     "@babel/runtime": "7.28.4",
