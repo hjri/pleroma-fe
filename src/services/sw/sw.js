@@ -41,7 +41,7 @@ function subscribePush(registration, isEnabled, vapidPublicKey) {
 function unsubscribePush(registration) {
   return registration.pushManager.getSubscription().then((subscription) => {
     if (subscription === null) {
-      return
+      return Promise.resolve('No subscription')
     }
     return subscription.unsubscribe()
   })
@@ -158,23 +158,23 @@ export function registerPushNotifications(
 
 export function unregisterPushNotifications(token) {
   if (isPushSupported()) {
-    Promise.all([
-      deleteSubscriptionFromBackEnd(token),
-      getOrCreateServiceWorker()
-        .then((registration) => {
-          return unsubscribePush(registration).then((result) => [
-            registration,
-            result,
-          ])
-        })
-        .then(([, unsubResult]) => {
-          if (!unsubResult) {
-            console.warn("Push subscription cancellation wasn't successful")
-          }
-        }),
-    ]).catch((e) =>
-      console.warn(`Failed to disable Web Push Notifications: ${e.message}`),
-    )
+    getOrCreateServiceWorker()
+      .then((registration) => {
+        return unsubscribePush(registration).then((result) => [
+          registration,
+          result,
+        ])
+      })
+      .then(([, unsubResult]) => {
+        if (unsubResult === 'No subscription') return
+        if (!unsubResult) {
+          console.warn("Push subscription cancellation wasn't successful")
+        }
+        return deleteSubscriptionFromBackEnd(token)
+      })
+      .catch((e) => {
+        console.warn(`Failed to disable Web Push Notifications: ${e.message}`)
+      })
   }
 }
 
