@@ -26,6 +26,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useShoutStore } from 'src/stores/shout.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 export default {
   name: 'app',
@@ -72,7 +73,7 @@ export default {
   },
   created() {
     // Load the locale from the storage
-    const val = this.$store.getters.mergedConfig.interfaceLanguage
+    const val = useSyncConfigStore().mergedConfig.interfaceLanguage
     this.$store.dispatch('setOption', { name: 'interfaceLanguage', value: val })
     document.getElementById('modal').classList = ['-' + this.layoutType]
 
@@ -122,7 +123,7 @@ export default {
       ]
     },
     navClasses() {
-      const { navbarColumnStretch } = this.$store.getters.mergedConfig
+      const { navbarColumnStretch } = useSyncConfigStore().mergedConfig
       return [
         '-' + this.layoutType,
         ...(navbarColumnStretch ? ['-column-stretch'] : []),
@@ -160,19 +161,19 @@ export default {
       if (this.isChats) return false
       if (this.isListEdit) return false
       return (
-        this.$store.getters.mergedConfig.alwaysShowNewPostButton ||
+        useSyncConfigStore().mergedConfig.alwaysShowNewPostButton ||
         this.layoutType === 'mobile'
       )
     },
     shoutboxPosition() {
-      return this.$store.getters.mergedConfig.alwaysShowNewPostButton || false
+      return useSyncConfigStore().mergedConfig.alwaysShowNewPostButton || false
     },
     hideShoutbox() {
-      return this.$store.getters.mergedConfig.hideShoutbox
+      return useSyncConfigStore().mergedConfig.hideShoutbox
     },
     reverseLayout() {
       const { thirdColumnMode, sidebarRight: reverseSetting } =
-        this.$store.getters.mergedConfig
+        useSyncConfigStore().mergedConfig
       if (this.layoutType !== 'wide') {
         return reverseSetting
       } else {
@@ -182,10 +183,10 @@ export default {
       }
     },
     noSticky() {
-      return this.$store.getters.mergedConfig.disableStickyHeaders
+      return useSyncConfigStore().mergedConfig.disableStickyHeaders
     },
     showScrollbars() {
-      return this.$store.getters.mergedConfig.showScrollbars
+      return useSyncConfigStore().mergedConfig.showScrollbars
     },
     scrollParent() {
       return window /* this.$refs.appContentRef */
@@ -193,7 +194,7 @@ export default {
     showInstanceSpecificPanel() {
       return (
         this.instanceSpecificPanelPresent &&
-        !this.$store.getters.mergedConfig.hideISP
+        !useSyncConfigStore().mergedConfig.hideISP
       )
     },
     ...mapGetters(['mergedConfig']),
