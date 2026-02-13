@@ -81,15 +81,21 @@ const Notifications = {
     filteredNotifications() {
       if (this.unseenAtTop) {
         return [
-          ...filteredNotificationsFromStore(this.$store).filter((n) =>
-            this.shouldShowUnseen(n),
-          ),
-          ...filteredNotificationsFromStore(this.$store).filter(
-            (n) => !this.shouldShowUnseen(n),
-          ),
+          ...filteredNotificationsFromStore(
+            this.$store,
+            useSyncConfigStore().mergedConfig.notificationVisibility,
+          ).filter((n) => this.shouldShowUnseen(n)),
+          ...filteredNotificationsFromStore(
+            this.$store,
+            useSyncConfigStore().mergedConfig.notificationVisibility,
+          ).filter((n) => !this.shouldShowUnseen(n)),
         ]
       } else {
-        return filteredNotificationsFromStore(this.$store, this.filterMode)
+        return filteredNotificationsFromStore(
+          this.$store,
+          useSyncConfigStore().mergedConfig.notificationVisibility,
+          this.filterMode,
+        )
       }
     },
     unseenCountBadgeText() {

@@ -1,5 +1,7 @@
-import { useI18nStore } from 'src/stores/i18n.js'
+import Cookies from 'js-cookie'
+
 import { useEmojiStore } from 'src/stores/emoji.js'
+import { useI18nStore } from 'src/stores/i18n.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import messages from 'src/i18n/messages'
@@ -14,9 +16,6 @@ export const piniaLanguagePlugin = ({ store, options }) => {
         const { path, value } = args[0]
         if (path === 'simple.interfaceLanguage') {
           useI18nStore().setLanguage(value)
-          const value =
-                originalValue || useSyncConfigStore().mergedConfig.interfaceLanguage
-
           messages.setLanguage(this.i18n, value)
           useEmojiStore().loadUnicodeEmojiData(value)
           Cookies.set(

@@ -16,12 +16,7 @@ let cachedBadgeUrl = null
 
 export const notificationsFromStore = (store) => store.state.notifications.data
 
-export const visibleTypes = (store) => {
-  // When called from within a module we need rootGetters to access wider scope
-  // however when called from a component (i.e. this.$store) we already have wider scope
-  const rootGetters = store.rootGetters || store.getters
-  const { notificationVisibility } = rootGetters.mergedConfig
-
+const visibleTypes = (notificationVisibility) => {
   return [
     notificationVisibility.likes && 'like',
     notificationVisibility.mentions && 'mention',
@@ -76,11 +71,15 @@ const isMutedNotification = (notification) => {
   return muteFilterHits(notification.status).length > 0
 }
 
-export const maybeShowNotification = (store, notification) => {
+export const maybeShowNotification = (
+  store,
+  notificationVisibility,
+  notification,
+) => {
   const rootState = store.rootState || store.state
 
   if (notification.seen) return
-  if (!visibleTypes(store).includes(notification.type)) return
+  if (!visibleTypes(notificationVisibility).includes(notification.type)) return
   if (notification.type === 'mention' && isMutedNotification(notification))
     return
 
@@ -91,14 +90,18 @@ export const maybeShowNotification = (store, notification) => {
   showDesktopNotification(rootState, notificationObject)
 }
 
-export const filteredNotificationsFromStore = (store, types) => {
+export const filteredNotificationsFromStore = (
+  store,
+  notificationVisibility,
+  types,
+) => {
   // map is just to clone the array since sort mutates it and it causes some issues
   const sortedNotifications = notificationsFromStore(store)
     .map((_) => _)
     .sort(sortById)
   // TODO implement sorting elsewhere and make it optional
   return sortedNotifications.filter((notification) =>
-    (types || visibleTypes(store)).includes(notification.type),
+    (types || visibleTypes(notificationVisibility)).includes(notification.type),
   )
 }
 
