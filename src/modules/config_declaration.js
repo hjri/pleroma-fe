@@ -1,3 +1,5 @@
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
 export const CONFIG_MIGRATION = 1
 
 import { v4 as uuidv4 } from 'uuid'
@@ -22,7 +24,7 @@ export const declarations = [
     description: 'Mute filters, wordfilter/regexp/etc',
     valueType: 'complex',
     migration(serverside, rootState) {
-      rootState.config.muteWords.forEach((word, order) => {
+      useSyncConfigStore().mergedConfig.muteWords.forEach((word, order) => {
         const uniqueId = uuidv4()
 
         serverside.setPreference({
