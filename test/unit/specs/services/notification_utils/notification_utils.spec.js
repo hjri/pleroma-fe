@@ -1,21 +1,6 @@
-import { createTestingPinia } from '@pinia/testing'
-
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
-
 import * as NotificationUtils from 'src/services/notification_utils/notification_utils.js'
 
 describe('NotificationUtils', () => {
-  beforeEach(() => {
-    const store = useSyncConfigStore(createTestingPinia())
-    store.mergedConfig = {
-      notificationVisibility: {
-        likes: true,
-        repeats: true,
-        mentions: false,
-      },
-    }
-  })
-
   describe('filteredNotificationsFromStore', () => {
     it('should return sorted notifications with configured types', () => {
       const store = {
@@ -38,6 +23,15 @@ describe('NotificationUtils', () => {
                 type: 'repeat',
               },
             ],
+          },
+        },
+        getters: {
+          mergedConfig: {
+            notificationVisibility: {
+              likes: true,
+              repeats: true,
+              mentions: false,
+            },
           },
         },
       }
