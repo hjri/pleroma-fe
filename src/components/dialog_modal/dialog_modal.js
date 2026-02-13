@@ -1,3 +1,5 @@
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
 const DialogModal = {
   props: {
     darkOverlay: {
@@ -13,7 +15,7 @@ const DialogModal = {
   },
   computed: {
     mobileCenter() {
-      return this.$store.getters.mergedConfig.modalMobileCenter
+      return useSyncConfigStore().mergedConfig.modalMobileCenter
     },
   },
 }

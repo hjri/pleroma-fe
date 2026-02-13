@@ -1,6 +1,9 @@
+import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 
 import UserCard from '../user_card/user_card.vue'
+
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 const UserPopover = {
   name: 'UserPopover',
@@ -9,14 +12,11 @@ const UserPopover = {
     UserCard,
     Popover: defineAsyncComponent(() => import('../popover/popover.vue')),
   },
-  computed: {
-    userPopoverAvatarAction() {
-      return this.$store.getters.mergedConfig.userPopoverAvatarAction
-    },
-    userPopoverOverlay() {
-      return this.$store.getters.mergedConfig.userPopoverOverlay
-    },
-  },
+  computed: mapState(useSyncConfigStore, {
+    userPopoverAvatarAction: (state) =>
+      state.mergedConfig.userPopoverAvatarAction,
+    userPopoverOverlay: (state) => state.mergedConfig.userPopoverOverlay,
+  }),
 }
 
 export default UserPopover

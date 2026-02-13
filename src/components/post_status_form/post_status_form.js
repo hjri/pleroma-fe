@@ -25,6 +25,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { pollFormToMasto } from 'src/services/poll/poll.service.js'
 
@@ -163,7 +164,7 @@ const PostStatusForm = {
     const preset = this.$route.query.message
     let statusText = preset || ''
 
-    const { scopeCopy } = this.$store.getters.mergedConfig
+    const { scopeCopy } = useSyncConfigStore().mergedConfig
 
     const [statusType, refId] = typeAndRefId({
       replyTo: this.replyTo,
@@ -193,7 +194,7 @@ const PostStatusForm = {
           : this.$store.state.users.currentUser.default_scope
 
       const { postContentType: contentType, sensitiveByDefault } =
-        this.$store.getters.mergedConfig
+        useSyncConfigStore().mergedConfig
 
       statusParams = {
         type: statusType,
@@ -324,7 +325,7 @@ const PostStatusForm = {
     },
     hideScopeNotice() {
       return (
-        this.disableNotice || this.$store.getters.mergedConfig.hideScopeNotice
+        this.disableNotice || useSyncConfigStore().mergedConfig.hideScopeNotice
       )
     },
     pollContentError() {
@@ -380,7 +381,7 @@ const PostStatusForm = {
       return this.newStatus.hasPoll
     },
     shouldAutoSaveDraft() {
-      return this.$store.getters.mergedConfig.autoSaveDraft
+      return useSyncConfigStore().mergedConfig.autoSaveDraft
     },
     autoSaveState() {
       if (this.saveable) {

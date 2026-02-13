@@ -1,9 +1,12 @@
 import { createTestingPinia } from '@pinia/testing'
 import { flushPromises, mount } from '@vue/test-utils'
+import { setActivePinia } from 'pinia'
 import { nextTick } from 'vue'
 
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import { $t, mountOpts, waitForEvent } from '../../../fixtures/setup_test'
+
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 const autoSaveOrNot = (caseFn, caseTitle, runFn) => {
   caseFn(`${caseTitle} with auto-save`, function () {
@@ -36,17 +39,19 @@ afterEach(() => {
 })
 
 describe('Draft saving', () => {
-  createTestingPinia()
+  beforeEach(() => {
+    setActivePinia(createTestingPinia())
+  })
 
   autoSaveOrNot(
     it,
     'should save when the button is clicked',
     async (autoSave) => {
       const wrapper = mount(PostStatusForm, mountOpts())
-      await wrapper.vm.$store.dispatch('setOption', {
-        name: 'autoSaveDraft',
-        value: autoSave,
-      })
+      const store = useSyncConfigStore()
+      store.mergedConfig = {
+        autoSaveDraft: autoSave,
+      }
       expect(wrapper.vm.$store.getters.draftCount).to.equal(0)
 
       const textarea = wrapper.get('textarea')
@@ -63,10 +68,10 @@ describe('Draft saving', () => {
   it('should auto-save if it is enabled', async function () {
     vi.useFakeTimers()
     const wrapper = mount(PostStatusForm, mountOpts())
-    await wrapper.vm.$store.dispatch('setOption', {
-      name: 'autoSaveDraft',
-      value: true,
-    })
+    const store = useSyncConfigStore()
+    store.mergedConfig = {
+      autoSaveDraft: true,
+    }
     expect(wrapper.vm.$store.getters.draftCount).to.equal(0)
     const textarea = wrapper.get('textarea')
     await textarea.setValue('mew mew')
@@ -86,10 +91,10 @@ describe('Draft saving', () => {
         },
       }),
     )
-    await wrapper.vm.$store.dispatch('setOption', {
-      name: 'autoSaveDraft',
-      value: true,
-    })
+    const store = useSyncConfigStore()
+    store.mergedConfig = {
+      autoSaveDraft: true,
+    }
     expect(wrapper.vm.$store.getters.draftCount).to.equal(0)
     const textarea = wrapper.get('textarea')
     await textarea.setValue('mew mew')
@@ -107,14 +112,11 @@ describe('Draft saving', () => {
         },
       }),
     )
-    await wrapper.vm.$store.dispatch('setOption', {
-      name: 'autoSaveDraft',
-      value: false,
-    })
-    await wrapper.vm.$store.dispatch('setOption', {
-      name: 'unsavedPostAction',
-      value: 'save',
-    })
+    const store = useSyncConfigStore()
+    store.mergedConfig = {
+      autoSaveDraft: false,
+      unsavedPostAction: 'save',
+    }
     expect(wrapper.vm.$store.getters.draftCount).to.equal(0)
     const textarea = wrapper.get('textarea')
     await textarea.setValue('mew mew')
@@ -132,14 +134,11 @@ describe('Draft saving', () => {
         },
       }),
     )
-    await wrapper.vm.$store.dispatch('setOption', {
-      name: 'autoSaveDraft',
-      value: false,
-    })
-    await wrapper.vm.$store.dispatch('setOption', {
-      name: 'unsavedPostAction',
-      value: 'discard',
-    })
+    const store = useSyncConfigStore()
+    store.mergedConfig = {
+      autoSaveDraft: false,
+      unsavedPostAction: 'discard',
+    }
     expect(wrapper.vm.$store.getters.draftCount).to.equal(0)
     const textarea = wrapper.get('textarea')
     await textarea.setValue('mew mew')
@@ -157,14 +156,11 @@ describe('Draft saving', () => {
         },
       }),
     )
-    await wrapper.vm.$store.dispatch('setOption', {
-      name: 'autoSaveDraft',
-      value: false,
-    })
-    await wrapper.vm.$store.dispatch('setOption', {
-      name: 'unsavedPostAction',
-      value: 'confirm',
-    })
+    const store = useSyncConfigStore(createTestingPinia())
+    store.mergedConfig = {
+      autoSaveDraft: false,
+      unsavedPostAction: 'confirm',
+    }
     expect(wrapper.vm.$store.getters.draftCount).to.equal(0)
     const textarea = wrapper.get('textarea')
     await textarea.setValue('mew mew')

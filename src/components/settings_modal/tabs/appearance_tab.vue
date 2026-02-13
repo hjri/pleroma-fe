@@ -54,7 +54,7 @@
           :key="style.key"
           :data-theme-key="style.key"
           class="button-default theme-preview"
-          :class="{ toggled: isThemeActive(style.key), disabled: switchInProgress }"
+          :class="{ toggled: isStyleActive(style.key), disabled: switchInProgress }"
           :disabled="switchInProgress"
           @click="style.version === 'v2' ? setTheme(style.key) : setStyle(style.key)"
         >
@@ -90,7 +90,7 @@
               class="btn button-default palette-entry"
               :class="{ toggled: isPaletteActive(p.key), disabled: switchInProgress }"
               :disabled="switchInProgress"
-              @click="() => setPalette(p.key, p)"
+              @click="() => setLocalPalette(p.key, p)"
             >
               <div class="palette-label">
                 <label>
@@ -113,7 +113,7 @@
               class="btn button-default palette-entry"
               :class="{ toggled: isPaletteActive(p.key), disabled: switchInProgress }"
               :disabled="switchInProgress"
-              @click="() => setPalette(p.key, p)"
+              @click="() => setLocalPalette(p.key, p)"
             >
               <div class="palette-label">
                 <label>
@@ -143,7 +143,7 @@
               :compact="true"
               :apply="true"
               :disabled="switchInProgress"
-              @apply-palette="data => setPaletteCustom(data)"
+              @apply-palette="data => setLocalPaletteCustom(data)"
             />
           </template>
           <template v-else-if="customThemeVersion === 'v2'">

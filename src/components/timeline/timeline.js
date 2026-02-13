@@ -9,6 +9,7 @@ import Status from '../status/status.vue'
 import TimelineMenu from '../timeline_menu/timeline_menu.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import timelineFetcher from 'src/services/timeline_fetcher/timeline_fetcher.service.js'
 
@@ -125,7 +126,7 @@ const Timeline = {
       return this.timeline.visibleStatuses.slice(min, max).map((_) => _.id)
     },
     virtualScrollingEnabled() {
-      return this.$store.getters.mergedConfig.virtualScrolling
+      return useSyncConfigStore().mergedConfig.virtualScrolling
     },
     ...mapState(useInterfaceStore, {
       mobileLayout: (store) => store.layoutType === 'mobile',
@@ -313,7 +314,7 @@ const Timeline = {
   },
   watch: {
     newStatusCount(count) {
-      if (!this.$store.getters.mergedConfig.streaming) {
+      if (!useSyncConfigStore().mergedConfig.streaming) {
         return
       }
       if (count > 0) {
@@ -323,7 +324,9 @@ const Timeline = {
         if (
           top < 15 &&
           !this.paused &&
-          !(this.unfocused && this.$store.getters.mergedConfig.pauseOnUnfocused)
+          !(
+            this.unfocused && useSyncConfigStore().mergedConfig.pauseOnUnfocused
+          )
         ) {
           this.showNewStatuses()
         } else {

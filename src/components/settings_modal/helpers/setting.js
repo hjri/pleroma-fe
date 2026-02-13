@@ -4,6 +4,10 @@ import DraftButtons from './draft_buttons.vue'
 import ModifiedIndicator from './modified_indicator.vue'
 import ProfileSettingIndicator from './profile_setting_indicator.vue'
 
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
 export default {
   components: {
     ModifiedIndicator,
@@ -235,13 +239,14 @@ export default {
         case 'admin':
           return this.$store.state.adminSettings.config
         default:
-          return this.$store.getters.mergedConfig
+          return useSyncConfigStore().mergedConfig
       }
     },
     configSink() {
       if (this.path == null) {
         return (k, v) => this.$emit('update:modelValue', v)
       }
+
       switch (this.realSource) {
         case 'profile':
           return (k, v) =>
@@ -250,15 +255,37 @@ export default {
           return (k, v) =>
             this.$store.dispatch('pushAdminSetting', { path: k, value: v })
         default:
-          if (this.timedApplyMode) {
-            return (k, v) =>
-              this.$store.dispatch('setOptionTemporarily', {
-                name: k,
-                value: v,
-              })
-          } else {
-            return (k, v) =>
-              this.$store.dispatch('setOption', { name: k, value: v })
+          return (readPath, value) => {
+            const writePath = `simple.${readPath}`
+
+            if (!this.timedApplyMode) {
+              useSyncConfigStore().setPreference({ path: writePath, value })
+              useSyncConfigStore().pushSyncConfig()
+            } else {
+              if (useInterfaceStore().temporaryChangesTimeoutId !== null) {
+                console.error("Can't track more than one temporary change")
+                return
+              }
+
+              const oldValue = get(this.configSource, readPath)
+
+              useSyncConfigStore().setPreference({ path: writePath, value })
+
+              const confirm = () => {
+                useSyncConfigStore().pushSyncConfig()
+                useInterfaceStore().clearTemporaryChanges()
+              }
+
+              const revert = () => {
+                useSyncConfigStore().setPreference({
+                  path: writePath,
+                  value: oldValue,
+                })
+                useInterfaceStore().clearTemporaryChanges()
+              }
+
+              useInterfaceStore().setTemporaryChanges({ confirm, revert })
+            }
           }
       }
     },
@@ -267,7 +294,7 @@ export default {
         case 'profile':
           return {}
         default:
-          return get(this.$store.getters.defaultConfig, this.path)
+          return get(useInstanceStore().prefsStorage, this.path)
       }
     },
     isProfileSetting() {
@@ -318,7 +345,8 @@ export default {
     },
     matchesExpertLevel() {
       const settingExpertLevel = this.expert || 0
-      const userToggleExpert = this.$store.state.config.expertLevel || 0
+      const userToggleExpert =
+        useSyncConfigStore().mergedConfig.expertLevel || 0
 
       return settingExpertLevel <= userToggleExpert
     },
@@ -344,7 +372,7 @@ export default {
         this.draft = cloneDeep(this.state)
       } else {
         set(
-          this.$store.getters.mergedConfig,
+          useSyncConfigStore().mergedConfig,
           this.path,
           cloneDeep(this.defaultState),
         )

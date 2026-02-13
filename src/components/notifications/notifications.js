@@ -17,6 +17,7 @@ import NotificationFilters from './notification_filters.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -98,7 +99,7 @@ const Notifications = {
       return this.unseenNotifications.length
     },
     ignoreInactionableSeen() {
-      return this.$store.getters.mergedConfig.ignoreInactionableSeen
+      return useSyncConfigStore().mergedConfig.ignoreInactionableSeen
     },
     extraNotificationsCount() {
       return countExtraNotifications(this.$store)
@@ -136,10 +137,10 @@ const Notifications = {
       )
     },
     noSticky() {
-      return this.$store.getters.mergedConfig.disableStickyHeaders
+      return useSyncConfigStore().mergedConfig.disableStickyHeaders
     },
     unseenAtTop() {
-      return this.$store.getters.mergedConfig.unseenAtTop
+      return useSyncConfigStore().mergedConfig.unseenAtTop
     },
     showExtraNotifications() {
       return !this.noExtra

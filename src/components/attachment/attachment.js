@@ -9,6 +9,7 @@ import VideoAttachment from '../video_attachment/video_attachment.vue'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMediaViewerStore } from 'src/stores/media_viewer'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -58,8 +59,8 @@ const Attachment = {
       localDescription: this.description || this.attachment.description,
       nsfwImage:
         useInstanceStore().instanceIdentity.nsfwCensorImage || nsfwImage,
-      hideNsfwLocal: this.$store.getters.mergedConfig.hideNsfw,
-      preloadImage: this.$store.getters.mergedConfig.preloadImage,
+      hideNsfwLocal: useSyncConfigStore().mergedConfig.hideNsfw,
+      preloadImage: useSyncConfigStore().mergedConfig.preloadImage,
       loading: false,
       img:
         fileTypeService.fileType(this.attachment.mimetype) === 'image' &&
@@ -93,7 +94,7 @@ const Attachment = {
       return this.size === 'hide'
     },
     useContainFit() {
-      return this.$store.getters.mergedConfig.useContainFit
+      return useSyncConfigStore().mergedConfig.useContainFit
     },
     placeholderName() {
       if (this.attachment.description === '' || !this.attachment.description) {

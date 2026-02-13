@@ -8,6 +8,7 @@ import ProgressButton from '../progress_button/progress_button.vue'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useReportsStore } from 'src/stores/reports'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
@@ -89,10 +90,10 @@ const AccountActions = {
   },
   computed: {
     shouldConfirmBlock() {
-      return this.$store.getters.mergedConfig.modalOnBlock
+      return useSyncConfigStore().mergedConfig.modalOnBlock
     },
     shouldConfirmRemoveUserFromFollowers() {
-      return this.$store.getters.mergedConfig.modalOnRemoveUserFromFollowers
+      return useSyncConfigStore().mergedConfig.modalOnRemoveUserFromFollowers
     },
     ...mapState(useInstanceCapabilitiesStore, [
       'blockExpiration',

@@ -1,3 +1,5 @@
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
 const StillImage = {
   props: [
     'src',
@@ -15,7 +17,7 @@ const StillImage = {
     return {
       // for lazy loading, see loadLazy()
       realSrc: this.src,
-      stopGifs: this.$store.getters.mergedConfig.stopGifs,
+      stopGifs: useSyncConfigStore().mergedConfig.stopGifs,
     }
   },
   computed: {

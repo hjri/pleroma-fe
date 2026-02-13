@@ -11,6 +11,7 @@ import UnitSetting from '../helpers/unit_setting.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import localeService from 'src/services/locale/locale.service.js'
 
@@ -37,7 +38,7 @@ const GeneralTab = {
   computed: {
     language: {
       get: function () {
-        return this.$store.getters.mergedConfig.interfaceLanguage
+        return useSyncConfigStore().mergedConfig.interfaceLanguage
       },
       set: function (val) {
         this.$store.dispatch('setOption', {
@@ -48,6 +49,9 @@ const GeneralTab = {
     },
     ...SharedComputedObject(),
     ...mapState(useInstanceCapabilitiesStore, ['blockExpiration']),
+    ...mapState(useSyncConfigStore, {
+      theme3hacks: (store) => store.mergedConfig.theme3hacks,
+    }),
   },
   methods: {
     updateProfile() {

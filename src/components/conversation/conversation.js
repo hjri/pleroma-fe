@@ -9,6 +9,7 @@ import Status from '../status/status.vue'
 import ThreadTree from '../thread_tree/thread_tree.vue'
 
 import { useInterfaceStore } from 'src/stores/interface'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -81,7 +82,7 @@ const conversation = {
       // maxDepthInThread = max number of depths that is *visible*
       // since our depth starts with 0 and "showing" means "showing children"
       // there is a -2 here
-      const maxDepth = this.$store.getters.mergedConfig.maxDepthInThread - 2
+      const maxDepth = useSyncConfigStore().mergedConfig.maxDepthInThread - 2
       return maxDepth >= 1 ? maxDepth : 1
     },
     streamingEnabled() {
@@ -91,22 +92,22 @@ const conversation = {
       )
     },
     displayStyle() {
-      return this.$store.getters.mergedConfig.conversationDisplay
+      return useSyncConfigStore().mergedConfig.conversationDisplay
     },
     isTreeView() {
       return !this.isLinearView
     },
     treeViewIsSimple() {
-      return !this.$store.getters.mergedConfig.conversationTreeAdvanced
+      return !useSyncConfigStore().mergedConfig.conversationTreeAdvanced
     },
     isLinearView() {
       return this.displayStyle === 'linear'
     },
     shouldFadeAncestors() {
-      return this.$store.getters.mergedConfig.conversationTreeFadeAncestors
+      return useSyncConfigStore().mergedConfig.conversationTreeFadeAncestors
     },
     otherRepliesButtonPosition() {
-      return this.$store.getters.mergedConfig.conversationOtherRepliesButton
+      return useSyncConfigStore().mergedConfig.conversationOtherRepliesButton
     },
     showOtherRepliesButtonBelowStatus() {
       return this.otherRepliesButtonPosition === 'below'

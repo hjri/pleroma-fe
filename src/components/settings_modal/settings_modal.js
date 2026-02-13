@@ -9,6 +9,7 @@ import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
 import Popover from '../popover/popover.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import {
   newExporter,
@@ -191,11 +192,11 @@ const SettingsModal = {
     }),
     expertLevel: {
       get() {
-        return this.$store.state.config.expertLevel > 0
+        return useSyncConfigStore().mergedConfig.expertLevel > 0
       },
       set(value) {
-        this.$store.dispatch('setOption', {
-          name: 'expertLevel',
+        useSyncConfigStore().setPreference({
+          path: 'simple.expertLevel',
           value: value ? 1 : 0,
         })
       },

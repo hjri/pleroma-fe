@@ -1,5 +1,7 @@
 import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
 export default {
   props: ['user', 'relationship'],
   data() {
@@ -20,7 +22,7 @@ export default {
       }
     },
     shouldConfirmRemoveUserFromFollowers() {
-      return this.$store.getters.mergedConfig.modalOnRemoveUserFromFollowers
+      return useSyncConfigStore().mergedConfig.modalOnRemoveUserFromFollowers
     },
   },
   methods: {

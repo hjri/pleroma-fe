@@ -108,6 +108,8 @@
 <script>
 import Popover from '../popover/popover.vue'
 
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
 
@@ -117,7 +119,7 @@ export default {
   components: { Popover },
   computed: {
     filters() {
-      return this.$store.getters.mergedConfig.notificationVisibility
+      return useSyncConfigStore().mergedConfig.notificationVisibility
     },
   },
   methods: {

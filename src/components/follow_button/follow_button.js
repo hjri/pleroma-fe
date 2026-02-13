@@ -3,6 +3,8 @@ import {
   requestUnfollow,
 } from '../../services/follow_manipulate/follow_manipulate'
 import ConfirmModal from '../confirm_modal/confirm_modal.vue'
+
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 export default {
   props: ['relationship', 'user', 'labelFollowing', 'buttonClass'],
   components: {
@@ -16,7 +18,7 @@ export default {
   },
   computed: {
     shouldConfirmUnfollow() {
-      return this.$store.getters.mergedConfig.modalOnUnfollow
+      return useSyncConfigStore().mergedConfig.modalOnUnfollow
     },
     isPressed() {
       return this.inProgress || this.relationship.following

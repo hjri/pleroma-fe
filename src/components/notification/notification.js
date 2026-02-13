@@ -17,6 +17,7 @@ import UserLink from '../user_link/user_link.vue'
 import UserPopover from '../user_popover/user_popover.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
@@ -181,7 +182,7 @@ const Notification = {
       return highlightClass(this.notification.from_profile)
     },
     userStyle() {
-      const highlight = this.$store.getters.mergedConfig.highlight
+      const highlight = useSyncConfigStore().mergedConfig.highlight
       const user = this.notification.from_profile
       return highlightStyle(highlight[user.screen_name])
     },
@@ -209,7 +210,7 @@ const Notification = {
       return isStatusNotification(this.notification.type)
     },
     mergedConfig() {
-      return this.$store.getters.mergedConfig
+      return useSyncConfigStore().mergedConfig
     },
     shouldConfirmApprove() {
       return this.mergedConfig.modalOnApproveFollow

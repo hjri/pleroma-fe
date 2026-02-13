@@ -293,7 +293,7 @@
       </div>
     </div>
     <div
-      v-if="!editable && loggedIn && isOtherUser && (hasNote || !hideBio) && !mergedConfig.userCardHidePersonalMarks"
+      v-if="!editable && loggedIn && isOtherUser && (hasNote || !hideBio) && !userCardHidePersonalMarks"
       class="personal-marks"
     >
       <UserNote
@@ -357,7 +357,7 @@
       <RichContent
         v-if="!hideBio"
         class="user-card-bio"
-        :class="{ '-justify-left': mergedConfig.userCardLeftJustify }"
+        :class="{ '-justify-left': userCardLeftJustify }"
         :html="editable ? newBio.replace(/\n/g, '<br>') : user.description_html"
         :emoji="editable ? emoji : user.emoji"
         :handle-links="true"
@@ -368,7 +368,7 @@
         v-model="newBio"
         enable-emoji-picker
         class="user-card-bio"
-        :class="{ '-justify-left': mergedConfig.userCardLeftJustify }"
+        :class="{ '-justify-left': userCardLeftJustify }"
         :suggest="emojiUserSuggestor"
       >
         <template #default="inputProps">
@@ -505,11 +505,11 @@
       class="user-extras"
     >
       <span
-        v-if="!editable && !mergedConfig.hideUserStats"
+        v-if="!editable && !hideUserStats"
         class="user-stats"
       >
         <dl
-          v-if="!mergedConfig.hideUserStats && !hideBio"
+          v-if="!hideUserStats && !hideBio"
           class="user-count"
         >
           <dd>{{ user.statuses_count }}</dd>

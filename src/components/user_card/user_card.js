@@ -27,6 +27,7 @@ import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { usePostStatusStore } from 'src/stores/post_status'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
 import localeService from 'src/services/locale/locale.service.js'
@@ -223,12 +224,12 @@ export default {
     userHighlightType: {
       get() {
         const data =
-          this.$store.getters.mergedConfig.highlight[this.user.screen_name]
+          useSyncConfigStore().mergedConfig.highlight[this.user.screen_name]
         return (data && data.type) || 'disabled'
       },
       set(type) {
         const data =
-          this.$store.getters.mergedConfig.highlight[this.user.screen_name]
+          useSyncConfigStore().mergedConfig.highlight[this.user.screen_name]
         if (type !== 'disabled') {
           this.$store.dispatch('setHighlight', {
             user: this.user.screen_name,
@@ -247,7 +248,7 @@ export default {
     userHighlightColor: {
       get() {
         const data =
-          this.$store.getters.mergedConfig.highlight[this.user.screen_name]
+          useSyncConfigStore().mergedConfig.highlight[this.user.screen_name]
         return data && data.color
       },
       set(color) {

@@ -2,6 +2,7 @@ import fileSizeFormatService from '../../services/file_size_format/file_size_for
 import statusPosterService from '../../services/status_poster/status_poster.service.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch, faUpload } from '@fortawesome/free-solid-svg-icons'
@@ -33,7 +34,7 @@ const mediaUpload = {
       }
 
       // Skip if image compression is disabled
-      if (!this.$store.getters.mergedConfig.imageCompression) {
+      if (!useSyncConfigStore().mergedConfig.imageCompression) {
         return file
       }
 
@@ -78,7 +79,7 @@ const mediaUpload = {
 
           // Convert to WebP if supported and alwaysUseJpeg is false, otherwise JPEG
           const type =
-            !this.$store.getters.mergedConfig.alwaysUseJpeg && supportsWebP
+            !useSyncConfigStore().mergedConfig.alwaysUseJpeg && supportsWebP
               ? 'image/webp'
               : 'image/jpeg'
           const extension = type === 'image/webp' ? '.webp' : '.jpg'

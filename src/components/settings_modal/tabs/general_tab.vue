@@ -68,7 +68,7 @@
         </li>
         <li>
           <FontControl
-            :model-value="mergedConfig.theme3hacks.fonts.interface"
+            :model-value="theme3hacks.fonts.interface"
             name="ui"
             :label="$t('settings.style.fonts.components_inline.interface')"
             :fallback="{ family: 'sans-serif' }"
@@ -78,7 +78,7 @@
         </li>
         <li>
           <FontControl
-            :model-value="mergedConfig.theme3hacks.fonts.input"
+            :model-value="theme3hacks.fonts.input"
             name="input"
             :fallback="{ family: 'inherit' }"
             :label="$t('settings.style.fonts.components_inline.input')"

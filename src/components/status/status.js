@@ -478,7 +478,7 @@ const Status = {
       return this.$store.state.users.currentUser
     },
     mergedConfig() {
-      return this.$store.getters.mergedConfig
+      return useSyncConfigStore().mergedConfig
     },
     isSuspendable() {
       return !this.replying && this.mediaPlaying.length === 0

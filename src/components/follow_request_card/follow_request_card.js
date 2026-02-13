@@ -2,6 +2,8 @@ import { notificationsFromStore } from '../../services/notification_utils/notifi
 import BasicUserCard from '../basic_user_card/basic_user_card.vue'
 import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
 const FollowRequestCard = {
   props: ['user'],
   components: {
@@ -76,7 +78,7 @@ const FollowRequestCard = {
   },
   computed: {
     mergedConfig() {
-      return this.$store.getters.mergedConfig
+      return useSyncConfigStore().mergedConfig
     },
     shouldConfirmApprove() {
       return this.mergedConfig.modalOnApproveFollow

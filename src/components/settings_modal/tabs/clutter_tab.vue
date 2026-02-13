@@ -19,9 +19,7 @@
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting
-            path="hideUserStats"
-          >
+          <BooleanSetting path="hideUserStats">
             {{ $t('settings.hide_user_stats') }}
           </BooleanSetting>
         </li>
