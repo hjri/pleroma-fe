@@ -10,7 +10,7 @@ const simpleDeclaration = {
   store: 'server-side',
   migrationFlag: 'configMigration',
   migration(serverside, rootState) {
-    serverside.setPreference({ path: 'simple.' + field, value: ootState.config[oldField ?? field] })
+    serverside.setPreference({ path: 'simple.' + field, value: rootState.config[oldField ?? field] })
   }
 }
 */
