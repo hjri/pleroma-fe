@@ -20,8 +20,14 @@ import messages from './i18n/messages.js'
 import createPersistedState, {
   piniaPersistPlugin,
 } from './lib/persisted_state.js'
-import pushNotifications from './lib/push_notifications_plugin.js'
+import {
+  piniaPushNotificationsPlugin,
+  vuexPushNotificationsPlugin,
+} from './lib/push_notifications_plugin.js'
 import vuexModules from './modules/index.js'
+
+import { piniaLanguagePlugin } from 'src/lib/language.js'
+import { piniaStylePlugin } from 'src/lib/style.js'
 
 const currentLocale = (window.navigator.language || 'en').split('-')[0]
 
@@ -35,7 +41,7 @@ const i18n = createI18n({
 messages.setLanguage(i18n.global, currentLocale)
 
 const persistedStateOptions = {
-  paths: ['serverSideStorage.cache', 'config', 'users.lastLoginName', 'oauth'],
+  paths: ['syncConfig.cache', 'config', 'users.lastLoginName', 'oauth'],
 }
 
 ;(async () => {
@@ -66,9 +72,12 @@ const persistedStateOptions = {
 
   try {
     let storageError
-    const plugins = [pushNotifications]
+    const plugins = [vuexPushNotificationsPlugin]
     const pinia = createPinia()
     pinia.use(piniaPersistPlugin())
+    pinia.use(piniaLanguagePlugin)
+    pinia.use(piniaStylePlugin)
+    pinia.use(piniaPushNotificationsPlugin)
 
     try {
       const persistedState = await createPersistedState(persistedStateOptions)
