@@ -8,6 +8,7 @@ import {
 import { deserialize } from '../services/theme_data/iss_deserializer.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import {
   CURRENT_VERSION,
@@ -402,13 +403,13 @@ export const useInterfaceStore = defineStore('interface', {
         styleCustomData: userStyleCustomData,
         palette: userPaletteName,
         paletteCustomData: userPaletteCustomData,
-      } = window.vuex.state.config
+      } = useSyncConfigStore().mergedConfig
 
       let {
         theme: userThemeV2Name,
         customTheme: userThemeV2Snapshot,
         customThemeSource: userThemeV2Source,
-      } = window.vuex.state.config
+      } = useSyncConfigStore().mergedConfig
 
       let majorVersionUsed
 
@@ -573,7 +574,7 @@ export const useInterfaceStore = defineStore('interface', {
     },
     async applyTheme({ recompile = false } = {}) {
       const { forceThemeRecompilation, themeDebug, theme3hacks } =
-        window.vuex.state.config
+        useSyncConfigStore().mergedConfig
       this.themeChangeInProgress = true
       // If we're not forced to recompile try using
       // cache (tryLoadCache return true if load successful)
