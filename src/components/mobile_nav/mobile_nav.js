@@ -52,7 +52,10 @@ const MobileNav = {
       return this.$store.state.users.currentUser
     },
     unseenNotifications() {
-      return unseenNotificationsFromStore(this.$store)
+      return unseenNotificationsFromStore(
+        this.$store,
+        useSyncConfigStore().mergedConfig.notificationVisibility,
+      )
     },
     unseenNotificationsCount() {
       return (

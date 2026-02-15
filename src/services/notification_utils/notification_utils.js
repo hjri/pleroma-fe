@@ -105,15 +105,17 @@ export const filteredNotificationsFromStore = (
   )
 }
 
-export const unseenNotificationsFromStore = (store) => {
+export const unseenNotificationsFromStore = (store, notificationVisibility) => {
   const rootGetters = store.rootGetters || store.getters
   const ignoreInactionableSeen = rootGetters.mergedConfig.ignoreInactionableSeen
 
-  return filteredNotificationsFromStore(store).filter(({ seen, type }) => {
-    if (!ignoreInactionableSeen) return !seen
-    if (seen) return false
-    return ACTIONABLE_NOTIFICATION_TYPES.has(type)
-  })
+  return filteredNotificationsFromStore(store, notificationVisibility).filter(
+    ({ seen, type }) => {
+      if (!ignoreInactionableSeen) return !seen
+      if (seen) return false
+      return ACTIONABLE_NOTIFICATION_TYPES.has(type)
+    },
+  )
 }
 
 export const prepareNotificationObject = (notification, i18n) => {

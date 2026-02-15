@@ -76,7 +76,10 @@ const Notifications = {
       return this.$store.state.notifications.error
     },
     unseenNotifications() {
-      return unseenNotificationsFromStore(this.$store)
+      return unseenNotificationsFromStore(
+        this.$store,
+        useSyncConfigStore().mergedConfig.notificationVisibility,
+      )
     },
     filteredNotifications() {
       if (this.unseenAtTop) {
