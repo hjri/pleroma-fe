@@ -1,10 +1,10 @@
 import { mapState } from 'pinia'
-import { mapGetters } from 'vuex'
 
 import Popover from 'src/components/popover/popover.vue'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -25,18 +25,12 @@ const QuickViewSettings = {
     QuickFilterSettings,
   },
   methods: {
-    setConversationDisplay(visibility) {
-      this.$store.dispatch('setOption', {
-        name: 'conversationDisplay',
-        value: visibility,
-      })
-    },
     openTab(tab) {
       useInterfaceStore().openSettingsModalTab(tab)
     },
   },
   computed: {
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useSyncConfigStore, ['mergedConfig']),
     ...mapState(useInterfaceStore, {
       mobileLayout: (state) => state.layoutType === 'mobile',
     }),
@@ -47,8 +41,11 @@ const QuickViewSettings = {
       get() {
         return this.mergedConfig.conversationDisplay
       },
-      set(newVal) {
-        this.setConversationDisplay(newVal)
+      set(value) {
+        useSyncConfigStore().setPreference({
+          path: 'simple.conversationDisplay',
+          value,
+        })
       },
     },
     autoUpdate: {
@@ -57,7 +54,7 @@ const QuickViewSettings = {
       },
       set() {
         const value = !this.autoUpdate
-        this.$store.dispatch('setOption', { name: 'streaming', value })
+        useSyncConfigStore().setPreference({ path: 'simple.streaming', value })
       },
     },
     collapseWithSubjects: {
@@ -66,8 +63,8 @@ const QuickViewSettings = {
       },
       set() {
         const value = !this.collapseWithSubjects
-        this.$store.dispatch('setOption', {
-          name: 'collapseMessageWithSubject',
+        useSyncConfigStore().setPreference({
+          path: 'simple.collapseMessageWithSubject',
           value,
         })
       },
@@ -78,8 +75,8 @@ const QuickViewSettings = {
       },
       set() {
         const value = !this.showUserAvatars
-        this.$store.dispatch('setOption', {
-          name: 'mentionLinkShowAvatar',
+        useSyncConfigStore().setPreference({
+          path: 'simple.mentionLinkShowAvatar',
           value,
         })
       },
@@ -90,7 +87,10 @@ const QuickViewSettings = {
       },
       set() {
         const value = !this.muteBotStatuses
-        this.$store.dispatch('setOption', { name: 'muteBotStatuses', value })
+        useSyncConfigStore().setPreference({
+          path: 'simple.muteBotStatuses',
+          value,
+        })
       },
     },
     muteSensitiveStatuses: {
@@ -99,8 +99,8 @@ const QuickViewSettings = {
       },
       set() {
         const value = !this.muteSensitiveStatuses
-        this.$store.dispatch('setOption', {
-          name: 'muteSensitiveStatuses',
+        useSyncConfigStore().setPreference({
+          path: 'simple.muteSensitiveStatuses',
           value,
         })
       },
