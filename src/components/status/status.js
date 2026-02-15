@@ -131,25 +131,26 @@ const Status = {
   },
   props: [
     'statusoid',
+    'replies',
+
     'expandable',
-    'inConversation',
     'focused',
     'highlight',
     'compact',
-    'replies',
     'isPreview',
     'noHeading',
     'inlineExpanded',
     'showPinned',
     'inProfile',
-    'profileUserId',
+    'inConversation',
     'inQuote',
-
+    'profileUserId',
     'simpleTree',
+    'showOtherRepliesAsButton',
+    'dive',
+
     'controlledThreadDisplayStatus',
     'controlledToggleThreadDisplay',
-    'showOtherRepliesAsButton',
-
     'controlledShowingTall',
     'controlledToggleShowingTall',
     'controlledExpandingSubject',
@@ -160,9 +161,8 @@ const Status = {
     'controlledToggleReplying',
     'controlledMediaPlaying',
     'controlledSetMediaPlaying',
-    'dive',
   ],
-  emits: ['interacted'],
+  emits: ['interacted', 'goto', 'toggleExpanded'],
   data() {
     return {
       uncontrolledReplying: false,
