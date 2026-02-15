@@ -136,7 +136,7 @@ export default {
       return this.currentUser.background_image
     },
     instanceBackground() {
-      return this.mergedConfig.hideInstanceWallpaper ? null : this.background
+      return useSyncConfigStore().mergedConfig.hideInstanceWallpaper ? null : this.instanceBackgroundUrl
     },
     background() {
       return this.userBackground || this.instanceBackground
@@ -209,7 +209,7 @@ export default {
       'editingAvailable',
     ]),
     ...mapState(useInstanceStore, {
-      background: (store) => store.instanceIdentity.background,
+      instanceBackgroundUrl: (store) => store.instanceIdentity.background,
       showFeaturesPanel: (store) => store.instanceIdentity.showFeaturesPanel,
       instanceSpecificPanelPresent: (store) =>
         store.instanceIdentity.showInstanceSpecificPanel &&
