@@ -2,12 +2,6 @@ import Cookies from 'js-cookie'
 
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useI18nStore } from 'src/stores/i18n.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
-
-import messages from 'src/i18n/messages'
-import localeService from 'src/services/locale/locale.service.js'
-
-const BACKEND_LANGUAGE_COOKIE_NAME = 'userLanguage'
 
 export const piniaLanguagePlugin = ({ store, options }) => {
   if (store.$id === 'sync_config') {
@@ -15,12 +9,8 @@ export const piniaLanguagePlugin = ({ store, options }) => {
       if (name === 'setPreference') {
         const { path, value } = args[0]
         if (path === 'simple.interfaceLanguage') {
-          messages.setLanguage(useI18nStore().i18n, value)
+          useI18nStore().setLanguage(value)
           useEmojiStore().loadUnicodeEmojiData(value)
-          Cookies.set(
-            BACKEND_LANGUAGE_COOKIE_NAME,
-            localeService.internalToBackendLocaleMulti(value),
-          )
         }
       }
     })

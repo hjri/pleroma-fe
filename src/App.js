@@ -2,6 +2,8 @@ import { throttle } from 'lodash'
 import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 import { mapGetters } from 'vuex'
+import messages from 'src/i18n/messages'
+import localeService from 'src/services/locale/locale.service.js'
 
 import DesktopNav from './components/desktop_nav/desktop_nav.vue'
 import EditStatusModal from './components/edit_status_modal/edit_status_modal.vue'
@@ -22,6 +24,8 @@ import WhoToFollowPanel from './components/who_to_follow_panel/who_to_follow_pan
 import { getOrCreateServiceWorker } from './services/sw/sw'
 import { windowHeight, windowWidth } from './services/window_utils/window_utils'
 
+import { useI18nStore } from 'src/stores/i18n.js'
+import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
@@ -73,8 +77,10 @@ export default {
   },
   created() {
     // Load the locale from the storage
-    const val = useSyncConfigStore().mergedConfig.interfaceLanguage
-    useSyncConfigStore().setSimplePrefAndSave({ path: 'interfaceLanguage', value: val })
+    const value = useSyncConfigStore().mergedConfig.interfaceLanguage
+    useI18nStore().setLanguage(value)
+    useEmojiStore().loadUnicodeEmojiData(value)
+
     document.getElementById('modal').classList = ['-' + this.layoutType]
 
     // Create bound handlers
