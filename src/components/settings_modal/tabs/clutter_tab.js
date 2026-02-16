@@ -52,8 +52,8 @@ const ClutterTab = {
         if (value !== 'ask' && value !== 'forever') {
           realValue = '14d'
         }
-        useSyncConfigStore().setPreference({
-          path: 'simple.onMuteDefaultAction',
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'onMuteDefaultAction',
           value: realValue,
         })
       },
@@ -72,8 +72,8 @@ const ClutterTab = {
         if (value !== 'ask' && value !== 'forever') {
           realValue = '14d'
         }
-        useSyncConfigStore().setPreference({
-          path: 'simple.onBlockDefaultAction',
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'onBlockDefaultAction',
           value: realValue,
         })
       },
@@ -90,8 +90,8 @@ const ClutterTab = {
   },
   methods: {
     ...mapActions(useSyncConfigStore, [
-      'setPreference',
-      'unsetPreference',
+      'setSimplePrefAndSave',
+      'unsetSimplePrefAndSave',
       'pushSyncConfig',
     ]),
     getDatetimeLocal(timestamp) {
@@ -138,7 +138,7 @@ const ClutterTab = {
 
       filter.order = this.muteFilters.length + 2
       this.muteFiltersDraftObject[newId] = filter
-      this.setPreference({ path: 'simple.muteFilters.' + newId, value: filter })
+      this.setSimplePrefAndSave({ path: 'muteFilters.' + newId, value: filter })
       this.pushSyncConfig()
     },
     exportFilter(id) {
@@ -154,18 +154,18 @@ const ClutterTab = {
       const newId = uuidv4()
 
       this.muteFiltersDraftObject[newId] = filter
-      this.setPreference({ path: 'simple.muteFilters.' + newId, value: filter })
+      this.setSimplePrefAndSave({ path: 'muteFilters.' + newId, value: filter })
       this.pushSyncConfig()
     },
     deleteFilter(id) {
       delete this.muteFiltersDraftObject[id]
-      this.unsetPreference({ path: 'simple.muteFilters.' + id, value: null })
+      this.unsetSimplePrefAndSave({ path: 'muteFilters.' + id, value: null })
       this.pushSyncConfig()
     },
     purgeExpiredFilters() {
       this.muteFiltersExpired.forEach(([id]) => {
         delete this.muteFiltersDraftObject[id]
-        this.unsetPreference({ path: 'simple.muteFilters.' + id, value: null })
+        this.unsetSimplePrefAndSave({ path: 'muteFilters.' + id, value: null })
       })
       this.pushSyncConfig()
     },
@@ -189,8 +189,8 @@ const ClutterTab = {
       this.muteFiltersDraftDirty[id] = true
     },
     saveFilter(id) {
-      this.setPreference({
-        path: 'simple.muteFilters.' + id,
+      this.setSimplePrefAndSave({
+        path: 'muteFilters.' + id,
         value: this.muteFiltersDraftObject[id],
       })
       this.pushSyncConfig()

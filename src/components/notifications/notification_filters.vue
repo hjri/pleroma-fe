@@ -124,8 +124,8 @@ export default {
   },
   methods: {
     toggleNotificationFilter(type) {
-      useSyncConfigStore().setPreference({
-        path: 'simple.notificationVisibility',
+      useSyncConfigStore().setSimplePrefAndSave({
+        path: 'notificationVisibility',
         value: {
           ...this.filters,
           [type]: !this.filters[type],

@@ -84,16 +84,16 @@ const UserTimedFilterModal = {
       if (this.isMute) {
         this.$store.dispatch('muteUser', this.requestBody)
         if (this.dontAskAgain) {
-          this.$store.dispatch('setOption', {
-            name: 'onMuteDefaultAction',
+          useSyncConfigStore().setSimplePrefAndSave({
+            path: 'onMuteDefaultAction',
             value: this.expiryString,
           })
         }
       } else {
         this.$store.dispatch('blockUser', this.requestBody)
         if (this.dontAskAgain) {
-          this.$store.dispatch('setOption', {
-            name: 'onBlockDefaultAction',
+          useSyncConfigStore().setSimplePrefAndSave({
+            path: 'onBlockDefaultAction',
             value: this.expiryString,
           })
         }

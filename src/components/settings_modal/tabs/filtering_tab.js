@@ -36,11 +36,11 @@ const FilteringTab = {
         label: this.$t(`user_card.mute_block_${mode}`),
       })),
       muteFiltersDraftObject: cloneDeep(
-        useSyncConfigStore().prefsStorage.simple.muteFilters,
+        this.prefsStorage.simple.muteFilters,
       ),
       muteFiltersDraftDirty: Object.fromEntries(
         Object.entries(
-          useSyncConfigStore().prefsStorage.simple.muteFilters,
+          this.prefsStorage.simple.muteFilters,
         ).map(([k]) => [k, false]),
       ),
       exportedFilter: null,
@@ -112,7 +112,7 @@ const FilteringTab = {
         if (value !== 'ask' && value !== 'forever') {
           realValue = '14d'
         }
-        useSyncConfigStore().setPreference({
+        this.setPreference({
           path: 'simple.onMuteDefaultAction',
           value: realValue,
         })
@@ -132,7 +132,7 @@ const FilteringTab = {
         if (value !== 'ask' && value !== 'forever') {
           realValue = '14d'
         }
-        useSyncConfigStore().setPreference({
+        this.setPreference({
           path: 'simple.onBlockDefaultAction',
           value: realValue,
         })
@@ -151,7 +151,9 @@ const FilteringTab = {
   methods: {
     ...mapActions(useSyncConfigStore, [
       'setPreference',
+      'setPrefAndSave',
       'unsetPreference',
+      'unsetPrefAndSave',
       'pushSyncConfig',
     ]),
     getDatetimeLocal(timestamp) {
@@ -198,8 +200,7 @@ const FilteringTab = {
 
       filter.order = this.muteFilters.length + 2
       this.muteFiltersDraftObject[newId] = filter
-      this.setPreference({ path: 'simple.muteFilters.' + newId, value: filter })
-      this.pushSyncConfig()
+      this.setSimplePrefAndSave({ path: 'muteFilters.' + newId, value: filter })
     },
     exportFilter(id) {
       this.exportedFilter = { ...this.muteFiltersDraftObject[id] }
@@ -214,13 +215,11 @@ const FilteringTab = {
       const newId = uuidv4()
 
       this.muteFiltersDraftObject[newId] = filter
-      this.setPreference({ path: 'simple.muteFilters.' + newId, value: filter })
-      this.pushSyncConfig()
+      this.setSimplePrefAndSave({ path: 'muteFilters.' + newId, value: filter })
     },
     deleteFilter(id) {
       delete this.muteFiltersDraftObject[id]
-      this.unsetPreference({ path: 'simple.muteFilters.' + id, value: null })
-      this.pushSyncConfig()
+      this.unsetSimplePrefAndSave({ path: 'muteFilters.' + id, value: null })
     },
     purgeExpiredFilters() {
       this.muteFiltersExpired.forEach(([id]) => {
@@ -249,11 +248,10 @@ const FilteringTab = {
       this.muteFiltersDraftDirty[id] = true
     },
     saveFilter(id) {
-      this.setPreference({
-        path: 'simple.muteFilters.' + id,
+      this.setPrefAndSave({
+        path: 'muteFilters.' + id,
         value: this.muteFiltersDraftObject[id],
       })
-      this.pushSyncConfig()
       this.muteFiltersDraftDirty[id] = false
     },
   },

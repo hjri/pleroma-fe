@@ -41,8 +41,8 @@ const GeneralTab = {
         return useSyncConfigStore().mergedConfig.interfaceLanguage
       },
       set: function (val) {
-        useSyncConfigStore().setPreference({
-          path: 'simple.interfaceLanguage',
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'interfaceLanguage',
           value: val,
         })
       },
@@ -69,8 +69,8 @@ const GeneralTab = {
         })
     },
     updateFont(key, value) {
-      useSyncConfigStore().setPreference({
-        path: 'simple.theme3hacks',
+      useSyncConfigStore().setSimplePrefAndSave({
+        path: 'theme3hacks',
         value: {
           ...this.mergedConfig.theme3hacks,
           fonts: {

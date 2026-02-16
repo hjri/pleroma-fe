@@ -819,8 +819,8 @@ const PostStatusForm = {
       }
     },
     dismissScopeNotice() {
-      useSyncConfigStore().setPreference({
-        path: 'simple.hideScopeNotice',
+      useSyncConfigStore().setSimplePrefAndSave({
+        path: 'hideScopeNotice',
         value: true,
       })
     },

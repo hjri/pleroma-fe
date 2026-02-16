@@ -57,8 +57,8 @@ const UpdateNotification = {
         flag: 'updateCounter',
         value: CURRENT_UPDATE_COUNTER,
       })
-      useSyncConfigStore().setPreference({
-        path: 'simple.dontShowUpdateNotifs',
+      useSyncConfigStore().setSimplePrefAndSave({
+        path: 'dontShowUpdateNotifs',
         value: true,
       })
       useSyncConfigStore().pushSyncConfig()

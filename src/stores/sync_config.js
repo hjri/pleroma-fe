@@ -417,6 +417,14 @@ export const useSyncConfigStore = defineStore('sync_config', {
       this.flagStorage[flag] = value
       this.dirty = true
     },
+    setSimplePrefAndSave({ path, value }) {
+      this.setPreference({ path: `simple.${path}`, value })
+      this.pushSyncConfig()
+    },
+    unsetSimplePrefAndSave({ path }) {
+      this.unsetPreference({ path: `simple.${path}` })
+      this.pushSyncConfig()
+    },
     setPreference({ path, value }) {
       if (path.startsWith('_')) {
         throw new Error(
@@ -472,7 +480,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
           `Calling unset on depth > 3 (path: ${path})  is not allowed`,
         )
       }
-      unset(this.prefsStorage, path, value)
+      unset(this.prefsStorage, path)
       this.prefsStorage._journal = [
         ...this.prefsStorage._journal,
         { operation: 'unset', path, args: [], timestamp: Date.now() },

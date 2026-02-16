@@ -725,7 +725,7 @@ const users = {
               Object.keys(
                 useSyncConfigStore().prefsStorage.simple.muteFilters
               ).forEach(key => {
-                useSyncConfigStore().unsetPreference({ path: 'simple.muteFilters.' + key, value: null })
+                useSyncConfigStore().unsetSimplePrefAndSave({ path: 'muteFilters.' + key, value: null })
               })
 
               // Reset flag to 0 to re-run migrations

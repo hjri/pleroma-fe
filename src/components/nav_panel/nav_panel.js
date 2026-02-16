@@ -84,8 +84,8 @@ const NavPanel = {
       this.editMode = !this.editMode
     },
     toggleCollapse() {
-      useSyncConfigStore().setPreference({
-        path: 'simple.collapseNav',
+      useSyncConfigStore().setSimplePrefAndSave({
+        path: 'collapseNav',
         value: !this.collapsed,
       })
       useSyncConfigStore().pushSyncConfig()

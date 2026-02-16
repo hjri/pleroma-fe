@@ -195,8 +195,8 @@ const SettingsModal = {
         return useSyncConfigStore().mergedConfig.expertLevel > 0
       },
       set(value) {
-        useSyncConfigStore().setPreference({
-          path: 'simple.expertLevel',
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'expertLevel',
           value: value ? 1 : 0,
         })
       },

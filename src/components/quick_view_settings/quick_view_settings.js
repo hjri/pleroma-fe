@@ -42,8 +42,8 @@ const QuickViewSettings = {
         return this.mergedConfig.conversationDisplay
       },
       set(value) {
-        useSyncConfigStore().setPreference({
-          path: 'simple.conversationDisplay',
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'conversationDisplay',
           value,
         })
       },
@@ -54,7 +54,7 @@ const QuickViewSettings = {
       },
       set() {
         const value = !this.autoUpdate
-        useSyncConfigStore().setPreference({ path: 'simple.streaming', value })
+        useSyncConfigStore().setSimplePrefAndSave({ path: 'streaming', value })
       },
     },
     collapseWithSubjects: {
@@ -63,8 +63,8 @@ const QuickViewSettings = {
       },
       set() {
         const value = !this.collapseWithSubjects
-        useSyncConfigStore().setPreference({
-          path: 'simple.collapseMessageWithSubject',
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'collapseMessageWithSubject',
           value,
         })
       },
@@ -75,8 +75,8 @@ const QuickViewSettings = {
       },
       set() {
         const value = !this.showUserAvatars
-        useSyncConfigStore().setPreference({
-          path: 'simple.mentionLinkShowAvatar',
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'mentionLinkShowAvatar',
           value,
         })
       },
@@ -87,8 +87,8 @@ const QuickViewSettings = {
       },
       set() {
         const value = !this.muteBotStatuses
-        useSyncConfigStore().setPreference({
-          path: 'simple.muteBotStatuses',
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'muteBotStatuses',
           value,
         })
       },
@@ -99,8 +99,8 @@ const QuickViewSettings = {
       },
       set() {
         const value = !this.muteSensitiveStatuses
-        useSyncConfigStore().setPreference({
-          path: 'simple.muteSensitiveStatuses',
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'muteSensitiveStatuses',
           value,
         })
       },

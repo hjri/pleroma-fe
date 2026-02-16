@@ -61,8 +61,8 @@ const ExtraNotifications = {
       return useInterfaceStore().openSettingsModalTab('notifications')
     },
     dismissConfigurationTip() {
-      return useSyncConfigStore().setPreference({
-        path: 'simple.showExtraNotificationsTip',
+      return useSyncConfigStore().setSimplePrefAndSave({
+        path: 'showExtraNotificationsTip',
         value: false,
       })
     },

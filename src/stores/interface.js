@@ -226,14 +226,14 @@ export const useInterfaceStore = defineStore('interface', {
       try {
         const value = await getResourcesIndex('/static/palettes/index.json')
         useInstanceStore().set({
-          name: 'palettesIndex',
+          path: 'palettesIndex',
           value,
         })
         return value
       } catch (e) {
         console.error('Could not fetch palettes index', e)
         useInstanceStore().set({
-          name: 'palettesIndex',
+          path: 'palettesIndex',
           value: { _error: e },
         })
         return Promise.resolve({})
@@ -243,7 +243,8 @@ export const useInterfaceStore = defineStore('interface', {
       this.resetThemeV3Palette()
       this.resetThemeV2()
 
-      window.vuex.commit('setOption', { name: 'palette', value })
+      useSyncConfigStore().setPreference({ path: 'simple.palette', value })
+      useSyncConfigStore().pushSyncConfig()
 
       this.applyTheme({ recompile: true })
     },
@@ -251,7 +252,8 @@ export const useInterfaceStore = defineStore('interface', {
       this.resetThemeV3Palette()
       this.resetThemeV2()
 
-      window.vuex.commit('setOption', { name: 'paletteCustomData', value })
+      useSyncConfigStore().setPreference({ path: 'simple.paletteCustomData', value })
+      useSyncConfigStore().pushSyncConfig()
 
       this.applyTheme({ recompile: true })
     },
@@ -261,12 +263,12 @@ export const useInterfaceStore = defineStore('interface', {
           '/static/styles/index.json',
           deserialize,
         )
-        useInstanceStore().set({ name: 'stylesIndex', value })
+        useInstanceStore().set({ path: 'stylesIndex', value })
         return value
       } catch (e) {
         console.error('Could not fetch styles index', e)
         useInstanceStore().set({
-          name: 'stylesIndex',
+          path: 'simple.stylesIndex',
           value: { _error: e },
         })
         return Promise.resolve({})
@@ -277,7 +279,8 @@ export const useInterfaceStore = defineStore('interface', {
       this.resetThemeV2()
       this.resetThemeV3Palette()
 
-      window.vuex.commit('setOption', { name: 'style', value })
+      useSyncConfigStore().setPreference({ path: 'simple.style', value })
+      useSyncConfigStore().pushSyncConfig()
       this.useStylePalette = true
 
       this.applyTheme({ recompile: true }).then(() => {
@@ -289,7 +292,8 @@ export const useInterfaceStore = defineStore('interface', {
       this.resetThemeV2()
       this.resetThemeV3Palette()
 
-      window.vuex.commit('setOption', { name: 'styleCustomData', value })
+      useSyncConfigStore().setPreference({ path: 'simple.styleCustomData', value })
+      useSyncConfigStore().pushSyncConfig()
 
       this.useStylePalette = true
       this.applyTheme({ recompile: true }).then(() => {
@@ -299,12 +303,12 @@ export const useInterfaceStore = defineStore('interface', {
     async fetchThemesIndex() {
       try {
         const value = await getResourcesIndex('/static/styles.json')
-        useInstanceStore().set({ name: 'themesIndex', value })
+        useInstanceStore().set({ path: 'simple.themesIndex', value })
         return value
       } catch (e) {
         console.error('Could not fetch themes index', e)
         useInstanceStore().set({
-          name: 'themesIndex',
+          path: 'themesIndex',
           value: { _error: e },
         })
         return Promise.resolve({})
@@ -315,7 +319,8 @@ export const useInterfaceStore = defineStore('interface', {
       this.resetThemeV3Palette()
       this.resetThemeV2()
 
-      window.vuex.commit('setOption', { name: 'theme', value })
+      useSyncConfigStore().setPreference({ path: 'simple.theme', value })
+      useSyncConfigStore().pushSyncConfig()
 
       this.applyTheme({ recompile: true })
     },
@@ -324,29 +329,33 @@ export const useInterfaceStore = defineStore('interface', {
       this.resetThemeV3Palette()
       this.resetThemeV2()
 
-      window.vuex.commit('setOption', { name: 'customTheme', value })
-      window.vuex.commit('setOption', { name: 'customThemeSource', value })
+      useSyncConfigStore().setPreference({ path: 'simple.customTheme', value })
+      useSyncConfigStore().setPreference({ path: 'simple.customThemeSource', value })
+      useSyncConfigStore().pushSyncConfig()
 
       this.applyTheme({ recompile: true })
     },
     resetThemeV3() {
-      window.vuex.commit('setOption', { name: 'style', value: null })
-      window.vuex.commit('setOption', { name: 'styleCustomData', value: null })
+      useSyncConfigStore().setPreference({ path: 'simple.style', value: null })
+      useSyncConfigStore().setPreference({ path: 'simple.styleCustomData', value: null })
+      useSyncConfigStore().pushSyncConfig()
     },
     resetThemeV3Palette() {
-      window.vuex.commit('setOption', { name: 'palette', value: null })
-      window.vuex.commit('setOption', {
-        name: 'paletteCustomData',
+      useSyncConfigStore().setPreference({ path: 'simple.palette', value: null })
+      useSyncConfigStore().setPreference({
+        path: 'simple.paletteCustomData',
         value: null,
       })
+      useSyncConfigStore().pushSyncConfig()
     },
     resetThemeV2() {
-      window.vuex.commit('setOption', { name: 'theme', value: null })
-      window.vuex.commit('setOption', { name: 'customTheme', value: null })
-      window.vuex.commit('setOption', {
-        name: 'customThemeSource',
+      useSyncConfigStore().setPreference({ path: 'simple.theme', value: null })
+      useSyncConfigStore().setPreference({ path: 'simple.customTheme', value: null })
+      useSyncConfigStore().setPreference({
+        path: 'simple.customThemeSource',
         value: null,
       })
+      useSyncConfigStore().pushSyncConfig()
     },
     async getThemeData() {
       const getData = async (resource, index, customData, name) => {
@@ -516,6 +525,7 @@ export const useInterfaceStore = defineStore('interface', {
             path: 'simple.palette',
             value: firstStylePaletteName,
           })
+          useSyncConfigStore().pushSyncConfig()
         }
 
         this.paletteNameUsed = palette.nameUsed

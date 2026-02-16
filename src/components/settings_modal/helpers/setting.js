@@ -259,7 +259,7 @@ export default {
             const writePath = `simple.${readPath}`
 
             if (!this.timedApplyMode) {
-              useSyncConfigStore().setPreference({ path: writePath, value })
+              useSyncConfigStore().setSimplePrefAndSave({ path: writePath, value })
               useSyncConfigStore().pushSyncConfig()
             } else {
               if (useInterfaceStore().temporaryChangesTimeoutId !== null) {
