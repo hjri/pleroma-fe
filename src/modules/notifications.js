@@ -118,6 +118,7 @@ export const notifications = {
           commit('addNewNotifications', { notifications: [notification] })
 
           maybeShowNotification(
+            useSyncConfigStore().mergedConfig.notificationVisibility,
             store,
             Object.values(useSyncConfigStore().prefsStorage.simple.muteFilters),
             notification,
