@@ -605,9 +605,15 @@ export const useSyncConfigStore = defineStore('sync_config', {
         )
         cache = null
       }
-      console.log(cache, live)
 
+      console.log('======')
+      console.log('CACHE', cache.prefsStorage.simple.conversationDisplay)
+      console.log('LIVE', live.prefsStorage.simple.conversationDisplay)
       let { recent, stale, needUpload } = _getRecentData(cache, live)
+      console.log('======')
+      console.log('RECENT', cache.prefsStorage.simple.conversationDisplay)
+      console.log('STALE', live.prefsStorage.simple.conversationDisplay)
+      console.log('======')
 
       const userNew = userData.created_at > NEW_USER_DATE
       const flagsTemplate = userNew ? newUserFlags : defaultState.flagStorage
