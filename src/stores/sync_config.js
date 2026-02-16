@@ -74,12 +74,15 @@ export const _moveItemInArray = (array, value, movement) => {
   return newArray
 }
 
-const _wrapData = (data, userName) => ({
-  ...data,
-  _user: userName,
-  _timestamp: Date.now(),
-  _version: VERSION,
-})
+const _wrapData = (data, userName) => {
+  console.log('WRAP')
+  return {
+    ...data,
+    _user: userName,
+    _timestamp: Date.now(),
+    _version: VERSION,
+  }
+}
 
 const _checkValidity = (data) => data._timestamp > 0 && data._version > 0
 
@@ -91,16 +94,17 @@ const _verifyPrefs = (state) => {
 
   // Simple
   Object.entries(defaultState.prefsStorage.simple).forEach(([k, v]) => {
+    if (typeof v === 'undefined') return
     if (typeof v === 'number' || typeof v === 'boolean') return
-    if (typeof v === 'object' && v != null) return
-    console.warn(`Preference simple.${k} as invalid type, reinitializing`)
+    if (typeof v === 'object') return
+    console.warn(`Preference simple.${k} as invalid type ${typeof v}, reinitializing`)
     set(state.prefsStorage.simple, k, defaultState.prefsStorage.simple[k])
   })
 
   // Collections
   Object.entries(defaultState.prefsStorage.collections).forEach(([k, v]) => {
     if (Array.isArray(v)) return
-    console.warn(`Preference collections.${k} as invalid type, reinitializing`)
+    console.warn(`Preference collections.${k} as invalid type ${typeof v}, reinitializing`)
     set(
       state.prefsStorage.collections,
       k,
@@ -154,21 +158,36 @@ export const _getRecentData = (cache, live, isTest) => {
     result.needUpload = true
   }
 
-  const merge = (a, b) => ({
-    _user: a._user ?? b._user,
-    _version: a._version ?? b._version,
-    _timestamp: a._timestamp ?? b._timestamp,
-    needUpload: b.needUpload ?? a.needUpload,
-    prefsStorage: _merge(a.prefsStorage, b.prefsStorage),
-    flagStorage: _merge(a.flagStorage, b.flagStorage),
-  })
+  const merge = (a, b) => {
+    console.log(
+      'MERGE',
+      a.prefsStorage.simple.conversationDisplay,
+      b.prefsStorage.simple.conversationDisplay,
+    )
+    console.log(a.prefsStorage.simple)
+    console.log(cloneDeep(a.prefsStorage).simple)
+    return {
+      _user: a._user ?? b._user,
+      _version: a._version ?? b._version,
+      _timestamp: a._timestamp ?? b._timestamp,
+      needUpload: b.needUpload ?? a.needUpload,
+      prefsStorage: _merge(cloneDeep(a.prefsStorage), b.prefsStorage),
+      flagStorage: _merge(a.flagStorage, b.flagStorage),
+    }
+  }
+
+  console.log('1',result.recent.prefsStorage.simple.conversationDisplay)
+
   result.recent = isTest
     ? result.recent
     : result.recent && merge(defaultState, result.recent)
+  console.log('2',result.recent.prefsStorage.simple.conversationDisplay)
+
   result.stale = isTest
     ? result.stale
     : result.stale && merge(defaultState, result.stale)
 
+  console.log('3', result.recent.prefsStorage.simple.conversationDisplay)
   return result
 }
 
@@ -213,7 +232,7 @@ const _mergeJournal = (...journals) => {
     // side effect
     journal.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
 
-    if (path.startsWith('collections') || path.startsWith('objectCollection')) {
+    if (path.startsWith('collections')) {
       const lastRemoveIndex = findLastIndex(
         journal,
         ({ operation }) => operation === 'removeFromCollection',
@@ -234,7 +253,6 @@ const _mergeJournal = (...journals) => {
           return false
         }
         if (a.operation === 'addToCollection') {
-          // TODO check how objectCollections behaves here
           return a.args[0] === b.args[0]
         }
         return false
@@ -276,34 +294,31 @@ export const _mergePrefs = (recent, stale) => {
     }
     switch (operation) {
       case 'set':
-        if (
-          path.startsWith('collections') ||
-          path.startsWith('objectCollections')
-        ) {
-          throw new Error('Illegal operation "set" on a collection')
+        if (path.startsWith('collections')) {
+          return console.error('Illegal operation "set" on a collection')
         }
         if (path.split(/\./g).length <= 1) {
-          throw new Error(
+          return console.error(
             `Calling set on depth <= 1 (path: ${path}) is not allowed`,
           )
         }
         set(resultOutput, path, args[0])
         break
       case 'unset':
-        if (
-          path.startsWith('collections') ||
-          path.startsWith('objectCollections')
-        ) {
-          throw new Error('Illegal operation "unset" on a collection')
+        if (path.startsWith('collections')) {
+          return console.error('Illegal operation "unset" on a collection')
         }
         if (path.split(/\./g).length <= 2) {
-          throw new Error(
+          return console.error(
             `Calling unset on depth <= 2 (path: ${path})  is not allowed`,
           )
         }
         unset(resultOutput, path)
         break
       case 'addToCollection':
+        if (!path.startsWith('collections')) {
+          return console.error('Illegal operation "addToCollection" on a non-collection')
+        }
         set(
           resultOutput,
           path,
@@ -311,6 +326,9 @@ export const _mergePrefs = (recent, stale) => {
         )
         break
       case 'removeFromCollection': {
+        if (!path.startsWith('collections')) {
+          return console.error('Illegal operation "removeFromCollection" on a non-collection')
+        }
         const newSet = new Set(get(resultOutput, path))
         newSet.delete(args[0])
         set(resultOutput, path, Array.from(newSet))
@@ -326,7 +344,7 @@ export const _mergePrefs = (recent, stale) => {
         break
       }
       default:
-        throw new Error(
+        return console.error(
           `Unknown journal operation: '${operation}', did we forget to run reverse migrations beforehand?`,
         )
     }
@@ -432,8 +450,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
         )
       }
       if (
-        path.startsWith('collections') ||
-        path.startsWith('objectCollections')
+        path.startsWith('collections')
       ) {
         throw new Error(
           `Invalid operation 'set' for collection field '${path}', ignoring.`,
@@ -463,8 +480,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
         )
       }
       if (
-        path.startsWith('collections') ||
-        path.startsWith('objectCollections')
+        path.startsWith('collections')
       ) {
         throw new Error(
           `Invalid operation 'unset' for collection field '${path}', ignoring.`,
@@ -497,15 +513,6 @@ export const useSyncConfigStore = defineStore('sync_config', {
         const collection = new Set(get(this.prefsStorage, path))
         collection.add(value)
         set(this.prefsStorage, path, [...collection])
-      } else if (path.startsWith('objectCollections')) {
-        const { _key } = value
-        if (!_key && typeof _key !== 'string') {
-          throw new Error('Object for storage is missing _key field!')
-        }
-        const collection = new Set(get(this.prefsStorage, path + '.index'))
-        collection.add(_key)
-        set(this.prefsStorage, path + '.index', [...collection])
-        set(this.prefsStorage, path + '.data.' + _key, value)
       }
       this.prefsStorage._journal = [
         ...this.prefsStorage._journal,
@@ -541,22 +548,6 @@ export const useSyncConfigStore = defineStore('sync_config', {
           },
         ]
         this.dirty = true
-      } else if (path.startsWith('objectCollection')) {
-        const collection = new Set(get(this.prefsStorage, path + '.index'))
-        collection.delete(_key)
-        set(this.prefsStorage, path + '.index', [...collection])
-        const data = get(this.prefsStorage, path + '.data')
-        delete data[_key]
-
-        this.prefsStorage._journal = [
-          ...this.prefsStorage._journal,
-          {
-            operation: 'removeFromCollection',
-            path,
-            args: [{ _key }],
-            timestamp: Date.now(),
-          },
-        ]
       }
     },
     reorderCollectionPreference({ path, value, movement }) {
@@ -609,10 +600,17 @@ export const useSyncConfigStore = defineStore('sync_config', {
       console.log('======')
       console.log('CACHE', cache.prefsStorage.simple.conversationDisplay)
       console.log('LIVE', live.prefsStorage.simple.conversationDisplay)
+      if (cache._timestamp > live._timestamp) {
+        console.log('C > L')
+      } else if (cache._timestamp === live._timestamp) {
+        console.log('C = L')
+      } else {
+        console.log('C < L')
+      }
       let { recent, stale, needUpload } = _getRecentData(cache, live)
       console.log('======')
-      console.log('RECENT', cache.prefsStorage.simple.conversationDisplay)
-      console.log('STALE', live.prefsStorage.simple.conversationDisplay)
+      console.log('RECENT', recent.prefsStorage.simple.conversationDisplay)
+      console.log('STALE', stale.prefsStorage.simple.conversationDisplay)
       console.log('======')
 
       const userNew = userData.created_at > NEW_USER_DATE
