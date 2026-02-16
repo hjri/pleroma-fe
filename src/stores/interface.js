@@ -512,8 +512,8 @@ export const useInterfaceStore = defineStore('interface', {
         )
 
         if (this.useStylePalette) {
-          window.vuex.commit('setOption', {
-            name: 'palette',
+          useSyncConfigStore().setPreference({
+            path: 'simple.palette',
             value: firstStylePaletteName,
           })
         }

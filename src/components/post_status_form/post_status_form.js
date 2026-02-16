@@ -819,8 +819,8 @@ const PostStatusForm = {
       }
     },
     dismissScopeNotice() {
-      this.$store.dispatch('setOption', {
-        name: 'hideScopeNotice',
+      useSyncConfigStore().setPreference({
+        path: 'simple.hideScopeNotice',
         value: true,
       })
     },

@@ -120,8 +120,8 @@ const ComposingTab = {
         return useSyncConfigStore().mergedConfig.interfaceLanguage
       },
       set: function (val) {
-        this.$store.dispatch('setOption', {
-          name: 'interfaceLanguage',
+        useSyncConfigStore().setPreference({
+          path: 'simple.interfaceLanguage',
           value: val,
         })
       },
@@ -172,8 +172,8 @@ const ComposingTab = {
         })
     },
     updateFont(key, value) {
-      this.$store.dispatch('setOption', {
-        name: 'theme3hacks',
+      useSyncConfigStore().setPreference({
+        path: 'simple.theme3hacks',
         value: {
           ...this.mergedConfig.theme3hacks,
           fonts: {

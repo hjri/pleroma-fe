@@ -10,8 +10,8 @@ import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 
 import localeService from 'src/services/locale/locale.service.js'
 
@@ -41,8 +41,8 @@ const GeneralTab = {
         return useSyncConfigStore().mergedConfig.interfaceLanguage
       },
       set: function (val) {
-        this.$store.dispatch('setOption', {
-          name: 'interfaceLanguage',
+        useSyncConfigStore().setPreference({
+          path: 'simple.interfaceLanguage',
           value: val,
         })
       },
@@ -69,8 +69,8 @@ const GeneralTab = {
         })
     },
     updateFont(key, value) {
-      this.$store.dispatch('setOption', {
-        name: 'theme3hacks',
+      useSyncConfigStore().setPreference({
+        path: 'simple.theme3hacks',
         value: {
           ...this.mergedConfig.theme3hacks,
           fonts: {

@@ -15,8 +15,7 @@ export const piniaLanguagePlugin = ({ store, options }) => {
       if (name === 'setPreference') {
         const { path, value } = args[0]
         if (path === 'simple.interfaceLanguage') {
-          useI18nStore().setLanguage(value)
-          messages.setLanguage(this.i18n, value)
+          messages.setLanguage(useI18nStore().i18n, value)
           useEmojiStore().loadUnicodeEmojiData(value)
           Cookies.set(
             BACKEND_LANGUAGE_COOKIE_NAME,

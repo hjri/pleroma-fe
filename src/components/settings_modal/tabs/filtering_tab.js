@@ -112,8 +112,8 @@ const FilteringTab = {
         if (value !== 'ask' && value !== 'forever') {
           realValue = '14d'
         }
-        this.$store.dispatch('setOption', {
-          name: 'onMuteDefaultAction',
+        useSyncConfigStore().setPreference({
+          path: 'simple.onMuteDefaultAction',
           value: realValue,
         })
       },
@@ -132,8 +132,8 @@ const FilteringTab = {
         if (value !== 'ask' && value !== 'forever') {
           realValue = '14d'
         }
-        this.$store.dispatch('setOption', {
-          name: 'onBlockDefaultAction',
+        useSyncConfigStore().setPreference({
+          path: 'simple.onBlockDefaultAction',
           value: realValue,
         })
       },

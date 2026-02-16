@@ -74,7 +74,7 @@ export default {
   created() {
     // Load the locale from the storage
     const val = useSyncConfigStore().mergedConfig.interfaceLanguage
-    this.$store.dispatch('setOption', { name: 'interfaceLanguage', value: val })
+    useSyncConfigStore().setPreference({ path: 'simple.interfaceLanguage', value: val })
     document.getElementById('modal').classList = ['-' + this.layoutType]
 
     // Create bound handlers

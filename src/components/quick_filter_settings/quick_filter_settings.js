@@ -20,8 +20,8 @@ const QuickFilterSettings = {
   },
   methods: {
     setReplyVisibility(visibility) {
-      this.$store.dispatch('setOption', {
-        name: 'replyVisibility',
+      useSyncConfigStore().setPreference({
+        path: 'simple.replyVisibility',
         value: visibility,
       })
       this.$store.dispatch('queueFlushAll')
@@ -87,9 +87,9 @@ const QuickFilterSettings = {
       },
       set() {
         const value = !this.hideMedia
-        this.$store.dispatch('setOption', { name: 'hideAttachments', value })
-        this.$store.dispatch('setOption', {
-          name: 'hideAttachmentsInConv',
+        useSyncConfigStore().setPreference({ path: 'simple.hideAttachments', value })
+        useSyncConfigStore().setPreference({
+          path: 'simple.hideAttachmentsInConv',
           value,
         })
       },
@@ -100,8 +100,8 @@ const QuickFilterSettings = {
       },
       set() {
         const value = !this.hideMutedPosts
-        this.$store.dispatch('setOption', {
-          name: 'hideFilteredStatuses',
+        useSyncConfigStore().setPreference({
+          path: 'simple.hideFilteredStatuses',
           value,
         })
       },
@@ -112,7 +112,7 @@ const QuickFilterSettings = {
       },
       set() {
         const value = !this.muteBotStatuses
-        this.$store.dispatch('setOption', { name: 'muteBotStatuses', value })
+        useSyncConfigStore().setPreference({ path: 'simple.muteBotStatuses', value })
       },
     },
     muteSensitiveStatuses: {
@@ -121,8 +121,8 @@ const QuickFilterSettings = {
       },
       set() {
         const value = !this.muteSensitiveStatuses
-        this.$store.dispatch('setOption', {
-          name: 'muteSensitiveStatuses',
+        useSyncConfigStore().setPreference({
+          path: 'simple.muteSensitiveStatuses',
           value,
         })
       },
