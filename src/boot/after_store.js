@@ -34,6 +34,7 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
 
 import VBodyScrollLock from 'src/directives/body_scroll_lock'
 import {
@@ -523,6 +524,8 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
 
   useInterfaceStore().setLayoutWidth(windowWidth())
   useInterfaceStore().setLayoutHeight(windowHeight())
+  window.syncConfig = useSyncConfigStore()
+  window.localConfig = useLocalConfigStore()
 
   FaviconService.initFaviconService()
   initServiceWorker(store)
