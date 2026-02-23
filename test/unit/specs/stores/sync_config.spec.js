@@ -123,30 +123,14 @@ describe('The SyncConfig module', () => {
         store.setPreference({ path: 'simple.testing', value: 1 })
         store.setPreference({ path: 'simple.testing', value: 2 })
         store.addCollectionPreference({ path: 'collections.testing', value: 2 })
-        store.addCollectionPreference({
-          path: 'objectCollections.testing',
-          value: { _key: 'a', foo: 1 },
-        })
-        expect(store.prefsStorage.objectCollections.testing).to.eql({
-          data: { a: { _key: 'a', foo: 1 } },
-          index: ['a'],
-        })
         store.removeCollectionPreference({
           path: 'collections.testing',
           value: 2,
         })
-        store.removeCollectionPreference({
-          path: 'objectCollections.testing',
-          value: { _key: 'a' },
-        })
         store.updateCache({ username: 'test' })
         expect(store.prefsStorage.simple.testing).to.eql(2)
         expect(store.prefsStorage.collections.testing).to.eql([])
-        expect(store.prefsStorage.objectCollections.testing).to.eql({
-          data: {},
-          index: [],
-        })
-        expect(store.prefsStorage._journal.length).to.eql(3)
+        expect(store.prefsStorage._journal.length).to.eql(2)
         expect(store.prefsStorage._journal[0]).to.eql({
           path: 'simple.testing',
           operation: 'set',
@@ -161,13 +145,6 @@ describe('The SyncConfig module', () => {
           // should have A timestamp, we don't really care what it is
           timestamp: store.prefsStorage._journal[1].timestamp,
         })
-        expect(store.prefsStorage._journal[2]).to.eql({
-          path: 'objectCollections.testing',
-          operation: 'removeFromCollection',
-          args: [{ _key: 'a' }],
-          // should have A timestamp, we don't really care what it is
-          timestamp: store.prefsStorage._journal[2].timestamp,
-        })
       })
 
       it('should remove duplicate entries from journal', () => {
@@ -176,22 +153,10 @@ describe('The SyncConfig module', () => {
         store.setPreference({ path: 'simple.testing', value: 1 })
         store.addCollectionPreference({ path: 'collections.testing', value: 2 })
         store.addCollectionPreference({ path: 'collections.testing', value: 2 })
-        store.addCollectionPreference({
-          path: 'objectCollections.testing',
-          value: { _key: 'a', foo: 1 },
-        })
-        store.addCollectionPreference({
-          path: 'objectCollections.testing',
-          value: { _key: 'a', foo: 1 },
-        })
         store.updateCache({ username: 'test' })
         expect(store.prefsStorage.simple.testing).to.eql(1)
         expect(store.prefsStorage.collections.testing).to.eql([2])
-        expect(store.prefsStorage.objectCollections.testing).to.eql({
-          data: { a: { _key: 'a', foo: 1 } },
-          index: ['a'],
-        })
-        expect(store.prefsStorage._journal.length).to.eql(4)
+        expect(store.prefsStorage._journal.length).to.eql(2)
       })
 
       it('should remove depth = 3 set/unset entries from journal', () => {

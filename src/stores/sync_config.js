@@ -159,13 +159,6 @@ export const _getRecentData = (cache, live, isTest) => {
   }
 
   const merge = (a, b) => {
-    console.log(
-      'MERGE',
-      a.prefsStorage.simple.conversationDisplay,
-      b.prefsStorage.simple.conversationDisplay,
-    )
-    console.log(a.prefsStorage.simple)
-    console.log(cloneDeep(a.prefsStorage).simple)
     return {
       _user: a._user ?? b._user,
       _version: a._version ?? b._version,
@@ -176,18 +169,14 @@ export const _getRecentData = (cache, live, isTest) => {
     }
   }
 
-  console.log('1',result.recent.prefsStorage.simple.conversationDisplay)
-
   result.recent = isTest
     ? result.recent
     : result.recent && merge(defaultState, result.recent)
-  console.log('2',result.recent.prefsStorage.simple.conversationDisplay)
 
   result.stale = isTest
     ? result.stale
     : result.stale && merge(defaultState, result.stale)
 
-  console.log('3', result.recent.prefsStorage.simple.conversationDisplay)
   return result
 }
 
@@ -597,21 +586,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
         cache = null
       }
 
-      console.log('======')
-      console.log('CACHE', cache.prefsStorage.simple.conversationDisplay)
-      console.log('LIVE', live.prefsStorage.simple.conversationDisplay)
-      if (cache._timestamp > live._timestamp) {
-        console.log('C > L')
-      } else if (cache._timestamp === live._timestamp) {
-        console.log('C = L')
-      } else {
-        console.log('C < L')
-      }
       let { recent, stale, needUpload } = _getRecentData(cache, live)
-      console.log('======')
-      console.log('RECENT', recent.prefsStorage.simple.conversationDisplay)
-      console.log('STALE', stale.prefsStorage.simple.conversationDisplay)
-      console.log('======')
 
       const userNew = userData.created_at > NEW_USER_DATE
       const flagsTemplate = userNew ? newUserFlags : defaultState.flagStorage
