@@ -97,14 +97,18 @@ const _verifyPrefs = (state) => {
     if (typeof v === 'undefined') return
     if (typeof v === 'number' || typeof v === 'boolean') return
     if (typeof v === 'object') return
-    console.warn(`Preference simple.${k} as invalid type ${typeof v}, reinitializing`)
+    console.warn(
+      `Preference simple.${k} as invalid type ${typeof v}, reinitializing`,
+    )
     set(state.prefsStorage.simple, k, defaultState.prefsStorage.simple[k])
   })
 
   // Collections
   Object.entries(defaultState.prefsStorage.collections).forEach(([k, v]) => {
     if (Array.isArray(v)) return
-    console.warn(`Preference collections.${k} as invalid type ${typeof v}, reinitializing`)
+    console.warn(
+      `Preference collections.${k} as invalid type ${typeof v}, reinitializing`,
+    )
     set(
       state.prefsStorage.collections,
       k,
@@ -306,7 +310,9 @@ export const _mergePrefs = (recent, stale) => {
         break
       case 'addToCollection':
         if (!path.startsWith('collections')) {
-          return console.error('Illegal operation "addToCollection" on a non-collection')
+          return console.error(
+            'Illegal operation "addToCollection" on a non-collection',
+          )
         }
         set(
           resultOutput,
@@ -316,7 +322,9 @@ export const _mergePrefs = (recent, stale) => {
         break
       case 'removeFromCollection': {
         if (!path.startsWith('collections')) {
-          return console.error('Illegal operation "removeFromCollection" on a non-collection')
+          return console.error(
+            'Illegal operation "removeFromCollection" on a non-collection',
+          )
         }
         const newSet = new Set(get(resultOutput, path))
         newSet.delete(args[0])
@@ -438,9 +446,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
           `Tried to edit internal (starts with _) field '${path}', ignoring.`,
         )
       }
-      if (
-        path.startsWith('collections')
-      ) {
+      if (path.startsWith('collections')) {
         throw new Error(
           `Invalid operation 'set' for collection field '${path}', ignoring.`,
         )
@@ -468,9 +474,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
           `Tried to edit internal (starts with _) field '${path}', ignoring.`,
         )
       }
-      if (
-        path.startsWith('collections')
-      ) {
+      if (path.startsWith('collections')) {
         throw new Error(
           `Invalid operation 'unset' for collection field '${path}', ignoring.`,
         )

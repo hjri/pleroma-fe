@@ -252,7 +252,10 @@ export const useInterfaceStore = defineStore('interface', {
       this.resetThemeV3Palette()
       this.resetThemeV2()
 
-      useSyncConfigStore().setPreference({ path: 'simple.paletteCustomData', value })
+      useSyncConfigStore().setPreference({
+        path: 'simple.paletteCustomData',
+        value,
+      })
       useSyncConfigStore().pushSyncConfig()
 
       this.applyTheme({ recompile: true })
@@ -292,7 +295,10 @@ export const useInterfaceStore = defineStore('interface', {
       this.resetThemeV2()
       this.resetThemeV3Palette()
 
-      useSyncConfigStore().setPreference({ path: 'simple.styleCustomData', value })
+      useSyncConfigStore().setPreference({
+        path: 'simple.styleCustomData',
+        value,
+      })
       useSyncConfigStore().pushSyncConfig()
 
       this.useStylePalette = true
@@ -330,18 +336,27 @@ export const useInterfaceStore = defineStore('interface', {
       this.resetThemeV2()
 
       useSyncConfigStore().setPreference({ path: 'simple.customTheme', value })
-      useSyncConfigStore().setPreference({ path: 'simple.customThemeSource', value })
+      useSyncConfigStore().setPreference({
+        path: 'simple.customThemeSource',
+        value,
+      })
       useSyncConfigStore().pushSyncConfig()
 
       this.applyTheme({ recompile: true })
     },
     resetThemeV3() {
       useSyncConfigStore().setPreference({ path: 'simple.style', value: null })
-      useSyncConfigStore().setPreference({ path: 'simple.styleCustomData', value: null })
+      useSyncConfigStore().setPreference({
+        path: 'simple.styleCustomData',
+        value: null,
+      })
       useSyncConfigStore().pushSyncConfig()
     },
     resetThemeV3Palette() {
-      useSyncConfigStore().setPreference({ path: 'simple.palette', value: null })
+      useSyncConfigStore().setPreference({
+        path: 'simple.palette',
+        value: null,
+      })
       useSyncConfigStore().setPreference({
         path: 'simple.paletteCustomData',
         value: null,
@@ -350,7 +365,10 @@ export const useInterfaceStore = defineStore('interface', {
     },
     resetThemeV2() {
       useSyncConfigStore().setPreference({ path: 'simple.theme', value: null })
-      useSyncConfigStore().setPreference({ path: 'simple.customTheme', value: null })
+      useSyncConfigStore().setPreference({
+        path: 'simple.customTheme',
+        value: null,
+      })
       useSyncConfigStore().setPreference({
         path: 'simple.customThemeSource',
         value: null,

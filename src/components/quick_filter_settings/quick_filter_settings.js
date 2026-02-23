@@ -1,9 +1,9 @@
 import { mapState } from 'pinia'
-import { mapGetters } from 'vuex'
 
 import Popover from '../popover/popover.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faFilter, faFont, faWrench } from '@fortawesome/free-solid-svg-icons'
@@ -31,7 +31,7 @@ const QuickFilterSettings = {
     },
   },
   computed: {
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useSyncConfigStore, ['mergedConfig']),
     ...mapState(useInterfaceStore, {
       mobileLayout: (state) => state.layoutType === 'mobile',
     }),
@@ -87,7 +87,10 @@ const QuickFilterSettings = {
       },
       set() {
         const value = !this.hideMedia
-        useSyncConfigStore().setSimplePrefAndSave({ path: 'hideAttachments', value })
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'hideAttachments',
+          value,
+        })
         useSyncConfigStore().setSimplePrefAndSave({
           path: 'hideAttachmentsInConv',
           value,
@@ -112,7 +115,10 @@ const QuickFilterSettings = {
       },
       set() {
         const value = !this.muteBotStatuses
-        useSyncConfigStore().setSimplePrefAndSave({ path: 'muteBotStatuses', value })
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'muteBotStatuses',
+          value,
+        })
       },
     },
     muteSensitiveStatuses: {

@@ -12,6 +12,7 @@ import UserAvatar from '../user_avatar/user_avatar.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEllipsisH, faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -85,7 +86,7 @@ const ChatMessage = {
         return { left: 50 }
       }
     },
-    ...mapGetters(['mergedConfig', 'findUser']),
+    ...mapPiniaState(useSyncConfigStore, ['mergedConfig', 'findUser']),
   },
   data() {
     return {

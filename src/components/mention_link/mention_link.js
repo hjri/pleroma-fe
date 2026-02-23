@@ -1,7 +1,6 @@
+import { mapState as mapPiniaState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 import { mapGetters, mapState } from 'vuex'
-import { mapState as mapPiniaState } from 'pinia'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import {
   highlightClass,
@@ -9,6 +8,8 @@ import {
 } from '../../services/user_highlighter/user_highlighter.js'
 import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
+
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 

@@ -1,6 +1,8 @@
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
 
 import RichContent from 'src/components/rich_content/rich_content.jsx'
+
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import fileType from 'src/services/file_type/file_type.service'
 
@@ -110,7 +112,7 @@ const StatusBody = {
     collapsedStatus() {
       return this.status.raw_html.replace(/(\n|<br\s?\/?>)/g, ' ')
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useSyncConfigStore, ['mergedConfig']),
   },
   components: {
     RichContent,

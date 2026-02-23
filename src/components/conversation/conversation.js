@@ -1,6 +1,6 @@
 import { clone, filter, findIndex, get, reduce } from 'lodash'
 import { mapState as mapPiniaState } from 'pinia'
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 import { WSConnectionStatus } from '../../services/api/api.service.js'
 import QuickFilterSettings from '../quick_filter_settings/quick_filter_settings.vue'
@@ -393,7 +393,7 @@ const conversation = {
     maybeHighlight() {
       return this.isExpanded ? this.highlight : null
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapPiniaState(useSyncConfigStore, ['mergedConfig']),
     ...mapState({
       mastoUserSocketStatus: (state) => state.api.mastoUserSocketStatus,
     }),

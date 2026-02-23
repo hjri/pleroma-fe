@@ -1,7 +1,4 @@
-import {
-  cloneDeep,
-  set,
-} from 'lodash'
+import { cloneDeep, set } from 'lodash'
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
 
@@ -12,7 +9,7 @@ import { defaultState as configDefaultState } from 'src/modules/default_config_s
 export const defaultState = {
   prefsStorage: {
     ...configDefaultState,
-  }
+  },
 }
 
 export const useLocalConfigStore = defineStore('local_config', {

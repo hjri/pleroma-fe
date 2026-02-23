@@ -1,3 +1,4 @@
+import { mapState as mapPiniaState } from 'pinia'
 import { mapGetters, mapState } from 'vuex'
 
 import StatusBody from 'src/components/status_body/status_body.vue'
@@ -123,7 +124,7 @@ const StatusContent = {
     maxThumbnails() {
       return this.mergedConfig.maxThumbnails
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapPiniaState(useSyncConfigStore, ['mergedConfig']),
     ...mapState({
       currentUser: (state) => state.users.currentUser,
     }),

@@ -1,7 +1,8 @@
 import Cookies from 'js-cookie'
+import { defineStore } from 'pinia'
+
 import messages from 'src/i18n/messages'
 import localeService from 'src/services/locale/locale.service.js'
-import { defineStore } from 'pinia'
 
 const BACKEND_LANGUAGE_COOKIE_NAME = 'userLanguage'
 
@@ -21,6 +22,6 @@ export const useI18nStore = defineStore('i18n', {
         BACKEND_LANGUAGE_COOKIE_NAME,
         localeService.internalToBackendLocaleMulti(value),
       )
-    }
+    },
   },
 })

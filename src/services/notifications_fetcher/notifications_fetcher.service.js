@@ -27,7 +27,6 @@ const mastoApiNotificationTypes = new Set([
 
 const fetchAndUpdate = ({ store, credentials, older = false, since }) => {
   const args = { credentials }
-  const { getters } = store
   const rootState = store.rootState || store.state
   const timelineData = rootState.notifications
   const hideMutedPosts = useSyncConfigStore().mergedConfig.hideMutedPosts

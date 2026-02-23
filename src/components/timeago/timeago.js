@@ -1,7 +1,7 @@
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
 import * as DateUtils from 'src/services/date_utils/date_utils.js'
 import localeService from 'src/services/locale/locale.service.js'
-
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 export default {
   name: 'Timeago',

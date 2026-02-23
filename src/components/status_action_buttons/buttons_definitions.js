@@ -1,9 +1,9 @@
 import { useEditStatusStore } from 'src/stores/editStatus.js'
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useReportsStore } from 'src/stores/reports.js'
 import { useStatusHistoryStore } from 'src/stores/statusHistory.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 const PRIVATE_SCOPES = new Set(['private', 'direct'])
 const PUBLIC_SCOPES = new Set(['public', 'unlisted'])

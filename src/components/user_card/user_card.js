@@ -1,7 +1,7 @@
 import isEqual from 'lodash/isEqual'
 import merge from 'lodash/merge'
 import ldUnescape from 'lodash/unescape'
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
@@ -243,7 +243,7 @@ export default {
           })
         }
       },
-      ...mapGetters(['mergedConfig']),
+      ...mapState(useSyncConfigStore, ['mergedConfig']),
     },
     userHighlightColor: {
       get() {
@@ -391,7 +391,7 @@ export default {
         ],
       })
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useSyncConfigStore, ['mergedConfig']),
   },
   methods: {
     muteUser() {

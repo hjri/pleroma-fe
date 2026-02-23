@@ -32,9 +32,9 @@ import { useI18nStore } from 'src/stores/i18n'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useOAuthStore } from 'src/stores/oauth'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
-import { useLocalConfigStore } from 'src/stores/local_config.js'
 
 import VBodyScrollLock from 'src/directives/body_scroll_lock'
 import {

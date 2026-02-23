@@ -1,4 +1,4 @@
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
 
 import nsfwImage from '../../assets/nsfw.png'
 import fileTypeService from '../../services/file_type/file_type.service.js'
@@ -140,7 +140,7 @@ const Attachment = {
     videoTag() {
       return this.useModal ? 'button' : 'span'
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useSyncConfigStore, ['mergedConfig']),
   },
   watch: {
     'attachment.description'(newVal) {

@@ -412,7 +412,7 @@ const PostStatusForm = {
         )
       )
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useSyncConfigStore, ['mergedConfig']),
     ...mapState(useInterfaceStore, {
       mobileLayout: (store) => store.mobileLayout,
     }),

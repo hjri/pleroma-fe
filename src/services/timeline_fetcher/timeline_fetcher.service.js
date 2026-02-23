@@ -45,7 +45,6 @@ const fetchAndUpdate = ({
 }) => {
   const args = { timeline, credentials }
   const rootState = store.rootState || store.state
-  const { getters } = store
   const timelineData = rootState.statuses.timelines[camelCase(timeline)]
   const { hideMutedPosts, replyVisibility } = useSyncConfigStore().mergedConfig
   const loggedIn = !!rootState.users.currentUser
