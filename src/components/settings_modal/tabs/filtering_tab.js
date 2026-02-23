@@ -36,11 +36,11 @@ const FilteringTab = {
         label: this.$t(`user_card.mute_block_${mode}`),
       })),
       muteFiltersDraftObject: cloneDeep(
-        this.prefsStorage.simple.muteFilters,
+        useSyncConfigStore().prefsStorage.simple.muteFilters,
       ),
       muteFiltersDraftDirty: Object.fromEntries(
         Object.entries(
-          this.prefsStorage.simple.muteFilters,
+          useSyncConfigStore().prefsStorage.simple.muteFilters,
         ).map(([k]) => [k, false]),
       ),
       exportedFilter: null,
