@@ -682,7 +682,6 @@ const users = {
           useInterfaceStore().setLastTimeline('public-timeline')
           useInterfaceStore().setLayoutWidth(windowWidth())
           useInterfaceStore().setLayoutHeight(windowHeight())
-          //useSyncConfigStore().clearSyncConfig()
         })
     },
     loginUser(store, accessToken) {
@@ -780,7 +779,7 @@ const users = {
                 dispatch('startFetchingFollowRequests')
               }
 
-              if (store.getters.mergedConfig.useStreamingApi) {
+              if (useSyncConfigStore().mergedConfig.useStreamingApi) {
                 dispatch('fetchTimeline', { timeline: 'friends', since: null })
                 dispatch('fetchNotifications', { since: null })
                 dispatch('enableMastoSockets', true)

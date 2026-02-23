@@ -1,5 +1,7 @@
 import { defineAsyncComponent } from 'vue'
 import { mapGetters, mapState } from 'vuex'
+import { mapState as mapPiniaState } from 'pinia'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import {
   highlightClass,
@@ -156,7 +158,7 @@ const MentionLink = {
     shouldFadeDomain() {
       return this.mergedConfig.mentionLinkFadeDomain
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapPiniaState(useSyncConfigStore, ['mergedConfig']),
     ...mapState({
       currentUser: (state) => state.users.currentUser,
     }),

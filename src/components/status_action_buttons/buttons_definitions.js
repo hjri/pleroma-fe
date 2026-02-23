@@ -1,5 +1,6 @@
 import { useEditStatusStore } from 'src/stores/editStatus.js'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useReportsStore } from 'src/stores/reports.js'
 import { useStatusHistoryStore } from 'src/stores/statusHistory.js'
@@ -52,7 +53,7 @@ export const BUTTONS = [
         !PRIVATE_SCOPES.has(status.visibility)),
     toggleable: true,
     confirm: ({ status, getters }) =>
-      !status.repeated && getters.mergedConfig.modalOnRepeat,
+      !status.repeated && useSyncConfigStore().mergedConfig.modalOnRepeat,
     confirmStrings: {
       title: 'status.repeat_confirm_title',
       body: 'status.repeat_confirm',
@@ -227,7 +228,7 @@ export const BUTTONS = [
           currentUser.privileges.includes('messages_delete'))
       )
     },
-    confirm: ({ getters }) => getters.mergedConfig.modalOnDelete,
+    confirm: ({ getters }) => useSyncConfigStore().mergedConfig.modalOnDelete,
     confirmStrings: {
       title: 'status.delete_confirm_title',
       body: 'status.delete_confirm',

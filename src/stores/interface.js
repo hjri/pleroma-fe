@@ -186,7 +186,7 @@ export const useInterfaceStore = defineStore('interface', {
 
       const mobileLayout = width <= 800
       const normalOrMobile = mobileLayout ? 'mobile' : 'normal'
-      const { thirdColumnMode } = window.vuex.getters.mergedConfig
+      const { thirdColumnMode } = useSyncConfigStore().mergedConfig
       if (thirdColumnMode === 'none' || !window.vuex.state.users.currentUser) {
         this.layoutType = normalOrMobile
       } else {

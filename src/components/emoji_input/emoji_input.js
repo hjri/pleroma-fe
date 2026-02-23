@@ -136,7 +136,7 @@ const EmojiInput = {
       return useSyncConfigStore().mergedConfig.padEmoji
     },
     defaultCandidateIndex() {
-      return this.$store.getters.mergedConfig.autocompleteSelect ? 0 : -1
+      return useSyncConfigStore().mergedConfig.autocompleteSelect ? 0 : -1
     },
     preText() {
       return this.modelValue.slice(0, this.caret)
@@ -165,7 +165,7 @@ const EmojiInput = {
     },
     languages() {
       return ensureFinalFallback(
-        this.$store.getters.mergedConfig.interfaceLanguage,
+        useSyncConfigStore().mergedConfig.interfaceLanguage,
       )
     },
     maybeLocalizedEmojiNamesAndKeywords() {

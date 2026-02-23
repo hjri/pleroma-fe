@@ -1,6 +1,8 @@
 import * as DateUtils from 'src/services/date_utils/date_utils.js'
 import localeService from 'src/services/locale/locale.service.js'
 
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
 export default {
   name: 'Timeago',
   props: ['time', 'autoUpdate', 'longFormat', 'nowThreshold', 'templateKey'],
@@ -13,17 +15,17 @@ export default {
   },
   computed: {
     shouldUseAbsoluteTimeFormat() {
-      if (!this.$store.getters.mergedConfig.useAbsoluteTimeFormat) {
+      if (!useSyncConfigStore().mergedConfig.useAbsoluteTimeFormat) {
         return false
       }
       return (
         DateUtils.durationStrToMs(
-          this.$store.getters.mergedConfig.absoluteTimeFormatMinAge,
+          useSyncConfigStore().mergedConfig.absoluteTimeFormatMinAge,
         ) <= this.relativeTimeMs
       )
     },
     time12hFormat() {
-      return this.$store.getters.mergedConfig.absoluteTimeFormat12h === '12h'
+      return useSyncConfigStore().mergedConfig.absoluteTimeFormat12h === '12h'
     },
     browserLocale() {
       return localeService.internalToBrowserLocale(this.$i18n.locale)
