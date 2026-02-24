@@ -26,6 +26,8 @@ export const NEW_USER_DATE = new Date('2022-08-04') // date of writing this, bas
 
 export const COMMAND_TRIM_FLAGS = 1000
 export const COMMAND_TRIM_FLAGS_AND_RESET = 1001
+export const COMMAND_WIPE_JOURNAL = 1010
+export const COMMAND_WIPE_JOURNAL_AND_STORAGE = 1011
 
 export const defaultState = {
   // do we need to update data on server?
@@ -34,7 +36,7 @@ export const defaultState = {
   flagStorage: {
     updateCounter: 0, // Counter for most recent update notification seen
     configMigration: 0, // Counter for config -> server-side migrations
-    reset: 0, // special flag that can be used to force-reset all flags, debug purposes only
+    reset: 0, // special flag that can be used to force-reset all data, debug purposes only
     // special reset codes:
     // 1000: trim keys to those known by currently running FE
     // 1001: same as above + reset everything to 0
@@ -379,14 +381,28 @@ export const _resetFlags = (
         result[flag] = 0
       })
     }
-  } else if (totalFlags.reset > 0 && totalFlags.reset < 9000) {
-    console.debug('Received command to reset the flags')
-    allFlagKeys.forEach((flag) => {
-      result[flag] = 0
-    })
   }
   result.reset = 0
   return result
+}
+
+export const _resetPrefs = (
+  totalFlags,
+  totalPrefs,
+  knownKeys = defaultState.flagStorage,
+) => {
+  // prefs reset functionality
+  if (
+    totalFlags.reset >= COMMAND_WIPE_JOURNAL &&
+    totalFlags.reset <= COMMAND_WIPE_JOURNAL_AND_STORAGE
+  ) {
+    console.debug('Received command to reset journals')
+    clearJournals()
+    if (totalFlags.reset === COMMAND_WIPE_JOURNAL_AND_STORAGE) {
+      console.debug('Received command to reset storage')
+      return cloneDeep(defaultState)
+    }
+  } return totalPrefs
 }
 
 export const _doMigrations = (cache, live) => {
@@ -578,8 +594,10 @@ export const useSyncConfigStore = defineStore('sync_config', {
       Object.keys(this).forEach((k) => {
         this[k] = blankState[k]
       })
+      this.flagStorage.reset = COMMAND_WIPE_JOURNAL_AND_STORAGE
     },
     clearJournals() {
+      this.flagStorage.reset = COMMAND_WIPE_JOURNAL
       this.prefsStorage._journal = []
       this.cache.prefsStorage._journal = []
       this.raw.prefsStorage._journal = []
@@ -639,6 +657,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
         totalPrefs = recent.prefsStorage
       }
 
+      totalPrefs = _resetPrefs(totalPrefs, totalFlags)
       totalFlags = _resetFlags(totalFlags)
 
       recent.flagStorage = { ...flagsTemplate, ...totalFlags }
