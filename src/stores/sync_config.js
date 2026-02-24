@@ -387,8 +387,8 @@ export const _resetFlags = (
 }
 
 export const _resetPrefs = (
-  totalFlags,
   totalPrefs,
+  totalFlags,
   knownKeys = defaultState.flagStorage,
 ) => {
   // prefs reset functionality
@@ -402,7 +402,8 @@ export const _resetPrefs = (
       console.debug('Received command to reset storage')
       return cloneDeep(defaultState)
     }
-  } return totalPrefs
+  }
+  return totalPrefs
 }
 
 export const _doMigrations = (cache, live) => {
