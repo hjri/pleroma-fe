@@ -579,6 +579,12 @@ export const useSyncConfigStore = defineStore('sync_config', {
         this[k] = blankState[k]
       })
     },
+    clearJournals() {
+      this.prefsStorage._journal = []
+      this.cache.prefsStorage._journal = []
+      this.raw.prefsStorage._journal = []
+      this.pushSyncConfig()
+    },
     setSyncConfig(userData) {
       const live = userData.storage
       this.raw = live
