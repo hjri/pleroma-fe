@@ -49,7 +49,6 @@
           :is-local="status.is_local"
           @parse-ready="onParseReady"
         />
-        {{ mergedConfig }}
         <div
           v-show="shouldShowToggle"
           :class="toggleButtonClasses"
