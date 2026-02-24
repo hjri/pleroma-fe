@@ -10,6 +10,9 @@ export const defaultState = {
   prefsStorage: {
     ...configDefaultState,
   },
+  tempStorage: {
+    ...configDefaultState
+  }
 }
 
 export const useLocalConfigStore = defineStore('local_config', {
@@ -19,6 +22,12 @@ export const useLocalConfigStore = defineStore('local_config', {
   actions: {
     set({ path, value }) {
       set(this.prefsStorage, path, value)
+    },
+    setTemporarily({ path, value }) {
+      set(this.tempStorage, path, value)
+    },
+    unsetTemporarily({ path, value }) {
+      set(this.tempStorage, path, undefined)
     },
     unset({ path, value }) {
       set(this.prefsStorage, path, undefined)
@@ -36,7 +45,7 @@ export const useLocalConfigStore = defineStore('local_config', {
       const result = Object.fromEntries(
         Object.entries(state.prefsStorage).map(([k, v]) => [
           k,
-          v ?? instancePrefs[k],
+          state.tempStorage[k] ?? v ?? instancePrefs[k],
         ]),
       )
       return result
@@ -44,7 +53,10 @@ export const useLocalConfigStore = defineStore('local_config', {
   },
   persist: {
     afterLoad(state) {
-      return state
+      return {
+        prefStorage: state.prefsStorage,
+        tempStorage: { ...configDefaultState },
+      }
     },
   },
 })

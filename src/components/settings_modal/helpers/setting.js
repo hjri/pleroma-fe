@@ -47,6 +47,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    local: {
+      type: Boolean,
+      default: false,
+    },
     parentPath: {
       type: [String, Array],
     },
@@ -259,11 +263,17 @@ export default {
             const writePath = `simple.${readPath}`
 
             if (!this.timedApplyMode) {
-              useSyncConfigStore().setSimplePrefAndSave({
-                path: writePath,
-                value,
-              })
-              useSyncConfigStore().pushSyncConfig()
+              if (this.local) {
+                useLocalConfigStore().set({
+                  path: writePath,
+                  value,
+                })
+              } else {
+                useSyncConfigStore().setSimplePrefAndSave({
+                  path: writePath,
+                  value,
+                })
+              }
             } else {
               if (useInterfaceStore().temporaryChangesTimeoutId !== null) {
                 console.error("Can't track more than one temporary change")
@@ -272,18 +282,30 @@ export default {
 
               const oldValue = get(this.configSource, readPath)
 
-              useSyncConfigStore().setPreference({ path: writePath, value })
+              if (this.local) {
+                useLocalConfigStore().setTemporarily({ path: writePath, value })
+              } else {
+                useSyncConfigStore().setPreference({ path: writePath, value })
+              }
 
               const confirm = () => {
-                useSyncConfigStore().pushSyncConfig()
+                if (this.local) {
+                  useLocalConfigStore().set({ path: writePath, value })
+                } else {
+                  useSyncConfigStore().pushSyncConfig()
+                }
                 useInterfaceStore().clearTemporaryChanges()
               }
 
               const revert = () => {
-                useSyncConfigStore().setPreference({
-                  path: writePath,
-                  value: oldValue,
-                })
+                if (this.local) {
+                  useLocalConfigStore().unsetTemporarily({ path: writePath, value })
+                } else {
+                  useSyncConfigStore().setPreference({
+                    path: writePath,
+                    value: oldValue,
+                  })
+                }
                 useInterfaceStore().clearTemporaryChanges()
               }
 
