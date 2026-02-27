@@ -44,7 +44,6 @@
       :changed="isChanged"
       :onclick="reset"
     />
-    <ProfileSettingIndicator :is-profile="isProfileSetting" />
     <DraftButtons v-if="!hideDraftButtons" />
     <p
       v-if="backendDescriptionDescription"

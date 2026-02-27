@@ -11,7 +11,6 @@
         :changed="isChanged"
         :onclick="reset"
       />
-      <ProfileSettingIndicator :is-profile="isProfileSetting" />
       {{ ' ' }}
       <template v-if="backendDescriptionLabel">
         {{ backendDescriptionLabel + ' ' }}

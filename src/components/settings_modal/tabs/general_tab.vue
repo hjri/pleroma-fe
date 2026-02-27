@@ -9,11 +9,6 @@
           class="lang-selector"
           @update="val => language = val"
         />
-        <h4>
-          {{ $t('settings.email_language') }}
-          {{ ' ' }}
-          <ProfileSettingIndicator :is-profile="true" />
-        </h4>
         <interface-language-switcher
           v-model="emailLanguage"
           class="lang-selector"

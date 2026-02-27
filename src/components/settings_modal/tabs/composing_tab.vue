@@ -8,10 +8,6 @@
             class="setting-item "
             for="default-vis"
           >
-            <span class="setting-label">
-              <ProfileSettingIndicator :is-profile="true" />
-              {{ $t('settings.default_vis') }}
-            </span>
             <ScopeSelector
               class="scope-selector setting-control"
               :show-all="true"
@@ -19,7 +15,6 @@
               :initial-scope="$store.state.profileConfig.defaultScope"
               :on-scope-change="changeDefaultScope"
               :unstyled="false"
-              uns
             />
           </label>
         </li>

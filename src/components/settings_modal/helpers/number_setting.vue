@@ -34,7 +34,7 @@
       :changed="isChanged"
       :onclick="reset"
     />
-    <ProfileSettingIndicator :is-profile="isProfileSetting" />
+    <LocalSettingIndicator :is-local="isLocalSetting" />
     <DraftButtons v-if="!hideDraftButtons" />
     <p
       v-if="backendDescriptionDescription"

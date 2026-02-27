@@ -1,7 +1,7 @@
 <template>
   <span
-    v-if="isProfile"
-    class="ProfileSettingIndicator"
+    v-if="isLocal"
+    class="LocalSettingIndicator"
   >
     <Popover
       trigger="hover"
@@ -9,13 +9,13 @@
       <template #trigger>
         &nbsp;
         <FAIcon
-          icon="server"
-          :aria-label="$t('settings.setting_server_side')"
+          icon="desktop"
+          :aria-label="$t('settings.setting_local_side')"
         />
       </template>
       <template #content>
         <div class="profilesetting-tooltip">
-          {{ $t('settings.setting_server_side') }}
+          {{ $t('settings.setting_local_side') }}
         </div>
       </template>
     </Popover>
@@ -26,18 +26,18 @@
 import Popover from 'src/components/popover/popover.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faServer } from '@fortawesome/free-solid-svg-icons'
+import { faDesktop } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faServer)
+library.add(faDesktop)
 
 export default {
   components: { Popover },
-  props: ['isProfile'],
+  props: ['isLocal'],
 }
 </script>
 
 <style lang="scss">
-.ProfileSettingIndicator {
+.LocalSettingIndicator {
   display: inline-block;
   position: relative;
 }

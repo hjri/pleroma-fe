@@ -2,7 +2,7 @@ import { cloneDeep, get, isEqual, set } from 'lodash'
 
 import DraftButtons from './draft_buttons.vue'
 import ModifiedIndicator from './modified_indicator.vue'
-import ProfileSettingIndicator from './profile_setting_indicator.vue'
+import LocalSettingIndicator from './local_setting_indicator.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
@@ -13,7 +13,7 @@ export default {
   components: {
     ModifiedIndicator,
     DraftButtons,
-    ProfileSettingIndicator,
+    LocalSettingIndicator,
   },
   props: {
     modelValue: {
@@ -325,6 +325,9 @@ export default {
     },
     isProfileSetting() {
       return this.realSource === 'profile'
+    },
+    isLocalSetting() {
+      return this.local
     },
     isChanged() {
       if (this.path == null) return false
