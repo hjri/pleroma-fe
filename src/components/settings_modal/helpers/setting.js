@@ -260,7 +260,7 @@ export default {
             this.$store.dispatch('pushAdminSetting', { path: k, value: v })
         default:
           return (readPath, value) => {
-            const writePath = `simple.${readPath}`
+            const writePath = `${readPath}`
 
             if (!this.timedApplyMode) {
               if (this.local) {
