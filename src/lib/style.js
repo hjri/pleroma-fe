@@ -1,27 +1,39 @@
 import { applyStyleConfig } from 'src/services/style_setter/style_setter.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
-const APPEARANCE_SETTINGS_KEYS = new Set(
-  [
-    'sidebarColumnWidth',
-    'contentColumnWidth',
-    'notifsColumnWidth',
-    'themeEditorMinWidth',
-    'textSize',
-    'navbarSize',
-    'panelHeaderSize',
-    'forcedRoundness',
-    'emojiSize',
-    'emojiReactionsScale',
-  ].map((x) => 'simple.' + x),
-)
+const ACTIONS = new Set([
+  'setPreference',
+  'unsetPreference',
+  'set',
+  'unset',
+  'setTemporarily',
+  'unsetTemporarily',
+])
+
+const APPEARANCE_SETTINGS_KEYS = [
+  'sidebarColumnWidth',
+  'contentColumnWidth',
+  'notifsColumnWidth',
+  'themeEditorMinWidth',
+  'textSize',
+  'navbarSize',
+  'panelHeaderSize',
+  'forcedRoundness',
+  'emojiSize',
+  'emojiReactionsScale',
+]
+const MIXED_KEYS = new Set([
+  ...APPEARANCE_SETTINGS_KEYS,
+  ...APPEARANCE_SETTINGS_KEYS.map((x) => 'simple.' + x),
+])
 
 export const piniaStylePlugin = ({ store, options }) => {
-  if (store.$id === 'sync_config') {
+  if (store.$id === 'sync_config' || store.$id === 'local_config') {
     store.$onAction(({ name, args, after }) => {
-      if (name === 'setPreference') {
+      if (ACTIONS.has(name)) {
         const { path } = args[0]
-        if (APPEARANCE_SETTINGS_KEYS.has(path)) {
-          after(() => applyStyleConfig(store.mergedConfig))
+        if (MIXED_KEYS.has(path)) {
+          after(() => applyStyleConfig(useSyncConfigStore().mergedConfig))
         }
       }
     })

@@ -66,7 +66,7 @@ export const useInterfaceStore = defineStore('interface', {
       this.temporaryChangesConfirm = confirm
       this.temporaryChangesRevert = revert
       const countdownFunc = () => {
-        if (this.temporaryChangesCountdown === 1) {
+        if (this.temporaryChangesCountdown <= 1) {
           this.temporaryChangesRevert()
           this.clearTemporaryChanges()
         } else {

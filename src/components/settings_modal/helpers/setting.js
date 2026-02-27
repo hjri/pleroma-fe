@@ -7,6 +7,7 @@ import ProfileSettingIndicator from './profile_setting_indicator.vue'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
 
 export default {
   components: {

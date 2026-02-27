@@ -691,10 +691,11 @@ export const useSyncConfigStore = defineStore('sync_config', {
     mergedConfig: (state) => {
       const instancePrefs = useInstanceStore().prefsStorage
       const localPrefs = useLocalConfigStore().prefsStorage
+      const tempPrefs = useLocalConfigStore().tempStorage
       const result = Object.fromEntries(
         Object.entries(state.prefsStorage.simple).map(([k, v]) => [
           k,
-          localPrefs[k] ?? v ?? instancePrefs[k],
+          tempPrefs[k] ?? localPrefs[k] ?? v ?? instancePrefs[k],
         ]),
       )
       return result

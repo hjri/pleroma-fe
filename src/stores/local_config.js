@@ -39,18 +39,6 @@ export const useLocalConfigStore = defineStore('local_config', {
       })
     },
   },
-  getters: {
-    mergedConfig: (state) => {
-      const instancePrefs = useInstanceStore().prefsStorage
-      const result = Object.fromEntries(
-        Object.entries(state.prefsStorage).map(([k, v]) => [
-          k,
-          state.tempStorage[k] ?? v ?? instancePrefs[k],
-        ]),
-      )
-      return result
-    },
-  },
   persist: {
     afterLoad(state) {
       return {

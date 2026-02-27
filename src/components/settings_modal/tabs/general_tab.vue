@@ -44,6 +44,7 @@
             :units="['px', 'rem']"
             :reset-default="{ 'px': 14, 'rem': 1 }"
             timed-apply-mode
+            :local="true"
           >
             {{ $t('settings.text_size') }}
           </UnitSetting>
