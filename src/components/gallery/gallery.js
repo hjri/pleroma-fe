@@ -4,7 +4,7 @@ import Attachment from '../attachment/attachment.vue'
 
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 
-const displayTypes = ["image", "video", "flash"]
+const displayTypes = new Set(["image", "video", "flash"])
 
 const Gallery = {
   props: [
@@ -54,7 +54,7 @@ const Gallery = {
                     { items: [] },
                   ]
                 }
-                if (!displayTypes.includes(attachment.type)) {
+                if (!displayTypes.has(attachment.type)) {
                   return [
                     ...acc,
                     { minimal: true, items: [attachment] },
