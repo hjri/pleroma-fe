@@ -426,7 +426,7 @@ export default {
     zoomAvatar() {
       const attachment = {
         url: this.user.profile_image_url_original,
-        mimetype: 'image',
+        type: 'image',
       }
       useMediaViewerStore().setMedia([attachment])
       useMediaViewerStore().setCurrentMedia(attachment)
