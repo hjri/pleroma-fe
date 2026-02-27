@@ -43,7 +43,7 @@ const UpdateNotification = {
         this.$store.state.users.currentUser &&
         useSyncConfigStore().flagStorage.updateCounter <
           CURRENT_UPDATE_COUNTER &&
-        !useSyncConfigStore().prefsStorage.simple.dontShowUpdateNotifs
+        !useSyncConfigStore().mergedConfig.dontShowUpdateNotifs
       )
     },
   },
