@@ -17,7 +17,8 @@ import { toRaw } from 'vue'
 
 import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
 
-import { useInstanceStore } from 'src/stores/instance'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
 
 import { defaultState as configDefaultState } from 'src/modules/default_config_state'
 
@@ -689,10 +690,11 @@ export const useSyncConfigStore = defineStore('sync_config', {
   getters: {
     mergedConfig: (state) => {
       const instancePrefs = useInstanceStore().prefsStorage
+      const localPrefs = useLocalConfigStore().prefsStorage
       const result = Object.fromEntries(
         Object.entries(state.prefsStorage.simple).map(([k, v]) => [
           k,
-          v ?? instancePrefs[k],
+          localPrefs[k] ?? v ?? instancePrefs[k],
         ]),
       )
       return result
