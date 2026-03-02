@@ -2,7 +2,7 @@
   "name": "pleroma_fe",
   "version": "2.10.1",
   "description": "Pleroma frontend, the default frontend of Pleroma social network server",
-  "author": "Pleroma contributors <https://git.pleroma.social/pleroma/pleroma-fe/-/blob/develop/CONTRIBUTORS.md>",
+  "author": "Pleroma contributors <https://git.pleroma.social/pleroma/pleroma-fe/src/CONTRIBUTORS.md>",
   "private": false,
   "scripts": {
     "dev": "node build/update-emoji.js && vite dev",
