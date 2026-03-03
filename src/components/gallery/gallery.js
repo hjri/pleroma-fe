@@ -47,7 +47,7 @@ const Gallery = {
         : attachments
             .reduce(
               (acc, attachment, i) => {
-                if (attachment.type == 'audio') {
+                if (attachment.type === 'audio') {
                   return [
                     ...acc,
                     { audio: true, items: [attachment] },

@@ -60,7 +60,7 @@ const Attachment = {
       hideNsfwLocal: this.$store.getters.mergedConfig.hideNsfw,
       preloadImage: this.$store.getters.mergedConfig.preloadImage,
       loading: false,
-      img: this.attachment.type == "image" && document.createElement('img'),
+      img: this.attachment.type === 'image' && document.createElement('img'),
       modalOpen: false,
       showHidden: false,
       flashLoaded: false,
