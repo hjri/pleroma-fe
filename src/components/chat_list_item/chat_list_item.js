@@ -6,8 +6,6 @@ import StatusBody from '../status_content/status_content.vue'
 import Timeago from '../timeago/timeago.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
 
-import fileType from 'src/services/file_type/file_type.service'
-
 const ChatListItem = {
   name: 'ChatListItem',
   props: ['chat'],
@@ -28,7 +26,7 @@ const ChatListItem = {
       }
 
       const types = this.chat.lastMessage.attachments.map((file) =>
-        fileType.fileType(file.mimetype),
+        file.type,
       )
       if (types.includes('video')) {
         return this.$t('file_type.video')

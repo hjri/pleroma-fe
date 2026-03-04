@@ -6,7 +6,6 @@ import DraftCloser from 'src/components/draft_closer/draft_closer.vue'
 import Gallery from 'src/components/gallery/gallery.vue'
 import Popover from 'src/components/popover/popover.vue'
 import { propsToNative } from '../../services/attributes_helper/attributes_helper.service.js'
-import fileTypeService from '../../services/file_type/file_type.service.js'
 import { findOffset } from '../../services/offset_finder/offset_finder.service.js'
 import genRandomSeed from '../../services/random_seed/random_seed.service.js'
 import statusPoster from '../../services/status_poster/status_poster.service.js'
@@ -648,9 +647,6 @@ const PostStatusForm = {
     finishedUploadingFiles() {
       this.$emit('resize')
       this.uploadingFiles = false
-    },
-    type(fileInfo) {
-      return fileTypeService.fileType(fileInfo.mimetype)
     },
     paste(e) {
       this.autoPreview()

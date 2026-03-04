@@ -5,7 +5,7 @@
     @backdrop-clicked="hideIfNotSwiped"
   >
     <SwipeClick
-      v-if="type === 'image'"
+      v-if="currentMedia.type === 'image'"
       ref="swipeClick"
       class="modal-image-container"
       :direction="swipeDirection"
@@ -36,13 +36,13 @@
       </PinchZoom>
     </SwipeClick>
     <VideoAttachment
-      v-if="type === 'video'"
+      v-if="currentMedia.type === 'video'"
       class="modal-image"
       :attachment="currentMedia"
       :controls="true"
     />
     <audio
-      v-if="type === 'audio'"
+      v-if="currentMedia.type === 'audio'"
       class="modal-image"
       :src="currentMedia.url"
       :alt="currentMedia.description"
@@ -50,7 +50,7 @@
       controls
     />
     <Flash
-      v-if="type === 'flash'"
+      v-if="currentMedia.type === 'flash'"
       class="modal-image"
       :src="currentMedia.url"
       :alt="currentMedia.description"
