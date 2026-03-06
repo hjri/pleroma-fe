@@ -703,7 +703,7 @@ const users = {
               commit('setCurrentUser', user)
 
               useSyncConfigStore().initSyncConfig(user)
-              useUserHighlightStore().initHighlight(user)
+              useUserHighlightStore().initUserHighlight(user)
               commit('addNewUsers', [user])
 
               useEmojiStore().fetchEmoji()

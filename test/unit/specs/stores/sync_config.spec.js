@@ -16,7 +16,7 @@ import {
   VERSION,
 } from 'src/stores/sync_config.js'
 
-describe('The SyncConfig module', () => {
+describe('The SyncConfig store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
   })

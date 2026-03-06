@@ -169,16 +169,18 @@ export const _mergePrefs = (recent, stale) => {
         `journal contains entry to edit internal (starts with _) field '${user}', something is incorrect here, ignoring.`,
       )
     }
+    console.log(resultOutput)
     switch (operation) {
       case 'set':
-        resultOutput[user] = args[0]
+        resultOutput.highlight[user] = args[0]
         break
       case 'unset':
-        delete resultOutput[user]
+        delete resultOutput.highlight[user]
         break
       default:
         return console.error(`Unknown journal operation: '${operation}'`)
     }
+    console.log(resultOutput)
   })
   return { ...resultOutput, _journal: totalJournal }
 }
@@ -260,7 +262,7 @@ export const useUserHighlightStore = defineStore('user_highlight', {
       this.raw.highlight._journal = []
       this.pushSyncConfig()
     },
-    initHighlight(userData) {
+    initUserHighlight(userData) {
       const live = userData.user_highlight
       this.raw = live
       let cache = this.cache
@@ -319,12 +321,12 @@ export const useUserHighlightStore = defineStore('user_highlight', {
       if (!needPush) return
       this.updateCache({ username: window.vuex.state.users.currentUser.fqn })
       const params = {
-        pleroma_settings_store: { 'user_highlight': this.cache },
+        pleroma_settings_store: { user_highlight: this.cache },
       }
       window.vuex.state.api.backendInteractor
         .updateProfileJSON({ params })
         .then((user) => {
-          this.initHighlight(user)
+          this.initUserHighlight(user)
           this.dirty = false
         })
     },
