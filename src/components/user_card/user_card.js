@@ -1,7 +1,7 @@
+import ldEscape from 'lodash/escape'
 import isEqual from 'lodash/isEqual'
 import merge from 'lodash/merge'
 import ldUnescape from 'lodash/unescape'
-import ldEscape from 'lodash/escape'
 import { mapGetters } from 'vuex'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
