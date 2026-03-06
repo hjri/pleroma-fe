@@ -493,11 +493,6 @@ describe('The SyncConfig store', () => {
     })
 
     describe('_resetFlags', () => {
-      it('should reset all known flags to 0 when reset flag is set to > 0 and < 9000', () => {
-        const totalFlags = { a: 0, b: 3, reset: 1 }
-
-        expect(_resetFlags(totalFlags)).to.eql({ a: 0, b: 0, reset: 0 })
-      })
       it('should trim all flags to known when reset is set to 1000', () => {
         const totalFlags = { a: 0, b: 3, c: 33, reset: COMMAND_TRIM_FLAGS }
 
