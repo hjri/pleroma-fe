@@ -319,7 +319,7 @@ export const useUserHighlightStore = defineStore('user_highlight', {
       if (!needPush) return
       this.updateCache({ username: window.vuex.state.users.currentUser.fqn })
       const params = {
-        pleroma_settings_store: { 'user-highlight': this.cache },
+        pleroma_settings_store: { 'user_highlight': this.cache },
       }
       window.vuex.state.api.backendInteractor
         .updateProfileJSON({ params })
