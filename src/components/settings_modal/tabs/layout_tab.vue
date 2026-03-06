@@ -107,8 +107,8 @@
           <div class="column-settings">
             <UnitSetting
               v-for="column in columns"
-              :local="true"
               :key="column"
+              :local="true"
               :path="column + 'ColumnWidth'"
               :units="horizontalUnits"
               expert="1"
