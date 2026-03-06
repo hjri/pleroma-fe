@@ -88,7 +88,7 @@
         <StatusBookmarkFolderMenu
           v-if="button.name === 'bookmark'"
           :status="status"
-          :close="() => { close(); outerClose() }"
+          @close="() => { close(); outerClose() }"
         />
       </template>
     </Popover>
