@@ -67,7 +67,7 @@ const GeneralTab = {
         })
     },
     updateFont(key, value) {
-      useSyncConfigStore().setSimplePrefAndSave({
+      useLocalConfigStore().set({
         path: 'theme3hacks',
         value: {
           ...this.mergedConfig.theme3hacks,

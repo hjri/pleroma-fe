@@ -8,6 +8,8 @@
         :model-value="present"
         @change="$emit('update:modelValue', typeof modelValue === 'undefined' ? fallback : undefined)"
       >
+        <LocalSettingIndicator :is-local="isLocal" />
+        {{ ' ' }}
         <i18n-t
           scope="global"
           keypath="settings.style.fonts.override"

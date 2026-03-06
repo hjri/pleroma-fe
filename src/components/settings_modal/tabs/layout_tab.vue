@@ -50,6 +50,7 @@
           <UnitSetting
             path="navbarSize"
             :step="0.1"
+            :local="true"
             :units="['px', 'rem']"
             :reset-default="{ 'px': 55, 'rem': 3.5 }"
           >
@@ -72,6 +73,7 @@
         <li>
           <UnitSetting
             path="panelHeaderSize"
+            :local="true"
             :step="0.1"
             :units="['px', 'rem']"
             :reset-default="{ 'px': 52, 'rem': 3.2 }"
@@ -105,6 +107,7 @@
           <div class="column-settings">
             <UnitSetting
               v-for="column in columns"
+              :local="true"
               :key="column"
               :path="column + 'ColumnWidth'"
               :units="horizontalUnits"

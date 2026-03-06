@@ -68,6 +68,7 @@
             name="ui"
             :label="$t('settings.style.fonts.components_inline.interface')"
             :fallback="{ family: 'sans-serif' }"
+            :is-local="true"
             no-inherit="1"
             @update:model-value="v => updateFont('interface', v)"
           />
@@ -76,6 +77,7 @@
           <FontControl
             :model-value="theme3hacks.fonts.input"
             name="input"
+            :is-local="true"
             :fallback="{ family: 'inherit' }"
             :label="$t('settings.style.fonts.components_inline.input')"
             @update:model-value="v => updateFont('input', v)"
@@ -85,6 +87,7 @@
           <UnitSetting
             path="emojiSize"
             :step="0.1"
+            :local="true"
             :units="['px', 'rem']"
             :reset-default="{ 'px': 32, 'rem': 2.2 }"
           >
@@ -124,6 +127,7 @@
         <li>
           <BooleanSetting
             path="useStreamingApi"
+            :local="true"
             expert="1"
           >
             {{ $t('settings.useStreamingApi') }}

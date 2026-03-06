@@ -58,6 +58,7 @@
           <FontControl
             :model-value="mergedConfig.theme3hacks.fonts.post"
             name="post"
+            :is-local="true"
             :fallback="{ family: 'inherit' }"
             :label="$t('settings.style.fonts.components.post')"
             @update:model-value="v => updateFont('post', v)"
@@ -66,6 +67,7 @@
         <li>
           <FontControl
             :model-value="mergedConfig.theme3hacks.fonts.monospace"
+            :is-local="true"
             name="postCode"
             :fallback="{ family: 'monospace' }"
             :label="$t('settings.style.fonts.components.monospace')"
