@@ -1,13 +1,13 @@
 import { cloneDeep, get, isEqual, set } from 'lodash'
 
 import DraftButtons from './draft_buttons.vue'
-import ModifiedIndicator from './modified_indicator.vue'
 import LocalSettingIndicator from './local_setting_indicator.vue'
+import ModifiedIndicator from './modified_indicator.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 export default {
   components: {
@@ -300,7 +300,10 @@ export default {
 
               const revert = () => {
                 if (this.local) {
-                  useLocalConfigStore().unsetTemporarily({ path: writePath, value })
+                  useLocalConfigStore().unsetTemporarily({
+                    path: writePath,
+                    value,
+                  })
                 } else {
                   useSyncConfigStore().setPreference({
                     path: writePath,

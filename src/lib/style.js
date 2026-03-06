@@ -1,5 +1,6 @@
-import { applyStyleConfig } from 'src/services/style_setter/style_setter.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
+import { applyStyleConfig } from 'src/services/style_setter/style_setter.js'
 
 const ACTIONS = new Set([
   'setPreference',

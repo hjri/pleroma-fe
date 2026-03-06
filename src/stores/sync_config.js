@@ -398,7 +398,11 @@ export const _resetPrefs = (
     totalFlags.reset <= COMMAND_WIPE_JOURNAL_AND_STORAGE
   ) {
     console.debug('Received command to reset journals')
-    clearJournals()
+    this.flagStorage.reset = COMMAND_WIPE_JOURNAL
+    this.prefsStorage._journal = []
+    this.cache.prefsStorage._journal = []
+    this.raw.prefsStorage._journal = []
+    this.pushSyncConfig()
     if (totalFlags.reset === COMMAND_WIPE_JOURNAL_AND_STORAGE) {
       console.debug('Received command to reset storage')
       return cloneDeep(defaultState)
@@ -597,13 +601,6 @@ export const useSyncConfigStore = defineStore('sync_config', {
         this[k] = blankState[k]
       })
       this.flagStorage.reset = COMMAND_WIPE_JOURNAL_AND_STORAGE
-    },
-    clearJournals() {
-      this.flagStorage.reset = COMMAND_WIPE_JOURNAL
-      this.prefsStorage._journal = []
-      this.cache.prefsStorage._journal = []
-      this.raw.prefsStorage._journal = []
-      this.pushSyncConfig()
     },
     initSyncConfig(userData) {
       console.log(userData)

@@ -103,9 +103,7 @@ const StatusBody = {
       )
     },
     attachmentTypes() {
-      return this.status.attachments.map((file) =>
-        file.type,
-      )
+      return this.status.attachments.map((file) => file.type)
     },
     collapsedStatus() {
       return this.status.raw_html.replace(/(\n|<br\s?\/?>)/g, ' ')

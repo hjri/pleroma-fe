@@ -4,7 +4,7 @@ import Attachment from '../attachment/attachment.vue'
 
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 
-const displayTypes = new Set(["image", "video", "flash"])
+const displayTypes = new Set(['image', 'video', 'flash'])
 
 const Gallery = {
   props: [

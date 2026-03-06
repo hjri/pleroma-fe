@@ -187,7 +187,8 @@ const Attachment = {
       if (
         this.mergedConfig.useOneClickNsfw &&
         !this.showHidden &&
-        (this.attachment.type !== 'video' || this.mergedConfig.playVideosInModal)
+        (this.attachment.type !== 'video' ||
+          this.mergedConfig.playVideosInModal)
       ) {
         this.openModal(event)
         return

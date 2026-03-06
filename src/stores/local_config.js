@@ -11,8 +11,8 @@ export const defaultState = {
     ...configDefaultState,
   },
   tempStorage: {
-    ...configDefaultState
-  }
+    ...configDefaultState,
+  },
 }
 
 export const useLocalConfigStore = defineStore('local_config', {

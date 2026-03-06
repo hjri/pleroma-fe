@@ -10,6 +10,7 @@ import UnitSetting from '../helpers/unit_setting.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import localeService from 'src/services/locale/locale.service.js'

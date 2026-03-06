@@ -183,7 +183,6 @@ const Notification = {
       return highlightClass(this.notification.from_profile)
     },
     userStyle() {
-      const highlight = useSyncConfigStore().mergedConfig.highlight
       const user = this.notification.from_profile
       return highlightStyle(useUserHighlightStore().get(user))
     },

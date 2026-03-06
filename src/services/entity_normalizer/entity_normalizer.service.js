@@ -1,8 +1,8 @@
 import { parseLinkHeader } from '@web3-storage/parse-link-header'
 import escapeHtml from 'escape-html'
-import fileTypeService from '../file_type/file_type.service.js'
 import punycode from 'punycode.js'
 
+import fileTypeService from '../file_type/file_type.service.js'
 import { isStatusNotification } from '../notification_utils/notification_utils.js'
 
 /** NOTICE! **

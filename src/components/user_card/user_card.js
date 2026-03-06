@@ -227,14 +227,14 @@ export default {
       }))
     },
     userHighlightType: {
-      get () {
+      get() {
         return useUserHighlightStore().get(this.user.screen_name).type
       },
-      set (type) {
+      set(type) {
         if (type !== 'disabled') {
           useUserHighlightStore().setAndSave({
             user: this.user.screen_name,
-            value: { type }
+            value: { type },
           })
         } else {
           useUserHighlightStore().unsetAndSave({ user: this.user.screen_name })
@@ -248,7 +248,7 @@ export default {
       set(color) {
         useUserHighlightStore().setAndSave({
           user: this.user.screen_name,
-          value: { color }
+          value: { color },
         })
       },
     },
