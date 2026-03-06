@@ -53,13 +53,13 @@ describe('NotificationUtils', () => {
           type: 'like',
         },
       ]
-      expect(NotificationUtils.filteredNotificationsFromStore(store, {
-        mentions: false,
-        likes: true,
-        repeats: true,
-      })).to.eql(
-        expected,
-      )
+      expect(
+        NotificationUtils.filteredNotificationsFromStore(store, {
+          mentions: false,
+          likes: true,
+          repeats: true,
+        }),
+      ).to.eql(expected)
     })
   })
 
@@ -81,7 +81,7 @@ describe('NotificationUtils', () => {
               },
             ],
           },
-        }
+        },
       }
       const expected = [
         {
@@ -90,13 +90,13 @@ describe('NotificationUtils', () => {
           seen: false,
         },
       ]
-      expect(NotificationUtils.unseenNotificationsFromStore(store, {
-              likes: true,
-              repeats: true,
-              mentions: false,
-            })).to.eql(
-        expected,
-      )
+      expect(
+        NotificationUtils.unseenNotificationsFromStore(store, {
+          likes: true,
+          repeats: true,
+          mentions: false,
+        }),
+      ).to.eql(expected)
     })
   })
 })

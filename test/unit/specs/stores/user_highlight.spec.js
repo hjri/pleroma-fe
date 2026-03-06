@@ -43,8 +43,11 @@ describe('The UserHighlight store', () => {
     describe('set', () => {
       it('should set preference and update journal log accordingly', () => {
         const store = useUserHighlightStore()
-        store.set({ user: 'highlight@testing', value: { type: 'test' }})
-        expect(store.highlight['highlight@testing']).to.eql({ user: 'highlight@testing', type: 'test' })
+        store.set({ user: 'highlight@testing', value: { type: 'test' } })
+        expect(store.highlight['highlight@testing']).to.eql({
+          user: 'highlight@testing',
+          type: 'test',
+        })
         expect(store.highlight._journal.length).to.eql(1)
         expect(store.highlight._journal[0]).to.eql({
           user: 'highlight@testing',
@@ -60,15 +63,20 @@ describe('The UserHighlight store', () => {
         store.set({ user: 'highlight@testing.xyz', value: { type: 'test' } })
         store.set({ user: 'highlight@testing.xyz', value: { type: 'test' } })
         store.updateCache({ username: 'test' })
-        expect(store.highlight['highlight@testing.xyz']).to.eql({ user: 'highlight@testing.xyz', type: 'test' })
+        expect(store.highlight['highlight@testing.xyz']).to.eql({
+          user: 'highlight@testing.xyz',
+          type: 'test',
+        })
         expect(store.highlight._journal.length).to.eql(1)
         expect(store.highlight._journal[0]).to.eql({
           user: 'highlight@testing.xyz',
           operation: 'set',
-          args: [{
-            user: 'highlight@testing.xyz',
-            type: 'test',
-          }],
+          args: [
+            {
+              user: 'highlight@testing.xyz',
+              type: 'test',
+            },
+          ],
           // should have A timestamp, we don't really care what it is
           timestamp: store.highlight._journal[0].timestamp,
         })
@@ -79,7 +87,10 @@ describe('The UserHighlight store', () => {
         store.set({ user: 'a@test.xyz', value: { type: 'foo' } })
         store.set({ user: 'a@test.xyz', value: { type: 'foo' } })
         store.updateCache({ username: 'test' })
-        expect(store.highlight['a@test.xyz']).to.eql({ user: 'a@test.xyz', type: 'foo' })
+        expect(store.highlight['a@test.xyz']).to.eql({
+          user: 'a@test.xyz',
+          type: 'foo',
+        })
         expect(store.highlight._journal.length).to.eql(1)
       })
     })
@@ -156,7 +167,11 @@ describe('The UserHighlight store', () => {
           _mergePrefs(
             // RECENT
             {
-              highlight: { 'a@test.xyz': 1, 'b@test.xyz': 0, 'c@test.xyz': true },
+              highlight: {
+                'a@test.xyz': 1,
+                'b@test.xyz': 0,
+                'c@test.xyz': true,
+              },
               _journal: [
                 {
                   user: 'b@test.xyz',
@@ -174,7 +189,11 @@ describe('The UserHighlight store', () => {
             },
             // STALE
             {
-              highlight: { 'a@test.xyz': 1, 'b@test.xyz': 1, 'c@test.xyz': false },
+              highlight: {
+                'a@test.xyz': 1,
+                'b@test.xyz': 1,
+                'c@test.xyz': false,
+              },
               _journal: [
                 {
                   user: 'a@test.xyz',

@@ -1,9 +1,9 @@
 import { showDesktopNotification } from '../desktop_notification_utils/desktop_notification_utils.js'
 import { muteFilterHits } from '../status_parser/status_parser.js'
 
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useI18nStore } from 'src/stores/i18n.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import FaviconService from 'src/services/favicon_service/favicon_service.js'
 
@@ -108,7 +108,8 @@ export const filteredNotificationsFromStore = (
 }
 
 export const unseenNotificationsFromStore = (store, notificationVisibility) => {
-  const ignoreInactionableSeen = useSyncConfigStore().mergedConfig.ignoreInactionableSeen
+  const ignoreInactionableSeen =
+    useSyncConfigStore().mergedConfig.ignoreInactionableSeen
 
   return filteredNotificationsFromStore(store, notificationVisibility).filter(
     ({ seen, type }) => {
@@ -189,7 +190,10 @@ export const prepareNotificationObject = (notification, i18n) => {
   return notifObj
 }
 
-export const countExtraNotifications = (mergedConfig) => {
+export const countExtraNotifications = (store) => {
+  const rootGetters = store.rootGetters || store.getters
+  const mergedConfig = useSyncConfigStore().mergedConfig
+
   if (!mergedConfig.showExtraNotifications) {
     return 0
   }

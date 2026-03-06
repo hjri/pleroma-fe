@@ -103,11 +103,7 @@ describe('Gallery', () => {
 
     // No grouping of non-image items
     local = {
-      attachments: [
-        { type: 'plain' },
-        { type: 'plain' },
-        { type: 'plain' },
-      ],
+      attachments: [{ type: 'plain' }, { type: 'plain' }, { type: 'plain' }],
     }
     expect(Gallery.computed.rows.call(local)).to.eql([
       { minimal: true, items: [{ type: 'plain' }] },
@@ -174,11 +170,7 @@ describe('Gallery', () => {
 
     expect(Gallery.computed.rows.call(local)).to.eql([
       {
-        items: [
-          { type: 'image' },
-          { type: 'image' },
-          { type: 'image' },
-        ],
+        items: [{ type: 'image' }, { type: 'image' }, { type: 'image' }],
       },
       { items: [{ type: 'image' }] },
       { audio: true, items: [{ type: 'audio' }] },
@@ -202,11 +194,7 @@ describe('Gallery', () => {
     // https:/.pleroma.social-fe/-_requests#note_98514
     expect(Gallery.computed.rows.call(local)).to.eql([
       {
-        items: [
-          { type: 'image' },
-          { type: 'image' },
-          { type: 'image' },
-        ],
+        items: [{ type: 'image' }, { type: 'image' }, { type: 'image' }],
       },
       {
         items: [
@@ -233,18 +221,10 @@ describe('Gallery', () => {
 
     expect(Gallery.computed.rows.call(local)).to.eql([
       {
-        items: [
-          { type: 'image' },
-          { type: 'image' },
-          { type: 'image' },
-        ],
+        items: [{ type: 'image' }, { type: 'image' }, { type: 'image' }],
       },
       {
-        items: [
-          { type: 'image' },
-          { type: 'image' },
-          { type: 'image' },
-        ],
+        items: [{ type: 'image' }, { type: 'image' }, { type: 'image' }],
       },
       { items: [{ type: 'image' }, { type: 'image' }] },
     ])
