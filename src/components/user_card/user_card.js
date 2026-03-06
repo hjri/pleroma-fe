@@ -377,7 +377,7 @@ export default {
     emojiUserSuggestor() {
       return suggestor({
         emoji: [
-          ...this.$store.getters.standardEmojiList,
+          ...useEmojiStore().standardEmojiList,
           ...useEmojiStore().customEmoji,
         ],
         store: this.$store,
@@ -386,7 +386,7 @@ export default {
     emojiSuggestor() {
       return suggestor({
         emoji: [
-          ...this.$store.getters.standardEmojiList,
+          ...useEmojiStore().standardEmojiList,
           ...useEmojiStore().customEmoji,
         ],
       })

@@ -357,7 +357,7 @@
       <RichContent
         v-if="!hideBio"
         class="user-card-bio"
-        :class="{ '-justify-left': userCardLeftJustify }"
+        :class="{ '-justify-left': mergedConfig.userCardLeftJustify }"
         :html="editable ? newBio.replace(/\n/g, '<br>') : user.description_html"
         :emoji="editable ? emoji : user.emoji"
         :handle-links="true"
@@ -368,7 +368,7 @@
         v-model="newBio"
         enable-emoji-picker
         class="user-card-bio"
-        :class="{ '-justify-left': userCardLeftJustify }"
+        :class="{ '-justify-left': mergedConfig.userCardLeftJustify }"
         :suggest="emojiUserSuggestor"
       >
         <template #default="inputProps">
