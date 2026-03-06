@@ -27,6 +27,7 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 import { declarations } from 'src/modules/config_declaration'
 
@@ -701,7 +702,8 @@ const users = {
               user.domainMutes = []
               commit('setCurrentUser', user)
 
-              useSyncConfigStore().setSyncConfig(user)
+              useSyncConfigStore().initSyncConfig(user)
+              useUserHighlightStore().initHighlight(user)
               commit('addNewUsers', [user])
 
               useEmojiStore().fetchEmoji()

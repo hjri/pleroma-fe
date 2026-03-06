@@ -23,6 +23,7 @@ import UserPopover from '../user_popover/user_popover.vue'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
@@ -199,16 +200,14 @@ const Status = {
     },
     repeaterStyle() {
       const user = this.statusoid.user
-      const highlight = this.mergedConfig.highlight
-      return highlightStyle(highlight[user.screen_name])
+      return highlightStyle(useUserHighlightStore().get(user.screen_name))
     },
     userStyle() {
       if (this.noHeading) return
       const user = this.retweet
         ? this.statusoid.retweeted_status.user
         : this.statusoid.user
-      const highlight = this.mergedConfig.highlight
-      return highlightStyle(highlight[user.screen_name])
+      return highlightStyle(useUserHighlightStore().get(user.screen_name))
     },
     userProfileLink() {
       return this.generateUserProfileLink(

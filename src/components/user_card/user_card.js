@@ -29,6 +29,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { usePostStatusStore } from 'src/stores/post_status'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
 import localeService from 'src/services/locale/locale.service.js'
@@ -226,39 +227,28 @@ export default {
       }))
     },
     userHighlightType: {
-      get() {
-        const data =
-          useSyncConfigStore().mergedConfig.highlight[this.user.screen_name]
-        return (data && data.type) || 'disabled'
+      get () {
+        return useUserHighlightStore().get(this.user.screen_name).type
       },
-      set(type) {
-        const data =
-          useSyncConfigStore().mergedConfig.highlight[this.user.screen_name]
+      set (type) {
         if (type !== 'disabled') {
-          this.$store.dispatch('setHighlight', {
+          useUserHighlightStore().setAndSave({
             user: this.user.screen_name,
-            color: (data && data.color) || '#FFFFFF',
-            type,
+            value: { type }
           })
         } else {
-          this.$store.dispatch('setHighlight', {
-            user: this.user.screen_name,
-            color: undefined,
-          })
+          useUserHighlightStore().unsetAndSave({ user: this.user.screen_name })
         }
       },
-      ...mapState(useSyncConfigStore, ['mergedConfig']),
     },
     userHighlightColor: {
       get() {
-        const data =
-          useSyncConfigStore().mergedConfig.highlight[this.user.screen_name]
-        return data && data.color
+        return useUserHighlightStore().get(this.user.screen_name).color
       },
       set(color) {
-        this.$store.dispatch('setHighlight', {
+        useUserHighlightStore().setAndSave({
           user: this.user.screen_name,
-          color,
+          value: { color }
         })
       },
     },

@@ -605,7 +605,8 @@ export const useSyncConfigStore = defineStore('sync_config', {
       this.raw.prefsStorage._journal = []
       this.pushSyncConfig()
     },
-    setSyncConfig(userData) {
+    initSyncConfig(userData) {
+      console.log(userData)
       const live = userData.storage
       this.raw = live
       let cache = this.cache
@@ -682,7 +683,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
       window.vuex.state.api.backendInteractor
         .updateProfileJSON({ params })
         .then((user) => {
-          this.setSyncConfig(user)
+          this.initSyncConfig(user)
           this.dirty = false
         })
     },

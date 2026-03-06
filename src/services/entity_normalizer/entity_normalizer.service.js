@@ -117,6 +117,7 @@ export const parseUser = (data) => {
     if (data.pleroma) {
       if (data.pleroma.settings_store) {
         output.storage = data.pleroma.settings_store['pleroma-fe']
+        output.user_highlight = data.pleroma.settings_store['user_highlight']
       }
       const relationship = data.pleroma.relationship
 

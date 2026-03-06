@@ -22,7 +22,7 @@ describe('The SyncConfig module', () => {
   })
 
   describe('mutations', () => {
-    describe('setSyncConfig', () => {
+    describe('initSyncConfig', () => {
       const user = {
         created_at: new Date('1999-02-09'),
         storage: {},
@@ -30,7 +30,7 @@ describe('The SyncConfig module', () => {
 
       it('should initialize storage if none present', () => {
         const store = useSyncConfigStore()
-        store.setSyncConfig({ ...user })
+        store.initSyncConfig({ ...user })
         expect(store.cache._version).to.eql(VERSION)
         expect(store.cache._timestamp).to.be.a('number')
         expect(store.cache.flagStorage).to.eql(defaultState.flagStorage)
@@ -39,7 +39,7 @@ describe('The SyncConfig module', () => {
 
       it('should initialize storage with proper flags for new users if none present', () => {
         const store = useSyncConfigStore()
-        store.setSyncConfig({ ...user, created_at: new Date() })
+        store.initSyncConfig({ ...user, created_at: new Date() })
         expect(store.cache._version).to.eql(VERSION)
         expect(store.cache._timestamp).to.be.a('number')
         expect(store.cache.flagStorage).to.eql(newUserFlags)
@@ -54,7 +54,7 @@ describe('The SyncConfig module', () => {
           ...cloneDeep(defaultState),
         }
 
-        store.setSyncConfig({
+        store.initSyncConfig({
           ...user,
           storage: {
             _timestamp: 123,
@@ -79,7 +79,7 @@ describe('The SyncConfig module', () => {
         const store = useSyncConfigStore()
         store.cache = null
 
-        store.setSyncConfig({
+        store.initSyncConfig({
           ...user,
           storage: {
             _timestamp: 123,
@@ -97,7 +97,7 @@ describe('The SyncConfig module', () => {
 
       it('should use remote version if local missing', () => {
         const store = useSyncConfigStore()
-        store.setSyncConfig(store, user)
+        store.initSyncConfig(store, user)
         expect(store.cache._version).to.eql(VERSION)
         expect(store.cache._timestamp).to.be.a('number')
         expect(store.cache.flagStorage).to.eql(defaultState.flagStorage)
