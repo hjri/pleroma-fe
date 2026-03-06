@@ -111,7 +111,10 @@ const Notifications = {
       return useSyncConfigStore().mergedConfig.ignoreInactionableSeen
     },
     extraNotificationsCount() {
-      return countExtraNotifications(this.$store)
+      return countExtraNotifications(
+        this.$store,
+        useSyncConfigStore().mergedConfig,
+      )
     },
     unseenCountTitle() {
       return (

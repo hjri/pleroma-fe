@@ -3,7 +3,6 @@ import { muteFilterHits } from '../status_parser/status_parser.js'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useI18nStore } from 'src/stores/i18n.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import FaviconService from 'src/services/favicon_service/favicon_service.js'
 
@@ -101,16 +100,16 @@ export const filteredNotificationsFromStore = (
     .map((_) => _)
     .sort(sortById)
   // TODO implement sorting elsewhere and make it optional
-  console.log(types, visibleTypes(notificationVisibility))
   return sortedNotifications.filter((notification) =>
     (types || visibleTypes(notificationVisibility)).includes(notification.type),
   )
 }
 
-export const unseenNotificationsFromStore = (store, notificationVisibility) => {
-  const ignoreInactionableSeen =
-    useSyncConfigStore().mergedConfig.ignoreInactionableSeen
-
+export const unseenNotificationsFromStore = (
+  store,
+  notificationVisibility,
+  ignoreInactionableSeen,
+) => {
   return filteredNotificationsFromStore(store, notificationVisibility).filter(
     ({ seen, type }) => {
       if (!ignoreInactionableSeen) return !seen
@@ -190,9 +189,8 @@ export const prepareNotificationObject = (notification, i18n) => {
   return notifObj
 }
 
-export const countExtraNotifications = (store) => {
+export const countExtraNotifications = (store, mergedConfig) => {
   const rootGetters = store.rootGetters || store.getters
-  const mergedConfig = useSyncConfigStore().mergedConfig
 
   if (!mergedConfig.showExtraNotifications) {
     return 0

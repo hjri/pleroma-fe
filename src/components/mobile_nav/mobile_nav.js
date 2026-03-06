@@ -55,11 +55,13 @@ const MobileNav = {
       return unseenNotificationsFromStore(
         this.$store,
         useSyncConfigStore().mergedConfig.notificationVisibility,
+        useSyncConfigStore().mergedConfig.ignoreInactionableSeen,
       )
     },
     unseenNotificationsCount() {
       return (
-        this.unseenNotifications.length + countExtraNotifications(this.$store)
+        this.unseenNotifications.length +
+        countExtraNotifications(this.$store, useSyncConfigStore().mergedConfig)
       )
     },
     unseenCount() {
