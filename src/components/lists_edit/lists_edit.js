@@ -124,12 +124,12 @@ const ListsNew = {
       useListsStore()
         .createList({ title: this.titleDraft })
         .then((list) => {
-          return useListsStore()
+          useListsStore()
             .setListAccounts({
               listId: list.id,
               accountIds: [...this.addedUserIds],
             })
-            .then(() => list.id)
+          return list.id
         })
         .then((listId) => {
           this.$router.push({ name: 'lists-timeline', params: { id: listId } })
