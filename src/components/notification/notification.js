@@ -183,7 +183,7 @@ const Notification = {
       return highlightClass(this.notification.from_profile)
     },
     userStyle() {
-      const user = this.notification.from_profile
+      const user = this.notification.from_profile.screen_name
       return highlightStyle(useUserHighlightStore().get(user))
     },
     expandable() {
