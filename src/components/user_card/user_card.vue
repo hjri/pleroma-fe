@@ -358,7 +358,7 @@
         v-if="!hideBio"
         class="user-card-bio"
         :class="{ '-justify-left': mergedConfig.userCardLeftJustify }"
-        :html="editable ? newBio.replace(/\n/g, '<br>') : user.description_html"
+        :html="editable ? escapedNewBio : user.description_html"
         :emoji="editable ? emoji : user.emoji"
         :handle-links="true"
       />
