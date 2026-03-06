@@ -309,7 +309,7 @@ export const useInterfaceStore = defineStore('interface', {
     async fetchThemesIndex() {
       try {
         const value = await getResourcesIndex('/static/styles.json')
-        useInstanceStore().set({ path: 'simple.themesIndex', value })
+        useInstanceStore().set({ path: 'themesIndex', value })
         return value
       } catch (e) {
         console.error('Could not fetch themes index', e)
