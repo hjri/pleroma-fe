@@ -115,19 +115,23 @@ export const useEmojiStore = defineStore('emoji', {
       }, {})
     },
     standardEmojiList(state) {
-      return SORTED_EMOJI_GROUP_IDS.map((groupId) =>
-        (this.emoji[groupId] || []).map((k) =>
-          injectAnnotations(k, this.unicodeEmojiAnnotations),
-        ),
-      ).reduce((a, b) => a.concat(b), [])
+      return (
+        SORTED_EMOJI_GROUP_IDS.map((groupId) =>
+          (this.emoji[groupId] || []).map((k) =>
+            injectAnnotations(k, this.unicodeEmojiAnnotations),
+          ),
+        ).reduce((a, b) => a.concat(b), []) ?? []
+      )
     },
     standardEmojiGroupList(state) {
-      return SORTED_EMOJI_GROUP_IDS.map((groupId) => ({
-        id: groupId,
-        emojis: (this.emoji[groupId] || []).map((k) =>
-          injectAnnotations(k, this.unicodeEmojiAnnotations),
-        ),
-      }))
+      return (
+        SORTED_EMOJI_GROUP_IDS.map((groupId) => ({
+          id: groupId,
+          emojis: (this.emoji[groupId] || []).map((k) =>
+            injectAnnotations(k, this.unicodeEmojiAnnotations),
+          ),
+        })) ?? []
+      )
     },
   },
   actions: {
