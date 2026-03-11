@@ -704,6 +704,11 @@ const users = {
 
               useSyncConfigStore().initSyncConfig(user)
               useUserHighlightStore().initUserHighlight(user)
+              useInterfaceStore()
+                .applyTheme()
+                .catch((e) => {
+                  console.error('Error setting theme', e)
+                })
               commit('addNewUsers', [user])
 
               useEmojiStore().fetchEmoji()
