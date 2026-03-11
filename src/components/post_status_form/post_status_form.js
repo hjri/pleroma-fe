@@ -278,10 +278,10 @@ const PostStatusForm = {
       })
     },
     emoji() {
-      return useEmojiStore().standardEmojiList || []
+      return useEmojiStore().standardEmojiList
     },
     customEmoji() {
-      return useEmojiStore().customEmoji || []
+      return useEmojiStore().customEmoji
     },
     statusLength() {
       return this.newStatus.status.length
