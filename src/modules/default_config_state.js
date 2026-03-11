@@ -8,6 +8,7 @@ export const staticOrApiConfigDefault = {
   theme: 'pleroma-dark',
   palette: null,
   style: null,
+  themeChecksum: undefined,
   defaultAvatar: '/images/avi.png',
   defaultBanner: '/images/banner.png',
   background: '/static/aurora_borealis.jpg',

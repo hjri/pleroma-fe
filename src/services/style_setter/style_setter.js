@@ -3,8 +3,10 @@ import { chunk, throttle } from 'lodash'
 
 import { getCssRules } from '../theme_data/css_utils.js'
 import { getEngineChecksum, init } from '../theme_data/theme_data_3.service.js'
+import sum from 'hash-sum'
 
 import { defaultState } from 'src/modules/default_config_state.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 // On platforms where this is not supported, it will return undefined
 // Otherwise it will return an array
@@ -77,7 +79,7 @@ export const adoptStyleSheets = throttle(() => {
 const EAGER_STYLE_ID = 'pleroma-eager-styles'
 const LAZY_STYLE_ID = 'pleroma-lazy-styles'
 
-export const generateTheme = (inputRuleset, callbacks, debug) => {
+const generateTheme = (inputRuleset, callbacks, debug) => {
   const {
     onNewRule = () => {
       /* no-op */
@@ -134,9 +136,12 @@ export const generateTheme = (inputRuleset, callbacks, debug) => {
 export const tryLoadCache = async () => {
   console.info('Trying to load compiled theme data from cache')
   const cache = await localforage.getItem('pleromafe-theme-cache')
+  console.log(cache.checksum)
   if (!cache) return null
   try {
-    if (cache.engineChecksum === getEngineChecksum()) {
+    if (cache.engineChecksum === getEngineChecksum() &&
+        cache.checksum !== undefined &&
+        cache.checksum === useSyncConfigStore().mergedConfig.themeChecksum) {
       const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
       const lazyStyles = createStyleSheet(LAZY_STYLE_ID, 20)
 
@@ -149,7 +154,7 @@ export const tryLoadCache = async () => {
       console.info(`Loaded theme from cache`)
       return true
     } else {
-      console.warn("Engine checksum doesn't match, cache not usable, clearing")
+      console.warn("Checksums don't match, cache not usable, clearing")
       localStorage.removeItem('pleroma-fe-theme-cache')
     }
   } catch (e) {
@@ -195,10 +200,14 @@ export const applyTheme = (
       onLazyFinished() {
         lazyStyles.ready = true
         adoptStyleSheets()
+        const data = [eagerStyles.rules, lazyStyles.rules]
+        const checksum = sum(data)
         const cache = {
+          checksum,
           engineChecksum: getEngineChecksum(),
-          data: [eagerStyles.rules, lazyStyles.rules],
+          data,
         }
+        useSyncConfigStore().setSimplePrefAndSave({ path: 'themeChecksum', value: checksum })
         onFinish(cache)
         localforage.setItem('pleromafe-theme-cache', cache)
         console.info('Theme cache stored')
