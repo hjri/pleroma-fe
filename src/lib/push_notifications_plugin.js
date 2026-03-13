@@ -83,7 +83,6 @@ export const vuexPushNotificationsPlugin = (store) => {
       mutation.type === 'setCurrentUser' ||
       mutation.type === 'clearCurrentUser'
     ) {
-      console.log(!!user, permissionGranted, enabled)
       if (user && permissionGranted && enabled) {
         return store.dispatch('registerPushNotifications')
       } else {

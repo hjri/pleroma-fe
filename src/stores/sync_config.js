@@ -80,7 +80,6 @@ export const _moveItemInArray = (array, value, movement) => {
 }
 
 const _wrapData = (data, userName) => {
-  console.log('WRAP')
   return {
     ...data,
     _user: userName,
@@ -414,8 +413,6 @@ export const _resetPrefs = (
 }
 
 export const _doMigrations = async (data, setPreference) => {
-  console.log('TEST', data._version)
-
   if (data._version < VERSION) {
     console.debug(
       'Data has older version, seeing if there any migrations that can be applied',

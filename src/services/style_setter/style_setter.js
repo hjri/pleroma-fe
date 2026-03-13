@@ -136,7 +136,6 @@ const generateTheme = (inputRuleset, callbacks, debug) => {
 export const tryLoadCache = async () => {
   console.info('Trying to load compiled theme data from cache')
   const cache = await localforage.getItem('pleromafe-theme-cache')
-  console.log(cache.checksum)
   if (!cache) return null
   try {
     if (cache.engineChecksum === getEngineChecksum() &&
