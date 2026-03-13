@@ -275,8 +275,8 @@ export const useUserHighlightStore = defineStore('user_highlight', {
       const vuexState = await storage.getItem('vuex-lz')
       const { highlight } = vuexState.config
       Object.entries(highlight).forEach(([user, value]) => {
-        if ((highlight[user]._migrated || 0) < 1) {
-          vuexState.config.highlight[user]._migrated = 1
+        if ((highlight[user]._migrated || 0) < 2) {
+          // vuexState.config.highlight[user]._migrated = 1
           this.set({ user, value })
           console.log(user, value, this.highlight[user])
         }
