@@ -51,7 +51,7 @@ const _wrapData = (data, userName) => {
 
 const _checkValidity = (data) => data._timestamp > 0
 
-const _verifyPrefs = (state) => {
+const _verifyHighlights = (state) => {
   state.highlight = state.highlight || {}
 
   // Simple
@@ -148,7 +148,7 @@ const _mergeJournal = (...journals) => {
   )
 }
 
-export const _mergePrefs = (recent, stale) => {
+export const _mergeHighlights = (recent, stale) => {
   if (!stale) return recent
   if (!recent) return stale
   const { _journal: recentJournal, ...recentData } = recent
@@ -163,8 +163,8 @@ export const _mergePrefs = (recent, stale) => {
    * to requested one. Intended only to be used with simple preferences (boolean, number)
    */
   const resultOutput = { ...recentData }
-  const totalJournal = _mergeJournal(staleJournal, recentJournal)
-  totalJournal.forEach(({ user, operation, args }) => {
+  const Journal = _mergeJournal(staleJournal, recentJournal)
+  Journal.forEach(({ user, operation, args }) => {
     if (user.startsWith('_')) {
       throw new Error(
         `journal contains entry to edit internal (starts with _) field '${user}', something is incorrect here, ignoring.`,
@@ -172,16 +172,16 @@ export const _mergePrefs = (recent, stale) => {
     }
     switch (operation) {
       case 'set':
-        resultOutput.highlight[user] = args[0]
+        resultOutput[user] = args[0]
         break
       case 'unset':
-        delete resultOutput.highlight[user]
+        delete resultOutput[user]
         break
       default:
         return console.error(`Unknown journal operation: '${operation}'`)
     }
   })
-  return { ...resultOutput, _journal: totalJournal }
+  return { ...resultOutput, _journal: Journal }
 }
 
 export const useUserHighlightStore = defineStore('user_highlight', {
@@ -305,17 +305,17 @@ export const useUserHighlightStore = defineStore('user_highlight', {
         console.debug(`Data ${dirty ? 'needs' : "doesn't need"} merging`)
       }
 
-      let totalPrefs
+      let highlights
       if (dirty) {
         console.debug('Merging the data...')
-        _verifyPrefs(recent)
-        _verifyPrefs(stale)
-        totalPrefs = _mergePrefs(recent.highlight, stale.highlight)
+        _verifyHighlights(recent)
+        _verifyHighlights(stale)
+        highlights = _mergeHighlights(recent.highlight, stale.highlight)
       } else {
-        totalPrefs = recent.highlight
+        highlights = recent.highlight
       }
 
-      recent.highlight = { ...defaultState.highlight, ...totalPrefs }
+      recent.highlight = { ...defaultState.highlight, ...highlights }
 
       this.dirty = dirty || needUpload
       this.cache = recent
