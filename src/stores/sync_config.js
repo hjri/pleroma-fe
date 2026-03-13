@@ -20,7 +20,9 @@ import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/updat
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 
-import { defaultState as configDefaultState } from 'src/modules/default_config_state'
+import { defaultState as configDefaultState } from 'src/modules/default_config_state.js'
+import { defaultStateKeys } from 'src/modules/old_default_config_state.js'
+import { storage } from 'src/lib/storage.js'
 
 export const VERSION = 2
 export const NEW_USER_DATE = new Date('2022-08-04') // date of writing this, basically
@@ -411,16 +413,21 @@ export const _resetPrefs = (
   return totalPrefs
 }
 
-export const _doMigrations = (cache, live) => {
-  const data = cache ?? live
+export const _doMigrations = async (data) => {
+  console.log('TEST', data._version)
 
   if (data._version < VERSION) {
     console.debug(
       'Data has older version, seeing if there any migrations that can be applied',
     )
 
-    // no migrations right now since we only have one version
-    console.debug('No migrations found')
+    if (data._version === 1) {
+      // Migrate old config to sync config
+      const vuexState = await storage.getItem('vuex-lz')
+      defaultStateKeys.forEach(key => {
+        this.setPreference({ path: `simple.${key}`, value: vuexState.config[key] })
+      })
+    }
   }
 
   if (data._version > VERSION) {
@@ -442,7 +449,7 @@ export const _doMigrations = (cache, live) => {
     }
   }
 
-  return cache
+  return data
 }
 
 export const useSyncConfigStore = defineStore('sync_config', {
@@ -602,8 +609,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
       })
       this.flagStorage.reset = COMMAND_WIPE_JOURNAL_AND_STORAGE
     },
-    initSyncConfig(userData) {
-      console.log(userData)
+    async initSyncConfig(userData) {
       const live = userData.storage
       this.raw = live
       let cache = this.cache
@@ -630,8 +636,8 @@ export const useSyncConfigStore = defineStore('sync_config', {
         })
       }
 
-      recent = recent && _doMigrations(recent)
-      stale = stale && _doMigrations(stale)
+      recent = recent && await _doMigrations(recent)
+      stale = stale && await _doMigrations(stale)
 
       if (!needUpload && recent && stale) {
         console.debug('Checking if data needs merging...')
@@ -671,6 +677,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
       }
       this.flagStorage = this.cache.flagStorage
       this.prefsStorage = this.cache.prefsStorage
+      this.pushSyncConfig()
     },
     pushSyncConfig({ force = false } = {}) {
       const needPush = this.dirty || force
