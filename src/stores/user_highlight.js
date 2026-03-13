@@ -13,8 +13,8 @@ import {
 } from 'lodash'
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
-import { storage } from 'src/lib/storage.js'
 
+import { storage } from 'src/lib/storage.js'
 import { defaultState as configDefaultState } from 'src/modules/default_config_state'
 
 export const NEW_USER_DATE = new Date('2022-08-04') // date of writing this, basically
@@ -82,7 +82,9 @@ export const _getRecentData = (cache, live, isTest) => {
     result.recent = live
     result.stale = cache
   } else if (cacheValid && liveValid) {
-    console.debug('[HIGHLIGHT] Both sources have valid data, figuring things out...')
+    console.debug(
+      '[HIGHLIGHT] Both sources have valid data, figuring things out...',
+    )
     if (live._timestamp === cache._timestamp) {
       console.debug(
         '[HIGHLIGHT] Same timestamp on both sources, source of truth irrelevant',
@@ -284,7 +286,9 @@ export const useUserHighlightStore = defineStore('user_highlight', {
           needUpload = true
           this.set({ user, value: clone(value) })
           vuexState.config.highlight[user]._migrated = 1
-          console.debug(`[HIGHLIGHT] Migrating user ${user}: ${ JSON.stringify(value) }`)
+          console.debug(
+            `[HIGHLIGHT] Migrating user ${user}: ${JSON.stringify(value)}`,
+          )
         }
       })
       storage.setItem('vuex-lz', vuexState)
@@ -304,7 +308,9 @@ export const useUserHighlightStore = defineStore('user_highlight', {
         const { _timestamp: _0, ...recentData } = recent
         const { _timestamp: _2, ...staleData } = stale
         dirty = !isEqual(recentData, staleData)
-        console.debug(`[HIGHLIGHT] Data ${dirty ? 'needs' : "doesn't need"} merging`)
+        console.debug(
+          `[HIGHLIGHT] Data ${dirty ? 'needs' : "doesn't need"} merging`,
+        )
       }
 
       let highlights

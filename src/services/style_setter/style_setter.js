@@ -1,12 +1,13 @@
+import sum from 'hash-sum'
 import localforage from 'localforage'
 import { chunk, throttle } from 'lodash'
 
 import { getCssRules } from '../theme_data/css_utils.js'
 import { getEngineChecksum, init } from '../theme_data/theme_data_3.service.js'
-import sum from 'hash-sum'
+
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { defaultState } from 'src/modules/default_config_state.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 // On platforms where this is not supported, it will return undefined
 // Otherwise it will return an array
@@ -138,9 +139,11 @@ export const tryLoadCache = async () => {
   const cache = await localforage.getItem('pleromafe-theme-cache')
   if (!cache) return null
   try {
-    if (cache.engineChecksum === getEngineChecksum() &&
-        cache.checksum !== undefined &&
-        cache.checksum === useSyncConfigStore().mergedConfig.themeChecksum) {
+    if (
+      cache.engineChecksum === getEngineChecksum() &&
+      cache.checksum !== undefined &&
+      cache.checksum === useSyncConfigStore().mergedConfig.themeChecksum
+    ) {
       const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
       const lazyStyles = createStyleSheet(LAZY_STYLE_ID, 20)
 
@@ -206,7 +209,10 @@ export const applyTheme = (
           engineChecksum: getEngineChecksum(),
           data,
         }
-        useSyncConfigStore().setSimplePrefAndSave({ path: 'themeChecksum', value: checksum })
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'themeChecksum',
+          value: checksum,
+        })
         onFinish(cache)
         localforage.setItem('pleromafe-theme-cache', cache)
         console.info('Theme cache stored')

@@ -20,9 +20,9 @@ import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/updat
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 
+import { storage } from 'src/lib/storage.js'
 import { defaultState as configDefaultState } from 'src/modules/default_config_state.js'
 import { defaultStateKeys } from 'src/modules/old_default_config_state.js'
-import { storage } from 'src/lib/storage.js'
 
 export const VERSION = 2
 export const NEW_USER_DATE = new Date('2022-08-04') // date of writing this, basically
@@ -421,7 +421,7 @@ export const _doMigrations = async (data, setPreference) => {
     if (data._version === 1) {
       // Migrate old config to sync config
       const vuexState = await storage.getItem('vuex-lz')
-      defaultStateKeys.forEach(key => {
+      defaultStateKeys.forEach((key) => {
         setPreference({ path: `simple.${key}`, value: vuexState.config[key] })
       })
     }
@@ -633,8 +633,8 @@ export const useSyncConfigStore = defineStore('sync_config', {
         })
       }
 
-      recent = recent && await _doMigrations(recent, this.setPreference)
-      stale = stale && await _doMigrations(stale, this.setPreference)
+      recent = recent && (await _doMigrations(recent, this.setPreference))
+      stale = stale && (await _doMigrations(stale, this.setPreference))
 
       if (!needUpload && recent && stale) {
         console.debug('Checking if data needs merging...')
