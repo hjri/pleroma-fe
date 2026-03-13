@@ -326,6 +326,7 @@ export const useUserHighlightStore = defineStore('user_highlight', {
         this.cache._timestamp = Math.min(stale._timestamp, recent._timestamp)
       }
       this.highlight = this.cache.highlight
+      this.pushHighlight()
     },
     pushHighlight({ force = false } = {}) {
       const needPush = this.dirty || force
