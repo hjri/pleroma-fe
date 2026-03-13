@@ -12,6 +12,7 @@ import {
 } from 'lodash'
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
+import { storage } from 'src/lib/storage.js'
 
 import { defaultState as configDefaultState } from 'src/modules/default_config_state'
 
@@ -169,7 +170,6 @@ export const _mergePrefs = (recent, stale) => {
         `journal contains entry to edit internal (starts with _) field '${user}', something is incorrect here, ignoring.`,
       )
     }
-    console.log(resultOutput)
     switch (operation) {
       case 'set':
         resultOutput.highlight[user] = args[0]
@@ -180,7 +180,6 @@ export const _mergePrefs = (recent, stale) => {
       default:
         return console.error(`Unknown journal operation: '${operation}'`)
     }
-    console.log(resultOutput)
   })
   return { ...resultOutput, _journal: totalJournal }
 }
@@ -219,9 +218,7 @@ export const useUserHighlightStore = defineStore('user_highlight', {
         ...oldValue,
         ...value,
       }
-      console.log(oldValue, newValue, value)
       this.highlight[user] = newValue
-      console.log(this.highlight)
       this.highlight._journal = [
         ...this.highlight._journal,
         { operation: 'set', user, args: [newValue], timestamp: Date.now() },
@@ -262,7 +259,7 @@ export const useUserHighlightStore = defineStore('user_highlight', {
       this.raw.highlight._journal = []
       this.pushSyncConfig()
     },
-    initUserHighlight(userData) {
+    async initUserHighlight(userData) {
       const live = userData.user_highlight
       this.raw = live
       let cache = this.cache
@@ -274,6 +271,18 @@ export const useUserHighlightStore = defineStore('user_highlight', {
       }
 
       let { recent, stale, needUpload } = _getRecentData(cache, live)
+
+      const vuexState = await storage.getItem('vuex-lz')
+      const { highlight } = vuexState.config
+      Object.entries(highlight).forEach(([user, value]) => {
+        if ((highlight[user]._migrated || 0) < 1) {
+          vuexState.config.highlight[user]._migrated = 1
+          this.set({ user, value })
+          console.log(user, value, this.highlight[user])
+        }
+      })
+      storage.setItem('vuex-lz', vuexState)
+      this.pushHighlight()
 
       const userNew = userData.created_at > NEW_USER_DATE
       let dirty = false
