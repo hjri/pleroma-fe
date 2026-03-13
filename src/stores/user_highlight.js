@@ -1,6 +1,7 @@
 import {
   merge as _merge,
   clamp,
+  clone,
   cloneDeep,
   findLastIndex,
   flatten,
@@ -282,7 +283,7 @@ export const useUserHighlightStore = defineStore('user_highlight', {
           dirty = true
           this.set({ user, value: clone(value) })
           vuexState.config.highlight[user]._migrated = 1
-          console.log(user, value, this.highlight[user])
+          console.debug(`Migrating user ${user}: ${ JSON.stringify(value) }`)
         }
       })
       storage.setItem('vuex-lz', vuexState)
