@@ -71,27 +71,27 @@ export const _getRecentData = (cache, live, isTest) => {
   if (!liveValid && cacheValid) {
     result.needUpload = true
     console.debug(
-      'Nothing valid stored on server, assuming cache to be source of truth',
+      '[HIGHLIGHT] Nothing valid stored on server, assuming cache to be source of truth',
     )
     result.recent = cache
     result.stale = live
   } else if (!cacheValid && liveValid) {
     console.debug(
-      'Valid storage on server found, no local cache found, using live as source of truth',
+      '[HIGHLIGHT] Valid storage on server found, no local cache found, using live as source of truth',
     )
     result.recent = live
     result.stale = cache
   } else if (cacheValid && liveValid) {
-    console.debug('Both sources have valid data, figuring things out...')
+    console.debug('[HIGHLIGHT] Both sources have valid data, figuring things out...')
     if (live._timestamp === cache._timestamp) {
       console.debug(
-        'Same timestamp on both sources, source of truth irrelevant',
+        '[HIGHLIGHT] Same timestamp on both sources, source of truth irrelevant',
       )
       result.recent = cache
       result.stale = live
     } else {
       console.debug(
-        'Different timestamp, figuring out which one is more recent',
+        '[HIGHLIGHT] Different timestamp, figuring out which one is more recent',
       )
       if (live._timestamp < cache._timestamp) {
         result.recent = cache
@@ -102,7 +102,7 @@ export const _getRecentData = (cache, live, isTest) => {
       }
     }
   } else {
-    console.debug('Both sources are invalid, start from scratch')
+    console.debug('[HIGHLIGHT] Both sources are invalid, start from scratch')
     result.needUpload = true
   }
 
@@ -281,16 +281,17 @@ export const useUserHighlightStore = defineStore('user_highlight', {
       Object.entries(highlight).forEach(([user, value]) => {
         if ((highlight[user]._migrated || 0) < 1) {
           dirty = true
+          needUpload = true
           this.set({ user, value: clone(value) })
           vuexState.config.highlight[user]._migrated = 1
-          console.debug(`Migrating user ${user}: ${ JSON.stringify(value) }`)
+          console.debug(`[HIGHLIGHT] Migrating user ${user}: ${ JSON.stringify(value) }`)
         }
       })
       storage.setItem('vuex-lz', vuexState)
 
       if (recent === null) {
         console.debug(
-          `Data is empty, initializing for ${userNew ? 'new' : 'existing'} user`,
+          `[HIGHLIGHT] Data is empty, initializing for ${userNew ? 'new' : 'existing'} user`,
         )
         recent = _wrapData({
           highlight: { ...defaultState.highlight },
@@ -298,17 +299,17 @@ export const useUserHighlightStore = defineStore('user_highlight', {
       }
 
       if (!needUpload && recent && stale) {
-        console.debug('Checking if data needs merging...')
+        console.debug('[HIGHLIGHT] Checking if data needs merging...')
         // discarding timestamps
         const { _timestamp: _0, ...recentData } = recent
         const { _timestamp: _2, ...staleData } = stale
         dirty = !isEqual(recentData, staleData)
-        console.debug(`Data ${dirty ? 'needs' : "doesn't need"} merging`)
+        console.debug(`[HIGHLIGHT] Data ${dirty ? 'needs' : "doesn't need"} merging`)
       }
 
       let highlights
       if (dirty) {
-        console.debug('Merging the data...')
+        console.debug('[HIGHLIGHT] Merging the data...')
         _verifyHighlights(recent)
         _verifyHighlights(stale)
         highlights = _mergeHighlights(recent.highlight, stale.highlight)
