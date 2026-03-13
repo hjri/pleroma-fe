@@ -413,7 +413,7 @@ export const _resetPrefs = (
   return totalPrefs
 }
 
-export const _doMigrations = async (data) => {
+export const _doMigrations = async (data, setPreference) => {
   console.log('TEST', data._version)
 
   if (data._version < VERSION) {
@@ -425,7 +425,7 @@ export const _doMigrations = async (data) => {
       // Migrate old config to sync config
       const vuexState = await storage.getItem('vuex-lz')
       defaultStateKeys.forEach(key => {
-        this.setPreference({ path: `simple.${key}`, value: vuexState.config[key] })
+        setPreference({ path: `simple.${key}`, value: vuexState.config[key] })
       })
     }
   }
@@ -636,8 +636,8 @@ export const useSyncConfigStore = defineStore('sync_config', {
         })
       }
 
-      recent = recent && await _doMigrations(recent)
-      stale = stale && await _doMigrations(stale)
+      recent = recent && await _doMigrations(recent, this.setPreference)
+      stale = stale && await _doMigrations(stale, this.setPreference)
 
       if (!needUpload && recent && stale) {
         console.debug('Checking if data needs merging...')
