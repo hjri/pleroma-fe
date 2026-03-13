@@ -272,19 +272,20 @@ export const useUserHighlightStore = defineStore('user_highlight', {
 
       let { recent, stale, needUpload } = _getRecentData(cache, live)
 
+      const userNew = userData.created_at > NEW_USER_DATE
+      let dirty = false
+
       const vuexState = await storage.getItem('vuex-lz')
       const { highlight } = vuexState.config
       Object.entries(highlight).forEach(([user, value]) => {
-        if ((highlight[user]._migrated || 0) < 2) {
+        if ((highlight[user]._migrated || 0) < 1) {
+          dirty = true
           this.set({ user, value: clone(value) })
-          // vuexState.config.highlight[user]._migrated = 1
+          vuexState.config.highlight[user]._migrated = 1
           console.log(user, value, this.highlight[user])
         }
       })
       storage.setItem('vuex-lz', vuexState)
-
-      const userNew = userData.created_at > NEW_USER_DATE
-      let dirty = false
 
       if (recent === null) {
         console.debug(
