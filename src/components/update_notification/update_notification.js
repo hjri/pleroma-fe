@@ -11,7 +11,7 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faTimes)
 
-export const CURRENT_UPDATE_COUNTER = 1
+export const CURRENT_UPDATE_COUNTER = 2
 
 const pleromaTan = '/static/pleromatan_apology.png'
 const pleromaTanFox = '/static/pleromatan_apology_fox.png'

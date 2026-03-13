@@ -27,7 +27,7 @@
           <div class="spacer-top" />
           <div class="text">
             <p>
-              {{ $t('update.big_update_content') }}
+              {{ $t('update.big_update_content2') }}
             </p>
             <div
               ref="animatedText"
