@@ -20,6 +20,7 @@
     {{ ' ' }}
     <ColorInput
       :id="path"
+      :name="path"
       class="setting-control color-setting-input"
       :class="{ disabled: shouldBeDisabled }"
       :disabled="shouldBeDisabled"
