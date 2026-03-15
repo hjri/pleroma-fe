@@ -7,7 +7,6 @@ import {
   get,
   groupBy,
   isEqual,
-  deepEqual,
   set,
   takeRight,
   uniqWith,
@@ -620,6 +619,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
       const { config } = vuexState
 
       const migratedEntries = new Set(config._syncMigration ?? [])
+      console.debug(`Already migrated Values: ${[...migratedEntries].join()}`)
 
       Object.entries(defaultConfigSync).forEach(([key, value]) => {
         const oldValue = config[key]
@@ -627,12 +627,12 @@ export const useSyncConfigStore = defineStore('sync_config', {
 
         const present = oldValue !== undefined
         const migrated = migratedEntries.has(key)
-        const different = !deepEqual(oldValue, defaultValue)
+        const different = !isEqual(oldValue, defaultValue)
 
         if (present && !migrated && different) {
-          console.debug(`Migrating config ${key}: ${oldValue}`,)
-          // this.setPreference({ path: `simple.${key}`, oldValue })
+          this.setPreference({ path: `simple.${key}`, oldValue })
           migratedEntries.add(key)
+          this.needUpload = true
           console.debug(`Migrating config ${key}: ${oldValue}`,)
         }
       })
@@ -658,8 +658,6 @@ export const useSyncConfigStore = defineStore('sync_config', {
         const { _timestamp: _0, _version: _1, ...recentData } = recent
         const { _timestamp: _2, _version: _3, ...staleData } = stale
         dirty = !isEqual(recentData, staleData)
-        console.log(JSON.stringify(recentData))
-        console.log(JSON.stringify(staleData))
         console.debug(`Data ${dirty ? 'needs' : "doesn't need"} merging`)
       }
 
