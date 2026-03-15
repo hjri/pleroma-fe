@@ -7,6 +7,7 @@ import {
   get,
   groupBy,
   isEqual,
+  deepEqual,
   set,
   takeRight,
   uniqWith,
@@ -22,7 +23,7 @@ import { useLocalConfigStore } from 'src/stores/local_config.js'
 
 import { storage } from 'src/lib/storage.js'
 import { defaultState as configDefaultState } from 'src/modules/default_config_state.js'
-import { defaultStateKeys } from 'src/modules/old_default_config_state.js'
+import { defaultConfigSync } from 'src/modules/old_default_config_state.js'
 
 export const VERSION = 2
 export const NEW_USER_DATE = new Date('2022-08-04') // date of writing this, basically
@@ -38,7 +39,6 @@ export const defaultState = {
   // storage of flags - stuff that can only be set and incremented
   flagStorage: {
     updateCounter: 0, // Counter for most recent update notification seen
-    configMigration: 0, // Counter for config -> server-side migrations
     reset: 0, // special flag that can be used to force-reset all data, debug purposes only
     // special reset codes:
     // 1000: trim keys to those known by currently running FE
@@ -417,14 +417,6 @@ export const _doMigrations = async (data, setPreference) => {
     console.debug(
       'Data has older version, seeing if there any migrations that can be applied',
     )
-
-    if (data._version === 1) {
-      // Migrate old config to sync config
-      const vuexState = await storage.getItem('vuex-lz')
-      defaultStateKeys.forEach((key) => {
-        setPreference({ path: `simple.${key}`, value: vuexState.config[key] })
-      })
-    }
   }
 
   if (data._version > VERSION) {
@@ -623,6 +615,30 @@ export const useSyncConfigStore = defineStore('sync_config', {
       const flagsTemplate = userNew ? newUserFlags : defaultState.flagStorage
       let dirty = false
 
+      console.debug('Migrating from old config')
+      const vuexState = await storage.getItem('vuex-lz')
+      const { config } = vuexState
+
+      const migratedEntries = new Set(config._syncMigration ?? [])
+
+      Object.entries(defaultConfigSync).forEach(([key, value]) => {
+        const oldValue = config[key]
+        const defaultValue = value
+
+        const present = oldValue !== undefined
+        const migrated = migratedEntries.has(key)
+        const different = !deepEqual(oldValue, defaultValue)
+
+        if (present && !migrated && different) {
+          console.debug(`Migrating config ${key}: ${oldValue}`,)
+          // this.setPreference({ path: `simple.${key}`, oldValue })
+          migratedEntries.add(key)
+          console.debug(`Migrating config ${key}: ${oldValue}`,)
+        }
+      })
+      vuexState.config._syncMigration = [...migratedEntries]
+      storage.setItem('vuex-lz', vuexState)
+
       if (recent === null) {
         console.debug(
           `Data is empty, initializing for ${userNew ? 'new' : 'existing'} user`,
@@ -642,6 +658,8 @@ export const useSyncConfigStore = defineStore('sync_config', {
         const { _timestamp: _0, _version: _1, ...recentData } = recent
         const { _timestamp: _2, _version: _3, ...staleData } = stale
         dirty = !isEqual(recentData, staleData)
+        console.log(JSON.stringify(recentData))
+        console.log(JSON.stringify(staleData))
         console.debug(`Data ${dirty ? 'needs' : "doesn't need"} merging`)
       }
 
