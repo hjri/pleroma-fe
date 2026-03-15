@@ -630,10 +630,10 @@ export const useSyncConfigStore = defineStore('sync_config', {
         const different = !isEqual(oldValue, defaultValue)
 
         if (present && !migrated && different) {
+          console.debug(`Migrating config ${key}: ${oldValue}`,)
           this.setPreference({ path: `simple.${key}`, oldValue })
           migratedEntries.add(key)
-          this.needUpload = true
-          console.debug(`Migrating config ${key}: ${oldValue}`,)
+          needUpload = true
         }
       })
       vuexState.config._syncMigration = [...migratedEntries]
@@ -657,7 +657,12 @@ export const useSyncConfigStore = defineStore('sync_config', {
         // discarding timestamps and versions
         const { _timestamp: _0, _version: _1, ...recentData } = recent
         const { _timestamp: _2, _version: _3, ...staleData } = stale
-        dirty = !isEqual(recentData, staleData)
+        dirty = !isEqual(
+          // Something wrong happens if we compare both objects directly
+          // or with cloneDeep()
+          JSON.parse(JSON.stringify(recentData)),
+          JSON.parse(JSON.stringify(staleData)),
+        )
         console.debug(`Data ${dirty ? 'needs' : "doesn't need"} merging`)
       }
 
