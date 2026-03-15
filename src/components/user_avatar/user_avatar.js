@@ -37,7 +37,7 @@ const UserAvatar = {
   data() {
     return {
       showPlaceholder: false,
-      defaultAvatar: `${useInstanceStore().server + useInstanceStore().defaultAvatar}`,
+      defaultAvatar: `${useInstanceStore().server + useInstanceStore().instanceIdentity.defaultAvatar}`,
       betterShadow: useInterfaceStore().browserSupport.cssFilter,
     }
   },
