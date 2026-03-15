@@ -91,6 +91,7 @@
         <li>
           <BooleanSetting
             path="imageCompression"
+            :local="true"
             expert="1"
           >
             {{ $t('settings.image_compression') }}
@@ -99,6 +100,7 @@
             <li>
               <BooleanSetting
                 path="alwaysUseJpeg"
+                :local="true"
                 expert="1"
                 parent-path="imageCompression"
               >

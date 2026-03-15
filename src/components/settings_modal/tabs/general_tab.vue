@@ -68,7 +68,6 @@
             name="ui"
             :label="$t('settings.style.fonts.components_inline.interface')"
             :fallback="{ family: 'sans-serif' }"
-            :is-local="true"
             no-inherit="1"
             @update:model-value="v => updateFont('interface', v)"
           />
@@ -77,7 +76,6 @@
           <FontControl
             :model-value="theme3hacks.fonts.input"
             name="input"
-            :is-local="true"
             :fallback="{ family: 'inherit' }"
             :label="$t('settings.style.fonts.components_inline.input')"
             @update:model-value="v => updateFont('input', v)"
@@ -100,6 +98,7 @@
               <FloatSetting
                 v-if="user"
                 path="emojiReactionsScale"
+                :local="true"
               >
                 {{ $t('settings.emoji_reactions_scale') }}
               </FloatSetting>

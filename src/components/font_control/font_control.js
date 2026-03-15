@@ -28,7 +28,6 @@ export default {
     'fallback',
     'options',
     'no-inherit',
-    'isLocal',
   ],
   mounted() {
     useInterfaceStore().queryLocalFonts()

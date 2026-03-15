@@ -40,6 +40,7 @@
         <li>
           <UnitSetting
             path="themeEditorMinWidth"
+            :local="true"
             :units="['px', 'rem']"
             expert="1"
           >
@@ -83,12 +84,18 @@
           </UnitSetting>
         </li>
         <li>
-          <BooleanSetting path="sidebarRight">
+          <BooleanSetting
+            :local="true"
+            path="sidebarRight"
+          >
             {{ $t('settings.right_sidebar') }}
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting path="navbarColumnStretch">
+          <BooleanSetting
+            :local="true"
+            path="navbarColumnStretch"
+          >
             {{ $t('settings.navbar_column_stretch') }}
           </BooleanSetting>
         </li>

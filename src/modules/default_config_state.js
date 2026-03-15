@@ -94,8 +94,6 @@ export const instanceDefaultConfig = {
   webPushAlwaysShowNotifications: false,
   interfaceLanguage: browserLocale,
   hideScopeNotice: false,
-  useStreamingApi: false,
-  sidebarRight: false,
   scopeCopy: true,
   subjectLineBehavior: 'email',
   alwaysShowSubjectInput: true,
@@ -168,6 +166,7 @@ export const defaultConfigLocal = {
   hideAttachments: false,
   hideAttachmentsInConv: false,
   postContentType: 'text/plain',
+  sidebarRight: false,
   sidebarColumnWidth: '25rem',
   contentColumnWidth: '45rem',
   notifsColumnWidth: '25rem',
@@ -181,6 +180,7 @@ export const defaultConfigLocal = {
   mentionLinkDisplay: 'short',
   alwaysUseJpeg: false,
   imageCompression: true,
+  useStreamingApi: false,
 }
 
 export const makeUndefined = (c) =>

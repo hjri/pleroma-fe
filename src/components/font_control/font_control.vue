@@ -8,7 +8,7 @@
         :model-value="present"
         @change="$emit('update:modelValue', typeof modelValue === 'undefined' ? fallback : undefined)"
       >
-        <LocalSettingIndicator :is-local="isLocal" />
+        <LocalSettingIndicator />
         {{ ' ' }}
         <i18n-t
           scope="global"
