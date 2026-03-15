@@ -33,14 +33,14 @@ export default {
       const path = e[':src']
       if (!path) {
         return {
-          mimetype: '',
+          type: '',
           url: '',
         }
       }
       const url = path.includes('://') ? path : useInstanceStore().server + path
 
       return {
-        mimetype: fileTypeExt(url),
+        type: fileTypeExt(url),
         url,
       }
     },
