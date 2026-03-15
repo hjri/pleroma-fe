@@ -86,7 +86,7 @@ export default {
     },
     // Readable label
     label: {
-      required: true,
+      required: false,
       type: String,
     },
     // use unstyled, uh, style

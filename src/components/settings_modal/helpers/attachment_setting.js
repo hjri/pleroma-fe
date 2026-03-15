@@ -29,7 +29,7 @@ export default {
       // The "server" part is primarily for local dev, but could be useful for alt-domain or multiuser usage.
       const url = path.includes('://') ? path : useInstanceStore().server + path
       return {
-        mimetype: fileTypeExt(url),
+        type: fileTypeExt(url),
         url,
       }
     },

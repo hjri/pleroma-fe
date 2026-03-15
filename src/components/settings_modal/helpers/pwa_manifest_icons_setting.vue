@@ -50,7 +50,7 @@
             <div class="src-field">
               <Attachment
                 class="src-attachment"
-                :compact="compact"
+                :compact="true"
                 :attachment="attachment(item)"
                 size="small"
                 hide-description
@@ -70,7 +70,7 @@
                 class="src-upload media-upload-icon"
                 :class="{ disabled: shouldBeDisabled }"
                 normal-button
-                :accept-types="acceptTypes"
+                accept-types="image"
                 @uploaded="event => setMediaFile({ event, index })"
               />
             </div>
