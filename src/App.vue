@@ -60,8 +60,8 @@
       />
     </div>
     <MediaModal />
-    <shout-panel
-      v-if="currentUser && shout && !hideShoutbox"
+    <ShoutPanel
+      v-if="currentUser && !hideShoutbox && shoutJoined"
       :floating="true"
       class="floating-shout mobile-hidden"
       :class="{ '-left': shoutboxPosition }"
