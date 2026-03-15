@@ -12,6 +12,7 @@ import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import localeService from 'src/services/locale/locale.service.js'
@@ -104,7 +105,7 @@ const ComposingTab = {
   },
   computed: {
     postFormats() {
-      return useInstanceStore().postFormats || []
+      return useInstanceCapabilitiesStore().postFormats
     },
     postContentOptions() {
       return this.postFormats.map((format) => ({

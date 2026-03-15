@@ -99,7 +99,6 @@ export const instanceDefaultConfig = {
   scopeCopy: true,
   subjectLineBehavior: 'email',
   alwaysShowSubjectInput: true,
-  postContentType: 'text/plain',
   minimalScopesMode: false,
 
   // This hides statuses filtered via a word filter
@@ -168,6 +167,7 @@ export const instanceDefaultConfig = {
 export const defaultConfigLocal = {
   hideAttachments: false,
   hideAttachmentsInConv: false,
+  postContentType: 'text/plain',
   sidebarColumnWidth: '25rem',
   contentColumnWidth: '45rem',
   notifsColumnWidth: '25rem',

@@ -29,6 +29,7 @@
             id="postContentType"
             path="postContentType"
             :options="postContentOptions"
+            :local="true"
           >
             {{ $t('settings.default_post_status_content_type') }}
           </ChoiceSetting>
