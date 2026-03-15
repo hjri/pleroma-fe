@@ -2,8 +2,6 @@ import { mapGetters } from 'vuex'
 
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 
-import fileType from 'src/services/file_type/file_type.service'
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faFile,
@@ -104,7 +102,7 @@ const StatusBody = {
     },
     attachmentTypes() {
       return this.status.attachments.map((file) =>
-        fileType.fileType(file.mimetype),
+        file.type,
       )
     },
     collapsedStatus() {

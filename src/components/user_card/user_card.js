@@ -1,3 +1,4 @@
+import ldEscape from 'lodash/escape'
 import isEqual from 'lodash/isEqual'
 import merge from 'lodash/merge'
 import ldUnescape from 'lodash/unescape'
@@ -159,6 +160,9 @@ export default {
     this.$store.dispatch('fetchUserRelationship', this.user.id)
   },
   computed: {
+    escapedNewBio() {
+      return ldEscape(this.newBio).replace(/\n/g, '<br>')
+    },
     somethingToSave() {
       if (this.newName !== this.user.name_unescaped) return true
       if (this.newBio !== ldUnescape(this.user.description)) return true
@@ -376,7 +380,7 @@ export default {
     emojiUserSuggestor() {
       return suggestor({
         emoji: [
-          ...this.$store.getters.standardEmojiList,
+          ...useEmojiStore().standardEmojiList,
           ...useEmojiStore().customEmoji,
         ],
         store: this.$store,
@@ -385,7 +389,7 @@ export default {
     emojiSuggestor() {
       return suggestor({
         emoji: [
-          ...this.$store.getters.standardEmojiList,
+          ...useEmojiStore().standardEmojiList,
           ...useEmojiStore().customEmoji,
         ],
       })
@@ -426,7 +430,7 @@ export default {
     zoomAvatar() {
       const attachment = {
         url: this.user.profile_image_url_original,
-        mimetype: 'image',
+        type: 'image',
       }
       useMediaViewerStore().setMedia([attachment])
       useMediaViewerStore().setCurrentMedia(attachment)

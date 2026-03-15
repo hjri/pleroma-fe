@@ -4,6 +4,8 @@ import Attachment from '../attachment/attachment.vue'
 
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 
+const displayTypes = new Set(["image", "video", "flash"])
+
 const Gallery = {
   props: [
     'attachments',
@@ -45,20 +47,14 @@ const Gallery = {
         : attachments
             .reduce(
               (acc, attachment, i) => {
-                if (attachment.mimetype.includes('audio')) {
+                if (attachment.type === 'audio') {
                   return [
                     ...acc,
                     { audio: true, items: [attachment] },
                     { items: [] },
                   ]
                 }
-                if (
-                  !(
-                    attachment.mimetype.includes('image') ||
-                    attachment.mimetype.includes('video') ||
-                    attachment.mimetype.includes('flash')
-                  )
-                ) {
+                if (!displayTypes.has(attachment.type)) {
                   return [
                     ...acc,
                     { minimal: true, items: [attachment] },

@@ -1,7 +1,5 @@
 import { defineStore } from 'pinia'
 
-import fileTypeService from '../services/file_type/file_type.service.js'
-
 const supportedTypes = new Set(['image', 'video', 'audio', 'flash'])
 
 export const useMediaViewerStore = defineStore('mediaViewer', {
@@ -13,8 +11,7 @@ export const useMediaViewerStore = defineStore('mediaViewer', {
   actions: {
     setMedia(attachments) {
       const media = attachments.filter((attachment) => {
-        const type = fileTypeService.fileType(attachment.mimetype)
-        return supportedTypes.has(type)
+        return supportedTypes.has(attachment.type)
       })
 
       this.media = media
