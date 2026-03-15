@@ -1,5 +1,6 @@
 import { parseLinkHeader } from '@web3-storage/parse-link-header'
 import escapeHtml from 'escape-html'
+import fileTypeService from '../file_type/file_type.service.js'
 import punycode from 'punycode.js'
 
 import { isStatusNotification } from '../notification_utils/notification_utils.js'
@@ -297,6 +298,11 @@ export const parseAttachment = (data) => {
     // output.meta = ??? missing
   }
 
+  if (data.type !== 'unknown') {
+    output.type = data.type
+  } else {
+    output.type = fileTypeService.fileType(output.mimetype)
+  }
   output.url = data.url
   output.large_thumb_url = data.preview_url
   output.description = data.description

@@ -1,7 +1,6 @@
 import { mapGetters } from 'vuex'
 
 import nsfwImage from '../../assets/nsfw.png'
-import fileTypeService from '../../services/file_type/file_type.service.js'
 import Flash from '../flash/flash.vue'
 import StillImage from '../still-image/still-image.vue'
 import VideoAttachment from '../video_attachment/video_attachment.vue'
@@ -61,9 +60,7 @@ const Attachment = {
       hideNsfwLocal: this.$store.getters.mergedConfig.hideNsfw,
       preloadImage: this.$store.getters.mergedConfig.preloadImage,
       loading: false,
-      img:
-        fileTypeService.fileType(this.attachment.mimetype) === 'image' &&
-        document.createElement('img'),
+      img: this.attachment.type === 'image' && document.createElement('img'),
       modalOpen: false,
       showHidden: false,
       flashLoaded: false,
@@ -84,7 +81,7 @@ const Attachment = {
           '-editable': this.edit !== undefined,
           '-compact': this.compact,
         },
-        '-type-' + this.type,
+        '-type-' + this.attachment.type,
         this.size && '-size-' + this.size,
         `-${this.useContainFit ? 'contain' : 'cover'}-fit`,
       ]
@@ -97,14 +94,14 @@ const Attachment = {
     },
     placeholderName() {
       if (this.attachment.description === '' || !this.attachment.description) {
-        return this.type.toUpperCase()
+        return this.attachment.type.toUpperCase()
       }
       return this.attachment.description
     },
     placeholderIconClass() {
-      if (this.type === 'image') return 'image'
-      if (this.type === 'video') return 'video'
-      if (this.type === 'audio') return 'music'
+      if (this.attachment.type === 'image') return 'image'
+      if (this.attachment.type === 'video') return 'video'
+      if (this.attachment.type === 'audio') return 'music'
       return 'file'
     },
     referrerpolicy() {
@@ -112,14 +109,11 @@ const Attachment = {
         ? ''
         : 'no-referrer'
     },
-    type() {
-      return fileTypeService.fileType(this.attachment.mimetype)
-    },
     hidden() {
       return this.nsfw && this.hideNsfwLocal && !this.showHidden
     },
     isEmpty() {
-      return this.type === 'html' && !this.attachment.oembed
+      return this.attachment.type === 'html' && !this.attachment.oembed
     },
     useModal() {
       let modalTypes = []
@@ -134,7 +128,7 @@ const Attachment = {
             : ['image']
           break
       }
-      return modalTypes.includes(this.type)
+      return modalTypes.includes(this.attachment.type)
     },
     videoTag() {
       return this.useModal ? 'button' : 'span'
@@ -159,7 +153,7 @@ const Attachment = {
       if (this.useModal) {
         this.$emit('setMedia')
         useMediaViewerStore().setCurrentMedia(this.attachment)
-      } else if (this.type === 'unknown') {
+      } else if (this.attachment.type === 'unknown') {
         window.open(this.attachment.url)
       }
     },
@@ -192,7 +186,7 @@ const Attachment = {
       if (
         this.mergedConfig.useOneClickNsfw &&
         !this.showHidden &&
-        (this.type !== 'video' || this.mergedConfig.playVideosInModal)
+        (this.attachment.type !== 'video' || this.mergedConfig.playVideosInModal)
       ) {
         this.openModal(event)
         return

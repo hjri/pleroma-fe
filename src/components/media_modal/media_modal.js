@@ -1,5 +1,4 @@
 import Flash from 'src/components/flash/flash.vue'
-import fileTypeService from '../../services/file_type/file_type.service.js'
 import GestureService from '../../services/gesture_service/gesture_service'
 import Modal from '../modal/modal.vue'
 import PinchZoom from '../pinch_zoom/pinch_zoom.vue'
@@ -59,9 +58,6 @@ const MediaModal = {
     canNavigate() {
       return this.media.length > 1
     },
-    type() {
-      return this.currentMedia ? this.getType(this.currentMedia) : null
-    },
     swipeDisableClickThreshold() {
       // If there is only one media, allow more mouse movements to close the modal
       // because there is less chance that the user wants to switch to another image
@@ -69,9 +65,6 @@ const MediaModal = {
     },
   },
   methods: {
-    getType(media) {
-      return fileTypeService.fileType(media.mimetype)
-    },
     hide() {
       // HACK: Closing immediately via a touch will cause the click
       // to be processed on the content below the overlay
@@ -96,7 +89,7 @@ const MediaModal = {
             ? this.media.length - 1
             : this.currentIndex - 1
         const newMedia = this.media[prevIndex]
-        if (this.getType(newMedia) === 'image') {
+        if (newMedia.type === 'image') {
           this.loading = true
         }
         useMediaViewerStore().setCurrentMedia(newMedia)
@@ -109,7 +102,7 @@ const MediaModal = {
             ? 0
             : this.currentIndex + 1
         const newMedia = this.media[nextIndex]
-        if (this.getType(newMedia) === 'image') {
+        if (newMedia.type === 'image') {
           this.loading = true
         }
         useMediaViewerStore().setCurrentMedia(newMedia)

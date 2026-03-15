@@ -1,0 +1,22 @@
+name: 'Feature request / Suggestion / Improvement'
+about: 'Feature requests, suggestions and improvements for Pleroma FE'
+labels:
+  - Feature Request / Enhancement
+body:
+- type: textarea
+  id: issue-text
+  attributes:
+    label: Proposal
+    placeholder: Make groups happen!
+  validations:
+    required: true
+- type: checkboxes
+  id: duplicate-issues
+  attributes:
+    label: Duplicate issues
+    hide_label: true
+    description: Before submitting this issue, search for same or similar requests on the [Pleroma FE bug tracker](https://git.pleroma.social/pleroma/pleroma-fe/issues).
+    options:
+      - label: I've searched for same or similar requests before submitting this issue.
+        required: true
+        visible: [form]
