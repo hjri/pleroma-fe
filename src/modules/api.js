@@ -345,7 +345,7 @@ const api = {
       // Set up websocket connection
       const token = state.wsToken
       if (
-        useInstanceStore().shoutAvailable &&
+        useInstanceCapabilitiesStore().shoutAvailable &&
         typeof token !== 'undefined' &&
         state.socket === null
       ) {

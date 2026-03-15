@@ -147,7 +147,7 @@ export default {
         }
       }
     },
-    shout() {
+    shoutJoined() {
       return useShoutStore().joined
     },
     isChats() {
