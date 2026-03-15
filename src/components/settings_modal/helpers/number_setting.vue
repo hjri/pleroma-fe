@@ -9,6 +9,13 @@
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
+    <ModifiedIndicator
+      :changed="isChanged"
+      :onclick="reset"
+    />
+    <LocalSettingIndicator :is-local="isLocalSetting" />
+    {{ ' ' }}
+    <DraftButtons v-if="!hideDraftButtons" />
       <template v-if="backendDescriptionLabel">
         {{ backendDescriptionLabel + ' ' }}
       </template>
@@ -29,13 +36,6 @@
       :value="realDraftMode ? draft :state"
       @change="update"
     >
-    {{ ' ' }}
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
-    <LocalSettingIndicator :is-local="isLocalSetting" />
-    <DraftButtons v-if="!hideDraftButtons" />
     <p
       v-if="backendDescriptionDescription"
       class="setting-description"
