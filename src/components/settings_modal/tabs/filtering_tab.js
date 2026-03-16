@@ -259,7 +259,6 @@ const FilteringTab = {
       this.$store.dispatch('queueFlushAll')
     },
     muteFiltersObject() {
-      console.log('UPDATE')
       this.muteFiltersDraftObject = cloneDeep(
         useSyncConfigStore().prefsStorage.simple.muteFilters,
       )

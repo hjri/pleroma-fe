@@ -11,7 +11,7 @@ import {
   takeRight,
   uniqWith,
   unset,
-  throttle,
+  debounce,
 } from 'lodash'
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
@@ -449,7 +449,7 @@ const _doMigrations = async (data, setPreference) => {
 
   return data
 }
-const _pushSyncConfig = throttle((force, root) => {
+const _pushSyncConfig = debounce((force, root) => {
   const needPush = root.dirty || force
   if (!needPush) return
   root.updateCache({ username: window.vuex.state.users.currentUser.fqn })
@@ -681,10 +681,6 @@ export const useSyncConfigStore = defineStore('sync_config', {
         const { _timestamp: _0, _version: _1, ...recentData } = recent
         const { _timestamp: _2, _version: _3, ...staleData } = stale
         dirty = sum(recentData) !== sum(staleData)
-        console.log(sum(recentData), sum(staleData), recentData.prefsStorage)
-        console.log(sum(recentData.prefsStorage), sum(staleData.prefsStorage))
-        console.log('J', sum(recentData.prefsStorage._journal), sum(staleData.prefsStorage._journal))
-        console.log('S', sum(recentData.prefsStorage.simple), sum(staleData.prefsStorage.simple))
         console.debug(`Data ${dirty ? 'needs' : "doesn't need"} merging`)
       }
 
