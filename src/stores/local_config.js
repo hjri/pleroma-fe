@@ -6,6 +6,8 @@ import { useInstanceStore } from 'src/stores/instance'
 
 import { defaultState as configDefaultState } from 'src/modules/default_config_state'
 
+export const LOCAL_ONLY_KEYS = new Set(Object.keys(configDefaultState))
+
 export const defaultState = {
   prefsStorage: {
     ...configDefaultState,

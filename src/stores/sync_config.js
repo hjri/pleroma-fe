@@ -18,7 +18,10 @@ import { toRaw } from 'vue'
 import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useLocalConfigStore } from 'src/stores/local_config.js'
+import {
+  LOCAL_ONLY_KEYS,
+  useLocalConfigStore,
+} from 'src/stores/local_config.js'
 
 import { storage } from 'src/lib/storage.js'
 import {
@@ -35,7 +38,6 @@ export const COMMAND_TRIM_FLAGS = 1000
 export const COMMAND_TRIM_FLAGS_AND_RESET = 1001
 export const COMMAND_WIPE_JOURNAL = 1010
 export const COMMAND_WIPE_JOURNAL_AND_STORAGE = 1011
-const LOCAL_ONLY_KEYS = new Set(Object.keys(defaultConfigLocal))
 
 export const defaultState = {
   // do we need to update data on server?
@@ -735,6 +737,16 @@ export const useSyncConfigStore = defineStore('sync_config', {
               value ??
               instancePrefs[k] ??
               instanceDefaultConfig[k]),
+        ]),
+      )
+      return result
+    },
+    mergedConfigWithoutDefaults: (state) => {
+      const localPrefs = useLocalConfigStore().prefsStorage
+      const result = Object.fromEntries(
+        Object.entries(state.prefsStorage.simple).map(([k, value]) => [
+          k,
+          LOCAL_ONLY_KEYS.has(k) ? localPrefs[k] : value,
         ]),
       )
       return result

@@ -93,8 +93,6 @@ const FilteringTab = {
   computed: {
     ...SharedComputedObject(),
     ...mapState(useSyncConfigStore, {
-      muteFilters: (store) =>
-        Object.entries(store.prefsStorage.simple.muteFilters),
       muteFiltersObject: (store) => store.prefsStorage.simple.muteFilters,
     }),
     ...mapState(useInstanceCapabilitiesStore, ['blockExpiration']),
@@ -260,6 +258,12 @@ const FilteringTab = {
     replyVisibility() {
       this.$store.dispatch('queueFlushAll')
     },
+    muteFiltersObject()  {
+      console.log('UPDATE')
+      this.muteFiltersDraftObject = cloneDeep(
+        useSyncConfigStore().prefsStorage.simple.muteFilters,
+      )
+    }
   },
 }
 

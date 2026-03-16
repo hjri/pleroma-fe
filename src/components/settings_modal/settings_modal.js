@@ -9,6 +9,7 @@ import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
 import Popover from '../popover/popover.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { LOCAL_ONLY_KEYS, useLocalConfigStore } from 'src/stores/local_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import {
@@ -137,7 +138,24 @@ const SettingsModal = {
     },
     onImport(data) {
       if (data) {
-        this.$store.dispatch('loadSettings', data)
+        Object.entries(data).forEach(([path, value]) => {
+          if (LOCAL_ONLY_KEYS.has(path)) {
+            useLocalConfigStore().set({ path, value })
+          } else {
+            if (path.startsWith('muteFilters')) {
+              Object.keys(useSyncConfigStore().mergedConfig.muteFilters).forEach((key) => {
+                useSyncConfigStore().unsetPreference({ path: `simple.${path}.${key}` })
+              })
+
+              Object.entries(value).forEach(([key, filter]) => {
+                useSyncConfigStore().setPreference({ path: `simple.${path}.${key}`, value: filter })
+              })
+            } else {
+              useSyncConfigStore().setPreference({ path: `simple.${path}`, value })
+            }
+          }
+        })
+        useSyncConfigStore().pushSyncConfig()
       }
     },
     restore() {
@@ -150,7 +168,7 @@ const SettingsModal = {
       this.dataThemeExporter.exportData()
     },
     generateExport(theme = false) {
-      const { config } = this.$store.state
+      const config = useSyncConfigStore().mergedConfigWithoutDefaults
       let sample = config
       if (!theme) {
         const ignoreList = new Set([
@@ -159,7 +177,9 @@ const SettingsModal = {
           'colors',
         ])
         sample = Object.fromEntries(
-          Object.entries(sample).filter(([key]) => !ignoreList.has(key)),
+          Object.entries(sample).filter(
+            ([key, value]) => !ignoreList.has(key) && value !== undefined,
+          ),
         )
       }
       const clone = cloneDeep(sample)

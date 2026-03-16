@@ -381,6 +381,7 @@
     "select_all": "Select all"
   },
   "settings": {
+    "invalid_settings_imported": "Error importing settings",
     "add_language": "Add fallback language",
     "remove_language": "Remove",
     "primary_language": "Primary language:",
