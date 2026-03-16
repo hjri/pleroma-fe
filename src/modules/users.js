@@ -702,13 +702,14 @@ const users = {
               user.domainMutes = []
               commit('setCurrentUser', user)
 
-              useSyncConfigStore().initSyncConfig(user)
+              useSyncConfigStore().initSyncConfig(user).then(() => {
+                useInterfaceStore()
+                  .applyTheme()
+                  .catch((e) => {
+                    console.error('Error setting theme', e)
+                  })
+              })
               useUserHighlightStore().initUserHighlight(user)
-              useInterfaceStore()
-                .applyTheme()
-                .catch((e) => {
-                  console.error('Error setting theme', e)
-                })
               commit('addNewUsers', [user])
 
               useEmojiStore().fetchEmoji()
