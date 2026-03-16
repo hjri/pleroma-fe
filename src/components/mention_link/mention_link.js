@@ -108,7 +108,7 @@ const MentionLink = {
       return this.highlightData && '-' + this.highlightData.type
     },
     highlightClass() {
-       return this.highlightData && highlightClass(this.user)
+      return this.highlightData && highlightClass(this.user)
     },
     style() {
       if (this.highlightData) {

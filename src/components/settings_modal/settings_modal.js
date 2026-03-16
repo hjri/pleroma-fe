@@ -9,12 +9,10 @@ import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
 import Popover from '../popover/popover.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
-import {
-  LOCAL_ONLY_KEYS,
-  useLocalConfigStore,
-} from 'src/stores/local_config.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
+import { LOCAL_ONLY_KEYS } from 'src/modules/default_config_state.js'
 import {
   newExporter,
   newImporter,

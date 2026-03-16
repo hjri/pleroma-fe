@@ -36,7 +36,7 @@ const FilteringTab = {
         label: this.$t(`user_card.mute_block_${mode}`),
       })),
       muteFiltersDraftObject: cloneDeep(
-        useSyncConfigStore().prefsStorage.simple.muteFilters,
+        useSyncConfigStore().mergedConfig.muteFilters,
       ),
       muteFiltersDraftDirty: Object.fromEntries(
         Object.entries(
@@ -260,7 +260,7 @@ const FilteringTab = {
     },
     muteFiltersObject() {
       this.muteFiltersDraftObject = cloneDeep(
-        useSyncConfigStore().prefsStorage.simple.muteFilters,
+        useSyncConfigStore().mergedConfig.muteFilters,
       )
     },
   },

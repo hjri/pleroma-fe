@@ -182,6 +182,7 @@ export const defaultConfigLocal = {
   imageCompression: true,
   useStreamingApi: false,
 }
+export const LOCAL_ONLY_KEYS = new Set(Object.keys(defaultConfigLocal))
 
 export const makeUndefined = (c) =>
   Object.fromEntries(Object.keys(c).map((key) => [key, undefined]))

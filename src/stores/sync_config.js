@@ -1,7 +1,9 @@
+import sum from 'hash-sum'
 import {
   merge as _merge,
   clamp,
   cloneDeep,
+  debounce,
   findLastIndex,
   flatten,
   get,
@@ -11,25 +13,21 @@ import {
   takeRight,
   uniqWith,
   unset,
-  debounce,
 } from 'lodash'
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
-import sum from 'hash-sum'
 
 import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
-import {
-  LOCAL_ONLY_KEYS,
-  useLocalConfigStore,
-} from 'src/stores/local_config.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
 
 import { storage } from 'src/lib/storage.js'
 import {
   defaultState as configDefaultState,
   defaultConfigLocal,
   instanceDefaultConfig,
+  LOCAL_ONLY_KEYS,
 } from 'src/modules/default_config_state.js'
 import { defaultConfigSync } from 'src/modules/old_default_config_state.js'
 
