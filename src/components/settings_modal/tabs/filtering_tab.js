@@ -258,12 +258,12 @@ const FilteringTab = {
     replyVisibility() {
       this.$store.dispatch('queueFlushAll')
     },
-    muteFiltersObject()  {
+    muteFiltersObject() {
       console.log('UPDATE')
       this.muteFiltersDraftObject = cloneDeep(
         useSyncConfigStore().prefsStorage.simple.muteFilters,
       )
-    }
+    },
   },
 }
 

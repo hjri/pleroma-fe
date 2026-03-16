@@ -9,7 +9,10 @@ import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
 import Popover from '../popover/popover.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
-import { LOCAL_ONLY_KEYS, useLocalConfigStore } from 'src/stores/local_config.js'
+import {
+  LOCAL_ONLY_KEYS,
+  useLocalConfigStore,
+} from 'src/stores/local_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import {
@@ -143,15 +146,25 @@ const SettingsModal = {
             useLocalConfigStore().set({ path, value })
           } else {
             if (path.startsWith('muteFilters')) {
-              Object.keys(useSyncConfigStore().mergedConfig.muteFilters).forEach((key) => {
-                useSyncConfigStore().unsetPreference({ path: `simple.${path}.${key}` })
+              Object.keys(
+                useSyncConfigStore().mergedConfig.muteFilters,
+              ).forEach((key) => {
+                useSyncConfigStore().unsetPreference({
+                  path: `simple.${path}.${key}`,
+                })
               })
 
               Object.entries(value).forEach(([key, filter]) => {
-                useSyncConfigStore().setPreference({ path: `simple.${path}.${key}`, value: filter })
+                useSyncConfigStore().setPreference({
+                  path: `simple.${path}.${key}`,
+                  value: filter,
+                })
               })
             } else {
-              useSyncConfigStore().setPreference({ path: `simple.${path}`, value })
+              useSyncConfigStore().setPreference({
+                path: `simple.${path}`,
+                value,
+              })
             }
           }
         })
