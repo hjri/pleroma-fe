@@ -350,7 +350,6 @@ export const useInterfaceStore = defineStore('interface', {
         path: 'simple.styleCustomData',
         value: null,
       })
-      useSyncConfigStore().pushSyncConfig()
     },
     resetThemeV3Palette() {
       useSyncConfigStore().setPreference({
@@ -361,7 +360,6 @@ export const useInterfaceStore = defineStore('interface', {
         path: 'simple.paletteCustomData',
         value: null,
       })
-      useSyncConfigStore().pushSyncConfig()
     },
     resetThemeV2() {
       useSyncConfigStore().setPreference({ path: 'simple.theme', value: null })
@@ -373,7 +371,6 @@ export const useInterfaceStore = defineStore('interface', {
         path: 'simple.customThemeSource',
         value: null,
       })
-      useSyncConfigStore().pushSyncConfig()
     },
     async getThemeData() {
       const getData = async (resource, index, customData, name) => {

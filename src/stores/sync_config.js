@@ -11,9 +11,11 @@ import {
   takeRight,
   uniqWith,
   unset,
+  throttle,
 } from 'lodash'
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
+import sum from 'hash-sum'
 
 import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
 
@@ -395,7 +397,7 @@ export const _resetFlags = (
   return result
 }
 
-export const _resetPrefs = (
+const _resetPrefs = (
   totalPrefs,
   totalFlags,
   knownKeys = defaultState.flagStorage,
@@ -419,7 +421,7 @@ export const _resetPrefs = (
   return totalPrefs
 }
 
-export const _doMigrations = async (data, setPreference) => {
+const _doMigrations = async (data, setPreference) => {
   if (data._version < VERSION) {
     console.debug(
       'Data has older version, seeing if there any migrations that can be applied',
@@ -447,6 +449,18 @@ export const _doMigrations = async (data, setPreference) => {
 
   return data
 }
+const _pushSyncConfig = throttle((force, root) => {
+  const needPush = root.dirty || force
+  if (!needPush) return
+  root.updateCache({ username: window.vuex.state.users.currentUser.fqn })
+  const params = { pleroma_settings_store: { 'pleroma-fe': root.cache } }
+  window.vuex.state.api.backendInteractor
+    .updateProfileJSON({ params })
+    .then((user) => {
+      root.initSyncConfig(user)
+      root.dirty = false
+    })
+}, 5000)
 
 export const useSyncConfigStore = defineStore('sync_config', {
   state() {
@@ -666,12 +680,11 @@ export const useSyncConfigStore = defineStore('sync_config', {
         // discarding timestamps and versions
         const { _timestamp: _0, _version: _1, ...recentData } = recent
         const { _timestamp: _2, _version: _3, ...staleData } = stale
-        dirty = !isEqual(
-          // Something wrong happens if we compare both objects directly
-          // or with cloneDeep()
-          JSON.parse(JSON.stringify(recentData)),
-          JSON.parse(JSON.stringify(staleData)),
-        )
+        dirty = sum(recentData) !== sum(staleData)
+        console.log(sum(recentData), sum(staleData), recentData.prefsStorage)
+        console.log(sum(recentData.prefsStorage), sum(staleData.prefsStorage))
+        console.log('J', sum(recentData.prefsStorage._journal), sum(staleData.prefsStorage._journal))
+        console.log('S', sum(recentData.prefsStorage.simple), sum(staleData.prefsStorage.simple))
         console.debug(`Data ${dirty ? 'needs' : "doesn't need"} merging`)
       }
 
@@ -707,16 +720,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
       this.pushSyncConfig()
     },
     pushSyncConfig({ force = false } = {}) {
-      const needPush = this.dirty || force
-      if (!needPush) return
-      this.updateCache({ username: window.vuex.state.users.currentUser.fqn })
-      const params = { pleroma_settings_store: { 'pleroma-fe': this.cache } }
-      window.vuex.state.api.backendInteractor
-        .updateProfileJSON({ params })
-        .then((user) => {
-          this.initSyncConfig(user)
-          this.dirty = false
-        })
+      _pushSyncConfig(force, this)
     },
   },
   getters: {
