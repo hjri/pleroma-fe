@@ -34,14 +34,14 @@ function getWindowClients() {
 }
 
 const setSettings = async () => {
-  const vuexState = await storage.getItem('vuex-lz')
-  const locale = vuexState.config.interfaceLanguage || 'en'
+  const piniaState = await storage.getItem('pinia-local-sync_config')
+  const locale = piniaState.prefsStorage.simple.interfaceLanguage || 'en'
   i18n.locale = locale
   const notificationsNativeArray = Object.entries(
-    vuexState.config.notificationNative,
+    piniaState.prefsStorage.simple.notificationNative,
   )
   state.webPushAlwaysShowNotifications =
-    vuexState.config.webPushAlwaysShowNotifications
+    piniaState.prefsStorage.simple.webPushAlwaysShowNotifications
 
   state.allowedNotificationTypes = new Set(
     notificationsNativeArray
