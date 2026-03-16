@@ -32,7 +32,7 @@ export const useLocalConfigStore = defineStore('local_config', {
     unset({ path, value }) {
       set(this.prefsStorage, path, undefined)
     },
-    clearSyncConfig() {
+    clearLocalConfig() {
       const blankState = { ...cloneDeep(defaultState) }
       Object.keys(this).forEach((k) => {
         this.prefsStorage[k] = blankState[k]

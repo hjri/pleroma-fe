@@ -21,14 +21,7 @@ export default {
     Popover,
     LocalSettingIndicator,
   },
-  props: [
-    'name',
-    'label',
-    'modelValue',
-    'fallback',
-    'options',
-    'no-inherit',
-  ],
+  props: ['name', 'label', 'modelValue', 'fallback', 'options', 'no-inherit'],
   mounted() {
     useInterfaceStore().queryLocalFonts()
   },

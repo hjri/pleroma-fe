@@ -278,7 +278,7 @@ export const useUserHighlightStore = defineStore('user_highlight', {
       const userNew = userData.created_at > NEW_USER_DATE
       let dirty = false
 
-      const vuexState = await storage.getItem('vuex-lz') ?? {}
+      const vuexState = (await storage.getItem('vuex-lz')) ?? {}
       vuexState.config = vuexState.config ?? {}
       const highlight = vuexState.config.highlight ?? {}
 

@@ -182,6 +182,4 @@ export const defaultConfigLocal = {
   mentionLinkDisplay: 'short',
   imageCompression: true,
   alwaysUseJpeg: false,
-  imageCompression: true,
-  alwaysUseJpeg: false,
 }

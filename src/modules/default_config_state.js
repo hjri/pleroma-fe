@@ -191,9 +191,12 @@ export const makeUndefined = (c) =>
 export const defaultState = {
   // Set these to undefined so it does not interfere with default settings check
   ...makeUndefined(instanceDefaultConfig),
+  ...makeUndefined(defaultConfigLocal),
+  // If there are any configurations that does not make sense to
+  // have instance-wide default, put it here and explain why.
 
-  // Special processing
-  // Theme  stuff
+  // # Special processing
+  // ## Theme  stuff
   theme: undefined, // Very old theme store, stores preset name, still in use
 
   // V1
@@ -220,15 +223,4 @@ export const defaultState = {
       monospace: undefined,
     },
   },
-
-  // Special handling: These fields are not of a primitive type, and
-  // might cause problems with current code because it specifically checks
-  // them in state.config (not getters.mergedConfig).
-
-  // Specifically, muteWords is now deprecated in favour of a server-side configuration.
-  muteWords: [],
-  highlight: {},
-
-  // If there are any configurations that does not make sense to
-  // have instance-wide default, put it here and explain why.
 }

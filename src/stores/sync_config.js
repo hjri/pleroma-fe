@@ -21,7 +21,11 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 
 import { storage } from 'src/lib/storage.js'
-import { defaultState as configDefaultState, makeUndefined, defaultConfigLocal } from 'src/modules/default_config_state.js'
+import {
+  defaultState as configDefaultState,
+  defaultConfigLocal,
+  instanceDefaultConfig,
+} from 'src/modules/default_config_state.js'
 import { defaultConfigSync } from 'src/modules/old_default_config_state.js'
 
 export const VERSION = 2
@@ -50,7 +54,8 @@ export const defaultState = {
       dontShowUpdateNotifs: false,
       collapseNav: false,
       muteFilters: {},
-      ...makeUndefined(configDefaultState),
+
+      ...configDefaultState,
     },
     collections: {
       pinnedStatusActions: ['reply', 'retweet', 'favorite', 'emoji'],
@@ -616,7 +621,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
       let dirty = false
 
       console.debug('Migrating from old config')
-      const vuexState = await storage.getItem('vuex-lz') ?? {}
+      const vuexState = (await storage.getItem('vuex-lz')) ?? {}
       vuexState.config = vuexState.config ?? {}
 
       const migratedEntries = new Set(vuexState.config._syncMigration ?? [])
@@ -631,7 +636,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
         const different = !isEqual(oldValue, defaultValue)
 
         if (present && !migrated && different) {
-          console.debug(`Migrating config ${key}: ${oldValue}`,)
+          console.debug(`Migrating config ${key}: ${oldValue}`)
           this.setPreference({ path: `simple.${key}`, oldValue })
           migratedEntries.add(key)
           needUpload = true
@@ -721,8 +726,15 @@ export const useSyncConfigStore = defineStore('sync_config', {
         Object.entries(state.prefsStorage.simple).map(([k, value]) => [
           k,
           LOCAL_ONLY_KEYS.has(k)
-            ? tempPrefs[k] ?? localPrefs[k] ?? instancePrefs[k]
-            : tempPrefs[k] ?? localPrefs[k] ?? value ?? instancePrefs[k],
+            ? (tempPrefs[k] ??
+              localPrefs[k] ??
+              instancePrefs[k] ??
+              defaultConfigLocal[k])
+            : (tempPrefs[k] ??
+              localPrefs[k] ??
+              value ??
+              instancePrefs[k] ??
+              instanceDefaultConfig[k]),
         ]),
       )
       return result
