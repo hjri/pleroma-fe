@@ -83,9 +83,7 @@
           </BooleanSetting>
         </li>
         <li v-if="shoutAvailable">
-          <BooleanSetting
-            path="hideShoutbox"
-          >
+          <BooleanSetting path="hideShoutbox">
             {{ $t('settings.hide_shoutbox') }}
           </BooleanSetting>
         </li>
