@@ -21,7 +21,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 
 import { storage } from 'src/lib/storage.js'
-import { defaultState as configDefaultState } from 'src/modules/default_config_state.js'
+import { defaultState as configDefaultState, makeUndefined, defaultConfigLocal } from 'src/modules/default_config_state.js'
 import { defaultConfigSync } from 'src/modules/old_default_config_state.js'
 
 export const VERSION = 2
@@ -31,6 +31,7 @@ export const COMMAND_TRIM_FLAGS = 1000
 export const COMMAND_TRIM_FLAGS_AND_RESET = 1001
 export const COMMAND_WIPE_JOURNAL = 1010
 export const COMMAND_WIPE_JOURNAL_AND_STORAGE = 1011
+const LOCAL_ONLY_KEYS = new Set(Object.keys(defaultConfigLocal))
 
 export const defaultState = {
   // do we need to update data on server?
@@ -49,7 +50,7 @@ export const defaultState = {
       dontShowUpdateNotifs: false,
       collapseNav: false,
       muteFilters: {},
-      ...configDefaultState,
+      ...makeUndefined(configDefaultState),
     },
     collections: {
       pinnedStatusActions: ['reply', 'retweet', 'favorite', 'emoji'],
@@ -636,6 +637,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
           needUpload = true
         }
       })
+
       vuexState.config._syncMigration = [...migratedEntries]
       storage.setItem('vuex-lz', vuexState)
 
@@ -716,9 +718,11 @@ export const useSyncConfigStore = defineStore('sync_config', {
       const localPrefs = useLocalConfigStore().prefsStorage
       const tempPrefs = useLocalConfigStore().tempStorage
       const result = Object.fromEntries(
-        Object.entries(state.prefsStorage.simple).map(([k, v]) => [
+        Object.entries(state.prefsStorage.simple).map(([k, value]) => [
           k,
-          tempPrefs[k] ?? localPrefs[k] ?? v ?? instancePrefs[k],
+          LOCAL_ONLY_KEYS.has(k)
+            ? tempPrefs[k] ?? localPrefs[k] ?? instancePrefs[k]
+            : tempPrefs[k] ?? localPrefs[k] ?? value ?? instancePrefs[k],
         ]),
       )
       return result

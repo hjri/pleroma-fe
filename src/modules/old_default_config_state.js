@@ -18,8 +18,6 @@ export const defaultConfigSync = {
   hideScrobbles: false,
   hideScrobblesAfter: '2d',
   maxThumbnails: 16,
-  hideNsfw: true,
-  preloadImage: true,
   loopVideo: true,
   loopVideoSilentOnly: true,
   /// This is not the streaming API configuration, but rather an option
@@ -93,7 +91,6 @@ export const defaultConfigSync = {
 
   modalMobileCenter: false,
   playVideosInModal: false,
-  useOneClickNsfw: false,
   useContainFit: true,
   disableStickyHeaders: false,
   showScrollbars: false,
@@ -169,6 +166,9 @@ export const defaultConfigSync = {
 export const defaultConfigLocal = {
   hideAttachments: false,
   hideAttachmentsInConv: false,
+  hideNsfw: true,
+  useOneClickNsfw: false,
+  preloadImage: true,
   sidebarColumnWidth: '25rem',
   contentColumnWidth: '45rem',
   notifsColumnWidth: '25rem',
