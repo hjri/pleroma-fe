@@ -278,8 +278,10 @@ export const useUserHighlightStore = defineStore('user_highlight', {
       const userNew = userData.created_at > NEW_USER_DATE
       let dirty = false
 
-      const vuexState = await storage.getItem('vuex-lz')
-      const { highlight } = vuexState.config
+      const vuexState = await storage.getItem('vuex-lz') ?? {}
+      vuexState.config = vuexState.config ?? {}
+      const highlight = vuexState.config.highlight ?? {}
+
       Object.entries(highlight).forEach(([user, value]) => {
         if ((highlight[user]._migrated || 0) < 1) {
           dirty = true

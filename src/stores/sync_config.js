@@ -25,7 +25,7 @@ import { defaultState as configDefaultState } from 'src/modules/default_config_s
 import { defaultConfigSync } from 'src/modules/old_default_config_state.js'
 
 export const VERSION = 2
-export const NEW_USER_DATE = new Date('2022-08-04') // date of writing this, basically
+export const NEW_USER_DATE = new Date('2026-03-16') // date of writing this, basically
 
 export const COMMAND_TRIM_FLAGS = 1000
 export const COMMAND_TRIM_FLAGS_AND_RESET = 1001
@@ -615,14 +615,14 @@ export const useSyncConfigStore = defineStore('sync_config', {
       let dirty = false
 
       console.debug('Migrating from old config')
-      const vuexState = await storage.getItem('vuex-lz')
-      const { config } = vuexState
+      const vuexState = await storage.getItem('vuex-lz') ?? {}
+      vuexState.config = vuexState.config ?? {}
 
-      const migratedEntries = new Set(config._syncMigration ?? [])
+      const migratedEntries = new Set(vuexState.config._syncMigration ?? [])
       console.debug(`Already migrated Values: ${[...migratedEntries].join()}`)
 
       Object.entries(defaultConfigSync).forEach(([key, value]) => {
-        const oldValue = config[key]
+        const oldValue = vuexState.config[key]
         const defaultValue = value
 
         const present = oldValue !== undefined
