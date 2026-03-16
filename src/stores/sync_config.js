@@ -3,7 +3,6 @@ import {
   merge as _merge,
   clamp,
   cloneDeep,
-  debounce,
   findLastIndex,
   flatten,
   get,
@@ -447,18 +446,6 @@ const _doMigrations = async (data, setPreference) => {
 
   return data
 }
-const _pushSyncConfig = debounce((force, root) => {
-  const needPush = root.dirty || force
-  if (!needPush) return
-  root.updateCache({ username: window.vuex.state.users.currentUser.fqn })
-  const params = { pleroma_settings_store: { 'pleroma-fe': root.cache } }
-  window.vuex.state.api.backendInteractor
-    .updateProfileJSON({ params })
-    .then((user) => {
-      root.initSyncConfig(user)
-      root.dirty = false
-    })
-}, 5000)
 
 export const useSyncConfigStore = defineStore('sync_config', {
   state() {
@@ -714,7 +701,12 @@ export const useSyncConfigStore = defineStore('sync_config', {
       this.pushSyncConfig()
     },
     pushSyncConfig({ force = false } = {}) {
-      _pushSyncConfig(force, this)
+      const needPush = this.dirty || force
+      if (!needPush) return
+      this.updateCache({ username: window.vuex.state.users.currentUser.fqn })
+      const params = { pleroma_settings_store: { 'pleroma-fe': this.cache } }
+      window.vuex.state.api.backendInteractor
+        .updateProfileJSON({ params })
     },
   },
   getters: {
