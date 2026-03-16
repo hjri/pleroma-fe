@@ -38,55 +38,6 @@ const ClutterTab = {
         Object.entries(store.prefsStorage.simple.muteFilters),
       muteFiltersObject: (store) => store.prefsStorage.simple.muteFilters,
     }),
-    onMuteDefaultActionLv1: {
-      get() {
-        const value = this.$store.state.config.onMuteDefaultAction
-        if (value === 'ask' || value === 'forever') {
-          return value
-        } else {
-          return 'temporarily'
-        }
-      },
-      set(value) {
-        let realValue = value
-        if (value !== 'ask' && value !== 'forever') {
-          realValue = '14d'
-        }
-        useSyncConfigStore().setSimplePrefAndSave({
-          path: 'onMuteDefaultAction',
-          value: realValue,
-        })
-      },
-    },
-    onBlockDefaultActionLv1: {
-      get() {
-        const value = this.$store.state.config.onBlockDefaultAction
-        if (value === 'ask' || value === 'forever') {
-          return value
-        } else {
-          return 'temporarily'
-        }
-      },
-      set(value) {
-        let realValue = value
-        if (value !== 'ask' && value !== 'forever') {
-          realValue = '14d'
-        }
-        useSyncConfigStore().setSimplePrefAndSave({
-          path: 'onBlockDefaultAction',
-          value: realValue,
-        })
-      },
-    },
-    muteFiltersDraft() {
-      return Object.entries(this.muteFiltersDraftObject)
-    },
-    muteFiltersExpired() {
-      const now = Date.now()
-      return Object.entries(this.muteFiltersDraftObject).filter(
-        ([, { expires }]) => expires != null && expires <= now,
-      )
-    },
   },
   methods: {
     ...mapActions(useSyncConfigStore, [

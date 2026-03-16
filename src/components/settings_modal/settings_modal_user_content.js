@@ -16,6 +16,7 @@ import SecurityTab from './tabs/security_tab/security_tab.vue'
 import StyleTab from './tabs/style_tab/style_tab.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -83,7 +84,7 @@ const SettingsModalContent = {
       return useInterfaceStore().settingsModalState === 'visible'
     },
     expertLevel() {
-      return this.$store.state.config.expertLevel
+      return useSyncConfigStore().mergedConfig.expertLevel
     },
   },
   data() {

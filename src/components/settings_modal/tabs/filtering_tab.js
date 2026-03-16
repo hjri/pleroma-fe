@@ -100,7 +100,7 @@ const FilteringTab = {
     ...mapState(useInstanceCapabilitiesStore, ['blockExpiration']),
     onMuteDefaultActionLv1: {
       get() {
-        const value = this.$store.state.config.onMuteDefaultAction
+        const value = useSyncConfigStore().mergedConfig.onMuteDefaultAction
         if (value === 'ask' || value === 'forever') {
           return value
         } else {
@@ -120,7 +120,7 @@ const FilteringTab = {
     },
     onBlockDefaultActionLv1: {
       get() {
-        const value = this.$store.state.config.onBlockDefaultAction
+        const value = useSyncConfigStore().mergedConfig.onBlockDefaultAction
         if (value === 'ask' || value === 'forever') {
           return value
         } else {
