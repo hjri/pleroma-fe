@@ -650,7 +650,7 @@ export const useInterfaceStore = defineStore('interface', {
         const fontMap = {
           Interface: 'Root',
           Input: 'Input',
-          Posts: 'RichContent',
+          Posts: 'Post',
           Monospace: 'Root',
         }
 
