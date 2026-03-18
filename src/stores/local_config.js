@@ -33,9 +33,9 @@ export const useLocalConfigStore = defineStore('local_config', {
       set(this.prefsStorage, path, undefined)
     },
     clearLocalConfig() {
-      const blankState = { ...cloneDeep(defaultState) }
       Object.keys(this).forEach((k) => {
-        this.prefsStorage[k] = blankState[k]
+        this.prefsStorage[k] = undefined
+        this.tempStorage[k] = undefined
       })
     },
   },

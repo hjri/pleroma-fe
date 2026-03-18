@@ -69,14 +69,8 @@ const GeneralTab = {
     },
     updateFont(key, value) {
       useLocalConfigStore().set({
-        path: 'theme3hacks',
-        value: {
-          ...this.mergedConfig.theme3hacks,
-          fonts: {
-            ...this.mergedConfig.theme3hacks.fonts,
-            [key]: value,
-          },
-        },
+        path: `theme3hacks.fonts.${key}`,
+        value,
       })
     },
   },
