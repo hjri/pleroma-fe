@@ -4,6 +4,7 @@ import UserListPopover from '../user_list_popover/user_list_popover.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCheck, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { useInstanceStore } from 'src/stores/instance.js'
 
 library.add(faPlus, faMinus, faCheck)
 
@@ -42,7 +43,7 @@ const EmojiReactions = {
       return !!this.$store.state.users.currentUser
     },
     remoteInteractionLink() {
-      return this.$store.getters.remoteInteractionLink({
+      return useInstanceStore().getRemoteInteractionLink({
         statusId: this.status.id,
       })
     },
