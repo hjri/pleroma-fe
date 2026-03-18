@@ -28,7 +28,7 @@ import {
   instanceDefaultConfig,
   LOCAL_ONLY_KEYS,
 } from 'src/modules/default_config_state.js'
-import { defaultConfigSync } from 'src/modules/old_default_config_state.js'
+import { oldDefaultConfigSync } from 'src/modules/old_default_config_state.js'
 
 export const VERSION = 2
 export const NEW_USER_DATE = new Date('2026-03-16') // date of writing this, basically
@@ -628,7 +628,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
       const migratedEntries = new Set(vuexState.config._syncMigration ?? [])
       console.debug(`Already migrated Values: ${[...migratedEntries].join()}`)
 
-      Object.entries(defaultConfigSync).forEach(([key, value]) => {
+      Object.entries(oldDefaultConfigSync).forEach(([key, value]) => {
         const oldValue = vuexState.config[key]
         const defaultValue = value
 
@@ -638,7 +638,30 @@ export const useSyncConfigStore = defineStore('sync_config', {
 
         if (present && !migrated && different) {
           console.debug(`Migrating config ${key}: ${oldValue}`)
-          this.setPreference({ path: `simple.${key}`, oldValue })
+          if (key === 'theme3hacks') {
+            useLocalConfigStore().set({
+              path: 'fontInterface',
+              value: oldValue.fonts.interface,
+            })
+            useLocalConfigStore().set({
+              path: 'fontInput',
+              value: oldValue.fonts.input,
+            })
+            useLocalConfigStore().set({
+              path: 'fontPost',
+              value: oldValue.fonts.post,
+            })
+            useLocalConfigStore().set({
+              path: 'fontMonospace',
+              value: oldValue.fonts.monospace,
+            })
+            useLocalConfigStore().set({
+              path: 'underlay',
+              value: oldValue.underlay,
+            })
+          } else {
+            this.setPreference({ path: `simple.${key}`, value: oldValue })
+          }
           migratedEntries.add(key)
           needUpload = true
         }
@@ -705,8 +728,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
       if (!needPush) return
       this.updateCache({ username: window.vuex.state.users.currentUser.fqn })
       const params = { pleroma_settings_store: { 'pleroma-fe': this.cache } }
-      window.vuex.state.api.backendInteractor
-        .updateProfileJSON({ params })
+      window.vuex.state.api.backendInteractor.updateProfileJSON({ params })
     },
   },
   getters: {

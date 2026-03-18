@@ -2,9 +2,10 @@ import StillImage from 'src/components/still-image/still-image.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
 import UserListPopover from '../user_list_popover/user_list_popover.vue'
 
+import { useInstanceStore } from 'src/stores/instance.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCheck, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
-import { useInstanceStore } from 'src/stores/instance.js'
 
 library.add(faPlus, faMinus, faCheck)
 

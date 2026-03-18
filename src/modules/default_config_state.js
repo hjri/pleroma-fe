@@ -181,6 +181,13 @@ export const defaultConfigLocal = {
   alwaysUseJpeg: false,
   imageCompression: true,
   useStreamingApi: false,
+  underlay: 'none',
+  fontInterface: undefined,
+  fontInput: undefined,
+  fontPosts: undefined,
+  fontMonospace: undefined,
+  themeDebug: false, // debug mode that uses computed backgrounds instead of real ones to debug contrast functions
+  forceThemeRecompilation: false, //  flag that forces recompilation on boot even if cache exists
 }
 export const LOCAL_ONLY_KEYS = new Set(Object.keys(defaultConfigLocal))
 
@@ -212,16 +219,4 @@ export const defaultState = {
   styleCustomData: null,
   palette: null,
   paletteCustomData: null,
-  themeDebug: false, // debug mode that uses computed backgrounds instead of real ones to debug contrast functions
-  forceThemeRecompilation: false, //  flag that forces recompilation on boot even if cache exists
-  theme3hacks: {
-    // Hacks, user overrides that are independent of theme used
-    underlay: 'none',
-    fonts: {
-      interface: undefined,
-      input: undefined,
-      post: undefined,
-      monospace: undefined,
-    },
-  },
 }

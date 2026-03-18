@@ -4,9 +4,10 @@ import ChoiceSetting from '../helpers/choice_setting.vue'
 import IntegerSetting from '../helpers/integer_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
+import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
-const GeneralTab = {
+const PostsTab = {
   data() {
     return {
       conversationDisplayOptions: ['tree', 'linear'].map((mode) => ({
@@ -66,19 +67,10 @@ const GeneralTab = {
     ...SharedComputedObject(),
   },
   methods: {
-    updateFont(key, value) {
-      useSyncConfigStore().setSimplePrefAndSave({
-        path: 'theme3hacks',
-        value: {
-          ...this.mergedConfig.theme3hacks,
-          fonts: {
-            ...this.mergedConfig.theme3hacks.fonts,
-            [key]: value,
-          },
-        },
-      })
+    updateFont(path, value) {
+      useLocalConfigStore().set({ path, value })
     },
   },
 }
 
-export default GeneralTab
+export default PostsTab

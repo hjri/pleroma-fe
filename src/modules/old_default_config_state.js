@@ -2,7 +2,7 @@
 // used to migrate from old config.
 
 // commented entries are unsynced stuff
-export const defaultConfigSync = {
+export const oldDefaultConfigSync = {
   expertLevel: 0, // used to track which settings to show and hide
   hideISP: false,
   hideInstanceWallpaper: false,

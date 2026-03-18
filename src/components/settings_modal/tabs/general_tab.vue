@@ -64,21 +64,21 @@
         </li>
         <li>
           <FontControl
-            :model-value="theme3hacks.fonts.interface"
+            :model-value="mergedConfig.fontInterface"
             name="ui"
             :label="$t('settings.style.fonts.components_inline.interface')"
             :fallback="{ family: 'sans-serif' }"
             no-inherit="1"
-            @update:model-value="v => updateFont('interface', v)"
+            @update:model-value="v => updateFont('fontInterface', v)"
           />
         </li>
         <li>
           <FontControl
-            :model-value="theme3hacks.fonts.input"
+            :model-value="mergedConfig.fontInput"
             name="input"
             :fallback="{ family: 'inherit' }"
             :label="$t('settings.style.fonts.components_inline.input')"
-            @update:model-value="v => updateFont('input', v)"
+            @update:model-value="v => updateFont('fontInput', v)"
           />
         </li>
         <li>

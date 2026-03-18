@@ -598,8 +598,9 @@ export const useInterfaceStore = defineStore('interface', {
       this.themeApplied = true
     },
     async applyTheme({ recompile = false } = {}) {
-      const { forceThemeRecompilation, themeDebug, theme3hacks } =
-        useSyncConfigStore().mergedConfig
+      const { mergedConfig } = useSyncConfigStore()
+      const { forceThemeRecompilation, themeDebug } = mergedConfig
+
       this.themeChangeInProgress = true
       // If we're not forced to recompile try using
       // cache (tryLoadCache return true if load successful)
@@ -646,67 +647,40 @@ export const useInterfaceStore = defineStore('interface', {
           convertTheme2To3(normalizeThemeData(this.themeDataUsed))
         const hacks = []
 
-        Object.entries(theme3hacks).forEach(([key, value]) => {
-          switch (key) {
-            case 'fonts': {
-              Object.entries(theme3hacks.fonts).forEach(([fontKey, font]) => {
-                if (!font?.family) return
-                switch (fontKey) {
-                  case 'interface':
-                    hacks.push({
-                      component: 'Root',
-                      directives: {
-                        '--font': 'generic | ' + font.family,
-                      },
-                    })
-                    break
-                  case 'input':
-                    hacks.push({
-                      component: 'Input',
-                      directives: {
-                        '--font': 'generic | ' + font.family,
-                      },
-                    })
-                    break
-                  case 'post':
-                    hacks.push({
-                      component: 'RichContent',
-                      directives: {
-                        '--font': 'generic | ' + font.family,
-                      },
-                    })
-                    break
-                  case 'monospace':
-                    hacks.push({
-                      component: 'Root',
-                      directives: {
-                        '--monoFont': 'generic | ' + font.family,
-                      },
-                    })
-                    break
-                }
-              })
-              break
-            }
-            case 'underlay': {
-              if (value !== 'none') {
-                const newRule = {
-                  component: 'Underlay',
-                  directives: {},
-                }
-                if (value === 'opaque') {
-                  newRule.directives.opacity = 1
-                  newRule.directives.background = '--wallpaper'
-                }
-                if (value === 'transparent') {
-                  newRule.directives.opacity = 0
-                }
-                hacks.push(newRule)
-              }
-              break
-            }
+        const fontMap = {
+          Interface: 'Root',
+          Input: 'Input',
+          Posts: 'RichContent',
+          Monospace: 'Root',
+        }
+
+        Object.entries(fontMap).forEach(([font, component]) => {
+          const family = mergedConfig[`font${font}`]?.family
+          const variable = font === 'Monospace' ? '--monoFont' : '--font'
+          if (family) {
+            hacks.push({
+              component,
+              directives: {
+                [variable]: `generic | "${family}"`,
+              },
+            })
           }
         })
+
+        if (mergedConfig.underlay !== 'none') {
+          const newRule = {
+            component: 'Underlay',
+            directives: {},
+          }
+          if (mergedConfig.underlay === 'opaque') {
+            newRule.directives.opacity = 1
+            newRule.directives.background = '--wallpaper'
+          }
+          if (mergedConfig.underlay === 'transparent') {
+            newRule.directives.opacity = 0
+          }
+          hacks.push(newRule)
+        }
 
         const rulesetArray = [
           theme2ruleset,
@@ -724,6 +698,7 @@ export const useInterfaceStore = defineStore('interface', {
           themeDebug,
         )
       } catch (e) {
+        console.error(e)
         window.splashError(e)
       }
     },

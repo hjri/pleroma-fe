@@ -48,9 +48,6 @@ const GeneralTab = {
     },
     ...SharedComputedObject(),
     ...mapState(useInstanceCapabilitiesStore, ['blockExpiration']),
-    ...mapState(useSyncConfigStore, {
-      theme3hacks: (store) => store.mergedConfig.theme3hacks,
-    }),
   },
   methods: {
     updateProfile() {
@@ -67,11 +64,8 @@ const GeneralTab = {
           this.$store.commit('setCurrentUser', user)
         })
     },
-    updateFont(key, value) {
-      useLocalConfigStore().set({
-        path: `theme3hacks.fonts.${key}`,
-        value,
-      })
+    updateFont(path, value) {
+      useLocalConfigStore().set({ path, value })
     },
   },
 }
