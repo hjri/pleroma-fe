@@ -106,10 +106,11 @@ export const BUTTONS = [
     icon: 'eye-slash',
     label: 'status.mute_ellipsis',
     if: ({ loggedIn }) => loggedIn,
-    toggleable: true,
+    toggleable: false,
     dropdown: true,
-    // action ({ status, dispatch, emit }) {
-    // }
+    action({ status, dispatch, emit }) {
+      /* prevent hiding */
+    },
   },
   {
     // =========
