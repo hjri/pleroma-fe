@@ -8,6 +8,7 @@ import { storage } from 'src/lib/storage.js'
 import { parseNotification } from 'src/services/entity_normalizer/entity_normalizer.service.js'
 import { prepareNotificationObject } from 'src/services/notification_utils/notification_utils.js'
 import { cacheKey, emojiCacheKey, shouldCache } from 'src/services/sw/sw.js'
+import { instanceDefaultConfig } from 'src/modules/default_config_state.js'
 
 // Collects all messages for service workers
 // Needed because service workers cannot use dynamic imports
@@ -38,7 +39,8 @@ const setSettings = async () => {
   const locale = piniaState.prefsStorage.simple.interfaceLanguage || 'en'
   i18n.locale = locale
   const notificationsNativeArray = Object.entries(
-    piniaState.prefsStorage.simple.notificationNative,
+    piniaState.prefsStorage.simple.notificationNative ||
+      instanceDefaultConfig.notificationNative,
   )
   state.webPushAlwaysShowNotifications =
     piniaState.prefsStorage.simple.webPushAlwaysShowNotifications
