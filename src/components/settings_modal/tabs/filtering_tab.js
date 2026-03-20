@@ -93,6 +93,7 @@ const FilteringTab = {
   computed: {
     ...SharedComputedObject(),
     ...mapState(useSyncConfigStore, {
+      muteFilters: (store) => Object.entries(store.prefsStorage.simple.muteFilters),
       muteFiltersObject: (store) => store.prefsStorage.simple.muteFilters,
     }),
     ...mapState(useInstanceCapabilitiesStore, ['blockExpiration']),
@@ -246,7 +247,7 @@ const FilteringTab = {
       this.muteFiltersDraftDirty[id] = true
     },
     saveFilter(id) {
-      this.setPrefAndSave({
+      this.setSimplePrefAndSave({
         path: 'muteFilters.' + id,
         value: this.muteFiltersDraftObject[id],
       })

@@ -4,6 +4,7 @@ import Popover from '../popover/popover.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faFilter, faFont, faWrench } from '@fortawesome/free-solid-svg-icons'
@@ -85,13 +86,12 @@ const QuickFilterSettings = {
           this.mergedConfig.hideAttachmentsInConv
         )
       },
-      set() {
-        const value = !this.hideMedia
-        useSyncConfigStore().setSimplePrefAndSave({
+      set(value) {
+        useLocalConfigStore().set({
           path: 'hideAttachments',
           value,
         })
-        useSyncConfigStore().setSimplePrefAndSave({
+        useLocalConfigStore().set({
           path: 'hideAttachmentsInConv',
           value,
         })
@@ -101,8 +101,7 @@ const QuickFilterSettings = {
       get() {
         return this.mergedConfig.hideFilteredStatuses
       },
-      set() {
-        const value = !this.hideMutedPosts
+      set(value) {
         useSyncConfigStore().setSimplePrefAndSave({
           path: 'hideFilteredStatuses',
           value,
@@ -113,8 +112,7 @@ const QuickFilterSettings = {
       get() {
         return this.mergedConfig.muteBotStatuses
       },
-      set() {
-        const value = !this.muteBotStatuses
+      set(value) {
         useSyncConfigStore().setSimplePrefAndSave({
           path: 'muteBotStatuses',
           value,
@@ -125,8 +123,7 @@ const QuickFilterSettings = {
       get() {
         return this.mergedConfig.muteSensitiveStatuses
       },
-      set() {
-        const value = !this.muteSensitiveStatuses
+      set(value) {
         useSyncConfigStore().setSimplePrefAndSave({
           path: 'muteSensitiveStatuses',
           value,
