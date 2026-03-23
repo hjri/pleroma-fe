@@ -15,6 +15,7 @@ import {
   useSyncConfigStore,
   VERSION,
 } from 'src/stores/sync_config.js'
+import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
 
 describe('The SyncConfig store', () => {
   beforeEach(() => {
@@ -28,40 +29,52 @@ describe('The SyncConfig store', () => {
         storage: {},
       }
 
-      it('should initialize storage if none present', () => {
+      it('should initialize storage if none present', async () => {
         const store = useSyncConfigStore()
-        store.initSyncConfig({ ...user })
+        // PushSyncConfig is very simple but uses vuex to push data
+        store.pushSyncConfig = () => {
+          /* no-op */
+        }
+        await store.initSyncConfig({ ...user })
         expect(store.cache._version).to.eql(VERSION)
         expect(store.cache._timestamp).to.be.a('number')
         expect(store.cache.flagStorage).to.eql(defaultState.flagStorage)
         expect(store.cache.prefsStorage).to.eql(defaultState.prefsStorage)
       })
 
-      it('should initialize storage with proper flags for new users if none present', () => {
+      it('should initialize storage with proper flags for new users if none present', async () => {
         const store = useSyncConfigStore()
-        store.initSyncConfig({ ...user, created_at: new Date() })
+        // PushSyncConfig is very simple but uses vuex to push data
+        store.pushSyncConfig = () => {
+          /* no-op */
+        }
+        await store.initSyncConfig({ ...user, created_at: new Date() })
         expect(store.cache._version).to.eql(VERSION)
         expect(store.cache._timestamp).to.be.a('number')
         expect(store.cache.flagStorage).to.eql(newUserFlags)
         expect(store.cache.prefsStorage).to.eql(defaultState.prefsStorage)
       })
 
-      it('should merge flags even if remote timestamp is older', () => {
+      it('should merge flags even if remote timestamp is older', async () => {
         const store = useSyncConfigStore()
+        // PushSyncConfig is very simple but uses vuex to push data
+        store.pushSyncConfig = () => {
+          /* no-op */
+        }
         store.cache = {
           _timestamp: Date.now(),
           _version: VERSION,
           ...cloneDeep(defaultState),
         }
 
-        store.initSyncConfig({
+        await store.initSyncConfig({
           ...user,
           storage: {
             _timestamp: 123,
             _version: VERSION,
             flagStorage: {
               ...defaultState.flagStorage,
-              updateCounter: 1,
+              updateCounter: CURRENT_UPDATE_COUNTER,
             },
             prefsStorage: {
               ...defaultState.prefsStorage,
@@ -69,17 +82,62 @@ describe('The SyncConfig store', () => {
           },
         })
 
-        expect(store.cache.flagStorage).to.eql({
+        expect(store.flagStorage).to.eql({
           ...defaultState.flagStorage,
-          updateCounter: 1,
+          updateCounter: CURRENT_UPDATE_COUNTER,
         })
       })
 
-      it('should reset local timestamp to remote if contents are the same', () => {
+      it('should trim journal to 500 entries', async () => {
+        const store = useSyncConfigStore()
+        // PushSyncConfig is very simple but uses vuex to push data
+        store.pushSyncConfig = () => {
+          /* no-op */
+        }
+        store.cache = {
+          _timestamp: Date.now(),
+          _version: VERSION,
+          ...cloneDeep(defaultState),
+        }
+        const largeJournal = []
+        for (let value = 0; value < 1000; value++) {
+          largeJournal.push({
+            path: 'simple.testing' + value,
+            operation: 'set',
+            args: [value],
+            // should have A timestamp, we don't really care what it is
+            timestamp: 123456,
+          })
+        }
+
+        await store.initSyncConfig({
+          ...user,
+          storage: {
+            _timestamp: 123,
+            _version: VERSION,
+            flagStorage: {
+              ...defaultState.flagStorage,
+              updateCounter: CURRENT_UPDATE_COUNTER,
+            },
+            prefsStorage: {
+              ...defaultState.prefsStorage,
+              _journal: largeJournal,
+            },
+          },
+        })
+
+        expect(store.prefsStorage._journal.length).to.eql(500)
+      })
+
+      it('should reset local timestamp to remote if contents are the same', async () => {
         const store = useSyncConfigStore()
         store.cache = null
+        // PushSyncConfig is very simple but uses vuex to push data
+        store.pushSyncConfig = () => {
+          /* no-op */
+        }
 
-        store.initSyncConfig({
+        await store.initSyncConfig({
           ...user,
           storage: {
             _timestamp: 123,
@@ -95,9 +153,13 @@ describe('The SyncConfig store', () => {
         expect(store.cache.flagStorage.updateCounter).to.eql(999)
       })
 
-      it('should use remote version if local missing', () => {
+      it('should use remote version if local missing', async () => {
         const store = useSyncConfigStore()
-        store.initSyncConfig(store, user)
+        // PushSyncConfig is very simple but uses vuex to push data
+        store.pushSyncConfig = () => {
+          /* no-op */
+        }
+        await store.initSyncConfig(store, user)
         expect(store.cache._version).to.eql(VERSION)
         expect(store.cache._timestamp).to.be.a('number')
         expect(store.cache.flagStorage).to.eql(defaultState.flagStorage)
@@ -106,6 +168,10 @@ describe('The SyncConfig store', () => {
     describe('setPreference', () => {
       it('should set preference and update journal log accordingly', () => {
         const store = useSyncConfigStore()
+        // PushSyncConfig is very simple but uses vuex to push data
+        store.pushSyncConfig = () => {
+          /* no-op */
+        }
         store.setPreference({ path: 'simple.testing', value: 1 })
         expect(store.prefsStorage.simple.testing).to.eql(1)
         expect(store.prefsStorage._journal.length).to.eql(1)
@@ -120,6 +186,10 @@ describe('The SyncConfig store', () => {
 
       it('should keep journal to a minimum', () => {
         const store = useSyncConfigStore()
+        // PushSyncConfig is very simple but uses vuex to push data
+        store.pushSyncConfig = () => {
+          /* no-op */
+        }
         store.setPreference({ path: 'simple.testing', value: 1 })
         store.setPreference({ path: 'simple.testing', value: 2 })
         store.addCollectionPreference({ path: 'collections.testing', value: 2 })
@@ -149,6 +219,10 @@ describe('The SyncConfig store', () => {
 
       it('should remove duplicate entries from journal', () => {
         const store = useSyncConfigStore()
+        // PushSyncConfig is very simple but uses vuex to push data
+        store.pushSyncConfig = () => {
+          /* no-op */
+        }
         store.setPreference({ path: 'simple.testing', value: 1 })
         store.setPreference({ path: 'simple.testing', value: 1 })
         store.addCollectionPreference({ path: 'collections.testing', value: 2 })
@@ -161,6 +235,10 @@ describe('The SyncConfig store', () => {
 
       it('should remove depth = 3 set/unset entries from journal', () => {
         const store = useSyncConfigStore()
+        // PushSyncConfig is very simple but uses vuex to push data
+        store.pushSyncConfig = () => {
+          /* no-op */
+        }
         store.setPreference({ path: 'simple.object.foo', value: 1 })
         store.unsetPreference({ path: 'simple.object.foo' })
         store.updateCache(store, { username: 'test' })
@@ -170,6 +248,10 @@ describe('The SyncConfig store', () => {
 
       it('should not allow unsetting depth <= 2', () => {
         const store = useSyncConfigStore()
+        // PushSyncConfig is very simple but uses vuex to push data
+        store.pushSyncConfig = () => {
+          /* no-op */
+        }
         store.setPreference({ path: 'simple.object.foo', value: 1 })
         expect(() => store.unsetPreference({ path: 'simple' })).to.throw()
         expect(() =>
@@ -179,6 +261,10 @@ describe('The SyncConfig store', () => {
 
       it('should not allow (un)setting depth > 3', () => {
         const store = useSyncConfigStore()
+        // PushSyncConfig is very simple but uses vuex to push data
+        store.pushSyncConfig = () => {
+          /* no-op */
+        }
         store.setPreference({ path: 'simple.object', value: {} })
         expect(() =>
           store.setPreference({ path: 'simple.object.lv3', value: 1 }),

@@ -93,7 +93,8 @@ const FilteringTab = {
   computed: {
     ...SharedComputedObject(),
     ...mapState(useSyncConfigStore, {
-      muteFilters: (store) => Object.entries(store.prefsStorage.simple.muteFilters),
+      muteFilters: (store) =>
+        Object.entries(store.prefsStorage.simple.muteFilters),
       muteFiltersObject: (store) => store.prefsStorage.simple.muteFilters,
     }),
     ...mapState(useInstanceCapabilitiesStore, ['blockExpiration']),

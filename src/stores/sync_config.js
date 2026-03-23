@@ -9,6 +9,7 @@ import {
   groupBy,
   isEqual,
   set,
+  take,
   takeRight,
   uniqWith,
   unset,
@@ -219,7 +220,7 @@ export const _mergeFlags = (recent, stale, allFlagKeys) => {
   )
 }
 
-const _mergeJournal = (...journals) => {
+export const _mergeJournal = (...journals) => {
   // Ignore invalid journal entries
   const allJournals = flatten(
     journals.map((j) => (Array.isArray(j) ? j : [])),
@@ -267,9 +268,11 @@ const _mergeJournal = (...journals) => {
       return journal
     }
   })
-  return flatten(trimmedGrouped).sort((a, b) =>
+
+  const flat = flatten(trimmedGrouped).sort((a, b) =>
     a.timestamp > b.timestamp ? 1 : -1,
   )
+  return take(flat, 500)
 }
 
 export const _mergePrefs = (recent, stale) => {
@@ -621,12 +624,26 @@ export const useSyncConfigStore = defineStore('sync_config', {
       const flagsTemplate = userNew ? newUserFlags : defaultState.flagStorage
       let dirty = false
 
+      if (recent === null) {
+        console.debug(
+          `Data is empty, initializing for ${userNew ? 'new' : 'existing'} user`,
+        )
+        recent = _wrapData({
+          flagStorage: { ...flagsTemplate },
+          prefsStorage: { ...defaultState.prefsStorage },
+        })
+      }
+
+      recent = recent && (await _doMigrations(recent, this.setPreference))
+      stale = stale && (await _doMigrations(stale, this.setPreference))
+
+      // Various migrations
       console.debug('Migrating from old config')
       const vuexState = (await storage.getItem('vuex-lz')) ?? {}
       vuexState.config = vuexState.config ?? {}
 
       const migratedEntries = new Set(vuexState.config._syncMigration ?? [])
-      console.debug(`Already migrated Values: ${[...migratedEntries].join()}`)
+      console.debug(`Already migrated Values: ${[...migratedEntries].join() || '[none]'}`)
 
       Object.entries(oldDefaultConfigSync).forEach(([key, value]) => {
         const oldValue = vuexState.config[key]
@@ -670,19 +687,6 @@ export const useSyncConfigStore = defineStore('sync_config', {
       vuexState.config._syncMigration = [...migratedEntries]
       storage.setItem('vuex-lz', vuexState)
 
-      if (recent === null) {
-        console.debug(
-          `Data is empty, initializing for ${userNew ? 'new' : 'existing'} user`,
-        )
-        recent = _wrapData({
-          flagStorage: { ...flagsTemplate },
-          prefsStorage: { ...defaultState.prefsStorage },
-        })
-      }
-
-      recent = recent && (await _doMigrations(recent, this.setPreference))
-      stale = stale && (await _doMigrations(stale, this.setPreference))
-
       if (!needUpload && recent && stale) {
         console.debug('Checking if data needs merging...')
         // discarding timestamps and versions
@@ -722,6 +726,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
       this.flagStorage = this.cache.flagStorage
       this.prefsStorage = this.cache.prefsStorage
       this.pushSyncConfig()
+      console.log('C', this.cache)
     },
     pushSyncConfig({ force = false } = {}) {
       const needPush = this.dirty || force
