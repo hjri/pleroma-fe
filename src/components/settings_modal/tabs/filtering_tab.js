@@ -152,6 +152,7 @@ const FilteringTab = {
     ...mapActions(useSyncConfigStore, [
       'setPreference',
       'setSimplePrefAndSave',
+      'unsetSimplePrefAndSave',
       'unsetPreference',
       'unsetPrefAndSave',
       'pushSyncConfig',
