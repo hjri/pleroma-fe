@@ -758,6 +758,18 @@ export const useSyncConfigStore = defineStore('sync_config', {
       )
       return result
     },
+    mergedConfigDefault: (state) => {
+      const instancePrefs = useInstanceStore().prefsStorage
+      const result = Object.fromEntries(
+        Object.entries(state.prefsStorage.simple).map(([k, value]) => [
+          k,
+          LOCAL_ONLY_KEYS.has(k)
+            ? (instancePrefs[k] ?? defaultConfigLocal[k])
+            : (instancePrefs[k] ?? instanceDefaultConfig[k]),
+        ]),
+      )
+      return result
+    },
     mergedConfigWithoutDefaults: (state) => {
       const localPrefs = useLocalConfigStore().prefsStorage
       const result = Object.fromEntries(

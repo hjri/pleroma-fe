@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 import { instanceDefaultProperties } from '../modules/config.js'
 import {
   instanceDefaultConfig,
+  defaultConfigLocal,
   staticOrApiConfigDefault,
 } from '../modules/default_config_state.js'
 import apiService from '../services/api/api.service.js'
@@ -55,6 +56,7 @@ const defaultState = {
   // Instance admins can override default settings for the whole instance
   prefsStorage: {
     ...instanceDefaultConfig,
+    ...defaultConfigLocal,
   },
 
   // Known domains list for user's domain-muting

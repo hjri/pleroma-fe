@@ -322,8 +322,9 @@ export default {
       switch (this.realSource) {
         case 'profile':
           return {}
-        default:
-          return get(useInstanceStore().prefsStorage, this.path)
+        default: {
+          return get(useSyncConfigStore().mergedConfigDefault, this.path)
+        }
       }
     },
     isProfileSetting() {
