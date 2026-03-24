@@ -52,10 +52,11 @@ const ExtraNotifications = {
     currentUser() {
       return this.$store.state.users.currentUser
     },
-    ...mapGetters(['unreadChatCount', 'followRequestCount', 'mergedConfig']),
+    ...mapGetters(['unreadChatCount', 'followRequestCount']),
     ...mapPiniaState(useAnnouncementsStore, {
       unreadAnnouncementCount: 'unreadAnnouncementCount',
     }),
+    ...mapPiniaState(useSyncConfigStore, ['mergedConfig']),
   },
   methods: {
     openNotificationSettings() {
