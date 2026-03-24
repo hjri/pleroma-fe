@@ -15,7 +15,7 @@ const FeaturesPanel = {
       'mediaProxyAvailable',
     ]),
     ...mapState(useInstanceStore, {
-      textlimit: (store) => store.limits.textlimit,
+      textLimit: (store) => store.limits.textLimit,
       uploadlimit: (store) =>
         fileSizeFormatService.fileSizeFormat(store.limits.uploadlimit),
     }),

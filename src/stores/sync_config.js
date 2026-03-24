@@ -25,8 +25,10 @@ import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { storage } from 'src/lib/storage.js'
 import {
   defaultState as configDefaultState,
-  defaultConfigLocal,
-  instanceDefaultConfig,
+  validateSetting,
+  INSTANCE_DEFAULT_CONFIG,
+  INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
+  LOCAL_DEFAULT_CONFIG,
   LOCAL_ONLY_KEYS,
 } from 'src/modules/default_config_state.js'
 import { oldDefaultConfigSync } from 'src/modules/old_default_config_state.js'
@@ -488,7 +490,19 @@ export const useSyncConfigStore = defineStore('sync_config', {
           `Calling set on depth > 3 (path: ${path})  is not allowed`,
         )
       }
-      set(this.prefsStorage, path, value)
+
+      const definition = INSTANCE_DEFAULT_CONFIG_DEFINITIONS[path.split('.')[1]]
+
+      const finalValue = validateSetting({
+        path: path.split('.')[1],
+        value,
+        definition,
+        throwError: false,
+        defaultState: INSTANCE_DEFAULT_CONFIG,
+      })
+
+      set(this.prefsStorage, path, finalValue)
+
       this.prefsStorage._journal = [
         ...this.prefsStorage._journal,
         { operation: 'set', path, args: [value], timestamp: Date.now() },
@@ -750,12 +764,12 @@ export const useSyncConfigStore = defineStore('sync_config', {
             ? (tempPrefs[k] ??
               localPrefs[k] ??
               instancePrefs[k] ??
-              defaultConfigLocal[k])
+              LOCAL_DEFAULT_CONFIG[k])
             : (tempPrefs[k] ??
               localPrefs[k] ??
               value ??
               instancePrefs[k] ??
-              instanceDefaultConfig[k]),
+              INSTANCE_DEFAULT_CONFIG[k]),
         ]),
       )
       return result
@@ -766,8 +780,8 @@ export const useSyncConfigStore = defineStore('sync_config', {
         Object.entries(state.prefsStorage.simple).map(([k, value]) => [
           k,
           LOCAL_ONLY_KEYS.has(k)
-            ? (instancePrefs[k] ?? defaultConfigLocal[k])
-            : (instancePrefs[k] ?? instanceDefaultConfig[k]),
+            ? (instancePrefs[k] ?? LOCAL_DEFAULT_CONFIG[k])
+            : (instancePrefs[k] ?? INSTANCE_DEFAULT_CONFIG[k]),
         ]),
       )
       return result

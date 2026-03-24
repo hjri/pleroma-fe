@@ -290,7 +290,7 @@ const PostStatusForm = {
       return this.newStatus.spoilerText.length
     },
     statusLengthLimit() {
-      return useInstanceStore().textlimit
+      return useInstanceStore().limits.textLimit
     },
     hasStatusLengthLimit() {
       return this.statusLengthLimit > 0

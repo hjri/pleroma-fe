@@ -1,16 +1,19 @@
+import { get, set } from 'lodash'
+
 const browserLocale = (navigator.language || 'en').split('-')[0]
 
-const convertDefinitions = definitions => Object.fromEntries(
-  Object.entries(definitions).map(([k, v]) => [
-    k,
-    v.default == null ? null : v.default,
-  ]),
-)
+export const convertDefinitions = (definitions) =>
+  Object.fromEntries(
+    Object.entries(definitions).map(([k, v]) => {
+      const defaultValue = v.default ?? null
+      return [k, defaultValue]
+    }),
+  )
 
 /// Instance config entries provided by static config or pleroma api
 /// Put settings here only if it does not make sense for a normal user
 /// to override it.
-export const instanceIdentityDefaultDefinitions = {
+export const INSTANCE_IDENTITY_DEFAULT_DEFINITIONS = {
   style: {
     description: 'Instance default style name',
     type: 'string',
@@ -110,14 +113,17 @@ export const instanceIdentityDefaultDefinitions = {
     required: false,
   },
 }
-export const instanceIdentityDefault = convertDefinitions(instanceIdentityDefaultDefinitions)
+export const INSTANCE_IDENTITY_DEFAULT = convertDefinitions(
+  INSTANCE_IDENTITY_DEFAULT_DEFINITIONS,
+)
 
 /// This object contains setting entries that makes sense
 /// at the user level. The defaults can also be overriden by
 /// instance admins in the frontend_configuration endpoint or static config.
-export const instanceDefaultConfigDefinitions = {
+export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
   expertLevel: {
-    description: 'Used to track which settings to show and hide in settings modal',
+    description:
+      'Used to track which settings to show and hide in settings modal',
     type: 'number', // not a boolean so we could potentially make multiple levels of expert-ness
     default: 0,
   },
@@ -133,7 +139,8 @@ export const instanceDefaultConfigDefinitions = {
     description: 'Hide shoutbox if present',
     default: false,
   },
-  hideMutedPosts: { // bad name
+  hideMutedPosts: {
+    // bad name
     description: 'Hide posts of muted users entirely',
     default: false,
   },
@@ -205,7 +212,8 @@ export const instanceDefaultConfigDefinitions = {
     default: false,
   },
   autohideFloatingPostButton: {
-    description: 'Automatically hide mobile "new post" button when scrolling down',
+    description:
+      'Automatically hide mobile "new post" button when scrolling down',
     default: false,
   },
   stopGifs: {
@@ -400,7 +408,8 @@ export const instanceDefaultConfigDefinitions = {
     default: false,
   },
   mentionLinkFadeDomain: {
-    description: 'Mute (fade) domain name in mention links if configured to show it',
+    description:
+      'Mute (fade) domain name in mention links if configured to show it',
     default: true,
   },
   mentionLinkShowYous: {
@@ -448,7 +457,8 @@ export const instanceDefaultConfigDefinitions = {
     default: false,
   },
   showExtraNotifications: {
-    description: 'Show extra notifications (chats, announcements etc) in notification panel',
+    description:
+      'Show extra notifications (chats, announcements etc) in notification panel',
     default: true,
   },
   showExtraNotificationsTip: {
@@ -507,41 +517,141 @@ export const instanceDefaultConfigDefinitions = {
     description: 'Use 24h time format',
     default: '24h',
   },
+  themeChecksum: {
+    description: 'Checksum of theme used',
+    type: 'string',
+    required: false,
+  },
 }
-export const instanceDefaultConfig = convertDefinitions(instanceDefaultConfigDefinitions)
+export const INSTANCE_DEFAULT_CONFIG = convertDefinitions(
+  INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
+)
 
-export const defaultConfigLocal = {
-  hideAttachments: false,
-  hideAttachmentsInConv: false,
-  hideNsfw: true,
-  useOneClickNsfw: false,
-  preloadImage: true,
-  postContentType: 'text/plain',
-  sidebarRight: false,
-  sidebarColumnWidth: '25rem',
-  contentColumnWidth: '45rem',
-  notifsColumnWidth: '25rem',
-  themeEditorMinWidth: '0rem',
-  emojiReactionsScale: 0.5,
-  textSize: '1rem',
-  emojiSize: '2.2rem',
-  navbarSize: '3.5rem',
-  panelHeaderSize: '3.2rem',
-  navbarColumnStretch: false,
-  mentionLinkDisplay: 'short',
-  alwaysUseJpeg: false,
-  imageCompression: true,
-  useStreamingApi: false,
-  underlay: 'none',
-  fontInterface: undefined,
-  fontInput: undefined,
-  fontPosts: undefined,
-  fontMonospace: undefined,
-  themeDebug: false, // debug mode that uses computed backgrounds instead of real ones to debug contrast functions
-  forceThemeRecompilation: false, //  flag that forces recompilation on boot even if cache exists
+export const LOCAL_DEFAULT_CONFIG_DEFINITIONS = {
+  // TODO these two used to be separate but since separation feature got broken it doesn't matter
+  hideAttachments: {
+    description: 'Hide attachments in timeline',
+    default: false,
+  },
+  hideAttachmentsInConv: {
+    description: 'Hide attachments in coversation',
+    default: false,
+  },
+  hideNsfw: {
+    description: 'Hide nsfw posts',
+    default: true,
+  },
+  useOneClickNsfw: {
+    description: 'Open NSFW images directly in media modal',
+    default: false,
+  },
+  preloadImage: {
+    description: 'Preload images for NSFW',
+    default: true,
+  },
+  postContentType: {
+    description: 'Default post content type',
+    default: 'text/plain',
+  },
+  sidebarRight: {
+    description: 'Reverse order of columns',
+    default: false,
+  },
+  sidebarColumnWidth: {
+    description: 'Sidebar column width',
+    default: '25rem',
+  },
+  contentColumnWidth: {
+    description: 'Middle column width',
+    default: '45rem',
+  },
+  notifsColumnWidth: {
+    description: 'Notifications column width',
+    default: '25rem',
+  },
+  themeEditorMinWidth: {
+    description: 'Hack for theme editor on mobile',
+    default: '0rem',
+  },
+  emojiReactionsScale: {
+    description: 'Emoji reactions scale factor',
+    default: 0.5,
+  },
+  textSize: {
+    description: 'Font size',
+    default: '1rem',
+  },
+  emojiSize: {
+    description: 'Emoji size',
+    default: '2.2rem',
+  },
+  navbarSize: {
+    description: 'Navbar size',
+    default: '3.5rem',
+  },
+  panelHeaderSize: {
+    description: 'Panel header size',
+    default: '3.2rem',
+  },
+  navbarColumnStretch: {
+    description: 'Stretch navbar to match columns width',
+    default: false,
+  },
+  mentionLinkDisplay: {
+    description: 'How to display mention links',
+    default: 'short',
+  },
+  imageCompression: {
+    description: 'Image compression (WebP/JPEG)',
+    default: true,
+  },
+  alwaysUseJpeg: {
+    description: 'Compress images using JPEG only',
+    default: false,
+  },
+  useStreamingApi: {
+    description: 'Streaming API (WebSocket)',
+    default: false,
+  },
+  underlay: {
+    description: 'Underlay override',
+    default: 'none',
+  },
+  fontInterface: {
+    description: 'Interface font override',
+    type: 'string',
+    default: null,
+  },
+  fontInput: {
+    description: 'Input font override',
+    type: 'string',
+    default: null,
+  },
+  fontPosts: {
+    description: 'Post font override',
+    type: 'string',
+    default: null,
+  },
+  fontMonospace: {
+    description: 'Monospace font override',
+    type: 'string',
+    default: null,
+  },
+  themeDebug: {
+    description:
+      'Debug mode that uses computed backgrounds instead of real ones to debug contrast functions',
+    default: false,
+  },
+  forceThemeRecompilation: {
+    description: 'Flag that forces recompilation on boot even if cache exists',
+    default: false,
+  },
 }
+export const LOCAL_DEFAULT_CONFIG = convertDefinitions(
+  LOCAL_DEFAULT_CONFIG_DEFINITIONS,
+)
 
-export const LOCAL_ONLY_KEYS = new Set(Object.keys(defaultConfigLocal))
+export const LOCAL_ONLY_KEYS = new Set(Object.keys(LOCAL_DEFAULT_CONFIG))
 
 export const makeUndefined = (c) =>
   Object.fromEntries(Object.keys(c).map((key) => [key, undefined]))
@@ -550,8 +660,8 @@ export const makeUndefined = (c) =>
 /// make sense to be overriden on a instance-wide level.
 export const defaultState = {
   // Set these to undefined so it does not interfere with default settings check
-  ...makeUndefined(instanceDefaultConfig),
-  ...makeUndefined(defaultConfigLocal),
+  ...makeUndefined(INSTANCE_DEFAULT_CONFIG),
+  ...makeUndefined(LOCAL_DEFAULT_CONFIG),
   // If there are any configurations that does not make sense to
   // have instance-wide default, put it here and explain why.
 
@@ -571,4 +681,54 @@ export const defaultState = {
   styleCustomData: null,
   palette: null,
   paletteCustomData: null,
+}
+
+export const validateSetting = ({
+  value,
+  path,
+  definition,
+  throwError,
+  defaultState,
+}) => {
+  if (value === undefined) return // only null is allowed as missing value
+  if (get(defaultState, path) === undefined) {
+    const string = `Unknown instance option ${path}, value: ${value}`
+
+    if (throwError) {
+      throw new Error(string)
+    } else {
+      console.error(string)
+      return value
+    }
+  }
+
+  let { required, type, default: defaultValue } = definition
+
+  if (type == null && defaultValue != null) {
+    type = typeof defaultValue
+  }
+
+  if (required && value == null) {
+    const string = `Value required for setting ${path} but was provided nullish; defaulting`
+
+    if (throwError) {
+      throw new Error(string)
+    } else {
+      console.error(string)
+      return defaultValue
+    }
+  }
+
+  if (value !== null && type != null && typeof value !== type) {
+    const string = `Invalid type for setting ${path}: expected type ${type}, got ${typeof value}, value ${value}; defaulting`
+
+    if (throwError) {
+      throw new Error(string)
+    } else {
+      console.error(string)
+      return defaultValue
+    }
+  }
+
+  return value
 }

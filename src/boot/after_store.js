@@ -39,8 +39,8 @@ import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 import VBodyScrollLock from 'src/directives/body_scroll_lock'
 import {
-  instanceDefaultConfigDefinitions,
-  instanceIdentityDefaultDefinitions,
+  INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
+  INSTANCE_IDENTITY_DEFAULT_DEFINITIONS,
 } from 'src/modules/default_config_state.js'
 
 let staticInitialResults = null
@@ -83,7 +83,7 @@ const getInstanceConfig = async ({ store }) => {
     const res = await preloadFetch('/api/v1/instance')
     if (res.ok) {
       const data = await res.json()
-      const textlimit = data.max_toot_chars
+      const textLimit = data.max_toot_chars
       const vapidPublicKey = data.pleroma.vapid_public_key
 
       useInstanceCapabilitiesStore().set(
@@ -91,8 +91,8 @@ const getInstanceConfig = async ({ store }) => {
         data.pleroma,
       )
       useInstanceStore().set({
-        path: 'textlimit',
-        value: textlimit,
+        path: 'limits.textLimit',
+        value: textLimit,
       })
       useInstanceStore().set({
         path: 'accountApprovalRequired',
@@ -169,22 +169,19 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
     config = Object.assign({}, staticConfig, apiConfig)
   }
 
-  const copyInstanceOption = ({ source, definition = { required: true }, destination }) => {
-    const value = config[source]
-    let { required, type, default: defaultValue } = definition
-    if (type == null && defaultValue != null) type = typeof defaultValue
-    if (required && value == null) return
-    if (type != null && typeof value !== type) return
+  Object.keys(INSTANCE_IDENTITY_DEFAULT_DEFINITIONS).forEach((source) =>
+    useInstanceStore().set({
+      value: config[source],
+      path: `instanceIdentity.${source}`,
+    }),
+  )
 
-    useInstanceStore().set({ path: destination, value })
-  }
-
-  Object.entries(instanceIdentityDefaultDefinitions)
-    .map(([source, definition]) => ({ source, definition, destination: `instanceIdentity.${source}` }))
-    .forEach(copyInstanceOption)
-  Object.keys(instanceDefaultConfigDefinitions)
-    .map(([source, definition]) => ({ source, definition, destination: `prefsStorage.${source}` }))
-    .forEach(copyInstanceOption)
+  Object.keys(INSTANCE_DEFAULT_CONFIG_DEFINITIONS).forEach((source) =>
+    useInstanceStore().set({
+      value: config[source],
+      path: `prefsStorage.${source}`,
+    }),
+  )
 
   useAuthFlowStore().setInitialStrategy(config.loginMethod)
 }
@@ -194,7 +191,7 @@ const getTOS = async ({ store }) => {
     const res = await window.fetch('/static/terms-of-service.html')
     if (res.ok) {
       const html = await res.text()
-      useInstanceStore().set({ name: 'instanceIdentity.tos', value: html })
+      useInstanceStore().set({ path: 'instanceIdentity.tos', value: html })
     } else {
       throw res
     }
@@ -543,7 +540,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     typeof overrides.target !== 'undefined'
       ? overrides.target
       : window.location.origin
-  useInstanceStore().set({ name: 'server', value: server })
+  useInstanceStore().set({ path: 'server', value: server })
 
   await setConfig({ store })
   try {
