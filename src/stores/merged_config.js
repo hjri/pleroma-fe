@@ -28,7 +28,7 @@ export const useMergedConfigStore = defineStore('merged_config', {
       const getDefault = (k) => instancePrefs[k] ?? ROOT_CONFIG[k]
 
       const result = Object.fromEntries(
-        Object.keys(INSTANCE_DEFAULT_CONFIG).map((k) => [
+        Object.keys(ROOT_CONFIG).map((k) => [
           k,
           getValue(k) ?? getDefault(k),
         ]),
@@ -41,7 +41,7 @@ export const useMergedConfigStore = defineStore('merged_config', {
       const getDefault = (k) => instancePrefs[k] ?? ROOT_CONFIG[k]
 
       const result = Object.fromEntries(
-        Object.keys(INSTANCE_DEFAULT_CONFIG).map((k) => [
+        Object.keys(ROOT_CONFIG).map((k) => [
           k,
           getDefault(k),
         ]),
@@ -58,7 +58,7 @@ export const useMergedConfigStore = defineStore('merged_config', {
         tempPrefs[k] ?? localPrefs[k] ?? syncPrefs.simple[k] ?? instancePrefs[k]
 
       const result = Object.fromEntries(
-        Object.keys(INSTANCE_DEFAULT_CONFIG).map(([k, value]) => [
+        Object.keys(ROOT_CONFIG).map(([k, value]) => [
           k,
           getValue(k),
         ]),

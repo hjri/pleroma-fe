@@ -37,7 +37,7 @@ const FilteringTab = {
         label: this.$t(`user_card.mute_block_${mode}`),
       })),
       muteFiltersDraftObject: cloneDeep(
-        useMergedConfigStore().mergedConfig.muteFilters,
+        useSyncConfigStore().prefsStorage.simple.muteFilters,
       ),
       muteFiltersDraftDirty: Object.fromEntries(
         Object.entries(
