@@ -3,30 +3,112 @@ const browserLocale = (navigator.language || 'en').split('-')[0]
 /// Instance config entries provided by static config or pleroma api
 /// Put settings here only if it does not make sense for a normal user
 /// to override it.
-export const instanceIdentityDefault = {
-  theme: null,
-  palette: null,
-  style: null,
-  themeChecksum: undefined,
-  defaultAvatar: '/images/avi.png',
-  defaultBanner: '/images/banner.png',
-  background: '/static/aurora_borealis.jpg',
-  embeddedToS: true,
-  logo: '/static/logo.svg',
-  logoMargin: '.2em',
-  logoMask: true,
-  logoLeft: false,
-  redirectRootLogin: '/main/friends',
-  redirectRootNoLogin: '/main/all',
-  hideSitename: false,
-  nsfwCensorImage: null,
-  showFeaturesPanel: true,
-  showInstanceSpecificPanel: false,
+export const instanceIdentityDefaultDefinition = {
+  style: {
+    description: 'Instance default style name',
+    type: 'string',
+    required: false,
+  },
+  palette: {
+    description: 'Instance default palette name',
+    type: 'string',
+    required: false,
+  },
+  theme: {
+    description: 'Instance default theme name',
+    type: 'string',
+    required: false,
+  },
+  defaultAvatar: {
+    description: "Default avatar image to use when user doesn't have one set",
+    type: 'string',
+    default: '/images/avi.png',
+  },
+  defaultBanner: {
+    description: "Default banner image to use when user doesn't have one set",
+    type: 'string',
+    default: '/images/banner.png',
+  },
+  background: {
+    description: 'Instance background/wallpaper',
+    type: 'string',
+    default: '/static/aurora_borealis.jpg',
+  },
+  embeddedToS: {
+    description: 'Whether to show Terms of Service title bar',
+    type: 'boolean',
+    default: true,
+  },
+  logo: {
+    description: 'Instance logo',
+    type: 'string',
+    default: '/static/logo.svg',
+  },
+  logoMargin: {
+    description: 'Margin for logo (spacing above/below)',
+    type: 'string',
+    default: '.2em',
+  },
+  logoMask: {
+    description:
+      'Use logo as a mask (works well for monochrome/transparent logos)',
+    type: 'boolean',
+    default: true,
+  },
+  logoLeft: {
+    description: 'Show logo on the left side of navbar',
+    type: 'boolean',
+    default: false,
+  },
+  redirectRootLogin: {
+    description: 'Where to redirect user after login',
+    type: 'string',
+    default: '/main/friends',
+  },
+  redirectRootNoLogin: {
+    description: 'Where to redirect anonymous visitors',
+    type: 'string',
+    default: '/main/all',
+  },
+  hideSitename: {
+    description: 'Hide the instance name in navbar',
+    type: 'boolean',
+    default: false,
+  },
+  nsfwCensorImage: {
+    description: 'Default NSFW censor image',
+    type: 'string',
+    required: false,
+  },
+  showFeaturesPanel: {
+    description: 'Show features panel to anonymous visitors',
+    type: 'boolean',
+    default: true,
+  },
+  showInstanceSpecificPanel: {
+    description: 'Show instance-specific panel',
+    type: 'boolean',
+    default: false,
+  },
 
   // Html stuff
-  instanceSpecificPanelContent: '',
-  tos: '',
+  instanceSpecificPanelContent: {
+    description: 'HTML of Instance-specific panel',
+    type: 'string',
+    required: false,
+  },
+  tos: {
+    description: 'HTML of Terms of Service panel',
+    type: 'string',
+    required: false,
+  },
 }
+export const instanceIdentityDefault = Object.fromEntries(
+  Object.entries(instanceIdentityDefaultDefinition).map(([k, v]) => [
+    k,
+    v.default == null ? null : v.default,
+  ]),
+)
 
 /// This object contains setting entries that makes sense
 /// at the user level. The defaults can also be overriden by

@@ -418,11 +418,7 @@ export const useInterfaceStore = defineStore('interface', {
         palette: instancePaletteName,
       } = useInstanceStore().instanceIdentity
 
-      let {
-        themesIndex,
-        stylesIndex,
-        palettesIndex,
-      } = useInstanceStore()
+      let { themesIndex, stylesIndex, palettesIndex } = useInstanceStore()
 
       const {
         style: userStyleName,

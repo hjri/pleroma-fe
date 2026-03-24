@@ -40,7 +40,7 @@ import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 import VBodyScrollLock from 'src/directives/body_scroll_lock'
 import {
   instanceDefaultConfig,
-  instanceIdentityDefault,
+  instanceIdentityDefaultDefinition,
 } from 'src/modules/default_config_state.js'
 
 let staticInitialResults = null
@@ -169,17 +169,20 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
     config = Object.assign({}, staticConfig, apiConfig)
   }
 
-  const copyInstanceOption = ({ source, destination }) => {
-    if (typeof config[source] !== 'undefined') {
-      useInstanceStore().set({ path: destination, value: config[source] })
-    }
+  const copyInstanceOption = ({ source, definition = { required: true }, destination }) => {
+    const value = config[source]
+    const { required, type } = definition
+    if (required && value == null) return
+    if (type != null && typeof value !== type) return
+
+    useInstanceStore().set({ path: destination, value })
   }
 
-  Object.keys(instanceIdentityDefault)
-    .map((k) => ({ source: k, destination: `instanceIdentity.${k}` }))
+  Object.entries(instanceIdentityDefaultDefinition)
+    .map(([source, definition]) => ({ source, definition, destination: `instanceIdentity.${source}` }))
     .forEach(copyInstanceOption)
   Object.keys(instanceDefaultConfig)
-    .map((k) => ({ source: k, destination: `prefsStorage.${k}` }))
+    .map((source) => ({ source, destination: `prefsStorage.${source}` }))
     .forEach(copyInstanceOption)
 
   useAuthFlowStore().setInitialStrategy(config.loginMethod)
