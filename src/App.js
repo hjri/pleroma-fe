@@ -1,6 +1,6 @@
 import { throttle } from 'lodash'
 import { mapState } from 'pinia'
-import { defineAsyncComponent } from 'vue'
+import { defineAsyncComponent, toValue } from 'vue'
 
 import DesktopNav from './components/desktop_nav/desktop_nav.vue'
 import EditStatusModal from './components/edit_status_modal/edit_status_modal.vue'
@@ -31,6 +31,9 @@ import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import messages from 'src/i18n/messages'
 import localeService from 'src/services/locale/locale.service.js'
+
+// Helper to unwrap reactive proxies
+window.toValue = toValue
 
 export default {
   name: 'app',
