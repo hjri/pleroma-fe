@@ -1,9 +1,16 @@
 const browserLocale = (navigator.language || 'en').split('-')[0]
 
+const convertDefinitions = definitions => Object.fromEntries(
+  Object.entries(definitions).map(([k, v]) => [
+    k,
+    v.default == null ? null : v.default,
+  ]),
+)
+
 /// Instance config entries provided by static config or pleroma api
 /// Put settings here only if it does not make sense for a normal user
 /// to override it.
-export const instanceIdentityDefaultDefinition = {
+export const instanceIdentityDefaultDefinitions = {
   style: {
     description: 'Instance default style name',
     type: 'string',
@@ -103,142 +110,405 @@ export const instanceIdentityDefaultDefinition = {
     required: false,
   },
 }
-export const instanceIdentityDefault = Object.fromEntries(
-  Object.entries(instanceIdentityDefaultDefinition).map(([k, v]) => [
-    k,
-    v.default == null ? null : v.default,
-  ]),
-)
+export const instanceIdentityDefault = convertDefinitions(instanceIdentityDefaultDefinitions)
 
 /// This object contains setting entries that makes sense
 /// at the user level. The defaults can also be overriden by
 /// instance admins in the frontend_configuration endpoint or static config.
-export const instanceDefaultConfig = {
-  expertLevel: 0, // used to track which settings to show and hide
-  hideISP: false,
-  hideInstanceWallpaper: false,
-  hideShoutbox: false,
-  // bad name: actually hides posts of muted USERS
-  hideMutedPosts: false,
-  hideMutedThreads: true,
-  hideWordFilteredPosts: false,
-  muteBotStatuses: false,
-  muteSensitiveStatuses: false,
-  collapseMessageWithSubject: false,
-  padEmoji: true,
-  hideAttachmentsInConv: false,
-  hideScrobbles: false,
-  hideScrobblesAfter: '2d',
-  maxThumbnails: 16,
-  loopVideo: true,
-  loopVideoSilentOnly: true,
+export const instanceDefaultConfigDefinitions = {
+  expertLevel: {
+    description: 'Used to track which settings to show and hide in settings modal',
+    type: 'number', // not a boolean so we could potentially make multiple levels of expert-ness
+    default: 0,
+  },
+  hideISP: {
+    description: 'Hide Instance-specific panel',
+    default: false,
+  },
+  hideInstanceWallpaper: {
+    description: 'Hide Instance default background',
+    default: false,
+  },
+  hideShoutbox: {
+    description: 'Hide shoutbox if present',
+    default: false,
+  },
+  hideMutedPosts: { // bad name
+    description: 'Hide posts of muted users entirely',
+    default: false,
+  },
+  hideMutedThreads: {
+    description: 'Hide muted threads entirely',
+    default: true,
+  },
+  hideWordFilteredPosts: {
+    description: 'Hide wordfiltered posts entirely',
+    default: false,
+  },
+  muteBotStatuses: {
+    description: 'Mute posts made by bots',
+    default: false,
+  },
+  muteSensitiveStatuses: {
+    description: 'Mute posts marked as NSFW',
+    default: false,
+  },
+  collapseMessageWithSubject: {
+    description: 'Collapse posts with subject',
+    default: false,
+  },
+  padEmoji: {
+    description: 'Pad emoji with spaces when using emoji picker',
+    default: true,
+  },
+  hideAttachmentsInConv: {
+    description: 'Hide attachments',
+    default: false,
+  },
+  hideScrobbles: {
+    description: 'Hide scrobbles',
+    default: false,
+  },
+  hideScrobblesAfter: {
+    description: 'Hide scrobbles older than',
+    default: '2d',
+  },
+  maxThumbnails: {
+    description: 'Maximum attachments to show',
+    default: 16,
+  },
+  loopVideo: {
+    description: 'Loop videos',
+    default: true,
+  },
+  loopVideoSilentOnly: {
+    description: 'Loop only videos without sound',
+    default: true,
+  },
   /// This is not the streaming API configuration, but rather an option
   /// for automatically loading new posts into the timeline without
   /// the user clicking the Show New button.
-  streaming: false,
-  emojiReactionsOnTimeline: true,
-  alwaysShowNewPostButton: false,
-  autohideFloatingPostButton: false,
-  pauseOnUnfocused: true,
-  stopGifs: true,
-  replyVisibility: 'all',
-  thirdColumnMode: 'notifications',
+  streaming: {
+    description: 'Automatically show new posts',
+    default: false,
+  },
+  pauseOnUnfocused: {
+    description: 'Pause showing new posts when tab is unfocused',
+    default: true,
+  },
+  emojiReactionsOnTimeline: {
+    description: 'Show emoji reactions on timeline',
+    default: true,
+  },
+  alwaysShowNewPostButton: {
+    description: 'Always show mobile "new post" button, even in desktop mode',
+    default: false,
+  },
+  autohideFloatingPostButton: {
+    description: 'Automatically hide mobile "new post" button when scrolling down',
+    default: false,
+  },
+  stopGifs: {
+    description: 'Play animated gifs on hover only',
+    default: true,
+  },
+  replyVisibility: {
+    description: 'Type of replies to show',
+    default: 'all',
+  },
+  thirdColumnMode: {
+    description: 'What to display in third column',
+    default: 'notifications',
+  },
   notificationVisibility: {
-    follows: true,
-    mentions: true,
-    statuses: true,
-    likes: true,
-    repeats: true,
-    moves: true,
-    emojiReactions: true,
-    followRequest: true,
-    reports: true,
-    chatMention: true,
-    polls: true,
+    description: 'What types of notifications to show',
+    default: {
+      follows: true,
+      mentions: true,
+      statuses: true,
+      likes: true,
+      repeats: true,
+      moves: true,
+      emojiReactions: true,
+      followRequest: true,
+      reports: true,
+      chatMention: true,
+      polls: true,
+    },
   },
   notificationNative: {
-    follows: true,
-    mentions: true,
-    statuses: true,
-    likes: false,
-    repeats: false,
-    moves: false,
-    emojiReactions: false,
-    followRequest: true,
-    reports: true,
-    chatMention: true,
-    polls: true,
+    description: 'What type of notifications to show desktop notification for',
+    default: {
+      follows: true,
+      mentions: true,
+      statuses: true,
+      likes: false,
+      repeats: false,
+      moves: false,
+      emojiReactions: false,
+      followRequest: true,
+      reports: true,
+      chatMention: true,
+      polls: true,
+    },
   },
-  webPushNotifications: false,
-  webPushAlwaysShowNotifications: false,
-  interfaceLanguage: browserLocale,
-  hideScopeNotice: false,
-  scopeCopy: true,
-  subjectLineBehavior: 'email',
-  alwaysShowSubjectInput: true,
-  minimalScopesMode: false,
+  webPushNotifications: {
+    description: 'Use WebPush',
+    default: false,
+  },
+  webPushAlwaysShowNotifications: {
+    description: 'Ignore filter when using WebPush',
+    default: false,
+  },
+  interfaceLanguage: {
+    description: 'UI language',
+    default: browserLocale,
+  },
+  hideScopeNotice: {
+    description: 'Hide scope notification',
+    default: false,
+  },
+  scopeCopy: {
+    description: 'Copy scope like mastodon does',
+    default: true,
+  },
+  subjectLineBehavior: {
+    description: 'How to treat subject line',
+    default: 'email',
+  },
+  alwaysShowSubjectInput: {
+    description: 'Always show subject line field',
+    default: true,
+  },
+  minimalScopesMode: {
+    description: 'Minimize amount of options shown in scope selector',
+    default: false,
+  },
 
   // This hides statuses filtered via a word filter
-  hideFilteredStatuses: false,
+  hideFilteredStatuses: {
+    description: 'Hide wordfiltered entirely',
+    default: false,
+  },
 
   // Confirmations
-  modalOnRepeat: false,
-  modalOnUnfollow: false,
-  modalOnBlock: true,
-  modalOnMute: false,
-  modalOnMuteConversation: false,
-  modalOnMuteDomain: true,
-  modalOnDelete: true,
-  modalOnLogout: true,
-  modalOnApproveFollow: false,
-  modalOnDenyFollow: false,
-  modalOnRemoveUserFromFollowers: false,
+  modalOnRepeat: {
+    description: 'Show confirmation modal for repeat',
+    default: false,
+  },
+  modalOnUnfollow: {
+    description: 'Show confirmation modal for unfollow',
+    default: false,
+  },
+  modalOnBlock: {
+    description: 'Show confirmation modal for block',
+    default: true,
+  },
+  modalOnMute: {
+    description: 'Show confirmation modal for mute',
+    default: false,
+  },
+  modalOnMuteConversation: {
+    description: 'Show confirmation modal for mute conversation',
+    default: false,
+  },
+  modalOnMuteDomain: {
+    description: 'Show confirmation modal for mute domain',
+    default: true,
+  },
+  modalOnDelete: {
+    description: 'Show confirmation modal for delete',
+    default: true,
+  },
+  modalOnLogout: {
+    description: 'Show confirmation modal for logout',
+    default: true,
+  },
+  modalOnApproveFollow: {
+    description: 'Show confirmation modal for approve follow',
+    default: false,
+  },
+  modalOnDenyFollow: {
+    description: 'Show confirmation modal for deny follow',
+    default: false,
+  },
+  modalOnRemoveUserFromFollowers: {
+    description: 'Show confirmation modal for follower removal',
+    default: false,
+  },
 
   // Expiry confirmations/default actions
-  onMuteDefaultAction: 'ask',
-  onBlockDefaultAction: 'ask',
+  onMuteDefaultAction: {
+    description: 'Default action when muting user',
+    default: 'ask',
+  },
+  onBlockDefaultAction: {
+    description: 'Default action when blocking user',
+    default: 'ask',
+  },
 
-  modalMobileCenter: false,
-  playVideosInModal: false,
-  useContainFit: true,
-  disableStickyHeaders: false,
-  showScrollbars: false,
-  userPopoverAvatarAction: 'open',
-  userPopoverOverlay: false,
-  userCardLeftJustify: false,
-  userCardHidePersonalMarks: false,
-  forcedRoundness: -1,
-  greentext: false,
-  mentionLinkShowTooltip: true,
-  mentionLinkShowAvatar: false,
-  mentionLinkFadeDomain: true,
-  mentionLinkShowYous: false,
-  mentionLinkBoldenYou: true,
-  hidePostStats: false,
-  hideBotIndication: false,
-  hideUserStats: false,
-  virtualScrolling: true,
-  sensitiveByDefault: false,
-  conversationDisplay: 'linear',
-  conversationTreeAdvanced: false,
-  conversationOtherRepliesButton: 'below',
-  conversationTreeFadeAncestors: false,
-  showExtraNotifications: true,
-  showExtraNotificationsTip: true,
-  showChatsInExtraNotifications: true,
-  showAnnouncementsInExtraNotifications: true,
-  showFollowRequestsInExtraNotifications: true,
-  maxDepthInThread: 6,
-  autocompleteSelect: false,
-  closingDrawerMarksAsSeen: true,
-  unseenAtTop: false,
-  ignoreInactionableSeen: false,
-  unsavedPostAction: 'confirm',
-  autoSaveDraft: false,
-  useAbsoluteTimeFormat: false,
-  absoluteTimeFormatMinAge: '0d',
-  absoluteTime12h: '24h',
+  modalMobileCenter: {
+    description: 'Center mobile dialogs vertically',
+    default: false,
+  },
+  playVideosInModal: {
+    description: 'Play videos in gallery view',
+    default: false,
+  },
+  useContainFit: {
+    description: 'Use object-fit: contain for attachments',
+    default: true,
+  },
+  disableStickyHeaders: {
+    description: 'Disable sticky headers',
+    default: false,
+  },
+  showScrollbars: {
+    description: 'Always show scrollbars',
+    default: false,
+  },
+  userPopoverAvatarAction: {
+    description: 'What to do when clicking popover avatar',
+    default: 'open',
+  },
+  userPopoverOverlay: {
+    description: 'Overlay user popover with centering on avatar',
+    default: false,
+  },
+  userCardLeftJustify: {
+    description: 'Justify user bio to the left',
+    default: false,
+  },
+  userCardHidePersonalMarks: {
+    description: 'Hide highlight/personal note in user view',
+    default: false,
+  },
+  forcedRoundness: {
+    description: 'Force roundness of the theme',
+    default: -1,
+  },
+  greentext: {
+    description: 'Highlight plaintext >quotes',
+    default: false,
+  },
+  mentionLinkShowTooltip: {
+    description: 'Show tooltips for mention links',
+    default: true,
+  },
+  mentionLinkShowAvatar: {
+    description: 'Show avatar next to mention link',
+    default: false,
+  },
+  mentionLinkFadeDomain: {
+    description: 'Mute (fade) domain name in mention links if configured to show it',
+    default: true,
+  },
+  mentionLinkShowYous: {
+    description: 'Show (you)s when you are mentioned',
+    default: false,
+  },
+  mentionLinkBoldenYou: {
+    description: 'Boldern mentionlink of you',
+    default: true,
+  },
+  hidePostStats: {
+    description: 'Hide post stats (rt, favs)',
+    default: false,
+  },
+  hideBotIndication: {
+    description: 'Hide bot indicator',
+    default: false,
+  },
+  hideUserStats: {
+    description: 'Hide user stats (followers etc)',
+    default: false,
+  },
+  virtualScrolling: {
+    description: 'Timeline virtual scrolling',
+    default: true,
+  },
+  sensitiveByDefault: {
+    description: 'Assume attachments are NSFW by default',
+    default: false,
+  },
+  conversationDisplay: {
+    description: 'Style of conversation display',
+    default: 'linear',
+  },
+  conversationTreeAdvanced: {
+    description: 'Advanced features of tree view conversation',
+    default: false,
+  },
+  conversationOtherRepliesButton: {
+    description: 'Where to show "other replies" in tree conversation view',
+    default: 'below',
+  },
+  conversationTreeFadeAncestors: {
+    description: 'Fade ancestors in tree conversation view',
+    default: false,
+  },
+  showExtraNotifications: {
+    description: 'Show extra notifications (chats, announcements etc) in notification panel',
+    default: true,
+  },
+  showExtraNotificationsTip: {
+    description: 'Show tip for extra notifications (that user can remove them)',
+    default: true,
+  },
+  showChatsInExtraNotifications: {
+    description: 'Show chat messages in notifications',
+    default: true,
+  },
+  showAnnouncementsInExtraNotifications: {
+    description: 'Show announcements in notifications',
+    default: true,
+  },
+  showFollowRequestsInExtraNotifications: {
+    description: 'Show follow requests in notifications',
+    default: true,
+  },
+  maxDepthInThread: {
+    description: 'Maximum depth in tree conversation view',
+    default: 6,
+  },
+  autocompleteSelect: {
+    description: '',
+    default: false,
+  },
+  closingDrawerMarksAsSeen: {
+    description: 'Closing mobile notification pane marks everything as seen',
+    default: true,
+  },
+  unseenAtTop: {
+    description: 'Show unseen notifications above others',
+    default: false,
+  },
+  ignoreInactionableSeen: {
+    description: 'Treat inactionable (fav, rt etc) notifications as "seen"',
+    default: false,
+  },
+  unsavedPostAction: {
+    description: 'What to do if post is aborted',
+    default: 'confirm',
+  },
+  autoSaveDraft: {
+    description: 'Save drafts automatically',
+    default: false,
+  },
+  useAbsoluteTimeFormat: {
+    description: 'Use absolute time format',
+    default: false,
+  },
+  absoluteTimeFormatMinAge: {
+    description: 'Show absolute time format only after this post age',
+    default: '0d',
+  },
+  absoluteTime12h: {
+    description: 'Use 24h time format',
+    default: '24h',
+  },
 }
+export const instanceDefaultConfig = convertDefinitions(instanceDefaultConfigDefinitions)
 
 export const defaultConfigLocal = {
   hideAttachments: false,
