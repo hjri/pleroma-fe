@@ -412,11 +412,13 @@ export const useInterfaceStore = defineStore('interface', {
         return result
       }
 
-      const { style: instanceStyleName, palette: instancePaletteName } =
-        useInstanceStore()
+      let {
+        theme: instanceThemeName,
+        style: instanceStyleName,
+        palette: instancePaletteName,
+      } = useInstanceStore().instanceIdentity
 
       let {
-        theme: instanceThemeV2Name,
         themesIndex,
         stylesIndex,
         palettesIndex,
@@ -447,7 +449,7 @@ export const useInterfaceStore = defineStore('interface', {
       console.debug(
         `Instance V3 palette: ${instancePaletteName}, style: ${instanceStyleName}`,
       )
-      console.debug('Instance V2 theme: ' + instanceThemeV2Name)
+      console.debug('Instance V2 theme: ' + instanceThemeName)
 
       if (
         userPaletteName ||
@@ -456,11 +458,11 @@ export const useInterfaceStore = defineStore('interface', {
         userStyleCustomData ||
         // User V2 overrides instance V3
         ((instancePaletteName || instanceStyleName) &&
-          instanceThemeV2Name == null &&
+          instanceThemeName == null &&
           userThemeV2Name == null)
       ) {
         // Palette and/or style overrides V2 themes
-        instanceThemeV2Name = null
+        instanceThemeName = null
         userThemeV2Name = null
         userThemeV2Source = null
         userThemeV2Snapshot = null
@@ -470,7 +472,7 @@ export const useInterfaceStore = defineStore('interface', {
         userThemeV2Name ||
         userThemeV2Snapshot ||
         userThemeV2Source ||
-        instanceThemeV2Name
+        instanceThemeName
       ) {
         majorVersionUsed = 'v2'
       } else {
@@ -588,7 +590,7 @@ export const useInterfaceStore = defineStore('interface', {
           'theme',
           themesIndex,
           userThemeV2Source || userThemeV2Snapshot,
-          userThemeV2Name || instanceThemeV2Name,
+          userThemeV2Name || instanceThemeName,
         )
         this.themeNameUsed = theme.nameUsed
         this.themeDataUsed = theme.dataUsed

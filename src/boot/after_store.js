@@ -40,7 +40,7 @@ import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 import VBodyScrollLock from 'src/directives/body_scroll_lock'
 import {
   instanceDefaultConfig,
-  staticOrApiConfigDefault,
+  instanceIdentityDefault,
 } from 'src/modules/default_config_state.js'
 
 let staticInitialResults = null
@@ -175,7 +175,7 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
     }
   }
 
-  Object.keys(staticOrApiConfigDefault)
+  Object.keys(instanceIdentityDefault)
     .map((k) => ({ source: k, destination: `instanceIdentity.${k}` }))
     .forEach(copyInstanceOption)
   Object.keys(instanceDefaultConfig)

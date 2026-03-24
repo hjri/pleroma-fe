@@ -5,7 +5,7 @@ import { instanceDefaultProperties } from '../modules/config.js'
 import {
   defaultConfigLocal,
   instanceDefaultConfig,
-  staticOrApiConfigDefault,
+  instanceIdentityDefault,
 } from '../modules/default_config_state.js'
 import apiService from '../services/api/api.service.js'
 
@@ -16,7 +16,6 @@ import { ensureFinalFallback } from 'src/i18n/languages.js'
 const REMOTE_INTERACTION_URL = '/main/ostatus'
 
 const defaultState = {
-  // Stuff from apiConfig
   name: 'Pleroma FE',
   registrationOpen: true,
   server: 'http://localhost:4040/',
@@ -36,7 +35,7 @@ const defaultState = {
 
   // Instance-wide configurations that should not be changed by individual users
   instanceIdentity: {
-    ...staticOrApiConfigDefault,
+    ...instanceIdentityDefault,
   },
 
   limits: {
