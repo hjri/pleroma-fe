@@ -8,7 +8,7 @@ import LinkPreview from '../link-preview/link-preview.vue'
 import Poll from '../poll/poll.vue'
 
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -76,7 +76,7 @@ const StatusContent = {
       uncontrolledShowingLongSubject: false,
       // not as computed because it sets the initial state which will be changed later
       uncontrolledExpandingSubject:
-        !useSyncConfigStore().mergedConfig.collapseMessageWithSubject,
+        !useMergedConfigStore().mergedConfig.collapseMessageWithSubject,
     }
   },
   computed: {
@@ -124,7 +124,7 @@ const StatusContent = {
     maxThumbnails() {
       return this.mergedConfig.maxThumbnails
     },
-    ...mapPiniaState(useSyncConfigStore, ['mergedConfig']),
+    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
     ...mapState({
       currentUser: (state) => state.users.currentUser,
     }),

@@ -1,7 +1,7 @@
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Setting from './setting.js'
 
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 export default {
   ...Setting,
@@ -45,7 +45,7 @@ export default {
       if (this.forceNew) return true
       if (!this.allowNew) return false
 
-      const isExpert = useSyncConfigStore().mergedConfig.expertLevel > 0
+      const isExpert = useMergedConfigStore().mergedConfig.expertLevel > 0
       const hasBuiltins = this.builtinEntries.length > 0
 
       if (hasBuiltins) {

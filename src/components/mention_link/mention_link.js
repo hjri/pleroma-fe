@@ -9,7 +9,7 @@ import {
 import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
 
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
@@ -160,7 +160,7 @@ const MentionLink = {
     shouldFadeDomain() {
       return this.mergedConfig.mentionLinkFadeDomain
     },
-    ...mapPiniaState(useSyncConfigStore, ['mergedConfig']),
+    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
     ...mapPiniaState(useUserHighlightStore, ['highlight']),
     ...mapState({
       currentUser: (state) => state.users.currentUser,

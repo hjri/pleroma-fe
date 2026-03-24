@@ -1,7 +1,7 @@
 import { debounce } from 'lodash'
 
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { usePostStatusStore } from 'src/stores/post_status.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
@@ -46,10 +46,10 @@ const MobilePostStatusButton = {
       )
     },
     isPersistent() {
-      return !!useSyncConfigStore().mergedConfig.alwaysShowNewPostButton
+      return !!useMergedConfigStore().mergedConfig.alwaysShowNewPostButton
     },
     autohideFloatingPostButton() {
-      return !!useSyncConfigStore().mergedConfig.autohideFloatingPostButton
+      return !!useMergedConfigStore().mergedConfig.autohideFloatingPostButton
     },
   },
   watch: {

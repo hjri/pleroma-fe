@@ -1,5 +1,5 @@
 import { useInterfaceStore } from 'src/stores/interface.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { applyStyleConfig } from 'src/services/style_setter/style_setter.js'
 
@@ -44,7 +44,7 @@ export const piniaStylePlugin = ({ store, options }) => {
       if (ACTIONS.has(name)) {
         const { path } = args[0]
         if (MIXED_KEYS.has(path)) {
-          after(() => applyStyleConfig(useSyncConfigStore().mergedConfig))
+          after(() => applyStyleConfig(useMergedConfigStore().mergedConfig))
         }
         if (HACKS_KEYS.has(path)) {
           after(() => useInterfaceStore().applyTheme({ recompile: true }))

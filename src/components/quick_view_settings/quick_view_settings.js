@@ -4,6 +4,7 @@ import Popover from 'src/components/popover/popover.vue'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -30,7 +31,7 @@ const QuickViewSettings = {
     },
   },
   computed: {
-    ...mapState(useSyncConfigStore, ['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
     ...mapState(useInterfaceStore, {
       mobileLayout: (state) => state.layoutType === 'mobile',
     }),

@@ -6,7 +6,7 @@ import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const GeneralTab = {
   data() {
@@ -31,12 +31,12 @@ const GeneralTab = {
       'suggestionsEnabled',
     ]),
     columns() {
-      const mode = useSyncConfigStore().mergedConfig.thirdColumnMode
+      const mode = useMergedConfigStore().mergedConfig.thirdColumnMode
 
       const notif = mode === 'none' ? [] : ['notifs']
 
       if (
-        useSyncConfigStore().mergedConfig.sidebarRight ||
+        useMergedConfigStore().mergedConfig.sidebarRight ||
         mode === 'postform'
       ) {
         return [...notif, 'content', 'sidebar']

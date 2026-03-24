@@ -1,11 +1,11 @@
 import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const SharedComputedObject = () => ({
-  ...mapPiniaState(useSyncConfigStore, ['mergedConfig']),
-  ...mapPiniaState(useSyncConfigStore, {
+  ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
+  ...mapPiniaState(useMergedConfigStore, {
     expertLevel: (store) => store.mergedConfig.expertLevel,
   }),
   ...mapState({

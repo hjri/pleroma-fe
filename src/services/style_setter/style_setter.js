@@ -5,6 +5,7 @@ import { chunk, throttle } from 'lodash'
 import { getCssRules } from '../theme_data/css_utils.js'
 import { getEngineChecksum, init } from '../theme_data/theme_data_3.service.js'
 
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { defaultState } from 'src/modules/default_config_state.js'
@@ -142,7 +143,7 @@ export const tryLoadCache = async () => {
     if (
       cache.engineChecksum === getEngineChecksum() &&
       cache.checksum !== undefined &&
-      cache.checksum === useSyncConfigStore().mergedConfig.themeChecksum
+      cache.checksum === useMergedConfigStore().mergedConfig.themeChecksum
     ) {
       const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
       const lazyStyles = createStyleSheet(LAZY_STYLE_ID, 20)

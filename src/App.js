@@ -26,8 +26,8 @@ import { useI18nStore } from 'src/stores/i18n.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useShoutStore } from 'src/stores/shout.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import messages from 'src/i18n/messages'
 import localeService from 'src/services/locale/locale.service.js'
@@ -80,7 +80,7 @@ export default {
   },
   created() {
     // Load the locale from the storage
-    const value = useSyncConfigStore().mergedConfig.interfaceLanguage
+    const value = useMergedConfigStore().mergedConfig.interfaceLanguage
     useI18nStore().setLanguage(value)
     useEmojiStore().loadUnicodeEmojiData(value)
 
@@ -132,7 +132,7 @@ export default {
       ]
     },
     navClasses() {
-      const { navbarColumnStretch } = useSyncConfigStore().mergedConfig
+      const { navbarColumnStretch } = useMergedConfigStore().mergedConfig
       return [
         '-' + this.layoutType,
         ...(navbarColumnStretch ? ['-column-stretch'] : []),
@@ -145,7 +145,7 @@ export default {
       return this.currentUser.background_image
     },
     instanceBackground() {
-      return useSyncConfigStore().mergedConfig.hideInstanceWallpaper
+      return useMergedConfigStore().mergedConfig.hideInstanceWallpaper
         ? null
         : this.instanceBackgroundUrl
     },
@@ -172,19 +172,21 @@ export default {
       if (this.isChats) return false
       if (this.isListEdit) return false
       return (
-        useSyncConfigStore().mergedConfig.alwaysShowNewPostButton ||
+        useMergedConfigStore().mergedConfig.alwaysShowNewPostButton ||
         this.layoutType === 'mobile'
       )
     },
     shoutboxPosition() {
-      return useSyncConfigStore().mergedConfig.alwaysShowNewPostButton || false
+      return (
+        useMergedConfigStore().mergedConfig.alwaysShowNewPostButton || false
+      )
     },
     hideShoutbox() {
-      return useSyncConfigStore().mergedConfig.hideShoutbox
+      return useMergedConfigStore().mergedConfig.hideShoutbox
     },
     reverseLayout() {
       const { thirdColumnMode, sidebarRight: reverseSetting } =
-        useSyncConfigStore().mergedConfig
+        useMergedConfigStore().mergedConfig
       if (this.layoutType !== 'wide') {
         return reverseSetting
       } else {
@@ -194,10 +196,10 @@ export default {
       }
     },
     noSticky() {
-      return useSyncConfigStore().mergedConfig.disableStickyHeaders
+      return useMergedConfigStore().mergedConfig.disableStickyHeaders
     },
     showScrollbars() {
-      return useSyncConfigStore().mergedConfig.showScrollbars
+      return useMergedConfigStore().mergedConfig.showScrollbars
     },
     scrollParent() {
       return window /* this.$refs.appContentRef */
@@ -205,10 +207,10 @@ export default {
     showInstanceSpecificPanel() {
       return (
         this.instanceSpecificPanelPresent &&
-        !useSyncConfigStore().mergedConfig.hideISP
+        !useMergedConfigStore().mergedConfig.hideISP
       )
     },
-    ...mapState(useSyncConfigStore, ['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
     ...mapState(useInterfaceStore, [
       'themeApplied',
       'styleDataUsed',

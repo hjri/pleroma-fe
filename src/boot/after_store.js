@@ -33,6 +33,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
@@ -527,6 +528,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
   useInterfaceStore().setLayoutWidth(windowWidth())
   useInterfaceStore().setLayoutHeight(windowHeight())
   window.syncConfig = useSyncConfigStore()
+  window.mergedConfig = useMergedConfigStore()
   window.localConfig = useLocalConfigStore()
   window.highlightConfig = useUserHighlightStore()
 
@@ -554,7 +556,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     return Promise.reject(e)
   }
 
-  applyStyleConfig(useSyncConfigStore().mergedConfig, i18n.global)
+  applyStyleConfig(useMergedConfigStore().mergedConfig, i18n.global)
 
   // Now we can try getting the server settings and logging in
   // Most of these are preloaded into the index.html so blocking is minimized

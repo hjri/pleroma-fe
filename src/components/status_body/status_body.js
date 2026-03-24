@@ -2,7 +2,7 @@ import { mapState } from 'pinia'
 
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -108,7 +108,7 @@ const StatusBody = {
     collapsedStatus() {
       return this.status.raw_html.replace(/(\n|<br\s?\/?>)/g, ' ')
     },
-    ...mapState(useSyncConfigStore, ['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   components: {
     RichContent,

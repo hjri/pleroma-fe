@@ -9,6 +9,7 @@ import {
   maybeShowNotification,
 } from '../services/notification_utils/notification_utils.js'
 
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useReportsStore } from 'src/stores/reports.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
@@ -118,8 +119,8 @@ export const notifications = {
           commit('addNewNotifications', { notifications: [notification] })
 
           maybeShowNotification(
-            useSyncConfigStore().mergedConfig.notificationVisibility,
             store,
+            useMergedConfigStore().mergedConfig.notificationVisibility,
             Object.values(useSyncConfigStore().prefsStorage.simple.muteFilters),
             notification,
           )

@@ -25,11 +25,11 @@ import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { storage } from 'src/lib/storage.js'
 import {
   defaultState as configDefaultState,
-  validateSetting,
   INSTANCE_DEFAULT_CONFIG,
   INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
   LOCAL_DEFAULT_CONFIG,
   LOCAL_ONLY_KEYS,
+  validateSetting,
 } from 'src/modules/default_config_state.js'
 import { oldDefaultConfigSync } from 'src/modules/old_default_config_state.js'
 
@@ -750,51 +750,6 @@ export const useSyncConfigStore = defineStore('sync_config', {
       this.updateCache({ username: window.vuex.state.users.currentUser.fqn })
       const params = { pleroma_settings_store: { 'pleroma-fe': this.cache } }
       window.vuex.state.api.backendInteractor.updateProfileJSON({ params })
-    },
-  },
-  getters: {
-    mergedConfig: (state) => {
-      const instancePrefs = useInstanceStore().prefsStorage
-      const localPrefs = useLocalConfigStore().prefsStorage
-      const tempPrefs = useLocalConfigStore().tempStorage
-      const result = Object.fromEntries(
-        Object.entries(state.prefsStorage.simple).map(([k, value]) => [
-          k,
-          LOCAL_ONLY_KEYS.has(k)
-            ? (tempPrefs[k] ??
-              localPrefs[k] ??
-              instancePrefs[k] ??
-              LOCAL_DEFAULT_CONFIG[k])
-            : (tempPrefs[k] ??
-              localPrefs[k] ??
-              value ??
-              instancePrefs[k] ??
-              INSTANCE_DEFAULT_CONFIG[k]),
-        ]),
-      )
-      return result
-    },
-    mergedConfigDefault: (state) => {
-      const instancePrefs = useInstanceStore().prefsStorage
-      const result = Object.fromEntries(
-        Object.entries(state.prefsStorage.simple).map(([k, value]) => [
-          k,
-          LOCAL_ONLY_KEYS.has(k)
-            ? (instancePrefs[k] ?? LOCAL_DEFAULT_CONFIG[k])
-            : (instancePrefs[k] ?? INSTANCE_DEFAULT_CONFIG[k]),
-        ]),
-      )
-      return result
-    },
-    mergedConfigWithoutDefaults: (state) => {
-      const localPrefs = useLocalConfigStore().prefsStorage
-      const result = Object.fromEntries(
-        Object.entries(state.prefsStorage.simple).map(([k, value]) => [
-          k,
-          LOCAL_ONLY_KEYS.has(k) ? localPrefs[k] : value,
-        ]),
-      )
-      return result
     },
   },
   persist: {

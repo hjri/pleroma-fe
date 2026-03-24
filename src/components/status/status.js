@@ -22,6 +22,7 @@ import UserPopover from '../user_popover/user_popover.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
@@ -477,7 +478,7 @@ const Status = {
       return this.$store.state.users.currentUser
     },
     mergedConfig() {
-      return useSyncConfigStore().mergedConfig
+      return useMergedConfigStore().mergedConfig
     },
     isSuspendable() {
       return !this.replying && this.mediaPlaying.length === 0

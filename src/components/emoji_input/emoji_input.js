@@ -9,7 +9,7 @@ import genRandomSeed from '../../services/random_seed/random_seed.service.js'
 import EmojiPicker from '../emoji_picker/emoji_picker.vue'
 import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
 
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faSmileBeam } from '@fortawesome/free-regular-svg-icons'
@@ -133,10 +133,10 @@ const EmojiInput = {
   },
   computed: {
     padEmoji() {
-      return useSyncConfigStore().mergedConfig.padEmoji
+      return useMergedConfigStore().mergedConfig.padEmoji
     },
     defaultCandidateIndex() {
-      return useSyncConfigStore().mergedConfig.autocompleteSelect ? 0 : -1
+      return useMergedConfigStore().mergedConfig.autocompleteSelect ? 0 : -1
     },
     preText() {
       return this.modelValue.slice(0, this.caret)
@@ -165,7 +165,7 @@ const EmojiInput = {
     },
     languages() {
       return ensureFinalFallback(
-        useSyncConfigStore().mergedConfig.interfaceLanguage,
+        useMergedConfigStore().mergedConfig.interfaceLanguage,
       )
     },
     maybeLocalizedEmojiNamesAndKeywords() {

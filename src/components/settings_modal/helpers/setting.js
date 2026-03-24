@@ -7,6 +7,7 @@ import ModifiedIndicator from './modified_indicator.vue'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 export default {
@@ -244,7 +245,7 @@ export default {
         case 'admin':
           return this.$store.state.adminSettings.config
         default:
-          return useSyncConfigStore().mergedConfig
+          return useMergedConfigStore().mergedConfig
       }
     },
     configSink() {
@@ -323,7 +324,7 @@ export default {
         case 'profile':
           return {}
         default: {
-          return get(useSyncConfigStore().mergedConfigDefault, this.path)
+          return get(useMergedConfigStore().mergedConfigDefault, this.path)
         }
       }
     },
@@ -379,7 +380,7 @@ export default {
     matchesExpertLevel() {
       const settingExpertLevel = this.expert || 0
       const userToggleExpert =
-        useSyncConfigStore().mergedConfig.expertLevel || 0
+        useMergedConfigStore().mergedConfig.expertLevel || 0
 
       return settingExpertLevel <= userToggleExpert
     },
@@ -405,7 +406,7 @@ export default {
         this.draft = cloneDeep(this.state)
       } else {
         set(
-          useSyncConfigStore().mergedConfig,
+          useMergedConfigStore().mergedConfig,
           this.path,
           cloneDeep(this.defaultState),
         )

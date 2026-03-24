@@ -1,6 +1,6 @@
 import { mapState } from 'pinia'
 
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const LinkPreview = {
   name: 'LinkPreview',
@@ -26,7 +26,7 @@ const LinkPreview = {
     hideNsfwConfig() {
       return this.mergedConfig.hideNsfw
     },
-    ...mapState(useSyncConfigStore, ['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   created() {
     if (this.useImage) {

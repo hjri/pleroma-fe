@@ -615,6 +615,7 @@ export const LOCAL_DEFAULT_CONFIG_DEFINITIONS = {
   },
   underlay: {
     description: 'Underlay override',
+    required: true,
     default: 'none',
   },
   fontInterface: {

@@ -13,6 +13,7 @@ import UnitSetting from '../helpers/unit_setting.vue'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import {
@@ -36,7 +37,7 @@ const FilteringTab = {
         label: this.$t(`user_card.mute_block_${mode}`),
       })),
       muteFiltersDraftObject: cloneDeep(
-        useSyncConfigStore().mergedConfig.muteFilters,
+        useMergedConfigStore().mergedConfig.muteFilters,
       ),
       muteFiltersDraftDirty: Object.fromEntries(
         Object.entries(
@@ -100,7 +101,7 @@ const FilteringTab = {
     ...mapState(useInstanceCapabilitiesStore, ['blockExpiration']),
     onMuteDefaultActionLv1: {
       get() {
-        const value = useSyncConfigStore().mergedConfig.onMuteDefaultAction
+        const value = useMergedConfigStore().mergedConfig.onMuteDefaultAction
         if (value === 'ask' || value === 'forever') {
           return value
         } else {
@@ -120,7 +121,7 @@ const FilteringTab = {
     },
     onBlockDefaultActionLv1: {
       get() {
-        const value = useSyncConfigStore().mergedConfig.onBlockDefaultAction
+        const value = useMergedConfigStore().mergedConfig.onBlockDefaultAction
         if (value === 'ask' || value === 'forever') {
           return value
         } else {
@@ -263,7 +264,7 @@ const FilteringTab = {
     },
     muteFiltersObject() {
       this.muteFiltersDraftObject = cloneDeep(
-        useSyncConfigStore().mergedConfig.muteFilters,
+        useMergedConfigStore().mergedConfig.muteFilters,
       )
     },
   },

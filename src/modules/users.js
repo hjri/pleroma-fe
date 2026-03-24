@@ -25,6 +25,7 @@ import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
@@ -554,9 +555,9 @@ const users = {
     registerPushNotifications(store) {
       const token = store.state.currentUser.credentials
       const vapidPublicKey = useInstanceStore().vapidPublicKey
-      const isEnabled = useSyncConfigStore().mergedConfig.webPushNotifications
+      const isEnabled = useMergedConfigStore().mergedConfig.webPushNotifications
       const notificationVisibility =
-        useSyncConfigStore().mergedConfig.notificationVisibility
+        useMergedConfigStore().mergedConfig.notificationVisibility
 
       registerPushNotifications(
         isEnabled,
@@ -789,7 +790,7 @@ const users = {
                 dispatch('startFetchingFollowRequests')
               }
 
-              if (useSyncConfigStore().mergedConfig.useStreamingApi) {
+              if (useMergedConfigStore().mergedConfig.useStreamingApi) {
                 dispatch('fetchTimeline', { timeline: 'friends', since: null })
                 dispatch('fetchNotifications', { since: null })
                 dispatch('enableMastoSockets', true)

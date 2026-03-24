@@ -2,6 +2,7 @@ import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import Select from 'src/components/select/select.vue'
 
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { durationStrToMs } from 'src/services/date_utils/date_utils.js'
@@ -9,8 +10,8 @@ import { durationStrToMs } from 'src/services/date_utils/date_utils.js'
 const UserTimedFilterModal = {
   data() {
     const action = this.isMute
-      ? useSyncConfigStore().mergedConfig.onMuteDefaultAction
-      : useSyncConfigStore().mergedConfig.onBlockDefaultAction
+      ? useMergedConfigStore().mergedConfig.onMuteDefaultAction
+      : useMergedConfigStore().mergedConfig.onBlockDefaultAction
     const doAsk = action === 'ask'
     const defaultValues = {}
 
@@ -46,9 +47,11 @@ const UserTimedFilterModal = {
   computed: {
     shouldConfirm() {
       if (this.isMute) {
-        return useSyncConfigStore().mergedConfig.onMuteDefaultAction === 'ask'
+        return useMergedConfigStore().mergedConfig.onMuteDefaultAction === 'ask'
       } else {
-        return useSyncConfigStore().mergedConfig.onBlockDefaultAction === 'ask'
+        return (
+          useMergedConfigStore().mergedConfig.onBlockDefaultAction === 'ask'
+        )
       }
     },
     expiryString() {

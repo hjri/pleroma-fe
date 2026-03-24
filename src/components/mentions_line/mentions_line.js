@@ -2,7 +2,7 @@ import { mapState } from 'pinia'
 
 import MentionLink from 'src/components/mention_link/mention_link.vue'
 
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 export const MENTIONS_LIMIT = 5
 
@@ -28,7 +28,7 @@ const MentionsLine = {
     manyMentions() {
       return this.extraMentions.length > 0
     },
-    ...mapState(useSyncConfigStore, ['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   methods: {
     toggleShowMore() {

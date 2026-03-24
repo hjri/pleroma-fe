@@ -1,6 +1,7 @@
 import Modal from 'src/components/modal/modal.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import pleromaTanFoxMask from 'src/assets/pleromatan_apology_fox_mask.png'
@@ -43,7 +44,7 @@ const UpdateNotification = {
         this.$store.state.users.currentUser &&
         useSyncConfigStore().flagStorage.updateCounter <
           CURRENT_UPDATE_COUNTER &&
-        !useSyncConfigStore().mergedConfig.dontShowUpdateNotifs
+        !useMergedConfigStore().mergedConfig.dontShowUpdateNotifs
       )
     },
   },

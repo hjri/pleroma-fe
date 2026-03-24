@@ -8,7 +8,7 @@ import StillImage from '../still-image/still-image.vue'
 
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -341,7 +341,7 @@ const EmojiPicker = {
       this.$nextTick(() => {
         this.updateEmojiSize()
       })
-      return useSyncConfigStore().mergedConfig.fontSize
+      return useMergedConfigStore().mergedConfig.fontSize
     },
     emojiHeight() {
       return this.emojiSize
@@ -406,7 +406,7 @@ const EmojiPicker = {
     },
     languages() {
       return ensureFinalFallback(
-        useSyncConfigStore().mergedConfig.interfaceLanguage,
+        useMergedConfigStore().mergedConfig.interfaceLanguage,
       )
     },
     maybeLocalizedEmojiName() {

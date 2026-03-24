@@ -17,7 +17,7 @@ import NotificationFilters from './notification_filters.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -78,7 +78,7 @@ const Notifications = {
     unseenNotifications() {
       return unseenNotificationsFromStore(
         this.$store,
-        useSyncConfigStore().mergedConfig.notificationVisibility,
+        useMergedConfigStore().mergedConfig.notificationVisibility,
       )
     },
     filteredNotifications() {
@@ -86,17 +86,17 @@ const Notifications = {
         return [
           ...filteredNotificationsFromStore(
             this.$store,
-            useSyncConfigStore().mergedConfig.notificationVisibility,
+            useMergedConfigStore().mergedConfig.notificationVisibility,
           ).filter((n) => this.shouldShowUnseen(n)),
           ...filteredNotificationsFromStore(
             this.$store,
-            useSyncConfigStore().mergedConfig.notificationVisibility,
+            useMergedConfigStore().mergedConfig.notificationVisibility,
           ).filter((n) => !this.shouldShowUnseen(n)),
         ]
       } else {
         return filteredNotificationsFromStore(
           this.$store,
-          useSyncConfigStore().mergedConfig.notificationVisibility,
+          useMergedConfigStore().mergedConfig.notificationVisibility,
           this.filterMode,
         )
       }
@@ -108,12 +108,12 @@ const Notifications = {
       return this.unseenNotifications.length
     },
     ignoreInactionableSeen() {
-      return useSyncConfigStore().mergedConfig.ignoreInactionableSeen
+      return useMergedConfigStore().mergedConfig.ignoreInactionableSeen
     },
     extraNotificationsCount() {
       return countExtraNotifications(
         this.$store,
-        useSyncConfigStore().mergedConfig,
+        useMergedConfigStore().mergedConfig,
       )
     },
     unseenCountTitle() {
@@ -149,10 +149,10 @@ const Notifications = {
       )
     },
     noSticky() {
-      return useSyncConfigStore().mergedConfig.disableStickyHeaders
+      return useMergedConfigStore().mergedConfig.disableStickyHeaders
     },
     unseenAtTop() {
-      return useSyncConfigStore().mergedConfig.unseenAtTop
+      return useMergedConfigStore().mergedConfig.unseenAtTop
     },
     showExtraNotifications() {
       return !this.noExtra

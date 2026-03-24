@@ -1,4 +1,4 @@
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const VideoAttachment = {
   props: ['attachment', 'controls'],
@@ -11,10 +11,10 @@ const VideoAttachment = {
   },
   computed: {
     loopVideo() {
-      if (useSyncConfigStore().mergedConfig.loopVideoSilentOnly) {
+      if (useMergedConfigStore().mergedConfig.loopVideoSilentOnly) {
         return !this.hasAudio
       }
-      return useSyncConfigStore().mergedConfig.loopVideo
+      return useMergedConfigStore().mergedConfig.loopVideo
     },
   },
   methods: {

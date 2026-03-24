@@ -1,4 +1,4 @@
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const DialogModal = {
   props: {
@@ -15,7 +15,7 @@ const DialogModal = {
   },
   computed: {
     mobileCenter() {
-      return useSyncConfigStore().mergedConfig.modalMobileCenter
+      return useMergedConfigStore().mergedConfig.modalMobileCenter
     },
   },
 }

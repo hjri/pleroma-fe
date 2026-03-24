@@ -3,7 +3,7 @@ import { mapGetters } from 'vuex'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -56,7 +56,7 @@ const ExtraNotifications = {
     ...mapPiniaState(useAnnouncementsStore, {
       unreadAnnouncementCount: 'unreadAnnouncementCount',
     }),
-    ...mapPiniaState(useSyncConfigStore, ['mergedConfig']),
+    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
   },
   methods: {
     openNotificationSettings() {

@@ -8,6 +8,7 @@ import {
 import { deserialize } from '../services/theme_data/iss_deserializer.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import {
@@ -186,7 +187,7 @@ export const useInterfaceStore = defineStore('interface', {
 
       const mobileLayout = width <= 800
       const normalOrMobile = mobileLayout ? 'mobile' : 'normal'
-      const { thirdColumnMode } = useSyncConfigStore().mergedConfig
+      const { thirdColumnMode } = useMergedConfigStore().mergedConfig
       if (thirdColumnMode === 'none' || !window.vuex.state.users.currentUser) {
         this.layoutType = normalOrMobile
       } else {
@@ -425,13 +426,13 @@ export const useInterfaceStore = defineStore('interface', {
         styleCustomData: userStyleCustomData,
         palette: userPaletteName,
         paletteCustomData: userPaletteCustomData,
-      } = useSyncConfigStore().mergedConfig
+      } = useMergedConfigStore().mergedConfig
 
       let {
         theme: userThemeV2Name,
         customTheme: userThemeV2Snapshot,
         customThemeSource: userThemeV2Source,
-      } = useSyncConfigStore().mergedConfig
+      } = useMergedConfigStore().mergedConfig
 
       let majorVersionUsed
 
@@ -596,7 +597,7 @@ export const useInterfaceStore = defineStore('interface', {
       this.themeApplied = true
     },
     async applyTheme({ recompile = false } = {}) {
-      const { mergedConfig } = useSyncConfigStore()
+      const { mergedConfig } = useMergedConfigStore()
       const { forceThemeRecompilation, themeDebug } = mergedConfig
 
       this.themeChangeInProgress = true

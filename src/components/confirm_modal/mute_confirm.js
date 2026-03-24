@@ -3,7 +3,7 @@ import { mapState } from 'pinia'
 import Select from 'src/components/select/select.vue'
 import ConfirmModal from './confirm_modal.vue'
 
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 export default {
   props: ['type', 'user', 'status'],
@@ -45,7 +45,7 @@ export default {
         }
       }
     },
-    ...mapState(useSyncConfigStore, ['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   methods: {
     optionallyPrompt() {

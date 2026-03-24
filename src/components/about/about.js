@@ -5,7 +5,7 @@ import StaffPanel from '../staff_panel/staff_panel.vue'
 import TermsOfServicePanel from '../terms_of_service_panel/terms_of_service_panel.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const About = {
   components: {
@@ -22,7 +22,7 @@ const About = {
     showInstanceSpecificPanel() {
       return (
         useInstanceStore().instanceIdentity.showInstanceSpecificPanel &&
-        !useSyncConfigStore().mergedConfig.hideISP &&
+        !useMergedConfigStore().mergedConfig.hideISP &&
         useInstanceStore().instanceIdentity.instanceSpecificPanelContent
       )
     },

@@ -13,6 +13,7 @@ import UnitSetting from '../helpers/unit_setting.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import localeService from 'src/services/locale/locale.service.js'
@@ -116,7 +117,7 @@ const ComposingTab = {
     },
     language: {
       get: function () {
-        return useSyncConfigStore().mergedConfig.interfaceLanguage
+        return useMergedConfigStore().mergedConfig.interfaceLanguage
       },
       set: function (val) {
         useSyncConfigStore().setSimplePrefAndSave({

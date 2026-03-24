@@ -108,6 +108,7 @@
 <script>
 import Popover from '../popover/popover.vue'
 
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -119,7 +120,7 @@ export default {
   components: { Popover },
   computed: {
     filters() {
-      return useSyncConfigStore().mergedConfig.notificationVisibility
+      return useMergedConfigStore().mergedConfig.notificationVisibility
     },
   },
   methods: {

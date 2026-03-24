@@ -12,8 +12,6 @@ import suggestor from 'src/components/emoji_input/suggestor.js'
 import ImageCropper from 'src/components/image_cropper/image_cropper.vue'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
-import { useInterfaceStore } from '../../stores/interface'
-import { useMediaViewerStore } from '../../stores/media_viewer'
 import AccountActions from '../account_actions/account_actions.vue'
 import FollowButton from '../follow_button/follow_button.vue'
 import ModerationTools from '../moderation_tools/moderation_tools.vue'
@@ -27,8 +25,10 @@ import UserNote from '../user_note/user_note.vue'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface'
+import { useMediaViewerStore } from 'src/stores/media_viewer'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { usePostStatusStore } from 'src/stores/post_status'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
@@ -385,7 +385,7 @@ export default {
         ],
       })
     },
-    ...mapState(useSyncConfigStore, ['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   methods: {
     muteUser() {

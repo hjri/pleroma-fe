@@ -1,6 +1,6 @@
 import DialogModal from 'src/components/dialog_modal/dialog_modal.vue'
 
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const DraftCloser = {
   data() {
@@ -14,10 +14,10 @@ const DraftCloser = {
   emits: ['save', 'discard'],
   computed: {
     action() {
-      if (useSyncConfigStore().mergedConfig.autoSaveDraft) {
+      if (useMergedConfigStore().mergedConfig.autoSaveDraft) {
         return 'save'
       } else {
-        return useSyncConfigStore().mergedConfig.unsavedPostAction
+        return useMergedConfigStore().mergedConfig.unsavedPostAction
       }
     },
     shouldConfirm() {

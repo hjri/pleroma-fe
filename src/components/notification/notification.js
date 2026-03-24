@@ -17,7 +17,7 @@ import UserLink from '../user_link/user_link.vue'
 import UserPopover from '../user_popover/user_popover.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
@@ -210,7 +210,7 @@ const Notification = {
       return isStatusNotification(this.notification.type)
     },
     mergedConfig() {
-      return useSyncConfigStore().mergedConfig
+      return useMergedConfigStore().mergedConfig
     },
     shouldConfirmApprove() {
       return this.mergedConfig.modalOnApproveFollow

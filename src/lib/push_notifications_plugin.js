@@ -1,6 +1,6 @@
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 export const piniaPushNotificationsPlugin = ({ store }) => {
   if (
@@ -20,7 +20,7 @@ export const piniaPushNotificationsPlugin = ({ store }) => {
 
     // Initial state
     let vapidPublicKey = useInstanceStore().vapidPublicKey
-    let enabled = useSyncConfigStore().mergedConfig.webPushNotifications
+    let enabled = useMergedConfigStore().mergedConfig.webPushNotifications
     let permissionGranted =
       useInterfaceStore().notificationPermission === 'granted'
     let permissionPresent =
@@ -70,7 +70,7 @@ export const vuexPushNotificationsPlugin = (store) => {
   store.subscribe((mutation, state) => {
     // Initial state
     const vapidPublicKey = useInstanceStore().vapidPublicKey
-    const enabled = useSyncConfigStore().mergedConfig.webPushNotifications
+    const enabled = useMergedConfigStore().mergedConfig.webPushNotifications
     const permissionGranted =
       useInterfaceStore().notificationPermission === 'granted'
     const permissionPresent =
