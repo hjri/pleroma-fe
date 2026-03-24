@@ -654,6 +654,46 @@ export const LOCAL_DEFAULT_CONFIG = convertDefinitions(
 
 export const LOCAL_ONLY_KEYS = new Set(Object.keys(LOCAL_DEFAULT_CONFIG))
 
+export const THEME_CONFIG_DEFINITIONS = {
+  theme: {
+    description: 'Very old theme store, stores preset name, still in use',
+    default: null,
+  },
+  colors: {
+    description: 'VERY old theme store, just colors of V1, probably not even used anymore',
+    default: {},
+  },
+  // V2
+  customTheme: {
+    description: '"Snapshot", previously was used as actual theme store for V2 so it\'s still used in case of PleromaFE downgrade event.',
+    default: null,
+  },
+  customThemeSource: {
+    description: '"Source", stores original theme data',
+    default: null,
+  },
+  // V3
+  style: {
+    description: 'Style name for builtins',
+    default: null,
+  },
+  styleCustomData: {
+    description: 'Custom style data (i.e. not builtin)',
+    default: null,
+  },
+  palette: {
+    description: 'Palette name for builtins',
+    default: null,
+  },
+  paletteCustomData: {
+    description: 'Custom palette data (i.e. not builtin)',
+    default: null,
+  },
+}
+export const THEME_CONFIG = convertDefinitions(
+  THEME_CONFIG_DEFINITIONS,
+)
+
 export const makeUndefined = (c) =>
   Object.fromEntries(Object.keys(c).map((key) => [key, undefined]))
 
@@ -663,25 +703,7 @@ export const defaultState = {
   // Set these to undefined so it does not interfere with default settings check
   ...makeUndefined(INSTANCE_DEFAULT_CONFIG),
   ...makeUndefined(LOCAL_DEFAULT_CONFIG),
-  // If there are any configurations that does not make sense to
-  // have instance-wide default, put it here and explain why.
-
-  // # Special processing
-  // ## Theme  stuff
-  theme: undefined, // Very old theme store, stores preset name, still in use
-
-  // V1
-  colors: {}, // VERY old theme store, just colors of V1, probably not even used anymore
-
-  // V2
-  customTheme: undefined, // "snapshot", previously was used as actual theme store for V2 so it's still used in case of PleromaFE downgrade event.
-  customThemeSource: undefined, // "source", stores original theme data
-
-  // V3
-  style: null,
-  styleCustomData: null,
-  palette: null,
-  paletteCustomData: null,
+  ...makeUndefined(THEME_CONFIG),
 }
 
 export const validateSetting = ({

@@ -28,10 +28,24 @@ import {
   INSTANCE_DEFAULT_CONFIG,
   INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
   LOCAL_DEFAULT_CONFIG,
-  LOCAL_ONLY_KEYS,
+  LOCAL_DEFAULT_CONFIG_DEFINITIONS,
+  THEME_CONFIG,
+  THEME_CONFIG_DEFINITIONS,
   validateSetting,
 } from 'src/modules/default_config_state.js'
 import { oldDefaultConfigSync } from 'src/modules/old_default_config_state.js'
+
+const ROOT_CONFIG_DEFINITIONS = {
+  ...INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
+  ...LOCAL_DEFAULT_CONFIG_DEFINITIONS,
+  ...THEME_CONFIG_DEFINITIONS,
+}
+
+const ROOT_CONFIG = {
+  ...INSTANCE_DEFAULT_CONFIG,
+  ...LOCAL_DEFAULT_CONFIG,
+  ...THEME_CONFIG,
+}
 
 export const VERSION = 2
 export const NEW_USER_DATE = new Date('2026-03-16') // date of writing this, basically
@@ -491,14 +505,14 @@ export const useSyncConfigStore = defineStore('sync_config', {
         )
       }
 
-      const definition = INSTANCE_DEFAULT_CONFIG_DEFINITIONS[path.split('.')[1]]
+      const definition = ROOT_CONFIG_DEFINITIONS[path.split('.')[1]]
 
       const finalValue = validateSetting({
         path: path.split('.')[1],
         value,
         definition,
         throwError: false,
-        defaultState: INSTANCE_DEFAULT_CONFIG,
+        defaultState: ROOT_CONFIG,
       })
 
       set(this.prefsStorage, path, finalValue)

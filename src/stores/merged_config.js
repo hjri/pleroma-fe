@@ -7,12 +7,14 @@ import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import {
   INSTANCE_DEFAULT_CONFIG,
   LOCAL_DEFAULT_CONFIG,
+  THEME_CONFIG,
   LOCAL_ONLY_KEYS,
 } from 'src/modules/default_config_state.js'
 
 const ROOT_CONFIG = {
   ...INSTANCE_DEFAULT_CONFIG,
   ...LOCAL_DEFAULT_CONFIG,
+  ...THEME_CONFIG,
 }
 
 export const useMergedConfigStore = defineStore('merged_config', {
