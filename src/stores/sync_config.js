@@ -643,7 +643,9 @@ export const useSyncConfigStore = defineStore('sync_config', {
       vuexState.config = vuexState.config ?? {}
 
       const migratedEntries = new Set(vuexState.config._syncMigration ?? [])
-      console.debug(`Already migrated Values: ${[...migratedEntries].join() || '[none]'}`)
+      console.debug(
+        `Already migrated Values: ${[...migratedEntries].join() || '[none]'}`,
+      )
 
       Object.entries(oldDefaultConfigSync).forEach(([key, value]) => {
         const oldValue = vuexState.config[key]

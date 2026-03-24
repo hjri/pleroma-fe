@@ -5,9 +5,9 @@ const browserLocale = (navigator.language || 'en').split('-')[0]
 /// to override it.
 export const staticOrApiConfigDefault = {
   name: 'PleromaFE',
-  theme: 'pleroma-dark',
+  theme: null,
   palette: null,
-  style: null,
+  style: 'breezy',
   themeChecksum: undefined,
   defaultAvatar: '/images/avi.png',
   defaultBanner: '/images/banner.png',
@@ -189,6 +189,7 @@ export const defaultConfigLocal = {
   themeDebug: false, // debug mode that uses computed backgrounds instead of real ones to debug contrast functions
   forceThemeRecompilation: false, //  flag that forces recompilation on boot even if cache exists
 }
+
 export const LOCAL_ONLY_KEYS = new Set(Object.keys(defaultConfigLocal))
 
 export const makeUndefined = (c) =>

@@ -3,8 +3,8 @@ import { defineStore } from 'pinia'
 
 import { instanceDefaultProperties } from '../modules/config.js'
 import {
-  instanceDefaultConfig,
   defaultConfigLocal,
+  instanceDefaultConfig,
   staticOrApiConfigDefault,
 } from '../modules/default_config_state.js'
 import apiService from '../services/api/api.service.js'

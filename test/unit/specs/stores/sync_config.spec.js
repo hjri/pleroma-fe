@@ -1,6 +1,8 @@
 import { cloneDeep } from 'lodash'
 import { createPinia, setActivePinia } from 'pinia'
 
+import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
+
 import {
   _getAllFlags,
   _getRecentData,
@@ -15,7 +17,6 @@ import {
   useSyncConfigStore,
   VERSION,
 } from 'src/stores/sync_config.js'
-import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
 
 describe('The SyncConfig store', () => {
   beforeEach(() => {
