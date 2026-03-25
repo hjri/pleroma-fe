@@ -6,7 +6,7 @@
         :id="name + '-o'"
         class="font-checkbox setting-control setting-label"
         :model-value="present"
-        @change="$emit('update:modelValue', typeof modelValue === 'undefined' ? fallback : undefined)"
+        @change="$emit('update:modelValue', modelValue == null ? fallback : null)"
       >
         <LocalSettingIndicator />
         {{ ' ' }}

@@ -27,6 +27,7 @@ export default {
   },
   emits: ['update:modelValue'],
   data() {
+    console.log(this.fallback)
     return {
       manualEntry: false,
       availableOptions: [
@@ -45,7 +46,7 @@ export default {
   },
   computed: {
     present() {
-      return typeof this.modelValue !== 'undefined'
+      return this.modelValue != null
     },
     localFontsList() {
       return useInterfaceStore().localFonts
