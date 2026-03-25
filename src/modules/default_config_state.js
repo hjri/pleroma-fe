@@ -661,8 +661,8 @@ export const SYNC_DEFAULT_CONFIG_DEFINITIONS = {
   },
   collapseNav: {
     description: 'Collapse navigation panel to header only',
-    default: false
-  }
+    default: false,
+  },
 }
 export const SYNC_DEFAULT_CONFIG = convertDefinitions(
   SYNC_DEFAULT_CONFIG_DEFINITIONS,
@@ -675,12 +675,14 @@ export const THEME_CONFIG_DEFINITIONS = {
     default: null,
   },
   colors: {
-    description: 'VERY old theme store, just colors of V1, probably not even used anymore',
+    description:
+      'VERY old theme store, just colors of V1, probably not even used anymore',
     default: {},
   },
   // V2
   customTheme: {
-    description: '"Snapshot", previously was used as actual theme store for V2 so it\'s still used in case of PleromaFE downgrade event.',
+    description:
+      '"Snapshot", previously was used as actual theme store for V2 so it\'s still used in case of PleromaFE downgrade event.',
     default: null,
   },
   customThemeSource: {
@@ -705,9 +707,7 @@ export const THEME_CONFIG_DEFINITIONS = {
     default: null,
   },
 }
-export const THEME_CONFIG = convertDefinitions(
-  THEME_CONFIG_DEFINITIONS,
-)
+export const THEME_CONFIG = convertDefinitions(THEME_CONFIG_DEFINITIONS)
 
 export const makeUndefined = (c) =>
   Object.fromEntries(Object.keys(c).map((key) => [key, undefined]))

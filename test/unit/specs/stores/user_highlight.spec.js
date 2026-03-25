@@ -3,7 +3,7 @@ import { createPinia, setActivePinia } from 'pinia'
 
 import {
   _getRecentData,
-  _mergePrefs,
+  _mergeHighlights,
   _moveItemInArray,
   useUserHighlightStore,
 } from 'src/stores/user_highlight.js'
@@ -11,6 +11,15 @@ import {
 describe('The UserHighlight store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
+    window.vuex = {
+      state: {
+        users: {
+          currentUser: {
+            fqn: 'foo@bar.tld',
+          },
+        },
+      },
+    }
   })
 
   describe('mutations', () => {
@@ -20,23 +29,23 @@ describe('The UserHighlight store', () => {
         storage: {},
       }
 
-      it('should initialize storage if none present', () => {
+      it('should initialize storage if none present', async () => {
         const store = useUserHighlightStore()
-        store.initUserHighlight({ ...user })
+        await store.initUserHighlight({ ...user })
         expect(store.cache._timestamp).to.be.a('number')
         expect(store.cache.highlight).to.eql({ _journal: [] })
       })
 
-      it('should initialize storage for new users if none present', () => {
+      it('should initialize storage for new users if none present', async () => {
         const store = useUserHighlightStore()
-        store.initUserHighlight({ ...user, created_at: new Date() })
+        await store.initUserHighlight({ ...user, created_at: new Date() })
         expect(store.cache._timestamp).to.be.a('number')
         expect(store.cache.highlight).to.eql({ _journal: [] })
       })
 
-      it('should use remote version if local missing', () => {
+      it('should use remote version if local missing', async () => {
         const store = useUserHighlightStore()
-        store.initUserHighlight(store, user)
+        await store.initUserHighlight(store, user)
         expect(store.cache._timestamp).to.be.a('number')
       })
     })
@@ -161,10 +170,10 @@ describe('The UserHighlight store', () => {
       })
     })
 
-    describe('_mergePrefs', () => {
+    describe('_mergeHighlights', () => {
       it('should prefer recent and apply journal to it', () => {
         expect(
-          _mergePrefs(
+          _mergeHighlights(
             // RECENT
             {
               highlight: {
@@ -227,7 +236,7 @@ describe('The UserHighlight store', () => {
 
       it('should work with objects', () => {
         expect(
-          _mergePrefs(
+          _mergeHighlights(
             // RECENT
             {
               highlight: { 'a@test.xyz': { type: 'foo' } },
@@ -268,7 +277,7 @@ describe('The UserHighlight store', () => {
 
       it('should work with unset', () => {
         expect(
-          _mergePrefs(
+          _mergeHighlights(
             // RECENT
             {
               highlight: { 'a@test.xyz': { type: 'foo' } },

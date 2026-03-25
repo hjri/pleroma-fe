@@ -7,8 +7,8 @@ import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import {
   INSTANCE_DEFAULT_CONFIG,
   LOCAL_DEFAULT_CONFIG,
-  THEME_CONFIG,
   LOCAL_ONLY_KEYS,
+  THEME_CONFIG,
 } from 'src/modules/default_config_state.js'
 
 const ROOT_CONFIG = {
@@ -35,10 +35,7 @@ export const useMergedConfigStore = defineStore('merged_config', {
       const getDefault = (k) => instancePrefs[k] ?? ROOT_CONFIG[k]
 
       const result = Object.fromEntries(
-        Object.keys(ROOT_CONFIG).map((k) => [
-          k,
-          getValue(k) ?? getDefault(k),
-        ]),
+        Object.keys(ROOT_CONFIG).map((k) => [k, getValue(k) ?? getDefault(k)]),
       )
       return result
     },
@@ -48,10 +45,7 @@ export const useMergedConfigStore = defineStore('merged_config', {
       const getDefault = (k) => instancePrefs[k] ?? ROOT_CONFIG[k]
 
       const result = Object.fromEntries(
-        Object.keys(ROOT_CONFIG).map((k) => [
-          k,
-          getDefault(k),
-        ]),
+        Object.keys(ROOT_CONFIG).map((k) => [k, getDefault(k)]),
       )
       return result
     },
@@ -65,10 +59,7 @@ export const useMergedConfigStore = defineStore('merged_config', {
         tempPrefs[k] ?? localPrefs[k] ?? syncPrefs.simple[k] ?? instancePrefs[k]
 
       const result = Object.fromEntries(
-        Object.keys(ROOT_CONFIG).map(([k, value]) => [
-          k,
-          getValue(k),
-        ]),
+        Object.keys(ROOT_CONFIG).map(([k, value]) => [k, getValue(k)]),
       )
       return result
     },

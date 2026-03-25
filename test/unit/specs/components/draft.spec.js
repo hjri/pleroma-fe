@@ -6,7 +6,7 @@ import { nextTick } from 'vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import { $t, mountOpts, waitForEvent } from '../../../fixtures/setup_test'
 
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const autoSaveOrNot = (caseFn, caseTitle, runFn) => {
   caseFn(`${caseTitle} with auto-save`, function () {
@@ -48,7 +48,7 @@ describe('Draft saving', () => {
     'should save when the button is clicked',
     async (autoSave) => {
       const wrapper = mount(PostStatusForm, mountOpts())
-      const store = useSyncConfigStore()
+      const store = useMergedConfigStore()
       store.mergedConfig = {
         autoSaveDraft: autoSave,
       }
@@ -68,7 +68,7 @@ describe('Draft saving', () => {
   it('should auto-save if it is enabled', async function () {
     vi.useFakeTimers()
     const wrapper = mount(PostStatusForm, mountOpts())
-    const store = useSyncConfigStore()
+    const store = useMergedConfigStore()
     store.mergedConfig = {
       autoSaveDraft: true,
     }
@@ -91,7 +91,7 @@ describe('Draft saving', () => {
         },
       }),
     )
-    const store = useSyncConfigStore()
+    const store = useMergedConfigStore()
     store.mergedConfig = {
       autoSaveDraft: true,
     }
@@ -112,7 +112,7 @@ describe('Draft saving', () => {
         },
       }),
     )
-    const store = useSyncConfigStore()
+    const store = useMergedConfigStore()
     store.mergedConfig = {
       autoSaveDraft: false,
       unsavedPostAction: 'save',
@@ -134,7 +134,7 @@ describe('Draft saving', () => {
         },
       }),
     )
-    const store = useSyncConfigStore()
+    const store = useMergedConfigStore()
     store.mergedConfig = {
       autoSaveDraft: false,
       unsavedPostAction: 'discard',
@@ -156,7 +156,7 @@ describe('Draft saving', () => {
         },
       }),
     )
-    const store = useSyncConfigStore(createTestingPinia())
+    const store = useMergedConfigStore(createTestingPinia())
     store.mergedConfig = {
       autoSaveDraft: false,
       unsavedPostAction: 'confirm',

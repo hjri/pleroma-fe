@@ -7,7 +7,7 @@ createTestingPinia()
 
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
 
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const generateInput = (value, padEmoji = true) => {
   const wrapper = shallowMount(EmojiInput, {
@@ -45,7 +45,7 @@ const generateInput = (value, padEmoji = true) => {
 
 describe('EmojiInput', () => {
   beforeEach(() => {
-    const store = useSyncConfigStore(createTestingPinia())
+    const store = useMergedConfigStore(createTestingPinia())
     store.mergedConfig = {
       padEmoji: true,
     }
@@ -113,7 +113,7 @@ describe('EmojiInput', () => {
     it('inserts string without any padding if padEmoji setting is set to false', () => {
       const initialString = 'Eat some spam!'
       const wrapper = generateInput(initialString, false)
-      const store = useSyncConfigStore(createTestingPinia())
+      const store = useMergedConfigStore(createTestingPinia())
       store.mergedConfig = {
         padEmoji: false,
       }
@@ -152,7 +152,7 @@ describe('EmojiInput', () => {
     it('correctly sets caret after insertion if padEmoji setting is set to false', async () => {
       const initialString = '1234'
       const wrapper = generateInput(initialString, false)
-      const store = useSyncConfigStore(createTestingPinia())
+      const store = useMergedConfigStore(createTestingPinia())
       store.mergedConfig = {
         padEmoji: false,
       }

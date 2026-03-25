@@ -24,10 +24,10 @@ import { useLocalConfigStore } from 'src/stores/local_config.js'
 
 import { storage } from 'src/lib/storage.js'
 import {
+  makeUndefined,
   ROOT_CONFIG,
   ROOT_CONFIG_DEFINITIONS,
   validateSetting,
-  makeUndefined,
 } from 'src/modules/default_config_state.js'
 import { oldDefaultConfigSync } from 'src/modules/old_default_config_state.js'
 
@@ -297,7 +297,7 @@ export const _mergePrefs = (recent, stale) => {
       )
     }
     switch (operation) {
-      case 'set':
+      case 'set': {
         if (path.startsWith('collections')) {
           return console.error('Illegal operation "set" on a collection')
         }
@@ -306,8 +306,22 @@ export const _mergePrefs = (recent, stale) => {
             `Calling set on depth <= 1 (path: ${path}) is not allowed`,
           )
         }
-        set(resultOutput, path, args[0])
+
+        const definition = path.startsWith('simple.muteFilters')
+          ? { default: {} }
+          : ROOT_CONFIG_DEFINITIONS[path.split('.')[1]]
+
+        const finalValue = validateSetting({
+          path: path.split('.')[1],
+          value: args[0],
+          definition,
+          throwError: false,
+          defaultState: ROOT_CONFIG,
+        })
+
+        set(resultOutput, path, finalValue)
         break
+      }
       case 'unset':
         if (path.startsWith('collections')) {
           return console.error('Illegal operation "unset" on a collection')
@@ -488,8 +502,8 @@ export const useSyncConfigStore = defineStore('sync_config', {
       }
 
       const definition = path.startsWith('simple.muteFilters')
-            ? { default: {} }
-            : ROOT_CONFIG_DEFINITIONS[path.split('.')[1]]
+        ? { default: {} }
+        : ROOT_CONFIG_DEFINITIONS[path.split('.')[1]]
 
       const finalValue = validateSetting({
         path: path.split('.')[1],

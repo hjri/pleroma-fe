@@ -1,8 +1,6 @@
 import { cloneDeep } from 'lodash'
 import { createPinia, setActivePinia } from 'pinia'
 
-import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
-
 import {
   _getAllFlags,
   _getRecentData,
@@ -75,7 +73,7 @@ describe('The SyncConfig store', () => {
             _version: VERSION,
             flagStorage: {
               ...defaultState.flagStorage,
-              updateCounter: CURRENT_UPDATE_COUNTER,
+              updateCounter: 1,
             },
             prefsStorage: {
               ...defaultState.prefsStorage,
@@ -85,7 +83,7 @@ describe('The SyncConfig store', () => {
 
         expect(store.flagStorage).to.eql({
           ...defaultState.flagStorage,
-          updateCounter: CURRENT_UPDATE_COUNTER,
+          updateCounter: 1,
         })
       })
 
@@ -118,7 +116,7 @@ describe('The SyncConfig store', () => {
             _version: VERSION,
             flagStorage: {
               ...defaultState.flagStorage,
-              updateCounter: CURRENT_UPDATE_COUNTER,
+              updateCounter: 1,
             },
             prefsStorage: {
               ...defaultState.prefsStorage,

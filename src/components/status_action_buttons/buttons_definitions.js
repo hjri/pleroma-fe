@@ -1,9 +1,9 @@
 import { useEditStatusStore } from 'src/stores/editStatus.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useReportsStore } from 'src/stores/reports.js'
 import { useStatusHistoryStore } from 'src/stores/statusHistory.js'
-import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const PRIVATE_SCOPES = new Set(['private', 'direct'])
 const PUBLIC_SCOPES = new Set(['public', 'unlisted'])

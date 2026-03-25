@@ -153,8 +153,9 @@ const _mergeJournal = (...journals) => {
 export const _mergeHighlights = (recent, stale) => {
   if (!stale) return recent
   if (!recent) return stale
-  const { _journal: recentJournal, ...recentData } = recent
+  const { _journal: recentJournal, highlight: recentHighlight } = recent
   const { _journal: staleJournal } = stale
+  console.log(recentHighlight)
   /** Journal entry format:
    * user: user to entry in highlight storage
    * timestamp: timestamp of the change
@@ -164,7 +165,7 @@ export const _mergeHighlights = (recent, stale) => {
    * currently only supported operation type is "set" which just sets the value
    * to requested one. Intended only to be used with simple preferences (boolean, number)
    */
-  const resultOutput = { ...recentData }
+  const resultHighlight = { ...recentHighlight }
   const Journal = _mergeJournal(staleJournal, recentJournal)
   Journal.forEach(({ user, operation, args }) => {
     if (user.startsWith('_')) {
@@ -174,16 +175,16 @@ export const _mergeHighlights = (recent, stale) => {
     }
     switch (operation) {
       case 'set':
-        resultOutput[user] = args[0]
+        resultHighlight[user] = args[0]
         break
       case 'unset':
-        delete resultOutput[user]
+        delete resultHighlight[user]
         break
       default:
         return console.error(`Unknown journal operation: '${operation}'`)
     }
   })
-  return { ...resultOutput, _journal: Journal }
+  return { highlight: resultHighlight, _journal: Journal }
 }
 
 export const useUserHighlightStore = defineStore('user_highlight', {
@@ -333,7 +334,6 @@ export const useUserHighlightStore = defineStore('user_highlight', {
         this.cache._timestamp = Math.min(stale._timestamp, recent._timestamp)
       }
       this.highlight = this.cache.highlight
-      this.pushHighlight()
     },
     pushHighlight({ force = false } = {}) {
       const needPush = this.dirty || force

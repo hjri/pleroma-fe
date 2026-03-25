@@ -325,7 +325,8 @@ const PostStatusForm = {
     },
     hideScopeNotice() {
       return (
-        this.disableNotice || useMergedConfigStore().mergedConfig.hideScopeNotice
+        this.disableNotice ||
+        useMergedConfigStore().mergedConfig.hideScopeNotice
       )
     },
     pollContentError() {

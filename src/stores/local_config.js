@@ -7,8 +7,8 @@ import { useInstanceStore } from 'src/stores/instance'
 import {
   LOCAL_DEFAULT_CONFIG,
   LOCAL_DEFAULT_CONFIG_DEFINITIONS,
-  validateSetting,
   makeUndefined,
+  validateSetting,
 } from 'src/modules/default_config_state'
 
 export const defaultState = {
@@ -57,7 +57,9 @@ export const useLocalConfigStore = defineStore('local_config', {
   persist: {
     afterLoad(state) {
       return {
-        prefsStorage: state.prefsStorage ?? { ...makeUndefined(LOCAL_DEFAULT_CONFIG) },
+        prefsStorage: state.prefsStorage ?? {
+          ...makeUndefined(LOCAL_DEFAULT_CONFIG),
+        },
         tempStorage: { ...makeUndefined(LOCAL_DEFAULT_CONFIG) },
       }
     },
