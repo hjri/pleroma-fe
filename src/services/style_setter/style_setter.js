@@ -8,7 +8,7 @@ import { getEngineChecksum, init } from '../theme_data/theme_data_3.service.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
-import { defaultState } from 'src/modules/default_config_state.js'
+import { ROOT_CONFIG } from 'src/modules/default_config_state.js'
 
 // On platforms where this is not supported, it will return undefined
 // Otherwise it will return an array
@@ -268,7 +268,7 @@ const extractStyleConfig = ({
   return result
 }
 
-const defaultStyleConfig = extractStyleConfig(defaultState)
+const defaultStyleConfig = extractStyleConfig(ROOT_CONFIG)
 
 export const applyStyleConfig = (input) => {
   const config = extractStyleConfig(input)

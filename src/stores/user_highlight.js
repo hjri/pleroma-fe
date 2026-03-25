@@ -15,7 +15,6 @@ import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
 
 import { storage } from 'src/lib/storage.js'
-import { defaultState as configDefaultState } from 'src/modules/default_config_state'
 
 export const NEW_USER_DATE = new Date('2022-08-04') // date of writing this, basically
 

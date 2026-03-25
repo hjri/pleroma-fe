@@ -654,6 +654,21 @@ export const LOCAL_DEFAULT_CONFIG = convertDefinitions(
 
 export const LOCAL_ONLY_KEYS = new Set(Object.keys(LOCAL_DEFAULT_CONFIG))
 
+export const SYNC_DEFAULT_CONFIG_DEFINITIONS = {
+  dontShowUpdateNotifs: {
+    description: 'Never show update notification (pleroma-tan)',
+    default: false,
+  },
+  collapseNav: {
+    description: 'Collapse navigation panel to header only',
+    default: false
+  }
+}
+export const SYNC_DEFAULT_CONFIG = convertDefinitions(
+  SYNC_DEFAULT_CONFIG_DEFINITIONS,
+)
+export const SYNC_ONLY_KEYS = new Set(Object.keys(SYNC_DEFAULT_CONFIG))
+
 export const THEME_CONFIG_DEFINITIONS = {
   theme: {
     description: 'Very old theme store, stores preset name, still in use',
@@ -699,11 +714,19 @@ export const makeUndefined = (c) =>
 
 /// For properties with special processing or properties that does not
 /// make sense to be overriden on a instance-wide level.
-export const defaultState = {
+export const ROOT_CONFIG = {
   // Set these to undefined so it does not interfere with default settings check
-  ...makeUndefined(INSTANCE_DEFAULT_CONFIG),
-  ...makeUndefined(LOCAL_DEFAULT_CONFIG),
-  ...makeUndefined(THEME_CONFIG),
+  ...INSTANCE_DEFAULT_CONFIG,
+  ...LOCAL_DEFAULT_CONFIG,
+  ...SYNC_DEFAULT_CONFIG,
+  ...THEME_CONFIG,
+}
+
+export const ROOT_CONFIG_DEFINITIONS = {
+  ...INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
+  ...LOCAL_DEFAULT_CONFIG_DEFINITIONS,
+  ...SYNC_DEFAULT_CONFIG_DEFINITIONS,
+  ...THEME_CONFIG_DEFINITIONS,
 }
 
 export const validateSetting = ({
