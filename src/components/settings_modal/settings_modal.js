@@ -11,6 +11,7 @@ import Popover from '../popover/popover.vue'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { LOCAL_ONLY_KEYS } from 'src/modules/default_config_state.js'
 import {
@@ -145,7 +146,7 @@ const SettingsModal = {
           } else {
             if (path.startsWith('muteFilters')) {
               Object.keys(
-                useSyncConfigStore().mergedConfig.muteFilters,
+                useMergedConfigStore().mergedConfig.muteFilters,
               ).forEach((key) => {
                 useSyncConfigStore().unsetPreference({
                   path: `simple.${path}.${key}`,
@@ -179,7 +180,7 @@ const SettingsModal = {
       this.dataThemeExporter.exportData()
     },
     generateExport(theme = false) {
-      const config = useSyncConfigStore().mergedConfigWithoutDefaults
+      const config = useMergedConfigStore().mergedConfigWithoutDefaults
       let sample = config
       if (!theme) {
         const ignoreList = new Set([
@@ -223,7 +224,7 @@ const SettingsModal = {
     }),
     expertLevel: {
       get() {
-        return useSyncConfigStore().mergedConfig.expertLevel > 0
+        return useMergedConfigStore().mergedConfig.expertLevel > 0
       },
       set(value) {
         useSyncConfigStore().setSimplePrefAndSave({
