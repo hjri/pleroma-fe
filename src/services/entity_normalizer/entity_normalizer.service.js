@@ -383,7 +383,7 @@ export const parseStatus = (data) => {
     }
 
     output.summary_raw_html = escapeHtml(data.spoiler_text)
-    output.external_url = data.url
+    output.external_url = data.uri || data.url
     output.poll = data.poll
     if (output.poll) {
       output.poll.options = (output.poll.options || []).map((field) => ({

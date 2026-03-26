@@ -419,47 +419,12 @@
             @parse-ready="setHeadTailLinks"
           />
 
-          <article
-            v-if="hasVisibleQuote"
-            class="quoted-status"
-          >
-            <button
-              class="button-unstyled -link display-quoted-status-button"
-              :aria-expanded="shouldDisplayQuote"
-              @click="toggleDisplayQuote"
-            >
-              {{ shouldDisplayQuote ? $t('status.hide_quote') : $t('status.display_quote') }}
-              <FAIcon
-                class="display-quoted-status-button-icon"
-                :icon="shouldDisplayQuote ? 'chevron-up' : 'chevron-down'"
-              />
-            </button>
-            <Status
-              v-if="shouldDisplayQuote"
-              :statusoid="quotedStatus"
-              :in-quote="true"
-            />
-          </article>
-          <p
-            v-else-if="hasInvisibleQuote"
-            class="quoted-status -unavailable-prompt"
-          >
-            <i18n-t
-              scope="global"
-              keypath="status.invisible_quote"
-            >
-              <template #link>
-                <bdi>
-                  <a
-                    :href="status.quote_url"
-                    target="_blank"
-                  >
-                    {{ status.quote_url }}
-                  </a>
-                </bdi>
-              </template>
-            </i18n-t>
-          </p>
+          <Quote
+            :status-id="quoteId"
+            :status-url="quoteUrl"
+            :status-visible="quoteVisible"
+            :initially-expanded="quoteExpanded"
+          />
 
           <div
             v-if="inConversation && !isPreview && replies && replies.length"

@@ -12,6 +12,7 @@ import {
 import AvatarList from '../avatar_list/avatar_list.vue'
 import EmojiReactions from '../emoji_reactions/emoji_reactions.vue'
 import PostStatusForm from '../post_status_form/post_status_form.vue'
+import Quote from '../quote/quote.vue'
 import StatusContent from '../status_content/status_content.vue'
 import StatusPopover from '../status_popover/status_popover.vue'
 import Timeago from '../timeago/timeago.vue'
@@ -127,6 +128,7 @@ const Status = {
     MentionsLine,
     UserPopover,
     UserLink,
+    Quote,
     StatusActionButtons,
   },
   props: [
@@ -172,7 +174,6 @@ const Status = {
       suspendable: true,
       error: null,
       headTailLinks: null,
-      displayQuote: !this.inQuote,
     }
   },
   computed: {
@@ -500,19 +501,17 @@ const Status = {
     editingAvailable() {
       return useInstanceCapabilitiesStore().editingAvailable
     },
-    hasVisibleQuote() {
-      return this.status.quote_url && this.status.quote_visible
-    },
-    hasInvisibleQuote() {
-      return this.status.quote_url && !this.status.quote_visible
-    },
-    quotedStatus() {
+    quoteId() {
       return this.status.quote_id
-        ? this.$store.state.statuses.allStatusesObject[this.status.quote_id]
-        : undefined
     },
-    shouldDisplayQuote() {
-      return this.quotedStatus && this.displayQuote
+    quoteUrl() {
+      return this.status.quote_url
+    },
+    quoteVisible() {
+      return this.status.quote_visible
+    },
+    quoteExpanded() {
+      return !this.inQuote
     },
     scrobblePresent() {
       if (this.mergedConfig.hideScrobbles) return false
@@ -630,17 +629,6 @@ const Status = {
           // Post is below screen, match its bottom to screen bottom
           window.scrollBy(0, rect.bottom - window.innerHeight + 50)
         }
-      }
-    },
-    toggleDisplayQuote() {
-      if (this.shouldDisplayQuote) {
-        this.displayQuote = false
-      } else if (!this.quotedStatus) {
-        this.$store.dispatch('fetchStatus', this.status.quote_id).then(() => {
-          this.displayQuote = true
-        })
-      } else {
-        this.displayQuote = true
       }
     },
   },

@@ -388,22 +388,4 @@
       }
     }
   }
-
-  .quoted-status {
-    margin-top: 0.5em;
-    border: 1px solid var(--border);
-    border-radius: var(--roundness);
-
-    &.-unavailable-prompt {
-      padding: 0.5em;
-    }
-  }
-
-  .display-quoted-status-button {
-    margin: 0.5em;
-
-    &-icon {
-      color: inherit;
-    }
-  }
 }
