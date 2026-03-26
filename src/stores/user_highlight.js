@@ -153,7 +153,7 @@ const _mergeJournal = (...journals) => {
 export const _mergeHighlights = (recent, stale) => {
   if (!stale) return recent
   if (!recent) return stale
-  const { _journal: recentJournal, highlight: recentHighlight } = recent
+  const { _journal: recentJournal, ...recentHighlight } = recent
   const { _journal: staleJournal } = stale
   console.log(recentHighlight)
   /** Journal entry format:
@@ -184,7 +184,7 @@ export const _mergeHighlights = (recent, stale) => {
         return console.error(`Unknown journal operation: '${operation}'`)
     }
   })
-  return { highlight: resultHighlight, _journal: Journal }
+  return { ...resultHighlight, _journal: Journal }
 }
 
 export const useUserHighlightStore = defineStore('user_highlight', {
@@ -333,6 +333,7 @@ export const useUserHighlightStore = defineStore('user_highlight', {
       if (stale && recent && !this.dirty) {
         this.cache._timestamp = Math.min(stale._timestamp, recent._timestamp)
       }
+      console.log('CACHE', this.cache)
       this.highlight = this.cache.highlight
     },
     pushHighlight({ force = false } = {}) {
