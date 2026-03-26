@@ -73,7 +73,7 @@
 
   .emoji {
     display: inline-block;
-    width: var(--emoji-size, 32px);
+    width: auto;
     height: var(--emoji-size, 32px);
   }
 
