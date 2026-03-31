@@ -270,7 +270,7 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
   },
   interfaceLanguage: {
     description: 'UI language',
-    default: browserLocale,
+    default: [browserLocale],
   },
   hideScopeNotice: {
     description: 'Hide scope notification',
