@@ -744,7 +744,7 @@ export const validateSetting = ({
       throw new Error(string)
     } else {
       console.error(string)
-      return value
+      return undefined
     }
   }
 

@@ -290,87 +290,90 @@ export const _mergePrefs = (recent, stale) => {
    */
   const resultOutput = { ...recentData }
   const totalJournal = _mergeJournal(staleJournal, recentJournal)
-  totalJournal.forEach(({ path, operation, args }) => {
-    if (path.startsWith('_')) {
-      throw new Error(
-        `journal contains entry to edit internal (starts with _) field '${path}', something is incorrect here, ignoring.`,
-      )
-    }
-    switch (operation) {
-      case 'set': {
-        if (path.startsWith('collections')) {
-          return console.error('Illegal operation "set" on a collection')
-        }
-        if (path.split(/\./g).length <= 1) {
-          return console.error(
-            `Calling set on depth <= 1 (path: ${path}) is not allowed`,
-          )
-        }
+  totalJournal
+    .filter(({ path, operation, args }) => {
+      const definition = path.startsWith('simple.muteFilters')
+        ? { default: {} }
+        : ROOT_CONFIG_DEFINITIONS[path.split('.')[1]]
 
-        const definition = path.startsWith('simple.muteFilters')
-          ? { default: {} }
-          : ROOT_CONFIG_DEFINITIONS[path.split('.')[1]]
+      const finalValue = validateSetting({
+        path: path.split('.')[1],
+        value: args[0],
+        definition,
+        throwError: false,
+        defaultState: ROOT_CONFIG,
+      })
 
-        const finalValue = validateSetting({
-          path: path.split('.')[1],
-          value: args[0],
-          definition,
-          throwError: false,
-          defaultState: ROOT_CONFIG,
-        })
-
-        set(resultOutput, path, finalValue)
-        break
-      }
-      case 'unset':
-        if (path.startsWith('collections')) {
-          return console.error('Illegal operation "unset" on a collection')
-        }
-        if (path.split(/\./g).length <= 2) {
-          return console.error(
-            `Calling unset on depth <= 2 (path: ${path})  is not allowed`,
-          )
-        }
-        unset(resultOutput, path)
-        break
-      case 'addToCollection':
-        if (!path.startsWith('collections')) {
-          return console.error(
-            'Illegal operation "addToCollection" on a non-collection',
-          )
-        }
-        set(
-          resultOutput,
-          path,
-          Array.from(new Set(get(resultOutput, path)).add(args[0])),
+      return finalValue !== undefined
+    })
+    .forEach(({ path, operation, args }) => {
+      if (path.startsWith('_')) {
+        throw new Error(
+          `journal contains entry to edit internal (starts with _) field '${path}', something is incorrect here, ignoring.`,
         )
-        break
-      case 'removeFromCollection': {
-        if (!path.startsWith('collections')) {
-          return console.error(
-            'Illegal operation "removeFromCollection" on a non-collection',
-          )
+      }
+      switch (operation) {
+        case 'set': {
+          if (path.startsWith('collections')) {
+            return console.error('Illegal operation "set" on a collection')
+          }
+          if (path.split(/\./g).length <= 1) {
+            return console.error(
+              `Calling set on depth <= 1 (path: ${path}) is not allowed`,
+            )
+          }
+          set(resultOutput, path, args[0])
+          break
         }
-        const newSet = new Set(get(resultOutput, path))
-        newSet.delete(args[0])
-        set(resultOutput, path, Array.from(newSet))
-        break
+        case 'unset':
+          if (path.startsWith('collections')) {
+            return console.error('Illegal operation "unset" on a collection')
+          }
+          if (path.split(/\./g).length <= 2) {
+            return console.error(
+              `Calling unset on depth <= 2 (path: ${path})  is not allowed`,
+            )
+          }
+          unset(resultOutput, path)
+          break
+        case 'addToCollection':
+          if (!path.startsWith('collections')) {
+            return console.error(
+              'Illegal operation "addToCollection" on a non-collection',
+            )
+          }
+          set(
+            resultOutput,
+            path,
+            Array.from(new Set(get(resultOutput, path)).add(args[0])),
+          )
+          break
+        case 'removeFromCollection': {
+          if (!path.startsWith('collections')) {
+            return console.error(
+              'Illegal operation "removeFromCollection" on a non-collection',
+            )
+          }
+          const newSet = new Set(get(resultOutput, path))
+          newSet.delete(args[0])
+          set(resultOutput, path, Array.from(newSet))
+          break
+        }
+        case 'reorderCollection': {
+          const [value, movement] = args
+          set(
+            resultOutput,
+            path,
+            _moveItemInArray(get(resultOutput, path), value, movement),
+          )
+          break
+        }
+        default:
+          return console.error(
+            `Unknown journal operation: '${operation}', did we forget to run reverse migrations beforehand?`,
+          )
       }
-      case 'reorderCollection': {
-        const [value, movement] = args
-        set(
-          resultOutput,
-          path,
-          _moveItemInArray(get(resultOutput, path), value, movement),
-        )
-        break
-      }
-      default:
-        return console.error(
-          `Unknown journal operation: '${operation}', did we forget to run reverse migrations beforehand?`,
-        )
-    }
-  })
+    })
   return { ...resultOutput, _journal: totalJournal }
 }
 
@@ -513,7 +516,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
         defaultState: ROOT_CONFIG,
       })
 
-      set(this.prefsStorage, path, finalValue)
+      if (finalValue !== undefined) set(this.prefsStorage, path, finalValue)
 
       this.prefsStorage._journal = [
         ...this.prefsStorage._journal,
@@ -754,7 +757,6 @@ export const useSyncConfigStore = defineStore('sync_config', {
       this.flagStorage = this.cache.flagStorage
       this.prefsStorage = this.cache.prefsStorage
       this.pushSyncConfig()
-      console.log('C', this.cache)
     },
     pushSyncConfig({ force = false } = {}) {
       const needPush = this.dirty || force
@@ -766,7 +768,29 @@ export const useSyncConfigStore = defineStore('sync_config', {
   },
   persist: {
     afterLoad(state) {
-      return state
+      console.log('Validating persisted state of SyncConfig')
+      const newState = { ...state }
+      const newEntries = Object.entries(newState.prefsStorage.simple).map(
+        ([path, value]) => {
+          if (path === 'muteFilters') {
+            return value
+          }
+          const definition = ROOT_CONFIG_DEFINITIONS[path]
+          const finalValue = validateSetting({
+            path,
+            value,
+            definition,
+            throwError: false,
+            defaultState: ROOT_CONFIG,
+          })
+
+          return finalValue === undefined ? undefined : [path, finalValue]
+        },
+      )
+      newState.prefsStorage.simple = Object.fromEntries(
+        newEntries.filter((_) => _),
+      )
+      return newState
     },
   },
 })
