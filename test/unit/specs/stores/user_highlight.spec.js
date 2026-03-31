@@ -174,13 +174,11 @@ describe('The UserHighlight store', () => {
       it('should prefer recent and apply journal to it', () => {
         expect(
           _mergeHighlights(
-            // RECENT
             {
-              highlight: {
-                'a@test.xyz': 1,
-                'b@test.xyz': 0,
-                'c@test.xyz': true,
-              },
+              // RECENT
+              'a@test.xyz': 1,
+              'b@test.xyz': 0,
+              'c@test.xyz': true,
               _journal: [
                 {
                   user: 'b@test.xyz',
@@ -196,13 +194,11 @@ describe('The UserHighlight store', () => {
                 },
               ],
             },
-            // STALE
             {
-              highlight: {
-                'a@test.xyz': 1,
-                'b@test.xyz': 1,
-                'c@test.xyz': false,
-              },
+              // STALE
+              'a@test.xyz': 1,
+              'b@test.xyz': 1,
+              'c@test.xyz': false,
               _journal: [
                 {
                   user: 'a@test.xyz',
@@ -220,7 +216,9 @@ describe('The UserHighlight store', () => {
             },
           ),
         ).to.eql({
-          highlight: { 'a@test.xyz': 1, 'b@test.xyz': 1, 'c@test.xyz': true },
+          'a@test.xyz': 1,
+          'b@test.xyz': 1,
+          'c@test.xyz': true,
           _journal: [
             { user: 'a@test.xyz', operation: 'set', args: [1], timestamp: 1 },
             { user: 'b@test.xyz', operation: 'set', args: [1], timestamp: 3 },
@@ -239,7 +237,7 @@ describe('The UserHighlight store', () => {
           _mergeHighlights(
             // RECENT
             {
-              highlight: { 'a@test.xyz': { type: 'foo' } },
+              'a@test.xyz': { type: 'foo' },
               _journal: [
                 {
                   user: 'a@test.xyz',
@@ -251,7 +249,7 @@ describe('The UserHighlight store', () => {
             },
             // STALE
             {
-              highlight: { 'a@test.xyz': { type: 'bar' } },
+              'a@test.xyz': { type: 'bar' },
               _journal: [
                 {
                   user: 'a@test.xyz',
@@ -263,7 +261,7 @@ describe('The UserHighlight store', () => {
             },
           ),
         ).to.eql({
-          highlight: { 'a@test.xyz': { type: 'bar' } },
+          'a@test.xyz': { type: 'bar' },
           _journal: [
             {
               user: 'a@test.xyz',
@@ -280,7 +278,7 @@ describe('The UserHighlight store', () => {
           _mergeHighlights(
             // RECENT
             {
-              highlight: { 'a@test.xyz': { type: 'foo' } },
+              'a@test.xyz': { type: 'foo' },
               _journal: [
                 {
                   user: 'a@test.xyz',
@@ -292,7 +290,6 @@ describe('The UserHighlight store', () => {
             },
             // STALE
             {
-              highlight: {},
               _journal: [
                 {
                   user: 'a@test.xyz',
@@ -304,7 +301,6 @@ describe('The UserHighlight store', () => {
             },
           ),
         ).to.eql({
-          highlight: {},
           _journal: [
             {
               user: 'a@test.xyz',
