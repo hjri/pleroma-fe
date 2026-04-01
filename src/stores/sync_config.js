@@ -292,17 +292,22 @@ export const _mergePrefs = (recent, stale) => {
   const totalJournal = _mergeJournal(staleJournal, recentJournal)
   totalJournal
     .filter(({ path, operation, args }) => {
+      const entry = path.split('.')[1]
+      if (operation === 'unset') return ROOT_CONFIG[entry] !== undefined
+
       const definition = path.startsWith('simple.muteFilters')
         ? { default: {} }
-        : ROOT_CONFIG_DEFINITIONS[path.split('.')[1]]
+        : ROOT_CONFIG_DEFINITIONS[entry]
 
       const finalValue = validateSetting({
-        path: path.split('.')[1],
+        path: entry,
         value: args[0],
         definition,
         throwError: false,
         defaultState: ROOT_CONFIG,
       })
+
+      console.log(path, args[0])
 
       return finalValue !== undefined
     })

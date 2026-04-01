@@ -101,7 +101,7 @@ describe('The SyncConfig store', () => {
         const largeJournal = []
         for (let value = 0; value < 1000; value++) {
           largeJournal.push({
-            path: 'simple.testing' + value,
+            path: 'simple.palette' + value,
             operation: 'set',
             args: [value],
             // should have A timestamp, we don't really care what it is
@@ -171,13 +171,13 @@ describe('The SyncConfig store', () => {
         store.pushSyncConfig = () => {
           /* no-op */
         }
-        store.setPreference({ path: 'simple.testing', value: 1 })
-        expect(store.prefsStorage.simple.testing).to.eql(1)
+        store.setPreference({ path: 'simple.palette', value: '1' })
+        expect(store.prefsStorage.simple.palette).to.eql('1')
         expect(store.prefsStorage._journal.length).to.eql(1)
         expect(store.prefsStorage._journal[0]).to.eql({
-          path: 'simple.testing',
+          path: 'simple.palette',
           operation: 'set',
-          args: [1],
+          args: ['1'],
           // should have A timestamp, we don't really care what it is
           timestamp: store.prefsStorage._journal[0].timestamp,
         })
@@ -189,26 +189,26 @@ describe('The SyncConfig store', () => {
         store.pushSyncConfig = () => {
           /* no-op */
         }
-        store.setPreference({ path: 'simple.testing', value: 1 })
-        store.setPreference({ path: 'simple.testing', value: 2 })
-        store.addCollectionPreference({ path: 'collections.testing', value: 2 })
+        store.setPreference({ path: 'simple.palette', value: 1 })
+        store.setPreference({ path: 'simple.palette', value: 2 })
+        store.addCollectionPreference({ path: 'collections.palette', value: 2 })
         store.removeCollectionPreference({
-          path: 'collections.testing',
+          path: 'collections.palette',
           value: 2,
         })
         store.updateCache({ username: 'test' })
-        expect(store.prefsStorage.simple.testing).to.eql(2)
-        expect(store.prefsStorage.collections.testing).to.eql([])
+        expect(store.prefsStorage.simple.palette).to.eql(2)
+        expect(store.prefsStorage.collections.palette).to.eql([])
         expect(store.prefsStorage._journal.length).to.eql(2)
         expect(store.prefsStorage._journal[0]).to.eql({
-          path: 'simple.testing',
+          path: 'simple.palette',
           operation: 'set',
           args: [2],
           // should have A timestamp, we don't really care what it is
           timestamp: store.prefsStorage._journal[0].timestamp,
         })
         expect(store.prefsStorage._journal[1]).to.eql({
-          path: 'collections.testing',
+          path: 'collections.palette',
           operation: 'removeFromCollection',
           args: [2],
           // should have A timestamp, we don't really care what it is
@@ -222,13 +222,13 @@ describe('The SyncConfig store', () => {
         store.pushSyncConfig = () => {
           /* no-op */
         }
-        store.setPreference({ path: 'simple.testing', value: 1 })
-        store.setPreference({ path: 'simple.testing', value: 1 })
-        store.addCollectionPreference({ path: 'collections.testing', value: 2 })
-        store.addCollectionPreference({ path: 'collections.testing', value: 2 })
+        store.setPreference({ path: 'simple.palette', value: 1 })
+        store.setPreference({ path: 'simple.palette', value: 1 })
+        store.addCollectionPreference({ path: 'collections.palette', value: 2 })
+        store.addCollectionPreference({ path: 'collections.palette', value: 2 })
         store.updateCache({ username: 'test' })
-        expect(store.prefsStorage.simple.testing).to.eql(1)
-        expect(store.prefsStorage.collections.testing).to.eql([2])
+        expect(store.prefsStorage.simple.palette).to.eql(1)
+        expect(store.prefsStorage.collections.palette).to.eql([2])
         expect(store.prefsStorage._journal.length).to.eql(2)
       })
 
@@ -238,10 +238,10 @@ describe('The SyncConfig store', () => {
         store.pushSyncConfig = () => {
           /* no-op */
         }
-        store.setPreference({ path: 'simple.object.foo', value: 1 })
-        store.unsetPreference({ path: 'simple.object.foo' })
+        store.setPreference({ path: 'simple.fontInput.family', value: 'test' })
+        store.unsetPreference({ path: 'simple.fontInput.family' })
         store.updateCache(store, { username: 'test' })
-        expect(store.prefsStorage.simple.object).to.not.have.property('foo')
+        expect(store.prefsStorage.simple.fontInput).to.not.have.property('family')
         expect(store.prefsStorage._journal.length).to.eql(1)
       })
 
@@ -393,11 +393,11 @@ describe('The SyncConfig store', () => {
           _mergePrefs(
             // RECENT
             {
-              simple: { a: 1, b: 0, c: true },
+              simple: { theme: '1', style: '0', hideISP: true },
               _journal: [
-                { path: 'simple.b', operation: 'set', args: [0], timestamp: 2 },
+                { path: 'simple.style', operation: 'set', args: ['0'], timestamp: 2 },
                 {
-                  path: 'simple.c',
+                  path: 'simple.hideISP',
                   operation: 'set',
                   args: [true],
                   timestamp: 4,
@@ -406,19 +406,19 @@ describe('The SyncConfig store', () => {
             },
             // STALE
             {
-              simple: { a: 1, b: 1, c: false },
+              simple: { theme: '1', style: '1', hideISP: false },
               _journal: [
-                { path: 'simple.a', operation: 'set', args: [1], timestamp: 1 },
-                { path: 'simple.b', operation: 'set', args: [1], timestamp: 3 },
+                { path: 'simple.theme', operation: 'set', args: ['1'], timestamp: 1 },
+                { path: 'simple.style', operation: 'set', args: ['1'], timestamp: 3 },
               ],
             },
           ),
         ).to.eql({
-          simple: { a: 1, b: 1, c: true },
+          simple: { theme: '1', style: '1', hideISP: true },
           _journal: [
-            { path: 'simple.a', operation: 'set', args: [1], timestamp: 1 },
-            { path: 'simple.b', operation: 'set', args: [1], timestamp: 3 },
-            { path: 'simple.c', operation: 'set', args: [true], timestamp: 4 },
+            { path: 'simple.theme', operation: 'set', args: ['1'], timestamp: 1 },
+            { path: 'simple.style', operation: 'set', args: ['1'], timestamp: 3 },
+            { path: 'simple.hideISP', operation: 'set', args: [true], timestamp: 4 },
           ],
         })
       })
@@ -428,11 +428,11 @@ describe('The SyncConfig store', () => {
           _mergePrefs(
             // RECENT
             {
-              simple: { a: 1, b: 0, c: false },
+              simple: { theme: '1', style: '0', hideISP: false },
               _journal: [
-                { path: 'simple.b', operation: 'set', args: [0], timestamp: 2 },
+                { path: 'simple.style', operation: 'set', args: ['0'], timestamp: 2 },
                 {
-                  path: 'simple.c',
+                  path: 'simple.hideISP',
                   operation: 'set',
                   args: [false],
                   timestamp: 4,
@@ -441,19 +441,20 @@ describe('The SyncConfig store', () => {
             },
             // STALE
             {
-              simple: { a: 0, b: 0, c: true },
+              simple: { theme: '0', style: '0', hideISP: true },
               _journal: [
-                { path: 'simple.a', operation: 'set', args: [0], timestamp: 1 },
-                { path: 'simple.b', operation: 'set', args: [0], timestamp: 3 },
+                { path: 'simple.theme', operation: 'set', args: ['0'], timestamp: 1 },
+                { path: 'simple.style', operation: 'set', args: ['0'], timestamp: 3 },
               ],
             },
           ),
         ).to.eql({
           simple: { a: 0, b: 0, c: false },
+          simple: { theme: '0', style: '0', hideISP: false },
           _journal: [
-            { path: 'simple.a', operation: 'set', args: [0], timestamp: 1 },
-            { path: 'simple.b', operation: 'set', args: [0], timestamp: 3 },
-            { path: 'simple.c', operation: 'set', args: [false], timestamp: 4 },
+            { path: 'simple.theme', operation: 'set', args: ['0'], timestamp: 1 },
+            { path: 'simple.style', operation: 'set', args: ['0'], timestamp: 3 },
+            { path: 'simple.hideISP', operation: 'set', args: [false], timestamp: 4 },
           ],
         })
       })
@@ -463,10 +464,10 @@ describe('The SyncConfig store', () => {
           _mergePrefs(
             // RECENT
             {
-              simple: { a: 'foo' },
+              simple: { theme: 'foo' },
               _journal: [
                 {
-                  path: 'simple.a',
+                  path: 'simple.theme',
                   operation: 'set',
                   args: ['foo'],
                   timestamp: 2,
@@ -475,10 +476,10 @@ describe('The SyncConfig store', () => {
             },
             // STALE
             {
-              simple: { a: 'bar' },
+              simple: { theme: 'bar' },
               _journal: [
                 {
-                  path: 'simple.a',
+                  path: 'simple.theme',
                   operation: 'set',
                   args: ['bar'],
                   timestamp: 4,
@@ -487,9 +488,9 @@ describe('The SyncConfig store', () => {
             },
           ),
         ).to.eql({
-          simple: { a: 'bar' },
+          simple: { theme: 'bar' },
           _journal: [
-            { path: 'simple.a', operation: 'set', args: ['bar'], timestamp: 4 },
+            { path: 'simple.theme', operation: 'set', args: ['bar'], timestamp: 4 },
           ],
         })
       })
@@ -499,10 +500,10 @@ describe('The SyncConfig store', () => {
           _mergePrefs(
             // RECENT
             {
-              simple: { lv2: { lv3: 'foo' } },
+              simple: { fontInput: { lv3: 'foo' } },
               _journal: [
                 {
-                  path: 'simple.lv2.lv3',
+                  path: 'simple.fontInput.lv3',
                   operation: 'set',
                   args: ['foo'],
                   timestamp: 2,
@@ -511,10 +512,10 @@ describe('The SyncConfig store', () => {
             },
             // STALE
             {
-              simple: { lv2: { lv3: 'bar' } },
+              simple: { fontInput: { lv3: 'bar' } },
               _journal: [
                 {
-                  path: 'simple.lv2.lv3',
+                  path: 'simple.fontInput.lv3',
                   operation: 'set',
                   args: ['bar'],
                   timestamp: 4,
@@ -523,10 +524,10 @@ describe('The SyncConfig store', () => {
             },
           ),
         ).to.eql({
-          simple: { lv2: { lv3: 'bar' } },
+          simple: { fontInput: { lv3: 'bar' } },
           _journal: [
             {
-              path: 'simple.lv2.lv3',
+              path: 'simple.fontInput.lv3',
               operation: 'set',
               args: ['bar'],
               timestamp: 4,
@@ -540,10 +541,10 @@ describe('The SyncConfig store', () => {
           _mergePrefs(
             // RECENT
             {
-              simple: { lv2: { lv3: 'foo' } },
+              simple: { fontInput: { lv3: 'foo' } },
               _journal: [
                 {
-                  path: 'simple.lv2.lv3',
+                  path: 'simple.fontInput.lv3',
                   operation: 'set',
                   args: ['foo'],
                   timestamp: 2,
@@ -552,10 +553,10 @@ describe('The SyncConfig store', () => {
             },
             // STALE
             {
-              simple: { lv2: {} },
+              simple: { fontInput: {} },
               _journal: [
                 {
-                  path: 'simple.lv2.lv3',
+                  path: 'simple.fontInput.lv3',
                   operation: 'unset',
                   args: [],
                   timestamp: 4,
@@ -564,10 +565,10 @@ describe('The SyncConfig store', () => {
             },
           ),
         ).to.eql({
-          simple: { lv2: {} },
+          simple: { fontInput: {} },
           _journal: [
             {
-              path: 'simple.lv2.lv3',
+              path: 'simple.fontInput.lv3',
               operation: 'unset',
               args: [],
               timestamp: 4,
