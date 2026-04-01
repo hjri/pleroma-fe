@@ -307,8 +307,6 @@ export const _mergePrefs = (recent, stale) => {
         defaultState: ROOT_CONFIG,
       })
 
-      console.log(path, args[0])
-
       return finalValue !== undefined
     })
     .forEach(({ path, operation, args }) => {
@@ -773,7 +771,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
   },
   persist: {
     afterLoad(state) {
-      console.log('Validating persisted state of SyncConfig')
+      console.debug('Validating persisted state of SyncConfig')
       const newState = { ...state }
       const newEntries = Object.entries(newState.prefsStorage.simple).map(
         ([path, value]) => {

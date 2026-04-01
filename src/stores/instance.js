@@ -164,7 +164,6 @@ const DEFAULT_STATE = {
     ...LOCAL_DEFAULT_CONFIG,
   },
 }
-console.log('===', ROOT_STATE_DEFINITIONS)
 
 export const useInstanceStore = defineStore('instance', {
   state: () => ({ ...DEFAULT_STATE }),

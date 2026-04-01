@@ -27,7 +27,6 @@ export default {
   },
   emits: ['update:modelValue'],
   data() {
-    console.log(this.fallback)
     return {
       manualEntry: false,
       availableOptions: [

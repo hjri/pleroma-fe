@@ -155,7 +155,6 @@ export const _mergeHighlights = (recent, stale) => {
   if (!recent) return stale
   const { _journal: recentJournal, ...recentHighlight } = recent
   const { _journal: staleJournal } = stale
-  console.log(recentHighlight)
   /** Journal entry format:
    * user: user to entry in highlight storage
    * timestamp: timestamp of the change
@@ -333,7 +332,6 @@ export const useUserHighlightStore = defineStore('user_highlight', {
       if (stale && recent && !this.dirty) {
         this.cache._timestamp = Math.min(stale._timestamp, recent._timestamp)
       }
-      console.log('CACHE', this.cache)
       this.highlight = this.cache.highlight
     },
     pushHighlight({ force = false } = {}) {
