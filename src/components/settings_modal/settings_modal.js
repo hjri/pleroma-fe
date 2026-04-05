@@ -200,6 +200,7 @@ const SettingsModal = {
       let sample = config
       if (!theme) {
         const ignoreList = new Set([
+          'theme',
           'customTheme',
           'customThemeSource',
           'colors',
@@ -207,7 +208,9 @@ const SettingsModal = {
           'styleCustomData',
           'palette',
           'paletteCustomData',
+          'themeChecksum',
         ])
+
         sample = Object.fromEntries(
           Object.entries(sample).filter(
             ([key, value]) => !ignoreList.has(key) && value !== undefined,
