@@ -241,7 +241,9 @@ describe('The SyncConfig store', () => {
         store.setPreference({ path: 'simple.fontInput.family', value: 'test' })
         store.unsetPreference({ path: 'simple.fontInput.family' })
         store.updateCache(store, { username: 'test' })
-        expect(store.prefsStorage.simple.fontInput).to.not.have.property('family')
+        expect(store.prefsStorage.simple.fontInput).to.not.have.property(
+          'family',
+        )
         expect(store.prefsStorage._journal.length).to.eql(1)
       })
 
@@ -395,7 +397,12 @@ describe('The SyncConfig store', () => {
             {
               simple: { theme: '1', style: '0', hideISP: true },
               _journal: [
-                { path: 'simple.style', operation: 'set', args: ['0'], timestamp: 2 },
+                {
+                  path: 'simple.style',
+                  operation: 'set',
+                  args: ['0'],
+                  timestamp: 2,
+                },
                 {
                   path: 'simple.hideISP',
                   operation: 'set',
@@ -408,17 +415,42 @@ describe('The SyncConfig store', () => {
             {
               simple: { theme: '1', style: '1', hideISP: false },
               _journal: [
-                { path: 'simple.theme', operation: 'set', args: ['1'], timestamp: 1 },
-                { path: 'simple.style', operation: 'set', args: ['1'], timestamp: 3 },
+                {
+                  path: 'simple.theme',
+                  operation: 'set',
+                  args: ['1'],
+                  timestamp: 1,
+                },
+                {
+                  path: 'simple.style',
+                  operation: 'set',
+                  args: ['1'],
+                  timestamp: 3,
+                },
               ],
             },
           ),
         ).to.eql({
           simple: { theme: '1', style: '1', hideISP: true },
           _journal: [
-            { path: 'simple.theme', operation: 'set', args: ['1'], timestamp: 1 },
-            { path: 'simple.style', operation: 'set', args: ['1'], timestamp: 3 },
-            { path: 'simple.hideISP', operation: 'set', args: [true], timestamp: 4 },
+            {
+              path: 'simple.theme',
+              operation: 'set',
+              args: ['1'],
+              timestamp: 1,
+            },
+            {
+              path: 'simple.style',
+              operation: 'set',
+              args: ['1'],
+              timestamp: 3,
+            },
+            {
+              path: 'simple.hideISP',
+              operation: 'set',
+              args: [true],
+              timestamp: 4,
+            },
           ],
         })
       })
@@ -430,7 +462,12 @@ describe('The SyncConfig store', () => {
             {
               simple: { theme: '1', style: '0', hideISP: false },
               _journal: [
-                { path: 'simple.style', operation: 'set', args: ['0'], timestamp: 2 },
+                {
+                  path: 'simple.style',
+                  operation: 'set',
+                  args: ['0'],
+                  timestamp: 2,
+                },
                 {
                   path: 'simple.hideISP',
                   operation: 'set',
@@ -443,18 +480,42 @@ describe('The SyncConfig store', () => {
             {
               simple: { theme: '0', style: '0', hideISP: true },
               _journal: [
-                { path: 'simple.theme', operation: 'set', args: ['0'], timestamp: 1 },
-                { path: 'simple.style', operation: 'set', args: ['0'], timestamp: 3 },
+                {
+                  path: 'simple.theme',
+                  operation: 'set',
+                  args: ['0'],
+                  timestamp: 1,
+                },
+                {
+                  path: 'simple.style',
+                  operation: 'set',
+                  args: ['0'],
+                  timestamp: 3,
+                },
               ],
             },
           ),
         ).to.eql({
-          simple: { a: 0, b: 0, c: false },
           simple: { theme: '0', style: '0', hideISP: false },
           _journal: [
-            { path: 'simple.theme', operation: 'set', args: ['0'], timestamp: 1 },
-            { path: 'simple.style', operation: 'set', args: ['0'], timestamp: 3 },
-            { path: 'simple.hideISP', operation: 'set', args: [false], timestamp: 4 },
+            {
+              path: 'simple.theme',
+              operation: 'set',
+              args: ['0'],
+              timestamp: 1,
+            },
+            {
+              path: 'simple.style',
+              operation: 'set',
+              args: ['0'],
+              timestamp: 3,
+            },
+            {
+              path: 'simple.hideISP',
+              operation: 'set',
+              args: [false],
+              timestamp: 4,
+            },
           ],
         })
       })
@@ -490,7 +551,12 @@ describe('The SyncConfig store', () => {
         ).to.eql({
           simple: { theme: 'bar' },
           _journal: [
-            { path: 'simple.theme', operation: 'set', args: ['bar'], timestamp: 4 },
+            {
+              path: 'simple.theme',
+              operation: 'set',
+              args: ['bar'],
+              timestamp: 4,
+            },
           ],
         })
       })

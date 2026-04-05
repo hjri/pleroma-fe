@@ -17,6 +17,7 @@ import {
   LOCAL_ONLY_KEYS,
   ROOT_CONFIG,
   ROOT_CONFIG_DEFINITIONS,
+  validateSetting,
 } from 'src/modules/default_config_state.js'
 import {
   newExporter,
@@ -164,7 +165,7 @@ const SettingsModal = {
                 })
               })
             } else {
-              const definition = ROOT_CONFIG_DEFINITIONS[entry]
+              const definition = ROOT_CONFIG_DEFINITIONS[path]
 
               const finalValue = validateSetting({
                 path: `simple.${path}`,
