@@ -738,7 +738,7 @@ export const validateSetting = ({
 }) => {
   if (value === undefined) return // only null is allowed as missing value
   if (get(defaultState, path) === undefined) {
-    const string = `Unknown instance option ${path}, value: ${value}`
+    const string = `Unknown option ${path}, value: ${value}`
 
     if (throwError) {
       throw new Error(string)

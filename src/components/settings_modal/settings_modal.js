@@ -143,49 +143,52 @@ const SettingsModal = {
         })
       }
     },
-    onImport(data) {
-      if (data) {
-        Object.entries(data).forEach(([path, value]) => {
-          if (LOCAL_ONLY_KEYS.has(path)) {
-            useLocalConfigStore().set({ path, value })
+    onImport(input) {
+      if (!input) return
+      const { _pleroma_settings_version, ...data } = input
+
+      Object.entries(data).forEach(([path, value]) => {
+        const definition = ROOT_CONFIG_DEFINITIONS[path]
+
+        const finalValue = validateSetting({
+          path,
+          value,
+          definition,
+          throwError: false,
+          defaultState: ROOT_CONFIG,
+        })
+
+        if (finalValue === undefined) return
+
+        if (LOCAL_ONLY_KEYS.has(path)) {
+          useLocalConfigStore().set({ path, value: finalValue })
+        } else {
+          if (path.startsWith('muteFilters')) {
+            Object.keys(
+              useMergedConfigStore().mergedConfig.muteFilters,
+            ).forEach((key) => {
+              useSyncConfigStore().unsetPreference({
+                path: `simple.${path}.${key}`,
+              })
+            })
+
+            Object.entries(value).forEach(([key, filter]) => {
+              useSyncConfigStore().setPreference({
+                path: `simple.${path}.${key}`,
+                value: filter,
+              })
+            })
           } else {
-            if (path.startsWith('muteFilters')) {
-              Object.keys(
-                useMergedConfigStore().mergedConfig.muteFilters,
-              ).forEach((key) => {
-                useSyncConfigStore().unsetPreference({
-                  path: `simple.${path}.${key}`,
-                })
-              })
-
-              Object.entries(value).forEach(([key, filter]) => {
-                useSyncConfigStore().setPreference({
-                  path: `simple.${path}.${key}`,
-                  value: filter,
-                })
-              })
-            } else {
-              const definition = ROOT_CONFIG_DEFINITIONS[path]
-
-              const finalValue = validateSetting({
+            if (finalValue !== undefined) {
+              useSyncConfigStore().setPreference({
                 path: `simple.${path}`,
-                value,
-                definition,
-                throwError: false,
-                defaultState: ROOT_CONFIG,
+                value: finalValue,
               })
-
-              if (finalValue !== undefined) {
-                useSyncConfigStore().setPreference({
-                  path: `simple.${path}`,
-                  value,
-                })
-              }
             }
           }
-        })
-        useSyncConfigStore().pushSyncConfig()
-      }
+        }
+      })
+      useSyncConfigStore().pushSyncConfig()
     },
     restore() {
       this.dataImporter.importData()
