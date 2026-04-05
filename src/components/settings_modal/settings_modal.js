@@ -13,7 +13,11 @@ import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
-import { LOCAL_ONLY_KEYS } from 'src/modules/default_config_state.js'
+import {
+  LOCAL_ONLY_KEYS,
+  ROOT_CONFIG,
+  ROOT_CONFIG_DEFINITIONS,
+} from 'src/modules/default_config_state.js'
 import {
   newExporter,
   newImporter,
@@ -160,10 +164,22 @@ const SettingsModal = {
                 })
               })
             } else {
-              useSyncConfigStore().setPreference({
+              const definition = ROOT_CONFIG_DEFINITIONS[entry]
+
+              const finalValue = validateSetting({
                 path: `simple.${path}`,
                 value,
+                definition,
+                throwError: false,
+                defaultState: ROOT_CONFIG,
               })
+
+              if (finalValue !== undefined) {
+                useSyncConfigStore().setPreference({
+                  path: `simple.${path}`,
+                  value,
+                })
+              }
             }
           }
         })
@@ -187,6 +203,10 @@ const SettingsModal = {
           'customTheme',
           'customThemeSource',
           'colors',
+          'style',
+          'styleCustomData',
+          'palette',
+          'paletteCustomData',
         ])
         sample = Object.fromEntries(
           Object.entries(sample).filter(
