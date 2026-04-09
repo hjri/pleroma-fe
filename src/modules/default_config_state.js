@@ -688,7 +688,7 @@ export const SYNC_DEFAULT_CONFIG_DEFINITIONS = {
     description: 'Object containing mute filters',
     type: 'object',
     default: {},
-  }
+  },
 }
 export const SYNC_DEFAULT_CONFIG = convertDefinitions(
   SYNC_DEFAULT_CONFIG_DEFINITIONS,
@@ -764,8 +764,14 @@ export const validateSetting = ({
   validateObjects = true,
 }) => {
   const path = fullPath.replace(/^simple./, '')
-  if (validateObjects && definition.type === 'object' && path.split('.').length <= 1) {
-    console.error(`attempt to set object ${fullPath} instead of its children. ignoring.`)
+  if (
+    validateObjects &&
+    definition.type === 'object' &&
+    path.split('.').length <= 1
+  ) {
+    console.error(
+      `attempt to set object ${fullPath} instead of its children. ignoring.`,
+    )
     return undefined
   }
 
