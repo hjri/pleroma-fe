@@ -763,6 +763,8 @@ export const validateSetting = ({
   defaultState,
   validateObjects = true,
 }) => {
+  if (value === undefined) return undefined // only null is allowed as missing value
+  if (definition === undefined) return undefined // invalid definition
   const path = fullPath.replace(/^simple./, '')
   if (
     validateObjects &&
@@ -781,7 +783,6 @@ export const validateSetting = ({
     console.log(path)
     console.log('====')
   }
-  if (value === undefined) return undefined // only null is allowed as missing value
   if (get(defaultState, path.split('.')[0]) === undefined) {
     const string = `Unknown option ${fullPath}, value: ${value}`
 
