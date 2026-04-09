@@ -295,6 +295,8 @@ export const _mergePrefs = (recent, stale) => {
       const entry = path.split('.')[1]
       if (operation === 'unset') return ROOT_CONFIG[entry] !== undefined
 
+      if (operation !== 'set') return true
+
       const definition = path.startsWith('simple.muteFilters')
         ? { default: {} }
         : ROOT_CONFIG_DEFINITIONS[entry]
@@ -506,6 +508,8 @@ export const useSyncConfigStore = defineStore('sync_config', {
           `Calling set on depth > 3 (path: ${path})  is not allowed`,
         )
       }
+
+      if (path.startsWith('collections.')) return value
 
       const definition = path.startsWith('simple.muteFilters')
         ? { default: {} }
