@@ -201,6 +201,7 @@ export const useInstanceStore = defineStore('instance', {
         definition,
         throwError: true,
         defaultState: DEFAULT_STATE,
+        validateObjects: false,
       })
 
       set(this, path, finalValue)

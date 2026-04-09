@@ -531,6 +531,18 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
     type: 'string',
     required: false,
   },
+  theme3hacks: {
+    description: 'Theme 3 hacks (need separation)',
+    type: 'object',
+    required: false,
+    default: {},
+  },
+  highlights: {
+    description: 'User highlights',
+    type: 'object',
+    required: false,
+    default: {},
+  },
 }
 export const INSTANCE_DEFAULT_CONFIG = convertDefinitions(
   INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
@@ -672,6 +684,11 @@ export const SYNC_DEFAULT_CONFIG_DEFINITIONS = {
     description: 'Collapse navigation panel to header only',
     default: false,
   },
+  muteFilters: {
+    description: 'Object containing mute filters',
+    type: 'object',
+    default: {},
+  }
 }
 export const SYNC_DEFAULT_CONFIG = convertDefinitions(
   SYNC_DEFAULT_CONFIG_DEFINITIONS,
@@ -740,14 +757,27 @@ export const ROOT_CONFIG_DEFINITIONS = {
 
 export const validateSetting = ({
   value,
-  path,
+  path: fullPath,
   definition,
   throwError,
   defaultState,
+  validateObjects = true,
 }) => {
-  if (value === undefined) return // only null is allowed as missing value
-  if (get(defaultState, path) === undefined) {
-    const string = `Unknown option ${path}, value: ${value}`
+  const path = fullPath.replace(/^simple./, '')
+  if (validateObjects && definition.type === 'object' && path.split('.').length <= 1) {
+    console.error(`attempt to set object ${fullPath} instead of its children. ignoring.`)
+    return undefined
+  }
+
+  if (path.includes('muteFilters')) {
+    console.log('##', path, value, definition)
+    console.log(value)
+    console.log(path)
+    console.log('====')
+  }
+  if (value === undefined) return undefined // only null is allowed as missing value
+  if (get(defaultState, path.split('.')[0]) === undefined) {
+    const string = `Unknown option ${fullPath}, value: ${value}`
 
     if (throwError) {
       throw new Error(string)

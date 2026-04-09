@@ -302,7 +302,7 @@ export const _mergePrefs = (recent, stale) => {
         : ROOT_CONFIG_DEFINITIONS[entry]
 
       const finalValue = validateSetting({
-        path: entry,
+        path,
         value: args[0],
         definition,
         throwError: false,
@@ -516,7 +516,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
         : ROOT_CONFIG_DEFINITIONS[path.split('.')[1]]
 
       const finalValue = validateSetting({
-        path: path.split('.')[1],
+        path,
         value,
         definition,
         throwError: false,
@@ -777,21 +777,19 @@ export const useSyncConfigStore = defineStore('sync_config', {
     afterLoad(state) {
       console.debug('Validating persisted state of SyncConfig')
       const newState = { ...state }
-      const newEntries = Object.entries(newState.prefsStorage.simple).map(
+      const newEntries = Object.entries(ROOT_CONFIG).map(
         ([path, value]) => {
-          if (path === 'muteFilters') {
-            return value
-          }
           const definition = ROOT_CONFIG_DEFINITIONS[path]
           const finalValue = validateSetting({
             path,
-            value,
+            value: newState.prefsStorage.simple[path],
             definition,
             throwError: false,
+            validateObjects: false,
             defaultState: ROOT_CONFIG,
           })
 
-          return finalValue === undefined ? undefined : [path, finalValue]
+          return finalValue === undefined ? definition.default : [path, finalValue]
         },
       )
       newState.prefsStorage.simple = Object.fromEntries(
