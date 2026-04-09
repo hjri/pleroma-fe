@@ -42,6 +42,7 @@ import VBodyScrollLock from 'src/directives/body_scroll_lock'
 import {
   INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
   INSTANCE_IDENTITY_DEFAULT_DEFINITIONS,
+  INSTANCE_IDENTIY_EXTERNAL,
 } from 'src/modules/default_config_state.js'
 
 let staticInitialResults = null
@@ -170,12 +171,14 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
     config = Object.assign({}, staticConfig, apiConfig)
   }
 
-  Object.keys(INSTANCE_IDENTITY_DEFAULT_DEFINITIONS).forEach((source) =>
+  Object.keys(INSTANCE_IDENTITY_DEFAULT_DEFINITIONS).forEach((source) => {
+    if (source === 'name') return
+    if (INSTANCE_IDENTIY_EXTERNAL.has(source)) return
     useInstanceStore().set({
       value: config[source],
       path: `instanceIdentity.${source}`,
-    }),
-  )
+    })
+  })
 
   Object.keys(INSTANCE_DEFAULT_CONFIG_DEFINITIONS).forEach((source) =>
     useInstanceStore().set({
@@ -277,7 +280,7 @@ const getNodeInfo = async ({ store }) => {
       const metadata = data.metadata
       const features = metadata.features
       useInstanceStore().set({
-        path: 'name',
+        path: 'instanceIdentity.name',
         value: metadata.nodeName,
       })
       useInstanceStore().set({
@@ -527,6 +530,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
 
   useInterfaceStore().setLayoutWidth(windowWidth())
   useInterfaceStore().setLayoutHeight(windowHeight())
+
   window.syncConfig = useSyncConfigStore()
   window.mergedConfig = useMergedConfigStore()
   window.localConfig = useLocalConfigStore()

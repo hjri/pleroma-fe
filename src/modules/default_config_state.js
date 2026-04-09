@@ -112,10 +112,19 @@ export const INSTANCE_IDENTITY_DEFAULT_DEFINITIONS = {
     type: 'string',
     required: false,
   },
+  name: {
+    description: 'Instance Name',
+    type: 'string',
+    required: false,
+  },
 }
 export const INSTANCE_IDENTITY_DEFAULT = convertDefinitions(
   INSTANCE_IDENTITY_DEFAULT_DEFINITIONS,
 )
+export const INSTANCE_IDENTIY_EXTERNAL = new Set([
+  'tos',
+  'instanceSpecificPanelContent',
+])
 
 /// This object contains setting entries that makes sense
 /// at the user level. The defaults can also be overriden by
