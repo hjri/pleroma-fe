@@ -789,7 +789,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
         })
 
         return finalValue === undefined
-          ? definition.default
+          ? [path, definition.default]
           : [path, finalValue]
       })
       newState.prefsStorage.simple = Object.fromEntries(
