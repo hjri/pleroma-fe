@@ -30,8 +30,6 @@ import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
-import { declarations } from 'src/modules/config_declaration'
-
 // TODO: Unify with mergeOrAdd in statuses.js
 export const mergeOrAdd = (arr, obj, item) => {
   if (!item) {
@@ -741,25 +739,6 @@ const users = {
               // Reset flag to 0 to re-run migrations
               useSyncConfigStore().setFlag({ flag: 'configMigration', value: 0 })
               /**/
-
-              const { configMigration } = useSyncConfigStore().flagStorage
-              declarations
-                .filter((x) => {
-                  return (
-                    x.store === 'server-side' &&
-                    x.migrationNum > 0 &&
-                    x.migrationNum > configMigration
-                  )
-                })
-                .toSorted((a, b) => a.configMigration - b.configMigration)
-                .forEach((value) => {
-                  value.migration(useSyncConfigStore(), store.rootState)
-                  useSyncConfigStore().setFlag({
-                    flag: 'configMigration',
-                    value: value.migrationNum,
-                  })
-                  useSyncConfigStore().pushSyncConfig()
-                })
 
               if (user.token) {
                 dispatch('setWsToken', user.token)

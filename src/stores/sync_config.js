@@ -14,6 +14,7 @@ import {
   uniqWith,
   unset,
 } from 'lodash'
+import { v4 as uuidv4 } from 'uuid'
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
 
@@ -676,21 +677,24 @@ export const useSyncConfigStore = defineStore('sync_config', {
       // Various migrations
       console.debug('Migrating from old config')
       const vuexState = (await storage.getItem('vuex-lz')) ?? {}
-      vuexState.config = vuexState.config ?? {}
+      const config = vuexState.config ?? {}
 
-      const migratedEntries = new Set(vuexState.config._syncMigration ?? [])
+      const migratedEntries = new Set(config._syncMigration ?? [])
       console.debug(
         `Already migrated Values: ${[...migratedEntries].join() || '[none]'}`,
       )
 
+      const { configMigration } = useSyncConfigStore().flagStorage
+
       Object.entries(oldDefaultConfigSync).forEach(([key, value]) => {
-        const oldValue = vuexState.config[key]
+        const oldValue = config[key]
         const defaultValue = value
 
         const present = oldValue !== undefined
         const migrated = migratedEntries.has(key)
         const different = !isEqual(oldValue, defaultValue)
 
+        console.log(key, oldValue)
         if (present && !migrated && different) {
           console.debug(`Migrating config ${key}: ${oldValue}`)
           if (key === 'theme3hacks') {
@@ -710,9 +714,26 @@ export const useSyncConfigStore = defineStore('sync_config', {
               path: 'fontMonospace',
               value: oldValue.fonts.monospace,
             })
-            useLocalConfigStore().set({
+            useSyncConfigStore().set({
               path: 'underlay',
               value: oldValue.underlay,
+            })
+          } else if (key == 'muteWords') {
+            oldValue.forEach((word, order) => {
+              const uniqueId = uuidv4()
+
+              useSyncConfigStore().setPreference({
+                path: 'simple.muteFilters.' + uniqueId,
+                value: {
+                  type: 'word',
+                  value: word,
+                  name: word,
+                  enabled: true,
+                  expires: null,
+                  hide: false,
+                  order,
+                },
+              })
             })
           } else {
             this.setPreference({ path: `simple.${key}`, value: oldValue })
@@ -722,8 +743,9 @@ export const useSyncConfigStore = defineStore('sync_config', {
         }
       })
 
-      vuexState.config._syncMigration = [...migratedEntries]
-      storage.setItem('vuex-lz', vuexState)
+      config._syncMigration = [...migratedEntries]
+      vuexState.config = config
+      //storage.setItem('vuex-lz', vuexState)
 
       if (!needUpload && recent && stale) {
         console.debug('Checking if data needs merging...')

@@ -531,17 +531,16 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
     type: 'string',
     required: false,
   },
-  theme3hacks: {
-    description: 'Theme 3 hacks (need separation)',
-    type: 'object',
-    required: false,
-    default: {},
-  },
   highlights: {
     description: 'User highlights',
     type: 'object',
     required: false,
     default: {},
+  },
+  underlay: {
+    description: 'Underlay override',
+    required: true,
+    default: 'none',
   },
 }
 export const INSTANCE_DEFAULT_CONFIG = convertDefinitions(
@@ -633,11 +632,6 @@ export const LOCAL_DEFAULT_CONFIG_DEFINITIONS = {
   useStreamingApi: {
     description: 'Streaming API (WebSocket)',
     default: false,
-  },
-  underlay: {
-    description: 'Underlay override',
-    required: true,
-    default: 'none',
   },
   fontInterface: {
     description: 'Interface font override',
@@ -766,6 +760,7 @@ export const validateSetting = ({
   if (value === undefined) return undefined // only null is allowed as missing value
   if (definition === undefined) return undefined // invalid definition
   const path = fullPath.replace(/^simple./, '')
+  const depth = path.split('.')
   if (
     validateObjects &&
     definition.type === 'object' &&
@@ -777,12 +772,6 @@ export const validateSetting = ({
     return undefined
   }
 
-  if (path.includes('muteFilters')) {
-    console.log('##', path, value, definition)
-    console.log(value)
-    console.log(path)
-    console.log('====')
-  }
   if (get(defaultState, path.split('.')[0]) === undefined) {
     const string = `Unknown option ${fullPath}, value: ${value}`
 
