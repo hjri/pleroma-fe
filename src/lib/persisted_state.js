@@ -42,6 +42,8 @@ export default function createPersistedState({
       console.info('waiting for old state to be loaded...')
       return Promise.resolve()
     } else {
+      console.log(key, state)
+      debugger
       return storage.setItem(key, state)
     }
   },
