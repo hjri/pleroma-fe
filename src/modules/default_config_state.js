@@ -811,7 +811,7 @@ export const validateSetting = ({
     }
   }
 
-  if (value !== null && type != null && typeof value !== type) {
+  if (depth > 2 && value !== null && type != null && typeof value !== type) {
     const string = `Invalid type for setting ${path}: expected type ${type}, got ${typeof value}, value ${value}; defaulting`
 
     if (throwError) {
