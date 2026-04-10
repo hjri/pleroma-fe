@@ -677,6 +677,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
       // Various migrations
       console.debug('Migrating from old config')
       const vuexState = (await storage.getItem('vuex-lz')) ?? {}
+      console.log('### sc', vuexState)
       const config = vuexState.config ?? {}
 
       const migratedEntries = new Set(config._syncMigration ?? [])

@@ -278,21 +278,22 @@ export const useUserHighlightStore = defineStore('user_highlight', {
       let dirty = false
 
       const vuexState = (await storage.getItem('vuex-lz')) ?? {}
-      vuexState.config = vuexState.config ?? {}
-      const highlight = vuexState.config.highlight ?? {}
+      const config = vuexState.config ?? {}
+      const highlight = config.highlight ?? {}
 
       Object.entries(highlight).forEach(([user, value]) => {
         if ((highlight[user]._migrated || 0) < 1) {
           dirty = true
           needUpload = true
           this.set({ user, value: clone(value) })
-          vuexState.config.highlight[user]._migrated = 1
+          highlight[user]._migrated = 1
           console.debug(
             `[HIGHLIGHT] Migrating user ${user}: ${JSON.stringify(value)}`,
           )
         }
       })
-      storage.setItem('vuex-lz', vuexState)
+      console.log('### uh', vuexState)
+      //storage.setItem('vuex-lz', { ...vuexState, config: { ...config, highlight } })
 
       if (recent === null) {
         console.debug(
