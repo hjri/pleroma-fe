@@ -23,15 +23,12 @@ const APPEARANCE_SETTINGS_KEYS = [
   'forcedRoundness',
   'emojiSize',
   'emojiReactionsScale',
-]
-
-const HACKS_KEYS = new Set([
   'fontInterface',
   'fontPosts',
   'fontInput',
   'fontMonospace',
   'underlay',
-])
+]
 
 const MIXED_KEYS = new Set([
   ...APPEARANCE_SETTINGS_KEYS,
@@ -45,8 +42,6 @@ export const piniaStylePlugin = ({ store, options }) => {
         const { path } = args[0]
         if (MIXED_KEYS.has(path)) {
           after(() => applyStyleConfig(useMergedConfigStore().mergedConfig))
-        }
-        if (HACKS_KEYS.has(path)) {
           after(() => useInterfaceStore().applyTheme({ recompile: true }))
         }
       }

@@ -235,7 +235,7 @@
         <li>
           <ChoiceSetting
             id="underlayOverride"
-            path="theme3hacks.underlay"
+            path="underlay"
             :options="underlayOverrideModes"
           >
             {{ $t('settings.style.themes3.hacks.underlay_overrides') }}
