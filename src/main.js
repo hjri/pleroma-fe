@@ -41,7 +41,7 @@ const i18n = createI18n({
 messages.setLanguage(i18n.global, currentLocale)
 
 const persistedStateOptions = {
-  paths: ['users.lastLoginName', 'oauth'],
+  paths: ['users.lastLoginName', 'oauth', 'config'],
 }
 
 ;(async () => {
