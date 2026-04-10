@@ -1,4 +1,4 @@
-import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { storage } from 'src/lib/storage.js'
 
 export const CONFIG_MIGRATION = 1
 
@@ -23,8 +23,10 @@ export const declarations = [
     migrationNum: 1,
     description: 'Mute filters, wordfilter/regexp/etc',
     valueType: 'complex',
-    migration(serverside, rootState) {
-      useMergedConfigStore().mergedConfig.muteWords.forEach((word, order) => {
+    migration: async (serverside, rootState) => {
+      const vuexState = (await storage.getItem('vuex-lz')) ?? {}
+
+      vuexState.config?.muteWords?.forEach((word, order) => {
         const uniqueId = uuidv4()
 
         serverside.setPreference({
