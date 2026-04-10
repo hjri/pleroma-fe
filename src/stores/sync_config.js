@@ -677,7 +677,6 @@ export const useSyncConfigStore = defineStore('sync_config', {
       // Various migrations
       console.debug('Migrating from old config')
       const vuexState = (await storage.getItem('vuex-lz')) ?? {}
-      console.log('### sc', vuexState)
       const config = vuexState.config ?? {}
 
       const migratedEntries = new Set(config._syncMigration ?? [])
@@ -695,7 +694,6 @@ export const useSyncConfigStore = defineStore('sync_config', {
         const migrated = migratedEntries.has(key)
         const different = !isEqual(oldValue, defaultValue)
 
-        console.log(key, oldValue)
         if (present && !migrated && different) {
           console.debug(`Migrating config ${key}: ${oldValue}`)
           if (key === 'theme3hacks') {
@@ -715,7 +713,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
               path: 'fontMonospace',
               value: oldValue.fonts.monospace,
             })
-            useSyncConfigStore().set({
+            useSyncConfigStore().setSimplePrefAndSave({
               path: 'underlay',
               value: oldValue.underlay,
             })
@@ -746,7 +744,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
 
       config._syncMigration = [...migratedEntries]
       vuexState.config = config
-      //storage.setItem('vuex-lz', vuexState)
+      storage.setItem('vuex-lz', vuexState)
 
       if (!needUpload && recent && stale) {
         console.debug('Checking if data needs merging...')

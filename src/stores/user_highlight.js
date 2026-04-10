@@ -292,8 +292,7 @@ export const useUserHighlightStore = defineStore('user_highlight', {
           )
         }
       })
-      console.log('### uh', vuexState)
-      //storage.setItem('vuex-lz', { ...vuexState, config: { ...config, highlight } })
+      storage.setItem('vuex-lz', { ...vuexState, config: { ...config, highlight } })
 
       if (recent === null) {
         console.debug(
