@@ -10,12 +10,13 @@
       class="alert error"
     >
       {{ error }}
-      <span
+      <button
         class="fa-scale-110 fa-old-padding"
+        type="button"
         @click="clearError"
       >
         <FAIcon icon="times" />
-      </span>
+      </button>
     </div>
     <template v-if="muted && !isPreview">
       <div class="status-container muted">

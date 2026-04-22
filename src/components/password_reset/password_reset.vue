@@ -61,15 +61,16 @@
           </div>
           <p
             v-if="error"
-            class="alert error notice-dismissible"
+            class="alert error"
           >
             <span>{{ error }}</span>
-            <a
+            <button
               class="fa-scale-110 fa-old-padding dismiss"
+              type="button"
               @click.prevent="dismissError()"
             >
               <FAIcon icon="times" />
-            </a>
+            </button>
           </p>
         </div>
       </form>
@@ -115,10 +116,6 @@
   .alert {
     padding: 0.5em;
     margin: 0.3em 0 1em;
-  }
-
-  .notice-dismissible {
-    padding-right: 2rem;
   }
 
   .dismiss {
