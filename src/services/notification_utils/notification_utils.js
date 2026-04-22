@@ -65,22 +65,24 @@ const sortById = (a, b) => {
   }
 }
 
-const isMutedNotification = (notification) => {
+const isMutedNotification = (muteFilters, notification) => {
   if (!notification.status) return false
   if (notification.status.muted) return true
-  return muteFilterHits(notification.status).length > 0
+  return muteFilterHits(muteFilters, notification.status).length > 0
 }
 
 export const maybeShowNotification = (
   store,
   notificationVisibility,
+  muteFilters,
   notification,
 ) => {
+  console.log('NOTIF', store, notificationVisibility, muteFilters, notification)
   const rootState = store.rootState || store.state
 
   if (notification.seen) return
   if (!visibleTypes(notificationVisibility).includes(notification.type)) return
-  if (notification.type === 'mention' && isMutedNotification(notification))
+  if (notification.type === 'mention' && isMutedNotification(muteFilters, notification))
     return
 
   const notificationObject = prepareNotificationObject(
