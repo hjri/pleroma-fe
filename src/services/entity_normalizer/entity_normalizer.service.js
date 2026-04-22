@@ -372,8 +372,8 @@ export const parseStatus = (data) => {
     const quoteData = quoteRaw ? parseStatus(quoteRaw) : undefined
     output.quote = quoteData
     output.quote_id =
-      data.quote?.id ?? data.quote_id ?? quoteData?.id ?? pleroma.quote_id
-    output.quote_url = data.quote?.url ?? quoteData?.url ?? pleroma.quote_url
+      data.quote?.id ?? data.quote_id ?? quoteData?.id ?? pleroma?.quote_id
+    output.quote_url = data.quote?.url ?? quoteData?.url ?? pleroma?.quote_url
 
     output.in_reply_to_status_id = data.in_reply_to_id
     output.in_reply_to_user_id = data.in_reply_to_account_id
