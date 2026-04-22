@@ -91,7 +91,8 @@ export const useInterfaceStore = defineStore('interface', {
     },
     setPageTitle(option = '') {
       try {
-        document.title = `${option} ${useInstanceStore().name}`
+        console.log('TITLE', option, useInstanceStore().instanceIdentity.name)
+        document.title = `${option} ${useInstanceStore().instanceIdentity.name}`
       } catch (error) {
         console.error(`${error}`)
       }
