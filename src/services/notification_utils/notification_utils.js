@@ -77,7 +77,6 @@ export const maybeShowNotification = (
   muteFilters,
   notification,
 ) => {
-  console.log('NOTIF', store, notificationVisibility, muteFilters, notification)
   const rootState = store.rootState || store.state
 
   if (notification.seen) return
