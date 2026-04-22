@@ -9,9 +9,11 @@
       @dragover.prevent="fileDrag"
     >
       <div class="form-group">
-        <div class="visibility-notice notice-dismissible">
+        <div
+          v-if="!$store.state.users.currentUser.locked && newStatus.visibility == 'private' && !disableLockWarning"
+          class="visibility-notice notice-dismissible"
+        >
           <i18n-t
-            v-if="!$store.state.users.currentUser.locked && newStatus.visibility == 'private' && !disableLockWarning"
             keypath="post_status.account_not_locked_warning"
             tag="p"
             class=""
