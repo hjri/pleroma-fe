@@ -1,5 +1,6 @@
 import { get } from 'lodash'
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
+import { useInstanceStore } from 'src/stores/instance.js'
 
 /**
  * This is for backwards compatibility. We originally didn't recieve
@@ -18,64 +19,65 @@ const toInstanceReasonObject = (instances, info, key) => {
 
 const MRFTransparencyPanel = {
   computed: {
-    ...mapState({
-      federationPolicy: (state) => get(state, 'instance.federationPolicy'),
+    ...mapState(useInstanceStore, {
+      federationPolicy: (state) => state.federationPolicy,
       mrfPolicies: (state) =>
-        get(state, 'instance.federationPolicy.mrf_policies', []),
+        get(state, 'federationPolicy.mrf_policies', []),
       quarantineInstances: (state) =>
+        console.log(state) ||
         toInstanceReasonObject(
-          get(state, 'instance.federationPolicy.quarantined_instances', []),
+          get(state, 'federationPolicy.quarantined_instances', []),
           get(
             state,
-            'instance.federationPolicy.quarantined_instances_info',
+            'federationPolicy.quarantined_instances_info',
             [],
           ),
           'quarantined_instances',
         ),
       acceptInstances: (state) =>
         toInstanceReasonObject(
-          get(state, 'instance.federationPolicy.mrf_simple.accept', []),
-          get(state, 'instance.federationPolicy.mrf_simple_info', []),
+          get(state, 'federationPolicy.mrf_simple.accept', []),
+          get(state, 'federationPolicy.mrf_simple_info', []),
           'accept',
         ),
       rejectInstances: (state) =>
         toInstanceReasonObject(
-          get(state, 'instance.federationPolicy.mrf_simple.reject', []),
-          get(state, 'instance.federationPolicy.mrf_simple_info', []),
+          get(state, 'federationPolicy.mrf_simple.reject', []),
+          get(state, 'federationPolicy.mrf_simple_info', []),
           'reject',
         ),
       ftlRemovalInstances: (state) =>
         toInstanceReasonObject(
           get(
             state,
-            'instance.federationPolicy.mrf_simple.federated_timeline_removal',
+            'federationPolicy.mrf_simple.federated_timeline_removal',
             [],
           ),
-          get(state, 'instance.federationPolicy.mrf_simple_info', []),
+          get(state, 'federationPolicy.mrf_simple_info', []),
           'federated_timeline_removal',
         ),
       mediaNsfwInstances: (state) =>
         toInstanceReasonObject(
-          get(state, 'instance.federationPolicy.mrf_simple.media_nsfw', []),
-          get(state, 'instance.federationPolicy.mrf_simple_info', []),
+          get(state, 'federationPolicy.mrf_simple.media_nsfw', []),
+          get(state, 'federationPolicy.mrf_simple_info', []),
           'media_nsfw',
         ),
       mediaRemovalInstances: (state) =>
         toInstanceReasonObject(
-          get(state, 'instance.federationPolicy.mrf_simple.media_removal', []),
-          get(state, 'instance.federationPolicy.mrf_simple_info', []),
+          get(state, 'federationPolicy.mrf_simple.media_removal', []),
+          get(state, 'federationPolicy.mrf_simple_info', []),
           'media_removal',
         ),
       keywordsFtlRemoval: (state) =>
         get(
           state,
-          'instance.federationPolicy.mrf_keyword.federated_timeline_removal',
+          'federationPolicy.mrf_keyword.federated_timeline_removal',
           [],
         ),
       keywordsReject: (state) =>
-        get(state, 'instance.federationPolicy.mrf_keyword.reject', []),
+        get(state, 'federationPolicy.mrf_keyword.reject', []),
       keywordsReplace: (state) =>
-        get(state, 'instance.federationPolicy.mrf_keyword.replace', []),
+        get(state, 'federationPolicy.mrf_keyword.replace', []),
     }),
     hasInstanceSpecificPolicies() {
       return (
