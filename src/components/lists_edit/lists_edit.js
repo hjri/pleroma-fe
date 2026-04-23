@@ -124,11 +124,10 @@ const ListsNew = {
       useListsStore()
         .createList({ title: this.titleDraft })
         .then((list) => {
-          useListsStore()
-            .setListAccounts({
-              listId: list.id,
-              accountIds: [...this.addedUserIds],
-            })
+          useListsStore().setListAccounts({
+            listId: list.id,
+            accountIds: [...this.addedUserIds],
+          })
           return list.id
         })
         .then((listId) => {

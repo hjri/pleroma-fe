@@ -7,18 +7,13 @@ createTestingPinia()
 
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
 
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
 const generateInput = (value, padEmoji = true) => {
   const wrapper = shallowMount(EmojiInput, {
     global: {
       renderStubDefaultSlot: true,
       mocks: {
-        $store: {
-          getters: {
-            mergedConfig: {
-              padEmoji,
-            },
-          },
-        },
         $t: (msg) => msg,
       },
       stubs: {
@@ -49,6 +44,12 @@ const generateInput = (value, padEmoji = true) => {
 }
 
 describe('EmojiInput', () => {
+  beforeEach(() => {
+    const store = useMergedConfigStore(createTestingPinia())
+    store.mergedConfig = {
+      padEmoji: true,
+    }
+  })
   describe('insertion mechanism', () => {
     it('inserts string at the end with trailing space', () => {
       const initialString = 'Testing'
@@ -112,6 +113,10 @@ describe('EmojiInput', () => {
     it('inserts string without any padding if padEmoji setting is set to false', () => {
       const initialString = 'Eat some spam!'
       const wrapper = generateInput(initialString, false)
+      const store = useMergedConfigStore(createTestingPinia())
+      store.mergedConfig = {
+        padEmoji: false,
+      }
       const input = wrapper.find('input')
       input.setValue(initialString)
       wrapper.setData({ caret: initialString.length, keepOpen: false })
@@ -147,6 +152,10 @@ describe('EmojiInput', () => {
     it('correctly sets caret after insertion if padEmoji setting is set to false', async () => {
       const initialString = '1234'
       const wrapper = generateInput(initialString, false)
+      const store = useMergedConfigStore(createTestingPinia())
+      store.mergedConfig = {
+        padEmoji: false,
+      }
       const input = wrapper.find('input')
       input.setValue(initialString)
       wrapper.setData({ caret: initialString.length })

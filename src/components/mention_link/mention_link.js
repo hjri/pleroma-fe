@@ -1,3 +1,4 @@
+import { mapState as mapPiniaState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 import { mapGetters, mapState } from 'vuex'
 
@@ -7,6 +8,9 @@ import {
 } from '../../services/user_highlighter/user_highlighter.js'
 import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
+
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
@@ -97,23 +101,23 @@ const MentionLink = {
     userNameFullUi() {
       return this.user && this.user.screen_name_ui
     },
-    highlight() {
-      return this.user && this.mergedConfig.highlight[this.user.screen_name]
+    highlightData() {
+      return this.highlight[this.user?.screen_name]
     },
     highlightType() {
-      return this.highlight && '-' + this.highlight.type
+      return this.highlightData && '-' + this.highlightData.type
     },
     highlightClass() {
-      if (this.highlight) return highlightClass(this.user)
+      return this.highlightData && highlightClass(this.user)
     },
     style() {
-      if (this.highlight) {
+      if (this.highlightData) {
         const {
           backgroundColor,
           backgroundPosition,
           backgroundImage,
           ...rest
-        } = highlightStyle(this.highlight)
+        } = highlightStyle(this.highlightData)
         return rest
       }
     },
@@ -121,7 +125,7 @@ const MentionLink = {
       return [
         {
           '-you': this.isYou && this.shouldBoldenYou,
-          '-highlighted': this.highlight,
+          '-highlighted': !!this.highlightData,
           '-has-selection': this.hasSelection,
         },
         this.highlightType,
@@ -156,7 +160,8 @@ const MentionLink = {
     shouldFadeDomain() {
       return this.mergedConfig.mentionLinkFadeDomain
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
+    ...mapPiniaState(useUserHighlightStore, ['highlight']),
     ...mapState({
       currentUser: (state) => state.users.currentUser,
     }),

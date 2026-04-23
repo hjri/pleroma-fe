@@ -56,20 +56,20 @@
         </li>
         <li>
           <FontControl
-            :model-value="mergedConfig.theme3hacks.fonts.post"
+            :model-value="mergedConfig.fontPosts"
             name="post"
             :fallback="{ family: 'inherit' }"
             :label="$t('settings.style.fonts.components.post')"
-            @update:model-value="v => updateFont('post', v)"
+            @update:model-value="v => updateFont('fontPosts', v)"
           />
         </li>
         <li>
           <FontControl
-            :model-value="mergedConfig.theme3hacks.fonts.monospace"
+            :model-value="mergedConfig.fontMonospace"
             name="postCode"
             :fallback="{ family: 'monospace' }"
             :label="$t('settings.style.fonts.components.monospace')"
-            @update:model-value="v => updateFont('monospace', v)"
+            @update:model-value="v => updateFont('fontMonospace', v)"
           />
         </li>
         <li>
@@ -99,6 +99,7 @@
           <ChoiceSetting
             id="mentionLinkDisplay"
             path="mentionLinkDisplay"
+            :local="true"
             :options="mentionLinkDisplayOptions"
           >
             {{ $t('settings.mention_link_display') }}
@@ -169,7 +170,10 @@
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting path="hideNsfw">
+          <BooleanSetting
+            :local="true"
+            path="hideNsfw"
+          >
             {{ $t('settings.nsfw_clickthrough') }}
           </BooleanSetting>
           <ul class="setting-list suboptions">
@@ -177,6 +181,7 @@
               <BooleanSetting
                 path="preloadImage"
                 expert="1"
+                :local="true"
                 parent-path="hideNsfw"
               >
                 {{ $t('settings.preload_images') }}
@@ -186,6 +191,7 @@
               <BooleanSetting
                 path="useOneClickNsfw"
                 expert="1"
+                :local="true"
                 parent-path="hideNsfw"
               >
                 {{ $t('settings.use_one_click_nsfw') }}

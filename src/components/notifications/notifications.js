@@ -17,6 +17,7 @@ import NotificationFilters from './notification_filters.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -75,20 +76,29 @@ const Notifications = {
       return this.$store.state.notifications.error
     },
     unseenNotifications() {
-      return unseenNotificationsFromStore(this.$store)
+      return unseenNotificationsFromStore(
+        this.$store,
+        useMergedConfigStore().mergedConfig.notificationVisibility,
+      )
     },
     filteredNotifications() {
       if (this.unseenAtTop) {
         return [
-          ...filteredNotificationsFromStore(this.$store).filter((n) =>
-            this.shouldShowUnseen(n),
-          ),
-          ...filteredNotificationsFromStore(this.$store).filter(
-            (n) => !this.shouldShowUnseen(n),
-          ),
+          ...filteredNotificationsFromStore(
+            this.$store,
+            useMergedConfigStore().mergedConfig.notificationVisibility,
+          ).filter((n) => this.shouldShowUnseen(n)),
+          ...filteredNotificationsFromStore(
+            this.$store,
+            useMergedConfigStore().mergedConfig.notificationVisibility,
+          ).filter((n) => !this.shouldShowUnseen(n)),
         ]
       } else {
-        return filteredNotificationsFromStore(this.$store, this.filterMode)
+        return filteredNotificationsFromStore(
+          this.$store,
+          useMergedConfigStore().mergedConfig.notificationVisibility,
+          this.filterMode,
+        )
       }
     },
     unseenCountBadgeText() {
@@ -98,10 +108,13 @@ const Notifications = {
       return this.unseenNotifications.length
     },
     ignoreInactionableSeen() {
-      return this.$store.getters.mergedConfig.ignoreInactionableSeen
+      return useMergedConfigStore().mergedConfig.ignoreInactionableSeen
     },
     extraNotificationsCount() {
-      return countExtraNotifications(this.$store)
+      return countExtraNotifications(
+        this.$store,
+        useMergedConfigStore().mergedConfig,
+      )
     },
     unseenCountTitle() {
       return (
@@ -136,10 +149,10 @@ const Notifications = {
       )
     },
     noSticky() {
-      return this.$store.getters.mergedConfig.disableStickyHeaders
+      return useMergedConfigStore().mergedConfig.disableStickyHeaders
     },
     unseenAtTop() {
-      return this.$store.getters.mergedConfig.unseenAtTop
+      return useMergedConfigStore().mergedConfig.unseenAtTop
     },
     showExtraNotifications() {
       return !this.noExtra

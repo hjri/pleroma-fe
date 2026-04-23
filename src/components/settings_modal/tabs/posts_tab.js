@@ -2,10 +2,12 @@ import FontControl from 'src/components/font_control/font_control.vue'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import IntegerSetting from '../helpers/integer_setting.vue'
-import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
-const GeneralTab = {
+import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
+const PostsTab = {
   data() {
     return {
       conversationDisplayOptions: ['tree', 'linear'].map((mode) => ({
@@ -60,25 +62,15 @@ const GeneralTab = {
     ChoiceSetting,
     IntegerSetting,
     FontControl,
-    ProfileSettingIndicator,
   },
   computed: {
     ...SharedComputedObject(),
   },
   methods: {
-    updateFont(key, value) {
-      this.$store.dispatch('setOption', {
-        name: 'theme3hacks',
-        value: {
-          ...this.mergedConfig.theme3hacks,
-          fonts: {
-            ...this.mergedConfig.theme3hacks.fonts,
-            [key]: value,
-          },
-        },
-      })
+    updateFont(path, value) {
+      useLocalConfigStore().set({ path, value })
     },
   },
 }
 
-export default GeneralTab
+export default PostsTab

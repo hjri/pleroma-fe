@@ -1,5 +1,6 @@
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Popover from 'src/components/popover/popover.vue'
+import LocalSettingIndicator from 'src/components/settings_modal/helpers/local_setting_indicator.vue'
 import Select from '../select/select.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
@@ -18,6 +19,7 @@ export default {
     Select,
     Checkbox,
     Popover,
+    LocalSettingIndicator,
   },
   props: ['name', 'label', 'modelValue', 'fallback', 'options', 'no-inherit'],
   mounted() {
@@ -43,7 +45,7 @@ export default {
   },
   computed: {
     present() {
-      return typeof this.modelValue !== 'undefined'
+      return this.modelValue != null
     },
     localFontsList() {
       return useInterfaceStore().localFonts

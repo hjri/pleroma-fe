@@ -4,11 +4,11 @@ import 'virtual:pleroma-fe/service_worker_env'
 
 import { createI18n } from 'vue-i18n'
 
-import { parseNotification } from './services/entity_normalizer/entity_normalizer.service.js'
-import { prepareNotificationObject } from './services/notification_utils/notification_utils.js'
-import { cacheKey, emojiCacheKey, shouldCache } from './services/sw/sw.js'
-
 import { storage } from 'src/lib/storage.js'
+import { INSTANCE_DEFAULT_CONFIG } from 'src/modules/default_config_state.js'
+import { parseNotification } from 'src/services/entity_normalizer/entity_normalizer.service.js'
+import { prepareNotificationObject } from 'src/services/notification_utils/notification_utils.js'
+import { cacheKey, emojiCacheKey, shouldCache } from 'src/services/sw/sw.js'
 
 // Collects all messages for service workers
 // Needed because service workers cannot use dynamic imports
@@ -35,14 +35,15 @@ function getWindowClients() {
 }
 
 const setSettings = async () => {
-  const vuexState = await storage.getItem('vuex-lz')
-  const locale = vuexState.config.interfaceLanguage || 'en'
+  const piniaState = await storage.getItem('pinia-local-sync_config')
+  const locale = piniaState.prefsStorage.simple.interfaceLanguage || 'en'
   i18n.locale = locale
   const notificationsNativeArray = Object.entries(
-    vuexState.config.notificationNative,
+    piniaState.prefsStorage.simple.notificationNative ||
+      INSTANCE_DEFAULT_CONFIG.notificationNative,
   )
   state.webPushAlwaysShowNotifications =
-    vuexState.config.webPushAlwaysShowNotifications
+    piniaState.prefsStorage.simple.webPushAlwaysShowNotifications
 
   state.allowedNotificationTypes = new Set(
     notificationsNativeArray

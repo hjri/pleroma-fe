@@ -1,7 +1,7 @@
 import { showDesktopNotification } from '../desktop_notification_utils/desktop_notification_utils.js'
 import { muteFilterHits } from '../status_parser/status_parser.js'
 
-import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useI18nStore } from 'src/stores/i18n.js'
 
 import FaviconService from 'src/services/favicon_service/favicon_service.js'
@@ -16,12 +16,7 @@ let cachedBadgeUrl = null
 
 export const notificationsFromStore = (store) => store.state.notifications.data
 
-export const visibleTypes = (store) => {
-  // When called from within a module we need rootGetters to access wider scope
-  // however when called from a component (i.e. this.$store) we already have wider scope
-  const rootGetters = store.rootGetters || store.getters
-  const { notificationVisibility } = rootGetters.mergedConfig
-
+const visibleTypes = (notificationVisibility) => {
   return [
     notificationVisibility.likes && 'like',
     notificationVisibility.mentions && 'mention',
@@ -70,18 +65,23 @@ const sortById = (a, b) => {
   }
 }
 
-const isMutedNotification = (notification) => {
+const isMutedNotification = (muteFilters, notification) => {
   if (!notification.status) return false
   if (notification.status.muted) return true
-  return muteFilterHits(notification.status).length > 0
+  return muteFilterHits(muteFilters, notification.status).length > 0
 }
 
-export const maybeShowNotification = (store, notification) => {
+export const maybeShowNotification = (
+  store,
+  notificationVisibility,
+  muteFilters,
+  notification,
+) => {
   const rootState = store.rootState || store.state
 
   if (notification.seen) return
-  if (!visibleTypes(store).includes(notification.type)) return
-  if (notification.type === 'mention' && isMutedNotification(notification))
+  if (!visibleTypes(notificationVisibility).includes(notification.type)) return
+  if (notification.type === 'mention' && isMutedNotification(muteFilters, notification))
     return
 
   const notificationObject = prepareNotificationObject(
@@ -91,26 +91,33 @@ export const maybeShowNotification = (store, notification) => {
   showDesktopNotification(rootState, notificationObject)
 }
 
-export const filteredNotificationsFromStore = (store, types) => {
+export const filteredNotificationsFromStore = (
+  store,
+  notificationVisibility,
+  types,
+) => {
   // map is just to clone the array since sort mutates it and it causes some issues
   const sortedNotifications = notificationsFromStore(store)
     .map((_) => _)
     .sort(sortById)
   // TODO implement sorting elsewhere and make it optional
   return sortedNotifications.filter((notification) =>
-    (types || visibleTypes(store)).includes(notification.type),
+    (types || visibleTypes(notificationVisibility)).includes(notification.type),
   )
 }
 
-export const unseenNotificationsFromStore = (store) => {
-  const rootGetters = store.rootGetters || store.getters
-  const ignoreInactionableSeen = rootGetters.mergedConfig.ignoreInactionableSeen
-
-  return filteredNotificationsFromStore(store).filter(({ seen, type }) => {
-    if (!ignoreInactionableSeen) return !seen
-    if (seen) return false
-    return ACTIONABLE_NOTIFICATION_TYPES.has(type)
-  })
+export const unseenNotificationsFromStore = (
+  store,
+  notificationVisibility,
+  ignoreInactionableSeen,
+) => {
+  return filteredNotificationsFromStore(store, notificationVisibility).filter(
+    ({ seen, type }) => {
+      if (!ignoreInactionableSeen) return !seen
+      if (seen) return false
+      return ACTIONABLE_NOTIFICATION_TYPES.has(type)
+    },
+  )
 }
 
 export const prepareNotificationObject = (notification, i18n) => {
@@ -183,9 +190,8 @@ export const prepareNotificationObject = (notification, i18n) => {
   return notifObj
 }
 
-export const countExtraNotifications = (store) => {
+export const countExtraNotifications = (store, mergedConfig) => {
   const rootGetters = store.rootGetters || store.getters
-  const mergedConfig = rootGetters.mergedConfig
 
   if (!mergedConfig.showExtraNotifications) {
     return 0

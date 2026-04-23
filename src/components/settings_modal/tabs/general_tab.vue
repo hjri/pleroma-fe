@@ -9,11 +9,6 @@
           class="lang-selector"
           @update="val => language = val"
         />
-        <h4>
-          {{ $t('settings.email_language') }}
-          {{ ' ' }}
-          <ProfileSettingIndicator :is-profile="true" />
-        </h4>
         <interface-language-switcher
           v-model="emailLanguage"
           class="lang-selector"
@@ -44,6 +39,7 @@
             :units="['px', 'rem']"
             :reset-default="{ 'px': 14, 'rem': 1 }"
             timed-apply-mode
+            :local="true"
           >
             {{ $t('settings.text_size') }}
           </UnitSetting>
@@ -68,27 +64,28 @@
         </li>
         <li>
           <FontControl
-            :model-value="mergedConfig.theme3hacks.fonts.interface"
+            :model-value="mergedConfig.fontInterface"
             name="ui"
             :label="$t('settings.style.fonts.components_inline.interface')"
             :fallback="{ family: 'sans-serif' }"
             no-inherit="1"
-            @update:model-value="v => updateFont('interface', v)"
+            @update:model-value="v => updateFont('fontInterface', v)"
           />
         </li>
         <li>
           <FontControl
-            :model-value="mergedConfig.theme3hacks.fonts.input"
+            :model-value="mergedConfig.fontInput"
             name="input"
             :fallback="{ family: 'inherit' }"
             :label="$t('settings.style.fonts.components_inline.input')"
-            @update:model-value="v => updateFont('input', v)"
+            @update:model-value="v => updateFont('fontInput', v)"
           />
         </li>
         <li>
           <UnitSetting
             path="emojiSize"
             :step="0.1"
+            :local="true"
             :units="['px', 'rem']"
             :reset-default="{ 'px': 32, 'rem': 2.2 }"
           >
@@ -101,6 +98,7 @@
               <FloatSetting
                 v-if="user"
                 path="emojiReactionsScale"
+                :local="true"
               >
                 {{ $t('settings.emoji_reactions_scale') }}
               </FloatSetting>
@@ -128,6 +126,7 @@
         <li>
           <BooleanSetting
             path="useStreamingApi"
+            :local="true"
             expert="1"
           >
             {{ $t('settings.useStreamingApi') }}

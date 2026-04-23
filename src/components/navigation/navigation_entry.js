@@ -5,7 +5,7 @@ import { routeTo } from 'src/components/navigation/navigation.js'
 import OptionalRouterLink from 'src/components/optional_router_link/optional_router_link.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faThumbtack } from '@fortawesome/free-solid-svg-icons'
@@ -23,17 +23,17 @@ const NavigationEntry = {
     },
     togglePin(value) {
       if (this.isPinned(value)) {
-        useServerSideStorageStore().removeCollectionPreference({
+        useSyncConfigStore().removeCollectionPreference({
           path: 'collections.pinnedNavItems',
           value,
         })
       } else {
-        useServerSideStorageStore().addCollectionPreference({
+        useSyncConfigStore().addCollectionPreference({
           path: 'collections.pinnedNavItems',
           value,
         })
       }
-      useServerSideStorageStore().pushServerSideStorage()
+      useSyncConfigStore().pushSyncConfig()
     },
   },
   computed: {
@@ -47,7 +47,7 @@ const NavigationEntry = {
     ...mapState({
       currentUser: (state) => state.users.currentUser,
     }),
-    ...mapPiniaState(useServerSideStorageStore, {
+    ...mapPiniaState(useSyncConfigStore, {
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems),
     }),

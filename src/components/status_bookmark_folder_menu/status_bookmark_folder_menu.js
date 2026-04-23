@@ -11,7 +11,8 @@ import { faChevronRight, faFolder } from '@fortawesome/free-solid-svg-icons'
 library.add(faChevronRight, faFolder)
 
 const StatusBookmarkFolderMenu = {
-  props: ['status', 'close'],
+  props: ['status'],
+  emits: ['success', 'error', 'close'],
   data() {
     return {}
   },
@@ -33,8 +34,8 @@ const StatusBookmarkFolderMenu = {
 
       this.$store
         .dispatch('bookmark', { id: this.status.id, bookmark_folder_id: value })
-        .then(() => this.$emit('onSuccess'))
-        .catch((err) => this.$emit('onError', err.error.error))
+        .then(() => this.$emit('success'))
+        .catch((err) => this.$emit('error', err.error.error))
     },
   },
 }

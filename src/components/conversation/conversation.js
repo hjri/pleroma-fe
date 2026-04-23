@@ -1,6 +1,6 @@
 import { clone, filter, findIndex, get, reduce } from 'lodash'
 import { mapState as mapPiniaState } from 'pinia'
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 import { WSConnectionStatus } from '../../services/api/api.service.js'
 import QuickFilterSettings from '../quick_filter_settings/quick_filter_settings.vue'
@@ -9,6 +9,7 @@ import Status from '../status/status.vue'
 import ThreadTree from '../thread_tree/thread_tree.vue'
 
 import { useInterfaceStore } from 'src/stores/interface'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -81,7 +82,7 @@ const conversation = {
       // maxDepthInThread = max number of depths that is *visible*
       // since our depth starts with 0 and "showing" means "showing children"
       // there is a -2 here
-      const maxDepth = this.$store.getters.mergedConfig.maxDepthInThread - 2
+      const maxDepth = this.mergedConfig.maxDepthInThread - 2
       return maxDepth >= 1 ? maxDepth : 1
     },
     streamingEnabled() {
@@ -91,22 +92,22 @@ const conversation = {
       )
     },
     displayStyle() {
-      return this.$store.getters.mergedConfig.conversationDisplay
+      return this.mergedConfig.conversationDisplay
     },
     isTreeView() {
       return !this.isLinearView
     },
     treeViewIsSimple() {
-      return !this.$store.getters.mergedConfig.conversationTreeAdvanced
+      return !this.mergedConfig.conversationTreeAdvanced
     },
     isLinearView() {
       return this.displayStyle === 'linear'
     },
     shouldFadeAncestors() {
-      return this.$store.getters.mergedConfig.conversationTreeFadeAncestors
+      return this.mergedConfig.conversationTreeFadeAncestors
     },
     otherRepliesButtonPosition() {
-      return this.$store.getters.mergedConfig.conversationOtherRepliesButton
+      return this.mergedConfig.conversationOtherRepliesButton
     },
     showOtherRepliesButtonBelowStatus() {
       return this.otherRepliesButtonPosition === 'below'
@@ -392,7 +393,7 @@ const conversation = {
     maybeHighlight() {
       return this.isExpanded ? this.highlight : null
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
     ...mapState({
       mastoUserSocketStatus: (state) => state.api.mastoUserSocketStatus,
     }),

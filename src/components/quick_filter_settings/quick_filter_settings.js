@@ -1,9 +1,11 @@
 import { mapState } from 'pinia'
-import { mapGetters } from 'vuex'
 
 import Popover from '../popover/popover.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faFilter, faFont, faWrench } from '@fortawesome/free-solid-svg-icons'
@@ -20,8 +22,8 @@ const QuickFilterSettings = {
   },
   methods: {
     setReplyVisibility(visibility) {
-      this.$store.dispatch('setOption', {
-        name: 'replyVisibility',
+      useSyncConfigStore().setSimplePrefAndSave({
+        path: 'replyVisibility',
         value: visibility,
       })
       this.$store.dispatch('queueFlushAll')
@@ -31,7 +33,7 @@ const QuickFilterSettings = {
     },
   },
   computed: {
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
     ...mapState(useInterfaceStore, {
       mobileLayout: (state) => state.layoutType === 'mobile',
     }),
@@ -85,11 +87,13 @@ const QuickFilterSettings = {
           this.mergedConfig.hideAttachmentsInConv
         )
       },
-      set() {
-        const value = !this.hideMedia
-        this.$store.dispatch('setOption', { name: 'hideAttachments', value })
-        this.$store.dispatch('setOption', {
-          name: 'hideAttachmentsInConv',
+      set(value) {
+        useLocalConfigStore().set({
+          path: 'hideAttachments',
+          value,
+        })
+        useLocalConfigStore().set({
+          path: 'hideAttachmentsInConv',
           value,
         })
       },
@@ -98,10 +102,9 @@ const QuickFilterSettings = {
       get() {
         return this.mergedConfig.hideFilteredStatuses
       },
-      set() {
-        const value = !this.hideMutedPosts
-        this.$store.dispatch('setOption', {
-          name: 'hideFilteredStatuses',
+      set(value) {
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'hideFilteredStatuses',
           value,
         })
       },
@@ -110,19 +113,20 @@ const QuickFilterSettings = {
       get() {
         return this.mergedConfig.muteBotStatuses
       },
-      set() {
-        const value = !this.muteBotStatuses
-        this.$store.dispatch('setOption', { name: 'muteBotStatuses', value })
+      set(value) {
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'muteBotStatuses',
+          value,
+        })
       },
     },
     muteSensitiveStatuses: {
       get() {
         return this.mergedConfig.muteSensitiveStatuses
       },
-      set() {
-        const value = !this.muteSensitiveStatuses
-        this.$store.dispatch('setOption', {
-          name: 'muteSensitiveStatuses',
+      set(value) {
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'muteSensitiveStatuses',
           value,
         })
       },

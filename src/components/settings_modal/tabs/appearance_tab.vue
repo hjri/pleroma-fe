@@ -54,7 +54,7 @@
           :key="style.key"
           :data-theme-key="style.key"
           class="button-default theme-preview"
-          :class="{ toggled: isThemeActive(style.key), disabled: switchInProgress }"
+          :class="{ toggled: isStyleActive(style.key), disabled: switchInProgress }"
           :disabled="switchInProgress"
           @click="style.version === 'v2' ? setTheme(style.key) : setStyle(style.key)"
         >
@@ -235,7 +235,7 @@
         <li>
           <ChoiceSetting
             id="underlayOverride"
-            path="theme3hacks.underlay"
+            path="underlay"
             :options="underlayOverrideModes"
           >
             {{ $t('settings.style.themes3.hacks.underlay_overrides') }}

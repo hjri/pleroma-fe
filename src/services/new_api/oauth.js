@@ -20,10 +20,8 @@ export const getJsonOrError = async (response) => {
 }
 
 export const createApp = (instance) => {
-  console.log('NAP', instance)
   const url = `${instance}/api/v1/apps`
   const form = new window.FormData()
-  console.log(url)
 
   form.append('client_name', 'PleromaFE')
   form.append('website', 'https://pleroma.social')

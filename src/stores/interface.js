@@ -8,6 +8,8 @@ import {
 import { deserialize } from '../services/theme_data/iss_deserializer.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import {
   CURRENT_VERSION,
@@ -65,7 +67,7 @@ export const useInterfaceStore = defineStore('interface', {
       this.temporaryChangesConfirm = confirm
       this.temporaryChangesRevert = revert
       const countdownFunc = () => {
-        if (this.temporaryChangesCountdown === 1) {
+        if (this.temporaryChangesCountdown <= 1) {
           this.temporaryChangesRevert()
           this.clearTemporaryChanges()
         } else {
@@ -89,7 +91,7 @@ export const useInterfaceStore = defineStore('interface', {
     },
     setPageTitle(option = '') {
       try {
-        document.title = `${option} ${useInstanceStore().name}`
+        document.title = `${option} ${useInstanceStore().instanceIdentity.name}`
       } catch (error) {
         console.error(`${error}`)
       }
@@ -185,7 +187,7 @@ export const useInterfaceStore = defineStore('interface', {
 
       const mobileLayout = width <= 800
       const normalOrMobile = mobileLayout ? 'mobile' : 'normal'
-      const { thirdColumnMode } = window.vuex.getters.mergedConfig
+      const { thirdColumnMode } = useMergedConfigStore().mergedConfig
       if (thirdColumnMode === 'none' || !window.vuex.state.users.currentUser) {
         this.layoutType = normalOrMobile
       } else {
@@ -225,14 +227,14 @@ export const useInterfaceStore = defineStore('interface', {
       try {
         const value = await getResourcesIndex('/static/palettes/index.json')
         useInstanceStore().set({
-          name: 'palettesIndex',
+          path: 'palettesIndex',
           value,
         })
         return value
       } catch (e) {
         console.error('Could not fetch palettes index', e)
         useInstanceStore().set({
-          name: 'palettesIndex',
+          path: 'palettesIndex',
           value: { _error: e },
         })
         return Promise.resolve({})
@@ -242,7 +244,8 @@ export const useInterfaceStore = defineStore('interface', {
       this.resetThemeV3Palette()
       this.resetThemeV2()
 
-      window.vuex.commit('setOption', { name: 'palette', value })
+      useSyncConfigStore().setPreference({ path: 'simple.palette', value })
+      useSyncConfigStore().pushSyncConfig()
 
       this.applyTheme({ recompile: true })
     },
@@ -250,7 +253,11 @@ export const useInterfaceStore = defineStore('interface', {
       this.resetThemeV3Palette()
       this.resetThemeV2()
 
-      window.vuex.commit('setOption', { name: 'paletteCustomData', value })
+      useSyncConfigStore().setPreference({
+        path: 'simple.paletteCustomData',
+        value,
+      })
+      useSyncConfigStore().pushSyncConfig()
 
       this.applyTheme({ recompile: true })
     },
@@ -260,12 +267,12 @@ export const useInterfaceStore = defineStore('interface', {
           '/static/styles/index.json',
           deserialize,
         )
-        useInstanceStore().set({ name: 'stylesIndex', value })
+        useInstanceStore().set({ path: 'stylesIndex', value })
         return value
       } catch (e) {
         console.error('Could not fetch styles index', e)
         useInstanceStore().set({
-          name: 'stylesIndex',
+          path: 'simple.stylesIndex',
           value: { _error: e },
         })
         return Promise.resolve({})
@@ -276,7 +283,8 @@ export const useInterfaceStore = defineStore('interface', {
       this.resetThemeV2()
       this.resetThemeV3Palette()
 
-      window.vuex.commit('setOption', { name: 'style', value })
+      useSyncConfigStore().setPreference({ path: 'simple.style', value })
+      useSyncConfigStore().pushSyncConfig()
       this.useStylePalette = true
 
       this.applyTheme({ recompile: true }).then(() => {
@@ -288,7 +296,11 @@ export const useInterfaceStore = defineStore('interface', {
       this.resetThemeV2()
       this.resetThemeV3Palette()
 
-      window.vuex.commit('setOption', { name: 'styleCustomData', value })
+      useSyncConfigStore().setPreference({
+        path: 'simple.styleCustomData',
+        value,
+      })
+      useSyncConfigStore().pushSyncConfig()
 
       this.useStylePalette = true
       this.applyTheme({ recompile: true }).then(() => {
@@ -298,12 +310,12 @@ export const useInterfaceStore = defineStore('interface', {
     async fetchThemesIndex() {
       try {
         const value = await getResourcesIndex('/static/styles.json')
-        useInstanceStore().set({ name: 'themesIndex', value })
+        useInstanceStore().set({ path: 'themesIndex', value })
         return value
       } catch (e) {
         console.error('Could not fetch themes index', e)
         useInstanceStore().set({
-          name: 'themesIndex',
+          path: 'themesIndex',
           value: { _error: e },
         })
         return Promise.resolve({})
@@ -314,7 +326,8 @@ export const useInterfaceStore = defineStore('interface', {
       this.resetThemeV3Palette()
       this.resetThemeV2()
 
-      window.vuex.commit('setOption', { name: 'theme', value })
+      useSyncConfigStore().setPreference({ path: 'simple.theme', value })
+      useSyncConfigStore().pushSyncConfig()
 
       this.applyTheme({ recompile: true })
     },
@@ -323,27 +336,40 @@ export const useInterfaceStore = defineStore('interface', {
       this.resetThemeV3Palette()
       this.resetThemeV2()
 
-      window.vuex.commit('setOption', { name: 'customTheme', value })
-      window.vuex.commit('setOption', { name: 'customThemeSource', value })
+      useSyncConfigStore().setPreference({ path: 'simple.customTheme', value })
+      useSyncConfigStore().setPreference({
+        path: 'simple.customThemeSource',
+        value,
+      })
+      useSyncConfigStore().pushSyncConfig()
 
       this.applyTheme({ recompile: true })
     },
     resetThemeV3() {
-      window.vuex.commit('setOption', { name: 'style', value: null })
-      window.vuex.commit('setOption', { name: 'styleCustomData', value: null })
+      useSyncConfigStore().setPreference({ path: 'simple.style', value: null })
+      useSyncConfigStore().setPreference({
+        path: 'simple.styleCustomData',
+        value: null,
+      })
     },
     resetThemeV3Palette() {
-      window.vuex.commit('setOption', { name: 'palette', value: null })
-      window.vuex.commit('setOption', {
-        name: 'paletteCustomData',
+      useSyncConfigStore().setPreference({
+        path: 'simple.palette',
+        value: null,
+      })
+      useSyncConfigStore().setPreference({
+        path: 'simple.paletteCustomData',
         value: null,
       })
     },
     resetThemeV2() {
-      window.vuex.commit('setOption', { name: 'theme', value: null })
-      window.vuex.commit('setOption', { name: 'customTheme', value: null })
-      window.vuex.commit('setOption', {
-        name: 'customThemeSource',
+      useSyncConfigStore().setPreference({ path: 'simple.theme', value: null })
+      useSyncConfigStore().setPreference({
+        path: 'simple.customTheme',
+        value: null,
+      })
+      useSyncConfigStore().setPreference({
+        path: 'simple.customThemeSource',
         value: null,
       })
     },
@@ -387,28 +413,26 @@ export const useInterfaceStore = defineStore('interface', {
         return result
       }
 
-      const { style: instanceStyleName, palette: instancePaletteName } =
-        useInstanceStore()
-
       let {
-        theme: instanceThemeV2Name,
-        themesIndex,
-        stylesIndex,
-        palettesIndex,
-      } = useInstanceStore()
+        theme: instanceThemeName,
+        style: instanceStyleName,
+        palette: instancePaletteName,
+      } = useInstanceStore().instanceIdentity
+
+      let { themesIndex, stylesIndex, palettesIndex } = useInstanceStore()
 
       const {
         style: userStyleName,
         styleCustomData: userStyleCustomData,
         palette: userPaletteName,
         paletteCustomData: userPaletteCustomData,
-      } = window.vuex.state.config
+      } = useMergedConfigStore().mergedConfig
 
       let {
         theme: userThemeV2Name,
         customTheme: userThemeV2Snapshot,
         customThemeSource: userThemeV2Source,
-      } = window.vuex.state.config
+      } = useMergedConfigStore().mergedConfig
 
       let majorVersionUsed
 
@@ -422,7 +446,7 @@ export const useInterfaceStore = defineStore('interface', {
       console.debug(
         `Instance V3 palette: ${instancePaletteName}, style: ${instanceStyleName}`,
       )
-      console.debug('Instance V2 theme: ' + instanceThemeV2Name)
+      console.debug('Instance V2 theme: ' + instanceThemeName)
 
       if (
         userPaletteName ||
@@ -431,11 +455,11 @@ export const useInterfaceStore = defineStore('interface', {
         userStyleCustomData ||
         // User V2 overrides instance V3
         ((instancePaletteName || instanceStyleName) &&
-          instanceThemeV2Name == null &&
+          instanceThemeName == null &&
           userThemeV2Name == null)
       ) {
         // Palette and/or style overrides V2 themes
-        instanceThemeV2Name = null
+        instanceThemeName = null
         userThemeV2Name = null
         userThemeV2Source = null
         userThemeV2Snapshot = null
@@ -445,7 +469,7 @@ export const useInterfaceStore = defineStore('interface', {
         userThemeV2Name ||
         userThemeV2Snapshot ||
         userThemeV2Source ||
-        instanceThemeV2Name
+        instanceThemeName
       ) {
         majorVersionUsed = 'v2'
       } else {
@@ -511,10 +535,11 @@ export const useInterfaceStore = defineStore('interface', {
         )
 
         if (this.useStylePalette) {
-          window.vuex.commit('setOption', {
-            name: 'palette',
+          useSyncConfigStore().setPreference({
+            path: 'simple.palette',
             value: firstStylePaletteName,
           })
+          useSyncConfigStore().pushSyncConfig()
         }
 
         this.paletteNameUsed = palette.nameUsed
@@ -562,7 +587,7 @@ export const useInterfaceStore = defineStore('interface', {
           'theme',
           themesIndex,
           userThemeV2Source || userThemeV2Snapshot,
-          userThemeV2Name || instanceThemeV2Name,
+          userThemeV2Name || instanceThemeName,
         )
         this.themeNameUsed = theme.nameUsed
         this.themeDataUsed = theme.dataUsed
@@ -572,8 +597,9 @@ export const useInterfaceStore = defineStore('interface', {
       this.themeApplied = true
     },
     async applyTheme({ recompile = false } = {}) {
-      const { forceThemeRecompilation, themeDebug, theme3hacks } =
-        window.vuex.state.config
+      const { mergedConfig } = useMergedConfigStore()
+      const { forceThemeRecompilation, themeDebug } = mergedConfig
+
       this.themeChangeInProgress = true
       // If we're not forced to recompile try using
       // cache (tryLoadCache return true if load successful)
@@ -620,67 +646,40 @@ export const useInterfaceStore = defineStore('interface', {
           convertTheme2To3(normalizeThemeData(this.themeDataUsed))
         const hacks = []
 
-        Object.entries(theme3hacks).forEach(([key, value]) => {
-          switch (key) {
-            case 'fonts': {
-              Object.entries(theme3hacks.fonts).forEach(([fontKey, font]) => {
-                if (!font?.family) return
-                switch (fontKey) {
-                  case 'interface':
-                    hacks.push({
-                      component: 'Root',
-                      directives: {
-                        '--font': 'generic | ' + font.family,
-                      },
-                    })
-                    break
-                  case 'input':
-                    hacks.push({
-                      component: 'Input',
-                      directives: {
-                        '--font': 'generic | ' + font.family,
-                      },
-                    })
-                    break
-                  case 'post':
-                    hacks.push({
-                      component: 'RichContent',
-                      directives: {
-                        '--font': 'generic | ' + font.family,
-                      },
-                    })
-                    break
-                  case 'monospace':
-                    hacks.push({
-                      component: 'Root',
-                      directives: {
-                        '--monoFont': 'generic | ' + font.family,
-                      },
-                    })
-                    break
-                }
-              })
-              break
-            }
-            case 'underlay': {
-              if (value !== 'none') {
-                const newRule = {
-                  component: 'Underlay',
-                  directives: {},
-                }
-                if (value === 'opaque') {
-                  newRule.directives.opacity = 1
-                  newRule.directives.background = '--wallpaper'
-                }
-                if (value === 'transparent') {
-                  newRule.directives.opacity = 0
-                }
-                hacks.push(newRule)
-              }
-              break
-            }
+        const fontMap = {
+          Interface: 'Root',
+          Input: 'Input',
+          Posts: 'Post',
+          Monospace: 'Root',
+        }
+
+        Object.entries(fontMap).forEach(([font, component]) => {
+          const family = mergedConfig[`font${font}`]?.family
+          const variable = font === 'Monospace' ? '--monoFont' : '--font'
+          if (family) {
+            hacks.push({
+              component,
+              directives: {
+                [variable]: `generic | "${family}"`,
+              },
+            })
           }
         })
+
+        if (mergedConfig.underlay !== 'none') {
+          const newRule = {
+            component: 'Underlay',
+            directives: {},
+          }
+          if (mergedConfig.underlay === 'opaque') {
+            newRule.directives.opacity = 1
+            newRule.directives.background = '--wallpaper'
+          }
+          if (mergedConfig.underlay === 'transparent') {
+            newRule.directives.opacity = 0
+          }
+          hacks.push(newRule)
+        }
 
         const rulesetArray = [
           theme2ruleset,
@@ -698,6 +697,7 @@ export const useInterfaceStore = defineStore('interface', {
           themeDebug,
         )
       } catch (e) {
+        console.error(e)
         window.splashError(e)
       }
     },

@@ -25,10 +25,10 @@ import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
-
-import { declarations } from 'src/modules/config_declaration'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 // TODO: Unify with mergeOrAdd in statuses.js
 export const mergeOrAdd = (arr, obj, item) => {
@@ -553,9 +553,9 @@ const users = {
     registerPushNotifications(store) {
       const token = store.state.currentUser.credentials
       const vapidPublicKey = useInstanceStore().vapidPublicKey
-      const isEnabled = store.rootState.config.webPushNotifications
+      const isEnabled = useMergedConfigStore().mergedConfig.webPushNotifications
       const notificationVisibility =
-        store.rootState.config.notificationVisibility
+        useMergedConfigStore().mergedConfig.notificationVisibility
 
       registerPushNotifications(
         isEnabled,
@@ -682,7 +682,6 @@ const users = {
           useInterfaceStore().setLastTimeline('public-timeline')
           useInterfaceStore().setLayoutWidth(windowWidth())
           useInterfaceStore().setLayoutHeight(windowHeight())
-          store.commit('clearServerSideStorage')
         })
     },
     loginUser(store, accessToken) {
@@ -702,7 +701,16 @@ const users = {
               user.domainMutes = []
               commit('setCurrentUser', user)
 
-              useServerSideStorageStore().setServerSideStorage(user)
+              useSyncConfigStore()
+                .initSyncConfig(user)
+                .then(() => {
+                  useInterfaceStore()
+                    .applyTheme()
+                    .catch((e) => {
+                      console.error('Error setting theme', e)
+                    })
+                })
+              useUserHighlightStore().initUserHighlight(user)
               commit('addNewUsers', [user])
 
               useEmojiStore().fetchEmoji()
@@ -723,34 +731,14 @@ const users = {
               /*
               // Reset wordfilter
               Object.keys(
-                useServerSideStorageStore().prefsStorage.simple.muteFilters
+                useSyncConfigStore().prefsStorage.simple.muteFilters
               ).forEach(key => {
-                useServerSideStorageStore().unsetPreference({ path: 'simple.muteFilters.' + key, value: null })
+                useSyncConfigStore().unsetSimplePrefAndSave({ path: 'muteFilters.' + key, value: null })
               })
 
               // Reset flag to 0 to re-run migrations
-              useServerSideStorageStore().setFlag({ flag: 'configMigration', value: 0 })
+              useSyncConfigStore().setFlag({ flag: 'configMigration', value: 0 })
               /**/
-
-              const { configMigration } =
-                useServerSideStorageStore().flagStorage
-              declarations
-                .filter((x) => {
-                  return (
-                    x.store === 'server-side' &&
-                    x.migrationNum > 0 &&
-                    x.migrationNum > configMigration
-                  )
-                })
-                .toSorted((a, b) => a.configMigration - b.configMigration)
-                .forEach((value) => {
-                  value.migration(useServerSideStorageStore(), store.rootState)
-                  useServerSideStorageStore().setFlag({
-                    flag: 'configMigration',
-                    value: value.migrationNum,
-                  })
-                  useServerSideStorageStore().pushServerSideStorage()
-                })
 
               if (user.token) {
                 dispatch('setWsToken', user.token)
@@ -781,7 +769,7 @@ const users = {
                 dispatch('startFetchingFollowRequests')
               }
 
-              if (store.getters.mergedConfig.useStreamingApi) {
+              if (useMergedConfigStore().mergedConfig.useStreamingApi) {
                 dispatch('fetchTimeline', { timeline: 'friends', since: null })
                 dispatch('fetchNotifications', { since: null })
                 dispatch('enableMastoSockets', true)

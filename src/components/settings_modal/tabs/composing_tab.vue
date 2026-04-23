@@ -8,10 +8,6 @@
             class="setting-item "
             for="default-vis"
           >
-            <span class="setting-label">
-              <ProfileSettingIndicator :is-profile="true" />
-              {{ $t('settings.default_vis') }}
-            </span>
             <ScopeSelector
               class="scope-selector setting-control"
               :show-all="true"
@@ -19,7 +15,6 @@
               :initial-scope="$store.state.profileConfig.defaultScope"
               :on-scope-change="changeDefaultScope"
               :unstyled="false"
-              uns
             />
           </label>
         </li>
@@ -34,6 +29,7 @@
             id="postContentType"
             path="postContentType"
             :options="postContentOptions"
+            :local="true"
           >
             {{ $t('settings.default_post_status_content_type') }}
           </ChoiceSetting>
@@ -95,6 +91,7 @@
         <li>
           <BooleanSetting
             path="imageCompression"
+            :local="true"
             expert="1"
           >
             {{ $t('settings.image_compression') }}
@@ -103,6 +100,7 @@
             <li>
               <BooleanSetting
                 path="alwaysUseJpeg"
+                :local="true"
                 expert="1"
                 parent-path="imageCompression"
               >

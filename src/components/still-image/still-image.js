@@ -1,3 +1,5 @@
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
 const StillImage = {
   props: [
     'src',
@@ -15,7 +17,7 @@ const StillImage = {
     return {
       // for lazy loading, see loadLazy()
       realSrc: this.src,
-      stopGifs: this.$store.getters.mergedConfig.stopGifs,
+      stopGifs: useMergedConfigStore().mergedConfig.stopGifs,
     }
   },
   computed: {

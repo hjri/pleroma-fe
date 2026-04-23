@@ -32,12 +32,17 @@ import { useI18nStore } from 'src/stores/i18n'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 import VBodyScrollLock from 'src/directives/body_scroll_lock'
 import {
-  instanceDefaultConfig,
-  staticOrApiConfigDefault,
+  INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
+  INSTANCE_IDENTITY_DEFAULT_DEFINITIONS,
+  INSTANCE_IDENTIY_EXTERNAL,
 } from 'src/modules/default_config_state.js'
 
 let staticInitialResults = null
@@ -80,7 +85,7 @@ const getInstanceConfig = async ({ store }) => {
     const res = await preloadFetch('/api/v1/instance')
     if (res.ok) {
       const data = await res.json()
-      const textlimit = data.max_toot_chars
+      const textLimit = data.max_toot_chars
       const vapidPublicKey = data.pleroma.vapid_public_key
 
       useInstanceCapabilitiesStore().set(
@@ -88,8 +93,8 @@ const getInstanceConfig = async ({ store }) => {
         data.pleroma,
       )
       useInstanceStore().set({
-        path: 'textlimit',
-        value: textlimit,
+        path: 'limits.textLimit',
+        value: textLimit,
       })
       useInstanceStore().set({
         path: 'accountApprovalRequired',
@@ -166,18 +171,21 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
     config = Object.assign({}, staticConfig, apiConfig)
   }
 
-  const copyInstanceOption = ({ source, destination }) => {
-    if (typeof config[source] !== 'undefined') {
-      useInstanceStore().set({ path: destination, value: config[source] })
-    }
-  }
+  Object.keys(INSTANCE_IDENTITY_DEFAULT_DEFINITIONS).forEach((source) => {
+    if (source === 'name') return
+    if (INSTANCE_IDENTIY_EXTERNAL.has(source)) return
+    useInstanceStore().set({
+      value: config[source],
+      path: `instanceIdentity.${source}`,
+    })
+  })
 
-  Object.keys(staticOrApiConfigDefault)
-    .map((k) => ({ source: k, destination: `instanceIdentity.${k}` }))
-    .forEach(copyInstanceOption)
-  Object.keys(instanceDefaultConfig)
-    .map((k) => ({ source: k, destination: `prefsStorage.${k}` }))
-    .forEach(copyInstanceOption)
+  Object.keys(INSTANCE_DEFAULT_CONFIG_DEFINITIONS).forEach((source) =>
+    useInstanceStore().set({
+      value: config[source],
+      path: `prefsStorage.${source}`,
+    }),
+  )
 
   useAuthFlowStore().setInitialStrategy(config.loginMethod)
 }
@@ -187,7 +195,7 @@ const getTOS = async ({ store }) => {
     const res = await window.fetch('/static/terms-of-service.html')
     if (res.ok) {
       const html = await res.text()
-      useInstanceStore().set({ name: 'instanceIdentity.tos', value: html })
+      useInstanceStore().set({ path: 'instanceIdentity.tos', value: html })
     } else {
       throw res
     }
@@ -272,7 +280,7 @@ const getNodeInfo = async ({ store }) => {
       const metadata = data.metadata
       const features = metadata.features
       useInstanceStore().set({
-        path: 'name',
+        path: 'instanceIdentity.name',
         value: metadata.nodeName,
       })
       useInstanceStore().set({
@@ -523,6 +531,11 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
   useInterfaceStore().setLayoutWidth(windowWidth())
   useInterfaceStore().setLayoutHeight(windowHeight())
 
+  window.syncConfig = useSyncConfigStore()
+  window.mergedConfig = useMergedConfigStore()
+  window.localConfig = useLocalConfigStore()
+  window.highlightConfig = useUserHighlightStore()
+
   FaviconService.initFaviconService()
   initServiceWorker(store)
 
@@ -533,7 +546,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     typeof overrides.target !== 'undefined'
       ? overrides.target
       : window.location.origin
-  useInstanceStore().set({ name: 'server', value: server })
+  useInstanceStore().set({ path: 'server', value: server })
 
   await setConfig({ store })
   try {
@@ -547,7 +560,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     return Promise.reject(e)
   }
 
-  applyStyleConfig(store.state.config, i18n.global)
+  applyStyleConfig(useMergedConfigStore().mergedConfig, i18n.global)
 
   // Now we can try getting the server settings and logging in
   // Most of these are preloaded into the index.html so blocking is minimized

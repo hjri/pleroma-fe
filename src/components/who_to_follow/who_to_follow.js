@@ -1,6 +1,8 @@
 import apiService from '../../services/api/api.service.js'
 import FollowCard from '../follow_card/follow_card.vue'
 
+import { useInstanceStore } from 'src/stores/instance.js'
+
 const WhoToFollow = {
   components: {
     FollowCard,

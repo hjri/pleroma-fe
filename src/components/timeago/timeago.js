@@ -1,3 +1,5 @@
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
 import * as DateUtils from 'src/services/date_utils/date_utils.js'
 import localeService from 'src/services/locale/locale.service.js'
 
@@ -13,17 +15,17 @@ export default {
   },
   computed: {
     shouldUseAbsoluteTimeFormat() {
-      if (!this.$store.getters.mergedConfig.useAbsoluteTimeFormat) {
+      if (!useMergedConfigStore().mergedConfig.useAbsoluteTimeFormat) {
         return false
       }
       return (
         DateUtils.durationStrToMs(
-          this.$store.getters.mergedConfig.absoluteTimeFormatMinAge,
+          useMergedConfigStore().mergedConfig.absoluteTimeFormatMinAge,
         ) <= this.relativeTimeMs
       )
     },
     time12hFormat() {
-      return this.$store.getters.mergedConfig.absoluteTimeFormat12h === '12h'
+      return useMergedConfigStore().mergedConfig.absoluteTimeFormat12h === '12h'
     },
     browserLocale() {
       return localeService.internalToBrowserLocale(this.$i18n.locale)

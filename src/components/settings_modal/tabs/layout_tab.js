@@ -2,11 +2,11 @@ import { mapState } from 'pinia'
 
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
-import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const GeneralTab = {
   data() {
@@ -24,7 +24,6 @@ const GeneralTab = {
     BooleanSetting,
     ChoiceSetting,
     UnitSetting,
-    ProfileSettingIndicator,
   },
   computed: {
     ...mapState(useInstanceCapabilitiesStore, [
@@ -32,12 +31,12 @@ const GeneralTab = {
       'suggestionsEnabled',
     ]),
     columns() {
-      const mode = this.$store.getters.mergedConfig.thirdColumnMode
+      const mode = useMergedConfigStore().mergedConfig.thirdColumnMode
 
       const notif = mode === 'none' ? [] : ['notifs']
 
       if (
-        this.$store.getters.mergedConfig.sidebarRight ||
+        useMergedConfigStore().mergedConfig.sidebarRight ||
         mode === 'postform'
       ) {
         return [...notif, 'content', 'sidebar']

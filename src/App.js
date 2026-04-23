@@ -1,7 +1,6 @@
 import { throttle } from 'lodash'
 import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
-import { mapGetters } from 'vuex'
 
 import DesktopNav from './components/desktop_nav/desktop_nav.vue'
 import EditStatusModal from './components/edit_status_modal/edit_status_modal.vue'
@@ -22,10 +21,19 @@ import WhoToFollowPanel from './components/who_to_follow_panel/who_to_follow_pan
 import { getOrCreateServiceWorker } from './services/sw/sw'
 import { windowHeight, windowWidth } from './services/window_utils/window_utils'
 
+import { useEmojiStore } from 'src/stores/emoji.js'
+import { useI18nStore } from 'src/stores/i18n.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useShoutStore } from 'src/stores/shout.js'
+
+import messages from 'src/i18n/messages'
+import localeService from 'src/services/locale/locale.service.js'
+
+// Helper to unwrap reactive proxies
+window.toValue = (x) => JSON.parse(JSON.stringify(x))
 
 export default {
   name: 'app',
@@ -72,8 +80,10 @@ export default {
   },
   created() {
     // Load the locale from the storage
-    const val = this.$store.getters.mergedConfig.interfaceLanguage
-    this.$store.dispatch('setOption', { name: 'interfaceLanguage', value: val })
+    const value = useMergedConfigStore().mergedConfig.interfaceLanguage
+    useI18nStore().setLanguage(value)
+    useEmojiStore().loadUnicodeEmojiData(value)
+
     document.getElementById('modal').classList = ['-' + this.layoutType]
 
     // Create bound handlers
@@ -122,7 +132,7 @@ export default {
       ]
     },
     navClasses() {
-      const { navbarColumnStretch } = this.$store.getters.mergedConfig
+      const { navbarColumnStretch } = useMergedConfigStore().mergedConfig
       return [
         '-' + this.layoutType,
         ...(navbarColumnStretch ? ['-column-stretch'] : []),
@@ -135,7 +145,9 @@ export default {
       return this.currentUser.background_image
     },
     instanceBackground() {
-      return this.mergedConfig.hideInstanceWallpaper ? null : this.background
+      return useMergedConfigStore().mergedConfig.hideInstanceWallpaper
+        ? null
+        : this.instanceBackgroundUrl
     },
     background() {
       return this.userBackground || this.instanceBackground
@@ -160,19 +172,21 @@ export default {
       if (this.isChats) return false
       if (this.isListEdit) return false
       return (
-        this.$store.getters.mergedConfig.alwaysShowNewPostButton ||
+        useMergedConfigStore().mergedConfig.alwaysShowNewPostButton ||
         this.layoutType === 'mobile'
       )
     },
     shoutboxPosition() {
-      return this.$store.getters.mergedConfig.alwaysShowNewPostButton || false
+      return (
+        useMergedConfigStore().mergedConfig.alwaysShowNewPostButton || false
+      )
     },
     hideShoutbox() {
-      return this.$store.getters.mergedConfig.hideShoutbox
+      return useMergedConfigStore().mergedConfig.hideShoutbox
     },
     reverseLayout() {
       const { thirdColumnMode, sidebarRight: reverseSetting } =
-        this.$store.getters.mergedConfig
+        useMergedConfigStore().mergedConfig
       if (this.layoutType !== 'wide') {
         return reverseSetting
       } else {
@@ -182,10 +196,10 @@ export default {
       }
     },
     noSticky() {
-      return this.$store.getters.mergedConfig.disableStickyHeaders
+      return useMergedConfigStore().mergedConfig.disableStickyHeaders
     },
     showScrollbars() {
-      return this.$store.getters.mergedConfig.showScrollbars
+      return useMergedConfigStore().mergedConfig.showScrollbars
     },
     scrollParent() {
       return window /* this.$refs.appContentRef */
@@ -193,10 +207,10 @@ export default {
     showInstanceSpecificPanel() {
       return (
         this.instanceSpecificPanelPresent &&
-        !this.$store.getters.mergedConfig.hideISP
+        !useMergedConfigStore().mergedConfig.hideISP
       )
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
     ...mapState(useInterfaceStore, [
       'themeApplied',
       'styleDataUsed',
@@ -208,7 +222,7 @@ export default {
       'editingAvailable',
     ]),
     ...mapState(useInstanceStore, {
-      background: (store) => store.instanceIdentity.background,
+      instanceBackgroundUrl: (store) => store.instanceIdentity.background,
       showFeaturesPanel: (store) => store.instanceIdentity.showFeaturesPanel,
       instanceSpecificPanelPresent: (store) =>
         store.instanceIdentity.showInstanceSpecificPanel &&

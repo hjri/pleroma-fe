@@ -1,14 +1,20 @@
 import { cloneDeep, get, isEqual, set } from 'lodash'
 
 import DraftButtons from './draft_buttons.vue'
+import LocalSettingIndicator from './local_setting_indicator.vue'
 import ModifiedIndicator from './modified_indicator.vue'
-import ProfileSettingIndicator from './profile_setting_indicator.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 export default {
   components: {
     ModifiedIndicator,
     DraftButtons,
-    ProfileSettingIndicator,
+    LocalSettingIndicator,
   },
   props: {
     modelValue: {
@@ -40,6 +46,10 @@ export default {
       required: false,
     },
     disabled: {
+      type: Boolean,
+      default: false,
+    },
+    local: {
       type: Boolean,
       default: false,
     },
@@ -235,13 +245,14 @@ export default {
         case 'admin':
           return this.$store.state.adminSettings.config
         default:
-          return this.$store.getters.mergedConfig
+          return useMergedConfigStore().mergedConfig
       }
     },
     configSink() {
       if (this.path == null) {
         return (k, v) => this.$emit('update:modelValue', v)
       }
+
       switch (this.realSource) {
         case 'profile':
           return (k, v) =>
@@ -250,15 +261,61 @@ export default {
           return (k, v) =>
             this.$store.dispatch('pushAdminSetting', { path: k, value: v })
         default:
-          if (this.timedApplyMode) {
-            return (k, v) =>
-              this.$store.dispatch('setOptionTemporarily', {
-                name: k,
-                value: v,
-              })
-          } else {
-            return (k, v) =>
-              this.$store.dispatch('setOption', { name: k, value: v })
+          return (readPath, value) => {
+            const writePath = `${readPath}`
+
+            if (!this.timedApplyMode) {
+              if (this.local) {
+                useLocalConfigStore().set({
+                  path: writePath,
+                  value,
+                })
+              } else {
+                useSyncConfigStore().setSimplePrefAndSave({
+                  path: writePath,
+                  value,
+                })
+              }
+            } else {
+              if (useInterfaceStore().temporaryChangesTimeoutId !== null) {
+                console.error("Can't track more than one temporary change")
+                return
+              }
+
+              const oldValue = get(this.configSource, readPath)
+
+              if (this.local) {
+                useLocalConfigStore().setTemporarily({ path: writePath, value })
+              } else {
+                useSyncConfigStore().setPreference({ path: writePath, value })
+              }
+
+              const confirm = () => {
+                if (this.local) {
+                  useLocalConfigStore().set({ path: writePath, value })
+                } else {
+                  useSyncConfigStore().pushSyncConfig()
+                }
+                useInterfaceStore().clearTemporaryChanges()
+              }
+
+              const revert = () => {
+                if (this.local) {
+                  useLocalConfigStore().unsetTemporarily({
+                    path: writePath,
+                    value,
+                  })
+                } else {
+                  useSyncConfigStore().setPreference({
+                    path: writePath,
+                    value: oldValue,
+                  })
+                }
+                useInterfaceStore().clearTemporaryChanges()
+              }
+
+              useInterfaceStore().setTemporaryChanges({ confirm, revert })
+            }
           }
       }
     },
@@ -266,12 +323,16 @@ export default {
       switch (this.realSource) {
         case 'profile':
           return {}
-        default:
-          return get(this.$store.getters.defaultConfig, this.path)
+        default: {
+          return get(useMergedConfigStore().mergedConfigDefault, this.path)
+        }
       }
     },
     isProfileSetting() {
       return this.realSource === 'profile'
+    },
+    isLocalSetting() {
+      return this.local
     },
     isChanged() {
       if (this.path == null) return false
@@ -318,7 +379,8 @@ export default {
     },
     matchesExpertLevel() {
       const settingExpertLevel = this.expert || 0
-      const userToggleExpert = this.$store.state.config.expertLevel || 0
+      const userToggleExpert =
+        useMergedConfigStore().mergedConfig.expertLevel || 0
 
       return settingExpertLevel <= userToggleExpert
     },
@@ -344,7 +406,7 @@ export default {
         this.draft = cloneDeep(this.state)
       } else {
         set(
-          this.$store.getters.mergedConfig,
+          useMergedConfigStore().mergedConfig,
           this.path,
           cloneDeep(this.defaultState),
         )

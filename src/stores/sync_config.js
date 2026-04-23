@@ -1,3 +1,4 @@
+import sum from 'hash-sum'
 import {
   merge as _merge,
   clamp,
@@ -8,20 +9,36 @@ import {
   groupBy,
   isEqual,
   set,
+  take,
   takeRight,
   uniqWith,
   unset,
 } from 'lodash'
+import { v4 as uuidv4 } from 'uuid'
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
 
 import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
 
-export const VERSION = 1
-export const NEW_USER_DATE = new Date('2022-08-04') // date of writing this, basically
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
+
+import { storage } from 'src/lib/storage.js'
+import {
+  makeUndefined,
+  ROOT_CONFIG,
+  ROOT_CONFIG_DEFINITIONS,
+  validateSetting,
+} from 'src/modules/default_config_state.js'
+import { oldDefaultConfigSync } from 'src/modules/old_default_config_state.js'
+
+export const VERSION = 2
+export const NEW_USER_DATE = new Date('2026-03-16') // date of writing this, basically
 
 export const COMMAND_TRIM_FLAGS = 1000
 export const COMMAND_TRIM_FLAGS_AND_RESET = 1001
+export const COMMAND_WIPE_JOURNAL = 1010
+export const COMMAND_WIPE_JOURNAL_AND_STORAGE = 1011
 
 export const defaultState = {
   // do we need to update data on server?
@@ -29,8 +46,7 @@ export const defaultState = {
   // storage of flags - stuff that can only be set and incremented
   flagStorage: {
     updateCounter: 0, // Counter for most recent update notification seen
-    configMigration: 0, // Counter for config -> server-side migrations
-    reset: 0, // special flag that can be used to force-reset all flags, debug purposes only
+    reset: 0, // special flag that can be used to force-reset all data, debug purposes only
     // special reset codes:
     // 1000: trim keys to those known by currently running FE
     // 1001: same as above + reset everything to 0
@@ -38,9 +54,9 @@ export const defaultState = {
   prefsStorage: {
     _journal: [],
     simple: {
-      dontShowUpdateNotifs: false,
-      collapseNav: false,
       muteFilters: {},
+
+      ...makeUndefined({ ...ROOT_CONFIG }),
     },
     collections: {
       pinnedStatusActions: ['reply', 'retweet', 'favorite', 'emoji'],
@@ -69,12 +85,14 @@ export const _moveItemInArray = (array, value, movement) => {
   return newArray
 }
 
-const _wrapData = (data, userName) => ({
-  ...data,
-  _user: userName,
-  _timestamp: Date.now(),
-  _version: VERSION,
-})
+const _wrapData = (data, userName) => {
+  return {
+    ...data,
+    _user: userName,
+    _timestamp: Date.now(),
+    _version: VERSION,
+  }
+}
 
 const _checkValidity = (data) => data._timestamp > 0 && data._version > 0
 
@@ -86,16 +104,21 @@ const _verifyPrefs = (state) => {
 
   // Simple
   Object.entries(defaultState.prefsStorage.simple).forEach(([k, v]) => {
+    if (typeof v === 'undefined') return
     if (typeof v === 'number' || typeof v === 'boolean') return
-    if (typeof v === 'object' && v != null) return
-    console.warn(`Preference simple.${k} as invalid type, reinitializing`)
+    if (typeof v === 'object') return
+    console.warn(
+      `Preference simple.${k} as invalid type ${typeof v}, reinitializing`,
+    )
     set(state.prefsStorage.simple, k, defaultState.prefsStorage.simple[k])
   })
 
   // Collections
   Object.entries(defaultState.prefsStorage.collections).forEach(([k, v]) => {
     if (Array.isArray(v)) return
-    console.warn(`Preference collections.${k} as invalid type, reinitializing`)
+    console.warn(
+      `Preference collections.${k} as invalid type ${typeof v}, reinitializing`,
+    )
     set(
       state.prefsStorage.collections,
       k,
@@ -128,13 +151,13 @@ export const _getRecentData = (cache, live, isTest) => {
       live._version === cache._version
     ) {
       console.debug(
-        'Same version/timestamp on both source, source of truth irrelevant',
+        'Same version/timestamp on both sources, source of truth irrelevant',
       )
       result.recent = cache
       result.stale = live
     } else {
       console.debug(
-        'Different timestamp, figuring out which one is more recent',
+        'Different timestamp or version, figuring out which one is more recent',
       )
       if (live._timestamp < cache._timestamp) {
         result.recent = cache
@@ -149,17 +172,21 @@ export const _getRecentData = (cache, live, isTest) => {
     result.needUpload = true
   }
 
-  const merge = (a, b) => ({
-    _user: a._user ?? b._user,
-    _version: a._version ?? b._version,
-    _timestamp: a._timestamp ?? b._timestamp,
-    needUpload: b.needUpload ?? a.needUpload,
-    prefsStorage: _merge(a.prefsStorage, b.prefsStorage),
-    flagStorage: _merge(a.flagStorage, b.flagStorage),
-  })
+  const merge = (a, b) => {
+    return {
+      _user: a._user ?? b._user,
+      _version: a._version ?? b._version,
+      _timestamp: a._timestamp ?? b._timestamp,
+      needUpload: b.needUpload ?? a.needUpload,
+      prefsStorage: _merge(cloneDeep(a.prefsStorage), b.prefsStorage),
+      flagStorage: _merge(a.flagStorage, b.flagStorage),
+    }
+  }
+
   result.recent = isTest
     ? result.recent
     : result.recent && merge(defaultState, result.recent)
+
   result.stale = isTest
     ? result.stale
     : result.stale && merge(defaultState, result.stale)
@@ -192,7 +219,7 @@ export const _mergeFlags = (recent, stale, allFlagKeys) => {
   )
 }
 
-const _mergeJournal = (...journals) => {
+export const _mergeJournal = (...journals) => {
   // Ignore invalid journal entries
   const allJournals = flatten(
     journals.map((j) => (Array.isArray(j) ? j : [])),
@@ -240,9 +267,11 @@ const _mergeJournal = (...journals) => {
       return journal
     }
   })
-  return flatten(trimmedGrouped).sort((a, b) =>
+
+  const flat = flatten(trimmedGrouped).sort((a, b) =>
     a.timestamp > b.timestamp ? 1 : -1,
   )
+  return take(flat, 500)
 }
 
 export const _mergePrefs = (recent, stale) => {
@@ -262,69 +291,95 @@ export const _mergePrefs = (recent, stale) => {
    */
   const resultOutput = { ...recentData }
   const totalJournal = _mergeJournal(staleJournal, recentJournal)
-  totalJournal.forEach(({ path, operation, args }) => {
-    if (path.startsWith('_')) {
-      throw new Error(
-        `journal contains entry to edit internal (starts with _) field '${path}', something is incorrect here, ignoring.`,
-      )
-    }
-    switch (operation) {
-      case 'set':
-        if (
-          path.startsWith('collections') ||
-          path.startsWith('objectCollections')
-        ) {
-          throw new Error('Illegal operation "set" on a collection')
-        }
-        if (path.split(/\./g).length <= 1) {
-          throw new Error(
-            `Calling set on depth <= 1 (path: ${path}) is not allowed`,
-          )
-        }
-        set(resultOutput, path, args[0])
-        break
-      case 'unset':
-        if (
-          path.startsWith('collections') ||
-          path.startsWith('objectCollections')
-        ) {
-          throw new Error('Illegal operation "unset" on a collection')
-        }
-        if (path.split(/\./g).length <= 2) {
-          throw new Error(
-            `Calling unset on depth <= 2 (path: ${path})  is not allowed`,
-          )
-        }
-        unset(resultOutput, path)
-        break
-      case 'addToCollection':
-        set(
-          resultOutput,
-          path,
-          Array.from(new Set(get(resultOutput, path)).add(args[0])),
-        )
-        break
-      case 'removeFromCollection': {
-        const newSet = new Set(get(resultOutput, path))
-        newSet.delete(args[0])
-        set(resultOutput, path, Array.from(newSet))
-        break
-      }
-      case 'reorderCollection': {
-        const [value, movement] = args
-        set(
-          resultOutput,
-          path,
-          _moveItemInArray(get(resultOutput, path), value, movement),
-        )
-        break
-      }
-      default:
+  totalJournal
+    .filter(({ path, operation, args }) => {
+      const entry = path.split('.')[1]
+      if (operation === 'unset') return ROOT_CONFIG[entry] !== undefined
+
+      if (operation !== 'set') return true
+
+      const definition = path.startsWith('simple.muteFilters')
+        ? { default: {} }
+        : ROOT_CONFIG_DEFINITIONS[entry]
+
+      const finalValue = validateSetting({
+        path,
+        value: args[0],
+        definition,
+        throwError: false,
+        defaultState: ROOT_CONFIG,
+      })
+
+      return finalValue !== undefined
+    })
+    .forEach(({ path, operation, args }) => {
+      if (path.startsWith('_')) {
         throw new Error(
-          `Unknown journal operation: '${operation}', did we forget to run reverse migrations beforehand?`,
+          `journal contains entry to edit internal (starts with _) field '${path}', something is incorrect here, ignoring.`,
         )
-    }
-  })
+      }
+      switch (operation) {
+        case 'set': {
+          if (path.startsWith('collections')) {
+            return console.error('Illegal operation "set" on a collection')
+          }
+          if (path.split(/\./g).length <= 1) {
+            return console.error(
+              `Calling set on depth <= 1 (path: ${path}) is not allowed`,
+            )
+          }
+          set(resultOutput, path, args[0])
+          break
+        }
+        case 'unset':
+          if (path.startsWith('collections')) {
+            return console.error('Illegal operation "unset" on a collection')
+          }
+          if (path.split(/\./g).length <= 2) {
+            return console.error(
+              `Calling unset on depth <= 2 (path: ${path})  is not allowed`,
+            )
+          }
+          unset(resultOutput, path)
+          break
+        case 'addToCollection':
+          if (!path.startsWith('collections')) {
+            return console.error(
+              'Illegal operation "addToCollection" on a non-collection',
+            )
+          }
+          set(
+            resultOutput,
+            path,
+            Array.from(new Set(get(resultOutput, path)).add(args[0])),
+          )
+          break
+        case 'removeFromCollection': {
+          if (!path.startsWith('collections')) {
+            return console.error(
+              'Illegal operation "removeFromCollection" on a non-collection',
+            )
+          }
+          const newSet = new Set(get(resultOutput, path))
+          newSet.delete(args[0])
+          set(resultOutput, path, Array.from(newSet))
+          break
+        }
+        case 'reorderCollection': {
+          const [value, movement] = args
+          set(
+            resultOutput,
+            path,
+            _moveItemInArray(get(resultOutput, path), value, movement),
+          )
+          break
+        }
+        default:
+          return console.error(
+            `Unknown journal operation: '${operation}', did we forget to run reverse migrations beforehand?`,
+          )
+      }
+    })
   return { ...resultOutput, _journal: totalJournal }
 }
 
@@ -358,31 +413,45 @@ export const _resetFlags = (
         result[flag] = 0
       })
     }
-  } else if (totalFlags.reset > 0 && totalFlags.reset < 9000) {
-    console.debug('Received command to reset the flags')
-    allFlagKeys.forEach((flag) => {
-      result[flag] = 0
-    })
   }
   result.reset = 0
   return result
 }
 
-export const _doMigrations = (cache) => {
-  if (!cache) return cache
+const _resetPrefs = (
+  totalPrefs,
+  totalFlags,
+  knownKeys = defaultState.flagStorage,
+) => {
+  // prefs reset functionality
+  if (
+    totalFlags.reset >= COMMAND_WIPE_JOURNAL &&
+    totalFlags.reset <= COMMAND_WIPE_JOURNAL_AND_STORAGE
+  ) {
+    console.debug('Received command to reset journals')
+    this.flagStorage.reset = COMMAND_WIPE_JOURNAL
+    this.prefsStorage._journal = []
+    this.cache.prefsStorage._journal = []
+    this.raw.prefsStorage._journal = []
+    this.pushSyncConfig()
+    if (totalFlags.reset === COMMAND_WIPE_JOURNAL_AND_STORAGE) {
+      console.debug('Received command to reset storage')
+      return cloneDeep(defaultState)
+    }
+  }
+  return totalPrefs
+}
 
-  if (cache._version < VERSION) {
+const _doMigrations = async (data, setPreference) => {
+  if (data._version < VERSION) {
     console.debug(
-      'Local cached data has older version, seeing if there any migrations that can be applied',
+      'Data has older version, seeing if there any migrations that can be applied',
     )
-
-    // no migrations right now since we only have one version
-    console.debug('No migrations found')
   }
 
-  if (cache._version > VERSION) {
+  if (data._version > VERSION) {
     console.debug(
-      'Local cached data has newer version, seeing if there any reverse migrations that can be applied',
+      'Data has newer version, seeing if there any reverse migrations that can be applied',
     )
 
     // no reverse migrations right now but we leave a possibility of loading a hotpatch if need be
@@ -391,18 +460,18 @@ export const _doMigrations = (cache) => {
         console.debug('Found hotpatch migration, applying')
         return window._PLEROMA_HOTPATCH.reverseMigrations.call(
           {},
-          'serverSideStorage',
-          { from: cache._version, to: VERSION },
-          cache,
+          'syncConfigStore',
+          { from: data._version, to: VERSION },
+          data,
         )
       }
     }
   }
 
-  return cache
+  return data
 }
 
-export const useServerSideStorageStore = defineStore('serverSideStorage', {
+export const useSyncConfigStore = defineStore('sync_config', {
   state() {
     return cloneDeep(defaultState)
   },
@@ -411,16 +480,21 @@ export const useServerSideStorageStore = defineStore('serverSideStorage', {
       this.flagStorage[flag] = value
       this.dirty = true
     },
+    setSimplePrefAndSave({ path, value }) {
+      this.setPreference({ path: `simple.${path}`, value })
+      this.pushSyncConfig()
+    },
+    unsetSimplePrefAndSave({ path }) {
+      this.unsetPreference({ path: `simple.${path}` })
+      this.pushSyncConfig()
+    },
     setPreference({ path, value }) {
       if (path.startsWith('_')) {
         throw new Error(
           `Tried to edit internal (starts with _) field '${path}', ignoring.`,
         )
       }
-      if (
-        path.startsWith('collections') ||
-        path.startsWith('objectCollections')
-      ) {
+      if (path.startsWith('collections')) {
         throw new Error(
           `Invalid operation 'set' for collection field '${path}', ignoring.`,
         )
@@ -435,7 +509,23 @@ export const useServerSideStorageStore = defineStore('serverSideStorage', {
           `Calling set on depth > 3 (path: ${path})  is not allowed`,
         )
       }
-      set(this.prefsStorage, path, value)
+
+      if (path.startsWith('collections.')) return value
+
+      const definition = path.startsWith('simple.muteFilters')
+        ? { default: {} }
+        : ROOT_CONFIG_DEFINITIONS[path.split('.')[1]]
+
+      const finalValue = validateSetting({
+        path,
+        value,
+        definition,
+        throwError: false,
+        defaultState: ROOT_CONFIG,
+      })
+
+      if (finalValue !== undefined) set(this.prefsStorage, path, finalValue)
+
       this.prefsStorage._journal = [
         ...this.prefsStorage._journal,
         { operation: 'set', path, args: [value], timestamp: Date.now() },
@@ -448,10 +538,7 @@ export const useServerSideStorageStore = defineStore('serverSideStorage', {
           `Tried to edit internal (starts with _) field '${path}', ignoring.`,
         )
       }
-      if (
-        path.startsWith('collections') ||
-        path.startsWith('objectCollections')
-      ) {
+      if (path.startsWith('collections')) {
         throw new Error(
           `Invalid operation 'unset' for collection field '${path}', ignoring.`,
         )
@@ -466,7 +553,7 @@ export const useServerSideStorageStore = defineStore('serverSideStorage', {
           `Calling unset on depth > 3 (path: ${path})  is not allowed`,
         )
       }
-      unset(this.prefsStorage, path, value)
+      unset(this.prefsStorage, path)
       this.prefsStorage._journal = [
         ...this.prefsStorage._journal,
         { operation: 'unset', path, args: [], timestamp: Date.now() },
@@ -483,15 +570,6 @@ export const useServerSideStorageStore = defineStore('serverSideStorage', {
         const collection = new Set(get(this.prefsStorage, path))
         collection.add(value)
         set(this.prefsStorage, path, [...collection])
-      } else if (path.startsWith('objectCollections')) {
-        const { _key } = value
-        if (!_key && typeof _key !== 'string') {
-          throw new Error('Object for storage is missing _key field!')
-        }
-        const collection = new Set(get(this.prefsStorage, path + '.index'))
-        collection.add(_key)
-        set(this.prefsStorage, path + '.index', [...collection])
-        set(this.prefsStorage, path + '.data.' + _key, value)
       }
       this.prefsStorage._journal = [
         ...this.prefsStorage._journal,
@@ -510,19 +588,24 @@ export const useServerSideStorageStore = defineStore('serverSideStorage', {
           `tried to edit internal (starts with _) field '${path}', ignoring.`,
         )
       }
-      const collection = new Set(get(this.prefsStorage, path))
-      collection.delete(value)
-      set(this.prefsStorage, path, [...collection])
-      this.prefsStorage._journal = [
-        ...this.prefsStorage._journal,
-        {
-          operation: 'removeFromCollection',
-          path,
-          args: [value],
-          timestamp: Date.now(),
-        },
-      ]
-      this.dirty = true
+
+      const { _key } = value
+      if (path.startsWith('collection')) {
+        const collection = new Set(get(this.prefsStorage, path))
+        collection.delete(value)
+        set(this.prefsStorage, path, [...collection])
+
+        this.prefsStorage._journal = [
+          ...this.prefsStorage._journal,
+          {
+            operation: 'removeFromCollection',
+            path,
+            args: [value],
+            timestamp: Date.now(),
+          },
+        ]
+        this.dirty = true
+      }
     },
     reorderCollectionPreference({ path, value, movement }) {
       if (path.startsWith('_')) {
@@ -554,24 +637,23 @@ export const useServerSideStorageStore = defineStore('serverSideStorage', {
         username,
       )
     },
-    clearServerSideStorage() {
+    clearSyncConfig() {
       const blankState = { ...cloneDeep(defaultState) }
       Object.keys(this).forEach((k) => {
         this[k] = blankState[k]
       })
+      this.flagStorage.reset = COMMAND_WIPE_JOURNAL_AND_STORAGE
     },
-    setServerSideStorage(userData) {
+    async initSyncConfig(userData) {
       const live = userData.storage
       this.raw = live
       let cache = this.cache
-      if (cache && cache._user !== userData.fqn) {
+      if (cache?._user !== userData.fqn) {
         console.warn(
           'Cache belongs to another user! reinitializing local cache!',
         )
         cache = null
       }
-
-      cache = _doMigrations(cache)
 
       let { recent, stale, needUpload } = _getRecentData(cache, live)
 
@@ -589,12 +671,87 @@ export const useServerSideStorageStore = defineStore('serverSideStorage', {
         })
       }
 
+      recent = recent && (await _doMigrations(recent, this.setPreference))
+      stale = stale && (await _doMigrations(stale, this.setPreference))
+
+      // Various migrations
+      console.debug('Migrating from old config')
+      const vuexState = (await storage.getItem('vuex-lz')) ?? {}
+      const config = vuexState.config ?? {}
+
+      const migratedEntries = new Set(config._syncMigration ?? [])
+      console.debug(
+        `Already migrated Values: ${[...migratedEntries].join() || '[none]'}`,
+      )
+
+      const { configMigration } = useSyncConfigStore().flagStorage
+
+      Object.entries(oldDefaultConfigSync).forEach(([key, value]) => {
+        const oldValue = config[key]
+        const defaultValue = value
+
+        const present = oldValue !== undefined
+        const migrated = migratedEntries.has(key)
+        const different = !isEqual(oldValue, defaultValue)
+
+        if (present && !migrated && different) {
+          console.debug(`Migrating config ${key}: ${oldValue}`)
+          if (key === 'theme3hacks') {
+            useLocalConfigStore().set({
+              path: 'fontInterface',
+              value: oldValue.fonts.interface,
+            })
+            useLocalConfigStore().set({
+              path: 'fontInput',
+              value: oldValue.fonts.input,
+            })
+            useLocalConfigStore().set({
+              path: 'fontPost',
+              value: oldValue.fonts.post,
+            })
+            useLocalConfigStore().set({
+              path: 'fontMonospace',
+              value: oldValue.fonts.monospace,
+            })
+            useSyncConfigStore().setSimplePrefAndSave({
+              path: 'underlay',
+              value: oldValue.underlay,
+            })
+          } else if (key == 'muteWords') {
+            oldValue.forEach((word, order) => {
+              const uniqueId = uuidv4()
+
+              useSyncConfigStore().setPreference({
+                path: 'simple.muteFilters.' + uniqueId,
+                value: {
+                  type: 'word',
+                  value: word,
+                  name: word,
+                  enabled: true,
+                  expires: null,
+                  hide: false,
+                  order,
+                },
+              })
+            })
+          } else {
+            this.setPreference({ path: `simple.${key}`, value: oldValue })
+          }
+          migratedEntries.add(key)
+          needUpload = true
+        }
+      })
+
+      config._syncMigration = [...migratedEntries]
+      vuexState.config = config
+      storage.setItem('vuex-lz', vuexState)
+
       if (!needUpload && recent && stale) {
         console.debug('Checking if data needs merging...')
         // discarding timestamps and versions
         const { _timestamp: _0, _version: _1, ...recentData } = recent
         const { _timestamp: _2, _version: _3, ...staleData } = stale
-        dirty = !isEqual(recentData, staleData)
+        dirty = sum(recentData) !== sum(staleData)
         console.debug(`Data ${dirty ? 'needs' : "doesn't need"} merging`)
       }
 
@@ -613,6 +770,7 @@ export const useServerSideStorageStore = defineStore('serverSideStorage', {
         totalPrefs = recent.prefsStorage
       }
 
+      totalPrefs = _resetPrefs(totalPrefs, totalFlags)
       totalFlags = _resetFlags(totalFlags)
 
       recent.flagStorage = { ...flagsTemplate, ...totalFlags }
@@ -626,18 +784,39 @@ export const useServerSideStorageStore = defineStore('serverSideStorage', {
       }
       this.flagStorage = this.cache.flagStorage
       this.prefsStorage = this.cache.prefsStorage
+      this.pushSyncConfig()
     },
-    pushServerSideStorage({ force = false } = {}) {
+    pushSyncConfig({ force = false } = {}) {
       const needPush = this.dirty || force
       if (!needPush) return
       this.updateCache({ username: window.vuex.state.users.currentUser.fqn })
       const params = { pleroma_settings_store: { 'pleroma-fe': this.cache } }
-      window.vuex.state.api.backendInteractor
-        .updateProfileJSON({ params })
-        .then((user) => {
-          this.setServerSideStorage(user)
-          this.dirty = false
+      window.vuex.state.api.backendInteractor.updateProfileJSON({ params })
+    },
+  },
+  persist: {
+    afterLoad(state) {
+      console.debug('Validating persisted state of SyncConfig')
+      const newState = { ...state }
+      const newEntries = Object.entries(ROOT_CONFIG).map(([path, value]) => {
+        const definition = ROOT_CONFIG_DEFINITIONS[path]
+        const finalValue = validateSetting({
+          path,
+          value: newState.prefsStorage.simple[path],
+          definition,
+          throwError: false,
+          validateObjects: false,
+          defaultState: ROOT_CONFIG,
         })
+
+        return finalValue === undefined
+          ? [path, definition.default]
+          : [path, finalValue]
+      })
+      newState.prefsStorage.simple = Object.fromEntries(
+        newEntries.filter((_) => _),
+      )
+      return newState
     },
   },
 })

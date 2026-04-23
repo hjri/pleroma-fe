@@ -293,7 +293,7 @@
       </div>
     </div>
     <div
-      v-if="!editable && loggedIn && isOtherUser && (hasNote || !hideBio) && !mergedConfig.userCardHidePersonalMarks"
+      v-if="!editable && loggedIn && isOtherUser && (hasNote || !hideBio) && !userCardHidePersonalMarks"
       class="personal-marks"
     >
       <UserNote
@@ -505,11 +505,11 @@
       class="user-extras"
     >
       <span
-        v-if="!editable && !mergedConfig.hideUserStats"
+        v-if="!editable && !hideUserStats"
         class="user-stats"
       >
         <dl
-          v-if="!mergedConfig.hideUserStats && !hideBio"
+          v-if="!hideUserStats && !hideBio"
           class="user-count"
         >
           <dd>{{ user.statuses_count }}</dd>

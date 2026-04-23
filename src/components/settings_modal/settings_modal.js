@@ -9,7 +9,16 @@ import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
 import Popover from '../popover/popover.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
+import {
+  LOCAL_ONLY_KEYS,
+  ROOT_CONFIG,
+  ROOT_CONFIG_DEFINITIONS,
+  validateSetting,
+} from 'src/modules/default_config_state.js'
 import {
   newExporter,
   newImporter,
@@ -134,10 +143,52 @@ const SettingsModal = {
         })
       }
     },
-    onImport(data) {
-      if (data) {
-        this.$store.dispatch('loadSettings', data)
-      }
+    onImport(input) {
+      if (!input) return
+      const { _pleroma_settings_version, ...data } = input
+
+      Object.entries(data).forEach(([path, value]) => {
+        const definition = ROOT_CONFIG_DEFINITIONS[path]
+
+        const finalValue = validateSetting({
+          path,
+          value,
+          definition,
+          throwError: false,
+          defaultState: ROOT_CONFIG,
+        })
+
+        if (finalValue === undefined) return
+
+        if (LOCAL_ONLY_KEYS.has(path)) {
+          useLocalConfigStore().set({ path, value: finalValue })
+        } else {
+          if (path.startsWith('muteFilters')) {
+            Object.keys(
+              useMergedConfigStore().mergedConfig.muteFilters,
+            ).forEach((key) => {
+              useSyncConfigStore().unsetPreference({
+                path: `simple.${path}.${key}`,
+              })
+            })
+
+            Object.entries(value).forEach(([key, filter]) => {
+              useSyncConfigStore().setPreference({
+                path: `simple.${path}.${key}`,
+                value: filter,
+              })
+            })
+          } else {
+            if (finalValue !== undefined) {
+              useSyncConfigStore().setPreference({
+                path: `simple.${path}`,
+                value: finalValue,
+              })
+            }
+          }
+        }
+      })
+      useSyncConfigStore().pushSyncConfig()
     },
     restore() {
       this.dataImporter.importData()
@@ -149,16 +200,25 @@ const SettingsModal = {
       this.dataThemeExporter.exportData()
     },
     generateExport(theme = false) {
-      const { config } = this.$store.state
+      const config = useMergedConfigStore().mergedConfigWithoutDefaults
       let sample = config
       if (!theme) {
         const ignoreList = new Set([
+          'theme',
           'customTheme',
           'customThemeSource',
           'colors',
+          'style',
+          'styleCustomData',
+          'palette',
+          'paletteCustomData',
+          'themeChecksum',
         ])
+
         sample = Object.fromEntries(
-          Object.entries(sample).filter(([key]) => !ignoreList.has(key)),
+          Object.entries(sample).filter(
+            ([key, value]) => !ignoreList.has(key) && value !== undefined,
+          ),
         )
       }
       const clone = cloneDeep(sample)
@@ -191,11 +251,11 @@ const SettingsModal = {
     }),
     expertLevel: {
       get() {
-        return this.$store.state.config.expertLevel > 0
+        return useMergedConfigStore().mergedConfig.expertLevel > 0
       },
       set(value) {
-        this.$store.dispatch('setOption', {
-          name: 'expertLevel',
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'expertLevel',
           value: value ? 1 : 0,
         })
       },

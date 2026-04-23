@@ -23,7 +23,9 @@ import UserPopover from '../user_popover/user_popover.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
@@ -133,25 +135,26 @@ const Status = {
   },
   props: [
     'statusoid',
+    'replies',
+
     'expandable',
-    'inConversation',
     'focused',
     'highlight',
     'compact',
-    'replies',
     'isPreview',
     'noHeading',
     'inlineExpanded',
     'showPinned',
     'inProfile',
-    'profileUserId',
+    'inConversation',
     'inQuote',
-
+    'profileUserId',
     'simpleTree',
+    'showOtherRepliesAsButton',
+    'dive',
+
     'controlledThreadDisplayStatus',
     'controlledToggleThreadDisplay',
-    'showOtherRepliesAsButton',
-
     'controlledShowingTall',
     'controlledToggleShowingTall',
     'controlledExpandingSubject',
@@ -162,9 +165,8 @@ const Status = {
     'controlledToggleReplying',
     'controlledMediaPlaying',
     'controlledSetMediaPlaying',
-    'dive',
   ],
-  emits: ['interacted'],
+  emits: ['interacted', 'goto', 'toggleExpanded'],
   data() {
     return {
       uncontrolledReplying: false,
@@ -200,16 +202,14 @@ const Status = {
     },
     repeaterStyle() {
       const user = this.statusoid.user
-      const highlight = this.mergedConfig.highlight
-      return highlightStyle(highlight[user.screen_name])
+      return highlightStyle(useUserHighlightStore().get(user.screen_name))
     },
     userStyle() {
       if (this.noHeading) return
       const user = this.retweet
         ? this.statusoid.retweeted_status.user
         : this.statusoid.user
-      const highlight = this.mergedConfig.highlight
-      return highlightStyle(highlight[user.screen_name])
+      return highlightStyle(useUserHighlightStore().get(user.screen_name))
     },
     userProfileLink() {
       return this.generateUserProfileLink(
@@ -260,9 +260,7 @@ const Status = {
     },
     muteFilterHits() {
       return muteFilterHits(
-        Object.values(
-          useServerSideStorageStore().prefsStorage.simple.muteFilters,
-        ),
+        Object.values(useSyncConfigStore().prefsStorage.simple.muteFilters),
         this.status,
       )
     },
@@ -481,7 +479,7 @@ const Status = {
       return this.$store.state.users.currentUser
     },
     mergedConfig() {
-      return this.$store.getters.mergedConfig
+      return useMergedConfigStore().mergedConfig
     },
     isSuspendable() {
       return !this.replying && this.mediaPlaying.length === 0

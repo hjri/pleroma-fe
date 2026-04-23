@@ -9,8 +9,9 @@ import {
   maybeShowNotification,
 } from '../services/notification_utils/notification_utils.js'
 
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useReportsStore } from 'src/stores/reports.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 const emptyNotifications = () => ({
   desktopNotificationSilence: true,
@@ -119,9 +120,8 @@ export const notifications = {
 
           maybeShowNotification(
             store,
-            Object.values(
-              useServerSideStorageStore().prefsStorage.simple.muteFilters,
-            ),
+            useMergedConfigStore().mergedConfig.notificationVisibility,
+            Object.values(useSyncConfigStore().prefsStorage.simple.muteFilters),
             notification,
           )
         } else if (notification.seen) {

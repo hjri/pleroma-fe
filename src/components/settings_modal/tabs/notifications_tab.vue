@@ -249,6 +249,7 @@
         <li>
           <BooleanSetting
             path="webPushNotifications"
+            :local="true"
             expert="1"
           >
             {{ $t('settings.enable_web_push_notifications') }}
@@ -257,6 +258,7 @@
             <li>
               <BooleanSetting
                 path="webPushAlwaysShowNotifications"
+                :local="true"
                 :disabled="!mergedConfig.webPushNotifications"
               >
                 {{ $t('settings.enable_web_push_always_show') }}
@@ -273,6 +275,7 @@
         <li>
           <BooleanSetting
             source="profile"
+            :local="true"
             path="webPushHideContents"
             expert="1"
           >

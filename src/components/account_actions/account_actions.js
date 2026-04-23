@@ -7,6 +7,7 @@ import Popover from '../popover/popover.vue'
 import ProgressButton from '../progress_button/progress_button.vue'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useReportsStore } from 'src/stores/reports'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -89,10 +90,10 @@ const AccountActions = {
   },
   computed: {
     shouldConfirmBlock() {
-      return this.$store.getters.mergedConfig.modalOnBlock
+      return useMergedConfigStore().mergedConfig.modalOnBlock
     },
     shouldConfirmRemoveUserFromFollowers() {
-      return this.$store.getters.mergedConfig.modalOnRemoveUserFromFollowers
+      return useMergedConfigStore().mergedConfig.modalOnRemoveUserFromFollowers
     },
     ...mapState(useInstanceCapabilitiesStore, [
       'blockExpiration',

@@ -11,6 +11,7 @@ import Preview from './theme_preview.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import {
   getContrastRatioLayers,
@@ -81,7 +82,7 @@ export default {
       }),
       availableStyles: [],
       selected: '',
-      selectedTheme: this.$store.getters.mergedConfig.theme,
+      selectedTheme: useMergedConfigStore().mergedConfig.theme,
       themeWarning: undefined,
       tempImportFile: undefined,
       engineVersion: 0,

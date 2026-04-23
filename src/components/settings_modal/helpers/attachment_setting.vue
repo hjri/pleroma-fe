@@ -40,7 +40,7 @@
           :changed="isChanged"
           :onclick="reset"
         />
-        <ProfileSettingIndicator :is-profile="isProfileSetting" />
+        <LocalSettingIndicator :is-local="isLocalSetting" />
       </div>
       <div v-if="!compact">{{ $t('settings.preview') }}</div>
       <Attachment

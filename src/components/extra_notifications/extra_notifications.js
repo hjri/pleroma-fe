@@ -3,6 +3,8 @@ import { mapGetters } from 'vuex'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -51,18 +53,19 @@ const ExtraNotifications = {
     currentUser() {
       return this.$store.state.users.currentUser
     },
-    ...mapGetters(['unreadChatCount', 'followRequestCount', 'mergedConfig']),
+    ...mapGetters(['unreadChatCount', 'followRequestCount']),
     ...mapPiniaState(useAnnouncementsStore, {
       unreadAnnouncementCount: 'unreadAnnouncementCount',
     }),
+    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
   },
   methods: {
     openNotificationSettings() {
       return useInterfaceStore().openSettingsModalTab('notifications')
     },
     dismissConfigurationTip() {
-      return this.$store.dispatch('setOption', {
-        name: 'showExtraNotificationsTip',
+      return useSyncConfigStore().setSimplePrefAndSave({
+        path: 'showExtraNotificationsTip',
         value: false,
       })
     },

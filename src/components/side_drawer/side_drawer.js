@@ -10,6 +10,7 @@ import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useShoutStore } from 'src/stores/shout'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -72,7 +73,10 @@ const SideDrawer = {
       return useShoutStore().joined
     },
     unseenNotifications() {
-      return unseenNotificationsFromStore(this.$store)
+      return unseenNotificationsFromStore(
+        this.$store,
+        useMergedConfigStore().mergedConfig.notificationVisibility,
+      )
     },
     unseenNotificationsCount() {
       return this.unseenNotifications.length

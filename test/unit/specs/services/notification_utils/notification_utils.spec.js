@@ -1,6 +1,21 @@
+import { createTestingPinia } from '@pinia/testing'
+
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
 import * as NotificationUtils from 'src/services/notification_utils/notification_utils.js'
 
 describe('NotificationUtils', () => {
+  beforeEach(() => {
+    const store = useSyncConfigStore(createTestingPinia())
+    store.mergedConfig = {
+      notificationVisibility: {
+        likes: true,
+        repeats: true,
+        mentions: false,
+      },
+    }
+  })
+
   describe('filteredNotificationsFromStore', () => {
     it('should return sorted notifications with configured types', () => {
       const store = {
@@ -25,15 +40,6 @@ describe('NotificationUtils', () => {
             ],
           },
         },
-        getters: {
-          mergedConfig: {
-            notificationVisibility: {
-              likes: true,
-              repeats: true,
-              mentions: false,
-            },
-          },
-        },
       }
       const expected = [
         {
@@ -47,9 +53,13 @@ describe('NotificationUtils', () => {
           type: 'like',
         },
       ]
-      expect(NotificationUtils.filteredNotificationsFromStore(store)).to.eql(
-        expected,
-      )
+      expect(
+        NotificationUtils.filteredNotificationsFromStore(store, {
+          mentions: false,
+          likes: true,
+          repeats: true,
+        }),
+      ).to.eql(expected)
     })
   })
 
@@ -72,15 +82,6 @@ describe('NotificationUtils', () => {
             ],
           },
         },
-        getters: {
-          mergedConfig: {
-            notificationVisibility: {
-              likes: true,
-              repeats: true,
-              mentions: false,
-            },
-          },
-        },
       }
       const expected = [
         {
@@ -89,9 +90,13 @@ describe('NotificationUtils', () => {
           seen: false,
         },
       ]
-      expect(NotificationUtils.unseenNotificationsFromStore(store)).to.eql(
-        expected,
-      )
+      expect(
+        NotificationUtils.unseenNotificationsFromStore(store, {
+          likes: true,
+          repeats: true,
+          mentions: false,
+        }),
+      ).to.eql(expected)
     })
   })
 })

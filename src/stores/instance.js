@@ -1,41 +1,146 @@
 import { get, set } from 'lodash'
 import { defineStore } from 'pinia'
 
-import { instanceDefaultProperties } from '../modules/config.js'
 import {
-  instanceDefaultConfig,
-  staticOrApiConfigDefault,
+  convertDefinitions,
+  INSTANCE_DEFAULT_CONFIG,
+  INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
+  INSTANCE_IDENTITY_DEFAULT,
+  INSTANCE_IDENTITY_DEFAULT_DEFINITIONS,
+  LOCAL_DEFAULT_CONFIG,
+  LOCAL_DEFAULT_CONFIG_DEFINITIONS,
+  validateSetting,
 } from '../modules/default_config_state.js'
 import apiService from '../services/api/api.service.js'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 
-import { ensureFinalFallback } from 'src/i18n/languages.js'
-
 const REMOTE_INTERACTION_URL = '/main/ostatus'
 
-const defaultState = {
-  // Stuff from apiConfig
-  name: 'Pleroma FE',
-  registrationOpen: true,
-  server: 'http://localhost:4040/',
-  textlimit: 5000,
-  privateMode: false,
-  federating: true,
-  federationPolicy: null,
-  themesIndex: null,
-  stylesIndex: null,
-  palettesIndex: null,
-  themeData: null, // used for theme editor v2
-  vapidPublicKey: null,
+const ROOT_STATE_DEFINITIONS = {
+  name: {
+    type: 'string',
+    default: 'PleromaFE',
+  },
+  registrationOpen: {
+    required: true,
+    type: 'boolean',
+  },
+  server: {
+    description: 'Server URL',
+    required: true,
+    type: 'string',
+  },
+  privateMode: {
+    description: 'Private instance?',
+    required: true,
+    type: 'boolean',
+  },
+  federating: {
+    description: 'Is federation enabled?',
+    required: true,
+    type: 'boolean',
+  },
+  federationPolicy: {
+    description: '????',
+    required: true,
+    type: 'object',
+  },
+
+  // Indexes of themes/styles/palettes
+  themesIndex: {
+    required: true,
+    type: 'object',
+  },
+  stylesIndex: {
+    required: true,
+    type: 'object',
+  },
+  palettesIndex: {
+    required: true,
+    type: 'object',
+  },
+
+  themeData: {
+    description: 'Used for theme v2 editor',
+    required: true,
+    type: 'object',
+  },
+  vapidPublicKey: {
+    description: 'Used for WebPush',
+    required: true,
+    type: 'string',
+  },
 
   // Stuff from static/config.json
-  loginMethod: 'password',
-  disableUpdateNotification: false,
+  loginMethod: {
+    description: 'Login method (token/password)',
+    default: 'password',
+  },
+  disableUpdateNotification: {
+    description: 'Disable update notification (pleroma-tan one)',
+    default: false,
+  },
+  knownDomains: {
+    description: 'List of known domains; used for domain list for domain mutes',
+    default: [],
+  },
 
+  // Moderation stuff
+  staffAccounts: {
+    description: 'List of staff accounts',
+    default: [],
+  },
+  accountActivationRequired: {
+    description:
+      'Account activation (by email or admin) required after registration',
+    required: true,
+    type: 'boolean',
+  },
+  accountApprovalRequired: {
+    description: 'Admin approval required after registration',
+    required: true,
+    type: 'boolean',
+  },
+  birthdayRequired: {
+    description: 'Require birthday entry when registering',
+    required: true,
+    type: 'boolean',
+  },
+  birthdayMinAge: {
+    description: 'Minimum age required for registration',
+    default: 0,
+  },
+  restrictedNicknames: {
+    description: 'List of nicknames that are not allowed',
+    default: [],
+  },
+  localBubbleInstances: {
+    description: "Akkoma's bubble feature, list of instances",
+    default: [],
+  }, // Akkoma
+
+  // Version Information
+  backendVersion: {
+    required: true,
+    type: 'string',
+  },
+  backendRepository: {
+    required: true,
+    type: 'string',
+  },
+  frontendVersion: {
+    required: true,
+    type: 'string',
+  },
+}
+const ROOT_STATE = convertDefinitions(ROOT_STATE_DEFINITIONS)
+
+const DEFAULT_STATE = {
+  ...ROOT_STATE,
   // Instance-wide configurations that should not be changed by individual users
   instanceIdentity: {
-    ...staticOrApiConfigDefault,
+    ...INSTANCE_IDENTITY_DEFAULT,
   },
 
   limits: {
@@ -44,6 +149,7 @@ const defaultState = {
     backgroundlimit: null,
     uploadlimit: null,
     fieldsLimits: null,
+    textLimit: null,
     pollLimits: {
       max_options: 4,
       max_option_chars: 255,
@@ -54,49 +160,53 @@ const defaultState = {
 
   // Instance admins can override default settings for the whole instance
   prefsStorage: {
-    ...instanceDefaultConfig,
+    ...INSTANCE_DEFAULT_CONFIG,
+    ...LOCAL_DEFAULT_CONFIG,
   },
-
-  // Known domains list for user's domain-muting
-  knownDomains: [],
-
-  // Moderation stuff
-  staffAccounts: [],
-  accountActivationRequired: null,
-  accountApprovalRequired: null,
-  birthdayRequired: false,
-  birthdayMinAge: 0,
-  restrictedNicknames: [],
-  localBubbleInstances: [], // Akkoma
-
-  // Version Information
-  backendVersion: '',
-  backendRepository: '',
-  frontendVersion: '',
 }
 
 export const useInstanceStore = defineStore('instance', {
-  state: () => ({ ...defaultState }),
+  state: () => ({ ...DEFAULT_STATE }),
   getters: {
-    instanceDefaultConfig(state) {
-      return instanceDefaultProperties
-        .map((key) => [key, state[key]])
-        .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
-    },
     instanceDomain(state) {
       return new URL(this.server).hostname
     },
   },
   actions: {
-    set({ path, name, value }) {
-      if (get(defaultState, path ?? name) === undefined)
-        console.error(
-          `Unknown instance option ${path ?? name}, value: ${value}`,
-        )
+    set({ path, value }) {
+      let definition
+      const pathArray = path.split('.')
+      const subpath = pathArray[1] ?? pathArray[0]
 
-      set(this, path ?? name, value)
+      if (path.startsWith('instanceIdentity.')) {
+        definition = INSTANCE_IDENTITY_DEFAULT_DEFINITIONS[subpath]
+      } else if (path.startsWith('prefsStorage.')) {
+        definition = {
+          ...LOCAL_DEFAULT_CONFIG_DEFINITIONS,
+          ...INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
+        }[subpath]
+      } else if (path.startsWith('limits.')) {
+        definition =
+          path === 'limits.pollLimits' || path === 'limits.fieldsLimits'
+            ? { required: true, type: 'object' }
+            : { required: true, type: 'number' }
+      } else {
+        const definitions = ROOT_STATE_DEFINITIONS
+        definition = definitions[subpath]
+      }
 
-      if ((path ?? name) === 'name') useInterfaceStore().setPageTitle()
+      const finalValue = validateSetting({
+        path,
+        value,
+        definition,
+        throwError: true,
+        defaultState: DEFAULT_STATE,
+        validateObjects: false,
+      })
+
+      set(this, path, finalValue)
+
+      if (path === 'name') useInterfaceStore().setPageTitle()
     },
     async getKnownDomains() {
       try {

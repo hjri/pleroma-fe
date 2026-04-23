@@ -4,6 +4,7 @@ import { promiseInterval } from '../promise_interval/promise_interval.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const update = ({ store, notifications, older }) => {
   store.dispatch('addNewNotifications', { notifications, older })
@@ -26,10 +27,9 @@ const mastoApiNotificationTypes = new Set([
 
 const fetchAndUpdate = ({ store, credentials, older = false, since }) => {
   const args = { credentials }
-  const { getters } = store
   const rootState = store.rootState || store.state
   const timelineData = rootState.notifications
-  const hideMutedPosts = getters.mergedConfig.hideMutedPosts
+  const hideMutedPosts = useMergedConfigStore().mergedConfig.hideMutedPosts
 
   if (useInstanceCapabilitiesStore().pleromaChatMessagesAvailable) {
     mastoApiNotificationTypes.add('pleroma:chat_mention')

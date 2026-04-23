@@ -1,4 +1,4 @@
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
 
 import nsfwImage from '../../assets/nsfw.png'
 import Flash from '../flash/flash.vue'
@@ -8,6 +8,7 @@ import VideoAttachment from '../video_attachment/video_attachment.vue'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMediaViewerStore } from 'src/stores/media_viewer'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -57,8 +58,8 @@ const Attachment = {
       localDescription: this.description || this.attachment.description,
       nsfwImage:
         useInstanceStore().instanceIdentity.nsfwCensorImage || nsfwImage,
-      hideNsfwLocal: this.$store.getters.mergedConfig.hideNsfw,
-      preloadImage: this.$store.getters.mergedConfig.preloadImage,
+      hideNsfwLocal: useMergedConfigStore().mergedConfig.hideNsfw,
+      preloadImage: useMergedConfigStore().mergedConfig.preloadImage,
       loading: false,
       img: this.attachment.type === 'image' && document.createElement('img'),
       modalOpen: false,
@@ -90,7 +91,7 @@ const Attachment = {
       return this.size === 'hide'
     },
     useContainFit() {
-      return this.$store.getters.mergedConfig.useContainFit
+      return this.mergedConfig.useContainFit
     },
     placeholderName() {
       if (this.attachment.description === '' || !this.attachment.description) {
@@ -133,7 +134,7 @@ const Attachment = {
     videoTag() {
       return this.useModal ? 'button' : 'span'
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   watch: {
     'attachment.description'(newVal) {
@@ -186,7 +187,8 @@ const Attachment = {
       if (
         this.mergedConfig.useOneClickNsfw &&
         !this.showHidden &&
-        (this.attachment.type !== 'video' || this.mergedConfig.playVideosInModal)
+        (this.attachment.type !== 'video' ||
+          this.mergedConfig.playVideosInModal)
       ) {
         this.openModal(event)
         return

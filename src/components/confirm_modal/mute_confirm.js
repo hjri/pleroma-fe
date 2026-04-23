@@ -1,7 +1,9 @@
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
 
 import Select from 'src/components/select/select.vue'
 import ConfirmModal from './confirm_modal.vue'
+
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 export default {
   props: ['type', 'user', 'status'],
@@ -43,7 +45,7 @@ export default {
         }
       }
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   methods: {
     optionallyPrompt() {

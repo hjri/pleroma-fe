@@ -5,6 +5,7 @@ import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -96,7 +97,7 @@ export default {
       return this.$store.state.users.currentUser
     },
     shouldConfirmLogout() {
-      return this.$store.getters.mergedConfig.modalOnLogout
+      return useMergedConfigStore().mergedConfig.modalOnLogout
     },
   },
   methods: {

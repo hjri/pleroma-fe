@@ -1,6 +1,8 @@
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
 
 import RichContent from 'src/components/rich_content/rich_content.jsx'
+
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -101,14 +103,12 @@ const StatusBody = {
       )
     },
     attachmentTypes() {
-      return this.status.attachments.map((file) =>
-        file.type,
-      )
+      return this.status.attachments.map((file) => file.type)
     },
     collapsedStatus() {
       return this.status.raw_html.replace(/(\n|<br\s?\/?>)/g, ' ')
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   components: {
     RichContent,

@@ -1,8 +1,8 @@
 import { parseLinkHeader } from '@web3-storage/parse-link-header'
 import escapeHtml from 'escape-html'
-import fileTypeService from '../file_type/file_type.service.js'
 import punycode from 'punycode.js'
 
+import fileTypeService from '../file_type/file_type.service.js'
 import { isStatusNotification } from '../notification_utils/notification_utils.js'
 
 /** NOTICE! **
@@ -117,6 +117,7 @@ export const parseUser = (data) => {
     if (data.pleroma) {
       if (data.pleroma.settings_store) {
         output.storage = data.pleroma.settings_store['pleroma-fe']
+        output.user_highlight = data.pleroma.settings_store['user_highlight']
       }
       const relationship = data.pleroma.relationship
 
@@ -371,8 +372,8 @@ export const parseStatus = (data) => {
     const quoteData = quoteRaw ? parseStatus(quoteRaw) : undefined
     output.quote = quoteData
     output.quote_id =
-      data.quote?.id ?? data.quote_id ?? quoteData?.id ?? pleroma.quote_id
-    output.quote_url = data.quote?.url ?? quoteData?.url ?? pleroma.quote_url
+      data.quote?.id ?? data.quote_id ?? quoteData?.id ?? pleroma?.quote_id
+    output.quote_url = data.quote?.url ?? quoteData?.url ?? pleroma?.quote_url
 
     output.in_reply_to_status_id = data.in_reply_to_id
     output.in_reply_to_user_id = data.in_reply_to_account_id

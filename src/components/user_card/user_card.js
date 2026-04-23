@@ -2,7 +2,7 @@ import ldEscape from 'lodash/escape'
 import isEqual from 'lodash/isEqual'
 import merge from 'lodash/merge'
 import ldUnescape from 'lodash/unescape'
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
@@ -12,8 +12,6 @@ import suggestor from 'src/components/emoji_input/suggestor.js'
 import ImageCropper from 'src/components/image_cropper/image_cropper.vue'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
-import { useInterfaceStore } from '../../stores/interface'
-import { useMediaViewerStore } from '../../stores/media_viewer'
 import AccountActions from '../account_actions/account_actions.vue'
 import FollowButton from '../follow_button/follow_button.vue'
 import ModerationTools from '../moderation_tools/moderation_tools.vue'
@@ -27,7 +25,11 @@ import UserNote from '../user_note/user_note.vue'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface'
+import { useMediaViewerStore } from 'src/stores/media_viewer'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { usePostStatusStore } from 'src/stores/post_status'
+import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
 import localeService from 'src/services/locale/locale.service.js'
@@ -226,38 +228,27 @@ export default {
     },
     userHighlightType: {
       get() {
-        const data =
-          this.$store.getters.mergedConfig.highlight[this.user.screen_name]
-        return (data && data.type) || 'disabled'
+        return useUserHighlightStore().get(this.user.screen_name).type
       },
       set(type) {
-        const data =
-          this.$store.getters.mergedConfig.highlight[this.user.screen_name]
         if (type !== 'disabled') {
-          this.$store.dispatch('setHighlight', {
+          useUserHighlightStore().setAndSave({
             user: this.user.screen_name,
-            color: (data && data.color) || '#FFFFFF',
-            type,
+            value: { type },
           })
         } else {
-          this.$store.dispatch('setHighlight', {
-            user: this.user.screen_name,
-            color: undefined,
-          })
+          useUserHighlightStore().unsetAndSave({ user: this.user.screen_name })
         }
       },
-      ...mapGetters(['mergedConfig']),
     },
     userHighlightColor: {
       get() {
-        const data =
-          this.$store.getters.mergedConfig.highlight[this.user.screen_name]
-        return data && data.color
+        return useUserHighlightStore().get(this.user.screen_name).color
       },
       set(color) {
-        this.$store.dispatch('setHighlight', {
+        useUserHighlightStore().setAndSave({
           user: this.user.screen_name,
-          color,
+          value: { color },
         })
       },
     },
@@ -394,7 +385,7 @@ export default {
         ],
       })
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   methods: {
     muteUser() {

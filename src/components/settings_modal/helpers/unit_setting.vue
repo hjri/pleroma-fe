@@ -7,6 +7,7 @@
       :for="path"
       class="setting-label size-label"
     >
+      <LocalSettingIndicator :is-local="isLocalSetting" />
       <ModifiedIndicator
         :changed="isChanged"
         :onclick="reset"

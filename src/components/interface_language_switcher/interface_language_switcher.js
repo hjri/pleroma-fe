@@ -1,13 +1,11 @@
 import { v4 as uuidv4 } from 'uuid'
 
-import ProfileSettingIndicator from 'src/components/settings_modal/helpers/profile_setting_indicator.vue'
 import localeService from '../../services/locale/locale.service.js'
 import Select from '../select/select.vue'
 
 export default {
   components: {
     Select,
-    ProfileSettingIndicator,
   },
   props: {
     // List of languages (or just one language)

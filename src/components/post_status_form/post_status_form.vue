@@ -9,20 +9,24 @@
       @dragover.prevent="fileDrag"
     >
       <div class="form-group">
-        <i18n-t
+        <div
           v-if="!$store.state.users.currentUser.locked && newStatus.visibility == 'private' && !disableLockWarning"
-          keypath="post_status.account_not_locked_warning"
-          tag="p"
-          class="visibility-notice"
-          scope="global"
+          class="visibility-notice notice-dismissible"
         >
-          <button
-            class="button-unstyled -link"
-            @click="openProfileTab"
+          <i18n-t
+            keypath="post_status.account_not_locked_warning"
+            tag="p"
+            class=""
+            scope="global"
           >
-            {{ $t('post_status.account_not_locked_warning_link') }}
-          </button>
-        </i18n-t>
+            <button
+              class="button-unstyled -link"
+              @click="openProfileTab"
+            >
+              {{ $t('post_status.account_not_locked_warning_link') }}
+            </button>
+          </i18n-t>
+        </div>
         <p
           v-if="!hideScopeNotice && newStatus.visibility === 'public'"
           class="visibility-notice notice-dismissible"
@@ -70,7 +74,7 @@
         </p>
         <p
           v-else-if="newStatus.visibility === 'direct'"
-          class="visibility-notice"
+          class="visibility-notice notice-dismissible"
         >
           <span v-if="safeDMEnabled">{{ $t('post_status.direct_warning_to_first_only') }}</span>
           <span v-else>{{ $t('post_status.direct_warning_to_all') }}</span>

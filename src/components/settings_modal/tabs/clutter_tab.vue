@@ -19,9 +19,7 @@
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting
-            path="hideUserStats"
-          >
+          <BooleanSetting path="hideUserStats">
             {{ $t('settings.hide_user_stats') }}
           </BooleanSetting>
         </li>
@@ -64,12 +62,18 @@
           </IntegerSetting>
         </li>
         <li>
-          <BooleanSetting path="hideAttachments">
+          <BooleanSetting
+            :local="true"
+            path="hideAttachments"
+          >
             {{ $t('settings.hide_attachments_in_tl') }}
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting path="hideAttachmentsInConv">
+          <BooleanSetting
+            :local="true"
+            path="hideAttachmentsInConv"
+          >
             {{ $t('settings.hide_attachments_in_convo') }}
           </BooleanSetting>
         </li>
@@ -79,9 +83,7 @@
           </BooleanSetting>
         </li>
         <li v-if="shoutAvailable">
-          <BooleanSetting
-            path="hideShoutbox"
-          >
+          <BooleanSetting path="hideShoutbox">
             {{ $t('settings.hide_shoutbox') }}
           </BooleanSetting>
         </li>

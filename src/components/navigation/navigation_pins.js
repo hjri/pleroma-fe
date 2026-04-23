@@ -18,7 +18,7 @@ import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useListsStore } from 'src/stores/lists'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -70,7 +70,7 @@ const NavPanel = {
     ...mapPiniaState(useBookmarkFoldersStore, {
       bookmarks: getBookmarkFolderEntries,
     }),
-    ...mapPiniaState(useServerSideStorageStore, {
+    ...mapPiniaState(useSyncConfigStore, {
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems),
     }),

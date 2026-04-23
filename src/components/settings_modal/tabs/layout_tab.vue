@@ -40,6 +40,7 @@
         <li>
           <UnitSetting
             path="themeEditorMinWidth"
+            :local="true"
             :units="['px', 'rem']"
             expert="1"
           >
@@ -50,6 +51,7 @@
           <UnitSetting
             path="navbarSize"
             :step="0.1"
+            :local="true"
             :units="['px', 'rem']"
             :reset-default="{ 'px': 55, 'rem': 3.5 }"
           >
@@ -72,6 +74,7 @@
         <li>
           <UnitSetting
             path="panelHeaderSize"
+            :local="true"
             :step="0.1"
             :units="['px', 'rem']"
             :reset-default="{ 'px': 52, 'rem': 3.2 }"
@@ -81,12 +84,18 @@
           </UnitSetting>
         </li>
         <li>
-          <BooleanSetting path="sidebarRight">
+          <BooleanSetting
+            :local="true"
+            path="sidebarRight"
+          >
             {{ $t('settings.right_sidebar') }}
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting path="navbarColumnStretch">
+          <BooleanSetting
+            :local="true"
+            path="navbarColumnStretch"
+          >
             {{ $t('settings.navbar_column_stretch') }}
           </BooleanSetting>
         </li>
@@ -106,6 +115,7 @@
             <UnitSetting
               v-for="column in columns"
               :key="column"
+              :local="true"
               :path="column + 'ColumnWidth'"
               :units="horizontalUnits"
               expert="1"

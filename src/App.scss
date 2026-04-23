@@ -797,14 +797,17 @@ option {
 }
 
 .notice-dismissible {
-  padding-right: 4rem;
-  position: relative;
+  display: flex;
+  padding: 0.75em 1em;
+  align-items: baseline;
+  line-height: 1.5;
+
+  span {
+    display: block;
+    flex: 1 1 auto;
+  }
 
   .dismiss {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 0.5em;
     color: inherit;
   }
 }

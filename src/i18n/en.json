@@ -382,6 +382,7 @@
     "select_all": "Select all"
   },
   "settings": {
+    "invalid_settings_imported": "Error importing settings",
     "add_language": "Add fallback language",
     "remove_language": "Remove",
     "primary_language": "Primary language:",
@@ -403,6 +404,7 @@
     "change_avatar": "Change avatar",
     "setting_changed": "Setting is different from default",
     "setting_server_side": "This setting is tied to your profile and affects all sessions and clients",
+    "setting_local_side": "This setting is tied to current session and doesn't affects other devices and browsers",
     "enter_current_password_to_confirm": "Enter your current password to confirm your identity",
     "post_look_feel": "Posts Look & Feel",
     "posts": "Posts",
@@ -1858,8 +1860,11 @@
   "update": {
     "big_update_title": "Please bear with us",
     "big_update_content": "We haven't had a release in a while, so things might look and feel different than what you're used to.",
-    "update_bugs": "Please report any issues and bugs on {pleromaGitlab}, as we have changed a lot, and although we test thoroughly and use development versions ourselves, we may have missed some things. We welcome your feedback and suggestions on issues you might encounter, or how to improve Pleroma and Pleroma-FE.",
+    "big_update_content2": "We implemented synchronized settings! This means (nearly) all your settings are now properly synchronized between devices and sessions. We try to migrate settings from old config but migration is performed only once, so some settings might be incorrect.",
+    "update_bugs": "Please report any issues and bugs on {pleromaForgejo}, as we have changed a lot, and although we test thoroughly and use development versions ourselves, we may have missed some things. We welcome your feedback and suggestions on issues you might encounter, or how to improve Pleroma and Pleroma-FE.",
+    "update_bugs2": "Let us know if you don't want certain setting synchronized on {pleromaForgejo}.",
     "update_bugs_gitlab": "Pleroma GitLab",
+    "update_bugs_forgejo": "Pleroma Forgejo",
     "update_changelog": "For more details on what's changed, see {theFullChangelog}.",
     "update_changelog_here": "the full changelog",
     "art_by": "Art by {linkToArtist}"

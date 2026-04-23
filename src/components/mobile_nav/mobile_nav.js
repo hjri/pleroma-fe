@@ -13,7 +13,7 @@ import SideDrawer from '../side_drawer/side_drawer.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -52,11 +52,19 @@ const MobileNav = {
       return this.$store.state.users.currentUser
     },
     unseenNotifications() {
-      return unseenNotificationsFromStore(this.$store)
+      return unseenNotificationsFromStore(
+        this.$store,
+        useMergedConfigStore().mergedConfig.notificationVisibility,
+        useMergedConfigStore().mergedConfig.ignoreInactionableSeen,
+      )
     },
     unseenNotificationsCount() {
       return (
-        this.unseenNotifications.length + countExtraNotifications(this.$store)
+        this.unseenNotifications.length +
+        countExtraNotifications(
+          this.$store,
+          useMergedConfigStore().mergedConfig,
+        )
       )
     },
     unseenCount() {
@@ -75,15 +83,15 @@ const MobileNav = {
       return this.$route.name === 'chat'
     },
     ...mapState(useAnnouncementsStore, ['unreadAnnouncementCount']),
-    ...mapState(useServerSideStorageStore, {
+    ...mapState(useMergedConfigStore, {
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems).has('chats'),
     }),
     shouldConfirmLogout() {
-      return this.$store.getters.mergedConfig.modalOnLogout
+      return useMergedConfigStore().mergedConfig.modalOnLogout
     },
     closingDrawerMarksAsSeen() {
-      return this.$store.getters.mergedConfig.closingDrawerMarksAsSeen
+      return useMergedConfigStore().mergedConfig.closingDrawerMarksAsSeen
     },
     ...mapGetters(['unreadChatCount']),
   },

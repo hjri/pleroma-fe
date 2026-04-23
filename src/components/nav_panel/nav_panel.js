@@ -12,7 +12,7 @@ import NavigationPins from 'src/components/navigation/navigation_pins.vue'
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -84,28 +84,28 @@ const NavPanel = {
       this.editMode = !this.editMode
     },
     toggleCollapse() {
-      useServerSideStorageStore().setPreference({
-        path: 'simple.collapseNav',
+      useSyncConfigStore().setSimplePrefAndSave({
+        path: 'collapseNav',
         value: !this.collapsed,
       })
-      useServerSideStorageStore().pushServerSideStorage()
+      useSyncConfigStore().pushSyncConfig()
     },
     isPinned(item) {
       return this.pinnedItems.has(item)
     },
     togglePin(item) {
       if (this.isPinned(item)) {
-        useServerSideStorageStore().removeCollectionPreference({
+        useSyncConfigStore().removeCollectionPreference({
           path: 'collections.pinnedNavItems',
           value: item,
         })
       } else {
-        useServerSideStorageStore().addCollectionPreference({
+        useSyncConfigStore().addCollectionPreference({
           path: 'collections.pinnedNavItems',
           value: item,
         })
       }
-      useServerSideStorageStore().pushServerSideStorage()
+      useSyncConfigStore().pushSyncConfig()
     },
   },
   computed: {
@@ -122,7 +122,7 @@ const NavPanel = {
     ...mapPiniaState(useInstanceStore, {
       privateMode: (store) => store.private,
     }),
-    ...mapPiniaState(useServerSideStorageStore, {
+    ...mapPiniaState(useSyncConfigStore, {
       collapsed: (store) => store.prefsStorage.simple.collapseNav,
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems),

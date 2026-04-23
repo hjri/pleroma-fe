@@ -28,13 +28,17 @@
       <h3>{{ $t('settings.debug') }}</h3>
       <ul class="setting-list">
         <li>
-          <BooleanSetting path="virtualScrolling">
+          <BooleanSetting
+            :local="true"
+            path="virtualScrolling"
+          >
             {{ $t('settings.virtual_scrolling') }}
           </BooleanSetting>
         </li>
         <li>
           <BooleanSetting
             path="themeDebug"
+            :local="true"
             :expert="1"
           >
             {{ $t('settings.theme_debug') }}
@@ -43,6 +47,7 @@
         <li>
           <BooleanSetting
             path="forceThemeRecompilation"
+            :local="true"
             :expert="1"
           >
             {{ $t('settings.force_theme_recompilation_debug') }}

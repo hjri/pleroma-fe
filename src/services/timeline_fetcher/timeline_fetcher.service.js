@@ -6,6 +6,7 @@ import { promiseInterval } from '../promise_interval/promise_interval.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const update = ({
   store,
@@ -44,9 +45,9 @@ const fetchAndUpdate = ({
 }) => {
   const args = { timeline, credentials }
   const rootState = store.rootState || store.state
-  const { getters } = store
   const timelineData = rootState.statuses.timelines[camelCase(timeline)]
-  const { hideMutedPosts, replyVisibility } = getters.mergedConfig
+  const { hideMutedPosts, replyVisibility } =
+    useMergedConfigStore().mergedConfig
   const loggedIn = !!rootState.users.currentUser
 
   if (older) {

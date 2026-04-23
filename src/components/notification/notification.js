@@ -17,6 +17,8 @@ import UserLink from '../user_link/user_link.vue'
 import UserPopover from '../user_popover/user_popover.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
@@ -181,9 +183,8 @@ const Notification = {
       return highlightClass(this.notification.from_profile)
     },
     userStyle() {
-      const highlight = this.$store.getters.mergedConfig.highlight
-      const user = this.notification.from_profile
-      return highlightStyle(highlight[user.screen_name])
+      const user = this.notification.from_profile.screen_name
+      return highlightStyle(useUserHighlightStore().get(user))
     },
     expandable() {
       return new Set(['like', 'pleroma:emoji_reaction', 'repeat', 'poll']).has(
@@ -209,7 +210,7 @@ const Notification = {
       return isStatusNotification(this.notification.type)
     },
     mergedConfig() {
-      return this.$store.getters.mergedConfig
+      return useMergedConfigStore().mergedConfig
     },
     shouldConfirmApprove() {
       return this.mergedConfig.modalOnApproveFollow

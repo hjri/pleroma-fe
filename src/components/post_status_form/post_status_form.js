@@ -25,6 +25,8 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { pollFormToMasto } from 'src/services/poll/poll.service.js'
 
@@ -170,7 +172,7 @@ const PostStatusForm = {
     const preset = this.$route.query.message
     let statusText = preset || ''
 
-    const { scopeCopy } = this.$store.getters.mergedConfig
+    const { scopeCopy } = useMergedConfigStore().mergedConfig
 
     const [statusType, refId] = typeAndRefId({
       replyTo: this.replyTo,
@@ -200,7 +202,7 @@ const PostStatusForm = {
           : this.$store.state.users.currentUser.default_scope
 
       const { postContentType: contentType, sensitiveByDefault } =
-        this.$store.getters.mergedConfig
+        useMergedConfigStore().mergedConfig
 
       statusParams = {
         type: statusType,
@@ -301,7 +303,7 @@ const PostStatusForm = {
       return this.newStatus.spoilerText.length
     },
     statusLengthLimit() {
-      return useInstanceStore().textlimit
+      return useInstanceStore().limits.textLimit
     },
     hasStatusLengthLimit() {
       return this.statusLengthLimit > 0
@@ -335,7 +337,8 @@ const PostStatusForm = {
     },
     hideScopeNotice() {
       return (
-        this.disableNotice || this.$store.getters.mergedConfig.hideScopeNotice
+        this.disableNotice ||
+        useMergedConfigStore().mergedConfig.hideScopeNotice
       )
     },
     pollContentError() {
@@ -420,7 +423,7 @@ const PostStatusForm = {
       return this.newStatus.hasQuote && !this.newStatus.quote.thread
     },
     shouldAutoSaveDraft() {
-      return this.$store.getters.mergedConfig.autoSaveDraft
+      return useMergedConfigStore().mergedConfig.autoSaveDraft
     },
     autoSaveState() {
       if (this.saveable) {
@@ -453,7 +456,7 @@ const PostStatusForm = {
         )
       )
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
     ...mapState(useInterfaceStore, {
       mobileLayout: (store) => store.mobileLayout,
     }),
@@ -879,8 +882,8 @@ const PostStatusForm = {
       this.newStatus.hasQuote = !this.newStatus.hasQuote
     },
     dismissScopeNotice() {
-      this.$store.dispatch('setOption', {
-        name: 'hideScopeNotice',
+      useSyncConfigStore().setSimplePrefAndSave({
+        path: 'hideScopeNotice',
         value: true,
       })
     },

@@ -4,6 +4,7 @@ import Timeago from 'components/timeago/timeago.vue'
 
 import genRandomSeed from '../../services/random_seed/random_seed.service.js'
 
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { usePollsStore } from 'src/stores/polls.js'
 
 export default {
@@ -48,7 +49,7 @@ export default {
       return (this.poll && this.poll.expired) || false
     },
     expirationLabel() {
-      if (this.$store.getters.mergedConfig.useAbsoluteTimeFormat) {
+      if (useMergedConfigStore().mergedConfig.useAbsoluteTimeFormat) {
         return this.expired ? 'polls.expired_at' : 'polls.expires_at'
       } else {
         return this.expired ? 'polls.expired' : 'polls.expires_in'

@@ -5,7 +5,7 @@ import Popover from 'src/components/popover/popover.vue'
 import ActionButtonContainer from './action_button_container.vue'
 import { BUTTONS } from './buttons_definitions.js'
 
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import genRandomSeed from 'src/services/random_seed/random_seed.service.js'
 
@@ -36,7 +36,7 @@ const StatusActionButtons = {
     ActionButtonContainer,
   },
   computed: {
-    ...mapState(useServerSideStorageStore, {
+    ...mapState(useSyncConfigStore, {
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedStatusActions),
     }),
@@ -111,18 +111,18 @@ const StatusActionButtons = {
       return this.pinnedItems.has(button.name)
     },
     unpin(button) {
-      useServerSideStorageStore().removeCollectionPreference({
+      useSyncConfigStore().removeCollectionPreference({
         path: 'collections.pinnedStatusActions',
         value: button.name,
       })
-      useServerSideStorageStore().pushServerSideStorage()
+      useSyncConfigStore().pushSyncConfig()
     },
     pin(button) {
-      useServerSideStorageStore().addCollectionPreference({
+      useSyncConfigStore().addCollectionPreference({
         path: 'collections.pinnedStatusActions',
         value: button.name,
       })
-      useServerSideStorageStore().pushServerSideStorage()
+      useSyncConfigStore().pushSyncConfig()
     },
     getComponent(button) {
       if (!this.$store.state.users.currentUser && button.anonLink) {

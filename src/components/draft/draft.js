@@ -6,6 +6,8 @@ import Gallery from 'src/components/gallery/gallery.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
 
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPollH } from '@fortawesome/free-solid-svg-icons'
 
@@ -62,7 +64,7 @@ const Draft = {
         : undefined
     },
     localCollapseSubjectDefault() {
-      return this.$store.getters.mergedConfig.collapseMessageWithSubject
+      return useMergedConfigStore().mergedConfig.collapseMessageWithSubject
     },
     nsfwClickthrough() {
       if (!this.draft.nsfw) {
