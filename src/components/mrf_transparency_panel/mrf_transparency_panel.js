@@ -24,7 +24,6 @@ const MRFTransparencyPanel = {
       mrfPolicies: (state) =>
         get(state, 'federationPolicy.mrf_policies', []),
       quarantineInstances: (state) =>
-        console.log(state) ||
         toInstanceReasonObject(
           get(state, 'federationPolicy.quarantined_instances', []),
           get(
