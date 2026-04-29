@@ -54,7 +54,6 @@
       <FAIcon
         v-if="button.dropdown?.()"
         class="chevron-icon"
-        size="lg"
         :icon="extra ? 'chevron-right' : 'chevron-up'"
         fixed-width
       />
@@ -71,6 +70,7 @@
     />
     <Popover
       v-if="button.name === 'bookmark'"
+      class="chevron-popover"
       :trigger="extra ? 'hover' : 'click'"
       :placement="extra ? 'right' : 'top'"
       :offset="extra ? { x: 10 } : { y: 10 }"
@@ -79,7 +79,6 @@
       <template #trigger>
         <FAIcon
           class="chevron-icon"
-          size="lg"
           :icon="extra ? 'chevron-right' : 'chevron-up'"
           fixed-width
         />

@@ -1,11 +1,14 @@
 <template>
   <div class="StatusActionButtons">
-    <span class="quick-action-buttons">
+    <span
+      class="quick-action-buttons"
+      :class="{ '-pin': showPin }"
+      >
       <span
         v-for="button in quickButtons"
         :key="button.name"
         class="quick-action"
-        :class="{ '-pin': showPin, '-toggle': button.dropdown?.() }"
+        :class="{ '-pin': showPin, '-toggle': button.dropdown?.(), '-with-extra': button.name === 'bookmark' }"
       >
         <ActionButtonContainer
           :class="{ '-pin': showPin }"
@@ -30,7 +33,6 @@
           <FAIcon
             v-if="showPin && currentUser"
             fixed-width
-            class="fa-scale-110"
             icon="thumbtack"
           />
         </button>
@@ -38,6 +40,7 @@
       <Popover
         trigger="click"
         :trigger-attrs="triggerAttrs"
+        class="quick-action"
         :tabindex="0"
         placement="top"
         :offset="{ y: 5 }"
@@ -46,7 +49,7 @@
       >
         <template #trigger>
           <FAIcon
-            class="fa-scale-110 "
+            class="action-button-inner"
             icon="ellipsis-h"
           />
         </template>
