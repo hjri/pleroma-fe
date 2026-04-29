@@ -244,6 +244,7 @@ export const parseUser = (data) => {
 
   output.created_at = new Date(data.created_at)
   output.locked = data.locked
+  output.last_status_at = new Date(data.last_status_at)
   output.followers_count = data.followers_count
   output.statuses_count = data.statuses_count
 
