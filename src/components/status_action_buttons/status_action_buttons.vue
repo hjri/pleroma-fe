@@ -60,23 +60,6 @@
             role="menu"
           >
             <div
-              v-if="currentUser"
-              class="menu-item dropdown-item extra-action -icon"
-            >
-              <button
-                class="main-button"
-                role="menuitem"
-                :tabindex="0"
-                @click.stop="() => { resize(); showPin = !showPin }"
-              >
-                <FAIcon
-                  class="fa-scale-110"
-                  fixed-width
-                  icon="wrench"
-                /><span>{{ $t('nav.edit_pinned') }}</span>
-              </button>
-            </div>
-            <div
               v-for="button in extraButtons"
               :key="button.name"
               class="menu-item dropdown-item extra-action -icon"
@@ -109,6 +92,23 @@
                   transform="rotate-45"
                   icon="thumbtack"
                 />
+              </button>
+            </div>
+            <div
+              v-if="currentUser"
+              class="menu-item dropdown-item extra-action -icon"
+            >
+              <button
+                class="main-button"
+                role="menuitem"
+                :tabindex="0"
+                @click.stop="() => { resize(); showPin = !showPin }"
+              >
+                <FAIcon
+                  class="fa-scale-110"
+                  fixed-width
+                  icon="wrench"
+                /><span>{{ $t('nav.edit_pinned') }}</span>
               </button>
             </div>
           </div>
