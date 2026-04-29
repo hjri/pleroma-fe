@@ -42,7 +42,7 @@
         :trigger-attrs="triggerAttrs"
         class="quick-action"
         :tabindex="0"
-        placement="top"
+        placement="bottom"
         :offset="{ y: 5 }"
         remove-padding
         @close="onExtraClose"
