@@ -635,22 +635,22 @@ export const LOCAL_DEFAULT_CONFIG_DEFINITIONS = {
   },
   fontInterface: {
     description: 'Interface font override',
-    type: 'object',
+    type: 'string',
     default: null,
   },
   fontInput: {
     description: 'Input font override',
-    type: 'object',
+    type: 'string',
     default: null,
   },
   fontPosts: {
     description: 'Post font override',
-    type: 'object',
+    type: 'string',
     default: null,
   },
   fontMonospace: {
     description: 'Monospace font override',
-    type: 'object',
+    type: 'string',
     default: null,
   },
   themeDebug: {

@@ -238,8 +238,8 @@ describe('The SyncConfig store', () => {
         store.pushSyncConfig = () => {
           /* no-op */
         }
-        store.setPreference({ path: 'simple.fontInput.family', value: 'test' })
-        store.unsetPreference({ path: 'simple.fontInput.family' })
+        store.setPreference({ path: 'simple.fontInput', value: 'test' })
+        store.unsetPreference({ path: 'simple.fontInput' })
         store.updateCache(store, { username: 'test' })
         expect(store.prefsStorage.simple.fontInput).to.not.have.property(
           'family',

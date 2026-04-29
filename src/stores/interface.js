@@ -196,7 +196,7 @@ export const useInterfaceStore = defineStore('interface', {
       }
     },
     setFontsList(value) {
-      this.localFonts = [...new Set(value.map((font) => font.family)).values()]
+      this.localFonts = [...new Set(value.map((font) => font)).values()]
     },
     queryLocalFonts() {
       if (this.localFonts !== null) return
@@ -654,7 +654,7 @@ export const useInterfaceStore = defineStore('interface', {
         }
 
         Object.entries(fontMap).forEach(([font, component]) => {
-          const family = mergedConfig[`font${font}`]?.family
+          const family = mergedConfig[`font${font}`]
           const variable = font === 'Monospace' ? '--monoFont' : '--font'
           if (family) {
             hacks.push({
