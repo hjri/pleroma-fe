@@ -1043,7 +1043,9 @@
     "default_post_status_content_type": "デフォルトの投稿形式",
     "plaintext_quotes": "プレーンテキストの{0}をハイライトする",
     "greentext_quotes": ">引用",
-    "replies": "返信"
+    "replies": "返信",
+    "setting_local_side": "この設定はこのセッションでのみ有効です。他のデバイスやブラウザには反映されません。",
+    "invalid_settings_imported": "設定のインポートに失敗しました"
   },
   "time": {
     "day": "{0}日",
@@ -1082,7 +1084,7 @@
       "seconds_short": "{0}秒",
       "weeks": "{0} 週間",
       "weeks_short": "{0}週",
-      "years": "年",
+      "years": "{0} 年",
       "years_short": "{0}年",
       "days": "{0} 日",
       "hours": "{0} 時間",
@@ -1098,7 +1100,8 @@
       "minutes_suffix": "分",
       "months_suffix": "ヶ月",
       "seconds_suffix": "秒",
-      "weeks_suffix": "週間"
+      "weeks_suffix": "週間",
+      "years_suffix": "年"
     }
   },
   "timeline": {
@@ -1203,7 +1206,8 @@
     "unmute_domain": "ドメインのミュートを解除",
     "muted_filters": "カスタムフィルターにマッチ: {name} | カスタムフィルターにマッチ: {name}とその他{filtersMore}件のフィルター",
     "reply_to_with_icon": "{icon} {replyTo}",
-    "reply_to_with_arg": "{replyToWithIcon} {user}"
+    "reply_to_with_arg": "{replyToWithIcon} {user}",
+    "unknown_user": "不明なユーザー"
   },
   "user_card": {
     "approve": "承認",
@@ -1790,7 +1794,7 @@
     "is_in_list": "追加済み"
   },
   "update": {
-    "update_bugs": "何か問題を見つけたら{pleromaGitlab}にて報告してください。開発中のバージョンにて念入りに確認はしましたが、様々なものが変更されているため、我々が見逃したものがあるかもしれません。バグの報告や、Pleroma/PleromaFEを改善するための提案やフィードバックは大歓迎です。",
+    "update_bugs": "何か問題を見つけたら{pleromaForgejo}にて報告してください。開発中のバージョンにて念入りに確認はしましたが、様々なものが変更されているため、我々が見逃したものがあるかもしれません。バグの報告や、Pleroma/PleromaFEを改善するための提案やフィードバックは大歓迎です。",
     "update_changelog_here": "変更履歴",
     "update_changelog": "全ての変更点は{theFullChangelog}を参照してください。",
     "big_update_content": "久しぶりのリリースですので、今までと異なるところがあるかもしれません。",
