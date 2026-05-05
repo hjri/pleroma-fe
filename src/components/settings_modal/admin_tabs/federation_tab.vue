@@ -25,9 +25,6 @@
       <h3>{{ $t('admin_dash.federation.activitypub') }}</h3>
       <ul class="setting-list">
         <li>
-          <BooleanSetting path=":pleroma.:instance.:allow_relay" />
-        </li>
-        <li>
           <BooleanSetting path=":pleroma.:activitypub.:unfollow_blocked" />
         </li>
         <li>
