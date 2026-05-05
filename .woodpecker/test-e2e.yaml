@@ -55,7 +55,7 @@ steps:
         fi
       - |
         if ! yarn e2e:pw; then
-          zip -r ${CI_COMMIT_SHA:0:8}-e2e.zip ./test/e2e-playwright/test-results ./test/e2e-playwright/playwright-report
+          zip -9qr ${CI_COMMIT_SHA:0:8}-e2e.zip ./test/e2e-playwright/test-results ./test/e2e-playwright/playwright-report
           exit 1
         fi
 

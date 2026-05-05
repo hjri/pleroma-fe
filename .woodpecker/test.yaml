@@ -37,7 +37,7 @@ steps:
       - yarn --frozen-lockfile
       - |
         if ! yarn unit-ci; then
-          zip -r ${CI_COMMIT_SHA:0:8}-screenshots.zip $(find . -type d -name __screenshots__)
+          zip -9qr ${CI_COMMIT_SHA:0:8}-screenshots.zip $(find . -type d -name __screenshots__)
           exit 1
         fi
 
