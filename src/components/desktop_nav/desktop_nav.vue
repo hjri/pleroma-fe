@@ -32,48 +32,50 @@
         >
       </router-link>
       <div class="item right actions">
-        <search-bar
+        <SearchBar
           v-if="currentUser || !privateMode"
           @toggled="onSearchBarToggled"
           @click.stop
         />
-        <button
-          class="button-unstyled nav-icon"
-          :title="$t('nav.preferences')"
-          @click.stop="openSettingsModal('user')"
-        >
-          <FAIcon
-            fixed-width
-            class="fa-scale-110 fa-old-padding"
-            icon="cog"
-          />
-        </button>
-        <button
-          v-if="currentUser && currentUser.role === 'admin'"
-          class="button-unstyled nav-icon"
-          target="_blank"
-          :title="$t('nav.administration')"
-          @click.stop="openSettingsModal('admin')"
-        >
-          <FAIcon
-            fixed-width
-            class="fa-scale-110 fa-old-padding"
-            icon="tachometer-alt"
-          />
-        </button>
-        <span class="spacer" />
-        <button
-          v-if="currentUser"
-          class="button-unstyled nav-icon"
-          :title="$t('login.logout')"
-          @click.stop.prevent="logout"
-        >
-          <FAIcon
-            fixed-width
-            class="fa-scale-110 fa-old-padding"
-            icon="sign-out-alt"
-          />
-        </button>
+        <template v-if="searchBarHidden">
+          <button
+            class="button-unstyled nav-icon"
+            :title="$t('nav.preferences')"
+            @click.stop="openSettingsModal('user')"
+          >
+            <FAIcon
+              fixed-width
+              class="fa-scale-110 fa-old-padding"
+              icon="cog"
+            />
+          </button>
+          <button
+            v-if="currentUser && currentUser.role === 'admin'"
+            class="button-unstyled nav-icon"
+            target="_blank"
+            :title="$t('nav.administration')"
+            @click.stop="openSettingsModal('admin')"
+          >
+            <FAIcon
+              fixed-width
+              class="fa-scale-110 fa-old-padding"
+              icon="tachometer-alt"
+            />
+          </button>
+          <span class="spacer" />
+          <button
+            v-if="currentUser"
+            class="button-unstyled nav-icon"
+            :title="$t('login.logout')"
+            @click.stop.prevent="logout"
+          >
+            <FAIcon
+              fixed-width
+              class="fa-scale-110 fa-old-padding"
+              icon="sign-out-alt"
+            />
+          </button>
+        </template>
       </div>
     </div>
     <teleport to="#modal">

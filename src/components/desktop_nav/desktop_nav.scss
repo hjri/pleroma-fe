@@ -9,7 +9,7 @@
   .inner-nav {
     display: grid;
     grid-template-rows: var(--navbar-height);
-    grid-template-columns: 2fr auto 2fr;
+    grid-template-columns: minmax(5em, 1fr) auto minmax(5em, 1fr);
     grid-template-areas: "sitename logo actions";
     box-sizing: border-box;
     padding: 0 1.2em;
@@ -31,7 +31,7 @@
   }
 
   &.-logoLeft .inner-nav {
-    grid-template-columns: auto 2fr 2fr;
+    grid-template-columns: auto minmax(5em, 1fr) minmax(5em, 1fr);
     grid-template-areas: "logo sitename actions";
   }
 
@@ -92,23 +92,18 @@
 
   .actions {
     grid-area: actions;
+    justify-content: flex-end;
+    text-align: right;
+    z-index: 1;
   }
 
   .item {
-    flex: 1;
     line-height: var(--navbar-height);
     height: var(--navbar-height);
-    overflow: hidden;
     display: flex;
-    flex-wrap: wrap;
-
-    &.right {
-      justify-content: flex-end;
-      text-align: right;
-    }
   }
 
   .spacer {
-    width: 1em;
+    min-width: 1em;
   }
 }

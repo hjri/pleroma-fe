@@ -51,8 +51,6 @@
           class="cancel-icon fa-scale-110 fa-old-padding"
         />
       </button>
-      <span class="spacer" />
-      <span class="spacer" />
     </template>
   </div>
 </template>
@@ -61,18 +59,14 @@
 
 <style lang="scss">
 .SearchBar {
-  display: inline-flex;
+  display: flex;
   align-items: baseline;
   vertical-align: baseline;
   justify-content: flex-end;
 
-  &.-expanded {
-    width: 100%;
-  }
-
   .search-bar-input,
   .search-button {
-    height: 29px;
+    height: 2em;
   }
 
   .search-bar-input {
