@@ -113,19 +113,19 @@
             class="reply-or-quote-selector"
           >
             <Checkbox
+              v-model="quoteThreadToggled"
+              :radio="true"
+              :disabled="quoteFormVisible"
+            >
+              {{ $t('post_status.quote_option') }}
+            </Checkbox>
+            <Checkbox
               role="radio"
               :radio="true"
               :model-value="!quoteThreadToggled"
               @update:model-value="e => quoteThreadToggled = !e"
             >
               {{ $t('post_status.reply_option') }}
-            </Checkbox>
-            <Checkbox
-              v-model="quoteThreadToggled"
-              :radio="true"
-              :disabled="quoteFormVisible"
-            >
-              {{ $t('post_status.quote_option') }}
             </Checkbox>
           </div>
         </div>
