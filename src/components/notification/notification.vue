@@ -7,7 +7,7 @@
       class="Notification"
       :compact="true"
       :statusoid="notification.status"
-      @interacted="interacted"
+      @click="interacted"
     />
   </article>
   <article

@@ -520,7 +520,6 @@
             :status="status"
             :replying="replying"
             @toggle-replying="toggleReplying"
-            @interacted="e => $emit('interacted')"
           />
         </div>
       </div>

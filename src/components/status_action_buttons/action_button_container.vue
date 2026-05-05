@@ -79,7 +79,6 @@
       :button="button"
       :status="status"
       v-bind="$attrs"
-      @interacted="e => $emit('interacted')"
     />
     <teleport to="#modal">
       <MuteConfirm

@@ -167,7 +167,7 @@ const Status = {
     'controlledMediaPlaying',
     'controlledSetMediaPlaying',
   ],
-  emits: ['interacted', 'goto', 'toggleExpanded'],
+  emits: ['goto', 'toggleExpanded'],
   data() {
     return {
       uncontrolledReplying: false,
@@ -560,11 +560,9 @@ const Status = {
       this.error = error
     },
     clearError() {
-      this.$emit('interacted')
       this.error = undefined
     },
     toggleReplying() {
-      this.$emit('interacted')
       if (this.replying) {
         this.$refs.postStatusForm.requestClose()
       } else {

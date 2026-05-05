@@ -20,7 +20,6 @@
           :get-component="getComponent"
           :close="() => { /* no-op */ }"
           :do-action="doAction"
-          @interacted="e => $emit('interacted')"
         />
         <button
           v-if="showPin && currentUser"
@@ -75,7 +74,6 @@
                 :get-component="getComponent"
                 :outer-close="close"
                 :do-action="doAction"
-                @interacted="e => $emit('interacted')"
               />
               <button
                 v-if="showPin && currentUser"
