@@ -216,7 +216,7 @@
                   v-for="tag in user.tags"
                   class="alert warning user-role"
                 >
-                  {{ $t('user_card.tags.' + tag) }}
+                  {{ isKnownTag ? $t('user_card.tags.' + tag) : tag }}
                 </span>
               </template>
             </div>

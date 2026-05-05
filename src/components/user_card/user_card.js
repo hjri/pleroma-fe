@@ -62,6 +62,15 @@ library.add(
   faClockRotateLeft,
 )
 
+const KNOWN_TAGS = new Set([
+  'mrf_tag:media-force-nsfw',
+  'mrf_tag:media-strip',
+  'mrf_tag:force-unlisted',
+  'mrf_tag:sandbox',
+  'mrf_tag:disable-remote-subscription',
+  'mrf_tag:disable-any-subscription'
+])
+
 export default {
   props: {
     // Enables all the options for profile editing, used in settings -> profile tab
@@ -388,6 +397,9 @@ export default {
     ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   methods: {
+    isKnownTag(tag) {
+      return KNOWN_TAGS.has(tag)
+    },
     muteUser() {
       this.$refs.timedMuteDialog.optionallyPrompt()
     },
