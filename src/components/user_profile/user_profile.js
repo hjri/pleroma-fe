@@ -1,4 +1,5 @@
 import get from 'lodash/get'
+import { mapState } from 'pinia'
 
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
@@ -9,6 +10,7 @@ import List from '../list/list.vue'
 import Timeline from '../timeline/timeline.vue'
 import UserCard from '../user_card/user_card.vue'
 
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 
@@ -93,6 +95,9 @@ const UserProfile = {
         (useInstanceCapabilitiesStore().pleromaPublicFavouritesAvailable &&
           !this.user.hide_favorites)
       )
+    },
+    compactProfiles() {
+      return useMergedConfigStore().mergedConfig.compactProfiles
     },
   },
   methods: {

@@ -263,6 +263,11 @@
             {{ $t('settings.hide_wallpaper') }}
           </BooleanSetting>
         </li>
+        <li>
+          <BooleanSetting path="compactProfiles">
+            {{ $t('settings.compact_profiles') }}
+          </BooleanSetting>
+        </li>
       </ul>
     </div>
   </div>

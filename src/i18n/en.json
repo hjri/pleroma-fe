@@ -1141,7 +1141,8 @@
     "hard_reset_value_tooltip": "Remove setting from storage, forcing use of default value",
     "cache": "Cache",
     "clear_asset_cache": "Clear asset cache",
-    "clear_emoji_cache": "Clear emoji cache"
+    "clear_emoji_cache": "Clear emoji cache",
+    "compact_profiles": "Reduce profile height on user pages"
   },
   "admin_dash": {
     "window_title": "Administration",

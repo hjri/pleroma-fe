@@ -2,7 +2,10 @@
   <div class="user-card">
     <div class="user-card-inner">
       <div class="user-info">
-        <div class="user-identity">
+        <div
+          class="user-identity"
+          :class="{ '-compact': compact }"
+        >
           <div class="header-overlay">
             <div class="banner-image">
               <img

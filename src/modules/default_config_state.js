@@ -542,6 +542,10 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
     required: true,
     default: 'none',
   },
+  compactProfiles: {
+    description: 'Reduce profile height on user pages',
+    default: false,
+  },
 }
 export const INSTANCE_DEFAULT_CONFIG = convertDefinitions(
   INSTANCE_DEFAULT_CONFIG_DEFINITIONS,

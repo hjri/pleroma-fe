@@ -114,6 +114,12 @@ export default {
       type: Boolean,
       default: false,
     },
+    // Disable forced 3:1 aspect ratio
+    compact: {
+      required: false,
+      type: Boolean,
+      default: false,
+    }
   },
   components: {
     DialogModal,

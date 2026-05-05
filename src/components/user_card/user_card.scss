@@ -165,11 +165,14 @@
 
   .user-identity {
     position: relative;
-    aspect-ratio: 3;
     min-height: 6em;
     display: flex;
     align-items: flex-end;
     container: user-card / inline-size;
+
+    &:not(.-compact) {
+      aspect-ratio: 3;
+    }
 
     > * {
       min-width: 0;
