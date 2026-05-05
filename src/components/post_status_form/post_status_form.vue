@@ -292,7 +292,7 @@
         <div class="form-bottom-left">
           <media-upload
             ref="mediaUpload"
-            class="media-upload-icon"
+            class="bottom-left-button media-upload-icon"
             :drop-files="dropFiles"
             :disabled="uploadFileLimitReached"
             @uploading="startedUploadingFiles"
@@ -302,8 +302,8 @@
           />
           <button
             v-if="pollsAvailable"
-            class="poll-icon button-unstyled"
-            :class="{ selected: pollFormVisible }"
+            class="bottom-left-button poll-icon button-unstyled"
+            :class="{ toggled: pollFormVisible }"
             :title="$t('polls.add_poll')"
             @click="togglePollForm"
           >
@@ -311,9 +311,9 @@
           </button>
           <button
             v-if="quotingAvailable"
-            class="quote-icon button-unstyled"
+            class="bottom-left-button quote-icon button-unstyled"
             :disabled="newStatus.quote.thread"
-            :class="{ selected: quoteFormVisible }"
+            :class="{ toggled: quoteFormVisible }"
             :title="$t('tool_tip.add_quote')"
             @click="toggleQuoteForm"
           >
