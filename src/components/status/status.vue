@@ -88,13 +88,14 @@
               :to="retweeterProfileLink"
             >{{ retweeter }}</router-link>
           </bdi>
-          {{ ' ' }}
-          <FAIcon
-            icon="retweet"
-            class="repeat-icon"
-            :title="$t('tool_tip.repeat')"
-          />
-          {{ $t('timeline.repeated') }}
+          <div class="repeat-label">
+            <FAIcon
+              icon="retweet"
+              class="repeat-icon"
+              :title="$t('tool_tip.repeat')"
+            />
+            {{ $t('timeline.repeated') }}
+          </div>
         </div>
       </div>
 
