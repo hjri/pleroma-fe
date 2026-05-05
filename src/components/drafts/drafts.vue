@@ -13,36 +13,66 @@
         >
           {{ $t('drafts.no_drafts') }}
         </div>
-        <List
-          v-else
-          :items="drafts"
-          :non-interactive="true"
-        >
-          <template #item="{ item: draft }">
-            <Draft
-              class="draft"
-              :draft="draft"
-            />
-          </template>
-        </List>
+        <template v-else>
+          <List
+            :items="drafts"
+            :non-interactive="true"
+          >
+            <template #item="{ item: draft }">
+              <Draft
+                class="draft"
+                :draft="draft"
+              />
+            </template>
+          </List>
+          <div class="remove-all">
+            <button
+              class="btn -danger button-default"
+              @click="abandonAll"
+            >
+              {{ $t('drafts.clean_drafts') }}
+            </button>
+          </div>
+        </template>
       </div>
     </div>
+    <teleport to="#modal">
+      <confirm-modal
+        v-if="showingConfirmDialog"
+        :confirm-danger="true"
+        :title="$t('drafts.abandon_confirm_title')"
+        :confirm-text="$t('drafts.abandon_confirm_accept_button')"
+        :cancel-text="$t('drafts.abandon_confirm_cancel_button')"
+        @accepted="doAbandonAll"
+        @cancelled="hideConfirmDialog"
+      >
+        {{ $t('drafts.abandon_all_confirm') }}
+      </confirm-modal>
+    </teleport>
   </div>
 </template>
 
 <script src="./drafts.js"></script>
 
 <style lang="scss">
-.draft {
-  margin: 1em 0;
-}
+.Drafts {
+  .draft {
+    margin: 1em 0;
+  }
 
-.empty-drafs-list-alert {
-  padding: 3em;
-  font-size: 1.2em;
-  display: flex;
-  justify-content: center;
-  color: var(--textFaint);
+  .remove-all {
+    margin: 1em;
+    display: flex;
+    justify-content: center;
+  }
+
+  .empty-drafs-list-alert {
+    padding: 3em;
+    font-size: 1.2em;
+    display: flex;
+    justify-content: center;
+    color: var(--textFaint);
+  }
 }
 
 </style>

@@ -1884,6 +1884,7 @@
   "drafts": {
     "drafts": "Drafts",
     "no_drafts": "You have no drafts",
+    "clean_drafts": "Remove all drafts",
     "empty": "(No content)",
     "poll_tooltip": "Draft contains a poll",
     "continue": "Continue composing",
@@ -1893,6 +1894,7 @@
     "abandon_confirm": "Do you really want to abandon this draft?",
     "abandon_confirm_accept_button": "Abandon",
     "abandon_confirm_cancel_button": "Keep",
+    "abandon_all_confirm": "Do you really want to abandon all drafts?",
     "replying": "Replying to {statusLink}",
     "editing": "Editing {statusLink}",
     "unavailable": "(unavailable)"
