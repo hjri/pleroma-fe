@@ -88,7 +88,7 @@
         </div>
         <div
           v-if="!disablePreview"
-          class="preview-heading faint"
+          class="preview-heading"
         >
           <a
             class="preview-toggle faint"
@@ -110,34 +110,23 @@
           <div
             v-if="quotable"
             role="radiogroup"
-            class="btn-group reply-or-quote-selector"
+            class="reply-or-quote-selector"
           >
-            <button
-              :id="`reply-or-quote-option-${randomSeed}-reply`"
-              class="btn button-default reply-or-quote-option"
-              :class="{ toggled: !quoteThreadToggled }"
-              tabindex="0"
+            <Checkbox
               role="radio"
-              :disabled="quoteFormVisible"
-              :aria-labelledby="`reply-or-quote-option-${randomSeed}-reply`"
-              :aria-checked="!newStatus.quote.thread"
-              @click="setQuoteThread(false)"
+              :radio="true"
+              :model-value="!quoteThreadToggled"
+              @update:model-value="e => quoteThreadToggled = !e"
             >
               {{ $t('post_status.reply_option') }}
-            </button>
-            <button
-              :id="`reply-or-quote-option-${randomSeed}-quote`"
-              class="btn button-default reply-or-quote-option"
-              :class="{ toggled: quoteThreadToggled }"
-              tabindex="0"
-              role="radio"
+            </Checkbox>
+            <Checkbox
+              v-model="quoteThreadToggled"
+              :radio="true"
               :disabled="quoteFormVisible"
-              :aria-labelledby="`reply-or-quote-option-${randomSeed}-quote`"
-              :aria-checked="newStatus.quote.thread"
-              @click="setQuoteThread(true)"
             >
               {{ $t('post_status.quote_option') }}
-            </button>
+            </Checkbox>
           </div>
         </div>
         <div

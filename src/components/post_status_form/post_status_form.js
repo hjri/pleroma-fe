@@ -373,14 +373,20 @@ const PostStatusForm = {
     quotable() {
       return this.quotingAvailable && this.replyTo
     },
-    quoteThreadToggled() {
-      return this.newStatus.hasQuote && this.newStatus.quote.thread
+    quoteThreadToggled: {
+      get() {
+        return this.newStatus.hasQuote && this.newStatus.quote.thread
+      },
+      set(value) {
+        this.newStatus.hasQuote = value
+        this.newStatus.quote.thread = value
+        this.newStatus.quote.id = value ? this.replyTo : ''
+      }
     },
     defaultQuotable() {
       if (
         !this.quotingAvailable ||
-        !this.isReply ||
-        !this.$store.getters.mergedConfig.quoteReply
+        !this.isReply
       ) {
         return false
       }
@@ -867,11 +873,6 @@ const PostStatusForm = {
       quote.id = quotable ? this.replyTo : ''
       quote.url = ''
       quote.thread = quotable
-    },
-    setQuoteThread(v) {
-      this.newStatus.hasQuote = v
-      this.newStatus.quote.thread = v
-      this.newStatus.quote.id = v ? this.replyTo : ''
     },
     clearQuoteForm() {
       if (this.$refs.quoteForm) {
