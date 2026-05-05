@@ -152,6 +152,7 @@ const Status = {
     'simpleTree',
     'showOtherRepliesAsButton',
     'dive',
+    'ignoreMute',
 
     'controlledThreadDisplayStatus',
     'controlledToggleThreadDisplay',
@@ -345,6 +346,7 @@ const Status = {
       }
     },
     muted() {
+      if (this.ignoreMute) return false
       if (this.statusoid.user.id === this.currentUser.id) return false
       return !this.unmuted && !this.shouldNotMute && this.muteReasons.length > 0
     },
@@ -366,6 +368,7 @@ const Status = {
       )
     },
     shouldNotMute() {
+      if (this.ignoreMute) return true
       if (this.isFocused) return true
       const { status } = this
       const { reblog } = status
