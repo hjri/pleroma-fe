@@ -378,9 +378,11 @@
       </div>
       <div
         v-if="error"
-        class="alert error"
+        class="alert error -dismissible"
       >
-        Error: {{ error }}
+        <span>
+          {{ error }}
+        </span>
         <button
           class="button-unstyled"
           @click="clearError"
