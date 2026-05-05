@@ -1737,7 +1737,15 @@
     },
     "personal_note": "Personal note",
     "note_blank_click": "Click to add note",
-    "highlight_header": "Highlight user's posts and mentions"
+    "highlight_header": "Highlight user's posts and mentions",
+    "tags": {
+      "mrf_tag:media-force-nsfw": "Mark as sensitive",
+      "mrf_tag:media-strip": "Remove attachments",
+      "mrf_tag:force-unlisted": "Force unlisted",
+      "mrf_tag:sandbox": "Remove from public timelines",
+      "mrf_tag:disable-remote-subscription": "Reject non-local follow requests",
+      "mrf_tag:disable-any-subscription": "Reject any follow requests"
+    }
   },
   "user_profile": {
     "timeline_title": "User timeline",

@@ -212,6 +212,12 @@
                 >
                   {{ $t('user_card.group') }}
                 </span>
+                <span
+                  v-for="tag in user.tags"
+                  class="alert warning user-role"
+                >
+                  {{ $t('user_card.tags.' + tag) }}
+                </span>
               </template>
             </div>
           </div>
