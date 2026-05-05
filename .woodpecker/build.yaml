@@ -18,7 +18,7 @@ steps:
     image: docker.io/node:18-alpine
     commands:
       - apk add --no-cache zip
-      - yarn
+      - yarn --frozen-lockfile
       - yarn build
       - if [ "${CI_PIPELINE_EVENT}" = "push" ] || [ "${CI_PIPELINE_EVENT}" = "manual" ]; then zip -9qr ${CI_REPO_DEFAULT_BRANCH}.zip dist/; fi
 

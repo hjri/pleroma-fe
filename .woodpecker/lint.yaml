@@ -10,7 +10,7 @@ steps:
     image: &node-image
       docker.io/node:18-alpine
     commands:
-      - yarn
+      - yarn --frozen-lockfile
 
   eslint:
     image: *node-image
