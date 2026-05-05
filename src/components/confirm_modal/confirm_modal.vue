@@ -14,6 +14,7 @@
       <slot name="footerLeft" />
       <button
         class="btn button-default"
+        :class="{ '-danger': confirmDanger }"
         @click.prevent="onAccept"
         v-text="confirmText"
       />

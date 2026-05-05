@@ -80,6 +80,7 @@
       <confirm-modal
         v-if="showingConfirmLogout"
         :title="$t('login.logout_confirm_title')"
+        :confirm-danger="true"
         :confirm-text="$t('login.logout_confirm_accept_button')"
         :cancel-text="$t('login.logout_confirm_cancel_button')"
         @accepted="doLogout"
