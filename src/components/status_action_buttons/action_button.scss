@@ -31,6 +31,7 @@
     align-self: stretch;
     width: 1px;
     background-color: var(--icon);
+    opacity: 0.75;
     margin: 0.5em 0;
   }
 
@@ -84,7 +85,7 @@
   &.-with-extra {
     .action-button-inner,
     .extra-button {
-      padding-left: 0.2em;
+      padding-left: 0.25em;
       padding-right: 0.25em;
     }
   }
