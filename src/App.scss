@@ -787,6 +787,19 @@ option {
   padding: 0 0.25em;
   border-radius: var(--roundness);
   border: 1px solid var(--border);
+
+  &.-dismissible {
+    display: flex;
+    padding-left: 0.5em;
+    margin: 0;
+    align-items: baseline;
+    line-height: 2;
+
+    span {
+      display: block;
+      flex: 1 0 auto;
+    }
+  }
 }
 
 .faint {

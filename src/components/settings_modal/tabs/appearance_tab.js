@@ -67,6 +67,7 @@ const AppearanceTab = {
       })),
       backgroundUploading: false,
       background: null,
+      backgroundError: null,
       backgroundPreview: null,
     }
   },
@@ -474,6 +475,9 @@ const AppearanceTab = {
     resetUploadedBackground() {
       this.backgroundPreview = null
     },
+    clearBackgroundError() {
+      this.backgroundError = null
+    },
     submitBackground(background) {
       if (!this.backgroundPreview && background !== '') {
         return
@@ -486,8 +490,11 @@ const AppearanceTab = {
           this.$store.commit('addNewUsers', [data])
           this.$store.commit('setCurrentUser', data)
           this.backgroundPreview = null
+          this.backgroundError = null
         })
-        .catch(this.displayUploadError)
+        .catch((e) => {
+          this.backgroundError = e
+        })
         .finally(() => {
           this.backgroundUploading = false
         })
