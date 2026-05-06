@@ -33,30 +33,20 @@ steps:
       PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
     entrypoint: *script_file_entrypoint
     commands:
-      - mkdir -pv $APT_CACHE_DIR && apt-get -qq update
-      - apt-get -y install zip
+      - |
+        if [ "${CI_PIPELINE_EVENT}" != "pull_request" ]; then
+          mkdir -pv $APT_CACHE_DIR && apt-get -qq update
+          apt-get -y install zip
+        fi
       - yarn --frozen-lockfile
       - |
         if ! yarn unit-ci; then
-          zip -9qr ${CI_COMMIT_SHA:0:8}-screenshots.zip $(find . -type d -name __screenshots__)
+          [ "${CI_PIPELINE_EVENT}" = "pull_request" ] || zip -9qr ${CI_COMMIT_SHA:0:8}-screenshots.zip $(find . -type d -name __screenshots__)
           exit 1
         fi
 
-  upload-artifacts-pr:
-    image: &artifacts_uploader_image
-      docker.io/woodpeckercommunity/plugin-gitea-package:0.5.0
-    when:
-      - event: pull_request
-        status: [failure]
-    settings:
-      <<: *artifacts_uploader_settings
-      package_version: pr-${CI_COMMIT_PULL_REQUEST}
-      file_source: ./${CI_COMMIT_SHA:0:8}-screenshots.zip
-      file_name: pr-${CI_COMMIT_PULL_REQUEST}-screenshots.zip
-      update: true
-
   upload-artifacts:
-    image: *artifacts_uploader_image
+    image: docker.io/woodpeckercommunity/plugin-gitea-package:0.5.0
     when:
       - event: push
         branch: ${CI_REPO_DEFAULT_BRANCH}
