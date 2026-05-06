@@ -7,7 +7,6 @@
       trigger="hover"
     >
       <template #trigger>
-        &nbsp;
         <FAIcon
           icon="desktop"
           :aria-label="$t('settings.setting_local_side')"
