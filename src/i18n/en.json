@@ -440,6 +440,7 @@
       "plain": "Simple",
       "user": "User (Simple)",
       "user_regexp": "User (RegExp)",
+      "case_sensitive": "Case-sensitive",
       "hide": "Hide completely",
       "name": "Name",
       "value": "Value",

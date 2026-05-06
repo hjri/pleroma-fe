@@ -51,7 +51,16 @@
       text-align: right;
     }
 
+    > label.checkbox {
+      display: grid;
+      grid-template-columns: subgrid;
+      grid-template-rows: subgrid;
+      grid-column: 1 / span 2;
+      text-align: right;
+    }
+
     .filter-field-value {
+      display: flex;
       grid-column: 2 / span 2;
     }
   }

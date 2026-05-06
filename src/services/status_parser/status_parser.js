@@ -10,24 +10,32 @@ export const muteFilterHits = (muteFilters, status) => {
   return muteFilters
     .toSorted((a, b) => b.order - a.order)
     .map((filter) => {
-      const { hide, expires, name, value, type, enabled } = filter
+      const { hide, expires, name, value, type, enabled, caseSensitive = false } = filter
       if (!enabled) return false
       if (value === '') return false
       if (expires !== null && expires < Date.now()) return false
       switch (type) {
         case 'word': {
-          const lowercaseValue = value.toLowerCase()
-          if (
-            statusText.toLowerCase().includes(lowercaseValue) ||
-            statusSummary.toLowerCase().includes(lowercaseValue)
-          ) {
+          let match = false
+          if (caseSensitive) {
+            match =
+              statusText.includes(value) ||
+              statusSummary.includes(value)
+          } else {
+            const lowercaseValue = value.toLowerCase()
+            match =
+              statusText.toLowerCase().includes(lowercaseValue) ||
+              statusSummary.toLowerCase().includes(lowercaseValue)
+          }
+
+          if (match) {
             return { hide, name }
           }
           break
         }
         case 'regexp': {
           try {
-            const re = new RegExp(value, 'i')
+            const re = new RegExp(value, caseSensitive ? '' : 'i')
             if (re.test(statusText) || re.test(statusSummary)) {
               return { hide, name }
             }
@@ -37,18 +45,27 @@ export const muteFilterHits = (muteFilters, status) => {
           }
         }
         case 'user': {
-          if (
-            poster.includes(value) ||
-            replyToUser.includes(value) ||
-            mentions.some((mention) => mention.includes(value))
-          ) {
+          let match = false
+          if (caseSensitive) {
+            match =
+              poster.includes(value) ||
+              replyToUser.includes(value) ||
+              mentions.some((mention) => mention.includes(value))
+          } else {
+            const lowercaseValue = value.toLowerCase()
+            match =
+              poster.toLowerCase().includes(lowercaseValue) ||
+              replyToUser.toLowerCase().includes(lowercaseValue) ||
+              mentions.some((mention) => mention.toLowerCase().includes(lowercaseValue))
+          }
+          if (match) {
             return { hide, name }
           }
           break
         }
         case 'user_regexp': {
           try {
-            const re = new RegExp(value, 'i')
+            const re = new RegExp(value, caseSensitive ? '' : 'i')
             if (
               re.test(poster) ||
               re.test(replyToUser) ||
