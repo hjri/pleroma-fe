@@ -301,7 +301,7 @@
           <button
             v-if="quotingAvailable"
             class="bottom-left-button quote-icon button-unstyled"
-            :disabled="newStatus.quote.thread"
+            :disabled="quoteThreadToggled"
             :class="{ toggled: quoteFormVisible }"
             :title="$t('tool_tip.add_quote')"
             @click="toggleQuoteForm"
