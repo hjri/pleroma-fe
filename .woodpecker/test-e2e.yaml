@@ -36,8 +36,11 @@ steps:
       VITE_PROXY_ORIGIN: "http://pleroma:4000"
       VITE_PROXY_TARGET: "http://pleroma:4000"
     commands:
-      - mkdir -pv $APT_CACHE_DIR && apt-get -qq update
-      - apt-get install -y zip
+      - |
+        if [ "${CI_PIPELINE_EVENT}" != "pull_request" ]; then
+          mkdir -pv $APT_CACHE_DIR && apt-get -qq update
+          apt-get install -y zip
+        fi
       - npm install -g yarn@1.22.22
       - yarn --frozen-lockfile
       - |
@@ -56,25 +59,12 @@ steps:
         fi
       - |
         if ! yarn e2e:pw; then
-          zip -9qr ${CI_COMMIT_SHA:0:8}-e2e.zip ./test/e2e-playwright/test-results ./test/e2e-playwright/playwright-report
+          [ "${CI_PIPELINE_EVENT}" = "pull_request" ] || zip -9qr ${CI_COMMIT_SHA:0:8}-e2e.zip ./test/e2e-playwright/test-results ./test/e2e-playwright/playwright-report
           exit 1
         fi
 
-  upload-artifacts-pr:
-    image: &artifacts_uploader_image
-      docker.io/woodpeckercommunity/plugin-gitea-package:0.5.0
-    when:
-      - event: pull_request
-        status: [failure]
-    settings:
-      <<: *artifacts_uploader_settings
-      package_version: pr-${CI_COMMIT_PULL_REQUEST}
-      file_source: ./${CI_COMMIT_SHA:0:8}-e2e.zip
-      file_name: ./pr-${CI_COMMIT_PULL_REQUEST}-e2e.zip
-      update: true
-
   upload-artifacts:
-    image: *artifacts_uploader_image
+    image: docker.io/woodpeckercommunity/plugin-gitea-package:0.5.0
     when:
       - event: push
         branch: ${CI_REPO_DEFAULT_BRANCH}
