@@ -12,7 +12,7 @@ function showWhoToFollow(panel, reply) {
 
   panel.usersToFollow.forEach((toFollow, index) => {
     const user = shuffled[index]
-    const img = user.avatar || useInstanceStore().defaultAvatar
+    const img = user.avatar || useInstanceStore().instanceIdentity.defaultAvatar
     const name = user.acct
 
     toFollow.img = img
@@ -71,7 +71,7 @@ const WhoToFollowPanel = {
   },
   mounted: function () {
     this.usersToFollow = new Array(3).fill().map(() => ({
-      img: useInstanceStore().defaultAvatar,
+      img: useInstanceStore().instanceIdentity.defaultAvatar,
       name: '',
       id: 0,
     }))

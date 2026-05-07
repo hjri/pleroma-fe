@@ -175,14 +175,14 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
     if (source === 'name') return
     if (INSTANCE_IDENTIY_EXTERNAL.has(source)) return
     useInstanceStore().set({
-      value: config[source],
+      value: config[source] ?? INSTANCE_IDENTITY_DEFAULT_DEFINITIONS[source].default,
       path: `instanceIdentity.${source}`,
     })
   })
 
   Object.keys(INSTANCE_DEFAULT_CONFIG_DEFINITIONS).forEach((source) =>
     useInstanceStore().set({
-      value: config[source],
+      value: config[source] ?? INSTANCE_DEFAULT_CONFIG_DEFINITIONS[source].default,
       path: `prefsStorage.${source}`,
     }),
   )

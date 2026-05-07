@@ -362,7 +362,7 @@ export default {
       )
     },
     isDefaultAvatar() {
-      const baseAvatar = useInstanceStore().defaultAvatar
+      const baseAvatar = useInstanceStore().instanceIdenitity.defaultAvatar
       return (
         !this.$store.state.users.currentUser.profile_image_url ||
         this.$store.state.users.currentUser.profile_image_url.includes(
@@ -371,7 +371,7 @@ export default {
       )
     },
     isDefaultBanner() {
-      const baseBanner = useInstanceStore().defaultBanner
+      const baseBanner = useInstanceStore().instanceIdentity.defaultBanner
       return (
         !this.$store.state.users.currentUser.cover_photo ||
         this.$store.state.users.currentUser.cover_photo.includes(baseBanner)
