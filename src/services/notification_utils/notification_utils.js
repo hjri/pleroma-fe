@@ -113,6 +113,7 @@ export const unseenNotificationsFromStore = (
 ) => {
   return filteredNotificationsFromStore(store, notificationVisibility).filter(
     ({ seen, type }) => {
+      console.log(ignoreInactionableSeen)
       if (!ignoreInactionableSeen) return !seen
       if (seen) return false
       return ACTIONABLE_NOTIFICATION_TYPES.has(type)
