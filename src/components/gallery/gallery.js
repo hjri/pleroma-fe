@@ -42,7 +42,6 @@ const Gallery = {
       if (this.size === 'hide') {
         return attachments.map((item) => ({ minimal: true, items: [item] }))
       }
-      console.log('<=')
       const rows = this.grid
         ? [{ grid: true, items: attachments }]
         : attachments
