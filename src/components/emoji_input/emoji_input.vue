@@ -164,6 +164,7 @@
     }
 
     textarea {
+      padding-bottom: 0;
       margin-bottom: 2.5em;
     }
   }
