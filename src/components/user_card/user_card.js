@@ -400,6 +400,9 @@ export default {
         ],
       })
     },
+    allowNonSquareEmoji() {
+      return this.mergedConfig.nonSquareEmoji
+    },
     ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   methods: {

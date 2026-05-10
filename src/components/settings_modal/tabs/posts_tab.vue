@@ -170,6 +170,11 @@
           </BooleanSetting>
         </li>
         <li>
+          <BooleanSetting path="nonSquareEmoji">
+            {{ $t('settings.non_square_emoji') }}
+          </BooleanSetting>
+        </li>
+        <li>
           <BooleanSetting
             :local="true"
             path="hideNsfw"

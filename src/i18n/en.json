@@ -794,6 +794,7 @@
     "default_post_status_content_type": "Default post status content type",
     "sensitive_by_default": "Mark posts as sensitive by default",
     "stop_gifs": "Pause animated images until you hover on them",
+    "non_square_emoji": "Allow non-square emoji",
     "streaming": "Automatically show new posts when scrolled to the top",
     "auto_update": "Show new posts automatically",
     "user_mutes": "Users",

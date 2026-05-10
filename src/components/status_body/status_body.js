@@ -43,6 +43,9 @@ const StatusBody = {
     localCollapseSubjectDefault() {
       return this.mergedConfig.collapseMessageWithSubject
     },
+    allowNonSquareEmoji() {
+      return this.mergedConfig.nonSquareEmoji
+    },
     // This is a bit hacky, but we want to approximate post height before rendering
     // so we count newlines (masto uses <p> for paragraphs, GS uses <br> between them)
     // as well as approximate line count by counting characters and approximating ~80

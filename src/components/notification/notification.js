@@ -210,6 +210,9 @@ const Notification = {
     mergedConfig() {
       return useMergedConfigStore().mergedConfig
     },
+    allowNonSquareEmoji() {
+      return this.mergedConfig.nonSquareEmoji
+    },
     shouldConfirmApprove() {
       return this.mergedConfig.modalOnApproveFollow
     },

@@ -140,6 +140,7 @@
                     :title="editable ? newName : user.name_unescaped"
                     :html="editable ? newName : user.name_unescaped"
                     :emoji="editable ? emoji : user.emoji"
+                    :allow-non-square-emoji="allowNonSquareEmoji"
                   />
                 </router-link>
                 <EmojiInput
@@ -369,6 +370,7 @@
         :class="{ '-justify-left': mergedConfig.userCardLeftJustify }"
         :html="editable ? escapedNewBio : user.description_html"
         :emoji="editable ? emoji : user.emoji"
+        :allow-non-square-emoji="allowNonSquareEmoji"
         :handle-links="true"
       />
     </template>
@@ -423,6 +425,7 @@
             <RichContent
               :html="field.name"
               :emoji="editable ? emoji : user.emoji"
+              :allow-non-square-emoji="allowNonSquareEmoji"
             />
           </dt>
           <dd
@@ -432,6 +435,7 @@
             <RichContent
               :html="field.value"
               :emoji="editable ? emoji : user.emoji"
+              :allow-non-square-emoji="allowNonSquareEmoji"
             />
           </dd>
         </dl>

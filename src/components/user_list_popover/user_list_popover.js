@@ -23,6 +23,9 @@ const UserListPopover = {
     usersCapped() {
       return this.users.slice(0, 16)
     },
+    allowNonSquareEmoji() {
+      return useMergedConfigStore().mergedConfig.nonSquareEmoji
+    },
   },
 }
 

@@ -229,6 +229,10 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
     description: 'Play animated gifs on hover only',
     default: true,
   },
+  nonSquareEmoji: {
+    description: 'Allow emoji to be non-square (max 3:1 aspect)',
+    default: true,
+  },
   replyVisibility: {
     description: 'Type of replies to show',
     default: 'all',

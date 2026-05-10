@@ -27,6 +27,7 @@
                 :title="'@'+user.screen_name_ui"
                 :html="user.name_html"
                 :emoji="user.emoji"
+                :allow-non-square-emoji="allowNonSquareEmoji"
               />
               <!-- eslint-enable vue/no-v-html -->
               <span class="user-list-screen-name">{{ user.screen_name_ui }}</span><UnicodeDomainIndicator :user="user" />

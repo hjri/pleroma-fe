@@ -20,5 +20,8 @@ export default {
     htmlTitle() {
       return this.user ? this.user.name_html : ''
     },
+    allowNonSquareEmoji() {
+      return useMergedConfigStore().mergedConfig.nonSquareEmoji
+    },
   },
 }

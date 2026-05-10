@@ -188,6 +188,9 @@ const Status = {
         !this.inConversation
       )
     },
+    allowNonSquareEmoji() {
+      return this.mergedConfig.nonSquareEmoji
+    },
     repeaterClass() {
       const user = this.statusoid.user
       return highlightClass(user)

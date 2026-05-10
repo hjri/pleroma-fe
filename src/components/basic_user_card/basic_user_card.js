@@ -24,6 +24,11 @@ const BasicUserCard = {
       )
     },
   },
+  computed: {
+    allowNonSquareEmoji() {
+      return useMergedConfigStore().mergedConfig.nonSquareEmoji
+    },
+  }
 }
 
 export default BasicUserCard

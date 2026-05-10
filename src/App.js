@@ -67,6 +67,11 @@ export default {
   data: () => ({
     mobileActivePanel: 'timeline',
   }),
+  provide() {
+    return {
+      allowNonSquareEmoji: useMergedConfigStore().mergedConfig.nonSquareEmoji,
+    }
+  },
   watch: {
     themeApplied() {
       this.removeSplash()

@@ -80,6 +80,7 @@
               <RichContent
                 :html="retweeterHtml"
                 :emoji="retweeterUser.emoji"
+                :allow-non-square-emoji="allowNonSquareEmoji"
                 :is-local="retweeterUser.is_local"
               />
             </router-link>
@@ -153,6 +154,7 @@
                   <RichContent
                     :html="status.user.name"
                     :emoji="status.user.emoji"
+                    :allow-non-square-emoji="allowNonSquareEmoji"
                     :is-local="status.user.is_local"
                   />
                 </h4>
