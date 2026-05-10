@@ -6,6 +6,8 @@ import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_i
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
 library.add(faCircleNotch)
 
 const UserListPopover = {
