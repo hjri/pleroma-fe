@@ -2,7 +2,7 @@
   <div
     ref="root"
     class="input emoji-input"
-    :class="{ 'with-picker': !hideEmojiButton }"
+    :class="{ '-with-picker': !hideEmojiButton, '-textarea': this.input?.tagName === 'TEXTAREA' }"
   >
     <slot
       :id="'textbox-' + randomSeed"
@@ -120,7 +120,7 @@
     position: absolute;
     top: 0;
     right: 0;
-    margin: 0.2em 0.25em;
+    padding: 0.2em 0.25em;
     font-size: 1.3em;
     cursor: pointer;
     line-height: 1.2em;
@@ -128,6 +128,12 @@
     &:hover i {
       color: var(--text);
     }
+  }
+
+  &.-textarea .emoji-picker-icon {
+    inset: auto;
+    bottom: 0;
+    left: 0;
   }
 
   .emoji-picker-panel {
@@ -151,8 +157,15 @@
     outline: none;
   }
 
-  &.with-picker input {
-    padding-right: 2em;
+
+  &.-with-picker {
+    input {
+      padding-right: 2.4em;
+    }
+
+    textarea {
+      margin-bottom: 2.5em;
+    }
   }
 
   .hidden-overlay {

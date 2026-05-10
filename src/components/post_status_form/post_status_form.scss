@@ -208,14 +208,11 @@
     padding: 0;
   }
 
-  .input.form-post-body {
+  textarea.input.form-post-body {
     // TODO: make a resizable textarea component?
     box-sizing: content-box; // needed for easier computation of dynamic size
     overflow: hidden;
     transition: min-height 200ms 100ms;
-    // stock padding + 1 line of text (for counter)
-    padding-bottom: calc(var(--_padding) + var(--post-line-height) * 1em);
-    padding-right: 1.5em;
     // two lines of text
     height: calc(var(--post-line-height) * 1em);
     min-height: calc(var(--post-line-height) * 1em);
