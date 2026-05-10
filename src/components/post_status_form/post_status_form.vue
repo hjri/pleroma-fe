@@ -123,6 +123,7 @@
               role="radio"
               :radio="true"
               :model-value="!quoteThreadToggled"
+              :disabled="quoteFormVisible"
               @update:model-value="e => quoteThreadToggled = !e"
             >
               {{ $t('post_status.reply_option') }}
