@@ -42,11 +42,17 @@ const Gallery = {
       if (this.size === 'hide') {
         return attachments.map((item) => ({ minimal: true, items: [item] }))
       }
+      console.log('<=')
       const rows = this.grid
         ? [{ grid: true, items: attachments }]
         : attachments
             .reduce(
               (acc, attachment, i) => {
+                const peek = attachments[i+1]
+                const nextEnd = peek == null
+                const nextWide = !nextEnd && !displayTypes.has(peek?.type)
+
+                // Inserting new row
                 if (attachment.type === 'audio') {
                   return [
                     ...acc,
@@ -61,18 +67,16 @@ const Gallery = {
                     { items: [] },
                   ]
                 }
+
                 const maxPerRow = 3
-                const attachmentsRemaining = this.attachments.length - i + 1
                 const currentRow = acc[acc.length - 1].items
-                currentRow.push(attachment)
-                if (
-                  currentRow.length >= maxPerRow &&
-                  attachmentsRemaining > maxPerRow
-                ) {
-                  return [...acc, { items: [] }]
+                if ((nextWide || nextEnd) && currentRow.length >= maxPerRow) {
+                  const last = currentRow.splice(-1)[0]
+                  return [...acc, { items: [last, attachment] }]
                 } else {
-                  return acc
+                  currentRow.push(attachment)
                 }
+                return acc
               },
               [{ items: [] }],
             )
