@@ -118,9 +118,10 @@
 
   .emoji-picker-icon {
     position: absolute;
-    top: 0;
+    bottom: 0;
     right: 0;
-    padding: 0.2em 0.25em;
+    height: 100%;
+    padding: 0 0.2em;
     font-size: 1.3em;
     cursor: pointer;
     line-height: 1.2em;
@@ -130,10 +131,11 @@
     }
   }
 
-  &.-textarea .emoji-picker-icon {
-    inset: auto;
-    bottom: 0;
-    left: 0;
+  &.-textarea {
+    .emoji-picker-icon {
+      height: auto;
+      padding: 0.2em;
+    }
   }
 
   .emoji-picker-panel {
@@ -157,15 +159,10 @@
     outline: none;
   }
 
-
   &.-with-picker {
+    textarea,
     input {
       padding-right: 2.4em;
-    }
-
-    textarea {
-      padding-bottom: 0;
-      margin-bottom: 2.5em;
     }
   }
 
