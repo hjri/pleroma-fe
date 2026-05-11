@@ -28,19 +28,19 @@
           <FAIcon
             v-if="button.active(funcArg)"
             class="active-marker"
-            transform="shrink-6 up-9 right-15"
+            transform="shrink-6 up-9 left-12"
             :icon="button.activeIndicator?.(funcArg) || 'check'"
           />
           <FAIcon
             v-if="!button.active(funcArg)"
             class="focus-marker"
-            transform="shrink-6 up-9 right-15"
+            transform="shrink-6 up-9 left-12"
             :icon="button.openIndicator?.(funcArg) || 'plus'"
           />
           <FAIcon
             v-else
             class="focus-marker"
-            transform="shrink-6 up-9 right-15"
+            transform="shrink-6 up-9 left-12"
             :icon="button.closeIndicator?.(funcArg) || 'minus'"
           />
         </template>
