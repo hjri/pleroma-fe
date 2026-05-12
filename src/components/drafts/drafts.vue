@@ -37,7 +37,7 @@
       </div>
     </div>
     <teleport to="#modal">
-      <confirm-modal
+      <ConfirmModal
         v-if="showingConfirmDialog"
         :confirm-danger="true"
         :title="$t('drafts.abandon_confirm_title')"
@@ -47,7 +47,7 @@
         @cancelled="hideConfirmDialog"
       >
         {{ $t('drafts.abandon_all_confirm') }}
-      </confirm-modal>
+      </ConfirmModal>
     </teleport>
   </div>
 </template>

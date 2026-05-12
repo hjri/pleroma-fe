@@ -23,12 +23,7 @@ const Drafts = {
       this.showingConfirmDialog = true
     },
     doAbandonAll() {
-      this.drafts.forEach((draft) => {
-        this.$store.dispatch('abandonDraft', { id: draft.id }).then(() => {
-          this.hideConfirmDialog()
-        })
-      })
-      this.hideConfirmDialog()
+      this.$store.dispatch('abandonAllDrafts').then(() => this.hideConfirmDialog())
     },
     hideConfirmDialog() {
       this.showingConfirmDialog = false
