@@ -313,7 +313,88 @@ export default {
           const newChildren = Array.isArray(children)
             ? [...children].reverse().map(processItemReverse).reverse()
             : children
-          return <Tag {...getAttrs(opener)}>{newChildren}</Tag>
+          const attrs = getAttrs(opener)
+          const newAttrs = { ...attrs }
+          const fullAttrs = getAttrs(opener, () => true)
+          const classname = fullAttrs['class']
+          const isMFM = classname?.startsWith('mfm-')
+          if (isMFM) {
+            const mfmOperator = /^mfm-(\w+)$/.exec(classname)?.[1]
+            newAttrs['class'] = 'mfm'
+            newAttrs['data-mfm-operator'] = mfmOperator
+            switch(mfmOperator) {
+              case 'position': {
+                const x = fullAttrs['data-mfm-x'] || 0
+                const y = fullAttrs['data-mfm-y'] || 0
+                newAttrs.style = [
+                  'transform:',
+                  `translateX(calc(${x} * (var(--emoji-size) / 2)))`,
+                  `translateY(calc(${y} * (var(--emoji-size) / 2)))`,
+                ].join(' ')
+                break
+              }
+              case 'scale': {
+                const x = fullAttrs['data-mfm-x'] || 1
+                const y = fullAttrs['data-mfm-y'] || 1
+                newAttrs.style = [
+                  'transform:',
+                  `scale(${x}, ${y})`,
+                ].join(' ')
+                break
+              }
+              case 'rotate': {
+                const deg = fullAttrs['data-mfm-deg'] || 0
+                newAttrs.style = [
+                  'transform:',
+                  `rotate(${deg}deg);`,
+                  'transform-origin:',
+                  'center',
+                ].join(' ')
+                break
+              }
+              case 'bg': {
+                const color = fullAttrs['data-mfm-color'] || 0
+                newAttrs.style = [
+                  `background-color: #${color}`,
+                ].join(' ')
+                break
+              }
+              case 'fg': {
+                const color = fullAttrs['data-mfm-color'] || 0
+                newAttrs.style = [
+                  `color: #${color}`,
+                ].join(' ')
+                break
+              }
+              case 'spin': {
+                const speed = fullAttrs['data-mfm-speed']
+                const y = fullAttrs['data-mfm-y'] != null
+                const x = fullAttrs['data-mfm-x'] != null
+                const anim = [
+                  x ? 'mfm-spinX' : null,
+                  y ? 'mfm-spinY' : null,
+                  'mfm-spin'
+                ].filter(a => a)[0]
+                newAttrs.style = `animation: ${speed} linear 3s infinite normal none running ${anim}`
+                break
+              }
+              case 'flip': {
+                newAttrs.style = 'transform: scaleX(-1)'
+                break
+              }
+              case 'jump':
+              case 'twitch':
+              case 'shake':
+              case 'bounce':
+                newAttrs.style = `animation: 0.75s linear 0s infinite normal none running mfm-${mfmOperator}`
+                break
+              default:
+                console.log(mfmOperator, opener)
+                console.log(mfmOperator)
+                break
+            }
+          }
+          return <Tag {...newAttrs}>{newChildren}</Tag>
         } else {
           return <Tag />
         }
