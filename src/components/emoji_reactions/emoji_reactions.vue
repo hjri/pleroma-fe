@@ -17,11 +17,13 @@
       >
         <span
           class="reaction-emoji"
+          :class="{ ['-wide']: allowNonSquareEmoji }"
         >
           <StillImage
             v-if="reaction.url"
             :src="reaction.url"
             class="reaction-emoji-content"
+            :class="{ ['-wide']: allowNonSquareEmoji }"
           />
           <span
             v-else

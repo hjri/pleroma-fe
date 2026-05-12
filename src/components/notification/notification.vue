@@ -137,6 +137,7 @@
                     :src="notification.emoji_url"
                     :alt="notification.emoji"
                     :title="notification.emoji"
+                    :class="{ ['-wide']: allowNonSquareEmoji }"
                   >
                   <span
                     v-else

@@ -49,6 +49,12 @@
       justify-content: center;
       align-items: center;
 
+      &.-wide {
+        width: auto;
+        min-width: var(--emoji-size);
+        max-width: calc(var(--emoji-size) * 3);
+      }
+
       --_still_image-label-scale: 0.3;
     }
 
@@ -61,6 +67,12 @@
       overflow: hidden;
       font-size: calc(var(--emoji-size) * 0.8);
       margin: 0;
+
+      &.-wide {
+        width: auto;
+        min-width: var(--emoji-size);
+        max-width: calc(var(--emoji-size) * 3);
+      }
 
       img {
         object-fit: contain;
