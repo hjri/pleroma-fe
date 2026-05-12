@@ -152,9 +152,6 @@ const PostStatusForm = {
     DraftCloser,
     Popover,
   },
-  created() {
-    this.initQuote()
-  },
   mounted() {
     this.updateIdempotencyKey()
     this.resize(this.$refs.textarea)
@@ -861,19 +858,6 @@ const PostStatusForm = {
         this.$refs.pollForm.clear()
       }
     },
-    initQuote() {
-      const quote = this.newStatus.quote
-
-      if (Object.keys(quote).length > 0) {
-        return
-      }
-
-      const quotable = this.defaultQuotable
-
-      quote.id = quotable ? this.replyTo : ''
-      quote.url = ''
-      quote.thread = quotable
-    },
     clearQuoteForm() {
       if (this.$refs.quoteForm) {
         this.$refs.quoteForm.clear()
@@ -881,6 +865,11 @@ const PostStatusForm = {
     },
     toggleQuoteForm() {
       this.newStatus.hasQuote = !this.newStatus.hasQuote
+
+      this.newStatus.quote = {}
+      this.newStatus.quote.thread = false
+      this.newStatus.quote.id = null
+      this.newStatus.quote.url = ''
     },
     dismissScopeNotice() {
       useSyncConfigStore().setSimplePrefAndSave({

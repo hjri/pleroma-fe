@@ -256,18 +256,20 @@
           </div>
         </div>
       </div>
-      <poll-form
+      <PollForm
         v-if="pollsAvailable"
         ref="pollForm"
         :visible="pollFormVisible"
         :params="newStatus.poll"
       />
-      <quote-form
+      <QuoteForm
         v-if="quotingAvailable"
         ref="quoteForm"
         :visible="quoteFormVisible"
-        :reply="isReply"
-        :params="newStatus.quote"
+        :url="newStatus.quote.url"
+        :id="newStatus.quote.id"
+        @update:url="url => newStatus.quote.url = url"
+        @update:id="id => newStatus.quote.id = id"
       />
       <span
         v-if="!disableDraft && shouldAutoSaveDraft"
