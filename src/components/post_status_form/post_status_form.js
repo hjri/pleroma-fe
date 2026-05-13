@@ -378,13 +378,10 @@ const PostStatusForm = {
         this.newStatus.hasQuote = value
         this.newStatus.quote.thread = value
         this.newStatus.quote.id = value ? this.replyTo : ''
-      }
+      },
     },
     defaultQuotable() {
-      if (
-        !this.quotingAvailable ||
-        !this.isReply
-      ) {
+      if (!this.quotingAvailable || !this.isReply) {
         return false
       }
 

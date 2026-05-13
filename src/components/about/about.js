@@ -27,7 +27,11 @@ const About = {
     frontendVersionLink() {
       return pleromaFeCommitUrl + this.frontendVersion
     },
-    ...mapState(useInstanceStore, ['backendVersion', 'backendRepository', 'frontendVersion']),
+    ...mapState(useInstanceStore, [
+      'backendVersion',
+      'backendRepository',
+      'frontendVersion',
+    ]),
     showInstanceSpecificPanel() {
       return (
         useInstanceStore().instanceIdentity.showInstanceSpecificPanel &&

@@ -3,10 +3,10 @@ import { defineAsyncComponent } from 'vue'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
 
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
-
-import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 library.add(faCircleNotch)
 

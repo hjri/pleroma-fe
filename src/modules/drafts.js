@@ -44,7 +44,7 @@ const saveDraftToStorage = async (draft) => {
 
 const deleteDraftFromStorage = async (ids) => {
   const currentData = await getStorageData()
-  ids.forEach(id => {
+  ids.forEach((id) => {
     delete currentData[id]
   })
   await storage.setItem(storageKey, currentData)

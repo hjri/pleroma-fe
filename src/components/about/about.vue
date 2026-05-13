@@ -7,7 +7,9 @@
     <features-panel v-if="showFeaturesPanel" />
     <div class="panel panel-default">
       <div class="panel-heading">
-        <div class="title">{{ $t('settings.version.title') }}</div>
+        <div class="title">
+          {{ $t('settings.version.title') }}
+        </div>
       </div>
       <div class="panel-body">
         <dl>

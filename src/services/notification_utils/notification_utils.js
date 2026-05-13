@@ -81,7 +81,10 @@ export const maybeShowNotification = (
 
   if (notification.seen) return
   if (!visibleTypes(notificationVisibility).includes(notification.type)) return
-  if (notification.type === 'mention' && isMutedNotification(muteFilters, notification))
+  if (
+    notification.type === 'mention' &&
+    isMutedNotification(muteFilters, notification)
+  )
     return
 
   const notificationObject = prepareNotificationObject(

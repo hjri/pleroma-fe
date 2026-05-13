@@ -499,10 +499,7 @@ export const init = ({
             }),
           )
           const lastVariantRule = variantRules[variantRules.length - 1]
-          const lastVariantSelector = ruleToSelector(
-            lastVariantRule,
-            true,
-          )
+          const lastVariantSelector = ruleToSelector(lastVariantRule, true)
 
           if (lastVariantRule && lastVariantSelector !== selector) {
             inheritRule = lastVariantRule

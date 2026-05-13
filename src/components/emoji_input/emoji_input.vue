@@ -2,7 +2,7 @@
   <div
     ref="root"
     class="input emoji-input"
-    :class="{ '-with-picker': !hideEmojiButton, '-textarea': this.input?.tagName === 'TEXTAREA' }"
+    :class="{ '-with-picker': !hideEmojiButton, '-textarea': input?.tagName === 'TEXTAREA' }"
   >
     <slot
       :id="'textbox-' + randomSeed"

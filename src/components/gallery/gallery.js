@@ -47,7 +47,7 @@ const Gallery = {
         : attachments
             .reduce(
               (acc, attachment, i) => {
-                const peek = attachments[i+1]
+                const peek = attachments[i + 1]
                 const nextEnd = peek == null
                 const nextWide = !nextEnd && !displayTypes.has(peek?.type)
 

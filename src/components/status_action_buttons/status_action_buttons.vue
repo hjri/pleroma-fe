@@ -3,7 +3,7 @@
     <span
       class="quick-action-buttons"
       :class="{ '-pin': showPin }"
-      >
+    >
       <span
         v-for="button in quickButtons"
         :key="button.name"

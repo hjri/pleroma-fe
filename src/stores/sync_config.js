@@ -14,8 +14,8 @@ import {
   uniqWith,
   unset,
 } from 'lodash'
-import { v4 as uuidv4 } from 'uuid'
 import { defineStore } from 'pinia'
+import { v4 as uuidv4 } from 'uuid'
 import { toRaw } from 'vue'
 
 import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
@@ -683,8 +683,6 @@ export const useSyncConfigStore = defineStore('sync_config', {
       console.debug(
         `Already migrated Values: ${[...migratedEntries].join() || '[none]'}`,
       )
-
-      const { configMigration } = useSyncConfigStore().flagStorage
 
       Object.entries(oldDefaultConfigSync).forEach(([key, value]) => {
         const oldValue = config[key]

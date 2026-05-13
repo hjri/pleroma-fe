@@ -68,7 +68,7 @@ const KNOWN_TAGS = new Set([
   'mrf_tag:force-unlisted',
   'mrf_tag:sandbox',
   'mrf_tag:disable-remote-subscription',
-  'mrf_tag:disable-any-subscription'
+  'mrf_tag:disable-any-subscription',
 ])
 
 export default {
@@ -119,7 +119,7 @@ export default {
       required: false,
       type: Boolean,
       default: false,
-    }
+    },
   },
   components: {
     DialogModal,

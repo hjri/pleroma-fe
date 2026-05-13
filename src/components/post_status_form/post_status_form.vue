@@ -264,10 +264,10 @@
       />
       <QuoteForm
         v-if="quotingAvailable"
+        :id="newStatus.quote.id"
         ref="quoteForm"
         :visible="quoteFormVisible"
         :url="newStatus.quote.url"
-        :id="newStatus.quote.id"
         @update:url="url => newStatus.quote.url = url"
         @update:id="id => newStatus.quote.id = id"
       />

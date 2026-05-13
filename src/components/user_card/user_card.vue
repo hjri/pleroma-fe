@@ -218,6 +218,7 @@
                 </span>
                 <span
                   v-for="tag in user.tags"
+                  :key="tag"
                   class="alert warning user-role"
                 >
                   {{ isKnownTag ? $t('user_card.tags.' + tag) : tag }}
