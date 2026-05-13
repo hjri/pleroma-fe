@@ -381,7 +381,11 @@ const PostStatusForm = {
       },
     },
     defaultQuotable() {
-      if (!this.quotingAvailable || !this.isReply) {
+      if (
+        !this.quotingAvailable ||
+        !this.isReply ||
+        !useMergedConfigStore().mergedConfig.quoteReply
+      ) {
         return false
       }
 

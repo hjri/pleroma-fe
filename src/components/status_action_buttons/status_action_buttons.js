@@ -16,7 +16,7 @@ library.add(faEllipsisH)
 
 const StatusActionButtons = {
   props: ['status', 'replying'],
-  emits: ['toggleReplying'],
+  emits: ['toggleReplying', 'onSuccess', 'onError'],
   data() {
     return {
       showPin: false,
