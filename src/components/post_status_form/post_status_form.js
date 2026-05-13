@@ -380,7 +380,7 @@ const PostStatusForm = {
       if (
         !this.quotingAvailable ||
         !this.isReply ||
-        !this.$store.getters.mergedConfig.quoteReply
+        !useMergedConfigStore().mergedConfig.quoteReply
       ) {
         return false
       }
