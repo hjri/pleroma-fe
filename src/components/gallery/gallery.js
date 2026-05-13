@@ -68,12 +68,23 @@ const Gallery = {
                 }
 
                 const maxPerRow = 3
-                const currentRow = acc[acc.length - 1].items
-                if ((nextWide || nextEnd) && currentRow.length >= maxPerRow) {
-                  const last = currentRow.splice(-1)[0]
-                  return [...acc, { items: [last, attachment] }]
+                const currentRow = acc[acc.length - 1]
+                const previousRow = acc[acc.length - 2]
+
+                if (currentRow.items.length >= maxPerRow) {
+                  if (nextWide || nextEnd) {
+                    if (previousRow?.items.length > 1) {
+                      currentRow.items.push(attachment)
+                      return [...acc, { items: [] }]
+                    } else {
+                      const last = currentRow.items.splice(-1)[0]
+                      return [...acc, { items: [last, attachment] }]
+                    }
+                  } else {
+                    return [...acc, { items: [attachment] }]
+                  }
                 } else {
-                  currentRow.push(attachment)
+                  currentRow.items.push(attachment)
                 }
                 return acc
               },

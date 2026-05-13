@@ -129,13 +129,12 @@ describe('Gallery', () => {
     ])
   })
 
-  it('mixed attachments', () => {
+  it('mixed attachments 1', () => {
     local = {
       attachments: [
         { type: 'audio' },
         { type: 'image' },
         { type: 'audio' },
-        { type: 'image' },
         { type: 'image' },
         { type: 'image' },
         { type: 'image' },
@@ -151,14 +150,14 @@ describe('Gallery', () => {
           { type: 'image' },
           { type: 'image' },
           { type: 'image' },
-          { type: 'image' },
         ],
       },
     ])
+  })
 
+  it('mixed attachments 2', () => {
     local = {
       attachments: [
-        { type: 'image' },
         { type: 'image' },
         { type: 'image' },
         { type: 'image' },
@@ -172,12 +171,13 @@ describe('Gallery', () => {
       {
         items: [{ type: 'image' }, { type: 'image' }, { type: 'image' }],
       },
-      { items: [{ type: 'image' }] },
       { audio: true, items: [{ type: 'audio' }] },
       { items: [{ type: 'image' }] },
       { audio: true, items: [{ type: 'audio' }] },
     ])
+  })
 
+  it('7 images', () => {
     local = {
       attachments: [
         { type: 'image' },
@@ -205,7 +205,9 @@ describe('Gallery', () => {
         ],
       },
     ])
+  })
 
+  it('8 images', () => {
     local = {
       attachments: [
         { type: 'image' },
@@ -227,6 +229,54 @@ describe('Gallery', () => {
         items: [{ type: 'image' }, { type: 'image' }, { type: 'image' }],
       },
       { items: [{ type: 'image' }, { type: 'image' }] },
+    ])
+  })
+
+  it('4 images + audio + image + 4 images', () => {
+    local = {
+      attachments: [
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'audio' },
+        { type: 'image' },
+        { type: 'audio' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+      ],
+    }
+
+    expect(Gallery.computed.rows.call(local)).to.eql([
+      {
+        items: [
+          { type: 'image' },
+          { type: 'image' },
+        ],
+      },
+      {
+        items: [
+          { type: 'image' },
+          { type: 'image' },
+        ],
+      },
+      { audio: true, items: [{ type: 'audio' }] },
+      { items: [{ type: 'image' }] },
+      { audio: true, items: [{ type: 'audio' }] },
+      {
+        items: [
+          { type: 'image' },
+          { type: 'image' },
+        ],
+      },
+      {
+        items: [
+          { type: 'image' },
+          { type: 'image' },
+        ],
+      },
     ])
   })
 
