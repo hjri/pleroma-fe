@@ -28,10 +28,10 @@
       >
         <user-panel />
         <template v-if="layoutType !== 'mobile'">
-          <nav-panel />
-          <instance-specific-panel v-if="showInstanceSpecificPanel" />
-          <features-panel v-if="!currentUser && showFeaturesPanel" />
-          <who-to-follow-panel v-if="currentUser && suggestionsEnabled" />
+          <NavPanel />
+          <InstanceSpecificPanel v-if="showInstanceSpecificPanel" />
+          <FeaturesPanel v-if="!currentUser && showFeaturesPanel" />
+          <WhoToFollowPanel v-if="currentUser && suggestionsEnabled" />
           <div id="notifs-sidebar" />
         </template>
       </div>
