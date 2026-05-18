@@ -146,11 +146,7 @@ describe('Gallery', () => {
       { items: [{ type: 'image' }] },
       { audio: true, items: [{ type: 'audio' }] },
       {
-        items: [
-          { type: 'image' },
-          { type: 'image' },
-          { type: 'image' },
-        ],
+        items: [{ type: 'image' }, { type: 'image' }, { type: 'image' }],
       },
     ])
   })
@@ -251,31 +247,19 @@ describe('Gallery', () => {
 
     expect(Gallery.computed.rows.call(local)).to.eql([
       {
-        items: [
-          { type: 'image' },
-          { type: 'image' },
-        ],
+        items: [{ type: 'image' }, { type: 'image' }],
       },
       {
-        items: [
-          { type: 'image' },
-          { type: 'image' },
-        ],
+        items: [{ type: 'image' }, { type: 'image' }],
       },
       { audio: true, items: [{ type: 'audio' }] },
       { items: [{ type: 'image' }] },
       { audio: true, items: [{ type: 'audio' }] },
       {
-        items: [
-          { type: 'image' },
-          { type: 'image' },
-        ],
+        items: [{ type: 'image' }, { type: 'image' }],
       },
       {
-        items: [
-          { type: 'image' },
-          { type: 'image' },
-        ],
+        items: [{ type: 'image' }, { type: 'image' }],
       },
     ])
   })
