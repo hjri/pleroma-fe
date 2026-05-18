@@ -2,6 +2,7 @@ import EmojiPicker from 'src/components/emoji_picker/emoji_picker.vue'
 import Popover from 'src/components/popover/popover.vue'
 import StatusBookmarkFolderMenu from 'src/components/status_bookmark_folder_menu/status_bookmark_folder_menu.vue'
 
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 
@@ -95,6 +96,9 @@ export default {
     hideCustomEmoji() {
       return !useInstanceCapabilitiesStore()
         .pleromaCustomEmojiReactionsAvailable
+    },
+    hidePostStats() {
+      return useMergedConfigStore().mergedConfig.hidePostStats
     },
     buttonInnerClass() {
       return [

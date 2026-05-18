@@ -59,7 +59,7 @@
       />
     </component>
     <span
-      v-if="button.counter?.(funcArg) > 0"
+      v-if="!hidePostStats && button.counter?.(funcArg) > 0"
       class="action-counter"
     >
       {{ button.counter?.(funcArg) }}

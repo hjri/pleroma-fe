@@ -403,6 +403,9 @@ export default {
     allowNonSquareEmoji() {
       return this.mergedConfig.nonSquareEmoji
     },
+    hideUserStats() {
+      return this.mergedConfig.hideUserStats
+    },
     ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   methods: {
