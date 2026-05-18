@@ -406,6 +406,9 @@ export default {
     hideUserStats() {
       return this.mergedConfig.hideUserStats
     },
+    hideRemarks() {
+      return this.mergedConfig.userCardHidePersonalMarks
+    },
     ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   methods: {

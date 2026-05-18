@@ -152,8 +152,10 @@ const getStaticConfig = async () => {
       throw res
     }
   } catch (error) {
-    console.warn('Failed to load static/config.json, continuing without it.')
-    console.warn(error)
+    console.warn(
+      'Failed to load static/config.json, continuing without it.',
+      error,
+    )
     return {}
   }
 }
@@ -442,8 +444,7 @@ const getNodeInfo = async ({ store }) => {
       throw res
     }
   } catch (e) {
-    console.warn('Could not load nodeinfo')
-    console.warn(e)
+    console.warn('Could not load nodeinfo', e)
   }
 }
 

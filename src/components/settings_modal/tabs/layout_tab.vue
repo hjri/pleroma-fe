@@ -117,7 +117,6 @@
               :key="column"
               :local="true"
               :path="column + 'ColumnWidth'"
-              :units="horizontalUnits"
               expert="1"
             >
               {{ $t('settings.column_sizes_' + column) }}

@@ -50,6 +50,16 @@
             </li>
           </ul>
         </li>
+        <li>
+          <BooleanSetting path="userCardHidePersonalMarks">
+            {{ $t('settings.user_card_hide_personal_marks') }}
+          </BooleanSetting>
+        </li>
+        <li v-if="shoutAvailable">
+          <BooleanSetting path="hideShoutbox">
+            {{ $t('settings.hide_shoutbox') }}
+          </BooleanSetting>
+        </li>
       </ul>
       <h3>{{ $t('settings.attachments') }}</h3>
       <ul class="setting-list">
@@ -75,16 +85,6 @@
             path="hideAttachmentsInConv"
           >
             {{ $t('settings.hide_attachments_in_convo') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting path="userCardHidePersonalMarks">
-            {{ $t('settings.user_card_hide_personal_marks') }}
-          </BooleanSetting>
-        </li>
-        <li v-if="shoutAvailable">
-          <BooleanSetting path="hideShoutbox">
-            {{ $t('settings.hide_shoutbox') }}
           </BooleanSetting>
         </li>
       </ul>

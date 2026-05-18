@@ -348,8 +348,7 @@ const addNewStatuses = (
       // NOOP, it is known status but we don't do anything about it for now
     },
     default: (unknown) => {
-      console.warn('unknown status type')
-      console.warn(unknown)
+      console.warn('unknown status type', unknown)
     },
   }
 

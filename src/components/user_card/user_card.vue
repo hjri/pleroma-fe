@@ -304,7 +304,7 @@
       </div>
     </div>
     <div
-      v-if="!editable && loggedIn && isOtherUser && (hasNote || !hideBio) && !userCardHidePersonalMarks"
+      v-if="!editable && loggedIn && isOtherUser && (hasNote || !hideBio) && !hideRemarks"
       class="personal-marks"
     >
       <UserNote

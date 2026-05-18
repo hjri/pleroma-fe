@@ -333,7 +333,6 @@ const EmojiInput = {
       if (!this.pickerShown) {
         this.scrollIntoView()
         this.$refs.picker.showPicker()
-        this.$refs.picker.startEmojiLoad()
       } else {
         this.$refs.picker.hidePicker()
       }

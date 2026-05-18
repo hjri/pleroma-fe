@@ -3,6 +3,7 @@ import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import IntegerSetting from '../helpers/integer_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
+import UnitSetting from '../helpers/unit_setting.vue'
 
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
@@ -62,6 +63,7 @@ const PostsTab = {
     ChoiceSetting,
     IntegerSetting,
     FontControl,
+    UnitSetting,
   },
   computed: {
     ...SharedComputedObject(),
