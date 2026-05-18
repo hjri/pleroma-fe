@@ -313,6 +313,9 @@ const Timeline = {
     },
   },
   watch: {
+    filteredVisibleStatuses() {
+      this.determineVisibleStatuses()
+    },
     newStatusCount(count) {
       if (!useMergedConfigStore().mergedConfig.streaming) {
         return
