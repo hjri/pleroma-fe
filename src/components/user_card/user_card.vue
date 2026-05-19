@@ -597,7 +597,7 @@
           </dd>
           {{ ' ' }}
           <dt>
-            {{ formattedBirthday }}
+            {{ formattedJoinDate }}
           </dt>
         </dl>
       </span>

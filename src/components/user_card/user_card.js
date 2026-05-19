@@ -332,7 +332,7 @@ export default {
         )
       )
     },
-    formattedBirthday() {
+    formattedJoinDate() {
       const browserLocale = localeService.internalToBrowserLocale(
         this.$i18n.locale,
       )
