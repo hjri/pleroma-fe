@@ -1,5 +1,6 @@
 import { parseLinkHeader } from '@web3-storage/parse-link-header'
 import escapeHtml from 'escape-html'
+import { unescape } from 'lodash'
 import punycode from 'punycode.js'
 
 import fileTypeService from '../file_type/file_type.service.js'
@@ -307,7 +308,7 @@ export const parseAttachment = (data) => {
   }
   output.url = data.url
   output.large_thumb_url = data.preview_url
-  output.description = data.description
+  output.description = unescape(data.description)
 
   return output
 }
