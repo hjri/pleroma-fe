@@ -269,7 +269,9 @@
 .description-popover {
   padding: 1em;
   width: 50ch;
+  max-width: 90vw;
   overflow: hidden;
+  box-sizing: border-box;
 
   summary {
     display: inline-block;
