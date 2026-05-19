@@ -21,7 +21,7 @@ export const BUTTONS = [
     anonLink: true,
     toggleable: true,
     closeIndicator: 'times',
-    activeIndicator: 'none',
+    activeIndicator: null,
     action({ emit }) {
       emit('toggleReplying')
       return Promise.resolve()

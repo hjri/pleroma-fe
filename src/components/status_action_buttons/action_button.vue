@@ -26,7 +26,7 @@
         />
         <template v-if="!buttonClass.disabled && (!button.interactive || button?.interactive(funcArg)) && button.toggleable?.(funcArg) && button.active">
           <FAIcon
-            v-if="button.active(funcArg)"
+            v-if="button.active(funcArg) && button.activeIndicator?.() !== null"
             class="active-marker"
             transform="shrink-6 up-9 left-12"
             :icon="button.activeIndicator?.(funcArg) || 'check'"

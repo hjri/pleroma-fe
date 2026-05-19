@@ -589,7 +589,7 @@ const EmojiInput = {
     setCaret({ target: { selectionStart } }) {
       this.caret = selectionStart
       this.$nextTick(() => {
-        this.$refs.suggestorPopover.updateStyles()
+        this.$refs.suggestorPopover?.updateStyles()
       })
     },
     autoCompleteItemLabel(suggestion) {
