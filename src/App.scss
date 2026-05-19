@@ -815,9 +815,11 @@ option {
   align-items: baseline;
   line-height: 1.5;
 
+  p,
   span {
     display: block;
     flex: 1 1 auto;
+    margin: 0;
   }
 
   .dismiss {
