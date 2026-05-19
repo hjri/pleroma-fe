@@ -2,9 +2,9 @@ import { mapState } from 'pinia'
 
 import nsfwImage from '../../assets/nsfw.png'
 import Flash from '../flash/flash.vue'
+import Popover from '../popover/popover.vue'
 import StillImage from '../still-image/still-image.vue'
 import VideoAttachment from '../video_attachment/video_attachment.vue'
-import Popover from '../popover/popover.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'

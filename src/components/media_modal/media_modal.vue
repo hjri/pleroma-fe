@@ -90,8 +90,8 @@
     </button>
 
     <details
-      open
       v-if="description"
+      open
       class="description"
     >
       <summary>{{ $t('status.attachment_description') }}</summary>

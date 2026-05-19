@@ -87,7 +87,7 @@
           trigger="click"
           popover-class="popover popover-default description-popover"
           :trigger-attrs="{ 'class': 'button-default attachment-button -transparent', 'title': $t('status.attachment_description') }"
-          >
+        >
           <template #trigger>
             <FAIcon icon="align-right" />
           </template>
