@@ -129,7 +129,7 @@
 
         .gallery-item {
           margin: 0;
-          height: 15em;
+          height: 20em;
         }
       }
     }

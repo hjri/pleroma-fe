@@ -134,7 +134,7 @@
       width: 2em;
       height: 2em;
       margin-left: 0.5em;
-      font-size: 1.25em;
+      font-size: 1em;
     }
   }
 
@@ -263,5 +263,27 @@
     .placeholder-container {
       padding-bottom: 0.5em;
     }
+  }
+}
+
+.description-popover {
+  padding: 1em;
+  width: 50ch;
+  overflow: hidden;
+
+  summary {
+    display: inline-block;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+    pointer-events: none;
+  }
+
+  span {
+    display: block;
+    overflow-y: auto;
+    max-height: 10.5em;
+    text-wrap: pretty;
+    line-height: 1.5;
+    white-space: pre-wrap;
   }
 }
