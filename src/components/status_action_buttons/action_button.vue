@@ -9,6 +9,7 @@
       :class="buttonInnerClass"
       role="menuitem"
       type="button"
+      placement="bottom"
       :title="$t(button.label(funcArg))"
       target="_blank"
       :tabindex="0"
@@ -54,7 +55,7 @@
       <FAIcon
         v-if="button.dropdown?.()"
         class="chevron-icon"
-        :icon="extra ? 'chevron-right' : 'chevron-up'"
+        :icon="extra ? 'chevron-right' : 'chevron-down'"
         fixed-width
       />
     </component>
@@ -71,6 +72,7 @@
     <Popover
       v-if="button.name === 'bookmark'"
       class="chevron-popover"
+      placement="bottom"
       :trigger="extra ? 'hover' : 'click'"
       :placement="extra ? 'right' : 'top'"
       :offset="extra ? { x: 10 } : { y: 10 }"
@@ -79,7 +81,7 @@
       <template #trigger>
         <FAIcon
           class="chevron-icon"
-          :icon="extra ? 'chevron-right' : 'chevron-up'"
+          :icon="extra ? 'chevron-right' : 'chevron-down'"
           fixed-width
         />
       </template>

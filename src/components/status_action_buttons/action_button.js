@@ -15,7 +15,7 @@ import {
   faBookmark,
   faCheck,
   faChevronRight,
-  faChevronUp,
+  faChevronDown,
   faExternalLinkAlt,
   faEyeSlash,
   faHistory,
@@ -39,7 +39,7 @@ library.add(
   faWrench,
 
   faChevronRight,
-  faChevronUp,
+  faChevronDown,
 
   faReply,
   faRetweet,

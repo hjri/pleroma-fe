@@ -4,7 +4,7 @@
       v-if="button.dropdown?.()"
       :trigger="$attrs.extra ? 'hover' : 'click'"
       :offset="{ y: 5 }"
-      :placement="$attrs.extra ? 'right' : 'top'"
+      :placement="$attrs.extra ? 'right' : 'bottom'"
     >
       <template #trigger>
         <ActionButton
