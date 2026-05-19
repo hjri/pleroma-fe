@@ -546,39 +546,61 @@
           <dt>{{ $t('user_card.followers') }}</dt>
         </dl>
       </span>
-      <template v-if="!hideBio">
-        <div
-          v-if="user.birthday && !editable"
-          class="birthday"
-        >
-          <FAIcon
-            class="fa-old-padding"
-            icon="birthday-cake"
-          />
-          {{ $t('user_card.birthday', { birthday: formattedBirthday }) }}
-        </div>
-        <div
-          v-else-if="editable"
-          class="birthday"
-        >
-          <div>
-            <Checkbox v-model="newShowBirthday">
-              {{ $t('settings.birthday.show_birthday') }}
-            </Checkbox>
-          </div>
-          <FAIcon
-            class="fa-old-padding"
-            icon="birthday-cake"
-          />
-          {{ $t('settings.birthday.label') }}
-          <input
-            id="birthday"
-            v-model="newBirthday"
-            type="date"
-            class="input birthday-input"
+      <span
+        v-if="!hideUserStats"
+        class="user-stats"
+      >
+        <template v-if="!hideBio">
+          <dl
+            v-if="user.birthday && !editable"
+            class="user-count"
           >
-        </div>
-      </template>
+            <dd>
+              <FAIcon
+                class="fa-old-padding"
+                icon="birthday-cake"
+              />
+            </dd>
+            {{ ' ' }}
+            <dt>
+              {{ $t('user_card.birthday', { birthday: formattedBirthday }) }}
+            </dt>
+          </dl>
+          <div
+            v-else-if="editable"
+            class="birthday"
+          >
+            <div>
+              <Checkbox v-model="newShowBirthday">
+                {{ $t('settings.birthday.show_birthday') }}
+              </Checkbox>
+            </div>
+            <FAIcon
+              class="fa-old-padding"
+              icon="birthday-cake"
+            />
+            {{ $t('settings.birthday.label') }}
+            <input
+              id="birthday"
+              v-model="newBirthday"
+              type="date"
+              class="input birthday-input"
+            >
+          </div>
+        </template>
+        <dl
+          v-if="!editable"
+          class="user-count"
+        >
+          <dd>
+            {{ $t('user_card.joined') }}
+          </dd>
+          {{ ' ' }}
+          <dt>
+            {{ formattedBirthday }}
+          </dt>
+        </dl>
+      </span>
     </div>
     <template v-if="editable">
       <h3>{{ $t('settings.profile_other') }}</h3>

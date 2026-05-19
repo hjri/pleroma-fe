@@ -1714,6 +1714,7 @@
     "bot": "Bot",
     "group": "Group",
     "birthday": "Born {birthday}",
+    "joined": "Joined",
     "admin_menu": {
       "moderation": "Moderation",
       "grant_admin": "Grant Admin",

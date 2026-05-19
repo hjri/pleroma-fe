@@ -332,6 +332,18 @@ export default {
         )
       )
     },
+    formattedBirthday() {
+      const browserLocale = localeService.internalToBrowserLocale(
+        this.$i18n.locale,
+      )
+      return (
+        this.user.created_at &&
+        new Date(Date.parse(this.user.created_at)).toLocaleDateString(
+          browserLocale,
+          { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' },
+        )
+      )
+    },
 
     // Editable stuff
     avatarImgSrc() {

@@ -413,6 +413,10 @@
       text-overflow: ellipsis;
       overflow: hidden;
       margin: 0;
+
+      .svg-inline--fa {
+        color: var(--text);
+      }
     }
 
     dd, dt {
