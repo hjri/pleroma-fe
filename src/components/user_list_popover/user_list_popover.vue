@@ -10,8 +10,9 @@
     <template #content>
       <div class="user-list-popover">
         <template v-if="users.length">
-          <div
+          <a
             v-for="(user) in usersCapped"
+            :href="$router.resolve(generateProfileLink(user)).href"
             :key="user.id"
             class="user-list-row"
           >
@@ -32,7 +33,7 @@
               <!-- eslint-enable vue/no-v-html -->
               <span class="user-list-screen-name">{{ user.screen_name_ui }}</span><UnicodeDomainIndicator :user="user" />
             </div>
-          </div>
+          </a>
         </template>
         <template v-else>
           <FAIcon
@@ -58,6 +59,7 @@
     padding: 0.25em;
     display: flex;
     flex-direction: row;
+    color: var(--text);
 
     .user-list-names {
       display: flex;
