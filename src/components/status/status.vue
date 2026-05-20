@@ -47,16 +47,6 @@
     </template>
     <template v-else>
       <div
-        v-if="showPinned"
-        class="pin"
-      >
-        <FAIcon
-          icon="thumbtack"
-          class="faint"
-        />
-        <span class="faint">{{ $t('status.pinned') }}</span>
-      </div>
-      <div
         v-if="retweet && !noHeading && !inConversation"
         :class="[repeaterClass, { highlighted: repeaterStyle }]"
         :style="[repeaterStyle]"
@@ -179,6 +169,13 @@
               </div>
 
               <span class="heading-right">
+                <span class="pin" v-if="showPinned">
+                  <FAIcon
+                    icon="thumbtack"
+                    class="faint"
+                  />
+                  <span class="faint">{{ $t('status.pinned') }}</span>
+                </span>
                 <router-link
                   class="timeago faint"
                   :to="{ name: 'conversation', params: { id: status.id } }"
