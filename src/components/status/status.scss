@@ -28,10 +28,6 @@
     > * {
       min-width: 0;
     }
-
-    &.-repeat {
-      padding-top: 0;
-    }
   }
 
   .pin {
@@ -233,6 +229,7 @@
     display: flex;
     align-items: center;
     padding: 0.4em var(--status-margin);
+    border-bottom: 1px dotted var(--border);
 
     .repeater-avatar {
       flex: 0 0 1.5em;
