@@ -129,6 +129,7 @@ const EmojiPicker = {
       hideCustomEmojiInPicker: false,
       // Lazy-load only after the first time `showing` becomes true.
       contentLoaded: false,
+      popoverShown: false,
       groupRefs: {},
       emojiRefs: {},
       filteredEmojiGroups: [],
@@ -176,6 +177,13 @@ const EmojiPicker = {
       const fullEmojiSize = emojiSizeReal + 2 * 0.2 * fontSizeMultiplier * 14
       this.emojiSize = fullEmojiSize
     },
+    togglePicker() {
+      if (this.popoverShown) {
+        this.hidePicker()
+      } else {
+        this.showPicker()
+      }
+    },
     showPicker() {
       this.$refs.popover.showPopover()
       this.$nextTick(() => {
@@ -194,10 +202,10 @@ const EmojiPicker = {
       }
     },
     onPopoverShown() {
-      this.$emit('show')
+      this.popoverShown = true
     },
     onPopoverClosed() {
-      this.$emit('close')
+      this.popoverShown = false
     },
     onStickerUploaded(e) {
       this.$emit('sticker-uploaded', e)

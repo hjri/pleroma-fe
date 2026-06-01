@@ -98,7 +98,7 @@ export const BUTTONS = [
     label: 'tool_tip.add_reaction',
     icon: ['far', 'smile-beam'],
     interactive: () => true,
-    active: () => false,
+    active: ({ emojiPickerShown }) => emojiPickerShown,
     toggleable: true,
     anonLink: true,
   },

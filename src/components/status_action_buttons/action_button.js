@@ -131,6 +131,12 @@ export default {
         this.$store.dispatch('reactWithEmoji', { id: this.status.id, emoji })
       }
     },
+    onShowEmojiPicker() {
+      this.$emit('emojiPickerShown', true)
+    },
+    onHideEmojiPicker() {
+      this.$emit('emojiPickerShown', false)
+    },
     doActionWrap(
       button,
       close = () => {
@@ -142,7 +148,7 @@ export default {
       )
         return
       if (button.name === 'emoji') {
-        this.$refs.picker.showPicker()
+        this.$refs.picker.togglePicker()
       } else {
         this.animationState = true
         this.getComponent(button) === 'button' && this.doAction(button)

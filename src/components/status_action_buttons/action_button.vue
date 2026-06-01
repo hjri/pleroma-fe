@@ -100,6 +100,8 @@
       :hide-custom-emoji="hideCustomEmoji"
       class="emoji-picker-panel"
       @emoji="addReaction"
+      @show="onShowEmojiPicker"
+      @close="onHideEmojiPicker"
     />
   </div>
 </template>
