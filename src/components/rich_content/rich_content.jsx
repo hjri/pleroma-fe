@@ -367,7 +367,8 @@ export default {
                 break
               }
               case 'spin': {
-                const speed = fullAttrs['data-mfm-speed']
+                const speed = fullAttrs['data-mfm-speed'] = '1s'
+                const delay = fullAttrs['data-mfm-delay'] = 0
                 const y = fullAttrs['data-mfm-y'] != null
                 const x = fullAttrs['data-mfm-x'] != null
                 const anim = [
@@ -375,7 +376,7 @@ export default {
                   y ? 'mfm-spinY' : null,
                   'mfm-spin'
                 ].filter(a => a)[0]
-                newAttrs.style = `animation: ${speed} linear 3s infinite normal none running ${anim}`
+                newAttrs.style = `animation: ${speed} linear ${delay} infinite normal none running ${anim}`
                 break
               }
               case 'flip': {
