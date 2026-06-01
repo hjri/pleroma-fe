@@ -208,6 +208,23 @@
               {{ $t('settings.reset') }}
             </button>
           </div>
+          <div
+            v-if="backgroundError"
+            class="alert error -dismissible"
+          >
+            <span>
+              {{ backgroundError }}
+            </span>
+            <button
+              class="button-unstyled"
+              @click="clearBackgroundError"
+            >
+              <FAIcon
+                class="fa-scale-110 fa-old-padding"
+                icon="times"
+              />
+            </button>
+          </div>
           <button
             v-if="!isDefaultBackground"
             class="btn button-default reset-button"
@@ -244,6 +261,11 @@
         <li v-if="instanceWallpaperUsed">
           <BooleanSetting path="hideInstanceWallpaper">
             {{ $t('settings.hide_wallpaper') }}
+          </BooleanSetting>
+        </li>
+        <li>
+          <BooleanSetting path="compactProfiles">
+            {{ $t('settings.compact_profiles') }}
           </BooleanSetting>
         </li>
       </ul>

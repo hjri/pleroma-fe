@@ -16,7 +16,7 @@ library.add(faEllipsisH)
 
 const StatusActionButtons = {
   props: ['status', 'replying'],
-  emits: ['toggleReplying', 'interacted', 'onSuccess', 'onError'],
+  emits: ['toggleReplying', 'onSuccess', 'onError'],
   data() {
     return {
       showPin: false,
@@ -28,6 +28,7 @@ const StatusActionButtons = {
         /* no-op */
       },
       randomSeed: genRandomSeed(),
+      emojiPickerShown: false,
     }
   },
   components: {
@@ -56,6 +57,7 @@ const StatusActionButtons = {
       return {
         status: this.status,
         replying: this.replying,
+        emojiPickerShown: this.emojiPickerShown,
         emit: this.$emit,
         dispatch: this.$store.dispatch,
         state: this.$store.state,
@@ -106,6 +108,9 @@ const StatusActionButtons = {
     },
     onExtraClose() {
       this.showPin = false
+    },
+    onEmojiPickerShown(state) {
+      this.emojiPickerShown = state
     },
     isPinned(button) {
       return this.pinnedItems.has(button.name)

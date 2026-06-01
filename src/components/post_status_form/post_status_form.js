@@ -152,9 +152,6 @@ const PostStatusForm = {
     DraftCloser,
     Popover,
   },
-  created() {
-    this.initQuote()
-  },
   mounted() {
     this.updateIdempotencyKey()
     this.resize(this.$refs.textarea)
@@ -214,7 +211,11 @@ const PostStatusForm = {
         poll: {},
         hasPoll: false,
         hasQuote: false,
-        quote: {},
+        quote: {
+          id: '',
+          url: '',
+          thread: false,
+        },
         mediaDescriptions: {},
         visibility: scope,
         contentType,
@@ -233,7 +234,11 @@ const PostStatusForm = {
           poll: this.statusPoll || {},
           hasPoll: false,
           hasQuote: false,
-          quote: {},
+          quote: {
+            id: '',
+            url: '',
+            thread: false,
+          },
           mediaDescriptions: this.statusMediaDescriptions || {},
           visibility: this.statusScope || scope,
           contentType: statusContentType,
@@ -373,8 +378,15 @@ const PostStatusForm = {
     quotable() {
       return this.quotingAvailable && this.replyTo
     },
-    quoteThreadToggled() {
-      return this.newStatus.hasQuote && this.newStatus.quote.thread
+    quoteThreadToggled: {
+      get() {
+        return this.newStatus.hasQuote && this.newStatus.quote.thread
+      },
+      set(value) {
+        this.newStatus.hasQuote = value
+        this.newStatus.quote.thread = value
+        this.newStatus.quote.id = value ? this.replyTo : ''
+      },
     },
     defaultQuotable() {
       if (
@@ -855,24 +867,6 @@ const PostStatusForm = {
         this.$refs.pollForm.clear()
       }
     },
-    initQuote() {
-      const quote = this.newStatus.quote
-
-      if (Object.keys(quote).length > 0) {
-        return
-      }
-
-      const quotable = this.defaultQuotable
-
-      quote.id = quotable ? this.replyTo : ''
-      quote.url = ''
-      quote.thread = quotable
-    },
-    setQuoteThread(v) {
-      this.newStatus.hasQuote = v
-      this.newStatus.quote.thread = v
-      this.newStatus.quote.id = v ? this.replyTo : ''
-    },
     clearQuoteForm() {
       if (this.$refs.quoteForm) {
         this.$refs.quoteForm.clear()
@@ -880,6 +874,11 @@ const PostStatusForm = {
     },
     toggleQuoteForm() {
       this.newStatus.hasQuote = !this.newStatus.hasQuote
+
+      this.newStatus.quote = {}
+      this.newStatus.quote.thread = false
+      this.newStatus.quote.id = null
+      this.newStatus.quote.url = ''
     },
     dismissScopeNotice() {
       useSyncConfigStore().setSimplePrefAndSave({

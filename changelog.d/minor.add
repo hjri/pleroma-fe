@@ -1,0 +1,6 @@
+button to remove all drafts
+option to remove forced aspect ratio for user profiles (requested)
+showing user tags (mrf policies for user + custom if present)
+version information now is also in about page
+mention autosuggest now sorts by recent activity
+non-square emoji support (toggleable by user)

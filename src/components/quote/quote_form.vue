@@ -13,8 +13,8 @@
       >
     </div>
     <Quote
-      :status-id="params.id"
-      :status-url="params.url"
+      :status-id="id"
+      :status-url="url"
       :status-visible="quoteVisible"
       :initially-expanded="true"
       :loading="loading"

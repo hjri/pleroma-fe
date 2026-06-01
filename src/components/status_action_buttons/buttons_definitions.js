@@ -21,7 +21,7 @@ export const BUTTONS = [
     anonLink: true,
     toggleable: true,
     closeIndicator: 'times',
-    activeIndicator: 'none',
+    activeIndicator: null,
     action({ emit }) {
       emit('toggleReplying')
       return Promise.resolve()
@@ -97,6 +97,9 @@ export const BUTTONS = [
     name: 'emoji',
     label: 'tool_tip.add_reaction',
     icon: ['far', 'smile-beam'],
+    interactive: () => true,
+    active: ({ emojiPickerShown }) => emojiPickerShown,
+    toggleable: true,
     anonLink: true,
   },
   {

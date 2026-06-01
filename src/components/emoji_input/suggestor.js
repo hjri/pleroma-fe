@@ -131,10 +131,11 @@ export const suggestUsers = ({ dispatch, state }) => {
         const diff = (bScore - aScore) * 10
 
         // Then sort alphabetically
+        const activity = a.last_status_at < b.last_status_at ? 100 : -100
         const nameAlphabetically = a.name > b.name ? 1 : -1
         const screenNameAlphabetically = a.screen_name > b.screen_name ? 1 : -1
 
-        return diff + nameAlphabetically + screenNameAlphabetically
+        return diff + nameAlphabetically + screenNameAlphabetically + activity
       })
       .map((user) => ({
         user,

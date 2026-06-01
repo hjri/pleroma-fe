@@ -440,6 +440,7 @@
       "plain": "Simple",
       "user": "User (Simple)",
       "user_regexp": "User (RegExp)",
+      "case_sensitive": "Case-sensitive",
       "hide": "Hide completely",
       "name": "Name",
       "value": "Value",
@@ -793,6 +794,7 @@
     "default_post_status_content_type": "Default post status content type",
     "sensitive_by_default": "Mark posts as sensitive by default",
     "stop_gifs": "Pause animated images until you hover on them",
+    "non_square_emoji": "Allow non-square emoji",
     "streaming": "Automatically show new posts when scrolled to the top",
     "auto_update": "Show new posts automatically",
     "user_mutes": "Users",
@@ -1141,7 +1143,8 @@
     "hard_reset_value_tooltip": "Remove setting from storage, forcing use of default value",
     "cache": "Cache",
     "clear_asset_cache": "Clear asset cache",
-    "clear_emoji_cache": "Clear emoji cache"
+    "clear_emoji_cache": "Clear emoji cache",
+    "compact_profiles": "Reduce profile height on user pages"
   },
   "admin_dash": {
     "window_title": "Administration",
@@ -1599,6 +1602,7 @@
     "show_all_attachments": "Show all attachments",
     "show_attachment_in_modal": "Show in media modal",
     "show_attachment_description": "Preview description (open attachment for full description)",
+    "attachment_description": "Attachment description",
     "hide_attachment": "Hide attachment",
     "remove_attachment": "Remove attachment",
     "attachment_stop_flash": "Stop Flash player",
@@ -1710,6 +1714,7 @@
     "bot": "Bot",
     "group": "Group",
     "birthday": "Born {birthday}",
+    "joined": "Joined",
     "admin_menu": {
       "moderation": "Moderation",
       "grant_admin": "Grant Admin",
@@ -1737,7 +1742,15 @@
     },
     "personal_note": "Personal note",
     "note_blank_click": "Click to add note",
-    "highlight_header": "Highlight user's posts and mentions"
+    "highlight_header": "Highlight user's posts and mentions",
+    "tags": {
+      "mrf_tag:media-force-nsfw": "Mark as sensitive",
+      "mrf_tag:media-strip": "Remove attachments",
+      "mrf_tag:force-unlisted": "Force unlisted",
+      "mrf_tag:sandbox": "Remove from public timelines",
+      "mrf_tag:disable-remote-subscription": "Reject non-local follow requests",
+      "mrf_tag:disable-any-subscription": "Reject any follow requests"
+    }
   },
   "user_profile": {
     "timeline_title": "User timeline",
@@ -1875,6 +1888,7 @@
   "drafts": {
     "drafts": "Drafts",
     "no_drafts": "You have no drafts",
+    "clean_drafts": "Remove all drafts",
     "empty": "(No content)",
     "poll_tooltip": "Draft contains a poll",
     "continue": "Continue composing",
@@ -1884,6 +1898,7 @@
     "abandon_confirm": "Do you really want to abandon this draft?",
     "abandon_confirm_accept_button": "Abandon",
     "abandon_confirm_cancel_button": "Keep",
+    "abandon_all_confirm": "Do you really want to abandon all drafts?",
     "replying": "Replying to {statusLink}",
     "editing": "Editing {statusLink}",
     "unavailable": "(unavailable)"

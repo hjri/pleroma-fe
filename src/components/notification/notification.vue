@@ -7,7 +7,7 @@
       class="Notification"
       :compact="true"
       :statusoid="notification.status"
-      @interacted="interacted"
+      @click="interacted"
     />
   </article>
   <article
@@ -71,6 +71,7 @@
                 :title="'@'+notification.from_profile.screen_name_ui"
                 :html="notification.from_profile.name_html"
                 :emoji="notification.from_profile.emoji"
+                :allow-non-square-emoji="allowNonSquareEmoji"
                 :is-local="notification.from_profile.is_local"
               />
             </bdi>
@@ -136,6 +137,7 @@
                     :src="notification.emoji_url"
                     :alt="notification.emoji"
                     :title="notification.emoji"
+                    :class="{ ['-wide']: allowNonSquareEmoji }"
                   >
                   <span
                     v-else

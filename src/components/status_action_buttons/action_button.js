@@ -4,6 +4,7 @@ import StatusBookmarkFolderMenu from 'src/components/status_bookmark_folder_menu
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -13,8 +14,8 @@ import {
 import {
   faBookmark,
   faCheck,
+  faChevronDown,
   faChevronRight,
-  faChevronUp,
   faExternalLinkAlt,
   faEyeSlash,
   faHistory,
@@ -38,7 +39,7 @@ library.add(
   faWrench,
 
   faChevronRight,
-  faChevronUp,
+  faChevronDown,
 
   faReply,
   faRetweet,
@@ -67,7 +68,6 @@ export default {
     'doAction',
     'outerClose',
   ],
-  emits: ['interacted'],
   components: {
     StatusBookmarkFolderMenu,
     EmojiPicker,
@@ -96,6 +96,9 @@ export default {
     hideCustomEmoji() {
       return !useInstanceCapabilitiesStore()
         .pleromaCustomEmojiReactionsAvailable
+    },
+    hidePostStats() {
+      return useMergedConfigStore().mergedConfig.hidePostStats
     },
     buttonInnerClass() {
       return [
@@ -128,6 +131,12 @@ export default {
         this.$store.dispatch('reactWithEmoji', { id: this.status.id, emoji })
       }
     },
+    onShowEmojiPicker() {
+      this.$emit('emojiPickerShown', true)
+    },
+    onHideEmojiPicker() {
+      this.$emit('emojiPickerShown', false)
+    },
     doActionWrap(
       button,
       close = () => {
@@ -138,9 +147,8 @@ export default {
         this.button.interactive ? !this.button.interactive(this.funcArg) : false
       )
         return
-      this.$emit('interacted')
       if (button.name === 'emoji') {
-        this.$refs.picker.showPicker()
+        this.$refs.picker.togglePicker()
       } else {
         this.animationState = true
         this.getComponent(button) === 'button' && this.doAction(button)

@@ -10,4 +10,15 @@
   .footer-left-checkbox {
     width: max-content;
   }
+
+  .expirationTime {
+    display: inline-flex;
+    white-space: nowrap;
+    padding: 0.5em;
+  }
+
+  .dialog-modal-content .checkbox {
+    vertical-align: middle;
+    padding: 0.5em;
+  }
 }

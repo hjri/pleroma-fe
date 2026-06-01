@@ -76,6 +76,7 @@ const SideDrawer = {
       return unseenNotificationsFromStore(
         this.$store,
         useMergedConfigStore().mergedConfig.notificationVisibility,
+        useMergedConfigStore().mergedConfig.ignoreInactionableSeen,
       )
     },
     unseenNotificationsCount() {

@@ -55,6 +55,9 @@ export default {
         return this.expired ? 'polls.expired' : 'polls.expires_in'
       }
     },
+    allowNonSquareEmoji() {
+      return useMergedConfigStore().mergedConfig.nonSquareEmoji
+    },
     loggedIn() {
       return this.$store.state.users.currentUser
     },

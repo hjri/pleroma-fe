@@ -24,6 +24,7 @@
               :html="option.title_html"
               :handle-links="false"
               :emoji="emoji"
+              :allow-non-square-emoji="allowNonSquareEmoji"
             />
           </div>
           <div

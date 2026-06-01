@@ -21,6 +21,9 @@ const ConfirmModal = {
     confirmText: {
       type: String,
     },
+    confirmDanger: {
+      type: Boolean,
+    },
   },
   emits: ['cancelled', 'accepted'],
   computed: {},

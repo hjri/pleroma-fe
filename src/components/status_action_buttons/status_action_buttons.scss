@@ -3,16 +3,19 @@
 .StatusActionButtons {
   .quick-action-buttons {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(10%, 3em));
+    margin-left: -0.5em;
+    grid-template-columns: repeat(auto-fill, minmax(3.75em, 10%));
     grid-auto-flow: row dense;
     grid-auto-rows: 1fr;
-    grid-gap: 1.25em 0;
+    grid-gap: 0.5em 0.1em;
     margin-top: var(--status-margin);
   }
 
   .pin-action-button {
-    margin: -0.5em;
+    display: flex;
+    z-index: 1;
     padding: 0.5em;
+    margin: 0;
   }
 }
 // popover

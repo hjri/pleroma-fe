@@ -4,6 +4,7 @@
     trigger="click"
     popover-class="emoji-picker popover-default"
     :hide-trigger="true"
+    placement="bottom"
     @show="onPopoverShown"
     @close="onPopoverClosed"
   >

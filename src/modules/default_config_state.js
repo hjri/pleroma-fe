@@ -229,6 +229,10 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
     description: 'Play animated gifs on hover only',
     default: true,
   },
+  nonSquareEmoji: {
+    description: 'Allow emoji to be non-square (max 3:1 aspect)',
+    default: true,
+  },
   replyVisibility: {
     description: 'Type of replies to show',
     default: 'all',
@@ -542,6 +546,10 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
     required: true,
     default: 'none',
   },
+  compactProfiles: {
+    description: 'Reduce profile height on user pages',
+    default: false,
+  },
 }
 export const INSTANCE_DEFAULT_CONFIG = convertDefinitions(
   INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
@@ -623,7 +631,7 @@ export const LOCAL_DEFAULT_CONFIG_DEFINITIONS = {
   },
   imageCompression: {
     description: 'Image compression (WebP/JPEG)',
-    default: true,
+    default: false,
   },
   alwaysUseJpeg: {
     description: 'Compress images using JPEG only',
@@ -635,22 +643,22 @@ export const LOCAL_DEFAULT_CONFIG_DEFINITIONS = {
   },
   fontInterface: {
     description: 'Interface font override',
-    type: 'object',
+    type: 'string',
     default: null,
   },
   fontInput: {
     description: 'Input font override',
-    type: 'object',
+    type: 'string',
     default: null,
   },
   fontPosts: {
     description: 'Post font override',
-    type: 'object',
+    type: 'string',
     default: null,
   },
   fontMonospace: {
     description: 'Monospace font override',
-    type: 'object',
+    type: 'string',
     default: null,
   },
   themeDebug: {

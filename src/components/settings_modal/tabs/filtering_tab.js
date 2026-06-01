@@ -58,6 +58,7 @@ const FilteringTab = {
             hide = false,
             name = '',
             value = '',
+            caseSensitive = false,
           } = data
 
           this.createFilter({
@@ -66,6 +67,7 @@ const FilteringTab = {
             hide,
             name,
             value,
+            caseSensitive,
           })
         },
         onImportFailure(result) {

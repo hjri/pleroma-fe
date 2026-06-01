@@ -1,3 +1,5 @@
+import { mapState } from 'pinia'
+
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
@@ -9,14 +11,6 @@ const pleromaFeCommitUrl =
   'https://git.pleroma.social/pleroma/pleroma-fe/commit/'
 
 const VersionTab = {
-  data() {
-    const instance = useInstanceStore()
-    return {
-      backendVersion: instance.backendVersion,
-      backendRepository: instance.backendRepository,
-      frontendVersion: instance.frontendVersion,
-    }
-  },
   components: {
     BooleanSetting,
   },
@@ -24,6 +18,11 @@ const VersionTab = {
     frontendVersionLink() {
       return pleromaFeCommitUrl + this.frontendVersion
     },
+    ...mapState(useInstanceStore, [
+      'backendVersion',
+      'backendRepository',
+      'frontendVersion',
+    ]),
     ...SharedComputedObject(),
   },
   methods: {

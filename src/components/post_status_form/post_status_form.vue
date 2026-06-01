@@ -88,7 +88,7 @@
         </div>
         <div
           v-if="!disablePreview"
-          class="preview-heading faint"
+          class="preview-heading"
         >
           <a
             class="preview-toggle faint"
@@ -110,34 +110,24 @@
           <div
             v-if="quotable"
             role="radiogroup"
-            class="btn-group reply-or-quote-selector"
+            class="reply-or-quote-selector"
           >
-            <button
-              :id="`reply-or-quote-option-${randomSeed}-reply`"
-              class="btn button-default reply-or-quote-option"
-              :class="{ toggled: !quoteThreadToggled }"
-              tabindex="0"
-              role="radio"
+            <Checkbox
+              v-model="quoteThreadToggled"
+              :radio="true"
               :disabled="quoteFormVisible"
-              :aria-labelledby="`reply-or-quote-option-${randomSeed}-reply`"
-              :aria-checked="!newStatus.quote.thread"
-              @click="setQuoteThread(false)"
-            >
-              {{ $t('post_status.reply_option') }}
-            </button>
-            <button
-              :id="`reply-or-quote-option-${randomSeed}-quote`"
-              class="btn button-default reply-or-quote-option"
-              :class="{ toggled: quoteThreadToggled }"
-              tabindex="0"
-              role="radio"
-              :disabled="quoteFormVisible"
-              :aria-labelledby="`reply-or-quote-option-${randomSeed}-quote`"
-              :aria-checked="newStatus.quote.thread"
-              @click="setQuoteThread(true)"
             >
               {{ $t('post_status.quote_option') }}
-            </button>
+            </Checkbox>
+            <Checkbox
+              role="radio"
+              :radio="true"
+              :model-value="!quoteThreadToggled"
+              :disabled="quoteFormVisible"
+              @update:model-value="e => quoteThreadToggled = !e"
+            >
+              {{ $t('post_status.reply_option') }}
+            </Checkbox>
           </div>
         </div>
         <div
@@ -266,18 +256,20 @@
           </div>
         </div>
       </div>
-      <poll-form
+      <PollForm
         v-if="pollsAvailable"
         ref="pollForm"
         :visible="pollFormVisible"
         :params="newStatus.poll"
       />
-      <quote-form
+      <QuoteForm
         v-if="quotingAvailable"
+        :id="newStatus.quote.id"
         ref="quoteForm"
         :visible="quoteFormVisible"
-        :reply="isReply"
-        :params="newStatus.quote"
+        :url="newStatus.quote.url"
+        @update:url="url => newStatus.quote.url = url"
+        @update:id="id => newStatus.quote.id = id"
       />
       <span
         v-if="!disableDraft && shouldAutoSaveDraft"
@@ -292,7 +284,7 @@
         <div class="form-bottom-left">
           <media-upload
             ref="mediaUpload"
-            class="media-upload-icon"
+            class="bottom-left-button media-upload-icon"
             :drop-files="dropFiles"
             :disabled="uploadFileLimitReached"
             @uploading="startedUploadingFiles"
@@ -302,8 +294,8 @@
           />
           <button
             v-if="pollsAvailable"
-            class="poll-icon button-unstyled"
-            :class="{ selected: pollFormVisible }"
+            class="bottom-left-button poll-icon button-unstyled"
+            :class="{ toggled: pollFormVisible }"
             :title="$t('polls.add_poll')"
             @click="togglePollForm"
           >
@@ -311,9 +303,9 @@
           </button>
           <button
             v-if="quotingAvailable"
-            class="quote-icon button-unstyled"
-            :disabled="newStatus.quote.thread"
-            :class="{ selected: quoteFormVisible }"
+            class="bottom-left-button quote-icon button-unstyled"
+            :disabled="quoteThreadToggled"
+            :class="{ toggled: quoteFormVisible }"
             :title="$t('tool_tip.add_quote')"
             @click="toggleQuoteForm"
           >
@@ -389,9 +381,11 @@
       </div>
       <div
         v-if="error"
-        class="alert error"
+        class="alert error -dismissible"
       >
-        Error: {{ error }}
+        <span>
+          {{ error }}
+        </span>
         <button
           class="button-unstyled"
           @click="clearError"

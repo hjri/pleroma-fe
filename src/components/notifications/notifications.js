@@ -79,6 +79,7 @@ const Notifications = {
       return unseenNotificationsFromStore(
         this.$store,
         useMergedConfigStore().mergedConfig.notificationVisibility,
+        useMergedConfigStore().mergedConfig.ignoreInactionableSeen,
       )
     },
     filteredNotifications() {

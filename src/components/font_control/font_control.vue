@@ -23,7 +23,7 @@
     </div>
     {{ ' ' }}
     <div
-      v-if="modelValue?.family"
+      v-if="modelValue"
       class="font-input setting-item"
     >
       <label
@@ -67,10 +67,10 @@
         </button>
         <input
           :id="name"
-          :model-value="modelValue.family"
+          :model-value="modelValue"
           class="input custom-font"
           type="text"
-          @update:modelValue="$emit('update:modelValue', { ...(modelValue || {}), family: $event.target.value })"
+          @update:modelValue="$emit('update:modelValue', $event.target.value)"
         >
       </span>
       <span
@@ -89,9 +89,9 @@
         </button>
         <Select
           :id="name + '-local-font-switcher'"
-          :model-value="modelValue?.family"
+          :model-value="modelValue"
           class="custom-font"
-          @update:model-value="v => $emit('update:modelValue', { ...(modelValue || {}), family: v })"
+          @update:model-value="v => $emit('update:modelValue', v)"
         >
           <optgroup
             :label="$t('settings.style.themes3.font.group-builtin')"

@@ -47,6 +47,11 @@ const Gallery = {
         : attachments
             .reduce(
               (acc, attachment, i) => {
+                const peek = attachments[i + 1]
+                const nextEnd = peek == null
+                const nextWide = !nextEnd && !displayTypes.has(peek?.type)
+
+                // Inserting new row
                 if (attachment.type === 'audio') {
                   return [
                     ...acc,
@@ -61,18 +66,27 @@ const Gallery = {
                     { items: [] },
                   ]
                 }
+
                 const maxPerRow = 3
-                const attachmentsRemaining = this.attachments.length - i + 1
-                const currentRow = acc[acc.length - 1].items
-                currentRow.push(attachment)
-                if (
-                  currentRow.length >= maxPerRow &&
-                  attachmentsRemaining > maxPerRow
-                ) {
-                  return [...acc, { items: [] }]
+                const currentRow = acc[acc.length - 1]
+                const previousRow = acc[acc.length - 2]
+
+                if (currentRow.items.length >= maxPerRow) {
+                  if (nextWide || nextEnd) {
+                    if (previousRow?.items.length > 1) {
+                      currentRow.items.push(attachment)
+                      return [...acc, { items: [] }]
+                    } else {
+                      const last = currentRow.items.splice(-1)[0]
+                      return [...acc, { items: [last, attachment] }]
+                    }
+                  } else {
+                    return [...acc, { items: [attachment] }]
+                  }
                 } else {
-                  return acc
+                  currentRow.items.push(attachment)
                 }
+                return acc
               },
               [{ items: [] }],
             )

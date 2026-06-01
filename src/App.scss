@@ -50,7 +50,7 @@ body {
 // have a cursor/pointer to operate them
 @media (any-pointer: fine) {
   * {
-    scrollbar-color: var(--fg) transparent;
+    scrollbar-color: var(--icon) transparent;
 
     &::-webkit-scrollbar {
       background: transparent;
@@ -130,7 +130,7 @@ body {
   }
   // Body should have background to scrollbar otherwise it will use white (body color?)
   html {
-    scrollbar-color: var(--fg) var(--wallpaper);
+    scrollbar-color: var(--icon) var(--wallpaper);
     background: var(--wallpaper);
   }
 }
@@ -787,6 +787,19 @@ option {
   padding: 0 0.25em;
   border-radius: var(--roundness);
   border: 1px solid var(--border);
+
+  &.-dismissible {
+    display: flex;
+    padding-left: 0.5em;
+    margin: 0;
+    align-items: baseline;
+    line-height: 2;
+
+    span {
+      display: block;
+      flex: 1 0 auto;
+    }
+  }
 }
 
 .faint {
@@ -802,9 +815,11 @@ option {
   align-items: baseline;
   line-height: 1.5;
 
+  p,
   span {
     display: block;
     flex: 1 1 auto;
+    margin: 0;
   }
 
   .dismiss {

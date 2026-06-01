@@ -152,6 +152,7 @@ const Status = {
     'simpleTree',
     'showOtherRepliesAsButton',
     'dive',
+    'ignoreMute',
 
     'controlledThreadDisplayStatus',
     'controlledToggleThreadDisplay',
@@ -166,7 +167,7 @@ const Status = {
     'controlledMediaPlaying',
     'controlledSetMediaPlaying',
   ],
-  emits: ['interacted', 'goto', 'toggleExpanded'],
+  emits: ['goto', 'toggleExpanded'],
   data() {
     return {
       uncontrolledReplying: false,
@@ -186,6 +187,9 @@ const Status = {
           (this.status.reblog && this.status.reblog.thread_muted)) &&
         !this.inConversation
       )
+    },
+    allowNonSquareEmoji() {
+      return this.mergedConfig.nonSquareEmoji
     },
     repeaterClass() {
       const user = this.statusoid.user
@@ -345,6 +349,7 @@ const Status = {
       }
     },
     muted() {
+      if (this.ignoreMute) return false
       if (this.statusoid.user.id === this.currentUser.id) return false
       return !this.unmuted && !this.shouldNotMute && this.muteReasons.length > 0
     },
@@ -366,6 +371,7 @@ const Status = {
       )
     },
     shouldNotMute() {
+      if (this.ignoreMute) return true
       if (this.isFocused) return true
       const { status } = this
       const { reblog } = status
@@ -557,11 +563,9 @@ const Status = {
       this.error = error
     },
     clearError() {
-      this.$emit('interacted')
       this.error = undefined
     },
     toggleReplying() {
-      this.$emit('interacted')
       if (this.replying) {
         this.$refs.postStatusForm.requestClose()
       } else {

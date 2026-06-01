@@ -138,8 +138,6 @@
     align-items: start;
     flex-direction: row;
 
-    --emoji-size: calc(var(--emojiSize, 32px) / 2);
-
     & .body,
     & .attachments {
       max-height: 3.25em;

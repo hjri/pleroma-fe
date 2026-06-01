@@ -3,6 +3,7 @@ import UserAvatar from '../user_avatar/user_avatar.vue'
 import UserListPopover from '../user_list_popover/user_list_popover.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCheck, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
@@ -47,6 +48,9 @@ const EmojiReactions = {
       return useInstanceStore().getRemoteInteractionLink({
         statusId: this.status.id,
       })
+    },
+    allowNonSquareEmoji() {
+      return useMergedConfigStore().mergedConfig.nonSquareEmoji
     },
   },
   methods: {

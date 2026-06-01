@@ -42,9 +42,11 @@ const saveDraftToStorage = async (draft) => {
   await storage.setItem(storageKey, currentData)
 }
 
-const deleteDraftFromStorage = async (id) => {
+const deleteDraftFromStorage = async (ids) => {
   const currentData = await getStorageData()
-  delete currentData[id]
+  ids.forEach((id) => {
+    delete currentData[id]
+  })
   await storage.setItem(storageKey, currentData)
 }
 
@@ -58,7 +60,12 @@ export const actions = {
   },
   async abandonDraft(store, { id }) {
     store.commit('abandonDraft', { id })
-    await deleteDraftFromStorage(id)
+    await deleteDraftFromStorage([id])
+  },
+  async abandonAllDrafts(store) {
+    const ids = Object.keys(store.state.drafts)
+    ids.forEach((id) => store.commit('abandonDraft', { id }))
+    await deleteDraftFromStorage(ids)
   },
   async loadDrafts(store) {
     const currentData = await getStorageData()

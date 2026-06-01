@@ -30,21 +30,16 @@
       </button>
     </div>
     <div
-      v-if="size !== 'hide' && !hideDescription && (edit || localDescription || showDescription)"
+      v-if="size !== 'hide' && !hideDescription && edit"
       class="description-container"
       :class="{ '-static': !edit }"
     >
-      <input
-        v-if="edit"
+      <textarea
         v-model="localDescription"
         type="text"
         class="input description-field"
         :placeholder="$t('post_status.media_description')"
-        @keydown.enter.prevent=""
-      >
-      <p v-else>
-        {{ localDescription }}
-      </p>
+      />
     </div>
   </button>
   <div
@@ -87,14 +82,22 @@
         >
           <FAIcon icon="stop" />
         </button>
-        <button
+        <Popover
           v-if="attachment.description && size !== 'small' && !edit && attachment.type !== 'unknown'"
-          class="button-default attachment-button -transparent"
-          :title="$t('status.show_attachment_description')"
-          @click.prevent="toggleDescription"
+          trigger="click"
+          popover-class="popover popover-default description-popover"
+          :trigger-attrs="{ 'class': 'button-default attachment-button -transparent', 'title': $t('status.attachment_description') }"
         >
-          <FAIcon icon="align-right" />
-        </button>
+          <template #trigger>
+            <FAIcon icon="align-right" />
+          </template>
+          <template #content>
+            <details open>
+              <summary>{{ $t('status.attachment_description') }}</summary>
+              <span>{{ localDescription }}</span>
+            </details>
+          </template>
+        </Popover>
         <button
           v-if="!useModal && attachment.type !== 'unknown'"
           class="button-default attachment-button -transparent"
@@ -244,21 +247,16 @@
       </span>
     </div>
     <div
-      v-if="size !== 'hide' && !hideDescription && (edit || (localDescription && showDescription))"
+      v-if="size !== 'hide' && !hideDescription && edit"
       class="description-container"
       :class="{ '-static': !edit }"
     >
-      <input
-        v-if="edit"
+      <textarea
         v-model="localDescription"
         type="text"
         class="input description-field"
         :placeholder="$t('post_status.media_description')"
-        @keydown.enter.prevent=""
-      >
-      <p v-else>
-        {{ localDescription }}
-      </p>
+      />
     </div>
   </div>
 </template>

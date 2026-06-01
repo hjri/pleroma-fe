@@ -11,6 +11,7 @@ import ModifiedIndicator from '../helpers/modified_indicator.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import StringSetting from '../helpers/string_setting.vue'
 
+import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 
@@ -174,63 +175,25 @@ const EmojiTab = {
       this.sortPackFiles(packName)
     },
 
-    loadPacksPaginated(listFunction) {
-      const pageSize = 25
-      const allPacks = {}
-
-      return listFunction({
-        instance: this.remotePackInstance,
-        page: 1,
-        pageSize: 0,
-      })
-        .then((data) => data.json())
-        .then((data) => {
-          if (data.error !== undefined) {
-            return Promise.reject(data.error)
-          }
-
-          let resultingPromise = Promise.resolve({})
-          for (let i = 0; i < Math.ceil(data.count / pageSize); i++) {
-            resultingPromise = resultingPromise
-              .then(() =>
-                listFunction({
-                  instance: this.remotePackInstance,
-                  page: i,
-                  pageSize,
-                }),
-              )
-              .then((data) => data.json())
-              .then((pageData) => {
-                if (pageData.error !== undefined) {
-                  return Promise.reject(pageData.error)
-                }
-
-                assign(allPacks, pageData.packs)
-              })
-          }
-
-          return resultingPromise
-        })
-        .then(() => allPacks)
-        .catch((data) => {
-          this.displayError(data)
-        })
-    },
-
     refreshPackList() {
-      this.loadPacksPaginated(
-        this.$store.state.api.backendInteractor.listEmojiPacks,
-      ).then((allPacks) => {
-        this.knownLocalPacks = allPacks
-        for (const name of Object.keys(this.knownLocalPacks)) {
-          this.sortPackFiles(name)
-        }
-      })
+      useEmojiStore()
+        .getAdminPacks(
+          this.remotePackInstance,
+          this.$store.state.api.backendInteractor.listEmojiPacks,
+        )
+        .then((allPacks) => {
+          this.knownLocalPacks = allPacks
+          for (const name of Object.keys(this.knownLocalPacks)) {
+            this.sortPackFiles(name)
+          }
+        })
     },
     listRemotePacks() {
-      this.loadPacksPaginated(
-        this.$store.state.api.backendInteractor.listRemoteEmojiPacks,
-      )
+      useEmojiStore()
+        .getAdminPacks(
+          this.remotePackInstance,
+          this.$store.state.api.backendInteractor.listRemoteEmojiPacks,
+        )
         .then((allPacks) => {
           let inst = this.remotePackInstance
           if (!inst.startsWith('http')) {

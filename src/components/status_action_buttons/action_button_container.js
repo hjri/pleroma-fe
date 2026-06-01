@@ -20,7 +20,7 @@ export default {
     UserTimedFilterModal,
   },
   props: ['button', 'status'],
-  emits: ['interacted'],
+  emits: ['emojiPickerShown'],
   mounted() {
     if (this.button.name === 'mute') {
       this.$store.dispatch('fetchDomainMutes')

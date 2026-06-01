@@ -15,17 +15,20 @@ export default {
     visible: {
       type: Boolean,
     },
-    reply: {
-      type: Boolean,
+    url: {
+      type: String,
+      required: false,
+      default: '',
     },
-    params: {
-      type: Object,
-      required: true,
+    id: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {
     return {
-      text: this.params.url,
+      text: this.url,
       loading: false,
       error: false,
       debounceSetQuote: debounce((value) => {
@@ -34,16 +37,15 @@ export default {
     }
   },
   created() {
-    if (this.params.url && !this.params.id) {
-      this.fetchStatus(this.params.url)
-    } else if (this.params.id) {
+    if (this.url && !this.id) {
+      this.fetchStatus(this.url)
+    } else if (this.id) {
       this.text =
         window.location.protocol +
         '//' +
         this.instanceHost +
         '/notice/' +
-        this.params.id
-      this.params.url = this.text
+        this.id
     }
   },
   computed: {
@@ -56,22 +58,23 @@ export default {
       )
     },
     quoteVisible() {
-      return (!!this.params.id || this.loading) && !this.error
+      return (!!this.id || this.loading) && !this.error
     },
   },
   watch: {
     text(value) {
       this.debounceSetQuote(value)
+      this.$emit('update:url', value)
     },
     visible(value) {
-      if (value && this.params.url) {
-        this.fetchStatus(this.params.url)
+      if (value && this.url) {
+        this.fetchStatus(this.url)
       }
     },
   },
   methods: {
     clear() {
-      this.text = this.params.url
+      this.text = this.url
       this.loading = false
       this.error = false
     },
@@ -79,16 +82,15 @@ export default {
       this.loading = value
     },
     handleError(error) {
-      this.params.id = null
+      this.id = null
       this.error = !!error
     },
     fetchStatus(value) {
-      this.params.url = value
       this.error = false
 
       const notice = this.noticeRegex.exec(value)
       if (notice && notice.length === 4) {
-        this.params.id = notice[3]
+        this.$emit('update:id', notice[3])
       } else if (value) {
         this.loading = true
         this.$store
@@ -101,7 +103,7 @@ export default {
           })
           .then((data) => {
             if (data && data.statuses && data.statuses.length === 1) {
-              this.params.id = data.statuses[0].id
+              this.$emit('update:id', data.statuses[0].id)
             } else {
               this.handleError(true)
             }
@@ -111,7 +113,7 @@ export default {
             this.loading = false
           })
       } else {
-        this.params.id = null
+        this.$emit('update:id', null)
       }
     },
   },

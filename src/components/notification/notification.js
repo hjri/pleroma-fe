@@ -144,7 +144,6 @@ const Notification = {
       }
     },
     doApprove() {
-      this.$emit('interacted')
       this.$store.state.api.backendInteractor.approveUser({ id: this.user.id })
       this.$store.dispatch('removeFollowRequest', this.user)
       this.$store.dispatch('markSingleNotificationAsSeen', {
@@ -166,7 +165,6 @@ const Notification = {
       }
     },
     doDeny() {
-      this.$emit('interacted')
       this.$store.state.api.backendInteractor
         .denyUser({ id: this.user.id })
         .then(() => {
@@ -211,6 +209,9 @@ const Notification = {
     },
     mergedConfig() {
       return useMergedConfigStore().mergedConfig
+    },
+    allowNonSquareEmoji() {
+      return this.mergedConfig.nonSquareEmoji
     },
     shouldConfirmApprove() {
       return this.mergedConfig.modalOnApproveFollow

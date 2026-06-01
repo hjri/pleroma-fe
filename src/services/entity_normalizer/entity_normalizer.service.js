@@ -1,5 +1,6 @@
 import { parseLinkHeader } from '@web3-storage/parse-link-header'
 import escapeHtml from 'escape-html'
+import { unescape as lodashUnescape } from 'lodash'
 import punycode from 'punycode.js'
 
 import fileTypeService from '../file_type/file_type.service.js'
@@ -244,6 +245,7 @@ export const parseUser = (data) => {
 
   output.created_at = new Date(data.created_at)
   output.locked = data.locked
+  output.last_status_at = new Date(data.last_status_at)
   output.followers_count = data.followers_count
   output.statuses_count = data.statuses_count
 
@@ -306,7 +308,7 @@ export const parseAttachment = (data) => {
   }
   output.url = data.url
   output.large_thumb_url = data.preview_url
-  output.description = data.description
+  output.description = lodashUnescape(data.description)
 
   return output
 }

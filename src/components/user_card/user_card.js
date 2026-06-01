@@ -62,6 +62,15 @@ library.add(
   faClockRotateLeft,
 )
 
+const KNOWN_TAGS = new Set([
+  'mrf_tag:media-force-nsfw',
+  'mrf_tag:media-strip',
+  'mrf_tag:force-unlisted',
+  'mrf_tag:sandbox',
+  'mrf_tag:disable-remote-subscription',
+  'mrf_tag:disable-any-subscription',
+])
+
 export default {
   props: {
     // Enables all the options for profile editing, used in settings -> profile tab
@@ -101,6 +110,12 @@ export default {
     },
     // Show close icon (for popovers)
     showExpand: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
+    // Disable forced 3:1 aspect ratio
+    compact: {
       required: false,
       type: Boolean,
       default: false,
@@ -317,6 +332,18 @@ export default {
         )
       )
     },
+    formattedJoinDate() {
+      const browserLocale = localeService.internalToBrowserLocale(
+        this.$i18n.locale,
+      )
+      return (
+        this.user.created_at &&
+        new Date(Date.parse(this.user.created_at)).toLocaleDateString(
+          browserLocale,
+          { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' },
+        )
+      )
+    },
 
     // Editable stuff
     avatarImgSrc() {
@@ -347,7 +374,7 @@ export default {
       )
     },
     isDefaultAvatar() {
-      const baseAvatar = useInstanceStore().defaultAvatar
+      const baseAvatar = useInstanceStore().instanceIdenitity.defaultAvatar
       return (
         !this.$store.state.users.currentUser.profile_image_url ||
         this.$store.state.users.currentUser.profile_image_url.includes(
@@ -356,7 +383,7 @@ export default {
       )
     },
     isDefaultBanner() {
-      const baseBanner = useInstanceStore().defaultBanner
+      const baseBanner = useInstanceStore().instanceIdentity.defaultBanner
       return (
         !this.$store.state.users.currentUser.cover_photo ||
         this.$store.state.users.currentUser.cover_photo.includes(baseBanner)
@@ -385,9 +412,21 @@ export default {
         ],
       })
     },
+    allowNonSquareEmoji() {
+      return this.mergedConfig.nonSquareEmoji
+    },
+    hideUserStats() {
+      return this.mergedConfig.hideUserStats
+    },
+    hideRemarks() {
+      return this.mergedConfig.userCardHidePersonalMarks
+    },
     ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   methods: {
+    isKnownTag(tag) {
+      return KNOWN_TAGS.has(tag)
+    },
     muteUser() {
       this.$refs.timedMuteDialog.optionallyPrompt()
     },

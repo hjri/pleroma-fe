@@ -47,16 +47,6 @@
     </template>
     <template v-else>
       <div
-        v-if="showPinned"
-        class="pin"
-      >
-        <FAIcon
-          icon="thumbtack"
-          class="faint"
-        />
-        <span class="faint">{{ $t('status.pinned') }}</span>
-      </div>
-      <div
         v-if="retweet && !noHeading && !inConversation"
         :class="[repeaterClass, { highlighted: repeaterStyle }]"
         :style="[repeaterStyle]"
@@ -80,6 +70,7 @@
               <RichContent
                 :html="retweeterHtml"
                 :emoji="retweeterUser.emoji"
+                :allow-non-square-emoji="allowNonSquareEmoji"
                 :is-local="retweeterUser.is_local"
               />
             </router-link>
@@ -88,13 +79,14 @@
               :to="retweeterProfileLink"
             >{{ retweeter }}</router-link>
           </bdi>
-          {{ ' ' }}
-          <FAIcon
-            icon="retweet"
-            class="repeat-icon"
-            :title="$t('tool_tip.repeat')"
-          />
-          {{ $t('timeline.repeated') }}
+          <div class="repeat-label">
+            <FAIcon
+              icon="retweet"
+              class="repeat-icon"
+              :title="$t('tool_tip.repeat')"
+            />
+            {{ $t('timeline.repeated') }}
+          </div>
         </div>
       </div>
 
@@ -152,6 +144,7 @@
                   <RichContent
                     :html="status.user.name"
                     :emoji="status.user.emoji"
+                    :allow-non-square-emoji="allowNonSquareEmoji"
                     :is-local="status.user.is_local"
                   />
                 </h4>
@@ -176,6 +169,16 @@
               </div>
 
               <span class="heading-right">
+                <span
+                  v-if="showPinned"
+                  class="pin"
+                >
+                  <FAIcon
+                    icon="thumbtack"
+                    class="faint"
+                  />
+                  <span class="faint">{{ $t('status.pinned') }}</span>
+                </span>
                 <router-link
                   class="timeago faint"
                   :to="{ name: 'conversation', params: { id: status.id } }"
@@ -519,7 +522,6 @@
             :status="status"
             :replying="replying"
             @toggle-replying="toggleReplying"
-            @interacted="e => $emit('interacted')"
           />
         </div>
       </div>

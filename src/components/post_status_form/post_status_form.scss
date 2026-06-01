@@ -42,6 +42,7 @@
   .form-bottom-left {
     display: flex;
     gap: 1.5em;
+    margin-right: 1em;
 
     button {
       padding: 0.5em;
@@ -52,13 +53,13 @@
   .preview-heading {
     display: flex;
     flex-wrap: wrap;
+    margin: 0 0.5em;
   }
 
   .preview-toggle {
     flex: 10 0 auto;
     cursor: pointer;
     user-select: none;
-    padding-left: 0.5em;
 
     &:hover {
       text-decoration: underline;
@@ -89,9 +90,10 @@
   }
 
   .reply-or-quote-selector {
-    flex: 1 0 auto;
     margin-bottom: 0.5em;
-    display: grid;
+    gap: 0 1em;
+    display: flex;
+    flex-wrap: wrap-reverse;
     grid-template-columns: 1fr 1fr;
   }
 
@@ -105,7 +107,6 @@
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-left: -0.5em;
   }
 
   .visibility-notice {
@@ -144,10 +145,7 @@
     justify-content: right;
   }
 
-  .media-upload-icon,
-  .poll-icon,
-  .quote-icon,
-  .emoji-icon {
+  .bottom-left-button {
     font-size: 1.85em;
     line-height: 1.1;
     flex: 1;
@@ -210,14 +208,14 @@
     padding: 0;
   }
 
-  .input.form-post-body {
+  textarea.input.form-post-body {
     // TODO: make a resizable textarea component?
     box-sizing: content-box; // needed for easier computation of dynamic size
     overflow: hidden;
     transition: min-height 200ms 100ms;
     // stock padding + 1 line of text (for counter)
     padding-bottom: calc(var(--_padding) + var(--post-line-height) * 1em);
-    padding-right: 1.5em;
+    padding-right: 0.5em;
     // two lines of text
     height: calc(var(--post-line-height) * 1em);
     min-height: calc(var(--post-line-height) * 1em);
@@ -241,9 +239,11 @@
   .character-counter {
     position: absolute;
     bottom: 0;
-    right: 0;
+    right: 2.2em;
     padding: 0;
-    margin: 0 0.5em;
+    margin: 0;
+    line-height: 2.2em;
+    height: 2.2em;
 
     &.error {
       color: var(--cRed);

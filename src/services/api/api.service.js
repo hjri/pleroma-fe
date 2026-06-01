@@ -2089,6 +2089,7 @@ const listEmojiPacks = ({ page, pageSize }) => {
 }
 
 const listRemoteEmojiPacks = ({ instance, page, pageSize }) => {
+  console.log(instance)
   if (!instance.startsWith('http')) {
     instance = 'https://' + instance
   }

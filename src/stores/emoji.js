@@ -1,3 +1,4 @@
+import { merge } from 'lodash'
 import { defineStore } from 'pinia'
 
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -10,6 +11,8 @@ const defaultState = {
   // Custom emoji from server
   customEmoji: [],
   customEmojiFetched: false,
+  adminPacksLocal: null,
+  adminPacksLocalLoading: true,
 
   // Unicode emoji from bundle
   emoji: {},
@@ -176,6 +179,76 @@ export const useEmojiStore = defineStore('emoji', {
           }
         }),
       )
+    },
+
+    async getAdminPacksLocal(refresh) {
+      if (!refresh && this.adminPacksLocal) return this.adminPacksLocal
+      const backendInteractor = window.vuex.state.api.backendInteractor
+      const listFunction = backendInteractor.listEmojiPacks
+
+      this.adminPacksLocalLoading = true
+      this.adminPacksLocal = await this.getAdminPacks(
+        useInstanceStore().server,
+        listFunction,
+      )
+      this.adminPacksLocalLoading = false
+    },
+
+    async getAdminPacks(instance, listFunction) {
+      const currentUser = window.vuex.state.users.currentUser
+
+      if (!currentUser.rights.admin) return
+
+      const pageSize = 25
+
+      return await listFunction({
+        instance,
+        page: 1,
+        pageSize: 0,
+      })
+        .then((data) => data.json())
+        .then((data) => {
+          if (data.error !== undefined) {
+            return Promise.reject(data.error)
+          }
+
+          const promises = []
+
+          for (let i = 0; i < Math.ceil(data.count / pageSize); i++) {
+            promises.push(
+              listFunction({
+                instance,
+                page: i,
+                pageSize,
+              })
+                .then((data) => data.json())
+                .then((pageData) => {
+                  if (pageData.error !== undefined) {
+                    return Promise.reject(pageData.error)
+                  }
+
+                  return pageData.packs
+                }),
+            )
+          }
+
+          return Promise.all(promises).then((results) => {
+            return merge({}, ...results)
+          })
+        })
+        .then((allPacks) => {
+          // Sort by key
+          return Object.keys(allPacks)
+            .sort()
+            .reduce((acc, key) => {
+              if (key.length === 0) return acc
+              acc[key] = allPacks[key]
+              return acc
+            }, {})
+        })
+        .catch((data) => {
+          this.displayError(data)
+        })
     },
 
     async getCustomEmoji() {

@@ -19,6 +19,7 @@
       :title="'@'+(user && user.screen_name_ui)"
       :html="htmlTitle"
       :emoji="user.emoji || []"
+      :allow-non-square-emoji="allowNonSquareEmoji"
       :is-local="user.is_local"
     />
   </div>

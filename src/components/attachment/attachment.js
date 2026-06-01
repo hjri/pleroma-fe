@@ -2,6 +2,7 @@ import { mapState } from 'pinia'
 
 import nsfwImage from '../../assets/nsfw.png'
 import Flash from '../flash/flash.vue'
+import Popover from '../popover/popover.vue'
 import StillImage from '../still-image/still-image.vue'
 import VideoAttachment from '../video_attachment/video_attachment.vue'
 
@@ -65,13 +66,13 @@ const Attachment = {
       modalOpen: false,
       showHidden: false,
       flashLoaded: false,
-      showDescription: false,
     }
   },
   components: {
     Flash,
     StillImage,
     VideoAttachment,
+    Popover,
   },
   computed: {
     classNames() {
@@ -179,9 +180,6 @@ const Attachment = {
     },
     setFlashLoaded(event) {
       this.flashLoaded = event
-    },
-    toggleDescription() {
-      this.showDescription = !this.showDescription
     },
     toggleHidden(event) {
       if (

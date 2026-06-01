@@ -27,6 +27,7 @@
           class="basic-user-card-user-name-value"
           :html="user.name"
           :emoji="user.emoji"
+          :allow-non-square-emoji="allowNonSquareEmoji"
         />
       </div>
       <div>

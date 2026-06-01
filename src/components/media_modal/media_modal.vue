@@ -89,13 +89,16 @@
       />
     </button>
 
-    <span
+    <details
       v-if="description"
+      open
       class="description"
     >
-      {{ description }}
-    </span>
+      <summary>{{ $t('status.attachment_description') }}</summary>
+      <span>{{ description }}</span>
+    </details>
     <span
+      v-if="media.length > 1"
       class="counter"
     >
       {{ $t('media_modal.counter', { current: currentIndex + 1, total: media.length }, currentIndex + 1) }}
@@ -159,19 +162,43 @@ $modal-view-button-icon-margin: 0.5em;
   .counter {
     /* Hardcoded since background is also hardcoded */
     color: white;
-    margin-top: 1em;
-    text-shadow: 0 0 10px black, 0 0 10px black;
-    padding: 0.2em 2em;
+    text-shadow: 0 0 1em black, 0 0 1em black, 0 0 1em black;
+    margin: 1em 2em;
+    overflow: hidden;
+
+  }
+
+  .description + .counter {
+    margin-top: 0;
   }
 
   .description {
     flex: 0 0 auto;
-    overflow-y: auto;
-    min-height: 1em;
-    max-width: 35.8em;
+    max-width: 80ch;
     max-height: 9.5em;
-    overflow-wrap: break-word;
-    text-wrap: pretty;
+
+    summary {
+      margin-bottom: 0.5em;
+      display: inline-block;
+      font-weight: bold;
+      pointer-events: none;
+    }
+
+    span {
+      display: block;
+      overflow-y: auto;
+      min-height: 1em;
+      text-wrap: pretty;
+      max-height: 10.5em;
+      white-space: pre-wrap;
+      line-height: 1.5;
+      scrollbar-color: white transparent;
+
+      &::-webkit-scrollbar-button,
+      &::-webkit-scrollbar-thumb {
+        background-color: white;
+      }
+    }
   }
 
   .modal-image {

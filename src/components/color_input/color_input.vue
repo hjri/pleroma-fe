@@ -88,6 +88,7 @@ export default {
     label: {
       required: false,
       type: String,
+      default: '',
     },
     // use unstyled, uh, style
     unstyled: {

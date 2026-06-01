@@ -9,6 +9,7 @@
           class="lang-selector"
           @update="val => language = val"
         />
+        <h5>{{ $t('settings.email_language') }}</h5>
         <interface-language-switcher
           v-model="emailLanguage"
           class="lang-selector"

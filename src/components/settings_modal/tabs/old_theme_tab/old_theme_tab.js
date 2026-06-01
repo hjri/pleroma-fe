@@ -509,22 +509,14 @@ export default {
       }
     },
     setCustomTheme() {
-      useInterfaceStore().setThemeV2({
-        customTheme: {
-          ignore: true,
-          themeFileVersion: this.selectedVersion,
-          themeEngineVersion: CURRENT_VERSION,
-          ...this.previewTheme,
-        },
-        customThemeSource: {
-          themeFileVersion: this.selectedVersion,
-          themeEngineVersion: CURRENT_VERSION,
-          shadows: this.shadowsLocal,
-          fonts: this.fontsLocal,
-          opacity: this.currentOpacity,
-          colors: this.currentColors,
-          radii: this.currentRadii,
-        },
+      useInterfaceStore().setTheme({
+        themeFileVersion: this.selectedVersion,
+        themeEngineVersion: CURRENT_VERSION,
+        shadows: this.shadowsLocal,
+        fonts: this.fontsLocal,
+        opacity: this.currentOpacity,
+        colors: this.currentColors,
+        radii: this.currentRadii,
       })
     },
     updatePreviewColors() {
