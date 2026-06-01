@@ -11,8 +11,8 @@ import ModifiedIndicator from '../helpers/modified_indicator.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import StringSetting from '../helpers/string_setting.vue'
 
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -176,21 +176,24 @@ const EmojiTab = {
     },
 
     refreshPackList() {
-      useEmojiStore().getAdminPacks(
-        this.remotePackInstance,
-        this.$store.state.api.backendInteractor.listEmojiPacks,
-      ).then((allPacks) => {
-        this.knownLocalPacks = allPacks
-        for (const name of Object.keys(this.knownLocalPacks)) {
-          this.sortPackFiles(name)
-        }
-      })
+      useEmojiStore()
+        .getAdminPacks(
+          this.remotePackInstance,
+          this.$store.state.api.backendInteractor.listEmojiPacks,
+        )
+        .then((allPacks) => {
+          this.knownLocalPacks = allPacks
+          for (const name of Object.keys(this.knownLocalPacks)) {
+            this.sortPackFiles(name)
+          }
+        })
     },
     listRemotePacks() {
-      useEmojiStore().getAdminPacks(
-        this.remotePackInstance,
-        this.$store.state.api.backendInteractor.listRemoteEmojiPacks,
-      )
+      useEmojiStore()
+        .getAdminPacks(
+          this.remotePackInstance,
+          this.$store.state.api.backendInteractor.listRemoteEmojiPacks,
+        )
         .then((allPacks) => {
           let inst = this.remotePackInstance
           if (!inst.startsWith('http')) {

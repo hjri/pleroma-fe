@@ -1,6 +1,6 @@
+import { merge } from 'lodash'
 import { defineStore } from 'pinia'
 
-import { merge } from 'lodash'
 import { useInstanceStore } from 'src/stores/instance.js'
 
 import { ensureFinalFallback } from 'src/i18n/languages.js'
@@ -187,7 +187,10 @@ export const useEmojiStore = defineStore('emoji', {
       const listFunction = backendInteractor.listEmojiPacks
 
       this.adminPacksLocalLoading = true
-      this.adminPacksLocal = await this.getAdminPacks(useInstanceStore().server, listFunction)
+      this.adminPacksLocal = await this.getAdminPacks(
+        useInstanceStore().server,
+        listFunction,
+      )
       this.adminPacksLocalLoading = false
     },
 
@@ -197,8 +200,6 @@ export const useEmojiStore = defineStore('emoji', {
       if (!currentUser.rights.admin) return
 
       const pageSize = 25
-      const allPacks = {}
-
 
       return await listFunction({
         instance,
@@ -222,25 +223,22 @@ export const useEmojiStore = defineStore('emoji', {
               })
                 .then((data) => data.json())
                 .then((pageData) => {
-                if (pageData.error !== undefined) {
-                  return Promise.reject(pageData.error)
-                }
+                  if (pageData.error !== undefined) {
+                    return Promise.reject(pageData.error)
+                  }
 
                   return pageData.packs
-                })
+                }),
             )
           }
 
-          return Promise
-            .all(promises)
-            .then((results) => {
-              return merge({}, ...results)
-            })
+          return Promise.all(promises).then((results) => {
+            return merge({}, ...results)
+          })
         })
         .then((allPacks) => {
           // Sort by key
-          return Object
-            .keys(allPacks)
+          return Object.keys(allPacks)
             .sort()
             .reduce((acc, key) => {
               if (key.length === 0) return acc

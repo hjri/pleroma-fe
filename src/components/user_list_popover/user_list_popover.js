@@ -3,8 +3,8 @@ import { defineAsyncComponent } from 'vue'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
 
-import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
@@ -40,7 +40,7 @@ const UserListPopover = {
         useInstanceStore().restrictedNicknames,
       )
     },
-  }
+  },
 }
 
 export default UserListPopover

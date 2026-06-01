@@ -1,11 +1,11 @@
 import Popover from 'components/popover/popover.vue'
 import SelectComponent from 'components/select/select.vue'
-
-import StillImage from './still-image.vue'
 import { mapState } from 'pinia'
 
-import { useInterfaceStore } from 'src/stores/interface'
+import StillImage from './still-image.vue'
+
 import { useEmojiStore } from 'src/stores/emoji'
+import { useInterfaceStore } from 'src/stores/interface'
 
 export default {
   components: { StillImage, Popover, SelectComponent },
@@ -28,7 +28,7 @@ export default {
     isUserAdmin() {
       return this.$store.state.users.currentUser?.rights.admin
     },
-    ...mapState(useEmojiStore, ['adminPacksLocal', 'adminPacksLocalLoading'])
+    ...mapState(useEmojiStore, ['adminPacksLocal', 'adminPacksLocalLoading']),
   },
   methods: {
     displayError(msg) {
@@ -64,9 +64,11 @@ export default {
     },
 
     fetchEmojiPacksIfAdmin() {
-      useEmojiStore().getAdminPacksLocal().then(() => {
-        this.$refs.emojiPopover.updateStyles()
-      })
+      useEmojiStore()
+        .getAdminPacksLocal()
+        .then(() => {
+          this.$refs.emojiPopover.updateStyles()
+        })
     },
   },
 }

@@ -14,8 +14,8 @@ import {
 import {
   faBookmark,
   faCheck,
-  faChevronRight,
   faChevronDown,
+  faChevronRight,
   faExternalLinkAlt,
   faEyeSlash,
   faHistory,
