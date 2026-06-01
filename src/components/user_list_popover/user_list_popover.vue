@@ -12,8 +12,8 @@
         <template v-if="users.length">
           <router-link
             v-for="(user) in usersCapped"
-            :to="generateProfileLink(user)"
             :key="user.id"
+            :to="generateProfileLink(user)"
             class="user-list-row"
           >
             <UserAvatar

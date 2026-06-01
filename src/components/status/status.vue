@@ -169,7 +169,10 @@
               </div>
 
               <span class="heading-right">
-                <span class="pin" v-if="showPinned">
+                <span
+                  v-if="showPinned"
+                  class="pin"
+                >
                   <FAIcon
                     icon="thumbtack"
                     class="faint"

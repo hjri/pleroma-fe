@@ -72,9 +72,8 @@
     <Popover
       v-if="button.name === 'bookmark'"
       class="chevron-popover"
-      placement="bottom"
       :trigger="extra ? 'hover' : 'click'"
-      :placement="extra ? 'right' : 'top'"
+      :placement="extra ? 'right' : 'bottom'"
       :offset="extra ? { x: 10 } : { y: 10 }"
       :trigger-attrs="{ class: 'extra-button' }"
     >
