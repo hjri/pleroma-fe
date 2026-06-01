@@ -41,6 +41,7 @@
     .tab-slot-wrapper {
       flex: 1 1 auto;
       height: 100%;
+      padding: 0 1em;
       overflow-y: auto;
       display: grid;
       grid-template-columns: minmax(1em, 1fr) minmax(min-content, 45em) minmax(1em, 1fr);
