@@ -167,6 +167,7 @@ export default defineConfig(async ({ mode, command }) => {
     ],
     css: {
       devSourcemap: true,
+      transformer: 'lightningcss',
     },
     resolve: {
       alias,
