@@ -631,7 +631,7 @@ export const LOCAL_DEFAULT_CONFIG_DEFINITIONS = {
   },
   imageCompression: {
     description: 'Image compression (WebP/JPEG)',
-    default: false,
+    default: true,
   },
   alwaysUseJpeg: {
     description: 'Compress images using JPEG only',
