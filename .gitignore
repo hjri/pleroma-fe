@@ -11,6 +11,5 @@ selenium-debug.log
 .gitlab-ci-local/
 config/local.json
 src/assets/emoji.json
-stats.html
 logs/
 __screenshots__/
