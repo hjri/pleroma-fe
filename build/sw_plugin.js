@@ -3,6 +3,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import * as esbuild from 'esbuild'
 import { build } from 'vite'
+import { exactRegex } from '@rolldown/pluginutils'
 
 import {
   generateServiceWorkerMessages,
@@ -185,27 +186,23 @@ export const buildSwPlugin = ({ swSrc, swDest }) => {
   }
 }
 
-const swMessagesName = 'virtual:pleroma-fe/service_worker_messages'
-const swMessagesNameResolved = '\0' + swMessagesName
-
 export const swMessagesPlugin = () => {
+  const swMessagesName = 'virtual:pleroma-fe/service_worker_messages'
+  const swMessagesNameResolved = '\0' + swMessagesName
+
   return {
     name: 'sw-messages-plugin',
-    resolveId(id) {
-      if (id === swMessagesName) {
-        Object.values(i18nFiles).forEach((f) => {
-          this.addWatchFile(f)
-        })
+    resolveId: {
+      filter: { id: exactRegex(swMessagesName) },
+      handler() {
         return swMessagesNameResolved
-      } else {
-        return null
       }
     },
-    async load(id) {
-      if (id === swMessagesNameResolved) {
+    load: {
+      filter: { id: exactRegex(swMessagesNameResolved) },
+      async handler () {
         return await getSWMessagesAsText()
       }
-      return null
     },
   }
 }
