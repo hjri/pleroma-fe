@@ -1,7 +1,7 @@
 import { mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 
 import nsfwImage from '../../assets/nsfw.png'
-import Flash from '../flash/flash.vue'
 import Popover from '../popover/popover.vue'
 import StillImage from '../still-image/still-image.vue'
 import VideoAttachment from '../video_attachment/video_attachment.vue'
@@ -69,9 +69,13 @@ const Attachment = {
     }
   },
   components: {
-    Flash,
+    Flash: defineAsyncComponent(
+      () => import( 'src/components/flash/flash.vue'),
+    ),
     StillImage,
-    VideoAttachment,
+    VideoAttachment: defineAsyncComponent(
+      () => import( 'src/components/video_attachment/video_attachment.vue'),
+    ),
     Popover,
   },
   computed: {

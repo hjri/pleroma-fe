@@ -3,6 +3,9 @@ import GestureService from '../../services/gesture_service/gesture_service'
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 import { defineAsyncComponent } from 'vue'
 
+import Modal from 'src/components/modal/modal.vue'
+import StillImage from 'src/components/still-image/still-image.vue'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faChevronLeft,
@@ -15,9 +18,7 @@ library.add(faChevronLeft, faChevronRight, faCircleNotch, faTimes)
 
 const MediaModal = {
   components: {
-    StillImage: defineAsyncComponent(
-      () => import( 'src/components/still-image/still-image.vue'),
-    ),
+    StillImage,
     VideoAttachment: defineAsyncComponent(
       () => import( 'src/components/video_attachment/video_attachment.vue'),
     ),
@@ -27,9 +28,7 @@ const MediaModal = {
     SwipeClick: defineAsyncComponent(
       () => import( 'src/components/swipe_click/swipe_click.vue'),
     ),
-    Modal: defineAsyncComponent(
-      () => import( 'src/components/modal/modal.vue'),
-    ),
+    Modal,
     Flash: defineAsyncComponent(
       () => import( 'src/components/flash/flash.vue'),
     ),
