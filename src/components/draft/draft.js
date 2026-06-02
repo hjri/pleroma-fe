@@ -1,9 +1,8 @@
 import { cloneDeep } from 'lodash'
+import { defineAsyncComponent } from 'vue'
 
 import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
-import EditStatusForm from 'src/components/edit_status_form/edit_status_form.vue'
 import Gallery from 'src/components/gallery/gallery.vue'
-import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -15,8 +14,12 @@ library.add(faPollH)
 
 const Draft = {
   components: {
-    PostStatusForm,
-    EditStatusForm,
+    PostStatusForm: defineAsyncComponent(
+      () => import('src/components/post_status_form/post_status_form.vue'),
+    ),
+    EditStatusForm: defineAsyncComponent(
+      () => import('src/components/edit_status_form/edit_status_form.vue'),
+    ),
     ConfirmModal,
     StatusContent,
     Gallery,

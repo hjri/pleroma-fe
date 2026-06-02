@@ -1,4 +1,5 @@
 import { unescape as ldUnescape, uniqBy } from 'lodash'
+import { defineAsyncComponent } from 'vue'
 
 import MentionLink from 'src/components/mention_link/mention_link.vue'
 import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
@@ -11,7 +12,6 @@ import {
 } from '../../services/user_highlighter/user_highlighter.js'
 import AvatarList from '../avatar_list/avatar_list.vue'
 import EmojiReactions from '../emoji_reactions/emoji_reactions.vue'
-import PostStatusForm from '../post_status_form/post_status_form.vue'
 import Quote from '../quote/quote.vue'
 import StatusContent from '../status_content/status_content.vue'
 import StatusPopover from '../status_popover/status_popover.vue'
@@ -117,7 +117,9 @@ const controlledOrUncontrolledSet = (obj, name, val) => {
 const Status = {
   name: 'Status',
   components: {
-    PostStatusForm,
+    PostStatusForm: defineAsyncComponent(
+      () => import('src/components/post_status_form/post_status_form.vue'),
+    ),
     UserAvatar,
     AvatarList,
     Timeago,

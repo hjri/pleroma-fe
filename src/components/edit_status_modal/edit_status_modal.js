@@ -1,13 +1,15 @@
 import get from 'lodash/get'
+import { defineAsyncComponent } from 'vue'
 
-import EditStatusForm from '../edit_status_form/edit_status_form.vue'
 import Modal from '../modal/modal.vue'
 
 import { useEditStatusStore } from 'src/stores/editStatus.js'
 
 const EditStatusModal = {
   components: {
-    EditStatusForm,
+    EditStatusForm: defineAsyncComponent(
+      () => import('src/components/edit_status_form/edit_status_form.vue'),
+    ),
     Modal,
   },
   data() {

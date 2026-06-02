@@ -12,7 +12,6 @@ import MobileNav from './components/mobile_nav/mobile_nav.vue'
 import MobilePostStatusButton from './components/mobile_post_status_button/mobile_post_status_button.vue'
 import NavPanel from './components/nav_panel/nav_panel.vue'
 import PostStatusModal from './components/post_status_modal/post_status_modal.vue'
-import ShoutPanel from './components/shout_panel/shout_panel.vue'
 import SideDrawer from './components/side_drawer/side_drawer.vue'
 import StatusHistoryModal from './components/status_history_modal/status_history_modal.vue'
 import UserPanel from './components/user_panel/user_panel.vue'
@@ -46,7 +45,9 @@ export default {
     InstanceSpecificPanel,
     FeaturesPanel,
     WhoToFollowPanel,
-    ShoutPanel,
+    ShoutPanel: defineAsyncComponent(
+      () => import('src/components/shout_panel/shout_panel.vue'),
+    ),
     MediaModal,
     SideDrawer,
     MobilePostStatusButton,
