@@ -1,10 +1,9 @@
-import EmojiPicker from 'src/components/emoji_picker/emoji_picker.vue'
 import Popover from 'src/components/popover/popover.vue'
-import StatusBookmarkFolderMenu from 'src/components/status_bookmark_folder_menu/status_bookmark_folder_menu.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { defineAsyncComponent } from 'vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -69,8 +68,12 @@ export default {
     'outerClose',
   ],
   components: {
-    StatusBookmarkFolderMenu,
-    EmojiPicker,
+    StatusBookmarkFolderMenu: defineAsyncComponent(
+      () => import( 'src/components/status_bookmark_folder_menu/status_bookmark_folder_menu.vue'),
+    ),
+    EmojiPicker: defineAsyncComponent(
+      () => import( 'src/components/emoji_picker/emoji_picker.vue'),
+    ),
     Popover,
   },
   data: () => ({
