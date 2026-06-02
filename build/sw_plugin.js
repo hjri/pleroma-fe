@@ -134,7 +134,7 @@ export const buildSwPlugin = ({ swSrc, swDest }) => {
             formats: ['iife'],
             name: 'sw_pleroma',
           },
-          emptyOutDir: true,
+          emptyOutDir: false,
           rolldownOptions: {
             output: {
               entryFileNames: swDest,

@@ -4,6 +4,7 @@ import 'virtual:pleroma-fe/service_worker_env'
 
 import { createI18n } from 'vue-i18n'
 
+import { storage } from 'src/lib/storage.js'
 import { INSTANCE_DEFAULT_CONFIG } from 'src/modules/default_config_state.js'
 import { parseNotification } from 'src/services/entity_normalizer/entity_normalizer.service.js'
 import { prepareNotificationObject } from 'src/services/notification_utils/notification_utils.js'
@@ -34,7 +35,7 @@ function getWindowClients() {
 }
 
 const setSettings = async () => {
-  const piniaState = {}
+  const piniaState = await storage.getItem('pinia-local-sync_config')
   const locale = piniaState.prefsStorage.simple.interfaceLanguage || 'en'
   i18n.locale = locale
   const notificationsNativeArray = Object.entries(

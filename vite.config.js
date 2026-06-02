@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { defineConfig } from 'vite'
 import { DevTools } from '@vitejs/devtools'
+
 import eslint from 'vite-plugin-eslint2'
 import stylelint from 'vite-plugin-stylelint'
 import { configDefaults } from 'vitest/config'
@@ -12,6 +13,7 @@ import { getCommitHash } from './build/commit_hash.js'
 import copyPlugin from './build/copy_plugin.js'
 import emojisPlugin from './build/emojis_plugin.js'
 import mswPlugin from './build/msw_plugin.js'
+import { visualizer } from "rollup-plugin-visualizer";
 import {
   buildSwPlugin,
   devSwPlugin,
@@ -144,6 +146,7 @@ export default defineConfig(async ({ mode, command }) => {
       }),
       devSwPlugin({ swSrc, swDest, transformSW, alias }),
       buildSwPlugin({ swSrc, swDest }),
+      visualizer(),
       swMessagesPlugin(),
       emojisPlugin(),
       copyPlugin({
