@@ -11,12 +11,12 @@ import { configDefaults } from 'vitest/config'
 import { getCommitHash } from './build/commit_hash.js'
 import copyPlugin from './build/copy_plugin.js'
 import emojisPlugin from './build/emojis_plugin.js'
+import mswPlugin from './build/msw_plugin.js'
 import {
+  buildSwPlugin,
   devSwPlugin,
   swMessagesPlugin,
 } from './build/sw_plugin.js'
-import { VitePWA } from 'vite-plugin-pwa'
-
 
 const localConfigPath = '<projectRoot>/config/local.json'
 const normalizeTarget = (target) => {
@@ -142,6 +142,9 @@ export default defineConfig(async ({ mode, command }) => {
           // outDir: 'custom-dir', // optional, defaults to Vite's build.outDir
         },
       }),
+      devSwPlugin({ swSrc, swDest, transformSW, alias }),
+      buildSwPlugin({ swSrc, swDest }),
+      swMessagesPlugin(),
       emojisPlugin(),
       copyPlugin({
         inUrl: '/static/ruffle',
@@ -160,8 +163,7 @@ export default defineConfig(async ({ mode, command }) => {
           'node_modules/.cache/stylelintcache',
         ),
       }),
-      swMessagesPlugin(),
-      devSwPlugin({ swSrc, swDest }),
+      ...(mode === 'test' ? [mswPlugin()] : []),
     ],
     optimizeDeps: {
       // For unknown reasons, during vitest, vite will re-optimize the following
@@ -206,9 +208,9 @@ export default defineConfig(async ({ mode, command }) => {
         devtools: {}, // enable devtools mode
         input: {
           main: 'index.html',
-          sw: 'src/sw.js',
         },
         output: {
+          inlineDynamicImports: false,
           entryFileNames(chunkInfo) {
             const id = chunkInfo.facadeModuleId
             if (id.endsWith(swSrc)) {
