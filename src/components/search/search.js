@@ -1,5 +1,4 @@
-import { uniqBy } from 'lodash'
-import map from 'lodash/map'
+import { uniqBy, map } from 'lodash'
 
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 import Conversation from '../conversation/conversation.vue'

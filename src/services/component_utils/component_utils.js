@@ -1,4 +1,4 @@
-import isFunction from 'lodash/isFunction'
+import { isFunction } from 'lodash'
 
 const getComponentOptions = (Component) =>
   isFunction(Component) ? Component.options : Component

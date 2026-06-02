@@ -1,4 +1,4 @@
-import filter from 'lodash/filter'
+import { filter } from 'lodash'
 import { defineStore } from 'pinia'
 
 import { useInterfaceStore } from 'src/stores/interface.js'

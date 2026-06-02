@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused
 
-import isEmpty from 'lodash/isEmpty'
+import { isEmpty } from 'lodash'
 import { h } from 'vue'
 
 import { getComponentProps } from '../../services/component_utils/component_utils'

@@ -1,4 +1,4 @@
-import get from 'lodash/get'
+import { get } from 'lodash'
 import { mapState } from 'pinia'
 
 import RichContent from 'src/components/rich_content/rich_content.jsx'

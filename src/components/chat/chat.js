@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import { throttle } from 'lodash'
 import { mapState as mapPiniaState } from 'pinia'
 import { mapGetters, mapState } from 'vuex'
 
@@ -224,7 +224,7 @@ const Chat = {
         }
       }, 5000)
     },
-    handleScroll: _.throttle(function () {
+    handleScroll: throttle(function () {
       this.lastScrollPosition = getScrollPosition()
       if (!this.currentChat) {
         return

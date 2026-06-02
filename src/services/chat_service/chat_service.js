@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import { maxBy, minBy } from 'lodash'
 
 const empty = (chatId) => {
   return {
@@ -42,12 +42,12 @@ const deleteMessage = (storage, messageId) => {
   delete storage.idIndex[messageId]
 
   if (storage.maxId === messageId) {
-    const lastMessage = _.maxBy(storage.messages, 'id')
+    const lastMessage = maxBy(storage.messages, 'id')
     storage.maxId = lastMessage.id
   }
 
   if (storage.minId === messageId) {
-    const firstMessage = _.minBy(storage.messages, 'id')
+    const firstMessage = minBy(storage.messages, 'id')
     storage.minId = firstMessage.id
   }
 }
