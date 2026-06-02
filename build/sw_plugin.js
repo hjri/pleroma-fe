@@ -141,7 +141,7 @@ export const buildSwPlugin = ({ swSrc, swDest }) => {
             name: 'sw_pleroma',
           },
           emptyOutDir: false,
-          rollupOptions: {
+          rolldownOptions: {
             output: {
               entryFileNames: swDest,
             },

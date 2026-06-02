@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { defineConfig } from 'vite'
+import { DevTools } from '@vitejs/devtools'
 import eslint from 'vite-plugin-eslint2'
 import stylelint from 'vite-plugin-stylelint'
 import { configDefaults } from 'vitest/config'
@@ -135,6 +136,12 @@ export default defineConfig(async ({ mode, command }) => {
         },
       }),
       vueJsx(),
+      DevTools({
+        build: {
+          withApp: true, // generate DevTools output during `vite build`
+          // outDir: 'custom-dir', // optional, defaults to Vite's build.outDir
+        },
+      }),
       devSwPlugin({ swSrc, swDest, transformSW, alias }),
       buildSwPlugin({ swSrc, swDest }),
       swMessagesPlugin(),
@@ -197,12 +204,12 @@ export default defineConfig(async ({ mode, command }) => {
     },
     build: {
       sourcemap: true,
-      rollupOptions: {
+      rolldownOptions: {
+        devtools: {}, // enable devtools mode
         input: {
           main: 'index.html',
         },
         output: {
-          inlineDynamicImports: false,
           entryFileNames(chunkInfo) {
             const id = chunkInfo.facadeModuleId
             if (id.endsWith(swSrc)) {
