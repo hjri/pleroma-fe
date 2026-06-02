@@ -9,6 +9,7 @@ import {
   maybeShowNotification,
 } from '../services/notification_utils/notification_utils.js'
 
+import { useI18nStore } from 'src/stores/i18n.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useReportsStore } from 'src/stores/reports.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
@@ -123,6 +124,7 @@ export const notifications = {
             useMergedConfigStore().mergedConfig.notificationVisibility,
             Object.values(useSyncConfigStore().prefsStorage.simple.muteFilters),
             notification,
+            useI18nStore().i18n,
           )
         } else if (notification.seen) {
           state.idStore[notification.id].seen = true

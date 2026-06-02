@@ -66,6 +66,7 @@ const MobileNav = {
         countExtraNotifications(
           this.$store,
           useMergedConfigStore().mergedConfig,
+          useAnnouncementsStore().unreadAnnouncementCount,
         )
       )
     },

@@ -115,6 +115,7 @@ const Notifications = {
       return countExtraNotifications(
         this.$store,
         useMergedConfigStore().mergedConfig,
+        useAnnouncementsStore().unreadAnnouncementCount,
       )
     },
     unseenCountTitle() {
