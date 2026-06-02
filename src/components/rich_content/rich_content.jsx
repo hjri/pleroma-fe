@@ -324,18 +324,18 @@ export default {
             newAttrs['data-mfm-operator'] = mfmOperator
             switch(mfmOperator) {
               case 'position': {
-                const x = fullAttrs['data-mfm-x'] || 0
-                const y = fullAttrs['data-mfm-y'] || 0
+                const x = fullAttrs['data-mfm-x'].replace(/\.+$/,'') || 0
+                const y = fullAttrs['data-mfm-y'].replace(/\.+$/,'') || 0
                 newAttrs.style = [
                   'transform:',
-                  `translateX(calc(${x} * (var(--emoji-size) / 2)))`,
-                  `translateY(calc(${y} * (var(--emoji-size) / 2)))`,
+                  `translate(calc(${x} * (var(--emoji-size) / 2)), `,
+                  `calc(${y} * (var(--emoji-size) / 2)))`,
                 ].join(' ')
                 break
               }
               case 'scale': {
-                const x = fullAttrs['data-mfm-x'] || 1
-                const y = fullAttrs['data-mfm-y'] || 1
+                const x = fullAttrs['data-mfm-x'].replace(/\.+$/,'') || 1
+                const y = fullAttrs['data-mfm-y'].replace(/\.+$/,'') || 1
                 newAttrs.style = [
                   'transform:',
                   `scale(${x}, ${y})`,
@@ -345,11 +345,9 @@ export default {
               case 'rotate': {
                 const deg = fullAttrs['data-mfm-deg'] || 0
                 newAttrs.style = [
-                  'transform:',
-                  `rotate(${deg}deg);`,
-                  'transform-origin:',
-                  'center',
-                ].join(' ')
+                  `transform: rotate(${deg}deg)`,
+                  'transform-origin: center',
+                ].join(';')
                 break
               }
               case 'bg': {
@@ -363,32 +361,79 @@ export default {
                 const color = fullAttrs['data-mfm-color'] || 0
                 newAttrs.style = [
                   `color: #${color}`,
-                ].join(' ')
+                ].join(';')
                 break
               }
               case 'spin': {
-                const speed = fullAttrs['data-mfm-speed'] = '1s'
-                const delay = fullAttrs['data-mfm-delay'] = 0
+                const speed = fullAttrs['data-mfm-speed'] || '1s'
+                const delay = fullAttrs['data-mfm-delay'] || 0
+                const left = fullAttrs['data-mfm-left'] != null
+                const alternate = fullAttrs['data-mfm-alternate'] != null
                 const y = fullAttrs['data-mfm-y'] != null
                 const x = fullAttrs['data-mfm-x'] != null
+
                 const anim = [
                   x ? 'mfm-spinX' : null,
                   y ? 'mfm-spinY' : null,
                   'mfm-spin'
                 ].filter(a => a)[0]
-                newAttrs.style = `animation: ${speed} linear ${delay} infinite normal none running ${anim}`
+
+                const direction = [
+                  alternate ? 'alternate' : null,
+                  left ? 'reverse' : null,
+                  'normal',
+                ].filter(a => a)[0]
+
+                newAttrs.style = [
+                  `animation-name: ${anim}`,
+                  `animation-duration: ${speed}`,
+                  'animation-iteration-count: infinite',
+                  `animation-delay: ${delay}`,
+                  `animation-direction: ${direction}`,
+                  'animation-fill-mode: none',
+                  'animation-timing-function: linear',
+                ].join(';')
                 break
               }
               case 'flip': {
                 newAttrs.style = 'transform: scaleX(-1)'
                 break
               }
-              case 'jump':
+              case 'border': {
+                const width = fullAttrs['data-mfm-width'] || '0'
+                const style = fullAttrs['data-mfm-style'] || 'solid'
+                const color = fullAttrs['data-mfm-color'] || 'transparent'
+                const radius = fullAttrs['data-mfm-radius'] || '0'
+                const noclip = fullAttrs['data-mfm-noclip'] || false
+
+                newAttrs.style = [
+                  `border: ${width} ${style} ${color}`,
+                  `border-radius: ${radius}`,
+                  `overflow: ${noclip ? 'visible' : 'clip'}`
+                ].join(';')
+                break
+              }
+              case 'tada':
+              case 'jelly':
               case 'twitch':
               case 'shake':
-              case 'bounce':
-                newAttrs.style = `animation: 0.75s linear 0s infinite normal none running mfm-${mfmOperator}`
+              case 'jump':
+              case 'bounce': {
+                const speed = fullAttrs['data-mfm-speed'] || '1s'
+                const delay = fullAttrs['data-mfm-delay'] || 0
+
+                const rules = [
+                  `animation-name: mfm-${mfmOperator}`,
+                  `animation-duration: ${speed}`,
+                  'animation-iteration-count: infinite',
+                  `animation-delay: ${delay}`,
+                  'animation-direction: normal',
+                  'animation-fill-mode: none',
+                  'animation-timing-function: linear',
+                ].join(';')
+                newAttrs.style = rules
                 break
+              }
               default:
                 console.log(mfmOperator, opener)
                 console.log(mfmOperator)

@@ -1,9 +1,16 @@
 .RichContent {
   font-family: var(--font);
+  text-align: center;
 
   .mfm {
     display: inline-block;
     font-size: calc(var(--emoji-size) / 2);
+
+    .emoji {
+      /* Misskey's emoji width knows no bounds */
+      /* stylelint-disable-next-line declaration-no-important */
+      max-width: unset !important;
+    }
   }
 
   &.-faint {
@@ -148,7 +155,7 @@ a .RichContent {
     }
 
     25% {
-        transform: translateY(-16px)
+        transform: translateY(-1em)
     }
 
     50% {
@@ -156,7 +163,7 @@ a .RichContent {
     }
 
     75% {
-        transform: translateY(-8px)
+        transform: translateY(-0.5em)
     }
 
     100% {
