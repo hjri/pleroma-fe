@@ -1,5 +1,6 @@
 import { defineAsyncComponent } from 'vue'
 
+import Status from '../status/status.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
@@ -7,10 +8,7 @@ library.add(faCircleNotch)
 
 export default {
   components: {
-    // Quote and Status depend on each other, dynamic import to break this circular dependency
-    Status: defineAsyncComponent(
-      () => import('src/components/status/status.vue'),
-    ),
+    Status,
   },
   name: 'Quote',
   props: {
