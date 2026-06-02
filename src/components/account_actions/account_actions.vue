@@ -94,7 +94,7 @@
       </template>
     </Popover>
     <teleport to="#modal">
-      <confirm-modal
+      <ConfirmModal
         v-if="showingConfirmBlock && !blockExpiration"
         ref="blockDialog"
         :title="$t('user_card.block_confirm_title')"
@@ -114,10 +114,10 @@
             />
           </template>
         </i18n-t>
-      </confirm-modal>
+      </ConfirmModal>
     </teleport>
     <teleport to="#modal">
-      <confirm-modal
+      <ConfirmModal
         v-if="showingConfirmRemoveFollower"
         :title="$t('user_card.remove_follower_confirm_title')"
         :confirm-text="$t('user_card.remove_follower_confirm_accept_button')"
@@ -136,7 +136,7 @@
             />
           </template>
         </i18n-t>
-      </confirm-modal>
+      </ConfirmModal>
       <UserTimedFilterModal
         v-if="blockExpiration"
         ref="timedBlockDialog"

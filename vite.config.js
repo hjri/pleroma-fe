@@ -1,10 +1,9 @@
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { DevTools } from '@vitejs/devtools'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { defineConfig } from 'vite'
-import { DevTools } from '@vitejs/devtools'
-
 import eslint from 'vite-plugin-eslint2'
 import stylelint from 'vite-plugin-stylelint'
 import { configDefaults } from 'vitest/config'

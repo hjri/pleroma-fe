@@ -1,6 +1,6 @@
 import { mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 
-import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import Popover from 'src/components/popover/popover.vue'
 import ActionButtonContainer from './action_button_container.vue'
 import { BUTTONS } from './buttons_definitions.js'
@@ -33,7 +33,10 @@ const StatusActionButtons = {
   },
   components: {
     Popover,
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
+
     ActionButtonContainer,
   },
   computed: {

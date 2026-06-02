@@ -106,7 +106,7 @@
       :logout="logout"
     />
     <teleport to="#modal">
-      <confirm-modal
+      <ConfirmModal
         v-if="showingConfirmLogout"
         :title="$t('login.logout_confirm_title')"
         :confirm-danger="true"
@@ -116,7 +116,7 @@
         @cancelled="hideConfirmLogout"
       >
         {{ $t('login.logout_confirm') }}
-      </confirm-modal>
+      </ConfirmModal>
     </teleport>
   </div>
 </template>

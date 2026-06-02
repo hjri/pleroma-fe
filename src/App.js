@@ -60,10 +60,11 @@ export default {
     UserReportingModal,
     PostStatusModal,
     EditStatusModal: defineAsyncComponent(
-      () => import( './components/edit_status_modal/edit_status_modal.vue'),
+      () => import('./components/edit_status_modal/edit_status_modal.vue'),
     ),
     StatusHistoryModal: defineAsyncComponent(
-      () => import( './components/status_history_modal/status_history_modal.vue'),
+      () =>
+        import('./components/status_history_modal/status_history_modal.vue'),
     ),
     GlobalNoticeList,
   },

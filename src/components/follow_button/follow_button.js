@@ -1,14 +1,17 @@
+import { defineAsyncComponent } from 'vue'
+
 import {
   requestFollow,
   requestUnfollow,
 } from '../../services/follow_manipulate/follow_manipulate'
-import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 export default {
   props: ['relationship', 'user', 'labelFollowing', 'buttonClass'],
   components: {
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
   },
   data() {
     return {

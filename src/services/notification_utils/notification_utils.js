@@ -87,10 +87,7 @@ export const maybeShowNotification = (
   )
     return
 
-  const notificationObject = prepareNotificationObject(
-    notification,
-    i18n,
-  )
+  const notificationObject = prepareNotificationObject(notification, i18n)
   showDesktopNotification(rootState, notificationObject)
 }
 
@@ -193,7 +190,11 @@ export const prepareNotificationObject = (notification, i18n) => {
   return notifObj
 }
 
-export const countExtraNotifications = (store, mergedConfig, unreadAnnouncementCount) => {
+export const countExtraNotifications = (
+  store,
+  mergedConfig,
+  unreadAnnouncementCount,
+) => {
   const rootGetters = store.rootGetters || store.getters
 
   if (!mergedConfig.showExtraNotifications) {

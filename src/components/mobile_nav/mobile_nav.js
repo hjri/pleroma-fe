@@ -2,7 +2,6 @@ import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 import { mapGetters } from 'vuex'
 
-import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import NavigationPins from 'src/components/navigation/navigation_pins.vue'
 import SideDrawer from 'src/components/side_drawer/side_drawer.vue'
 import GestureService from '../../services/gesture_service/gesture_service'
@@ -34,7 +33,9 @@ const MobileNav = {
       () => import('src/components/notifications/notifications.vue'),
     ),
     NavigationPins,
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
   },
   data: () => ({
     notificationsCloseGesture: undefined,

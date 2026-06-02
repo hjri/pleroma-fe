@@ -1,4 +1,4 @@
-import { maxBy, minBy } from 'lodash'
+import { maxBy, minBy, orderBy, sortBy, uniqueId } from 'lodash'
 
 const empty = (chatId) => {
   return {
@@ -57,7 +57,7 @@ const cullOlderMessages = (storage) => {
   const minIndex = maxIndex - 50
   if (maxIndex <= 50) return
 
-  storage.messages = _.sortBy(storage.messages, ['id'])
+  storage.messages = sortBy(storage.messages, ['id'])
   storage.minId = storage.messages[minIndex].id
   for (const message of storage.messages) {
     if (message.id < storage.minId) {
@@ -78,7 +78,7 @@ const handleMessageError = (storage, fakeId, isRetry) => {
     fakeMessage.pending = false
     if (!isRetry) {
       // Ensure the failed message doesn't stay at the bottom of the list.
-      const lastPersistedMessage = _.orderBy(
+      const lastPersistedMessage = orderBy(
         storage.messages,
         ['pending', 'id'],
         ['asc', 'desc'],
@@ -166,11 +166,7 @@ const getView = (storage) => {
   }
 
   const result = []
-  const messages = _.orderBy(
-    storage.messages,
-    ['pending', 'id'],
-    ['asc', 'asc'],
-  )
+  const messages = orderBy(storage.messages, ['pending', 'id'], ['asc', 'asc'])
   const firstMessage = messages[0]
   let previousMessage = messages[messages.length - 1]
   let currentMessageChainId
@@ -228,7 +224,7 @@ const getView = (storage) => {
         previousMessage.data.account_id) !== message.account_id ||
       afterDate
     ) {
-      currentMessageChainId = _.uniqueId()
+      currentMessageChainId = uniqueId()
       object.isHead = true
       object.messageChainId = currentMessageChainId
     }

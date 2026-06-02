@@ -1,4 +1,9 @@
-import { escape as ldEscape, isEqual, merge, unescape as ldUnescape } from 'lodash'
+import {
+  isEqual,
+  escape as ldEscape,
+  unescape as ldUnescape,
+  merge,
+} from 'lodash'
 import { mapState } from 'pinia'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'

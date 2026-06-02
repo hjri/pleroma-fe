@@ -1,6 +1,7 @@
 import { defineAsyncComponent } from 'vue'
 
 import Status from '../status/status.vue'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 

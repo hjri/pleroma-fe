@@ -1,7 +1,6 @@
 import { cloneDeep } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 
-import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import Gallery from 'src/components/gallery/gallery.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
 
@@ -20,7 +19,10 @@ const Draft = {
     EditStatusForm: defineAsyncComponent(
       () => import('src/components/edit_status_form/edit_status_form.vue'),
     ),
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
+
     StatusContent,
     Gallery,
   },

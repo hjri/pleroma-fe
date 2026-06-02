@@ -1,3 +1,4 @@
+import { defineAsyncComponent } from 'vue'
 import { mapState } from 'vuex'
 
 import RichContent from 'src/components/rich_content/rich_content.jsx'
@@ -6,7 +7,6 @@ import {
   highlightClass,
   highlightStyle,
 } from '../../services/user_highlighter/user_highlighter.js'
-import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 import Report from '../report/report.vue'
 import Status from '../status/status.vue'
 import StatusContent from '../status_content/status_content.vue'
@@ -69,7 +69,9 @@ const Notification = {
     RichContent,
     UserPopover,
     UserLink,
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
   },
   mounted() {
     document.addEventListener('selectionchange', this.onContentSelect)

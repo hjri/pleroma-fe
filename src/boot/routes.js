@@ -1,16 +1,16 @@
+import { defineAsyncComponent } from 'vue'
+
 import BookmarkTimeline from 'src/components/bookmark_timeline/bookmark_timeline.vue'
 import BubbleTimeline from 'src/components/bubble_timeline/bubble_timeline.vue'
 import ConversationPage from 'src/components/conversation-page/conversation-page.vue'
 import DMs from 'src/components/dm_timeline/dm_timeline.vue'
 import FriendsTimeline from 'src/components/friends_timeline/friends_timeline.vue'
+import NavPanel from 'src/components/nav_panel/nav_panel.vue'
 import PublicAndExternalTimeline from 'src/components/public_and_external_timeline/public_and_external_timeline.vue'
 import PublicTimeline from 'src/components/public_timeline/public_timeline.vue'
+import QuotesTimeline from 'src/components/quotes_timeline/quotes_timeline.vue'
 import RemoteUserResolver from 'src/components/remote_user_resolver/remote_user_resolver.vue'
 import TagTimeline from 'src/components/tag_timeline/tag_timeline.vue'
-import { defineAsyncComponent } from 'vue'
-
-import NavPanel from 'src/components/nav_panel/nav_panel.vue'
-import QuotesTimeline from 'src/components/quotes_timeline/quotes_timeline.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -141,14 +141,14 @@ export default (store) => {
       name: 'login',
       path: '/login',
       component: defineAsyncComponent(
-        () => import( 'src/components/auth_form/auth_form.js'),
+        () => import('src/components/auth_form/auth_form.js'),
       ),
     },
     {
       name: 'shout-panel',
       path: '/shout-panel',
       component: defineAsyncComponent(
-        () => import( 'src/components/shout_panel/shout_panel.vue'),
+        () => import('src/components/shout_panel/shout_panel.vue'),
       ),
       props: () => ({ floating: false }),
     },
@@ -164,7 +164,7 @@ export default (store) => {
       name: 'search',
       path: '/search',
       component: defineAsyncComponent(
-        () => import( 'src/components/search/search.vue'),
+        () => import('src/components/search/search.vue'),
       ),
       props: (route) => ({ query: route.query.query }),
     },
@@ -172,7 +172,7 @@ export default (store) => {
       name: 'who-to-follow',
       path: '/who-to-follow',
       component: defineAsyncComponent(
-        () => import( 'src/components/who_to_follow/who_to_follow.vue'),
+        () => import('src/components/who_to_follow/who_to_follow.vue'),
       ),
       beforeEnter: validateAuthenticatedRoute,
     },
@@ -180,21 +180,22 @@ export default (store) => {
       name: 'about',
       path: '/about',
       component: defineAsyncComponent(
-        () => import( 'src/components/about/about.vue'),
+        () => import('src/components/about/about.vue'),
       ),
     },
     {
       name: 'announcements',
       path: '/announcements',
       component: defineAsyncComponent(
-        () => import( 'src/components/announcements_page/announcements_page.vue'),
+        () =>
+          import('src/components/announcements_page/announcements_page.vue'),
       ),
     },
     {
       name: 'drafts',
       path: '/drafts',
       component: defineAsyncComponent(
-        () => import( 'src/components/drafts/drafts.vue'),
+        () => import('src/components/drafts/drafts.vue'),
       ),
     },
     {
@@ -215,28 +216,28 @@ export default (store) => {
       name: 'lists',
       path: '/lists',
       component: defineAsyncComponent(
-        () => import( 'src/components/lists/lists.vue'),
+        () => import('src/components/lists/lists.vue'),
       ),
     },
     {
       name: 'lists-timeline',
       path: '/lists/:id',
       component: defineAsyncComponent(
-        () => import( 'src/components/lists_timeline/lists_timeline.vue'),
+        () => import('src/components/lists_timeline/lists_timeline.vue'),
       ),
     },
     {
       name: 'lists-edit',
       path: '/lists/:id/edit',
       component: defineAsyncComponent(
-        () => import( 'src/components/lists_edit/lists_edit.vue'),
+        () => import('src/components/lists_edit/lists_edit.vue'),
       ),
     },
     {
       name: 'lists-new',
       path: '/lists/new',
       component: defineAsyncComponent(
-        () => import( 'src/components/lists_edit/lists_edit.vue'),
+        () => import('src/components/lists_edit/lists_edit.vue'),
       ),
     },
     {
@@ -250,14 +251,17 @@ export default (store) => {
       name: 'bookmark-folders',
       path: '/bookmark_folders',
       component: defineAsyncComponent(
-        () => import( 'src/components/bookmark_folders/bookmark_folders.vue'),
+        () => import('src/components/bookmark_folders/bookmark_folders.vue'),
       ),
     },
     {
       name: 'bookmark-folder-new',
       path: '/bookmarks/new-folder',
       component: defineAsyncComponent(
-        () => import( 'src/components/bookmark_folder_edit/bookmark_folder_edit.vue'),
+        () =>
+          import(
+            'src/components/bookmark_folder_edit/bookmark_folder_edit.vue'
+          ),
       ),
     },
     {
@@ -269,7 +273,10 @@ export default (store) => {
       name: 'bookmark-folder-edit',
       path: '/bookmarks/:id/edit',
       component: defineAsyncComponent(
-        () => import( 'src/components/bookmark_folder_edit/bookmark_folder_edit.vue'),
+        () =>
+          import(
+            'src/components/bookmark_folder_edit/bookmark_folder_edit.vue'
+          ),
       ),
     },
   ]
@@ -280,7 +287,7 @@ export default (store) => {
         name: 'chat',
         path: '/users/:username/chats/:recipient_id',
         component: defineAsyncComponent(
-          () => import( 'src/components/chat/chat.vue'),
+          () => import('src/components/chat/chat.vue'),
         ),
         meta: { dontScroll: false },
         beforeEnter: validateAuthenticatedRoute,
@@ -289,7 +296,7 @@ export default (store) => {
         name: 'chats',
         path: '/users/:username/chats',
         component: defineAsyncComponent(
-          () => import( 'src/components/chat_list/chat_list.vue'),
+          () => import('src/components/chat_list/chat_list.vue'),
         ),
         meta: { dontScroll: false },
         beforeEnter: validateAuthenticatedRoute,

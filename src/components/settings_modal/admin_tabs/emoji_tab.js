@@ -1,9 +1,9 @@
 import Checkbox from 'components/checkbox/checkbox.vue'
-import ConfirmModal from 'components/confirm_modal/confirm_modal.vue'
 import Popover from 'components/popover/popover.vue'
 import Select from 'components/select/select.vue'
 import StillImage from 'components/still-image/still-image.vue'
 import { assign, clone } from 'lodash'
+import { defineAsyncComponent } from 'vue'
 
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 import EmojiEditingPopover from '../helpers/emoji_editing_popover.vue'
@@ -33,7 +33,10 @@ const EmojiTab = {
     StillImage,
     Select,
     Popover,
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
+
     ModifiedIndicator,
     EmojiEditingPopover,
   },
