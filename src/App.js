@@ -3,7 +3,6 @@ import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 
 import DesktopNav from './components/desktop_nav/desktop_nav.vue'
-import EditStatusModal from './components/edit_status_modal/edit_status_modal.vue'
 import FeaturesPanel from './components/features_panel/features_panel.vue'
 import GlobalNoticeList from './components/global_notice_list/global_notice_list.vue'
 import InstanceSpecificPanel from './components/instance_specific_panel/instance_specific_panel.vue'
@@ -13,7 +12,6 @@ import MobilePostStatusButton from './components/mobile_post_status_button/mobil
 import NavPanel from './components/nav_panel/nav_panel.vue'
 import PostStatusModal from './components/post_status_modal/post_status_modal.vue'
 import SideDrawer from './components/side_drawer/side_drawer.vue'
-import StatusHistoryModal from './components/status_history_modal/status_history_modal.vue'
 import UserPanel from './components/user_panel/user_panel.vue'
 import UserReportingModal from './components/user_reporting_modal/user_reporting_modal.vue'
 import WhoToFollowPanel from './components/who_to_follow_panel/who_to_follow_panel.vue'
@@ -61,8 +59,12 @@ export default {
     ),
     UserReportingModal,
     PostStatusModal,
-    EditStatusModal,
-    StatusHistoryModal,
+    EditStatusModal: defineAsyncComponent(
+      () => import( './components/edit_status_modal/edit_status_modal.vue'),
+    ),
+    StatusHistoryModal: defineAsyncComponent(
+      () => import( './components/status_history_modal/status_history_modal.vue'),
+    ),
     GlobalNoticeList,
   },
   data: () => ({
