@@ -10,6 +10,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faBookmark as faBookmarkRegular,
   faStar as faStarRegular,
+  faFaceSmileBeam,
 } from '@fortawesome/free-regular-svg-icons'
 import {
   faBookmark,
@@ -24,7 +25,6 @@ import {
   faReply,
   faRetweet,
   faShareAlt,
-  faSmileBeam,
   faStar,
   faThumbtack,
   faTimes,
@@ -45,7 +45,7 @@ library.add(
   faRetweet,
   faStar,
   faStarRegular,
-  faSmileBeam,
+  faFaceSmileBeam,
 
   faBookmark,
   faBookmarkRegular,
