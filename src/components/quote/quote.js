@@ -7,7 +7,10 @@ library.add(faCircleNotch)
 
 export default {
   components: {
-    Status: defineAsyncComponent(() => import('../status/status.vue')),
+    // Quote and Status depend on each other, dynamic import to break this circular dependency
+    Status: defineAsyncComponent(
+      () => import('src/components/status/status.vue'),
+    ),
   },
   name: 'Quote',
   props: {

@@ -1,10 +1,10 @@
 import { mapActions, mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 import { mapGetters } from 'vuex'
 
 import { USERNAME_ROUTES } from 'src/components/navigation/navigation.js'
 import GestureService from '../../services/gesture_service/gesture_service'
 import { unseenNotificationsFromStore } from '../../services/notification_utils/notification_utils'
-import UserCard from '../user_card/user_card.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -64,7 +64,11 @@ const SideDrawer = {
       this.$store.dispatch('startFetchingFollowRequests')
     }
   },
-  components: { UserCard },
+  components: {
+    UserCard: defineAsyncComponent(
+      () => import('src/components/user_card/user_card.vue'),
+    ),
+  },
   computed: {
     currentUser() {
       return this.$store.state.users.currentUser

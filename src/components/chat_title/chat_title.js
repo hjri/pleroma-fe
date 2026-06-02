@@ -1,7 +1,8 @@
 import { defineAsyncComponent } from 'vue'
 
 import RichContent from 'src/components/rich_content/rich_content.jsx'
-import UserAvatar from '../user_avatar/user_avatar.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+import UserPopover from 'src/components/user_popover/user_popover.vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
@@ -10,9 +11,7 @@ export default {
   components: {
     UserAvatar,
     RichContent,
-    UserPopover: defineAsyncComponent(
-      () => import('../user_popover/user_popover.vue'),
-    ),
+    UserPopover,
   },
   props: ['user', 'withAvatar'],
   computed: {

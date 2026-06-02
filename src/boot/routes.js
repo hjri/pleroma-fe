@@ -10,11 +10,9 @@ import DMs from 'components/dm_timeline/dm_timeline.vue'
 import Drafts from 'components/drafts/drafts.vue'
 import FollowRequests from 'components/follow_requests/follow_requests.vue'
 import FriendsTimeline from 'components/friends_timeline/friends_timeline.vue'
-import Interactions from 'components/interactions/interactions.vue'
 import Lists from 'components/lists/lists.vue'
 import ListsEdit from 'components/lists_edit/lists_edit.vue'
 import ListsTimeline from 'components/lists_timeline/lists_timeline.vue'
-import Notifications from 'components/notifications/notifications.vue'
 import OAuthCallback from 'components/oauth_callback/oauth_callback.vue'
 import PasswordReset from 'components/password_reset/password_reset.vue'
 import PublicAndExternalTimeline from 'components/public_and_external_timeline/public_and_external_timeline.vue'
@@ -24,8 +22,8 @@ import RemoteUserResolver from 'components/remote_user_resolver/remote_user_reso
 import Search from 'components/search/search.vue'
 import ShoutPanel from 'components/shout_panel/shout_panel.vue'
 import TagTimeline from 'components/tag_timeline/tag_timeline.vue'
-import UserProfile from 'components/user_profile/user_profile.vue'
 import WhoToFollow from 'components/who_to_follow/who_to_follow.vue'
+import { defineAsyncComponent } from 'vue'
 
 import NavPanel from 'src/components/nav_panel/nav_panel.vue'
 import BookmarkFolderEdit from '../components/bookmark_folder_edit/bookmark_folder_edit.vue'
@@ -100,12 +98,16 @@ export default (store) => {
     {
       name: 'external-user-profile',
       path: '/users/$:id',
-      component: UserProfile,
+      component: defineAsyncComponent(
+        () => import('src/components/user_profile/user_profile.vue'),
+      ),
     },
     {
       name: 'interactions',
       path: '/users/:username/interactions',
-      component: Interactions,
+      component: defineAsyncComponent(
+        () => import('src/components/interactions/interactions.vue'),
+      ),
       beforeEnter: validateAuthenticatedRoute,
     },
     {
@@ -135,7 +137,9 @@ export default (store) => {
     {
       name: 'notifications',
       path: '/:username/notifications',
-      component: Notifications,
+      component: defineAsyncComponent(
+        () => import('src/components/notifications/notifications.vue'),
+      ),
       props: () => ({ disableTeleport: true }),
       beforeEnter: validateAuthenticatedRoute,
     },
@@ -171,8 +175,20 @@ export default (store) => {
       component: AnnouncementsPage,
     },
     { name: 'drafts', path: '/drafts', component: Drafts },
-    { name: 'user-profile', path: '/users/:name', component: UserProfile },
-    { name: 'legacy-user-profile', path: '/:name', component: UserProfile },
+    {
+      name: 'user-profile',
+      path: '/users/:name',
+      component: defineAsyncComponent(
+        () => import('src/components/user_profile/user_profile.vue'),
+      ),
+    },
+    {
+      name: 'legacy-user-profile',
+      path: '/:name',
+      component: defineAsyncComponent(
+        () => import('src/components/user_profile/user_profile.vue'),
+      ),
+    },
     { name: 'lists', path: '/lists', component: Lists },
     { name: 'lists-timeline', path: '/lists/:id', component: ListsTimeline },
     { name: 'lists-edit', path: '/lists/:id/edit', component: ListsEdit },

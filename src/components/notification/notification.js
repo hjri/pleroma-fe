@@ -12,7 +12,6 @@ import Status from '../status/status.vue'
 import StatusContent from '../status_content/status_content.vue'
 import Timeago from '../timeago/timeago.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
-import UserCard from '../user_card/user_card.vue'
 import UserLink from '../user_link/user_link.vue'
 import UserPopover from '../user_popover/user_popover.vue'
 
@@ -64,7 +63,6 @@ const Notification = {
   components: {
     StatusContent,
     UserAvatar,
-    UserCard,
     Timeago,
     Status,
     Report,

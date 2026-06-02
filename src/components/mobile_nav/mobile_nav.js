@@ -1,15 +1,15 @@
 import { mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 import { mapGetters } from 'vuex'
 
+import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import NavigationPins from 'src/components/navigation/navigation_pins.vue'
+import SideDrawer from 'src/components/side_drawer/side_drawer.vue'
 import GestureService from '../../services/gesture_service/gesture_service'
 import {
   countExtraNotifications,
   unseenNotificationsFromStore,
 } from '../../services/notification_utils/notification_utils'
-import ConfirmModal from '../confirm_modal/confirm_modal.vue'
-import Notifications from '../notifications/notifications.vue'
-import SideDrawer from '../side_drawer/side_drawer.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -30,7 +30,9 @@ library.add(faTimes, faBell, faBars, faArrowUp, faMinus, faCheckDouble)
 const MobileNav = {
   components: {
     SideDrawer,
-    Notifications,
+    Notifications: defineAsyncComponent(
+      () => import('src/components/notifications/notifications.vue'),
+    ),
     NavigationPins,
     ConfirmModal,
   },
