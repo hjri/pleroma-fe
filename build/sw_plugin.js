@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import * as esbuild from 'esbuild'
 import { build } from 'vite'
 
 import {
@@ -22,6 +23,10 @@ const getProdSwEnv = ({ assets }) =>
 
 export const devSwPlugin = ({ swSrc, swDest, transformSW, alias }) => {
   const swFullSrc = resolve(projectRoot, swSrc)
+  const esbuildAlias = {}
+  Object.entries(alias).forEach(([source, dest]) => {
+    esbuildAlias[source] = dest.startsWith('/') ? projectRoot + dest : dest
+  })
 
   return {
     name: 'dev-sw-plugin',
@@ -53,11 +58,12 @@ export const devSwPlugin = ({ swSrc, swDest, transformSW, alias }) => {
      */
     async transform(code, id) {
       if (id === swFullSrc && transformSW) {
-        const res = await build({
+        const res = await esbuild.build({
           entryPoints: [swSrc],
           bundle: true,
           write: false,
           outfile: 'sw-pleroma.js',
+          alias: esbuildAlias,
           plugins: [
             {
               name: 'vite-like-root-resolve',
