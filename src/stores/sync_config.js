@@ -796,11 +796,12 @@ export const useSyncConfigStore = defineStore('sync_config', {
     afterLoad(state) {
       console.debug('Validating persisted state of SyncConfig')
       const newState = { ...state }
+      newState.prefsStorage = newState.prefsStorage || {}
       const newEntries = Object.entries(ROOT_CONFIG).map(([path, value]) => {
         const definition = ROOT_CONFIG_DEFINITIONS[path]
         const finalValue = validateSetting({
           path,
-          value: newState.prefsStorage.simple[path],
+          value: newState.prefsStorage.simple?.[path],
           definition,
           throwError: false,
           validateObjects: false,
