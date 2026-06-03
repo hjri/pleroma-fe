@@ -165,7 +165,7 @@
     "content_warning": "Předmět (volitelný)",
     "default": "Právě jsem přistál v L.A.",
     "direct_warning": "Tento příspěvek uvidí pouze všichni zmínění uživatelé.",
-    "posting": "Přispívání",
+    "posting": "Odesílání",
     "scope": {
       "direct": "Přímý - Poslat pouze zmíněným uživatelům",
       "private": "Pouze pro sledující - Poslat pouze sledujícím",
