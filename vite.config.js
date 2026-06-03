@@ -198,7 +198,6 @@ export default defineConfig(async ({ mode, command }) => {
           main: 'index.html',
         },
         output: {
-          inlineDynamicImports: false,
           entryFileNames(chunkInfo) {
             const id = chunkInfo.facadeModuleId
             if (id.endsWith(swSrc)) {

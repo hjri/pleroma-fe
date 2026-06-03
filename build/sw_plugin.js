@@ -27,12 +27,13 @@ export const devSwPlugin = ({ swSrc, swDest, transformSW, alias }) => {
   Object.entries(alias).forEach(([source, dest]) => {
     esbuildAlias[source] = dest.startsWith('/') ? projectRoot + dest : dest
   })
+  let localConfig
 
   return {
     name: 'dev-sw-plugin',
     apply: 'serve',
-    configResolved() {
-      /* no-op */
+    configResolved(config) {
+      localConfig = config
     },
     resolveId(id) {
       const name = id.startsWith('/') ? id.slice(1) : id
@@ -57,9 +58,13 @@ export const devSwPlugin = ({ swSrc, swDest, transformSW, alias }) => {
      * https://bugzilla.mozilla.org/show_bug.cgi?id=1360870
      */
     async transform(code, id) {
-      if (id === swFullSrc && transformSW) {
+      if (id === swFullSrc) {
         const res = await esbuild.build({
           entryPoints: [swSrc],
+          define: {
+            'process.env': JSON.stringify(localConfig.define['process.env']),
+            'COMMIT_HASH': JSON.stringify(localConfig.define['COMMIT_HASH']),
+          },
           bundle: true,
           write: false,
           outfile: 'sw-pleroma.js',
@@ -135,16 +140,17 @@ export const buildSwPlugin = ({ swSrc, swDest }) => {
         publicDir: false,
         build: {
           ...resolvedConfig.build,
-          lib: {
-            entry: swSrc,
-            formats: ['iife'],
-            name: 'sw_pleroma',
-          },
           emptyOutDir: false,
           rolldownOptions: {
+            input: {
+              main: swSrc
+            },
+            context: 'self',
             output: {
               entryFileNames: swDest,
-            },
+              codeSplitting: false,
+              format: 'iife',
+            }
           },
         },
         configFile: false,
