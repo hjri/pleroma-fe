@@ -139,7 +139,7 @@ const EmojiPicker = {
   },
   components: {
     StickerPicker: defineAsyncComponent(
-      () => import('../sticker_picker/sticker_picker.vue'),
+      () => import('src/components/sticker_picker/sticker_picker.vue'),
     ),
     Checkbox,
     StillImage,
