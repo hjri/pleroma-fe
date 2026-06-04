@@ -132,12 +132,6 @@ export default defineConfig(async ({ mode, command }) => {
         },
       }),
       vueJsx(),
-      DevTools({
-        build: {
-          withApp: true, // generate DevTools output during `vite build`
-          // outDir: 'custom-dir', // optional, defaults to Vite's build.outDir
-        },
-      }),
       buildSwPlugin({ swSrc, swDest }),
       swMessagesPlugin(),
       emojisPlugin(),
@@ -162,7 +156,6 @@ export default defineConfig(async ({ mode, command }) => {
     ],
     css: {
       devSourcemap: true,
-      transformer: 'lightningcss',
     },
     resolve: {
       alias,
@@ -185,10 +178,10 @@ export default defineConfig(async ({ mode, command }) => {
       __VUE_PROD_DEVTOOLS__: false,
       __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
     },
+    // devtools: { enabled: true },
     build: {
       sourcemap: true,
       rolldownOptions: {
-        devtools: {}, // enable devtools mode
         input: {
           main: 'index.html',
         },

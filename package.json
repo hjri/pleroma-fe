@@ -43,7 +43,7 @@
     "localforage": "1.10.0",
     "parse-link-header": "2.0.0",
     "phoenix": "1.8.1",
-    "pinia": "^3.0.0",
+    "pinia": "^3.0.4",
     "punycode.js": "2.3.1",
     "qrcode": "1.5.4",
     "querystring-es3": "0.2.1",

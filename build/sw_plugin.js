@@ -110,6 +110,7 @@ export const buildSwPlugin = ({ swSrc, swDest }) => {
       order: 'post',
       sequential: true,
       async handler() {
+        if (process.env.VITEST) return
         console.info('Building service worker for production')
         await build(config)
       },
