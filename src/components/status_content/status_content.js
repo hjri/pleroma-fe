@@ -1,9 +1,9 @@
 import { mapState as mapPiniaState } from 'pinia'
 import { mapGetters, mapState } from 'vuex'
+import { defineAsyncComponent } from 'vue'
 
 import StatusBody from 'src/components/status_body/status_body.vue'
 import Attachment from '../attachment/attachment.vue'
-import Gallery from '../gallery/gallery.vue'
 import LinkPreview from '../link-preview/link-preview.vue'
 import Poll from '../poll/poll.vue'
 
@@ -132,7 +132,9 @@ const StatusContent = {
   components: {
     Attachment,
     Poll,
-    Gallery,
+    Gallery: defineAsyncComponent(
+      () => import( 'src/components/gallery/gallery.vue')
+    ),
     LinkPreview,
     StatusBody,
   },

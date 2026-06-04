@@ -1,17 +1,15 @@
 import { debounce, map, reject, uniqBy } from 'lodash'
 import { mapActions, mapState } from 'pinia'
 import { mapGetters } from 'vuex'
+import { defineAsyncComponent } from 'vue'
 
 import Attachment from 'src/components/attachment/attachment.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import DraftCloser from 'src/components/draft_closer/draft_closer.vue'
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
 import suggestor from 'src/components/emoji_input/suggestor.js'
-import Gallery from 'src/components/gallery/gallery.vue'
 import MediaUpload from 'src/components/media_upload/media_upload.vue'
-import PollForm from 'src/components/poll/poll_form.vue'
 import Popover from 'src/components/popover/popover.vue'
-import QuoteForm from 'src/components/quote/quote_form.vue'
 import ScopeSelector from 'src/components/scope_selector/scope_selector.vue'
 import Select from 'src/components/select/select.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
@@ -141,14 +139,20 @@ const PostStatusForm = {
   components: {
     MediaUpload,
     EmojiInput,
-    PollForm,
-    QuoteForm,
+    PollForm: defineAsyncComponent(
+      () => import( 'src/components/poll/poll_form.vue')
+    ),
+    QuoteForm: defineAsyncComponent(
+      () => import( 'src/components/quote/quote_form.vue')
+    ),
     ScopeSelector,
     Checkbox,
     Select,
     Attachment,
     StatusContent,
-    Gallery,
+    Gallery: defineAsyncComponent(
+      () => import( 'src/components/gallery/gallery.vue')
+    ),
     DraftCloser,
     Popover,
   },

@@ -1,7 +1,6 @@
 import { cloneDeep } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 
-import Gallery from 'src/components/gallery/gallery.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -24,7 +23,9 @@ const Draft = {
     ),
 
     StatusContent,
-    Gallery,
+    Gallery: defineAsyncComponent(
+      () => import( 'src/components/gallery/gallery.vue')
+    ),
   },
   props: {
     draft: {

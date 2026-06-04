@@ -396,7 +396,7 @@
           />
         </button>
       </div>
-      <gallery
+      <Gallery
         v-if="newStatus.files && newStatus.files.length > 0"
         class="attachments"
         :grid="true"

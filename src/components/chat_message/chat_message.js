@@ -1,9 +1,9 @@
 import { mapState as mapPiniaState } from 'pinia'
 import { mapGetters, mapState } from 'vuex'
+import { defineAsyncComponent } from 'vue'
 
 import Attachment from 'src/components/attachment/attachment.vue'
 import ChatMessageDate from 'src/components/chat_message_date/chat_message_date.vue'
-import Gallery from 'src/components/gallery/gallery.vue'
 import LinkPreview from 'src/components/link-preview/link-preview.vue'
 import Popover from 'src/components/popover/popover.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
@@ -34,7 +34,9 @@ const ChatMessage = {
     Attachment,
     StatusContent,
     UserAvatar,
-    Gallery,
+    Gallery: defineAsyncComponent(
+      () => import( 'src/components/gallery/gallery.vue'),
+    ),
     LinkPreview,
     ChatMessageDate,
     UserPopover,

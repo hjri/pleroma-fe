@@ -39,7 +39,7 @@
             class="faint"
           >{{ $t('drafts.empty') }}</p>
         </span>
-        <gallery
+        <Gallery
           v-if="draft.files?.length !== 0"
           class="attachments media-body"
           :compact="true"
