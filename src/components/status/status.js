@@ -13,6 +13,7 @@ import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserLink from 'src/components/user_link/user_link.vue'
 import UserListPopover from 'src/components/user_list_popover/user_list_popover.vue'
 import UserPopover from 'src/components/user_popover/user_popover.vue'
+import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import { muteFilterHits } from '../../services/status_parser/status_parser.js'
 import {
   highlightClass,
@@ -115,9 +116,7 @@ const controlledOrUncontrolledSet = (obj, name, val) => {
 const Status = {
   name: 'Status',
   components: {
-    PostStatusForm: defineAsyncComponent(
-      () => import('src/components/post_status_form/post_status_form.vue'),
-    ),
+    PostStatusForm,
     UserAvatar,
     AvatarList,
     Timeago,
