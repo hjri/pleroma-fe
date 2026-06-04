@@ -14,7 +14,6 @@ import emojisPlugin from './build/emojis_plugin.js'
 import mswPlugin from './build/msw_plugin.js'
 import {
   buildSwPlugin,
-  devSwPlugin,
   swMessagesPlugin,
 } from './build/sw_plugin.js'
 
@@ -142,7 +141,6 @@ export default defineConfig(async ({ mode, command }) => {
           // outDir: 'custom-dir', // optional, defaults to Vite's build.outDir
         },
       }),
-      devSwPlugin({ swSrc, swDest, transformSW, alias }),
       buildSwPlugin({ swSrc, swDest }),
       swMessagesPlugin(),
       emojisPlugin(),

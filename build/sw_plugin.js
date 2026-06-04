@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
+import { exactRegex } from '@rolldown/pluginutils'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import * as esbuild from 'esbuild'
 import { build } from 'vite'
 
 import {
@@ -15,110 +15,6 @@ const getSWMessagesAsText = async () => {
 }
 const projectRoot = dirname(dirname(fileURLToPath(import.meta.url)))
 
-const swEnvName = 'virtual:pleroma-fe/service_worker_env'
-const swEnvNameResolved = '\0' + swEnvName
-const getDevSwEnv = () => `self.serviceWorkerOption = { assets: [] };`
-const getProdSwEnv = ({ assets }) =>
-  `self.serviceWorkerOption = { assets: ${JSON.stringify(assets)} };`
-
-export const devSwPlugin = ({ swSrc, swDest, transformSW, alias }) => {
-  const swFullSrc = resolve(projectRoot, swSrc)
-  const esbuildAlias = {}
-  Object.entries(alias).forEach(([source, dest]) => {
-    esbuildAlias[source] = dest.startsWith('/') ? projectRoot + dest : dest
-  })
-  let localConfig
-
-  return {
-    name: 'dev-sw-plugin',
-    apply: 'serve',
-    configResolved(config) {
-      localConfig = config
-    },
-    resolveId(id) {
-      const name = id.startsWith('/') ? id.slice(1) : id
-      if (name === swDest) {
-        return swFullSrc
-      } else if (name === swEnvName) {
-        return swEnvNameResolved
-      }
-      return null
-    },
-    async load(id) {
-      if (id === swFullSrc) {
-        return readFile(swFullSrc, 'utf-8')
-      } else if (id === swEnvNameResolved) {
-        return getDevSwEnv()
-      }
-      return null
-    },
-    /**
-     * vite does not bundle the service worker
-     * during dev, and firefox does not support ESM as service worker
-     * https://bugzilla.mozilla.org/show_bug.cgi?id=1360870
-     */
-    async transform(code, id) {
-      if (id === swFullSrc) {
-        const res = await esbuild.build({
-          entryPoints: [swSrc],
-          define: {
-            'process.env': JSON.stringify(localConfig.define['process.env']),
-            'COMMIT_HASH': JSON.stringify(localConfig.define['COMMIT_HASH']),
-          },
-          bundle: true,
-          write: false,
-          outfile: 'sw-pleroma.js',
-          alias: esbuildAlias,
-          plugins: [
-            {
-              name: 'vite-like-root-resolve',
-              setup(b) {
-                b.onResolve({ filter: new RegExp(/^\//) }, (args) => ({
-                  path: resolve(projectRoot, args.path.slice(1)),
-                }))
-              },
-            },
-            {
-              name: 'sw-messages',
-              setup(b) {
-                b.onResolve(
-                  { filter: new RegExp('^' + swMessagesName + '$') },
-                  (args) => ({
-                    path: args.path,
-                    namespace: 'sw-messages',
-                  }),
-                )
-                b.onLoad(
-                  { filter: /.*/, namespace: 'sw-messages' },
-                  async () => ({
-                    contents: await getSWMessagesAsText(),
-                  }),
-                )
-              },
-            },
-            {
-              name: 'sw-env',
-              setup(b) {
-                b.onResolve(
-                  { filter: new RegExp('^' + swEnvName + '$') },
-                  (args) => ({
-                    path: args.path,
-                    namespace: 'sw-env',
-                  }),
-                )
-                b.onLoad({ filter: /.*/, namespace: 'sw-env' }, () => ({
-                  contents: getDevSwEnv(),
-                }))
-              },
-            },
-          ],
-        })
-        const text = res.outputFiles[0].text
-        return text
-      }
-    },
-  }
-}
 
 // Idea taken from
 // https://github.com/vite-pwa/vite-plugin-pwa/blob/main/src/plugins/build.ts
@@ -127,12 +23,17 @@ export const devSwPlugin = ({ swSrc, swDest, transformSW, alias }) => {
 // Run another vite build just for the service worker targeting iife at
 // the end of the build.
 export const buildSwPlugin = ({ swSrc, swDest }) => {
-  let config
+  const swFullSrc = resolve(projectRoot, swSrc)
+  const swEnvName = 'virtual:pleroma-fe/service_worker_env'
+  const swEnvNameResolved = '\0' + swEnvName
+
+  let rootConfig, config
+
   return {
     name: 'build-sw-plugin',
     enforce: 'post',
-    apply: 'build',
     configResolved(resolvedConfig) {
+      rootConfig = resolvedConfig
       config = {
         define: resolvedConfig.define,
         resolve: resolvedConfig.resolve,
@@ -163,22 +64,48 @@ export const buildSwPlugin = ({ swSrc, swDest }) => {
         const assets = Object.keys(bundle)
           .filter((name) => !/\.map$/.test(name))
           .map((name) => '/' + name)
+
         config.plugins.push({
           name: 'build-sw-env-plugin',
-          resolveId(id) {
-            if (id === swEnvName) {
-              return swEnvNameResolved
-            }
-            return null
+          mode: 'production',
+          resolveId: {
+            filter: { id: exactRegex(swEnvName) },
+            handler: () => swEnvNameResolved,
           },
-          load(id) {
-            if (id === swEnvNameResolved) {
-              return getProdSwEnv({ assets })
+          load: {
+            filter: { id: exactRegex(swEnvNameResolved) },
+            handler() {
+              return `self.serviceWorkerOption = { assets: ${JSON.stringify(assets)} };`
             }
-            return null
           },
         })
       },
+    },
+    resolveId: {
+      filter: { id: new RegExp(swDest) },
+      handler() {
+        return swFullSrc
+      }
+    },
+    load: {
+      filter: { id: new RegExp(swFullSrc) },
+      async handler() {
+        config.plugins.push({
+          name: 'dummy-sw-env',
+          mode: 'development',
+          resolveId: {
+            filter: { id: exactRegex(swEnvName) },
+            handler: () => swEnvNameResolved,
+          },
+          load: {
+            filter: { id: exactRegex(swEnvNameResolved) },
+            handler: () => 'self.serviceWorkerOption = { assets: [] }',
+          }
+        })
+
+        const swBundle = await build(config)
+        return swBundle.output[0]
+      }
     },
     closeBundle: {
       order: 'post',
