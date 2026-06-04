@@ -1,4 +1,5 @@
 import { defineAsyncComponent } from 'vue'
+
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const DraftCloser = {

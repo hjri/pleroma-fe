@@ -1,4 +1,3 @@
-
 import Select from 'src/components/select/select.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
 import Timeago from 'src/components/timeago/timeago.vue'
@@ -14,7 +13,6 @@ const Report = {
     Select,
     StatusContent,
     Timeago,
-
   },
   computed: {
     report() {

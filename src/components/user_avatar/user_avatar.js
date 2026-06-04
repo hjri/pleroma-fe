@@ -1,5 +1,3 @@
-
-
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 
@@ -41,9 +39,7 @@ const UserAvatar = {
       betterShadow: useInterfaceStore().browserSupport.cssFilter,
     }
   },
-  components: {
-
-  },
+  components: {},
   methods: {
     imgSrc(src) {
       return !src || this.showPlaceholder ? this.defaultAvatar : src

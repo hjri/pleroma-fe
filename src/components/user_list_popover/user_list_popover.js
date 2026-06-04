@@ -1,8 +1,8 @@
 import { defineAsyncComponent } from 'vue'
 
-import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import Popover from 'src/components/popover/popover.vue'
 import UnicodeDomainIndicator from 'src/components/unicode_domain_indicator/unicode_domain_indicator.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'

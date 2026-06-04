@@ -1,7 +1,7 @@
 import { mapState } from 'pinia'
 
-import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
+import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 

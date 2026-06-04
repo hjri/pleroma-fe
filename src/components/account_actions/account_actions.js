@@ -1,9 +1,9 @@
 import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 
-import UserListMenu from 'src/components/user_list_menu/user_list_menu.vue'
 import Popover from 'src/components/popover/popover.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
+import UserListMenu from 'src/components/user_list_menu/user_list_menu.vue'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -30,7 +30,10 @@ const AccountActions = {
       () => import('src/components/confirm_modal/confirm_modal.vue'),
     ),
     UserTimedFilterModal: defineAsyncComponent(
-      () => import( 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'),
+      () =>
+        import(
+          'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
+        ),
     ),
   },
   methods: {

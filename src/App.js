@@ -38,13 +38,14 @@ export default {
     InstanceSpecificPanel,
     FeaturesPanel,
     WhoToFollowPanel: defineAsyncComponent(
-      () => import('src/components/who_to_follow_panel/who_to_follow_panel.vue'),
+      () =>
+        import('src/components/who_to_follow_panel/who_to_follow_panel.vue'),
     ),
     ShoutPanel: defineAsyncComponent(
       () => import('src/components/shout_panel/shout_panel.vue'),
     ),
-    MediaModal:  defineAsyncComponent(
-      () => import( 'src/components/media_modal/media_modal.vue'),
+    MediaModal: defineAsyncComponent(
+      () => import('src/components/media_modal/media_modal.vue'),
     ),
     MobilePostStatusButton,
     MobileNav,
@@ -53,13 +54,15 @@ export default {
       () => import('src/components/settings_modal/settings_modal.vue'),
     ),
     UpdateNotification: defineAsyncComponent(
-      () => import('src/components/update_notification/update_notification.vue'),
+      () =>
+        import('src/components/update_notification/update_notification.vue'),
     ),
     PostStatusModal: defineAsyncComponent(
       () => import('src/components/post_status_modal/post_status_modal.vue'),
     ),
     UserReportingModal: defineAsyncComponent(
-      () => import('src/components/user_reporting_modal/user_reporting_modal.vue')
+      () =>
+        import('src/components/user_reporting_modal/user_reporting_modal.vue'),
     ),
     EditStatusModal: defineAsyncComponent(
       () => import('src/components/edit_status_modal/edit_status_modal.vue'),

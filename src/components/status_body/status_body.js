@@ -1,7 +1,5 @@
 import { mapState } from 'pinia'
 
-
-
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -113,9 +111,7 @@ const StatusBody = {
     },
     ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
-  components: {
-
-  },
+  components: {},
   mounted() {
     this.status.attentions &&
       this.status.attentions.forEach((attn) => {

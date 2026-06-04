@@ -1,15 +1,12 @@
 import { defineAsyncComponent } from 'vue'
 
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faCircleNotch)
 
 export default {
-  components: {
-
-  },
+  components: {},
   name: 'Quote',
   props: {
     visible: {

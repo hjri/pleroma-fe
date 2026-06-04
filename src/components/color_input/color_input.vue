@@ -66,8 +66,8 @@
 <script>
 import { throttle } from 'lodash'
 
-import { hex2rgb } from '../../services/color_convert/color_convert.js'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
+import { hex2rgb } from '../../services/color_convert/color_convert.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEyeDropper } from '@fortawesome/free-solid-svg-icons'

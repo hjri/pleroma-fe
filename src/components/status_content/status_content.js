@@ -1,12 +1,12 @@
 import { mapState as mapPiniaState } from 'pinia'
-import { mapGetters, mapState } from 'vuex'
 import { defineAsyncComponent } from 'vue'
+import { mapGetters, mapState } from 'vuex'
 
-import StatusBody from 'src/components/status_body/status_body.vue'
 import Attachment from 'src/components/attachment/attachment.vue'
+import Gallery from 'src/components/gallery/gallery.vue'
 import LinkPreview from 'src/components/link-preview/link-preview.vue'
 import Poll from 'src/components/poll/poll.vue'
-import Gallery from 'src/components/gallery/gallery.vue'
+import StatusBody from 'src/components/status_body/status_body.vue'
 
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'

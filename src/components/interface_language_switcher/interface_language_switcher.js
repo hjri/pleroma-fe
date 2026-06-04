@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 
-import localeService from '../../services/locale/locale.service.js'
 import Select from 'src/components/select/select.vue'
+import localeService from '../../services/locale/locale.service.js'
 
 export default {
   components: {

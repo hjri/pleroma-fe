@@ -1,10 +1,10 @@
 import { mapState as mapPiniaState } from 'pinia'
 import { mapGetters, mapState } from 'vuex'
 
-import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
-import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
 import ListsUserSearch from 'src/components/lists_user_search/lists_user_search.vue'
+import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
+import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'

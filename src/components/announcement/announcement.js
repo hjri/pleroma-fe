@@ -1,15 +1,13 @@
 import { mapState } from 'vuex'
 
-import localeService from '../../services/locale/locale.service.js'
 import AnnouncementEditor from 'src/components/announcement_editor/announcement_editor.vue'
-
+import localeService from '../../services/locale/locale.service.js'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 
 const Announcement = {
   components: {
     AnnouncementEditor,
-
   },
   data() {
     return {

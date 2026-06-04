@@ -1,13 +1,14 @@
 import { debounce, map, reject, uniqBy } from 'lodash'
 import { mapActions, mapState } from 'pinia'
-import { mapGetters } from 'vuex'
 import { defineAsyncComponent } from 'vue'
+import { mapGetters } from 'vuex'
 
 import Attachment from 'src/components/attachment/attachment.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import DraftCloser from 'src/components/draft_closer/draft_closer.vue'
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
 import suggestor from 'src/components/emoji_input/suggestor.js'
+import Gallery from 'src/components/gallery/gallery.vue'
 import MediaUpload from 'src/components/media_upload/media_upload.vue'
 import Popover from 'src/components/popover/popover.vue'
 import ScopeSelector from 'src/components/scope_selector/scope_selector.vue'
@@ -17,7 +18,6 @@ import { propsToNative } from '../../services/attributes_helper/attributes_helpe
 import { findOffset } from '../../services/offset_finder/offset_finder.service.js'
 import genRandomSeed from '../../services/random_seed/random_seed.service.js'
 import statusPoster from '../../services/status_poster/status_poster.service.js'
-import Gallery from 'src/components/gallery/gallery.vue'
 
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -141,10 +141,10 @@ const PostStatusForm = {
     MediaUpload,
     EmojiInput,
     PollForm: defineAsyncComponent(
-      () => import( 'src/components/poll/poll_form.vue')
+      () => import('src/components/poll/poll_form.vue'),
     ),
     QuoteForm: defineAsyncComponent(
-      () => import( 'src/components/quote/quote_form.vue')
+      () => import('src/components/quote/quote_form.vue'),
     ),
     ScopeSelector,
     Checkbox,

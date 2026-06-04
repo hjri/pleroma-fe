@@ -1,25 +1,22 @@
+import { defineAsyncComponent } from 'vue'
 import { mapState } from 'vuex'
 
-
+import Report from 'src/components/report/report.vue'
+import StatusContent from 'src/components/status_content/status_content.vue'
+import Timeago from 'src/components/timeago/timeago.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+import UserLink from 'src/components/user_link/user_link.vue'
+import UserPopover from 'src/components/user_popover/user_popover.vue'
 import { isStatusNotification } from '../../services/notification_utils/notification_utils.js'
 import {
   highlightClass,
   highlightStyle,
 } from '../../services/user_highlighter/user_highlighter.js'
 
-import Report from 'src/components/report/report.vue'
-
-import StatusContent from 'src/components/status_content/status_content.vue'
-import Timeago from 'src/components/timeago/timeago.vue'
-import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
-import UserLink from 'src/components/user_link/user_link.vue'
-import UserPopover from 'src/components/user_popover/user_popover.vue'
-
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
-import { defineAsyncComponent } from 'vue'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -70,8 +67,9 @@ const Notification = {
 
     UserPopover,
     UserLink,
-    ConfirmModal: defineAsyncComponent(() => import('src/components/confirm_modal/confirm_modal.vue')),
-
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
   },
   mounted() {
     document.addEventListener('selectionchange', this.onContentSelect)

@@ -1,10 +1,9 @@
 import { chunk, debounce, trim } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 
+import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Popover from 'src/components/popover/popover.vue'
 import { ensureFinalFallback } from '../../i18n/languages.js'
-import Checkbox from 'src/components/checkbox/checkbox.vue'
-
 
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'

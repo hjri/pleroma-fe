@@ -1,15 +1,15 @@
 import { mapState as mapPiniaState } from 'pinia'
-import { mapGetters, mapState } from 'vuex'
 import { defineAsyncComponent } from 'vue'
+import { mapGetters, mapState } from 'vuex'
 
 import Attachment from 'src/components/attachment/attachment.vue'
 import ChatMessageDate from 'src/components/chat_message_date/chat_message_date.vue'
+import Gallery from 'src/components/gallery/gallery.vue'
 import LinkPreview from 'src/components/link-preview/link-preview.vue'
 import Popover from 'src/components/popover/popover.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserPopover from 'src/components/user_popover/user_popover.vue'
-import Gallery from 'src/components/gallery/gallery.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'

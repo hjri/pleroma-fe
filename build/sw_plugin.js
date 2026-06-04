@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises'
-import { exactRegex } from '@rolldown/pluginutils'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { exactRegex } from '@rolldown/pluginutils'
 import { build } from 'vite'
 
 import {
@@ -15,7 +15,6 @@ const getSWMessagesAsText = async () => {
 }
 const projectRoot = dirname(dirname(fileURLToPath(import.meta.url)))
 
-
 // Idea taken from
 // https://github.com/vite-pwa/vite-plugin-pwa/blob/main/src/plugins/build.ts
 // rollup does not support compiling to iife if we want to code-split;
@@ -27,13 +26,13 @@ export const buildSwPlugin = ({ swSrc, swDest }) => {
   const swEnvName = 'virtual:pleroma-fe/service_worker_env'
   const swEnvNameResolved = '\0' + swEnvName
 
-  let rootConfig, config
+  let config
 
   return {
     name: 'build-sw-plugin',
     enforce: 'post',
     configResolved(resolvedConfig) {
-      rootConfig = resolvedConfig
+      resolvedConfig
       config = {
         define: resolvedConfig.define,
         resolve: resolvedConfig.resolve,
@@ -44,14 +43,14 @@ export const buildSwPlugin = ({ swSrc, swDest }) => {
           emptyOutDir: false,
           rolldownOptions: {
             input: {
-              main: swSrc
+              main: swSrc,
             },
             context: 'self',
             output: {
               entryFileNames: swDest,
               codeSplitting: false,
               format: 'iife',
-            }
+            },
           },
         },
         configFile: false,
@@ -76,7 +75,7 @@ export const buildSwPlugin = ({ swSrc, swDest }) => {
             filter: { id: exactRegex(swEnvNameResolved) },
             handler() {
               return `self.serviceWorkerOption = { assets: ${JSON.stringify(assets)} };`
-            }
+            },
           },
         })
       },
@@ -85,7 +84,7 @@ export const buildSwPlugin = ({ swSrc, swDest }) => {
       filter: { id: new RegExp(swDest) },
       handler() {
         return swFullSrc
-      }
+      },
     },
     load: {
       filter: { id: new RegExp(swFullSrc) },
@@ -100,12 +99,12 @@ export const buildSwPlugin = ({ swSrc, swDest }) => {
           load: {
             filter: { id: exactRegex(swEnvNameResolved) },
             handler: () => 'self.serviceWorkerOption = { assets: [] }',
-          }
+          },
         })
 
         const swBundle = await build(config)
         return swBundle.output[0]
-      }
+      },
     },
     closeBundle: {
       order: 'post',

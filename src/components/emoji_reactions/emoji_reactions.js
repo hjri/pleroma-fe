@@ -1,4 +1,3 @@
-
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserListPopover from 'src/components/user_list_popover/user_list_popover.vue'
 
@@ -17,7 +16,6 @@ const EmojiReactions = {
   components: {
     UserAvatar,
     UserListPopover,
-
   },
   props: ['status'],
   data: () => ({

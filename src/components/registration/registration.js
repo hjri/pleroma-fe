@@ -3,9 +3,9 @@ import { required, requiredIf, sameAs } from '@vuelidate/validators'
 import { mapState as mapPiniaState } from 'pinia'
 import { mapActions, mapState } from 'vuex'
 
-import localeService from '../../services/locale/locale.service.js'
 import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
 import TermsOfServicePanel from 'src/components/terms_of_service_panel/terms_of_service_panel.vue'
+import localeService from '../../services/locale/locale.service.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 

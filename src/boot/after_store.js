@@ -6,8 +6,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import VueVirtualScroller from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
-import Status from 'src/components/status/status.vue'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
+import Status from 'src/components/status/status.vue'
 import StillImage from 'src/components/still-image/still-image.vue'
 
 import { config } from '@fortawesome/fontawesome-svg-core'

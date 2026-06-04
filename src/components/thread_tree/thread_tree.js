@@ -1,5 +1,3 @@
-
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faAngleDoubleDown,
@@ -9,9 +7,7 @@ import {
 library.add(faAngleDoubleDown, faAngleDoubleRight)
 
 const ThreadTree = {
-  components: {
-
-  },
+  components: {},
   name: 'ThreadTree',
   props: {
     depth: Number,

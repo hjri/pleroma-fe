@@ -2,8 +2,6 @@ import Popover from 'components/popover/popover.vue'
 import SelectComponent from 'components/select/select.vue'
 import { mapState } from 'pinia'
 
-
-
 import { useEmojiStore } from 'src/stores/emoji'
 import { useInterfaceStore } from 'src/stores/interface'
 

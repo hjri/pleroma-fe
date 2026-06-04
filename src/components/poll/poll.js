@@ -1,5 +1,4 @@
 import Checkbox from 'components/checkbox/checkbox.vue'
-
 import Timeago from 'components/timeago/timeago.vue'
 
 import genRandomSeed from '../../services/random_seed/random_seed.service.js'

@@ -151,7 +151,6 @@
 <script>
 import Popover from 'components/popover/popover.vue'
 import SelectComponent from 'components/select/select.vue'
-
 import { defineAsyncComponent } from 'vue'
 
 export default {

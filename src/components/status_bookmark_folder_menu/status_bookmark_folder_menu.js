@@ -2,7 +2,6 @@ import { mapState } from 'pinia'
 
 import Popover from 'src/components/popover/popover.vue'
 
-
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -18,7 +17,6 @@ const StatusBookmarkFolderMenu = {
   },
   components: {
     Popover,
-
   },
   computed: {
     ...mapState(useBookmarkFoldersStore, {

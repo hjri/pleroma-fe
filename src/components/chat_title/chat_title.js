@@ -1,6 +1,5 @@
 import { defineAsyncComponent } from 'vue'
 
-
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserPopover from 'src/components/user_popover/user_popover.vue'
 
