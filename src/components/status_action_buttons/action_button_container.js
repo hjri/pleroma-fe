@@ -1,7 +1,7 @@
 import MuteConfirm from 'src/components/confirm_modal/mute_confirm.vue'
 import Popover from 'src/components/popover/popover.vue'
-import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
 import ActionButton from './action_button.vue'
+import { defineAsyncComponent } from 'vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -17,7 +17,9 @@ export default {
     ActionButton,
     Popover,
     MuteConfirm,
-    UserTimedFilterModal,
+    UserTimedFilterModal: defineAsyncComponent(
+      () => import( 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'),
+    ),
   },
   props: ['button', 'status'],
   emits: ['emojiPickerShown'],

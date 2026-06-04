@@ -2,7 +2,6 @@ import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 
 import UserListMenu from 'src/components/user_list_menu/user_list_menu.vue'
-import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
 import Popover from '../popover/popover.vue'
 import ProgressButton from '../progress_button/progress_button.vue'
 
@@ -30,8 +29,9 @@ const AccountActions = {
     ConfirmModal: defineAsyncComponent(
       () => import('src/components/confirm_modal/confirm_modal.vue'),
     ),
-
-    UserTimedFilterModal,
+    UserTimedFilterModal: defineAsyncComponent(
+      () => import( 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'),
+    ),
   },
   methods: {
     showConfirmRemoveUserFromFollowers() {
