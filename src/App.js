@@ -11,7 +11,6 @@ import MobileNav from './components/mobile_nav/mobile_nav.vue'
 import MobilePostStatusButton from './components/mobile_post_status_button/mobile_post_status_button.vue'
 import NavPanel from './components/nav_panel/nav_panel.vue'
 import PostStatusModal from './components/post_status_modal/post_status_modal.vue'
-import SideDrawer from './components/side_drawer/side_drawer.vue'
 import UserPanel from './components/user_panel/user_panel.vue'
 import UserReportingModal from './components/user_reporting_modal/user_reporting_modal.vue'
 import WhoToFollowPanel from './components/who_to_follow_panel/who_to_follow_panel.vue'
@@ -47,7 +46,6 @@ export default {
       () => import('src/components/shout_panel/shout_panel.vue'),
     ),
     MediaModal,
-    SideDrawer,
     MobilePostStatusButton,
     MobileNav,
     DesktopNav,

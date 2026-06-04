@@ -3,7 +3,6 @@ import { defineAsyncComponent } from 'vue'
 import { mapGetters } from 'vuex'
 
 import NavigationPins from 'src/components/navigation/navigation_pins.vue'
-import SideDrawer from 'src/components/side_drawer/side_drawer.vue'
 import GestureService from '../../services/gesture_service/gesture_service'
 import {
   countExtraNotifications,
@@ -28,7 +27,9 @@ library.add(faTimes, faBell, faBars, faArrowUp, faMinus, faCheckDouble)
 
 const MobileNav = {
   components: {
-    SideDrawer,
+    SideDrawer: defineAsyncComponent(
+      () => import('src/components/side_drawer/side_drawer.vue'),
+    ),
     Notifications: defineAsyncComponent(
       () => import('src/components/notifications/notifications.vue'),
     ),
