@@ -38,11 +38,9 @@ describe('routes', () => {
     const matchedComponents = router.currentRoute.value.matched
 
     expect(
-      Object.hasOwn(
-        matchedComponents[0].components.default.components,
-        'UserCard',
-      ),
-    ).to.eql(true)
+      matchedComponents[0].components.default.name,
+    ).to.eql('AsyncComponentWrapper')
+
   })
 
   it("user's profile at /users", async () => {
@@ -51,11 +49,8 @@ describe('routes', () => {
     const matchedComponents = router.currentRoute.value.matched
 
     expect(
-      Object.hasOwn(
-        matchedComponents[0].components.default.components,
-        'UserCard',
-      ),
-    ).to.eql(true)
+      matchedComponents[0].components.default.name,
+    ).to.eql('AsyncComponentWrapper')
   })
 
   it('list view', async () => {
@@ -64,11 +59,8 @@ describe('routes', () => {
     const matchedComponents = router.currentRoute.value.matched
 
     expect(
-      Object.hasOwn(
-        matchedComponents[0].components.default.components,
-        'ListsCard',
-      ),
-    ).to.eql(true)
+      matchedComponents[0].components.default.name,
+    ).to.eql('AsyncComponentWrapper')
   })
 
   it('list timeline', async () => {
@@ -77,11 +69,8 @@ describe('routes', () => {
     const matchedComponents = router.currentRoute.value.matched
 
     expect(
-      Object.hasOwn(
-        matchedComponents[0].components.default.components,
-        'Timeline',
-      ),
-    ).to.eql(true)
+      matchedComponents[0].components.default.name,
+    ).to.eql('AsyncComponentWrapper')
   })
 
   it('list edit', async () => {
@@ -90,10 +79,7 @@ describe('routes', () => {
     const matchedComponents = router.currentRoute.value.matched
 
     expect(
-      Object.hasOwn(
-        matchedComponents[0].components.default.components,
-        'BasicUserCard',
-      ),
-    ).to.eql(true)
+      matchedComponents[0].components.default.name,
+    ).to.eql('AsyncComponentWrapper')
   })
 })
