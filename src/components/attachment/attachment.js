@@ -3,7 +3,7 @@ import { defineAsyncComponent } from 'vue'
 
 import nsfwImage from '../../assets/nsfw.png'
 import Popover from '../popover/popover.vue'
-import StillImage from '../still-image/still-image.vue'
+
 import VideoAttachment from '../video_attachment/video_attachment.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -69,10 +69,12 @@ const Attachment = {
     }
   },
   components: {
-    Flash: defineAsyncComponent(() => import('src/components/flash/flash.vue')),
-    StillImage,
+    Flash: defineAsyncComponent(
+      () => import( 'src/components/flash/flash.vue'),
+    ),
+
     VideoAttachment: defineAsyncComponent(
-      () => import('src/components/video_attachment/video_attachment.vue'),
+      () => import( 'src/components/video_attachment/video_attachment.vue'),
     ),
     Popover,
   },

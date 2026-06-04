@@ -5,7 +5,7 @@ import { mapState } from 'vuex'
 import { WSConnectionStatus } from '../../services/api/api.service.js'
 import QuickFilterSettings from '../quick_filter_settings/quick_filter_settings.vue'
 import QuickViewSettings from '../quick_view_settings/quick_view_settings.vue'
-import Status from '../status/status.vue'
+
 import ThreadTree from '../thread_tree/thread_tree.vue'
 
 import { useInterfaceStore } from 'src/stores/interface'
@@ -402,7 +402,6 @@ const conversation = {
     }),
   },
   components: {
-    Status,
     ThreadTree,
     QuickFilterSettings,
     QuickViewSettings,

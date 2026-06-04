@@ -1,8 +1,7 @@
 import { defineAsyncComponent } from 'vue'
 
-import Popover from 'src/components/popover/popover.vue'
-import RichContent from 'src/components/rich_content/rich_content.jsx'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+import Popover from 'src/components/popover/popover.vue'
 import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -19,7 +18,6 @@ const UserListPopover = {
   name: 'UserListPopover',
   props: ['users'],
   components: {
-    RichContent,
     UnicodeDomainIndicator,
     Popover,
     UserAvatar,

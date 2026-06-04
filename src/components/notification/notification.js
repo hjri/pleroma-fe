@@ -1,14 +1,14 @@
-import { defineAsyncComponent } from 'vue'
 import { mapState } from 'vuex'
 
-import RichContent from 'src/components/rich_content/rich_content.jsx'
+
 import { isStatusNotification } from '../../services/notification_utils/notification_utils.js'
 import {
   highlightClass,
   highlightStyle,
 } from '../../services/user_highlighter/user_highlighter.js'
+
 import Report from '../report/report.vue'
-import Status from '../status/status.vue'
+
 import StatusContent from '../status_content/status_content.vue'
 import Timeago from '../timeago/timeago.vue'
 import UserAvatar from '../user_avatar/user_avatar.vue'
@@ -19,6 +19,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
+import { defineAsyncComponent } from 'vue'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -64,14 +65,13 @@ const Notification = {
     StatusContent,
     UserAvatar,
     Timeago,
-    Status,
+
     Report,
-    RichContent,
+
     UserPopover,
     UserLink,
-    ConfirmModal: defineAsyncComponent(
-      () => import('src/components/confirm_modal/confirm_modal.vue'),
-    ),
+    ConfirmModal: defineAsyncComponent(() => import('src/components/confirm_modal/confirm_modal.vue')),
+
   },
   mounted() {
     document.addEventListener('selectionchange', this.onContentSelect)

@@ -6,6 +6,7 @@ import StatusBody from 'src/components/status_body/status_body.vue'
 import Attachment from '../attachment/attachment.vue'
 import LinkPreview from '../link-preview/link-preview.vue'
 import Poll from '../poll/poll.vue'
+import Gallery from 'src/components/gallery/gallery.vue'
 
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -132,9 +133,7 @@ const StatusContent = {
   components: {
     Attachment,
     Poll,
-    Gallery: defineAsyncComponent(
-      () => import( 'src/components/gallery/gallery.vue')
-    ),
+    Gallery,
     LinkPreview,
     StatusBody,
   },

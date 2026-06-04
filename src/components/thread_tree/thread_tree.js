@@ -1,4 +1,4 @@
-import Status from '../status/status.vue'
+
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -10,7 +10,7 @@ library.add(faAngleDoubleDown, faAngleDoubleRight)
 
 const ThreadTree = {
   components: {
-    Status,
+
   },
   name: 'ThreadTree',
   props: {

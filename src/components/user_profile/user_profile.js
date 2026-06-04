@@ -1,7 +1,7 @@
 import { get } from 'lodash'
 import { mapState } from 'pinia'
 
-import RichContent from 'src/components/rich_content/rich_content.jsx'
+
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 import withLoadMore from '../../hocs/with_load_more/with_load_more'
 import Conversation from '../conversation/conversation.vue'
@@ -203,7 +203,7 @@ const UserProfile = {
     FollowCard,
     TabSwitcher,
     Conversation,
-    RichContent,
+
   },
 }
 

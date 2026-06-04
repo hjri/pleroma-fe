@@ -22,7 +22,6 @@ const StatusPopover = {
     },
   },
   components: {
-    Status,
     Popover,
   },
   methods: {

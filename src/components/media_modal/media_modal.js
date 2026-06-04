@@ -1,10 +1,10 @@
+import GestureService from '../../services/gesture_service/gesture_service'
+
+import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 import { defineAsyncComponent } from 'vue'
 
 import Modal from 'src/components/modal/modal.vue'
 import StillImage from 'src/components/still-image/still-image.vue'
-import GestureService from '../../services/gesture_service/gesture_service'
-
-import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -18,18 +18,20 @@ library.add(faChevronLeft, faChevronRight, faCircleNotch, faTimes)
 
 const MediaModal = {
   components: {
-    StillImage,
+
     VideoAttachment: defineAsyncComponent(
-      () => import('src/components/video_attachment/video_attachment.vue'),
+      () => import( 'src/components/video_attachment/video_attachment.vue'),
     ),
     PinchZoom: defineAsyncComponent(
-      () => import('src/components/pinch_zoom/pinch_zoom.vue'),
+      () => import( 'src/components/pinch_zoom/pinch_zoom.vue'),
     ),
     SwipeClick: defineAsyncComponent(
-      () => import('src/components/swipe_click/swipe_click.vue'),
+      () => import( 'src/components/swipe_click/swipe_click.vue'),
     ),
     Modal,
-    Flash: defineAsyncComponent(() => import('src/components/flash/flash.vue')),
+    Flash: defineAsyncComponent(
+      () => import( 'src/components/flash/flash.vue'),
+    ),
   },
   data() {
     return {

@@ -11,7 +11,7 @@ import {
   routeTo,
   TIMELINES,
 } from 'src/components/navigation/navigation.js'
-import StillImage from 'src/components/still-image/still-image.vue'
+
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
@@ -55,7 +55,7 @@ const NavPanel = {
     },
   },
   components: {
-    StillImage,
+
   },
   computed: {
     getters() {

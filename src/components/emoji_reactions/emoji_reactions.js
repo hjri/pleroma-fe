@@ -1,4 +1,4 @@
-import StillImage from 'src/components/still-image/still-image.vue'
+
 import UserAvatar from '../user_avatar/user_avatar.vue'
 import UserListPopover from '../user_list_popover/user_list_popover.vue'
 
@@ -17,7 +17,7 @@ const EmojiReactions = {
   components: {
     UserAvatar,
     UserListPopover,
-    StillImage,
+
   },
   props: ['status'],
   data: () => ({

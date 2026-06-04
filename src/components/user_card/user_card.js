@@ -11,7 +11,7 @@ import AccountActions from 'src/components/account_actions/account_actions.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
 import suggestor from 'src/components/emoji_input/suggestor.js'
-import RichContent from 'src/components/rich_content/rich_content.jsx'
+
 import FollowButton from '../follow_button/follow_button.vue'
 import ProgressButton from '../progress_button/progress_button.vue'
 import RemoteFollow from '../remote_follow/remote_follow.vue'
@@ -134,7 +134,7 @@ export default {
     ProgressButton,
     FollowButton,
     Select,
-    RichContent,
+
     UserLink,
     UserNote,
     UserTimedFilterModal: defineAsyncComponent(

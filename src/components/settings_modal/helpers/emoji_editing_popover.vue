@@ -151,7 +151,7 @@
 <script>
 import Popover from 'components/popover/popover.vue'
 import SelectComponent from 'components/select/select.vue'
-import StillImage from 'components/still-image/still-image.vue'
+
 import { defineAsyncComponent } from 'vue'
 
 export default {
@@ -160,7 +160,7 @@ export default {
     ConfirmModal: defineAsyncComponent(
       () => import('src/components/confirm_modal/confirm_modal.vue'),
     ),
-    StillImage,
+
     SelectComponent,
   },
 

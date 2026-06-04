@@ -1,6 +1,7 @@
 import { mapActions, mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 import { mapGetters } from 'vuex'
+import UserCard from 'src/components/user_card/user_card.vue'
 
 import { USERNAME_ROUTES } from 'src/components/navigation/navigation.js'
 import GestureService from '../../services/gesture_service/gesture_service'
@@ -65,9 +66,7 @@ const SideDrawer = {
     }
   },
   components: {
-    UserCard: defineAsyncComponent(
-      () => import('src/components/user_card/user_card.vue'),
-    ),
+    UserCard,
   },
   computed: {
     currentUser() {

@@ -1,6 +1,7 @@
 import { defineAsyncComponent } from 'vue'
 
 import Popover from 'src/components/popover/popover.vue'
+import EmojiPicker from '../emoji_picker/emoji_picker.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -75,9 +76,7 @@ export default {
           'src/components/status_bookmark_folder_menu/status_bookmark_folder_menu.vue'
         ),
     ),
-    EmojiPicker: defineAsyncComponent(
-      () => import('src/components/emoji_picker/emoji_picker.vue'),
-    ),
+    EmojiPicker,
     Popover,
   },
   data: () => ({

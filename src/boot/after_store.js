@@ -6,6 +6,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 import VueVirtualScroller from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
+import Status from 'src/components/status/status.vue'
+import RichContent from 'src/components/rich_content/rich_content.jsx'
+import StillImage from 'src/components/still-image/still-image.vue'
+
 import { config } from '@fortawesome/fontawesome-svg-core'
 import {
   FontAwesomeIcon,
@@ -611,6 +615,9 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
 
   app.component('FAIcon', FontAwesomeIcon)
   app.component('FALayers', FontAwesomeLayers)
+  app.component('Status', Status)
+  app.component('RichContent', RichContent)
+  app.component('StillImage', StillImage)
 
   // remove after vue 3.3
   app.config.unwrapInjectedRef = true

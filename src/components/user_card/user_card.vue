@@ -669,6 +669,7 @@
     </template>
     <teleport to="#modal">
       <UserTimedFilterModal
+        v-if="isOtherUser"
         ref="timedMuteDialog"
         :user="user"
         :is-mute="true"

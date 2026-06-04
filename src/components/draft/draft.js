@@ -3,6 +3,7 @@ import { defineAsyncComponent } from 'vue'
 
 import StatusContent from 'src/components/status_content/status_content.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
+import Gallery from 'src/components/gallery/gallery.vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
@@ -21,9 +22,7 @@ const Draft = {
       () => import('src/components/confirm_modal/confirm_modal.vue'),
     ),
     StatusContent,
-    Gallery: defineAsyncComponent(
-      () => import( 'src/components/gallery/gallery.vue')
-    ),
+    Gallery,
   },
   props: {
     draft: {

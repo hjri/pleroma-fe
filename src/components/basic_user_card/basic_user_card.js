@@ -1,4 +1,4 @@
-import RichContent from 'src/components/rich_content/rich_content.jsx'
+
 import UserAvatar from '../user_avatar/user_avatar.vue'
 import UserLink from '../user_link/user_link.vue'
 import UserPopover from '../user_popover/user_popover.vue'
@@ -13,7 +13,7 @@ const BasicUserCard = {
   components: {
     UserPopover,
     UserAvatar,
-    RichContent,
+
     UserLink,
   },
   methods: {

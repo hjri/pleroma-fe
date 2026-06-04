@@ -9,6 +9,7 @@ import Popover from 'src/components/popover/popover.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserPopover from 'src/components/user_popover/user_popover.vue'
+import Gallery from 'src/components/gallery/gallery.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
@@ -34,9 +35,7 @@ const ChatMessage = {
     Attachment,
     StatusContent,
     UserAvatar,
-    Gallery: defineAsyncComponent(
-      () => import( 'src/components/gallery/gallery.vue'),
-    ),
+    Gallery,
     LinkPreview,
     ChatMessageDate,
     UserPopover,

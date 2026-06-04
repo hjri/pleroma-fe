@@ -1,4 +1,4 @@
-import StillImage from '../still-image/still-image.vue'
+
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
@@ -42,7 +42,7 @@ const UserAvatar = {
     }
   },
   components: {
-    StillImage,
+
   },
   methods: {
     imgSrc(src) {

@@ -5,7 +5,6 @@ import AvatarList from 'src/components/avatar_list/avatar_list.vue'
 import EmojiReactions from 'src/components/emoji_reactions/emoji_reactions.vue'
 import MentionLink from 'src/components/mention_link/mention_link.vue'
 import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
-import RichContent from 'src/components/rich_content/rich_content.jsx'
 import StatusActionButtons from 'src/components/status_action_buttons/status_action_buttons.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
 import Timeago from 'src/components/timeago/timeago.vue'
@@ -14,6 +13,7 @@ import UserLink from 'src/components/user_link/user_link.vue'
 import UserListPopover from 'src/components/user_list_popover/user_list_popover.vue'
 import UserPopover from 'src/components/user_popover/user_popover.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
+import StatusPopover from 'src/components/status_popover/status_popover.vue'
 import { muteFilterHits } from '../../services/status_parser/status_parser.js'
 import {
   highlightClass,
@@ -120,13 +120,10 @@ const Status = {
     UserAvatar,
     AvatarList,
     Timeago,
-    StatusPopover: defineAsyncComponent(
-      () => import('src/components/status_popover/status_popover.vue'),
-    ),
+    StatusPopover,
     UserListPopover,
     EmojiReactions,
     StatusContent,
-    RichContent,
     MentionLink,
     MentionsLine,
     UserPopover,

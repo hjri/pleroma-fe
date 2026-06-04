@@ -1,4 +1,4 @@
-import RichContent from 'src/components/rich_content/rich_content.jsx'
+
 import Select from '../select/select.vue'
 import StatusContent from '../status_content/status_content.vue'
 import Timeago from '../timeago/timeago.vue'
@@ -14,7 +14,7 @@ const Report = {
     Select,
     StatusContent,
     Timeago,
-    RichContent,
+
   },
   computed: {
     report() {

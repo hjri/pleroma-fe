@@ -1,6 +1,6 @@
 import { defineAsyncComponent } from 'vue'
 
-import RichContent from 'src/components/rich_content/rich_content.jsx'
+
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserPopover from 'src/components/user_popover/user_popover.vue'
 
@@ -10,7 +10,7 @@ export default {
   name: 'ChatTitle',
   components: {
     UserAvatar,
-    RichContent,
+
     UserPopover,
   },
   props: ['user', 'withAvatar'],

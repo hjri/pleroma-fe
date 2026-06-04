@@ -17,6 +17,7 @@ import { propsToNative } from '../../services/attributes_helper/attributes_helpe
 import { findOffset } from '../../services/offset_finder/offset_finder.service.js'
 import genRandomSeed from '../../services/random_seed/random_seed.service.js'
 import statusPoster from '../../services/status_poster/status_poster.service.js'
+import Gallery from 'src/components/gallery/gallery.vue'
 
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -150,9 +151,7 @@ const PostStatusForm = {
     Select,
     Attachment,
     StatusContent,
-    Gallery: defineAsyncComponent(
-      () => import( 'src/components/gallery/gallery.vue')
-    ),
+    Gallery,
     DraftCloser,
     Popover,
   },

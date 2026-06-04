@@ -5,7 +5,7 @@ import Conversation from '../conversation/conversation.vue'
 import QuickFilterSettings from '../quick_filter_settings/quick_filter_settings.vue'
 import QuickViewSettings from '../quick_view_settings/quick_view_settings.vue'
 import ScrollTopButton from '../scroll_top_button/scroll_top_button.vue'
-import Status from '../status/status.vue'
+
 import TimelineMenu from '../timeline_menu/timeline_menu.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
@@ -52,7 +52,7 @@ const Timeline = {
     }
   },
   components: {
-    Status,
+
     ScrollTopButton,
     Conversation,
     TimelineMenu,
