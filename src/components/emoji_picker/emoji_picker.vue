@@ -49,7 +49,7 @@
               v-if="group.image"
               class="emoji-picker-header-image"
             >
-              <still-image
+              <StillImage
                 :alt="group.text"
                 :src="group.image"
               />
@@ -131,7 +131,7 @@
                       v-if="!emoji.imageUrl"
                       class="emoji-picker-emoji -unicode"
                     >{{ emoji.replacement }}</span>
-                    <still-image
+                    <StillImage
                       v-else
                       class="emoji-picker-emoji -custom"
                       loading="lazy"
