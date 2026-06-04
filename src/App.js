@@ -13,7 +13,6 @@ import NavPanel from './components/nav_panel/nav_panel.vue'
 import PostStatusModal from './components/post_status_modal/post_status_modal.vue'
 import UserPanel from './components/user_panel/user_panel.vue'
 import UserReportingModal from './components/user_reporting_modal/user_reporting_modal.vue'
-import WhoToFollowPanel from './components/who_to_follow_panel/who_to_follow_panel.vue'
 import { getOrCreateServiceWorker } from './services/sw/sw'
 import { windowHeight, windowWidth } from './services/window_utils/window_utils'
 
@@ -41,7 +40,9 @@ export default {
     ),
     InstanceSpecificPanel,
     FeaturesPanel,
-    WhoToFollowPanel,
+    WhoToFollowPanel: defineAsyncComponent(
+      () => import('./components/who_to_follow_panel/who_to_follow_panel.vue'),
+    ),
     ShoutPanel: defineAsyncComponent(
       () => import('src/components/shout_panel/shout_panel.vue'),
     ),

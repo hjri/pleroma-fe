@@ -7,19 +7,15 @@ import {
 import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 
-import AccountActions from 'src/components/account_actions/account_actions.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
 import suggestor from 'src/components/emoji_input/suggestor.js'
 
-import FollowButton from '../follow_button/follow_button.vue'
-import ProgressButton from '../progress_button/progress_button.vue'
-import RemoteFollow from '../remote_follow/remote_follow.vue'
-import Select from '../select/select.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
-import UserLink from '../user_link/user_link.vue'
+import ProgressButton from 'src/components/progress_button/progress_button.vue'
+import Select from 'src/components/select/select.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+import UserLink from 'src/components/user_link/user_link.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
-import UserNote from '../user_note/user_note.vue'
 
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -126,17 +122,24 @@ export default {
     ),
     UserAvatar,
     Checkbox,
-    RemoteFollow,
+    RemoteFollow: defineAsyncComponent(
+      () => import( 'src/components/remote_follow/remote_follow.vue'),
+    ),
     ModerationTools: defineAsyncComponent(
       () => import( 'src/components/moderation_tools/moderation_tools.vue'),
     ),
-    AccountActions,
+    AccountActions: defineAsyncComponent(
+      () => import( 'src/components/account_actions/account_actions.vue'),
+    ),
     ProgressButton,
-    FollowButton,
+    FollowButton: defineAsyncComponent(
+      () => import( 'src/components/follow_button/follow_button.vue'),
+    ),
     Select,
-
     UserLink,
-    UserNote,
+    UserNote: defineAsyncComponent(
+      () => import( 'src/components/user_note/user_note.vue'),
+    ),
     UserTimedFilterModal: defineAsyncComponent(
       () => import( 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'),
     ),

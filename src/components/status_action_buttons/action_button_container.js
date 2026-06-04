@@ -1,4 +1,3 @@
-import MuteConfirm from 'src/components/confirm_modal/mute_confirm.vue'
 import Popover from 'src/components/popover/popover.vue'
 import ActionButton from './action_button.vue'
 import { defineAsyncComponent } from 'vue'
@@ -16,7 +15,9 @@ export default {
   components: {
     ActionButton,
     Popover,
-    MuteConfirm,
+    MuteConfirm: defineAsyncComponent(
+      () => import( 'src/components/confirm_modal/mute_confirm.vue'),
+    ),
     UserTimedFilterModal: defineAsyncComponent(
       () => import( 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'),
     ),
