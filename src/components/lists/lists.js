@@ -1,4 +1,4 @@
-import ListsCard from '../lists_card/lists_card.vue'
+import ListsCard from 'src/components/lists_card/lists_card.vue'
 
 import { useListsStore } from 'src/stores/lists.js'
 

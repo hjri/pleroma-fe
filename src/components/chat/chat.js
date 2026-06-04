@@ -6,9 +6,9 @@ import { WSConnectionStatus } from '../../services/api/api.service.js'
 import chatService from '../../services/chat_service/chat_service.js'
 import { buildFakeMessage } from '../../services/chat_utils/chat_utils.js'
 import { promiseInterval } from '../../services/promise_interval/promise_interval.js'
-import ChatMessage from '../chat_message/chat_message.vue'
-import ChatTitle from '../chat_title/chat_title.vue'
-import PostStatusForm from '../post_status_form/post_status_form.vue'
+import ChatMessage from 'src/components/chat_message/chat_message.vue'
+import ChatTitle from 'src/components/chat_title/chat_title.vue'
+import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import {
   getNewTopPosition,
   getScrollPosition,

@@ -1,5 +1,5 @@
-import DialogModal from '../dialog_modal/dialog_modal.vue'
-import Popover from '../popover/popover.vue'
+import DialogModal from 'src/components/dialog_modal/dialog_modal.vue'
+import Popover from 'src/components/popover/popover.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'

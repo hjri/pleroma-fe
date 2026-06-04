@@ -1,5 +1,5 @@
-import Checkbox from '../checkbox/checkbox.vue'
-import List from '../list/list.vue'
+import Checkbox from 'src/components/checkbox/checkbox.vue'
+import List from 'src/components/list/list.vue'
 
 const SelectableList = {
   components: {

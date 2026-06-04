@@ -11,8 +11,8 @@ import {
   unseenNotificationsFromStore,
 } from '../../services/notification_utils/notification_utils.js'
 import notificationsFetcher from '../../services/notifications_fetcher/notifications_fetcher.service.js'
-import ExtraNotifications from '../extra_notifications/extra_notifications.vue'
-import Notification from '../notification/notification.vue'
+import ExtraNotifications from 'src/components/extra_notifications/extra_notifications.vue'
+import Notification from 'src/components/notification/notification.vue'
 import NotificationFilters from './notification_filters.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'

@@ -1,6 +1,6 @@
 import { debounce } from 'lodash'
 
-import Checkbox from '../checkbox/checkbox.vue'
+import Checkbox from 'src/components/checkbox/checkbox.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons'

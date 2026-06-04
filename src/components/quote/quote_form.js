@@ -1,6 +1,6 @@
 import { debounce } from 'lodash'
 
-import Checkbox from '../checkbox/checkbox.vue'
+import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Quote from './quote.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'

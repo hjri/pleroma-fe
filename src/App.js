@@ -2,14 +2,14 @@ import { throttle } from 'lodash'
 import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 
-import DesktopNav from './components/desktop_nav/desktop_nav.vue'
-import FeaturesPanel from './components/features_panel/features_panel.vue'
-import GlobalNoticeList from './components/global_notice_list/global_notice_list.vue'
-import InstanceSpecificPanel from './components/instance_specific_panel/instance_specific_panel.vue'
-import MobileNav from './components/mobile_nav/mobile_nav.vue'
-import MobilePostStatusButton from './components/mobile_post_status_button/mobile_post_status_button.vue'
-import NavPanel from './components/nav_panel/nav_panel.vue'
-import UserPanel from './components/user_panel/user_panel.vue'
+import DesktopNav from 'src/components/desktop_nav/desktop_nav.vue'
+import FeaturesPanel from 'src/components/features_panel/features_panel.vue'
+import GlobalNoticeList from 'src/components/global_notice_list/global_notice_list.vue'
+import InstanceSpecificPanel from 'src/components/instance_specific_panel/instance_specific_panel.vue'
+import MobileNav from 'src/components/mobile_nav/mobile_nav.vue'
+import MobilePostStatusButton from 'src/components/mobile_post_status_button/mobile_post_status_button.vue'
+import NavPanel from 'src/components/nav_panel/nav_panel.vue'
+import UserPanel from 'src/components/user_panel/user_panel.vue'
 import { getOrCreateServiceWorker } from './services/sw/sw'
 import { windowHeight, windowWidth } from './services/window_utils/window_utils'
 
@@ -56,17 +56,17 @@ export default {
       () => import('src/components/update_notification/update_notification.vue'),
     ),
     PostStatusModal: defineAsyncComponent(
-      () => import('./components/post_status_modal/post_status_modal.vue'),
+      () => import('src/components/post_status_modal/post_status_modal.vue'),
     ),
     UserReportingModal: defineAsyncComponent(
-      () => import('./components/user_reporting_modal/user_reporting_modal.vue')
+      () => import('src/components/user_reporting_modal/user_reporting_modal.vue')
     ),
     EditStatusModal: defineAsyncComponent(
-      () => import('./components/edit_status_modal/edit_status_modal.vue'),
+      () => import('src/components/edit_status_modal/edit_status_modal.vue'),
     ),
     StatusHistoryModal: defineAsyncComponent(
       () =>
-        import('./components/status_history_modal/status_history_modal.vue'),
+        import('src/components/status_history_modal/status_history_modal.vue'),
     ),
     GlobalNoticeList,
   },

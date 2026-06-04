@@ -1,4 +1,4 @@
-import DialogModal from '../dialog_modal/dialog_modal.vue'
+import DialogModal from 'src/components/dialog_modal/dialog_modal.vue'
 
 /**
  * This component emits the following events:

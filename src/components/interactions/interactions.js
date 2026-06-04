@@ -1,5 +1,5 @@
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
-import Notifications from '../notifications/notifications.vue'
+import Notifications from 'src/components/notifications/notifications.vue'
 
 const tabModeDict = {
   mentions: ['mention'],

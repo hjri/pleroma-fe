@@ -1,5 +1,5 @@
 import statusPosterService from '../../services/status_poster/status_poster.service.js'
-import PostStatusForm from '../post_status_form/post_status_form.vue'
+import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 
 const EditStatusForm = {
   components: {

@@ -1,7 +1,7 @@
 import { get } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 
-import Modal from '../modal/modal.vue'
+import Modal from 'src/components/modal/modal.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 
 import { usePostStatusStore } from 'src/stores/post_status.js'

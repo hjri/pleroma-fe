@@ -3,9 +3,9 @@ import { mapGetters, mapState } from 'vuex'
 
 import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
-import BasicUserCard from '../basic_user_card/basic_user_card.vue'
-import ListsUserSearch from '../lists_user_search/lists_user_search.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
+import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
+import ListsUserSearch from 'src/components/lists_user_search/lists_user_search.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useListsStore } from 'src/stores/lists.js'

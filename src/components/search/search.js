@@ -1,8 +1,8 @@
 import { map, uniqBy } from 'lodash'
 
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
-import Conversation from '../conversation/conversation.vue'
-import FollowCard from '../follow_card/follow_card.vue'
+import Conversation from 'src/components/conversation/conversation.vue'
+import FollowCard from 'src/components/follow_card/follow_card.vue'
 
 
 import { library } from '@fortawesome/fontawesome-svg-core'

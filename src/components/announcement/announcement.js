@@ -1,7 +1,7 @@
 import { mapState } from 'vuex'
 
 import localeService from '../../services/locale/locale.service.js'
-import AnnouncementEditor from '../announcement_editor/announcement_editor.vue'
+import AnnouncementEditor from 'src/components/announcement_editor/announcement_editor.vue'
 
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'

@@ -1,7 +1,7 @@
-import { groupBy, map } from 'lodash'
+import { map, groupBy } from 'lodash'
 import { mapGetters, mapState } from 'vuex'
 
-import BasicUserCard from '../basic_user_card/basic_user_card.vue'
+import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 

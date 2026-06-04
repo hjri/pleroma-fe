@@ -1,5 +1,5 @@
 import apiService from '../../services/api/api.service'
-import EmojiPicker from '../emoji_picker/emoji_picker.vue'
+import EmojiPicker from 'src/components/emoji_picker/emoji_picker.vue'
 
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
 import { useInterfaceStore } from 'src/stores/interface.js'

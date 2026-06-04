@@ -1,6 +1,6 @@
 import { mapState } from 'pinia'
 
-import Popover from '../popover/popover.vue'
+import Popover from 'src/components/popover/popover.vue'
 
 import { useListsStore } from 'src/stores/lists.js'
 

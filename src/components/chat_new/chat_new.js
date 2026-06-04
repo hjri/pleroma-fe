@@ -1,7 +1,7 @@
 import { mapGetters, mapState } from 'vuex'
 
-import BasicUserCard from '../basic_user_card/basic_user_card.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
+import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons'

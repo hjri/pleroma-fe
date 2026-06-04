@@ -7,13 +7,13 @@ import {
   highlightStyle,
 } from '../../services/user_highlighter/user_highlighter.js'
 
-import Report from '../report/report.vue'
+import Report from 'src/components/report/report.vue'
 
-import StatusContent from '../status_content/status_content.vue'
-import Timeago from '../timeago/timeago.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
-import UserLink from '../user_link/user_link.vue'
-import UserPopover from '../user_popover/user_popover.vue'
+import StatusContent from 'src/components/status_content/status_content.vue'
+import Timeago from 'src/components/timeago/timeago.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+import UserLink from 'src/components/user_link/user_link.vue'
+import UserPopover from 'src/components/user_popover/user_popover.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'

@@ -106,7 +106,7 @@
 </template>
 
 <script>
-import Popover from '../popover/popover.vue'
+import Popover from 'src/components/popover/popover.vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'

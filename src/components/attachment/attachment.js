@@ -2,9 +2,9 @@ import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 
 import nsfwImage from '../../assets/nsfw.png'
-import Popover from '../popover/popover.vue'
+import Popover from 'src/components/popover/popover.vue'
 
-import VideoAttachment from '../video_attachment/video_attachment.vue'
+import VideoAttachment from 'src/components/video_attachment/video_attachment.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'

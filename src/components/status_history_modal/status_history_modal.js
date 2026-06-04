@@ -1,6 +1,6 @@
 import { get } from 'lodash'
 
-import Modal from '../modal/modal.vue'
+import Modal from 'src/components/modal/modal.vue'
 
 
 import { useStatusHistoryStore } from 'src/stores/statusHistory.js'
