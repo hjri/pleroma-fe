@@ -6,13 +6,10 @@ import DesktopNav from './components/desktop_nav/desktop_nav.vue'
 import FeaturesPanel from './components/features_panel/features_panel.vue'
 import GlobalNoticeList from './components/global_notice_list/global_notice_list.vue'
 import InstanceSpecificPanel from './components/instance_specific_panel/instance_specific_panel.vue'
-import MediaModal from './components/media_modal/media_modal.vue'
 import MobileNav from './components/mobile_nav/mobile_nav.vue'
 import MobilePostStatusButton from './components/mobile_post_status_button/mobile_post_status_button.vue'
 import NavPanel from './components/nav_panel/nav_panel.vue'
-import PostStatusModal from './components/post_status_modal/post_status_modal.vue'
 import UserPanel from './components/user_panel/user_panel.vue'
-import UserReportingModal from './components/user_reporting_modal/user_reporting_modal.vue'
 import { getOrCreateServiceWorker } from './services/sw/sw'
 import { windowHeight, windowWidth } from './services/window_utils/window_utils'
 
@@ -36,28 +33,34 @@ export default {
     UserPanel,
     NavPanel,
     Notifications: defineAsyncComponent(
-      () => import('./components/notifications/notifications.vue'),
+      () => import('src/components/notifications/notifications.vue'),
     ),
     InstanceSpecificPanel,
     FeaturesPanel,
     WhoToFollowPanel: defineAsyncComponent(
-      () => import('./components/who_to_follow_panel/who_to_follow_panel.vue'),
+      () => import('src/components/who_to_follow_panel/who_to_follow_panel.vue'),
     ),
     ShoutPanel: defineAsyncComponent(
       () => import('src/components/shout_panel/shout_panel.vue'),
     ),
-    MediaModal,
+    MediaModal:  defineAsyncComponent(
+      () => import( 'src/components/media_modal/media_modal.vue'),
+    ),
     MobilePostStatusButton,
     MobileNav,
     DesktopNav,
     SettingsModal: defineAsyncComponent(
-      () => import('./components/settings_modal/settings_modal.vue'),
+      () => import('src/components/settings_modal/settings_modal.vue'),
     ),
     UpdateNotification: defineAsyncComponent(
-      () => import('./components/update_notification/update_notification.vue'),
+      () => import('src/components/update_notification/update_notification.vue'),
     ),
-    UserReportingModal,
-    PostStatusModal,
+    PostStatusModal: defineAsyncComponent(
+      () => import('./components/post_status_modal/post_status_modal.vue'),
+    ),
+    UserReportingModal: defineAsyncComponent(
+      () => import('./components/user_reporting_modal/user_reporting_modal.vue')
+    ),
     EditStatusModal: defineAsyncComponent(
       () => import('./components/edit_status_modal/edit_status_modal.vue'),
     ),
