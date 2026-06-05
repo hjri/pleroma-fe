@@ -150,7 +150,10 @@ export default {
       return this.currentUser.background_image
     },
     foreignProfileBackground() {
-      return useMergedConfigStore().mergedConfig.allowForeignUserBackground && useInterfaceStore().foreignProfileBackground
+      return (
+        useMergedConfigStore().mergedConfig.allowForeignUserBackground &&
+        useInterfaceStore().foreignProfileBackground
+      )
     },
     instanceBackground() {
       return useMergedConfigStore().mergedConfig.hideInstanceWallpaper
@@ -158,7 +161,11 @@ export default {
         : this.instanceBackgroundUrl
     },
     background() {
-      return this.foreignProfileBackground || this.userBackground || this.instanceBackground
+      return (
+        this.foreignProfileBackground ||
+        this.userBackground ||
+        this.instanceBackground
+      )
     },
     bgStyle() {
       if (this.background) {

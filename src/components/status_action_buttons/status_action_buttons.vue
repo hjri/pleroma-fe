@@ -20,7 +20,7 @@
           :get-component="getComponent"
           :close="() => { /* no-op */ }"
           :do-action="doAction"
-          @emojiPickerShown="onEmojiPickerShown"
+          @emoji-picker-shown="onEmojiPickerShown"
         />
         <button
           v-if="showPin && currentUser"

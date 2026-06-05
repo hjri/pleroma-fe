@@ -11,8 +11,8 @@ import Timeline from '../timeline/timeline.vue'
 import UserCard from '../user_card/user_card.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useInterfaceStore } from 'src/stores/interface.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'

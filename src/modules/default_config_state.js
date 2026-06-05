@@ -141,7 +141,7 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
     default: false,
   },
   allowForeignUserBackground: {
-    description: 'Allow other user\'s profiles to override wallpaper',
+    description: "Allow other user's profiles to override wallpaper",
     default: true,
   },
   hideInstanceWallpaper: {
