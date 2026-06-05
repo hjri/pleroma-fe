@@ -79,7 +79,7 @@
       :button="button"
       :status="status"
       v-bind="$attrs"
-      @emojiPickerShown="e => $emit('emojiPickerShown', e)"
+      @emoji-picker-shown="e => $emit('emojiPickerShown', e)"
     />
     <teleport to="#modal">
       <MuteConfirm
