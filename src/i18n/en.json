@@ -1291,7 +1291,7 @@
     "users": {
       "title": "Users",
       "labels": {
-        "query": "Query",
+        "query": "Search",
         "name": "Name",
         "email": "Email",
         "origin": "Origin",

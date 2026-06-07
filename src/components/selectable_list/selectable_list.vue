@@ -83,6 +83,13 @@
   --__horizontal-gap: 0.75em;
   --__vertical-gap: 0.5em;
 
+  display: flex;
+  flex-direction: column;
+
+  .list {
+    flex: 1 1 0;
+  }
+
   &-item-inner {
     display: flex;
     align-items: center;

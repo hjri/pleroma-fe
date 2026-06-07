@@ -1,16 +1,30 @@
-.user-tab {
-  height: 100%;
-}
+.UsersTab {
+  max-height: 100%;
+  display: grid;
+  flex-direction: column;
+  overflow-y: hidden;
 
-.query-label {
-  padding-right: 10px;
-  padding-left: 10px;
-}
+  .filters-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5em 1em;
 
-.filter-input {
-  width: 200px;
-}
+    > div {
+      flex: 0 1 auto;
+    }
 
-.filter-btn-box {
-  text-align: right;
+    .filter {
+      display: block;
+      margin-bottom: 0.5em;
+      min-width: 14em;
+
+      .query-label {
+        margin-bottom: 0.5em;
+      }
+
+      > input {
+        width: 100%;
+      }
+    }
+  }
 }

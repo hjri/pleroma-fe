@@ -88,6 +88,8 @@
       :label="$t('admin_dash.tabs.users')"
       icon="user"
       data-tab-name="users"
+      full-width
+      full-height
     >
       <UsersTab />
     </div>
