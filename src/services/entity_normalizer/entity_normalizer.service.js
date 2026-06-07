@@ -302,7 +302,8 @@ export const parseAttachment = (data) => {
   }
 
   if (data.type !== 'unknown') {
-    output.type = data.type
+    // treat gifv like it is "video"
+    output.type = data.type === 'gifv' ? 'video' : data.type
   } else {
     output.type = fileType(output.mimetype)
   }

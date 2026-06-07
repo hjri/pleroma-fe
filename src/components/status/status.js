@@ -262,7 +262,7 @@ const Status = {
     },
     muteFilterHits() {
       return muteFilterHits(
-        Object.values(useSyncConfigStore().prefsStorage.simple.muteFilters),
+        Object.values(useSyncConfigStore().prefsStorage.simple.muteFilters || {}),
         this.status,
       )
     },

@@ -60,6 +60,7 @@ export const useInterfaceStore = defineStore('interface', {
     globalNotices: [],
     layoutHeight: 0,
     lastTimeline: null,
+    foreignProfileBackground: null,
   }),
   actions: {
     setTemporaryChanges({ confirm, revert }) {
@@ -95,6 +96,9 @@ export const useInterfaceStore = defineStore('interface', {
       } catch (error) {
         console.error(`${error}`)
       }
+    },
+    setForeignProfileBackground(url) {
+      this.foreignProfileBackground = url
     },
     settingsSaved({ success, error }) {
       if (success) {

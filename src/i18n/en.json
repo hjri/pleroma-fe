@@ -636,6 +636,7 @@
     "navbar_column_stretch": "Stretch navbar to columns width",
     "always_show_post_button": "Always show floating New Post button",
     "hide_wallpaper": "Hide instance wallpaper",
+    "foreign_user_background": "Allow other user's profiles to override wallpaper",
     "preload_images": "Preload images",
     "use_one_click_nsfw": "Open NSFW attachments with just one click",
     "hide_post_stats": "Hide post statistics (e.g. the number of favorites)",

@@ -11,6 +11,7 @@ import withLoadMore from '../../hocs/with_load_more/with_load_more'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -55,9 +56,14 @@ const UserProfile = {
     const routeParams = this.$route.params
     this.load({ name: routeParams.name, id: routeParams.id })
     this.tab = get(this.$route, 'query.tab', defaultTabKey)
+    useInterfaceStore().setForeignProfileBackground(this.user?.background_image)
+  },
+  updated() {
+    useInterfaceStore().setForeignProfileBackground(this.user?.background_image)
   },
   unmounted() {
     this.stopFetching()
+    useInterfaceStore().setForeignProfileBackground(null)
   },
   computed: {
     timeline() {
