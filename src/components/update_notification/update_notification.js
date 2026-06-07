@@ -1,72 +1,90 @@
 import Modal from 'src/components/modal/modal.vue'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import pleromaTanMask from 'src/assets/pleromatan_apology_mask.png'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
 import pleromaTanFoxMask from 'src/assets/pleromatan_apology_fox_mask.png'
+import pleromaTanMask from 'src/assets/pleromatan_apology_mask.png'
 
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
-import {
-  faTimes
-} from '@fortawesome/free-solid-svg-icons'
-library.add(
-  faTimes
-)
+library.add(faTimes)
 
-export const CURRENT_UPDATE_COUNTER = 1
+export const CURRENT_UPDATE_COUNTER = 2
 
 const pleromaTan = '/static/pleromatan_apology.png'
 const pleromaTanFox = '/static/pleromatan_apology_fox.png'
 
 const UpdateNotification = {
-  data () {
+  data() {
     return {
       showingImage: false,
       pleromaTanVariant: Math.random() > 0.5 ? pleromaTan : pleromaTanFox,
-      showingMore: false
+      showingMore: false,
     }
   },
   components: {
-    Modal
+    Modal,
   },
   computed: {
-    pleromaTanStyles () {
-      const mask = this.pleromaTanVariant === pleromaTan ? pleromaTanMask : pleromaTanFoxMask
+    pleromaTanStyles() {
+      const mask =
+        this.pleromaTanVariant === pleromaTan
+          ? pleromaTanMask
+          : pleromaTanFoxMask
       return {
-        'shape-outside': 'url(' + mask + ')'
+        'shape-outside': 'url(' + mask + ')',
       }
     },
-    shouldShow () {
-      return !this.$store.state.instance.disableUpdateNotification &&
+    shouldShow() {
+      return (
+        !useInstanceStore().disableUpdateNotification &&
         this.$store.state.users.currentUser &&
-        useServerSideStorageStore().flagStorage.updateCounter < CURRENT_UPDATE_COUNTER &&
-        !useServerSideStorageStore().prefsStorage.simple.dontShowUpdateNotifs
-    }
+        useSyncConfigStore().flagStorage.updateCounter <
+          CURRENT_UPDATE_COUNTER &&
+        !useMergedConfigStore().mergedConfig.dontShowUpdateNotifs
+      )
+    },
   },
   methods: {
-    toggleShow () {
+    toggleShow() {
       this.showingMore = !this.showingMore
     },
-    neverShowAgain () {
+    neverShowAgain() {
       this.toggleShow()
-      useServerSideStorageStore().setFlag({ flag: 'updateCounter', value: CURRENT_UPDATE_COUNTER })
-      useServerSideStorageStore().setPreference({ path: 'simple.dontShowUpdateNotifs', value: true })
-      useServerSideStorageStore().pushServerSideStorage()
+      useSyncConfigStore().setFlag({
+        flag: 'updateCounter',
+        value: CURRENT_UPDATE_COUNTER,
+      })
+      useSyncConfigStore().setSimplePrefAndSave({
+        path: 'dontShowUpdateNotifs',
+        value: true,
+      })
+      useSyncConfigStore().pushSyncConfig()
     },
-    dismiss () {
-      useServerSideStorageStore().setFlag({ flag: 'updateCounter', value: CURRENT_UPDATE_COUNTER })
-      useServerSideStorageStore().pushServerSideStorage()
-    }
+    dismiss() {
+      useSyncConfigStore().setFlag({
+        flag: 'updateCounter',
+        value: CURRENT_UPDATE_COUNTER,
+      })
+      useSyncConfigStore().pushSyncConfig()
+    },
   },
-  mounted () {
+  mounted() {
     this.contentHeightNoImage = this.$refs.animatedText.scrollHeight
 
     // Workaround to get the text height only after mask loaded. A bit hacky.
     const newImg = new Image()
     newImg.onload = () => {
-      setTimeout(() => { this.showingImage = true }, 100)
+      setTimeout(() => {
+        this.showingImage = true
+      }, 100)
     }
-    newImg.src = this.pleromaTanVariant === pleromaTan ? pleromaTanMask : pleromaTanFoxMask
-  }
+    newImg.src =
+      this.pleromaTanVariant === pleromaTan ? pleromaTanMask : pleromaTanFoxMask
+  },
 }
 
 export default UpdateNotification

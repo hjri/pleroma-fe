@@ -1,22 +1,25 @@
+import FollowCard from 'src/components/follow_card/follow_card.vue'
 import apiService from '../../services/api/api.service.js'
-import FollowCard from '../follow_card/follow_card.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
 
 const WhoToFollow = {
   components: {
-    FollowCard
+    FollowCard,
   },
-  data () {
+  data() {
     return {
-      users: []
+      users: [],
     }
   },
-  mounted () {
+  mounted() {
     this.getWhoToFollow()
   },
   methods: {
-    showWhoToFollow (reply) {
+    showWhoToFollow(reply) {
       reply.forEach((i) => {
-        this.$store.state.api.backendInteractor.fetchUser({ id: i.acct })
+        this.$store.state.api.backendInteractor
+          .fetchUser({ id: i.acct })
           .then((externalUser) => {
             if (!externalUser.error) {
               this.$store.commit('addNewUsers', [externalUser])
@@ -25,16 +28,15 @@ const WhoToFollow = {
           })
       })
     },
-    getWhoToFollow () {
+    getWhoToFollow() {
       const credentials = this.$store.state.users.currentUser.credentials
       if (credentials) {
-        apiService.suggestions({ credentials })
-          .then((reply) => {
-            this.showWhoToFollow(reply)
-          })
+        apiService.suggestions({ credentials }).then((reply) => {
+          this.showWhoToFollow(reply)
+        })
       }
-    }
-  }
+    },
+  },
 }
 
 export default WhoToFollow

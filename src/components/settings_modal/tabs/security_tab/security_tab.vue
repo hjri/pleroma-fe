@@ -1,116 +1,97 @@
 <template>
   <div :label="$t('settings.security_tab')">
-    <div class="setting-item">
-      <h2>{{ $t('settings.change_email') }}</h2>
-      <div>
-        <p>{{ $t('settings.new_email') }}</p>
-        <input
-          v-model="newEmail"
-          type="email"
-          autocomplete="email"
-          class="input"
-        >
-      </div>
-      <div>
-        <p>{{ $t('settings.current_password') }}</p>
-        <input
-          v-model="changeEmailPassword"
-          type="password"
-          autocomplete="current-password"
-          class="input"
-        >
-      </div>
-      <button
-        class="btn button-default"
-        @click="changeEmail"
-      >
-        {{ $t('settings.save') }}
-      </button>
-      <p v-if="changedEmail">
-        {{ $t('settings.changed_email') }}
-      </p>
-      <template v-if="changeEmailError !== false">
-        <p>{{ $t('settings.change_email_error') }}</p>
-        <p>{{ changeEmailError }}</p>
-      </template>
-    </div>
-
-    <div class="setting-item">
-      <h2>{{ $t('settings.change_password') }}</h2>
-      <div>
-        <p>{{ $t('settings.current_password') }}</p>
-        <input
-          v-model="changePasswordInputs[0]"
-          type="password"
-          class="input"
-        >
-      </div>
-      <div>
-        <p>{{ $t('settings.new_password') }}</p>
-        <input
-          v-model="changePasswordInputs[1]"
-          type="password"
-          class="input"
-        >
-      </div>
-      <div>
-        <p>{{ $t('settings.confirm_new_password') }}</p>
-        <input
-          v-model="changePasswordInputs[2]"
-          type="password"
-          class="input"
-        >
-      </div>
-      <button
-        class="btn button-default"
-        @click="changePassword"
-      >
-        {{ $t('settings.save') }}
-      </button>
-      <p v-if="changedPassword">
-        {{ $t('settings.changed_password') }}
-      </p>
-      <p v-else-if="changePasswordError !== false">
-        {{ $t('settings.change_password_error') }}
-      </p>
-      <p v-if="changePasswordError">
-        {{ changePasswordError }}
-      </p>
-    </div>
-
-    <div class="setting-item">
-      <h2>{{ $t('settings.oauth_tokens') }}</h2>
-      <table class="oauth-tokens">
-        <thead>
-          <tr>
-            <th>{{ $t('settings.app_name') }}</th>
-            <th>{{ $t('settings.valid_until') }}</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="oauthToken in oauthTokens"
-            :key="oauthToken.id"
+    <div class="setting-section">
+      <h3>{{ $t('settings.change_email') }}</h3>
+      <ul class="setting-list">
+        <li>
+          <h4>{{ $t('settings.new_email') }}</h4>
+          <input
+            v-model="newEmail"
+            type="email"
+            autocomplete="email"
+            class="input"
           >
-            <td>{{ oauthToken.appName }}</td>
-            <td>{{ oauthToken.validUntil }}</td>
-            <td class="actions">
-              <button
-                class="btn button-default"
-                @click="revokeToken(oauthToken.id)"
-              >
-                {{ $t('settings.revoke_token') }}
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        </li>
+        <li>
+          <h4>{{ $t('settings.current_password') }}</h4>
+          <input
+            v-model="changeEmailPassword"
+            type="password"
+            autocomplete="current-password"
+            class="input"
+          >
+        </li>
+        <li>
+          <button
+            class="btn button-default"
+            @click="changeEmail"
+          >
+            {{ $t('settings.save') }}
+          </button>
+        </li>
+        <li>
+          <p v-if="changedEmail">
+            {{ $t('settings.changed_email') }}
+          </p>
+          <template v-if="changeEmailError !== false">
+            <p>{{ $t('settings.change_email_error') }}</p>
+            <p>{{ changeEmailError }}</p>
+          </template>
+        </li>
+      </ul>
     </div>
-    <mfa />
 
-    <div class="setting-item">
-      <h2>{{ $t('settings.account_alias') }}</h2>
+    <div class="setting-section">
+      <h3>{{ $t('settings.change_password') }}</h3>
+      <ul class="setting-list">
+        <li>
+          <h4>{{ $t('settings.current_password') }}</h4>
+          <input
+            v-model="changePasswordInputs[0]"
+            type="password"
+            class="input"
+          >
+        </li>
+        <li>
+          <h4>{{ $t('settings.new_password') }}</h4>
+          <input
+            v-model="changePasswordInputs[1]"
+            type="password"
+            class="input"
+          >
+        </li>
+        <li>
+          <h4>{{ $t('settings.confirm_new_password') }}</h4>
+          <input
+            v-model="changePasswordInputs[2]"
+            type="password"
+            class="input"
+          >
+        </li>
+        <li>
+          <button
+            class="btn button-default"
+            @click="changePassword"
+          >
+            {{ $t('settings.save') }}
+          </button>
+        </li>
+        <li>
+          <p v-if="changedPassword">
+            {{ $t('settings.changed_password') }}
+          </p>
+          <p v-else-if="changePasswordError !== false">
+            {{ $t('settings.change_password_error') }}
+          </p>
+          <p v-if="changePasswordError">
+            {{ changePasswordError }}
+          </p>
+        </li>
+      </ul>
+    </div>
+
+    <div class="setting-section">
+      <h3>{{ $t('settings.account_alias') }}</h3>
       <table>
         <thead>
           <tr>
@@ -178,8 +159,40 @@
       </template>
     </div>
 
-    <div class="setting-item">
-      <h2>{{ $t('settings.move_account') }}</h2>
+
+    <div class="setting-section">
+      <h3>{{ $t('settings.oauth_tokens') }}</h3>
+      <table class="oauth-tokens">
+        <thead>
+          <tr>
+            <th>{{ $t('settings.app_name') }}</th>
+            <th>{{ $t('settings.valid_until') }}</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="oauthToken in oauthTokens"
+            :key="oauthToken.id"
+          >
+            <td>{{ oauthToken.appName }}</td>
+            <td>{{ oauthToken.validUntil }}</td>
+            <td class="actions">
+              <button
+                class="btn button-default"
+                @click="revokeToken(oauthToken.id)"
+              >
+                {{ $t('settings.revoke_token') }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <mfa />
+
+    <div class="setting-section">
+      <h3>{{ $t('settings.move_account') }}</h3>
       <p>{{ $t('settings.move_account_notes') }}</p>
       <div>
         <i18n-t
@@ -221,8 +234,8 @@
       </template>
     </div>
 
-    <div class="setting-item">
-      <h2>{{ $t('settings.delete_account') }}</h2>
+    <div class="setting-section">
+      <h3>{{ $t('settings.delete_account') }}</h3>
       <p v-if="!deletingAccount">
         {{ $t('settings.delete_account_description') }}
       </p>

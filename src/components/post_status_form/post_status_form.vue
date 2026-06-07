@@ -9,20 +9,24 @@
       @dragover.prevent="fileDrag"
     >
       <div class="form-group">
-        <i18n-t
+        <div
           v-if="!$store.state.users.currentUser.locked && newStatus.visibility == 'private' && !disableLockWarning"
-          keypath="post_status.account_not_locked_warning"
-          tag="p"
-          class="visibility-notice"
-          scope="global"
+          class="visibility-notice notice-dismissible"
         >
-          <button
-            class="button-unstyled -link"
-            @click="openProfileTab"
+          <i18n-t
+            keypath="post_status.account_not_locked_warning"
+            tag="p"
+            class=""
+            scope="global"
           >
-            {{ $t('post_status.account_not_locked_warning_link') }}
-          </button>
-        </i18n-t>
+            <button
+              class="button-unstyled -link"
+              @click="openProfileTab"
+            >
+              {{ $t('post_status.account_not_locked_warning_link') }}
+            </button>
+          </i18n-t>
+        </div>
         <p
           v-if="!hideScopeNotice && newStatus.visibility === 'public'"
           class="visibility-notice notice-dismissible"
@@ -70,7 +74,7 @@
         </p>
         <p
           v-else-if="newStatus.visibility === 'direct'"
-          class="visibility-notice"
+          class="visibility-notice notice-dismissible"
         >
           <span v-if="safeDMEnabled">{{ $t('post_status.direct_warning_to_first_only') }}</span>
           <span v-else>{{ $t('post_status.direct_warning_to_all') }}</span>
@@ -84,7 +88,7 @@
         </div>
         <div
           v-if="!disablePreview"
-          class="preview-heading faint"
+          class="preview-heading"
         >
           <a
             class="preview-toggle faint"
@@ -106,32 +110,24 @@
           <div
             v-if="quotable"
             role="radiogroup"
-            class="btn-group reply-or-quote-selector"
+            class="reply-or-quote-selector"
           >
-            <button
-              :id="`reply-or-quote-option-${randomSeed}-reply`"
-              class="btn button-default reply-or-quote-option"
-              :class="{ toggled: !newStatus.quoting }"
-              tabindex="0"
-              role="radio"
-              :aria-labelledby="`reply-or-quote-option-${randomSeed}-reply`"
-              :aria-checked="!newStatus.quoting"
-              @click="newStatus.quoting = false"
-            >
-              {{ $t('post_status.reply_option') }}
-            </button>
-            <button
-              :id="`reply-or-quote-option-${randomSeed}-quote`"
-              class="btn button-default reply-or-quote-option"
-              :class="{ toggled: newStatus.quoting }"
-              tabindex="0"
-              role="radio"
-              :aria-labelledby="`reply-or-quote-option-${randomSeed}-quote`"
-              :aria-checked="newStatus.quoting"
-              @click="newStatus.quoting = true"
+            <Checkbox
+              v-model="quoteThreadToggled"
+              :radio="true"
+              :disabled="quoteFormVisible"
             >
               {{ $t('post_status.quote_option') }}
-            </button>
+            </Checkbox>
+            <Checkbox
+              role="radio"
+              :radio="true"
+              :model-value="!quoteThreadToggled"
+              :disabled="quoteFormVisible"
+              @update:model-value="e => quoteThreadToggled = !e"
+            >
+              {{ $t('post_status.reply_option') }}
+            </Checkbox>
           </div>
         </div>
         <div
@@ -260,11 +256,20 @@
           </div>
         </div>
       </div>
-      <poll-form
+      <PollForm
         v-if="pollsAvailable"
         ref="pollForm"
         :visible="pollFormVisible"
         :params="newStatus.poll"
+      />
+      <QuoteForm
+        v-if="quotingAvailable"
+        :id="newStatus.quote.id"
+        ref="quoteForm"
+        :visible="quoteFormVisible"
+        :url="newStatus.quote.url"
+        @update:url="url => newStatus.quote.url = url"
+        @update:id="id => newStatus.quote.id = id"
       />
       <span
         v-if="!disableDraft && shouldAutoSaveDraft"
@@ -279,7 +284,7 @@
         <div class="form-bottom-left">
           <media-upload
             ref="mediaUpload"
-            class="media-upload-icon"
+            class="bottom-left-button media-upload-icon"
             :drop-files="dropFiles"
             :disabled="uploadFileLimitReached"
             @uploading="startedUploadingFiles"
@@ -289,12 +294,22 @@
           />
           <button
             v-if="pollsAvailable"
-            class="poll-icon button-unstyled"
-            :class="{ selected: pollFormVisible }"
+            class="bottom-left-button poll-icon button-unstyled"
+            :class="{ toggled: pollFormVisible }"
             :title="$t('polls.add_poll')"
             @click="togglePollForm"
           >
             <FAIcon icon="poll-h" />
+          </button>
+          <button
+            v-if="quotingAvailable"
+            class="bottom-left-button quote-icon button-unstyled"
+            :disabled="quoteThreadToggled"
+            :class="{ toggled: quoteFormVisible }"
+            :title="$t('tool_tip.add_quote')"
+            @click="toggleQuoteForm"
+          >
+            <FAIcon icon="quote-right" />
           </button>
         </div>
         <div class="btn-group post-button-group">
@@ -366,9 +381,11 @@
       </div>
       <div
         v-if="error"
-        class="alert error"
+        class="alert error -dismissible"
       >
-        Error: {{ error }}
+        <span>
+          {{ error }}
+        </span>
         <button
           class="button-unstyled"
           @click="clearError"
@@ -379,7 +396,7 @@
           />
         </button>
       </div>
-      <gallery
+      <Gallery
         v-if="newStatus.files && newStatus.files.length > 0"
         class="attachments"
         :grid="true"

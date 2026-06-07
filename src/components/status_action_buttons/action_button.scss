@@ -6,19 +6,24 @@
   display: flex;
   align-items: baseline;
   align-items: center;
-  height: 1.5em;
+  border: 2px solid transparent;
+
+  .chevron-popover {
+    .popover-trigger-button {
+      display: flex;
+    }
+  }
 
   .action-counter {
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    margin-left: 1em;
   }
 
   .action-button-inner,
   .extra-button {
-    margin: -0.5em;
     padding: 0.5em;
+    z-index: 1;
   }
 
   .separator {
@@ -26,27 +31,13 @@
     align-self: stretch;
     width: 1px;
     background-color: var(--icon);
-    margin-left: 0.75em;
-    margin-right: 0.125em;
-  }
-
-  &.-pin {
-    margin: calc(-2px - 0.25em);
-    padding: 0.25em;
-    border: 2px dashed var(--icon);
-    border-radius: var(--roundness);
-    grid-template-columns: minmax(max-content, 1fr) auto;
-
-    .chevron-icon,
-    .extra-button,
-    .separator {
-      display: none;
-    }
+    opacity: 0.75;
+    margin: 0.5em 0;
   }
 
   .action-button-inner {
     display: grid;
-    grid-gap: 1em;
+    grid-gap: 0.125em;
     grid-template-columns: max-content;
     grid-auto-flow: column;
     grid-auto-columns: max-content;
@@ -70,6 +61,32 @@
       .active-marker {
         visibility: hidden;
       }
+    }
+  }
+
+  &.-pin {
+    border: 2px dashed var(--icon);
+    border-radius: var(--roundness);
+    grid-template-columns: minmax(max-content, 1fr) auto;
+
+    .action-button-inner {
+      opacity: 0.8;
+      padding-right: 0;
+      pointer-events: none;
+    }
+
+    .chevron-icon,
+    .extra-button,
+    .separator {
+      display: none;
+    }
+  }
+
+  &.-with-extra {
+    .action-button-inner,
+    .extra-button {
+      padding-left: 0.25em;
+      padding-right: 0.25em;
     }
   }
 }
@@ -106,7 +123,7 @@
   &.-extra {
     .action-counter {
       justify-self: end;
-      margin-right: 1em;
+      margin-left: 1em;
     }
 
     .chevron-icon {

@@ -1,11 +1,18 @@
-import { unescape, flattenDeep } from 'lodash'
-import { getTagName, processTextForEmoji, getAttrs } from 'src/services/html_converter/utility.service.js'
-import { convertHtmlToTree } from 'src/services/html_converter/html_tree_converter.service.js'
-import { convertHtmlToLines } from 'src/services/html_converter/html_line_converter.service.js'
-import StillImageEmojiPopover from 'src/components/still-image/still-image-emoji-popover.vue'
-import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
-import { MENTIONS_LIMIT } from 'src/components/mentions_line/mentions_line.js'
+import { flattenDeep, unescape as ldUnescape } from 'lodash'
+
 import HashtagLink from 'src/components/hashtag_link/hashtag_link.vue'
+import { MENTIONS_LIMIT } from 'src/components/mentions_line/mentions_line.js'
+import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
+import StillImage from 'src/components/still-image/still-image.vue'
+import StillImageEmojiPopover from 'src/components/still-image/still-image-emoji-popover.vue'
+
+import { convertHtmlToLines } from 'src/services/html_converter/html_line_converter.service.js'
+import { convertHtmlToTree } from 'src/services/html_converter/html_tree_converter.service.js'
+import {
+  getAttrs,
+  getTagName,
+  processTextForEmoji,
+} from 'src/services/html_converter/utility.service.js'
 
 import './rich_content.scss'
 
@@ -27,7 +34,7 @@ const MAYBE_LINE_BREAKING_ELEMENTS = [
   'h2',
   'h3',
   'h4',
-  'h5'
+  'h5',
 ]
 
 /**
@@ -52,46 +59,46 @@ export default {
   name: 'RichContent',
   components: {
     MentionsLine,
-    HashtagLink
+    HashtagLink,
   },
   props: {
     // Original html content
     html: {
       required: true,
-      type: String
+      type: String,
     },
     attentions: {
       required: false,
-      default: () => []
+      default: () => [],
     },
     // Emoji object, as in status.emojis, note the "s" at the end...
     emoji: {
       required: true,
-      type: Array
+      type: Array,
     },
     // Whether to handle links or not (posts: yes, everything else: no)
     handleLinks: {
       required: false,
       type: Boolean,
-      default: false
+      default: false,
     },
     // Meme arrows
     greentext: {
       required: false,
       type: Boolean,
-      default: false
+      default: false,
     },
     // Faint style (for notifs)
     faint: {
       required: false,
       type: Boolean,
-      default: false
+      default: false,
     },
     // Collapse newlines
     collapse: {
       required: false,
       type: Boolean,
-      default: false
+      default: false,
     },
     /* Content comes from current instance
      *
@@ -103,11 +110,17 @@ export default {
     isLocal: {
       required: false,
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
+    // Allow wide emoji (max 3:1 ratio)
+    allowNonSquareEmoji: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
   },
   // NEVER EVER TOUCH DATA INSIDE RENDER
-  render () {
+  render() {
     // Pre-process HTML
     const { newHtml: html } = preProcessPerLine(this.html, this.greentext)
     let currentMentions = null // Current chain of mentions, we group all mentions together
@@ -124,10 +137,7 @@ export default {
     let tagsIndex = 0
 
     const renderImage = (tag) => {
-      return <StillImage
-        {...getAttrs(tag)}
-        class="img"
-      />
+      return <StillImage {...getAttrs(tag)} class="img" />
     }
 
     const renderHashtag = (attrs, children, encounteredTextReverse) => {
@@ -137,12 +147,14 @@ export default {
         lastTags.push(linkData)
       }
       const { url, tag, content } = linkData
-      return <HashtagLink url={url} tag={tag} content={content}/>
+      return <HashtagLink url={url} tag={tag} content={content} />
     }
 
     const renderMention = (attrs, children) => {
       const linkData = getLinkData(attrs, children, mentionIndex++)
-      linkData.notifying = this.attentions.some(a => a.statusnet_profile_url === linkData.url)
+      linkData.notifying = this.attentions.some(
+        (a) => a.statusnet_profile_url === linkData.url,
+      )
       writtenMentions.push(linkData)
       if (currentMentions === null) {
         currentMentions = []
@@ -152,7 +164,7 @@ export default {
         invisibleMentions.push(linkData)
       }
       if (currentMentions.length === 1) {
-        return <MentionsLine mentions={ currentMentions } />
+        return <MentionsLine mentions={currentMentions} />
       } else {
         return ''
       }
@@ -171,26 +183,28 @@ export default {
           // in MentionsLine
           lastSpacing = item
           // Don't remove last space in a container (fixes poast mentions)
-          return (index !== array.length - 1) && (currentMentions !== null) ? item.trim() : item
+          return index !== array.length - 1 && currentMentions !== null
+            ? item.trim()
+            : item
         }
 
         currentMentions = null
         if (item.includes(':')) {
-          item = ['', processTextForEmoji(
-            item,
-            this.emoji,
-            ({ shortcode, url }) => {
-              return <StillImageEmojiPopover
-                class="emoji img"
-                src={url}
-                title={`:${shortcode}:`}
-                alt={`:${shortcode}:`}
-
-                shortcode={shortcode}
-                isLocal={this.isLocal}
-              />
-            }
-          )]
+          item = [
+            '',
+            processTextForEmoji(item, this.emoji, ({ shortcode, url }) => {
+              return (
+                <StillImageEmojiPopover
+                  class="emoji img"
+                  src={url}
+                  title={`:${shortcode}:`}
+                  alt={`:${shortcode}:`}
+                  shortcode={shortcode}
+                  isLocal={this.isLocal}
+                />
+              )
+            }),
+          ]
         }
         return item
       }
@@ -209,18 +223,24 @@ export default {
          * we have a tag right next to mentions
          */
         const mentionsLinePadding =
-              // Padding is only needed if we just finished parsing mentions
-              previouslyMentions &&
-              // Don't add padding if content is string and has padding already
-              !(children && typeof children[0] === 'string' && children[0].match(/^\s/))
-                ? lastSpacing
-                : ''
+          // Padding is only needed if we just finished parsing mentions
+          previouslyMentions &&
+          // Don't add padding if content is string and has padding already
+          !(
+            children &&
+            typeof children[0] === 'string' &&
+            children[0].match(/^\s/)
+          )
+            ? lastSpacing
+            : ''
         if (MAYBE_LINE_BREAKING_ELEMENTS.includes(Tag)) {
           // all the elements that can cause a line change
           currentMentions = null
-        } else if (Tag === 'img') { // replace images with StillImage
+        } else if (Tag === 'img') {
+          // replace images with StillImage
           return ['', [mentionsLinePadding, renderImage(opener)], '']
-        } else if (Tag === 'a' && this.handleLinks) { // replace mentions with MentionLink
+        } else if (Tag === 'a' && this.handleLinks) {
+          // replace mentions with MentionLink
           if (fullAttrs.class && fullAttrs.class.includes('mention')) {
             // Handling mentions here
             return renderMention(attrs, children)
@@ -228,7 +248,11 @@ export default {
             currentMentions = null
           }
         } else if (Tag === 'span') {
-          if (this.handleLinks && fullAttrs.class && fullAttrs.class.includes('h-card')) {
+          if (
+            this.handleLinks &&
+            fullAttrs.class &&
+            fullAttrs.class.includes('h-card')
+          ) {
             return ['', children.map(processItem), '']
           }
         }
@@ -236,11 +260,8 @@ export default {
         if (children !== undefined) {
           return [
             '',
-            [
-              mentionsLinePadding,
-              [opener, children.map(processItem), closer]
-            ],
-            ''
+            [mentionsLinePadding, [opener, children.map(processItem), closer]],
+            '',
           ]
         } else {
           return ['', [mentionsLinePadding, item], '']
@@ -256,29 +277,31 @@ export default {
         const emptyText = item.trim() === ''
         if (emptyText) return item
         if (!encounteredTextReverse) encounteredTextReverse = true
-        return unescape(item)
+        return ldUnescape(item)
       } else if (Array.isArray(item)) {
         // Handle tag nodes
         const [opener, children] = item
         const Tag = opener === '' ? '' : getTagName(opener)
         switch (Tag) {
-          case 'a': { // replace mentions with MentionLink
+          case 'a': {
+            // replace mentions with MentionLink
             if (!this.handleLinks) break
             const fullAttrs = getAttrs(opener, () => true)
             const attrs = getAttrs(opener, () => true)
             // should only be this
             if (
               (fullAttrs.class && fullAttrs.class.includes('hashtag')) || // Pleroma style
-                (fullAttrs.rel === 'tag') // Mastodon style
+              fullAttrs.rel === 'tag' // Mastodon style
             ) {
               return renderHashtag(attrs, children, encounteredTextReverse)
             } else {
               attrs.target = '_blank'
-              const newChildren = [...children].reverse().map(processItemReverse).reverse()
+              const newChildren = [...children]
+                .reverse()
+                .map(processItemReverse)
+                .reverse()
 
-              return <a {...attrs}>
-                { newChildren }
-              </a>
+              return <a {...attrs}>{newChildren}</a>
             }
           }
           case '':
@@ -290,11 +313,9 @@ export default {
           const newChildren = Array.isArray(children)
             ? [...children].reverse().map(processItemReverse).reverse()
             : children
-          return <Tag {...getAttrs(opener)}>
-            { newChildren }
-          </Tag>
+          return <Tag {...getAttrs(opener)}>{newChildren}</Tag>
         } else {
-          return <Tag/>
+          return <Tag />
         }
       }
       return item
@@ -306,30 +327,35 @@ export default {
     // DO NOT USE SLOTS they cause a re-render feedback loop here.
     // slots updated -> rerender -> emit -> update up the tree -> rerender -> ...
     // at least until vue3?
-    const result =
-    <span class={['RichContent', this.faint ? '-faint' : '']}>
-      {
-        this.collapse
-          ? pass2.map(x => {
-            if (!Array.isArray(x)) return x.replace(/\n/g, ' ')
-            return x.map(y => y.type === 'br' ? ' ' : y)
-          })
-          : pass2
-      }
-    </span>
+    const result = (
+      <span
+        class={[
+          'RichContent',
+          this.faint ? '-faint' : '',
+          this.allowNonSquareEmoji ? '-allow-non-square-emoji' : '',
+        ]}
+      >
+        {this.collapse
+          ? pass2.map((x) => {
+              if (!Array.isArray(x)) return x.replace(/\n/g, ' ')
+              return x.map((y) => (y.type === 'br' ? ' ' : y))
+            })
+          : pass2}
+      </span>
+    )
 
     const event = {
       lastTags,
       writtenMentions,
       writtenTags,
-      invisibleMentions
+      invisibleMentions,
     }
 
     // DO NOT MOVE TO UPDATE. BAD IDEA.
     this.$emit('parseReady', event)
 
     return result
-  }
+  },
 }
 
 const getLinkData = (attrs, children, index) => {
@@ -346,7 +372,7 @@ const getLinkData = (attrs, children, index) => {
     url: attrs.href,
     tag: attrs['data-tag'],
     content: flattenDeep(children).join(''),
-    textContent
+    textContent,
   }
 }
 
@@ -362,31 +388,36 @@ export const preProcessPerLine = (html, greentext) => {
   const greentextHandle = new Set(['p', 'div'])
 
   const lines = convertHtmlToLines(html)
-  const newHtml = lines.reverse().map((item, index, array) => {
-    if (!item.text) return item
-    const string = item.text
+  const newHtml = lines
+    .reverse()
+    .map((item, index, array) => {
+      if (!item.text) return item
+      const string = item.text
 
-    // Greentext stuff
-    if (
-      // Only if greentext is engaged
-      greentext &&
+      // Greentext stuff
+      if (
+        // Only if greentext is engaged
+        greentext &&
         // Only handle p's and divs. Don't want to affect blockquotes, code etc
-        item.level.every(l => greentextHandle.has(l)) &&
+        item.level.every((l) => greentextHandle.has(l)) &&
         // Only if line begins with '>' or '<'
         (string.includes('&gt;') || string.includes('&lt;'))
-    ) {
-      const cleanedString = string.replace(/<[^>]+?>/gi, '') // remove all tags
-        .replace(/@\w+/gi, '') // remove mentions (even failed ones)
-        .trim()
-      if (cleanedString.startsWith('&gt;')) {
-        return `<span class='greentext'>${string}</span>`
-      } else if (cleanedString.startsWith('&lt;')) {
-        return `<span class='cyantext'>${string}</span>`
+      ) {
+        const cleanedString = string
+          .replace(/<[^>]+?>/gi, '') // remove all tags
+          .replace(/@\w+/gi, '') // remove mentions (even failed ones)
+          .trim()
+        if (cleanedString.startsWith('&gt;')) {
+          return `<span class='greentext'>${string}</span>`
+        } else if (cleanedString.startsWith('&lt;')) {
+          return `<span class='cyantext'>${string}</span>`
+        }
       }
-    }
 
-    return string
-  }).reverse().join('')
+      return string
+    })
+    .reverse()
+    .join('')
 
   return { newHtml }
 }

@@ -1,25 +1,22 @@
+import { get } from 'lodash'
+
+import AttachmentSetting from '../helpers/attachment_setting.vue'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
-import IntegerSetting from '../helpers/integer_setting.vue'
-import StringSetting from '../helpers/string_setting.vue'
+import ColorSetting from '../helpers/color_setting.vue'
 import GroupSetting from '../helpers/group_setting.vue'
-import AttachmentSetting from '../helpers/attachment_setting.vue'
-
+import IntegerSetting from '../helpers/integer_setting.vue'
+import ListSetting from '../helpers/list_setting.vue'
+import MapSetting from '../helpers/map_setting.vue'
+import PWAManifestIconsSetting from '../helpers/pwa_manifest_icons_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faGlobe
-} from '@fortawesome/free-solid-svg-icons'
-
-library.add(
-  faGlobe
-)
+import StringSetting from '../helpers/string_setting.vue'
 
 const InstanceTab = {
-  provide () {
+  provide() {
     return {
       defaultDraftMode: true,
-      defaultSource: 'admin'
+      defaultSource: 'admin',
     }
   },
   components: {
@@ -27,12 +24,45 @@ const InstanceTab = {
     ChoiceSetting,
     IntegerSetting,
     StringSetting,
+    ColorSetting,
     AttachmentSetting,
-    GroupSetting
+    ListSetting,
+    PWAManifestIconsSetting,
+    MapSetting,
+    GroupSetting,
   },
   computed: {
-    ...SharedComputedObject()
-  }
+    ...SharedComputedObject(),
+    providersOptions() {
+      const desc = get(this.$store.state.adminSettings.descriptions, [
+        ':pleroma',
+        'Pleroma.Web.Metadata',
+        ':providers',
+      ])
+      return new Set(
+        desc.suggestions.map((option) => ({
+          label: option.replace('Pleroma.Web.Metadata.Providers.', ''),
+          value: option,
+        })),
+      )
+    },
+    limitLocalContentOptions() {
+      const desc = get(this.$store.state.adminSettings.descriptions, [
+        ':pleroma',
+        ':instance',
+        ':limit_to_local_content',
+      ])
+      return new Set(
+        desc.suggestions.map((option) => ({
+          label:
+            option !== 'false'
+              ? this.$t('admin_dash.instance.' + option)
+              : this.$t('general.no'),
+          value: option,
+        })),
+      )
+    },
+  },
 }
 
 export default InstanceTab

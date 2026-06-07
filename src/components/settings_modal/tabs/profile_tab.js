@@ -1,24 +1,19 @@
-import UserCard from 'src/components/user_card/user_card.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
+import UserCard from 'src/components/user_card/user_card.vue'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
-import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-  faTimes,
+  faCircleNotch,
   faPlus,
-  faCircleNotch
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faTimes,
-  faPlus,
-  faCircleNotch
-)
+library.add(faTimes, faPlus, faCircleNotch)
 
 const ProfileTab = {
-  data () {
+  data() {
     return {
       // Whether user is locked or not
       locked: this.$store.state.users.currentUser.locked,
@@ -28,18 +23,17 @@ const ProfileTab = {
     UserCard,
     Checkbox,
     BooleanSetting,
-    ProfileSettingIndicator
   },
   computed: {
-    user () {
+    user() {
       return this.$store.state.users.currentUser
     },
-    ...SharedComputedObject()
+    ...SharedComputedObject(),
   },
   methods: {
-    updateProfile () {
+    updateProfile() {
       const params = {
-        locked: this.locked
+        locked: this.locked,
       }
 
       this.$store.state.api.backendInteractor
@@ -51,13 +45,13 @@ const ProfileTab = {
         .catch((error) => {
           this.displayUploadError(error)
         })
-    }
+    },
   },
   watch: {
-    locked () {
+    locked() {
       this.updateProfile()
-    }
-  }
+    },
+  },
 }
 
 export default ProfileTab

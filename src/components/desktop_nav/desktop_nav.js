@@ -1,20 +1,25 @@
 import SearchBar from 'components/search_bar/search_bar.vue'
-import ConfirmModal from '../confirm_modal/confirm_modal.vue'
+import { mapActions, mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInterfaceStore } from 'src/stores/interface'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
+  faBell,
+  faBullhorn,
+  faCog,
+  faComments,
+  faHome,
+  faInfoCircle,
+  faSearch,
   faSignInAlt,
   faSignOutAlt,
-  faHome,
-  faComments,
-  faBell,
-  faUserPlus,
-  faBullhorn,
-  faSearch,
   faTachometerAlt,
-  faCog,
-  faInfoCircle
+  faUserPlus,
 } from '@fortawesome/free-solid-svg-icons'
-import { useInterfaceStore } from 'src/stores/interface'
 
 library.add(
   faSignInAlt,
@@ -27,91 +32,100 @@ library.add(
   faSearch,
   faTachometerAlt,
   faCog,
-  faInfoCircle
+  faInfoCircle,
 )
 
 export default {
   components: {
     SearchBar,
-    ConfirmModal
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
   },
   data: () => ({
     searchBarHidden: true,
-    supportsMask: window.CSS && window.CSS.supports && (
-      window.CSS.supports('mask-size', 'contain') ||
+    supportsMask:
+      window.CSS &&
+      window.CSS.supports &&
+      (window.CSS.supports('mask-size', 'contain') ||
         window.CSS.supports('-webkit-mask-size', 'contain') ||
         window.CSS.supports('-moz-mask-size', 'contain') ||
         window.CSS.supports('-ms-mask-size', 'contain') ||
-        window.CSS.supports('-o-mask-size', 'contain')
-    ),
-    showingConfirmLogout: false
+        window.CSS.supports('-o-mask-size', 'contain')),
+    showingConfirmLogout: false,
   }),
   computed: {
-    enableMask () { return this.supportsMask && this.$store.state.instance.logoMask },
-    logoStyle () {
+    enableMask() {
+      return this.supportsMask && this.logoMask
+    },
+    logoStyle() {
       return {
-        visibility: this.enableMask ? 'hidden' : 'visible'
+        visibility: this.enableMask ? 'hidden' : 'visible',
       }
     },
-    logoMaskStyle () {
+    logoMaskStyle() {
       return this.enableMask
         ? {
-            'mask-image': `url(${this.$store.state.instance.logo})`
+            'mask-image': `url(${this.logo})`,
           }
         : {
-            'background-color': this.enableMask ? '' : 'transparent'
+            'background-color': this.enableMask ? '' : 'transparent',
           }
     },
-    logoBgStyle () {
-      return Object.assign({
-        margin: `${this.$store.state.instance.logoMargin} 0`,
-        opacity: this.searchBarHidden ? 1 : 0
-      }, this.enableMask
-        ? {}
-        : {
-            'background-color': this.enableMask ? '' : 'transparent'
-          })
+    logoBgStyle() {
+      return Object.assign(
+        {
+          margin: `${this.logoMargin} 0`,
+          opacity: this.searchBarHidden ? 1 : 0,
+        },
+        this.enableMask
+          ? {}
+          : {
+              'background-color': this.enableMask ? '' : 'transparent',
+            },
+      )
     },
-    logo () { return this.$store.state.instance.logo },
-    sitename () { return this.$store.state.instance.name },
-    hideSitename () { return this.$store.state.instance.hideSitename },
-    logoLeft () { return this.$store.state.instance.logoLeft },
-    currentUser () { return this.$store.state.users.currentUser },
-    privateMode () { return this.$store.state.instance.private },
-    shouldConfirmLogout () {
-      return this.$store.getters.mergedConfig.modalOnLogout
-    }
+    ...mapState(useInstanceStore, ['privateMode']),
+    ...mapState(useInstanceStore, {
+      logoMask: (store) => store.instanceIdentity.logoMask,
+      logo: (store) => store.instanceIdentity.logo,
+      logoLeft: (store) => store.instanceIdentity.logoLeft,
+      logoMargin: (store) => store.instanceIdentity.logoMargin,
+      sitename: (store) => store.instanceIdentity.name,
+      hideSitename: (store) => store.instanceIdentity.hideSitename,
+    }),
+    currentUser() {
+      return this.$store.state.users.currentUser
+    },
+    shouldConfirmLogout() {
+      return useMergedConfigStore().mergedConfig.modalOnLogout
+    },
   },
   methods: {
-    scrollToTop () {
+    scrollToTop() {
       window.scrollTo(0, 0)
     },
-    showConfirmLogout () {
+    showConfirmLogout() {
       this.showingConfirmLogout = true
     },
-    hideConfirmLogout () {
+    hideConfirmLogout() {
       this.showingConfirmLogout = false
     },
-    logout () {
+    logout() {
       if (!this.shouldConfirmLogout) {
         this.doLogout()
       } else {
         this.showConfirmLogout()
       }
     },
-    doLogout () {
+    doLogout() {
       this.$router.replace('/main/public')
       this.$store.dispatch('logout')
       this.hideConfirmLogout()
     },
-    onSearchBarToggled (hidden) {
+    onSearchBarToggled(hidden) {
       this.searchBarHidden = hidden
     },
-    openSettingsModal () {
-      useInterfaceStore().openSettingsModal('user')
-    },
-    openAdminModal () {
-      useInterfaceStore().openSettingsModal('admin')
-    }
-  }
+    ...mapActions(useInterfaceStore, ['openSettingsModal']),
+  },
 }

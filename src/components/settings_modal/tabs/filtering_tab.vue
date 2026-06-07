@@ -1,10 +1,7 @@
 <template>
-  <div
-    :label="$t('settings.filtering')"
-    class="filtering-tab"
-  >
-    <div class="setting-item">
-      <h2>{{ $t('settings.filter.clutter') }}</h2>
+  <div class="filtering-tab">
+    <div class="setting-section">
+      <h3>{{ $t('settings.filter.mute_filter') }}</h3>
       <ul class="setting-list">
         <li>
           <ChoiceSetting
@@ -17,83 +14,23 @@
           </ChoiceSetting>
         </li>
         <li>
-          <BooleanSetting
-            expert="1"
-            path="hidePostStats"
-          >
-            {{ $t('settings.hide_post_stats') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting
-            expert="1"
-            path="hideUserStats"
-          >
-            {{ $t('settings.hide_user_stats') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting path="hideBotIndication">
-            {{ $t('settings.hide_actor_type_indication') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting path="hideScrobbles">
-            {{ $t('settings.hide_scrobbles') }}
-          </BooleanSetting>
-          <ul class="setting-list suboptions">
-            <li>
-              <UnitSetting
-                key="hideScrobblesAfter"
-                path="hideScrobblesAfter"
-                :units="['m', 'h', 'd']"
-                unit-set="time"
-                expert="1"
-              >
-                {{ $t('settings.hide_scrobbles_after') }}
-              </UnitSetting>
-            </li>
-          </ul>
-        </li>
-        <h3>{{ $t('settings.attachments') }}</h3>
-        <li>
-          <IntegerSetting
-            path="maxThumbnails"
-            expert="1"
-            :min="0"
-          >
-            {{ $t('settings.max_thumbnails') }}
-          </IntegerSetting>
-        </li>
-        <li>
-          <BooleanSetting path="hideAttachments">
-            {{ $t('settings.hide_attachments_in_tl') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting path="hideAttachmentsInConv">
-            {{ $t('settings.hide_attachments_in_convo') }}
-          </BooleanSetting>
-        </li>
-      </ul>
-    </div>
-    <div class="setting-item">
-      <h2>{{ $t('settings.filter.mute_filter') }}</h2>
-      <ul class="setting-list">
-        <li>
-          {{ $t('user_card.default_mute_expiration') }}
-          <Select
-            id="onMuteDefaultActionLv1"
-            v-model="onMuteDefaultActionLv1"
-          >
-            <option
-              v-for="option in muteBlockLv1Options"
-              :key="option.key"
-              :value="option.value"
+          <span class="setting-item">
+            <span class="setting-label">
+              {{ $t('user_card.default_mute_expiration') }}
+            </span>
+            <Select
+              id="onMuteDefaultActionLv1"
+              v-model="onMuteDefaultActionLv1"
             >
-              {{ option.label }}
-            </option>
-          </Select>
+              <option
+                v-for="option in muteBlockLv1Options"
+                :key="option.key"
+                :value="option.value"
+              >
+                {{ option.label }}
+              </option>
+            </Select>
+          </span>
           <ul
             v-if="onMuteDefaultActionLv1 === 'temporarily'"
             class="setting-list suboptions"
@@ -110,20 +47,25 @@
             </li>
           </ul>
         </li>
-        <li v-if="blockExpirationSupported">
-          {{ $t('user_card.default_block_expiration') }}
-          <Select
-            id="onBlockDefaultActionLv1"
-            v-model="onBlockDefaultActionLv1"
-          >
-            <option
-              v-for="option in muteBlockLv1Options"
-              :key="option.key"
-              :value="option.value"
+        <li v-if="blockExpiration">
+          <span class="setting-item">
+            <span class="setting-label">
+              {{ $t('user_card.default_block_expiration') }}
+            </span>
+            <Select
+              id="onBlockDefaultActionLv1"
+              v-model="onBlockDefaultActionLv1"
+              class="setting-control"
             >
-              {{ option.label }}
-            </option>
-          </Select>
+              <option
+                v-for="option in muteBlockLv1Options"
+                :key="option.key"
+                :value="option.value"
+              >
+                {{ option.label }}
+              </option>
+            </Select>
+          </span>
           <ul
             v-if="onBlockDefaultActionLv1 === 'temporarily'"
             class="setting-list suboptions"
@@ -312,6 +254,20 @@
                   :value="filter[1].value"
                   @input="updateFilter(filter[0], 'value', $event.target.value)"
                 >
+                {{ ' ' }}
+              </div>
+              <div class="filter-value filter-field">
+                <Checkbox
+                  :id="'filterCaseSensitive' + filter[0]"
+                  :model-value="filter[1].caseSensitive"
+                  :name="'filterCaseSensitive' + filter[0]"
+                  class="input-inset input-boolean case-sensitive"
+                  @update:model-value="updateFilter(filter[0], 'caseSensitive', $event)"
+                >
+                  <template #before>
+                    {{ $t('settings.filter.case_sensitive') }}
+                  </template>
+                </Checkbox>
               </div>
               <div class="filter-expires filter-field">
                 <label

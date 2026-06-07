@@ -1,41 +1,45 @@
-import Attachment from '../attachment/attachment.vue'
-import Poll from '../poll/poll.vue'
-import Gallery from '../gallery/gallery.vue'
-import StatusBody from 'src/components/status_body/status_body.vue'
-import LinkPreview from '../link-preview/link-preview.vue'
+import { mapState as mapPiniaState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 import { mapGetters, mapState } from 'vuex'
+
+import Attachment from 'src/components/attachment/attachment.vue'
+import Gallery from 'src/components/gallery/gallery.vue'
+import LinkPreview from 'src/components/link-preview/link-preview.vue'
+import Poll from 'src/components/poll/poll.vue'
+import StatusBody from 'src/components/status_body/status_body.vue'
+
+import { useMediaViewerStore } from 'src/stores/media_viewer.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faCircleNotch,
   faFile,
-  faMusic,
   faImage,
   faLink,
-  faPollH
+  faMusic,
+  faPollH,
 } from '@fortawesome/free-solid-svg-icons'
-import { useMediaViewerStore } from 'src/stores/media_viewer'
 
-library.add(
-  faCircleNotch,
-  faFile,
-  faMusic,
-  faImage,
-  faLink,
-  faPollH
-)
+library.add(faCircleNotch, faFile, faMusic, faImage, faLink, faPollH)
 
-const camelCase = name => name.charAt(0).toUpperCase() + name.slice(1)
+const camelCase = (name) => name.charAt(0).toUpperCase() + name.slice(1)
 
-const controlledOrUncontrolledGetters = list => list.reduce((res, name) => {
-  const camelized = camelCase(name)
-  const toggle = `controlledToggle${camelized}`
-  const controlledName = `controlled${camelized}`
-  const uncontrolledName = `uncontrolled${camelized}`
-  res[name] = function () {
-    return ((this.$data[toggle] !== undefined || this.$props[toggle] !== undefined) && this[toggle]) ? this[controlledName] : this[uncontrolledName]
-  }
-  return res
-}, {})
+const controlledOrUncontrolledGetters = (list) =>
+  list.reduce((res, name) => {
+    const camelized = camelCase(name)
+    const toggle = `controlledToggle${camelized}`
+    const controlledName = `controlled${camelized}`
+    const uncontrolledName = `uncontrolled${camelized}`
+    res[name] = function () {
+      return (this.$data[toggle] !== undefined ||
+        this.$props[toggle] !== undefined) &&
+        this[toggle]
+        ? this[controlledName]
+        : this[uncontrolledName]
+    }
+    return res
+  }, {})
 
 const controlledOrUncontrolledToggle = (obj, name) => {
   const camelized = camelCase(name)
@@ -63,28 +67,38 @@ const StatusContent = {
     'controlledToggleShowingTall',
     'controlledToggleExpandingSubject',
     'controlledShowingLongSubject',
-    'controlledToggleShowingLongSubject'
+    'controlledToggleShowingLongSubject',
   ],
   emits: ['parseReady', 'mediaplay', 'mediapause'],
-  data () {
+  data() {
     return {
-      uncontrolledShowingTall: this.fullContent || (this.inConversation && this.focused),
+      uncontrolledShowingTall:
+        this.fullContent || (this.inConversation && this.focused),
       uncontrolledShowingLongSubject: false,
       // not as computed because it sets the initial state which will be changed later
-      uncontrolledExpandingSubject: !this.$store.getters.mergedConfig.collapseMessageWithSubject
+      uncontrolledExpandingSubject:
+        !useMergedConfigStore().mergedConfig.collapseMessageWithSubject,
     }
   },
   computed: {
-    ...controlledOrUncontrolledGetters(['showingTall', 'expandingSubject', 'showingLongSubject']),
-    statusCard () {
+    ...controlledOrUncontrolledGetters([
+      'showingTall',
+      'expandingSubject',
+      'showingLongSubject',
+    ]),
+    statusCard() {
       if (!this.status.card) return null
-      return this.status.card.url === this.status.quote_url ? null : this.status.card
+      return this.status.card.url === this.status.quote_url
+        ? null
+        : this.status.card
     },
-    hideAttachments () {
-      return (this.mergedConfig.hideAttachments && !this.inConversation) ||
+    hideAttachments() {
+      return (
+        (this.mergedConfig.hideAttachments && !this.inConversation) ||
         (this.mergedConfig.hideAttachmentsInConv && this.inConversation)
+      )
     },
-    nsfwClickthrough () {
+    nsfwClickthrough() {
       if (!this.status.nsfw) {
         return false
       }
@@ -93,49 +107,54 @@ const StatusContent = {
       }
       return true
     },
-    localCollapseSubjectDefault () {
+    localCollapseSubjectDefault() {
       return this.mergedConfig.collapseMessageWithSubject
     },
-    attachmentSize () {
+    attachmentSize() {
       if (this.compact) {
         return 'small'
-      } else if ((this.mergedConfig.hideAttachments && !this.inConversation) ||
+      } else if (
+        (this.mergedConfig.hideAttachments && !this.inConversation) ||
         (this.mergedConfig.hideAttachmentsInConv && this.inConversation) ||
-        (this.status.attachments.length > this.maxThumbnails)) {
+        this.status.attachments.length > this.maxThumbnails
+      ) {
         return 'hide'
       }
       return 'normal'
     },
-    maxThumbnails () {
+    maxThumbnails() {
       return this.mergedConfig.maxThumbnails
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
     ...mapState({
-      currentUser: state => state.users.currentUser
-    })
+      currentUser: (state) => state.users.currentUser,
+    }),
   },
   components: {
     Attachment,
     Poll,
     Gallery,
     LinkPreview,
-    StatusBody
+    StatusBody,
   },
   methods: {
-    toggleShowingTall () {
+    toggleShowingTall() {
       controlledOrUncontrolledToggle(this, 'showingTall')
     },
-    toggleExpandingSubject () {
+    toggleExpandingSubject() {
       controlledOrUncontrolledToggle(this, 'expandingSubject')
     },
-    toggleShowingLongSubject () {
+    toggleShowingLongSubject() {
       controlledOrUncontrolledToggle(this, 'showingLongSubject')
     },
-    setMedia () {
-      const attachments = this.attachmentSize === 'hide' ? this.status.attachments : this.galleryAttachments
+    setMedia() {
+      const attachments =
+        this.attachmentSize === 'hide'
+          ? this.status.attachments
+          : this.galleryAttachments
       return () => useMediaViewerStore().setMedia(attachments)
-    }
-  }
+    },
+  },
 }
 
 export default StatusContent

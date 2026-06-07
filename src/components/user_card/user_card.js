@@ -1,48 +1,47 @@
-import merge from 'lodash/merge'
-import isEqual from 'lodash/isEqual'
-import unescape from 'lodash/unescape'
+import {
+  isEqual,
+  escape as ldEscape,
+  unescape as ldUnescape,
+  merge,
+} from 'lodash'
+import { mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 
-import ColorInput from 'src/components/color_input/color_input.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
-import RemoteFollow from '../remote_follow/remote_follow.vue'
-import ProgressButton from '../progress_button/progress_button.vue'
-import FollowButton from '../follow_button/follow_button.vue'
-import ModerationTools from '../moderation_tools/moderation_tools.vue'
-import AccountActions from '../account_actions/account_actions.vue'
-import UserNote from '../user_note/user_note.vue'
-import Select from '../select/select.vue'
-import UserLink from '../user_link/user_link.vue'
-import RichContent from 'src/components/rich_content/rich_content.jsx'
-import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
+import ColorInput from 'src/components/color_input/color_input.vue'
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
-import DialogModal from 'src/components/dialog_modal/dialog_modal.vue'
-import ImageCropper from 'src/components/image_cropper/image_cropper.vue'
-
-import localeService from 'src/services/locale/locale.service.js'
 import suggestor from 'src/components/emoji_input/suggestor.js'
+import ProgressButton from 'src/components/progress_button/progress_button.vue'
+import Select from 'src/components/select/select.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+import UserLink from 'src/components/user_link/user_link.vue'
 
-import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
-import { mapGetters } from 'vuex'
+import { useEmojiStore } from 'src/stores/emoji.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface'
+import { useMediaViewerStore } from 'src/stores/media_viewer'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { usePostStatusStore } from 'src/stores/post_status'
+import { useUserHighlightStore } from 'src/stores/user_highlight.js'
+
 import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
+import localeService from 'src/services/locale/locale.service.js'
+import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faBell,
-  faRss,
-  faSearchPlus,
-  faExternalLinkAlt,
-  faEdit,
-  faTimes,
-  faExpandAlt,
   faBirthdayCake,
+  faClockRotateLeft,
+  faEdit,
+  faExpandAlt,
+  faExternalLinkAlt,
+  faRss,
   faSave,
-  faClockRotateLeft
+  faSearchPlus,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons'
-
-import { useMediaViewerStore } from '../../stores/media_viewer'
-import { useInterfaceStore } from '../../stores/interface'
 
 library.add(
   faSave,
@@ -54,8 +53,17 @@ library.add(
   faTimes,
   faExpandAlt,
   faBirthdayCake,
-  faClockRotateLeft
+  faClockRotateLeft,
 )
+
+const KNOWN_TAGS = new Set([
+  'mrf_tag:media-force-nsfw',
+  'mrf_tag:media-strip',
+  'mrf_tag:force-unlisted',
+  'mrf_tag:sandbox',
+  'mrf_tag:disable-remote-subscription',
+  'mrf_tag:disable-any-subscription',
+])
 
 export default {
   props: {
@@ -63,69 +71,91 @@ export default {
     editable: {
       required: false,
       default: false,
-      type: Boolean
+      type: Boolean,
     },
     // ID of user to show data of
     userId: {
       required: true,
-      type: String
+      type: String,
     },
     // Use a compact layout that hides bio, stats etc.
     hideBio: {
       required: false,
       default: false,
-      type: Boolean
+      type: Boolean,
     },
     // default - open profile, 'zoom' - zoom, function - call function
     avatarAction: {
       required: false,
       type: String,
-      default: 'default'
+      default: 'default',
     },
     // Show note editor if supported
     hasNoteEditor: {
       required: false,
       type: Boolean,
-      default: false
+      default: false,
     },
     // Show close icon (for popovers)
     showClose: {
       required: false,
       type: Boolean,
-      default: false
+      default: false,
     },
     // Show close icon (for popovers)
     showExpand: {
       required: false,
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
+    // Disable forced 3:1 aspect ratio
+    compact: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
-    DialogModal,
+    DialogModal: defineAsyncComponent(
+      () => import('src/components/dialog_modal/dialog_modal.vue'),
+    ),
     UserAvatar,
     Checkbox,
-    RemoteFollow,
-    ModerationTools,
-    AccountActions,
+    RemoteFollow: defineAsyncComponent(
+      () => import('src/components/remote_follow/remote_follow.vue'),
+    ),
+    ModerationTools: defineAsyncComponent(
+      () => import('src/components/moderation_tools/moderation_tools.vue'),
+    ),
+    AccountActions: defineAsyncComponent(
+      () => import('src/components/account_actions/account_actions.vue'),
+    ),
     ProgressButton,
-    FollowButton,
+    FollowButton: defineAsyncComponent(
+      () => import('src/components/follow_button/follow_button.vue'),
+    ),
     Select,
-    RichContent,
     UserLink,
-    UserNote,
-    UserTimedFilterModal,
+    UserNote: defineAsyncComponent(
+      () => import('src/components/user_note/user_note.vue'),
+    ),
+    UserTimedFilterModal: defineAsyncComponent(
+      () =>
+        import(
+          'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
+        ),
+    ),
     ColorInput,
     EmojiInput,
-    ImageCropper
+    ImageCropper: defineAsyncComponent(
+      () => import('src/components/image_cropper/image_cropper.vue'),
+    ),
   },
-  data () {
+  data() {
     const user = this.$store.getters.findUser(this.userId)
 
     return {
       followRequestInProgress: false,
-      muteExpiryAmount: 0,
-      muteExpiryUnit: 'minutes',
 
       // Editable stuff
       editImage: false,
@@ -133,7 +163,7 @@ export default {
       newName: user.name_unescaped,
       editingName: false,
 
-      newBio: unescape(user.description),
+      newBio: ldUnescape(user.description),
       editingBio: false,
 
       newAvatar: null,
@@ -147,206 +177,281 @@ export default {
       newShowBirthday: user.show_birthday,
       newShowRole: user.show_role,
 
-      newFields: user.fields?.map(field => ({ name: field.name, value: field.value })),
+      newFields: user.fields?.map((field) => ({
+        name: field.name,
+        value: field.value,
+      })),
 
       editingFields: false,
     }
   },
-  created () {
+  created() {
     this.$store.dispatch('fetchUserRelationship', this.user.id)
   },
   computed: {
-    somethingToSave () {
+    escapedNewBio() {
+      return ldEscape(this.newBio).replace(/\n/g, '<br>')
+    },
+    somethingToSave() {
       if (this.newName !== this.user.name_unescaped) return true
-      if (this.newBio !== unescape(this.user.description)) return true
+      if (this.newBio !== ldUnescape(this.user.description)) return true
       if (this.newAvatar !== null) return true
       if (this.newBanner !== null) return true
       if (this.newActorType !== this.user.actor_type) return true
       if (this.newBirthday !== this.user.birthday) return true
       if (this.newShowBirthday !== this.user.show_birthday) return true
       if (this.newShowRole !== this.user.show_role) return true
-      if (!isEqual(
-        this.newFields,
-        this.user.fields?.map(field => ({ name: field.name, value: field.value }))
-      )) return true
+      if (
+        !isEqual(
+          this.newFields,
+          this.user.fields?.map((field) => ({
+            name: field.name,
+            value: field.value,
+          })),
+        )
+      )
+        return true
       return false
     },
-    groupActorAvailable () {
-      return this.$store.state.instance.groupActorAvailable
+    groupActorAvailable() {
+      return useInstanceCapabilitiesStore().groupActorAvailable
     },
-    availableActorTypes () {
-      return this.groupActorAvailable ? ['Person', 'Service', 'Group'] : ['Person', 'Service']
+    availableActorTypes() {
+      return this.groupActorAvailable
+        ? ['Person', 'Service', 'Group']
+        : ['Person', 'Service']
     },
-    user () {
+    user() {
       return this.$store.getters.findUser(this.userId)
     },
-    role () {
+    role() {
       return this.user.role
     },
-    relationship () {
+    relationship() {
       return this.$store.getters.relationship(this.userId)
     },
-    isOtherUser () {
+    isOtherUser() {
       return this.user.id !== this.$store.state.users.currentUser.id
     },
-    subscribeUrl () {
+    subscribeUrl() {
       const serverUrl = new URL(this.user.statusnet_profile_url)
       return `${serverUrl.protocol}//${serverUrl.host}/main/ostatus`
     },
-    loggedIn () {
+    loggedIn() {
       return this.$store.state.users.currentUser
     },
-    dailyAvg () {
-      const days = Math.ceil((new Date() - new Date(this.user.created_at)) / (60 * 60 * 24 * 1000))
+    dailyAvg() {
+      const days = Math.ceil(
+        (new Date() - new Date(this.user.created_at)) / (60 * 60 * 24 * 1000),
+      )
       return Math.round(this.user.statuses_count / days)
     },
-    emoji () {
-      return this.$store.state.instance.customEmoji.map(e => ({
+    emoji() {
+      return useEmojiStore().customEmoji.map((e) => ({
         shortcode: e.displayText,
         static_url: e.imageUrl,
-        url: e.imageUrl
+        url: e.imageUrl,
       }))
     },
     userHighlightType: {
-      get () {
-        const data = this.$store.getters.mergedConfig.highlight[this.user.screen_name]
-        return (data && data.type) || 'disabled'
+      get() {
+        return useUserHighlightStore().get(this.user.screen_name).type
       },
-      set (type) {
-        const data = this.$store.getters.mergedConfig.highlight[this.user.screen_name]
+      set(type) {
         if (type !== 'disabled') {
-          this.$store.dispatch('setHighlight', { user: this.user.screen_name, color: (data && data.color) || '#FFFFFF', type })
+          useUserHighlightStore().setAndSave({
+            user: this.user.screen_name,
+            value: { type },
+          })
         } else {
-          this.$store.dispatch('setHighlight', { user: this.user.screen_name, color: undefined })
+          useUserHighlightStore().unsetAndSave({ user: this.user.screen_name })
         }
       },
-      ...mapGetters(['mergedConfig'])
     },
     userHighlightColor: {
-      get () {
-        const data = this.$store.getters.mergedConfig.highlight[this.user.screen_name]
-        return data && data.color
+      get() {
+        return useUserHighlightStore().get(this.user.screen_name).color
       },
-      set (color) {
-        this.$store.dispatch('setHighlight', { user: this.user.screen_name, color })
-      }
+      set(color) {
+        useUserHighlightStore().setAndSave({
+          user: this.user.screen_name,
+          value: { color },
+        })
+      },
     },
-    visibleRole () {
-      if (!this.newShowRole) { return }
+    visibleRole() {
+      if (!this.newShowRole) {
+        return
+      }
       const rights = this.user.rights
-      if (!rights) { return }
+      if (!rights) {
+        return
+      }
       const validRole = rights.admin || rights.moderator
       const roleTitle = rights.admin ? 'admin' : 'moderator'
       return validRole && roleTitle
     },
-    hideFollowsCount () {
+    hideFollowsCount() {
       return this.isOtherUser && this.user.hide_follows_count
     },
-    hideFollowersCount () {
+    hideFollowersCount() {
       return this.isOtherUser && this.user.hide_followers_count
     },
-    showModerationMenu () {
+    showModerationMenu() {
       const privileges = this.loggedIn.privileges
-      return this.loggedIn.role === 'admin' ||
+      return (
+        this.loggedIn.role === 'admin' ||
         privileges.includes('users_manage_activation_state') ||
         privileges.includes('users_delete') ||
         privileges.includes('users_manage_tags')
+      )
     },
-    hasNote () {
+    hasNote() {
       return this.relationship.note
     },
-    supportsNote () {
+    supportsNote() {
       return 'note' in this.relationship
     },
-    muteExpiryAvailable () {
-      return this.user.mute_expires_at !== undefined
+    muteExpiryAvailable() {
+      return Object.hasOwn(this.user, 'mute_expires_at')
     },
-    muteExpiry () {
-      return this.user.mute_expires_at == null
+    muteExpiry() {
+      return this.user.mute_expires_at === false
         ? this.$t('user_card.mute_expires_forever')
-        : this.$t('user_card.mute_expires_at', [new Date(this.user.mute_expires_at).toLocaleString()])
+        : this.$t('user_card.mute_expires_at', [
+            new Date(this.user.mute_expires_at).toLocaleString(),
+          ])
     },
-    blockExpiryAvailable () {
-      return this.user.block_expires_at !== undefined
+    blockExpiryAvailable() {
+      return Object.hasOwn(this.user, 'block_expires_at')
     },
-    blockExpiry () {
+    blockExpiry() {
       return this.user.block_expires_at == null
         ? this.$t('user_card.block_expires_forever')
-        : this.$t('user_card.block_expires_at', [new Date(this.user.mute_expires_at).toLocaleString()])
+        : this.$t('user_card.block_expires_at', [
+            new Date(this.user.mute_expires_at).toLocaleString(),
+          ])
     },
-    formattedBirthday () {
-      const browserLocale = localeService.internalToBrowserLocale(this.$i18n.locale)
-      return this.user.birthday && new Date(Date.parse(this.user.birthday)).toLocaleDateString(browserLocale, { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' })
+    formattedBirthday() {
+      const browserLocale = localeService.internalToBrowserLocale(
+        this.$i18n.locale,
+      )
+      return (
+        this.user.birthday &&
+        new Date(Date.parse(this.user.birthday)).toLocaleDateString(
+          browserLocale,
+          { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' },
+        )
+      )
+    },
+    formattedJoinDate() {
+      const browserLocale = localeService.internalToBrowserLocale(
+        this.$i18n.locale,
+      )
+      return (
+        this.user.created_at &&
+        new Date(Date.parse(this.user.created_at)).toLocaleDateString(
+          browserLocale,
+          { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' },
+        )
+      )
     },
 
     // Editable stuff
-    avatarImgSrc () {
-      const currentUrl = this.user.profile_image_url_original || this.defaultAvatar
+    avatarImgSrc() {
+      const currentUrl =
+        this.user.profile_image_url_original || this.defaultAvatar
       if (!this.editable) return currentUrl
-      const newUrl = this.newAvatar === null ? this.defaultAvatar : this.newAvatar
-      return (this.newAvatar === null) ? currentUrl : newUrl
+      const newUrl =
+        this.newAvatar === null ? this.defaultAvatar : this.newAvatar
+      return this.newAvatar === null ? currentUrl : newUrl
     },
-    bannerImgSrc () {
+    bannerImgSrc() {
       const currentUrl = this.user.cover_photo || this.defaultBanner
       if (!this.editable) return currentUrl
-      const newUrl = this.newBanner === null ? this.defaultBanner : this.newBanner
-      return (this.newBanner === null) ? currentUrl : newUrl
+      const newUrl =
+        this.newBanner === null ? this.defaultBanner : this.newBanner
+      return this.newBanner === null ? currentUrl : newUrl
     },
-    defaultAvatar () {
-      return this.$store.state.instance.server + this.$store.state.instance.defaultAvatar
+    defaultAvatar() {
+      return (
+        useInstanceStore().server +
+        useInstanceStore().instanceIdentity.defaultAvatar
+      )
     },
-    defaultBanner () {
-      return this.$store.state.instance.server + this.$store.state.instance.defaultBanner
+    defaultBanner() {
+      return (
+        useInstanceStore().server +
+        useInstanceStore().instanceIdentity.defaultBanner
+      )
     },
-    isDefaultAvatar () {
-      const baseAvatar = this.$store.state.instance.defaultAvatar
-      return !(this.$store.state.users.currentUser.profile_image_url) ||
-      this.$store.state.users.currentUser.profile_image_url.includes(baseAvatar)
+    isDefaultAvatar() {
+      const baseAvatar = useInstanceStore().instanceIdenitity.defaultAvatar
+      return (
+        !this.$store.state.users.currentUser.profile_image_url ||
+        this.$store.state.users.currentUser.profile_image_url.includes(
+          baseAvatar,
+        )
+      )
     },
-    isDefaultBanner () {
-      const baseBanner = this.$store.state.instance.defaultBanner
-      return !(this.$store.state.users.currentUser.cover_photo) ||
-      this.$store.state.users.currentUser.cover_photo.includes(baseBanner)
+    isDefaultBanner() {
+      const baseBanner = useInstanceStore().instanceIdentity.defaultBanner
+      return (
+        !this.$store.state.users.currentUser.cover_photo ||
+        this.$store.state.users.currentUser.cover_photo.includes(baseBanner)
+      )
     },
-    fieldsLimits () {
-      return this.$store.state.instance.fieldsLimits
+    fieldsLimits() {
+      return useInstanceStore().limits.fieldsLimits
     },
-    maxFields () {
+    maxFields() {
       return this.fieldsLimits ? this.fieldsLimits.maxFields : 0
     },
-    emojiUserSuggestor () {
+    emojiUserSuggestor() {
       return suggestor({
         emoji: [
-          ...this.$store.getters.standardEmojiList,
-          ...this.$store.state.instance.customEmoji
+          ...useEmojiStore().standardEmojiList,
+          ...useEmojiStore().customEmoji,
         ],
-        store: this.$store
+        store: this.$store,
       })
     },
-    emojiSuggestor () {
+    emojiSuggestor() {
       return suggestor({
         emoji: [
-          ...this.$store.getters.standardEmojiList,
-          ...this.$store.state.instance.customEmoji
-        ]
+          ...useEmojiStore().standardEmojiList,
+          ...useEmojiStore().customEmoji,
+        ],
       })
     },
-    ...mapGetters(['mergedConfig'])
+    allowNonSquareEmoji() {
+      return this.mergedConfig.nonSquareEmoji
+    },
+    hideUserStats() {
+      return this.mergedConfig.hideUserStats
+    },
+    hideRemarks() {
+      return this.mergedConfig.userCardHidePersonalMarks
+    },
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   methods: {
-    muteUser () {
+    isKnownTag(tag) {
+      return KNOWN_TAGS.has(tag)
+    },
+    muteUser() {
       this.$refs.timedMuteDialog.optionallyPrompt()
     },
-    unmuteUser () {
+    unmuteUser() {
       this.$store.dispatch('unmuteUser', this.user.id)
     },
-    subscribeUser () {
+    subscribeUser() {
       return this.$store.dispatch('subscribeUser', this.user.id)
     },
-    unsubscribeUser () {
+    unsubscribeUser() {
       return this.$store.dispatch('unsubscribeUser', this.user.id)
     },
-    linkClicked ({ target }) {
+    linkClicked({ target }) {
       if (target.tagName === 'SPAN') {
         target = target.parentNode
       }
@@ -354,27 +459,31 @@ export default {
         window.open(target.href, '_blank')
       }
     },
-    userProfileLink (user) {
+    userProfileLink(user) {
       return generateProfileLink(
-        user.id, user.screen_name,
-        this.$store.state.instance.restrictedNicknames
+        user.id,
+        user.screen_name,
+        useInstanceStore().restrictedNicknames,
       )
     },
-    openProfileTab () {
+    openProfileTab() {
       useInterfaceStore().openSettingsModalTab('profile')
     },
-    zoomAvatar () {
+    zoomAvatar() {
       const attachment = {
         url: this.user.profile_image_url_original,
-        mimetype: 'image'
+        type: 'image',
       }
       useMediaViewerStore().setMedia([attachment])
       useMediaViewerStore().setCurrentMedia(attachment)
     },
-    mentionUser () {
-      usePostStatusStore().openPostStatusModal({ profileMention: true, repliedUser: this.user })
+    mentionUser() {
+      usePostStatusStore().openPostStatusModal({
+        profileMention: true,
+        repliedUser: this.user,
+      })
     },
-    onAvatarClickHandler (e) {
+    onAvatarClickHandler(e) {
       if (this.onAvatarClick) {
         e.preventDefault()
         this.onAvatarClick()
@@ -382,15 +491,17 @@ export default {
     },
 
     // Editable stuff
-    changeAvatar () {
+    changeAvatar() {
       this.editImage = 'avatar'
     },
-    changeBanner () {
+    changeBanner() {
       this.editImage = 'banner'
     },
-    submitImage ({ canvas, file }) {
+    submitImage({ canvas, file }) {
       if (canvas) {
-        return canvas.toBlob((data) => this.submitImage({ canvas: null, file: data }))
+        return canvas.toBlob((data) =>
+          this.submitImage({ canvas: null, file: data }),
+        )
       }
 
       const reader = new window.FileReader()
@@ -409,9 +520,8 @@ export default {
       }
 
       reader.readAsDataURL(file)
-
     },
-    resetImage () {
+    resetImage() {
       if (this.editImage === 'avatar') {
         this.newAvatar = null
         this.newAvatarFile = null
@@ -421,25 +531,25 @@ export default {
       }
       this.editImage = false
     },
-    addField () {
+    addField() {
       if (this.newFields.length < this.maxFields) {
         this.newFields.push({ name: '', value: '' })
       }
     },
-    deleteField (index) {
+    deleteField(index) {
       this.newFields.splice(index, 1)
     },
-    propsToNative (props) {
+    propsToNative(props) {
       return propsToNative(props)
     },
-    cancelImageText () {
+    cancelImageText() {
       return
     },
-    resetState () {
+    resetState() {
       const user = this.$store.state.users.currentUser
 
       this.newName = user.name_unescaped
-      this.newBio = unescape(user.description)
+      this.newBio = ldUnescape(user.description)
 
       this.newAvatar = null
       this.newAvatarFile = null
@@ -452,22 +562,25 @@ export default {
       this.newShowBirthday = user.show_birthday
       this.newShowRole = user.show_role
 
-      this.newFields = user.fields.map(field => ({ name: field.name, value: field.value }))
+      this.newFields = user.fields.map((field) => ({
+        name: field.name,
+        value: field.value,
+      }))
     },
-    updateProfile () {
+    updateProfile() {
       const params = {
         note: this.newBio,
 
         // Backend notation.
         display_name: this.newName,
-        fields_attributes: this.newFields.filter(el => el != null),
+        fields_attributes: this.newFields.filter((el) => el != null),
         show_role: !!this.newShowRole,
         birthday: this.newBirthday || '',
         show_birthday: !!this.newShowBirthday,
       }
 
-      if (this.actorType) {
-        params.actor_type = this.actorType
+      if (this.newActorType) {
+        params.actor_type = this.newActorType
       }
 
       if (this.newAvatarFile !== null) {
@@ -491,12 +604,12 @@ export default {
           this.displayUploadError(error)
         })
     },
-    displayUploadError (error) {
+    displayUploadError(error) {
       useInterfaceStore().pushGlobalNotice({
         messageKey: 'upload.error.message',
         messageArgs: [error.message],
-        level: 'error'
+        level: 'error',
       })
-    }
-  }
+    },
+  },
 }

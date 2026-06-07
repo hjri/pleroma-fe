@@ -4,37 +4,37 @@ import ConfirmModal from './confirm_modal.vue'
 export default {
   props: {
     title: {
-      type: String
+      type: String,
     },
     message: {
-      type: String
+      type: String,
     },
     cancelText: {
-      type: String
+      type: String,
     },
     confirmText: {
-      type: String
-    }
+      type: String,
+    },
   },
   emits: ['hide', 'show', 'action'],
   data: () => ({
-    showing: false
+    showing: false,
   }),
   components: {
-    ConfirmModal
+    ConfirmModal,
   },
   methods: {
-    show () {
+    show() {
       this.showing = true
       this.$emit('show')
     },
-    hide () {
+    hide() {
       this.showing = false
       this.$emit('hide')
     },
-    doGeneric () {
+    doGeneric() {
       this.$emit('action')
       this.hide()
-    }
-  }
+    },
+  },
 }

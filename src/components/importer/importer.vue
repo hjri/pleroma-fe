@@ -1,5 +1,5 @@
 <template>
-  <div class="importer">
+  <div class="importer btn-group">
     <form>
       <input
         ref="input"
@@ -19,7 +19,7 @@
       class="btn button-default"
       @click="submit"
     >
-      {{ submitButtonLabel || $t('importer.submit') }}
+      {{ submitButtonLabel || $t('importer.import') }}
     </button>
     <div v-if="success">
       <button

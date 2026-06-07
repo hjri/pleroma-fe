@@ -1,0 +1,101 @@
+when:
+  - event: pull_request
+    evaluate: 'CI_COMMIT_SOURCE_BRANCH != "weblate" && not(CI_COMMIT_SOURCE_BRANCH startsWith "renovate/")'
+  - event: push
+    branch: ${CI_REPO_DEFAULT_BRANCH}
+  - event: manual
+    branch: ${CI_REPO_DEFAULT_BRANCH}
+
+labels:
+  platform: linux/amd64
+  memory: 'high'
+
+variables:
+  artifacts_uploader_settings: &artifacts_uploader_settings
+    user:
+      from_secret: pleroma-ci-user
+    password:
+      from_secret: pleroma-ci-password
+    owner: 'pleroma'
+    package_name: 'pleroma-fe-test-artifacts'
+  script_file_entrypoint: &script_file_entrypoint
+    - /bin/sh
+    - -c
+    - 'printf "%s" "$CI_SCRIPT" | base64 -d > /tmp/ci-script.sh && /bin/sh -xe /tmp/ci-script.sh'
+
+steps:
+  test:
+    image: mcr.microsoft.com/playwright:v1.57.0-jammy
+    entrypoint: *script_file_entrypoint
+    environment:
+      APT_CACHE_DIR: apt-cache
+      DEBIAN_FRONTEND: noninteractive
+      E2E_BASE_URL: http://localhost:8080
+      FF_NETWORK_PER_BUILD: "true"
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+      VITE_PROXY_ORIGIN: "http://pleroma:4000"
+      VITE_PROXY_TARGET: "http://pleroma:4000"
+    commands:
+      - |
+        if [ "${CI_PIPELINE_EVENT}" != "pull_request" ]; then
+          mkdir -pv $APT_CACHE_DIR && apt-get -qq update
+          apt-get install -y zip
+        fi
+      - npm install -g yarn@1.22.22
+      - yarn --frozen-lockfile
+      - |
+        echo "-- Waiting for Pleroma API..."
+        api_ok="false"
+        for _i in $(seq 1 120); do
+          if wget -qO- http://pleroma:4000/api/v1/instance >/dev/null 2>&1; then
+            api_ok="true"
+            break
+          fi
+          sleep 1s
+        done
+        if [ "$api_ok" != "true" ]; then
+          echo "Timed out waiting for Pleroma API to become available"
+          exit 1
+        fi
+      - |
+        if ! yarn e2e:pw; then
+          [ "${CI_PIPELINE_EVENT}" = "pull_request" ] || zip -9qr ${CI_COMMIT_SHA:0:8}-e2e.zip ./test/e2e-playwright/test-results ./test/e2e-playwright/playwright-report
+          exit 1
+        fi
+
+  upload-artifacts:
+    image: docker.io/woodpeckercommunity/plugin-gitea-package:0.5.0
+    when:
+      - event: push
+        branch: ${CI_REPO_DEFAULT_BRANCH}
+        status: [failure]
+      - event: manual
+        branch: ${CI_REPO_DEFAULT_BRANCH}
+        status: [failure]
+    settings:
+      <<: *artifacts_uploader_settings
+      package_version: ${CI_REPO_DEFAULT_BRANCH}-${CI_COMMIT_SHA:0:8}
+      file_source: ./${CI_COMMIT_SHA:0:8}-e2e.zip
+      file_name: ${CI_COMMIT_SHA:0:8}-e2e.zip
+
+services:
+  postgres:
+    image: docker.io/postgres:13-alpine
+    environment:
+      POSTGRES_DB: pleroma_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  pleroma:
+    image: git.pleroma.social/pleroma/pleroma:stable-e2e
+    environment:
+      ADMIN_EMAIL: "admin@example.com"
+      NOTIFY_EMAIL: "admin@example.com"
+      DB_USER: postgres
+      DB_PASS: postgres
+      DB_NAME: pleroma_test
+      DB_HOST: postgres
+      INSTANCE_NAME: Pleroma E2E
+      E2E_ADMIN_USERNAME: admin
+      E2E_ADMIN_PASSWORD: adminadmin
+      E2E_ADMIN_EMAIL: "admin@example.com"

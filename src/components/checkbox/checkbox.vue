@@ -1,7 +1,7 @@
 <template>
   <label
     class="checkbox"
-    :class="[{ disabled, indeterminate, 'indeterminate-fix': indeterminateTransitionFix }, radio ? '-radio' : '-checkbox']"
+    :class="[{ ['-disabled']: disabled, indeterminate, 'indeterminate-fix': indeterminateTransitionFix }, radio ? '-radio' : '-checkbox']"
   >
     <span
       v-if="!!$slots.before"
@@ -36,42 +36,39 @@
 
 <script>
 export default {
-  props: [
-    'radio',
-    'modelValue',
-    'indeterminate',
-    'disabled'
-  ],
+  props: ['radio', 'modelValue', 'indeterminate', 'disabled'],
   emits: ['update:modelValue'],
   data: (vm) => ({
-    indeterminateTransitionFix: vm.indeterminate
+    indeterminateTransitionFix: vm.indeterminate,
   }),
   watch: {
-    indeterminate (e) {
+    indeterminate(e) {
       if (e) {
         this.indeterminateTransitionFix = true
       }
-    }
+    },
   },
   methods: {
-    onTransitionEnd () {
+    onTransitionEnd() {
       if (!this.indeterminate) {
         this.indeterminateTransitionFix = false
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style lang="scss">
 .checkbox {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
   min-height: 1.2em;
+  align-items: baseline;
+  gap: 0 0.5em;
 
   &-indicator,
   & .label {
-    vertical-align: middle;
+    align-self: center;
   }
 
   & > &-indicator {
@@ -123,7 +120,7 @@ export default {
 
   .disabled {
     .checkbox-indicator::before {
-      background-color: var(--background);
+      background-color: transparent;
     }
   }
 
@@ -141,16 +138,6 @@ export default {
   &.indeterminate-fix {
     input[type="checkbox"] + .checkbox-indicator::before {
       content: "–";
-    }
-  }
-
-  & > .label {
-    &.-after {
-      margin-left: 0.5em;
-    }
-
-    &.-before {
-      margin-right: 0.5em;
     }
   }
 }

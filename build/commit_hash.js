@@ -1,8 +1,8 @@
 import childProcess from 'child_process'
 
-export const getCommitHash = (() => {
-  const subst = "$Format:%h$"
-  if(!subst.match(/Format:/)) {
+export const getCommitHash = () => {
+  const subst = '$Format:%h$'
+  if (!subst.match(/Format:/)) {
     return subst
   } else {
     try {
@@ -15,4 +15,4 @@ export const getCommitHash = (() => {
       return 'UNKNOWN'
     }
   }
-})
+}

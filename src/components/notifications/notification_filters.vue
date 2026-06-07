@@ -106,31 +106,33 @@
 </template>
 
 <script>
-import Popover from '../popover/popover.vue'
+import Popover from 'src/components/popover/popover.vue'
+
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faFilter } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faFilter
-)
+library.add(faFilter)
 
 export default {
   components: { Popover },
   computed: {
-    filters () {
-      return this.$store.getters.mergedConfig.notificationVisibility
-    }
+    filters() {
+      return useMergedConfigStore().mergedConfig.notificationVisibility
+    },
   },
   methods: {
-    toggleNotificationFilter (type) {
-      this.$store.dispatch('setOption', {
-        name: 'notificationVisibility',
+    toggleNotificationFilter(type) {
+      useSyncConfigStore().setSimplePrefAndSave({
+        path: 'notificationVisibility',
         value: {
           ...this.filters,
-          [type]: !this.filters[type]
-        }
+          [type]: !this.filters[type],
+        },
       })
-    }
-  }
+    },
+  },
 }
 </script>

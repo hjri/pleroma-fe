@@ -1,9 +1,13 @@
-import { fileURLToPath } from 'node:url'
-import { dirname, resolve } from 'node:path'
 import { readFile } from 'node:fs/promises'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { exactRegex } from '@rolldown/pluginutils'
 import { build } from 'vite'
-import * as esbuild from 'esbuild'
-import { generateServiceWorkerMessages, i18nFiles } from './service_worker_messages.js'
+
+import {
+  generateServiceWorkerMessages,
+  i18nFiles,
+} from './service_worker_messages.js'
 
 const getSWMessagesAsText = async () => {
   const messages = await generateServiceWorkerMessages()
@@ -11,123 +15,24 @@ const getSWMessagesAsText = async () => {
 }
 const projectRoot = dirname(dirname(fileURLToPath(import.meta.url)))
 
-const swEnvName = 'virtual:pleroma-fe/service_worker_env'
-const swEnvNameResolved = '\0' + swEnvName
-const getDevSwEnv = () => `self.serviceWorkerOption = { assets: [] };`
-const getProdSwEnv = ({ assets }) => `self.serviceWorkerOption = { assets: ${JSON.stringify(assets)} };`
-
-export const devSwPlugin = ({
-  swSrc,
-  swDest,
-  transformSW,
-  alias
-}) => {
-  const swFullSrc = resolve(projectRoot, swSrc)
-  const esbuildAlias = {}
-  Object.entries(alias).forEach(([source, dest]) => {
-    esbuildAlias[source] = dest.startsWith('/') ? projectRoot + dest : dest
-  })
-
-  return {
-    name: 'dev-sw-plugin',
-    apply: 'serve',
-    configResolved (conf) {
-    },
-    resolveId (id) {
-      const name = id.startsWith('/') ? id.slice(1) : id
-      if (name === swDest) {
-        return swFullSrc
-      } else if (name === swEnvName) {
-        return swEnvNameResolved
-      }
-      return null
-    },
-    async load (id) {
-      if (id === swFullSrc) {
-        return readFile(swFullSrc, 'utf-8')
-      } else if (id === swEnvNameResolved) {
-        return getDevSwEnv()
-      }
-      return null
-    },
-    /**
-     * vite does not bundle the service worker
-     * during dev, and firefox does not support ESM as service worker
-     * https://bugzilla.mozilla.org/show_bug.cgi?id=1360870
-     */
-    async transform (code, id) {
-      if (id === swFullSrc && transformSW) {
-        const res = await esbuild.build({
-          entryPoints: [swSrc],
-          bundle: true,
-          write: false,
-          outfile: 'sw-pleroma.js',
-          alias: esbuildAlias,
-          plugins: [{
-            name: 'vite-like-root-resolve',
-            setup (b) {
-              b.onResolve(
-                { filter: new RegExp(/^\//) },
-                args => ({
-                  path: resolve(projectRoot, args.path.slice(1))
-                })
-              )
-            }
-          }, {
-            name: 'sw-messages',
-            setup (b) {
-              b.onResolve(
-                { filter: new RegExp('^' + swMessagesName + '$') },
-                args => ({
-                  path: args.path,
-                  namespace: 'sw-messages'
-                }))
-              b.onLoad(
-                { filter: /.*/, namespace: 'sw-messages' },
-                async () => ({
-                  contents: await getSWMessagesAsText()
-                }))
-            }
-          }, {
-            name: 'sw-env',
-            setup (b) {
-              b.onResolve(
-                { filter: new RegExp('^' + swEnvName + '$') },
-                args => ({
-                  path: args.path,
-                  namespace: 'sw-env'
-                }))
-              b.onLoad(
-                { filter: /.*/, namespace: 'sw-env' },
-                () => ({
-                  contents: getDevSwEnv()
-                }))
-            }
-          }]
-        })
-        const text = res.outputFiles[0].text
-        return text
-      }
-    }
-  }
-}
-
 // Idea taken from
 // https://github.com/vite-pwa/vite-plugin-pwa/blob/main/src/plugins/build.ts
 // rollup does not support compiling to iife if we want to code-split;
 // however, we must compile the service worker to iife because of browser support.
 // Run another vite build just for the service worker targeting iife at
 // the end of the build.
-export const buildSwPlugin = ({
-  swSrc,
-  swDest,
-}) => {
+export const buildSwPlugin = ({ swSrc, swDest }) => {
+  const swFullSrc = resolve(projectRoot, swSrc)
+  const swEnvName = 'virtual:pleroma-fe/service_worker_env'
+  const swEnvNameResolved = '\0' + swEnvName
+
   let config
+
   return {
     name: 'build-sw-plugin',
     enforce: 'post',
-    apply: 'build',
-    configResolved (resolvedConfig) {
+    configResolved(resolvedConfig) {
+      resolvedConfig
       config = {
         define: resolvedConfig.define,
         resolve: resolvedConfig.resolve,
@@ -135,53 +40,81 @@ export const buildSwPlugin = ({
         publicDir: false,
         build: {
           ...resolvedConfig.build,
-          lib: {
-            entry: swSrc,
-            formats: ['iife'],
-            name: 'sw_pleroma'
-          },
           emptyOutDir: false,
-          rollupOptions: {
+          rolldownOptions: {
+            input: {
+              main: swSrc,
+            },
+            context: 'self',
             output: {
-              entryFileNames: swDest
-            }
-          }
+              entryFileNames: swDest,
+              codeSplitting: false,
+              format: 'iife',
+            },
+          },
         },
-        configFile: false
+        configFile: false,
       }
     },
     generateBundle: {
       order: 'post',
       sequential: true,
-      async handler (_, bundle) {
+      async handler(_, bundle) {
         const assets = Object.keys(bundle)
-              .filter(name => !/\.map$/.test(name))
-              .map(name => '/' + name)
+          .filter((name) => !/\.map$/.test(name))
+          .map((name) => '/' + name)
+
         config.plugins.push({
           name: 'build-sw-env-plugin',
-          resolveId (id) {
-            if (id === swEnvName) {
-              return swEnvNameResolved
-            }
-            return null
+          mode: 'production',
+          resolveId: {
+            filter: { id: exactRegex(swEnvName) },
+            handler: () => swEnvNameResolved,
           },
-          load (id) {
-            if (id === swEnvNameResolved) {
-              return getProdSwEnv({ assets })
-            }
-            return null
-          }
+          load: {
+            filter: { id: exactRegex(swEnvNameResolved) },
+            handler() {
+              return `self.serviceWorkerOption = { assets: ${JSON.stringify(assets)} };`
+            },
+          },
         })
-      }
+      },
+    },
+    resolveId: {
+      filter: { id: new RegExp(swDest) },
+      handler() {
+        return swFullSrc
+      },
+    },
+    load: {
+      filter: { id: new RegExp(swFullSrc) },
+      async handler() {
+        config.plugins.push({
+          name: 'dummy-sw-env',
+          mode: 'development',
+          resolveId: {
+            filter: { id: exactRegex(swEnvName) },
+            handler: () => swEnvNameResolved,
+          },
+          load: {
+            filter: { id: exactRegex(swEnvNameResolved) },
+            handler: () => 'self.serviceWorkerOption = { assets: [] }',
+          },
+        })
+
+        const swBundle = await build(config)
+        return swBundle.output[0]
+      },
     },
     closeBundle: {
       order: 'post',
       sequential: true,
-      async handler () {
-        console.log('Building service worker for production')
+      async handler() {
+        if (process.env.VITEST) return
+        console.info('Building service worker for production')
         await build(config)
-      }
-    }
+      },
+    },
   }
 }
 
@@ -191,9 +124,9 @@ const swMessagesNameResolved = '\0' + swMessagesName
 export const swMessagesPlugin = () => {
   return {
     name: 'sw-messages-plugin',
-    resolveId (id) {
+    resolveId(id) {
       if (id === swMessagesName) {
-        Object.values(i18nFiles).forEach(f => {
+        Object.values(i18nFiles).forEach((f) => {
           this.addWatchFile(f)
         })
         return swMessagesNameResolved
@@ -201,11 +134,11 @@ export const swMessagesPlugin = () => {
         return null
       }
     },
-    async load (id) {
+    async load(id) {
       if (id === swMessagesNameResolved) {
         return await getSWMessagesAsText()
       }
       return null
-    }
+    },
   }
 }

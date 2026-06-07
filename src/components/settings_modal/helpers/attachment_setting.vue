@@ -1,10 +1,11 @@
 <template>
   <span
     v-if="matchesExpertLevel"
-    class="AttachmentSetting"
+    class="AttachmentSetting setting-item"
     :class="{ '-compact': compact }"
   >
     <label
+      class="setting-label"
       :for="path"
       :class="{ 'faint': shouldBeDisabled }"
     >
@@ -39,7 +40,7 @@
           :changed="isChanged"
           :onclick="reset"
         />
-        <ProfileSettingIndicator :is-profile="isProfileSetting" />
+        <LocalSettingIndicator :is-local="isLocalSetting" />
       </div>
       <div v-if="!compact">{{ $t('settings.preview') }}</div>
       <Attachment

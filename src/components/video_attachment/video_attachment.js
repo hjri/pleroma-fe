@@ -1,22 +1,24 @@
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
 const VideoAttachment = {
   props: ['attachment', 'controls'],
-  data () {
+  data() {
     return {
       blocksSuspend: false,
       // Start from true because removing "loop" property seems buggy in Vue
-      hasAudio: true
+      hasAudio: true,
     }
   },
   computed: {
-    loopVideo () {
-      if (this.$store.getters.mergedConfig.loopVideoSilentOnly) {
+    loopVideo() {
+      if (useMergedConfigStore().mergedConfig.loopVideoSilentOnly) {
         return !this.hasAudio
       }
-      return this.$store.getters.mergedConfig.loopVideo
-    }
+      return useMergedConfigStore().mergedConfig.loopVideo
+    },
   },
   methods: {
-    onPlaying (e) {
+    onPlaying(e) {
       this.setHasAudio(e)
       if (this.loopVideo) {
         this.$emit('play', { looping: true })
@@ -24,10 +26,10 @@ const VideoAttachment = {
       }
       this.$emit('play')
     },
-    onPaused () {
+    onPaused() {
       this.$emit('pause')
     },
-    setHasAudio (e) {
+    setHasAudio(e) {
       const target = e.srcElement || e.target
       // If hasAudio is false, we've already marked this video to not have audio,
       // a video can't gain audio out of nowhere so don't bother checking again.
@@ -44,8 +46,8 @@ const VideoAttachment = {
         if (target.audioTracks.length > 0) return
       }
       this.hasAudio = false
-    }
-  }
+    },
+  },
 }
 
 export default VideoAttachment

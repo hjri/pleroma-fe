@@ -1,25 +1,23 @@
-import { reduce, filter, findIndex, clone, get } from 'lodash'
-import Status from '../status/status.vue'
-import ThreadTree from '../thread_tree/thread_tree.vue'
-import { WSConnectionStatus } from '../../services/api/api.service.js'
-import { mapGetters, mapState } from 'vuex'
+import { clone, filter, findIndex, get, reduce } from 'lodash'
 import { mapState as mapPiniaState } from 'pinia'
-import QuickFilterSettings from '../quick_filter_settings/quick_filter_settings.vue'
-import QuickViewSettings from '../quick_view_settings/quick_view_settings.vue'
+import { mapState } from 'vuex'
+
+import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
+import QuickViewSettings from 'src/components/quick_view_settings/quick_view_settings.vue'
+import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
+import { WSConnectionStatus } from '../../services/api/api.service.js'
+
 import { useInterfaceStore } from 'src/stores/interface'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faAngleDoubleDown,
   faAngleDoubleLeft,
-  faChevronLeft
+  faChevronLeft,
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faAngleDoubleDown,
-  faAngleDoubleLeft,
-  faChevronLeft
-)
+library.add(faAngleDoubleDown, faAngleDoubleLeft, faChevronLeft)
 
 const sortById = (a, b) => {
   const idA = a.type === 'retweet' ? a.retweeted_status.id : a.id
@@ -43,23 +41,25 @@ const sortAndFilterConversation = (conversation, statusoid) => {
   if (statusoid.type === 'retweet') {
     conversation = filter(
       conversation,
-      (status) => (status.type === 'retweet' || status.id !== statusoid.retweeted_status.id)
+      (status) =>
+        status.type === 'retweet' ||
+        status.id !== statusoid.retweeted_status.id,
     )
   } else {
     conversation = filter(conversation, (status) => status.type !== 'retweet')
   }
-  return conversation.filter(_ => _).sort(sortById)
+  return conversation.filter((_) => _).sort(sortById)
 }
 
 const conversation = {
-  data () {
+  data() {
     return {
       highlight: null,
       expanded: false,
       threadDisplayStatusObject: {}, // id => 'showing' | 'hidden'
       statusContentPropertiesObject: {},
       inlineDivePosition: null,
-      loadStatusError: null
+      loadStatusError: null,
     }
   },
   props: [
@@ -69,76 +69,80 @@ const conversation = {
     'pinnedStatusIdsObject',
     'inProfile',
     'profileUserId',
-    'virtualHidden'
+    'virtualHidden',
   ],
-  created () {
+  created() {
     if (this.isPage) {
       this.fetchConversation()
     }
   },
   computed: {
-    maxDepthToShowByDefault () {
+    maxDepthToShowByDefault() {
       // maxDepthInThread = max number of depths that is *visible*
       // since our depth starts with 0 and "showing" means "showing children"
       // there is a -2 here
-      const maxDepth = this.$store.getters.mergedConfig.maxDepthInThread - 2
+      const maxDepth = this.mergedConfig.maxDepthInThread - 2
       return maxDepth >= 1 ? maxDepth : 1
     },
-    streamingEnabled () {
-      return this.mergedConfig.useStreamingApi && this.mastoUserSocketStatus === WSConnectionStatus.JOINED
+    streamingEnabled() {
+      return (
+        this.mergedConfig.useStreamingApi &&
+        this.mastoUserSocketStatus === WSConnectionStatus.JOINED
+      )
     },
-    displayStyle () {
-      return this.$store.getters.mergedConfig.conversationDisplay
+    displayStyle() {
+      return this.mergedConfig.conversationDisplay
     },
-    isTreeView () {
+    isTreeView() {
       return !this.isLinearView
     },
-    treeViewIsSimple () {
-      return !this.$store.getters.mergedConfig.conversationTreeAdvanced
+    treeViewIsSimple() {
+      return !this.mergedConfig.conversationTreeAdvanced
     },
-    isLinearView () {
+    isLinearView() {
       return this.displayStyle === 'linear'
     },
-    shouldFadeAncestors () {
-      return this.$store.getters.mergedConfig.conversationTreeFadeAncestors
+    shouldFadeAncestors() {
+      return this.mergedConfig.conversationTreeFadeAncestors
     },
-    otherRepliesButtonPosition () {
-      return this.$store.getters.mergedConfig.conversationOtherRepliesButton
+    otherRepliesButtonPosition() {
+      return this.mergedConfig.conversationOtherRepliesButton
     },
-    showOtherRepliesButtonBelowStatus () {
+    showOtherRepliesButtonBelowStatus() {
       return this.otherRepliesButtonPosition === 'below'
     },
-    showOtherRepliesButtonInsideStatus () {
+    showOtherRepliesButtonInsideStatus() {
       return this.otherRepliesButtonPosition === 'inside'
     },
-    suspendable () {
+    suspendable() {
       if (this.isTreeView) {
-        return Object.entries(this.statusContentProperties)
-          .every(([, prop]) => !prop.replying && prop.mediaPlaying.length === 0)
+        return Object.entries(this.statusContentProperties).every(
+          ([, prop]) => !prop.replying && prop.mediaPlaying.length === 0,
+        )
       }
       if (this.$refs.statusComponent && this.$refs.statusComponent[0]) {
-        return this.$refs.statusComponent.every(s => s.suspendable)
+        return this.$refs.statusComponent.every((s) => s.suspendable)
       } else {
         return true
       }
     },
-    hideStatus () {
+    hideStatus() {
       return this.virtualHidden && this.suspendable
     },
-    status () {
+    status() {
       return this.$store.state.statuses.allStatusesObject[this.statusId]
     },
-    originalStatusId () {
+    originalStatusId() {
       if (this.status.retweeted_status) {
         return this.status.retweeted_status.id
       } else {
         return this.statusId
       }
     },
-    conversationId () {
+    conversationId() {
       return this.getConversationId(this.statusId)
     },
-    conversation () {
+    conversation() {
       if (!this.status) {
         return []
       }
@@ -147,7 +151,9 @@ const conversation = {
         return [this.status]
       }
 
-      const conversation = clone(this.$store.state.statuses.conversationsObject[this.conversationId])
+      const conversation = clone(
+        this.$store.state.statuses.conversationsObject[this.conversationId],
+      )
       const statusIndex = findIndex(conversation, { id: this.originalStatusId })
       if (statusIndex !== -1) {
         conversation[statusIndex] = this.status
@@ -155,144 +161,188 @@ const conversation = {
 
       return sortAndFilterConversation(conversation, this.status)
     },
-    statusMap () {
+    statusMap() {
       return this.conversation.reduce((res, s) => {
         res[s.id] = s
         return res
       }, {})
     },
-    threadTree () {
-      const reverseLookupTable = this.conversation.reduce((table, status, index) => {
-        table[status.id] = index
-        return table
-      }, {})
+    threadTree() {
+      const reverseLookupTable = this.conversation.reduce(
+        (table, status, index) => {
+          table[status.id] = index
+          return table
+        },
+        {},
+      )
 
-      const threads = this.conversation.reduce((a, cur) => {
-        const id = cur.id
-        a.forest[id] = this.getReplies(id)
-          .map(s => s.id)
+      const threads = this.conversation.reduce(
+        (a, cur) => {
+          const id = cur.id
+          a.forest[id] = this.getReplies(id).map((s) => s.id)
 
-        return a
-      }, {
-        forest: {}
-      })
+          return a
+        },
+        {
+          forest: {},
+        },
+      )
 
-      const walk = (forest, topLevel, depth = 0, processed = {}) => topLevel.map(id => {
-        if (processed[id]) {
-          return []
-        }
+      const walk = (forest, topLevel, depth = 0, processed = {}) =>
+        topLevel
+          .map((id) => {
+            if (processed[id]) {
+              return []
+            }
 
-        processed[id] = true
-        return [{
-          status: this.conversation[reverseLookupTable[id]],
-          id,
-          depth
-        }, walk(forest, forest[id], depth + 1, processed)].reduce((a, b) => a.concat(b), [])
-      }).reduce((a, b) => a.concat(b), [])
+            processed[id] = true
+            return [
+              {
+                status: this.conversation[reverseLookupTable[id]],
+                id,
+                depth,
+              },
+              walk(forest, forest[id], depth + 1, processed),
+            ].reduce((a, b) => a.concat(b), [])
+          })
+          .reduce((a, b) => a.concat(b), [])
 
-      const linearized = walk(threads.forest, this.topLevel.map(k => k.id))
+      const linearized = walk(
+        threads.forest,
+        this.topLevel.map((k) => k.id),
+      )
 
       return linearized
     },
-    replyIds () {
-      return this.conversation.map(k => k.id)
+    replyIds() {
+      return this.conversation
+        .map((k) => k.id)
         .reduce((res, id) => {
-          res[id] = (this.replies[id] || []).map(k => k.id)
+          res[id] = (this.replies[id] || []).map((k) => k.id)
           return res
         }, {})
     },
-    totalReplyCount () {
+    totalReplyCount() {
       const sizes = {}
       const subTreeSizeFor = (id) => {
         if (sizes[id]) {
           return sizes[id]
         }
-        sizes[id] = 1 + this.replyIds[id].map(cid => subTreeSizeFor(cid)).reduce((a, b) => a + b, 0)
+        sizes[id] =
+          1 +
+          this.replyIds[id]
+            .map((cid) => subTreeSizeFor(cid))
+            .reduce((a, b) => a + b, 0)
         return sizes[id]
       }
-      this.conversation.map(k => k.id).map(subTreeSizeFor)
+      this.conversation.map((k) => k.id).map(subTreeSizeFor)
       return Object.keys(sizes).reduce((res, id) => {
         res[id] = sizes[id] - 1 // exclude itself
         return res
       }, {})
     },
-    totalReplyDepth () {
+    totalReplyDepth() {
       const depths = {}
       const subTreeDepthFor = (id) => {
         if (depths[id]) {
           return depths[id]
         }
-        depths[id] = 1 + this.replyIds[id].map(cid => subTreeDepthFor(cid)).reduce((a, b) => a > b ? a : b, 0)
+        depths[id] =
+          1 +
+          this.replyIds[id]
+            .map((cid) => subTreeDepthFor(cid))
+            .reduce((a, b) => (a > b ? a : b), 0)
         return depths[id]
       }
-      this.conversation.map(k => k.id).map(subTreeDepthFor)
+      this.conversation.map((k) => k.id).map(subTreeDepthFor)
       return Object.keys(depths).reduce((res, id) => {
         res[id] = depths[id] - 1 // exclude itself
         return res
       }, {})
     },
-    depths () {
+    depths() {
       return this.threadTree.reduce((a, k) => {
         a[k.id] = k.depth
         return a
       }, {})
     },
-    topLevel () {
-      const topLevel = this.conversation.reduce((tl, cur) =>
-        tl.filter(k => this.getReplies(cur.id).map(v => v.id).indexOf(k.id) === -1), this.conversation)
+    topLevel() {
+      const topLevel = this.conversation.reduce(
+        (tl, cur) =>
+          tl.filter(
+            (k) =>
+              this.getReplies(cur.id)
+                .map((v) => v.id)
+                .indexOf(k.id) === -1,
+          ),
+        this.conversation,
+      )
       return topLevel
     },
-    otherTopLevelCount () {
+    otherTopLevelCount() {
       return this.topLevel.length - 1
     },
-    showingTopLevel () {
+    showingTopLevel() {
       if (this.canDive && this.diveRoot) {
         return [this.statusMap[this.diveRoot]]
       }
       return this.topLevel
     },
-    diveRoot () {
+    diveRoot() {
       const statusId = this.inlineDivePosition || this.statusId
       const isTopLevel = !this.parentOf(statusId)
       return isTopLevel ? null : statusId
     },
-    diveDepth () {
+    diveDepth() {
       return this.canDive && this.diveRoot ? this.depths[this.diveRoot] : 0
     },
-    diveMode () {
+    diveMode() {
       return this.canDive && !!this.diveRoot
     },
-    shouldShowAllConversationButton () {
+    shouldShowAllConversationButton() {
       // The "show all conversation" button tells the user that there exist
       // other toplevel statuses, so do not show it if there is only a single root
-      return this.isTreeView && this.isExpanded && this.diveMode && this.topLevel.length > 1
+      return (
+        this.isTreeView &&
+        this.isExpanded &&
+        this.diveMode &&
+        this.topLevel.length > 1
+      )
     },
-    shouldShowAncestors () {
-      return this.isTreeView && this.isExpanded && this.ancestorsOf(this.diveRoot).length
+    shouldShowAncestors() {
+      return (
+        this.isTreeView &&
+        this.isExpanded &&
+        this.ancestorsOf(this.diveRoot).length
+      )
     },
-    replies () {
+    replies() {
       let i = 1
 
-      return reduce(this.conversation, (result, { id, in_reply_to_status_id: irid }) => {
-        if (irid) {
-          result[irid] = result[irid] || []
-          result[irid].push({
-            name: `#${i}`,
-            id
-          })
-        }
-        i++
-        return result
-      }, {})
+      return reduce(
+        this.conversation,
+        (result, { id, in_reply_to_status_id: irid }) => {
+          if (irid) {
+            result[irid] = result[irid] || []
+            result[irid].push({
+              name: `#${i}`,
+              id,
+            })
+          }
+          i++
+          return result
+        },
+        {},
+      )
     },
-    isExpanded () {
+    isExpanded() {
       return !!(this.expanded || this.isPage)
     },
-    hiddenStyle () {
+    hiddenStyle() {
       const height = (this.status && this.status.virtualHeight) || '120px'
       return this.virtualHidden ? { height } : {}
     },
-    threadDisplayStatus () {
+    threadDisplayStatus() {
       return this.conversation.reduce((a, k) => {
         const id = k.id
         const depth = this.depths[id]
@@ -300,7 +350,7 @@ const conversation = {
           if (this.threadDisplayStatusObject[id]) {
             return this.threadDisplayStatusObject[id]
           }
-          if ((depth - this.diveDepth) <= this.maxDepthToShowByDefault) {
+          if (depth - this.diveDepth <= this.maxDepthToShowByDefault) {
             return 'showing'
           } else {
             return 'hidden'
@@ -311,7 +361,7 @@ const conversation = {
         return a
       }, {})
     },
-    statusContentProperties () {
+    statusContentProperties() {
       return this.conversation.reduce((a, k) => {
         const id = k.id
         const props = (() => {
@@ -320,13 +370,13 @@ const conversation = {
             expandingSubject: false,
             showingLongSubject: false,
             isReplying: false,
-            mediaPlaying: []
+            mediaPlaying: [],
           }
 
           if (this.statusContentPropertiesObject[id]) {
             return {
               ...def,
-              ...this.statusContentPropertiesObject[id]
+              ...this.statusContentPropertiesObject[id],
             }
           }
           return def
@@ -336,54 +386,58 @@ const conversation = {
         return a
       }, {})
     },
-    canDive () {
+    canDive() {
       return this.isTreeView && this.isExpanded
     },
-    maybeHighlight () {
+    maybeHighlight() {
       return this.isExpanded ? this.highlight : null
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
     ...mapState({
-      mastoUserSocketStatus: state => state.api.mastoUserSocketStatus
+      mastoUserSocketStatus: (state) => state.api.mastoUserSocketStatus,
     }),
     ...mapPiniaState(useInterfaceStore, {
-      mobileLayout: store => store.layoutType === 'mobile'
-    })
+      mobileLayout: (store) => store.layoutType === 'mobile',
+    }),
   },
   components: {
-    Status,
     ThreadTree,
     QuickFilterSettings,
-    QuickViewSettings
+    QuickViewSettings,
   },
   watch: {
-    statusId (newVal, oldVal) {
+    statusId(newVal, oldVal) {
       const newConversationId = this.getConversationId(newVal)
       const oldConversationId = this.getConversationId(oldVal)
-      if (newConversationId && oldConversationId && newConversationId === oldConversationId) {
+      if (
+        newConversationId &&
+        oldConversationId &&
+        newConversationId === oldConversationId
+      ) {
         this.setHighlight(this.originalStatusId)
       } else {
         this.fetchConversation()
       }
     },
-    expanded (value) {
+    expanded(value) {
       if (value) {
         this.fetchConversation()
       } else {
         this.resetDisplayState()
       }
     },
-    virtualHidden () {
-      this.$store.dispatch(
-        'setVirtualHeight',
-        { statusId: this.statusId, height: `${this.$el.clientHeight}px` }
-      )
-    }
+    virtualHidden() {
+      this.$store.dispatch('setVirtualHeight', {
+        statusId: this.statusId,
+        height: `${this.$el.clientHeight}px`,
+      })
+    },
   },
   methods: {
-    fetchConversation () {
+    fetchConversation() {
       if (this.status) {
-        this.$store.state.api.backendInteractor.fetchConversation({ id: this.statusId })
+        this.$store.state.api.backendInteractor
+          .fetchConversation({ id: this.statusId })
           .then(({ ancestors, descendants }) => {
             this.$store.dispatch('addNewStatuses', { statuses: ancestors })
             this.$store.dispatch('addNewStatuses', { statuses: descendants })
@@ -391,7 +445,8 @@ const conversation = {
           })
       } else {
         this.loadStatusError = null
-        this.$store.state.api.backendInteractor.fetchStatus({ id: this.statusId })
+        this.$store.state.api.backendInteractor
+          .fetchStatus({ id: this.statusId })
           .then((status) => {
             this.$store.dispatch('addNewStatuses', { statuses: [status] })
             this.fetchConversation()
@@ -401,16 +456,16 @@ const conversation = {
           })
       }
     },
-    isFocused (id) {
-      return (this.isExpanded) && id === this.highlight
+    isFocused(id) {
+      return this.isExpanded && id === this.highlight
     },
-    getReplies (id) {
+    getReplies(id) {
       return this.replies[id] || []
     },
-    getHighlight () {
+    getHighlight() {
       return this.isExpanded ? this.highlight : null
     },
-    setHighlight (id) {
+    setHighlight(id) {
       if (!id) return
       this.highlight = id
 
@@ -421,44 +476,54 @@ const conversation = {
       this.$store.dispatch('fetchFavsAndRepeats', id)
       this.$store.dispatch('fetchEmojiReactionsBy', id)
     },
-    toggleExpanded () {
+    toggleExpanded() {
       this.expanded = !this.expanded
     },
-    getConversationId (statusId) {
+    getConversationId(statusId) {
       const status = this.$store.state.statuses.allStatusesObject[statusId]
-      return get(status, 'retweeted_status.statusnet_conversation_id', get(status, 'statusnet_conversation_id'))
+      return get(
+        status,
+        'retweeted_status.statusnet_conversation_id',
+        get(status, 'statusnet_conversation_id'),
+      )
     },
-    setThreadDisplay (id, nextStatus) {
+    setThreadDisplay(id, nextStatus) {
       this.threadDisplayStatusObject = {
         ...this.threadDisplayStatusObject,
-        [id]: nextStatus
+        [id]: nextStatus,
       }
     },
-    toggleThreadDisplay (id) {
+    toggleThreadDisplay(id) {
       const curStatus = this.threadDisplayStatus[id]
       const nextStatus = curStatus === 'showing' ? 'hidden' : 'showing'
       this.setThreadDisplay(id, nextStatus)
     },
-    setThreadDisplayRecursively (id, nextStatus) {
+    setThreadDisplayRecursively(id, nextStatus) {
       this.setThreadDisplay(id, nextStatus)
-      this.getReplies(id).map(k => k.id).map(id => this.setThreadDisplayRecursively(id, nextStatus))
+      this.getReplies(id)
+        .map((k) => k.id)
+        .map((id) => this.setThreadDisplayRecursively(id, nextStatus))
     },
-    showThreadRecursively (id) {
+    showThreadRecursively(id) {
       this.setThreadDisplayRecursively(id, 'showing')
     },
-    setStatusContentProperty (id, name, value) {
+    setStatusContentProperty(id, name, value) {
       this.statusContentPropertiesObject = {
         ...this.statusContentPropertiesObject,
         [id]: {
           ...this.statusContentPropertiesObject[id],
-          [name]: value
-        }
+          [name]: value,
+        },
       }
     },
-    toggleStatusContentProperty (id, name) {
-      this.setStatusContentProperty(id, name, !this.statusContentProperties[id][name])
+    toggleStatusContentProperty(id, name) {
+      this.setStatusContentProperty(
+        id,
+        name,
+        !this.statusContentProperties[id][name],
+      )
     },
-    leastVisibleAncestor (id) {
+    leastVisibleAncestor(id) {
       let cur = id
       let parent = this.parentOf(cur)
       while (cur) {
@@ -472,18 +537,20 @@ const conversation = {
       // nothing found, fall back to toplevel
       return this.topLevel[0] ? this.topLevel[0].id : undefined
     },
-    diveIntoStatus (id) {
+    diveIntoStatus(id) {
       this.tryScrollTo(id)
     },
-    diveToTopLevel () {
-      this.tryScrollTo(this.topLevelAncestorOrSelfId(this.diveRoot) || this.topLevel[0].id)
+    diveToTopLevel() {
+      this.tryScrollTo(
+        this.topLevelAncestorOrSelfId(this.diveRoot) || this.topLevel[0].id,
+      )
     },
     // only used when we are not on a page
-    undive () {
+    undive() {
       this.inlineDivePosition = null
       this.setHighlight(this.statusId)
     },
-    tryScrollTo (id) {
+    tryScrollTo(id) {
       if (!id) {
         return
       }
@@ -512,13 +579,13 @@ const conversation = {
         this.setHighlight(id)
       })
     },
-    goToCurrent () {
+    goToCurrent() {
       this.tryScrollTo(this.diveRoot || this.topLevel[0].id)
     },
-    statusById (id) {
+    statusById(id) {
       return this.statusMap[id]
     },
-    parentOf (id) {
+    parentOf(id) {
       const status = this.statusById(id)
       if (!status) {
         return undefined
@@ -529,11 +596,11 @@ const conversation = {
       }
       return parentId
     },
-    parentOrSelf (id) {
+    parentOrSelf(id) {
       return this.parentOf(id) || id
     },
     // Ancestors of some status, from top to bottom
-    ancestorsOf (id) {
+    ancestorsOf(id) {
       const ancestors = []
       let cur = this.parentOf(id)
       while (cur) {
@@ -542,7 +609,7 @@ const conversation = {
       }
       return ancestors
     },
-    topLevelAncestorOrSelfId (id) {
+    topLevelAncestorOrSelfId(id) {
       let cur = id
       let parent = this.parentOf(id)
       while (parent) {
@@ -551,11 +618,11 @@ const conversation = {
       }
       return cur
     },
-    resetDisplayState () {
+    resetDisplayState() {
       this.undive()
       this.threadDisplayStatusObject = {}
-    }
-  }
+    },
+  },
 }
 
 export default conversation

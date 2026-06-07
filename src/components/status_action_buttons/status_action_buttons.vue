@@ -1,11 +1,14 @@
 <template>
   <div class="StatusActionButtons">
-    <span class="quick-action-buttons">
+    <span
+      class="quick-action-buttons"
+      :class="{ '-pin': showPin }"
+    >
       <span
         v-for="button in quickButtons"
         :key="button.name"
         class="quick-action"
-        :class="{ '-pin': showPin, '-toggle': button.dropdown?.() }"
+        :class="{ '-pin': showPin, '-toggle': button.dropdown?.(), '-with-extra': button.name === 'bookmark' }"
       >
         <ActionButtonContainer
           :class="{ '-pin': showPin }"
@@ -15,9 +18,9 @@
           :func-arg="funcArg"
           :get-class="getClass"
           :get-component="getComponent"
-          :close="() => {}"
+          :close="() => { /* no-op */ }"
           :do-action="doAction"
-          @interacted="e => $emit('interacted')"
+          @emoji-picker-shown="onEmojiPickerShown"
         />
         <button
           v-if="showPin && currentUser"
@@ -30,7 +33,6 @@
           <FAIcon
             v-if="showPin && currentUser"
             fixed-width
-            class="fa-scale-110"
             icon="thumbtack"
           />
         </button>
@@ -38,15 +40,16 @@
       <Popover
         trigger="click"
         :trigger-attrs="triggerAttrs"
+        class="quick-action"
         :tabindex="0"
-        placement="top"
+        placement="bottom"
         :offset="{ y: 5 }"
         remove-padding
         @close="onExtraClose"
       >
         <template #trigger>
           <FAIcon
-            class="fa-scale-110 "
+            class="action-button-inner"
             icon="ellipsis-h"
           />
         </template>
@@ -56,23 +59,6 @@
             class="dropdown-menu extra-action-buttons"
             role="menu"
           >
-            <div
-              v-if="currentUser"
-              class="menu-item dropdown-item extra-action -icon"
-            >
-              <button
-                class="main-button"
-                role="menuitem"
-                :tabindex="0"
-                @click.stop="() => { resize(); showPin = !showPin }"
-              >
-                <FAIcon
-                  class="fa-scale-110"
-                  fixed-width
-                  icon="wrench"
-                /><span>{{ $t('nav.edit_pinned') }}</span>
-              </button>
-            </div>
             <div
               v-for="button in extraButtons"
               :key="button.name"
@@ -89,7 +75,6 @@
                 :get-component="getComponent"
                 :outer-close="close"
                 :do-action="doAction"
-                @interacted="e => $emit('interacted')"
               />
               <button
                 v-if="showPin && currentUser"
@@ -108,13 +93,30 @@
                 />
               </button>
             </div>
+            <div
+              v-if="currentUser"
+              class="menu-item dropdown-item extra-action -icon"
+            >
+              <button
+                class="main-button"
+                role="menuitem"
+                :tabindex="0"
+                @click.stop="() => { resize(); showPin = !showPin }"
+              >
+                <FAIcon
+                  class="fa-scale-110"
+                  fixed-width
+                  icon="wrench"
+                /><span>{{ $t('nav.edit_pinned') }}</span>
+              </button>
+            </div>
           </div>
         </template>
       </Popover>
     </span>
 
     <teleport to="#modal">
-      <confirm-modal
+      <ConfirmModal
         v-if="showingConfirmDialog"
         :title="currentConfirmTitle"
         :confirm-text="currentConfirmOkText"
@@ -123,7 +125,7 @@
         @cancelled="showingConfirmDialog = false"
       >
         {{ currentConfirmBody }}
-      </confirm-modal>
+      </ConfirmModal>
     </teleport>
   </div>
 </template>

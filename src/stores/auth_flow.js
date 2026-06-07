@@ -1,5 +1,6 @@
-import { useOAuthStore } from 'src/stores/oauth.js'
 import { defineStore } from 'pinia'
+
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 const PASSWORD_STRATEGY = 'password'
 const TOKEN_STRATEGY = 'token'
@@ -13,7 +14,7 @@ export const useAuthFlowStore = defineStore('authFlow', {
   state: () => ({
     settings: {},
     strategy: PASSWORD_STRATEGY,
-    initStrategy: PASSWORD_STRATEGY // default strategy from config
+    initStrategy: PASSWORD_STRATEGY, // default strategy from config
   }),
   // getters
   getters: {
@@ -31,39 +32,39 @@ export const useAuthFlowStore = defineStore('authFlow', {
     },
   },
   actions: {
-    setInitialStrategy (strategy) {
+    setInitialStrategy(strategy) {
       if (strategy) {
         this.initStrategy = strategy
         this.strategy = strategy
       }
     },
-    requirePassword () {
+    requirePassword() {
       this.strategy = PASSWORD_STRATEGY
     },
-    requireToken () {
+    requireToken() {
       this.strategy = TOKEN_STRATEGY
     },
-    requireMFA ({ settings }) {
+    requireMFA({ settings }) {
       this.settings = settings
       this.strategy = TOTP_STRATEGY // default strategy of MFA
     },
-    requireRecovery () {
+    requireRecovery() {
       this.strategy = RECOVERY_STRATEGY
     },
-    requireTOTP () {
+    requireTOTP() {
       this.strategy = TOTP_STRATEGY
     },
-    abortMFA () {
+    abortMFA() {
       this.resetState()
     },
-    resetState () {
+    resetState() {
       this.strategy = this.initStrategy
       this.settings = {}
     },
-    async login ({ access_token: accessToken }) {
+    async login({ access_token: accessToken }) {
       useOAuthStore().setToken(accessToken)
       await window.vuex.dispatch('loginUser', accessToken, { root: true })
       this.resetState()
-    }
-  }
+    },
+  },
 })

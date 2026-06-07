@@ -73,6 +73,7 @@
             :disable-notice="true"
             :disable-lock-warning="true"
             :disable-polls="true"
+            :disable-quotes="true"
             :disable-sensitivity-checkbox="true"
             :disable-submit="errorLoadingChat || !currentChat"
             :disable-preview="true"

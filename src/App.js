@@ -1,187 +1,268 @@
-import UserPanel from './components/user_panel/user_panel.vue'
-import NavPanel from './components/nav_panel/nav_panel.vue'
-import InstanceSpecificPanel from './components/instance_specific_panel/instance_specific_panel.vue'
-import FeaturesPanel from './components/features_panel/features_panel.vue'
-import WhoToFollowPanel from './components/who_to_follow_panel/who_to_follow_panel.vue'
-import ShoutPanel from './components/shout_panel/shout_panel.vue'
-import MediaModal from './components/media_modal/media_modal.vue'
-import SideDrawer from './components/side_drawer/side_drawer.vue'
-import MobilePostStatusButton from './components/mobile_post_status_button/mobile_post_status_button.vue'
-import MobileNav from './components/mobile_nav/mobile_nav.vue'
-import DesktopNav from './components/desktop_nav/desktop_nav.vue'
-import UserReportingModal from './components/user_reporting_modal/user_reporting_modal.vue'
-import EditStatusModal from './components/edit_status_modal/edit_status_modal.vue'
-import PostStatusModal from './components/post_status_modal/post_status_modal.vue'
-import StatusHistoryModal from './components/status_history_modal/status_history_modal.vue'
-import GlobalNoticeList from './components/global_notice_list/global_notice_list.vue'
-import { getOrCreateServiceWorker } from './services/sw/sw'
-import { windowWidth, windowHeight } from './services/window_utils/window_utils'
-import { mapGetters } from 'vuex'
-import { defineAsyncComponent } from 'vue'
-import { useShoutStore } from './stores/shout'
-import { useInterfaceStore } from './stores/interface'
-
 import { throttle } from 'lodash'
+import { mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
+
+import DesktopNav from 'src/components/desktop_nav/desktop_nav.vue'
+import FeaturesPanel from 'src/components/features_panel/features_panel.vue'
+import GlobalNoticeList from 'src/components/global_notice_list/global_notice_list.vue'
+import InstanceSpecificPanel from 'src/components/instance_specific_panel/instance_specific_panel.vue'
+import MobileNav from 'src/components/mobile_nav/mobile_nav.vue'
+import MobilePostStatusButton from 'src/components/mobile_post_status_button/mobile_post_status_button.vue'
+import NavPanel from 'src/components/nav_panel/nav_panel.vue'
+import UserPanel from 'src/components/user_panel/user_panel.vue'
+import { getOrCreateServiceWorker } from './services/sw/sw'
+import { windowHeight, windowWidth } from './services/window_utils/window_utils'
+
+import { useEmojiStore } from 'src/stores/emoji.js'
+import { useI18nStore } from 'src/stores/i18n.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useShoutStore } from 'src/stores/shout.js'
+
+import messages from 'src/i18n/messages'
+import localeService from 'src/services/locale/locale.service.js'
+
+// Helper to unwrap reactive proxies
+window.toValue = (x) => JSON.parse(JSON.stringify(x))
 
 export default {
   name: 'app',
   components: {
     UserPanel,
     NavPanel,
-    Notifications: defineAsyncComponent(() => import('./components/notifications/notifications.vue')),
+    Notifications: defineAsyncComponent(
+      () => import('src/components/notifications/notifications.vue'),
+    ),
     InstanceSpecificPanel,
     FeaturesPanel,
-    WhoToFollowPanel,
-    ShoutPanel,
-    MediaModal,
-    SideDrawer,
+    WhoToFollowPanel: defineAsyncComponent(
+      () =>
+        import('src/components/who_to_follow_panel/who_to_follow_panel.vue'),
+    ),
+    ShoutPanel: defineAsyncComponent(
+      () => import('src/components/shout_panel/shout_panel.vue'),
+    ),
+    MediaModal: defineAsyncComponent(
+      () => import('src/components/media_modal/media_modal.vue'),
+    ),
     MobilePostStatusButton,
     MobileNav,
     DesktopNav,
-    SettingsModal: defineAsyncComponent(() => import('./components/settings_modal/settings_modal.vue')),
-    UpdateNotification: defineAsyncComponent(() => import('./components/update_notification/update_notification.vue')),
-    UserReportingModal,
-    PostStatusModal,
-    EditStatusModal,
-    StatusHistoryModal,
-    GlobalNoticeList
+    SettingsModal: defineAsyncComponent(
+      () => import('src/components/settings_modal/settings_modal.vue'),
+    ),
+    UpdateNotification: defineAsyncComponent(
+      () =>
+        import('src/components/update_notification/update_notification.vue'),
+    ),
+    PostStatusModal: defineAsyncComponent(
+      () => import('src/components/post_status_modal/post_status_modal.vue'),
+    ),
+    UserReportingModal: defineAsyncComponent(
+      () =>
+        import('src/components/user_reporting_modal/user_reporting_modal.vue'),
+    ),
+    EditStatusModal: defineAsyncComponent(
+      () => import('src/components/edit_status_modal/edit_status_modal.vue'),
+    ),
+    StatusHistoryModal: defineAsyncComponent(
+      () =>
+        import('src/components/status_history_modal/status_history_modal.vue'),
+    ),
+    GlobalNoticeList,
   },
   data: () => ({
-    mobileActivePanel: 'timeline'
+    mobileActivePanel: 'timeline',
   }),
-  watch: {
-    themeApplied () {
-      this.removeSplash()
-    },
-    currentTheme () {
-      this.setThemeBodyClass()
-    },
-    layoutType () {
-      document.getElementById('modal').classList = ['-' + this.layoutType]
+  provide() {
+    return {
+      allowNonSquareEmoji: useMergedConfigStore().mergedConfig.nonSquareEmoji,
     }
   },
-  created () {
+  watch: {
+    themeApplied() {
+      this.removeSplash()
+    },
+    currentTheme() {
+      this.setThemeBodyClass()
+    },
+    layoutType() {
+      document.getElementById('modal').classList = ['-' + this.layoutType]
+    },
+  },
+  created() {
     // Load the locale from the storage
-    const val = this.$store.getters.mergedConfig.interfaceLanguage
-    this.$store.dispatch('setOption', { name: 'interfaceLanguage', value: val })
+    const value = useMergedConfigStore().mergedConfig.interfaceLanguage
+    useI18nStore().setLanguage(value)
+    useEmojiStore().loadUnicodeEmojiData(value)
+
     document.getElementById('modal').classList = ['-' + this.layoutType]
 
     // Create bound handlers
     this.updateScrollState = throttle(this.scrollHandler, 200)
     this.updateMobileState = throttle(this.resizeHandler, 200)
   },
-  mounted () {
+  mounted() {
     window.addEventListener('resize', this.updateMobileState)
     this.scrollParent.addEventListener('scroll', this.updateScrollState)
 
-    if (useInterfaceStore().themeApplied) {
+    if (this.themeApplied) {
       this.setThemeBodyClass()
       this.removeSplash()
     }
     getOrCreateServiceWorker()
   },
-  unmounted () {
+  unmounted() {
     window.removeEventListener('resize', this.updateMobileState)
     this.scrollParent.removeEventListener('scroll', this.updateScrollState)
   },
   computed: {
-    themeApplied () {
-      return useInterfaceStore().themeApplied
-    },
-    currentTheme () {
-      if (useInterfaceStore().styleDataUsed) {
-        const styleMeta = useInterfaceStore().styleDataUsed.find(x => x.component === '@meta')
+    currentTheme() {
+      if (this.styleDataUsed) {
+        const styleMeta = this.styleDataUsed.find(
+          (x) => x.component === '@meta',
+        )
 
         if (styleMeta !== undefined) {
-          return styleMeta.directives.name.replaceAll(" ", "-").toLowerCase()
+          return styleMeta.directives.name.replaceAll(' ', '-').toLowerCase()
         }
       }
 
       return 'stock'
     },
-    layoutModalClass () {
+    layoutModalClass() {
       return '-' + this.layoutType
     },
-    classes () {
+    classes() {
       return [
         {
           '-reverse': this.reverseLayout,
           '-no-sticky-headers': this.noSticky,
-          '-has-new-post-button': this.newPostButtonShown
+          '-has-new-post-button': this.newPostButtonShown,
         },
-        '-' + this.layoutType
+        '-' + this.layoutType,
       ]
     },
-    navClasses () {
-      const { navbarColumnStretch } = this.$store.getters.mergedConfig
+    navClasses() {
+      const { navbarColumnStretch } = useMergedConfigStore().mergedConfig
       return [
         '-' + this.layoutType,
-        ...(navbarColumnStretch ? ['-column-stretch'] : [])
+        ...(navbarColumnStretch ? ['-column-stretch'] : []),
       ]
     },
-    currentUser () { return this.$store.state.users.currentUser },
-    userBackground () { return this.currentUser.background_image },
-    instanceBackground () {
-      return this.mergedConfig.hideInstanceWallpaper
-        ? null
-        : this.$store.state.instance.background
+    currentUser() {
+      return this.$store.state.users.currentUser
     },
-    background () { return this.userBackground || this.instanceBackground },
-    bgStyle () {
+    userBackground() {
+      return this.currentUser.background_image
+    },
+    foreignProfileBackground() {
+      return (
+        useMergedConfigStore().mergedConfig.allowForeignUserBackground &&
+        useInterfaceStore().foreignProfileBackground
+      )
+    },
+    instanceBackground() {
+      return useMergedConfigStore().mergedConfig.hideInstanceWallpaper
+        ? null
+        : this.instanceBackgroundUrl
+    },
+    background() {
+      return (
+        this.foreignProfileBackground ||
+        this.userBackground ||
+        this.instanceBackground
+      )
+    },
+    bgStyle() {
       if (this.background) {
         return {
-          '--body-background-image': `url(${this.background})`
+          '--body-background-image': `url(${this.background})`,
         }
       }
     },
-    shout () { return useShoutStore().joined },
-    suggestionsEnabled () { return this.$store.state.instance.suggestionsEnabled },
-    showInstanceSpecificPanel () {
-      return this.$store.state.instance.showInstanceSpecificPanel &&
-        !this.$store.getters.mergedConfig.hideISP &&
-        this.$store.state.instance.instanceSpecificPanelContent
+    shoutJoined() {
+      return useShoutStore().joined
     },
-    isChats () {
+    isChats() {
       return this.$route.name === 'chat' || this.$route.name === 'chats'
     },
-    isListEdit () {
+    isListEdit() {
       return this.$route.name === 'lists-edit'
     },
-    newPostButtonShown () {
+    newPostButtonShown() {
       if (this.isChats) return false
       if (this.isListEdit) return false
-      return this.$store.getters.mergedConfig.alwaysShowNewPostButton || this.layoutType === 'mobile'
+      return (
+        useMergedConfigStore().mergedConfig.alwaysShowNewPostButton ||
+        this.layoutType === 'mobile'
+      )
     },
-    showFeaturesPanel () { return this.$store.state.instance.showFeaturesPanel },
-    editingAvailable () { return this.$store.state.instance.editingAvailable },
-    shoutboxPosition () {
-      return this.$store.getters.mergedConfig.alwaysShowNewPostButton || false
+    shoutboxPosition() {
+      return (
+        useMergedConfigStore().mergedConfig.alwaysShowNewPostButton || false
+      )
     },
-    hideShoutbox () {
-      return this.$store.getters.mergedConfig.hideShoutbox
+    hideShoutbox() {
+      return useMergedConfigStore().mergedConfig.hideShoutbox
     },
-    layoutType () { return useInterfaceStore().layoutType },
-    privateMode () { return this.$store.state.instance.private },
-    reverseLayout () {
-      const { thirdColumnMode, sidebarRight: reverseSetting } = this.$store.getters.mergedConfig
+    reverseLayout() {
+      const { thirdColumnMode, sidebarRight: reverseSetting } =
+        useMergedConfigStore().mergedConfig
       if (this.layoutType !== 'wide') {
         return reverseSetting
       } else {
-        return thirdColumnMode === 'notifications' ? reverseSetting : !reverseSetting
+        return thirdColumnMode === 'notifications'
+          ? reverseSetting
+          : !reverseSetting
       }
     },
-    noSticky () { return this.$store.getters.mergedConfig.disableStickyHeaders },
-    showScrollbars () { return this.$store.getters.mergedConfig.showScrollbars },
-    scrollParent () { return window; /* this.$refs.appContentRef */ },
-    ...mapGetters(['mergedConfig'])
+    noSticky() {
+      return useMergedConfigStore().mergedConfig.disableStickyHeaders
+    },
+    showScrollbars() {
+      return useMergedConfigStore().mergedConfig.showScrollbars
+    },
+    scrollParent() {
+      return window /* this.$refs.appContentRef */
+    },
+    showInstanceSpecificPanel() {
+      return (
+        this.instanceSpecificPanelPresent &&
+        !useMergedConfigStore().mergedConfig.hideISP
+      )
+    },
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
+    ...mapState(useInterfaceStore, [
+      'themeApplied',
+      'styleDataUsed',
+      'layoutType',
+    ]),
+    ...mapState(useInstanceStore, ['styleDataUsed']),
+    ...mapState(useInstanceCapabilitiesStore, [
+      'suggestionsEnabled',
+      'editingAvailable',
+    ]),
+    ...mapState(useInstanceStore, {
+      instanceBackgroundUrl: (store) => store.instanceIdentity.background,
+      showFeaturesPanel: (store) => store.instanceIdentity.showFeaturesPanel,
+      instanceSpecificPanelPresent: (store) =>
+        store.instanceIdentity.showInstanceSpecificPanel &&
+        store.instanceIdentity.instanceSpecificPanelContent,
+    }),
   },
   methods: {
-    resizeHandler () {
+    resizeHandler() {
       useInterfaceStore().setLayoutWidth(windowWidth())
       useInterfaceStore().setLayoutHeight(windowHeight())
     },
-    scrollHandler () {
-      const scrollPosition = this.scrollParent === window ? window.scrollY : this.scrollParent.scrollTop
+    scrollHandler() {
+      const scrollPosition =
+        this.scrollParent === window
+          ? window.scrollY
+          : this.scrollParent.scrollTop
 
       if (scrollPosition != 0) {
         this.$refs.appContentRef.classList.add(['-scrolled'])
@@ -189,10 +270,10 @@ export default {
         this.$refs.appContentRef.classList.remove(['-scrolled'])
       }
     },
-    setThemeBodyClass () {
+    setThemeBodyClass() {
       const themeName = this.currentTheme
       const classList = Array.from(document.body.classList)
-      const oldTheme = classList.filter(c => c.startsWith('theme-'))
+      const oldTheme = classList.filter((c) => c.startsWith('theme-'))
 
       if (themeName !== null && themeName !== '') {
         const newTheme = `theme-${themeName.toLowerCase()}`
@@ -208,8 +289,10 @@ export default {
         document.body.classList.remove(...oldTheme)
       }
     },
-    removeSplash () {
-      document.querySelector('#status').textContent = this.$t('splash.fun_' + Math.ceil(Math.random() * 4))
+    removeSplash() {
+      document.querySelector('#status').textContent = this.$t(
+        'splash.fun_' + Math.ceil(Math.random() * 4),
+      )
       const splashscreenRoot = document.querySelector('#splash')
       splashscreenRoot.addEventListener('transitionend', () => {
         splashscreenRoot.remove()
@@ -219,6 +302,6 @@ export default {
       }, 600)
       splashscreenRoot.classList.add('hidden')
       document.querySelector('#app').classList.remove('hidden')
-    }
-  }
+    },
+  },
 }

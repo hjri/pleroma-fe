@@ -10,12 +10,13 @@
       class="alert error"
     >
       {{ error }}
-      <span
+      <button
         class="fa-scale-110 fa-old-padding"
+        type="button"
         @click="clearError"
       >
         <FAIcon icon="times" />
-      </span>
+      </button>
     </div>
     <template v-if="muted && !isPreview">
       <div class="status-container muted">
@@ -46,16 +47,6 @@
     </template>
     <template v-else>
       <div
-        v-if="showPinned"
-        class="pin"
-      >
-        <FAIcon
-          icon="thumbtack"
-          class="faint"
-        />
-        <span class="faint">{{ $t('status.pinned') }}</span>
-      </div>
-      <div
         v-if="retweet && !noHeading && !inConversation"
         :class="[repeaterClass, { highlighted: repeaterStyle }]"
         :style="[repeaterStyle]"
@@ -79,6 +70,7 @@
               <RichContent
                 :html="retweeterHtml"
                 :emoji="retweeterUser.emoji"
+                :allow-non-square-emoji="allowNonSquareEmoji"
                 :is-local="retweeterUser.is_local"
               />
             </router-link>
@@ -87,13 +79,14 @@
               :to="retweeterProfileLink"
             >{{ retweeter }}</router-link>
           </bdi>
-          {{ ' ' }}
-          <FAIcon
-            icon="retweet"
-            class="repeat-icon"
-            :title="$t('tool_tip.repeat')"
-          />
-          {{ $t('timeline.repeated') }}
+          <div class="repeat-label">
+            <FAIcon
+              icon="retweet"
+              class="repeat-icon"
+              :title="$t('tool_tip.repeat')"
+            />
+            {{ $t('timeline.repeated') }}
+          </div>
         </div>
       </div>
 
@@ -109,6 +102,7 @@
           class="left-side"
         >
           <a
+            v-if="status.user?.name"
             :href="$router.resolve(userProfileLink).href"
             @click.prevent
           >
@@ -120,10 +114,17 @@
                 class="post-avatar"
                 :show-actor-type-indicator="showActorTypeIndicator"
                 :compact="compact"
-                :user="status.user"
+                :user="status?.user"
               />
             </UserPopover>
           </a>
+          <UserAvatar
+            v-else
+            :user="status?.user"
+            class="post-avatar"
+            :compact="compact"
+            :title="$t('status.unknown_user_info')"
+          />
         </div>
         <div class="right-side">
           <div
@@ -131,7 +132,10 @@
             class="status-heading"
           >
             <div class="heading-name-row">
-              <div class="heading-left">
+              <div
+                v-if="status.user"
+                class="heading-left"
+              >
                 <h4
                   v-if="status.user.name_html"
                   class="status-username"
@@ -140,6 +144,7 @@
                   <RichContent
                     :html="status.user.name"
                     :emoji="status.user.emoji"
+                    :allow-non-square-emoji="allowNonSquareEmoji"
                     :is-local="status.user.is_local"
                   />
                 </h4>
@@ -164,6 +169,16 @@
               </div>
 
               <span class="heading-right">
+                <span
+                  v-if="showPinned"
+                  class="pin"
+                >
+                  <FAIcon
+                    icon="thumbtack"
+                    class="faint"
+                  />
+                  <span class="faint">{{ $t('status.pinned') }}</span>
+                </span>
                 <router-link
                   class="timeago faint"
                   :to="{ name: 'conversation', params: { id: status.id } }"
@@ -408,47 +423,12 @@
             @parse-ready="setHeadTailLinks"
           />
 
-          <article
-            v-if="hasVisibleQuote"
-            class="quoted-status"
-          >
-            <button
-              class="button-unstyled -link display-quoted-status-button"
-              :aria-expanded="shouldDisplayQuote"
-              @click="toggleDisplayQuote"
-            >
-              {{ shouldDisplayQuote ? $t('status.hide_quote') : $t('status.display_quote') }}
-              <FAIcon
-                class="display-quoted-status-button-icon"
-                :icon="shouldDisplayQuote ? 'chevron-up' : 'chevron-down'"
-              />
-            </button>
-            <Status
-              v-if="shouldDisplayQuote"
-              :statusoid="quotedStatus"
-              :in-quote="true"
-            />
-          </article>
-          <p
-            v-else-if="hasInvisibleQuote"
-            class="quoted-status -unavailable-prompt"
-          >
-            <i18n-t
-              scope="global"
-              keypath="status.invisible_quote"
-            >
-              <template #link>
-                <bdi>
-                  <a
-                    :href="status.quote_url"
-                    target="_blank"
-                  >
-                    {{ status.quote_url }}
-                  </a>
-                </bdi>
-              </template>
-            </i18n-t>
-          </p>
+          <Quote
+            :status-id="quoteId"
+            :status-url="quoteUrl"
+            :status-visible="quoteVisible"
+            :initially-expanded="quoteExpanded"
+          />
 
           <div
             v-if="inConversation && !isPreview && replies && replies.length"
@@ -542,7 +522,6 @@
             :status="status"
             :replying="replying"
             @toggle-replying="toggleReplying"
-            @interacted="e => $emit('interacted')"
           />
         </div>
       </div>

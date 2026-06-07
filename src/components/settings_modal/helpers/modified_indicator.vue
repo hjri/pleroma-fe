@@ -8,7 +8,6 @@
       :trigger-attrs="{ 'aria-label': $t('settings.setting_changed') }"
     >
       <template #trigger>
-        &nbsp;
         <FAIcon
           icon="wrench"
         />
@@ -24,12 +23,11 @@
 
 <script>
 import Popover from 'src/components/popover/popover.vue'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faWrench
-)
+library.add(faWrench)
 
 export default {
   components: { Popover },
@@ -37,9 +35,9 @@ export default {
     changed: Boolean,
     messageKey: {
       type: String,
-      default: 'settings.setting_changed'
-    }
-  }
+      default: 'settings.setting_changed',
+    },
+  },
 }
 </script>
 

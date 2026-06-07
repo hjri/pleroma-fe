@@ -5,22 +5,25 @@ const DIRECTION_DOWN = [0, 1]
 
 const BUTTON_LEFT = 0
 
-const deltaCoord = (oldCoord, newCoord) => [newCoord[0] - oldCoord[0], newCoord[1] - oldCoord[1]]
+const deltaCoord = (oldCoord, newCoord) => [
+  newCoord[0] - oldCoord[0],
+  newCoord[1] - oldCoord[1],
+]
 
-const touchCoord = touch => [touch.screenX, touch.screenY]
+const touchCoord = (touch) => [touch.screenX, touch.screenY]
 
-const touchEventCoord = e => touchCoord(e.touches[0])
+const touchEventCoord = (e) => touchCoord(e.touches[0])
 
-const pointerEventCoord = e => [e.clientX, e.clientY]
+const pointerEventCoord = (e) => [e.clientX, e.clientY]
 
-const vectorLength = v => Math.sqrt(v[0] * v[0] + v[1] * v[1])
+const vectorLength = (v) => Math.sqrt(v[0] * v[0] + v[1] * v[1])
 
-const perpendicular = v => [v[1], -v[0]]
+const perpendicular = (v) => [v[1], -v[0]]
 
 const dotProduct = (v1, v2) => v1[0] * v2[0] + v1[1] * v2[1]
 
 const project = (v1, v2) => {
-  const scalar = (dotProduct(v1, v2) / dotProduct(v2, v2))
+  const scalar = dotProduct(v1, v2) / dotProduct(v2, v2)
   return [scalar * v2[0], scalar * v2[1]]
 }
 
@@ -30,14 +33,19 @@ const project = (v1, v2) => {
 // divergentTolerance: a scalar for much of divergent direction we tolerate when
 //    above threshold. for example, with 1.0 we only call the callback if
 //    divergent component of delta is < 1.0 * direction component of delta.
-const swipeGesture = (direction, onSwipe, threshold = 30, perpendicularTolerance = 1.0) => {
+const swipeGesture = (
+  direction,
+  onSwipe,
+  threshold = 30,
+  perpendicularTolerance = 1.0,
+) => {
   return {
     direction,
     onSwipe,
     threshold,
     perpendicularTolerance,
     _startPos: [0, 0],
-    _swiping: false
+    _swiping: false,
   }
 }
 
@@ -60,7 +68,8 @@ const updateSwipe = (event, gesture) => {
   if (
     vectorLength(towardsDir) * gesture.perpendicularTolerance <
     vectorLength(towardsPerpendicular)
-  ) return
+  )
+    return
 
   gesture.onSwipe()
   gesture._swiping = false
@@ -73,7 +82,7 @@ class SwipeAndClickGesture {
   //   sign: if the swipe does not meet the threshold, 0
   //         if the swipe meets the threshold in the positive direction, 1
   //         if the swipe meets the threshold in the negative direction, -1
-  constructor ({
+  constructor({
     direction,
     // swipeStartCallback
     swipePreviewCallback,
@@ -82,21 +91,27 @@ class SwipeAndClickGesture {
     swipelessClickCallback,
     threshold = 30,
     perpendicularTolerance = 1.0,
-    disableClickThreshold = 1
+    disableClickThreshold = 1,
   }) {
-    const nop = () => {}
+    const noop = () => {
+      /* no-op */
+    }
     this.direction = direction
-    this.swipePreviewCallback = swipePreviewCallback || nop
-    this.swipeEndCallback = swipeEndCallback || nop
-    this.swipeCancelCallback = swipeCancelCallback || nop
-    this.swipelessClickCallback = swipelessClickCallback || nop
-    this.threshold = typeof threshold === 'function' ? threshold : () => threshold
-    this.disableClickThreshold = typeof disableClickThreshold === 'function' ? disableClickThreshold : () => disableClickThreshold
+    this.swipePreviewCallback = swipePreviewCallback || noop
+    this.swipeEndCallback = swipeEndCallback || noop
+    this.swipeCancelCallback = swipeCancelCallback || noop
+    this.swipelessClickCallback = swipelessClickCallback || noop
+    this.threshold =
+      typeof threshold === 'function' ? threshold : () => threshold
+    this.disableClickThreshold =
+      typeof disableClickThreshold === 'function'
+        ? disableClickThreshold
+        : () => disableClickThreshold
     this.perpendicularTolerance = perpendicularTolerance
     this._reset()
   }
 
-  _reset () {
+  _reset() {
     this._startPos = [0, 0]
     this._pointerId = -1
     this._swiping = false
@@ -104,7 +119,7 @@ class SwipeAndClickGesture {
     this._preventNextClick = false
   }
 
-  start (event) {
+  start(event) {
     // Only handle left click
     if (event.button !== BUTTON_LEFT) {
       return
@@ -116,7 +131,7 @@ class SwipeAndClickGesture {
     this._swiped = false
   }
 
-  move (event) {
+  move(event) {
     if (this._swiping && this._pointerId === event.pointerId) {
       this._swiped = true
 
@@ -127,7 +142,7 @@ class SwipeAndClickGesture {
     }
   }
 
-  cancel (event) {
+  cancel(event) {
     if (!this._swiping || this._pointerId !== event.pointerId) {
       return
     }
@@ -135,7 +150,7 @@ class SwipeAndClickGesture {
     this.swipeCancelCallback()
   }
 
-  end (event) {
+  end(event) {
     if (!this._swiping) {
       return
     }
@@ -163,7 +178,7 @@ class SwipeAndClickGesture {
       const towardsPerpendicular = project(delta, perpendicularDir)
       if (
         vectorLength(towardsDir) * this.perpendicularTolerance <
-          vectorLength(towardsPerpendicular)
+        vectorLength(towardsPerpendicular)
       ) {
         return 0
       }
@@ -179,12 +194,15 @@ class SwipeAndClickGesture {
     // the end point is far from the starting point
     // so for other kinds of pointers do not check
     // whether we have swiped
-    if (vectorLength(delta) >= this.disableClickThreshold() && event.pointerType === 'mouse') {
+    if (
+      vectorLength(delta) >= this.disableClickThreshold() &&
+      event.pointerType === 'mouse'
+    ) {
       this._preventNextClick = true
     }
   }
 
-  click () {
+  click() {
     if (!this._preventNextClick) {
       this.swipelessClickCallback()
     }
@@ -200,7 +218,7 @@ const GestureService = {
   swipeGesture,
   beginSwipe,
   updateSwipe,
-  SwipeAndClickGesture
+  SwipeAndClickGesture,
 }
 
 export default GestureService

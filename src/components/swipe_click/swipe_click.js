@@ -30,51 +30,51 @@ import GestureService from '../../services/gesture_service/gesture_service'
 const SwipeClick = {
   props: {
     direction: {
-      type: Array
+      type: Array,
     },
     threshold: {
       type: Function,
-      default: () => 30
+      default: () => 30,
     },
     disableClickThreshold: {
       type: Function,
-      default: () => 1
+      default: () => 1,
     },
     perpendicularTolerance: {
       type: Number,
-      default: 1.0
-    }
+      default: 1.0,
+    },
   },
   methods: {
-    handlePointerDown (event) {
+    handlePointerDown(event) {
       this.$gesture.start(event)
     },
-    handlePointerMove (event) {
+    handlePointerMove(event) {
       this.$gesture.move(event)
     },
-    handlePointerUp (event) {
+    handlePointerUp(event) {
       this.$gesture.end(event)
     },
-    handlePointerCancel (event) {
+    handlePointerCancel(event) {
       this.$gesture.cancel(event)
     },
-    handleNativeClick (event) {
+    handleNativeClick(event) {
       this.$gesture.click(event)
     },
-    preview (offsets) {
+    preview(offsets) {
       this.$emit('preview-requested', offsets)
     },
-    end (sign) {
+    end(sign) {
       this.$emit('swipe-finished', sign)
     },
-    click () {
+    click() {
       this.$emit('swipeless-clicked')
     },
-    cancel () {
+    cancel() {
       this.$emit('swipe-canceled')
-    }
+    },
   },
-  created () {
+  created() {
     this.$gesture = new GestureService.SwipeAndClickGesture({
       direction: this.direction,
       threshold: this.threshold,
@@ -83,9 +83,9 @@ const SwipeClick = {
       swipePreviewCallback: this.preview,
       swipeEndCallback: this.end,
       swipeCancelCallback: this.cancel,
-      swipelessClickCallback: this.click
+      swipelessClickCallback: this.click,
     })
-  }
+  },
 }
 
 export default SwipeClick

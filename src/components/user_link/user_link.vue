@@ -14,7 +14,10 @@
 </template>
 
 <script>
-import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
+import UnicodeDomainIndicator from 'src/components/unicode_domain_indicator/unicode_domain_indicator.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 const UserLink = {
@@ -22,20 +25,21 @@ const UserLink = {
     user: Object,
     at: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   components: {
-    UnicodeDomainIndicator
+    UnicodeDomainIndicator,
   },
   methods: {
-    userProfileLink (user) {
+    userProfileLink(user) {
       return generateProfileLink(
-        user.id, user.screen_name,
-        this.$store.state.instance.restrictedNicknames
+        user.id,
+        user.screen_name,
+        useInstanceStore().restrictedNicknames,
       )
-    }
-  }
+    },
+  },
 }
 
 export default UserLink

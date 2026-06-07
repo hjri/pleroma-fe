@@ -1,50 +1,49 @@
-import mfaApi from '../../services/new_api/mfa.js'
-import { mapState } from 'vuex'
-import { mapStores, mapActions, mapState as mapPiniaState } from 'pinia'
-import { useOAuthStore } from 'src/stores/oauth.js'
-import { useAuthFlowStore } from 'src/stores/auth_flow.js'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faTimes
-} from '@fortawesome/free-solid-svg-icons'
+import { mapActions, mapState, mapStores } from 'pinia'
 
-library.add(
-  faTimes
-)
+import mfaApi from '../../services/new_api/mfa.js'
+
+import { useAuthFlowStore } from 'src/stores/auth_flow.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faTimes)
 
 export default {
   data: () => ({
     code: null,
-    error: false
+    error: false,
   }),
   computed: {
-    ...mapPiniaState(useAuthFlowStore, {
-      authSettings: store => store.settings
+    ...mapState(useAuthFlowStore, {
+      authSettings: (store) => store.settings,
     }),
+    ...mapState(useInstanceStore, ['server']),
     ...mapStores(useOAuthStore),
-    ...mapState({
-      instance: 'instance',
-    })
   },
   methods: {
     ...mapActions(useAuthFlowStore, ['requireRecovery', 'abortMFA', 'login']),
-    clearError () { this.error = false },
+    clearError() {
+      this.error = false
+    },
 
-    focusOnCodeInput () {
+    focusOnCodeInput() {
       const codeInput = this.$refs.codeInput
       codeInput.focus()
       codeInput.setSelectionRange(0, codeInput.value.length)
     },
 
-    submit () {
+    submit() {
       const { clientId, clientSecret } = this.oauthStore
 
       const data = {
         clientId,
         clientSecret,
-        instance: this.instance.server,
+        instance: this.server,
         mfaToken: this.authSettings.mfa_token,
-        code: this.code
+        code: this.code,
       }
 
       mfaApi.verifyOTPCode(data).then((result) => {
@@ -59,6 +58,6 @@ export default {
           this.$router.push({ name: 'friends' })
         })
       })
-    }
-  }
+    },
+  },
 }

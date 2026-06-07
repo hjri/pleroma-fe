@@ -1,82 +1,112 @@
+import { mapState } from 'pinia'
+
 import Popover from 'src/components/popover/popover.vue'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
-import { mapGetters } from 'vuex'
-import { mapState } from 'pinia'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faList, faFolderTree, faBars, faWrench } from '@fortawesome/free-solid-svg-icons'
-import { useInterfaceStore } from 'src/stores/interface'
 
-library.add(
-  faList,
-  faFolderTree,
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
   faBars,
-  faWrench
-)
+  faFolderTree,
+  faList,
+  faWrench,
+} from '@fortawesome/free-solid-svg-icons'
+
+library.add(faList, faFolderTree, faBars, faWrench)
 
 const QuickViewSettings = {
   props: {
-    conversation: Boolean
+    conversation: Boolean,
   },
   components: {
     Popover,
-    QuickFilterSettings
+    QuickFilterSettings,
   },
   methods: {
-    setConversationDisplay (visibility) {
-      this.$store.dispatch('setOption', { name: 'conversationDisplay', value: visibility })
-    },
-    openTab (tab) {
+    openTab(tab) {
       useInterfaceStore().openSettingsModalTab(tab)
-    }
+    },
   },
   computed: {
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
     ...mapState(useInterfaceStore, {
-      mobileLayout: state => state.layoutType === 'mobile'
+      mobileLayout: (state) => state.layoutType === 'mobile',
     }),
-    loggedIn () {
+    loggedIn() {
       return !!this.$store.state.users.currentUser
     },
     conversationDisplay: {
-      get () { return this.mergedConfig.conversationDisplay },
-      set (newVal) { this.setConversationDisplay(newVal) }
+      get() {
+        return this.mergedConfig.conversationDisplay
+      },
+      set(value) {
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'conversationDisplay',
+          value,
+        })
+      },
     },
     autoUpdate: {
-      get () { return this.mergedConfig.streaming },
-      set () {
+      get() {
+        return this.mergedConfig.streaming
+      },
+      set() {
         const value = !this.autoUpdate
-        this.$store.dispatch('setOption', { name: 'streaming', value })
-      }
+        useSyncConfigStore().setSimplePrefAndSave({ path: 'streaming', value })
+      },
     },
     collapseWithSubjects: {
-      get () { return this.mergedConfig.collapseMessageWithSubject },
-      set () {
+      get() {
+        return this.mergedConfig.collapseMessageWithSubject
+      },
+      set() {
         const value = !this.collapseWithSubjects
-        this.$store.dispatch('setOption', { name: 'collapseMessageWithSubject', value })
-      }
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'collapseMessageWithSubject',
+          value,
+        })
+      },
     },
     showUserAvatars: {
-      get () { return this.mergedConfig.mentionLinkShowAvatar },
-      set () {
+      get() {
+        return this.mergedConfig.mentionLinkShowAvatar
+      },
+      set() {
         const value = !this.showUserAvatars
-        this.$store.dispatch('setOption', { name: 'mentionLinkShowAvatar', value })
-      }
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'mentionLinkShowAvatar',
+          value,
+        })
+      },
     },
     muteBotStatuses: {
-      get () { return this.mergedConfig.muteBotStatuses },
-      set () {
+      get() {
+        return this.mergedConfig.muteBotStatuses
+      },
+      set() {
         const value = !this.muteBotStatuses
-        this.$store.dispatch('setOption', { name: 'muteBotStatuses', value })
-      }
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'muteBotStatuses',
+          value,
+        })
+      },
     },
     muteSensitiveStatuses: {
-      get () { return this.mergedConfig.muteSensitiveStatuses },
-      set () {
+      get() {
+        return this.mergedConfig.muteSensitiveStatuses
+      },
+      set() {
         const value = !this.muteSensitiveStatuses
-        this.$store.dispatch('setOption', { name: 'muteSensitiveStatuses', value })
-      }
-    }
-  }
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'muteSensitiveStatuses',
+          value,
+        })
+      },
+    },
+  },
 }
 
 export default QuickViewSettings

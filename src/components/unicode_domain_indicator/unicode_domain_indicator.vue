@@ -8,18 +8,14 @@
 
 <script>
 import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faCode
-} from '@fortawesome/free-solid-svg-icons'
+import { faCode } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faCode
-)
+library.add(faCode)
 
 const UnicodeDomainIndicator = {
   props: {
-    user: Object
-  }
+    user: Object,
+  },
 }
 
 export default UnicodeDomainIndicator

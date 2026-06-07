@@ -1,24 +1,21 @@
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faTimes
-} from '@fortawesome/free-solid-svg-icons'
-import { useInterfaceStore } from 'src/stores/interface'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
-library.add(
-  faTimes
-)
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faTimes)
 
 const GlobalNoticeList = {
   computed: {
-    notices () {
+    notices() {
       return useInterfaceStore().globalNotices
-    }
+    },
   },
   methods: {
-    closeNotice (notice) {
+    closeNotice(notice) {
       useInterfaceStore().removeGlobalNotice(notice)
-    }
-  }
+    },
+  },
 }
 
 export default GlobalNoticeList

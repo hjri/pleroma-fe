@@ -1,55 +1,75 @@
-import { mapGetters } from 'vuex'
 import { mapState as mapPiniaState } from 'pinia'
-import { useAnnouncementsStore } from 'src/stores/announcements'
+import { mapGetters } from 'vuex'
+
+import { useAnnouncementsStore } from 'src/stores/announcements.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-  faUserPlus,
+  faBullhorn,
   faComments,
-  faBullhorn
+  faUserPlus,
 } from '@fortawesome/free-solid-svg-icons'
 
-import { useInterfaceStore } from 'src/stores/interface'
-
-library.add(
-  faUserPlus,
-  faComments,
-  faBullhorn
-)
+library.add(faUserPlus, faComments, faBullhorn)
 
 const ExtraNotifications = {
   computed: {
-    shouldShowChats () {
-      return this.mergedConfig.showExtraNotifications && this.mergedConfig.showChatsInExtraNotifications && this.unreadChatCount
+    shouldShowChats() {
+      return (
+        this.mergedConfig.showExtraNotifications &&
+        this.mergedConfig.showChatsInExtraNotifications &&
+        this.unreadChatCount
+      )
     },
-    shouldShowAnnouncements () {
-      return this.mergedConfig.showExtraNotifications && this.mergedConfig.showAnnouncementsInExtraNotifications && this.unreadAnnouncementCount
+    shouldShowAnnouncements() {
+      return (
+        this.mergedConfig.showExtraNotifications &&
+        this.mergedConfig.showAnnouncementsInExtraNotifications &&
+        this.unreadAnnouncementCount
+      )
     },
-    shouldShowFollowRequests () {
-      return this.mergedConfig.showExtraNotifications && this.mergedConfig.showFollowRequestsInExtraNotifications && this.followRequestCount
+    shouldShowFollowRequests() {
+      return (
+        this.mergedConfig.showExtraNotifications &&
+        this.mergedConfig.showFollowRequestsInExtraNotifications &&
+        this.followRequestCount
+      )
     },
-    hasAnythingToShow () {
-      return this.shouldShowChats || this.shouldShowAnnouncements || this.shouldShowFollowRequests
+    hasAnythingToShow() {
+      return (
+        this.shouldShowChats ||
+        this.shouldShowAnnouncements ||
+        this.shouldShowFollowRequests
+      )
     },
-    shouldShowCustomizationTip () {
-      return this.mergedConfig.showExtraNotificationsTip && this.hasAnythingToShow
+    shouldShowCustomizationTip() {
+      return (
+        this.mergedConfig.showExtraNotificationsTip && this.hasAnythingToShow
+      )
     },
-    currentUser () {
+    currentUser() {
       return this.$store.state.users.currentUser
     },
-    ...mapGetters(['unreadChatCount', 'followRequestCount', 'mergedConfig']),
+    ...mapGetters(['unreadChatCount', 'followRequestCount']),
     ...mapPiniaState(useAnnouncementsStore, {
-      unreadAnnouncementCount: 'unreadAnnouncementCount'
-    })
+      unreadAnnouncementCount: 'unreadAnnouncementCount',
+    }),
+    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
   },
   methods: {
-    openNotificationSettings () {
+    openNotificationSettings() {
       return useInterfaceStore().openSettingsModalTab('notifications')
     },
-    dismissConfigurationTip () {
-      return this.$store.dispatch('setOption', { name: 'showExtraNotificationsTip', value: false })
-    }
-  }
+    dismissConfigurationTip() {
+      return useSyncConfigStore().setSimplePrefAndSave({
+        path: 'showExtraNotificationsTip',
+        value: false,
+      })
+    },
+  },
 }
 
 export default ExtraNotifications

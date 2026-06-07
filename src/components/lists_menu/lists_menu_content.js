@@ -1,26 +1,25 @@
-import { mapState } from 'vuex'
 import { mapState as mapPiniaState } from 'pinia'
-import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
+import { mapState } from 'vuex'
+
 import { getListEntries } from 'src/components/navigation/filter.js'
-import { useListsStore } from 'src/stores/lists'
+import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useListsStore } from 'src/stores/lists.js'
 
 export const ListsMenuContent = {
-  props: [
-    'showPin'
-  ],
+  props: ['showPin'],
   components: {
-    NavigationEntry
+    NavigationEntry,
   },
   computed: {
     ...mapPiniaState(useListsStore, {
-      lists: getListEntries
+      lists: getListEntries,
     }),
     ...mapState({
-      currentUser: state => state.users.currentUser,
-      privateMode: state => state.instance.private,
-      federating: state => state.instance.federating
-    })
-  }
+      currentUser: (state) => state.users.currentUser,
+    }),
+  },
 }
 
 export default ListsMenuContent

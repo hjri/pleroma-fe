@@ -1,37 +1,44 @@
-import { useReportsStore } from 'src/stores/reports'
-import Select from '../select/select.vue'
-import StatusContent from '../status_content/status_content.vue'
-import Timeago from '../timeago/timeago.vue'
-import RichContent from 'src/components/rich_content/rich_content.jsx'
+import Select from 'src/components/select/select.vue'
+import StatusContent from 'src/components/status_content/status_content.vue'
+import Timeago from 'src/components/timeago/timeago.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useReportsStore } from 'src/stores/reports.js'
+
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 const Report = {
-  props: [
-    'reportId'
-  ],
+  props: ['reportId'],
   components: {
     Select,
     StatusContent,
     Timeago,
-    RichContent
   },
   computed: {
-    report () {
+    report() {
       return useReportsStore().reports[this.reportId] || {}
     },
     state: {
-      get: function () { return this.report.state },
-      set: function (val) { this.setReportState(val) }
-    }
+      get: function () {
+        return this.report.state
+      },
+      set: function (val) {
+        this.setReportState(val)
+      },
+    },
   },
   methods: {
-    generateUserProfileLink (user) {
-      return generateProfileLink(user.id, user.screen_name, this.$store.state.instance.restrictedNicknames)
+    generateUserProfileLink(user) {
+      return generateProfileLink(
+        user.id,
+        user.screen_name,
+        useInstanceStore().restrictedNicknames,
+      )
     },
-    setReportState (state) {
+    setReportState(state) {
       return useReportsStore().setReportState({ id: this.report.id, state })
-    }
-  }
+    },
+  },
 }
 
 export default Report

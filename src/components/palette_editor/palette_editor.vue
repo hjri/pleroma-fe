@@ -1,60 +1,65 @@
 <template>
   <div
     class="PaletteEditor"
-    :class="{ '-compact': compact, '-apply': apply }"
+    :class="{ '-compact': compact, '-apply': apply, '-mobile': mobile }"
   >
-    <ColorInput
-      v-for="key in paletteKeys"
-      :key="key"
-      :name="key"
-      :model-value="props.modelValue[key]"
-      :fallback="fallback(key)"
-      :label="$t('settings.style.themes3.palette.' + key)"
-      @update:model-value="value => updatePalette(key, value)"
-    />
-    <button
-      class="btn button-default palette-import-button"
-      @click="importPalette"
-    >
-      <FAIcon icon="file-import" />
-      {{ $t('settings.style.themes3.palette.import') }}
-    </button>
-    <button
-      class="btn button-default palette-export-button"
-      @click="exportPalette"
-    >
-      <FAIcon icon="file-export" />
-      {{ $t('settings.style.themes3.palette.export') }}
-    </button>
-    <button
-      v-if="apply"
-      class="btn button-default palette-apply-button"
-      :disabled="disabled"
-      :class="{ disabled }"
-      @click="applyPalette"
-    >
-      {{ $t('settings.style.themes3.palette.apply') }}
-    </button>
+    <div class="palette">
+      <ColorInput
+        v-for="key in paletteKeys"
+        :key="key"
+        :name="key"
+        :model-value="props.modelValue[key]"
+        :fallback="fallback(key)"
+        :label="$t('settings.style.themes3.palette.' + key)"
+        @update:model-value="value => updatePalette(key, value)"
+      />
+    </div>
+    <div class="buttons">
+      <button
+        class="btn button-default palette-import-button"
+        @click="importPalette"
+      >
+        <FAIcon icon="file-import" />
+        {{ $t('settings.style.themes3.palette.import') }}
+      </button>
+      <button
+        class="btn button-default palette-export-button"
+        @click="exportPalette"
+      >
+        <FAIcon icon="file-export" />
+        {{ $t('settings.style.themes3.palette.export') }}
+      </button>
+    </div>
+    <div class="buttons">
+      <button
+        v-if="apply"
+        class="btn button-default palette-apply-button"
+        :disabled="disabled"
+        :class="{ disabled }"
+        @click="applyPalette"
+      >
+        {{ $t('settings.style.themes3.palette.apply') }}
+      </button>
+    </div>
   </div>
 </template>
 
 <script setup>
+import { computed } from 'vue'
+
 import ColorInput from 'src/components/color_input/color_input.vue'
+
+import { useInterfaceStore } from 'src/stores/interface.js'
+
 import {
+  newExporter,
   newImporter,
-  newExporter
 } from 'src/services/export_import/export_import.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faFileImport,
-  faFileExport
-} from '@fortawesome/free-solid-svg-icons'
+import { faFileExport, faFileImport } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faFileImport,
-  faFileExport
-)
+library.add(faFileImport, faFileExport)
 
 const paletteKeys = [
   'bg',
@@ -66,30 +71,31 @@ const paletteKeys = [
   'cBlue',
   'cGreen',
   'cOrange',
-  'wallpaper'
+  'wallpaper',
 ]
 
 const props = defineProps(['modelValue', 'compact', 'apply', 'disabled'])
 const emit = defineEmits(['update:modelValue', 'applyPalette'])
-const getExportedObject = () => paletteKeys.reduce((acc, key) => {
-  const value = props.modelValue[key]
-  if (value == null) {
-    return acc
-  } else {
-    return { ...acc, [key]: props.modelValue[key] }
-  }
-}, {})
+const getExportedObject = () =>
+  paletteKeys.reduce((acc, key) => {
+    const value = props.modelValue[key]
+    if (value == null) {
+      return acc
+    } else {
+      return { ...acc, [key]: props.modelValue[key] }
+    }
+  }, {})
 
 const paletteExporter = newExporter({
   filename: 'pleroma_palette',
   extension: 'json',
-  getExportedObject
+  getExportedObject,
 })
 const paletteImporter = newImporter({
   accept: '.json',
-  onImport (parsed) {
+  onImport(parsed) {
     emit('update:modelValue', parsed)
-  }
+  },
 })
 
 const exportPalette = () => {
@@ -103,6 +109,10 @@ const importPalette = () => {
 const applyPalette = () => {
   emit('applyPalette', getExportedObject())
 }
+
+const mobile = computed(() => {
+  return useInterfaceStore().layoutType === 'mobile'
+})
 
 const fallback = (key) => {
   if (key === 'accent') {
@@ -122,19 +132,34 @@ const fallback = (key) => {
 const updatePalette = (paletteKey, value) => {
   emit('update:modelValue', {
     ...props.modelValue,
-    [paletteKey]: value
+    [paletteKey]: value,
   })
 }
 </script>
 
 <style lang="scss">
 .PaletteEditor {
-  display: grid;
   justify-content: space-around;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(5, 1fr) auto;
   grid-gap: 0.5em;
   align-items: baseline;
+
+  .buttons {
+    margin-top: 0.5em;
+    display: grid;
+    gap: 0.5em
+  }
+
+  .palette {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-auto-flow: row;
+    grid-auto-rows: auto;
+    grid-template-columns: repeat(auto-fill, 10em);
+    grid-gap: 0.5em;
+    margin-bottom: 0.5em;
+  }
 
   .palette-import-button {
     grid-column: 1 / span 2;
@@ -171,23 +196,21 @@ const updatePalette = (paletteKey, value) => {
         grid-column: 1 / span 2;
       }
     }
+  }
 
-    .-mobile & {
-      grid-template-columns: 1fr;
-      grid-template-rows: repeat(10, 1fr) auto;
-
-      .palette-import-button {
-        grid-column: 1;
+  &.-mobile {
+    &.-apply {
+      .palette-apply-button {
+        grid-column: 1 / span 2;
       }
+    }
 
-      .palette-export-button {
-        grid-column: 1;
-      }
+    .color-input {
+      display: grid;
+      gap: 0.5em;
 
-      &.-apply {
-        .palette-apply-button {
-          grid-column: 1;
-        }
+      label {
+        flex: 1;
       }
     }
   }

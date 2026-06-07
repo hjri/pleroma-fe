@@ -1,8 +1,11 @@
+import DialogModal from 'src/components/dialog_modal/dialog_modal.vue'
+import Popover from 'src/components/popover/popover.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
-
-import DialogModal from '../dialog_modal/dialog_modal.vue'
-import Popover from '../popover/popover.vue'
 
 library.add(faChevronDown)
 
@@ -15,10 +18,8 @@ const SANDBOX = 'mrf_tag:sandbox'
 const QUARANTINE = 'mrf_tag:quarantine'
 
 const ModerationTools = {
-  props: [
-    'user'
-  ],
-  data () {
+  props: ['user'],
+  data() {
     return {
       tags: {
         FORCE_NSFW,
@@ -27,92 +28,124 @@ const ModerationTools = {
         DISABLE_REMOTE_SUBSCRIPTION,
         DISABLE_ANY_SUBSCRIPTION,
         SANDBOX,
-        QUARANTINE
+        QUARANTINE,
       },
       showDeleteUserDialog: false,
-      toggled: false
+      toggled: false,
     }
   },
   components: {
     DialogModal,
-    Popover
+    Popover,
   },
   computed: {
-    tagsSet () {
+    tagsSet() {
       return new Set(this.user.tags)
     },
-    canGrantRole () {
-      return this.user.is_local && !this.user.deactivated && this.$store.state.users.currentUser.role === 'admin'
+    canGrantRole() {
+      return (
+        this.user.is_local &&
+        !this.user.deactivated &&
+        this.$store.state.users.currentUser.role === 'admin'
+      )
     },
-    canChangeActivationState () {
+    canChangeActivationState() {
       return this.privileged('users_manage_activation_state')
     },
-    canDeleteAccount () {
+    canDeleteAccount() {
       return this.privileged('users_delete')
     },
-    canUseTagPolicy () {
-      return this.$store.state.instance.tagPolicyAvailable && this.privileged('users_manage_tags')
-    }
+    canUseTagPolicy() {
+      return (
+        useInstanceCapabilitiesStore().tagPolicyAvailable &&
+        this.privileged('users_manage_tags')
+      )
+    },
   },
   methods: {
-    hasTag (tagName) {
+    hasTag(tagName) {
       return this.tagsSet.has(tagName)
     },
-    privileged (privilege) {
+    privileged(privilege) {
       return this.$store.state.users.currentUser.privileges.includes(privilege)
     },
-    toggleTag (tag) {
+    toggleTag(tag) {
       const store = this.$store
       if (this.tagsSet.has(tag)) {
-        store.state.api.backendInteractor.untagUser({ user: this.user, tag }).then(response => {
-          if (!response.ok) { return }
-          store.commit('untagUser', { user: this.user, tag })
-        })
+        store.state.api.backendInteractor
+          .untagUser({ user: this.user, tag })
+          .then((response) => {
+            if (!response.ok) {
+              return
+            }
+            store.commit('untagUser', { user: this.user, tag })
+          })
       } else {
-        store.state.api.backendInteractor.tagUser({ user: this.user, tag }).then(response => {
-          if (!response.ok) { return }
-          store.commit('tagUser', { user: this.user, tag })
-        })
+        store.state.api.backendInteractor
+          .tagUser({ user: this.user, tag })
+          .then((response) => {
+            if (!response.ok) {
+              return
+            }
+            store.commit('tagUser', { user: this.user, tag })
+          })
       }
     },
-    toggleRight (right) {
+    toggleRight(right) {
       const store = this.$store
       if (this.user.rights[right]) {
-        store.state.api.backendInteractor.deleteRight({ user: this.user, right }).then(response => {
-          if (!response.ok) { return }
-          store.commit('updateRight', { user: this.user, right, value: false })
-        })
+        store.state.api.backendInteractor
+          .deleteRight({ user: this.user, right })
+          .then((response) => {
+            if (!response.ok) {
+              return
+            }
+            store.commit('updateRight', {
+              user: this.user,
+              right,
+              value: false,
+            })
+          })
       } else {
-        store.state.api.backendInteractor.addRight({ user: this.user, right }).then(response => {
-          if (!response.ok) { return }
-          store.commit('updateRight', { user: this.user, right, value: true })
-        })
+        store.state.api.backendInteractor
+          .addRight({ user: this.user, right })
+          .then((response) => {
+            if (!response.ok) {
+              return
+            }
+            store.commit('updateRight', { user: this.user, right, value: true })
+          })
       }
     },
-    toggleActivationStatus () {
+    toggleActivationStatus() {
       this.$store.dispatch('toggleActivationStatus', { user: this.user })
     },
-    deleteUserDialog (show) {
+    deleteUserDialog(show) {
       this.showDeleteUserDialog = show
     },
-    deleteUser () {
+    deleteUser() {
       const store = this.$store
       const user = this.user
       const { id, name } = user
-      store.state.api.backendInteractor.deleteUser({ user })
-        .then(() => {
-          this.$store.dispatch('markStatusesAsDeleted', status => user.id === status.user.id)
-          const isProfile = this.$route.name === 'external-user-profile' || this.$route.name === 'user-profile'
-          const isTargetUser = this.$route.params.name === name || this.$route.params.id === id
-          if (isProfile && isTargetUser) {
-            window.history.back()
-          }
-        })
+      store.state.api.backendInteractor.deleteUser({ user }).then(() => {
+        this.$store.dispatch(
+          'markStatusesAsDeleted',
+          (status) => user.id === status.user.id,
+        )
+        const isProfile =
+          this.$route.name === 'external-user-profile' ||
+          this.$route.name === 'user-profile'
+        const isTargetUser =
+          this.$route.params.name === name || this.$route.params.id === id
+        if (isProfile && isTargetUser) {
+          window.history.back()
+        }
+      })
     },
-    setToggled (value) {
+    setToggled(value) {
       this.toggled = value
-    }
-  }
+    },
+  },
 }
 
 export default ModerationTools

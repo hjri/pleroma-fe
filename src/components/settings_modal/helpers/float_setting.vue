@@ -10,7 +10,7 @@
 import NumberSetting from './number_setting.vue'
 export default {
   components: {
-    NumberSetting
-  }
+    NumberSetting,
+  },
 }
 </script>

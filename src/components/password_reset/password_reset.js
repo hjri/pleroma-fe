@@ -1,34 +1,32 @@
+import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
-import passwordResetApi from '../../services/new_api/password_reset.js'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faTimes
-} from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faTimes
-)
+import passwordResetApi from '../../services/new_api/password_reset.js'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faTimes)
 
 const passwordReset = {
   data: () => ({
     user: {
-      email: ''
+      email: '',
     },
     isPending: false,
     success: false,
     throttled: false,
-    error: null
+    error: null,
   }),
   computed: {
     ...mapState({
       signedIn: (state) => !!state.users.currentUser,
-      instance: state => state.instance
     }),
-    mailerEnabled () {
-      return this.instance.mailerEnabled
-    }
+    ...mapPiniaState(useInstanceStore, ['server', 'mailerEnabled']),
   },
-  created () {
+  created() {
     if (this.signedIn) {
       this.$router.push({ name: 'root' })
     }
@@ -36,36 +34,38 @@ const passwordReset = {
   props: {
     passwordResetRequested: {
       default: false,
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   methods: {
-    dismissError () {
+    dismissError() {
       this.error = null
     },
-    submit () {
+    submit() {
       this.isPending = true
       const email = this.user.email
-      const instance = this.instance.server
+      const server = this.server
 
-      passwordResetApi({ instance, email }).then(({ status }) => {
-        this.isPending = false
-        this.user.email = ''
+      passwordResetApi({ server, email })
+        .then(({ status }) => {
+          this.isPending = false
+          this.user.email = ''
 
-        if (status === 204) {
-          this.success = true
-          this.error = null
-        } else if (status === 429) {
-          this.throttled = true
-          this.error = this.$t('password_reset.too_many_requests')
-        }
-      }).catch(() => {
-        this.isPending = false
-        this.user.email = ''
-        this.error = this.$t('general.generic_error')
-      })
-    }
-  }
+          if (status === 204) {
+            this.success = true
+            this.error = null
+          } else if (status === 429) {
+            this.throttled = true
+            this.error = this.$t('password_reset.too_many_requests')
+          }
+        })
+        .catch(() => {
+          this.isPending = false
+          this.user.email = ''
+          this.error = this.$t('general.generic_error')
+        })
+    },
+  },
 }
 
 export default passwordReset

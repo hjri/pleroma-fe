@@ -15,6 +15,7 @@
           :html="status.summary_raw_html"
           :emoji="status.emojis"
           :is-local="status.isLocal"
+          :allow-non-square-emoji="allowNonSquareEmoji"
         />
         <button
           v-show="longSubject && showingLongSubject"
@@ -47,6 +48,7 @@
           :greentext="mergedConfig.greentext"
           :attentions="status.attentions"
           :is-local="status.is_local"
+          :allow-non-square-emoji="allowNonSquareEmoji"
           @parse-ready="onParseReady"
         />
         <div

@@ -2,6 +2,7 @@
 <!-- TODO make it reusable -->
 <template>
   <span
+    v-if="$parent.isDirty || $parent.canHardReset"
     class="DraftButtons"
   >
     <Popover
@@ -57,27 +58,24 @@
 
 <script>
 import Popover from 'src/components/popover/popover.vue'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faWrench } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faWrench
-)
+library.add(faWrench)
 
 export default {
   components: { Popover },
-  props: ['changed']
+  props: ['changed'],
 }
 </script>
 
 <style lang="scss">
 .DraftButtons {
-  display: inline-block;
+  display: inline-flex;
   position: relative;
-
-  .button-default {
-    margin-left: 0.5em;
-  }
+  gap: 0.5em;
+  margin-top: 0.5em
 }
 
 .draft-tooltip {

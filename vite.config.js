@@ -1,31 +1,51 @@
-import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
-import { defineConfig } from 'vite'
+import { fileURLToPath } from 'node:url'
+import { DevTools } from '@vitejs/devtools'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import stylelint from 'vite-plugin-stylelint'
+import { defineConfig } from 'vite'
 import eslint from 'vite-plugin-eslint2'
-import emojisPlugin from './build/emojis_plugin.js'
-import { devSwPlugin, buildSwPlugin, swMessagesPlugin } from './build/sw_plugin.js'
-import copyPlugin from './build/copy_plugin.js'
+import stylelint from 'vite-plugin-stylelint'
+import { configDefaults } from 'vitest/config'
+
 import { getCommitHash } from './build/commit_hash.js'
+import copyPlugin from './build/copy_plugin.js'
+import emojisPlugin from './build/emojis_plugin.js'
 import mswPlugin from './build/msw_plugin.js'
+import { buildSwPlugin, swMessagesPlugin } from './build/sw_plugin.js'
 
 const localConfigPath = '<projectRoot>/config/local.json'
+const normalizeTarget = (target) => {
+  if (!target || typeof target !== 'string') return target
+  return target.endsWith('/') ? target.replace(/\/$/, '') : target
+}
+
 const getLocalDevSettings = async () => {
+  const envTarget = normalizeTarget(process.env.VITE_PROXY_TARGET)
+  const envOrigin = normalizeTarget(process.env.VITE_PROXY_ORIGIN)
   try {
     const settings = (await import('./config/local.json')).default
-    if (settings.target && settings.target.endsWith('/')) {
-      // replacing trailing slash since it can conflict with some apis
-      // and that's how actual BE reports its url
-      settings.target = settings.target.replace(/\/$/, '')
-    }
+    settings.target = normalizeTarget(settings.target)
+    settings.origin = normalizeTarget(settings.origin)
+    if (envTarget) settings.target = envTarget
+    if (envOrigin) settings.origin = envOrigin
     console.info(`Using local dev server settings (${localConfigPath}):`)
     console.info(JSON.stringify(settings, null, 2))
     return settings
   } catch (e) {
-    console.info(`Local dev server settings not found (${localConfigPath}), using default`, e)
-    return {}
+    if (!envTarget && !envOrigin) {
+      console.info(
+        `Local dev server settings not found (${localConfigPath}), using default`,
+        e,
+      )
+      return {}
+    }
+    const settings = { target: envTarget, origin: envOrigin }
+    console.info(
+      'Using dev server settings from VITE_PROXY_TARGET/VITE_PROXY_ORIGIN:',
+    )
+    console.info(JSON.stringify(settings, null, 2))
+    return settings
   }
 }
 
@@ -42,7 +62,7 @@ const getTransformSWSettings = (settings) => {
         'Some browsers (e.g. Firefox) does not support ESM service workers.\n' +
         'To avoid surprises, it is defaulted to true, but this can be slow.\n' +
         'If you are using a browser that supports ESM service workers, you can set this option to false.\n' +
-        `No matter your choice, you can set the transformSW option in ${localConfigPath} in to disable this message.`
+        `No matter your choice, you can set the transformSW option in ${localConfigPath} in to disable this message.`,
     )
     return true
   }
@@ -51,18 +71,24 @@ const getTransformSWSettings = (settings) => {
 export default defineConfig(async ({ mode, command }) => {
   const settings = await getLocalDevSettings()
   const target = settings.target || 'http://localhost:4000/'
+  const origin = settings.origin || target
   const transformSW = getTransformSWSettings(settings)
   const proxy = {
     '/api': {
       target,
       changeOrigin: true,
       cookieDomainRewrite: 'localhost',
-      ws: true
+      ws: true,
     },
     '/nodeinfo': {
       target,
       changeOrigin: true,
-      cookieDomainRewrite: 'localhost'
+      cookieDomainRewrite: 'localhost',
+    },
+    '/instance': {
+      target,
+      changeOrigin: true,
+      cookieDomainRewrite: 'localhost',
     },
     '/socket': {
       target,
@@ -70,14 +96,14 @@ export default defineConfig(async ({ mode, command }) => {
       cookieDomainRewrite: 'localhost',
       ws: true,
       headers: {
-        'Origin': target
-      }
+        Origin: origin,
+      },
     },
     '/oauth': {
       target,
       changeOrigin: true,
-      cookieDomainRewrite: 'localhost'
-    }
+      cookieDomainRewrite: 'localhost',
+    },
   }
 
   const swSrc = 'src/sw.js'
@@ -85,7 +111,7 @@ export default defineConfig(async ({ mode, command }) => {
   const alias = {
     src: '/src',
     components: '/src/components',
-    ...(mode === 'test' ? { vue: 'vue/dist/vue.esm-bundler.js' } : {})
+    ...(mode === 'test' ? { vue: 'vue/dist/vue.esm-bundler.js' } : {}),
   }
 
   return {
@@ -101,70 +127,66 @@ export default defineConfig(async ({ mode, command }) => {
                 return true
               }
               return false
-            }
-          }
-        }
+            },
+          },
+        },
       }),
       vueJsx(),
-      devSwPlugin({ swSrc, swDest, transformSW, alias }),
       buildSwPlugin({ swSrc, swDest }),
       swMessagesPlugin(),
       emojisPlugin(),
       copyPlugin({
         inUrl: '/static/ruffle',
-        inFs: resolve(projectRoot, 'node_modules/@ruffle-rs/ruffle')
+        inFs: resolve(projectRoot, 'node_modules/@ruffle-rs/ruffle'),
       }),
       eslint({
         lintInWorker: true,
         lintOnStart: true,
-        cacheLocation: resolve(projectRoot, 'node_modules/.cache/eslintcache')
+        cacheLocation: resolve(projectRoot, 'node_modules/.cache/eslintcache'),
       }),
       stylelint({
         lintInWorker: true,
         lintOnStart: true,
-        cacheLocation: resolve(projectRoot, 'node_modules/.cache/stylelintcache')
+        cacheLocation: resolve(
+          projectRoot,
+          'node_modules/.cache/stylelintcache',
+        ),
       }),
-      ...(mode === 'test' ? [mswPlugin()] : [])
+      ...(mode === 'test' ? [mswPlugin()] : []),
     ],
-    optimizeDeps: {
-      // For unknown reasons, during vitest, vite will re-optimize the following
-      // deps, causing the test to reload, so add them here so that it will not
-      // reload during tests
-      include: [
-        'custom-event-polyfill',
-        'vue-i18n',
-        '@ungap/event-target',
-        'lodash.merge',
-        'body-scroll-lock',
-        '@kazvmoe-infra/pinch-zoom-element'
-      ]
-    },
     css: {
-      devSourcemap: true
+      devSourcemap: true,
     },
     resolve: {
-      alias
+      alias,
     },
     define: {
       'process.env': JSON.stringify({
-        NODE_ENV: mode === 'test' ? 'testing' : command === 'serve' ? 'development' : 'production',
-        HAS_MODULE_SERVICE_WORKER: command === 'serve' && !transformSW
+        NODE_ENV:
+          mode === 'test'
+            ? 'testing'
+            : command === 'serve'
+              ? 'development'
+              : 'production',
+        HAS_MODULE_SERVICE_WORKER: command === 'serve' && !transformSW,
       }),
-      'COMMIT_HASH': JSON.stringify(command === 'serve' ? 'DEV' : getCommitHash()),
-      'DEV_OVERRIDES': JSON.stringify(command === 'serve' ? settings : undefined),
-      '__VUE_OPTIONS_API__': true,
-      '__VUE_PROD_DEVTOOLS__': false,
-      '__VUE_PROD_HYDRATION_MISMATCH_DETAILS__': false
+      COMMIT_HASH: JSON.stringify(
+        command === 'serve' ? 'DEV' : getCommitHash(),
+      ),
+      DEV_OVERRIDES: JSON.stringify(command === 'serve' ? settings : undefined),
+      __VUE_OPTIONS_API__: true,
+      __VUE_PROD_DEVTOOLS__: false,
+      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
     },
+    // devtools: { enabled: true },
     build: {
       sourcemap: true,
-      rollupOptions: {
+      rolldownOptions: {
         input: {
-          main: 'index.html'
+          main: 'index.html',
         },
         output: {
-          inlineDynamicImports: false,
-          entryFileNames (chunkInfo) {
+          entryFileNames(chunkInfo) {
             const id = chunkInfo.facadeModuleId
             if (id.endsWith(swSrc)) {
               return swDest
@@ -172,9 +194,13 @@ export default defineConfig(async ({ mode, command }) => {
               return 'static/js/[name].[hash].js'
             }
           },
-          chunkFileNames (chunkInfo) {
+          chunkFileNames(chunkInfo) {
             if (chunkInfo.facadeModuleId) {
-              if (chunkInfo.facadeModuleId.includes('node_modules/@kazvmoe-infra/unicode-emoji-json/annotations/')) {
+              if (
+                chunkInfo.facadeModuleId.includes(
+                  'node_modules/@kazvmoe-infra/unicode-emoji-json/annotations/',
+                )
+              ) {
                 return 'static/js/emoji-annotations/[name].[hash].js'
               } else if (chunkInfo.facadeModuleId.includes('src/i18n/')) {
                 return 'static/js/i18n/[name].[hash].js'
@@ -182,7 +208,7 @@ export default defineConfig(async ({ mode, command }) => {
             }
             return 'static/js/[name].[hash].js'
           },
-          assetFileNames (assetInfo) {
+          assetFileNames(assetInfo) {
             const name = assetInfo.names?.[0] || ''
             if (/\.(png|jpe?g|gif|svg)(\?.*)?$/.test(name)) {
               return 'static/img/[name].[hash][extname]'
@@ -191,26 +217,25 @@ export default defineConfig(async ({ mode, command }) => {
             } else {
               return 'static/misc/[name].[hash][extname]'
             }
-          }
-        }
+          },
+        },
       },
     },
     server: {
       ...(mode === 'test' ? {} : { proxy }),
-      port: Number(process.env.PORT) || 8080
+      port: Number(process.env.PORT) || 8080,
     },
     preview: {
-      proxy
+      proxy,
     },
     test: {
       globals: true,
+      exclude: [...configDefaults.exclude, 'test/e2e-playwright/**'],
       browser: {
         enabled: true,
         provider: 'playwright',
-        instances: [
-          { browser: 'firefox' }
-        ]
-      }
-    }
+        instances: [{ browser: 'firefox' }],
+      },
+    },
   }
 })

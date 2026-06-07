@@ -8,7 +8,7 @@
       v-model="localNote"
       class="input note-text"
       :class="{ unstyled: !editing }"
-      rows="1"
+      rows="3"
       :placeholder="$t('user_card.note_blank_click')"
       @focus="startEditing"
       @blur="finalizeEditing"

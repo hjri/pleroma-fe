@@ -13,27 +13,27 @@
 <script>
 export default {
   provide: {
-    popoversZLayer: 'modals'
+    popoversZLayer: 'modals',
   },
   props: {
     isOpen: {
       type: Boolean,
-      default: true
+      default: true,
     },
     noBackground: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: ['backdropClicked'],
   computed: {
-    classes () {
+    classes() {
       return {
         'modal-background': !this.noBackground,
-        open: this.isOpen
+        open: this.isOpen,
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

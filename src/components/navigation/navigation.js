@@ -4,42 +4,39 @@ export const USERNAME_ROUTES = new Set([
   'interactions',
   'notifications',
   'chat',
-  'chats'
+  'chats',
 ])
 
 // routes that take :name property
-export const NAME_ROUTES = new Set([
-  'user-profile',
-  'legacy-user-profile'
-])
+export const NAME_ROUTES = new Set(['user-profile', 'legacy-user-profile'])
 
 export const TIMELINES = {
   home: {
     route: 'friends',
     icon: 'home',
     label: 'nav.home_timeline',
-    criteria: ['!private']
+    criteria: ['!private'],
   },
   public: {
     route: 'public-timeline',
     anon: true,
     icon: 'users',
     label: 'nav.public_tl',
-    criteria: ['!private']
+    criteria: ['!private'],
   },
   bubble: {
     route: 'bubble',
     anon: true,
     icon: 'city',
     label: 'nav.bubble',
-    criteria: ['!private', 'federating', 'supportsBubbleTimeline']
+    criteria: ['!private', 'federating', 'supportsBubbleTimeline'],
   },
   twkn: {
     route: 'public-external-timeline',
     anon: true,
     icon: 'globe',
     label: 'nav.twkn',
-    criteria: ['!private', 'federating']
+    criteria: ['!private', 'federating'],
   },
   // bookmarks are still technically a timeline so we should show it in the dropdown
   bookmarks: {
@@ -50,13 +47,13 @@ export const TIMELINES = {
   favorites: {
     routeObject: { name: 'user-profile', query: { tab: 'favorites' } },
     icon: 'star',
-    label: 'user_card.favorites'
+    label: 'user_card.favorites',
   },
   dms: {
     route: 'dms',
     icon: 'envelope',
-    label: 'nav.dms'
-  }
+    label: 'nav.dms',
+  },
 }
 
 export const ROOT_ITEMS = {
@@ -67,12 +64,12 @@ export const ROOT_ITEMS = {
     // shows bookmarks entry in a better suited location
     // hides it when bookmark folders are supported since
     // we show custom component instead of it
-    criteria: ['!supportsBookmarkFolders']
+    criteria: ['!supportsBookmarkFolders'],
   },
   interactions: {
     route: 'interactions',
     icon: 'bell',
-    label: 'nav.interactions'
+    label: 'nav.interactions',
   },
   chats: {
     route: 'chats',
@@ -80,7 +77,7 @@ export const ROOT_ITEMS = {
     label: 'nav.chats',
     badgeStyle: 'notification',
     badgeGetter: 'unreadChatCount',
-    criteria: ['chats']
+    criteria: ['chats'],
   },
   friendRequests: {
     route: 'friend-requests',
@@ -88,13 +85,13 @@ export const ROOT_ITEMS = {
     label: 'nav.friend_requests',
     badgeStyle: 'notification',
     criteria: ['lockedUser'],
-    badgeGetter: 'followRequestCount'
+    badgeGetter: 'followRequestCount',
   },
   about: {
     route: 'about',
     anon: true,
     icon: 'info-circle',
-    label: 'nav.about'
+    label: 'nav.about',
   },
   announcements: {
     route: 'announcements',
@@ -103,18 +100,18 @@ export const ROOT_ITEMS = {
     store: 'announcements',
     badgeStyle: 'notification',
     badgeGetter: 'unreadAnnouncementCount',
-    criteria: ['announcements']
+    criteria: ['announcements'],
   },
   drafts: {
     route: 'drafts',
     icon: 'file-pen',
     label: 'nav.drafts',
     badgeStyle: 'neutral',
-    badgeGetter: 'draftCount'
-  }
+    badgeGetter: 'draftCount',
+  },
 }
 
-export function routeTo (item, currentUser) {
+export function routeTo(item, currentUser) {
   if (!item.route && !item.routeObject) return null
 
   let route
@@ -122,7 +119,7 @@ export function routeTo (item, currentUser) {
   if (item.routeObject) {
     route = item.routeObject
   } else {
-    route = { name: (item.anon || currentUser) ? item.route : item.anonRoute }
+    route = { name: item.anon || currentUser ? item.route : item.anonRoute }
   }
 
   if (USERNAME_ROUTES.has(route.name)) {

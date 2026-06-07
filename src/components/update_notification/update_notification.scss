@@ -6,6 +6,7 @@
   --__top-fringe: 15em; // how much pleroma-tan should stick her head above
   --__bottom-fringe: 80em; // just reserving as much as we can, number is mostly irrelevant
   --__right-fringe: 8em;
+  --__panel-background: rgb(0,255,255 / 80%);
 
   font-size: 15px;
   position: relative;
@@ -16,6 +17,29 @@
   .text {
     max-width: 40em;
     padding-left: 1em;
+  }
+
+  .footer-buttons {
+    --panel-heading-height-padding: calc(var(--panel-header-height) * 0.2);
+    --__panel-heading-gap: calc(var(--panel-header-height) * 0.1565);
+    --__panel-heading-height: var(--panel-header-height);
+    --__panel-heading-height-inner: calc(var(--__panel-heading-height) - 2 * var(--panel-heading-height-padding, 0));
+
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: grid;
+    z-index: 20;
+    grid-auto-flow: column;
+    grid-template-columns: auto;
+    grid-auto-columns: auto;
+    grid-column-gap: var(--__panel-heading-gap);
+    padding: var(--panel-heading-height-padding);
+    height: var(--__panel-heading-height);
+    line-height: var(--__panel-heading-height-inner);
+    font-size: calc(var(--panelHeaderSize) / 3.2);
   }
 
   @media all and (width <= 800px) {
@@ -50,10 +74,13 @@
   }
 
   .panel-footer {
-    z-index: 22;
+    z-index: 10;
     position: relative;
     border-width: 0;
-    grid-template-columns: auto;
+
+    .button-default {
+      z-index: 2;
+    }
   }
 
   .pleroma-tan {
@@ -76,7 +103,7 @@
   }
 
   .spacer-bottom {
-    min-height: var(--__bottom-fringe);
+    min-height: calc(var(--__bottom-fringe) + var(--panel-header-height));
   }
 
   .extra-info-group {

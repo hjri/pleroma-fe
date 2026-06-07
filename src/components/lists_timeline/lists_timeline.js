@@ -1,16 +1,20 @@
-import { useListsStore } from 'src/stores/lists'
-import Timeline from '../timeline/timeline.vue'
+import Timeline from 'src/components/timeline/timeline.vue'
+
+import { useListsStore } from 'src/stores/lists.js'
+
 const ListsTimeline = {
-  data () {
+  data() {
     return {
-      listId: null
+      listId: null,
     }
   },
   components: {
-    Timeline
+    Timeline,
   },
   computed: {
-    timeline () { return this.$store.state.statuses.timelines.list }
+    timeline() {
+      return this.$store.state.statuses.timelines.list
+    },
   },
   watch: {
     $route: function (route) {
@@ -19,19 +23,25 @@ const ListsTimeline = {
         this.$store.dispatch('stopFetchingTimeline', 'list')
         this.$store.commit('clearTimeline', { timeline: 'list' })
         useListsStore().fetchList({ listId: this.listId })
-        this.$store.dispatch('startFetchingTimeline', { timeline: 'list', listId: this.listId })
+        this.$store.dispatch('startFetchingTimeline', {
+          timeline: 'list',
+          listId: this.listId,
+        })
       }
-    }
+    },
   },
-  created () {
+  created() {
     this.listId = this.$route.params.id
     useListsStore().fetchList({ listId: this.listId })
-    this.$store.dispatch('startFetchingTimeline', { timeline: 'list', listId: this.listId })
+    this.$store.dispatch('startFetchingTimeline', {
+      timeline: 'list',
+      listId: this.listId,
+    })
   },
-  unmounted () {
+  unmounted() {
     this.$store.dispatch('stopFetchingTimeline', 'list')
     this.$store.commit('clearTimeline', { timeline: 'list' })
-  }
+  },
 }
 
 export default ListsTimeline

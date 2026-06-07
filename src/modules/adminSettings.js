@@ -1,4 +1,4 @@
-import { set, get, cloneDeep, differenceWith, isEqual, flatten } from 'lodash'
+import { cloneDeep, differenceWith, flatten, get, isEqual, set } from 'lodash'
 
 export const defaultState = {
   frontends: [],
@@ -8,24 +8,24 @@ export const defaultState = {
   modifiedPaths: null,
   descriptions: null,
   draft: null,
-  dbConfigEnabled: null
+  dbConfigEnabled: null,
 }
 
 export const newUserFlags = {
-  ...defaultState.flagStorage
+  ...defaultState.flagStorage,
 }
 
 const adminSettingsStorage = {
   state: {
-    ...cloneDeep(defaultState)
+    ...cloneDeep(defaultState),
   },
   mutations: {
-    setInstanceAdminNoDbConfig (state) {
+    setInstanceAdminNoDbConfig(state) {
       state.loaded = false
       state.dbConfigEnabled = false
     },
-    setAvailableFrontends (state, { frontends }) {
-      state.frontends = frontends.map(f => {
+    setAvailableFrontends(state, { frontends }) {
+      state.frontends = frontends.map((f) => {
         f.installedRefs = f.installed_refs
         if (f.name === 'pleroma-fe') {
           f.refs = ['master', 'develop']
@@ -35,16 +35,16 @@ const adminSettingsStorage = {
         return f
       })
     },
-    updateAdminSettings (state, { config, modifiedPaths }) {
+    updateAdminSettings(state, { config, modifiedPaths }) {
       state.loaded = true
       state.dbConfigEnabled = true
       state.config = config
       state.modifiedPaths = modifiedPaths
     },
-    updateAdminDescriptions (state, { descriptions }) {
+    updateAdminDescriptions(state, { descriptions }) {
       state.descriptions = descriptions
     },
-    updateAdminDraft (state, { path, value }) {
+    updateAdminDraft(state, { path, value }) {
       const [group, key, subkey] = path
       const parent = [group, key, subkey]
 
@@ -55,84 +55,132 @@ const adminSettingsStorage = {
         set(state.draft, parent, cloneDeep(get(state.draft, parent)))
       }
     },
-    resetAdminDraft (state) {
+    resetAdminDraft(state) {
       state.draft = cloneDeep(state.config)
-    }
+    },
   },
   actions: {
-    async fetchAdminUsers (store, opts) {
-      const users = await store.rootState.api.backendInteractor.adminListUsers({opts})
-      users.forEach(user => store.dispatch('fetchUserIfMissing', user.id))
-       return users
+    async fetchAdminUsers(store, opts) {
+      const users = await store.rootState.api.backendInteractor.adminListUsers({
+        opts,
+      })
+      users.forEach((user) => store.dispatch('fetchUserIfMissing', user.id))
+      return users
     },
-    adminAddUserToAdminGroup (store, user) {
-       store.rootState.api.backendInteractor.adminAddUserToAdminGroup({ user })
-          .then(res => store.commit('updateRight', { user, right: 'admin', value: res.is_admin }))
+    adminAddUserToAdminGroup(store, user) {
+      store.rootState.api.backendInteractor
+        .adminAddUserToAdminGroup({ user })
+        .then((res) =>
+          store.commit('updateRight', {
+            user,
+            right: 'admin',
+            value: res.is_admin,
+          }),
+        )
     },
-    adminRemoveUserFromAdminGroup (store, user) {
-       // prevent revokation of own rights
-       if (user.id !== store.rootState.users.currentUser.id) {
-          return store.rootState.api.backendInteractor.adminRemoveUserFromAdminGroup({ user })
-             .then(res => store.commit('updateRight', { user, right: 'admin', value: res.is_admin }))
-       }
+    adminRemoveUserFromAdminGroup(store, user) {
+      // prevent revokation of own rights
+      if (user.id !== store.rootState.users.currentUser.id) {
+        return store.rootState.api.backendInteractor
+          .adminRemoveUserFromAdminGroup({ user })
+          .then((res) =>
+            store.commit('updateRight', {
+              user,
+              right: 'admin',
+              value: res.is_admin,
+            }),
+          )
+      }
     },
-    adminAddUserToModeratorGroup (store, user) {
-       return store.rootState.api.backendInteractor.adminAddUserToModeratorGroup({ user })
-          .then(res => store.commit('updateRight', { user, right: 'moderator', value: res.is_moderator }))
+    adminAddUserToModeratorGroup(store, user) {
+      return store.rootState.api.backendInteractor
+        .adminAddUserToModeratorGroup({ user })
+        .then((res) =>
+          store.commit('updateRight', {
+            user,
+            right: 'moderator',
+            value: res.is_moderator,
+          }),
+        )
     },
-    adminRemoveUserFromModeratorGroup (store, user) {
-       // prevent revokation of own rights
-       if (user.id !== store.state.users.currentUser.id) {
-          return store.rootState.api.backendInteractor.adminRemoveUserFromModeratorGroup({ user })
-             .then(res => store.commit('updateRight', { user, right: 'moderator', value: res.is_moderator }))
-       }
+    adminRemoveUserFromModeratorGroup(store, user) {
+      // prevent revokation of own rights
+      if (user.id !== store.state.users.currentUser.id) {
+        return store.rootState.api.backendInteractor
+          .adminRemoveUserFromModeratorGroup({ user })
+          .then((res) =>
+            store.commit('updateRight', {
+              user,
+              right: 'moderator',
+              value: res.is_moderator,
+            }),
+          )
+      }
     },
-    adminActivateUser (store, user) {
-       return store.rootState.api.backendInteractor.activateUser({ user })
-         .then(res => { const deactivated = !res.is_active; store.commit('updateActivationStatus', { user, deactivated })})
+    adminActivateUser(store, user) {
+      return store.rootState.api.backendInteractor
+        .activateUser({ user })
+        .then((res) => {
+          const deactivated = !res.is_active
+          store.commit('updateActivationStatus', { user, deactivated })
+        })
     },
-    adminDeactivateUser (store, user) {
-       return store.rootState.api.backendInteractor.deactivateUser({ user })
-         .then(res => { const deactivated = !res.is_active; store.commit('updateActivationStatus', { user, deactivated })})
+    adminDeactivateUser(store, user) {
+      return store.rootState.api.backendInteractor
+        .deactivateUser({ user })
+        .then((res) => {
+          const deactivated = !res.is_active
+          store.commit('updateActivationStatus', { user, deactivated })
+        })
     },
-    adminDeleteUser (store, user) {
-       return store.rootState.api.backendInteractor.deleteUser({ user })
+    adminDeleteUser(store, user) {
+      return store.rootState.api.backendInteractor.deleteUser({ user })
     },
-    adminConfirmUser (store, user) {
-       return store.rootState.api.backendInteractor.adminConfirmUser({ user })
-         .then(() => store.dispatch('fetchUser', user.id))
+    adminConfirmUser(store, user) {
+      return store.rootState.api.backendInteractor
+        .adminConfirmUser({ user })
+        .then(() => store.dispatch('fetchUser', user.id))
     },
-    adminResendConfirmationEmail (store, user) {
-       return store.rootState.api.backendInteractor.adminResendConfirmationEmail({ user })
+    adminResendConfirmationEmail(store, user) {
+      return store.rootState.api.backendInteractor.adminResendConfirmationEmail(
+        { user },
+      )
     },
-    adminApproveUser (store, user) {
-       return store.rootState.api.backendInteractor.adminApproveUser({ user })
+    adminApproveUser(store, user) {
+      return store.rootState.api.backendInteractor.adminApproveUser({ user })
     },
-    adminListStatuses (store, { user, opts }) {
-       return store.rootState.api.backendInteractor.adminListStatuses({ user, opts })
+    adminListStatuses(store, { user, opts }) {
+      return store.rootState.api.backendInteractor.adminListStatuses({
+        user,
+        opts,
+      })
     },
-    adminChangeStatusScope (store, { opts }) {
-       return store.rootState.api.backendInteractor.adminChangeStatusScope({ opts })
+    adminChangeStatusScope(store, { opts }) {
+      return store.rootState.api.backendInteractor.adminChangeStatusScope({
+        opts,
+      })
     },
-    adminDisableMFA (store, user) {
+    adminDisableMFA(store, user) {
       return store.rootState.api.backendInteractor.adminDisableMFA({ user })
     },
-    adminTagUser (store, { user, tag }) {
+    adminTagUser(store, { user, tag }) {
       return store.rootState.api.backendInteractor.tagUser({ user, tag })
     },
-    adminUntagUser (store, { user, tag }) {
+    adminUntagUser(store, { user, tag }) {
       return store.rootState.api.backendInteractor.untagUser({ user, tag })
     },
-    loadFrontendsStuff ({ rootState, commit }) {
-      rootState.api.backendInteractor.fetchAvailableFrontends()
-        .then(frontends => commit('setAvailableFrontends', { frontends }))
+    loadFrontendsStuff({ rootState, commit }) {
+      rootState.api.backendInteractor
+        .fetchAvailableFrontends()
+        .then((frontends) => commit('setAvailableFrontends', { frontends }))
     },
-    loadAdminStuff ({ state, rootState, dispatch, commit }) {
-      rootState.api.backendInteractor.fetchInstanceDBConfig()
-        .then(backendDbConfig => {
+    loadAdminStuff({ state, rootState, dispatch, commit }) {
+      rootState.api.backendInteractor
+        .fetchInstanceDBConfig()
+        .then((backendDbConfig) => {
           if (backendDbConfig.error) {
             if (backendDbConfig.error.status === 400) {
-              backendDbConfig.error.json().then(errorJson => {
+              backendDbConfig.error.json().then((errorJson) => {
                 if (/configurable_from_database/.test(errorJson.error)) {
                   commit('setInstanceAdminNoDbConfig')
                 }
@@ -143,40 +191,83 @@ const adminSettingsStorage = {
           }
         })
       if (state.descriptions === null) {
-        rootState.api.backendInteractor.fetchInstanceConfigDescriptions()
-          .then(backendDescriptions => dispatch('setInstanceAdminDescriptions', { backendDescriptions }))
+        rootState.api.backendInteractor
+          .fetchInstanceConfigDescriptions()
+          .then((backendDescriptions) =>
+            dispatch('setInstanceAdminDescriptions', { backendDescriptions }),
+          )
       }
     },
-    setInstanceAdminSettings ({ state, commit }, { backendDbConfig }) {
+    setInstanceAdminSettings({ state, commit }, { backendDbConfig }) {
       const config = state.config || {}
       const modifiedPaths = new Set()
-      backendDbConfig.configs.forEach(c => {
+
+      backendDbConfig.configs.forEach((c) => {
         const path = [c.group, c.key]
         if (c.db) {
           // Path elements can contain dot, therefore we use ' -> ' as a separator instead
           // Using strings for modified paths for easier searching
-          c.db.forEach(x => modifiedPaths.add([...path, x].join(' -> ')))
+          c.db.forEach((x) => modifiedPaths.add([...path, x].join(' -> ')))
         }
-        const convert = (value) => {
+
+        // we need to preserve tuples on second level only, possibly third
+        // but it's not a case right now.
+        const convert = (value, preserveTuples, preserveTuplesLv2) => {
           if (Array.isArray(value) && value.length > 0 && value[0].tuple) {
-            return value.reduce((acc, c) => {
-              return { ...acc, [c.tuple[0]]: convert(c.tuple[1]) }
-            }, {})
+            if (!preserveTuples) {
+              return value.reduce((acc, c) => {
+                if (c.tuple == null) {
+                  return {
+                    ...acc,
+                    [c]: c,
+                  }
+                }
+                return {
+                  ...acc,
+                  [c.tuple[0]]: convert(c.tuple[1], preserveTuplesLv2),
+                }
+              }, {})
+            } else {
+              return value.map((x) => x.tuple)
+            }
           } else {
-            return value
+            if (!preserveTuples) {
+              return value
+            } else {
+              return value.tuple
+            }
           }
         }
-        set(config, path, convert(c.value))
+        // for most stuff we want maps since those are more convenient
+        // however this doesn't allow for multiple values per same key
+        // so for those cases we want to preserve tuples as-is
+        // right now it's made exclusively for :pleroma.:rate_limit
+        // so it might not work properly elsewhere
+        const preserveTuples = path.find((x) => x === ':rate_limit')
+        set(config, path, convert(c.value, false, preserveTuples))
       })
+      // patching http adapter config to be easier to handle
+      const adapter = config[':pleroma'][':http'][':adapter']
+      if (Array.isArray(adapter)) {
+        config[':pleroma'][':http'][':adapter'] = {
+          [':ssl_options']: {
+            [':versions']: [],
+          },
+        }
+      }
       commit('updateAdminSettings', { config, modifiedPaths })
       commit('resetAdminDraft')
     },
-    setInstanceAdminDescriptions ({ commit }, { backendDescriptions }) {
-      const convert = ({ children, description, label, key = '<ROOT>', group, suggestions }, path, acc) => {
+    setInstanceAdminDescriptions({ commit }, { backendDescriptions }) {
+      const convert = (
+        { children, description, label, key = '<ROOT>', group, suggestions },
+        path,
+        acc,
+      ) => {
         const newPath = group ? [group, key] : [key]
         const obj = { description, label, suggestions }
         if (Array.isArray(children)) {
-          children.forEach(c => {
+          children.forEach((c) => {
             convert(c, newPath, obj)
           })
         }
@@ -184,13 +275,14 @@ const adminSettingsStorage = {
       }
 
       const descriptions = {}
-      backendDescriptions.forEach(d => convert(d, '', descriptions))
+
+      backendDescriptions.forEach((d) => convert(d, '', descriptions))
       commit('updateAdminDescriptions', { descriptions })
     },
 
     // This action takes draft state, diffs it with live config state and then pushes
     // only differences between the two. Difference detection only work up to subkey (third) level.
-    pushAdminDraft ({ rootState, state, dispatch }) {
+    pushAdminDraft({ rootState, state, dispatch }) {
       // TODO cleanup paths in modifiedPaths
       const convert = (value) => {
         if (typeof value !== 'object') {
@@ -204,13 +296,9 @@ const adminSettingsStorage = {
 
       // Getting all group-keys used in config
       const allGroupKeys = flatten(
-        Object
-          .entries(state.config)
-          .map(
-            ([group, lv1data]) => Object
-              .keys(lv1data)
-              .map((key) => ({ group, key }))
-          )
+        Object.entries(state.config).map(([group, lv1data]) =>
+          Object.keys(lv1data).map((key) => ({ group, key })),
+        ),
       )
 
       // Only using group-keys where there are changes detected
@@ -229,19 +317,30 @@ const adminSettingsStorage = {
 
         // Then those entries array we diff so only changed subkey entries remain
         // We use the diffed array to reconstruct the object and then shove it into convert()
-        return ({ group, key, value: convert(Object.fromEntries(differenceWith(eDraft, eConfig, isEqual))) })
-      })
-
-      rootState.api.backendInteractor.pushInstanceDBConfig({
-        payload: {
-          configs: changed
+        return {
+          group,
+          key,
+          value: convert(
+            Object.fromEntries(differenceWith(eDraft, eConfig, isEqual)),
+          ),
         }
       })
+
+      rootState.api.backendInteractor
+        .pushInstanceDBConfig({
+          payload: {
+            configs: changed,
+          },
+        })
         .then(() => rootState.api.backendInteractor.fetchInstanceDBConfig())
-        .then(backendDbConfig => dispatch('setInstanceAdminSettings', { backendDbConfig }))
+        .then((backendDbConfig) =>
+          dispatch('setInstanceAdminSettings', { backendDbConfig }),
+        )
     },
-    pushAdminSetting ({ rootState, dispatch }, { path, value }) {
-      const [group, key, ...rest] = Array.isArray(path) ? path : path.split(/\./g)
+    pushAdminSetting({ rootState, dispatch }, { path, value }) {
+      const [group, key, ...rest] = Array.isArray(path)
+        ? path
+        : path.split(/\./g)
       const clone = {} // not actually cloning the entire thing to avoid excessive writes
       set(clone, rest, value)
 
@@ -256,37 +355,49 @@ const adminSettingsStorage = {
         }
       }
 
-      rootState.api.backendInteractor.pushInstanceDBConfig({
-        payload: {
-          configs: [{
-            group,
-            key,
-            value: convert(clone)
-          }]
-        }
-      })
+      rootState.api.backendInteractor
+        .pushInstanceDBConfig({
+          payload: {
+            configs: [
+              {
+                group,
+                key,
+                value: convert(clone),
+              },
+            ],
+          },
+        })
         .then(() => rootState.api.backendInteractor.fetchInstanceDBConfig())
-        .then(backendDbConfig => dispatch('setInstanceAdminSettings', { backendDbConfig }))
+        .then((backendDbConfig) =>
+          dispatch('setInstanceAdminSettings', { backendDbConfig }),
+        )
     },
-    resetAdminSetting ({ rootState, state, dispatch }, { path }) {
-      const [group, key, subkey] = path.split(/\./g)
+    resetAdminSetting({ rootState, state, dispatch }, { path }) {
+      const [group, key, subkey] = Array.isArray(path)
+        ? path
+        : path.split(/\./g)
 
       state.modifiedPaths.delete(path)
 
-      return rootState.api.backendInteractor.pushInstanceDBConfig({
-        payload: {
-          configs: [{
-            group,
-            key,
-            delete: true,
-            subkeys: [subkey]
-          }]
-        }
-      })
+      return rootState.api.backendInteractor
+        .pushInstanceDBConfig({
+          payload: {
+            configs: [
+              {
+                group,
+                key,
+                delete: true,
+                subkeys: [subkey],
+              },
+            ],
+          },
+        })
         .then(() => rootState.api.backendInteractor.fetchInstanceDBConfig())
-        .then(backendDbConfig => dispatch('setInstanceAdminSettings', { backendDbConfig }))
-    }
-  }
+        .then((backendDbConfig) =>
+          dispatch('setInstanceAdminSettings', { backendDbConfig }),
+        )
+    },
+  },
 }
 
 export default adminSettingsStorage

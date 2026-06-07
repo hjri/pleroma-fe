@@ -21,256 +21,297 @@ describe('Gallery', () => {
 
   it('one audio attachment', () => {
     local = {
-      attachments: [
-        { mimetype: 'audio/mpeg' }
-      ]
+      attachments: [{ type: 'audio' }],
     }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { audio: true, items: [{ mimetype: 'audio/mpeg' }] }
+      { audio: true, items: [{ type: 'audio' }] },
     ])
   })
 
   it('one image attachment', () => {
     local = {
-      attachments: [
-        { mimetype: 'image/png' }
-      ]
+      attachments: [{ type: 'image' }],
     }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { items: [{ mimetype: 'image/png' }] }
+      { items: [{ type: 'image' }] },
     ])
   })
 
   it('one audio attachment and one image attachment', () => {
     local = {
-      attachments: [
-        { mimetype: 'audio/mpeg' },
-        { mimetype: 'image/png' }
-      ]
+      attachments: [{ type: 'audio' }, { type: 'image' }],
     }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
-      { items: [{ mimetype: 'image/png' }] }
+      { audio: true, items: [{ type: 'audio' }] },
+      { items: [{ type: 'image' }] },
     ])
   })
 
   it('has "size" key set to "hide"', () => {
     let local
     local = {
-      attachments: [
-        { mimetype: 'audio/mpeg' }
-      ],
-      size: 'hide'
+      attachments: [{ type: 'audio' }],
+      size: 'hide',
     }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { minimal: true, items: [{ mimetype: 'audio/mpeg' }] }
+      { minimal: true, items: [{ type: 'audio' }] },
     ])
 
     local = {
       attachments: [
-        { mimetype: 'image/jpg' },
-        { mimetype: 'image/png' },
-        { mimetype: 'image/jpg' },
-        { mimetype: 'audio/mpeg' },
-        { mimetype: 'image/png' },
-        { mimetype: 'audio/mpeg' },
-        { mimetype: 'image/jpg' },
-        { mimetype: 'image/png' },
-        { mimetype: 'image/jpg' }
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'audio' },
+        { type: 'image' },
+        { type: 'audio' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
       ],
-      size: 'hide'
+      size: 'hide',
     }
 
     // When defining `size: hide`, the `items` aren't
     // grouped and `audio` isn't set
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { minimal: true, items: [{ mimetype: 'image/jpg' }] },
-      { minimal: true, items: [{ mimetype: 'image/png' }] },
-      { minimal: true, items: [{ mimetype: 'image/jpg' }] },
-      { minimal: true, items: [{ mimetype: 'audio/mpeg' }] },
-      { minimal: true, items: [{ mimetype: 'image/png' }] },
-      { minimal: true, items: [{ mimetype: 'audio/mpeg' }] },
-      { minimal: true, items: [{ mimetype: 'image/jpg' }] },
-      { minimal: true, items: [{ mimetype: 'image/png' }] },
-      { minimal: true, items: [{ mimetype: 'image/jpg' }] }
+      { minimal: true, items: [{ type: 'image' }] },
+      { minimal: true, items: [{ type: 'image' }] },
+      { minimal: true, items: [{ type: 'image' }] },
+      { minimal: true, items: [{ type: 'audio' }] },
+      { minimal: true, items: [{ type: 'image' }] },
+      { minimal: true, items: [{ type: 'audio' }] },
+      { minimal: true, items: [{ type: 'image' }] },
+      { minimal: true, items: [{ type: 'image' }] },
+      { minimal: true, items: [{ type: 'image' }] },
     ])
   })
 
   // types other than image or audio should be `minimal`
-  it('non-image/audio', () => {
+  it('non-image', () => {
     let local
     local = {
-      attachments: [
-        { mimetype: 'plain/text' }
-      ]
+      attachments: [{ type: 'plain' }],
     }
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { minimal: true, items: [{ mimetype: 'plain/text' }] }
+      { minimal: true, items: [{ type: 'plain' }] },
     ])
 
-    // No grouping of non-image/audio items
+    // No grouping of non-image items
     local = {
-      attachments: [
-        { mimetype: 'plain/text' },
-        { mimetype: 'plain/text' },
-        { mimetype: 'plain/text' }
-      ]
+      attachments: [{ type: 'plain' }, { type: 'plain' }, { type: 'plain' }],
     }
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { minimal: true, items: [{ mimetype: 'plain/text' }] },
-      { minimal: true, items: [{ mimetype: 'plain/text' }] },
-      { minimal: true, items: [{ mimetype: 'plain/text' }] }
+      { minimal: true, items: [{ type: 'plain' }] },
+      { minimal: true, items: [{ type: 'plain' }] },
+      { minimal: true, items: [{ type: 'plain' }] },
     ])
 
     local = {
       attachments: [
-        { mimetype: 'image/png' },
-        { mimetype: 'plain/text' },
-        { mimetype: 'image/jpg' },
-        { mimetype: 'audio/mpeg' }
-      ]
+        { type: 'image' },
+        { type: 'plain' },
+        { type: 'image' },
+        { type: 'audio' },
+      ],
     }
     // NOTE / TODO: When defining `size: hide`, the `items` aren't
     // grouped and `audio` isn't set
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { items: [{ mimetype: 'image/png' }] },
-      { minimal: true, items: [{ mimetype: 'plain/text' }] },
-      { items: [{ mimetype: 'image/jpg' }] },
-      { audio: true, items: [{ mimetype: 'audio/mpeg' }] }
+      { items: [{ type: 'image' }] },
+      { minimal: true, items: [{ type: 'plain' }] },
+      { items: [{ type: 'image' }] },
+      { audio: true, items: [{ type: 'audio' }] },
     ])
   })
 
-  it('mixed attachments', () => {
+  it('mixed attachments 1', () => {
     local = {
       attachments: [
-        { mimetype: 'audio/mpeg' },
-        { mimetype: 'image/png' },
-        { mimetype: 'audio/mpeg' },
-        { mimetype: 'image/jpg' },
-        { mimetype: 'image/png' },
-        { mimetype: 'image/jpg' },
-        { mimetype: 'image/jpg' }
-      ]
+        { type: 'audio' },
+        { type: 'image' },
+        { type: 'audio' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+      ],
     }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
-      { items: [{ mimetype: 'image/png' }] },
-      { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
-      { items: [{ mimetype: 'image/jpg' }, { mimetype: 'image/png' }, { mimetype: 'image/jpg' }, { mimetype: 'image/jpg' }] }
+      { audio: true, items: [{ type: 'audio' }] },
+      { items: [{ type: 'image' }] },
+      { audio: true, items: [{ type: 'audio' }] },
+      {
+        items: [{ type: 'image' }, { type: 'image' }, { type: 'image' }],
+      },
     ])
+  })
 
+  it('mixed attachments 2', () => {
     local = {
       attachments: [
-        { mimetype: 'image/jpg' },
-        { mimetype: 'image/png' },
-        { mimetype: 'image/jpg' },
-        { mimetype: 'image/jpg' },
-        { mimetype: 'audio/mpeg' },
-        { mimetype: 'image/png' },
-        { mimetype: 'audio/mpeg' }
-      ]
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'audio' },
+        { type: 'image' },
+        { type: 'audio' },
+      ],
     }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { items: [{ mimetype: 'image/jpg' }, { mimetype: 'image/png' }, { mimetype: 'image/jpg' }] },
-      { items: [{ mimetype: 'image/jpg' }] },
-      { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
-      { items: [{ mimetype: 'image/png' }] },
-      { audio: true, items: [{ mimetype: 'audio/mpeg' }] }
+      {
+        items: [{ type: 'image' }, { type: 'image' }, { type: 'image' }],
+      },
+      { audio: true, items: [{ type: 'audio' }] },
+      { items: [{ type: 'image' }] },
+      { audio: true, items: [{ type: 'audio' }] },
     ])
+  })
 
+  it('7 images', () => {
     local = {
       attachments: [
-        { mimetype: 'image/jpg' },
-        { mimetype: 'image/png' },
-        { mimetype: 'image/jpg' },
-        { mimetype: 'image/jpg' },
-        { mimetype: 'image/png' },
-        { mimetype: 'image/png' },
-        { mimetype: 'image/jpg' }
-      ]
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+      ],
     }
 
     // Group by three-per-row, unless there's one dangling, then stick it on the end of the last row
-    // https://git.pleroma.social/pleroma/pleroma-fe/-/merge_requests/1785#note_98514
+    // https:/.pleroma.social-fe/-_requests#note_98514
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { items: [{ mimetype: 'image/jpg' }, { mimetype: 'image/png' }, { mimetype: 'image/jpg' }] },
-      { items: [{ mimetype: 'image/jpg' }, { mimetype: 'image/png' }, { mimetype: 'image/png' }, { mimetype: 'image/jpg' }] }
+      {
+        items: [{ type: 'image' }, { type: 'image' }, { type: 'image' }],
+      },
+      {
+        items: [
+          { type: 'image' },
+          { type: 'image' },
+          { type: 'image' },
+          { type: 'image' },
+        ],
+      },
     ])
+  })
 
+  it('8 images', () => {
     local = {
       attachments: [
-        { mimetype: 'image/jpg' },
-        { mimetype: 'image/png' },
-        { mimetype: 'image/jpg' },
-        { mimetype: 'image/jpg' },
-        { mimetype: 'image/png' },
-        { mimetype: 'image/png' },
-        { mimetype: 'image/jpg' },
-        { mimetype: 'image/png' }
-      ]
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+      ],
     }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { items: [{ mimetype: 'image/jpg' }, { mimetype: 'image/png' }, { mimetype: 'image/jpg' }] },
-      { items: [{ mimetype: 'image/jpg' }, { mimetype: 'image/png' }, { mimetype: 'image/png' }] },
-      { items: [{ mimetype: 'image/jpg' }, { mimetype: 'image/png' }] }
+      {
+        items: [{ type: 'image' }, { type: 'image' }, { type: 'image' }],
+      },
+      {
+        items: [{ type: 'image' }, { type: 'image' }, { type: 'image' }],
+      },
+      { items: [{ type: 'image' }, { type: 'image' }] },
+    ])
+  })
+
+  it('4 images + audio + image + 4 images', () => {
+    local = {
+      attachments: [
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'audio' },
+        { type: 'image' },
+        { type: 'audio' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+        { type: 'image' },
+      ],
+    }
+
+    expect(Gallery.computed.rows.call(local)).to.eql([
+      {
+        items: [{ type: 'image' }, { type: 'image' }],
+      },
+      {
+        items: [{ type: 'image' }, { type: 'image' }],
+      },
+      { audio: true, items: [{ type: 'audio' }] },
+      { items: [{ type: 'image' }] },
+      { audio: true, items: [{ type: 'audio' }] },
+      {
+        items: [{ type: 'image' }, { type: 'image' }],
+      },
+      {
+        items: [{ type: 'image' }, { type: 'image' }],
+      },
     ])
   })
 
   it('does not do grouping when grid is set', () => {
     const attachments = [
-      { mimetype: 'audio/mpeg' },
-      { mimetype: 'image/png' },
-      { mimetype: 'audio/mpeg' },
-      { mimetype: 'image/jpg' },
-      { mimetype: 'image/png' },
-      { mimetype: 'image/jpg' },
-      { mimetype: 'image/jpg' }
+      { type: 'audio' },
+      { type: 'image' },
+      { type: 'audio' },
+      { type: 'image' },
+      { type: 'image' },
+      { type: 'image' },
+      { type: 'image' },
     ]
 
     local = { grid: true, attachments }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { grid: true, items: attachments }
+      { grid: true, items: attachments },
     ])
   })
 
   it('limit is set', () => {
     const attachments = [
-      { mimetype: 'audio/mpeg' },
-      { mimetype: 'image/png' },
-      { mimetype: 'image/jpg' },
-      { mimetype: 'audio/mpeg' },
-      { mimetype: 'image/jpg' }
+      { type: 'audio' },
+      { type: 'image' },
+      { type: 'image' },
+      { type: 'audio' },
+      { type: 'image' },
     ]
 
     let local
     local = { attachments, limit: 2 }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
-      { items: [{ mimetype: 'image/png' }] }
+      { audio: true, items: [{ type: 'audio' }] },
+      { items: [{ type: 'image' }] },
     ])
 
     local = { attachments, limit: 3 }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
-      { items: [{ mimetype: 'image/png' }, { mimetype: 'image/jpg' }] }
+      { audio: true, items: [{ type: 'audio' }] },
+      { items: [{ type: 'image' }, { type: 'image' }] },
     ])
 
     local = { attachments, limit: 4 }
 
     expect(Gallery.computed.rows.call(local)).to.eql([
-      { audio: true, items: [{ mimetype: 'audio/mpeg' }] },
-      { items: [{ mimetype: 'image/png' }, { mimetype: 'image/jpg' }] },
-      { audio: true, items: [{ mimetype: 'audio/mpeg' }] }
+      { audio: true, items: [{ type: 'audio' }] },
+      { items: [{ type: 'image' }, { type: 'image' }] },
+      { audio: true, items: [{ type: 'audio' }] },
     ])
   })
 })

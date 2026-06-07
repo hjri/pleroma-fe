@@ -395,7 +395,7 @@
   }
 
   form textarea {
-    line-height: 16px;
+    line-height: 1;
     resize: vertical;
   }
 

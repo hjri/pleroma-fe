@@ -1,61 +1,63 @@
 import { get } from 'lodash'
-import Modal from '../modal/modal.vue'
-import Status from '../status/status.vue'
-import { useStatusHistoryStore } from 'src/stores/statusHistory'
+
+import Modal from 'src/components/modal/modal.vue'
+
+import { useStatusHistoryStore } from 'src/stores/statusHistory.js'
 
 const StatusHistoryModal = {
   components: {
     Modal,
-    Status
   },
-  data () {
+  data() {
     return {
-      statuses: []
+      statuses: [],
     }
   },
   computed: {
-    modalActivated () {
+    modalActivated() {
       return useStatusHistoryStore().modalActivated
     },
-    params () {
+    params() {
       return useStatusHistoryStore().params
     },
-    statusId () {
+    statusId() {
       return this.params.id
     },
-    historyCount () {
+    historyCount() {
       return this.statuses.length
     },
-    history () {
+    history() {
       return this.statuses
-    }
+    },
   },
   watch: {
-    params (newVal, oldVal) {
+    params(newVal, oldVal) {
       const newStatusId = get(newVal, 'id') !== get(oldVal, 'id')
       if (newStatusId) {
         this.resetHistory()
       }
 
-      if (newStatusId || get(newVal, 'edited_at') !== get(oldVal, 'edited_at')) {
+      if (
+        newStatusId ||
+        get(newVal, 'edited_at') !== get(oldVal, 'edited_at')
+      ) {
         this.fetchStatusHistory()
       }
-    }
+    },
   },
   methods: {
-    resetHistory () {
+    resetHistory() {
       this.statuses = []
     },
-    fetchStatusHistory () {
-      this.$store.dispatch('fetchStatusHistory', this.params)
-        .then(data => {
-          this.statuses = data
-        })
+    fetchStatusHistory() {
+      this.$store.dispatch('fetchStatusHistory', this.params).then((data) => {
+        this.statuses = data
+      })
     },
-    closeModal () {
+    closeModal() {
       useStatusHistoryStore().closeStatusHistoryModal()
-    }
-  }
+    },
+  },
 }
 
 export default StatusHistoryModal

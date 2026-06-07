@@ -2,59 +2,91 @@ export const muteFilterHits = (muteFilters, status) => {
   const statusText = status.text.toLowerCase()
   const statusSummary = status.summary.toLowerCase()
   const replyToUser = status.in_reply_to_screen_name?.toLowerCase()
-  const poster = status.user.screen_name.toLowerCase()
-  const mentions = (status.attentions || []).map(att => att.screen_name.toLowerCase())
+  const poster = status.user.screen_name?.toLowerCase()
+  const mentions = (status.attentions || []).map((att) =>
+    att.screen_name.toLowerCase(),
+  )
 
+  return muteFilters
+    .toSorted((a, b) => b.order - a.order)
+    .map((filter) => {
+      const {
+        hide,
+        expires,
+        name,
+        value,
+        type,
+        enabled,
+        caseSensitive = false,
+      } = filter
+      if (!enabled) return false
+      if (value === '') return false
+      if (expires !== null && expires < Date.now()) return false
+      switch (type) {
+        case 'word': {
+          let match = false
+          if (caseSensitive) {
+            match = statusText.includes(value) || statusSummary.includes(value)
+          } else {
+            const lowercaseValue = value.toLowerCase()
+            match =
+              statusText.toLowerCase().includes(lowercaseValue) ||
+              statusSummary.toLowerCase().includes(lowercaseValue)
+          }
 
-  return muteFilters.toSorted((a,b) => b.order - a.order).map(filter => {
-    const { hide, expires, name, value, type, enabled} = filter
-    if (!enabled) return false
-    if (value === '') return false
-    if (expires !== null && expires < Date.now()) return false
-    switch (type) {
-      case 'word': {
-        const lowercaseValue = value.toLowerCase()
-        if (statusText.toLowerCase().includes(lowercaseValue) || statusSummary.toLowerCase().includes(lowercaseValue)) {
-          return { hide, name }
-        }
-        break
-      }
-      case 'regexp': {
-        try {
-          const re = new RegExp(value, 'i')
-          if (re.test(statusText) || re.test(statusSummary)) {
+          if (match) {
             return { hide, name }
           }
-          return false
-        } catch {
-          return false
+          break
         }
-      }
-      case 'user': {
-        if (
-          poster.includes(value) ||
-            replyToUser.includes(value) ||
-            mentions.some(mention => mention.includes(value))
-        ) {
-          return { hide, name }
+        case 'regexp': {
+          try {
+            const re = new RegExp(value, caseSensitive ? '' : 'i')
+            if (re.test(statusText) || re.test(statusSummary)) {
+              return { hide, name }
+            }
+            return false
+          } catch {
+            return false
+          }
         }
-        break
-      }
-      case 'user_regexp': {
-        try {
-          const re = new RegExp(value, 'i')
-          if (
-            re.test(poster) ||
+        case 'user': {
+          let match = false
+          if (caseSensitive) {
+            match =
+              poster.includes(value) ||
+              replyToUser.includes(value) ||
+              mentions.some((mention) => mention.includes(value))
+          } else {
+            const lowercaseValue = value.toLowerCase()
+            match =
+              poster.toLowerCase().includes(lowercaseValue) ||
+              replyToUser.toLowerCase().includes(lowercaseValue) ||
+              mentions.some((mention) =>
+                mention.toLowerCase().includes(lowercaseValue),
+              )
+          }
+          if (match) {
+            return { hide, name }
+          }
+          break
+        }
+        case 'user_regexp': {
+          try {
+            const re = new RegExp(value, caseSensitive ? '' : 'i')
+            if (
+              re.test(poster) ||
               re.test(replyToUser) ||
-              mentions.some(mention => re.test(mention))
-          ) {
-            return { hide, name }
+              mentions.some((mention) => re.test(mention))
+            ) {
+              return { hide, name }
+            }
+            return false
+          } catch {
+            return false
           }
-          return false
-        } catch {
-          return false
         }
       }
-    }
-  }).filter(_ => _)
+    })
+    .filter((_) => _)
 }

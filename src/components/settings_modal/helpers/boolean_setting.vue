@@ -1,9 +1,10 @@
 <template>
   <label
     v-if="matchesExpertLevel"
-    class="BooleanSetting"
+    class="BooleanSetting setting-item"
   >
     <Checkbox
+      class="setting-control setting-label"
       :model-value="visibleState"
       :disabled="shouldBeDisabled"
       :indeterminate="isIndeterminate"
@@ -13,6 +14,12 @@
         class="label"
         :class="{ 'faint': shouldBeDisabled }"
       >
+        <ModifiedIndicator
+          :changed="isChanged"
+          :onclick="reset"
+        />
+        <LocalSettingIndicator :is-local="isLocalSetting" />
+        {{ ' ' }}
         <template v-if="backendDescriptionLabel">
           {{ backendDescriptionLabel }}
         </template>
@@ -22,19 +29,16 @@
         <slot v-else />
       </span>
     </Checkbox>
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
-    <ProfileSettingIndicator :is-profile="isProfileSetting" />
-    <DraftButtons />
     <p
-      v-if="backendDescriptionDescription"
+      v-if="backendDescriptionDescription || showDescription"
       class="setting-description"
       :class="{ 'faint': shouldBeDisabled }"
     >
-      {{ backendDescriptionDescription + ' ' }}
+      <slot name="description">
+        {{ backendDescriptionDescription + ' ' }}
+      </slot>
     </p>
+    <DraftButtons />
   </label>
 </template>
 

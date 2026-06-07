@@ -1,10 +1,54 @@
-.emoji-tab {
-  .btn-group .btn:not(:first-child) {
-    margin-left: 0.5em;
+.EmojiTab {
+  .setting-list {
+    margin: 0.5em 2em;
   }
 
-  .pack-info-wrapper {
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+
+    .header-buttons {
+      display: flex;
+      flex: 1 0 auto;
+      justify-content: end;
+      align-items: end;
+
+      &:not(.btn-group) {
+        gap: 0.5em;
+      }
+
+      .header-text {
+        flex: 1 0 auto;
+      }
+    }
+
+    .button-default {
+      flex: 0 0 auto;
+      padding: 0.5em;
+      font-size: 1rem;
+    }
+
+    .popover-wrapper {
+      display: flex;
+    }
+  }
+
+  .selector-buttons,
+  .meta-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    margin-left: 1em;
+  }
+
+  h5 {
     margin-top: 1em;
+    margin-bottom: 0.25em;
+  }
+
+  h3.toolbar {
+    align-items: end;
   }
 
   .emoji-info-input {
@@ -18,8 +62,8 @@
   }
 
   .emoji {
-    width: 32px;
-    height: 32px;
+    width: 2em;
+    height: 2em;
   }
 
   .emoji-unsaved {
@@ -30,6 +74,22 @@
     display: flex;
     flex-wrap: wrap;
     gap: 1em;
+
+    .button-unstyled {
+      display: flex;
+    }
+
+    .emoji-item,
+    .placeholder {
+      width: 2em;
+      height: 2em;
+      opacity: 0.5;
+    }
+
+    .placeholder {
+      background: var(--textFaint);
+      border-radius: 0.5em;
+    }
   }
 }
 

@@ -1,10 +1,15 @@
 <template>
   <div
     class="appearance-tab"
-    :label="$t('settings.general')"
+    :label="$t('settings.interface')"
+    icon="table-columns"
   >
-    <div class="setting-item">
-      <h2>{{ $t('settings.theme') }}</h2>
+    <div
+      class="setting-section"
+      :label="$t('settings.theme')"
+      icon="paintbrush"
+    >
+      <h3>{{ $t('settings.style.style_section') }}</h3>
       <ul
         ref="themeList"
         class="theme-list"
@@ -17,10 +22,10 @@
           @click="resetTheming"
         >
           <preview id="theme-preview-stock" />
-          <h4 class="theme-name">
+          <span class="theme-name">
             {{ $t('settings.style.stock_theme_used') }}
             <span class="alert neutral version">v3</span>
-          </h4>
+          </span>
         </button>
         <button
           v-if="isCustomThemeUsed"
@@ -28,10 +33,10 @@
           class="button-default theme-preview toggled"
         >
           <preview />
-          <h4 class="theme-name">
+          <span class="theme-name">
             {{ $t('settings.style.custom_theme_used') }}
             <span class="alert neutral version">v2</span>
-          </h4>
+          </span>
         </button>
         <button
           v-if="isCustomStyleUsed"
@@ -39,25 +44,25 @@
           class="button-default theme-preview toggled"
         >
           <preview />
-          <h4 class="theme-name">
+          <span class="theme-name">
             {{ $t('settings.style.custom_style_used') }}
             <span class="alert neutral version">v3</span>
-          </h4>
+          </span>
         </button>
         <button
           v-for="style in availableStyles"
           :key="style.key"
           :data-theme-key="style.key"
           class="button-default theme-preview"
-          :class="{ toggled: isThemeActive(style.key), disabled: switchInProgress }"
+          :class="{ toggled: isStyleActive(style.key), disabled: switchInProgress }"
           :disabled="switchInProgress"
           @click="style.version === 'v2' ? setTheme(style.key) : setStyle(style.key)"
         >
           <preview :id="'theme-preview-' + style.key" />
-          <h4 class="theme-name">
+          <span class="theme-name">
             {{ style.name }}
             <span class="alert neutral version">{{ style.version }}</span>
-          </h4>
+          </span>
         </button>
       </ul>
       <div class="import-file-container">
@@ -70,16 +75,14 @@
           <FAIcon icon="folder-open" />
           {{ $t('settings.style.themes3.editor.load_style') }}
         </button>
-      </div>
-      <div class="setting-item">
-        <h2>{{ $t('settings.style.themes3.palette.label') }}</h2>
+        <h4>{{ $t('settings.style.themes3.palette.label') }}</h4>
         <div
           v-if="customThemeVersion === 'v3'"
           class="palettes-container"
         >
-          <h4 v-if="stylePalettes?.length > 0">
+          <h5 v-if="stylePalettes?.length > 0">
             {{ $t('settings.style.themes3.palette.style') }}
-          </h4>
+          </h5>
           <div class="palettes">
             <button
               v-for="p in stylePalettes || []"
@@ -103,7 +106,7 @@
                 />
               </div>
             </button>
-            <h4>{{ $t('settings.style.themes3.palette.bundled') }}</h4>
+            <h5>{{ $t('settings.style.themes3.palette.bundled') }}</h5>
             <button
               v-for="p in bundledPalettes"
               :key="p.name"
@@ -130,9 +133,9 @@
         </div>
         <div>
           <template v-if="customThemeVersion === 'v3'">
-            <h4 v-if="expertLevel > 0">
+            <h5 v-if="expertLevel > 0">
               {{ $t('settings.style.themes3.palette.user') }}
-            </h4>
+            </h5>
             <PaletteEditor
               v-if="expertLevel > 0"
               v-model="userPalette"
@@ -150,236 +153,93 @@
           </template>
         </div>
       </div>
-    </div>
-    <div class="setting-item">
-      <h2>{{ $t('settings.background') }}</h2>
-      <div class="banner-background-preview">
-        <img :src="user.background_image">
-        <button
-          v-if="!isDefaultBackground"
-          class="button-unstyled reset-button"
-          :title="$t('settings.reset_profile_background')"
-          @click="resetBackground"
-        >
-          <FAIcon
-            icon="times"
-            type="button"
-          />
-        </button>
-      </div>
-      <p>{{ $t('settings.set_new_background') }}</p>
-      <img
-        v-if="backgroundPreview"
-        class="banner-background-preview"
-        :src="backgroundPreview"
-      >
-      <div>
-        <input
-          type="file"
-          class="input"
-          @change="uploadFile('background', $event)"
-        >
-      </div>
-      <FAIcon
-        v-if="backgroundUploading"
-        class="uploading"
-        spin
-        icon="circle-notch"
-      />
-      <button
-        v-else-if="backgroundPreview"
-        class="btn button-default"
-        @click="submitBackground(background)"
-      >
-        {{ $t('settings.save') }}
-      </button>
-    </div>
-    <div class="setting-item">
-      <h2>{{ $t('settings.scale_and_layout') }}</h2>
-      <div class="alert neutral theme-notice">
-        {{ $t("settings.style.appearance_tab_note") }}
-      </div>
-      <ul class="setting-list">
-        <li>
-          <UnitSetting
-            path="textSize"
-            :step="0.1"
-            :units="['px', 'rem']"
-            :reset-default="{ 'px': 14, 'rem': 1 }"
-            timed-apply-mode
-          >
-            {{ $t('settings.text_size') }}
-          </UnitSetting>
-          <div>
-            <small>
-              <i18n-t
-                scope="global"
-                keypath="settings.text_size_tip"
-                tag="span"
-              >
-                <code>px</code>
-                <code>rem</code>
-              </i18n-t>
-              <br>
-              <i18n-t
-                scope="global"
-                keypath="settings.text_size_tip2"
-                tag="span"
-              >
-                <code>14px</code>
-              </i18n-t>
-            </small>
+      <h3>{{ $t('settings.background') }}</h3>
+      <div class="banner-background">
+        <div class="banner-background-preview">
+          <div class="fun-monitor">
+            <div class="fun-monitor-stand button-default" />
+            <div class="fun-monitor-neck button-default" />
+            <div class="fun-monitor-display-bezel button-default">
+              <div class="fun-monitor-display-screen input">
+                <img
+                  v-if="backgroundPreview || user.background_image || instanceWallpaper"
+                  class="fun-monitor-display-screen-image"
+                  :src="backgroundPreview || user.background_image || instanceWallpaper"
+                >
+                <div
+                  v-else
+                  class="wallpaper"
+                />
+                <div class="fun-monitor-display-screen-overlay input" />
+                <div
+                  v-if="backgroundUploading"
+                  class="fun-monitor-display-uploading"
+                >
+                  <FAIcon
+                    class="fun-monitor-display-screen-uploading"
+                    spin
+                    icon="circle-notch"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-        </li>
-        <li>
-          <UnitSetting
-            path="emojiSize"
-            :step="0.1"
-            :units="['px', 'rem']"
-            :reset-default="{ 'px': 32, 'rem': 2.2 }"
+        </div>
+        <div class="banner-background-input">
+          <h4>{{ $t('settings.set_new_background') }}</h4>
+          <input
+            type="file"
+            class="input"
+            @change="uploadFile('background', $event)"
           >
-            {{ $t('settings.emoji_size') }}
-          </UnitSetting>
-          <ul
-            class="setting-list suboptions"
-          >
-            <li>
-              <FloatSetting
-                v-if="user"
-                path="emojiReactionsScale"
-                expert="1"
-              >
-                {{ $t('settings.emoji_reactions_scale') }}
-              </FloatSetting>
-            </li>
-          </ul>
-        </li>
-        <li>
-          <UnitSetting
-            path="navbarSize"
-            :step="0.1"
-            :units="['px', 'rem']"
-            :reset-default="{ 'px': 55, 'rem': 3.5 }"
-          >
-            {{ $t('settings.navbar_size') }}
-          </UnitSetting>
-        </li>
-        <h3>{{ $t('settings.style.interface_font_user_override') }}</h3>
-        <li>
-          <FontControl
-            :model-value="mergedConfig.theme3hacks.fonts.interface"
-            name="ui"
-            :label="$t('settings.style.fonts.components.interface')"
-            :fallback="{ family: 'sans-serif' }"
-            no-inherit="1"
-            @update:model-value="v => updateFont('interface', v)"
-          />
-        </li>
-        <li>
-          <FontControl
-            v-if="expertLevel > 0"
-            :model-value="mergedConfig.theme3hacks.fonts.input"
-            name="input"
-            :fallback="{ family: 'inherit' }"
-            :label="$t('settings.style.fonts.components.input')"
-            @update:model-value="v => updateFont('input', v)"
-          />
-        </li>
-        <li>
-          <FontControl
-            v-if="expertLevel > 0"
-            :model-value="mergedConfig.theme3hacks.fonts.post"
-            name="post"
-            :fallback="{ family: 'inherit' }"
-            :label="$t('settings.style.fonts.components.post')"
-            @update:model-value="v => updateFont('post', v)"
-          />
-        </li>
-        <li>
-          <FontControl
-            v-if="expertLevel > 0"
-            :model-value="mergedConfig.theme3hacks.fonts.monospace"
-            name="postCode"
-            :fallback="{ family: 'monospace' }"
-            :label="$t('settings.style.fonts.components.monospace')"
-            @update:model-value="v => updateFont('monospace', v)"
-          />
-        </li>
-        <h3>{{ $t('settings.columns') }}</h3>
-        <li>
-          <UnitSetting
-            path="panelHeaderSize"
-            :step="0.1"
-            :units="['px', 'rem']"
-            :reset-default="{ 'px': 52, 'rem': 3.2 }"
-            timed-apply-mode
-          >
-            {{ $t('settings.panel_header_size') }}
-          </UnitSetting>
-        </li>
-        <li>
-          <BooleanSetting path="sidebarRight">
-            {{ $t('settings.right_sidebar') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting path="navbarColumnStretch">
-            {{ $t('settings.navbar_column_stretch') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <ChoiceSetting
-            v-if="user"
-            id="thirdColumnMode"
-            path="thirdColumnMode"
-            :options="thirdColumnModeOptions"
-          >
-            {{ $t('settings.third_column_mode') }}
-          </ChoiceSetting>
-        </li>
-        <li v-if="expertLevel > 0">
-          {{ $t('settings.column_sizes') }}
-          <div class="column-settings">
-            <UnitSetting
-              v-for="column in columns"
-              :key="column"
-              :path="column + 'ColumnWidth'"
-              :units="horizontalUnits"
-              expert="1"
+          <div class="custom-bg-control">
+            <button
+              :disabled="!backgroundPreview"
+              class="btn button-default"
+              @click="submitBackground(background)"
             >
-              {{ $t('settings.column_sizes_' + column) }}
-            </UnitSetting>
+              {{ $t('settings.save') }}
+            </button>
+            <button
+              :disabled="!backgroundPreview"
+              class="btn button-default"
+              @click="resetUploadedBackground"
+            >
+              {{ $t('settings.reset') }}
+            </button>
           </div>
-        </li>
-        <li>
-          <BooleanSetting path="disableStickyHeaders">
-            {{ $t('settings.disable_sticky_headers') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting path="showScrollbars">
-            {{ $t('settings.show_scrollbars') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <UnitSetting
-            path="themeEditorMinWidth"
-            :units="['px', 'rem']"
-            expert="1"
+          <div
+            v-if="backgroundError"
+            class="alert error -dismissible"
           >
-            {{ $t('settings.theme_editor_min_width') }}
-          </UnitSetting>
-        </li>
-      </ul>
-    </div>
-    <div class="setting-item">
-      <h2>{{ $t('settings.visual_tweaks') }}</h2>
+            <span>
+              {{ backgroundError }}
+            </span>
+            <button
+              class="button-unstyled"
+              @click="clearBackgroundError"
+            >
+              <FAIcon
+                class="fa-scale-110 fa-old-padding"
+                icon="times"
+              />
+            </button>
+          </div>
+          <button
+            v-if="!isDefaultBackground"
+            class="btn button-default reset-button"
+            :title="$t('settings.reset_profile_background')"
+            @click="resetBackground"
+          >
+            {{ $t('settings.reset_profile_background') }}
+          </button>
+        </div>
+      </div>
+      <h3>{{ $t('settings.visual_tweaks') }}</h3>
+      <div class="alert neutral theme-notice">
+        {{ $t("settings.style.visual_tweaks_section_note") }}
+      </div>
       <ul class="setting-list">
-        <li>
-          <BooleanSetting path="modalMobileCenter">
-            {{ $t('settings.mobile_center_dialog') }}
-          </BooleanSetting>
-        </li>
         <li>
           <ChoiceSetting
             id="forcedRoundness"
@@ -392,7 +252,7 @@
         <li>
           <ChoiceSetting
             id="underlayOverride"
-            path="theme3hacks.underlay"
+            path="underlay"
             :options="underlayOverrideModes"
           >
             {{ $t('settings.style.themes3.hacks.underlay_overrides') }}
@@ -404,19 +264,13 @@
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting
-            path="forceThemeRecompilation"
-            :expert="1"
-          >
-            {{ $t('settings.force_theme_recompilation_debug') }}
+          <BooleanSetting path="allowForeignUserBackground">
+            {{ $t('settings.foreign_user_background') }}
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting
-            path="themeDebug"
-            :expert="1"
-          >
-            {{ $t('settings.theme_debug') }}
+          <BooleanSetting path="compactProfiles">
+            {{ $t('settings.compact_profiles') }}
           </BooleanSetting>
         </li>
       </ul>

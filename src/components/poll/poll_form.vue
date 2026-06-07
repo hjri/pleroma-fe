@@ -17,7 +17,6 @@
           type="text"
           :placeholder="$t('polls.option')"
           :maxlength="maxLength"
-          @change="updatePollToParent"
           @keydown.enter.stop.prevent="nextOption(index)"
         >
       </div>
@@ -50,7 +49,6 @@
           v-model="pollType"
           class="poll-type-select"
           unstyled="true"
-          @change="updatePollToParent"
         >
           <option value="single">
             {{ $t('polls.single_choice') }}

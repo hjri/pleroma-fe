@@ -1,12 +1,12 @@
-import BasicUserCard from '../../basic_user_card/basic_user_card.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
-import PageList from 'src/components/page_list/page_list.vue'
-import AdminStatusCard from 'src/components/settings_modal/admin_tabs/admin_status_card.vue'
-import Modal from 'src/components/modal/modal.vue'
-import Popover from 'src/components/popover/popover.vue'
 import GenericConfirm from 'src/components/confirm_modal/generic_confirm.vue'
-import Select from 'src/components/select/select.vue'
 import TextConfirm from 'src/components/confirm_modal/text_confirm.vue'
+import Modal from 'src/components/modal/modal.vue'
+import PageList from 'src/components/page_list/page_list.vue'
+import Popover from 'src/components/popover/popover.vue'
+import Select from 'src/components/select/select.vue'
+import AdminStatusCard from 'src/components/settings_modal/admin_tabs/admin_status_card.vue'
+import BasicUserCard from '../../basic_user_card/basic_user_card.vue'
 
 const AdminCard = {
   props: {
@@ -27,17 +27,17 @@ const AdminCard = {
        * @param {any} u
        * @returns {u is { id: string; _original: { is_approved; is_confirmed: boolean; } } }
        */
-      validator (u) {
+      validator(u) {
         return (
-          typeof(u.id) === 'string' &&
-          typeof(u._original) === 'object' &&
-          typeof(u._original.is_approved) === 'boolean' &&
-          typeof(u._original.is_confirmed) === 'boolean'
+          typeof u.id === 'string' &&
+          typeof u._original === 'object' &&
+          typeof u._original.is_approved === 'boolean' &&
+          typeof u._original.is_confirmed === 'boolean'
         )
-      }
-    }
+      },
+    },
   },
-  data () {
+  data() {
     return {
       progress: false,
       detailsExpanded: false,
@@ -49,7 +49,7 @@ const AdminCard = {
       justDeleted: false,
       showDirect: false,
       showReblogs: false,
-      timelineSorting: "des"
+      timelineSorting: 'des',
     }
   },
   computed: {
@@ -57,27 +57,27 @@ const AdminCard = {
      * checks if the user is defined
      * @returns {boolean}
      */
-    isLoaded () {
-      return typeof(this.user) !== 'undefined'
+    isLoaded() {
+      return typeof this.user !== 'undefined'
     },
     /**
      * @returns {object} user info
      */
-    user () {
+    user() {
       return this.$store.getters.findUser(this.userDetails.id)
     },
     /**
      * @returns {object} user relationship
      */
-    relationship () {
+    relationship() {
       return this.$store.getters.relationship(this.userDetails.id)
     },
     /**
      * @returns {boolean} is user local
      */
-    isLocal () {
+    isLocal() {
       const u = this.$store.getters.findUser(this.userDetails.id)
-      if (typeof(u) !== 'undefined') {
+      if (typeof u !== 'undefined') {
         return u.is_local === true
       }
       return false
@@ -85,9 +85,9 @@ const AdminCard = {
     /**
      * @returns {boolean} is user admin
      */
-    isAdmin () {
+    isAdmin() {
       const u = this.$store.getters.findUser(this.userDetails.id)
-      if (typeof(u) !== 'undefined') {
+      if (typeof u !== 'undefined') {
         return u.rights.admin === true
       }
       return false
@@ -95,9 +95,9 @@ const AdminCard = {
     /**
      * @returns {boolean} is user moderator
      */
-    isModerator () {
+    isModerator() {
       const u = this.$store.getters.findUser(this.userDetails.id)
-      if (typeof(u) !== 'undefined') {
+      if (typeof u !== 'undefined') {
         return u.rights.moderator === true
       }
       return false
@@ -105,9 +105,9 @@ const AdminCard = {
     /**
      * @returns {boolean} is user active
      */
-    isActivated () {
+    isActivated() {
       const u = this.$store.getters.findUser(this.userDetails.id)
-      if (typeof(u) !== 'undefined') {
+      if (typeof u !== 'undefined') {
         return u.deactivated === false
       }
       return false
@@ -115,16 +115,19 @@ const AdminCard = {
     /**
      * @returns {boolean} has this user been confirmed
      */
-    isConfirmed () {
+    isConfirmed() {
       const u = this.$store.getters.findUser(this.userDetails.id)
-      return (u._original.is_confirmed === true) || (this.justConfirmed === true)
+      return u._original.is_confirmed === true || this.justConfirmed === true
     },
     /**
      * @returns {boolean} has this user been approved
      */
-    isApproved () {
-      return (this.userDetails._original.is_approved === true) || (this.justApproved === true)
-    }
+    isApproved() {
+      return (
+        this.userDetails._original.is_approved === true ||
+        this.justApproved === true
+      )
+    },
   },
   components: {
     BasicUserCard,
@@ -135,13 +138,13 @@ const AdminCard = {
     Popover,
     GenericConfirm,
     Select,
-    TextConfirm
+    TextConfirm,
   },
   methods: {
     /**
      * @param {boolean} v set admin status
      */
-    setAdmin (v) {
+    setAdmin(v) {
       const u = this.$store.getters.findUser(this.userDetails.id)
       if (v === true) {
         this.$store.dispatch('adminAddUserToAdminGroup', u)
@@ -152,7 +155,7 @@ const AdminCard = {
     /**
      * @param {boolean} v set moderator status
      */
-    setModerator (v) {
+    setModerator(v) {
       const u = this.$store.getters.findUser(this.userDetails.id)
       if (v === true) {
         this.$store.dispatch('adminAddUserToModeratorGroup', u)
@@ -163,7 +166,7 @@ const AdminCard = {
     /**
      * @param {boolean} v set activation status
      */
-    setActivation (v) {
+    setActivation(v) {
       const u = this.$store.getters.findUser(this.userDetails.id)
       if (v === true) {
         this.$store.dispatch('adminActivateUser', u)
@@ -174,7 +177,7 @@ const AdminCard = {
     /**
      * confirm this user
      */
-    confirmUser () {
+    confirmUser() {
       const u = this.$store.getters.findUser(this.userDetails.id)
       this.$store.dispatch('adminConfirmUser', u)
       this.just_confirmed = true
@@ -182,37 +185,37 @@ const AdminCard = {
     /**
      * try resending the confirmation email
      */
-    resendConfirmationEmail () {
+    resendConfirmationEmail() {
       const u = this.$store.getters.findUser(this.userDetails.id)
       this.$store.dispatch('adminResendConfirmationEmail', u)
     },
     /**
      * approve this user
      */
-    approveUser () {
+    approveUser() {
       const u = this.$store.getters.findUser(this.userDetails.id)
       this.$store.dispatch('adminApproveUser', u)
     },
     /**
      * update user info from server
      */
-    forceUpdateUser () {
+    forceUpdateUser() {
       this.$store.dispatch('fetchUser', this.userDetails.id)
     },
     /**
      * delete selected statuses
      */
-    deleteSelection () {
+    deleteSelection() {
       const l = this.$refs.timelineList
       const s = l.getSelected()
-      s.forEach(p => this.$store.dispatch('deleteStatus', p))
+      s.forEach((p) => this.$store.dispatch('deleteStatus', p))
       l.reset()
     },
     /**
      * delete this user. keep in mind that user deletion is not intuitive in pleroma backend.
      * it actually deletes all content of a user. the user itself will keep showing up in search results.
      */
-    deleteUser () {
+    deleteUser() {
       if (!this.justDeleted) {
         const u = this.$store.getters.findUser(this.userDetails.id)
         this.$store.dispatch('adminDeleteUser', u)
@@ -222,17 +225,19 @@ const AdminCard = {
     /**
      * @param {string} text name of tag to be added to user
      */
-    addUserTag (text) {
+    addUserTag(text) {
       const u = this.$store.getters.findUser(this.userDetails.id)
-      this.$store.dispatch('adminTagUser', { user: u, tag: text })
+      this.$store
+        .dispatch('adminTagUser', { user: u, tag: text })
         .then(() => this.$store.dispatch('fetchUser', this.userDetails.id))
     },
     /**
      * @param {string} text name of tag to be removed from user
      */
-    removeUserTag (text) {
+    removeUserTag(text) {
       const u = this.$store.getters.findUser(this.userDetails.id)
-      this.$store.dispatch('adminUntagUser', { user: u, tag: text })
+      this.$store
+        .dispatch('adminUntagUser', { user: u, tag: text })
         .then(() => this.$store.dispatch('fetchUser', this.userDetails.id))
     },
     /**
@@ -240,34 +245,48 @@ const AdminCard = {
      * @param {object} opts
      * @returns {Promise<Array<object>>} statuses
      */
-    async fetchStatuses (store, opts) {
+    async fetchStatuses(store, opts) {
       const u = this.$store.getters.findUser(this.userDetails.id)
-      const res = store.dispatch('adminListStatuses', { user: u,  opts: { pageSize: opts.pageSize, godmode: this.showDirect, withReblogs: this.showReblogs}})
-      return res.then(r => {
+      const res = store.dispatch('adminListStatuses', {
+        user: u,
+        opts: {
+          pageSize: opts.pageSize,
+          godmode: this.showDirect,
+          withReblogs: this.showReblogs,
+        },
+      })
+      return res.then((r) => {
         const a = r.activities
         console.log(this.timelineSorting)
         if (this.timelineSorting === 'des') {
-          return [...a].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+          return [...a].sort(
+            (a, b) => new Date(b.created_at) - new Date(a.created_at),
+          )
         } else if (this.timelineSorting === 'asc') {
-          return [...a].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+          return [...a].sort(
+            (a, b) => new Date(a.created_at) - new Date(b.created_at),
+          )
         } else return []
       })
     },
-    confirmAction (box) {
+    confirmAction(box) {
       this.$refs[box].show()
       this.$refs.dropdownuser.hidePopover()
     },
-    userActionConfirmed (action) {
-      this.$store.dispatch(action, this.$store.getters.findUser(this.userDetails.id))
+    userActionConfirmed(action) {
+      this.$store.dispatch(
+        action,
+        this.$store.getters.findUser(this.userDetails.id),
+      )
     },
-    statusActionConfirmed (action, opts) {
+    statusActionConfirmed(action, opts) {
       const s = this.$refs.statusList.getSelected()
-      s.forEach(p => {
-        this.$store.dispatch(action, { id: p.id, ...(opts || {})})
+      s.forEach((p) => {
+        this.$store.dispatch(action, { id: p.id, ...(opts || {}) })
       })
       this.reset()
-    }
-  }
+    },
+  },
 }
 
 export default AdminCard

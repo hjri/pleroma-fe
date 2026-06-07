@@ -1,6 +1,13 @@
-import { defaultState, mutations, prepareStatus } from '../../../../src/modules/statuses.js'
+import { createTestingPinia } from '@pinia/testing'
 
- 
+import {
+  defaultState,
+  mutations,
+  prepareStatus,
+} from '../../../../src/modules/statuses.js'
+
+createTestingPinia()
+
 const makeMockStatus = ({ id, text, type = 'status' }) => {
   return {
     id,
@@ -10,7 +17,7 @@ const makeMockStatus = ({ id, text, type = 'status' }) => {
     fave_num: 0,
     uri: '',
     type,
-    attentions: []
+    attentions: [],
   }
 }
 
@@ -27,7 +34,10 @@ describe('Statuses module', () => {
       const state = defaultState()
       const status = makeMockStatus({ id: '1' })
 
-      mutations.addNewStatuses(state, { statuses: [status], timeline: 'public' })
+      mutations.addNewStatuses(state, {
+        statuses: [status],
+        timeline: 'public',
+      })
 
       expect(state.allStatuses).to.eql([status])
       expect(state.timelines.public.statuses).to.eql([status])
@@ -39,8 +49,14 @@ describe('Statuses module', () => {
       const state = defaultState()
       const status = makeMockStatus({ id: '1' })
 
-      mutations.addNewStatuses(state, { statuses: [status], timeline: 'public' })
-      mutations.addNewStatuses(state, { statuses: [status], timeline: 'friends' })
+      mutations.addNewStatuses(state, {
+        statuses: [status],
+        timeline: 'public',
+      })
+      mutations.addNewStatuses(state, {
+        statuses: [status],
+        timeline: 'friends',
+      })
 
       expect(state.allStatuses).to.eql([status])
       expect(state.timelines.public.statuses).to.eql([status])
@@ -69,7 +85,11 @@ describe('Statuses module', () => {
       const state = defaultState()
       const status = makeMockStatus({ id: '1' })
 
-      mutations.addNewStatuses(state, { statuses: [status], showImmediately: true, timeline: 'public' })
+      mutations.addNewStatuses(state, {
+        statuses: [status],
+        showImmediately: true,
+        timeline: 'public',
+      })
 
       expect(state.allStatuses).to.eql([status])
       expect(state.timelines.public.statuses).to.eql([status])
@@ -82,12 +102,24 @@ describe('Statuses module', () => {
       const status = makeMockStatus({ id: '1' })
       const secondStatus = makeMockStatus({ id: '2' })
 
-      mutations.addNewStatuses(state, { statuses: [status], showImmediately: true, timeline: 'public' })
+      mutations.addNewStatuses(state, {
+        statuses: [status],
+        showImmediately: true,
+        timeline: 'public',
+      })
       expect(state.timelines.public.maxId).to.eql('1')
 
-      mutations.addNewStatuses(state, { statuses: [secondStatus], showImmediately: true, timeline: 'public', noIdUpdate: true })
+      mutations.addNewStatuses(state, {
+        statuses: [secondStatus],
+        showImmediately: true,
+        timeline: 'public',
+        noIdUpdate: true,
+      })
       expect(state.timelines.public.statuses).to.eql([secondStatus, status])
-      expect(state.timelines.public.visibleStatuses).to.eql([secondStatus, status])
+      expect(state.timelines.public.visibleStatuses).to.eql([
+        secondStatus,
+        status,
+      ])
       expect(state.timelines.public.maxId).to.eql('1')
     })
 
@@ -98,17 +130,42 @@ describe('Statuses module', () => {
       const statusTwo = makeMockStatus({ id: '2' })
       const statusThree = makeMockStatus({ id: '4' })
 
-      mutations.addNewStatuses(state, { statuses: [nonVisibleStatus], showImmediately: false, timeline: 'public' })
+      mutations.addNewStatuses(state, {
+        statuses: [nonVisibleStatus],
+        showImmediately: false,
+        timeline: 'public',
+      })
 
-      mutations.addNewStatuses(state, { statuses: [status], showImmediately: true, timeline: 'public' })
-      mutations.addNewStatuses(state, { statuses: [statusTwo], showImmediately: true, timeline: 'public' })
+      mutations.addNewStatuses(state, {
+        statuses: [status],
+        showImmediately: true,
+        timeline: 'public',
+      })
+      mutations.addNewStatuses(state, {
+        statuses: [statusTwo],
+        showImmediately: true,
+        timeline: 'public',
+      })
 
       expect(state.timelines.public.minVisibleId).to.equal('2')
 
-      mutations.addNewStatuses(state, { statuses: [statusThree], showImmediately: true, timeline: 'public' })
+      mutations.addNewStatuses(state, {
+        statuses: [statusThree],
+        showImmediately: true,
+        timeline: 'public',
+      })
 
-      expect(state.timelines.public.statuses).to.eql([statusThree, status, statusTwo, nonVisibleStatus])
-      expect(state.timelines.public.visibleStatuses).to.eql([statusThree, status, statusTwo])
+      expect(state.timelines.public.statuses).to.eql([
+        statusThree,
+        status,
+        statusTwo,
+        nonVisibleStatus,
+      ])
+      expect(state.timelines.public.visibleStatuses).to.eql([
+        statusThree,
+        status,
+        statusTwo,
+      ])
     })
 
     it('splits retweets from their status and links them', () => {
@@ -120,7 +177,11 @@ describe('Statuses module', () => {
       retweet.retweeted_status = status
 
       // It adds both statuses, but only the retweet to visible.
-      mutations.addNewStatuses(state, { statuses: [retweet], timeline: 'public', showImmediately: true })
+      mutations.addNewStatuses(state, {
+        statuses: [retweet],
+        timeline: 'public',
+        showImmediately: true,
+      })
       expect(state.timelines.public.visibleStatuses).to.have.length(1)
       expect(state.timelines.public.statuses).to.have.length(1)
       expect(state.allStatuses).to.have.length(2)
@@ -128,7 +189,10 @@ describe('Statuses module', () => {
       expect(state.allStatuses[1].id).to.equal('2')
 
       // It refers to the modified status.
-      mutations.addNewStatuses(state, { statuses: [modStatus], timeline: 'public' })
+      mutations.addNewStatuses(state, {
+        statuses: [modStatus],
+        timeline: 'public',
+      })
       expect(state.allStatuses).to.have.length(2)
       expect(state.allStatuses[0].id).to.equal('1')
       expect(state.allStatuses[0].text).to.equal(modStatus.text)
@@ -142,12 +206,20 @@ describe('Statuses module', () => {
       const modStatus = makeMockStatus({ id: '1', text: 'something else' })
 
       // Add original status
-      mutations.addNewStatuses(state, { statuses: [status], showImmediately: true, timeline: 'public' })
+      mutations.addNewStatuses(state, {
+        statuses: [status],
+        showImmediately: true,
+        timeline: 'public',
+      })
       expect(state.timelines.public.visibleStatuses).to.have.length(1)
       expect(state.allStatuses).to.have.length(1)
 
       // Add new version of status
-      mutations.addNewStatuses(state, { statuses: [modStatus], showImmediately: true, timeline: 'public' })
+      mutations.addNewStatuses(state, {
+        statuses: [modStatus],
+        showImmediately: true,
+        timeline: 'public',
+      })
       expect(state.timelines.public.visibleStatuses).to.have.length(1)
       expect(state.allStatuses).to.have.length(1)
       expect(state.allStatuses[0].text).to.eql(modStatus.text)
@@ -161,12 +233,20 @@ describe('Statuses module', () => {
       retweet.retweeted_status = modStatus
 
       // Add original status
-      mutations.addNewStatuses(state, { statuses: [status], showImmediately: true, timeline: 'public' })
+      mutations.addNewStatuses(state, {
+        statuses: [status],
+        showImmediately: true,
+        timeline: 'public',
+      })
       expect(state.timelines.public.visibleStatuses).to.have.length(1)
       expect(state.allStatuses).to.have.length(1)
 
       // Add new version of status
-      mutations.addNewStatuses(state, { statuses: [retweet], showImmediately: false, timeline: 'public' })
+      mutations.addNewStatuses(state, {
+        statuses: [retweet],
+        showImmediately: false,
+        timeline: 'public',
+      })
       expect(state.timelines.public.visibleStatuses).to.have.length(1)
       // Don't add the retweet itself if the tweet is visible
       expect(state.timelines.public.statuses).to.have.length(1)
@@ -184,18 +264,30 @@ describe('Statuses module', () => {
         in_reply_to_status_id: '1', // The API uses strings here...
         uri: 'tag:shitposter.club,2016-08-21:fave:3895:note:773501:2016-08-21T16:52:15+00:00',
         text: 'a favorited something by b',
-        user: { id: '99' }
+        user: { id: '99' },
       }
 
-      mutations.addNewStatuses(state, { statuses: [status], showImmediately: true, timeline: 'public' })
-      mutations.addNewStatuses(state, { statuses: [favorite], showImmediately: true, timeline: 'public' })
+      mutations.addNewStatuses(state, {
+        statuses: [status],
+        showImmediately: true,
+        timeline: 'public',
+      })
+      mutations.addNewStatuses(state, {
+        statuses: [favorite],
+        showImmediately: true,
+        timeline: 'public',
+      })
 
       expect(state.timelines.public.visibleStatuses.length).to.eql(1)
       expect(state.timelines.public.visibleStatuses[0].fave_num).to.eql(1)
       expect(state.timelines.public.maxId).to.eq(favorite.id)
 
       // Adding it again does nothing
-      mutations.addNewStatuses(state, { statuses: [favorite], showImmediately: true, timeline: 'public' })
+      mutations.addNewStatuses(state, {
+        statuses: [favorite],
+        showImmediately: true,
+        timeline: 'public',
+      })
 
       expect(state.timelines.public.visibleStatuses.length).to.eql(1)
       expect(state.timelines.public.visibleStatuses[0].fave_num).to.eql(1)
@@ -203,7 +295,7 @@ describe('Statuses module', () => {
 
       // If something is favorited by the current user, it also sets the 'favorited' property but does not increment counter to avoid over-counting. Counter is incremented (updated, really) via response to the favorite request.
       const user = {
-        id: '1'
+        id: '1',
       }
 
       const ownFavorite = {
@@ -212,10 +304,15 @@ describe('Statuses module', () => {
         in_reply_to_status_id: '1', // The API uses strings here...
         uri: 'tag:shitposter.club,2016-08-21:fave:3895:note:773501:2016-08-21T16:52:15+00:00',
         text: 'a favorited something by b',
-        user
+        user,
       }
 
-      mutations.addNewStatuses(state, { statuses: [ownFavorite], showImmediately: true, timeline: 'public', user })
+      mutations.addNewStatuses(state, {
+        statuses: [ownFavorite],
+        showImmediately: true,
+        timeline: 'public',
+        user,
+      })
 
       expect(state.timelines.public.visibleStatuses.length).to.eql(1)
       expect(state.timelines.public.visibleStatuses[0].fave_num).to.eql(1)
@@ -229,11 +326,21 @@ describe('Statuses module', () => {
       const status = makeMockStatus({ id: '1' })
       status.emoji_reactions = [{ name: '😂', count: 1, accounts: [] }]
 
-      mutations.addNewStatuses(state, { statuses: [status], showImmediately: true, timeline: 'public' })
-      mutations.addOwnReaction(state, { id: '1', emoji: '😂', currentUser: { id: 'me' } })
+      mutations.addNewStatuses(state, {
+        statuses: [status],
+        showImmediately: true,
+        timeline: 'public',
+      })
+      mutations.addOwnReaction(state, {
+        id: '1',
+        emoji: '😂',
+        currentUser: { id: 'me' },
+      })
       expect(state.allStatusesObject['1'].emoji_reactions[0].count).to.eql(2)
       expect(state.allStatusesObject['1'].emoji_reactions[0].me).to.eql(true)
-      expect(state.allStatusesObject['1'].emoji_reactions[0].accounts[0].id).to.eql('me')
+      expect(
+        state.allStatusesObject['1'].emoji_reactions[0].accounts[0].id,
+      ).to.eql('me')
     })
 
     it('adds a new reaction', () => {
@@ -241,32 +348,64 @@ describe('Statuses module', () => {
       const status = makeMockStatus({ id: '1' })
       status.emoji_reactions = []
 
-      mutations.addNewStatuses(state, { statuses: [status], showImmediately: true, timeline: 'public' })
-      mutations.addOwnReaction(state, { id: '1', emoji: '😂', currentUser: { id: 'me' } })
+      mutations.addNewStatuses(state, {
+        statuses: [status],
+        showImmediately: true,
+        timeline: 'public',
+      })
+      mutations.addOwnReaction(state, {
+        id: '1',
+        emoji: '😂',
+        currentUser: { id: 'me' },
+      })
       expect(state.allStatusesObject['1'].emoji_reactions[0].count).to.eql(1)
       expect(state.allStatusesObject['1'].emoji_reactions[0].me).to.eql(true)
-      expect(state.allStatusesObject['1'].emoji_reactions[0].accounts[0].id).to.eql('me')
+      expect(
+        state.allStatusesObject['1'].emoji_reactions[0].accounts[0].id,
+      ).to.eql('me')
     })
 
     it('decreases count in existing reaction', () => {
       const state = defaultState()
       const status = makeMockStatus({ id: '1' })
-      status.emoji_reactions = [{ name: '😂', count: 2, accounts: [{ id: 'me' }] }]
+      status.emoji_reactions = [
+        { name: '😂', count: 2, accounts: [{ id: 'me' }] },
+      ]
 
-      mutations.addNewStatuses(state, { statuses: [status], showImmediately: true, timeline: 'public' })
-      mutations.removeOwnReaction(state, { id: '1', emoji: '😂', currentUser: { id: 'me' } })
+      mutations.addNewStatuses(state, {
+        statuses: [status],
+        showImmediately: true,
+        timeline: 'public',
+      })
+      mutations.removeOwnReaction(state, {
+        id: '1',
+        emoji: '😂',
+        currentUser: { id: 'me' },
+      })
       expect(state.allStatusesObject['1'].emoji_reactions[0].count).to.eql(1)
       expect(state.allStatusesObject['1'].emoji_reactions[0].me).to.eql(false)
-      expect(state.allStatusesObject['1'].emoji_reactions[0].accounts).to.eql([])
+      expect(state.allStatusesObject['1'].emoji_reactions[0].accounts).to.eql(
+        [],
+      )
     })
 
     it('removes a reaction', () => {
       const state = defaultState()
       const status = makeMockStatus({ id: '1' })
-      status.emoji_reactions = [{ name: '😂', count: 1, accounts: [{ id: 'me' }] }]
+      status.emoji_reactions = [
+        { name: '😂', count: 1, accounts: [{ id: 'me' }] },
+      ]
 
-      mutations.addNewStatuses(state, { statuses: [status], showImmediately: true, timeline: 'public' })
-      mutations.removeOwnReaction(state, { id: '1', emoji: '😂', currentUser: { id: 'me' } })
+      mutations.addNewStatuses(state, {
+        statuses: [status],
+        showImmediately: true,
+        timeline: 'public',
+      })
+      mutations.removeOwnReaction(state, {
+        id: '1',
+        emoji: '😂',
+        currentUser: { id: 'me' },
+      })
       expect(state.allStatusesObject['1'].emoji_reactions.length).to.eql(0)
     })
   })
@@ -275,9 +414,17 @@ describe('Statuses module', () => {
     it('resets the minId to the min of the visible statuses when adding new to visible statuses', () => {
       const state = defaultState()
       const status = makeMockStatus({ id: '10' })
-      mutations.addNewStatuses(state, { statuses: [status], showImmediately: true, timeline: 'public' })
+      mutations.addNewStatuses(state, {
+        statuses: [status],
+        showImmediately: true,
+        timeline: 'public',
+      })
       const newStatus = makeMockStatus({ id: '20' })
-      mutations.addNewStatuses(state, { statuses: [newStatus], showImmediately: false, timeline: 'public' })
+      mutations.addNewStatuses(state, {
+        statuses: [newStatus],
+        showImmediately: false,
+        timeline: 'public',
+      })
       state.timelines.public.minId = '5'
       mutations.showNewStatuses(state, { timeline: 'public' })
 

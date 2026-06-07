@@ -4,35 +4,36 @@ const UserNote = {
   props: {
     user: Object,
     relationship: Object,
-    editable: Boolean
+    editable: Boolean,
   },
   components: {
-    PanelLoading
+    PanelLoading,
   },
-  data () {
+  data() {
     return {
       localNote: this.relationship.note,
       editing: false,
-      frozen: false
+      frozen: false,
     }
   },
   watch: {
-    relationship () {
+    relationship() {
       this.localNote = this.relationship.note
-    }
+    },
   },
   methods: {
-    startEditing () {
+    startEditing() {
       this.localNote = this.relationship.note
       this.editing = true
     },
-    finalizeEditing () {
+    finalizeEditing() {
       this.frozen = true
 
-      this.$store.dispatch('editUserNote', {
-        id: this.user.id,
-        comment: this.localNote
-      })
+      this.$store
+        .dispatch('editUserNote', {
+          id: this.user.id,
+          comment: this.localNote,
+        })
         .then(() => {
           this.frozen = false
           this.editing = false
@@ -41,8 +42,8 @@ const UserNote = {
           this.frozen = false
           this.editing = false
         })
-    }
-  }
+    },
+  },
 }
 
 export default UserNote

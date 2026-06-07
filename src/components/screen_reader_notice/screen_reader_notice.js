@@ -2,20 +2,22 @@ const ScreenReaderNotice = {
   props: {
     ariaLive: {
       type: String,
-      default: 'assertive'
-    }
+      default: 'assertive',
+    },
   },
-  data () {
+  data() {
     return {
-      currentText: ''
+      currentText: '',
     }
   },
   methods: {
-    announce (text) {
+    announce(text) {
       this.currentText = text
-      setTimeout(() => { this.currentText = '' }, 1000)
-    }
-  }
+      setTimeout(() => {
+        this.currentText = ''
+      }, 1000)
+    },
+  },
 }
 
 export default ScreenReaderNotice

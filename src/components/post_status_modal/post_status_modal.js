@@ -1,34 +1,37 @@
-import PostStatusForm from '../post_status_form/post_status_form.vue'
-import Modal from '../modal/modal.vue'
-import get from 'lodash/get'
-import { usePostStatusStore } from 'src/stores/post_status'
+import { get } from 'lodash'
+import { defineAsyncComponent } from 'vue'
+
+import Modal from 'src/components/modal/modal.vue'
+import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
+
+import { usePostStatusStore } from 'src/stores/post_status.js'
 
 const PostStatusModal = {
   components: {
     PostStatusForm,
-    Modal
+    Modal,
   },
-  data () {
+  data() {
     return {
-      resettingForm: false
+      resettingForm: false,
     }
   },
   computed: {
-    isLoggedIn () {
+    isLoggedIn() {
       return !!this.$store.state.users.currentUser
     },
-    modalActivated () {
+    modalActivated() {
       return usePostStatusStore().modalActivated
     },
-    isFormVisible () {
+    isFormVisible() {
       return this.isLoggedIn && !this.resettingForm && this.modalActivated
     },
-    params () {
+    params() {
       return usePostStatusStore().params || {}
-    }
+    },
   },
   watch: {
-    params (newVal, oldVal) {
+    params(newVal, oldVal) {
       if (get(newVal, 'repliedUser.id') !== get(oldVal, 'repliedUser.id')) {
         this.resettingForm = true
         this.$nextTick(() => {
@@ -36,21 +39,23 @@ const PostStatusModal = {
         })
       }
     },
-    isFormVisible (val) {
+    isFormVisible(val) {
       if (val) {
-        this.$nextTick(() => this.$el && this.$el.querySelector('textarea').focus())
+        this.$nextTick(
+          () => this.$el && this.$el.querySelector('textarea').focus(),
+        )
       }
-    }
+    },
   },
   methods: {
-    closeModal () {
+    closeModal() {
       usePostStatusStore().closePostStatusModal()
     },
-    resetAndClose () {
+    resetAndClose() {
       usePostStatusStore().resetPostStatusModal()
       usePostStatusStore().closePostStatusModal()
-    }
-  }
+    },
+  },
 }
 
 export default PostStatusModal

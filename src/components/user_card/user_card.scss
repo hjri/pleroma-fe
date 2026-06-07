@@ -26,6 +26,10 @@
     height: auto; // override settings default textarea size
   }
 
+  .follow-button {
+    flex: 1 0 auto;
+  }
+
   .user-card-inner {
     padding-bottom: 0;
   }
@@ -82,7 +86,7 @@
     padding: 0.6em;
 
     &:not(:last-child) {
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1px dotted var(--border);
     }
 
     .highlighter {
@@ -161,11 +165,14 @@
 
   .user-identity {
     position: relative;
-    aspect-ratio: 3;
     min-height: 6em;
     display: flex;
     align-items: flex-end;
     container: user-card / inline-size;
+
+    &:not(.-compact) {
+      aspect-ratio: 3;
+    }
 
     > * {
       min-width: 0;
@@ -406,6 +413,10 @@
       text-overflow: ellipsis;
       overflow: hidden;
       margin: 0;
+
+      .svg-inline--fa {
+        color: var(--text);
+      }
     }
 
     dd, dt {

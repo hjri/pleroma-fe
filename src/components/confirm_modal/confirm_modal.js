@@ -1,4 +1,4 @@
-import DialogModal from '../dialog_modal/dialog_modal.vue'
+import DialogModal from 'src/components/dialog_modal/dialog_modal.vue'
 
 /**
  * This component emits the following events:
@@ -9,30 +9,32 @@ import DialogModal from '../dialog_modal/dialog_modal.vue'
  */
 const ConfirmModal = {
   components: {
-    DialogModal
+    DialogModal,
   },
   props: {
     title: {
-      type: String
+      type: String,
     },
     cancelText: {
-      type: String
+      type: String,
     },
     confirmText: {
-      type: String
-    }
+      type: String,
+    },
+    confirmDanger: {
+      type: Boolean,
+    },
   },
   emits: ['cancelled', 'accepted'],
-  computed: {
-  },
+  computed: {},
   methods: {
-    onCancel () {
+    onCancel() {
       this.$emit('cancelled')
     },
-    onAccept () {
+    onAccept() {
       this.$emit('accepted')
-    }
-  }
+    },
+  },
 }
 
 export default ConfirmModal

@@ -1,26 +1,36 @@
-import Timeline from '../timeline/timeline.vue'
+import Timeline from 'src/components/timeline/timeline.vue'
 
 const QuotesTimeline = {
-  created () {
+  created() {
     this.$store.commit('clearTimeline', { timeline: 'quotes' })
-    this.$store.dispatch('startFetchingTimeline', { timeline: 'quotes', statusId: this.statusId })
+    this.$store.dispatch('startFetchingTimeline', {
+      timeline: 'quotes',
+      statusId: this.statusId,
+    })
   },
   components: {
-    Timeline
+    Timeline,
   },
   computed: {
-    statusId () { return this.$route.params.id },
-    timeline () { return this.$store.state.statuses.timelines.quotes }
+    statusId() {
+      return this.$route.params.id
+    },
+    timeline() {
+      return this.$store.state.statuses.timelines.quotes
+    },
   },
   watch: {
-    statusId () {
+    statusId() {
       this.$store.commit('clearTimeline', { timeline: 'quotes' })
-      this.$store.dispatch('startFetchingTimeline', { timeline: 'quotes', statusId: this.statusId })
-    }
+      this.$store.dispatch('startFetchingTimeline', {
+        timeline: 'quotes',
+        statusId: this.statusId,
+      })
+    },
   },
-  unmounted () {
+  unmounted() {
     this.$store.dispatch('stopFetchingTimeline', 'quotes')
-  }
+  },
 }
 
 export default QuotesTimeline

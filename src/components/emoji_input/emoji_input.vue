@@ -2,7 +2,7 @@
   <div
     ref="root"
     class="input emoji-input"
-    :class="{ 'with-picker': !hideEmojiButton }"
+    :class="{ '-with-picker': !hideEmojiButton, '-textarea': input?.tagName === 'TEXTAREA' }"
   >
     <slot
       :id="'textbox-' + randomSeed"
@@ -37,7 +37,7 @@
         :title="$t('emoji.add_emoji')"
         @click.prevent="togglePicker"
       >
-        <FAIcon :icon="['far', 'smile-beam']" />
+        <FAIcon :icon="['far', 'face-smile-beam']" />
       </button>
       <EmojiPicker
         v-if="enableEmojiPicker"
@@ -118,15 +118,23 @@
 
   .emoji-picker-icon {
     position: absolute;
-    top: 0;
+    bottom: 0;
     right: 0;
-    margin: 0.2em 0.25em;
+    height: 100%;
+    padding: 0 0.2em;
     font-size: 1.3em;
     cursor: pointer;
     line-height: 1.2em;
 
     &:hover i {
       color: var(--text);
+    }
+  }
+
+  &.-textarea {
+    .emoji-picker-icon {
+      height: auto;
+      padding: 0.2em;
     }
   }
 
@@ -151,8 +159,11 @@
     outline: none;
   }
 
-  &.with-picker input {
-    padding-right: 2em;
+  &.-with-picker {
+    textarea,
+    input {
+      padding-right: 2.4em;
+    }
   }
 
   .hidden-overlay {

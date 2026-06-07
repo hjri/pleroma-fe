@@ -2,7 +2,10 @@
   <div class="user-card">
     <div class="user-card-inner">
       <div class="user-info">
-        <div class="user-identity">
+        <div
+          class="user-identity"
+          :class="{ '-compact': compact }"
+        >
           <div class="header-overlay">
             <div class="banner-image">
               <img
@@ -137,6 +140,7 @@
                     :title="editable ? newName : user.name_unescaped"
                     :html="editable ? newName : user.name_unescaped"
                     :emoji="editable ? emoji : user.emoji"
+                    :allow-non-square-emoji="allowNonSquareEmoji"
                   />
                 </router-link>
                 <EmojiInput
@@ -208,21 +212,16 @@
                 </span>
                 <span
                   v-if="user.actor_type === 'Group'"
-                  class="alert user-role"
+                  class="alert neutral user-role"
                 >
                   {{ $t('user_card.group') }}
                 </span>
                 <span
-                  v-if="relationship.muting && muteExpiryAvailable"
-                  class="alert neutral user-role"
+                  v-for="tag in user.tags"
+                  :key="tag"
+                  class="alert warning user-role"
                 >
-                  {{ muteExpiry }}
-                </span>
-                <span
-                  v-if="relationship.blocking && blockExpiryAvailable"
-                  class="alert neutral user-role"
-                >
-                  {{ blockExpiry }}
+                  {{ isKnownTag ? $t('user_card.tags.' + tag) : tag }}
                 </span>
               </template>
             </div>
@@ -305,7 +304,7 @@
       </div>
     </div>
     <div
-      v-if="!editable && loggedIn && isOtherUser && (hasNote || !hideBio) && !mergedConfig.userCardHidePersonalMarks"
+      v-if="!editable && loggedIn && isOtherUser && (hasNote || !hideBio) && !hideRemarks"
       class="personal-marks"
     >
       <UserNote
@@ -370,8 +369,9 @@
         v-if="!hideBio"
         class="user-card-bio"
         :class="{ '-justify-left': mergedConfig.userCardLeftJustify }"
-        :html="editable ? newBio.replace(/\n/g, '<br>') : user.description_html"
+        :html="editable ? escapedNewBio : user.description_html"
         :emoji="editable ? emoji : user.emoji"
+        :allow-non-square-emoji="allowNonSquareEmoji"
         :handle-links="true"
       />
     </template>
@@ -426,6 +426,7 @@
             <RichContent
               :html="field.name"
               :emoji="editable ? emoji : user.emoji"
+              :allow-non-square-emoji="allowNonSquareEmoji"
             />
           </dt>
           <dd
@@ -435,6 +436,7 @@
             <RichContent
               :html="field.value"
               :emoji="editable ? emoji : user.emoji"
+              :allow-non-square-emoji="allowNonSquareEmoji"
             />
           </dd>
         </dl>
@@ -517,11 +519,11 @@
       class="user-extras"
     >
       <span
-        v-if="!editable && !mergedConfig.hideUserStats"
+        v-if="!editable && !hideUserStats"
         class="user-stats"
       >
         <dl
-          v-if="!mergedConfig.hideUserStats && !hideBio"
+          v-if="!hideUserStats && !hideBio"
           class="user-count"
         >
           <dd>{{ user.statuses_count }}</dd>
@@ -544,39 +546,61 @@
           <dt>{{ $t('user_card.followers') }}</dt>
         </dl>
       </span>
-      <template v-if="!hideBio">
-        <div
-          v-if="user.birthday && !editable"
-          class="birthday"
-        >
-          <FAIcon
-            class="fa-old-padding"
-            icon="birthday-cake"
-          />
-          {{ $t('user_card.birthday', { birthday: formattedBirthday }) }}
-        </div>
-        <div
-          v-else-if="editable"
-          class="birthday"
-        >
-          <div>
-            <Checkbox v-model="newShowBirthday">
-              {{ $t('settings.birthday.show_birthday') }}
-            </Checkbox>
-          </div>
-          <FAIcon
-            class="fa-old-padding"
-            icon="birthday-cake"
-          />
-          {{ $t('settings.birthday.label') }}
-          <input
-            id="birthday"
-            v-model="newBirthday"
-            type="date"
-            class="input birthday-input"
+      <span
+        v-if="!hideUserStats"
+        class="user-stats"
+      >
+        <template v-if="!hideBio">
+          <dl
+            v-if="user.birthday && !editable"
+            class="user-count"
           >
-        </div>
-      </template>
+            <dd>
+              <FAIcon
+                class="fa-old-padding"
+                icon="birthday-cake"
+              />
+            </dd>
+            {{ ' ' }}
+            <dt>
+              {{ $t('user_card.birthday', { birthday: formattedBirthday }) }}
+            </dt>
+          </dl>
+          <div
+            v-else-if="editable"
+            class="birthday"
+          >
+            <div>
+              <Checkbox v-model="newShowBirthday">
+                {{ $t('settings.birthday.show_birthday') }}
+              </Checkbox>
+            </div>
+            <FAIcon
+              class="fa-old-padding"
+              icon="birthday-cake"
+            />
+            {{ $t('settings.birthday.label') }}
+            <input
+              id="birthday"
+              v-model="newBirthday"
+              type="date"
+              class="input birthday-input"
+            >
+          </div>
+        </template>
+        <dl
+          v-if="!editable"
+          class="user-count"
+        >
+          <dd>
+            {{ $t('user_card.joined') }}
+          </dd>
+          {{ ' ' }}
+          <dt>
+            {{ formattedJoinDate }}
+          </dt>
+        </dl>
+      </span>
     </div>
     <template v-if="editable">
       <h3>{{ $t('settings.profile_other') }}</h3>
@@ -645,6 +669,7 @@
     </template>
     <teleport to="#modal">
       <UserTimedFilterModal
+        v-if="isOtherUser"
         ref="timedMuteDialog"
         :user="user"
         :is-mute="true"

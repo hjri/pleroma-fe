@@ -1,3 +1,5 @@
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
 const StillImage = {
   props: [
     'src',
@@ -9,38 +11,41 @@ const StillImage = {
     'height',
     'width',
     'dataSrc',
-    'loading'
+    'loading',
   ],
-  data () {
+  data() {
     return {
       // for lazy loading, see loadLazy()
       realSrc: this.src,
-      stopGifs: this.$store.getters.mergedConfig.stopGifs
+      stopGifs: useMergedConfigStore().mergedConfig.stopGifs,
     }
   },
   computed: {
-    animated () {
+    animated() {
       if (!this.realSrc) {
         return false
       }
 
-      return this.stopGifs && (this.mimetype === 'image/gif' || this.realSrc.endsWith('.gif'))
+      return (
+        this.stopGifs &&
+        (this.mimetype === 'image/gif' || this.realSrc.endsWith('.gif'))
+      )
     },
-    style () {
-      const appendPx = (str) => /\d$/.test(str) ? str + 'px' : str
+    style() {
+      const appendPx = (str) => (/\d$/.test(str) ? str + 'px' : str)
       return {
         height: this.height ? appendPx(this.height) : null,
-        width: this.width ? appendPx(this.width) : null
+        width: this.width ? appendPx(this.width) : null,
       }
-    }
+    },
   },
   methods: {
-    loadLazy () {
+    loadLazy() {
       if (this.dataSrc) {
         this.realSrc = this.dataSrc
       }
     },
-    onLoad () {
+    onLoad() {
       if (!this.realSrc) {
         return
       }
@@ -55,18 +60,18 @@ const StillImage = {
       canvas.height = height
       canvas.getContext('2d').drawImage(image, 0, 0, width, height)
     },
-    onError () {
+    onError() {
       this.imageLoadError && this.imageLoadError()
-    }
+    },
   },
   watch: {
-    src () {
+    src() {
       this.realSrc = this.src
     },
-    dataSrc () {
+    dataSrc() {
       this.$el.removeAttribute('data-loaded')
-    }
-  }
+    },
+  },
 }
 
 export default StillImage

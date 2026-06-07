@@ -1,0 +1,21 @@
+.data-import-export-tab {
+  .importer-exporter {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.5em;
+  }
+
+  table {
+    td, th {
+      line-height: 1.5;
+    }
+
+    th {
+      padding: 0 0.5em;
+    }
+
+    td {
+      padding: 0.5em;
+    }
+  }
+}

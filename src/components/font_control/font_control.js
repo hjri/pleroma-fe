@@ -1,35 +1,32 @@
-import Select from '../select/select.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Popover from 'src/components/popover/popover.vue'
-import { useInterfaceStore } from 'src/stores/interface'
+import Select from 'src/components/select/select.vue'
+import LocalSettingIndicator from 'src/components/settings_modal/helpers/local_setting_indicator.vue'
+
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faExclamationTriangle,
+  faFont,
   faKeyboard,
-  faFont
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(
-  faExclamationTriangle,
-  faKeyboard,
-  faFont
-)
+library.add(faExclamationTriangle, faKeyboard, faFont)
 
 export default {
   components: {
     Select,
     Checkbox,
-    Popover
+    Popover,
+    LocalSettingIndicator,
   },
-  props: [
-    'name', 'label', 'modelValue', 'fallback', 'options', 'no-inherit'
-  ],
-  mounted () {
+  props: ['name', 'label', 'modelValue', 'fallback', 'options', 'no-inherit'],
+  mounted() {
     useInterfaceStore().queryLocalFonts()
   },
   emits: ['update:modelValue'],
-  data () {
+  data() {
     return {
       manualEntry: false,
       availableOptions: [
@@ -37,24 +34,24 @@ export default {
         'serif',
         'sans-serif',
         'monospace',
-        ...(this.options || [])
-      ].filter(_ => _)
+        ...(this.options || []),
+      ].filter((_) => _),
     }
   },
   methods: {
-    toggleManualEntry () {
+    toggleManualEntry() {
       this.manualEntry = !this.manualEntry
-    }
+    },
   },
   computed: {
-    present () {
-      return typeof this.modelValue !== 'undefined'
+    present() {
+      return this.modelValue != null
     },
-    localFontsList () {
+    localFontsList() {
       return useInterfaceStore().localFonts
     },
-    localFontsSize () {
+    localFontsSize() {
       return useInterfaceStore().localFonts?.length
-    }
-  }
+    },
+  },
 }

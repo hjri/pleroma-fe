@@ -1,4 +1,5 @@
 import { convert } from 'chromatism'
+
 import allKeys from './theme2_keys'
 
 // keys that are meant to be used globally, i.e. what's the rest of the theme is based upon.
@@ -14,15 +15,10 @@ export const basePaletteKeys = new Set([
   'cGreen',
   'cOrange',
 
-  'wallpaper'
+  'wallpaper',
 ])
 
-export const fontsKeys = new Set([
-  'interface',
-  'input',
-  'post',
-  'postCode'
-])
+export const fontsKeys = new Set(['interface', 'input', 'post', 'postCode'])
 
 export const opacityKeys = new Set([
   'alert',
@@ -35,7 +31,7 @@ export const opacityKeys = new Set([
   'panel',
   'popover',
   'profileTint',
-  'underlay'
+  'underlay',
 ])
 
 export const shadowsKeys = new Set([
@@ -48,7 +44,7 @@ export const shadowsKeys = new Set([
   'button',
   'buttonHover',
   'buttonPressed',
-  'input'
+  'input',
 ])
 
 export const radiiKeys = new Set([
@@ -60,14 +56,11 @@ export const radiiKeys = new Set([
   'avatarAlt',
   'tooltip',
   'attachment',
-  'chatMessage'
+  'chatMessage',
 ])
 
 // Keys that are not available in editor and never meant to be edited
-export const hiddenKeys = new Set([
-  'profileBg',
-  'profileTint'
-])
+export const hiddenKeys = new Set(['profileBg', 'profileTint'])
 
 export const extendedBasePrefixes = [
   'border',
@@ -93,33 +86,30 @@ export const extendedBasePrefixes = [
   'poll',
 
   'chatBg',
-  'chatMessage'
+  'chatMessage',
 ]
 export const nonComponentPrefixes = new Set([
   'border',
   'icon',
   'highlight',
   'lightText',
-  'chatBg'
+  'chatBg',
 ])
 
 export const extendedBaseKeys = Object.fromEntries(
-  extendedBasePrefixes.map(prefix => [
+  extendedBasePrefixes.map((prefix) => [
     prefix,
-    allKeys.filter(k => {
+    allKeys.filter((k) => {
       if (prefix === 'alert') {
         return k.startsWith(prefix) && !k.startsWith('alertPopup')
       }
       return k.startsWith(prefix)
-    })
-  ])
+    }),
+  ]),
 )
 
 // Keysets that are only really used intermideately, i.e. to generate other colors
-export const temporary = new Set([
-  '',
-  'highlight'
-])
+export const temporary = new Set(['', 'highlight'])
 
 export const temporaryColors = {}
 
@@ -128,16 +118,18 @@ export const convertTheme2To3 = (data) => {
   data.colors.link = data.colors.link || data.colors.accent
   const generateRoot = () => {
     const directives = {}
-    basePaletteKeys.forEach(key => { directives['--' + key] = 'color | ' + convert(data.colors[key]).hex })
+    basePaletteKeys.forEach((key) => {
+      directives['--' + key] = 'color | ' + convert(data.colors[key]).hex
+    })
     return {
       component: 'Root',
-      directives
+      directives,
     }
   }
 
   const convertOpacity = () => {
     const newRules = []
-    Object.keys(data.opacity || {}).forEach(key => {
+    Object.keys(data.opacity || {}).forEach((key) => {
       if (!opacityKeys.has(key) || data.opacity[key] === undefined) return null
       const originalOpacity = data.opacity[key]
       const rule = { source: '2to3' }
@@ -201,7 +193,12 @@ export const convertTheme2To3 = (data) => {
       if (rule.component === 'Button') {
         newRules.push({ ...rule, component: 'ScrollbarElement' })
         newRules.push({ ...rule, component: 'Tab' })
-        newRules.push({ ...rule, component: 'Tab', state: ['active'], directives: { opacity: 0 } })
+        newRules.push({
+          ...rule,
+          component: 'Tab',
+          state: ['active'],
+          directives: { opacity: 0 },
+        })
       }
       if (rule.component === 'Panel') {
         newRules.push({ ...rule, component: 'Post' })
@@ -212,7 +209,7 @@ export const convertTheme2To3 = (data) => {
 
   const convertRadii = () => {
     const newRules = []
-    Object.keys(data.radii || {}).forEach(key => {
+    Object.keys(data.radii || {}).forEach((key) => {
       if (!radiiKeys.has(key) || data.radii[key] === undefined) return null
       const originalRadius = data.radii[key]
       const rule = { source: '2to3' }
@@ -249,7 +246,7 @@ export const convertTheme2To3 = (data) => {
           break
       }
       rule.directives = {
-        roundness: originalRadius
+        roundness: originalRadius,
       }
       newRules.push(rule)
       if (rule.component === 'Button') {
@@ -262,10 +259,10 @@ export const convertTheme2To3 = (data) => {
 
   const convertFonts = () => {
     const newRules = []
-    Object.keys(data.fonts || {}).forEach(key => {
+    Object.keys(data.fonts || {}).forEach((key) => {
       if (!fontsKeys.has(key)) return
       if (!data.fonts[key]) return
-      const originalFont = data.fonts[key].family
+      const originalFont = data.fonts[key]
       const rule = { source: '2to3' }
 
       switch (key) {
@@ -297,7 +294,7 @@ export const convertTheme2To3 = (data) => {
   }
   const convertShadows = () => {
     const newRules = []
-    Object.keys(data.shadows || {}).forEach(key => {
+    Object.keys(data.shadows || {}).forEach((key) => {
       if (!shadowsKeys.has(key)) return
       const originalShadow = data.shadows[key]
       const rule = { source: '2to3' }
@@ -338,11 +335,15 @@ export const convertTheme2To3 = (data) => {
           break
       }
       rule.directives = {
-        shadow: originalShadow
+        shadow: originalShadow,
       }
       newRules.push(rule)
       if (key === 'topBar') {
-        newRules.push({ ...rule, component: 'PanelHeader', parent: { component: 'MobileDrawer' } })
+        newRules.push({
+          ...rule,
+          component: 'PanelHeader',
+          parent: { component: 'MobileDrawer' },
+        })
       }
       if (key === 'avatarStatus') {
         newRules.push({ ...rule, parent: { component: 'Notification' } })
@@ -363,169 +364,211 @@ export const convertTheme2To3 = (data) => {
     return newRules
   }
 
-  const extendedRules = Object.entries(extendedBaseKeys).map(([prefix, keys]) => {
-    if (nonComponentPrefixes.has(prefix)) return null
-    const rule = { source: '2to3' }
-    if (prefix === 'alertPopup') {
-      rule.component = 'Alert'
-      rule.parent = { component: 'Popover' }
-    } else if (prefix === 'selectedPost') {
-      rule.component = 'Post'
-      rule.state = ['selected']
-    } else if (prefix === 'selectedMenu') {
-      rule.component = 'MenuItem'
-      rule.state = ['hover']
-    } else if (prefix === 'chatMessageIncoming') {
-      rule.component = 'ChatMessage'
-    } else if (prefix === 'chatMessageOutgoing') {
-      rule.component = 'ChatMessage'
-      rule.variant = 'outgoing'
-    } else if (prefix === 'panel') {
-      rule.component = 'PanelHeader'
-    } else if (prefix === 'topBar') {
-      rule.component = 'TopBar'
-    } else if (prefix === 'chatMessage') {
-      rule.component = 'ChatMessage'
-    } else if (prefix === 'poll') {
-      rule.component = 'PollGraph'
-    } else if (prefix === 'btn') {
-      rule.component = 'Button'
-    } else {
-      rule.component = prefix[0].toUpperCase() + prefix.slice(1).toLowerCase()
-    }
-    return keys.map((key) => {
-      if (!data.colors[key]) return null
-      const leftoverKey = key.replace(prefix, '')
-      const parts = (leftoverKey || 'Bg').match(/[A-Z][a-z]*/g)
-      const last = parts.slice(-1)[0]
-      let newRule = { source: '2to3', directives: {} }
-      let variantArray = []
-
-      switch (last) {
-        case 'Text':
-        case 'Faint': // typo
-        case 'Link':
-        case 'Icon':
-        case 'Greentext':
-        case 'Cyantext':
-        case 'Border':
-          newRule.parent = rule
-          newRule.directives.textColor = data.colors[key]
-          variantArray = parts.slice(0, -1)
-          break
-        default:
-          newRule = { ...rule, directives: {} }
-          newRule.directives.background = data.colors[key]
-          variantArray = parts
-          break
+  const extendedRules = Object.entries(extendedBaseKeys).map(
+    ([prefix, keys]) => {
+      if (nonComponentPrefixes.has(prefix)) return null
+      const rule = { source: '2to3' }
+      if (prefix === 'alertPopup') {
+        rule.component = 'Alert'
+        rule.parent = { component: 'Popover' }
+      } else if (prefix === 'selectedPost') {
+        rule.component = 'Post'
+        rule.state = ['selected']
+      } else if (prefix === 'selectedMenu') {
+        rule.component = 'MenuItem'
+        rule.state = ['hover']
+      } else if (prefix === 'chatMessageIncoming') {
+        rule.component = 'ChatMessage'
+      } else if (prefix === 'chatMessageOutgoing') {
+        rule.component = 'ChatMessage'
+        rule.variant = 'outgoing'
+      } else if (prefix === 'panel') {
+        rule.component = 'PanelHeader'
+      } else if (prefix === 'topBar') {
+        rule.component = 'TopBar'
+      } else if (prefix === 'chatMessage') {
+        rule.component = 'ChatMessage'
+      } else if (prefix === 'poll') {
+        rule.component = 'PollGraph'
+      } else if (prefix === 'btn') {
+        rule.component = 'Button'
+      } else {
+        rule.component = prefix[0].toUpperCase() + prefix.slice(1).toLowerCase()
       }
+      return keys.map((key) => {
+        if (!data.colors[key]) return null
+        const leftoverKey = key.replace(prefix, '')
+        const parts = (leftoverKey || 'Bg').match(/[A-Z][a-z]*/g)
+        const last = parts.slice(-1)[0]
+        let newRule = { source: '2to3', directives: {} }
+        let variantArray = []
 
-      if (last === 'Text' || last === 'Link') {
-        const secondLast = parts.slice(-2)[0]
-        if (secondLast === 'Light') {
-          return null // unsupported
-        } else if (secondLast === 'Faint') {
-          newRule.state = ['faint']
-          variantArray = parts.slice(0, -2)
+        switch (last) {
+          case 'Text':
+          case 'Faint': // typo
+          case 'Link':
+          case 'Icon':
+          case 'Greentext':
+          case 'Cyantext':
+          case 'Border':
+            newRule.parent = rule
+            newRule.directives.textColor = data.colors[key]
+            variantArray = parts.slice(0, -1)
+            break
+          default:
+            newRule = { ...rule, directives: {} }
+            newRule.directives.background = data.colors[key]
+            variantArray = parts
+            break
         }
-      }
 
-      switch (last) {
-        case 'Text':
-        case 'Link':
-        case 'Icon':
-        case 'Border':
-          newRule.component = last
-          break
-        case 'Greentext':
-        case 'Cyantext':
-          newRule.component = 'FunText'
-          newRule.variant = last.toLowerCase()
-          break
-        case 'Faint':
-          newRule.component = 'Text'
-          newRule.state = ['faint']
-          break
-      }
-
-      variantArray = variantArray.filter(x => x !== 'Bg')
-
-      if (last === 'Link' && prefix === 'selectedPost') {
-        // selectedPost has typo - duplicate 'Post'
-        variantArray = variantArray.filter(x => x !== 'Post')
-      }
-
-      if (prefix === 'popover' && variantArray[0] === 'Post') {
-        newRule.component = 'Post'
-        newRule.parent = { source: '2to3hack', component: 'Popover' }
-        variantArray = variantArray.filter(x => x !== 'Post')
-      }
-
-      if (prefix === 'selectedMenu' && variantArray[0] === 'Popover') {
-        newRule.parent = { source: '2to3hack', component: 'Popover' }
-        variantArray = variantArray.filter(x => x !== 'Popover')
-      }
-
-      switch (prefix) {
-        case 'btn':
-        case 'input':
-        case 'alert': {
-          const hasPanel = variantArray.find(x => x === 'Panel')
-          if (hasPanel) {
-            newRule.parent = { source: '2to3hack', component: 'PanelHeader', parent: newRule.parent }
-            variantArray = variantArray.filter(x => x !== 'Panel')
+        if (last === 'Text' || last === 'Link') {
+          const secondLast = parts.slice(-2)[0]
+          if (secondLast === 'Light') {
+            return null // unsupported
+          } else if (secondLast === 'Faint') {
+            newRule.state = ['faint']
+            variantArray = parts.slice(0, -2)
           }
-          const hasTop = variantArray.find(x => x === 'Top') // TopBar
-          if (hasTop) {
-            newRule.parent = { source: '2to3hack', component: 'TopBar', parent: newRule.parent }
-            variantArray = variantArray.filter(x => x !== 'Top' && x !== 'Bar')
+        }
+
+        switch (last) {
+          case 'Text':
+          case 'Link':
+          case 'Icon':
+          case 'Border':
+            newRule.component = last
+            break
+          case 'Greentext':
+          case 'Cyantext':
+            newRule.component = 'FunText'
+            newRule.variant = last.toLowerCase()
+            break
+          case 'Faint':
+            newRule.component = 'Text'
+            newRule.state = ['faint']
+            break
+        }
+
+        variantArray = variantArray.filter((x) => x !== 'Bg')
+
+        if (last === 'Link' && prefix === 'selectedPost') {
+          // selectedPost has typo - duplicate 'Post'
+          variantArray = variantArray.filter((x) => x !== 'Post')
+        }
+
+        if (prefix === 'popover' && variantArray[0] === 'Post') {
+          newRule.component = 'Post'
+          newRule.parent = { source: '2to3hack', component: 'Popover' }
+          variantArray = variantArray.filter((x) => x !== 'Post')
+        }
+
+        if (prefix === 'selectedMenu' && variantArray[0] === 'Popover') {
+          newRule.parent = { source: '2to3hack', component: 'Popover' }
+          variantArray = variantArray.filter((x) => x !== 'Popover')
+        }
+
+        switch (prefix) {
+          case 'btn':
+          case 'input':
+          case 'alert': {
+            const hasPanel = variantArray.find((x) => x === 'Panel')
+            if (hasPanel) {
+              newRule.parent = {
+                source: '2to3hack',
+                component: 'PanelHeader',
+                parent: newRule.parent,
+              }
+              variantArray = variantArray.filter((x) => x !== 'Panel')
+            }
+            const hasTop = variantArray.find((x) => x === 'Top') // TopBar
+            if (hasTop) {
+              newRule.parent = {
+                source: '2to3hack',
+                component: 'TopBar',
+                parent: newRule.parent,
+              }
+              variantArray = variantArray.filter(
+                (x) => x !== 'Top' && x !== 'Bar',
+              )
+            }
+            break
           }
-          break
         }
-      }
 
-      if (variantArray.length > 0) {
-        if (prefix === 'btn') {
-          newRule.state = variantArray.map(x => x.toLowerCase())
-        } else {
-          newRule.variant = variantArray[0].toLowerCase()
+        if (variantArray.length > 0) {
+          if (prefix === 'btn') {
+            newRule.state = variantArray.map((x) => x.toLowerCase())
+          } else {
+            newRule.variant = variantArray[0].toLowerCase()
+          }
         }
-      }
 
-      if (newRule.component === 'Panel') {
-        return [newRule, { ...newRule, component: 'MobileDrawer' }]
-      } else if (newRule.component === 'Button') {
-        const rules = [
-          newRule,
-          { ...newRule, component: 'Tab' },
-          { ...newRule, component: 'ScrollbarElement' }
-        ]
-        if (newRule.state?.indexOf('toggled') >= 0) {
-          rules.push({ ...newRule, state: [...newRule.state, 'focused'] })
-          rules.push({ ...newRule, state: [...newRule.state, 'hover'] })
-          rules.push({ ...newRule, state: [...newRule.state, 'hover', 'focused'] })
-        }
-        if (newRule.state?.indexOf('hover') >= 0) {
-          rules.push({ ...newRule, state: [...newRule.state, 'focused'] })
-        }
-        return rules
-      } else if (newRule.component === 'Badge') {
-        if (newRule.variant === 'notification') {
-          return [newRule, { component: 'Root', directives: { '--badgeNotification': 'color | ' + newRule.directives.background } }]
-        } else if (newRule.variant === 'neutral') {
-          return [{ ...newRule, variant: 'normal' }]
+        if (newRule.component === 'Panel') {
+          return [newRule, { ...newRule, component: 'MobileDrawer' }]
+        } else if (newRule.component === 'Button') {
+          const rules = [
+            newRule,
+            { ...newRule, component: 'Tab' },
+            { ...newRule, component: 'ScrollbarElement' },
+          ]
+          if (newRule.state?.indexOf('toggled') >= 0) {
+            rules.push({ ...newRule, state: [...newRule.state, 'focused'] })
+            rules.push({ ...newRule, state: [...newRule.state, 'hover'] })
+            rules.push({
+              ...newRule,
+              state: [...newRule.state, 'hover', 'focused'],
+            })
+          }
+          if (newRule.state?.indexOf('hover') >= 0) {
+            rules.push({ ...newRule, state: [...newRule.state, 'focused'] })
+          }
+          return rules
+        } else if (newRule.component === 'Badge') {
+          if (newRule.variant === 'notification') {
+            return [
+              newRule,
+              {
+                component: 'Root',
+                directives: {
+                  '--badgeNotification':
+                    'color | ' + newRule.directives.background,
+                },
+              },
+            ]
+          } else if (newRule.variant === 'neutral') {
+            return [{ ...newRule, variant: 'normal' }]
+          } else {
+            return [newRule]
+          }
+        } else if (newRule.component === 'TopBar') {
+          return [
+            newRule,
+            {
+              ...newRule,
+              parent: { component: 'MobileDrawer' },
+              component: 'PanelHeader',
+            },
+          ]
         } else {
           return [newRule]
         }
-      } else if (newRule.component === 'TopBar') {
-        return [newRule, { ...newRule, parent: { component: 'MobileDrawer' }, component: 'PanelHeader' }]
-      } else {
-        return [newRule]
-      }
-    })
-  })
+      })
+    },
+  )
 
-  const flatExtRules = extendedRules.filter(x => x).reduce((acc, x) => [...acc, ...x], []).filter(x => x).reduce((acc, x) => [...acc, ...x], [])
+  const flatExtRules = extendedRules
+    .filter((x) => x)
+    .reduce((acc, x) => [...acc, ...x], [])
+    .filter((x) => x)
+    .reduce((acc, x) => [...acc, ...x], [])
 
-  return [generateRoot(), ...convertShadows(), ...convertRadii(), ...convertOpacity(), ...convertFonts(), ...flatExtRules]
+  return [
+    generateRoot(),
+    ...convertShadows(),
+    ...convertRadii(),
+    ...convertOpacity(),
+    ...convertFonts(),
+    ...flatExtRules,
+  ]
 }

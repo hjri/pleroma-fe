@@ -1,7 +1,7 @@
 <template>
   <div
     class="color-input style-control"
-    :class="{ disabled: !present || disabled }"
+    :class="{ disabled: !present || disabled, '-compact': compact }"
   >
     <label
       :for="name"
@@ -64,91 +64,96 @@
   </div>
 </template>
 <script>
-import Checkbox from '../checkbox/checkbox.vue'
-import { hex2rgb } from '../../services/color_convert/color_convert.js'
 import { throttle } from 'lodash'
 
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faEyeDropper
-} from '@fortawesome/free-solid-svg-icons'
+import Checkbox from 'src/components/checkbox/checkbox.vue'
+import { hex2rgb } from '../../services/color_convert/color_convert.js'
 
-library.add(
-  faEyeDropper
-)
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faEyeDropper } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faEyeDropper)
 
 export default {
   components: {
-    Checkbox
+    Checkbox,
   },
   props: {
     // Name of color, used for identifying
     name: {
       required: true,
-      type: String
+      type: String,
     },
     // Readable label
     label: {
-      required: true,
-      type: String
+      required: false,
+      type: String,
+      default: '',
     },
     // use unstyled, uh, style
     unstyled: {
       required: false,
-      type: Boolean
+      type: Boolean,
     },
     // Color value, should be required but vue cannot tell the difference
     // between "property missing" and "property set to undefined"
     modelValue: {
       required: false,
       type: String,
-      default: undefined
+      default: undefined,
     },
     // Color fallback to use when value is not defeind
     fallback: {
       required: false,
       type: String,
-      default: undefined
+      default: undefined,
     },
     // Disable the control
     disabled: {
       required: false,
       type: Boolean,
-      default: false
+      default: false,
     },
     // Show "optional" tickbox, for when value might become mandatory
     showOptionalCheckbox: {
       required: false,
       type: Boolean,
-      default: true
+      default: true,
     },
     // Force "optional" tickbox to hide
     hideOptionalCheckbox: {
       required: false,
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
+    compact: {
+      required: false,
+      type: Boolean,
+    },
   },
   emits: ['update:modelValue'],
   computed: {
-    present () {
+    present() {
       return typeof this.modelValue !== 'undefined'
     },
-    validColor () {
+    validColor() {
       return hex2rgb(this.modelValue || this.fallback)
     },
-    transparentColor () {
+    transparentColor() {
       return this.modelValue === 'transparent'
     },
-    computedColor () {
-      return this.modelValue && (this.modelValue.startsWith('--') || this.modelValue.startsWith('$'))
-    }
+    computedColor() {
+      return (
+        this.modelValue &&
+        (this.modelValue.startsWith('--') || this.modelValue.startsWith('$'))
+      )
+    },
   },
   methods: {
     updateValue: throttle(function (value) {
       this.$emit('update:modelValue', value)
-    }, 100)
-  }
+    }, 100),
+  },
 }
 </script>
 <style lang="scss" src="./color_input.scss"></style>

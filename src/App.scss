@@ -50,7 +50,7 @@ body {
 // have a cursor/pointer to operate them
 @media (any-pointer: fine) {
   * {
-    scrollbar-color: var(--fg) transparent;
+    scrollbar-color: var(--icon) transparent;
 
     &::-webkit-scrollbar {
       background: transparent;
@@ -130,7 +130,7 @@ body {
   }
   // Body should have background to scrollbar otherwise it will use white (body color?)
   html {
-    scrollbar-color: var(--fg) var(--wallpaper);
+    scrollbar-color: var(--icon) var(--wallpaper);
     background: var(--wallpaper);
   }
 }
@@ -200,6 +200,7 @@ nav {
   background-color: var(--wallpaper);
   background-image: var(--body-background-image);
   background-position: 50%;
+  transition: background-image 1s;
 }
 
 .underlay {
@@ -513,6 +514,12 @@ nav {
   }
 }
 
+label {
+  &.-disabled {
+    color: var(--textFaint);
+  }
+}
+
 input,
 textarea {
   border: none;
@@ -553,6 +560,10 @@ textarea {
   &[disabled="disabled"],
   &.disabled {
     cursor: not-allowed;
+    color: var(--textFaint);
+
+    /* stylelint-disable-next-line declaration-no-important */
+    background-color: transparent !important;
   }
 
   &[type="range"] {
@@ -578,6 +589,8 @@ textarea {
       & + label::before {
         opacity: 0.5;
       }
+
+      background-color: var(--background);
     }
 
     + label::before {
@@ -677,7 +690,8 @@ option {
   list-style: none;
   display: grid;
   grid-auto-flow: row dense;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
+  grid-gap: 0.5em;
 
   li {
     border: 1px solid var(--border);
@@ -698,7 +712,6 @@ option {
     --_roundness-right: 0;
 
     position: relative;
-    flex: 1 1 auto;
   }
 
   > *:first-child,
@@ -775,6 +788,19 @@ option {
   padding: 0 0.25em;
   border-radius: var(--roundness);
   border: 1px solid var(--border);
+
+  &.-dismissible {
+    display: flex;
+    padding-left: 0.5em;
+    margin: 0;
+    align-items: baseline;
+    line-height: 2;
+
+    span {
+      display: block;
+      flex: 1 0 auto;
+    }
+  }
 }
 
 .faint {
@@ -785,14 +811,19 @@ option {
 }
 
 .notice-dismissible {
-  padding-right: 4rem;
-  position: relative;
+  display: flex;
+  padding: 0.75em 1em;
+  align-items: baseline;
+  line-height: 1.5;
+
+  p,
+  span {
+    display: block;
+    flex: 1 1 auto;
+    margin: 0;
+  }
 
   .dismiss {
-    position: absolute;
-    top: 0;
-    right: 0;
-    padding: 0.5em;
     color: inherit;
   }
 }

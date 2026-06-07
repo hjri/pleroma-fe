@@ -1,48 +1,55 @@
-import { h } from 'vue'
+import { createTestingPinia } from '@pinia/testing'
 import { shallowMount } from '@vue/test-utils'
-import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
 import vClickOutside from 'click-outside-vue3'
+import { h } from 'vue'
+
+createTestingPinia()
+
+import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
+
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const generateInput = (value, padEmoji = true) => {
   const wrapper = shallowMount(EmojiInput, {
     global: {
       renderStubDefaultSlot: true,
       mocks: {
-        $store: {
-          getters: {
-            mergedConfig: {
-              padEmoji
-            }
-          }
-        },
-        $t: (msg) => msg
+        $t: (msg) => msg,
       },
       stubs: {
         FAIcon: true,
         Popover: {
           template: `<div><slot trigger /></div>`,
           methods: {
-            updateStyles () {}
-          }
-        }
+            updateStyles() {
+              /* no-op */
+            },
+          },
+        },
       },
       directives: {
-        'click-outside': vClickOutside
-      }
+        'click-outside': vClickOutside,
+      },
     },
     props: {
       suggest: () => [],
       enableEmojiPicker: true,
-      modelValue: value
+      modelValue: value,
     },
     slots: {
-      default: () => h('input', '')
-    }
+      default: () => h('input', ''),
+    },
   })
   return wrapper
 }
 
 describe('EmojiInput', () => {
+  beforeEach(() => {
+    const store = useMergedConfigStore(createTestingPinia())
+    store.mergedConfig = {
+      padEmoji: true,
+    }
+  })
   describe('insertion mechanism', () => {
     it('inserts string at the end with trailing space', () => {
       const initialString = 'Testing'
@@ -85,7 +92,9 @@ describe('EmojiInput', () => {
       wrapper.setData({ caret: 6 })
       wrapper.vm.insert({ insertion: ':ebin:', keepOpen: false })
       const inputEvents = wrapper.emitted()['update:modelValue']
-      expect(inputEvents[inputEvents.length - 1][0]).to.eql('Spurdo :ebin: Sparde')
+      expect(inputEvents[inputEvents.length - 1][0]).to.eql(
+        'Spurdo :ebin: Sparde',
+      )
     })
 
     it('inserts string between words without creating extra spaces (other caret)', () => {
@@ -96,18 +105,26 @@ describe('EmojiInput', () => {
       wrapper.setData({ caret: 7 })
       wrapper.vm.insert({ insertion: ':ebin:', keepOpen: false })
       const inputEvents = wrapper.emitted()['update:modelValue']
-      expect(inputEvents[inputEvents.length - 1][0]).to.eql('Spurdo :ebin: Sparde')
+      expect(inputEvents[inputEvents.length - 1][0]).to.eql(
+        'Spurdo :ebin: Sparde',
+      )
     })
 
     it('inserts string without any padding if padEmoji setting is set to false', () => {
       const initialString = 'Eat some spam!'
       const wrapper = generateInput(initialString, false)
+      const store = useMergedConfigStore(createTestingPinia())
+      store.mergedConfig = {
+        padEmoji: false,
+      }
       const input = wrapper.find('input')
       input.setValue(initialString)
       wrapper.setData({ caret: initialString.length, keepOpen: false })
       wrapper.vm.insert({ insertion: ':spam:' })
       const inputEvents = wrapper.emitted()['update:modelValue']
-      expect(inputEvents[inputEvents.length - 1][0]).to.eql('Eat some spam!:spam:')
+      expect(inputEvents[inputEvents.length - 1][0]).to.eql(
+        'Eat some spam!:spam:',
+      )
     })
 
     it('correctly sets caret after insertion at beginning', async () => {
@@ -135,6 +152,10 @@ describe('EmojiInput', () => {
     it('correctly sets caret after insertion if padEmoji setting is set to false', async () => {
       const initialString = '1234'
       const wrapper = generateInput(initialString, false)
+      const store = useMergedConfigStore(createTestingPinia())
+      store.mergedConfig = {
+        padEmoji: false,
+      }
       const input = wrapper.find('input')
       input.setValue(initialString)
       wrapper.setData({ caret: initialString.length })

@@ -1,18 +1,18 @@
-import merge from 'lodash.merge'
-import { each, get, set, cloneDeep } from 'lodash'
-import { useInterfaceStore } from 'src/stores/interface'
+import { cloneDeep, each, get, merge, set } from 'lodash'
+
 import { storage } from './storage.js'
+
+import { useInterfaceStore } from 'src/stores/interface'
 
 let loaded = false
 
-const defaultReducer = (state, paths) => (
+const defaultReducer = (state, paths) =>
   paths.length === 0
     ? state
     : paths.reduce((substate, path) => {
-      set(substate, path, get(state, path))
-      return substate
-    }, {})
-)
+        set(substate, path, get(state, path))
+        return substate
+      }, {})
 
 const saveImmedeatelyActions = [
   'markNotificationsAsSeen',
@@ -22,14 +22,14 @@ const saveImmedeatelyActions = [
   'setOption',
   'setClientData',
   'setToken',
-  'clearToken'
+  'clearToken',
 ]
 
 const defaultStorage = (() => {
   return storage
 })()
 
-export default function createPersistedState ({
+export default function createPersistedState({
   key = 'vuex-lz',
   paths = [],
   getState = (key, storage) => {
@@ -46,22 +46,22 @@ export default function createPersistedState ({
   },
   reducer = defaultReducer,
   storage = defaultStorage,
-  subscriber = store => handler => store.subscribe(handler)
+  subscriber = (store) => (handler) => store.subscribe(handler),
 } = {}) {
   return getState(key, storage).then((savedState) => {
-    return store => {
+    return (store) => {
       try {
         if (savedState !== null && typeof savedState === 'object') {
           // build user cache
           const usersState = savedState.users || {}
           usersState.usersObject = {}
           const users = usersState.users || []
-          each(users, (user) => { usersState.usersObject[user.id] = user })
+          each(users, (user) => {
+            usersState.usersObject[user.id] = user
+          })
           savedState.users = usersState
 
-          store.replaceState(
-            merge({}, store.state, savedState)
-          )
+          store.replaceState(merge({}, store.state, savedState))
         }
         loaded = true
       } catch (e) {
@@ -72,18 +72,26 @@ export default function createPersistedState ({
       subscriber(store)((mutation, state) => {
         try {
           if (saveImmedeatelyActions.includes(mutation.type)) {
-            setState(key, reducer(cloneDeep(state), paths), storage)
-              .then(success => {
+            setState(key, reducer(cloneDeep(state), paths), storage).then(
+              (success) => {
                 if (typeof success !== 'undefined') {
-                  if (mutation.type === 'setOption' || mutation.type === 'setCurrentUser') {
+                  if (
+                    mutation.type === 'setOption' ||
+                    mutation.type === 'setCurrentUser'
+                  ) {
                     useInterfaceStore().settingsSaved({ success })
                   }
                 }
-              }, error => {
-                if (mutation.type === 'setOption' || mutation.type === 'setCurrentUser') {
+              },
+              (error) => {
+                if (
+                  mutation.type === 'setOption' ||
+                  mutation.type === 'setCurrentUser'
+                ) {
                   useInterfaceStore().settingsSaved({ error })
                 }
-              })
+              },
+            )
           }
         } catch (e) {
           console.error("Couldn't persist state:")
@@ -134,119 +142,123 @@ export default function createPersistedState ({
  * })
  *
  */
-export const piniaPersistPlugin = ({
-  vuexKey = 'vuex-lz',
-  keyFunction = (id) => `pinia-local-${id}`,
-  storage = defaultStorage,
-  reducer = defaultReducer
-} = {}) => ({ store, options }) => {
-  if (!options.persist) {
-    return {
-      $persistLoaded: Promise.resolve()
-    }
-  }
-
-  let resolveLoaded
-  let rejectLoaded
-  const loadedPromise = new Promise((resolve, reject) => {
-    resolveLoaded = resolve
-    rejectLoaded = reject
-  })
-
-  const {
-    afterLoad,
-    paths = [],
-    saveImmediatelyActions,
-    onSaveSuccess = () => {},
-    onSaveError = () => {}
-  } = options.persist || {}
-
-  const loadedGuard = { loaded: false }
-  const key = keyFunction(store.$id)
-  const getState = async () => {
-    const id = store.$id
-    const value = await storage.getItem(key)
-    if (value) {
-      return value
-    }
-
-    const fallbackValue = await storage.getItem(vuexKey)
-    if (fallbackValue && fallbackValue[id]) {
-      console.info(`Migrating ${id} store data from vuex to pinia`)
-      const res = fallbackValue[id]
-      await storage.setItem(key, res)
-      return res
-    }
-
-    return {}
-  }
-
-  const setState = (state) => {
-    if (!loadedGuard.loaded) {
-      console.info('waiting for old state to be loaded...')
-      return Promise.reject()
-    } else {
-      return storage.setItem(key, state)
-    }
-  }
-
-  const getMaybeAugmentedState = async () => {
-    const savedRawState = await getState()
-    if (typeof afterLoad === 'function') {
-      try {
-        return await afterLoad(savedRawState)
-      } catch (e) {
-        console.error('Error running afterLoad:', e)
-        return savedRawState
+export const piniaPersistPlugin =
+  ({
+    vuexKey = 'vuex-lz',
+    keyFunction = (id) => `pinia-local-${id}`,
+    storage = defaultStorage,
+    reducer = defaultReducer,
+  } = {}) =>
+  ({ store, options }) => {
+    if (!options.persist) {
+      return {
+        $persistLoaded: Promise.resolve(),
       }
-    } else {
-      return savedRawState
     }
-  }
 
-  const persistCurrentState = async (state) => {
-    const stateClone = cloneDeep(state)
-    const stateToPersist = reducer(stateClone, paths)
-    try {
-      const res = await setState(stateToPersist)
-      onSaveSuccess(res)
-    } catch (e) {
-      console.error('Cannot persist state:', e)
-      onSaveError(e)
-    }
-  }
-
-  getMaybeAugmentedState()
-    .then(savedState => {
-      if (savedState) {
-        store.$patch(savedState)
-      }
-
-      loadedGuard.loaded = true
-      resolveLoaded()
-
-      // only subscribe after we have done setting the initial state
-      if (!saveImmediatelyActions) {
-        store.$subscribe(async (_mutation, state) => {
-          await persistCurrentState(state)
-        })
-      } else {
-        store.$onAction(({
-          name,
-          store,
-          after,
-        }) => {
-          if (saveImmediatelyActions.includes(name)) {
-            after(() => persistCurrentState(store.$state))
-          }
-        })
-      }
-    }, error => {
-      console.error('Cannot load storage:', error)
-      rejectLoaded(error)
+    let resolveLoaded
+    let rejectLoaded
+    const loadedPromise = new Promise((resolve, reject) => {
+      resolveLoaded = resolve
+      rejectLoaded = reject
     })
 
-  return {
-    $persistLoaded: loadedPromise
+    const {
+      afterLoad,
+      paths = [],
+      saveImmediatelyActions,
+      onSaveSuccess = () => {
+        /* no-op */
+      },
+      onSaveError = () => {
+        /* no-op */
+      },
+    } = options.persist || {}
+
+    const loadedGuard = { loaded: false }
+    const key = keyFunction(store.$id)
+    const getState = async () => {
+      const id = store.$id
+      const value = await storage.getItem(key)
+      if (value) {
+        return value
+      }
+
+      const fallbackValue = await storage.getItem(vuexKey)
+      if (fallbackValue && fallbackValue[id]) {
+        console.info(`Migrating ${id} store data from vuex to pinia`)
+        const res = fallbackValue[id]
+        await storage.setItem(key, res)
+        return res
+      }
+
+      return {}
+    }
+
+    const setState = (state) => {
+      if (!loadedGuard.loaded) {
+        console.info('waiting for old state to be loaded...')
+        return Promise.reject()
+      } else {
+        return storage.setItem(key, state)
+      }
+    }
+
+    const getMaybeAugmentedState = async () => {
+      const savedRawState = await getState()
+      if (typeof afterLoad === 'function') {
+        try {
+          return await afterLoad(savedRawState)
+        } catch (e) {
+          console.error('Error running afterLoad:', e)
+          return savedRawState
+        }
+      } else {
+        return savedRawState
+      }
+    }
+
+    const persistCurrentState = async (state) => {
+      const stateClone = cloneDeep(state)
+      const stateToPersist = reducer(stateClone, paths)
+      try {
+        const res = await setState(stateToPersist)
+        onSaveSuccess(res)
+      } catch (e) {
+        console.error('Cannot persist state:', e)
+        onSaveError(e)
+      }
+    }
+
+    getMaybeAugmentedState().then(
+      (savedState) => {
+        if (savedState) {
+          store.$patch(savedState)
+        }
+
+        loadedGuard.loaded = true
+        resolveLoaded()
+
+        // only subscribe after we have done setting the initial state
+        if (!saveImmediatelyActions) {
+          store.$subscribe(async (_mutation, state) => {
+            await persistCurrentState(state)
+          })
+        } else {
+          store.$onAction(({ name, store, after }) => {
+            if (saveImmediatelyActions.includes(name)) {
+              after(() => persistCurrentState(store.$state))
+            }
+          })
+        }
+      },
+      (error) => {
+        console.error('Cannot load storage:', error)
+        rejectLoaded(error)
+      },
+    )
+
+    return {
+      $persistLoaded: loadedPromise,
+    }
   }
-}

@@ -1,29 +1,36 @@
-import { mapState, mapGetters } from 'vuex'
-import { mapState as mapPiniaState } from 'pinia'
-import UserCard from '../user_card/user_card.vue'
-import { unseenNotificationsFromStore } from '../../services/notification_utils/notification_utils'
-import GestureService from '../../services/gesture_service/gesture_service'
+import { mapActions, mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
+import { mapGetters } from 'vuex'
+
 import { USERNAME_ROUTES } from 'src/components/navigation/navigation.js'
+import UserCard from 'src/components/user_card/user_card.vue'
+import GestureService from '../../services/gesture_service/gesture_service'
+import { unseenNotificationsFromStore } from '../../services/notification_utils/notification_utils'
+
+import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useShoutStore } from 'src/stores/shout'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
+  faBell,
+  faBullhorn,
+  faCog,
+  faComments,
+  faCompass,
+  faFilePen,
+  faHome,
+  faInfoCircle,
+  faList,
+  faSearch,
   faSignInAlt,
   faSignOutAlt,
-  faHome,
-  faComments,
-  faBell,
-  faUserPlus,
-  faBullhorn,
-  faSearch,
   faTachometerAlt,
-  faCog,
-  faInfoCircle,
-  faCompass,
-  faList,
-  faFilePen
+  faUserPlus,
 } from '@fortawesome/free-solid-svg-icons'
-import { useShoutStore } from 'src/stores/shout'
-import { useInterfaceStore } from 'src/stores/interface'
-import { useAnnouncementsStore } from 'src/stores/announcements'
 
 library.add(
   faSignInAlt,
@@ -39,56 +46,49 @@ library.add(
   faInfoCircle,
   faCompass,
   faList,
-  faFilePen
+  faFilePen,
 )
 
 const SideDrawer = {
   props: ['logout'],
   data: () => ({
     closed: true,
-    closeGesture: undefined
+    closeGesture: undefined,
   }),
-  created () {
-    this.closeGesture = GestureService.swipeGesture(GestureService.DIRECTION_LEFT, this.toggleDrawer)
+  created() {
+    this.closeGesture = GestureService.swipeGesture(
+      GestureService.DIRECTION_LEFT,
+      this.toggleDrawer,
+    )
 
     if (this.currentUser && this.currentUser.locked) {
       this.$store.dispatch('startFetchingFollowRequests')
     }
   },
-  components: { UserCard },
+  components: {
+    UserCard,
+  },
   computed: {
-    currentUser () {
+    currentUser() {
       return this.$store.state.users.currentUser
     },
-    shout () { return useShoutStore().joined },
-    unseenNotifications () {
-      return unseenNotificationsFromStore(this.$store)
+    shout() {
+      return useShoutStore().joined
     },
-    unseenNotificationsCount () {
+    unseenNotifications() {
+      return unseenNotificationsFromStore(
+        this.$store,
+        useMergedConfigStore().mergedConfig.notificationVisibility,
+        useMergedConfigStore().mergedConfig.ignoreInactionableSeen,
+      )
+    },
+    unseenNotificationsCount() {
       return this.unseenNotifications.length
     },
-    suggestionsEnabled () {
-      return this.$store.state.instance.suggestionsEnabled
-    },
-    logo () {
-      return this.$store.state.instance.logo
-    },
-    hideSitename () {
-      return this.$store.state.instance.hideSitename
-    },
-    sitename () {
-      return this.$store.state.instance.name
-    },
-    followRequestCount () {
+    followRequestCount() {
       return this.$store.state.api.followRequests.length
     },
-    privateMode () {
-      return this.$store.state.instance.private
-    },
-    federating () {
-      return this.$store.state.instance.federating
-    },
-    timelinesRoute () {
+    timelinesRoute() {
       let name
       if (useInterfaceStore().lastTimeline) {
         name = useInterfaceStore().lastTimeline
@@ -100,36 +100,38 @@ const SideDrawer = {
         return { name }
       }
     },
-    ...mapPiniaState(useAnnouncementsStore, {
-      supportsAnnouncements: store => store.supportsAnnouncements,
-      unreadAnnouncementCount: 'unreadAnnouncementCount'
+    ...mapState(useAnnouncementsStore, [
+      'supportsAnnouncements',
+      'unreadAnnouncementCount',
+    ]),
+    ...mapState(useInstanceCapabilitiesStore, [
+      'pleromaChatMessagesAvailable',
+      'suggestionsEnabled',
+    ]),
+    ...mapState(useInstanceStore, ['privateMode', 'federating']),
+    ...mapState(useInstanceStore, {
+      logo: (store) => store.instanceIdentity.logo,
+      sitename: (store) => store.instanceIdentity.name,
+      hideSitename: (store) => store.instanceIdentity.hideSitename,
     }),
-    ...mapState({
-      pleromaChatMessagesAvailable: state => state.instance.pleromaChatMessagesAvailable
-    }),
-    ...mapGetters(['unreadChatCount', 'draftCount'])
+    ...mapGetters(['unreadChatCount', 'draftCount']),
   },
   methods: {
-    toggleDrawer () {
+    toggleDrawer() {
       this.closed = !this.closed
     },
-    doLogout () {
+    doLogout() {
       this.logout()
       this.toggleDrawer()
     },
-    touchStart (e) {
+    touchStart(e) {
       GestureService.beginSwipe(e, this.closeGesture)
     },
-    touchMove (e) {
+    touchMove(e) {
       GestureService.updateSwipe(e, this.closeGesture)
     },
-    openSettingsModal () {
-      useInterfaceStore().openSettingsModal('user')
-    },
-    openAdminModal () {
-      useInterfaceStore().openSettingsModal('admin')
-    }
-  }
+    ...mapActions(useInterfaceStore, ['openSettingsModal']),
+  },
 }
 
 export default SideDrawer

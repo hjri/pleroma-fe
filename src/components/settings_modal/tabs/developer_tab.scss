@@ -1,0 +1,30 @@
+.developer-tab {
+  .setting-list {
+    margin-left: 2em;
+  }
+
+  .cache-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column: 1 / 3;
+    column-gap: 0.5em;
+    margin: 0 5em;
+
+    .-mobile & {
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr 1fr;
+      row-gap: 0.5em;
+      margin: 0;
+    }
+  }
+
+
+  dt {
+    font-weight: 900;
+  }
+
+  dd {
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+  }
+}

@@ -1,69 +1,92 @@
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faEnvelope,
-  faLock,
-  faLockOpen,
-  faGlobe
-} from '@fortawesome/free-solid-svg-icons'
-
-library.add(
-  faEnvelope,
   faGlobe,
   faLock,
-  faLockOpen
-)
+  faLockOpen,
+} from '@fortawesome/free-solid-svg-icons'
+
+library.add(faEnvelope, faGlobe, faLock, faLockOpen)
 
 const ScopeSelector = {
-  props: [
-    'showAll',
-    'userDefault',
-    'originalScope',
-    'initialScope',
-    'onScopeChange'
-  ],
-  data () {
+  props: {
+    showAll: {
+      required: true,
+      type: Boolean,
+    },
+    userDefault: {
+      required: true,
+      type: String,
+    },
+    originalScope: {
+      required: false,
+      type: String,
+    },
+    initialScope: {
+      required: false,
+      type: String,
+    },
+    onScopeChange: {
+      required: true,
+      type: Function,
+    },
+    unstyled: {
+      required: false,
+      type: Boolean,
+      default: true,
+    },
+  },
+  data() {
     return {
-      currentScope: this.initialScope
+      currentScope: this.initialScope,
     }
   },
   computed: {
-    showNothing () {
-      return !this.showPublic && !this.showUnlisted && !this.showPrivate && !this.showDirect
+    showNothing() {
+      return (
+        !this.showPublic &&
+        !this.showUnlisted &&
+        !this.showPrivate &&
+        !this.showDirect
+      )
     },
-    showPublic () {
+    showPublic() {
       return this.originalScope !== 'direct' && this.shouldShow('public')
     },
-    showUnlisted () {
+    showUnlisted() {
       return this.originalScope !== 'direct' && this.shouldShow('unlisted')
     },
-    showPrivate () {
+    showPrivate() {
       return this.originalScope !== 'direct' && this.shouldShow('private')
     },
-    showDirect () {
+    showDirect() {
       return this.shouldShow('direct')
     },
-    css () {
+    css() {
+      const style = this.unstyled ? 'button-unstyled' : 'button-default'
       return {
-        public: { toggled: this.currentScope === 'public' },
-        unlisted: { toggled: this.currentScope === 'unlisted' },
-        private: { toggled: this.currentScope === 'private' },
-        direct: { toggled: this.currentScope === 'direct' }
+        public: [style, { toggled: this.currentScope === 'public' }],
+        unlisted: [style, { toggled: this.currentScope === 'unlisted' }],
+        private: [style, { toggled: this.currentScope === 'private' }],
+        direct: [style, { toggled: this.currentScope === 'direct' }],
       }
-    }
+    },
   },
   methods: {
-    shouldShow (scope) {
-      return this.showAll ||
+    shouldShow(scope) {
+      return (
+        this.showAll ||
         this.currentScope === scope ||
         this.originalScope === scope ||
         this.userDefault === scope ||
         scope === 'direct'
+      )
     },
-    changeVis (scope) {
+    changeVis(scope) {
       this.currentScope = scope
       this.onScopeChange && this.onScopeChange(scope)
-    }
-  }
+    },
+  },
 }
 
 export default ScopeSelector

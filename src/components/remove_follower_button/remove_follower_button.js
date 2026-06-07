@@ -1,48 +1,54 @@
-import ConfirmModal from '../confirm_modal/confirm_modal.vue'
+import { defineAsyncComponent } from 'vue'
+
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 export default {
   props: ['user', 'relationship'],
-  data () {
+  data() {
     return {
       inProgress: false,
-      showingConfirmRemoveFollower: false
+      showingConfirmRemoveFollower: false,
     }
   },
   components: {
-    ConfirmModal
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
   },
   computed: {
-    label () {
+    label() {
       if (this.inProgress) {
         return this.$t('user_card.follow_progress')
       } else {
         return this.$t('user_card.remove_follower')
       }
     },
-    shouldConfirmRemoveUserFromFollowers () {
-      return this.$store.getters.mergedConfig.modalOnRemoveUserFromFollowers
-    }
+    shouldConfirmRemoveUserFromFollowers() {
+      return useMergedConfigStore().mergedConfig.modalOnRemoveUserFromFollowers
+    },
   },
   methods: {
-    showConfirmRemoveUserFromFollowers () {
+    showConfirmRemoveUserFromFollowers() {
       this.showingConfirmRemoveFollower = true
     },
-    hideConfirmRemoveUserFromFollowers () {
+    hideConfirmRemoveUserFromFollowers() {
       this.showingConfirmRemoveFollower = false
     },
-    onClick () {
+    onClick() {
       if (!this.shouldConfirmRemoveUserFromFollowers) {
         this.doRemoveUserFromFollowers()
       } else {
         this.showConfirmRemoveUserFromFollowers()
       }
     },
-    doRemoveUserFromFollowers () {
+    doRemoveUserFromFollowers() {
       this.inProgress = true
-      this.$store.dispatch('removeUserFromFollowers', this.relationship.id).then(() => {
-        this.inProgress = false
-      })
+      this.$store
+        .dispatch('removeUserFromFollowers', this.relationship.id)
+        .then(() => {
+          this.inProgress = false
+        })
       this.hideConfirmRemoveUserFromFollowers()
-    }
-  }
+    },
+  },
 }

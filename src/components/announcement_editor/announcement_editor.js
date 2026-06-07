@@ -1,13 +1,13 @@
-import Checkbox from '../checkbox/checkbox.vue'
+import Checkbox from 'src/components/checkbox/checkbox.vue'
 
 const AnnouncementEditor = {
   components: {
-    Checkbox
+    Checkbox,
   },
   props: {
     announcement: Object,
-    disabled: Boolean
-  }
+    disabled: Boolean,
+  },
 }
 
 export default AnnouncementEditor

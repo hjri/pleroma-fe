@@ -77,6 +77,14 @@
     height: var(--emoji-size, 32px);
   }
 
+  &.-allow-non-square-emoji {
+    .emoji {
+      width: auto;
+      max-width: calc(var(--emoji-size, 32px) * 3);
+      min-width: var(--emoji-size, 32px);
+    }
+  }
+
   .img,
   video {
     max-width: 100%;

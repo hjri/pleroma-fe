@@ -1,16 +1,21 @@
 <template>
   <span
     v-if="matchesExpertLevel"
-    class="UnitSetting"
+    class="UnitSetting setting-item"
   >
     <label
       :for="path"
-      class="size-label"
+      class="setting-label size-label"
     >
+      <LocalSettingIndicator :is-local="isLocalSetting" />
+      <ModifiedIndicator
+        :changed="isChanged"
+        :onclick="reset"
+      />
+      {{ ' ' }}
       <slot />
     </label>
-    {{ ' ' }}
-    <span class="no-break">
+    <span class="no-break setting-control">
       <input
         :id="path"
         class="input number-input"
@@ -38,10 +43,6 @@
       </Select>
     </span>
     {{ ' ' }}
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
   </span>
 </template>
 
@@ -50,7 +51,7 @@
 <style lang="scss">
 .UnitSetting {
   .no-break {
-    display: inline-block;
+    display: inline-flex;
   }
 
   .number-input {

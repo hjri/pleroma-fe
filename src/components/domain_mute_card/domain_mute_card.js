@@ -1,26 +1,26 @@
-import ProgressButton from '../progress_button/progress_button.vue'
+import ProgressButton from 'src/components/progress_button/progress_button.vue'
 
 const DomainMuteCard = {
   props: ['domain'],
   components: {
-    ProgressButton
+    ProgressButton,
   },
   computed: {
-    user () {
+    user() {
       return this.$store.state.users.currentUser
     },
-    muted () {
+    muted() {
       return this.user.domainMutes.includes(this.domain)
-    }
+    },
   },
   methods: {
-    unmuteDomain () {
+    unmuteDomain() {
       return this.$store.dispatch('unmuteDomain', this.domain)
     },
-    muteDomain () {
+    muteDomain() {
       return this.$store.dispatch('muteDomain', this.domain)
-    }
-  }
+    },
+  },
 }
 
 export default DomainMuteCard

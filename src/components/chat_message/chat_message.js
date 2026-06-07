@@ -1,24 +1,24 @@
-import { mapState, mapGetters } from 'vuex'
 import { mapState as mapPiniaState } from 'pinia'
-import Popover from '../popover/popover.vue'
-import Attachment from '../attachment/attachment.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
-import Gallery from '../gallery/gallery.vue'
-import LinkPreview from '../link-preview/link-preview.vue'
-import StatusContent from '../status_content/status_content.vue'
-import ChatMessageDate from '../chat_message_date/chat_message_date.vue'
 import { defineAsyncComponent } from 'vue'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faTimes,
-  faEllipsisH
-} from '@fortawesome/free-solid-svg-icons'
-import { useInterfaceStore } from 'src/stores/interface'
+import { mapGetters, mapState } from 'vuex'
 
-library.add(
-  faTimes,
-  faEllipsisH
-)
+import Attachment from 'src/components/attachment/attachment.vue'
+import ChatMessageDate from 'src/components/chat_message_date/chat_message_date.vue'
+import Gallery from 'src/components/gallery/gallery.vue'
+import LinkPreview from 'src/components/link-preview/link-preview.vue'
+import Popover from 'src/components/popover/popover.vue'
+import StatusContent from 'src/components/status_content/status_content.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+import UserPopover from 'src/components/user_popover/user_popover.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInterfaceStore } from 'src/stores/interface'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faEllipsisH, faTimes } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faTimes, faEllipsisH)
 
 const ChatMessage = {
   name: 'ChatMessage',
@@ -27,7 +27,7 @@ const ChatMessage = {
     'edited',
     'noHeading',
     'chatViewItem',
-    'hoveredMessageChain'
+    'hoveredMessageChain',
   ],
   emits: ['hover'],
   components: {
@@ -38,73 +38,80 @@ const ChatMessage = {
     Gallery,
     LinkPreview,
     ChatMessageDate,
-    UserPopover: defineAsyncComponent(() => import('../user_popover/user_popover.vue'))
+    UserPopover,
   },
   computed: {
     // Returns HH:MM (hours and minutes) in local time.
-    createdAt () {
+    createdAt() {
       const time = this.chatViewItem.data.created_at
-      return time.toLocaleTimeString('en', { hour: '2-digit', minute: '2-digit', hour12: false })
+      return time.toLocaleTimeString('en', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      })
     },
-    isCurrentUser () {
+    isCurrentUser() {
       return this.message.account_id === this.currentUser.id
     },
-    message () {
+    message() {
       return this.chatViewItem.data
     },
-    isMessage () {
+    isMessage() {
       return this.chatViewItem.type === 'message'
     },
-    messageForStatusContent () {
+    messageForStatusContent() {
       return {
         summary: '',
         emojis: this.message.emojis,
         raw_html: this.message.content || '',
         text: this.message.content || '',
-        attachments: this.message.attachments
+        attachments: this.message.attachments,
       }
     },
-    hasAttachment () {
+    hasAttachment() {
       return this.message.attachments.length > 0
     },
     ...mapPiniaState(useInterfaceStore, {
-      betterShadow: store => store.browserSupport.cssFilter
+      betterShadow: (store) => store.browserSupport.cssFilter,
     }),
     ...mapState({
-      currentUser: state => state.users.currentUser,
-      restrictedNicknames: state => state.instance.restrictedNicknames
+      currentUser: (state) => state.users.currentUser,
+      restrictedNicknames: (state) => useInstanceStore().restrictedNicknames,
     }),
-    popoverMarginStyle () {
+    popoverMarginStyle() {
       if (this.isCurrentUser) {
         return {}
       } else {
         return { left: 50 }
       }
     },
-    ...mapGetters(['mergedConfig', 'findUser'])
+    ...mapPiniaState(useMergedConfigStore, ['mergedConfig', 'findUser']),
   },
-  data () {
+  data() {
     return {
       hovered: false,
-      menuOpened: false
+      menuOpened: false,
     }
   },
   methods: {
-    onHover (bool) {
-      this.$emit('hover', { isHovered: bool, messageChainId: this.chatViewItem.messageChainId })
+    onHover(bool) {
+      this.$emit('hover', {
+        isHovered: bool,
+        messageChainId: this.chatViewItem.messageChainId,
+      })
     },
-    async deleteMessage () {
+    async deleteMessage() {
       const confirmed = window.confirm(this.$t('chats.delete_confirm'))
       if (confirmed) {
         await this.$store.dispatch('deleteChatMessage', {
           messageId: this.chatViewItem.data.id,
-          chatId: this.chatViewItem.data.chat_id
+          chatId: this.chatViewItem.data.chat_id,
         })
       }
       this.hovered = false
       this.menuOpened = false
-    }
-  }
+    },
+  },
 }
 
 export default ChatMessage

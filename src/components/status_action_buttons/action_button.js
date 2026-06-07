@@ -1,34 +1,36 @@
-import StatusBookmarkFolderMenu from 'src/components/status_bookmark_folder_menu/status_bookmark_folder_menu.vue'
-import EmojiPicker from 'src/components/emoji_picker/emoji_picker.vue'
+import { defineAsyncComponent } from 'vue'
+
 import Popover from 'src/components/popover/popover.vue'
+import EmojiPicker from '../emoji_picker/emoji_picker.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-  faPlus,
-  faMinus,
+  faBookmark as faBookmarkRegular,
+  faFaceSmileBeam,
+  faStar as faStarRegular,
+} from '@fortawesome/free-regular-svg-icons'
+import {
+  faBookmark,
   faCheck,
-  faTimes,
-  faWrench,
-
+  faChevronDown,
   faChevronRight,
-  faChevronUp,
-
+  faExternalLinkAlt,
+  faEyeSlash,
+  faHistory,
+  faMinus,
+  faPlus,
   faReply,
   faRetweet,
-  faStar,
-  faSmileBeam,
-
-  faBookmark,
-  faEyeSlash,
-  faThumbtack,
   faShareAlt,
-  faExternalLinkAlt,
-  faHistory
+  faStar,
+  faThumbtack,
+  faTimes,
+  faWrench,
 } from '@fortawesome/free-solid-svg-icons'
-import {
-  faStar as faStarRegular,
-  faBookmark as faBookmarkRegular
-} from '@fortawesome/free-regular-svg-icons'
 
 library.add(
   faPlus,
@@ -38,13 +40,13 @@ library.add(
   faWrench,
 
   faChevronRight,
-  faChevronUp,
+  faChevronDown,
 
   faReply,
   faRetweet,
   faStar,
   faStarRegular,
-  faSmileBeam,
+  faFaceSmileBeam,
 
   faBookmark,
   faBookmarkRegular,
@@ -52,7 +54,7 @@ library.add(
   faThumbtack,
   faShareAlt,
   faExternalLinkAlt,
-  faHistory
+  faHistory,
 )
 
 export default {
@@ -65,69 +67,94 @@ export default {
     'getClass',
     'getComponent',
     'doAction',
-    'outerClose'
-  ],
-  emits: [
-    'interacted'
+    'outerClose',
   ],
   components: {
-    StatusBookmarkFolderMenu,
+    StatusBookmarkFolderMenu: defineAsyncComponent(
+      () =>
+        import(
+          'src/components/status_bookmark_folder_menu/status_bookmark_folder_menu.vue'
+        ),
+    ),
     EmojiPicker,
-    Popover
+    Popover,
   },
   data: () => ({
-    animationState: false
+    animationState: false,
   }),
   computed: {
-    buttonClass () {
+    buttonClass() {
       return [
         this.button.name + '-button',
         {
           '-with-extra': this.button.name === 'bookmark',
           '-extra': this.extra,
-          '-quick': !this.extra
-        }
+          '-quick': !this.extra,
+        },
       ]
     },
-    userIsMuted () {
+    userIsMuted() {
       return this.$store.getters.relationship(this.status.user.id).muting
     },
-    threadIsMuted () {
+    threadIsMuted() {
       return this.status.thread_muted
     },
-    hideCustomEmoji () {
-      return !this.$store.state.instance.pleromaCustomEmojiReactionsAvailable
+    hideCustomEmoji() {
+      return !useInstanceCapabilitiesStore()
+        .pleromaCustomEmojiReactionsAvailable
     },
-    buttonInnerClass () {
+    hidePostStats() {
+      return useMergedConfigStore().mergedConfig.hidePostStats
+    },
+    buttonInnerClass() {
       return [
         this.button.name + '-button',
         {
           'main-button': this.extra,
           'button-unstyled': !this.extra,
           '-active': this.button.active?.(this.funcArg),
-          disabled: this.button.interactive ? !this.button.interactive(this.funcArg) : false
-        }
+          disabled: this.button.interactive
+            ? !this.button.interactive(this.funcArg)
+            : false,
+        },
       ]
     },
-    remoteInteractionLink () {
-      return this.$store.getters.remoteInteractionLink({ statusId: this.status.id })
-    }
+    remoteInteractionLink() {
+      return useInstanceStore().getRemoteInteractionLink({
+        statusId: this.status.id,
+      })
+    },
   },
   methods: {
-    addReaction (event) {
+    addReaction(event) {
       const emoji = event.insertion
-      const existingReaction = this.status.emoji_reactions.find(r => r.name === emoji)
+      const existingReaction = this.status.emoji_reactions.find(
+        (r) => r.name === emoji,
+      )
       if (existingReaction && existingReaction.me) {
         this.$store.dispatch('unreactWithEmoji', { id: this.status.id, emoji })
       } else {
         this.$store.dispatch('reactWithEmoji', { id: this.status.id, emoji })
       }
     },
-    doActionWrap (button, close = () => {}) {
-      if (this.button.interactive ? !this.button.interactive(this.funcArg) : false) return
-      this.$emit('interacted')
+    onShowEmojiPicker() {
+      this.$emit('emojiPickerShown', true)
+    },
+    onHideEmojiPicker() {
+      this.$emit('emojiPickerShown', false)
+    },
+    doActionWrap(
+      button,
+      close = () => {
+        /* no-op */
+      },
+    ) {
+      if (
+        this.button.interactive ? !this.button.interactive(this.funcArg) : false
+      )
+        return
       if (button.name === 'emoji') {
-        this.$refs.picker.showPicker()
+        this.$refs.picker.togglePicker()
       } else {
         this.animationState = true
         this.getComponent(button) === 'button' && this.doAction(button)
@@ -136,6 +163,6 @@ export default {
         }, 500)
         close()
       }
-    }
-  }
+    },
+  },
 }

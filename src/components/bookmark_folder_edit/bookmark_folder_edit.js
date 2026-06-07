@@ -1,10 +1,11 @@
-import EmojiPicker from '../emoji_picker/emoji_picker.vue'
+import EmojiPicker from 'src/components/emoji_picker/emoji_picker.vue'
 import apiService from '../../services/api/api.service'
-import { useInterfaceStore } from 'src/stores/interface'
-import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
+
+import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 const BookmarkFolderEdit = {
-  data () {
+  data() {
     return {
       name: '',
       nameDraft: '',
@@ -13,54 +14,59 @@ const BookmarkFolderEdit = {
       emojiDraft: '',
       emojiUrlDraft: null,
       emojiPickerExpanded: false,
-      reallyDelete: false
+      reallyDelete: false,
     }
   },
   components: {
-    EmojiPicker
+    EmojiPicker,
   },
-  created () {
+  created() {
     if (!this.id) return
     const credentials = this.$store.state.users.currentUser.credentials
-    apiService.fetchBookmarkFolders({ credentials })
-      .then((folders) => {
-        const folder = folders.find(folder => folder.id === this.id)
-        if (!folder) return
+    apiService.fetchBookmarkFolders({ credentials }).then((folders) => {
+      const folder = folders.find((folder) => folder.id === this.id)
+      if (!folder) return
 
-        this.nameDraft = this.name = folder.name
-        this.emojiDraft = this.emoji = folder.emoji
-        this.emojiUrlDraft = this.emojiUrl = folder.emoji_url
-      })
+      this.nameDraft = this.name = folder.name
+      this.emojiDraft = this.emoji = folder.emoji
+      this.emojiUrlDraft = this.emojiUrl = folder.emoji_url
+    })
   },
   computed: {
-    id () {
+    id() {
       return this.$route.params.id
-    }
+    },
   },
   methods: {
-    selectEmoji (event) {
+    selectEmoji(event) {
       this.emojiDraft = event.insertion
       this.emojiUrlDraft = event.insertionUrl
     },
-    showEmojiPicker () {
+    showEmojiPicker() {
       if (!this.emojiPickerExpanded) {
         this.$refs.picker.showPicker()
       }
     },
-    onShowPicker () {
+    onShowPicker() {
       this.emojiPickerExpanded = true
     },
-    onClosePicker () {
+    onClosePicker() {
       this.emojiPickerExpanded = false
     },
-    updateFolder () {
-      useBookmarkFoldersStore().updateBookmarkFolder({ folderId: this.id, name: this.nameDraft, emoji: this.emojiDraft })
+    updateFolder() {
+      useBookmarkFoldersStore()
+        .updateBookmarkFolder({
+          folderId: this.id,
+          name: this.nameDraft,
+          emoji: this.emojiDraft,
+        })
         .then(() => {
           this.$router.push({ name: 'bookmark-folders' })
         })
     },
-    createFolder () {
-      useBookmarkFoldersStore().createBookmarkFolder({ name: this.nameDraft, emoji: this.emojiDraft })
+    createFolder() {
+      useBookmarkFoldersStore()
+        .createBookmarkFolder({ name: this.nameDraft, emoji: this.emojiDraft })
         .then(() => {
           this.$router.push({ name: 'bookmark-folders' })
         })
@@ -68,15 +74,15 @@ const BookmarkFolderEdit = {
           useInterfaceStore().pushGlobalNotice({
             messageKey: 'bookmark_folders.error',
             messageArgs: [e.message],
-            level: 'error'
+            level: 'error',
           })
         })
     },
-    deleteFolder () {
+    deleteFolder() {
       useBookmarkFoldersStore().deleteBookmarkFolder({ folderId: this.id })
       this.$router.push({ name: 'bookmark-folders' })
-    }
-  }
+    },
+  },
 }
 
 export default BookmarkFolderEdit

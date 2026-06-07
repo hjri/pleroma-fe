@@ -5,7 +5,7 @@
 module.exports = function (source) {
   const object = JSON.parse(source)
   const smol = {
-    notifications: object.notifications || {}
+    notifications: object.notifications || {},
   }
 
   return JSON.stringify(smol)

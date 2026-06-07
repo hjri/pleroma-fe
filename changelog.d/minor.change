@@ -1,0 +1,7 @@
+overall improved spacings in status action buttons and post form
+logout confirm button is now dangerous
+reply/quote now is a radio group and wraps, fixes overflow on languages where labels are too wide
+personal note input is now bigger
+moved "edit pinned" to the bottom for status action buttons.
+dots status action button drops down instead of up to avoid hiding the action buttons
+improved attachment description (alt text) input and display

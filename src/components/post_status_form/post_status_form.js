@@ -1,51 +1,59 @@
-import statusPoster from '../../services/status_poster/status_poster.service.js'
-import genRandomSeed from '../../services/random_seed/random_seed.service.js'
-import MediaUpload from '../media_upload/media_upload.vue'
-import ScopeSelector from '../scope_selector/scope_selector.vue'
-import EmojiInput from '../emoji_input/emoji_input.vue'
-import PollForm from '../poll/poll_form.vue'
-import Attachment from '../attachment/attachment.vue'
-import Gallery from 'src/components/gallery/gallery.vue'
-import StatusContent from '../status_content/status_content.vue'
-import Popover from 'src/components/popover/popover.vue'
-import fileTypeService from '../../services/file_type/file_type.service.js'
-import { findOffset } from '../../services/offset_finder/offset_finder.service.js'
-import { propsToNative } from '../../services/attributes_helper/attributes_helper.service.js'
-import { pollFormToMasto } from 'src/services/poll/poll.service.js'
-import { reject, map, uniqBy, debounce } from 'lodash'
-import suggestor from '../emoji_input/suggestor.js'
+import { debounce, map, reject, uniqBy } from 'lodash'
+import { mapActions, mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 import { mapGetters } from 'vuex'
-import { mapState, mapActions } from 'pinia'
-import Checkbox from '../checkbox/checkbox.vue'
-import Select from '../select/select.vue'
+
+import Attachment from 'src/components/attachment/attachment.vue'
+import Checkbox from 'src/components/checkbox/checkbox.vue'
 import DraftCloser from 'src/components/draft_closer/draft_closer.vue'
+import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
+import suggestor from 'src/components/emoji_input/suggestor.js'
+import Gallery from 'src/components/gallery/gallery.vue'
+import MediaUpload from 'src/components/media_upload/media_upload.vue'
+import Popover from 'src/components/popover/popover.vue'
+import ScopeSelector from 'src/components/scope_selector/scope_selector.vue'
+import Select from 'src/components/select/select.vue'
+import StatusContent from 'src/components/status_content/status_content.vue'
+import { propsToNative } from '../../services/attributes_helper/attributes_helper.service.js'
+import { findOffset } from '../../services/offset_finder/offset_finder.service.js'
+import genRandomSeed from '../../services/random_seed/random_seed.service.js'
+import statusPoster from '../../services/status_poster/status_poster.service.js'
+
+import { useEmojiStore } from 'src/stores/emoji.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMediaViewerStore } from 'src/stores/media_viewer.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
+import { pollFormToMasto } from 'src/services/poll/poll.service.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
-  faSmileBeam,
-  faPollH,
-  faUpload,
   faBan,
-  faTimes,
-  faCircleNotch,
   faChevronDown,
   faChevronLeft,
-  faChevronRight
+  faChevronRight,
+  faCircleNotch,
+  faPollH,
+  faQuoteRight,
+  faSmileBeam,
+  faTimes,
+  faUpload,
 } from '@fortawesome/free-solid-svg-icons'
-
-import { useInterfaceStore } from 'src/stores/interface.js'
-import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 
 library.add(
   faSmileBeam,
   faPollH,
   faUpload,
+  faQuoteRight,
   faBan,
   faTimes,
   faCircleNotch,
   faChevronDown,
   faChevronLeft,
-  faChevronRight
+  faChevronRight,
 )
 
 const buildMentionsString = ({ user, attentions = [] }, currentUser) => {
@@ -101,6 +109,7 @@ const PostStatusForm = {
     'disableNotice',
     'disableLockWarning',
     'disablePolls',
+    'disableQuotes',
     'disableSensitivityCheckbox',
     'disableSubmit',
     'disablePreview',
@@ -117,7 +126,7 @@ const PostStatusForm = {
     'emojiPickerPlacement',
     'optimisticPosting',
     'profileMention',
-    'draftId'
+    'draftId',
   ],
   emits: [
     'posted',
@@ -126,12 +135,17 @@ const PostStatusForm = {
     'mediaplay',
     'mediapause',
     'can-close',
-    'update'
+    'update',
   ],
   components: {
     MediaUpload,
     EmojiInput,
-    PollForm,
+    PollForm: defineAsyncComponent(
+      () => import('src/components/poll/poll_form.vue'),
+    ),
+    QuoteForm: defineAsyncComponent(
+      () => import('src/components/quote/quote_form.vue'),
+    ),
     ScopeSelector,
     Checkbox,
     Select,
@@ -139,9 +153,9 @@ const PostStatusForm = {
     StatusContent,
     Gallery,
     DraftCloser,
-    Popover
+    Popover,
   },
-  mounted () {
+  mounted() {
     this.updateIdempotencyKey()
     this.resize(this.$refs.textarea)
 
@@ -154,28 +168,41 @@ const PostStatusForm = {
       this.$refs.textarea.focus()
     }
   },
-  data () {
+  data() {
     const preset = this.$route.query.message
     let statusText = preset || ''
 
-    const { scopeCopy } = this.$store.getters.mergedConfig
+    const { scopeCopy } = useMergedConfigStore().mergedConfig
 
-    const [statusType, refId] = typeAndRefId({ replyTo: this.replyTo, profileMention: this.profileMention && this.repliedUser?.id, statusId: this.statusId })
+    const [statusType, refId] = typeAndRefId({
+      replyTo: this.replyTo,
+      profileMention: this.profileMention && this.repliedUser?.id,
+      statusId: this.statusId,
+    })
 
     // If we are starting a new post, do not associate it with old drafts
-    let statusParams = !this.disableDraft && (this.draftId || statusType !== 'new') ? this.getDraft(statusType, refId) : null
+    let statusParams =
+      !this.disableDraft && (this.draftId || statusType !== 'new')
+        ? this.getDraft(statusType, refId)
+        : null
 
     if (!statusParams) {
       if (statusType === 'reply' || statusType === 'mention') {
         const currentUser = this.$store.state.users.currentUser
-        statusText = buildMentionsString({ user: this.repliedUser, attentions: this.attentions }, currentUser)
+        statusText = buildMentionsString(
+          { user: this.repliedUser, attentions: this.attentions },
+          currentUser,
+        )
       }
 
-      const scope = ((this.copyMessageScope && scopeCopy) || this.copyMessageScope === 'direct')
-        ? this.copyMessageScope
-        : this.$store.state.users.currentUser.default_scope
+      const scope =
+        (this.copyMessageScope && scopeCopy) ||
+        this.copyMessageScope === 'direct'
+          ? this.copyMessageScope
+          : this.$store.state.users.currentUser.default_scope
 
-      const { postContentType: contentType, sensitiveByDefault } = this.$store.getters.mergedConfig
+      const { postContentType: contentType, sensitiveByDefault } =
+        useMergedConfigStore().mergedConfig
 
       statusParams = {
         type: statusType,
@@ -186,10 +213,16 @@ const PostStatusForm = {
         files: [],
         poll: {},
         hasPoll: false,
+        hasQuote: false,
+        quote: {
+          id: '',
+          url: '',
+          thread: false,
+        },
         mediaDescriptions: {},
         visibility: scope,
         contentType,
-        quoting: false
+        quoting: false,
       }
 
       if (statusType === 'edit') {
@@ -203,9 +236,15 @@ const PostStatusForm = {
           files: this.statusFiles || [],
           poll: this.statusPoll || {},
           hasPoll: false,
+          hasQuote: false,
+          quote: {
+            id: '',
+            url: '',
+            thread: false,
+          },
           mediaDescriptions: this.statusMediaDescriptions || {},
           visibility: this.statusScope || scope,
-          contentType: statusContentType
+          contentType: statusContentType,
         }
       }
     }
@@ -226,117 +265,152 @@ const PostStatusForm = {
       emojiInputShown: false,
       idempotencyKey: '',
       saveInhibited: true,
-      saveable: false
+      saveable: false,
     }
   },
   computed: {
-    users () {
+    users() {
       return this.$store.state.users.users
     },
-    userDefaultScope () {
+    userDefaultScope() {
       return this.$store.state.users.currentUser.default_scope
     },
-    showAllScopes () {
+    showAllScopes() {
       return !this.mergedConfig.minimalScopesMode
     },
-    hideExtraActions () {
+    hideExtraActions() {
       return this.disableDraft || this.hideDraft
     },
-    emojiUserSuggestor () {
+    emojiUserSuggestor() {
       return suggestor({
         emoji: [
-          ...this.$store.getters.standardEmojiList,
-          ...this.$store.state.instance.customEmoji
+          ...useEmojiStore().standardEmojiList,
+          ...useEmojiStore().customEmoji,
         ],
-        store: this.$store
+        store: this.$store,
       })
     },
-    emojiSuggestor () {
+    emojiSuggestor() {
       return suggestor({
         emoji: [
-          ...this.$store.getters.standardEmojiList,
-          ...this.$store.state.instance.customEmoji
-        ]
+          ...useEmojiStore().standardEmojiList,
+          ...useEmojiStore().customEmoji,
+        ],
       })
     },
-    emoji () {
-      return this.$store.getters.standardEmojiList || []
+    emoji() {
+      return useEmojiStore().standardEmojiList
     },
-    customEmoji () {
-      return this.$store.state.instance.customEmoji || []
+    customEmoji() {
+      return useEmojiStore().customEmoji
     },
-    statusLength () {
+    statusLength() {
       return this.newStatus.status.length
     },
-    spoilerTextLength () {
+    spoilerTextLength() {
       return this.newStatus.spoilerText.length
     },
-    statusLengthLimit () {
-      return this.$store.state.instance.textlimit
+    statusLengthLimit() {
+      return useInstanceStore().limits.textLimit
     },
-    hasStatusLengthLimit () {
+    hasStatusLengthLimit() {
       return this.statusLengthLimit > 0
     },
-    charactersLeft () {
-      return this.statusLengthLimit - (this.statusLength + this.spoilerTextLength)
+    charactersLeft() {
+      return (
+        this.statusLengthLimit - (this.statusLength + this.spoilerTextLength)
+      )
     },
-    isOverLengthLimit () {
-      return this.hasStatusLengthLimit && (this.charactersLeft < 0)
+    isOverLengthLimit() {
+      return this.hasStatusLengthLimit && this.charactersLeft < 0
     },
-    minimalScopesMode () {
-      return this.$store.state.instance.minimalScopesMode
+    minimalScopesMode() {
+      return useInstanceStore().minimalScopesMode
     },
-    alwaysShowSubject () {
+    alwaysShowSubject() {
       return this.mergedConfig.alwaysShowSubjectInput
     },
-    postFormats () {
-      return this.$store.state.instance.postFormats || []
+    postFormats() {
+      return useInstanceCapabilitiesStore().postFormats || []
     },
-    safeDMEnabled () {
-      return this.$store.state.instance.safeDM
+    safeDMEnabled() {
+      return useInstanceCapabilitiesStore().safeDM
     },
-    pollsAvailable () {
-      return this.$store.state.instance.pollsAvailable &&
-        this.$store.state.instance.pollLimits.max_options >= 2 &&
+    pollsAvailable() {
+      return (
+        useInstanceCapabilitiesStore().pollsAvailable &&
+        useInstanceStore().limits.pollLimits.max_options >= 2 &&
         this.disablePolls !== true
+      )
     },
-    hideScopeNotice () {
-      return this.disableNotice || this.$store.getters.mergedConfig.hideScopeNotice
+    hideScopeNotice() {
+      return (
+        this.disableNotice ||
+        useMergedConfigStore().mergedConfig.hideScopeNotice
+      )
     },
-    pollContentError () {
-      return this.pollFormVisible &&
-        this.newStatus.poll &&
-        this.newStatus.poll.error
+    pollContentError() {
+      return (
+        this.pollFormVisible && this.newStatus.poll && this.newStatus.poll.error
+      )
     },
-    showPreview () {
+    showPreview() {
       return !this.disablePreview && (!!this.preview || this.previewLoading)
     },
-    emptyStatus () {
-      return this.newStatus.status.trim() === '' && this.newStatus.files.length === 0
+    emptyStatus() {
+      return (
+        this.newStatus.status.trim() === '' && this.newStatus.files.length === 0
+      )
     },
-    uploadFileLimitReached () {
+    uploadFileLimitReached() {
       return this.newStatus.files.length >= this.fileLimit
     },
-    isEdit () {
+    isEdit() {
       return typeof this.statusId !== 'undefined' && this.statusId.trim() !== ''
     },
-    quotable () {
-      if (!this.$store.state.instance.quotingAvailable) {
+    quotingAvailable() {
+      if (!useInstanceCapabilitiesStore().quotingAvailable) {
         return false
       }
 
-      if (!this.replyTo) {
+      return this.disableQuotes !== true
+    },
+    isReply() {
+      return this.newStatus.type === 'reply'
+    },
+    quotable() {
+      return this.quotingAvailable && this.replyTo
+    },
+    quoteThreadToggled: {
+      get() {
+        return this.newStatus.hasQuote && this.newStatus.quote.thread
+      },
+      set(value) {
+        this.newStatus.hasQuote = value
+        this.newStatus.quote.thread = value
+        this.newStatus.quote.id = value ? this.replyTo : ''
+      },
+    },
+    defaultQuotable() {
+      if (
+        !this.quotingAvailable ||
+        !this.isReply ||
+        !useMergedConfigStore().mergedConfig.quoteReply
+      ) {
         return false
       }
 
-      const repliedStatus = this.$store.state.statuses.allStatusesObject[this.replyTo]
+      const repliedStatus =
+        this.$store.state.statuses.allStatusesObject[this.replyTo]
       if (!repliedStatus) {
         return false
       }
 
-      if (repliedStatus.visibility === 'public' ||
-          repliedStatus.visibility === 'unlisted' ||
-          repliedStatus.visibility === 'local') {
+      if (
+        repliedStatus.visibility === 'public' ||
+        repliedStatus.visibility === 'unlisted' ||
+        repliedStatus.visibility === 'local'
+      ) {
         return true
       } else if (repliedStatus.visibility === 'private') {
         return repliedStatus.user.id === this.$store.state.users.currentUser.id
@@ -344,16 +418,29 @@ const PostStatusForm = {
 
       return false
     },
-    debouncedMaybeAutoSaveDraft () {
+    inReplyStatusId() {
+      return !this.newStatus.hasQuote ||
+        !this.newStatus.quote.thread ||
+        !this.newStatus.quote.id
+        ? this.replyTo
+        : undefined
+    },
+    quoteId() {
+      return this.newStatus.hasQuote ? this.newStatus.quote.id : undefined
+    },
+    debouncedMaybeAutoSaveDraft() {
       return debounce(this.maybeAutoSaveDraft, 3000)
     },
-    pollFormVisible () {
+    pollFormVisible() {
       return this.newStatus.hasPoll
     },
-    shouldAutoSaveDraft () {
-      return this.$store.getters.mergedConfig.autoSaveDraft
+    quoteFormVisible() {
+      return this.newStatus.hasQuote && !this.newStatus.quote.thread
     },
-    autoSaveState () {
+    shouldAutoSaveDraft() {
+      return useMergedConfigStore().mergedConfig.autoSaveDraft
+    },
+    autoSaveState() {
       if (this.saveable) {
         return this.$t('post_status.auto_save_saving')
       } else if (this.newStatus.id) {
@@ -362,35 +449,41 @@ const PostStatusForm = {
         return this.$t('post_status.auto_save_nothing_new')
       }
     },
-    safeToSaveDraft () {
+    safeToSaveDraft() {
       return (
-        this.newStatus.status ||
-        this.newStatus.spoilerText ||
-        this.newStatus.files?.length ||
-        this.newStatus.hasPoll
-      ) && this.saveable
-    },
-    hasEmptyDraft () {
-      return this.newStatus.id && !(
-        this.newStatus.status ||
+        (this.newStatus.status ||
           this.newStatus.spoilerText ||
           this.newStatus.files?.length ||
-          this.newStatus.hasPoll
+          this.newStatus.hasPoll ||
+          this.newStatus.hasQuote) &&
+        this.saveable
       )
     },
-    ...mapGetters(['mergedConfig']),
+    hasEmptyDraft() {
+      return (
+        this.newStatus.id &&
+        !(
+          this.newStatus.status ||
+          this.newStatus.spoilerText ||
+          this.newStatus.files?.length ||
+          this.newStatus.hasPoll ||
+          this.newStatus.hasQuote
+        )
+      )
+    },
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
     ...mapState(useInterfaceStore, {
-      mobileLayout: store => store.mobileLayout
-    })
+      mobileLayout: (store) => store.mobileLayout,
+    }),
   },
   watch: {
     newStatus: {
       deep: true,
-      handler () {
+      handler() {
         this.statusChanged()
-      }
+      },
     },
-    saveable (val) {
+    saveable(val) {
       // https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event#usage_notes
       // MDN says we'd better add the beforeunload event listener only when needed, and remove it when it's no longer needed
       if (val) {
@@ -398,22 +491,22 @@ const PostStatusForm = {
       } else {
         this.removeBeforeUnloadListener()
       }
-    }
+    },
   },
-  beforeUnmount () {
+  beforeUnmount() {
     this.maybeAutoSaveDraft()
     this.removeBeforeUnloadListener()
   },
   methods: {
     ...mapActions(useMediaViewerStore, ['increment']),
-    statusChanged () {
+    statusChanged() {
       this.autoPreview()
       this.updateIdempotencyKey()
       this.debouncedMaybeAutoSaveDraft()
       this.saveable = true
       this.saveInhibited = false
     },
-    clearStatus () {
+    clearStatus() {
       const newStatus = this.newStatus
       this.saveInhibited = true
       this.newStatus = {
@@ -424,11 +517,13 @@ const PostStatusForm = {
         contentType: newStatus.contentType,
         poll: {},
         hasPoll: false,
+        hasQuote: false,
+        quote: {},
         mediaDescriptions: {},
-        quoting: false
       }
       this.$refs.mediaUpload && this.$refs.mediaUpload.clearFile()
       this.clearPollForm()
+      this.clearQuoteForm()
       if (this.preserveFocus) {
         this.$nextTick(() => {
           this.$refs.textarea.focus()
@@ -441,23 +536,34 @@ const PostStatusForm = {
       if (this.preview) this.previewStatus()
       this.saveable = false
     },
-    async postStatus (event, newStatus) {
-      if (this.posting && !this.optimisticPosting) { return }
-      if (this.disableSubmit) { return }
-      if (this.emojiInputShown) { return }
+    async postStatus(event, newStatus) {
+      if (this.posting && !this.optimisticPosting) {
+        return
+      }
+      if (this.disableSubmit) {
+        return
+      }
+      if (this.emojiInputShown) {
+        return
+      }
       if (this.submitOnEnter) {
         event.stopPropagation()
         event.preventDefault()
       }
 
-      if (this.optimisticPosting && (this.emptyStatus || this.isOverLengthLimit)) { return }
+      if (
+        this.optimisticPosting &&
+        (this.emptyStatus || this.isOverLengthLimit)
+      ) {
+        return
+      }
 
       if (this.emptyStatus) {
         this.error = this.$t('post_status.empty_status_error')
         return
       }
 
-      const poll = this.newStatus.hasPoll ? pollFormToMasto(this.newStatus.poll) : {}
+      const poll = newStatus.hasPoll ? pollFormToMasto(newStatus.poll) : {}
       if (this.pollContentError) {
         this.error = this.pollContentError
         return
@@ -473,8 +579,6 @@ const PostStatusForm = {
         return
       }
 
-      const replyOrQuoteAttr = newStatus.quoting ? 'quoteId' : 'inReplyToStatusId'
-
       const postingOptions = {
         status: newStatus.status,
         spoilerText: newStatus.spoilerText || null,
@@ -482,13 +586,16 @@ const PostStatusForm = {
         sensitive: newStatus.nsfw,
         media: newStatus.files,
         store: this.$store,
-        [replyOrQuoteAttr]: this.replyTo,
+        inReplyToStatusId: this.inReplyStatusId,
+        quoteId: this.quoteId,
         contentType: newStatus.contentType,
         poll,
-        idempotencyKey: this.idempotencyKey
+        idempotencyKey: this.idempotencyKey,
       }
 
-      const postHandler = this.postHandler ? this.postHandler : statusPoster.postStatus
+      const postHandler = this.postHandler
+        ? this.postHandler
+        : statusPoster.postStatus
 
       postHandler(postingOptions).then((data) => {
         if (!data.error) {
@@ -501,7 +608,7 @@ const PostStatusForm = {
         this.posting = false
       })
     },
-    previewStatus () {
+    previewStatus() {
       if (this.emptyStatus && this.newStatus.spoilerText.trim() === '') {
         this.preview = { error: this.$t('post_status.preview_empty') }
         this.previewLoading = false
@@ -509,89 +616,96 @@ const PostStatusForm = {
       }
       const newStatus = this.newStatus
       this.previewLoading = true
-      const replyOrQuoteAttr = newStatus.quoting ? 'quoteId' : 'inReplyToStatusId'
-      statusPoster.postStatus({
-        status: newStatus.status,
-        spoilerText: newStatus.spoilerText || null,
-        visibility: newStatus.visibility,
-        sensitive: newStatus.nsfw,
-        media: [],
-        store: this.$store,
-        [replyOrQuoteAttr]: this.replyTo,
-        contentType: newStatus.contentType,
-        poll: {},
-        preview: true
-      }).then((data) => {
-        // Don't apply preview if not loading, because it means
-        // user has closed the preview manually.
-        if (!this.previewLoading) return
-        if (!data.error) {
-          this.preview = data
-        } else {
-          this.preview = { error: data.error }
-        }
-      }).catch((error) => {
-        this.preview = { error }
-      }).finally(() => {
-        this.previewLoading = false
-      })
+
+      statusPoster
+        .postStatus({
+          status: newStatus.status,
+          spoilerText: newStatus.spoilerText || null,
+          visibility: newStatus.visibility,
+          sensitive: newStatus.nsfw,
+          media: [],
+          store: this.$store,
+          inReplyToStatusId: this.inReplyStatusId,
+          quoteId: this.quoteId,
+          contentType: newStatus.contentType,
+          poll: {},
+          preview: true,
+        })
+        .then((data) => {
+          // Don't apply preview if not loading, because it means
+          // user has closed the preview manually.
+          if (!this.previewLoading) return
+          if (!data.error) {
+            this.preview = data
+          } else {
+            this.preview = { error: data.error }
+          }
+        })
+        .catch((error) => {
+          this.preview = { error }
+        })
+        .finally(() => {
+          this.previewLoading = false
+        })
     },
-    debouncePreviewStatus: debounce(function () { this.previewStatus() }, 500),
-    autoPreview () {
+    debouncePreviewStatus: debounce(function () {
+      this.previewStatus()
+    }, 500),
+    autoPreview() {
       if (!this.preview) return
       this.previewLoading = true
       this.debouncePreviewStatus()
     },
-    closePreview () {
+    closePreview() {
       this.preview = null
       this.previewLoading = false
     },
-    togglePreview () {
+    togglePreview() {
       if (this.showPreview) {
         this.closePreview()
       } else {
         this.previewStatus()
       }
     },
-    addMediaFile (fileInfo) {
+    addMediaFile(fileInfo) {
       this.newStatus.files.push(fileInfo)
       this.$emit('resize', { delayed: true })
     },
-    removeMediaFile (fileInfo) {
+    removeMediaFile(fileInfo) {
       const index = this.newStatus.files.indexOf(fileInfo)
       this.newStatus.files.splice(index, 1)
       this.$emit('resize')
     },
-    editAttachment (fileInfo, newText) {
+    editAttachment(fileInfo, newText) {
       this.newStatus.mediaDescriptions[fileInfo.id] = newText
     },
-    shiftUpMediaFile (fileInfo) {
+    shiftUpMediaFile(fileInfo) {
       const { files } = this.newStatus
       const index = this.newStatus.files.indexOf(fileInfo)
       files.splice(index, 1)
       files.splice(index - 1, 0, fileInfo)
     },
-    shiftDnMediaFile (fileInfo) {
+    shiftDnMediaFile(fileInfo) {
       const { files } = this.newStatus
       const index = this.newStatus.files.indexOf(fileInfo)
       files.splice(index, 1)
       files.splice(index + 1, 0, fileInfo)
     },
-    uploadFailed (errString, templateArgs) {
+    uploadFailed(errString, templateArgs) {
       templateArgs = templateArgs || {}
-      this.error = this.$t('upload.error.base') + ' ' + this.$t('upload.error.' + errString, templateArgs)
+      this.error =
+        this.$t('upload.error.base') +
+        ' ' +
+        this.$t('upload.error.' + errString, templateArgs)
     },
-    startedUploadingFiles () {
+    startedUploadingFiles() {
       this.uploadingFiles = true
     },
-    finishedUploadingFiles () {
+    finishedUploadingFiles() {
       this.$emit('resize')
       this.uploadingFiles = false
     },
-    type (fileInfo) {
-      return fileTypeService.fileType(fileInfo.mimetype)
-    },
-    paste (e) {
+    paste(e) {
       this.autoPreview()
       this.resize(e)
       if (e.clipboardData.files.length > 0) {
@@ -603,7 +717,7 @@ const PostStatusForm = {
         this.dropFiles = [e.clipboardData.files[0]]
       }
     },
-    fileDrop (e) {
+    fileDrop(e) {
       if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
         e.preventDefault() // allow dropping text like before
         this.dropFiles = e.dataTransfer.files
@@ -611,7 +725,7 @@ const PostStatusForm = {
         this.showDropIcon = 'hide'
       }
     },
-    fileDragStop () {
+    fileDragStop() {
       // The false-setting is done with delay because just using leave-events
       // directly caused unwanted flickering, this is not perfect either but
       // much less noticable.
@@ -619,21 +733,23 @@ const PostStatusForm = {
       this.showDropIcon = 'fade'
       this.dropStopTimeout = setTimeout(() => (this.showDropIcon = 'hide'), 500)
     },
-    fileDrag (e) {
+    fileDrag(e) {
       e.dataTransfer.dropEffect = this.uploadFileLimitReached ? 'none' : 'copy'
       if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
         clearTimeout(this.dropStopTimeout)
         this.showDropIcon = 'show'
       }
     },
-    onEmojiInputInput () {
+    onEmojiInputInput() {
       this.$nextTick(() => {
         this.resize(this.$refs.textarea)
       })
     },
-    resize (e) {
+    resize(e) {
       const target = e.target || e
-      if (!(target instanceof window.Element)) { return }
+      if (!(target instanceof window.Element)) {
+        return
+      }
 
       // Reset to default height for empty form, nothing else to do here.
       if (target.value === '') {
@@ -648,12 +764,14 @@ const PostStatusForm = {
        * replies in notifs) or mobile post form. Note that getting and setting
        * scroll is different for `Window` and `Element`s
        */
-      const bottomBottomPaddingStr = window.getComputedStyle(bottomRef)['padding-bottom']
+      const bottomBottomPaddingStr =
+        window.getComputedStyle(bottomRef)['padding-bottom']
       const bottomBottomPadding = pxStringToNumber(bottomBottomPaddingStr)
 
-      const scrollerRef = this.$el.closest('.column.-scrollable') ||
-            this.$el.closest('.post-form-modal-view') ||
-            window
+      const scrollerRef =
+        this.$el.closest('.column.-scrollable') ||
+        this.$el.closest('.post-form-modal-view') ||
+        window
 
       // Getting info about padding we have to account for, removing 'px' part
       const topPaddingStr = window.getComputedStyle(target)['padding-top']
@@ -682,18 +800,20 @@ const PostStatusForm = {
        */
 
       // this part has to be BEFORE the content size update
-      const currentScroll = scrollerRef === window
-        ? scrollerRef.scrollY
-        : scrollerRef.scrollTop
-      const scrollerHeight = scrollerRef === window
-        ? scrollerRef.innerHeight
-        : scrollerRef.offsetHeight
+      const currentScroll =
+        scrollerRef === window ? scrollerRef.scrollY : scrollerRef.scrollTop
+      const scrollerHeight =
+        scrollerRef === window
+          ? scrollerRef.innerHeight
+          : scrollerRef.offsetHeight
       const scrollerBottomBorder = currentScroll + scrollerHeight
 
       // BEGIN content size update
       target.style.height = 'auto'
       const heightWithoutPadding = Math.floor(target.scrollHeight - vertPadding)
-      let newHeight = this.maxHeight ? Math.min(heightWithoutPadding, this.maxHeight) : heightWithoutPadding
+      let newHeight = this.maxHeight
+        ? Math.min(heightWithoutPadding, this.maxHeight)
+        : heightWithoutPadding
       // This is a bit of a hack to combat target.scrollHeight being different on every other input
       // on some browsers for whatever reason. Don't change the height if difference is 1px or less.
       if (Math.abs(newHeight - oldHeight) <= 1) {
@@ -705,7 +825,10 @@ const PostStatusForm = {
 
       // We check where the bottom border of form-bottom element is, this uses findOffset
       // to find offset relative to scrollable container (scroller)
-      const bottomBottomBorder = bottomRef.offsetHeight + findOffset(bottomRef, scrollerRef).top + bottomBottomPadding
+      const bottomBottomBorder =
+        bottomRef.offsetHeight +
+        findOffset(bottomRef, scrollerRef).top +
+        bottomBottomPadding
 
       const isBottomObstructed = scrollerBottomBorder < bottomBottomBorder
       const isFormBiggerThanScroller = scrollerHeight < formRef.offsetHeight
@@ -714,9 +837,13 @@ const PostStatusForm = {
       // Keep form-bottom always visible so that submit button is in view EXCEPT
       // if form element bigger than scroller and caret isn't at the end, so that
       // if you scroll up and edit middle of text you won't get scrolled back to bottom
-      const shouldScrollToBottom = isBottomObstructed &&
-            !(isFormBiggerThanScroller &&
-              this.$refs.textarea.selectionStart !== this.$refs.textarea.value.length)
+      const shouldScrollToBottom =
+        isBottomObstructed &&
+        !(
+          isFormBiggerThanScroller &&
+          this.$refs.textarea.selectionStart !==
+            this.$refs.textarea.value.length
+        )
       const totalDelta = shouldScrollToBottom ? bottomChangeDelta : 0
       const targetScroll = Math.round(currentScroll + totalDelta)
 
@@ -726,53 +853,73 @@ const PostStatusForm = {
         scrollerRef.scrollTop = targetScroll
       }
     },
-    clearError () {
+    clearError() {
       this.error = null
     },
-    changeVis (visibility) {
+    changeVis(visibility) {
       this.newStatus.visibility = visibility
     },
-    togglePollForm () {
+    togglePollForm() {
       this.newStatus.hasPoll = !this.newStatus.hasPoll
     },
-    setPoll (poll) {
+    setPoll(poll) {
       this.newStatus.poll = poll
     },
-    clearPollForm () {
+    clearPollForm() {
       if (this.$refs.pollForm) {
         this.$refs.pollForm.clear()
       }
     },
-    dismissScopeNotice () {
-      this.$store.dispatch('setOption', { name: 'hideScopeNotice', value: true })
+    clearQuoteForm() {
+      if (this.$refs.quoteForm) {
+        this.$refs.quoteForm.clear()
+      }
     },
-    setMediaDescription (id) {
+    toggleQuoteForm() {
+      this.newStatus.hasQuote = !this.newStatus.hasQuote
+
+      this.newStatus.quote = {}
+      this.newStatus.quote.thread = false
+      this.newStatus.quote.id = null
+      this.newStatus.quote.url = ''
+    },
+    dismissScopeNotice() {
+      useSyncConfigStore().setSimplePrefAndSave({
+        path: 'hideScopeNotice',
+        value: true,
+      })
+    },
+    setMediaDescription(id) {
       const description = this.newStatus.mediaDescriptions[id]
       if (!description || description.trim() === '') return
-      return statusPoster.setMediaDescription({ store: this.$store, id, description })
+      return statusPoster.setMediaDescription({
+        store: this.$store,
+        id,
+        description,
+      })
     },
-    setAllMediaDescriptions () {
-      const ids = this.newStatus.files.map(file => file.id)
-      return Promise.all(ids.map(id => this.setMediaDescription(id)))
+    setAllMediaDescriptions() {
+      const ids = this.newStatus.files.map((file) => file.id)
+      return Promise.all(ids.map((id) => this.setMediaDescription(id)))
     },
-    handleEmojiInputShow (value) {
+    handleEmojiInputShow(value) {
       this.emojiInputShown = value
     },
-    updateIdempotencyKey () {
+    updateIdempotencyKey() {
       this.idempotencyKey = Date.now().toString()
     },
-    openProfileTab () {
+    openProfileTab() {
       useInterfaceStore().openSettingsModalTab('profile')
     },
-    propsToNative (props) {
+    propsToNative(props) {
       return propsToNative(props)
     },
-    saveDraft () {
-      if (!this.disableDraft &&
-          !this.saveInhibited) {
+    saveDraft() {
+      if (!this.disableDraft && !this.saveInhibited) {
         if (this.safeToSaveDraft) {
-          return this.$store.dispatch('addOrSaveDraft', { draft: this.newStatus })
-            .then(id => {
+          return this.$store
+            .dispatch('addOrSaveDraft', { draft: this.newStatus })
+            .then((id) => {
               if (this.newStatus.id !== id) {
                 this.newStatus.id = id
               }
@@ -784,32 +931,34 @@ const PostStatusForm = {
             })
         } else if (this.hasEmptyDraft) {
           // There is a draft, but there is nothing in it, clear it
-          return this.abandonDraft()
-            .then(() => {
-              this.saveable = false
-              if (!this.shouldAutoSaveDraft) {
-                this.clearStatus()
-                this.$emit('draft-done')
-              }
-            })
+          return this.abandonDraft().then(() => {
+            this.saveable = false
+            if (!this.shouldAutoSaveDraft) {
+              this.clearStatus()
+              this.$emit('draft-done')
+            }
+          })
         }
       }
       return Promise.resolve()
     },
-    maybeAutoSaveDraft () {
+    maybeAutoSaveDraft() {
       if (this.shouldAutoSaveDraft) {
         this.saveDraft(false)
       }
     },
-    abandonDraft () {
+    abandonDraft() {
       return this.$store.dispatch('abandonDraft', { id: this.newStatus.id })
     },
-    getDraft (statusType, refId) {
+    getDraft(statusType, refId) {
       const maybeDraft = this.$store.state.drafts.drafts[this.draftId]
       if (this.draftId && maybeDraft) {
         return maybeDraft
       } else {
-        const existingDrafts = this.$store.getters.draftsByTypeAndRefId(statusType, refId)
+        const existingDrafts = this.$store.getters.draftsByTypeAndRefId(
+          statusType,
+          refId,
+        )
 
         if (existingDrafts.length) {
           return existingDrafts[0]
@@ -817,35 +966,35 @@ const PostStatusForm = {
       }
       // No draft available, fall back
     },
-    requestClose () {
+    requestClose() {
       if (!this.saveable) {
         this.$emit('can-close')
       } else {
         this.$refs.draftCloser.requestClose()
       }
     },
-    saveAndCloseDraft () {
+    saveAndCloseDraft() {
       this.saveDraft().then(() => {
         this.$emit('can-close')
       })
     },
-    discardAndCloseDraft () {
+    discardAndCloseDraft() {
       this.abandonDraft().then(() => {
         this.$emit('can-close')
       })
     },
-    addBeforeUnloadListener () {
+    addBeforeUnloadListener() {
       this._beforeUnloadListener ||= () => {
         this.saveDraft()
       }
       window.addEventListener('beforeunload', this._beforeUnloadListener)
     },
-    removeBeforeUnloadListener () {
+    removeBeforeUnloadListener() {
       if (this._beforeUnloadListener) {
         window.removeEventListener('beforeunload', this._beforeUnloadListener)
       }
-    }
-  }
+    },
+  },
 }
 
 export default PostStatusForm

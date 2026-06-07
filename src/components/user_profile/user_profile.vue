@@ -9,6 +9,7 @@
           :user-id="userId"
           :switcher="true"
           :selected="timeline.viewing"
+          :compact="compactProfiles"
           avatar-action="zoom"
           :has-note-editor="true"
         />

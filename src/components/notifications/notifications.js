@@ -1,28 +1,32 @@
+import { mapState } from 'pinia'
 import { computed } from 'vue'
 import { mapGetters } from 'vuex'
-import { mapState } from 'pinia'
-import Notification from '../notification/notification.vue'
-import ExtraNotifications from '../extra_notifications/extra_notifications.vue'
-import NotificationFilters from './notification_filters.vue'
-import notificationsFetcher from '../../services/notifications_fetcher/notifications_fetcher.service.js'
-import {
-  notificationsFromStore,
-  filteredNotificationsFromStore,
-  unseenNotificationsFromStore,
-  countExtraNotifications,
-  ACTIONABLE_NOTIFICATION_TYPES
-} from '../../services/notification_utils/notification_utils.js'
-import FaviconService from '../../services/favicon_service/favicon_service.js'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCircleNotch, faArrowUp, faMinus } from '@fortawesome/free-solid-svg-icons'
-import { useInterfaceStore } from 'src/stores/interface'
-import { useAnnouncementsStore } from 'src/stores/announcements'
 
-library.add(
-  faCircleNotch,
+import ExtraNotifications from 'src/components/extra_notifications/extra_notifications.vue'
+import Notification from 'src/components/notification/notification.vue'
+import FaviconService from '../../services/favicon_service/favicon_service.js'
+import {
+  ACTIONABLE_NOTIFICATION_TYPES,
+  countExtraNotifications,
+  filteredNotificationsFromStore,
+  notificationsFromStore,
+  unseenNotificationsFromStore,
+} from '../../services/notification_utils/notification_utils.js'
+import notificationsFetcher from '../../services/notifications_fetcher/notifications_fetcher.service.js'
+import NotificationFilters from './notification_filters.vue'
+
+import { useAnnouncementsStore } from 'src/stores/announcements.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
   faArrowUp,
-  faMinus
-)
+  faCircleNotch,
+  faMinus,
+} from '@fortawesome/free-solid-svg-icons'
+
+library.add(faCircleNotch, faArrowUp, faMinus)
 
 const DEFAULT_SEEN_TO_DISPLAY_COUNT = 30
 
@@ -30,7 +34,7 @@ const Notifications = {
   components: {
     Notification,
     NotificationFilters,
-    ExtraNotifications
+    ExtraNotifications,
   },
   props: {
     // Disables panel styles, unread mark, potentially other notification-related actions
@@ -41,93 +45,124 @@ const Notifications = {
     // Do not show extra notifications
     noExtra: {
       type: Boolean,
-      default: false
+      default: false,
     },
     // Disable teleporting (i.e. for /users/user/notifications)
-    disableTeleport: Boolean
+    disableTeleport: Boolean,
   },
-  data () {
+  data() {
     return {
       showScrollTop: false,
       bottomedOut: false,
       // How many seen notifications to display in the list. The more there are,
       // the heavier the page becomes. This count is increased when loading
       // older notifications, and cut back to default whenever hitting "Read!".
-      seenToDisplayCount: DEFAULT_SEEN_TO_DISPLAY_COUNT
+      seenToDisplayCount: DEFAULT_SEEN_TO_DISPLAY_COUNT,
     }
   },
-  provide () {
+  provide() {
     return {
-      popoversZLayer: computed(() => this.popoversZLayer)
+      popoversZLayer: computed(() => this.popoversZLayer),
     }
   },
   computed: {
-    mainClass () {
+    mainClass() {
       return this.minimalMode ? '' : 'panel panel-default'
     },
-    notifications () {
+    notifications() {
       return notificationsFromStore(this.$store)
     },
-    error () {
+    error() {
       return this.$store.state.notifications.error
     },
-    unseenNotifications () {
-      return unseenNotificationsFromStore(this.$store)
+    unseenNotifications() {
+      return unseenNotificationsFromStore(
+        this.$store,
+        useMergedConfigStore().mergedConfig.notificationVisibility,
+        useMergedConfigStore().mergedConfig.ignoreInactionableSeen,
+      )
     },
-    filteredNotifications () {
+    filteredNotifications() {
       if (this.unseenAtTop) {
         return [
-          ...filteredNotificationsFromStore(this.$store).filter(n => this.shouldShowUnseen(n)),
-          ...filteredNotificationsFromStore(this.$store).filter(n => !this.shouldShowUnseen(n))
+          ...filteredNotificationsFromStore(
+            this.$store,
+            useMergedConfigStore().mergedConfig.notificationVisibility,
+          ).filter((n) => this.shouldShowUnseen(n)),
+          ...filteredNotificationsFromStore(
+            this.$store,
+            useMergedConfigStore().mergedConfig.notificationVisibility,
+          ).filter((n) => !this.shouldShowUnseen(n)),
         ]
       } else {
-        return filteredNotificationsFromStore(this.$store, this.filterMode)
+        return filteredNotificationsFromStore(
+          this.$store,
+          useMergedConfigStore().mergedConfig.notificationVisibility,
+          this.filterMode,
+        )
       }
     },
-    unseenCountBadgeText () {
+    unseenCountBadgeText() {
       return `${this.unseenCount ? this.unseenCount : ''}${this.extraNotificationsCount ? '*' : ''}`
     },
-    unseenCount () {
+    unseenCount() {
       return this.unseenNotifications.length
     },
-    ignoreInactionableSeen () { return this.$store.getters.mergedConfig.ignoreInactionableSeen },
-    extraNotificationsCount () {
-      return countExtraNotifications(this.$store)
+    ignoreInactionableSeen() {
+      return useMergedConfigStore().mergedConfig.ignoreInactionableSeen
     },
-    unseenCountTitle () {
-      return this.unseenNotifications.length + (this.unreadChatCount) + this.unreadAnnouncementCount
+    extraNotificationsCount() {
+      return countExtraNotifications(
+        this.$store,
+        useMergedConfigStore().mergedConfig,
+        useAnnouncementsStore().unreadAnnouncementCount,
+      )
     },
-    loading () {
+    unseenCountTitle() {
+      return (
+        this.unseenNotifications.length +
+        this.unreadChatCount +
+        this.unreadAnnouncementCount
+      )
+    },
+    loading() {
       return this.$store.state.notifications.loading
     },
-    noHeading () {
+    noHeading() {
       const { layoutType } = useInterfaceStore()
       return this.minimalMode || layoutType === 'mobile'
     },
-    teleportTarget () {
+    teleportTarget() {
       const { layoutType } = useInterfaceStore()
       const map = {
         wide: '#notifs-column',
-        mobile: '#mobile-notifications'
+        mobile: '#mobile-notifications',
       }
       return map[layoutType] || '#notifs-sidebar'
     },
-    popoversZLayer () {
+    popoversZLayer() {
       const { layoutType } = useInterfaceStore()
       return layoutType === 'mobile' ? 'navbar' : null
     },
-    notificationsToDisplay () {
-      return this.filteredNotifications.slice(0, this.unseenCount + this.seenToDisplayCount)
+    notificationsToDisplay() {
+      return this.filteredNotifications.slice(
+        0,
+        this.unseenCount + this.seenToDisplayCount,
+      )
     },
-    noSticky () { return this.$store.getters.mergedConfig.disableStickyHeaders },
-    unseenAtTop () { return this.$store.getters.mergedConfig.unseenAtTop },
-    showExtraNotifications () {
+    noSticky() {
+      return useMergedConfigStore().mergedConfig.disableStickyHeaders
+    },
+    unseenAtTop() {
+      return useMergedConfigStore().mergedConfig.unseenAtTop
+    },
+    showExtraNotifications() {
       return !this.noExtra
     },
     ...mapState(useAnnouncementsStore, ['unreadAnnouncementCount']),
-    ...mapGetters(['unreadChatCount'])
+    ...mapGetters(['unreadChatCount']),
   },
-  mounted () {
+  mounted() {
     this.scrollerRef = this.$refs.root.closest('.column.-scrollable')
     if (!this.scrollerRef) {
       this.scrollerRef = this.$refs.root.closest('.mobile-notifications')
@@ -137,12 +172,12 @@ const Notifications = {
     }
     this.scrollerRef.addEventListener('scroll', this.updateScrollPosition)
   },
-  unmounted () {
+  unmounted() {
     if (!this.scrollerRef) return
     this.scrollerRef.removeEventListener('scroll', this.updateScrollPosition)
   },
   watch: {
-    unseenCountTitle (count) {
+    unseenCountTitle(count) {
       if (count > 0) {
         FaviconService.drawFaviconBadge()
         useInterfaceStore().setPageTitle(`(${count})`)
@@ -151,10 +186,13 @@ const Notifications = {
         useInterfaceStore().setPageTitle('')
       }
     },
-    teleportTarget () {
+    teleportTarget() {
       // handle scroller change
       this.$nextTick(() => {
-        this.scrollerRef.removeEventListener('scroll', this.updateScrollPosition)
+        this.scrollerRef.removeEventListener(
+          'scroll',
+          this.updateScrollPosition,
+        )
         this.scrollerRef = this.$refs.root.closest('.column.-scrollable')
         if (!this.scrollerRef) {
           this.scrollerRef = this.$refs.root.closest('.mobile-notifications')
@@ -162,17 +200,18 @@ const Notifications = {
         this.scrollerRef.addEventListener('scroll', this.updateScrollPosition)
         this.updateScrollPosition()
       })
-    }
+    },
   },
   methods: {
-    scrollToTop () {
+    scrollToTop() {
       const scrollable = this.scrollerRef
       scrollable.scrollTo({ top: this.$refs.root.offsetTop })
     },
-    updateScrollPosition () {
-      this.showScrollTop = this.$refs.root.offsetTop < this.scrollerRef.scrollTop
+    updateScrollPosition() {
+      this.showScrollTop =
+        this.$refs.root.offsetTop < this.scrollerRef.scrollTop
     },
-    shouldShowUnseen (notification) {
+    shouldShowUnseen(notification) {
       if (notification.seen) return false
 
       const actionable = ACTIONABLE_NOTIFICATION_TYPES.has(notification.type)
@@ -182,26 +221,29 @@ const Notifications = {
      * everything else (likes/repeats/reacts) cannot be acted and therefore we just clear
      * the "seen" status upon any clicks on them
      */
-    notificationClicked (notification) {
+    notificationClicked(notification) {
       const { id } = notification
       this.$store.dispatch('notificationClicked', { id })
     },
-    notificationInteracted (notification) {
+    notificationInteracted(notification) {
       const { id } = notification
       this.$store.dispatch('markSingleNotificationAsSeen', { id })
     },
-    markAsSeen () {
+    markAsSeen() {
       this.$store.dispatch('markNotificationsAsSeen')
       this.seenToDisplayCount = DEFAULT_SEEN_TO_DISPLAY_COUNT
     },
-    fetchOlderNotifications () {
+    fetchOlderNotifications() {
       if (this.loading) {
         return
       }
 
       const seenCount = this.filteredNotifications.length - this.unseenCount
       if (this.seenToDisplayCount < seenCount) {
-        this.seenToDisplayCount = Math.min(this.seenToDisplayCount + 20, seenCount)
+        this.seenToDisplayCount = Math.min(
+          this.seenToDisplayCount + 20,
+          seenCount,
+        )
         return
       } else if (this.seenToDisplayCount > seenCount) {
         this.seenToDisplayCount = seenCount
@@ -210,19 +252,21 @@ const Notifications = {
       const store = this.$store
       const credentials = store.state.users.currentUser.credentials
       store.commit('setNotificationsLoading', { value: true })
-      notificationsFetcher.fetchAndUpdate({
-        store,
-        credentials,
-        older: true
-      }).then(notifs => {
-        store.commit('setNotificationsLoading', { value: false })
-        if (notifs.length === 0) {
-          this.bottomedOut = true
-        }
-        this.seenToDisplayCount += notifs.length
-      })
-    }
-  }
+      notificationsFetcher
+        .fetchAndUpdate({
+          store,
+          credentials,
+          older: true,
+        })
+        .then((notifs) => {
+          store.commit('setNotificationsLoading', { value: false })
+          if (notifs.length === 0) {
+            this.bottomedOut = true
+          }
+          this.seenToDisplayCount += notifs.length
+        })
+    },
+  },
 }
 
 export default Notifications

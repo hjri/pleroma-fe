@@ -1,19 +1,23 @@
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
 const DialogModal = {
   props: {
     darkOverlay: {
       default: true,
-      type: Boolean
+      type: Boolean,
     },
     onCancel: {
-      default: () => {},
-      type: Function
-    }
+      default: () => {
+        /* no-op */
+      },
+      type: Function,
+    },
   },
   computed: {
-    mobileCenter () {
-      return this.$store.getters.mergedConfig.modalMobileCenter
-    }
-  }
+    mobileCenter() {
+      return useMergedConfigStore().mergedConfig.modalMobileCenter
+    },
+  },
 }
 
 export default DialogModal

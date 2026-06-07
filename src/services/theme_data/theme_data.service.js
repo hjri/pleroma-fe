@@ -1,6 +1,14 @@
-import { convert, brightness, contrastRatio } from 'chromatism'
-import { rgb2hex, rgba2css, alphaBlendLayers, getTextColor, relativeLuminance, getCssColor } from '../color_convert/color_convert.js'
-import { LAYERS, DEFAULT_OPACITY, SLOT_INHERITANCE } from './pleromafe.js'
+import { brightness, contrastRatio, convert } from 'chromatism'
+
+import {
+  alphaBlendLayers,
+  getCssColor,
+  getTextColor,
+  relativeLuminance,
+  rgb2hex,
+  rgba2css,
+} from '../color_convert/color_convert.js'
+import { DEFAULT_OPACITY, LAYERS, SLOT_INHERITANCE } from './pleromafe.js'
 
 /*
  * # What's all this?
@@ -48,15 +56,17 @@ export const getLayersArray = (layer, data = LAYERS) => {
   return array
 }
 
-export const getLayers = (layer, variant = layer, opacitySlot, colors, opacity) => {
-  return getLayersArray(layer).map((currentLayer) => ([
-    currentLayer === layer
-      ? colors[variant]
-      : colors[currentLayer],
-    currentLayer === layer
-      ? opacity[opacitySlot] || 1
-      : opacity[currentLayer]
-  ]))
+export const getLayers = (
+  layer,
+  variant = layer,
+  opacitySlot,
+  colors,
+  opacity,
+) => {
+  return getLayersArray(layer).map((currentLayer) => [
+    currentLayer === layer ? colors[variant] : colors[currentLayer],
+    currentLayer === layer ? opacity[opacitySlot] || 1 : opacity[currentLayer],
+  ])
 }
 
 const getDependencies = (key, inheritance) => {
@@ -67,11 +77,9 @@ const getDependencies = (key, inheritance) => {
     if (data === null) return []
     const { depends, layer, variant } = data
     const layerDeps = layer
-      ? getLayersArray(layer).map(currentLayer => {
-        return currentLayer === layer
-          ? variant || layer
-          : currentLayer
-      })
+      ? getLayersArray(layer).map((currentLayer) => {
+          return currentLayer === layer ? variant || layer : currentLayer
+        })
       : []
     if (Array.isArray(depends)) {
       return [...depends, ...layerDeps]
@@ -93,7 +101,7 @@ const getDependencies = (key, inheritance) => {
  */
 export const topoSort = (
   inheritance = SLOT_INHERITANCE,
-  getDeps = getDependencies
+  getDeps = getDependencies,
 ) => {
   // This is an implementation of https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm
 
@@ -130,22 +138,25 @@ export const topoSort = (
 
   // The index thing is to make sorting stable on browsers
   // where Array.sort() isn't stable
-  return output.map((data, index) => ({ data, index })).sort(({ data: a, index: ai }, { data: b, index: bi }) => {
-    const depsA = getDeps(a, inheritance).length
-    const depsB = getDeps(b, inheritance).length
+  return output
+    .map((data, index) => ({ data, index }))
+    .sort(({ data: a, index: ai }, { data: b, index: bi }) => {
+      const depsA = getDeps(a, inheritance).length
+      const depsB = getDeps(b, inheritance).length
 
-    if (depsA === depsB || (depsB !== 0 && depsA !== 0)) return ai - bi
-    if (depsA === 0 && depsB !== 0) return -1
-    if (depsB === 0 && depsA !== 0) return 1
-    return 0 // failsafe, shouldn't happen?
-  }).map(({ data }) => data)
+      if (depsA === depsB || (depsB !== 0 && depsA !== 0)) return ai - bi
+      if (depsA === 0 && depsB !== 0) return -1
+      if (depsB === 0 && depsA !== 0) return 1
+      return 0 // failsafe, shouldn't happen?
+    })
+    .map(({ data }) => data)
 }
 
 const expandSlotValue = (value) => {
   if (typeof value === 'object') return value
   return {
     depends: value.startsWith('--') ? [value.substring(2)] : [],
-    default: value.startsWith('#') ? value : undefined
+    default: value.startsWith('#') ? value : undefined,
   }
 }
 /**
@@ -156,7 +167,7 @@ const expandSlotValue = (value) => {
 export const getOpacitySlot = (
   k,
   inheritance = SLOT_INHERITANCE,
-  getDeps = getDependencies
+  getDeps = getDependencies,
 ) => {
   const value = expandSlotValue(inheritance[k])
   if (value.opacity === null) return
@@ -189,7 +200,7 @@ export const getOpacitySlot = (
 export const getLayerSlot = (
   k,
   inheritance = SLOT_INHERITANCE,
-  getDeps = getDependencies
+  getDeps = getDependencies,
 ) => {
   const value = expandSlotValue(inheritance[k])
   if (LAYERS[k]) return k
@@ -218,8 +229,11 @@ export const getLayerSlot = (
  */
 export const SLOT_ORDERED = topoSort(
   Object.entries(SLOT_INHERITANCE)
-    .sort(([, aV], [, bV]) => ((aV && aV.priority) || 0) - ((bV && bV.priority) || 0))
-    .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {})
+    .sort(
+      ([, aV], [, bV]) =>
+        ((aV && aV.priority) || 0) - ((bV && bV.priority) || 0),
+    )
+    .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {}),
 )
 
 /**
@@ -233,8 +247,11 @@ export const OPACITIES = Object.entries(SLOT_INHERITANCE).reduce((acc, [k]) => {
       ...acc,
       [opacity]: {
         defaultValue: DEFAULT_OPACITY[opacity] || 1,
-        affectedSlots: [...((acc[opacity] && acc[opacity].affectedSlots) || []), k]
-      }
+        affectedSlots: [
+          ...((acc[opacity] && acc[opacity].affectedSlots) || []),
+          k,
+        ],
+      },
     }
   } else {
     return acc
@@ -245,10 +262,11 @@ export const OPACITIES = Object.entries(SLOT_INHERITANCE).reduce((acc, [k]) => {
  * Handle dynamic color
  */
 export const computeDynamicColor = (sourceColor, getColor, mod) => {
-  if (typeof sourceColor !== 'string' || !sourceColor.startsWith('--')) return sourceColor
+  if (typeof sourceColor !== 'string' || !sourceColor.startsWith('--'))
+    return sourceColor
   let targetColor = null
   // Color references other color
-  const [variable, modifier] = sourceColor.split(/,/g).map(str => str.trim())
+  const [variable, modifier] = sourceColor.split(/,/g).map((str) => str.trim())
   const variableSlot = variable.substring(2)
   targetColor = getColor(variableSlot)
   if (modifier) {
@@ -261,151 +279,167 @@ export const computeDynamicColor = (sourceColor, getColor, mod) => {
  * THE function you want to use. Takes provided colors and opacities
  * value and uses inheritance data to figure out color needed for the slot.
  */
-export const getColors = (sourceColors, sourceOpacity) => SLOT_ORDERED.reduce(({ colors, opacity }, key) => {
-  const sourceColor = sourceColors[key]
-  const value = expandSlotValue(SLOT_INHERITANCE[key])
-  const deps = getDependencies(key, SLOT_INHERITANCE)
-  const isTextColor = !!value.textColor
-  const variant = value.variant || value.layer
+export const getColors = (sourceColors, sourceOpacity) =>
+  SLOT_ORDERED.reduce(
+    ({ colors, opacity }, key) => {
+      const sourceColor = sourceColors[key]
+      const value = expandSlotValue(SLOT_INHERITANCE[key])
+      const deps = getDependencies(key, SLOT_INHERITANCE)
+      const isTextColor = !!value.textColor
+      const variant = value.variant || value.layer
 
-  let backgroundColor = null
+      let backgroundColor = null
 
-  if (isTextColor) {
-    backgroundColor = alphaBlendLayers(
-      { ...(colors[deps[0]] || convert(sourceColors[key] || '#FF00FF').rgb) },
-      getLayers(
-        getLayerSlot(key) || 'bg',
-        variant || 'bg',
-        getOpacitySlot(variant),
-        colors,
-        opacity
-      )
-    )
-  } else if (variant && variant !== key) {
-    backgroundColor = colors[variant] || convert(sourceColors[variant]).rgb
-  } else {
-    backgroundColor = colors.bg || convert(sourceColors.bg)
-  }
-
-  const isLightOnDark = relativeLuminance(backgroundColor) < 0.5
-  const mod = isLightOnDark ? 1 : -1
-
-  let outputColor = null
-  if (sourceColor) {
-    // Color is defined in source color
-    let targetColor = sourceColor
-    if (targetColor === 'transparent') {
-      // We take only layers below current one
-      const layers = getLayers(
-        getLayerSlot(key),
-        key,
-        getOpacitySlot(key) || key,
-        colors,
-        opacity
-      ).slice(0, -1)
-      targetColor = {
-        ...alphaBlendLayers(
-          convert('#FF00FF').rgb,
-          layers
-        ),
-        a: 0
-      }
-    } else if (typeof sourceColor === 'string' && sourceColor.startsWith('--')) {
-      targetColor = computeDynamicColor(
-        sourceColor,
-        variableSlot => colors[variableSlot] || sourceColors[variableSlot],
-        mod
-      )
-    } else if (typeof sourceColor === 'string' && sourceColor.startsWith('#')) {
-      targetColor = convert(targetColor).rgb
-    }
-    outputColor = { ...targetColor }
-  } else if (value.default) {
-    // same as above except in object form
-    outputColor = convert(value.default).rgb
-  } else {
-    // calculate color
-    const defaultColorFunc = (mod, dep) => ({ ...dep })
-    const colorFunc = value.color || defaultColorFunc
-
-    if (value.textColor) {
-      if (value.textColor === 'bw') {
-        outputColor = contrastRatio(backgroundColor).rgb
-      } else {
-        let color = { ...colors[deps[0]] }
-        if (value.color) {
-          color = colorFunc(mod, ...deps.map((dep) => ({ ...colors[dep] })))
-        }
-        outputColor = getTextColor(
-          backgroundColor,
-          { ...color },
-          value.textColor === 'preserve'
+      if (isTextColor) {
+        backgroundColor = alphaBlendLayers(
+          {
+            ...(colors[deps[0]] || convert(sourceColors[key] || '#FF00FF').rgb),
+          },
+          getLayers(
+            getLayerSlot(key) || 'bg',
+            variant || 'bg',
+            getOpacitySlot(variant),
+            colors,
+            opacity,
+          ),
         )
+      } else if (variant && variant !== key) {
+        backgroundColor = colors[variant] || convert(sourceColors[variant]).rgb
+      } else {
+        backgroundColor = colors.bg || convert(sourceColors.bg)
       }
-    } else {
-      // background color case
-      outputColor = colorFunc(
-        mod,
-        ...deps.map((dep) => ({ ...colors[dep] }))
-      )
-    }
-  }
-  if (!outputColor) {
-    throw new Error('Couldn\'t generate color for ' + key)
-  }
 
-  const opacitySlot = value.opacity || getOpacitySlot(key)
-  const ownOpacitySlot = value.opacity
+      const isLightOnDark = relativeLuminance(backgroundColor) < 0.5
+      const mod = isLightOnDark ? 1 : -1
 
-  if (ownOpacitySlot === null) {
-    outputColor.a = 1
-  } else if (sourceColor === 'transparent') {
-    outputColor.a = 0
-  } else {
-    const opacityOverriden = ownOpacitySlot && sourceOpacity[opacitySlot] !== undefined
+      let outputColor = null
+      if (sourceColor) {
+        // Color is defined in source color
+        let targetColor = sourceColor
+        if (targetColor === 'transparent') {
+          // We take only layers below current one
+          const layers = getLayers(
+            getLayerSlot(key),
+            key,
+            getOpacitySlot(key) || key,
+            colors,
+            opacity,
+          ).slice(0, -1)
+          targetColor = {
+            ...alphaBlendLayers(convert('#FF00FF').rgb, layers),
+            a: 0,
+          }
+        } else if (
+          typeof sourceColor === 'string' &&
+          sourceColor.startsWith('--')
+        ) {
+          targetColor = computeDynamicColor(
+            sourceColor,
+            (variableSlot) =>
+              colors[variableSlot] || sourceColors[variableSlot],
+            mod,
+          )
+        } else if (
+          typeof sourceColor === 'string' &&
+          sourceColor.startsWith('#')
+        ) {
+          targetColor = convert(targetColor).rgb
+        }
+        outputColor = { ...targetColor }
+      } else if (value.default) {
+        // same as above except in object form
+        outputColor = convert(value.default).rgb
+      } else {
+        // calculate color
+        const defaultColorFunc = (mod, dep) => ({ ...dep })
+        const colorFunc = value.color || defaultColorFunc
 
-    const dependencySlot = deps[0]
-    const dependencyColor = dependencySlot && colors[dependencySlot]
+        if (value.textColor) {
+          if (value.textColor === 'bw') {
+            outputColor = contrastRatio(backgroundColor).rgb
+          } else {
+            let color = { ...colors[deps[0]] }
+            if (value.color) {
+              color = colorFunc(mod, ...deps.map((dep) => ({ ...colors[dep] })))
+            }
+            outputColor = getTextColor(
+              backgroundColor,
+              { ...color },
+              value.textColor === 'preserve',
+            )
+          }
+        } else {
+          // background color case
+          outputColor = colorFunc(
+            mod,
+            ...deps.map((dep) => ({ ...colors[dep] })),
+          )
+        }
+      }
+      if (!outputColor) {
+        throw new Error("Couldn't generate color for " + key)
+      }
 
-    if (!ownOpacitySlot && dependencyColor && !value.textColor && ownOpacitySlot !== null) {
-      // Inheriting color from dependency (weird, i know)
-      // except if it's a text color or opacity slot is set to 'null'
-      outputColor.a = dependencyColor.a
-    } else if (!dependencyColor && !opacitySlot) {
-      // Remove any alpha channel if no dependency and no opacitySlot found
-      delete outputColor.a
-    } else {
-      // Otherwise try to assign opacity
-      if (dependencyColor && dependencyColor.a === 0) {
-        // transparent dependency shall make dependents transparent too
+      const opacitySlot = value.opacity || getOpacitySlot(key)
+      const ownOpacitySlot = value.opacity
+
+      if (ownOpacitySlot === null) {
+        outputColor.a = 1
+      } else if (sourceColor === 'transparent') {
         outputColor.a = 0
       } else {
-        // Otherwise check if opacity is overriden and use that or default value instead
-        outputColor.a = Number(
-          opacityOverriden
-            ? sourceOpacity[opacitySlot]
-            : (OPACITIES[opacitySlot] || {}).defaultValue
-        )
+        const opacityOverriden =
+          ownOpacitySlot && sourceOpacity[opacitySlot] !== undefined
+
+        const dependencySlot = deps[0]
+        const dependencyColor = dependencySlot && colors[dependencySlot]
+
+        if (
+          !ownOpacitySlot &&
+          dependencyColor &&
+          !value.textColor &&
+          ownOpacitySlot !== null
+        ) {
+          // Inheriting color from dependency (weird, i know)
+          // except if it's a text color or opacity slot is set to 'null'
+          outputColor.a = dependencyColor.a
+        } else if (!dependencyColor && !opacitySlot) {
+          // Remove any alpha channel if no dependency and no opacitySlot found
+          delete outputColor.a
+        } else {
+          // Otherwise try to assign opacity
+          if (dependencyColor && dependencyColor.a === 0) {
+            // transparent dependency shall make dependents transparent too
+            outputColor.a = 0
+          } else {
+            // Otherwise check if opacity is overriden and use that or default value instead
+            outputColor.a = Number(
+              opacityOverriden
+                ? sourceOpacity[opacitySlot]
+                : (OPACITIES[opacitySlot] || {}).defaultValue,
+            )
+          }
+        }
       }
-    }
-  }
 
-  if (Number.isNaN(outputColor.a) || outputColor.a === undefined) {
-    outputColor.a = 1
-  }
+      if (Number.isNaN(outputColor.a) || outputColor.a === undefined) {
+        outputColor.a = 1
+      }
 
-  if (opacitySlot) {
-    return {
-      colors: { ...colors, [key]: outputColor },
-      opacity: { ...opacity, [opacitySlot]: outputColor.a }
-    }
-  } else {
-    return {
-      colors: { ...colors, [key]: outputColor },
-      opacity
-    }
-  }
-}, { colors: {}, opacity: {} })
+      if (opacitySlot) {
+        return {
+          colors: { ...colors, [key]: outputColor },
+          opacity: { ...opacity, [opacitySlot]: outputColor.a },
+        }
+      } else {
+        return {
+          colors: { ...colors, [key]: outputColor },
+          opacity,
+        }
+      }
+    },
+    { colors: {}, opacity: {} },
+  )
 
 export const composePreset = (colors, radii, shadows, fonts) => {
   return {
@@ -413,14 +447,14 @@ export const composePreset = (colors, radii, shadows, fonts) => {
       ...shadows.rules,
       ...colors.rules,
       ...radii.rules,
-      ...fonts.rules
+      ...fonts.rules,
     },
     theme: {
       ...shadows.theme,
       ...colors.theme,
       ...radii.theme,
-      ...fonts.theme
-    }
+      ...fonts.theme,
+    },
   }
 }
 
@@ -430,7 +464,7 @@ export const generatePreset = (input) => {
     colors,
     generateRadii(input),
     generateShadows(input, colors.theme.colors, colors.mod),
-    generateFonts(input)
+    generateFonts(input),
   )
 }
 
@@ -440,16 +474,17 @@ export const getCssShadow = (input, usesDropShadow) => {
   }
 
   return input
-    .filter(_ => usesDropShadow ? _.inset : _)
-    .map((shad) => [
-      shad.x,
-      shad.y,
-      shad.blur,
-      shad.spread
-    ].map(_ => _ + 'px').concat([
-      getCssColor(shad.color, shad.alpha),
-      shad.inset ? 'inset' : ''
-    ]).join(' ')).join(', ')
+    .filter((_) => (usesDropShadow ? _.inset : _))
+    .map((shad) =>
+      [shad.x, shad.y, shad.blur, shad.spread]
+        .map((_) => _ + 'px')
+        .concat([
+          getCssColor(shad.color, shad.alpha),
+          shad.inset ? 'inset' : '',
+        ])
+        .join(' '),
+    )
+    .join(', ')
 }
 
 export const getCssShadowFilter = (input) => {
@@ -457,19 +492,24 @@ export const getCssShadowFilter = (input) => {
     return 'none'
   }
 
-  return input
-  // drop-shadow doesn't support inset or spread
-    .filter((shad) => !shad.inset && Number(shad.spread) === 0)
-    .map((shad) => [
-      shad.x,
-      shad.y,
-      // drop-shadow's blur is twice as strong compared to box-shadow
-      shad.blur / 2
-    ].map(_ => _ + 'px').concat([
-      getCssColor(shad.color, shad.alpha)
-    ]).join(' '))
-    .map(_ => `drop-shadow(${_})`)
-    .join(' ')
+  return (
+    input
+      // drop-shadow doesn't support inset or spread
+      .filter((shad) => !shad.inset && Number(shad.spread) === 0)
+      .map((shad) =>
+        [
+          shad.x,
+          shad.y,
+          // drop-shadow's blur is twice as strong compared to box-shadow
+          shad.blur / 2,
+        ]
+          .map((_) => _ + 'px')
+          .concat([getCssColor(shad.color, shad.alpha)])
+          .join(' '),
+      )
+      .map((_) => `drop-shadow(${_})`)
+      .join(' ')
+  )
 }
 
 export const generateColors = (themeData) => {
@@ -479,24 +519,26 @@ export const generateColors = (themeData) => {
 
   const { colors, opacity } = getColors(sourceColors, themeData.opacity || {})
 
-  const htmlColors = Object.entries(colors)
-    .reduce((acc, [k, v]) => {
+  const htmlColors = Object.entries(colors).reduce(
+    (acc, [k, v]) => {
       if (!v) return acc
       acc.solid[k] = rgb2hex(v)
       acc.complete[k] = typeof v.a === 'undefined' ? rgb2hex(v) : rgba2css(v)
       return acc
-    }, { complete: {}, solid: {} })
+    },
+    { complete: {}, solid: {} },
+  )
   return {
     rules: {
       colors: Object.entries(htmlColors.complete)
         .filter(([, v]) => v)
         .map(([k, v]) => `--${k}: ${v}`)
-        .join(';')
+        .join(';'),
     },
     theme: {
       colors: htmlColors.solid,
-      opacity
-    }
+      opacity,
+    },
   }
 }
 
@@ -504,68 +546,85 @@ export const generateRadii = (input) => {
   let inputRadii = input.radii || {}
   // v1 -> v2
   if (typeof input.btnRadius !== 'undefined') {
-    inputRadii = Object
-      .entries(input)
+    inputRadii = Object.entries(input)
       .filter(([k]) => k.endsWith('Radius'))
-      .reduce((acc, e) => { acc[e[0].split('Radius')[0]] = e[1]; return acc }, {})
+      .reduce((acc, e) => {
+        acc[e[0].split('Radius')[0]] = e[1]
+        return acc
+      }, {})
   }
-  const radii = Object.entries(inputRadii).filter(([, v]) => v).reduce((acc, [k, v]) => {
-    acc[k] = v
-    return acc
-  }, {
-    btn: 4,
-    input: 4,
-    checkbox: 2,
-    panel: 10,
-    avatar: 5,
-    avatarAlt: 50,
-    tooltip: 2,
-    attachment: 5,
-    chatMessage: inputRadii.panel
-  })
+  const radii = Object.entries(inputRadii)
+    .filter(([, v]) => v)
+    .reduce(
+      (acc, [k, v]) => {
+        acc[k] = v
+        return acc
+      },
+      {
+        btn: 4,
+        input: 4,
+        checkbox: 2,
+        panel: 10,
+        avatar: 5,
+        avatarAlt: 50,
+        tooltip: 2,
+        attachment: 5,
+        chatMessage: inputRadii.panel,
+      },
+    )
 
   return {
     rules: {
-      radii: Object.entries(radii).filter(([, v]) => v).map(([k, v]) => `--${k}Radius: ${v}px`).join(';')
+      radii: Object.entries(radii)
+        .filter(([, v]) => v)
+        .map(([k, v]) => `--${k}Radius: ${v}px`)
+        .join(';'),
     },
     theme: {
-      radii
-    }
+      radii,
+    },
   }
 }
 
 export const generateFonts = (input) => {
-  const fonts = Object.entries(input.fonts || {}).filter(([, v]) => v).reduce((acc, [k, v]) => {
-    acc[k] = Object.entries(v).filter(([, v]) => v).reduce((acc, [k, v]) => {
-      acc[k] = v
-      return acc
-    }, acc[k])
-    return acc
-  }, {
-    interface: {
-      family: 'sans-serif'
-    },
-    input: {
-      family: 'inherit'
-    },
-    post: {
-      family: 'inherit'
-    },
-    postCode: {
-      family: 'monospace'
-    }
-  })
+  const fonts = Object.entries(input.fonts || {})
+    .filter(([, v]) => v)
+    .reduce(
+      (acc, [k, v]) => {
+        acc[k] = Object.entries(v)
+          .filter(([, v]) => v)
+          .reduce((acc, [k, v]) => {
+            acc[k] = v
+            return acc
+          }, acc[k])
+        return acc
+      },
+      {
+        interface: {
+          family: 'sans-serif',
+        },
+        input: {
+          family: 'inherit',
+        },
+        post: {
+          family: 'inherit',
+        },
+        postCode: {
+          family: 'monospace',
+        },
+      },
+    )
 
   return {
     rules: {
-      fonts: Object
-        .entries(fonts)
+      fonts: Object.entries(fonts)
         .filter(([, v]) => v)
-        .map(([k, v]) => `--${k}Font: ${v.family}`).join(';')
+        .map(([k, v]) => `--${k}Font: ${v}`)
+        .join(';'),
     },
     theme: {
-      fonts
-    }
+      fonts,
+    },
   }
 }
 
@@ -576,7 +635,7 @@ const border = (top, shadow) => ({
   spread: 0,
   color: shadow ? '#000000' : '#FFFFFF',
   alpha: 0.2,
-  inset: true
+  inset: true,
 })
 const buttonInsetFakeBorders = [border(true, false), border(false, true)]
 const inputInsetFakeBorders = [border(true, true), border(false, false)]
@@ -586,63 +645,77 @@ const hoverGlow = {
   blur: 4,
   spread: 0,
   color: '--faint',
-  alpha: 1
+  alpha: 1,
 }
 
 export const DEFAULT_SHADOWS = {
-  panel: [{
-    x: 1,
-    y: 1,
-    blur: 4,
-    spread: 0,
-    color: '#000000',
-    alpha: 0.6
-  }],
-  topBar: [{
-    x: 0,
-    y: 0,
-    blur: 4,
-    spread: 0,
-    color: '#000000',
-    alpha: 0.6
-  }],
-  popup: [{
-    x: 2,
-    y: 2,
-    blur: 3,
-    spread: 0,
-    color: '#000000',
-    alpha: 0.5
-  }],
-  avatar: [{
-    x: 0,
-    y: 1,
-    blur: 8,
-    spread: 0,
-    color: '#000000',
-    alpha: 0.7
-  }],
+  panel: [
+    {
+      x: 1,
+      y: 1,
+      blur: 4,
+      spread: 0,
+      color: '#000000',
+      alpha: 0.6,
+    },
+  ],
+  topBar: [
+    {
+      x: 0,
+      y: 0,
+      blur: 4,
+      spread: 0,
+      color: '#000000',
+      alpha: 0.6,
+    },
+  ],
+  popup: [
+    {
+      x: 2,
+      y: 2,
+      blur: 3,
+      spread: 0,
+      color: '#000000',
+      alpha: 0.5,
+    },
+  ],
+  avatar: [
+    {
+      x: 0,
+      y: 1,
+      blur: 8,
+      spread: 0,
+      color: '#000000',
+      alpha: 0.7,
+    },
+  ],
   avatarStatus: [],
   panelHeader: [],
-  button: [{
-    x: 0,
-    y: 0,
-    blur: 2,
-    spread: 0,
-    color: '#000000',
-    alpha: 1
-  }, ...buttonInsetFakeBorders],
+  button: [
+    {
+      x: 0,
+      y: 0,
+      blur: 2,
+      spread: 0,
+      color: '#000000',
+      alpha: 1,
+    },
+    ...buttonInsetFakeBorders,
+  ],
   buttonHover: [hoverGlow, ...buttonInsetFakeBorders],
   buttonPressed: [hoverGlow, ...inputInsetFakeBorders],
-  input: [...inputInsetFakeBorders, {
-    x: 0,
-    y: 0,
-    blur: 2,
-    inset: true,
-    spread: 0,
-    color: '#000000',
-    alpha: 1
-  }]
+  input: [
+    ...inputInsetFakeBorders,
+    {
+      x: 0,
+      y: 0,
+      blur: 2,
+      inset: true,
+      spread: 0,
+      color: '#000000',
+      alpha: 1,
+    },
+  ],
 }
 export const generateShadows = (input, colors) => {
   // TODO this is a small hack for `mod` to work with shadows
@@ -654,58 +727,65 @@ export const generateShadows = (input, colors) => {
     popup: 'popover',
     avatar: 'bg',
     panelHeader: 'panel',
-    input: 'input'
+    input: 'input',
   }
 
   const cleanInputShadows = Object.fromEntries(
-    Object.entries(input.shadows || {})
-      .map(([name, shadowSlot]) => [
-        name,
-        // defaulting color to black to avoid potential problems
-        shadowSlot.map(shadowDef => ({ color: '#000000', ...shadowDef }))
-      ])
+    Object.entries(input.shadows || {}).map(([name, shadowSlot]) => [
+      name,
+      // defaulting color to black to avoid potential problems
+      shadowSlot.map((shadowDef) => ({ color: '#000000', ...shadowDef })),
+    ]),
   )
-  const inputShadows = cleanInputShadows && !input.themeEngineVersion
-    ? shadows2to3(cleanInputShadows, input.opacity)
-    : cleanInputShadows || {}
+  const inputShadows =
+    cleanInputShadows && !input.themeEngineVersion
+      ? shadows2to3(cleanInputShadows, input.opacity)
+      : cleanInputShadows || {}
   const shadows = Object.entries({
     ...DEFAULT_SHADOWS,
-    ...inputShadows
+    ...inputShadows,
   }).reduce((shadowsAcc, [slotName, shadowDefs]) => {
     const slotFirstWord = slotName.replace(/[A-Z].*$/, '')
     const colorSlotName = hackContextDict[slotFirstWord]
-    const isLightOnDark = relativeLuminance(convert(colors[colorSlotName]).rgb) < 0.5
+    const isLightOnDark =
+      relativeLuminance(convert(colors[colorSlotName]).rgb) < 0.5
     const mod = isLightOnDark ? 1 : -1
-    const newShadow = shadowDefs.reduce((shadowAcc, def) => [
-      ...shadowAcc,
-      {
-        ...def,
-        color: rgb2hex(computeDynamicColor(
-          def.color,
-          (variableSlot) => convert(colors[variableSlot]).rgb,
-          mod
-        ))
-      }
-    ], [])
+    const newShadow = shadowDefs.reduce(
+      (shadowAcc, def) => [
+        ...shadowAcc,
+        {
+          ...def,
+          color: rgb2hex(
+            computeDynamicColor(
+              def.color,
+              (variableSlot) => convert(colors[variableSlot]).rgb,
+              mod,
+            ),
+          ),
+        },
+      ],
+      [],
+    )
     return { ...shadowsAcc, [slotName]: newShadow }
   }, {})
 
   return {
     rules: {
-      shadows: Object
-        .entries(shadows)
-      // TODO for v2.2: if shadow doesn't have non-inset shadows with spread > 0 - optionally
-      // convert all non-inset shadows into filter: drop-shadow() to boost performance
-        .map(([k, v]) => [
-          `--${k}Shadow: ${getCssShadow(v)}`,
-          `--${k}ShadowFilter: ${getCssShadowFilter(v)}`,
-          `--${k}ShadowInset: ${getCssShadow(v, true)}`
-        ].join(';'))
-        .join(';')
+      shadows: Object.entries(shadows)
+        // TODO for v2.2: if shadow doesn't have non-inset shadows with spread > 0 - optionally
+        // convert all non-inset shadows into filter: drop-shadow() to boost performance
+        .map(([k, v]) =>
+          [
+            `--${k}Shadow: ${getCssShadow(v)}`,
+            `--${k}ShadowFilter: ${getCssShadowFilter(v)}`,
+            `--${k}ShadowInset: ${getCssShadow(v, true)}`,
+          ].join(';'),
+        )
+        .join(';'),
     },
     theme: {
-      shadows
-    }
+      shadows,
+    },
   }
 }
 
@@ -715,18 +795,25 @@ export const generateShadows = (input, colors) => {
  * Back in v2 shadows allowed you to use dynamic colors however those used pure CSS3 variables
  */
 export const shadows2to3 = (shadows, opacity) => {
-  return Object.entries(shadows).reduce((shadowsAcc, [slotName, shadowDefs]) => {
-    const isDynamic = ({ color = '#000000' }) => color.startsWith('--')
-    const getOpacity = ({ color }) => opacity[getOpacitySlot(color.substring(2).split(',')[0])]
-    const newShadow = shadowDefs.reduce((shadowAcc, def) => [
-      ...shadowAcc,
-      {
-        ...def,
-        alpha: isDynamic(def) ? getOpacity(def) || 1 : def.alpha
-      }
-    ], [])
-    return { ...shadowsAcc, [slotName]: newShadow }
-  }, {})
+  return Object.entries(shadows).reduce(
+    (shadowsAcc, [slotName, shadowDefs]) => {
+      const isDynamic = ({ color = '#000000' }) => color.startsWith('--')
+      const getOpacity = ({ color }) =>
+        opacity[getOpacitySlot(color.substring(2).split(',')[0])]
+      const newShadow = shadowDefs.reduce(
+        (shadowAcc, def) => [
+          ...shadowAcc,
+          {
+            ...def,
+            alpha: isDynamic(def) ? getOpacity(def) || 1 : def.alpha,
+          },
+        ],
+        [],
+      )
+      return { ...shadowsAcc, [slotName]: newShadow }
+    },
+    {},
+  )
 }
 
 export const colors2to3 = (colors) => {
@@ -738,12 +825,13 @@ export const colors2to3 = (colors) => {
       case 'btnText':
         return {
           ...acc,
-          ...btnPositions
-            .reduce(
-              (statePositionAcc, position) =>
-                ({ ...statePositionAcc, ['btn' + position + 'Text']: color })
-              , {}
-            )
+          ...btnPositions.reduce(
+            (statePositionAcc, position) => ({
+              ...statePositionAcc,
+              ['btn' + position + 'Text']: color,
+            }),
+            {},
+          ),
         }
       default:
         return { ...acc, [slotName]: color }

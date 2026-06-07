@@ -5,8 +5,8 @@ export default {
     {
       directives: {
         background: '--accent',
-        opacity: 0.5
-      }
-    }
-  ]
+        opacity: 0.5,
+      },
+    },
+  ],
 }

@@ -132,6 +132,7 @@
   },
   "importer": {
     "submit": "Submit",
+    "import": "Import",
     "success": "Imported successfully.",
     "error": "An error occured while importing this file."
   },
@@ -283,6 +284,7 @@
     "new_status": "Post new status",
     "reply_option": "Reply to this status",
     "quote_option": "Quote this status",
+    "quote_url": "Link to quoted post",
     "account_not_locked_warning": "Your account is not {0}. Anyone can follow you to view your follower-only posts.",
     "account_not_locked_warning_link": "locked",
     "attachments_sensitive": "Mark attachments as sensitive",
@@ -380,9 +382,10 @@
     "select_all": "Select all"
   },
   "page_list": {
-     "load_more": "Load more"
+    "load_more": "Load more"
   },
   "settings": {
+    "invalid_settings_imported": "Error importing settings",
     "add_language": "Add fallback language",
     "remove_language": "Remove",
     "primary_language": "Primary language:",
@@ -404,12 +407,17 @@
     "change_avatar": "Change avatar",
     "setting_changed": "Setting is different from default",
     "setting_server_side": "This setting is tied to your profile and affects all sessions and clients",
+    "setting_local_side": "This setting is tied to current session and doesn't affects other devices and browsers",
     "enter_current_password_to_confirm": "Enter your current password to confirm your identity",
     "post_look_feel": "Posts Look & Feel",
-    "mention_links": "Mention links",
+    "posts": "Posts",
+    "developer": "Developer",
+    "debug": "Debug",
+    "mention_links": "Mention Links",
     "appearance": "Appearance",
     "confirm_new_setting": "Confirm new setting?",
     "confirm_new_question": "Does this look ok? Setting will be reverted in 10 seconds.",
+    "confirm_new_question_countdown": "Does this look ok? Setting will be reverted in 1 second. | Does this look ok? Setting will be reverted in {count} seconds.",
     "revert": "Revert",
     "confirm": "Confirm",
     "text_size": "Text and interface size",
@@ -419,9 +427,14 @@
     "navbar_size": "Top bar size",
     "panel_header_size": "Panel header size",
     "visual_tweaks": "Minor visual tweaks",
-    "theme_debug": "Show what background theme engine assumes when dealing with transparancy (DEBUG)",
+    "theme_debug": "Show what background theme engine assumes when dealing with transparancy",
     "scale_and_layout": "Interface scale and layout",
+    "timelines": "Timelines",
+    "format_and_language": "Format and Language",
+    "confirmations": "Confirmations",
+    "layout": "Layout",
     "enabled": "Enabled",
+    "clutter": "Clutter",
     "filter": {
       "clutter": "Remove clutter",
       "mute_filter": "Mute Filters",
@@ -430,6 +443,7 @@
       "plain": "Simple",
       "user": "User (Simple)",
       "user_regexp": "User (RegExp)",
+      "case_sensitive": "Case-sensitive",
       "hide": "Hide completely",
       "name": "Name",
       "value": "Value",
@@ -536,6 +550,7 @@
     "chatMessageRadius": "Chat message",
     "collapse_subject": "Collapse posts with subjects",
     "composing": "Composing",
+    "replies": "Replying",
     "confirm_new_password": "Confirm new password",
     "current_password": "Current password",
     "confirm_dialogs": "Ask for confirmation when",
@@ -597,6 +612,12 @@
     "follow_export_button": "Export your follows to a csv file",
     "follow_import": "Follow import",
     "follow_import_error": "Error importing followers",
+    "import_export": {
+      "title": "Import / Export",
+      "follows": "List of users you follow",
+      "blocks": "List of users you block",
+      "mutes": "List of users you mute"
+    },
     "follows_imported": "Follows imported! Processing them will take a while.",
     "accent": "Accent",
     "foreground": "Foreground",
@@ -618,6 +639,7 @@
     "navbar_column_stretch": "Stretch navbar to columns width",
     "always_show_post_button": "Always show floating New Post button",
     "hide_wallpaper": "Hide instance wallpaper",
+    "foreign_user_background": "Allow other user's profiles to override wallpaper",
     "preload_images": "Preload images",
     "use_one_click_nsfw": "Open NSFW attachments with just one click",
     "hide_post_stats": "Hide post statistics (e.g. the number of favorites)",
@@ -674,7 +696,6 @@
     "name_bio": "Name & bio",
     "new_email": "New email",
     "new_password": "New password",
-    "posts": "Posts",
     "user_profiles": "User Profiles",
     "notification_visibility": "Types of notifications to show",
     "notification_visibility_in_column": "Show in notifications column/drawer",
@@ -748,7 +769,7 @@
     "subject_line_email": "Like email: \"re: subject\"",
     "subject_line_mastodon": "Like mastodon: copy as is",
     "subject_line_noop": "Do not copy",
-    "force_theme_recompilation_debug": "Disable theme cahe, force recompile on each boot (DEBUG)",
+    "force_theme_recompilation_debug": "Disable theme cahe, force recompile on each boot",
     "conversation_display": "Conversation display style",
     "conversation_display_tree": "Tree-style",
     "conversation_display_tree_quick": "Tree view",
@@ -763,6 +784,7 @@
     "column_sizes_sidebar": "Sidebar",
     "column_sizes_content": "Content",
     "column_sizes_notifs": "Notifications",
+    "scale_and_font": "Scale and Font",
     "theme_editor_min_width": "Minimum width of theme editor (0 for \"fit-content\")",
     "tree_advanced": "Allow more flexible navigation in tree view",
     "tree_fade_ancestors": "Display ancestors of the current status in faint text",
@@ -773,8 +795,10 @@
     "conversation_other_replies_button_inside": "Inside statuses",
     "max_depth_in_thread": "Maximum number of levels in thread to display by default",
     "post_status_content_type": "Post status content type",
+    "default_post_status_content_type": "Default post status content type",
     "sensitive_by_default": "Mark posts as sensitive by default",
     "stop_gifs": "Pause animated images until you hover on them",
+    "non_square_emoji": "Allow non-square emoji",
     "streaming": "Automatically show new posts when scrolled to the top",
     "auto_update": "Show new posts automatically",
     "user_mutes": "Users",
@@ -814,8 +838,11 @@
     "user_popover_avatar_overlay": "Show user popover over user avatar",
     "user_card_left_justify": "Justify user bio to the left",
     "user_card_hide_personal_marks": "Hide personal marks (highlight/note) in user profiles",
+    "posts_appearance": "Posts Appearance",
     "fun": "Fun",
     "greentext": "Meme arrows",
+    "plaintext_quotes": "Highlight plaintext {0}",
+    "greentext_quotes": ">quotes",
     "show_yous": "Show (You)s",
     "notifications": "Notifications",
     "notification_setting_annoyance": "Annoyance",
@@ -835,11 +862,13 @@
     "enable_web_push_always_show_tip": "Some browsers (Chromium, Chrome) require that push messages always result in a notification, otherwise generic 'Website was updated in background' is shown, enable this to prevent this notification from showing, as Chrome seem to hide push notifications if tab is in focus. Can result in showing duplicate notifications on other browsers.",
     "more_settings": "More settings",
     "style": {
+      "style_section": "Style",
       "custom_theme_used": "(Custom theme)",
       "custom_style_used": "(Custom style)",
       "stock_theme_used": "(Stock theme)",
       "themes2_outdated": "Editor for Themes V2 is being phased out and will eventually be replaced with a new one that takes advantage of new Themes V3 engine. It should still work but experience might be degraded and inconsistent.",
       "appearance_tab_note": "Changes on this tab do not affect the theme used, so exported theme will be different from what seen in the UI",
+      "visual_tweaks_section_note": "Changes in this section do not affect the theme used, exported theme will be different from what seen in the UI",
       "update_preview": "Update preview",
       "themes3": {
         "define": "Override",
@@ -924,7 +953,7 @@
         },
         "font": {
           "group-builtin": "Browser default fonts",
-          "builtin" : {
+          "builtin": {
             "serif": "Serif",
             "sans-serif": "Sans-serif",
             "monospace": "Monospace",
@@ -1078,6 +1107,13 @@
           "post": "Post text",
           "monospace": "Monospaced text"
         },
+        "components_inline": {
+          "interface": "interface",
+          "input": "input fields",
+          "post": "post text",
+          "monospace": "monospaced text"
+        },
+        "override": "Override {0} font",
         "family": "Font name",
         "size": "Size (in px)",
         "weight": "Weight (boldness)",
@@ -1111,7 +1147,8 @@
     "hard_reset_value_tooltip": "Remove setting from storage, forcing use of default value",
     "cache": "Cache",
     "clear_asset_cache": "Clear asset cache",
-    "clear_emoji_cache": "Clear emoji cache"
+    "clear_emoji_cache": "Clear emoji cache",
+    "compact_profiles": "Reduce profile height on user pages"
   },
   "admin_dash": {
     "window_title": "Administration",
@@ -1125,7 +1162,77 @@
       "users": "Users",
       "limits": "Limits",
       "frontends": "Front-ends",
-      "emoji": "Emoji"
+      "mailer": "EMails",
+      "media_proxy": "Media Proxy",
+      "emoji": "Emoji",
+      "uploads": "Uploads",
+      "monitoring": "Monitoring",
+      "registrations": "Registrations",
+      "links": "Links",
+      "job_queues": "Job Queues",
+      "auth": "Auth",
+      "posts": "Posts",
+      "rate_limit": "Rate Limits",
+      "http": "HTTP",
+      "federation": "Federation",
+      "other": "Other"
+    },
+    "posts": {
+      "global": "Global settings",
+      "local": "Local posts",
+      "remote": "Remote posts"
+    },
+    "other": {
+      "uncategorized": "Uncategorized",
+      "user_backup": "User Backup",
+      "reports": "Reports",
+      "privileges": "Privileges"
+    },
+    "monitoring": {
+      "builtins": "Built-in Tools",
+      "prometheus": "Prometheus Exporter"
+    },
+    "federation": {
+      "global": "Global settings",
+      "restrictions": "Restrictions",
+      "activitypub": "ActivityPub"
+    },
+    "auth": {
+      "MFA": "Multi-factor Authentication",
+      "LDAP": "LDAP Settings",
+      "OAuth": "Oauth2 settings",
+      "TOTP": "One-time Passwords (TOTP)",
+      "backup_codes": "Backup codes"
+    },
+    "job_queues": {
+      "Gun": {
+        "title": "Gun queues",
+        "connections_pools": "Gun connections pool",
+        "pools": {
+          "title": "Gun worker pools",
+          "default": "Default pool",
+          "federation": "Federation pool",
+          "media": "Media pool",
+          "rich_media": "Rich media pool",
+          "upload": "Upload pool"
+        }
+      },
+      "Hackney": {
+        "title": "Hackney pools",
+        "federation": "Federation",
+        "media": "Media",
+        "rich_media": "Rich media",
+        "upload": "Upload"
+      },
+      "queues": "Queues"
+    },
+    "rate_limit": {
+      "rate_limit": "Rate Limit",
+      "amount": "Amount",
+      "unauthenticated": "Unauthenticated",
+      "authenticated": "Authenticated",
+      "period": "Time period",
+      "separate": "Separate rate limits for authenticated/unauthenticated users"
     },
     "nodb": {
       "heading": "Database config is disabled",
@@ -1137,19 +1244,49 @@
       "native": "Native",
       "kocaptcha": "KoCaptcha"
     },
-    "instance": {
-      "instance": "Instance information",
-      "registrations": "User sign-ups",
-      "captcha_header": "CAPTCHA",
-      "kocaptcha": "KoCaptcha settings",
-      "access": "Instance access",
-      "restrict": {
-        "header": "Restrict access for anonymous visitors",
-        "description": "Detailed setting for allowing/disallowing access to certain aspects of API. By default (indeterminate state) it will disallow if instance is not public, ticked checkbox means disallow access even if instance is public, unticked means allow access even if instance is private. Please note that unexpected behavior might happen if some settings are set, i.e. if profile access is disabled posts will show without profile information.",
-        "timelines": "Timelines access",
-        "profiles": "User profiles access",
-        "activities": "Statuses/activities access"
-      }
+    "http": {
+      "outbound": "Outgoing connections",
+      "incoming": "Incoming connections",
+      "security": "HTTP Security",
+      "web_push": "Web Push",
+      "web_push_description": "Web Push VAPID settings. You can use the mix task web_push.gen.keypair to generate it."
+    },
+    "registrations": {
+      "welcome": {
+        "title": "Welcome message",
+        "description": "Send new users a message when they sign up",
+        "direct_message": "Via direct message",
+        "chat_message": "Via chat",
+        "email_message": "Via email"
+      },
+      "restrictions": "Restrictions",
+      "autofollow": "Autofollow"
+    },
+    "links": {
+      "no_scheme": "No scheme",
+      "link_previews": "Link previews",
+      "link_formatter": "Link formatter"
+    },
+    "uploads": {
+      "attachments": "Attachments settings",
+      "upload": "Upload",
+      "local_uploader": "Local files",
+      "filenames": "Filenames, Titles and Descriptions",
+      "uploader_settings": "Uploader settings"
+    },
+    "media_proxy": {
+      "basic": "Basic Settings",
+      "invalidation": "Cache Invalidation",
+      "limits": "Limits",
+      "thumbnails": "Thumbnail Generation",
+      "invalidation_settings": "Cache Invalidation"
+    },
+    "mailer": {
+      "styling": "Styling",
+      "assets": "Assets",
+      "colors": "Color palette",
+      "adapter": "Mailing Adapter",
+      "auth": "Authentication"
     },
     "users": {
       "title": "Users",
@@ -1240,7 +1377,6 @@
           "require_password_change": "Require Password Change For Selected Users?",
           "resend_confirmation_email": "Resend Confirmation Email For Selected Users?",
           "disable_mfa": "Disable MFA For Selected Users?"
-
         }
       },
       "details": {
@@ -1269,12 +1405,14 @@
     "limits": {
       "arbitrary_limits": "Arbitrary limits",
       "posts": "Post limits",
+      "other": "Misc. limits",
       "uploads": "Attachments limits",
       "users": "User profile limits",
       "profile_fields": "Profile fields limits",
       "user_uploads": "Profile media limits"
     },
     "frontend": {
+      "title": "Frontend management",
       "repository": "Repository link",
       "versions": "Available versions",
       "build_url": "Build URL",
@@ -1298,7 +1436,11 @@
     "emoji": {
       "global_actions": "Global actions",
       "reload": "Reload emoji",
+      "reload_short": "Refresh",
+      "advanced": "Advanced",
       "importFS": "Import emoji from filesystem",
+      "import_pack": "Upload emoji pack",
+      "import_pack_short": "Import",
       "error": "Error: {0}",
       "create_pack": "Create pack",
       "delete_pack": "Delete pack",
@@ -1306,10 +1448,12 @@
       "create": "Create",
       "emoji_packs": "Emoji packs",
       "remote_packs": "Remote packs",
+      "remote_packs_short": "Remote",
       "do_list": "List",
       "remote_pack_instance": "Remote pack instance",
       "emoji_pack": "Emoji pack",
       "edit_pack": "Edit pack",
+      "metadata": "Metadata",
       "description": "Description",
       "homepage": "Homepage",
       "fallback_src": "Fallback source",
@@ -1345,8 +1489,99 @@
       "replace_warning": "This will REPLACE the local pack of the same name",
       "copied_successfully": "Successfully copied emoji \"{0}\" to pack \"{1}\""
     },
+    "generic_enforcement": {
+      "if_available": "If available",
+      "always": "Always",
+      "never": "Never"
+    },
+    "instance": {
+      "instance": "Instance information",
+      "registrations": "User sign-ups",
+      "captcha_header": "CAPTCHA",
+      "kocaptcha": "KoCaptcha settings",
+      "pwa": {
+        "manifest": "PWA Manifest",
+        "optional": "(optional)",
+        "no_icons": "No icons defined",
+        "icon": {
+          "purpose": "Icon purpose",
+          "any": "Any",
+          "monochrome": "Monochrome",
+          "maskable": "Maskable"
+        }
+      },
+      "misc_brand": "Miscellaneous elements",
+      "branding": "Branding",
+      "access": "Instance access",
+      "rich_metadata": "Metadata",
+      "restrict": {
+        "header": "Restrict access for anonymous visitors",
+        "description": "Detailed setting for allowing/disallowing access to certain aspects of API. By default (indeterminate state) it will disallow if instance is not public, ticked checkbox means disallow access even if instance is public, unticked means allow access even if instance is private. Please note that unexpected behavior might happen if some settings are set, i.e. if profile access is disabled posts will show without profile information.",
+        "timelines": "Timelines access",
+        "profiles": "User profiles access",
+        "activities": "Statuses/activities access"
+      },
+      ":unauthenticated": "Unauthenticated",
+      ":all": "Everyone"
+    },
     "temp_overrides": {
       ":pleroma": {
+        ":connections_pool": {
+          ":max_idle_time": {
+            "label": "Maximum idle time",
+            "description": "Maximum idle time before CONFIRM"
+          },
+          ":retry": {
+            "label": "Retry",
+            "description": "Number of retries for making a connection CONFIRM"
+          }
+        },
+        ":pools": {
+          ":rich_media": {
+            "label": "Rich media",
+            "description": "idk"
+          }
+        },
+        ":rate_limit": {
+          ":oauth_app_creation": {
+            "label": "OAuth app creation",
+            "description": "For registering new OAuth App ID"
+          },
+          ":ap_routes": {
+            "label": "ActivityPub",
+            "description": "Federation endpoints"
+          },
+          ":account_confirmation_resend": {
+            "label": "Account confirmation resend",
+            "description": "How often user can resend confirmation mail"
+          }
+        },
+        "Pleroma_DOT_Formatter": {
+          ":attribute_toggle": {
+            "label": "Set {attr} attribute"
+          },
+          ":truncate_toggle": {
+            "label": "Truncate"
+          },
+          ":class": {
+            "label": "Value"
+          },
+          ":rel": {
+            "label": "Value"
+          }
+        },
+        "Pleroma_DOT_Uploaders_DOT_Uploader": {
+          ":timeout": {
+            "label": "Timeout",
+            "description": "Amount of milliseconds before dropping connection"
+          }
+        },
+        "Pleroma_DOT_Upload": {
+          ":default_description": {
+            "label": "Default description",
+            "description": "Default description to give to a file. Setting it to ':filename' will use file's filename as description."
+          }
+        },
         ":instance": {
           ":public": {
             "label": "Instance is public",
@@ -1363,6 +1598,16 @@
           ":background_image": {
             "label": "Background image",
             "description": "Background image (primarily used by PleromaFE)"
+          }
+        },
+        ":http_security": {
+          ":allow_unsafe_eval": {
+            "label": "Allow unsafe-eval",
+            "description": "Allow unsafe evaluation of scripts (required for Flash support)"
+          },
+          ":report_url": {
+            "label": "Report URL",
+            "description": "URL to report security violations to"
           }
         }
       }
@@ -1390,7 +1635,7 @@
       "weeks_suffix": "week(s)",
       "years": "{0} year | {0} years",
       "years_short": "{0}y",
-      "years": "year(s)"
+      "years_suffix": "year(s)"
     },
     "in_future": "in {0}",
     "in_past": "{0} ago",
@@ -1465,6 +1710,8 @@
     "show_content": "Show content",
     "hide_content": "Hide content",
     "status_deleted": "This post was deleted",
+    "unknown_user": "unknown user",
+    "unknown_user_info": "Unable to fetch information about this user",
     "nsfw": "NSFW",
     "expand": "Expand",
     "you": "(You)",
@@ -1474,6 +1721,7 @@
     "show_all_attachments": "Show all attachments",
     "show_attachment_in_modal": "Show in media modal",
     "show_attachment_description": "Preview description (open attachment for full description)",
+    "attachment_description": "Attachment description",
     "hide_attachment": "Hide attachment",
     "remove_attachment": "Remove attachment",
     "attachment_stop_flash": "Stop Flash player",
@@ -1542,6 +1790,7 @@
     "muted": "Muted",
     "mute_confirm_title": "Mute confirmation",
     "mute_confirm": "Do you really want to mute {user}?",
+    "mute_domain_confirm": "Do you really want to mute entire {domain}?",
     "mute_confirm_accept_button": "Mute",
     "mute_confirm_cancel_button": "Do not mute",
     "mute_or": "or",
@@ -1584,6 +1833,7 @@
     "bot": "Bot",
     "group": "Group",
     "birthday": "Born {birthday}",
+    "joined": "Joined",
     "admin_menu": {
       "moderation": "Moderation",
       "grant_admin": "Grant Admin",
@@ -1611,7 +1861,15 @@
     },
     "personal_note": "Personal note",
     "note_blank_click": "Click to add note",
-    "highlight_header": "Highlight user's posts and mentions"
+    "highlight_header": "Highlight user's posts and mentions",
+    "tags": {
+      "mrf_tag:media-force-nsfw": "Mark as sensitive",
+      "mrf_tag:media-strip": "Remove attachments",
+      "mrf_tag:force-unlisted": "Force unlisted",
+      "mrf_tag:sandbox": "Remove from public timelines",
+      "mrf_tag:disable-remote-subscription": "Reject non-local follow requests",
+      "mrf_tag:disable-any-subscription": "Reject any follow requests"
+    }
   },
   "user_profile": {
     "timeline_title": "User timeline",
@@ -1637,10 +1895,10 @@
     "repeat": "Repeat",
     "unrepeat": "Unrepeat",
     "reply": "Reply",
-    "add_reaction": "Add reaction",
     "favorite": "Favorite",
     "unfavorite": "Unfavorite",
     "add_reaction": "Add Reaction",
+    "add_quote": "Add quote",
     "user_settings": "User Settings",
     "accept_follow_request": "Accept follow request",
     "reject_follow_request": "Reject follow request",
@@ -1734,8 +1992,11 @@
   "update": {
     "big_update_title": "Please bear with us",
     "big_update_content": "We haven't had a release in a while, so things might look and feel different than what you're used to.",
-    "update_bugs": "Please report any issues and bugs on {pleromaGitlab}, as we have changed a lot, and although we test thoroughly and use development versions ourselves, we may have missed some things. We welcome your feedback and suggestions on issues you might encounter, or how to improve Pleroma and Pleroma-FE.",
+    "big_update_content2": "We implemented synchronized settings! This means (nearly) all your settings are now properly synchronized between devices and sessions. We try to migrate settings from old config but migration is performed only once, so some settings might be incorrect.",
+    "update_bugs": "Please report any issues and bugs on {pleromaForgejo}, as we have changed a lot, and although we test thoroughly and use development versions ourselves, we may have missed some things. We welcome your feedback and suggestions on issues you might encounter, or how to improve Pleroma and Pleroma-FE.",
+    "update_bugs2": "Let us know if you don't want certain setting synchronized on {pleromaForgejo}.",
     "update_bugs_gitlab": "Pleroma GitLab",
+    "update_bugs_forgejo": "Pleroma Forgejo",
     "update_changelog": "For more details on what's changed, see {theFullChangelog}.",
     "update_changelog_here": "the full changelog",
     "art_by": "Art by {linkToArtist}"
@@ -1746,6 +2007,7 @@
   "drafts": {
     "drafts": "Drafts",
     "no_drafts": "You have no drafts",
+    "clean_drafts": "Remove all drafts",
     "empty": "(No content)",
     "poll_tooltip": "Draft contains a poll",
     "continue": "Continue composing",
@@ -1755,6 +2017,7 @@
     "abandon_confirm": "Do you really want to abandon this draft?",
     "abandon_confirm_accept_button": "Abandon",
     "abandon_confirm_cancel_button": "Keep",
+    "abandon_all_confirm": "Do you really want to abandon all drafts?",
     "replying": "Replying to {statusLink}",
     "editing": "Editing {statusLink}",
     "unavailable": "(unavailable)"

@@ -1,11 +1,14 @@
-import Timeline from '../timeline/timeline.vue'
+import Timeline from 'src/components/timeline/timeline.vue'
+
 const FriendsTimeline = {
   components: {
-    Timeline
+    Timeline,
   },
   computed: {
-    timeline () { return this.$store.state.statuses.timelines.friends }
-  }
+    timeline() {
+      return this.$store.state.statuses.timelines.friends
+    },
+  },
 }
 
 export default FriendsTimeline

@@ -1,21 +1,24 @@
 <template>
   <div class="profile-tab">
-    <div class="setting-item profile-edit">
-      <h2>{{ $t('settings.account_profile_edit') }}</h2>
+    <div class="setting-section profile-edit">
       <UserCard
         :user-id="user.id"
         :editable="true"
         :switcher="false"
       />
     </div>
-    <div class="setting-item">
-      <h2>{{ $t('settings.account_privacy') }}</h2>
+    <div class="setting-section">
+      <h3>{{ $t('settings.account_privacy') }}</h3>
       <ul class="setting-list">
         <li>
-          <Checkbox v-model="locked">
-            {{ $t('settings.lock_account_description') }}
-          </Checkbox>
-          <ProfileSettingIndicator :is-profile="true" />
+          <div class="setting-item">
+            <Checkbox
+              v-model="locked"
+              class="setting-label setting-control custom-boolean-setting"
+            >
+              {{ $t('settings.lock_account_description') }}
+            </Checkbox>
+          </div>
         </li>
         <li>
           <BooleanSetting

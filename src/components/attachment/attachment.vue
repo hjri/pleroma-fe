@@ -6,7 +6,7 @@
     @click="openModal"
   >
     <a
-      v-if="type !== 'html'"
+      v-if="attachment.type !== 'html'"
       class="placeholder"
       target="_blank"
       :href="attachment.url"
@@ -30,21 +30,16 @@
       </button>
     </div>
     <div
-      v-if="size !== 'hide' && !hideDescription && (edit || localDescription || showDescription)"
+      v-if="size !== 'hide' && !hideDescription && edit"
       class="description-container"
       :class="{ '-static': !edit }"
     >
-      <input
-        v-if="edit"
+      <textarea
         v-model="localDescription"
         type="text"
         class="input description-field"
         :placeholder="$t('post_status.media_description')"
-        @keydown.enter.prevent=""
-      >
-      <p v-else>
-        {{ localDescription }}
-      </p>
+      />
     </div>
   </button>
   <div
@@ -70,7 +65,7 @@
           :src="nsfwImage"
         >
         <FAIcon
-          v-if="type === 'video'"
+          v-if="attachment.type === 'video'"
           class="play-icon"
           icon="play-circle"
         />
@@ -80,23 +75,31 @@
         class="attachment-buttons"
       >
         <button
-          v-if="type === 'flash' && flashLoaded"
+          v-if="attachment.type === 'flash' && flashLoaded"
           class="button-default attachment-button -transparent"
           :title="$t('status.attachment_stop_flash')"
           @click.prevent="stopFlash"
         >
           <FAIcon icon="stop" />
         </button>
-        <button
-          v-if="attachment.description && size !== 'small' && !edit && type !== 'unknown'"
-          class="button-default attachment-button -transparent"
-          :title="$t('status.show_attachment_description')"
-          @click.prevent="toggleDescription"
+        <Popover
+          v-if="attachment.description && size !== 'small' && !edit && attachment.type !== 'unknown'"
+          trigger="click"
+          popover-class="popover popover-default description-popover"
+          :trigger-attrs="{ 'class': 'button-default attachment-button -transparent', 'title': $t('status.attachment_description') }"
         >
-          <FAIcon icon="align-right" />
-        </button>
+          <template #trigger>
+            <FAIcon icon="align-right" />
+          </template>
+          <template #content>
+            <details open>
+              <summary>{{ $t('status.attachment_description') }}</summary>
+              <span>{{ localDescription }}</span>
+            </details>
+          </template>
+        </Popover>
         <button
-          v-if="!useModal && type !== 'unknown'"
+          v-if="!useModal && attachment.type !== 'unknown'"
           class="button-default attachment-button -transparent"
           :title="$t('status.show_attachment_in_modal')"
           @click.prevent="openModalForce"
@@ -138,7 +141,7 @@
       </div>
 
       <a
-        v-if="type === 'image' && (!hidden || preloadImage)"
+        v-if="attachment.type === 'image' && (!hidden || preloadImage)"
         class="image-container"
         :class="{'-hidden': hidden && preloadImage }"
         :href="attachment.url"
@@ -156,7 +159,7 @@
       </a>
 
       <a
-        v-if="type === 'unknown' && !hidden"
+        v-if="attachment.type === 'unknown' && !hidden"
         class="placeholder-container"
         :href="attachment.url"
         target="_blank"
@@ -173,7 +176,7 @@
 
       <component
         :is="videoTag"
-        v-if="type === 'video' && !hidden"
+        v-if="attachment.type === 'video' && !hidden"
         class="video-container"
         :href="attachment.url"
         @click.stop.prevent="openModal"
@@ -193,13 +196,13 @@
       </component>
 
       <span
-        v-if="type === 'audio' && !hidden"
+        v-if="attachment.type === 'audio' && !hidden"
         class="audio-container"
         :href="attachment.url"
         @click.stop.prevent="openModal"
       >
         <audio
-          v-if="type === 'audio'"
+          v-if="attachment.type === 'audio'"
           :src="attachment.url"
           :alt="attachment.description"
           :title="attachment.description"
@@ -210,7 +213,7 @@
       </span>
 
       <div
-        v-if="type === 'html' && attachment.oembed"
+        v-if="attachment.type === 'html' && attachment.oembed"
         class="oembed-container"
         @click.prevent="linkClicked"
       >
@@ -229,7 +232,7 @@
       </div>
 
       <span
-        v-if="type === 'flash' && !hidden"
+        v-if="attachment.type === 'flash' && !hidden"
         class="flash-container"
         :href="attachment.url"
         @click.stop.prevent="openModal"
@@ -244,21 +247,16 @@
       </span>
     </div>
     <div
-      v-if="size !== 'hide' && !hideDescription && (edit || (localDescription && showDescription))"
+      v-if="size !== 'hide' && !hideDescription && edit"
       class="description-container"
       :class="{ '-static': !edit }"
     >
-      <input
-        v-if="edit"
+      <textarea
         v-model="localDescription"
         type="text"
         class="input description-field"
         :placeholder="$t('post_status.media_description')"
-        @keydown.enter.prevent=""
-      >
-      <p v-else>
-        {{ localDescription }}
-      </p>
+      />
     </div>
   </div>
 </template>

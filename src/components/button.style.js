@@ -12,25 +12,22 @@ export default {
     focused: ':focus-within',
     pressed: ':active',
     hover: ':is(:hover, :focus-visible):not(:disabled)',
-    disabled: ':disabled'
+    disabled: ':disabled',
   },
   // Variants are mutually exclusive, each component implicitly has "normal" variant, and all other variants inherit from it.
   variants: {
     // Variants save on computation time since adding new variant just adds one more "set".
     // normal: '', // you can override normal variant, it will be appenended to the main class
     danger: '.-danger',
-    transparent: '.-transparent'
+    transparent: '.-transparent',
     // Overall the compuation difficulty is N*((1/6)M^3+M) where M is number of distinct states and N is number of variants.
     // This (currently) is further multipled by number of places where component can exist.
   },
   editor: {
-    aspect: '2 / 1'
+    aspect: '2 / 1',
   },
   // This lists all other components that can possibly exist within one. Recursion is currently not supported (and probably won't be supported ever).
-  validInnerComponents: [
-    'Text',
-    'Icon'
-  ],
+  validInnerComponents: ['Text', 'Icon'],
   // Default rules, used as "default theme", essentially.
   defaultRules: [
     {
@@ -39,9 +36,11 @@ export default {
         '--buttonDefaultHoverGlow': 'shadow | 0 0 1 2 --text / 0.4',
         '--buttonDefaultFocusGlow': 'shadow | 0 0 1 2 --link / 0.5',
         '--buttonDefaultShadow': 'shadow | 0 0 2 #000000',
-        '--buttonDefaultBevel': 'shadow | $borderSide(#FFFFFF top 0.2 1), $borderSide(#000000 bottom 0.2 1)',
-        '--buttonPressedBevel': 'shadow | inset 0 0 4 #000000, $borderSide(#FFFFFF bottom 0.2 1), $borderSide(#000000 top 0.2 1)'
-      }
+        '--buttonDefaultBevel':
+          'shadow | $borderSide(#FFFFFF top 0.2 1), $borderSide(#000000 bottom 0.2 1)',
+        '--buttonPressedBevel':
+          'shadow | inset 0 0 4 #000000, $borderSide(#FFFFFF bottom 0.2 1), $borderSide(#000000 top 0.2 1)',
+      },
     },
     {
       // component: 'Button', // no need to specify components every time unless you're specifying how other component should look
@@ -49,128 +48,128 @@ export default {
       directives: {
         background: '--fg',
         shadow: ['--buttonDefaultShadow', '--buttonDefaultBevel'],
-        roundness: 3
-      }
+        roundness: 3,
+      },
     },
     {
       variant: 'danger',
       directives: {
-        background: '--cRed'
-      }
+        background: '$blend(--cRed 0.25 --inheritedBackground)',
+      },
     },
     {
       variant: 'transparent',
       directives: {
-        opacity: 0.5
-      }
+        opacity: 0.5,
+      },
     },
     {
       component: 'Text',
       parent: {
         component: 'Button',
-        variant: 'transparent'
+        variant: 'transparent',
       },
       directives: {
-        textColor: '--text'
-      }
+        textColor: '--text',
+      },
     },
     {
       component: 'Icon',
       parent: {
         component: 'Button',
-        variant: 'transparent'
+        variant: 'transparent',
       },
       directives: {
-        textColor: '--text'
-      }
+        textColor: '--text',
+      },
     },
     {
       state: ['hover'],
       directives: {
-        shadow: ['--buttonDefaultHoverGlow', '--buttonDefaultBevel']
-      }
+        shadow: ['--buttonDefaultHoverGlow', '--buttonDefaultBevel'],
+      },
     },
     {
       state: ['focused'],
       directives: {
-        shadow: ['--buttonDefaultFocusGlow', '--buttonDefaultBevel']
-      }
+        shadow: ['--buttonDefaultFocusGlow', '--buttonDefaultBevel'],
+      },
     },
     {
       state: ['pressed'],
       directives: {
-        shadow: ['--buttonDefaultShadow', '--buttonPressedBevel']
-      }
+        shadow: ['--buttonDefaultShadow', '--buttonPressedBevel'],
+      },
     },
     {
       state: ['pressed', 'hover'],
       directives: {
-        shadow: ['--buttonPressedBevel', '--buttonDefaultHoverGlow']
-      }
+        shadow: ['--buttonPressedBevel', '--buttonDefaultHoverGlow'],
+      },
     },
     {
       state: ['toggled'],
       directives: {
         background: '--accent,-24.2',
-        shadow: ['--buttonDefaultShadow', '--buttonPressedBevel']
-      }
+        shadow: ['--buttonDefaultShadow', '--buttonPressedBevel'],
+      },
     },
     {
       state: ['toggled', 'hover'],
       directives: {
         background: '--accent,-24.2',
-        shadow: ['--buttonDefaultHoverGlow', '--buttonPressedBevel']
-      }
+        shadow: ['--buttonDefaultHoverGlow', '--buttonPressedBevel'],
+      },
     },
     {
       state: ['toggled', 'focused'],
       directives: {
         background: '--accent,-24.2',
-        shadow: ['--buttonDefaultHoverGlow', '--buttonPressedBevel']
-      }
+        shadow: ['--buttonDefaultHoverGlow', '--buttonPressedBevel'],
+      },
     },
     {
       state: ['toggled', 'hover', 'focused'],
       directives: {
         background: '--accent,-24.2',
-        shadow: ['--buttonDefaultHoverGlow', '--buttonPressedBevel']
-      }
+        shadow: ['--buttonDefaultHoverGlow', '--buttonPressedBevel'],
+      },
     },
     {
       state: ['toggled', 'disabled'],
       directives: {
         background: '$blend(--accent 0.25 --parent)',
-        shadow: ['--buttonPressedBevel']
-      }
+        shadow: ['--buttonPressedBevel'],
+      },
     },
     {
       state: ['disabled'],
       directives: {
         background: '$blend(--inheritedBackground 0.25 --parent)',
-        shadow: ['--buttonDefaultBevel']
-      }
+        shadow: ['--buttonDefaultBevel'],
+      },
     },
     {
       component: 'Text',
       parent: {
         component: 'Button',
-        state: ['disabled']
+        state: ['disabled'],
       },
       directives: {
         textOpacity: 0.25,
-        textOpacityMode: 'blend'
-      }
+        textOpacityMode: 'blend',
+      },
     },
     {
       component: 'Icon',
       parent: {
         component: 'Button',
-        state: ['disabled']
+        state: ['disabled'],
       },
       directives: {
         textOpacity: 0.25,
-        textOpacityMode: 'blend'
-      }
-    }
-  ]
+        textOpacityMode: 'blend',
+      },
+    },
+  ],
 }

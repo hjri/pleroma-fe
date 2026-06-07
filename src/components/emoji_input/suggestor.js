@@ -1,8 +1,10 @@
+import { useEmojiStore } from 'src/stores/emoji.js'
+
 /**
  * suggest - generates a suggestor function to be used by emoji-input
  * data: object providing source information for specific types of suggestions:
  * data.emoji - optional, an array of all emoji available i.e.
- *   (getters.standardEmojiList + state.instance.customEmoji)
+ *   (useEmojiStore().standardEmojiList + state.instance.customEmoji)
  * data.users - optional, an array of all known users
  * updateUsersList - optional, a function to search and append to users
  *
@@ -10,7 +12,7 @@
  * doesn't support user linking you can just provide only emoji.
  */
 
-export default data => {
+export default (data) => {
   const emojiCurry = suggestEmoji(data.emoji)
   const usersCurry = data.store && suggestUsers(data.store)
   return (input, nameKeywordLocalizer) => {
@@ -25,22 +27,35 @@ export default data => {
   }
 }
 
-export const suggestEmoji = emojis => (input, nameKeywordLocalizer) => {
+export const suggestEmoji = (emojis) => (input, nameKeywordLocalizer) => {
   const noPrefix = input.toLowerCase().substr(1)
   return emojis
-    .map(emoji => ({ ...emoji, ...nameKeywordLocalizer(emoji) }))
-    .filter((emoji) => (emoji.names.concat(emoji.keywords)).filter(kw => kw.toLowerCase().match(noPrefix)).length)
-    .map(k => {
+    .map((emoji) => ({ ...emoji, ...nameKeywordLocalizer(emoji) }))
+    .filter(
+      (emoji) =>
+        emoji.names
+          .concat(emoji.keywords)
+          .filter((kw) => kw.toLowerCase().match(noPrefix)).length,
+    )
+    .map((k) => {
       let score = 0
 
       // An exact match always wins
-      score += Math.max(...k.names.map(name => name.toLowerCase() === noPrefix ? 200 : 0), 0)
+      score += Math.max(
+        ...k.names.map((name) => (name.toLowerCase() === noPrefix ? 200 : 0)),
+        0,
+      )
 
       // Prioritize custom emoji a lot
       score += k.imageUrl ? 100 : 0
 
       // Prioritize prefix matches somewhat
-      score += Math.max(...k.names.map(kw => kw.toLowerCase().startsWith(noPrefix) ? 10 : 0), 0)
+      score += Math.max(
+        ...k.names.map((kw) =>
+          kw.toLowerCase().startsWith(noPrefix) ? 10 : 0,
+        ),
+        0,
+      )
 
       // Sort by length
       score -= k.displayText.length
@@ -78,7 +93,7 @@ export const suggestUsers = ({ dispatch, state }) => {
     })
   }
 
-  return async input => {
+  return async (input) => {
     const noPrefix = input.toLowerCase().substr(1)
     if (previousQuery === noPrefix) return suggestions
 
@@ -92,37 +107,43 @@ export const suggestUsers = ({ dispatch, state }) => {
       await debounceUserSearch(noPrefix)
     }
 
-    const newSuggestions = state.users.users.filter(
-      user =>
-        user.screen_name && user.name && (
-          user.screen_name.toLowerCase().startsWith(noPrefix) ||
-            user.name.toLowerCase().startsWith(noPrefix))
-    ).slice(0, 20).sort((a, b) => {
-      let aScore = 0
-      let bScore = 0
+    const newSuggestions = state.users.users
+      .filter(
+        (user) =>
+          user.screen_name &&
+          user.name &&
+          (user.screen_name.toLowerCase().startsWith(noPrefix) ||
+            user.name.toLowerCase().startsWith(noPrefix)),
+      )
+      .slice(0, 20)
+      .sort((a, b) => {
+        let aScore = 0
+        let bScore = 0
 
-      // Matches on screen name (i.e. user@instance) makes a priority
-      aScore += a.screen_name.toLowerCase().startsWith(noPrefix) ? 2 : 0
-      bScore += b.screen_name.toLowerCase().startsWith(noPrefix) ? 2 : 0
+        // Matches on screen name (i.e. user@instance) makes a priority
+        aScore += a.screen_name.toLowerCase().startsWith(noPrefix) ? 2 : 0
+        bScore += b.screen_name.toLowerCase().startsWith(noPrefix) ? 2 : 0
 
-      // Matches on name takes second priority
-      aScore += a.name.toLowerCase().startsWith(noPrefix) ? 1 : 0
-      bScore += b.name.toLowerCase().startsWith(noPrefix) ? 1 : 0
+        // Matches on name takes second priority
+        aScore += a.name.toLowerCase().startsWith(noPrefix) ? 1 : 0
+        bScore += b.name.toLowerCase().startsWith(noPrefix) ? 1 : 0
 
-      const diff = (bScore - aScore) * 10
+        const diff = (bScore - aScore) * 10
 
-      // Then sort alphabetically
-      const nameAlphabetically = a.name > b.name ? 1 : -1
-      const screenNameAlphabetically = a.screen_name > b.screen_name ? 1 : -1
+        // Then sort alphabetically
+        const activity = a.last_status_at < b.last_status_at ? 100 : -100
+        const nameAlphabetically = a.name > b.name ? 1 : -1
+        const screenNameAlphabetically = a.screen_name > b.screen_name ? 1 : -1
 
-      return diff + nameAlphabetically + screenNameAlphabetically
-    }).map((user) => ({
-      user,
-      displayText: user.screen_name_ui,
-      detailText: user.name,
-      imageUrl: user.profile_image_url_original,
-      replacement: '@' + user.screen_name + ' '
-    }))
+        return diff + nameAlphabetically + screenNameAlphabetically + activity
+      })
+      .map((user) => ({
+        user,
+        displayText: user.screen_name_ui,
+        detailText: user.name,
+        imageUrl: user.profile_image_url_original,
+        replacement: '@' + user.screen_name + ' ',
+      }))
 
     suggestions = newSuggestions || []
     return suggestions

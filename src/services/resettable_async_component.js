@@ -1,4 +1,4 @@
-import { defineAsyncComponent, shallowReactive, h } from 'vue'
+import { defineAsyncComponent, h, shallowReactive } from 'vue'
 
 /* By default async components don't have any way to recover, if component is
  * failed, it is failed forever. This helper tries to remedy that by recreating
@@ -7,23 +7,24 @@ import { defineAsyncComponent, shallowReactive, h } from 'vue'
  * this should be done from error component but could be done from loading or
  * actual target component itself if needs to be.
  */
-function getResettableAsyncComponent (asyncComponent, options) {
-  const asyncComponentFactory = () => () => defineAsyncComponent({
-    loader: asyncComponent,
-    ...options
-  })
+function getResettableAsyncComponent(asyncComponent, options) {
+  const asyncComponentFactory = () => () =>
+    defineAsyncComponent({
+      loader: asyncComponent,
+      ...options,
+    })
 
   const observe = shallowReactive({ c: asyncComponentFactory() })
 
   return {
-    render () {
+    render() {
       //  emit event resetAsyncComponent to reloading
       return h(observe.c(), {
-        onResetAsyncComponent () {
+        onResetAsyncComponent() {
           observe.c = asyncComponentFactory()
-        }
+        },
       })
-    }
+    },
   }
 }
 

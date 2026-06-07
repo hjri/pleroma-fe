@@ -54,20 +54,20 @@ import { computed, defineEmits, defineProps, nextTick } from 'vue'
 const props = defineProps({
   modelValue: {
     type: Array,
-    required: true
+    required: true,
   },
   selectedId: {
     type: Number,
-    required: true
+    required: true,
   },
   disabled: {
     type: Boolean,
-    default: false
+    default: false,
   },
   getAddValue: {
     type: Function,
-    required: true
-  }
+    required: true,
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'update:selectedId'])
@@ -80,10 +80,16 @@ const present = computed(() => props.modelValue[props.selectedId] != null)
 
 const moveUp = async () => {
   const newModel = [...props.modelValue]
-  const movable = newModel.splice(props.selectedId, 1)[0]
-  newModel.splice(props.selectedId - 1, 0, movable)
+  const movableId = Number(props.selectedId)
 
-  emit('update:modelValue', newModel)
+  const movable = newModel.slice(movableId, movableId + 1)[0]
+  const before = newModel.slice(0, movableId)
+  const after = newModel.slice(movableId + 1)
+
+  const newBefore = before.slice(0, -1)
+  const newAfter = [before.slice(-1)[0], ...after]
+
+  emit('update:modelValue', [...newBefore, movable, ...newAfter])
   await nextTick()
   emit('update:selectedId', props.selectedId - 1)
 }
@@ -94,12 +100,18 @@ const moveDnValid = computed(() => {
 
 const moveDn = async () => {
   const newModel = [...props.modelValue]
-  const movable = newModel.splice(props.selectedId.value, 1)[0]
-  newModel.splice(props.selectedId + 1, 0, movable)
+  const movableId = Number(props.selectedId)
 
-  emit('update:modelValue', newModel)
+  const movable = newModel.slice(movableId, movableId + 1)[0]
+  const before = newModel.slice(0, movableId)
+  const after = newModel.slice(movableId + 1)
+
+  const newBefore = [...before, after.slice(0, 1)[0]]
+  const newAfter = after.slice(1)
+
+  emit('update:modelValue', [...newBefore, movable, ...newAfter])
   await nextTick()
-  emit('update:selectedId', props.selectedId + 1)
+  emit('update:selectedId', movableId + 1)
 }
 
 const add = async () => {
@@ -116,7 +128,10 @@ const del = async () => {
 
   emit('update:modelValue', newModel)
   await nextTick()
-  emit('update:selectedId', newModel.length === 0 ? undefined : Math.max(props.selectedId - 1, 0))
+  emit(
+    'update:selectedId',
+    newModel.length === 0 ? undefined : Math.max(props.selectedId - 1, 0),
+  )
 }
 </script>
 

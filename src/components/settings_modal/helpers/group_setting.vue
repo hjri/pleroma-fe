@@ -1,13 +1,13 @@
 <template>
   <span
     v-if="matchesExpertLevel"
-    class="GroupSetting"
+    class="GroupSetting setting-item"
   >
     <ModifiedIndicator
       :changed="isChanged"
       :onclick="reset"
     />
-    <ProfileSettingIndicator :is-profile="isProfileSetting" />
+    <LocalSettingIndicator :is-local="isLocalSetting" />
     <DraftButtons />
   </span>
 </template>

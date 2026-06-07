@@ -1,31 +1,31 @@
 import { mapState } from 'vuex'
-import StatusBody from '../status_content/status_content.vue'
-import fileType from 'src/services/file_type/file_type.service'
-import UserAvatar from '../user_avatar/user_avatar.vue'
-import AvatarList from '../avatar_list/avatar_list.vue'
-import Timeago from '../timeago/timeago.vue'
-import ChatTitle from '../chat_title/chat_title.vue'
+
+import AvatarList from 'src/components/avatar_list/avatar_list.vue'
+import ChatTitle from 'src/components/chat_title/chat_title.vue'
+import StatusBody from 'src/components/status_content/status_content.vue'
+import Timeago from 'src/components/timeago/timeago.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 
 const ChatListItem = {
   name: 'ChatListItem',
-  props: [
-    'chat'
-  ],
+  props: ['chat'],
   components: {
     UserAvatar,
     AvatarList,
     Timeago,
     ChatTitle,
-    StatusBody
+    StatusBody,
   },
   computed: {
     ...mapState({
-      currentUser: state => state.users.currentUser
+      currentUser: (state) => state.users.currentUser,
     }),
-    attachmentInfo () {
-      if (this.chat.lastMessage.attachments.length === 0) { return }
+    attachmentInfo() {
+      if (this.chat.lastMessage.attachments.length === 0) {
+        return
+      }
 
-      const types = this.chat.lastMessage.attachments.map(file => fileType.fileType(file.mimetype))
+      const types = this.chat.lastMessage.attachments.map((file) => file.type)
       if (types.includes('video')) {
         return this.$t('file_type.video')
       } else if (types.includes('audio')) {
@@ -36,34 +36,36 @@ const ChatListItem = {
         return this.$t('file_type.file')
       }
     },
-    messageForStatusContent () {
+    messageForStatusContent() {
       const message = this.chat.lastMessage
       const messageEmojis = message ? message.emojis : []
       const isYou = message && message.account_id === this.currentUser.id
-      const content = message ? (this.attachmentInfo || message.content) : ''
-      const messagePreview = isYou ? `<i>${this.$t('chats.you')}</i> ${content}` : content
+      const content = message ? this.attachmentInfo || message.content : ''
+      const messagePreview = isYou
+        ? `<i>${this.$t('chats.you')}</i> ${content}`
+        : content
       return {
         summary: '',
         emojis: messageEmojis,
         raw_html: messagePreview,
         text: messagePreview,
-        attachments: []
+        attachments: [],
       }
-    }
+    },
   },
   methods: {
-    openChat () {
+    openChat() {
       if (this.chat.id) {
         this.$router.push({
           name: 'chat',
           params: {
             username: this.currentUser.screen_name,
-            recipient_id: this.chat.account.id
-          }
+            recipient_id: this.chat.account.id,
+          },
         })
       }
-    }
-  }
+    },
+  },
 }
 
 export default ChatListItem

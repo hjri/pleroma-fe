@@ -1,17 +1,22 @@
-import Timeline from '../timeline/timeline.vue'
+import Timeline from 'src/components/timeline/timeline.vue'
+
 const PublicAndExternalTimeline = {
   components: {
-    Timeline
+    Timeline,
   },
   computed: {
-    timeline () { return this.$store.state.statuses.timelines.publicAndExternal }
+    timeline() {
+      return this.$store.state.statuses.timelines.publicAndExternal
+    },
   },
-  created () {
-    this.$store.dispatch('startFetchingTimeline', { timeline: 'publicAndExternal' })
+  created() {
+    this.$store.dispatch('startFetchingTimeline', {
+      timeline: 'publicAndExternal',
+    })
   },
-  unmounted () {
+  unmounted() {
     this.$store.dispatch('stopFetchingTimeline', 'publicAndExternal')
-  }
+  },
 }
 
 export default PublicAndExternalTimeline

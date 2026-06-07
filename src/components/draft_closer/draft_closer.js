@@ -1,32 +1,33 @@
-import DialogModal from 'src/components/dialog_modal/dialog_modal.vue'
+import { defineAsyncComponent } from 'vue'
+
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const DraftCloser = {
-  data () {
+  data() {
     return {
-      showing: false
+      showing: false,
     }
   },
   components: {
-    DialogModal
+    DialogModal: defineAsyncComponent(
+      () => import('src/components/dialog_modal/dialog_modal.vue'),
+    ),
   },
-  emits: [
-    'save',
-    'discard'
-  ],
+  emits: ['save', 'discard'],
   computed: {
-    action () {
-      if (this.$store.getters.mergedConfig.autoSaveDraft) {
+    action() {
+      if (useMergedConfigStore().mergedConfig.autoSaveDraft) {
         return 'save'
       } else {
-        return this.$store.getters.mergedConfig.unsavedPostAction
+        return useMergedConfigStore().mergedConfig.unsavedPostAction
       }
     },
-    shouldConfirm () {
+    shouldConfirm() {
       return this.action === 'confirm'
-    }
+    },
   },
   methods: {
-    requestClose () {
+    requestClose() {
       if (this.shouldConfirm) {
         this.showing = true
       } else if (this.action === 'save') {
@@ -35,18 +36,18 @@ const DraftCloser = {
         this.discard()
       }
     },
-    save () {
+    save() {
       this.$emit('save')
       this.showing = false
     },
-    discard () {
+    discard() {
       this.$emit('discard')
       this.showing = false
     },
-    cancel () {
+    cancel() {
       this.showing = false
-    }
-  }
+    },
+  },
 }
 
 export default DraftCloser
