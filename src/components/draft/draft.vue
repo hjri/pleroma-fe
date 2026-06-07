@@ -39,7 +39,7 @@
             class="faint"
           >{{ $t('drafts.empty') }}</p>
         </span>
-        <gallery
+        <Gallery
           v-if="draft.files?.length !== 0"
           class="attachments media-body"
           :compact="true"
@@ -77,7 +77,7 @@
       />
     </div>
     <teleport to="#modal">
-      <confirm-modal
+      <ConfirmModal
         v-if="showingConfirmDialog"
         :title="$t('drafts.abandon_confirm_title')"
         :confirm-text="$t('drafts.abandon_confirm_accept_button')"
@@ -86,7 +86,7 @@
         @cancelled="hideConfirmDialog"
       >
         {{ $t('drafts.abandon_confirm') }}
-      </confirm-modal>
+      </ConfirmModal>
     </teleport>
     <div class="actions">
       <button

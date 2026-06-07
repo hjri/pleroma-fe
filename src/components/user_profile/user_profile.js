@@ -1,14 +1,13 @@
-import get from 'lodash/get'
+import { get } from 'lodash'
 import { mapState } from 'pinia'
 
-import RichContent from 'src/components/rich_content/rich_content.jsx'
+import Conversation from 'src/components/conversation/conversation.vue'
+import FollowCard from 'src/components/follow_card/follow_card.vue'
+import List from 'src/components/list/list.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+import Timeline from 'src/components/timeline/timeline.vue'
+import UserCard from 'src/components/user_card/user_card.vue'
 import withLoadMore from '../../hocs/with_load_more/with_load_more'
-import Conversation from '../conversation/conversation.vue'
-import FollowCard from '../follow_card/follow_card.vue'
-import List from '../list/list.vue'
-import Timeline from '../timeline/timeline.vue'
-import UserCard from '../user_card/user_card.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -209,7 +208,6 @@ const UserProfile = {
     FollowCard,
     TabSwitcher,
     Conversation,
-    RichContent,
   },
 }
 

@@ -1,7 +1,6 @@
 import { mapState } from 'pinia'
 
 import Popover from 'src/components/popover/popover.vue'
-import StillImage from 'src/components/still-image/still-image.vue'
 
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
 
@@ -18,7 +17,6 @@ const StatusBookmarkFolderMenu = {
   },
   components: {
     Popover,
-    StillImage,
   },
   computed: {
     ...mapState(useBookmarkFoldersStore, {

@@ -16,10 +16,11 @@ const ULTIMATE_FALLBACK_LOCALE = 'en'
 
 const hasLanguageFile = (code) => languages.includes(code)
 
-const languageFileMap = import.meta.glob('./*.json')
+const languageFileMap = import.meta.glob(['./*.json', '!./en.json'])
 
 const loadLanguageFile = (code) => {
   const jsonName = langCodeToJsonName(code)
+  if (jsonName === 'en') return Promise.resolve({ default: enMessages })
   return languageFileMap[`./${jsonName}.json`]()
 }
 

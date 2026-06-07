@@ -149,13 +149,20 @@
 </template>
 
 <script>
-import ConfirmModal from 'components/confirm_modal/confirm_modal.vue'
 import Popover from 'components/popover/popover.vue'
 import SelectComponent from 'components/select/select.vue'
-import StillImage from 'components/still-image/still-image.vue'
+import { defineAsyncComponent } from 'vue'
 
 export default {
-  components: { Popover, ConfirmModal, StillImage, SelectComponent },
+  components: {
+    Popover,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
+
+    SelectComponent,
+  },
+
   inject: ['emojiAddr'],
   props: {
     placement: {

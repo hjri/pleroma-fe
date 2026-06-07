@@ -1,6 +1,4 @@
-import get from 'lodash/get'
-import map from 'lodash/map'
-import reject from 'lodash/reject'
+import { get, map, reject } from 'lodash'
 
 import withLoadMore from 'src/components/../hocs/with_load_more/with_load_more'
 import withSubscription from 'src/components/../hocs/with_subscription/with_subscription'

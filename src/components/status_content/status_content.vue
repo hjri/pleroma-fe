@@ -34,7 +34,7 @@
         />
       </div>
 
-      <gallery
+      <Gallery
         v-if="status.attachments.length !== 0"
         class="attachments media-body"
         :compact="compact"

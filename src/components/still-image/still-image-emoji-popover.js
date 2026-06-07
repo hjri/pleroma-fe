@@ -2,13 +2,11 @@ import Popover from 'components/popover/popover.vue'
 import SelectComponent from 'components/select/select.vue'
 import { mapState } from 'pinia'
 
-import StillImage from './still-image.vue'
-
 import { useEmojiStore } from 'src/stores/emoji'
 import { useInterfaceStore } from 'src/stores/interface'
 
 export default {
-  components: { StillImage, Popover, SelectComponent },
+  components: { Popover, SelectComponent },
   props: {
     shortcode: {
       type: String,

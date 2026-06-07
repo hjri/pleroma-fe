@@ -1,12 +1,12 @@
 import { cloneDeep, isEqual } from 'lodash'
 import { mapActions, mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 
 import AsyncComponentError from 'src/components/async_component_error/async_component_error.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
-import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import Modal from 'src/components/modal/modal.vue'
 import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
-import Popover from '../popover/popover.vue'
+import Popover from 'src/components/popover/popover.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
@@ -67,7 +67,10 @@ const SettingsModal = {
     Modal,
     Popover,
     Checkbox,
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
+
     SettingsModalUserContent: getResettableAsyncComponent(
       () => import('./settings_modal_user_content.vue'),
       {

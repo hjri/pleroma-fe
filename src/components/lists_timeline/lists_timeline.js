@@ -1,4 +1,4 @@
-import Timeline from '../timeline/timeline.vue'
+import Timeline from 'src/components/timeline/timeline.vue'
 
 import { useListsStore } from 'src/stores/lists.js'
 

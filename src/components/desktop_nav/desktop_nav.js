@@ -1,7 +1,6 @@
 import SearchBar from 'components/search_bar/search_bar.vue'
 import { mapActions, mapState } from 'pinia'
-
-import ConfirmModal from '../confirm_modal/confirm_modal.vue'
+import { defineAsyncComponent } from 'vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
@@ -39,7 +38,9 @@ library.add(
 export default {
   components: {
     SearchBar,
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
   },
   data: () => ({
     searchBarHidden: true,

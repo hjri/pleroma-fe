@@ -1,6 +1,7 @@
+import { defineAsyncComponent } from 'vue'
+
 import { notificationsFromStore } from '../../services/notification_utils/notification_utils.js'
 import BasicUserCard from '../basic_user_card/basic_user_card.vue'
-import ConfirmModal from '../confirm_modal/confirm_modal.vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
@@ -8,7 +9,9 @@ const FollowRequestCard = {
   props: ['user'],
   components: {
     BasicUserCard,
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
   },
   data() {
     return {

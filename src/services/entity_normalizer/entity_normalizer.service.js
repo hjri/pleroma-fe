@@ -3,7 +3,7 @@ import escapeHtml from 'escape-html'
 import { unescape as lodashUnescape } from 'lodash'
 import punycode from 'punycode.js'
 
-import fileTypeService from '../file_type/file_type.service.js'
+import { fileType } from '../file_type/file_type.service.js'
 import { isStatusNotification } from '../notification_utils/notification_utils.js'
 
 /** NOTICE! **
@@ -305,7 +305,7 @@ export const parseAttachment = (data) => {
     // treat gifv like it is "video"
     output.type = data.type === 'gifv' ? 'video' : data.type
   } else {
-    output.type = fileTypeService.fileType(output.mimetype)
+    output.type = fileType(output.mimetype)
   }
   output.url = data.url
   output.large_thumb_url = data.preview_url

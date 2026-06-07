@@ -1,5 +1,5 @@
 <template>
-  <confirm-modal
+  <ConfirmModal
     v-if="showing"
     class="UserTimedFilterModal"
     :title="$t(isMute ? $t('user_card.mute') : $t('user_card.block'))"
@@ -80,7 +80,7 @@
         </Checkbox>
       </div>
     </template>
-  </confirm-modal>
+  </ConfirmModal>
 </template>
 
 <script src="./user_timed_filter_modal.js"></script>

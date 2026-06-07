@@ -1,7 +1,8 @@
 import { defineAsyncComponent } from 'vue'
 
-import RichContent from 'src/components/rich_content/rich_content.jsx'
-import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
+import Popover from 'src/components/popover/popover.vue'
+import UnicodeDomainIndicator from 'src/components/unicode_domain_indicator/unicode_domain_indicator.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -17,12 +18,9 @@ const UserListPopover = {
   name: 'UserListPopover',
   props: ['users'],
   components: {
-    RichContent,
     UnicodeDomainIndicator,
-    Popover: defineAsyncComponent(() => import('../popover/popover.vue')),
-    UserAvatar: defineAsyncComponent(
-      () => import('../user_avatar/user_avatar.vue'),
-    ),
+    Popover,
+    UserAvatar,
   },
   computed: {
     usersCapped() {

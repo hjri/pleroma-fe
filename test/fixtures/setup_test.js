@@ -1,7 +1,11 @@
+import { createTestingPinia } from '@pinia/testing'
 import { config } from '@vue/test-utils'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import VueVirtualScroller from 'vue-virtual-scroller'
 
+import RichContent from 'src/components/rich_content/rich_content.jsx'
+import Status from 'src/components/status/status.vue'
+import StillImage from 'src/components/still-image/still-image.vue'
 import makeMockStore from './mock_store'
 
 import routes from 'src/boot/routes'
@@ -37,8 +41,13 @@ const getDefaultOpts = ({
       (Vue) => {
         Vue.directive('body-scroll-lock', {})
       },
+      createTestingPinia(),
     ],
-    components: {},
+    components: {
+      RichContent,
+      Status,
+      StillImage,
+    },
     stubs: {
       I18nT: true,
       teleport: true,

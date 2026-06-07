@@ -1,24 +1,23 @@
 import { debounce, map, reject, uniqBy } from 'lodash'
 import { mapActions, mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 import { mapGetters } from 'vuex'
 
+import Attachment from 'src/components/attachment/attachment.vue'
+import Checkbox from 'src/components/checkbox/checkbox.vue'
 import DraftCloser from 'src/components/draft_closer/draft_closer.vue'
+import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
+import suggestor from 'src/components/emoji_input/suggestor.js'
 import Gallery from 'src/components/gallery/gallery.vue'
+import MediaUpload from 'src/components/media_upload/media_upload.vue'
 import Popover from 'src/components/popover/popover.vue'
+import ScopeSelector from 'src/components/scope_selector/scope_selector.vue'
+import Select from 'src/components/select/select.vue'
+import StatusContent from 'src/components/status_content/status_content.vue'
 import { propsToNative } from '../../services/attributes_helper/attributes_helper.service.js'
 import { findOffset } from '../../services/offset_finder/offset_finder.service.js'
 import genRandomSeed from '../../services/random_seed/random_seed.service.js'
 import statusPoster from '../../services/status_poster/status_poster.service.js'
-import Attachment from '../attachment/attachment.vue'
-import Checkbox from '../checkbox/checkbox.vue'
-import EmojiInput from '../emoji_input/emoji_input.vue'
-import suggestor from '../emoji_input/suggestor.js'
-import MediaUpload from '../media_upload/media_upload.vue'
-import PollForm from '../poll/poll_form.vue'
-import QuoteForm from '../quote/quote_form.vue'
-import ScopeSelector from '../scope_selector/scope_selector.vue'
-import Select from '../select/select.vue'
-import StatusContent from '../status_content/status_content.vue'
 
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -141,8 +140,12 @@ const PostStatusForm = {
   components: {
     MediaUpload,
     EmojiInput,
-    PollForm,
-    QuoteForm,
+    PollForm: defineAsyncComponent(
+      () => import('src/components/poll/poll_form.vue'),
+    ),
+    QuoteForm: defineAsyncComponent(
+      () => import('src/components/quote/quote_form.vue'),
+    ),
     ScopeSelector,
     Checkbox,
     Select,

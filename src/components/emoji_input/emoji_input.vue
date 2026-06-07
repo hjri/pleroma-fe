@@ -37,7 +37,7 @@
         :title="$t('emoji.add_emoji')"
         @click.prevent="togglePicker"
       >
-        <FAIcon :icon="['far', 'smile-beam']" />
+        <FAIcon :icon="['far', 'face-smile-beam']" />
       </button>
       <EmojiPicker
         v-if="enableEmojiPicker"

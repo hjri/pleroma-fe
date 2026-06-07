@@ -1,10 +1,9 @@
 import { chunk, debounce, trim } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 
+import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Popover from 'src/components/popover/popover.vue'
 import { ensureFinalFallback } from '../../i18n/languages.js'
-import Checkbox from '../checkbox/checkbox.vue'
-import StillImage from '../still-image/still-image.vue'
 
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -139,10 +138,10 @@ const EmojiPicker = {
   },
   components: {
     StickerPicker: defineAsyncComponent(
-      () => import('../sticker_picker/sticker_picker.vue'),
+      () => import('src/components/sticker_picker/sticker_picker.vue'),
     ),
     Checkbox,
-    StillImage,
+
     Popover,
   },
   methods: {

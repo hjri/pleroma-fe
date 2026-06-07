@@ -1,6 +1,6 @@
 import { set, sumBy } from 'lodash'
 
-import Attachment from '../attachment/attachment.vue'
+import Attachment from 'src/components/attachment/attachment.vue'
 
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 

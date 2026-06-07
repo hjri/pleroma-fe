@@ -1,4 +1,5 @@
-import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
+import { defineAsyncComponent } from 'vue'
+
 import Draft from 'src/components/draft/draft.vue'
 import List from 'src/components/list/list.vue'
 
@@ -6,7 +7,9 @@ const Drafts = {
   components: {
     Draft,
     List,
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
   },
   data() {
     return {

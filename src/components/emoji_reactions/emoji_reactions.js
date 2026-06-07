@@ -1,6 +1,5 @@
-import StillImage from 'src/components/still-image/still-image.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
-import UserListPopover from '../user_list_popover/user_list_popover.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+import UserListPopover from 'src/components/user_list_popover/user_list_popover.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -17,7 +16,6 @@ const EmojiReactions = {
   components: {
     UserAvatar,
     UserListPopover,
-    StillImage,
   },
   props: ['status'],
   data: () => ({

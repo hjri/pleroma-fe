@@ -116,7 +116,7 @@
     </span>
 
     <teleport to="#modal">
-      <confirm-modal
+      <ConfirmModal
         v-if="showingConfirmDialog"
         :title="currentConfirmTitle"
         :confirm-text="currentConfirmOkText"
@@ -125,7 +125,7 @@
         @cancelled="showingConfirmDialog = false"
       >
         {{ currentConfirmBody }}
-      </confirm-modal>
+      </ConfirmModal>
     </teleport>
   </div>
 </template>

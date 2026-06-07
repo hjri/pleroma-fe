@@ -1,5 +1,6 @@
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { DevTools } from '@vitejs/devtools'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { defineConfig } from 'vite'
@@ -11,11 +12,7 @@ import { getCommitHash } from './build/commit_hash.js'
 import copyPlugin from './build/copy_plugin.js'
 import emojisPlugin from './build/emojis_plugin.js'
 import mswPlugin from './build/msw_plugin.js'
-import {
-  buildSwPlugin,
-  devSwPlugin,
-  swMessagesPlugin,
-} from './build/sw_plugin.js'
+import { buildSwPlugin, swMessagesPlugin } from './build/sw_plugin.js'
 
 const localConfigPath = '<projectRoot>/config/local.json'
 const normalizeTarget = (target) => {
@@ -135,7 +132,6 @@ export default defineConfig(async ({ mode, command }) => {
         },
       }),
       vueJsx(),
-      devSwPlugin({ swSrc, swDest, transformSW, alias }),
       buildSwPlugin({ swSrc, swDest }),
       swMessagesPlugin(),
       emojisPlugin(),
@@ -158,19 +154,6 @@ export default defineConfig(async ({ mode, command }) => {
       }),
       ...(mode === 'test' ? [mswPlugin()] : []),
     ],
-    optimizeDeps: {
-      // For unknown reasons, during vitest, vite will re-optimize the following
-      // deps, causing the test to reload, so add them here so that it will not
-      // reload during tests
-      include: [
-        'custom-event-polyfill',
-        'vue-i18n',
-        '@ungap/event-target',
-        'lodash.merge',
-        'body-scroll-lock',
-        '@kazvmoe-infra/pinch-zoom-element',
-      ],
-    },
     css: {
       devSourcemap: true,
     },
@@ -195,14 +178,14 @@ export default defineConfig(async ({ mode, command }) => {
       __VUE_PROD_DEVTOOLS__: false,
       __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
     },
+    // devtools: { enabled: true },
     build: {
       sourcemap: true,
-      rollupOptions: {
+      rolldownOptions: {
         input: {
           main: 'index.html',
         },
         output: {
-          inlineDynamicImports: false,
           entryFileNames(chunkInfo) {
             const id = chunkInfo.facadeModuleId
             if (id.endsWith(swSrc)) {

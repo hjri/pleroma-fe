@@ -1,25 +1,24 @@
 import { unescape as ldUnescape, uniqBy } from 'lodash'
+import { defineAsyncComponent } from 'vue'
 
+import AvatarList from 'src/components/avatar_list/avatar_list.vue'
+import EmojiReactions from 'src/components/emoji_reactions/emoji_reactions.vue'
 import MentionLink from 'src/components/mention_link/mention_link.vue'
 import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
-import RichContent from 'src/components/rich_content/rich_content.jsx'
+import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import StatusActionButtons from 'src/components/status_action_buttons/status_action_buttons.vue'
+import StatusContent from 'src/components/status_content/status_content.vue'
+import StatusPopover from 'src/components/status_popover/status_popover.vue'
+import Timeago from 'src/components/timeago/timeago.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+import UserLink from 'src/components/user_link/user_link.vue'
+import UserListPopover from 'src/components/user_list_popover/user_list_popover.vue'
+import UserPopover from 'src/components/user_popover/user_popover.vue'
 import { muteFilterHits } from '../../services/status_parser/status_parser.js'
 import {
   highlightClass,
   highlightStyle,
 } from '../../services/user_highlighter/user_highlighter.js'
-import AvatarList from '../avatar_list/avatar_list.vue'
-import EmojiReactions from '../emoji_reactions/emoji_reactions.vue'
-import PostStatusForm from '../post_status_form/post_status_form.vue'
-import Quote from '../quote/quote.vue'
-import StatusContent from '../status_content/status_content.vue'
-import StatusPopover from '../status_popover/status_popover.vue'
-import Timeago from '../timeago/timeago.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
-import UserLink from '../user_link/user_link.vue'
-import UserListPopover from '../user_list_popover/user_list_popover.vue'
-import UserPopover from '../user_popover/user_popover.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -125,12 +124,11 @@ const Status = {
     UserListPopover,
     EmojiReactions,
     StatusContent,
-    RichContent,
     MentionLink,
     MentionsLine,
     UserPopover,
     UserLink,
-    Quote,
+    Quote: defineAsyncComponent(() => import('src/components/quote/quote.vue')),
     StatusActionButtons,
   },
   props: [
@@ -264,7 +262,9 @@ const Status = {
     },
     muteFilterHits() {
       return muteFilterHits(
-        Object.values(useSyncConfigStore().prefsStorage.simple.muteFilters || {}),
+        Object.values(
+          useSyncConfigStore().prefsStorage.simple.muteFilters || {},
+        ),
         this.status,
       )
     },

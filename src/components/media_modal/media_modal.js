@@ -1,10 +1,8 @@
-import Flash from 'src/components/flash/flash.vue'
+import { defineAsyncComponent } from 'vue'
+
+import Modal from 'src/components/modal/modal.vue'
+import StillImage from 'src/components/still-image/still-image.vue'
 import GestureService from '../../services/gesture_service/gesture_service'
-import Modal from '../modal/modal.vue'
-import PinchZoom from '../pinch_zoom/pinch_zoom.vue'
-import StillImage from '../still-image/still-image.vue'
-import SwipeClick from '../swipe_click/swipe_click.vue'
-import VideoAttachment from '../video_attachment/video_attachment.vue'
 
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 
@@ -20,12 +18,17 @@ library.add(faChevronLeft, faChevronRight, faCircleNotch, faTimes)
 
 const MediaModal = {
   components: {
-    StillImage,
-    VideoAttachment,
-    PinchZoom,
-    SwipeClick,
+    VideoAttachment: defineAsyncComponent(
+      () => import('src/components/video_attachment/video_attachment.vue'),
+    ),
+    PinchZoom: defineAsyncComponent(
+      () => import('src/components/pinch_zoom/pinch_zoom.vue'),
+    ),
+    SwipeClick: defineAsyncComponent(
+      () => import('src/components/swipe_click/swipe_click.vue'),
+    ),
     Modal,
-    Flash,
+    Flash: defineAsyncComponent(() => import('src/components/flash/flash.vue')),
   },
   data() {
     return {

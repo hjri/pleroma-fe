@@ -1,14 +1,14 @@
-import _ from 'lodash'
+import { throttle } from 'lodash'
 import { mapState as mapPiniaState } from 'pinia'
 import { mapGetters, mapState } from 'vuex'
 
+import ChatMessage from 'src/components/chat_message/chat_message.vue'
+import ChatTitle from 'src/components/chat_title/chat_title.vue'
+import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import { WSConnectionStatus } from '../../services/api/api.service.js'
 import chatService from '../../services/chat_service/chat_service.js'
 import { buildFakeMessage } from '../../services/chat_utils/chat_utils.js'
 import { promiseInterval } from '../../services/promise_interval/promise_interval.js'
-import ChatMessage from '../chat_message/chat_message.vue'
-import ChatTitle from '../chat_title/chat_title.vue'
-import PostStatusForm from '../post_status_form/post_status_form.vue'
 import {
   getNewTopPosition,
   getScrollPosition,
@@ -224,7 +224,7 @@ const Chat = {
         }
       }, 5000)
     },
-    handleScroll: _.throttle(function () {
+    handleScroll: throttle(function () {
       this.lastScrollPosition = getScrollPosition()
       if (!this.currentChat) {
         return

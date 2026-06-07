@@ -1,4 +1,4 @@
-import Timeline from '../timeline/timeline.vue'
+import Timeline from 'src/components/timeline/timeline.vue'
 
 const FriendsTimeline = {
   components: {

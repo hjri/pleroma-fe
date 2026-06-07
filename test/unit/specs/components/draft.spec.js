@@ -166,10 +166,15 @@ describe('Draft saving', () => {
     await textarea.setValue('mew mew')
     wrapper.vm.requestClose()
     await nextTick()
-    const saveButton = wrapper.findByText(
-      'button',
-      $t('post_status.close_confirm_save_button'),
-    )
+    await flushPromises()
+    const saveButton = await vi.waitFor(() => {
+      const button = wrapper.findByText(
+        'button',
+        $t('post_status.close_confirm_save_button'),
+      )
+      if (!button) throw new Error('Save button not present')
+      return button
+    })
     expect(saveButton).to.be.ok
     await saveButton.trigger('click')
     console.info('clicked')
