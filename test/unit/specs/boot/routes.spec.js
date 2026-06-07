@@ -37,10 +37,9 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(
-      matchedComponents[0].components.default.name,
-    ).to.eql('AsyncComponentWrapper')
-
+    expect(matchedComponents[0].components.default.name).to.eql(
+      'AsyncComponentWrapper',
+    )
   })
 
   it("user's profile at /users", async () => {
@@ -48,9 +47,9 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(
-      matchedComponents[0].components.default.name,
-    ).to.eql('AsyncComponentWrapper')
+    expect(matchedComponents[0].components.default.name).to.eql(
+      'AsyncComponentWrapper',
+    )
   })
 
   it('list view', async () => {
@@ -58,9 +57,9 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(
-      matchedComponents[0].components.default.name,
-    ).to.eql('AsyncComponentWrapper')
+    expect(matchedComponents[0].components.default.name).to.eql(
+      'AsyncComponentWrapper',
+    )
   })
 
   it('list timeline', async () => {
@@ -68,9 +67,9 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(
-      matchedComponents[0].components.default.name,
-    ).to.eql('AsyncComponentWrapper')
+    expect(matchedComponents[0].components.default.name).to.eql(
+      'AsyncComponentWrapper',
+    )
   })
 
   it('list edit', async () => {
@@ -78,8 +77,8 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(
-      matchedComponents[0].components.default.name,
-    ).to.eql('AsyncComponentWrapper')
+    expect(matchedComponents[0].components.default.name).to.eql(
+      'AsyncComponentWrapper',
+    )
   })
 })
