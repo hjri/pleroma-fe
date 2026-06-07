@@ -16,7 +16,7 @@ labels:
 
 steps:
   build:
-    image: docker.io/node:18-alpine
+    image: docker.io/node:20-alpine
     commands:
       - apk add --no-cache zip git
       - yarn --frozen-lockfile
