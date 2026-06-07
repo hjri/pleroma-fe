@@ -65,7 +65,7 @@ describe('Draft saving', () => {
     },
   )
 
-  it.only('should auto-save if it is enabled', async function () {
+  it('should auto-save if it is enabled', async function () {
     vi.useFakeTimers()
     const wrapper = mount(PostStatusForm, mountOpts())
     const store = useMergedConfigStore()
