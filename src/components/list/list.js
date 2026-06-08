@@ -1,5 +1,3 @@
-import { isEmpty } from 'lodash'
-
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 
 const List = {
@@ -10,7 +8,7 @@ const List = {
     },
     items: {
       type: Array,
-      default: () => [],
+      default: [],
     },
     fetchFunction: {
       type: Function,
@@ -40,28 +38,37 @@ const List = {
       type: Boolean,
       default: false,
     },
+    loading: {
+      type: Boolean,
+      default: true,
+    },
+    bottomedOut: {
+      type: Boolean,
+      default: false,
+    },
+    error: {
+      type: String,
+      default: null,
+    },
   },
+  emits: ['fetchRequested'],
   components: {
     Checkbox,
   },
   data() {
     return {
-      loading: false,
-      bottomedOut: false,
-      error: false,
-      dynamicItems: this.itemsFunction ? [] : null,
       selected: [],
     }
   },
   computed: {
     allKeys() {
-      return this.actualItems.map(this.getKey)
+      return this.items.map(this.getKey)
     },
     filteredSelected() {
       return this.allKeys.filter((key) => this.selected.indexOf(key) !== -1)
     },
     allSelected() {
-      return this.filteredSelected.length === this.actualItems.length
+      return this.filteredSelected.length === this.items.length
     },
     noneSelected() {
       return this.filteredSelected.length === 0
@@ -69,54 +76,26 @@ const List = {
     someSelected() {
       return !this.allSelected && !this.noneSelected
     },
-    actualItems() {
-      return this.dynamicItems || this.actualItems
-    },
   },
   created() {
-    if (this.fetchFunction) {
-      window.addEventListener('scroll', this.scrollLoad)
+    window.addEventListener('scroll', this.scrollLoad)
 
-      if (this.dynamicItems.length === 0) {
-        this.fetchEntries()
-      }
+    if (this.items.length === 0) {
+      this.fetchEntries()
     }
   },
   unmounted() {
     window.removeEventListener('scroll', this.scrollLoad)
   },
   methods: {
-    // Entries is not a computed because computed can't track the dynamic
-    // selector for changes and won't trigger after fetch.
-    updateEntries(newEntries) {
-      this.dynamicItems = this.itemsFunction(newEntries)
-    },
     fetchEntries() {
-      if (!this.loading) {
-        this.loading = true
-        this.error = false
-        this.fetchFunction()
-          .then((newEntries) => {
-            this.loading = false
-            this.bottomedOut = isEmpty(newEntries)
-            return newEntries
-          })
-          .catch((error) => {
-            this.loading = false
-            this.error = error
-          })
-          .finally((newEntries) => {
-            this.updateEntries(newEntries)
-          })
-      }
+      this.$emit('fetchRequested')
     },
     scrollLoad(e) {
       if (this.fetchFunction) {
         const bodyBRect = document.body.getBoundingClientRect()
         const height = Math.max(bodyBRect.height, -bodyBRect.y)
         if (
-          this.loading === false &&
-          this.bottomedOut === false &&
           this.$el.offsetHeight > 0 &&
           window.innerHeight + window.pageYOffset >= height - 750
         ) {
@@ -128,7 +107,6 @@ const List = {
       return this.filteredSelected.indexOf(this.getKey(item)) !== -1
     },
     toggle(checked, item) {
-      console.log('TOGGLE', checked, item)
       const key = this.getKey(item)
       const oldChecked = this.isSelected(key)
       if (checked !== oldChecked) {
@@ -138,6 +116,7 @@ const List = {
           this.selected.splice(this.selected.indexOf(key), 1)
         }
       }
+      this.$emit('selected', this.selected)
     },
     toggleAll(value) {
       if (value) {
@@ -145,6 +124,7 @@ const List = {
       } else {
         this.selected = []
       }
+      this.$emit('selected', this.selected)
     },
   },
 }

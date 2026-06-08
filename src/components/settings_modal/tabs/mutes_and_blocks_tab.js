@@ -1,6 +1,5 @@
-import { get, map, reject } from 'lodash'
+import { get, map, reject, isEmpty } from 'lodash'
 
-import withSubscription from 'src/components/../hocs/with_subscription/with_subscription'
 import Autosuggest from 'src/components/autosuggest/autosuggest.vue'
 import BlockCard from 'src/components/block_card/block_card.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
@@ -18,6 +17,15 @@ const MutesAndBlocks = {
   data() {
     return {
       activeTab: 'profile',
+      mutesLoading: false,
+      mutesError: null,
+      mutesBottomedOut: false,
+      blocksLoading: false,
+      blocksError: null,
+      blocksBottomedOut: false,
+      domainsLoading: false,
+      domainsError: null,
+      domainsBottomedOut: false,
     }
   },
   created() {
@@ -41,8 +49,37 @@ const MutesAndBlocks = {
     user() {
       return this.$store.state.users.currentUser
     },
+    blocks() {
+      return get(this.$store.state.users.currentUser, 'blockIds', [])
+    },
+    mutes() {
+      return get(this.$store.state.users.currentUser, 'muteIds', [])
+    },
+    domains() {
+      return get(this.$store.state.users.currentUser, 'domainMutes', [])
+    },
   },
   methods: {
+    fetchItems(group) {
+      if (this[group + 'Loading']) return
+
+      const capGroup = group[0].toUpperCase() + group.slice(1)
+
+      this[group + 'Loading'] = true
+      this[group + 'Error'] = null
+
+      this.$store
+        .dispatch('fetch' + capGroup, this.userId)
+        .then((newEntries) => {
+          this[group + 'Loading'] = false
+          this[group + 'BottomedOut'] = isEmpty(newEntries)
+          return newEntries
+        })
+        .catch((error) => {
+          this[group + 'Loading'] = false
+          this[group + 'Error'] = error
+        })
+    },
     importFollows(file) {
       return this.$store.state.api.backendInteractor
         .importFollows({ file })
@@ -73,15 +110,6 @@ const MutesAndBlocks = {
           return user.screen_name
         })
         .join('\n')
-    },
-    getBlocks() {
-      return get(this.$store.state.users.currentUser, 'blockIds', [])
-    },
-    getMutes() {
-      return get(this.$store.state.users.currentUser, 'muteIds', [])
-    },
-    getDomainMutes() {
-      return get(this.$store.state.users.currentUser, 'domainMutes', [])
     },
     activateTab(tabName) {
       this.activeTab = tabName

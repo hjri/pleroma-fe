@@ -61,11 +61,13 @@ const adminSettingsStorage = {
   },
   actions: {
     async fetchAdminUsers(store, opts) {
-      const users = await store.rootState.api.backendInteractor.adminListUsers({
+      const data = await store.rootState.api.backendInteractor.adminListUsers({
         opts,
       })
-      users.forEach((user) => store.dispatch('fetchUserIfMissing', user.id))
-      return users
+      data.users.forEach((user) =>
+        store.dispatch('fetchUserIfMissing', user.id),
+      )
+      return data
     },
     adminAddUserToAdminGroup(store, user) {
       store.rootState.api.backendInteractor

@@ -1,7 +1,9 @@
+import { isEmpty } from 'lodash'
+
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import GenericConfirm from 'src/components/confirm_modal/generic_confirm.vue'
-import PageList from 'src/components/page_list/page_list.vue'
+import List from 'src/components/list/list.vue'
 import Popover from 'src/components/popover/popover.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import Select from 'src/components/select/select.vue'
@@ -17,7 +19,6 @@ const UsersTab = {
   },
   data() {
     return {
-      init: false,
       filtersOrigin: 'local',
       filtersActivity: 'all',
       filtersPrivileges: 'all',
@@ -28,6 +29,11 @@ const UsersTab = {
       filtersEmail: '',
       expandedUser: null,
       loading: false,
+      error: null,
+      bottomedOut: false,
+      users: [],
+      page: 1,
+      total: null,
     }
   },
   computed: {
@@ -79,26 +85,7 @@ const UsersTab = {
     filtersExternal() {
       return this.filtersOrigin === 'external'
     },
-  },
-  components: {
-    Checkbox,
-    Select,
-    BasicUserCard,
-    PageList,
-    ProgressButton,
-    AdminCard,
-    TabSwitcher,
-    Popover,
-    GenericConfirm,
-  },
-  methods: {
-    /**
-     * fetch a new page of users via admin-api
-     * @param {object} store
-     * @param {object} opts
-     */
-    fetchPage(store, opts) {
-      if (!this.init) return new Promise(() => [])
+    fetchOptions() {
       const filters = {
         isAdmin: this.filtersIsAdmin,
         isModerator: this.filtersIsModerator,
@@ -109,22 +96,51 @@ const UsersTab = {
         needApproval: this.filtersNeedApproval,
         unconfirmed: this.filtersUnconfirmeUnconfirmed,
       }
-      const nopts = {
-        ...opts,
-        ...{
-          query: this.filtersQuery,
-          filters,
-          name: this.filtersName,
-          email: this.filtersEmail,
-        },
+
+      return {
+        query: this.filtersQuery,
+        name: this.filtersName,
+        email: this.filtersEmail,
+        pageSize: 50,
+        filters,
       }
-      return store.dispatch('fetchAdminUsers', nopts)
     },
-    /**
-     * reset the userlist explicitly
-     */
-    reset() {
-      this.$refs.userList.reset()
+  },
+  components: {
+    Checkbox,
+    Select,
+    BasicUserCard,
+    List,
+    ProgressButton,
+    AdminCard,
+    TabSwitcher,
+    Popover,
+    GenericConfirm,
+  },
+  methods: {
+    fetchPage() {
+      if (this.loading) return
+
+      this.loading = true
+      this.error = null
+
+      this.$store
+        .dispatch('fetchAdminUsers', {
+          ...this.fetchOptions,
+          page: this.page,
+        })
+        .then((result) => {
+          console.log('RESULT', result)
+          this.loading = false
+          this.bottomedOut = isEmpty(result.users)
+          this.page += 1
+          this.total = result.count
+          this.users.push(...result.users)
+        })
+        .catch((error) => {
+          this.loading = false
+          this.error = error
+        })
     },
     /**
      * show the confirmation box for bulk actions.
@@ -147,20 +163,18 @@ const UsersTab = {
           u.id !== this.$store.state.users.currentUser.id
         ) {
           const uf = this.$store.getters.findUser(u.id)
-          console.log('user: ', uf)
           this.$store.dispatch(action, this.$store.getters.findUser(u.id))
         }
       })
-      this.reset()
     },
   },
-  /**
-   * mark as initialized and reset user list
-   */
-  mounted() {
-    this.init = true
-    this.reset()
-  },
+  watch: {
+    fetchOptions () {
+      this.page = 1
+      this.users = []
+      this.fetchPage()
+    }
+  }
 }
 
 export default UsersTab

@@ -22,8 +22,11 @@
       </div>
       <List
         :get-key="i => i"
-        :items-function="getBlocks"
-        :fetch-function="() => $store.dispatch('fetchBlocks')"
+        :items="blocks"
+        :loading="blocksLoading"
+        :error="blocksError"
+        :bottomed-out="blocksBottomedOut"
+        @fetch-requested="fetchItems('blocks')"
         scrollable
         selectable
       >
@@ -76,8 +79,11 @@
       </div>
       <List
         :get-key="i => i"
-        :items-function="getMutes"
-        :fetch-function="() => $store.dispatch('fetchMutes')"
+        :items="mutes"
+        :loading="mutesLoading"
+        :error="mutesError"
+        :bottomed-out="mutesBottomedOut"
+        @fetch-requested="fetchItems('mutes')"
         scrollable
         selectable
       >
@@ -130,8 +136,11 @@
       </div>
       <List
         :get-key="i => i"
-        :items-function="getDomainMutes"
-        :fetch-function="() => $store.dispatch('fetchDomainMutes')"
+        :items="domains"
+        :loading="domainsLoading"
+        :error="domainsError"
+        :bottomed-out="domainsBottomedOut"
+        @fetch-requested="fetchItems('domainMutes')"
         scrollable
         selectable
       >

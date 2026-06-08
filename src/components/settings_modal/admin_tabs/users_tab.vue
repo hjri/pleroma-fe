@@ -14,7 +14,6 @@
         <input
           v-model="filtersQuery"
           class="input string-input filter-input"
-          @input="reset()"
         >
       </label>
       <label class="filter">
@@ -24,7 +23,6 @@
         <input
           v-model="filtersName"
           class="input string-input filter-input"
-          @input="reset()"
         >
       </label>
       <label class="filter">
@@ -34,7 +32,6 @@
         <input
           v-model="filtersEmail"
           class="input string-input filter-input"
-          @input="reset()"
         >
       </label>
       <div class="filter">
@@ -43,7 +40,6 @@
         </div>
         <Select
           v-model="filtersOrigin"
-          @update:model-value="reset"
         >
           <option
             value="all"
@@ -68,7 +64,6 @@
         </div>
         <Select
           v-model="filtersActivity"
-          @update:model-value="reset"
         >
           <option
             value="all"
@@ -91,10 +86,7 @@
         <div class="query-label">
           {{ $t('admin_dash.users.labels.privileges') }}
         </div>
-        <Select
-          v-model="filtersPrivileges"
-          @update:model-value="reset"
-        >
+        <Select v-model="filtersPrivileges">
           <option
             value="all"
           >
@@ -118,27 +110,25 @@
         </Select>
       </div>
       <div class="filter">
-        <Checkbox
-          @update:model-value="v => {filtersNeedApproval = v; reset();}"
-        >
+        <Checkbox v-model="filtersNeedApproval">
           {{ $t('admin_dash.users.options.only_unapproved') }}
         </Checkbox>
       </div>
       <div class="filter">
-        <Checkbox
-          @update:model-value="v => {filtersUncomfirmed = v; reset();}"
-        >
+        <Checkbox v-model="filtersUncomfirmed">
           {{ $t('admin_dash.users.options.only_unconfirmed') }}
         </Checkbox>
       </div>
     </div>
-    <PageList
-      ref="userList"
-      :refresh="true"
+    <List
       :get-key="i => i"
-      :box-only="true"
-      :page-size="20"
-      :fetch-page="(store, opts) => fetchPage(store, opts)"
+      :items="users"
+      :loading="loading"
+      :error="error"
+      :bottomed-out="bottomedOut"
+      @fetch-requested="fetchPage"
+      selectable
+      scrollable
     >
       <template #header>
         <Popover
@@ -264,7 +254,7 @@
       <template #empty>
         <span> no users </span>
       </template>
-    </PageList>
+    </List>
     <GenericConfirm
       ref="confirmActivate"
       :title="$t('admin_dash.users.actions.confirm_multi.title')"

@@ -40,9 +40,11 @@
           :disabled="!user.friends_count"
         >
           <List
-            :user-id="userId"
-            :items-function="getFriends"
-            :fetch-function="() => $store.dispatch('fetchFriends', userId)"
+            :items="friends"
+            :loading="friendsLoading"
+            :error="friendsError"
+            :bottomed-out="friendsBottomedOut"
+            @fetch-requested="fetchUsers('friends')"
           >
             <template #item="{item}">
               <FollowCard :user="item" />
@@ -57,9 +59,11 @@
           :disabled="!user.followers_count"
         >
           <List
-            :user-id="userId"
-            :items-function="getFollowers"
-            :fetch-function="() => $store.dispatch('fetchFollowers', userId)"
+            :items="followers"
+            :loading="followersLoading"
+            :error="followersError"
+            :bottomed-out="followersBottomedOut"
+            @fetch-requested="fetchUsers('followers')"
           >
             <template #item="{item}">
               <FollowCard

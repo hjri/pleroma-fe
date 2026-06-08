@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get, isEmpty } from 'lodash'
 import { mapState } from 'pinia'
 
 import Conversation from 'src/components/conversation/conversation.vue'
@@ -27,6 +27,12 @@ const UserProfile = {
       userId: null,
       tab: defaultTabKey,
       footerRef: null,
+      friendsLoading: false,
+      friendsError: null,
+      friendsBottomedOut: false,
+      followersLoading: false,
+      followersError: null,
+      followersBottomedOut: false,
     }
   },
   created() {
@@ -83,22 +89,44 @@ const UserProfile = {
     compactProfiles() {
       return useMergedConfigStore().mergedConfig.compactProfiles
     },
+    friends() {
+      return get(
+        this.$store.getters.findUser(this.userId),
+        'friendIds',
+        [],
+      ).map((id) => this.$store.getters.findUser(id))
+    },
+    followers() {
+      return get(
+        this.$store.getters.findUser(this.userId),
+        'followerIds',
+        [],
+      ).map((id) => this.$store.getters.findUser(id))
+    },
   },
   methods: {
     setFooterRef(el) {
       this.footerRef = el
     },
-    getFriends() {
-      return get(
-        this.$store.getters.findUser(this.userId),
-        'friendIds', []
-      ).map((id) => this.$store.getters.findUser(id))
-    },
-    getFollowers() {
-      return get(
-        this.$store.getters.findUser(this.userId),
-        'followerIds', []
-      ).map((id) => this.$store.getters.findUser(id))
+    fetchUsers(group) {
+      if (this[group + 'Loading']) return
+
+      const capGroup = group[0].toUpperCase() + group.slice(1)
+
+      this[group + 'Loading'] = true
+      this[group + 'Error'] = null
+
+      this.$store
+        .dispatch('fetch' + capGroup, this.userId)
+        .then((newEntries) => {
+          this[group + 'Loading'] = false
+          this[group + 'BottomedOut'] = isEmpty(newEntries)
+          return newEntries
+        })
+        .catch((error) => {
+          this[group + 'Loading'] = false
+          this[group + 'Error'] = error
+        })
     },
     load(userNameOrId) {
       const startFetchingTimeline = (timeline, userId) => {

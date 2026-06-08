@@ -28,7 +28,7 @@
       role="list"
     >
       <div
-        v-for="item in actualItems"
+        v-for="item in items"
         :key="getKey(item)"
         class="list-item"
         :class="[getClass(item), nonInteractive ? '-non-interactive' : '']"
@@ -50,7 +50,7 @@
         />
       </div>
       <div
-        v-if="actualItems.length === 0 && !!$slots.empty"
+        v-if="items.length === 0 && !!$slots.empty"
         class="list-empty-content faint"
       >
         <slot name="empty" />

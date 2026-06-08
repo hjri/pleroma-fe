@@ -1673,7 +1673,10 @@ const adminListUsers = ({ opts, credentials }) => {
     url: url,
     credentials,
     method: 'GET',
-  }).then((data) => data.users.map(parseUser))
+  }).then((data) => ({
+    ...data,
+    users: data.users.map(parseUser),
+  }))
 }
 
 const adminAddUserToAdminGroup = ({ user, credentials }) => {
