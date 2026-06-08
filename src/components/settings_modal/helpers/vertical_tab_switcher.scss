@@ -40,6 +40,7 @@
 
     .tab-slot-wrapper {
       flex: 1 1 auto;
+      position: relative;
       height: 100%;
       padding: 0 1em;
       overflow-y: auto;
@@ -56,9 +57,15 @@
         }
 
         &.-full-height {
+          height: 100%;
           > * {
             height: 100%;
           }
+        }
+
+        &.-full-width.-full-height {
+          position: absolute;
+          inset: 0;
         }
       }
     }

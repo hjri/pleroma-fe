@@ -87,7 +87,7 @@
   flex-direction: column;
 
   .list {
-    flex: 1 1 0;
+    flex: 1;
   }
 
   &-item-inner {

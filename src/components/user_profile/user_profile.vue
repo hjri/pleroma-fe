@@ -39,14 +39,15 @@
           :label="$t('user_card.followees')"
           :disabled="!user.friends_count"
         >
-          <FriendList
+          <List
             :user-id="userId"
-            :non-interactive="true"
+            :items-function="getFriends"
+            :fetch-function="() => $store.dispatch('fetchFriends', userId)"
           >
             <template #item="{item}">
               <FollowCard :user="item" />
             </template>
-          </FriendList>
+          </List>
         </div>
         <div
           v-if="followersTabVisible"
@@ -55,9 +56,10 @@
           :label="$t('user_card.followers')"
           :disabled="!user.followers_count"
         >
-          <FollowerList
+          <List
             :user-id="userId"
-            :non-interactive="true"
+            :items-function="getFollowers"
+            :fetch-function="() => $store.dispatch('fetchFollowers', userId)"
           >
             <template #item="{item}">
               <FollowCard
@@ -65,7 +67,7 @@
                 :no-follows-you="isUs"
               />
             </template>
-          </FollowerList>
+          </List>
         </div>
         <Timeline
           key="media"

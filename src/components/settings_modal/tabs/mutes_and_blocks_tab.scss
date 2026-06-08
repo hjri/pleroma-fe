@@ -1,5 +1,5 @@
 .mutes-and-blocks-tab {
-  height: 100%;
+  min-height: 100%;
 
   .usersearch-wrapper {
     padding: 1em;
@@ -25,5 +25,13 @@
     align-self: flex-end;
     margin-top: 1em;
     width: 10em;
+  }
+
+  .blocks, .mutes {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    position: absolute;
+    inset: 0;
   }
 }
