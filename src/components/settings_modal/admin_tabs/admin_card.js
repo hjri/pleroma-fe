@@ -2,7 +2,7 @@ import Checkbox from 'src/components/checkbox/checkbox.vue'
 import GenericConfirm from 'src/components/confirm_modal/generic_confirm.vue'
 import TextConfirm from 'src/components/confirm_modal/text_confirm.vue'
 import Modal from 'src/components/modal/modal.vue'
-import PageList from 'src/components/page_list/page_list.vue'
+import List from 'src/components/list/list.vue'
 import Popover from 'src/components/popover/popover.vue'
 import Select from 'src/components/select/select.vue'
 import AdminStatusCard from 'src/components/settings_modal/admin_tabs/admin_status_card.vue'
@@ -132,7 +132,7 @@ const AdminCard = {
   components: {
     BasicUserCard,
     Checkbox,
-    PageList,
+    List,
     AdminStatusCard,
     Modal,
     Popover,

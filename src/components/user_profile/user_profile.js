@@ -1,4 +1,4 @@
-import { get, isEmpty } from 'lodash'
+import { get } from 'lodash'
 import { mapState } from 'pinia'
 
 import Conversation from 'src/components/conversation/conversation.vue'
@@ -27,12 +27,6 @@ const UserProfile = {
       userId: null,
       tab: defaultTabKey,
       footerRef: null,
-      friendsLoading: false,
-      friendsError: null,
-      friendsBottomedOut: false,
-      followersLoading: false,
-      followersError: null,
-      followersBottomedOut: false,
     }
   },
   created() {
@@ -109,24 +103,10 @@ const UserProfile = {
       this.footerRef = el
     },
     fetchUsers(group) {
-      if (this[group + 'Loading']) return
-
-      const capGroup = group[0].toUpperCase() + group.slice(1)
-
-      this[group + 'Loading'] = true
-      this[group + 'Error'] = null
-
-      this.$store
-        .dispatch('fetch' + capGroup, this.userId)
-        .then((newEntries) => {
-          this[group + 'Loading'] = false
-          this[group + 'BottomedOut'] = isEmpty(newEntries)
-          return newEntries
-        })
-        .catch((error) => {
-          this[group + 'Loading'] = false
-          this[group + 'Error'] = error
-        })
+      return () => this
+        .$store
+        .dispatch('fetch' + group, this.userId)
+        .then((result) => ({ items: result }))
     },
     load(userNameOrId) {
       const startFetchingTimeline = (timeline, userId) => {

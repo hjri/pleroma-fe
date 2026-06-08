@@ -1,3 +1,5 @@
+import { isEmpty } from 'lodash'
+
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 
 const List = {
@@ -6,21 +8,13 @@ const List = {
       type: Boolean,
       default: false,
     },
-    items: {
-      type: Array,
-      default: [],
-    },
     fetchFunction: {
-      type: Function,
-      default: null,
-    },
-    itemsFunction: {
       type: Function,
       default: null,
     },
     getKey: {
       type: Function,
-      default: (item) => item.id,
+      default: (item) => item,
     },
     getClass: {
       type: Function,
@@ -38,16 +32,8 @@ const List = {
       type: Boolean,
       default: false,
     },
-    loading: {
-      type: Boolean,
-      default: true,
-    },
-    bottomedOut: {
-      type: Boolean,
-      default: false,
-    },
-    error: {
-      type: String,
+    externalItems: {
+      type: Array,
       default: null,
     },
   },
@@ -57,25 +43,34 @@ const List = {
   },
   data() {
     return {
-      selected: [],
+      items: [],
+      selected: new Set([]),
+      loading: false,
+      bottomedOut: true,
+      error: null,
+      page: 1,
+      total: null,
     }
   },
   computed: {
     allKeys() {
-      return this.items.map(this.getKey)
+      return new Set(this.finalItems.map(this.getKey))
     },
     filteredSelected() {
-      return this.allKeys.filter((key) => this.selected.indexOf(key) !== -1)
+      return [ ...this.allKeys.values().filter((key) => this.selected.has(key))]
     },
     allSelected() {
-      return this.filteredSelected.length === this.items.length
+      return this.selected.size === this.finalItems.length
     },
     noneSelected() {
-      return this.filteredSelected.length === 0
+      return this.selected.size === 0
     },
     someSelected() {
       return !this.allSelected && !this.noneSelected
     },
+    finalItems() {
+      return this.externalItems || this.items
+    }
   },
   created() {
     window.addEventListener('scroll', this.scrollLoad)
@@ -89,7 +84,32 @@ const List = {
   },
   methods: {
     fetchEntries() {
-      this.$emit('fetchRequested')
+      if (this.loading) return
+
+      this.loading = true
+      this.error = null
+
+      this.fetchFunction(this.page)
+        .then((result) => {
+          this.loading = false
+          this.bottomedOut = isEmpty(result.items)
+          if (this.externalItems) return
+          this.page += 1
+          this.total = result.count
+          this.items.push(...result.items)
+        })
+        .catch((error) => {
+          this.loading = false
+          this.error = error
+        })
+    },
+    reset() {
+      this.items = []
+      this.page = 1
+      this.total = null
+      this.error = null
+      this.loading = false
+      this.fetchEntries()
     },
     scrollLoad(e) {
       if (this.fetchFunction) {
@@ -111,18 +131,18 @@ const List = {
       const oldChecked = this.isSelected(key)
       if (checked !== oldChecked) {
         if (checked) {
-          this.selected.push(key)
+          this.selected.add(key)
         } else {
-          this.selected.splice(this.selected.indexOf(key), 1)
+          this.selected.delete(key)
         }
       }
       this.$emit('selected', this.selected)
     },
     toggleAll(value) {
       if (value) {
-        this.selected = this.allKeys.slice(0)
+        this.selected = new Set([...this.allKeys])
       } else {
-        this.selected = []
+        this.selected = new Set([])
       }
       this.$emit('selected', this.selected)
     },

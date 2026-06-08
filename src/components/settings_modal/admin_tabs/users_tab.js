@@ -28,12 +28,6 @@ const UsersTab = {
       filtersName: '',
       filtersEmail: '',
       expandedUser: null,
-      loading: false,
-      error: null,
-      bottomedOut: false,
-      users: [],
-      page: 1,
-      total: null,
     }
   },
   computed: {
@@ -118,29 +112,14 @@ const UsersTab = {
     GenericConfirm,
   },
   methods: {
-    fetchPage() {
-      if (this.loading) return
-
-      this.loading = true
-      this.error = null
-
-      this.$store
+    fetchUsers(page) {
+      console.log(page)
+      return this.$store
         .dispatch('fetchAdminUsers', {
           ...this.fetchOptions,
-          page: this.page,
+          page,
         })
-        .then((result) => {
-          console.log('RESULT', result)
-          this.loading = false
-          this.bottomedOut = isEmpty(result.users)
-          this.page += 1
-          this.total = result.count
-          this.users.push(...result.users)
-        })
-        .catch((error) => {
-          this.loading = false
-          this.error = error
-        })
+        .then(({ count, users }) => ({ count, items: users }))
     },
     /**
      * show the confirmation box for bulk actions.
@@ -170,9 +149,7 @@ const UsersTab = {
   },
   watch: {
     fetchOptions () {
-      this.page = 1
-      this.users = []
-      this.fetchPage()
+      this.$refs.usersList.reset()
     }
   }
 }

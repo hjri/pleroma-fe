@@ -40,11 +40,8 @@
           :disabled="!user.friends_count"
         >
           <List
-            :items="friends"
-            :loading="friendsLoading"
-            :error="friendsError"
-            :bottomed-out="friendsBottomedOut"
-            @fetch-requested="fetchUsers('friends')"
+            :fetch-function="fetchUsers('Friends')"
+            :external-items="friends"
           >
             <template #item="{item}">
               <FollowCard :user="item" />
@@ -59,11 +56,8 @@
           :disabled="!user.followers_count"
         >
           <List
-            :items="followers"
-            :loading="followersLoading"
-            :error="followersError"
-            :bottomed-out="followersBottomedOut"
-            @fetch-requested="fetchUsers('followers')"
+            :fetch-function="fetchUsers('Followers')"
+            :external-items="followers"
           >
             <template #item="{item}">
               <FollowCard

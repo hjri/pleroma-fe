@@ -7,7 +7,6 @@ import DomainMuteCard from 'src/components/domain_mute_card/domain_mute_card.vue
 import List from 'src/components/list/list.vue'
 import MuteCard from 'src/components/mute_card/mute_card.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
-import SelectableList from 'src/components/selectable_list/selectable_list.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -61,24 +60,7 @@ const MutesAndBlocks = {
   },
   methods: {
     fetchItems(group) {
-      if (this[group + 'Loading']) return
-
-      const capGroup = group[0].toUpperCase() + group.slice(1)
-
-      this[group + 'Loading'] = true
-      this[group + 'Error'] = null
-
-      this.$store
-        .dispatch('fetch' + capGroup, this.userId)
-        .then((newEntries) => {
-          this[group + 'Loading'] = false
-          this[group + 'BottomedOut'] = isEmpty(newEntries)
-          return newEntries
-        })
-        .catch((error) => {
-          this[group + 'Loading'] = false
-          this[group + 'Error'] = error
-        })
+      return () => this.$store.dispatch('fetch' + group, this.userId)
     },
     importFollows(file) {
       return this.$store.state.api.backendInteractor

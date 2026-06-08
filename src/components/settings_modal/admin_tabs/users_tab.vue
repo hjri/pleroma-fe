@@ -121,12 +121,8 @@
       </div>
     </div>
     <List
-      :get-key="i => i"
-      :items="users"
-      :loading="loading"
-      :error="error"
-      :bottomed-out="bottomedOut"
-      @fetch-requested="fetchPage"
+      ref="usersList"
+      :fetch-function="fetchUsers"
       selectable
       scrollable
     >
