@@ -1,19 +1,9 @@
-.inline-layout {
-  display: flex;
-  align-items: center;
+.AdminCard {
   width: 100%;
-  gap: 8px;
-}
 
-.alert {
-  text-shadow: none;
-}
-
-.user-role {
-  display: inline-block;
-  vertical-align: baseline;
-}
-
-.modalfix::before {
-  opacity: 1.0;
+  .right-side {
+    align-items: baseline;
+    justify-content: end;
+    display: flex;
+  }
 }

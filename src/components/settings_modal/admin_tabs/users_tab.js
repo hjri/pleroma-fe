@@ -10,6 +10,8 @@ import Select from 'src/components/select/select.vue'
 import AdminCard from 'src/components/settings_modal/admin_tabs/admin_card.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 
+import { useAdminUsersStore } from 'src/stores/adminUsers.js'
+
 const UsersTab = {
   provide() {
     return {
@@ -113,9 +115,7 @@ const UsersTab = {
   },
   methods: {
     fetchUsers(page) {
-      console.log(page)
-      return this.$store
-        .dispatch('fetchAdminUsers', {
+      return useAdminUsersStore().fetchAdminUsers({
           ...this.fetchOptions,
           page,
         })
@@ -148,10 +148,10 @@ const UsersTab = {
     },
   },
   watch: {
-    fetchOptions () {
+    fetchOptions() {
       this.$refs.usersList.reset()
-    }
-  }
+    },
+  },
 }
 
 export default UsersTab

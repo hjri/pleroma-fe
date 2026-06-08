@@ -103,10 +103,10 @@ const UserProfile = {
       this.footerRef = el
     },
     fetchUsers(group) {
-      return () => this
-        .$store
-        .dispatch('fetch' + group, this.userId)
-        .then((result) => ({ items: result }))
+      return () =>
+        this.$store
+          .dispatch('fetch' + group, this.userId)
+          .then((result) => ({ items: result }))
     },
     load(userNameOrId) {
       const startFetchingTimeline = (timeline, userId) => {

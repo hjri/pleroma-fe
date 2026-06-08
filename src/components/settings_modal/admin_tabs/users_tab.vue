@@ -242,7 +242,11 @@
         </Popover>
       </template>
       <template #item="{item}">
-        <AdminCard :user-details="item" />
+        <AdminCard
+          :user-id="item.id"
+          :confirmed="item.is_confirmed"
+          :suggested="item.is_suggested"
+        />
       </template>
       <template #load>
         <span> loading </span>

@@ -57,7 +57,7 @@ const List = {
       return new Set(this.finalItems.map(this.getKey))
     },
     filteredSelected() {
-      return [ ...this.allKeys.values().filter((key) => this.selected.has(key))]
+      return [...this.allKeys.values().filter((key) => this.selected.has(key))]
     },
     allSelected() {
       return this.selected.size === this.finalItems.length
@@ -70,7 +70,7 @@ const List = {
     },
     finalItems() {
       return this.externalItems || this.items
-    }
+    },
   },
   created() {
     window.addEventListener('scroll', this.scrollLoad)

@@ -151,9 +151,9 @@ const adminSettingsStorage = {
     adminApproveUser(store, user) {
       return store.rootState.api.backendInteractor.adminApproveUser({ user })
     },
-    adminListStatuses(store, { user, opts }) {
+    adminListStatuses(store, { userId, opts }) {
       return store.rootState.api.backendInteractor.adminListStatuses({
-        user,
+        userId,
         opts,
       })
     },

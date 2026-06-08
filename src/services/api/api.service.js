@@ -1740,17 +1740,19 @@ const adminApproveUser = ({ user: { screen_name: nickname }, credentials }) => {
 }
 
 const adminListStatuses = ({
-  user: { id },
-  opts: { pageSize, godmode, withReblogs },
+  userId,
+  pageSize = 20,
+  godmode,
+  withReblogs,
   credentials,
 }) => {
   const url = PLEROMA_ADMIN_LIST_STATUSES_URL(
-    id,
+    userId,
     pageSize,
     godmode,
     withReblogs,
   )
-  return promisedRequest({ url: url, credentials, method: 'GET' })
+  return promisedRequest({ url, credentials, method: 'GET' })
 }
 
 const adminChangeStatusScope = ({
