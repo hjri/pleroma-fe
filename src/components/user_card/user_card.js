@@ -280,7 +280,7 @@ export default {
       },
     },
     visibleRole() {
-      if (!this.newShowRole) {
+      if (!this.user.show_role && !this.user.adminData) {
         return
       }
       const rights = this.user.rights

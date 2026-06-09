@@ -19,22 +19,13 @@ export const newUserFlags = {
 export const useAdminSettingsStore = defineStore('adminSettings', {
   state: () => ({
     ...cloneDeep(defaultState),
+    backendInteractor: window.vuex.state.api.backendInteractor,
   }),
   actions: {
+    // Configuration Stuff
     setInstanceAdminNoDbConfig() {
       this.loaded = false
       this.dbConfigEnabled = false
-    },
-    setAvailableFrontends({ frontends }) {
-      this.frontends = frontends.map((f) => {
-        f.installedRefs = f.installed_refs
-        if (f.name === 'pleroma-fe') {
-          f.refs = ['master', 'develop']
-        } else {
-          f.refs = [f.ref]
-        }
-        return f
-      })
     },
     updateAdminSettings({ config, modifiedPaths }) {
       this.loaded = true
@@ -59,144 +50,23 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     resetAdminDraft() {
       this.draft = cloneDeep(this.config)
     },
-    async fetchAdminUsers(opts) {
-      const data = await window.vuex.state.api.backendInteractor.adminListUsers(
-        {
-          opts,
-        },
-      )
 
-      data.users.forEach((user) =>
-        window.vuex.dispatch('fetchUserIfMissing', user.id),
-      )
-
-      return data
-    },
-    adminAddUserToAdminGroup(user) {
-      window.vuex.state.api.backendInteractor
-        .adminAddUserToAdminGroup({ user })
-        .then((res) =>
-          window.vuex.commit('updateRight', {
-            user,
-            right: 'admin',
-            value: res.is_admin,
-          }),
-        )
-    },
-    adminRemoveUserFromAdminGroup(user) {
-      // prevent revokation of own rights
-      if (user.id !== window.vuex.state.users.currentUser.id) {
-        return window.vuex.state.api.backendInteractor
-          .adminRemoveUserFromAdminGroup({ user })
-          .then((res) =>
-            window.vuex.commit('updateRight', {
-              user,
-              right: 'admin',
-              value: res.is_admin,
-            }),
-          )
-      }
-    },
-    adminAddUserToModeratorGroup(user) {
-      return window.vuex.state.api.backendInteractor
-        .adminAddUserToModeratorGroup({ user })
-        .then((res) =>
-          window.vuex.commit('updateRight', {
-            user,
-            right: 'moderator',
-            value: res.is_moderator,
-          }),
-        )
-    },
-    adminRemoveUserFromModeratorGroup(user) {
-      // prevent revokation of own rights
-      if (user.id !== window.vuex.state.users.currentUser.id) {
-        return window.vuex.state.api.backendInteractor
-          .adminRemoveUserFromModeratorGroup({ user })
-          .then((res) =>
-            window.vuex.commit('updateRight', {
-              user,
-              right: 'moderator',
-              value: res.is_moderator,
-            }),
-          )
-      }
-    },
-    adminActivateUser(user) {
-      return window.vuex.state.api.backendInteractor
-        .activateUser({ user })
-        .then((res) => {
-          const deactivated = !res.is_active
-          window.vuex.commit('updateActivationStatus', { user, deactivated })
-        })
-    },
-    adminDeactivateUser(user) {
-      return window.vuex.state.api.backendInteractor
-        .deactivateUser({ user })
-        .then((res) => {
-          const deactivated = !res.is_active
-          window.vuex.commit('updateActivationStatus', { user, deactivated })
-        })
-    },
-    adminDeleteUser(user) {
-      return window.vuex.state.api.backendInteractor.deleteUser({ user })
-    },
-    adminConfirmUser(user) {
-      return window.vuex.state.api.backendInteractor
-        .adminConfirmUser({ user })
-        .then(() => window.vuex.dispatch('fetchUser', user.id))
-    },
-    adminResendConfirmationEmail(user) {
-      return window.vuex.state.api.backendInteractor.adminResendConfirmationEmail(
-        { user },
-      )
-    },
-    adminApproveUser(user) {
-      return window.vuex.state.api.backendInteractor.adminApproveUser({ user })
-    },
-    adminListStatuses({ userId, opts }) {
-      return window.vuex.state.api.backendInteractor.adminListStatuses({
-        userId,
-        opts,
-      })
-    },
-    adminChangeStatusScope({ opts }) {
-      return window.vuex.state.api.backendInteractor.adminChangeStatusScope({
-        opts,
-      })
-    },
-    adminDisableMFA(user) {
-      return window.vuex.state.api.backendInteractor.adminDisableMFA({ user })
-    },
-    adminTagUser({ user, tag }) {
-      return window.vuex.state.api.backendInteractor.tagUser({ user, tag })
-    },
-    adminUntagUser({ user, tag }) {
-      return window.vuex.state.api.backendInteractor.untagUser({ user, tag })
-    },
-    loadFrontendsStuff() {
-      window.vuex.state.api.backendInteractor
-        .fetchAvailableFrontends()
-        .then((frontends) => this.setAvailableFrontends({ frontends }))
-    },
     loadAdminStuff() {
-      window.vuex.state.api.backendInteractor
-        .fetchInstanceDBConfig()
-        .then((backendDbConfig) => {
-          if (backendDbConfig.error) {
-            if (backendDbConfig.error.status === 400) {
-              backendDbConfig.error.json().then((errorJson) => {
-                if (/configurable_from_database/.test(errorJson.error)) {
-                  this.setInstanceAdminNoDbConfig()
-                }
-              })
-            }
-          } else {
-            this.setInstanceAdminSettings({ backendDbConfig })
+      this.backendInteractor.fetchInstanceDBConfig().then((backendDbConfig) => {
+        if (backendDbConfig.error) {
+          if (backendDbConfig.error.status === 400) {
+            backendDbConfig.error.json().then((errorJson) => {
+              if (/configurable_from_database/.test(errorJson.error)) {
+                this.setInstanceAdminNoDbConfig()
+              }
+            })
           }
-        })
+        } else {
+          this.setInstanceAdminSettings({ backendDbConfig })
+        }
+      })
       if (this.descriptions === null) {
-        window.vuex.state.api.backendInteractor
+        this.backendInteractor
           .fetchInstanceConfigDescriptions()
           .then((backendDescriptions) =>
             this.setInstanceAdminDescriptions({ backendDescriptions }),
@@ -407,6 +277,173 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         .then((backendDbConfig) =>
           this.setInstanceAdminSettings({ backendDbConfig }),
         )
+    },
+
+    // Frontends Stuff
+    loadFrontendsStuff() {
+      this.backendInteractor
+        .fetchAvailableFrontends()
+        .then((frontends) => this.setAvailableFrontends({ frontends }))
+    },
+
+    setAvailableFrontends({ frontends }) {
+      this.frontends = frontends.map((f) => {
+        f.installedRefs = f.installed_refs
+        if (f.name === 'pleroma-fe') {
+          f.refs = ['master', 'develop']
+        } else {
+          f.refs = [f.ref]
+        }
+        return f
+      })
+    },
+
+    // Statuses stuff
+    listStatuses({ userId, opts }) {
+      return this.backendInteractor.adminListStatuses({
+        userId,
+        opts,
+      })
+    },
+    changeStatusScope({ opts }) {
+      return this.backendInteractor.adminChangeStatusScope({
+        opts,
+      })
+    },
+
+    // Users stuff
+    async fetchAdminUsers(opts) {
+      const adminData = await this.backendInteractor.adminListUsers({
+        opts,
+      })
+
+      adminData.users = await Promise.all(
+        adminData.users.map(
+          async (userAdminData) =>
+            await window.vuex.dispatch('updateUserAdminData', {
+              userAdminData,
+            }),
+        ),
+      )
+
+      return adminData
+    },
+    async getUserData({ user }) {
+      const api = this.backendInteractor.adminGetUserData
+      const { screen_name } = user
+
+      const result = await api({ screen_name })
+      window.vuex.commit('updateUserAdminData', { user: result })
+    },
+    async deleteUsers({ users }) {
+      const screen_names = users.map((u) => u.screen_name)
+      const api = this.backendInteractor.adminDeleteAccounts
+
+      const resultUserIds = await api({ screen_names })
+
+      resultUserIds.forEach((userId) => {
+        window.vuex.dispatch(
+          'markStatusesAsDeleted',
+          (status) => userId === status.user.id,
+        )
+        // TODO when migrated to pinia, also remove user
+      })
+
+      return resultUserIds
+    },
+    resendConfirmationEmail({ users }) {
+      const screen_names = users.map((u) => u.screen_name)
+
+      return this.backendInteractor.adminResendConfirmationEmail({
+        screen_names,
+      })
+    },
+    requirePasswordChange({ users }) {
+      const screen_names = users.map((u) => u.screen_name)
+
+      return this.backendInteractor.adminRequirePasswordChange({
+        screen_names,
+      })
+    },
+    // Singular only!
+    disableMFA({ user }) {
+      return this.backendInteractor.adminDisableMFA(user)
+    },
+    async setUsersTags({ users, tags, value }) {
+      const screen_names = users.map((u) => u.screen_name)
+      const api = this.backendInteractor.adminSetUsersTags
+
+      await api({
+        screen_names,
+        tags,
+        value,
+      })
+
+      users.forEach((user) => {
+        this.getUserData({ user })
+      })
+    },
+    async setUsersRight({ users, right, value }) {
+      const screen_names = users.map((u) => u.screen_name)
+      const api = this.backendInteractor.adminSetUsersRight
+
+      await api({
+        screen_names,
+        right,
+        value,
+      })
+
+      users.forEach((user) => {
+        window.vuex.commit('updateRight', { user, right, value })
+      })
+    },
+    async setUsersActivationStatus({ users, value }) {
+      const screen_names = users.map((u) => u.screen_name)
+      const api = this.backendInteractor.adminSetUsersActivationStatus
+
+      const resultUsers = await api({
+        screen_names,
+        value,
+      })
+
+      resultUsers.forEach((user) => {
+        window.vuex.commit('updateUserAdminData', { user })
+      })
+    },
+    async setUsersSuggestionStatus({ users, value }) {
+      const screen_names = users.map((u) => u.screen_name)
+      const api = this.backendInteractor.adminSetUsersSuggestionStatus
+
+      const resultUsers = await api({
+        screen_names,
+        value,
+      })
+
+      resultUsers.forEach((user) => {
+        window.vuex.commit('updateUserAdminData', { user })
+      })
+    },
+    async setUsersConfirmationStatus({ users }) {
+      const screen_names = users.map((u) => u.screen_name)
+      const api = this.backendInteractor.adminSetUsersConfirmationStatus
+
+      await api({ screen_names })
+
+      users.forEach((user) => {
+        this.getUserData({ user })
+      })
+    },
+    async setUsersApprovalStatus({ users }) {
+      const screen_names = users.map((u) => u.screen_name)
+      const api = this.backendInteractor.adminSetUsersApprovalStatus
+
+      const resultUsers = await api({
+        screen_names,
+      })
+
+      resultUsers.forEach((user) => {
+        window.vuex.commit('updateUserAdminData', { user })
+      })
     },
   },
 })

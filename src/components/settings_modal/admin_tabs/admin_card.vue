@@ -26,7 +26,7 @@
         </label>
         <label
           v-if="isActivated"
-          class="alert info user-role"
+          class="alert success user-role"
         >
           {{ $t('admin_dash.users.indicator.active') }}
         </label>
@@ -37,14 +37,32 @@
           {{ $t('admin_dash.users.indicator.deactivated') }}
         </label>
         <label
-          v-if="isConfirmed"
-          class="alert neutral user-role"
+          v-if="user.adminData.is_confirmed"
+          class="alert success user-role"
         >
           {{ $t('admin_dash.users.indicator.confirmed') }}
         </label>
+        <label
+          v-if="!user.adminData.is_confirmed"
+          class="alert warning user-role"
+        >
+          {{ $t('admin_dash.users.indicator.unconfirmed') }}
+        </label>
+        <label
+          v-if="user.adminData.is_approved"
+          class="alert success user-role"
+        >
+          {{ $t('admin_dash.users.indicator.approved') }}
+        </label>
+        <label
+          v-if="!user.adminData.is_approved"
+          class="alert warning user-role"
+        >
+          {{ $t('admin_dash.users.indicator.unapproved') }}
+        </label>
         <ModerationTools
           class="moderation-menu"
-          :user="user"
+          :users="[user]"
         />
       </div>
     </BasicUserCard>

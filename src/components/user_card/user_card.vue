@@ -291,8 +291,7 @@
           </button>
           <ModerationTools
             v-if="showModerationMenu"
-            class="moderation-menu"
-            :user="user"
+            :users="[user]"
           />
         </div>
         <div

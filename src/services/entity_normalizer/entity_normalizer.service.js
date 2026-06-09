@@ -17,12 +17,13 @@ import { isStatusNotification } from '../notification_utils/notification_utils.j
 
 export const parseUser = (data) => {
   const output = {}
+  output._original = data // used for server-side settings
+
   // case for users in "mentions" property for statuses in MastoAPI
   const mastoShort = !Object.hasOwn(data, 'avatar')
 
   output.inLists = null
   output.id = String(data.id)
-  output._original = data // used for server-side settings
 
   output.screen_name = data.acct
   output.fqn = data.fqn
@@ -118,9 +119,9 @@ export const parseUser = (data) => {
     output.birthday = data.pleroma.birthday
 
     if (data.pleroma.privileges) {
-      output.privileges = data.pleroma.privileges
+      output.privileges = new Set(data.pleroma.privileges)
     } else if (data.pleroma.is_admin) {
-      output.privileges = [
+      output.privileges = new Set([
         'users_read',
         'users_manage_invites',
         'users_manage_activation_state',
@@ -135,11 +136,11 @@ export const parseUser = (data) => {
         'announcements_manage_announcements',
         'emoji_manage_emoji',
         'statistics_read',
-      ]
+      ])
     } else if (data.pleroma.is_moderator) {
-      output.privileges = ['messages_delete', 'reports_manage_reports']
+      output.privileges = new Set(['messages_delete', 'reports_manage_reports'])
     } else {
-      output.privileges = []
+      output.privileges = new Set()
     }
   }
 
@@ -149,7 +150,7 @@ export const parseUser = (data) => {
     output.fields = data.source.fields
     if (data.source.pleroma) {
       output.no_rich_text = data.source.pleroma.no_rich_text
-      output.show_role = data.source.pleroma.show_role
+      output.show_role = typeof data.source.pleroma.show_role === 'boolean' ? data.source.pleroma.show_role : true
       output.discoverable = data.source.pleroma.discoverable
       output.show_birthday = data.pleroma.show_birthday
       output.actor_type = data.source.pleroma.actor_type
@@ -168,7 +169,7 @@ export const parseUser = (data) => {
   if (data.pleroma) {
     output.follow_request_count = data.pleroma.follow_request_count
 
-    output.tags = data.pleroma.tags
+    output.tags = new Set(data.pleroma.tags)
 
     // deactivated was changed to is_active in Pleroma 2.3.0
     // so check if is_active is present
@@ -181,7 +182,7 @@ export const parseUser = (data) => {
     output.unread_chat_count = data.pleroma.unread_chat_count
   }
 
-  output.tags = output.tags || []
+  output.tags = output.tags || new Set()
   output.rights = output.rights || {}
   output.notification_settings = output.notification_settings || {}
 

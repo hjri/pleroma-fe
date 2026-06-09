@@ -14,7 +14,7 @@ const List = {
     },
     getKey: {
       type: Function,
-      default: (item) => item,
+      default: (item) => item.id,
     },
     getClass: {
       type: Function,
@@ -37,7 +37,7 @@ const List = {
       default: null,
     },
   },
-  emits: ['fetchRequested'],
+  emits: ['fetchRequested', 'select'],
   components: {
     Checkbox,
   },
@@ -56,11 +56,14 @@ const List = {
     allKeys() {
       return new Set(this.finalItems.map(this.getKey))
     },
-    filteredSelected() {
-      return [...this.allKeys.values().filter((key) => this.selected.has(key))]
+    selectedItems() {
+      return this.items.filter((item) => this.selected.has(this.getKey(item)))
     },
     allSelected() {
-      return this.selected.size === this.finalItems.length
+      return (
+        this.selected.size !== 0 &&
+        this.selected.size === this.finalItems.length
+      )
     },
     noneSelected() {
       return this.selected.size === 0
@@ -101,6 +104,7 @@ const List = {
         .catch((error) => {
           this.loading = false
           this.error = error
+          console.error('Error loading list data:', error)
         })
     },
     reset() {
@@ -124,19 +128,17 @@ const List = {
       }
     },
     isSelected(item) {
-      return this.filteredSelected.indexOf(this.getKey(item)) !== -1
+      return this.selected.has(this.getKey(item))
     },
     toggle(checked, item) {
       const key = this.getKey(item)
-      const oldChecked = this.isSelected(key)
-      if (checked !== oldChecked) {
-        if (checked) {
-          this.selected.add(key)
-        } else {
-          this.selected.delete(key)
-        }
+      if (checked) {
+        this.selected.add(key)
+      } else {
+        this.selected.delete(key)
       }
-      this.$emit('selected', this.selected)
+
+      this.$emit('select', this.selected)
     },
     toggleAll(value) {
       if (value) {
@@ -144,7 +146,7 @@ const List = {
       } else {
         this.selected = new Set([])
       }
-      this.$emit('selected', this.selected)
+      this.$emit('select', this.selected)
     },
   },
 }

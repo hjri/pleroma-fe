@@ -38,7 +38,7 @@ const FrontendsTab = {
   },
   created() {
     if (this.user.rights.admin) {
-      this.$store.dispatch('loadFrontendsStuff')
+      useAdminSettingsStore().loadFrontendsStuff()
     }
   },
   computed: {
@@ -77,7 +77,7 @@ const FrontendsTab = {
           this.working = false
         })
         .then(async (response) => {
-          this.$store.dispatch('loadFrontendsStuff')
+          useAdminSettingsStore().loadFrontendsStuff()
           if (response.error) {
             const reason = await response.error.json()
             useInterfaceStore().pushGlobalNotice({

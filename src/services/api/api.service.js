@@ -20,12 +20,6 @@ const CHANGE_EMAIL_URL = '/api/pleroma/change_email'
 const CHANGE_PASSWORD_URL = '/api/pleroma/change_password'
 const MOVE_ACCOUNT_URL = '/api/pleroma/move_account'
 const ALIASES_URL = '/api/pleroma/aliases'
-const TAG_USER_URL = '/api/pleroma/admin/users/tag'
-const PERMISSION_GROUP_URL = (screenName, right) =>
-  `/api/pleroma/admin/users/${screenName}/permission_group/${right}`
-const ACTIVATE_USER_URL = '/api/pleroma/admin/users/activate'
-const DEACTIVATE_USER_URL = '/api/pleroma/admin/users/deactivate'
-const ADMIN_USERS_URL = '/api/v1/pleroma/admin/users'
 const SUGGESTIONS_URL = '/api/v1/suggestions'
 const NOTIFICATION_SETTINGS_URL = '/api/pleroma/notification_settings'
 const NOTIFICATION_READ_URL = '/api/v1/pleroma/notifications/read'
@@ -121,7 +115,6 @@ const PLEROMA_CHAT_MESSAGES_URL = (id) => `/api/v1/pleroma/chats/${id}/messages`
 const PLEROMA_CHAT_READ_URL = (id) => `/api/v1/pleroma/chats/${id}/read`
 const PLEROMA_DELETE_CHAT_MESSAGE_URL = (chatId, messageId) =>
   `/api/v1/pleroma/chats/${chatId}/messages/${messageId}`
-const PLEROMA_ADMIN_REPORTS = '/api/v1/pleroma/admin/reports'
 const PLEROMA_BACKUP_URL = '/api/v1/pleroma/backups'
 const PLEROMA_ANNOUNCEMENTS_URL = '/api/v1/pleroma/admin/announcements'
 const PLEROMA_POST_ANNOUNCEMENT_URL = '/api/v1/pleroma/admin/announcements'
@@ -138,6 +131,7 @@ const PLEROMA_BOOKMARK_FOLDERS_URL = '/api/v1/pleroma/bookmark_folders'
 const PLEROMA_BOOKMARK_FOLDER_URL = (id) =>
   `/api/v1/pleroma/bookmark_folders/${id}`
 
+const PLEROMA_ADMIN_REPORTS = '/api/v1/pleroma/admin/reports'
 const PLEROMA_ADMIN_CONFIG_URL = '/api/v1/pleroma/admin/config'
 const PLEROMA_ADMIN_DESCRIPTIONS_URL =
   '/api/v1/pleroma/admin/config/descriptions'
@@ -145,7 +139,10 @@ const PLEROMA_ADMIN_FRONTENDS_URL = '/api/v1/pleroma/admin/frontends'
 const PLEROMA_ADMIN_FRONTENDS_INSTALL_URL =
   '/api/v1/pleroma/admin/frontends/install'
 
-const PLEROMA_ADMIN_USERS_URL = ({
+const PLEROMA_ADMIN_USERS_URL = '/api/v1/pleroma/admin/users'
+const PLEROMA_ADMIN_USERS_URL_SHOW = (nickname) =>
+  `/api/v1/pleroma/admin/users/${nickname}`
+const PLEROMA_ADMIN_USERS_URL_LIST = ({
   page,
   pageSize,
   filters = {},
@@ -177,13 +174,18 @@ const PLEROMA_ADMIN_USERS_URL = ({
     .join(',')
   return `/api/v1/pleroma/admin/users?page=${page}&page_size=${pageSize}&filters=${filters_str}&query=${query}&name=${name}&email=${email}`
 }
-const PLEROMA_ADMIN_MODIFY_GROUP_URL = (nickname, group) =>
-  `/api/v1/pleroma/admin/users/${nickname}/permission_group/${group}`
-const PLEROMA_ADMIN_CONFIRM_USER_URL =
+const PLEROMA_ADMIN_TAG_USER_URL = '/api/pleroma/admin/users/tag'
+const PLEROMA_ADMIN_PERMISSION_GROUP_URL = (right) =>
+  `/api/pleroma/admin/users/permission_group/${right}`
+const PLEROMA_ADMIN_ACTIVATE_USERS_URL = '/api/pleroma/admin/users/activate'
+const PLEROMA_ADMIN_DEACTIVATE_USERS_URL = '/api/pleroma/admin/users/deactivate'
+const PLEROMA_ADMIN_SUGGEST_USERS_URL = '/api/pleroma/admin/users/suggest'
+const PLEROMA_ADMIN_UNSUGGEST_USERS_URL = '/api/pleroma/admin/users/unsuggest'
+const PLEROMA_ADMIN_APPROVE_USERS_URL = '/api/v1/pleroma/admin/users/approve'
+const PLEROMA_ADMIN_CONFIRM_USERS_URL =
   '/api/v1/pleroma/admin/users/confirm_email'
 const PLEROMA_ADMIN_RESEND_CONFIRMATION_EMAIL_URL =
   '/api/v1/pleroma/admin/users/resend_confirmation_email'
-const PLEROMA_ADMIN_APPROVE_URL = '/api/v1/pleroma/admin/users/approve'
 const PLEROMA_ADMIN_LIST_STATUSES_URL = (id, pageSize, godmode, withReblogs) =>
   `/api/v1/pleroma/admin/users/${id}/statuses?page_size=${pageSize}&godmode=${godmode}&with_reblogs=${withReblogs}`
 const PLEROMA_ADMIN_CHANGE_STATUS_SCOPE_URL = (id) =>
@@ -251,8 +253,11 @@ const promisedRequest = ({
     }
   }
   return fetch(url, options).then((response) => {
-    return new Promise((resolve, reject) =>
-      response
+    return new Promise((resolve, reject) => {
+      // 204 is "No content", which fails to parse json (as you'd might think)
+      if (response.ok && response.status === 204) resolve()
+
+      return response
         .json()
         .then((json) => {
           if (!response.ok) {
@@ -276,8 +281,8 @@ const promisedRequest = ({
               response,
             ),
           )
-        }),
-    )
+        })
+    })
   })
 }
 
@@ -769,92 +774,118 @@ const fetchStatusHistory = ({ status, credentials }) => {
   })
 }
 
-const tagUser = ({ tag, credentials, user }) => {
-  const screenName = user.screen_name
-  const form = {
-    nicknames: [screenName],
-    tags: [tag],
-  }
-
-  const headers = authHeaders(credentials)
-  headers['Content-Type'] = 'application/json'
-
-  return fetch(TAG_USER_URL, {
-    method: 'PUT',
-    headers,
-    body: JSON.stringify(form),
-  })
-}
-
-const untagUser = ({ tag, credentials, user }) => {
-  const screenName = user.screen_name
-  const body = {
-    nicknames: [screenName],
-    tags: [tag],
-  }
-
-  const headers = authHeaders(credentials)
-  headers['Content-Type'] = 'application/json'
-
-  return fetch(TAG_USER_URL, {
-    method: 'DELETE',
-    headers,
-    body: JSON.stringify(body),
-  })
-}
-
-const addRight = ({ right, credentials, user }) => {
-  const screenName = user.screen_name
-
-  return fetch(PERMISSION_GROUP_URL(screenName, right), {
-    method: 'POST',
-    headers: authHeaders(credentials),
-    body: {},
-  })
-}
-
-const deleteRight = ({ right, credentials, user }) => {
-  const screenName = user.screen_name
-
-  return fetch(PERMISSION_GROUP_URL(screenName, right), {
-    method: 'DELETE',
-    headers: authHeaders(credentials),
-    body: {},
-  })
-}
-
-const activateUser = ({ credentials, user: { screen_name: nickname } }) => {
+const adminSetUsersTags = ({
+  tags,
+  credentials,
+  value,
+  screen_names: nicknames,
+}) => {
   return promisedRequest({
-    url: ACTIVATE_USER_URL,
+    url: PLEROMA_ADMIN_TAG_USER_URL,
+    method: value ? 'PUT' : 'DELETE',
+    credentials,
+    payload: {
+      nicknames,
+      tags,
+    },
+  })
+}
+
+const adminSetUsersRight = ({
+  right,
+  credentials,
+  value,
+  screen_names: nicknames,
+}) => {
+  return promisedRequest({
+    url: PLEROMA_ADMIN_PERMISSION_GROUP_URL(right),
+    method: value ? 'POST' : 'DELETE',
+    credentials,
+    payload: {
+      nicknames,
+    },
+  })
+}
+
+const adminSetUsersActivationStatus = ({
+  credentials,
+  screen_names: nicknames,
+  value,
+}) => {
+  return promisedRequest({
+    url: value
+      ? PLEROMA_ADMIN_ACTIVATE_USERS_URL
+      : PLEROMA_ADMIN_DEACTIVATE_USERS_URL,
     method: 'PATCH',
     credentials,
     payload: {
-      nicknames: [nickname],
+      nicknames,
     },
-  }).then((response) => response.users[0])
+  }).then((response) => response.users)
 }
 
-const deactivateUser = ({ credentials, user: { screen_name: nickname } }) => {
+const adminSetUsersApprovalStatus = ({
+  credentials,
+  screen_names: nicknames,
+}) => {
   return promisedRequest({
-    url: DEACTIVATE_USER_URL,
+    url: PLEROMA_ADMIN_APPROVE_USERS_URL,
     method: 'PATCH',
     credentials,
     payload: {
-      nicknames: [nickname],
+      nicknames,
     },
-  }).then((response) => response.users[0])
+  }).then((response) => response.users)
 }
 
-const deleteUser = ({ credentials, user: { screen_name: nickname } }) => {
-  const r = promisedRequest({
-    url: ADMIN_USERS_URL,
+const adminSetUsersConfirmationStatus = ({
+  credentials,
+  screen_names: nicknames,
+}) => {
+  return promisedRequest({
+    url: PLEROMA_ADMIN_CONFIRM_USERS_URL,
+    method: 'PATCH',
+    credentials,
+    payload: {
+      nicknames,
+    },
+  }).then((response) => response.users)
+}
+
+const adminSetUsersSuggestionStatus = ({
+  credentials,
+  screen_names: nicknames,
+  value,
+}) => {
+  return promisedRequest({
+    url: value
+      ? PLEROMA_ADMIN_SUGGEST_USERS_URL
+      : PLEROMA_ADMIN_UNSUGGEST_USERS_URL,
+    method: 'PATCH',
+    credentials,
+    payload: {
+      nicknames,
+    },
+  }).then((response) => response.users)
+}
+
+const adminGetUserData = ({ credentials, screen_name: nickname }) => {
+  return promisedRequest({
+    url: PLEROMA_ADMIN_USERS_URL_SHOW(nickname),
+    method: 'GET',
+    credentials,
+  })
+}
+
+const adminDeleteAccounts = ({ credentials, screen_names: nicknames }) => {
+  return promisedRequest({
+    url: PLEROMA_ADMIN_USERS_URL,
     method: 'DELETE',
     credentials,
     payload: {
-      nicknames: [nickname],
+      nicknames,
     },
   })
-  return r.then((response) => response.users[0])
 }
 
 const fetchTimeline = ({
@@ -1668,75 +1699,57 @@ const dismissAnnouncement = ({ id, credentials }) => {
 const adminListUsers = ({ opts, credentials }) => {
   // the reported list is hardly useful because standards are for dating i guess,
   // so make sure to fetchIfMissing right afterward using this call
-  const url = PLEROMA_ADMIN_USERS_URL(opts)
+  const url = PLEROMA_ADMIN_USERS_URL_LIST(opts)
   return promisedRequest({
     url: url,
     credentials,
     method: 'GET',
   }).then((data) => ({
     ...data,
-    users: data.users.map(parseUser),
+    users: data.users,
   }))
 }
 
-const adminAddUserToAdminGroup = ({ user, credentials }) => {
-  const url = PLEROMA_ADMIN_MODIFY_GROUP_URL(user.name_html, 'admin')
-  return promisedRequest({ url: url, credentials, method: 'POST' })
-}
-
-const adminRemoveUserFromAdminGroup = ({ user, credentials }) => {
-  const url = PLEROMA_ADMIN_MODIFY_GROUP_URL(user.name_html, 'admin')
-  return promisedRequest({ url: url, credentials, method: 'DELETE' })
-}
-
-const adminAddUserToModeratorGroup = ({ user, credentials }) => {
-  const url = PLEROMA_ADMIN_MODIFY_GROUP_URL(user.name_html, 'moderator')
-  return promisedRequest({ url: url, credentials, method: 'POST' })
-}
-
-const adminRemoveUserFromModeratorGroup = ({ user, credentials }) => {
-  const url = PLEROMA_ADMIN_MODIFY_GROUP_URL(user.name_html, 'moderator')
-  return promisedRequest({ url: url, credentials, method: 'DELETE' })
-}
-
-const adminConfirmUser = ({ user: { screen_name: nickname }, credentials }) => {
-  const url = PLEROMA_ADMIN_CONFIRM_USER_URL
-  return promisedRequest({
-    url: url,
-    credentials,
-    method: 'PATCH',
-    payload: {
-      nicknames: [nickname],
-    },
-  })
-}
-
 const adminResendConfirmationEmail = ({
-  user: { screen_name: nickname },
+  screen_names: nicknames,
   credentials,
 }) => {
   const url = PLEROMA_ADMIN_RESEND_CONFIRMATION_EMAIL_URL
   return promisedRequest({
-    url: url,
+    url,
     credentials,
     method: 'PATCH',
     payload: {
-      nicknames: [nickname],
+      nicknames,
     },
   })
 }
 
-const adminApproveUser = ({ user: { screen_name: nickname }, credentials }) => {
-  const url = PLEROMA_ADMIN_APPROVE_URL
-  const r = promisedRequest({
-    url: url,
+const adminRequirePasswordChange = ({
+  user: { screen_names: nicknames },
+  credentials,
+}) => {
+  const url = PLEROMA_ADMIN_REQUIRE_PASSWORD_CHANGE_URL
+  return promisedRequest({
+    url,
     credentials,
     method: 'PATCH',
     payload: {
-      nicknames: [nickname],
+      nicknames,
     },
   })
-  return r
+}
+
+const adminDisableMFA = ({ user: { screen_name: nickname }, credentials }) => {
+  const url = PLEROMA_ADMIN_DISABLE_MFA_URL
+  return promisedRequest({
+    url,
+    credentials,
+    method: 'PUT',
+    payload: {
+      nickname,
+    },
+  })
 }
 
 const adminListStatuses = ({
@@ -1772,33 +1785,6 @@ const adminChangeStatusScope = ({
     credentials,
     method: 'PUT',
     payload,
-  })
-}
-
-const adminRequirePasswordChange = ({
-  user: { screen_name: nickname },
-  credentials,
-}) => {
-  const url = PLEROMA_ADMIN_REQUIRE_PASSWORD_CHANGE_URL
-  return promisedRequest({
-    url,
-    credentials,
-    method: 'PATCH',
-    payload: {
-      nicknames: [nickname],
-    },
-  })
-}
-
-const adminDisableMFA = ({ user: { screen_name: nickname }, credentials }) => {
-  const url = PLEROMA_ADMIN_DISABLE_MFA_URL
-  return promisedRequest({
-    url,
-    credentials,
-    method: 'PUT',
-    payload: {
-      nickname,
-    },
   })
 }
 
@@ -2438,13 +2424,6 @@ const apiService = {
   fetchBlocks,
   fetchOAuthTokens,
   revokeOAuthToken,
-  tagUser,
-  untagUser,
-  deleteUser,
-  addRight,
-  deleteRight,
-  activateUser,
-  deactivateUser,
   register,
   getCaptcha,
   updateProfileImages,
@@ -2533,13 +2512,15 @@ const apiService = {
   updateBookmarkFolder,
   deleteBookmarkFolder,
   adminListUsers,
-  adminAddUserToAdminGroup,
-  adminRemoveUserFromAdminGroup,
-  adminAddUserToModeratorGroup,
-  adminRemoveUserFromModeratorGroup,
-  adminConfirmUser,
+  adminGetUserData,
   adminResendConfirmationEmail,
-  adminApproveUser,
+  adminDeleteAccounts,
+  adminSetUsersRight,
+  adminSetUsersTags,
+  adminSetUsersApprovalStatus,
+  adminSetUsersConfirmationStatus,
+  adminSetUsersActivationStatus,
+  adminSetUsersSuggestionStatus,
   adminListStatuses,
   adminChangeStatusScope,
   adminRequirePasswordChange,

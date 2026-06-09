@@ -1,8 +1,7 @@
 import { defineAsyncComponent } from 'vue'
 
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
-
-import { useAdminUsersStore } from 'src/stores/adminUsers.js'
+import ModerationTools from 'src/components/moderation_tools/moderation_tools.vue'
 
 const AdminCard = {
   props: {
@@ -12,22 +11,14 @@ const AdminCard = {
   },
   components: {
     BasicUserCard,
-    ModerationTools: defineAsyncComponent(
-      () => import('src/components/moderation_tools/moderation_tools.vue'),
-    ),
+    ModerationTools,
   },
   computed: {
     user() {
       return this.$store.getters.findUser(this.userId)
     },
-    userAdminData() {
-      return useAdminUsersStore().getUser(this.userId)
-    },
     relationship() {
       return this.$store.getters.relationship(this.userId)
-    },
-    isLocal() {
-      return this.user.is_local
     },
     isAdmin() {
       return this.user.rights.admin
@@ -37,12 +28,6 @@ const AdminCard = {
     },
     isActivated() {
       return !this.user.deactivated
-    },
-    isApproved() {
-      return this.userAdminData.is_approved
-    },
-    isConfirmed() {
-      return this.userAdminData.is_confirmed
     },
   },
 }

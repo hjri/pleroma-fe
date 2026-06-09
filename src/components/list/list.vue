@@ -19,7 +19,7 @@
       <div class="actions">
         <slot
           name="header"
-          :selected="filteredSelected"
+          :selected="selectedItems"
         />
       </div>
     </div>

@@ -229,7 +229,7 @@ export const BUTTONS = [
       return (
         loggedIn &&
         (status.user.id === currentUser.id ||
-          currentUser.privileges.includes('messages_delete'))
+          currentUser.privileges.has('messages_delete'))
       )
     },
     confirm: ({ getters }) => useMergedConfigStore().mergedConfig.modalOnDelete,

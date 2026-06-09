@@ -31,9 +31,7 @@ const Announcement = {
     canEditAnnouncement() {
       return (
         this.currentUser &&
-        this.currentUser.privileges.includes(
-          'announcements_manage_announcements',
-        )
+        this.currentUser.privileges.has('announcements_manage_announcements')
       )
     },
     content() {

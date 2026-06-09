@@ -17,7 +17,7 @@ const Interactions = {
       allowFollowingMove:
         this.$store.state.users.currentUser.allow_following_move,
       filterMode: tabModeDict.mentions,
-      canSeeReports: this.$store.state.users.currentUser.privileges.includes(
+      canSeeReports: this.$store.state.users.currentUser.has.has(
         'reports_manage_reports',
       ),
     }
