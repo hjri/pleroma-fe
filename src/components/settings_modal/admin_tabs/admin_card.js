@@ -7,7 +7,7 @@ import { useAdminUsersStore } from 'src/stores/adminUsers.js'
 const AdminCard = {
   props: {
     userId: {
-      type: String
+      type: String,
     },
   },
   components: {
@@ -43,7 +43,7 @@ const AdminCard = {
     },
     isConfirmed() {
       return this.userAdminData.is_confirmed
-    }
+    },
   },
 }
 

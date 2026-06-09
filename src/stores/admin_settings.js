@@ -1,4 +1,5 @@
 import { cloneDeep, differenceWith, flatten, get, isEqual, set } from 'lodash'
+import { defineStore } from 'pinia'
 
 export const defaultState = {
   frontends: [],
@@ -15,17 +16,17 @@ export const newUserFlags = {
   ...defaultState.flagStorage,
 }
 
-const adminSettingsStorage = {
-  state: {
+export const useAdminSettingsStore = defineStore('adminSettings', {
+  state: () => ({
     ...cloneDeep(defaultState),
-  },
-  mutations: {
-    setInstanceAdminNoDbConfig(state) {
-      state.loaded = false
-      state.dbConfigEnabled = false
+  }),
+  actions: {
+    setInstanceAdminNoDbConfig() {
+      this.loaded = false
+      this.dbConfigEnabled = false
     },
-    setAvailableFrontends(state, { frontends }) {
-      state.frontends = frontends.map((f) => {
+    setAvailableFrontends({ frontends }) {
+      this.frontends = frontends.map((f) => {
         f.installedRefs = f.installed_refs
         if (f.name === 'pleroma-fe') {
           f.refs = ['master', 'develop']
@@ -35,58 +36,60 @@ const adminSettingsStorage = {
         return f
       })
     },
-    updateAdminSettings(state, { config, modifiedPaths }) {
-      state.loaded = true
-      state.dbConfigEnabled = true
-      state.config = config
-      state.modifiedPaths = modifiedPaths
+    updateAdminSettings({ config, modifiedPaths }) {
+      this.loaded = true
+      this.dbConfigEnabled = true
+      this.config = config
+      this.modifiedPaths = modifiedPaths
     },
-    updateAdminDescriptions(state, { descriptions }) {
-      state.descriptions = descriptions
+    updateAdminDescriptions({ descriptions }) {
+      this.descriptions = descriptions
     },
-    updateAdminDraft(state, { path, value }) {
+    updateAdminDraft({ path, value }) {
       const [group, key, subkey] = path
       const parent = [group, key, subkey]
 
-      set(state.draft, path, value)
+      set(this.draft, path, value)
 
       // force-updating grouped draft to trigger refresh of group settings
       if (path.length > parent.length) {
-        set(state.draft, parent, cloneDeep(get(state.draft, parent)))
+        set(this.draft, parent, cloneDeep(get(this.draft, parent)))
       }
     },
-    resetAdminDraft(state) {
-      state.draft = cloneDeep(state.config)
+    resetAdminDraft() {
+      this.draft = cloneDeep(this.config)
     },
-  },
-  actions: {
-    async fetchAdminUsers(store, opts) {
-      const data = await store.rootState.api.backendInteractor.adminListUsers({
-        opts,
-      })
-      data.users.forEach((user) =>
-        store.dispatch('fetchUserIfMissing', user.id),
+    async fetchAdminUsers(opts) {
+      const data = await window.vuex.state.api.backendInteractor.adminListUsers(
+        {
+          opts,
+        },
       )
+
+      data.users.forEach((user) =>
+        window.vuex.dispatch('fetchUserIfMissing', user.id),
+      )
+
       return data
     },
-    adminAddUserToAdminGroup(store, user) {
-      store.rootState.api.backendInteractor
+    adminAddUserToAdminGroup(user) {
+      window.vuex.state.api.backendInteractor
         .adminAddUserToAdminGroup({ user })
         .then((res) =>
-          store.commit('updateRight', {
+          window.vuex.commit('updateRight', {
             user,
             right: 'admin',
             value: res.is_admin,
           }),
         )
     },
-    adminRemoveUserFromAdminGroup(store, user) {
+    adminRemoveUserFromAdminGroup(user) {
       // prevent revokation of own rights
-      if (user.id !== store.rootState.users.currentUser.id) {
-        return store.rootState.api.backendInteractor
+      if (user.id !== window.vuex.state.users.currentUser.id) {
+        return window.vuex.state.api.backendInteractor
           .adminRemoveUserFromAdminGroup({ user })
           .then((res) =>
-            store.commit('updateRight', {
+            window.vuex.commit('updateRight', {
               user,
               right: 'admin',
               value: res.is_admin,
@@ -94,24 +97,24 @@ const adminSettingsStorage = {
           )
       }
     },
-    adminAddUserToModeratorGroup(store, user) {
-      return store.rootState.api.backendInteractor
+    adminAddUserToModeratorGroup(user) {
+      return window.vuex.state.api.backendInteractor
         .adminAddUserToModeratorGroup({ user })
         .then((res) =>
-          store.commit('updateRight', {
+          window.vuex.commit('updateRight', {
             user,
             right: 'moderator',
             value: res.is_moderator,
           }),
         )
     },
-    adminRemoveUserFromModeratorGroup(store, user) {
+    adminRemoveUserFromModeratorGroup(user) {
       // prevent revokation of own rights
-      if (user.id !== store.state.users.currentUser.id) {
-        return store.rootState.api.backendInteractor
+      if (user.id !== window.vuex.state.users.currentUser.id) {
+        return window.vuex.state.api.backendInteractor
           .adminRemoveUserFromModeratorGroup({ user })
           .then((res) =>
-            store.commit('updateRight', {
+            window.vuex.commit('updateRight', {
               user,
               right: 'moderator',
               value: res.is_moderator,
@@ -119,89 +122,89 @@ const adminSettingsStorage = {
           )
       }
     },
-    adminActivateUser(store, user) {
-      return store.rootState.api.backendInteractor
+    adminActivateUser(user) {
+      return window.vuex.state.api.backendInteractor
         .activateUser({ user })
         .then((res) => {
           const deactivated = !res.is_active
-          store.commit('updateActivationStatus', { user, deactivated })
+          window.vuex.commit('updateActivationStatus', { user, deactivated })
         })
     },
-    adminDeactivateUser(store, user) {
-      return store.rootState.api.backendInteractor
+    adminDeactivateUser(user) {
+      return window.vuex.state.api.backendInteractor
         .deactivateUser({ user })
         .then((res) => {
           const deactivated = !res.is_active
-          store.commit('updateActivationStatus', { user, deactivated })
+          window.vuex.commit('updateActivationStatus', { user, deactivated })
         })
     },
-    adminDeleteUser(store, user) {
-      return store.rootState.api.backendInteractor.deleteUser({ user })
+    adminDeleteUser(user) {
+      return window.vuex.state.api.backendInteractor.deleteUser({ user })
     },
-    adminConfirmUser(store, user) {
-      return store.rootState.api.backendInteractor
+    adminConfirmUser(user) {
+      return window.vuex.state.api.backendInteractor
         .adminConfirmUser({ user })
-        .then(() => store.dispatch('fetchUser', user.id))
+        .then(() => window.vuex.dispatch('fetchUser', user.id))
     },
-    adminResendConfirmationEmail(store, user) {
-      return store.rootState.api.backendInteractor.adminResendConfirmationEmail(
+    adminResendConfirmationEmail(user) {
+      return window.vuex.state.api.backendInteractor.adminResendConfirmationEmail(
         { user },
       )
     },
-    adminApproveUser(store, user) {
-      return store.rootState.api.backendInteractor.adminApproveUser({ user })
+    adminApproveUser(user) {
+      return window.vuex.state.api.backendInteractor.adminApproveUser({ user })
     },
-    adminListStatuses(store, { userId, opts }) {
-      return store.rootState.api.backendInteractor.adminListStatuses({
+    adminListStatuses({ userId, opts }) {
+      return window.vuex.state.api.backendInteractor.adminListStatuses({
         userId,
         opts,
       })
     },
-    adminChangeStatusScope(store, { opts }) {
-      return store.rootState.api.backendInteractor.adminChangeStatusScope({
+    adminChangeStatusScope({ opts }) {
+      return window.vuex.state.api.backendInteractor.adminChangeStatusScope({
         opts,
       })
     },
-    adminDisableMFA(store, user) {
-      return store.rootState.api.backendInteractor.adminDisableMFA({ user })
+    adminDisableMFA(user) {
+      return window.vuex.state.api.backendInteractor.adminDisableMFA({ user })
     },
-    adminTagUser(store, { user, tag }) {
-      return store.rootState.api.backendInteractor.tagUser({ user, tag })
+    adminTagUser({ user, tag }) {
+      return window.vuex.state.api.backendInteractor.tagUser({ user, tag })
     },
-    adminUntagUser(store, { user, tag }) {
-      return store.rootState.api.backendInteractor.untagUser({ user, tag })
+    adminUntagUser({ user, tag }) {
+      return window.vuex.state.api.backendInteractor.untagUser({ user, tag })
     },
-    loadFrontendsStuff({ rootState, commit }) {
-      rootState.api.backendInteractor
+    loadFrontendsStuff() {
+      window.vuex.state.api.backendInteractor
         .fetchAvailableFrontends()
-        .then((frontends) => commit('setAvailableFrontends', { frontends }))
+        .then((frontends) => this.setAvailableFrontends({ frontends }))
     },
-    loadAdminStuff({ state, rootState, dispatch, commit }) {
-      rootState.api.backendInteractor
+    loadAdminStuff() {
+      window.vuex.state.api.backendInteractor
         .fetchInstanceDBConfig()
         .then((backendDbConfig) => {
           if (backendDbConfig.error) {
             if (backendDbConfig.error.status === 400) {
               backendDbConfig.error.json().then((errorJson) => {
                 if (/configurable_from_database/.test(errorJson.error)) {
-                  commit('setInstanceAdminNoDbConfig')
+                  this.setInstanceAdminNoDbConfig()
                 }
               })
             }
           } else {
-            dispatch('setInstanceAdminSettings', { backendDbConfig })
+            this.setInstanceAdminSettings({ backendDbConfig })
           }
         })
-      if (state.descriptions === null) {
-        rootState.api.backendInteractor
+      if (this.descriptions === null) {
+        window.vuex.state.api.backendInteractor
           .fetchInstanceConfigDescriptions()
           .then((backendDescriptions) =>
-            dispatch('setInstanceAdminDescriptions', { backendDescriptions }),
+            this.setInstanceAdminDescriptions({ backendDescriptions }),
           )
       }
     },
-    setInstanceAdminSettings({ state, commit }, { backendDbConfig }) {
-      const config = state.config || {}
+    setInstanceAdminSettings({ backendDbConfig }) {
+      const config = this.config || {}
       const modifiedPaths = new Set()
 
       backendDbConfig.configs.forEach((c) => {
@@ -257,10 +260,10 @@ const adminSettingsStorage = {
           },
         }
       }
-      commit('updateAdminSettings', { config, modifiedPaths })
-      commit('resetAdminDraft')
+      this.updateAdminSettings({ config, modifiedPaths })
+      this.resetAdminDraft()
     },
-    setInstanceAdminDescriptions({ commit }, { backendDescriptions }) {
+    setInstanceAdminDescriptions({ backendDescriptions }) {
       const convert = (
         { children, description, label, key = '<ROOT>', group, suggestions },
         path,
@@ -279,12 +282,12 @@ const adminSettingsStorage = {
       const descriptions = {}
 
       backendDescriptions.forEach((d) => convert(d, '', descriptions))
-      commit('updateAdminDescriptions', { descriptions })
+      this.updateAdminDescriptions({ descriptions })
     },
 
     // This action takes draft state, diffs it with live config state and then pushes
     // only differences between the two. Difference detection only work up to subkey (third) level.
-    pushAdminDraft({ rootState, state, dispatch }) {
+    pushAdminDraft() {
       // TODO cleanup paths in modifiedPaths
       const convert = (value) => {
         if (typeof value !== 'object') {
@@ -298,20 +301,20 @@ const adminSettingsStorage = {
 
       // Getting all group-keys used in config
       const allGroupKeys = flatten(
-        Object.entries(state.config).map(([group, lv1data]) =>
+        Object.entries(this.config).map(([group, lv1data]) =>
           Object.keys(lv1data).map((key) => ({ group, key })),
         ),
       )
 
       // Only using group-keys where there are changes detected
       const changedGroupKeys = allGroupKeys.filter(({ group, key }) => {
-        return !isEqual(state.config[group][key], state.draft[group][key])
+        return !isEqual(this.config[group][key], this.draft[group][key])
       })
 
       // Here we take all changed group-keys and get all changed subkeys
       const changed = changedGroupKeys.map(({ group, key }) => {
-        const config = state.config[group][key]
-        const draft = state.draft[group][key]
+        const config = this.config[group][key]
+        const draft = this.draft[group][key]
 
         // We convert group-key value into entries arrays
         const eConfig = Object.entries(config)
@@ -328,18 +331,20 @@ const adminSettingsStorage = {
         }
       })
 
-      rootState.api.backendInteractor
+      window.vuex.state.api.backendInteractor
         .pushInstanceDBConfig({
           payload: {
             configs: changed,
           },
         })
-        .then(() => rootState.api.backendInteractor.fetchInstanceDBConfig())
+        .then(() =>
+          window.vuex.state.api.backendInteractor.fetchInstanceDBConfig(),
+        )
         .then((backendDbConfig) =>
-          dispatch('setInstanceAdminSettings', { backendDbConfig }),
+          this.setInstanceAdminSettings({ backendDbConfig }),
         )
     },
-    pushAdminSetting({ rootState, dispatch }, { path, value }) {
+    pushAdminSetting({ path, value }) {
       const [group, key, ...rest] = Array.isArray(path)
         ? path
         : path.split(/\./g)
@@ -357,7 +362,7 @@ const adminSettingsStorage = {
         }
       }
 
-      rootState.api.backendInteractor
+      window.vuex.state.api.backendInteractor
         .pushInstanceDBConfig({
           payload: {
             configs: [
@@ -369,19 +374,21 @@ const adminSettingsStorage = {
             ],
           },
         })
-        .then(() => rootState.api.backendInteractor.fetchInstanceDBConfig())
+        .then(() =>
+          window.vuex.state.api.backendInteractor.fetchInstanceDBConfig(),
+        )
         .then((backendDbConfig) =>
-          dispatch('setInstanceAdminSettings', { backendDbConfig }),
+          this.setInstanceAdminSettings({ backendDbConfig }),
         )
     },
-    resetAdminSetting({ rootState, state, dispatch }, { path }) {
+    resetAdminSetting({ path }) {
       const [group, key, subkey] = Array.isArray(path)
         ? path
         : path.split(/\./g)
 
-      state.modifiedPaths.delete(path)
+      this.modifiedPaths.delete(path)
 
-      return rootState.api.backendInteractor
+      return window.vuex.state.api.backendInteractor
         .pushInstanceDBConfig({
           payload: {
             configs: [
@@ -394,12 +401,12 @@ const adminSettingsStorage = {
             ],
           },
         })
-        .then(() => rootState.api.backendInteractor.fetchInstanceDBConfig())
+        .then(() =>
+          window.vuex.state.api.backendInteractor.fetchInstanceDBConfig(),
+        )
         .then((backendDbConfig) =>
-          dispatch('setInstanceAdminSettings', { backendDbConfig }),
+          this.setInstanceAdminSettings({ backendDbConfig }),
         )
     },
   },
-}
-
-export default adminSettingsStorage
+})

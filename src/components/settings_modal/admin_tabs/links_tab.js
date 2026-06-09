@@ -10,6 +10,8 @@ import ListSetting from '../helpers/list_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import StringSetting from '../helpers/string_setting.vue'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
+
 const LinksTab = {
   provide() {
     return {
@@ -30,27 +32,27 @@ const LinksTab = {
   computed: {
     classIsPresent() {
       return (
-        this.$store.state.adminSettings.draft[':pleroma']['Pleroma.Formatter'][
+        useAdminSettingsStore().draft[':pleroma']['Pleroma.Formatter'][
           ':class'
         ] !== false
       )
     },
     relIsPresent() {
       return (
-        this.$store.state.adminSettings.draft[':pleroma']['Pleroma.Formatter'][
+        useAdminSettingsStore().draft[':pleroma']['Pleroma.Formatter'][
           ':rel'
         ] !== false
       )
     },
     truncateIsPresent() {
       return (
-        this.$store.state.adminSettings.draft[':pleroma']['Pleroma.Formatter'][
+        useAdminSettingsStore().draft[':pleroma']['Pleroma.Formatter'][
           ':truncate'
         ] !== false
       )
     },
     truncateDescription() {
-      return get(this.$store.state.adminSettings.descriptions, [
+      return get(useAdminSettingsStore().descriptions, [
         ':pleroma',
         'Pleroma.Formatter',
         ':truncate',
@@ -58,7 +60,7 @@ const LinksTab = {
     },
     ttlSettersOptions() {
       const desc = get(
-        this.$store.state.adminSettings.descriptions,
+        useAdminSettingsStore().descriptions,
         ':pleroma.:rich_media.:ttl_setters',
       )
       return new Set(
@@ -70,7 +72,7 @@ const LinksTab = {
     },
     parsersOptions() {
       const desc = get(
-        this.$store.state.adminSettings.descriptions,
+        useAdminSettingsStore().descriptions,
         ':pleroma.:rich_media.:parsers',
       )
       return new Set(
@@ -97,12 +99,12 @@ const LinksTab = {
       ]
     },
     mediaProxyEnabled() {
-      return this.$store.state.adminSettings.draft[':pleroma'][':media_proxy'][
+      return useAdminSettingsStore().draft[':pleroma'][':media_proxy'][
         ':enabled'
       ]
     },
     mediaInvalidationProvider() {
-      return this.$store.state.adminSettings.draft[':pleroma'][':media_proxy'][
+      return useAdminSettingsStore().draft[':pleroma'][':media_proxy'][
         ':invalidation'
       ][':provider']
     },
@@ -110,19 +112,19 @@ const LinksTab = {
   },
   methods: {
     checkRel(e) {
-      this.$store.commit('updateAdminDraft', {
+      useAdminSettingsStore.updateAdminDraft({
         path: [':pleroma', 'Pleroma.Formatter', ':rel'],
         value: e ? '' : false,
       })
     },
     checkClass(e) {
-      this.$store.commit('updateAdminDraft', {
+      useAdminSettingsStore.updateAdminDraft({
         path: [':pleroma', 'Pleroma.Formatter', ':class'],
         value: e ? '' : false,
       })
     },
     checkTruncate(e) {
-      this.$store.commit('updateAdminDraft', {
+      useAdminSettingsStore.updateAdminDraft({
         path: [':pleroma', 'Pleroma.Formatter', ':truncate'],
         value: e ? 20 : false,
       })

@@ -19,6 +19,7 @@ import UploadsTab from './admin_tabs/uploads_tab.vue'
 import UsersTab from './admin_tabs/users_tab.vue'
 import VerticalTabSwitcher from './helpers/vertical_tab_switcher.jsx'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -109,18 +110,18 @@ const SettingsModalAdminContent = {
       return useInterfaceStore().settingsModalState === 'visible'
     },
     adminDbLoaded() {
-      return this.$store.state.adminSettings.loaded
+      return useAdminSettingsStore().loaded
     },
     adminDescriptionsLoaded() {
-      return this.$store.state.adminSettings.descriptions !== null
+      return useAdminSettingsStore().descriptions !== null
     },
     noDb() {
-      return this.$store.state.adminSettings.dbConfigEnabled === false
+      return useAdminSettingsStore().dbConfigEnabled === false
     },
   },
   created() {
     if (this.user.rights.admin) {
-      this.$store.dispatch('loadAdminStuff')
+      useAdminSettingsStore().loadAdminStuff()
     }
   },
   methods: {

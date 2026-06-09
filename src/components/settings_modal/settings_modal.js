@@ -8,6 +8,7 @@ import Modal from 'src/components/modal/modal.vue'
 import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
 import Popover from 'src/components/popover/popover.vue'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -232,10 +233,10 @@ const SettingsModal = {
       return clone
     },
     resetAdminDraft() {
-      this.$store.commit('resetAdminDraft')
+      useAdminSettingsStore.resetAdminDraft()
     },
     pushAdminDraft() {
-      this.$store.dispatch('pushAdminDraft')
+      useAdminSettingsStore.pushAdminDraft()
     },
     ...mapActions(useInterfaceStore, [
       'temporaryChangesRevert',
@@ -265,8 +266,8 @@ const SettingsModal = {
     },
     adminDraftAny() {
       return !isEqual(
-        this.$store.state.adminSettings.config,
-        this.$store.state.adminSettings.draft,
+        useAdminSettingsStore().config,
+        useAdminSettingsStore().draft,
       )
     },
   },
