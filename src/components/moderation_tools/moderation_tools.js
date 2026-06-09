@@ -78,11 +78,11 @@ const ENTRIES = [
     separator: true,
   },
   {
-    check: '!state:disable_mfa',
+    check: '!action:disable_mfa',
     label: 'user_card.admin_menu.disable_mfa',
   },
   {
-    check: '!state:require_password_change',
+    check: '!action:require_password_change',
     label: 'user_card.admin_menu.require_password_change',
   },
   {
