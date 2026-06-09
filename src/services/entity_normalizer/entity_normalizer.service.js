@@ -15,233 +15,149 @@ import { isStatusNotification } from '../notification_utils/notification_utils.j
  * it would be reverted back to []
  */
 
-const qvitterStatusType = (status) => {
-  if (status.is_post_verb) {
-    return 'status'
-  }
-
-  if (status.retweeted_status) {
-    return 'retweet'
-  }
-
-  if (
-    (typeof status.uri === 'string' &&
-      status.uri.match(/(fave|objectType=Favourite)/)) ||
-    (typeof status.text === 'string' && status.text.match(/favorited/))
-  ) {
-    return 'favorite'
-  }
-
-  if (
-    status.text.match(/deleted notice {{tag/) ||
-    status.qvitter_delete_notice
-  ) {
-    return 'deletion'
-  }
-
-  if (
-    status.text.match(/started following/) ||
-    status.activity_type === 'follow'
-  ) {
-    return 'follow'
-  }
-
-  return 'unknown'
-}
-
 export const parseUser = (data) => {
   const output = {}
-  const masto = Object.hasOwn(data, 'acct')
   // case for users in "mentions" property for statuses in MastoAPI
-  const mastoShort = masto && !Object.hasOwn(data, 'avatar')
+  const mastoShort = !Object.hasOwn(data, 'avatar')
 
   output.inLists = null
   output.id = String(data.id)
   output._original = data // used for server-side settings
 
-  if (masto) {
-    output.screen_name = data.acct
-    output.fqn = data.fqn
-    output.statusnet_profile_url = data.url
+  output.screen_name = data.acct
+  output.fqn = data.fqn
+  output.statusnet_profile_url = data.url
 
-    if (Object.hasOwn(data, 'mute_expires_at')) {
-      output.mute_expires_at =
-        data.mute_expires_at == null ? false : data.mute_expires_at
+  if (Object.hasOwn(data, 'mute_expires_at')) {
+    output.mute_expires_at =
+      data.mute_expires_at == null ? false : data.mute_expires_at
+  }
+
+  if (Object.hasOwn(data, 'block_expires_at')) {
+    output.block_expires_at =
+      data.block_expires_at == null ? false : data.block_expires_at
+  }
+
+  // There's nothing else to get
+  if (mastoShort) {
+    return output
+  }
+
+  output.emoji = data.emojis
+  output.name = escapeHtml(data.display_name)
+  output.name_html = output.name
+  output.name_unescaped = data.display_name
+
+  output.description = data.note
+  // TODO cleanup this shit, output.description is overriden with source data
+  output.description_html = data.note
+
+  output.fields = data.fields
+  output.fields_html = data.fields.map((field) => {
+    return {
+      name: escapeHtml(field.name),
+      value: field.value,
+    }
+  })
+  output.fields_text = data.fields.map((field) => {
+    return {
+      name: unescape(field.name.replace(/<[^>]*>/g, '')),
+      value: unescape(field.value.replace(/<[^>]*>/g, '')),
+    }
+  })
+
+  // Utilize avatar_static for gif avatars?
+  output.profile_image_url = data.avatar
+  output.profile_image_url_original = data.avatar
+
+  // Same, utilize header_static?
+  output.cover_photo = data.header
+
+  output.friends_count = data.following_count
+
+  output.bot = data.bot
+
+  output.privileges = []
+
+  if (data.pleroma) {
+    if (data.pleroma.settings_store) {
+      output.storage = data.pleroma.settings_store['pleroma-fe']
+      output.user_highlight = data.pleroma.settings_store['user_highlight']
+    }
+    const relationship = data.pleroma.relationship
+
+    output.background_image = data.pleroma.background_image
+    output.favicon = data.pleroma.favicon
+    output.token = data.pleroma.chat_token
+
+    if (relationship) {
+      output.relationship = relationship
     }
 
-    if (Object.hasOwn(data, 'block_expires_at')) {
-      output.block_expires_at =
-        data.block_expires_at == null ? false : data.block_expires_at
+    output.allow_following_move = data.pleroma.allow_following_move
+
+    output.hide_favorites = data.pleroma.hide_favorites
+    output.hide_follows = data.pleroma.hide_follows
+    output.hide_followers = data.pleroma.hide_followers
+    output.hide_follows_count = data.pleroma.hide_follows_count
+    output.hide_followers_count = data.pleroma.hide_followers_count
+
+    output.rights = {
+      moderator: data.pleroma.is_moderator,
+      admin: data.pleroma.is_admin,
+    }
+    // TODO: Clean up in UI? This is duplication from what BE does for qvitterapi
+    if (output.rights.admin) {
+      output.role = 'admin'
+    } else if (output.rights.moderator) {
+      output.role = 'moderator'
+    } else {
+      output.role = 'member'
     }
 
-    // There's nothing else to get
-    if (mastoShort) {
-      return output
-    }
+    output.birthday = data.pleroma.birthday
 
-    output.emoji = data.emojis
-    output.name = escapeHtml(data.display_name)
-    output.name_html = output.name
-    output.name_unescaped = data.display_name
-
-    output.description = data.note
-    // TODO cleanup this shit, output.description is overriden with source data
-    output.description_html = data.note
-
-    output.fields = data.fields
-    output.fields_html = data.fields.map((field) => {
-      return {
-        name: escapeHtml(field.name),
-        value: field.value,
-      }
-    })
-    output.fields_text = data.fields.map((field) => {
-      return {
-        name: unescape(field.name.replace(/<[^>]*>/g, '')),
-        value: unescape(field.value.replace(/<[^>]*>/g, '')),
-      }
-    })
-
-    // Utilize avatar_static for gif avatars?
-    output.profile_image_url = data.avatar
-    output.profile_image_url_original = data.avatar
-
-    // Same, utilize header_static?
-    output.cover_photo = data.header
-
-    output.friends_count = data.following_count
-
-    output.bot = data.bot
-
-    output.privileges = []
-
-    if (data.pleroma) {
-      if (data.pleroma.settings_store) {
-        output.storage = data.pleroma.settings_store['pleroma-fe']
-        output.user_highlight = data.pleroma.settings_store['user_highlight']
-      }
-      const relationship = data.pleroma.relationship
-
-      output.background_image = data.pleroma.background_image
-      output.favicon = data.pleroma.favicon
-      output.token = data.pleroma.chat_token
-
-      if (relationship) {
-        output.relationship = relationship
-      }
-
-      output.allow_following_move = data.pleroma.allow_following_move
-
-      output.hide_favorites = data.pleroma.hide_favorites
-      output.hide_follows = data.pleroma.hide_follows
-      output.hide_followers = data.pleroma.hide_followers
-      output.hide_follows_count = data.pleroma.hide_follows_count
-      output.hide_followers_count = data.pleroma.hide_followers_count
-
-      output.rights = {
-        moderator: data.pleroma.is_moderator,
-        admin: data.pleroma.is_admin,
-      }
-      // TODO: Clean up in UI? This is duplication from what BE does for qvitterapi
-      if (output.rights.admin) {
-        output.role = 'admin'
-      } else if (output.rights.moderator) {
-        output.role = 'moderator'
-      } else {
-        output.role = 'member'
-      }
-
-      output.birthday = data.pleroma.birthday
-
-      if (data.pleroma.privileges) {
-        output.privileges = data.pleroma.privileges
-      } else if (data.pleroma.is_admin) {
-        output.privileges = [
-          'users_read',
-          'users_manage_invites',
-          'users_manage_activation_state',
-          'users_manage_tags',
-          'users_manage_credentials',
-          'users_delete',
-          'messages_read',
-          'messages_delete',
-          'instances_delete',
-          'reports_manage_reports',
-          'moderation_log_read',
-          'announcements_manage_announcements',
-          'emoji_manage_emoji',
-          'statistics_read',
-        ]
-      } else if (data.pleroma.is_moderator) {
-        output.privileges = ['messages_delete', 'reports_manage_reports']
-      } else {
-        output.privileges = []
-      }
-    }
-
-    if (data.source) {
-      output.description = data.source.note
-      output.default_scope = data.source.privacy
-      output.fields = data.source.fields
-      if (data.source.pleroma) {
-        output.no_rich_text = data.source.pleroma.no_rich_text
-        output.show_role = data.source.pleroma.show_role
-        output.discoverable = data.source.pleroma.discoverable
-        output.show_birthday = data.pleroma.show_birthday
-        output.actor_type = data.source.pleroma.actor_type
-      }
-    }
-
-    // TODO: handle is_local
-    output.is_local = !output.screen_name.includes('@')
-  } else {
-    output.screen_name = data.screen_name
-
-    output.name = data.name
-    output.name_html = data.name_html
-
-    output.description = data.description
-    output.description_html = data.description_html
-
-    output.profile_image_url = data.profile_image_url
-    output.profile_image_url_original = data.profile_image_url_original
-
-    output.cover_photo = data.cover_photo
-
-    output.friends_count = data.friends_count
-
-    // output.bot = ??? missing
-
-    output.statusnet_profile_url = data.statusnet_profile_url
-
-    output.is_local = data.is_local
-    output.role = data.role
-    output.show_role = data.show_role
-
-    if (data.rights) {
-      output.rights = {
-        moderator: data.rights.delete_others_notice,
-        admin: data.rights.admin,
-      }
-    }
-    output.no_rich_text = data.no_rich_text
-    output.default_scope = data.default_scope
-    output.hide_follows = data.hide_follows
-    output.hide_followers = data.hide_followers
-    output.hide_follows_count = data.hide_follows_count
-    output.hide_followers_count = data.hide_followers_count
-    output.background_image = data.background_image
-    // Websocket token
-    output.token = data.token
-
-    // Convert relationsip data to expected format
-    output.relationship = {
-      muting: data.muted,
-      blocking: data.statusnet_blocking,
-      followed_by: data.follows_you,
-      following: data.following,
+    if (data.pleroma.privileges) {
+      output.privileges = data.pleroma.privileges
+    } else if (data.pleroma.is_admin) {
+      output.privileges = [
+        'users_read',
+        'users_manage_invites',
+        'users_manage_activation_state',
+        'users_manage_tags',
+        'users_manage_credentials',
+        'users_delete',
+        'messages_read',
+        'messages_delete',
+        'instances_delete',
+        'reports_manage_reports',
+        'moderation_log_read',
+        'announcements_manage_announcements',
+        'emoji_manage_emoji',
+        'statistics_read',
+      ]
+    } else if (data.pleroma.is_moderator) {
+      output.privileges = ['messages_delete', 'reports_manage_reports']
+    } else {
+      output.privileges = []
     }
   }
+
+  if (data.source) {
+    output.description = data.source.note
+    output.default_scope = data.source.privacy
+    output.fields = data.source.fields
+    if (data.source.pleroma) {
+      output.no_rich_text = data.source.pleroma.no_rich_text
+      output.show_role = data.source.pleroma.show_role
+      output.discoverable = data.source.pleroma.discoverable
+      output.show_birthday = data.pleroma.show_birthday
+      output.actor_type = data.source.pleroma.actor_type
+    }
+  }
+
+  // TODO: handle is_local
+  output.is_local = !output.screen_name.includes('@')
 
   output.created_at = new Date(data.created_at)
   output.locked = data.locked
@@ -289,17 +205,11 @@ export const parseUser = (data) => {
 
 export const parseAttachment = (data) => {
   const output = {}
-  const masto = !Object.hasOwn(data, 'oembed')
 
-  if (masto) {
-    // Not exactly same...
-    output.mimetype = data.pleroma ? data.pleroma.mime_type : data.type
-    output.meta = data.meta // not present in BE yet
-    output.id = data.id
-  } else {
-    output.mimetype = data.mimetype
-    // output.meta = ??? missing
-  }
+  // Not exactly same...
+  output.mimetype = data.pleroma ? data.pleroma.mime_type : data.type
+  output.meta = data.meta // not present in BE yet
+  output.id = data.id
 
   if (data.type !== 'unknown') {
     // treat gifv like it is "video"
@@ -326,115 +236,75 @@ export const parseSource = (data) => {
 
 export const parseStatus = (data) => {
   const output = {}
-  const masto = Object.hasOwn(data, 'account')
 
-  if (masto) {
-    output.favorited = data.favourited
-    output.fave_num = data.favourites_count
+  output.favorited = data.favourited
+  output.fave_num = data.favourites_count
 
-    output.repeated = data.reblogged
-    output.repeat_num = data.reblogs_count
+  output.repeated = data.reblogged
+  output.repeat_num = data.reblogs_count
 
-    output.bookmarked = data.bookmarked
+  output.bookmarked = data.bookmarked
 
-    output.type = data.reblog ? 'retweet' : 'status'
-    output.nsfw = data.sensitive
+  output.type = data.reblog ? 'retweet' : 'status'
+  output.nsfw = data.sensitive
 
-    output.raw_html = data.content
-    output.emojis = data.emojis
+  output.raw_html = data.content
+  output.emojis = data.emojis
 
-    output.tags = data.tags
+  output.tags = data.tags
 
-    output.edited_at = data.edited_at
+  output.edited_at = data.edited_at
 
-    const { pleroma } = data
+  const { pleroma } = data
 
-    if (data.pleroma) {
-      output.text = pleroma.content
-        ? data.pleroma.content['text/plain']
-        : data.content
-      output.summary = pleroma.spoiler_text
-        ? data.pleroma.spoiler_text['text/plain']
-        : data.spoiler_text
-      output.statusnet_conversation_id = data.pleroma.conversation_id
-      output.is_local = pleroma.local
-      output.in_reply_to_screen_name = pleroma.in_reply_to_account_acct
-      output.thread_muted = pleroma.thread_muted
-      output.emoji_reactions = pleroma.emoji_reactions
-      output.parent_visible =
-        pleroma.parent_visible === undefined ? true : pleroma.parent_visible
-      output.quote_visible = pleroma.quote_visible || true
-      output.quotes_count = pleroma.quotes_count
-      output.bookmark_folder_id = pleroma.bookmark_folder
-    } else {
-      output.text = data.content
-      output.summary = data.spoiler_text
-    }
-
-    const quoteRaw = pleroma?.quote || data.quote
-    const quoteData = quoteRaw ? parseStatus(quoteRaw) : undefined
-    output.quote = quoteData
-    output.quote_id =
-      data.quote?.id ?? data.quote_id ?? quoteData?.id ?? pleroma?.quote_id
-    output.quote_url = data.quote?.url ?? quoteData?.url ?? pleroma?.quote_url
-
-    output.in_reply_to_status_id = data.in_reply_to_id
-    output.in_reply_to_user_id = data.in_reply_to_account_id
-    output.replies_count = data.replies_count
-
-    if (output.type === 'retweet') {
-      output.retweeted_status = parseStatus(data.reblog)
-    }
-
-    output.summary_raw_html = escapeHtml(data.spoiler_text)
-    output.external_url = data.uri || data.url
-    output.poll = data.poll
-    if (output.poll) {
-      output.poll.options = (output.poll.options || []).map((field) => ({
-        ...field,
-        title_html: escapeHtml(field.title),
-      }))
-    }
-    output.pinned = data.pinned
-    output.muted = data.muted
+  if (data.pleroma) {
+    output.text = pleroma.content
+      ? data.pleroma.content['text/plain']
+      : data.content
+    output.summary = pleroma.spoiler_text
+      ? data.pleroma.spoiler_text['text/plain']
+      : data.spoiler_text
+    output.statusnet_conversation_id = data.pleroma.conversation_id
+    output.is_local = pleroma.local
+    output.in_reply_to_screen_name = pleroma.in_reply_to_account_acct
+    output.thread_muted = pleroma.thread_muted
+    output.emoji_reactions = pleroma.emoji_reactions
+    output.parent_visible =
+      pleroma.parent_visible === undefined ? true : pleroma.parent_visible
+    output.quote_visible = pleroma.quote_visible || true
+    output.quotes_count = pleroma.quotes_count
+    output.bookmark_folder_id = pleroma.bookmark_folder
   } else {
-    output.favorited = data.favorited
-    output.fave_num = data.fave_num
-
-    output.repeated = data.repeated
-    output.repeat_num = data.repeat_num
-
-    // catchall, temporary
-    // Object.assign(output, data)
-
-    output.type = qvitterStatusType(data)
-
-    if (data.nsfw === undefined) {
-      output.nsfw = isNsfw(data)
-      if (data.retweeted_status) {
-        output.nsfw = data.retweeted_status.nsfw
-      }
-    } else {
-      output.nsfw = data.nsfw
-    }
-
-    output.raw_html = data.statusnet_html
-    output.text = data.text
-
-    output.in_reply_to_status_id = data.in_reply_to_status_id
-    output.in_reply_to_user_id = data.in_reply_to_user_id
-    output.in_reply_to_screen_name = data.in_reply_to_screen_name
-    output.statusnet_conversation_id = data.statusnet_conversation_id
-
-    if (output.type === 'retweet') {
-      output.retweeted_status = parseStatus(data.retweeted_status)
-    }
-
-    output.summary = data.summary
-    output.summary_html = data.summary_html
-    output.external_url = data.external_url
-    output.is_local = data.is_local
+    output.text = data.content
+    output.summary = data.spoiler_text
   }
+
+  const quoteRaw = pleroma?.quote || data.quote
+  const quoteData = quoteRaw ? parseStatus(quoteRaw) : undefined
+  output.quote = quoteData
+  output.quote_id =
+    data.quote?.id ?? data.quote_id ?? quoteData?.id ?? pleroma?.quote_id
+  output.quote_url = data.quote?.url ?? quoteData?.url ?? pleroma?.quote_url
+
+  output.in_reply_to_status_id = data.in_reply_to_id
+  output.in_reply_to_user_id = data.in_reply_to_account_id
+  output.replies_count = data.replies_count
+
+  if (output.type === 'retweet') {
+    output.retweeted_status = parseStatus(data.reblog)
+  }
+
+  output.summary_raw_html = escapeHtml(data.spoiler_text)
+  output.external_url = data.uri || data.url
+  output.poll = data.poll
+  if (output.poll) {
+    output.poll.options = (output.poll.options || []).map((field) => ({
+      ...field,
+      title_html: escapeHtml(field.title),
+    }))
+  }
+  output.pinned = data.pinned
+  output.muted = data.muted
 
   output.id = String(data.id)
   output.visibility = data.visibility
@@ -449,17 +319,13 @@ export const parseStatus = (data) => {
     ? String(output.in_reply_to_user_id)
     : null
 
-  output.user = parseUser(masto ? data.account : data.user)
+  output.user = parseUser(data.account)
 
-  output.attentions = ((masto ? data.mentions : data.attentions) || []).map(
-    parseUser,
-  )
+  output.attentions = (data.mentions || []).map(parseUser)
 
-  output.attachments = (
-    (masto ? data.media_attachments : data.attachments) || []
-  ).map(parseAttachment)
+  output.attachments = (data.media_attachments || []).map(parseAttachment)
 
-  const retweetedStatus = masto ? data.reblog : data.retweeted_status
+  const retweetedStatus = data.reblog
   if (retweetedStatus) {
     output.retweeted_status = parseStatus(retweetedStatus)
   }
@@ -479,56 +345,32 @@ export const parseNotification = (data) => {
     favourite: 'like',
     reblog: 'repeat',
   }
-  const masto = !Object.hasOwn(data, 'ntype')
   const output = {}
 
-  if (masto) {
-    output.type = mastoDict[data.type] || data.type
-    output.seen = data.pleroma.is_seen
-    // TODO: null check should be a temporary fix, I guess.
-    // Investigate why backend does this.
-    output.status =
-      isStatusNotification(output.type) && data.status !== null
-        ? parseStatus(data.status)
-        : null
-    output.target = output.type !== 'move' ? null : parseUser(data.target)
-    output.from_profile = parseUser(data.account)
-    output.emoji = data.emoji
-    output.emoji_url = data.emoji_url
-    if (data.report) {
-      output.report = data.report
-      output.report.content = data.report.content
-      output.report.acct = parseUser(data.report.account)
-      output.report.actor = parseUser(data.report.actor)
-      output.report.statuses = data.report.statuses.map(parseStatus)
-    }
-  } else {
-    const parsedNotice = parseStatus(data.notice)
-    output.type = data.ntype
-    output.seen = Boolean(data.is_seen)
-    output.status =
-      output.type === 'like'
-        ? parseStatus(data.notice.favorited_status)
-        : parsedNotice
-    output.action = parsedNotice
-    output.from_profile =
-      output.type === 'pleroma:chat_mention'
-        ? parseUser(data.account)
-        : parseUser(data.from_profile)
+  output.type = mastoDict[data.type] || data.type
+  output.seen = data.pleroma.is_seen
+  // TODO: null check should be a temporary fix, I guess.
+  // Investigate why backend does this.
+  output.status =
+    isStatusNotification(output.type) && data.status !== null
+      ? parseStatus(data.status)
+      : null
+  output.target = output.type !== 'move' ? null : parseUser(data.target)
+  output.from_profile = parseUser(data.account)
+  output.emoji = data.emoji
+  output.emoji_url = data.emoji_url
+  if (data.report) {
+    output.report = data.report
+    output.report.content = data.report.content
+    output.report.acct = parseUser(data.report.account)
+    output.report.actor = parseUser(data.report.actor)
+    output.report.statuses = data.report.statuses.map(parseStatus)
   }
 
   output.created_at = new Date(data.created_at)
   output.id = parseInt(data.id)
 
   return output
-}
-
-const isNsfw = (status) => {
-  const nsfwRegex = /#nsfw/i
-  return (
-    (status.tags || []).includes('nsfw') ||
-    !!(status.text || '').match(nsfwRegex)
-  )
 }
 
 export const parseLinkHeaderPagination = (linkHeader, opts = {}) => {
