@@ -349,7 +349,7 @@
     </div>
     <div
       class="admin-data"
-      v-if="user.adminData"
+      v-if="user.adminData && !hideBio"
     >
       <details>
         <summary>
@@ -358,13 +358,38 @@
         <div class="user-profile-fields">
           <dl class="user-profile-field">
             <dt class="user-profile-field-name">
+              {{ $t('admin_dash.users.local_id') }}
+            </dt>
+            <dd class="user-profile-field-value">
+              {{ user.adminData.id }}
+            </dd>
+          </dl>
+          <dl
+            v-if="user.is_local"
+            class="user-profile-field"
+          >
+            <dt class="user-profile-field-name">
+              {{ $t('admin_dash.users.labels.email') }}
+            </dt>
+            <dd class="user-profile-field-value">
+              {{ user.adminData.email == null ? $t('general.not_available') : user.adminData.email }}
+            </dd>
+          </dl>
+          <dl
+            v-if="user.is_local"
+            class="user-profile-field"
+          >
+            <dt class="user-profile-field-name">
               {{ $t('general.role.admin') }}
             </dt>
             <dd class="user-profile-field-value">
               {{ $t('general.' + (user.adminData.roles.admin ? 'yes' : 'no')) }}
             </dd>
           </dl>
-          <dl class="user-profile-field">
+          <dl
+            v-if="user.is_local"
+            class="user-profile-field"
+          >
             <dt class="user-profile-field-name">
               {{ $t('general.role.moderator') }}
             </dt>
@@ -372,12 +397,26 @@
               {{ $t('general.' + (user.adminData.roles.moderator ? 'yes' : 'no')) }}
             </dd>
           </dl>
-          <dl class="user-profile-field">
+          <dl
+            v-if="user.is_local"
+            class="user-profile-field"
+          >
             <dt class="user-profile-field-name">
-              {{ $t('admin_dash.users.labels.email') }}
+              {{ $t('admin_dash.users.indicator.confirmed') }}
             </dt>
             <dd class="user-profile-field-value">
-              {{ user.adminData.email == null ? $t('general.not_available') : user.adminData.email }}
+              {{ $t('general.' + (user.adminData.is_confirmed ? 'yes' : 'no')) }}
+            </dd>
+          </dl>
+          <dl
+            v-if="user.is_local"
+            class="user-profile-field"
+          >
+            <dt class="user-profile-field-name">
+              {{ $t('admin_dash.users.indicator.approved') }}
+            </dt>
+            <dd class="user-profile-field-value">
+              {{ $t('general.' + (user.adminData.is_approved ? 'yes' : 'no')) }}
             </dd>
           </dl>
           <dl class="user-profile-field">
@@ -388,23 +427,10 @@
               {{ $t('general.' + (user.adminData.is_suggested ? 'yes' : 'no')) }}
             </dd>
           </dl>
-          <dl class="user-profile-field">
-            <dt class="user-profile-field-name">
-              {{ $t('admin_dash.users.indicator.confirmed') }}
-            </dt>
-            <dd class="user-profile-field-value">
-              {{ $t('general.' + (user.adminData.is_confirmed ? 'yes' : 'no')) }}
-            </dd>
-          </dl>
-          <dl class="user-profile-field">
-            <dt class="user-profile-field-name">
-              {{ $t('admin_dash.users.indicator.approved') }}
-            </dt>
-            <dd class="user-profile-field-value">
-              {{ $t('general.' + (user.adminData.is_approved ? 'yes' : 'no')) }}
-            </dd>
-          </dl>
-          <details open>
+          <details
+            v-if="user.is_local"
+            open
+          >
             <summary>
               {{ $t('user_card.admin_data.registration_reason') }}
             </summary>

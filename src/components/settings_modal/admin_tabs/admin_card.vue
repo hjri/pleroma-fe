@@ -10,7 +10,31 @@
     <BasicUserCard
       class="AdminCard"
       :user="user"
+      show-line-labels
     >
+      <div>
+        <strong>
+          {{ $t('admin_dash.users.labels.email_colon') }}
+        </strong>
+        {{ ' ' }}
+        <template v-if="user.adminData.email == null">
+          {{ $t('general.not_available') }}
+        </template>
+        <a :href="'mailto:' + user.adminData.email">
+          {{ user.adminData.email }}
+        </a>
+      </div>
+      <details
+        v-if="user.adminData.registration_reason != null"
+        open
+      >
+        <summary>
+          {{ $t('user_card.admin_data.registration_reason') }}
+        </summary>
+        <span>
+          {{  user.adminData.registration_reason }}
+        </span>
+      </details>
       <div class="right-side">
         <label
           v-if="isAdmin"

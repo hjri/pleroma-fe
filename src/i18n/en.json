@@ -1297,10 +1297,14 @@
     },
     "users": {
       "title": "Users",
+      "local_id": "Local ID",
       "labels": {
         "query": "Search",
         "name": "Name",
+        "name_colon": "Name:",
         "email": "Email",
+        "email_colon": "Email:",
+        "handle_colon": "Handle:",
         "origin": "Origin",
         "activity": "Activity",
         "privileges": "Privileges"

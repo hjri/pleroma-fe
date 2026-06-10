@@ -8,7 +8,15 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 const BasicUserCard = {
-  props: ['user'],
+  props: {
+    user: {
+      type: Object,
+    },
+    showLineLabels: {
+      type: Boolean,
+      default: false,
+    }
+  },
   components: {
     UserPopover,
     UserAvatar,
