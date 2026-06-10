@@ -3,6 +3,7 @@ import { mapState } from 'pinia'
 
 import List from 'src/components/list/list.vue'
 import Status from 'src/components/status/status.vue'
+import Checkbox from 'src/components/checkbox/checkbox.vue'
 import UserCard from 'src/components/user_card/user_card.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
@@ -22,6 +23,7 @@ const UserProfileAdminView = {
   },
   created() {
     this.userId = this.$route.params.id
+    this.$store.dispatch('fetchUserIfMissing', this.userId)
     useInterfaceStore().setForeignProfileBackground(this.user?.background_image)
   },
   updated() {
@@ -55,7 +57,13 @@ const UserProfileAdminView = {
     UserCard,
     List,
     Status,
+    Checkbox,
   },
+  watch: {
+    godmode() {
+      this.$refs.list.reset()
+    }
+  }
 }
 
 export default UserProfileAdminView

@@ -78,6 +78,13 @@ const ENTRIES = [
     separator: true,
   },
   {
+    check: 'action:statuses',
+    label: 'user_card.admin_menu.show_statuses',
+  },
+  {
+    separator: true,
+  },
+  {
     check: 'action:disable_mfa',
     label: 'user_card.admin_menu.disable_mfa',
   },
@@ -216,6 +223,9 @@ const ModerationTools = {
                 }
                 case 'disable_mfa': {
                   return () => this.disableMFA()
+                }
+                case 'statuses': {
+                  return () => this.$router.push(`/users/\$${this.users[0].id}/admin_view`)
                 }
                 case 'require_password_change': {
                   return () => this.requirePasswordChange()

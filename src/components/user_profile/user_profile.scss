@@ -26,17 +26,21 @@
   }
 
   &.-admin-view {
+    .godmode {
+      padding: 1em;
+    }
+
     .list-item {
       padding: 0;
       border-bottom: 1px solid var(--border);
 
-      .admin-actions {
-        background: var(--background);
-      }
-
       .Status{
         width: 100%
       }
+    }
+
+    .footer {
+      background: var(--background);
     }
   }
 }

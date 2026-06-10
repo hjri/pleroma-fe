@@ -1298,6 +1298,7 @@
     "users": {
       "title": "Users",
       "local_id": "Local ID",
+      "godmode": "Show direct messages",
       "labels": {
         "query": "Search",
         "name": "Name",
@@ -1798,6 +1799,7 @@
       "remove_suggested_account": "Remove from suggested",
       "approve_account": "Approve",
       "confirm_account": "Confirm",
+      "show_statuses": "Show all posts",
 
       "disable_mfa": "Disable MFA",
 

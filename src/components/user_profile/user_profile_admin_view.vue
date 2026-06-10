@@ -7,20 +7,21 @@
       <UserCard
         :user-id="userId"
         :compact="true"
-        avatar-action="zoom"
         hide-bio
         hide-buttons
       />
+      <Checkbox class="godmode" v-model="godmode">
+        {{ $t('admin_dash.users.godmode') }}
+      </Checkbox>
     </div>
     <List
+      ref="list"
       :fetch-function="fetchStatuses"
       @select="onSelect"
       scrollable
     >
       <template #item="{item}">
-        <Status
-          :statusoid="item"
-        />
+        <Status :statusoid="item" />
       </template>
     </List>
   </div>
