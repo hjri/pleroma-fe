@@ -37,13 +37,13 @@
       </details>
       <div class="right-side">
         <label
-          v-if="isAdmin"
+          v-if="user.is_local && isAdmin"
           class="alert neutral user-role"
         >
           {{ $t('admin_dash.users.indicator.admin') }}
         </label>
         <label
-          v-if="isModerator"
+          v-if="user.is_local && isModerator"
           class="alert neutral user-role"
         >
           {{ $t('admin_dash.users.indicator.moderator') }}
@@ -61,25 +61,25 @@
           {{ $t('admin_dash.users.indicator.deactivated') }}
         </label>
         <label
-          v-if="user.adminData.is_confirmed"
+          v-if="user.is_local && user.adminData.is_confirmed"
           class="alert success user-role"
         >
           {{ $t('admin_dash.users.indicator.confirmed') }}
         </label>
         <label
-          v-if="!user.adminData.is_confirmed"
+          v-if="user.is_local && !user.adminData.is_confirmed"
           class="alert warning user-role"
         >
           {{ $t('admin_dash.users.indicator.unconfirmed') }}
         </label>
         <label
-          v-if="user.adminData.is_approved"
+          v-if="user.is_local && user.adminData.is_approved"
           class="alert success user-role"
         >
           {{ $t('admin_dash.users.indicator.approved') }}
         </label>
         <label
-          v-if="!user.adminData.is_approved"
+          v-if="user.is_local && !user.adminData.is_approved"
           class="alert warning user-role"
         >
           {{ $t('admin_dash.users.indicator.unapproved') }}
