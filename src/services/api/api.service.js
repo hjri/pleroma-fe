@@ -186,7 +186,12 @@ const PLEROMA_ADMIN_CONFIRM_USERS_URL =
   '/api/v1/pleroma/admin/users/confirm_email'
 const PLEROMA_ADMIN_RESEND_CONFIRMATION_EMAIL_URL =
   '/api/v1/pleroma/admin/users/resend_confirmation_email'
-const PLEROMA_ADMIN_LIST_STATUSES_URL = (id, pageSize, godmode, withReblogs) =>
+const PLEROMA_ADMIN_LIST_STATUSES_URL = ({
+  id,
+  pageSize,
+  godmode,
+  withReblogs,
+}) =>
   `/api/v1/pleroma/admin/users/${id}/statuses?page_size=${pageSize}&godmode=${godmode}&with_reblogs=${withReblogs}`
 const PLEROMA_ADMIN_CHANGE_STATUS_SCOPE_URL = (id) =>
   `/api/v1/pleroma/admin/statuses/${id}`
@@ -1700,14 +1705,12 @@ const adminListUsers = ({ opts, credentials }) => {
   // the reported list is hardly useful because standards are for dating i guess,
   // so make sure to fetchIfMissing right afterward using this call
   const url = PLEROMA_ADMIN_USERS_URL_LIST(opts)
+
   return promisedRequest({
-    url: url,
+    url,
     credentials,
     method: 'GET',
-  }).then((data) => ({
-    ...data,
-    users: data.users,
-  }))
+  })
 }
 
 const adminResendConfirmationEmail = ({
@@ -1752,20 +1755,14 @@ const adminDisableMFA = ({ screen_name: nickname, credentials }) => {
   })
 }
 
-const adminListStatuses = ({
-  userId,
-  pageSize = 20,
-  godmode,
-  withReblogs,
-  credentials,
-}) => {
-  const url = PLEROMA_ADMIN_LIST_STATUSES_URL(
-    userId,
-    pageSize,
-    godmode,
-    withReblogs,
-  )
-  return promisedRequest({ url, credentials, method: 'GET' })
+const adminListStatuses = ({ opts, credentials }) => {
+  const url = PLEROMA_ADMIN_LIST_STATUSES_URL(opts)
+
+  return promisedRequest({
+    url,
+    credentials,
+    method: 'GET',
+  })
 }
 
 const adminChangeStatusScope = ({
@@ -2260,7 +2257,6 @@ const listEmojiPacks = ({ page, pageSize }) => {
 }
 
 const listRemoteEmojiPacks = ({ instance, page, pageSize }) => {
-  console.log(instance)
   if (!instance.startsWith('http')) {
     instance = 'https://' + instance
   }

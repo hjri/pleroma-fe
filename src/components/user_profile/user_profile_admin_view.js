@@ -1,19 +1,17 @@
 import { get } from 'lodash'
 import { mapState } from 'pinia'
 
-import Conversation from 'src/components/conversation/conversation.vue'
 import List from 'src/components/list/list.vue'
+import Status from 'src/components/status/status.vue'
 import UserCard from 'src/components/user_card/user_card.vue'
 
-import { useInterfaceStore } from 'src/stores/interface.js'
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faCircleNotch)
-
-const defaultTabKey = 'statuses'
 
 const UserProfileAdminView = {
   data() {
@@ -24,7 +22,6 @@ const UserProfileAdminView = {
   },
   created() {
     this.userId = this.$route.params.id
-    console.log(this.userId)
     useInterfaceStore().setForeignProfileBackground(this.user?.background_image)
   },
   updated() {
@@ -38,8 +35,8 @@ const UserProfileAdminView = {
       return {
         pageSize: 20,
         godmode: this.godmode,
-        userId: this.userId,
-        withReblogs: false
+        id: this.userId,
+        withReblogs: false,
       }
     },
     user() {
@@ -48,18 +45,16 @@ const UserProfileAdminView = {
   },
   methods: {
     fetchStatuses(page) {
-      return useAdminSettingsStore()
-        .fetchStatuses({
-          ...this.fetchOptions,
-          page,
-        })
-        .then(({ count, users }) => ({ count, items: users }))
+      return useAdminSettingsStore().fetchStatuses({
+        ...this.fetchOptions,
+        page,
+      })
     },
   },
   components: {
     UserCard,
     List,
-    Conversation,
+    Status,
   },
 }
 

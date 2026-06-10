@@ -1,14 +1,15 @@
 <template>
   <div
     v-if="user"
-    class="user-profile panel panel-default"
+    class="user-profile -admin-view panel panel-default"
   >
     <div class="panel-body card-wrapper">
       <UserCard
         :user-id="userId"
-        :compact="compactProfiles"
+        :compact="true"
         avatar-action="zoom"
-        :hide-bio="true"
+        hide-bio
+        hide-buttons
       />
     </div>
     <List
@@ -17,8 +18,8 @@
       scrollable
     >
       <template #item="{item}">
-        <Conversation
-          :user="item"
+        <Status
+          :statusoid="item"
         />
       </template>
     </List>

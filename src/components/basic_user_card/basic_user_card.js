@@ -15,7 +15,7 @@ const BasicUserCard = {
     showLineLabels: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   components: {
     UserPopover,

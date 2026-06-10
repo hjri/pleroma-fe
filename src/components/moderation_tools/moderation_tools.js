@@ -185,16 +185,15 @@ const ModerationTools = {
     entries() {
       return ENTRIES.map(({ check, label, separator, conditions }) => {
         if (separator) return 'separator'
-        const [, negateToken, group, name] = /^([!~]?)([a-z-_]+):([a-z-_]+)$/.exec(
-          check,
-        )
+        const [, negateToken, group, name] =
+          /^([!~]?)([a-z-_]+):([a-z-_]+)$/.exec(check)
 
         const hasTag = this.tagsSet.has(`${group}:${name}`)
         const noTag = this.tagsSet.has(`!${group}:${name}`)
         const maybeTag = this.tagsSet.has(`~${group}:${name}`)
 
         // We are checking for condition to show element, i.e. only show "activate" if user is "deactivated"
-        const checkNegated = (negateToken === '!' || negateToken === '~')
+        const checkNegated = negateToken === '!' || negateToken === '~'
 
         // Naturally, new value should also be the same
         const value = checkNegated
@@ -442,7 +441,11 @@ const ModerationTools = {
       return this.$store.state.users.currentUser.privileges.has(privilege)
     },
     setTag(tag, value) {
-      useAdminSettingsStore().setUsersTags({ users: this.users, value, tags: [tag] })
+      useAdminSettingsStore().setUsersTags({
+        users: this.users,
+        value,
+        tags: [tag],
+      })
     },
     setRight(right, value) {
       useAdminSettingsStore().setUsersRight({ users: this.users, value, right })
@@ -542,9 +545,7 @@ const ModerationTools = {
               )
               this.confirmDialogContent =
                 'user_card.admin_menu.confirm_modal.disable_mfa_content'
-              this.confirmDialogConfirm = this.$t(
-                'settings.confirm'
-              )
+              this.confirmDialogConfirm = this.$t('settings.confirm')
               break
             }
             case 'require_password_change': {
@@ -554,12 +555,11 @@ const ModerationTools = {
               )
               this.confirmDialogContent =
                 'user_card.admin_menu.confirm_modal.require_password_change_content'
-              this.confirmDialogConfirm = this.$t(
-                'settings.confirm'
-              )
+              this.confirmDialogConfirm = this.$t('settings.confirm')
               break
             }
           }
+          break
         }
         case 'state': {
           switch (name) {

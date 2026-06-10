@@ -301,37 +301,46 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     },
 
     // Statuses stuff
-    fetchStatuses(opts) {
-      return this
-        .backendInteractor
-        .adminListStatuses(opts)
-        .then(({ total, activities }) => ({
-          count: total,
-          items: activities.map(parseStatus)
+    async fetchStatuses(opts) {
+      const { total, activities } =
+        await this.backendInteractor.adminListStatuses({
+          opts,
         })
+
+      return {
+        items: activities.map(parseStatus),
+        count: total,
+      }
     },
-    changeStatusScope({ opts }) {
-      return this.backendInteractor.adminChangeStatusScope({
+    async changeStatusScope(opts) {
+      const raw = await this.backendInteractor.adminChangeStatusScope({
         opts,
+      })
+      const status = parseStatus(raw)
+
+      await window.vuex.dispatch('addNewStatuses', {
+        statuses: [status],
+        userId: false,
       })
     },
 
     // Users stuff
     async fetchUsers(opts) {
-      const adminData = await this.backendInteractor.adminListUsers({
+      const { users, count } = await this.backendInteractor.adminListUsers({
         opts,
       })
 
-      adminData.users = await Promise.all(
-        adminData.users.map(
-          async (userAdminData) =>
-            await window.vuex.dispatch('updateUserAdminData', {
-              userAdminData,
-            }),
+      return {
+        items: await Promise.all(
+          users.map(
+            async (userAdminData) =>
+              await window.vuex.dispatch('updateUserAdminData', {
+                userAdminData,
+              }),
+          ),
         ),
-      )
-
-      return adminData
+        count,
+      }
     },
     async getUserData({ user }) {
       const api = this.backendInteractor.adminGetUserData

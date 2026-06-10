@@ -84,6 +84,12 @@ export default {
       default: false,
       type: Boolean,
     },
+    // Hide action buttons
+    hideButtons: {
+      required: false,
+      default: false,
+      type: Boolean,
+    },
     // default - open profile, 'zoom' - zoom, function - call function
     avatarAction: {
       required: false,

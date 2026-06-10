@@ -1689,7 +1689,10 @@
     "invisible_quote": "Quoted status unavailable: {link}",
     "more_actions": "More actions on this status",
     "loading": "Loading...",
-    "load_error": "Unable to load status: {error}"
+    "load_error": "Unable to load status: {error}",
+    "admin_change_scope": "Change visibility",
+    "mark_as_sensitive": "Sensitive",
+    "mark_as_non-sensitive": "Non-sensitive"
   },
   "user_card": {
     "approve": "Approve",

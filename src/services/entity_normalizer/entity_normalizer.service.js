@@ -150,7 +150,10 @@ export const parseUser = (data) => {
     output.fields = data.source.fields
     if (data.source.pleroma) {
       output.no_rich_text = data.source.pleroma.no_rich_text
-      output.show_role = typeof data.source.pleroma.show_role === 'boolean' ? data.source.pleroma.show_role : true
+      output.show_role =
+        typeof data.source.pleroma.show_role === 'boolean'
+          ? data.source.pleroma.show_role
+          : true
       output.discoverable = data.source.pleroma.discoverable
       output.show_birthday = data.pleroma.show_birthday
       output.actor_type = data.source.pleroma.actor_type

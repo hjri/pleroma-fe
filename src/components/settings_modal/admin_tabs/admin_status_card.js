@@ -6,19 +6,9 @@ import { parseStatus } from 'src/services/entity_normalizer/entity_normalizer.se
 
 const AdminStatusCard = {
   props: {
-    /**
-     * minimal status info
-     * @type {import('vue').PropType<{
-     *   id: string
-     * }>}
-     */
     statusDetails: {
       type: Object,
       required: true,
-      /**
-       * @param {any} u
-       * @returns {u is { id: string }}
-       */
       validator(u) {
         return typeof u.id === 'string'
       },
@@ -31,23 +21,14 @@ const AdminStatusCard = {
     }
   },
   computed: {
-    /**
-     * @returns {boolean} is this status sensitive?
-     */
     isSensitive() {
       return this.statusDetails.sensitive === true
     },
-    /**
-     * @returns {'public' | 'unlisted' | 'private' | 'direct'} status visibility
-     */
     visibility() {
       return this.statusDetails.visibility
     },
   },
   methods: {
-    /**
-     * @param {boolean} v set sensitive
-     */
     changeSensitivity(v) {
       this.$store
         .dispatch('adminChangeStatusScope', {
@@ -56,9 +37,6 @@ const AdminStatusCard = {
         .then((res) => parseStatus(res))
         .then((s) => (this.statusCache = s))
     },
-    /**
-     * @param {boolean} v set visible
-     */
     changeVisibility(v) {
       this.$store
         .dispatch('adminChangeStatusScope', {

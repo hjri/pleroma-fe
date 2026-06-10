@@ -104,7 +104,7 @@
                   />
                 </a>
                 <AccountActions
-                  v-if="isOtherUser && loggedIn"
+                  v-if="isOtherUser && loggedIn && !hideButtons"
                   :user="user"
                   :relationship="relationship"
                 />
@@ -228,7 +228,7 @@
           </div>
         </div>
         <div
-          v-if="loggedIn && isOtherUser"
+          v-if="loggedIn && isOtherUser && !hideButtons"
           class="user-interactions"
         >
           <div class="btn-group">

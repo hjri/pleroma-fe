@@ -245,6 +245,26 @@ export const BUTTONS = [
   },
   {
     // =========
+    // CHANGE SCOPE
+    // =========
+    name: 'changeScope',
+    icon: 'eye',
+    label: 'status.admin_change_scope',
+    if({ status, loggedIn, currentUser }) {
+      return (
+        loggedIn &&
+        (status.user.id === currentUser.id ||
+          currentUser.privileges.has('messages_delete'))
+      )
+    },
+    toggleable: false,
+    dropdown: true,
+    action({ status, dispatch, emit }) {
+      /* prevent hiding */
+    },
+  },
+  {
+    // =========
     // SHARE/COPY
     // =========
     name: 'share',

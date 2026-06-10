@@ -24,6 +24,21 @@
   .user-info {
     margin: 1.2em;
   }
+
+  &.-admin-view {
+    .list-item {
+      padding: 0;
+      border-bottom: 1px solid var(--border);
+
+      .admin-actions {
+        background: var(--background);
+      }
+
+      .Status{
+        width: 100%
+      }
+    }
+  }
 }
 
 .user-profile-placeholder {
