@@ -78,8 +78,7 @@ const List = {
   created() {
     window.addEventListener('scroll', this.scrollLoad)
 
-    console.log(this.externalItems)
-    if (!this.externalItems && this.items.length === 0) {
+    if (this.fetchFunction && this.items.length === 0) {
       this.fetchEntries()
     }
   },
