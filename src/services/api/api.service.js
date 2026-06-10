@@ -188,11 +188,12 @@ const PLEROMA_ADMIN_RESEND_CONFIRMATION_EMAIL_URL =
   '/api/v1/pleroma/admin/users/resend_confirmation_email'
 const PLEROMA_ADMIN_LIST_STATUSES_URL = ({
   id,
+  page,
   pageSize,
   godmode,
   withReblogs,
 }) =>
-  `/api/v1/pleroma/admin/users/${id}/statuses?page_size=${pageSize}&godmode=${godmode}&with_reblogs=${withReblogs}`
+  `/api/v1/pleroma/admin/users/${id}/statuses?page_size=${pageSize}&page=${page}&godmode=${godmode}&with_reblogs=${withReblogs}`
 const PLEROMA_ADMIN_CHANGE_STATUS_SCOPE_URL = (id) =>
   `/api/v1/pleroma/admin/statuses/${id}`
 const PLEROMA_ADMIN_REQUIRE_PASSWORD_CHANGE_URL =
