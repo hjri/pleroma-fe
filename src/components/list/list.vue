@@ -1,6 +1,7 @@
 <template>
   <div
     class="List"
+    role="list"
     :class="{ '-scrollable': scrollable }"
   >
     <div

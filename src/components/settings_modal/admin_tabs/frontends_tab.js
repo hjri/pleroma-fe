@@ -105,7 +105,7 @@ const FrontendsTab = {
       const ref = suggestRef || this.getSuggestedRef(frontend)
       const { name } = frontend
 
-      useAdminSettingsStore.updateAdminDraft({
+      useAdminSettingsStore().updateAdminDraft({
         path: [':pleroma', ':frontends', ':primary'],
         value: { name, ref },
       })

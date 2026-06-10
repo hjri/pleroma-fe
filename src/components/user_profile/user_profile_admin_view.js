@@ -60,7 +60,7 @@ const UserProfileAdminView = {
     Checkbox,
   },
   watch: {
-    godmode() {
+    fetchOptions() {
       this.$refs.list.reset()
     },
   },

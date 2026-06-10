@@ -133,7 +133,7 @@ export default {
       },
       set(value) {
         if (this.realSource === 'admin' || this.path == null) {
-          useAdminSettingsStore.updateAdminDraft({
+          useAdminSettingsStore().updateAdminDraft({
             path: this.canonPath,
             value,
           })
@@ -254,7 +254,7 @@ export default {
             this.$store.dispatch('setProfileOption', { name: k, value: v })
         case 'admin':
           return (k, v) =>
-            useAdminSettingsStore.pushAdminSetting({ path: k, value: v })
+            useAdminSettingsStore().pushAdminSetting({ path: k, value: v })
         default:
           return (readPath, value) => {
             const writePath = `${readPath}`

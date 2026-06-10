@@ -5,10 +5,8 @@ import Checkbox from 'src/components/checkbox/checkbox.vue'
 import GenericConfirm from 'src/components/confirm_modal/generic_confirm.vue'
 import List from 'src/components/list/list.vue'
 import ModerationTools from 'src/components/moderation_tools/moderation_tools.vue'
-import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import Select from 'src/components/select/select.vue'
-import AdminCard from 'src/components/settings_modal/admin_tabs/admin_card.vue'
-import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+import AdminUserCard from 'src/components/settings_modal/admin_tabs/admin_user_card.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 
@@ -18,17 +16,9 @@ const UsersTab = {
     Select,
     BasicUserCard,
     List,
-    ProgressButton,
-    AdminCard,
-    TabSwitcher,
+    AdminUserCard,
     ModerationTools,
     GenericConfirm,
-  },
-  provide() {
-    return {
-      defaultDraftMode: true,
-      defaultSource: 'admin',
-    }
   },
   data() {
     return {

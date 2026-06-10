@@ -204,6 +204,7 @@ const UserProfile = {
     List,
     FollowCard,
     TabSwitcher,
+    Conversation,
   },
 }
 

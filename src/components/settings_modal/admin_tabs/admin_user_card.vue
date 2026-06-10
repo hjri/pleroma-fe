@@ -8,7 +8,7 @@
   </template>
   <template v-else>
     <BasicUserCard
-      class="AdminCard"
+      class="AdminUserCard"
       :user="user"
       show-line-labels
     >
@@ -102,6 +102,6 @@
   </template>
 </template>
 
-<script src="./admin_card.js"></script>
+<script src="./admin_user_card.js"></script>
 
-<style lang="scss" src="./admin_card.scss"></style>
+<style lang="scss" src="./admin_user_card.scss"></style>

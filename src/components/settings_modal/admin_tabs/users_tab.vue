@@ -131,7 +131,7 @@
         <ModerationTools :users="selected" />
       </template>
       <template #item="{item}">
-        <AdminCard :user-id="item.id" />
+        <AdminUserCard :user-id="item.id" />
       </template>
       <template #load>
         <span> loading </span>

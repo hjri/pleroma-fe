@@ -4,7 +4,7 @@
     ref="tabSwitcher"
     class="settings-admin-content settings_tab-switcher"
     :side-tab-bar="true"
-    :scrollable-tabs="true"
+    :scrollable-tabs
     :render-only-focused="true"
     :body-scroll-lock="bodyLock"
   >
@@ -50,7 +50,6 @@
     </div>
 
     <div
-      v-if="adminDbLoaded"
       :label="$t('admin_dash.tabs.users')"
       icon="user"
       data-tab-name="users"

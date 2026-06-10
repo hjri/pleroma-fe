@@ -112,19 +112,19 @@ const LinksTab = {
   },
   methods: {
     checkRel(e) {
-      useAdminSettingsStore.updateAdminDraft({
+      useAdminSettingsStore().updateAdminDraft({
         path: [':pleroma', 'Pleroma.Formatter', ':rel'],
         value: e ? '' : false,
       })
     },
     checkClass(e) {
-      useAdminSettingsStore.updateAdminDraft({
+      useAdminSettingsStore().updateAdminDraft({
         path: [':pleroma', 'Pleroma.Formatter', ':class'],
         value: e ? '' : false,
       })
     },
     checkTruncate(e) {
-      useAdminSettingsStore.updateAdminDraft({
+      useAdminSettingsStore().updateAdminDraft({
         path: [':pleroma', 'Pleroma.Formatter', ':truncate'],
         value: e ? 20 : false,
       })

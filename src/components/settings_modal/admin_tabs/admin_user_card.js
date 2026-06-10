@@ -3,7 +3,7 @@ import { defineAsyncComponent } from 'vue'
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
 import ModerationTools from 'src/components/moderation_tools/moderation_tools.vue'
 
-const AdminCard = {
+const AdminUserCard = {
   props: {
     userId: {
       type: String,
@@ -17,9 +17,6 @@ const AdminCard = {
     user() {
       return this.$store.getters.findUser(this.userId)
     },
-    relationship() {
-      return this.$store.getters.relationship(this.userId)
-    },
     isAdmin() {
       return this.user.rights.admin
     },
@@ -32,4 +29,4 @@ const AdminCard = {
   },
 }
 
-export default AdminCard
+export default AdminUserCard

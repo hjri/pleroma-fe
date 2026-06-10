@@ -215,22 +215,17 @@ const ModerationTools = {
               return () => this.setTag(`${group}:${name}`, noTag)
             case 'action': {
               switch (name) {
-                case 'delete': {
+                case 'delete':
                   return () => this.deleteUsers()
-                }
-                case 'resend_confirmation': {
+                case 'resend_confirmation':
                   return () => this.resendConfirmationEmail()
-                }
-                case 'disable_mfa': {
+                case 'disable_mfa':
                   return () => this.disableMFA()
-                }
-                case 'statuses': {
+                case 'statuses':
                   return () =>
                     this.$router.push(`/users/\$${this.users[0].id}/admin_view`)
-                }
-                case 'require_password_change': {
+                case 'require_password_change':
                   return () => this.requirePasswordChange()
-                }
                 default:
                   throw new Error(`Unknown action group: ${name}`)
               }
@@ -277,24 +272,22 @@ const ModerationTools = {
           }
 
           switch (group) {
-            case 'action': {
+            case 'action':
               return true
-            }
-            case 'rights': {
+            case 'rights':
               return this.canGrantRole(name, value)
-            }
-            case 'state': {
+            case 'state':
               return this.canChangeState(name, value)
-            }
-            case 'mrf_tag': {
+            case 'mrf_tag':
               return this.canUseTagPolicy
-            }
             default: {
               throw new Error(`Unknown moderation group: ${group}`)
             }
           }
         })
         .reduce((acc, entry, index) => {
+          // Removing any double separators as well
+          // as separators at very end and bery beginning
           if (entry === 'separator') {
             if (
               acc.length === 0 ||
@@ -363,12 +356,16 @@ const ModerationTools = {
 
       const result = new Set()
 
+      // Each tag can have three states for given group of users
       TAGS.forEach((tag) => {
         if (present.has(tag) && missing.has(tag)) {
+          // Some users have tag, some don't: "~tag"
           result.add(`~${tag}`)
         } else if (missing.has(tag)) {
+          // No users have tag: "!tag"
           result.add(`!${tag}`)
         } else {
+          // All users have tag: "tag"
           result.add(tag)
         }
       })

@@ -16,15 +16,6 @@ const MutesAndBlocks = {
   data() {
     return {
       activeTab: 'profile',
-      mutesLoading: false,
-      mutesError: null,
-      mutesBottomedOut: false,
-      blocksLoading: false,
-      blocksError: null,
-      blocksBottomedOut: false,
-      domainsLoading: false,
-      domainsError: null,
-      domainsBottomedOut: false,
     }
   },
   created() {

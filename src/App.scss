@@ -411,6 +411,14 @@ nav {
   button:not(.button-default) {
     color: var(--text);
     font-size: 100%;
+    text-align: initial;
+    padding: 0;
+    background: none;
+    border: none;
+    outline: none;
+    display: inline;
+    font-family: inherit;
+    line-height: unset;
   }
 
   &.disabled {
@@ -436,22 +444,6 @@ nav {
   --__line-height: 1.5em;
   --__horizontal-gap: 0.75em;
   --__vertical-gap: 0.5em;
-
-  &.-non-interactive {
-    cursor: auto;
-  }
-
-  > a,
-  > button:not(.button-default) {
-    text-align: initial;
-    padding: 0;
-    background: none;
-    border: none;
-    outline: none;
-    display: inline;
-    font-family: inherit;
-    line-height: unset;
-  }
 }
 
 .button-unstyled {

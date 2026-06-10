@@ -1,7 +1,7 @@
 <template>
   <tab-switcher
     class="mutes-and-blocks-tab"
-    :scrollable-tabs="true"
+    :scrollable-tabs
     >
     <div
       class="blocks"

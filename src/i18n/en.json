@@ -385,9 +385,6 @@
   "selectable_list": {
     "select_all": "Select all"
   },
-  "page_list": {
-    "load_more": "Load more"
-  },
   "settings": {
     "invalid_settings_imported": "Error importing settings",
     "add_language": "Add fallback language",

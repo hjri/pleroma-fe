@@ -233,10 +233,10 @@ const SettingsModal = {
       return clone
     },
     resetAdminDraft() {
-      useAdminSettingsStore.resetAdminDraft()
+      useAdminSettingsStore().resetAdminDraft()
     },
     pushAdminDraft() {
-      useAdminSettingsStore.pushAdminDraft()
+      useAdminSettingsStore().pushAdminDraft()
     },
     ...mapActions(useInterfaceStore, [
       'temporaryChangesRevert',
