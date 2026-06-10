@@ -2,7 +2,6 @@ import { isEmpty } from 'lodash'
 
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
-import GenericConfirm from 'src/components/confirm_modal/generic_confirm.vue'
 import List from 'src/components/list/list.vue'
 import ModerationTools from 'src/components/moderation_tools/moderation_tools.vue'
 import Select from 'src/components/select/select.vue'
@@ -18,7 +17,6 @@ const UsersTab = {
     List,
     AdminUserCard,
     ModerationTools,
-    GenericConfirm,
   },
   data() {
     return {

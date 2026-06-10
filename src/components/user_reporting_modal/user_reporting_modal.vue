@@ -51,7 +51,7 @@
           </div>
         </div>
         <div class="user-reporting-panel-right">
-          <List :items="statuses">
+          <List :external-items="statuses">
             <template #item="{item}">
               <div class="status-fadein user-reporting-panel-sitem">
                 <Status
