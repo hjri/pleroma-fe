@@ -17,9 +17,12 @@
           {{ $t('admin_dash.users.labels.email_colon') }}
         </strong>
         {{ ' ' }}
-        <template v-if="user.adminData.email == null">
+        <span
+          class="faint"
+          v-if="user.adminData.email == null"
+        >
           {{ $t('general.not_available') }}
-        </template>
+        </span>
         <a :href="'mailto:' + user.adminData.email">
           {{ user.adminData.email }}
         </a>

@@ -371,7 +371,10 @@
             <dt class="user-profile-field-name">
               {{ $t('admin_dash.users.labels.email') }}
             </dt>
-            <dd class="user-profile-field-value">
+            <dd
+              class="user-profile-field-value"
+              :class="{ faint: user.adminData.email == null }"
+            >
               {{ user.adminData.email == null ? $t('general.not_available') : user.adminData.email }}
             </dd>
           </dl>
