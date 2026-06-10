@@ -312,7 +312,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     },
 
     // Users stuff
-    async fetchAdminUsers(opts) {
+    async fetchUsers(opts) {
       const adminData = await this.backendInteractor.adminListUsers({
         opts,
       })

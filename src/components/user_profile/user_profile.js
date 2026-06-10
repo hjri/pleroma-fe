@@ -1,7 +1,6 @@
 import { get } from 'lodash'
 import { mapState } from 'pinia'
 
-import Conversation from 'src/components/conversation/conversation.vue'
 import FollowCard from 'src/components/follow_card/follow_card.vue'
 import List from 'src/components/list/list.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
@@ -205,7 +204,6 @@ const UserProfile = {
     List,
     FollowCard,
     TabSwitcher,
-    Conversation,
   },
 }
 

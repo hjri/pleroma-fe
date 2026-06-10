@@ -116,7 +116,7 @@ const UsersTab = {
   methods: {
     fetchUsers(page) {
       return useAdminSettingsStore()
-        .fetchAdminUsers({
+        .fetchUsers({
           ...this.fetchOptions,
           page,
         })

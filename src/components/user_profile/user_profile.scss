@@ -1,0 +1,46 @@
+.user-profile {
+  flex: 2;
+
+  .card-wrapper {
+    border-top-left-radius: var(--roundness);
+    border-top-right-radius: var(--roundness);
+  }
+
+  .panel-footer {
+    border-bottom-left-radius: var(--roundness);
+    border-bottom-right-radius: var(--roundness);
+  }
+
+  // No sticky header on user profile
+  --currentPanelStack: 0;
+
+  .userlist-placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2em;
+  }
+
+  .user-info {
+    margin: 1.2em;
+  }
+}
+
+.user-profile-placeholder {
+  .panel-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 7em;
+  }
+
+  .alert {
+    padding: 0.75em 5em;
+    border-width: 2px;
+
+    .error-message {
+      color: var(--text);
+      font-weight: bold;
+    }
+  }
+}
