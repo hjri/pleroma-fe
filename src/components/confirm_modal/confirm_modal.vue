@@ -18,7 +18,9 @@
         <slot />
       </div>
     </div>
-
+    <div class="below">
+      <slot name="below" />
+    </div>
     <template #footer>
       <slot name="footerLeft" />
       <button
@@ -59,6 +61,10 @@
         margin-bottom: 0;
       }
     }
+  }
+
+  .below:not(:empty) {
+    margin-top: 1em;
   }
 
   .text {
