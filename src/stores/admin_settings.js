@@ -1,6 +1,8 @@
 import { cloneDeep, differenceWith, flatten, get, isEqual, set } from 'lodash'
 import { defineStore } from 'pinia'
 
+import { parseStatus } from 'src/services/entity_normalizer/entity_normalizer.service.js'
+
 export const defaultState = {
   frontends: [],
   loaded: false,
@@ -299,11 +301,14 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     },
 
     // Statuses stuff
-    listStatuses({ userId, opts }) {
-      return this.backendInteractor.adminListStatuses({
-        userId,
-        opts,
-      })
+    fetchStatuses(opts) {
+      return this
+        .backendInteractor
+        .adminListStatuses(opts)
+        .then(({ total, activities }) => ({
+          count: total,
+          items: activities.map(parseStatus)
+        })
     },
     changeStatusScope({ opts }) {
       return this.backendInteractor.adminChangeStatusScope({
