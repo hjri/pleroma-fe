@@ -348,8 +348,8 @@
       </div>
     </div>
     <div
-      class="admin-data"
       v-if="user.adminData && !hideBio"
+      class="admin-data"
     >
       <details>
         <summary>
@@ -454,7 +454,7 @@
                 :key="tag"
               >
                 <code>
-                {{ tag }}
+                  {{ tag }}
                 </code>
                 {{ ' ' }}
               </li>

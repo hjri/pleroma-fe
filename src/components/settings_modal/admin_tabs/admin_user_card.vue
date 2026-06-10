@@ -18,8 +18,8 @@
         </strong>
         {{ ' ' }}
         <span
-          class="faint"
           v-if="user.adminData.email == null"
+          class="faint"
         >
           {{ $t('general.not_available') }}
         </span>
@@ -35,7 +35,7 @@
           {{ $t('user_card.admin_data.registration_reason') }}
         </summary>
         <span>
-          {{  user.adminData.registration_reason }}
+          {{ user.adminData.registration_reason }}
         </span>
       </details>
       <div class="right-side">

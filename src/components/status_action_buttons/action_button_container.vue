@@ -22,6 +22,7 @@
         >
           <div
             v-for="visibility in availableScopes"
+            :key="visibility"
             class="menu-item dropdown-item extra-action -icon"
           >
             <button
@@ -32,7 +33,7 @@
                 :icon="visibilityIcon(visibility)"
                 fixed-width
               />
-                {{ $t('general.scope_in_timeline.' + visibility) }}
+              {{ $t('general.scope_in_timeline.' + visibility) }}
             </button>
           </div>
           <div
@@ -47,7 +48,7 @@
                 icon="eye"
                 fixed-width
               />
-                {{ $t('status.mark_as_non-sensitive') }}
+              {{ $t('status.mark_as_non-sensitive') }}
             </button>
           </div>
           <div
@@ -62,7 +63,7 @@
                 icon="eye-slash"
                 fixed-width
               />
-                {{ $t('status.mark_as_sensitive') }}
+              {{ $t('status.mark_as_sensitive') }}
             </button>
           </div>
         </div>

@@ -46,13 +46,19 @@
           :disabled="disabled"
         >
           {{ $t('user_card.admin_menu.moderation') }}
-          <FAIcon v-if="ready" icon="chevron-down" />
-          <span v-else class="loading-spinner">
+          <FAIcon
+            v-if="ready"
+            icon="chevron-down"
+          />
+          <span
+            v-else
+            class="loading-spinner"
+          >
             <FAIcon
               class="fa-old-padding"
               spin
               icon="circle-notch"
-              />
+            />
           </span>
         </button>
       </template>
@@ -91,7 +97,10 @@
           {{ $t(confirmDialogContent2) }}
         </p>
         <ul v-if="users.length > 1">
-          <li v-for="user in users">
+          <li
+            v-for="user in users"
+            :key="user.screen_name"
+          >
             {{ user.screen_name }}
           </li>
         </ul>

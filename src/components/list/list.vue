@@ -73,9 +73,9 @@
         />
         <a
           v-else-if="!bottomedOut"
-          @click="fetchEntries"
           role="button"
           tabindex="0"
+          @click="fetchEntries"
         >
           {{ $t('general.more') }}
         </a>

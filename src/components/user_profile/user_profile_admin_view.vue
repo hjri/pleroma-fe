@@ -10,15 +10,18 @@
         hide-bio
         hide-buttons
       />
-      <Checkbox class="godmode" v-model="godmode">
+      <Checkbox
+        v-model="godmode"
+        class="godmode"
+      >
         {{ $t('admin_dash.users.godmode') }}
       </Checkbox>
     </div>
     <List
       ref="list"
       :fetch-function="fetchStatuses"
-      @select="onSelect"
       scrollable
+      @select="onSelect"
     >
       <template #item="{item}">
         <Status :statusoid="item" />

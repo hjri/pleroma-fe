@@ -2,7 +2,7 @@
   <tab-switcher
     class="mutes-and-blocks-tab"
     :scrollable-tabs
-    >
+  >
     <div
       class="blocks"
       :label="$t('settings.user_blocks')"
@@ -60,7 +60,10 @@
       </List>
     </div>
 
-    <div class="mutes" :label="$t('settings.user_mutes2')">
+    <div
+      class="mutes"
+      :label="$t('settings.user_mutes2')"
+    >
       <div class="usersearch-wrapper">
         <Autosuggest
           :filter="filterUnMutedUsers"

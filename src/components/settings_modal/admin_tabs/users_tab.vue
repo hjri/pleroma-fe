@@ -123,9 +123,9 @@
     <List
       ref="usersList"
       :fetch-function="fetchUsers"
-      @select="onSelect"
       selectable
       scrollable
+      @select="onSelect"
     >
       <template #header="{selected}">
         <ModerationTools :users="selected" />
