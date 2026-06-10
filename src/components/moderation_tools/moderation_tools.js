@@ -225,7 +225,8 @@ const ModerationTools = {
                   return () => this.disableMFA()
                 }
                 case 'statuses': {
-                  return () => this.$router.push(`/users/\$${this.users[0].id}/admin_view`)
+                  return () =>
+                    this.$router.push(`/users/\$${this.users[0].id}/admin_view`)
                 }
                 case 'require_password_change': {
                   return () => this.requirePasswordChange()
