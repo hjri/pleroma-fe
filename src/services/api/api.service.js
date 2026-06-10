@@ -1726,7 +1726,7 @@ const adminResendConfirmationEmail = ({
 }
 
 const adminRequirePasswordChange = ({
-  user: { screen_names: nicknames },
+  screen_names: nicknames,
   credentials,
 }) => {
   const url = PLEROMA_ADMIN_REQUIRE_PASSWORD_CHANGE_URL
@@ -1740,7 +1740,7 @@ const adminRequirePasswordChange = ({
   })
 }
 
-const adminDisableMFA = ({ user: { screen_name: nickname }, credentials }) => {
+const adminDisableMFA = ({ screen_name: nickname, credentials }) => {
   const url = PLEROMA_ADMIN_DISABLE_MFA_URL
   return promisedRequest({
     url,

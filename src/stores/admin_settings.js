@@ -367,7 +367,9 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     },
     // Singular only!
     disableMFA({ user }) {
-      return this.backendInteractor.adminDisableMFA(user)
+      const { screen_name } = user
+
+      return this.backendInteractor.adminDisableMFA({ screen_name })
     },
     async setUsersTags({ users, tags, value }) {
       const screen_names = users.map((u) => u.screen_name)

@@ -78,11 +78,11 @@ const ENTRIES = [
     separator: true,
   },
   {
-    check: '!action:disable_mfa',
+    check: 'action:disable_mfa',
     label: 'user_card.admin_menu.disable_mfa',
   },
   {
-    check: '!action:require_password_change',
+    check: 'action:require_password_change',
     label: 'user_card.admin_menu.require_password_change',
   },
   {
@@ -507,21 +507,59 @@ const ModerationTools = {
 
       switch (group) {
         case 'action': {
-          if (name === 'delete') {
-            this.confirmDialogShow = true
-            this.confirmDialogTitle = this.$t(
-              'user_card.admin_menu.confirm_modal.delete_title',
-            )
-            this.confirmDialogDanger = true
-            this.confirmDialogContent =
-              'user_card.admin_menu.confirm_modal.delete_content'
-            this.confirmDialogContent2 =
-              'user_card.admin_menu.confirm_modal.delete_content_2'
-            this.confirmDialogConfirm = this.$t(
-              'user_card.admin_menu.confirm_modal.delete',
-            )
+          switch (name) {
+            case 'delete': {
+              this.confirmDialogShow = true
+              this.confirmDialogTitle = this.$t(
+                'user_card.admin_menu.confirm_modal.delete_title',
+              )
+              this.confirmDialogDanger = true
+              this.confirmDialogContent =
+                'user_card.admin_menu.confirm_modal.delete_content'
+              this.confirmDialogContent2 =
+                'user_card.admin_menu.confirm_modal.delete_content_2'
+              this.confirmDialogConfirm = this.$t(
+                'user_card.admin_menu.confirm_modal.delete',
+              )
+              break
+            }
+            case 'resend_confirmation': {
+              this.confirmDialogShow = true
+              this.confirmDialogTitle = this.$t(
+                'user_card.admin_menu.confirm_modal.resend_confirmation_title',
+              )
+              this.confirmDialogContent =
+                'user_card.admin_menu.confirm_modal.resend_confirmation_content'
+              this.confirmDialogConfirm = this.$t(
+                'user_card.admin_menu.confirm_modal.send',
+              )
+              break
+            }
+            case 'disable_mfa': {
+              this.confirmDialogShow = true
+              this.confirmDialogTitle = this.$t(
+                'user_card.admin_menu.confirm_modal.disable_mfa_title',
+              )
+              this.confirmDialogContent =
+                'user_card.admin_menu.confirm_modal.disable_mfa_content'
+              this.confirmDialogConfirm = this.$t(
+                'settings.confirm'
+              )
+              break
+            }
+            case 'require_password_change': {
+              this.confirmDialogShow = true
+              this.confirmDialogTitle = this.$t(
+                'user_card.admin_menu.confirm_modal.require_password_change_title',
+              )
+              this.confirmDialogContent =
+                'user_card.admin_menu.confirm_modal.require_password_change_content'
+              this.confirmDialogConfirm = this.$t(
+                'settings.confirm'
+              )
+              break
+            }
           }
-          break
         }
         case 'state': {
           switch (name) {
@@ -564,7 +602,7 @@ const ModerationTools = {
               //: this.$t('user_card.admin_menu.confirm_modal.revoke')
               break
             }
-            case 'suggest': {
+            case 'suggested': {
               this.confirmDialogTitle = this.$t(
                 'user_card.admin_menu.confirm_modal.suggest_title',
               )
