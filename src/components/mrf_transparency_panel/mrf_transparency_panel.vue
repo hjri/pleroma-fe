@@ -43,7 +43,7 @@
                 >
                   <td>{{ entry.instance }}</td>
                   <td v-if="entry.reason === ''">
-                    {{ $t("about.mrf.simple.not_applicable") }}
+                    {{ $t("general.not_applicable") }}
                   </td>
                   <td v-else>
                     {{ entry.reason }}
@@ -70,7 +70,7 @@
                 >
                   <td>{{ entry.instance }}</td>
                   <td v-if="entry.reason === ''">
-                    {{ $t("about.mrf.simple.not_applicable") }}
+                    {{ $t("general.not_applicable") }}
                   </td>
                   <td v-else>
                     {{ entry.reason }}
@@ -97,7 +97,7 @@
                 >
                   <td>{{ entry.instance }}</td>
                   <td v-if="entry.reason === ''">
-                    {{ $t("about.mrf.simple.not_applicable") }}
+                    {{ $t("general.not_applicable") }}
                   </td>
                   <td v-else>
                     {{ entry.reason }}
@@ -124,7 +124,7 @@
                 >
                   <td>{{ entry.instance }}</td>
                   <td v-if="entry.reason === ''">
-                    {{ $t("about.mrf.simple.not_applicable") }}
+                    {{ $t("general.not_applicable") }}
                   </td>
                   <td v-else>
                     {{ entry.reason }}
@@ -151,7 +151,7 @@
                 >
                   <td>{{ entry.instance }}</td>
                   <td v-if="entry.reason === ''">
-                    {{ $t("about.mrf.simple.not_applicable") }}
+                    {{ $t("general.not_applicable") }}
                   </td>
                   <td v-else>
                     {{ entry.reason }}
@@ -178,7 +178,7 @@
                 >
                   <td>{{ entry.instance }}</td>
                   <td v-if="entry.reason === ''">
-                    {{ $t("about.mrf.simple.not_applicable") }}
+                    {{ $t("general.not_applicable") }}
                   </td>
                   <td v-else>
                     {{ entry.reason }}

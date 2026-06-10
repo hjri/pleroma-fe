@@ -106,6 +106,9 @@
     "undo": "Undo",
     "yes": "Yes",
     "no": "No",
+    "none": "None",
+    "not_applicable": "N/A",
+    "not_available": "N/A",
     "peek": "Peek",
     "scroll_to_top": "Scroll to top",
     "role": {
@@ -1334,6 +1337,7 @@
         "confirmed": "Confirmed",
         "unconfirmed": "Pending confirmation",
         "approved": "Approved",
+        "suggested": "Suggested",
         "unapproved": "Pending approval"
       }
     },
@@ -1769,6 +1773,11 @@
     "group": "Group",
     "birthday": "Born {birthday}",
     "joined": "Joined",
+    "admin_data": {
+      "data": "Administrative info",
+      "registration_reason": "Registration reason",
+      "tags": "Tags"
+    },
     "admin_menu": {
       "moderation": "Moderation",
       "grant_admin": "Grant Admin",

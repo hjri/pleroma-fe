@@ -60,6 +60,12 @@
         >
           {{ $t('admin_dash.users.indicator.unapproved') }}
         </label>
+        <label
+          v-if="user.adminData.is_suggested"
+          class="alert info user-role"
+        >
+          {{ $t('admin_dash.users.indicator.suggested') }}
+        </label>
         <ModerationTools
           class="moderation-menu"
           :users="[user]"

@@ -347,6 +347,93 @@
         />
       </div>
     </div>
+    <div
+      class="admin-data"
+      v-if="user.adminData"
+    >
+      <details>
+        <summary>
+          {{ $t('user_card.admin_data.data') }}
+        </summary>
+        <div class="user-profile-fields">
+          <dl class="user-profile-field">
+            <dt class="user-profile-field-name">
+              {{ $t('general.role.admin') }}
+            </dt>
+            <dd class="user-profile-field-value">
+              {{ $t('general.' + (user.adminData.roles.admin ? 'yes' : 'no')) }}
+            </dd>
+          </dl>
+          <dl class="user-profile-field">
+            <dt class="user-profile-field-name">
+              {{ $t('general.role.moderator') }}
+            </dt>
+            <dd class="user-profile-field-value">
+              {{ $t('general.' + (user.adminData.roles.moderator ? 'yes' : 'no')) }}
+            </dd>
+          </dl>
+          <dl class="user-profile-field">
+            <dt class="user-profile-field-name">
+              {{ $t('admin_dash.users.labels.email') }}
+            </dt>
+            <dd class="user-profile-field-value">
+              {{ user.adminData.email == null ? $t('general.not_available') : user.adminData.email }}
+            </dd>
+          </dl>
+          <dl class="user-profile-field">
+            <dt class="user-profile-field-name">
+              {{ $t('admin_dash.users.indicator.suggested') }}
+            </dt>
+            <dd class="user-profile-field-value">
+              {{ $t('general.' + (user.adminData.is_suggested ? 'yes' : 'no')) }}
+            </dd>
+          </dl>
+          <dl class="user-profile-field">
+            <dt class="user-profile-field-name">
+              {{ $t('admin_dash.users.indicator.confirmed') }}
+            </dt>
+            <dd class="user-profile-field-value">
+              {{ $t('general.' + (user.adminData.is_confirmed ? 'yes' : 'no')) }}
+            </dd>
+          </dl>
+          <dl class="user-profile-field">
+            <dt class="user-profile-field-name">
+              {{ $t('admin_dash.users.indicator.approved') }}
+            </dt>
+            <dd class="user-profile-field-value">
+              {{ $t('general.' + (user.adminData.is_approved ? 'yes' : 'no')) }}
+            </dd>
+          </dl>
+          <details open>
+            <summary>
+              {{ $t('user_card.admin_data.registration_reason') }}
+            </summary>
+            <span>
+              {{ user.adminData.registration_reason == null ? $t('general.not_available') : user.adminData.registration_reason }}
+            </span>
+          </details>
+          <details open>
+            <summary>
+              {{ $t('user_card.admin_data.tags') }}
+            </summary>
+            <ul>
+              <li v-if="user.adminData.tags.length === 0">
+                {{ $t('general.none') }}
+              </li>
+              <li
+                v-for="tag in user.adminData.tags"
+                :key="tag"
+              >
+                <code>
+                {{ tag }}
+                </code>
+                {{ ' ' }}
+              </li>
+            </ul>
+          </details>
+        </div>
+      </details>
+    </div>
     <h3 v-if="editable">
       <span>
         {{ $t('settings.bio') }}
