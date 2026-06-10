@@ -50,6 +50,17 @@
     </div>
 
     <div
+      v-if="adminDbLoaded"
+      :label="$t('admin_dash.tabs.users')"
+      icon="user"
+      data-tab-name="users"
+      full-width
+      full-height
+    >
+      <UsersTab />
+    </div>
+
+    <div
       :label="$t('admin_dash.tabs.registrations')"
       icon="door-open"
       data-tab-name="registrations"
@@ -83,16 +94,6 @@
       <FrontendsTab />
     </div>
 
-    <div
-      v-if="adminDbLoaded"
-      :label="$t('admin_dash.tabs.users')"
-      icon="user"
-      data-tab-name="users"
-      full-width
-      full-height
-    >
-      <UsersTab />
-    </div>
     <div
       v-if="adminDbLoaded"
       :label="$t('admin_dash.tabs.limits')"
