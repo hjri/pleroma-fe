@@ -17,13 +17,11 @@ library.add(faCircleNotch)
 const UserProfileAdminView = {
   data() {
     return {
-      userId: null,
       godmode: false,
       showReblogs: false,
     }
   },
   created() {
-    this.userId = this.$route.params.id
     this.$store.dispatch('fetchUserIfMissing', this.userId)
     useInterfaceStore().setForeignProfileBackground(this.user?.background_image)
   },
@@ -45,6 +43,9 @@ const UserProfileAdminView = {
     user() {
       return this.$store.getters.findUser(this.userId)
     },
+    userId() {
+      return this.$route.params.id
+    }
   },
   methods: {
     fetchStatuses(page) {

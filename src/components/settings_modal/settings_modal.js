@@ -64,6 +64,11 @@ const SettingsModal = {
       }),
     }
   },
+  watch: {
+    $route(r) {
+      this.peekModal()
+    }
+  },
   components: {
     Modal,
     Popover,
