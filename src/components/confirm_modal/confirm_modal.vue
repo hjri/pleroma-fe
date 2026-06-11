@@ -42,6 +42,10 @@
 <script src="./confirm_modal.js"></script>
 <style lang="scss">
 .confirm-modal {
+  .dialog-modal-content {
+    padding: 0;
+  }
+
   .content {
     display: flex;
     align-items: center;
@@ -51,7 +55,6 @@
 
     p {
       margin: 0.75em;
-      margin-right: 0;
 
       &:first-child {
         margin-top: 0;
