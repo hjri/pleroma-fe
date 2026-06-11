@@ -80,6 +80,7 @@ const ENTRIES = [
   {
     check: 'action:statuses',
     label: 'user_card.admin_menu.show_statuses',
+    conditions: ['count:1'],
   },
   {
     separator: true,
@@ -391,6 +392,7 @@ const ModerationTools = {
         ...this.stateSet,
         ...this.tagsSet,
         ...this.propertySet,
+        `count:${this.users.length}`,
       ])
     },
     canDeleteAccount() {
