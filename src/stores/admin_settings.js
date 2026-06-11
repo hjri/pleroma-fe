@@ -307,8 +307,12 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
           opts,
         })
 
+      const statuses = activities.map(parseStatus)
+
+      await window.vuex.dispatch('addNewStatuses', { statuses })
+
       return {
-        items: activities.map(parseStatus),
+        items: statuses,
         count: total,
       }
     },
@@ -318,10 +322,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
       const status = parseStatus(raw)
 
-      await window.vuex.dispatch('addNewStatuses', {
-        statuses: [status],
-        userId: false,
-      })
+      await window.vuex.dispatch('addNewStatuses', { statuses: [status] })
     },
 
     // Users stuff

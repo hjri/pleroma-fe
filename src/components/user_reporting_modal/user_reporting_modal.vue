@@ -52,8 +52,10 @@
         </div>
         <div class="user-reporting-panel-right">
           <List
-            :external-items="statuses"
+            :external-items="reportModal.statuses"
+            :pre-select="reportModal.preTickedIds"
             selectable
+            @select="onListSelect"
           >
             <template #item="{item}">
               <Status

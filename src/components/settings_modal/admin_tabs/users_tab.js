@@ -108,12 +108,11 @@ const UsersTab = {
           ...this.fetchOptions,
           page,
         })
-        .then(({ count, users }) => ({ count, items: users }))
     },
   },
   watch: {
     fetchOptions() {
-      this.$refs.usersList.reset()
+      this.$refs.usersList?.reset()
     },
   },
 }

@@ -299,10 +299,12 @@ export const BUTTONS = [
     label: 'user_card.report',
     if: ({ loggedIn }) => loggedIn,
     action({ status }) {
-      return useReportsStore().openUserReportingModal({
+      useReportsStore().openUserReportingModal({
         userId: status.user.id,
         statusIds: [status.id],
       })
+
+      return Promise.resolve()
     },
   },
 ].map((button) => {

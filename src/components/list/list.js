@@ -20,6 +20,10 @@ const List = {
       type: Function,
       default: () => '',
     },
+    preSelect: {
+      type: Array,
+      default: [],
+    },
     nonInteractive: {
       type: Boolean,
       default: false,
@@ -44,7 +48,7 @@ const List = {
   data() {
     return {
       items: [],
-      selected: new Set([]),
+      selected: new Set(this.preSelect),
       loading: false,
       bottomedOut: true,
       error: null,

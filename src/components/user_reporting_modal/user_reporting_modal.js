@@ -1,3 +1,5 @@
+import { mapState } from 'pinia'
+
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import List from 'src/components/list/list.vue'
 import Modal from 'src/components/modal/modal.vue'
@@ -16,19 +18,17 @@ const UserReportingModal = {
     return {
       comment: '',
       forward: false,
-      statusIdsToReport: [],
+      statusIdsToReport: new Set(),
       processing: false,
       error: false,
     }
   },
   computed: {
-    reportModal() {
-      return useReportsStore().reportModal
-    },
     isLoggedIn() {
       return !!this.$store.state.users.currentUser
     },
     isOpen() {
+      console.log(this.reportModal)
       return this.isLoggedIn && this.reportModal.activated
     },
     userId() {
@@ -43,30 +43,25 @@ const UserReportingModal = {
         this.user.screen_name.substr(this.user.screen_name.indexOf('@') + 1)
       )
     },
-    statuses() {
-      return this.reportModal.statuses
-    },
-    preTickedIds() {
-      return this.reportModal.preTickedIds
-    },
+    ...mapState(useReportsStore, ['reportModal']),
   },
   watch: {
     userId: 'resetState',
-    preTickedIds(newValue) {
-      this.statusIdsToReport = newValue
-    },
   },
   methods: {
     resetState() {
       // Reset state
       this.comment = ''
       this.forward = false
-      this.statusIdsToReport = this.preTickedIds
+      this.statusIdsToReport = new Set(this.reportModal.preTickedIds)
       this.processing = false
       this.error = false
     },
     closeModal() {
       useReportsStore().closeUserReportingModal()
+    },
+    onListSelect(selected) {
+      this.statusIdsToReport = selected
     },
     reportUser() {
       this.processing = true
@@ -75,7 +70,7 @@ const UserReportingModal = {
         userId: this.userId,
         comment: this.comment,
         forward: this.forward,
-        statusIds: this.statusIdsToReport,
+        statusIds: [...this.statusIdsToReport],
       }
       this.$store.state.api.backendInteractor
         .reportUser({ ...params })
@@ -91,23 +86,6 @@ const UserReportingModal = {
     },
     clearError() {
       this.error = false
-    },
-    isChecked(statusId) {
-      return this.statusIdsToReport.indexOf(statusId) !== -1
-    },
-    toggleStatus(checked, statusId) {
-      if (checked === this.isChecked(statusId)) {
-        return
-      }
-
-      if (checked) {
-        this.statusIdsToReport.push(statusId)
-      } else {
-        this.statusIdsToReport.splice(
-          this.statusIdsToReport.indexOf(statusId),
-          1,
-        )
-      }
     },
     resize(e) {
       const target = e.target || e
