@@ -1,9 +1,14 @@
 .AdminUserCard {
-  width: 100%;
-
   .right-side {
     align-items: baseline;
     justify-content: end;
     display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    margin-top: 0.5em;
+
+    .alert {
+      margin: 0;
+    }
   }
 }
