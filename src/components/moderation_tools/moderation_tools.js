@@ -402,27 +402,33 @@ const ModerationTools = {
         this.privileged('users_manage_tags')
       )
     },
+    isAdmin() {
+      this.$store.state.users.currentUser.role === 'admin'
+    }
   },
   methods: {
     canGrantRole(name, value) {
       const setEntry = `${value ? '!' : ''}rights:${name}`
 
       return (
-        this.$store.state.users.currentUser.role === 'admin' &&
+        this.isAdmin &&
         this.totalSet.has(setEntry)
       )
     },
     canChangeState(name, value) {
-      let privilege
-
-      switch (name) {
-        // TODO detailed privileges
-        default: {
-          privilege = 'users_manage_activation_state'
-        }
-      }
-
       const setEntry = `${value ? '!' : ''}state:${name}`
+      const privilege = (() => {
+        switch (name) {
+          case 'activated':
+            return 'users_manage_activation_state'
+          case 'approved':
+            return 'users_manage_invites'
+          case 'confirmed':
+            return 'users_manage_credentials'
+          default:
+            return null
+        }
+      })()
 
       return this.privileged(privilege) && this.totalSet.has(setEntry)
     },
@@ -446,6 +452,7 @@ const ModerationTools = {
       this.confirmDialogName = null
     },
     privileged(privilege) {
+      if (this.isAdmin) return true
       return this.$store.state.users.currentUser.privileges.has(privilege)
     },
     setTag(tag, value) {
