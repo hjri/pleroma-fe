@@ -64,11 +64,6 @@ const SettingsModal = {
       }),
     }
   },
-  watch: {
-    $route(r) {
-      this.peekModal()
-    }
-  },
   components: {
     Modal,
     Popover,
@@ -98,8 +93,11 @@ const SettingsModal = {
     closeModal() {
       useInterfaceStore().closeSettingsModal()
     },
-    peekModal() {
-      useInterfaceStore().togglePeekSettingsModal()
+    toggleMinimizeModal(state) {
+      useInterfaceStore().toggleMinimizeSettingsModal()
+    },
+    minimizeModal() {
+      useInterfaceStore().setSettingsModalState('minimized')
     },
     importValidator(data) {
       if (!Array.isArray(data._pleroma_settings_version)) {
@@ -256,7 +254,7 @@ const SettingsModal = {
       modalMode: (store) => store.settingsModalMode,
       modalOpenedOnceUser: (store) => store.settingsModalLoadedUser,
       modalOpenedOnceAdmin: (store) => store.settingsModalLoadedAdmin,
-      modalPeeked: (store) => store.settingsModalState === 'minimized',
+      modalMinimized: (store) => store.settingsModalState === 'minimized',
     }),
     expertLevel: {
       get() {
@@ -275,6 +273,11 @@ const SettingsModal = {
         useAdminSettingsStore().draft,
       )
     },
+  },
+  watch: {
+    $route(r) {
+      this.minimizeModal()
+    }
   },
 }
 

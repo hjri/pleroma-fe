@@ -133,6 +133,23 @@ export const useInterfaceStore = defineStore('interface', {
         }
       }
     },
+    setSettingsModalState(newState) {
+      const oldState = this.settingsModalState
+      const legal = (() => {
+        switch (oldState) {
+          case 'minimized':
+            return true
+          case 'visible':
+            return true
+          case 'hidden':
+            return newState === 'visible'
+        }
+      })()
+
+      if (legal) {
+        this.settingsModalState = newState
+      }
+    },
     togglePeekSettingsModal() {
       switch (this.settingsModalState) {
         case 'minimized':
@@ -141,8 +158,10 @@ export const useInterfaceStore = defineStore('interface', {
         case 'visible':
           this.settingsModalState = 'minimized'
           return
+        case 'hidden':
+          return
         default:
-          throw new Error('Illegal minimization state of settings modal')
+          throw new Error(`Illegal minimization state of settings modal: ${this.settingsModalState}`)
       }
     },
     clearSettingsModalTargetTab() {

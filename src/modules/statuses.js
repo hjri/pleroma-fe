@@ -591,7 +591,7 @@ const statuses = {
         pagination,
       },
     ) {
-      commit('addNewStatuses', {
+      return commit('addNewStatuses', {
         statuses,
         showImmediately,
         timeline,
@@ -683,7 +683,7 @@ const statuses = {
         .then((status) => dispatch('addNewStatuses', { statuses: [status] }))
     },
     unpinStatus({ rootState, dispatch }, statusId) {
-      rootState.api.backendInteractor
+      return rootState.api.backendInteractor
         .unpinOwnStatus({ id: statusId })
         .then((status) => dispatch('addNewStatuses', { statuses: [status] }))
     },
@@ -822,7 +822,7 @@ const statuses = {
             'addNewUsers',
             data.statuses.map((s) => s.user).filter((u) => u),
           )
-          store.commit('addNewStatuses', { statuses: data.statuses })
+          data.statuses = store.commit('addNewStatuses', { statuses: data.statuses })
           return data
         })
     },
