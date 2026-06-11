@@ -277,7 +277,7 @@ const SettingsModal = {
   watch: {
     $route(r) {
       this.minimizeModal()
-    }
+    },
   },
 }
 

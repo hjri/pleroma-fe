@@ -407,16 +407,13 @@ const ModerationTools = {
     },
     isAdmin() {
       this.$store.state.users.currentUser.role === 'admin'
-    }
+    },
   },
   methods: {
     canGrantRole(name, value) {
       const setEntry = `${value ? '!' : ''}rights:${name}`
 
-      return (
-        this.isAdmin &&
-        this.totalSet.has(setEntry)
-      )
+      return this.isAdmin && this.totalSet.has(setEntry)
     },
     canChangeState(name, value) {
       const setEntry = `${value ? '!' : ''}state:${name}`

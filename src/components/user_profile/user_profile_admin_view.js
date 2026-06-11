@@ -45,7 +45,7 @@ const UserProfileAdminView = {
     },
     userId() {
       return this.$route.params.id
-    }
+    },
   },
   methods: {
     fetchStatuses(page) {

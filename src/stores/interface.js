@@ -161,7 +161,9 @@ export const useInterfaceStore = defineStore('interface', {
         case 'hidden':
           return
         default:
-          throw new Error(`Illegal minimization state of settings modal: ${this.settingsModalState}`)
+          throw new Error(
+            `Illegal minimization state of settings modal: ${this.settingsModalState}`,
+          )
       }
     },
     clearSettingsModalTargetTab() {
