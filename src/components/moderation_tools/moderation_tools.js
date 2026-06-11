@@ -274,7 +274,8 @@ const ModerationTools = {
 
           switch (group) {
             case 'action':
-              return true
+              if (name === 'statuses') return this.privileged('users_read')
+              else return true
             case 'rights':
               return this.canGrantRole(name, value)
             case 'state':
