@@ -19,6 +19,7 @@ const UserProfileAdminView = {
     return {
       userId: null,
       godmode: false,
+      showReblogs: false,
     }
   },
   created() {
@@ -38,7 +39,7 @@ const UserProfileAdminView = {
         pageSize: 20,
         godmode: this.godmode,
         id: this.userId,
-        withReblogs: false,
+        withReblogs: this.showReblogs,
       }
     },
     user() {

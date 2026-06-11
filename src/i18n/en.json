@@ -1295,7 +1295,6 @@
     "users": {
       "title": "Users",
       "local_id": "Local ID",
-      "godmode": "Show direct messages",
       "labels": {
         "query": "Search",
         "name": "Name",
@@ -1326,10 +1325,8 @@
         "only_unconfirmed": "Exclude Confirmed"
       },
       "filters": {
-        "show_direct": "Show Direct Posts",
-        "show_reblogs": "Show Reblogs",
-        "ascending": "Oldest First",
-        "descending": "Newest First"
+        "show_direct": "Show Direct Messages",
+        "show_reblogs": "Show Reblogs"
       },
       "indicator": {
         "admin": "Admin",

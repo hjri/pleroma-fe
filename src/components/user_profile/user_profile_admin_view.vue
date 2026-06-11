@@ -12,19 +12,28 @@
       />
       <Checkbox
         v-model="godmode"
-        class="godmode"
+        class="filter"
       >
-        {{ $t('admin_dash.users.godmode') }}
+        {{ $t('admin_dash.users.filters.show_direct') }}
+      </Checkbox>
+      <Checkbox
+        v-model="showReblogs"
+        class="filter"
+      >
+        {{ $t('admin_dash.users.filters.show_reblogs') }}
       </Checkbox>
     </div>
     <List
       ref="list"
       :fetch-function="fetchStatuses"
       scrollable
-      @select="onSelect"
     >
       <template #item="{item}">
-        <Status :statusoid="item" />
+        <Status
+          :statusoid="item"
+          :in-conversation="false"
+          :focused="false"
+        />
       </template>
     </List>
   </div>
