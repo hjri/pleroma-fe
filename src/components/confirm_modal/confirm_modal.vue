@@ -10,6 +10,7 @@
 
     <div class="content">
       <FAIcon
+        class="confirm-icon"
         icon="circle-question"
         size="3x"
         fixed-width
@@ -42,8 +43,10 @@
 <script src="./confirm_modal.js"></script>
 <style lang="scss">
 .confirm-modal {
-  .dialog-modal-content {
-    padding: 0;
+  .confirm-icon {
+    margin-left: 0.75rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
   }
 
   .content {
@@ -54,7 +57,8 @@
     line-height: 1.5;
 
     p {
-      margin: 0.75em;
+      margin-top: 0.75em;
+      margin-bottom: 0.75em;
 
       &:first-child {
         margin-top: 0;
@@ -72,6 +76,8 @@
 
   .text {
     max-width: 50ch;
+    margin-left: 0.5em;
+    margin-right: 3.5em;
   }
 }
 </style>
