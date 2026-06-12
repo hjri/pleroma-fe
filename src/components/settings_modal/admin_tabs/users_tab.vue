@@ -122,8 +122,8 @@
         </div>
       </div>
       <List
-        class="users-list"
         ref="usersList"
+        class="users-list"
         :fetch-function="fetchUsers"
         selectable
         scrollable
