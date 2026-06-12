@@ -1297,7 +1297,7 @@
       "local_id": "Local ID",
       "labels": {
         "query": "Search",
-        "nickname": "@handle",
+        "nickname": "{'@'}handle",
         "name": "Display Name",
         "name_colon": "Name:",
         "email": "Email",
