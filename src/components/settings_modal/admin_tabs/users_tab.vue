@@ -10,7 +10,7 @@
       <div class="filters-section">
         <label class="filter">
           <div class="query-label">
-            {{ $t('admin_dash.users.labels.query') }}
+            {{ $t('admin_dash.users.labels.nickname') }}
           </div>
           <input
             v-model="filtersQuery"
