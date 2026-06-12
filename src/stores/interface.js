@@ -150,7 +150,7 @@ export const useInterfaceStore = defineStore('interface', {
         this.settingsModalState = newState
       }
     },
-    togglePeekSettingsModal() {
+    toggleMinimizeSettingsModal() {
       switch (this.settingsModalState) {
         case 'minimized':
           this.settingsModalState = 'visible'
