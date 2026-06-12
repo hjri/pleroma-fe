@@ -1295,6 +1295,7 @@
     "users": {
       "title": "Users",
       "local_id": "Local ID",
+      "no_users_found": "No users found",
       "labels": {
         "query": "Search",
         "nickname": "{'@'}handle",

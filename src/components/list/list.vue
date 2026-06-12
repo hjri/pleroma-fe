@@ -52,10 +52,9 @@
       </div>
       <div
         v-if="finalItems.length === 0 && !!$slots.empty"
-        class="list-empty-content faint"
+        class="list-item list-empty-content faint"
       >
         <slot name="empty" />
-        <slot name="load" />
       </div>
       <div class="footer">
         <button
@@ -64,7 +63,6 @@
           @click="fetchEntries"
         >
           {{ $t('general.generic_error') }}
-          {{ error }}
         </button>
         <FAIcon
           v-else-if="loading"
@@ -79,7 +77,7 @@
         >
           {{ $t('general.more') }}
         </a>
-        <span v-else>
+        <span v-else-if="finalItems.length !== 0">
           {{ $t('general.no_more') }}
         </span>
       </div>

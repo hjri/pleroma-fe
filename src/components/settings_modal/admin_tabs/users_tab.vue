@@ -135,11 +135,8 @@
         <template #item="{item}">
           <AdminUserCard :user-id="item.id" />
         </template>
-        <template #load>
-          <span> loading </span>
-        </template>
         <template #empty>
-          <span> no users </span>
+          <span>{{ $t('admin_dash.users.no_users_found')}}</span>
         </template>
       </List>
     </div>
