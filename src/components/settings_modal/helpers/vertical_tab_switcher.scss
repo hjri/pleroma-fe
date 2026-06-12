@@ -49,6 +49,16 @@
       grid-template-areas: ". content .";
       flex-direction: column;
 
+      &.-full-width {
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      &.-full-height {
+        padding-top: 0;
+        padding-bottom: 0;
+      }
+
       .tab-content {
         grid-area: content;
 
@@ -57,6 +67,8 @@
         }
 
         &.-full-height {
+          display: flex;
+          flex-direction: column;
           height: 100%;
 
           > * {

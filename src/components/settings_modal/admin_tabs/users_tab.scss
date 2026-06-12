@@ -2,14 +2,26 @@
   max-height: 100%;
   display: flex;
   flex-direction: column;
-  overflow-y: hidden;
+  padding: 0;
+
+  h3 {
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+  }
+
+  .splitter {
+    max-height: 100%;
+    display: flex;
+    overflow-y: hidden;
+  }
 
   .filters-section {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15em, 1fr));
-    grid-auto-columns: 1fr;
-    grid-auto-flow: row;
-    gap: 0.5em 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    border-right: 1px solid var(--border);
+    padding: 0 1em;
+    margin-right: 1em;
 
     > div {
       flex: 0 1 auto;
@@ -17,7 +29,6 @@
 
     .filter {
       display: block;
-      margin-bottom: 0.5em;
       min-width: 14em;
 
       .query-label {
@@ -28,5 +39,9 @@
         width: 100%;
       }
     }
+  }
+
+  .users-list {
+    flex: 1 0 30em;
   }
 }
