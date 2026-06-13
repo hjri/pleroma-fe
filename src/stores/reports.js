@@ -15,12 +15,10 @@ export const useReportsStore = defineStore('reports', {
   }),
   actions: {
     openUserReportingModal({ userId, statusIds = [] }) {
-      console.log('ASS')
       const preTickedStatuses = statusIds.map(
         (id) => window.vuex.state.statuses.allStatusesObject[id],
       )
       const preTickedIds = statusIds
-      console.log(preTickedStatuses)
       const statuses = preTickedStatuses.concat(
         filter(
           window.vuex.state.statuses.allStatuses,

@@ -28,7 +28,6 @@ const UserReportingModal = {
       return !!this.$store.state.users.currentUser
     },
     isOpen() {
-      console.log(this.reportModal)
       return this.isLoggedIn && this.reportModal.activated
     },
     userId() {
