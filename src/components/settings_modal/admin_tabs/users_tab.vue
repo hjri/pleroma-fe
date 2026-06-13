@@ -3,9 +3,6 @@
     class="UsersTab"
     :label="$t('admin_dash.users.management')"
   >
-    <h3>
-      {{ $t('admin_dash.users.title') }}
-    </h3>
     <div class="splitter">
       <div class="filters-section">
         <label class="filter">
