@@ -347,13 +347,13 @@ export const setReportState = ({ id, state, credentials }) => {
 }
 
 export const getInstanceDBConfig = ({ credentials }) =>
-  get({
+  promisedRequest({
     url: CONFIG_URL,
     credentials,
   })
 
 export const getInstanceConfigDescriptions = ({ credentials }) =>
-  get({
+  promisedRequest({
     url: DESCRIPTIONS_URL,
     credentials,
   })

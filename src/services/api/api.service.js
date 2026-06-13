@@ -1504,9 +1504,9 @@ export const chats = ({ credentials }) =>
   promisedRequest({
     url: PLEROMA_CHATS_URL,
     credentials,
-  }).then((data) => {
-    chats: data.map(parseChat).filter((c) => c)
-  })
+  }).then((data) => ({
+    chatList: data.map(parseChat).filter((c) => c),
+  }))
 
 export const getOrCreateChat = ({ accountId, credentials }) =>
   promisedRequest({

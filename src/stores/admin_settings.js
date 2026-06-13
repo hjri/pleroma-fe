@@ -8,10 +8,12 @@ import {
   deleteAccounts,
   disableMFA,
   getAvailableFrontends,
+  getInstanceConfigDescriptions,
   getInstanceDBConfig,
   getUserData,
   listStatuses,
   listUsers,
+  pushInstanceDBConfig,
   requirePasswordChange,
   resendConfirmationEmail,
   setUsersActivationStatus,
@@ -85,12 +87,20 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
             })
           }
         } else {
-          this.setInstanceAdminSettings({ backendDbConfig })
+          this.setInstanceAdminSettings({
+            credentials: useCredentialsStore().current,
+            backendDbConfig,
+          })
         }
       })
       if (this.descriptions === null) {
-        fetchInstanceConfigDescriptions().then((backendDescriptions) =>
-          this.setInstanceAdminDescriptions({ backendDescriptions }),
+        getInstanceConfigDescriptions({
+          credentials: useCredentialsStore().current,
+        }).then((backendDescriptions) =>
+          this.setInstanceAdminDescriptions({
+            credentials: useCredentialsStore().current,
+            backendDescriptions,
+          }),
         )
       }
     },
@@ -223,13 +233,22 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
 
       pushInstanceDBConfig({
+        credentials: useCredentialsStore().current,
         payload: {
           configs: changed,
         },
       })
-        .then(() => fetchInstanceDBConfig())
+        .then(() =>
+          getInstanceDBConfig({
+            credentials: useCredentialsStore().current,
+          }),
+        )
         .then((backendDbConfig) =>
-          this.setInstanceAdminSettings({ backendDbConfig }),
+          this.setInstanceAdminSettings({
+            credentials: useCredentialsStore().current,
+
+            backendDbConfig,
+          }),
         )
     },
     pushAdminSetting({ path, value }) {
@@ -251,6 +270,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       }
 
       pushInstanceDBConfig({
+        credentials: useCredentialsStore().current,
         payload: {
           configs: [
             {
@@ -261,9 +281,16 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
           ],
         },
       })
-        .then(() => fetchInstanceDBConfig())
+        .then(() =>
+          getInstanceDBConfig({
+            credentials: useCredentialsStore().current,
+          }),
+        )
         .then((backendDbConfig) =>
-          this.setInstanceAdminSettings({ backendDbConfig }),
+          this.setInstanceAdminSettings({
+            credentials: useCredentialsStore().current,
+            backendDbConfig,
+          }),
         )
     },
     resetAdminSetting({ path }) {
@@ -274,6 +301,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       this.modifiedPaths.delete(path)
 
       return pushInstanceDBConfig({
+        credentials: useCredentialsStore().current,
         payload: {
           configs: [
             {
@@ -285,7 +313,11 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
           ],
         },
       })
-        .then(() => fetchInstanceDBConfig())
+        .then(() =>
+          getInstanceDBConfig({
+            credentials: useCredentialsStore().current,
+          }),
+        )
         .then((backendDbConfig) =>
           this.setInstanceAdminSettings({ backendDbConfig }),
         )
@@ -389,16 +421,16 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       const screen_names = users.map((u) => u.screen_name)
 
       return resendConfirmationEmail({
-            credentials: useCredentialsStore().current,
-    screen_names,
+        credentials: useCredentialsStore().current,
+        screen_names,
       })
     },
     requirePasswordChange({ users }) {
       const screen_names = users.map((u) => u.screen_name)
 
       return requirePasswordChange({
-            credentials: useCredentialsStore().current,
-    screen_names,
+        credentials: useCredentialsStore().current,
+        screen_names,
       })
     },
     // Singular only!

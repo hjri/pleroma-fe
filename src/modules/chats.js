@@ -9,6 +9,10 @@ import {
 } from '../services/entity_normalizer/entity_normalizer.service.js'
 import { promiseInterval } from '../services/promise_interval/promise_interval.js'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
+
+import { chats } from 'src/services/api/api.service.js'
+
 const emptyChatList = () => ({
   data: [],
   idStore: {},
@@ -36,7 +40,7 @@ const unreadChatCount = (state) => {
   return sumBy(state.chatList.data, 'unread')
 }
 
-const chats = {
+const chatsModule = {
   state: { ...defaultState },
   getters: {
     currentChat: (state) => state.openedChats[state.currentChatId],
@@ -60,8 +64,10 @@ const chats = {
       commit('setChatListFetcher', { fetcher: undefined })
     },
     fetchChats({ dispatch, rootState }) {
-      return rootState.api.backendInteractor.chats().then(({ chats }) => {
-        dispatch('addNewChats', { chats })
+      return chats({
+        credentials: useCredentialsStore().current,
+      }).then(({ chatList }) => {
+        dispatch('addNewChats', { chats: chatList })
         return chats
       })
     },
@@ -262,4 +268,4 @@ const chats = {
   },
 }
 
-export default chats
+export default chatsModule

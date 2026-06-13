@@ -20,6 +20,7 @@ import {
   fetchStatusSource,
 } from '../services/api/api.service.js'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 
@@ -613,7 +614,7 @@ const statuses = {
     fetchStatusSource({ rootState }, status) {
       return fetchStatusSource({
         id: status.id,
-        credentials: rootState.users.currentUser.credentials,
+        credentials: useCredentialsStore().current,
       })
     },
     fetchStatusHistory(_, status) {
@@ -622,7 +623,7 @@ const statuses = {
     deleteStatus({ rootState, commit }, status) {
       deleteStatus({
         id: status.id,
-        credentials: rootState.users.currentUser.credentials,
+        credentials: useCredentialsStore().current,
       })
         .then(() => {
           commit('setDeleted', { status })
