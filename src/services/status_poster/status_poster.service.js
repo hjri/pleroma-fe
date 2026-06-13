@@ -1,6 +1,11 @@
 import { map } from 'lodash'
 
-import apiService from '../api/api.service.js'
+import {
+  editStatus as apiEditStatus,
+  postStatus as apiPostStatus,
+  setMediaDescription as apiSetMediaDescription,
+  uploadMedia as apiUploadMedia,
+} from '../api/api.service.js'
 
 const postStatus = ({
   store,
@@ -18,21 +23,20 @@ const postStatus = ({
 }) => {
   const mediaIds = map(media, 'id')
 
-  return apiService
-    .postStatus({
-      credentials: store.state.users.currentUser.credentials,
-      status,
-      spoilerText,
-      visibility,
-      sensitive,
-      mediaIds,
-      inReplyToStatusId,
-      quoteId,
-      contentType,
-      poll,
-      preview,
-      idempotencyKey,
-    })
+  return apiPostStatus({
+    credentials: store.state.users.currentUser.credentials,
+    status,
+    spoilerText,
+    visibility,
+    sensitive,
+    mediaIds,
+    inReplyToStatusId,
+    quoteId,
+    contentType,
+    poll,
+    preview,
+    idempotencyKey,
+  })
     .then((data) => {
       if (!data.error && !preview) {
         store.dispatch('addNewStatuses', {
@@ -63,17 +67,16 @@ const editStatus = ({
 }) => {
   const mediaIds = map(media, 'id')
 
-  return apiService
-    .editStatus({
-      id: statusId,
-      credentials: store.state.users.currentUser.credentials,
-      status,
-      spoilerText,
-      sensitive,
-      poll,
-      mediaIds,
-      contentType,
-    })
+  return editStatus({
+    id: statusId,
+    credentials: store.state.users.currentUser.credentials,
+    status,
+    spoilerText,
+    sensitive,
+    poll,
+    mediaIds,
+    contentType,
+  })
     .then((data) => {
       if (!data.error) {
         store.dispatch('addNewStatuses', {
@@ -95,12 +98,12 @@ const editStatus = ({
 
 const uploadMedia = ({ store, formData }) => {
   const credentials = store.state.users.currentUser.credentials
-  return apiService.uploadMedia({ credentials, formData })
+  return apiUploadMedia({ credentials, formData })
 }
 
 const setMediaDescription = ({ store, id, description }) => {
   const credentials = store.state.users.currentUser.credentials
-  return apiService.setMediaDescription({ credentials, id, description })
+  return apiSetMediaDescription({ credentials, id, description })
 }
 
 const statusPosterService = {

@@ -11,7 +11,7 @@ import {
   LOCAL_DEFAULT_CONFIG_DEFINITIONS,
   validateSetting,
 } from '../modules/default_config_state.js'
-import apiService from '../services/api/api.service.js'
+import { fetchKnownDomains } from '../services/api/api.service.js'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 
@@ -210,7 +210,7 @@ export const useInstanceStore = defineStore('instance', {
     },
     async getKnownDomains() {
       try {
-        this.knownDomains = await apiService.fetchKnownDomains({
+        this.knownDomains = await fetchKnownDomains({
           credentials: window.vuex.state.users.currentUser.credentials,
         })
       } catch (e) {

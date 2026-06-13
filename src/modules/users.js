@@ -9,7 +9,7 @@ import {
   uniq,
 } from 'lodash'
 
-import apiService from '../services/api/api.service.js'
+import { register } from '../services/api/api.service.js'
 import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import oauthApi from '../services/new_api/oauth.js'
 import {
@@ -624,7 +624,7 @@ const users = {
 
       try {
         const token = await oauthStore.ensureAppToken()
-        const data = await apiService.register({
+        const data = await register({
           credentials: token,
           params: { ...userInfo },
         })

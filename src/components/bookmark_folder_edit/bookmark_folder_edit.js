@@ -1,8 +1,10 @@
 import EmojiPicker from 'src/components/emoji_picker/emoji_picker.vue'
-import apiService from '../../services/api/api.service'
 
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
+import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+
+import { fetchBookmarkFolders } from 'src/services/api/api.service.js'
 
 const BookmarkFolderEdit = {
   data() {
@@ -22,8 +24,10 @@ const BookmarkFolderEdit = {
   },
   created() {
     if (!this.id) return
-    const credentials = this.$store.state.users.currentUser.credentials
-    apiService.fetchBookmarkFolders({ credentials }).then((folders) => {
+
+    fetchBookmarkFolders({
+      credentials: useCredentialsStore().current,
+    }).then((folders) => {
       const folder = folders.find((folder) => folder.id === this.id)
       if (!folder) return
 

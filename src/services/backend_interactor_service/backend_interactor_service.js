@@ -1,10 +1,7 @@
 import bookmarkFoldersFetcher from '../../services/bookmark_folders_fetcher/bookmark_folders_fetcher.service.js'
 import followRequestFetcher from '../../services/follow_request_fetcher/follow_request_fetcher.service'
 import listsFetcher from '../../services/lists_fetcher/lists_fetcher.service.js'
-import apiService, {
-  getMastodonSocketURI,
-  ProcessedWS,
-} from '../api/api.service.js'
+import * as apiService from '../api/api.service.js'
 import notificationsFetcher from '../notifications_fetcher/notifications_fetcher.service.js'
 import timelineFetcher from '../timeline_fetcher/timeline_fetcher.service.js'
 
@@ -58,8 +55,8 @@ const backendInteractorService = (credentials) => ({
 
   startUserSocket({ store }) {
     const serv = useInstanceStore().server.replace('http', 'ws')
-    const url = getMastodonSocketURI({}, serv)
-    return ProcessedWS({ url, id: 'Unified', credentials })
+    const url = apiService.getMastodonSocketURI({}, serv)
+    return apiService.ProcessedWS({ url, id: 'Unified', credentials })
   },
 
   ...Object.entries(apiService).reduce((acc, [key, func]) => {

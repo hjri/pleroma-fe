@@ -13,7 +13,12 @@ import {
   slice,
 } from 'lodash'
 
-import apiService from '../services/api/api.service.js'
+import {
+  deleteStatus,
+  fetchScrobbles,
+  fetchStatusHistory,
+  fetchStatusSource,
+} from '../services/api/api.service.js'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
@@ -131,8 +136,7 @@ const getLatestScrobble = (state, user) => {
 
   state.scrobblesNextFetch[user.id] = Date.now() + 24 * 60 * 60 * 1000
   if (!scrobblesSupport) return
-  apiService
-    .fetchScrobbles({ accountId: user.id })
+  fetchScrobbles({ accountId: user.id })
     .then((scrobbles) => {
       if (scrobbles?.error) {
         useInstanceCapabilitiesStore().set('pleromaScrobblesAvailable', false)
@@ -607,20 +611,19 @@ const statuses = {
         .then((status) => dispatch('addNewStatuses', { statuses: [status] }))
     },
     fetchStatusSource({ rootState }, status) {
-      return apiService.fetchStatusSource({
+      return fetchStatusSource({
         id: status.id,
         credentials: rootState.users.currentUser.credentials,
       })
     },
     fetchStatusHistory(_, status) {
-      return apiService.fetchStatusHistory({ status })
+      return fetchStatusHistory({ status })
     },
     deleteStatus({ rootState, commit }, status) {
-      apiService
-        .deleteStatus({
-          id: status.id,
-          credentials: rootState.users.currentUser.credentials,
-        })
+      deleteStatus({
+        id: status.id,
+        credentials: rootState.users.currentUser.credentials,
+      })
         .then(() => {
           commit('setDeleted', { status })
         })

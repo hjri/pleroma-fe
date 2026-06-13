@@ -1,6 +1,26 @@
 import { cloneDeep, differenceWith, flatten, get, isEqual, set } from 'lodash'
 import { defineStore } from 'pinia'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
+
+import {
+  changeStatusScope,
+  deleteAccounts,
+  disableMFA,
+  getAvailableFrontends,
+  getInstanceDBConfig,
+  getUserData,
+  listStatuses,
+  listUsers,
+  requirePasswordChange,
+  resendConfirmationEmail,
+  setUsersActivationStatus,
+  setUsersApprovalStatus,
+  setUsersConfirmationStatus,
+  setUsersRight,
+  setUsersSuggestionStatus,
+  setUsersTags,
+} from 'src/services/api/admin.js'
 import { parseStatus } from 'src/services/entity_normalizer/entity_normalizer.service.js'
 
 export const defaultState = {
@@ -21,7 +41,6 @@ export const newUserFlags = {
 export const useAdminSettingsStore = defineStore('adminSettings', {
   state: () => ({
     ...cloneDeep(defaultState),
-    backendInteractor: window.vuex.state.api.backendInteractor,
   }),
   actions: {
     // Configuration Stuff
@@ -54,7 +73,9 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     },
 
     loadAdminStuff() {
-      this.backendInteractor.fetchInstanceDBConfig().then((backendDbConfig) => {
+      getInstanceDBConfig({
+        credentials: useCredentialsStore().current,
+      }).then((backendDbConfig) => {
         if (backendDbConfig.error) {
           if (backendDbConfig.error.status === 400) {
             backendDbConfig.error.json().then((errorJson) => {
@@ -68,11 +89,9 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         }
       })
       if (this.descriptions === null) {
-        this.backendInteractor
-          .fetchInstanceConfigDescriptions()
-          .then((backendDescriptions) =>
-            this.setInstanceAdminDescriptions({ backendDescriptions }),
-          )
+        fetchInstanceConfigDescriptions().then((backendDescriptions) =>
+          this.setInstanceAdminDescriptions({ backendDescriptions }),
+        )
       }
     },
     setInstanceAdminSettings({ backendDbConfig }) {
@@ -203,15 +222,12 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         }
       })
 
-      window.vuex.state.api.backendInteractor
-        .pushInstanceDBConfig({
-          payload: {
-            configs: changed,
-          },
-        })
-        .then(() =>
-          window.vuex.state.api.backendInteractor.fetchInstanceDBConfig(),
-        )
+      pushInstanceDBConfig({
+        payload: {
+          configs: changed,
+        },
+      })
+        .then(() => fetchInstanceDBConfig())
         .then((backendDbConfig) =>
           this.setInstanceAdminSettings({ backendDbConfig }),
         )
@@ -234,21 +250,18 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         }
       }
 
-      window.vuex.state.api.backendInteractor
-        .pushInstanceDBConfig({
-          payload: {
-            configs: [
-              {
-                group,
-                key,
-                value: convert(clone),
-              },
-            ],
-          },
-        })
-        .then(() =>
-          window.vuex.state.api.backendInteractor.fetchInstanceDBConfig(),
-        )
+      pushInstanceDBConfig({
+        payload: {
+          configs: [
+            {
+              group,
+              key,
+              value: convert(clone),
+            },
+          ],
+        },
+      })
+        .then(() => fetchInstanceDBConfig())
         .then((backendDbConfig) =>
           this.setInstanceAdminSettings({ backendDbConfig }),
         )
@@ -260,22 +273,19 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
 
       this.modifiedPaths.delete(path)
 
-      return window.vuex.state.api.backendInteractor
-        .pushInstanceDBConfig({
-          payload: {
-            configs: [
-              {
-                group,
-                key,
-                delete: true,
-                subkeys: [subkey],
-              },
-            ],
-          },
-        })
-        .then(() =>
-          window.vuex.state.api.backendInteractor.fetchInstanceDBConfig(),
-        )
+      return pushInstanceDBConfig({
+        payload: {
+          configs: [
+            {
+              group,
+              key,
+              delete: true,
+              subkeys: [subkey],
+            },
+          ],
+        },
+      })
+        .then(() => fetchInstanceDBConfig())
         .then((backendDbConfig) =>
           this.setInstanceAdminSettings({ backendDbConfig }),
         )
@@ -283,9 +293,9 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
 
     // Frontends Stuff
     loadFrontendsStuff() {
-      this.backendInteractor
-        .fetchAvailableFrontends()
-        .then((frontends) => this.setAvailableFrontends({ frontends }))
+      getAvailableFrontends({
+        credentials: useCredentialsStore().current,
+      }).then((frontends) => this.setAvailableFrontends({ frontends }))
     },
 
     setAvailableFrontends({ frontends }) {
@@ -302,10 +312,10 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
 
     // Statuses stuff
     async fetchStatuses(opts) {
-      const { total, activities } =
-        await this.backendInteractor.adminListStatuses({
-          opts,
-        })
+      const { total, activities } = await listStatuses({
+        credentials: useCredentialsStore().current,
+        opts,
+      })
 
       const statuses = activities.map(parseStatus)
 
@@ -317,7 +327,8 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       }
     },
     async changeStatusScope(opts) {
-      const raw = await this.backendInteractor.adminChangeStatusScope({
+      const raw = await changeStatusScope({
+        credentials: useCredentialsStore().current,
         opts,
       })
       const status = parseStatus(raw)
@@ -327,7 +338,9 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
 
     // Users stuff
     async fetchUsers(opts) {
-      const { users, count } = await this.backendInteractor.adminListUsers({
+      const { users, count } = await listUsers({
+        credentials: useCredentialsStore().current,
+
         opts,
       })
 
@@ -344,17 +357,23 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       }
     },
     async getUserData({ user }) {
-      const api = this.backendInteractor.adminGetUserData
+      const api = getUserData
       const { screen_name } = user
 
-      const result = await api({ screen_name })
+      const result = await api({
+        credentials: useCredentialsStore().current,
+        screen_name,
+      })
       window.vuex.commit('updateUserAdminData', { user: result })
     },
     async deleteUsers({ users }) {
       const screen_names = users.map((u) => u.screen_name)
-      const api = this.backendInteractor.adminDeleteAccounts
+      const api = deleteAccounts
 
-      const resultUserIds = await api({ screen_names })
+      const resultUserIds = await api({
+        credentials: useCredentialsStore().current,
+        screen_names,
+      })
 
       resultUserIds.forEach((userId) => {
         window.vuex.dispatch(
@@ -369,28 +388,34 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     resendConfirmationEmail({ users }) {
       const screen_names = users.map((u) => u.screen_name)
 
-      return this.backendInteractor.adminResendConfirmationEmail({
-        screen_names,
+      return resendConfirmationEmail({
+            credentials: useCredentialsStore().current,
+    screen_names,
       })
     },
     requirePasswordChange({ users }) {
       const screen_names = users.map((u) => u.screen_name)
 
-      return this.backendInteractor.adminRequirePasswordChange({
-        screen_names,
+      return requirePasswordChange({
+            credentials: useCredentialsStore().current,
+    screen_names,
       })
     },
     // Singular only!
     disableMFA({ user }) {
       const { screen_name } = user
 
-      return this.backendInteractor.adminDisableMFA({ screen_name })
+      return disableMFA({
+        credentials: useCredentialsStore().current,
+        screen_name,
+      })
     },
     async setUsersTags({ users, tags, value }) {
       const screen_names = users.map((u) => u.screen_name)
-      const api = this.backendInteractor.adminSetUsersTags
+      const api = setUsersTags
 
       await api({
+        credentials: useCredentialsStore().current,
         screen_names,
         tags,
         value,
@@ -402,9 +427,10 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     },
     async setUsersRight({ users, right, value }) {
       const screen_names = users.map((u) => u.screen_name)
-      const api = this.backendInteractor.adminSetUsersRight
+      const api = setUsersRight
 
       await api({
+        credentials: useCredentialsStore().current,
         screen_names,
         right,
         value,
@@ -416,9 +442,10 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     },
     async setUsersActivationStatus({ users, value }) {
       const screen_names = users.map((u) => u.screen_name)
-      const api = this.backendInteractor.adminSetUsersActivationStatus
+      const api = setUsersActivationStatus
 
       const resultUsers = await api({
+        credentials: useCredentialsStore().current,
         screen_names,
         value,
       })
@@ -429,9 +456,10 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     },
     async setUsersSuggestionStatus({ users, value }) {
       const screen_names = users.map((u) => u.screen_name)
-      const api = this.backendInteractor.adminSetUsersSuggestionStatus
+      const api = setUsersSuggestionStatus
 
       const resultUsers = await api({
+        credentials: useCredentialsStore().current,
         screen_names,
         value,
       })
@@ -442,9 +470,12 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     },
     async setUsersConfirmationStatus({ users }) {
       const screen_names = users.map((u) => u.screen_name)
-      const api = this.backendInteractor.adminSetUsersConfirmationStatus
+      const api = setUsersConfirmationStatus
 
-      await api({ screen_names })
+      await api({
+        credentials: useCredentialsStore().current,
+        screen_names,
+      })
 
       users.forEach((user) => {
         this.getUserData({ user })
@@ -452,9 +483,10 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     },
     async setUsersApprovalStatus({ users }) {
       const screen_names = users.map((u) => u.screen_name)
-      const api = this.backendInteractor.adminSetUsersApprovalStatus
+      const api = setUsersApprovalStatus
 
       const resultUsers = await api({
+        credentials: useCredentialsStore().current,
         screen_names,
       })
 

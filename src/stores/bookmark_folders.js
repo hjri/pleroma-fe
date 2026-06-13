@@ -1,6 +1,14 @@
 import { find, remove } from 'lodash'
 import { defineStore } from 'pinia'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
+
+import {
+  createBookmarkFolder,
+  deleteBookmarkFolder,
+  updateBookmarkFolder,
+} from 'src/services/api/api.service.js'
+
 export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {
   state: () => ({
     allFolders: [],
@@ -30,23 +38,31 @@ export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {
       }
     },
     createBookmarkFolder({ name, emoji }) {
-      return window.vuex.state.api.backendInteractor
-        .createBookmarkFolder({ name, emoji })
-        .then((folder) => {
-          this.setBookmarkFolder(folder)
-          return folder
-        })
+      return createBookmarkFolder({
+        name,
+        emoji,
+        credentials: useCredentialsStore().current,
+      }).then((folder) => {
+        this.setBookmarkFolder(folder)
+        return folder
+      })
     },
     updateBookmarkFolder({ folderId, name, emoji }) {
-      return window.vuex.state.api.backendInteractor
-        .updateBookmarkFolder({ folderId, name, emoji })
-        .then((folder) => {
-          this.setBookmarkFolder(folder)
-          return folder
-        })
+      return updateBookmarkFolder({
+        credentials: useCredentialsStore().current,
+        folderId,
+        name,
+        emoji,
+      }).then((folder) => {
+        this.setBookmarkFolder(folder)
+        return folder
+      })
     },
     deleteBookmarkFolder({ folderId }) {
-      window.vuex.state.api.backendInteractor.deleteBookmarkFolder({ folderId })
+      deleteBookmarkFolder({
+        folderId,
+        credentials: useCredentialsStore().current,
+      })
       remove(this.allFolders, (folder) => folder.id === folderId)
     },
   },

@@ -9,7 +9,9 @@ import {
   parseStatus,
   parseUser,
 } from '../entity_normalizer/entity_normalizer.service.js'
-import { RegistrationError, StatusCodeError } from '../errors/errors'
+import { promisedRequest } from './helpers.js'
+
+import { RegistrationError, StatusCodeError } from 'src/services/errors/errors'
 
 /* eslint-env browser */
 const MUTES_IMPORT_URL = '/api/pleroma/mutes_import'
@@ -116,12 +118,6 @@ const PLEROMA_CHAT_READ_URL = (id) => `/api/v1/pleroma/chats/${id}/read`
 const PLEROMA_DELETE_CHAT_MESSAGE_URL = (chatId, messageId) =>
   `/api/v1/pleroma/chats/${chatId}/messages/${messageId}`
 const PLEROMA_BACKUP_URL = '/api/v1/pleroma/backups'
-const PLEROMA_ANNOUNCEMENTS_URL = '/api/v1/pleroma/admin/announcements'
-const PLEROMA_POST_ANNOUNCEMENT_URL = '/api/v1/pleroma/admin/announcements'
-const PLEROMA_EDIT_ANNOUNCEMENT_URL = (id) =>
-  `/api/v1/pleroma/admin/announcements/${id}`
-const PLEROMA_DELETE_ANNOUNCEMENT_URL = (id) =>
-  `/api/v1/pleroma/admin/announcements/${id}`
 const PLEROMA_SCROBBLES_URL = (id) => `/api/v1/pleroma/accounts/${id}/scrobbles`
 const PLEROMA_STATUS_QUOTES_URL = (id) =>
   `/api/v1/pleroma/statuses/${id}/quotes`
@@ -130,186 +126,22 @@ const PLEROMA_USER_FAVORITES_TIMELINE_URL = (id) =>
 const PLEROMA_BOOKMARK_FOLDERS_URL = '/api/v1/pleroma/bookmark_folders'
 const PLEROMA_BOOKMARK_FOLDER_URL = (id) =>
   `/api/v1/pleroma/bookmark_folders/${id}`
-
-const PLEROMA_ADMIN_REPORTS = '/api/v1/pleroma/admin/reports'
-const PLEROMA_ADMIN_CONFIG_URL = '/api/v1/pleroma/admin/config'
-const PLEROMA_ADMIN_DESCRIPTIONS_URL =
-  '/api/v1/pleroma/admin/config/descriptions'
-const PLEROMA_ADMIN_FRONTENDS_URL = '/api/v1/pleroma/admin/frontends'
-const PLEROMA_ADMIN_FRONTENDS_INSTALL_URL =
-  '/api/v1/pleroma/admin/frontends/install'
-
-const PLEROMA_ADMIN_USERS_URL = '/api/v1/pleroma/admin/users'
-const PLEROMA_ADMIN_USERS_URL_SHOW = (nickname) =>
-  `/api/v1/pleroma/admin/users/${nickname}`
-const PLEROMA_ADMIN_USERS_URL_LIST = ({
-  page,
-  pageSize,
-  filters = {},
-  query = '',
-  name = '',
-  email = '',
-}) => {
-  const {
-    local = false,
-    external = false,
-    active = false,
-    needApproval = false,
-    unconfirmed = false,
-    deactivated = false,
-    isAdmin = true,
-    isModerator = true,
-  } = filters
-  const filters_str = [
-    local && 'local',
-    external && 'external',
-    active && 'active',
-    needApproval && 'need_approval',
-    unconfirmed && 'unconfirmed',
-    deactivated && 'deactivated',
-    isAdmin && 'is_admin',
-    isModerator && 'is_moderator',
-  ]
-    .filter((x) => x)
-    .join(',')
-  return `/api/v1/pleroma/admin/users?page=${page}&page_size=${pageSize}&filters=${filters_str}&query=${query}&name=${name}&email=${email}`
-}
-const PLEROMA_ADMIN_TAG_USER_URL = '/api/pleroma/admin/users/tag'
-const PLEROMA_ADMIN_PERMISSION_GROUP_URL = (right) =>
-  `/api/pleroma/admin/users/permission_group/${right}`
-const PLEROMA_ADMIN_ACTIVATE_USERS_URL = '/api/pleroma/admin/users/activate'
-const PLEROMA_ADMIN_DEACTIVATE_USERS_URL = '/api/pleroma/admin/users/deactivate'
-const PLEROMA_ADMIN_SUGGEST_USERS_URL = '/api/pleroma/admin/users/suggest'
-const PLEROMA_ADMIN_UNSUGGEST_USERS_URL = '/api/pleroma/admin/users/unsuggest'
-const PLEROMA_ADMIN_APPROVE_USERS_URL = '/api/v1/pleroma/admin/users/approve'
-const PLEROMA_ADMIN_CONFIRM_USERS_URL =
-  '/api/v1/pleroma/admin/users/confirm_email'
-const PLEROMA_ADMIN_RESEND_CONFIRMATION_EMAIL_URL =
-  '/api/v1/pleroma/admin/users/resend_confirmation_email'
-const PLEROMA_ADMIN_LIST_STATUSES_URL = ({
-  id,
-  page,
-  pageSize,
-  godmode,
-  withReblogs,
-}) =>
-  `/api/v1/pleroma/admin/users/${id}/statuses?page_size=${pageSize}&page=${page}&godmode=${godmode}&with_reblogs=${withReblogs}`
-const PLEROMA_ADMIN_CHANGE_STATUS_SCOPE_URL = (id) =>
-  `/api/v1/pleroma/admin/statuses/${id}`
-const PLEROMA_ADMIN_REQUIRE_PASSWORD_CHANGE_URL =
-  '/api/v1/pleroma/admin/users/force_password_reset'
-const PLEROMA_ADMIN_DISABLE_MFA_URL = '/api/v1/pleroma/admin/users/disable_mfa'
-const PLEROMA_EMOJI_RELOAD_URL = '/api/pleroma/admin/reload_emoji'
-const PLEROMA_EMOJI_IMPORT_FS_URL = '/api/pleroma/emoji/packs/import'
-const PLEROMA_EMOJI_PACKS_URL = (page, pageSize) =>
-  `/api/v1/pleroma/emoji/packs?page=${page}&page_size=${pageSize}`
-const PLEROMA_EMOJI_PACK_URL = (name) =>
-  `/api/v1/pleroma/emoji/pack?name=${name}`
-const PLEROMA_EMOJI_PACKS_DL_REMOTE_URL = '/api/v1/pleroma/emoji/packs/download'
-const PLEROMA_EMOJI_PACKS_DL_REMOTE_ZIP_URL =
-  '/api/v1/pleroma/emoji/packs/download_zip'
-const PLEROMA_EMOJI_PACKS_LS_REMOTE_URL = (url, page, pageSize) =>
-  `/api/v1/pleroma/emoji/packs/remote?url=${url}&page=${page}&page_size=${pageSize}`
-const PLEROMA_EMOJI_UPDATE_FILE_URL = (name) =>
-  `/api/v1/pleroma/emoji/packs/files?name=${name}`
-
-const oldfetch = window.fetch
-
-const fetch = (url, options) => {
-  options = options || {}
-  const baseUrl = ''
-  const fullUrl = baseUrl + url
-  options.credentials = 'same-origin'
-  return oldfetch(fullUrl, options)
-}
-
-const promisedRequest = ({
-  method,
-  url,
-  params,
-  payload,
-  credentials,
-  headers = {},
-}) => {
-  const options = {
-    method,
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      ...headers,
-    },
-  }
-  if (params) {
-    url +=
-      '?' +
-      Object.entries(params)
-        .map(
-          ([key, value]) =>
-            encodeURIComponent(key) + '=' + encodeURIComponent(value),
-        )
-        .join('&')
-  }
-  if (payload) {
-    options.body = JSON.stringify(payload)
-  }
-  if (credentials) {
-    options.headers = {
-      ...options.headers,
-      ...authHeaders(credentials),
-    }
-  }
-  return fetch(url, options).then((response) => {
-    return new Promise((resolve, reject) => {
-      // 204 is "No content", which fails to parse json (as you'd might think)
-      if (response.ok && response.status === 204) resolve()
-
-      return response
-        .json()
-        .then((json) => {
-          if (!response.ok) {
-            return reject(
-              new StatusCodeError(
-                response.status,
-                json,
-                { url, options },
-                response,
-              ),
-            )
-          }
-          return resolve(json)
-        })
-        .catch((error) => {
-          return reject(
-            new StatusCodeError(
-              response.status,
-              error,
-              { url, options },
-              response,
-            ),
-          )
-        })
-    })
-  })
-}
-
-const updateNotificationSettings = ({ credentials, settings }) => {
+export const updateNotificationSettings = ({ credentials, settings }) => {
   const form = new FormData()
 
   each(settings, (value, key) => {
     form.append(key, value)
   })
 
-  return fetch(
-    `${NOTIFICATION_SETTINGS_URL}?${new URLSearchParams(settings)}`,
-    {
-      headers: authHeaders(credentials),
-      method: 'PUT',
-      body: form,
-    },
-  ).then((data) => data.json())
+  return promisedRequest({
+    url: `${NOTIFICATION_SETTINGS_URL}?${new URLSearchParams(settings)}`,
+    credentials,
+    method: 'PUT',
+    formData: form,
+  })
 }
 
-const updateProfileImages = ({
+export const updateProfileImages = ({
   credentials,
   avatar = null,
   avatarName = null,
@@ -326,21 +158,20 @@ const updateProfileImages = ({
   }
   if (banner !== null) form.append('header', banner)
   if (background !== null) form.append('pleroma_background_image', background)
-  return fetch(MASTODON_PROFILE_UPDATE_URL, {
-    headers: authHeaders(credentials),
+  return promisedRequest({
+    url: MASTODON_PROFILE_UPDATE_URL,
+    credentials,
     method: 'PATCH',
-    body: form,
+    formData: form,
+  }).then((data) => {
+    if (data.error) {
+      throw new Error(data.error)
+    }
+    return parseUser(data)
   })
-    .then((data) => data.json())
-    .then((data) => {
-      if (data.error) {
-        throw new Error(data.error)
-      }
-      return parseUser(data)
-    })
 }
 
-const updateProfile = ({ credentials, params }) => {
+export const updateProfile = ({ credentials, params }) => {
   const formData = new FormData()
 
   for (const name in params) {
@@ -360,23 +191,21 @@ const updateProfile = ({ credentials, params }) => {
     }
   }
 
-  return fetch(MASTODON_PROFILE_UPDATE_URL, {
-    headers: authHeaders(credentials),
+  return promisedRequest({
+    url: MASTODON_PROFILE_UPDATE_URL,
+    credentials,
     method: 'PATCH',
-    body: formData,
-  })
-    .then((data) => data.json())
-    .then((data) => parseUser(data))
+    formData,
+  }).then((data) => parseUser(data))
 }
 
-const updateProfileJSON = ({ credentials, params }) => {
-  return promisedRequest({
+export const updateProfileJSON = ({ credentials, params }) =>
+  promisedRequest({
     url: MASTODON_PROFILE_UPDATE_URL,
     credentials,
     payload: params,
     method: 'PATCH',
   }).then((data) => parseUser(data))
-}
 
 // Params needed:
 // nickname
@@ -391,109 +220,87 @@ const updateProfileJSON = ({ credentials, params }) => {
 // location
 // token
 // language
-const register = ({ params, credentials }) => {
+export const register = ({ params, credentials }) => {
   const { nickname, ...rest } = params
-  return fetch(MASTODON_REGISTRATION_URL, {
+  return promisedRequest({
+    url: MASTODON_REGISTRATION_URL,
     method: 'POST',
-    headers: {
-      ...authHeaders(credentials),
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
+    credentials,
+    payload: {
       nickname,
       locale: 'en_US',
       agreement: true,
       ...rest,
-    }),
-  }).then((response) => {
-    if (response.ok) {
-      return response.json()
-    } else {
-      return response.json().then((error) => {
-        throw new RegistrationError(error)
-      })
-    }
+    },
   })
 }
 
-const getCaptcha = () =>
-  fetch('/api/pleroma/captcha').then((resp) => resp.json())
+export const getCaptcha = () =>
+  promisedRequest({
+    url: '/api/pleroma/captcha',
+  })
 
-const authHeaders = (accessToken) => {
-  if (accessToken) {
-    return { Authorization: `Bearer ${accessToken}` }
-  } else {
-    return {}
-  }
-}
-
-const followUser = ({ id, credentials, ...options }) => {
-  const url = MASTODON_FOLLOW_URL(id)
+export const followUser = ({ id, credentials, ...options }) => {
   const form = {}
+
   if (options.reblogs !== undefined) {
     form.reblogs = options.reblogs
   }
+
   if (options.notify !== undefined) {
     form.notify = options.notify
   }
-  return fetch(url, {
-    body: JSON.stringify(form),
-    headers: {
-      ...authHeaders(credentials),
-      'Content-Type': 'application/json',
-    },
-    method: 'POST',
-  }).then((data) => data.json())
-}
 
-const unfollowUser = ({ id, credentials }) => {
-  const url = MASTODON_UNFOLLOW_URL(id)
-  return fetch(url, {
-    headers: authHeaders(credentials),
-    method: 'POST',
-  }).then((data) => data.json())
-}
-
-const fetchUserInLists = ({ id, credentials }) => {
-  const url = MASTODON_USER_IN_LISTS(id)
-  return fetch(url, {
-    headers: authHeaders(credentials),
-  }).then((data) => data.json())
-}
-
-const pinOwnStatus = ({ id, credentials }) => {
   return promisedRequest({
+    url: MASTODON_FOLLOW_URL(id),
+    formData: form,
+    credentials,
+    method: 'POST',
+  })
+}
+
+export const unfollowUser = ({ id, credentials }) =>
+  promisedRequest({
+    url: MASTODON_UNFOLLOW_URL(id),
+    credentials,
+    method: 'POST',
+  })
+
+export const fetchUserInLists = ({ id, credentials }) =>
+  promisedRequest({
+    url: MASTODON_USER_IN_LISTS(id),
+    credentials,
+  })
+
+export const pinOwnStatus = ({ id, credentials }) =>
+  promisedRequest({
     url: MASTODON_PIN_OWN_STATUS(id),
     credentials,
     method: 'POST',
   }).then((data) => parseStatus(data))
-}
 
-const unpinOwnStatus = ({ id, credentials }) => {
-  return promisedRequest({
+export const unpinOwnStatus = ({ id, credentials }) =>
+  promisedRequest({
     url: MASTODON_UNPIN_OWN_STATUS(id),
     credentials,
     method: 'POST',
   }).then((data) => parseStatus(data))
-}
 
-const muteConversation = ({ id, credentials }) => {
-  return promisedRequest({
+export const muteConversation = ({ id, credentials }) =>
+  promisedRequest({
     url: MASTODON_MUTE_CONVERSATION(id),
     credentials,
     method: 'POST',
   }).then((data) => parseStatus(data))
-}
 
-const unmuteConversation = ({ id, credentials }) => {
-  return promisedRequest({
+export const unmuteConversation = ({ id, credentials }) =>
+  promisedRequest({
     url: MASTODON_UNMUTE_CONVERSATION(id),
     credentials,
     method: 'POST',
   }).then((data) => parseStatus(data))
-}
 
-const blockUser = ({ id, expiresIn, credentials }) => {
+export const blockUser = ({ id, expiresIn, credentials }) => {
   const payload = {}
   if (expiresIn) {
     payload.duration = expiresIn
@@ -507,22 +314,22 @@ const blockUser = ({ id, expiresIn, credentials }) => {
   })
 }
 
-const unblockUser = ({ id, credentials }) => {
-  return fetch(MASTODON_UNBLOCK_USER_URL(id), {
-    headers: authHeaders(credentials),
+export const unblockUser = ({ id, credentials }) =>
+  promisedRequest({
+    url: MASTODON_UNBLOCK_USER_URL(id),
+    credentials,
     method: 'POST',
-  }).then((data) => data.json())
-}
+  })
 
-const removeUserFromFollowers = ({ id, credentials }) => {
-  return fetch(MASTODON_REMOVE_USER_FROM_FOLLOWERS(id), {
-    headers: authHeaders(credentials),
+export const removeUserFromFollowers = ({ id, credentials }) =>
+  promisedRequest({
+    url: MASTODON_REMOVE_USER_FROM_FOLLOWERS(id),
+    credentials,
     method: 'POST',
-  }).then((data) => data.json())
-}
+  })
 
-const editUserNote = ({ id, credentials, comment }) => {
-  return promisedRequest({
+export const editUserNote = ({ id, credentials, comment }) =>
+  promisedRequest({
     url: MASTODON_USER_NOTE_URL(id),
     credentials,
     payload: {
@@ -530,31 +337,29 @@ const editUserNote = ({ id, credentials, comment }) => {
     },
     method: 'POST',
   })
-}
 
-const approveUser = ({ id, credentials }) => {
-  const url = MASTODON_APPROVE_USER_URL(id)
-  return fetch(url, {
-    headers: authHeaders(credentials),
+export const approveUser = ({ id, credentials }) =>
+  promisedRequest({
+    url: MASTODON_APPROVE_USER_URL(id),
+    credentials,
     method: 'POST',
-  }).then((data) => data.json())
-}
+  })
 
-const denyUser = ({ id, credentials }) => {
-  const url = MASTODON_DENY_USER_URL(id)
-  return fetch(url, {
-    headers: authHeaders(credentials),
+export const denyUser = ({ id, credentials }) =>
+  promisedRequest({
+    url: MASTODON_DENY_USER_URL(id),
+    credentials,
     method: 'POST',
-  }).then((data) => data.json())
-}
+  })
 
-const fetchUser = ({ id, credentials }) => {
-  const url = `${MASTODON_USER_URL}/${id}`
-  return promisedRequest({ url, credentials }).then((data) => parseUser(data))
-}
+export const fetchUser = ({ id, credentials }) =>
+  promisedRequest({
+    url: `${MASTODON_USER_URL}/${id}`,
+    credentials,
+  }).then((data) => parseUser(data))
 
-const fetchUserByName = ({ name, credentials }) => {
-  return promisedRequest({
+export const fetchUserByName = ({ name, credentials }) =>
+  promisedRequest({
     url: MASTODON_USER_LOOKUP_URL,
     credentials,
     params: { acct: name },
@@ -570,25 +375,20 @@ const fetchUserByName = ({ name, credentials }) => {
       }
     })
     .then((id) => fetchUser({ id, credentials }))
-}
 
-const fetchUserRelationship = ({ id, credentials }) => {
-  const url = `${MASTODON_USER_RELATIONSHIPS_URL}/?id=${id}`
-  return fetch(url, { headers: authHeaders(credentials) }).then((response) => {
-    return new Promise((resolve, reject) =>
-      response.json().then((json) => {
-        if (!response.ok) {
-          return reject(
-            new StatusCodeError(response.status, json, { url }, response),
-          )
-        }
-        return resolve(json)
-      }),
-    )
+export const fetchUserRelationship = ({ id, credentials }) =>
+  promisedRequest({
+    url: `${MASTODON_USER_RELATIONSHIPS_URL}/?id=${id}`,
+    credentials,
   })
-}
 
-const fetchFriends = ({ id, maxId, sinceId, limit = 20, credentials }) => {
+export const fetchFriends = ({
+  id,
+  maxId,
+  sinceId,
+  limit = 20,
+  credentials,
+}) => {
   let url = MASTODON_FOLLOWING_URL(id)
   const args = [
     maxId && `max_id=${maxId}`,
@@ -600,12 +400,13 @@ const fetchFriends = ({ id, maxId, sinceId, limit = 20, credentials }) => {
     .join('&')
 
   url = url + (args ? '?' + args : '')
-  return fetch(url, { headers: authHeaders(credentials) })
-    .then((data) => data.json())
-    .then((data) => data.map(parseUser))
+  return promisedRequest({
+    url,
+    credentials,
+  }).then((data) => data.map(parseUser))
 }
 
-const exportFriends = ({ id, credentials }) => {
+export const exportFriends = ({ id, credentials }) => {
   // biome-ignore lint/suspicious/noAsyncPromiseExecutor: TODO refactor this
   return new Promise(async (resolve, reject) => {
     try {
@@ -626,7 +427,13 @@ const exportFriends = ({ id, credentials }) => {
   })
 }
 
-const fetchFollowers = ({ id, maxId, sinceId, limit = 20, credentials }) => {
+export const fetchFollowers = ({
+  id,
+  maxId,
+  sinceId,
+  limit = 20,
+  credentials,
+}) => {
   let url = MASTODON_FOLLOWERS_URL(id)
   const args = [
     maxId && `max_id=${maxId}`,
@@ -638,263 +445,131 @@ const fetchFollowers = ({ id, maxId, sinceId, limit = 20, credentials }) => {
     .join('&')
 
   url += args ? '?' + args : ''
-  return fetch(url, { headers: authHeaders(credentials) })
-    .then((data) => data.json())
-    .then((data) => data.map(parseUser))
+  return promisedRequest({
+    url,
+    credentials,
+  }).then((data) => data.map(parseUser))
 }
 
-const fetchFollowRequests = ({ credentials }) => {
-  const url = MASTODON_FOLLOW_REQUESTS_URL
-  return fetch(url, { headers: authHeaders(credentials) })
-    .then((data) => data.json())
-    .then((data) => data.map(parseUser))
-}
+export const fetchFollowRequests = ({ credentials }) =>
+  promisedRequest({
+    url: MASTODON_FOLLOW_REQUESTS_URL,
+    credentials,
+  }).then((data) => data.map(parseUser))
 
-const fetchLists = ({ credentials }) => {
-  const url = MASTODON_LISTS_URL
-  return fetch(url, { headers: authHeaders(credentials) }).then((data) =>
-    data.json(),
-  )
-}
+export const fetchLists = ({ credentials }) =>
+  promisedRequest({
+    url: MASTODON_LISTS_URL,
+    credentials,
+  })
 
-const createList = ({ title, credentials }) => {
-  const url = MASTODON_LISTS_URL
-  const headers = authHeaders(credentials)
-  headers['Content-Type'] = 'application/json'
-
-  return fetch(url, {
-    headers,
+export const createList = ({ title, credentials }) =>
+  promisedRequest({
+    url: MASTODON_LISTS_URL,
+    credentials,
     method: 'POST',
-    body: JSON.stringify({ title }),
-  }).then((data) => data.json())
-}
+    payload: { title },
+  })
 
-const getList = ({ listId, credentials }) => {
-  const url = MASTODON_LIST_URL(listId)
-  return fetch(url, { headers: authHeaders(credentials) }).then((data) =>
-    data.json(),
-  )
-}
+export const getList = ({ listId, credentials }) =>
+  promisedRequest({
+    url: MASTODON_LIST_URL(listId),
+    credentials,
+  })
 
-const updateList = ({ listId, title, credentials }) => {
-  const url = MASTODON_LIST_URL(listId)
-  const headers = authHeaders(credentials)
-  headers['Content-Type'] = 'application/json'
+export const updateList = ({ listId, title, credentials }) =>
+  promisedRequest({
+    url: MASTODON_LIST_URL(listId),
 
-  return fetch(url, {
-    headers,
+    credentials,
     method: 'PUT',
-    body: JSON.stringify({ title }),
+    payload: { title },
   })
-}
 
-const getListAccounts = ({ listId, credentials }) => {
-  const url = MASTODON_LIST_ACCOUNTS_URL(listId)
-  return fetch(url, { headers: authHeaders(credentials) })
-    .then((data) => data.json())
-    .then((data) => data.map(({ id }) => id))
-}
+export const getListAccounts = ({ listId, credentials }) =>
+  promisedRequest({
+    url: MASTODON_LIST_ACCOUNTS_URL(listId),
+    credentials,
+  }).then((data) => data.map(({ id }) => id))
 
-const addAccountsToList = ({ listId, accountIds, credentials }) => {
-  const url = MASTODON_LIST_ACCOUNTS_URL(listId)
-  const headers = authHeaders(credentials)
-  headers['Content-Type'] = 'application/json'
-
-  return fetch(url, {
-    headers,
+export const addAccountsToList = ({ listId, accountIds, credentials }) =>
+  promisedRequest({
+    url: MASTODON_LIST_ACCOUNTS_URL(listId),
+    credentials,
     method: 'POST',
-    body: JSON.stringify({ account_ids: accountIds }),
+    payload: { account_ids: accountIds },
   })
-}
 
-const removeAccountsFromList = ({ listId, accountIds, credentials }) => {
-  const url = MASTODON_LIST_ACCOUNTS_URL(listId)
-  const headers = authHeaders(credentials)
-  headers['Content-Type'] = 'application/json'
-
-  return fetch(url, {
-    headers,
+export const removeAccountsFromList = ({ listId, accountIds, credentials }) =>
+  promisedRequest({
+    url: MASTODON_LIST_ACCOUNTS_URL(listId),
+    credentials,
     method: 'DELETE',
-    body: JSON.stringify({ account_ids: accountIds }),
+    payload: { account_ids: accountIds },
   })
-}
 
-const deleteList = ({ listId, credentials }) => {
-  const url = MASTODON_LIST_URL(listId)
-  return fetch(url, {
+export const deleteList = ({ listId, credentials }) =>
+  promisedRequest({
+    url: MASTODON_LIST_URL(listId),
     method: 'DELETE',
-    headers: authHeaders(credentials),
+    credentials,
   })
-}
 
-const fetchConversation = ({ id, credentials }) => {
-  const urlContext = MASTODON_STATUS_CONTEXT_URL(id)
-  return fetch(urlContext, { headers: authHeaders(credentials) })
+export const fetchConversation = ({ id, credentials }) =>
+  promisedRequest({
+    url: MASTODON_STATUS_CONTEXT_URL(id),
+    credentials,
+  })
     .then((data) => {
       if (data.ok) {
         return data
       }
       throw new Error('Error fetching timeline', data)
     })
-    .then((data) => data.json())
     .then(({ ancestors, descendants }) => ({
       ancestors: ancestors.map(parseStatus),
       descendants: descendants.map(parseStatus),
     }))
-}
 
-const fetchStatus = ({ id, credentials }) => {
-  const url = MASTODON_STATUS_URL(id)
-  return fetch(url, { headers: authHeaders(credentials) })
+export const fetchStatus = ({ id, credentials }) =>
+  promisedRequest({
+    url: MASTODON_STATUS_URL(id),
+    credentials,
+  })
     .then((data) => {
       if (data.ok) {
         return data
       }
       throw new Error('Error fetching timeline', { cause: data })
     })
-    .then((data) => data.json())
     .then((data) => parseStatus(data))
-}
 
-const fetchStatusSource = ({ id, credentials }) => {
-  const url = MASTODON_STATUS_SOURCE_URL(id)
-  return fetch(url, { headers: authHeaders(credentials) })
+export const fetchStatusSource = ({ id, credentials }) =>
+  promisedRequest({
+    url: MASTODON_STATUS_SOURCE_URL(id),
+    credentials,
+  })
     .then((data) => {
       if (data.ok) {
         return data
       }
       throw new Error('Error fetching source', { cause: data })
     })
-    .then((data) => data.json())
     .then((data) => parseSource(data))
-}
 
-const fetchStatusHistory = ({ status, credentials }) => {
-  const url = MASTODON_STATUS_HISTORY_URL(status.id)
-  return promisedRequest({ url, credentials }).then((data) => {
+export const fetchStatusHistory = ({ status, credentials }) =>
+  promisedRequest({
+    url: MASTODON_STATUS_HISTORY_URL(status.id),
+    credentials,
+  }).then((data) => {
     data.reverse()
     return data.map((item) => {
       item.originalStatus = status
       return parseStatus(item)
     })
   })
-}
 
-const adminSetUsersTags = ({
-  tags,
-  credentials,
-  value,
-  screen_names: nicknames,
-}) => {
-  return promisedRequest({
-    url: PLEROMA_ADMIN_TAG_USER_URL,
-    method: value ? 'PUT' : 'DELETE',
-    credentials,
-    payload: {
-      nicknames,
-      tags,
-    },
-  })
-}
-
-const adminSetUsersRight = ({
-  right,
-  credentials,
-  value,
-  screen_names: nicknames,
-}) => {
-  return promisedRequest({
-    url: PLEROMA_ADMIN_PERMISSION_GROUP_URL(right),
-    method: value ? 'POST' : 'DELETE',
-    credentials,
-    payload: {
-      nicknames,
-    },
-  })
-}
-
-const adminSetUsersActivationStatus = ({
-  credentials,
-  screen_names: nicknames,
-  value,
-}) => {
-  return promisedRequest({
-    url: value
-      ? PLEROMA_ADMIN_ACTIVATE_USERS_URL
-      : PLEROMA_ADMIN_DEACTIVATE_USERS_URL,
-    method: 'PATCH',
-    credentials,
-    payload: {
-      nicknames,
-    },
-  }).then((response) => response.users)
-}
-
-const adminSetUsersApprovalStatus = ({
-  credentials,
-  screen_names: nicknames,
-}) => {
-  return promisedRequest({
-    url: PLEROMA_ADMIN_APPROVE_USERS_URL,
-    method: 'PATCH',
-    credentials,
-    payload: {
-      nicknames,
-    },
-  }).then((response) => response.users)
-}
-
-const adminSetUsersConfirmationStatus = ({
-  credentials,
-  screen_names: nicknames,
-}) => {
-  return promisedRequest({
-    url: PLEROMA_ADMIN_CONFIRM_USERS_URL,
-    method: 'PATCH',
-    credentials,
-    payload: {
-      nicknames,
-    },
-  }).then((response) => response.users)
-}
-
-const adminSetUsersSuggestionStatus = ({
-  credentials,
-  screen_names: nicknames,
-  value,
-}) => {
-  return promisedRequest({
-    url: value
-      ? PLEROMA_ADMIN_SUGGEST_USERS_URL
-      : PLEROMA_ADMIN_UNSUGGEST_USERS_URL,
-    method: 'PATCH',
-    credentials,
-    payload: {
-      nicknames,
-    },
-  }).then((response) => response.users)
-}
-
-const adminGetUserData = ({ credentials, screen_name: nickname }) => {
-  return promisedRequest({
-    url: PLEROMA_ADMIN_USERS_URL_SHOW(nickname),
-    method: 'GET',
-    credentials,
-  })
-}
-
-const adminDeleteAccounts = ({ credentials, screen_names: nicknames }) => {
-  return promisedRequest({
-    url: PLEROMA_ADMIN_USERS_URL,
-    method: 'DELETE',
-    credentials,
-    payload: {
-      nicknames,
-    },
-  })
-}
-
-const fetchTimeline = ({
+export const fetchTimeline = ({
   timeline,
   credentials,
   since = false,
@@ -989,109 +664,82 @@ const fetchTimeline = ({
   )
   url += `?${queryString}`
 
-  return fetch(url, { headers: authHeaders(credentials) }).then(
-    async (response) => {
-      const success = response.ok
-
-      const data = await response.json()
-
-      if (success && !data.errors) {
-        const pagination = parseLinkHeaderPagination(
-          response.headers.get('Link'),
-          {
-            flakeId: timeline !== 'bookmarks' && timeline !== 'notifications',
-          },
-        )
-
-        return {
-          data: data.map(isNotifications ? parseNotification : parseStatus),
-          pagination,
-        }
-      } else {
-        data.errors ||= []
-        data.status = response.status
-        data.statusText = response.statusText
-        return data
-      }
-    },
-  )
-}
-
-const fetchPinnedStatuses = ({ id, credentials }) => {
-  const url = MASTODON_USER_TIMELINE_URL(id) + '?pinned=true'
-  return promisedRequest({ url, credentials }).then((data) =>
-    data.map(parseStatus),
-  )
-}
-
-const verifyCredentials = (user) => {
-  return fetch(MASTODON_LOGIN_URL, {
-    headers: authHeaders(user),
-  })
-    .then((response) => {
-      if (response.ok) {
-        return response.json()
-      } else {
-        return {
-          error: response,
-        }
-      }
-    })
-    .then((data) => (data.error ? data : parseUser(data)))
-}
-
-const favorite = ({ id, credentials }) => {
   return promisedRequest({
+    url,
+    credentials,
+  }).then(async (data) => {
+    const pagination = parseLinkHeaderPagination(
+      data._response.headers.get('Link'),
+      {
+        flakeId: timeline !== 'bookmarks' && timeline !== 'notifications',
+      },
+    )
+
+    return {
+      data: data.map(isNotifications ? parseNotification : parseStatus),
+      pagination,
+    }
+  })
+}
+
+export const fetchPinnedStatuses = ({ id, credentials }) =>
+  promisedRequest({
+    url: MASTODON_USER_TIMELINE_URL(id) + '?pinned=true',
+    credentials,
+  }).then((data) => data.map(parseStatus))
+
+export const verifyCredentials = ({ credentials }) =>
+  promisedRequest({
+    url: MASTODON_LOGIN_URL,
+    credentials,
+  }).then((data) => (data.error ? data : parseUser(data)))
+
+export const favorite = ({ id, credentials }) =>
+  promisedRequest({
     url: MASTODON_FAVORITE_URL(id),
     method: 'POST',
     credentials,
   }).then((data) => parseStatus(data))
-}
 
-const unfavorite = ({ id, credentials }) => {
-  return promisedRequest({
+export const unfavorite = ({ id, credentials }) =>
+  promisedRequest({
     url: MASTODON_UNFAVORITE_URL(id),
     method: 'POST',
     credentials,
   }).then((data) => parseStatus(data))
-}
 
-const retweet = ({ id, credentials }) => {
-  return promisedRequest({
+export const retweet = ({ id, credentials }) =>
+  promisedRequest({
     url: MASTODON_RETWEET_URL(id),
     method: 'POST',
     credentials,
   }).then((data) => parseStatus(data))
-}
 
-const unretweet = ({ id, credentials }) => {
-  return promisedRequest({
+export const unretweet = ({ id, credentials }) =>
+  promisedRequest({
     url: MASTODON_UNRETWEET_URL(id),
     method: 'POST',
     credentials,
   }).then((data) => parseStatus(data))
-}
 
-const bookmarkStatus = ({ id, credentials, ...options }) => {
-  return promisedRequest({
+export const bookmarkStatus = ({ id, credentials, ...options }) =>
+  promisedRequest({
     url: MASTODON_BOOKMARK_STATUS_URL(id),
-    headers: authHeaders(credentials),
+    credentials,
     method: 'POST',
     payload: {
       folder_id: options.folder_id,
     },
   })
-}
 
-const unbookmarkStatus = ({ id, credentials }) => {
-  return promisedRequest({
+export const unbookmarkStatus = ({ id, credentials }) =>
+  promisedRequest({
     url: MASTODON_UNBOOKMARK_STATUS_URL(id),
-    headers: authHeaders(credentials),
+    credentials,
     method: 'POST',
   })
-}
 
-const postStatus = ({
+export const postStatus = ({
   credentials,
   status,
   spoilerText,
@@ -1140,23 +788,21 @@ const postStatus = ({
     form.append('preview', 'true')
   }
 
-  const postHeaders = authHeaders(credentials)
+  const headers = {}
   if (idempotencyKey) {
-    postHeaders['idempotency-key'] = idempotencyKey
+    headers['idempotency-key'] = idempotencyKey
   }
 
-  return fetch(MASTODON_POST_STATUS_URL, {
-    body: form,
+  return promisedRequest({
+    url: MASTODON_POST_STATUS_URL,
+    formData: form,
     method: 'POST',
-    headers: postHeaders,
-  })
-    .then((response) => {
-      return response.json()
-    })
-    .then((data) => (data.error ? data : parseStatus(data)))
+    credentials,
+    headers,
+  }).then((data) => (data.error ? data : parseStatus(data)))
 }
 
-const editStatus = ({
+export const editStatus = ({
   id,
   credentials,
   status,
@@ -1191,136 +837,131 @@ const editStatus = ({
     })
   }
 
-  const putHeaders = authHeaders(credentials)
-
-  return fetch(MASTODON_STATUS_URL(id), {
-    body: form,
+  return promisedRequest({
+    url: MASTODON_STATUS_URL(id),
+    formData: form,
     method: 'PUT',
-    headers: putHeaders,
-  })
-    .then((response) => {
-      return response.json()
-    })
-    .then((data) => (data.error ? data : parseStatus(data)))
+    credentials,
+  }).then((data) => (data.error ? data : parseStatus(data)))
 }
 
-const deleteStatus = ({ id, credentials }) => {
-  return promisedRequest({
+export const deleteStatus = ({ id, credentials }) =>
+  promisedRequest({
     url: MASTODON_DELETE_URL(id),
     credentials,
     method: 'DELETE',
   })
-}
 
-const uploadMedia = ({ formData, credentials }) => {
-  return fetch(MASTODON_MEDIA_UPLOAD_URL, {
-    body: formData,
+export const uploadMedia = ({ formData, credentials }) =>
+  promisedRequest({
+    url: MASTODON_MEDIA_UPLOAD_URL,
+    formData,
     method: 'POST',
-    headers: authHeaders(credentials),
-  })
-    .then((data) => data.json())
-    .then((data) => parseAttachment(data))
-}
+    credentials,
+  }).then((data) => parseAttachment(data))
 
-const setMediaDescription = ({ id, description, credentials }) => {
-  return promisedRequest({
+export const setMediaDescription = ({ id, description, credentials }) =>
+  promisedRequest({
     url: `${MASTODON_MEDIA_UPLOAD_URL}/${id}`,
     method: 'PUT',
-    headers: authHeaders(credentials),
+    credentials,
     payload: {
       description,
     },
   }).then((data) => parseAttachment(data))
-}
 
-const importMutes = ({ file, credentials }) => {
+export const importMutes = ({ file, credentials }) => {
   const formData = new FormData()
   formData.append('list', file)
-  return fetch(MUTES_IMPORT_URL, {
-    body: formData,
+  return promisedRequest({
+    url: MUTES_IMPORT_URL,
+    formData,
     method: 'POST',
-    headers: authHeaders(credentials),
+    credentials,
   }).then((response) => response.ok)
 }
 
-const importBlocks = ({ file, credentials }) => {
+export const importBlocks = ({ file, credentials }) => {
   const formData = new FormData()
   formData.append('list', file)
-  return fetch(BLOCKS_IMPORT_URL, {
-    body: formData,
+  return promisedRequest({
+    url: BLOCKS_IMPORT_URL,
+    formData,
     method: 'POST',
-    headers: authHeaders(credentials),
+    credentials,
   }).then((response) => response.ok)
 }
 
-const importFollows = ({ file, credentials }) => {
+export const importFollows = ({ file, credentials }) => {
   const formData = new FormData()
   formData.append('list', file)
-  return fetch(FOLLOW_IMPORT_URL, {
-    body: formData,
+  return promisedRequest({
+    url: FOLLOW_IMPORT_URL,
+    formData,
     method: 'POST',
-    headers: authHeaders(credentials),
+    credentials,
   }).then((response) => response.ok)
 }
 
-const deleteAccount = ({ credentials, password }) => {
-  const form = new FormData()
+export const deleteAccount = ({ credentials, password }) => {
+  const formData = new FormData()
 
-  form.append('password', password)
+  formData.append('password', password)
 
-  return fetch(DELETE_ACCOUNT_URL, {
-    body: form,
+  return promisedRequest({
+    url: DELETE_ACCOUNT_URL,
+    formData,
     method: 'POST',
-    headers: authHeaders(credentials),
-  }).then((response) => response.json())
+    credentials,
+  })
 }
 
-const changeEmail = ({ credentials, email, password }) => {
+export const changeEmail = ({ credentials, email, password }) => {
   const form = new FormData()
 
   form.append('email', email)
   form.append('password', password)
 
-  return fetch(CHANGE_EMAIL_URL, {
-    body: form,
+  return promisedRequest({
+    url: CHANGE_EMAIL_URL,
+    formData: form,
     method: 'POST',
-    headers: authHeaders(credentials),
-  }).then((response) => response.json())
+    credentials,
+  })
 }
 
-const moveAccount = ({ credentials, password, targetAccount }) => {
+export const moveAccount = ({ credentials, password, targetAccount }) => {
   const form = new FormData()
 
   form.append('password', password)
   form.append('target_account', targetAccount)
 
-  return fetch(MOVE_ACCOUNT_URL, {
-    body: form,
+  return promisedRequest({
+    url: MOVE_ACCOUNT_URL,
+    formData: form,
     method: 'POST',
-    headers: authHeaders(credentials),
-  }).then((response) => response.json())
+    credentials,
+  })
 }
 
-const addAlias = ({ credentials, alias }) => {
-  return promisedRequest({
+export const addAlias = ({ credentials, alias }) =>
+  promisedRequest({
     url: ALIASES_URL,
     method: 'PUT',
     credentials,
     payload: { alias },
   })
-}
 
-const deleteAlias = ({ credentials, alias }) => {
-  return promisedRequest({
+export const deleteAlias = ({ credentials, alias }) =>
+  promisedRequest({
     url: ALIASES_URL,
     method: 'DELETE',
     credentials,
     payload: { alias },
   })
-}
 
-const listAliases = ({ credentials }) => {
-  return promisedRequest({
+export const listAliases = ({ credentials }) =>
+  promisedRequest({
     url: ALIASES_URL,
     method: 'GET',
     credentials,
@@ -1328,9 +969,8 @@ const listAliases = ({ credentials }) => {
       _cacheBooster: new Date().getTime(),
     },
   })
-}
 
-const changePassword = ({
+export const changePassword = ({
   credentials,
   password,
   newPassword,
@@ -1342,58 +982,61 @@ const changePassword = ({
   form.append('new_password', newPassword)
   form.append('new_password_confirmation', newPasswordConfirmation)
 
-  return fetch(CHANGE_PASSWORD_URL, {
-    body: form,
+  return promisedRequest({
+    url: CHANGE_PASSWORD_URL,
+    formData: form,
     method: 'POST',
-    headers: authHeaders(credentials),
-  }).then((response) => response.json())
+    credentials,
+  })
 }
 
-const settingsMFA = ({ credentials }) => {
-  return fetch(MFA_SETTINGS_URL, {
-    headers: authHeaders(credentials),
+export const settingsMFA = ({ credentials }) =>
+  promisedRequest({
+    url: MFA_SETTINGS_URL,
+    credentials,
     method: 'GET',
-  }).then((data) => data.json())
-}
+  })
 
-const mfaDisableOTP = ({ credentials, password }) => {
+export const mfaDisableOTP = ({ credentials, password }) => {
   const form = new FormData()
 
   form.append('password', password)
 
-  return fetch(MFA_DISABLE_OTP_URL, {
-    body: form,
+  return promisedRequest({
+    url: MFA_DISABLE_OTP_URL,
+    formData: form,
     method: 'DELETE',
-    headers: authHeaders(credentials),
-  }).then((response) => response.json())
+    credentials,
+  })
 }
 
-const mfaConfirmOTP = ({ credentials, password, token }) => {
+export const mfaConfirmOTP = ({ credentials, password, token }) => {
   const form = new FormData()
 
   form.append('password', password)
   form.append('code', token)
 
-  return fetch(MFA_CONFIRM_OTP_URL, {
-    body: form,
-    headers: authHeaders(credentials),
+  return promisedRequest({
+    url: MFA_CONFIRM_OTP_URL,
+    formData: form,
+    credentials,
     method: 'POST',
-  }).then((data) => data.json())
+  })
 }
-const mfaSetupOTP = ({ credentials }) => {
-  return fetch(MFA_SETUP_OTP_URL, {
-    headers: authHeaders(credentials),
+export const mfaSetupOTP = ({ credentials }) =>
+  promisedRequest({
+    url: MFA_SETUP_OTP_URL,
+    credentials,
     method: 'GET',
-  }).then((data) => data.json())
-}
-const generateMfaBackupCodes = ({ credentials }) => {
-  return fetch(MFA_BACKUP_CODES_URL, {
-    headers: authHeaders(credentials),
+  })
+export const generateMfaBackupCodes = ({ credentials }) =>
+  promisedRequest({
+    url: MFA_BACKUP_CODES_URL,
+    credentials,
     method: 'GET',
-  }).then((data) => data.json())
-}
+  })
 
-const fetchMutes = ({ maxId, credentials }) => {
+export const fetchMutes = ({ maxId, credentials }) => {
   const query = new URLSearchParams({ with_relationships: true })
   if (maxId) {
     query.append('max_id', maxId)
@@ -1404,7 +1047,7 @@ const fetchMutes = ({ maxId, credentials }) => {
   }).then((users) => users.map(parseUser))
 }
 
-const muteUser = ({ id, expiresIn, credentials }) => {
+export const muteUser = ({ id, expiresIn, credentials }) => {
   const payload = {}
   if (expiresIn) {
     payload.expires_in = expiresIn
@@ -1418,15 +1061,14 @@ const muteUser = ({ id, expiresIn, credentials }) => {
   })
 }
 
-const unmuteUser = ({ id, credentials }) => {
-  return promisedRequest({
+export const unmuteUser = ({ id, credentials }) =>
+  promisedRequest({
     url: MASTODON_UNMUTE_USER_URL(id),
     credentials,
     method: 'POST',
   })
-}
 
-const fetchBlocks = ({ maxId, credentials }) => {
+export const fetchBlocks = ({ maxId, credentials }) => {
   const query = new URLSearchParams({ with_relationships: true })
   if (maxId) {
     query.append('max_id', maxId)
@@ -1437,16 +1079,15 @@ const fetchBlocks = ({ maxId, credentials }) => {
   }).then((users) => users.map(parseUser))
 }
 
-const addBackup = ({ credentials }) => {
-  return promisedRequest({
+export const addBackup = ({ credentials }) =>
+  promisedRequest({
     url: PLEROMA_BACKUP_URL,
     method: 'POST',
     credentials,
   })
-}
 
-const listBackups = ({ credentials }) => {
-  return promisedRequest({
+export const listBackups = ({ credentials }) =>
+  promisedRequest({
     url: PLEROMA_BACKUP_URL,
     method: 'GET',
     credentials,
@@ -1454,53 +1095,48 @@ const listBackups = ({ credentials }) => {
       _cacheBooster: new Date().getTime(),
     },
   })
-}
 
-const fetchOAuthTokens = ({ credentials }) => {
-  const url = '/api/oauth_tokens.json'
-
-  return fetch(url, {
-    headers: authHeaders(credentials),
-  }).then((data) => {
-    if (data.ok) {
-      return data.json()
-    }
-    throw new Error('Error fetching auth tokens', data)
+export const fetchOAuthTokens = ({ credentials }) =>
+  promisedRequest({
+    url: '/api/oauth_tokens.json',
+    credentials,
   })
-}
 
-const revokeOAuthToken = ({ id, credentials }) => {
-  const url = `/api/oauth_tokens/${id}`
-
-  return fetch(url, {
-    headers: authHeaders(credentials),
+export const revokeOAuthToken = ({ id, credentials }) =>
+  promisedRequest({
+    url: `/api/oauth_tokens/${id}`,
+    credentials,
     method: 'DELETE',
   })
-}
 
-const suggestions = ({ credentials }) => {
-  return fetch(SUGGESTIONS_URL, {
-    headers: authHeaders(credentials),
-  }).then((data) => data.json())
-}
+export const suggestions = ({ credentials }) =>
+  promisedRequest({
+    url: SUGGESTIONS_URL,
+    credentials,
+  })
 
-const markNotificationsAsSeen = ({ id, credentials, single = false }) => {
-  const body = new FormData()
+export const markNotificationsAsSeen = ({
+  id,
+  credentials,
+  single = false,
+}) => {
+  const formData = new FormData()
 
   if (single) {
-    body.append('id', id)
+    formData.append('id', id)
   } else {
-    body.append('max_id', id)
+    formData.append('max_id', id)
   }
 
-  return fetch(NOTIFICATION_READ_URL, {
-    body,
-    headers: authHeaders(credentials),
+  return promisedRequest({
+    url: NOTIFICATION_READ_URL,
+    formData,
+    credentials,
     method: 'POST',
-  }).then((data) => data.json())
+  })
 }
 
-const vote = ({ pollId, choices, credentials }) => {
+export const vote = ({ pollId, choices, credentials }) => {
   const form = new FormData()
   form.append('choices', choices)
 
@@ -1514,32 +1150,29 @@ const vote = ({ pollId, choices, credentials }) => {
   })
 }
 
-const fetchPoll = ({ pollId, credentials }) => {
-  return promisedRequest({
+export const fetchPoll = ({ pollId, credentials }) =>
+  promisedRequest({
     url: MASTODON_POLL_URL(encodeURIComponent(pollId)),
     method: 'GET',
     credentials,
   })
-}
 
-const fetchFavoritedByUsers = ({ id, credentials }) => {
-  return promisedRequest({
+export const fetchFavoritedByUsers = ({ id, credentials }) =>
+  promisedRequest({
     url: MASTODON_STATUS_FAVORITEDBY_URL(id),
     method: 'GET',
     credentials,
   }).then((users) => users.map(parseUser))
-}
 
-const fetchRebloggedByUsers = ({ id, credentials }) => {
-  return promisedRequest({
+export const fetchRebloggedByUsers = ({ id, credentials }) =>
+  promisedRequest({
     url: MASTODON_STATUS_REBLOGGEDBY_URL(id),
     method: 'GET',
     credentials,
   }).then((users) => users.map(parseUser))
-}
 
-const fetchEmojiReactions = ({ id, credentials }) => {
-  return promisedRequest({
+export const fetchEmojiReactions = ({ id, credentials }) =>
+  promisedRequest({
     url: PLEROMA_EMOJI_REACTIONS_URL(id),
     credentials,
   }).then((reactions) =>
@@ -1548,26 +1181,29 @@ const fetchEmojiReactions = ({ id, credentials }) => {
       return r
     }),
   )
-}
 
-const reactWithEmoji = ({ id, emoji, credentials }) => {
-  return promisedRequest({
+export const reactWithEmoji = ({ id, emoji, credentials }) =>
+  promisedRequest({
     url: PLEROMA_EMOJI_REACT_URL(id, emoji),
     method: 'PUT',
     credentials,
   }).then(parseStatus)
-}
 
-const unreactWithEmoji = ({ id, emoji, credentials }) => {
-  return promisedRequest({
+export const unreactWithEmoji = ({ id, emoji, credentials }) =>
+  promisedRequest({
     url: PLEROMA_EMOJI_UNREACT_URL(id, emoji),
     method: 'DELETE',
     credentials,
   }).then(parseStatus)
-}
 
-const reportUser = ({ credentials, userId, statusIds, comment, forward }) => {
-  return promisedRequest({
+export const reportUser = ({
+  credentials,
+  userId,
+  statusIds,
+  comment,
+  forward,
+}) =>
+  promisedRequest({
     url: MASTODON_REPORT_USER_URL,
     method: 'POST',
     payload: {
@@ -1578,10 +1214,9 @@ const reportUser = ({ credentials, userId, statusIds, comment, forward }) => {
     },
     credentials,
   })
-}
 
-const searchUsers = ({ credentials, query }) => {
-  return promisedRequest({
+export const searchUsers = ({ credentials, query }) =>
+  promisedRequest({
     url: MASTODON_USER_SEARCH_URL,
     params: {
       q: query,
@@ -1589,9 +1224,8 @@ const searchUsers = ({ credentials, query }) => {
     },
     credentials,
   }).then((data) => data.map(parseUser))
-}
 
-const search2 = ({
+export const search2 = ({
   credentials,
   q,
   resolve,
@@ -1634,15 +1268,15 @@ const search2 = ({
   )
   url += `?${queryString}`
 
-  return fetch(url, { headers: authHeaders(credentials) })
+  return promisedRequest({
+    url,
+    credentials,
+  })
     .then((data) => {
       if (data.ok) {
         return data
       }
       throw new Error('Error fetching search result', data)
-    })
-    .then((data) => {
-      return data.json()
     })
     .then((data) => {
       data.accounts = data.accounts.slice(0, limit).map((u) => parseUser(u))
@@ -1651,197 +1285,45 @@ const search2 = ({
     })
 }
 
-const fetchKnownDomains = ({ credentials }) => {
-  return promisedRequest({ url: MASTODON_KNOWN_DOMAIN_LIST_URL, credentials })
-}
+export const fetchKnownDomains = ({ credentials }) =>
+  promisedRequest({ url: MASTODON_KNOWN_DOMAIN_LIST_URL, credentials })
 
-const fetchDomainMutes = ({ credentials }) => {
-  return promisedRequest({ url: MASTODON_DOMAIN_BLOCKS_URL, credentials })
-}
+export const fetchDomainMutes = ({ credentials }) =>
+  promisedRequest({ url: MASTODON_DOMAIN_BLOCKS_URL, credentials })
 
-const muteDomain = ({ domain, credentials }) => {
-  return promisedRequest({
+export const muteDomain = ({ domain, credentials }) =>
+  promisedRequest({
     url: MASTODON_DOMAIN_BLOCKS_URL,
     method: 'POST',
     payload: { domain },
     credentials,
   })
-}
 
-const unmuteDomain = ({ domain, credentials }) => {
-  return promisedRequest({
+export const unmuteDomain = ({ domain, credentials }) =>
+  promisedRequest({
     url: MASTODON_DOMAIN_BLOCKS_URL,
     method: 'DELETE',
     payload: { domain },
     credentials,
   })
-}
 
-const dismissNotification = ({ credentials, id }) => {
-  return promisedRequest({
+export const dismissNotification = ({ credentials, id }) =>
+  promisedRequest({
     url: MASTODON_DISMISS_NOTIFICATION_URL(id),
     method: 'POST',
     payload: { id },
     credentials,
   })
-}
 
-const adminFetchAnnouncements = ({ credentials }) => {
-  return promisedRequest({ url: PLEROMA_ANNOUNCEMENTS_URL, credentials })
-}
+export const getAnnouncements = ({ credentials }) =>
+  promisedRequest({ url: MASTODON_ANNOUNCEMENTS_URL, credentials })
 
-const fetchAnnouncements = ({ credentials }) => {
-  return promisedRequest({ url: MASTODON_ANNOUNCEMENTS_URL, credentials })
-}
-
-const dismissAnnouncement = ({ id, credentials }) => {
-  return promisedRequest({
+export const dismissAnnouncement = ({ id, credentials }) =>
+  promisedRequest({
     url: MASTODON_ANNOUNCEMENTS_DISMISS_URL(id),
     credentials,
     method: 'POST',
   })
-}
-
-const adminListUsers = ({ opts, credentials }) => {
-  // the reported list is hardly useful because standards are for dating i guess,
-  // so make sure to fetchIfMissing right afterward using this call
-  const url = PLEROMA_ADMIN_USERS_URL_LIST(opts)
-
-  return promisedRequest({
-    url,
-    credentials,
-    method: 'GET',
-  })
-}
-
-const adminResendConfirmationEmail = ({
-  screen_names: nicknames,
-  credentials,
-}) => {
-  const url = PLEROMA_ADMIN_RESEND_CONFIRMATION_EMAIL_URL
-  return promisedRequest({
-    url,
-    credentials,
-    method: 'PATCH',
-    payload: {
-      nicknames,
-    },
-  })
-}
-
-const adminRequirePasswordChange = ({
-  screen_names: nicknames,
-  credentials,
-}) => {
-  const url = PLEROMA_ADMIN_REQUIRE_PASSWORD_CHANGE_URL
-  return promisedRequest({
-    url,
-    credentials,
-    method: 'PATCH',
-    payload: {
-      nicknames,
-    },
-  })
-}
-
-const adminDisableMFA = ({ screen_name: nickname, credentials }) => {
-  const url = PLEROMA_ADMIN_DISABLE_MFA_URL
-  return promisedRequest({
-    url,
-    credentials,
-    method: 'PUT',
-    payload: {
-      nickname,
-    },
-  })
-}
-
-const adminListStatuses = ({ opts, credentials }) => {
-  const url = PLEROMA_ADMIN_LIST_STATUSES_URL(opts)
-
-  return promisedRequest({
-    url,
-    credentials,
-    method: 'GET',
-  })
-}
-
-const adminChangeStatusScope = ({
-  opts: { id, sensitive, visibility },
-  credentials,
-}) => {
-  const url = PLEROMA_ADMIN_CHANGE_STATUS_SCOPE_URL(id)
-  var payload = {}
-  if (typeof sensitive !== 'undefined') {
-    payload['sensitive'] = sensitive
-  }
-  if (typeof visibility !== 'undefined') {
-    payload['visibility'] = visibility
-  }
-  return promisedRequest({
-    url,
-    credentials,
-    method: 'PUT',
-    payload,
-  })
-}
-
-const announcementToPayload = ({ content, startsAt, endsAt, allDay }) => {
-  const payload = { content }
-
-  if (typeof startsAt !== 'undefined') {
-    payload.starts_at = startsAt ? new Date(startsAt).toISOString() : null
-  }
-
-  if (typeof endsAt !== 'undefined') {
-    payload.ends_at = endsAt ? new Date(endsAt).toISOString() : null
-  }
-
-  if (typeof allDay !== 'undefined') {
-    payload.all_day = allDay
-  }
-
-  return payload
-}
-
-const postAnnouncement = ({
-  credentials,
-  content,
-  startsAt,
-  endsAt,
-  allDay,
-}) => {
-  return promisedRequest({
-    url: PLEROMA_POST_ANNOUNCEMENT_URL,
-    credentials,
-    method: 'POST',
-    payload: announcementToPayload({ content, startsAt, endsAt, allDay }),
-  })
-}
-
-const editAnnouncement = ({
-  id,
-  credentials,
-  content,
-  startsAt,
-  endsAt,
-  allDay,
-}) => {
-  return promisedRequest({
-    url: PLEROMA_EDIT_ANNOUNCEMENT_URL(id),
-    credentials,
-    method: 'PATCH',
-    payload: announcementToPayload({ content, startsAt, endsAt, allDay }),
-  })
-}
-
-const deleteAnnouncement = ({ id, credentials }) => {
-  return promisedRequest({
-    url: PLEROMA_DELETE_ANNOUNCEMENT_URL(id),
-    credentials,
-    method: 'DELETE',
-  })
-}
 
 export const getMastodonSocketURI = (
   { credentials, stream, args = {} },
@@ -2018,23 +1500,28 @@ export const WSConnectionStatus = Object.freeze({
   STARTING_INITIAL: 6,
 })
 
-const chats = ({ credentials }) => {
-  return fetch(PLEROMA_CHATS_URL, { headers: authHeaders(credentials) })
-    .then((data) => data.json())
-    .then((data) => {
-      return { chats: data.map(parseChat).filter((c) => c) }
-    })
-}
+export const chats = ({ credentials }) =>
+  promisedRequest({
+    url: PLEROMA_CHATS_URL,
+    credentials,
+  }).then((data) => {
+    chats: data.map(parseChat).filter((c) => c)
+  })
 
-const getOrCreateChat = ({ accountId, credentials }) => {
-  return promisedRequest({
+export const getOrCreateChat = ({ accountId, credentials }) =>
+  promisedRequest({
     url: PLEROMA_CHAT_URL(accountId),
     method: 'POST',
     credentials,
   })
-}
 
-const chatMessages = ({ id, credentials, maxId, sinceId, limit = 20 }) => {
+export const chatMessages = ({
+  id,
+  credentials,
+  maxId,
+  sinceId,
+  limit = 20,
+}) => {
   let url = PLEROMA_CHAT_MESSAGES_URL(id)
   const args = [
     maxId && `max_id=${maxId}`,
@@ -2053,7 +1540,7 @@ const chatMessages = ({ id, credentials, maxId, sinceId, limit = 20 }) => {
   })
 }
 
-const sendChatMessage = ({
+export const sendChatMessage = ({
   id,
   content,
   mediaId = null,
@@ -2083,8 +1570,8 @@ const sendChatMessage = ({
   })
 }
 
-const readChat = ({ id, lastReadId, credentials }) => {
-  return promisedRequest({
+export const readChat = ({ id, lastReadId, credentials }) =>
+  promisedRequest({
     url: PLEROMA_CHAT_READ_URL(id),
     method: 'POST',
     payload: {
@@ -2092,436 +1579,49 @@ const readChat = ({ id, lastReadId, credentials }) => {
     },
     credentials,
   })
-}
 
-const deleteChatMessage = ({ chatId, messageId, credentials }) => {
-  return promisedRequest({
+export const deleteChatMessage = ({ chatId, messageId, credentials }) =>
+  promisedRequest({
     url: PLEROMA_DELETE_CHAT_MESSAGE_URL(chatId, messageId),
     method: 'DELETE',
     credentials,
   })
-}
 
-const setReportState = ({ id, state, credentials }) => {
-  // TODO: Can't use promisedRequest because on OK this does not return json
-  // See https://git.pleroma.social/pleroma/pleroma-fe/-/merge_requests/1322
-  return fetch(PLEROMA_ADMIN_REPORTS, {
-    headers: {
-      ...authHeaders(credentials),
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    },
-    method: 'PATCH',
-    body: JSON.stringify({
-      reports: [
-        {
-          id,
-          state,
-        },
-      ],
-    }),
-  })
-    .then((data) => {
-      if (data.status >= 500) {
-        throw Error(data.statusText)
-      } else if (data.status >= 400) {
-        return data.json()
-      }
-      return data
-    })
-    .then((data) => {
-      if (data.errors) {
-        throw Error(data.errors[0].message)
-      }
-    })
-}
-
-// ADMIN STUFF // EXPERIMENTAL
-const fetchInstanceDBConfig = ({ credentials }) => {
-  return fetch(PLEROMA_ADMIN_CONFIG_URL, {
-    headers: authHeaders(credentials),
-  }).then((response) => {
-    if (response.ok) {
-      return response.json()
-    } else {
-      return {
-        error: response,
-      }
-    }
-  })
-}
-
-const fetchInstanceConfigDescriptions = ({ credentials }) => {
-  return fetch(PLEROMA_ADMIN_DESCRIPTIONS_URL, {
-    headers: authHeaders(credentials),
-  }).then((response) => {
-    if (response.ok) {
-      return response.json()
-    } else {
-      return {
-        error: response,
-      }
-    }
-  })
-}
-
-const fetchAvailableFrontends = ({ credentials }) => {
-  return fetch(PLEROMA_ADMIN_FRONTENDS_URL, {
-    headers: authHeaders(credentials),
-  }).then((response) => {
-    if (response.ok) {
-      return response.json()
-    } else {
-      return {
-        error: response,
-      }
-    }
-  })
-}
-
-const pushInstanceDBConfig = ({ credentials, payload }) => {
-  return fetch(PLEROMA_ADMIN_CONFIG_URL, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      ...authHeaders(credentials),
-    },
-    method: 'POST',
-    body: JSON.stringify(payload),
-  }).then((response) => {
-    if (response.ok) {
-      return response.json()
-    } else {
-      return {
-        error: response,
-      }
-    }
-  })
-}
-
-const installFrontend = ({ credentials, payload }) => {
-  return fetch(PLEROMA_ADMIN_FRONTENDS_INSTALL_URL, {
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      ...authHeaders(credentials),
-    },
-    method: 'POST',
-    body: JSON.stringify(payload),
-  }).then((response) => {
-    if (response.ok) {
-      return response.json()
-    } else {
-      return {
-        error: response,
-      }
-    }
-  })
-}
-
-const fetchScrobbles = ({ accountId, limit = 1 }) => {
+export const fetchScrobbles = ({ accountId, limit = 1 }) => {
   let url = PLEROMA_SCROBBLES_URL(accountId)
   const params = [['limit', limit]]
   const queryString = map(params, (param) => `${param[0]}=${param[1]}`).join(
     '&',
   )
   url += `?${queryString}`
-  return fetch(url, {}).then((response) => {
-    if (response.ok) {
-      return response.json()
-    } else {
-      return {
-        error: response,
-      }
-    }
+  return promisedRequest({ url })
+}
+
+export const fetchBookmarkFolders = ({ credentials }) =>
+  promisedRequest({
+    url: PLEROMA_BOOKMARK_FOLDERS_URL,
+    credentials,
   })
-}
 
-const deleteEmojiPack = ({ name }) => {
-  return fetch(PLEROMA_EMOJI_PACK_URL(name), { method: 'DELETE' })
-}
-
-const reloadEmoji = () => {
-  return fetch(PLEROMA_EMOJI_RELOAD_URL, { method: 'POST' })
-}
-
-const importEmojiFromFS = () => {
-  return fetch(PLEROMA_EMOJI_IMPORT_FS_URL)
-}
-
-const createEmojiPack = ({ name }) => {
-  return fetch(PLEROMA_EMOJI_PACK_URL(name), { method: 'POST' })
-}
-
-const listEmojiPacks = ({ page, pageSize }) => {
-  return fetch(PLEROMA_EMOJI_PACKS_URL(page, pageSize))
-}
-
-const listRemoteEmojiPacks = ({ instance, page, pageSize }) => {
-  if (!instance.startsWith('http')) {
-    instance = 'https://' + instance
-  }
-
-  return fetch(PLEROMA_EMOJI_PACKS_LS_REMOTE_URL(instance, page, pageSize), {
-    headers: { 'Content-Type': 'application/json' },
-  })
-}
-
-const downloadRemoteEmojiPack = ({ instance, packName, as }) => {
-  return fetch(PLEROMA_EMOJI_PACKS_DL_REMOTE_URL, {
+export const createBookmarkFolder = ({ name, emoji, credentials }) =>
+  promisedRequest({
+    url: PLEROMA_BOOKMARK_FOLDERS_URL,
+    credentials,
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      url: instance,
-      name: packName,
-      as,
-    }),
+    payload: { name, emoji },
   })
-}
 
-const downloadRemoteEmojiPackZIP = ({ url, packName, file }) => {
-  const data = new FormData()
-  if (file) data.set('file', file)
-  if (url) data.set('url', url)
-  data.set('name', packName)
-
-  return fetch(PLEROMA_EMOJI_PACKS_DL_REMOTE_ZIP_URL, {
-    method: 'POST',
-    body: data,
-  })
-}
-
-const saveEmojiPackMetadata = ({ name, newData }) => {
-  return fetch(PLEROMA_EMOJI_PACK_URL(name), {
+export const updateBookmarkFolder = ({ folderId, name, emoji, credentials }) =>
+  promisedRequest({
+    url: PLEROMA_BOOKMARK_FOLDER_URL(folderId),
+    credentials,
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ metadata: newData }),
+    payload: { name, emoji },
   })
-}
 
-const addNewEmojiFile = ({ packName, file, shortcode, filename }) => {
-  const data = new FormData()
-  if (filename.trim() !== '') {
-    data.set('filename', filename)
-  }
-  if (shortcode.trim() !== '') {
-    data.set('shortcode', shortcode)
-  }
-  data.set('file', file)
-
-  return fetch(PLEROMA_EMOJI_UPDATE_FILE_URL(packName), {
-    method: 'POST',
-    body: data,
-  })
-}
-
-const updateEmojiFile = ({
-  packName,
-  shortcode,
-  newShortcode,
-  newFilename,
-  force,
-}) => {
-  return fetch(PLEROMA_EMOJI_UPDATE_FILE_URL(packName), {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      shortcode,
-      new_shortcode: newShortcode,
-      new_filename: newFilename,
-      force,
-    }),
-  })
-}
-
-const deleteEmojiFile = ({ packName, shortcode }) => {
-  return fetch(
-    `${PLEROMA_EMOJI_UPDATE_FILE_URL(packName)}&shortcode=${shortcode}`,
-    { method: 'DELETE' },
-  )
-}
-
-const fetchBookmarkFolders = ({ credentials }) => {
-  const url = PLEROMA_BOOKMARK_FOLDERS_URL
-  return fetch(url, { headers: authHeaders(credentials) }).then((data) =>
-    data.json(),
-  )
-}
-
-const createBookmarkFolder = ({ name, emoji, credentials }) => {
-  const url = PLEROMA_BOOKMARK_FOLDERS_URL
-  const headers = authHeaders(credentials)
-  headers['Content-Type'] = 'application/json'
-
-  return fetch(url, {
-    headers,
-    method: 'POST',
-    body: JSON.stringify({ name, emoji }),
-  }).then((data) => data.json())
-}
-
-const updateBookmarkFolder = ({ folderId, name, emoji, credentials }) => {
-  const url = PLEROMA_BOOKMARK_FOLDER_URL(folderId)
-  const headers = authHeaders(credentials)
-  headers['Content-Type'] = 'application/json'
-
-  return fetch(url, {
-    headers,
-    method: 'PATCH',
-    body: JSON.stringify({ name, emoji }),
-  }).then((data) => data.json())
-}
-
-const deleteBookmarkFolder = ({ folderId, credentials }) => {
-  const url = PLEROMA_BOOKMARK_FOLDER_URL(folderId)
-  return fetch(url, {
+export const deleteBookmarkFolder = ({ folderId, credentials }) =>
+  promisedRequest({
+    url: PLEROMA_BOOKMARK_FOLDER_URL(folderId),
     method: 'DELETE',
-    headers: authHeaders(credentials),
+    credentials,
   })
-}
-
-const apiService = {
-  verifyCredentials,
-  fetchTimeline,
-  fetchPinnedStatuses,
-  fetchConversation,
-  fetchStatus,
-  fetchStatusSource,
-  fetchStatusHistory,
-  fetchFriends,
-  exportFriends,
-  fetchFollowers,
-  followUser,
-  unfollowUser,
-  pinOwnStatus,
-  unpinOwnStatus,
-  muteConversation,
-  unmuteConversation,
-  blockUser,
-  unblockUser,
-  removeUserFromFollowers,
-  editUserNote,
-  fetchUser,
-  fetchUserByName,
-  fetchUserRelationship,
-  favorite,
-  unfavorite,
-  retweet,
-  unretweet,
-  bookmarkStatus,
-  unbookmarkStatus,
-  postStatus,
-  editStatus,
-  deleteStatus,
-  uploadMedia,
-  setMediaDescription,
-  fetchMutes,
-  muteUser,
-  unmuteUser,
-  fetchBlocks,
-  fetchOAuthTokens,
-  revokeOAuthToken,
-  register,
-  getCaptcha,
-  updateProfileImages,
-  updateProfile,
-  updateProfileJSON,
-  importMutes,
-  importBlocks,
-  importFollows,
-  deleteAccount,
-  changeEmail,
-  moveAccount,
-  addAlias,
-  deleteAlias,
-  listAliases,
-  changePassword,
-  settingsMFA,
-  mfaDisableOTP,
-  generateMfaBackupCodes,
-  mfaSetupOTP,
-  mfaConfirmOTP,
-  addBackup,
-  listBackups,
-  fetchFollowRequests,
-  fetchLists,
-  createList,
-  getList,
-  updateList,
-  getListAccounts,
-  addAccountsToList,
-  removeAccountsFromList,
-  deleteList,
-  approveUser,
-  denyUser,
-  suggestions,
-  markNotificationsAsSeen,
-  dismissNotification,
-  vote,
-  fetchPoll,
-  fetchFavoritedByUsers,
-  fetchRebloggedByUsers,
-  fetchEmojiReactions,
-  reactWithEmoji,
-  unreactWithEmoji,
-  reportUser,
-  updateNotificationSettings,
-  search2,
-  searchUsers,
-  fetchKnownDomains,
-  fetchDomainMutes,
-  muteDomain,
-  unmuteDomain,
-  chats,
-  getOrCreateChat,
-  chatMessages,
-  sendChatMessage,
-  readChat,
-  deleteChatMessage,
-  setReportState,
-  fetchUserInLists,
-  fetchAnnouncements,
-  dismissAnnouncement,
-  postAnnouncement,
-  editAnnouncement,
-  deleteAnnouncement,
-  fetchScrobbles,
-  adminFetchAnnouncements,
-  fetchInstanceDBConfig,
-  fetchInstanceConfigDescriptions,
-  fetchAvailableFrontends,
-  pushInstanceDBConfig,
-  installFrontend,
-  importEmojiFromFS,
-  reloadEmoji,
-  listEmojiPacks,
-  createEmojiPack,
-  deleteEmojiPack,
-  saveEmojiPackMetadata,
-  addNewEmojiFile,
-  updateEmojiFile,
-  deleteEmojiFile,
-  listRemoteEmojiPacks,
-  downloadRemoteEmojiPack,
-  downloadRemoteEmojiPackZIP,
-  fetchBookmarkFolders,
-  createBookmarkFolder,
-  updateBookmarkFolder,
-  deleteBookmarkFolder,
-  adminListUsers,
-  adminGetUserData,
-  adminResendConfirmationEmail,
-  adminDeleteAccounts,
-  adminSetUsersRight,
-  adminSetUsersTags,
-  adminSetUsersApprovalStatus,
-  adminSetUsersConfirmationStatus,
-  adminSetUsersActivationStatus,
-  adminSetUsersSuggestionStatus,
-  adminListStatuses,
-  adminChangeStatusScope,
-  adminRequirePasswordChange,
-  adminDisableMFA,
-}
-
-export default apiService

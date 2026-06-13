@@ -1,4 +1,4 @@
-import apiService from '../api/api.service.js'
+import { fetchTimeline } from '../api/api.service.js'
 import { promiseInterval } from '../promise_interval/promise_interval.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -80,8 +80,7 @@ const fetchAndUpdate = ({ store, credentials, older = false, since }) => {
 }
 
 const fetchNotifications = ({ store, args, older }) => {
-  return apiService
-    .fetchTimeline(args)
+  return fetchTimeline(args)
     .then((response) => {
       if (response.errors) {
         if (

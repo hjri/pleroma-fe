@@ -1,4 +1,4 @@
-import apiService from '../services/api/api.service.js'
+import { markNotificationsAsSeen } from '../services/api/api.service.js'
 import {
   closeAllDesktopNotifications,
   closeDesktopNotification,
@@ -154,26 +154,22 @@ export const notifications = {
     },
     markNotificationsAsSeen({ rootState, state, commit }) {
       commit('markNotificationsAsSeen')
-      apiService
-        .markNotificationsAsSeen({
-          id: state.maxId,
-          credentials: rootState.users.currentUser.credentials,
-        })
-        .then(() => {
-          closeAllDesktopNotifications(rootState)
-        })
+      markNotificationsAsSeen({
+        id: state.maxId,
+        credentials: rootState.users.currentUser.credentials,
+      }).then(() => {
+        closeAllDesktopNotifications(rootState)
+      })
     },
     markSingleNotificationAsSeen({ rootState, commit }, { id }) {
       commit('markSingleNotificationAsSeen', { id })
-      apiService
-        .markNotificationsAsSeen({
-          single: true,
-          id,
-          credentials: rootState.users.currentUser.credentials,
-        })
-        .then(() => {
-          closeDesktopNotification(rootState, { id })
-        })
+      markNotificationsAsSeen({
+        single: true,
+        id,
+        credentials: rootState.users.currentUser.credentials,
+      }).then(() => {
+        closeDesktopNotification(rootState, { id })
+      })
     },
     dismissNotificationLocal({ commit }, { id }) {
       commit('dismissNotification', { id })

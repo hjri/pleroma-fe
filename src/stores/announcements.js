@@ -1,5 +1,18 @@
 import { defineStore } from 'pinia'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
+
+import {
+  getAnnouncements as adminGetAnnouncements,
+  deleteAnnouncement,
+  editAnnouncement,
+  postAnnouncement,
+} from 'src/services/api/admin.js'
+import {
+  dismissAnnouncement,
+  getAnnouncements,
+} from 'src/services/api/api.service.js'
+
 const FETCH_ANNOUNCEMENT_INTERVAL_MS = 1000 * 60 * 5
 
 export const useAnnouncementsStore = defineStore('announcements', {
@@ -31,15 +44,19 @@ export const useAnnouncementsStore = defineStore('announcements', {
         currentUser &&
         currentUser.privileges.has('announcements_manage_announcements')
 
-      const getAnnouncements = async () => {
+      const fetchAnnouncements = async () => {
         if (!isAdmin) {
-          return window.vuex.state.api.backendInteractor.fetchAnnouncements()
+          return fetchAnnouncements({
+            credentials: useCredentialsStore().current,
+          })
         }
 
-        const all =
-          await window.vuex.state.api.backendInteractor.adminFetchAnnouncements()
-        const visible =
-          await window.vuex.state.api.backendInteractor.fetchAnnouncements()
+        const all = await adminGetAnnouncements({
+          credentials: useCredentialsStore().current,
+        })
+        const visible = await getAnnouncements({
+          credentials: useCredentialsStore().current,
+        })
         const visibleObject = visible.reduce((a, c) => {
           a[c.id] = c
           return a
@@ -59,7 +76,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
         return all
       }
 
-      return getAnnouncements()
+      return fetchAnnouncements()
         .then((announcements) => {
           this.announcements = announcements
         })
@@ -74,17 +91,18 @@ export const useAnnouncementsStore = defineStore('announcements', {
         })
     },
     markAnnouncementAsRead(id) {
-      return window.vuex.state.api.backendInteractor
-        .dismissAnnouncement({ id })
-        .then(() => {
-          const index = this.announcements.findIndex((a) => a.id === id)
+      return dismissAnnouncement({
+        id,
+        credentials: useCredentialsStore().current,
+      }).then(() => {
+        const index = this.announcements.findIndex((a) => a.id === id)
 
-          if (index < 0) {
-            return
-          }
+        if (index < 0) {
+          return
+        }
 
-          this.announcements[index].read = true
-        })
+        this.announcements[index].read = true
+      })
     },
     startFetchingAnnouncements() {
       if (this.fetchAnnouncementsTimer) {
@@ -105,25 +123,35 @@ export const useAnnouncementsStore = defineStore('announcements', {
       clearInterval(interval)
     },
     postAnnouncement({ content, startsAt, endsAt, allDay }) {
-      return window.vuex.state.api.backendInteractor
-        .postAnnouncement({ content, startsAt, endsAt, allDay })
-        .then(() => {
-          return this.fetchAnnouncements()
-        })
+      return postAnnouncement({
+        credentials: useCredentialsStore().current,
+        content,
+        startsAt,
+        endsAt,
+        allDay,
+      }).then(() => {
+        return this.fetchAnnouncements()
+      })
     },
     editAnnouncement({ id, content, startsAt, endsAt, allDay }) {
-      return window.vuex.state.api.backendInteractor
-        .editAnnouncement({ id, content, startsAt, endsAt, allDay })
-        .then(() => {
-          return this.fetchAnnouncements()
-        })
+      return editAnnouncement({
+        id,
+        content,
+        startsAt,
+        endsAt,
+        allDay,
+        credentials: useCredentialsStore().current,
+      }).then(() => {
+        return this.fetchAnnouncements()
+      })
     },
     deleteAnnouncement(id) {
-      return window.vuex.state.api.backendInteractor
-        .deleteAnnouncement({ id })
-        .then(() => {
-          return this.fetchAnnouncements()
-        })
+      return deleteAnnouncement({
+        id,
+        credentials: useCredentialsStore().current,
+      }).then(() => {
+        return this.fetchAnnouncements()
+      })
     },
   },
 })
