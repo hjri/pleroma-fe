@@ -1,48 +1,90 @@
 <template>
   <div
-    class="list"
+    class="List"
     role="list"
+    :class="{ '-scrollable': scrollable }"
   >
     <div
-      v-for="item in items"
-      :key="getKey(item)"
-      class="list-item"
-      :class="[getClass(item), nonInteractive ? '-non-interactive' : '']"
-      role="listitem"
+      v-if="selectable"
+      class="header"
     >
-      <slot
-        name="item"
-        :item="item"
-      />
+      <div class="checkbox-wrapper">
+        <Checkbox
+          :model-value="allSelected"
+          :indeterminate="someSelected"
+          @update:model-value="toggleAll"
+        >
+          {{ $t('selectable_list.select_all') }}
+        </Checkbox>
+      </div>
+      <div class="actions">
+        <slot
+          name="header"
+          :selected="selectedItems"
+        />
+      </div>
     </div>
     <div
-      v-if="items.length === 0 && !!$slots.empty"
-      class="list-empty-content faint"
+      class="list"
+      role="list"
     >
-      <slot name="empty" />
+      <div
+        v-for="item in finalItems"
+        :key="getKey(item)"
+        class="list-item"
+        :class="[getClass(item), nonInteractive ? '-non-interactive' : '']"
+        role="listitem"
+      >
+        <div
+          v-if="selectable"
+          class="checkbox-wrapper"
+        >
+          <Checkbox
+            :model-value="isSelected(item)"
+            @update:model-value="checked => toggle(checked, item)"
+            @click.stop
+          />
+        </div>
+        <slot
+          name="item"
+          :item="item"
+        />
+      </div>
+      <div
+        v-if="finalItems.length === 0 && !!$slots.empty"
+        class="list-item list-empty-content faint"
+      >
+        <slot name="empty" />
+      </div>
+      <div class="footer">
+        <button
+          v-if="error"
+          class="button-unstyled -link -fullwidth alert error"
+          @click="fetchEntries"
+        >
+          {{ $t('general.generic_error') }}
+        </button>
+        <FAIcon
+          v-else-if="loading"
+          spin
+          icon="circle-notch"
+        />
+        <a
+          v-else-if="!bottomedOut"
+          role="button"
+          tabindex="0"
+          @click="fetchEntries"
+        >
+          {{ $t('general.more') }}
+        </a>
+        <span v-else-if="finalItems.length !== 0">
+          {{ $t('general.no_more') }}
+        </span>
+      </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    items: {
-      type: Array,
-      default: () => [],
-    },
-    getKey: {
-      type: Function,
-      default: (item) => item.id,
-    },
-    getClass: {
-      type: Function,
-      default: () => '',
-    },
-    nonInteractive: {
-      type: Boolean,
-      default: false,
-    },
-  },
-}
-</script>
+<script src="./list.js"></script>
+
+<style src="./list.css"></style>

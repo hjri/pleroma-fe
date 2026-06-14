@@ -1,5 +1,5 @@
 <template>
-  <basic-user-card :user="user">
+  <BasicUserCard :user="user">
     <div class="block-card-content-container">
       <span
         v-if="blocked && blockExpiryAvailable"
@@ -30,7 +30,7 @@
         :is-mute="false"
       />
     </teleport>
-  </basic-user-card>
+  </BasicUserCard>
 </template>
 
 <script src="./block_card.js"></script>

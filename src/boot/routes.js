@@ -85,6 +85,13 @@ export default (store) => {
       ),
     },
     {
+      name: 'user-profile-admin-view',
+      path: '/users/$:id/admin_view',
+      component: defineAsyncComponent(
+        () => import('src/components/user_profile/user_profile_admin_view.vue'),
+      ),
+    },
+    {
       name: 'interactions',
       path: '/users/:username/interactions',
       component: defineAsyncComponent(

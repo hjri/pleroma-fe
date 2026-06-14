@@ -7,6 +7,8 @@ import ListSetting from '../helpers/list_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import StringSetting from '../helpers/string_setting.vue'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
+
 const MediaProxyTab = {
   provide() {
     return {
@@ -25,12 +27,12 @@ const MediaProxyTab = {
   },
   computed: {
     mediaProxyEnabled() {
-      return this.$store.state.adminSettings.draft[':pleroma'][':media_proxy'][
+      return useAdminSettingsStore().draft[':pleroma'][':media_proxy'][
         ':enabled'
       ]
     },
     mediaInvalidationProvider() {
-      return this.$store.state.adminSettings.draft[':pleroma'][':media_proxy'][
+      return useAdminSettingsStore().draft[':pleroma'][':media_proxy'][
         ':invalidation'
       ][':provider']
     },

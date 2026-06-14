@@ -7,6 +7,7 @@ import IntegerSetting from '../helpers/integer_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import StringSetting from '../helpers/string_setting.vue'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -37,13 +38,13 @@ const FrontendsTab = {
   },
   created() {
     if (this.user.rights.admin) {
-      this.$store.dispatch('loadFrontendsStuff')
+      useAdminSettingsStore().loadFrontendsStuff()
     }
   },
   computed: {
     ...SharedComputedObject(),
     frontends() {
-      return this.$store.state.adminSettings.frontends
+      return useAdminSettingsStore().frontends
     },
   },
   methods: {
@@ -76,7 +77,7 @@ const FrontendsTab = {
           this.working = false
         })
         .then(async (response) => {
-          this.$store.dispatch('loadFrontendsStuff')
+          useAdminSettingsStore().loadFrontendsStuff()
           if (response.error) {
             const reason = await response.error.json()
             useInterfaceStore().pushGlobalNotice({
@@ -104,7 +105,7 @@ const FrontendsTab = {
       const ref = suggestRef || this.getSuggestedRef(frontend)
       const { name } = frontend
 
-      this.$store.commit('updateAdminDraft', {
+      useAdminSettingsStore().updateAdminDraft({
         path: [':pleroma', ':frontends', ':primary'],
         value: { name, ref },
       })

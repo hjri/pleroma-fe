@@ -4,6 +4,7 @@ export default {
   validInnerComponents: ['Text', 'Icon', 'Link', 'Border', 'ButtonUnstyled'],
   variants: {
     normal: '.neutral',
+    info: '.info',
     error: '.error',
     warning: '.warning',
     success: '.success',
@@ -45,6 +46,12 @@ export default {
       variant: 'success',
       directives: {
         background: '--cGreen',
+      },
+    },
+    {
+      variant: 'info',
+      directives: {
+        background: '--cBlue',
       },
     },
   ],

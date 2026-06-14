@@ -1,6 +1,7 @@
 import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const SharedComputedObject = () => ({
@@ -8,9 +9,11 @@ const SharedComputedObject = () => ({
   ...mapPiniaState(useMergedConfigStore, {
     expertLevel: (store) => store.mergedConfig.expertLevel,
   }),
+  ...mapPiniaState(useAdminSettingsStore, {
+    adminConfig: (store) => store.config,
+    adminDraft: (store) => store.draft,
+  }),
   ...mapState({
-    adminConfig: (state) => state.adminSettings.config,
-    adminDraft: (state) => state.adminSettings.draft,
     user: (state) => state.users.currentUser,
   }),
 })

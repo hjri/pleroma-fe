@@ -170,15 +170,11 @@ const unmuteDomain = (store, domain) => {
 export const mutations = {
   tagUser(state, { user: { id }, tag }) {
     const user = state.usersObject[id]
-    const tags = user.tags || []
-    const newTags = tags.concat([tag])
-    user.tags = newTags
+    user.tags.add(tag)
   },
   untagUser(state, { user: { id }, tag }) {
     const user = state.usersObject[id]
-    const tags = user.tags || []
-    const newTags = tags.filter((t) => t !== tag)
-    user.tags = newTags
+    user.tags.delete(tag)
   },
   updateRight(state, { user: { id }, right, value }) {
     const user = state.usersObject[id]
@@ -186,9 +182,12 @@ export const mutations = {
     newRights[right] = value
     user.rights = newRights
   },
-  updateActivationStatus(state, { user: { id }, deactivated }) {
-    const user = state.usersObject[id]
-    user.deactivated = deactivated
+  updateUserAdminData(state, { user }) {
+    const { id } = user
+    const localUser = state.usersObject[id]
+    localUser.adminData = user
+    localUser.deactivated = !user.is_active
+    localUser.tags = new Set(user.tags)
   },
   setCurrentUser(state, user) {
     state.lastLoginName = user.screen_name
@@ -369,9 +368,21 @@ const users = {
   getters,
   actions: {
     fetchUserIfMissing(store, id) {
-      if (!store.getters.findUser(id)) {
-        store.dispatch('fetchUser', id)
+      const user = store.getters.findUser(id)
+      if (!user) {
+        return store.dispatch('fetchUser', id)
+      } else {
+        return Promise.resolve(user)
       }
+    },
+    updateUserAdminData(store, { userAdminData }) {
+      return store
+        .dispatch('fetchUserIfMissing', userAdminData.id)
+        .then((user) => {
+          user.adminData = userAdminData
+          store.commit('addNewUsers', [user])
+          return user
+        })
     },
     fetchUser(store, id) {
       return store.rootState.api.backendInteractor
@@ -540,15 +551,6 @@ const users = {
         .then((relationship) =>
           commit('updateUserRelationship', [relationship]),
         )
-    },
-    toggleActivationStatus({ rootState, commit }, { user }) {
-      const api = user.deactivated
-        ? rootState.api.backendInteractor.activateUser
-        : rootState.api.backendInteractor.deactivateUser
-      api({ user }).then((user) => {
-        const deactivated = !user.is_active
-        commit('updateActivationStatus', { user, deactivated })
-      })
     },
     registerPushNotifications(store) {
       const token = store.state.currentUser.credentials

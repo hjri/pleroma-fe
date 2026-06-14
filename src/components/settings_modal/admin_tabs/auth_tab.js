@@ -9,6 +9,8 @@ import SharedComputedObject from '../helpers/shared_computed_object.js'
 import StringSetting from '../helpers/string_setting.vue'
 import TupleSetting from '../helpers/tuple_setting.vue'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
+
 const AuthTab = {
   provide() {
     return {
@@ -30,9 +32,7 @@ const AuthTab = {
   computed: {
     ...SharedComputedObject(),
     LDAPEnabled() {
-      return this.$store.state.adminSettings.draft[':pleroma'][':ldap'][
-        ':enabled'
-      ]
+      return useAdminSettingsStore().draft[':pleroma'][':ldap'][':enabled']
     },
   },
 }

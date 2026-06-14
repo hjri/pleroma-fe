@@ -160,19 +160,25 @@ export default {
         'tab-content-wrapper',
         active ? '-active' : '-hidden',
       ]
+      const slotWrapperClasses = [
+        'tab-slot-wrapper',
+        active ? '-active' : '-hidden',
+      ]
       const contentClasses = ['tab-content']
-      if (props['full-width'] || props['full-width'] === '') {
+      if (props['full-width'] || props['full-width'] != null) {
         contentClasses.push('-full-width')
         wrapperClasses.push('-full-width')
+        slotWrapperClasses.push('-full-width')
       }
-      if (props['full-height'] || props['full-width'] === '') {
+      if (props['full-height'] || props['full-width'] != null) {
         contentClasses.push('-full-height')
         wrapperClasses.push('-full-height')
+        slotWrapperClasses.push('-full-height')
       }
       return (
         <div class={wrapperClasses}>
           <div class="tab-mobile-header">{header}</div>
-          <div class="tab-slot-wrapper">
+          <div class={slotWrapperClasses}>
             <div class={contentClasses}>{renderSlot}</div>
           </div>
         </div>

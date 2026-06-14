@@ -1,3 +1,4 @@
+import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 import AuthTab from './admin_tabs/auth_tab.vue'
 import EmojiTab from './admin_tabs/emoji_tab.vue'
 import FederationTab from './admin_tabs/federation_tab.vue'
@@ -15,27 +16,35 @@ import PostsTab from './admin_tabs/posts_tab.vue'
 import RatesTab from './admin_tabs/rates_tab.vue'
 import RegistrationsTab from './admin_tabs/registrations_tab.vue'
 import UploadsTab from './admin_tabs/uploads_tab.vue'
+import UsersTab from './admin_tabs/users_tab.vue'
 import VerticalTabSwitcher from './helpers/vertical_tab_switcher.jsx'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
+  faBell,
   faChain,
   faChartLine,
   faCircleNodes,
   faDoorOpen,
+  faDownload,
   faEllipsis,
   faEnvelope,
+  faEyeSlash,
   faGauge,
   faGears,
   faGlobe,
   faHand,
+  faInfo,
   faKey,
   faLaptopCode,
   faMessage,
+  faPaintBrush,
   faTowerBroadcast,
   faUpload,
+  faUser,
   faWrench,
 } from '@fortawesome/free-solid-svg-icons'
 
@@ -45,6 +54,12 @@ library.add(
   faChain,
   faGlobe,
   faLaptopCode,
+  faPaintBrush,
+  faBell,
+  faDownload,
+  faEyeSlash,
+  faInfo,
+  faUser,
   faTowerBroadcast,
   faEnvelope,
   faChartLine,
@@ -63,11 +78,12 @@ const SettingsModalAdminContent = {
     VerticalTabSwitcher,
 
     InstanceTab,
+    UsersTab,
+    LimitsTab,
     RegistrationsTab,
     EmojiTab,
     FrontendsTab,
     FederationTab,
-    LimitsTab,
     MailerTab,
     UploadsTab,
     MediaProxyTab,
@@ -94,18 +110,18 @@ const SettingsModalAdminContent = {
       return useInterfaceStore().settingsModalState === 'visible'
     },
     adminDbLoaded() {
-      return this.$store.state.adminSettings.loaded
+      return useAdminSettingsStore().loaded
     },
     adminDescriptionsLoaded() {
-      return this.$store.state.adminSettings.descriptions !== null
+      return useAdminSettingsStore().descriptions !== null
     },
     noDb() {
-      return this.$store.state.adminSettings.dbConfigEnabled === false
+      return useAdminSettingsStore().dbConfigEnabled === false
     },
   },
   created() {
     if (this.user.rights.admin) {
-      this.$store.dispatch('loadAdminStuff')
+      useAdminSettingsStore().loadAdminStuff()
     }
   },
   methods: {

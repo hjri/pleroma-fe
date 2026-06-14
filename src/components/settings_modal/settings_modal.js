@@ -8,6 +8,7 @@ import Modal from 'src/components/modal/modal.vue'
 import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
 import Popover from 'src/components/popover/popover.vue'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -92,8 +93,11 @@ const SettingsModal = {
     closeModal() {
       useInterfaceStore().closeSettingsModal()
     },
-    peekModal() {
-      useInterfaceStore().togglePeekSettingsModal()
+    toggleMinimizeModal(state) {
+      useInterfaceStore().toggleMinimizeSettingsModal()
+    },
+    minimizeModal() {
+      useInterfaceStore().setSettingsModalState('minimized')
     },
     importValidator(data) {
       if (!Array.isArray(data._pleroma_settings_version)) {
@@ -232,10 +236,10 @@ const SettingsModal = {
       return clone
     },
     resetAdminDraft() {
-      this.$store.commit('resetAdminDraft')
+      useAdminSettingsStore().resetAdminDraft()
     },
     pushAdminDraft() {
-      this.$store.dispatch('pushAdminDraft')
+      useAdminSettingsStore().pushAdminDraft()
     },
     ...mapActions(useInterfaceStore, [
       'temporaryChangesRevert',
@@ -250,7 +254,7 @@ const SettingsModal = {
       modalMode: (store) => store.settingsModalMode,
       modalOpenedOnceUser: (store) => store.settingsModalLoadedUser,
       modalOpenedOnceAdmin: (store) => store.settingsModalLoadedAdmin,
-      modalPeeked: (store) => store.settingsModalState === 'minimized',
+      modalMinimized: (store) => store.settingsModalState === 'minimized',
     }),
     expertLevel: {
       get() {
@@ -265,9 +269,14 @@ const SettingsModal = {
     },
     adminDraftAny() {
       return !isEqual(
-        this.$store.state.adminSettings.config,
-        this.$store.state.adminSettings.draft,
+        useAdminSettingsStore().config,
+        useAdminSettingsStore().draft,
       )
+    },
+  },
+  watch: {
+    $route(r) {
+      this.minimizeModal()
     },
   },
 }

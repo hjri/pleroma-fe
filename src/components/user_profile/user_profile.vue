@@ -39,14 +39,14 @@
           :label="$t('user_card.followees')"
           :disabled="!user.friends_count"
         >
-          <FriendList
-            :user-id="userId"
-            :non-interactive="true"
+          <List
+            :fetch-function="fetchUsers('Friends')"
+            :external-items="friends"
           >
             <template #item="{item}">
               <FollowCard :user="item" />
             </template>
-          </FriendList>
+          </List>
         </div>
         <div
           v-if="followersTabVisible"
@@ -55,9 +55,9 @@
           :label="$t('user_card.followers')"
           :disabled="!user.followers_count"
         >
-          <FollowerList
-            :user-id="userId"
-            :non-interactive="true"
+          <List
+            :fetch-function="fetchUsers('Followers')"
+            :external-items="followers"
           >
             <template #item="{item}">
               <FollowCard
@@ -65,7 +65,7 @@
                 :no-follows-you="isUs"
               />
             </template>
-          </FollowerList>
+          </List>
         </div>
         <Timeline
           key="media"
@@ -126,52 +126,4 @@
 
 <script src="./user_profile.js"></script>
 
-<style lang="scss">
-.user-profile {
-  flex: 2;
-
-  .card-wrapper {
-    border-top-left-radius: var(--roundness);
-    border-top-right-radius: var(--roundness);
-  }
-
-  .panel-footer {
-    border-bottom-left-radius: var(--roundness);
-    border-bottom-right-radius: var(--roundness);
-  }
-
-  // No sticky header on user profile
-  --currentPanelStack: 0;
-
-  .userlist-placeholder {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 2em;
-  }
-
-  .user-info {
-    margin: 1.2em;
-  }
-}
-
-.user-profile-placeholder {
-  .panel-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 7em;
-  }
-
-  .alert {
-    padding: 0.75em 5em;
-    border-width: 2px;
-
-    .error-message {
-      color: var(--text);
-      font-weight: bold;
-    }
-  }
-}
-
-</style>
+<style src="./user_profile.scss" lang="scss"></style>
