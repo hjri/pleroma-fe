@@ -133,7 +133,7 @@
           <AdminUserCard :user-id="item.id" />
         </template>
         <template #empty>
-          <span>{{ $t('admin_dash.users.no_users_found')}}</span>
+          <span>{{ $t('admin_dash.users.no_users_found') }}</span>
         </template>
       </List>
     </div>
