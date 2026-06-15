@@ -548,11 +548,15 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     importEmojiFromFS() {
       return importEmojiFromFS({ credentials: useCredentialsStore().current })
     },
-    listEmojiPacks() {
-      return listEmojiPacks({ credentials: useCredentialsStore().current })
+    listEmojiPacks(params) {
+      return listEmojiPacks({
+        ...params,
+        credentials: useCredentialsStore().current
+      })
     },
-    listRemoteEmojiPacks() {
+    listRemoteEmojiPacks(params) {
       return listRemoteEmojiPacks({
+        ...params,
         credentials: useCredentialsStore().current,
       })
     },

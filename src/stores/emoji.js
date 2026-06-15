@@ -188,8 +188,8 @@ export const useEmojiStore = defineStore('emoji', {
       this.adminPacksLocalLoading = true
       this.adminPacksLocal = await this.getAdminPacks(
         useInstanceStore().server,
-        () =>
-          listEmojiPacks({
+        (params) => listEmojiPacks({
+            ...params,
             credentials: useCredentialsStore().current,
           }),
       )
@@ -208,7 +208,6 @@ export const useEmojiStore = defineStore('emoji', {
         page: 1,
         pageSize: 0,
       })
-        .then((data) => data.json())
         .then((data) => {
           if (data.error !== undefined) {
             return Promise.reject(data.error)
@@ -223,7 +222,6 @@ export const useEmojiStore = defineStore('emoji', {
                 page: i,
                 pageSize,
               })
-                .then((data) => data.json())
                 .then((pageData) => {
                   if (pageData.error !== undefined) {
                     return Promise.reject(pageData.error)
@@ -249,7 +247,7 @@ export const useEmojiStore = defineStore('emoji', {
             }, {})
         })
         .catch((data) => {
-          this.displayError(data)
+          console.error(data)
         })
     },
 
