@@ -5,7 +5,10 @@ import List from 'src/components/list/list.vue'
 import Modal from 'src/components/modal/modal.vue'
 import UserLink from 'src/components/user_link/user_link.vue'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useReportsStore } from 'src/stores/reports.js'
+
+import { reportUser } from 'src/services/api/api.service.js'
 
 const UserReportingModal = {
   components: {
@@ -71,9 +74,9 @@ const UserReportingModal = {
         comment: this.comment,
         forward: this.forward,
         statusIds: [...this.statusIdsToReport],
+        credentials: useCredentialsStore().current,
       }
-      this.$store.state.api.backendInteractor
-        .reportUser({ ...params })
+      reportUser({ ...params })
         .then(() => {
           this.processing = false
           this.resetState()

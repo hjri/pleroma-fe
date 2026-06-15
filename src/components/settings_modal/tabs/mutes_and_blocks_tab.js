@@ -9,8 +9,11 @@ import MuteCard from 'src/components/mute_card/mute_card.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens.js'
+
+import { importBlocks, importFollows } from 'src/services/api/api.service.js'
 
 const MutesAndBlocks = {
   data() {
@@ -54,22 +57,24 @@ const MutesAndBlocks = {
       return () => this.$store.dispatch('fetch' + group, this.userId)
     },
     importFollows(file) {
-      return this.$store.state.api.backendInteractor
-        .importFollows({ file })
-        .then((status) => {
-          if (!status) {
-            throw new Error('failed')
-          }
-        })
+      return importFollows({
+        file,
+        credentials: useCredentialsStore().current,
+      }).then((status) => {
+        if (!status) {
+          throw new Error('failed')
+        }
+      })
     },
     importBlocks(file) {
-      return this.$store.state.api.backendInteractor
-        .importBlocks({ file })
-        .then((status) => {
-          if (!status) {
-            throw new Error('failed')
-          }
-        })
+      return importBlocks({
+        file,
+        credentials: useCredentialsStore().current,
+      }).then((status) => {
+        if (!status) {
+          throw new Error('failed')
+        }
+      })
     },
     generateExportableUsersContent(users) {
       // Get addresses

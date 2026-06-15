@@ -20,6 +20,7 @@ import { toRaw } from 'vue'
 
 import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 
@@ -31,6 +32,7 @@ import {
   validateSetting,
 } from 'src/modules/default_config_state.js'
 import { oldDefaultConfigSync } from 'src/modules/old_default_config_state.js'
+import { updateProfileJSON } from 'src/services/api/api.service.js'
 
 export const VERSION = 2
 export const NEW_USER_DATE = new Date('2026-03-16') // date of writing this, basically
@@ -789,7 +791,10 @@ export const useSyncConfigStore = defineStore('sync_config', {
       if (!needPush) return
       this.updateCache({ username: window.vuex.state.users.currentUser.fqn })
       const params = { pleroma_settings_store: { 'pleroma-fe': this.cache } }
-      window.vuex.state.api.backendInteractor.updateProfileJSON({ params })
+      updateProfileJSON({
+        params,
+        credentials: useCredentialsStore().current,
+      })
     },
   },
   persist: {

@@ -10,7 +10,6 @@ import {
 } from 'lodash'
 
 import { register } from '../services/api/api.service.js'
-import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import oauthApi from '../services/new_api/oauth.js'
 import {
   registerPushNotifications,
@@ -21,14 +20,34 @@ import {
   windowWidth,
 } from '../services/window_utils/window_utils'
 
+import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
+import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useListsStore } from 'src/stores/lists.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
+
+import {
+  fetchBlocks,
+  fetchDomainMutes,
+  fetchFollowers,
+  fetchFriends,
+  fetchMutes,
+  fetchUser,
+  fetchUserByName,
+  fetchUserInLists,
+  fetchUserRelationship,
+  followUser,
+  getCaptcha,
+  muteUser,
+  searchUsers,
+  verifyCredentials,
+} from 'src/services/api/api.service.js'
 
 // TODO: Unify with mergeOrAdd in statuses.js
 export const mergeOrAdd = (arr, obj, item) => {
@@ -72,46 +91,38 @@ const blockUser = (store, args) => {
   store.commit('updateUserRelationship', [predictedRelationship])
   store.commit('addBlockId', id)
 
-  return store.rootState.api.backendInteractor
-    .blockUser({ id, expiresIn })
-    .then((relationship) => {
-      store.commit('updateUserRelationship', [relationship])
-      store.commit('addBlockId', id)
+  return blockUser({ id, expiresIn }).then((relationship) => {
+    store.commit('updateUserRelationship', [relationship])
+    store.commit('addBlockId', id)
 
-      store.commit('removeStatus', { timeline: 'friends', userId: id })
-      store.commit('removeStatus', { timeline: 'public', userId: id })
-      store.commit('removeStatus', {
-        timeline: 'publicAndExternal',
-        userId: id,
-      })
+    store.commit('removeStatus', { timeline: 'friends', userId: id })
+    store.commit('removeStatus', { timeline: 'public', userId: id })
+    store.commit('removeStatus', {
+      timeline: 'publicAndExternal',
+      userId: id,
     })
+  })
 }
 
 const unblockUser = (store, id) => {
-  return store.rootState.api.backendInteractor
-    .unblockUser({ id })
-    .then((relationship) =>
-      store.commit('updateUserRelationship', [relationship]),
-    )
+  return unblockUser({ id }).then((relationship) =>
+    store.commit('updateUserRelationship', [relationship]),
+  )
 }
 
 const removeUserFromFollowers = (store, id) => {
-  return store.rootState.api.backendInteractor
-    .removeUserFromFollowers({ id })
-    .then((relationship) =>
-      store.commit('updateUserRelationship', [relationship]),
-    )
+  return removeUserFromFollowers({ id }).then((relationship) =>
+    store.commit('updateUserRelationship', [relationship]),
+  )
 }
 
 const editUserNote = (store, { id, comment }) => {
-  return store.rootState.api.backendInteractor
-    .editUserNote({ id, comment })
-    .then((relationship) =>
-      store.commit('updateUserRelationship', [relationship]),
-    )
+  return editUserNote({ id, comment }).then((relationship) =>
+    store.commit('updateUserRelationship', [relationship]),
+  )
 }
 
-const muteUser = (store, args) => {
+const localMuteUser = (store, args) => {
   const id = typeof args === 'object' ? args.id : args
   const expiresIn = typeof args === 'object' ? args.expiresIn : 0
 
@@ -119,12 +130,14 @@ const muteUser = (store, args) => {
   store.commit('updateUserRelationship', [predictedRelationship])
   store.commit('addMuteId', id)
 
-  return store.rootState.api.backendInteractor
-    .muteUser({ id, expiresIn })
-    .then((relationship) => {
-      store.commit('updateUserRelationship', [relationship])
-      store.commit('addMuteId', id)
-    })
+  return muteUser({
+    id,
+    expiresIn,
+    credentials: useCredentialsStore().current,
+  }).then((relationship) => {
+    store.commit('updateUserRelationship', [relationship])
+    store.commit('addMuteId', id)
+  })
 }
 
 const unmuteUser = (store, id) => {
@@ -132,39 +145,43 @@ const unmuteUser = (store, id) => {
   predictedRelationship.muting = false
   store.commit('updateUserRelationship', [predictedRelationship])
 
-  return store.rootState.api.backendInteractor
-    .unmuteUser({ id })
-    .then((relationship) =>
-      store.commit('updateUserRelationship', [relationship]),
-    )
+  return unmuteUser({ id }).then((relationship) =>
+    store.commit('updateUserRelationship', [relationship]),
+  )
 }
 
 const hideReblogs = (store, userId) => {
-  return store.rootState.api.backendInteractor
-    .followUser({ id: userId, reblogs: false })
-    .then((relationship) => {
-      store.commit('updateUserRelationship', [relationship])
-    })
+  return followUser({
+    id: userId,
+    reblogs: false,
+    credentials: useCredentialsStore().current,
+  }).then((relationship) => {
+    store.commit('updateUserRelationship', [relationship])
+  })
 }
 
 const showReblogs = (store, userId) => {
-  return store.rootState.api.backendInteractor
-    .followUser({ id: userId, reblogs: true })
-    .then((relationship) =>
-      store.commit('updateUserRelationship', [relationship]),
-    )
+  return followUser({
+    id: userId,
+    reblogs: true,
+    credentials: useCredentialsStore().current,
+  }).then((relationship) =>
+    store.commit('updateUserRelationship', [relationship]),
+  )
 }
 
 const muteDomain = (store, domain) => {
-  return store.rootState.api.backendInteractor
-    .muteDomain({ domain })
-    .then(() => store.commit('addDomainMute', domain))
+  return muteDomain({
+    domain,
+    credentials: useCredentialsStore().current,
+  }).then(() => store.commit('addDomainMute', domain))
 }
 
 const unmuteDomain = (store, domain) => {
-  return store.rootState.api.backendInteractor
-    .unmuteDomain({ domain })
-    .then(() => store.commit('removeDomainMute', domain))
+  return unmuteDomain({
+    domain,
+    credentials: useCredentialsStore().current,
+  }).then(() => store.commit('removeDomainMute', domain))
 }
 
 export const mutations = {
@@ -385,55 +402,60 @@ const users = {
         })
     },
     fetchUser(store, id) {
-      return store.rootState.api.backendInteractor
-        .fetchUser({ id })
-        .then((user) => {
-          store.commit('addNewUsers', [user])
-          return user
-        })
+      return fetchUser({
+        id,
+        credentials: useCredentialsStore().current,
+      }).then((user) => {
+        store.commit('addNewUsers', [user])
+        return user
+      })
     },
     fetchUserByName(store, name) {
-      return store.rootState.api.backendInteractor
-        .fetchUserByName({ name })
-        .then((user) => {
-          store.commit('addNewUsers', [user])
-          return user
-        })
+      return fetchUserByName({
+        name,
+        credentials: useCredentialsStore().current,
+      }).then((user) => {
+        store.commit('addNewUsers', [user])
+        return user
+      })
     },
     fetchUserRelationship(store, id) {
       if (store.state.currentUser) {
-        store.rootState.api.backendInteractor
-          .fetchUserRelationship({ id })
-          .then((relationships) =>
-            store.commit('updateUserRelationship', relationships),
-          )
+        fetchUserRelationship({
+          id,
+          credentials: useCredentialsStore().current,
+        }).then((relationships) =>
+          store.commit('updateUserRelationship', relationships),
+        )
       }
     },
     fetchUserInLists(store, id) {
       if (store.state.currentUser) {
-        store.rootState.api.backendInteractor
-          .fetchUserInLists({ id })
-          .then((inLists) => store.commit('updateUserInLists', { id, inLists }))
+        fetchUserInLists({
+          id,
+          credentials: useCredentialsStore().current,
+        }).then((inLists) => store.commit('updateUserInLists', { id, inLists }))
       }
     },
     fetchBlocks(store, args) {
       const { reset } = args || {}
 
       const maxId = store.state.currentUser.blockIdsMaxId
-      return store.rootState.api.backendInteractor
-        .fetchBlocks({ maxId })
-        .then((blocks) => {
-          if (reset) {
-            store.commit('saveBlockIds', map(blocks, 'id'))
-          } else {
-            map(blocks, 'id').map((id) => store.commit('addBlockId', id))
-          }
-          if (blocks.length) {
-            store.commit('setBlockIdsMaxId', last(blocks).id)
-          }
-          store.commit('addNewUsers', blocks)
-          return blocks
-        })
+      return fetchBlocks({
+        maxId,
+        credentials: useCredentialsStore().current,
+      }).then((blocks) => {
+        if (reset) {
+          store.commit('saveBlockIds', map(blocks, 'id'))
+        } else {
+          map(blocks, 'id').map((id) => store.commit('addBlockId', id))
+        }
+        if (blocks.length) {
+          store.commit('setBlockIdsMaxId', last(blocks).id)
+        }
+        store.commit('addNewUsers', blocks)
+        return blocks
+      })
     },
     blockUser(store, data) {
       return blockUser(store, data)
@@ -457,23 +479,24 @@ const users = {
       const { reset } = args || {}
 
       const maxId = store.state.currentUser.muteIdsMaxId
-      return store.rootState.api.backendInteractor
-        .fetchMutes({ maxId })
-        .then((mutes) => {
-          if (reset) {
-            store.commit('saveMuteIds', map(mutes, 'id'))
-          } else {
-            map(mutes, 'id').map((id) => store.commit('addMuteId', id))
-          }
-          if (mutes.length) {
-            store.commit('setMuteIdsMaxId', last(mutes).id)
-          }
-          store.commit('addNewUsers', mutes)
-          return mutes
-        })
+      return fetchMutes({
+        maxId,
+        credentials: useCredentialsStore().current,
+      }).then((mutes) => {
+        if (reset) {
+          store.commit('saveMuteIds', map(mutes, 'id'))
+        } else {
+          map(mutes, 'id').map((id) => store.commit('addMuteId', id))
+        }
+        if (mutes.length) {
+          store.commit('setMuteIdsMaxId', last(mutes).id)
+        }
+        store.commit('addNewUsers', mutes)
+        return mutes
+      })
     },
     muteUser(store, data) {
-      return muteUser(store, data)
+      return localMuteUser(store, data)
     },
     unmuteUser(store, id) {
       return unmuteUser(store, id)
@@ -485,18 +508,18 @@ const users = {
       return showReblogs(store, id)
     },
     muteUsers(store, data = []) {
-      return Promise.all(data.map((d) => muteUser(store, d)))
+      return Promise.all(data.map((d) => localMuteUser(store, d)))
     },
     unmuteUsers(store, ids = []) {
       return Promise.all(ids.map((d) => unmuteUser(store, d)))
     },
     fetchDomainMutes(store) {
-      return store.rootState.api.backendInteractor
-        .fetchDomainMutes()
-        .then((domainMutes) => {
-          store.commit('saveDomainMutes', domainMutes)
-          return domainMutes
-        })
+      return fetchDomainMutes({
+        credentials: useCredentialsStore().current,
+      }).then((domainMutes) => {
+        store.commit('saveDomainMutes', domainMutes)
+        return domainMutes
+      })
     },
     muteDomain(store, domain) {
       return muteDomain(store, domain)
@@ -513,24 +536,28 @@ const users = {
     fetchFriends({ rootState, commit }, id) {
       const user = rootState.users.usersObject[id]
       const maxId = last(user.friendIds)
-      return rootState.api.backendInteractor
-        .fetchFriends({ id, maxId })
-        .then((friends) => {
-          commit('addNewUsers', friends)
-          commit('saveFriendIds', { id, friendIds: map(friends, 'id') })
-          return friends
-        })
+      return fetchFriends({
+        id,
+        maxId,
+        credentials: useCredentialsStore().current,
+      }).then((friends) => {
+        commit('addNewUsers', friends)
+        commit('saveFriendIds', { id, friendIds: map(friends, 'id') })
+        return friends
+      })
     },
     fetchFollowers({ rootState, commit }, id) {
       const user = rootState.users.usersObject[id]
       const maxId = last(user.followerIds)
-      return rootState.api.backendInteractor
-        .fetchFollowers({ id, maxId })
-        .then((followers) => {
-          commit('addNewUsers', followers)
-          commit('saveFollowerIds', { id, followerIds: map(followers, 'id') })
-          return followers
-        })
+      return fetchFollowers({
+        id,
+        maxId,
+        credentials: useCredentialsStore().current,
+      }).then((followers) => {
+        commit('addNewUsers', followers)
+        commit('saveFollowerIds', { id, followerIds: map(followers, 'id') })
+        return followers
+      })
     },
     clearFriends({ commit }, userId) {
       commit('clearFriends', userId)
@@ -539,18 +566,22 @@ const users = {
       commit('clearFollowers', userId)
     },
     subscribeUser({ rootState, commit }, id) {
-      return rootState.api.backendInteractor
-        .followUser({ id, notify: true })
-        .then((relationship) =>
-          commit('updateUserRelationship', [relationship]),
-        )
+      return followUser({
+        id,
+        notify: true,
+        credentials: useCredentialsStore().current,
+      }).then((relationship) =>
+        commit('updateUserRelationship', [relationship]),
+      )
     },
     unsubscribeUser({ rootState, commit }, id) {
-      return rootState.api.backendInteractor
-        .followUser({ id, notify: false })
-        .then((relationship) =>
-          commit('updateUserRelationship', [relationship]),
-        )
+      return followUser({
+        id,
+        notify: false,
+        credentials: useCredentialsStore().current,
+      }).then((relationship) =>
+        commit('updateUserRelationship', [relationship]),
+      )
     },
     registerPushNotifications(store) {
       const token = store.state.currentUser.credentials
@@ -611,12 +642,13 @@ const users = {
       })
     },
     searchUsers({ rootState, commit }, { query }) {
-      return rootState.api.backendInteractor
-        .searchUsers({ query })
-        .then((users) => {
-          commit('addNewUsers', users)
-          return users
-        })
+      return searchUsers({
+        query,
+        credentials: useCredentialsStore().current,
+      }).then((users) => {
+        commit('addNewUsers', users)
+        return users
+      })
     },
     async signUp(store, userInfo) {
       const oauthStore = useOAuthStore()
@@ -645,8 +677,10 @@ const users = {
         throw e
       }
     },
-    async getCaptcha(store) {
-      return store.rootState.api.backendInteractor.getCaptcha()
+    getCaptcha(store) {
+      return getCaptcha({
+        credentials: useCredentialsStore().current,
+      })
     },
 
     logout(store) {
@@ -670,13 +704,10 @@ const users = {
           store.dispatch('disconnectFromSocket')
           oauth.clearToken()
           store.dispatch('stopFetchingTimeline', 'friends')
-          store.commit(
-            'setBackendInteractor',
-            backendInteractorService(oauth.getToken),
-          )
+          useCredentialsStore().setCredentials(null)
           store.dispatch('stopFetchingNotifications')
-          store.dispatch('stopFetchingLists')
-          store.dispatch('stopFetchingBookmarkFolders')
+          useListsStore().stopFetching()
+          useBookmarkFoldersStore().stopFetching()
           store.dispatch('stopFetchingFollowRequests')
           store.commit('clearNotifications')
           store.commit('resetStatuses')
@@ -691,8 +722,9 @@ const users = {
         const commit = store.commit
         const dispatch = store.dispatch
         commit('beginLogin')
-        store.rootState.api.backendInteractor
-          .verifyCredentials(accessToken)
+        verifyCredentials({
+          credentials: useCredentialsStore().current,
+        })
           .then((data) => {
             if (!data.error) {
               const user = data
@@ -721,11 +753,8 @@ const users = {
                 useInterfaceStore().setNotificationPermission(permission),
               )
 
-              // Set our new backend interactor
-              commit(
-                'setBackendInteractor',
-                backendInteractorService(accessToken),
-              )
+              // Update credentials
+              useCredentialsStore().setCredentials(accessToken)
 
               // Do server-side storage migrations
 
@@ -764,8 +793,8 @@ const users = {
                 }
               }
 
-              dispatch('startFetchingLists')
-              dispatch('startFetchingBookmarkFolders')
+              useListsStore().startFetching()
+              useBookmarkFoldersStore().startFetching()
 
               if (user.locked) {
                 dispatch('startFetchingFollowRequests')
@@ -799,9 +828,9 @@ const users = {
               useInterfaceStore().setLayoutHeight(windowHeight())
 
               // Fetch our friends
-              store.rootState.api.backendInteractor
-                .fetchFriends({ id: user.id })
-                .then((friends) => commit('addNewUsers', friends))
+              fetchFriends({ id: user.id }).then((friends) =>
+                commit('addNewUsers', friends),
+              )
             } else {
               const response = data.error
               // Authentication failed

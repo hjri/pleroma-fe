@@ -16,6 +16,7 @@ import Select from 'src/components/select/select.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserLink from 'src/components/user_link/user_link.vue'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -25,6 +26,7 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { usePostStatusStore } from 'src/stores/post_status'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
+import { updateProfile } from 'src/services/api/api.service.js'
 import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
 import localeService from 'src/services/locale/locale.service.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
@@ -597,8 +599,7 @@ export default {
         params.header = this.newBannerFile
       }
 
-      this.$store.state.api.backendInteractor
-        .updateProfile({ params })
+      updateProfile({ params })
         .then((user) => {
           this.newFields.splice(this.newFields.length)
           merge(this.newFields, user.fields)

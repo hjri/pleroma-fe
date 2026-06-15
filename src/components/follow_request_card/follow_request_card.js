@@ -3,7 +3,10 @@ import { defineAsyncComponent } from 'vue'
 import { notificationsFromStore } from '../../services/notification_utils/notification_utils.js'
 import BasicUserCard from '../basic_user_card/basic_user_card.vue'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
+import { approveUser, denyUser } from 'src/services/api/api.service.js'
 
 const FollowRequestCard = {
   props: ['user'],
@@ -48,7 +51,10 @@ const FollowRequestCard = {
       }
     },
     doApprove() {
-      this.$store.state.api.backendInteractor.approveUser({ id: this.user.id })
+      approveUser({
+        id: this.user.id,
+        credentials: useCredentialsStore().current,
+      })
       this.$store.dispatch('removeFollowRequest', this.user)
 
       const notifId = this.findFollowRequestNotificationId()
@@ -70,12 +76,14 @@ const FollowRequestCard = {
     },
     doDeny() {
       const notifId = this.findFollowRequestNotificationId()
-      this.$store.state.api.backendInteractor
-        .denyUser({ id: this.user.id })
-        .then(() => {
-          this.$store.dispatch('dismissNotificationLocal', { id: notifId })
-          this.$store.dispatch('removeFollowRequest', this.user)
-        })
+
+      denyUser({
+        id: this.user.id,
+        credentials: useCredentialsStore().current,
+      }).then(() => {
+        this.$store.dispatch('dismissNotificationLocal', { id: notifId })
+        this.$store.dispatch('removeFollowRequest', this.user)
+      })
       this.hideDenyConfirmDialog()
     },
   },

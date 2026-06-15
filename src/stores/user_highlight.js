@@ -14,7 +14,10 @@ import {
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
+
 import { storage } from 'src/lib/storage.js'
+import { updateProfileJSON } from 'src/services/api/api.service.js'
 
 export const NEW_USER_DATE = new Date('2022-08-04') // date of writing this, basically
 
@@ -344,12 +347,13 @@ export const useUserHighlightStore = defineStore('user_highlight', {
       const params = {
         pleroma_settings_store: { user_highlight: this.cache },
       }
-      window.vuex.state.api.backendInteractor
-        .updateProfileJSON({ params })
-        .then((user) => {
-          this.initUserHighlight(user)
-          this.dirty = false
-        })
+      updateProfileJSON({
+        params,
+        credentials: useCredentialsStore().current,
+      }).then((user) => {
+        this.initUserHighlight(user)
+        this.dirty = false
+      })
     },
   },
   persist: {

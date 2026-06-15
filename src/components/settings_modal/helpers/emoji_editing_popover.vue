@@ -153,6 +153,14 @@ import Popover from 'components/popover/popover.vue'
 import SelectComponent from 'components/select/select.vue'
 import { defineAsyncComponent } from 'vue'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
+
+import {
+  addNewEmojiFile,
+  deleteEmojiFile,
+  updateEmojiFile,
+} from 'src/services/api/api.service.js'
+
 export default {
   components: {
     Popover,
@@ -243,14 +251,14 @@ export default {
     saveEditedEmoji() {
       if (!this.isEdited) return
 
-      this.$store.state.api.backendInteractor
-        .updateEmojiFile({
-          packName: this.packName,
-          shortcode: this.shortcode,
-          newShortcode: this.editedShortcode,
-          newFilename: this.editedFile,
-          force: false,
-        })
+      updateEmojiFile({
+        packName: this.packName,
+        shortcode: this.shortcode,
+        newShortcode: this.editedShortcode,
+        newFilename: this.editedFile,
+        force: false,
+        credentials: useCredentialsStore().current,
+      })
         .then((resp) => {
           if (resp.error !== undefined) {
             this.$emit('displayError', resp.error)
@@ -263,18 +271,18 @@ export default {
     },
     uploadEmoji() {
       let packName = this.remote === undefined ? this.packName : this.copyToPack
-      this.$store.state.api.backendInteractor
-        .addNewEmojiFile({
-          packName: packName,
-          file:
-            this.remote === undefined
-              ? this.uploadURL !== ''
-                ? this.uploadURL
-                : this.uploadFile[0]
-              : this.emojiAddr(this.file),
-          shortcode: this.editedShortcode,
-          filename: this.editedFile,
-        })
+      addNewEmojiFile({
+        packName: packName,
+        file:
+          this.remote === undefined
+            ? this.uploadURL !== ''
+              ? this.uploadURL
+              : this.uploadFile[0]
+            : this.emojiAddr(this.file),
+        shortcode: this.editedShortcode,
+        filename: this.editedFile,
+        credentials: useCredentialsStore().current,
+      })
         .then((resp) => resp.json())
         .then((resp) => {
           if (resp.error !== undefined) {
@@ -297,8 +305,11 @@ export default {
     deleteEmoji() {
       this.deleteModalVisible = false
 
-      this.$store.state.api.backendInteractor
-        .deleteEmojiFile({ packName: this.packName, shortcode: this.shortcode })
+      deleteEmojiFile({
+        packName: this.packName,
+        shortcode: this.shortcode,
+        credentials: useCredentialsStore().current,
+      })
         .then((resp) => resp.json())
         .then((resp) => {
           if (resp.error !== undefined) {

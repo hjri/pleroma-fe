@@ -4,16 +4,26 @@ import { defineStore } from 'pinia'
 import { useCredentialsStore } from 'src/stores/credentials.js'
 
 import {
+  addNewEmojiFile,
   changeStatusScope,
+  createEmojiPack,
   deleteAccounts,
+  deleteEmojiPack,
   disableMFA,
+  downloadRemoteEmojiPack,
+  downloadRemoteEmojiPackZIP,
   getAvailableFrontends,
   getInstanceConfigDescriptions,
   getInstanceDBConfig,
   getUserData,
+  importEmojiFromFS,
+  installFrontend,
+  listEmojiPacks,
+  listRemoteEmojiPacks,
   listStatuses,
   listUsers,
   pushInstanceDBConfig,
+  reloadEmoji,
   requirePasswordChange,
   resendConfirmationEmail,
   setUsersActivationStatus,
@@ -342,6 +352,12 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
     },
 
+    installFrontend() {
+      return installFrontend({
+        credentials: useCredentialsStore().current,
+      })
+    },
+
     // Statuses stuff
     async fetchStatuses(opts) {
       const { total, activities } = await listStatuses({
@@ -524,6 +540,63 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
 
       resultUsers.forEach((user) => {
         window.vuex.commit('updateUserAdminData', { user })
+      })
+    },
+    reloadEmoji() {
+      return reloadEmoji({ credentials: useCredentialsStore().current })
+    },
+    importEmojiFromFS() {
+      return importEmojiFromFS({ credentials: useCredentialsStore().current })
+    },
+    listEmojiPacks() {
+      return listEmojiPacks({ credentials: useCredentialsStore().current })
+    },
+    listRemoteEmojiPacks() {
+      return listRemoteEmojiPacks({
+        credentials: useCredentialsStore().current,
+      })
+    },
+    addNewEmojiFile({ packName, file, shortcode, filename }) {
+      return addNewEmojiFile({
+        packName,
+        file,
+        shortcode,
+        filename,
+        credentials: useCredentialsStore().current,
+      })
+    },
+    downloadRemoteEmojiPack({ instance, packName, as }) {
+      return downloadRemoteEmojiPack({
+        instance,
+        packName,
+        as,
+        credentials: useCredentialsStore().current,
+      })
+    },
+    downloadRemoteEmojiPackZIP({ url, packName }) {
+      return downloadRemoteEmojiPackZIP({
+        url,
+        packName,
+        credentials: useCredentialsStore().current,
+      })
+    },
+    createEmojiPack({ name }) {
+      return createEmojiPack({
+        name,
+        credentials: useCredentialsStore().current,
+      })
+    },
+    deleteEmojiPack({ name }) {
+      return createEmojiPack({
+        name,
+        credentials: useCredentialsStore().current,
+      })
+    },
+    saveEmojiPackMetadata({ name, newData }) {
+      return createEmojiPack({
+        name,
+        newData,
+        credentials: useCredentialsStore().current,
       })
     },
   },

@@ -1,6 +1,10 @@
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
+
+import { updateNotificationSettings } from 'src/services/api/api.service.js'
+
 const NotificationsTab = {
   data() {
     return {
@@ -27,7 +31,8 @@ const NotificationsTab = {
   },
   methods: {
     updateNotificationSettings() {
-      this.$store.state.api.backendInteractor.updateNotificationSettings({
+      updateNotificationSettings({
+        credentials: useCredentialsStore().current,
         settings: this.notificationSettings,
       })
     },

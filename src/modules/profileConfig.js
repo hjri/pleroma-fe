@@ -1,28 +1,37 @@
 import { get, set } from 'lodash'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
+
+import {
+  updateNotificationSettings,
+  updateProfile,
+} from 'src/services/api/api.service.js'
+
 const defaultApi = ({ rootState, commit }, { path, value }) => {
   const params = {}
   set(params, path, value)
-  return rootState.api.backendInteractor
-    .updateProfile({ params })
-    .then((result) => {
-      commit('addNewUsers', [result])
-      commit('setCurrentUser', result)
-    })
+  return updateProfile({
+    params,
+    credentials: useCredentialsStore().current,
+  }).then((result) => {
+    commit('addNewUsers', [result])
+    commit('setCurrentUser', result)
+  })
 }
 
 const notificationsApi = ({ rootState, commit }, { path, value, oldValue }) => {
   const settings = {}
   set(settings, path, value)
-  return rootState.api.backendInteractor
-    .updateNotificationSettings({ settings })
-    .then((result) => {
-      if (result.status === 'success') {
-        commit('confirmProfileOption', { name, value })
-      } else {
-        commit('confirmProfileOption', { name, value: oldValue })
-      }
-    })
+  return updateNotificationSettings({
+    settings,
+    credentials: useCredentialsStore().current,
+  }).then((result) => {
+    if (result.status === 'success') {
+      commit('confirmProfileOption', { name, value })
+    } else {
+      commit('confirmProfileOption', { name, value: oldValue })
+    }
+  })
 }
 
 /**

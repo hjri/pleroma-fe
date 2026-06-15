@@ -2,6 +2,7 @@ import Popover from 'components/popover/popover.vue'
 import SelectComponent from 'components/select/select.vue'
 import { mapState } from 'pinia'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings'
 import { useEmojiStore } from 'src/stores/emoji'
 import { useInterfaceStore } from 'src/stores/interface'
 
@@ -37,7 +38,7 @@ export default {
       })
     },
     copyToLocalPack() {
-      this.$store.state.api.backendInteractor
+      useAdminSettingsStore()
         .addNewEmojiFile({
           packName: this.packName,
           file: this.$attrs.src,

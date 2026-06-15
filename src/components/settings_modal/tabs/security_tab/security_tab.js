@@ -2,10 +2,20 @@ import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import Mfa from './mfa.vue'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens'
 
+import {
+  addAlias,
+  changeEmail,
+  changePassword,
+  deleteAccount,
+  deleteAlias,
+  listAliases,
+  moveAccount,
+} from 'src/services/api/api.service.js'
 import localeService from 'src/services/locale/locale.service.js'
 
 const SecurityTab = {
@@ -65,78 +75,79 @@ const SecurityTab = {
       this.deletingAccount = true
     },
     deleteAccount() {
-      this.$store.state.api.backendInteractor
-        .deleteAccount({ password: this.deleteAccountConfirmPasswordInput })
-        .then((res) => {
-          if (res.status === 'success') {
-            this.$store.dispatch('logout')
-            this.$router.push({ name: 'root' })
-          } else {
-            this.deleteAccountError = res.error
-          }
-        })
+      deleteAccount({
+        credentials: useCredentialsStore().current,
+        password: this.deleteAccountConfirmPasswordInput,
+      }).then((res) => {
+        if (res.status === 'success') {
+          this.$store.dispatch('logout')
+          this.$router.push({ name: 'root' })
+        } else {
+          this.deleteAccountError = res.error
+        }
+      })
     },
     changePassword() {
       const params = {
         password: this.changePasswordInputs[0],
         newPassword: this.changePasswordInputs[1],
         newPasswordConfirmation: this.changePasswordInputs[2],
+        credentials: useCredentialsStore().current,
       }
-      this.$store.state.api.backendInteractor
-        .changePassword(params)
-        .then((res) => {
-          if (res.status === 'success') {
-            this.changedPassword = true
-            this.changePasswordError = false
-            this.logout()
-          } else {
-            this.changedPassword = false
-            this.changePasswordError = res.error
-          }
-        })
+      changePassword(params).then((res) => {
+        if (res.status === 'success') {
+          this.changedPassword = true
+          this.changePasswordError = false
+          this.logout()
+        } else {
+          this.changedPassword = false
+          this.changePasswordError = res.error
+        }
+      })
     },
     changeEmail() {
       const params = {
         email: this.newEmail,
         password: this.changeEmailPassword,
+        credentials: useCredentialsStore().current,
       }
-      this.$store.state.api.backendInteractor
-        .changeEmail(params)
-        .then((res) => {
-          if (res.status === 'success') {
-            this.changedEmail = true
-            this.changeEmailError = false
-          } else {
-            this.changedEmail = false
-            this.changeEmailError = res.error
-          }
-        })
+      changeEmail(params).then((res) => {
+        if (res.status === 'success') {
+          this.changedEmail = true
+          this.changeEmailError = false
+        } else {
+          this.changedEmail = false
+          this.changeEmailError = res.error
+        }
+      })
     },
     moveAccount() {
       const params = {
         targetAccount: this.moveAccountTarget,
         password: this.moveAccountPassword,
+        credentials: useCredentialsStore().current,
       }
-      this.$store.state.api.backendInteractor
-        .moveAccount(params)
-        .then((res) => {
-          if (res.status === 'success') {
-            this.movedAccount = true
-            this.moveAccountError = false
-          } else {
-            this.movedAccount = false
-            this.moveAccountError = res.error
-          }
-        })
+      moveAccount(params).then((res) => {
+        if (res.status === 'success') {
+          this.movedAccount = true
+          this.moveAccountError = false
+        } else {
+          this.movedAccount = false
+          this.moveAccountError = res.error
+        }
+      })
     },
     removeAlias(alias) {
-      this.$store.state.api.backendInteractor
-        .deleteAlias({ alias })
-        .then(() => this.fetchAliases())
+      deleteAlias({
+        alias,
+        credentials: useCredentialsStore().current,
+      }).then(() => this.fetchAliases())
     },
     addAlias() {
-      this.$store.state.api.backendInteractor
-        .addAlias({ alias: this.addAliasTarget })
+      addAlias({
+        alias: this.addAliasTarget,
+        credentials: useCredentialsStore().current,
+      })
         .then(() => {
           this.addedAlias = true
           this.addAliasError = false
@@ -149,8 +160,9 @@ const SecurityTab = {
         .then(() => this.fetchAliases())
     },
     fetchAliases() {
-      this.$store.state.api.backendInteractor
-        .listAliases()
+      listAliases({
+        credentials: useCredentialsStore().current,
+      })
         .then((res) => {
           this.aliases = res.aliases
           this.listAliasesError = false

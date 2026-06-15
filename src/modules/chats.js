@@ -11,7 +11,11 @@ import { promiseInterval } from '../services/promise_interval/promise_interval.j
 
 import { useCredentialsStore } from 'src/stores/credentials.js'
 
-import { chats } from 'src/services/api/api.service.js'
+import {
+  chats,
+  deleteChatMessage,
+  readChat,
+} from 'src/services/api/api.service.js'
 
 const emptyChatList = () => ({
   data: [],
@@ -119,11 +123,18 @@ const chatsModule = {
       commit('readChat', { id, lastReadId })
 
       if (isNewMessage) {
-        rootState.api.backendInteractor.readChat({ id, lastReadId })
+        readChat({
+          id,
+          lastReadId,
+          credentials: useCredentialsStore().current,
+        })
       }
     },
     deleteChatMessage({ rootState, commit }, value) {
-      rootState.api.backendInteractor.deleteChatMessage(value)
+      deleteChatMessage({
+        ...value,
+        credentials: useCredentialsStore().current,
+      })
       commit('deleteChatMessage', { commit, ...value })
     },
     resetChats({ commit, dispatch }) {

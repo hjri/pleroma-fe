@@ -1,3 +1,7 @@
+import { useCredentialsStore } from 'src/stores/credentials.js'
+
+import { fetchUser } from 'src/services/api/api.service.js'
+
 const RemoteUserResolver = {
   data: () => ({
     error: false,
@@ -7,10 +11,11 @@ const RemoteUserResolver = {
   },
   methods: {
     redirect() {
-      const acct =
-        this.$route.params.username + '@' + this.$route.params.hostname
-      this.$store.state.api.backendInteractor
-        .fetchUser({ id: acct })
+      const id = this.$route.params.username + '@' + this.$route.params.hostname
+      fetchUser({
+        id,
+        credentials: useCredentialsStore().current,
+      })
         .then((externalUser) => {
           if (externalUser.error) {
             this.error = true

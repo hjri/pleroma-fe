@@ -10,9 +10,11 @@ import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
 import Preview from './old_theme_tab/theme_preview.vue'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { normalizeThemeData, useInterfaceStore } from 'src/stores/interface.js'
 
+import { updateProfileImages } from 'src/services/api/api.service.js'
 import { newImporter } from 'src/services/export_import/export_import.js'
 import {
   adoptStyleSheets,
@@ -484,8 +486,10 @@ const AppearanceTab = {
       }
 
       this.backgroundUploading = true
-      this.$store.state.api.backendInteractor
-        .updateProfileImages({ background })
+      updateProfileImages({
+        background,
+        credentials: useCredentialsStore().current,
+      })
         .then((data) => {
           this.$store.commit('addNewUsers', [data])
           this.$store.commit('setCurrentUser', data)

@@ -14,10 +14,28 @@ import {
 } from 'lodash'
 
 import {
+  bookmarkStatus,
   deleteStatus,
+  favorite,
+  fetchEmojiReactions,
+  fetchFavoritedByUsers,
+  fetchPinnedStatuses,
+  fetchRebloggedByUsers,
   fetchScrobbles,
+  fetchStatus,
   fetchStatusHistory,
   fetchStatusSource,
+  muteConversation,
+  pinOwnStatus,
+  reactWithEmoji,
+  retweet,
+  search2,
+  unbookmarkStatus,
+  unfavorite,
+  unmuteConversation,
+  unpinOwnStatus,
+  unreactWithEmoji,
+  unretweet,
 } from '../services/api/api.service.js'
 
 import { useCredentialsStore } from 'src/stores/credentials.js'
@@ -607,9 +625,9 @@ const statuses = {
       })
     },
     fetchStatus({ rootState, dispatch }, id) {
-      return rootState.api.backendInteractor
-        .fetchStatus({ id })
-        .then((status) => dispatch('addNewStatuses', { statuses: [status] }))
+      return fetchStatus({ id }).then((status) =>
+        dispatch('addNewStatuses', { statuses: [status] }),
+      )
     },
     fetchStatusSource({ rootState }, status) {
       return fetchStatusSource({
@@ -647,99 +665,111 @@ const statuses = {
     favorite({ rootState, commit }, status) {
       // Optimistic favoriting...
       commit('setFavorited', { status, value: true })
-      rootState.api.backendInteractor
-        .favorite({ id: status.id })
-        .then((status) =>
-          commit('setFavoritedConfirm', {
-            status,
-            user: rootState.users.currentUser,
-          }),
-        )
+      favorite({
+        id: status.id,
+        credentials: useCredentialsStore().current,
+      }).then((status) =>
+        commit('setFavoritedConfirm', {
+          status,
+          user: rootState.users.currentUser,
+        }),
+      )
     },
     unfavorite({ rootState, commit }, status) {
       // Optimistic unfavoriting...
       commit('setFavorited', { status, value: false })
-      rootState.api.backendInteractor
-        .unfavorite({ id: status.id })
-        .then((status) =>
-          commit('setFavoritedConfirm', {
-            status,
-            user: rootState.users.currentUser,
-          }),
-        )
+      unfavorite({
+        id: status.id,
+        credentials: useCredentialsStore().current,
+      }).then((status) =>
+        commit('setFavoritedConfirm', {
+          status,
+          user: rootState.users.currentUser,
+        }),
+      )
     },
     fetchPinnedStatuses({ rootState, dispatch }, userId) {
-      rootState.api.backendInteractor
-        .fetchPinnedStatuses({ id: userId })
-        .then((statuses) =>
-          dispatch('addNewStatuses', {
-            statuses,
-            timeline: 'user',
-            userId,
-            showImmediately: true,
-            noIdUpdate: true,
-          }),
-        )
+      fetchPinnedStatuses({
+        id: userId,
+        credentials: useCredentialsStore().current,
+      }).then((statuses) =>
+        dispatch('addNewStatuses', {
+          statuses,
+          timeline: 'user',
+          userId,
+          showImmediately: true,
+          noIdUpdate: true,
+        }),
+      )
     },
     pinStatus({ rootState, dispatch }, statusId) {
-      return rootState.api.backendInteractor
-        .pinOwnStatus({ id: statusId })
-        .then((status) => dispatch('addNewStatuses', { statuses: [status] }))
+      return pinOwnStatus({
+        id: statusId,
+        credentials: useCredentialsStore().current,
+      }).then((status) => dispatch('addNewStatuses', { statuses: [status] }))
     },
     unpinStatus({ rootState, dispatch }, statusId) {
-      return rootState.api.backendInteractor
-        .unpinOwnStatus({ id: statusId })
-        .then((status) => dispatch('addNewStatuses', { statuses: [status] }))
+      return unpinOwnStatus({
+        id: statusId,
+        credentials: useCredentialsStore().current,
+      }).then((status) => dispatch('addNewStatuses', { statuses: [status] }))
     },
     muteConversation({ rootState, commit }, { id: statusId }) {
-      return rootState.api.backendInteractor
-        .muteConversation({ id: statusId })
-        .then((status) => commit('setMutedStatus', status))
+      return muteConversation({
+        id: statusId,
+        credentials: useCredentialsStore().current,
+      }).then((status) => commit('setMutedStatus', status))
     },
     unmuteConversation({ rootState, commit }, { id: statusId }) {
-      return rootState.api.backendInteractor
-        .unmuteConversation({ id: statusId })
-        .then((status) => commit('setMutedStatus', status))
+      return unmuteConversation({
+        id: statusId,
+        credentials: useCredentialsStore().current,
+      }).then((status) => commit('setMutedStatus', status))
     },
     retweet({ rootState, commit }, status) {
       // Optimistic retweeting...
       commit('setRetweeted', { status, value: true })
-      rootState.api.backendInteractor
-        .retweet({ id: status.id })
-        .then((status) =>
-          commit('setRetweetedConfirm', {
-            status: status.retweeted_status,
-            user: rootState.users.currentUser,
-          }),
-        )
+      retweet({
+        id: status.id,
+        credentials: useCredentialsStore().current,
+      }).then((status) =>
+        commit('setRetweetedConfirm', {
+          status: status.retweeted_status,
+          user: rootState.users.currentUser,
+        }),
+      )
     },
     unretweet({ rootState, commit }, status) {
       // Optimistic unretweeting...
       commit('setRetweeted', { status, value: false })
-      rootState.api.backendInteractor
-        .unretweet({ id: status.id })
-        .then((status) =>
-          commit('setRetweetedConfirm', {
-            status,
-            user: rootState.users.currentUser,
-          }),
-        )
+      unretweet({
+        id: status.id,
+        credentials: useCredentialsStore().current,
+      }).then((status) =>
+        commit('setRetweetedConfirm', {
+          status,
+          user: rootState.users.currentUser,
+        }),
+      )
     },
     bookmark({ rootState, commit }, status) {
       commit('setBookmarked', { status, value: true })
-      rootState.api.backendInteractor
-        .bookmarkStatus({ id: status.id, folder_id: status.bookmark_folder_id })
-        .then((status) => {
-          commit('setBookmarkedConfirm', { status })
-        })
+      bookmarkStatus({
+        id: status.id,
+        folder_id: status.bookmark_folder_id,
+        credentials: useCredentialsStore().current,
+      }).then((status) => {
+        commit('setBookmarkedConfirm', { status })
+      })
     },
     unbookmark({ rootState, commit }, status) {
       commit('setBookmarked', { status, value: false })
-      rootState.api.backendInteractor
-        .unbookmarkStatus({ id: status.id })
-        .then((status) => {
-          commit('setBookmarkedConfirm', { status })
-        })
+      unbookmarkStatus({
+        id: status.id,
+        credentials: useCredentialsStore().current,
+      }).then((status) => {
+        commit('setBookmarkedConfirm', { status })
+      })
     },
     queueFlush({ commit }, { timeline, id }) {
       commit('queueFlush', { timeline, id })
@@ -749,8 +779,14 @@ const statuses = {
     },
     fetchFavsAndRepeats({ rootState, commit }, id) {
       Promise.all([
-        rootState.api.backendInteractor.fetchFavoritedByUsers({ id }),
-        rootState.api.backendInteractor.fetchRebloggedByUsers({ id }),
+        fetchFavoritedByUsers({
+          id,
+          credentials: useCredentialsStore().current,
+        }),
+        fetchRebloggedByUsers({
+          id,
+          credentials: useCredentialsStore().current,
+        }),
       ]).then(([favoritedByUsers, rebloggedByUsers]) => {
         commit('addFavs', {
           id,
@@ -769,7 +805,11 @@ const statuses = {
       if (!currentUser) return
 
       commit('addOwnReaction', { id, emoji, currentUser })
-      rootState.api.backendInteractor.reactWithEmoji({ id, emoji }).then(() => {
+      reactWithEmoji({
+        id,
+        emoji,
+        credentials: useCredentialsStore().current,
+      }).then(() => {
         dispatch('fetchEmojiReactionsBy', id)
       })
     },
@@ -778,59 +818,70 @@ const statuses = {
       if (!currentUser) return
 
       commit('removeOwnReaction', { id, emoji, currentUser })
-      rootState.api.backendInteractor
-        .unreactWithEmoji({ id, emoji })
-        .then(() => {
-          dispatch('fetchEmojiReactionsBy', id)
-        })
+      unreactWithEmoji({
+        id,
+        emoji,
+        currentUser: rootState.users.currentUser,
+      }).then(() => {
+        dispatch('fetchEmojiReactionsBy', id)
+      })
     },
     fetchEmojiReactionsBy({ rootState, commit }, id) {
-      return rootState.api.backendInteractor
-        .fetchEmojiReactions({ id })
-        .then((emojiReactions) => {
-          commit('addEmojiReactionsBy', {
-            id,
-            emojiReactions,
-            currentUser: rootState.users.currentUser,
-          })
+      return fetchEmojiReactions({
+        id,
+        credentials: useCredentialsStore().current,
+      }).then((emojiReactions) => {
+        commit('addEmojiReactionsBy', {
+          id,
+          emojiReactions,
+          currentUser: rootState.users.currentUser,
         })
+      })
     },
     fetchFavs({ rootState, commit }, id) {
-      rootState.api.backendInteractor
-        .fetchFavoritedByUsers({ id })
-        .then((favoritedByUsers) =>
-          commit('addFavs', {
-            id,
-            favoritedByUsers,
-            currentUser: rootState.users.currentUser,
-          }),
-        )
+      fetchFavoritedByUsers({
+        id,
+        credentials: useCredentialsStore().current,
+      }).then((favoritedByUsers) =>
+        commit('addFavs', {
+          id,
+          favoritedByUsers,
+          currentUser: rootState.users.currentUser,
+        }),
+      )
     },
     fetchRepeats({ rootState, commit }, id) {
-      rootState.api.backendInteractor
-        .fetchRebloggedByUsers({ id })
-        .then((rebloggedByUsers) =>
-          commit('addRepeats', {
-            id,
-            rebloggedByUsers,
-            currentUser: rootState.users.currentUser,
-          }),
-        )
+      fetchRebloggedByUsers({
+        id,
+        credentials: useCredentialsStore().current,
+      }).then((rebloggedByUsers) =>
+        commit('addRepeats', {
+          id,
+          rebloggedByUsers,
+          currentUser: rootState.users.currentUser,
+        }),
+      )
     },
     search(store, { q, resolve, limit, offset, following, type }) {
-      return store.rootState.api.backendInteractor
-        .search2({ q, resolve, limit, offset, following, type })
-        .then((data) => {
-          store.commit('addNewUsers', data.accounts)
-          store.commit(
-            'addNewUsers',
-            data.statuses.map((s) => s.user).filter((u) => u),
-          )
-          data.statuses = store.commit('addNewStatuses', {
-            statuses: data.statuses,
-          })
-          return data
+      return search2({
+        q,
+        resolve,
+        limit,
+        offset,
+        following,
+        type,
+        credentials: useCredentialsStore().current,
+      }).then((data) => {
+        store.commit('addNewUsers', data.accounts)
+        store.commit(
+          'addNewUsers',
+          data.statuses.map((s) => s.user).filter((u) => u),
+        )
+        data.statuses = store.commit('addNewStatuses', {
+          statuses: data.statuses,
         })
+        return data
+      })
     },
     setVirtualHeight({ commit }, { statusId, height }) {
       commit('setVirtualHeight', { statusId, height })

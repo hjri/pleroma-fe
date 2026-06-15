@@ -9,10 +9,13 @@ import {
   maybeShowNotification,
 } from '../services/notification_utils/notification_utils.js'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useI18nStore } from 'src/stores/i18n.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useReportsStore } from 'src/stores/reports.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
+import { dismissNotification } from 'src/services/api/api.service.js'
 
 const emptyNotifications = () => ({
   desktopNotificationSilence: true,
@@ -176,7 +179,10 @@ export const notifications = {
     },
     dismissNotification({ rootState, commit }, { id }) {
       commit('dismissNotification', { id })
-      rootState.api.backendInteractor.dismissNotification({ id })
+      dismissNotification({
+        id,
+        credentials: useCredentialsStore().current,
+      })
     },
     updateNotification({ commit }, { id, updater }) {
       commit('updateNotification', { id, updater })

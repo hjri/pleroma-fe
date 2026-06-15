@@ -5,6 +5,15 @@ import Confirm from './confirm.vue'
 import RecoveryCodes from './mfa_backup_codes.vue'
 import TOTP from './mfa_totp.vue'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
+
+import {
+  generateMfaBackupCodes,
+  mfaConfirmOTP,
+  mfaSetupOTP,
+  settingsMFA,
+} from 'src/services/api/api.service.js'
+
 const Mfa = {
   data: () => ({
     settings: {
@@ -71,9 +80,6 @@ const Mfa = {
     confirmNewBackupCodes() {
       return this.backupCodes.getNewCodes
     },
-    ...mapState({
-      backendInteractor: (state) => state.api.backendInteractor,
-    }),
   },
 
   methods: {
@@ -87,7 +93,9 @@ const Mfa = {
       this.backupCodes.inProgress = true
       this.backupCodes.codes = []
 
-      return this.backendInteractor.generateMfaBackupCodes().then((res) => {
+      return generateMfaBackupCodes({
+        credentials: useCredentialsStore().current,
+      }).then((res) => {
         this.backupCodes.codes = res.codes
         this.backupCodes.inProgress = false
       })
@@ -112,7 +120,9 @@ const Mfa = {
       // prepare setup OTP
       this.setupState.state = 'setupOTP'
       this.setupState.setupOTPState = 'prepare'
-      this.backendInteractor.mfaSetupOTP().then((res) => {
+      mfaSetupOTP({
+        credentials: useCredentialsStore().current,
+      }).then((res) => {
         this.otpSettings = res
         this.setupState.setupOTPState = 'confirm'
       })
@@ -120,18 +130,17 @@ const Mfa = {
     doConfirmOTP() {
       // handler confirm enable OTP
       this.error = null
-      this.backendInteractor
-        .mfaConfirmOTP({
-          token: this.otpConfirmToken,
-          password: this.currentPassword,
-        })
-        .then((res) => {
-          if (res.error) {
-            this.error = res.error
-            return
-          }
-          this.completeSetup()
-        })
+      mfaConfirmOTP({
+        token: this.otpConfirmToken,
+        password: this.currentPassword,
+        credentials: useCredentialsStore().current,
+      }).then((res) => {
+        if (res.error) {
+          this.error = res.error
+          return
+        }
+        this.completeSetup()
+      })
     },
 
     completeSetup() {
@@ -152,7 +161,9 @@ const Mfa = {
 
     // fetch settings from server
     async fetchSettings() {
-      const result = await this.backendInteractor.settingsMFA()
+      const result = await settingsMFA({
+        credentials: useCredentialsStore().current,
+      })
       if (result.error) return
       this.settings = result.settings
       this.settings.available = true

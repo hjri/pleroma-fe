@@ -126,6 +126,10 @@ const PLEROMA_USER_FAVORITES_TIMELINE_URL = (id) =>
 const PLEROMA_BOOKMARK_FOLDERS_URL = '/api/v1/pleroma/bookmark_folders'
 const PLEROMA_BOOKMARK_FOLDER_URL = (id) =>
   `/api/v1/pleroma/bookmark_folders/${id}`
+
+const EMOJI_PACKS_URL = (page, pageSize) =>
+  `/api/v1/pleroma/emoji/packs?page=${page}&page_size=${pageSize}`
+
 export const updateNotificationSettings = ({ credentials, settings }) => {
   const form = new FormData()
 
@@ -681,6 +685,11 @@ export const fetchTimeline = ({
     }
   })
 }
+
+export const listEmojiPacks = ({ page, pageSize, credentials }) =>
+  promisedRequest({
+    url: EMOJI_PACKS_URL(page, pageSize),
+  })
 
 export const fetchPinnedStatuses = ({ id, credentials }) =>
   promisedRequest({

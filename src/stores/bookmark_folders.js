@@ -6,8 +6,10 @@ import { useCredentialsStore } from 'src/stores/credentials.js'
 import {
   createBookmarkFolder,
   deleteBookmarkFolder,
+  fetchBookmarkFolders,
   updateBookmarkFolder,
 } from 'src/services/api/api.service.js'
+import { promiseInterval } from 'src/services/promise_interval/promise_interval.js'
 
 export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {
   state: () => ({
@@ -24,6 +26,23 @@ export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {
     },
   },
   actions: {
+    startFetching() {
+      promiseInterval(() => {
+        this.fetcher = fetchBookmarkFolders({
+          credentials: useCredentialsStore().current,
+        })
+          .then(
+            (folders) => this.setBookmarkFolders(folders),
+            (rej) => console.error(rej),
+          )
+          .catch((e) => {
+            console.error(e)
+          })
+      }, 240000)
+    },
+    stopFetching() {
+      this.fetcher?.stop()
+    },
     setBookmarkFolders(value) {
       this.allFolders = value
     },

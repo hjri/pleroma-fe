@@ -3,6 +3,10 @@ import { mapGetters, mapState } from 'vuex'
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
+
+import { chats } from 'src/services/api/api.service.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons'
 
@@ -22,7 +26,9 @@ const chatNew = {
     }
   },
   async created() {
-    const { chats } = await this.backendInteractor.chats()
+    const { chats } = await chats({
+      credentials: useCredentialsStore().current,
+    })
     chats.forEach((chat) => this.suggestions.push(chat.account))
   },
   computed: {
@@ -38,7 +44,6 @@ const chatNew = {
     },
     ...mapState({
       currentUser: (state) => state.users.currentUser,
-      backendInteractor: (state) => state.api.backendInteractor,
     }),
     ...mapGetters(['findUser']),
   },

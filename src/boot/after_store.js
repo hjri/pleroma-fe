@@ -19,7 +19,6 @@ import {
 config.autoAddCss = false
 
 import App from '../App.vue'
-import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import FaviconService from '../services/favicon_service/favicon_service.js'
 import { applyStyleConfig } from '../services/style_setter/style_setter.js'
 import { initServiceWorker, updateFocus } from '../services/sw/sw.js'
@@ -31,6 +30,7 @@ import routes from './routes'
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useAuthFlowStore } from 'src/stores/auth_flow'
+import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useI18nStore } from 'src/stores/i18n'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -264,10 +264,7 @@ const getStickers = async ({ store }) => {
 const getAppSecret = async ({ store }) => {
   const oauth = useOAuthStore()
   if (oauth.userToken) {
-    store.commit(
-      'setBackendInteractor',
-      backendInteractorService(oauth.getToken),
-    )
+    useCredentialsStore().setCredentials(oauth.getToken)
   }
 }
 

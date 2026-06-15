@@ -16,7 +16,14 @@ import {
   isScrollable,
 } from './chat_layout_utils.js'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+
+import {
+  chatMessages,
+  getOrCreateChat,
+  sendChatMessage,
+} from 'src/services/api/api.service.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronDown, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
@@ -115,7 +122,6 @@ const Chat = {
       mobileLayout: (store) => store.layoutType === 'mobile',
     }),
     ...mapState({
-      backendInteractor: (state) => state.api.backendInteractor,
       mastoUserSocketStatus: (state) => state.api.mastoUserSocketStatus,
       currentUser: (state) => state.users.currentUser,
     }),
@@ -267,42 +273,46 @@ const Chat = {
       const fetchOlderMessages = !!maxId
       const sinceId = fetchLatest && chatMessageService.maxId
 
-      return this.backendInteractor
-        .chatMessages({ id: chatId, maxId, sinceId })
-        .then((messages) => {
-          // Clear the current chat in case we're recovering from a ws connection loss.
-          if (isFirstFetch) {
-            chatService.clear(chatMessageService)
-          }
+      return chatMessages({
+        id: chatId,
+        maxId,
+        sinceId,
+        credentials: useCredentialsStore().current,
+      }).then((messages) => {
+        // Clear the current chat in case we're recovering from a ws connection loss.
+        if (isFirstFetch) {
+          chatService.clear(chatMessageService)
+        }
 
-          const positionBeforeUpdate = getScrollPosition()
-          this.$store
-            .dispatch('addChatMessages', { chatId, messages })
-            .then(() => {
-              this.$nextTick(() => {
-                if (fetchOlderMessages) {
-                  this.handleScrollUp(positionBeforeUpdate)
-                }
+        const positionBeforeUpdate = getScrollPosition()
+        this.$store
+          .dispatch('addChatMessages', { chatId, messages })
+          .then(() => {
+            this.$nextTick(() => {
+              if (fetchOlderMessages) {
+                this.handleScrollUp(positionBeforeUpdate)
+              }
 
-                // In vertical screens, the first batch of fetched messages may not always take the
-                // full height of the scrollable container.
-                // If this is the case, we want to fetch the messages until the scrollable container
-                // is fully populated so that the user has the ability to scroll up and load the history.
-                if (!isScrollable() && messages.length > 0) {
-                  this.fetchChat({
-                    maxId: this.currentChatMessageService.minId,
-                  })
-                }
-              })
+              // In vertical screens, the first batch of fetched messages may not always take the
+              // full height of the scrollable container.
+              // If this is the case, we want to fetch the messages until the scrollable container
+              // is fully populated so that the user has the ability to scroll up and load the history.
+              if (!isScrollable() && messages.length > 0) {
+                this.fetchChat({
+                  maxId: this.currentChatMessageService.minId,
+                })
+              }
             })
-        })
+          })
+      })
     },
     async startFetching() {
       let chat = this.findOpenedChatByRecipientId(this.recipientId)
       if (!chat) {
         try {
-          chat = await this.backendInteractor.getOrCreateChat({
+          chat = await getOrCreateChat({
             accountId: this.recipientId,
+            credentials: useCredentialsStore().current,
           })
         } catch (e) {
           console.error('Error creating or getting a chat', e)
@@ -369,8 +379,10 @@ const Chat = {
     doSendMessage({ params, fakeMessage, retriesLeft = MAX_RETRIES }) {
       if (retriesLeft <= 0) return
 
-      this.backendInteractor
-        .sendChatMessage(params)
+      sendChatMessage({
+        params,
+        credentials: useCredentialsStore().current,
+      })
         .then((data) => {
           this.$store.dispatch('addChatMessages', {
             chatId: this.currentChat.id,

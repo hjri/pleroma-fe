@@ -1,9 +1,11 @@
 import { merge } from 'lodash'
 import { defineStore } from 'pinia'
 
+import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 
 import { ensureFinalFallback } from 'src/i18n/languages.js'
+import { listEmojiPacks } from 'src/services/api/api.service.js'
 
 import { annotationsLoader } from 'virtual:pleroma-fe/emoji-annotations'
 
@@ -183,13 +185,13 @@ export const useEmojiStore = defineStore('emoji', {
 
     async getAdminPacksLocal(refresh) {
       if (!refresh && this.adminPacksLocal) return this.adminPacksLocal
-      const backendInteractor = window.vuex.state.api.backendInteractor
-      const listFunction = backendInteractor.listEmojiPacks
-
       this.adminPacksLocalLoading = true
       this.adminPacksLocal = await this.getAdminPacks(
         useInstanceStore().server,
-        listFunction,
+        () =>
+          listEmojiPacks({
+            credentials: useCredentialsStore().current,
+          }),
       )
       this.adminPacksLocalLoading = false
     },
