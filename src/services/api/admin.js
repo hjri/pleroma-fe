@@ -66,8 +66,6 @@ const REQUIRE_PASSWORD_CHANGE_URL =
 const DISABLE_MFA_URL = '/api/v1/pleroma/admin/users/disable_mfa'
 const EMOJI_RELOAD_URL = '/api/pleroma/admin/reload_emoji'
 const EMOJI_IMPORT_FS_URL = '/api/pleroma/emoji/packs/import'
-const EMOJI_PACKS_URL = (page, pageSize) =>
-  `/api/v1/pleroma/emoji/packs?page=${page}&page_size=${pageSize}`
 const EMOJI_PACK_URL = (name) => `/api/v1/pleroma/emoji/pack?name=${name}`
 const EMOJI_PACKS_DL_REMOTE_URL = '/api/v1/pleroma/emoji/packs/download'
 const EMOJI_PACKS_DL_REMOTE_ZIP_URL = '/api/v1/pleroma/emoji/packs/download_zip'
@@ -405,11 +403,6 @@ export const createEmojiPack = ({ name, credentials }) =>
     url: EMOJI_PACK_URL(name),
     method: 'POST',
     credentials,
-  })
-
-export const listEmojiPacks = ({ page, pageSize, credentials }) =>
-  promisedRequest({
-    url: EMOJI_PACKS_URL(page, pageSize),
   })
 
 export const listRemoteEmojiPacks = ({

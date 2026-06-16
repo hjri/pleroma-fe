@@ -18,7 +18,6 @@ import {
   getUserData,
   importEmojiFromFS,
   installFrontend,
-  listEmojiPacks,
   listRemoteEmojiPacks,
   listStatuses,
   listUsers,
@@ -33,6 +32,7 @@ import {
   setUsersSuggestionStatus,
   setUsersTags,
 } from 'src/services/api/admin.js'
+import { listEmojiPacks } from 'src/services/api/api.service.js'
 import { parseStatus } from 'src/services/entity_normalizer/entity_normalizer.service.js'
 
 export const defaultState = {
