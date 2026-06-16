@@ -14,10 +14,12 @@
       </router-link>
     </div>
     <div class="panel-body">
-      <ListsCard
+      <FolderCard
         v-for="list in lists.slice().reverse()"
         :key="list"
-        :list="list"
+        :name="list.title"
+        :link="{ name: 'lists-timeline', params: { id: list.id } }"
+        :link-edit="{ name: 'lists-edit', params: { id: list.id } }"
         class="list-item"
       />
     </div>
