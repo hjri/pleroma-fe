@@ -40,7 +40,7 @@ const fetchAndUpdate = ({
   statusId = false,
   bookmarkFolderId = false,
   tag = false,
-  until,
+  maxId,
   sinceId,
 }) => {
   const args = { timeline, credentials }
@@ -51,7 +51,7 @@ const fetchAndUpdate = ({
   const loggedIn = !!rootState.users.currentUser
 
   if (older) {
-    args.until = until || timelineData.minId
+    args.maxId = maxId || timelineData.minId
   } else {
     if (sinceId === undefined) {
       args.sinceId = timelineData.maxId
@@ -119,11 +119,11 @@ const startFetching = ({
   timeline = 'friends',
   credentials,
   store,
-  userId = false,
-  listId = false,
-  statusId = false,
-  bookmarkFolderId = false,
-  tag = false,
+  userId,
+  listId,
+  statusId,
+  bookmarkFolderId,
+  tag,
 }) => {
   const rootState = store.rootState || store.state
   const timelineData = rootState.statuses.timelines[camelCase(timeline)]
