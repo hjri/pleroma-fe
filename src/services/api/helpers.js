@@ -126,6 +126,12 @@ export const promisedRequest = ({
             )
           }
 
+          if (typeof json !== 'object') {
+            return resolve({
+              _response: response,
+              _value: json
+            })
+          }
           json._response = response
 
           return resolve(json)
