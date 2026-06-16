@@ -46,7 +46,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
 
       const fetchAnnouncements = async () => {
         if (!isAdmin) {
-          return fetchAnnouncements({
+          return getAnnouncements({
             credentials: useCredentialsStore().current,
           })
         }
