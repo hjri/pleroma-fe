@@ -524,42 +524,33 @@ export const fetchConversation = ({ id, credentials }) =>
     url: MASTODON_STATUS_CONTEXT_URL(id),
     credentials,
   })
-    .then((data) => {
-      if (data.ok) {
-        return data
-      }
-      throw new Error('Error fetching timeline', data)
-    })
     .then(({ ancestors, descendants }) => ({
       ancestors: ancestors.map(parseStatus),
       descendants: descendants.map(parseStatus),
     }))
+    .catch((error) => {
+      throw new Error('Error fetching timeline', error)
+    })
 
 export const fetchStatus = ({ id, credentials }) =>
   promisedRequest({
     url: MASTODON_STATUS_URL(id),
     credentials,
   })
-    .then((data) => {
-      if (data.ok) {
-        return data
-      }
-      throw new Error('Error fetching timeline', { cause: data })
-    })
     .then((data) => parseStatus(data))
+    .catch((error) => {
+      throw new Error('Error fetching timeline', error)
+    })
 
 export const fetchStatusSource = ({ id, credentials }) =>
   promisedRequest({
     url: MASTODON_STATUS_SOURCE_URL(id),
     credentials,
   })
-    .then((data) => {
-      if (data.ok) {
-        return data
-      }
-      throw new Error('Error fetching source', { cause: data })
-    })
     .then((data) => parseSource(data))
+    .catch((error) => {
+      throw new Error('Error fetching timeline', error)
+    })
 
 export const fetchStatusHistory = ({ status, credentials }) =>
   promisedRequest({
@@ -1282,15 +1273,12 @@ export const search2 = ({
     credentials,
   })
     .then((data) => {
-      if (data.ok) {
-        return data
-      }
-      throw new Error('Error fetching search result', data)
-    })
-    .then((data) => {
       data.accounts = data.accounts.slice(0, limit).map((u) => parseUser(u))
       data.statuses = data.statuses.slice(0, limit).map((s) => parseStatus(s))
       return data
+    })
+    .catch((error) => {
+      throw new Error('Error fetching timeline', error)
     })
 }
 
