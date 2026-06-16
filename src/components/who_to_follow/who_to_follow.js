@@ -1,5 +1,4 @@
 import FollowCard from 'src/components/follow_card/follow_card.vue'
-import apiService from '../../services/api/api.service.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
