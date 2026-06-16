@@ -9,7 +9,7 @@ import {
   parseStatus,
   parseUser,
 } from '../entity_normalizer/entity_normalizer.service.js'
-import { promisedRequest } from './helpers.js'
+import { paramsString, promisedRequest } from './helpers.js'
 
 import { RegistrationError, StatusCodeError } from 'src/services/errors/errors'
 
@@ -46,8 +46,16 @@ const MASTODON_UNRETWEET_URL = (id) => `/api/v1/statuses/${id}/unreblog`
 const MASTODON_DELETE_URL = (id) => `/api/v1/statuses/${id}`
 const MASTODON_FOLLOW_URL = (id) => `/api/v1/accounts/${id}/follow`
 const MASTODON_UNFOLLOW_URL = (id) => `/api/v1/accounts/${id}/unfollow`
-const MASTODON_FOLLOWING_URL = (id) => `/api/v1/accounts/${id}/following`
-const MASTODON_FOLLOWERS_URL = (id) => `/api/v1/accounts/${id}/followers`
+const MASTODON_FOLLOWING_URL = (
+  id,
+  { minId, maxId, sinceId, limit, withRelationships },
+) =>
+  `/api/v1/accounts/${id}/following${paramsString({ minId, maxId, sinceId, limit, withRelationships })}`
+const MASTODON_FOLLOWERS_URL = (
+  id,
+  { minId, maxId, sinceId, limit, withRelationships },
+) =>
+  `/api/v1/accounts/${id}/followers${paramsString({ minId, maxId, sinceId, limit, withRelationships })}`
 const MASTODON_FOLLOW_REQUESTS_URL = '/api/v1/follow_requests'
 const MASTODON_APPROVE_USER_URL = (id) =>
   `/api/v1/follow_requests/${id}/authorize`
@@ -61,7 +69,8 @@ const MASTODON_STATUS_SOURCE_URL = (id) => `/api/v1/statuses/${id}/source`
 const MASTODON_STATUS_HISTORY_URL = (id) => `/api/v1/statuses/${id}/history`
 const MASTODON_USER_URL = '/api/v1/accounts'
 const MASTODON_USER_LOOKUP_URL = '/api/v1/accounts/lookup'
-const MASTODON_USER_RELATIONSHIPS_URL = '/api/v1/accounts/relationships'
+const MASTODON_USER_RELATIONSHIPS_URL = ({ id, withSuspended }) =>
+  `/api/v1/accounts/relationships/${paramsString({ id, withSuspended })}`
 const MASTODON_USER_TIMELINE_URL = (id) => `/api/v1/accounts/${id}/statuses`
 const MASTODON_USER_IN_LISTS = (id) => `/api/v1/accounts/${id}/lists`
 const MASTODON_LIST_URL = (id) => `/api/v1/lists/${id}`
@@ -70,8 +79,20 @@ const MASTODON_LIST_ACCOUNTS_URL = (id) => `/api/v1/lists/${id}/accounts`
 const MASTODON_TAG_TIMELINE_URL = (tag) => `/api/v1/timelines/tag/${tag}`
 const MASTODON_BOOKMARK_TIMELINE_URL = '/api/v1/bookmarks'
 const AKKOMA_BUBBLE_TIMELINE_URL = '/api/v1/timelines/bubble'
-const MASTODON_USER_BLOCKS_URL = '/api/v1/blocks/'
-const MASTODON_USER_MUTES_URL = '/api/v1/mutes/'
+const MASTODON_USER_BLOCKS_URL = ({
+  maxId,
+  sinceId,
+  limit,
+  withRelationships,
+}) =>
+  `/api/v1/blocks/${paramsString({ maxId, sinceId, limit, withRelationships })}`
+const MASTODON_USER_MUTES_URL = ({
+  maxId,
+  sinceId,
+  limit,
+  withRelationships,
+}) =>
+  `/api/v1/mutes/${paramsString({ maxId, sinceId, limit, withRelationships })}`
 const MASTODON_BLOCK_USER_URL = (id) => `/api/v1/accounts/${id}/block`
 const MASTODON_UNBLOCK_USER_URL = (id) => `/api/v1/accounts/${id}/unblock`
 const MASTODON_MUTE_USER_URL = (id) => `/api/v1/accounts/${id}/mute`
@@ -113,12 +134,14 @@ const PLEROMA_EMOJI_UNREACT_URL = (id, emoji) =>
   `/api/v1/pleroma/statuses/${id}/reactions/${emoji}`
 const PLEROMA_CHATS_URL = '/api/v1/pleroma/chats'
 const PLEROMA_CHAT_URL = (id) => `/api/v1/pleroma/chats/by-account-id/${id}`
-const PLEROMA_CHAT_MESSAGES_URL = (id) => `/api/v1/pleroma/chats/${id}/messages`
+const PLEROMA_CHAT_MESSAGES_URL = (id, { maxId, sinceId, limit }) =>
+  `/api/v1/pleroma/chats/${id}/messages${paramsString({ maxId, sinceId, limit })}`
 const PLEROMA_CHAT_READ_URL = (id) => `/api/v1/pleroma/chats/${id}/read`
 const PLEROMA_DELETE_CHAT_MESSAGE_URL = (chatId, messageId) =>
   `/api/v1/pleroma/chats/${chatId}/messages/${messageId}`
 const PLEROMA_BACKUP_URL = '/api/v1/pleroma/backups'
-const PLEROMA_SCROBBLES_URL = (id) => `/api/v1/pleroma/accounts/${id}/scrobbles`
+const PLEROMA_SCROBBLES_URL = (id, { maxId, sinceId, minId, limit, offset }) =>
+  `/api/v1/pleroma/accounts/${id}/scrobbles${paramsString({ maxId, sinceId, minId, limit, offset })}`
 const PLEROMA_STATUS_QUOTES_URL = (id) =>
   `/api/v1/pleroma/statuses/${id}/quotes`
 const PLEROMA_USER_FAVORITES_TIMELINE_URL = (id) =>
@@ -128,20 +151,14 @@ const PLEROMA_BOOKMARK_FOLDER_URL = (id) =>
   `/api/v1/pleroma/bookmark_folders/${id}`
 
 const EMOJI_PACKS_URL = (page, pageSize) =>
-  `/api/v1/pleroma/emoji/packs?page=${page}&page_size=${pageSize}`
+  `/api/v1/pleroma/emoji/packs${paramsString({ page, pageSize })}`
 
 export const updateNotificationSettings = ({ credentials, settings }) => {
-  const form = new FormData()
-
-  each(settings, (value, key) => {
-    form.append(key, value)
-  })
-
   return promisedRequest({
-    url: `${NOTIFICATION_SETTINGS_URL}?${new URLSearchParams(settings)}`,
+    url: NOTIFICATION_SETTINGS_URL,
     credentials,
     method: 'PUT',
-    formData: form,
+    payload: settings,
   })
 }
 
@@ -380,35 +397,17 @@ export const fetchUserByName = ({ name, credentials }) =>
     })
     .then((id) => fetchUser({ id, credentials }))
 
-export const fetchUserRelationship = ({ id, credentials }) =>
+export const fetchUserRelationship = ({ id, withSuspended, credentials }) =>
   promisedRequest({
-    url: `${MASTODON_USER_RELATIONSHIPS_URL}/?id=${id}`,
+    url: MASTODON_USER_RELATIONSHIPS_URL({ id, withSuspended }),
     credentials,
   })
 
-export const fetchFriends = ({
-  id,
-  maxId,
-  sinceId,
-  limit = 20,
-  credentials,
-}) => {
-  let url = MASTODON_FOLLOWING_URL(id)
-  const args = [
-    maxId && `max_id=${maxId}`,
-    sinceId && `since_id=${sinceId}`,
-    limit && `limit=${limit}`,
-    'with_relationships=true',
-  ]
-    .filter((_) => _)
-    .join('&')
-
-  url = url + (args ? '?' + args : '')
-  return promisedRequest({
-    url,
+export const fetchFriends = ({ id, maxId, sinceId, limit = 20, credentials }) =>
+  promisedRequest({
+    url: MASTODON_FOLLOWING_URL(id, { maxId, sinceId, limit }),
     credentials,
   }).then((data) => data.map(parseUser))
-}
 
 export const exportFriends = ({ id, credentials }) => {
   // biome-ignore lint/suspicious/noAsyncPromiseExecutor: TODO refactor this
@@ -418,7 +417,12 @@ export const exportFriends = ({ id, credentials }) => {
       let more = true
       while (more) {
         const maxId = friends.length > 0 ? last(friends).id : undefined
-        const users = await fetchFriends({ id, maxId, credentials })
+        const users = await fetchFriends({
+          id,
+          maxId,
+          credentials,
+          withRelationships: true,
+        })
         friends = concat(friends, users)
         if (users.length === 0) {
           more = false
@@ -437,23 +441,16 @@ export const fetchFollowers = ({
   sinceId,
   limit = 20,
   credentials,
-}) => {
-  let url = MASTODON_FOLLOWERS_URL(id)
-  const args = [
-    maxId && `max_id=${maxId}`,
-    sinceId && `since_id=${sinceId}`,
-    limit && `limit=${limit}`,
-    'with_relationships=true',
-  ]
-    .filter((_) => _)
-    .join('&')
-
-  url += args ? '?' + args : ''
-  return promisedRequest({
-    url,
+}) =>
+  promisedRequest({
+    url: MASTODON_FOLLOWERS_URL(id, {
+      maxId,
+      sinceId,
+      limit,
+      withRelationships: true,
+    }),
     credentials,
   }).then((data) => data.map(parseUser))
-}
 
 export const fetchFollowRequests = ({ credentials }) =>
   promisedRequest({
@@ -567,17 +564,17 @@ export const fetchStatusHistory = ({ status, credentials }) =>
 export const fetchTimeline = ({
   timeline,
   credentials,
-  since = false,
-  minId = false,
-  until = false,
-  userId = false,
-  listId = false,
-  statusId = false,
-  tag = false,
-  withMuted = false,
+  sinceId,
+  minId,
+  maxId,
+  userId,
+  listId,
+  statusId,
+  tag,
+  withMuted,
   replyVisibility = 'all',
   includeTypes = [],
-  bookmarkFolderId = false,
+  bookmarkFolderId,
 }) => {
   const timelineUrls = {
     public: MASTODON_PUBLIC_TIMELINE,
@@ -595,8 +592,14 @@ export const fetchTimeline = ({
     quotes: PLEROMA_STATUS_QUOTES_URL,
     bubble: AKKOMA_BUBBLE_TIMELINE_URL,
   }
+
   const isNotifications = timeline === 'notifications'
-  const params = []
+  const params = {
+    minId,
+    sinceId,
+    maxId,
+    limit: 20,
+  }
 
   let url = timelineUrls[timeline]
 
@@ -616,51 +619,34 @@ export const fetchTimeline = ({
     url = url(statusId)
   }
 
-  if (minId) {
-    params.push(['min_id', minId])
-  }
-  if (since) {
-    params.push(['since_id', since])
-  }
-  if (until) {
-    params.push(['max_id', until])
-  }
   if (tag) {
     url = url(tag)
   }
+
   if (timeline === 'media') {
-    params.push(['only_media', 1])
+    params.onlyMedia = 1
   }
   if (timeline === 'public') {
-    params.push(['local', true])
+    params.local = true
   }
   if (timeline === 'public' || timeline === 'publicAndExternal') {
-    params.push(['only_media', false])
+    params.onlyMedia = false
   }
   if (timeline !== 'favorites' && timeline !== 'bookmarks') {
-    params.push(['with_muted', withMuted])
+    params.withMuted = withMuted
   }
   if (replyVisibility !== 'all') {
-    params.push(['reply_visibility', replyVisibility])
+    params.replyVisibility = replyVisibility
   }
   if (includeTypes.size > 0) {
-    includeTypes.forEach((type) => {
-      params.push(['include_types[]', type])
-    })
+    params.includeTypes = includeTypes
   }
   if (timeline === 'bookmarks' && bookmarkFolderId) {
-    params.push(['folder_id', bookmarkFolderId])
+    params.folderId = bookmarkFolderId
   }
 
-  params.push(['limit', 20])
-
-  const queryString = map(params, (param) => `${param[0]}=${param[1]}`).join(
-    '&',
-  )
-  url += `?${queryString}`
-
   return promisedRequest({
-    url,
+    url: url + paramsString(params),
     credentials,
   }).then(async (data) => {
     const pagination = parseLinkHeaderPagination(
@@ -1036,16 +1022,11 @@ export const generateMfaBackupCodes = ({ credentials }) =>
     method: 'GET',
   })
 
-export const fetchMutes = ({ maxId, credentials }) => {
-  const query = new URLSearchParams({ with_relationships: true })
-  if (maxId) {
-    query.append('max_id', maxId)
-  }
-  return promisedRequest({
-    url: `${MASTODON_USER_MUTES_URL}?${query.toString()}`,
+export const fetchMutes = ({ maxId, credentials }) =>
+  promisedRequest({
+    url: MASTODON_USER_MUTES_URL({ maxId, withRelationships: true }),
     credentials,
   }).then((users) => users.map(parseUser))
-}
 
 export const muteUser = ({ id, expiresIn, credentials }) => {
   const payload = {}
@@ -1068,16 +1049,11 @@ export const unmuteUser = ({ id, credentials }) =>
     method: 'POST',
   })
 
-export const fetchBlocks = ({ maxId, credentials }) => {
-  const query = new URLSearchParams({ with_relationships: true })
-  if (maxId) {
-    query.append('max_id', maxId)
-  }
-  return promisedRequest({
-    url: `${MASTODON_USER_BLOCKS_URL}?${query.toString()}`,
+export const fetchBlocks = ({ maxId, credentials }) =>
+  promisedRequest({
+    url: MASTODON_USER_BLOCKS_URL({ maxId, withRelationships: true }),
     credentials,
   }).then((users) => users.map(parseUser))
-}
 
 export const addBackup = ({ credentials }) =>
   promisedRequest({
@@ -1519,19 +1495,8 @@ export const chatMessages = ({
   sinceId,
   limit = 20,
 }) => {
-  let url = PLEROMA_CHAT_MESSAGES_URL(id)
-  const args = [
-    maxId && `max_id=${maxId}`,
-    sinceId && `since_id=${sinceId}`,
-    limit && `limit=${limit}`,
-  ]
-    .filter((_) => _)
-    .join('&')
-
-  url = url + (args ? '?' + args : '')
-
   return promisedRequest({
-    url,
+    url: PLEROMA_CHAT_MESSAGES_URL(id, { maxId, sinceId, limit }),
     method: 'GET',
     credentials,
   })
@@ -1584,15 +1549,10 @@ export const deleteChatMessage = ({ chatId, messageId, credentials }) =>
     credentials,
   })
 
-export const fetchScrobbles = ({ accountId, limit = 1 }) => {
-  let url = PLEROMA_SCROBBLES_URL(accountId)
-  const params = [['limit', limit]]
-  const queryString = map(params, (param) => `${param[0]}=${param[1]}`).join(
-    '&',
-  )
-  url += `?${queryString}`
-  return promisedRequest({ url })
-}
+export const fetchScrobbles = ({ accountId, limit = 1 }) =>
+  promisedRequest({
+    url: PLEROMA_SCROBBLES_URL(accountId, { limit }),
+  })
 
 export const fetchBookmarkFolders = ({ credentials }) =>
   promisedRequest({

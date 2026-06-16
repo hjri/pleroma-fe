@@ -25,7 +25,7 @@ const mastoApiNotificationTypes = new Set([
   'pleroma:report',
 ])
 
-const fetchAndUpdate = ({ store, credentials, older = false, since }) => {
+const fetchAndUpdate = ({ store, credentials, older = false, sinceId }) => {
   const args = { credentials }
   const rootState = store.rootState || store.state
   const timelineData = rootState.notifications
@@ -35,24 +35,24 @@ const fetchAndUpdate = ({ store, credentials, older = false, since }) => {
     mastoApiNotificationTypes.add('pleroma:chat_mention')
   }
 
-  args.includeTypes = mastoApiNotificationTypes
+  args.includeTypes = [...mastoApiNotificationTypes]
   args.withMuted = !hideMutedPosts
 
   args.timeline = 'notifications'
   if (older) {
     if (timelineData.minId !== Number.POSITIVE_INFINITY) {
-      args.until = timelineData.minId
+      args.maxId = timelineData.minId
     }
     return fetchNotifications({ store, args, older })
   } else {
     // fetch new notifications
     if (
-      since === undefined &&
+      sinceId === undefined &&
       timelineData.maxId !== Number.POSITIVE_INFINITY
     ) {
-      args.since = timelineData.maxId
-    } else if (since !== null) {
-      args.since = since
+      args.sinceId = timelineData.maxId
+    } else if (sinceId !== null) {
+      args.sinceId = sinceId
     }
     const result = fetchNotifications({ store, args, older })
 
@@ -69,7 +69,7 @@ const fetchAndUpdate = ({ store, credentials, older = false, since }) => {
     if (readNotifsIds.length > 0 && readNotifsIds.length > 0) {
       const minId = Math.min(...unreadNotifsIds) // Oldest known unread notification
       if (minId !== Infinity) {
-        args.since = false // Don't use since_id since it sorta conflicts with min_id
+        args.sinceId = null // Don't use since_id since it sorta conflicts with min_id
         args.minId = minId - 1 // go beyond
         fetchNotifications({ store, args, older })
       }

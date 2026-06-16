@@ -1,10 +1,11 @@
+import mastoapidata from '../../../../fixtures/mastoapi.json'
+
 import {
   parseLinkHeaderPagination,
   parseNotification,
   parseStatus,
   parseUser,
-} from '../../../../../src/services/entity_normalizer/entity_normalizer.service.js'
-import mastoapidata from '../../../../fixtures/mastoapi.json'
+} from 'src/services/entity_normalizer/entity_normalizer.service.js'
 
 const makeMockUserMasto = (overrides = {}) => {
   return Object.assign(

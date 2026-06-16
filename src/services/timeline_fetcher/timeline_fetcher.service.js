@@ -41,7 +41,7 @@ const fetchAndUpdate = ({
   bookmarkFolderId = false,
   tag = false,
   until,
-  since,
+  sinceId,
 }) => {
   const args = { timeline, credentials }
   const rootState = store.rootState || store.state
@@ -53,10 +53,10 @@ const fetchAndUpdate = ({
   if (older) {
     args.until = until || timelineData.minId
   } else {
-    if (since === undefined) {
-      args.since = timelineData.maxId
-    } else if (since !== null) {
-      args.since = since
+    if (sinceId === undefined) {
+      args.sinceId = timelineData.maxId
+    } else if (sinceId !== null) {
+      args.sinceId = sinceId
     }
   }
 
