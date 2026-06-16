@@ -35,7 +35,7 @@ const AnnouncementsPage = {
     canPostAnnouncement() {
       return (
         this.currentUser &&
-        this.currentUser.privileges.includes(
+        this.currentUser.privileges.has(
           'announcements_manage_announcements',
         )
       )
