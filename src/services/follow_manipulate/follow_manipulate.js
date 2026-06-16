@@ -35,42 +35,33 @@ const fetchRelationship = (attempt, userId, store) =>
     }
   })
 
-export const requestFollow = (userId, store) =>
-  new Promise((resolve) => {
-    followUser({
-      id: userId,
-      credentials: useOAuthStore().token,
-    }).then((updated) => {
-      store.commit('updateUserRelationship', [updated])
-
-      if (updated.following || (updated.locked && updated.requested)) {
-        // If we get result immediately or the account is locked, just stop.
-        resolve()
-        return
-      }
-
-      // But usually we don't get result immediately, so we ask server
-      // for updated user profile to confirm if we are following them
-      // Sometimes it takes several tries. Sometimes we end up not following
-      // user anyway, probably because they locked themselves and we
-      // don't know that yet.
-      // Recursive Promise, it will call itself up to 3 times.
-
-      return fetchRelationship(1, updated, store).then(() => {
-        resolve()
-      })
-    })
+export const requestFollow = async (userId, store) => {
+  const updated = await followUser({
+    id: userId,
+    credentials: useOAuthStore().token,
   })
 
-export const requestUnfollow = (userId, store) =>
-  new Promise((resolve) => {
-    unfollowUser({
-      id: userId,
-      credentials: useOAuthStore().token,
-    }).then((updated) => {
-      store.commit('updateUserRelationship', [updated])
-      resolve({
-        updated,
-      })
-    })
+  store.commit('updateUserRelationship', [updated])
+
+  if (updated.following || (updated.locked && updated.requested)) {
+    // If we get result immediately or the account is locked, just stop.
+    return
+  }
+
+  // But usually we don't get result immediately, so we ask server
+  // for updated user profile to confirm if we are following them
+  // Sometimes it takes several tries. Sometimes we end up not following
+  // user anyway, probably because they locked themselves and we
+  // don't know that yet.
+  // Recursive Promise, it will call itself up to 3 times.
+  return await fetchRelationship(1, updated, store)
+}
+
+export const requestUnfollow = async (userId, store) => {
+  const updated = await unfollowUser({
+    id: userId,
+    credentials: useOAuthStore().token,
   })
+
+  return await store.commit('updateUserRelationship', [updated])
+}

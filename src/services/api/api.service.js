@@ -245,19 +245,19 @@ export const getCaptcha = () =>
   })
 
 export const followUser = ({ id, credentials, ...options }) => {
-  const form = {}
+  const payload = {}
 
   if (options.reblogs !== undefined) {
-    form.reblogs = options.reblogs
+    payload.reblogs = options.reblogs
   }
 
   if (options.notify !== undefined) {
-    form.notify = options.notify
+    payload.notify = options.notify
   }
 
   return promisedRequest({
     url: MASTODON_FOLLOW_URL(id),
-    formData: form,
+    payload,
     credentials,
     method: 'POST',
   })
