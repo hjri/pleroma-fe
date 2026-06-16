@@ -1,7 +1,7 @@
 import { find, remove } from 'lodash'
 import { defineStore } from 'pinia'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import {
   addAccountsToList,
@@ -36,7 +36,7 @@ export const useListsStore = defineStore('lists', {
     startFetching() {
       promiseInterval(() => {
         this.fetcher = fetchLists({
-          credentials: useCredentialsStore().current,
+          credentials: useOAuthStore().token,
         })
           .then(
             (lists) => this.setLists(lists),
@@ -56,7 +56,7 @@ export const useListsStore = defineStore('lists', {
     createList({ title }) {
       return createList({
         title,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((list) => {
         this.setList({ listId: list.id, title })
         return list
@@ -65,13 +65,13 @@ export const useListsStore = defineStore('lists', {
     fetchList({ listId }) {
       return getList({
         listId,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((list) => this.setList({ listId: list.id, title: list.title }))
     },
     fetchListAccounts({ listId }) {
       return getListAccounts({
         listId,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((accountIds) => {
         if (!this.allListsObject[listId]) {
           this.allListsObject[listId] = { accountIds: [] }
@@ -83,7 +83,7 @@ export const useListsStore = defineStore('lists', {
       updateList({
         listId,
         title,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
 
       if (!this.allListsObject[listId]) {
@@ -110,14 +110,14 @@ export const useListsStore = defineStore('lists', {
         addAccountsToList({
           listId,
           accountIds: added,
-          credentials: useCredentialsStore().current,
+          credentials: useOAuthStore().token,
         })
       }
       if (removed.length > 0) {
         removeAccountsFromList({
           listId,
           accountIds: removed,
-          credentials: useCredentialsStore().current,
+          credentials: useOAuthStore().token,
         })
       }
     },
@@ -125,7 +125,7 @@ export const useListsStore = defineStore('lists', {
       return addAccountsToList({
         listId,
         accountIds: [accountId],
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((result) => {
         if (!this.allListsObject[listId]) {
           this.allListsObject[listId] = { accountIds: [] }
@@ -138,7 +138,7 @@ export const useListsStore = defineStore('lists', {
       return removeAccountsFromList({
         listId,
         accountIds: [accountId],
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((result) => {
         if (!this.allListsObject[listId]) {
           this.allListsObject[listId] = { accountIds: [] }
@@ -154,7 +154,7 @@ export const useListsStore = defineStore('lists', {
     deleteList({ listId }) {
       deleteList({
         listId,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
 
       delete this.allListsObject[listId]

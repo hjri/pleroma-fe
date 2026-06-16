@@ -11,10 +11,10 @@ import IntegerSetting from '../helpers/integer_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { updateProfile } from 'src/services/api/api.service.js'
@@ -168,7 +168,7 @@ const ComposingTab = {
 
       updateProfile({
         params,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((user) => {
         this.$store.commit('addNewUsers', [user])
         this.$store.commit('setCurrentUser', user)

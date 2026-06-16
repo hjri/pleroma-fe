@@ -1,7 +1,7 @@
 import { merge } from 'lodash'
 import { defineStore } from 'pinia'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { fetchPoll, vote } from 'src/services/api/api.service.js'
 
@@ -25,7 +25,7 @@ export const usePollsStore = defineStore('polls', {
     updateTrackedPoll(pollId) {
       fetchPoll({
         pollId,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((poll) => {
         setTimeout(() => {
           if (this.trackedPolls[pollId]) {
@@ -58,7 +58,7 @@ export const usePollsStore = defineStore('polls', {
       return vote({
         pollId,
         choices,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((poll) => {
         this.mergeOrAddPoll(poll)
         return poll

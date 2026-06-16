@@ -4,7 +4,7 @@ import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Exporter from 'src/components/exporter/exporter.vue'
 import Importer from 'src/components/importer/importer.vue'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens.js'
 
 import {
@@ -47,23 +47,23 @@ const DataImportExportTab = {
     getFollowsContent() {
       return exportFriends({
         id: this.user.id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then(this.generateExportableUsersContent)
     },
     getBlocksContent() {
       return fetchBlocks({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then(this.generateExportableUsersContent)
     },
     getMutesContent() {
       return fetchMutes({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then(this.generateExportableUsersContent)
     },
     importFollows(file) {
       return importFollows({
         file,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((status) => {
         if (!status) {
           throw new Error('failed')
@@ -73,7 +73,7 @@ const DataImportExportTab = {
     importBlocks(file) {
       return importBlocks({
         file,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((status) => {
         if (!status) {
           throw new Error('failed')
@@ -83,7 +83,7 @@ const DataImportExportTab = {
     importMutes(file) {
       return importMutes({
         file,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((status) => {
         if (!status) {
           throw new Error('failed')
@@ -105,7 +105,7 @@ const DataImportExportTab = {
     },
     addBackup() {
       addBackup({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
         .then(() => {
           this.addedBackup = true
@@ -119,7 +119,7 @@ const DataImportExportTab = {
     },
     fetchBackups() {
       listBackups({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
         .then((res) => {
           this.backups = res

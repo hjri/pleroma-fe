@@ -6,9 +6,10 @@
 
 const wait = (timeout) => {
   let timeoutId
-  const promise = () => new Promise((resolve) => {
-    timeoutId = window.setTimeout(() => resolve(), timeout)
-  })
+  const promise = () =>
+    new Promise((resolve) => {
+      timeoutId = window.setTimeout(() => resolve(), timeout)
+    })
   return { timeoutId, promise }
 }
 

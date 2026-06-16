@@ -1,8 +1,8 @@
 import { shuffle } from 'lodash'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { fetchUser, suggestions } from 'src/services/api/api.service.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
@@ -20,7 +20,7 @@ function showWhoToFollow(panel, reply) {
 
     fetchUser({
       id: name,
-      credentials: useCredentialsStore().current,
+      credentials: useOAuthStore().token,
     }).then((externalUser) => {
       if (!externalUser.error) {
         panel.$store.commit('addNewUsers', [externalUser])

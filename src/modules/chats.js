@@ -9,7 +9,7 @@ import {
 } from '../services/entity_normalizer/entity_normalizer.service.js'
 import { promiseInterval } from '../services/promise_interval/promise_interval.js'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import {
   chats,
@@ -68,7 +68,7 @@ const chatsModule = {
     },
     fetchChats({ dispatch, rootState }) {
       return chats({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then(({ chatList }) => {
         dispatch('addNewChats', { chats: chatList })
         return chats
@@ -125,14 +125,14 @@ const chatsModule = {
         readChat({
           id,
           lastReadId,
-          credentials: useCredentialsStore().current,
+          credentials: useOAuthStore().token,
         })
       }
     },
     deleteChatMessage({ rootState, commit }, value) {
       deleteChatMessage({
         ...value,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
       commit('deleteChatMessage', { commit, ...value })
     },

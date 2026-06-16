@@ -9,8 +9,8 @@ import MuteCard from 'src/components/mute_card/mute_card.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens.js'
 
 import { importBlocks, importFollows } from 'src/services/api/api.service.js'
@@ -59,7 +59,7 @@ const MutesAndBlocks = {
     importFollows(file) {
       return importFollows({
         file,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((status) => {
         if (!status) {
           throw new Error('failed')
@@ -69,7 +69,7 @@ const MutesAndBlocks = {
     importBlocks(file) {
       return importBlocks({
         file,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((status) => {
         if (!status) {
           throw new Error('failed')

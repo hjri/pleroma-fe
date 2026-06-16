@@ -3,7 +3,7 @@ import UserCard from 'src/components/user_card/user_card.vue'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { updateProfile } from 'src/services/api/api.service.js'
 
@@ -41,7 +41,7 @@ const ProfileTab = {
       }
       updateProfile({
         params,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
         .then((user) => {
           this.$store.commit('addNewUsers', [user])

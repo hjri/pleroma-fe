@@ -1,7 +1,7 @@
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { updateNotificationSettings } from 'src/services/api/api.service.js'
 
@@ -32,7 +32,7 @@ const NotificationsTab = {
   methods: {
     updateNotificationSettings() {
       updateNotificationSettings({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         settings: this.notificationSettings,
       })
     },

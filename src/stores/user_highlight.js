@@ -14,7 +14,7 @@ import {
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { storage } from 'src/lib/storage.js'
 import { updateProfileJSON } from 'src/services/api/api.service.js'
@@ -349,7 +349,7 @@ export const useUserHighlightStore = defineStore('user_highlight', {
       }
       updateProfileJSON({
         params,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((user) => {
         this.initUserHighlight(user)
         this.dirty = false

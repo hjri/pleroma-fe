@@ -30,7 +30,6 @@ import routes from './routes'
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useAuthFlowStore } from 'src/stores/auth_flow'
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useI18nStore } from 'src/stores/i18n'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -38,7 +37,7 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useOAuthStore } from 'src/stores/oauth'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
@@ -261,13 +260,6 @@ const getStickers = async ({ store }) => {
   }
 }
 
-const getAppSecret = async ({ store }) => {
-  const oauth = useOAuthStore()
-  if (oauth.userToken) {
-    useCredentialsStore().setCredentials(oauth.getToken)
-  }
-}
-
 const resolveStaffAccounts = ({ store, accounts }) => {
   const nicknames = accounts.map((uri) => uri.split('/').pop())
   useInstanceStore().set({
@@ -458,14 +450,13 @@ const setConfig = async ({ store }) => {
   const apiConfig = configInfos[0]
   const staticConfig = configInfos[1]
 
-  getAppSecret({ store })
   await setSettings({ store, apiConfig, staticConfig })
 }
 
 const checkOAuthToken = async ({ store }) => {
   const oauth = useOAuthStore()
-  if (oauth.getUserToken) {
-    return store.dispatch('loginUser', oauth.getUserToken)
+  if (oauth.userToken) {
+    return store.dispatch('loginUser', oauth.userToken)
   }
   return Promise.resolve()
 }

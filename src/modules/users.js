@@ -21,7 +21,6 @@ import {
 } from '../services/window_utils/window_utils'
 
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -133,7 +132,7 @@ const localMuteUser = (store, args) => {
   return muteUser({
     id,
     expiresIn,
-    credentials: useCredentialsStore().current,
+    credentials: useOAuthStore().token,
   }).then((relationship) => {
     store.commit('updateUserRelationship', [relationship])
     store.commit('addMuteId', id)
@@ -154,7 +153,7 @@ const hideReblogs = (store, userId) => {
   return followUser({
     id: userId,
     reblogs: false,
-    credentials: useCredentialsStore().current,
+    credentials: useOAuthStore().token,
   }).then((relationship) => {
     store.commit('updateUserRelationship', [relationship])
   })
@@ -164,7 +163,7 @@ const showReblogs = (store, userId) => {
   return followUser({
     id: userId,
     reblogs: true,
-    credentials: useCredentialsStore().current,
+    credentials: useOAuthStore().token,
   }).then((relationship) =>
     store.commit('updateUserRelationship', [relationship]),
   )
@@ -173,14 +172,14 @@ const showReblogs = (store, userId) => {
 const muteDomain = (store, domain) => {
   return muteDomain({
     domain,
-    credentials: useCredentialsStore().current,
+    credentials: useOAuthStore().token,
   }).then(() => store.commit('addDomainMute', domain))
 }
 
 const unmuteDomain = (store, domain) => {
   return unmuteDomain({
     domain,
-    credentials: useCredentialsStore().current,
+    credentials: useOAuthStore().token,
   }).then(() => store.commit('removeDomainMute', domain))
 }
 
@@ -404,7 +403,7 @@ const users = {
     fetchUser(store, id) {
       return fetchUser({
         id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((user) => {
         store.commit('addNewUsers', [user])
         return user
@@ -413,7 +412,7 @@ const users = {
     fetchUserByName(store, name) {
       return fetchUserByName({
         name,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((user) => {
         store.commit('addNewUsers', [user])
         return user
@@ -423,7 +422,7 @@ const users = {
       if (store.state.currentUser) {
         fetchUserRelationship({
           id,
-          credentials: useCredentialsStore().current,
+          credentials: useOAuthStore().token,
         }).then((relationships) =>
           store.commit('updateUserRelationship', relationships),
         )
@@ -433,7 +432,7 @@ const users = {
       if (store.state.currentUser) {
         fetchUserInLists({
           id,
-          credentials: useCredentialsStore().current,
+          credentials: useOAuthStore().token,
         }).then((inLists) => store.commit('updateUserInLists', { id, inLists }))
       }
     },
@@ -443,7 +442,7 @@ const users = {
       const maxId = store.state.currentUser.blockIdsMaxId
       return fetchBlocks({
         maxId,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((blocks) => {
         if (reset) {
           store.commit('saveBlockIds', map(blocks, 'id'))
@@ -481,7 +480,7 @@ const users = {
       const maxId = store.state.currentUser.muteIdsMaxId
       return fetchMutes({
         maxId,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((mutes) => {
         if (reset) {
           store.commit('saveMuteIds', map(mutes, 'id'))
@@ -515,7 +514,7 @@ const users = {
     },
     fetchDomainMutes(store) {
       return fetchDomainMutes({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((domainMutes) => {
         store.commit('saveDomainMutes', domainMutes)
         return domainMutes
@@ -539,7 +538,7 @@ const users = {
       return fetchFriends({
         id,
         maxId,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((friends) => {
         commit('addNewUsers', friends)
         commit('saveFriendIds', { id, friendIds: map(friends, 'id') })
@@ -552,7 +551,7 @@ const users = {
       return fetchFollowers({
         id,
         maxId,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((followers) => {
         commit('addNewUsers', followers)
         commit('saveFollowerIds', { id, followerIds: map(followers, 'id') })
@@ -569,7 +568,7 @@ const users = {
       return followUser({
         id,
         notify: true,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((relationship) =>
         commit('updateUserRelationship', [relationship]),
       )
@@ -578,7 +577,7 @@ const users = {
       return followUser({
         id,
         notify: false,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((relationship) =>
         commit('updateUserRelationship', [relationship]),
       )
@@ -644,7 +643,7 @@ const users = {
     searchUsers({ rootState, commit }, { query }) {
       return searchUsers({
         query,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((users) => {
         commit('addNewUsers', users)
         return users
@@ -679,7 +678,7 @@ const users = {
     },
     getCaptcha(store) {
       return getCaptcha({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
     },
 
@@ -704,7 +703,6 @@ const users = {
           store.dispatch('disconnectFromSocket')
           oauth.clearToken()
           store.dispatch('stopFetchingTimeline', 'friends')
-          useCredentialsStore().setCredentials(null)
           store.dispatch('stopFetchingNotifications')
           useListsStore().stopFetching()
           useBookmarkFoldersStore().stopFetching()
@@ -721,9 +719,11 @@ const users = {
       return new Promise((resolve, reject) => {
         const commit = store.commit
         const dispatch = store.dispatch
+
         commit('beginLogin')
+
         verifyCredentials({
-          credentials: useCredentialsStore().current,
+          credentials: useOAuthStore().token,
         })
           .then((data) => {
             if (!data.error) {
@@ -752,9 +752,6 @@ const users = {
               getNotificationPermission().then((permission) =>
                 useInterfaceStore().setNotificationPermission(permission),
               )
-
-              // Update credentials
-              useCredentialsStore().setCredentials(accessToken)
 
               // Do server-side storage migrations
 

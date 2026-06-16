@@ -1,7 +1,7 @@
 import { cloneDeep, differenceWith, flatten, get, isEqual, set } from 'lodash'
 import { defineStore } from 'pinia'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import {
   addNewEmojiFile,
@@ -86,7 +86,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
 
     loadAdminStuff() {
       getInstanceDBConfig({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((backendDbConfig) => {
         if (backendDbConfig.error) {
           if (backendDbConfig.error.status === 400) {
@@ -98,17 +98,17 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
           }
         } else {
           this.setInstanceAdminSettings({
-            credentials: useCredentialsStore().current,
+            credentials: useOAuthStore().token,
             backendDbConfig,
           })
         }
       })
       if (this.descriptions === null) {
         getInstanceConfigDescriptions({
-          credentials: useCredentialsStore().current,
+          credentials: useOAuthStore().token,
         }).then((backendDescriptions) =>
           this.setInstanceAdminDescriptions({
-            credentials: useCredentialsStore().current,
+            credentials: useOAuthStore().token,
             backendDescriptions,
           }),
         )
@@ -243,19 +243,19 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
 
       pushInstanceDBConfig({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         payload: {
           configs: changed,
         },
       })
         .then(() =>
           getInstanceDBConfig({
-            credentials: useCredentialsStore().current,
+            credentials: useOAuthStore().token,
           }),
         )
         .then((backendDbConfig) =>
           this.setInstanceAdminSettings({
-            credentials: useCredentialsStore().current,
+            credentials: useOAuthStore().token,
 
             backendDbConfig,
           }),
@@ -280,7 +280,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       }
 
       pushInstanceDBConfig({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         payload: {
           configs: [
             {
@@ -293,12 +293,12 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
         .then(() =>
           getInstanceDBConfig({
-            credentials: useCredentialsStore().current,
+            credentials: useOAuthStore().token,
           }),
         )
         .then((backendDbConfig) =>
           this.setInstanceAdminSettings({
-            credentials: useCredentialsStore().current,
+            credentials: useOAuthStore().token,
             backendDbConfig,
           }),
         )
@@ -311,7 +311,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       this.modifiedPaths.delete(path)
 
       return pushInstanceDBConfig({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         payload: {
           configs: [
             {
@@ -325,7 +325,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
         .then(() =>
           getInstanceDBConfig({
-            credentials: useCredentialsStore().current,
+            credentials: useOAuthStore().token,
           }),
         )
         .then((backendDbConfig) =>
@@ -336,7 +336,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     // Frontends Stuff
     loadFrontendsStuff() {
       getAvailableFrontends({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((frontends) => this.setAvailableFrontends({ frontends }))
     },
 
@@ -354,14 +354,14 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
 
     installFrontend() {
       return installFrontend({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
     },
 
     // Statuses stuff
     async fetchStatuses(opts) {
       const { total, activities } = await listStatuses({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         opts,
       })
 
@@ -376,7 +376,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     },
     async changeStatusScope(opts) {
       const raw = await changeStatusScope({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         opts,
       })
       const status = parseStatus(raw)
@@ -387,7 +387,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     // Users stuff
     async fetchUsers(opts) {
       const { users, count } = await listUsers({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
 
         opts,
       })
@@ -409,7 +409,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       const { screen_name } = user
 
       const result = await api({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         screen_name,
       })
       window.vuex.commit('updateUserAdminData', { user: result })
@@ -419,7 +419,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       const api = deleteAccounts
 
       const resultUserIds = await api({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         screen_names,
       })
 
@@ -437,7 +437,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       const screen_names = users.map((u) => u.screen_name)
 
       return resendConfirmationEmail({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         screen_names,
       })
     },
@@ -445,7 +445,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       const screen_names = users.map((u) => u.screen_name)
 
       return requirePasswordChange({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         screen_names,
       })
     },
@@ -454,7 +454,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       const { screen_name } = user
 
       return disableMFA({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         screen_name,
       })
     },
@@ -463,7 +463,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       const api = setUsersTags
 
       await api({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         screen_names,
         tags,
         value,
@@ -478,7 +478,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       const api = setUsersRight
 
       await api({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         screen_names,
         right,
         value,
@@ -493,7 +493,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       const api = setUsersActivationStatus
 
       const resultUsers = await api({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         screen_names,
         value,
       })
@@ -507,7 +507,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       const api = setUsersSuggestionStatus
 
       const resultUsers = await api({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         screen_names,
         value,
       })
@@ -521,7 +521,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       const api = setUsersConfirmationStatus
 
       await api({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         screen_names,
       })
 
@@ -534,7 +534,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       const api = setUsersApprovalStatus
 
       const resultUsers = await api({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         screen_names,
       })
 
@@ -543,21 +543,21 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
     },
     reloadEmoji() {
-      return reloadEmoji({ credentials: useCredentialsStore().current })
+      return reloadEmoji({ credentials: useOAuthStore().token })
     },
     importEmojiFromFS() {
-      return importEmojiFromFS({ credentials: useCredentialsStore().current })
+      return importEmojiFromFS({ credentials: useOAuthStore().token })
     },
     listEmojiPacks(params) {
       return listEmojiPacks({
         ...params,
-        credentials: useCredentialsStore().current
+        credentials: useOAuthStore().token,
       })
     },
     listRemoteEmojiPacks(params) {
       return listRemoteEmojiPacks({
         ...params,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
     },
     addNewEmojiFile({ packName, file, shortcode, filename }) {
@@ -566,7 +566,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         file,
         shortcode,
         filename,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
     },
     downloadRemoteEmojiPack({ instance, packName, as }) {
@@ -574,33 +574,33 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         instance,
         packName,
         as,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
     },
     downloadRemoteEmojiPackZIP({ url, packName }) {
       return downloadRemoteEmojiPackZIP({
         url,
         packName,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
     },
     createEmojiPack({ name }) {
       return createEmojiPack({
         name,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
     },
     deleteEmojiPack({ name }) {
       return createEmojiPack({
         name,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
     },
     saveEmojiPackMetadata({ name, newData }) {
       return createEmojiPack({
         name,
         newData,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
     },
   },

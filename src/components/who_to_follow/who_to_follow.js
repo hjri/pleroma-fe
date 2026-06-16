@@ -1,8 +1,8 @@
 import FollowCard from 'src/components/follow_card/follow_card.vue'
 import apiService from '../../services/api/api.service.js'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { fetchUser, suggestions } from 'src/services/api/api.service.js'
 
@@ -23,7 +23,7 @@ const WhoToFollow = {
       reply.forEach(({ id }) => {
         fetchUser({
           id,
-          credentials: useCredentialsStore().current,
+          credentials: useOAuthStore().token,
         }).then((externalUser) => {
           if (!externalUser.error) {
             this.$store.commit('addNewUsers', [externalUser])
@@ -33,7 +33,7 @@ const WhoToFollow = {
       })
     },
     getWhoToFollow() {
-      const credentials = useCredentialsStore().current
+      const credentials = useOAuthStore().token
       if (credentials) {
         suggestions({ credentials }).then((reply) => {
           this.showWhoToFollow(reply)

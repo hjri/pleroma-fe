@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import {
   getAnnouncements as adminGetAnnouncements,
@@ -47,15 +47,15 @@ export const useAnnouncementsStore = defineStore('announcements', {
       const fetchAnnouncements = async () => {
         if (!isAdmin) {
           return getAnnouncements({
-            credentials: useCredentialsStore().current,
+            credentials: useOAuthStore().token,
           })
         }
 
         const all = await adminGetAnnouncements({
-          credentials: useCredentialsStore().current,
+          credentials: useOAuthStore().token,
         })
         const visible = await getAnnouncements({
-          credentials: useCredentialsStore().current,
+          credentials: useOAuthStore().token,
         })
         const visibleObject = visible.reduce((a, c) => {
           a[c.id] = c
@@ -93,7 +93,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
     markAnnouncementAsRead(id) {
       return dismissAnnouncement({
         id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then(() => {
         const index = this.announcements.findIndex((a) => a.id === id)
 
@@ -124,7 +124,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
     },
     postAnnouncement({ content, startsAt, endsAt, allDay }) {
       return postAnnouncement({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         content,
         startsAt,
         endsAt,
@@ -140,7 +140,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
         startsAt,
         endsAt,
         allDay,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then(() => {
         return this.fetchAnnouncements()
       })
@@ -148,7 +148,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
     deleteAnnouncement(id) {
       return deleteAnnouncement({
         id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then(() => {
         return this.fetchAnnouncements()
       })

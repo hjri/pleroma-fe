@@ -5,7 +5,7 @@ import Confirm from './confirm.vue'
 import RecoveryCodes from './mfa_backup_codes.vue'
 import TOTP from './mfa_totp.vue'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import {
   generateMfaBackupCodes,
@@ -94,7 +94,7 @@ const Mfa = {
       this.backupCodes.codes = []
 
       return generateMfaBackupCodes({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((res) => {
         this.backupCodes.codes = res.codes
         this.backupCodes.inProgress = false
@@ -121,7 +121,7 @@ const Mfa = {
       this.setupState.state = 'setupOTP'
       this.setupState.setupOTPState = 'prepare'
       mfaSetupOTP({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((res) => {
         this.otpSettings = res
         this.setupState.setupOTPState = 'confirm'
@@ -133,7 +133,7 @@ const Mfa = {
       mfaConfirmOTP({
         token: this.otpConfirmToken,
         password: this.currentPassword,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((res) => {
         if (res.error) {
           this.error = res.error
@@ -162,7 +162,7 @@ const Mfa = {
     // fetch settings from server
     async fetchSettings() {
       const result = await settingsMFA({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
       if (result.error) return
       this.settings = result.settings

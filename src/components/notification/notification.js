@@ -13,9 +13,9 @@ import {
   highlightStyle,
 } from '../../services/user_highlighter/user_highlighter.js'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 import { approveUser, denyUser } from 'src/services/api/api.service.js'
@@ -146,7 +146,7 @@ const Notification = {
     doApprove() {
       approveUser({
         id: this.user.id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
       this.$store.dispatch('removeFollowRequest', this.user)
       this.$store.dispatch('markSingleNotificationAsSeen', {
@@ -170,7 +170,7 @@ const Notification = {
     doDeny() {
       denyUser({
         id: this.user.id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then(() => {
         this.$store.dispatch('dismissNotificationLocal', {
           id: this.notification.id,

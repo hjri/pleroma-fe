@@ -9,9 +9,9 @@ import {
   maybeShowNotification,
 } from '../services/notification_utils/notification_utils.js'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useI18nStore } from 'src/stores/i18n.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useReportsStore } from 'src/stores/reports.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
@@ -181,7 +181,7 @@ export const notifications = {
       commit('dismissNotification', { id })
       dismissNotification({
         id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
     },
     updateNotification({ commit }, { id, updater }) {

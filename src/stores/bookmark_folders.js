@@ -1,7 +1,7 @@
 import { find, remove } from 'lodash'
 import { defineStore } from 'pinia'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import {
   createBookmarkFolder,
@@ -29,7 +29,7 @@ export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {
     startFetching() {
       promiseInterval(() => {
         this.fetcher = fetchBookmarkFolders({
-          credentials: useCredentialsStore().current,
+          credentials: useOAuthStore().token,
         })
           .then(
             (folders) => this.setBookmarkFolders(folders),
@@ -60,7 +60,7 @@ export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {
       return createBookmarkFolder({
         name,
         emoji,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((folder) => {
         this.setBookmarkFolder(folder)
         return folder
@@ -68,7 +68,7 @@ export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {
     },
     updateBookmarkFolder({ folderId, name, emoji }) {
       return updateBookmarkFolder({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         folderId,
         name,
         emoji,
@@ -80,7 +80,7 @@ export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {
     deleteBookmarkFolder({ folderId }) {
       deleteBookmarkFolder({
         folderId,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
       remove(this.allFolders, (folder) => folder.id === folderId)
     },

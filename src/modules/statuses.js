@@ -38,9 +38,9 @@ import {
   unretweet,
 } from '../services/api/api.service.js'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 const emptyTl = (userId = 0) => ({
   statuses: [],
@@ -632,7 +632,7 @@ const statuses = {
     fetchStatusSource({ rootState }, status) {
       return fetchStatusSource({
         id: status.id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
     },
     fetchStatusHistory(_, status) {
@@ -641,7 +641,7 @@ const statuses = {
     deleteStatus({ rootState, commit }, status) {
       deleteStatus({
         id: status.id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
         .then(() => {
           commit('setDeleted', { status })
@@ -667,7 +667,7 @@ const statuses = {
       commit('setFavorited', { status, value: true })
       favorite({
         id: status.id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((status) =>
         commit('setFavoritedConfirm', {
           status,
@@ -680,7 +680,7 @@ const statuses = {
       commit('setFavorited', { status, value: false })
       unfavorite({
         id: status.id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((status) =>
         commit('setFavoritedConfirm', {
           status,
@@ -691,7 +691,7 @@ const statuses = {
     fetchPinnedStatuses({ rootState, dispatch }, userId) {
       fetchPinnedStatuses({
         id: userId,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((statuses) =>
         dispatch('addNewStatuses', {
           statuses,
@@ -705,25 +705,25 @@ const statuses = {
     pinStatus({ rootState, dispatch }, statusId) {
       return pinOwnStatus({
         id: statusId,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((status) => dispatch('addNewStatuses', { statuses: [status] }))
     },
     unpinStatus({ rootState, dispatch }, statusId) {
       return unpinOwnStatus({
         id: statusId,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((status) => dispatch('addNewStatuses', { statuses: [status] }))
     },
     muteConversation({ rootState, commit }, { id: statusId }) {
       return muteConversation({
         id: statusId,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((status) => commit('setMutedStatus', status))
     },
     unmuteConversation({ rootState, commit }, { id: statusId }) {
       return unmuteConversation({
         id: statusId,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((status) => commit('setMutedStatus', status))
     },
     retweet({ rootState, commit }, status) {
@@ -731,7 +731,7 @@ const statuses = {
       commit('setRetweeted', { status, value: true })
       retweet({
         id: status.id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((status) =>
         commit('setRetweetedConfirm', {
           status: status.retweeted_status,
@@ -744,7 +744,7 @@ const statuses = {
       commit('setRetweeted', { status, value: false })
       unretweet({
         id: status.id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((status) =>
         commit('setRetweetedConfirm', {
           status,
@@ -757,7 +757,7 @@ const statuses = {
       bookmarkStatus({
         id: status.id,
         folder_id: status.bookmark_folder_id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((status) => {
         commit('setBookmarkedConfirm', { status })
       })
@@ -766,7 +766,7 @@ const statuses = {
       commit('setBookmarked', { status, value: false })
       unbookmarkStatus({
         id: status.id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((status) => {
         commit('setBookmarkedConfirm', { status })
       })
@@ -781,11 +781,11 @@ const statuses = {
       Promise.all([
         fetchFavoritedByUsers({
           id,
-          credentials: useCredentialsStore().current,
+          credentials: useOAuthStore().token,
         }),
         fetchRebloggedByUsers({
           id,
-          credentials: useCredentialsStore().current,
+          credentials: useOAuthStore().token,
         }),
       ]).then(([favoritedByUsers, rebloggedByUsers]) => {
         commit('addFavs', {
@@ -808,7 +808,7 @@ const statuses = {
       reactWithEmoji({
         id,
         emoji,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then(() => {
         dispatch('fetchEmojiReactionsBy', id)
       })
@@ -829,7 +829,7 @@ const statuses = {
     fetchEmojiReactionsBy({ rootState, commit }, id) {
       return fetchEmojiReactions({
         id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((emojiReactions) => {
         commit('addEmojiReactionsBy', {
           id,
@@ -841,7 +841,7 @@ const statuses = {
     fetchFavs({ rootState, commit }, id) {
       fetchFavoritedByUsers({
         id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((favoritedByUsers) =>
         commit('addFavs', {
           id,
@@ -853,7 +853,7 @@ const statuses = {
     fetchRepeats({ rootState, commit }, id) {
       fetchRebloggedByUsers({
         id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((rebloggedByUsers) =>
         commit('addRepeats', {
           id,
@@ -870,7 +870,7 @@ const statuses = {
         offset,
         following,
         type,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((data) => {
         store.commit('addNewUsers', data.accounts)
         store.commit(

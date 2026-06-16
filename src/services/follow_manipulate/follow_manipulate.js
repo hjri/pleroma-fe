@@ -1,4 +1,4 @@
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import {
   fetchUserRelationship,
@@ -11,7 +11,7 @@ const fetchRelationship = (attempt, userId, store) =>
     setTimeout(() => {
       fetchUserRelationship({
         id: userId,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
         .then((relationship) => {
           store.commit('updateUserRelationship', [relationship])
@@ -39,7 +39,7 @@ export const requestFollow = (userId, store) =>
   new Promise((resolve) => {
     followUser({
       id: userId,
-      credentials: useCredentialsStore().current,
+      credentials: useOAuthStore().token,
     }).then((updated) => {
       store.commit('updateUserRelationship', [updated])
 
@@ -66,7 +66,7 @@ export const requestUnfollow = (userId, store) =>
   new Promise((resolve) => {
     unfollowUser({
       id: userId,
-      credentials: useCredentialsStore().current,
+      credentials: useOAuthStore().token,
     }).then((updated) => {
       store.commit('updateUserRelationship', [updated])
       resolve({

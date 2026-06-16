@@ -153,7 +153,7 @@ import Popover from 'components/popover/popover.vue'
 import SelectComponent from 'components/select/select.vue'
 import { defineAsyncComponent } from 'vue'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import {
   addNewEmojiFile,
@@ -257,7 +257,7 @@ export default {
         newShortcode: this.editedShortcode,
         newFilename: this.editedFile,
         force: false,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
         .then((resp) => {
           if (resp.error !== undefined) {
@@ -281,7 +281,7 @@ export default {
             : this.emojiAddr(this.file),
         shortcode: this.editedShortcode,
         filename: this.editedFile,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
         .then((resp) => resp.json())
         .then((resp) => {
@@ -308,7 +308,7 @@ export default {
       deleteEmojiFile({
         packName: this.packName,
         shortcode: this.shortcode,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
         .then((resp) => resp.json())
         .then((resp) => {

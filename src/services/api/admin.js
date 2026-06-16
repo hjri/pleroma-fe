@@ -6,7 +6,8 @@ const REPORTS = '/api/v1/pleroma/admin/reports'
 const CONFIG_URL = '/api/v1/pleroma/admin/config'
 const DESCRIPTIONS_URL = '/api/v1/pleroma/admin/config/descriptions'
 
-const ANNOUNCEMENTS_URL = (id = '') => `/api/v1/pleroma/admin/announcements/${id}`
+const ANNOUNCEMENTS_URL = (id = '') =>
+  `/api/v1/pleroma/admin/announcements/${id}`
 
 const FRONTENDS_URL = '/api/v1/pleroma/admin/frontends'
 const FRONTENDS_INSTALL_URL = '/api/v1/pleroma/admin/frontends/install'

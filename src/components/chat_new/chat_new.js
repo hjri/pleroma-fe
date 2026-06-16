@@ -3,7 +3,7 @@ import { mapGetters, mapState } from 'vuex'
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { chats } from 'src/services/api/api.service.js'
 
@@ -27,7 +27,7 @@ const chatNew = {
   },
   async created() {
     const { chats } = await chats({
-      credentials: useCredentialsStore().current,
+      credentials: useOAuthStore().token,
     })
     chats.forEach((chat) => this.suggestions.push(chat.account))
   },

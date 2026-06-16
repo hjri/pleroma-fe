@@ -1,6 +1,6 @@
 import { get, set } from 'lodash'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import {
   updateNotificationSettings,
@@ -12,7 +12,7 @@ const defaultApi = ({ rootState, commit }, { path, value }) => {
   set(params, path, value)
   return updateProfile({
     params,
-    credentials: useCredentialsStore().current,
+    credentials: useOAuthStore().token,
   }).then((result) => {
     commit('addNewUsers', [result])
     commit('setCurrentUser', result)
@@ -24,7 +24,7 @@ const notificationsApi = ({ rootState, commit }, { path, value, oldValue }) => {
   set(settings, path, value)
   return updateNotificationSettings({
     settings,
-    credentials: useCredentialsStore().current,
+    credentials: useOAuthStore().token,
   }).then((result) => {
     if (result.status === 'success') {
       commit('confirmProfileOption', { name, value })

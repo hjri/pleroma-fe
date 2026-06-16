@@ -20,9 +20,9 @@ import { toRaw } from 'vue'
 
 import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { storage } from 'src/lib/storage.js'
 import {
@@ -793,7 +793,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
       const params = { pleroma_settings_store: { 'pleroma-fe': this.cache } }
       updateProfileJSON({
         params,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
     },
   },

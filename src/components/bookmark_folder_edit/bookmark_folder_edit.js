@@ -1,8 +1,8 @@
 import EmojiPicker from 'src/components/emoji_picker/emoji_picker.vue'
 
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { fetchBookmarkFolders } from 'src/services/api/api.service.js'
 
@@ -26,7 +26,7 @@ const BookmarkFolderEdit = {
     if (!this.id) return
 
     fetchBookmarkFolders({
-      credentials: useCredentialsStore().current,
+      credentials: useOAuthStore().token,
     }).then((folders) => {
       const folder = folders.find((folder) => folder.id === this.id)
       if (!folder) return

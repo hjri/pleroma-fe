@@ -2,9 +2,9 @@ import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import Mfa from './mfa.vue'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens'
 
 import {
@@ -76,7 +76,7 @@ const SecurityTab = {
     },
     deleteAccount() {
       deleteAccount({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
         password: this.deleteAccountConfirmPasswordInput,
       }).then((res) => {
         if (res.status === 'success') {
@@ -92,7 +92,7 @@ const SecurityTab = {
         password: this.changePasswordInputs[0],
         newPassword: this.changePasswordInputs[1],
         newPasswordConfirmation: this.changePasswordInputs[2],
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }
       changePassword(params).then((res) => {
         if (res.status === 'success') {
@@ -109,7 +109,7 @@ const SecurityTab = {
       const params = {
         email: this.newEmail,
         password: this.changeEmailPassword,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }
       changeEmail(params).then((res) => {
         if (res.status === 'success') {
@@ -125,7 +125,7 @@ const SecurityTab = {
       const params = {
         targetAccount: this.moveAccountTarget,
         password: this.moveAccountPassword,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }
       moveAccount(params).then((res) => {
         if (res.status === 'success') {
@@ -140,13 +140,13 @@ const SecurityTab = {
     removeAlias(alias) {
       deleteAlias({
         alias,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then(() => this.fetchAliases())
     },
     addAlias() {
       addAlias({
         alias: this.addAliasTarget,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
         .then(() => {
           this.addedAlias = true
@@ -161,7 +161,7 @@ const SecurityTab = {
     },
     fetchAliases() {
       listAliases({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
         .then((res) => {
           this.aliases = res.aliases

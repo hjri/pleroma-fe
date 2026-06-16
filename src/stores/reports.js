@@ -1,8 +1,8 @@
 import { filter } from 'lodash'
 import { defineStore } from 'pinia'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { setReportState } from 'src/services/api/admin.js'
 
@@ -45,7 +45,7 @@ export const useReportsStore = defineStore('reports', {
       setReportState({
         id,
         state,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).catch((e) => {
         console.error('Failed to set report state', e)
         useInterfaceStore().pushGlobalNotice({

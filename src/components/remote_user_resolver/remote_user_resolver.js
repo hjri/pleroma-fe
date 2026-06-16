@@ -1,4 +1,4 @@
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { fetchUser } from 'src/services/api/api.service.js'
 
@@ -14,7 +14,7 @@ const RemoteUserResolver = {
       const id = this.$route.params.username + '@' + this.$route.params.hostname
       fetchUser({
         id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
         .then((externalUser) => {
           if (externalUser.error) {

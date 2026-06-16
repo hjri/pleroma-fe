@@ -41,11 +41,8 @@ export const useOAuthStore = defineStore('oauth', {
     userToken: false,
   }),
   getters: {
-    getToken() {
+    token() {
       return this.userToken || this.appToken
-    },
-    getUserToken() {
-      return this.userToken
     },
   },
   actions: {

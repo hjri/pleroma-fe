@@ -3,8 +3,8 @@ import { defineAsyncComponent } from 'vue'
 import { notificationsFromStore } from '../../services/notification_utils/notification_utils.js'
 import BasicUserCard from '../basic_user_card/basic_user_card.vue'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { approveUser, denyUser } from 'src/services/api/api.service.js'
 
@@ -53,7 +53,7 @@ const FollowRequestCard = {
     doApprove() {
       approveUser({
         id: this.user.id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
       this.$store.dispatch('removeFollowRequest', this.user)
 
@@ -79,7 +79,7 @@ const FollowRequestCard = {
 
       denyUser({
         id: this.user.id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then(() => {
         this.$store.dispatch('dismissNotificationLocal', { id: notifId })
         this.$store.dispatch('removeFollowRequest', this.user)

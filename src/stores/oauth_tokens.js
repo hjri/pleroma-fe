@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import {
   fetchOAuthTokens,
@@ -14,7 +14,7 @@ export const useOAuthTokensStore = defineStore('oauthTokens', {
   actions: {
     fetchTokens() {
       fetchOAuthTokens({
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((tokens) => {
         this.swapTokens(tokens)
       })
@@ -22,7 +22,7 @@ export const useOAuthTokensStore = defineStore('oauthTokens', {
     revokeToken(id) {
       revokeOAuthToken({
         id,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((response) => {
         if (response.status === 201) {
           this.swapTokens(this.tokens.filter((token) => token.id !== id))

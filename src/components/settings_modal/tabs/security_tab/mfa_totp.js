@@ -2,7 +2,7 @@ import { mapState } from 'vuex'
 
 import Confirm from './confirm.vue'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { mfaDisableOTP } from 'src/services/api/api.service.js'
 
@@ -39,7 +39,7 @@ export default {
       this.inProgress = true
       mfaDisableOTP({
         password: this.currentPassword,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((res) => {
         this.inProgress = false
         if (res.error) {

@@ -5,7 +5,7 @@ import List from 'src/components/list/list.vue'
 import Modal from 'src/components/modal/modal.vue'
 import UserLink from 'src/components/user_link/user_link.vue'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useReportsStore } from 'src/stores/reports.js'
 
 import { reportUser } from 'src/services/api/api.service.js'
@@ -31,6 +31,7 @@ const UserReportingModal = {
       return !!this.$store.state.users.currentUser
     },
     isOpen() {
+      console.log(this.reportModal)
       return this.isLoggedIn && this.reportModal.activated
     },
     userId() {
@@ -73,7 +74,7 @@ const UserReportingModal = {
         comment: this.comment,
         forward: this.forward,
         statusIds: [...this.statusIdsToReport],
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }
       reportUser({ ...params })
         .then(() => {

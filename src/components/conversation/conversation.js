@@ -7,9 +7,9 @@ import QuickViewSettings from 'src/components/quick_view_settings/quick_view_set
 import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
 import { WSConnectionStatus } from '../../services/api/api.service.js'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { fetchConversation, fetchStatus } from 'src/services/api/api.service.js'
 
@@ -441,7 +441,7 @@ const conversation = {
       if (this.status) {
         fetchConversation({
           id: this.statusId,
-          credentials: useCredentialsStore().current,
+          credentials: useOAuthStore().token,
         }).then(({ ancestors, descendants }) => {
           this.$store.dispatch('addNewStatuses', { statuses: ancestors })
           this.$store.dispatch('addNewStatuses', { statuses: descendants })
@@ -451,13 +451,14 @@ const conversation = {
         this.loadStatusError = null
         fetchStatus({
           id: this.statusId,
-          credentials: useCredentialsStore().current,
+          credentials: useOAuthStore().token,
         })
           .then((status) => {
             this.$store.dispatch('addNewStatuses', { statuses: [status] })
             this.fetchConversation()
           })
           .catch((error) => {
+            console.error(error)
             this.loadStatusError = error
           })
       }

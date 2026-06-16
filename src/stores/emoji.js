@@ -1,8 +1,8 @@
 import { merge } from 'lodash'
 import { defineStore } from 'pinia'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { ensureFinalFallback } from 'src/i18n/languages.js'
 import { listEmojiPacks } from 'src/services/api/api.service.js'
@@ -188,9 +188,10 @@ export const useEmojiStore = defineStore('emoji', {
       this.adminPacksLocalLoading = true
       this.adminPacksLocal = await this.getAdminPacks(
         useInstanceStore().server,
-        (params) => listEmojiPacks({
+        (params) =>
+          listEmojiPacks({
             ...params,
-            credentials: useCredentialsStore().current,
+            credentials: useOAuthStore().token,
           }),
       )
       this.adminPacksLocalLoading = false
@@ -221,14 +222,13 @@ export const useEmojiStore = defineStore('emoji', {
                 instance,
                 page: i,
                 pageSize,
-              })
-                .then((pageData) => {
-                  if (pageData.error !== undefined) {
-                    return Promise.reject(pageData.error)
-                  }
+              }).then((pageData) => {
+                if (pageData.error !== undefined) {
+                  return Promise.reject(pageData.error)
+                }
 
-                  return pageData.packs
-                }),
+                return pageData.packs
+              }),
             )
           }
 

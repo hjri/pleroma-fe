@@ -16,8 +16,8 @@ import {
   isScrollable,
 } from './chat_layout_utils.js'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import {
   chatMessages,
@@ -277,7 +277,7 @@ const Chat = {
         id: chatId,
         maxId,
         sinceId,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       }).then((messages) => {
         // Clear the current chat in case we're recovering from a ws connection loss.
         if (isFirstFetch) {
@@ -312,7 +312,7 @@ const Chat = {
         try {
           chat = await getOrCreateChat({
             accountId: this.recipientId,
-            credentials: useCredentialsStore().current,
+            credentials: useOAuthStore().token,
           })
         } catch (e) {
           console.error('Error creating or getting a chat', e)
@@ -381,7 +381,7 @@ const Chat = {
 
       sendChatMessage({
         params,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
         .then((data) => {
           this.$store.dispatch('addChatMessages', {

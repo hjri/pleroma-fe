@@ -3,10 +3,10 @@ import { Socket } from 'phoenix'
 import { WSConnectionStatus } from '../services/api/api.service.js'
 import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'
 
-import { useCredentialsStore } from 'src/stores/credentials.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useShoutStore } from 'src/stores/shout.js'
 
 import {
@@ -98,7 +98,7 @@ const api = {
           const timelineData = rootState.statuses.timelines.friends
 
           const serv = useInstanceStore().server.replace('http', 'ws')
-          const credentials = useCredentialsStore().current
+          const credentials = useOAuthStore().token
           const url = getMastodonSocketURI({ credentials }, serv)
 
           state.mastoUserSocket = ProcessedWS({
@@ -266,7 +266,7 @@ const api = {
         statusId,
         bookmarkFolderId,
         tag,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
 
       store.commit('addFetcher', { fetcherName: timeline, fetcher })
@@ -282,7 +282,7 @@ const api = {
         store,
         timeline,
         ...rest,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
     },
 
@@ -291,7 +291,7 @@ const api = {
       if (store.state.fetchers.notifications) return
       const fetcher = notificationsFetcher.startFetching({
         store,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
       store.commit('addFetcher', { fetcherName: 'notifications', fetcher })
     },
@@ -306,7 +306,7 @@ const api = {
       if (store.state.fetchers.followRequests) return
       const fetcher = followRequestFetcher.startFetchingFollowRequests({
         store,
-        credentials: useCredentialsStore().current,
+        credentials: useOAuthStore().token,
       })
 
       store.commit('addFetcher', { fetcherName: 'followRequests', fetcher })
