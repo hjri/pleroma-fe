@@ -6,12 +6,12 @@ const REPORTS = '/api/v1/pleroma/admin/reports'
 const CONFIG_URL = '/api/v1/pleroma/admin/config'
 const DESCRIPTIONS_URL = '/api/v1/pleroma/admin/config/descriptions'
 
-const ANNOUNCEMENTS_URL = (id) => '/api/v1/pleroma/admin/announcements/${id}'
+const ANNOUNCEMENTS_URL = (id = '') => `/api/v1/pleroma/admin/announcements/${id}`
 
 const FRONTENDS_URL = '/api/v1/pleroma/admin/frontends'
 const FRONTENDS_INSTALL_URL = '/api/v1/pleroma/admin/frontends/install'
 
-const USERS_URL = (nickname) => `/api/v1/pleroma/admin/users/${nickname}`
+const USERS_URL = (nickname = '') => `/api/v1/pleroma/admin/users/${nickname}`
 const USERS_URL_LIST = ({
   page,
   pageSize,
@@ -178,8 +178,8 @@ export const deleteAccounts = ({ credentials, screen_names: nicknames }) =>
     },
   })
 
-export const getAnnouncements = ({ credentials }) =>
-  promisedRequest({ url: ANNOUNCEMENTS_URL(), credentials })
+export const getAnnouncements = ({ id, credentials }) =>
+  promisedRequest({ url: ANNOUNCEMENTS_URL(id), credentials })
 
 // the reported list is hardly useful because standards are for dating i guess,
 // so make sure to fetchIfMissing right afterward using this call
