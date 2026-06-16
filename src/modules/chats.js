@@ -59,7 +59,6 @@ const chatsModule = {
     // Chat list
     startFetchingChats({ dispatch, commit }) {
       const fetcher = () => dispatch('fetchChats', { latest: true })
-      fetcher()
       commit('setChatListFetcher', {
         fetcher: () => promiseInterval(fetcher, 5000),
       })
