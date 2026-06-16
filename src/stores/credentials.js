@@ -13,7 +13,7 @@ export const useCredentialsStore = defineStore('credentials', {
   },
   getters: {
     current() {
-      return window.vuex.state.users.currentUser.credentials
+      return this.credentials
     },
   },
 })
