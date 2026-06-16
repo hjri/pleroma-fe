@@ -33,6 +33,10 @@
     &:not(:last-child) {
       border-bottom: 1px dotted var(--border);
     }
+
+    &:empty {
+      border: none;
+    }
   }
 
   .header {

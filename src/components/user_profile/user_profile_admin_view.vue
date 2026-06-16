@@ -33,6 +33,7 @@
           :statusoid="item"
           :in-conversation="false"
           :focused="false"
+          ignore-mute
         />
       </template>
     </List>

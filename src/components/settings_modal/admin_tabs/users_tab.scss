@@ -20,8 +20,10 @@
     flex-direction: column;
     gap: 1em;
     border-right: 1px solid var(--border);
-    padding: 0 1em;
+    padding: 1em;
     margin-right: 1em;
+    overflow: auto visible;
+    flex: 0 0 auto;
 
     > div {
       flex: 0 1 auto;
