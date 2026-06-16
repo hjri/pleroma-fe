@@ -1,5 +1,7 @@
 /* eslint-env serviceworker */
 
+import 'virtual:pleroma-fe/service_worker_env'
+
 import { createI18n } from 'vue-i18n'
 
 import { storage } from 'src/lib/storage.js'
