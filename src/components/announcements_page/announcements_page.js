@@ -35,9 +35,7 @@ const AnnouncementsPage = {
     canPostAnnouncement() {
       return (
         this.currentUser &&
-        this.currentUser.privileges.has(
-          'announcements_manage_announcements',
-        )
+        this.currentUser.privileges.has('announcements_manage_announcements')
       )
     },
   },

@@ -22,21 +22,16 @@ export const promiseInterval = (promiseCall, interval) => {
     window.clearTimeout(timeout)
   }
 
-  const loop = new Promise(async (resolve, reject) => {
-    try {
-      while (!stopped) {
-        await promiseCall()
-        const { timeoutId, promise } = wait(interval)
-        timeout = timeoutId
-        await promise()
-      }
-      resolve()
-    } catch (e) {
-      reject(e)
+  const loop = async () => {
+    while (!stopped) {
+      await promiseCall()
+      const { timeoutId, promise } = wait(interval)
+      timeout = timeoutId
+      await promise()
     }
-  })
+  }
 
-  loop.then()
+  loop().then()
 
   return { stop: stopFetcher }
 }
