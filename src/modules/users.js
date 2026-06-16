@@ -798,7 +798,10 @@ const users = {
               }
 
               if (useMergedConfigStore().mergedConfig.useStreamingApi) {
-                dispatch('fetchTimeline', { timeline: 'friends', sinceId: null })
+                dispatch('fetchTimeline', {
+                  timeline: 'friends',
+                  sinceId: null,
+                })
                 dispatch('fetchNotifications', { sinceId: null })
                 dispatch('enableMastoSockets', true)
                   .catch((error) => {
