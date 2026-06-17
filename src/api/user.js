@@ -81,6 +81,7 @@ const MASTODON_MUTE_CONVERSATION = (id) => `/api/v1/statuses/${id}/mute`
 const MASTODON_UNMUTE_CONVERSATION = (id) => `/api/v1/statuses/${id}/unmute`
 const MASTODON_DOMAIN_BLOCKS_URL = '/api/v1/domain_blocks'
 const MASTODON_LISTS_URL = '/api/v1/lists'
+const MASTODON_ANNOUNCEMENTS_URL = '/api/v1/announcements'
 const MASTODON_ANNOUNCEMENTS_DISMISS_URL = (id) =>
   `/api/v1/announcements/${id}/dismiss`
 const PLEROMA_EMOJI_REACT_URL = (id, emoji) =>
@@ -335,13 +336,6 @@ export const dismissNotification = ({ credentials, id }) =>
     credentials,
   })
 
-export const dismissAnnouncement = ({ id, credentials }) =>
-  promisedRequest({
-    url: MASTODON_ANNOUNCEMENTS_DISMISS_URL(id),
-    credentials,
-    method: 'POST',
-  })
-
 export const markNotificationsAsSeen = ({
   id,
   credentials,
@@ -362,6 +356,18 @@ export const markNotificationsAsSeen = ({
     method: 'POST',
   })
 }
+
+// #Announcements
+export const getAnnouncements = ({ credentials }) =>
+  promisedRequest({ url: MASTODON_ANNOUNCEMENTS_URL, credentials })
+
+export const dismissAnnouncement = ({ id, credentials }) =>
+  promisedRequest({
+    url: MASTODON_ANNOUNCEMENTS_DISMISS_URL(id),
+    credentials,
+    method: 'POST',
+  })
+
 
 // #Imports
 export const importMutes = ({ file, credentials }) => {

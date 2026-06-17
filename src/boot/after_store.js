@@ -566,10 +566,6 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     getInstanceConfig({ store }),
   ]).catch((e) => Promise.reject(e))
 
-  // Start fetching things that don't need to block the UI
-  store.dispatch('fetchMutes')
-  store.dispatch('loadDrafts')
-  useAnnouncementsStore().startFetchingAnnouncements()
   getTOS({ store })
   getStickers({ store })
 

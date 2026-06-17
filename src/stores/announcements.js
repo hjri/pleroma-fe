@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 
-import { getAnnouncements } from 'src/api/public.js'
+import { getAnnouncements, dismissAnnouncement } from 'src/api/user.js'
 
 const FETCH_ANNOUNCEMENT_INTERVAL_MS = 1000 * 60 * 5
 
@@ -36,10 +36,6 @@ export const useAnnouncementsStore = defineStore('announcements', {
         currentUser.privileges.has('announcements_manage_announcements')
 
       try {
-        if (currentUser) {
-          this.userActions = await import('src/api/user.js')
-        }
-
         if (isAdmin) {
           this.adminActions = await import('src/api/admin.js')
         } else {
@@ -86,8 +82,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
       }
     },
     markAnnouncementAsRead(id) {
-      return this.userActions
-        .dismissAnnouncement({
+      return dismissAnnouncement({
           id,
           credentials: useOAuthStore().token,
         })

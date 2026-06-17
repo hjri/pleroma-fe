@@ -28,6 +28,7 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
+import { useAnnouncementsStore } from 'src/stores/announcements.js'
 
 import { revokeToken } from 'src/api/oauth.js'
 import {
@@ -832,8 +833,11 @@ const users = {
               startPolling()
             }
 
-            // Get user mutes
+            // Start fetching things that don't need to block the UI
+            useAnnouncementsStore().startFetchingAnnouncements()
+
             dispatch('fetchMutes')
+            dispatch('loadDrafts')
 
             useInterfaceStore().setLayoutWidth(windowWidth())
             useInterfaceStore().setLayoutHeight(windowHeight())

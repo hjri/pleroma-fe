@@ -91,6 +91,7 @@ export const getClientToken = ({ clientId, clientSecret, instance }) => {
     formData,
   })
 }
+
 export const verifyOTPCode = ({ app, instance, mfaToken, code }) => {
   const formData = new window.FormData()
 
