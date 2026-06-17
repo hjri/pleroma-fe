@@ -9,7 +9,6 @@ import {
   uniq,
 } from 'lodash'
 
-import oauthApi from '../services/new_api/oauth.js'
 import {
   registerPushNotifications,
   unregisterPushNotifications,
@@ -30,6 +29,7 @@ import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
+import { revokeToken } from 'src/api/oauth.js'
 import {
   fetchFollowers,
   fetchFriends,
@@ -711,7 +711,7 @@ const users = {
             token: oauth.userToken,
           }
 
-          return oauthApi.revokeToken(params)
+          return revokeToken(params)
         })
         .then(() => {
           store.commit('clearCurrentUser')

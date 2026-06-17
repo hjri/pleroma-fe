@@ -1,10 +1,10 @@
 import { mapActions, mapState, mapStores } from 'pinia'
 
-import { verifyRecoveryCode } from 'src/api/mfa.js'
-
 import { useAuthFlowStore } from 'src/stores/auth_flow.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+
+import { verifyRecoveryCode } from 'src/api/mfa.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'

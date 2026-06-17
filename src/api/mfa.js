@@ -16,7 +16,7 @@ export const verifyOTPCode = ({
   formData.append('challenge_type', 'totp')
 
   return promisedRequest({
-    url: '/oauth/mfa/challenge'
+    url: '/oauth/mfa/challenge',
     method: 'POST',
     formData,
   })
@@ -29,7 +29,6 @@ export const verifyRecoveryCode = ({
   mfaToken,
   code,
 }) => {
-  const url = `${instance}`
   const formData = new window.FormData()
 
   formData.append('client_id', clientId)
@@ -39,7 +38,7 @@ export const verifyRecoveryCode = ({
   formData.append('challenge_type', 'recovery')
 
   return promisedRequest({
-    url: '/oauth/mfa/challenge'
+    url: `${instance}/oauth/mfa/challenge`,
     method: 'POST',
     formData,
   })

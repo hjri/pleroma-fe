@@ -86,18 +86,20 @@ export const useAnnouncementsStore = defineStore('announcements', {
       }
     },
     markAnnouncementAsRead(id) {
-      return this.userActions.dismissAnnouncement({
-        id,
-        credentials: useOAuthStore().token,
-      }).then(() => {
-        const index = this.announcements.findIndex((a) => a.id === id)
+      return this.userActions
+        .dismissAnnouncement({
+          id,
+          credentials: useOAuthStore().token,
+        })
+        .then(() => {
+          const index = this.announcements.findIndex((a) => a.id === id)
 
-        if (index < 0) {
-          return
-        }
+          if (index < 0) {
+            return
+          }
 
-        this.announcements[index].read = true
-      })
+          this.announcements[index].read = true
+        })
     },
     startFetchingAnnouncements() {
       if (this.fetchAnnouncementsTimer) {
