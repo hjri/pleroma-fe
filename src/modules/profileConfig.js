@@ -5,7 +5,7 @@ import { useOAuthStore } from 'src/stores/oauth.js'
 import {
   updateNotificationSettings,
   updateProfile,
-} from 'src/services/api/api.service.js'
+} from 'src/services/api/user.js'
 
 const defaultApi = ({ rootState, commit }, { path, value }) => {
   const params = {}

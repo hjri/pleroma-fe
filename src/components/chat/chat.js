@@ -23,7 +23,7 @@ import {
   chatMessages,
   getOrCreateChat,
   sendChatMessage,
-} from 'src/services/api/api.service.js'
+} from 'src/services/api/chats.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronDown, faChevronLeft } from '@fortawesome/free-solid-svg-icons'

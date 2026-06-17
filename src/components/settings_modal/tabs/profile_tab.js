@@ -5,7 +5,7 @@ import SharedComputedObject from '../helpers/shared_computed_object.js'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 
-import { updateProfile } from 'src/services/api/api.service.js'
+import { updateProfile } from 'src/services/api/user.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

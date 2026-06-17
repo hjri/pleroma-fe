@@ -13,7 +13,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens.js'
 
-import { importBlocks, importFollows } from 'src/services/api/api.service.js'
+import { importBlocks, importFollows } from 'src/services/api/user.js'
 
 const MutesAndBlocks = {
   data() {

@@ -13,10 +13,11 @@ import {
   slice,
 } from 'lodash'
 
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
+
 import {
-  bookmarkStatus,
-  deleteStatus,
-  favorite,
   fetchEmojiReactions,
   fetchFavoritedByUsers,
   fetchPinnedStatuses,
@@ -25,22 +26,23 @@ import {
   fetchStatus,
   fetchStatusHistory,
   fetchStatusSource,
+  search2,
+} from 'src/services/api/api.service.js'
+import {
+  bookmarkStatus,
+  deleteStatus,
+  favorite,
   muteConversation,
   pinOwnStatus,
   reactWithEmoji,
   retweet,
-  search2,
   unbookmarkStatus,
   unfavorite,
   unmuteConversation,
   unpinOwnStatus,
   unreactWithEmoji,
   unretweet,
-} from '../services/api/api.service.js'
-
-import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
-import { useInterfaceStore } from 'src/stores/interface.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
+} from 'src/services/api/user.js'
 
 const emptyTl = (userId = 0) => ({
   statuses: [],

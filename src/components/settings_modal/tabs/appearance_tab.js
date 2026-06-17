@@ -14,7 +14,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { normalizeThemeData, useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 
-import { updateProfileImages } from 'src/services/api/api.service.js'
+import { updateProfileImages } from 'src/services/api/user.js'
 import { newImporter } from 'src/services/export_import/export_import.js'
 import {
   adoptStyleSheets,

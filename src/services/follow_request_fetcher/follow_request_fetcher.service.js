@@ -1,5 +1,5 @@
-import { fetchFollowRequests } from '../api/api.service.js'
-import { promiseInterval } from '../promise_interval/promise_interval.js'
+import { fetchFollowRequests } from 'src/services/api/user.js'
+import { promiseInterval } from 'src/services/promise_interval/promise_interval.js'
 
 const fetchAndUpdate = ({ store, credentials }) => {
   return fetchFollowRequests({ credentials })

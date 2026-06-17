@@ -83,9 +83,11 @@ export const promisedRequest = async ({
       ...headers,
     },
   }
+
   if (!formData) {
     options.headers['Content-Type'] = 'application/json'
   }
+
   if (params) {
     url +=
       '?' +
@@ -112,15 +114,6 @@ export const promisedRequest = async ({
   // 204 is "No content", which fails to parse json (as you'd might think)
   if (response.ok && response.status === 204) return { _response: response }
 
-  if (!response.ok) {
-    throw new StatusCodeError(
-      response.status,
-      json,
-      { url, options },
-      response,
-    )
-  }
-
   try {
     const json = await response.json()
 
@@ -132,6 +125,15 @@ export const promisedRequest = async ({
     }
 
     json._response = response
+
+    if (!response.ok) {
+      throw new StatusCodeError(
+        response.status,
+        json,
+        { url, options },
+        response,
+      )
+    }
 
     return json
   } catch (error) {

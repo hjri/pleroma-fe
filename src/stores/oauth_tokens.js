@@ -2,10 +2,7 @@ import { defineStore } from 'pinia'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 
-import {
-  fetchOAuthTokens,
-  revokeOAuthToken,
-} from 'src/services/api/api.service.js'
+import { fetchOAuthTokens, revokeOAuthToken } from 'src/services/api/user.js'
 
 export const useOAuthTokensStore = defineStore('oauthTokens', {
   state: () => ({

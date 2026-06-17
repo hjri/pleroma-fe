@@ -3,7 +3,8 @@ import { defineStore } from 'pinia'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 
-import { fetchPoll, vote } from 'src/services/api/api.service.js'
+import { fetchPoll } from 'src/services/api/api.service.js'
+import { vote } from 'src/services/api/user.js'
 
 export const usePollsStore = defineStore('polls', {
   state: () => ({

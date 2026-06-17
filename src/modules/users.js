@@ -32,21 +32,23 @@ import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 import {
-  fetchBlocks,
-  fetchDomainMutes,
   fetchFollowers,
   fetchFriends,
-  fetchMutes,
   fetchUser,
   fetchUserByName,
-  fetchUserInLists,
-  fetchUserRelationship,
-  followUser,
   getCaptcha,
-  muteUser,
   searchUsers,
   verifyCredentials,
 } from 'src/services/api/api.service.js'
+import {
+  fetchBlocks,
+  fetchDomainMutes,
+  fetchMutes,
+  fetchUserInLists,
+  fetchUserRelationship,
+  followUser,
+  muteUser,
+} from 'src/services/api/user.js'
 
 // TODO: Unify with mergeOrAdd in statuses.js
 export const mergeOrAdd = (arr, obj, item) => {

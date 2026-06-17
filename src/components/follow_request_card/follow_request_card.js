@@ -6,7 +6,7 @@ import BasicUserCard from '../basic_user_card/basic_user_card.vue'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 
-import { approveUser, denyUser } from 'src/services/api/api.service.js'
+import { approveUser, denyUser } from 'src/services/api/user.js'
 
 const FollowRequestCard = {
   props: ['user'],

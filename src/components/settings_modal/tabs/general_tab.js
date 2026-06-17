@@ -15,7 +15,7 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
-import { updateProfile } from 'src/services/api/api.service.js'
+import { updateProfile } from 'src/services/api/user.js'
 import localeService from 'src/services/locale/locale.service.js'
 
 const GeneralTab = {

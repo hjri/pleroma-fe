@@ -32,7 +32,7 @@ import {
   validateSetting,
 } from 'src/modules/default_config_state.js'
 import { oldDefaultConfigSync } from 'src/modules/old_default_config_state.js'
-import { updateProfileJSON } from 'src/services/api/api.service.js'
+import { updateProfileJSON } from 'src/services/api/user.js'
 
 export const VERSION = 2
 export const NEW_USER_DATE = new Date('2026-03-16') // date of writing this, basically

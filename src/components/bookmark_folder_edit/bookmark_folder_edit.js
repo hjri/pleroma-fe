@@ -4,7 +4,7 @@ import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 
-import { fetchBookmarkFolders } from 'src/services/api/api.service.js'
+import { fetchBookmarkFolders } from 'src/services/api/user.js'
 
 const BookmarkFolderEdit = {
   data() {
