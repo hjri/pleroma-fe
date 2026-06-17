@@ -1,6 +1,6 @@
 import { mapActions, mapState, mapStores } from 'pinia'
 
-import mfaApi from '../../services/new_api/mfa.js'
+import { verifyOTPCode } from 'src/api/mfa.js'
 
 import { useAuthFlowStore } from 'src/stores/auth_flow.js'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -46,18 +46,18 @@ export default {
         code: this.code,
       }
 
-      mfaApi.verifyOTPCode(data).then((result) => {
-        if (result.error) {
-          this.error = result.error
+      verifyOTPCode(data)
+        .then(({ data: result }) => {
+          this.login(result).then(() => {
+            this.$router.push({ name: 'friends' })
+          })
+        })
+        .catch((error) => {
+          this.error = error
           this.code = null
           this.focusOnCodeInput()
           return
-        }
-
-        this.login(result).then(() => {
-          this.$router.push({ name: 'friends' })
         })
-      })
     },
   },
 }
