@@ -66,7 +66,7 @@ export const paramsString = (params = {}) => {
   )
 }
 
-export const promisedRequest = ({
+export const promisedRequest = async ({
   method,
   url,
   params,
@@ -107,47 +107,41 @@ export const promisedRequest = ({
     }
   }
 
-  return fetch(url, options).then((response) => {
-    return new Promise((resolve, reject) => {
-      // 204 is "No content", which fails to parse json (as you'd might think)
-      if (response.ok && response.status === 204) resolve()
+  const response = await fetch(url, options)
 
-      return response
-        .json()
-        .then((json) => {
-          if (!response.ok) {
-            return reject(
-              new StatusCodeError(
-                response.status,
-                json,
-                { url, options },
-                response,
-              ),
-            )
-          }
+  // 204 is "No content", which fails to parse json (as you'd might think)
+  if (response.ok && response.status === 204) return { _response: response }
 
-          if (typeof json !== 'object') {
-            return resolve({
-              _response: response,
-              _value: json,
-            })
-          }
-          json._response = response
+  if (!response.ok) {
+    throw new StatusCodeError(
+      response.status,
+      json,
+      { url, options },
+      response,
+    )
+  }
 
-          return resolve(json)
-        })
-        .catch((error) => {
-          return reject(
-            new StatusCodeError(
-              response.status,
-              error,
-              { url, options },
-              response,
-            ),
-          )
-        })
-    })
-  })
+  try {
+    const json = await response.json()
+
+    if (typeof json !== 'object') {
+      return {
+        _response: response,
+        _value: json,
+      }
+    }
+
+    json._response = response
+
+    return json
+  } catch (error) {
+    throw new StatusCodeError(
+      response.status,
+      error,
+      { url, options },
+      response,
+    )
+  }
 }
 
 const authHeaders = (accessToken) => {
