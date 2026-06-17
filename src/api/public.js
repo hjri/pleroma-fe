@@ -314,7 +314,7 @@ export const verifyCredentials = ({ credentials }) =>
     credentials,
   }).then(({ data, ...rest }) => ({ ...rest, data: parseUser(data) }))
 
-export const resetPassword = ({ instance, email }) => {
+export const resetPassword = ({ email }) => {
   return promisedRequest({
     url: MASTODON_PASSWORD_RESET_URL({ email }),
     method: 'POST',

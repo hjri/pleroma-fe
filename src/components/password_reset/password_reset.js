@@ -1,7 +1,7 @@
 import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
-import passwordResetApi from '../../services/new_api/password_reset.js'
+import { resetPassword } from 'src/api/public.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 
@@ -46,7 +46,7 @@ const passwordReset = {
       const email = this.user.email
       const server = this.server
 
-      passwordResetApi({ server, email })
+      resetPassword({ email })
         .then(({ status }) => {
           this.isPending = false
           this.user.email = ''
