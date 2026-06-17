@@ -368,7 +368,6 @@ export const dismissAnnouncement = ({ id, credentials }) =>
     method: 'POST',
   })
 
-
 // #Imports
 export const importMutes = ({ file, credentials }) => {
   const formData = new FormData()

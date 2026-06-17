@@ -5,8 +5,9 @@ import { paramsString, promisedRequest } from './helpers.js'
 import { StatusCodeError } from 'src/services/errors/errors.js'
 
 const REDIRECT_URI = `${window.location.origin}/oauth-callback`
+const MASTODON_APP_VERIFY_URL = '/api/v1/apps/verify_credentials'
 
-export const createApp = ({ instance }) => {
+export const createApp = () => {
   const formData = new window.FormData()
 
   formData.append('client_name', 'PleromaFE')
@@ -15,7 +16,7 @@ export const createApp = ({ instance }) => {
   formData.append('scopes', 'read write follow push admin')
 
   return promisedRequest({
-    url: `${instance}/api/v1/apps`,
+    url: '/api/v1/apps',
     method: 'POST',
     formData,
   }).then(({ data, ...rest }) => ({
@@ -27,6 +28,12 @@ export const createApp = ({ instance }) => {
     },
   }))
 }
+
+export const verifyAppToken = ({ credentials }) =>
+  promisedRequest({
+    url: MASTODON_APP_VERIFY_URL,
+    credentials,
+  })
 
 export const getLoginUrl = ({ instance, clientId }) => {
   const data = {
@@ -42,7 +49,6 @@ export const getLoginUrl = ({ instance, clientId }) => {
 export const getTokenWithCredentials = ({
   clientId,
   clientSecret,
-  instance,
   username,
   password,
 }) => {
@@ -55,13 +61,13 @@ export const getTokenWithCredentials = ({
   formData.append('password', password)
 
   return promisedRequest({
-    url: `${instance}/oauth/token`,
+    url: '/oauth/token',
     method: 'POST',
     formData,
   })
 }
 
-export const getToken = ({ clientId, clientSecret, instance, code }) => {
+export const getToken = ({ clientId, clientSecret, code }) => {
   const formData = new window.FormData()
 
   formData.append('client_id', clientId)
@@ -71,13 +77,13 @@ export const getToken = ({ clientId, clientSecret, instance, code }) => {
   formData.append('redirect_uri', `${window.location.origin}/oauth-callback`)
 
   return promisedRequest({
-    url: `${instance}/oauth/token`,
+    url: '/oauth/token',
     method: 'POST',
     formData,
   })
 }
 
-export const getClientToken = ({ clientId, clientSecret, instance }) => {
+export const getClientToken = ({ clientId, clientSecret }) => {
   const formData = new window.FormData()
 
   formData.append('client_id', clientId)
@@ -86,13 +92,13 @@ export const getClientToken = ({ clientId, clientSecret, instance }) => {
   formData.append('redirect_uri', `${window.location.origin}/oauth-callback`)
 
   return promisedRequest({
-    url: `${instance}/oauth/token`,
+    url: '/oauth/token',
     method: 'POST',
     formData,
   })
 }
 
-export const verifyOTPCode = ({ app, instance, mfaToken, code }) => {
+export const verifyOTPCode = ({ app, mfaToken, code }) => {
   const formData = new window.FormData()
 
   formData.append('client_id', app.client_id)
@@ -102,13 +108,13 @@ export const verifyOTPCode = ({ app, instance, mfaToken, code }) => {
   formData.append('challenge_type', 'totp')
 
   return promisedRequest({
-    url: `${instance}/oauth/mfa/challenge`,
+    url: '/oauth/mfa/challenge',
     method: 'POST',
     formData,
   })
 }
 
-export const verifyRecoveryCode = ({ app, instance, mfaToken, code }) => {
+export const verifyRecoveryCode = ({ app, mfaToken, code }) => {
   const formData = new window.FormData()
 
   formData.append('client_id', app.client_id)
@@ -118,13 +124,13 @@ export const verifyRecoveryCode = ({ app, instance, mfaToken, code }) => {
   formData.append('challenge_type', 'recovery')
 
   return promisedRequest({
-    url: `${instance}/oauth/mfa/challenge`,
+    url: '/oauth/mfa/challenge',
     method: 'POST',
     formData,
   })
 }
 
-export const revokeToken = ({ app, instance, token }) => {
+export const revokeToken = ({ app, token }) => {
   const formData = new window.FormData()
 
   formData.append('client_id', app.clientId)
@@ -132,7 +138,7 @@ export const revokeToken = ({ app, instance, token }) => {
   formData.append('token', token)
 
   return promisedRequest({
-    url: `${instance}/oauth/revoke`,
+    url: '/oauth/revoke',
     method: 'POST',
     formData,
   })

@@ -54,7 +54,6 @@ const MASTODON_SEARCH_2 = '/api/v2/search'
 const MASTODON_USER_SEARCH_URL = '/api/v1/accounts/search'
 const MASTODON_STREAMING = '/api/v1/streaming'
 const MASTODON_KNOWN_DOMAIN_LIST_URL = '/api/v1/instance/peers'
-const MASTODON_ANNOUNCEMENTS_URL = '/api/v1/announcements'
 const PLEROMA_EMOJI_REACTIONS_URL = (id) =>
   `/api/v1/pleroma/statuses/${id}/reactions`
 const PLEROMA_SCROBBLES_URL = (id, { maxId, sinceId, minId, limit, offset }) =>
@@ -430,9 +429,6 @@ export const search2 = ({
 
 export const fetchKnownDomains = ({ credentials }) =>
   promisedRequest({ url: MASTODON_KNOWN_DOMAIN_LIST_URL, credentials })
-
-export const getAnnouncements = ({ credentials }) =>
-  promisedRequest({ url: MASTODON_ANNOUNCEMENTS_URL, credentials })
 
 export const getMastodonSocketURI = (
   { credentials, stream, args = {} },

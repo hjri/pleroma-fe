@@ -18,6 +18,7 @@ import {
   windowWidth,
 } from '../services/window_utils/window_utils'
 
+import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -28,7 +29,6 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
-import { useAnnouncementsStore } from 'src/stores/announcements.js'
 
 import { revokeToken } from 'src/api/oauth.js'
 import {

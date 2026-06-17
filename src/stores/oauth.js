@@ -2,8 +2,7 @@ import { defineStore } from 'pinia'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 
-import { createApp, getClientToken } from 'src/api/oauth.js'
-import { verifyCredentials } from 'src/api/public.js'
+import { createApp, getClientToken, verifyAppToken } from 'src/api/oauth.js'
 
 // status codes about verifyAppToken (GET /api/v1/apps/verify_credentials)
 const isAppTokenRejected = (error) =>
@@ -39,7 +38,7 @@ export const useOAuthStore = defineStore('oauth', {
   }),
   getters: {
     token() {
-      return this.userToken || this.appToken
+      return this.userToken
     },
   },
   actions: {
@@ -90,7 +89,7 @@ export const useOAuthStore = defineStore('oauth', {
     async ensureAppToken() {
       if (this.appToken) {
         try {
-          await verifyCredentials({
+          await verifyAppToken({
             credentials: this.appToken,
           })
           return this.appToken

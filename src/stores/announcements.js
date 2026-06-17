@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 
-import { getAnnouncements, dismissAnnouncement } from 'src/api/user.js'
+import { dismissAnnouncement, getAnnouncements } from 'src/api/user.js'
 
 const FETCH_ANNOUNCEMENT_INTERVAL_MS = 1000 * 60 * 5
 
@@ -83,18 +83,17 @@ export const useAnnouncementsStore = defineStore('announcements', {
     },
     markAnnouncementAsRead(id) {
       return dismissAnnouncement({
-          id,
-          credentials: useOAuthStore().token,
-        })
-        .then(() => {
-          const index = this.announcements.findIndex((a) => a.id === id)
+        id,
+        credentials: useOAuthStore().token,
+      }).then(() => {
+        const index = this.announcements.findIndex((a) => a.id === id)
 
-          if (index < 0) {
-            return
-          }
+        if (index < 0) {
+          return
+        }
 
-          this.announcements[index].read = true
-        })
+        this.announcements[index].read = true
+      })
     },
     startFetchingAnnouncements() {
       if (this.fetchAnnouncementsTimer) {
