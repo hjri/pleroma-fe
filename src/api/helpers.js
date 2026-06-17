@@ -98,6 +98,7 @@ export const promisedRequest = async ({
         )
         .join('&')
   }
+
   if (formData || payload) {
     options.body = formData || JSON.stringify(payload)
   }
@@ -109,33 +110,37 @@ export const promisedRequest = async ({
     }
   }
 
-  const response = await fetch(url, options)
-
-  // 204 is "No content", which fails to parse json (as you'd might think)
-  if (response.ok && response.status === 204) return { _response: response }
-
+  let response = null
   try {
-    const json = await response.json()
+    response = await fetch(url, options)
+    const data = await (async () => {
+      const [contentType] = response.headers
+        .get('content-type')
+        .split(';')
+        .map((x) => x.toLowerCase().trim())
 
-    if (typeof json !== 'object') {
-      return {
-        _response: response,
-        _value: json,
+      switch (contentType) {
+        case 'text/plain':
+          return await response.text()
+        case 'application/json':
+          return await response.json()
+        default:
+          return await response.bytes()
       }
-    }
+    })()
 
-    json._response = response
+    const { ok, status } = response
 
-    if (!response.ok) {
+    if (ok) {
+      return { response, status, data }
+    } else {
       throw new StatusCodeError(
         response.status,
-        json,
+        data,
         { url, options },
         response,
       )
     }
-
-    return json
   } catch (error) {
     throw new StatusCodeError(
       response.status,

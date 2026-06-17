@@ -158,7 +158,7 @@ const getLatestScrobble = (state, user) => {
   state.scrobblesNextFetch[user.id] = Date.now() + 24 * 60 * 60 * 1000
   if (!scrobblesSupport) return
   fetchScrobbles({ accountId: user.id })
-    .then((scrobbles) => {
+    .then(({ data: scrobbles }) => {
       if (scrobbles?.error) {
         useInstanceCapabilitiesStore().set('pleromaScrobblesAvailable', false)
         return
@@ -627,7 +627,7 @@ const statuses = {
       })
     },
     fetchStatus({ rootState, dispatch }, id) {
-      return fetchStatus({ id }).then((status) =>
+      return fetchStatus({ id }).then(({ data: status }) =>
         dispatch('addNewStatuses', { statuses: [status] }),
       )
     },
@@ -635,10 +635,10 @@ const statuses = {
       return fetchStatusSource({
         id: status.id,
         credentials: useOAuthStore().token,
-      })
+      }).then(({ data }) => data)
     },
     fetchStatusHistory(_, status) {
-      return fetchStatusHistory({ status })
+      return fetchStatusHistory({ status }).then(({ data }) => data)
     },
     deleteStatus({ rootState, commit }, status) {
       deleteStatus({
@@ -670,7 +670,7 @@ const statuses = {
       favorite({
         id: status.id,
         credentials: useOAuthStore().token,
-      }).then((status) =>
+      }).then(({ data: status }) =>
         commit('setFavoritedConfirm', {
           status,
           user: rootState.users.currentUser,
@@ -683,7 +683,7 @@ const statuses = {
       unfavorite({
         id: status.id,
         credentials: useOAuthStore().token,
-      }).then((status) =>
+      }).then(({ data: status }) =>
         commit('setFavoritedConfirm', {
           status,
           user: rootState.users.currentUser,
@@ -694,7 +694,7 @@ const statuses = {
       fetchPinnedStatuses({
         id: userId,
         credentials: useOAuthStore().token,
-      }).then((statuses) =>
+      }).then(({ data: statuses }) =>
         dispatch('addNewStatuses', {
           statuses,
           timeline: 'user',
@@ -708,25 +708,29 @@ const statuses = {
       return pinOwnStatus({
         id: statusId,
         credentials: useOAuthStore().token,
-      }).then((status) => dispatch('addNewStatuses', { statuses: [status] }))
+      }).then(({ data: status }) =>
+        dispatch('addNewStatuses', { statuses: [status] }),
+      )
     },
     unpinStatus({ rootState, dispatch }, statusId) {
       return unpinOwnStatus({
         id: statusId,
         credentials: useOAuthStore().token,
-      }).then((status) => dispatch('addNewStatuses', { statuses: [status] }))
+      }).then(({ data: status }) =>
+        dispatch('addNewStatuses', { statuses: [status] }),
+      )
     },
     muteConversation({ rootState, commit }, { id: statusId }) {
       return muteConversation({
         id: statusId,
         credentials: useOAuthStore().token,
-      }).then((status) => commit('setMutedStatus', status))
+      }).then(({ data: status }) => commit('setMutedStatus', status))
     },
     unmuteConversation({ rootState, commit }, { id: statusId }) {
       return unmuteConversation({
         id: statusId,
         credentials: useOAuthStore().token,
-      }).then((status) => commit('setMutedStatus', status))
+      }).then(({ data: status }) => commit('setMutedStatus', status))
     },
     retweet({ rootState, commit }, status) {
       // Optimistic retweeting...
@@ -734,7 +738,7 @@ const statuses = {
       retweet({
         id: status.id,
         credentials: useOAuthStore().token,
-      }).then((status) =>
+      }).then(({ data: status }) =>
         commit('setRetweetedConfirm', {
           status: status.retweeted_status,
           user: rootState.users.currentUser,
@@ -747,7 +751,7 @@ const statuses = {
       unretweet({
         id: status.id,
         credentials: useOAuthStore().token,
-      }).then((status) =>
+      }).then(({ data: status }) =>
         commit('setRetweetedConfirm', {
           status,
           user: rootState.users.currentUser,
@@ -760,7 +764,7 @@ const statuses = {
         id: status.id,
         folder_id: status.bookmark_folder_id,
         credentials: useOAuthStore().token,
-      }).then((status) => {
+      }).then(({ data: status }) => {
         commit('setBookmarkedConfirm', { status })
       })
     },
@@ -769,7 +773,7 @@ const statuses = {
       unbookmarkStatus({
         id: status.id,
         credentials: useOAuthStore().token,
-      }).then((status) => {
+      }).then(({ data: status }) => {
         commit('setBookmarkedConfirm', { status })
       })
     },
@@ -789,7 +793,7 @@ const statuses = {
           id,
           credentials: useOAuthStore().token,
         }),
-      ]).then(([favoritedByUsers, rebloggedByUsers]) => {
+      ]).then(([{ data: favoritedByUsers }, { data: rebloggedByUsers }]) => {
         commit('addFavs', {
           id,
           favoritedByUsers,
@@ -832,7 +836,7 @@ const statuses = {
       return fetchEmojiReactions({
         id,
         credentials: useOAuthStore().token,
-      }).then((emojiReactions) => {
+      }).then(({ data: emojiReactions }) => {
         commit('addEmojiReactionsBy', {
           id,
           emojiReactions,
@@ -844,7 +848,7 @@ const statuses = {
       fetchFavoritedByUsers({
         id,
         credentials: useOAuthStore().token,
-      }).then((favoritedByUsers) =>
+      }).then(({ data: favoritedByUsers }) =>
         commit('addFavs', {
           id,
           favoritedByUsers,
@@ -856,7 +860,7 @@ const statuses = {
       fetchRebloggedByUsers({
         id,
         credentials: useOAuthStore().token,
-      }).then((rebloggedByUsers) =>
+      }).then(({ data: rebloggedByUsers }) =>
         commit('addRepeats', {
           id,
           rebloggedByUsers,
@@ -873,7 +877,7 @@ const statuses = {
         following,
         type,
         credentials: useOAuthStore().token,
-      }).then((data) => {
+      }).then(({ data }) => {
         store.commit('addNewUsers', data.accounts)
         store.commit(
           'addNewUsers',

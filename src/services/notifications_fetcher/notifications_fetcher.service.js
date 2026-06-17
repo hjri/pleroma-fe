@@ -1,10 +1,11 @@
-import { fetchTimeline } from 'src/api/public.js'
 import { promiseInterval } from '../promise_interval/promise_interval.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
+import { fetchTimeline } from 'src/api/public.js'
 
 const update = ({ store, notifications, older }) => {
   store.dispatch('addNewNotifications', { notifications, older })
@@ -97,6 +98,7 @@ const fetchNotifications = ({ store, args, older }) => {
           throw new Error(`${response.status} ${response.statusText}`)
         }
       }
+
       const notifications = response.data
       update({ store, notifications, older })
       return notifications

@@ -31,10 +31,7 @@ export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {
         this.fetcher = fetchBookmarkFolders({
           credentials: useOAuthStore().token,
         })
-          .then(
-            (folders) => this.setBookmarkFolders(folders),
-            (rej) => console.error(rej),
-          )
+          .then(({ data: folders }) => this.setBookmarkFolders(folders))
           .catch((e) => {
             console.error(e)
           })
@@ -61,7 +58,7 @@ export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {
         name,
         emoji,
         credentials: useOAuthStore().token,
-      }).then((folder) => {
+      }).then(({ data: folder }) => {
         this.setBookmarkFolder(folder)
         return folder
       })
@@ -72,7 +69,7 @@ export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {
         folderId,
         name,
         emoji,
-      }).then((folder) => {
+      }).then(({ data: folder }) => {
         this.setBookmarkFolder(folder)
         return folder
       })

@@ -2,10 +2,7 @@ import { get, set } from 'lodash'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 
-import {
-  updateNotificationSettings,
-  updateProfile,
-} from 'src/api/user.js'
+import { updateNotificationSettings, updateProfile } from 'src/api/user.js'
 
 const defaultApi = ({ rootState, commit }, { path, value }) => {
   const params = {}

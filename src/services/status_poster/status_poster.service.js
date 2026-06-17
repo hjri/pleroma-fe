@@ -37,15 +37,16 @@ const postStatus = ({
     preview,
     idempotencyKey,
   })
-    .then((data) => {
-      if (!data.error && !preview) {
-        store.dispatch('addNewStatuses', {
-          statuses: [data],
-          timeline: 'friends',
-          showImmediately: true,
-          noIdUpdate: true, // To prevent missing notices on next pull.
-        })
-      }
+    .then(({ data }) => {
+      if (preview) return data
+
+      store.dispatch('addNewStatuses', {
+        statuses: [data],
+        timeline: 'friends',
+        showImmediately: true,
+        noIdUpdate: true, // To prevent missing notices on next pull.
+      })
+
       return data
     })
     .catch((err) => {
@@ -67,7 +68,7 @@ const editStatus = ({
 }) => {
   const mediaIds = map(media, 'id')
 
-  return editStatus({
+  return apiEditStatus({
     id: statusId,
     credentials: store.state.users.currentUser.credentials,
     status,
@@ -77,15 +78,14 @@ const editStatus = ({
     mediaIds,
     contentType,
   })
-    .then((data) => {
-      if (!data.error) {
-        store.dispatch('addNewStatuses', {
-          statuses: [data],
-          timeline: 'friends',
-          showImmediately: true,
-          noIdUpdate: true, // To prevent missing notices on next pull.
-        })
-      }
+    .then(({ data }) => {
+      store.dispatch('addNewStatuses', {
+        statuses: [data],
+        timeline: 'friends',
+        showImmediately: true,
+        noIdUpdate: true, // To prevent missing notices on next pull.
+      })
+
       return data
     })
     .catch((err) => {
@@ -98,12 +98,14 @@ const editStatus = ({
 
 const uploadMedia = ({ store, formData }) => {
   const credentials = store.state.users.currentUser.credentials
-  return apiUploadMedia({ credentials, formData })
+  return apiUploadMedia({ credentials, formData }).then(({ data }) => data)
 }
 
 const setMediaDescription = ({ store, id, description }) => {
   const credentials = store.state.users.currentUser.credentials
-  return apiSetMediaDescription({ credentials, id, description })
+  return apiSetMediaDescription({ credentials, id, description }).then(
+    ({ data }) => data,
+  )
 }
 
 const statusPosterService = {

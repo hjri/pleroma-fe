@@ -38,10 +38,7 @@ export const useListsStore = defineStore('lists', {
         this.fetcher = fetchLists({
           credentials: useOAuthStore().token,
         })
-          .then(
-            (lists) => this.setLists(lists),
-            (rej) => console.error(rej),
-          )
+          .then(({ data: lists }) => this.setLists(lists))
           .catch((e) => {
             console.error(e)
           })

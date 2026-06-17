@@ -1,5 +1,7 @@
 import { concat, each, last, map } from 'lodash'
 
+import { paramsString, promisedRequest } from './helpers.js'
+
 import {
   parseAttachment,
   parseChat,
@@ -9,8 +11,6 @@ import {
   parseStatus,
   parseUser,
 } from 'src/services/entity_normalizer/entity_normalizer.service.js'
-import { paramsString, promisedRequest } from './helpers.js'
-
 import { RegistrationError, StatusCodeError } from 'src/services/errors/errors'
 
 const SUGGESTIONS_URL = '/api/v1/suggestions'
@@ -102,7 +102,7 @@ export const fetchUser = ({ id, credentials }) =>
   promisedRequest({
     url: `${MASTODON_USER_URL}/${id}`,
     credentials,
-  }).then((data) => parseUser(data))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseUser(data) }))
 
 export const fetchUserByName = ({ name, credentials }) =>
   promisedRequest({
@@ -126,7 +126,7 @@ export const fetchFriends = ({ id, maxId, sinceId, limit = 20, credentials }) =>
   promisedRequest({
     url: MASTODON_FOLLOWING_URL(id, { maxId, sinceId, limit }),
     credentials,
-  }).then((data) => data.map(parseUser))
+  }).then(({ data, ...rest }) => ({ ...rest, data: data.map(parseUser) }))
 
 export const fetchFollowers = ({
   id,
@@ -143,16 +143,20 @@ export const fetchFollowers = ({
       withRelationships: true,
     }),
     credentials,
-  }).then((data) => data.map(parseUser))
+  }).then(({ data, ...rest }) => ({ ...rest, data: data.map(parseUser) }))
 
 export const fetchConversation = ({ id, credentials }) =>
   promisedRequest({
     url: MASTODON_STATUS_CONTEXT_URL(id),
     credentials,
   })
-    .then(({ ancestors, descendants }) => ({
-      ancestors: ancestors.map(parseStatus),
-      descendants: descendants.map(parseStatus),
+    .then((result) => ({
+      ...result,
+      data: {
+        ...result.data,
+        ancestors: result.data.ancestors.map(parseStatus),
+        descendants: result.data.descendants.map(parseStatus),
+      },
     }))
     .catch((error) => {
       throw new Error('Error fetching timeline', error)
@@ -163,7 +167,7 @@ export const fetchStatus = ({ id, credentials }) =>
     url: MASTODON_STATUS_URL(id),
     credentials,
   })
-    .then((data) => parseStatus(data))
+    .then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
     .catch((error) => {
       throw new Error('Error fetching timeline', error)
     })
@@ -173,7 +177,7 @@ export const fetchStatusSource = ({ id, credentials }) =>
     url: MASTODON_STATUS_SOURCE_URL(id),
     credentials,
   })
-    .then((data) => parseSource(data))
+    .then(({ data, ...rest }) => ({ ...rest, data: parseSource(data) }))
     .catch((error) => {
       throw new Error('Error fetching timeline', error)
     })
@@ -182,9 +186,8 @@ export const fetchStatusHistory = ({ status, credentials }) =>
   promisedRequest({
     url: MASTODON_STATUS_HISTORY_URL(status.id),
     credentials,
-  }).then((data) => {
-    data.reverse()
-    return data.map((item) => {
+  }).then(({ data }) => {
+    return [...data].reverse().map((item) => {
       item.originalStatus = status
       return parseStatus(item)
     })
@@ -277,16 +280,17 @@ export const fetchTimeline = ({
   return promisedRequest({
     url: url + paramsString(params),
     credentials,
-  }).then(async (data) => {
+  }).then(async (result) => {
     const pagination = parseLinkHeaderPagination(
-      data._response.headers.get('Link'),
+      result.response.headers.get('Link'),
       {
         flakeId: timeline !== 'bookmarks' && timeline !== 'notifications',
       },
     )
 
     return {
-      data: data.map(isNotifications ? parseNotification : parseStatus),
+      ...result,
+      data: result.data.map(isNotifications ? parseNotification : parseStatus),
       pagination,
     }
   })
@@ -301,13 +305,13 @@ export const fetchPinnedStatuses = ({ id, credentials }) =>
   promisedRequest({
     url: MASTODON_USER_TIMELINE_URL(id) + '?pinned=true',
     credentials,
-  }).then((data) => data.map(parseStatus))
+  }).then(({ data, ...rest }) => ({ ...rest, data: data.map(parseStatus) }))
 
 export const verifyCredentials = ({ credentials }) =>
   promisedRequest({
     url: MASTODON_LOGIN_URL,
     credentials,
-  }).then((data) => (data.error ? data : parseUser(data)))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseUser(data) }))
 
 export const suggestions = ({ credentials }) =>
   promisedRequest({
@@ -327,25 +331,26 @@ export const fetchFavoritedByUsers = ({ id, credentials }) =>
     url: MASTODON_STATUS_FAVORITEDBY_URL(id),
     method: 'GET',
     credentials,
-  }).then((users) => users.map(parseUser))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseUser(data) }))
 
 export const fetchRebloggedByUsers = ({ id, credentials }) =>
   promisedRequest({
     url: MASTODON_STATUS_REBLOGGEDBY_URL(id),
     method: 'GET',
     credentials,
-  }).then((users) => users.map(parseUser))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseUser(data) }))
 
 export const fetchEmojiReactions = ({ id, credentials }) =>
   promisedRequest({
     url: PLEROMA_EMOJI_REACTIONS_URL(id),
     credentials,
-  }).then((reactions) =>
-    reactions.map((r) => {
+  }).then(({ data, ...rest }) => ({
+    ...rest,
+    data: data.map((r) => {
       r.accounts = r.accounts.map(parseUser)
       return r
     }),
-  )
+  }))
 
 export const searchUsers = ({ credentials, query }) =>
   promisedRequest({
@@ -355,7 +360,7 @@ export const searchUsers = ({ credentials, query }) =>
       resolve: true,
     },
     credentials,
-  }).then((data) => data.map(parseUser))
+  }).then(({ data, ...rest }) => ({ ...rest, data: data.map(parseUser) }))
 
 export const search2 = ({
   credentials,
@@ -404,10 +409,10 @@ export const search2 = ({
     url,
     credentials,
   })
-    .then((data) => {
+    .then(({ data, ...rest }) => {
       data.accounts = data.accounts.slice(0, limit).map((u) => parseUser(u))
       data.statuses = data.statuses.slice(0, limit).map((s) => parseStatus(s))
-      return data
+      return { ...rest, data }
     })
     .catch((error) => {
       throw new Error('Error fetching timeline', error)

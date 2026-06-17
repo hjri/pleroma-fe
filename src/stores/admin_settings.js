@@ -87,7 +87,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     loadAdminStuff() {
       getInstanceDBConfig({
         credentials: useOAuthStore().token,
-      }).then((backendDbConfig) => {
+      }).then(({ data: backendDbConfig }) => {
         if (backendDbConfig.error) {
           if (backendDbConfig.error.status === 400) {
             backendDbConfig.error.json().then((errorJson) => {
@@ -106,7 +106,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       if (this.descriptions === null) {
         getInstanceConfigDescriptions({
           credentials: useOAuthStore().token,
-        }).then((backendDescriptions) =>
+        }).then(({ data: backendDescriptions }) =>
           this.setInstanceAdminDescriptions({
             credentials: useOAuthStore().token,
             backendDescriptions,
@@ -251,7 +251,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         .then(() =>
           getInstanceDBConfig({
             credentials: useOAuthStore().token,
-          }),
+          }).then(({ data }) => data),
         )
         .then((backendDbConfig) =>
           this.setInstanceAdminSettings({
@@ -294,7 +294,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         .then(() =>
           getInstanceDBConfig({
             credentials: useOAuthStore().token,
-          }),
+          }).then(({ data }) => data),
         )
         .then((backendDbConfig) =>
           this.setInstanceAdminSettings({
@@ -326,7 +326,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         .then(() =>
           getInstanceDBConfig({
             credentials: useOAuthStore().token,
-          }),
+          }).then(({ data }) => data),
         )
         .then((backendDbConfig) =>
           this.setInstanceAdminSettings({ backendDbConfig }),
@@ -337,7 +337,9 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     loadFrontendsStuff() {
       getAvailableFrontends({
         credentials: useOAuthStore().token,
-      }).then((frontends) => this.setAvailableFrontends({ frontends }))
+      }).then(({ data: frontends }) =>
+        this.setAvailableFrontends({ frontends }),
+      )
     },
 
     setAvailableFrontends({ frontends }) {
@@ -355,12 +357,14 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     installFrontend() {
       return installFrontend({
         credentials: useOAuthStore().token,
-      })
+      }).then(({ data }) => data)
     },
 
     // Statuses stuff
     async fetchStatuses(opts) {
-      const { total, activities } = await listStatuses({
+      const {
+        data: { total, activities },
+      } = await listStatuses({
         credentials: useOAuthStore().token,
         opts,
       })
@@ -375,20 +379,21 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       }
     },
     async changeStatusScope(opts) {
-      const raw = await changeStatusScope({
+      const { data } = await changeStatusScope({
         credentials: useOAuthStore().token,
         opts,
       })
-      const status = parseStatus(raw)
+      const status = parseStatus(data)
 
       await window.vuex.dispatch('addNewStatuses', { statuses: [status] })
     },
 
     // Users stuff
     async fetchUsers(opts) {
-      const { users, count } = await listUsers({
+      const {
+        data: { users, count },
+      } = await listUsers({
         credentials: useOAuthStore().token,
-
         opts,
       })
 
@@ -412,7 +417,8 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         credentials: useOAuthStore().token,
         screen_name,
       })
-      window.vuex.commit('updateUserAdminData', { user: result })
+
+      window.vuex.commit('updateUserAdminData', { user: result.data })
     },
     async deleteUsers({ users }) {
       const screen_names = users.map((u) => u.screen_name)
@@ -423,7 +429,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         screen_names,
       })
 
-      resultUserIds.forEach((userId) => {
+      resultUserIds.data.forEach((userId) => {
         window.vuex.dispatch(
           'markStatusesAsDeleted',
           (status) => userId === status.user.id,
@@ -439,7 +445,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       return resendConfirmationEmail({
         credentials: useOAuthStore().token,
         screen_names,
-      })
+      }).then(({ data }) => data)
     },
     requirePasswordChange({ users }) {
       const screen_names = users.map((u) => u.screen_name)
@@ -447,7 +453,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       return requirePasswordChange({
         credentials: useOAuthStore().token,
         screen_names,
-      })
+      }).then(({ data }) => data)
     },
     // Singular only!
     disableMFA({ user }) {
@@ -456,7 +462,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       return disableMFA({
         credentials: useOAuthStore().token,
         screen_name,
-      })
+      }).then(({ data }) => data)
     },
     async setUsersTags({ users, tags, value }) {
       const screen_names = users.map((u) => u.screen_name)
@@ -498,7 +504,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         value,
       })
 
-      resultUsers.forEach((user) => {
+      resultUsers.data.forEach((user) => {
         window.vuex.commit('updateUserAdminData', { user })
       })
     },
@@ -512,7 +518,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         value,
       })
 
-      resultUsers.forEach((user) => {
+      resultUsers.data.forEach((user) => {
         window.vuex.commit('updateUserAdminData', { user })
       })
     },
@@ -538,27 +544,31 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         screen_names,
       })
 
-      resultUsers.forEach((user) => {
+      resultUsers.data.forEach((user) => {
         window.vuex.commit('updateUserAdminData', { user })
       })
     },
     reloadEmoji() {
-      return reloadEmoji({ credentials: useOAuthStore().token })
+      return reloadEmoji({ credentials: useOAuthStore().token }).then(
+        ({ data }) => data,
+      )
     },
     importEmojiFromFS() {
-      return importEmojiFromFS({ credentials: useOAuthStore().token })
+      return importEmojiFromFS({ credentials: useOAuthStore().token }).then(
+        ({ data }) => data,
+      )
     },
     listEmojiPacks(params) {
       return listEmojiPacks({
         ...params,
-        credentials: useOAuthStore().token
-      })
+        credentials: useOAuthStore().token,
+      }).then(({ data }) => data)
     },
     listRemoteEmojiPacks(params) {
       return listRemoteEmojiPacks({
         ...params,
         credentials: useOAuthStore().token,
-      })
+      }).then(({ data }) => data)
     },
     addNewEmojiFile({ packName, file, shortcode, filename }) {
       return addNewEmojiFile({
@@ -567,7 +577,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         shortcode,
         filename,
         credentials: useOAuthStore().token,
-      })
+      }).then(({ data }) => data)
     },
     downloadRemoteEmojiPack({ instance, packName, as }) {
       return downloadRemoteEmojiPack({
@@ -575,33 +585,33 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         packName,
         as,
         credentials: useOAuthStore().token,
-      })
+      }).then(({ data }) => data)
     },
     downloadRemoteEmojiPackZIP({ url, packName }) {
       return downloadRemoteEmojiPackZIP({
         url,
         packName,
         credentials: useOAuthStore().token,
-      })
+      }).then(({ data }) => data)
     },
     createEmojiPack({ name }) {
       return createEmojiPack({
         name,
         credentials: useOAuthStore().token,
-      })
+      }).then(({ data }) => data)
     },
     deleteEmojiPack({ name }) {
       return createEmojiPack({
         name,
         credentials: useOAuthStore().token,
-      })
+      }).then(({ data }) => data)
     },
     saveEmojiPackMetadata({ name, newData }) {
       return createEmojiPack({
         name,
         newData,
         credentials: useOAuthStore().token,
-      })
+      }).then(({ data }) => data)
     },
   },
 })

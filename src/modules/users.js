@@ -9,7 +9,6 @@ import {
   uniq,
 } from 'lodash'
 
-import { register } from 'src/api/public.js'
 import oauthApi from '../services/new_api/oauth.js'
 import {
   registerPushNotifications,
@@ -37,17 +36,21 @@ import {
   fetchUser,
   fetchUserByName,
   getCaptcha,
+  register,
   searchUsers,
   verifyCredentials,
 } from 'src/api/public.js'
 import {
+  blockUser as apiBlockUser,
+  muteUser as apiMuteUser,
+  unblockUser as apiUnblockUser,
+  unmuteUser as apiUnmuteUser,
   fetchBlocks,
   fetchDomainMutes,
   fetchMutes,
   fetchUserInLists,
   fetchUserRelationship,
   followUser,
-  muteUser,
 } from 'src/api/user.js'
 
 // TODO: Unify with mergeOrAdd in statuses.js
@@ -92,7 +95,7 @@ const blockUser = (store, args) => {
   store.commit('updateUserRelationship', [predictedRelationship])
   store.commit('addBlockId', id)
 
-  return blockUser({ id, expiresIn }).then((relationship) => {
+  return apiBlockUser({ id, expiresIn }).then(({ data: relationship }) => {
     store.commit('updateUserRelationship', [relationship])
     store.commit('addBlockId', id)
 
@@ -106,7 +109,7 @@ const blockUser = (store, args) => {
 }
 
 const unblockUser = (store, id) => {
-  return unblockUser({ id }).then((relationship) =>
+  return apiUnblockUser({ id }).then(({ data: relationship }) =>
     store.commit('updateUserRelationship', [relationship]),
   )
 }
@@ -123,7 +126,7 @@ const editUserNote = (store, { id, comment }) => {
   )
 }
 
-const localMuteUser = (store, args) => {
+const muteUser = (store, args) => {
   const id = typeof args === 'object' ? args.id : args
   const expiresIn = typeof args === 'object' ? args.expiresIn : 0
 
@@ -131,11 +134,11 @@ const localMuteUser = (store, args) => {
   store.commit('updateUserRelationship', [predictedRelationship])
   store.commit('addMuteId', id)
 
-  return muteUser({
+  return apiMuteUser({
     id,
     expiresIn,
     credentials: useOAuthStore().token,
-  }).then((relationship) => {
+  }).then(({ data: relationship }) => {
     store.commit('updateUserRelationship', [relationship])
     store.commit('addMuteId', id)
   })
@@ -146,7 +149,7 @@ const unmuteUser = (store, id) => {
   predictedRelationship.muting = false
   store.commit('updateUserRelationship', [predictedRelationship])
 
-  return unmuteUser({ id }).then((relationship) =>
+  return apiUnmuteUser({ id }).then(({ data: relationship }) =>
     store.commit('updateUserRelationship', [relationship]),
   )
 }
@@ -156,9 +159,9 @@ const hideReblogs = (store, userId) => {
     id: userId,
     reblogs: false,
     credentials: useOAuthStore().token,
-  }).then((relationship) => {
-    store.commit('updateUserRelationship', [relationship])
-  })
+  }).then(({ data: relationship }) =>
+    store.commit('updateUserRelationship', [relationship]),
+  )
 }
 
 const showReblogs = (store, userId) => {
@@ -166,7 +169,7 @@ const showReblogs = (store, userId) => {
     id: userId,
     reblogs: true,
     credentials: useOAuthStore().token,
-  }).then((relationship) =>
+  }).then(({ data: relationship }) =>
     store.commit('updateUserRelationship', [relationship]),
   )
 }
@@ -406,16 +409,24 @@ const users = {
       return fetchUser({
         id,
         credentials: useOAuthStore().token,
-      }).then((user) => {
-        store.commit('addNewUsers', [user])
-        return user
       })
+        .then(({ data: user }) => {
+          store.commit('addNewUsers', [user])
+          return user
+        })
+        .catch((error) => {
+          if (error.statusCode === 404) {
+            console.warn(`User ${id} not found`)
+          } else {
+            throw error
+          }
+        })
     },
     fetchUserByName(store, name) {
       return fetchUserByName({
         name,
         credentials: useOAuthStore().token,
-      }).then((user) => {
+      }).then(({ data: user }) => {
         store.commit('addNewUsers', [user])
         return user
       })
@@ -425,7 +436,7 @@ const users = {
         fetchUserRelationship({
           id,
           credentials: useOAuthStore().token,
-        }).then((relationships) =>
+        }).then(({ data: relationships }) =>
           store.commit('updateUserRelationship', relationships),
         )
       }
@@ -435,7 +446,9 @@ const users = {
         fetchUserInLists({
           id,
           credentials: useOAuthStore().token,
-        }).then((inLists) => store.commit('updateUserInLists', { id, inLists }))
+        }).then(({ data: inLists }) =>
+          store.commit('updateUserInLists', { id, inLists }),
+        )
       }
     },
     fetchBlocks(store, args) {
@@ -445,7 +458,7 @@ const users = {
       return fetchBlocks({
         maxId,
         credentials: useOAuthStore().token,
-      }).then((blocks) => {
+      }).then(({ data: blocks }) => {
         if (reset) {
           store.commit('saveBlockIds', map(blocks, 'id'))
         } else {
@@ -483,7 +496,7 @@ const users = {
       return fetchMutes({
         maxId,
         credentials: useOAuthStore().token,
-      }).then((mutes) => {
+      }).then(({ data: mutes }) => {
         if (reset) {
           store.commit('saveMuteIds', map(mutes, 'id'))
         } else {
@@ -497,7 +510,7 @@ const users = {
       })
     },
     muteUser(store, data) {
-      return localMuteUser(store, data)
+      return muteUser(store, data)
     },
     unmuteUser(store, id) {
       return unmuteUser(store, id)
@@ -509,7 +522,7 @@ const users = {
       return showReblogs(store, id)
     },
     muteUsers(store, data = []) {
-      return Promise.all(data.map((d) => localMuteUser(store, d)))
+      return Promise.all(data.map((d) => muteUser(store, d)))
     },
     unmuteUsers(store, ids = []) {
       return Promise.all(ids.map((d) => unmuteUser(store, d)))
@@ -517,7 +530,7 @@ const users = {
     fetchDomainMutes(store) {
       return fetchDomainMutes({
         credentials: useOAuthStore().token,
-      }).then((domainMutes) => {
+      }).then(({ data: domainMutes }) => {
         store.commit('saveDomainMutes', domainMutes)
         return domainMutes
       })
@@ -541,7 +554,7 @@ const users = {
         id,
         maxId,
         credentials: useOAuthStore().token,
-      }).then((friends) => {
+      }).then(({ data: friends }) => {
         commit('addNewUsers', friends)
         commit('saveFriendIds', { id, friendIds: map(friends, 'id') })
         return friends
@@ -554,7 +567,7 @@ const users = {
         id,
         maxId,
         credentials: useOAuthStore().token,
-      }).then((followers) => {
+      }).then(({ data: followers }) => {
         commit('addNewUsers', followers)
         commit('saveFollowerIds', { id, followerIds: map(followers, 'id') })
         return followers
@@ -571,7 +584,7 @@ const users = {
         id,
         notify: true,
         credentials: useOAuthStore().token,
-      }).then((relationship) =>
+      }).then(({ data: relationship }) =>
         commit('updateUserRelationship', [relationship]),
       )
     },
@@ -580,7 +593,7 @@ const users = {
         id,
         notify: false,
         credentials: useOAuthStore().token,
-      }).then((relationship) =>
+      }).then(({ data: relationship }) =>
         commit('updateUserRelationship', [relationship]),
       )
     },
@@ -646,7 +659,7 @@ const users = {
       return searchUsers({
         query,
         credentials: useOAuthStore().token,
-      }).then((users) => {
+      }).then(({ data: users }) => {
         commit('addNewUsers', users)
         return users
       })
@@ -657,7 +670,7 @@ const users = {
 
       try {
         const token = await oauthStore.ensureAppToken()
-        const data = await register({
+        const { data } = await register({
           credentials: token,
           params: { ...userInfo },
         })
@@ -681,7 +694,7 @@ const users = {
     getCaptcha(store) {
       return getCaptcha({
         credentials: useOAuthStore().token,
-      })
+      }).then(({ data }) => data)
     },
 
     logout(store) {
@@ -727,135 +740,128 @@ const users = {
         verifyCredentials({
           credentials: useOAuthStore().token,
         })
-          .then((data) => {
-            if (!data.error) {
-              const user = data
-              // user.credentials = userCredentials
-              user.credentials = accessToken
-              user.blockIds = []
-              user.muteIds = []
-              user.domainMutes = []
-              commit('setCurrentUser', user)
+          .then(({ data: user }) => {
+            // user.credentials = userCredentials
+            user.credentials = accessToken
+            user.blockIds = []
+            user.muteIds = []
+            user.domainMutes = []
+            commit('setCurrentUser', user)
 
-              useSyncConfigStore()
-                .initSyncConfig(user)
-                .then(() => {
-                  useInterfaceStore()
-                    .applyTheme()
-                    .catch((e) => {
-                      console.error('Error setting theme', e)
-                    })
-                })
-              useUserHighlightStore().initUserHighlight(user)
-              commit('addNewUsers', [user])
-
-              useEmojiStore().fetchEmoji()
-
-              getNotificationPermission().then((permission) =>
-                useInterfaceStore().setNotificationPermission(permission),
-              )
-
-              // Do server-side storage migrations
-
-              // Debug snippet to clean up storage and reset migrations
-              /*
-              // Reset wordfilter
-              Object.keys(
-                useSyncConfigStore().prefsStorage.simple.muteFilters
-              ).forEach(key => {
-                useSyncConfigStore().unsetSimplePrefAndSave({ path: 'muteFilters.' + key, value: null })
+            useSyncConfigStore()
+              .initSyncConfig(user)
+              .then(() => {
+                useInterfaceStore()
+                  .applyTheme()
+                  .catch((e) => {
+                    console.error('Error setting theme', e)
+                  })
               })
+            useUserHighlightStore().initUserHighlight(user)
+            commit('addNewUsers', [user])
 
-              // Reset flag to 0 to re-run migrations
-              useSyncConfigStore().setFlag({ flag: 'configMigration', value: 0 })
-              /**/
+            useEmojiStore().fetchEmoji()
 
-              if (user.token) {
-                dispatch('setWsToken', user.token)
+            getNotificationPermission().then((permission) =>
+              useInterfaceStore().setNotificationPermission(permission),
+            )
 
-                // Initialize the shout socket.
-                dispatch('initializeSocket')
-              }
+            // Do server-side storage migrations
 
-              const startPolling = () => {
-                // Start getting fresh posts.
-                dispatch('startFetchingTimeline', { timeline: 'friends' })
+            // Debug snippet to clean up storage and reset migrations
+            /*
+            // Reset wordfilter
+            Object.keys(
+              useSyncConfigStore().prefsStorage.simple.muteFilters
+            ).forEach(key => {
+              useSyncConfigStore().unsetSimplePrefAndSave({ path: 'muteFilters.' + key, value: null })
+            })
 
-                // Start fetching notifications
-                dispatch('startFetchingNotifications')
+            // Reset flag to 0 to re-run migrations
+            useSyncConfigStore().setFlag({ flag: 'configMigration', value: 0 })
+            /**/
 
-                if (
-                  useInstanceCapabilitiesStore().pleromaChatMessagesAvailable
-                ) {
-                  // Start fetching chats
-                  dispatch('startFetchingChats')
-                }
-              }
+            if (user.token) {
+              dispatch('setWsToken', user.token)
 
-              useListsStore().startFetching()
-              useBookmarkFoldersStore().startFetching()
+              // Initialize the shout socket.
+              dispatch('initializeSocket')
+            }
 
-              if (user.locked) {
-                dispatch('startFetchingFollowRequests')
-              }
+            const startPolling = () => {
+              // Start getting fresh posts.
+              dispatch('startFetchingTimeline', { timeline: 'friends' })
 
-              if (useMergedConfigStore().mergedConfig.useStreamingApi) {
-                dispatch('fetchTimeline', {
-                  timeline: 'friends',
-                  sinceId: null,
-                })
-                dispatch('fetchNotifications', { sinceId: null })
-                dispatch('enableMastoSockets', true)
-                  .catch((error) => {
-                    console.error(
-                      'Failed initializing MastoAPI Streaming socket',
-                      error,
-                    )
-                  })
-                  .then(() => {
-                    dispatch('fetchChats', { latest: true })
-                    setTimeout(
-                      () => dispatch('setNotificationsSilence', false),
-                      10000,
-                    )
-                  })
-              } else {
-                startPolling()
-              }
+              // Start fetching notifications
+              dispatch('startFetchingNotifications')
 
-              // Get user mutes
-              dispatch('fetchMutes')
-
-              useInterfaceStore().setLayoutWidth(windowWidth())
-              useInterfaceStore().setLayoutHeight(windowHeight())
-
-              // Fetch our friends
-              fetchFriends({ id: user.id }).then((friends) =>
-                commit('addNewUsers', friends),
-              )
-            } else {
-              const response = data.error
-              // Authentication failed
-              commit('endLogin')
-
-              // remove authentication token on client/authentication errors
-              if ([400, 401, 403, 422].includes(response.status)) {
-                useOAuthStore().clearToken()
-              }
-
-              if (response.status === 401) {
-                reject(new Error('Wrong username or password'))
-              } else {
-                reject(new Error('An error occurred, please try again'))
+              if (useInstanceCapabilitiesStore().pleromaChatMessagesAvailable) {
+                // Start fetching chats
+                dispatch('startFetchingChats')
               }
             }
+
+            useListsStore().startFetching()
+            useBookmarkFoldersStore().startFetching()
+
+            if (user.locked) {
+              dispatch('startFetchingFollowRequests')
+            }
+
+            if (useMergedConfigStore().mergedConfig.useStreamingApi) {
+              dispatch('fetchTimeline', {
+                timeline: 'friends',
+                sinceId: null,
+              })
+              dispatch('fetchNotifications', { sinceId: null })
+              dispatch('enableMastoSockets', true)
+                .catch((error) => {
+                  console.error(
+                    'Failed initializing MastoAPI Streaming socket',
+                    error,
+                  )
+                })
+                .then(() => {
+                  dispatch('fetchChats', { latest: true })
+                  setTimeout(
+                    () => dispatch('setNotificationsSilence', false),
+                    10000,
+                  )
+                })
+            } else {
+              startPolling()
+            }
+
+            // Get user mutes
+            dispatch('fetchMutes')
+
+            useInterfaceStore().setLayoutWidth(windowWidth())
+            useInterfaceStore().setLayoutHeight(windowHeight())
+
+            // Fetch our friends
+            fetchFriends({ id: user.id }).then(({ data: friends }) =>
+              commit('addNewUsers', friends),
+            )
             commit('endLogin')
             resolve()
           })
           .catch((error) => {
             console.error(error)
+
+            // Authentication failed
             commit('endLogin')
-            reject(new Error('Failed to connect to server, try again'))
+
+            // remove authentication token on client/authentication errors
+            if ([400, 401, 403, 422].includes(error.statusCode)) {
+              useOAuthStore().clearToken()
+            }
+
+            commit('endLogin')
+            if (error.tatusCode === 401) {
+              throw new Error('Wrong username or password', error)
+            } else {
+              throw new Error('An error occurred, please try again', error)
+            }
           })
       })
     },

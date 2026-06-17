@@ -5,13 +5,16 @@ import { mapState } from 'vuex'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
 import QuickViewSettings from 'src/components/quick_view_settings/quick_view_settings.vue'
 import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
-import { WSConnectionStatus } from 'src/api/public.js'
 
-import { useOAuthStore } from 'src/stores/oauth.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
-import { fetchConversation, fetchStatus } from 'src/api/public.js'
+import {
+  fetchConversation,
+  fetchStatus,
+  WSConnectionStatus,
+} from 'src/api/public.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

@@ -1,14 +1,13 @@
 import { concat, each, last, map } from 'lodash'
 
+import { paramsString, promisedRequest } from './helpers.js'
+import { fetchFriends, MASTODON_STATUS_URL } from './public.js'
+
 import {
   parseAttachment,
-  parseNotification,
-  parseSource,
   parseStatus,
   parseUser,
 } from 'src/services/entity_normalizer/entity_normalizer.service.js'
-import { paramsString, promisedRequest } from './helpers.js'
-import { fetchFriends, MASTODON_STATUS_URL } from './public.js'
 
 const MUTES_IMPORT_URL = '/api/pleroma/mutes_import'
 const BLOCKS_IMPORT_URL = '/api/pleroma/blocks_import'
@@ -99,42 +98,42 @@ export const favorite = ({ id, credentials }) =>
     url: MASTODON_FAVORITE_URL(id),
     method: 'POST',
     credentials,
-  }).then((data) => parseStatus(data))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
 
 export const unfavorite = ({ id, credentials }) =>
   promisedRequest({
     url: MASTODON_UNFAVORITE_URL(id),
     method: 'POST',
     credentials,
-  }).then((data) => parseStatus(data))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
 
 export const retweet = ({ id, credentials }) =>
   promisedRequest({
     url: MASTODON_RETWEET_URL(id),
     method: 'POST',
     credentials,
-  }).then((data) => parseStatus(data))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
 
 export const unretweet = ({ id, credentials }) =>
   promisedRequest({
     url: MASTODON_UNRETWEET_URL(id),
     method: 'POST',
     credentials,
-  }).then((data) => parseStatus(data))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
 
 export const reactWithEmoji = ({ id, emoji, credentials }) =>
   promisedRequest({
     url: PLEROMA_EMOJI_REACT_URL(id, emoji),
     method: 'PUT',
     credentials,
-  }).then(parseStatus)
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
 
 export const unreactWithEmoji = ({ id, emoji, credentials }) =>
   promisedRequest({
     url: PLEROMA_EMOJI_UNREACT_URL(id, emoji),
     method: 'DELETE',
     credentials,
-  }).then(parseStatus)
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
 
 export const bookmarkStatus = ({ id, credentials, ...options }) =>
   promisedRequest({
@@ -158,28 +157,28 @@ export const pinOwnStatus = ({ id, credentials }) =>
     url: MASTODON_PIN_OWN_STATUS(id),
     credentials,
     method: 'POST',
-  }).then((data) => parseStatus(data))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
 
 export const unpinOwnStatus = ({ id, credentials }) =>
   promisedRequest({
     url: MASTODON_UNPIN_OWN_STATUS(id),
     credentials,
     method: 'POST',
-  }).then((data) => parseStatus(data))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
 
 export const muteConversation = ({ id, credentials }) =>
   promisedRequest({
     url: MASTODON_MUTE_CONVERSATION(id),
     credentials,
     method: 'POST',
-  }).then((data) => parseStatus(data))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
 
 export const unmuteConversation = ({ id, credentials }) =>
   promisedRequest({
     url: MASTODON_UNMUTE_CONVERSATION(id),
     credentials,
     method: 'POST',
-  }).then((data) => parseStatus(data))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
 
 export const vote = ({ pollId, choices, credentials }) => {
   const form = new FormData()
@@ -256,7 +255,7 @@ export const postStatus = ({
     method: 'POST',
     credentials,
     headers,
-  }).then((data) => (data.error ? data : parseStatus(data)))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
 }
 
 export const editStatus = ({
@@ -299,7 +298,7 @@ export const editStatus = ({
     formData: form,
     method: 'PUT',
     credentials,
-  }).then((data) => (data.error ? data : parseStatus(data)))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
 }
 
 export const deleteStatus = ({ id, credentials }) =>
@@ -315,7 +314,7 @@ export const uploadMedia = ({ formData, credentials }) =>
     formData,
     method: 'POST',
     credentials,
-  }).then((data) => parseAttachment(data))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseAttachment(data) }))
 
 export const setMediaDescription = ({ id, description, credentials }) =>
   promisedRequest({
@@ -325,7 +324,7 @@ export const setMediaDescription = ({ id, description, credentials }) =>
     payload: {
       description,
     },
-  }).then((data) => parseAttachment(data))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseAttachment(data) }))
 
 // #Notifications
 export const dismissNotification = ({ credentials, id }) =>
@@ -456,12 +455,7 @@ export const updateProfileImages = ({
     credentials,
     method: 'PATCH',
     formData: form,
-  }).then((data) => {
-    if (data.error) {
-      throw new Error(data.error)
-    }
-    return parseUser(data)
-  })
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseUser(data) }))
 }
 
 export const updateProfile = ({ credentials, params }) => {
@@ -489,7 +483,7 @@ export const updateProfile = ({ credentials, params }) => {
     credentials,
     method: 'PATCH',
     formData,
-  }).then((data) => parseUser(data))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseUser(data) }))
 }
 
 export const updateProfileJSON = ({ credentials, params }) =>
@@ -498,7 +492,7 @@ export const updateProfileJSON = ({ credentials, params }) =>
     credentials,
     payload: params,
     method: 'PATCH',
-  }).then((data) => parseUser(data))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseUser(data) }))
 
 export const changeEmail = ({ credentials, email, password }) => {
   const form = new FormData()
@@ -671,7 +665,7 @@ export const fetchFollowRequests = ({ credentials }) =>
   promisedRequest({
     url: MASTODON_FOLLOW_REQUESTS_URL,
     credentials,
-  }).then((data) => data.map(parseUser))
+  }).then(({ data, ...rest }) => ({ ...rest, data: data.map(parseUser) }))
 
 export const approveUser = ({ id, credentials }) =>
   promisedRequest({
@@ -701,7 +695,7 @@ export const fetchMutes = ({ maxId, credentials }) =>
   promisedRequest({
     url: MASTODON_USER_MUTES_URL({ maxId, withRelationships: true }),
     credentials,
-  }).then((users) => users.map(parseUser))
+  }).then(({ data, ...rest }) => ({ ...rest, data: data.map(parseUser) }))
 
 export const muteUser = ({ id, expiresIn, credentials }) => {
   const payload = {}
@@ -728,7 +722,7 @@ export const fetchBlocks = ({ maxId, credentials }) =>
   promisedRequest({
     url: MASTODON_USER_BLOCKS_URL({ maxId, withRelationships: true }),
     credentials,
-  }).then((users) => users.map(parseUser))
+  }).then(({ data, ...rest }) => ({ ...rest, data: data.map(parseUser) }))
 
 export const blockUser = ({ id, expiresIn, credentials }) => {
   const payload = {}

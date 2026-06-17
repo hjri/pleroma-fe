@@ -44,15 +44,16 @@ export const useAnnouncementsStore = defineStore('announcements', {
 
       const fetchAnnouncements = async () => {
         if (!isAdmin) {
-          return getAnnouncements({
+          const result = await getAnnouncements({
             credentials: useOAuthStore().token,
           })
+          return result.data
         }
 
-        const all = await adminGetAnnouncements({
+        const { data: all } = await adminGetAnnouncements({
           credentials: useOAuthStore().token,
         })
-        const visible = await getAnnouncements({
+        const { data: visible } = await getAnnouncements({
           credentials: useOAuthStore().token,
         })
         const visibleObject = visible.reduce((a, c) => {

@@ -1,5 +1,6 @@
-import { parseChat } from 'src/services/entity_normalizer/entity_normalizer.service.js'
 import { paramsString, promisedRequest } from './helpers.js'
+
+import { parseChat } from 'src/services/entity_normalizer/entity_normalizer.service.js'
 
 const PLEROMA_CHATS_URL = '/api/v1/pleroma/chats'
 const PLEROMA_CHAT_URL = (id) => `/api/v1/pleroma/chats/by-account-id/${id}`
@@ -13,7 +14,7 @@ export const chats = ({ credentials }) =>
   promisedRequest({
     url: PLEROMA_CHATS_URL,
     credentials,
-  }).then((data) => ({
+  }).then(({ data }) => ({
     chatList: data.map(parseChat).filter((c) => c),
   }))
 

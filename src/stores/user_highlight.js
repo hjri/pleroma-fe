@@ -16,8 +16,8 @@ import { toRaw } from 'vue'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 
-import { storage } from 'src/lib/storage.js'
 import { updateProfileJSON } from 'src/api/user.js'
+import { storage } from 'src/lib/storage.js'
 
 export const NEW_USER_DATE = new Date('2022-08-04') // date of writing this, basically
 
