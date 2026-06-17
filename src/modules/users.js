@@ -9,7 +9,7 @@ import {
   uniq,
 } from 'lodash'
 
-import { register } from '../services/api/api.service.js'
+import { register } from '../services/api/public.js'
 import oauthApi from '../services/new_api/oauth.js'
 import {
   registerPushNotifications,
@@ -39,7 +39,7 @@ import {
   getCaptcha,
   searchUsers,
   verifyCredentials,
-} from 'src/services/api/api.service.js'
+} from 'src/services/api/public.js'
 import {
   fetchBlocks,
   fetchDomainMutes,

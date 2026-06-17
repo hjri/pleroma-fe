@@ -27,7 +27,7 @@ import {
   fetchStatusHistory,
   fetchStatusSource,
   search2,
-} from 'src/services/api/api.service.js'
+} from 'src/services/api/public.js'
 import {
   bookmarkStatus,
   deleteStatus,

@@ -5,7 +5,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { ensureFinalFallback } from 'src/i18n/languages.js'
-import { listEmojiPacks } from 'src/services/api/api.service.js'
+import { listEmojiPacks } from 'src/services/api/public.js'
 
 import { annotationsLoader } from 'virtual:pleroma-fe/emoji-annotations'
 

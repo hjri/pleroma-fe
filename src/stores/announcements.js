@@ -8,7 +8,7 @@ import {
   editAnnouncement,
   postAnnouncement,
 } from 'src/services/api/admin.js'
-import { getAnnouncements } from 'src/services/api/api.service.js'
+import { getAnnouncements } from 'src/services/api/public.js'
 import { dismissAnnouncement } from 'src/services/api/user.js'
 
 const FETCH_ANNOUNCEMENT_INTERVAL_MS = 1000 * 60 * 5

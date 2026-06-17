@@ -11,7 +11,7 @@ import {
   LOCAL_DEFAULT_CONFIG_DEFINITIONS,
   validateSetting,
 } from '../modules/default_config_state.js'
-import { fetchKnownDomains } from '../services/api/api.service.js'
+import { fetchKnownDomains } from '../services/api/public.js'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 

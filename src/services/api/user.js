@@ -7,8 +7,8 @@ import {
   parseStatus,
   parseUser,
 } from '../entity_normalizer/entity_normalizer.service.js'
-import { fetchFriends, MASTODON_STATUS_URL } from './api.service.js'
 import { paramsString, promisedRequest } from './helpers.js'
+import { fetchFriends, MASTODON_STATUS_URL } from './public.js'
 
 const MUTES_IMPORT_URL = '/api/pleroma/mutes_import'
 const BLOCKS_IMPORT_URL = '/api/pleroma/blocks_import'

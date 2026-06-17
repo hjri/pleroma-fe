@@ -1,6 +1,6 @@
 import { camelCase } from 'lodash'
 
-import { fetchTimeline } from '../api/api.service.js'
+import { fetchTimeline } from '../api/public.js'
 import { promiseInterval } from '../promise_interval/promise_interval.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
