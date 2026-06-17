@@ -2,12 +2,6 @@ import { defineStore } from 'pinia'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 
-import {
-  getAnnouncements as adminGetAnnouncements,
-  deleteAnnouncement,
-  editAnnouncement,
-  postAnnouncement,
-} from 'src/api/admin.js'
 import { getAnnouncements } from 'src/api/public.js'
 import { dismissAnnouncement } from 'src/api/user.js'
 
@@ -18,6 +12,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
     announcements: [],
     supportsAnnouncements: true,
     fetchAnnouncementsTimer: undefined,
+    adminActions: {},
   }),
   getters: {
     unreadAnnouncementCount() {
@@ -32,34 +27,37 @@ export const useAnnouncementsStore = defineStore('announcements', {
     },
   },
   actions: {
-    fetchAnnouncements() {
-      if (!this.supportsAnnouncements) {
-        return Promise.resolve()
-      }
+    async fetchAnnouncements() {
+      if (!this.supportsAnnouncements) return
 
       const currentUser = window.vuex.state.users.currentUser
       const isAdmin =
         currentUser &&
         currentUser.privileges.has('announcements_manage_announcements')
 
-      const fetchAnnouncements = async () => {
-        if (!isAdmin) {
-          const result = await getAnnouncements({
+      try {
+        if (isAdmin) {
+          this.adminActions = await import('src/api/admin.js')
+        } else {
+          const all = await getAnnouncements({
             credentials: useOAuthStore().token,
           })
-          return result.data
+          return all.data
         }
 
-        const { data: all } = await adminGetAnnouncements({
+        const { data: all } = await this.adminActions.getAnnouncements({
           credentials: useOAuthStore().token,
         })
+
         const { data: visible } = await getAnnouncements({
           credentials: useOAuthStore().token,
         })
+
         const visibleObject = visible.reduce((a, c) => {
           a[c.id] = c
           return a
         }, {})
+
         const getWithinVisible = (announcement) =>
           visibleObject[announcement.id]
 
@@ -72,22 +70,16 @@ export const useAnnouncementsStore = defineStore('announcements', {
           }
         })
 
-        return all
+        this.announcements = all
+      } catch (error) {
+        // If and only if backend does not support announcements, it would return 404.
+        // In this case, silently ignores it.
+        if (error && error.statusCode === 404) {
+          this.supportsAnnouncements = false
+        } else {
+          throw error
+        }
       }
-
-      return fetchAnnouncements()
-        .then((announcements) => {
-          this.announcements = announcements
-        })
-        .catch((error) => {
-          // If and only if backend does not support announcements, it would return 404.
-          // In this case, silently ignores it.
-          if (error && error.statusCode === 404) {
-            this.supportsAnnouncements = false
-          } else {
-            throw error
-          }
-        })
     },
     markAnnouncementAsRead(id) {
       return dismissAnnouncement({
@@ -122,35 +114,41 @@ export const useAnnouncementsStore = defineStore('announcements', {
       clearInterval(interval)
     },
     postAnnouncement({ content, startsAt, endsAt, allDay }) {
-      return postAnnouncement({
-        credentials: useOAuthStore().token,
-        content,
-        startsAt,
-        endsAt,
-        allDay,
-      }).then(() => {
-        return this.fetchAnnouncements()
-      })
+      return this.adminActions
+        .postAnnouncement({
+          credentials: useOAuthStore().token,
+          content,
+          startsAt,
+          endsAt,
+          allDay,
+        })
+        .then(() => {
+          return this.fetchAnnouncements()
+        })
     },
     editAnnouncement({ id, content, startsAt, endsAt, allDay }) {
-      return editAnnouncement({
-        id,
-        content,
-        startsAt,
-        endsAt,
-        allDay,
-        credentials: useOAuthStore().token,
-      }).then(() => {
-        return this.fetchAnnouncements()
-      })
+      return this.adminActions
+        .editAnnouncement({
+          id,
+          content,
+          startsAt,
+          endsAt,
+          allDay,
+          credentials: useOAuthStore().token,
+        })
+        .then(() => {
+          return this.fetchAnnouncements()
+        })
     },
     deleteAnnouncement(id) {
-      return deleteAnnouncement({
-        id,
-        credentials: useOAuthStore().token,
-      }).then(() => {
-        return this.fetchAnnouncements()
-      })
+      return this.adminActions
+        .deleteAnnouncement({
+          id,
+          credentials: useOAuthStore().token,
+        })
+        .then(() => {
+          return this.fetchAnnouncements()
+        })
     },
   },
 })
