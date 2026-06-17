@@ -13,7 +13,7 @@ const fetchRelationship = (attempt, userId, store) =>
         id: userId,
         credentials: useOAuthStore().token,
       })
-        .then((relationship) => {
+        .then(({ data: relationship }) => {
           store.commit('updateUserRelationship', [relationship])
           return relationship
         })
@@ -36,7 +36,7 @@ const fetchRelationship = (attempt, userId, store) =>
   })
 
 export const requestFollow = async (userId, store) => {
-  const updated = await followUser({
+  const { data: updated } = await followUser({
     id: userId,
     credentials: useOAuthStore().token,
   })
@@ -58,7 +58,7 @@ export const requestFollow = async (userId, store) => {
 }
 
 export const requestUnfollow = async (userId, store) => {
-  const updated = await unfollowUser({
+  const { data: updated } = await unfollowUser({
     id: userId,
     credentials: useOAuthStore().token,
   })

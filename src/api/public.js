@@ -110,7 +110,7 @@ export const fetchUserByName = ({ name, credentials }) =>
     credentials,
     params: { acct: name },
   })
-    .then((data) => data.id)
+    .then(({ data }) => data.id)
     .catch((error) => {
       if (error && error.statusCode === 404) {
         // Either the backend does not support lookup endpoint,
