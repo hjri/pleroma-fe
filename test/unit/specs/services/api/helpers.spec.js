@@ -1,7 +1,7 @@
 import { paramsString } from 'src/api/helpers.js'
 
 describe('API Helpers', () => {
-  describe.only('paramsString', () => {
+  describe('paramsString', () => {
     it('should return empty string when given empty object', () => {
       const string = paramsString({})
 
