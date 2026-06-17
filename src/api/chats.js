@@ -1,4 +1,4 @@
-import { parseChat } from '../entity_normalizer/entity_normalizer.service.js'
+import { parseChat } from 'src/services/entity_normalizer/entity_normalizer.service.js'
 import { paramsString, promisedRequest } from './helpers.js'
 
 const PLEROMA_CHATS_URL = '/api/v1/pleroma/chats'

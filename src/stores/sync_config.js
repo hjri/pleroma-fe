@@ -20,9 +20,9 @@ import { toRaw } from 'vue'
 
 import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
 
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { storage } from 'src/lib/storage.js'
 import {
@@ -32,7 +32,7 @@ import {
   validateSetting,
 } from 'src/modules/default_config_state.js'
 import { oldDefaultConfigSync } from 'src/modules/old_default_config_state.js'
-import { updateProfileJSON } from 'src/services/api/user.js'
+import { updateProfileJSON } from 'src/api/user.js'
 
 export const VERSION = 2
 export const NEW_USER_DATE = new Date('2026-03-16') // date of writing this, basically

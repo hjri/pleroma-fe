@@ -12,7 +12,7 @@ import {
   mfaConfirmOTP,
   mfaSetupOTP,
   settingsMFA,
-} from 'src/services/api/user.js'
+} from 'src/api/user.js'
 
 const Mfa = {
   data: () => ({

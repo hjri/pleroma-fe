@@ -9,7 +9,7 @@ import {
   uniq,
 } from 'lodash'
 
-import { register } from '../services/api/public.js'
+import { register } from 'src/api/public.js'
 import oauthApi from '../services/new_api/oauth.js'
 import {
   registerPushNotifications,
@@ -39,7 +39,7 @@ import {
   getCaptcha,
   searchUsers,
   verifyCredentials,
-} from 'src/services/api/public.js'
+} from 'src/api/public.js'
 import {
   fetchBlocks,
   fetchDomainMutes,
@@ -48,7 +48,7 @@ import {
   fetchUserRelationship,
   followUser,
   muteUser,
-} from 'src/services/api/user.js'
+} from 'src/api/user.js'
 
 // TODO: Unify with mergeOrAdd in statuses.js
 export const mergeOrAdd = (arr, obj, item) => {

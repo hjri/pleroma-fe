@@ -8,7 +8,7 @@ import {
   deleteBookmarkFolder,
   fetchBookmarkFolders,
   updateBookmarkFolder,
-} from 'src/services/api/user.js'
+} from 'src/api/user.js'
 import { promiseInterval } from 'src/services/promise_interval/promise_interval.js'
 
 export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {

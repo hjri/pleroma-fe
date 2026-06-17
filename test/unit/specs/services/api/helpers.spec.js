@@ -1,4 +1,4 @@
-import { paramsString } from 'src/services/api/helpers.js'
+import { paramsString } from 'src/api/helpers.js'
 
 describe('API Helpers', () => {
   describe.only('paramsString', () => {

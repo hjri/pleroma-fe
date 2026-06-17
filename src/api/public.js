@@ -8,7 +8,7 @@ import {
   parseSource,
   parseStatus,
   parseUser,
-} from '../entity_normalizer/entity_normalizer.service.js'
+} from 'src/services/entity_normalizer/entity_normalizer.service.js'
 import { paramsString, promisedRequest } from './helpers.js'
 
 import { RegistrationError, StatusCodeError } from 'src/services/errors/errors'

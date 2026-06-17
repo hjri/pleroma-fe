@@ -4,7 +4,7 @@ import Confirm from './confirm.vue'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 
-import { mfaDisableOTP } from 'src/services/api/user.js'
+import { mfaDisableOTP } from 'src/api/user.js'
 
 export default {
   props: ['settings'],

@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 
-import { setReportState } from 'src/services/api/admin.js'
+import { setReportState } from 'src/api/admin.js'
 
 export const useReportsStore = defineStore('reports', {
   state: () => ({

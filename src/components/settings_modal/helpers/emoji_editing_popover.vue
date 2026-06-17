@@ -159,7 +159,7 @@ import {
   addNewEmojiFile,
   deleteEmojiFile,
   updateEmojiFile,
-} from 'src/services/api/admin.js'
+} from 'src/api/admin.js'
 
 export default {
   components: {

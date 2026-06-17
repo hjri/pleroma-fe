@@ -15,7 +15,7 @@ import {
   deleteAlias,
   listAliases,
   moveAccount,
-} from 'src/services/api/user.js'
+} from 'src/api/user.js'
 import localeService from 'src/services/locale/locale.service.js'
 
 const SecurityTab = {

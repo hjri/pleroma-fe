@@ -4,7 +4,7 @@ import {
   fetchUserRelationship,
   followUser,
   unfollowUser,
-} from 'src/services/api/user.js'
+} from 'src/api/user.js'
 
 const fetchRelationship = (attempt, userId, store) =>
   new Promise((resolve, reject) => {

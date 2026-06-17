@@ -1,6 +1,6 @@
 import { useOAuthStore } from 'src/stores/oauth.js'
 
-import { fetchUser } from 'src/services/api/public.js'
+import { fetchUser } from 'src/api/public.js'
 
 const RemoteUserResolver = {
   data: () => ({

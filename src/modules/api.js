@@ -1,6 +1,6 @@
 import { Socket } from 'phoenix'
 
-import { WSConnectionStatus } from '../services/api/public.js'
+import { WSConnectionStatus } from 'src/api/public.js'
 import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -13,7 +13,7 @@ import {
   fetchTimeline,
   getMastodonSocketURI,
   ProcessedWS,
-} from 'src/services/api/public.js'
+} from 'src/api/public.js'
 import followRequestFetcher from 'src/services/follow_request_fetcher/follow_request_fetcher.service'
 import notificationsFetcher from 'src/services/notifications_fetcher/notifications_fetcher.service.js'
 import timelineFetcher from 'src/services/timeline_fetcher/timeline_fetcher.service.js'

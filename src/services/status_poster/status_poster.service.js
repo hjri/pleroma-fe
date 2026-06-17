@@ -5,7 +5,7 @@ import {
   postStatus as apiPostStatus,
   setMediaDescription as apiSetMediaDescription,
   uploadMedia as apiUploadMedia,
-} from 'src/services/api/user.js'
+} from 'src/api/user.js'
 
 const postStatus = ({
   store,

@@ -16,7 +16,7 @@ import {
   importFollows,
   importMutes,
   listBackups,
-} from 'src/services/api/user.js'
+} from 'src/api/user.js'
 
 const DataImportExportTab = {
   data() {

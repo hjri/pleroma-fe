@@ -1,4 +1,4 @@
-import { fetchTimeline } from '../api/public.js'
+import { fetchTimeline } from 'src/api/public.js'
 import { promiseInterval } from '../promise_interval/promise_interval.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'

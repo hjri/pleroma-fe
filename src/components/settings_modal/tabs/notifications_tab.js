@@ -3,7 +3,7 @@ import SharedComputedObject from '../helpers/shared_computed_object.js'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 
-import { updateNotificationSettings } from 'src/services/api/user.js'
+import { updateNotificationSettings } from 'src/api/user.js'
 
 const NotificationsTab = {
   data() {

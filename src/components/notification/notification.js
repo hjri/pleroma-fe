@@ -18,7 +18,7 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
-import { approveUser, denyUser } from 'src/services/api/user.js'
+import { approveUser, denyUser } from 'src/api/user.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 import { library } from '@fortawesome/fontawesome-svg-core'

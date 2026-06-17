@@ -6,7 +6,7 @@ import {
   parseSource,
   parseStatus,
   parseUser,
-} from '../entity_normalizer/entity_normalizer.service.js'
+} from 'src/services/entity_normalizer/entity_normalizer.service.js'
 import { paramsString, promisedRequest } from './helpers.js'
 import { fetchFriends, MASTODON_STATUS_URL } from './public.js'
 

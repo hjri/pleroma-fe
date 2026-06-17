@@ -8,7 +8,7 @@ import UserLink from 'src/components/user_link/user_link.vue'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useReportsStore } from 'src/stores/reports.js'
 
-import { reportUser } from 'src/services/api/user.js'
+import { reportUser } from 'src/api/user.js'
 
 const UserReportingModal = {
   components: {

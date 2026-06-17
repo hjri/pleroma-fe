@@ -27,7 +27,7 @@ import {
   fetchStatusHistory,
   fetchStatusSource,
   search2,
-} from 'src/services/api/public.js'
+} from 'src/api/public.js'
 import {
   bookmarkStatus,
   deleteStatus,
@@ -42,7 +42,7 @@ import {
   unpinOwnStatus,
   unreactWithEmoji,
   unretweet,
-} from 'src/services/api/user.js'
+} from 'src/api/user.js'
 
 const emptyTl = (userId = 0) => ({
   statuses: [],

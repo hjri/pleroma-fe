@@ -11,7 +11,7 @@ import { promiseInterval } from '../services/promise_interval/promise_interval.j
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 
-import { chats, deleteChatMessage, readChat } from 'src/services/api/chats.js'
+import { chats, deleteChatMessage, readChat } from 'src/api/chats.js'
 
 const emptyChatList = () => ({
   data: [],

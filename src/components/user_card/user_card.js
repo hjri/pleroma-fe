@@ -26,7 +26,7 @@ import { useOAuthStore } from 'src/stores/oauth.js'
 import { usePostStatusStore } from 'src/stores/post_status'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
-import { updateProfile } from 'src/services/api/user.js'
+import { updateProfile } from 'src/api/user.js'
 import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
 import localeService from 'src/services/locale/locale.service.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'

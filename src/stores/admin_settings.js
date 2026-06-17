@@ -31,8 +31,8 @@ import {
   setUsersRight,
   setUsersSuggestionStatus,
   setUsersTags,
-} from 'src/services/api/admin.js'
-import { listEmojiPacks } from 'src/services/api/public.js'
+} from 'src/api/admin.js'
+import { listEmojiPacks } from 'src/api/public.js'
 import { parseStatus } from 'src/services/entity_normalizer/entity_normalizer.service.js'
 
 export const defaultState = {
@@ -551,7 +551,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     listEmojiPacks(params) {
       return listEmojiPacks({
         ...params,
-        credentials: useOAuthStore().token,
+        credentials: useOAuthStore().token
       })
     },
     listRemoteEmojiPacks(params) {

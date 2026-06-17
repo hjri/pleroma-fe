@@ -11,13 +11,13 @@ import IntegerSetting from '../helpers/integer_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
 
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
-import { updateProfile } from 'src/services/api/user.js'
+import { updateProfile } from 'src/api/user.js'
 import localeService from 'src/services/locale/locale.service.js'
 import { cacheKey, clearCache, emojiCacheKey } from 'src/services/sw/sw.js'
 

@@ -1,4 +1,4 @@
-import { markNotificationsAsSeen } from '../services/api/user.js'
+import { markNotificationsAsSeen } from 'src/api/user.js'
 import {
   closeAllDesktopNotifications,
   closeDesktopNotification,
@@ -15,7 +15,7 @@ import { useOAuthStore } from 'src/stores/oauth.js'
 import { useReportsStore } from 'src/stores/reports.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
-import { dismissNotification } from 'src/services/api/user.js'
+import { dismissNotification } from 'src/api/user.js'
 
 const emptyNotifications = () => ({
   desktopNotificationSilence: true,
