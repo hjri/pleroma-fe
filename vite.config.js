@@ -80,7 +80,8 @@ export default defineConfig(async ({ mode, command }) => {
       cookieDomainRewrite: 'localhost',
       ws: true,
     },
-    '/auth': { // Mastodon password reset lives here
+    '/auth': {
+      // Mastodon password reset lives here
       target,
       changeOrigin: true,
       cookieDomainRewrite: 'localhost',
