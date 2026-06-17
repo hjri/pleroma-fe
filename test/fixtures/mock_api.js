@@ -2,6 +2,8 @@ import { HttpResponse, http } from 'msw'
 import { setupWorker } from 'msw/browser'
 import { test as testBase } from 'vitest'
 
+export const testServer = ''
+
 // https://mswjs.io/docs/recipes/vitest-browser-mode
 export const injectMswToTest = (defaultHandlers) => {
   const worker = setupWorker(...defaultHandlers)
@@ -24,16 +26,14 @@ export const injectMswToTest = (defaultHandlers) => {
   })
 }
 
-export const testServer = 'https://test.server.example'
-
 export const authApis = [
-  http.post(`${testServer}/api/v1/apps`, () => {
+  http.post('/api/v1/apps', () => {
     return HttpResponse.json({
       client_id: 'test-id',
       client_secret: 'test-secret',
     })
   }),
-  http.get(`${testServer}/api/v1/apps/verify_credentials`, ({ request }) => {
+  http.get('/api/v1/apps/verify_credentials', ({ request }) => {
     const authHeader = request.headers.get('Authorization')
     if (
       authHeader === 'Bearer test-app-token' ||
@@ -50,7 +50,7 @@ export const authApis = [
       )
     }
   }),
-  http.post(`${testServer}/oauth/token`, async ({ request }) => {
+  http.post('/oauth/token', async ({ request }) => {
     const data = await request.formData()
 
     if (

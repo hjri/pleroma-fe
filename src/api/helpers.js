@@ -69,7 +69,6 @@ export const paramsString = (params = {}) => {
 export const promisedRequest = async ({
   method,
   url,
-  params,
   payload,
   formData,
   credentials,
@@ -86,17 +85,6 @@ export const promisedRequest = async ({
 
   if (!formData) {
     options.headers['Content-Type'] = 'application/json'
-  }
-
-  if (params) {
-    url +=
-      '?' +
-      Object.entries(params)
-        .map(
-          ([key, value]) =>
-            encodeURIComponent(key) + '=' + encodeURIComponent(value),
-        )
-        .join('&')
   }
 
   if (formData || payload) {

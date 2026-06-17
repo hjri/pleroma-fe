@@ -5,10 +5,8 @@ import { createPinia, setActivePinia } from 'pinia'
 import {
   authApis,
   injectMswToTest,
-  testServer,
 } from '/test/fixtures/mock_api.js'
 
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 
 const test = injectMswToTest(authApis)
@@ -16,7 +14,6 @@ const test = injectMswToTest(authApis)
 describe('oauth store', () => {
   beforeEach(() => {
     setActivePinia(createTestingPinia({ stubActions: false }))
-    useInstanceStore().server = testServer
   })
 
   describe('createApp', () => {
@@ -31,7 +28,7 @@ describe('oauth store', () => {
 
     test('it should throw and not update if failed', async ({ worker }) => {
       worker.use(
-        http.post(`${testServer}/api/v1/apps`, () => {
+        http.post('/api/v1/apps', () => {
           return HttpResponse.text('Throttled', { status: 429 })
         }),
       )
@@ -56,7 +53,7 @@ describe('oauth store', () => {
 
     test('it should not create an app if it exists', async ({ worker }) => {
       worker.use(
-        http.post(`${testServer}/api/v1/apps`, () => {
+        http.post('/api/v1/apps', () => {
           return HttpResponse.text('Should not call this API', { status: 400 })
         }),
       )
@@ -115,7 +112,7 @@ describe('oauth store', () => {
       worker,
     }) => {
       worker.use(
-        http.post(`${testServer}/api/v1/apps`, () => {
+        http.post('/api/v1/apps', () => {
           return HttpResponse.text('Should not call this API', { status: 400 })
         }),
       )
@@ -133,7 +130,7 @@ describe('oauth store', () => {
       worker,
     }) => {
       worker.use(
-        http.post(`${testServer}/api/v1/apps`, () => {
+        http.post('/api/v1/apps', () => {
           return HttpResponse.text('Should not call this API', { status: 400 })
         }),
       )
@@ -173,7 +170,7 @@ describe('oauth store', () => {
 
     test('it should throw if we cannot create an app', async ({ worker }) => {
       worker.use(
-        http.post(`${testServer}/api/v1/apps`, () => {
+        http.post('/api/v1/apps', () => {
           return HttpResponse.text('Throttled', { status: 429 })
         }),
       )
@@ -186,7 +183,7 @@ describe('oauth store', () => {
       worker,
     }) => {
       worker.use(
-        http.post(`${testServer}/oauth/token`, () => {
+        http.post('/oauth/token', () => {
           return HttpResponse.text('Throttled', { status: 429 })
         }),
       )

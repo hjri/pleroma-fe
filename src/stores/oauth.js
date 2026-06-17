@@ -82,7 +82,7 @@ export const useOAuthStore = defineStore('oauth', {
         instance,
       })
       this.setAppToken(res.data.access_token)
-      return res.access_token
+      return res.data.access_token
     },
     /// Use this if you want to ensure the app is still valid to use.
     /// @return {string} The access token to the app (not attached to any user)
