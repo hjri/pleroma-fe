@@ -14,9 +14,11 @@ import {
 import { RegistrationError, StatusCodeError } from 'src/services/errors/errors'
 
 const SUGGESTIONS_URL = '/api/v1/suggestions'
-/* eslint-env browser */
 const MASTODON_LOGIN_URL = '/api/v1/accounts/verify_credentials'
 const MASTODON_REGISTRATION_URL = '/api/v1/accounts'
+const MASTODON_PASSWORD_RESET_URL = ({ email }) =>
+  `/auth/password${paramsString({ email })}`
+
 const MASTODON_USER_FAVORITES_TIMELINE_URL = '/api/v1/favourites'
 const MASTODON_USER_NOTIFICATIONS_URL = '/api/v1/notifications'
 const MASTODON_FOLLOWING_URL = (
@@ -312,6 +314,13 @@ export const verifyCredentials = ({ credentials }) =>
     url: MASTODON_LOGIN_URL,
     credentials,
   }).then(({ data, ...rest }) => ({ ...rest, data: parseUser(data) }))
+
+export const resetPassword = ({ instance, email }) => {
+  return promisedRequest({
+    url: MASTODON_PASSWORD_RESET_URL({ email }),
+    method: 'POST',
+  })
+}
 
 export const suggestions = ({ credentials }) =>
   promisedRequest({
