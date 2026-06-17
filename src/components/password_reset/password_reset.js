@@ -1,9 +1,9 @@
 import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
-import { resetPassword } from 'src/api/public.js'
-
 import { useInstanceStore } from 'src/stores/instance.js'
+
+import { resetPassword } from 'src/api/public.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -24,7 +24,7 @@ const passwordReset = {
     ...mapState({
       signedIn: (state) => !!state.users.currentUser,
     }),
-    ...mapPiniaState(useInstanceStore, ['server', 'mailerEnabled']),
+    ...mapPiniaState(useInstanceStore, ['mailerEnabled']),
   },
   created() {
     if (this.signedIn) {
@@ -44,7 +44,6 @@ const passwordReset = {
     submit() {
       this.isPending = true
       const email = this.user.email
-      const server = this.server
 
       resetPassword({ email })
         .then(({ status }) => {
