@@ -445,7 +445,7 @@ const conversation = {
         fetchConversation({
           id: this.statusId,
           credentials: useOAuthStore().token,
-        }).then(({ ancestors, descendants }) => {
+        }).then(({ data: { ancestors, descendants } }) => {
           this.$store.dispatch('addNewStatuses', { statuses: ancestors })
           this.$store.dispatch('addNewStatuses', { statuses: descendants })
           this.setHighlight(this.originalStatusId)
@@ -456,7 +456,7 @@ const conversation = {
           id: this.statusId,
           credentials: useOAuthStore().token,
         })
-          .then((status) => {
+          .then(({ data: status }) => {
             this.$store.dispatch('addNewStatuses', { statuses: [status] })
             this.fetchConversation()
           })

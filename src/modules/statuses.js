@@ -788,12 +788,12 @@ const statuses = {
         fetchFavoritedByUsers({
           id,
           credentials: useOAuthStore().token,
-        }),
+        }).then(({ data }) => data),
         fetchRebloggedByUsers({
           id,
           credentials: useOAuthStore().token,
-        }),
-      ]).then(([{ data: favoritedByUsers }, { data: rebloggedByUsers }]) => {
+        }).then(({ data }) => data),,
+      ]).then(([favoritedByUsers, rebloggedByUsers]) => {
         commit('addFavs', {
           id,
           favoritedByUsers,

@@ -244,7 +244,6 @@ export const _mergeJournal = (...journals) => {
         }
       })
       .map((x) => x.data)
-    console.log(journal)
 
     if (path.startsWith('collections')) {
       const lastRemoveIndex = findLastIndex(

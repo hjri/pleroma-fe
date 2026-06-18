@@ -339,14 +339,14 @@ export const fetchFavoritedByUsers = ({ id, credentials }) =>
     url: MASTODON_STATUS_FAVORITEDBY_URL(id),
     method: 'GET',
     credentials,
-  }).then(({ data, ...rest }) => ({ ...rest, data: parseUser(data) }))
+  }).then(({ data, ...rest }) => ({ ...rest, data: data.map(parseUser) }))
 
 export const fetchRebloggedByUsers = ({ id, credentials }) =>
   promisedRequest({
     url: MASTODON_STATUS_REBLOGGEDBY_URL(id),
     method: 'GET',
     credentials,
-  }).then(({ data, ...rest }) => ({ ...rest, data: parseUser(data) }))
+  }).then(({ data, ...rest }) => ({ ...rest, data: data.map(parseUser) }))
 
 export const fetchEmojiReactions = ({ id, credentials }) =>
   promisedRequest({

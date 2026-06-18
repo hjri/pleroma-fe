@@ -44,7 +44,7 @@ const MASTODON_DENY_USER_URL = (id) => `/api/v1/follow_requests/${id}/reject`
 const MASTODON_USER_RELATIONSHIPS_URL = ({ id, withSuspended }) =>
   `/api/v1/accounts/relationships/${paramsString({ id, withSuspended })}`
 const MASTODON_USER_IN_LISTS = (id) => `/api/v1/accounts/${id}/lists`
-export const MASTODON_LIST_URL = (id) => `/api/v1/lists/${id}`
+export const MASTODON_LIST_URL = (id = '') => `/api/v1/lists/${id}`
 export const MASTODON_LIST_ACCOUNTS_URL = (id) => `/api/v1/lists/${id}/accounts`
 const MASTODON_USER_BLOCKS_URL = ({
   maxId,
