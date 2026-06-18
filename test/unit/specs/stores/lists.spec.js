@@ -3,15 +3,8 @@ import { createStore } from 'vuex'
 
 import { useListsStore } from 'src/stores/lists.js'
 
-import apiModule from 'src/modules/api.js'
-
 setActivePinia(createPinia())
 const store = useListsStore()
-window.vuex = createStore({
-  modules: {
-    api: apiModule,
-  },
-})
 
 describe('The lists store', () => {
   describe('actions', () => {
