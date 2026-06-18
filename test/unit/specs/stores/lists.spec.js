@@ -1,10 +1,22 @@
-import { createPinia, setActivePinia } from 'pinia'
-import { createStore } from 'vuex'
+import { createTestingPinia } from '@pinia/testing'
+import { HttpResponse, http } from 'msw'
+import { setActivePinia } from 'pinia'
+
+import { injectMswToTest } from '/test/fixtures/mock_api.js'
 
 import { useListsStore } from 'src/stores/lists.js'
 
-setActivePinia(createPinia())
+setActivePinia(createTestingPinia({ stubActions: false }))
 const store = useListsStore()
+const it = injectMswToTest([
+  http.get('/api/v1/lists/:id', () => HttpResponse.json({ ok: true })),
+  http.put('/api/v1/lists/:id', () => HttpResponse.json({ ok: true })),
+  http.post('/api/v1/lists/:id', () => HttpResponse.json({ ok: true })),
+  http.delete('/api/v1/lists/:id', () => HttpResponse.json({ ok: true })),
+  http.get('/api/v1/lists/:id/accounts', () => HttpResponse.json({ ok: true })),
+  http.post('/api/v1/lists/:id/accounts', () => HttpResponse.json({ ok: true })),
+  http.delete('/api/v1/lists/:id/accounts', () => HttpResponse.json({ ok: true })),
+])
 
 describe('The lists store', () => {
   describe('actions', () => {
