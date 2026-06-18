@@ -44,8 +44,8 @@ const MASTODON_DENY_USER_URL = (id) => `/api/v1/follow_requests/${id}/reject`
 const MASTODON_USER_RELATIONSHIPS_URL = ({ id, withSuspended }) =>
   `/api/v1/accounts/relationships/${paramsString({ id, withSuspended })}`
 const MASTODON_USER_IN_LISTS = (id) => `/api/v1/accounts/${id}/lists`
-const MASTODON_LIST_URL = (id) => `/api/v1/lists/${id}`
-const MASTODON_LIST_ACCOUNTS_URL = (id) => `/api/v1/lists/${id}/accounts`
+export const MASTODON_LIST_URL = (id) => `/api/v1/lists/${id}`
+export const MASTODON_LIST_ACCOUNTS_URL = (id) => `/api/v1/lists/${id}/accounts`
 const MASTODON_USER_BLOCKS_URL = ({
   maxId,
   sinceId,
@@ -80,7 +80,6 @@ const MASTODON_UNPIN_OWN_STATUS = (id) => `/api/v1/statuses/${id}/unpin`
 const MASTODON_MUTE_CONVERSATION = (id) => `/api/v1/statuses/${id}/mute`
 const MASTODON_UNMUTE_CONVERSATION = (id) => `/api/v1/statuses/${id}/unmute`
 const MASTODON_DOMAIN_BLOCKS_URL = '/api/v1/domain_blocks'
-const MASTODON_LISTS_URL = '/api/v1/lists'
 const MASTODON_ANNOUNCEMENTS_URL = '/api/v1/announcements'
 const MASTODON_ANNOUNCEMENTS_DISMISS_URL = (id) =>
   `/api/v1/announcements/${id}/dismiss`
@@ -824,13 +823,13 @@ export const revokeOAuthToken = ({ id, credentials }) =>
 // #Lists
 export const fetchLists = ({ credentials }) =>
   promisedRequest({
-    url: MASTODON_LISTS_URL,
+    url: MASTODON_LIST_URL(),
     credentials,
   })
 
 export const createList = ({ title, credentials }) =>
   promisedRequest({
-    url: MASTODON_LISTS_URL,
+    url: MASTODON_LIST_URL(),
     credentials,
     method: 'POST',
     payload: { title },
@@ -843,6 +842,7 @@ export const getList = ({ listId, credentials }) =>
   })
 
 export const updateList = ({ listId, title, credentials }) =>
+  console.log('PUT', MASTODON_LIST_URL(listId)) ||
   promisedRequest({
     url: MASTODON_LIST_URL(listId),
 

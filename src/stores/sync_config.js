@@ -233,9 +233,18 @@ export const _mergeJournal = (...journals) => {
       Object.hasOwn(entry, 'timestamp'),
   )
   const grouped = groupBy(allJournals, 'path')
-  const trimmedGrouped = Object.entries(grouped).map(([path, journal]) => {
-    // side effect
-    journal.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
+  const trimmedGrouped = Object.entries(grouped).map(([path, rawJournal]) => {
+    const journal = rawJournal
+      .map((data, index) => ({ data, index }))
+      .toSorted(({ data: a, index: ai }, { data: b, index: bi }) => {
+        if (a.timestamp === b.timestamp) {
+          return ai - bi
+        } else {
+          return a.timestamp > b.timestamp ? 1 : -1
+        }
+      })
+      .map((x) => x.data)
+    console.log(journal)
 
     if (path.startsWith('collections')) {
       const lastRemoveIndex = findLastIndex(
@@ -270,9 +279,16 @@ export const _mergeJournal = (...journals) => {
     }
   })
 
-  const flat = flatten(trimmedGrouped).sort((a, b) =>
-    a.timestamp > b.timestamp ? 1 : -1,
-  )
+  const flat = flatten(trimmedGrouped)
+    .map((data, index) => ({ data, index }))
+    .toSorted(({ data: a, index: ai }, { data: b, index: bi }) => {
+      if (a.timestamp === b.timestamp) {
+        return ai - bi
+      } else {
+        return a.timestamp > b.timestamp ? 1 : -1
+      }
+    })
+    .map((x) => x.data)
   return take(flat, 500)
 }
 

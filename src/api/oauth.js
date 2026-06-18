@@ -5,7 +5,12 @@ import { paramsString, promisedRequest } from './helpers.js'
 import { StatusCodeError } from 'src/services/errors/errors.js'
 
 const REDIRECT_URI = `${window.location.origin}/oauth-callback`
-const MASTODON_APP_VERIFY_URL = '/api/v1/apps/verify_credentials'
+
+export const MASTODON_APP_VERIFY_URL = '/api/v1/apps/verify_credentials'
+export const MASTODON_APP_URL = '/api/v1/apps'
+export const OAUTH_TOKEN_URL = '/oauth/token'
+export const OAUTH_MFA_CHALLENGE_URL = '/oauth/mfa/challenge'
+export const OAUTH_REVOKE_URL = '/oauth/revoke'
 
 export const createApp = () => {
   const formData = new window.FormData()
@@ -16,8 +21,8 @@ export const createApp = () => {
   formData.append('scopes', 'read write follow push admin')
 
   return promisedRequest({
-    url: '/api/v1/apps',
     method: 'POST',
+    url: MASTODON_APP_URL,
     formData,
   }).then(({ data, ...rest }) => ({
     ...rest,
@@ -61,7 +66,7 @@ export const getTokenWithCredentials = ({
   formData.append('password', password)
 
   return promisedRequest({
-    url: '/oauth/token',
+    url: OAUTH_TOKEN_URL,
     method: 'POST',
     formData,
   })
@@ -77,7 +82,7 @@ export const getToken = ({ clientId, clientSecret, code }) => {
   formData.append('redirect_uri', `${window.location.origin}/oauth-callback`)
 
   return promisedRequest({
-    url: '/oauth/token',
+    url: OAUTH_TOKEN_URL,
     method: 'POST',
     formData,
   })
@@ -92,7 +97,7 @@ export const getClientToken = ({ clientId, clientSecret }) => {
   formData.append('redirect_uri', `${window.location.origin}/oauth-callback`)
 
   return promisedRequest({
-    url: '/oauth/token',
+    url: OAUTH_TOKEN_URL,
     method: 'POST',
     formData,
   })
@@ -108,7 +113,7 @@ export const verifyOTPCode = ({ app, mfaToken, code }) => {
   formData.append('challenge_type', 'totp')
 
   return promisedRequest({
-    url: '/oauth/mfa/challenge',
+    url: OAUTH_MFA_CHALLENGE_URL,
     method: 'POST',
     formData,
   })
@@ -124,7 +129,7 @@ export const verifyRecoveryCode = ({ app, mfaToken, code }) => {
   formData.append('challenge_type', 'recovery')
 
   return promisedRequest({
-    url: '/oauth/mfa/challenge',
+    url: OAUTH_MFA_CHALLENGE_URL,
     method: 'POST',
     formData,
   })
@@ -138,7 +143,7 @@ export const revokeToken = ({ app, token }) => {
   formData.append('token', token)
 
   return promisedRequest({
-    url: '/oauth/revoke',
+    url: OAUTH_REVOKE_URL,
     method: 'POST',
     formData,
   })

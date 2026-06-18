@@ -50,8 +50,8 @@ export const useListsStore = defineStore('lists', {
     setLists(value) {
       this.allLists = value
     },
-    createList({ title }) {
-      return createList({
+    async createList({ title }) {
+      return await createList({
         title,
         credentials: useOAuthStore().token,
       }).then((list) => {
@@ -59,14 +59,14 @@ export const useListsStore = defineStore('lists', {
         return list
       })
     },
-    fetchList({ listId }) {
-      return getList({
+    async fetchList({ listId }) {
+      return await getList({
         listId,
         credentials: useOAuthStore().token,
       }).then((list) => this.setList({ listId: list.id, title: list.title }))
     },
-    fetchListAccounts({ listId }) {
-      return getListAccounts({
+    async fetchListAccounts({ listId }) {
+      return await getListAccounts({
         listId,
         credentials: useOAuthStore().token,
       }).then((accountIds) => {
@@ -76,8 +76,8 @@ export const useListsStore = defineStore('lists', {
         this.allListsObject[listId].accountIds = accountIds
       })
     },
-    setList({ listId, title }) {
-      updateList({
+    async setList({ listId, title }) {
+      await updateList({
         listId,
         title,
         credentials: useOAuthStore().token,
@@ -95,7 +95,7 @@ export const useListsStore = defineStore('lists', {
         entry.title = title
       }
     },
-    setListAccounts({ listId, accountIds }) {
+    async setListAccounts({ listId, accountIds }) {
       const saved = this.allListsObject[listId]?.accountIds || []
       const added = accountIds.filter((id) => !saved.includes(id))
       const removed = saved.filter((id) => !accountIds.includes(id))
@@ -103,23 +103,29 @@ export const useListsStore = defineStore('lists', {
         this.allListsObject[listId] = { accountIds: [] }
       }
       this.allListsObject[listId].accountIds = accountIds
+      const promises = []
       if (added.length > 0) {
-        addAccountsToList({
-          listId,
-          accountIds: added,
-          credentials: useOAuthStore().token,
-        })
+        promises.push(
+          addAccountsToList({
+            listId,
+            accountIds: added,
+            credentials: useOAuthStore().token,
+          }),
+        )
       }
       if (removed.length > 0) {
-        removeAccountsFromList({
-          listId,
-          accountIds: removed,
-          credentials: useOAuthStore().token,
-        })
+        promises.push(
+          removeAccountsFromList({
+            listId,
+            accountIds: removed,
+            credentials: useOAuthStore().token,
+          }),
+        )
       }
+      await Promise.all(promises)
     },
-    addListAccount({ listId, accountId }) {
-      return addAccountsToList({
+    async addListAccount({ listId, accountId }) {
+      return await addAccountsToList({
         listId,
         accountIds: [accountId],
         credentials: useOAuthStore().token,
@@ -131,8 +137,8 @@ export const useListsStore = defineStore('lists', {
         return result
       })
     },
-    removeListAccount({ listId, accountId }) {
-      return removeAccountsFromList({
+    async removeListAccount({ listId, accountId }) {
+      return await removeAccountsFromList({
         listId,
         accountIds: [accountId],
         credentials: useOAuthStore().token,
@@ -148,8 +154,8 @@ export const useListsStore = defineStore('lists', {
         return result
       })
     },
-    deleteList({ listId }) {
-      deleteList({
+    async deleteList({ listId }) {
+      await deleteList({
         listId,
         credentials: useOAuthStore().token,
       })
