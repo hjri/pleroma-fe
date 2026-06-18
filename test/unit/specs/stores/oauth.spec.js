@@ -2,10 +2,7 @@ import { createTestingPinia } from '@pinia/testing'
 import { HttpResponse, http } from 'msw'
 import { createPinia, setActivePinia } from 'pinia'
 
-import {
-  authApis,
-  injectMswToTest,
-} from '/test/fixtures/mock_api.js'
+import { authApis, injectMswToTest } from '/test/fixtures/mock_api.js'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 
