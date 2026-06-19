@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie'
 import {
   compact,
   concat,
@@ -717,7 +718,6 @@ const users = {
         .then(() => {
           store.commit('clearCurrentUser')
           store.dispatch('disconnectFromSocket')
-          oauth.clearToken()
           store.dispatch('stopFetchingTimeline', 'friends')
           store.dispatch('stopFetchingNotifications')
           useListsStore().stopFetching()
@@ -726,6 +726,8 @@ const users = {
           store.commit('clearNotifications')
           store.commit('resetStatuses')
           store.dispatch('resetChats')
+          oauth.clearToken()
+          Cookies.remove('__Host-pleroma_key', { path: '/' })
           useInterfaceStore().setLastTimeline('public-timeline')
           useInterfaceStore().setLayoutWidth(windowWidth())
           useInterfaceStore().setLayoutHeight(windowHeight())

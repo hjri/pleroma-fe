@@ -19,7 +19,14 @@ const MASTODON_REGISTRATION_URL = '/api/v1/accounts'
 const MASTODON_PASSWORD_RESET_URL = ({ email }) =>
   `/auth/password${paramsString({ email })}`
 
-const MASTODON_USER_NOTIFICATIONS_URL = ({ minId, sinceId, maxId, limit, includeTypes, replyVisibility }) =>
+const MASTODON_USER_NOTIFICATIONS_URL = ({
+  minId,
+  sinceId,
+  maxId,
+  limit,
+  includeTypes,
+  replyVisibility,
+}) =>
   `/api/v1/notifications${paramsString({ minId, sinceId, maxId, limit, includeTypes, replyVisibility })}`
 const MASTODON_FOLLOWING_URL = (
   id,
@@ -32,27 +39,82 @@ const MASTODON_FOLLOWERS_URL = (
 ) =>
   `/api/v1/accounts/${id}/followers${paramsString({ minId, maxId, sinceId, limit, withRelationships })}`
 
-const MASTODON_USER_HOME_TIMELINE_URL = ({ minId, sinceId, maxId, limit, replyVisibility }) =>
+const MASTODON_USER_HOME_TIMELINE_URL = ({
+  minId,
+  sinceId,
+  maxId,
+  limit,
+  replyVisibility,
+}) =>
   `/api/v1/timelines/home${paramsString({ minId, sinceId, maxId, limit, replyVisibility })}`
-const MASTODON_LIST_TIMELINE_URL = (id, { minId, sinceId, maxId, limit, replyVisibility }) =>
+const MASTODON_LIST_TIMELINE_URL = (
+  id,
+  { minId, sinceId, maxId, limit, replyVisibility },
+) =>
   `/api/v1/timelines/list/${id}${paramsString({ minId, sinceId, maxId, limit, replyVisibility })}`
-const MASTODON_DIRECT_MESSAGES_TIMELINE_URL = ({ minId, sinceId, maxId, limit, replyVisibility }) =>
+const MASTODON_DIRECT_MESSAGES_TIMELINE_URL = ({
+  minId,
+  sinceId,
+  maxId,
+  limit,
+  replyVisibility,
+}) =>
   `/api/v1/timelines/direct${paramsString({ minId, sinceId, maxId, limit, replyVisibility })}`
-const MASTODON_PUBLIC_TIMELINE = ({ minId, sinceId, maxId, limit, replyVisibility, local, remote, onlyMedia }) =>
+const MASTODON_PUBLIC_TIMELINE = ({
+  minId,
+  sinceId,
+  maxId,
+  limit,
+  replyVisibility,
+  local,
+  remote,
+  onlyMedia,
+}) =>
   `/api/v1/timelines/public${paramsString({ minId, sinceId, maxId, limit, replyVisibility, local, remote, onlyMedia })}`
-const MASTODON_TAG_TIMELINE_URL = (tag, { minId, sinceId, maxId, limit, replyVisibility }) =>
+const MASTODON_TAG_TIMELINE_URL = (
+  tag,
+  { minId, sinceId, maxId, limit, replyVisibility },
+) =>
   `/api/v1/timelines/tag/${tag}${paramsString({ minId, sinceId, maxId, limit, replyVisibility })}`
-const MASTODON_USER_TIMELINE_URL = (id, { minId, sinceId, maxId, limit, replyVisibility, pinned, onlyMedia }) =>
+const MASTODON_USER_TIMELINE_URL = (
+  id,
+  { minId, sinceId, maxId, limit, replyVisibility, pinned, onlyMedia },
+) =>
   `/api/v1/accounts/${id}/statuses${paramsString({ minId, sinceId, maxId, limit, replyVisibility, pinned, onlyMedia })}`
-const MASTODON_USER_FAVORITES_TIMELINE_URL = ({ minId, sinceId, maxId, limit, replyVisibility }) =>
+const MASTODON_USER_FAVORITES_TIMELINE_URL = ({
+  minId,
+  sinceId,
+  maxId,
+  limit,
+  replyVisibility,
+}) =>
   `/api/v1/favourites${paramsString({ minId, sinceId, maxId, limit, replyVisibility })}`
-const MASTODON_BOOKMARK_TIMELINE_URL = ({ minId, sinceId, maxId, limit, replyVisibility, folderId }) =>
+const MASTODON_BOOKMARK_TIMELINE_URL = ({
+  minId,
+  sinceId,
+  maxId,
+  limit,
+  replyVisibility,
+  folderId,
+}) =>
   `/api/v1/bookmarks${paramsString({ minId, sinceId, maxId, limit, replyVisibility, folderId })}`
-const PLEROMA_STATUS_QUOTES_URL = (id, { minId, sinceId, maxId, limit, replyVisibility }) =>
+const PLEROMA_STATUS_QUOTES_URL = (
+  id,
+  { minId, sinceId, maxId, limit, replyVisibility },
+) =>
   `/api/v1/pleroma/statuses/${id}/quotes${paramsString({ minId, sinceId, maxId, limit, replyVisibility })}`
-const PLEROMA_USER_FAVORITES_TIMELINE_URL = (id, { minId, sinceId, maxId, limit, replyVisibility }) =>
+const PLEROMA_USER_FAVORITES_TIMELINE_URL = (
+  id,
+  { minId, sinceId, maxId, limit, replyVisibility },
+) =>
   `/api/v1/pleroma/accounts/${id}/favourites${paramsString({ minId, sinceId, maxId, limit, replyVisibility })}`
-const AKKOMA_BUBBLE_TIMELINE_URL = ({ minId, sinceId, maxId, limit, replyVisibility }) =>
+const AKKOMA_BUBBLE_TIMELINE_URL = ({
+  minId,
+  sinceId,
+  maxId,
+  limit,
+  replyVisibility,
+}) =>
   `/api/v1/timelines/bubble${paramsString({ minId, sinceId, maxId, limit, replyVisibility })}`
 
 export const MASTODON_STATUS_URL = (id) => `/api/v1/statuses/${id}`
@@ -66,10 +128,22 @@ const MASTODON_STATUS_FAVORITEDBY_URL = (id) =>
   `/api/v1/statuses/${id}/favourited_by`
 const MASTODON_STATUS_REBLOGGEDBY_URL = (id) =>
   `/api/v1/statuses/${id}/reblogged_by`
-const MASTODON_SEARCH_2 = ({ q, resolve, limit, offset, following, type, withRelationships, accountId, excludeUnreviewed }) =>
+const MASTODON_SEARCH_2 = ({
+  q,
+  resolve,
+  limit,
+  offset,
+  following,
+  type,
+  withRelationships,
+  accountId,
+  excludeUnreviewed,
+}) =>
   `/api/v2/search${paramsString({ q, resolve, limit, offset, following, type, withRelationships, accountId, excludeUnreviewed })}`
-const MASTODON_USER_SEARCH_URL = ({ q, resolve }) => `/api/v1/accounts/search${paramsString({ q, resolve })}`
-const MASTODON_STREAMING = ({ accessToken, stream }) => `/api/v1/streaming${paramsString({accessToken, stream })}`
+const MASTODON_USER_SEARCH_URL = ({ q, resolve }) =>
+  `/api/v1/accounts/search${paramsString({ q, resolve })}`
+const MASTODON_STREAMING = ({ accessToken, stream }) =>
+  `/api/v1/streaming${paramsString({ accessToken, stream })}`
 const MASTODON_KNOWN_DOMAIN_LIST_URL = '/api/v1/instance/peers'
 const PLEROMA_EMOJI_REACTIONS_URL = (id) =>
   `/api/v1/pleroma/statuses/${id}/reactions`
@@ -246,7 +320,7 @@ export const fetchTimeline = ({
     'list',
     'publicFavorites',
     'tag',
-    'quotes'
+    'quotes',
   ])
 
   const params = {
@@ -414,10 +488,7 @@ export const search2 = ({
 export const fetchKnownDomains = ({ credentials }) =>
   promisedRequest({ url: MASTODON_KNOWN_DOMAIN_LIST_URL, credentials })
 
-export const getMastodonSocketURI = (
-  { credentials, stream },
-  base,
-) => {
+export const getMastodonSocketURI = ({ credentials, stream }, base) => {
   return base + MASTODON_STREAMING({ accessToken: credentials, stream })
 }
 

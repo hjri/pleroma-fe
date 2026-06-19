@@ -56,25 +56,26 @@ const LoginForm = {
           instance: this.server,
           username: this.user.username,
           password: this.user.password,
-        }).then((result) => {
-          if (result.error) {
-            if (result.error === 'mfa_required') {
-              this.requireMFA({ settings: result })
-            } else if (result.identifier === 'password_reset_required') {
+        })
+          .then(({ data: result }) => {
+            this.login(result).then(() => {
+              this.$router.push({ name: 'friends' })
+            })
+          })
+          .catch((error) => {
+            if (error === 'mfa_required') {
+              this.requireMFA({ settings: error })
+            } else if (error.identifier === 'password_reset_required') {
               this.$router.push({
                 name: 'password-reset',
                 params: { passwordResetRequested: true },
               })
             } else {
-              this.error = result.error
+              this.error = error
               this.focusOnPasswordInput()
             }
             return
-          }
-          this.login(result).then(() => {
-            this.$router.push({ name: 'friends' })
           })
-        })
       })
     },
     clearError() {

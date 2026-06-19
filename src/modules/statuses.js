@@ -792,7 +792,7 @@ const statuses = {
         fetchRebloggedByUsers({
           id,
           credentials: useOAuthStore().token,
-        }).then(({ data }) => data),,
+        }).then(({ data }) => data),
       ]).then(([favoritedByUsers, rebloggedByUsers]) => {
         commit('addFavs', {
           id,
