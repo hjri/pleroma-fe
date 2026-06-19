@@ -13,14 +13,14 @@ import {
 } from 'src/services/entity_normalizer/entity_normalizer.service.js'
 import { RegistrationError, StatusCodeError } from 'src/services/errors/errors'
 
-const SUGGESTIONS_URL = '/api/v1/suggestions'
+const MASTODON_SUGGESTIONS_URL = '/api/v1/suggestions'
 const MASTODON_LOGIN_URL = '/api/v1/accounts/verify_credentials'
 const MASTODON_REGISTRATION_URL = '/api/v1/accounts'
 const MASTODON_PASSWORD_RESET_URL = ({ email }) =>
   `/auth/password${paramsString({ email })}`
 
-const MASTODON_USER_FAVORITES_TIMELINE_URL = '/api/v1/favourites'
-const MASTODON_USER_NOTIFICATIONS_URL = '/api/v1/notifications'
+const MASTODON_USER_NOTIFICATIONS_URL = ({ minId, sinceId, maxId, limit, includeTypes, replyVisibility }) =>
+  `/api/v1/notifications${paramsString({ minId, sinceId, maxId, limit, includeTypes, replyVisibility })}`
 const MASTODON_FOLLOWING_URL = (
   id,
   { minId, maxId, sinceId, limit, withRelationships },
@@ -31,26 +31,43 @@ const MASTODON_FOLLOWERS_URL = (
   { minId, maxId, sinceId, limit, withRelationships },
 ) =>
   `/api/v1/accounts/${id}/followers${paramsString({ minId, maxId, sinceId, limit, withRelationships })}`
-const MASTODON_USER_HOME_TIMELINE_URL = '/api/v1/timelines/home'
-const MASTODON_LIST_TIMELINE_URL = (id) => `/api/v1/timelines/list/${id}`
-const MASTODON_BOOKMARK_TIMELINE_URL = '/api/v1/bookmarks'
-const MASTODON_DIRECT_MESSAGES_TIMELINE_URL = '/api/v1/timelines/direct'
-const MASTODON_PUBLIC_TIMELINE = '/api/v1/timelines/public'
+
+const MASTODON_USER_HOME_TIMELINE_URL = ({ minId, sinceId, maxId, limit, replyVisibility }) =>
+  `/api/v1/timelines/home${paramsString({ minId, sinceId, maxId, limit, replyVisibility })}`
+const MASTODON_LIST_TIMELINE_URL = (id, { minId, sinceId, maxId, limit, replyVisibility }) =>
+  `/api/v1/timelines/list/${id}${paramsString({ minId, sinceId, maxId, limit, replyVisibility })}`
+const MASTODON_DIRECT_MESSAGES_TIMELINE_URL = ({ minId, sinceId, maxId, limit, replyVisibility }) =>
+  `/api/v1/timelines/direct${paramsString({ minId, sinceId, maxId, limit, replyVisibility })}`
+const MASTODON_PUBLIC_TIMELINE = ({ minId, sinceId, maxId, limit, replyVisibility, local, remote, onlyMedia }) =>
+  `/api/v1/timelines/public${paramsString({ minId, sinceId, maxId, limit, replyVisibility, local, remote, onlyMedia })}`
+const MASTODON_TAG_TIMELINE_URL = (tag, { minId, sinceId, maxId, limit, replyVisibility }) =>
+  `/api/v1/timelines/tag/${tag}${paramsString({ minId, sinceId, maxId, limit, replyVisibility })}`
+const MASTODON_USER_TIMELINE_URL = (id, { minId, sinceId, maxId, limit, replyVisibility, pinned, onlyMedia }) =>
+  `/api/v1/accounts/${id}/statuses${paramsString({ minId, sinceId, maxId, limit, replyVisibility, pinned, onlyMedia })}`
+const MASTODON_USER_FAVORITES_TIMELINE_URL = ({ minId, sinceId, maxId, limit, replyVisibility }) =>
+  `/api/v1/favourites${paramsString({ minId, sinceId, maxId, limit, replyVisibility })}`
+const MASTODON_BOOKMARK_TIMELINE_URL = ({ minId, sinceId, maxId, limit, replyVisibility, folderId }) =>
+  `/api/v1/bookmarks${paramsString({ minId, sinceId, maxId, limit, replyVisibility, folderId })}`
+const PLEROMA_STATUS_QUOTES_URL = (id, { minId, sinceId, maxId, limit, replyVisibility }) =>
+  `/api/v1/pleroma/statuses/${id}/quotes${paramsString({ minId, sinceId, maxId, limit, replyVisibility })}`
+const PLEROMA_USER_FAVORITES_TIMELINE_URL = (id, { minId, sinceId, maxId, limit, replyVisibility }) =>
+  `/api/v1/pleroma/accounts/${id}/favourites${paramsString({ minId, sinceId, maxId, limit, replyVisibility })}`
+const AKKOMA_BUBBLE_TIMELINE_URL = ({ minId, sinceId, maxId, limit, replyVisibility }) =>
+  `/api/v1/timelines/bubble${paramsString({ minId, sinceId, maxId, limit, replyVisibility })}`
+
 export const MASTODON_STATUS_URL = (id) => `/api/v1/statuses/${id}`
 const MASTODON_STATUS_CONTEXT_URL = (id) => `/api/v1/statuses/${id}/context`
 const MASTODON_STATUS_SOURCE_URL = (id) => `/api/v1/statuses/${id}/source`
 const MASTODON_STATUS_HISTORY_URL = (id) => `/api/v1/statuses/${id}/history`
 const MASTODON_USER_URL = '/api/v1/accounts'
 const MASTODON_USER_LOOKUP_URL = '/api/v1/accounts/lookup'
-const MASTODON_USER_TIMELINE_URL = (id) => `/api/v1/accounts/${id}/statuses`
-const MASTODON_TAG_TIMELINE_URL = (tag) => `/api/v1/timelines/tag/${tag}`
-const AKKOMA_BUBBLE_TIMELINE_URL = '/api/v1/timelines/bubble'
-const MASTODON_POLL_URL = (id) => `/api/v1/polls/${id}`
+const MASTODON_POLL_URL = (id = '') => `/api/v1/polls/${id}`
 const MASTODON_STATUS_FAVORITEDBY_URL = (id) =>
   `/api/v1/statuses/${id}/favourited_by`
 const MASTODON_STATUS_REBLOGGEDBY_URL = (id) =>
   `/api/v1/statuses/${id}/reblogged_by`
-const MASTODON_SEARCH_2 = '/api/v2/search'
+const MASTODON_SEARCH_2 = ({ q, resolve, limit, offset, following, type, withRelationships, accountId, excludeUnreviewed }) =>
+  `/api/v2/search${paramsString({ q, resolve, limit, offset, following, type, withRelationships, accountId, excludeUnreviewed })}`
 const MASTODON_USER_SEARCH_URL = '/api/v1/accounts/search'
 const MASTODON_STREAMING = '/api/v1/streaming'
 const MASTODON_KNOWN_DOMAIN_LIST_URL = '/api/v1/instance/peers'
@@ -58,10 +75,6 @@ const PLEROMA_EMOJI_REACTIONS_URL = (id) =>
   `/api/v1/pleroma/statuses/${id}/reactions`
 const PLEROMA_SCROBBLES_URL = (id, { maxId, sinceId, minId, limit, offset }) =>
   `/api/v1/pleroma/accounts/${id}/scrobbles${paramsString({ maxId, sinceId, minId, limit, offset })}`
-const PLEROMA_STATUS_QUOTES_URL = (id) =>
-  `/api/v1/pleroma/statuses/${id}/quotes`
-const PLEROMA_USER_FAVORITES_TIMELINE_URL = (id) =>
-  `/api/v1/pleroma/accounts/${id}/favourites`
 
 const EMOJI_PACKS_URL = (page, pageSize) =>
   `/api/v1/pleroma/emoji/packs${paramsString({ page, pageSize })}`
@@ -210,23 +223,32 @@ export const fetchTimeline = ({
   bookmarkFolderId,
 }) => {
   const timelineUrls = {
-    public: MASTODON_PUBLIC_TIMELINE,
     friends: MASTODON_USER_HOME_TIMELINE_URL,
-    dms: MASTODON_DIRECT_MESSAGES_TIMELINE_URL,
-    notifications: MASTODON_USER_NOTIFICATIONS_URL,
+    public: MASTODON_PUBLIC_TIMELINE,
     publicAndExternal: MASTODON_PUBLIC_TIMELINE,
+    dms: MASTODON_DIRECT_MESSAGES_TIMELINE_URL,
     user: MASTODON_USER_TIMELINE_URL,
     media: MASTODON_USER_TIMELINE_URL,
     list: MASTODON_LIST_TIMELINE_URL,
     favorites: MASTODON_USER_FAVORITES_TIMELINE_URL,
     publicFavorites: PLEROMA_USER_FAVORITES_TIMELINE_URL,
-    tag: MASTODON_TAG_TIMELINE_URL,
     bookmarks: MASTODON_BOOKMARK_TIMELINE_URL,
-    quotes: PLEROMA_STATUS_QUOTES_URL,
     bubble: AKKOMA_BUBBLE_TIMELINE_URL,
+    tag: MASTODON_TAG_TIMELINE_URL,
+    quotes: PLEROMA_STATUS_QUOTES_URL,
+
+    notifications: MASTODON_USER_NOTIFICATIONS_URL,
   }
 
-  const isNotifications = timeline === 'notifications'
+  const twoArgs = new Set([
+    'user',
+    'media',
+    'list',
+    'publicFavorites',
+    'tag',
+    'quotes'
+  ])
+
   const params = {
     minId,
     sinceId,
@@ -234,36 +256,29 @@ export const fetchTimeline = ({
     limit: 20,
   }
 
-  let url = timelineUrls[timeline]
+  const id = (() => {
+    switch (timeline) {
+      case 'user':
+      case 'media':
+        return userId
+      case 'list':
+        return listId
+      case 'quotes':
+        return statusId
+      case 'tag':
+        return tag
+    }
+  })()
 
-  if (timeline === 'favorites' && userId) {
-    url = timelineUrls.publicFavorites(userId)
-  }
+  const isNotifications = timeline === 'notifications'
 
-  if (timeline === 'user' || timeline === 'media') {
-    url = url(userId)
-  }
-
-  if (timeline === 'list') {
-    url = url(listId)
-  }
-
-  if (timeline === 'quotes') {
-    url = url(statusId)
-  }
-
-  if (tag) {
-    url = url(tag)
-  }
+  const urlFunc = timelineUrls[timeline]
 
   if (timeline === 'media') {
-    params.onlyMedia = 1
+    params.onlyMedia = true
   }
   if (timeline === 'public') {
     params.local = true
-  }
-  if (timeline === 'public' || timeline === 'publicAndExternal') {
-    params.onlyMedia = false
   }
   if (timeline !== 'favorites' && timeline !== 'bookmarks') {
     params.withMuted = withMuted
@@ -271,17 +286,16 @@ export const fetchTimeline = ({
   if (replyVisibility !== 'all') {
     params.replyVisibility = replyVisibility
   }
-  if (includeTypes.size > 0) {
-    params.includeTypes = includeTypes
-  }
   if (timeline === 'bookmarks' && bookmarkFolderId) {
     params.folderId = bookmarkFolderId
   }
 
-  return promisedRequest({
-    url: url + paramsString(params),
-    credentials,
-  }).then(async (result) => {
+  if (isNotifications && includeTypes.size > 0) {
+    params.includeTypes = includeTypes
+  }
+
+  const url = twoArgs.has(timeline) ? urlFunc(id, params) : urlFunc(params)
+  return promisedRequest({ url, credentials }).then((result) => {
     const pagination = parseLinkHeaderPagination(
       result.response.headers.get('Link'),
       {
@@ -304,7 +318,7 @@ export const listEmojiPacks = ({ page, pageSize, credentials }) =>
 
 export const fetchPinnedStatuses = ({ id, credentials }) =>
   promisedRequest({
-    url: MASTODON_USER_TIMELINE_URL(id) + '?pinned=true',
+    url: MASTODON_USER_TIMELINE_URL(id, { pinned: true }),
     credentials,
   }).then(({ data, ...rest }) => ({ ...rest, data: data.map(parseStatus) }))
 
@@ -323,7 +337,7 @@ export const resetPassword = ({ email }) => {
 
 export const suggestions = ({ credentials }) =>
   promisedRequest({
-    url: SUGGESTIONS_URL,
+    url: MASTODON_SUGGESTIONS_URL,
     credentials,
   })
 
@@ -379,42 +393,16 @@ export const search2 = ({
   following,
   type,
 }) => {
-  let url = MASTODON_SEARCH_2
-  const params = []
-
-  if (q) {
-    params.push(['q', encodeURIComponent(q)])
-  }
-
-  if (resolve) {
-    params.push(['resolve', resolve])
-  }
-
-  if (limit) {
-    params.push(['limit', limit])
-  }
-
-  if (offset) {
-    params.push(['offset', offset])
-  }
-
-  if (following) {
-    params.push(['following', true])
-  }
-
-  if (type) {
-    params.push(['type', type])
-  }
-
-  params.push(['with_relationships', true])
-
-  const queryString = map(params, (param) => `${param[0]}=${param[1]}`).join(
-    '&',
-  )
-  url += `?${queryString}`
-
   return promisedRequest({
-    url,
+    url: MASTODON_SEARCH_2({
+      q,
+      resolve,
+      limit,
+      offset,
+      following,
+      type,
+      withRelationships: true,
+    }),
     credentials,
   })
     .then(({ data, ...rest }) => {
