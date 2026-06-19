@@ -68,8 +68,8 @@ const MASTODON_STATUS_REBLOGGEDBY_URL = (id) =>
   `/api/v1/statuses/${id}/reblogged_by`
 const MASTODON_SEARCH_2 = ({ q, resolve, limit, offset, following, type, withRelationships, accountId, excludeUnreviewed }) =>
   `/api/v2/search${paramsString({ q, resolve, limit, offset, following, type, withRelationships, accountId, excludeUnreviewed })}`
-const MASTODON_USER_SEARCH_URL = '/api/v1/accounts/search'
-const MASTODON_STREAMING = '/api/v1/streaming'
+const MASTODON_USER_SEARCH_URL = ({ q, resolve }) => `/api/v1/accounts/search${paramsString({ q, resolve })}`
+const MASTODON_STREAMING = ({ accessToken, stream }) => `/api/v1/streaming${paramsString({accessToken, stream })}`
 const MASTODON_KNOWN_DOMAIN_LIST_URL = '/api/v1/instance/peers'
 const PLEROMA_EMOJI_REACTIONS_URL = (id) =>
   `/api/v1/pleroma/statuses/${id}/reactions`
@@ -376,11 +376,7 @@ export const fetchEmojiReactions = ({ id, credentials }) =>
 
 export const searchUsers = ({ credentials, query }) =>
   promisedRequest({
-    url: MASTODON_USER_SEARCH_URL,
-    params: {
-      q: query,
-      resolve: true,
-    },
+    url: MASTODON_USER_SEARCH_URL({ q: query, resolve: true }),
     credentials,
   }).then(({ data, ...rest }) => ({ ...rest, data: data.map(parseUser) }))
 
@@ -419,20 +415,10 @@ export const fetchKnownDomains = ({ credentials }) =>
   promisedRequest({ url: MASTODON_KNOWN_DOMAIN_LIST_URL, credentials })
 
 export const getMastodonSocketURI = (
-  { credentials, stream, args = {} },
+  { credentials, stream },
   base,
 ) => {
-  const url = new URL(MASTODON_STREAMING, base)
-  if (credentials) {
-    url.searchParams.append('access_token', credentials)
-  }
-  if (stream) {
-    url.searchParams.append('stream', stream)
-  }
-  Object.entries(args).forEach(([key, val]) => {
-    url.searchParams.append(key, val)
-  })
-  return url
+  return base + MASTODON_STREAMING({ accessToken: credentials, stream })
 }
 
 const MASTODON_STREAMING_EVENTS = new Set([
