@@ -95,7 +95,7 @@ const Mfa = {
 
       return generateMfaBackupCodes({
         credentials: useOAuthStore().token,
-      }).then((res) => {
+      }).then(({ data: res }) => {
         this.backupCodes.codes = res.codes
         this.backupCodes.inProgress = false
       })
@@ -122,7 +122,7 @@ const Mfa = {
       this.setupState.setupOTPState = 'prepare'
       mfaSetupOTP({
         credentials: useOAuthStore().token,
-      }).then((res) => {
+      }).then(({ data: res }) => {
         this.otpSettings = res
         this.setupState.setupOTPState = 'confirm'
       })
@@ -135,11 +135,9 @@ const Mfa = {
         password: this.currentPassword,
         credentials: useOAuthStore().token,
       }).then((res) => {
-        if (res.error) {
-          this.error = res.error
-          return
-        }
         this.completeSetup()
+      }).catch((error) => {
+        this.error = error
       })
     },
 
@@ -161,7 +159,7 @@ const Mfa = {
 
     // fetch settings from server
     async fetchSettings() {
-      const result = await settingsMFA({
+      const { data: result } = await settingsMFA({
         credentials: useOAuthStore().token,
       })
       if (result.error) return
