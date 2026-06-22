@@ -60,7 +60,7 @@ export const usePollsStore = defineStore('polls', {
         pollId,
         choices,
         credentials: useOAuthStore().token,
-      }).then((poll) => {
+      }).then(({ data: poll }) => {
         this.mergeOrAddPoll(poll)
         return poll
       })
