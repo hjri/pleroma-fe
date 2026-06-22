@@ -12,7 +12,7 @@ export const useOAuthTokensStore = defineStore('oauthTokens', {
     fetchTokens() {
       fetchOAuthTokens({
         credentials: useOAuthStore().token,
-      }).then((tokens) => {
+      }).then(({ data: tokens }) => {
         this.swapTokens(tokens)
       })
     },
