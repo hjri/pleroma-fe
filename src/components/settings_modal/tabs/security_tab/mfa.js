@@ -134,11 +134,13 @@ const Mfa = {
         token: this.otpConfirmToken,
         password: this.currentPassword,
         credentials: useOAuthStore().token,
-      }).then((res) => {
-        this.completeSetup()
-      }).catch((error) => {
-        this.error = error
       })
+        .then(() => {
+          this.completeSetup()
+        })
+        .catch((error) => {
+          this.error = error
+        })
     },
 
     completeSetup() {
