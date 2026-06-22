@@ -36,19 +36,16 @@ const postStatus = ({
     poll,
     preview,
     idempotencyKey,
-  })
-    .then(({ data }) => {
-      if (preview) return data
-
-      store.dispatch('addNewStatuses', {
-        statuses: [data],
-        timeline: 'friends',
-        showImmediately: true,
-        noIdUpdate: true, // To prevent missing notices on next pull.
-      })
-
-      return data
+  }).then(({ data }) => {
+    if (!preview) store.dispatch('addNewStatuses', {
+      statuses: [data],
+      timeline: 'friends',
+      showImmediately: true,
+      noIdUpdate: true, // To prevent missing notices on next pull.
     })
+
+    return data
+  })
 }
 
 const editStatus = ({
