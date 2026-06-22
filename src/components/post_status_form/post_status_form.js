@@ -635,11 +635,6 @@ const PostStatusForm = {
           // Don't apply preview if not loading, because it means
           // user has closed the preview manually.
           if (!this.previewLoading) return
-          if (!data.error) {
-            this.preview = data
-          } else {
-            this.preview = { error: data.error }
-          }
         })
         .catch((error) => {
           this.preview = { error }

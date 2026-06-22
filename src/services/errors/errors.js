@@ -13,8 +13,9 @@ function humanizeErrors(errors) {
 export function StatusCodeError(statusCode, body, options, response) {
   this.name = 'StatusCodeError'
   this.statusCode = statusCode
-  this.message =
-    statusCode + ' - ' + (JSON && JSON.stringify ? JSON.stringify(body) : body)
+  this.details = JSON && JSON.stringify ? JSON.stringify(body) : body
+  this.errorData = body.error
+  this.message = statusCode + ' - ' + body.error.error || body.error
   this.error = body // legacy attribute
   this.options = options
   this.response = response

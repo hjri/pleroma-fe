@@ -49,11 +49,6 @@ const postStatus = ({
 
       return data
     })
-    .catch((err) => {
-      return {
-        error: err.message,
-      }
-    })
 }
 
 const editStatus = ({
