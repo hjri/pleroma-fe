@@ -52,7 +52,8 @@ const fetchAndUpdate = ({
   const loggedIn = !!rootState.users.currentUser
 
   if (older) {
-    args.maxId = maxId || timelineData.minId
+    // When minId = 0 we need to fetch without maxId param
+    args.maxId = maxId || timelineData.minId || null
   } else {
     if (sinceId === undefined) {
       args.sinceId = timelineData.maxId
