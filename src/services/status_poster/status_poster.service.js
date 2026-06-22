@@ -37,12 +37,13 @@ const postStatus = ({
     preview,
     idempotencyKey,
   }).then(({ data }) => {
-    if (!preview) store.dispatch('addNewStatuses', {
-      statuses: [data],
-      timeline: 'friends',
-      showImmediately: true,
-      noIdUpdate: true, // To prevent missing notices on next pull.
-    })
+    if (!preview)
+      store.dispatch('addNewStatuses', {
+        statuses: [data],
+        timeline: 'friends',
+        showImmediately: true,
+        noIdUpdate: true, // To prevent missing notices on next pull.
+      })
 
     return data
   })

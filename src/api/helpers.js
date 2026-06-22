@@ -132,11 +132,7 @@ export const promisedRequest = async ({
       )
     }
   } catch (error) {
-    throw new Error(
-      error,
-      { url, options },
-      response,
-    )
+    throw new Error(error, { url, options }, response)
   }
 }
 
