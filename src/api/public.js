@@ -274,10 +274,10 @@ export const fetchStatusHistory = ({ status, credentials }) =>
   promisedRequest({
     url: MASTODON_STATUS_HISTORY_URL(status.id),
     credentials,
-  }).then(({ data }) => {
+  }).then(({ data, ...rest }) => {
     return [...data].reverse().map((item) => {
       item.originalStatus = status
-      return parseStatus(item)
+      return { ...rest, data: parseStatus(item) }
     })
   })
 
