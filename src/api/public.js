@@ -122,7 +122,7 @@ const MASTODON_STATUS_CONTEXT_URL = (id) => `/api/v1/statuses/${id}/context`
 const MASTODON_STATUS_SOURCE_URL = (id) => `/api/v1/statuses/${id}/source`
 const MASTODON_STATUS_HISTORY_URL = (id) => `/api/v1/statuses/${id}/history`
 const MASTODON_USER_URL = '/api/v1/accounts'
-const MASTODON_USER_LOOKUP_URL = '/api/v1/accounts/lookup'
+const MASTODON_USER_LOOKUP_URL = ({ acct }) => `/api/v1/accounts/lookup${paramsString({ acct })}`
 const MASTODON_POLL_URL = (id = '') => `/api/v1/polls/${id}`
 const MASTODON_STATUS_FAVORITEDBY_URL = (id) =>
   `/api/v1/statuses/${id}/favourited_by`
@@ -194,9 +194,8 @@ export const fetchUser = ({ id, credentials }) =>
 
 export const fetchUserByName = ({ name, credentials }) =>
   promisedRequest({
-    url: MASTODON_USER_LOOKUP_URL,
+    url: MASTODON_USER_LOOKUP_URL({ acct: name }),
     credentials,
-    params: { acct: name },
   })
     .then(({ data }) => data.id)
     .catch((error) => {
