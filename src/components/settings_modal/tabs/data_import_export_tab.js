@@ -64,7 +64,7 @@ const DataImportExportTab = {
       return importFollows({
         file,
         credentials: useOAuthStore().token,
-      }).then((status) => {
+      }).then(({ data: status }) => {
         if (!status) {
           throw new Error('failed')
         }
@@ -74,7 +74,7 @@ const DataImportExportTab = {
       return importBlocks({
         file,
         credentials: useOAuthStore().token,
-      }).then((status) => {
+      }).then(({ data: status }) => {
         if (!status) {
           throw new Error('failed')
         }
@@ -84,13 +84,13 @@ const DataImportExportTab = {
       return importMutes({
         file,
         credentials: useOAuthStore().token,
-      }).then((status) => {
+      }).then(({ data: status }) => {
         if (!status) {
           throw new Error('failed')
         }
       })
     },
-    generateExportableUsersContent(users) {
+    generateExportableUsersContent({ data: users }) {
       // Get addresses
       return users
         .map((user) => {
@@ -121,7 +121,7 @@ const DataImportExportTab = {
       listBackups({
         credentials: useOAuthStore().token,
       })
-        .then((res) => {
+        .then(({ data: res }) => {
           this.backups = res
           this.listBackupsError = false
         })

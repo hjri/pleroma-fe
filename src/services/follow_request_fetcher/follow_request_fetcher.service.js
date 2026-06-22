@@ -4,7 +4,7 @@ import { promiseInterval } from 'src/services/promise_interval/promise_interval.
 const fetchAndUpdate = ({ store, credentials }) => {
   return fetchFollowRequests({ credentials })
     .then(
-      (requests) => {
+      ({ data: requests }) => {
         store.commit('setFollowRequests', requests)
         store.commit('addNewUsers', requests)
       },

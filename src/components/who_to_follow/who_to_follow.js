@@ -23,7 +23,7 @@ const WhoToFollow = {
         fetchUser({
           id,
           credentials: useOAuthStore().token,
-        }).then((externalUser) => {
+        }).then(({ data: externalUser }) => {
           if (!externalUser.error) {
             this.$store.commit('addNewUsers', [externalUser])
             this.users.push(externalUser)
@@ -34,7 +34,7 @@ const WhoToFollow = {
     getWhoToFollow() {
       const credentials = useOAuthStore().token
       if (credentials) {
-        suggestions({ credentials }).then((reply) => {
+        suggestions({ credentials }).then(({ data: reply }) => {
           this.showWhoToFollow(reply)
         })
       }

@@ -27,7 +27,7 @@ export const usePollsStore = defineStore('polls', {
       fetchPoll({
         pollId,
         credentials: useOAuthStore().token,
-      }).then((poll) => {
+      }).then(({ data: poll }) => {
         setTimeout(() => {
           if (this.trackedPolls[pollId]) {
             this.updateTrackedPoll(pollId)

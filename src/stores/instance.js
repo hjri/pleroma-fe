@@ -211,9 +211,10 @@ export const useInstanceStore = defineStore('instance', {
     },
     async getKnownDomains() {
       try {
-        this.knownDomains = await fetchKnownDomains({
+        const { data } = await fetchKnownDomains({
           credentials: window.vuex.state.users.currentUser.credentials,
         })
+        this.knownDomains = data
       } catch (e) {
         console.warn("Can't load known domains\n", e)
       }

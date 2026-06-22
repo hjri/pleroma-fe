@@ -10,7 +10,7 @@ const defaultApi = ({ rootState, commit }, { path, value }) => {
   return updateProfile({
     params,
     credentials: useOAuthStore().token,
-  }).then((result) => {
+  }).then(({ data: result }) => {
     commit('addNewUsers', [result])
     commit('setCurrentUser', result)
   })
@@ -22,7 +22,7 @@ const notificationsApi = ({ rootState, commit }, { path, value, oldValue }) => {
   return updateNotificationSettings({
     settings,
     credentials: useOAuthStore().token,
-  }).then((result) => {
+  }).then(({ data: result }) => {
     if (result.status === 'success') {
       commit('confirmProfileOption', { name, value })
     } else {

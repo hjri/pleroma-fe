@@ -21,7 +21,7 @@ function showWhoToFollow(panel, reply) {
     fetchUser({
       id: name,
       credentials: useOAuthStore().token,
-    }).then((externalUser) => {
+    }).then(({ data: externalUser }) => {
       if (!externalUser.error) {
         panel.$store.commit('addNewUsers', [externalUser])
         toFollow.id = externalUser.id
@@ -36,7 +36,7 @@ function getWhoToFollow(panel) {
     panel.usersToFollow.forEach((toFollow) => {
       toFollow.name = 'Loading...'
     })
-    suggestions({ credentials }).then((reply) => {
+    suggestions({ credentials }).then(({ data: reply }) => {
       showWhoToFollow(panel, reply)
     })
   }

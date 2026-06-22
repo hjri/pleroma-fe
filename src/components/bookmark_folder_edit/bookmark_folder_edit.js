@@ -27,7 +27,7 @@ const BookmarkFolderEdit = {
 
     fetchBookmarkFolders({
       credentials: useOAuthStore().token,
-    }).then((folders) => {
+    }).then(({ data: folders }) => {
       const folder = folders.find((folder) => folder.id === this.id)
       if (!folder) return
 

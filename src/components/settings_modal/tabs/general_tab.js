@@ -63,7 +63,7 @@ const GeneralTab = {
       updateProfile({
         params,
         credentials: useOAuthStore().token,
-      }).then((user) => {
+      }).then(({ data: user }) => {
         this.$store.commit('addNewUsers', [user])
         this.$store.commit('setCurrentUser', user)
       })

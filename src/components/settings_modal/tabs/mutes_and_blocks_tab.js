@@ -60,7 +60,7 @@ const MutesAndBlocks = {
       return importFollows({
         file,
         credentials: useOAuthStore().token,
-      }).then((status) => {
+      }).then(({ data: status }) => {
         if (!status) {
           throw new Error('failed')
         }
@@ -70,7 +70,7 @@ const MutesAndBlocks = {
       return importBlocks({
         file,
         credentials: useOAuthStore().token,
-      }).then((status) => {
+      }).then(({ data: status }) => {
         if (!status) {
           throw new Error('failed')
         }

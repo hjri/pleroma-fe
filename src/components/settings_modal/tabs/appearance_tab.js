@@ -490,7 +490,7 @@ const AppearanceTab = {
         background,
         credentials: useOAuthStore().token,
       })
-        .then((data) => {
+        .then(({ data }) => {
           this.$store.commit('addNewUsers', [data])
           this.$store.commit('setCurrentUser', data)
           this.backgroundPreview = null

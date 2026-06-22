@@ -54,7 +54,7 @@ export const useListsStore = defineStore('lists', {
       return await createList({
         title,
         credentials: useOAuthStore().token,
-      }).then((list) => {
+      }).then(({ data: list }) => {
         this.setList({ listId: list.id, title })
         return list
       })
@@ -63,13 +63,15 @@ export const useListsStore = defineStore('lists', {
       return await getList({
         listId,
         credentials: useOAuthStore().token,
-      }).then((list) => this.setList({ listId: list.id, title: list.title }))
+      }).then(({ data: list }) =>
+        this.setList({ listId: list.id, title: list.title }),
+      )
     },
     async fetchListAccounts({ listId }) {
       return await getListAccounts({
         listId,
         credentials: useOAuthStore().token,
-      }).then((accountIds) => {
+      }).then(({ data: accountIds }) => {
         if (!this.allListsObject[listId]) {
           this.allListsObject[listId] = { accountIds: [] }
         }

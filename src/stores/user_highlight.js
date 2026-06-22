@@ -350,7 +350,7 @@ export const useUserHighlightStore = defineStore('user_highlight', {
       updateProfileJSON({
         params,
         credentials: useOAuthStore().token,
-      }).then((user) => {
+      }).then(({ data: user }) => {
         this.initUserHighlight(user)
         this.dirty = false
       })

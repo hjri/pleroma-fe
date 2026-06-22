@@ -40,7 +40,7 @@ export default {
       mfaDisableOTP({
         password: this.currentPassword,
         credentials: useOAuthStore().token,
-      }).then((res) => {
+      }).then(({ data: res }) => {
         this.inProgress = false
         if (res.error) {
           this.error = res.error

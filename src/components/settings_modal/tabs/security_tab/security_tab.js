@@ -78,7 +78,7 @@ const SecurityTab = {
       deleteAccount({
         credentials: useOAuthStore().token,
         password: this.deleteAccountConfirmPasswordInput,
-      }).then((res) => {
+      }).then(({ data: res }) => {
         if (res.status === 'success') {
           this.$store.dispatch('logout')
           this.$router.push({ name: 'root' })
@@ -94,7 +94,7 @@ const SecurityTab = {
         newPasswordConfirmation: this.changePasswordInputs[2],
         credentials: useOAuthStore().token,
       }
-      changePassword(params).then((res) => {
+      changePassword(params).then(({ data: res }) => {
         if (res.status === 'success') {
           this.changedPassword = true
           this.changePasswordError = false
@@ -111,7 +111,7 @@ const SecurityTab = {
         password: this.changeEmailPassword,
         credentials: useOAuthStore().token,
       }
-      changeEmail(params).then((res) => {
+      changeEmail(params).then(({ data: res }) => {
         if (res.status === 'success') {
           this.changedEmail = true
           this.changeEmailError = false
@@ -127,7 +127,7 @@ const SecurityTab = {
         password: this.moveAccountPassword,
         credentials: useOAuthStore().token,
       }
-      moveAccount(params).then((res) => {
+      moveAccount(params).then(({ data: res }) => {
         if (res.status === 'success') {
           this.movedAccount = true
           this.moveAccountError = false
@@ -163,7 +163,7 @@ const SecurityTab = {
       listAliases({
         credentials: useOAuthStore().token,
       })
-        .then((res) => {
+        .then(({ data: res }) => {
           this.aliases = res.aliases
           this.listAliasesError = false
         })

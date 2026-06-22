@@ -278,7 +278,7 @@ const Chat = {
         maxId,
         sinceId,
         credentials: useOAuthStore().token,
-      }).then((messages) => {
+      }).then(({ data: messages }) => {
         // Clear the current chat in case we're recovering from a ws connection loss.
         if (isFirstFetch) {
           chatService.clear(chatMessageService)
@@ -310,10 +310,11 @@ const Chat = {
       let chat = this.findOpenedChatByRecipientId(this.recipientId)
       if (!chat) {
         try {
-          chat = await getOrCreateChat({
+          const { data } = await getOrCreateChat({
             accountId: this.recipientId,
             credentials: useOAuthStore().token,
           })
+          chat = data
         } catch (e) {
           console.error('Error creating or getting a chat', e)
           this.errorLoadingChat = true
@@ -383,7 +384,7 @@ const Chat = {
         params,
         credentials: useOAuthStore().token,
       })
-        .then((data) => {
+        .then(({ data }) => {
           this.$store.dispatch('addChatMessages', {
             chatId: this.currentChat.id,
             updateMaxId: false,

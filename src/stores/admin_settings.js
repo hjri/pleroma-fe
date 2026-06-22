@@ -601,7 +601,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       }).then(({ data }) => data)
     },
     deleteEmojiPack({ name }) {
-      return createEmojiPack({
+      return deleteEmojiPack({
         name,
         credentials: useOAuthStore().token,
       }).then(({ data }) => data)

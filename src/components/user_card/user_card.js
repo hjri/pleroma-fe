@@ -600,7 +600,7 @@ export default {
       }
 
       updateProfile({ params })
-        .then((user) => {
+        .then(({ data: user }) => {
           this.newFields.splice(this.newFields.length)
           merge(this.newFields, user.fields)
           this.$store.commit('addNewUsers', [user])

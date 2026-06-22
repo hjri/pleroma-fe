@@ -192,7 +192,7 @@ export const useEmojiStore = defineStore('emoji', {
           listEmojiPacks({
             ...params,
             credentials: useOAuthStore().token,
-          }),
+          }).then(({ data }) => data),
       )
       this.adminPacksLocalLoading = false
     },
@@ -210,10 +210,6 @@ export const useEmojiStore = defineStore('emoji', {
         pageSize: 0,
       })
         .then((data) => {
-          if (data.error !== undefined) {
-            return Promise.reject(data.error)
-          }
-
           const promises = []
 
           for (let i = 0; i < Math.ceil(data.count / pageSize); i++) {
@@ -223,10 +219,6 @@ export const useEmojiStore = defineStore('emoji', {
                 page: i,
                 pageSize,
               }).then((pageData) => {
-                if (pageData.error !== undefined) {
-                  return Promise.reject(pageData.error)
-                }
-
                 return pageData.packs
               }),
             )

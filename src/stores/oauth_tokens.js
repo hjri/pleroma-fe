@@ -20,8 +20,8 @@ export const useOAuthTokensStore = defineStore('oauthTokens', {
       revokeOAuthToken({
         id,
         credentials: useOAuthStore().token,
-      }).then((response) => {
-        if (response.status === 201) {
+      }).then(({ status }) => {
+        if (status === 201) {
           this.swapTokens(this.tokens.filter((token) => token.id !== id))
         }
       })

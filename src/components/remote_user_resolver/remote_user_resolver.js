@@ -16,7 +16,7 @@ const RemoteUserResolver = {
         id,
         credentials: useOAuthStore().token,
       })
-        .then((externalUser) => {
+        .then(({ data: externalUser }) => {
           if (externalUser.error) {
             this.error = true
           } else {
