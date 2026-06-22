@@ -83,27 +83,23 @@ const fetchAndUpdate = ({ store, credentials, older = false, sinceId }) => {
 const fetchNotifications = ({ store, args, older }) => {
   return fetchTimeline(args)
     .then((response) => {
-      if (response.errors) {
-        if (
-          response.status === 400 &&
-          response.statusText.includes('Invalid value for enum')
-        ) {
-          response.statusText
-            .matchAll(/(\w+) - Invalid value for enum./g)
-            .toArray()
-            .map((x) => x[1])
-            .forEach((x) => mastoApiNotificationTypes.delete(x))
-          return fetchNotifications({ store, args, older })
-        } else {
-          throw new Error(`${response.status} ${response.statusText}`)
-        }
-      }
-
       const notifications = response.data
       update({ store, notifications, older })
       return notifications
     })
     .catch((error) => {
+      if (
+        error.statusCode === 400 &&
+        error.statusText.includes('Invalid value for enum')
+      ) {
+        error.statusText
+          .matchAll(/(\w+) - Invalid value for enum./g)
+          .toArray()
+          .map((x) => x[1])
+          .forEach((x) => mastoApiNotificationTypes.delete(x))
+        return fetchNotifications({ store, args, older })
+      }
+
       useInterfaceStore().pushGlobalNotice({
         level: 'error',
         messageKey: 'notifications.error',
