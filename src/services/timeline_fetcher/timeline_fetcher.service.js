@@ -79,14 +79,6 @@ const fetchAndUpdate = ({
 
   return fetchTimeline(args)
     .then((response) => {
-      if (response.errors) {
-        if (timeline === 'favorites') {
-          useInstanceCapabilitiesStore().pleromaPublicFavouritesAvailable = false
-          return
-        }
-        throw new Error(`${response.status} ${response.statusText}`)
-      }
-
       const { data: statuses, pagination } = response
       if (
         !older &&
@@ -108,6 +100,10 @@ const fetchAndUpdate = ({
       return { statuses, pagination }
     })
     .catch((error) => {
+      if (error.statusCode === 403 && timeline === 'favorites') {
+        useInstanceCapabilitiesStore().pleromaPublicFavouritesAvailable = false
+        return
+      }
       useInterfaceStore().pushGlobalNotice({
         level: 'error',
         messageKey: 'timeline.error',

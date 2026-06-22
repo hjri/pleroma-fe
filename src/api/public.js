@@ -312,6 +312,7 @@ export const fetchTimeline = ({
 
     notifications: MASTODON_USER_NOTIFICATIONS_URL,
   }
+  const urlFunc = timelineUrls[timeline]
 
   const twoArgs = new Set([
     'user',
@@ -345,8 +346,6 @@ export const fetchTimeline = ({
 
   const isNotifications = timeline === 'notifications'
 
-  const urlFunc = timelineUrls[timeline]
-
   if (timeline === 'media') {
     params.onlyMedia = true
   }
@@ -363,7 +362,7 @@ export const fetchTimeline = ({
     params.folderId = bookmarkFolderId
   }
 
-  if (isNotifications && includeTypes.size > 0) {
+  if (isNotifications && includeTypes.length > 0) {
     params.includeTypes = includeTypes
   }
 
