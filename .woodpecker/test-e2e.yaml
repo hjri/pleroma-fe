@@ -30,7 +30,7 @@ steps:
     environment:
       APT_CACHE_DIR: apt-cache
       DEBIAN_FRONTEND: noninteractive
-      E2E_BASE_URL: http://localhost:8080
+      E2E_BASE_URL: http://localhost:8099
       FF_NETWORK_PER_BUILD: "true"
       PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
       VITE_PROXY_ORIGIN: "http://pleroma:4000"

@@ -175,7 +175,7 @@ e2e-pleroma:
     NOTIFY_EMAIL: $E2E_ADMIN_EMAIL
     VITE_PROXY_TARGET: http://pleroma:4000
     VITE_PROXY_ORIGIN: http://localhost:4000
-    E2E_BASE_URL: http://localhost:8080
+    E2E_BASE_URL: http://localhost:8099
   script:
     - npm install -g yarn@1.22.22
     - yarn --frozen-lockfile
