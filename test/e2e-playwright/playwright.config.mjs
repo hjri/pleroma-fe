@@ -25,7 +25,7 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
   webServer: {
-    command: 'yarn dev -- --host 0.0.0.0 --strictPort',
+    command: 'yarn dev -- --host 0.0.0.0 --port $PORT --strictPort',
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
