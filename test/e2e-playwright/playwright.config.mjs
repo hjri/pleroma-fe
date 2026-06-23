@@ -31,8 +31,7 @@ export default defineConfig({
     timeout: 120_000,
     env: {
       ...process.env,
-      PORT:
-        process.env.PORT || '8099',
+      PORT: process.env.PORT || '8099',
       VITE_PROXY_TARGET:
         process.env.VITE_PROXY_TARGET || 'http://localhost:4000',
       VITE_PROXY_ORIGIN:

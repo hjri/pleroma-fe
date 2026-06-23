@@ -92,7 +92,8 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
           this.setInstanceAdminSettings({
             credentials: useOAuthStore().token,
             backendDbConfig,
-          }))
+          }),
+        )
         .catch(({ statusCode, statusText }) => {
           if (statusCode === 400) {
             if (/configurable_from_database/.test(statusText)) {
