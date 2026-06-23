@@ -55,14 +55,11 @@ const login = async (page, user) => {
 test('user can register, log out, and log back in', async ({ page }) => {
   const user = createTestUser()
   await register(page, user)
-  console.debug('Register Success')
   await expect(page.getByTitle('Log out')).toBeVisible()
 
   await logout(page)
-  console.debug('Logout Success')
 
   await login(page, user)
-  console.debug('Login Success')
   await expect(page.getByTitle('Log out')).toBeVisible()
 })
 
