@@ -87,22 +87,19 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     loadAdminStuff() {
       getInstanceDBConfig({
         credentials: useOAuthStore().token,
-      }).then(({ data: backendDbConfig }) => {
-        if (backendDbConfig.error) {
-          if (backendDbConfig.error.status === 400) {
-            backendDbConfig.error.json().then((errorJson) => {
-              if (/configurable_from_database/.test(errorJson.error)) {
-                this.setInstanceAdminNoDbConfig()
-              }
-            })
-          }
-        } else {
+      })
+        .then(({ data: backendDbConfig }) =>
           this.setInstanceAdminSettings({
             credentials: useOAuthStore().token,
             backendDbConfig,
-          })
-        }
-      })
+          }))
+        .catch(({ statusCode, statusText }) => {
+          if (statusCode === 400) {
+            if (/configurable_from_database/.test(statusText)) {
+              this.setInstanceAdminNoDbConfig()
+            }
+          }
+        })
       if (this.descriptions === null) {
         getInstanceConfigDescriptions({
           credentials: useOAuthStore().token,

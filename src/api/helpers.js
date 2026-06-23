@@ -132,6 +132,7 @@ export const promisedRequest = async ({
       )
     }
   } catch (error) {
+    if (error.name === 'StatusCodeError') throw error
     throw new Error(error, { url, options }, response)
   }
 }
