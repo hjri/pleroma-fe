@@ -27,8 +27,8 @@ export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {
   },
   actions: {
     startFetching() {
-      promiseInterval(() => {
-        this.fetcher = fetchBookmarkFolders({
+      this.fetcher = promiseInterval(() => {
+        fetchBookmarkFolders({
           credentials: useOAuthStore().token,
         })
           .then(({ data: folders }) => this.setBookmarkFolders(folders))

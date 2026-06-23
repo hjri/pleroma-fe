@@ -34,8 +34,8 @@ export const useListsStore = defineStore('lists', {
   },
   actions: {
     startFetching() {
-      promiseInterval(() => {
-        this.fetcher = fetchLists({
+      this.fetcher = promiseInterval(() => {
+        fetchLists({
           credentials: useOAuthStore().token,
         })
           .then(({ data: lists }) => this.setLists(lists))
