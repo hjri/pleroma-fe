@@ -22,6 +22,6 @@ test('admin can open the admin settings modal', async ({ page }) => {
     modal.getByRole('heading', { name: 'Administration' }),
   ).toBeVisible()
 
-  await modal.getByRole('tab', { name: 'Emoji' }).click()
+  await modal.getByRole('tab', { title: 'Emoji' }).click()
   await expect(modal.getByText('Emoji packs')).toBeVisible()
 })
