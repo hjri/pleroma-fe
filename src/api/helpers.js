@@ -98,42 +98,36 @@ export const promisedRequest = async ({
     }
   }
 
-  let response = null
-  try {
-    response = await fetch(url, options)
-    const data = await (async () => {
-      const [contentType] = response.headers
-        .get('content-type')
-        .split(';')
-        .map((x) => x.toLowerCase().trim())
-      const contentLength = parseInt(response.headers.get('content-length'))
-      if (contentLength === 0) return null
+  const response = await fetch(url, options)
+  const data = await (async () => {
+    const [contentType] = response.headers
+      .get('content-type')
+      .split(';')
+      .map((x) => x.toLowerCase().trim())
+    const contentLength = parseInt(response.headers.get('content-length'))
+    if (contentLength === 0) return null
 
-      switch (contentType) {
-        case 'text/plain':
-          return await response.text()
-        case 'application/json':
-          return await response.json()
-        default:
-          return await response.bytes()
-      }
-    })()
-
-    const { ok, status } = response
-
-    if (ok) {
-      return { response, status, data }
-    } else {
-      throw new StatusCodeError(
-        response.status,
-        data,
-        { url, options },
-        response,
-      )
+    switch (contentType) {
+      case 'text/plain':
+        return await response.text()
+      case 'application/json':
+        return await response.json()
+      default:
+        return await response.bytes()
     }
-  } catch (error) {
-    if (error.name === 'StatusCodeError') throw error
-    throw new Error(error, { url, options }, response)
+  })()
+
+  const { ok, status } = response
+
+  if (ok) {
+    return { response, status, data }
+  } else {
+    throw new StatusCodeError(
+      response.status,
+      data,
+      { url, options },
+      response,
+    )
   }
 }
 
