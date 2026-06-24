@@ -13,7 +13,7 @@ function humanizeErrors(errors) {
 export function StatusCodeError(statusCode, body, options, response) {
   this.name = 'StatusCodeError'
   this.statusCode = statusCode
-  this.statusText = body.error.error || body.error
+  this.statusText = body.error || body
   this.details = JSON && JSON.stringify ? JSON.stringify(body) : body
   this.errorData = body.error
   this.message = this.statusCode + ' - ' + this.statusText

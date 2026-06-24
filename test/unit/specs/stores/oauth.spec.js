@@ -69,6 +69,12 @@ describe('oauth store', () => {
     it('should use create an app and record client id and secret', async ({
       worker,
     }) => {
+      worker.use(
+        http.post(MASTODON_APP_URL, () => {
+          return HttpResponse.text('Throttled', { status: 429 })
+        }),
+      )
+
       const store = useOAuthStore()
       worker.use(...authApis())
       const app = await store.createApp()

@@ -2,8 +2,6 @@ import { reduce } from 'lodash'
 
 import { paramsString, promisedRequest } from './helpers.js'
 
-import { StatusCodeError } from 'src/services/errors/errors.js'
-
 const REDIRECT_URI = `${window.location.origin}/oauth-callback`
 
 export const MASTODON_APP_VERIFY_URL = '/api/v1/apps/verify_credentials'
