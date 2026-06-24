@@ -25,7 +25,7 @@ variables:
 
 steps:
   test:
-    image: mcr.microsoft.com/playwright:v1.57.0-jammy
+    image: mcr.microsoft.com/playwright:v1.61.0-jammy
     entrypoint: *script_file_entrypoint
     environment:
       APT_CACHE_DIR: apt-cache
