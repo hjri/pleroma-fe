@@ -8,9 +8,7 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useShoutStore } from 'src/stores/shout.js'
 
-import {
-  fetchTimeline,
-} from 'src/api/public.js'
+import { fetchTimeline } from 'src/api/public.js'
 import {
   getMastodonSocketURI,
   ProcessedWS,
@@ -99,7 +97,6 @@ const api = {
           const { state, commit, dispatch, rootState } = store
           const timelineData = rootState.statuses.timelines.friends
 
-          const serv = useInstanceStore().server.replace('http', 'ws')
           const credentials = useOAuthStore().token
           const url = getMastodonSocketURI({ credentials })
 

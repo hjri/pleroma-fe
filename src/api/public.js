@@ -3,8 +3,6 @@ import { concat, each, last, map } from 'lodash'
 import { paramsString, promisedRequest } from './helpers.js'
 
 import {
-  parseAttachment,
-  parseChat,
   parseLinkHeaderPagination,
   parseNotification,
   parseSource,

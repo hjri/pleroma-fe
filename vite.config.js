@@ -73,7 +73,7 @@ export default defineConfig(async ({ mode, command }) => {
   const settings = await getLocalDevSettings()
   const target = settings.target || 'http://localhost:4000/'
   const origin = settings.origin || target
-  const targetSW = target.replace(/^http/,'ws')
+  const targetSW = target.replace(/^http/, 'ws')
   const transformSW = getTransformSWSettings(settings)
   const proxy = {
     '/api': {
