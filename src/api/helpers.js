@@ -122,12 +122,7 @@ export const promisedRequest = async ({
   if (ok) {
     return { response, status, data }
   } else {
-    throw new StatusCodeError(
-      response.status,
-      data,
-      { url, options },
-      response,
-    )
+    throw new StatusCodeError(response.status, data, { url, options }, response)
   }
 }
 
