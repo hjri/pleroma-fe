@@ -1,4 +1,4 @@
-import { concat, each, last, map } from 'lodash'
+import { concat, last } from 'lodash'
 
 import { paramsString, promisedRequest } from './helpers.js'
 import { fetchFriends, MASTODON_STATUS_URL } from './public.js'
