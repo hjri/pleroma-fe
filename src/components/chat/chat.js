@@ -23,7 +23,9 @@ import {
   getOrCreateChat,
   sendChatMessage,
 } from 'src/api/chats.js'
-import { WSConnectionStatus } from 'src/api/public.js'
+import {
+  WSConnectionStatus,
+} from 'src/api/websocket.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronDown, faChevronLeft } from '@fortawesome/free-solid-svg-icons'

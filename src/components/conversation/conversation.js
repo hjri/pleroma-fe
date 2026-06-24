@@ -13,8 +13,10 @@ import { useOAuthStore } from 'src/stores/oauth.js'
 import {
   fetchConversation,
   fetchStatus,
-  WSConnectionStatus,
 } from 'src/api/public.js'
+import {
+  WSConnectionStatus,
+} from 'src/api/websocket.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

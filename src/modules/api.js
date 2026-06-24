@@ -10,10 +10,12 @@ import { useShoutStore } from 'src/stores/shout.js'
 
 import {
   fetchTimeline,
+} from 'src/api/public.js'
+import {
   getMastodonSocketURI,
   ProcessedWS,
   WSConnectionStatus,
-} from 'src/api/public.js'
+} from 'src/api/websocket.js'
 import followRequestFetcher from 'src/services/follow_request_fetcher/follow_request_fetcher.service'
 import notificationsFetcher from 'src/services/notifications_fetcher/notifications_fetcher.service.js'
 import timelineFetcher from 'src/services/timeline_fetcher/timeline_fetcher.service.js'
@@ -99,7 +101,7 @@ const api = {
 
           const serv = useInstanceStore().server.replace('http', 'ws')
           const credentials = useOAuthStore().token
-          const url = getMastodonSocketURI({ credentials }, serv)
+          const url = getMastodonSocketURI({ credentials })
 
           state.mastoUserSocket = ProcessedWS({
             url,

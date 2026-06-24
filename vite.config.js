@@ -73,6 +73,7 @@ export default defineConfig(async ({ mode, command }) => {
   const settings = await getLocalDevSettings()
   const target = settings.target || 'http://localhost:4000/'
   const origin = settings.origin || target
+  const targetSW = target.replace(/^http/,'ws')
   const transformSW = getTransformSWSettings(settings)
   const proxy = {
     '/api': {
@@ -80,6 +81,7 @@ export default defineConfig(async ({ mode, command }) => {
       changeOrigin: true,
       cookieDomainRewrite: 'localhost',
       ws: true,
+      rewriteWsOrigin: true,
     },
     '/auth': {
       // Mastodon password reset lives here
@@ -98,19 +100,20 @@ export default defineConfig(async ({ mode, command }) => {
       changeOrigin: true,
       cookieDomainRewrite: 'localhost',
     },
-    '/socket': {
-      target,
-      changeOrigin: true,
-      cookieDomainRewrite: 'localhost',
-      ws: true,
-      headers: {
-        Origin: origin,
-      },
-    },
     '/oauth': {
       target,
       changeOrigin: true,
       cookieDomainRewrite: 'localhost',
+    },
+    '/socket': {
+      target: targetSW,
+      changeOrigin: true,
+      cookieDomainRewrite: 'localhost',
+      rewriteWsOrigin: true,
+      ws: true,
+      headers: {
+        Origin: origin,
+      },
     },
   }
 
