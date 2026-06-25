@@ -142,29 +142,26 @@ export const fetchConversation = ({ id, credentials }) =>
   promisedRequest({
     url: MASTODON_STATUS_CONTEXT_URL(id),
     credentials,
-  })
-    .then((result) => ({
-      ...result,
-      data: {
-        ...result.data,
-        ancestors: result.data.ancestors.map(parseStatus),
-        descendants: result.data.descendants.map(parseStatus),
-      },
-    }))
+  }).then((result) => ({
+    ...result,
+    data: {
+      ...result.data,
+      ancestors: result.data.ancestors.map(parseStatus),
+      descendants: result.data.descendants.map(parseStatus),
+    },
+  }))
 
 export const fetchStatus = ({ id, credentials }) =>
   promisedRequest({
     url: MASTODON_STATUS_URL(id),
     credentials,
-  })
-    .then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
 
 export const fetchStatusSource = ({ id, credentials }) =>
   promisedRequest({
     url: MASTODON_STATUS_SOURCE_URL(id),
     credentials,
-  })
-    .then(({ data, ...rest }) => ({ ...rest, data: parseSource(data) }))
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseSource(data) }))
 
 export const fetchStatusHistory = ({ status, credentials }) =>
   promisedRequest({
@@ -266,12 +263,11 @@ export const search2 = ({
       withRelationships: true,
     }),
     credentials,
+  }).then(({ data, ...rest }) => {
+    data.accounts = data.accounts.slice(0, limit).map((u) => parseUser(u))
+    data.statuses = data.statuses.slice(0, limit).map((s) => parseStatus(s))
+    return { ...rest, data }
   })
-    .then(({ data, ...rest }) => {
-      data.accounts = data.accounts.slice(0, limit).map((u) => parseUser(u))
-      data.statuses = data.statuses.slice(0, limit).map((s) => parseStatus(s))
-      return { ...rest, data }
-    })
 }
 
 export const fetchKnownDomains = ({ credentials }) =>
