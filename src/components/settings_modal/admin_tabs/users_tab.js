@@ -1,5 +1,3 @@
-import { isEmpty } from 'lodash'
-
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import List from 'src/components/list/list.vue'

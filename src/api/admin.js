@@ -1,7 +1,5 @@
 import { promisedRequest } from './helpers.js'
 
-import { RegistrationError, StatusCodeError } from 'src/services/errors/errors'
-
 const REPORTS = '/api/v1/pleroma/admin/reports'
 const CONFIG_URL = '/api/v1/pleroma/admin/config'
 const DESCRIPTIONS_URL = '/api/v1/pleroma/admin/config/descriptions'

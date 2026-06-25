@@ -1,6 +1,5 @@
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { DevTools } from '@vitejs/devtools'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { playwright } from '@vitest/browser-playwright'

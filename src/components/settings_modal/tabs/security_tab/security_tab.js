@@ -2,7 +2,6 @@ import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import Mfa from './mfa.vue'
 
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens'

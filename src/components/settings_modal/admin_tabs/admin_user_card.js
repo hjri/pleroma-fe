@@ -1,5 +1,3 @@
-import { defineAsyncComponent } from 'vue'
-
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
 import ModerationTools from 'src/components/moderation_tools/moderation_tools.vue'
 

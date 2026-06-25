@@ -12,7 +12,7 @@ describe('The lists store', () => {
   let store
 
   beforeEach(() => {
-    createTestingPinia({ stubActions: false })
+    setActivePinia(createTestingPinia({ stubActions: false }))
     store = useListsStore()
   })
 

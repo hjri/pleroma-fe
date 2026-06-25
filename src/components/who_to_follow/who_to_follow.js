@@ -1,6 +1,5 @@
 import FollowCard from 'src/components/follow_card/follow_card.vue'
 
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { fetchUser, suggestions } from 'src/api/public.js'

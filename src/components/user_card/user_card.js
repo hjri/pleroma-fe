@@ -22,7 +22,6 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMediaViewerStore } from 'src/stores/media_viewer'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
 import { usePostStatusStore } from 'src/stores/post_status'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 

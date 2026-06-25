@@ -1,7 +1,6 @@
 import { debounce, map, reject, uniqBy } from 'lodash'
 import { mapActions, mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
-import { mapGetters } from 'vuex'
 
 import Attachment from 'src/components/attachment/attachment.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'

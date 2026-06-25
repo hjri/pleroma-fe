@@ -1,6 +1,6 @@
 import { snakeCase } from 'lodash'
 
-import { RegistrationError, StatusCodeError } from 'src/services/errors/errors'
+import { StatusCodeError } from 'src/services/errors/errors'
 
 export const paramsString = (params = {}) => {
   if (params == null || params === undefined) return ''

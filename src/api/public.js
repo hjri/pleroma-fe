@@ -6,7 +6,6 @@ import {
   parseStatus,
   parseUser,
 } from 'src/services/entity_normalizer/entity_normalizer.service.js'
-import { RegistrationError, StatusCodeError } from 'src/services/errors/errors'
 
 const MASTODON_SUGGESTIONS_URL = '/api/v1/suggestions'
 const MASTODON_LOGIN_URL = '/api/v1/accounts/verify_credentials'

@@ -1,4 +1,4 @@
-import { paramsString, promisedRequest } from './helpers.js'
+import { paramsString } from './helpers.js'
 
 import {
   parseChat,

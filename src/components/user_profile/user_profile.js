@@ -1,5 +1,4 @@
 import { get } from 'lodash'
-import { mapState } from 'pinia'
 
 import FollowCard from 'src/components/follow_card/follow_card.vue'
 import List from 'src/components/list/list.vue'
@@ -7,7 +6,6 @@ import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 import Timeline from 'src/components/timeline/timeline.vue'
 import UserCard from 'src/components/user_card/user_card.vue'
 
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'

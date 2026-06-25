@@ -28,7 +28,6 @@ import {
 } from '../services/window_utils/window_utils'
 import routes from './routes'
 
-import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useAuthFlowStore } from 'src/stores/auth_flow'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useI18nStore } from 'src/stores/i18n'

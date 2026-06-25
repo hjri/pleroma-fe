@@ -2,7 +2,6 @@ import { Socket } from 'phoenix'
 
 import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'
 
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'

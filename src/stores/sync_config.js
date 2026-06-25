@@ -20,7 +20,6 @@ import { toRaw } from 'vue'
 
 import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
 
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 

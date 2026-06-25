@@ -1,5 +1,4 @@
 import { mapState } from 'pinia'
-import { defineAsyncComponent } from 'vue'
 
 import Popover from 'src/components/popover/popover.vue'
 import UserCard from 'src/components/user_card/user_card.vue'

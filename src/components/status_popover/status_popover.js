@@ -1,7 +1,6 @@
 import { find } from 'lodash'
 
 import Popover from 'src/components/popover/popover.vue'
-import Status from 'src/components/status/status.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'

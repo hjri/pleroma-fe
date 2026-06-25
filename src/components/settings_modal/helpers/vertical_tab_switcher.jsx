@@ -1,8 +1,7 @@
 // eslint-disable-next-line no-unused
 
-import { throttle } from 'lodash'
-import { mapState as mapPiniaState, mapState } from 'pinia'
-import { Fragment, h } from 'vue'
+import { mapState as mapPiniaState } from 'pinia'
+import { Fragment } from 'vue'
 
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/vue-fontawesome'
 

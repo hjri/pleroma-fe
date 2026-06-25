@@ -1,4 +1,4 @@
-import { mapActions, mapState as mapPiniaState, mapStores } from 'pinia'
+import { mapActions, mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
 import { useAuthFlowStore } from 'src/stores/auth_flow.js'

@@ -1,6 +1,5 @@
 import { promiseInterval } from '../promise_interval/promise_interval.js'
 
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'

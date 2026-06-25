@@ -9,8 +9,6 @@ import { useOAuthStore } from 'src/stores/oauth.js'
 import {
   MASTODON_APP_URL,
   MASTODON_APP_VERIFY_URL,
-  OAUTH_MFA_CHALLENGE_URL,
-  OAUTH_REVOKE_URL,
   OAUTH_TOKEN_URL,
 } from 'src/api/oauth.js'
 

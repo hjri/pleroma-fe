@@ -1,4 +1,3 @@
-import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 import AuthTab from './admin_tabs/auth_tab.vue'
 import EmojiTab from './admin_tabs/emoji_tab.vue'
 import FederationTab from './admin_tabs/federation_tab.vue'

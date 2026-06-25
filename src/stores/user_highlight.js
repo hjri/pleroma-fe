@@ -1,15 +1,11 @@
 import {
   merge as _merge,
-  clamp,
   clone,
   cloneDeep,
-  findLastIndex,
   flatten,
-  get,
   groupBy,
   isEqual,
   takeRight,
-  uniqWith,
 } from 'lodash'
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
@@ -31,17 +27,6 @@ export const defaultState = {
   raw: null,
   // local cache
   cache: null,
-}
-
-export const _moveItemInArray = (array, value, movement) => {
-  const oldIndex = array.indexOf(value)
-  const newIndex = oldIndex + movement
-  const newArray = [...array]
-  // remove old
-  newArray.splice(oldIndex, 1)
-  // add new
-  newArray.splice(clamp(newIndex, 0, newArray.length + 1), 0, value)
-  return newArray
 }
 
 const _wrapData = (data, userName) => {

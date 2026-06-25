@@ -6,7 +6,6 @@ import Popover from 'src/components/popover/popover.vue'
 import { ensureFinalFallback } from '../../i18n/languages.js'
 
 import { useEmojiStore } from 'src/stores/emoji.js'
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'

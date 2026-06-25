@@ -1,5 +1,3 @@
-import { reduce } from 'lodash'
-
 import { paramsString, promisedRequest } from './helpers.js'
 
 const REDIRECT_URI = `${window.location.origin}/oauth-callback`

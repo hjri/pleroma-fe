@@ -1,5 +1,3 @@
-import { mapState } from 'vuex'
-
 import Confirm from './confirm.vue'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
