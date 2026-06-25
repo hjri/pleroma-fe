@@ -151,9 +151,6 @@ export const fetchConversation = ({ id, credentials }) =>
         descendants: result.data.descendants.map(parseStatus),
       },
     }))
-    .catch((error) => {
-      throw new Error('Error fetching timeline', error)
-    })
 
 export const fetchStatus = ({ id, credentials }) =>
   promisedRequest({
@@ -161,9 +158,6 @@ export const fetchStatus = ({ id, credentials }) =>
     credentials,
   })
     .then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
-    .catch((error) => {
-      throw new Error('Error fetching timeline', error)
-    })
 
 export const fetchStatusSource = ({ id, credentials }) =>
   promisedRequest({
@@ -171,9 +165,6 @@ export const fetchStatusSource = ({ id, credentials }) =>
     credentials,
   })
     .then(({ data, ...rest }) => ({ ...rest, data: parseSource(data) }))
-    .catch((error) => {
-      throw new Error('Error fetching timeline', error)
-    })
 
 export const fetchStatusHistory = ({ status, credentials }) =>
   promisedRequest({
@@ -280,9 +271,6 @@ export const search2 = ({
       data.accounts = data.accounts.slice(0, limit).map((u) => parseUser(u))
       data.statuses = data.statuses.slice(0, limit).map((s) => parseStatus(s))
       return { ...rest, data }
-    })
-    .catch((error) => {
-      throw new Error('Error fetching timeline', error)
     })
 }
 
