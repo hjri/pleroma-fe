@@ -5,7 +5,7 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
-import { fetchTimeline } from 'src/api/public.js'
+import { fetchTimeline } from 'src/api/timelines.js'
 
 const update = ({ store, notifications, older }) => {
   store.dispatch('addNewNotifications', { notifications, older })

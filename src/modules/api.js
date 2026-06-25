@@ -8,7 +8,7 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useShoutStore } from 'src/stores/shout.js'
 
-import { fetchTimeline } from 'src/api/public.js'
+import { fetchTimeline } from 'src/api/timelines.js'
 import {
   getMastodonSocketURI,
   ProcessedWS,
