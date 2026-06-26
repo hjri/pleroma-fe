@@ -58,6 +58,7 @@ export const useInterfaceStore = defineStore('interface', {
     },
     layoutType: 'normal',
     globalNotices: [],
+    globalError: null,
     layoutHeight: 0,
     lastTimeline: null,
     foreignProfileBackground: null,
@@ -175,6 +176,9 @@ export const useInterfaceStore = defineStore('interface', {
     },
     removeGlobalNotice(notice) {
       this.globalNotices = this.globalNotices.filter((n) => n !== notice)
+    },
+    setGlobalError(data) {
+      this.globalError = data
     },
     pushGlobalNotice({
       messageKey,

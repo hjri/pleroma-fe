@@ -467,6 +467,11 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
   // "Plugins are only applied to stores created after the plugins themselves, and after pinia is passed to the app, otherwise they won't be applied."
   app.use(pinia)
 
+  app.config.errorHandler = (error, instance, info) => {
+    console.error('GLOBAL ERROR HANDLER', error, instance, info)
+    useInterfaceStore().setGlobalError({ error, instance, info })
+  }
+
   const waitForAllStoresToLoad = async () => {
     // the stores that do not persist technically do not need to be awaited here,
     // but that involves either hard-coding the stores in some place (prone to errors)
