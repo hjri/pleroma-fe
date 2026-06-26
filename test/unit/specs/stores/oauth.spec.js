@@ -155,7 +155,6 @@ describe('oauth store', () => {
   describe('ensureAppToken', () => {
     it('should work if the state is empty', async ({ worker }) => {
       worker.use(...authApis())
-      console.log('=========', worker.listHandlers())
       const store = useOAuthStore()
       const token = await store.ensureAppToken()
       expect(token).to.eql('test-app-token')

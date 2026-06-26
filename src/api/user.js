@@ -842,7 +842,6 @@ export const getList = ({ listId, credentials }) =>
   })
 
 export const updateList = ({ listId, title, credentials }) =>
-  console.log('PUT', MASTODON_LIST_URL(listId)) ||
   promisedRequest({
     url: MASTODON_LIST_URL(listId),
 

@@ -36,7 +36,6 @@ describe('The lists store', () => {
           HttpResponse.json({ ok: true }),
         ),
       )
-      console.log('1 =========', worker.listHandlers())
 
       await store.setList({ listId: list.id, title: list.title })
       expect(store.allListsObject[list.id]).to.eql({
@@ -46,8 +45,6 @@ describe('The lists store', () => {
       expect(store.allLists).to.have.length(1)
       expect(store.allLists[0]).to.eql(list)
 
-      console.log('2 =========', worker.listHandlers())
-
       await store.setList({ listId: modList.id, title: modList.title })
       expect(store.allListsObject[modList.id]).to.eql({
         title: modList.title,
@@ -55,8 +52,6 @@ describe('The lists store', () => {
       })
       expect(store.allLists).to.have.length(1)
       expect(store.allLists[0]).to.eql(modList)
-
-      console.log('3 =========', worker.listHandlers())
     })
 
     it('adds a new list with an array of IDs, updating the IDs for existing lists', async ({

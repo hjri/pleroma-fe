@@ -312,9 +312,6 @@ export const deleteAnnouncement = ({ id, credentials }) =>
   })
 
 export const setReportState = ({ id, state, credentials }) => {
-  // TODO: Can't use promisedRequest because on OK this does not return json
-  // See https://git.pleroma.social/pleroma/pleroma-fe/-/merge_requests/1322
-
   return promisedRequest({
     url: REPORTS,
     credentials,
@@ -328,19 +325,6 @@ export const setReportState = ({ id, state, credentials }) => {
       ],
     },
   })
-    .then((data) => {
-      if (data.status >= 500) {
-        throw Error(data.statusText)
-      } else if (data.status >= 400) {
-        return data.json()
-      }
-      return data
-    })
-    .then((data) => {
-      if (data.errors) {
-        throw Error(data.errors[0].message)
-      }
-    })
 }
 
 export const getInstanceDBConfig = ({ credentials }) =>
