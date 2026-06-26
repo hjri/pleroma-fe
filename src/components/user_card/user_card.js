@@ -15,6 +15,7 @@ import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import Select from 'src/components/select/select.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserLink from 'src/components/user_link/user_link.vue'
+import FollowButton from 'src/components/follow_button/follow_button.vue'
 
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -138,9 +139,7 @@ export default {
       () => import('src/components/account_actions/account_actions.vue'),
     ),
     ProgressButton,
-    FollowButton: defineAsyncComponent(
-      () => import('src/components/follow_button/follow_button.vue'),
-    ),
+    FollowButton,
     Select,
     UserLink,
     UserNote: defineAsyncComponent(
