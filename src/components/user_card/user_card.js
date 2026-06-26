@@ -25,6 +25,7 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { usePostStatusStore } from 'src/stores/post_status'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
+import { updateProfile } from 'src/api/user.js'
 import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
 import localeService from 'src/services/locale/locale.service.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
@@ -597,9 +598,8 @@ export default {
         params.header = this.newBannerFile
       }
 
-      this.$store.state.api.backendInteractor
-        .updateProfile({ params })
-        .then((user) => {
+      updateProfile({ params })
+        .then(({ data: user }) => {
           this.newFields.splice(this.newFields.length)
           merge(this.newFields, user.fields)
           this.$store.commit('addNewUsers', [user])

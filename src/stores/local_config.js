@@ -1,8 +1,5 @@
 import { cloneDeep, set } from 'lodash'
 import { defineStore } from 'pinia'
-import { toRaw } from 'vue'
-
-import { useInstanceStore } from 'src/stores/instance'
 
 import {
   LOCAL_DEFAULT_CONFIG,

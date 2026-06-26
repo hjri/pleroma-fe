@@ -1,4 +1,4 @@
-import { get, isEmpty, map, reject } from 'lodash'
+import { get, map, reject } from 'lodash'
 
 import Autosuggest from 'src/components/autosuggest/autosuggest.vue'
 import BlockCard from 'src/components/block_card/block_card.vue'
@@ -10,7 +10,10 @@ import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens.js'
+
+import { importBlocks, importFollows } from 'src/api/user.js'
 
 const MutesAndBlocks = {
   data() {
@@ -54,22 +57,24 @@ const MutesAndBlocks = {
       return () => this.$store.dispatch('fetch' + group, this.userId)
     },
     importFollows(file) {
-      return this.$store.state.api.backendInteractor
-        .importFollows({ file })
-        .then((status) => {
-          if (!status) {
-            throw new Error('failed')
-          }
-        })
+      return importFollows({
+        file,
+        credentials: useOAuthStore().token,
+      }).then(({ data: status }) => {
+        if (!status) {
+          throw new Error('failed')
+        }
+      })
     },
     importBlocks(file) {
-      return this.$store.state.api.backendInteractor
-        .importBlocks({ file })
-        .then((status) => {
-          if (!status) {
-            throw new Error('failed')
-          }
-        })
+      return importBlocks({
+        file,
+        credentials: useOAuthStore().token,
+      }).then(({ data: status }) => {
+        if (!status) {
+          throw new Error('failed')
+        }
+      })
     },
     generateExportableUsersContent(users) {
       // Get addresses

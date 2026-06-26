@@ -1,7 +1,6 @@
 import { defineAsyncComponent } from 'vue'
 
 import Modal from 'src/components/modal/modal.vue'
-import StillImage from 'src/components/still-image/still-image.vue'
 import GestureService from '../../services/gesture_service/gesture_service'
 
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'

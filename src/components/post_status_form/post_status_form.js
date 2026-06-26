@@ -1,7 +1,6 @@
 import { debounce, map, reject, uniqBy } from 'lodash'
 import { mapActions, mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
-import { mapGetters } from 'vuex'
 
 import Attachment from 'src/components/attachment/attachment.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
@@ -635,11 +634,7 @@ const PostStatusForm = {
           // Don't apply preview if not loading, because it means
           // user has closed the preview manually.
           if (!this.previewLoading) return
-          if (!data.error) {
-            this.preview = data
-          } else {
-            this.preview = { error: data.error }
-          }
+          this.preview = data
         })
         .catch((error) => {
           this.preview = { error }

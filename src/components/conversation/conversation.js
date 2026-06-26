@@ -5,10 +5,13 @@ import { mapState } from 'vuex'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
 import QuickViewSettings from 'src/components/quick_view_settings/quick_view_settings.vue'
 import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
-import { WSConnectionStatus } from '../../services/api/api.service.js'
 
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import { fetchConversation, fetchStatus } from 'src/api/public.js'
+import { WSConnectionStatus } from 'src/api/websocket.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -436,22 +439,26 @@ const conversation = {
   methods: {
     fetchConversation() {
       if (this.status) {
-        this.$store.state.api.backendInteractor
-          .fetchConversation({ id: this.statusId })
-          .then(({ ancestors, descendants }) => {
-            this.$store.dispatch('addNewStatuses', { statuses: ancestors })
-            this.$store.dispatch('addNewStatuses', { statuses: descendants })
-            this.setHighlight(this.originalStatusId)
-          })
+        fetchConversation({
+          id: this.statusId,
+          credentials: useOAuthStore().token,
+        }).then(({ data: { ancestors, descendants } }) => {
+          this.$store.dispatch('addNewStatuses', { statuses: ancestors })
+          this.$store.dispatch('addNewStatuses', { statuses: descendants })
+          this.setHighlight(this.originalStatusId)
+        })
       } else {
         this.loadStatusError = null
-        this.$store.state.api.backendInteractor
-          .fetchStatus({ id: this.statusId })
-          .then((status) => {
+        fetchStatus({
+          id: this.statusId,
+          credentials: useOAuthStore().token,
+        })
+          .then(({ data: status }) => {
             this.$store.dispatch('addNewStatuses', { statuses: [status] })
             this.fetchConversation()
           })
           .catch((error) => {
+            console.error(error)
             this.loadStatusError = error
           })
       }

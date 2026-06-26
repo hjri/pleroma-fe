@@ -4,7 +4,19 @@ import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Exporter from 'src/components/exporter/exporter.vue'
 import Importer from 'src/components/importer/importer.vue'
 
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens.js'
+
+import {
+  addBackup,
+  exportFriends,
+  fetchBlocks,
+  fetchMutes,
+  importBlocks,
+  importFollows,
+  importMutes,
+  listBackups,
+} from 'src/api/user.js'
 
 const DataImportExportTab = {
   data() {
@@ -28,48 +40,57 @@ const DataImportExportTab = {
   },
   computed: {
     ...mapState({
-      backendInteractor: (state) => state.api.backendInteractor,
       user: (state) => state.users.currentUser,
     }),
   },
   methods: {
     getFollowsContent() {
-      return this.backendInteractor
-        .exportFriends({ id: this.user.id })
-        .then(this.generateExportableUsersContent)
+      return exportFriends({
+        id: this.user.id,
+        credentials: useOAuthStore().token,
+      }).then(this.generateExportableUsersContent)
     },
     getBlocksContent() {
-      return this.backendInteractor
-        .fetchBlocks()
-        .then(this.generateExportableUsersContent)
+      return fetchBlocks({
+        credentials: useOAuthStore().token,
+      }).then(this.generateExportableUsersContent)
     },
     getMutesContent() {
-      return this.backendInteractor
-        .fetchMutes()
-        .then(this.generateExportableUsersContent)
+      return fetchMutes({
+        credentials: useOAuthStore().token,
+      }).then(this.generateExportableUsersContent)
     },
     importFollows(file) {
-      return this.backendInteractor.importFollows({ file }).then((status) => {
+      return importFollows({
+        file,
+        credentials: useOAuthStore().token,
+      }).then(({ data: status }) => {
         if (!status) {
           throw new Error('failed')
         }
       })
     },
     importBlocks(file) {
-      return this.backendInteractor.importBlocks({ file }).then((status) => {
+      return importBlocks({
+        file,
+        credentials: useOAuthStore().token,
+      }).then(({ data: status }) => {
         if (!status) {
           throw new Error('failed')
         }
       })
     },
     importMutes(file) {
-      return this.backendInteractor.importMutes({ file }).then((status) => {
+      return importMutes({
+        file,
+        credentials: useOAuthStore().token,
+      }).then(({ data: status }) => {
         if (!status) {
           throw new Error('failed')
         }
       })
     },
-    generateExportableUsersContent(users) {
+    generateExportableUsersContent({ data: users }) {
       // Get addresses
       return users
         .map((user) => {
@@ -83,8 +104,9 @@ const DataImportExportTab = {
         .join('\n')
     },
     addBackup() {
-      this.$store.state.api.backendInteractor
-        .addBackup()
+      addBackup({
+        credentials: useOAuthStore().token,
+      })
         .then(() => {
           this.addedBackup = true
           this.addBackupError = false
@@ -96,9 +118,10 @@ const DataImportExportTab = {
         .then(() => this.fetchBackups())
     },
     fetchBackups() {
-      this.$store.state.api.backendInteractor
-        .listBackups()
-        .then((res) => {
+      listBackups({
+        credentials: useOAuthStore().token,
+      })
+        .then(({ data: res }) => {
           this.backups = res
           this.listBackupsError = false
         })

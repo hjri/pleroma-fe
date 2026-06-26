@@ -1,6 +1,5 @@
 import { mapState as mapPiniaState } from 'pinia'
-import { defineAsyncComponent } from 'vue'
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 import Attachment from 'src/components/attachment/attachment.vue'
 import Gallery from 'src/components/gallery/gallery.vue'

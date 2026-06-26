@@ -1,10 +1,8 @@
-import { cloneDeep } from 'lodash'
 import { createPinia, setActivePinia } from 'pinia'
 
 import {
   _getRecentData,
   _mergeHighlights,
-  _moveItemInArray,
   useUserHighlightStore,
 } from 'src/stores/user_highlight.js'
 

@@ -4,7 +4,6 @@ import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import Popover from 'src/components/popover/popover.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'

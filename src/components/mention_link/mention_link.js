@@ -1,6 +1,5 @@
 import { mapState as mapPiniaState } from 'pinia'
-import { defineAsyncComponent } from 'vue'
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 import UnicodeDomainIndicator from 'src/components/unicode_domain_indicator/unicode_domain_indicator.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'

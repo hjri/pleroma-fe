@@ -1,8 +1,23 @@
 import { find, remove } from 'lodash'
 import { defineStore } from 'pinia'
 
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import {
+  addAccountsToList,
+  createList,
+  deleteList,
+  fetchLists,
+  getList,
+  getListAccounts,
+  removeAccountsFromList,
+  updateList,
+} from 'src/api/user.js'
+import { promiseInterval } from 'src/services/promise_interval/promise_interval.js'
+
 export const useListsStore = defineStore('lists', {
   state: () => ({
+    fetcher: null,
     allLists: [],
     allListsObject: {},
   }),
@@ -18,34 +33,57 @@ export const useListsStore = defineStore('lists', {
     },
   },
   actions: {
+    startFetching() {
+      this.fetcher = promiseInterval(() => {
+        fetchLists({
+          credentials: useOAuthStore().token,
+        })
+          .then(({ data: lists }) => this.setLists(lists))
+          .catch((e) => {
+            console.error(e)
+          })
+      }, 240000)
+    },
+    stopFetching() {
+      this.fetcher?.stop()
+    },
     setLists(value) {
       this.allLists = value
     },
-    createList({ title }) {
-      return window.vuex.state.api.backendInteractor
-        .createList({ title })
-        .then((list) => {
-          this.setList({ listId: list.id, title })
-          return list
-        })
+    async createList({ title }) {
+      return await createList({
+        title,
+        credentials: useOAuthStore().token,
+      }).then(({ data: list }) => {
+        this.setList({ listId: list.id, title })
+        return list
+      })
     },
-    fetchList({ listId }) {
-      return window.vuex.state.api.backendInteractor
-        .getList({ listId })
-        .then((list) => this.setList({ listId: list.id, title: list.title }))
+    async fetchList({ listId }) {
+      return await getList({
+        listId,
+        credentials: useOAuthStore().token,
+      }).then(({ data: list }) =>
+        this.setList({ listId: list.id, title: list.title }),
+      )
     },
-    fetchListAccounts({ listId }) {
-      return window.vuex.state.api.backendInteractor
-        .getListAccounts({ listId })
-        .then((accountIds) => {
-          if (!this.allListsObject[listId]) {
-            this.allListsObject[listId] = { accountIds: [] }
-          }
-          this.allListsObject[listId].accountIds = accountIds
-        })
+    async fetchListAccounts({ listId }) {
+      return await getListAccounts({
+        listId,
+        credentials: useOAuthStore().token,
+      }).then(({ data: accountIds }) => {
+        if (!this.allListsObject[listId]) {
+          this.allListsObject[listId] = { accountIds: [] }
+        }
+        this.allListsObject[listId].accountIds = accountIds
+      })
     },
-    setList({ listId, title }) {
-      window.vuex.state.api.backendInteractor.updateList({ listId, title })
+    async setList({ listId, title }) {
+      await updateList({
+        listId,
+        title,
+        credentials: useOAuthStore().token,
+      })
 
       if (!this.allListsObject[listId]) {
         this.allListsObject[listId] = { accountIds: [] }
@@ -59,7 +97,7 @@ export const useListsStore = defineStore('lists', {
         entry.title = title
       }
     },
-    setListAccounts({ listId, accountIds }) {
+    async setListAccounts({ listId, accountIds }) {
       const saved = this.allListsObject[listId]?.accountIds || []
       const added = accountIds.filter((id) => !saved.includes(id))
       const removed = saved.filter((id) => !accountIds.includes(id))
@@ -67,47 +105,62 @@ export const useListsStore = defineStore('lists', {
         this.allListsObject[listId] = { accountIds: [] }
       }
       this.allListsObject[listId].accountIds = accountIds
+      const promises = []
       if (added.length > 0) {
-        window.vuex.state.api.backendInteractor.addAccountsToList({
-          listId,
-          accountIds: added,
-        })
+        promises.push(
+          addAccountsToList({
+            listId,
+            accountIds: added,
+            credentials: useOAuthStore().token,
+          }),
+        )
       }
       if (removed.length > 0) {
-        window.vuex.state.api.backendInteractor.removeAccountsFromList({
-          listId,
-          accountIds: removed,
-        })
+        promises.push(
+          removeAccountsFromList({
+            listId,
+            accountIds: removed,
+            credentials: useOAuthStore().token,
+          }),
+        )
       }
+      await Promise.all(promises)
     },
-    addListAccount({ listId, accountId }) {
-      return window.vuex.state.api.backendInteractor
-        .addAccountsToList({ listId, accountIds: [accountId] })
-        .then((result) => {
-          if (!this.allListsObject[listId]) {
-            this.allListsObject[listId] = { accountIds: [] }
-          }
-          this.allListsObject[listId].accountIds.push(accountId)
-          return result
-        })
+    async addListAccount({ listId, accountId }) {
+      return await addAccountsToList({
+        listId,
+        accountIds: [accountId],
+        credentials: useOAuthStore().token,
+      }).then((result) => {
+        if (!this.allListsObject[listId]) {
+          this.allListsObject[listId] = { accountIds: [] }
+        }
+        this.allListsObject[listId].accountIds.push(accountId)
+        return result
+      })
     },
-    removeListAccount({ listId, accountId }) {
-      return window.vuex.state.api.backendInteractor
-        .removeAccountsFromList({ listId, accountIds: [accountId] })
-        .then((result) => {
-          if (!this.allListsObject[listId]) {
-            this.allListsObject[listId] = { accountIds: [] }
-          }
-          const { accountIds } = this.allListsObject[listId]
-          const set = new Set(accountIds)
-          set.delete(accountId)
-          this.allListsObject[listId].accountIds = [...set]
+    async removeListAccount({ listId, accountId }) {
+      return await removeAccountsFromList({
+        listId,
+        accountIds: [accountId],
+        credentials: useOAuthStore().token,
+      }).then((result) => {
+        if (!this.allListsObject[listId]) {
+          this.allListsObject[listId] = { accountIds: [] }
+        }
+        const { accountIds } = this.allListsObject[listId]
+        const set = new Set(accountIds)
+        set.delete(accountId)
+        this.allListsObject[listId].accountIds = [...set]
 
-          return result
-        })
+        return result
+      })
     },
-    deleteList({ listId }) {
-      window.vuex.state.api.backendInteractor.deleteList({ listId })
+    async deleteList({ listId }) {
+      await deleteList({
+        listId,
+        credentials: useOAuthStore().token,
+      })
 
       delete this.allListsObject[listId]
       remove(this.allLists, (list) => list.id === listId)

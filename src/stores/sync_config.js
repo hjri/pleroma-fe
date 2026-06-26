@@ -20,9 +20,10 @@ import { toRaw } from 'vue'
 
 import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
 
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
+import { updateProfileJSON } from 'src/api/user.js'
 import { storage } from 'src/lib/storage.js'
 import {
   makeUndefined,
@@ -231,9 +232,17 @@ export const _mergeJournal = (...journals) => {
       Object.hasOwn(entry, 'timestamp'),
   )
   const grouped = groupBy(allJournals, 'path')
-  const trimmedGrouped = Object.entries(grouped).map(([path, journal]) => {
-    // side effect
-    journal.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
+  const trimmedGrouped = Object.entries(grouped).map(([path, rawJournal]) => {
+    const journal = rawJournal
+      .map((data, index) => ({ data, index }))
+      .toSorted(({ data: a, index: ai }, { data: b, index: bi }) => {
+        if (a.timestamp === b.timestamp) {
+          return ai - bi
+        } else {
+          return a.timestamp > b.timestamp ? 1 : -1
+        }
+      })
+      .map((x) => x.data)
 
     if (path.startsWith('collections')) {
       const lastRemoveIndex = findLastIndex(
@@ -268,9 +277,16 @@ export const _mergeJournal = (...journals) => {
     }
   })
 
-  const flat = flatten(trimmedGrouped).sort((a, b) =>
-    a.timestamp > b.timestamp ? 1 : -1,
-  )
+  const flat = flatten(trimmedGrouped)
+    .map((data, index) => ({ data, index }))
+    .toSorted(({ data: a, index: ai }, { data: b, index: bi }) => {
+      if (a.timestamp === b.timestamp) {
+        return ai - bi
+      } else {
+        return a.timestamp > b.timestamp ? 1 : -1
+      }
+    })
+    .map((x) => x.data)
   return take(flat, 500)
 }
 
@@ -789,7 +805,10 @@ export const useSyncConfigStore = defineStore('sync_config', {
       if (!needPush) return
       this.updateCache({ username: window.vuex.state.users.currentUser.fqn })
       const params = { pleroma_settings_store: { 'pleroma-fe': this.cache } }
-      window.vuex.state.api.backendInteractor.updateProfileJSON({ params })
+      updateProfileJSON({
+        params,
+        credentials: useOAuthStore().token,
+      })
     },
   },
   persist: {

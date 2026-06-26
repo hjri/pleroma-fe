@@ -1,8 +1,6 @@
 import { showDesktopNotification } from '../desktop_notification_utils/desktop_notification_utils.js'
 import { muteFilterHits } from '../status_parser/status_parser.js'
 
-import { useAnnouncementsStore } from 'src/stores/announcements.js'
-
 import FaviconService from 'src/services/favicon_service/favicon_service.js'
 
 export const ACTIONABLE_NOTIFICATION_TYPES = new Set([

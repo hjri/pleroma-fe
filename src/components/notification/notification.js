@@ -15,8 +15,10 @@ import {
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
+import { approveUser, denyUser } from 'src/api/user.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -142,7 +144,10 @@ const Notification = {
       }
     },
     doApprove() {
-      this.$store.state.api.backendInteractor.approveUser({ id: this.user.id })
+      approveUser({
+        id: this.user.id,
+        credentials: useOAuthStore().token,
+      })
       this.$store.dispatch('removeFollowRequest', this.user)
       this.$store.dispatch('markSingleNotificationAsSeen', {
         id: this.notification.id,
@@ -163,14 +168,15 @@ const Notification = {
       }
     },
     doDeny() {
-      this.$store.state.api.backendInteractor
-        .denyUser({ id: this.user.id })
-        .then(() => {
-          this.$store.dispatch('dismissNotificationLocal', {
-            id: this.notification.id,
-          })
-          this.$store.dispatch('removeFollowRequest', this.user)
+      denyUser({
+        id: this.user.id,
+        credentials: useOAuthStore().token,
+      }).then(() => {
+        this.$store.dispatch('dismissNotificationLocal', {
+          id: this.notification.id,
         })
+        this.$store.dispatch('removeFollowRequest', this.user)
+      })
       this.hideDenyConfirmDialog()
     },
   },

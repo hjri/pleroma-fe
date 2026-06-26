@@ -21,9 +21,6 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useShoutStore } from 'src/stores/shout.js'
 
-import messages from 'src/i18n/messages'
-import localeService from 'src/services/locale/locale.service.js'
-
 // Helper to unwrap reactive proxies
 window.toValue = (x) => JSON.parse(JSON.stringify(x))
 

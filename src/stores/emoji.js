@@ -2,7 +2,9 @@ import { merge } from 'lodash'
 import { defineStore } from 'pinia'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
+import { listEmojiPacks } from 'src/api/public.js'
 import { ensureFinalFallback } from 'src/i18n/languages.js'
 
 import { annotationsLoader } from 'virtual:pleroma-fe/emoji-annotations'
@@ -183,13 +185,14 @@ export const useEmojiStore = defineStore('emoji', {
 
     async getAdminPacksLocal(refresh) {
       if (!refresh && this.adminPacksLocal) return this.adminPacksLocal
-      const backendInteractor = window.vuex.state.api.backendInteractor
-      const listFunction = backendInteractor.listEmojiPacks
-
       this.adminPacksLocalLoading = true
       this.adminPacksLocal = await this.getAdminPacks(
         useInstanceStore().server,
-        listFunction,
+        (params) =>
+          listEmojiPacks({
+            ...params,
+            credentials: useOAuthStore().token,
+          }).then(({ data }) => data),
       )
       this.adminPacksLocalLoading = false
     },
@@ -206,12 +209,7 @@ export const useEmojiStore = defineStore('emoji', {
         page: 1,
         pageSize: 0,
       })
-        .then((data) => data.json())
         .then((data) => {
-          if (data.error !== undefined) {
-            return Promise.reject(data.error)
-          }
-
           const promises = []
 
           for (let i = 0; i < Math.ceil(data.count / pageSize); i++) {
@@ -220,15 +218,9 @@ export const useEmojiStore = defineStore('emoji', {
                 instance,
                 page: i,
                 pageSize,
-              })
-                .then((data) => data.json())
-                .then((pageData) => {
-                  if (pageData.error !== undefined) {
-                    return Promise.reject(pageData.error)
-                  }
-
-                  return pageData.packs
-                }),
+              }).then((pageData) => {
+                return pageData.packs
+              }),
             )
           }
 
@@ -247,7 +239,7 @@ export const useEmojiStore = defineStore('emoji', {
             }, {})
         })
         .catch((data) => {
-          this.displayError(data)
+          console.error(data)
         })
     },
 

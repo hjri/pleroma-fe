@@ -1,19 +1,18 @@
 import {
   merge as _merge,
-  clamp,
   clone,
   cloneDeep,
-  findLastIndex,
   flatten,
-  get,
   groupBy,
   isEqual,
   takeRight,
-  uniqWith,
 } from 'lodash'
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
 
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import { updateProfileJSON } from 'src/api/user.js'
 import { storage } from 'src/lib/storage.js'
 
 export const NEW_USER_DATE = new Date('2022-08-04') // date of writing this, basically
@@ -28,17 +27,6 @@ export const defaultState = {
   raw: null,
   // local cache
   cache: null,
-}
-
-export const _moveItemInArray = (array, value, movement) => {
-  const oldIndex = array.indexOf(value)
-  const newIndex = oldIndex + movement
-  const newArray = [...array]
-  // remove old
-  newArray.splice(oldIndex, 1)
-  // add new
-  newArray.splice(clamp(newIndex, 0, newArray.length + 1), 0, value)
-  return newArray
 }
 
 const _wrapData = (data, userName) => {
@@ -344,12 +332,13 @@ export const useUserHighlightStore = defineStore('user_highlight', {
       const params = {
         pleroma_settings_store: { user_highlight: this.cache },
       }
-      window.vuex.state.api.backendInteractor
-        .updateProfileJSON({ params })
-        .then((user) => {
-          this.initUserHighlight(user)
-          this.dirty = false
-        })
+      updateProfileJSON({
+        params,
+        credentials: useOAuthStore().token,
+      }).then(({ data: user }) => {
+        this.initUserHighlight(user)
+        this.dirty = false
+      })
     },
   },
   persist: {

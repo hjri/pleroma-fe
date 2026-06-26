@@ -1,25 +1,35 @@
 import { defineStore } from 'pinia'
 
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import { fetchOAuthTokens, revokeOAuthToken } from 'src/api/user.js'
+
+/* Just to clear the confusion:
+ * OAuth Store is responsible for user authentication
+ * OAuth Tokens Store is responsible for *managing* all of the user's tokens,
+ * i.e. for current and other clients
+ */
 export const useOAuthTokensStore = defineStore('oauthTokens', {
   state: () => ({
     tokens: [],
   }),
   actions: {
     fetchTokens() {
-      window.vuex.state.api.backendInteractor
-        .fetchOAuthTokens()
-        .then((tokens) => {
-          this.swapTokens(tokens)
-        })
+      fetchOAuthTokens({
+        credentials: useOAuthStore().token,
+      }).then(({ data: tokens }) => {
+        this.swapTokens(tokens)
+      })
     },
     revokeToken(id) {
-      window.vuex.state.api.backendInteractor
-        .revokeOAuthToken({ id })
-        .then((response) => {
-          if (response.status === 201) {
-            this.swapTokens(this.tokens.filter((token) => token.id !== id))
-          }
-        })
+      revokeOAuthToken({
+        id,
+        credentials: useOAuthStore().token,
+      }).then(({ status }) => {
+        if (status === 201) {
+          this.swapTokens(this.tokens.filter((token) => token.id !== id))
+        }
+      })
     },
     swapTokens(tokens) {
       this.tokens = tokens

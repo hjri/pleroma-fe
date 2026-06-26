@@ -1,5 +1,3 @@
-import { useEmojiStore } from 'src/stores/emoji.js'
-
 /**
  * suggest - generates a suggestor function to be used by emoji-input
  * data: object providing source information for specific types of suggestions:

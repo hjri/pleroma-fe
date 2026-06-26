@@ -1,20 +1,27 @@
 import { Socket } from 'phoenix'
 
-import { WSConnectionStatus } from '../services/api/api.service.js'
-import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'
 
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useShoutStore } from 'src/stores/shout.js'
+
+import { fetchTimeline } from 'src/api/timelines.js'
+import {
+  getMastodonSocketURI,
+  ProcessedWS,
+  WSConnectionStatus,
+} from 'src/api/websocket.js'
+import followRequestFetcher from 'src/services/follow_request_fetcher/follow_request_fetcher.service'
+import notificationsFetcher from 'src/services/notifications_fetcher/notifications_fetcher.service.js'
+import timelineFetcher from 'src/services/timeline_fetcher/timeline_fetcher.service.js'
 
 const retryTimeout = (multiplier) => 1000 * multiplier
 
 const api = {
   state: {
     retryMultiplier: 1,
-    backendInteractor: backendInteractorService(),
     fetchers: {},
     socket: null,
     mastoUserSocket: null,
@@ -25,9 +32,6 @@ const api = {
     followRequestCount: (state) => state.followRequests.length,
   },
   mutations: {
-    setBackendInteractor(state, backendInteractor) {
-      state.backendInteractor = backendInteractor
-    },
     addFetcher(state, { fetcherName, fetcher }) {
       state.fetchers[fetcherName] = fetcher
     },
@@ -91,9 +95,16 @@ const api = {
         try {
           const { state, commit, dispatch, rootState } = store
           const timelineData = rootState.statuses.timelines.friends
-          state.mastoUserSocket = state.backendInteractor.startUserSocket({
-            store,
+
+          const credentials = useOAuthStore().token
+          const url = getMastodonSocketURI({ credentials })
+
+          state.mastoUserSocket = ProcessedWS({
+            url,
+            id: 'Unified',
+            credentials,
           })
+
           state.mastoUserSocket.addEventListener(
             'pleroma:authenticated',
             () => {
@@ -245,7 +256,7 @@ const api = {
         return
       if (store.state.fetchers[timeline]) return
 
-      const fetcher = store.state.backendInteractor.startFetchingTimeline({
+      const fetcher = timelineFetcher.startFetching({
         timeline,
         store,
         userId,
@@ -253,7 +264,9 @@ const api = {
         statusId,
         bookmarkFolderId,
         tag,
+        credentials: useOAuthStore().token,
       })
+
       store.commit('addFetcher', { fetcherName: timeline, fetcher })
     },
     stopFetchingTimeline(store, timeline) {
@@ -261,19 +274,22 @@ const api = {
       if (!fetcher) return
       store.commit('removeFetcher', { fetcherName: timeline, fetcher })
     },
+
     fetchTimeline(store, { timeline, ...rest }) {
-      store.state.backendInteractor.fetchTimeline({
+      fetchTimeline({
         store,
         timeline,
         ...rest,
+        credentials: useOAuthStore().token,
       })
     },
 
     // Notifications
     startFetchingNotifications(store) {
       if (store.state.fetchers.notifications) return
-      const fetcher = store.state.backendInteractor.startFetchingNotifications({
+      const fetcher = notificationsFetcher.startFetching({
         store,
+        credentials: useOAuthStore().token,
       })
       store.commit('addFetcher', { fetcherName: 'notifications', fetcher })
     },
@@ -282,19 +298,14 @@ const api = {
       if (!fetcher) return
       store.commit('removeFetcher', { fetcherName: 'notifications', fetcher })
     },
-    fetchNotifications(store, { ...rest }) {
-      store.state.backendInteractor.fetchNotifications({
-        store,
-        ...rest,
-      })
-    },
 
     // Follow requests
     startFetchingFollowRequests(store) {
       if (store.state.fetchers.followRequests) return
-      const fetcher = store.state.backendInteractor.startFetchingFollowRequests(
-        { store },
-      )
+      const fetcher = followRequestFetcher.startFetchingFollowRequests({
+        store,
+        credentials: useOAuthStore().token,
+      })
 
       store.commit('addFetcher', { fetcherName: 'followRequests', fetcher })
     },
@@ -302,39 +313,6 @@ const api = {
       const fetcher = store.state.fetchers.followRequests
       if (!fetcher) return
       store.commit('removeFetcher', { fetcherName: 'followRequests', fetcher })
-    },
-    removeFollowRequest(store, request) {
-      const requests = store.state.followRequests.filter((it) => it !== request)
-      store.commit('setFollowRequests', requests)
-    },
-
-    // Lists
-    startFetchingLists(store) {
-      if (store.state.fetchers.lists) return
-      const fetcher = store.state.backendInteractor.startFetchingLists({
-        store,
-      })
-      store.commit('addFetcher', { fetcherName: 'lists', fetcher })
-    },
-    stopFetchingLists(store) {
-      const fetcher = store.state.fetchers.lists
-      if (!fetcher) return
-      store.commit('removeFetcher', { fetcherName: 'lists', fetcher })
-    },
-
-    // Bookmark folders
-    startFetchingBookmarkFolders(store) {
-      if (store.state.fetchers.bookmarkFolders) return
-      if (!useInstanceCapabilitiesStore().pleromaBookmarkFoldersAvailable)
-        return
-      const fetcher =
-        store.state.backendInteractor.startFetchingBookmarkFolders({ store })
-      store.commit('addFetcher', { fetcherName: 'bookmarkFolders', fetcher })
-    },
-    stopFetchingBookmarkFolders(store) {
-      const fetcher = store.state.fetchers.bookmarkFolders
-      if (!fetcher) return
-      store.commit('removeFetcher', { fetcherName: 'bookmarkFolders', fetcher })
     },
 
     // Pleroma websocket

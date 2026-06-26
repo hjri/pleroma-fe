@@ -1,4 +1,3 @@
-import { readFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { exactRegex } from '@rolldown/pluginutils'
@@ -102,8 +101,12 @@ export const buildSwPlugin = ({ swSrc, swDest }) => {
           },
         })
 
-        const swBundle = await build(config)
-        return swBundle.output[0]
+        try {
+          const swBundle = await build(config)
+          return swBundle.output[0]
+        } catch (e) {
+          console.error('Error building ServiceWorker:', e)
+        }
       },
     },
     closeBundle: {
@@ -112,7 +115,11 @@ export const buildSwPlugin = ({ swSrc, swDest }) => {
       async handler() {
         if (process.env.VITEST) return
         console.info('Building service worker for production')
-        await build(config)
+        try {
+          await build(config)
+        } catch (e) {
+          console.error('Error building ServiceWorker:', e)
+        }
       },
     },
   }
