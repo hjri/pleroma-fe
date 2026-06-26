@@ -5,7 +5,6 @@ import { mapGetters, mapState } from 'vuex'
 import ChatMessage from 'src/components/chat_message/chat_message.vue'
 import ChatTitle from 'src/components/chat_title/chat_title.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
-import { WSConnectionStatus } from '../../services/api/api.service.js'
 import chatService from '../../services/chat_service/chat_service.js'
 import { buildFakeMessage } from '../../services/chat_utils/chat_utils.js'
 import { promiseInterval } from '../../services/promise_interval/promise_interval.js'
@@ -17,6 +16,14 @@ import {
 } from './chat_layout_utils.js'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import {
+  chatMessages,
+  getOrCreateChat,
+  sendChatMessage,
+} from 'src/api/chats.js'
+import { WSConnectionStatus } from 'src/api/websocket.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronDown, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
@@ -115,7 +122,6 @@ const Chat = {
       mobileLayout: (store) => store.layoutType === 'mobile',
     }),
     ...mapState({
-      backendInteractor: (state) => state.api.backendInteractor,
       mastoUserSocketStatus: (state) => state.api.mastoUserSocketStatus,
       currentUser: (state) => state.users.currentUser,
     }),
@@ -267,43 +273,48 @@ const Chat = {
       const fetchOlderMessages = !!maxId
       const sinceId = fetchLatest && chatMessageService.maxId
 
-      return this.backendInteractor
-        .chatMessages({ id: chatId, maxId, sinceId })
-        .then((messages) => {
-          // Clear the current chat in case we're recovering from a ws connection loss.
-          if (isFirstFetch) {
-            chatService.clear(chatMessageService)
-          }
+      return chatMessages({
+        id: chatId,
+        maxId,
+        sinceId,
+        credentials: useOAuthStore().token,
+      }).then(({ data: messages }) => {
+        // Clear the current chat in case we're recovering from a ws connection loss.
+        if (isFirstFetch) {
+          chatService.clear(chatMessageService)
+        }
 
-          const positionBeforeUpdate = getScrollPosition()
-          this.$store
-            .dispatch('addChatMessages', { chatId, messages })
-            .then(() => {
-              this.$nextTick(() => {
-                if (fetchOlderMessages) {
-                  this.handleScrollUp(positionBeforeUpdate)
-                }
+        const positionBeforeUpdate = getScrollPosition()
+        this.$store
+          .dispatch('addChatMessages', { chatId, messages })
+          .then(() => {
+            this.$nextTick(() => {
+              if (fetchOlderMessages) {
+                this.handleScrollUp(positionBeforeUpdate)
+              }
 
-                // In vertical screens, the first batch of fetched messages may not always take the
-                // full height of the scrollable container.
-                // If this is the case, we want to fetch the messages until the scrollable container
-                // is fully populated so that the user has the ability to scroll up and load the history.
-                if (!isScrollable() && messages.length > 0) {
-                  this.fetchChat({
-                    maxId: this.currentChatMessageService.minId,
-                  })
-                }
-              })
+              // In vertical screens, the first batch of fetched messages may not always take the
+              // full height of the scrollable container.
+              // If this is the case, we want to fetch the messages until the scrollable container
+              // is fully populated so that the user has the ability to scroll up and load the history.
+              if (!isScrollable() && messages.length > 0) {
+                this.fetchChat({
+                  maxId: this.currentChatMessageService.minId,
+                })
+              }
             })
-        })
+          })
+      })
     },
     async startFetching() {
       let chat = this.findOpenedChatByRecipientId(this.recipientId)
       if (!chat) {
         try {
-          chat = await this.backendInteractor.getOrCreateChat({
+          const { data } = await getOrCreateChat({
             accountId: this.recipientId,
+            credentials: useOAuthStore().token,
           })
+          chat = data
         } catch (e) {
           console.error('Error creating or getting a chat', e)
           this.errorLoadingChat = true
@@ -369,9 +380,11 @@ const Chat = {
     doSendMessage({ params, fakeMessage, retriesLeft = MAX_RETRIES }) {
       if (retriesLeft <= 0) return
 
-      this.backendInteractor
-        .sendChatMessage(params)
-        .then((data) => {
+      sendChatMessage({
+        params,
+        credentials: useOAuthStore().token,
+      })
+        .then(({ data }) => {
           this.$store.dispatch('addChatMessages', {
             chatId: this.currentChat.id,
             updateMaxId: false,

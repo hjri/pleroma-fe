@@ -2,11 +2,7 @@ import { defineStore } from 'pinia'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 
-import {
-  createApp,
-  getClientToken,
-  verifyAppToken,
-} from 'src/services/new_api/oauth.js'
+import { createApp, getClientToken, verifyAppToken } from 'src/api/oauth.js'
 
 // status codes about verifyAppToken (GET /api/v1/apps/verify_credentials)
 const isAppTokenRejected = (error) =>
@@ -41,10 +37,7 @@ export const useOAuthStore = defineStore('oauth', {
     userToken: false,
   }),
   getters: {
-    getToken() {
-      return this.userToken || this.appToken
-    },
-    getUserToken() {
+    token() {
       return this.userToken
     },
   },
@@ -64,9 +57,9 @@ export const useOAuthStore = defineStore('oauth', {
     },
     async createApp() {
       const instance = useInstanceStore().server
-      const app = await createApp(instance)
-      this.setClientData(app)
-      return app
+      const app = await createApp({ instance })
+      this.setClientData(app.data)
+      return app.data
     },
     /// Use this if you want to get the client id and secret but are not interested
     /// in whether they are valid.
@@ -88,8 +81,8 @@ export const useOAuthStore = defineStore('oauth', {
         clientSecret: this.clientSecret,
         instance,
       })
-      this.setAppToken(res.access_token)
-      return res.access_token
+      this.setAppToken(res.data.access_token)
+      return res.data.access_token
     },
     /// Use this if you want to ensure the app is still valid to use.
     /// @return {string} The access token to the app (not attached to any user)
@@ -97,8 +90,7 @@ export const useOAuthStore = defineStore('oauth', {
       if (this.appToken) {
         try {
           await verifyAppToken({
-            instance: useInstanceStore().server,
-            appToken: this.appToken,
+            credentials: this.appToken,
           })
           return this.appToken
         } catch (e) {

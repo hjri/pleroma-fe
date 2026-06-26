@@ -1,6 +1,3 @@
-import { get } from 'lodash'
-import { mapState } from 'pinia'
-
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import List from 'src/components/list/list.vue'
 import Status from 'src/components/status/status.vue'

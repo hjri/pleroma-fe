@@ -19,7 +19,6 @@ import {
 config.autoAddCss = false
 
 import App from '../App.vue'
-import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import FaviconService from '../services/favicon_service/favicon_service.js'
 import { applyStyleConfig } from '../services/style_setter/style_setter.js'
 import { initServiceWorker, updateFocus } from '../services/sw/sw.js'
@@ -29,7 +28,6 @@ import {
 } from '../services/window_utils/window_utils'
 import routes from './routes'
 
-import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useAuthFlowStore } from 'src/stores/auth_flow'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useI18nStore } from 'src/stores/i18n'
@@ -38,7 +36,7 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useOAuthStore } from 'src/stores/oauth'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
@@ -261,16 +259,6 @@ const getStickers = async ({ store }) => {
   }
 }
 
-const getAppSecret = async ({ store }) => {
-  const oauth = useOAuthStore()
-  if (oauth.userToken) {
-    store.commit(
-      'setBackendInteractor',
-      backendInteractorService(oauth.getToken),
-    )
-  }
-}
-
 const resolveStaffAccounts = ({ store, accounts }) => {
   const nicknames = accounts.map((uri) => uri.split('/').pop())
   useInstanceStore().set({
@@ -461,14 +449,13 @@ const setConfig = async ({ store }) => {
   const apiConfig = configInfos[0]
   const staticConfig = configInfos[1]
 
-  getAppSecret({ store })
   await setSettings({ store, apiConfig, staticConfig })
 }
 
 const checkOAuthToken = async ({ store }) => {
   const oauth = useOAuthStore()
-  if (oauth.getUserToken) {
-    return store.dispatch('loginUser', oauth.getUserToken)
+  if (oauth.userToken) {
+    return store.dispatch('loginUser', oauth.userToken)
   }
   return Promise.resolve()
 }
@@ -578,10 +565,6 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     getInstanceConfig({ store }),
   ]).catch((e) => Promise.reject(e))
 
-  // Start fetching things that don't need to block the UI
-  store.dispatch('fetchMutes')
-  store.dispatch('loadDrafts')
-  useAnnouncementsStore().startFetchingAnnouncements()
   getTOS({ store })
   getStickers({ store })
 

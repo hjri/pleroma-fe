@@ -2,7 +2,7 @@ import Checkbox from 'components/checkbox/checkbox.vue'
 import Popover from 'components/popover/popover.vue'
 import Select from 'components/select/select.vue'
 import StillImage from 'components/still-image/still-image.vue'
-import { assign, clone } from 'lodash'
+import { clone } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
@@ -11,6 +11,7 @@ import ModifiedIndicator from '../helpers/modified_indicator.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import StringSetting from '../helpers/string_setting.vue'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
@@ -98,10 +99,10 @@ const EmojiTab = {
 
   methods: {
     reloadEmoji() {
-      this.$store.state.api.backendInteractor.reloadEmoji()
+      useAdminSettingsStore().reloadEmoji()
     },
     importFromFS() {
-      this.$store.state.api.backendInteractor.importEmojiFromFS()
+      useAdminSettingsStore().importEmojiFromFS()
     },
     emojiAddr(name) {
       if (this.pack.remote !== undefined) {
@@ -113,7 +114,7 @@ const EmojiTab = {
     },
 
     createEmojiPack() {
-      this.$store.state.api.backendInteractor
+      useAdminSettingsStore()
         .createEmojiPack({ name: this.newPackName })
         .then((resp) => resp.json())
         .then((resp) => {
@@ -130,7 +131,7 @@ const EmojiTab = {
         })
     },
     deleteEmojiPack() {
-      this.$store.state.api.backendInteractor
+      useAdminSettingsStore()
         .deleteEmojiPack({ name: this.packName })
         .then((resp) => resp.json())
         .then((resp) => {
@@ -157,7 +158,7 @@ const EmojiTab = {
       return edited !== def
     },
     savePackMetadata() {
-      this.$store.state.api.backendInteractor
+      useAdminSettingsStore()
         .saveEmojiPackMetadata({ name: this.packName, newData: this.packMeta })
         .then((resp) => resp.json())
         .then((resp) => {
@@ -182,7 +183,7 @@ const EmojiTab = {
       useEmojiStore()
         .getAdminPacks(
           this.remotePackInstance,
-          this.$store.state.api.backendInteractor.listEmojiPacks,
+          useAdminSettingsStore().listEmojiPacks,
         )
         .then((allPacks) => {
           this.knownLocalPacks = allPacks
@@ -195,7 +196,7 @@ const EmojiTab = {
       useEmojiStore()
         .getAdminPacks(
           this.remotePackInstance,
-          this.$store.state.api.backendInteractor.listRemoteEmojiPacks,
+          useAdminSettingsStore().listRemoteEmojiPacks,
         )
         .then((allPacks) => {
           let inst = this.remotePackInstance
@@ -226,7 +227,7 @@ const EmojiTab = {
         this.remotePackDownloadAs = this.pack.remote.baseName
       }
 
-      this.$store.state.api.backendInteractor
+      useAdminSettingsStore()
         .downloadRemoteEmojiPack({
           instance: this.pack.remote.instance,
           packName: this.pack.remote.baseName,
@@ -247,7 +248,7 @@ const EmojiTab = {
         })
     },
     downloadRemoteURLPack() {
-      this.$store.state.api.backendInteractor
+      useAdminSettingsStore()
         .downloadRemoteEmojiPackZIP({
           url: this.remotePackURL,
           packName: this.newPackName,
@@ -268,7 +269,7 @@ const EmojiTab = {
         })
     },
     downloadRemoteFilePack() {
-      this.$store.state.api.backendInteractor
+      useAdminSettingsStore()
         .downloadRemoteEmojiPackZIP({
           file: this.remotePackFile[0],
           packName: this.newPackName,

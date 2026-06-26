@@ -5,7 +5,6 @@ import LocalSettingIndicator from './local_setting_indicator.vue'
 import ModifiedIndicator from './modified_indicator.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'

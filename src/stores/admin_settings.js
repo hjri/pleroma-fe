@@ -1,6 +1,38 @@
 import { cloneDeep, differenceWith, flatten, get, isEqual, set } from 'lodash'
 import { defineStore } from 'pinia'
 
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import {
+  addNewEmojiFile,
+  changeStatusScope,
+  createEmojiPack,
+  deleteAccounts,
+  deleteEmojiPack,
+  disableMFA,
+  downloadRemoteEmojiPack,
+  downloadRemoteEmojiPackZIP,
+  getAvailableFrontends,
+  getInstanceConfigDescriptions,
+  getInstanceDBConfig,
+  getUserData,
+  importEmojiFromFS,
+  installFrontend,
+  listRemoteEmojiPacks,
+  listStatuses,
+  listUsers,
+  pushInstanceDBConfig,
+  reloadEmoji,
+  requirePasswordChange,
+  resendConfirmationEmail,
+  setUsersActivationStatus,
+  setUsersApprovalStatus,
+  setUsersConfirmationStatus,
+  setUsersRight,
+  setUsersSuggestionStatus,
+  setUsersTags,
+} from 'src/api/admin.js'
+import { listEmojiPacks } from 'src/api/public.js'
 import { parseStatus } from 'src/services/entity_normalizer/entity_normalizer.service.js'
 
 export const defaultState = {
@@ -21,7 +53,6 @@ export const newUserFlags = {
 export const useAdminSettingsStore = defineStore('adminSettings', {
   state: () => ({
     ...cloneDeep(defaultState),
-    backendInteractor: window.vuex.state.api.backendInteractor,
   }),
   actions: {
     // Configuration Stuff
@@ -54,25 +85,31 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     },
 
     loadAdminStuff() {
-      this.backendInteractor.fetchInstanceDBConfig().then((backendDbConfig) => {
-        if (backendDbConfig.error) {
-          if (backendDbConfig.error.status === 400) {
-            backendDbConfig.error.json().then((errorJson) => {
-              if (/configurable_from_database/.test(errorJson.error)) {
-                this.setInstanceAdminNoDbConfig()
-              }
-            })
-          }
-        } else {
-          this.setInstanceAdminSettings({ backendDbConfig })
-        }
+      getInstanceDBConfig({
+        credentials: useOAuthStore().token,
       })
+        .then(({ data: backendDbConfig }) =>
+          this.setInstanceAdminSettings({
+            credentials: useOAuthStore().token,
+            backendDbConfig,
+          }),
+        )
+        .catch(({ statusCode, statusText }) => {
+          if (statusCode === 400) {
+            if (/configurable_from_database/.test(statusText)) {
+              this.setInstanceAdminNoDbConfig()
+            }
+          }
+        })
       if (this.descriptions === null) {
-        this.backendInteractor
-          .fetchInstanceConfigDescriptions()
-          .then((backendDescriptions) =>
-            this.setInstanceAdminDescriptions({ backendDescriptions }),
-          )
+        getInstanceConfigDescriptions({
+          credentials: useOAuthStore().token,
+        }).then(({ data: backendDescriptions }) =>
+          this.setInstanceAdminDescriptions({
+            credentials: useOAuthStore().token,
+            backendDescriptions,
+          }),
+        )
       }
     },
     setInstanceAdminSettings({ backendDbConfig }) {
@@ -203,17 +240,23 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         }
       })
 
-      window.vuex.state.api.backendInteractor
-        .pushInstanceDBConfig({
-          payload: {
-            configs: changed,
-          },
-        })
+      pushInstanceDBConfig({
+        credentials: useOAuthStore().token,
+        payload: {
+          configs: changed,
+        },
+      })
         .then(() =>
-          window.vuex.state.api.backendInteractor.fetchInstanceDBConfig(),
+          getInstanceDBConfig({
+            credentials: useOAuthStore().token,
+          }).then(({ data }) => data),
         )
         .then((backendDbConfig) =>
-          this.setInstanceAdminSettings({ backendDbConfig }),
+          this.setInstanceAdminSettings({
+            credentials: useOAuthStore().token,
+
+            backendDbConfig,
+          }),
         )
     },
     pushAdminSetting({ path, value }) {
@@ -234,23 +277,28 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         }
       }
 
-      window.vuex.state.api.backendInteractor
-        .pushInstanceDBConfig({
-          payload: {
-            configs: [
-              {
-                group,
-                key,
-                value: convert(clone),
-              },
-            ],
-          },
-        })
+      pushInstanceDBConfig({
+        credentials: useOAuthStore().token,
+        payload: {
+          configs: [
+            {
+              group,
+              key,
+              value: convert(clone),
+            },
+          ],
+        },
+      })
         .then(() =>
-          window.vuex.state.api.backendInteractor.fetchInstanceDBConfig(),
+          getInstanceDBConfig({
+            credentials: useOAuthStore().token,
+          }).then(({ data }) => data),
         )
         .then((backendDbConfig) =>
-          this.setInstanceAdminSettings({ backendDbConfig }),
+          this.setInstanceAdminSettings({
+            credentials: useOAuthStore().token,
+            backendDbConfig,
+          }),
         )
     },
     resetAdminSetting({ path }) {
@@ -260,21 +308,23 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
 
       this.modifiedPaths.delete(path)
 
-      return window.vuex.state.api.backendInteractor
-        .pushInstanceDBConfig({
-          payload: {
-            configs: [
-              {
-                group,
-                key,
-                delete: true,
-                subkeys: [subkey],
-              },
-            ],
-          },
-        })
+      return pushInstanceDBConfig({
+        credentials: useOAuthStore().token,
+        payload: {
+          configs: [
+            {
+              group,
+              key,
+              delete: true,
+              subkeys: [subkey],
+            },
+          ],
+        },
+      })
         .then(() =>
-          window.vuex.state.api.backendInteractor.fetchInstanceDBConfig(),
+          getInstanceDBConfig({
+            credentials: useOAuthStore().token,
+          }).then(({ data }) => data),
         )
         .then((backendDbConfig) =>
           this.setInstanceAdminSettings({ backendDbConfig }),
@@ -283,9 +333,11 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
 
     // Frontends Stuff
     loadFrontendsStuff() {
-      this.backendInteractor
-        .fetchAvailableFrontends()
-        .then((frontends) => this.setAvailableFrontends({ frontends }))
+      getAvailableFrontends({
+        credentials: useOAuthStore().token,
+      }).then(({ data: frontends }) =>
+        this.setAvailableFrontends({ frontends }),
+      )
     },
 
     setAvailableFrontends({ frontends }) {
@@ -300,12 +352,20 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
     },
 
+    installFrontend() {
+      return installFrontend({
+        credentials: useOAuthStore().token,
+      }).then(({ data }) => data)
+    },
+
     // Statuses stuff
     async fetchStatuses(opts) {
-      const { total, activities } =
-        await this.backendInteractor.adminListStatuses({
-          opts,
-        })
+      const {
+        data: { total, activities },
+      } = await listStatuses({
+        credentials: useOAuthStore().token,
+        opts,
+      })
 
       const statuses = activities.map(parseStatus)
 
@@ -317,17 +377,21 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       }
     },
     async changeStatusScope(opts) {
-      const raw = await this.backendInteractor.adminChangeStatusScope({
+      const { data } = await changeStatusScope({
+        credentials: useOAuthStore().token,
         opts,
       })
-      const status = parseStatus(raw)
+      const status = parseStatus(data)
 
       await window.vuex.dispatch('addNewStatuses', { statuses: [status] })
     },
 
     // Users stuff
     async fetchUsers(opts) {
-      const { users, count } = await this.backendInteractor.adminListUsers({
+      const {
+        data: { users, count },
+      } = await listUsers({
+        credentials: useOAuthStore().token,
         opts,
       })
 
@@ -344,19 +408,26 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       }
     },
     async getUserData({ user }) {
-      const api = this.backendInteractor.adminGetUserData
+      const api = getUserData
       const { screen_name } = user
 
-      const result = await api({ screen_name })
-      window.vuex.commit('updateUserAdminData', { user: result })
+      const result = await api({
+        credentials: useOAuthStore().token,
+        screen_name,
+      })
+
+      window.vuex.commit('updateUserAdminData', { user: result.data })
     },
     async deleteUsers({ users }) {
       const screen_names = users.map((u) => u.screen_name)
-      const api = this.backendInteractor.adminDeleteAccounts
+      const api = deleteAccounts
 
-      const resultUserIds = await api({ screen_names })
+      const resultUserIds = await api({
+        credentials: useOAuthStore().token,
+        screen_names,
+      })
 
-      resultUserIds.forEach((userId) => {
+      resultUserIds.data.forEach((userId) => {
         window.vuex.dispatch(
           'markStatusesAsDeleted',
           (status) => userId === status.user.id,
@@ -369,28 +440,34 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     resendConfirmationEmail({ users }) {
       const screen_names = users.map((u) => u.screen_name)
 
-      return this.backendInteractor.adminResendConfirmationEmail({
+      return resendConfirmationEmail({
+        credentials: useOAuthStore().token,
         screen_names,
-      })
+      }).then(({ data }) => data)
     },
     requirePasswordChange({ users }) {
       const screen_names = users.map((u) => u.screen_name)
 
-      return this.backendInteractor.adminRequirePasswordChange({
+      return requirePasswordChange({
+        credentials: useOAuthStore().token,
         screen_names,
-      })
+      }).then(({ data }) => data)
     },
     // Singular only!
     disableMFA({ user }) {
       const { screen_name } = user
 
-      return this.backendInteractor.adminDisableMFA({ screen_name })
+      return disableMFA({
+        credentials: useOAuthStore().token,
+        screen_name,
+      }).then(({ data }) => data)
     },
     async setUsersTags({ users, tags, value }) {
       const screen_names = users.map((u) => u.screen_name)
-      const api = this.backendInteractor.adminSetUsersTags
+      const api = setUsersTags
 
       await api({
+        credentials: useOAuthStore().token,
         screen_names,
         tags,
         value,
@@ -402,9 +479,10 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     },
     async setUsersRight({ users, right, value }) {
       const screen_names = users.map((u) => u.screen_name)
-      const api = this.backendInteractor.adminSetUsersRight
+      const api = setUsersRight
 
       await api({
+        credentials: useOAuthStore().token,
         screen_names,
         right,
         value,
@@ -416,35 +494,40 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     },
     async setUsersActivationStatus({ users, value }) {
       const screen_names = users.map((u) => u.screen_name)
-      const api = this.backendInteractor.adminSetUsersActivationStatus
+      const api = setUsersActivationStatus
 
       const resultUsers = await api({
+        credentials: useOAuthStore().token,
         screen_names,
         value,
       })
 
-      resultUsers.forEach((user) => {
+      resultUsers.data.forEach((user) => {
         window.vuex.commit('updateUserAdminData', { user })
       })
     },
     async setUsersSuggestionStatus({ users, value }) {
       const screen_names = users.map((u) => u.screen_name)
-      const api = this.backendInteractor.adminSetUsersSuggestionStatus
+      const api = setUsersSuggestionStatus
 
       const resultUsers = await api({
+        credentials: useOAuthStore().token,
         screen_names,
         value,
       })
 
-      resultUsers.forEach((user) => {
+      resultUsers.data.forEach((user) => {
         window.vuex.commit('updateUserAdminData', { user })
       })
     },
     async setUsersConfirmationStatus({ users }) {
       const screen_names = users.map((u) => u.screen_name)
-      const api = this.backendInteractor.adminSetUsersConfirmationStatus
+      const api = setUsersConfirmationStatus
 
-      await api({ screen_names })
+      await api({
+        credentials: useOAuthStore().token,
+        screen_names,
+      })
 
       users.forEach((user) => {
         this.getUserData({ user })
@@ -452,15 +535,81 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     },
     async setUsersApprovalStatus({ users }) {
       const screen_names = users.map((u) => u.screen_name)
-      const api = this.backendInteractor.adminSetUsersApprovalStatus
+      const api = setUsersApprovalStatus
 
       const resultUsers = await api({
+        credentials: useOAuthStore().token,
         screen_names,
       })
 
-      resultUsers.forEach((user) => {
+      resultUsers.data.forEach((user) => {
         window.vuex.commit('updateUserAdminData', { user })
       })
+    },
+    reloadEmoji() {
+      return reloadEmoji({ credentials: useOAuthStore().token }).then(
+        ({ data }) => data,
+      )
+    },
+    importEmojiFromFS() {
+      return importEmojiFromFS({ credentials: useOAuthStore().token }).then(
+        ({ data }) => data,
+      )
+    },
+    listEmojiPacks(params) {
+      return listEmojiPacks({
+        ...params,
+        credentials: useOAuthStore().token,
+      }).then(({ data }) => data)
+    },
+    listRemoteEmojiPacks(params) {
+      return listRemoteEmojiPacks({
+        ...params,
+        credentials: useOAuthStore().token,
+      }).then(({ data }) => data)
+    },
+    addNewEmojiFile({ packName, file, shortcode, filename }) {
+      return addNewEmojiFile({
+        packName,
+        file,
+        shortcode,
+        filename,
+        credentials: useOAuthStore().token,
+      }).then(({ data }) => data)
+    },
+    downloadRemoteEmojiPack({ instance, packName, as }) {
+      return downloadRemoteEmojiPack({
+        instance,
+        packName,
+        as,
+        credentials: useOAuthStore().token,
+      }).then(({ data }) => data)
+    },
+    downloadRemoteEmojiPackZIP({ url, packName }) {
+      return downloadRemoteEmojiPackZIP({
+        url,
+        packName,
+        credentials: useOAuthStore().token,
+      }).then(({ data }) => data)
+    },
+    createEmojiPack({ name }) {
+      return createEmojiPack({
+        name,
+        credentials: useOAuthStore().token,
+      }).then(({ data }) => data)
+    },
+    deleteEmojiPack({ name }) {
+      return deleteEmojiPack({
+        name,
+        credentials: useOAuthStore().token,
+      }).then(({ data }) => data)
+    },
+    saveEmojiPackMetadata({ name, newData }) {
+      return createEmojiPack({
+        name,
+        newData,
+        credentials: useOAuthStore().token,
+      }).then(({ data }) => data)
     },
   },
 })

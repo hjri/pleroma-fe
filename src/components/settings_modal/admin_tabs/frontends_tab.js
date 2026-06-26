@@ -71,7 +71,7 @@ const FrontendsTab = {
       const payload = { name, ref }
 
       this.working = true
-      this.$store.state.api.backendInteractor
+      useAdminSettingsStore()
         .installFrontend({ payload })
         .finally(() => {
           this.working = false

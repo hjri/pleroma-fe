@@ -1,8 +1,8 @@
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { DevTools } from '@vitejs/devtools'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import { playwright } from '@vitest/browser-playwright'
 import { defineConfig } from 'vite'
 import eslint from 'vite-plugin-eslint2'
 import stylelint from 'vite-plugin-stylelint'
@@ -72,9 +72,18 @@ export default defineConfig(async ({ mode, command }) => {
   const settings = await getLocalDevSettings()
   const target = settings.target || 'http://localhost:4000/'
   const origin = settings.origin || target
+  const targetSW = target.replace(/^http/, 'ws')
   const transformSW = getTransformSWSettings(settings)
   const proxy = {
     '/api': {
+      target,
+      changeOrigin: true,
+      cookieDomainRewrite: 'localhost',
+      ws: true,
+      rewriteWsOrigin: true,
+    },
+    '/auth': {
+      // Mastodon password reset lives here
       target,
       changeOrigin: true,
       cookieDomainRewrite: 'localhost',
@@ -90,19 +99,20 @@ export default defineConfig(async ({ mode, command }) => {
       changeOrigin: true,
       cookieDomainRewrite: 'localhost',
     },
-    '/socket': {
-      target,
-      changeOrigin: true,
-      cookieDomainRewrite: 'localhost',
-      ws: true,
-      headers: {
-        Origin: origin,
-      },
-    },
     '/oauth': {
       target,
       changeOrigin: true,
       cookieDomainRewrite: 'localhost',
+    },
+    '/socket': {
+      target: targetSW,
+      changeOrigin: true,
+      cookieDomainRewrite: 'localhost',
+      rewriteWsOrigin: true,
+      ws: true,
+      headers: {
+        Origin: origin,
+      },
     },
   }
 
@@ -233,8 +243,10 @@ export default defineConfig(async ({ mode, command }) => {
       exclude: [...configDefaults.exclude, 'test/e2e-playwright/**'],
       browser: {
         enabled: true,
-        provider: 'playwright',
-        instances: [{ browser: 'firefox' }],
+        headless: true,
+        provider: playwright(),
+        // https://github.com/mswjs/msw/issues/2757
+        instances: [{ browser: 'chromium' }],
       },
     },
   }

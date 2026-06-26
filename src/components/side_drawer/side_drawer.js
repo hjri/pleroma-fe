@@ -1,5 +1,4 @@
 import { mapActions, mapState } from 'pinia'
-import { defineAsyncComponent } from 'vue'
 import { mapGetters } from 'vuex'
 
 import { USERNAME_ROUTES } from 'src/components/navigation/navigation.js'

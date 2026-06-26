@@ -107,7 +107,7 @@ const StatusActionButtons = {
       button
         .action?.(this.funcArg)
         .then(() => this.$emit('onSuccess'))
-        .catch((err) => this.$emit('onError', err.error.error))
+        .catch((err) => this.$emit('onError', err))
     },
     onExtraClose() {
       this.showPin = false

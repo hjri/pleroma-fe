@@ -1,6 +1,11 @@
 import { merge } from 'lodash'
 import { defineStore } from 'pinia'
 
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import { fetchPoll } from 'src/api/public.js'
+import { vote } from 'src/api/user.js'
+
 export const usePollsStore = defineStore('polls', {
   state: () => ({
     // Contains key = id, value = number of trackers for this poll
@@ -19,16 +24,17 @@ export const usePollsStore = defineStore('polls', {
       }
     },
     updateTrackedPoll(pollId) {
-      window.vuex.state.api.backendInteractor
-        .fetchPoll({ pollId })
-        .then((poll) => {
-          setTimeout(() => {
-            if (this.trackedPolls[pollId]) {
-              this.updateTrackedPoll(pollId)
-            }
-          }, 30 * 1000)
-          this.mergeOrAddPoll(poll)
-        })
+      fetchPoll({
+        pollId,
+        credentials: useOAuthStore().token,
+      }).then(({ data: poll }) => {
+        setTimeout(() => {
+          if (this.trackedPolls[pollId]) {
+            this.updateTrackedPoll(pollId)
+          }
+        }, 30 * 1000)
+        this.mergeOrAddPoll(poll)
+      })
     },
     trackPoll(pollId) {
       if (!this.trackedPolls[pollId]) {
@@ -50,12 +56,14 @@ export const usePollsStore = defineStore('polls', {
       }
     },
     votePoll({ pollId, choices }) {
-      return window.vuex.state.api.backendInteractor
-        .vote({ pollId, choices })
-        .then((poll) => {
-          this.mergeOrAddPoll(poll)
-          return poll
-        })
+      return vote({
+        pollId,
+        choices,
+        credentials: useOAuthStore().token,
+      }).then(({ data: poll }) => {
+        this.mergeOrAddPoll(poll)
+        return poll
+      })
     },
   },
 })

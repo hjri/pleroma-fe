@@ -1,3 +1,7 @@
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import { fetchUser } from 'src/api/public.js'
+
 const RemoteUserResolver = {
   data: () => ({
     error: false,
@@ -7,11 +11,12 @@ const RemoteUserResolver = {
   },
   methods: {
     redirect() {
-      const acct =
-        this.$route.params.username + '@' + this.$route.params.hostname
-      this.$store.state.api.backendInteractor
-        .fetchUser({ id: acct })
-        .then((externalUser) => {
+      const id = this.$route.params.username + '@' + this.$route.params.hostname
+      fetchUser({
+        id,
+        credentials: useOAuthStore().token,
+      })
+        .then(({ data: externalUser }) => {
           if (externalUser.error) {
             this.error = true
           } else {

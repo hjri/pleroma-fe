@@ -1,10 +1,10 @@
-import apiService from '../api/api.service.js'
 import { promiseInterval } from '../promise_interval/promise_interval.js'
 
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
+import { fetchTimeline } from 'src/api/timelines.js'
 
 const update = ({ store, notifications, older }) => {
   store.dispatch('addNewNotifications', { notifications, older })
@@ -25,7 +25,7 @@ const mastoApiNotificationTypes = new Set([
   'pleroma:report',
 ])
 
-const fetchAndUpdate = ({ store, credentials, older = false, since }) => {
+const fetchAndUpdate = ({ store, credentials, older = false, sinceId }) => {
   const args = { credentials }
   const rootState = store.rootState || store.state
   const timelineData = rootState.notifications
@@ -35,24 +35,24 @@ const fetchAndUpdate = ({ store, credentials, older = false, since }) => {
     mastoApiNotificationTypes.add('pleroma:chat_mention')
   }
 
-  args.includeTypes = mastoApiNotificationTypes
+  args.includeTypes = [...mastoApiNotificationTypes]
   args.withMuted = !hideMutedPosts
 
   args.timeline = 'notifications'
   if (older) {
     if (timelineData.minId !== Number.POSITIVE_INFINITY) {
-      args.until = timelineData.minId
+      args.maxId = timelineData.minId
     }
     return fetchNotifications({ store, args, older })
   } else {
     // fetch new notifications
     if (
-      since === undefined &&
+      sinceId === undefined &&
       timelineData.maxId !== Number.POSITIVE_INFINITY
     ) {
-      args.since = timelineData.maxId
-    } else if (since !== null) {
-      args.since = since
+      args.sinceId = timelineData.maxId
+    } else if (sinceId !== null) {
+      args.sinceId = sinceId
     }
     const result = fetchNotifications({ store, args, older })
 
@@ -69,7 +69,7 @@ const fetchAndUpdate = ({ store, credentials, older = false, since }) => {
     if (readNotifsIds.length > 0 && readNotifsIds.length > 0) {
       const minId = Math.min(...unreadNotifsIds) // Oldest known unread notification
       if (minId !== Infinity) {
-        args.since = false // Don't use since_id since it sorta conflicts with min_id
+        args.sinceId = null // Don't use since_id since it sorta conflicts with min_id
         args.minId = minId - 1 // go beyond
         fetchNotifications({ store, args, older })
       }
@@ -80,29 +80,25 @@ const fetchAndUpdate = ({ store, credentials, older = false, since }) => {
 }
 
 const fetchNotifications = ({ store, args, older }) => {
-  return apiService
-    .fetchTimeline(args)
+  return fetchTimeline(args)
     .then((response) => {
-      if (response.errors) {
-        if (
-          response.status === 400 &&
-          response.statusText.includes('Invalid value for enum')
-        ) {
-          response.statusText
-            .matchAll(/(\w+) - Invalid value for enum./g)
-            .toArray()
-            .map((x) => x[1])
-            .forEach((x) => mastoApiNotificationTypes.delete(x))
-          return fetchNotifications({ store, args, older })
-        } else {
-          throw new Error(`${response.status} ${response.statusText}`)
-        }
-      }
       const notifications = response.data
       update({ store, notifications, older })
       return notifications
     })
     .catch((error) => {
+      if (
+        error.statusCode === 400 &&
+        error.statusText.includes('Invalid value for enum')
+      ) {
+        error.statusText
+          .matchAll(/(\w+) - Invalid value for enum./g)
+          .toArray()
+          .map((x) => x[1])
+          .forEach((x) => mastoApiNotificationTypes.delete(x))
+        return fetchNotifications({ store, args, older })
+      }
+
       useInterfaceStore().pushGlobalNotice({
         level: 'error',
         messageKey: 'notifications.error',

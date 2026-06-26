@@ -1,5 +1,3 @@
-import Cookies from 'js-cookie'
-
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useI18nStore } from 'src/stores/i18n.js'
 

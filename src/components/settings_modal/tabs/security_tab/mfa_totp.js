@@ -1,6 +1,8 @@
-import { mapState } from 'vuex'
-
 import Confirm from './confirm.vue'
+
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import { mfaDisableOTP } from 'src/api/user.js'
 
 export default {
   props: ['settings'],
@@ -17,9 +19,6 @@ export default {
     isActivated() {
       return this.settings.totp
     },
-    ...mapState({
-      backendInteractor: (state) => state.api.backendInteractor,
-    }),
   },
   methods: {
     doActivate() {
@@ -36,19 +35,18 @@ export default {
       // confirm deactivate TOTP method
       this.error = null
       this.inProgress = true
-      this.backendInteractor
-        .mfaDisableOTP({
-          password: this.currentPassword,
-        })
-        .then((res) => {
-          this.inProgress = false
-          if (res.error) {
-            this.error = res.error
-            return
-          }
-          this.deactivate = false
-          this.$emit('deactivate')
-        })
+      mfaDisableOTP({
+        password: this.currentPassword,
+        credentials: useOAuthStore().token,
+      }).then(({ data: res }) => {
+        this.inProgress = false
+        if (res.error) {
+          this.error = res.error
+          return
+        }
+        this.deactivate = false
+        this.$emit('deactivate')
+      })
     },
   },
 }

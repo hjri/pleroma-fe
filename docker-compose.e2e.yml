@@ -39,6 +39,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 60
+    ports:
+      - 4000:4000
 
   e2e:
     build:
@@ -51,7 +53,7 @@ services:
       CI: "1"
       VITE_PROXY_TARGET: http://pleroma:4000
       VITE_PROXY_ORIGIN: http://localhost:4000
-      E2E_BASE_URL: http://localhost:8080
+      E2E_BASE_URL: http://localhost:8099
       E2E_ADMIN_USERNAME: ${E2E_ADMIN_USERNAME:-admin}
       E2E_ADMIN_PASSWORD: ${E2E_ADMIN_PASSWORD:-adminadmin}
     command: ["yarn", "e2e:pw"]

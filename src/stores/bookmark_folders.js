@@ -1,6 +1,16 @@
 import { find, remove } from 'lodash'
 import { defineStore } from 'pinia'
 
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import {
+  createBookmarkFolder,
+  deleteBookmarkFolder,
+  fetchBookmarkFolders,
+  updateBookmarkFolder,
+} from 'src/api/user.js'
+import { promiseInterval } from 'src/services/promise_interval/promise_interval.js'
+
 export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {
   state: () => ({
     allFolders: [],
@@ -16,6 +26,20 @@ export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {
     },
   },
   actions: {
+    startFetching() {
+      this.fetcher = promiseInterval(() => {
+        fetchBookmarkFolders({
+          credentials: useOAuthStore().token,
+        })
+          .then(({ data: folders }) => this.setBookmarkFolders(folders))
+          .catch((e) => {
+            console.error(e)
+          })
+      }, 240000)
+    },
+    stopFetching() {
+      this.fetcher?.stop()
+    },
     setBookmarkFolders(value) {
       this.allFolders = value
     },
@@ -30,23 +54,31 @@ export const useBookmarkFoldersStore = defineStore('bookmarkFolders', {
       }
     },
     createBookmarkFolder({ name, emoji }) {
-      return window.vuex.state.api.backendInteractor
-        .createBookmarkFolder({ name, emoji })
-        .then((folder) => {
-          this.setBookmarkFolder(folder)
-          return folder
-        })
+      return createBookmarkFolder({
+        name,
+        emoji,
+        credentials: useOAuthStore().token,
+      }).then(({ data: folder }) => {
+        this.setBookmarkFolder(folder)
+        return folder
+      })
     },
     updateBookmarkFolder({ folderId, name, emoji }) {
-      return window.vuex.state.api.backendInteractor
-        .updateBookmarkFolder({ folderId, name, emoji })
-        .then((folder) => {
-          this.setBookmarkFolder(folder)
-          return folder
-        })
+      return updateBookmarkFolder({
+        credentials: useOAuthStore().token,
+        folderId,
+        name,
+        emoji,
+      }).then(({ data: folder }) => {
+        this.setBookmarkFolder(folder)
+        return folder
+      })
     },
     deleteBookmarkFolder({ folderId }) {
-      window.vuex.state.api.backendInteractor.deleteBookmarkFolder({ folderId })
+      deleteBookmarkFolder({
+        folderId,
+        credentials: useOAuthStore().token,
+      })
       remove(this.allFolders, (folder) => folder.id === folderId)
     },
   },

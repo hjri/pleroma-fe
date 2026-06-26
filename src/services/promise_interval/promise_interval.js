@@ -4,32 +4,34 @@
 // time after the first interval.
 // - interval is the interval delay in ms.
 
+const wait = (timeout) => {
+  let timeoutId
+  const promise = () =>
+    new Promise((resolve) => {
+      timeoutId = window.setTimeout(() => resolve(), timeout)
+    })
+  return { timeoutId, promise }
+}
+
 export const promiseInterval = (promiseCall, interval) => {
   let stopped = false
   let timeout = null
-
-  const func = () => {
-    const promise = promiseCall()
-    // something unexpected happened and promiseCall did not
-    // return a promise, abort the loop.
-    if (!(promise && promise.finally)) {
-      console.warn(
-        'promiseInterval: promise call did not return a promise, stopping interval.',
-      )
-      return
-    }
-    promise.finally(() => {
-      if (stopped) return
-      timeout = window.setTimeout(func, interval)
-    })
-  }
 
   const stopFetcher = () => {
     stopped = true
     window.clearTimeout(timeout)
   }
 
-  timeout = window.setTimeout(func, interval)
+  const loop = async () => {
+    while (!stopped) {
+      await promiseCall()
+      const { timeoutId, promise } = wait(interval)
+      timeout = timeoutId
+      await promise()
+    }
+  }
+
+  loop().then()
 
   return { stop: stopFetcher }
 }

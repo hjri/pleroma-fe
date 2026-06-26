@@ -1,22 +1,23 @@
-import { createPinia, setActivePinia } from 'pinia'
-import { createStore } from 'vuex'
+import { createTestingPinia } from '@pinia/testing'
+import { HttpResponse, http } from 'msw'
+import { setActivePinia } from 'pinia'
+
+import { test as it } from '/test/fixtures/mock_api.js'
 
 import { useListsStore } from 'src/stores/lists.js'
 
-import apiModule from 'src/modules/api.js'
-
-setActivePinia(createPinia())
-const store = useListsStore()
-window.vuex = createStore({
-  modules: {
-    api: apiModule,
-  },
-})
+import { MASTODON_LIST_ACCOUNTS_URL, MASTODON_LIST_URL } from 'src/api/user.js'
 
 describe('The lists store', () => {
+  let store
+
+  beforeEach(() => {
+    setActivePinia(createTestingPinia({ stubActions: false }))
+    store = useListsStore()
+  })
+
   describe('actions', () => {
     it('updates array of all lists', () => {
-      store.$reset()
       const list = { id: '1', title: 'testList' }
 
       store.setLists([list])
@@ -24,12 +25,19 @@ describe('The lists store', () => {
       expect(store.allLists).to.eql([list])
     })
 
-    it('adds a new list with a title, updating the title for existing lists', () => {
-      store.$reset()
+    it('adds a new list with a title, updating the title for existing lists', async ({
+      worker,
+    }) => {
       const list = { id: '1', title: 'testList' }
       const modList = { id: '1', title: 'anotherTestTitle' }
 
-      store.setList({ listId: list.id, title: list.title })
+      worker.use(
+        http.put(MASTODON_LIST_URL(':id'), () =>
+          HttpResponse.json({ ok: true }),
+        ),
+      )
+
+      await store.setList({ listId: list.id, title: list.title })
       expect(store.allListsObject[list.id]).to.eql({
         title: list.title,
         accountIds: [],
@@ -37,7 +45,7 @@ describe('The lists store', () => {
       expect(store.allLists).to.have.length(1)
       expect(store.allLists[0]).to.eql(list)
 
-      store.setList({ listId: modList.id, title: modList.title })
+      await store.setList({ listId: modList.id, title: modList.title })
       expect(store.allListsObject[modList.id]).to.eql({
         title: modList.title,
         accountIds: [],
@@ -46,24 +54,38 @@ describe('The lists store', () => {
       expect(store.allLists[0]).to.eql(modList)
     })
 
-    it('adds a new list with an array of IDs, updating the IDs for existing lists', () => {
-      store.$reset()
+    it('adds a new list with an array of IDs, updating the IDs for existing lists', async ({
+      worker,
+    }) => {
       const list = { id: '1', accountIds: ['1', '2', '3'] }
       const modList = { id: '1', accountIds: ['3', '4', '5'] }
 
-      store.setListAccounts({ listId: list.id, accountIds: list.accountIds })
+      worker.use(
+        http.post(MASTODON_LIST_ACCOUNTS_URL(':id'), () =>
+          HttpResponse.json({ ok: true }),
+        ),
+        http.delete(MASTODON_LIST_ACCOUNTS_URL(':id'), () =>
+          HttpResponse.json({ ok: true }),
+        ),
+      )
+
+      await store.setListAccounts({
+        listId: list.id,
+        accountIds: list.accountIds,
+      })
       expect(store.allListsObject[list.id].accountIds).to.eql(list.accountIds)
 
-      store.setListAccounts({
+      await store.setListAccounts({
         listId: modList.id,
         accountIds: modList.accountIds,
       })
+
       expect(store.allListsObject[modList.id].accountIds).to.eql(
         modList.accountIds,
       )
     })
 
-    it('deletes a list', () => {
+    it('deletes a list', async ({ worker }) => {
       store.$patch({
         allLists: [{ id: '1', title: 'testList' }],
         allListsObject: {
@@ -72,7 +94,13 @@ describe('The lists store', () => {
       })
       const listId = '1'
 
-      store.deleteList({ listId })
+      worker.use(
+        http.delete(MASTODON_LIST_URL(':id'), () =>
+          HttpResponse.json({ ok: true }),
+        ),
+      )
+
+      await store.deleteList({ listId })
       expect(store.allLists).to.have.length(0)
       expect(store.allListsObject).to.eql({})
     })
