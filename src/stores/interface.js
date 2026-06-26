@@ -177,8 +177,29 @@ export const useInterfaceStore = defineStore('interface', {
     removeGlobalNotice(notice) {
       this.globalNotices = this.globalNotices.filter((n) => n !== notice)
     },
-    setGlobalError(data) {
-      this.globalError = data
+    setGlobalError({ error, instance, info }) {
+      console.log(info)
+      switch (info) {
+        case 'https://vuejs.org/error-reference/#runtime-13': {
+          this.globalError = {
+            title: 'general.refresh_required',
+            content: 'general.refresh_required_content',
+            // `true` disables cache on Firefox (non-standard)
+            recover: () => window.location.reload(true),
+            recoverText: 'general.refresh_required_refresh',
+            error,
+          }
+          break
+        }
+        default: {
+          this.globalError = { error }
+          break
+        }
+      }
+      console.log(this.globalError)
+    },
+    clearGlobalError() {
+      this.globalError = null;
     },
     pushGlobalNotice({
       messageKey,

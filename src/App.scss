@@ -144,6 +144,19 @@ h4 {
   margin: 0;
 }
 
+code {
+  background: var(--bg);
+  border: 1px solid var(--fg);
+  border-radius: var(--roundness);
+  margin: 0.2em;
+  padding: 0 0.2em;
+
+  &.pre {
+    white-space: pre;
+    display: block;
+  }
+}
+
 .iconLetter {
   display: inline-block;
   text-align: center;

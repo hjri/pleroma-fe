@@ -4,6 +4,7 @@ import { defineAsyncComponent } from 'vue'
 
 import DesktopNav from 'src/components/desktop_nav/desktop_nav.vue'
 import FeaturesPanel from 'src/components/features_panel/features_panel.vue'
+import GlobalError from 'src/components/global_error/global_error.vue'
 import GlobalNoticeList from 'src/components/global_notice_list/global_notice_list.vue'
 import InstanceSpecificPanel from 'src/components/instance_specific_panel/instance_specific_panel.vue'
 import MobileNav from 'src/components/mobile_nav/mobile_nav.vue'
@@ -68,6 +69,7 @@ export default {
       () =>
         import('src/components/status_history_modal/status_history_modal.vue'),
     ),
+    GlobalError,
     GlobalNoticeList,
   },
   data: () => ({
