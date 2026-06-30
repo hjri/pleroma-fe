@@ -69,15 +69,6 @@ const StatusContent = {
           (this.mergedConfig.hideAttachmentsInConv && this.inConversation))
       )
     },
-    nsfwClickthrough() {
-      if (!this.status.nsfw) {
-        return false
-      }
-      if (this.status.summary && this.mergedConfig.collapseMessageWithSubject) {
-        return false
-      }
-      return true
-    },
     attachmentSize() {
       if (this.compact) {
         return 'small'

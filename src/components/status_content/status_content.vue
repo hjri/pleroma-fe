@@ -33,7 +33,7 @@
         v-if="status.attachments.length !== 0"
         class="attachments media-body"
         :compact="compact"
-        :nsfw="nsfwClickthrough"
+        :nsfw="status.nsfw"
         :attachments="status.attachments"
         :limit="compact ? 1 : 0"
         :size="attachmentSize"
@@ -45,10 +45,10 @@
         v-if="statusCard && !compact"
         class="link-preview media-body"
       >
-        <link-preview
+        <LinkPreview
           :card="status.card"
           :size="attachmentSize"
-          :nsfw="nsfwClickthrough"
+          :nsfw="status.nsfw"
         />
       </div>
     </StatusBody>

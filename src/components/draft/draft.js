@@ -69,15 +69,6 @@ const Draft = {
     localCollapseSubjectDefault() {
       return useMergedConfigStore().mergedConfig.collapseMessageWithSubject
     },
-    nsfwClickthrough() {
-      if (!this.draft.nsfw) {
-        return false
-      }
-      if (this.draft.summary && this.localCollapseSubjectDefault) {
-        return false
-      }
-      return true
-    },
   },
   watch: {
     editing(newVal) {
