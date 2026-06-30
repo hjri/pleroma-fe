@@ -11,7 +11,7 @@
       />
       <PostStatusForm />
     </div>
-    <auth-form
+    <AuthForm
       v-else
       key="user-panel"
     />

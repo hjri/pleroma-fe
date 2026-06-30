@@ -1,9 +1,8 @@
-import { defineAsyncComponent } from 'vue'
 import { mapState } from 'vuex'
 
+import AuthForm from 'src/components/auth_form/auth_form.js'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import UserCard from 'src/components/user_card/user_card.vue'
-import AuthForm from 'src/components/auth_form/auth_form.js'
 
 const UserPanel = {
   computed: {
@@ -15,6 +14,7 @@ const UserPanel = {
   components: {
     PostStatusForm,
     UserCard,
+    AuthForm,
   },
 }
 

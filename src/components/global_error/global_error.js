@@ -1,8 +1,8 @@
+import { mapActions, mapState } from 'pinia'
+
 import ErrorModal from 'src/components/error_modal/error_modal.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
-
-import { mapState, mapActions } from 'pinia'
 
 const GlobalError = {
   components: {
@@ -24,7 +24,11 @@ const GlobalError = {
     details() {
       if (this.globalError == null) return null
       if (this.globalError.error != null) {
-        return this.globalError.error.toString() + '\n\n' + this.globalError.error.stack
+        return (
+          this.globalError.error.toString() +
+          '\n\n' +
+          this.globalError.error.stack
+        )
       } else {
         return this.globalError.details
       }

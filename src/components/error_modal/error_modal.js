@@ -30,7 +30,7 @@ const ErrorModal = {
       type: Error,
     },
   },
-  emits: ['clear', 'recover']
+  emits: ['clear', 'recover'],
 }
 
 export default ErrorModal

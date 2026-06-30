@@ -199,7 +199,7 @@ export const useInterfaceStore = defineStore('interface', {
       console.log(this.globalError)
     },
     clearGlobalError() {
-      this.globalError = null;
+      this.globalError = null
     },
     pushGlobalNotice({
       messageKey,
