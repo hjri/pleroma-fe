@@ -50,7 +50,7 @@
       </div>
       <tab-switcher
         class="list-member-management"
-        :scrollable-tabs
+        scrollable-tabs
       >
         <div
           v-if="id || addedUserIds.size > 0"
