@@ -10,17 +10,17 @@
       :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
       :focused="isFocusedFunction(status.id)"
       :in-conversation="isExpanded"
-      :highlight="highlight"
+      :highlight="highlight === status.id"
       :in-profile="inProfile"
       :profile-user-id="profileUserId"
       class="conversation-status conversation-status-treeview status-fadein panel-body"
 
       :simple-tree="simple"
       :thread-display-status="threadDisplayStatus[status.id]"
-
       :can-dive="canDive"
+
       @dive="$emit('dive', status.id)"
-      @goto="setHighlight"
+      @goto="$emit('goto', status.id)"
       @toggle-expanded="toggleExpanded"
       @suspendable-state-change="e => $emit('suspendableStateChange', e)"
     />
@@ -55,6 +55,7 @@
         :total-reply-depth="totalReplyDepth"
 
         :can-dive="canDive"
+        @goto="(e) => $emit('goto', e)"
         @dive="(e) => $emit('dive', e)"
         @suspendable-state-change="e => $emit('suspendableStateChange', e)"
       />

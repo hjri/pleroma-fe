@@ -97,7 +97,7 @@
 
               :expandable="!isExpanded"
               :focused="isFocused(status.id)"
-              :highlight="getHighlight()"
+              :highlight="maybeHighlight"
               :inline-expanded="collapsable && isExpanded"
               :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
               :in-profile="inProfile"
@@ -156,8 +156,7 @@
 
           :is-focused-function="isFocused"
           :get-replies="getReplies"
-          :highlight="maybeHighlight"
-          :set-highlight="setHighlight"
+          :highlight="maybeHighlight === status.id"
           :toggle-expanded="toggleExpanded"
 
           :simple="treeViewIsSimple"
@@ -165,8 +164,9 @@
           :show-thread-recursively="showThreadRecursively"
           :total-reply-count="totalReplyCount"
           :total-reply-depth="totalReplyDepth"
-
           :can-dive="canDive"
+
+          @goto="setHighlight"
           @dive="diveIntoStatus"
           @suspendable-state-change="onStatusSuspendStateChange"
         />
@@ -186,7 +186,7 @@
 
             :expandable="!isExpanded"
             :focused="isFocused(status.id)"
-            :highlight="getHighlight()"
+            :highlight="maybeHighlight === status.id"
             :inline-expanded="collapsable && isExpanded"
             :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
             :in-profile="inProfile"

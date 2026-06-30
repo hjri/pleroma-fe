@@ -38,6 +38,12 @@ const StatusBody = {
       type: Boolean,
       default: false,
     },
+    inConversation: {
+      // Is status rendered within open conversation?
+      // Used to automatically expand subjects (if collapsed)
+      type: Boolean,
+      default: false,
+    }
   },
   data() {
     return {
@@ -70,7 +76,7 @@ const StatusBody = {
     // button. If the default is to collapse statuses with subjects, we just treat it like
     // a status with a subject; otherwise, we just treat it like a tall status.
     mightHideBecauseSubject() {
-      return this.hasSubject && this.mergedConfig.collapseMessageWithSubject
+      return !this.inConversation && this.hasSubject && this.mergedConfig.collapseMessageWithSubject
     },
     mightHideBecauseTall() {
       if (this.singleLine || this.compact) return false

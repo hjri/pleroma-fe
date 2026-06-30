@@ -9,6 +9,7 @@
       :compact="compact"
       :single-line="singleLine"
       :collapse="collapse"
+      :in-conversation="inConversation"
       @parse-ready="$emit('parseReady', $event)"
     >
       <div v-if="status.poll && status.poll.options && !compact">

@@ -32,7 +32,7 @@ const ThreadTree = {
     totalReplyCount: Object,
     totalReplyDepth: Object,
   },
-  emits: ['suspendableStateChange', 'dive'],
+  emits: ['suspendableStateChange', 'goto', 'dive'],
   computed: {
     reverseLookupTable() {
       return this.conversation.reduce(
