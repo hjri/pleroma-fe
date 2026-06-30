@@ -45,12 +45,7 @@ export default {
           shortcode: this.shortcode,
           filename: '',
         })
-        .then((resp) => resp.json())
-        .then((resp) => {
-          if (resp.error !== undefined) {
-            this.displayError(resp.error)
-            return
-          }
+        .then(({ data: resp }) => {
           useInterfaceStore().pushGlobalNotice({
             messageKey: 'admin_dash.emoji.copied_successfully',
             messageArgs: [this.shortcode, this.packName],
@@ -59,6 +54,10 @@ export default {
 
           this.$refs.emojiPopover.hidePopover()
           this.packName = ''
+        })
+        .catch((e) => {
+          this.displayError(e)
+          return
         })
     },
 
