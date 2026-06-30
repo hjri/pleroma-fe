@@ -45,7 +45,7 @@ export default {
         if (event === 'split') {
           return [this.normalizedState[0], this.normalizedState[0]]
         } else if (event === 'join') {
-          return [this.normalizedState[0]]
+          return this.normalizedState[0]
         }
       }
     },
