@@ -71,6 +71,7 @@ export const promisedRequest = async ({
   url,
   payload,
   formData,
+  cache,
   credentials,
   headers = {},
 }) => {
@@ -85,6 +86,10 @@ export const promisedRequest = async ({
 
   if (!formData) {
     options.headers['Content-Type'] = 'application/json'
+  }
+
+  if (cache) {
+    options.cache = cache
   }
 
   if (formData || payload) {

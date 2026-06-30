@@ -2,6 +2,8 @@ import sum from 'hash-sum'
 import localforage from 'localforage'
 import { chunk, throttle } from 'lodash'
 
+import { promisedRequest } from 'src/api/helpers.js'
+
 import { getCssRules } from '../theme_data/css_utils.js'
 import { getEngineChecksum, init } from '../theme_data/theme_data_3.service.js'
 
@@ -300,7 +302,7 @@ export const applyStyleConfig = (input) => {
   adoptStyleSheets()
 }
 
-export const getResourcesIndex = async (url, parser = JSON.parse) => {
+export const getResourcesIndex = async (url, parser = x => x) => {
   const cache = 'no-store'
   const customUrl = url.replace(/\.(\w+)$/, '.custom.$1')
   let builtin
@@ -314,14 +316,15 @@ export const getResourcesIndex = async (url, parser = JSON.parse) => {
         return [
           k,
           () =>
-            window
-              .fetch(v, { cache })
-              .then((data) => data.text())
-              .then((text) => parser(text))
-              .catch((e) => {
-                console.error(e)
-                return null
-              }),
+            promisedRequest({
+              url: v,
+              cache,
+            })
+            .then(({ data: text }) => parser(text))
+            .catch((e) => {
+              console.error(e)
+              return null
+            }),
         ]
       } else {
         console.error(`Unknown resource format - ${k} is a ${typeof v}`)
@@ -331,18 +334,16 @@ export const getResourcesIndex = async (url, parser = JSON.parse) => {
   }
 
   try {
-    const builtinData = await window.fetch(url, { cache })
-    const builtinResources = await builtinData.json()
-    builtin = resourceTransform(builtinResources)
+    const { data: builtinData } = await promisedRequest({ url, cache })
+    builtin = resourceTransform(builtinData)
   } catch {
     builtin = []
     console.warn(`Builtin resources at ${url} unavailable`)
   }
 
   try {
-    const customData = await window.fetch(customUrl, { cache })
-    const customResources = await customData.json()
-    custom = resourceTransform(customResources)
+    const { data: customData } = await promisedRequest({ url: customUrl, cache })
+    custom = resourceTransform(customData)
   } catch {
     custom = []
     console.warn(`Custom resources at ${customUrl} unavailable`)
