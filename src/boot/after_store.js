@@ -468,7 +468,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
   app.use(pinia)
 
   app.config.errorHandler = (error, instance, info) => {
-    console.error('GLOBAL ERROR HANDLER', error, instance, info)
+    console.error('Global Vue Error Handler caught an error:', error, instance, info)
     useInterfaceStore().setGlobalError({ error, instance, info })
   }
 
