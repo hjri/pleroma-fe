@@ -1,8 +1,7 @@
 <template>
-  <conversation
-    :collapsable="false"
-    is-page="true"
+  <Conversation
     :status-id="statusId"
+    is-page
   />
 </template>
 

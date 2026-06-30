@@ -55,15 +55,46 @@ const sortAndFilterConversation = (conversation, statusoid) => {
 }
 
 const conversation = {
-  props: [
-    'statusId',
-    'collapsable',
-    'isPage',
-    'pinnedStatusIdsObject',
-    'inProfile',
-    'profileUserId',
-    'virtualHidden',
-  ],
+  props: {
+    statusId: {
+      // Main thing
+      type: String,
+      required: true,
+    },
+    collapsable: {
+      // Whether conversation can be collapsed
+      // i.e. when it's not a page
+      type: Boolean,
+      default: false,
+    },
+    isPage: {
+      // Whether conversation is rendered as a standalone page
+      // as opposed to embedded into a timeline
+      type: Boolean,
+      default: false,
+    },
+    pinnedStatusIdsObject: {
+      // Used for user profile, map of pinned statuses
+      type: Object,
+      default: null,
+    },
+    inProfile: {
+      // Whether conversation is rendered in a user profile
+      // used for overriding muted status
+      type: Boolean,
+      default: false,
+    },
+    profileUserId: {
+      // used with inProfile, user id of the profile
+      type: String,
+      default: null,
+    },
+    virtualHidden: {
+      // Whether conversation is suspended. Controls rendering of statuses
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       highlight: null,
