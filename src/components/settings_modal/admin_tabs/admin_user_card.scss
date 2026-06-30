@@ -1,4 +1,19 @@
 .AdminUserCard {
+  details {
+    white-space: normal;
+
+    summary {
+      font-weight: bold;
+    }
+
+    span {
+      display: block;
+      max-height: 6.5em;
+      overflow-y: auto;
+      resize: vertical;
+    }
+  }
+
   .right-side {
     align-items: baseline;
     justify-content: end;
