@@ -148,8 +148,14 @@ code {
   background: var(--bg);
   border: 1px solid var(--fg);
   border-radius: var(--roundness);
-  margin: 0.2em;
   padding: 0 0.2em;
+
+  & pre,
+  pre & {
+    display: block;
+    overflow-x: auto;
+    padding: 0.2em;
+  }
 
   &.pre {
     white-space: pre;
