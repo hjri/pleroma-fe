@@ -75,44 +75,6 @@ library.add(
 
 const camelCase = (name) => name.charAt(0).toUpperCase() + name.slice(1)
 
-const controlledOrUncontrolledGetters = (list) =>
-  list.reduce((res, name) => {
-    const camelized = camelCase(name)
-    const toggle = `controlledToggle${camelized}`
-    const controlledName = `controlled${camelized}`
-    const uncontrolledName = `uncontrolled${camelized}`
-    res[name] = function () {
-      return (this.$data[toggle] !== undefined ||
-        this.$props[toggle] !== undefined) &&
-        this[toggle]
-        ? this[controlledName]
-        : this[uncontrolledName]
-    }
-    return res
-  }, {})
-
-const controlledOrUncontrolledToggle = (obj, name) => {
-  const camelized = camelCase(name)
-  const toggle = `controlledToggle${camelized}`
-  const uncontrolledName = `uncontrolled${camelized}`
-  if (obj[toggle]) {
-    obj[toggle]()
-  } else {
-    obj[uncontrolledName] = !obj[uncontrolledName]
-  }
-}
-
-const controlledOrUncontrolledSet = (obj, name, val) => {
-  const camelized = camelCase(name)
-  const set = `controlledSet${camelized}`
-  const uncontrolledName = `uncontrolled${camelized}`
-  if (obj[set]) {
-    obj[set](val)
-  } else {
-    obj[uncontrolledName] = val
-  }
-}
-
 const Status = {
   name: 'Status',
   components: {
@@ -146,17 +108,22 @@ const Status = {
     inProfile: Boolean,
     inConversation: Boolean,
     inQuote: Boolean,
+    canDive: Boolean,
 
     profileUserId: String,
     simpleTree: Boolean,
     showOtherRepliesAsButton: Boolean,
-    dive: Function,
+    canDive: Boolean,
     ignoreMute: Boolean,
 
-    controlledThreadDisplayStatus: String,
-    controlledToggleThreadDisplay: Function,
+    threadDisplayStatus: String,
   },
-  emits: ['goto', 'toggleExpanded', 'suspendableStateChange'],
+  emits: [
+    'goto',
+    'dive',
+    'toggleExpanded',
+    'suspendableStateChange'
+  ],
   data() {
     return {
       replying: false,
@@ -480,10 +447,10 @@ const Status = {
       return !this.replying && this.mediaPlaying.size === 0
     },
     inThreadForest() {
-      return !!this.controlledThreadDisplayStatus
+      return !!this.threadDisplayStatus
     },
     threadShowing() {
-      return this.controlledThreadDisplayStatus === 'showing'
+      return this.threadDisplayStatus === 'showing'
     },
     visibilityLocalized() {
       return this.$i18n.t('general.scope_in_timeline.' + this.status.visibility)

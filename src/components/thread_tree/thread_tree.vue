@@ -3,30 +3,29 @@
     <Status
       :key="status.id"
       ref="statusComponent"
-      :inline-expanded="collapsable && isExpanded"
       :statusoid="status"
+      :replies="getReplies(status.id)"
+      :inline-expanded="collapsable && isExpanded"
       :expandable="!isExpanded"
       :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
       :focused="isFocusedFunction(status.id)"
       :in-conversation="isExpanded"
       :highlight="highlight"
-      :replies="getReplies(status.id)"
       :in-profile="inProfile"
       :profile-user-id="profileUserId"
       class="conversation-status conversation-status-treeview status-fadein panel-body"
 
       :simple-tree="simple"
-      :controlled-thread-display-status="threadDisplayStatus[status.id]"
-      :controlled-toggle-thread-display="() => toggleThreadDisplay(status.id)"
+      :thread-display-status="threadDisplayStatus[status.id]"
 
-      :dive="dive ? () => dive(status.id) : undefined"
-
+      :can-dive="canDive"
+      @dive="$emit('dive', status.id)"
       @goto="setHighlight"
       @toggle-expanded="toggleExpanded"
       @suspendable-state-change="e => $emit('suspendableStateChange', e)"
     />
     <div
-      v-if="currentReplies.length && threadShowing"
+      v-if="currentReplies.length > 0 && threadShowing"
       class="thread-tree-replies"
     >
       <ThreadTree
@@ -50,13 +49,13 @@
         :toggle-expanded="toggleExpanded"
 
         :simple="simple"
-        :toggle-thread-display="toggleThreadDisplay"
         :thread-display-status="threadDisplayStatus"
         :show-thread-recursively="showThreadRecursively"
         :total-reply-count="totalReplyCount"
         :total-reply-depth="totalReplyDepth"
-        :dive="dive"
 
+        :can-dive="canDive"
+        @dive="(e) => $emit('dive', e)"
         @suspendable-state-change="e => $emit('suspendableStateChange', e)"
       />
     </div>
@@ -70,7 +69,7 @@
         tag="button"
         keypath="status.thread_follow_with_icon"
         class="button-unstyled -link thread-tree-show-replies-button"
-        @click.prevent="dive(status.id)"
+        @click.prevent="$emit('dive', status.id)"
       >
         <template #icon>
           <FAIcon

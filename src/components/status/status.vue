@@ -236,10 +236,10 @@
                   />
                 </button>
                 <button
-                  v-if="dive && !simpleTree"
+                  v-if="canDive && !simpleTree"
                   class="button-unstyled"
                   :title="$t('status.show_only_conversation_under_this')"
-                  @click.prevent="dive"
+                  @click.prevent="$emit('dive')"
                 >
                   <FAIcon
                     fixed-width
@@ -432,7 +432,7 @@
               v-if="showOtherRepliesAsButton && replies.length > 1"
               class="button-unstyled -link"
               :title="$t('status.ancestor_follow', { numReplies: replies.length - 1 }, replies.length - 1)"
-              @click.prevent="dive"
+              @click.prevent="$emit('dive')"
             >
               {{ $t('status.replies_list_with_others', { numReplies: replies.length - 1 }, replies.length - 1) }}
             </button>

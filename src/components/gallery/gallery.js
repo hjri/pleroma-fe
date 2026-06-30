@@ -165,8 +165,8 @@ const Gallery = {
       } else {
         this.$emit('pause')
       }
-    }
-  }
+    },
+  },
 }
 
 export default Gallery

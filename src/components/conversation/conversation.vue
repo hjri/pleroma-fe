@@ -105,9 +105,10 @@
               :profile-user-id="profileUserId"
               :simple-tree="treeViewIsSimple"
               :show-other-replies-as-button="showOtherRepliesButtonInsideStatus"
-              :dive="() => diveIntoStatus(status.id)"
+              can-dive
 
               @goto="setHighlight"
+              @dive="() => diveIntoStatus(status.id)"
               @suspendable-state-change="onStatusSuspendStateChange"
             />
             <div
@@ -160,12 +161,13 @@
           :toggle-expanded="toggleExpanded"
 
           :simple="treeViewIsSimple"
-          :toggle-thread-display="toggleThreadDisplay"
           :thread-display-status="threadDisplayStatus"
           :show-thread-recursively="showThreadRecursively"
           :total-reply-count="totalReplyCount"
           :total-reply-depth="totalReplyDepth"
-          :dive="canDive ? diveIntoStatus : undefined"
+
+          :can-dive="canDive"
+          @dive="diveIntoStatus"
           @suspendable-state-change="onStatusSuspendStateChange"
         />
       </div>
