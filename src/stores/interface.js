@@ -205,7 +205,7 @@ export const useInterfaceStore = defineStore('interface', {
       messageKey,
       messageArgs = {},
       level = 'error',
-      timeout = 0,
+      timeout = 5000,
     }) {
       const notice = {
         messageKey,
@@ -218,7 +218,7 @@ export const useInterfaceStore = defineStore('interface', {
       // Adding a new element to array wraps it in a Proxy, which breaks the comparison
       // TODO: Generate UUID or something instead or relying on !== operator?
       const newNotice = this.globalNotices[this.globalNotices.length - 1]
-      if (timeout) {
+      if (timeout > 0) {
         setTimeout(() => this.removeGlobalNotice(newNotice), timeout)
       }
 
