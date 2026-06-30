@@ -22,7 +22,7 @@
         </transition>
         <button
           class="btn button-default"
-          :title="$t('general.minimize')"
+          :title="$t('general.peek')"
           @click="toggleMinimizeModal"
         >
           <FAIcon
