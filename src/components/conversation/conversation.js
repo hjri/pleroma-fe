@@ -358,9 +358,6 @@ const conversation = {
     canDive() {
       return this.isTreeView && this.isExpanded
     },
-    maybeHighlight() {
-      return this.isExpanded ? this.highlight : null
-    },
     ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
     ...mapState({
       mastoUserSocketStatus: (state) => state.api.mastoUserSocketStatus,
@@ -435,7 +432,7 @@ const conversation = {
     getReplies(id) {
       return this.replies[id] || []
     },
-    getHighlight() {
+    maybeHighlight() {
       return this.isExpanded ? this.highlight : null
     },
     setHighlight(id) {
