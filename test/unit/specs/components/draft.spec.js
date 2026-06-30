@@ -100,7 +100,7 @@ describe('Draft saving', () => {
     await textarea.setValue('mew mew')
     wrapper.vm.requestClose()
     expect(wrapper.vm.$store.getters.draftCount).to.equal(1)
-    await waitForEvent(wrapper, 'can-close')
+    await waitForEvent(wrapper, 'close-accepted')
   })
 
   it('should save when close if auto-save is off, and unsavedPostAction is save', async () => {
@@ -122,7 +122,7 @@ describe('Draft saving', () => {
     await textarea.setValue('mew mew')
     wrapper.vm.requestClose()
     expect(wrapper.vm.$store.getters.draftCount).to.equal(1)
-    await waitForEvent(wrapper, 'can-close')
+    await waitForEvent(wrapper, 'close-accepted')
   })
 
   it('should discard when close if auto-save is off, and unsavedPostAction is discard', async () => {
@@ -143,7 +143,7 @@ describe('Draft saving', () => {
     const textarea = wrapper.get('textarea')
     await textarea.setValue('mew mew')
     wrapper.vm.requestClose()
-    await waitForEvent(wrapper, 'can-close')
+    await waitForEvent(wrapper, 'close-accepted')
     expect(wrapper.vm.$store.getters.draftCount).to.equal(0)
   })
 
@@ -180,6 +180,6 @@ describe('Draft saving', () => {
     console.info('clicked')
     expect(wrapper.vm.$store.getters.draftCount).to.equal(1)
     await flushPromises()
-    await waitForEvent(wrapper, 'can-close')
+    await waitForEvent(wrapper, 'close-accepted')
   })
 })
