@@ -1,6 +1,6 @@
 <template>
   <article class="thread-tree">
-    <status
+    <Status
       :key="status.id"
       ref="statusComponent"
       :inline-expanded="collapsable && isExpanded"
@@ -19,26 +19,17 @@
       :controlled-thread-display-status="threadDisplayStatus[status.id]"
       :controlled-toggle-thread-display="() => toggleThreadDisplay(status.id)"
 
-      :controlled-showing-tall="currentProp.showingTall"
-      :controlled-expanding-subject="currentProp.expandingSubject"
-      :controlled-showing-long-subject="currentProp.showingLongSubject"
-      :controlled-replying="currentProp.replying"
-      :controlled-media-playing="currentProp.mediaPlaying"
-      :controlled-toggle-showing-tall="() => toggleCurrentProp('showingTall')"
-      :controlled-toggle-expanding-subject="() => toggleCurrentProp('expandingSubject')"
-      :controlled-toggle-showing-long-subject="() => toggleCurrentProp('showingLongSubject')"
-      :controlled-toggle-replying="() => toggleCurrentProp('replying')"
-      :controlled-set-media-playing="(newVal) => setCurrentProp('mediaPlaying', newVal)"
       :dive="dive ? () => dive(status.id) : undefined"
 
       @goto="setHighlight"
       @toggle-expanded="toggleExpanded"
+      @suspendable-state-change="e => $emit('suspendableStateChange', e)"
     />
     <div
       v-if="currentReplies.length && threadShowing"
       class="thread-tree-replies"
     >
-      <thread-tree
+      <ThreadTree
         v-for="replyStatus in currentReplies"
         :key="replyStatus.id"
         ref="childComponent"
@@ -64,10 +55,9 @@
         :show-thread-recursively="showThreadRecursively"
         :total-reply-count="totalReplyCount"
         :total-reply-depth="totalReplyDepth"
-        :status-content-properties="statusContentProperties"
-        :set-status-content-property="setStatusContentProperty"
-        :toggle-status-content-property="toggleStatusContentProperty"
         :dive="dive"
+
+        @suspendable-state-change="e => $emit('suspendableStateChange', e)"
       />
     </div>
     <div

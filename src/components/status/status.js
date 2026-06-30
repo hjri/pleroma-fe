@@ -155,31 +155,19 @@ const Status = {
 
     controlledThreadDisplayStatus: String,
     controlledToggleThreadDisplay: Function,
-    controlledShowingTall: Boolean,
-    controlledToggleShowingTall: Function,
-    controlledExpandingSubject: Boolean,
-    controlledToggleExpandingSubject: Function,
-    controlledShowingLongSubject: Boolean,
-    controlledToggleShowingLongSubject: Function,
-    controlledReplying: Boolean,
-    controlledToggleReplying: Function,
-    controlledMediaPlaying: Boolean,
-    controlledSetMediaPlaying: Function,
   },
-  emits: ['goto', 'toggleExpanded'],
+  emits: ['goto', 'toggleExpanded', 'suspendableStateChange'],
   data() {
     return {
-      uncontrolledReplying: false,
+      replying: false,
       unmuted: false,
       userExpanded: false,
-      uncontrolledMediaPlaying: [],
-      suspendable: true,
+      mediaPlaying: new Set(),
       error: null,
       headTailLinks: null,
     }
   },
   computed: {
-    ...controlledOrUncontrolledGetters(['replying', 'mediaPlaying']),
     showReasonMutedThread() {
       return (
         (this.status.thread_muted ||
@@ -489,7 +477,7 @@ const Status = {
       return useMergedConfigStore().mergedConfig
     },
     isSuspendable() {
-      return !this.replying && this.mediaPlaying.length === 0
+      return !this.replying && this.mediaPlaying.size === 0
     },
     inThreadForest() {
       return !!this.controlledThreadDisplayStatus
@@ -566,15 +554,17 @@ const Status = {
     clearError() {
       this.error = undefined
     },
-    toggleReplying() {
+    toggleReplyForm() {
       if (this.replying) {
+        // This emits 'close-accepted' if successful
+        // which in turn callse closeReply()
         this.$refs.postStatusForm.requestClose()
       } else {
-        this.doToggleReplying()
+        this.replying = true
       }
     },
-    doToggleReplying() {
-      controlledOrUncontrolledToggle(this, 'replying')
+    closeReplyForm() {
+      this.replying = false
     },
     gotoOriginal(id) {
       if (this.inConversation) {
@@ -598,18 +588,10 @@ const Status = {
       )
     },
     addMediaPlaying(id) {
-      controlledOrUncontrolledSet(
-        this,
-        'mediaPlaying',
-        this.mediaPlaying.concat(id),
-      )
+      this.mediaPlaying.add(id)
     },
     removeMediaPlaying(id) {
-      controlledOrUncontrolledSet(
-        this,
-        'mediaPlaying',
-        this.mediaPlaying.filter((mediaId) => mediaId !== id),
-      )
+      this.mediaPlaying.delete(id)
     },
     setHeadTailLinks(headTailLinks) {
       this.headTailLinks = headTailLinks
@@ -659,8 +641,8 @@ const Status = {
         this.$store.dispatch('fetchFavs', this.status.id)
       }
     },
-    isSuspendable: function (val) {
-      this.suspendable = val
+    isSuspendable: function (suspend) {
+      this.$emit('suspendableStateChange', { id: this.statusoid.id, suspend })
     },
   },
 }

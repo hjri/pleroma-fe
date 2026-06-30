@@ -409,15 +409,9 @@
           <StatusContent
             ref="content"
             :status="status"
-            :no-heading="noHeading"
             :highlight="highlight"
             :focused="isFocused"
-            :controlled-showing-tall="controlledShowingTall"
-            :controlled-expanding-subject="controlledExpandingSubject"
-            :controlled-showing-long-subject="controlledShowingLongSubject"
-            :controlled-toggle-showing-tall="controlledToggleShowingTall"
-            :controlled-toggle-expanding-subject="controlledToggleExpandingSubject"
-            :controlled-toggle-showing-long-subject="controlledToggleShowingLongSubject"
+            :in-conversation="inConversation"
             @mediaplay="addMediaPlaying($event)"
             @mediapause="removeMediaPlaying($event)"
             @parse-ready="setHeadTailLinks"
@@ -521,7 +515,7 @@
             v-if="!noHeading && !isPreview"
             :status="status"
             :replying="replying"
-            @toggle-replying="toggleReplying"
+            @toggle-replying="toggleReplyForm"
           />
         </div>
       </div>
@@ -555,9 +549,9 @@
           :replied-user="status.user"
           :copy-message-scope="status.visibility"
           :subject="replySubject"
-          @posted="doToggleReplying"
-          @draft-done="doToggleReplying"
-          @can-close="doToggleReplying"
+          @posted="closeReplyForm"
+          @draft-done="closeReplyForm"
+          @close-accepted="closeReplyForm"
         />
       </div>
     </template>

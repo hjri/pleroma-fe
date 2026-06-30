@@ -133,7 +133,7 @@ const PostStatusForm = {
     'resize',
     'mediaplay',
     'mediapause',
-    'can-close',
+    'close-accepted',
     'update',
   ],
   components: {
@@ -963,19 +963,19 @@ const PostStatusForm = {
     },
     requestClose() {
       if (!this.saveable) {
-        this.$emit('can-close')
+        this.$emit('close-accepted')
       } else {
         this.$refs.draftCloser.requestClose()
       }
     },
     saveAndCloseDraft() {
       this.saveDraft().then(() => {
-        this.$emit('can-close')
+        this.$emit('close-accepted')
       })
     },
     discardAndCloseDraft() {
       this.abandonDraft().then(() => {
-        this.$emit('can-close')
+        this.$emit('close-accepted')
       })
     },
     addBeforeUnloadListener() {

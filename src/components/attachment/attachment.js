@@ -52,6 +52,7 @@ const Attachment = {
     'shiftDn',
     'edit',
   ],
+  emits: ['play', 'pause'],
   data() {
     return {
       localDescription: this.description || this.attachment.description,

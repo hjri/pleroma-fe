@@ -55,16 +55,6 @@ const sortAndFilterConversation = (conversation, statusoid) => {
 }
 
 const conversation = {
-  data() {
-    return {
-      highlight: null,
-      expanded: false,
-      threadDisplayStatusObject: {}, // id => 'showing' | 'hidden'
-      statusContentPropertiesObject: {},
-      inlineDivePosition: null,
-      loadStatusError: null,
-    }
-  },
   props: [
     'statusId',
     'collapsable',
@@ -74,6 +64,16 @@ const conversation = {
     'profileUserId',
     'virtualHidden',
   ],
+  data() {
+    return {
+      highlight: null,
+      expanded: false,
+      threadDisplayStatusObject: {}, // id => 'showing' | 'hidden'
+      inlineDivePosition: null,
+      loadStatusError: null,
+      unsuspendibleIds: new Set(),
+    }
+  },
   created() {
     if (this.isPage) {
       this.fetchConversation()
@@ -118,16 +118,7 @@ const conversation = {
       return this.otherRepliesButtonPosition === 'inside'
     },
     suspendable() {
-      if (this.isTreeView) {
-        return Object.entries(this.statusContentProperties).every(
-          ([, prop]) => !prop.replying && prop.mediaPlaying.length === 0,
-        )
-      }
-      if (this.$refs.statusComponent && this.$refs.statusComponent[0]) {
-        return this.$refs.statusComponent.every((s) => s.suspendable)
-      } else {
-        return true
-      }
+      return this.unsuspendibleIds.size > 0
     },
     hideStatus() {
       return this.virtualHidden && this.suspendable
@@ -364,31 +355,6 @@ const conversation = {
         return a
       }, {})
     },
-    statusContentProperties() {
-      return this.conversation.reduce((a, k) => {
-        const id = k.id
-        const props = (() => {
-          const def = {
-            showingTall: false,
-            expandingSubject: false,
-            showingLongSubject: false,
-            isReplying: false,
-            mediaPlaying: [],
-          }
-
-          if (this.statusContentPropertiesObject[id]) {
-            return {
-              ...def,
-              ...this.statusContentPropertiesObject[id],
-            }
-          }
-          return def
-        })()
-
-        a[id] = props
-        return a
-      }, {})
-    },
     canDive() {
       return this.isTreeView && this.isExpanded
     },
@@ -514,22 +480,6 @@ const conversation = {
     showThreadRecursively(id) {
       this.setThreadDisplayRecursively(id, 'showing')
     },
-    setStatusContentProperty(id, name, value) {
-      this.statusContentPropertiesObject = {
-        ...this.statusContentPropertiesObject,
-        [id]: {
-          ...this.statusContentPropertiesObject[id],
-          [name]: value,
-        },
-      }
-    },
-    toggleStatusContentProperty(id, name) {
-      this.setStatusContentProperty(
-        id,
-        name,
-        !this.statusContentProperties[id][name],
-      )
-    },
     leastVisibleAncestor(id) {
       let cur = id
       let parent = this.parentOf(cur)
@@ -628,6 +578,13 @@ const conversation = {
     resetDisplayState() {
       this.undive()
       this.threadDisplayStatusObject = {}
+    },
+    onStatusSuspendStateChange({ id, suspend }) {
+      if (!suspend) {
+        this.unsuspendibleIds.add(id)
+      } else {
+        this.unsuspendibleIds.delete(id)
+      }
     },
   },
 }

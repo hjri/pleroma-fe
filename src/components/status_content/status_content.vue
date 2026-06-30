@@ -8,12 +8,6 @@
       :status="status"
       :compact="compact"
       :single-line="singleLine"
-      :showing-tall="showingTall"
-      :expanding-subject="expandingSubject"
-      :showing-long-subject="showingLongSubject"
-      :toggle-showing-tall="toggleShowingTall"
-      :toggle-expanding-subject="toggleExpandingSubject"
-      :toggle-showing-long-subject="toggleShowingLongSubject"
       :collapse="collapse"
       @parse-ready="$emit('parseReady', $event)"
     >
@@ -42,12 +36,12 @@
         :attachments="status.attachments"
         :limit="compact ? 1 : 0"
         :size="attachmentSize"
-        @play="$emit('mediaplay', attachment.id)"
-        @pause="$emit('mediapause', attachment.id)"
+        @play="$emit('mediaplay')"
+        @pause="$emit('mediapause')"
       />
 
       <div
-        v-if="statusCard && !noHeading && !compact"
+        v-if="statusCard && !compact"
         class="link-preview media-body"
       >
         <link-preview

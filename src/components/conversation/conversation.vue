@@ -107,19 +107,8 @@
               :show-other-replies-as-button="showOtherRepliesButtonInsideStatus"
               :dive="() => diveIntoStatus(status.id)"
 
-              :controlled-showing-tall="statusContentProperties[status.id].showingTall"
-              :controlled-toggle-showing-tall="() => toggleStatusContentProperty(status.id, 'showingTall')"
-              :controlled-expanding-subject="statusContentProperties[status.id].expandingSubject"
-              :controlled-toggle-expanding-subject="() => toggleStatusContentProperty(status.id, 'expandingSubject')"
-              :controlled-showing-long-subject="statusContentProperties[status.id].showingLongSubject"
-              :controlled-toggle-showing-long-subject="() => toggleStatusContentProperty(status.id, 'showingLongSubject')"
-              :controlled-replying="statusContentProperties[status.id].replying"
-              :controlled-toggle-replying="() => toggleStatusContentProperty(status.id, 'replying')"
-              :controlled-media-playing="statusContentProperties[status.id].mediaPlaying"
-              :controlled-set-media-playing="(newVal) => toggleStatusContentProperty(status.id, 'mediaPlaying', newVal)"
-
               @goto="setHighlight"
-              @toggle-expanded="toggleExpanded"
+              @suspendable-state-change="onStatusSuspendStateChange"
             />
             <div
               v-if="showOtherRepliesButtonBelowStatus && getReplies(status.id).length > 1"
@@ -150,7 +139,7 @@
             </div>
           </article>
         </div>
-        <thread-tree
+        <ThreadTree
           v-for="status in showingTopLevel"
           :key="status.id"
           ref="statusComponent"
@@ -176,10 +165,8 @@
           :show-thread-recursively="showThreadRecursively"
           :total-reply-count="totalReplyCount"
           :total-reply-depth="totalReplyDepth"
-          :status-content-properties="statusContentProperties"
-          :set-status-content-property="setStatusContentProperty"
-          :toggle-status-content-property="toggleStatusContentProperty"
           :dive="canDive ? diveIntoStatus : undefined"
+          @suspendable-state-change="onStatusSuspendStateChange"
         />
       </div>
       <div
@@ -187,7 +174,7 @@
         class="thread-body"
       >
         <article>
-          <status
+          <Status
             v-for="status in conversation"
             :key="status.id"
             ref="statusComponent"
@@ -206,6 +193,7 @@
 
             @goto="setHighlight"
             @toggle-expanded="toggleExpanded"
+            @suspendable-state-change="onStatusSuspendStateChange"
           />
         </article>
       </div>

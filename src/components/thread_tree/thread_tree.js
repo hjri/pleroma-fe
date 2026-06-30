@@ -32,11 +32,9 @@ const ThreadTree = {
     showThreadRecursively: Function,
     totalReplyCount: Object,
     totalReplyDepth: Object,
-    statusContentProperties: Object,
-    setStatusContentProperty: Function,
-    toggleStatusContentProperty: Function,
     dive: Function,
   },
+  emits: ['suspendableStateChange'],
   computed: {
     suspendable() {
       const selfSuspendable = this.$refs.statusComponent
@@ -68,9 +66,6 @@ const ThreadTree = {
     },
     threadShowing() {
       return this.threadDisplayStatus[this.status.id] === 'showing'
-    },
-    currentProp() {
-      return this.statusContentProperties[this.status.id]
     },
   },
   methods: {
