@@ -887,7 +887,9 @@ const statuses = {
           statuses: data.statuses,
         })
 
-        data.statuses = data.statuses.map((s) => store.state.allStatusesObject[s.id])
+        data.statuses = data.statuses.map(
+          (s) => store.state.allStatusesObject[s.id],
+        )
         return data
       })
     },

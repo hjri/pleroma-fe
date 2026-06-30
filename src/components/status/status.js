@@ -73,8 +73,6 @@ library.add(
   faPlay,
 )
 
-const camelCase = (name) => name.charAt(0).toUpperCase() + name.slice(1)
-
 const Status = {
   name: 'Status',
   components: {
@@ -108,7 +106,6 @@ const Status = {
     inProfile: Boolean,
     inConversation: Boolean,
     inQuote: Boolean,
-    canDive: Boolean,
 
     profileUserId: String,
     simpleTree: Boolean,
@@ -118,12 +115,7 @@ const Status = {
 
     threadDisplayStatus: String,
   },
-  emits: [
-    'goto',
-    'dive',
-    'toggleExpanded',
-    'suspendableStateChange'
-  ],
+  emits: ['goto', 'dive', 'toggleExpanded', 'suspendableStateChange'],
   data() {
     return {
       replying: false,

@@ -2,14 +2,13 @@ import sum from 'hash-sum'
 import localforage from 'localforage'
 import { chunk, throttle } from 'lodash'
 
-import { promisedRequest } from 'src/api/helpers.js'
-
 import { getCssRules } from '../theme_data/css_utils.js'
 import { getEngineChecksum, init } from '../theme_data/theme_data_3.service.js'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
+import { promisedRequest } from 'src/api/helpers.js'
 import { ROOT_CONFIG } from 'src/modules/default_config_state.js'
 
 // On platforms where this is not supported, it will return undefined
@@ -302,7 +301,7 @@ export const applyStyleConfig = (input) => {
   adoptStyleSheets()
 }
 
-export const getResourcesIndex = async (url, parser = x => x) => {
+export const getResourcesIndex = async (url, parser = (x) => x) => {
   const cache = 'no-store'
   const customUrl = url.replace(/\.(\w+)$/, '.custom.$1')
   let builtin
@@ -320,11 +319,11 @@ export const getResourcesIndex = async (url, parser = x => x) => {
               url: v,
               cache,
             })
-            .then(({ data: text }) => parser(text))
-            .catch((e) => {
-              console.error(e)
-              return null
-            }),
+              .then(({ data: text }) => parser(text))
+              .catch((e) => {
+                console.error(e)
+                return null
+              }),
         ]
       } else {
         console.error(`Unknown resource format - ${k} is a ${typeof v}`)
@@ -342,7 +341,10 @@ export const getResourcesIndex = async (url, parser = x => x) => {
   }
 
   try {
-    const { data: customData } = await promisedRequest({ url: customUrl, cache })
+    const { data: customData } = await promisedRequest({
+      url: customUrl,
+      cache,
+    })
     custom = resourceTransform(customData)
   } catch {
     custom = []
