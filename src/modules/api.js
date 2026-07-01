@@ -302,7 +302,7 @@ const api = {
     // Follow requests
     startFetchingFollowRequests(store) {
       if (store.state.fetchers.followRequests) return
-      const fetcher = followRequestFetcher.startFetchingFollowRequests({
+      const fetcher = followRequestFetcher.startFetching({
         store,
         credentials: useOAuthStore().token,
       })
