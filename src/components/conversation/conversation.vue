@@ -156,7 +156,7 @@
 
           :is-focused-function="isFocused"
           :get-replies="getReplies"
-          :highlight="maybeHighlight === status.id"
+          :highlight="maybeHighlight"
           :toggle-expanded="toggleExpanded"
 
           :simple="treeViewIsSimple"
