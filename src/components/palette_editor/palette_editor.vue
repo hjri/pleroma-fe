@@ -4,15 +4,21 @@
     :class="{ '-compact': compact, '-apply': apply, '-mobile': mobile }"
   >
     <div class="palette">
-      <ColorInput
-        v-for="key in paletteKeys"
-        :key="key"
-        :name="key"
-        :model-value="props.modelValue[key]"
-        :fallback="fallback(key)"
-        :label="$t('settings.style.themes3.palette.' + key)"
-        @update:model-value="value => updatePalette(key, value)"
-      />
+      <div v-for="key in paletteKeys">
+        <ColorInput
+          :key="key"
+          :name="key"
+          :model-value="props.modelValue[key]"
+          :fallback="fallback(key)"
+          :label="$t('settings.style.themes3.palette.' + key)"
+          @update:model-value="value => updatePalette(key, value)"
+        />
+        <ContrastRatio
+          v-if="contrast[key]"
+          :show-ratio="true"
+          :contrast="contrast[key]"
+        />
+      </div>
     </div>
     <div class="buttons">
       <button
@@ -48,6 +54,9 @@
 import { computed } from 'vue'
 
 import ColorInput from 'src/components/color_input/color_input.vue'
+import ContrastRatio from 'src/components/contrast_ratio/contrast_ratio.vue'
+
+import { getContrastRatio, hex2rgb } from 'src/services/color_convert/color_convert.js'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 
@@ -106,12 +115,31 @@ const importPalette = () => {
   paletteImporter.importData()
 }
 
+const hints = (ratio) => ({
+  text: ratio.toPrecision(3) + ':1',
+  // AA level, AAA level
+  aa: ratio >= 4.5,
+  aaa: ratio >= 7,
+  // same but for 18pt+ texts
+  laa: ratio >= 3,
+  laaa: ratio >= 4.5,
+})
+
 const applyPalette = () => {
   emit('applyPalette', getExportedObject())
 }
 
 const mobile = computed(() => {
   return useInterfaceStore().layoutType === 'mobile'
+})
+
+const contrast = computed(() => {
+  const bg = hex2rgb(props.modelValue.bg)
+
+  return {
+    text: hints(getContrastRatio(bg, hex2rgb(props.modelValue.text))),
+    link: hints(getContrastRatio(bg, hex2rgb(props.modelValue.link))),
+  }
 })
 
 const fallback = (key) => {
