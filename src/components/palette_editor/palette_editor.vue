@@ -4,9 +4,11 @@
     :class="{ '-compact': compact, '-apply': apply, '-mobile': mobile }"
   >
     <div class="palette">
-      <div v-for="key in paletteKeys">
+      <div
+        v-for="key in paletteKeys"
+        :key="key"
+      >
         <ColorInput
-          :key="key"
           :name="key"
           :model-value="props.modelValue[key]"
           :fallback="fallback(key)"

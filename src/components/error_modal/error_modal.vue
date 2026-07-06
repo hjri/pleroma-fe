@@ -25,7 +25,10 @@
 
           <details open>
             <summary>{{ $t('general.generic_error_details') }}</summary>
-            <code class="stack pre" v-text="error.stack" />
+            <code
+              class="stack pre"
+              v-text="error.stack"
+            />
           </details>
         </slot>
       </div>

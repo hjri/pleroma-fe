@@ -13,7 +13,10 @@
 
         <details v-if="details">
           <summary>{{ $t('general.generic_error_details') }}</summary>
-          <code class="stack pre" v-text="details" />
+          <code
+            class="stack pre"
+            v-text="details"
+          />
         </details>
       </template>
     </ErrorModal>
