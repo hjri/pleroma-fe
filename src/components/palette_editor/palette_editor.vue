@@ -16,7 +16,7 @@
           @update:model-value="value => updatePalette(key, value)"
         />
         <ContrastRatio
-          v-if="contrast[key]"
+          v-if="contrast?.[key]"
           :show-ratio="true"
           :contrast="contrast[key]"
         />
@@ -136,11 +136,15 @@ const mobile = computed(() => {
 })
 
 const contrast = computed(() => {
+  if (props.modelValue == null) return null
   const bg = hex2rgb(props.modelValue.bg)
+  const text = hex2rgb(props.modelValue.text)
+  const link = hex2rgb(props.modelValue.link)
+  if (text == null || link == null) return null
 
   return {
-    text: hints(getContrastRatio(bg, hex2rgb(props.modelValue.text))),
-    link: hints(getContrastRatio(bg, hex2rgb(props.modelValue.link))),
+    text: hints(getContrastRatio(bg, text)),
+    link: hints(getContrastRatio(bg, link)),
   }
 })
 
