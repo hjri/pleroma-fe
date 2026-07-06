@@ -20,6 +20,7 @@
           :show-ratio="true"
           :contrast="contrast[key]"
         />
+        <div v-else>{{ '&nbsp;' }}</div>
       </div>
     </div>
     <div class="buttons">
@@ -236,15 +237,6 @@ const updatePalette = (paletteKey, value) => {
     &.-apply {
       .palette-apply-button {
         grid-column: 1 / span 2;
-      }
-    }
-
-    .color-input {
-      display: grid;
-      gap: 0.5em;
-
-      label {
-        flex: 1;
       }
     }
   }
