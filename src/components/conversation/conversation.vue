@@ -96,8 +96,7 @@
               :replies="getReplies(status.id)"
 
               :expandable="!isExpanded"
-              :focused="isFocused(status.id)"
-              :highlight="maybeHighlight"
+              :focused="maybeFocused === status.id"
               :inline-expanded="collapsable && isExpanded"
               :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
               :in-profile="inProfile"
@@ -107,7 +106,7 @@
               :show-other-replies-as-button="showOtherRepliesButtonInsideStatus"
               can-dive
 
-              @goto="setHighlight"
+              @goto="setFocused"
               @dive="() => diveIntoStatus(status.id)"
               @suspendable-state-change="onStatusSuspendStateChange"
             />
@@ -154,9 +153,8 @@
           :pinned-status-ids-object="pinnedStatusIdsObject"
           :profile-user-id="profileUserId"
 
-          :is-focused-function="isFocused"
           :get-replies="getReplies"
-          :highlight="maybeHighlight"
+          :focused="maybeFocused"
           :toggle-expanded="toggleExpanded"
 
           :simple="treeViewIsSimple"
@@ -166,7 +164,7 @@
           :total-reply-depth="totalReplyDepth"
           :can-dive="canDive"
 
-          @goto="setHighlight"
+          @goto="setFocused"
           @dive="diveIntoStatus"
           @suspendable-state-change="onStatusSuspendStateChange"
         />
@@ -185,15 +183,14 @@
             :replies="getReplies(status.id)"
 
             :expandable="!isExpanded"
-            :focused="isFocused(status.id)"
-            :highlight="maybeHighlight === status.id"
+            :focused="maybeFocused === status.id || maybeFocused === status.retweeted_status?.id"
             :inline-expanded="collapsable && isExpanded"
             :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
             :in-profile="inProfile"
             :in-conversation="isExpanded"
             :profile-user-id="profileUserId"
 
-            @goto="setHighlight"
+            @goto="setFocused"
             @toggle-expanded="toggleExpanded"
             @suspendable-state-change="onStatusSuspendStateChange"
           />

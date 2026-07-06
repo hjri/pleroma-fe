@@ -97,7 +97,7 @@ const conversation = {
   },
   data() {
     return {
-      highlight: null,
+      focused: null,
       expanded: false,
       threadDisplayStatusObject: {}, // id => 'showing' | 'hidden'
       inlineDivePosition: null,
@@ -389,6 +389,9 @@ const conversation = {
     canDive() {
       return this.isTreeView && this.isExpanded
     },
+    maybeFocused() {
+      return this.isExpanded ? this.focused : null
+    },
     ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
     ...mapState({
       mastoUserSocketStatus: (state) => state.api.mastoUserSocketStatus,
@@ -411,7 +414,7 @@ const conversation = {
         oldConversationId &&
         newConversationId === oldConversationId
       ) {
-        this.setHighlight(this.originalStatusId)
+        this.setFocused(this.originalStatusId)
       } else {
         this.fetchConversation()
       }
@@ -439,7 +442,7 @@ const conversation = {
         }).then(({ data: { ancestors, descendants } }) => {
           this.$store.dispatch('addNewStatuses', { statuses: ancestors })
           this.$store.dispatch('addNewStatuses', { statuses: descendants })
-          this.setHighlight(this.originalStatusId)
+          this.setFocused(this.originalStatusId)
         })
       } else {
         this.loadStatusError = null
@@ -457,18 +460,12 @@ const conversation = {
           })
       }
     },
-    isFocused(id) {
-      return this.isExpanded && id === this.highlight
-    },
     getReplies(id) {
       return this.replies[id] || []
     },
-    maybeHighlight() {
-      return this.isExpanded ? this.highlight : null
-    },
-    setHighlight(id) {
+    setFocused(id) {
       if (!id) return
-      this.highlight = id
+      this.focused = id
 
       if (!this.streamingEnabled) {
         this.$store.dispatch('fetchStatus', id)
@@ -533,7 +530,7 @@ const conversation = {
     // only used when we are not on a page
     undive() {
       this.inlineDivePosition = null
-      this.setHighlight(this.statusId)
+      this.setFocused(this.statusId)
     },
     tryScrollTo(id) {
       if (!id) {
@@ -551,7 +548,7 @@ const conversation = {
       // contain scrolling calls, as we do not want the page to jump
       // when we scroll with an expanded conversation.
       //
-      // Now the method is to rely solely on the `highlight` watcher
+      // Now the method is to rely solely on the `focused` watcher
       // in `status` components.
       // In linear views, all statuses are rendered at all times, but
       // in tree views, it is possible that a change in active status
@@ -559,9 +556,9 @@ const conversation = {
       // status becomes an ancestor status, and thus they will be
       // different).
       // Here, let the components be rendered first, in order to trigger
-      // the `highlight` watcher.
+      // the `focused` watcher.
       this.$nextTick(() => {
-        this.setHighlight(id)
+        this.setFocused(id)
       })
     },
     goToCurrent() {

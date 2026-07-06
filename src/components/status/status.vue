@@ -3,7 +3,7 @@
     v-if="!hideStatus"
     ref="root"
     class="Status"
-    :class="[{ '-focused': isFocused }, { '-conversation': inlineExpanded }]"
+    :class="[{ '-focused': focused }, { '-conversation': inlineExpanded }]"
   >
     <div
       v-if="error"
@@ -409,8 +409,7 @@
           <StatusContent
             ref="content"
             :status="status"
-            :highlight="highlight"
-            :focused="isFocused"
+            :focused="focused"
             :in-conversation="inConversation"
             @mediaplay="addMediaPlaying($event)"
             @mediapause="removeMediaPlaying($event)"
@@ -507,7 +506,7 @@
           </transition>
 
           <EmojiReactions
-            v-if="(mergedConfig.emojiReactionsOnTimeline || isFocused) && (!noHeading && !isPreview)"
+            v-if="(mergedConfig.emojiReactionsOnTimeline || focused) && (!noHeading && !isPreview)"
             :status="status"
           />
 

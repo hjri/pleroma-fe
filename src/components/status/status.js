@@ -97,7 +97,6 @@ const Status = {
 
     expandable: Boolean,
     focused: Boolean,
-    highlight: Boolean,
     compact: Boolean,
     isPreview: Boolean,
     noHeading: Boolean,
@@ -320,7 +319,7 @@ const Status = {
     },
     shouldNotMute() {
       if (this.ignoreMute) return true
-      if (this.isFocused) return true
+      if (this.focused) return true
       const { status } = this
       const { reblog } = status
       return (
@@ -356,16 +355,6 @@ const Status = {
           (this.muteFilterHits.length > 0 && this.hideWordFilteredPosts) ||
           this.muteFilterHits.some((x) => x.hide))
       )
-    },
-    isFocused() {
-      // retweet or root of an expanded conversation
-      if (this.focused) {
-        return true
-      } else if (!this.inConversation) {
-        return false
-      }
-      // use conversation highlight only when in conversation
-      return this.status.id === this.highlight
     },
     isReply() {
       return !!(
@@ -415,7 +404,7 @@ const Status = {
     shouldDisplayFavsAndRepeats() {
       return (
         !this.hidePostStats &&
-        this.isFocused &&
+        this.focused &&
         (this.combinedFavsAndRepeatsUsers.length > 0 ||
           this.statusFromGlobalRepository.quotes_count)
       )
@@ -558,9 +547,9 @@ const Status = {
     toggleThreadDisplay() {
       this.controlledToggleThreadDisplay()
     },
-    scrollIfHighlighted(highlightId) {
+    scrollIfFocused(focusedId) {
       if (this.$el.getBoundingClientRect == null) return
-      const id = highlightId
+      const id = focusedId
       if (this.status.id === id) {
         const rect = this.$el.getBoundingClientRect()
         if (rect.top < 100) {
@@ -577,13 +566,13 @@ const Status = {
     },
   },
   watch: {
-    highlight: function (id) {
-      this.scrollIfHighlighted(id)
+    focused: function (id) {
+      this.scrollIfFocused(id)
     },
     'status.repeat_num': function (num) {
       // refetch repeats when repeat_num is changed in any way
       if (
-        this.isFocused &&
+        this.focused &&
         this.statusFromGlobalRepository.rebloggedBy &&
         this.statusFromGlobalRepository.rebloggedBy.length !== num
       ) {
@@ -593,7 +582,7 @@ const Status = {
     'status.fave_num': function (num) {
       // refetch favs when fave_num is changed in any way
       if (
-        this.isFocused &&
+        this.focused &&
         this.statusFromGlobalRepository.favoritedBy &&
         this.statusFromGlobalRepository.favoritedBy.length !== num
       ) {
