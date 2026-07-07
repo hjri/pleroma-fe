@@ -16,6 +16,32 @@
       animation-play-state: paused;
     }
 
+    &[data-mfm-operator="sparkle"] {
+      position: relative;
+
+      &::before,
+      &::after {
+        content: '✨';
+        position: absolute;
+        opacity: 0.4;
+        z-index: -1;
+        animation-name: cheap-sparkle;
+        animation-duration: 1s;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+      }
+
+      &::before {
+        left: 0;
+        animation-direction: alternate;
+      }
+
+      &::after {
+        right: 0;
+        animation-direction: alternate-reverse;
+      }
+    }
+
     .emoji {
       /* Misskey's emoji width knows no bounds */
       /* stylelint-disable-next-line declaration-no-important */
@@ -417,4 +443,16 @@ a .RichContent {
     100% {
         filter: hue-rotate(360deg)contrast(150%)saturate(150%)
     }
+}
+
+@keyframes cheap-sparkle {
+  0% {
+    filter: hue-rotate()contrast(150%)saturate(150%);
+    transform: translateY(-0.5em);
+  }
+
+  100% {
+    filter: hue-rotate(360deg)contrast(150%)saturate(150%);
+    transform: translateY(0.5em);
+  }
 }
