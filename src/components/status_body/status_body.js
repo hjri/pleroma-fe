@@ -59,6 +59,12 @@ const StatusBody = {
     allowNonSquareEmoji() {
       return this.mergedConfig.nonSquareEmoji
     },
+    pauseMfm() {
+      return this.mergedConfig.pauseMfm
+    },
+    scaleMfm() {
+      return this.mergedConfig.scaleMfm
+    },
     // This is a bit hacky, but we want to approximate post height before rendering
     // so we count newlines (masto uses <p> for paragraphs, GS uses <br> between them)
     // as well as approximate line count by counting characters and approximating ~80

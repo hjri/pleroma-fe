@@ -20,6 +20,8 @@
       :html="htmlTitle"
       :emoji="user.emoji || []"
       :allow-non-square-emoji="allowNonSquareEmoji"
+      :pause-mfm="pauseMfm"
+      :scale-mfm="scaleMfm"
       :is-local="user.is_local"
     />
   </div>

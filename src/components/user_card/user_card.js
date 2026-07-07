@@ -433,6 +433,12 @@ export default {
     allowNonSquareEmoji() {
       return this.mergedConfig.nonSquareEmoji
     },
+    pauseMfm() {
+      return this.mergedConfig.pauseMfm
+    },
+    scaleMfm() {
+      return this.mergedConfig.scaleMfm
+    },
     hideUserStats() {
       return this.mergedConfig.hideUserStats
     },

@@ -118,6 +118,16 @@ export default {
       type: Boolean,
       default: false,
     },
+    pauseMfm: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
+    scaleMfm: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
   },
   // NEVER EVER TOUCH DATA INSIDE RENDER
   render() {
@@ -320,12 +330,16 @@ export default {
           const isMFM = classname?.startsWith('mfm-')
           if (isMFM) {
             const mfmOperator = /^mfm-(\w+)$/.exec(classname)?.[1]
-            newAttrs['class'] = 'mfm'
+            newAttrs['class'] = [
+              'mfm',
+              this.pauseMfm ? '-pause' : '',
+              this.scaleMfm ? '-scale' : '',
+            ].filter(x => x).join(' ')
             newAttrs['data-mfm-operator'] = mfmOperator
             switch(mfmOperator) {
               case 'position': {
-                const x = fullAttrs['data-mfm-x'].replace(/\.+$/,'') || 0
-                const y = fullAttrs['data-mfm-y'].replace(/\.+$/,'') || 0
+                const x = Number.parseFloat(fullAttrs['data-mfm-x']) || 0
+                const y = Number.parseFloat(fullAttrs['data-mfm-y']) || 0
                 newAttrs.style = [
                   'transform:',
                   `translate(calc(${x} * (var(--emoji-size) / 2)), `,
@@ -334,8 +348,8 @@ export default {
                 break
               }
               case 'scale': {
-                const x = fullAttrs['data-mfm-x'].replace(/\.+$/,'') || 1
-                const y = fullAttrs['data-mfm-y'].replace(/\.+$/,'') || 1
+                const x = Number.parseFloat(fullAttrs['data-mfm-x']) || 1
+                const y = Number.parseFloat(fullAttrs['data-mfm-y']) || 1
                 newAttrs.style = [
                   'transform:',
                   `scale(${x}, ${y})`,
@@ -343,7 +357,7 @@ export default {
                 break
               }
               case 'rotate': {
-                const deg = fullAttrs['data-mfm-deg'] || 0
+                const deg = Number.parseFloat(fullAttrs['data-mfm-deg']) || 0
                 newAttrs.style = [
                   `transform: rotate(${deg}deg)`,
                   'transform-origin: center',
@@ -418,7 +432,8 @@ export default {
               case 'twitch':
               case 'shake':
               case 'jump':
-              case 'bounce': {
+              case 'bounce':
+              case 'rainbow': {
                 const speed = fullAttrs['data-mfm-speed'] || '1s'
                 const delay = fullAttrs['data-mfm-delay'] || 0
 

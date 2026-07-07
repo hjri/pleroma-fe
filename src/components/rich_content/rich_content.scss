@@ -3,13 +3,28 @@
 
   .mfm {
     display: inline-block;
-    font-size: calc(var(--emoji-size) / 2);
+
+    &.-scale {
+      font-size: calc(var(--emoji-size) / 2);
+    }
+
+    &:not(.-scale) {
+      --emoji-size: 2em;
+    }
+
+    &.-pause {
+      animation-play-state: paused;
+    }
 
     .emoji {
       /* Misskey's emoji width knows no bounds */
       /* stylelint-disable-next-line declaration-no-important */
       max-width: unset !important;
     }
+  }
+
+  &:hover .mfm {
+    animation-play-state: running;
   }
 
   &.-faint {

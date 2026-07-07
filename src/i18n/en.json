@@ -807,6 +807,8 @@
     "sensitive_by_default": "Mark posts as sensitive by default",
     "stop_gifs": "Pause animated images until you hover on them",
     "non_square_emoji": "Allow non-square emoji",
+    "pause_mfm": "Pause MFM animations until you hover on them",
+    "scale_mfm": "Scale MFM animations with emoji size",
     "streaming": "Automatically show new posts when scrolled to the top",
     "auto_update": "Show new posts automatically",
     "user_mutes": "Users",

@@ -16,6 +16,8 @@
           :emoji="status.emojis"
           :is-local="status.isLocal"
           :allow-non-square-emoji="allowNonSquareEmoji"
+          :pause-mfm="pauseMfm"
+          :scale-mfm="scaleMfm"
         />
         <button
           v-show="hasLongSubject && showingLongSubject"
@@ -49,6 +51,8 @@
           :attentions="status.attentions"
           :is-local="status.is_local"
           :allow-non-square-emoji="allowNonSquareEmoji"
+          :pause-mfm="pauseMfm"
+          :scale-mfm="scaleMfm"
           @parse-ready="onParseReady"
         />
         <div
