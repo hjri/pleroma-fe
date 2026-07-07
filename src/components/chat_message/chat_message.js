@@ -22,10 +22,9 @@ library.add(faTimes, faEllipsisH)
 const ChatMessage = {
   name: 'ChatMessage',
   props: [
-    'author',
     'edited',
     'noHeading',
-    'chatViewItem',
+    'chatItem',
     'hoveredMessageChain',
   ],
   emits: ['hover'],
@@ -42,21 +41,26 @@ const ChatMessage = {
   computed: {
     // Returns HH:MM (hours and minutes) in local time.
     createdAt() {
-      const time = this.chatViewItem.data.created_at
+      const time = this.chatItem.data.created_at
       return time.toLocaleTimeString('en', {
         hour: '2-digit',
         minute: '2-digit',
         hour12: false,
       })
     },
+    author() {
+      return this.$store.getters.findUser(
+        this.chatItem.data.account_id
+      )
+    },
     isCurrentUser() {
       return this.message.account_id === this.currentUser.id
     },
     message() {
-      return this.chatViewItem.data
+      return this.chatItem.data
     },
     isMessage() {
-      return this.chatViewItem.type === 'message'
+      return this.chatItem.type === 'message'
     },
     messageForStatusContent() {
       return {
@@ -96,15 +100,15 @@ const ChatMessage = {
     onHover(bool) {
       this.$emit('hover', {
         isHovered: bool,
-        messageChainId: this.chatViewItem.messageChainId,
+        messageChainId: this.chatItem.messageChainId,
       })
     },
     async deleteMessage() {
       const confirmed = window.confirm(this.$t('chats.delete_confirm'))
       if (confirmed) {
         await this.$store.dispatch('deleteChatMessage', {
-          messageId: this.chatViewItem.data.id,
-          chatId: this.chatViewItem.data.chat_id,
+          messageId: this.chatItem.data.id,
+          chatId: this.chatItem.data.chat_id,
         })
       }
       this.hovered = false

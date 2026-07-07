@@ -159,60 +159,9 @@ const resetNewMessageCount = (storage) => {
   storage.lastSeenMessageId = storage.maxId
 }
 
-// Inserts date separators and marks the head and tail if it's the chain of messages made by the same user
-const getView = (items = []) => {
-  const messages = orderBy(items, ['pending', 'id'], ['asc', 'asc'])
-  return messages.reduceRight((acc, message, index) => {
-    const date = new Date(message.created_at)
-
-    const olderMessage = messages[index - 1]
-    const newerMessage = messages[index + 1]
-    const newerItem = acc[acc.length - 1]
-
-    const diff = message.created_at - (olderMessage?.created_at || 0)
-    const MAX_DIFF = 1000 * 60 // 5 minutes
-
-    const chatItem = {
-      type: 'message',
-      data: message,
-      date,
-      id: message.id,
-      isTail: true,
-      isHead: true,
-    }
-
-    if (newerItem == null) {
-      chatItem.messageChainId = uniqueId()
-    } else {
-      if (newerItem.type === 'date') {
-        chatItem.messageChainId = uniqueId()
-      } else if (newerItem.type === 'message') {
-        if (newerItem.data.account_id !== message.account_id) {
-          chatItem.messageChainId = uniqueId()
-        } else {
-          chatItem.messageChainId = newerItem.messageChainId
-          chatItem.isTail = false
-          newerItem.isHead = false
-        }
-      }
-    }
-
-    if (diff > MAX_DIFF || !olderMessage) {
-      return [...acc, chatItem, {
-        type: 'date',
-        date,
-        id: date.getTime().toString(),
-      }]
-    } else {
-      return [...acc, chatItem]
-    }
-  }, []).reverse()
-}
-
 const ChatService = {
   add,
   empty,
-  getView,
   deleteMessage,
   cullOlderMessages,
   resetNewMessageCount,

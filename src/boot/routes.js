@@ -294,7 +294,7 @@ export default (store) => {
         name: 'chat',
         path: '/users/:username/chats/:recipient_id',
         component: defineAsyncComponent(
-          () => import('src/components/chat/chat.vue'),
+          () => import('src/components/chat_view/chat_view.vue'),
         ),
         meta: { dontScroll: false },
         beforeEnter: validateAuthenticatedRoute,

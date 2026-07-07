@@ -25,29 +25,7 @@
             />
           </div>
         </div>
-        <div
-          class="chat-message-list message-list"
-          :style="{ height: scrollableContainerHeight }"
-        >
-          <template v-if="!errorLoadingChat">
-            <ChatMessage
-              v-for="chatViewItem in chatViewItems"
-              :key="chatViewItem.id"
-              :author="recipient"
-              :chat-view-item="chatViewItem"
-              :hovered-message-chain="chatViewItem.messageChainId === hoveredMessageChainId"
-              @hover="onMessageHover"
-            />
-          </template>
-          <div
-            v-else
-            class="chat-loading-error"
-          >
-            <div class="alert error">
-              {{ $t('chats.error_loading_chat') }}
-            </div>
-          </div>
-        </div>
+        <ChatMessageList :messages="chatMessages" />
         <div
           ref="footer"
           class="panel-body footer"
@@ -95,5 +73,5 @@
   </div>
 </template>
 
-<script src="./chat.js"></script>
-<style src="./chat.scss" lang="scss" />
+<script src="./chat_view.js"></script>
+<style src="./chat_view.scss" lang="scss" />

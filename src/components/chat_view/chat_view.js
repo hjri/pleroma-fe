@@ -2,8 +2,8 @@ import { throttle } from 'lodash'
 import { mapState as mapPiniaState } from 'pinia'
 import { mapGetters, mapState } from 'vuex'
 
-import ChatMessage from 'src/components/chat_message/chat_message.vue'
 import ChatTitle from 'src/components/chat_title/chat_title.vue'
+import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import chatService from '../../services/chat_service/chat_service.js'
 import { buildFakeMessage } from '../../services/chat_utils/chat_utils.js'
@@ -17,6 +17,7 @@ import {
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import {
   chatMessages,
@@ -38,9 +39,12 @@ const MAX_RETRIES = 10
 
 const Chat = {
   components: {
-    ChatMessage,
+    ChatMessageList,
     ChatTitle,
     PostStatusForm,
+  },
+  props: {
+    messages: Array,
   },
   data() {
     return {
@@ -97,12 +101,11 @@ const Chat = {
         return ''
       }
     },
-    chatViewItems() {
-      return chatService.getView(this.currentChatMessageService?.messages)
+    chatMessages() {
+      return this.currentChatMessageService?.messages
     },
     newMessageCount() {
       return this.currentChatMessageService?.newMessageCount
-
     },
     streamingEnabled() {
       return (
@@ -114,18 +117,18 @@ const Chat = {
       'currentChat',
       'currentChatMessageService',
       'findOpenedChatByRecipientId',
-      'mergedConfig',
     ]),
     ...mapPiniaState(useInterfaceStore, {
       mobileLayout: (store) => store.layoutType === 'mobile',
     }),
+    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
     ...mapState({
       mastoUserSocketStatus: (state) => state.api.mastoUserSocketStatus,
       currentUser: (state) => state.users.currentUser,
     }),
   },
   watch: {
-    chatViewItems() {
+    chatMessages() {
       // We don't want to scroll to the bottom on a new message when the user is viewing older messages.
       // Therefore we need to know whether the scroll position was at the bottom before the DOM update.
       const bottomedOutBeforeUpdate = this.bottomedOut(BOTTOMED_OUT_OFFSET)

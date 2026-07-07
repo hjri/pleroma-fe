@@ -15,7 +15,7 @@
         class="avatar-wrapper"
       >
         <UserPopover
-          v-if="chatViewItem.isHead"
+          v-if="chatItem.isHead"
           :user-id="author.id"
         >
           <UserAvatar
@@ -31,7 +31,7 @@
         >
           <div
             class="media status"
-            :class="{ 'without-attachment': !hasAttachment, 'pending': chatViewItem.data.pending, 'error': chatViewItem.data.error }"
+            :class="{ 'without-attachment': !hasAttachment, 'pending': chatItem.data.pending, 'error': chatItem.data.error }"
             style="position: relative;"
             @mouseenter="hovered = true"
             @mouseleave="hovered = false"
@@ -93,7 +93,7 @@
     v-else
     class="chat-message-date-separator"
   >
-    <ChatMessageDate :date="chatViewItem.date" />
+    <ChatMessageDate :date="chatItem.date" />
   </div>
 </template>
 
