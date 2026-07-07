@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
+import UnicodeDomainIndicator from 'src/components/unicode_domain_indicator/unicode_domain_indicator.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 

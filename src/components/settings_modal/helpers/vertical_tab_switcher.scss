@@ -40,12 +40,24 @@
 
     .tab-slot-wrapper {
       flex: 1 1 auto;
+      position: relative;
       height: 100%;
+      padding: 0 1em;
       overflow-y: auto;
       display: grid;
       grid-template-columns: minmax(1em, 1fr) minmax(min-content, 45em) minmax(1em, 1fr);
       grid-template-areas: ". content .";
       flex-direction: column;
+
+      &.-full-width {
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      &.-full-height {
+        padding-top: 0;
+        padding-bottom: 0;
+      }
 
       .tab-content {
         grid-area: content;
@@ -55,9 +67,18 @@
         }
 
         &.-full-height {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+
           > * {
             height: 100%;
           }
+        }
+
+        &.-full-width.-full-height {
+          position: absolute;
+          inset: 0;
         }
       }
     }

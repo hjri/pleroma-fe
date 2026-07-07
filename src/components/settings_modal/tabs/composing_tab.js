@@ -14,8 +14,10 @@ import UnitSetting from '../helpers/unit_setting.vue'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
+import { updateProfile } from 'src/api/user.js'
 import localeService from 'src/services/locale/locale.service.js'
 import { cacheKey, clearCache, emojiCacheKey } from 'src/services/sw/sw.js'
 
@@ -164,12 +166,13 @@ const ComposingTab = {
         ),
       }
 
-      this.$store.state.api.backendInteractor
-        .updateProfile({ params })
-        .then((user) => {
-          this.$store.commit('addNewUsers', [user])
-          this.$store.commit('setCurrentUser', user)
-        })
+      updateProfile({
+        params,
+        credentials: useOAuthStore().token,
+      }).then(({ data: user }) => {
+        this.$store.commit('addNewUsers', [user])
+        this.$store.commit('setCurrentUser', user)
+      })
     },
     updateFont(key, value) {
       useSyncConfigStore().setSimplePrefAndSave({

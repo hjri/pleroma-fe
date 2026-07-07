@@ -36,7 +36,6 @@ export default function () {
       const warning = warnings[i]
       console.warn('  ' + warning)
     }
-    console.warn()
     process.exit(1)
   }
 }

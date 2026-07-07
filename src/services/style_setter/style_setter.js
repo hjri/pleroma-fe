@@ -8,6 +8,7 @@ import { getEngineChecksum, init } from '../theme_data/theme_data_3.service.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
+import { promisedRequest } from 'src/api/helpers.js'
 import { ROOT_CONFIG } from 'src/modules/default_config_state.js'
 
 // On platforms where this is not supported, it will return undefined
@@ -300,7 +301,7 @@ export const applyStyleConfig = (input) => {
   adoptStyleSheets()
 }
 
-export const getResourcesIndex = async (url, parser = JSON.parse) => {
+export const getResourcesIndex = async (url, parser = (x) => x) => {
   const cache = 'no-store'
   const customUrl = url.replace(/\.(\w+)$/, '.custom.$1')
   let builtin
@@ -314,10 +315,11 @@ export const getResourcesIndex = async (url, parser = JSON.parse) => {
         return [
           k,
           () =>
-            window
-              .fetch(v, { cache })
-              .then((data) => data.text())
-              .then((text) => parser(text))
+            promisedRequest({
+              url: v,
+              cache,
+            })
+              .then(({ data: text }) => parser(text))
               .catch((e) => {
                 console.error(e)
                 return null
@@ -331,18 +333,19 @@ export const getResourcesIndex = async (url, parser = JSON.parse) => {
   }
 
   try {
-    const builtinData = await window.fetch(url, { cache })
-    const builtinResources = await builtinData.json()
-    builtin = resourceTransform(builtinResources)
+    const { data: builtinData } = await promisedRequest({ url, cache })
+    builtin = resourceTransform(builtinData)
   } catch {
     builtin = []
     console.warn(`Builtin resources at ${url} unavailable`)
   }
 
   try {
-    const customData = await window.fetch(customUrl, { cache })
-    const customResources = await customData.json()
-    custom = resourceTransform(customResources)
+    const { data: customData } = await promisedRequest({
+      url: customUrl,
+      cache,
+    })
+    custom = resourceTransform(customData)
   } catch {
     custom = []
     console.warn(`Custom resources at ${customUrl} unavailable`)

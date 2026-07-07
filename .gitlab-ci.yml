@@ -1,7 +1,7 @@
 # This file is a template, and might need editing before it works on your project.
 # Official framework image. Look for the different tagged releases at:
 # https://hub.docker.com/r/library/node/tags/
-image: node:18
+image: node:20
 
 stages:
   - check-changelog
@@ -73,7 +73,7 @@ test:
 
 e2e-pleroma:
   stage: test
-  image: mcr.microsoft.com/playwright:v1.57.0-jammy
+  image: mcr.microsoft.com/playwright:v1.61.0-jammy
   services:
     - name: postgres:15-alpine
       alias: db
@@ -157,7 +157,7 @@ e2e-pleroma:
   variables:
     PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
     FF_NETWORK_PER_BUILD: "true"
-    PLEROMA_IMAGE: git.pleroma.social:5050/pleroma/pleroma:stable
+    PLEROMA_IMAGE: git.pleroma.social/pleroma/pleroma:stable
     POSTGRES_USER: pleroma
     POSTGRES_PASSWORD: pleroma
     POSTGRES_DB: pleroma
@@ -175,7 +175,7 @@ e2e-pleroma:
     NOTIFY_EMAIL: $E2E_ADMIN_EMAIL
     VITE_PROXY_TARGET: http://pleroma:4000
     VITE_PROXY_ORIGIN: http://localhost:4000
-    E2E_BASE_URL: http://localhost:8080
+    E2E_BASE_URL: http://localhost:8099
   script:
     - npm install -g yarn@1.22.22
     - yarn --frozen-lockfile

@@ -1,6 +1,6 @@
 import { mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 
-import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import Popover from 'src/components/popover/popover.vue'
 import ActionButtonContainer from './action_button_container.vue'
 import { BUTTONS } from './buttons_definitions.js'
@@ -16,7 +16,7 @@ library.add(faEllipsisH)
 
 const StatusActionButtons = {
   props: ['status', 'replying'],
-  emits: ['toggleReplying'],
+  emits: ['toggleReplying', 'onSuccess', 'onError'],
   data() {
     return {
       showPin: false,
@@ -28,11 +28,15 @@ const StatusActionButtons = {
         /* no-op */
       },
       randomSeed: genRandomSeed(),
+      emojiPickerShown: false,
     }
   },
   components: {
     Popover,
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
+
     ActionButtonContainer,
   },
   computed: {
@@ -56,6 +60,7 @@ const StatusActionButtons = {
       return {
         status: this.status,
         replying: this.replying,
+        emojiPickerShown: this.emojiPickerShown,
         emit: this.$emit,
         dispatch: this.$store.dispatch,
         state: this.$store.state,
@@ -102,10 +107,13 @@ const StatusActionButtons = {
       button
         .action?.(this.funcArg)
         .then(() => this.$emit('onSuccess'))
-        .catch((err) => this.$emit('onError', err.error.error))
+        .catch((err) => this.$emit('onError', err))
     },
     onExtraClose() {
       this.showPin = false
+    },
+    onEmojiPickerShown(state) {
+      this.emojiPickerShown = state
     },
     isPinned(button) {
       return this.pinnedItems.has(button.name)

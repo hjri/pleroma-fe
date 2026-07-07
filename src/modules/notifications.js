@@ -1,4 +1,3 @@
-import apiService from '../services/api/api.service.js'
 import {
   closeAllDesktopNotifications,
   closeDesktopNotification,
@@ -9,9 +8,13 @@ import {
   maybeShowNotification,
 } from '../services/notification_utils/notification_utils.js'
 
+import { useI18nStore } from 'src/stores/i18n.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useReportsStore } from 'src/stores/reports.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
+import { dismissNotification, markNotificationsAsSeen } from 'src/api/user.js'
 
 const emptyNotifications = () => ({
   desktopNotificationSilence: true,
@@ -123,6 +126,7 @@ export const notifications = {
             useMergedConfigStore().mergedConfig.notificationVisibility,
             Object.values(useSyncConfigStore().prefsStorage.simple.muteFilters),
             notification,
+            useI18nStore().i18n,
           )
         } else if (notification.seen) {
           state.idStore[notification.id].seen = true
@@ -152,33 +156,32 @@ export const notifications = {
     },
     markNotificationsAsSeen({ rootState, state, commit }) {
       commit('markNotificationsAsSeen')
-      apiService
-        .markNotificationsAsSeen({
-          id: state.maxId,
-          credentials: rootState.users.currentUser.credentials,
-        })
-        .then(() => {
-          closeAllDesktopNotifications(rootState)
-        })
+      markNotificationsAsSeen({
+        id: state.maxId,
+        credentials: rootState.users.currentUser.credentials,
+      }).then(() => {
+        closeAllDesktopNotifications(rootState)
+      })
     },
     markSingleNotificationAsSeen({ rootState, commit }, { id }) {
       commit('markSingleNotificationAsSeen', { id })
-      apiService
-        .markNotificationsAsSeen({
-          single: true,
-          id,
-          credentials: rootState.users.currentUser.credentials,
-        })
-        .then(() => {
-          closeDesktopNotification(rootState, { id })
-        })
+      markNotificationsAsSeen({
+        single: true,
+        id,
+        credentials: rootState.users.currentUser.credentials,
+      }).then(() => {
+        closeDesktopNotification(rootState, { id })
+      })
     },
     dismissNotificationLocal({ commit }, { id }) {
       commit('dismissNotification', { id })
     },
     dismissNotification({ rootState, commit }, { id }) {
       commit('dismissNotification', { id })
-      rootState.api.backendInteractor.dismissNotification({ id })
+      dismissNotification({
+        id,
+        credentials: useOAuthStore().token,
+      })
     },
     updateNotification({ commit }, { id, updater }) {
       commit('updateNotification', { id, updater })

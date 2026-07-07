@@ -50,7 +50,7 @@ body {
 // have a cursor/pointer to operate them
 @media (any-pointer: fine) {
   * {
-    scrollbar-color: var(--fg) transparent;
+    scrollbar-color: var(--icon) transparent;
 
     &::-webkit-scrollbar {
       background: transparent;
@@ -130,7 +130,7 @@ body {
   }
   // Body should have background to scrollbar otherwise it will use white (body color?)
   html {
-    scrollbar-color: var(--fg) var(--wallpaper);
+    scrollbar-color: var(--icon) var(--wallpaper);
     background: var(--wallpaper);
   }
 }
@@ -142,6 +142,25 @@ a {
 
 h4 {
   margin: 0;
+}
+
+code {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--roundness);
+  padding: 0 0.2em;
+
+  & pre,
+  pre & {
+    display: block;
+    overflow-x: auto;
+    padding: 0.2em;
+  }
+
+  &.pre {
+    white-space: pre;
+    display: block;
+  }
 }
 
 .iconLetter {
@@ -200,6 +219,7 @@ nav {
   background-color: var(--wallpaper);
   background-image: var(--body-background-image);
   background-position: 50%;
+  transition: background-image 1s;
 }
 
 .underlay {
@@ -410,49 +430,18 @@ nav {
   button:not(.button-default) {
     color: var(--text);
     font-size: 100%;
+    text-align: initial;
+    padding: 0;
+    background: none;
+    border: none;
+    outline: none;
+    display: inline;
+    font-family: inherit;
+    line-height: unset;
   }
 
   &.disabled {
     cursor: not-allowed;
-  }
-}
-
-.list-item {
-  border-color: var(--border);
-  border-style: solid;
-  border-width: 0;
-  border-top-width: 1px;
-
-  &.-active,
-  &:hover {
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-  }
-
-  &.-active + &,
-  &:hover + & {
-    border-top-width: 0;
-  }
-
-  &:hover + .menu-item-collapsible:not(.-expanded) + &,
-  &.-active + .menu-item-collapsible:not(.-expanded) + & {
-    border-top-width: 0;
-  }
-
-  &[aria-expanded="true"] {
-    border-bottom-width: 1px;
-  }
-
-  &:first-child {
-    border-top-right-radius: var(--roundness);
-    border-top-left-radius: var(--roundness);
-    border-top-width: 0;
-  }
-
-  &:last-child {
-    border-bottom-right-radius: var(--roundness);
-    border-bottom-left-radius: var(--roundness);
-    border-bottom-width: 0;
   }
 }
 
@@ -474,22 +463,6 @@ nav {
   --__line-height: 1.5em;
   --__horizontal-gap: 0.75em;
   --__vertical-gap: 0.5em;
-
-  &.-non-interactive {
-    cursor: auto;
-  }
-
-  a,
-  button:not(.button-default) {
-    text-align: initial;
-    padding: 0;
-    background: none;
-    border: none;
-    outline: none;
-    display: inline;
-    font-family: inherit;
-    line-height: unset;
-  }
 }
 
 .button-unstyled {
@@ -815,9 +788,11 @@ option {
   align-items: baseline;
   line-height: 1.5;
 
+  p,
   span {
     display: block;
     flex: 1 1 auto;
+    margin: 0;
   }
 
   .dismiss {

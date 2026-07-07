@@ -1,16 +1,19 @@
+import { defineAsyncComponent } from 'vue'
+
 import Draft from 'src/components/draft/draft.vue'
 import List from 'src/components/list/list.vue'
-import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 
 const Drafts = {
   components: {
     Draft,
     List,
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
   },
   data() {
     return {
-      showingConfirmDialog: false
+      showingConfirmDialog: false,
     }
   },
   computed: {
@@ -23,12 +26,14 @@ const Drafts = {
       this.showingConfirmDialog = true
     },
     doAbandonAll() {
-      this.$store.dispatch('abandonAllDrafts').then(() => this.hideConfirmDialog())
+      this.$store
+        .dispatch('abandonAllDrafts')
+        .then(() => this.hideConfirmDialog())
     },
     hideConfirmDialog() {
       this.showingConfirmDialog = false
     },
-  }
+  },
 }
 
 export default Drafts

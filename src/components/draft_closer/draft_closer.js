@@ -1,4 +1,4 @@
-import DialogModal from 'src/components/dialog_modal/dialog_modal.vue'
+import { defineAsyncComponent } from 'vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
@@ -9,7 +9,9 @@ const DraftCloser = {
     }
   },
   components: {
-    DialogModal,
+    DialogModal: defineAsyncComponent(
+      () => import('src/components/dialog_modal/dialog_modal.vue'),
+    ),
   },
   emits: ['save', 'discard'],
   computed: {

@@ -264,6 +264,11 @@
           </BooleanSetting>
         </li>
         <li>
+          <BooleanSetting path="allowForeignUserBackground">
+            {{ $t('settings.foreign_user_background') }}
+          </BooleanSetting>
+        </li>
+        <li>
           <BooleanSetting path="compactProfiles">
             {{ $t('settings.compact_profiles') }}
           </BooleanSetting>

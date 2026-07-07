@@ -1,25 +1,49 @@
-import MuteConfirm from 'src/components/confirm_modal/mute_confirm.vue'
+import { defineAsyncComponent } from 'vue'
+
 import Popover from 'src/components/popover/popover.vue'
-import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
 import ActionButton from './action_button.vue'
+
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
+  faEnvelope,
+  faEye,
+  faEyeSlash,
   faFolderTree,
   faGlobe,
+  faLock,
+  faLockOpen,
   faUser,
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faUser, faGlobe, faFolderTree)
+library.add(
+  faUser,
+  faGlobe,
+  faFolderTree,
+  faEye,
+  faEyeSlash,
+  faLock,
+  faLockOpen,
+  faEnvelope,
+)
 
 export default {
   components: {
     ActionButton,
     Popover,
-    MuteConfirm,
-    UserTimedFilterModal,
+    MuteConfirm: defineAsyncComponent(
+      () => import('src/components/confirm_modal/mute_confirm.vue'),
+    ),
+    UserTimedFilterModal: defineAsyncComponent(
+      () =>
+        import(
+          'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
+        ),
+    ),
   },
   props: ['button', 'status'],
+  emits: ['emojiPickerShown'],
   mounted() {
     if (this.button.name === 'mute') {
       this.$store.dispatch('fetchDomainMutes')
@@ -53,8 +77,27 @@ export default {
         this.domain,
       )
     },
+    availableScopes() {
+      return ['private', 'unlisted', 'direct', 'public'].filter((scope) => {
+        return scope !== this.status.visibility
+      })
+    },
   },
   methods: {
+    visibilityIcon(visibility) {
+      switch (visibility) {
+        case 'private':
+          return 'lock'
+        case 'unlisted':
+          return 'lock-open'
+        case 'direct':
+          return 'envelope'
+        case 'local':
+          return 'igloo'
+        default:
+          return 'globe'
+      }
+    },
     unmuteUser() {
       return this.$store.dispatch('unmuteUser', this.user.id)
     },
@@ -70,6 +113,18 @@ export default {
       } else {
         this.$refs.confirmUser.optionallyPrompt()
       }
+    },
+    setScope(visibility) {
+      return useAdminSettingsStore().changeStatusScope({
+        id: this.status.id,
+        visibility,
+      })
+    },
+    setSensitive(sensitive) {
+      useAdminSettingsStore().changeStatusScope({
+        id: this.status.id,
+        sensitive,
+      })
     },
     toggleConversationMute() {
       if (this.conversationIsMuted) {

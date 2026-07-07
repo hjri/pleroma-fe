@@ -1,46 +1,19 @@
-import get from 'lodash/get'
-import map from 'lodash/map'
-import reject from 'lodash/reject'
+import { get, map, reject } from 'lodash'
 
-import withLoadMore from 'src/components/../hocs/with_load_more/with_load_more'
-import withSubscription from 'src/components/../hocs/with_subscription/with_subscription'
 import Autosuggest from 'src/components/autosuggest/autosuggest.vue'
 import BlockCard from 'src/components/block_card/block_card.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import DomainMuteCard from 'src/components/domain_mute_card/domain_mute_card.vue'
+import List from 'src/components/list/list.vue'
 import MuteCard from 'src/components/mute_card/mute_card.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
-import SelectableList from 'src/components/selectable_list/selectable_list.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens.js'
 
-const BlockList = withLoadMore({
-  fetch: (props, $store) => $store.dispatch('fetchBlocks'),
-  select: (props, $store) =>
-    get($store.state.users.currentUser, 'blockIds', []),
-  destroy: () => {
-    /* no-op */
-  },
-  childPropName: 'items',
-})(SelectableList)
-
-const MuteList = withLoadMore({
-  fetch: (props, $store) => $store.dispatch('fetchMutes'),
-  select: (props, $store) => get($store.state.users.currentUser, 'muteIds', []),
-  destroy: () => {
-    /* no-op */
-  },
-  childPropName: 'items',
-})(SelectableList)
-
-const DomainMuteList = withSubscription({
-  fetch: (props, $store) => $store.dispatch('fetchDomainMutes'),
-  select: (props, $store) =>
-    get($store.state.users.currentUser, 'domainMutes', []),
-  childPropName: 'items',
-})(SelectableList)
+import { importBlocks, importFollows } from 'src/api/user.js'
 
 const MutesAndBlocks = {
   data() {
@@ -54,12 +27,10 @@ const MutesAndBlocks = {
   },
   components: {
     TabSwitcher,
-    BlockList,
-    MuteList,
-    DomainMuteList,
-    BlockCard,
-    MuteCard,
     DomainMuteCard,
+    BlockCard,
+    List,
+    MuteCard,
     ProgressButton,
     Autosuggest,
     Checkbox,
@@ -71,25 +42,39 @@ const MutesAndBlocks = {
     user() {
       return this.$store.state.users.currentUser
     },
+    blocks() {
+      return get(this.$store.state.users.currentUser, 'blockIds', [])
+    },
+    mutes() {
+      return get(this.$store.state.users.currentUser, 'muteIds', [])
+    },
+    domains() {
+      return get(this.$store.state.users.currentUser, 'domainMutes', [])
+    },
   },
   methods: {
+    fetchItems(group) {
+      return () => this.$store.dispatch('fetch' + group, this.userId)
+    },
     importFollows(file) {
-      return this.$store.state.api.backendInteractor
-        .importFollows({ file })
-        .then((status) => {
-          if (!status) {
-            throw new Error('failed')
-          }
-        })
+      return importFollows({
+        file,
+        credentials: useOAuthStore().token,
+      }).then(({ data: status }) => {
+        if (!status) {
+          throw new Error('failed')
+        }
+      })
     },
     importBlocks(file) {
-      return this.$store.state.api.backendInteractor
-        .importBlocks({ file })
-        .then((status) => {
-          if (!status) {
-            throw new Error('failed')
-          }
-        })
+      return importBlocks({
+        file,
+        credentials: useOAuthStore().token,
+      }).then(({ data: status }) => {
+        if (!status) {
+          throw new Error('failed')
+        }
+      })
     },
     generateExportableUsersContent(users) {
       // Get addresses

@@ -1,12 +1,11 @@
 import { debounce, keyBy, throttle } from 'lodash'
 import { mapState } from 'pinia'
 
-import Conversation from '../conversation/conversation.vue'
-import QuickFilterSettings from '../quick_filter_settings/quick_filter_settings.vue'
-import QuickViewSettings from '../quick_view_settings/quick_view_settings.vue'
-import ScrollTopButton from '../scroll_top_button/scroll_top_button.vue'
-import Status from '../status/status.vue'
-import TimelineMenu from '../timeline_menu/timeline_menu.vue'
+import Conversation from 'src/components/conversation/conversation.vue'
+import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
+import QuickViewSettings from 'src/components/quick_view_settings/quick_view_settings.vue'
+import ScrollTopButton from 'src/components/scroll_top_button/scroll_top_button.vue'
+import TimelineMenu from 'src/components/timeline_menu/timeline_menu.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -52,7 +51,6 @@ const Timeline = {
     }
   },
   components: {
-    Status,
     ScrollTopButton,
     Conversation,
     TimelineMenu,
@@ -313,6 +311,9 @@ const Timeline = {
     },
   },
   watch: {
+    filteredVisibleStatuses() {
+      this.determineVisibleStatuses()
+    },
     newStatusCount(count) {
       if (!useMergedConfigStore().mergedConfig.streaming) {
         return

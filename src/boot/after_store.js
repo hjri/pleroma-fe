@@ -6,6 +6,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 import VueVirtualScroller from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
+import RichContent from 'src/components/rich_content/rich_content.jsx'
+import Status from 'src/components/status/status.vue'
+import StillImage from 'src/components/still-image/still-image.vue'
+
 import { config } from '@fortawesome/fontawesome-svg-core'
 import {
   FontAwesomeIcon,
@@ -15,7 +19,6 @@ import {
 config.autoAddCss = false
 
 import App from '../App.vue'
-import backendInteractorService from '../services/backend_interactor_service/backend_interactor_service.js'
 import FaviconService from '../services/favicon_service/favicon_service.js'
 import { applyStyleConfig } from '../services/style_setter/style_setter.js'
 import { initServiceWorker, updateFocus } from '../services/sw/sw.js'
@@ -25,7 +28,6 @@ import {
 } from '../services/window_utils/window_utils'
 import routes from './routes'
 
-import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useAuthFlowStore } from 'src/stores/auth_flow'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useI18nStore } from 'src/stores/i18n'
@@ -34,7 +36,7 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useOAuthStore } from 'src/stores/oauth'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
@@ -152,8 +154,10 @@ const getStaticConfig = async () => {
       throw res
     }
   } catch (error) {
-    console.warn('Failed to load static/config.json, continuing without it.')
-    console.warn(error)
+    console.warn(
+      'Failed to load static/config.json, continuing without it.',
+      error,
+    )
     return {}
   }
 }
@@ -175,14 +179,16 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
     if (source === 'name') return
     if (INSTANCE_IDENTIY_EXTERNAL.has(source)) return
     useInstanceStore().set({
-      value: config[source] ?? INSTANCE_IDENTITY_DEFAULT_DEFINITIONS[source].default,
+      value:
+        config[source] ?? INSTANCE_IDENTITY_DEFAULT_DEFINITIONS[source].default,
       path: `instanceIdentity.${source}`,
     })
   })
 
   Object.keys(INSTANCE_DEFAULT_CONFIG_DEFINITIONS).forEach((source) =>
     useInstanceStore().set({
-      value: config[source] ?? INSTANCE_DEFAULT_CONFIG_DEFINITIONS[source].default,
+      value:
+        config[source] ?? INSTANCE_DEFAULT_CONFIG_DEFINITIONS[source].default,
       path: `prefsStorage.${source}`,
     }),
   )
@@ -250,16 +256,6 @@ const getStickers = async ({ store }) => {
     }
   } catch (e) {
     console.warn("Can't load stickers\n", e)
-  }
-}
-
-const getAppSecret = async ({ store }) => {
-  const oauth = useOAuthStore()
-  if (oauth.userToken) {
-    store.commit(
-      'setBackendInteractor',
-      backendInteractorService(oauth.getToken),
-    )
   }
 }
 
@@ -440,8 +436,7 @@ const getNodeInfo = async ({ store }) => {
       throw res
     }
   } catch (e) {
-    console.warn('Could not load nodeinfo')
-    console.warn(e)
+    console.warn('Could not load nodeinfo', e)
   }
 }
 
@@ -454,14 +449,13 @@ const setConfig = async ({ store }) => {
   const apiConfig = configInfos[0]
   const staticConfig = configInfos[1]
 
-  getAppSecret({ store })
   await setSettings({ store, apiConfig, staticConfig })
 }
 
 const checkOAuthToken = async ({ store }) => {
   const oauth = useOAuthStore()
-  if (oauth.getUserToken) {
-    return store.dispatch('loginUser', oauth.getUserToken)
+  if (oauth.userToken) {
+    return store.dispatch('loginUser', oauth.userToken)
   }
   return Promise.resolve()
 }
@@ -472,6 +466,16 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
   // https://pinia.vuejs.org/core-concepts/plugins.html#Introduction
   // "Plugins are only applied to stores created after the plugins themselves, and after pinia is passed to the app, otherwise they won't be applied."
   app.use(pinia)
+
+  app.config.errorHandler = (error, instance, info) => {
+    console.error(
+      'Global Vue Error Handler caught an error:',
+      error,
+      instance,
+      info,
+    )
+    useInterfaceStore().setGlobalError({ error, instance, info })
+  }
 
   const waitForAllStoresToLoad = async () => {
     // the stores that do not persist technically do not need to be awaited here,
@@ -571,10 +575,6 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     getInstanceConfig({ store }),
   ]).catch((e) => Promise.reject(e))
 
-  // Start fetching things that don't need to block the UI
-  store.dispatch('fetchMutes')
-  store.dispatch('loadDrafts')
-  useAnnouncementsStore().startFetchingAnnouncements()
   getTOS({ store })
   getStickers({ store })
 
@@ -608,6 +608,9 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
 
   app.component('FAIcon', FontAwesomeIcon)
   app.component('FALayers', FontAwesomeLayers)
+  app.component('Status', Status)
+  app.component('RichContent', RichContent)
+  app.component('StillImage', StillImage)
 
   // remove after vue 3.3
   app.config.unwrapInjectedRef = true

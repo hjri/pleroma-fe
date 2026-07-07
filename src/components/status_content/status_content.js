@@ -1,11 +1,11 @@
 import { mapState as mapPiniaState } from 'pinia'
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
+import Attachment from 'src/components/attachment/attachment.vue'
+import Gallery from 'src/components/gallery/gallery.vue'
+import LinkPreview from 'src/components/link-preview/link-preview.vue'
+import Poll from 'src/components/poll/poll.vue'
 import StatusBody from 'src/components/status_body/status_body.vue'
-import Attachment from '../attachment/attachment.vue'
-import Gallery from '../gallery/gallery.vue'
-import LinkPreview from '../link-preview/link-preview.vue'
-import Poll from '../poll/poll.vue'
 
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -22,69 +22,40 @@ import {
 
 library.add(faCircleNotch, faFile, faMusic, faImage, faLink, faPollH)
 
-const camelCase = (name) => name.charAt(0).toUpperCase() + name.slice(1)
-
-const controlledOrUncontrolledGetters = (list) =>
-  list.reduce((res, name) => {
-    const camelized = camelCase(name)
-    const toggle = `controlledToggle${camelized}`
-    const controlledName = `controlled${camelized}`
-    const uncontrolledName = `uncontrolled${camelized}`
-    res[name] = function () {
-      return (this.$data[toggle] !== undefined ||
-        this.$props[toggle] !== undefined) &&
-        this[toggle]
-        ? this[controlledName]
-        : this[uncontrolledName]
-    }
-    return res
-  }, {})
-
-const controlledOrUncontrolledToggle = (obj, name) => {
-  const camelized = camelCase(name)
-  const toggle = `controlledToggle${camelized}`
-  const uncontrolledName = `uncontrolled${camelized}`
-  if (obj[toggle]) {
-    obj[toggle]()
-  } else {
-    obj[uncontrolledName] = !obj[uncontrolledName]
-  }
-}
-
 const StatusContent = {
   name: 'StatusContent',
-  props: [
-    'status',
-    'compact',
-    'collapse',
-    'focused',
-    'noHeading',
-    'fullContent',
-    'singleLine',
-    'controlledShowingTall',
-    'controlledExpandingSubject',
-    'controlledToggleShowingTall',
-    'controlledToggleExpandingSubject',
-    'controlledShowingLongSubject',
-    'controlledToggleShowingLongSubject',
-  ],
-  emits: ['parseReady', 'mediaplay', 'mediapause'],
-  data() {
-    return {
-      uncontrolledShowingTall:
-        this.fullContent || (this.inConversation && this.focused),
-      uncontrolledShowingLongSubject: false,
-      // not as computed because it sets the initial state which will be changed later
-      uncontrolledExpandingSubject:
-        !useMergedConfigStore().mergedConfig.collapseMessageWithSubject,
-    }
+  props: {
+    status: {
+      // Main thing
+      type: Object,
+      required: true,
+    },
+    compact: {
+      // Resizes emoji and minimizes vertical space used
+      // Primarily used for showing status in react notifications
+      type: Boolean,
+      default: false,
+    },
+    collapse: {
+      // replaces newlines with spaces
+      type: Boolean,
+      default: false,
+    },
+    singleLine: {
+      // Show entire thing (subject and content) in a single line
+      // Primarily used in chats
+      type: Boolean,
+      default: false,
+    },
+    inConversation: {
+      // Whether status content is being shown in an (open) conversation
+      // Used to control whether to display attachments or not
+      type: Boolean,
+      default: false,
+    },
   },
+  emits: ['parseReady', 'mediaplay', 'mediapause'],
   computed: {
-    ...controlledOrUncontrolledGetters([
-      'showingTall',
-      'expandingSubject',
-      'showingLongSubject',
-    ]),
     statusCard() {
       if (!this.status.card) return null
       return this.status.card.url === this.status.quote_url
@@ -93,21 +64,10 @@ const StatusContent = {
     },
     hideAttachments() {
       return (
-        (this.mergedConfig.hideAttachments && !this.inConversation) ||
-        (this.mergedConfig.hideAttachmentsInConv && this.inConversation)
+        !this.fullContent &&
+        ((this.mergedConfig.hideAttachments && !this.inConversation) ||
+          (this.mergedConfig.hideAttachmentsInConv && this.inConversation))
       )
-    },
-    nsfwClickthrough() {
-      if (!this.status.nsfw) {
-        return false
-      }
-      if (this.status.summary && this.localCollapseSubjectDefault) {
-        return false
-      }
-      return true
-    },
-    localCollapseSubjectDefault() {
-      return this.mergedConfig.collapseMessageWithSubject
     },
     attachmentSize() {
       if (this.compact) {
@@ -137,15 +97,6 @@ const StatusContent = {
     StatusBody,
   },
   methods: {
-    toggleShowingTall() {
-      controlledOrUncontrolledToggle(this, 'showingTall')
-    },
-    toggleExpandingSubject() {
-      controlledOrUncontrolledToggle(this, 'expandingSubject')
-    },
-    toggleShowingLongSubject() {
-      controlledOrUncontrolledToggle(this, 'showingLongSubject')
-    },
     setMedia() {
       const attachments =
         this.attachmentSize === 'hide'

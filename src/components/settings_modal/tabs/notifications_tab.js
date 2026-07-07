@@ -1,6 +1,10 @@
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import { updateNotificationSettings } from 'src/api/user.js'
+
 const NotificationsTab = {
   data() {
     return {
@@ -21,13 +25,14 @@ const NotificationsTab = {
       if (!this.user) {
         return false
       }
-      return this.user.privileges.includes('reports_manage_reports')
+      return this.user.privileges.has('reports_manage_reports')
     },
     ...SharedComputedObject(),
   },
   methods: {
     updateNotificationSettings() {
-      this.$store.state.api.backendInteractor.updateNotificationSettings({
+      updateNotificationSettings({
+        credentials: useOAuthStore().token,
         settings: this.notificationSettings,
       })
     },

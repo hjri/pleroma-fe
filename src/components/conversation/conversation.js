@@ -2,14 +2,16 @@ import { clone, filter, findIndex, get, reduce } from 'lodash'
 import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
-import { WSConnectionStatus } from '../../services/api/api.service.js'
-import QuickFilterSettings from '../quick_filter_settings/quick_filter_settings.vue'
-import QuickViewSettings from '../quick_view_settings/quick_view_settings.vue'
-import Status from '../status/status.vue'
-import ThreadTree from '../thread_tree/thread_tree.vue'
+import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
+import QuickViewSettings from 'src/components/quick_view_settings/quick_view_settings.vue'
+import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
 
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import { fetchConversation, fetchStatus } from 'src/api/public.js'
+import { WSConnectionStatus } from 'src/api/websocket.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -53,25 +55,56 @@ const sortAndFilterConversation = (conversation, statusoid) => {
 }
 
 const conversation = {
+  props: {
+    statusId: {
+      // Main thing
+      type: String,
+      required: true,
+    },
+    collapsable: {
+      // Whether conversation can be collapsed
+      // i.e. when it's not a page
+      type: Boolean,
+      default: false,
+    },
+    isPage: {
+      // Whether conversation is rendered as a standalone page
+      // as opposed to embedded into a timeline
+      type: Boolean,
+      default: false,
+    },
+    pinnedStatusIdsObject: {
+      // Used for user profile, map of pinned statuses
+      type: Object,
+      default: null,
+    },
+    inProfile: {
+      // Whether conversation is rendered in a user profile
+      // used for overriding muted status
+      type: Boolean,
+      default: false,
+    },
+    profileUserId: {
+      // used with inProfile, user id of the profile
+      type: String,
+      default: null,
+    },
+    virtualHidden: {
+      // Whether conversation is suspended. Controls rendering of statuses
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
-      highlight: null,
+      focused: null,
       expanded: false,
       threadDisplayStatusObject: {}, // id => 'showing' | 'hidden'
-      statusContentPropertiesObject: {},
       inlineDivePosition: null,
       loadStatusError: null,
+      unsuspendibleIds: new Set(),
     }
   },
-  props: [
-    'statusId',
-    'collapsable',
-    'isPage',
-    'pinnedStatusIdsObject',
-    'inProfile',
-    'profileUserId',
-    'virtualHidden',
-  ],
   created() {
     if (this.isPage) {
       this.fetchConversation()
@@ -116,16 +149,7 @@ const conversation = {
       return this.otherRepliesButtonPosition === 'inside'
     },
     suspendable() {
-      if (this.isTreeView) {
-        return Object.entries(this.statusContentProperties).every(
-          ([, prop]) => !prop.replying && prop.mediaPlaying.length === 0,
-        )
-      }
-      if (this.$refs.statusComponent && this.$refs.statusComponent[0]) {
-        return this.$refs.statusComponent.every((s) => s.suspendable)
-      } else {
-        return true
-      }
+      return this.unsuspendibleIds.size > 0
     },
     hideStatus() {
       return this.virtualHidden && this.suspendable
@@ -362,36 +386,11 @@ const conversation = {
         return a
       }, {})
     },
-    statusContentProperties() {
-      return this.conversation.reduce((a, k) => {
-        const id = k.id
-        const props = (() => {
-          const def = {
-            showingTall: false,
-            expandingSubject: false,
-            showingLongSubject: false,
-            isReplying: false,
-            mediaPlaying: [],
-          }
-
-          if (this.statusContentPropertiesObject[id]) {
-            return {
-              ...def,
-              ...this.statusContentPropertiesObject[id],
-            }
-          }
-          return def
-        })()
-
-        a[id] = props
-        return a
-      }, {})
-    },
     canDive() {
       return this.isTreeView && this.isExpanded
     },
-    maybeHighlight() {
-      return this.isExpanded ? this.highlight : null
+    maybeFocused() {
+      return this.isExpanded ? this.focused : null
     },
     ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
     ...mapState({
@@ -402,7 +401,6 @@ const conversation = {
     }),
   },
   components: {
-    Status,
     ThreadTree,
     QuickFilterSettings,
     QuickViewSettings,
@@ -416,7 +414,7 @@ const conversation = {
         oldConversationId &&
         newConversationId === oldConversationId
       ) {
-        this.setHighlight(this.originalStatusId)
+        this.setFocused(this.originalStatusId)
       } else {
         this.fetchConversation()
       }
@@ -438,38 +436,36 @@ const conversation = {
   methods: {
     fetchConversation() {
       if (this.status) {
-        this.$store.state.api.backendInteractor
-          .fetchConversation({ id: this.statusId })
-          .then(({ ancestors, descendants }) => {
-            this.$store.dispatch('addNewStatuses', { statuses: ancestors })
-            this.$store.dispatch('addNewStatuses', { statuses: descendants })
-            this.setHighlight(this.originalStatusId)
-          })
+        fetchConversation({
+          id: this.statusId,
+          credentials: useOAuthStore().token,
+        }).then(({ data: { ancestors, descendants } }) => {
+          this.$store.dispatch('addNewStatuses', { statuses: ancestors })
+          this.$store.dispatch('addNewStatuses', { statuses: descendants })
+          this.setFocused(this.originalStatusId)
+        })
       } else {
         this.loadStatusError = null
-        this.$store.state.api.backendInteractor
-          .fetchStatus({ id: this.statusId })
-          .then((status) => {
+        fetchStatus({
+          id: this.statusId,
+          credentials: useOAuthStore().token,
+        })
+          .then(({ data: status }) => {
             this.$store.dispatch('addNewStatuses', { statuses: [status] })
             this.fetchConversation()
           })
           .catch((error) => {
+            console.error(error)
             this.loadStatusError = error
           })
       }
     },
-    isFocused(id) {
-      return this.isExpanded && id === this.highlight
-    },
     getReplies(id) {
       return this.replies[id] || []
     },
-    getHighlight() {
-      return this.isExpanded ? this.highlight : null
-    },
-    setHighlight(id) {
+    setFocused(id) {
       if (!id) return
-      this.highlight = id
+      this.focused = id
 
       if (!this.streamingEnabled) {
         this.$store.dispatch('fetchStatus', id)
@@ -509,22 +505,6 @@ const conversation = {
     showThreadRecursively(id) {
       this.setThreadDisplayRecursively(id, 'showing')
     },
-    setStatusContentProperty(id, name, value) {
-      this.statusContentPropertiesObject = {
-        ...this.statusContentPropertiesObject,
-        [id]: {
-          ...this.statusContentPropertiesObject[id],
-          [name]: value,
-        },
-      }
-    },
-    toggleStatusContentProperty(id, name) {
-      this.setStatusContentProperty(
-        id,
-        name,
-        !this.statusContentProperties[id][name],
-      )
-    },
     leastVisibleAncestor(id) {
       let cur = id
       let parent = this.parentOf(cur)
@@ -550,7 +530,7 @@ const conversation = {
     // only used when we are not on a page
     undive() {
       this.inlineDivePosition = null
-      this.setHighlight(this.statusId)
+      this.setFocused(this.statusId)
     },
     tryScrollTo(id) {
       if (!id) {
@@ -568,7 +548,7 @@ const conversation = {
       // contain scrolling calls, as we do not want the page to jump
       // when we scroll with an expanded conversation.
       //
-      // Now the method is to rely solely on the `highlight` watcher
+      // Now the method is to rely solely on the `focused` watcher
       // in `status` components.
       // In linear views, all statuses are rendered at all times, but
       // in tree views, it is possible that a change in active status
@@ -576,9 +556,9 @@ const conversation = {
       // status becomes an ancestor status, and thus they will be
       // different).
       // Here, let the components be rendered first, in order to trigger
-      // the `highlight` watcher.
+      // the `focused` watcher.
       this.$nextTick(() => {
-        this.setHighlight(id)
+        this.setFocused(id)
       })
     },
     goToCurrent() {
@@ -623,6 +603,13 @@ const conversation = {
     resetDisplayState() {
       this.undive()
       this.threadDisplayStatusObject = {}
+    },
+    onStatusSuspendStateChange({ id, suspend }) {
+      if (!suspend) {
+        this.unsuspendibleIds.add(id)
+      } else {
+        this.unsuspendibleIds.delete(id)
+      }
     },
   },
 }

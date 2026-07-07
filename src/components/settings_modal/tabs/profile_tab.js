@@ -3,6 +3,10 @@ import UserCard from 'src/components/user_card/user_card.vue'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import { updateProfile } from 'src/api/user.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faCircleNotch,
@@ -35,10 +39,11 @@ const ProfileTab = {
       const params = {
         locked: this.locked,
       }
-
-      this.$store.state.api.backendInteractor
-        .updateProfile({ params })
-        .then((user) => {
+      updateProfile({
+        params,
+        credentials: useOAuthStore().token,
+      })
+        .then(({ data: user }) => {
           this.$store.commit('addNewUsers', [user])
           this.$store.commit('setCurrentUser', user)
         })

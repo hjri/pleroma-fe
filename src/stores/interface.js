@@ -58,8 +58,10 @@ export const useInterfaceStore = defineStore('interface', {
     },
     layoutType: 'normal',
     globalNotices: [],
+    globalError: null,
     layoutHeight: 0,
     lastTimeline: null,
+    foreignProfileBackground: null,
   }),
   actions: {
     setTemporaryChanges({ confirm, revert }) {
@@ -96,6 +98,9 @@ export const useInterfaceStore = defineStore('interface', {
         console.error(`${error}`)
       }
     },
+    setForeignProfileBackground(url) {
+      this.foreignProfileBackground = url
+    },
     settingsSaved({ success, error }) {
       if (success) {
         if (this.noticeClearTimeout) {
@@ -129,7 +134,24 @@ export const useInterfaceStore = defineStore('interface', {
         }
       }
     },
-    togglePeekSettingsModal() {
+    setSettingsModalState(newState) {
+      const oldState = this.settingsModalState
+      const legal = (() => {
+        switch (oldState) {
+          case 'minimized':
+            return true
+          case 'visible':
+            return true
+          case 'hidden':
+            return newState === 'visible'
+        }
+      })()
+
+      if (legal) {
+        this.settingsModalState = newState
+      }
+    },
+    toggleMinimizeSettingsModal() {
       switch (this.settingsModalState) {
         case 'minimized':
           this.settingsModalState = 'visible'
@@ -137,8 +159,12 @@ export const useInterfaceStore = defineStore('interface', {
         case 'visible':
           this.settingsModalState = 'minimized'
           return
+        case 'hidden':
+          return
         default:
-          throw new Error('Illegal minimization state of settings modal')
+          throw new Error(
+            `Illegal minimization state of settings modal: ${this.settingsModalState}`,
+          )
       }
     },
     clearSettingsModalTargetTab() {
@@ -151,11 +177,35 @@ export const useInterfaceStore = defineStore('interface', {
     removeGlobalNotice(notice) {
       this.globalNotices = this.globalNotices.filter((n) => n !== notice)
     },
+    setGlobalError({ error, instance, info }) {
+      console.log(info)
+      switch (info) {
+        case 'https://vuejs.org/error-reference/#runtime-13': {
+          this.globalError = {
+            title: 'general.refresh_required',
+            content: 'general.refresh_required_content',
+            // `true` disables cache on Firefox (non-standard)
+            recover: () => window.location.reload(true),
+            recoverText: 'general.refresh_required_refresh',
+            error,
+          }
+          break
+        }
+        default: {
+          this.globalError = { error }
+          break
+        }
+      }
+      console.log(this.globalError)
+    },
+    clearGlobalError() {
+      this.globalError = null
+    },
     pushGlobalNotice({
       messageKey,
       messageArgs = {},
       level = 'error',
-      timeout = 0,
+      timeout = 5000,
     }) {
       const notice = {
         messageKey,
@@ -168,7 +218,7 @@ export const useInterfaceStore = defineStore('interface', {
       // Adding a new element to array wraps it in a Proxy, which breaks the comparison
       // TODO: Generate UUID or something instead or relying on !== operator?
       const newNotice = this.globalNotices[this.globalNotices.length - 1]
-      if (timeout) {
+      if (timeout > 0) {
         setTimeout(() => this.removeGlobalNotice(newNotice), timeout)
       }
 

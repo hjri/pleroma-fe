@@ -125,7 +125,7 @@ export default {
           if (computedColor) return rgb2hex(computedColor)
           return null
         } catch (e) {
-          console.warn(e)
+          console.warn('Failed to get fallback color', e)
           return null
         }
       } else {

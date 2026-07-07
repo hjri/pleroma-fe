@@ -2,8 +2,8 @@
   <Modal
     :is-open="modalActivated"
     class="settings-modal"
-    :class="{ peek: modalPeeked }"
-    :no-background="modalPeeked"
+    :class="{ minimize: modalMinimized }"
+    :no-background="modalMinimized"
   >
     <div class="settings-modal-panel panel">
       <div class="panel-heading">
@@ -23,7 +23,7 @@
         <button
           class="btn button-default"
           :title="$t('general.peek')"
-          @click="peekModal"
+          @click="toggleMinimizeModal"
         >
           <FAIcon
             :icon="['far', 'window-minimize']"

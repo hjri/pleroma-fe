@@ -1,9 +1,12 @@
 <template>
   <tab-switcher
-    :scrollable-tabs="true"
     class="mutes-and-blocks-tab"
+    scrollable-tabs
   >
-    <div :label="$t('settings.blocks_tab')">
+    <div
+      class="blocks"
+      :label="$t('settings.user_blocks')"
+    >
       <div class="usersearch-wrapper">
         <Autosuggest
           :filter="filterUnblockedUsers"
@@ -17,9 +20,12 @@
           </template>
         </Autosuggest>
       </div>
-      <BlockList
-        :refresh="true"
+      <List
         :get-key="i => i"
+        :external-items="blocks"
+        :fetch-function="fetchItems('Blocks')"
+        scrollable
+        selectable
       >
         <template #header="{selected}">
           <div class="bulk-actions">
@@ -51,103 +57,109 @@
         <template #empty>
           {{ $t('settings.no_blocks') }}
         </template>
-      </BlockList>
+      </List>
     </div>
 
-    <div :label="$t('settings.mutes_tab')">
-      <tab-switcher>
-        <div :label="$t('settings.user_mutes')">
-          <div class="usersearch-wrapper">
-            <Autosuggest
-              :filter="filterUnMutedUsers"
-              :query="queryUserIds"
-              :placeholder="$t('settings.search_user_to_mute')"
+    <div
+      class="mutes"
+      :label="$t('settings.user_mutes2')"
+    >
+      <div class="usersearch-wrapper">
+        <Autosuggest
+          :filter="filterUnMutedUsers"
+          :query="queryUserIds"
+          :placeholder="$t('settings.search_user_to_mute')"
+        >
+          <template #default="row">
+            <MuteCard
+              :user-id="row.item"
+            />
+          </template>
+        </Autosuggest>
+      </div>
+      <List
+        :get-key="i => i"
+        :external-items="mutes"
+        :fetch-function="fetchItems('Mutes')"
+        scrollable
+        selectable
+      >
+        <template #header="{selected}">
+          <div class="bulk-actions">
+            <ProgressButton
+              v-if="selected.length > 0"
+              class="btn button-default"
+              :click="() => muteUsers(selected)"
             >
-              <template #default="row">
-                <MuteCard
-                  :user-id="row.item"
-                />
+              {{ $t('user_card.mute') }}
+              <template #progress>
+                {{ $t('user_card.mute_progress') }}
               </template>
-            </Autosuggest>
+            </ProgressButton>
+            <ProgressButton
+              v-if="selected.length > 0"
+              class="btn button-default"
+              :click="() => unmuteUsers(selected)"
+            >
+              {{ $t('user_card.unmute') }}
+              <template #progress>
+                {{ $t('user_card.unmute_progress') }}
+              </template>
+            </ProgressButton>
           </div>
-          <MuteList
-            :refresh="true"
-            :get-key="i => i"
-          >
-            <template #header="{selected}">
-              <div class="bulk-actions">
-                <ProgressButton
-                  v-if="selected.length > 0"
-                  class="btn button-default"
-                  :click="() => muteUsers(selected)"
-                >
-                  {{ $t('user_card.mute') }}
-                  <template #progress>
-                    {{ $t('user_card.mute_progress') }}
-                  </template>
-                </ProgressButton>
-                <ProgressButton
-                  v-if="selected.length > 0"
-                  class="btn button-default"
-                  :click="() => unmuteUsers(selected)"
-                >
-                  {{ $t('user_card.unmute') }}
-                  <template #progress>
-                    {{ $t('user_card.unmute_progress') }}
-                  </template>
-                </ProgressButton>
-              </div>
-            </template>
-            <template #item="{item}">
-              <MuteCard :user-id="item" />
-            </template>
-            <template #empty>
-              {{ $t('settings.no_mutes') }}
-            </template>
-          </MuteList>
-        </div>
+        </template>
+        <template #item="{item}">
+          <MuteCard :user-id="item" />
+        </template>
+        <template #empty>
+          {{ $t('settings.no_mutes') }}
+        </template>
+      </List>
+    </div>
 
-        <div :label="$t('settings.domain_mutes')">
-          <div class="domain-mute-form">
-            <Autosuggest
-              :filter="filterUnMutedDomains"
-              :query="queryKnownDomains"
-              :placeholder="$t('settings.type_domains_to_mute')"
+    <div :label="$t('settings.domain_mutes2')">
+      <div class="domain-mute-form">
+        <Autosuggest
+          :filter="filterUnMutedDomains"
+          :query="queryKnownDomains"
+          :placeholder="$t('settings.type_domains_to_mute')"
+        >
+          <template #default="row">
+            <DomainMuteCard
+              :domain="row.item"
+            />
+          </template>
+        </Autosuggest>
+      </div>
+      <List
+        :get-key="i => i"
+        :external-items="domains"
+        :fetch-function="fetchItems('DomainMutes')"
+        scrollable
+        selectable
+      >
+        <template #header="{selected}">
+          <div class="bulk-actions">
+            <ProgressButton
+              v-if="selected.length > 0"
+              class="btn button-default"
+              :click="() => unmuteDomains(selected)"
             >
-              <template #default="row">
-                <DomainMuteCard
-                  :domain="row.item"
-                />
+              {{ $t('domain_mute_card.unmute') }}
+              <template #progress>
+                {{ $t('domain_mute_card.unmute_progress') }}
               </template>
-            </Autosuggest>
+            </ProgressButton>
           </div>
-          <DomainMuteList
-            :refresh="true"
-            :get-key="i => i"
-          >
-            <template #header="{selected}">
-              <div class="bulk-actions">
-                <ProgressButton
-                  v-if="selected.length > 0"
-                  class="btn button-default"
-                  :click="() => unmuteDomains(selected)"
-                >
-                  {{ $t('domain_mute_card.unmute') }}
-                  <template #progress>
-                    {{ $t('domain_mute_card.unmute_progress') }}
-                  </template>
-                </ProgressButton>
-              </div>
-            </template>
-            <template #item="{item}">
-              <DomainMuteCard :domain="item" />
-            </template>
-            <template #empty>
-              {{ $t('settings.no_mutes') }}
-            </template>
-          </DomainMuteList>
-        </div>
-      </tab-switcher>
+        </template>
+        <template #item="{item}">
+          {{ item }}
+          <DomainMuteCard :domain="item" />
+        </template>
+        <template #empty>
+          {{ $t('settings.no_mutes') }}
+        </template>
+      </List>
     </div>
   </tab-switcher>
 </template>

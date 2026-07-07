@@ -14,15 +14,16 @@ import {
   uniqWith,
   unset,
 } from 'lodash'
-import { v4 as uuidv4 } from 'uuid'
 import { defineStore } from 'pinia'
+import { v4 as uuidv4 } from 'uuid'
 import { toRaw } from 'vue'
 
 import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
 
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
+import { updateProfileJSON } from 'src/api/user.js'
 import { storage } from 'src/lib/storage.js'
 import {
   makeUndefined,
@@ -231,9 +232,17 @@ export const _mergeJournal = (...journals) => {
       Object.hasOwn(entry, 'timestamp'),
   )
   const grouped = groupBy(allJournals, 'path')
-  const trimmedGrouped = Object.entries(grouped).map(([path, journal]) => {
-    // side effect
-    journal.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
+  const trimmedGrouped = Object.entries(grouped).map(([path, rawJournal]) => {
+    const journal = rawJournal
+      .map((data, index) => ({ data, index }))
+      .toSorted(({ data: a, index: ai }, { data: b, index: bi }) => {
+        if (a.timestamp === b.timestamp) {
+          return ai - bi
+        } else {
+          return a.timestamp > b.timestamp ? 1 : -1
+        }
+      })
+      .map((x) => x.data)
 
     if (path.startsWith('collections')) {
       const lastRemoveIndex = findLastIndex(
@@ -268,9 +277,16 @@ export const _mergeJournal = (...journals) => {
     }
   })
 
-  const flat = flatten(trimmedGrouped).sort((a, b) =>
-    a.timestamp > b.timestamp ? 1 : -1,
-  )
+  const flat = flatten(trimmedGrouped)
+    .map((data, index) => ({ data, index }))
+    .toSorted(({ data: a, index: ai }, { data: b, index: bi }) => {
+      if (a.timestamp === b.timestamp) {
+        return ai - bi
+      } else {
+        return a.timestamp > b.timestamp ? 1 : -1
+      }
+    })
+    .map((x) => x.data)
   return take(flat, 500)
 }
 
@@ -684,8 +700,6 @@ export const useSyncConfigStore = defineStore('sync_config', {
         `Already migrated Values: ${[...migratedEntries].join() || '[none]'}`,
       )
 
-      const { configMigration } = useSyncConfigStore().flagStorage
-
       Object.entries(oldDefaultConfigSync).forEach(([key, value]) => {
         const oldValue = config[key]
         const defaultValue = value
@@ -791,18 +805,22 @@ export const useSyncConfigStore = defineStore('sync_config', {
       if (!needPush) return
       this.updateCache({ username: window.vuex.state.users.currentUser.fqn })
       const params = { pleroma_settings_store: { 'pleroma-fe': this.cache } }
-      window.vuex.state.api.backendInteractor.updateProfileJSON({ params })
+      updateProfileJSON({
+        params,
+        credentials: useOAuthStore().token,
+      })
     },
   },
   persist: {
     afterLoad(state) {
       console.debug('Validating persisted state of SyncConfig')
       const newState = { ...state }
+      newState.prefsStorage = newState.prefsStorage || {}
       const newEntries = Object.entries(ROOT_CONFIG).map(([path, value]) => {
         const definition = ROOT_CONFIG_DEFINITIONS[path]
         const finalValue = validateSetting({
           path,
-          value: newState.prefsStorage.simple[path],
+          value: newState.prefsStorage.simple?.[path],
           definition,
           throwError: false,
           validateObjects: false,

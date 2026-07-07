@@ -1,24 +1,22 @@
 import { debounce, map, reject, uniqBy } from 'lodash'
 import { mapActions, mapState } from 'pinia'
-import { mapGetters } from 'vuex'
+import { defineAsyncComponent } from 'vue'
 
+import Attachment from 'src/components/attachment/attachment.vue'
+import Checkbox from 'src/components/checkbox/checkbox.vue'
 import DraftCloser from 'src/components/draft_closer/draft_closer.vue'
+import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
+import suggestor from 'src/components/emoji_input/suggestor.js'
 import Gallery from 'src/components/gallery/gallery.vue'
+import MediaUpload from 'src/components/media_upload/media_upload.vue'
 import Popover from 'src/components/popover/popover.vue'
+import ScopeSelector from 'src/components/scope_selector/scope_selector.vue'
+import Select from 'src/components/select/select.vue'
+import StatusContent from 'src/components/status_content/status_content.vue'
 import { propsToNative } from '../../services/attributes_helper/attributes_helper.service.js'
 import { findOffset } from '../../services/offset_finder/offset_finder.service.js'
 import genRandomSeed from '../../services/random_seed/random_seed.service.js'
 import statusPoster from '../../services/status_poster/status_poster.service.js'
-import Attachment from '../attachment/attachment.vue'
-import Checkbox from '../checkbox/checkbox.vue'
-import EmojiInput from '../emoji_input/emoji_input.vue'
-import suggestor from '../emoji_input/suggestor.js'
-import MediaUpload from '../media_upload/media_upload.vue'
-import PollForm from '../poll/poll_form.vue'
-import QuoteForm from '../quote/quote_form.vue'
-import ScopeSelector from '../scope_selector/scope_selector.vue'
-import Select from '../select/select.vue'
-import StatusContent from '../status_content/status_content.vue'
 
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -135,14 +133,18 @@ const PostStatusForm = {
     'resize',
     'mediaplay',
     'mediapause',
-    'can-close',
+    'close-accepted',
     'update',
   ],
   components: {
     MediaUpload,
     EmojiInput,
-    PollForm,
-    QuoteForm,
+    PollForm: defineAsyncComponent(
+      () => import('src/components/poll/poll_form.vue'),
+    ),
+    QuoteForm: defineAsyncComponent(
+      () => import('src/components/quote/quote_form.vue'),
+    ),
     ScopeSelector,
     Checkbox,
     Select,
@@ -211,7 +213,11 @@ const PostStatusForm = {
         poll: {},
         hasPoll: false,
         hasQuote: false,
-        quote: {},
+        quote: {
+          id: '',
+          url: '',
+          thread: false,
+        },
         mediaDescriptions: {},
         visibility: scope,
         contentType,
@@ -230,7 +236,11 @@ const PostStatusForm = {
           poll: this.statusPoll || {},
           hasPoll: false,
           hasQuote: false,
-          quote: {},
+          quote: {
+            id: '',
+            url: '',
+            thread: false,
+          },
           mediaDescriptions: this.statusMediaDescriptions || {},
           visibility: this.statusScope || scope,
           contentType: statusContentType,
@@ -378,12 +388,13 @@ const PostStatusForm = {
         this.newStatus.hasQuote = value
         this.newStatus.quote.thread = value
         this.newStatus.quote.id = value ? this.replyTo : ''
-      }
+      },
     },
     defaultQuotable() {
       if (
         !this.quotingAvailable ||
-        !this.isReply
+        !this.isReply ||
+        !useMergedConfigStore().mergedConfig.quoteReply
       ) {
         return false
       }
@@ -623,11 +634,7 @@ const PostStatusForm = {
           // Don't apply preview if not loading, because it means
           // user has closed the preview manually.
           if (!this.previewLoading) return
-          if (!data.error) {
-            this.preview = data
-          } else {
-            this.preview = { error: data.error }
-          }
+          this.preview = data
         })
         .catch((error) => {
           this.preview = { error }
@@ -956,19 +963,19 @@ const PostStatusForm = {
     },
     requestClose() {
       if (!this.saveable) {
-        this.$emit('can-close')
+        this.$emit('close-accepted')
       } else {
         this.$refs.draftCloser.requestClose()
       }
     },
     saveAndCloseDraft() {
       this.saveDraft().then(() => {
-        this.$emit('can-close')
+        this.$emit('close-accepted')
       })
     },
     discardAndCloseDraft() {
       this.abandonDraft().then(() => {
-        this.$emit('can-close')
+        this.$emit('close-accepted')
       })
     },
     addBeforeUnloadListener() {

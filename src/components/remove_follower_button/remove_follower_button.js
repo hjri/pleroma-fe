@@ -1,4 +1,4 @@
-import ConfirmModal from '../confirm_modal/confirm_modal.vue'
+import { defineAsyncComponent } from 'vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
@@ -11,7 +11,9 @@ export default {
     }
   },
   components: {
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
   },
   computed: {
     label() {

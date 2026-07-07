@@ -1,13 +1,11 @@
 import { chunk, debounce, trim } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 
+import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Popover from 'src/components/popover/popover.vue'
 import { ensureFinalFallback } from '../../i18n/languages.js'
-import Checkbox from '../checkbox/checkbox.vue'
-import StillImage from '../still-image/still-image.vue'
 
 import { useEmojiStore } from 'src/stores/emoji.js'
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -129,6 +127,7 @@ const EmojiPicker = {
       hideCustomEmojiInPicker: false,
       // Lazy-load only after the first time `showing` becomes true.
       contentLoaded: false,
+      popoverShown: false,
       groupRefs: {},
       emojiRefs: {},
       filteredEmojiGroups: [],
@@ -138,10 +137,10 @@ const EmojiPicker = {
   },
   components: {
     StickerPicker: defineAsyncComponent(
-      () => import('../sticker_picker/sticker_picker.vue'),
+      () => import('src/components/sticker_picker/sticker_picker.vue'),
     ),
     Checkbox,
-    StillImage,
+
     Popover,
   },
   methods: {
@@ -176,6 +175,13 @@ const EmojiPicker = {
       const fullEmojiSize = emojiSizeReal + 2 * 0.2 * fontSizeMultiplier * 14
       this.emojiSize = fullEmojiSize
     },
+    togglePicker() {
+      if (this.popoverShown) {
+        this.hidePicker()
+      } else {
+        this.showPicker()
+      }
+    },
     showPicker() {
       this.$refs.popover.showPopover()
       this.$nextTick(() => {
@@ -194,10 +200,10 @@ const EmojiPicker = {
       }
     },
     onPopoverShown() {
-      this.$emit('show')
+      this.popoverShown = true
     },
     onPopoverClosed() {
-      this.$emit('close')
+      this.popoverShown = false
     },
     onStickerUploaded(e) {
       this.$emit('sticker-uploaded', e)

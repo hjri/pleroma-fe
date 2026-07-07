@@ -1,7 +1,10 @@
-import filter from 'lodash/filter'
+import { filter } from 'lodash'
 import { defineStore } from 'pinia'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import { setReportState } from 'src/api/admin.js'
 
 export const useReportsStore = defineStore('reports', {
   state: () => ({
@@ -38,18 +41,21 @@ export const useReportsStore = defineStore('reports', {
     setReportState({ id, state }) {
       const oldState = this.reports[id].state
       this.reports[id].state = state
-      window.vuex.state.api.backendInteractor
-        .setReportState({ id, state })
-        .catch((e) => {
-          console.error('Failed to set report state', e)
-          useInterfaceStore().pushGlobalNotice({
-            level: 'error',
-            messageKey: 'general.generic_error_message',
-            messageArgs: [e.message],
-            timeout: 5000,
-          })
-          this.reports[id].state = oldState
+
+      setReportState({
+        id,
+        state,
+        credentials: useOAuthStore().token,
+      }).catch((e) => {
+        console.error('Failed to set report state', e)
+        useInterfaceStore().pushGlobalNotice({
+          level: 'error',
+          messageKey: 'general.generic_error_message',
+          messageArgs: [e.message],
+          timeout: 5000,
         })
+        this.reports[id].state = oldState
+      })
     },
     addReport(report) {
       this.reports[report.id] = report

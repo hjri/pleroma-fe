@@ -1,7 +1,7 @@
 import { mapState } from 'vuex'
 
-import Announcement from '../announcement/announcement.vue'
-import AnnouncementEditor from '../announcement_editor/announcement_editor.vue'
+import Announcement from 'src/components/announcement/announcement.vue'
+import AnnouncementEditor from 'src/components/announcement_editor/announcement_editor.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 
@@ -35,9 +35,7 @@ const AnnouncementsPage = {
     canPostAnnouncement() {
       return (
         this.currentUser &&
-        this.currentUser.privileges.includes(
-          'announcements_manage_announcements',
-        )
+        this.currentUser.privileges.has('announcements_manage_announcements')
       )
     },
   },

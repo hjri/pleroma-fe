@@ -1,4 +1,4 @@
-import { get, set } from 'lodash'
+import { get } from 'lodash'
 
 const browserLocale = (navigator.language || 'en').split('-')[0]
 
@@ -139,6 +139,10 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
   hideISP: {
     description: 'Hide Instance-specific panel',
     default: false,
+  },
+  allowForeignUserBackground: {
+    description: "Allow other user's profiles to override wallpaper",
+    default: true,
   },
   hideInstanceWallpaper: {
     description: 'Hide Instance default background',

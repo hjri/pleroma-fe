@@ -4,3 +4,4 @@ reply/quote now is a radio group and wraps, fixes overflow on languages where la
 personal note input is now bigger
 moved "edit pinned" to the bottom for status action buttons.
 dots status action button drops down instead of up to avoid hiding the action buttons
+improved attachment description (alt text) input and display

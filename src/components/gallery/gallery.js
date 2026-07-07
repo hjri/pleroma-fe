@@ -1,6 +1,6 @@
 import { set, sumBy } from 'lodash'
 
-import Attachment from '../attachment/attachment.vue'
+import Attachment from 'src/components/attachment/attachment.vue'
 
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 
@@ -27,8 +27,10 @@ const Gallery = {
     return {
       sizes: {},
       hidingLong: true,
+      playingMedia: new Set(),
     }
   },
+  emits: ['play', 'pause'],
   components: { Attachment },
   computed: {
     rows() {
@@ -47,7 +49,7 @@ const Gallery = {
         : attachments
             .reduce(
               (acc, attachment, i) => {
-                const peek = attachments[i+1]
+                const peek = attachments[i + 1]
                 const nextEnd = peek == null
                 const nextWide = !nextEnd && !displayTypes.has(peek?.type)
 
@@ -68,12 +70,23 @@ const Gallery = {
                 }
 
                 const maxPerRow = 3
-                const currentRow = acc[acc.length - 1].items
-                if ((nextWide || nextEnd) && currentRow.length >= maxPerRow) {
-                  const last = currentRow.splice(-1)[0]
-                  return [...acc, { items: [last, attachment] }]
+                const currentRow = acc[acc.length - 1]
+                const previousRow = acc[acc.length - 2]
+
+                if (currentRow.items.length >= maxPerRow) {
+                  if (nextWide || nextEnd) {
+                    if (previousRow?.items.length > 1) {
+                      currentRow.items.push(attachment)
+                      return [...acc, { items: [] }]
+                    } else {
+                      const last = currentRow.items.splice(-1)[0]
+                      return [...acc, { items: [last, attachment] }]
+                    }
+                  } else {
+                    return [...acc, { items: [attachment] }]
+                  }
                 } else {
-                  currentRow.push(attachment)
+                  currentRow.items.push(attachment)
                 }
                 return acc
               },
@@ -104,10 +117,20 @@ const Gallery = {
         return this.attachmentsDimensionalScore > 1
       }
     },
+    hasPlayingMedia() {
+      return this.playingMedia.size > 0
+    },
   },
   methods: {
     onNaturalSizeLoad({ id, width, height }) {
       set(this.sizes, id, { width, height })
+    },
+    onMediaStateChange(playing, id) {
+      if (playing) {
+        this.playingMedia.add(id)
+      } else {
+        this.playingMedia.delete(id)
+      }
     },
     rowStyle(row) {
       if (row.audio) {
@@ -133,6 +156,15 @@ const Gallery = {
     },
     onMedia() {
       useMediaViewerStore().setMedia(this.attachments)
+    },
+  },
+  watch: {
+    hasPlayingMedia(newValue) {
+      if (newValue) {
+        this.$emit('play')
+      } else {
+        this.$emit('pause')
+      }
     },
   },
 }

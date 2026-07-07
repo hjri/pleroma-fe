@@ -1,5 +1,6 @@
 import { get } from 'lodash'
 import { mapState } from 'pinia'
+
 import { useInstanceStore } from 'src/stores/instance.js'
 
 /**
@@ -21,16 +22,11 @@ const MRFTransparencyPanel = {
   computed: {
     ...mapState(useInstanceStore, {
       federationPolicy: (state) => state.federationPolicy,
-      mrfPolicies: (state) =>
-        get(state, 'federationPolicy.mrf_policies', []),
+      mrfPolicies: (state) => get(state, 'federationPolicy.mrf_policies', []),
       quarantineInstances: (state) =>
         toInstanceReasonObject(
           get(state, 'federationPolicy.quarantined_instances', []),
-          get(
-            state,
-            'federationPolicy.quarantined_instances_info',
-            [],
-          ),
+          get(state, 'federationPolicy.quarantined_instances_info', []),
           'quarantined_instances',
         ),
       acceptInstances: (state) =>

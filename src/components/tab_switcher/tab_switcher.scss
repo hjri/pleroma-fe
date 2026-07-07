@@ -49,12 +49,14 @@
 
     .contents.scrollable-tabs {
       flex-basis: 0;
+      position: relative;
     }
   }
 
   .contents {
     flex: 1 0 auto;
     min-height: 0;
+    position: relative;
 
     .hidden {
       display: none;

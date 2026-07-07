@@ -1,13 +1,13 @@
 import { mapState as mapPiniaState } from 'pinia'
-import { defineAsyncComponent } from 'vue'
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
+import UnicodeDomainIndicator from 'src/components/unicode_domain_indicator/unicode_domain_indicator.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+import UserPopover from 'src/components/user_popover/user_popover.vue'
 import {
   highlightClass,
   highlightStyle,
 } from '../../services/user_highlighter/user_highlighter.js'
-import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
@@ -24,9 +24,7 @@ const MentionLink = {
   components: {
     UserAvatar,
     UnicodeDomainIndicator,
-    UserPopover: defineAsyncComponent(
-      () => import('../user_popover/user_popover.vue'),
-    ),
+    UserPopover,
   },
   props: {
     url: {

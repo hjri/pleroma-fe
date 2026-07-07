@@ -455,7 +455,13 @@ export default {
     // slots updated -> rerender -> emit -> update up the tree -> rerender -> ...
     // at least until vue3?
     const result = (
-      <span class={['RichContent', this.faint ? '-faint' : '', this.allowNonSquareEmoji ? '-allow-non-square-emoji' : '']}>
+      <span
+        class={[
+          'RichContent',
+          this.faint ? '-faint' : '',
+          this.allowNonSquareEmoji ? '-allow-non-square-emoji' : '',
+        ]}
+      >
         {this.collapse
           ? pass2.map((x) => {
               if (!Array.isArray(x)) return x.replace(/\n/g, ' ')

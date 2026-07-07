@@ -15,7 +15,7 @@
         </div>
         <template v-else>
           <List
-            :items="drafts"
+            :external-items="drafts"
             :non-interactive="true"
           >
             <template #item="{ item: draft }">
@@ -58,6 +58,7 @@
 .Drafts {
   .draft {
     margin: 1em 0;
+    width: 100%;
   }
 
   .remove-all {

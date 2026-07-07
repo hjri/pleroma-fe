@@ -1,26 +1,21 @@
-import ldEscape from 'lodash/escape'
-import isEqual from 'lodash/isEqual'
-import merge from 'lodash/merge'
-import ldUnescape from 'lodash/unescape'
+import {
+  isEqual,
+  escape as ldEscape,
+  unescape as ldUnescape,
+  merge,
+} from 'lodash'
 import { mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
-import DialogModal from 'src/components/dialog_modal/dialog_modal.vue'
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
 import suggestor from 'src/components/emoji_input/suggestor.js'
-import ImageCropper from 'src/components/image_cropper/image_cropper.vue'
-import RichContent from 'src/components/rich_content/rich_content.jsx'
-import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
-import AccountActions from '../account_actions/account_actions.vue'
-import FollowButton from '../follow_button/follow_button.vue'
-import ModerationTools from '../moderation_tools/moderation_tools.vue'
-import ProgressButton from '../progress_button/progress_button.vue'
-import RemoteFollow from '../remote_follow/remote_follow.vue'
-import Select from '../select/select.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
-import UserLink from '../user_link/user_link.vue'
-import UserNote from '../user_note/user_note.vue'
+import FollowButton from 'src/components/follow_button/follow_button.vue'
+import ProgressButton from 'src/components/progress_button/progress_button.vue'
+import Select from 'src/components/select/select.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+import UserLink from 'src/components/user_link/user_link.vue'
 
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -31,6 +26,7 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { usePostStatusStore } from 'src/stores/post_status'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
+import { updateProfile } from 'src/api/user.js'
 import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
 import localeService from 'src/services/locale/locale.service.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
@@ -68,7 +64,7 @@ const KNOWN_TAGS = new Set([
   'mrf_tag:force-unlisted',
   'mrf_tag:sandbox',
   'mrf_tag:disable-remote-subscription',
-  'mrf_tag:disable-any-subscription'
+  'mrf_tag:disable-any-subscription',
 ])
 
 export default {
@@ -86,6 +82,12 @@ export default {
     },
     // Use a compact layout that hides bio, stats etc.
     hideBio: {
+      required: false,
+      default: false,
+      type: Boolean,
+    },
+    // Hide action buttons
+    hideButtons: {
       required: false,
       default: false,
       type: Boolean,
@@ -119,25 +121,41 @@ export default {
       required: false,
       type: Boolean,
       default: false,
-    }
+    },
   },
   components: {
-    DialogModal,
+    DialogModal: defineAsyncComponent(
+      () => import('src/components/dialog_modal/dialog_modal.vue'),
+    ),
     UserAvatar,
     Checkbox,
-    RemoteFollow,
-    ModerationTools,
-    AccountActions,
+    RemoteFollow: defineAsyncComponent(
+      () => import('src/components/remote_follow/remote_follow.vue'),
+    ),
+    ModerationTools: defineAsyncComponent(
+      () => import('src/components/moderation_tools/moderation_tools.vue'),
+    ),
+    AccountActions: defineAsyncComponent(
+      () => import('src/components/account_actions/account_actions.vue'),
+    ),
     ProgressButton,
     FollowButton,
     Select,
-    RichContent,
     UserLink,
-    UserNote,
-    UserTimedFilterModal,
+    UserNote: defineAsyncComponent(
+      () => import('src/components/user_note/user_note.vue'),
+    ),
+    UserTimedFilterModal: defineAsyncComponent(
+      () =>
+        import(
+          'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
+        ),
+    ),
     ColorInput,
     EmojiInput,
-    ImageCropper,
+    ImageCropper: defineAsyncComponent(
+      () => import('src/components/image_cropper/image_cropper.vue'),
+    ),
   },
   data() {
     const user = this.$store.getters.findUser(this.userId)
@@ -268,7 +286,7 @@ export default {
       },
     },
     visibleRole() {
-      if (!this.newShowRole) {
+      if (!this.user.show_role && !this.user.adminData) {
         return
       }
       const rights = this.user.rights
@@ -289,9 +307,9 @@ export default {
       const privileges = this.loggedIn.privileges
       return (
         this.loggedIn.role === 'admin' ||
-        privileges.includes('users_manage_activation_state') ||
-        privileges.includes('users_delete') ||
-        privileges.includes('users_manage_tags')
+        privileges.has('users_manage_activation_state') ||
+        privileges.has('users_delete') ||
+        privileges.has('users_manage_tags')
       )
     },
     hasNote() {
@@ -327,6 +345,18 @@ export default {
       return (
         this.user.birthday &&
         new Date(Date.parse(this.user.birthday)).toLocaleDateString(
+          browserLocale,
+          { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' },
+        )
+      )
+    },
+    formattedJoinDate() {
+      const browserLocale = localeService.internalToBrowserLocale(
+        this.$i18n.locale,
+      )
+      return (
+        this.user.created_at &&
+        new Date(Date.parse(this.user.created_at)).toLocaleDateString(
           browserLocale,
           { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' },
         )
@@ -402,6 +432,12 @@ export default {
     },
     allowNonSquareEmoji() {
       return this.mergedConfig.nonSquareEmoji
+    },
+    hideUserStats() {
+      return this.mergedConfig.hideUserStats
+    },
+    hideRemarks() {
+      return this.mergedConfig.userCardHidePersonalMarks
     },
     ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
@@ -561,9 +597,8 @@ export default {
         params.header = this.newBannerFile
       }
 
-      this.$store.state.api.backendInteractor
-        .updateProfile({ params })
-        .then((user) => {
+      updateProfile({ params })
+        .then(({ data: user }) => {
           this.newFields.splice(this.newFields.length)
           merge(this.newFields, user.fields)
           this.$store.commit('addNewUsers', [user])

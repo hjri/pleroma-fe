@@ -51,19 +51,18 @@
           </div>
         </div>
         <div class="user-reporting-panel-right">
-          <List :items="statuses">
+          <List
+            :external-items="reportModal.statuses"
+            :pre-select="reportModal.preTickedIds"
+            selectable
+            @select="onListSelect"
+          >
             <template #item="{item}">
-              <div class="status-fadein user-reporting-panel-sitem">
-                <Status
-                  :in-conversation="false"
-                  :focused="false"
-                  :statusoid="item"
-                />
-                <Checkbox
-                  :model-value="isChecked(item.id)"
-                  @update:model-value="checked => toggleStatus(checked, item.id)"
-                />
-              </div>
+              <Status
+                :in-conversation="false"
+                :focused="false"
+                :statusoid="item"
+              />
             </template>
           </List>
         </div>
@@ -134,20 +133,6 @@
     display: flex;
     flex-direction: column;
     overflow-y: auto;
-  }
-
-  &-sitem {
-    display: flex;
-    justify-content: space-between;
-
-    /* TODO cleanup this */
-    > .Status {
-      flex: 1;
-    }
-
-    > .checkbox {
-      margin: 0.75em;
-    }
   }
 
   @media all and (width >= 801px) {

@@ -15,7 +15,7 @@
       </button>
     </div>
     <teleport to="#modal">
-      <confirm-modal
+      <ConfirmModal
         v-if="showingApproveConfirmDialog"
         :title="$t('user_card.approve_confirm_title')"
         :confirm-text="$t('user_card.approve_confirm_accept_button')"
@@ -24,8 +24,8 @@
         @cancelled="hideApproveConfirmDialog"
       >
         {{ $t('user_card.approve_confirm', { user: user.screen_name_ui }) }}
-      </confirm-modal>
-      <confirm-modal
+      </ConfirmModal>
+      <ConfirmModal
         v-if="showingDenyConfirmDialog"
         :title="$t('user_card.deny_confirm_title')"
         :confirm-text="$t('user_card.deny_confirm_accept_button')"
@@ -34,7 +34,7 @@
         @cancelled="hideDenyConfirmDialog"
       >
         {{ $t('user_card.deny_confirm', { user: user.screen_name_ui }) }}
-      </confirm-modal>
+      </ConfirmModal>
     </teleport>
   </basic-user-card>
 </template>

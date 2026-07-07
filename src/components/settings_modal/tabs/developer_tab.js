@@ -1,4 +1,5 @@
 import { mapState } from 'pinia'
+
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
@@ -17,7 +18,11 @@ const VersionTab = {
     frontendVersionLink() {
       return pleromaFeCommitUrl + this.frontendVersion
     },
-    ...mapState(useInstanceStore, ['backendVersion', 'backendRepository', 'frontendVersion']),
+    ...mapState(useInstanceStore, [
+      'backendVersion',
+      'backendRepository',
+      'frontendVersion',
+    ]),
     ...SharedComputedObject(),
   },
   methods: {

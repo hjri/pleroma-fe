@@ -1,4 +1,4 @@
-import { get, set } from 'lodash'
+import { set } from 'lodash'
 import { defineStore } from 'pinia'
 
 import {
@@ -11,9 +11,10 @@ import {
   LOCAL_DEFAULT_CONFIG_DEFINITIONS,
   validateSetting,
 } from '../modules/default_config_state.js'
-import apiService from '../services/api/api.service.js'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
+
+import { fetchKnownDomains } from 'src/api/public.js'
 
 const REMOTE_INTERACTION_URL = '/main/ostatus'
 
@@ -210,9 +211,10 @@ export const useInstanceStore = defineStore('instance', {
     },
     async getKnownDomains() {
       try {
-        this.knownDomains = await apiService.fetchKnownDomains({
+        const { data } = await fetchKnownDomains({
           credentials: window.vuex.state.users.currentUser.credentials,
         })
+        this.knownDomains = data
       } catch (e) {
         console.warn("Can't load known domains\n", e)
       }

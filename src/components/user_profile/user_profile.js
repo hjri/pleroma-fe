@@ -1,45 +1,19 @@
-import get from 'lodash/get'
-import { mapState } from 'pinia'
+import { get } from 'lodash'
 
-import RichContent from 'src/components/rich_content/rich_content.jsx'
+import FollowCard from 'src/components/follow_card/follow_card.vue'
+import List from 'src/components/list/list.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
-import withLoadMore from '../../hocs/with_load_more/with_load_more'
-import Conversation from '../conversation/conversation.vue'
-import FollowCard from '../follow_card/follow_card.vue'
-import List from '../list/list.vue'
-import Timeline from '../timeline/timeline.vue'
-import UserCard from '../user_card/user_card.vue'
+import Timeline from 'src/components/timeline/timeline.vue'
+import UserCard from 'src/components/user_card/user_card.vue'
 
-import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faCircleNotch)
-
-const FollowerList = withLoadMore({
-  fetch: (props, $store) => $store.dispatch('fetchFollowers', props.userId),
-  select: (props, $store) =>
-    get($store.getters.findUser(props.userId), 'followerIds', []).map((id) =>
-      $store.getters.findUser(id),
-    ),
-  destroy: (props, $store) => $store.dispatch('clearFollowers', props.userId),
-  childPropName: 'items',
-  additionalPropNames: ['userId'],
-})(List)
-
-const FriendList = withLoadMore({
-  fetch: (props, $store) => $store.dispatch('fetchFriends', props.userId),
-  select: (props, $store) =>
-    get($store.getters.findUser(props.userId), 'friendIds', []).map((id) =>
-      $store.getters.findUser(id),
-    ),
-  destroy: (props, $store) => $store.dispatch('clearFriends', props.userId),
-  childPropName: 'items',
-  additionalPropNames: ['userId'],
-})(List)
 
 const defaultTabKey = 'statuses'
 
@@ -56,9 +30,16 @@ const UserProfile = {
     const routeParams = this.$route.params
     this.load({ name: routeParams.name, id: routeParams.id })
     this.tab = get(this.$route, 'query.tab', defaultTabKey)
+    useInterfaceStore().setForeignProfileBackground(this.user?.background_image)
+  },
+  updated() {
+    useInterfaceStore().setForeignProfileBackground(this.user?.background_image)
   },
   unmounted() {
     this.stopFetching()
+    useInterfaceStore().setForeignProfileBackground(null)
+    this.$store.dispatch('clearFollowers', this.userId)
+    this.$store.dispatch('clearFriends', this.userId)
   },
   computed: {
     timeline() {
@@ -99,10 +80,30 @@ const UserProfile = {
     compactProfiles() {
       return useMergedConfigStore().mergedConfig.compactProfiles
     },
+    friends() {
+      return get(
+        this.$store.getters.findUser(this.userId),
+        'friendIds',
+        [],
+      ).map((id) => this.$store.getters.findUser(id))
+    },
+    followers() {
+      return get(
+        this.$store.getters.findUser(this.userId),
+        'followerIds',
+        [],
+      ).map((id) => this.$store.getters.findUser(id))
+    },
   },
   methods: {
     setFooterRef(el) {
       this.footerRef = el
+    },
+    fetchUsers(group) {
+      return () =>
+        this.$store
+          .dispatch('fetch' + group, this.userId)
+          .then((result) => ({ items: result }))
     },
     load(userNameOrId) {
       const startFetchingTimeline = (timeline, userId) => {
@@ -198,12 +199,9 @@ const UserProfile = {
   components: {
     UserCard,
     Timeline,
-    FollowerList,
-    FriendList,
+    List,
     FollowCard,
     TabSwitcher,
-    Conversation,
-    RichContent,
   },
 }
 

@@ -333,7 +333,6 @@ const EmojiInput = {
       if (!this.pickerShown) {
         this.scrollIntoView()
         this.$refs.picker.showPicker()
-        this.$refs.picker.startEmojiLoad()
       } else {
         this.$refs.picker.hidePicker()
       }
@@ -590,7 +589,7 @@ const EmojiInput = {
     setCaret({ target: { selectionStart } }) {
       this.caret = selectionStart
       this.$nextTick(() => {
-        this.$refs.suggestorPopover.updateStyles()
+        this.$refs.suggestorPopover?.updateStyles()
       })
     },
     autoCompleteItemLabel(suggestion) {

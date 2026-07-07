@@ -492,7 +492,7 @@ export default {
           try {
             return deserializeShadow(shadow)
           } catch (e) {
-            console.warn(e)
+            console.warn('Failed to deserialize shadow', e)
             return shadow
           }
         }
@@ -652,7 +652,7 @@ export default {
           return rgb2hex(computedColor)
         }
       } catch (e) {
-        console.warn(e)
+        console.warn('failed to get computed color', e)
       }
       return null
     }

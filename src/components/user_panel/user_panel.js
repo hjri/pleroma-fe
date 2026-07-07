@@ -1,8 +1,8 @@
 import { mapState } from 'vuex'
 
-import AuthForm from '../auth_form/auth_form.js'
-import PostStatusForm from '../post_status_form/post_status_form.vue'
-import UserCard from '../user_card/user_card.vue'
+import AuthForm from 'src/components/auth_form/auth_form.js'
+import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
+import UserCard from 'src/components/user_card/user_card.vue'
 
 const UserPanel = {
   computed: {
@@ -12,9 +12,9 @@ const UserPanel = {
     ...mapState({ user: (state) => state.users.currentUser }),
   },
   components: {
-    AuthForm,
     PostStatusForm,
     UserCard,
+    AuthForm,
   },
 }
 

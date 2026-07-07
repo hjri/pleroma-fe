@@ -99,12 +99,16 @@ export const findColor = (color, { dynamicVars, staticVars }) => {
         const staticVar = staticVars[variableSlot]
         const dynamicVar = dynamicVars[variableSlot]
         if (!staticVar && !dynamicVar) {
-          console.warn(dynamicVars, variableSlot, dynamicVars[variableSlot])
-          console.warn(`Couldn't find variable "${variableSlot}", falling back to magenta. Variables are:
+          console.warn(
+            `Couldn't find variable "${variableSlot}", falling back to magenta. Variables are:
 Static:
 ${JSON.stringify(staticVars, null, 2)}
 Dynamic:
-${JSON.stringify(dynamicVars, null, 2)}`)
+${JSON.stringify(dynamicVars, null, 2)}`,
+            dynamicVars,
+            variableSlot,
+            dynamicVars[variableSlot],
+          )
         }
         targetColor = convert(staticVar ?? dynamicVar ?? '#FF00FF').rgb
       }
@@ -499,10 +503,7 @@ export const init = ({
             }),
           )
           const lastVariantRule = variantRules[variantRules.length - 1]
-          const lastVariantSelector = ruleToSelector(
-            lastVariantRule,
-            true,
-          )
+          const lastVariantSelector = ruleToSelector(lastVariantRule, true)
 
           if (lastVariantRule && lastVariantSelector !== selector) {
             inheritRule = lastVariantRule

@@ -1,4 +1,5 @@
 import { mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 import { mapGetters } from 'vuex'
 
 import NavigationPins from 'src/components/navigation/navigation_pins.vue'
@@ -7,9 +8,6 @@ import {
   countExtraNotifications,
   unseenNotificationsFromStore,
 } from '../../services/notification_utils/notification_utils'
-import ConfirmModal from '../confirm_modal/confirm_modal.vue'
-import Notifications from '../notifications/notifications.vue'
-import SideDrawer from '../side_drawer/side_drawer.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -29,10 +27,16 @@ library.add(faTimes, faBell, faBars, faArrowUp, faMinus, faCheckDouble)
 
 const MobileNav = {
   components: {
-    SideDrawer,
-    Notifications,
+    SideDrawer: defineAsyncComponent(
+      () => import('src/components/side_drawer/side_drawer.vue'),
+    ),
+    Notifications: defineAsyncComponent(
+      () => import('src/components/notifications/notifications.vue'),
+    ),
     NavigationPins,
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
   },
   data: () => ({
     notificationsCloseGesture: undefined,
@@ -64,6 +68,7 @@ const MobileNav = {
         countExtraNotifications(
           this.$store,
           useMergedConfigStore().mergedConfig,
+          useAnnouncementsStore().unreadAnnouncementCount,
         )
       )
     },
@@ -147,9 +152,6 @@ const MobileNav = {
     },
     onScroll({ target: { scrollTop, clientHeight, scrollHeight } }) {
       this.notificationsAtTop = scrollTop > 0
-      if (scrollTop + clientHeight >= scrollHeight) {
-        this.$refs.notifications.fetchOlderNotifications()
-      }
     },
   },
   watch: {

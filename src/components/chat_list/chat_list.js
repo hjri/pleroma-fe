@@ -1,8 +1,8 @@
 import { mapGetters, mapState } from 'vuex'
 
-import ChatListItem from '../chat_list_item/chat_list_item.vue'
-import ChatNew from '../chat_new/chat_new.vue'
-import List from '../list/list.vue'
+import ChatListItem from 'src/components/chat_list_item/chat_list_item.vue'
+import ChatNew from 'src/components/chat_new/chat_new.vue'
+import List from 'src/components/list/list.vue'
 
 const ChatList = {
   components: {

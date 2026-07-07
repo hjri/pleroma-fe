@@ -7,6 +7,8 @@ import IntegerSetting from '../helpers/integer_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import StringSetting from '../helpers/string_setting.vue'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
+
 const MailerTab = {
   provide() {
     return {
@@ -26,7 +28,7 @@ const MailerTab = {
   computed: {
     adaptersLabels() {
       const prefix = 'Swoosh.Adapters.'
-      const descriptions = this.$store.state.adminSettings.descriptions
+      const descriptions = useAdminSettingsStore().descriptions
       const options =
         descriptions[':pleroma']['Pleroma.Emails.Mailer'][':adapter']
           .suggestions
@@ -46,20 +48,20 @@ const MailerTab = {
       // ]))
     },
     adapter() {
-      return this.$store.state.adminSettings.draft[':pleroma'][
-        'Pleroma.Emails.Mailer'
-      ][':adapter']
+      return useAdminSettingsStore().draft[':pleroma']['Pleroma.Emails.Mailer'][
+        ':adapter'
+      ]
     },
     mailerEnabled() {
-      return this.$store.state.adminSettings.draft[':pleroma'][
-        'Pleroma.Emails.Mailer'
-      ][':enabled']
+      return useAdminSettingsStore().draft[':pleroma']['Pleroma.Emails.Mailer'][
+        ':enabled'
+      ]
     },
     ...SharedComputedObject(),
   },
   methods: {
     adapterHasKey(key) {
-      const descriptions = this.$store.state.adminSettings.descriptions
+      const descriptions = useAdminSettingsStore().descriptions
       const mailerStuff = descriptions[':pleroma']['Pleroma.Emails.Mailer']
       const adapterStuff = mailerStuff[':subgroup,' + this.adapter]
       return Object.hasOwn(adapterStuff, key)

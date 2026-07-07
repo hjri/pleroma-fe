@@ -8,7 +8,7 @@
   >
     {{ label }}
     <teleport to="#modal">
-      <confirm-modal
+      <ConfirmModal
         v-if="showingConfirmUnfollow"
         :title="$t('user_card.unfollow_confirm_title')"
         :confirm-text="$t('user_card.unfollow_confirm_accept_button')"
@@ -27,7 +27,7 @@
             />
           </template>
         </i18n-t>
-      </confirm-modal>
+      </ConfirmModal>
     </teleport>
   </button>
 </template>

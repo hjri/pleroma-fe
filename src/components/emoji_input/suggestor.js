@@ -1,5 +1,3 @@
-import { useEmojiStore } from 'src/stores/emoji.js'
-
 /**
  * suggest - generates a suggestor function to be used by emoji-input
  * data: object providing source information for specific types of suggestions:
@@ -28,14 +26,14 @@ export default (data) => {
 }
 
 export const suggestEmoji = (emojis) => (input, nameKeywordLocalizer) => {
-  const noPrefix = input.toLowerCase().substr(1)
+  const noPrefix = input.toLowerCase().substring(1)
   return emojis
     .map((emoji) => ({ ...emoji, ...nameKeywordLocalizer(emoji) }))
     .filter(
       (emoji) =>
         emoji.names
           .concat(emoji.keywords)
-          .filter((kw) => kw.toLowerCase().match(noPrefix)).length,
+          .filter((kw) => kw.toLowerCase().includes(noPrefix)).length,
     )
     .map((k) => {
       let score = 0

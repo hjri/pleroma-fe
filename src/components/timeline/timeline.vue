@@ -71,27 +71,27 @@
         class="timeline"
         role="feed"
       >
-        <conversation
+        <Conversation
           v-for="statusId in filteredPinnedStatusIds"
           :key="statusId + '-pinned'"
           role="listitem"
           class="status-fadein"
           :status-id="statusId"
-          :collapsable="true"
           :pinned-status-ids-object="pinnedStatusIdsObject"
           :in-profile="inProfile"
           :profile-user-id="userId"
+          collapsable
         />
-        <conversation
+        <Conversation
           v-for="status in filteredVisibleStatuses"
           :key="status.id"
           role="listitem"
           class="status-fadein"
           :status-id="status.id"
-          :collapsable="true"
           :in-profile="inProfile"
           :profile-user-id="userId"
           :virtual-hidden="virtualScrollingEnabled && !statusesToDisplay.includes(status.id)"
+          collapsable
         />
       </div>
     </div>

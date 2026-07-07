@@ -1,5 +1,6 @@
+import { defineAsyncComponent } from 'vue'
+
 import Checkbox from 'src/components/checkbox/checkbox.vue'
-import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import Select from 'src/components/select/select.vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -36,7 +37,10 @@ const UserTimedFilterModal = {
     }
   },
   components: {
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
+
     Select,
     Checkbox,
   },

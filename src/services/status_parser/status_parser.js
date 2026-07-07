@@ -10,7 +10,15 @@ export const muteFilterHits = (muteFilters, status) => {
   return muteFilters
     .toSorted((a, b) => b.order - a.order)
     .map((filter) => {
-      const { hide, expires, name, value, type, enabled, caseSensitive = false } = filter
+      const {
+        hide,
+        expires,
+        name,
+        value,
+        type,
+        enabled,
+        caseSensitive = false,
+      } = filter
       if (!enabled) return false
       if (value === '') return false
       if (expires !== null && expires < Date.now()) return false
@@ -18,9 +26,7 @@ export const muteFilterHits = (muteFilters, status) => {
         case 'word': {
           let match = false
           if (caseSensitive) {
-            match =
-              statusText.includes(value) ||
-              statusSummary.includes(value)
+            match = statusText.includes(value) || statusSummary.includes(value)
           } else {
             const lowercaseValue = value.toLowerCase()
             match =
@@ -56,7 +62,9 @@ export const muteFilterHits = (muteFilters, status) => {
             match =
               poster.toLowerCase().includes(lowercaseValue) ||
               replyToUser.toLowerCase().includes(lowercaseValue) ||
-              mentions.some((mention) => mention.toLowerCase().includes(lowercaseValue))
+              mentions.some((mention) =>
+                mention.toLowerCase().includes(lowercaseValue),
+              )
           }
           if (match) {
             return { hide, name }

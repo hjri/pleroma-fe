@@ -1,9 +1,6 @@
 import { showDesktopNotification } from '../desktop_notification_utils/desktop_notification_utils.js'
 import { muteFilterHits } from '../status_parser/status_parser.js'
 
-import { useAnnouncementsStore } from 'src/stores/announcements.js'
-import { useI18nStore } from 'src/stores/i18n.js'
-
 import FaviconService from 'src/services/favicon_service/favicon_service.js'
 
 export const ACTIONABLE_NOTIFICATION_TYPES = new Set([
@@ -76,18 +73,19 @@ export const maybeShowNotification = (
   notificationVisibility,
   muteFilters,
   notification,
+  i18n,
 ) => {
   const rootState = store.rootState || store.state
 
   if (notification.seen) return
   if (!visibleTypes(notificationVisibility).includes(notification.type)) return
-  if (notification.type === 'mention' && isMutedNotification(muteFilters, notification))
+  if (
+    notification.type === 'mention' &&
+    isMutedNotification(muteFilters, notification)
+  )
     return
 
-  const notificationObject = prepareNotificationObject(
-    notification,
-    useI18nStore().i18n,
-  )
+  const notificationObject = prepareNotificationObject(notification, i18n)
   showDesktopNotification(rootState, notificationObject)
 }
 
@@ -190,7 +188,11 @@ export const prepareNotificationObject = (notification, i18n) => {
   return notifObj
 }
 
-export const countExtraNotifications = (store, mergedConfig) => {
+export const countExtraNotifications = (
+  store,
+  mergedConfig,
+  unreadAnnouncementCount,
+) => {
   const rootGetters = store.rootGetters || store.getters
 
   if (!mergedConfig.showExtraNotifications) {
@@ -202,7 +204,7 @@ export const countExtraNotifications = (store, mergedConfig) => {
       ? rootGetters.unreadChatCount
       : 0,
     mergedConfig.showAnnouncementsInExtraNotifications
-      ? useAnnouncementsStore().unreadAnnouncementCount
+      ? unreadAnnouncementCount
       : 0,
     mergedConfig.showFollowRequestsInExtraNotifications
       ? rootGetters.followRequestCount

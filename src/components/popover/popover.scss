@@ -96,12 +96,22 @@
           content: "✓";
         }
 
+        &.menu-checkbox-indeterminate::after {
+          font-size: 1.25em;
+          content: "–";
+        }
+
         &.-radio {
           border-radius: 9999px;
 
           &.menu-checkbox-checked::after {
             font-size: 2em;
             content: "•";
+          }
+
+          &.menu-checkbox-indeterminate::after {
+            font-size: 2em;
+            content: "–";
           }
         }
       }

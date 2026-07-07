@@ -1,4 +1,3 @@
-import adminSettings from './adminSettings.js'
 import api from './api.js'
 import chats from './chats.js'
 import drafts from './drafts.js'
@@ -13,7 +12,6 @@ export default {
   users,
   api,
   profileConfig,
-  adminSettings,
   drafts,
   chats,
 }

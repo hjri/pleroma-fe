@@ -4,7 +4,7 @@ import DraftButtons from './draft_buttons.vue'
 import LocalSettingIndicator from './local_setting_indicator.vue'
 import ModifiedIndicator from './modified_indicator.vue'
 
-import { useInstanceStore } from 'src/stores/instance.js'
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -125,14 +125,14 @@ export default {
     draft: {
       get() {
         if (this.realSource === 'admin' || this.path == null) {
-          return get(this.$store.state.adminSettings.draft, this.canonPath)
+          return get(useAdminSettingsStore().draft, this.canonPath)
         } else {
           return this.localDraft
         }
       },
       set(value) {
         if (this.realSource === 'admin' || this.path == null) {
-          this.$store.commit('updateAdminDraft', {
+          useAdminSettingsStore().updateAdminDraft({
             path: this.canonPath,
             value,
           })
@@ -164,10 +164,7 @@ export default {
         : this.draftMode
     },
     backendDescription() {
-      return get(
-        this.$store.state.adminSettings.descriptions,
-        this.descriptionPath,
-      )
+      return get(useAdminSettingsStore().descriptions, this.descriptionPath)
     },
     backendDescriptionLabel() {
       if (this.realSource !== 'admin') return ''
@@ -221,10 +218,7 @@ export default {
       let parentValue = null
       if (this.parentPath !== undefined && this.realSource === 'admin') {
         if (this.realDraftMode) {
-          parentValue = get(
-            this.$store.state.adminSettings.draft,
-            this.parentPath,
-          )
+          parentValue = get(useAdminSettingsStore().draft, this.parentPath)
         } else {
           parentValue = get(this.configSource, this.parentPath)
         }
@@ -243,7 +237,7 @@ export default {
         case 'profile':
           return this.$store.state.profileConfig
         case 'admin':
-          return this.$store.state.adminSettings.config
+          return useAdminSettingsStore().config
         default:
           return useMergedConfigStore().mergedConfig
       }
@@ -259,7 +253,7 @@ export default {
             this.$store.dispatch('setProfileOption', { name: k, value: v })
         case 'admin':
           return (k, v) =>
-            this.$store.dispatch('pushAdminSetting', { path: k, value: v })
+            useAdminSettingsStore().pushAdminSetting({ path: k, value: v })
         default:
           return (readPath, value) => {
             const writePath = `${readPath}`
@@ -372,9 +366,7 @@ export default {
     canHardReset() {
       return (
         this.realSource === 'admin' &&
-        this.$store.state.adminSettings.modifiedPaths?.has(
-          this.canonPath.join(' -> '),
-        )
+        useAdminSettingsStore().modifiedPaths?.has(this.canonPath.join(' -> '))
       )
     },
     matchesExpertLevel() {

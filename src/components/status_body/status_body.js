@@ -1,7 +1,5 @@
 import { mapState } from 'pinia'
 
-import RichContent from 'src/components/rich_content/rich_content.jsx'
-
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -17,32 +15,47 @@ library.add(faFile, faMusic, faImage, faLink, faPollH)
 
 const StatusBody = {
   name: 'StatusBody',
-  props: [
-    'compact',
-    'collapse', // replaces newlines with spaces
-    'status',
-    'focused',
-    'noHeading',
-    'fullContent',
-    'singleLine',
-    'showingTall',
-    'expandingSubject',
-    'showingLongSubject',
-    'toggleShowingTall',
-    'toggleExpandingSubject',
-    'toggleShowingLongSubject',
-  ],
+  props: {
+    status: {
+      // Main thing
+      type: Object,
+      required: true,
+    },
+    compact: {
+      // Resizes emoji and minimizes vertical space used
+      // Primarily used for showing status in react notifications
+      type: Boolean,
+      default: false,
+    },
+    collapse: {
+      // replaces newlines with spaces
+      type: Boolean,
+      default: false,
+    },
+    singleLine: {
+      // Show entire thing (subject and content) in a single line
+      // Primarily used in chats
+      type: Boolean,
+      default: false,
+    },
+    inConversation: {
+      // Is status rendered within open conversation?
+      // Used to automatically expand subjects (if collapsed)
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
       postLength: this.status.text.length,
       parseReadyDone: false,
+      showingTall: false,
+      showingLongSubject: false,
+      expandingSubject: null,
     }
   },
   emits: ['parseReady'],
   computed: {
-    localCollapseSubjectDefault() {
-      return this.mergedConfig.collapseMessageWithSubject
-    },
     allowNonSquareEmoji() {
       return this.mergedConfig.nonSquareEmoji
     },
@@ -53,24 +66,27 @@ const StatusBody = {
     //
     // Using max-height + overflow: auto for status components resulted in false positives
     // very often with japanese characters, and it was very annoying.
-    tallStatus() {
+    hasLongSubject() {
+      return this.status.summary.length > 240
+    },
+    hasSubject() {
+      return !!this.status.summary
+    },
+    // When a status has a subject and is also tall, we should only have one show more/less
+    // button. If the default is to collapse statuses with subjects, we just treat it like
+    // a status with a subject; otherwise, we just treat it like a tall status.
+    mightHideBecauseSubject() {
+      return (
+        !this.inConversation &&
+        this.hasSubject &&
+        this.mergedConfig.collapseMessageWithSubject
+      )
+    },
+    mightHideBecauseTall() {
       if (this.singleLine || this.compact) return false
       const lengthScore =
         this.status.raw_html.split(/<p|<br/).length + this.postLength / 80
       return lengthScore > 20
-    },
-    longSubject() {
-      return this.status.summary.length > 240
-    },
-    // When a status has a subject and is also tall, we should only have one show more/less button. If the default is to collapse statuses with subjects, we just treat it like a status with a subject; otherwise, we just treat it like a tall status.
-    mightHideBecauseSubject() {
-      return !!this.status.summary && this.localCollapseSubjectDefault
-    },
-    mightHideBecauseTall() {
-      return (
-        this.tallStatus &&
-        !(this.status.summary && this.localCollapseSubjectDefault)
-      )
     },
     hideSubjectStatus() {
       return this.mightHideBecauseSubject && !this.expandingSubject
@@ -78,7 +94,7 @@ const StatusBody = {
     hideTallStatus() {
       return this.mightHideBecauseTall && !this.showingTall
     },
-    shouldShowToggle() {
+    shouldShowExpandToggle() {
       return this.mightHideBecauseSubject || this.mightHideBecauseTall
     },
     toggleButtonClasses() {
@@ -99,6 +115,11 @@ const StatusBody = {
           : this.$t('general.show_more')
       }
     },
+    shouldHide() {
+      return (
+        !this.showingMore && this.mightHideBecauseSubject && this.hasSubject
+      )
+    },
     showingMore() {
       return (
         (this.mightHideBecauseTall && this.showingTall) ||
@@ -113,9 +134,7 @@ const StatusBody = {
     },
     ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
-  components: {
-    RichContent,
-  },
+  components: {},
   mounted() {
     this.status.attentions &&
       this.status.attentions.forEach((attn) => {
@@ -151,9 +170,9 @@ const StatusBody = {
     },
     toggleShowMore() {
       if (this.mightHideBecauseTall) {
-        this.toggleShowingTall()
+        this.showingTall = !this.showingTall
       } else if (this.mightHideBecauseSubject) {
-        this.toggleExpandingSubject()
+        this.expandingSubject = !this.expandingSubject
       }
     },
     generateTagLink(tag) {

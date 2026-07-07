@@ -1,6 +1,11 @@
 import { map } from 'lodash'
 
-import apiService from '../api/api.service.js'
+import {
+  editStatus as apiEditStatus,
+  postStatus as apiPostStatus,
+  setMediaDescription as apiSetMediaDescription,
+  uploadMedia as apiUploadMedia,
+} from 'src/api/user.js'
 
 const postStatus = ({
   store,
@@ -18,37 +23,30 @@ const postStatus = ({
 }) => {
   const mediaIds = map(media, 'id')
 
-  return apiService
-    .postStatus({
-      credentials: store.state.users.currentUser.credentials,
-      status,
-      spoilerText,
-      visibility,
-      sensitive,
-      mediaIds,
-      inReplyToStatusId,
-      quoteId,
-      contentType,
-      poll,
-      preview,
-      idempotencyKey,
-    })
-    .then((data) => {
-      if (!data.error && !preview) {
-        store.dispatch('addNewStatuses', {
-          statuses: [data],
-          timeline: 'friends',
-          showImmediately: true,
-          noIdUpdate: true, // To prevent missing notices on next pull.
-        })
-      }
-      return data
-    })
-    .catch((err) => {
-      return {
-        error: err.message,
-      }
-    })
+  return apiPostStatus({
+    credentials: store.state.users.currentUser.credentials,
+    status,
+    spoilerText,
+    visibility,
+    sensitive,
+    mediaIds,
+    inReplyToStatusId,
+    quoteId,
+    contentType,
+    poll,
+    preview,
+    idempotencyKey,
+  }).then(({ data }) => {
+    if (!preview)
+      store.dispatch('addNewStatuses', {
+        statuses: [data],
+        timeline: 'friends',
+        showImmediately: true,
+        noIdUpdate: true, // To prevent missing notices on next pull.
+      })
+
+    return data
+  })
 }
 
 const editStatus = ({
@@ -63,26 +61,24 @@ const editStatus = ({
 }) => {
   const mediaIds = map(media, 'id')
 
-  return apiService
-    .editStatus({
-      id: statusId,
-      credentials: store.state.users.currentUser.credentials,
-      status,
-      spoilerText,
-      sensitive,
-      poll,
-      mediaIds,
-      contentType,
-    })
-    .then((data) => {
-      if (!data.error) {
-        store.dispatch('addNewStatuses', {
-          statuses: [data],
-          timeline: 'friends',
-          showImmediately: true,
-          noIdUpdate: true, // To prevent missing notices on next pull.
-        })
-      }
+  return apiEditStatus({
+    id: statusId,
+    credentials: store.state.users.currentUser.credentials,
+    status,
+    spoilerText,
+    sensitive,
+    poll,
+    mediaIds,
+    contentType,
+  })
+    .then(({ data }) => {
+      store.dispatch('addNewStatuses', {
+        statuses: [data],
+        timeline: 'friends',
+        showImmediately: true,
+        noIdUpdate: true, // To prevent missing notices on next pull.
+      })
+
       return data
     })
     .catch((err) => {
@@ -95,12 +91,14 @@ const editStatus = ({
 
 const uploadMedia = ({ store, formData }) => {
   const credentials = store.state.users.currentUser.credentials
-  return apiService.uploadMedia({ credentials, formData })
+  return apiUploadMedia({ credentials, formData }).then(({ data }) => data)
 }
 
 const setMediaDescription = ({ store, id, description }) => {
   const credentials = store.state.users.currentUser.credentials
-  return apiService.setMediaDescription({ credentials, id, description })
+  return apiSetMediaDescription({ credentials, id, description }).then(
+    ({ data }) => data,
+  )
 }
 
 const statusPosterService = {

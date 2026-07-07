@@ -86,10 +86,15 @@
     "apply": "Apply",
     "submit": "Submit",
     "more": "More",
+    "no_more": "No more items",
     "loading": "Loading…",
     "generic_error": "An error occured",
     "generic_error_message": "An error occured: {0}",
+    "generic_error_details": "Technical info:",
     "error_retry": "Please try again",
+    "refresh_required": "Refresh required",
+    "refresh_required_content": "Failed to load UI code. Most likely frontend was updated on server, you'll need to refresh the page.",
+    "refresh_required_refresh": "Refresh page",
     "retry": "Try again",
     "optional": "optional",
     "show_more": "Show more",
@@ -105,6 +110,9 @@
     "undo": "Undo",
     "yes": "Yes",
     "no": "No",
+    "none": "None",
+    "not_applicable": "N/A",
+    "not_available": "N/A",
     "peek": "Peek",
     "scroll_to_top": "Scroll to top",
     "role": {
@@ -584,6 +592,9 @@
     "move_account_error": "Error moving account: {error}",
     "discoverable": "Allow discovery of this account in search results and other services",
     "domain_mutes": "Domains",
+    "domain_mutes2": "Excluded domains",
+    "user_mutes2": "Muted users",
+    "user_blocks": "Blocked users",
     "avatar_size_instruction": "The recommended minimum size for avatar images is 150x150 pixels. Recommended aspect ratio is 1:1",
     "banner_size_instruction": "The recommended minimum size for banner images is 450x150 pixels. Recommended aspect ratio is 3:1",
     "pad_emoji": "Pad emoji with spaces when adding from picker",
@@ -636,6 +647,7 @@
     "navbar_column_stretch": "Stretch navbar to columns width",
     "always_show_post_button": "Always show floating New Post button",
     "hide_wallpaper": "Hide instance wallpaper",
+    "foreign_user_background": "Allow other user's profiles to override wallpaper",
     "preload_images": "Preload images",
     "use_one_click_nsfw": "Open NSFW attachments with just one click",
     "hide_post_stats": "Hide post statistics (e.g. the number of favorites)",
@@ -1155,6 +1167,7 @@
     "tabs": {
       "nodb": "No DB Config",
       "instance": "Instance",
+      "users": "Users",
       "limits": "Limits",
       "frontends": "Front-ends",
       "mailer": "EMails",
@@ -1282,6 +1295,56 @@
       "colors": "Color palette",
       "adapter": "Mailing Adapter",
       "auth": "Authentication"
+    },
+    "users": {
+      "title": "Users",
+      "local_id": "Local ID",
+      "no_users_found": "No users found",
+      "labels": {
+        "query": "Search",
+        "nickname": "{'@'}handle",
+        "name": "Display Name",
+        "name_colon": "Name:",
+        "email": "Email",
+        "email_colon": "Email:",
+        "handle_colon": "Handle:",
+        "origin": "Origin",
+        "activity": "Activity",
+        "privileges": "Privileges"
+      },
+      "tags": {
+        "add_new": "Add New Tag",
+        "new_title": "Enter New Tag And Confirm",
+        "yes": "Add",
+        "no": "Abort"
+      },
+      "options": {
+        "all": "All",
+        "only_local": "Only Local",
+        "only_external": "Only External",
+        "only_active": "Only Active",
+        "only_deactivated": "Only Deactivated",
+        "only_admins": "Only Admins",
+        "only_privileged": "Only Privileged",
+        "only_moderators": "Only Moderators",
+        "only_unapproved": "Exclude Approved",
+        "only_unconfirmed": "Exclude Confirmed"
+      },
+      "filters": {
+        "show_direct": "Show Direct Messages",
+        "show_reblogs": "Show Reblogs"
+      },
+      "indicator": {
+        "admin": "Admin",
+        "moderator": "Moderator",
+        "active": "Active",
+        "deactivated": "Deactivated",
+        "confirmed": "Confirmed",
+        "unconfirmed": "Pending confirmation",
+        "approved": "Approved",
+        "suggested": "Suggested",
+        "unapproved": "Pending approval"
+      }
     },
     "limits": {
       "arbitrary_limits": "Arbitrary limits",
@@ -1417,10 +1480,36 @@
             "description": "Number of retries for making a connection CONFIRM"
           }
         },
+        ":hackney_pools": {
+          ":rich_media": {
+            "label": "Rich media",
+            "description": "idk",
+            ":max_connections": {
+              "label": "Max connections",
+              "description": "Number workers in the pool."
+            },
+            ":timeout": {
+              "label": "Timeout",
+              "description": "Timeout while `hackney` will wait for response."
+            }
+          }
+        },
         ":pools": {
           ":rich_media": {
             "label": "Rich media",
-            "description": "idk"
+            "description": "idk",
+            ":size": {
+              "label": "Size",
+              "description": "Maximum number of concurrent requests in the pool."
+            },
+            ":max_waiting": {
+              "label": "Max waiting",
+              "description": "Maximum number of requests waiting for other requests to finish. After this number is reached, the pool will start returning errors when a new request is made"
+            },
+            ":recv_timeout": {
+              "label": "Recv timeout",
+              "description": "Timeout for the pool while gun will wait for response"
+            }
           }
         },
         ":rate_limit": {
@@ -1602,6 +1691,7 @@
     "show_all_attachments": "Show all attachments",
     "show_attachment_in_modal": "Show in media modal",
     "show_attachment_description": "Preview description (open attachment for full description)",
+    "attachment_description": "Attachment description",
     "hide_attachment": "Hide attachment",
     "remove_attachment": "Remove attachment",
     "attachment_stop_flash": "Stop Flash player",
@@ -1626,7 +1716,10 @@
     "invisible_quote": "Quoted status unavailable: {link}",
     "more_actions": "More actions on this status",
     "loading": "Loading...",
-    "load_error": "Unable to load status: {error}"
+    "load_error": "Unable to load status: {error}",
+    "admin_change_scope": "Change visibility",
+    "mark_as_sensitive": "Sensitive",
+    "mark_as_non-sensitive": "Non-sensitive"
   },
   "user_card": {
     "approve": "Approve",
@@ -1713,15 +1806,29 @@
     "bot": "Bot",
     "group": "Group",
     "birthday": "Born {birthday}",
+    "joined": "Joined",
+    "admin_data": {
+      "data": "Administrative info",
+      "registration_reason": "Registration reason",
+      "tags": "Tags"
+    },
     "admin_menu": {
       "moderation": "Moderation",
       "grant_admin": "Grant Admin",
       "revoke_admin": "Revoke Admin",
       "grant_moderator": "Grant Moderator",
       "revoke_moderator": "Revoke Moderator",
-      "activate_account": "Activate account",
-      "deactivate_account": "Deactivate account",
-      "delete_account": "Delete account",
+      "activate_account": "Activate",
+      "deactivate_account": "Deactivate",
+      "delete_account": "Delete",
+      "suggest_account": "Add to suggested",
+      "remove_suggested_account": "Remove from suggested",
+      "approve_account": "Approve",
+      "confirm_account": "Confirm",
+      "show_statuses": "Show all posts",
+
+      "disable_mfa": "Disable MFA",
+
       "force_nsfw": "Mark all posts as NSFW",
       "strip_media": "Remove media from posts",
       "force_unlisted": "Force posts to be unlisted",
@@ -1729,8 +1836,48 @@
       "disable_remote_subscription": "Disallow following user from remote instances",
       "disable_any_subscription": "Disallow following user at all",
       "quarantine": "Disallow user posts from federating",
-      "delete_user": "Delete user",
-      "delete_user_data_and_deactivate_confirmation": "This will permanently delete the data from this account and deactivate it. Are you absolutely sure?"
+
+      "require_password_change": "Require Password Change",
+      "resend_confirmation": "Resend Confirmation Email",
+      "confirm_modal": {
+        "delete_title": "User deletion",
+        "delete_content": "Delete user {user}? | Delete {count} users?",
+        "delete_content_2": "This will permanently delete the data from this accounts and deactivate it. Are you absolutely sure?",
+        "activate_title": "User activation",
+        "activate_content": "Activate user {user}? | Activate {count} users?",
+        "deactivate_content": "Dectivate user {user}? | Dectivate {count} users?",
+        "approval_title": "Approve users",
+        "approval_content": "Approve user {user}? | Approve {count} users?",
+        "confirm_title": "Confirm users",
+        "confirm_content": "Approve user {user}? | Approve {count} users?",
+        "suggest_title": "Suggest users",
+        "add_suggest_content": "Add user {user} to suggested users list? | Add {count} users to suggested users list?",
+        "remove_suggest_content": "Remove user {user} from suggested users list? | Add {count} users to suggested users list?",
+        "rights_title": "Promote users",
+        "grant_rights_content": "Grant user {user} {name} role? | Grant {count} users {name} role?",
+        "revoke_rights_content": "Revoke {name} role from user {user}? | Revoke {name} from {count} users?",
+        "tag_title": "Assign user policy",
+        "assign_tag_content": "Assign {user} a {name} policy? | Assign {name} policy to {count} users?",
+        "unassign_tag_content": "Unassign policy {name} from {user}? | Unassign policy {name} from {count} users?",
+        "resend_confirmation_title": "Email confirmation resend",
+        "resend_confirmation_content": "Resend confirmation email to {count} users?",
+        "disable_mfa_title": "Disable MFA",
+        "disable_mfa_content": "Disable Mult-Factor Authentication for {count} users?",
+        "require_password_change_title": "Force password change",
+        "require_password_change_content": "Force {count} users to change password on next login?",
+        "add": "Add",
+        "remove": "Remove",
+        "delete": "Delete",
+        "activate": "Activate",
+        "deactivate": "Deactivate",
+        "grant": "Grant",
+        "revoke": "Revoke",
+        "approve": "Approve",
+        "confirm": "Confirm",
+        "assign": "Assign",
+        "unassign": "Unassign",
+        "send": "Send"
+      }
     },
     "highlight_new": {
       "disabled": "Don't highlight",

@@ -1,4 +1,4 @@
-import Select from '../select/select.vue'
+import Select from 'src/components/select/select.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 

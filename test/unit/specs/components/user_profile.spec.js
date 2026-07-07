@@ -4,7 +4,6 @@ import { createStore } from 'vuex'
 import UserProfile from 'src/components/user_profile/user_profile.vue'
 
 import { getters } from 'src/modules/users.js'
-import backendInteractorService from 'src/services/backend_interactor_service/backend_interactor_service.js'
 
 const mutations = {
   clearTimeline: () => {
@@ -53,10 +52,6 @@ const externalProfileStore = createStore({
   actions,
   getters: testGetters,
   state: {
-    api: {
-      fetchers: {},
-      backendInteractor: backendInteractorService(''),
-    },
     interface: {
       browserSupport: '',
     },
@@ -116,10 +111,6 @@ const localProfileStore = createStore({
   actions,
   getters: testGetters,
   state: {
-    api: {
-      fetchers: {},
-      backendInteractor: backendInteractorService(''),
-    },
     interface: {
       browserSupport: '',
     },

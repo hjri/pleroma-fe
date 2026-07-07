@@ -21,7 +21,7 @@ export const BUTTONS = [
     anonLink: true,
     toggleable: true,
     closeIndicator: 'times',
-    activeIndicator: 'none',
+    activeIndicator: null,
     action({ emit }) {
       emit('toggleReplying')
       return Promise.resolve()
@@ -96,7 +96,10 @@ export const BUTTONS = [
     // =========
     name: 'emoji',
     label: 'tool_tip.add_reaction',
-    icon: ['far', 'smile-beam'],
+    icon: ['far', 'face-smile-beam'],
+    interactive: () => true,
+    active: ({ emojiPickerShown }) => emojiPickerShown,
+    toggleable: true,
     anonLink: true,
   },
   {
@@ -226,7 +229,7 @@ export const BUTTONS = [
       return (
         loggedIn &&
         (status.user.id === currentUser.id ||
-          currentUser.privileges.includes('messages_delete'))
+          currentUser.privileges.has('messages_delete'))
       )
     },
     confirm: ({ getters }) => useMergedConfigStore().mergedConfig.modalOnDelete,
@@ -238,6 +241,26 @@ export const BUTTONS = [
     },
     action({ dispatch, status }) {
       return dispatch('deleteStatus', { id: status.id })
+    },
+  },
+  {
+    // =========
+    // CHANGE SCOPE
+    // =========
+    name: 'changeScope',
+    icon: 'eye',
+    label: 'status.admin_change_scope',
+    if({ status, loggedIn, currentUser }) {
+      return (
+        loggedIn &&
+        (status.user.id === currentUser.id ||
+          currentUser.privileges.has('messages_delete'))
+      )
+    },
+    toggleable: false,
+    dropdown: true,
+    action({ status, dispatch, emit }) {
+      /* prevent hiding */
     },
   },
   {
@@ -276,10 +299,12 @@ export const BUTTONS = [
     label: 'user_card.report',
     if: ({ loggedIn }) => loggedIn,
     action({ status }) {
-      return useReportsStore().openUserReportingModal({
+      useReportsStore().openUserReportingModal({
         userId: status.user.id,
         statusIds: [status.id],
       })
+
+      return Promise.resolve()
     },
   },
 ].map((button) => {

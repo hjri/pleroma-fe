@@ -1,4 +1,9 @@
-import DialogModal from '../dialog_modal/dialog_modal.vue'
+import DialogModal from 'src/components/dialog_modal/dialog_modal.vue'
+
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faCircleQuestion)
 
 /**
  * This component emits the following events:

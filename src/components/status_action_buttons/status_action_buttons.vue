@@ -3,7 +3,7 @@
     <span
       class="quick-action-buttons"
       :class="{ '-pin': showPin }"
-      >
+    >
       <span
         v-for="button in quickButtons"
         :key="button.name"
@@ -20,6 +20,7 @@
           :get-component="getComponent"
           :close="() => { /* no-op */ }"
           :do-action="doAction"
+          @emoji-picker-shown="onEmojiPickerShown"
         />
         <button
           v-if="showPin && currentUser"
@@ -115,7 +116,7 @@
     </span>
 
     <teleport to="#modal">
-      <confirm-modal
+      <ConfirmModal
         v-if="showingConfirmDialog"
         :title="currentConfirmTitle"
         :confirm-text="currentConfirmOkText"
@@ -124,7 +125,7 @@
         @cancelled="showingConfirmDialog = false"
       >
         {{ currentConfirmBody }}
-      </confirm-modal>
+      </ConfirmModal>
     </teleport>
   </div>
 </template>

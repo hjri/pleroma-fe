@@ -1,4 +1,4 @@
-import UserAvatar from '../user_avatar/user_avatar.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 

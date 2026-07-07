@@ -1,10 +1,10 @@
 import { mapState } from 'vuex'
 
-import AvatarList from '../avatar_list/avatar_list.vue'
-import ChatTitle from '../chat_title/chat_title.vue'
-import StatusBody from '../status_content/status_content.vue'
-import Timeago from '../timeago/timeago.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
+import AvatarList from 'src/components/avatar_list/avatar_list.vue'
+import ChatTitle from 'src/components/chat_title/chat_title.vue'
+import StatusBody from 'src/components/status_content/status_content.vue'
+import Timeago from 'src/components/timeago/timeago.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 
 const ChatListItem = {
   name: 'ChatListItem',

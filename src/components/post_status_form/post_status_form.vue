@@ -264,10 +264,10 @@
       />
       <QuoteForm
         v-if="quotingAvailable"
+        :id="newStatus.quote.id"
         ref="quoteForm"
         :visible="quoteFormVisible"
         :url="newStatus.quote.url"
-        :id="newStatus.quote.id"
         @update:url="url => newStatus.quote.url = url"
         @update:id="id => newStatus.quote.id = id"
       />
@@ -396,7 +396,7 @@
           />
         </button>
       </div>
-      <gallery
+      <Gallery
         v-if="newStatus.files && newStatus.files.length > 0"
         class="attachments"
         :grid="true"
@@ -409,8 +409,8 @@
         :remove-attachment="removeMediaFile"
         :shift-up-attachment="newStatus.files.length > 1 && shiftUpMediaFile"
         :shift-dn-attachment="newStatus.files.length > 1 && shiftDnMediaFile"
-        @play="$emit('mediaplay', attachment.id)"
-        @pause="$emit('mediapause', attachment.id)"
+        @play="$emit('mediaplay', 'newStatus')"
+        @pause="$emit('mediapause', 'newStatus')"
       />
       <div
         v-if="newStatus.files.length > 0 && !disableSensitivityCheckbox"

@@ -23,6 +23,10 @@
         :title="user.name"
         class="basic-user-card-user-name"
       >
+        <strong v-if="showLineLabels">
+          {{ $t('admin_dash.users.labels.name_colon') }}
+          {{ ' ' }}
+        </strong>
         <RichContent
           class="basic-user-card-user-name-value"
           :html="user.name"
@@ -31,6 +35,10 @@
         />
       </div>
       <div>
+        <strong v-if="showLineLabels">
+          {{ $t('admin_dash.users.labels.handle_colon') }}
+          {{ ' ' }}
+        </strong>
         <user-link
           class="basic-user-card-screen-name"
           :user="user"
@@ -46,8 +54,10 @@
 <style lang="scss">
 .basic-user-card {
   display: flex;
-  flex: 1 0;
+  flex: 1 1 10em;
+  min-width: 1em;
   margin: 0;
+  line-height: 1.25;
 
   --emoji-size: 1em;
 
@@ -69,7 +79,7 @@
 
   &-user-name-value,
   &-screen-name {
-    display: inline-block;
+    display: inline;
     max-width: 100%;
     overflow: hidden;
     white-space: nowrap;

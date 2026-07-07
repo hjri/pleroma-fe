@@ -12,6 +12,8 @@ import PWAManifestIconsSetting from '../helpers/pwa_manifest_icons_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import StringSetting from '../helpers/string_setting.vue'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
+
 const InstanceTab = {
   provide() {
     return {
@@ -34,7 +36,7 @@ const InstanceTab = {
   computed: {
     ...SharedComputedObject(),
     providersOptions() {
-      const desc = get(this.$store.state.adminSettings.descriptions, [
+      const desc = get(useAdminSettingsStore().descriptions, [
         ':pleroma',
         'Pleroma.Web.Metadata',
         ':providers',
@@ -47,7 +49,7 @@ const InstanceTab = {
       )
     },
     limitLocalContentOptions() {
-      const desc = get(this.$store.state.adminSettings.descriptions, [
+      const desc = get(useAdminSettingsStore().descriptions, [
         ':pleroma',
         ':instance',
         ':limit_to_local_content',

@@ -1,14 +1,17 @@
-import Checkbox from '../checkbox/checkbox.vue'
-import List from '../list/list.vue'
-import Modal from '../modal/modal.vue'
-import Status from '../status/status.vue'
-import UserLink from '../user_link/user_link.vue'
+import { mapState } from 'pinia'
 
+import Checkbox from 'src/components/checkbox/checkbox.vue'
+import List from 'src/components/list/list.vue'
+import Modal from 'src/components/modal/modal.vue'
+import UserLink from 'src/components/user_link/user_link.vue'
+
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useReportsStore } from 'src/stores/reports.js'
+
+import { reportUser } from 'src/api/user.js'
 
 const UserReportingModal = {
   components: {
-    Status,
     List,
     Checkbox,
     Modal,
@@ -18,15 +21,12 @@ const UserReportingModal = {
     return {
       comment: '',
       forward: false,
-      statusIdsToReport: [],
+      statusIdsToReport: new Set(),
       processing: false,
       error: false,
     }
   },
   computed: {
-    reportModal() {
-      return useReportsStore().reportModal
-    },
     isLoggedIn() {
       return !!this.$store.state.users.currentUser
     },
@@ -45,30 +45,25 @@ const UserReportingModal = {
         this.user.screen_name.substr(this.user.screen_name.indexOf('@') + 1)
       )
     },
-    statuses() {
-      return this.reportModal.statuses
-    },
-    preTickedIds() {
-      return this.reportModal.preTickedIds
-    },
+    ...mapState(useReportsStore, ['reportModal']),
   },
   watch: {
     userId: 'resetState',
-    preTickedIds(newValue) {
-      this.statusIdsToReport = newValue
-    },
   },
   methods: {
     resetState() {
       // Reset state
       this.comment = ''
       this.forward = false
-      this.statusIdsToReport = this.preTickedIds
+      this.statusIdsToReport = new Set(this.reportModal.preTickedIds)
       this.processing = false
       this.error = false
     },
     closeModal() {
       useReportsStore().closeUserReportingModal()
+    },
+    onListSelect(selected) {
+      this.statusIdsToReport = selected
     },
     reportUser() {
       this.processing = true
@@ -77,10 +72,10 @@ const UserReportingModal = {
         userId: this.userId,
         comment: this.comment,
         forward: this.forward,
-        statusIds: this.statusIdsToReport,
+        statusIds: [...this.statusIdsToReport],
+        credentials: useOAuthStore().token,
       }
-      this.$store.state.api.backendInteractor
-        .reportUser({ ...params })
+      reportUser({ ...params })
         .then(() => {
           this.processing = false
           this.resetState()
@@ -93,23 +88,6 @@ const UserReportingModal = {
     },
     clearError() {
       this.error = false
-    },
-    isChecked(statusId) {
-      return this.statusIdsToReport.indexOf(statusId) !== -1
-    },
-    toggleStatus(checked, statusId) {
-      if (checked === this.isChecked(statusId)) {
-        return
-      }
-
-      if (checked) {
-        this.statusIdsToReport.push(statusId)
-      } else {
-        this.statusIdsToReport.splice(
-          this.statusIdsToReport.indexOf(statusId),
-          1,
-        )
-      }
     },
     resize(e) {
       const target = e.target || e

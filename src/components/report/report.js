@@ -1,7 +1,6 @@
-import RichContent from 'src/components/rich_content/rich_content.jsx'
-import Select from '../select/select.vue'
-import StatusContent from '../status_content/status_content.vue'
-import Timeago from '../timeago/timeago.vue'
+import Select from 'src/components/select/select.vue'
+import StatusContent from 'src/components/status_content/status_content.vue'
+import Timeago from 'src/components/timeago/timeago.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useReportsStore } from 'src/stores/reports.js'
@@ -14,7 +13,6 @@ const Report = {
     Select,
     StatusContent,
     Timeago,
-    RichContent,
   },
   computed: {
     report() {

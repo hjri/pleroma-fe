@@ -4,7 +4,7 @@
       v-if="button.dropdown?.()"
       :trigger="$attrs.extra ? 'hover' : 'click'"
       :offset="{ y: 5 }"
-      :placement="$attrs.extra ? 'right' : 'top'"
+      :placement="$attrs.extra ? 'right' : 'bottom'"
     >
       <template #trigger>
         <ActionButton
@@ -14,6 +14,59 @@
         />
       </template>
       <template #content>
+        <div
+          v-if="button.name === 'changeScope'"
+          :id="`popup-menu-scope-${randomSeed}`"
+          class="dropdown-menu"
+          role="menu"
+        >
+          <div
+            v-for="visibility in availableScopes"
+            :key="visibility"
+            class="menu-item dropdown-item extra-action -icon"
+          >
+            <button
+              class="main-button"
+              @click="() => setScope(visibility)"
+            >
+              <FAIcon
+                :icon="visibilityIcon(visibility)"
+                fixed-width
+              />
+              {{ $t('general.scope_in_timeline.' + visibility) }}
+            </button>
+          </div>
+          <div
+            v-if="status.nsfw"
+            class="menu-item dropdown-item extra-action -icon"
+          >
+            <button
+              class="main-button"
+              @click="() => setSensitive(false)"
+            >
+              <FAIcon
+                icon="eye"
+                fixed-width
+              />
+              {{ $t('status.mark_as_non-sensitive') }}
+            </button>
+          </div>
+          <div
+            v-else
+            class="menu-item dropdown-item extra-action -icon"
+          >
+            <button
+              class="main-button"
+              @click="() => setSensitive(true)"
+            >
+              <FAIcon
+                icon="eye-slash"
+                fixed-width
+              />
+              {{ $t('status.mark_as_sensitive') }}
+            </button>
+          </div>
+        </div>
         <div
           v-if="button.name === 'mute'"
           :id="`popup-menu-${randomSeed}`"
@@ -79,6 +132,7 @@
       :button="button"
       :status="status"
       v-bind="$attrs"
+      @emoji-picker-shown="e => $emit('emojiPickerShown', e)"
     />
     <teleport to="#modal">
       <MuteConfirm
