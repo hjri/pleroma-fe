@@ -5,6 +5,7 @@ import { mapState } from 'vuex'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
 import QuickViewSettings from 'src/components/quick_view_settings/quick_view_settings.vue'
 import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
+import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
 
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -127,14 +128,17 @@ const conversation = {
     displayStyle() {
       return this.mergedConfig.conversationDisplay
     },
-    isTreeView() {
-      return !this.isLinearView
-    },
     treeViewIsSimple() {
       return !this.mergedConfig.conversationTreeAdvanced
     },
+    isTreeView() {
+      return this.displayStyle === 'tree'
+    },
     isLinearView() {
       return this.displayStyle === 'linear'
+    },
+    isChatView() {
+      return this.displayStyle === 'chat'
     },
     shouldFadeAncestors() {
       return this.mergedConfig.conversationTreeFadeAncestors
@@ -404,6 +408,7 @@ const conversation = {
     ThreadTree,
     QuickFilterSettings,
     QuickViewSettings,
+    ChatMessageList,
   },
   watch: {
     statusId(newVal, oldVal) {

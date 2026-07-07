@@ -10,6 +10,7 @@ const ChatMessageList = {
   },
   props: {
     messages: Array,
+    headerDate: Boolean,
   },
   data() {
     return {
@@ -26,8 +27,23 @@ const ChatMessageList = {
         const newerMessage = messages[index + 1]
         const newerItem = acc[acc.length - 1]
 
-        const diff = message.created_at - (olderMessage?.created_at || 0)
-        const MAX_DIFF = 1000 * 60 // 5 minutes
+        const diff = olderMessage ? message.created_at - olderMessage.created_at : null
+
+        const MAX_DIFF = 1000 * 60 * 5 // 5 minutes
+
+        const dateDiffs = (() => {
+          if (olderMessage) {
+            const newerDate = new Date(message.created_at)
+            const olderDate = new Date(olderMessage.created_at)
+
+            newerDate.setHours(0, 0, 0, 0)
+            olderDate.setHours(0, 0, 0, 0)
+
+            return newerDate.toISOString() !== olderDate.toISOString()
+          } else {
+            return true
+          }
+        })()
 
         const chatItem = {
           type: 'message',
@@ -54,10 +70,12 @@ const ChatMessageList = {
           }
         }
 
-        if (diff > MAX_DIFF || !olderMessage) {
+        if (diff > MAX_DIFF || (!olderMessage && this.headerDate)) {
           return [...acc, chatItem, {
             type: 'date',
             date,
+            isDate: dateDiffs,
+            isTime: diff > MAX_DIFF && !dateDiffs,
             id: date.getTime().toString(),
           }]
         } else {

@@ -93,7 +93,7 @@
     v-else
     class="chat-message-date-separator"
   >
-    <ChatMessageDate :date="chatItem.date" />
+    <ChatMessageDate :date="chatItem.date" :show-time="chatItem.isTime" />
   </div>
 </template>
 

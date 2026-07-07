@@ -49,15 +49,15 @@ const ChatMessage = {
       })
     },
     author() {
-      return this.$store.getters.findUser(
-        this.chatItem.data.account_id
-      )
+      const accountId = this.message.account_id || this.message.user.id
+
+      return this.$store.getters.findUser(accountId)
     },
     isCurrentUser() {
-      return this.message.account_id === this.currentUser.id
+      return this.author.id === this.currentUser.id
     },
     message() {
-      return this.chatItem.data
+      return this.isMessage ? this.chatItem.data : null
     },
     isMessage() {
       return this.chatItem.type === 'message'
@@ -66,7 +66,7 @@ const ChatMessage = {
       return {
         summary: '',
         emojis: this.message.emojis,
-        raw_html: this.message.content || '',
+        raw_html: this.message.content || this.message.raw_html || '',
         text: this.message.content || '',
         attachments: this.message.attachments,
       }

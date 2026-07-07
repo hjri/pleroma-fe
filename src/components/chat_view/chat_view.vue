@@ -25,7 +25,10 @@
             />
           </div>
         </div>
-        <ChatMessageList :messages="chatMessages" />
+        <ChatMessageList
+          header-date
+          :messages="chatMessages"
+        />
         <div
           ref="footer"
           class="panel-body footer"

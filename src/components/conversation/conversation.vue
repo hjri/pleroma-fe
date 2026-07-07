@@ -196,6 +196,14 @@
           />
         </article>
       </div>
+      <div
+        v-if="isChatView"
+        class="thread-body"
+      >
+        <ChatMessageList
+          :messages="conversation"
+        />
+      </div>
     </div>
   </div>
   <div

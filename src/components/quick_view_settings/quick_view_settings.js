@@ -13,9 +13,10 @@ import {
   faFolderTree,
   faList,
   faWrench,
+  faMessage,
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faList, faFolderTree, faBars, faWrench)
+library.add(faList, faFolderTree, faBars, faWrench, faMessage)
 
 const QuickViewSettings = {
   props: {
