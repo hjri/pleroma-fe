@@ -160,81 +160,53 @@ const resetNewMessageCount = (storage) => {
 }
 
 // Inserts date separators and marks the head and tail if it's the chain of messages made by the same user
-const getView = (storage) => {
-  if (!storage) {
-    return []
-  }
-
-  const result = []
-  const messages = orderBy(storage.messages, ['pending', 'id'], ['asc', 'asc'])
-  const firstMessage = messages[0]
-  let previousMessage = messages[messages.length - 1]
-  let currentMessageChainId
-
-  if (firstMessage) {
-    const date = new Date(firstMessage.created_at)
-    date.setHours(0, 0, 0, 0)
-    result.push({
-      type: 'date',
-      date,
-      id: date.getTime().toString(),
-    })
-  }
-
-  let afterDate = false
-
-  for (let i = 0; i < messages.length; i++) {
-    const message = messages[i]
-    const nextMessage = messages[i + 1]
-
+const getView = (items = []) => {
+  const messages = orderBy(items, ['pending', 'id'], ['asc', 'asc'])
+  return messages.reduceRight((acc, message, index) => {
     const date = new Date(message.created_at)
-    date.setHours(0, 0, 0, 0)
 
-    // insert date separator and start a new message chain
-    if (previousMessage && previousMessage.date < date) {
-      result.push({
-        type: 'date',
-        date,
-        id: date.getTime().toString(),
-      })
+    const olderMessage = messages[index - 1]
+    const newerMessage = messages[index + 1]
+    const newerItem = acc[acc.length - 1]
 
-      previousMessage.isTail = true
-      currentMessageChainId = undefined
-      afterDate = true
-    }
+    const diff = message.created_at - (olderMessage?.created_at || 0)
+    const MAX_DIFF = 1000 * 60 // 5 minutes
 
-    const object = {
+    const chatItem = {
       type: 'message',
       data: message,
       date,
       id: message.id,
-      messageChainId: currentMessageChainId,
+      isTail: true,
+      isHead: true,
     }
 
-    // end a message chian
-    if ((nextMessage && nextMessage.account_id) !== message.account_id) {
-      object.isTail = true
-      currentMessageChainId = undefined
+    if (newerItem == null) {
+      chatItem.messageChainId = uniqueId()
+    } else {
+      if (newerItem.type === 'date') {
+        chatItem.messageChainId = uniqueId()
+      } else if (newerItem.type === 'message') {
+        if (newerItem.data.account_id !== message.account_id) {
+          chatItem.messageChainId = uniqueId()
+        } else {
+          chatItem.messageChainId = newerItem.messageChainId
+          chatItem.isTail = false
+          newerItem.isHead = false
+        }
+      }
     }
 
-    // start a new message chain
-    if (
-      (previousMessage &&
-        previousMessage.data &&
-        previousMessage.data.account_id) !== message.account_id ||
-      afterDate
-    ) {
-      currentMessageChainId = uniqueId()
-      object.isHead = true
-      object.messageChainId = currentMessageChainId
+    if (diff > MAX_DIFF || !olderMessage) {
+      return [...acc, chatItem, {
+        type: 'date',
+        date,
+        id: date.getTime().toString(),
+      }]
+    } else {
+      return [...acc, chatItem]
     }
-
-    result.push(object)
-    previousMessage = object
-    afterDate = false
-  }
-
-  return result
+  }, []).reverse()
 }
 
 const ChatService = {

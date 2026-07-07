@@ -98,13 +98,11 @@ const Chat = {
       }
     },
     chatViewItems() {
-      return chatService.getView(this.currentChatMessageService)
+      return chatService.getView(this.currentChatMessageService?.messages)
     },
     newMessageCount() {
-      return (
-        this.currentChatMessageService &&
-        this.currentChatMessageService.newMessageCount
-      )
+      return this.currentChatMessageService?.newMessageCount
+
     },
     streamingEnabled() {
       return (
