@@ -69,7 +69,9 @@ const ChatMessageList = {
             if (newerItem.type === 'date') {
               chatItem.messageChainId = uniqueId()
             } else if (newerItem.type === 'message') {
-              if (newerItem.data.account_id !== message.account_id) {
+              const newerUser = newerItem.data.account_id || newerItem.data.user.id
+              const olderUser = message.account_id || message.user.id
+              if (newerUser !== olderUser) {
                 chatItem.messageChainId = uniqueId()
               } else {
                 chatItem.messageChainId = newerItem.messageChainId
