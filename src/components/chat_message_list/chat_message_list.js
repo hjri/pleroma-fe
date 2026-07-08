@@ -1,6 +1,4 @@
-import { orderBy, throttle, uniqueId } from 'lodash'
-import { mapState as mapPiniaState } from 'pinia'
-import { mapGetters, mapState } from 'vuex'
+import { orderBy, uniqueId } from 'lodash'
 
 import ChatMessage from 'src/components/chat_message/chat_message.vue'
 
@@ -34,7 +32,6 @@ const ChatMessageList = {
           const date = new Date(message.created_at)
 
           const olderMessage = messages[index - 1]
-          const newerMessage = messages[index + 1]
           const newerItem = acc[acc.length - 1]
 
           const diff = olderMessage

@@ -1,7 +1,7 @@
-import { throttle } from 'lodash'
-import { nextTick } from 'vue'
+import { maxBy, minBy, sortBy, throttle } from 'lodash'
 import { mapState as mapPiniaState } from 'pinia'
-import { mapGetters, mapState } from 'vuex'
+import { nextTick } from 'vue'
+import { mapState } from 'vuex'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
 import ChatTitle from 'src/components/chat_title/chat_title.vue'
@@ -15,16 +15,17 @@ import {
   isScrollable,
 } from './chat_layout_utils.js'
 
+import { useChatsStore } from 'src/stores/chats.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 
 import {
   chatMessages,
+  deleteChatMessage,
   getOrCreateChat,
   readChat,
   sendChatMessage,
-  deleteChatMessage,
 } from 'src/api/chats.js'
 import { WSConnectionStatus } from 'src/api/websocket.js'
 
@@ -215,7 +216,7 @@ const Chat = {
         credentials: useOAuthStore().token,
       })
 
-      this.$store.commit('readChat', { id: this.chat.id, lastId: lastReadId })
+      useChatsStore().readChat(this.chat.id)
     },
     bottomedOut(offset) {
       return isBottomedOut(offset)
@@ -378,7 +379,10 @@ const Chat = {
 
         // Sanity check
         if (message.chat_id !== this.chat.id) {
-          console.warn(`Chat message doesn't belong to current chat (id: ${this.chat.id})!!`, message)
+          console.warn(
+            `Chat message doesn't belong to current chat (id: ${this.chat.id})!!`,
+            message,
+          )
           return
         }
 
@@ -386,7 +390,10 @@ const Chat = {
         if (message.idempotency_key) {
           if (this.pendingMessagesIndex[message.idempotencyKeyIndex]) {
             delete this.pendingMessagesIndex[message.idempotencyKeyIndex]
-            this.pendingMessages = this.pendingMessages.filter(({ idempotency_key }) => idempotency_key !== message.idempotency_key)
+            this.pendingMessages = this.pendingMessages.filter(
+              ({ idempotency_key }) =>
+                idempotency_key !== message.idempotency_key,
+            )
           }
         }
 
@@ -445,7 +452,7 @@ const Chat = {
         retriesLeft: MAX_RETRIES,
       })
     },
-    async doSendMessage({ params, pendingId, retriesLeft = MAX_RETRIES }) {
+    async doSendMessage({ params, retriesLeft = MAX_RETRIES }) {
       if (retriesLeft <= 0) return
 
       try {
@@ -458,7 +465,11 @@ const Chat = {
           messages: [{ ...data }],
         })
       } catch (error) {
-        if (error.name !== 'StatusCodeError' || error.message === 'Failed to fetch') throw error
+        if (
+          error.name !== 'StatusCodeError' ||
+          error.message === 'Failed to fetch'
+        )
+          throw error
         console.error('Error sending message', error)
 
         this.handleMessageError({
@@ -471,11 +482,10 @@ const Chat = {
           (error.statusCode >= 500 && error.statusCode < 600) ||
           error.message === 'Failed to fetch'
         ) {
-          this.messageRetriers[fakeMessage.id] = setTimeout(
+          this.messageRetriers[params.idempotencyKey] = setTimeout(
             () => {
               this.doSendMessage({
                 params,
-                fakeMessage,
                 retriesLeft: retriesLeft - 1,
               })
             },
@@ -484,7 +494,7 @@ const Chat = {
         }
       }
     },
-    handleMessageError(idempotencyKey, isRetry)  {
+    handleMessageError(idempotencyKey, isRetry) {
       const fakeMessage = this.pendingMessagesIndex[idempotencyKey]
 
       if (fakeMessage) {

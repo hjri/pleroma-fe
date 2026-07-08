@@ -76,7 +76,7 @@ export const ROOT_ITEMS = {
     icon: 'comments',
     label: 'nav.chats',
     badgeStyle: 'notification',
-    badgeGetter: 'unreadChatCount',
+    badgeGetter: 'unreadChatsCount',
     criteria: ['chats'],
   },
   friendRequests: {

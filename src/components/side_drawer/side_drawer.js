@@ -12,6 +12,7 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useShoutStore } from 'src/stores/shout'
+import { useChatsStore } from 'src/stores/chats.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -113,7 +114,8 @@ const SideDrawer = {
       sitename: (store) => store.instanceIdentity.name,
       hideSitename: (store) => store.instanceIdentity.hideSitename,
     }),
-    ...mapGetters(['unreadChatCount', 'draftCount']),
+    ...mapState(useChatsStore, ['unreadChatsCount']),
+    ...mapGetters(['draftCount']),
   },
   methods: {
     toggleDrawer() {

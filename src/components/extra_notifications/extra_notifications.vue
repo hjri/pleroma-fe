@@ -14,7 +14,7 @@
           class="fa-scale-110 icon"
           icon="comments"
         />
-        {{ $t('notifications.unread_chats', { num: unreadChatCount }, unreadChatCount) }}
+        {{ $t('notifications.unread_chats', { num: unreadChatsCount }, unreadChatsCount) }}
       </router-link>
     </div>
     <div

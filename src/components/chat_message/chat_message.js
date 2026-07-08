@@ -15,7 +15,11 @@ import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faEllipsisH, faTimes, faCircleNotch } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCircleNotch,
+  faEllipsisH,
+  faTimes,
+} from '@fortawesome/free-solid-svg-icons'
 
 library.add(faTimes, faEllipsisH, faCircleNotch)
 
