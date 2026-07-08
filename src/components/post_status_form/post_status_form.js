@@ -596,16 +596,18 @@ const PostStatusForm = {
         ? this.postHandler
         : statusPoster.postStatus
 
-      postHandler(postingOptions).then((data) => {
-        if (!data.error) {
+      postHandler(postingOptions)
+        .then((data) => {
           this.abandonDraft()
           this.clearStatus()
           this.$emit('posted', data)
-        } else {
+        })
+        .catch((error) => {
           this.error = data.error
-        }
-        this.posting = false
-      })
+        })
+        .finally(() => {
+          this.posting = false
+        })
     },
     previewStatus() {
       if (this.emptyStatus && this.newStatus.spoilerText.trim() === '') {

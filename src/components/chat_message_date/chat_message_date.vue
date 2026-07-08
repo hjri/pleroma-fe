@@ -5,9 +5,9 @@
 </template>
 
 <script>
-import localeService from 'src/services/locale/locale.service.js'
-
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
+import localeService from 'src/services/locale/locale.service.js'
 
 export default {
   name: 'Timeago',
@@ -26,7 +26,7 @@ export default {
         if (this.showTime) {
           return this.date.toLocaleTimeString(
             localeService.internalToBrowserLocale(this.$i18n.locale),
-            { hour12: this.time12hFormat, hour: 'numeric', minute: 'numeric' }
+            { hour12: this.time12hFormat, hour: 'numeric', minute: 'numeric' },
           )
         } else {
           return this.date.toLocaleDateString(

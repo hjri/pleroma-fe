@@ -12,8 +12,8 @@ import {
   faBars,
   faFolderTree,
   faList,
-  faWrench,
   faMessage,
+  faWrench,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faList, faFolderTree, faBars, faWrench, faMessage)

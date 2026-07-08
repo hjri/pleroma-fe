@@ -8,7 +8,7 @@
   >
     <div
       class="chat-message"
-      :class="[{ 'outgoing': isCurrentUser, 'incoming': !isCurrentUser }]"
+      :class="[{ '-outgoing': isCurrentUser, '-incoming': !isCurrentUser, '-pending': message.pending }]"
     >
       <div
         v-if="!isCurrentUser"
@@ -73,6 +73,7 @@
             </div>
             <StatusContent
               class="message-content"
+              :class="{ faint: message.pending }"
               :status="messageForStatusContent"
               :full-content="true"
             >
@@ -80,6 +81,16 @@
                 <span
                   class="created-at"
                 >
+                  <span
+                    v-if="message.pending"
+                    class="loading-spinner"
+                  >
+                    <FAIcon
+                      class="fa-old-padding"
+                      spin
+                      icon="circle-notch"
+                    />
+                  </span>
                   {{ createdAt }}
                 </span>
               </template>

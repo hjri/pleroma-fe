@@ -27,7 +27,8 @@
         </div>
         <ChatMessageList
           header-date
-          :messages="chatMessages"
+          :messages="messages"
+          :pending-messages="pendingMessages"
         />
         <div
           ref="footer"
@@ -56,7 +57,7 @@
             :disable-polls="true"
             :disable-quotes="true"
             :disable-sensitivity-checkbox="true"
-            :disable-submit="errorLoadingChat || !currentChat"
+            :disable-submit="errorLoadingChat || !chat"
             :disable-preview="true"
             :disable-draft="true"
             :optimistic-posting="true"

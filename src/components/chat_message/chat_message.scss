@@ -104,7 +104,7 @@
     width: 100%;
   }
 
-  .outgoing {
+  .-outgoing {
     display: flex;
     flex-flow: row wrap;
     place-content: end flex-end;
@@ -118,10 +118,14 @@
     }
   }
 
-  .incoming {
+  .-incoming {
     .chat-message-menu {
       left: 0.4rem;
     }
+  }
+
+  .-pending {
+    color: red !important;
   }
 
   .chat-message-inner.with-media {

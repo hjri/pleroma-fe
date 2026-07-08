@@ -1,9 +1,10 @@
 import { throttle } from 'lodash'
+import { nextTick } from 'vue'
 import { mapState as mapPiniaState } from 'pinia'
 import { mapGetters, mapState } from 'vuex'
 
-import ChatTitle from 'src/components/chat_title/chat_title.vue'
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
+import ChatTitle from 'src/components/chat_title/chat_title.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import chatService from '../../services/chat_service/chat_service.js'
 import { buildFakeMessage } from '../../services/chat_utils/chat_utils.js'
@@ -16,12 +17,13 @@ import {
 } from './chat_layout_utils.js'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import {
   chatMessages,
   getOrCreateChat,
+  readChat,
   sendChatMessage,
 } from 'src/api/chats.js'
 import { WSConnectionStatus } from 'src/api/websocket.js'
@@ -37,23 +39,39 @@ const SAFE_RESIZE_TIME_OFFSET = 100
 const MARK_AS_READ_DELAY = 1500
 const MAX_RETRIES = 10
 
+const isConfirmation = (storage, message) => {
+  if (!message.idempotency_key) return
+  return storage.idempotencyKeyIndex[message.idempotency_key]
+}
+
 const Chat = {
   components: {
     ChatMessageList,
     ChatTitle,
     PostStatusForm,
   },
-  props: {
-    messages: Array,
-  },
   data() {
     return {
-      jumpToBottomButtonVisible: false,
-      hoveredMessageChainId: undefined,
+      // Main info
+      chat: null,
+      messages: [],
+      messagesIndex: {},
+      pendingMessages: [],
+      pendingMessagesIndex: {},
+      minId: undefined,
+      maxId: undefined,
+
+      // Unread stuff
+      newMessageCount: 0,
+      lastReadMessageId: null,
       lastScrollPosition: {},
-      scrollableContainerHeight: '100%',
+      jumpToBottomButtonVisible: false,
+
+      // Internal network stuff
+      fetcher: null,
       errorLoadingChat: false,
       messageRetriers: {},
+      idempotencyKeyIndex: {},
     }
   },
   created() {
@@ -83,11 +101,10 @@ const Chat = {
         this.handleVisibilityChange,
         false,
       )
-    this.$store.dispatch('clearCurrentChat')
   },
   computed: {
     recipient() {
-      return this.currentChat && this.currentChat.account
+      return this.chat?.account
     },
     recipientId() {
       return this.$route.params.recipient_id
@@ -101,23 +118,12 @@ const Chat = {
         return ''
       }
     },
-    chatMessages() {
-      return this.currentChatMessageService?.messages
-    },
-    newMessageCount() {
-      return this.currentChatMessageService?.newMessageCount
-    },
     streamingEnabled() {
       return (
         this.mergedConfig.useStreamingApi &&
         this.mastoUserSocketStatus === WSConnectionStatus.JOINED
       )
     },
-    ...mapGetters([
-      'currentChat',
-      'currentChatMessageService',
-      'findOpenedChatByRecipientId',
-    ]),
     ...mapPiniaState(useInterfaceStore, {
       mobileLayout: (store) => store.layoutType === 'mobile',
     }),
@@ -128,7 +134,7 @@ const Chat = {
     }),
   },
   watch: {
-    chatMessages() {
+    messages() {
       // We don't want to scroll to the bottom on a new message when the user is viewing older messages.
       // Therefore we need to know whether the scroll position was at the bottom before the DOM update.
       const bottomedOutBeforeUpdate = this.bottomedOut(BOTTOMED_OUT_OFFSET)
@@ -148,10 +154,6 @@ const Chat = {
     },
   },
   methods: {
-    // Used to animate the avatar near the first message of the message chain when any message belonging to the chain is hovered
-    onMessageHover({ isHovered, messageChainId }) {
-      this.hoveredMessageChainId = isHovered ? messageChainId : undefined
-    },
     onFilesDropped() {
       this.$nextTick(() => {
         this.handleResize()
@@ -198,22 +200,22 @@ const Chat = {
         this.readChat()
       }
     },
-    readChat() {
-      if (
-        !(
-          this.currentChatMessageService && this.currentChatMessageService.maxId
-        )
-      ) {
+    async readChat() {
+      if (!this.maxId || document.hidden) {
         return
       }
-      if (document.hidden) {
-        return
-      }
-      const lastReadId = this.currentChatMessageService.maxId
-      this.$store.dispatch('readChat', {
-        id: this.currentChat.id,
+      const lastReadId = this.maxId
+      const isNewMessage = this.lastReadMessageId !== lastReadId
+
+      if (!isNewMessage) return
+
+      await readChat({
+        id: this.chat.id,
         lastReadId,
+        credentials: useOAuthStore().token,
       })
+
+      this.$store.commit('readChat', { id: this.chat.id, lastId: lastReadId })
     },
     bottomedOut(offset) {
       return isBottomedOut(offset)
@@ -224,21 +226,32 @@ const Chat = {
     cullOlderCheck() {
       window.setTimeout(() => {
         if (this.bottomedOut(JUMP_TO_BOTTOM_BUTTON_VISIBILITY_OFFSET)) {
-          this.$store.dispatch(
-            'cullOlderMessages',
-            this.currentChatMessageService.chatId,
-          )
+          const maxIndex = this.messages.length
+          const minIndex = maxIndex - 50
+          if (maxIndex <= 50) return
+
+          this.messages = sortBy(this.messages, ['id'])
+          this.minId = this.messages[minIndex].id
+
+          for (const message of this.messages) {
+            if (message.id < this.minId) {
+              delete this.messagesIndex[message.id]
+              delete this.idempotencyKeyIndex[message.idempotency_key]
+            }
+          }
+
+          this.messages = this.messages.slice(minIndex, maxIndex)
         }
       }, 5000)
     },
     handleScroll: throttle(function () {
-      this.lastScrollPosition = getScrollPosition()
-      if (!this.currentChat) {
+      if (!this.chat) {
         return
       }
+      this.lastScrollPosition = getScrollPosition()
 
       if (this.reachedTop()) {
-        this.fetchChat({ maxId: this.currentChatMessageService.minId })
+        this.fetchChat({ maxId: this.minId })
       } else if (this.bottomedOut(JUMP_TO_BOTTOM_BUTTON_VISIBILITY_OFFSET)) {
         this.jumpToBottomButtonVisible = false
         this.cullOlderCheck()
@@ -257,84 +270,123 @@ const Chat = {
     }, 200),
     handleScrollUp(positionBeforeLoading) {
       const positionAfterLoading = getScrollPosition()
+
       window.scrollTo({
         top: getNewTopPosition(positionBeforeLoading, positionAfterLoading),
       })
     },
-    fetchChat({ isFirstFetch = false, fetchLatest = false, maxId }) {
-      const chatMessageService = this.currentChatMessageService
-      if (!chatMessageService) {
-        return
-      }
+    clear() {
+      this.messages = this.messages.filter((m) => m.error)
+      this.messagesIndex = this.messages.reduce(
+        (acc, m) => ({
+          ...acc,
+          [m.id]: m,
+        }),
+        {},
+      )
+      this.newMessageCount = 0
+      this.lastReadMessageId = null
+      this.minId = undefined
+      this.maxId = undefined
+    },
+    async fetchChat({ isFirstFetch = false, fetchLatest = false, maxId }) {
       if (fetchLatest && this.streamingEnabled) {
         return
       }
 
-      const chatId = chatMessageService.chatId
-      const fetchOlderMessages = !!maxId
-      const sinceId = fetchLatest && chatMessageService.maxId
-
-      return chatMessages({
-        id: chatId,
+      const { data: messages } = await chatMessages({
+        id: this.chat.id,
         maxId,
-        sinceId,
+        sinceId: fetchLatest ? this.maxId : null,
         credentials: useOAuthStore().token,
-      }).then(({ data: messages }) => {
-        // Clear the current chat in case we're recovering from a ws connection loss.
-        if (isFirstFetch) {
-          chatService.clear(chatMessageService)
-        }
-
-        const positionBeforeUpdate = getScrollPosition()
-        this.$store
-          .dispatch('addChatMessages', { chatId, messages })
-          .then(() => {
-            this.$nextTick(() => {
-              if (fetchOlderMessages) {
-                this.handleScrollUp(positionBeforeUpdate)
-              }
-
-              // In vertical screens, the first batch of fetched messages may not always take the
-              // full height of the scrollable container.
-              // If this is the case, we want to fetch the messages until the scrollable container
-              // is fully populated so that the user has the ability to scroll up and load the history.
-              if (!isScrollable() && messages.length > 0) {
-                this.fetchChat({
-                  maxId: this.currentChatMessageService.minId,
-                })
-              }
-            })
-          })
       })
+
+      // Clear the current chat in case we're recovering from a ws connection loss.
+      if (isFirstFetch) {
+        this.clear()
+      }
+
+      const positionBeforeUpdate = getScrollPosition()
+      this.addMessages({ messages })
+
+      await nextTick()
+
+      const fetchOlderMessages = !!maxId
+      if (fetchOlderMessages) {
+        this.handleScrollUp(positionBeforeUpdate)
+      }
+
+      // In vertical screens, the first batch of fetched messages may not always take the
+      // full height of the scrollable container.
+      // If this is the case, we want to fetch the messages until the scrollable container
+      // is fully populated so that the user has the ability to scroll up and load the history.
+      if (!isScrollable() && messages.length > 0) {
+        this.fetchChat({
+          maxId: this.minId,
+        })
+      }
     },
     async startFetching() {
-      let chat = this.findOpenedChatByRecipientId(this.recipientId)
-      if (!chat) {
-        try {
-          const { data } = await getOrCreateChat({
-            accountId: this.recipientId,
-            credentials: useOAuthStore().token,
-          })
-          chat = data
-        } catch (e) {
-          console.error('Error creating or getting a chat', e)
-          this.errorLoadingChat = true
-        }
+      try {
+        const { data } = await getOrCreateChat({
+          accountId: this.recipientId,
+          credentials: useOAuthStore().token,
+        })
+        this.chat = data
+      } catch (e) {
+        console.error('Error creating or getting a chat', e)
+        this.errorLoadingChat = true
       }
-      if (chat) {
+
+      if (this.chat) {
         this.$nextTick(() => {
           this.scrollDown({ forceRead: true })
         })
-        this.$store.dispatch('addOpenedChat', { chat })
         this.doStartFetching()
       }
     },
     doStartFetching() {
-      this.$store.dispatch('startFetchingCurrentChat', {
-        fetcher: () =>
-          promiseInterval(() => this.fetchChat({ fetchLatest: true }), 5000),
-      })
+      this.fetcher = promiseInterval(
+        () => this.fetchChat({ fetchLatest: true }),
+        5000,
+      )
       this.fetchChat({ isFirstFetch: true })
+    },
+    addMessages({ messages: newMessages }) {
+      for (let i = 0; i < newMessages.length; i++) {
+        const message = newMessages[i]
+
+        // Sanity check
+        if (message.chat_id !== this.chat.id) {
+          console.warn(`Chat message doesn't belong to current chat (id: ${this.chat.id})!!`, message)
+          return
+        }
+
+        // Clear any known pending messages
+        if (message.idempotency_key) {
+          if (this.pendingMessagesIndex[message.idempotencyKeyIndex]) {
+            delete this.pendingMessagesIndex[message.idempotencyKeyIndex]
+            this.pendingMessages = this.pendingMessages.filter(({ idempotency_key }) => idempotency_key !== message.idempotency_key)
+          }
+        }
+
+        if (!this.minId || (!message.pending && message.id < this.minId)) {
+          this.minId = message.id
+        }
+
+        if (!this.maxId || message.id > this.maxId) {
+          this.maxId = message.id
+        }
+
+        if (!this.messagesIndex[message.id] && !isConfirmation(this, message)) {
+          if (this.lastSeenMessageId < message.id) {
+            this.newMessageCount++
+          }
+          this.messagesIndex[message.id] = message
+          this.messages.push(this.messagesIndex[message.id])
+          this.idempotencyKeyIndex[message.idempotency_key] = true
+        }
+      }
     },
     handleAttachmentPosting() {
       this.$nextTick(() => {
@@ -344,9 +396,9 @@ const Chat = {
         this.scrollDown({ forceRead: true })
       })
     },
-    sendMessage({ status, media, idempotencyKey }) {
+    async sendMessage({ status, media, idempotencyKey }) {
       const params = {
-        id: this.currentChat.id,
+        id: this.chat.id,
         content: status,
         idempotencyKey,
       }
@@ -357,69 +409,59 @@ const Chat = {
 
       const fakeMessage = buildFakeMessage({
         attachments: media,
-        chatId: this.currentChat.id,
+        chatId: this.chat.id,
         content: status,
         userId: this.currentUser.id,
         idempotencyKey,
       })
 
-      this.$store
-        .dispatch('addChatMessages', {
-          chatId: this.currentChat.id,
-          messages: [fakeMessage],
-        })
-        .then(() => {
-          this.handleAttachmentPosting()
-        })
+      this.pendingMessages.push(fakeMessage)
+      this.pendingMessagesIndex[idempotencyKey] = fakeMessage
+
+      this.handleAttachmentPosting()
 
       return this.doSendMessage({
         params,
-        fakeMessage,
         retriesLeft: MAX_RETRIES,
       })
     },
-    doSendMessage({ params, fakeMessage, retriesLeft = MAX_RETRIES }) {
+    async doSendMessage({ params, pendingId, retriesLeft = MAX_RETRIES }) {
       if (retriesLeft <= 0) return
 
-      sendChatMessage({
-        params,
-        credentials: useOAuthStore().token,
-      })
-        .then(({ data }) => {
-          this.$store.dispatch('addChatMessages', {
-            chatId: this.currentChat.id,
-            updateMaxId: false,
-            messages: [{ ...data, fakeId: fakeMessage.id }],
-          })
-
-          return data
-        })
-        .catch((error) => {
-          console.error('Error sending message', error)
-          this.$store.dispatch('handleMessageError', {
-            chatId: this.currentChat.id,
-            fakeId: fakeMessage.id,
-            isRetry: retriesLeft !== MAX_RETRIES,
-          })
-          if (
-            (error.statusCode >= 500 && error.statusCode < 600) ||
-            error.message === 'Failed to fetch'
-          ) {
-            this.messageRetriers[fakeMessage.id] = setTimeout(
-              () => {
-                this.doSendMessage({
-                  params,
-                  fakeMessage,
-                  retriesLeft: retriesLeft - 1,
-                })
-              },
-              1000 * 2 ** (MAX_RETRIES - retriesLeft),
-            )
-          }
-          return {}
+      try {
+        const { data } = await sendChatMessage({
+          ...params,
+          credentials: useOAuthStore().token,
         })
 
-      return Promise.resolve(fakeMessage)
+        this.addMessages({
+          messages: [{ ...data }],
+        })
+      } catch (error) {
+        if (error.name !== 'StatusCodeError') throw error
+        console.error('Error sending message', error)
+
+        this.handleMessageError({
+          chatId: this.chat.id,
+          isRetry: retriesLeft !== MAX_RETRIES,
+        })
+
+        if (
+          (error.statusCode >= 500 && error.statusCode < 600) ||
+          error.message === 'Failed to fetch'
+        ) {
+          this.messageRetriers[fakeMessage.id] = setTimeout(
+            () => {
+              this.doSendMessage({
+                params,
+                fakeMessage,
+                retriesLeft: retriesLeft - 1,
+              })
+            },
+            1000 * 2 ** (MAX_RETRIES - retriesLeft),
+          )
+        }
+      }
     },
     goBack() {
       this.$router.push({

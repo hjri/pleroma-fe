@@ -1,6 +1,6 @@
 import { paramsString, promisedRequest } from './helpers.js'
 
-import { parseChat } from 'src/services/entity_normalizer/entity_normalizer.service.js'
+import { parseChat, parseChatMessage } from 'src/services/entity_normalizer/entity_normalizer.service.js'
 
 const PLEROMA_CHATS_URL = '/api/v1/pleroma/chats'
 const PLEROMA_CHAT_URL = (id) => `/api/v1/pleroma/chats/by-account-id/${id}`
@@ -15,7 +15,7 @@ export const chats = ({ credentials }) =>
     url: PLEROMA_CHATS_URL,
     credentials,
   }).then(({ data }) => ({
-    chatList: data.map(parseChat).filter((c) => c),
+    data: data.map(parseChat).filter((c) => c),
   }))
 
 export const getOrCreateChat = ({ accountId, credentials }) =>
@@ -23,7 +23,7 @@ export const getOrCreateChat = ({ accountId, credentials }) =>
     url: PLEROMA_CHAT_URL(accountId),
     method: 'POST',
     credentials,
-  })
+  }).then(({ data }) => ({ data: parseChat(data) }))
 
 export const chatMessages = ({
   id,
@@ -36,7 +36,9 @@ export const chatMessages = ({
     url: PLEROMA_CHAT_MESSAGES_URL(id, { maxId, sinceId, limit }),
     method: 'GET',
     credentials,
-  })
+  }).then(({ data }) => ({
+    data: data.map(parseChatMessage).filter((c) => c),
+  }))
 }
 
 export const sendChatMessage = ({
@@ -66,7 +68,9 @@ export const sendChatMessage = ({
     payload,
     credentials,
     headers,
-  })
+  }).then(({ data }) => ({
+    data: parseChatMessage(data),
+  }))
 }
 
 export const readChat = ({ id, lastReadId, credentials }) =>

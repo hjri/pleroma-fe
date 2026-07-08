@@ -15,18 +15,13 @@ import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faEllipsisH, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsisH, faTimes, faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faTimes, faEllipsisH)
+library.add(faTimes, faEllipsisH, faCircleNotch)
 
 const ChatMessage = {
   name: 'ChatMessage',
-  props: [
-    'edited',
-    'noHeading',
-    'chatItem',
-    'hoveredMessageChain',
-  ],
+  props: ['edited', 'noHeading', 'chatItem', 'hoveredMessageChain'],
   emits: ['hover'],
   components: {
     Popover,

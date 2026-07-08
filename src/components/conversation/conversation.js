@@ -2,10 +2,10 @@ import { clone, filter, findIndex, get, reduce } from 'lodash'
 import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
+import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
 import QuickViewSettings from 'src/components/quick_view_settings/quick_view_settings.vue'
 import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
-import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
 
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
