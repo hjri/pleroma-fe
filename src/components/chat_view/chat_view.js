@@ -6,7 +6,6 @@ import { mapGetters, mapState } from 'vuex'
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
 import ChatTitle from 'src/components/chat_title/chat_title.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
-import chatService from '../../services/chat_service/chat_service.js'
 import { buildFakeMessage } from '../../services/chat_utils/chat_utils.js'
 import { promiseInterval } from '../../services/promise_interval/promise_interval.js'
 import {
@@ -25,6 +24,7 @@ import {
   getOrCreateChat,
   readChat,
   sendChatMessage,
+  deleteChatMessage,
 } from 'src/api/chats.js'
 import { WSConnectionStatus } from 'src/api/websocket.js'
 
@@ -352,6 +352,26 @@ const Chat = {
       )
       this.fetchChat({ isFirstFetch: true })
     },
+    async deleteChatMessage({ chatId, messageId }) {
+      await deleteChatMessage({
+        chatId,
+        messageId,
+        credentials: useOAuthStore().token,
+      })
+
+      this.messages = this.messages.filter((m) => m.id !== messageId)
+      delete this.messagesIndex[messageId]
+
+      if (this.maxId === messageId) {
+        const lastMessage = maxBy(this.messages, 'id')
+        this.maxId = lastMessage.id
+      }
+
+      if (this.minId === messageId) {
+        const firstMessage = minBy(this.messages, 'id')
+        this.minId = firstMessage.id
+      }
+    },
     addMessages({ messages: newMessages }) {
       for (let i = 0; i < newMessages.length; i++) {
         const message = newMessages[i]
@@ -438,11 +458,12 @@ const Chat = {
           messages: [{ ...data }],
         })
       } catch (error) {
-        if (error.name !== 'StatusCodeError') throw error
+        if (error.name !== 'StatusCodeError' || error.message === 'Failed to fetch') throw error
         console.error('Error sending message', error)
 
         this.handleMessageError({
           chatId: this.chat.id,
+          idempotencyKey: params.idempotencyKey,
           isRetry: retriesLeft !== MAX_RETRIES,
         })
 
@@ -461,6 +482,14 @@ const Chat = {
             1000 * 2 ** (MAX_RETRIES - retriesLeft),
           )
         }
+      }
+    },
+    handleMessageError(idempotencyKey, isRetry)  {
+      const fakeMessage = this.pendingMessagesIndex[idempotencyKey]
+
+      if (fakeMessage) {
+        fakeMessage.error = true
+        fakeMessage.pending = false
       }
     },
     goBack() {

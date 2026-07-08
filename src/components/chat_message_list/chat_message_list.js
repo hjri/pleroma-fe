@@ -22,6 +22,7 @@ const ChatMessageList = {
       hoveredMessageChainId: undefined,
     }
   },
+  emits: ['messageDelete'],
   computed: {
     chatItems() {
       const messages = [
@@ -103,6 +104,9 @@ const ChatMessageList = {
   methods: {
     onMessageHover({ isHovered, messageChainId }) {
       this.hoveredMessageChainId = isHovered ? messageChainId : undefined
+    },
+    onMessageDelete({ messageId, chatId }) {
+      this.$emit('messageDelete', { messageId, chatId })
     },
   },
 }

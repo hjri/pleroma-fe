@@ -1,7 +1,6 @@
 import { find, omitBy, orderBy, sumBy } from 'lodash'
 import { reactive } from 'vue'
 
-import chatService from '../services/chat_service/chat_service.js'
 import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'
 import { promiseInterval } from '../services/promise_interval/promise_interval.js'
 
@@ -17,9 +16,6 @@ const emptyChatList = () => ({
 const defaultState = {
   chatList: emptyChatList(),
   chatListFetcher: null,
-  fetcher: undefined,
-  currentChatId: null,
-  lastReadMessageId: null,
 }
 
 const getChatById = (state, id) => {
@@ -75,31 +71,6 @@ const chatsModule = {
         newChatMessageSideEffects,
       })
     },
-
-    // Opened Chats
-    addOpenedChat({ commit, dispatch }, { chat }) {
-      commit('addOpenedChat', { dispatch, chat })
-      dispatch('addNewUsers', [chat.account])
-    },
-    addChatMessages({ commit }, value) {
-      commit('addChatMessages', { commit, ...value })
-    },
-    deleteChatMessage({ rootState, commit }, value) {
-      deleteChatMessage({
-        ...value,
-        credentials: useOAuthStore().token,
-      })
-      commit('deleteChatMessage', { commit, ...value })
-    },
-    resetChats({ commit, dispatch }) {
-      commit('resetChats', { commit })
-    },
-    clearOpenedChats({ commit }) {
-      commit('clearOpenedChats', { commit })
-    },
-    handleMessageError({ commit }, value) {
-      commit('handleMessageError', { commit, ...value })
-    },
   },
   mutations: {
     setChatListFetcher(state, { fetcher }) {
@@ -108,9 +79,6 @@ const chatsModule = {
         prevFetcher.stop()
       }
       state.chatListFetcher = fetcher && fetcher()
-    },
-    setCurrentChatId(state, { chatId }) {
-      state.currentChatId = chatId
     },
     addNewChats(state, { chats, newChatMessageSideEffects }) {
       chats.forEach((updatedChat) => {

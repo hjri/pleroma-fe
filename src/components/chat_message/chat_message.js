@@ -43,6 +43,10 @@ const ChatMessage = {
         hour12: false,
       })
     },
+    isStatus() {
+      // ChatMessage only has account_id while Status has full user data
+      return !!this.message.user
+    },
     author() {
       const accountId = this.message.account_id || this.message.user.id
 
@@ -101,7 +105,7 @@ const ChatMessage = {
     async deleteMessage() {
       const confirmed = window.confirm(this.$t('chats.delete_confirm'))
       if (confirmed) {
-        await this.$store.dispatch('deleteChatMessage', {
+        await this.$emit('delete', {
           messageId: this.chatItem.data.id,
           chatId: this.chatItem.data.chat_id,
         })

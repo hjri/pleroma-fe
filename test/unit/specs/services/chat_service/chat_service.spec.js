@@ -1,5 +1,3 @@
-import chatService from '../../../../../src/services/chat_service/chat_service.js'
-
 const message1 = {
   id: '9wLkdcmQXD21Oy8lEX',
   idempotency_key: '1',

@@ -6,6 +6,7 @@
       :chat-item="chatItem"
       :hovered-message-chain="chatItem.messageChainId === hoveredMessageChainId"
       @hover="onMessageHover"
+      @delete="onMessageDelete"
     />
   </div>
 </template>

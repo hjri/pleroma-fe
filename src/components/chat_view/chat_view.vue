@@ -29,6 +29,7 @@
           header-date
           :messages="messages"
           :pending-messages="pendingMessages"
+          @message-delete="deleteChatMessage"
         />
         <div
           ref="footer"
