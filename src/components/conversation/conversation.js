@@ -2,6 +2,7 @@ import { clone, filter, findIndex, get, reduce } from 'lodash'
 import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
+import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
 import QuickViewSettings from 'src/components/quick_view_settings/quick_view_settings.vue'
@@ -118,6 +119,10 @@ const conversation = {
       // there is a -2 here
       const maxDepth = this.mergedConfig.maxDepthInThread - 2
       return maxDepth >= 1 ? maxDepth : 1
+    },
+    lastStatus() {
+      console.log('LAST STATUS', this.conversation[this.conversation.length - 1])
+      return this.conversation[this.conversation.length - 1]
     },
     streamingEnabled() {
       return (
@@ -409,6 +414,7 @@ const conversation = {
     QuickFilterSettings,
     QuickViewSettings,
     ChatMessageList,
+    PostStatusForm,
   },
   watch: {
     statusId(newVal, oldVal) {

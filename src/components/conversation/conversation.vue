@@ -170,7 +170,7 @@
         />
       </div>
       <div
-        v-if="isLinearView"
+        v-else-if="isLinearView || (isChatView && !isExpanded)"
         class="thread-body"
       >
         <article>
@@ -197,13 +197,28 @@
         </article>
       </div>
       <div
-        v-if="isChatView"
-        class="thread-body"
+        v-else-if="isChatView"
+        class="chat-view"
       >
         <ChatMessageList
           :messages="conversation"
         />
       </div>
+    </div>
+    <div
+      v-if="isChatView && isExpanded"
+      class="chat-view-reply-form panel-footer -flexible-height"
+    >
+      <PostStatusForm
+        :submit-on-enter="!mobileLayout"
+        :preserve-focus="!mobileLayout"
+        :auto-focus="!mobileLayout"
+        :reply-to="lastStatus.id"
+        :disable-quotes="true"
+        :copy-message-scope="lastStatus.visibility"
+        :attentions="lastStatus.attentions"
+        :replied-user="lastStatus.user"
+      />
     </div>
   </div>
   <div
@@ -214,101 +229,4 @@
 </template>
 
 <script src="./conversation.js"></script>
-
-<style lang="scss">
-.Conversation {
-  z-index: 1;
-
-  &.-hidden {
-    background: var(--__panel-background);
-    backdrop-filter: var(--__panel-backdrop-filter);
-  }
-
-  .conversation-dive-to-top-level-box {
-    padding: var(--status-margin);
-    border-bottom: 1px solid var(--border);
-    border-radius: 0;
-
-    /* Make the button stretch along the whole row */
-    display: flex;
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .thread-ancestors {
-    margin-left: var(--status-margin);
-    border-left: 2px solid var(--border);
-  }
-
-  .thread-ancestor.-faded .RichContent {
-    /* stylelint-disable declaration-no-important */
-    --text: var(--textFaint) !important;
-    --link: var(--linkFaint) !important;
-    --funtextGreentext: var(--funtextGreentextFaint) !important;
-    --funtextCyantext: var(--funtextCyantextFaint) !important;
-    /* stylelint-enable declaration-no-important */
-  }
-
-  .thread-ancestor-dive-box {
-    padding-left: var(--status-margin);
-    border-bottom: 1px solid var(--border);
-    border-radius: 0;
-
-    /* Make the button stretch along the whole row */
-    &,
-    &-inner {
-      display: flex;
-      align-items: stretch;
-      flex-direction: column;
-    }
-  }
-
-  .thread-ancestor-dive-box-inner {
-    padding: var(--status-margin);
-  }
-
-  .conversation-status {
-    border-bottom: 1px solid var(--border);
-    border-radius: 0;
-  }
-
-  .thread-ancestor-has-other-replies .conversation-status,
-  &:last-child:not(.-expanded) .conversation-status,
-  &.-expanded .conversation-status:last-child,
-  .thread-ancestor:last-child .conversation-status,
-  .thread-ancestor:last-child .thread-ancestor-dive-box,
-  &.-expanded .thread-tree .conversation-status {
-    border-bottom: none;
-  }
-
-  .thread-ancestors + .thread-tree > .conversation-status {
-    border-top: 1px solid var(--border);
-  }
-
-  /* expanded conversation in timeline */
-  &.status-fadein.-expanded .thread-body {
-    border-left: 4px solid var(--cRed);
-    border-radius: var(--roundness);
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  &.-expanded.status-fadein {
-    --___margin: calc(var(--status-margin) / 2);
-
-    background: var(--background);
-    margin: var(--___margin);
-
-    &::before {
-      z-index: -1;
-      content: "";
-      display: block;
-      position: absolute;
-      inset: calc(var(--___margin) * -1);
-      background: var(--background);
-      backdrop-filter: var(--__panel-backdrop-filter);
-    }
-  }
-}
-</style>
+<style src="./conversation.scss" />
