@@ -17,7 +17,6 @@ export const paramsString = (params = {}) => {
     }
   })()
 
-  if (entries.length === 0) return ''
 
   const arrays = []
   const nonArrays = []
@@ -47,6 +46,8 @@ export const paramsString = (params = {}) => {
         throw new Error('Array param cannot contain non-primitives!')
     })
   })
+
+  if (nonArrays.length + arrays.length === 0) return ''
 
   return (
     '?' +

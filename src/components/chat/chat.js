@@ -382,7 +382,7 @@ const Chat = {
       if (retriesLeft <= 0) return
 
       sendChatMessage({
-        params,
+        ...params,
         credentials: useOAuthStore().token,
       })
         .then(({ data }) => {
