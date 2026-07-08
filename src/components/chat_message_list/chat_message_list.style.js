@@ -5,6 +5,7 @@ export default {
   defaultRules: [
     {
       directives: {
+        backgroundNoCssColor: 'yes',
         background: '--bg',
         blur: '5px',
       },
