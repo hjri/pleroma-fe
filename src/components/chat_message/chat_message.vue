@@ -82,6 +82,17 @@
                   class="created-at"
                 >
                   <span
+                    v-if="message.visibility"
+                    class="visibility-icon"
+                    :title="visibilityLocalized"
+                  >
+                    <FAIcon
+                      fixed-width
+                      class="fa-scale-110"
+                      :icon="visibilityIcon(message.visibility)"
+                    />
+                  </span>
+                  <span
                     v-if="message.pending"
                     class="loading-spinner"
                   >

@@ -106,6 +106,20 @@ const ChatMessage = {
         messageChainId: this.chatItem.messageChainId,
       })
     },
+    visibilityIcon(visibility) {
+      switch (visibility) {
+        case 'private':
+          return 'lock'
+        case 'unlisted':
+          return 'lock-open'
+        case 'direct':
+          return 'envelope'
+        case 'local':
+          return 'igloo'
+        default:
+          return 'globe'
+      }
+    },
     async deleteMessage() {
       const confirmed = window.confirm(this.$t('chats.delete_confirm'))
       if (confirmed) {
