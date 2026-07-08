@@ -59,10 +59,12 @@ import { computed } from 'vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
 import ContrastRatio from 'src/components/contrast_ratio/contrast_ratio.vue'
 
-import { getContrastRatio, hex2rgb } from 'src/services/color_convert/color_convert.js'
-
 import { useInterfaceStore } from 'src/stores/interface.js'
 
+import {
+  getContrastRatio,
+  hex2rgb,
+} from 'src/services/color_convert/color_convert.js'
 import {
   newExporter,
   newImporter,
