@@ -11,6 +11,7 @@ import PublicTimeline from 'src/components/public_timeline/public_timeline.vue'
 import QuotesTimeline from 'src/components/quotes_timeline/quotes_timeline.vue'
 import RemoteUserResolver from 'src/components/remote_user_resolver/remote_user_resolver.vue'
 import TagTimeline from 'src/components/tag_timeline/tag_timeline.vue'
+import AuthForm from 'src/components/auth_form/auth_form.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -147,9 +148,7 @@ export default (store) => {
     {
       name: 'login',
       path: '/login',
-      component: defineAsyncComponent(
-        () => import('src/components/auth_form/auth_form.js'),
-      ),
+      component: AuthForm,
     },
     {
       name: 'shout-panel',
