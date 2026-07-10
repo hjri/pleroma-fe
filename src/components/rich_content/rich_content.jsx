@@ -449,9 +449,14 @@ export default {
                 newAttrs.style = rules
                 break
               }
+              case 'sparkle':
+              case 'x2':
+              case 'x3':
+              case 'x4':
+                // handled by css
+                break
               default:
-                console.log(mfmOperator, opener)
-                console.log(mfmOperator)
+                console.warn('Unsupported MFM operator:', mfmOperator, opener)
                 break
             }
           }

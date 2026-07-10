@@ -16,6 +16,18 @@
       animation-play-state: paused;
     }
 
+    &[data-mfm-operator="x2"] {
+      font-size: 300%
+    }
+
+    &[data-mfm-operator="x3"] {
+      font-size: 400%
+    }
+
+    &[data-mfm-operator="x4"] {
+      font-size: 600%
+    }
+
     &[data-mfm-operator="sparkle"] {
       position: relative;
 
