@@ -1,5 +1,6 @@
 import { defineAsyncComponent } from 'vue'
 
+import AuthForm from 'src/components/auth_form/auth_form.js'
 import BookmarkTimeline from 'src/components/bookmark_timeline/bookmark_timeline.vue'
 import BubbleTimeline from 'src/components/bubble_timeline/bubble_timeline.vue'
 import ConversationPage from 'src/components/conversation-page/conversation-page.vue'
@@ -11,7 +12,6 @@ import PublicTimeline from 'src/components/public_timeline/public_timeline.vue'
 import QuotesTimeline from 'src/components/quotes_timeline/quotes_timeline.vue'
 import RemoteUserResolver from 'src/components/remote_user_resolver/remote_user_resolver.vue'
 import TagTimeline from 'src/components/tag_timeline/tag_timeline.vue'
-import AuthForm from 'src/components/auth_form/auth_form.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'

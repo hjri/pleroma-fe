@@ -6,7 +6,7 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 const GlobalError = {
   components: {
     ErrorModal: defineAsyncComponent(
-      () => import('src/components/error_modal/error_modal.vue')
+      () => import('src/components/error_modal/error_modal.vue'),
     ),
   },
   computed: {
