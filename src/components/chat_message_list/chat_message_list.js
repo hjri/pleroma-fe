@@ -20,7 +20,7 @@ const ChatMessageList = {
       hoveredMessageChainId: undefined,
     }
   },
-  emits: ['messageDelete'],
+  emits: ['messageDelete', 'replyRequested'],
   computed: {
     chatItems() {
       const messages = [
@@ -107,6 +107,22 @@ const ChatMessageList = {
     onMessageDelete({ messageId, chatId }) {
       this.$emit('messageDelete', { messageId, chatId })
     },
+    onReplyRequested(message) {
+      this.$emit('replyRequested', message)
+    },
+    getPreviousItem(index) {
+      let result
+
+      this.chatItems.slice(0, index).reverse().some((item) => {
+        const isMessage = item.type === 'message'
+        if (isMessage) {
+          result = item
+        }
+        return isMessage
+      })
+
+      return result
+    }
   },
 }
 

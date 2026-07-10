@@ -93,8 +93,31 @@
     }
   }
 
+  .auto-reply-to-section {
+    margin: 0 1em;
+    gap: 0.5em;
+
+    h4 {
+      margin: 0.5em 0;
+      line-height: 1.5;
+
+      button {
+        line-height: 1.5;
+      }
+    }
+
+    .reply-to-preview {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+  }
+
   .chat-view-reply-form {
     position: sticky;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
     bottom: 0;
   }
 }

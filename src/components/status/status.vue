@@ -512,6 +512,7 @@
 
           <StatusActionButtons
             v-if="!noHeading && !isPreview"
+            class="status-action-buttons"
             :status="status"
             :replying="replying"
             @toggle-replying="toggleReplyForm"

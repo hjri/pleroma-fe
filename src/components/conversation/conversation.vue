@@ -202,22 +202,50 @@
       >
         <ChatMessageList
           :messages="conversation"
+          @reply-requested="e => explicitReplyStatus = e"
         />
       </div>
     </div>
     <div
-      v-if="isChatView && isExpanded"
+      v-if="isChatView && isExpanded && replyStatus"
       class="chat-view-reply-form panel-footer -flexible-height"
     >
+      <div class="auto-reply-to-section">
+        <h4
+          class="reply-to-text"
+          >
+          {{ explicitReplyStatus ? $t('status.reply_to_selected') : $t('status.reply_to_last') }}
+          <button
+            v-if="explicitReplyStatus"
+            class="button-default"
+            @click="explicitReplyStatus = null"
+          >
+            <FAIcon icon="times" />
+            {{ $t('general.cancel') }}
+          </button>
+        </h4>
+        <div class="reply-to-preview">
+          <FAIcon
+            icon="reply"
+            flip="horizontal"
+          />
+          <StatusContent
+            :status="replyStatus"
+            compact
+            collapse
+          />
+        </div>
+      </div>
       <PostStatusForm
         :submit-on-enter="!mobileLayout"
         :preserve-focus="!mobileLayout"
         :auto-focus="!mobileLayout"
-        :reply-to="lastStatus.id"
+        :reply-to="replyStatus.id"
         :disable-quotes="true"
-        :copy-message-scope="lastStatus.visibility"
-        :attentions="lastStatus.attentions"
-        :replied-user="lastStatus.user"
+        :copy-message-scope="replyStatus.visibility"
+        :attentions="replyStatus.attentions"
+        :replied-user="replyStatus.user"
+        force-mentions-line
       />
     </div>
   </div>

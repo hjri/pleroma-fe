@@ -1654,6 +1654,8 @@
     "delete_confirm_accept_button": "Delete",
     "delete_confirm_cancel_button": "Keep",
     "reply_to": "Reply to",
+    "reply_to_selected": "Replying to selected message",
+    "reply_to_last": "Replying to last message",
     "reply_to_with_icon": "{icon} {replyTo}",
     "reply_to_with_arg": "{replyToWithIcon} {user}",
     "mentions": "Mentions",

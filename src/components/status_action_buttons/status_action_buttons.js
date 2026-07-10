@@ -15,7 +15,31 @@ import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
 library.add(faEllipsisH)
 
 const StatusActionButtons = {
-  props: ['status', 'replying'],
+  props: {
+    status: {
+      type: Object,
+      required: true,
+    },
+    replying: {
+      type: Boolean,
+      default: false,
+    },
+    fixedPinned: {
+      type: Boolean,
+      default: false,
+    },
+    pinned: {
+      type: Set,
+    },
+    useDefaultButtons: {
+      type: Boolean,
+      default: false,
+    },
+    hideLabels: {
+      type: Boolean,
+      default: false,
+    }
+  },
   emits: ['toggleReplying', 'onSuccess', 'onError'],
   data() {
     return {
@@ -36,14 +60,19 @@ const StatusActionButtons = {
     ConfirmModal: defineAsyncComponent(
       () => import('src/components/confirm_modal/confirm_modal.vue'),
     ),
-
     ActionButtonContainer,
   },
   computed: {
     ...mapState(useSyncConfigStore, {
-      pinnedItems: (store) =>
-        new Set(store.prefsStorage.collections.pinnedStatusActions),
+      userPinnedItems: (store) => new Set(store.prefsStorage.collections.pinnedStatusActions),
     }),
+    pinnedItems() {
+      if (this.fixedPinned) {
+        return this.pinned
+      } else {
+        return this.userPinnedItems
+      }
+    },
     buttons() {
       return BUTTONS.filter((x) => (x.if ? x.if(this.funcArg) : true))
     },

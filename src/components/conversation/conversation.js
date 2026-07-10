@@ -2,6 +2,7 @@ import { clone, filter, findIndex, get, reduce } from 'lodash'
 import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
+import StatusContent from 'src/components/status_content/status_content.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
@@ -20,9 +21,11 @@ import {
   faAngleDoubleDown,
   faAngleDoubleLeft,
   faChevronLeft,
+  faReply,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faAngleDoubleDown, faAngleDoubleLeft, faChevronLeft)
+library.add(faAngleDoubleDown, faAngleDoubleLeft, faChevronLeft, faReply, faTimes)
 
 const sortById = (a, b) => {
   const idA = a.type === 'retweet' ? a.retweeted_status.id : a.id
@@ -105,6 +108,7 @@ const conversation = {
       inlineDivePosition: null,
       loadStatusError: null,
       unsuspendibleIds: new Set(),
+      explicitReplyStatus: null,
     }
   },
   created() {
@@ -121,8 +125,10 @@ const conversation = {
       return maxDepth >= 1 ? maxDepth : 1
     },
     lastStatus() {
-      console.log('LAST STATUS', this.conversation[this.conversation.length - 1])
       return this.conversation[this.conversation.length - 1]
+    },
+    replyStatus() {
+      return this.explicitReplyStatus ?? this.lastStatus
     },
     streamingEnabled() {
       return (
@@ -415,6 +421,7 @@ const conversation = {
     QuickViewSettings,
     ChatMessageList,
     PostStatusForm,
+    StatusContent,
   },
   watch: {
     statusId(newVal, oldVal) {

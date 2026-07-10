@@ -25,6 +25,25 @@
         </UserPopover>
       </div>
       <div class="chat-message-inner">
+        <small
+          v-if="isStatus && isCustomReply"
+          class="reply-to-header faint"
+        >
+          <strong class="reply-label">
+            <FAIcon
+              class="fa-scale-110 fa-old-padding"
+              icon="reply"
+              flip="horizontal"
+            />
+            {{ $t('status.reply_to') }}
+          </strong>
+          <StatusBody
+            class="reply-body"
+            :status="customReplyTo"
+            collapse
+            single-line
+          />
+        </small>
         <div
           class="status-body"
           :style="{ 'min-width': message.attachment ? '80%' : '' }"
@@ -36,15 +55,27 @@
             @mouseenter="hovered = true"
             @mouseleave="hovered = false"
           >
+
+            <StatusActionButtons
+              v-if="isStatus"
+              class="chat-message-toolbar"
+              :class="{ '-visible': hovered || menuOpened }"
+              :status="message"
+              :pinned="new Set(['reply', 'emoji'])"
+              fixed-pinned
+              use-default-buttons
+              hide-labels
+              @toggle-replying="$emit('replyRequested', message)"
+            />
             <div
-              class="chat-message-menu"
-              :class="{ 'visible': hovered || menuOpened }"
+              class="chat-message-toolbar"
+              :class="{ '-visible': hovered || menuOpened }"
+              v-else
             >
               <Popover
                 trigger="click"
+                :trigger-attrs="{ 'class': 'button-default menu-icon simple-button', title: $t('chats.more') }"
                 placement="top"
-                bound-to-selector=".chat-view-inner"
-                :bound-to="{ x: 'container' }"
                 :margin="popoverMarginStyle"
                 @show="menuOpened = true"
                 @close="menuOpened = false"
@@ -62,12 +93,7 @@
                   </div>
                 </template>
                 <template #trigger>
-                  <button
-                    class="button-default menu-icon"
-                    :title="$t('chats.more')"
-                  >
-                    <FAIcon icon="ellipsis-h" />
-                  </button>
+                  <FAIcon icon="ellipsis-h" />
                 </template>
               </Popover>
             </div>
@@ -87,9 +113,9 @@
                     :title="visibilityLocalized"
                   >
                     <FAIcon
-                      fixed-width
                       class="fa-scale-110"
                       :icon="visibilityIcon(message.visibility)"
+                      fixed-width
                     />
                   </span>
                   <span
@@ -98,8 +124,8 @@
                   >
                     <FAIcon
                       class="fa-old-padding"
-                      spin
                       icon="circle-notch"
+                      spin
                     />
                   </span>
                   {{ createdAt }}

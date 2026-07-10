@@ -1,3 +1,4 @@
+import { find } from 'lodash'
 import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
@@ -7,6 +8,8 @@ import Gallery from 'src/components/gallery/gallery.vue'
 import LinkPreview from 'src/components/link-preview/link-preview.vue'
 import Popover from 'src/components/popover/popover.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
+import StatusBody from 'src/components/status_body/status_body.vue'
+import StatusActionButtons from 'src/components/status_action_buttons/status_action_buttons.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserPopover from 'src/components/user_popover/user_popover.vue'
 
@@ -25,18 +28,19 @@ library.add(faTimes, faEllipsisH, faCircleNotch)
 
 const ChatMessage = {
   name: 'ChatMessage',
-  props: ['edited', 'noHeading', 'chatItem', 'hoveredMessageChain'],
-  emits: ['hover'],
+  props: ['edited', 'noHeading', 'previousItem', 'chatItem', 'previousItem', 'hoveredMessageChain'],
+  emits: ['hover', 'replyRequested'],
   components: {
     Popover,
     Attachment,
     StatusContent,
+    StatusBody,
+    StatusActionButtons,
     UserAvatar,
     Gallery,
     LinkPreview,
     ChatMessageDate,
-    UserPopover,
-  },
+    UserPopover,},
   computed: {
     // Returns HH:MM (hours and minutes) in local time.
     createdAt() {
@@ -64,6 +68,16 @@ const ChatMessage = {
     },
     isMessage() {
       return this.chatItem.type === 'message'
+    },
+    isCustomReply() {
+      if (!this.previousItem) return false
+      console.log('==')
+      console.log('PREV', toValue(this.previousItem.data.raw_html))
+      console.log('CURR', toValue(this.chatItem.data.raw_html))
+      return this.previousItem.data.id !== this.chatItem.data.in_reply_to_status_id
+    },
+    customReplyTo() {
+      return find(this.$store.state.statuses.allStatuses, { id: this.chatItem.data.in_reply_to_status_id })
     },
     messageForStatusContent() {
       return {
