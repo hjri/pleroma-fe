@@ -217,6 +217,12 @@ const Notification = {
     allowNonSquareEmoji() {
       return this.mergedConfig.nonSquareEmoji
     },
+    pauseMfm() {
+      return this.mergedConfig.pauseMfm
+    },
+    scaleMfm() {
+      return this.mergedConfig.scaleMfm
+    },
     shouldConfirmApprove() {
       return this.mergedConfig.modalOnApproveFollow
     },

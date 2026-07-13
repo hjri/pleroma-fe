@@ -36,6 +36,12 @@ const BasicUserCard = {
     allowNonSquareEmoji() {
       return useMergedConfigStore().mergedConfig.nonSquareEmoji
     },
+    pauseMfm() {
+      return useMergedConfigStore().mergedConfig.pauseMfm
+    },
+    scaleMfm() {
+      return useMergedConfigStore().mergedConfig.scaleMfm
+    },
   },
 }
 

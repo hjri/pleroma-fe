@@ -175,6 +175,16 @@
           </BooleanSetting>
         </li>
         <li>
+          <BooleanSetting path="scaleMfm">
+            {{ $t('settings.scale_mfm') }}
+          </BooleanSetting>
+        </li>
+        <li>
+          <BooleanSetting path="pauseMfm">
+            {{ $t('settings.pause_mfm') }}
+          </BooleanSetting>
+        </li>
+        <li>
           <BooleanSetting
             :local="true"
             path="hideNsfw"

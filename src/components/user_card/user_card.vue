@@ -141,6 +141,8 @@
                     :html="editable ? newName : user.name_unescaped"
                     :emoji="editable ? emoji : user.emoji"
                     :allow-non-square-emoji="allowNonSquareEmoji"
+                    :pause-mfm="pauseMfm"
+                    :scale-mfm="scaleMfm"
                   />
                 </router-link>
                 <EmojiInput
@@ -487,6 +489,8 @@
         :html="editable ? escapedNewBio : user.description_html"
         :emoji="editable ? emoji : user.emoji"
         :allow-non-square-emoji="allowNonSquareEmoji"
+        :pause-mfm="pauseMfm"
+        :scale-mfm="scaleMfm"
         :handle-links="true"
       />
     </template>
@@ -542,6 +546,8 @@
               :html="field.name"
               :emoji="editable ? emoji : user.emoji"
               :allow-non-square-emoji="allowNonSquareEmoji"
+              :pause-mfm="pauseMfm"
+              :scale-mfm="scaleMfm"
             />
           </dt>
           <dd
@@ -552,6 +558,8 @@
               :html="field.value"
               :emoji="editable ? emoji : user.emoji"
               :allow-non-square-emoji="allowNonSquareEmoji"
+              :pause-mfm="pauseMfm"
+              :scale-mfm="scaleMfm"
             />
           </dd>
         </dl>

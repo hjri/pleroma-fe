@@ -118,6 +118,16 @@ export default {
       type: Boolean,
       default: false,
     },
+    pauseMfm: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
+    scaleMfm: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
   },
   // NEVER EVER TOUCH DATA INSIDE RENDER
   render() {
@@ -313,7 +323,139 @@ export default {
           const newChildren = Array.isArray(children)
             ? [...children].reverse().map(processItemReverse).reverse()
             : children
-          return <Tag {...getAttrs(opener)}>{newChildren}</Tag>
+          const attrs = getAttrs(opener)
+          const newAttrs = { ...attrs }
+          const fullAttrs = getAttrs(opener, () => true)
+          const classname = fullAttrs['class']
+          const isMFM = classname?.startsWith('mfm-')
+          if (isMFM) {
+            const mfmOperator = /^mfm-(\w+)$/.exec(classname)?.[1]
+            newAttrs['class'] = [
+              'mfm',
+              this.pauseMfm ? '-pause' : '',
+              this.scaleMfm ? '-scale' : '',
+            ]
+              .filter((x) => x)
+              .join(' ')
+            newAttrs['data-mfm-operator'] = mfmOperator
+            switch (mfmOperator) {
+              case 'position': {
+                const x = Number.parseFloat(fullAttrs['data-mfm-x']) || 0
+                const y = Number.parseFloat(fullAttrs['data-mfm-y']) || 0
+                newAttrs.style = [
+                  'transform:',
+                  `translate(calc(${x} * (var(--emoji-size) / 2)), `,
+                  `calc(${y} * (var(--emoji-size) / 2)))`,
+                ].join(' ')
+                break
+              }
+              case 'scale': {
+                const x = Number.parseFloat(fullAttrs['data-mfm-x']) || 1
+                const y = Number.parseFloat(fullAttrs['data-mfm-y']) || 1
+                newAttrs.style = ['transform:', `scale(${x}, ${y})`].join(' ')
+                break
+              }
+              case 'rotate': {
+                const deg = Number.parseFloat(fullAttrs['data-mfm-deg']) || 0
+                newAttrs.style = [
+                  `transform: rotate(${deg}deg)`,
+                  'transform-origin: center',
+                ].join(';')
+                break
+              }
+              case 'bg': {
+                const color = fullAttrs['data-mfm-color'] || 0
+                newAttrs.style = [`background-color: #${color}`].join(' ')
+                break
+              }
+              case 'fg': {
+                const color = fullAttrs['data-mfm-color'] || 0
+                newAttrs.style = [`color: #${color}`].join(';')
+                break
+              }
+              case 'spin': {
+                const speed = fullAttrs['data-mfm-speed'] || '1s'
+                const delay = fullAttrs['data-mfm-delay'] || 0
+                const left = fullAttrs['data-mfm-left'] != null
+                const alternate = fullAttrs['data-mfm-alternate'] != null
+                const y = fullAttrs['data-mfm-y'] != null
+                const x = fullAttrs['data-mfm-x'] != null
+
+                const anim = [
+                  x ? 'mfm-spinX' : null,
+                  y ? 'mfm-spinY' : null,
+                  'mfm-spin',
+                ].filter((a) => a)[0]
+
+                const direction = [
+                  alternate ? 'alternate' : null,
+                  left ? 'reverse' : null,
+                  'normal',
+                ].filter((a) => a)[0]
+
+                newAttrs.style = [
+                  `animation-name: ${anim}`,
+                  `animation-duration: ${speed}`,
+                  'animation-iteration-count: infinite',
+                  `animation-delay: ${delay}`,
+                  `animation-direction: ${direction}`,
+                  'animation-fill-mode: none',
+                  'animation-timing-function: linear',
+                ].join(';')
+                break
+              }
+              case 'flip': {
+                newAttrs.style = 'transform: scaleX(-1)'
+                break
+              }
+              case 'border': {
+                const width = fullAttrs['data-mfm-width'] || '0'
+                const style = fullAttrs['data-mfm-style'] || 'solid'
+                const color = fullAttrs['data-mfm-color'] || 'transparent'
+                const radius = fullAttrs['data-mfm-radius'] || '0'
+                const noclip = fullAttrs['data-mfm-noclip'] || false
+
+                newAttrs.style = [
+                  `border: ${width} ${style} ${color}`,
+                  `border-radius: ${radius}`,
+                  `overflow: ${noclip ? 'visible' : 'clip'}`,
+                ].join(';')
+                break
+              }
+              case 'tada':
+              case 'jelly':
+              case 'twitch':
+              case 'shake':
+              case 'jump':
+              case 'bounce':
+              case 'rainbow': {
+                const speed = fullAttrs['data-mfm-speed'] || '1s'
+                const delay = fullAttrs['data-mfm-delay'] || 0
+
+                const rules = [
+                  `animation-name: mfm-${mfmOperator}`,
+                  `animation-duration: ${speed}`,
+                  'animation-iteration-count: infinite',
+                  `animation-delay: ${delay}`,
+                  'animation-direction: normal',
+                  'animation-fill-mode: none',
+                  'animation-timing-function: linear',
+                ].join(';')
+                newAttrs.style = rules
+                break
+              }
+              case 'sparkle':
+              case 'x2':
+              case 'x3':
+              case 'x4':
+                // handled by css
+                break
+              default:
+                console.warn('Unsupported MFM operator:', mfmOperator, opener)
+                break
+            }
+          }
+          return <Tag {...newAttrs}>{newChildren}</Tag>
         } else {
           return <Tag />
         }

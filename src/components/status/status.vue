@@ -71,6 +71,8 @@
                 :html="retweeterHtml"
                 :emoji="retweeterUser.emoji"
                 :allow-non-square-emoji="allowNonSquareEmoji"
+                :pause-mfm="pauseMfm"
+                :scale-mfm="scaleMfm"
                 :is-local="retweeterUser.is_local"
               />
             </router-link>

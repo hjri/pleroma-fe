@@ -32,6 +32,8 @@
           :html="user.name"
           :emoji="user.emoji"
           :allow-non-square-emoji="allowNonSquareEmoji"
+          :pause-mfm="pauseMfm"
+          :scale-mfm="scaleMfm"
         />
       </div>
       <div>
