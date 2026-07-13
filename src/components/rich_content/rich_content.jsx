@@ -334,9 +334,11 @@ export default {
               'mfm',
               this.pauseMfm ? '-pause' : '',
               this.scaleMfm ? '-scale' : '',
-            ].filter(x => x).join(' ')
+            ]
+              .filter((x) => x)
+              .join(' ')
             newAttrs['data-mfm-operator'] = mfmOperator
-            switch(mfmOperator) {
+            switch (mfmOperator) {
               case 'position': {
                 const x = Number.parseFloat(fullAttrs['data-mfm-x']) || 0
                 const y = Number.parseFloat(fullAttrs['data-mfm-y']) || 0
@@ -350,10 +352,7 @@ export default {
               case 'scale': {
                 const x = Number.parseFloat(fullAttrs['data-mfm-x']) || 1
                 const y = Number.parseFloat(fullAttrs['data-mfm-y']) || 1
-                newAttrs.style = [
-                  'transform:',
-                  `scale(${x}, ${y})`,
-                ].join(' ')
+                newAttrs.style = ['transform:', `scale(${x}, ${y})`].join(' ')
                 break
               }
               case 'rotate': {
@@ -366,16 +365,12 @@ export default {
               }
               case 'bg': {
                 const color = fullAttrs['data-mfm-color'] || 0
-                newAttrs.style = [
-                  `background-color: #${color}`,
-                ].join(' ')
+                newAttrs.style = [`background-color: #${color}`].join(' ')
                 break
               }
               case 'fg': {
                 const color = fullAttrs['data-mfm-color'] || 0
-                newAttrs.style = [
-                  `color: #${color}`,
-                ].join(';')
+                newAttrs.style = [`color: #${color}`].join(';')
                 break
               }
               case 'spin': {
@@ -389,14 +384,14 @@ export default {
                 const anim = [
                   x ? 'mfm-spinX' : null,
                   y ? 'mfm-spinY' : null,
-                  'mfm-spin'
-                ].filter(a => a)[0]
+                  'mfm-spin',
+                ].filter((a) => a)[0]
 
                 const direction = [
                   alternate ? 'alternate' : null,
                   left ? 'reverse' : null,
                   'normal',
-                ].filter(a => a)[0]
+                ].filter((a) => a)[0]
 
                 newAttrs.style = [
                   `animation-name: ${anim}`,
@@ -423,7 +418,7 @@ export default {
                 newAttrs.style = [
                   `border: ${width} ${style} ${color}`,
                   `border-radius: ${radius}`,
-                  `overflow: ${noclip ? 'visible' : 'clip'}`
+                  `overflow: ${noclip ? 'visible' : 'clip'}`,
                 ].join(';')
                 break
               }
