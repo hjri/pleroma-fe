@@ -1,70 +1,6 @@
 .RichContent {
   font-family: var(--font);
 
-  .mfm {
-    display: inline-block;
-
-    &.-scale {
-      font-size: calc(var(--emoji-size) / 2);
-    }
-
-    &:not(.-scale) {
-      --emoji-size: 2em;
-    }
-
-    &.-pause {
-      animation-play-state: paused;
-    }
-
-    &[data-mfm-operator="x2"] {
-      font-size: 300%
-    }
-
-    &[data-mfm-operator="x3"] {
-      font-size: 400%
-    }
-
-    &[data-mfm-operator="x4"] {
-      font-size: 600%
-    }
-
-    &[data-mfm-operator="sparkle"] {
-      position: relative;
-
-      &::before,
-      &::after {
-        content: '✨';
-        position: absolute;
-        opacity: 0.4;
-        z-index: -1;
-        animation-name: cheap-sparkle;
-        animation-duration: 1s;
-        animation-timing-function: ease-in-out;
-        animation-iteration-count: infinite;
-      }
-
-      &::before {
-        left: 0;
-        animation-direction: alternate;
-      }
-
-      &::after {
-        right: 0;
-        animation-direction: alternate-reverse;
-      }
-    }
-
-    .emoji {
-      /* Misskey's emoji width knows no bounds */
-      /* stylelint-disable-next-line declaration-no-important */
-      max-width: unset !important;
-    }
-  }
-
-  &:hover .mfm {
-    animation-play-state: running;
-  }
-
   &.-faint {
     color: var(--text);
     /* stylelint-disable declaration-no-important */
@@ -163,6 +99,70 @@
 
   .cyantext {
     color: var(--funtextCyantext);
+  }
+
+  .mfm {
+    display: inline-block;
+
+    &.-scale {
+      font-size: calc(var(--emoji-size) / 2);
+    }
+
+    &:not(.-scale) {
+      --emoji-size: 2em;
+    }
+
+    &.-pause {
+      animation-play-state: paused;
+    }
+
+    &[data-mfm-operator="x2"] {
+      font-size: 300%
+    }
+
+    &[data-mfm-operator="x3"] {
+      font-size: 400%
+    }
+
+    &[data-mfm-operator="x4"] {
+      font-size: 600%
+    }
+
+    &[data-mfm-operator="sparkle"] {
+      position: relative;
+
+      &::before,
+      &::after {
+        content: '✨';
+        position: absolute;
+        opacity: 0.4;
+        z-index: -1;
+        animation-name: cheap-sparkle;
+        animation-duration: 1s;
+        animation-timing-function: ease-in-out;
+        animation-iteration-count: infinite;
+      }
+
+      &::before {
+        left: 0;
+        animation-direction: alternate;
+      }
+
+      &::after {
+        right: 0;
+        animation-direction: alternate-reverse;
+      }
+    }
+
+    .emoji {
+      /* Misskey's emoji width knows no bounds */
+      /* stylelint-disable-next-line declaration-no-important */
+      max-width: unset !important;
+    }
+  }
+
+  &:hover .mfm {
+    animation-play-state: running;
   }
 }
 
