@@ -970,7 +970,7 @@
             "inherit": "Unchanged"
           },
           "group-local": "Locally installed fonts",
-          "local-unavailable1": "List of locally installed fonts unavailalbe",
+          "local-unavailable1": "List of locally installed fonts unavailable",
           "local-unavailable2": "Use manual entry to specify custom font",
           "font_list_unavailable": "Couldn't get locally installed fonts: {error}",
           "lookup_local_fonts": "Load list of fonts installed on this computer",

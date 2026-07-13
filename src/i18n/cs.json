@@ -5,7 +5,7 @@
   "features_panel": {
     "chat": "Chat",
     "gopher": "Gopher",
-    "media_proxy": "Mediální proxy",
+    "media_proxy": "Média proxy",
     "scope_options": "Možnosti rozsahů",
     "text_limit": "Textový limit",
     "title": "Vlastnosti",
@@ -122,7 +122,11 @@
     "edit_pinned": "Upravit připnuté položky",
     "edit_finish": "Dokončit úpravu",
     "mobile_notifications_mark_as_seen": "Označit vše jako přečtené",
-    "interactions": "Interakce"
+    "interactions": "Interakce",
+    "bookmark_folders": "Složky záložek",
+    "all_bookmarks": "Všechny záložky",
+    "drafts": "Koncepty",
+    "quotes": "Citace"
   },
   "notifications": {
     "broken_favorite": "Neznámý příspěvek, hledám jej…",
@@ -139,12 +143,13 @@
     "unread_follow_requests": "{num} nový požadavek o sledování | {num} nových požadavků o sledování",
     "configuration_tip": "Může upravit co zde zobrazovat v {theSettings}. {dismiss}",
     "follow_request": "vás chce sledovat",
-    "migrated_to": "migroval na",
+    "migrated_to": "migroval/a na",
     "poll_ended": "anketa skončila",
     "reacted_with": "reagoval/a s {0}",
     "submitted_report": "Odeslal/a stížnost",
     "configuration_tip_settings": "nastavení",
-    "configuration_tip_dismiss": "Již nezobrazovat"
+    "configuration_tip_dismiss": "Již nezobrazovat",
+    "subscribed_status": "poslal/a"
   },
   "post_status": {
     "new_status": "Napsat nový příspěvek",
@@ -160,7 +165,7 @@
     "content_warning": "Předmět (volitelný)",
     "default": "Právě jsem přistál v L.A.",
     "direct_warning": "Tento příspěvek uvidí pouze všichni zmínění uživatelé.",
-    "posting": "Přispívání",
+    "posting": "Odesílání",
     "scope": {
       "direct": "Přímý - Poslat pouze zmíněným uživatelům",
       "private": "Pouze pro sledující - Poslat pouze sledujícím",
@@ -186,7 +191,18 @@
     "direct_warning_to_all": "Tento příspěvek budou vidět pouze zmínění uživatelé.",
     "direct_warning_to_first_only": "Tento příspěvek bude viditelný pouze pro zmíněné uživatele na začátku příspěvku.",
     "edit_remote_warning": "Jiné vzdálené instance nemusí podporovat úpravy a nemusí přijmout nejnovější verzi vašeho příspěvku.",
-    "preview": "Náhled"
+    "preview": "Náhled",
+    "auto_save_nothing_new": "Nic nového k uložení.",
+    "auto_save_saved": "Uloženo.",
+    "auto_save_saving": "Ukládání…",
+    "save_to_drafts_button": "Uložit do konceptů",
+    "save_to_drafts_and_close_button": "Uložit do konceptů a uzavřít",
+    "close_confirm": "Co chcete udělat s vaším konceptem?",
+    "close_confirm_save_button": "Uložit",
+    "close_confirm_discard_button": "Zahodit",
+    "close_confirm_continue_composing_button": "Pokračovat v psaní",
+    "more_post_actions": "Více akcí k příspěvku…",
+    "close_confirm_title": "Uzavírání formuláře příspěvku"
   },
   "registration": {
     "bio": "O vás",
@@ -252,7 +268,7 @@
     "avatar_size_instruction": "Doporučená minimální velikost pro avatarové obrázky je 150x150 pixelů.",
     "export_theme": "Uložit přednastavení",
     "filtering": "Filtrování",
-    "filtering_explanation": "Všechny příspěvky obsahující tato slova budou skryty. Napište jedno slovo na každý řádek",
+    "filtering_explanation": "Všechny příspěvky obsahující tato slova budou ztlumeny. Napište jedno slovo na každý řádek",
     "follow_export": "Export sledovaných",
     "follow_export_button": "Exportovat vaše sledované do souboru CSV",
     "follow_export_processing": "Zpracovávám, brzy si budete moci stáhnout váš soubor",
@@ -284,7 +300,7 @@
     "lock_account_description": "Omezit váš účet pouze na schválené sledující",
     "loop_video": "Opakovat videa",
     "loop_video_silent_only": "Opakovat pouze videa beze zvuku (t.j. „GIFy“ na Mastodonu)",
-    "mutes_tab": "Ignorování",
+    "mutes_tab": "Ztlumení",
     "play_videos_in_modal": "Přehrávat videa přímo v prohlížeči médií",
     "use_contain_fit": "Neořezávat přílohu v miniaturách",
     "name": "Jméno",
@@ -297,7 +313,7 @@
     "notification_visibility_repeats": "Zopakování",
     "no_rich_text_description": "Odstranit ze všech příspěvků formátování textu",
     "no_blocks": "Žádná blokování",
-    "no_mutes": "Žádná ignorování",
+    "no_mutes": "Žádná ztlumení",
     "hide_follows_description": "Nezobrazovat, koho sleduji",
     "hide_followers_description": "Nezobrazovat, kdo mě sleduje",
     "show_admin_badge": "Zobrazovat v mém profilu odznak administrátora",
@@ -356,7 +372,7 @@
         "keep_opacity": "Ponechat průhlednost",
         "keep_roundness": "Ponechat kulatost",
         "keep_fonts": "Ponechat písma",
-        "save_load_hint": "Možnosti „Ponechat“ dočasně ponechávají aktuálně nastavené možností při volení či nahrávání motivů, také tyto možnosti ukládají při exportování motivu. Pokud není žádné pole zaškrtnuto, uloží export motivu všechno.",
+        "save_load_hint": "Možnosti „Ponechat“ dočasně ponechávají aktuálně nastavené možnosti při volbě či nahrávání motivů, tyto možnosti se také ukládají při exportování motivu. Pokud není zaškrtnuto žádné pole, export motivu uloží všechno.",
         "reset": "Resetovat",
         "clear_all": "Vymazat vše",
         "clear_opacity": "Vymazat průhlednost",
@@ -364,7 +380,7 @@
         "use_snapshot": "Stará verze",
         "help": {
           "migration_napshot_gone": "Z nějakého důvodu chyběl snímek, některé věci můžou vypadat jinak, než si pamatujete.",
-          "fe_upgraded": "Motiv engine PleromaFE byl aktualizován po aktualizaci verze.",
+          "fe_upgraded": "Jádro motivů PleromaFE bylo aktualizováno po aktualizaci verze.",
           "future_version_imported": "Soubor, který jste importoval/a byl vytvořen pro novější verzi FE.",
           "older_version_imported": "Soubor, který jste importoval/a byl vytvořen pro starší verzi FE.",
           "v2_imported": "Soubor, který jste importoval/a byl vytvořen pro starší verzi FE. Snažíme se zachovat maximální kompatibilitu, ale může dojít k nekonzistenci.",
@@ -372,7 +388,8 @@
           "upgraded_from_v2": "PleromaFE bylo aktualizováno, motiv může vypadat trochu jinak, než si pamatujete.",
           "snapshot_missing": "V souboru nebyl žádný snímek motivu, takže může vypadat jinak, než bylo původně zamýšleno.",
           "fe_downgraded": "Verze PleromaFE byla vrácena zpět.",
-          "migration_snapshot_ok": "Pro jistotu byl načten snímek motivu. Můžete zkusit načíst data motivu."
+          "migration_snapshot_ok": "Pro jistotu byl načten snímek motivu. Můžete zkusit načíst data motivu.",
+          "snapshot_source_mismatch": "Konflikt verzí: verze FE byla pravděpodobně vrácena zpět a znovu aktualizována. Pokud jste aktualizovali motiv ve staré verzi, pravděpodobně budete chtít používat starší verzi, jinak používejte novou."
         },
         "load_theme": "Načíst motiv",
         "use_source": "Nová verze"
@@ -397,7 +414,7 @@
         "_tab_label": "Obvyklé",
         "main": "Obvyklé barvy",
         "foreground_hint": "Pro detailnější kontrolu viz záložka „Pokročilé“",
-        "rgbo": "Ikony, odstíny, odznaky"
+        "rgbo": "Ikony, zvýraznění, odznaky"
       },
       "advanced_colors": {
         "_tab_label": "Pokročilé",
@@ -449,7 +466,8 @@
           "drop_shadow_syntax": "{0} nepodporuje parametr {1} a klíčové slovo {2}.",
           "avatar_inset": "Prosím berte na vědomí, že kombinování vsazených i nevsazených stínů u avatarů může u průhledných avatarů dát neočekávané výsledky.",
           "spread_zero": "Stíny s rozsahem > 0 se zobrazí, jako kdyby byl rozsah nastaven na nulu",
-          "inset_classic": "Vsazené stíny budou používat {0}"
+          "inset_classic": "Vsazené stíny budou používat {0}",
+          "avatar_inset_short": "Oddělený vnitřní stín"
         },
         "components": {
           "panel": "Panel",
@@ -463,7 +481,18 @@
           "buttonPressed": "Tlačítko (stisknuto)",
           "buttonPressedHover": "Button (stisknuto+přejetí myši)",
           "input": "Vstupní pole"
-        }
+        },
+        "offset": "Offset stínu",
+        "light_grid": "Použít světlou šachovnici",
+        "name": "Název",
+        "raw": "Jednoduchý stín",
+        "color_override": "Použít jinou barvu",
+        "zoom": "Zvětšení",
+        "offset-x": "x:",
+        "offset-y": "y:",
+        "hintV3": "Pro stíny můžete také použít zápis {0}, pokud chcete použít jiný barevný slot.",
+        "empty_expression": "Prázdný výraz",
+        "expression": "Výraz (pokročilý)"
       },
       "fonts": {
         "_tab_label": "Písma",
@@ -472,7 +501,8 @@
           "interface": "Rozhraní",
           "input": "Vstupní pole",
           "post": "Text příspěvků",
-          "postCode": "Neproporcionální text v příspěvku (formátovaný text)"
+          "postCode": "Neproporcionální text v příspěvku (formátovaný text)",
+          "monospace": "Neproporcionální text"
         },
         "family": "Název písma",
         "size": "Velikost (v pixelech)",
@@ -492,7 +522,114 @@
         "header_faint": "Tohle je v pohodě",
         "checkbox": "Pročetl/a jsem podmínky používání",
         "link": "hezký malý odkaz"
-      }
+      },
+      "themes3": {
+        "palette": {
+          "wallpaper": "Pozadí",
+          "v2_unsupported": "Starší V2 motivy nepodporují palety. Přejděte na V3 motivy pro využití palet",
+          "export": "Exportovat paletu",
+          "apply": "Aplikovat paletu",
+          "style": "Palety z vybraného stylu",
+          "label": "Barevné palety",
+          "name_label": "Název barevné palety",
+          "import": "Importovat paletu",
+          "bg": "Pozadí panelu",
+          "fg": "Tlačítka a podobné",
+          "text": "Text",
+          "link": "Odkazy",
+          "accent": "Barva zvýraznění",
+          "imported": "Importované",
+          "bundled": "Předvytvořené palety",
+          "user": "Vlastní paleta",
+          "cRed": "Červená barva",
+          "cBlue": "Modrá barva",
+          "cGreen": "Zelená barva",
+          "cOrange": "Oranžová barva"
+        },
+        "hacks": {
+          "underlay_override_mode_none": "Výchozí v motivu",
+          "forced_roundness_mode_disabled": "Použít výchozí nastavení motivu",
+          "underlay_override_mode_transparent": "Kompletně odstranit (může rozbít některé motivy)",
+          "underlay_overrides": "Upravit podklad",
+          "forced_roundness_mode_nonsharp": "Vynutit lehce ostré hrany",
+          "forced_roundness_mode_round": "Vynutit zaoblené hrany",
+          "underlay_override_mode_opaque": "Nahradit netransparentní barvou",
+          "force_interface_roundness": "Přepsat zaoblení rozhraní",
+          "forced_roundness_mode_sharp": "Vynutit ostré hrany"
+        },
+        "editor": {
+          "include_in_rule": "Přidat do pravidel",
+          "variables": {
+            "label": "Proměnné",
+            "type_generic": "Běžný",
+            "type_shadow": "Stín",
+            "name_label": "Název:",
+            "type_label": "Typ:",
+            "type_color": "Barva",
+            "virtual_color": "Proměnná barva"
+          },
+          "states_selector": "Stavy",
+          "main_tab": "Hlavní",
+          "shadows_tab": "Stíny",
+          "test_string": "TEST",
+          "background": "Barva pozadí",
+          "title": "Editor stylu",
+          "reset_style": "Resetovat",
+          "load_style": "Načíst ze souboru",
+          "contrast": "Kontrast textu",
+          "roundness": "Zaoblení",
+          "opacity": "Průhlednost",
+          "border_color": "Barva ohraničení",
+          "text_color": "Barva textu",
+          "icon_color": "Barva ikon",
+          "link_color": "Barva odkazů",
+          "text_auto": {
+            "label": "Auto-kontrast",
+            "no-preserve": "Černé nebo Bílé",
+            "preserve": "Zachovat barvu",
+            "no-auto": "Vypnuto"
+          },
+          "component_tab": "Styl komponentů",
+          "palette_tab": "Barevné schémata",
+          "component_selector": "Komponent",
+          "save_style": "Uložit",
+          "style_name": "Jméno stylu",
+          "style_author": "Autor",
+          "style_license": "Licence",
+          "style_website": "Webová stránka",
+          "invalid": "Neplatné",
+          "refresh_preview": "Aktualizovat náhled",
+          "apply_preview": "Aplikovat",
+          "variables_tab": "Proměnné (Pokročilé)",
+          "variant_selector": "Varianta"
+        },
+        "define": "Přepsat",
+        "font": {
+          "builtin": {
+            "serif": "Patkové",
+            "sans-serif": "Bezpatkové",
+            "inherit": "Nezměněné",
+            "monospace": "Neproporcionální"
+          },
+          "group-builtin": "Výchozí písma prohlížeče",
+          "lookup_local_fonts": "Načíst seznam nainstalovaných písem na tomto počítači",
+          "select": "Vyberte písmo",
+          "enter_manually": "Zadejte rodinu písma manuálně",
+          "entry": "Zadejte {fontFamily}",
+          "label": "{label} písmo",
+          "local-unavailable2": "Použijte ruční zadání pro volbu písma",
+          "font_list_unavailable": "Chyba při získávání lokálně nainstalovaných písem: {error}",
+          "group-local": "Lokální nainstalované písma",
+          "local-unavailable1": "Seznam lokálně nainstalovaných písmen není dostupný"
+        }
+      },
+      "themes2_outdated": "Editor pro Themes V2 se postupně vyřazován a nakonec nahrazen novým, který využívá nové Themes V3 jádro. Měl by stále fungovat, ale jeho chování může být místy rozbité nebo nekonzistentní.",
+      "appearance_tab_note": "Změny na této záložce nemají efekt na motiv, takže exportované motivy se budou lišit oproti tomu co je vidět v UI",
+      "update_preview": "Aktualizovat náhled",
+      "interface_font_user_override": "Přepsat písmo motivu/prohlížeče",
+      "custom_theme_used": "(Vlastní motiv)",
+      "stock_theme_used": "(Základní motiv)",
+      "custom_style_used": "(Vlastní styl)"
     },
     "added_alias": "Přezdívka přidána.",
     "emoji_reactions_scale": "Měřítko zvětšení reakcí",
@@ -607,7 +744,7 @@
     "notification_extra_tip": "Zobrazení tipu přizpůsobení pro další oznámení",
     "notification_visibility_native_notifications": "Zobrazit nativní oznámení",
     "notification_visibility_follow_requests": "Požadavky na sledování",
-    "mute_bot_posts": "Skrýt příspěvky od robotů",
+    "mute_bot_posts": "Ztlumit příspěvky od robotů",
     "hide_bot_indication": "Skrýt indikaci účtů robotů v příspěvcích",
     "auto_update": "Zobrazovat nové příspěvky automaticky",
     "url": "URL",
@@ -633,7 +770,7 @@
     "max_depth_in_thread": "Maximální počet zobrazených úrovní ve vlákně ve výchozím stavu",
     "add_backup_error": "Chyba při přidávání nové zálohy: {error}",
     "added_backup": "Přidána nová záloha.",
-    "word_filter_and_more": "Filtr slov a další...",
+    "word_filter_and_more": "Filtr slov a další…",
     "posts": "Příspěvky",
     "reset_banner_confirm": "Opravdu chcete resetovat banner?",
     "reset_background_confirm": "Opravdu chcete resetovat pozadí?",
@@ -717,7 +854,7 @@
     "notification_setting_privacy": "Soukromí",
     "notification_setting_block_from_strangers": "Blokovat oznámení od uživatelů které nesledujete",
     "notification_setting_hide_notification_contents": "Schovávat odesílatele a obsah push oznámení",
-    "notification_blocks": "Blokování uživatele zastaví všechny notifikace a také je odhlásí.",
+    "notification_blocks": "Blokování uživatele zruší všechny notifikace a zruší sledování vašeho účtu.",
     "mention_link_use_tooltip": "Zobrazit kartu uživatele při kliknutí na zmínku",
     "user_popover_avatar_overlay": "Zobrazit popover uživatele přes jeho avatar",
     "greentext": "Vtipné šipky",
@@ -738,7 +875,86 @@
     },
     "commit_value_tooltip": "Hodnota není uložena, stiskněte toto tlačítko pro potvrzení změn",
     "hard_reset_value_tooltip": "Odstranit nastavení z úložiště a vynutit výchozí hodnotu",
-    "accent": "Akcentní barva"
+    "accent": "Zvýraznění",
+    "units": {
+      "time": {
+        "m": "minuty",
+        "s": "sekundy",
+        "h": "hodiny",
+        "d": "dny"
+      }
+    },
+    "confirm_dialogs_mute_domain": "ztlumování domén",
+    "confirm_dialogs_mute_conversation": "ztlumování konverzací",
+    "text_size": "Text a velikost rozhraní",
+    "emoji_size": "Velikost emoji",
+    "text_size_tip": "Použijte {0} pro absolutní hodnoty, {1} bude škálovat dle výchozí velikosti textu v prohlížeči.",
+    "scale_and_layout": "Měřítko rozložení rozhraní",
+    "visual_tweaks": "Drobné vizuální úpravy",
+    "theme_debug": "Zobrazit s jakým motivem pozadí vykreslovací jádro počítá při práci s průhlednosti (DEBUG)",
+    "enabled": "Aktivováno",
+    "filter": {
+      "clutter": "Odstranit přebytečnosti",
+      "type": "Typ filtru",
+      "regexp": "Regulární výraz",
+      "mute_filter": "Filtry ztlumení",
+      "plain": "Jednoduchý",
+      "user": "Uživatel (Jednoduchý)",
+      "user_regexp": "Uživatel (Regulární výraz)",
+      "hide": "Kompletně schovat",
+      "name": "Název",
+      "value": "Hodnota",
+      "expires": "Expiruje v",
+      "expired": "Expirované",
+      "copy": "Duplikovat",
+      "save": "Uložit",
+      "delete": "Odstranit",
+      "new": "Vytvořit nový",
+      "import": "Importovat",
+      "export": "Exportovat",
+      "regexp_error": "Neplatné regulární výraz",
+      "never_expires": "Nikdy",
+      "total_count": "Celkově {count} vlastní filtr|Celkově{count} vlastních filtrů",
+      "expired_count": "{count} expirovaný filtr|{count} expirovaných filtrů",
+      "custom_filters": "Vlastní filtry",
+      "purge_expired": "Odstranit expirované filtry",
+      "import_failure": "Vybraný soubor není Pleromou podporovaný filtr.",
+      "help": {
+        "word": "Jednoduché filtry a filtry s regulárním výrazem filtrují na základě obsahu a předmětu.",
+        "user": "Uživatelské filtry hledají shodu na celém uživatelském jméně (uživatel{'@'}doména) v následujících případech: autor, odpověď na, zmínky",
+        "regexp_link": "Regulární výrazy",
+        "regexp_url": "https://cs.wikipedia.org/wiki/Regul%C3%A1rn%C3%AD_v%C3%BDraz",
+        "regexp": "Varianty s regulárními výrazy jsou více pokročilé a využívají {link} k hledání shody místo jednoduchého hledání podřetězců."
+      }
+    },
+    "hide_scrobbles_after": "Skrýt scrobbles starší než",
+    "hide_muted_statuses": "Kompletně skrýt všechny ztlumené příspěvky",
+    "absolute_time_format_min_age": "Používat pouze pro čas větší než tento",
+    "absolute_time_format": "Zobrazovat čas v absolutním formátu",
+    "navbar_size": "Velikost horní lišty",
+    "panel_header_size": "Velikost záhlaví panelu",
+    "mobile_center_dialog": "Dialogy na mobilu zarovnávat vertikálně",
+    "text_size_tip2": "Hodnoty větší než {0} mohou rozbít některé věci a motivy",
+    "unsaved_post_action_discard": "Zahodit",
+    "unsaved_post_action_confirm": "Vždy se zeptat",
+    "auto_save_draft": "Ukládat do konceptů při komponování",
+    "force_theme_recompilation_debug": "Vypnout mezipamět motivu, vynutit překlad při každém načtení (DEBUG)",
+    "theme_editor_min_width": "Minimální šířka editoru motivu (0 pro přizpůsobení k obsahu)",
+    "mute_sensitive_posts": "Ztlumit citlivé příspěvky",
+    "unsaved_post_action": "Při uzavírání neuloženého konceptu",
+    "absolute_time_format_12h_24h": "24 hodinový formát (22:00)",
+    "absolute_time_format_12h": "Formátu času",
+    "absolute_time_format_12h_12h": "12 hodinový formát (10:00 PM)",
+    "revert": "Vrátit zpět",
+    "appearance": "Vzhled",
+    "confirm_new_setting": "Potvrdit nové nastavení?",
+    "confirm_new_question": "Vypadá tohle v pořádku? Nastavení bude vráceno zpět za 10 sekund.",
+    "confirm": "Potvrdit",
+    "theme_old": "Editor motivu (starý)",
+    "image_compression": "Komprimovat obrázky před nahráním",
+    "unsaved_post_action_save": "Uložit do konceptů",
+    "always_use_jpeg": "Vždy konvertovat obrázky do JPEG formátu",
+    "notification_visibility_statuses": "Odebírané"
   },
   "time": {
     "day": "{0} day",
@@ -804,7 +1020,10 @@
     "socket_reconnected": "Navázáno spojení v reálném čase",
     "error": "Chyba při načítání časové osy: {0}",
     "reload": "Načíst znovu",
-    "socket_broke": "Spojení v reálném čase ztraceno: CloseEvent code {0}"
+    "socket_broke": "Spojení v reálném čase ztraceno: CloseEvent code {0}",
+    "filter_settings": "Filtr",
+    "quick_view_settings": "Rychlé nastavení zobrazení",
+    "quick_filter_settings": "Rychlé nastavení filtrů"
   },
   "status": {
     "reply_to": "Odpověď uživateli",
@@ -853,7 +1072,43 @@
     "expand": "Rozbalit",
     "show_all_attachments": "Zobrazit všechny přílohy",
     "move_up": "Posunout přílohu doleva",
-    "open_gallery": "Otevřít galerii"
+    "open_gallery": "Otevřít galerii",
+    "muted_user": "Uživatel ztlumen",
+    "mute_ellipsis": "Ztlumit…",
+    "unmute_user": "Zrušit ztlumení uživatele",
+    "mute_domain": "Ztlumit doménu",
+    "unmute_domain": "Zrušit ztlumení domény",
+    "mute_user": "Ztlumit uživatele",
+    "ancestor_follow": "Zobrazit {numReplies} další odpověď pod tímto příspěvkem | Zobrazit {numReplies} ostatních odpovědí pod tímto příspěvkem",
+    "show_only_conversation_under_this": "Pouze zobrazit odpovědi na tento příspěvek",
+    "show_all_conversation": "Zobrazit celou konverzaci ({numStatus} příspěvek) | Zobrazit celou konverzaci ({numStatus} dalších příspěvků)",
+    "show_attachment_in_modal": "Zobrazit v modálním okně médií",
+    "show_all_conversation_with_icon": "{icon} {text}",
+    "plus_more": "+{number} dalších",
+    "ancestor_follow_with_icon": "{icon} {text}",
+    "thread_follow_with_icon": "{icon} {text}",
+    "replies_list_with_others": "Odpovědi (+{numReplies} ostatní): | Odpovědi (+{numReplies} ostatních):",
+    "display_quote": "Zobrazit citovaný příspěvek",
+    "reaction_count_label": "{num} uživatel reagoval | {num} uživatelů reagovalo",
+    "hide_quote": "Skrýt citovaný příspěvěk",
+    "invisible_quote": "Citovaný příspěvek není dostupný: {link}",
+    "thread_muted_and_words": ", obsahuje slova:",
+    "muted_filters": "Filtrováno: {name} | Filtrováno: {name} a {filtersMore} dalších slov",
+    "loading": "Načítání…",
+    "load_error": "Nebylo možné načíst příspěvek: {error}",
+    "pinned": "Připnuté",
+    "sensitive_muted": "Skrytý citlivý obsah",
+    "more_actions": "Více akcí pro tento příspěvek",
+    "muted_words": "Filtrováno: {word} | Filtrováno: {word} a {numWordsMore} dalších slov",
+    "multi_reason_mute": "{main} + jeden další důvod | {main} + {numReasonsMore} dalších důvodů",
+    "thread_show_full": "Zobrazit vše pod tímto vláknem ({numStatus} příspěvek, hloubka {depth}) | Zobrazit vše pod tímto vláknem ({numStatus} příspěvků celkově, hloubka {depth})",
+    "status_history": "Historie úprav",
+    "quotes": "Citace",
+    "thread_show_full_with_icon": "{icon} {text}",
+    "thread_follow": "Zobrazit zbývající část tohoto vlákna ({numStatus} příspěvek) | Zobrazit zbývající část tohoto vlákna ({numStatus} příspěvků celkově)",
+    "bot_muted": "Skrytý obsah od robota",
+    "reply_to_with_icon": "{icon} {replyTo}",
+    "reply_to_with_arg": "{replyToWithIcon} {user}"
   },
   "user_card": {
     "approve": "Schválit",
@@ -871,17 +1126,87 @@
     "follows_you": "Sleduje vás!",
     "its_you": "Jste to vy!",
     "media": "Média",
-    "mute": "Ignorovat",
-    "muted": "Ignorován/a",
+    "mute": "Ztlumit",
+    "muted": "Ztlumení",
     "per_day": "za den",
     "remote_follow": "Vzdálené sledování",
     "statuses": "Příspěvky",
     "unblock": "Odblokovat",
     "unblock_progress": "Odblokuji…",
     "block_progress": "Blokuji…",
-    "unmute": "Přestat ignorovat",
+    "unmute": "Přestat tlumit",
     "unmute_progress": "Ruším ignorování…",
-    "mute_progress": "Ignoruji…"
+    "mute_progress": "Ignoruji…",
+    "mute_duration_prompt": "Ztlumit tohoto uživatele na (0 pro neurčito):",
+    "mute_confirm_cancel_button": "Neztlumit",
+    "mute_confirm_accept_button": "Ztlumit",
+    "mute_confirm_title": "Ztlumit konverzaci",
+    "mute_confirm": "Opravdu chcete ztlumit {user}?",
+    "report": "Nahlásit",
+    "unsubscribe": "Zrušit odběr",
+    "admin_menu": {
+      "revoke_admin": "Odebrat práva správce",
+      "disable_any_subscription": "Kompletně zakázat sledování uživatele",
+      "revoke_moderator": "Odebrat práva moderátora",
+      "deactivate_account": "Deaktivovat účet",
+      "delete_user": "Smazat uživatele",
+      "delete_user_data_and_deactivate_confirmation": "Tímto permanentně smažete data uživatele a deaktivujete účet. Opravdu chcete pokračovat?",
+      "grant_moderator": "Přidělit práva moderátora",
+      "quarantine": "Přestat federovat příspěvky uživatele",
+      "grant_admin": "Přidělit práva správce",
+      "sandbox": "Nastavit příspěvky na pouze pro sledující",
+      "disable_remote_subscription": "Zakázat sledování uživatele ze vzdálených instancí",
+      "force_nsfw": "Označit všechny příspěvky jako citlivé",
+      "force_unlisted": "Nastavit příspěvky jako neveřejné",
+      "activate_account": "Aktivovat účet",
+      "delete_account": "Smazat účet",
+      "strip_media": "Odstranit média z příspěvků",
+      "moderation": "Moderace"
+    },
+    "edit_note_apply": "Použít",
+    "highlight": {
+      "striped": "Pruhované pozadí",
+      "disabled": "Žádné zvýraznění",
+      "solid": "Jednoduchá barva",
+      "side": "Postranní pruh"
+    },
+    "message": "Zpráva",
+    "approve_confirm_title": "Schválit potvrzení",
+    "approve_confirm_accept_button": "Schválit",
+    "remove_follower_confirm_accept_button": "Odstranit",
+    "deny_confirm": "Opravdu chcete zamítnout požadavek na sledování od uživatele {user}?",
+    "edit_note_cancel": "Zrušit",
+    "note": "Poznámka",
+    "unfollow_confirm_accept_button": "Přestat sledovat",
+    "subscribe": "Odebírat",
+    "remove_follower": "Odstranit sledování",
+    "unfollow_confirm": "Opravdu chcete přestat sledovat uživatele {user}?",
+    "remove_follower_confirm": "Opravdu chcete odstranit uživatele {user} ze svých sledujících?",
+    "note_blank": "(Žádná)",
+    "group": "Skupina",
+    "edit_note": "Upravit poznámku",
+    "remove_follower_confirm_title": "Potvrzení odstranění sledování",
+    "approve_confirm_cancel_button": "Neschválit",
+    "block_confirm_accept_button": "Zablokovat",
+    "block_confirm_cancel_button": "Nezablokovat",
+    "approve_confirm": "Chcete schválit požadavek na sledování od uživatele {user}?",
+    "block_confirm_title": "Schválení blokací",
+    "deny_confirm_title": "Zamítnout potvrzení",
+    "deny_confirm_accept_button": "Zamítnout",
+    "deny_confirm_cancel_button": "Nezamítnout",
+    "unfollow_confirm_title": "Potvrzení zrušení sledování",
+    "remove_follower_confirm_cancel_button": "Ponechat",
+    "hide_repeats": "Skrýt zopakování",
+    "bot": "Robot",
+    "unfollow_confirm_cancel_button": "Ponechat",
+    "hidden": "Skrytý",
+    "edit_profile": "Upravit profil",
+    "show_repeats": "Zobrazit zopakování",
+    "birthday": "Narozen/a {birthday}",
+    "deactivated": "Deaktivován",
+    "follow_cancel": "Zrušit žádost",
+    "block_confirm": "Opravdu chcete zablokovat uživatele {user}?",
+    "mention": "Zmínit"
   },
   "user_profile": {
     "timeline_title": "Uživatelská časová osa",
@@ -897,13 +1222,24 @@
     "repeat": "Zopakovat",
     "reply": "Odpovědět",
     "favorite": "Oblíbit",
-    "user_settings": "Uživatelské nastavení"
+    "user_settings": "Uživatelské nastavení",
+    "toggle_mute": "Rozbalit nebo sbalit notifikaci pro zobrazení ztlumeného obsahu",
+    "unrepeat": "Zrušit zopakování",
+    "unfavorite": "Zrušit oblíbení",
+    "add_reaction": "Přidat reakci",
+    "accept_follow_request": "Potvrdit požadavek na sledování",
+    "toggle_expand": "Rozbalit, nebo sbalit oznámení pro zobrazení celého příspěvku",
+    "bookmark": "Založit",
+    "autocomplete_available": "{number} výsledek je dostupný. Použijte šipky pro navigování. | {number} výsledků je dostupných. Použijte šipky pro navigování mezi nimy.",
+    "mentions": "Zmínky",
+    "reject_follow_request": "Zamítnout požadavek na sledování"
   },
   "upload": {
     "error": {
       "base": "Nahrávání selhalo.",
       "file_too_big": "Soubor je příliš velký [{filesize}{filesizeunit} / {allowedsize}{allowedsizeunit}]",
-      "default": "Zkuste to znovu později"
+      "default": "Zkuste to znovu později",
+      "message": "Nahrávání selhalo: {0}"
     },
     "file_size_units": {
       "B": "B",
@@ -952,7 +1288,8 @@
   },
   "remote_user_resolver": {
     "searching_for": "Hledám",
-    "error": "Nenalezeno."
+    "error": "Nenalezeno.",
+    "remote_user_resolver": "Překladač vzdálených uživatelů"
   },
   "polls": {
     "multiple_choices": "Výběr více možností",
@@ -968,7 +1305,11 @@
     "type": "Typ ankety",
     "expires_in": "Anketa končí za {0}",
     "expired": "Anketa skončila před {0}",
-    "not_enough_options": "Příliš málo jedinečných možností v anketě"
+    "not_enough_options": "Příliš málo jedinečných možností v anketě",
+    "expires_at": "Anketa končí za {0}",
+    "expired_at": "Anketa skončila před {0}",
+    "non_anonymous": "Veřejná anketa",
+    "non_anonymous_title": "Ostatní instance mohou zobrazit volbu pro kterou jste hlasoval/a"
   },
   "interactions": {
     "follows": "Nových sledujících",
@@ -976,7 +1317,8 @@
     "load_older": "Načíst starší interakce",
     "emoji_reactions": "Emoji reakce",
     "reports": "Stížnosti",
-    "favs_repeats": "Opakované a oblíbené"
+    "favs_repeats": "Opakované a oblíbené",
+    "statuses": "Odebírané"
   },
   "emoji": {
     "unicode_groups": {
@@ -1023,7 +1365,7 @@
     "page_header": "Oznámení",
     "title": "Oznámení",
     "post_form_header": "Vyvěsit oznámení",
-    "post_placeholder": "Zde napište obsah vašeho oznámení…",
+    "post_placeholder": "Zde napište vaše oznámení…",
     "post_action": "Odeslat",
     "post_error": "Chyba: {error}",
     "close_error": "Zavřít",
@@ -1067,7 +1409,8 @@
     "nodb": {
       "heading": "Nastavení v databázi je vypnuto",
       "documentation": "dokumentace",
-      "text2": "Většina konfiguračních možností nebude dostupná."
+      "text2": "Většina konfiguračních možností nebude dostupná.",
+      "text": "Musíte změnit nastavení v backendu tak, že {property} se rovná {value}, vice informací v {documentation}."
     },
     "wip_notice": "Tento administrační panel je experimentální a v aktivní vývoji, {adminFeLink}.",
     "old_ui_link": "staré administrační rozhraní je dostupné zde",
@@ -1088,7 +1431,10 @@
       "set_default_version": "Nastavit verzi {version} jako výchozí",
       "repository": "Odkaz k repozitáři",
       "is_default_custom": "(Výchozí, verze: {version})",
-      "success_installing_frontend": "Frontend {version} byl úspěšně nainstalován"
+      "success_installing_frontend": "Frontend {version} byl úspěšně nainstalován",
+      "default_frontend_unavail": "Výchozí nastavení frontendu nejsou dostupné protože vyžadují uchovávání nastavení v databázi",
+      "wip_notice": "Varování, tato sekce je ve vývoji a některé funkce stále chybí, protože správa frontend není zatím v backendu hotová.",
+      "default_frontend_tip": "Výchozí frontend platí pro všechny uživatele. Momentálně uživatelé nemají žádnou možnost si zvolit osobní frontend. Pokud přestanete používat PleromaFE, velice pravděpodobně bude muset používat zastaralé a rozbité AdminFE pro správu nastavení instance dokud jej nenahradíme."
     },
     "captcha": {
       "native": "Nativní",
@@ -1101,10 +1447,12 @@
         "activities": "Přístup k příspěvkům a aktivitám",
         "timelines": "Přístup k časovým osám",
         "profiles": "Přístup k uživatelským profilům",
-        "header": "Omezit přístup pro anonymní návštěvníky"
+        "header": "Omezit přístup pro anonymní návštěvníky",
+        "description": "Detailní nastavení pro povolení/zakázání přístupu k některým cestám API. Ve výchozím nastavení (neurčitém stavu) zakáže přístup pokud instance není veřejná, zaškrtnuté políčko zakáže přístup i pokud je instance veřejná, nezaškrtnuté políčko povolí přístup i pokud je instance privátní. Varování, může nastat nečekané chování, pokud některá nastavení jsou zaškrtnuta. Například, pokud je zakázán přístup k profilům, příspěvky se budou zobrazovat bez informací o profilech."
       },
       "registrations": "Registrace uživatelů",
-      "kocaptcha": "KoCaptcha nastavení"
+      "kocaptcha": "KoCaptcha nastavení",
+      "access": "Přístup k instanci"
     },
     "limits": {
       "posts": "Limity příspěvků",
@@ -1155,7 +1503,8 @@
       "replace_warning": "Tímto se NAHRADÍ místní balíček se stejným jménem",
       "metadata_changed": "Metadata jsou rozdílné od uložených",
       "revert": "Vrátit zpět",
-      "new_filename": "Jméno souboru, ponechte prázdné pro odvození"
+      "new_filename": "Jméno souboru, ponechte prázdné pro odvození",
+      "remote_pack_instance": "Instance se vzdálenými balíčky"
     },
     "temp_overrides": {
       ":pleroma": {
@@ -1169,13 +1518,141 @@
             "description": "Limit počtu znaků pro popisy příloh"
           },
           ":public": {
-            "label": "Instance je veřejná"
+            "label": "Instance je veřejná",
+            "description": "Vypnutím zakážete přístup k celému API pro nepřihlášené uživatele. Časové osy nebudou přístupné pro anonymní (nepřihlášené) návštěvníky."
           },
           ":limit_to_local_content": {
-            "label": "Limitovat vyhledávání pouze na místní obsah"
+            "label": "Limitovat vyhledávání pouze na místní obsah",
+            "description": "Zakáže vyhledávání po celé síti pro nepřihlášené (výchozí nastavení), všechny uživatele, nebo pro nikoho"
           }
         }
       }
     }
+  },
+  "splash": {
+    "theme": "Aplikuji motiv, prosím chvilku strpení…",
+    "fun_1": "Drink more water",
+    "loading": "Načítání…",
+    "fun_2": "Hlavně v klidu :)",
+    "error": "Něco se pokazilo",
+    "fun_3": "Suya…",
+    "fun_4": "Pleroma jede na plné obrátky!"
+  },
+  "drafts": {
+    "empty": "(Žádný obsah)",
+    "poll_tooltip": "Koncept obsahuje anketu",
+    "no_drafts": "Nemáte žádné koncepty",
+    "abandon_confirm": "Opravdu chcete zahodit tento koncept?",
+    "abandon_confirm_accept_button": "Zahodit",
+    "abandon_confirm_cancel_button": "Ponechat",
+    "save": "Uložit bez odeslání",
+    "abandon": "Zahodit koncept",
+    "abandon_confirm_title": "Potvrzení zahození konceptu",
+    "replying": "Odpovídáte {statusLink}",
+    "editing": "Upravujete {statusLink}",
+    "continue": "Pokračovat v komponování",
+    "drafts": "Koncepty",
+    "unavailable": "(nedostupné)"
+  },
+  "user_reporting": {
+    "forward_description": "Uživatel pochází z jiného serveru. Odeslat kopii stížnosti i na server uživatele?",
+    "additional_comments": "Dodatečné informace",
+    "forward_to": "Přeposlat na {0}",
+    "title": "Nahlašování {0}",
+    "generic_error": "Nastala chyba při zpracovávání vašeho požadavku.",
+    "submit": "Odeslat",
+    "add_comment_description": "Stížnost bude odeslána moderátorům instance. Můžete přidat důvod pro nahlášení uživatele níže:"
+  },
+  "lists": {
+    "manage_lists": "Spravovat seznamy",
+    "following_only": "Zahrnou pouze sledované",
+    "editing_list": "Úprava seznamu {listTitle}",
+    "search": "Vyhledat uživatele",
+    "remove_from_list": "Odstranit ze seznamu",
+    "add_members": "Vyhledat další uživatele",
+    "is_in_list": "Již v seznamu",
+    "title": "Název seznamu",
+    "manage_members": "Spravovat členy seznamu",
+    "lists": "Seznamy",
+    "save": "Uložit změny",
+    "creating_list": "Vytvoření nového seznamu",
+    "update_title": "Uložit název",
+    "really_delete": "Opravdu smazat seznam?",
+    "error": "Chyba při manipulaci se seznamy: {0}",
+    "add_to_list": "Přidat do seznamu",
+    "delete": "Smazat seznam",
+    "new": "Nový seznam",
+    "create": "Vytvořit"
+  },
+  "file_type": {
+    "image": "Obrázek",
+    "file": "Soubor",
+    "audio": "Zvuk",
+    "video": "Video"
+  },
+  "password_reset": {
+    "password_reset": "Obnovení hesla",
+    "placeholder": "Váš email, nebo uživatelské jméno",
+    "forgot_password": "Zapomenuté heslo?",
+    "return_home": "Zpět na domovskou stránku",
+    "too_many_requests": "Překročili jste limit pokusů, zkus to později.",
+    "check_email": "Podívejte se do emailu na odkaz pro obnovení hesla.",
+    "password_reset_disabled": "Obnova hesla je zakázána. Kontaktujte administrátora instance.",
+    "password_reset_required": "Musíte si obnovit heslo pro přihlášení.",
+    "instruction": "Napište vaši emailovou adresu, nebo uživatelské jméno. Pošleme vám odkaz pro obnovení hesla.",
+    "password_reset_required_but_mailer_is_disabled": "Musíte si obnovit heslo, ale obnova hesla byla zakázána. Kontaktujte administrátora instance."
+  },
+  "update": {
+    "big_update_title": "Prosíme o strpení",
+    "big_update_content": "Již delší dobu jsme neměli nové vydání, věci mohou vypadat a fungovat jinak než jste zvyklí.",
+    "update_changelog": "Více informací co se změnilo zde {theFullChangelog}.",
+    "art_by": "Kresbu nakreslil {linkToArtist}",
+    "update_bugs_gitlab": "Pleroma GitLab",
+    "update_changelog_here": "celý seznam změn",
+    "update_bugs": "Prosím nahlašujte problémy a chyby na {pleromaGitlab}. Přestože důkladně testujeme a sami používáme vývojové verze, je možné že nám něco uniklo. Vítáme vaši zpětnou vazbu a doporučení na problémy s kterými se můžete setkat nebo na to jak vylepšit Pleromu a Pleromu-FE."
+  },
+  "bookmark_folders": {
+    "error": "Chyba při manipulaci se složkami záložek: {0}",
+    "select_folder": "Zvolte složku záložek",
+    "creating_folder": "Vytváření složky záložek",
+    "editing_folder": "Úprava složky {folderName}",
+    "create": "Vytvořit složku",
+    "update_folder": "Uložit změny",
+    "really_delete": "Opravdu chcete smazat složku?",
+    "delete": "Smazat složku",
+    "emoji": "Emoji",
+    "name": "Název složky",
+    "new": "Nová složka"
+  },
+  "search": {
+    "people_talking": "{count} uživatelů píše",
+    "hashtags": "Hashtagy",
+    "person_talking": "{count} uživatel píše",
+    "no_results": "Žádné výsledky",
+    "no_more_results": "Žádné další výsledky",
+    "load_more": "Načíst další výsledky",
+    "people": "Lidé"
+  },
+  "chats": {
+    "you": "Vy:",
+    "error_loading_chat": "Nastala chyba při načítání chatu.",
+    "more": "Více",
+    "error_sending_message": "Nastala chyba při odesílání zprávy.",
+    "empty_chat_list_placeholder": "Zatím nemáte žádné chaty. Vytvořte nový chat!",
+    "delete": "Smazat",
+    "new": "Nový Chat",
+    "chats": "Chaty",
+    "empty_message_error": "Nelze odeslat prázdnou zprávu",
+    "message_user": "Zpráva {nickname}",
+    "delete_confirm": "Opravdu chcete smazat tuto zprávu?"
+  },
+  "unicode_domain_indicator": {
+    "tooltip": "Tato doména obsahuje znaky mimo ASCII."
+  },
+  "display_date": {
+    "today": "Dnes"
+  },
+  "bookmarks": {
+    "manage_bookmark_folders": "Spravovat složky záložek"
   }
 }

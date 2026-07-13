@@ -57,7 +57,8 @@
       "direct": "ダイレクト",
       "private": "フォロワー限定",
       "public": "パブリック",
-      "unlisted": "アンリステッド"
+      "unlisted": "アンリステッド",
+      "local": "連合なし"
     },
     "generic_error_message": "エラーが発生しました: {0}",
     "never_show_again": "二度と表示しない",
@@ -134,7 +135,9 @@
     "all_bookmarks": "全てのブックマーク",
     "bookmark_folders": "ブックマークフォルダ",
     "mobile_sidebar": "モバイルのサイドバーを開く",
-    "quotes": "引用"
+    "quotes": "引用",
+    "drafts": "下書き",
+    "bubble": "バブルタイムライン"
   },
   "notifications": {
     "broken_favorite": "ステータスが見つかりません。探しています…",
@@ -151,9 +154,9 @@
     "error": "通知の取得に失敗しました: {0}",
     "poll_ended": "投票結果が確定しました",
     "configuration_tip_dismiss": "二度と表示しない",
-    "unread_announcements": "未読のお知らせが{num}件あります | 未読のお知らせが{num}件あります",
-    "unread_chats": "未読のチャットが{num}件あります | 未読のチャットが{num}件あります",
-    "unread_follow_requests": "フォローリクエストが{num}件来ています | フォローリクエストが{num}件来ています",
+    "unread_announcements": "未読のお知らせが{num}件あります",
+    "unread_chats": "未読のチャットが{num}件あります",
+    "unread_follow_requests": "フォローリクエストが{num}件来ています",
     "configuration_tip": "ここに表示する通知の種類は{theSettings}にて変更することができます。 {dismiss}",
     "submitted_report": "通報が送信されました",
     "configuration_tip_settings": "設定",
@@ -172,8 +175,8 @@
     "expires_in": "投票は {0} で終了します",
     "expired": "投票は {0} 前に終了しました",
     "not_enough_options": "選択肢が少なすぎます",
-    "votes_count": "{count} 票 | {count} 票",
-    "people_voted_count": "{count}人が投票しました | {count}人が投票しました"
+    "votes_count": "{count} 票",
+    "people_voted_count": "{count}人が投票しました"
   },
   "emoji": {
     "stickers": "ステッカー",
@@ -209,9 +212,10 @@
       "text/plain": "プレーンテキスト",
       "text/html": "HTML",
       "text/markdown": "Markdown",
-      "text/bbcode": "BBCode"
+      "text/bbcode": "BBCode",
+      "text/x.misskeymarkdown": "MFM"
     },
-    "content_warning": "注釈 (任意)",
+    "content_warning": "件名 (任意)",
     "default": "羽田空港に着きました。",
     "direct_warning_to_all": "この投稿は、メンションされたすべてのユーザーが閲覧できます。",
     "direct_warning_to_first_only": "この投稿は、メッセージの冒頭でメンションされたユーザーだけが閲覧できます。",
@@ -240,7 +244,18 @@
     "edit_remote_warning": "他のインスタンスは投稿の編集に対応していないかもしれません。その場合、編集した内容は伝わりません。",
     "edit_unsupported_warning": "Pleromaは、メンションと投票の編集に対応していません。",
     "scope_notice_dismiss": "このメッセージを閉じる",
-    "content_type_selection": "投稿形式"
+    "content_type_selection": "投稿形式",
+    "save_to_drafts_and_close_button": "下書きに保存して閉じる",
+    "save_to_drafts_button": "下書きに保存",
+    "auto_save_saving": "保存中…",
+    "auto_save_saved": "保存しました。",
+    "close_confirm_discard_button": "削除する",
+    "auto_save_nothing_new": "保存するものがありません。",
+    "close_confirm_continue_composing_button": "編集を続ける",
+    "close_confirm_save_button": "保存する",
+    "close_confirm": "編集中の内容を下書きに保存しますか？",
+    "close_confirm_title": "保存の確認",
+    "more_post_actions": "その他の操作"
   },
   "registration": {
     "bio": "プロフィール",
@@ -306,7 +321,7 @@
     "avatar": "アイコン",
     "avatarAltRadius": "通知内のアイコン",
     "avatarRadius": "アイコン",
-    "background": "バックグラウンド",
+    "background": "背景",
     "bio": "プロフィール",
     "block_export": "ブロックのエクスポート",
     "block_export_button": "ブロックをCSVファイルにエクスポートする",
@@ -322,20 +337,20 @@
     "change_password": "パスワードを変更",
     "change_password_error": "パスワードの変更中にエラーが発生しました。",
     "changed_password": "パスワードが変更されました！",
-    "collapse_subject": "注釈のついた投稿をたたむ",
+    "collapse_subject": "件名のある投稿をたたむ",
     "composing": "投稿",
     "confirm_new_password": "新しいパスワードの確認",
     "current_avatar": "現在のアバター",
     "current_password": "現在のパスワード",
     "current_profile_banner": "現在のプロフィールバナー",
-    "data_import_export_tab": "インポートとエクスポート",
+    "data_import_export_tab": "インポート・エクスポート",
     "default_vis": "デフォルトの公開範囲",
     "delete_account": "アカウントの削除",
     "delete_account_description": "アカウントのデータを永久的に削除し、アカウントを無効化します。",
     "delete_account_error": "アカウントの削除中にエラーが発生しました。継続して発生する場合、管理者に問い合せてください。",
     "delete_account_instructions": "アカウント削除の確認のため、パスワードを入力してください。",
     "discoverable": "検索などのサービスでこのアカウントを見つけることを許可する",
-    "avatar_size_instruction": "アイコン画像のサイズは150x150以上を推奨します。",
+    "avatar_size_instruction": "アイコン画像のサイズは150x150以上を推奨します。アスペクト比は1:1が推奨です",
     "pad_emoji": "絵文字ピッカーから絵文字を挿入するとき、絵文字の前後に空白を挿入する",
     "export_theme": "ファイルにテーマを出力",
     "filtering": "フィルタリング",
@@ -422,9 +437,9 @@
     "set_new_profile_background": "プロフィールの背景を設定する",
     "set_new_profile_banner": "プロフィールのバナーを設定する",
     "settings": "設定",
-    "subject_input_always_show": "注釈欄を常に表示する",
-    "subject_line_behavior": "返信するとき、返信先の注釈をコピーする",
-    "subject_line_email": "メール風: \"re: 注釈\"",
+    "subject_input_always_show": "件名の入力欄を常に表示する",
+    "subject_line_behavior": "返信するとき、返信先の件名をコピーする",
+    "subject_line_email": "メール風: \"re: 件名\"",
     "subject_line_mastodon": "Mastodon風: そのままコピー",
     "subject_line_noop": "コピーしない",
     "post_status_content_type": "デフォルトの投稿形式",
@@ -565,7 +580,11 @@
         "hintV3": "影の色には、 {0} 表記を使って他の色スロットに指定した色を再利用することもできます。",
         "offset": "影のオフセット",
         "name": "名前",
-        "light_grid": "背景のチェック模様を明るくする"
+        "light_grid": "背景のチェック模様を明るくする",
+        "zoom": "拡大率",
+        "offset-x": "x:",
+        "offset-y": "y:",
+        "raw": "通常の影"
       },
       "fonts": {
         "_tab_label": "フォント",
@@ -588,7 +607,7 @@
         "error": "エラーの例",
         "button": "ボタン",
         "text": "これは{0}と{1}の例です",
-        "mono": "monospace",
+        "mono": "文章",
         "input": "羽田空港に着きました。",
         "faint_link": "とても助けになるマニュアル",
         "fine_print": "私たちの{0}を、読まないでください！",
@@ -613,7 +632,8 @@
           "font_list_unavailable": "端末上のフォントの一覧が取得できません: {error}",
           "enter_manually": "フォント名を直接入力する",
           "entry": "{fontFamily}を入力",
-          "select": "フォントを選択"
+          "select": "フォントを選択",
+          "label": "{label}のフォント"
         },
         "hacks": {
           "underlay_overrides": "背景表示",
@@ -626,12 +646,82 @@
           "forced_roundness_mode_nonsharp": "若干の角丸(1px分丸める)デザインを強制する",
           "forced_roundness_mode_round": "角丸デザインを強制する"
         },
-        "define": "上書き"
+        "define": "上書き",
+        "palette": {
+          "label": "カラースキーム",
+          "apply": "パレットを適用",
+          "wallpaper": "壁紙",
+          "name_label": "カラースキーム名",
+          "import": "パレットをインポート",
+          "bg": "パネルの背景",
+          "export": "パレットをエクスポート",
+          "text": "文字",
+          "fg": "ボタン等",
+          "cRed": "赤色",
+          "accent": "アクセントカラー",
+          "cBlue": "青色",
+          "link": "リンク",
+          "cGreen": "緑色",
+          "v2_unsupported": "V2のテーマはパレットに対応していません。パレットを利用するにはV3のテーマに変更してください",
+          "bundled": "組み込みのパレット",
+          "cOrange": "オレンジ色",
+          "style": "テーマ由来のパレット",
+          "user": "カスタムのパレット"
+        },
+        "editor": {
+          "reset_style": "リセット",
+          "component_selector": "UI要素",
+          "roundness": "丸さ",
+          "contrast": "文字のコントラスト比",
+          "border_color": "枠の色",
+          "variables_tab": "各種変数 (上級者向け)",
+          "palette_tab": "カラースキーム",
+          "variables": {
+            "type_color": "色",
+            "name_label": "名前:",
+            "type_label": "タイプ:",
+            "type_shadow": "影",
+            "type_generic": "汎用",
+            "virtual_color": "色",
+            "label": "変数"
+          },
+          "load_style": "ファイルから読み込む",
+          "save_style": "保存",
+          "style_name": "テーマ名",
+          "main_tab": "基本設定",
+          "style_author": "作者",
+          "variant_selector": "タイプ",
+          "states_selector": "状態",
+          "shadows_tab": "影の設定",
+          "background": "背景色",
+          "text_color": "文字色",
+          "icon_color": "アイコンの色",
+          "opacity": "不透明度",
+          "apply_preview": "適用",
+          "style_license": "ライセンス",
+          "title": "テーマエディタ",
+          "link_color": "リンクの色",
+          "refresh_preview": "プレビューを更新",
+          "text_auto": {
+            "no-preserve": "白黒",
+            "preserve": "色相を維持",
+            "no-auto": "無効",
+            "label": "コントラストの自動調整"
+          },
+          "style_website": "ウェブサイト",
+          "include_in_rule": "テーマ設定に追加",
+          "component_tab": "UI要素のスタイル",
+          "test_string": "123abcあいう"
+        }
       },
       "custom_theme_used": "(カスタムテーマ)",
       "appearance_tab_note": "以下の設定はテーマには反映されないため、エクスポートしたテーマの見た目は今見えているものと異なる可能性があります",
       "update_preview": "プレビューを更新",
-      "interface_font_user_override": "フォント設定の上書き"
+      "interface_font_user_override": "フォント設定の上書き",
+      "stock_theme_used": "(基礎テーマ)",
+      "custom_style_used": "(カスタムスタイル)",
+      "style_section": "スタイル",
+      "visual_tweaks_section_note": "このセクションへの変更はテーマに影響しません。そのため、テーマをエクスポートした際、今見えているものとは異なる見た目になる場合があります"
     },
     "version": {
       "title": "バージョン",
@@ -711,7 +801,7 @@
     "confirm_dialogs_unfollow": "ユーザーのフォローを解除するとき",
     "confirm_dialogs_block": "ユーザーをブロックするとき",
     "confirm_dialogs_mute": "ユーザーをミュートするとき",
-    "confirm_dialogs_delete": "投稿を削除するとき",
+    "confirm_dialogs_delete": "ステータスを削除するとき",
     "confirm_dialogs_logout": "ログアウトするとき",
     "confirm_dialogs_deny_follow": "フォローリクエストを却下するとき",
     "confirm_dialogs_remove_follower": "フォロワーを解除するとき",
@@ -765,7 +855,7 @@
     "notification_visibility_polls": "投票結果の確定",
     "user_popover_avatar_action_zoom": "アイコンを拡大する",
     "post_look_feel": "投稿の表示形式",
-    "mention_links": "メンションのリンク",
+    "mention_links": "メンションリンク",
     "setting_server_side": "この設定はサーバー側に保存され、すべてのセッションとクライアントに影響します",
     "word_filter_and_more": "ワードフィルターとその他の設定",
     "notification_extra_announcements": "未読のお知らせを表示する",
@@ -787,8 +877,8 @@
     "reset_value": "リセット",
     "reset_value_tooltip": "編集中の値を破棄します",
     "hard_reset_value": "デフォルトに戻す",
-    "conversation_other_replies_button_below": "投稿の下",
-    "conversation_other_replies_button_inside": "投稿の中",
+    "conversation_other_replies_button_below": "ステータスの下",
+    "conversation_other_replies_button_inside": "ステータスの中",
     "add_language": "代替言語を追加",
     "remove_language": "削除",
     "account_alias_table_head": "エイリアス",
@@ -814,14 +904,14 @@
     "account_backup_table_head": "バックアップ",
     "download_backup": "ダウンロード",
     "backup_not_ready": "まだ準備中です。",
-    "backup_running": "処理中…{number}件のデータが処理されました。 | 処理中… {number}件のデータが処理されました。",
+    "backup_running": "処理中… {number}件のデータが処理されました。",
     "list_backups_error": "バックアップ一覧の取得に失敗しました: {error}",
     "added_backup": "バックアップがキューに追加されました。",
     "add_backup_error": "バックアップの追加に失敗しました: {error}",
     "user_popover_avatar_action_close": "ユーザーカードを閉じる",
     "tree_advanced": "高度なナビゲーションボタンを表示する",
     "tree_fade_ancestors": "スレッド上で祖先にあたるステータスを薄いテキストで表示する",
-    "actor_type_description": "グループとして設定されたアカウントは、メンションのついたステータスを自動的にリピートします。",
+    "actor_type_description": "グループアカウントとして設定されたアカウントは、メンションのついたステータスを自動的にリピートします。",
     "actor_type_Person": "通常アカウント",
     "actor_type_Service": "BOTアカウント",
     "actor_type_Group": "グループアカウント",
@@ -848,7 +938,7 @@
       }
     },
     "hide_scrobbles_after": "これより古いScrobbleを表示しない:",
-    "force_theme_recompilation_debug": "テーマのキャッシュを無効化し、起動の度にコンパイルし直す (デバッグ用)",
+    "force_theme_recompilation_debug": "テーマのキャッシュを無効化し、起動の度にコンパイルし直す",
     "scale_and_layout": "インターフェースの表示サイズとレイアウト",
     "appearance": "見た目",
     "confirm_new_setting": "設定を適用しますか？",
@@ -865,7 +955,97 @@
     "visual_tweaks": "細かい外観の変更",
     "absolute_time_format": "時間の表示に絶対表記を使用する",
     "absolute_time_format_min_age": "これより古い日時に対してのみ使用する:",
-    "theme_debug": "テーマエンジンが透明度を処理する際に見ているものを表示する (デバッグ用)"
+    "theme_debug": "テーマエンジンが透明度を処理する際に見ているものを表示する",
+    "always_use_jpeg": "画像を常にJPEG形式に変換する",
+    "theme_old": "テーマエディタ (V2)",
+    "confirm_dialogs_mute_domain": "ドメインをミュートするとき",
+    "confirm_dialogs_mute_conversation": "スレッドをミュートするとき",
+    "mobile_center_dialog": "モバイルUIでダイアログを上下中央に表示する",
+    "unsaved_post_action": "保存せずに投稿フォームを閉じようとしたときの挙動",
+    "unsaved_post_action_save": "下書きに保存する",
+    "unsaved_post_action_discard": "破棄する",
+    "unsaved_post_action_confirm": "毎回尋ねる",
+    "auto_save_draft": "編集中の投稿を自動で下書きに保存する",
+    "absolute_time_format_12h": "時刻の表示形式",
+    "image_compression": "アップロード前に画像を圧縮する",
+    "absolute_time_format_12h_12h": "12時間表記 (例: 午後10:00)",
+    "absolute_time_format_12h_24h": "24時間表記 (例: 22:00)",
+    "filter": {
+      "clutter": "非表示設定",
+      "type": "フィルタータイプ",
+      "regexp": "正規表現",
+      "plain": "シンプル",
+      "mute_filter": "ミュートフィルター",
+      "user": "ユーザー (シンプル)",
+      "user_regexp": "ユーザー (正規表現)",
+      "hide": "完全に非表示にする",
+      "name": "名前",
+      "value": "対象",
+      "expired": "有効期限切れ",
+      "expires": "有効期限",
+      "copy": "複製",
+      "save": "保存",
+      "delete": "削除",
+      "new": "新規作成",
+      "import": "インポート",
+      "export": "エクスポート",
+      "never_expires": "無期限",
+      "total_count": "計{count}件のカスタムフィルター",
+      "expired_count": "{count}件の有効期限切れフィルター",
+      "custom_filters": "カスタムフィルター",
+      "purge_expired": "有効期限切れのフィルターを一括削除",
+      "import_failure": "選択されたファイルはPleromaのフィルターファイルではありません。",
+      "help": {
+        "word": "「シンプル」と「正規表現」のフィルターは投稿の内容と件名に対して機能します。",
+        "user": "「ユーザー」のフィルターは投稿者、返信先、メンションに含まれるユーザーのアカウントID (user{'@'}domain)に対して機能します。",
+        "regexp": "「正規表現」、「ユーザー (正規表現)」は単純な部分一致の代わりに{link}を使用する、より高度なフィルターです。",
+        "regexp_link": "正規表現",
+        "regexp_url": "https://ja.wikipedia.org/wiki/正規表現"
+      },
+      "regexp_error": "不正な正規表現です"
+    },
+    "enabled": "有効",
+    "hide_muted_statuses": "全てのミュートされた投稿を完全に非表示にする",
+    "notification_visibility_native_notifications": "ネイティブの通知を表示する",
+    "theme_editor_min_width": "テーマエディタの最小幅 (0で\"fit-content\")",
+    "actor_type_person_proper": "通常アカウント",
+    "toggle_edit": "編集",
+    "reset": "変更を破棄",
+    "change_banner": "バナー画像を変更",
+    "change_avatar": "アイコン画像を変更",
+    "banner_size_instruction": "バナー画像のサイズは450x150以上を推奨します。アスペクト比は3:1が推奨です",
+    "profile_other": "その他",
+    "account_profile_edit": "プロフィール編集",
+    "reset_banner": "バナーをリセット",
+    "set_new_background": "背景画像を設定",
+    "upload_picture": "画像をアップロード",
+    "select_picture": "画像を選択",
+    "cache": "キャッシュ",
+    "clear_asset_cache": "アセットのキャッシュを削除",
+    "clear_emoji_cache": "絵文字のキャッシュを削除",
+    "user_card_left_justify": "ユーザーのプロフィール文を左寄せで表示する",
+    "user_card_hide_personal_marks": "ユーザープロフィールに自分用設定(自分用メモ/ハイライト設定)を表示しない",
+    "developer": "開発者",
+    "debug": "デバッグ",
+    "confirmations": "確認ダイアログ",
+    "timelines": "タイムライン",
+    "format_and_language": "言語と表示形式",
+    "clutter": "UIの非表示",
+    "layout": "レイアウト",
+    "import_export": {
+      "title": "インポート・エクスポート",
+      "blocks": "ブロックリスト",
+      "follows": "フォローリスト",
+      "mutes": "ミュートリスト"
+    },
+    "scale_and_font": "フォントと拡大率",
+    "posts_appearance": "投稿の見た目",
+    "default_post_status_content_type": "デフォルトの投稿形式",
+    "plaintext_quotes": "プレーンテキストの{0}をハイライトする",
+    "greentext_quotes": ">引用",
+    "replies": "返信",
+    "setting_local_side": "この設定はこのセッションでのみ有効です。他のデバイスやブラウザには反映されません。",
+    "invalid_settings_imported": "設定のインポートに失敗しました"
   },
   "time": {
     "day": "{0}日",
@@ -902,19 +1082,26 @@
     "years_short": "{0}年",
     "unit": {
       "seconds_short": "{0}秒",
-      "weeks": "{0} 週間 | {0} 週間",
+      "weeks": "{0} 週間",
       "weeks_short": "{0}週",
-      "years": "{0} 年 | {0} 年",
+      "years": "{0} 年",
       "years_short": "{0}年",
-      "days": "{0} 日 | {0} 日",
-      "hours": "{0} 時間 | {0} 時間",
+      "days": "{0} 日",
+      "hours": "{0} 時間",
       "hours_short": "{0}時間",
-      "minutes": "{0} 分 | {0} 分",
+      "minutes": "{0} 分",
       "minutes_short": "{0}分",
-      "months": "{0} ヶ月 | {0} ヶ月",
+      "months": "{0} ヶ月",
       "months_short": "{0}ヶ月",
-      "seconds": "{0} 秒 | {0} 秒",
-      "days_short": "{0}日"
+      "seconds": "{0} 秒",
+      "days_short": "{0}日",
+      "days_suffix": "日",
+      "hours_suffix": "時間",
+      "minutes_suffix": "分",
+      "months_suffix": "ヶ月",
+      "seconds_suffix": "秒",
+      "weeks_suffix": "週間",
+      "years_suffix": "年"
     }
   },
   "timeline": {
@@ -933,7 +1120,8 @@
     "socket_reconnected": "リアルタイム接続が確立されました",
     "socket_broke": "リアルタイム接続が切断されました: コード{0}",
     "quick_view_settings": "表示の簡易設定",
-    "quick_filter_settings": "フィルターの簡易設定"
+    "quick_filter_settings": "フィルターの簡易設定",
+    "filter_settings": "フィルター"
   },
   "status": {
     "favorites": "お気に入り",
@@ -965,7 +1153,7 @@
     "you": "(あなた)",
     "plus_more": "ほか{number}件",
     "delete_confirm_title": "削除の確認",
-    "ancestor_follow": "このステータスについた{numReplies}件の返信をすべて表示 | このステータスについた{numReplies}件の返信をすべて表示",
+    "ancestor_follow": "このステータスについた{numReplies}件の返信をすべて表示",
     "invisible_quote": "引用先のステータスが存在しません: {link}",
     "ancestor_follow_with_icon": "{icon} {text}",
     "show_all_conversation_with_icon": "{icon} {text}",
@@ -975,7 +1163,7 @@
     "collapse_attachments": "ファイルをたたむ",
     "show_all_attachments": "すべてのファイルを表示",
     "hide_attachment": "ファイルを隠す",
-    "reaction_count_label": "{num}人がリアクションしました | {num}人がリアクションしました",
+    "reaction_count_label": "{num}人がリアクションしました",
     "repeat_confirm_accept_button": "リピートする",
     "repeat_confirm_cancel_button": "リピートしない",
     "repeat_confirm": "本当にリピートしますか？",
@@ -987,15 +1175,15 @@
     "attachment_stop_flash": "Flashプレーヤーを停止",
     "move_up": "ファイルを左へ移動",
     "move_down": "ファイルを右へ移動",
-    "thread_follow": "このスレッドの残りを表示 (全部で{numStatus}件の投稿があります) | このスレッドの残りを表示 (全部で{numStatus}件の投稿があります)",
+    "thread_follow": "このスレッドの残りを表示 (全部で{numStatus}件のステータスがあります)",
     "thread_follow_with_icon": "{icon} {text}",
     "hide_quote": "引用先を隠す",
     "display_quote": "引用先を表示",
     "show_only_conversation_under_this": "このステータスへの返信のみを表示",
-    "show_all_conversation": "スレッドの全体を表示 ({numStatus}件のステータス) | スレッドの全体を表示 ({numStatus}件のステータス)",
-    "replies_list_with_others": "返信 (+{numReplies}人): | 返信 (+{numReplies}人):",
+    "show_all_conversation": "スレッドの全体を表示 ({numStatus}件のステータス)",
+    "replies_list_with_others": "返信 (+{numReplies}人):",
     "more_actions": "その他のアクション",
-    "thread_show_full": "このスレッドをすべて表示 (全部で{depth}層、{numStatus}件の投稿があります) | このスレッドを全て表示 (全部で{depth}層、{numStatus}件の投稿があります)",
+    "thread_show_full": "このスレッドを全て表示 (全部で{depth}層、{numStatus}件のステータスがあります)",
     "thread_show_full_with_icon": "{icon} {text}",
     "show_attachment_in_modal": "メディアビューアで開く",
     "show_attachment_description": "メディアの説明文をポップアップで表示 (全文を読むにはメディアを開いてください)",
@@ -1004,10 +1192,22 @@
     "open_gallery": "メディアビューアで開く",
     "status_history": "編集履歴",
     "sensitive_muted": "閲覧注意な投稿のためミュートされています",
-    "load_error": "投稿の読み込みに失敗しました: {error}",
+    "load_error": "ステータスの読み込みに失敗しました: {error}",
     "loading": "読み込み中…",
     "quotes": "引用",
-    "bot_muted": "BOTによる投稿のためミュートされています"
+    "bot_muted": "BOTによる投稿のためミュートされています",
+    "mute_domain": "ドメインをミュート",
+    "muted_user": "ミュートされたユーザー",
+    "mute_ellipsis": "ミュート",
+    "mute_user": "ユーザーをミュート",
+    "unmute_user": "ユーザーのミュートを解除",
+    "multi_reason_mute": "{main} + {numReasonsMore}件の理由",
+    "muted_words": "ワードフィルターにマッチ: {word} | ワードフィルターにマッチ: {word}とその他{numWordsMore}件の単語",
+    "unmute_domain": "ドメインのミュートを解除",
+    "muted_filters": "カスタムフィルターにマッチ: {name} | カスタムフィルターにマッチ: {name}とその他{filtersMore}件のフィルター",
+    "reply_to_with_icon": "{icon} {replyTo}",
+    "reply_to_with_arg": "{replyToWithIcon} {user}",
+    "unknown_user": "不明なユーザー"
   },
   "user_card": {
     "approve": "承認",
@@ -1022,7 +1222,7 @@
     "followees": "フォロー",
     "followers": "フォロワー",
     "following": "フォローしています！",
-    "follows_you": "フォローされました！",
+    "follows_you": "フォローされています！",
     "its_you": "これはあなたです！",
     "media": "メディア",
     "mention": "メンション",
@@ -1046,8 +1246,8 @@
       "revoke_admin": "管理者権限を解除",
       "grant_moderator": "モデレーター権限を付与",
       "revoke_moderator": "モデレーター権限を解除",
-      "activate_account": "アカウントをアクティブにする",
-      "deactivate_account": "アカウントを無効化する",
+      "activate_account": "アカウントを有効化",
+      "deactivate_account": "アカウントを無効化",
       "delete_account": "アカウントを削除",
       "force_nsfw": "すべての投稿を閲覧注意にする",
       "strip_media": "すべての投稿からメディアを除去する",
@@ -1109,7 +1309,34 @@
     "mute_confirm_title": "ミュートの確認",
     "deactivated": "無効化済み",
     "group": "グループ",
-    "mute_duration_prompt": "ミュート期間 (0で無期限):"
+    "mute_duration_prompt": "ミュート期間 (0で無期限):",
+    "mute_block_ask": "毎回確認する",
+    "default_mute_expiration": "デフォルトのミュート期間:",
+    "default_block_expiration": "デフォルトのブロック期間:",
+    "default_expiration_time": "期限:",
+    "mute_expires_forever": "永久ミュート",
+    "highlight_new": {
+      "disabled": "ハイライトしない",
+      "solid": "単色の背景を表示する",
+      "striped": "縞々の背景を表示する",
+      "side": "帯をつける"
+    },
+    "personal_note": "自分用メモ",
+    "dont_ask_again_block": "常にこの設定でブロックする",
+    "block_expires_forever": "永久ブロック",
+    "block_expires_at": "{0}までブロック",
+    "statuses_per_day": "ステータス/日",
+    "note_blank_click": "クリックでメモを追加する",
+    "highlight_header": "投稿とメンションのハイライト表示",
+    "mute_expires_at": "{0}までミュート",
+    "expire_block_message": "本当に{0}をブロックしますか？",
+    "dont_ask_again_mute": "常にこの設定でミュートする",
+    "mute_block_temporarily": "一時的",
+    "mute_block_forever": "永久",
+    "expire_in": "期限付き:",
+    "expire_mute_message": "本当に{0}をミュートしますか？",
+    "mute_or": "または",
+    "mute_block_never": "永久"
   },
   "user_profile": {
     "timeline_title": "ユーザータイムライン",
@@ -1140,7 +1367,10 @@
     "accept_follow_request": "フォローリクエストを承認",
     "add_reaction": "リアクションを追加",
     "toggle_mute": "ミュートされた通知を開く/閉じる",
-    "toggle_expand": "この投稿を開く/閉じる"
+    "toggle_expand": "この投稿を開く/閉じる",
+    "unrepeat": "リピート解除",
+    "unfavorite": "お気に入り解除",
+    "mentions": "メンション"
   },
   "upload": {
     "error": {
@@ -1208,7 +1438,8 @@
         "reject": "拒否"
       }
     },
-    "staff": "スタッフ"
+    "staff": "スタッフ",
+    "terms": "利用規約"
   },
   "display_date": {
     "today": "今日"
@@ -1273,7 +1504,21 @@
       "registrations": "ユーザー登録",
       "access": "インスタンスへのアクセス",
       "captcha_header": "CAPTCHA",
-      "kocaptcha": "KoCaptchaの設定"
+      "kocaptcha": "KoCaptchaの設定",
+      "pwa": {
+        "manifest": "ウェブアプリマニフェスト",
+        "optional": "(任意)",
+        "no_icons": "アイコン未設定",
+        "icon": {
+          "purpose": "アイコンの用途 (purpose)",
+          "any": "any",
+          "maskable": "マスク可能 (maskable)",
+          "monochrome": "単色 (monochrome)"
+        }
+      },
+      "misc_brand": "その他の要素",
+      "branding": "ブランディング",
+      "rich_metadata": "メタデータ"
     },
     "frontend": {
       "available_frontends": "インストール可能なフロントエンド",
@@ -1292,7 +1537,8 @@
       "wip_notice": "このセクションは開発段階です。バックエンド側の実装が未完成であるため、一部の機能は欠けています。",
       "set_default": "デフォルトに設定",
       "set_default_version": "バージョン {version} をデフォルトに設定",
-      "default_frontend_tip": "デフォルトのフロントエンドはすべてのユーザーに表示されます。現時点で、ユーザーがフロントエンドを選択する方法はありません。デフォルトのフロントエンドをPleromaFE以外に設定した場合、インスタンスの設定を変更するには古いAdminFEを使用する必要があります。"
+      "default_frontend_tip": "デフォルトのフロントエンドはすべてのユーザーに表示されます。現時点で、ユーザーがフロントエンドを選択する方法はありません。デフォルトのフロントエンドをPleromaFE以外に設定した場合、インスタンスの設定を変更するには古いAdminFEを使用する必要があります。",
+      "title": "フロントエンドの管理"
     },
     "temp_overrides": {
       ":pleroma": {
@@ -1313,6 +1559,33 @@
             "description": "ファイルの説明欄に対する文字数制限",
             "label": "制限"
           }
+        },
+        ":connections_pool": {
+          ":max_idle_time": {
+            "label": "最大待機時間"
+          },
+          ":retry": {
+            "label": "リトライ回数"
+          }
+        },
+        ":pools": {
+          ":rich_media": {
+            "label": "リッチメディア"
+          }
+        },
+        ":rate_limit": {
+          ":oauth_app_creation": {
+            "label": "OAuth Appの作成"
+          },
+          ":ap_routes": {
+            "label": "ActivityPub"
+          }
+        },
+        "Pleroma_DOT_Upload": {
+          ":default_description": {
+            "label": "デフォルトの説明文",
+            "description": "ファイルに付与するデフォルトの説明文。「:filename」にするとファイル名を用います。"
+          }
         }
       }
     },
@@ -1324,7 +1597,20 @@
       "limits": "制限",
       "instance": "インスタンス",
       "frontends": "フロントエンド",
-      "emoji": "絵文字"
+      "emoji": "絵文字",
+      "mailer": "メール",
+      "media_proxy": "メディアプロキシ",
+      "uploads": "アップロード",
+      "monitoring": "監視",
+      "registrations": "登録",
+      "links": "リンク",
+      "job_queues": "ジョブキュー",
+      "auth": "認証・認可",
+      "posts": "投稿",
+      "rate_limit": "レートリミット",
+      "http": "HTTP",
+      "federation": "連合",
+      "other": "その他"
     },
     "limits": {
       "arbitrary_limits": "任意の制限",
@@ -1332,7 +1618,8 @@
       "uploads": "ファイルの制限",
       "profile_fields": "追加情報欄の制限",
       "user_uploads": "プロフィール画像の制限",
-      "users": "ユーザープロフィールの設定"
+      "users": "ユーザープロフィールの設定",
+      "other": "その他の制限"
     },
     "emoji": {
       "create_pack": "パックを作成",
@@ -1349,9 +1636,9 @@
       "filename": "ファイル名",
       "delete_confirm": "{0}を削除してもよろしいですか？",
       "download_pack": "パックをダウンロード",
-      "downloading_pack": "{0}をダウンロード中",
+      "downloading_pack": "{0}をダウンロード",
       "download": "ダウンロード",
-      "editing": "{0}を編集中",
+      "editing": "{0}を編集",
       "error": "エラー: {0}",
       "delete": "削除",
       "global_actions": "グローバルアクション",
@@ -1376,7 +1663,113 @@
       "remote_pack_instance": "リモートパックを取得するインスタンス",
       "download_as_name": "パック名",
       "download_as_name_full": "名前を入力 (空にするとリモートの名前を使用)",
-      "replace_warning": "続行するとローカルにある同名のパックが上書きされます"
+      "replace_warning": "続行するとローカルにある同名のパックが上書きされます",
+      "emoji_source": "絵文字にするファイル",
+      "upload_url": "URLでアップロード",
+      "reload_short": "再読み込み",
+      "advanced": "高度",
+      "import_pack": "絵文字パックをアップロード",
+      "import_pack_short": "インポート",
+      "metadata": "メタデータ",
+      "remote_packs_short": "リモートから取得",
+      "copying": "{0}をコピー",
+      "copy_to": "コピー先:",
+      "copy_to_pack": "ローカルのパックにコピー",
+      "copied_successfully": "絵文字「{0}」がパック「{1}」に正常にコピーされました"
+    },
+    "posts": {
+      "local": "ローカルの投稿",
+      "remote": "リモートの投稿"
+    },
+    "other": {
+      "uncategorized": "カテゴリなし",
+      "user_backup": "ユーザーバックアップ",
+      "reports": "通報",
+      "privileges": "権限"
+    },
+    "federation": {
+      "restrictions": "制限",
+      "activitypub": "ActivityPub"
+    },
+    "http": {
+      "outbound": "外向き通信",
+      "incoming": "内向き通信",
+      "security": "HTTPセキュリティ",
+      "web_push": "Web Push",
+      "web_push_description": "Web PushのVAPIDの設定です。mix task web_push.gen.keypairで生成できます。"
+    },
+    "auth": {
+      "MFA": "多要素認証",
+      "LDAP": "LDAPの設定",
+      "OAuth": "OAuth2の設定",
+      "TOTP": "ワンタイムパスワード (TOTP)",
+      "backup_codes": "バックアップコード"
+    },
+    "job_queues": {
+      "Gun": {
+        "title": "Gunキュー",
+        "connections_pools": "Gunコネクションプール",
+        "pools": {
+          "title": "Gunワーカープール",
+          "default": "デフォルトプール",
+          "federation": "連合プール",
+          "media": "メディアプール",
+          "rich_media": "リッチメディアプール",
+          "upload": "アップロードプール"
+        }
+      },
+      "Hackney": {
+        "title": "Hackneyプール",
+        "federation": "連合",
+        "media": "メディア",
+        "rich_media": "リッチメディア",
+        "upload": "アップロード"
+      },
+      "queues": "キュー"
+    },
+    "rate_limit": {
+      "rate_limit": "レートリミット",
+      "amount": "回数",
+      "unauthenticated": "未ログイン",
+      "authenticated": "ログイン済",
+      "period": "期間",
+      "separate": "ログイン状態によってレートリミットを個別設定する"
+    },
+    "registrations": {
+      "welcome": {
+        "title": "ウェルカムメッセージ",
+        "description": "新規ユーザーに対してメッセージを送信します",
+        "direct_message": "ダイレクトメッセージ",
+        "chat_message": "チャット",
+        "email_message": "メール"
+      },
+      "restrictions": "制限",
+      "autofollow": "自動フォロー"
+    },
+    "links": {
+      "link_previews": "リンクプレビュー",
+      "link_formatter": "リンクフォーマッタ"
+    },
+    "uploads": {
+      "attachments": "ファイル設定",
+      "upload": "アップロード",
+      "local_uploader": "ローカル",
+      "filenames": "ファイル名と説明欄",
+      "uploader_settings": "アップローダ設定"
+    },
+    "media_proxy": {
+      "basic": "基本設定",
+      "invalidation": "キャッシュ破棄",
+      "limits": "制限",
+      "thumbnails": "サムネイル生成",
+      "invalidation_settings": "キャッシュ破棄"
+    },
+    "mailer": {
+      "styling": "スタイル",
+      "assets": "アセット",
+      "colors": "カラーパレット",
+      "adapter": "メールアダプタ",
+      "auth": "認証"
     }
   },
   "lists": {
@@ -1401,7 +1794,7 @@
     "is_in_list": "追加済み"
   },
   "update": {
-    "update_bugs": "何か問題を見つけたら{pleromaGitlab}にて報告してください。開発中のバージョンにて念入りに確認はしましたが、様々なものが変更されているため、我々が見逃したものがあるかもしれません。バグの報告や、Pleroma/PleromaFEを改善するための提案やフィードバックは大歓迎です。",
+    "update_bugs": "何か問題を見つけたら{pleromaForgejo}にて報告してください。開発中のバージョンにて念入りに確認はしましたが、様々なものが変更されているため、我々が見逃したものがあるかもしれません。バグの報告や、Pleroma/PleromaFEを改善するための提案やフィードバックは大歓迎です。",
     "update_changelog_here": "変更履歴",
     "update_changelog": "全ての変更点は{theFullChangelog}を参照してください。",
     "big_update_content": "久しぶりのリリースですので、今までと異なるところがあるかもしれません。",
@@ -1451,7 +1844,8 @@
     "error": "問題が発生しました",
     "fun_3": "( ˘ω˘)ｽﾔｧ…",
     "almost": "少女祈祷中…",
-    "fun_4": "俺のPleromaが火を吹くぜ！"
+    "fun_4": "俺のPleromaが火を吹くぜ！",
+    "fun_1": "お水のんで"
   },
   "bookmark_folders": {
     "emoji": "絵文字",
@@ -1464,5 +1858,23 @@
     "delete": "フォルダを削除",
     "error": "ブックマークフォルダの処理中にエラーが発生しました: {0}",
     "new": "新規フォルダ"
+  },
+  "drafts": {
+    "no_drafts": "下書きはありません",
+    "empty": "(文章なし)",
+    "poll_tooltip": "投票を含みます",
+    "save": "下書きに保存する",
+    "continue": "編集を再開する",
+    "abandon": "下書きを破棄する",
+    "abandon_confirm_cancel_button": "破棄しない",
+    "abandon_confirm": "本当にこの下書きを破棄しますか？",
+    "abandon_confirm_title": "破棄の確認",
+    "replying": "{statusLink}への返信",
+    "editing": "{statusLink}を編集中",
+    "drafts": "下書き",
+    "abandon_confirm_accept_button": "破棄する"
+  },
+  "bookmarks": {
+    "manage_bookmark_folders": "ブックマークフォルダを管理"
   }
 }

@@ -1,12 +1,13 @@
 import { mapActions, mapState } from 'pinia'
-
-import ErrorModal from 'src/components/error_modal/error_modal.vue'
+import { defineAsyncComponent } from 'vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 
 const GlobalError = {
   components: {
-    ErrorModal,
+    ErrorModal: defineAsyncComponent(
+      () => import('src/components/error_modal/error_modal.vue'),
+    ),
   },
   computed: {
     title() {

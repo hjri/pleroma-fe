@@ -1,5 +1,6 @@
 import { defineAsyncComponent } from 'vue'
 
+import AuthForm from 'src/components/auth_form/auth_form.js'
 import BookmarkTimeline from 'src/components/bookmark_timeline/bookmark_timeline.vue'
 import BubbleTimeline from 'src/components/bubble_timeline/bubble_timeline.vue'
 import ConversationPage from 'src/components/conversation-page/conversation-page.vue'
@@ -147,9 +148,7 @@ export default (store) => {
     {
       name: 'login',
       path: '/login',
-      component: defineAsyncComponent(
-        () => import('src/components/auth_form/auth_form.js'),
-      ),
+      component: AuthForm,
     },
     {
       name: 'shout-panel',

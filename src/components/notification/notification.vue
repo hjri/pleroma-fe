@@ -13,7 +13,7 @@
   <article
     v-else
     ref="root"
-    class="NotificationParent"
+    class="NotificationParent panel-body"
     :class="{ '-expandable': expandable }"
   >
     <div
