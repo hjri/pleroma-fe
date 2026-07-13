@@ -73,6 +73,7 @@
     <StatusHistoryModal v-if="editingAvailable" />
     <SettingsModal :class="layoutModalClass" />
     <UpdateNotification />
+    <GlobalError />
     <GlobalNoticeList />
   </div>
 </template>

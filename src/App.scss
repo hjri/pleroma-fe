@@ -144,6 +144,25 @@ h4 {
   margin: 0;
 }
 
+code {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--roundness);
+  padding: 0 0.2em;
+
+  & pre,
+  pre & {
+    display: block;
+    overflow-x: auto;
+    padding: 0.2em;
+  }
+
+  &.pre {
+    white-space: pre;
+    display: block;
+  }
+}
+
 .iconLetter {
   display: inline-block;
   text-align: center;

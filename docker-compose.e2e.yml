@@ -12,7 +12,7 @@ services:
       retries: 30
 
   pleroma:
-    image: ${PLEROMA_IMAGE:-git.pleroma.social:5050/pleroma/pleroma:stable}
+    image: ${PLEROMA_IMAGE:-git.pleroma.social/pleroma/pleroma:stable}
     environment:
       DB_USER: pleroma
       DB_PASS: pleroma

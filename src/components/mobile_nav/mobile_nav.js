@@ -152,9 +152,6 @@ const MobileNav = {
     },
     onScroll({ target: { scrollTop, clientHeight, scrollHeight } }) {
       this.notificationsAtTop = scrollTop > 0
-      if (scrollTop + clientHeight >= scrollHeight) {
-        this.$refs.notifications.fetchOlderNotifications()
-      }
     },
   },
   watch: {

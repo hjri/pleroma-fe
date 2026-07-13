@@ -90,7 +90,11 @@
     "loading": "Loading…",
     "generic_error": "An error occured",
     "generic_error_message": "An error occured: {0}",
+    "generic_error_details": "Technical info:",
     "error_retry": "Please try again",
+    "refresh_required": "Refresh required",
+    "refresh_required_content": "Failed to load UI code. Most likely frontend was updated on server, you'll need to refresh the page.",
+    "refresh_required_refresh": "Refresh page",
     "retry": "Try again",
     "optional": "optional",
     "show_more": "Show more",
@@ -1476,10 +1480,36 @@
             "description": "Number of retries for making a connection CONFIRM"
           }
         },
+        ":hackney_pools": {
+          ":rich_media": {
+            "label": "Rich media",
+            "description": "idk",
+            ":max_connections": {
+              "label": "Max connections",
+              "description": "Number workers in the pool."
+            },
+            ":timeout": {
+              "label": "Timeout",
+              "description": "Timeout while `hackney` will wait for response."
+            }
+          }
+        },
         ":pools": {
           ":rich_media": {
             "label": "Rich media",
-            "description": "idk"
+            "description": "idk",
+            ":size": {
+              "label": "Size",
+              "description": "Maximum number of concurrent requests in the pool."
+            },
+            ":max_waiting": {
+              "label": "Max waiting",
+              "description": "Maximum number of requests waiting for other requests to finish. After this number is reached, the pool will start returning errors when a new request is made"
+            },
+            ":recv_timeout": {
+              "label": "Recv timeout",
+              "description": "Timeout for the pool while gun will wait for response"
+            }
           }
         },
         ":rate_limit": {

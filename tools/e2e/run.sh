@@ -5,7 +5,7 @@ set -u
 COMPOSE_FILE="docker-compose.e2e.yml"
 
 : "${COMPOSE_MENU:=false}"
-: "${PLEROMA_IMAGE:=git.pleroma.social:5050/pleroma/pleroma:stable}"
+: "${PLEROMA_IMAGE:=git.pleroma.social/pleroma/pleroma:stable}"
 : "${E2E_ADMIN_USERNAME:=admin}"
 : "${E2E_ADMIN_PASSWORD:=adminadmin}"
 : "${E2E_ADMIN_EMAIL:=admin@example.com}"

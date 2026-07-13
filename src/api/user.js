@@ -181,9 +181,6 @@ export const unmuteConversation = ({ id, credentials }) =>
   }).then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
 
 export const vote = ({ pollId, choices, credentials }) => {
-  const form = new FormData()
-  form.append('choices', choices)
-
   return promisedRequest({
     url: MASTODON_VOTE_URL(encodeURIComponent(pollId)),
     method: 'POST',

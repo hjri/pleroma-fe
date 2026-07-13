@@ -16,6 +16,7 @@ import {
 } from './chat_layout_utils.js'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 
 import {
@@ -116,8 +117,8 @@ const Chat = {
       'currentChat',
       'currentChatMessageService',
       'findOpenedChatByRecipientId',
-      'mergedConfig',
     ]),
+    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
     ...mapPiniaState(useInterfaceStore, {
       mobileLayout: (store) => store.layoutType === 'mobile',
     }),
@@ -381,7 +382,7 @@ const Chat = {
       if (retriesLeft <= 0) return
 
       sendChatMessage({
-        params,
+        ...params,
         credentials: useOAuthStore().token,
       })
         .then(({ data }) => {

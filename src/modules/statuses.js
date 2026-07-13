@@ -883,9 +883,13 @@ const statuses = {
           'addNewUsers',
           data.statuses.map((s) => s.user).filter((u) => u),
         )
-        data.statuses = store.commit('addNewStatuses', {
+        store.commit('addNewStatuses', {
           statuses: data.statuses,
         })
+
+        data.statuses = data.statuses.map(
+          (s) => store.state.allStatusesObject[s.id],
+        )
         return data
       })
     },

@@ -5,6 +5,8 @@ import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 
+import { chats } from 'src/api/chats.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons'
 
@@ -24,10 +26,10 @@ const chatNew = {
     }
   },
   async created() {
-    const { chats } = await chats({
+    const { chatList } = await chats({
       credentials: useOAuthStore().token,
     })
-    chats.forEach((chat) => this.suggestions.push(chat.account))
+    chatList.forEach((chat) => this.suggestions.push(chat.account))
   },
   computed: {
     users() {

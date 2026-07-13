@@ -11,6 +11,7 @@ import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
 import suggestor from 'src/components/emoji_input/suggestor.js'
+import FollowButton from 'src/components/follow_button/follow_button.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import Select from 'src/components/select/select.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
@@ -138,9 +139,7 @@ export default {
       () => import('src/components/account_actions/account_actions.vue'),
     ),
     ProgressButton,
-    FollowButton: defineAsyncComponent(
-      () => import('src/components/follow_button/follow_button.vue'),
-    ),
+    FollowButton,
     Select,
     UserLink,
     UserNote: defineAsyncComponent(

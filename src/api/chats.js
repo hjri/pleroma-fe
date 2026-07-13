@@ -4,7 +4,7 @@ import { parseChat } from 'src/services/entity_normalizer/entity_normalizer.serv
 
 const PLEROMA_CHATS_URL = '/api/v1/pleroma/chats'
 const PLEROMA_CHAT_URL = (id) => `/api/v1/pleroma/chats/by-account-id/${id}`
-const PLEROMA_CHAT_MESSAGES_URL = (id, { maxId, sinceId, limit }) =>
+const PLEROMA_CHAT_MESSAGES_URL = (id, { maxId, sinceId, limit } = {}) =>
   `/api/v1/pleroma/chats/${id}/messages${paramsString({ maxId, sinceId, limit })}`
 const PLEROMA_CHAT_READ_URL = (id) => `/api/v1/pleroma/chats/${id}/read`
 const PLEROMA_DELETE_CHAT_MESSAGE_URL = (chatId, messageId) =>

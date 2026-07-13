@@ -34,6 +34,8 @@
             :style="itemStyle(attachment.id, row.items)"
             @set-media="onMedia"
             @natural-size-load="onNaturalSizeLoad"
+            @play="() => onMediaStateChange(true, attachment.id)"
+            @pause="() => onMediaStateChange(false, attachment.id)"
           />
         </div>
       </div>

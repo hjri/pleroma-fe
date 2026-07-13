@@ -133,7 +133,7 @@ const PostStatusForm = {
     'resize',
     'mediaplay',
     'mediapause',
-    'can-close',
+    'close-accepted',
     'update',
   ],
   components: {
@@ -596,16 +596,18 @@ const PostStatusForm = {
         ? this.postHandler
         : statusPoster.postStatus
 
-      postHandler(postingOptions).then((data) => {
-        if (!data.error) {
+      postHandler(postingOptions)
+        .then((data) => {
           this.abandonDraft()
           this.clearStatus()
           this.$emit('posted', data)
-        } else {
-          this.error = data.error
-        }
-        this.posting = false
-      })
+        })
+        .catch((error) => {
+          this.error = error
+        })
+        .finally(() => {
+          this.posting = false
+        })
     },
     previewStatus() {
       if (this.emptyStatus && this.newStatus.spoilerText.trim() === '') {
@@ -963,19 +965,19 @@ const PostStatusForm = {
     },
     requestClose() {
       if (!this.saveable) {
-        this.$emit('can-close')
+        this.$emit('close-accepted')
       } else {
         this.$refs.draftCloser.requestClose()
       }
     },
     saveAndCloseDraft() {
       this.saveDraft().then(() => {
-        this.$emit('can-close')
+        this.$emit('close-accepted')
       })
     },
     discardAndCloseDraft() {
       this.abandonDraft().then(() => {
-        this.$emit('can-close')
+        this.$emit('close-accepted')
       })
     },
     addBeforeUnloadListener() {

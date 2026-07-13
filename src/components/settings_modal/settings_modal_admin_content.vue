@@ -4,7 +4,7 @@
     ref="tabSwitcher"
     class="settings-admin-content settings_tab-switcher"
     :side-tab-bar="true"
-    :scrollable-tabs
+    scrollable-tabs
     :render-only-focused="true"
     :body-scroll-lock="bodyLock"
   >

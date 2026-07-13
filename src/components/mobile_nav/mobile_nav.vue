@@ -94,6 +94,7 @@
           />
         </button>
       </div>
+      <!-- Notifications teleport target -->
       <div
         id="mobile-notifications"
         ref="mobileNotifications"

@@ -54,7 +54,8 @@
 <style lang="scss">
 .basic-user-card {
   display: flex;
-  flex: 1 0;
+  flex: 1 1 10em;
+  min-width: 1em;
   margin: 0;
   line-height: 1.25;
 

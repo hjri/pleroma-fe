@@ -4,15 +4,24 @@
     :class="{ '-compact': compact, '-apply': apply, '-mobile': mobile }"
   >
     <div class="palette">
-      <ColorInput
+      <div
         v-for="key in paletteKeys"
         :key="key"
-        :name="key"
-        :model-value="props.modelValue[key]"
-        :fallback="fallback(key)"
-        :label="$t('settings.style.themes3.palette.' + key)"
-        @update:model-value="value => updatePalette(key, value)"
-      />
+      >
+        <ColorInput
+          :name="key"
+          :model-value="props.modelValue[key]"
+          :fallback="fallback(key)"
+          :label="$t('settings.style.themes3.palette.' + key)"
+          @update:model-value="value => updatePalette(key, value)"
+        />
+        <ContrastRatio
+          v-if="contrast?.[key]"
+          :show-ratio="true"
+          :contrast="contrast[key]"
+        />
+        <div v-else>{{ '&nbsp;' }}</div>
+      </div>
     </div>
     <div class="buttons">
       <button
@@ -48,9 +57,14 @@
 import { computed } from 'vue'
 
 import ColorInput from 'src/components/color_input/color_input.vue'
+import ContrastRatio from 'src/components/contrast_ratio/contrast_ratio.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 
+import {
+  getContrastRatio,
+  hex2rgb,
+} from 'src/services/color_convert/color_convert.js'
 import {
   newExporter,
   newImporter,
@@ -106,12 +120,35 @@ const importPalette = () => {
   paletteImporter.importData()
 }
 
+const hints = (ratio) => ({
+  text: ratio.toPrecision(3) + ':1',
+  // AA level, AAA level
+  aa: ratio >= 4.5,
+  aaa: ratio >= 7,
+  // same but for 18pt+ texts
+  laa: ratio >= 3,
+  laaa: ratio >= 4.5,
+})
+
 const applyPalette = () => {
   emit('applyPalette', getExportedObject())
 }
 
 const mobile = computed(() => {
   return useInterfaceStore().layoutType === 'mobile'
+})
+
+const contrast = computed(() => {
+  if (props.modelValue == null) return null
+  const bg = hex2rgb(props.modelValue.bg)
+  const text = hex2rgb(props.modelValue.text)
+  const link = hex2rgb(props.modelValue.link)
+  if (text == null || link == null) return null
+
+  return {
+    text: hints(getContrastRatio(bg, text)),
+    link: hints(getContrastRatio(bg, link)),
+  }
 })
 
 const fallback = (key) => {
@@ -202,15 +239,6 @@ const updatePalette = (paletteKey, value) => {
     &.-apply {
       .palette-apply-button {
         grid-column: 1 / span 2;
-      }
-    }
-
-    .color-input {
-      display: grid;
-      gap: 0.5em;
-
-      label {
-        flex: 1;
       }
     }
   }

@@ -27,8 +27,10 @@ const Gallery = {
     return {
       sizes: {},
       hidingLong: true,
+      playingMedia: new Set(),
     }
   },
+  emits: ['play', 'pause'],
   components: { Attachment },
   computed: {
     rows() {
@@ -115,10 +117,20 @@ const Gallery = {
         return this.attachmentsDimensionalScore > 1
       }
     },
+    hasPlayingMedia() {
+      return this.playingMedia.size > 0
+    },
   },
   methods: {
     onNaturalSizeLoad({ id, width, height }) {
       set(this.sizes, id, { width, height })
+    },
+    onMediaStateChange(playing, id) {
+      if (playing) {
+        this.playingMedia.add(id)
+      } else {
+        this.playingMedia.delete(id)
+      }
     },
     rowStyle(row) {
       if (row.audio) {
@@ -144,6 +156,15 @@ const Gallery = {
     },
     onMedia() {
       useMediaViewerStore().setMedia(this.attachments)
+    },
+  },
+  watch: {
+    hasPlayingMedia(newValue) {
+      if (newValue) {
+        this.$emit('play')
+      } else {
+        this.$emit('pause')
+      }
     },
   },
 }

@@ -73,46 +73,6 @@ library.add(
   faPlay,
 )
 
-const camelCase = (name) => name.charAt(0).toUpperCase() + name.slice(1)
-
-const controlledOrUncontrolledGetters = (list) =>
-  list.reduce((res, name) => {
-    const camelized = camelCase(name)
-    const toggle = `controlledToggle${camelized}`
-    const controlledName = `controlled${camelized}`
-    const uncontrolledName = `uncontrolled${camelized}`
-    res[name] = function () {
-      return (this.$data[toggle] !== undefined ||
-        this.$props[toggle] !== undefined) &&
-        this[toggle]
-        ? this[controlledName]
-        : this[uncontrolledName]
-    }
-    return res
-  }, {})
-
-const controlledOrUncontrolledToggle = (obj, name) => {
-  const camelized = camelCase(name)
-  const toggle = `controlledToggle${camelized}`
-  const uncontrolledName = `uncontrolled${camelized}`
-  if (obj[toggle]) {
-    obj[toggle]()
-  } else {
-    obj[uncontrolledName] = !obj[uncontrolledName]
-  }
-}
-
-const controlledOrUncontrolledSet = (obj, name, val) => {
-  const camelized = camelCase(name)
-  const set = `controlledSet${camelized}`
-  const uncontrolledName = `uncontrolled${camelized}`
-  if (obj[set]) {
-    obj[set](val)
-  } else {
-    obj[uncontrolledName] = val
-  }
-}
-
 const Status = {
   name: 'Status',
   components: {
@@ -137,7 +97,6 @@ const Status = {
 
     expandable: Boolean,
     focused: Boolean,
-    highlight: Boolean,
     compact: Boolean,
     isPreview: Boolean,
     noHeading: Boolean,
@@ -150,36 +109,23 @@ const Status = {
     profileUserId: String,
     simpleTree: Boolean,
     showOtherRepliesAsButton: Boolean,
-    dive: Function,
+    canDive: Boolean,
     ignoreMute: Boolean,
 
-    controlledThreadDisplayStatus: String,
-    controlledToggleThreadDisplay: Function,
-    controlledShowingTall: Boolean,
-    controlledToggleShowingTall: Function,
-    controlledExpandingSubject: Boolean,
-    controlledToggleExpandingSubject: Function,
-    controlledShowingLongSubject: Boolean,
-    controlledToggleShowingLongSubject: Function,
-    controlledReplying: Boolean,
-    controlledToggleReplying: Function,
-    controlledMediaPlaying: Boolean,
-    controlledSetMediaPlaying: Function,
+    threadDisplayStatus: String,
   },
-  emits: ['goto', 'toggleExpanded'],
+  emits: ['goto', 'dive', 'toggleExpanded', 'suspendableStateChange'],
   data() {
     return {
-      uncontrolledReplying: false,
+      replying: false,
       unmuted: false,
       userExpanded: false,
-      uncontrolledMediaPlaying: [],
-      suspendable: true,
+      mediaPlaying: new Set(),
       error: null,
       headTailLinks: null,
     }
   },
   computed: {
-    ...controlledOrUncontrolledGetters(['replying', 'mediaPlaying']),
     showReasonMutedThread() {
       return (
         (this.status.thread_muted ||
@@ -373,7 +319,7 @@ const Status = {
     },
     shouldNotMute() {
       if (this.ignoreMute) return true
-      if (this.isFocused) return true
+      if (this.focused) return true
       const { status } = this
       const { reblog } = status
       return (
@@ -409,16 +355,6 @@ const Status = {
           (this.muteFilterHits.length > 0 && this.hideWordFilteredPosts) ||
           this.muteFilterHits.some((x) => x.hide))
       )
-    },
-    isFocused() {
-      // retweet or root of an expanded conversation
-      if (this.focused) {
-        return true
-      } else if (!this.inConversation) {
-        return false
-      }
-      // use conversation highlight only when in conversation
-      return this.status.id === this.highlight
     },
     isReply() {
       return !!(
@@ -468,7 +404,7 @@ const Status = {
     shouldDisplayFavsAndRepeats() {
       return (
         !this.hidePostStats &&
-        this.isFocused &&
+        this.focused &&
         (this.combinedFavsAndRepeatsUsers.length > 0 ||
           this.statusFromGlobalRepository.quotes_count)
       )
@@ -489,13 +425,13 @@ const Status = {
       return useMergedConfigStore().mergedConfig
     },
     isSuspendable() {
-      return !this.replying && this.mediaPlaying.length === 0
+      return !this.replying && this.mediaPlaying.size === 0
     },
     inThreadForest() {
-      return !!this.controlledThreadDisplayStatus
+      return !!this.threadDisplayStatus
     },
     threadShowing() {
-      return this.controlledThreadDisplayStatus === 'showing'
+      return this.threadDisplayStatus === 'showing'
     },
     visibilityLocalized() {
       return this.$i18n.t('general.scope_in_timeline.' + this.status.visibility)
@@ -566,15 +502,17 @@ const Status = {
     clearError() {
       this.error = undefined
     },
-    toggleReplying() {
+    toggleReplyForm() {
       if (this.replying) {
+        // This emits 'close-accepted' if successful
+        // which in turn callse closeReply()
         this.$refs.postStatusForm.requestClose()
       } else {
-        this.doToggleReplying()
+        this.replying = true
       }
     },
-    doToggleReplying() {
-      controlledOrUncontrolledToggle(this, 'replying')
+    closeReplyForm() {
+      this.replying = false
     },
     gotoOriginal(id) {
       if (this.inConversation) {
@@ -598,18 +536,10 @@ const Status = {
       )
     },
     addMediaPlaying(id) {
-      controlledOrUncontrolledSet(
-        this,
-        'mediaPlaying',
-        this.mediaPlaying.concat(id),
-      )
+      this.mediaPlaying.add(id)
     },
     removeMediaPlaying(id) {
-      controlledOrUncontrolledSet(
-        this,
-        'mediaPlaying',
-        this.mediaPlaying.filter((mediaId) => mediaId !== id),
-      )
+      this.mediaPlaying.delete(id)
     },
     setHeadTailLinks(headTailLinks) {
       this.headTailLinks = headTailLinks
@@ -617,9 +547,9 @@ const Status = {
     toggleThreadDisplay() {
       this.controlledToggleThreadDisplay()
     },
-    scrollIfHighlighted(highlightId) {
+    scrollIfFocused(focusedId) {
       if (this.$el.getBoundingClientRect == null) return
-      const id = highlightId
+      const id = focusedId
       if (this.status.id === id) {
         const rect = this.$el.getBoundingClientRect()
         if (rect.top < 100) {
@@ -636,13 +566,13 @@ const Status = {
     },
   },
   watch: {
-    highlight: function (id) {
-      this.scrollIfHighlighted(id)
+    focused: function (id) {
+      this.scrollIfFocused(id)
     },
     'status.repeat_num': function (num) {
       // refetch repeats when repeat_num is changed in any way
       if (
-        this.isFocused &&
+        this.focused &&
         this.statusFromGlobalRepository.rebloggedBy &&
         this.statusFromGlobalRepository.rebloggedBy.length !== num
       ) {
@@ -652,15 +582,15 @@ const Status = {
     'status.fave_num': function (num) {
       // refetch favs when fave_num is changed in any way
       if (
-        this.isFocused &&
+        this.focused &&
         this.statusFromGlobalRepository.favoritedBy &&
         this.statusFromGlobalRepository.favoritedBy.length !== num
       ) {
         this.$store.dispatch('fetchFavs', this.status.id)
       }
     },
-    isSuspendable: function (val) {
-      this.suspendable = val
+    isSuspendable: function (suspend) {
+      this.$emit('suspendableStateChange', { id: this.statusoid.id, suspend })
     },
   },
 }

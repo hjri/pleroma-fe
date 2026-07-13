@@ -53,6 +53,7 @@
   }
 
   .text-wrapper {
+    position: relative;
     text-overflow: ellipsis;
     overflow-wrap: break-word;
     overflow: hidden;
@@ -60,9 +61,11 @@
     flex-flow: column nowrap;
 
     &.-tall-status {
-      position: relative;
-      height: 16em;
       z-index: 1;
+
+      &:not(.-hidden) {
+        height: 16em;
+      }
 
       .media-body {
         min-height: 0;
@@ -98,6 +101,7 @@
     text-wrap: pretty;
     width: 100%;
     text-align: center;
+    margin: 0.1em 0;
   }
 
   .status-unhider {
@@ -107,17 +111,17 @@
     padding-bottom: 1em;
   }
 
-  .tall-status-hider {
-    position: absolute;
-    height: 5em;
-    margin-top: 10em;
-    line-height: 8em;
-    z-index: 2;
-  }
-
   .tall-subject-hider {
     // position: absolute;
     padding-bottom: 0.5em;
+
+    &:not(.cw-status-hider) {
+      position: absolute;
+      margin-top: 10em;
+      height: 5em;
+      line-height: 8em;
+      z-index: 2;
+    }
   }
 
   & .status-unhider,

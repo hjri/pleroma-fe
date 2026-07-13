@@ -409,8 +409,8 @@
         :remove-attachment="removeMediaFile"
         :shift-up-attachment="newStatus.files.length > 1 && shiftUpMediaFile"
         :shift-dn-attachment="newStatus.files.length > 1 && shiftDnMediaFile"
-        @play="$emit('mediaplay', attachment.id)"
-        @pause="$emit('mediapause', attachment.id)"
+        @play="$emit('mediaplay', 'newStatus')"
+        @pause="$emit('mediapause', 'newStatus')"
       />
       <div
         v-if="newStatus.files.length > 0 && !disableSensitivityCheckbox"

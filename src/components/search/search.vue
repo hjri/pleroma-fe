@@ -58,12 +58,10 @@
         <Status
           v-for="status in visibleStatuses"
           :key="status.id"
-          :collapsable="false"
           :expandable="false"
           :compact="false"
           class="search-result"
           :statusoid="status"
-          :no-heading="false"
         />
         <button
           v-if="!loading && loaded && lastStatusFetchCount > 0"

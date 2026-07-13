@@ -17,8 +17,6 @@ export const paramsString = (params = {}) => {
     }
   })()
 
-  if (entries.length === 0) return ''
-
   const arrays = []
   const nonArrays = []
 
@@ -48,6 +46,8 @@ export const paramsString = (params = {}) => {
     })
   })
 
+  if (nonArrays.length + arrays.length === 0) return ''
+
   return (
     '?' +
     [
@@ -71,6 +71,7 @@ export const promisedRequest = async ({
   url,
   payload,
   formData,
+  cache,
   credentials,
   headers = {},
 }) => {
@@ -85,6 +86,10 @@ export const promisedRequest = async ({
 
   if (!formData) {
     options.headers['Content-Type'] = 'application/json'
+  }
+
+  if (cache) {
+    options.cache = cache
   }
 
   if (formData || payload) {

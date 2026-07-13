@@ -8,13 +8,8 @@
       :status="status"
       :compact="compact"
       :single-line="singleLine"
-      :showing-tall="showingTall"
-      :expanding-subject="expandingSubject"
-      :showing-long-subject="showingLongSubject"
-      :toggle-showing-tall="toggleShowingTall"
-      :toggle-expanding-subject="toggleExpandingSubject"
-      :toggle-showing-long-subject="toggleShowingLongSubject"
       :collapse="collapse"
+      :in-conversation="inConversation"
       @parse-ready="$emit('parseReady', $event)"
     >
       <div v-if="status.poll && status.poll.options && !compact">
@@ -38,22 +33,22 @@
         v-if="status.attachments.length !== 0"
         class="attachments media-body"
         :compact="compact"
-        :nsfw="nsfwClickthrough"
+        :nsfw="status.nsfw"
         :attachments="status.attachments"
         :limit="compact ? 1 : 0"
         :size="attachmentSize"
-        @play="$emit('mediaplay', attachment.id)"
-        @pause="$emit('mediapause', attachment.id)"
+        @play="$emit('mediaplay')"
+        @pause="$emit('mediapause')"
       />
 
       <div
-        v-if="statusCard && !noHeading && !compact"
+        v-if="statusCard && !compact"
         class="link-preview media-body"
       >
-        <link-preview
+        <LinkPreview
           :card="status.card"
           :size="attachmentSize"
-          :nsfw="nsfwClickthrough"
+          :nsfw="status.nsfw"
         />
       </div>
     </StatusBody>

@@ -435,7 +435,7 @@ export const downloadRemoteEmojiPackZIP = ({
   return promisedRequest({
     url: EMOJI_PACKS_DL_REMOTE_ZIP_URL,
     method: 'POST',
-    payload: data,
+    formData: data,
   })
 }
 
@@ -460,7 +460,7 @@ export const addNewEmojiFile = ({ packName, file, shortcode, filename }) => {
   return promisedRequest({
     url: EMOJI_UPDATE_FILE_URL(packName),
     method: 'POST',
-    payload: data,
+    formData: data,
   })
 }
 

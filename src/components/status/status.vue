@@ -3,7 +3,7 @@
     v-if="!hideStatus"
     ref="root"
     class="Status"
-    :class="[{ '-focused': isFocused }, { '-conversation': inlineExpanded }]"
+    :class="[{ '-focused': focused }, { '-conversation': inlineExpanded }]"
   >
     <div
       v-if="error"
@@ -236,10 +236,10 @@
                   />
                 </button>
                 <button
-                  v-if="dive && !simpleTree"
+                  v-if="canDive && !simpleTree"
                   class="button-unstyled"
                   :title="$t('status.show_only_conversation_under_this')"
-                  @click.prevent="dive"
+                  @click.prevent="$emit('dive')"
                 >
                   <FAIcon
                     fixed-width
@@ -409,15 +409,8 @@
           <StatusContent
             ref="content"
             :status="status"
-            :no-heading="noHeading"
-            :highlight="highlight"
-            :focused="isFocused"
-            :controlled-showing-tall="controlledShowingTall"
-            :controlled-expanding-subject="controlledExpandingSubject"
-            :controlled-showing-long-subject="controlledShowingLongSubject"
-            :controlled-toggle-showing-tall="controlledToggleShowingTall"
-            :controlled-toggle-expanding-subject="controlledToggleExpandingSubject"
-            :controlled-toggle-showing-long-subject="controlledToggleShowingLongSubject"
+            :focused="focused"
+            :in-conversation="inConversation"
             @mediaplay="addMediaPlaying($event)"
             @mediapause="removeMediaPlaying($event)"
             @parse-ready="setHeadTailLinks"
@@ -438,7 +431,7 @@
               v-if="showOtherRepliesAsButton && replies.length > 1"
               class="button-unstyled -link"
               :title="$t('status.ancestor_follow', { numReplies: replies.length - 1 }, replies.length - 1)"
-              @click.prevent="dive"
+              @click.prevent="$emit('dive')"
             >
               {{ $t('status.replies_list_with_others', { numReplies: replies.length - 1 }, replies.length - 1) }}
             </button>
@@ -513,7 +506,7 @@
           </transition>
 
           <EmojiReactions
-            v-if="(mergedConfig.emojiReactionsOnTimeline || isFocused) && (!noHeading && !isPreview)"
+            v-if="(mergedConfig.emojiReactionsOnTimeline || focused) && (!noHeading && !isPreview)"
             :status="status"
           />
 
@@ -521,7 +514,7 @@
             v-if="!noHeading && !isPreview"
             :status="status"
             :replying="replying"
-            @toggle-replying="toggleReplying"
+            @toggle-replying="toggleReplyForm"
           />
         </div>
       </div>
@@ -555,9 +548,9 @@
           :replied-user="status.user"
           :copy-message-scope="status.visibility"
           :subject="replySubject"
-          @posted="doToggleReplying"
-          @draft-done="doToggleReplying"
-          @can-close="doToggleReplying"
+          @posted="closeReplyForm"
+          @draft-done="closeReplyForm"
+          @close-accepted="closeReplyForm"
         />
       </div>
     </template>
