@@ -9,8 +9,8 @@ import {
   highlightStyle,
 } from '../../services/user_highlighter/user_highlighter.js'
 
-import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
@@ -90,8 +90,7 @@ const MentionLink = {
       // XXX assumed that domain does not contain @
       return (
         this.user &&
-        (this.userNameFullUi.split('@')[1] ||
-         useInstanceStore().instanceDomain)
+        (this.userNameFullUi.split('@')[1] || useInstanceStore().instanceDomain)
       )
     },
     userNameFull() {
