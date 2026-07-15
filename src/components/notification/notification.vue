@@ -4,7 +4,7 @@
     ref="root"
   >
     <Status
-      class="Notification"
+      class="Notification panel-body"
       :compact="true"
       :statusoid="notification.status"
       @click="interacted"
