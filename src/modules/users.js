@@ -47,6 +47,7 @@ import {
   muteUser as apiMuteUser,
   unblockUser as apiUnblockUser,
   unmuteUser as apiUnmuteUser,
+  editUserNote as apiEditUserNote,
   fetchBlocks,
   fetchDomainMutes,
   fetchMutes,
@@ -123,7 +124,7 @@ const removeUserFromFollowers = (store, id) => {
 }
 
 const editUserNote = (store, { id, comment }) => {
-  return editUserNote({ id, comment }).then((relationship) =>
+  return apiEditUserNote({ id, comment }).then((relationship) =>
     store.commit('updateUserRelationship', [relationship]),
   )
 }
