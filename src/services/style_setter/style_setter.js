@@ -1,9 +1,15 @@
+import sum from 'hash-sum'
 import localforage from 'localforage'
 import { chunk, throttle } from 'lodash'
 
-import { defaultState } from 'src/modules/default_config_state.js'
 import { getCssRules } from '../theme_data/css_utils.js'
 import { getEngineChecksum, init } from '../theme_data/theme_data_3.service.js'
+
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
+import { promisedRequest } from 'src/api/helpers.js'
+import { ROOT_CONFIG } from 'src/modules/default_config_state.js'
 
 // On platforms where this is not supported, it will return undefined
 // Otherwise it will return an array
@@ -29,6 +35,9 @@ export const createStyleSheet = (id, priority = 1000) => {
       // firefox doesn't like invalid selectors
       if (
         !CSS.supports?.('selector(::-webkit-scrollbar)') &&
+        !CSS.supports?.('selector(::-webkit-scrollbar-button)') &&
+        !CSS.supports?.('selector(::-webkit-resizer)') &&
+        !CSS.supports?.('selector(::-webkit-scrollbar-thumb)') &&
         newRule.startsWith('::-webkit')
       ) {
         return
@@ -76,7 +85,7 @@ export const adoptStyleSheets = throttle(() => {
 const EAGER_STYLE_ID = 'pleroma-eager-styles'
 const LAZY_STYLE_ID = 'pleroma-lazy-styles'
 
-export const generateTheme = (inputRuleset, callbacks, debug) => {
+const generateTheme = (inputRuleset, callbacks, debug) => {
   const {
     onNewRule = () => {
       /* no-op */
@@ -135,7 +144,11 @@ export const tryLoadCache = async () => {
   const cache = await localforage.getItem('pleromafe-theme-cache')
   if (!cache) return null
   try {
-    if (cache.engineChecksum === getEngineChecksum()) {
+    if (
+      cache.engineChecksum === getEngineChecksum() &&
+      cache.checksum !== undefined &&
+      cache.checksum === useMergedConfigStore().mergedConfig.themeChecksum
+    ) {
       const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
       const lazyStyles = createStyleSheet(LAZY_STYLE_ID, 20)
 
@@ -148,7 +161,7 @@ export const tryLoadCache = async () => {
       console.info(`Loaded theme from cache`)
       return true
     } else {
-      console.warn("Engine checksum doesn't match, cache not usable, clearing")
+      console.warn("Checksums don't match, cache not usable, clearing")
       localStorage.removeItem('pleroma-fe-theme-cache')
     }
   } catch (e) {
@@ -194,10 +207,17 @@ export const applyTheme = (
       onLazyFinished() {
         lazyStyles.ready = true
         adoptStyleSheets()
+        const data = [eagerStyles.rules, lazyStyles.rules]
+        const checksum = sum(data)
         const cache = {
+          checksum,
           engineChecksum: getEngineChecksum(),
-          data: [eagerStyles.rules, lazyStyles.rules],
+          data,
         }
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'themeChecksum',
+          value: checksum,
+        })
         onFinish(cache)
         localforage.setItem('pleromafe-theme-cache', cache)
         console.info('Theme cache stored')
@@ -252,9 +272,9 @@ const extractStyleConfig = ({
   return result
 }
 
-const defaultStyleConfig = extractStyleConfig(defaultState)
+const defaultStyleConfig = extractStyleConfig(ROOT_CONFIG)
 
-export const applyConfig = (input) => {
+export const applyStyleConfig = (input) => {
   const config = extractStyleConfig(input)
 
   if (config === defaultStyleConfig) {
@@ -281,7 +301,7 @@ export const applyConfig = (input) => {
   adoptStyleSheets()
 }
 
-export const getResourcesIndex = async (url, parser = JSON.parse) => {
+export const getResourcesIndex = async (url, parser = (x) => x) => {
   const cache = 'no-store'
   const customUrl = url.replace(/\.(\w+)$/, '.custom.$1')
   let builtin
@@ -295,10 +315,11 @@ export const getResourcesIndex = async (url, parser = JSON.parse) => {
         return [
           k,
           () =>
-            window
-              .fetch(v, { cache })
-              .then((data) => data.text())
-              .then((text) => parser(text))
+            promisedRequest({
+              url: v,
+              cache,
+            })
+              .then(({ data: text }) => parser(text))
               .catch((e) => {
                 console.error(e)
                 return null
@@ -312,18 +333,19 @@ export const getResourcesIndex = async (url, parser = JSON.parse) => {
   }
 
   try {
-    const builtinData = await window.fetch(url, { cache })
-    const builtinResources = await builtinData.json()
-    builtin = resourceTransform(builtinResources)
+    const { data: builtinData } = await promisedRequest({ url, cache })
+    builtin = resourceTransform(builtinData)
   } catch {
     builtin = []
     console.warn(`Builtin resources at ${url} unavailable`)
   }
 
   try {
-    const customData = await window.fetch(customUrl, { cache })
-    const customResources = await customData.json()
-    custom = resourceTransform(customResources)
+    const { data: customData } = await promisedRequest({
+      url: customUrl,
+      cache,
+    })
+    custom = resourceTransform(customData)
   } catch {
     custom = []
     console.warn(`Custom resources at ${customUrl} unavailable`)

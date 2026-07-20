@@ -1,13 +1,14 @@
 import { mapState as mapPiniaState } from 'pinia'
 import { mapGetters, mapState } from 'vuex'
 
+import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
+import ListsUserSearch from 'src/components/lists_user_search/lists_user_search.vue'
 import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
-import { useInterfaceStore } from 'src/stores/interface'
-import { useListsStore } from 'src/stores/lists'
-import BasicUserCard from '../basic_user_card/basic_user_card.vue'
-import ListsUserSearch from '../lists_user_search/lists_user_search.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useListsStore } from 'src/stores/lists.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons'
@@ -123,12 +124,11 @@ const ListsNew = {
       useListsStore()
         .createList({ title: this.titleDraft })
         .then((list) => {
-          return useListsStore()
-            .setListAccounts({
-              listId: list.id,
-              accountIds: [...this.addedUserIds],
-            })
-            .then(() => list.id)
+          useListsStore().setListAccounts({
+            listId: list.id,
+            accountIds: [...this.addedUserIds],
+          })
+          return list.id
         })
         .then((listId) => {
           this.$router.push({ name: 'lists-timeline', params: { id: listId } })

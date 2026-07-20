@@ -47,7 +47,7 @@
             </li>
           </ul>
         </li>
-        <li v-if="blockExpirationSupported">
+        <li v-if="blockExpiration">
           <span class="setting-item">
             <span class="setting-label">
               {{ $t('user_card.default_block_expiration') }}
@@ -254,6 +254,20 @@
                   :value="filter[1].value"
                   @input="updateFilter(filter[0], 'value', $event.target.value)"
                 >
+                {{ ' ' }}
+              </div>
+              <div class="filter-value filter-field">
+                <Checkbox
+                  :id="'filterCaseSensitive' + filter[0]"
+                  :model-value="filter[1].caseSensitive"
+                  :name="'filterCaseSensitive' + filter[0]"
+                  class="input-inset input-boolean case-sensitive"
+                  @update:model-value="updateFilter(filter[0], 'caseSensitive', $event)"
+                >
+                  <template #before>
+                    {{ $t('settings.filter.case_sensitive') }}
+                  </template>
+                </Checkbox>
               </div>
               <div class="filter-expires filter-field">
                 <label

@@ -22,7 +22,7 @@
         v-if="sortedChatList.length > 0"
         class="timeline"
       >
-        <List :items="sortedChatList">
+        <List :external-items="sortedChatList">
           <template #item="{item}">
             <ChatListItem
               :key="item.id"

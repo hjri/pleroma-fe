@@ -1,4 +1,4 @@
-import FollowRequestCard from '../follow_request_card/follow_request_card.vue'
+import FollowRequestCard from 'src/components/follow_request_card/follow_request_card.vue'
 
 const FollowRequests = {
   components: {

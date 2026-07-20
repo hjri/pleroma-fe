@@ -1,17 +1,17 @@
 import { mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 import { mapGetters } from 'vuex'
 
 import NavigationPins from 'src/components/navigation/navigation_pins.vue'
-import { useAnnouncementsStore } from 'src/stores/announcements'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import GestureService from '../../services/gesture_service/gesture_service'
 import {
   countExtraNotifications,
   unseenNotificationsFromStore,
 } from '../../services/notification_utils/notification_utils'
-import ConfirmModal from '../confirm_modal/confirm_modal.vue'
-import Notifications from '../notifications/notifications.vue'
-import SideDrawer from '../side_drawer/side_drawer.vue'
+
+import { useAnnouncementsStore } from 'src/stores/announcements.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -27,10 +27,16 @@ library.add(faTimes, faBell, faBars, faArrowUp, faMinus, faCheckDouble)
 
 const MobileNav = {
   components: {
-    SideDrawer,
-    Notifications,
+    SideDrawer: defineAsyncComponent(
+      () => import('src/components/side_drawer/side_drawer.vue'),
+    ),
+    Notifications: defineAsyncComponent(
+      () => import('src/components/notifications/notifications.vue'),
+    ),
     NavigationPins,
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
   },
   data: () => ({
     notificationsCloseGesture: undefined,
@@ -50,11 +56,20 @@ const MobileNav = {
       return this.$store.state.users.currentUser
     },
     unseenNotifications() {
-      return unseenNotificationsFromStore(this.$store)
+      return unseenNotificationsFromStore(
+        this.$store,
+        useMergedConfigStore().mergedConfig.notificationVisibility,
+        useMergedConfigStore().mergedConfig.ignoreInactionableSeen,
+      )
     },
     unseenNotificationsCount() {
       return (
-        this.unseenNotifications.length + countExtraNotifications(this.$store)
+        this.unseenNotifications.length +
+        countExtraNotifications(
+          this.$store,
+          useMergedConfigStore().mergedConfig,
+          useAnnouncementsStore().unreadAnnouncementCount,
+        )
       )
     },
     unseenCount() {
@@ -64,24 +79,24 @@ const MobileNav = {
       return `${this.unseenCount ? this.unseenCount : ''}`
     },
     hideSitename() {
-      return this.$store.state.instance.hideSitename
+      return useInstanceStore().hideSitename
     },
     sitename() {
-      return this.$store.state.instance.name
+      return useInstanceStore().name
     },
     isChat() {
       return this.$route.name === 'chat'
     },
     ...mapState(useAnnouncementsStore, ['unreadAnnouncementCount']),
-    ...mapState(useServerSideStorageStore, {
+    ...mapState(useMergedConfigStore, {
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems).has('chats'),
     }),
     shouldConfirmLogout() {
-      return this.$store.getters.mergedConfig.modalOnLogout
+      return useMergedConfigStore().mergedConfig.modalOnLogout
     },
     closingDrawerMarksAsSeen() {
-      return this.$store.getters.mergedConfig.closingDrawerMarksAsSeen
+      return useMergedConfigStore().mergedConfig.closingDrawerMarksAsSeen
     },
     ...mapGetters(['unreadChatCount']),
   },
@@ -137,9 +152,6 @@ const MobileNav = {
     },
     onScroll({ target: { scrollTop, clientHeight, scrollHeight } }) {
       this.notificationsAtTop = scrollTop > 0
-      if (scrollTop + clientHeight >= scrollHeight) {
-        this.$refs.notifications.fetchOlderNotifications()
-      }
     },
   },
   watch: {

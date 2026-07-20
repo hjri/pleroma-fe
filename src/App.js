@@ -1,27 +1,29 @@
 import { throttle } from 'lodash'
+import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
-import { mapGetters } from 'vuex'
 
-import DesktopNav from './components/desktop_nav/desktop_nav.vue'
-import EditStatusModal from './components/edit_status_modal/edit_status_modal.vue'
-import FeaturesPanel from './components/features_panel/features_panel.vue'
-import GlobalNoticeList from './components/global_notice_list/global_notice_list.vue'
-import InstanceSpecificPanel from './components/instance_specific_panel/instance_specific_panel.vue'
-import MediaModal from './components/media_modal/media_modal.vue'
-import MobileNav from './components/mobile_nav/mobile_nav.vue'
-import MobilePostStatusButton from './components/mobile_post_status_button/mobile_post_status_button.vue'
-import NavPanel from './components/nav_panel/nav_panel.vue'
-import PostStatusModal from './components/post_status_modal/post_status_modal.vue'
-import ShoutPanel from './components/shout_panel/shout_panel.vue'
-import SideDrawer from './components/side_drawer/side_drawer.vue'
-import StatusHistoryModal from './components/status_history_modal/status_history_modal.vue'
-import UserPanel from './components/user_panel/user_panel.vue'
-import UserReportingModal from './components/user_reporting_modal/user_reporting_modal.vue'
-import WhoToFollowPanel from './components/who_to_follow_panel/who_to_follow_panel.vue'
+import DesktopNav from 'src/components/desktop_nav/desktop_nav.vue'
+import FeaturesPanel from 'src/components/features_panel/features_panel.vue'
+import GlobalError from 'src/components/global_error/global_error.vue'
+import GlobalNoticeList from 'src/components/global_notice_list/global_notice_list.vue'
+import InstanceSpecificPanel from 'src/components/instance_specific_panel/instance_specific_panel.vue'
+import MobileNav from 'src/components/mobile_nav/mobile_nav.vue'
+import MobilePostStatusButton from 'src/components/mobile_post_status_button/mobile_post_status_button.vue'
+import NavPanel from 'src/components/nav_panel/nav_panel.vue'
+import UserPanel from 'src/components/user_panel/user_panel.vue'
 import { getOrCreateServiceWorker } from './services/sw/sw'
 import { windowHeight, windowWidth } from './services/window_utils/window_utils'
-import { useInterfaceStore } from './stores/interface'
-import { useShoutStore } from './stores/shout'
+
+import { useEmojiStore } from 'src/stores/emoji.js'
+import { useI18nStore } from 'src/stores/i18n.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useShoutStore } from 'src/stores/shout.js'
+
+// Helper to unwrap reactive proxies
+window.toValue = (x) => JSON.parse(JSON.stringify(x))
 
 export default {
   name: 'app',
@@ -29,32 +31,55 @@ export default {
     UserPanel,
     NavPanel,
     Notifications: defineAsyncComponent(
-      () => import('./components/notifications/notifications.vue'),
+      () => import('src/components/notifications/notifications.vue'),
     ),
     InstanceSpecificPanel,
     FeaturesPanel,
-    WhoToFollowPanel,
-    ShoutPanel,
-    MediaModal,
-    SideDrawer,
+    WhoToFollowPanel: defineAsyncComponent(
+      () =>
+        import('src/components/who_to_follow_panel/who_to_follow_panel.vue'),
+    ),
+    ShoutPanel: defineAsyncComponent(
+      () => import('src/components/shout_panel/shout_panel.vue'),
+    ),
+    MediaModal: defineAsyncComponent(
+      () => import('src/components/media_modal/media_modal.vue'),
+    ),
     MobilePostStatusButton,
     MobileNav,
     DesktopNav,
     SettingsModal: defineAsyncComponent(
-      () => import('./components/settings_modal/settings_modal.vue'),
+      () => import('src/components/settings_modal/settings_modal.vue'),
     ),
     UpdateNotification: defineAsyncComponent(
-      () => import('./components/update_notification/update_notification.vue'),
+      () =>
+        import('src/components/update_notification/update_notification.vue'),
     ),
-    UserReportingModal,
-    PostStatusModal,
-    EditStatusModal,
-    StatusHistoryModal,
+    PostStatusModal: defineAsyncComponent(
+      () => import('src/components/post_status_modal/post_status_modal.vue'),
+    ),
+    UserReportingModal: defineAsyncComponent(
+      () =>
+        import('src/components/user_reporting_modal/user_reporting_modal.vue'),
+    ),
+    EditStatusModal: defineAsyncComponent(
+      () => import('src/components/edit_status_modal/edit_status_modal.vue'),
+    ),
+    StatusHistoryModal: defineAsyncComponent(
+      () =>
+        import('src/components/status_history_modal/status_history_modal.vue'),
+    ),
+    GlobalError,
     GlobalNoticeList,
   },
   data: () => ({
     mobileActivePanel: 'timeline',
   }),
+  provide() {
+    return {
+      allowNonSquareEmoji: useMergedConfigStore().mergedConfig.nonSquareEmoji,
+    }
+  },
   watch: {
     themeApplied() {
       this.removeSplash()
@@ -68,8 +93,10 @@ export default {
   },
   created() {
     // Load the locale from the storage
-    const val = this.$store.getters.mergedConfig.interfaceLanguage
-    this.$store.dispatch('setOption', { name: 'interfaceLanguage', value: val })
+    const value = useMergedConfigStore().mergedConfig.interfaceLanguage
+    useI18nStore().setLanguage(value)
+    useEmojiStore().loadUnicodeEmojiData(value)
+
     document.getElementById('modal').classList = ['-' + this.layoutType]
 
     // Create bound handlers
@@ -80,7 +107,7 @@ export default {
     window.addEventListener('resize', this.updateMobileState)
     this.scrollParent.addEventListener('scroll', this.updateScrollState)
 
-    if (useInterfaceStore().themeApplied) {
+    if (this.themeApplied) {
       this.setThemeBodyClass()
       this.removeSplash()
     }
@@ -91,12 +118,9 @@ export default {
     this.scrollParent.removeEventListener('scroll', this.updateScrollState)
   },
   computed: {
-    themeApplied() {
-      return useInterfaceStore().themeApplied
-    },
     currentTheme() {
-      if (useInterfaceStore().styleDataUsed) {
-        const styleMeta = useInterfaceStore().styleDataUsed.find(
+      if (this.styleDataUsed) {
+        const styleMeta = this.styleDataUsed.find(
           (x) => x.component === '@meta',
         )
 
@@ -121,7 +145,7 @@ export default {
       ]
     },
     navClasses() {
-      const { navbarColumnStretch } = this.$store.getters.mergedConfig
+      const { navbarColumnStretch } = useMergedConfigStore().mergedConfig
       return [
         '-' + this.layoutType,
         ...(navbarColumnStretch ? ['-column-stretch'] : []),
@@ -133,13 +157,23 @@ export default {
     userBackground() {
       return this.currentUser.background_image
     },
+    foreignProfileBackground() {
+      return (
+        useMergedConfigStore().mergedConfig.allowForeignUserBackground &&
+        useInterfaceStore().foreignProfileBackground
+      )
+    },
     instanceBackground() {
-      return this.mergedConfig.hideInstanceWallpaper
+      return useMergedConfigStore().mergedConfig.hideInstanceWallpaper
         ? null
-        : this.$store.state.instance.background
+        : this.instanceBackgroundUrl
     },
     background() {
-      return this.userBackground || this.instanceBackground
+      return (
+        this.foreignProfileBackground ||
+        this.userBackground ||
+        this.instanceBackground
+      )
     },
     bgStyle() {
       if (this.background) {
@@ -148,18 +182,8 @@ export default {
         }
       }
     },
-    shout() {
+    shoutJoined() {
       return useShoutStore().joined
-    },
-    suggestionsEnabled() {
-      return this.$store.state.instance.suggestionsEnabled
-    },
-    showInstanceSpecificPanel() {
-      return (
-        this.$store.state.instance.showInstanceSpecificPanel &&
-        !this.$store.getters.mergedConfig.hideISP &&
-        this.$store.state.instance.instanceSpecificPanelContent
-      )
     },
     isChats() {
       return this.$route.name === 'chat' || this.$route.name === 'chats'
@@ -171,31 +195,21 @@ export default {
       if (this.isChats) return false
       if (this.isListEdit) return false
       return (
-        this.$store.getters.mergedConfig.alwaysShowNewPostButton ||
+        useMergedConfigStore().mergedConfig.alwaysShowNewPostButton ||
         this.layoutType === 'mobile'
       )
     },
-    showFeaturesPanel() {
-      return this.$store.state.instance.showFeaturesPanel
-    },
-    editingAvailable() {
-      return this.$store.state.instance.editingAvailable
-    },
     shoutboxPosition() {
-      return this.$store.getters.mergedConfig.alwaysShowNewPostButton || false
+      return (
+        useMergedConfigStore().mergedConfig.alwaysShowNewPostButton || false
+      )
     },
     hideShoutbox() {
-      return this.$store.getters.mergedConfig.hideShoutbox
-    },
-    layoutType() {
-      return useInterfaceStore().layoutType
-    },
-    privateMode() {
-      return this.$store.state.instance.private
+      return useMergedConfigStore().mergedConfig.hideShoutbox
     },
     reverseLayout() {
       const { thirdColumnMode, sidebarRight: reverseSetting } =
-        this.$store.getters.mergedConfig
+        useMergedConfigStore().mergedConfig
       if (this.layoutType !== 'wide') {
         return reverseSetting
       } else {
@@ -205,15 +219,38 @@ export default {
       }
     },
     noSticky() {
-      return this.$store.getters.mergedConfig.disableStickyHeaders
+      return useMergedConfigStore().mergedConfig.disableStickyHeaders
     },
     showScrollbars() {
-      return this.$store.getters.mergedConfig.showScrollbars
+      return useMergedConfigStore().mergedConfig.showScrollbars
     },
     scrollParent() {
       return window /* this.$refs.appContentRef */
     },
-    ...mapGetters(['mergedConfig']),
+    showInstanceSpecificPanel() {
+      return (
+        this.instanceSpecificPanelPresent &&
+        !useMergedConfigStore().mergedConfig.hideISP
+      )
+    },
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
+    ...mapState(useInterfaceStore, [
+      'themeApplied',
+      'styleDataUsed',
+      'layoutType',
+    ]),
+    ...mapState(useInstanceStore, ['styleDataUsed']),
+    ...mapState(useInstanceCapabilitiesStore, [
+      'suggestionsEnabled',
+      'editingAvailable',
+    ]),
+    ...mapState(useInstanceStore, {
+      instanceBackgroundUrl: (store) => store.instanceIdentity.background,
+      showFeaturesPanel: (store) => store.instanceIdentity.showFeaturesPanel,
+      instanceSpecificPanelPresent: (store) =>
+        store.instanceIdentity.showInstanceSpecificPanel &&
+        store.instanceIdentity.instanceSpecificPanelContent,
+    }),
   },
   methods: {
     resizeHandler() {

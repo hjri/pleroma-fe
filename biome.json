@@ -46,6 +46,7 @@
         "noUnusedLabels": "error",
         "noUnusedPrivateClassMembers": "error",
         "noUnusedVariables": "error",
+        "noUnusedImports": "error",
         "useIsNan": "error",
         "useValidForDirection": "error",
         "useValidTypeof": "error",
@@ -132,7 +133,11 @@
             "groups": [
               [":NODE:", ":PACKAGE:", "!src/**", "!@fortawesome/**"],
               ":BLANK_LINE:",
-              [":PATH:", "src/**"],
+              [":PATH:", "src/components/**"],
+              ":BLANK_LINE:",
+              [":PATH:", "src/stores/**"],
+              ":BLANK_LINE:",
+              [":PATH:", "src/**", "src/stores/**", "src/components/**"],
               ":BLANK_LINE:",
               "@fortawesome/fontawesome-svg-core",
               "@fortawesome/*"

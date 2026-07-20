@@ -1,12 +1,9 @@
-import Flash from 'src/components/flash/flash.vue'
-import { useMediaViewerStore } from 'src/stores/media_viewer'
-import fileTypeService from '../../services/file_type/file_type.service.js'
+import { defineAsyncComponent } from 'vue'
+
+import Modal from 'src/components/modal/modal.vue'
 import GestureService from '../../services/gesture_service/gesture_service'
-import Modal from '../modal/modal.vue'
-import PinchZoom from '../pinch_zoom/pinch_zoom.vue'
-import StillImage from '../still-image/still-image.vue'
-import SwipeClick from '../swipe_click/swipe_click.vue'
-import VideoAttachment from '../video_attachment/video_attachment.vue'
+
+import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -20,12 +17,17 @@ library.add(faChevronLeft, faChevronRight, faCircleNotch, faTimes)
 
 const MediaModal = {
   components: {
-    StillImage,
-    VideoAttachment,
-    PinchZoom,
-    SwipeClick,
+    VideoAttachment: defineAsyncComponent(
+      () => import('src/components/video_attachment/video_attachment.vue'),
+    ),
+    PinchZoom: defineAsyncComponent(
+      () => import('src/components/pinch_zoom/pinch_zoom.vue'),
+    ),
+    SwipeClick: defineAsyncComponent(
+      () => import('src/components/swipe_click/swipe_click.vue'),
+    ),
     Modal,
-    Flash,
+    Flash: defineAsyncComponent(() => import('src/components/flash/flash.vue')),
   },
   data() {
     return {
@@ -58,9 +60,6 @@ const MediaModal = {
     canNavigate() {
       return this.media.length > 1
     },
-    type() {
-      return this.currentMedia ? this.getType(this.currentMedia) : null
-    },
     swipeDisableClickThreshold() {
       // If there is only one media, allow more mouse movements to close the modal
       // because there is less chance that the user wants to switch to another image
@@ -68,9 +67,6 @@ const MediaModal = {
     },
   },
   methods: {
-    getType(media) {
-      return fileTypeService.fileType(media.mimetype)
-    },
     hide() {
       // HACK: Closing immediately via a touch will cause the click
       // to be processed on the content below the overlay
@@ -95,7 +91,7 @@ const MediaModal = {
             ? this.media.length - 1
             : this.currentIndex - 1
         const newMedia = this.media[prevIndex]
-        if (this.getType(newMedia) === 'image') {
+        if (newMedia.type === 'image') {
           this.loading = true
         }
         useMediaViewerStore().setCurrentMedia(newMedia)
@@ -108,7 +104,7 @@ const MediaModal = {
             ? 0
             : this.currentIndex + 1
         const newMedia = this.media[nextIndex]
-        if (this.getType(newMedia) === 'image') {
+        if (newMedia.type === 'image') {
           this.loading = true
         }
         useMediaViewerStore().setCurrentMedia(newMedia)

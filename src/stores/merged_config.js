@@ -1,0 +1,58 @@
+import { defineStore } from 'pinia'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
+import {
+  LOCAL_ONLY_KEYS,
+  ROOT_CONFIG,
+} from 'src/modules/default_config_state.js'
+
+export const useMergedConfigStore = defineStore('merged_config', {
+  getters: {
+    mergedConfig: () => {
+      const instancePrefs = useInstanceStore().prefsStorage
+      const tempPrefs = useLocalConfigStore().tempStorage
+      const localPrefs = useLocalConfigStore().prefsStorage
+      const syncPrefs = useSyncConfigStore().prefsStorage
+
+      const getValue = (k) => {
+        if (LOCAL_ONLY_KEYS.has(k)) {
+          return tempPrefs[k] ?? localPrefs[k] ?? syncPrefs.simple[k]
+        } else {
+          return tempPrefs[k] ?? syncPrefs.simple[k]
+        }
+      }
+      const getDefault = (k) => instancePrefs[k] ?? ROOT_CONFIG[k]
+
+      const result = Object.fromEntries(
+        Object.keys(ROOT_CONFIG).map((k) => [k, getValue(k) ?? getDefault(k)]),
+      )
+      return result
+    },
+    mergedConfigDefault: () => {
+      const instancePrefs = useInstanceStore().prefsStorage
+
+      const getDefault = (k) => instancePrefs[k] ?? ROOT_CONFIG[k]
+
+      const result = Object.fromEntries(
+        Object.keys(ROOT_CONFIG).map((k) => [k, getDefault(k)]),
+      )
+      return result
+    },
+    mergedConfigWithoutDefaults: () => {
+      const tempPrefs = useLocalConfigStore().tempStorage
+      const localPrefs = useLocalConfigStore().prefsStorage
+      const syncPrefs = useSyncConfigStore().prefsStorage
+
+      const getValue = (k) =>
+        tempPrefs[k] ?? localPrefs[k] ?? syncPrefs.simple[k]
+
+      const result = Object.fromEntries(
+        Object.keys(ROOT_CONFIG).map((k) => [k, getValue(k)]),
+      )
+      return result
+    },
+  },
+})

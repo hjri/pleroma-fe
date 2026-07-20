@@ -32,61 +32,64 @@
         >
       </router-link>
       <div class="item right actions">
-        <search-bar
+        <SearchBar
           v-if="currentUser || !privateMode"
           @toggled="onSearchBarToggled"
           @click.stop
         />
-        <button
-          class="button-unstyled nav-icon"
-          :title="$t('nav.preferences')"
-          @click.stop="openSettingsModal"
-        >
-          <FAIcon
-            fixed-width
-            class="fa-scale-110 fa-old-padding"
-            icon="cog"
-          />
-        </button>
-        <button
-          v-if="currentUser && currentUser.role === 'admin'"
-          class="button-unstyled nav-icon"
-          target="_blank"
-          :title="$t('nav.administration')"
-          @click.stop="openAdminModal"
-        >
-          <FAIcon
-            fixed-width
-            class="fa-scale-110 fa-old-padding"
-            icon="tachometer-alt"
-          />
-        </button>
-        <span class="spacer" />
-        <button
-          v-if="currentUser"
-          class="button-unstyled nav-icon"
-          :title="$t('login.logout')"
-          @click.stop.prevent="logout"
-        >
-          <FAIcon
-            fixed-width
-            class="fa-scale-110 fa-old-padding"
-            icon="sign-out-alt"
-          />
-        </button>
+        <template v-if="searchBarHidden">
+          <button
+            class="button-unstyled nav-icon"
+            :title="$t('nav.preferences')"
+            @click.stop="openSettingsModal('user')"
+          >
+            <FAIcon
+              fixed-width
+              class="fa-scale-110 fa-old-padding"
+              icon="cog"
+            />
+          </button>
+          <button
+            v-if="currentUser && currentUser.role === 'admin'"
+            class="button-unstyled nav-icon"
+            target="_blank"
+            :title="$t('nav.administration')"
+            @click.stop="openSettingsModal('admin')"
+          >
+            <FAIcon
+              fixed-width
+              class="fa-scale-110 fa-old-padding"
+              icon="tachometer-alt"
+            />
+          </button>
+          <span class="spacer" />
+          <button
+            v-if="currentUser"
+            class="button-unstyled nav-icon"
+            :title="$t('login.logout')"
+            @click.stop.prevent="logout"
+          >
+            <FAIcon
+              fixed-width
+              class="fa-scale-110 fa-old-padding"
+              icon="sign-out-alt"
+            />
+          </button>
+        </template>
       </div>
     </div>
     <teleport to="#modal">
-      <confirm-modal
+      <ConfirmModal
         v-if="showingConfirmLogout"
         :title="$t('login.logout_confirm_title')"
+        :confirm-danger="true"
         :confirm-text="$t('login.logout_confirm_accept_button')"
         :cancel-text="$t('login.logout_confirm_cancel_button')"
         @accepted="doLogout"
         @cancelled="hideConfirmLogout"
       >
         {{ $t('login.logout_confirm') }}
-      </confirm-modal>
+      </ConfirmModal>
     </teleport>
   </nav>
 </template>

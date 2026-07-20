@@ -1,0 +1,87 @@
+name: 'Bug report'
+about: 'Bug report for Pleroma FE'
+labels:
+  - Bug
+body:
+- type: input
+  id: env-browser
+  attributes:
+    label: Browser and OS
+    description: What browser are you using, including version, and what OS are you running?
+    placeholder: Firefox 140, Arch Linux
+  validations:
+    required: true
+- type: input
+  id: env-instance
+  attributes:
+    label: Instance URL
+  validations:
+    required: false
+- type: input
+  id: env-backend
+  attributes:
+    label: Backend version information
+    description: Backend version being used. (See Settings->Show advanced->Developer)
+    placeholder: Pleroma BE 2.10
+  validations:
+    required: true
+- type: input
+  id: env-frontend
+  attributes:
+    label: Frontend version information
+    description: Frontend version being used. (See Settings->Show advanced->Developer)
+    placeholder: Pleroma FE 2.10
+  validations:
+    required: true
+- type: input
+  id: env-extensions
+  attributes:
+    label: Browser extensions
+    description: List of browser extensions you are using, like uBlock, rikaichamp etc. If none leave empty.
+  validations:
+    required: false
+- type: input
+  id: env-modifications
+  attributes:
+    label: Known instance/user customizations
+    description: Whether you are using a Pleroma FE fork, any mods mods or instance level styles among others.
+  validations:
+    required: false
+- type: textarea
+  id: bug-text
+  attributes:
+    label: Bug description
+    description: A short description of the bug. Images can be helpful.
+  validations:
+    required: true
+- type: textarea
+  id: bug-reproducer
+  attributes:
+    label: Reproduction steps
+    description: Ordered list of reproduction steps needed to make the bug happen. If you don't have reproduction steps, leave this empty.
+    placeholder: |
+      1. Log in with a fresh browser session
+      2. Open timeline X
+      3. Click on button Y
+      4. Z broke
+  validations:
+    required: false
+- type: textarea
+  id: bug-seriousness
+  attributes:
+    label: Bug seriousness
+    value: |
+      * How annoying it is:
+      * How often does it happen:
+      * How many people does it affect:
+      * Is there a workaround for it:
+- type: checkboxes
+  id: duplicate-issues
+  attributes:
+    label: Duplicate issues
+    hide_label: true
+    description: Before submitting this issue, search for same or similar issues on the [Pleroma FE bug tracker](https://git.pleroma.social/pleroma/pleroma-fe/issues).
+    options:
+      - label: I've searched for same or similar issues before submitting this issue.
+        required: true
+        visible: [form]

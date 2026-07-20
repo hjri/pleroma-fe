@@ -5,9 +5,9 @@
   >
     <div class="body">
       <div
-        v-if="status.summary_raw_html"
+        v-if="hasSubject"
         class="summary-wrapper"
-        :class="{ '-tall': (longSubject && !showingLongSubject) }"
+        :class="{ '-tall': (hasLongSubject && !showingLongSubject) }"
       >
         <RichContent
           class="media-body summary"
@@ -15,16 +15,19 @@
           :html="status.summary_raw_html"
           :emoji="status.emojis"
           :is-local="status.isLocal"
+          :allow-non-square-emoji="allowNonSquareEmoji"
+          :pause-mfm="pauseMfm"
+          :scale-mfm="scaleMfm"
         />
         <button
-          v-show="longSubject && showingLongSubject"
+          v-show="hasLongSubject && showingLongSubject"
           class="button-unstyled -link tall-subject-hider"
           @click.prevent="toggleShowingLongSubject"
         >
           {{ $t("status.hide_full_subject") }}
         </button>
         <button
-          v-show="longSubject && !showingLongSubject"
+          v-show="hasLongSubject && !showingLongSubject"
           class="button-unstyled -link tall-subject-hider"
           @click.prevent="toggleShowingLongSubject"
         >
@@ -33,10 +36,10 @@
       </div>
       <div
         class="text-wrapper"
-        :class="{'-tall-status': hideTallStatus, '-expanded': showingMore}"
+        :class="{'-tall-status': hideTallStatus, '-hidden': shouldHide, '-expanded': showingMore}"
       >
         <RichContent
-          v-if="!hideSubjectStatus && !(singleLine && status.summary_raw_html)"
+          v-if="!(singleLine && hasSubject) && !shouldHide"
           :class="{ '-single-line': singleLine }"
           class="text media-body"
           :html="status.raw_html"
@@ -47,15 +50,17 @@
           :greentext="mergedConfig.greentext"
           :attentions="status.attentions"
           :is-local="status.is_local"
+          :allow-non-square-emoji="allowNonSquareEmoji"
+          :pause-mfm="pauseMfm"
+          :scale-mfm="scaleMfm"
           @parse-ready="onParseReady"
         />
         <div
-          v-show="shouldShowToggle"
+          v-show="shouldShowExpandToggle"
           :class="toggleButtonClasses"
         >
           <button
             class="btn button-default toggle-button"
-            :class="{ '-focused': focused }"
             :aria-expanded="showingMore"
             @click.prevent="toggleShowMore"
           >

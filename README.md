@@ -6,7 +6,7 @@
 
 # For Translators
 
-To translate Pleroma-FE, use our weblate server: https://translate.pleroma.social/. If you need to add your language it should be added as a json file in [src/i18n/](https://git.pleroma.social/pleroma/pleroma-fe/blob/develop/src/i18n/) folder and added in a list within [src/i18n/languages.js](https://git.pleroma.social/pleroma/pleroma-fe/blob/develop/src/i18n/languages.js). 
+To translate Pleroma-FE, use our weblate server: https://translate.pleroma.social/. If you need to add your language it should be added as a json file in [src/i18n/](https://git.pleroma.social/pleroma/pleroma-fe/src/src/i18n/) folder and added in a list within [src/i18n/languages.js](https://git.pleroma.social/pleroma/pleroma-fe/src/src/i18n/languages.js). 
 
 Pleroma-FE will set your language by your browser locale, but you can change language in settings.
 
@@ -32,10 +32,10 @@ yarn unit
 
 # For Contributors:
 
-You can create file `/config/local.json` (see [example](https://git.pleroma.social/pleroma/pleroma-fe/blob/develop/config/local.example.json)) to enable some convenience dev options:
+You can create file `/config/local.json` (see [example](https://git.pleroma.social/pleroma/pleroma-fe/src/config/local.example.json)) to enable some convenience dev options:
 
 * `target`: makes local dev server redirect to some existing instance's BE instead of local BE, useful for testing things in near-production environment and searching for real-life use-cases.
-* `staticConfigPreference`: makes FE's `/static/config.json` take preference of BE-served `/api/statusnet/config.json`. Only works in dev mode.
+* `staticConfigPreference`: makes FE's `/static/config.json` take preference of BE-served `/api/pleroma/frontend_configurations`. Only works in dev mode.
 
 FE Build process also leaves current commit hash in global variable `___pleromafe_commit_hash` so that you can easily see which pleroma-fe commit instance is running, also helps pinpointing which commit was used when FE was bundled into BE.
 

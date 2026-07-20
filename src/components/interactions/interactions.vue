@@ -42,7 +42,6 @@
     </tab-switcher>
     <Notifications
       ref="notifications"
-      :no-heading="true"
       :no-extra="true"
       :minimal-mode="true"
       :filter-mode="filterMode"

@@ -1,5 +1,5 @@
 <template>
-  <basic-user-card :user="user">
+  <BasicUserCard :user="user">
     <div class="mute-card-content-container">
       <span
         v-if="muted && muteExpiryAvailable"
@@ -30,7 +30,7 @@
         :is-mute="true"
       />
     </teleport>
-  </basic-user-card>
+  </BasicUserCard>
 </template>
 
 <script src="./mute_card.js"></script>

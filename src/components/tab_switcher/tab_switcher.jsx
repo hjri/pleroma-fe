@@ -1,13 +1,10 @@
 // eslint-disable-next-line no-unused
 
-import { mapState } from 'pinia'
-import { Fragment, h } from 'vue'
+import { Fragment } from 'vue'
 
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/vue-fontawesome'
 
 import './tab_switcher.scss'
-
-import { useInterfaceStore } from 'src/stores/interface'
 
 const findFirstUsable = (slots) => slots.findIndex((_) => _.props)
 
@@ -89,7 +86,7 @@ export default {
         this.onSwitch.call(null, this.slots()[index].key)
       }
       this.active = index
-      if (this.scrollableTabs) {
+      if (this.scrollableTabs && this.$refs.contents) {
         this.$refs.contents.scrollTop = 0
       }
     },

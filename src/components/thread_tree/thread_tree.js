@@ -1,5 +1,3 @@
-import Status from '../status/status.vue'
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faAngleDoubleDown,
@@ -9,9 +7,7 @@ import {
 library.add(faAngleDoubleDown, faAngleDoubleRight)
 
 const ThreadTree = {
-  components: {
-    Status,
-  },
+  components: {},
   name: 'ThreadTree',
   props: {
     depth: Number,
@@ -23,37 +19,19 @@ const ThreadTree = {
     pinnedStatusIdsObject: Object,
     profileUserId: String,
 
-    isFocusedFunction: Function,
-    highlight: String,
+    focused: String,
     getReplies: Function,
-    setHighlight: Function,
     toggleExpanded: Function,
 
     simple: Boolean,
-    // to control display of the whole thread forest
-    toggleThreadDisplay: Function,
+    canDive: Boolean,
     threadDisplayStatus: Object,
     showThreadRecursively: Function,
     totalReplyCount: Object,
     totalReplyDepth: Object,
-    statusContentProperties: Object,
-    setStatusContentProperty: Function,
-    toggleStatusContentProperty: Function,
-    dive: Function,
   },
+  emits: ['suspendableStateChange', 'goto', 'dive'],
   computed: {
-    suspendable() {
-      const selfSuspendable = this.$refs.statusComponent
-        ? this.$refs.statusComponent.suspendable
-        : true
-      if (this.$refs.childComponent) {
-        return (
-          selfSuspendable &&
-          this.$refs.childComponent.every((s) => s.suspendable)
-        )
-      }
-      return selfSuspendable
-    },
     reverseLookupTable() {
       return this.conversation.reduce(
         (table, status, index) => {
@@ -73,28 +51,10 @@ const ThreadTree = {
     threadShowing() {
       return this.threadDisplayStatus[this.status.id] === 'showing'
     },
-    currentProp() {
-      return this.statusContentProperties[this.status.id]
-    },
   },
   methods: {
     statusById(id) {
       return this.conversation[this.reverseLookupTable[id]]
-    },
-    collapseThread() {
-      /* no-op */
-    },
-    showThread() {
-      /* no-op */
-    },
-    showAllSubthreads() {
-      /* no-op */
-    },
-    toggleCurrentProp(name) {
-      this.toggleStatusContentProperty(this.status.id, name)
-    },
-    setCurrentProp(name) {
-      this.setStatusContentProperty(this.status.id, name)
     },
   },
 }

@@ -8,8 +8,11 @@ import { filterNavigation } from 'src/components/navigation/filter.js'
 import { ROOT_ITEMS, TIMELINES } from 'src/components/navigation/navigation.js'
 import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
 import NavigationPins from 'src/components/navigation/navigation_pins.vue'
+
 import { useAnnouncementsStore } from 'src/stores/announcements'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -81,28 +84,28 @@ const NavPanel = {
       this.editMode = !this.editMode
     },
     toggleCollapse() {
-      useServerSideStorageStore().setPreference({
-        path: 'simple.collapseNav',
+      useSyncConfigStore().setSimplePrefAndSave({
+        path: 'collapseNav',
         value: !this.collapsed,
       })
-      useServerSideStorageStore().pushServerSideStorage()
+      useSyncConfigStore().pushSyncConfig()
     },
     isPinned(item) {
       return this.pinnedItems.has(item)
     },
     togglePin(item) {
       if (this.isPinned(item)) {
-        useServerSideStorageStore().removeCollectionPreference({
+        useSyncConfigStore().removeCollectionPreference({
           path: 'collections.pinnedNavItems',
           value: item,
         })
       } else {
-        useServerSideStorageStore().addCollectionPreference({
+        useSyncConfigStore().addCollectionPreference({
           path: 'collections.pinnedNavItems',
           value: item,
         })
       }
-      useServerSideStorageStore().pushServerSideStorage()
+      useSyncConfigStore().pushSyncConfig()
     },
   },
   computed: {
@@ -110,7 +113,16 @@ const NavPanel = {
       unreadAnnouncementCount: 'unreadAnnouncementCount',
       supportsAnnouncements: (store) => store.supportsAnnouncements,
     }),
-    ...mapPiniaState(useServerSideStorageStore, {
+    ...mapPiniaState(useInstanceCapabilitiesStore, [
+      'pleromaChatMessagesAvailable',
+      'pleromaBookmarkFoldersAvailable',
+      'localBubble',
+    ]),
+    ...mapPiniaState(useInstanceStore, ['federating']),
+    ...mapPiniaState(useInstanceStore, {
+      privateMode: (store) => store.private,
+    }),
+    ...mapPiniaState(useSyncConfigStore, {
       collapsed: (store) => store.prefsStorage.simple.collapseNav,
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems),
@@ -118,13 +130,6 @@ const NavPanel = {
     ...mapState({
       currentUser: (state) => state.users.currentUser,
       followRequestCount: (state) => state.api.followRequests.length,
-      privateMode: (state) => state.instance.private,
-      federating: (state) => state.instance.federating,
-      pleromaChatMessagesAvailable: (state) =>
-        state.instance.pleromaChatMessagesAvailable,
-      bookmarkFolders: (state) =>
-        state.instance.pleromaBookmarkFoldersAvailable,
-      bubbleTimeline: (state) => state.instance.localBubbleInstances.length > 0,
     }),
     timelinesItems() {
       return filterNavigation(
@@ -138,8 +143,8 @@ const NavPanel = {
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser,
-          supportsBubbleTimeline: this.bubbleTimeline,
-          supportsBookmarkFolders: this.bookmarkFolders,
+          supportsBubbleTimeline: this.localBubble,
+          supportsBookmarkFolders: this.pleromaBookmarkFoldersAvailable,
         },
       )
     },
@@ -152,8 +157,8 @@ const NavPanel = {
           isFederating: this.federating,
           isPrivate: this.privateMode,
           currentUser: this.currentUser,
-          supportsBubbleTimeline: this.bubbleTimeline,
-          supportsBookmarkFolders: this.bookmarkFolders,
+          supportsBubbleTimeline: this.localBubble,
+          supportsBookmarkFolders: this.pleromaBookmarkFoldersAvailable,
         },
       )
     },

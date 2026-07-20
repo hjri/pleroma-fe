@@ -25,7 +25,11 @@ const getAllAccessibleAnnotations = async (projectRoot) => {
           await access(importFile)
           return `'${lang}': () => import('${importModule}')`
         } catch (e) {
-          console.error(e)
+          if (e.message.match(/ENOENT/)) {
+            console.warn(`Missing emoji annotations locale: ${destLang}`)
+          } else {
+            console.error('test', e.message)
+          }
           return
         }
       }),

@@ -1,5 +1,6 @@
-import { useListsStore } from 'src/stores/lists'
-import ListsCard from '../lists_card/lists_card.vue'
+import FolderCard from 'src/components/folder_card/folder_card.vue'
+
+import { useListsStore } from 'src/stores/lists.js'
 
 const Lists = {
   data() {
@@ -8,7 +9,7 @@ const Lists = {
     }
   },
   components: {
-    ListsCard,
+    FolderCard,
   },
   computed: {
     lists() {

@@ -4,16 +4,16 @@
     ref="root"
   >
     <Status
-      class="Notification"
+      class="Notification panel-body"
       :compact="true"
       :statusoid="notification.status"
-      @interacted="interacted"
+      @click="interacted"
     />
   </article>
   <article
     v-else
     ref="root"
-    class="NotificationParent"
+    class="NotificationParent panel-body"
     :class="{ '-expandable': expandable }"
   >
     <div
@@ -71,6 +71,9 @@
                 :title="'@'+notification.from_profile.screen_name_ui"
                 :html="notification.from_profile.name_html"
                 :emoji="notification.from_profile.emoji"
+                :allow-non-square-emoji="allowNonSquareEmoji"
+                :pause-mfm="pauseMfm"
+                :scale-mfm="scaleMfm"
                 :is-local="notification.from_profile.is_local"
               />
             </bdi>
@@ -136,6 +139,7 @@
                     :src="notification.emoji_url"
                     :alt="notification.emoji"
                     :title="notification.emoji"
+                    :class="{ ['-wide']: allowNonSquareEmoji }"
                   >
                   <span
                     v-else
@@ -265,7 +269,7 @@
       </div>
     </div>
     <teleport to="#modal">
-      <confirm-modal
+      <ConfirmModal
         v-if="showingApproveConfirmDialog"
         :title="$t('user_card.approve_confirm_title')"
         :confirm-text="$t('user_card.approve_confirm_accept_button')"
@@ -274,8 +278,8 @@
         @cancelled="hideApproveConfirmDialog"
       >
         {{ $t('user_card.approve_confirm', { user: user.screen_name_ui }) }}
-      </confirm-modal>
-      <confirm-modal
+      </ConfirmModal>
+      <ConfirmModal
         v-if="showingDenyConfirmDialog"
         :title="$t('user_card.deny_confirm_title')"
         :confirm-text="$t('user_card.deny_confirm_accept_button')"
@@ -284,7 +288,7 @@
         @cancelled="hideDenyConfirmDialog"
       >
         {{ $t('user_card.deny_confirm', { user: user.screen_name_ui }) }}
-      </confirm-modal>
+      </ConfirmModal>
     </teleport>
   </article>
 </template>

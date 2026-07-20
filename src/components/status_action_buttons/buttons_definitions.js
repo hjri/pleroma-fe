@@ -1,4 +1,7 @@
 import { useEditStatusStore } from 'src/stores/editStatus.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useReportsStore } from 'src/stores/reports.js'
 import { useStatusHistoryStore } from 'src/stores/statusHistory.js'
 
@@ -18,7 +21,7 @@ export const BUTTONS = [
     anonLink: true,
     toggleable: true,
     closeIndicator: 'times',
-    activeIndicator: 'none',
+    activeIndicator: null,
     action({ emit }) {
       emit('toggleReplying')
       return Promise.resolve()
@@ -50,7 +53,7 @@ export const BUTTONS = [
         !PRIVATE_SCOPES.has(status.visibility)),
     toggleable: true,
     confirm: ({ status, getters }) =>
-      !status.repeated && getters.mergedConfig.modalOnRepeat,
+      !status.repeated && useMergedConfigStore().mergedConfig.modalOnRepeat,
     confirmStrings: {
       title: 'status.repeat_confirm_title',
       body: 'status.repeat_confirm',
@@ -93,7 +96,10 @@ export const BUTTONS = [
     // =========
     name: 'emoji',
     label: 'tool_tip.add_reaction',
-    icon: ['far', 'smile-beam'],
+    icon: ['far', 'face-smile-beam'],
+    interactive: () => true,
+    active: ({ emojiPickerShown }) => emojiPickerShown,
+    toggleable: true,
     anonLink: true,
   },
   {
@@ -104,10 +110,11 @@ export const BUTTONS = [
     icon: 'eye-slash',
     label: 'status.mute_ellipsis',
     if: ({ loggedIn }) => loggedIn,
-    toggleable: true,
+    toggleable: false,
     dropdown: true,
-    // action ({ status, dispatch, emit }) {
-    // }
+    action({ status, dispatch, emit }) {
+      /* prevent hiding */
+    },
   },
   {
     // =========
@@ -159,7 +166,10 @@ export const BUTTONS = [
     icon: 'history',
     label: 'status.status_history',
     if({ status, state }) {
-      return state.instance.editingAvailable && status.edited_at !== null
+      return (
+        useInstanceCapabilitiesStore().editingAvailable &&
+        status.edited_at !== null
+      )
     },
     action({ status }) {
       const originalStatus = { ...status }
@@ -189,7 +199,7 @@ export const BUTTONS = [
     if({ status, loggedIn, currentUser, state }) {
       return (
         loggedIn &&
-        state.instance.editingAvailable &&
+        useInstanceCapabilitiesStore().editingAvailable &&
         status.user.id === currentUser.id
       )
     },
@@ -219,10 +229,10 @@ export const BUTTONS = [
       return (
         loggedIn &&
         (status.user.id === currentUser.id ||
-          currentUser.privileges.includes('messages_delete'))
+          currentUser.privileges.has('messages_delete'))
       )
     },
-    confirm: ({ getters }) => getters.mergedConfig.modalOnDelete,
+    confirm: ({ getters }) => useMergedConfigStore().mergedConfig.modalOnDelete,
     confirmStrings: {
       title: 'status.delete_confirm_title',
       body: 'status.delete_confirm',
@@ -235,6 +245,26 @@ export const BUTTONS = [
   },
   {
     // =========
+    // CHANGE SCOPE
+    // =========
+    name: 'changeScope',
+    icon: 'eye',
+    label: 'status.admin_change_scope',
+    if({ status, loggedIn, currentUser }) {
+      return (
+        loggedIn &&
+        (status.user.id === currentUser.id ||
+          currentUser.privileges.has('messages_delete'))
+      )
+    },
+    toggleable: false,
+    dropdown: true,
+    action({ status, dispatch, emit }) {
+      /* prevent hiding */
+    },
+  },
+  {
+    // =========
     // SHARE/COPY
     // =========
     name: 'share',
@@ -243,7 +273,7 @@ export const BUTTONS = [
     action({ state, status, router }) {
       navigator.clipboard.writeText(
         [
-          state.instance.server,
+          useInstanceStore().server,
           router.resolve({ name: 'conversation', params: { id: status.id } })
             .href,
         ].join(''),
@@ -269,10 +299,12 @@ export const BUTTONS = [
     label: 'user_card.report',
     if: ({ loggedIn }) => loggedIn,
     action({ status }) {
-      return useReportsStore().openUserReportingModal({
+      useReportsStore().openUserReportingModal({
         userId: status.user.id,
         statusIds: [status.id],
       })
+
+      return Promise.resolve()
     },
   },
 ].map((button) => {

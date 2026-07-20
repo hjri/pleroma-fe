@@ -2,8 +2,7 @@
   <vertical-tab-switcher
     ref="tabSwitcher"
     class="settings_tab-switcher"
-    :scrollable-tabs="true"
-    :child-collapsed="childCollapsed"
+    scrollable-tabs
     :body-scroll-lock="bodyLock"
     :hide-header="navHideHeader"
   >

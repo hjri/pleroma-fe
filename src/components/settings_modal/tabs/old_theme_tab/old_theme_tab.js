@@ -7,6 +7,12 @@ import RangeInput from 'src/components/range_input/range_input.vue'
 import Select from 'src/components/select/select.vue'
 import ShadowControl from 'src/components/shadow_control/shadow_control.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+import Preview from './theme_preview.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
 import {
   getContrastRatioLayers,
   hex2rgb,
@@ -41,8 +47,6 @@ import {
 } from 'src/services/theme_data/theme_data.service.js'
 import { init } from 'src/services/theme_data/theme_data_3.service.js'
 import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
-import { useInterfaceStore } from 'src/stores/interface'
-import Preview from './theme_preview.vue'
 
 // List of color values used in v1
 const v1OnlyNames = [
@@ -78,7 +82,7 @@ export default {
       }),
       availableStyles: [],
       selected: '',
-      selectedTheme: this.$store.getters.mergedConfig.theme,
+      selectedTheme: useMergedConfigStore().mergedConfig.theme,
       themeWarning: undefined,
       tempImportFile: undefined,
       engineVersion: 0,
@@ -125,7 +129,7 @@ export default {
     }
   },
   created() {
-    const currentIndex = this.$store.state.instance.themesIndex
+    const currentIndex = useInstanceStore().themesIndex
 
     let promise
     if (currentIndex) {
@@ -505,22 +509,14 @@ export default {
       }
     },
     setCustomTheme() {
-      useInterfaceStore().setThemeV2({
-        customTheme: {
-          ignore: true,
-          themeFileVersion: this.selectedVersion,
-          themeEngineVersion: CURRENT_VERSION,
-          ...this.previewTheme,
-        },
-        customThemeSource: {
-          themeFileVersion: this.selectedVersion,
-          themeEngineVersion: CURRENT_VERSION,
-          shadows: this.shadowsLocal,
-          fonts: this.fontsLocal,
-          opacity: this.currentOpacity,
-          colors: this.currentColors,
-          radii: this.currentRadii,
-        },
+      useInterfaceStore().setTheme({
+        themeFileVersion: this.selectedVersion,
+        themeEngineVersion: CURRENT_VERSION,
+        shadows: this.shadowsLocal,
+        fonts: this.fontsLocal,
+        opacity: this.currentOpacity,
+        colors: this.currentColors,
+        radii: this.currentRadii,
       })
     },
     updatePreviewColors() {

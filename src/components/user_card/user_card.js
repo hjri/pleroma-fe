@@ -1,31 +1,35 @@
-import isEqual from 'lodash/isEqual'
-import merge from 'lodash/merge'
-import ldUnescape from 'lodash/unescape'
-import { mapGetters } from 'vuex'
+import {
+  isEqual,
+  escape as ldEscape,
+  unescape as ldUnescape,
+  merge,
+} from 'lodash'
+import { mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
-import DialogModal from 'src/components/dialog_modal/dialog_modal.vue'
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
 import suggestor from 'src/components/emoji_input/suggestor.js'
-import ImageCropper from 'src/components/image_cropper/image_cropper.vue'
-import RichContent from 'src/components/rich_content/rich_content.jsx'
-import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
+import FollowButton from 'src/components/follow_button/follow_button.vue'
+import ProgressButton from 'src/components/progress_button/progress_button.vue'
+import Select from 'src/components/select/select.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+import UserLink from 'src/components/user_link/user_link.vue'
+
+import { useEmojiStore } from 'src/stores/emoji.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface'
+import { useMediaViewerStore } from 'src/stores/media_viewer'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { usePostStatusStore } from 'src/stores/post_status'
+import { useUserHighlightStore } from 'src/stores/user_highlight.js'
+
+import { updateProfile } from 'src/api/user.js'
 import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
 import localeService from 'src/services/locale/locale.service.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
-import { usePostStatusStore } from 'src/stores/post_status'
-import { useInterfaceStore } from '../../stores/interface'
-import { useMediaViewerStore } from '../../stores/media_viewer'
-import AccountActions from '../account_actions/account_actions.vue'
-import FollowButton from '../follow_button/follow_button.vue'
-import ModerationTools from '../moderation_tools/moderation_tools.vue'
-import ProgressButton from '../progress_button/progress_button.vue'
-import RemoteFollow from '../remote_follow/remote_follow.vue'
-import Select from '../select/select.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
-import UserLink from '../user_link/user_link.vue'
-import UserNote from '../user_note/user_note.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -54,6 +58,15 @@ library.add(
   faClockRotateLeft,
 )
 
+const KNOWN_TAGS = new Set([
+  'mrf_tag:media-force-nsfw',
+  'mrf_tag:media-strip',
+  'mrf_tag:force-unlisted',
+  'mrf_tag:sandbox',
+  'mrf_tag:disable-remote-subscription',
+  'mrf_tag:disable-any-subscription',
+])
+
 export default {
   props: {
     // Enables all the options for profile editing, used in settings -> profile tab
@@ -69,6 +82,12 @@ export default {
     },
     // Use a compact layout that hides bio, stats etc.
     hideBio: {
+      required: false,
+      default: false,
+      type: Boolean,
+    },
+    // Hide action buttons
+    hideButtons: {
       required: false,
       default: false,
       type: Boolean,
@@ -97,24 +116,46 @@ export default {
       type: Boolean,
       default: false,
     },
+    // Disable forced 3:1 aspect ratio
+    compact: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
   },
   components: {
-    DialogModal,
+    DialogModal: defineAsyncComponent(
+      () => import('src/components/dialog_modal/dialog_modal.vue'),
+    ),
     UserAvatar,
     Checkbox,
-    RemoteFollow,
-    ModerationTools,
-    AccountActions,
+    RemoteFollow: defineAsyncComponent(
+      () => import('src/components/remote_follow/remote_follow.vue'),
+    ),
+    ModerationTools: defineAsyncComponent(
+      () => import('src/components/moderation_tools/moderation_tools.vue'),
+    ),
+    AccountActions: defineAsyncComponent(
+      () => import('src/components/account_actions/account_actions.vue'),
+    ),
     ProgressButton,
     FollowButton,
     Select,
-    RichContent,
     UserLink,
-    UserNote,
-    UserTimedFilterModal,
+    UserNote: defineAsyncComponent(
+      () => import('src/components/user_note/user_note.vue'),
+    ),
+    UserTimedFilterModal: defineAsyncComponent(
+      () =>
+        import(
+          'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
+        ),
+    ),
     ColorInput,
     EmojiInput,
-    ImageCropper,
+    ImageCropper: defineAsyncComponent(
+      () => import('src/components/image_cropper/image_cropper.vue'),
+    ),
   },
   data() {
     const user = this.$store.getters.findUser(this.userId)
@@ -154,6 +195,9 @@ export default {
     this.$store.dispatch('fetchUserRelationship', this.user.id)
   },
   computed: {
+    escapedNewBio() {
+      return ldEscape(this.newBio).replace(/\n/g, '<br>')
+    },
     somethingToSave() {
       if (this.newName !== this.user.name_unescaped) return true
       if (this.newBio !== ldUnescape(this.user.description)) return true
@@ -176,7 +220,7 @@ export default {
       return false
     },
     groupActorAvailable() {
-      return this.$store.state.instance.groupActorAvailable
+      return useInstanceCapabilitiesStore().groupActorAvailable
     },
     availableActorTypes() {
       return this.groupActorAvailable
@@ -209,7 +253,7 @@ export default {
       return Math.round(this.user.statuses_count / days)
     },
     emoji() {
-      return this.$store.state.instance.customEmoji.map((e) => ({
+      return useEmojiStore().customEmoji.map((e) => ({
         shortcode: e.displayText,
         static_url: e.imageUrl,
         url: e.imageUrl,
@@ -217,43 +261,32 @@ export default {
     },
     userHighlightType: {
       get() {
-        const data =
-          this.$store.getters.mergedConfig.highlight[this.user.screen_name]
-        return (data && data.type) || 'disabled'
+        return useUserHighlightStore().get(this.user.screen_name).type
       },
       set(type) {
-        const data =
-          this.$store.getters.mergedConfig.highlight[this.user.screen_name]
         if (type !== 'disabled') {
-          this.$store.dispatch('setHighlight', {
+          useUserHighlightStore().setAndSave({
             user: this.user.screen_name,
-            color: (data && data.color) || '#FFFFFF',
-            type,
+            value: { type },
           })
         } else {
-          this.$store.dispatch('setHighlight', {
-            user: this.user.screen_name,
-            color: undefined,
-          })
+          useUserHighlightStore().unsetAndSave({ user: this.user.screen_name })
         }
       },
-      ...mapGetters(['mergedConfig']),
     },
     userHighlightColor: {
       get() {
-        const data =
-          this.$store.getters.mergedConfig.highlight[this.user.screen_name]
-        return data && data.color
+        return useUserHighlightStore().get(this.user.screen_name).color
       },
       set(color) {
-        this.$store.dispatch('setHighlight', {
+        useUserHighlightStore().setAndSave({
           user: this.user.screen_name,
-          color,
+          value: { color },
         })
       },
     },
     visibleRole() {
-      if (!this.newShowRole) {
+      if (!this.user.show_role && !this.user.adminData) {
         return
       }
       const rights = this.user.rights
@@ -274,9 +307,9 @@ export default {
       const privileges = this.loggedIn.privileges
       return (
         this.loggedIn.role === 'admin' ||
-        privileges.includes('users_manage_activation_state') ||
-        privileges.includes('users_delete') ||
-        privileges.includes('users_manage_tags')
+        privileges.has('users_manage_activation_state') ||
+        privileges.has('users_delete') ||
+        privileges.has('users_manage_tags')
       )
     },
     hasNote() {
@@ -317,6 +350,18 @@ export default {
         )
       )
     },
+    formattedJoinDate() {
+      const browserLocale = localeService.internalToBrowserLocale(
+        this.$i18n.locale,
+      )
+      return (
+        this.user.created_at &&
+        new Date(Date.parse(this.user.created_at)).toLocaleDateString(
+          browserLocale,
+          { timeZone: 'UTC', day: 'numeric', month: 'long', year: 'numeric' },
+        )
+      )
+    },
 
     // Editable stuff
     avatarImgSrc() {
@@ -336,18 +381,18 @@ export default {
     },
     defaultAvatar() {
       return (
-        this.$store.state.instance.server +
-        this.$store.state.instance.defaultAvatar
+        useInstanceStore().server +
+        useInstanceStore().instanceIdentity.defaultAvatar
       )
     },
     defaultBanner() {
       return (
-        this.$store.state.instance.server +
-        this.$store.state.instance.defaultBanner
+        useInstanceStore().server +
+        useInstanceStore().instanceIdentity.defaultBanner
       )
     },
     isDefaultAvatar() {
-      const baseAvatar = this.$store.state.instance.defaultAvatar
+      const baseAvatar = useInstanceStore().instanceIdenitity.defaultAvatar
       return (
         !this.$store.state.users.currentUser.profile_image_url ||
         this.$store.state.users.currentUser.profile_image_url.includes(
@@ -356,14 +401,14 @@ export default {
       )
     },
     isDefaultBanner() {
-      const baseBanner = this.$store.state.instance.defaultBanner
+      const baseBanner = useInstanceStore().instanceIdentity.defaultBanner
       return (
         !this.$store.state.users.currentUser.cover_photo ||
         this.$store.state.users.currentUser.cover_photo.includes(baseBanner)
       )
     },
     fieldsLimits() {
-      return this.$store.state.instance.fieldsLimits
+      return useInstanceStore().limits.fieldsLimits
     },
     maxFields() {
       return this.fieldsLimits ? this.fieldsLimits.maxFields : 0
@@ -371,8 +416,8 @@ export default {
     emojiUserSuggestor() {
       return suggestor({
         emoji: [
-          ...this.$store.getters.standardEmojiList,
-          ...this.$store.state.instance.customEmoji,
+          ...useEmojiStore().standardEmojiList,
+          ...useEmojiStore().customEmoji,
         ],
         store: this.$store,
       })
@@ -380,14 +425,32 @@ export default {
     emojiSuggestor() {
       return suggestor({
         emoji: [
-          ...this.$store.getters.standardEmojiList,
-          ...this.$store.state.instance.customEmoji,
+          ...useEmojiStore().standardEmojiList,
+          ...useEmojiStore().customEmoji,
         ],
       })
     },
-    ...mapGetters(['mergedConfig']),
+    allowNonSquareEmoji() {
+      return this.mergedConfig.nonSquareEmoji
+    },
+    pauseMfm() {
+      return this.mergedConfig.pauseMfm
+    },
+    scaleMfm() {
+      return this.mergedConfig.scaleMfm
+    },
+    hideUserStats() {
+      return this.mergedConfig.hideUserStats
+    },
+    hideRemarks() {
+      return this.mergedConfig.userCardHidePersonalMarks
+    },
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   methods: {
+    isKnownTag(tag) {
+      return KNOWN_TAGS.has(tag)
+    },
     muteUser() {
       this.$refs.timedMuteDialog.optionallyPrompt()
     },
@@ -412,7 +475,7 @@ export default {
       return generateProfileLink(
         user.id,
         user.screen_name,
-        this.$store.state.instance.restrictedNicknames,
+        useInstanceStore().restrictedNicknames,
       )
     },
     openProfileTab() {
@@ -421,7 +484,7 @@ export default {
     zoomAvatar() {
       const attachment = {
         url: this.user.profile_image_url_original,
-        mimetype: 'image',
+        type: 'image',
       }
       useMediaViewerStore().setMedia([attachment])
       useMediaViewerStore().setCurrentMedia(attachment)
@@ -540,9 +603,8 @@ export default {
         params.header = this.newBannerFile
       }
 
-      this.$store.state.api.backendInteractor
-        .updateProfile({ params })
-        .then((user) => {
+      updateProfile({ params })
+        .then(({ data: user }) => {
           this.newFields.splice(this.newFields.length)
           merge(this.newFields, user.fields)
           this.$store.commit('addNewUsers', [user])

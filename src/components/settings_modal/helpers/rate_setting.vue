@@ -11,7 +11,7 @@
         :changed="isChanged"
         :onclick="reset"
       />
-      <ProfileSettingIndicator :is-profile="isProfileSetting" />
+      <LocalSettingIndicator :is-local="isLocalSetting" />
       {{ ' ' }}
       <template v-if="backendDescriptionLabel">
         {{ backendDescriptionLabel + ' ' }}
@@ -88,7 +88,7 @@
       </table>
       <Checkbox
         :model-value="isSeparate"
-        @update:model-value="event => update({ event: event ? 'join' : 'split', eventType: 'toggleMode' })"
+        @update:model-value="event => update({ event: event ? 'split' : 'join', eventType: 'toggleMode' })"
       >
         {{ $t('admin_dash.rate_limit.separate') }}
       </Checkbox>

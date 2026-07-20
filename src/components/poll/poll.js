@@ -1,16 +1,17 @@
 import Checkbox from 'components/checkbox/checkbox.vue'
-import RichContent from 'components/rich_content/rich_content.jsx'
 import Timeago from 'components/timeago/timeago.vue'
 
-import { usePollsStore } from 'src/stores/polls'
 import genRandomSeed from '../../services/random_seed/random_seed.service.js'
+
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { usePollsStore } from 'src/stores/polls.js'
 
 export default {
   name: 'Poll',
   props: ['basePoll', 'emoji'],
   components: {
     Timeago,
-    RichContent,
+
     Checkbox,
   },
   data() {
@@ -47,11 +48,20 @@ export default {
       return (this.poll && this.poll.expired) || false
     },
     expirationLabel() {
-      if (this.$store.getters.mergedConfig.useAbsoluteTimeFormat) {
+      if (useMergedConfigStore().mergedConfig.useAbsoluteTimeFormat) {
         return this.expired ? 'polls.expired_at' : 'polls.expires_at'
       } else {
         return this.expired ? 'polls.expired' : 'polls.expires_in'
       }
+    },
+    allowNonSquareEmoji() {
+      return useMergedConfigStore().mergedConfig.nonSquareEmoji
+    },
+    pauseMfm() {
+      return useMergedConfigStore().mergedConfig.pauseMfm
+    },
+    scaleMfm() {
+      return useMergedConfigStore().mergedConfig.scaleMfm
     },
     loggedIn() {
       return this.$store.state.users.currentUser

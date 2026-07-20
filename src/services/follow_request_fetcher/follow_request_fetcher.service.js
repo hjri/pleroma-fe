@@ -1,11 +1,10 @@
-import apiService from '../api/api.service.js'
-import { promiseInterval } from '../promise_interval/promise_interval.js'
+import { fetchFollowRequests } from 'src/api/user.js'
+import { promiseInterval } from 'src/services/promise_interval/promise_interval.js'
 
 const fetchAndUpdate = ({ store, credentials }) => {
-  return apiService
-    .fetchFollowRequests({ credentials })
+  return fetchFollowRequests({ credentials })
     .then(
-      (requests) => {
+      ({ data: requests }) => {
         store.commit('setFollowRequests', requests)
         store.commit('addNewUsers', requests)
       },

@@ -16,6 +16,7 @@
         :is-preview="true"
         :statusoid="status"
         :compact="true"
+        :ignore-mute="true"
       />
       <div
         v-else-if="error"

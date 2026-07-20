@@ -66,8 +66,8 @@
 <script>
 import { throttle } from 'lodash'
 
+import Checkbox from 'src/components/checkbox/checkbox.vue'
 import { hex2rgb } from '../../services/color_convert/color_convert.js'
-import Checkbox from '../checkbox/checkbox.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEyeDropper } from '@fortawesome/free-solid-svg-icons'
@@ -86,8 +86,9 @@ export default {
     },
     // Readable label
     label: {
-      required: true,
+      required: false,
       type: String,
+      default: '',
     },
     // use unstyled, uh, style
     unstyled: {

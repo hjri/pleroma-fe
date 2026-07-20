@@ -3,6 +3,50 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2.11
+### Added
+- Initial MFM rendering support
+- Button to remove all drafts
+- Option to remove forced aspect ratio for user profiles (requested)
+- Showing user tags (MRF policies for user + custom if present)
+- Version information now is also in about page
+- Mention autosuggest now sorts by recent activity
+- Non-square emoji support (toggleable by user)
+- Displaying other user's backgrounds (if supported by BE)
+- Add quoting by URL and in replies
+- Settings synchronization
+- User highlight synchronization
+- User administration + post scope/sensitivity admin change support
+
+### Changed
+- Migrated to Vite 8 and optimized our imports, more stuff is loaded on-demand, reducing the initial load time and transfer size
+- Overall improved spacing in status action buttons and post form
+- Logout confirm button is now dangerous
+- Reply/quote now is a radio group and wraps, fixes overflow on languages where labels are too wide
+- Personal note input is now bigger
+- Moved "edit pinned" to the bottom for status action buttons.
+- Dots status action button drops down instead of up to avoid hiding the action buttons
+- Improved attachment description (alt text) input and display
+
+### Fixed
+- Fix HTML attribute parsing for escaped quotes
+- Fix emojis breaking user bio/description editing
+- Navbar wide logo cropping search input
+- Danger buttons being too bright
+- User background upload failure no longer breaks new uploads + displays an error
+- Importing theme from old theme editor
+- Removed duplicate federationpolicy entry in admin tab
+- Repeater name overflowing content
+- Reply popover is now shown if replied-to status is muted
+- Second language input not having header
+- Post form's bottom left buttons not showing their toggled state
+- Some font overrides not working
+- Popovers opening outside of window's boundaries
+- Occasional blank page when showing new posts
+- Fixed status action mute hiding itself on click
+- Fix reply form crash when quote-reply settings are unavailable
+
+
 ## 2.10.1
 ### Fixed
 - fixed being unable to set actor type from profile page

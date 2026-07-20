@@ -1,9 +1,10 @@
-import { mapActions, mapState as mapPiniaState, mapStores } from 'pinia'
-import { mapState } from 'vuex'
+import { mapActions, mapState, mapStores } from 'pinia'
 
 import { useAuthFlowStore } from 'src/stores/auth_flow.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
-import mfaApi from '../../services/new_api/mfa.js'
+
+import { verifyOTPCode } from 'src/api/mfa.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -16,13 +17,11 @@ export default {
     error: false,
   }),
   computed: {
-    ...mapPiniaState(useAuthFlowStore, {
+    ...mapState(useAuthFlowStore, {
       authSettings: (store) => store.settings,
     }),
+    ...mapState(useInstanceStore, ['server']),
     ...mapStores(useOAuthStore),
-    ...mapState({
-      instance: 'instance',
-    }),
   },
   methods: {
     ...mapActions(useAuthFlowStore, ['requireRecovery', 'abortMFA', 'login']),
@@ -42,23 +41,23 @@ export default {
       const data = {
         clientId,
         clientSecret,
-        instance: this.instance.server,
+        instance: this.server,
         mfaToken: this.authSettings.mfa_token,
         code: this.code,
       }
 
-      mfaApi.verifyOTPCode(data).then((result) => {
-        if (result.error) {
-          this.error = result.error
+      verifyOTPCode(data)
+        .then(({ data: result }) => {
+          this.login(result).then(() => {
+            this.$router.push({ name: 'friends' })
+          })
+        })
+        .catch((error) => {
+          this.error = error
           this.code = null
           this.focusOnCodeInput()
           return
-        }
-
-        this.login(result).then(() => {
-          this.$router.push({ name: 'friends' })
         })
-      })
     },
   },
 }

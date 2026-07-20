@@ -1,7 +1,9 @@
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 
 import Select from 'src/components/select/select.vue'
-import ConfirmModal from './confirm_modal.vue'
+
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 export default {
   props: ['type', 'user', 'status'],
@@ -10,7 +12,10 @@ export default {
     showing: false,
   }),
   components: {
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
+
     Select,
   },
   computed: {
@@ -43,7 +48,7 @@ export default {
         }
       }
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   methods: {
     optionallyPrompt() {

@@ -1,11 +1,13 @@
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 
+import Popover from 'src/components/popover/popover.vue'
+import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import UserListMenu from 'src/components/user_list_menu/user_list_menu.vue'
-import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
+
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useReportsStore } from 'src/stores/reports'
-import ConfirmModal from '../confirm_modal/confirm_modal.vue'
-import Popover from '../popover/popover.vue'
-import ProgressButton from '../progress_button/progress_button.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
@@ -24,8 +26,15 @@ const AccountActions = {
     ProgressButton,
     Popover,
     UserListMenu,
-    ConfirmModal,
-    UserTimedFilterModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
+    UserTimedFilterModal: defineAsyncComponent(
+      () =>
+        import(
+          'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
+        ),
+    ),
   },
   methods: {
     showConfirmRemoveUserFromFollowers() {
@@ -87,16 +96,15 @@ const AccountActions = {
   },
   computed: {
     shouldConfirmBlock() {
-      return this.$store.getters.mergedConfig.modalOnBlock
+      return useMergedConfigStore().mergedConfig.modalOnBlock
     },
     shouldConfirmRemoveUserFromFollowers() {
-      return this.$store.getters.mergedConfig.modalOnRemoveUserFromFollowers
+      return useMergedConfigStore().mergedConfig.modalOnRemoveUserFromFollowers
     },
-    ...mapState({
-      blockExpirationSupported: (state) => state.instance.blockExpiration,
-      pleromaChatMessagesAvailable: (state) =>
-        state.instance.pleromaChatMessagesAvailable,
-    }),
+    ...mapState(useInstanceCapabilitiesStore, [
+      'blockExpiration',
+      'pleromaChatMessagesAvailable',
+    ]),
   },
 }
 

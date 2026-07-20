@@ -19,9 +19,7 @@
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting
-            path="hideUserStats"
-          >
+          <BooleanSetting path="hideUserStats">
             {{ $t('settings.hide_user_stats') }}
           </BooleanSetting>
         </li>
@@ -45,7 +43,22 @@
                 {{ $t('settings.hide_scrobbles_after') }}
               </UnitSetting>
             </li>
+            <li v-if="instanceSpecificPanelPresent">
+              <BooleanSetting path="hideISP">
+                {{ $t('settings.hide_isp') }}
+              </BooleanSetting>
+            </li>
           </ul>
+        </li>
+        <li>
+          <BooleanSetting path="userCardHidePersonalMarks">
+            {{ $t('settings.user_card_hide_personal_marks') }}
+          </BooleanSetting>
+        </li>
+        <li v-if="shoutAvailable">
+          <BooleanSetting path="hideShoutbox">
+            {{ $t('settings.hide_shoutbox') }}
+          </BooleanSetting>
         </li>
       </ul>
       <h3>{{ $t('settings.attachments') }}</h3>
@@ -59,25 +72,19 @@
           </IntegerSetting>
         </li>
         <li>
-          <BooleanSetting path="hideAttachments">
+          <BooleanSetting
+            :local="true"
+            path="hideAttachments"
+          >
             {{ $t('settings.hide_attachments_in_tl') }}
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting path="hideAttachmentsInConv">
-            {{ $t('settings.hide_attachments_in_convo') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting path="userCardHidePersonalMarks">
-            {{ $t('settings.user_card_hide_personal_marks') }}
-          </BooleanSetting>
-        </li>
-        <li v-if="instanceShoutboxPresent">
           <BooleanSetting
-            path="hideShoutbox"
+            :local="true"
+            path="hideAttachmentsInConv"
           >
-            {{ $t('settings.hide_shoutbox') }}
+            {{ $t('settings.hide_attachments_in_convo') }}
           </BooleanSetting>
         </li>
       </ul>

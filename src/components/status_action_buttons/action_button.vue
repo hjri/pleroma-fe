@@ -9,6 +9,7 @@
       :class="buttonInnerClass"
       role="menuitem"
       type="button"
+      placement="bottom"
       :title="$t(button.label(funcArg))"
       target="_blank"
       :tabindex="0"
@@ -26,21 +27,21 @@
         />
         <template v-if="!buttonClass.disabled && (!button.interactive || button?.interactive(funcArg)) && button.toggleable?.(funcArg) && button.active">
           <FAIcon
-            v-if="button.active(funcArg)"
+            v-if="button.active(funcArg) && button.activeIndicator?.() !== null"
             class="active-marker"
-            transform="shrink-6 up-9 right-15"
+            transform="shrink-6 up-9 left-12"
             :icon="button.activeIndicator?.(funcArg) || 'check'"
           />
           <FAIcon
             v-if="!button.active(funcArg)"
             class="focus-marker"
-            transform="shrink-6 up-9 right-15"
+            transform="shrink-6 up-9 left-12"
             :icon="button.openIndicator?.(funcArg) || 'plus'"
           />
           <FAIcon
             v-else
             class="focus-marker"
-            transform="shrink-6 up-9 right-15"
+            transform="shrink-6 up-9 left-12"
             :icon="button.closeIndicator?.(funcArg) || 'minus'"
           />
         </template>
@@ -54,13 +55,12 @@
       <FAIcon
         v-if="button.dropdown?.()"
         class="chevron-icon"
-        size="lg"
-        :icon="extra ? 'chevron-right' : 'chevron-up'"
+        :icon="extra ? 'chevron-right' : 'chevron-down'"
         fixed-width
       />
     </component>
     <span
-      v-if="button.counter?.(funcArg) > 0"
+      v-if="!hidePostStats && button.counter?.(funcArg) > 0"
       class="action-counter"
     >
       {{ button.counter?.(funcArg) }}
@@ -71,16 +71,16 @@
     />
     <Popover
       v-if="button.name === 'bookmark'"
+      class="chevron-popover"
       :trigger="extra ? 'hover' : 'click'"
-      :placement="extra ? 'right' : 'top'"
+      :placement="extra ? 'right' : 'bottom'"
       :offset="extra ? { x: 10 } : { y: 10 }"
       :trigger-attrs="{ class: 'extra-button' }"
     >
       <template #trigger>
         <FAIcon
           class="chevron-icon"
-          size="lg"
-          :icon="extra ? 'chevron-right' : 'chevron-up'"
+          :icon="extra ? 'chevron-right' : 'chevron-down'"
           fixed-width
         />
       </template>
@@ -88,7 +88,7 @@
         <StatusBookmarkFolderMenu
           v-if="button.name === 'bookmark'"
           :status="status"
-          :close="() => { close(); outerClose() }"
+          @close="() => { close(); outerClose?.() }"
         />
       </template>
     </Popover>
@@ -100,6 +100,8 @@
       :hide-custom-emoji="hideCustomEmoji"
       class="emoji-picker-panel"
       @emoji="addReaction"
+      @show="onShowEmojiPicker"
+      @close="onHideEmojiPicker"
     />
   </div>
 </template>

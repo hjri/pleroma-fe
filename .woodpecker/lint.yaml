@@ -1,0 +1,32 @@
+when:
+  - event: pull_request
+    evaluate: 'CI_COMMIT_SOURCE_BRANCH != "weblate" && not(CI_COMMIT_SOURCE_BRANCH startsWith "renovate/")'
+  - event: push
+    branch: ${CI_REPO_DEFAULT_BRANCH}
+  - event: manual
+    branch: ${CI_REPO_DEFAULT_BRANCH}
+
+steps:
+  install-depends:
+    image: &node-image
+      docker.io/node:20-alpine
+    commands:
+      - yarn --frozen-lockfile
+
+  eslint:
+    image: *node-image
+    depends_on: install-depends
+    commands:
+      - yarn ci-eslint
+
+  biome:
+    image: *node-image
+    depends_on: install-depends
+    commands:
+      - yarn ci-biome
+
+  stylelint:
+    image: *node-image
+    depends_on: install-depends
+    commands:
+      - yarn ci-stylelint

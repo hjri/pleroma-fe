@@ -1,22 +1,25 @@
 import { cloneDeep } from 'lodash'
 import { mapActions, mapState } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
-import { mapState as mapVuexState } from 'vuex'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Select from 'src/components/select/select.vue'
-import {
-  newExporter,
-  newImporter,
-} from 'src/services/export_import/export_import.js'
-import { useInterfaceStore } from 'src/stores/interface'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import HelpIndicator from '../helpers/help_indicator.vue'
 import IntegerSetting from '../helpers/integer_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
+
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
+import {
+  newExporter,
+  newImporter,
+} from 'src/services/export_import/export_import.js'
 
 const SUPPORTED_TYPES = new Set(['word', 'regexp', 'user', 'user_regexp'])
 
@@ -34,11 +37,11 @@ const FilteringTab = {
         label: this.$t(`user_card.mute_block_${mode}`),
       })),
       muteFiltersDraftObject: cloneDeep(
-        useServerSideStorageStore().prefsStorage.simple.muteFilters,
+        useSyncConfigStore().prefsStorage.simple.muteFilters,
       ),
       muteFiltersDraftDirty: Object.fromEntries(
         Object.entries(
-          useServerSideStorageStore().prefsStorage.simple.muteFilters,
+          useSyncConfigStore().prefsStorage.simple.muteFilters,
         ).map(([k]) => [k, false]),
       ),
       exportedFilter: null,
@@ -55,6 +58,7 @@ const FilteringTab = {
             hide = false,
             name = '',
             value = '',
+            caseSensitive = false,
           } = data
 
           this.createFilter({
@@ -63,6 +67,7 @@ const FilteringTab = {
             hide,
             name,
             value,
+            caseSensitive,
           })
         },
         onImportFailure(result) {
@@ -89,21 +94,16 @@ const FilteringTab = {
     HelpIndicator,
   },
   computed: {
-    instanceSpecificPanelPresent() {
-      return this.$store.state.instance.showInstanceSpecificPanel
-    },
     ...SharedComputedObject(),
-    ...mapState(useServerSideStorageStore, {
+    ...mapState(useSyncConfigStore, {
       muteFilters: (store) =>
         Object.entries(store.prefsStorage.simple.muteFilters),
       muteFiltersObject: (store) => store.prefsStorage.simple.muteFilters,
     }),
-    ...mapVuexState({
-      blockExpirationSupported: (state) => state.instance.blockExpiration,
-    }),
+    ...mapState(useInstanceCapabilitiesStore, ['blockExpiration']),
     onMuteDefaultActionLv1: {
       get() {
-        const value = this.$store.state.config.onMuteDefaultAction
+        const value = useMergedConfigStore().mergedConfig.onMuteDefaultAction
         if (value === 'ask' || value === 'forever') {
           return value
         } else {
@@ -115,15 +115,15 @@ const FilteringTab = {
         if (value !== 'ask' && value !== 'forever') {
           realValue = '14d'
         }
-        this.$store.dispatch('setOption', {
-          name: 'onMuteDefaultAction',
+        this.setPreference({
+          path: 'simple.onMuteDefaultAction',
           value: realValue,
         })
       },
     },
     onBlockDefaultActionLv1: {
       get() {
-        const value = this.$store.state.config.onBlockDefaultAction
+        const value = useMergedConfigStore().mergedConfig.onBlockDefaultAction
         if (value === 'ask' || value === 'forever') {
           return value
         } else {
@@ -135,8 +135,8 @@ const FilteringTab = {
         if (value !== 'ask' && value !== 'forever') {
           realValue = '14d'
         }
-        this.$store.dispatch('setOption', {
-          name: 'onBlockDefaultAction',
+        this.setPreference({
+          path: 'simple.onBlockDefaultAction',
           value: realValue,
         })
       },
@@ -152,10 +152,13 @@ const FilteringTab = {
     },
   },
   methods: {
-    ...mapActions(useServerSideStorageStore, [
+    ...mapActions(useSyncConfigStore, [
       'setPreference',
+      'setSimplePrefAndSave',
+      'unsetSimplePrefAndSave',
       'unsetPreference',
-      'pushServerSideStorage',
+      'unsetPrefAndSave',
+      'pushSyncConfig',
     ]),
     getDatetimeLocal(timestamp) {
       const date = new Date(timestamp)
@@ -201,8 +204,7 @@ const FilteringTab = {
 
       filter.order = this.muteFilters.length + 2
       this.muteFiltersDraftObject[newId] = filter
-      this.setPreference({ path: 'simple.muteFilters.' + newId, value: filter })
-      this.pushServerSideStorage()
+      this.setSimplePrefAndSave({ path: 'muteFilters.' + newId, value: filter })
     },
     exportFilter(id) {
       this.exportedFilter = { ...this.muteFiltersDraftObject[id] }
@@ -217,20 +219,18 @@ const FilteringTab = {
       const newId = uuidv4()
 
       this.muteFiltersDraftObject[newId] = filter
-      this.setPreference({ path: 'simple.muteFilters.' + newId, value: filter })
-      this.pushServerSideStorage()
+      this.setSimplePrefAndSave({ path: 'muteFilters.' + newId, value: filter })
     },
     deleteFilter(id) {
       delete this.muteFiltersDraftObject[id]
-      this.unsetPreference({ path: 'simple.muteFilters.' + id, value: null })
-      this.pushServerSideStorage()
+      this.unsetSimplePrefAndSave({ path: 'muteFilters.' + id, value: null })
     },
     purgeExpiredFilters() {
       this.muteFiltersExpired.forEach(([id]) => {
         delete this.muteFiltersDraftObject[id]
         this.unsetPreference({ path: 'simple.muteFilters.' + id, value: null })
       })
-      this.pushServerSideStorage()
+      this.pushSyncConfig()
     },
     updateFilter(id, field, value) {
       const filter = { ...this.muteFiltersDraftObject[id] }
@@ -252,11 +252,10 @@ const FilteringTab = {
       this.muteFiltersDraftDirty[id] = true
     },
     saveFilter(id) {
-      this.setPreference({
-        path: 'simple.muteFilters.' + id,
+      this.setSimplePrefAndSave({
+        path: 'muteFilters.' + id,
         value: this.muteFiltersDraftObject[id],
       })
-      this.pushServerSideStorage()
       this.muteFiltersDraftDirty[id] = false
     },
   },
@@ -264,6 +263,11 @@ const FilteringTab = {
   watch: {
     replyVisibility() {
       this.$store.dispatch('queueFlushAll')
+    },
+    muteFiltersObject() {
+      this.muteFiltersDraftObject = cloneDeep(
+        useMergedConfigStore().mergedConfig.muteFilters,
+      )
     },
   },
 }

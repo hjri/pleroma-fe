@@ -4,6 +4,7 @@
     v-bind="params"
     :post-handler="doEditStatus"
     :disable-polls="true"
+    :disable-quotes="true"
     :disable-visibility-selector="true"
   />
 </template>

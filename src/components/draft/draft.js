@@ -1,10 +1,11 @@
 import { cloneDeep } from 'lodash'
+import { defineAsyncComponent } from 'vue'
 
-import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
-import EditStatusForm from 'src/components/edit_status_form/edit_status_form.vue'
 import Gallery from 'src/components/gallery/gallery.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
+
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPollH } from '@fortawesome/free-solid-svg-icons'
@@ -14,8 +15,12 @@ library.add(faPollH)
 const Draft = {
   components: {
     PostStatusForm,
-    EditStatusForm,
-    ConfirmModal,
+    EditStatusForm: defineAsyncComponent(
+      () => import('src/components/edit_status_form/edit_status_form.vue'),
+    ),
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
     StatusContent,
     Gallery,
   },
@@ -43,7 +48,12 @@ const Draft = {
       }
     },
     safeToSave() {
-      return this.draft.status || this.draft.files?.length || this.draft.hasPoll
+      return (
+        this.draft.status ||
+        this.draft.files?.length ||
+        this.draft.hasPoll ||
+        this.draft.hasQuote
+      )
     },
     postStatusFormProps() {
       return {
@@ -57,16 +67,7 @@ const Draft = {
         : undefined
     },
     localCollapseSubjectDefault() {
-      return this.$store.getters.mergedConfig.collapseMessageWithSubject
-    },
-    nsfwClickthrough() {
-      if (!this.draft.nsfw) {
-        return false
-      }
-      if (this.draft.summary && this.localCollapseSubjectDefault) {
-        return false
-      }
-      return true
+      return useMergedConfigStore().mergedConfig.collapseMessageWithSubject
     },
   },
   watch: {

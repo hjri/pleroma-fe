@@ -12,14 +12,28 @@
       </router-link>
     </div>
     <div class="panel-body">
-      <BookmarkFolderCard
-        :all-bookmarks="true"
-        class="list-item"
-      />
-      <BookmarkFolderCard
+      <div class="list-item FolderCard">
+        <router-link
+          :to="{ name: 'bookmarks' }"
+          class="folder-name"
+        >
+          <span class="icon">
+            <FAIcon
+              fixed-width
+              class="fa-scale-110 menu-icon"
+              icon="bookmark"
+            />
+          </span>{{ $t('nav.all_bookmarks') }}
+        </router-link>
+      </div>
+      <FolderCard
         v-for="folder in bookmarkFolders.slice().reverse()"
         :key="folder"
-        :folder="folder"
+        :name="folder.name"
+        :emoji="folder.emoji"
+        :emoji-url="folder.emoji_url"
+        :link="{ name: 'bookmark-folder', params: { id: folder.id } }"
+        :link-edit="{ name: 'bookmark-folder-edit', params: { id: folder.id } }"
         class="list-item"
       />
     </div>

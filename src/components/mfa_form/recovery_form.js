@@ -1,9 +1,10 @@
-import { mapActions, mapState as mapPiniaState, mapStores } from 'pinia'
-import { mapState } from 'vuex'
+import { mapActions, mapState, mapStores } from 'pinia'
 
 import { useAuthFlowStore } from 'src/stores/auth_flow.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
-import mfaApi from '../../services/new_api/mfa.js'
+
+import { verifyRecoveryCode } from 'src/api/mfa.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -16,13 +17,10 @@ export default {
     error: false,
   }),
   computed: {
-    ...mapPiniaState(useAuthFlowStore, {
-      authSettings: (store) => store.settings,
-    }),
     ...mapStores(useOAuthStore),
-    ...mapState({
-      instance: 'instance',
-    }),
+    ...mapState(useOAuthStore, ['clientId', 'clientSecret']),
+    ...mapState(useAuthFlowStore, ['settings']),
+    ...mapState(useInstanceStore, ['server']),
   },
   methods: {
     ...mapActions(useAuthFlowStore, ['requireTOTP', 'abortMFA', 'login']),
@@ -37,28 +35,26 @@ export default {
     },
 
     submit() {
-      const { clientId, clientSecret } = this.oauthStore
-
       const data = {
-        clientId,
-        clientSecret,
-        instance: this.instance.server,
-        mfaToken: this.authSettings.mfa_token,
+        clientId: this.clientId,
+        clientSecret: this.clientSecret,
+        instance: this.server,
+        mfaToken: this.settings.mfa_token,
         code: this.code,
       }
 
-      mfaApi.verifyRecoveryCode(data).then((result) => {
-        if (result.error) {
-          this.error = result.error
+      verifyRecoveryCode(data)
+        .then((result) => {
+          this.login(result).then(() => {
+            this.$router.push({ name: 'friends' })
+          })
+        })
+        .catch((error) => {
+          this.error = error
           this.code = null
           this.focusOnCodeInput()
           return
-        }
-
-        this.login(result).then(() => {
-          this.$router.push({ name: 'friends' })
         })
-      })
     },
   },
 }

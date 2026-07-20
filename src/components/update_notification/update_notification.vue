@@ -27,7 +27,7 @@
           <div class="spacer-top" />
           <div class="text">
             <p>
-              {{ $t('update.big_update_content') }}
+              {{ $t('update.big_update_content2') }}
             </p>
             <div
               ref="animatedText"
@@ -35,14 +35,14 @@
             >
               <i18n-t
                 scope="global"
-                keypath="update.update_bugs"
+                keypath="update.update_bugs2"
                 tag="p"
               >
-                <template #pleromaGitlab>
+                <template #pleromaForgejo>
                   <a
                     target="_blank"
                     href="https://git.pleroma.social/"
-                  >{{ $t('update.update_bugs_gitlab') }}</a>
+                  >{{ $t('update.update_bugs_forgejo') }}</a>
                 </template>
               </i18n-t>
               <i18n-t
@@ -73,29 +73,29 @@
               </p>
             </div>
           </div>
+          <div class="footer-buttons">
+            <button
+              class="button-default"
+              @click.prevent="neverShowAgain"
+            >
+              {{ $t("general.never_show_again") }}
+            </button>
+            <button
+              v-if="!showingMore"
+              class="button-default"
+              @click.prevent="toggleShow"
+            >
+              {{ $t("general.show_more") }}
+            </button>
+            <button
+              class="button-default"
+              @click.prevent="dismiss"
+            >
+              {{ $t("general.dismiss") }}
+            </button>
+          </div>
           <div class="spacer-bottom" />
         </div>
-      </div>
-      <div class="panel-footer">
-        <button
-          class="button-default"
-          @click.prevent="neverShowAgain"
-        >
-          {{ $t("general.never_show_again") }}
-        </button>
-        <button
-          v-if="!showingMore"
-          class="button-default"
-          @click.prevent="toggleShow"
-        >
-          {{ $t("general.show_more") }}
-        </button>
-        <button
-          class="button-default"
-          @click.prevent="dismiss"
-        >
-          {{ $t("general.dismiss") }}
-        </button>
       </div>
     </div>
   </Modal>

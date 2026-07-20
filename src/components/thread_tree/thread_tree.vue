@@ -1,44 +1,33 @@
 <template>
   <article class="thread-tree">
-    <status
+    <Status
       :key="status.id"
       ref="statusComponent"
-      :inline-expanded="collapsable && isExpanded"
       :statusoid="status"
+      :replies="getReplies(status.id)"
+      :inline-expanded="collapsable && isExpanded"
       :expandable="!isExpanded"
       :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
-      :focused="isFocusedFunction(status.id)"
       :in-conversation="isExpanded"
-      :highlight="highlight"
-      :replies="getReplies(status.id)"
+      :focused="focused === status.id || focused === status.retweeted_status?.id"
       :in-profile="inProfile"
       :profile-user-id="profileUserId"
       class="conversation-status conversation-status-treeview status-fadein panel-body"
 
       :simple-tree="simple"
-      :controlled-thread-display-status="threadDisplayStatus[status.id]"
-      :controlled-toggle-thread-display="() => toggleThreadDisplay(status.id)"
+      :thread-display-status="threadDisplayStatus[status.id]"
+      :can-dive="canDive"
 
-      :controlled-showing-tall="currentProp.showingTall"
-      :controlled-expanding-subject="currentProp.expandingSubject"
-      :controlled-showing-long-subject="currentProp.showingLongSubject"
-      :controlled-replying="currentProp.replying"
-      :controlled-media-playing="currentProp.mediaPlaying"
-      :controlled-toggle-showing-tall="() => toggleCurrentProp('showingTall')"
-      :controlled-toggle-expanding-subject="() => toggleCurrentProp('expandingSubject')"
-      :controlled-toggle-showing-long-subject="() => toggleCurrentProp('showingLongSubject')"
-      :controlled-toggle-replying="() => toggleCurrentProp('replying')"
-      :controlled-set-media-playing="(newVal) => setCurrentProp('mediaPlaying', newVal)"
-      :dive="dive ? () => dive(status.id) : undefined"
-
-      @goto="setHighlight"
+      @dive="$emit('dive', status.id)"
+      @goto="$emit('goto', status.id)"
       @toggle-expanded="toggleExpanded"
+      @suspendable-state-change="e => $emit('suspendableStateChange', e)"
     />
     <div
-      v-if="currentReplies.length && threadShowing"
+      v-if="currentReplies.length > 0 && threadShowing"
       class="thread-tree-replies"
     >
-      <thread-tree
+      <ThreadTree
         v-for="replyStatus in currentReplies"
         :key="replyStatus.id"
         ref="childComponent"
@@ -52,22 +41,20 @@
         :pinned-status-ids-object="pinnedStatusIdsObject"
         :profile-user-id="profileUserId"
 
-        :is-focused-function="isFocusedFunction"
         :get-replies="getReplies"
-        :highlight="highlight"
-        :set-highlight="setHighlight"
+        :focused="focused"
         :toggle-expanded="toggleExpanded"
 
         :simple="simple"
-        :toggle-thread-display="toggleThreadDisplay"
         :thread-display-status="threadDisplayStatus"
         :show-thread-recursively="showThreadRecursively"
         :total-reply-count="totalReplyCount"
         :total-reply-depth="totalReplyDepth"
-        :status-content-properties="statusContentProperties"
-        :set-status-content-property="setStatusContentProperty"
-        :toggle-status-content-property="toggleStatusContentProperty"
-        :dive="dive"
+
+        :can-dive="canDive"
+        @goto="(e) => $emit('goto', e)"
+        @dive="(e) => $emit('dive', e)"
+        @suspendable-state-change="e => $emit('suspendableStateChange', e)"
       />
     </div>
     <div
@@ -80,7 +67,7 @@
         tag="button"
         keypath="status.thread_follow_with_icon"
         class="button-unstyled -link thread-tree-show-replies-button"
-        @click.prevent="dive(status.id)"
+        @click.prevent="$emit('dive', status.id)"
       >
         <template #icon>
           <FAIcon

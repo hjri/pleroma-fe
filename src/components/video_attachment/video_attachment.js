@@ -1,3 +1,5 @@
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
 const VideoAttachment = {
   props: ['attachment', 'controls'],
   data() {
@@ -9,10 +11,10 @@ const VideoAttachment = {
   },
   computed: {
     loopVideo() {
-      if (this.$store.getters.mergedConfig.loopVideoSilentOnly) {
+      if (useMergedConfigStore().mergedConfig.loopVideoSilentOnly) {
         return !this.hasAudio
       }
-      return this.$store.getters.mergedConfig.loopVideo
+      return useMergedConfigStore().mergedConfig.loopVideo
     },
   },
   methods: {

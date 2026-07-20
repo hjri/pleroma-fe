@@ -34,14 +34,9 @@ const logout = async (page) => {
     name: 'Logout',
     exact: true,
   })
-  if (await confirmLogout.isVisible()) {
-    await Promise.all([
-      page.waitForURL(/\/main\/(public|all)/),
-      confirmLogout.click(),
-    ])
-  } else {
-    await page.waitForURL(/\/main\/(public|all)/)
-  }
+  await expect(confirmLogout).toBeVisible()
+  await confirmLogout.click()
+  await page.waitForURL(/\/main\/(public|all)/)
 
   await expect(page.locator('#sidebar form.login-form')).toBeVisible()
 }

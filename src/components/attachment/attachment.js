@@ -1,11 +1,13 @@
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 
-import { useMediaViewerStore } from 'src/stores/media_viewer'
+import Popover from 'src/components/popover/popover.vue'
 import nsfwImage from '../../assets/nsfw.png'
-import fileTypeService from '../../services/file_type/file_type.service.js'
-import Flash from '../flash/flash.vue'
-import StillImage from '../still-image/still-image.vue'
-import VideoAttachment from '../video_attachment/video_attachment.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useMediaViewerStore } from 'src/stores/media_viewer'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -50,26 +52,28 @@ const Attachment = {
     'shiftDn',
     'edit',
   ],
+  emits: ['play', 'pause', 'naturalSizeLoad'],
   data() {
     return {
       localDescription: this.description || this.attachment.description,
-      nsfwImage: this.$store.state.instance.nsfwCensorImage || nsfwImage,
-      hideNsfwLocal: this.$store.getters.mergedConfig.hideNsfw,
-      preloadImage: this.$store.getters.mergedConfig.preloadImage,
+      nsfwImage:
+        useInstanceStore().instanceIdentity.nsfwCensorImage || nsfwImage,
+      hideNsfwLocal: useMergedConfigStore().mergedConfig.hideNsfw,
+      preloadImage: useMergedConfigStore().mergedConfig.preloadImage,
       loading: false,
-      img:
-        fileTypeService.fileType(this.attachment.mimetype) === 'image' &&
-        document.createElement('img'),
+      img: this.attachment.type === 'image' && document.createElement('img'),
       modalOpen: false,
       showHidden: false,
       flashLoaded: false,
-      showDescription: false,
     }
   },
   components: {
-    Flash,
-    StillImage,
-    VideoAttachment,
+    Flash: defineAsyncComponent(() => import('src/components/flash/flash.vue')),
+
+    VideoAttachment: defineAsyncComponent(
+      () => import('src/components/video_attachment/video_attachment.vue'),
+    ),
+    Popover,
   },
   computed: {
     classNames() {
@@ -80,7 +84,7 @@ const Attachment = {
           '-editable': this.edit !== undefined,
           '-compact': this.compact,
         },
-        '-type-' + this.type,
+        '-type-' + this.attachment.type,
         this.size && '-size-' + this.size,
         `-${this.useContainFit ? 'contain' : 'cover'}-fit`,
       ]
@@ -89,31 +93,30 @@ const Attachment = {
       return this.size === 'hide'
     },
     useContainFit() {
-      return this.$store.getters.mergedConfig.useContainFit
+      return this.mergedConfig.useContainFit
     },
     placeholderName() {
       if (this.attachment.description === '' || !this.attachment.description) {
-        return this.type.toUpperCase()
+        return this.attachment.type.toUpperCase()
       }
       return this.attachment.description
     },
     placeholderIconClass() {
-      if (this.type === 'image') return 'image'
-      if (this.type === 'video') return 'video'
-      if (this.type === 'audio') return 'music'
+      if (this.attachment.type === 'image') return 'image'
+      if (this.attachment.type === 'video') return 'video'
+      if (this.attachment.type === 'audio') return 'music'
       return 'file'
     },
     referrerpolicy() {
-      return this.$store.state.instance.mediaProxyAvailable ? '' : 'no-referrer'
-    },
-    type() {
-      return fileTypeService.fileType(this.attachment.mimetype)
+      return useInstanceCapabilitiesStore().mediaProxyAvailable
+        ? ''
+        : 'no-referrer'
     },
     hidden() {
       return this.nsfw && this.hideNsfwLocal && !this.showHidden
     },
     isEmpty() {
-      return this.type === 'html' && !this.attachment.oembed
+      return this.attachment.type === 'html' && !this.attachment.oembed
     },
     useModal() {
       let modalTypes = []
@@ -128,12 +131,12 @@ const Attachment = {
             : ['image']
           break
       }
-      return modalTypes.includes(this.type)
+      return modalTypes.includes(this.attachment.type)
     },
     videoTag() {
       return this.useModal ? 'button' : 'span'
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   watch: {
     'attachment.description'(newVal) {
@@ -153,7 +156,7 @@ const Attachment = {
       if (this.useModal) {
         this.$emit('setMedia')
         useMediaViewerStore().setCurrentMedia(this.attachment)
-      } else if (this.type === 'unknown') {
+      } else if (this.attachment.type === 'unknown') {
         window.open(this.attachment.url)
       }
     },
@@ -179,14 +182,12 @@ const Attachment = {
     setFlashLoaded(event) {
       this.flashLoaded = event
     },
-    toggleDescription() {
-      this.showDescription = !this.showDescription
-    },
     toggleHidden(event) {
       if (
         this.mergedConfig.useOneClickNsfw &&
         !this.showHidden &&
-        (this.type !== 'video' || this.mergedConfig.playVideosInModal)
+        (this.attachment.type !== 'video' ||
+          this.mergedConfig.playVideosInModal)
       ) {
         this.openModal(event)
         return

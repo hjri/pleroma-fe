@@ -1,14 +1,18 @@
+import Modal from 'src/components/modal/modal.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
 import pleromaTanFoxMask from 'src/assets/pleromatan_apology_fox_mask.png'
 import pleromaTanMask from 'src/assets/pleromatan_apology_mask.png'
-import Modal from 'src/components/modal/modal.vue'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faTimes)
 
-export const CURRENT_UPDATE_COUNTER = 1
+export const CURRENT_UPDATE_COUNTER = 2
 
 const pleromaTan = '/static/pleromatan_apology.png'
 const pleromaTanFox = '/static/pleromatan_apology_fox.png'
@@ -36,11 +40,11 @@ const UpdateNotification = {
     },
     shouldShow() {
       return (
-        !this.$store.state.instance.disableUpdateNotification &&
+        !useInstanceStore().disableUpdateNotification &&
         this.$store.state.users.currentUser &&
-        useServerSideStorageStore().flagStorage.updateCounter <
+        useSyncConfigStore().flagStorage.updateCounter <
           CURRENT_UPDATE_COUNTER &&
-        !useServerSideStorageStore().prefsStorage.simple.dontShowUpdateNotifs
+        !useMergedConfigStore().mergedConfig.dontShowUpdateNotifs
       )
     },
   },
@@ -50,22 +54,22 @@ const UpdateNotification = {
     },
     neverShowAgain() {
       this.toggleShow()
-      useServerSideStorageStore().setFlag({
+      useSyncConfigStore().setFlag({
         flag: 'updateCounter',
         value: CURRENT_UPDATE_COUNTER,
       })
-      useServerSideStorageStore().setPreference({
-        path: 'simple.dontShowUpdateNotifs',
+      useSyncConfigStore().setSimplePrefAndSave({
+        path: 'dontShowUpdateNotifs',
         value: true,
       })
-      useServerSideStorageStore().pushServerSideStorage()
+      useSyncConfigStore().pushSyncConfig()
     },
     dismiss() {
-      useServerSideStorageStore().setFlag({
+      useSyncConfigStore().setFlag({
         flag: 'updateCounter',
         value: CURRENT_UPDATE_COUNTER,
       })
-      useServerSideStorageStore().pushServerSideStorage()
+      useSyncConfigStore().pushSyncConfig()
     },
   },
   mounted() {

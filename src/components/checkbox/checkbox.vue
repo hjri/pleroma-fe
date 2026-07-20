@@ -61,12 +61,14 @@ export default {
 <style lang="scss">
 .checkbox {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
   min-height: 1.2em;
+  align-items: baseline;
+  gap: 0 0.5em;
 
   &-indicator,
   & .label {
-    vertical-align: middle;
+    align-self: center;
   }
 
   & > &-indicator {
@@ -136,16 +138,6 @@ export default {
   &.indeterminate-fix {
     input[type="checkbox"] + .checkbox-indicator::before {
       content: "–";
-    }
-  }
-
-  & > .label {
-    &.-after {
-      margin-left: 0.5em;
-    }
-
-    &.-before {
-      margin-right: 0.5em;
     }
   }
 }

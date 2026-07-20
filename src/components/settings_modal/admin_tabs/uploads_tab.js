@@ -4,6 +4,8 @@ import IntegerSetting from '../helpers/integer_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import StringSetting from '../helpers/string_setting.vue'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
+
 const UploadsTab = {
   provide() {
     return {
@@ -40,9 +42,9 @@ const UploadsTab = {
   },
   computed: {
     uploader() {
-      return this.$store.state.adminSettings.draft[':pleroma'][
-        'Pleroma.Upload'
-      ][':uploader']
+      return useAdminSettingsStore().draft[':pleroma']['Pleroma.Upload'][
+        ':uploader'
+      ]
     },
     ...SharedComputedObject(),
   },

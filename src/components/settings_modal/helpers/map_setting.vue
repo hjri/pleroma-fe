@@ -77,7 +77,7 @@
       :changed="isChanged"
       :onclick="reset"
     />
-    <ProfileSettingIndicator :is-profile="isProfileSetting" />
+    <LocalSettingIndicator :is-local="isLocalSetting" />
     <DraftButtons />
   </div>
 </template>

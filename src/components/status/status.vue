@@ -3,19 +3,20 @@
     v-if="!hideStatus"
     ref="root"
     class="Status"
-    :class="[{ '-focused': isFocused }, { '-conversation': inlineExpanded }]"
+    :class="[{ '-focused': focused }, { '-conversation': inlineExpanded }]"
   >
     <div
       v-if="error"
       class="alert error"
     >
       {{ error }}
-      <span
+      <button
         class="fa-scale-110 fa-old-padding"
+        type="button"
         @click="clearError"
       >
         <FAIcon icon="times" />
-      </span>
+      </button>
     </div>
     <template v-if="muted && !isPreview">
       <div class="status-container muted">
@@ -46,16 +47,6 @@
     </template>
     <template v-else>
       <div
-        v-if="showPinned"
-        class="pin"
-      >
-        <FAIcon
-          icon="thumbtack"
-          class="faint"
-        />
-        <span class="faint">{{ $t('status.pinned') }}</span>
-      </div>
-      <div
         v-if="retweet && !noHeading && !inConversation"
         :class="[repeaterClass, { highlighted: repeaterStyle }]"
         :style="[repeaterStyle]"
@@ -79,6 +70,9 @@
               <RichContent
                 :html="retweeterHtml"
                 :emoji="retweeterUser.emoji"
+                :allow-non-square-emoji="allowNonSquareEmoji"
+                :pause-mfm="pauseMfm"
+                :scale-mfm="scaleMfm"
                 :is-local="retweeterUser.is_local"
               />
             </router-link>
@@ -87,13 +81,14 @@
               :to="retweeterProfileLink"
             >{{ retweeter }}</router-link>
           </bdi>
-          {{ ' ' }}
-          <FAIcon
-            icon="retweet"
-            class="repeat-icon"
-            :title="$t('tool_tip.repeat')"
-          />
-          {{ $t('timeline.repeated') }}
+          <div class="repeat-label">
+            <FAIcon
+              icon="retweet"
+              class="repeat-icon"
+              :title="$t('tool_tip.repeat')"
+            />
+            {{ $t('timeline.repeated') }}
+          </div>
         </div>
       </div>
 
@@ -151,6 +146,7 @@
                   <RichContent
                     :html="status.user.name"
                     :emoji="status.user.emoji"
+                    :allow-non-square-emoji="allowNonSquareEmoji"
                     :is-local="status.user.is_local"
                   />
                 </h4>
@@ -175,6 +171,16 @@
               </div>
 
               <span class="heading-right">
+                <span
+                  v-if="showPinned"
+                  class="pin"
+                >
+                  <FAIcon
+                    icon="thumbtack"
+                    class="faint"
+                  />
+                  <span class="faint">{{ $t('status.pinned') }}</span>
+                </span>
                 <router-link
                   class="timeago faint"
                   :to="{ name: 'conversation', params: { id: status.id } }"
@@ -232,10 +238,10 @@
                   />
                 </button>
                 <button
-                  v-if="dive && !simpleTree"
+                  v-if="canDive && !simpleTree"
                   class="button-unstyled"
                   :title="$t('status.show_only_conversation_under_this')"
-                  @click.prevent="dive"
+                  @click.prevent="$emit('dive')"
                 >
                   <FAIcon
                     fixed-width
@@ -405,61 +411,19 @@
           <StatusContent
             ref="content"
             :status="status"
-            :no-heading="noHeading"
-            :highlight="highlight"
-            :focused="isFocused"
-            :controlled-showing-tall="controlledShowingTall"
-            :controlled-expanding-subject="controlledExpandingSubject"
-            :controlled-showing-long-subject="controlledShowingLongSubject"
-            :controlled-toggle-showing-tall="controlledToggleShowingTall"
-            :controlled-toggle-expanding-subject="controlledToggleExpandingSubject"
-            :controlled-toggle-showing-long-subject="controlledToggleShowingLongSubject"
+            :focused="focused"
+            :in-conversation="inConversation"
             @mediaplay="addMediaPlaying($event)"
             @mediapause="removeMediaPlaying($event)"
             @parse-ready="setHeadTailLinks"
           />
 
-          <article
-            v-if="hasVisibleQuote"
-            class="quoted-status"
-          >
-            <button
-              class="button-unstyled -link display-quoted-status-button"
-              :aria-expanded="shouldDisplayQuote"
-              @click="toggleDisplayQuote"
-            >
-              {{ shouldDisplayQuote ? $t('status.hide_quote') : $t('status.display_quote') }}
-              <FAIcon
-                class="display-quoted-status-button-icon"
-                :icon="shouldDisplayQuote ? 'chevron-up' : 'chevron-down'"
-              />
-            </button>
-            <Status
-              v-if="shouldDisplayQuote"
-              :statusoid="quotedStatus"
-              :in-quote="true"
-            />
-          </article>
-          <p
-            v-else-if="hasInvisibleQuote"
-            class="quoted-status -unavailable-prompt"
-          >
-            <i18n-t
-              scope="global"
-              keypath="status.invisible_quote"
-            >
-              <template #link>
-                <bdi>
-                  <a
-                    :href="status.quote_url"
-                    target="_blank"
-                  >
-                    {{ status.quote_url }}
-                  </a>
-                </bdi>
-              </template>
-            </i18n-t>
-          </p>
+          <Quote
+            :status-id="quoteId"
+            :status-url="quoteUrl"
+            :status-visible="quoteVisible"
+            :initially-expanded="quoteExpanded"
+          />
 
           <div
             v-if="inConversation && !isPreview && replies && replies.length"
@@ -469,7 +433,7 @@
               v-if="showOtherRepliesAsButton && replies.length > 1"
               class="button-unstyled -link"
               :title="$t('status.ancestor_follow', { numReplies: replies.length - 1 }, replies.length - 1)"
-              @click.prevent="dive"
+              @click.prevent="$emit('dive')"
             >
               {{ $t('status.replies_list_with_others', { numReplies: replies.length - 1 }, replies.length - 1) }}
             </button>
@@ -544,7 +508,7 @@
           </transition>
 
           <EmojiReactions
-            v-if="(mergedConfig.emojiReactionsOnTimeline || isFocused) && (!noHeading && !isPreview)"
+            v-if="(mergedConfig.emojiReactionsOnTimeline || focused) && (!noHeading && !isPreview)"
             :status="status"
           />
 
@@ -552,8 +516,7 @@
             v-if="!noHeading && !isPreview"
             :status="status"
             :replying="replying"
-            @toggle-replying="toggleReplying"
-            @interacted="e => $emit('interacted')"
+            @toggle-replying="toggleReplyForm"
           />
         </div>
       </div>
@@ -587,9 +550,9 @@
           :replied-user="status.user"
           :copy-message-scope="status.visibility"
           :subject="replySubject"
-          @posted="doToggleReplying"
-          @draft-done="doToggleReplying"
-          @can-close="doToggleReplying"
+          @posted="closeReplyForm"
+          @draft-done="closeReplyForm"
+          @close-accepted="closeReplyForm"
         />
       </div>
     </template>

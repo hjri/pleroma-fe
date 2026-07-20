@@ -1,4 +1,4 @@
-import Conversation from '../conversation/conversation.vue'
+import Conversation from 'src/components/conversation/conversation.vue'
 
 const conversationPage = {
   components: {

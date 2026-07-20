@@ -1,16 +1,20 @@
 import Checkbox from 'components/checkbox/checkbox.vue'
-import ConfirmModal from 'components/confirm_modal/confirm_modal.vue'
 import Popover from 'components/popover/popover.vue'
 import Select from 'components/select/select.vue'
 import StillImage from 'components/still-image/still-image.vue'
-import { assign, clone } from 'lodash'
+import { clone } from 'lodash'
+import { defineAsyncComponent } from 'vue'
 
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
-import { useInterfaceStore } from 'src/stores/interface'
 import EmojiEditingPopover from '../helpers/emoji_editing_popover.vue'
 import ModifiedIndicator from '../helpers/modified_indicator.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import StringSetting from '../helpers/string_setting.vue'
+
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
+import { useEmojiStore } from 'src/stores/emoji.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -30,7 +34,10 @@ const EmojiTab = {
     StillImage,
     Select,
     Popover,
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
+
     ModifiedIndicator,
     EmojiEditingPopover,
   },
@@ -92,22 +99,22 @@ const EmojiTab = {
 
   methods: {
     reloadEmoji() {
-      this.$store.state.api.backendInteractor.reloadEmoji()
+      useAdminSettingsStore().reloadEmoji()
     },
     importFromFS() {
-      this.$store.state.api.backendInteractor.importEmojiFromFS()
+      useAdminSettingsStore().importEmojiFromFS()
     },
     emojiAddr(name) {
       if (this.pack.remote !== undefined) {
         // Remote pack
         return `${this.pack.remote.instance}/emoji/${encodeURIComponent(this.pack.remote.baseName)}/${name}`
       } else {
-        return `${this.$store.state.instance.server}/emoji/${encodeURIComponent(this.packName)}/${name}`
+        return `${useInstanceStore().server}/emoji/${encodeURIComponent(this.packName)}/${name}`
       }
     },
 
     createEmojiPack() {
-      this.$store.state.api.backendInteractor
+      useAdminSettingsStore()
         .createEmojiPack({ name: this.newPackName })
         .then((resp) => resp.json())
         .then((resp) => {
@@ -124,7 +131,7 @@ const EmojiTab = {
         })
     },
     deleteEmojiPack() {
-      this.$store.state.api.backendInteractor
+      useAdminSettingsStore()
         .deleteEmojiPack({ name: this.packName })
         .then((resp) => resp.json())
         .then((resp) => {
@@ -151,7 +158,7 @@ const EmojiTab = {
       return edited !== def
     },
     savePackMetadata() {
-      this.$store.state.api.backendInteractor
+      useAdminSettingsStore()
         .saveEmojiPackMetadata({ name: this.packName, newData: this.packMeta })
         .then((resp) => resp.json())
         .then((resp) => {
@@ -172,63 +179,25 @@ const EmojiTab = {
       this.sortPackFiles(packName)
     },
 
-    loadPacksPaginated(listFunction) {
-      const pageSize = 25
-      const allPacks = {}
-
-      return listFunction({
-        instance: this.remotePackInstance,
-        page: 1,
-        pageSize: 0,
-      })
-        .then((data) => data.json())
-        .then((data) => {
-          if (data.error !== undefined) {
-            return Promise.reject(data.error)
-          }
-
-          let resultingPromise = Promise.resolve({})
-          for (let i = 0; i < Math.ceil(data.count / pageSize); i++) {
-            resultingPromise = resultingPromise
-              .then(() =>
-                listFunction({
-                  instance: this.remotePackInstance,
-                  page: i,
-                  pageSize,
-                }),
-              )
-              .then((data) => data.json())
-              .then((pageData) => {
-                if (pageData.error !== undefined) {
-                  return Promise.reject(pageData.error)
-                }
-
-                assign(allPacks, pageData.packs)
-              })
-          }
-
-          return resultingPromise
-        })
-        .then(() => allPacks)
-        .catch((data) => {
-          this.displayError(data)
-        })
-    },
-
     refreshPackList() {
-      this.loadPacksPaginated(
-        this.$store.state.api.backendInteractor.listEmojiPacks,
-      ).then((allPacks) => {
-        this.knownLocalPacks = allPacks
-        for (const name of Object.keys(this.knownLocalPacks)) {
-          this.sortPackFiles(name)
-        }
-      })
+      useEmojiStore()
+        .getAdminPacks(
+          this.remotePackInstance,
+          useAdminSettingsStore().listEmojiPacks,
+        )
+        .then((allPacks) => {
+          this.knownLocalPacks = allPacks
+          for (const name of Object.keys(this.knownLocalPacks)) {
+            this.sortPackFiles(name)
+          }
+        })
     },
     listRemotePacks() {
-      this.loadPacksPaginated(
-        this.$store.state.api.backendInteractor.listRemoteEmojiPacks,
-      )
+      useEmojiStore()
+        .getAdminPacks(
+          this.remotePackInstance,
+          useAdminSettingsStore().listRemoteEmojiPacks,
+        )
         .then((allPacks) => {
           let inst = this.remotePackInstance
           if (!inst.startsWith('http')) {
@@ -258,7 +227,7 @@ const EmojiTab = {
         this.remotePackDownloadAs = this.pack.remote.baseName
       }
 
-      this.$store.state.api.backendInteractor
+      useAdminSettingsStore()
         .downloadRemoteEmojiPack({
           instance: this.pack.remote.instance,
           packName: this.pack.remote.baseName,
@@ -279,7 +248,7 @@ const EmojiTab = {
         })
     },
     downloadRemoteURLPack() {
-      this.$store.state.api.backendInteractor
+      useAdminSettingsStore()
         .downloadRemoteEmojiPackZIP({
           url: this.remotePackURL,
           packName: this.newPackName,
@@ -300,7 +269,7 @@ const EmojiTab = {
         })
     },
     downloadRemoteFilePack() {
-      this.$store.state.api.backendInteractor
+      useAdminSettingsStore()
         .downloadRemoteEmojiPackZIP({
           file: this.remotePackFile[0],
           packName: this.newPackName,

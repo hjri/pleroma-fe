@@ -619,7 +619,7 @@ export const generateFonts = (input) => {
     rules: {
       fonts: Object.entries(fonts)
         .filter(([, v]) => v)
-        .map(([k, v]) => `--${k}Font: ${v.family}`)
+        .map(([k, v]) => `--${k}Font: ${v}`)
         .join(';'),
     },
     theme: {

@@ -12,6 +12,7 @@
     <template #content="{close}">
       <UserCard
         class="user-popover"
+        :compact="true"
         :show-close="true"
         :show-expand="true"
         :user-id="userId"
@@ -37,7 +38,6 @@
   }
 
   .user-identity {
-    aspect-ratio: unset;
     min-width: calc(min(30em, 98vw));
   }
 

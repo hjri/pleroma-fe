@@ -1,14 +1,13 @@
 // eslint-disable-next-line no-unused
 
-import { throttle } from 'lodash'
-import { mapState as mapPiniaState, mapState } from 'pinia'
-import { Fragment, h } from 'vue'
+import { mapState as mapPiniaState } from 'pinia'
+import { Fragment } from 'vue'
 
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/vue-fontawesome'
 
 import './vertical_tab_switcher.scss'
 
-import { useInterfaceStore } from 'src/stores/interface'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 const findFirstUsable = (slots) => slots.findIndex((_) => _.props)
 
@@ -34,11 +33,6 @@ export default {
       required: false,
       type: Boolean,
       default: false,
-    },
-    parentCollapsed: {
-      required: false,
-      type: Boolean,
-      default: null,
     },
   },
   data() {
@@ -165,19 +159,25 @@ export default {
         'tab-content-wrapper',
         active ? '-active' : '-hidden',
       ]
+      const slotWrapperClasses = [
+        'tab-slot-wrapper',
+        active ? '-active' : '-hidden',
+      ]
       const contentClasses = ['tab-content']
-      if (props['full-width'] || props['full-width'] === '') {
+      if (props['full-width'] || props['full-width'] != null) {
         contentClasses.push('-full-width')
         wrapperClasses.push('-full-width')
+        slotWrapperClasses.push('-full-width')
       }
-      if (props['full-height'] || props['full-width'] === '') {
+      if (props['full-height'] || props['full-width'] != null) {
         contentClasses.push('-full-height')
         wrapperClasses.push('-full-height')
+        slotWrapperClasses.push('-full-height')
       }
       return (
         <div class={wrapperClasses}>
           <div class="tab-mobile-header">{header}</div>
-          <div class="tab-slot-wrapper">
+          <div class={slotWrapperClasses}>
             <div class={contentClasses}>{renderSlot}</div>
           </div>
         </div>
@@ -202,7 +202,7 @@ export default {
         </div>
         <div
           role="tabpanel"
-          class={'contents' + (this.scrollableTabs ? ' scrollable-tabs' : '')}
+          class="contents"
           v-body-scroll-lock={this.bodyScrollLock}
           ref="contents"
         >

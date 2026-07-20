@@ -198,7 +198,7 @@
         <li @click="toggleDrawer">
           <button
             class="menu-item"
-            @click="openSettingsModal"
+            @click="openSettingsModal('user')"
           >
             <FAIcon
               fixed-width
@@ -225,7 +225,7 @@
         >
           <button
             class="menu-item"
-            @click.stop="openAdminModal"
+            @click.stop="openSettingsModal('admin')"
           >
             <FAIcon
               fixed-width

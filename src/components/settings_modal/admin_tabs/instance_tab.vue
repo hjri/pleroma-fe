@@ -51,6 +51,7 @@
         <li>
           <ColorSetting
             hide-draft-buttons
+            label=""
             path=":pleroma.:manifest.:theme_color"
           />
         </li>
@@ -99,7 +100,7 @@
             override-backend-description
             override-backend-description-label
             override-available-options
-            :options="limitLocalContentOptions"
+            :options="[...limitLocalContentOptions]"
             path=":pleroma.:instance.:limit_to_local_content"
           />
         </li>

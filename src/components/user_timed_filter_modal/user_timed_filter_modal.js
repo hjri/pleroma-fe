@@ -1,13 +1,18 @@
+import { defineAsyncComponent } from 'vue'
+
 import Checkbox from 'src/components/checkbox/checkbox.vue'
-import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import Select from 'src/components/select/select.vue'
+
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
 import { durationStrToMs } from 'src/services/date_utils/date_utils.js'
 
 const UserTimedFilterModal = {
   data() {
     const action = this.isMute
-      ? this.$store.getters.mergedConfig.onMuteDefaultAction
-      : this.$store.getters.mergedConfig.onBlockDefaultAction
+      ? useMergedConfigStore().mergedConfig.onMuteDefaultAction
+      : useMergedConfigStore().mergedConfig.onBlockDefaultAction
     const doAsk = action === 'ask'
     const defaultValues = {}
 
@@ -32,7 +37,10 @@ const UserTimedFilterModal = {
     }
   },
   components: {
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
+
     Select,
     Checkbox,
   },
@@ -43,9 +51,11 @@ const UserTimedFilterModal = {
   computed: {
     shouldConfirm() {
       if (this.isMute) {
-        return this.$store.getters.mergedConfig.onMuteDefaultAction === 'ask'
+        return useMergedConfigStore().mergedConfig.onMuteDefaultAction === 'ask'
       } else {
-        return this.$store.getters.mergedConfig.onBlockDefaultAction === 'ask'
+        return (
+          useMergedConfigStore().mergedConfig.onBlockDefaultAction === 'ask'
+        )
       }
     },
     expiryString() {
@@ -81,16 +91,16 @@ const UserTimedFilterModal = {
       if (this.isMute) {
         this.$store.dispatch('muteUser', this.requestBody)
         if (this.dontAskAgain) {
-          this.$store.dispatch('setOption', {
-            name: 'onMuteDefaultAction',
+          useSyncConfigStore().setSimplePrefAndSave({
+            path: 'onMuteDefaultAction',
             value: this.expiryString,
           })
         }
       } else {
         this.$store.dispatch('blockUser', this.requestBody)
         if (this.dontAskAgain) {
-          this.$store.dispatch('setOption', {
-            name: 'onBlockDefaultAction',
+          useSyncConfigStore().setSimplePrefAndSave({
+            path: 'onBlockDefaultAction',
             value: this.expiryString,
           })
         }

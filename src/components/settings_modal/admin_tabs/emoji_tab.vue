@@ -56,18 +56,14 @@
           <Popover
             ref="additionalRemotePopover"
             popover-class="emoji-tab-edit-popover popover-default"
+            class="button button-default emoji-panel-additional-actions"
+            :title="$t('admin_dash.emoji.import_pack')"
             trigger="click"
             placement="bottom"
           >
             <template #trigger>
-              <button
-                class="button button-default emoji-panel-additional-actions"
-                :title="$t('admin_dash.emoji.import_pack')"
-                @click="$refs.additionalRemotePopover.showPopover"
-              >
-                <FAIcon icon="folder-open" />
-                {{ $t('admin_dash.emoji.import_pack_short') }}
-              </button>
+              <FAIcon icon="folder-open" />
+              {{ $t('admin_dash.emoji.import_pack_short') }}
             </template>
 
             <template #content>

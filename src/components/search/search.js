@@ -1,10 +1,8 @@
-import { uniqBy } from 'lodash'
-import map from 'lodash/map'
+import { map, uniqBy } from 'lodash'
 
+import Conversation from 'src/components/conversation/conversation.vue'
+import FollowCard from 'src/components/follow_card/follow_card.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
-import Conversation from '../conversation/conversation.vue'
-import FollowCard from '../follow_card/follow_card.vue'
-import Status from '../status/status.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch, faSearch } from '@fortawesome/free-solid-svg-icons'
@@ -15,7 +13,7 @@ const Search = {
   components: {
     FollowCard,
     Conversation,
-    Status,
+
     TabSwitcher,
   },
   props: ['query'],

@@ -1,8 +1,12 @@
+import { createTestingPinia } from '@pinia/testing'
 import { flushPromises, mount } from '@vue/test-utils'
+import { setActivePinia } from 'pinia'
 import { nextTick } from 'vue'
 
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import { $t, mountOpts, waitForEvent } from '../../../fixtures/setup_test'
+
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const autoSaveOrNot = (caseFn, caseTitle, runFn) => {
   caseFn(`${caseTitle} with auto-save`, function () {
@@ -35,15 +39,19 @@ afterEach(() => {
 })
 
 describe('Draft saving', () => {
+  beforeEach(() => {
+    setActivePinia(createTestingPinia())
+  })
+
   autoSaveOrNot(
     it,
     'should save when the button is clicked',
     async (autoSave) => {
       const wrapper = mount(PostStatusForm, mountOpts())
-      await wrapper.vm.$store.dispatch('setOption', {
-        name: 'autoSaveDraft',
-        value: autoSave,
-      })
+      const store = useMergedConfigStore()
+      store.mergedConfig = {
+        autoSaveDraft: autoSave,
+      }
       expect(wrapper.vm.$store.getters.draftCount).to.equal(0)
 
       const textarea = wrapper.get('textarea')
@@ -60,10 +68,10 @@ describe('Draft saving', () => {
   it('should auto-save if it is enabled', async function () {
     vi.useFakeTimers()
     const wrapper = mount(PostStatusForm, mountOpts())
-    await wrapper.vm.$store.dispatch('setOption', {
-      name: 'autoSaveDraft',
-      value: true,
-    })
+    const store = useMergedConfigStore()
+    store.mergedConfig = {
+      autoSaveDraft: true,
+    }
     expect(wrapper.vm.$store.getters.draftCount).to.equal(0)
     const textarea = wrapper.get('textarea')
     await textarea.setValue('mew mew')
@@ -83,16 +91,16 @@ describe('Draft saving', () => {
         },
       }),
     )
-    await wrapper.vm.$store.dispatch('setOption', {
-      name: 'autoSaveDraft',
-      value: true,
-    })
+    const store = useMergedConfigStore()
+    store.mergedConfig = {
+      autoSaveDraft: true,
+    }
     expect(wrapper.vm.$store.getters.draftCount).to.equal(0)
     const textarea = wrapper.get('textarea')
     await textarea.setValue('mew mew')
     wrapper.vm.requestClose()
     expect(wrapper.vm.$store.getters.draftCount).to.equal(1)
-    await waitForEvent(wrapper, 'can-close')
+    await waitForEvent(wrapper, 'close-accepted')
   })
 
   it('should save when close if auto-save is off, and unsavedPostAction is save', async () => {
@@ -104,20 +112,17 @@ describe('Draft saving', () => {
         },
       }),
     )
-    await wrapper.vm.$store.dispatch('setOption', {
-      name: 'autoSaveDraft',
-      value: false,
-    })
-    await wrapper.vm.$store.dispatch('setOption', {
-      name: 'unsavedPostAction',
-      value: 'save',
-    })
+    const store = useMergedConfigStore()
+    store.mergedConfig = {
+      autoSaveDraft: false,
+      unsavedPostAction: 'save',
+    }
     expect(wrapper.vm.$store.getters.draftCount).to.equal(0)
     const textarea = wrapper.get('textarea')
     await textarea.setValue('mew mew')
     wrapper.vm.requestClose()
     expect(wrapper.vm.$store.getters.draftCount).to.equal(1)
-    await waitForEvent(wrapper, 'can-close')
+    await waitForEvent(wrapper, 'close-accepted')
   })
 
   it('should discard when close if auto-save is off, and unsavedPostAction is discard', async () => {
@@ -129,19 +134,16 @@ describe('Draft saving', () => {
         },
       }),
     )
-    await wrapper.vm.$store.dispatch('setOption', {
-      name: 'autoSaveDraft',
-      value: false,
-    })
-    await wrapper.vm.$store.dispatch('setOption', {
-      name: 'unsavedPostAction',
-      value: 'discard',
-    })
+    const store = useMergedConfigStore()
+    store.mergedConfig = {
+      autoSaveDraft: false,
+      unsavedPostAction: 'discard',
+    }
     expect(wrapper.vm.$store.getters.draftCount).to.equal(0)
     const textarea = wrapper.get('textarea')
     await textarea.setValue('mew mew')
     wrapper.vm.requestClose()
-    await waitForEvent(wrapper, 'can-close')
+    await waitForEvent(wrapper, 'close-accepted')
     expect(wrapper.vm.$store.getters.draftCount).to.equal(0)
   })
 
@@ -154,28 +156,30 @@ describe('Draft saving', () => {
         },
       }),
     )
-    await wrapper.vm.$store.dispatch('setOption', {
-      name: 'autoSaveDraft',
-      value: false,
-    })
-    await wrapper.vm.$store.dispatch('setOption', {
-      name: 'unsavedPostAction',
-      value: 'confirm',
-    })
+    const store = useMergedConfigStore(createTestingPinia())
+    store.mergedConfig = {
+      autoSaveDraft: false,
+      unsavedPostAction: 'confirm',
+    }
     expect(wrapper.vm.$store.getters.draftCount).to.equal(0)
     const textarea = wrapper.get('textarea')
     await textarea.setValue('mew mew')
     wrapper.vm.requestClose()
     await nextTick()
-    const saveButton = wrapper.findByText(
-      'button',
-      $t('post_status.close_confirm_save_button'),
-    )
+    await flushPromises()
+    const saveButton = await vi.waitFor(() => {
+      const button = wrapper.findByText(
+        'button',
+        $t('post_status.close_confirm_save_button'),
+      )
+      if (!button) throw new Error('Save button not present')
+      return button
+    })
     expect(saveButton).to.be.ok
     await saveButton.trigger('click')
     console.info('clicked')
     expect(wrapper.vm.$store.getters.draftCount).to.equal(1)
     await flushPromises()
-    await waitForEvent(wrapper, 'can-close')
+    await waitForEvent(wrapper, 'close-accepted')
   })
 })

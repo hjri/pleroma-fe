@@ -16,7 +16,7 @@
         :params="params"
         @posted="doCloseModal"
         @draft-done="doCloseModal"
-        @can-close="doCloseModal"
+        @close-accepted="doCloseModal"
       />
     </div>
   </Modal>

@@ -1,10 +1,12 @@
 import { chunk, debounce, trim } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 
+import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Popover from 'src/components/popover/popover.vue'
 import { ensureFinalFallback } from '../../i18n/languages.js'
-import Checkbox from '../checkbox/checkbox.vue'
-import StillImage from '../still-image/still-image.vue'
+
+import { useEmojiStore } from 'src/stores/emoji.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -125,6 +127,7 @@ const EmojiPicker = {
       hideCustomEmojiInPicker: false,
       // Lazy-load only after the first time `showing` becomes true.
       contentLoaded: false,
+      popoverShown: false,
       groupRefs: {},
       emojiRefs: {},
       filteredEmojiGroups: [],
@@ -134,10 +137,10 @@ const EmojiPicker = {
   },
   components: {
     StickerPicker: defineAsyncComponent(
-      () => import('../sticker_picker/sticker_picker.vue'),
+      () => import('src/components/sticker_picker/sticker_picker.vue'),
     ),
     Checkbox,
-    StillImage,
+
     Popover,
   },
   methods: {
@@ -172,6 +175,13 @@ const EmojiPicker = {
       const fullEmojiSize = emojiSizeReal + 2 * 0.2 * fontSizeMultiplier * 14
       this.emojiSize = fullEmojiSize
     },
+    togglePicker() {
+      if (this.popoverShown) {
+        this.hidePicker()
+      } else {
+        this.showPicker()
+      }
+    },
     showPicker() {
       this.$refs.popover.showPopover()
       this.$nextTick(() => {
@@ -190,10 +200,10 @@ const EmojiPicker = {
       }
     },
     onPopoverShown() {
-      this.$emit('show')
+      this.popoverShown = true
     },
     onPopoverClosed() {
-      this.$emit('close')
+      this.popoverShown = false
     },
     onStickerUploaded(e) {
       this.$emit('sticker-uploaded', e)
@@ -337,7 +347,7 @@ const EmojiPicker = {
       this.$nextTick(() => {
         this.updateEmojiSize()
       })
-      return this.$store.getters.mergedConfig.fontSize
+      return useMergedConfigStore().mergedConfig.fontSize
     },
     emojiHeight() {
       return this.emojiSize
@@ -349,8 +359,8 @@ const EmojiPicker = {
       return this.showingStickers ? '' : this.activeGroup
     },
     stickersAvailable() {
-      if (this.$store.state.instance.stickers) {
-        return this.$store.state.instance.stickers.length > 0
+      if (useEmojiStore().stickers) {
+        return useEmojiStore().stickers.length > 0
       }
       return 0
     },
@@ -358,7 +368,7 @@ const EmojiPicker = {
       if (this.hideCustomEmoji || this.hideCustomEmojiInPicker) {
         return {}
       }
-      const emojis = this.$store.getters.groupedCustomEmojis
+      const emojis = useEmojiStore().groupedCustomEmojis
       if (emojis.unpacked) {
         emojis.unpacked.text = this.$t('emoji.unpacked')
       }
@@ -368,7 +378,7 @@ const EmojiPicker = {
       return Object.keys(this.allCustomGroups)[0]
     },
     unicodeEmojiGroups() {
-      return this.$store.getters.standardEmojiGroupList.map((group) => ({
+      return useEmojiStore().standardEmojiGroupList.map((group) => ({
         id: `standard-${group.id}`,
         text: this.$t(`emoji.unicode_groups.${group.id}`),
         icon: UNICODE_EMOJI_GROUP_ICON[group.id],
@@ -381,7 +391,7 @@ const EmojiPicker = {
         .concat(this.unicodeEmojiGroups)
     },
     stickerPickerEnabled() {
-      return (this.$store.state.instance.stickers || []).length !== 0
+      return (useEmojiStore().stickers || []).length !== 0
     },
     debouncedHandleKeywordChange() {
       return debounce(() => {
@@ -402,7 +412,7 @@ const EmojiPicker = {
     },
     languages() {
       return ensureFinalFallback(
-        this.$store.getters.mergedConfig.interfaceLanguage,
+        useMergedConfigStore().mergedConfig.interfaceLanguage,
       )
     },
     maybeLocalizedEmojiName() {

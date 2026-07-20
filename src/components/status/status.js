@@ -1,26 +1,32 @@
 import { unescape as ldUnescape, uniqBy } from 'lodash'
+import { defineAsyncComponent } from 'vue'
 
+import AvatarList from 'src/components/avatar_list/avatar_list.vue'
+import EmojiReactions from 'src/components/emoji_reactions/emoji_reactions.vue'
 import MentionLink from 'src/components/mention_link/mention_link.vue'
 import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
-import RichContent from 'src/components/rich_content/rich_content.jsx'
+import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import StatusActionButtons from 'src/components/status_action_buttons/status_action_buttons.vue'
-import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
+import StatusContent from 'src/components/status_content/status_content.vue'
+import StatusPopover from 'src/components/status_popover/status_popover.vue'
+import Timeago from 'src/components/timeago/timeago.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+import UserLink from 'src/components/user_link/user_link.vue'
+import UserListPopover from 'src/components/user_list_popover/user_list_popover.vue'
+import UserPopover from 'src/components/user_popover/user_popover.vue'
 import { muteFilterHits } from '../../services/status_parser/status_parser.js'
 import {
   highlightClass,
   highlightStyle,
 } from '../../services/user_highlighter/user_highlighter.js'
-import AvatarList from '../avatar_list/avatar_list.vue'
-import EmojiReactions from '../emoji_reactions/emoji_reactions.vue'
-import PostStatusForm from '../post_status_form/post_status_form.vue'
-import StatusContent from '../status_content/status_content.vue'
-import StatusPopover from '../status_popover/status_popover.vue'
-import Timeago from '../timeago/timeago.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
-import UserLink from '../user_link/user_link.vue'
-import UserListPopover from '../user_list_popover/user_list_popover.vue'
-import UserPopover from '../user_popover/user_popover.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUserHighlightStore } from 'src/stores/user_highlight.js'
+
+import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -67,46 +73,6 @@ library.add(
   faPlay,
 )
 
-const camelCase = (name) => name.charAt(0).toUpperCase() + name.slice(1)
-
-const controlledOrUncontrolledGetters = (list) =>
-  list.reduce((res, name) => {
-    const camelized = camelCase(name)
-    const toggle = `controlledToggle${camelized}`
-    const controlledName = `controlled${camelized}`
-    const uncontrolledName = `uncontrolled${camelized}`
-    res[name] = function () {
-      return (this.$data[toggle] !== undefined ||
-        this.$props[toggle] !== undefined) &&
-        this[toggle]
-        ? this[controlledName]
-        : this[uncontrolledName]
-    }
-    return res
-  }, {})
-
-const controlledOrUncontrolledToggle = (obj, name) => {
-  const camelized = camelCase(name)
-  const toggle = `controlledToggle${camelized}`
-  const uncontrolledName = `uncontrolled${camelized}`
-  if (obj[toggle]) {
-    obj[toggle]()
-  } else {
-    obj[uncontrolledName] = !obj[uncontrolledName]
-  }
-}
-
-const controlledOrUncontrolledSet = (obj, name, val) => {
-  const camelized = camelCase(name)
-  const set = `controlledSet${camelized}`
-  const uncontrolledName = `uncontrolled${camelized}`
-  if (obj[set]) {
-    obj[set](val)
-  } else {
-    obj[uncontrolledName] = val
-  }
-}
-
 const Status = {
   name: 'Status',
   components: {
@@ -118,67 +84,63 @@ const Status = {
     UserListPopover,
     EmojiReactions,
     StatusContent,
-    RichContent,
     MentionLink,
     MentionsLine,
     UserPopover,
     UserLink,
+    Quote: defineAsyncComponent(() => import('src/components/quote/quote.vue')),
     StatusActionButtons,
   },
-  props: [
-    'statusoid',
-    'expandable',
-    'inConversation',
-    'focused',
-    'highlight',
-    'compact',
-    'replies',
-    'isPreview',
-    'noHeading',
-    'inlineExpanded',
-    'showPinned',
-    'inProfile',
-    'profileUserId',
-    'inQuote',
+  props: {
+    statusoid: Object,
+    replies: Array,
 
-    'simpleTree',
-    'controlledThreadDisplayStatus',
-    'controlledToggleThreadDisplay',
-    'showOtherRepliesAsButton',
+    expandable: Boolean,
+    focused: Boolean,
+    compact: Boolean,
+    isPreview: Boolean,
+    noHeading: Boolean,
+    inlineExpanded: Boolean,
+    showPinned: Boolean,
+    inProfile: Boolean,
+    inConversation: Boolean,
+    inQuote: Boolean,
 
-    'controlledShowingTall',
-    'controlledToggleShowingTall',
-    'controlledExpandingSubject',
-    'controlledToggleExpandingSubject',
-    'controlledShowingLongSubject',
-    'controlledToggleShowingLongSubject',
-    'controlledReplying',
-    'controlledToggleReplying',
-    'controlledMediaPlaying',
-    'controlledSetMediaPlaying',
-    'dive',
-  ],
-  emits: ['interacted'],
+    profileUserId: String,
+    simpleTree: Boolean,
+    showOtherRepliesAsButton: Boolean,
+    canDive: Boolean,
+    ignoreMute: Boolean,
+
+    threadDisplayStatus: String,
+  },
+  emits: ['goto', 'dive', 'toggleExpanded', 'suspendableStateChange'],
   data() {
     return {
-      uncontrolledReplying: false,
+      replying: false,
       unmuted: false,
       userExpanded: false,
-      uncontrolledMediaPlaying: [],
-      suspendable: true,
+      mediaPlaying: new Set(),
       error: null,
       headTailLinks: null,
-      displayQuote: !this.inQuote,
     }
   },
   computed: {
-    ...controlledOrUncontrolledGetters(['replying', 'mediaPlaying']),
     showReasonMutedThread() {
       return (
         (this.status.thread_muted ||
           (this.status.reblog && this.status.reblog.thread_muted)) &&
         !this.inConversation
       )
+    },
+    allowNonSquareEmoji() {
+      return this.mergedConfig.nonSquareEmoji
+    },
+    pauseMfm() {
+      return this.mergedConfig.pauseMfm
+    },
+    scaleMfm() {
+      return this.mergedConfig.scaleMfm
     },
     repeaterClass() {
       const user = this.statusoid.user
@@ -195,16 +157,14 @@ const Status = {
     },
     repeaterStyle() {
       const user = this.statusoid.user
-      const highlight = this.mergedConfig.highlight
-      return highlightStyle(highlight[user.screen_name])
+      return highlightStyle(useUserHighlightStore().get(user.screen_name))
     },
     userStyle() {
       if (this.noHeading) return
       const user = this.retweet
         ? this.statusoid.retweeted_status.user
         : this.statusoid.user
-      const highlight = this.mergedConfig.highlight
-      return highlightStyle(highlight[user.screen_name])
+      return highlightStyle(useUserHighlightStore().get(user.screen_name))
     },
     userProfileLink() {
       return this.generateUserProfileLink(
@@ -256,7 +216,7 @@ const Status = {
     muteFilterHits() {
       return muteFilterHits(
         Object.values(
-          useServerSideStorageStore().prefsStorage.simple.muteFilters,
+          useSyncConfigStore().prefsStorage.simple.muteFilters || {},
         ),
         this.status,
       )
@@ -342,6 +302,7 @@ const Status = {
       }
     },
     muted() {
+      if (this.ignoreMute) return false
       if (this.statusoid.user.id === this.currentUser.id) return false
       return !this.unmuted && !this.shouldNotMute && this.muteReasons.length > 0
     },
@@ -363,7 +324,8 @@ const Status = {
       )
     },
     shouldNotMute() {
-      if (this.isFocused) return true
+      if (this.ignoreMute) return true
+      if (this.focused) return true
       const { status } = this
       const { reblog } = status
       return (
@@ -399,16 +361,6 @@ const Status = {
           (this.muteFilterHits.length > 0 && this.hideWordFilteredPosts) ||
           this.muteFilterHits.some((x) => x.hide))
       )
-    },
-    isFocused() {
-      // retweet or root of an expanded conversation
-      if (this.focused) {
-        return true
-      } else if (!this.inConversation) {
-        return false
-      }
-      // use conversation highlight only when in conversation
-      return this.status.id === this.highlight
     },
     isReply() {
       return !!(
@@ -458,7 +410,7 @@ const Status = {
     shouldDisplayFavsAndRepeats() {
       return (
         !this.hidePostStats &&
-        this.isFocused &&
+        this.focused &&
         (this.combinedFavsAndRepeatsUsers.length > 0 ||
           this.statusFromGlobalRepository.quotes_count)
       )
@@ -476,16 +428,16 @@ const Status = {
       return this.$store.state.users.currentUser
     },
     mergedConfig() {
-      return this.$store.getters.mergedConfig
+      return useMergedConfigStore().mergedConfig
     },
     isSuspendable() {
-      return !this.replying && this.mediaPlaying.length === 0
+      return !this.replying && this.mediaPlaying.size === 0
     },
     inThreadForest() {
-      return !!this.controlledThreadDisplayStatus
+      return !!this.threadDisplayStatus
     },
     threadShowing() {
-      return this.controlledThreadDisplayStatus === 'showing'
+      return this.threadDisplayStatus === 'showing'
     },
     visibilityLocalized() {
       return this.$i18n.t('general.scope_in_timeline.' + this.status.visibility)
@@ -494,21 +446,19 @@ const Status = {
       return this.status.edited_at !== null
     },
     editingAvailable() {
-      return this.$store.state.instance.editingAvailable
+      return useInstanceCapabilitiesStore().editingAvailable
     },
-    hasVisibleQuote() {
-      return this.status.quote_url && this.status.quote_visible
-    },
-    hasInvisibleQuote() {
-      return this.status.quote_url && !this.status.quote_visible
-    },
-    quotedStatus() {
+    quoteId() {
       return this.status.quote_id
-        ? this.$store.state.statuses.allStatusesObject[this.status.quote_id]
-        : undefined
     },
-    shouldDisplayQuote() {
-      return this.quotedStatus && this.displayQuote
+    quoteUrl() {
+      return this.status.quote_url
+    },
+    quoteVisible() {
+      return this.status.quote_visible
+    },
+    quoteExpanded() {
+      return !this.inQuote
     },
     scrobblePresent() {
       if (this.mergedConfig.hideScrobbles) return false
@@ -556,19 +506,19 @@ const Status = {
       this.error = error
     },
     clearError() {
-      this.$emit('interacted')
       this.error = undefined
     },
-    toggleReplying() {
-      this.$emit('interacted')
+    toggleReplyForm() {
       if (this.replying) {
+        // This emits 'close-accepted' if successful
+        // which in turn callse closeReply()
         this.$refs.postStatusForm.requestClose()
       } else {
-        this.doToggleReplying()
+        this.replying = true
       }
     },
-    doToggleReplying() {
-      controlledOrUncontrolledToggle(this, 'replying')
+    closeReplyForm() {
+      this.replying = false
     },
     gotoOriginal(id) {
       if (this.inConversation) {
@@ -588,22 +538,14 @@ const Status = {
       return generateProfileLink(
         id,
         name,
-        this.$store.state.instance.restrictedNicknames,
+        useInstanceStore().restrictedNicknames,
       )
     },
     addMediaPlaying(id) {
-      controlledOrUncontrolledSet(
-        this,
-        'mediaPlaying',
-        this.mediaPlaying.concat(id),
-      )
+      this.mediaPlaying.add(id)
     },
     removeMediaPlaying(id) {
-      controlledOrUncontrolledSet(
-        this,
-        'mediaPlaying',
-        this.mediaPlaying.filter((mediaId) => mediaId !== id),
-      )
+      this.mediaPlaying.delete(id)
     },
     setHeadTailLinks(headTailLinks) {
       this.headTailLinks = headTailLinks
@@ -611,9 +553,9 @@ const Status = {
     toggleThreadDisplay() {
       this.controlledToggleThreadDisplay()
     },
-    scrollIfHighlighted(highlightId) {
+    scrollIfFocused(focusedId) {
       if (this.$el.getBoundingClientRect == null) return
-      const id = highlightId
+      const id = focusedId
       if (this.status.id === id) {
         const rect = this.$el.getBoundingClientRect()
         if (rect.top < 100) {
@@ -628,26 +570,15 @@ const Status = {
         }
       }
     },
-    toggleDisplayQuote() {
-      if (this.shouldDisplayQuote) {
-        this.displayQuote = false
-      } else if (!this.quotedStatus) {
-        this.$store.dispatch('fetchStatus', this.status.quote_id).then(() => {
-          this.displayQuote = true
-        })
-      } else {
-        this.displayQuote = true
-      }
-    },
   },
   watch: {
-    highlight: function (id) {
-      this.scrollIfHighlighted(id)
+    focused: function (id) {
+      this.scrollIfFocused(id)
     },
     'status.repeat_num': function (num) {
       // refetch repeats when repeat_num is changed in any way
       if (
-        this.isFocused &&
+        this.focused &&
         this.statusFromGlobalRepository.rebloggedBy &&
         this.statusFromGlobalRepository.rebloggedBy.length !== num
       ) {
@@ -657,15 +588,15 @@ const Status = {
     'status.fave_num': function (num) {
       // refetch favs when fave_num is changed in any way
       if (
-        this.isFocused &&
+        this.focused &&
         this.statusFromGlobalRepository.favoritedBy &&
         this.statusFromGlobalRepository.favoritedBy.length !== num
       ) {
         this.$store.dispatch('fetchFavs', this.status.id)
       }
     },
-    isSuspendable: function (val) {
-      this.suspendable = val
+    isSuspendable: function (suspend) {
+      this.$emit('suspendableStateChange', { id: this.statusoid.id, suspend })
     },
   },
 }

@@ -1,8 +1,12 @@
 import { camelCase } from 'lodash'
 
-import { useInterfaceStore } from 'src/stores/interface.js'
-import apiService from '../api/api.service.js'
 import { promiseInterval } from '../promise_interval/promise_interval.js'
+
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
+import { fetchTimeline } from 'src/api/timelines.js'
 
 const update = ({
   store,
@@ -31,28 +35,29 @@ const fetchAndUpdate = ({
   timeline = 'friends',
   older = false,
   showImmediately = false,
-  userId = false,
-  listId = false,
-  statusId = false,
-  bookmarkFolderId = false,
-  tag = false,
-  until,
-  since,
+  userId,
+  listId,
+  statusId,
+  bookmarkFolderId,
+  tag,
+  maxId,
+  sinceId,
 }) => {
   const args = { timeline, credentials }
   const rootState = store.rootState || store.state
-  const { getters } = store
   const timelineData = rootState.statuses.timelines[camelCase(timeline)]
-  const { hideMutedPosts, replyVisibility } = getters.mergedConfig
+  const { hideMutedPosts, replyVisibility } =
+    useMergedConfigStore().mergedConfig
   const loggedIn = !!rootState.users.currentUser
 
   if (older) {
-    args.until = until || timelineData.minId
+    // When minId = 0 we need to fetch without maxId param
+    args.maxId = maxId || timelineData.minId || null
   } else {
-    if (since === undefined) {
-      args.since = timelineData.maxId
-    } else if (since !== null) {
-      args.since = since
+    if (sinceId === undefined) {
+      args.sinceId = timelineData.maxId
+    } else if (sinceId !== null) {
+      args.sinceId = sinceId
     }
   }
 
@@ -71,17 +76,8 @@ const fetchAndUpdate = ({
 
   const numStatusesBeforeFetch = timelineData.statuses.length
 
-  return apiService
-    .fetchTimeline(args)
+  return fetchTimeline(args)
     .then((response) => {
-      if (response.errors) {
-        if (timeline === 'favorites') {
-          rootState.instance.pleromaPublicFavouritesAvailable = false
-          return
-        }
-        throw new Error(`${response.status} ${response.statusText}`)
-      }
-
       const { data: statuses, pagination } = response
       if (
         !older &&
@@ -103,6 +99,10 @@ const fetchAndUpdate = ({
       return { statuses, pagination }
     })
     .catch((error) => {
+      if (error.statusCode === 403 && timeline === 'favorites') {
+        useInstanceCapabilitiesStore().pleromaPublicFavouritesAvailable = false
+        return
+      }
       useInterfaceStore().pushGlobalNotice({
         level: 'error',
         messageKey: 'timeline.error',
@@ -116,11 +116,11 @@ const startFetching = ({
   timeline = 'friends',
   credentials,
   store,
-  userId = false,
-  listId = false,
-  statusId = false,
-  bookmarkFolderId = false,
-  tag = false,
+  userId,
+  listId,
+  statusId,
+  bookmarkFolderId,
+  tag,
 }) => {
   const rootState = store.rootState || store.state
   const timelineData = rootState.statuses.timelines[camelCase(timeline)]

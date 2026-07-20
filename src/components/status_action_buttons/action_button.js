@@ -1,18 +1,24 @@
-import EmojiPicker from 'src/components/emoji_picker/emoji_picker.vue'
 import Popover from 'src/components/popover/popover.vue'
 import StatusBookmarkFolderMenu from 'src/components/status_bookmark_folder_menu/status_bookmark_folder_menu.vue'
+import EmojiPicker from '../emoji_picker/emoji_picker.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faBookmark as faBookmarkRegular,
+  faFaceSmileBeam,
   faStar as faStarRegular,
 } from '@fortawesome/free-regular-svg-icons'
 import {
   faBookmark,
   faCheck,
+  faChevronDown,
   faChevronRight,
-  faChevronUp,
   faExternalLinkAlt,
+  faEye,
   faEyeSlash,
   faHistory,
   faMinus,
@@ -20,7 +26,6 @@ import {
   faReply,
   faRetweet,
   faShareAlt,
-  faSmileBeam,
   faStar,
   faThumbtack,
   faTimes,
@@ -35,17 +40,18 @@ library.add(
   faWrench,
 
   faChevronRight,
-  faChevronUp,
+  faChevronDown,
 
   faReply,
   faRetweet,
   faStar,
   faStarRegular,
-  faSmileBeam,
+  faFaceSmileBeam,
 
   faBookmark,
   faBookmarkRegular,
   faEyeSlash,
+  faEye,
   faThumbtack,
   faShareAlt,
   faExternalLinkAlt,
@@ -64,7 +70,6 @@ export default {
     'doAction',
     'outerClose',
   ],
-  emits: ['interacted'],
   components: {
     StatusBookmarkFolderMenu,
     EmojiPicker,
@@ -91,7 +96,11 @@ export default {
       return this.status.thread_muted
     },
     hideCustomEmoji() {
-      return !this.$store.state.instance.pleromaCustomEmojiReactionsAvailable
+      return !useInstanceCapabilitiesStore()
+        .pleromaCustomEmojiReactionsAvailable
+    },
+    hidePostStats() {
+      return useMergedConfigStore().mergedConfig.hidePostStats
     },
     buttonInnerClass() {
       return [
@@ -107,7 +116,7 @@ export default {
       ]
     },
     remoteInteractionLink() {
-      return this.$store.getters.remoteInteractionLink({
+      return useInstanceStore().getRemoteInteractionLink({
         statusId: this.status.id,
       })
     },
@@ -124,6 +133,12 @@ export default {
         this.$store.dispatch('reactWithEmoji', { id: this.status.id, emoji })
       }
     },
+    onShowEmojiPicker() {
+      this.$emit('emojiPickerShown', true)
+    },
+    onHideEmojiPicker() {
+      this.$emit('emojiPickerShown', false)
+    },
     doActionWrap(
       button,
       close = () => {
@@ -134,9 +149,8 @@ export default {
         this.button.interactive ? !this.button.interactive(this.funcArg) : false
       )
         return
-      this.$emit('interacted')
       if (button.name === 'emoji') {
-        this.$refs.picker.showPicker()
+        this.$refs.picker.togglePicker()
       } else {
         this.animationState = true
         this.getComponent(button) === 'button' && this.doAction(button)

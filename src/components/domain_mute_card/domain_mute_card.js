@@ -1,4 +1,4 @@
-import ProgressButton from '../progress_button/progress_button.vue'
+import ProgressButton from 'src/components/progress_button/progress_button.vue'
 
 const DomainMuteCard = {
   props: ['domain'],

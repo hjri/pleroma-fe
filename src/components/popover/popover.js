@@ -304,10 +304,13 @@ const Popover = {
       }
       this.scrollable.addEventListener('scroll', this.onScroll)
       this.scrollable.addEventListener('resize', this.onResize)
-      this.$nextTick(() => {
+      // My assumption is that upon showing popover initially has different size
+      // as its contents are getting populating, so logic uses those incorrect
+      // sizes as basis
+      setTimeout(() => {
         if (wasHidden) this.$emit('show')
         this.updateStyles()
-      })
+      }, 1)
     },
     hidePopover() {
       if (this.disabled) return

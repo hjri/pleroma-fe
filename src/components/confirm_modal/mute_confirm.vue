@@ -1,5 +1,5 @@
 <template>
-  <confirm-modal
+  <ConfirmModal
     v-if="showing"
     :title="$t('user_card.mute_confirm_title')"
     :confirm-text="$t('user_card.mute_confirm_accept_button')"
@@ -18,7 +18,7 @@
         <span v-text="user.screen_name_ui" />
       </template>
     </i18n-t>
-  </confirm-modal>
+  </ConfirmModal>
 </template>
 
 <script src="./mute_confirm.js" />

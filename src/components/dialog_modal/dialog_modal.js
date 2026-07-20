@@ -1,3 +1,5 @@
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
 const DialogModal = {
   props: {
     darkOverlay: {
@@ -13,7 +15,7 @@ const DialogModal = {
   },
   computed: {
     mobileCenter() {
-      return this.$store.getters.mergedConfig.modalMobileCenter
+      return useMergedConfigStore().mergedConfig.modalMobileCenter
     },
   },
 }

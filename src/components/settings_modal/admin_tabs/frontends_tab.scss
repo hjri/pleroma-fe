@@ -1,4 +1,6 @@
 .FrontendsTab {
+  padding: 0 1em;
+
   .cards-list {
     padding: 0;
   }
@@ -34,7 +36,8 @@
 
   h5 {
     margin: 0;
-    font-size: 1.15em
+    font-size: 1.15em;
+    text-transform: capitalize;
   }
 
   dl {
@@ -51,7 +54,7 @@
   dd {
     text-overflow: ellipsis;
     white-space: nowrap;
-    overflow-x: hidden;
+    overflow: hidden;
   }
 
 }

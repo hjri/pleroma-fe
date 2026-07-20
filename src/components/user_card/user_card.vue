@@ -2,7 +2,10 @@
   <div class="user-card">
     <div class="user-card-inner">
       <div class="user-info">
-        <div class="user-identity">
+        <div
+          class="user-identity"
+          :class="{ '-compact': compact }"
+        >
           <div class="header-overlay">
             <div class="banner-image">
               <img
@@ -101,7 +104,7 @@
                   />
                 </a>
                 <AccountActions
-                  v-if="isOtherUser && loggedIn"
+                  v-if="isOtherUser && loggedIn && !hideButtons"
                   :user="user"
                   :relationship="relationship"
                 />
@@ -137,6 +140,9 @@
                     :title="editable ? newName : user.name_unescaped"
                     :html="editable ? newName : user.name_unescaped"
                     :emoji="editable ? emoji : user.emoji"
+                    :allow-non-square-emoji="allowNonSquareEmoji"
+                    :pause-mfm="pauseMfm"
+                    :scale-mfm="scaleMfm"
                   />
                 </router-link>
                 <EmojiInput
@@ -212,12 +218,19 @@
                 >
                   {{ $t('user_card.group') }}
                 </span>
+                <span
+                  v-for="tag in user.tags"
+                  :key="tag"
+                  class="alert warning user-role"
+                >
+                  {{ isKnownTag ? $t('user_card.tags.' + tag) : tag }}
+                </span>
               </template>
             </div>
           </div>
         </div>
         <div
-          v-if="loggedIn && isOtherUser"
+          v-if="loggedIn && isOtherUser && !hideButtons"
           class="user-interactions"
         >
           <div class="btn-group">
@@ -280,8 +293,7 @@
           </button>
           <ModerationTools
             v-if="showModerationMenu"
-            class="moderation-menu"
-            :user="user"
+            :users="[user]"
           />
         </div>
         <div
@@ -293,7 +305,7 @@
       </div>
     </div>
     <div
-      v-if="!editable && loggedIn && isOtherUser && (hasNote || !hideBio) && !mergedConfig.userCardHidePersonalMarks"
+      v-if="!editable && loggedIn && isOtherUser && (hasNote || !hideBio) && !hideRemarks"
       class="personal-marks"
     >
       <UserNote
@@ -337,6 +349,122 @@
         />
       </div>
     </div>
+    <div
+      v-if="user.adminData && !hideBio"
+      class="admin-data"
+    >
+      <details>
+        <summary>
+          {{ $t('user_card.admin_data.data') }}
+        </summary>
+        <div class="user-profile-fields">
+          <dl class="user-profile-field">
+            <dt class="user-profile-field-name">
+              {{ $t('admin_dash.users.local_id') }}
+            </dt>
+            <dd class="user-profile-field-value">
+              {{ user.adminData.id }}
+            </dd>
+          </dl>
+          <dl
+            v-if="user.is_local"
+            class="user-profile-field"
+          >
+            <dt class="user-profile-field-name">
+              {{ $t('admin_dash.users.labels.email') }}
+            </dt>
+            <dd
+              class="user-profile-field-value"
+              :class="{ faint: user.adminData.email == null }"
+            >
+              {{ user.adminData.email == null ? $t('general.not_available') : user.adminData.email }}
+            </dd>
+          </dl>
+          <dl
+            v-if="user.is_local"
+            class="user-profile-field"
+          >
+            <dt class="user-profile-field-name">
+              {{ $t('general.role.admin') }}
+            </dt>
+            <dd class="user-profile-field-value">
+              {{ $t('general.' + (user.adminData.roles.admin ? 'yes' : 'no')) }}
+            </dd>
+          </dl>
+          <dl
+            v-if="user.is_local"
+            class="user-profile-field"
+          >
+            <dt class="user-profile-field-name">
+              {{ $t('general.role.moderator') }}
+            </dt>
+            <dd class="user-profile-field-value">
+              {{ $t('general.' + (user.adminData.roles.moderator ? 'yes' : 'no')) }}
+            </dd>
+          </dl>
+          <dl
+            v-if="user.is_local"
+            class="user-profile-field"
+          >
+            <dt class="user-profile-field-name">
+              {{ $t('admin_dash.users.indicator.confirmed') }}
+            </dt>
+            <dd class="user-profile-field-value">
+              {{ $t('general.' + (user.adminData.is_confirmed ? 'yes' : 'no')) }}
+            </dd>
+          </dl>
+          <dl
+            v-if="user.is_local"
+            class="user-profile-field"
+          >
+            <dt class="user-profile-field-name">
+              {{ $t('admin_dash.users.indicator.approved') }}
+            </dt>
+            <dd class="user-profile-field-value">
+              {{ $t('general.' + (user.adminData.is_approved ? 'yes' : 'no')) }}
+            </dd>
+          </dl>
+          <dl class="user-profile-field">
+            <dt class="user-profile-field-name">
+              {{ $t('admin_dash.users.indicator.suggested') }}
+            </dt>
+            <dd class="user-profile-field-value">
+              {{ $t('general.' + (user.adminData.is_suggested ? 'yes' : 'no')) }}
+            </dd>
+          </dl>
+          <details
+            v-if="user.is_local"
+            open
+          >
+            <summary>
+              {{ $t('user_card.admin_data.registration_reason') }}
+            </summary>
+            <span>
+              {{ user.adminData.registration_reason == null ? $t('general.not_available') : user.adminData.registration_reason }}
+            </span>
+          </details>
+          <details open>
+            <summary>
+              {{ $t('user_card.admin_data.tags') }}
+            </summary>
+            <ul>
+              <li v-if="user.adminData.tags.length === 0">
+                {{ $t('general.none') }}
+              </li>
+              <li
+                v-for="tag in user.adminData.tags"
+                :key="tag"
+              >
+                <code>
+                  {{ tag }}
+                </code>
+                {{ ' ' }}
+              </li>
+            </ul>
+          </details>
+        </div>
+      </details>
+    </div>
     <h3 v-if="editable">
       <span>
         {{ $t('settings.bio') }}
@@ -358,8 +486,11 @@
         v-if="!hideBio"
         class="user-card-bio"
         :class="{ '-justify-left': mergedConfig.userCardLeftJustify }"
-        :html="editable ? newBio.replace(/\n/g, '<br>') : user.description_html"
+        :html="editable ? escapedNewBio : user.description_html"
         :emoji="editable ? emoji : user.emoji"
+        :allow-non-square-emoji="allowNonSquareEmoji"
+        :pause-mfm="pauseMfm"
+        :scale-mfm="scaleMfm"
         :handle-links="true"
       />
     </template>
@@ -414,6 +545,9 @@
             <RichContent
               :html="field.name"
               :emoji="editable ? emoji : user.emoji"
+              :allow-non-square-emoji="allowNonSquareEmoji"
+              :pause-mfm="pauseMfm"
+              :scale-mfm="scaleMfm"
             />
           </dt>
           <dd
@@ -423,6 +557,9 @@
             <RichContent
               :html="field.value"
               :emoji="editable ? emoji : user.emoji"
+              :allow-non-square-emoji="allowNonSquareEmoji"
+              :pause-mfm="pauseMfm"
+              :scale-mfm="scaleMfm"
             />
           </dd>
         </dl>
@@ -505,11 +642,11 @@
       class="user-extras"
     >
       <span
-        v-if="!editable && !mergedConfig.hideUserStats"
+        v-if="!editable && !hideUserStats"
         class="user-stats"
       >
         <dl
-          v-if="!mergedConfig.hideUserStats && !hideBio"
+          v-if="!hideUserStats && !hideBio"
           class="user-count"
         >
           <dd>{{ user.statuses_count }}</dd>
@@ -532,39 +669,61 @@
           <dt>{{ $t('user_card.followers') }}</dt>
         </dl>
       </span>
-      <template v-if="!hideBio">
-        <div
-          v-if="user.birthday && !editable"
-          class="birthday"
-        >
-          <FAIcon
-            class="fa-old-padding"
-            icon="birthday-cake"
-          />
-          {{ $t('user_card.birthday', { birthday: formattedBirthday }) }}
-        </div>
-        <div
-          v-else-if="editable"
-          class="birthday"
-        >
-          <div>
-            <Checkbox v-model="newShowBirthday">
-              {{ $t('settings.birthday.show_birthday') }}
-            </Checkbox>
-          </div>
-          <FAIcon
-            class="fa-old-padding"
-            icon="birthday-cake"
-          />
-          {{ $t('settings.birthday.label') }}
-          <input
-            id="birthday"
-            v-model="newBirthday"
-            type="date"
-            class="input birthday-input"
+      <span
+        v-if="!hideUserStats"
+        class="user-stats"
+      >
+        <template v-if="!hideBio">
+          <dl
+            v-if="user.birthday && !editable"
+            class="user-count"
           >
-        </div>
-      </template>
+            <dd>
+              <FAIcon
+                class="fa-old-padding"
+                icon="birthday-cake"
+              />
+            </dd>
+            {{ ' ' }}
+            <dt>
+              {{ $t('user_card.birthday', { birthday: formattedBirthday }) }}
+            </dt>
+          </dl>
+          <div
+            v-else-if="editable"
+            class="birthday"
+          >
+            <div>
+              <Checkbox v-model="newShowBirthday">
+                {{ $t('settings.birthday.show_birthday') }}
+              </Checkbox>
+            </div>
+            <FAIcon
+              class="fa-old-padding"
+              icon="birthday-cake"
+            />
+            {{ $t('settings.birthday.label') }}
+            <input
+              id="birthday"
+              v-model="newBirthday"
+              type="date"
+              class="input birthday-input"
+            >
+          </div>
+        </template>
+        <dl
+          v-if="!editable"
+          class="user-count"
+        >
+          <dd>
+            {{ $t('user_card.joined') }}
+          </dd>
+          {{ ' ' }}
+          <dt>
+            {{ formattedJoinDate }}
+          </dt>
+        </dl>
+      </span>
     </div>
     <template v-if="editable">
       <h3>{{ $t('settings.profile_other') }}</h3>
@@ -633,6 +792,7 @@
     </template>
     <teleport to="#modal">
       <UserTimedFilterModal
+        v-if="isOtherUser"
         ref="timedMuteDialog"
         :user="user"
         :is-mute="true"

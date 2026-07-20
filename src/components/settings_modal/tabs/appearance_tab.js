@@ -2,6 +2,19 @@ import { mapActions } from 'pinia'
 
 import fileSizeFormatService from 'src/components/../services/file_size_format/file_size_format.js'
 import PaletteEditor from 'src/components/palette_editor/palette_editor.vue'
+import BooleanSetting from '../helpers/boolean_setting.vue'
+import ChoiceSetting from '../helpers/choice_setting.vue'
+import FloatSetting from '../helpers/float_setting.vue'
+import IntegerSetting from '../helpers/integer_setting.vue'
+import SharedComputedObject from '../helpers/shared_computed_object.js'
+import UnitSetting from '../helpers/unit_setting.vue'
+import Preview from './old_theme_tab/theme_preview.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { normalizeThemeData, useInterfaceStore } from 'src/stores/interface.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import { updateProfileImages } from 'src/api/user.js'
 import { newImporter } from 'src/services/export_import/export_import.js'
 import {
   adoptStyleSheets,
@@ -11,15 +24,6 @@ import { getCssRules } from 'src/services/theme_data/css_utils.js'
 import { deserialize } from 'src/services/theme_data/iss_deserializer.js'
 import { init } from 'src/services/theme_data/theme_data_3.service.js'
 import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
-import { normalizeThemeData, useInterfaceStore } from 'src/stores/interface'
-import BooleanSetting from '../helpers/boolean_setting.vue'
-import ChoiceSetting from '../helpers/choice_setting.vue'
-import FloatSetting from '../helpers/float_setting.vue'
-import IntegerSetting from '../helpers/integer_setting.vue'
-import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
-import SharedComputedObject from '../helpers/shared_computed_object.js'
-import UnitSetting from '../helpers/unit_setting.vue'
-import Preview from './old_theme_tab/theme_preview.vue'
 
 const AppearanceTab = {
   data() {
@@ -65,6 +69,7 @@ const AppearanceTab = {
       })),
       backgroundUploading: false,
       background: null,
+      backgroundError: null,
       backgroundPreview: null,
     }
   },
@@ -74,7 +79,6 @@ const AppearanceTab = {
     IntegerSetting,
     FloatSetting,
     UnitSetting,
-    ProfileSettingIndicator,
     Preview,
     PaletteEditor,
   },
@@ -83,7 +87,7 @@ const AppearanceTab = {
 
     const updateIndex = (resource) => {
       const capitalizedResource = resource[0].toUpperCase() + resource.slice(1)
-      const currentIndex = this.$store.state.instance[`${resource}sIndex`]
+      const currentIndex = useInstanceStore()[`${resource}sIndex`]
 
       let promise
       if (currentIndex) {
@@ -273,11 +277,11 @@ const AppearanceTab = {
       return !window.IntersectionObserver
     },
     instanceWallpaper() {
-      this.$store.state.instance.background
+      useInstanceStore().instanceIdentity.background
     },
     instanceWallpaperUsed() {
       return (
-        this.$store.state.instance.background &&
+        useInstanceStore().instanceIdentity.background &&
         !this.$store.state.users.currentUser.background_image
       )
     },
@@ -333,18 +337,21 @@ const AppearanceTab = {
     },
     isThemeActive(key) {
       return (
-        key === (this.mergedConfig.theme || this.$store.state.instance.theme)
+        key ===
+        (this.mergedConfig.theme || useInstanceStore().instanceIdentity.theme)
       )
     },
     isStyleActive(key) {
       return (
-        key === (this.mergedConfig.style || this.$store.state.instance.style)
+        key ===
+        (this.mergedConfig.style || useInstanceStore().instanceIdentity.style)
       )
     },
     isPaletteActive(key) {
       return (
         key ===
-        (this.mergedConfig.palette || this.$store.state.instance.palette)
+        (this.mergedConfig.palette ||
+          useInstanceStore().instanceIdentity.palette)
       )
     },
     ...mapActions(useInterfaceStore, ['setStyle', 'setTheme']),
@@ -431,10 +438,10 @@ const AppearanceTab = {
       if (!file) {
         return
       }
-      if (file.size > this.$store.state.instance[slot + 'limit']) {
+      if (file.size > useInstanceStore()[slot + 'limit']) {
         const filesize = fileSizeFormatService.fileSizeFormat(file.size)
         const allowedsize = fileSizeFormatService.fileSizeFormat(
-          this.$store.state.instance[slot + 'limit'],
+          useInstanceStore()[slot + 'limit'],
         )
         useInterfaceStore().pushGlobalNotice({
           messageKey: 'upload.error.message',
@@ -470,20 +477,28 @@ const AppearanceTab = {
     resetUploadedBackground() {
       this.backgroundPreview = null
     },
+    clearBackgroundError() {
+      this.backgroundError = null
+    },
     submitBackground(background) {
       if (!this.backgroundPreview && background !== '') {
         return
       }
 
       this.backgroundUploading = true
-      this.$store.state.api.backendInteractor
-        .updateProfileImages({ background })
-        .then((data) => {
+      updateProfileImages({
+        background,
+        credentials: useOAuthStore().token,
+      })
+        .then(({ data }) => {
           this.$store.commit('addNewUsers', [data])
           this.$store.commit('setCurrentUser', data)
           this.backgroundPreview = null
+          this.backgroundError = null
         })
-        .catch(this.displayUploadError)
+        .catch((e) => {
+          this.backgroundError = e
+        })
         .finally(() => {
           this.backgroundUploading = false
         })

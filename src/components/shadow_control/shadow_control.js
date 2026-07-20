@@ -7,6 +7,7 @@ import OpacityInput from 'src/components/opacity_input/opacity_input.vue'
 import Popover from 'src/components/popover/popover.vue'
 import Select from 'src/components/select/select.vue'
 import SelectMotion from 'src/components/select/select_motion.vue'
+
 import { rgb2hex } from 'src/services/color_convert/color_convert.js'
 import {
   getCssShadow,
@@ -124,7 +125,7 @@ export default {
           if (computedColor) return rgb2hex(computedColor)
           return null
         } catch (e) {
-          console.warn(e)
+          console.warn('Failed to get fallback color', e)
           return null
         }
       } else {

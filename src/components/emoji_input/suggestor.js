@@ -2,7 +2,7 @@
  * suggest - generates a suggestor function to be used by emoji-input
  * data: object providing source information for specific types of suggestions:
  * data.emoji - optional, an array of all emoji available i.e.
- *   (getters.standardEmojiList + state.instance.customEmoji)
+ *   (useEmojiStore().standardEmojiList + state.instance.customEmoji)
  * data.users - optional, an array of all known users
  * updateUsersList - optional, a function to search and append to users
  *
@@ -26,14 +26,14 @@ export default (data) => {
 }
 
 export const suggestEmoji = (emojis) => (input, nameKeywordLocalizer) => {
-  const noPrefix = input.toLowerCase().substr(1)
+  const noPrefix = input.toLowerCase().substring(1)
   return emojis
     .map((emoji) => ({ ...emoji, ...nameKeywordLocalizer(emoji) }))
     .filter(
       (emoji) =>
         emoji.names
           .concat(emoji.keywords)
-          .filter((kw) => kw.toLowerCase().match(noPrefix)).length,
+          .filter((kw) => kw.toLowerCase().includes(noPrefix)).length,
     )
     .map((k) => {
       let score = 0
@@ -129,10 +129,11 @@ export const suggestUsers = ({ dispatch, state }) => {
         const diff = (bScore - aScore) * 10
 
         // Then sort alphabetically
+        const activity = a.last_status_at < b.last_status_at ? 100 : -100
         const nameAlphabetically = a.name > b.name ? 1 : -1
         const screenNameAlphabetically = a.screen_name > b.screen_name ? 1 : -1
 
-        return diff + nameAlphabetically + screenNameAlphabetically
+        return diff + nameAlphabetically + screenNameAlphabetically + activity
       })
       .map((user) => ({
         user,

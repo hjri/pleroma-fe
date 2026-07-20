@@ -9,7 +9,7 @@
         :changed="isChanged"
         :onclick="reset"
       />
-      <ProfileSettingIndicator :is-profile="isProfileSetting" />
+      <LocalSettingIndicator :is-local="isLocalSetting" />
       {{ ' ' }}
       <template v-if="backendDescriptionLabel">
         {{ backendDescriptionLabel }}

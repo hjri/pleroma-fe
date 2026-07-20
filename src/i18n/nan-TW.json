@@ -30,7 +30,8 @@
         "not_applicable": "N/A"
       }
     },
-    "staff": "工作人員"
+    "staff": "工作人員",
+    "terms": "服務ê規範"
   },
   "announcements": {
     "page_header": "公告",
@@ -191,7 +192,10 @@
     "announcements": "公告",
     "search": "Tshuē",
     "mobile_notifications_mark_as_seen": "Lóng 標做有讀",
-    "quotes": "引用"
+    "quotes": "引用",
+    "bookmark_folders": "冊籤ê資料giap-á",
+    "all_bookmarks": "逐ê冊籤",
+    "drafts": "草稿"
   },
   "notifications": {
     "broken_favorite": "狀態毋知影，leh tshiau-tshuē……",
@@ -230,7 +234,11 @@
     "expiry": "投票期限",
     "expires_in": "投票 tī {0} 以後結束",
     "expired": "投票佇 {0} 以前結束",
-    "not_enough_options": "投票 ê 選項傷少"
+    "not_enough_options": "投票 ê 選項傷少",
+    "expires_at": "投票佇 {0} 結束",
+    "expired_at": "投票佇 {0} 結束",
+    "non_anonymous": "公開投票",
+    "non_anonymous_title": "其他ê站臺可能ē顯示lí所投ê選項"
   },
   "emoji": {
     "stickers": "貼圖",
@@ -308,7 +316,13 @@
     },
     "post": "PO 上去",
     "reply_option": "應tsit ê狀態",
-    "quote_option": "引用tsit ê狀態"
+    "quote_option": "引用tsit ê狀態",
+    "close_confirm_title": "確認保存",
+    "close_confirm": "Lí beh tuì tsit-má所寫ê做siánn物？",
+    "close_confirm_save_button": "保存",
+    "close_confirm_discard_button": "Mài保存",
+    "close_confirm_continue_composing_button": "繼續編寫",
+    "auto_save_nothing_new": "無新ê內容通儲存。"
   },
   "registration": {
     "bio_optional": "介紹（毋是必要）",
@@ -1287,7 +1301,7 @@
   },
   "user_reporting": {
     "title": "檢舉 {0}",
-    "forward_description": "Tsit ê口座是別ê站臺ê。Mā kám beh寄報告ê khóo-pih kàu hit ê站？",
+    "forward_description": "Tsit ê口座是別ê站臺ê。Kám beh同時寄報告ê khóo-pih kàu hit ê站？",
     "add_comment_description": "本檢舉ē 寄kàu你ê站臺ê仲裁員。Lí會當佇下kha解說檢舉tsit ê口座ê原因：",
     "additional_comments": "其他ê意見",
     "forward_to": "轉送kàu{0}",

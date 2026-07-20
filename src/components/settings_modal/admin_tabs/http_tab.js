@@ -12,6 +12,8 @@ import SharedComputedObject from '../helpers/shared_computed_object.js'
 import StringSetting from '../helpers/string_setting.vue'
 import TupleSetting from '../helpers/tuple_setting.vue'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
+
 const HTTPTab = {
   provide() {
     return {
@@ -35,7 +37,7 @@ const HTTPTab = {
     ...SharedComputedObject(),
     sslOptions() {
       const desc = get(
-        this.$store.state.adminSettings.descriptions,
+        useAdminSettingsStore().descriptions,
         ':pleroma.:http.:adapter.:ssl_options.:versions',
       )
       return new Set(

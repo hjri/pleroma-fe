@@ -1,80 +1,10 @@
+import mastoapidata from '../../../../fixtures/mastoapi.json'
+
 import {
   parseLinkHeaderPagination,
-  parseNotification,
   parseStatus,
   parseUser,
-} from '../../../../../src/services/entity_normalizer/entity_normalizer.service.js'
-import mastoapidata from '../../../../fixtures/mastoapi.json'
-import qvitterapidata from '../../../../fixtures/statuses.json'
-
-const makeMockStatusQvitter = (overrides = {}) => {
-  return Object.assign(
-    {
-      activity_type: 'post',
-      attachments: [],
-      attentions: [],
-      created_at: 'Tue Jan 15 13:57:56 +0000 2019',
-      external_url: 'https://ap.example/whatever',
-      fave_num: 1,
-      favorited: false,
-      id: '10335970',
-      in_reply_to_ostatus_uri: null,
-      in_reply_to_profileurl: null,
-      in_reply_to_screen_name: null,
-      in_reply_to_status_id: null,
-      in_reply_to_user_id: null,
-      is_local: false,
-      is_post_verb: true,
-      possibly_sensitive: false,
-      repeat_num: 0,
-      repeated: false,
-      statusnet_conversation_id: '16300488',
-      summary: null,
-      tags: [],
-      text: 'haha benis',
-      uri: 'https://ap.example/whatever',
-      user: makeMockUserQvitter(),
-      visibility: 'public',
-    },
-    overrides,
-  )
-}
-
-const makeMockUserQvitter = (overrides = {}) => {
-  return Object.assign(
-    {
-      background_image: null,
-      cover_photo: '',
-      created_at: 'Mon Jan 14 13:56:51 +0000 2019',
-      default_scope: 'public',
-      description: 'ebin',
-      description_html: '<p>ebin</p>',
-      favourites_count: 0,
-      fields: [],
-      followers_count: 1,
-      following: true,
-      follows_you: true,
-      friends_count: 1,
-      id: '60717',
-      is_local: false,
-      locked: false,
-      name: 'Spurdo :ebin:',
-      name_html: 'Spurdo <img src="whatever">',
-      no_rich_text: false,
-      pleroma: { confirmation_pending: false, tags: [] },
-      profile_image_url: 'https://ap.example/whatever',
-      profile_image_url_https: 'https://ap.example/whatever',
-      profile_image_url_original: 'https://ap.example/whatever',
-      profile_image_url_profile_size: 'https://ap.example/whatever',
-      rights: { delete_others_notice: false },
-      screen_name: 'spurdo@ap.example',
-      statuses_count: 46,
-      statusnet_blocking: false,
-      statusnet_profile_url: '',
-    },
-    overrides,
-  )
-}
+} from 'src/services/entity_normalizer/entity_normalizer.service.js'
 
 const makeMockUserMasto = (overrides = {}) => {
   return Object.assign(
@@ -151,19 +81,6 @@ const makeMockStatusMasto = (overrides = {}) => {
   )
 }
 
-const makeMockNotificationQvitter = (overrides = {}) => {
-  return Object.assign(
-    {
-      notice: makeMockStatusQvitter(),
-      ntype: 'follow',
-      from_profile: makeMockUserQvitter(),
-      is_seen: 0,
-      id: 123,
-    },
-    overrides,
-  )
-}
-
 const makeMockEmojiMasto = (overrides = [{}]) => {
   return [
     Object.assign(
@@ -189,78 +106,6 @@ const makeMockEmojiMasto = (overrides = [{}]) => {
 
 describe('API Entities normalizer', () => {
   describe('parseStatus', () => {
-    describe('QVitter preprocessing', () => {
-      it("doesn't blow up", () => {
-        const parsed = qvitterapidata.map(parseStatus)
-        expect(parsed.length).to.eq(qvitterapidata.length)
-      })
-
-      it('identifies favorites', () => {
-        const fav = {
-          uri: 'tag:soykaf.com,2016-08-21:fave:2558:note:339495:2016-08-21T16:54:04+00:00',
-          is_post_verb: false,
-        }
-
-        const mastoFav = {
-          uri: 'tag:mastodon.social,2016-11-27:objectId=73903:objectType=Favourite',
-          is_post_verb: false,
-        }
-
-        expect(parseStatus(makeMockStatusQvitter(fav))).to.have.property(
-          'type',
-          'favorite',
-        )
-        expect(parseStatus(makeMockStatusQvitter(mastoFav))).to.have.property(
-          'type',
-          'favorite',
-        )
-      })
-
-      it('processes repeats correctly', () => {
-        const post = makeMockStatusQvitter({
-          retweeted_status: null,
-          id: 'deadbeef',
-        })
-        const repeat = makeMockStatusQvitter({
-          retweeted_status: post,
-          is_post_verb: false,
-          id: 'foobar',
-        })
-
-        const parsedPost = parseStatus(post)
-        const parsedRepeat = parseStatus(repeat)
-
-        expect(parsedPost).to.have.property('type', 'status')
-        expect(parsedRepeat).to.have.property('type', 'retweet')
-        expect(parsedRepeat).to.have.property('retweeted_status')
-        expect(parsedRepeat).to.have.nested.property(
-          'retweeted_status.id',
-          'deadbeef',
-        )
-      })
-
-      it('sets nsfw for statuses with the #nsfw tag', () => {
-        const safe = makeMockStatusQvitter({ id: '1', text: 'Hello oniichan' })
-        const nsfw = makeMockStatusQvitter({
-          id: '1',
-          text: 'Hello oniichan #nsfw',
-        })
-
-        expect(parseStatus(safe).nsfw).to.eq(false)
-        expect(parseStatus(nsfw).nsfw).to.eq(true)
-      })
-
-      it('leaves existing nsfw settings alone', () => {
-        const nsfw = makeMockStatusQvitter({
-          id: '1',
-          text: 'Hello oniichan #nsfw',
-          nsfw: false,
-        })
-
-        expect(parseStatus(nsfw).nsfw).to.eq(false)
-      })
-    })
-
     describe('Mastoapi preprocessing and converting', () => {
       it("doesn't blow up", () => {
         const parsed = mastoapidata.map(parseStatus)
@@ -341,60 +186,6 @@ describe('API Entities normalizer', () => {
       expect(parseUser(user))
         .to.have.property('screen_name_ui_contains_non_ascii')
         .that.equal(true)
-    })
-  })
-
-  // We currently use QvitterAPI notifications only, and especially due to MastoAPI lacking is_seen, support for MastoAPI
-  // is more of an afterthought
-  describe('parseNotifications (QvitterAPI)', () => {
-    it("correctly normalizes data to FE's format", () => {
-      const notif = makeMockNotificationQvitter({
-        id: 123,
-        notice: makeMockStatusQvitter({ id: 444 }),
-        from_profile: makeMockUserQvitter({ id: 'spurdo' }),
-      })
-      expect(parseNotification(notif)).to.have.property('id', 123)
-      expect(parseNotification(notif)).to.have.property('seen', false)
-      expect(parseNotification(notif)).to.have.nested.property(
-        'status.id',
-        '444',
-      )
-      expect(parseNotification(notif)).to.have.nested.property(
-        'action.id',
-        '444',
-      )
-      expect(parseNotification(notif)).to.have.nested.property(
-        'from_profile.id',
-        'spurdo',
-      )
-    })
-
-    it('correctly normalizes favorite notifications', () => {
-      const notif = makeMockNotificationQvitter({
-        id: 123,
-        ntype: 'like',
-        notice: makeMockStatusQvitter({
-          id: 444,
-          favorited_status: makeMockStatusQvitter({ id: 4412 }),
-        }),
-        is_seen: 1,
-        from_profile: makeMockUserQvitter({ id: 'spurdo' }),
-      })
-      expect(parseNotification(notif)).to.have.property('id', 123)
-      expect(parseNotification(notif)).to.have.property('type', 'like')
-      expect(parseNotification(notif)).to.have.property('seen', true)
-      expect(parseNotification(notif)).to.have.nested.property(
-        'status.id',
-        '4412',
-      )
-      expect(parseNotification(notif)).to.have.nested.property(
-        'action.id',
-        '444',
-      )
-      expect(parseNotification(notif)).to.have.nested.property(
-        'from_profile.id',
-        'spurdo',
-      )
     })
   })
 

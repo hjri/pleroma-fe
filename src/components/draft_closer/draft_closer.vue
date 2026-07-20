@@ -1,6 +1,6 @@
 <template>
   <teleport to="#modal">
-    <dialog-modal
+    <DialogModal
       v-if="showing"
       v-body-scroll-lock="true"
       class="confirm-modal"
@@ -36,7 +36,7 @@
           {{ $t('post_status.close_confirm_continue_composing_button') }}
         </button>
       </template>
-    </dialog-modal>
+    </DialogModal>
   </teleport>
 </template>
 

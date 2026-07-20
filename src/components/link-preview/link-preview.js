@@ -1,4 +1,6 @@
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
+
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const LinkPreview = {
   name: 'LinkPreview',
@@ -24,7 +26,7 @@ const LinkPreview = {
     hideNsfwConfig() {
       return this.mergedConfig.hideNsfw
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   created() {
     if (this.useImage) {

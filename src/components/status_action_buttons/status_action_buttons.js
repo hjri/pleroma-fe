@@ -1,11 +1,13 @@
 import { mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 
-import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import Popover from 'src/components/popover/popover.vue'
-import genRandomSeed from 'src/services/random_seed/random_seed.service.js'
-import { useServerSideStorageStore } from 'src/stores/serverSideStorage'
 import ActionButtonContainer from './action_button_container.vue'
 import { BUTTONS } from './buttons_definitions.js'
+
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
+import genRandomSeed from 'src/services/random_seed/random_seed.service.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
@@ -14,7 +16,7 @@ library.add(faEllipsisH)
 
 const StatusActionButtons = {
   props: ['status', 'replying'],
-  emits: ['toggleReplying', 'interacted'],
+  emits: ['toggleReplying', 'onSuccess', 'onError'],
   data() {
     return {
       showPin: false,
@@ -26,15 +28,19 @@ const StatusActionButtons = {
         /* no-op */
       },
       randomSeed: genRandomSeed(),
+      emojiPickerShown: false,
     }
   },
   components: {
     Popover,
-    ConfirmModal,
+    ConfirmModal: defineAsyncComponent(
+      () => import('src/components/confirm_modal/confirm_modal.vue'),
+    ),
+
     ActionButtonContainer,
   },
   computed: {
-    ...mapState(useServerSideStorageStore, {
+    ...mapState(useSyncConfigStore, {
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedStatusActions),
     }),
@@ -54,6 +60,7 @@ const StatusActionButtons = {
       return {
         status: this.status,
         replying: this.replying,
+        emojiPickerShown: this.emojiPickerShown,
         emit: this.$emit,
         dispatch: this.$store.dispatch,
         state: this.$store.state,
@@ -97,30 +104,33 @@ const StatusActionButtons = {
       }
     },
     doActionReal(button) {
-      button
-        .action?.(this.funcArg)
+      const promise = button.action?.(this.funcArg) ?? Promise.resolve()
+      promise
         .then(() => this.$emit('onSuccess'))
-        .catch((err) => this.$emit('onError', err.error.error))
+        .catch((err) => this.$emit('onError', err))
     },
     onExtraClose() {
       this.showPin = false
+    },
+    onEmojiPickerShown(state) {
+      this.emojiPickerShown = state
     },
     isPinned(button) {
       return this.pinnedItems.has(button.name)
     },
     unpin(button) {
-      useServerSideStorageStore().removeCollectionPreference({
+      useSyncConfigStore().removeCollectionPreference({
         path: 'collections.pinnedStatusActions',
         value: button.name,
       })
-      useServerSideStorageStore().pushServerSideStorage()
+      useSyncConfigStore().pushSyncConfig()
     },
     pin(button) {
-      useServerSideStorageStore().addCollectionPreference({
+      useSyncConfigStore().addCollectionPreference({
         path: 'collections.pinnedStatusActions',
         value: button.name,
       })
-      useServerSideStorageStore().pushServerSideStorage()
+      useSyncConfigStore().pushSyncConfig()
     },
     getComponent(button) {
       if (!this.$store.state.users.currentUser && button.anonLink) {

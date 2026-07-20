@@ -54,7 +54,7 @@ export default {
     {
       variant: 'danger',
       directives: {
-        background: '--cRed',
+        background: '$blend(--cRed 0.25 --inheritedBackground)',
       },
     },
     {

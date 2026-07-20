@@ -1,6 +1,6 @@
 export default {
   name: 'Notification',
-  selector: '.Notification',
+  selector: '.NotificationParent',
   validInnerComponents: [
     'Text',
     'Link',
@@ -9,5 +9,11 @@ export default {
     'Avatar',
     'PollGraph',
   ],
-  defaultRules: [],
+  defaultRules: [
+    {
+      directives: {
+        background: '--bg',
+      },
+    },
+  ],
 }

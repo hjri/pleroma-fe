@@ -11,3 +11,9 @@
 </template>
 
 <script src="./instance_specific_panel.js"></script>
+
+<style lang="scss">
+  .instance-specific-panel .panel-body {
+    border-radius: var(--roundness);
+  }
+</style>

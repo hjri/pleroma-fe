@@ -27,7 +27,7 @@ describe('ISS (de)serialization', () => {
 
   /*
   // Debug snippet
-  const onlyComponent = componentsContext('./components/panel_header.style.js').default
+  const onlyComponent = componentsContext('src/components/panel_header.style.js').default
   it.only(`(De)serialization of component ${onlyComponent.name} works`, () => {
     const normalized = onlyComponent.defaultRules.map(x => ({ component: onlyComponent.name, ...x }))
     console.debug('BEGIN INPUT ================')

@@ -1,7 +1,11 @@
 import { mapGetters, mapState } from 'vuex'
 
-import BasicUserCard from '../basic_user_card/basic_user_card.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
+import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import { chats } from 'src/api/chats.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons'
@@ -22,8 +26,10 @@ const chatNew = {
     }
   },
   async created() {
-    const { chats } = await this.backendInteractor.chats()
-    chats.forEach((chat) => this.suggestions.push(chat.account))
+    const { chatList } = await chats({
+      credentials: useOAuthStore().token,
+    })
+    chatList.forEach((chat) => this.suggestions.push(chat.account))
   },
   computed: {
     users() {
@@ -38,7 +44,6 @@ const chatNew = {
     },
     ...mapState({
       currentUser: (state) => state.users.currentUser,
-      backendInteractor: (state) => state.api.backendInteractor,
     }),
     ...mapGetters(['findUser']),
   },

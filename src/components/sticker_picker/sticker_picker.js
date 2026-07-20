@@ -1,6 +1,9 @@
 /* eslint-env browser */
+
 import statusPosterService from '../../services/status_poster/status_poster.service.js'
 import TabSwitcher from '../tab_switcher/tab_switcher.jsx'
+
+import { useEmojiStore } from 'src/stores/emoji.js'
 
 const StickerPicker = {
   components: {
@@ -16,7 +19,7 @@ const StickerPicker = {
   },
   computed: {
     pack() {
-      return this.$store.state.instance.stickers || []
+      return useEmojiStore().stickers || []
     },
   },
   methods: {

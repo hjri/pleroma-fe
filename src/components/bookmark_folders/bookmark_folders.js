@@ -1,5 +1,6 @@
-import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
-import BookmarkFolderCard from '../bookmark_folder_card/bookmark_folder_card.vue'
+import FolderCard from 'src/components/folder_card/folder_card.vue'
+
+import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
 
 const BookmarkFolders = {
   data() {
@@ -8,7 +9,7 @@ const BookmarkFolders = {
     }
   },
   components: {
-    BookmarkFolderCard,
+    FolderCard,
   },
   computed: {
     bookmarkFolders() {

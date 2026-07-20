@@ -1,15 +1,18 @@
 import { mapState as mapPiniaState } from 'pinia'
-import { defineAsyncComponent } from 'vue'
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
+import Attachment from 'src/components/attachment/attachment.vue'
+import ChatMessageDate from 'src/components/chat_message_date/chat_message_date.vue'
+import Gallery from 'src/components/gallery/gallery.vue'
+import LinkPreview from 'src/components/link-preview/link-preview.vue'
+import Popover from 'src/components/popover/popover.vue'
+import StatusContent from 'src/components/status_content/status_content.vue'
+import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+import UserPopover from 'src/components/user_popover/user_popover.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
-import Attachment from '../attachment/attachment.vue'
-import ChatMessageDate from '../chat_message_date/chat_message_date.vue'
-import Gallery from '../gallery/gallery.vue'
-import LinkPreview from '../link-preview/link-preview.vue'
-import Popover from '../popover/popover.vue'
-import StatusContent from '../status_content/status_content.vue'
-import UserAvatar from '../user_avatar/user_avatar.vue'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEllipsisH, faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -34,9 +37,7 @@ const ChatMessage = {
     Gallery,
     LinkPreview,
     ChatMessageDate,
-    UserPopover: defineAsyncComponent(
-      () => import('../user_popover/user_popover.vue'),
-    ),
+    UserPopover,
   },
   computed: {
     // Returns HH:MM (hours and minutes) in local time.
@@ -74,7 +75,7 @@ const ChatMessage = {
     }),
     ...mapState({
       currentUser: (state) => state.users.currentUser,
-      restrictedNicknames: (state) => state.instance.restrictedNicknames,
+      restrictedNicknames: (state) => useInstanceStore().restrictedNicknames,
     }),
     popoverMarginStyle() {
       if (this.isCurrentUser) {
@@ -83,7 +84,7 @@ const ChatMessage = {
         return { left: 50 }
       }
     },
-    ...mapGetters(['mergedConfig', 'findUser']),
+    ...mapPiniaState(useMergedConfigStore, ['mergedConfig', 'findUser']),
   },
   data() {
     return {

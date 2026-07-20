@@ -8,7 +8,7 @@
       <button
         class="main-button"
         @click="toggleFolder(folder.id)"
-        @click.stop="close"
+        @click.stop="$emit('close')"
       >
         <span
           class="input menu-checkbox -radio"

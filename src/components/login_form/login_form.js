@@ -1,9 +1,11 @@
-import { mapActions, mapState as mapPiniaState, mapStores } from 'pinia'
+import { mapActions, mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
 import { useAuthFlowStore } from 'src/stores/auth_flow.js'
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
-import oauthApi from '../../services/new_api/oauth.js'
+
+import { getLoginUrl, getTokenWithCredentials } from 'src/api/oauth.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -16,43 +18,30 @@ const LoginForm = {
     error: false,
   }),
   computed: {
-    isPasswordAuth() {
-      return this.requiredPassword
-    },
-    isTokenAuth() {
-      return this.requiredToken
-    },
-    ...mapStores(useOAuthStore),
     ...mapState({
-      registrationOpen: (state) => state.instance.registrationOpen,
-      instance: (state) => state.instance,
       loggingIn: (state) => state.users.loggingIn,
     }),
-    ...mapPiniaState(useAuthFlowStore, [
-      'requiredPassword',
-      'requiredToken',
-      'requiredMFA',
-    ]),
+    ...mapPiniaState(useOAuthStore, ['clientId', 'clientSecret']),
+    ...mapPiniaState(useInstanceStore, ['server', 'registrationOpen']),
+    ...mapPiniaState(useAuthFlowStore, {
+      isTokenAuth: (store) => store.requiredToken,
+      isPasswordAuth: (store) => !store.requiredToken,
+    }),
   },
   methods: {
     ...mapActions(useAuthFlowStore, ['requireMFA', 'login']),
+    ...mapActions(useOAuthStore, ['ensureAppToken']),
     submit() {
       this.isTokenAuth ? this.submitToken() : this.submitPassword()
     },
     submitToken() {
-      const data = {
-        instance: this.instance.server,
-        commit: this.$store.commit,
-      }
-
       // NOTE: we do not really need the app token, but obtaining a token and
       // calling verify_credentials is the only way to ensure the app still works.
-      this.oauthStore.ensureAppToken().then(() => {
-        const app = {
-          clientId: this.oauthStore.clientId,
-          clientSecret: this.oauthStore.clientSecret,
-        }
-        oauthApi.login({ ...app, ...data })
+      this.ensureAppToken().then(() => {
+        window.location.href = getLoginUrl({
+          clientId: this.clientId,
+          instance: this.server,
+        })
       })
     },
     submitPassword() {
@@ -60,37 +49,32 @@ const LoginForm = {
 
       // NOTE: we do not really need the app token, but obtaining a token and
       // calling verify_credentials is the only way to ensure the app still works.
-      this.oauthStore.ensureAppToken().then(() => {
-        const app = {
-          clientId: this.oauthStore.clientId,
-          clientSecret: this.oauthStore.clientSecret,
-        }
-
-        oauthApi
-          .getTokenWithCredentials({
-            ...app,
-            instance: this.instance.server,
-            username: this.user.username,
-            password: this.user.password,
-          })
-          .then((result) => {
-            if (result.error) {
-              if (result.error === 'mfa_required') {
-                this.requireMFA({ settings: result })
-              } else if (result.identifier === 'password_reset_required') {
-                this.$router.push({
-                  name: 'password-reset',
-                  params: { passwordResetRequested: true },
-                })
-              } else {
-                this.error = result.error
-                this.focusOnPasswordInput()
-              }
-              return
-            }
+      this.ensureAppToken().then(() => {
+        getTokenWithCredentials({
+          clientId: this.clientId,
+          clientSecret: this.clientSecret,
+          instance: this.server,
+          username: this.user.username,
+          password: this.user.password,
+        })
+          .then(({ data: result }) => {
             this.login(result).then(() => {
               this.$router.push({ name: 'friends' })
             })
+          })
+          .catch((error) => {
+            if (error.errorData?.error === 'mfa_required') {
+              this.requireMFA({ settings: error })
+            } else if (error.identifier === 'password_reset_required') {
+              this.$router.push({
+                name: 'password-reset',
+                params: { passwordResetRequested: true },
+              })
+            } else {
+              this.error = error
+              this.focusOnPasswordInput()
+            }
+            return
           })
       })
     },

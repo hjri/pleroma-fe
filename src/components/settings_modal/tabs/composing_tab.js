@@ -1,18 +1,25 @@
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import FontControl from 'src/components/font_control/font_control.vue'
 import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
 import ScopeSelector from 'src/components/scope_selector/scope_selector.vue'
 import Select from 'src/components/select/select.vue'
-import localeService from 'src/services/locale/locale.service.js'
-import { cacheKey, clearCache, emojiCacheKey } from 'src/services/sw/sw.js'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import FloatSetting from '../helpers/float_setting.vue'
 import IntegerSetting from '../helpers/integer_setting.vue'
-import ProfileSettingIndicator from '../helpers/profile_setting_indicator.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
+
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
+import { updateProfile } from 'src/api/user.js'
+import localeService from 'src/services/locale/locale.service.js'
+import { cacheKey, clearCache, emojiCacheKey } from 'src/services/sw/sw.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -26,12 +33,6 @@ import {
 library.add(faGlobe, faMessage, faPenAlt, faDatabase, faSliders)
 
 const ComposingTab = {
-  props: {
-    parentCollapsed: {
-      required: true,
-      type: Boolean,
-    },
-  },
   data() {
     return {
       subjectLineOptions: ['email', 'noop', 'masto'].map((mode) => ({
@@ -101,14 +102,13 @@ const ComposingTab = {
     FloatSetting,
     UnitSetting,
     InterfaceLanguageSwitcher,
-    ProfileSettingIndicator,
     ScopeSelector,
     Select,
     FontControl,
   },
   computed: {
     postFormats() {
-      return this.$store.state.instance.postFormats || []
+      return useInstanceCapabilitiesStore().postFormats
     },
     postContentOptions() {
       return this.postFormats.map((format) => ({
@@ -119,19 +119,17 @@ const ComposingTab = {
     },
     language: {
       get: function () {
-        return this.$store.getters.mergedConfig.interfaceLanguage
+        return useMergedConfigStore().mergedConfig.interfaceLanguage
       },
       set: function (val) {
-        this.$store.dispatch('setOption', {
-          name: 'interfaceLanguage',
+        useSyncConfigStore().setSimplePrefAndSave({
+          path: 'interfaceLanguage',
           value: val,
         })
       },
     },
     ...SharedComputedObject(),
-    ...mapState({
-      blockExpirationSupported: (state) => state.instance.blockExpiration,
-    }),
+    ...mapState(useInstanceStore, ['blockExpiration']),
   },
   methods: {
     changeDefaultScope(value) {
@@ -168,16 +166,17 @@ const ComposingTab = {
         ),
       }
 
-      this.$store.state.api.backendInteractor
-        .updateProfile({ params })
-        .then((user) => {
-          this.$store.commit('addNewUsers', [user])
-          this.$store.commit('setCurrentUser', user)
-        })
+      updateProfile({
+        params,
+        credentials: useOAuthStore().token,
+      }).then(({ data: user }) => {
+        this.$store.commit('addNewUsers', [user])
+        this.$store.commit('setCurrentUser', user)
+      })
     },
     updateFont(key, value) {
-      this.$store.dispatch('setOption', {
-        name: 'theme3hacks',
+      useSyncConfigStore().setSimplePrefAndSave({
+        path: 'theme3hacks',
         value: {
           ...this.mergedConfig.theme3hacks,
           fonts: {

@@ -9,6 +9,10 @@ import {
 } from '../services/entity_normalizer/entity_normalizer.service.js'
 import { promiseInterval } from '../services/promise_interval/promise_interval.js'
 
+import { useOAuthStore } from 'src/stores/oauth.js'
+
+import { chats, deleteChatMessage, readChat } from 'src/api/chats.js'
+
 const emptyChatList = () => ({
   data: [],
   idStore: {},
@@ -36,7 +40,7 @@ const unreadChatCount = (state) => {
   return sumBy(state.chatList.data, 'unread')
 }
 
-const chats = {
+const chatsModule = {
   state: { ...defaultState },
   getters: {
     currentChat: (state) => state.openedChats[state.currentChatId],
@@ -51,7 +55,6 @@ const chats = {
     // Chat list
     startFetchingChats({ dispatch, commit }) {
       const fetcher = () => dispatch('fetchChats', { latest: true })
-      fetcher()
       commit('setChatListFetcher', {
         fetcher: () => promiseInterval(fetcher, 5000),
       })
@@ -60,8 +63,10 @@ const chats = {
       commit('setChatListFetcher', { fetcher: undefined })
     },
     fetchChats({ dispatch, rootState }) {
-      return rootState.api.backendInteractor.chats().then(({ chats }) => {
-        dispatch('addNewChats', { chats })
+      return chats({
+        credentials: useOAuthStore().token,
+      }).then(({ chatList }) => {
+        dispatch('addNewChats', { chats: chatList })
         return chats
       })
     },
@@ -113,11 +118,18 @@ const chats = {
       commit('readChat', { id, lastReadId })
 
       if (isNewMessage) {
-        rootState.api.backendInteractor.readChat({ id, lastReadId })
+        readChat({
+          id,
+          lastReadId,
+          credentials: useOAuthStore().token,
+        })
       }
     },
     deleteChatMessage({ rootState, commit }, value) {
-      rootState.api.backendInteractor.deleteChatMessage(value)
+      deleteChatMessage({
+        ...value,
+        credentials: useOAuthStore().token,
+      })
       commit('deleteChatMessage', { commit, ...value })
     },
     resetChats({ commit, dispatch }) {
@@ -262,4 +274,4 @@ const chats = {
   },
 }
 
-export default chats
+export default chatsModule

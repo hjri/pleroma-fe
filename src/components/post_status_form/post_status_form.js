@@ -1,27 +1,32 @@
 import { debounce, map, reject, uniqBy } from 'lodash'
 import { mapActions, mapState } from 'pinia'
-import { mapGetters } from 'vuex'
+import { defineAsyncComponent } from 'vue'
 
+import Attachment from 'src/components/attachment/attachment.vue'
+import Checkbox from 'src/components/checkbox/checkbox.vue'
 import DraftCloser from 'src/components/draft_closer/draft_closer.vue'
+import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
+import suggestor from 'src/components/emoji_input/suggestor.js'
 import Gallery from 'src/components/gallery/gallery.vue'
+import MediaUpload from 'src/components/media_upload/media_upload.vue'
 import Popover from 'src/components/popover/popover.vue'
-import { pollFormToMasto } from 'src/services/poll/poll.service.js'
-import { useInterfaceStore } from 'src/stores/interface.js'
-import { useMediaViewerStore } from 'src/stores/media_viewer.js'
+import ScopeSelector from 'src/components/scope_selector/scope_selector.vue'
+import Select from 'src/components/select/select.vue'
+import StatusContent from 'src/components/status_content/status_content.vue'
 import { propsToNative } from '../../services/attributes_helper/attributes_helper.service.js'
-import fileTypeService from '../../services/file_type/file_type.service.js'
 import { findOffset } from '../../services/offset_finder/offset_finder.service.js'
 import genRandomSeed from '../../services/random_seed/random_seed.service.js'
 import statusPoster from '../../services/status_poster/status_poster.service.js'
-import Attachment from '../attachment/attachment.vue'
-import Checkbox from '../checkbox/checkbox.vue'
-import EmojiInput from '../emoji_input/emoji_input.vue'
-import suggestor from '../emoji_input/suggestor.js'
-import MediaUpload from '../media_upload/media_upload.vue'
-import PollForm from '../poll/poll_form.vue'
-import ScopeSelector from '../scope_selector/scope_selector.vue'
-import Select from '../select/select.vue'
-import StatusContent from '../status_content/status_content.vue'
+
+import { useEmojiStore } from 'src/stores/emoji.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMediaViewerStore } from 'src/stores/media_viewer.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
+import { pollFormToMasto } from 'src/services/poll/poll.service.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -31,6 +36,7 @@ import {
   faChevronRight,
   faCircleNotch,
   faPollH,
+  faQuoteRight,
   faSmileBeam,
   faTimes,
   faUpload,
@@ -40,6 +46,7 @@ library.add(
   faSmileBeam,
   faPollH,
   faUpload,
+  faQuoteRight,
   faBan,
   faTimes,
   faCircleNotch,
@@ -101,6 +108,7 @@ const PostStatusForm = {
     'disableNotice',
     'disableLockWarning',
     'disablePolls',
+    'disableQuotes',
     'disableSensitivityCheckbox',
     'disableSubmit',
     'disablePreview',
@@ -125,13 +133,18 @@ const PostStatusForm = {
     'resize',
     'mediaplay',
     'mediapause',
-    'can-close',
+    'close-accepted',
     'update',
   ],
   components: {
     MediaUpload,
     EmojiInput,
-    PollForm,
+    PollForm: defineAsyncComponent(
+      () => import('src/components/poll/poll_form.vue'),
+    ),
+    QuoteForm: defineAsyncComponent(
+      () => import('src/components/quote/quote_form.vue'),
+    ),
     ScopeSelector,
     Checkbox,
     Select,
@@ -158,7 +171,7 @@ const PostStatusForm = {
     const preset = this.$route.query.message
     let statusText = preset || ''
 
-    const { scopeCopy } = this.$store.getters.mergedConfig
+    const { scopeCopy } = useMergedConfigStore().mergedConfig
 
     const [statusType, refId] = typeAndRefId({
       replyTo: this.replyTo,
@@ -188,7 +201,7 @@ const PostStatusForm = {
           : this.$store.state.users.currentUser.default_scope
 
       const { postContentType: contentType, sensitiveByDefault } =
-        this.$store.getters.mergedConfig
+        useMergedConfigStore().mergedConfig
 
       statusParams = {
         type: statusType,
@@ -199,6 +212,12 @@ const PostStatusForm = {
         files: [],
         poll: {},
         hasPoll: false,
+        hasQuote: false,
+        quote: {
+          id: '',
+          url: '',
+          thread: false,
+        },
         mediaDescriptions: {},
         visibility: scope,
         contentType,
@@ -216,6 +235,12 @@ const PostStatusForm = {
           files: this.statusFiles || [],
           poll: this.statusPoll || {},
           hasPoll: false,
+          hasQuote: false,
+          quote: {
+            id: '',
+            url: '',
+            thread: false,
+          },
           mediaDescriptions: this.statusMediaDescriptions || {},
           visibility: this.statusScope || scope,
           contentType: statusContentType,
@@ -258,8 +283,8 @@ const PostStatusForm = {
     emojiUserSuggestor() {
       return suggestor({
         emoji: [
-          ...this.$store.getters.standardEmojiList,
-          ...this.$store.state.instance.customEmoji,
+          ...useEmojiStore().standardEmojiList,
+          ...useEmojiStore().customEmoji,
         ],
         store: this.$store,
       })
@@ -267,16 +292,16 @@ const PostStatusForm = {
     emojiSuggestor() {
       return suggestor({
         emoji: [
-          ...this.$store.getters.standardEmojiList,
-          ...this.$store.state.instance.customEmoji,
+          ...useEmojiStore().standardEmojiList,
+          ...useEmojiStore().customEmoji,
         ],
       })
     },
     emoji() {
-      return this.$store.getters.standardEmojiList || []
+      return useEmojiStore().standardEmojiList
     },
     customEmoji() {
-      return this.$store.state.instance.customEmoji || []
+      return useEmojiStore().customEmoji
     },
     statusLength() {
       return this.newStatus.status.length
@@ -285,7 +310,7 @@ const PostStatusForm = {
       return this.newStatus.spoilerText.length
     },
     statusLengthLimit() {
-      return this.$store.state.instance.textlimit
+      return useInstanceStore().limits.textLimit
     },
     hasStatusLengthLimit() {
       return this.statusLengthLimit > 0
@@ -299,27 +324,28 @@ const PostStatusForm = {
       return this.hasStatusLengthLimit && this.charactersLeft < 0
     },
     minimalScopesMode() {
-      return this.$store.state.instance.minimalScopesMode
+      return useInstanceStore().minimalScopesMode
     },
     alwaysShowSubject() {
       return this.mergedConfig.alwaysShowSubjectInput
     },
     postFormats() {
-      return this.$store.state.instance.postFormats || []
+      return useInstanceCapabilitiesStore().postFormats || []
     },
     safeDMEnabled() {
-      return this.$store.state.instance.safeDM
+      return useInstanceCapabilitiesStore().safeDM
     },
     pollsAvailable() {
       return (
-        this.$store.state.instance.pollsAvailable &&
-        this.$store.state.instance.pollLimits.max_options >= 2 &&
+        useInstanceCapabilitiesStore().pollsAvailable &&
+        useInstanceStore().limits.pollLimits.max_options >= 2 &&
         this.disablePolls !== true
       )
     },
     hideScopeNotice() {
       return (
-        this.disableNotice || this.$store.getters.mergedConfig.hideScopeNotice
+        this.disableNotice ||
+        useMergedConfigStore().mergedConfig.hideScopeNotice
       )
     },
     pollContentError() {
@@ -341,12 +367,35 @@ const PostStatusForm = {
     isEdit() {
       return typeof this.statusId !== 'undefined' && this.statusId.trim() !== ''
     },
-    quotable() {
-      if (!this.$store.state.instance.quotingAvailable) {
+    quotingAvailable() {
+      if (!useInstanceCapabilitiesStore().quotingAvailable) {
         return false
       }
 
-      if (!this.replyTo) {
+      return this.disableQuotes !== true
+    },
+    isReply() {
+      return this.newStatus.type === 'reply'
+    },
+    quotable() {
+      return this.quotingAvailable && this.replyTo
+    },
+    quoteThreadToggled: {
+      get() {
+        return this.newStatus.hasQuote && this.newStatus.quote.thread
+      },
+      set(value) {
+        this.newStatus.hasQuote = value
+        this.newStatus.quote.thread = value
+        this.newStatus.quote.id = value ? this.replyTo : ''
+      },
+    },
+    defaultQuotable() {
+      if (
+        !this.quotingAvailable ||
+        !this.isReply ||
+        !useMergedConfigStore().mergedConfig.quoteReply
+      ) {
         return false
       }
 
@@ -368,14 +417,27 @@ const PostStatusForm = {
 
       return false
     },
+    inReplyStatusId() {
+      return !this.newStatus.hasQuote ||
+        !this.newStatus.quote.thread ||
+        !this.newStatus.quote.id
+        ? this.replyTo
+        : undefined
+    },
+    quoteId() {
+      return this.newStatus.hasQuote ? this.newStatus.quote.id : undefined
+    },
     debouncedMaybeAutoSaveDraft() {
       return debounce(this.maybeAutoSaveDraft, 3000)
     },
     pollFormVisible() {
       return this.newStatus.hasPoll
     },
+    quoteFormVisible() {
+      return this.newStatus.hasQuote && !this.newStatus.quote.thread
+    },
     shouldAutoSaveDraft() {
-      return this.$store.getters.mergedConfig.autoSaveDraft
+      return useMergedConfigStore().mergedConfig.autoSaveDraft
     },
     autoSaveState() {
       if (this.saveable) {
@@ -391,7 +453,8 @@ const PostStatusForm = {
         (this.newStatus.status ||
           this.newStatus.spoilerText ||
           this.newStatus.files?.length ||
-          this.newStatus.hasPoll) &&
+          this.newStatus.hasPoll ||
+          this.newStatus.hasQuote) &&
         this.saveable
       )
     },
@@ -402,11 +465,12 @@ const PostStatusForm = {
           this.newStatus.status ||
           this.newStatus.spoilerText ||
           this.newStatus.files?.length ||
-          this.newStatus.hasPoll
+          this.newStatus.hasPoll ||
+          this.newStatus.hasQuote
         )
       )
     },
-    ...mapGetters(['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
     ...mapState(useInterfaceStore, {
       mobileLayout: (store) => store.mobileLayout,
     }),
@@ -452,11 +516,13 @@ const PostStatusForm = {
         contentType: newStatus.contentType,
         poll: {},
         hasPoll: false,
+        hasQuote: false,
+        quote: {},
         mediaDescriptions: {},
-        quoting: false,
       }
       this.$refs.mediaUpload && this.$refs.mediaUpload.clearFile()
       this.clearPollForm()
+      this.clearQuoteForm()
       if (this.preserveFocus) {
         this.$nextTick(() => {
           this.$refs.textarea.focus()
@@ -496,9 +562,7 @@ const PostStatusForm = {
         return
       }
 
-      const poll = this.newStatus.hasPoll
-        ? pollFormToMasto(this.newStatus.poll)
-        : {}
+      const poll = newStatus.hasPoll ? pollFormToMasto(newStatus.poll) : {}
       if (this.pollContentError) {
         this.error = this.pollContentError
         return
@@ -514,10 +578,6 @@ const PostStatusForm = {
         return
       }
 
-      const replyOrQuoteAttr = newStatus.quoting
-        ? 'quoteId'
-        : 'inReplyToStatusId'
-
       const postingOptions = {
         status: newStatus.status,
         spoilerText: newStatus.spoilerText || null,
@@ -525,7 +585,8 @@ const PostStatusForm = {
         sensitive: newStatus.nsfw,
         media: newStatus.files,
         store: this.$store,
-        [replyOrQuoteAttr]: this.replyTo,
+        inReplyToStatusId: this.inReplyStatusId,
+        quoteId: this.quoteId,
         contentType: newStatus.contentType,
         poll,
         idempotencyKey: this.idempotencyKey,
@@ -535,16 +596,18 @@ const PostStatusForm = {
         ? this.postHandler
         : statusPoster.postStatus
 
-      postHandler(postingOptions).then((data) => {
-        if (!data.error) {
+      postHandler(postingOptions)
+        .then((data) => {
           this.abandonDraft()
           this.clearStatus()
           this.$emit('posted', data)
-        } else {
-          this.error = data.error
-        }
-        this.posting = false
-      })
+        })
+        .catch((error) => {
+          this.error = error
+        })
+        .finally(() => {
+          this.posting = false
+        })
     },
     previewStatus() {
       if (this.emptyStatus && this.newStatus.spoilerText.trim() === '') {
@@ -554,9 +617,7 @@ const PostStatusForm = {
       }
       const newStatus = this.newStatus
       this.previewLoading = true
-      const replyOrQuoteAttr = newStatus.quoting
-        ? 'quoteId'
-        : 'inReplyToStatusId'
+
       statusPoster
         .postStatus({
           status: newStatus.status,
@@ -565,7 +626,8 @@ const PostStatusForm = {
           sensitive: newStatus.nsfw,
           media: [],
           store: this.$store,
-          [replyOrQuoteAttr]: this.replyTo,
+          inReplyToStatusId: this.inReplyStatusId,
+          quoteId: this.quoteId,
           contentType: newStatus.contentType,
           poll: {},
           preview: true,
@@ -574,11 +636,7 @@ const PostStatusForm = {
           // Don't apply preview if not loading, because it means
           // user has closed the preview manually.
           if (!this.previewLoading) return
-          if (!data.error) {
-            this.preview = data
-          } else {
-            this.preview = { error: data.error }
-          }
+          this.preview = data
         })
         .catch((error) => {
           this.preview = { error }
@@ -643,9 +701,6 @@ const PostStatusForm = {
     finishedUploadingFiles() {
       this.$emit('resize')
       this.uploadingFiles = false
-    },
-    type(fileInfo) {
-      return fileTypeService.fileType(fileInfo.mimetype)
     },
     paste(e) {
       this.autoPreview()
@@ -812,9 +867,22 @@ const PostStatusForm = {
         this.$refs.pollForm.clear()
       }
     },
+    clearQuoteForm() {
+      if (this.$refs.quoteForm) {
+        this.$refs.quoteForm.clear()
+      }
+    },
+    toggleQuoteForm() {
+      this.newStatus.hasQuote = !this.newStatus.hasQuote
+
+      this.newStatus.quote = {}
+      this.newStatus.quote.thread = false
+      this.newStatus.quote.id = null
+      this.newStatus.quote.url = ''
+    },
     dismissScopeNotice() {
-      this.$store.dispatch('setOption', {
-        name: 'hideScopeNotice',
+      useSyncConfigStore().setSimplePrefAndSave({
+        path: 'hideScopeNotice',
         value: true,
       })
     },
@@ -897,19 +965,19 @@ const PostStatusForm = {
     },
     requestClose() {
       if (!this.saveable) {
-        this.$emit('can-close')
+        this.$emit('close-accepted')
       } else {
         this.$refs.draftCloser.requestClose()
       }
     },
     saveAndCloseDraft() {
       this.saveDraft().then(() => {
-        this.$emit('can-close')
+        this.$emit('close-accepted')
       })
     },
     discardAndCloseDraft() {
       this.abandonDraft().then(() => {
-        this.$emit('can-close')
+        this.$emit('close-accepted')
       })
     },
     addBeforeUnloadListener() {
