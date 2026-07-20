@@ -1,1 +1,0 @@
-Migrated to Vite 8 and optimized our imports, more stuff is loaded on-demand, reducing the initial load time and transfer size
