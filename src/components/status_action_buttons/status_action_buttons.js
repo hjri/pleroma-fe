@@ -104,8 +104,8 @@ const StatusActionButtons = {
       }
     },
     doActionReal(button) {
-      button
-        .action?.(this.funcArg)
+      const promise = button.action?.(this.funcArg) ?? Promise.resolve()
+      promise
         .then(() => this.$emit('onSuccess'))
         .catch((err) => this.$emit('onError', err))
     },

@@ -86,7 +86,7 @@ export default {
         this.onSwitch.call(null, this.slots()[index].key)
       }
       this.active = index
-      if (this.scrollableTabs) {
+      if (this.scrollableTabs && this.$refs.contents) {
         this.$refs.contents.scrollTop = 0
       }
     },
