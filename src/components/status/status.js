@@ -136,6 +136,12 @@ const Status = {
     allowNonSquareEmoji() {
       return this.mergedConfig.nonSquareEmoji
     },
+    pauseMfm() {
+      return this.mergedConfig.pauseMfm
+    },
+    scaleMfm() {
+      return this.mergedConfig.scaleMfm
+    },
     repeaterClass() {
       const user = this.statusoid.user
       return highlightClass(user)

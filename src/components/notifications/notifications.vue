@@ -51,7 +51,6 @@
           <NotificationFilters class="rightside-button" />
         </div>
         <div
-          class="panel-body"
           role="feed"
         >
           <div

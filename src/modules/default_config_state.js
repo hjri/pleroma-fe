@@ -237,6 +237,14 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
     description: 'Allow emoji to be non-square (max 3:1 aspect)',
     default: true,
   },
+  pauseMfm: {
+    description: 'Pause MFM animations',
+    default: true,
+  },
+  scaleMfm: {
+    description: 'Scale MFM animation with emoji size',
+    default: false,
+  },
   replyVisibility: {
     description: 'Type of replies to show',
     default: 'all',

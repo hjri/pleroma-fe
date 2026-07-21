@@ -25,6 +25,8 @@
               :handle-links="false"
               :emoji="emoji"
               :allow-non-square-emoji="allowNonSquareEmoji"
+              :pause-mfm="pauseMfm"
+              :scale-mfm="scaleMfm"
             />
           </div>
           <div

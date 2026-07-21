@@ -20,7 +20,9 @@
           :show-ratio="true"
           :contrast="contrast[key]"
         />
-        <div v-else>{{ '&nbsp;' }}</div>
+        <div v-else>
+          {{ '&nbsp;' }}
+        </div>
       </div>
     </div>
     <div class="buttons">

@@ -603,7 +603,7 @@ const PostStatusForm = {
           this.$emit('posted', data)
         })
         .catch((error) => {
-          this.error = data.error
+          this.error = error
         })
         .finally(() => {
           this.posting = false

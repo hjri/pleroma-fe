@@ -809,6 +809,8 @@
     "sensitive_by_default": "Mark posts as sensitive by default",
     "stop_gifs": "Pause animated images until you hover on them",
     "non_square_emoji": "Allow non-square emoji",
+    "pause_mfm": "Pause MFM animations until you hover on them",
+    "scale_mfm": "Scale MFM animations with emoji size",
     "streaming": "Automatically show new posts when scrolled to the top",
     "auto_update": "Show new posts automatically",
     "user_mutes": "Users",
@@ -970,7 +972,7 @@
             "inherit": "Unchanged"
           },
           "group-local": "Locally installed fonts",
-          "local-unavailable1": "List of locally installed fonts unavailalbe",
+          "local-unavailable1": "List of locally installed fonts unavailable",
           "local-unavailable2": "Use manual entry to specify custom font",
           "font_list_unavailable": "Couldn't get locally installed fonts: {error}",
           "lookup_local_fonts": "Load list of fonts installed on this computer",

@@ -4,7 +4,7 @@
     ref="root"
   >
     <Status
-      class="Notification"
+      class="Notification panel-body"
       :compact="true"
       :statusoid="notification.status"
       @click="interacted"
@@ -13,7 +13,7 @@
   <article
     v-else
     ref="root"
-    class="NotificationParent"
+    class="NotificationParent panel-body"
     :class="{ '-expandable': expandable }"
   >
     <div
@@ -72,6 +72,8 @@
                 :html="notification.from_profile.name_html"
                 :emoji="notification.from_profile.emoji"
                 :allow-non-square-emoji="allowNonSquareEmoji"
+                :pause-mfm="pauseMfm"
+                :scale-mfm="scaleMfm"
                 :is-local="notification.from_profile.is_local"
               />
             </bdi>

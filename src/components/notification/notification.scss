@@ -10,11 +10,6 @@
     cursor: pointer;
   }
 
-  &.Status {
-    /* stylelint-disable-next-line declaration-no-important */
-    background-color: transparent !important;
-  }
-
   --emoji-size: 1em;
 
   &:hover {
