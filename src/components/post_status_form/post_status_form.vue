@@ -381,6 +381,14 @@
           </Popover>
         </div>
       </div>
+      <small class="keyboard-enter-hint faint">
+        <i v-if="submitOnEnter">
+          {{ $t('post_status.enter_submits') }}
+        </i>
+        <i v-else>
+          {{ $t('post_status.enter_newline') }}
+        </i>
+      </small>
       <div
         v-show="showDropIcon !== 'hide'"
         :style="{ animation: showDropIcon === 'show' ? 'fade-in 0.25s' : 'fade-out 0.5s' }"

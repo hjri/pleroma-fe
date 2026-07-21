@@ -16,7 +16,7 @@
   .form-bottom {
     display: flex;
     justify-content: space-between;
-    padding: 0.5em;
+    padding: 0.5em 0.5em 0.25em;
     height: 2.5em;
 
     .post-button-group {
@@ -208,6 +208,13 @@
     padding: 0;
     display: flex;
     flex-direction: column;
+  }
+
+  .keyboard-enter-hint {
+    text-align: right;
+    margin-right: 1em;
+    line-height: 1;
+    margin-bottom: 0.5em;
   }
 
   textarea.input.form-post-body {
