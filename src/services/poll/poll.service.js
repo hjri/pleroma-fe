@@ -9,11 +9,11 @@ const pollFallbackValues = {
   expiryUnit: 'minutes',
 }
 
-const pollFallback = (object, attr) => {
+export const pollFallback = (object, attr) => {
   return object[attr] !== undefined ? object[attr] : pollFallbackValues[attr]
 }
 
-const pollFormToMasto = (poll) => {
+export const pollFormToMasto = (poll) => {
   const expiresIn = DateUtils.unitToSeconds(
     pollFallback(poll, 'expiryUnit'),
     pollFallback(poll, 'expiryAmount'),
@@ -32,5 +32,3 @@ const pollFormToMasto = (poll) => {
     expiresIn,
   }
 }
-
-export { pollFallback, pollFormToMasto }
