@@ -206,6 +206,8 @@
 
   .inputs-wrapper {
     padding: 0;
+    display: flex;
+    flex-direction: column;
   }
 
   textarea.input.form-post-body {
@@ -233,6 +235,10 @@
   }
 
   .subject-input {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mentions-input {
     border-bottom: 1px solid var(--border);
   }
 

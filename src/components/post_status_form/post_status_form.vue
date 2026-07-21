@@ -2,6 +2,7 @@
   <div
     ref="form"
     class="post-status-form"
+    v-if="initialized"
   >
     <form
       autocomplete="off"
@@ -10,7 +11,7 @@
     >
       <div class="form-group">
         <div
-          v-if="!$store.state.users.currentUser.locked && newStatus.visibility == 'private' && !disableLockWarning"
+          v-if="!currentUser.locked && newStatus.visibility == 'private' && !disableLockWarning"
           class="visibility-notice notice-dismissible"
         >
           <i18n-t
@@ -58,7 +59,7 @@
           </a>
         </p>
         <p
-          v-else-if="!hideScopeNotice && newStatus.visibility === 'private' && $store.state.users.currentUser.locked"
+          v-else-if="!hideScopeNotice && newStatus.visibility === 'private' && currentUser.locked"
           class="visibility-notice notice-dismissible"
         >
           <span>{{ $t('post_status.scope_notice.private') }}</span>
@@ -172,6 +173,16 @@
               >
             </template>
           </EmojiInput>
+          <input
+            v-if="mentionsLine"
+            :value="mentionsLineReadOnly ? mentionsString : newStatus.mentionsLine"
+            @change="onMentionsLineUpdate"
+            type="text"
+            :placeholder="$t('post_status.mentions_line')"
+            :disabled="mentionsLineReadOnly || (posting && !optimisticPosting)"
+            size="1"
+            class="input mentions-input form-post-mentions unstyled"
+          >
           <EmojiInput
             ref="emoji-input"
             v-model="newStatus.status"
@@ -264,10 +275,10 @@
       />
       <QuoteForm
         v-if="quotingAvailable"
-        :id="newStatus.quote.id"
         ref="quoteForm"
         :visible="quoteFormVisible"
-        :url="newStatus.quote.url"
+        :id="newStatus.quote?.id"
+        :url="newStatus.quote?.url"
         @update:url="url => newStatus.quote.url = url"
         @update:id="id => newStatus.quote.id = id"
       />

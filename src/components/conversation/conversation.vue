@@ -245,7 +245,8 @@
         :copy-message-scope="replyStatus.visibility"
         :attentions="replyStatus.attentions"
         :replied-user="replyStatus.user"
-        force-mentions-line
+        mentions-line
+        mentions-line-read-only
       />
     </div>
   </div>
