@@ -80,9 +80,6 @@ const ChatMessage = {
     isCustomReply() {
       if (!this.previousItem) return false
       if (!this.chatItem.data.in_reply_to_status_id) return false
-      console.log('==')
-      console.log('PREV', toValue(this.previousItem.data.text))
-      console.log('CURR', toValue(this.chatItem.data.text))
       return (
         this.previousItem.data.id !== this.chatItem.data.in_reply_to_status_id
       )
