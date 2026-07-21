@@ -306,6 +306,7 @@
     },
     "content_type_selection": "Post format",
     "content_warning": "Subject (optional)",
+    "mentions_line": "Mentioned users",
     "enter_submits": "Enter key sends the post",
     "enter_newline": "Enter key adds a newline",
     "default": "Just landed in L.A.",
