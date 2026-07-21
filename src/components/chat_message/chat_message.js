@@ -144,6 +144,9 @@ const ChatMessage = {
           return 'globe'
       }
     },
+    visibilityLocalized() {
+      return this.$i18n.t('general.scope_in_timeline.' + this.status.visibility)
+    },
     async deleteMessage() {
       const confirmed = window.confirm(this.$t('chats.delete_confirm'))
       if (confirmed) {
