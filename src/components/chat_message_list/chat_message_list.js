@@ -69,7 +69,8 @@ const ChatMessageList = {
             if (newerItem.type === 'date') {
               chatItem.messageChainId = uniqueId()
             } else if (newerItem.type === 'message') {
-              const newerUser = newerItem.data.account_id || newerItem.data.user.id
+              const newerUser =
+                newerItem.data.account_id || newerItem.data.user.id
               const olderUser = message.account_id || message.user.id
               if (newerUser !== olderUser) {
                 chatItem.messageChainId = uniqueId()
@@ -111,18 +112,21 @@ const ChatMessageList = {
       this.$emit('replyRequested', message)
     },
     getPreviousItem(index) {
-      let result
+      let result = null
 
-      this.chatItems.slice(0, index).reverse().some((item) => {
-        const isMessage = item.type === 'message'
-        if (isMessage) {
-          result = item
-        }
-        return isMessage
-      })
+      this.chatItems
+        .slice(0, index)
+        .reverse()
+        .some((item) => {
+          const isMessage = item.type === 'message'
+          if (isMessage) {
+            result = item
+          }
+          return isMessage
+        })
 
       return result
-    }
+    },
   },
 }
 
