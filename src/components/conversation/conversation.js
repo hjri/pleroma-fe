@@ -2,11 +2,11 @@ import { clone, filter, findIndex, get, reduce } from 'lodash'
 import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
-import StatusContent from 'src/components/status_content/status_content.vue'
-import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
+import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
 import QuickViewSettings from 'src/components/quick_view_settings/quick_view_settings.vue'
+import StatusContent from 'src/components/status_content/status_content.vue'
 import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
 
 import { useInterfaceStore } from 'src/stores/interface'
@@ -25,7 +25,13 @@ import {
   faTimes,
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faAngleDoubleDown, faAngleDoubleLeft, faChevronLeft, faReply, faTimes)
+library.add(
+  faAngleDoubleDown,
+  faAngleDoubleLeft,
+  faChevronLeft,
+  faReply,
+  faTimes,
+)
 
 const sortById = (a, b) => {
   const idA = a.type === 'retweet' ? a.retweeted_status.id : a.id

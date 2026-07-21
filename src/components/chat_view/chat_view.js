@@ -51,6 +51,9 @@ const Chat = {
     ChatTitle,
     PostStatusForm,
   },
+  props: {
+    testMode: Boolean,
+  },
   data() {
     return {
       // Main info
@@ -76,6 +79,7 @@ const Chat = {
     }
   },
   created() {
+    if (this.testMode) return
     this.startFetching()
     window.addEventListener('resize', this.handleResize)
   },
@@ -210,13 +214,16 @@ const Chat = {
 
       if (!isNewMessage) return
 
-      await readChat({
-        id: this.chat.id,
-        lastReadId,
-        credentials: useOAuthStore().token,
-      })
+      if (!this.testMode)
+        await readChat({
+          id: this.chat.id,
+          lastReadId,
+          credentials: useOAuthStore().token,
+        })
 
       useChatsStore().readChat(this.chat.id)
+      this.lastReadMessageId = this.maxId
+      this.newMessageCount = 0
     },
     bottomedOut(offset) {
       return isBottomedOut(offset)
@@ -224,24 +231,27 @@ const Chat = {
     reachedTop() {
       return window.scrollY <= 0
     },
+    cullOlder() {
+      const maxIndex = this.messages.length
+      const minIndex = maxIndex - 50
+      if (maxIndex <= 50) return
+
+      this.messages = sortBy(this.messages, ['id'])
+      this.minId = this.messages[minIndex].id
+
+      for (const message of this.messages) {
+        if (message.id < this.minId) {
+          delete this.messagesIndex[message.id]
+          delete this.idempotencyKeyIndex[message.idempotency_key]
+        }
+      }
+
+      this.messages = this.messages.slice(minIndex, maxIndex)
+    },
     cullOlderCheck() {
       window.setTimeout(() => {
         if (this.bottomedOut(JUMP_TO_BOTTOM_BUTTON_VISIBILITY_OFFSET)) {
-          const maxIndex = this.messages.length
-          const minIndex = maxIndex - 50
-          if (maxIndex <= 50) return
-
-          this.messages = sortBy(this.messages, ['id'])
-          this.minId = this.messages[minIndex].id
-
-          for (const message of this.messages) {
-            if (message.id < this.minId) {
-              delete this.messagesIndex[message.id]
-              delete this.idempotencyKeyIndex[message.idempotency_key]
-            }
-          }
-
-          this.messages = this.messages.slice(minIndex, maxIndex)
+          this.cullOlder()
         }
       }, 5000)
     },
@@ -354,11 +364,12 @@ const Chat = {
       this.fetchChat({ isFirstFetch: true })
     },
     async deleteChatMessage({ chatId, messageId }) {
-      await deleteChatMessage({
-        chatId,
-        messageId,
-        credentials: useOAuthStore().token,
-      })
+      if (!this.testMode)
+        await deleteChatMessage({
+          chatId,
+          messageId,
+          credentials: useOAuthStore().token,
+        })
 
       this.messages = this.messages.filter((m) => m.id !== messageId)
       delete this.messagesIndex[messageId]
@@ -406,7 +417,7 @@ const Chat = {
         }
 
         if (!this.messagesIndex[message.id] && !isConfirmation(this, message)) {
-          if (this.lastSeenMessageId < message.id) {
+          if (this.lastReadMessageId < message.id) {
             this.newMessageCount++
           }
           this.messagesIndex[message.id] = message

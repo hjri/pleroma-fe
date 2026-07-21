@@ -42,7 +42,7 @@ export default {
         ),
     ),
   },
-  props: ['button', 'status', 'defaultButton','hideLabel'],
+  props: ['button', 'status', 'defaultButton', 'hideLabel'],
   emits: ['emojiPickerShown'],
   mounted() {
     if (this.button.name === 'mute') {

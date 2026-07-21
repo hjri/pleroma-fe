@@ -105,7 +105,9 @@ export default {
       return useMergedConfigStore().mergedConfig.hidePostStats
     },
     buttonInnerClass() {
-      const buttonStyleClass = this.defaultButtonStyle ? 'button-default' : 'button-unstyled'
+      const buttonStyleClass = this.defaultButtonStyle
+        ? 'button-default'
+        : 'button-unstyled'
       return [
         this.button.name + '-button',
         {

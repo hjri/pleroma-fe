@@ -7,12 +7,12 @@ import GestureService from '../../services/gesture_service/gesture_service'
 import { unseenNotificationsFromStore } from '../../services/notification_utils/notification_utils'
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useChatsStore } from 'src/stores/chats.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useShoutStore } from 'src/stores/shout'
-import { useChatsStore } from 'src/stores/chats.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

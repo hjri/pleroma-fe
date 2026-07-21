@@ -17,7 +17,6 @@ export const paramsString = (params = {}) => {
     }
   })()
 
-
   const arrays = []
   const nonArrays = []
 

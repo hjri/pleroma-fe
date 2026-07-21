@@ -38,7 +38,7 @@ const StatusActionButtons = {
     hideLabels: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   emits: ['toggleReplying', 'onSuccess', 'onError'],
   data() {
@@ -64,7 +64,8 @@ const StatusActionButtons = {
   },
   computed: {
     ...mapState(useSyncConfigStore, {
-      userPinnedItems: (store) => new Set(store.prefsStorage.collections.pinnedStatusActions),
+      userPinnedItems: (store) =>
+        new Set(store.prefsStorage.collections.pinnedStatusActions),
     }),
     pinnedItems() {
       if (this.fixedPinned) {

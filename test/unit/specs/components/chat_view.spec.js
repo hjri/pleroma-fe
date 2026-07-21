@@ -1,7 +1,7 @@
+import { createTestingPinia } from '@pinia/testing'
 import { shallowMount } from '@vue/test-utils'
 import { setActivePinia } from 'pinia'
-import { createTestingPinia } from '@pinia/testing'
-import { HttpResponse, http } from 'msw'
+
 import ChatView from './chat_view.vue'
 
 const message1 = {
@@ -32,7 +32,7 @@ const global = {
     $store: {
       state: {
         api: {},
-        users: {}
+        users: {},
       },
     },
     $route: {
@@ -41,8 +41,10 @@ const global = {
       },
     },
     $router: {
-      push: () => {}
-    }
+      push: () => {
+        /* noop */
+      },
+    },
   },
   stubs: {
     FAIcon: true,
