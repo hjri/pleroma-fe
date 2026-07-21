@@ -16,42 +16,45 @@ export default {
   },
   name: 'PollForm',
   props: {
-    visible: {},
-    params: {
+    visible: Boolean,
+    modelValue: {
       type: Object,
-      required: true,
+      required: false,
+      default: null,
     },
   },
+  emits: ['update:modelValue'],
   computed: {
     pollType: {
       get() {
-        return pollFallback(this.params, 'pollType')
+        return pollFallback(this.modelValue, 'pollType')
       },
       set(newVal) {
-        this.params.pollType = newVal
+        this.$emit('update:modelValue', { ...this.modelValue, pollType: newVal })
       },
     },
-    options() {
-      const hasOptions = !!this.params.options
-      if (!hasOptions) {
-        this.params.options = pollFallback(this.params, 'options')
+    options: {
+      get() {
+        return pollFallback(this.modelValue, 'options')
+      },
+      set(newVal) {
+        this.$emit('update:modelValue', { ...this.modelValue, options: newVal })
       }
-      return this.params.options
     },
     expiryAmount: {
       get() {
-        return pollFallback(this.params, 'expiryAmount')
+        return pollFallback(this.modelValue, 'expiryAmount')
       },
       set(newVal) {
-        this.params.expiryAmount = newVal
+        this.$emit('update:modelValue', { ...this.modelValue, expiryAmount: newVal })
       },
     },
     expiryUnit: {
       get() {
-        return pollFallback(this.params, 'expiryUnit')
+        return pollFallback(this.modelValue, 'expiryUnit')
       },
       set(newVal) {
-        this.params.expiryUnit = newVal
+        this.$emit('update:modelValue', { ...this.modelValue, expiryUnit: newVal })
       },
     },
     pollLimits() {
@@ -88,12 +91,6 @@ export default {
     },
   },
   methods: {
-    clear() {
-      this.pollType = 'single'
-      this.options = ['', '']
-      this.expiryAmount = 10
-      this.expiryUnit = 'minutes'
-    },
     nextOption(index) {
       const element = this.$el.querySelector(`#poll-${index + 1}`)
       if (element) {
@@ -110,7 +107,7 @@ export default {
     },
     addOption() {
       if (this.options.length < this.maxOptions) {
-        this.options.push('')
+        this.options = [...this.options, '']
         return true
       }
       return false
@@ -118,7 +115,11 @@ export default {
     deleteOption(index) {
       if (this.options.length > 2) {
         this.options.splice(index, 1)
+        this.options = this.options
       }
+    },
+    updateOption(index, value) {
+      this.options = this.options
     },
     convertExpiryToUnit(unit, amount) {
       // Note: we want seconds and not milliseconds

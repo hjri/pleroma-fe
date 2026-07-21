@@ -271,7 +271,7 @@
         v-if="pollsAvailable"
         ref="pollForm"
         :visible="pollFormVisible"
-        :params="newStatus.poll"
+        v-model="newStatus.poll"
       />
       <QuoteForm
         v-if="quotingAvailable"

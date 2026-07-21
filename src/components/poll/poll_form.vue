@@ -18,6 +18,7 @@
           :placeholder="$t('polls.option')"
           :maxlength="maxLength"
           @keydown.enter.stop.prevent="nextOption(index)"
+          @change="updateOption"
         >
       </div>
       <button

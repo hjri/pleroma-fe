@@ -306,11 +306,11 @@ const PostStatusForm = {
     },
     // -Poll
     hasPoll() {
-      this.newStatus.poll != null
+      return this.newStatus.poll != null
     },
     // -Quotes
     hasQuote() {
-      this.newStatus.quote !== null
+      return this.newStatus.quote !== null
     },
     quotable() {
       return this.quotingAvailable && this.replyTo
@@ -350,9 +350,13 @@ const PostStatusForm = {
         return this.newStatus.quote?.thread
       },
       set(value) {
-        this.newStatus.quote = {}
-        this.newStatus.quote.thread = value
-        this.newStatus.quote.id = value ? this.replyTo : ''
+        if (value) {
+          this.newStatus.quote = {}
+          this.newStatus.quote.thread = value
+          this.newStatus.quote.id = value ? this.replyTo : ''
+        } else {
+          this.newStatus.quote = null
+        }
       },
     },
 
@@ -567,19 +571,15 @@ const PostStatusForm = {
     clearStatus() {
       const newStatus = this.newStatus
       this.saveInhibited = true
-      this.newStatus = {
-        status: '',
-        mentionsLine: '',
-        spoilerText: '',
-        files: [],
-        visibility: newStatus.visibility,
-        contentType: newStatus.contentType,
-        poll: {},
-        quote: {},
-        mediaDescriptions: {},
-      }
+      this.newStatus.status = ''
+      this.newStatus.mentionsLine = '',
+      this.newStatus.spoilerText = '',
+      this.newStatus.files = [],
+      this.newStatus.poll = null,
+      this.newStatus.quote = null,
+      this.newStatus.mediaDescriptions = {},
+
       this.$refs.mediaUpload && this.$refs.mediaUpload.clearFile()
-      this.clearPollForm()
       this.clearQuoteForm()
       if (this.preserveFocus) {
         this.$nextTick(() => {
@@ -919,11 +919,6 @@ const PostStatusForm = {
     },
     setPoll(poll) {
       this.newStatus.poll = poll
-    },
-    clearPollForm() {
-      if (this.$refs.pollForm) {
-        this.$refs.pollForm.clear()
-      }
     },
     clearQuoteForm() {
       if (this.$refs.quoteForm) {
