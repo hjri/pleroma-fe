@@ -287,8 +287,8 @@ const PostStatusForm = {
     },
     newStatusContent() {
       return this.mentionsLine
-        ? this.newStatus.status
-        : this.mentionsString + this.newStatus.status
+        ? this.mentionsString + this.newStatus.status
+        : this.newStatus.status
     },
     isEdit() {
       return typeof this.statusId !== 'undefined' && this.statusId.trim() !== ''
