@@ -37,7 +37,9 @@
             />
             {{ $t('status.reply_to') }}
           </strong>
+          <!-- v-if is there because status might not be loaded yet -->
           <StatusBody
+            v-if="customReplyTo"
             class="reply-body"
             :status="customReplyTo"
             collapse
