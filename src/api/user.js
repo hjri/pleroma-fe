@@ -207,7 +207,7 @@ export const postStatus = ({
   idempotencyKey,
 }) => {
   const form = new FormData()
-  const pollOptions = poll.options || []
+  const pollOptions = poll?.options || []
 
   form.append('status', status)
   form.append('source', 'Pleroma FE')
