@@ -1,4 +1,10 @@
-import { debounce, reject, uniqBy, isEqual, unescape as ldUnescape } from 'lodash'
+import {
+  debounce,
+  isEqual,
+  unescape as ldUnescape,
+  reject,
+  uniqBy,
+} from 'lodash'
 import { mapActions, mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 
@@ -58,9 +64,6 @@ library.add(
 // Converts a string with px to a number like '2px' -> 2
 const pxStringToNumber = (str) => {
   return Number(str.substring(0, str.length - 2))
-}
-
-const DEFAULT_NEWSTATUS = {
 }
 
 const PostStatusForm = {
@@ -195,7 +198,8 @@ const PostStatusForm = {
     this.updateIdempotencyKey()
 
     // If we are starting a new post, do not associate it with old drafts
-    const draft = !this.disableDraft && (this.draftId || this.statusType !== 'new')
+    const draft =
+      !this.disableDraft && (this.draftId || this.statusType !== 'new')
         ? this.getDraft(this.statusType, this.refId)
         : null
 
@@ -251,16 +255,17 @@ const PostStatusForm = {
     refId() {
       if (this.replyTo) {
         return this.replyTo
-      } else if (profileMention) {
+      } else if (this.profileMention && this.repliedUser?.id) {
         return this.profileMention && this.repliedUser?.id
-      } else if (statusId) {
+      } else if (this.statusId) {
         return this.statusId
       } else {
         return null
       }
     },
     mentionsString() {
-      if (this.statusType !== 'reply' && this.statusType !== 'mention') return ''
+      if (this.statusType !== 'reply' && this.statusType !== 'mention')
+        return ''
       let allAttentions = [...(this.attentions || [])]
 
       allAttentions.unshift(this.repliedUser)
@@ -268,7 +273,9 @@ const PostStatusForm = {
       allAttentions = uniqBy(allAttentions, 'id')
       allAttentions = reject(allAttentions, { id: this.currentUser.id })
 
-      const mentions = allAttentions.map((attention) => `@${attention.screen_name}`)
+      const mentions = allAttentions.map(
+        (attention) => `@${attention.screen_name}`,
+      )
 
       return mentions.length > 0 ? mentions.join(' ') + ' ' : ''
     },
@@ -286,7 +293,7 @@ const PostStatusForm = {
       }
 
       const scope =
-            (this.repliedScope && this.userDefaultScopeCopy) ||
+        (this.repliedScope && this.userDefaultScopeCopy) ||
         this.repliedScope === 'direct'
           ? this.repliedScope
           : this.userDefaultScope
@@ -450,11 +457,13 @@ const PostStatusForm = {
 
     // Drafts
     isDirty() {
-      return Object.entries(this.defaultNewStatus).some(([key, defaultValue]) => {
-        const actualValue = this.newStatus[key]
-        if (actualValue === null) return false
-        return !isEqual(actualValue, defaultValue)
-      })
+      return Object.entries(this.defaultNewStatus).some(
+        ([key, defaultValue]) => {
+          const actualValue = this.newStatus[key]
+          if (actualValue === null) return false
+          return !isEqual(actualValue, defaultValue)
+        },
+      )
     },
     shouldAutoSaveDraft() {
       return useMergedConfigStore().mergedConfig.autoSaveDraft
@@ -590,14 +599,13 @@ const PostStatusForm = {
     clearStatus() {
       this.saveInhibited = true
       this.newStatus.status = ''
-      this.newStatus.mentionsLine = '',
-      this.newStatus.spoilerText = '',
-      this.newStatus.files = [],
-      this.newStatus.poll = null,
-      this.newStatus.quote = null,
-      this.newStatus.mediaDescriptions = {},
-
-      this.$refs.mediaUpload && this.$refs.mediaUpload.clearFile()
+      ;(this.newStatus.mentionsLine = ''),
+        (this.newStatus.spoilerText = ''),
+        (this.newStatus.files = []),
+        (this.newStatus.poll = null),
+        (this.newStatus.quote = null),
+        (this.newStatus.mediaDescriptions = {}),
+        this.$refs.mediaUpload && this.$refs.mediaUpload.clearFile()
       this.clearQuoteForm()
       if (this.preserveFocus) {
         this.$nextTick(() => {

@@ -45,10 +45,10 @@ import {
 } from 'src/api/public.js'
 import {
   blockUser as apiBlockUser,
+  editUserNote as apiEditUserNote,
   muteUser as apiMuteUser,
   unblockUser as apiUnblockUser,
   unmuteUser as apiUnmuteUser,
-  editUserNote as apiEditUserNote,
   fetchBlocks,
   fetchDomainMutes,
   fetchMutes,

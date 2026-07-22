@@ -30,7 +30,10 @@ export default {
         return pollFallback(this.modelValue, 'pollType')
       },
       set(newVal) {
-        this.$emit('update:modelValue', { ...this.modelValue, pollType: newVal })
+        this.$emit('update:modelValue', {
+          ...this.modelValue,
+          pollType: newVal,
+        })
       },
     },
     options: {
@@ -39,14 +42,17 @@ export default {
       },
       set(newVal) {
         this.$emit('update:modelValue', { ...this.modelValue, options: newVal })
-      }
+      },
     },
     expiryAmount: {
       get() {
         return pollFallback(this.modelValue, 'expiryAmount')
       },
       set(newVal) {
-        this.$emit('update:modelValue', { ...this.modelValue, expiryAmount: newVal })
+        this.$emit('update:modelValue', {
+          ...this.modelValue,
+          expiryAmount: newVal,
+        })
       },
     },
     expiryUnit: {
@@ -54,7 +60,10 @@ export default {
         return pollFallback(this.modelValue, 'expiryUnit')
       },
       set(newVal) {
-        this.$emit('update:modelValue', { ...this.modelValue, expiryUnit: newVal })
+        this.$emit('update:modelValue', {
+          ...this.modelValue,
+          expiryUnit: newVal,
+        })
       },
     },
     pollLimits() {
