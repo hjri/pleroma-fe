@@ -7,7 +7,7 @@
     @mouseleave="onHover(false)"
   >
     <i18n-t
-      v-if="isStatus && isCustomReply"
+      v-if="isStatus && (isCustomReply || isBrokenReply)"
       keypath="status.reply_to_with_arg"
       scope="global"
       tag="small"
@@ -16,8 +16,10 @@
       <template #replyToWithIcon>
         <div class="avatar-spacer" />
         <StatusPopover
+          v-if="!isBrokenReply"
           :status-id="customReplyTo?.id"
           class="reply-to-popover"
+          :class="{ '-strikethrough': !message.parent_visible }"
         >
           <i18n-t
             keypath="status.reply_to_with_icon"
@@ -37,6 +39,9 @@
             </template>
           </i18n-t>
         </StatusPopover>
+        <span v-else class="reply-label">
+          {{ $t('status.broken_reply') }}
+        </span>
       </template>
       <template #user>
         <!-- v-if is there because status might not be loaded yet -->

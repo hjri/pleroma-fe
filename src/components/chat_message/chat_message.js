@@ -90,6 +90,10 @@ const ChatMessage = {
         this.previousItem.data.id !== this.chatItem.data.in_reply_to_status_id
       )
     },
+    isBrokenReply() {
+      if (!this.previousItem) return false
+      return !this.chatItem.data.in_reply_to_status_id
+    },
     customReplyTo() {
       return this.$store.state.statuses.allStatusesObject[
         this.chatItem.data.in_reply_to_status_id
