@@ -13,6 +13,7 @@ import StatusContent from 'src/components/status_content/status_content.vue'
 import StatusPopover from 'src/components/status_popover/status_popover.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserPopover from 'src/components/user_popover/user_popover.vue'
+import Timeago from 'src/components/timeago/timeago.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
@@ -54,17 +55,9 @@ const ChatMessage = {
     UserPopover,
     StatusPopover,
     MentionLink,
+    Timeago,
   },
   computed: {
-    // Returns HH:MM (hours and minutes) in local time.
-    createdAt() {
-      const time = this.chatItem.data.created_at
-      return time.toLocaleTimeString('en', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false,
-      })
-    },
     isStatus() {
       // ChatMessage only has account_id while Status has full user data
       return !!this.message.user

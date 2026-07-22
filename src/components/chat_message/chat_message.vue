@@ -167,7 +167,16 @@
                         spin
                       />
                     </span>
-                    {{ createdAt }}
+                    {{ ' ' }}
+                    <router-link
+                      class="timeago faint"
+                      :to="{ name: 'conversation', params: { id: message.id } }"
+                    >
+                      <Timeago
+                        :time="message.created_at"
+                        :auto-update="60"
+                      />
+                    </router-link>
                   </span>
                 </template>
               </StatusContent>
