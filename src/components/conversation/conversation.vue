@@ -211,9 +211,7 @@
       class="chat-view-reply-form panel-footer -flexible-height"
     >
       <div class="auto-reply-to-section">
-        <h4
-          class="reply-to-text"
-          >
+        <h4 class="reply-to-text">
           {{ explicitReplyStatus ? $t('status.reply_to_selected') : $t('status.reply_to_last') }}
           <button
             v-if="explicitReplyStatus"
@@ -224,27 +222,24 @@
             {{ $t('general.cancel') }}
           </button>
         </h4>
-        <div class="reply-to-preview">
-          <FAIcon
-            icon="reply"
-            flip="horizontal"
-          />
-          <StatusContent
-            :status="replyStatus"
-            compact
-            collapse
-          />
-        </div>
+        <StatusContent
+          :status="replyStatus"
+          class="reply-to-preview"
+          compact
+          collapse
+        />
       </div>
       <PostStatusForm
+        class="reply-form"
+        :reply-to="replyStatus.id"
+        :attentions="replyStatus.attentions"
+        :replied-user="replyStatus.user"
+        :replied-sibject="replyStatus.summary"
+        :replied-scope="replyStatus.visibility"
         :submit-on-enter="!mobileLayout"
         :preserve-focus="!mobileLayout"
         :auto-focus="!mobileLayout"
-        :reply-to="replyStatus.id"
-        :disable-quotes="true"
-        :copy-message-scope="replyStatus.visibility"
-        :attentions="replyStatus.attentions"
-        :replied-user="replyStatus.user"
+        disable-quotes
         mentions-line
         mentions-line-read-only
       />

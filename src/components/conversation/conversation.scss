@@ -99,10 +99,10 @@
 
     h4 {
       margin: 0.5em 0;
-      line-height: 1.5;
+      line-height: 1.1;
 
       button {
-        line-height: 1.5;
+        line-height: 1.1;
       }
     }
 
@@ -110,6 +110,9 @@
       display: flex;
       align-items: center;
       gap: 0.5em;
+      border: 1px solid var(--border);
+      border-radius: var(--roundness);
+      padding: 0.5em;
     }
   }
 
@@ -119,5 +122,9 @@
     flex-direction: column;
     align-items: stretch;
     bottom: 0;
+
+    .reply-form form {
+      margin-top: 0;
+    }
   }
 }
