@@ -14,6 +14,8 @@ const ChatMessageList = {
       default: [],
     },
     headerDate: Boolean,
+    focusedId: String,
+    repliedId: String,
   },
   data() {
     return {

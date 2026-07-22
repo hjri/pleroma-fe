@@ -2,13 +2,64 @@
   <div
     v-if="isMessage"
     class="chat-message-wrapper"
-    :class="{ 'hovered-message-chain': hoveredMessageChain }"
+    :class="[classnames, { 'hovered-message-chain': hoveredMessageChain }]"
     @mouseover="onHover(true)"
     @mouseleave="onHover(false)"
   >
+    <i18n-t
+      v-if="isStatus && isCustomReply"
+      keypath="status.reply_to_with_arg"
+      scope="global"
+      tag="small"
+      class="reply-to-header faint"
+    >
+      <template #replyToWithIcon>
+        <div class="avatar-spacer" />
+        <StatusPopover
+          :status-id="customReplyTo?.id"
+          class="reply-to-popover"
+        >
+          <i18n-t
+            keypath="status.reply_to_with_icon"
+            scope="global"
+          >
+            <template #icon>
+              <FAIcon
+                class="fa-scale-110"
+                icon="reply"
+                flip="horizontal"
+              />
+            </template>
+            <template #replyTo>
+              <span class="reply-label">
+                {{ $t('status.reply_to') }}
+              </span>
+            </template>
+          </i18n-t>
+        </StatusPopover>
+      </template>
+      <template #user>
+        <!-- v-if is there because status might not be loaded yet -->
+        <StatusBody
+          v-if="customReplyTo && customReplyTo.text.trim().length > 0"
+          class="reply-body faint"
+          :status="customReplyTo"
+          collapse
+          single-line
+        />
+        <MentionLink
+          v-else-if="customReplyTo"
+          class="reply-body"
+          :content="replyToName"
+          :url="replyProfileLink"
+          :user-id="message.in_reply_to_user_id"
+          :user-screen-name="message.in_reply_to_screen_name"
+        />
+      </template>
+    </i18n-t>
     <div
       class="chat-message"
-      :class="[{ '-outgoing': isCurrentUser, '-incoming': !isCurrentUser, '-pending': message.pending }]"
+      :class="classnames"
     >
       <div
         v-if="!isCurrentUser"
@@ -23,118 +74,107 @@
             :user="author"
           />
         </UserPopover>
+        <div v-else class="avatar-spacer" />
       </div>
       <div class="chat-message-inner">
-        <small
-          v-if="isStatus && isCustomReply"
-          class="reply-to-header faint"
-        >
-          <strong class="reply-label">
-            <FAIcon
-              class="fa-scale-110 fa-old-padding"
-              icon="reply"
-              flip="horizontal"
-            />
-            {{ $t('status.reply_to') }}
-          </strong>
-          <!-- v-if is there because status might not be loaded yet -->
-          <StatusBody
-            v-if="customReplyTo"
-            class="reply-body"
-            :status="customReplyTo"
-            collapse
-            single-line
-          />
-        </small>
-        <div
-          class="status-body"
-          :style="{ 'min-width': message.attachment ? '80%' : '' }"
-        >
+        <div class="message-bubble-wrapper">
           <div
-            class="media status"
-            :class="{ 'without-attachment': !hasAttachment, 'pending': chatItem.data.pending, 'error': chatItem.data.error }"
-            style="position: relative;"
-            @mouseenter="hovered = true"
-            @mouseleave="hovered = false"
+            class="status-body"
+            :style="{ 'min-width': message.attachment ? '80%' : '' }"
           >
-
-            <StatusActionButtons
-              v-if="isStatus"
-              class="chat-message-toolbar"
-              :class="{ '-visible': hovered || menuOpened }"
-              :status="message"
-              :pinned="new Set(['reply', 'emoji'])"
-              fixed-pinned
-              use-default-buttons
-              hide-labels
-              @toggle-replying="$emit('replyRequested', message)"
-            />
             <div
-              class="chat-message-toolbar"
-              :class="{ '-visible': hovered || menuOpened }"
-              v-else
+              class="media status"
+              :class="{ 'without-attachment': !hasAttachment, 'pending': chatItem.data.pending, 'error': chatItem.data.error }"
+              style="position: relative;"
+              @mouseenter="hovered = true"
+              @mouseleave="hovered = false"
             >
-              <Popover
-                trigger="click"
-                :trigger-attrs="{ 'class': 'button-default menu-icon simple-button', title: $t('chats.more') }"
-                placement="top"
-                :margin="popoverMarginStyle"
-                @show="menuOpened = true"
-                @close="menuOpened = false"
+
+              <StatusActionButtons
+                v-if="isStatus"
+                class="chat-message-toolbar"
+                :class="{ '-visible': hovered || menuOpened }"
+                :status="message"
+                :pinned="new Set(['reply', 'emoji'])"
+                fixed-pinned
+                use-default-buttons
+                hide-labels
+                @toggle-replying="$emit('replyRequested', message)"
+              />
+              <div
+                class="chat-message-toolbar"
+                :class="{ '-visible': hovered || menuOpened }"
+                v-else
               >
-                <template #content>
-                  <div class="dropdown-menu">
-                    <div class="menu-item dropdown-item -icon">
-                      <button
-                        class="main-button"
-                        @click="deleteMessage"
-                      >
-                        <FAIcon icon="times" /> {{ $t("chats.delete") }}
-                      </button>
-                    </div>
-                  </div>
-                </template>
-                <template #trigger>
-                  <FAIcon icon="ellipsis-h" />
-                </template>
-              </Popover>
-            </div>
-            <StatusContent
-              class="message-content"
-              :class="{ faint: message.pending }"
-              :status="messageForStatusContent"
-              :full-content="true"
-            >
-              <template #footer>
-                <span
-                  class="created-at"
+                <Popover
+                  trigger="click"
+                  :trigger-attrs="{ 'class': 'button-default menu-icon simple-button', title: $t('chats.more') }"
+                  placement="top"
+                  :margin="popoverMarginStyle"
+                  @show="menuOpened = true"
+                  @close="menuOpened = false"
                 >
+                  <template #content>
+                    <div class="dropdown-menu">
+                      <div class="menu-item dropdown-item -icon">
+                        <button
+                          class="main-button"
+                          @click="deleteMessage"
+                        >
+                          <FAIcon icon="times" /> {{ $t("chats.delete") }}
+                        </button>
+                      </div>
+                    </div>
+                  </template>
+                  <template #trigger>
+                    <FAIcon icon="ellipsis-h" />
+                  </template>
+                </Popover>
+              </div>
+              <StatusContent
+                class="message-content"
+                :class="{ faint: message.pending }"
+                :status="messageForStatusContent"
+                :full-content="true"
+              >
+                <template #footer>
                   <span
-                    v-if="message.visibility"
-                    class="visibility-icon"
-                    :title="visibilityLocalized"
+                    class="created-at"
                   >
-                    <FAIcon
-                      class="fa-scale-110"
-                      :icon="visibilityIcon(message.visibility)"
-                      fixed-width
-                    />
+                    <span
+                      v-if="message.visibility"
+                      class="visibility-icon"
+                      :title="visibilityLocalized"
+                    >
+                      <FAIcon
+                        class="fa-scale-110"
+                        :icon="visibilityIcon(message.visibility)"
+                        fixed-width
+                      />
+                    </span>
+                    <span
+                      v-if="message.pending"
+                      class="loading-spinner"
+                    >
+                      <FAIcon
+                        class="fa-old-padding"
+                        icon="circle-notch"
+                        spin
+                      />
+                    </span>
+                    {{ createdAt }}
                   </span>
-                  <span
-                    v-if="message.pending"
-                    class="loading-spinner"
-                  >
-                    <FAIcon
-                      class="fa-old-padding"
-                      icon="circle-notch"
-                      spin
-                    />
-                  </span>
-                  {{ createdAt }}
-                </span>
-              </template>
-            </StatusContent>
+                </template>
+              </StatusContent>
+            </div>
           </div>
+          <div
+            v-if="repliedTo"
+            class="reply-indicator"
+          >
+            <FAIcon class="icon" icon="reply" />
+          </div>
+          <div class="end-spacer" />
         </div>
       </div>
     </div>

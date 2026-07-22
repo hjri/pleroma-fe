@@ -17,7 +17,7 @@
     position: absolute;
     top: -0.8em;
     right: 0.4rem;
-    z-index: 10;
+    z-index: 1;
 
     .quick-action-buttons {
       justify-items: end;
@@ -39,23 +39,16 @@
   }
 
   .reply-to-header {
-    white-space: nowrap;
-    width: 100%;
     display: flex;
-    align-items: baseline;
-    gap: 0.5em;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 0.125em 0;
+    width: 100%;
+  }
 
-    .reply-label {
-      display: inline-block;
-      line-height: 1;
-    }
-
-    .reply-body {
-      line-height: 1;
-      display: inline-block;
-      overflow-x: hidden;
-      text-overflow: ellipsis;
-    }
+  .avatar-spacer {
+    flex: 0 0 2.2rem;
+    width: 2.2rem;
   }
 
   .popover {
@@ -73,8 +66,7 @@
   }
 
   .avatar-wrapper {
-    margin-right: 0.72em;
-    width: 32px;
+    margin-right: 0.5em;
   }
 
   .link-preview,
@@ -124,26 +116,69 @@
     }
   }
 
+  .message-bubble-wrapper {
+    display: flex;
+  }
+
   .chat-message-inner {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    max-width: 80%;
-    min-width: 10em;
-    width: 100%;
   }
 
-  .-outgoing {
+  .reply-indicator {
     display: flex;
-    flex-flow: row wrap;
-    place-content: end flex-end;
+    place-items: center;
+    place-content: center;
+    padding: 0.25em;
+    margin: var(--roundness) 0;
+    background: var(--border);
+    border-radius: var(--roundness);
+    border: 1px solid var(--border);
+  }
 
-    .chat-message-inner {
-      align-items: flex-end;
+  .end-spacer {
+    flex: 1 1 0;
+    min-width: calc(2.2em + 0.5em + 2em);
+  }
+
+  &.-incoming {
+    .reply-indicator {
+      border-bottom-left-radius: 0;
+      border-top-left-radius: 0;
+    }
+  }
+
+  .reply-to-popover {
+    white-space: nowrap;
+  }
+
+  .reply-label {
+    white-space: nowrap;
+  }
+
+  &.-outgoing {
+    &,
+    .message-bubble-wrapper,
+    .chat-message{
+      flex-direction: row-reverse;
     }
 
     .reply-to-header {
       justify-content: end;
+    }
+
+    .reply-indicator {
+      border-bottom-right-radius: 0;
+      border-top-right-radius: 0;
+
+      .icon {
+        transform: scaleX(-1);
+      }
+    }
+
+    .chat-message-inner {
+      align-items: flex-end;
     }
   }
 

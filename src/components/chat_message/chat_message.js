@@ -2,6 +2,7 @@ import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
 import Attachment from 'src/components/attachment/attachment.vue'
+import MentionLink from 'src/components/mention_link/mention_link.vue'
 import ChatMessageDate from 'src/components/chat_message_date/chat_message_date.vue'
 import Gallery from 'src/components/gallery/gallery.vue'
 import LinkPreview from 'src/components/link-preview/link-preview.vue'
@@ -9,6 +10,7 @@ import Popover from 'src/components/popover/popover.vue'
 import StatusActionButtons from 'src/components/status_action_buttons/status_action_buttons.vue'
 import StatusBody from 'src/components/status_body/status_body.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
+import StatusPopover from 'src/components/status_popover/status_popover.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserPopover from 'src/components/user_popover/user_popover.vue'
 
@@ -21,9 +23,10 @@ import {
   faCircleNotch,
   faEllipsisH,
   faTimes,
+  faReply,
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faTimes, faEllipsisH, faCircleNotch)
+library.add(faTimes, faEllipsisH, faCircleNotch, faReply)
 
 const ChatMessage = {
   name: 'ChatMessage',
@@ -34,6 +37,8 @@ const ChatMessage = {
     'chatItem',
     'previousItem',
     'hoveredMessageChain',
+    'focused',
+    'repliedTo',
   ],
   emits: ['hover', 'replyRequested'],
   components: {
@@ -47,6 +52,8 @@ const ChatMessage = {
     LinkPreview,
     ChatMessageDate,
     UserPopover,
+    StatusPopover,
+    MentionLink,
   },
   computed: {
     // Returns HH:MM (hours and minutes) in local time.
@@ -88,6 +95,25 @@ const ChatMessage = {
         this.chatItem.data.in_reply_to_status_id
       ]
     },
+    replyToName() {
+      if (this.message.in_reply_to_screen_name) {
+        return this.message.in_reply_to_screen_name
+      } else {
+        const user = this.$store.getters.findUser(
+          this.status.in_reply_to_user_id,
+        )
+        return user && user.screen_name_ui
+      }
+    },
+    replyProfileLink() {
+      if (this.isCustomReply) {
+        const user = this.$store.getters.findUser(
+          this.message.in_reply_to_user_id,
+        )
+        // FIXME Why user not found sometimes???
+        return user ? user.statusnet_profile_url : 'NOT_FOUND'
+      }
+    },
     messageForStatusContent() {
       return {
         summary: '',
@@ -99,6 +125,14 @@ const ChatMessage = {
     },
     hasAttachment() {
       return this.message.attachments.length > 0
+    },
+    classnames() {
+      return {
+        '-outgoing': this.isCurrentUser,
+        '-incoming': !this.isCurrentUser,
+        '-pending': this.message.pending,
+        '-focused': this.focused,
+      }
     },
     ...mapPiniaState(useInterfaceStore, {
       betterShadow: (store) => store.browserSupport.cssFilter,

@@ -202,6 +202,8 @@
       >
         <ChatMessageList
           :messages="conversation"
+          :replied-id="replyStatus?.id"
+          :focused-id="maybeFocused"
           @reply-requested="e => explicitReplyStatus = e"
         />
       </div>
