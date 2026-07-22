@@ -309,7 +309,7 @@ const PostStatusForm = {
         defaultNewStatus.mentions = ''
       }
 
-      defaultNewStatus.spoilerText = this.replySubject ?? ''
+      defaultNewStatus.spoilerText = this.repliedSubjectString ?? ''
       defaultNewStatus.nsfw = this.userDefaultSensitive
       defaultNewStatus.visibility = scope
       defaultNewStatus.contentType = this.userDefaultPostContentType
@@ -331,9 +331,9 @@ const PostStatusForm = {
         ? this.replyTo
         : undefined
     },
-    replySubject() {
-      if (!this.replySubject) return null
-      const decodedSummary = ldUnescape(this.replySubject)
+    repliedSubjectString() {
+      if (!this.repliedSubject) return null
+      const decodedSummary = ldUnescape(this.repliedSubject)
       const behavior = this.mergedConfig.subjectLineBehavior
       const startsWithRe = decodedSummary.match(/^re[: ]/i)
       if ((behavior !== 'noop' && startsWithRe) || behavior === 'masto') {

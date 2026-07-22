@@ -233,7 +233,7 @@
             v-if="!disableVisibilitySelector"
             :show-all="showAllScopes"
             :user-default="userDefaultScope"
-            :original-scope="copyMessageScope"
+            :original-scope="repliedScope"
             :initial-scope="newStatus.visibility"
             :on-scope-change="changeVis"
           />
