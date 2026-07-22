@@ -1,4 +1,4 @@
-import { debounce, reject, uniqBy } from 'lodash'
+import { debounce, reject, uniqBy, isEqual, unescape as ldUnescape } from 'lodash'
 import { mapActions, mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 
@@ -68,6 +68,7 @@ const PostStatusForm = {
     // Status editing stuff
     statusId: String,
     statusText: String,
+    statusSubject: String,
     statusIsSensitive: {
       type: Boolean,
       required: false,
@@ -79,30 +80,34 @@ const PostStatusForm = {
     statusMediaDescriptions: Object,
     statusScope: String,
     statusContentType: String,
+
     // Replies/mentions
-    replyTo: String,
-    repliedUser: Object,
-    mentionsLine: Boolean,
-    mentionsLineReadOnly: Boolean,
-    attentions: Array,
-    subject: String,
-    copyMessageScope: String,
-    profileMention: String,
+    replyTo: String, // id of the post replying to
+    repliedUser: Object, // user object replying to
+    attentions: Array, // list of users mentioned
+    repliedScope: String, // scope of the post replying to
+    repliedSubject: String, // subject of post replying to
+    profileMention: Boolean, // is mentioning a user (used in profile page -> mention)
+
     // Draft stuff
-    hideDraft: Boolean,
-    closeable: Boolean,
-    draftId: String,
+    hideDraft: Boolean, // Disable drafts functionality
+    closeable: Boolean, // Whether form can be closed (i.e. in replies)
+    draftId: String, // ID of the draft to be used
+
     // Chats stuff
     maxHeight: Number,
     placeholder: String,
-    postHandler: Function,
-    preserveFocus: Boolean,
-    autoFocus: Boolean,
-    fileLimit: Number,
+    postHandler: Function, // Used to override poster to use chats one instead of status one
+    preserveFocus: Boolean, // Keep focus on form after posting
+    autoFocus: Boolean, // Steal focus when form is opened
+    fileLimit: Number, // Chats only support 1 attachment :(
     submitOnEnter: Boolean,
     emojiPickerPlacement: String,
-    optimisticPosting: Boolean,
+    optimisticPosting: Boolean, // Don't wait for confirmation that post is done
+
     // Feature toggles for special cases (mostly chats)
+    mentionsLine: Boolean, // Use separate field for specifying mentions
+    mentionsLineReadOnly: Boolean, // Make the said field read-only (for chat conversation view)
     disableSubject: Boolean,
     disableScopeSelector: Boolean,
     disableVisibilitySelector: Boolean,
@@ -126,20 +131,19 @@ const PostStatusForm = {
   ],
   data() {
     return {
-      randomSeed: genRandomSeed(),
-      dropFiles: [],
-      uploadingFiles: false,
-      error: null,
-      posting: false,
-      highlighted: 0,
       initialized: false,
-      // Data is initialized first, but we have no access to .computed
-      // so we pre-fill with stuff meant for status editing and later
-      // back-fill with defaults in .created()
+      randomSeed: genRandomSeed(),
+      // Posting stuff
+      idempotencyKey: '',
+      /* Data is initialized first, but we have no access to .computed yet
+       * which we need for some defaults (i.e. user configration)
+       * so we pre-fill with stuff meant for status editing and later
+       * back-fill with defaults in .created()
+       */
       newStatus: {
         status: this.statusText ?? null,
         mentions: this.statusMentionLine ?? null,
-        spoilerText: this.subject ?? null,
+        spoilerText: this.statusSubject ?? null,
         quote: this.statusQuote ?? null,
         files: this.statusFiles ?? null,
         poll: this.statusPoll ?? null,
@@ -148,15 +152,25 @@ const PostStatusForm = {
         visibility: this.statusVisibility ?? null,
         contentType: this.statusContentType ?? null,
       },
-      caret: 0,
+
+      // Attachments
+      dropFiles: [],
+      uploadingFiles: false,
       showDropIcon: 'hide',
       dropStopTimeout: null,
+
+      // Preview
       preview: null,
       previewLoading: false,
-      emojiInputShown: false,
-      idempotencyKey: '',
+
+      // Draft
       saveInhibited: true,
       saveable: false,
+
+      // Misc States
+      emojiInputShown: false,
+      error: null,
+      posting: false,
     }
   },
   components: {
@@ -178,6 +192,8 @@ const PostStatusForm = {
     Popover,
   },
   created() {
+    this.updateIdempotencyKey()
+
     // If we are starting a new post, do not associate it with old drafts
     const draft = !this.disableDraft && (this.draftId || this.statusType !== 'new')
         ? this.getDraft(this.statusType, this.refId)
@@ -189,43 +205,14 @@ const PostStatusForm = {
         this.newStatus[key] = draft[key] ?? this.newStatus[key]
       })
     } else {
-      const defaultNewStatus = {
-        spoilerText: '',
-        files: [],
-        poll: null,
-        quote: null,
-        mediaDescriptions: {},
-      }
-
-      const scope =
-            (this.copyMessageScope && this.userDefaultScopeCopy) ||
-        this.copyMessageScope === 'direct'
-          ? this.copyMessageScope
-          : this.userDefaultScope
-
-      const preset = this.$route.query.message
-      let statusText = preset ?? ''
-
-      if (this.mentionsLine) {
-        defaultNewStatus.status = statusText
-        defaultNewStatus.mentions = this.mentionsString.trim()
-      } else {
-        defaultNewStatus.status = this.mentionsString + statusText
-        defaultNewStatus.mentions = ''
-      }
-
-      defaultNewStatus.nsfw = this.userDefaultSensitive
-      defaultNewStatus.visibility = scope
-      defaultNewStatus.contentType = this.userDefaultPostContentType
-
-      Object.entries(defaultNewStatus).forEach(([key, value]) => {
+      Object.entries(this.defaultNewStatus).forEach(([key, value]) => {
         this.newStatus[key] = this.newStatus[key] ?? value
       })
     }
+
     this.initialized = true
   },
   mounted() {
-    this.updateIdempotencyKey()
     this.resize(this.$refs.textarea)
 
     if (this.replyTo) {
@@ -249,7 +236,7 @@ const PostStatusForm = {
       return !this.disablePreview && (!!this.preview || this.previewLoading)
     },
 
-    // Composition stuff
+    // Composing stuff
     statusType() {
       if (this.replyTo) {
         return 'reply'
@@ -290,6 +277,39 @@ const PostStatusForm = {
         ? this.mentionsString + this.newStatus.status
         : this.newStatus.status
     },
+    defaultNewStatus() {
+      const defaultNewStatus = {
+        files: [],
+        poll: null,
+        quote: null,
+        mediaDescriptions: {},
+      }
+
+      const scope =
+            (this.repliedScope && this.userDefaultScopeCopy) ||
+        this.repliedScope === 'direct'
+          ? this.repliedScope
+          : this.userDefaultScope
+
+      const preset = this.$route.query.message
+      const statusText = preset ?? ''
+
+      if (this.mentionsLine) {
+        defaultNewStatus.status = statusText
+        defaultNewStatus.mentions = this.mentionsString.trim()
+      } else {
+        defaultNewStatus.status = this.mentionsString + statusText
+        defaultNewStatus.mentions = ''
+      }
+
+      defaultNewStatus.spoilerText = this.replySubject ?? ''
+      defaultNewStatus.nsfw = this.userDefaultSensitive
+      defaultNewStatus.visibility = scope
+      defaultNewStatus.contentType = this.userDefaultPostContentType
+
+      return defaultNewStatus
+    },
+    // -Edit
     isEdit() {
       return typeof this.statusId !== 'undefined' && this.statusId.trim() !== ''
     },
@@ -297,12 +317,25 @@ const PostStatusForm = {
     isReply() {
       return this.statusType === 'reply'
     },
-    inReplyStatusId() {
+    inReplyToStatusId() {
       return !this.hasQuote ||
         !this.newStatus.quote.thread ||
         !this.newStatus.quote.id
         ? this.replyTo
         : undefined
+    },
+    replySubject() {
+      if (!this.replySubject) return null
+      const decodedSummary = ldUnescape(this.replySubject)
+      const behavior = this.mergedConfig.subjectLineBehavior
+      const startsWithRe = decodedSummary.match(/^re[: ]/i)
+      if ((behavior !== 'noop' && startsWithRe) || behavior === 'masto') {
+        return decodedSummary
+      } else if (behavior === 'email') {
+        return 're: '.concat(decodedSummary)
+      } else if (behavior === 'noop') {
+        return ''
+      }
     },
     // -Poll
     hasPoll() {
@@ -406,7 +439,7 @@ const PostStatusForm = {
     isOverLengthLimit() {
       return this.hasStatusLengthLimit && this.charactersLeft < 0
     },
-    emptyStatus() {
+    isEmptyStatus() {
       return (
         this.newStatus.status.trim() === '' && this.newStatus.files.length === 0
       )
@@ -416,6 +449,13 @@ const PostStatusForm = {
     },
 
     // Drafts
+    isDirty() {
+      return Object.entries(this.defaultNewStatus).some(([key, defaultValue]) => {
+        const actualValue = this.newStatus[key]
+        if (actualValue === null) return false
+        return !isEqual(actualValue, defaultValue)
+      })
+    },
     shouldAutoSaveDraft() {
       return useMergedConfigStore().mergedConfig.autoSaveDraft
     },
@@ -525,11 +565,8 @@ const PostStatusForm = {
     }),
   },
   watch: {
-    newStatus: {
-      deep: true,
-      handler() {
-        if (this.initialized) this.statusChanged()
-      },
+    isDirty(newVal, oldVal) {
+      this.statusChanged()
     },
     saveable(val) {
       // https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event#usage_notes
@@ -541,35 +578,16 @@ const PostStatusForm = {
       }
     },
   },
-  beforeUnmount() {
-    this.maybeAutoSaveDraft()
-    this.removeBeforeUnloadListener()
-  },
   methods: {
-    ...mapActions(useMediaViewerStore, ['increment']),
-    statusChanged() {
-      this.autoPreview()
-      this.updateIdempotencyKey()
-      this.debouncedMaybeAutoSaveDraft()
-      this.saveable = true
-      this.saveInhibited = false
-    },
+    // Composing
     onMentionsLineUpdate(e) {
       if (this.mentionsLineReadOnly) return
       this.newStatus.mentionsLine = e
     },
-    toggleQuoteForm() {
-      if (!this.hasQuote) {
-        this.newStatus.quote = {}
-        this.newStatus.quote.thread = false
-        this.newStatus.quote.id = null
-        this.newStatus.quote.url = ''
-      } else {
-        this.newStatus.quote = null
-      }
+    changeVis(visibility) {
+      this.newStatus.visibility = visibility
     },
     clearStatus() {
-      const newStatus = this.newStatus
       this.saveInhibited = true
       this.newStatus.status = ''
       this.newStatus.mentionsLine = '',
@@ -610,12 +628,12 @@ const PostStatusForm = {
 
       if (
         this.optimisticPosting &&
-        (this.emptyStatus || this.isOverLengthLimit)
+        (this.isEmptyStatus || this.isOverLengthLimit)
       ) {
         return
       }
 
-      if (this.emptyStatus) {
+      if (this.isEmptyStatus) {
         this.error = this.$t('post_status.empty_status_error')
         return
       }
@@ -638,12 +656,12 @@ const PostStatusForm = {
 
       const postingOptions = {
         status: this.newStatusContent,
-        spoilerText: newStatus.spoilerText || null,
+        spoilerText: newStatus.spoilerText ?? null,
         visibility: newStatus.visibility,
         sensitive: newStatus.nsfw,
         media: newStatus.files,
         store: this.$store,
-        inReplyToStatusId: this.inReplyStatusId,
+        inReplyToStatusId: this.inReplyToStatusId,
         quoteId: this.quoteId,
         contentType: newStatus.contentType,
         poll,
@@ -667,8 +685,10 @@ const PostStatusForm = {
           this.posting = false
         })
     },
+
+    // Preview
     previewStatus() {
-      if (this.emptyStatus && this.newStatus.spoilerText.trim() === '') {
+      if (this.isEmptyStatus && this.newStatus.spoilerText.trim() === '') {
         this.preview = { error: this.$t('post_status.preview_empty') }
         this.previewLoading = false
         return
@@ -684,10 +704,11 @@ const PostStatusForm = {
           sensitive: newStatus.nsfw,
           media: [],
           store: this.$store,
-          inReplyToStatusId: this.inReplyStatusId,
+          inReplyToStatusId: this.inReplyToStatusId,
           quoteId: this.quoteId,
           contentType: newStatus.contentType,
-          poll: {},
+          poll: null,
+          quote: null,
           preview: true,
         })
         .then((data) => {
@@ -721,6 +742,21 @@ const PostStatusForm = {
       } else {
         this.previewStatus()
       }
+    },
+
+    // Attachments
+    setMediaDescription(id) {
+      const description = this.newStatus.mediaDescriptions[id]
+      if (!description || description.trim() === '') return
+      return statusPoster.setMediaDescription({
+        store: this.$store,
+        id,
+        description,
+      })
+    },
+    setAllMediaDescriptions() {
+      const ids = this.newStatus.files.map((file) => file.id)
+      return Promise.all(ids.map((id) => this.setMediaDescription(id)))
     },
     addMediaFile(fileInfo) {
       this.newStatus.files.push(fileInfo)
@@ -795,6 +831,9 @@ const PostStatusForm = {
         this.showDropIcon = 'show'
       }
     },
+
+    // Auto-sizable input field
+    // TODO separate into its own component pls
     onEmojiInputInput() {
       this.$nextTick(() => {
         this.resize(this.$refs.textarea)
@@ -908,53 +947,39 @@ const PostStatusForm = {
         scrollerRef.scrollTop = targetScroll
       }
     },
-    clearError() {
-      this.error = null
-    },
-    changeVis(visibility) {
-      this.newStatus.visibility = visibility
-    },
+
+    // Poll
     togglePollForm() {
       this.newStatus.poll = this.hasPoll ? null : {}
     },
     setPoll(poll) {
       this.newStatus.poll = poll
     },
+
+    // Quote
+    toggleQuoteForm() {
+      if (!this.hasQuote) {
+        this.newStatus.quote = {}
+        this.newStatus.quote.thread = false
+        this.newStatus.quote.id = null
+        this.newStatus.quote.url = ''
+      } else {
+        this.newStatus.quote = null
+      }
+    },
     clearQuoteForm() {
       if (this.$refs.quoteForm) {
         this.$refs.quoteForm.clear()
       }
     },
-    dismissScopeNotice() {
-      useSyncConfigStore().setSimplePrefAndSave({
-        path: 'hideScopeNotice',
-        value: true,
-      })
-    },
-    setMediaDescription(id) {
-      const description = this.newStatus.mediaDescriptions[id]
-      if (!description || description.trim() === '') return
-      return statusPoster.setMediaDescription({
-        store: this.$store,
-        id,
-        description,
-      })
-    },
-    setAllMediaDescriptions() {
-      const ids = this.newStatus.files.map((file) => file.id)
-      return Promise.all(ids.map((id) => this.setMediaDescription(id)))
-    },
-    handleEmojiInputShow(value) {
-      this.emojiInputShown = value
-    },
-    updateIdempotencyKey() {
-      this.idempotencyKey = Date.now().toString()
-    },
-    openProfileTab() {
-      useInterfaceStore().openSettingsModalTab('profile')
-    },
-    propsToNative(props) {
-      return propsToNative(props)
+
+    // Drafts
+    statusChanged() {
+      this.autoPreview()
+      this.updateIdempotencyKey()
+      this.debouncedMaybeAutoSaveDraft()
+      this.saveable = true
+      this.saveInhibited = false
     },
     saveDraft() {
       if (!this.disableDraft && !this.saveInhibited) {
@@ -1036,6 +1061,34 @@ const PostStatusForm = {
         window.removeEventListener('beforeunload', this._beforeUnloadListener)
       }
     },
+
+    // Misc
+    propsToNative(props) {
+      return propsToNative(props)
+    },
+    handleEmojiInputShow(value) {
+      this.emojiInputShown = value
+    },
+    updateIdempotencyKey() {
+      this.idempotencyKey = Date.now().toString()
+    },
+    openProfileTab() {
+      useInterfaceStore().openSettingsModalTab('profile')
+    },
+    dismissScopeNotice() {
+      useSyncConfigStore().setSimplePrefAndSave({
+        path: 'hideScopeNotice',
+        value: true,
+      })
+    },
+    clearError() {
+      this.error = null
+    },
+    ...mapActions(useMediaViewerStore, ['increment']),
+  },
+  beforeUnmount() {
+    this.maybeAutoSaveDraft()
+    this.removeBeforeUnloadListener()
   },
 }
 

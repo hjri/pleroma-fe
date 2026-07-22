@@ -1,4 +1,4 @@
-import { unescape as ldUnescape, uniqBy } from 'lodash'
+import { uniqBy } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 
 import AvatarList from 'src/components/avatar_list/avatar_list.vue'
@@ -375,19 +375,6 @@ const Status = {
           this.status.in_reply_to_user_id,
         )
         return user && user.screen_name_ui
-      }
-    },
-    replySubject() {
-      if (!this.status.summary) return ''
-      const decodedSummary = ldUnescape(this.status.summary)
-      const behavior = this.mergedConfig.subjectLineBehavior
-      const startsWithRe = decodedSummary.match(/^re[: ]/i)
-      if ((behavior !== 'noop' && startsWithRe) || behavior === 'masto') {
-        return decodedSummary
-      } else if (behavior === 'email') {
-        return 're: '.concat(decodedSummary)
-      } else if (behavior === 'noop') {
-        return ''
       }
     },
     combinedFavsAndRepeatsUsers() {
