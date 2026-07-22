@@ -224,12 +224,6 @@
             {{ $t('general.cancel') }}
           </button>
         </h4>
-        <StatusContent
-          :status="replyStatus"
-          class="reply-to-preview"
-          compact
-          collapse
-        />
       </div>
       <PostStatusForm
         class="reply-form"
