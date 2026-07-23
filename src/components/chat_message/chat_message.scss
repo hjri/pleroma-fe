@@ -11,6 +11,10 @@
     }
   }
 
+  .attachments {
+    min-width: 30em;
+  }
+
   .chat-message-toolbar {
     transition: opacity 0.1s;
     opacity: 0;
