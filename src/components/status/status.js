@@ -540,10 +540,9 @@ const Status = {
     toggleThreadDisplay() {
       this.controlledToggleThreadDisplay()
     },
-    scrollIfFocused(focusedId) {
+    scrollIfFocused(focused) {
       if (this.$el.getBoundingClientRect == null) return
-      const id = focusedId
-      if (this.status.id === id) {
+      if (focused) {
         const rect = this.$el.getBoundingClientRect()
         if (rect.top < 100) {
           // Post is above screen, match its top to screen top
