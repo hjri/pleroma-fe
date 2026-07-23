@@ -145,9 +145,28 @@
                 :full-content="true"
               >
                 <template #footer>
+                  <EmojiReactions :status="message" />
                   <span
                     class="created-at"
                   >
+                    <span
+                      v-if="message.favorited"
+                    >
+                      <FAIcon
+                        class="fa-scale-110"
+                        icon="star"
+                        fixed-width
+                      />
+                    </span>
+                    <span
+                      v-if="message.repeated"
+                    >
+                      <FAIcon
+                        class="fa-scale-110"
+                        icon="retweet"
+                        fixed-width
+                      />
+                    </span>
                     <span
                       v-if="message.visibility"
                       class="visibility-icon"

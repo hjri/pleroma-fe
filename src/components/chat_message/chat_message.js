@@ -14,6 +14,7 @@ import StatusPopover from 'src/components/status_popover/status_popover.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserPopover from 'src/components/user_popover/user_popover.vue'
 import Timeago from 'src/components/timeago/timeago.vue'
+import EmojiReactions from 'src/components/emoji_reactions/emoji_reactions.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
@@ -25,9 +26,11 @@ import {
   faEllipsisH,
   faTimes,
   faReply,
+  faRetweet,
+  faStar,
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faTimes, faEllipsisH, faCircleNotch, faReply)
+library.add(faTimes, faEllipsisH, faCircleNotch, faReply, faStar, faRetweet)
 
 const ChatMessage = {
   name: 'ChatMessage',
@@ -52,6 +55,7 @@ const ChatMessage = {
     Gallery,
     LinkPreview,
     ChatMessageDate,
+    EmojiReactions,
     UserPopover,
     StatusPopover,
     MentionLink,
