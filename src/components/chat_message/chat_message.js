@@ -76,7 +76,9 @@ const ChatMessage = {
       return !!this.message.user
     },
     author() {
-      const accountId = this.isStatus ? this.message.user.id : this.message.account_id
+      const accountId = this.isStatus
+        ? this.message.user.id
+        : this.message.account_id
 
       return this.$store.getters.findUser(accountId)
     },

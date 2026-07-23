@@ -266,9 +266,9 @@ const PostStatusForm = {
     mentionsString() {
       if (this.statusType !== 'reply' && this.statusType !== 'mention')
         return ''
-      let allAttentions = [...(this.attentions || [])]
+      let allAttentions = [...(this.newStatus.mentions || [])]
 
-      allAttentions.unshift(this.repliedUser)
+      if (this.repliedUser) allAttentions.unshift(this.repliedUser)
 
       allAttentions = uniqBy(allAttentions, 'id')
       allAttentions = reject(allAttentions, { id: this.currentUser.id })
@@ -303,12 +303,11 @@ const PostStatusForm = {
 
       if (this.mentionsLine) {
         defaultNewStatus.status = statusText
-        defaultNewStatus.mentions = this.mentionsString.trim()
       } else {
         defaultNewStatus.status = this.mentionsString + statusText
-        defaultNewStatus.mentions = ''
       }
 
+      defaultNewStatus.mentions = this.attentions
       defaultNewStatus.spoilerText = this.repliedSubjectString ?? ''
       defaultNewStatus.nsfw = this.userDefaultSensitive
       defaultNewStatus.visibility = scope
@@ -591,7 +590,8 @@ const PostStatusForm = {
     // Composing
     onMentionsLineUpdate(e) {
       if (this.mentionsLineReadOnly) return
-      this.newStatus.mentionsLine = e
+      // TODO
+      //this.newStatus.mentions = e
     },
     changeVis(visibility) {
       this.newStatus.visibility = visibility
@@ -599,13 +599,13 @@ const PostStatusForm = {
     clearStatus() {
       this.saveInhibited = true
       this.newStatus.status = ''
-      ;(this.newStatus.mentionsLine = ''),
-        (this.newStatus.spoilerText = ''),
-        (this.newStatus.files = []),
-        (this.newStatus.poll = null),
-        (this.newStatus.quote = null),
-        (this.newStatus.mediaDescriptions = {}),
-        this.$refs.mediaUpload && this.$refs.mediaUpload.clearFile()
+      this.newStatus.mentions = null
+      this.newStatus.spoilerText = ''
+      this.newStatus.files = []
+      this.newStatus.poll = null
+      this.newStatus.quote = null
+      this.newStatus.mediaDescriptions = {}
+      this.$refs.mediaUpload && this.$refs.mediaUpload.clearFile()
       this.clearQuoteForm()
       if (this.preserveFocus) {
         this.$nextTick(() => {
