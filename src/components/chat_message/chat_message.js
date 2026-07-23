@@ -1,21 +1,21 @@
 import { mapState as mapPiniaState } from 'pinia'
-import { mapState } from 'vuex'
 import { defineAsyncComponent } from 'vue'
+import { mapState } from 'vuex'
 
 import Attachment from 'src/components/attachment/attachment.vue'
-import MentionLink from 'src/components/mention_link/mention_link.vue'
 import ChatMessageDate from 'src/components/chat_message_date/chat_message_date.vue'
+import EmojiReactions from 'src/components/emoji_reactions/emoji_reactions.vue'
 import Gallery from 'src/components/gallery/gallery.vue'
 import LinkPreview from 'src/components/link-preview/link-preview.vue'
+import MentionLink from 'src/components/mention_link/mention_link.vue'
 import Popover from 'src/components/popover/popover.vue'
 import StatusActionButtons from 'src/components/status_action_buttons/status_action_buttons.vue'
 import StatusBody from 'src/components/status_body/status_body.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
 import StatusPopover from 'src/components/status_popover/status_popover.vue'
+import Timeago from 'src/components/timeago/timeago.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserPopover from 'src/components/user_popover/user_popover.vue'
-import Timeago from 'src/components/timeago/timeago.vue'
-import EmojiReactions from 'src/components/emoji_reactions/emoji_reactions.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
@@ -25,10 +25,10 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faCircleNotch,
   faEllipsisH,
-  faTimes,
   faReply,
   faRetweet,
   faStar,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faTimes, faEllipsisH, faCircleNotch, faReply, faStar, faRetweet)
@@ -86,9 +86,7 @@ const ChatMessage = {
     isCustomReply() {
       if (!this.previousItem) return false
       if (!this.message.in_reply_to_status_id) return false
-      return (
-        this.previousItem.data.id !== this.message.in_reply_to_status_id
-      )
+      return this.previousItem.data.id !== this.message.in_reply_to_status_id
     },
     isBrokenReply() {
       if (!this.previousItem) return false

@@ -1,7 +1,8 @@
 import { mapState } from 'pinia'
 
-import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
+
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -53,7 +54,7 @@ const StatusBody = {
       // to indicate what post reply belongs to
       type: Boolean,
       default: false,
-    }
+    },
   },
   data() {
     return {
@@ -150,7 +151,6 @@ const StatusBody = {
     },
     ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
-  components: {},
   mounted() {
     this.status.attentions &&
       this.status.attentions.forEach((attn) => {
