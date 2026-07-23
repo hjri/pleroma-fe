@@ -92,6 +92,23 @@
     }
   }
 
+  &.-single-line {
+    .summary-wrapper {
+      display: inline-block;
+      margin: 0;
+      padding: 0;
+      border: none;
+
+      .summary {
+        padding: 0;
+      }
+    }
+
+    .text-wrapper {
+      display: inline-flex;
+    }
+  }
+
   & .tall-status-hider,
   & .tall-subject-hider,
   & .status-unhider,

@@ -1,7 +1,7 @@
 <template>
   <div
     class="StatusBody"
-    :class="{ '-compact': compact }"
+    :class="{ '-compact': compact, '-single-line': singleLine }"
   >
     <div class="body">
       <div
@@ -36,7 +36,7 @@
       </div>
       <div
         class="text-wrapper"
-        :class="{'-tall-status': hideTallStatus, '-hidden': shouldHide, '-expanded': showingMore}"
+        :class="{'-tall-status': hideTallStatus, '-hidden': shouldHide, '-expanded': showingMore }"
       >
         <RichContent
           v-if="!(singleLine && hasSubject) && !shouldHide"
