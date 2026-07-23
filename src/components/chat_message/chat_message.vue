@@ -145,8 +145,12 @@
                 :full-content="true"
               >
                 <template #footer>
-                  <EmojiReactions :status="message" />
+                  <EmojiReactions
+                    v-if="isStatus"
+                    :status="message"
+                  />
                   <Quote
+                    v-if="isStatus"
                     class="quoted-post"
                     :status-id="quoteId"
                     :status-url="quoteUrl"

@@ -343,6 +343,8 @@ const Chat = {
           accountId: this.recipientId,
           credentials: useOAuthStore().token,
         })
+        this.$store.commit('addNewUsers', [data.account])
+        data.account = this.$store.getters.findUser(data.account.id)
         this.chat = data
       } catch (e) {
         console.error('Error creating or getting a chat', e)
