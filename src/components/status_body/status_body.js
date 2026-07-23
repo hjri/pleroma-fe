@@ -1,6 +1,7 @@
 import { mapState } from 'pinia'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import RichContent from 'src/components/rich_content/rich_content.jsx'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -15,6 +16,9 @@ library.add(faFile, faMusic, faImage, faLink, faPollH)
 
 const StatusBody = {
   name: 'StatusBody',
+  components: {
+    RichContent,
+  },
   props: {
     status: {
       // Main thing

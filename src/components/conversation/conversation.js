@@ -7,6 +7,7 @@ import PostStatusForm from 'src/components/post_status_form/post_status_form.vue
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
 import QuickViewSettings from 'src/components/quick_view_settings/quick_view_settings.vue'
 import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
+import RichContent from 'src/components/rich_content/rich_content.jsx'
 
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -426,6 +427,7 @@ const conversation = {
     QuickViewSettings,
     ChatMessageList,
     PostStatusForm,
+    RichContent,
   },
   watch: {
     statusId(newVal, oldVal) {

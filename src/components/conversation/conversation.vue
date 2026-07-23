@@ -10,7 +10,13 @@
       class="panel-heading conversation-heading -sticky"
     >
       <h1 class="title">
+        <RichContent
+          v-if="conversation[0].summary"
+          :html="conversation[0].summary"
+          />
+        <template v-else>
         {{ $t('timeline.conversation') }}
+        </template>
       </h1>
       <button
         v-if="collapsable"
