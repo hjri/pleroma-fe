@@ -64,25 +64,27 @@ const ChatMessage = {
     Timeago,
   },
   computed: {
+    isMessage() {
+      return this.chatItem.type === 'message'
+    },
+    message() {
+      if (!this.isMessage) return null
+      return this.chatItem.data.retweeted_status ?? this.chatItem.data
+    },
     isStatus() {
       // ChatMessage only has account_id while Status has full user data
       return !!this.message.user
     },
     author() {
-      const accountId = this.message.account_id || this.message.user.id
+      const accountId = this.isStatus ? this.message.user.id : this.message.account_id
 
       return this.$store.getters.findUser(accountId)
     },
     isCurrentUser() {
       return this.author.id === this.currentUser.id
     },
-    message() {
-      if (!this.isMessage) return null
-      return this.chatItem.data.retweeted_status ?? this.chatItem.data
-    },
-    isMessage() {
-      return this.chatItem.type === 'message'
-    },
+
+    // Reply stuff
     isCustomReply() {
       if (!this.previousItem) return false
       if (!this.message.in_reply_to_status_id) return false
@@ -116,6 +118,8 @@ const ChatMessage = {
         return user ? user.statusnet_profile_url : 'NOT_FOUND'
       }
     },
+
+    // Quote stuff
     quoteId() {
       return this.message.quote_id
     },
@@ -125,6 +129,8 @@ const ChatMessage = {
     quoteVisible() {
       return this.message.quote_visible
     },
+
+    // Content
     messageForStatusContent() {
       return {
         ...this.message,
@@ -137,6 +143,8 @@ const ChatMessage = {
     hasAttachment() {
       return this.message.attachments.length > 0
     },
+
+    // Stylistic
     classnames() {
       return {
         '-outgoing': this.isCurrentUser,
@@ -145,13 +153,6 @@ const ChatMessage = {
         '-focused': this.focused,
       }
     },
-    ...mapPiniaState(useInterfaceStore, {
-      betterShadow: (store) => store.browserSupport.cssFilter,
-    }),
-    ...mapState({
-      currentUser: (state) => state.users.currentUser,
-      restrictedNicknames: (state) => useInstanceStore().restrictedNicknames,
-    }),
     popoverMarginStyle() {
       if (this.isCurrentUser) {
         return {}
@@ -159,7 +160,16 @@ const ChatMessage = {
         return { left: 50 }
       }
     },
-    ...mapPiniaState(useMergedConfigStore, ['mergedConfig', 'findUser']),
+
+    // Global stuff
+    ...mapPiniaState(useInterfaceStore, {
+      betterShadow: (store) => store.browserSupport.cssFilter,
+    }),
+    ...mapState({
+      currentUser: (state) => state.users.currentUser,
+      restrictedNicknames: (state) => useInstanceStore().restrictedNicknames,
+    }),
+    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
   },
   data() {
     return {
