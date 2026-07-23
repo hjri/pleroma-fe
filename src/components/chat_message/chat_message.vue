@@ -146,6 +146,13 @@
               >
                 <template #footer>
                   <EmojiReactions :status="message" />
+                  <Quote
+                    class="quoted-post"
+                    :status-id="quoteId"
+                    :status-url="quoteUrl"
+                    :status-visible="quoteVisible"
+                    initially-expanded
+                  />
                   <span
                     class="created-at"
                   >

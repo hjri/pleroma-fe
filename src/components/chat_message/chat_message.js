@@ -1,5 +1,6 @@
 import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
+import { defineAsyncComponent } from 'vue'
 
 import Attachment from 'src/components/attachment/attachment.vue'
 import MentionLink from 'src/components/mention_link/mention_link.vue'
@@ -59,6 +60,7 @@ const ChatMessage = {
     UserPopover,
     StatusPopover,
     MentionLink,
+    Quote: defineAsyncComponent(() => import('src/components/quote/quote.vue')),
     Timeago,
   },
   computed: {
@@ -114,6 +116,15 @@ const ChatMessage = {
         // FIXME Why user not found sometimes???
         return user ? user.statusnet_profile_url : 'NOT_FOUND'
       }
+    },
+    quoteId() {
+      return this.message.quote_id
+    },
+    quoteUrl() {
+      return this.message.quote_url
+    },
+    quoteVisible() {
+      return this.message.quote_visible
     },
     messageForStatusContent() {
       return {
