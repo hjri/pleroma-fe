@@ -44,6 +44,12 @@ const StatusBody = {
       type: Boolean,
       default: false,
     },
+    ignoreSubject: {
+      // Pretend subject line doesn't exist. Useful for chat messages
+      // to indicate what post reply belongs to
+      type: Boolean,
+      default: false,
+    }
   },
   data() {
     return {
@@ -76,7 +82,7 @@ const StatusBody = {
       return this.status.summary.length > 240
     },
     hasSubject() {
-      return !!this.status.summary
+      return !!this.status.summary && !this.ignoreSubject
     },
     // When a status has a subject and is also tall, we should only have one show more/less
     // button. If the default is to collapse statuses with subjects, we just treat it like

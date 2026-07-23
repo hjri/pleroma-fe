@@ -51,6 +51,7 @@
           :status="customReplyTo"
           collapse
           single-line
+          ignore-subject
         />
         <MentionLink
           v-else-if="customReplyTo"
