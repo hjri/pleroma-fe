@@ -128,11 +128,11 @@ const ChatMessage = {
     },
     messageForStatusContent() {
       return {
+        ...this.message,
         summary: '',
         emojis: this.message.emojis,
         raw_html: this.message.content || this.message.raw_html || '',
         text: this.message.content || '',
-        attachments: this.message.attachments,
       }
     },
     hasAttachment() {
