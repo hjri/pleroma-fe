@@ -126,20 +126,26 @@
     align-items: flex-start;
   }
 
+  .end-spacer {
+    flex: 1 1 0;
+    min-width: calc(2.2rem + 0.5rem + 2rem);
+  }
+
   .reply-indicator {
     display: flex;
     place-items: center;
     place-content: center;
     padding: 0.25em;
+    width: 1em;
     margin: var(--roundness) 0;
     background: var(--border);
     border-radius: var(--roundness);
     border: 1px solid var(--border);
-  }
 
-  .end-spacer {
-    flex: 1 1 0;
-    min-width: calc(2.2em + 0.5em + 2em);
+    + .end-spacer {
+      // Compensate for reply indicator
+      min-width: calc(2.2rem + 0.5rem + 2rem - (1rem + (1px + 0.25rem) * 2));
+    }
   }
 
   &.-incoming {
