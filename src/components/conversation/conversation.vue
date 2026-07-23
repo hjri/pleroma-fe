@@ -244,6 +244,7 @@
         disable-quotes
         mentions-line
         mentions-line-read-only
+        @posted="onPosted"
       />
     </div>
   </div>

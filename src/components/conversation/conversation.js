@@ -635,6 +635,12 @@ const conversation = {
         this.unsuspendibleIds.delete(id)
       }
     },
+    onPosted(data) {
+      this.explicitReplyStatus = null
+      if (this.isPage) {
+        this.$router.push({ name: 'conversation', params: { id: data.id } })
+      }
+    }
   },
 }
 
