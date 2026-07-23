@@ -242,6 +242,8 @@
         :preserve-focus="!mobileLayout"
         :auto-focus="!mobileLayout"
         disable-quotes
+        disable-lock-warning
+        disable-notice
         mentions-line
         mentions-line-read-only
         @posted="onPosted"

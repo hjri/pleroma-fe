@@ -74,7 +74,7 @@
           </a>
         </p>
         <p
-          v-else-if="newStatus.visibility === 'direct'"
+          v-else-if="!hideScopeNotice && newStatus.visibility === 'direct'"
           class="visibility-notice notice-dismissible"
         >
           <span v-if="safeDMEnabled">{{ $t('post_status.direct_warning_to_first_only') }}</span>
