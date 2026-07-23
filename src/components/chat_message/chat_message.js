@@ -77,25 +77,26 @@ const ChatMessage = {
       return this.author.id === this.currentUser.id
     },
     message() {
-      return this.isMessage ? this.chatItem.data : null
+      if (!this.isMessage) return null
+      return this.chatItem.data.retweeted_status ?? this.chatItem.data
     },
     isMessage() {
       return this.chatItem.type === 'message'
     },
     isCustomReply() {
       if (!this.previousItem) return false
-      if (!this.chatItem.data.in_reply_to_status_id) return false
+      if (!this.message.in_reply_to_status_id) return false
       return (
-        this.previousItem.data.id !== this.chatItem.data.in_reply_to_status_id
+        this.previousItem.data.id !== this.message.in_reply_to_status_id
       )
     },
     isBrokenReply() {
       if (!this.previousItem) return false
-      return !this.chatItem.data.in_reply_to_status_id
+      return !this.message.in_reply_to_status_id
     },
     customReplyTo() {
       return this.$store.state.statuses.allStatusesObject[
-        this.chatItem.data.in_reply_to_status_id
+        this.message.in_reply_to_status_id
       ]
     },
     replyToName() {
@@ -201,8 +202,8 @@ const ChatMessage = {
       const confirmed = window.confirm(this.$t('chats.delete_confirm'))
       if (confirmed) {
         await this.$emit('delete', {
-          messageId: this.chatItem.data.id,
-          chatId: this.chatItem.data.chat_id,
+          messageId: this.message.id,
+          chatId: this.message.chat_id,
         })
       }
       this.hovered = false
