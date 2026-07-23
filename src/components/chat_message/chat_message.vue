@@ -44,23 +44,24 @@
         </span>
       </template>
       <template #user>
-        <!-- v-if is there because status might not be loaded yet -->
-        <StatusBody
-          v-if="customReplyTo && customReplyTo.text.trim().length > 0"
-          class="reply-body faint"
-          :status="customReplyTo"
-          collapse
-          single-line
-          ignore-subject
-        />
         <MentionLink
-          v-else-if="customReplyTo"
           class="reply-body"
           :content="replyToName"
           :url="replyProfileLink"
           :user-id="message.in_reply_to_user_id"
           :user-screen-name="message.in_reply_to_screen_name"
         />
+        <!-- v-if is there because status might not be loaded yet -->
+        <template v-if="customReplyTo && customReplyTo.text.trim().length > 0">
+          :
+          <StatusBody
+            class="reply-body faint"
+            :status="customReplyTo"
+            collapse
+            single-line
+            ignore-subject
+          />
+        </template>
       </template>
     </i18n-t>
     <div
