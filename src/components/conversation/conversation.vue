@@ -219,7 +219,7 @@
       class="chat-view-reply-form panel-footer -flexible-height"
     >
       <div class="auto-reply-to-section">
-        <span class="reply-to-text">
+        <center class="reply-to-text">
           {{ explicitReplyStatus ? $t('status.reply_to_selected') : $t('status.reply_to_last') }}
           <button
             v-if="explicitReplyStatus"
@@ -229,7 +229,7 @@
             <FAIcon icon="times" />
             {{ $t('general.cancel') }}
           </button>
-        </span>
+        </center>
       </div>
       <PostStatusForm
         class="reply-form"
