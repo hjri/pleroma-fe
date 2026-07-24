@@ -114,7 +114,6 @@ const conversation = {
       inlineDivePosition: null,
       loadStatusError: null,
       unsuspendibleIds: new Set(),
-      explicitReplyStatus: null,
     }
   },
   created() {
@@ -129,12 +128,6 @@ const conversation = {
       // there is a -2 here
       const maxDepth = this.mergedConfig.maxDepthInThread - 2
       return maxDepth >= 1 ? maxDepth : 1
-    },
-    lastStatus() {
-      return this.conversation[this.conversation.length - 1]
-    },
-    replyStatus() {
-      return this.explicitReplyStatus ?? this.lastStatus
     },
     streamingEnabled() {
       return (
@@ -152,10 +145,7 @@ const conversation = {
       return this.displayStyle === 'tree'
     },
     isLinearView() {
-      return this.displayStyle === 'linear'
-    },
-    isChatView() {
-      return this.displayStyle === 'chat'
+      return this.displayStyle !== 'tree'
     },
     shouldFadeAncestors() {
       return this.mergedConfig.conversationTreeFadeAncestors
@@ -636,7 +626,6 @@ const conversation = {
       }
     },
     onPosted(data) {
-      this.explicitReplyStatus = null
       if (this.isPage) {
         this.$router.push({ name: 'conversation', params: { id: data.id } })
       }

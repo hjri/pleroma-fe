@@ -26,16 +26,13 @@ const ScopeSelector = {
       required: false,
       type: String,
     },
-    onScopeChange: {
-      required: true,
-      type: Function,
-    },
     unstyled: {
       required: false,
       type: Boolean,
       default: true,
     },
   },
+  emits: ['change'],
   data() {
     return {
       currentScope: this.initialScope,
@@ -84,9 +81,14 @@ const ScopeSelector = {
     },
     changeVis(scope) {
       this.currentScope = scope
-      this.onScopeChange && this.onScopeChange(scope)
-    },
+      this.$emit('change', scope)
+    }
   },
+  watch: {
+    originalScope(newVal) {
+      this.currentScope = newVal
+    }
+  }
 }
 
 export default ScopeSelector

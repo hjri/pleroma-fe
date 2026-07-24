@@ -74,9 +74,10 @@
       >
         <UserPopover
           v-if="chatItem.isHead"
-          :user-id="author.id"
+          :user-id="authorId"
         >
           <UserAvatar
+            v-if="author"
             :compact="true"
             :user="author"
           />
@@ -202,7 +203,7 @@
                     {{ ' ' }}
                     <router-link
                       class="timeago faint"
-                      :to="{ name: 'conversation', params: { id: message.id } }"
+                      :to="{ name: 'conversation2', params: { statusId: message.id } }"
                     >
                       <Timeago
                         :time="message.created_at"

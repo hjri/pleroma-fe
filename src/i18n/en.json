@@ -801,8 +801,6 @@
     "tree_fade_ancestors": "Display ancestors of the current status in faint text",
     "conversation_display_linear": "Linear-style",
     "conversation_display_linear_quick": "Linear view",
-    "conversation_display_chat": "Chat-style",
-    "conversation_display_chat_quick": "Chat view",
     "conversation_other_replies_button": "Show the \"other replies\" button",
     "conversation_other_replies_button_below": "Below statuses",
     "conversation_other_replies_button_inside": "Inside statuses",

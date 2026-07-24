@@ -231,11 +231,12 @@
         >
           <scope-selector
             v-if="!disableVisibilitySelector"
+            ref="scopeSelector"
             :show-all="showAllScopes"
             :user-default="userDefaultScope"
-            :original-scope="repliedScope"
+            :original-scope="newStatus.visibility"
             :initial-scope="newStatus.visibility"
-            :on-scope-change="changeVis"
+            @change="changeVis"
           />
 
           <div

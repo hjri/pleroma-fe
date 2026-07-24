@@ -57,24 +57,6 @@
               /> {{ $t('settings.conversation_display_linear_quick') }}
             </button>
           </div>
-          <div class="menu-item dropdown-item -icon-double">
-            <button
-              class="main-button"
-              :aria-checked="conversationDisplay === 'chat'"
-              role="menuitemradio"
-              @click="conversationDisplay = 'chat'"
-            >
-              <span
-                class="input menu-checkbox -radio"
-                :class="{ 'menu-checkbox-checked': conversationDisplay === 'chat' }"
-                :aria-hidden="true"
-              /><FAIcon
-                icon="message"
-                :aria-hidden="true"
-                fixed-width
-              /> {{ $t('settings.conversation_display_chat_quick') }}
-            </button>
-          </div>
         </div>
         <div
           role="separator"

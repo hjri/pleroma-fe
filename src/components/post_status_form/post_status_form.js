@@ -588,6 +588,12 @@ const PostStatusForm = {
   },
   methods: {
     // Composing
+    update() {
+      Object.entries(this.defaultNewStatus).forEach(([key, value]) => {
+        if (key === 'status') return
+        this.newStatus[key] = value
+      })
+    },
     onMentionsLineUpdate(e) {
       if (this.mentionsLineReadOnly) return
       // TODO

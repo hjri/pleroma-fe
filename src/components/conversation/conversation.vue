@@ -176,7 +176,7 @@
         />
       </div>
       <div
-        v-else-if="isLinearView || (isChatView && !isExpanded)"
+        v-else-if="isLinearView"
         class="thread-body"
       >
         <article>
@@ -202,52 +202,6 @@
           />
         </article>
       </div>
-      <div
-        v-else-if="isChatView"
-        class="chat-view"
-      >
-        <ChatMessageList
-          :messages="conversation"
-          :replied-id="replyStatus?.id"
-          :focused-id="maybeFocused"
-          @reply-requested="e => explicitReplyStatus = e"
-        />
-      </div>
-    </div>
-    <div
-      v-if="isChatView && isExpanded && replyStatus"
-      class="chat-view-reply-form panel-footer -flexible-height"
-    >
-      <div class="auto-reply-to-section">
-        <center class="reply-to-text">
-          {{ explicitReplyStatus ? $t('status.reply_to_selected') : $t('status.reply_to_last') }}
-          <button
-            v-if="explicitReplyStatus"
-            class="button-default"
-            @click="explicitReplyStatus = null"
-          >
-            <FAIcon icon="times" />
-            {{ $t('general.cancel') }}
-          </button>
-        </center>
-      </div>
-      <PostStatusForm
-        class="reply-form"
-        :reply-to="replyStatus.id"
-        :attentions="replyStatus.attentions"
-        :replied-user="replyStatus.user"
-        :replied-sibject="replyStatus.summary"
-        :replied-scope="replyStatus.visibility"
-        :submit-on-enter="!mobileLayout"
-        :preserve-focus="!mobileLayout"
-        :auto-focus="!mobileLayout"
-        disable-quotes
-        disable-lock-warning
-        disable-notice
-        mentions-line
-        mentions-line-read-only
-        @posted="onPosted"
-      />
     </div>
   </div>
   <div

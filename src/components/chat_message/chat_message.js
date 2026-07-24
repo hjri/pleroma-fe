@@ -75,14 +75,19 @@ const ChatMessage = {
       // ChatMessage only has account_id while Status has full user data
       return !!this.message.user
     },
-    author() {
-      const accountId = this.isStatus
+    authorId() {
+      return this.isStatus
         ? this.message.user.id
         : this.message.account_id
-
-      return this.$store.getters.findUser(accountId)
+    },
+    author() {
+      return this.$store.getters.findUser(this.authorId)
     },
     isCurrentUser() {
+      // mini-hack/optimizaiton:
+      // - current user would always be in memory so if user is missing it's obviously not us
+      // - if anon views page then "us" pretty much doesn't exist
+      if (!this.author || !this.currentUser) return false
       return this.author.id === this.currentUser.id
     },
 

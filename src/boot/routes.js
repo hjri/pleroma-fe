@@ -65,6 +65,15 @@ export default (store) => {
       component: ConversationPage,
       meta: { dontScroll: true },
     },
+    {
+      name: 'conversation2',
+      path: '/conversation/:statusId',
+      component: defineAsyncComponent(
+        () => import('src/components/chat_view/chat_view.vue'),
+      ),
+      props: true,
+      beforeEnter: validateAuthenticatedRoute,
+    },
     { name: 'quotes', path: '/notice/:id/quotes', component: QuotesTimeline },
     {
       name: 'remote-user-profile-acct',

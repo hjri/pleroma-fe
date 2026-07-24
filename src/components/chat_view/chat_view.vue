@@ -19,7 +19,17 @@
             />
           </button>
           <div class="title text-center">
+            <template v-if="isConversation">
+              <RichContent
+                v-if="messages[0]?.summary"
+                :html="messages[0].summary"
+                />
+              <template v-else>
+                {{ $t('timeline.conversation') }}
+              </template>
+            </template>
             <ChatTitle
+              v-else
               :user="recipient"
               :with-avatar="true"
             />
@@ -29,7 +39,10 @@
           header-date
           :messages="messages"
           :pending-messages="pendingMessages"
+          :replied-id="replyStatus?.id"
+          :focused-id="statusId"
           @message-delete="deleteChatMessage"
+          @reply-requested="e => explicitReplyStatus = e"
         />
         <div
           ref="footer"
@@ -50,27 +63,52 @@
               </div>
             </span>
           </div>
+          <div class="auto-reply-to-section">
+            <div class="reply-to-text">
+              {{ explicitReplyStatus ? $t('status.reply_to_selected') : $t('status.reply_to_last') }}
+              <button
+                v-if="explicitReplyStatus"
+                class="button-default"
+                @click="explicitReplyStatus = null"
+              >
+                <FAIcon icon="times" />
+                {{ $t('general.cancel') }}
+              </button>
+            </div>
+          </div>
           <PostStatusForm
-            :disable-subject="true"
-            :disable-scope-selector="true"
-            :disable-notice="true"
-            :disable-lock-warning="true"
-            :disable-polls="true"
-            :disable-quotes="true"
-            :disable-sensitivity-checkbox="true"
-            :disable-submit="errorLoadingChat || !chat"
-            :disable-preview="true"
-            :disable-draft="true"
-            :optimistic-posting="true"
-            :post-handler="sendMessage"
+            ref="postStatusForm"
+            :reply-to="replyStatus?.id"
+            :mentions-line="isConversation"
+            mentions-line-read-only
+            :attentions="replyStatus?.attentions"
+            :replied-user="replyStatus?.user"
+            :replied-subject="replyStatus?.summary"
+            :replied-scope="replyStatus?.visibility"
+
+            disable-quotes
+            disable-notice
+            disable-lock-warning
+            :disable-subject="!isConversation"
+            :disable-scope-selector="!isConversation"
+            :disable-polls="!isConversation"
+            :disable-sensitivity-checkbox="!isConversation"
+            :disable-preview="!isConversation"
+            :disable-draft="!isConversation"
+
+            :disable-submit="isConversation ? false : (errorLoadingChat || !chat)"
+            :optimistic-posting="!isConversation"
+
             :submit-on-enter="!mobileLayout"
             :preserve-focus="!mobileLayout"
             :auto-focus="!mobileLayout"
             :placeholder="formPlaceholder"
-            :file-limit="1"
-            max-height="160"
+            :file-limit="isConversation ? null : 1"
+            :max-height="160"
             emoji-picker-placement="top"
+            :post-handler="isConversation ? null : sendMessage"
             @resize="handleResize"
+            @posted="onPosted"
           />
         </div>
       </div>
