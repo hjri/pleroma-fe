@@ -35,15 +35,18 @@
             />
           </div>
         </div>
-        <ChatMessageList
-          header-date
-          :messages="messages"
-          :pending-messages="pendingMessages"
-          :replied-id="replyStatus?.id"
-          :focused-id="statusId"
-          @message-delete="deleteChatMessage"
-          @reply-requested="e => explicitReplyStatus = e"
-        />
+        <div class="chat-list-wrapper panel-body">
+          <div class="top-spacer" />
+          <ChatMessageList
+            header-date
+            :messages="messages"
+            :pending-messages="pendingMessages"
+            :replied-id="replyStatus?.id"
+            :focused-id="statusId"
+            @message-delete="deleteChatMessage"
+            @reply-requested="e => explicitReplyStatus = e"
+          />
+        </div>
         <div
           ref="footer"
           class="panel-body footer"

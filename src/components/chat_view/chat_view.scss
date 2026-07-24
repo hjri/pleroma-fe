@@ -1,6 +1,18 @@
 .chat-view {
   display: flex;
-  height: 100%;
+  margin-bottom: -1em;
+  margin-top: -1em;
+
+  .chat-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .top-spacer {
+    flex: 1 1 0;
+    min-height: 0;
+  }
 
   .chat-view-inner {
     height: auto;
