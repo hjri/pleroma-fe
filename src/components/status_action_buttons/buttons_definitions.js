@@ -220,6 +220,17 @@ export const BUTTONS = [
   },
   {
     // =========
+    // OPEN IN CHAT VIEW
+    // =========
+    name: 'edit',
+    icon: 'comments',
+    label: 'status.open_in_chat_view',
+    action({ router, status }) {
+      router.push({ name: 'conversation2', params: { statusId: status.id } })
+    },
+  },
+  {
+    // =========
     // DELETE
     // =========
     name: 'delete',

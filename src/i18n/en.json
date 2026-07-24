@@ -1647,6 +1647,7 @@
     "delete_error": "Error deleting status: {0}",
     "edit": "Edit status",
     "edited_at": "(last edited {time})",
+    "open_in_chat_view": "Open in chat view",
     "pin": "Pin on profile",
     "unpin": "Unpin from profile",
     "pinned": "Pinned",

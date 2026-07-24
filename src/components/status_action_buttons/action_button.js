@@ -28,8 +28,10 @@ import {
   faShareAlt,
   faStar,
   faThumbtack,
+  faPencil,
   faTimes,
   faWrench,
+  faComments,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -53,7 +55,9 @@ library.add(
   faEyeSlash,
   faEye,
   faThumbtack,
+  faPencil,
   faShareAlt,
+  faComments,
   faExternalLinkAlt,
   faHistory,
 )
