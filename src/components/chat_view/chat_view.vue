@@ -49,7 +49,7 @@
         </div>
         <div
           ref="footer"
-          class="panel-body footer"
+          class="panel-footer -flexible-height footer"
         >
           <div
             class="jump-to-bottom-button"
