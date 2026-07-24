@@ -3,6 +3,7 @@
     v-if="isMessage"
     class="chat-message-wrapper"
     :class="[classnames, { 'hovered-message-chain': hoveredMessageChain }]"
+    :id="`chatmessage-${message.id}`"
     @mouseover="onHover(true)"
     @mouseleave="onHover(false)"
   >

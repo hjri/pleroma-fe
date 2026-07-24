@@ -184,11 +184,6 @@ const ChatMessage = {
       menuOpened: false,
     }
   },
-  watch: {
-    focused: function (value) {
-      this.scrollIfFocused(value)
-    },
-  },
   methods: {
     onHover(bool) {
       this.$emit('hover', {
@@ -223,22 +218,6 @@ const ChatMessage = {
       }
       this.hovered = false
       this.menuOpened = false
-    },
-    scrollIfFocused(focused) {
-      if (this.$el.getBoundingClientRect == null) return
-      if (focused) {
-        const rect = this.$el.getBoundingClientRect()
-        if (rect.top < 100) {
-          // Post is above screen, match its top to screen top
-          window.scrollBy(0, rect.top - 100)
-        } else if (rect.height >= window.innerHeight - 50) {
-          // Post we want to see is taller than screen so match its top to screen top
-          window.scrollBy(0, rect.top - 100)
-        } else if (rect.bottom > window.innerHeight - 50) {
-          // Post is below screen, match its bottom to screen bottom
-          window.scrollBy(0, rect.bottom - window.innerHeight + 50)
-        }
-      }
     },
   },
 }

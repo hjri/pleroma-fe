@@ -72,6 +72,7 @@ export default (store) => {
         () => import('src/components/chat_view/chat_view.vue'),
       ),
       props: true,
+      meta: { dontScroll: true },
       beforeEnter: validateAuthenticatedRoute,
     },
     { name: 'quotes', path: '/notice/:id/quotes', component: QuotesTimeline },

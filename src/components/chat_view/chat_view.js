@@ -86,9 +86,9 @@ const Chat = {
   created() {
     if (this.testMode) return
     this.startFetching()
-    window.addEventListener('resize', this.handleResize)
   },
   mounted() {
+    window.addEventListener('resize', this.handleResize)
     window.addEventListener('scroll', this.handleScroll)
     if (typeof document.hidden !== 'undefined') {
       document.addEventListener(
@@ -122,13 +122,10 @@ const Chat = {
       )
     },
     isConversation() {
-      return this.conversationId !== null
+      return this.statusId !== null
     },
     recipient() {
       return this.chat?.account
-    },
-    recipientId() {
-      return this.$route.params.recipient_id
     },
     formPlaceholder() {
       if (this.recipient) {
@@ -166,7 +163,8 @@ const Chat = {
     }),
   },
   watch: {
-    messages() {
+    messages(old, neu) {
+      if (old.length === neu.length) return
       // We don't want to scroll to the bottom on a new message when the user is viewing older messages.
       // Therefore we need to know whether the scroll position was at the bottom before the DOM update.
       const bottomedOutBeforeUpdate = isBottomedOut(BOTTOMED_OUT_OFFSET)
@@ -180,7 +178,38 @@ const Chat = {
       await nextTick() // wait for changes to propagate to postStatusForm
       this.$refs.postStatusForm.update()
     },
-    $route: function () {
+    $route: async function (newVal) {
+      if (this.messagesIndex[newVal.params.statusId]) {
+        const focused = document.getElementById(`chatmessage-${this.$route.params.statusId}`)
+        if (focused?.getBoundingClientRect == null) return
+        const bottomBoundary = window.innerHeight - this.$refs.footer.clientHeight
+        const topBoundary = this.$refs.header.clientHeight + document.getElementById('nav').clientHeight
+        const margin = Number(window.getComputedStyle(this.$refs.messageList.$el).gap.replace('px',''))
+
+        const rect = focused.getBoundingClientRect()
+        const scrollAmount = (() => {
+          if (rect.top < topBoundary) {
+            // Post is above screen, match its top to screen top
+            return rect.top - topBoundary - margin
+          } else if (rect.height >= bottomBoundary) {
+            // Post we want to see is taller than screen so match its top to screen top
+            return rect.top - topBoundary - margin
+          } else if (rect.bottom > bottomBoundary) {
+            // Post is below screen, match its bottom to screen bottom
+            return rect.bottom - bottomBoundary + margin
+          } else {
+            return 0
+          }
+        })()
+
+        if (scrollAmount !== 0) {
+          window.scrollBy(0, scrollAmount)
+        }
+
+        return
+      }
+
+      this.clear()
       this.startFetching()
     },
     mastoUserSocketStatus(newValue) {
@@ -295,6 +324,9 @@ const Chat = {
       this.addMessages({ messages })
 
       await nextTick()
+      if (isFirstFetch) {
+        this.scrollDown()
+      }
 
       const fetchOlderMessages = !!maxId
       if (fetchOlderMessages) {

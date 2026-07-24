@@ -18,7 +18,7 @@
               icon="chevron-left"
             />
           </button>
-          <div class="title text-center">
+          <div class="title">
             <template v-if="isConversation">
               <RichContent
                 v-if="messages[0]?.summary"
@@ -38,6 +38,7 @@
         <div class="chat-list-wrapper panel-body">
           <div class="top-spacer" />
           <ChatMessageList
+            ref="messageList"
             header-date
             :messages="messages"
             :pending-messages="pendingMessages"
