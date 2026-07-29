@@ -1,5 +1,5 @@
 <template>
-  <div class="ExtraNotifications">
+  <div class="ExtraNotifications panel-body">
     <div
       v-if="shouldShowChats"
       class="notification unseen"
