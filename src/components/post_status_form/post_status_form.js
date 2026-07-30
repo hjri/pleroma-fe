@@ -690,6 +690,7 @@ const PostStatusForm = {
         .then((data) => {
           this.abandonDraft()
           this.clearStatus()
+          this.updateIdempotencyKey()
           this.$emit('posted', data)
         })
         .catch((error) => {
@@ -1007,6 +1008,7 @@ const PostStatusForm = {
               this.saveable = false
               if (!this.shouldAutoSaveDraft) {
                 this.clearStatus()
+                this.updateIdempotencyKey()
                 this.$emit('draft-done')
               }
             })
@@ -1016,6 +1018,7 @@ const PostStatusForm = {
             this.saveable = false
             if (!this.shouldAutoSaveDraft) {
               this.clearStatus()
+              this.updateIdempotencyKey()
               this.$emit('draft-done')
             }
           })
