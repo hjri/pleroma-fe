@@ -85,11 +85,7 @@ const PostStatusForm = {
     statusContentType: String,
 
     // Replies/mentions
-    replyTo: String, // id of the post replying to
-    repliedUser: Object, // user object replying to
-    attentions: Array, // list of users mentioned
-    repliedScope: String, // scope of the post replying to
-    repliedSubject: String, // subject of post replying to
+    repliedStatus: Object, // Object of a status replying to
     profileMention: Boolean, // is mentioning a user (used in profile page -> mention)
 
     // Draft stuff
@@ -219,12 +215,12 @@ const PostStatusForm = {
   mounted() {
     this.resize(this.$refs.textarea)
 
-    if (this.replyTo) {
+    if (this.repliedStatus) {
       const textLength = this.$refs.textarea.value.length
       this.$refs.textarea.setSelectionRange(textLength, textLength)
     }
 
-    if (this.replyTo || this.autoFocus) {
+    if (this.repliedStatus || this.autoFocus) {
       this.$refs.textarea.focus()
     }
   },
@@ -242,9 +238,9 @@ const PostStatusForm = {
 
     // Composing stuff
     statusType() {
-      if (this.replyTo) {
+      if (this.repliedStatus) {
         return 'reply'
-      } else if (this.profileMention && this.repliedUser?.id) {
+      } else if (this.profileMention) {
         return 'mention'
       } else if (this.statusId) {
         return 'edit'
@@ -253,10 +249,10 @@ const PostStatusForm = {
       }
     },
     refId() {
-      if (this.replyTo) {
-        return this.replyTo
-      } else if (this.profileMention && this.repliedUser?.id) {
-        return this.profileMention && this.repliedUser?.id
+      if (this.repliedStatus) {
+        return this.repliedStatus.id
+      } else if (this.profileMention) {
+        return this.profileMention.id
       } else if (this.statusId) {
         return this.statusId
       } else {
@@ -266,9 +262,10 @@ const PostStatusForm = {
     mentionsString() {
       if (this.statusType !== 'reply' && this.statusType !== 'mention')
         return ''
-      let allAttentions = [...(this.newStatus.mentions || [])]
+      let allAttentions = [...(this.repliedStatus.attentions || [])]
+      const repliedUser = this.repliedStatus.user || this.profileMention
 
-      if (this.repliedUser) allAttentions.unshift(this.repliedUser)
+      if (repliedUser) allAttentions.unshift(repliedUser)
 
       allAttentions = uniqBy(allAttentions, 'id')
       allAttentions = reject(allAttentions, { id: this.currentUser.id })
@@ -292,11 +289,13 @@ const PostStatusForm = {
         mediaDescriptions: {},
       }
 
-      const scope =
-        (this.repliedScope && this.userDefaultScopeCopy) ||
-        this.repliedScope === 'direct'
-          ? this.repliedScope
-          : this.userDefaultScope
+      const scope = (() => {
+        if (this.repliedStatus) {
+          if (this.repliedStatus.visibility === 'direct') return 'direct'
+          if (this.userDefaultScopeCopy) return this.repliedStatus.visibility
+        }
+        return this.userDefaultScope
+      })()
 
       const preset = this.$route.query.message
       const statusText = preset ?? ''
@@ -307,7 +306,7 @@ const PostStatusForm = {
         defaultNewStatus.status = this.mentionsString + statusText
       }
 
-      defaultNewStatus.mentions = this.attentions
+      defaultNewStatus.mentions = this.mentionsString
       defaultNewStatus.spoilerText = this.repliedSubjectString ?? ''
       defaultNewStatus.nsfw = this.userDefaultSensitive
       defaultNewStatus.visibility = scope
@@ -327,12 +326,12 @@ const PostStatusForm = {
       return !this.hasQuote ||
         !this.newStatus.quote.thread ||
         !this.newStatus.quote.id
-        ? this.replyTo
+        ? this.repliedStatus?.id
         : undefined
     },
     repliedSubjectString() {
-      if (!this.repliedSubject) return null
-      const decodedSummary = ldUnescape(this.repliedSubject)
+      if (!this.repliedStatus?.summary) return null
+      const decodedSummary = ldUnescape(this.repliedStatus.summary)
       const behavior = this.mergedConfig.subjectLineBehavior
       const startsWithRe = decodedSummary.match(/^re[: ]/i)
       if ((behavior !== 'noop' && startsWithRe) || behavior === 'masto') {
@@ -352,7 +351,7 @@ const PostStatusForm = {
       return this.newStatus.quote !== null
     },
     quotable() {
-      return this.quotingAvailable && this.replyTo
+      return this.quotingAvailable && this.repliedStatus?.id
     },
     defaultQuotable() {
       if (
@@ -363,20 +362,18 @@ const PostStatusForm = {
         return false
       }
 
-      const repliedStatus =
-        this.$store.state.statuses.allStatusesObject[this.replyTo]
-      if (!repliedStatus) {
+      if (!this.repliedStatus) {
         return false
       }
 
       if (
-        repliedStatus.visibility === 'public' ||
-        repliedStatus.visibility === 'unlisted' ||
-        repliedStatus.visibility === 'local'
+        this.repliedStatus.visibility === 'public' ||
+          this.repliedStatus.visibility === 'unlisted' ||
+          this.repliedStatus.visibility === 'local'
       ) {
         return true
-      } else if (repliedStatus.visibility === 'private') {
-        return repliedStatus.user.id === this.currentUser.id
+      } else if (this.repliedStatus.visibility === 'private') {
+        return this.repliedStatus.user.id === this.currentUser.id
       }
 
       return false
@@ -392,7 +389,7 @@ const PostStatusForm = {
         if (value) {
           this.newStatus.quote = {}
           this.newStatus.quote.thread = value
-          this.newStatus.quote.id = value ? this.replyTo : ''
+          this.newStatus.quote.id = value ? this.repliedStatus.id : ''
         } else {
           this.newStatus.quote = null
         }

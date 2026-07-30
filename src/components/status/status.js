@@ -200,6 +200,7 @@ const Status = {
       )
     },
     status() {
+      console.log('s', this.statusoid)
       if (this.retweet) {
         return this.statusoid.retweeted_status
       } else {

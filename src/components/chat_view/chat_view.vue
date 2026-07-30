@@ -85,13 +85,9 @@
           </div>
           <PostStatusForm
             ref="postStatusForm"
-            :reply-to="replyStatus?.id"
+            :replied-status="replyStatus"
             :mentions-line="isConversation"
             mentions-line-read-only
-            :attentions="replyStatus?.attentions"
-            :replied-user="replyStatus?.user"
-            :replied-subject="replyStatus?.summary"
-            :replied-scope="replyStatus?.visibility"
 
             disable-quotes
             disable-notice
