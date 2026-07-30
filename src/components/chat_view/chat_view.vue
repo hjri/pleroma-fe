@@ -103,7 +103,7 @@
             :disable-preview="!isConversation"
             :disable-draft="!isConversation"
 
-            :disable-submit="isConversation ? false : (errorLoadingChat || !chat)"
+            :disable-submit="isConversation ? !!replyStatus : (errorLoadingChat || !chat)"
             :optimistic-posting="!isConversation"
 
             :submit-on-enter="!mobileLayout"
