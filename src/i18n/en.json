@@ -780,6 +780,7 @@
     "subject_line_email": "Like email: \"re: subject\"",
     "subject_line_mastodon": "Like mastodon: copy as is",
     "subject_line_noop": "Do not copy",
+    "submit_on_enter_in_chats": "Send message on Enter in chats",
     "force_theme_recompilation_debug": "Disable theme cahe, force recompile on each boot",
     "conversation_display": "Conversation display style",
     "conversation_display_tree": "Tree-style",

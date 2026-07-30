@@ -673,6 +673,11 @@ export const LOCAL_DEFAULT_CONFIG_DEFINITIONS = {
     type: 'string',
     default: null,
   },
+  chatSubmitOnEnter: {
+    description: 'Post status on enter key in chats and chat view',
+    type: 'boolean',
+    default: false,
+  },
   themeDebug: {
     description:
       'Debug mode that uses computed backgrounds instead of real ones to debug contrast functions',

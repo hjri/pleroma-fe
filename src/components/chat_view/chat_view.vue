@@ -106,8 +106,8 @@
             :disable-submit="isConversation ? !!replyStatus : (errorLoadingChat || !chat)"
             :optimistic-posting="!isConversation"
 
-            :submit-on-enter="!mobileLayout"
-            :preserve-focus="!mobileLayout"
+            chat-view
+            preserve-focus
             :auto-focus="!mobileLayout"
             :placeholder="formPlaceholder"
             :file-limit="isConversation ? null : 1"

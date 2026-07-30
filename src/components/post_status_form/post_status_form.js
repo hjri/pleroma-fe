@@ -98,13 +98,13 @@ const PostStatusForm = {
     draftId: String, // ID of the draft to be used
 
     // Chats stuff
+    chatView: Boolean, // Used for the "submit on enter" user setting
     maxHeight: Number,
     placeholder: String,
     postHandler: Function, // Used to override poster to use chats one instead of status one
     preserveFocus: Boolean, // Keep focus on form after posting
     autoFocus: Boolean, // Steal focus when form is opened
     fileLimit: Number, // Chats only support 1 attachment :(
-    submitOnEnter: Boolean,
     emojiPickerPlacement: String,
     optimisticPosting: Boolean, // Don't wait for confirmation that post is done
 
@@ -561,6 +561,9 @@ const PostStatusForm = {
         this.disableNotice ||
         useMergedConfigStore().mergedConfig.hideScopeNotice
       )
+    },
+    submitOnEnter() {
+      return this.chatView && this.mergedConfig.chatSubmitOnEnter
     },
 
     // Global stuff
