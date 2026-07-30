@@ -246,7 +246,7 @@ export const useInterfaceStore = defineStore('interface', {
       }
     },
     setFontsList(value) {
-      this.localFonts = [...new Set(value.map((font) => font)).values()]
+      this.localFonts = [...new Set(value.map(({ family }) => family)).values()]
     },
     queryLocalFonts() {
       if (this.localFonts !== null) return
