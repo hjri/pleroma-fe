@@ -109,7 +109,7 @@ const ChatMessage = {
         return this.message.in_reply_to_screen_name
       } else {
         const user = this.$store.getters.findUser(
-          this.status.in_reply_to_user_id,
+          this.message.in_reply_to_user_id,
         )
         return user && user.screen_name_ui
       }
