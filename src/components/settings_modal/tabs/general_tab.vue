@@ -68,7 +68,7 @@
             :model-value="mergedConfig.fontInterface"
             name="ui"
             :label="$t('settings.style.fonts.components_inline.interface')"
-            :fallback="{ family: 'sans-serif' }"
+            fallback="sans-serif"
             no-inherit="1"
             @update:model-value="v => updateFont('fontInterface', v)"
           />
@@ -77,7 +77,7 @@
           <FontControl
             :model-value="mergedConfig.fontInput"
             name="input"
-            :fallback="{ family: 'inherit' }"
+            fallback="inherit"
             :label="$t('settings.style.fonts.components_inline.input')"
             @update:model-value="v => updateFont('fontInput', v)"
           />

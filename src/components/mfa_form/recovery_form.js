@@ -44,7 +44,7 @@ export default {
       }
 
       verifyRecoveryCode(data)
-        .then((result) => {
+        .then(({ data: result }) => {
           this.login(result).then(() => {
             this.$router.push({ name: 'friends' })
           })

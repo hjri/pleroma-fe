@@ -1,6 +1,6 @@
 {
   "name": "pleroma_fe",
-  "version": "2.11.1",
+  "version": "2.11.2",
   "description": "Pleroma frontend, the default frontend of Pleroma social network server",
   "author": "Pleroma contributors <https://git.pleroma.social/pleroma/pleroma-fe/src/CONTRIBUTORS.md>",
   "private": false,

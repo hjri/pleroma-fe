@@ -1,5 +1,5 @@
 <template>
-  <div class="ExtraNotifications">
+  <div class="ExtraNotifications panel-body">
     <div
       v-if="shouldShowChats"
       class="notification unseen"
@@ -86,6 +86,11 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
+
+  &.panel-body::before {
+    content: '';
+    padding: 0;
+  }
 
   .notification {
     width: 100%;

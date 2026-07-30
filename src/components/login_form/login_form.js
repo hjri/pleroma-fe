@@ -63,8 +63,8 @@ const LoginForm = {
             })
           })
           .catch((error) => {
-            if (error.errorData?.error === 'mfa_required') {
-              this.requireMFA({ settings: error })
+            if (error.errorData === 'mfa_required') {
+              this.requireMFA({ settings: error.error })
             } else if (error.identifier === 'password_reset_required') {
               this.$router.push({
                 name: 'password-reset',

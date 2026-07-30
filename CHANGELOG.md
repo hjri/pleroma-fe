@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2.11.2
+### Fixed
+- Do not crash even on css rule insertion failure
+- Fixed serif-fonts being used by default in some cases
+- Fix MFA login and recovery code authentication.
+- Fixed font select component showing and using objects instead of strings
+- Fixed generic ('sans-serif', 'monospace' etc) fonts not working
+- Fix style of extra notifications
+- Potentially fixed theme rendering on Firefox 153
+
 ## 2.11.1
 ### Fixed
 - User note not working
