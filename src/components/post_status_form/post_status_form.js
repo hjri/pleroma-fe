@@ -86,7 +86,7 @@ const PostStatusForm = {
 
     // Replies/mentions
     repliedStatus: Object, // Object of a status replying to
-    profileMention: Boolean, // is mentioning a user (used in profile page -> mention)
+    profileMention: Object, // Mentioned user (used in profile page -> mention)
 
     // Draft stuff
     hideDraft: Boolean, // Disable drafts functionality
@@ -262,8 +262,8 @@ const PostStatusForm = {
     mentionsString() {
       if (this.statusType !== 'reply' && this.statusType !== 'mention')
         return ''
-      let allAttentions = [...(this.repliedStatus.attentions || [])]
-      const repliedUser = this.repliedStatus.user || this.profileMention
+      let allAttentions = [...(this.repliedStatus?.attentions || [])]
+      const repliedUser = this.repliedStatus?.user || this.profileMention
 
       if (repliedUser) allAttentions.unshift(repliedUser)
 
