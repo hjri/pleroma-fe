@@ -218,7 +218,7 @@
             </div>
           </div>
           <div
-            v-if="repliedTo"
+            v-if="isStatus && repliedTo"
             class="reply-indicator"
           >
             <FAIcon class="icon" icon="reply" />
