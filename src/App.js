@@ -205,7 +205,7 @@ export default {
       )
     },
     hideShoutbox() {
-      return useMergedConfigStore().mergedConfig.hideShoutbox
+      return this.isChats || useMergedConfigStore().mergedConfig.hideShoutbox
     },
     reverseLayout() {
       const { thirdColumnMode, sidebarRight: reverseSetting } =
