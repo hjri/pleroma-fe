@@ -59,7 +59,13 @@ export const adoptStyleSheets = throttle(() => {
       .sort((a, b) => a.priority - b.priority)
       .map((sheet) => {
         const css = new CSSStyleSheet()
-        sheet.rules.forEach((r) => css.insertRule(r))
+        sheet.rules.forEach((r) => {
+          try {
+            css.insertRule(r)
+          } catch (e) {
+            console.warn('Error inserting rule:', e, r)
+          }
+        })
         return css
       })
   } else {
