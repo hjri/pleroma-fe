@@ -53,7 +53,14 @@ const Chat = {
     PostStatusForm,
   },
   props: {
-    statusId: String,
+    statusId: {
+      type: String,
+      default: null,
+    },
+    chatUserId: {
+      type: String,
+      default: null,
+    },
     testMode: Boolean,
   },
   data() {
@@ -348,17 +355,21 @@ const Chat = {
       // full height of the scrollable container.
       // If this is the case, we want to fetch the messages until the scrollable container
       // is fully populated so that the user has the ability to scroll up and load the history.
-      if (!isScrollable() && messages.length > 0) {
+      //
+      // Conversation fetching doesn't support pagination and spews out everything at once
+      // so we both can't and don't need to fetch previous posts
+      if (!this.isConversation && !isScrollable() && messages.length > 0) {
         this.fetchChat({
           maxId: this.minId,
         })
       }
     },
     async startFetching() {
+      console.log(this.statusId, this.chatUserId)
       if (!this.isConversation) {
         try {
           const { data } = await getOrCreateChat({
-            accountId: this.recipientId,
+            accountId: this.chatUserId,
             credentials: useOAuthStore().token,
           })
           this.$store.commit('addNewUsers', [data.account])

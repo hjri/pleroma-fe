@@ -251,9 +251,10 @@ export default (store) => {
     routes = routes.concat([
       {
         name: 'chat',
-        path: '/users/:username/chats/:recipient_id',
+        path: '/users/:username/chats/:chatUserId',
         component: () => import('src/components/chat_view/chat_view.vue'),
         meta: { dontScroll: false },
+        props: true,
         beforeEnter: validateAuthenticatedRoute,
       },
       {

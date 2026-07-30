@@ -67,7 +67,10 @@
               </div>
             </span>
           </div>
-          <div class="auto-reply-to-section">
+          <div
+            v-if="isConversation"
+            class="auto-reply-to-section"
+          >
             <div class="reply-to-text">
               {{ explicitReplyStatus ? $t('status.reply_to_selected') : $t('status.reply_to_last') }}
               <button
