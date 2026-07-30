@@ -17,6 +17,16 @@ import {
 } from 'src/services/theme_data/theme_data.service.js'
 import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
 
+const GENERIC_FONT_NAMES = new Set([
+  'serif',
+  'sans-serif',
+  'system-ui',
+  'cursive',
+  'fantasy',
+  'math',
+  'monospace',
+])
+
 export const useInterfaceStore = defineStore('interface', {
   state: () => ({
     localFonts: null,
@@ -706,11 +716,12 @@ export const useInterfaceStore = defineStore('interface', {
         Object.entries(fontMap).forEach(([font, component]) => {
           const family = mergedConfig[`font${font}`]
           const variable = font === 'Monospace' ? '--monoFont' : '--font'
-          if (family) {
+          if (typeof family === 'string') {
+            const familyString = GENERIC_FONT_NAMES.has(family) ? family : `"${family}"`
             hacks.push({
               component,
               directives: {
-                [variable]: `generic | "${family}"`,
+                [variable]: `generic | ${familyString}`,
               },
             })
           }
