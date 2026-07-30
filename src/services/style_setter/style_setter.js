@@ -36,10 +36,10 @@ export const createStyleSheet = (id, priority = 1000) => {
         if (typeof CSS.supports !== 'function') return
         // firefox doesn't like invalid selectors
         const fullWebkitScrollbarSupport =
-              CSS.supports('selector(::-webkit-scrollbar)') &&
-              CSS.supports('selector(::-webkit-scrollbar-button)') &&
-              CSS.supports('selector(::-webkit-resizer)') &&
-              CSS.supports('selector(::-webkit-scrollbar-thumb)')
+          CSS.supports('selector(::-webkit-scrollbar)') &&
+          CSS.supports('selector(::-webkit-scrollbar-button)') &&
+          CSS.supports('selector(::-webkit-resizer)') &&
+          CSS.supports('selector(::-webkit-scrollbar-thumb)')
         if (!fullWebkitScrollbarSupport) return
       }
 

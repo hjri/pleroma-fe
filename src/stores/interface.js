@@ -717,7 +717,9 @@ export const useInterfaceStore = defineStore('interface', {
           const family = mergedConfig[`font${font}`]
           const variable = font === 'Monospace' ? '--monoFont' : '--font'
           if (typeof family === 'string') {
-            const familyString = GENERIC_FONT_NAMES.has(family) ? family : `"${family}"`
+            const familyString = GENERIC_FONT_NAMES.has(family)
+              ? family
+              : `"${family}"`
             hacks.push({
               component,
               directives: {
