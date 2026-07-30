@@ -87,6 +87,11 @@
   flex-direction: column;
   align-items: stretch;
 
+  &.panel-body::before {
+    content: '';
+    padding: 0;
+  }
+
   .notification {
     width: 100%;
     border-bottom: 1px solid;
