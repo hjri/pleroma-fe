@@ -32,16 +32,17 @@ export const createStyleSheet = (id, priority = 1000) => {
         newRule = newRule.replace(/backdrop-filter:[^;]+;/g, '') // Remove backdrop-filter
       }
 
-      // firefox doesn't like invalid selectors
-      if (
-        !CSS.supports?.('selector(::-webkit-scrollbar)') &&
-        !CSS.supports?.('selector(::-webkit-scrollbar-button)') &&
-        !CSS.supports?.('selector(::-webkit-resizer)') &&
-        !CSS.supports?.('selector(::-webkit-scrollbar-thumb)') &&
-        newRule.startsWith('::-webkit')
-      ) {
-        return
+      if (newRule.startsWith('::-webkit')) {
+        if (typeof CSS.supports !== 'function') return
+        // firefox doesn't like invalid selectors
+        const fullWebkitScrollbarSupport =
+          CSS.supports('selector(::-webkit-scrollbar)') &&
+          CSS.supports('selector(::-webkit-scrollbar-button)') &&
+          CSS.supports('selector(::-webkit-resizer)') &&
+          CSS.supports('selector(::-webkit-scrollbar-thumb)')
+        if (!fullWebkitScrollbarSupport) return
       }
+
       this.rules.push(
         newRule.replace(/var\(--shadowFilter\)[^;]*;/g, ''), // Remove shadowFilter references
       )
@@ -59,7 +60,13 @@ export const adoptStyleSheets = throttle(() => {
       .sort((a, b) => a.priority - b.priority)
       .map((sheet) => {
         const css = new CSSStyleSheet()
-        sheet.rules.forEach((r) => css.insertRule(r))
+        sheet.rules.forEach((r) => {
+          try {
+            css.insertRule(r)
+          } catch (e) {
+            console.warn('Error inserting rule:', e, r)
+          }
+        })
         return css
       })
   } else {

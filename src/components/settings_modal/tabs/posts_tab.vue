@@ -58,7 +58,7 @@
           <FontControl
             :model-value="mergedConfig.fontPosts"
             name="post"
-            :fallback="{ family: 'inherit' }"
+            fallback="inherit"
             :label="$t('settings.style.fonts.components.post')"
             @update:model-value="v => updateFont('fontPosts', v)"
           />
@@ -67,7 +67,7 @@
           <FontControl
             :model-value="mergedConfig.fontMonospace"
             name="postCode"
-            :fallback="{ family: 'monospace' }"
+            fallback="monospace"
             :label="$t('settings.style.fonts.components.monospace')"
             @update:model-value="v => updateFont('fontMonospace', v)"
           />

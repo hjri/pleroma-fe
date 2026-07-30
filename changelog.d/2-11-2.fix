@@ -1,0 +1,4 @@
+Fixed crashing on Firefox 153
+Fixed serif-fonts being used by default in some cases
+Fixed font select component showing and using objects instead of strings
+Fixed generic ('sans-serif', 'monospace' etc) fonts not working
