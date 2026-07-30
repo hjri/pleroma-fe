@@ -60,7 +60,7 @@ const ChatListItem = {
           name: 'chat',
           params: {
             username: this.currentUser.screen_name,
-            recipient_id: this.chat.account.id,
+            chatUserId: this.chat.account.id,
           },
         })
       }
