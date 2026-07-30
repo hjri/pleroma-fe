@@ -108,6 +108,7 @@
                 fixed-pinned
                 use-default-buttons
                 hide-labels
+                in-chat-view
                 @toggle-replying="$emit('replyRequested', message)"
               />
               <div

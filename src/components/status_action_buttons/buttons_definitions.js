@@ -222,11 +222,28 @@ export const BUTTONS = [
     // =========
     // OPEN IN CHAT VIEW
     // =========
-    name: 'edit',
+    name: 'chat_view',
     icon: 'comments',
     label: 'status.open_in_chat_view',
+    if({ chatView }) {
+      return !chatView
+    },
     action({ router, status }) {
       router.push({ name: 'conversation2', params: { statusId: status.id } })
+    },
+  },
+  {
+    // =========
+    // OPEN IN THREAD VIEW
+    // =========
+    name: 'thread_view',
+    icon: 'list',
+    label: 'status.open_in_thread_view',
+    if({ chatView }) {
+      return chatView
+    },
+    action({ router, status }) {
+      router.push({ name: 'conversation', params: { id: status.id } })
     },
   },
   {

@@ -39,6 +39,10 @@ const StatusActionButtons = {
       type: Boolean,
       default: false,
     },
+    inChatView: {
+      type: Boolean,
+      default: false,
+    },
   },
   emits: ['toggleReplying', 'onSuccess', 'onError'],
   data() {
@@ -98,6 +102,7 @@ const StatusActionButtons = {
         router: this.$router,
         currentUser: this.currentUser,
         loggedIn: !!this.currentUser,
+        chatView: !!this.inChatView,
       }
     },
     triggerAttrs() {

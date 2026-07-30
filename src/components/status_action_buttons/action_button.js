@@ -18,6 +18,7 @@ import {
   faChevronDown,
   faChevronRight,
   faComments,
+  faList,
   faExternalLinkAlt,
   faEye,
   faEyeSlash,
@@ -58,6 +59,7 @@ library.add(
   faPencil,
   faShareAlt,
   faComments,
+  faList,
   faExternalLinkAlt,
   faHistory,
 )

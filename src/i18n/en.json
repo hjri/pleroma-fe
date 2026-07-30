@@ -1648,6 +1648,7 @@
     "edit": "Edit status",
     "edited_at": "(last edited {time})",
     "open_in_chat_view": "Open in chat view",
+    "open_in_thread_view": "Open in thread view",
     "pin": "Pin on profile",
     "unpin": "Unpin from profile",
     "pinned": "Pinned",
