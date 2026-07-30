@@ -27,8 +27,8 @@ import {
   readChat,
   sendChatMessage,
 } from 'src/api/chats.js'
-import { WSConnectionStatus } from 'src/api/websocket.js'
 import { fetchConversation, fetchStatus } from 'src/api/public.js'
+import { WSConnectionStatus } from 'src/api/websocket.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronDown, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
@@ -180,11 +180,20 @@ const Chat = {
     },
     $route: async function (newVal) {
       if (this.messagesIndex[newVal.params.statusId]) {
-        const focused = document.getElementById(`chatmessage-${this.$route.params.statusId}`)
+        const focused = document.getElementById(
+          `chatmessage-${this.$route.params.statusId}`,
+        )
         if (focused?.getBoundingClientRect == null) return
-        const bottomBoundary = window.innerHeight - this.$refs.footer.clientHeight
-        const topBoundary = this.$refs.header.clientHeight + document.getElementById('nav').clientHeight
-        const margin = Number(window.getComputedStyle(this.$refs.messageList.$el).gap.replace('px',''))
+        const bottomBoundary =
+          window.innerHeight - this.$refs.footer.clientHeight
+        const topBoundary =
+          this.$refs.header.clientHeight +
+          document.getElementById('nav').clientHeight
+        const margin = Number(
+          window
+            .getComputedStyle(this.$refs.messageList.$el)
+            .gap.replace('px', ''),
+        )
 
         const rect = focused.getBoundingClientRect()
         const scrollAmount = (() => {
@@ -293,7 +302,9 @@ const Chat = {
       if (this.isConversation) {
         const [
           { data: status },
-          { data: { ancestors, descendants } }
+          {
+            data: { ancestors, descendants },
+          },
         ] = await Promise.all([
           fetchStatus({
             id: this.statusId,
@@ -302,7 +313,7 @@ const Chat = {
           fetchConversation({
             id: this.statusId,
             credentials: useOAuthStore().token,
-          })
+          }),
         ])
         messages = [...ancestors, status, ...descendants]
       } else {
@@ -378,7 +389,7 @@ const Chat = {
         const message = newMessages[i]
 
         // Sanity check
-        if (!this.isConversation && (message.chat_id !== this.chat.id)) {
+        if (!this.isConversation && message.chat_id !== this.chat.id) {
           console.warn(
             `Chat message doesn't belong to current chat (id: ${this.chat.id})!!`,
             message,
@@ -516,7 +527,10 @@ const Chat = {
     // Event handlers
     onPosted(data) {
       this.explicitReplyStatus = null
-      this.$router.push({ name: 'conversation2', params: { statusId: data.id } })
+      this.$router.push({
+        name: 'conversation2',
+        params: { statusId: data.id },
+      })
     },
     handleVisibilityChange() {
       this.$nextTick(() => {

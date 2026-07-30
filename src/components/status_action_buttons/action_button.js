@@ -17,21 +17,21 @@ import {
   faCheck,
   faChevronDown,
   faChevronRight,
+  faComments,
   faExternalLinkAlt,
   faEye,
   faEyeSlash,
   faHistory,
   faMinus,
+  faPencil,
   faPlus,
   faReply,
   faRetweet,
   faShareAlt,
   faStar,
   faThumbtack,
-  faPencil,
   faTimes,
   faWrench,
-  faComments,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(

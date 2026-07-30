@@ -82,13 +82,13 @@ const ScopeSelector = {
     changeVis(scope) {
       this.currentScope = scope
       this.$emit('change', scope)
-    }
+    },
   },
   watch: {
     originalScope(newVal) {
       this.currentScope = newVal
-    }
-  }
+    },
+  },
 }
 
 export default ScopeSelector
