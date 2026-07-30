@@ -1,5 +1,3 @@
-import { defineAsyncComponent } from 'vue'
-
 import AuthForm from 'src/components/auth_form/auth_form.js'
 import BookmarkTimeline from 'src/components/bookmark_timeline/bookmark_timeline.vue'
 import BubbleTimeline from 'src/components/bubble_timeline/bubble_timeline.vue'
@@ -68,9 +66,7 @@ export default (store) => {
     {
       name: 'conversation2',
       path: '/conversation/:statusId',
-      component: defineAsyncComponent(
-        () => import('src/components/chat_view/chat_view.vue'),
-      ),
+      component: () => import('src/components/chat_view/chat_view.vue'),
       props: true,
       meta: { dontScroll: true },
       beforeEnter: validateAuthenticatedRoute,
@@ -91,23 +87,18 @@ export default (store) => {
     {
       name: 'external-user-profile',
       path: '/users/$:id',
-      component: defineAsyncComponent(
-        () => import('src/components/user_profile/user_profile.vue'),
-      ),
+      component: () => import('src/components/user_profile/user_profile.vue'),
     },
     {
       name: 'user-profile-admin-view',
       path: '/users/$:id/admin_view',
-      component: defineAsyncComponent(
-        () => import('src/components/user_profile/user_profile_admin_view.vue'),
-      ),
+      component: () =>
+        import('src/components/user_profile/user_profile_admin_view.vue'),
     },
     {
       name: 'interactions',
       path: '/users/:username/interactions',
-      component: defineAsyncComponent(
-        () => import('src/components/interactions/interactions.vue'),
-      ),
+      component: () => import('src/components/interactions/interactions.vue'),
       beforeEnter: validateAuthenticatedRoute,
     },
     {
@@ -119,39 +110,31 @@ export default (store) => {
     {
       name: 'registration',
       path: '/registration',
-      component: defineAsyncComponent(
-        () => import('src/components/registration/registration.vue'),
-      ),
+      component: () => import('src/components/registration/registration.vue'),
     },
     {
       name: 'password-reset',
       path: '/password-reset',
-      component: defineAsyncComponent(
-        () => import('src/components/password_reset/password_reset.vue'),
-      ),
+      component: () =>
+        import('src/components/password_reset/password_reset.vue'),
       props: true,
     },
     {
       name: 'registration-token',
       path: '/registration/:token',
-      component: defineAsyncComponent(
-        () => import('src/components/registration/registration.vue'),
-      ),
+      component: () => import('src/components/registration/registration.vue'),
     },
     {
       name: 'friend-requests',
       path: '/friend-requests',
-      component: defineAsyncComponent(
-        () => import('src/components/follow_requests/follow_requests.vue'),
-      ),
+      component: () =>
+        import('src/components/follow_requests/follow_requests.vue'),
       beforeEnter: validateAuthenticatedRoute,
     },
     {
       name: 'notifications',
       path: '/:username/notifications',
-      component: defineAsyncComponent(
-        () => import('src/components/notifications/notifications.vue'),
-      ),
+      component: () => import('src/components/notifications/notifications.vue'),
       props: () => ({ disableTeleport: true }),
       beforeEnter: validateAuthenticatedRoute,
     },
@@ -163,98 +146,74 @@ export default (store) => {
     {
       name: 'shout-panel',
       path: '/shout-panel',
-      component: defineAsyncComponent(
-        () => import('src/components/shout_panel/shout_panel.vue'),
-      ),
+      component: () => import('src/components/shout_panel/shout_panel.vue'),
       props: () => ({ floating: false }),
     },
     {
       name: 'oauth-callback',
       path: '/oauth-callback',
-      component: defineAsyncComponent(
-        () => import('src/components/oauth_callback/oauth_callback.vue'),
-      ),
+      component: () =>
+        import('src/components/oauth_callback/oauth_callback.vue'),
       props: (route) => ({ code: route.query.code }),
     },
     {
       name: 'search',
       path: '/search',
-      component: defineAsyncComponent(
-        () => import('src/components/search/search.vue'),
-      ),
+      component: () => import('src/components/search/search.vue'),
       props: (route) => ({ query: route.query.query }),
     },
     {
       name: 'who-to-follow',
       path: '/who-to-follow',
-      component: defineAsyncComponent(
-        () => import('src/components/who_to_follow/who_to_follow.vue'),
-      ),
+      component: () => import('src/components/who_to_follow/who_to_follow.vue'),
       beforeEnter: validateAuthenticatedRoute,
     },
     {
       name: 'about',
       path: '/about',
-      component: defineAsyncComponent(
-        () => import('src/components/about/about.vue'),
-      ),
+      component: () => import('src/components/about/about.vue'),
     },
     {
       name: 'announcements',
       path: '/announcements',
-      component: defineAsyncComponent(
-        () =>
-          import('src/components/announcements_page/announcements_page.vue'),
-      ),
+      component: () =>
+        import('src/components/announcements_page/announcements_page.vue'),
     },
     {
       name: 'drafts',
       path: '/drafts',
-      component: defineAsyncComponent(
-        () => import('src/components/drafts/drafts.vue'),
-      ),
+      component: () => import('src/components/drafts/drafts.vue'),
     },
     {
       name: 'user-profile',
       path: '/users/:name',
-      component: defineAsyncComponent(
-        () => import('src/components/user_profile/user_profile.vue'),
-      ),
+      component: () => import('src/components/user_profile/user_profile.vue'),
     },
     {
       name: 'legacy-user-profile',
       path: '/:name',
-      component: defineAsyncComponent(
-        () => import('src/components/user_profile/user_profile.vue'),
-      ),
+      component: () => import('src/components/user_profile/user_profile.vue'),
     },
     {
       name: 'lists',
       path: '/lists',
-      component: defineAsyncComponent(
-        () => import('src/components/lists/lists.vue'),
-      ),
+      component: () => import('src/components/lists/lists.vue'),
     },
     {
       name: 'lists-timeline',
       path: '/lists/:id',
-      component: defineAsyncComponent(
-        () => import('src/components/lists_timeline/lists_timeline.vue'),
-      ),
+      component: () =>
+        import('src/components/lists_timeline/lists_timeline.vue'),
     },
     {
       name: 'lists-edit',
       path: '/lists/:id/edit',
-      component: defineAsyncComponent(
-        () => import('src/components/lists_edit/lists_edit.vue'),
-      ),
+      component: () => import('src/components/lists_edit/lists_edit.vue'),
     },
     {
       name: 'lists-new',
       path: '/lists/new',
-      component: defineAsyncComponent(
-        () => import('src/components/lists_edit/lists_edit.vue'),
-      ),
+      component: () => import('src/components/lists_edit/lists_edit.vue'),
     },
     {
       name: 'edit-navigation',
@@ -266,19 +225,14 @@ export default (store) => {
     {
       name: 'bookmark-folders',
       path: '/bookmark_folders',
-      component: defineAsyncComponent(
-        () => import('src/components/bookmark_folders/bookmark_folders.vue'),
-      ),
+      component: () =>
+        import('src/components/bookmark_folders/bookmark_folders.vue'),
     },
     {
       name: 'bookmark-folder-new',
       path: '/bookmarks/new-folder',
-      component: defineAsyncComponent(
-        () =>
-          import(
-            'src/components/bookmark_folder_edit/bookmark_folder_edit.vue'
-          ),
-      ),
+      component: () =>
+        import('src/components/bookmark_folder_edit/bookmark_folder_edit.vue'),
     },
     {
       name: 'bookmark-folder',
@@ -288,12 +242,8 @@ export default (store) => {
     {
       name: 'bookmark-folder-edit',
       path: '/bookmarks/:id/edit',
-      component: defineAsyncComponent(
-        () =>
-          import(
-            'src/components/bookmark_folder_edit/bookmark_folder_edit.vue'
-          ),
-      ),
+      component: () =>
+        import('src/components/bookmark_folder_edit/bookmark_folder_edit.vue'),
     },
   ]
 
@@ -302,18 +252,14 @@ export default (store) => {
       {
         name: 'chat',
         path: '/users/:username/chats/:recipient_id',
-        component: defineAsyncComponent(
-          () => import('src/components/chat_view/chat_view.vue'),
-        ),
+        component: () => import('src/components/chat_view/chat_view.vue'),
         meta: { dontScroll: false },
         beforeEnter: validateAuthenticatedRoute,
       },
       {
         name: 'chats',
         path: '/users/:username/chats',
-        component: defineAsyncComponent(
-          () => import('src/components/chat_list/chat_list.vue'),
-        ),
+        component: () => import('src/components/chat_list/chat_list.vue'),
         meta: { dontScroll: false },
         beforeEnter: validateAuthenticatedRoute,
       },
