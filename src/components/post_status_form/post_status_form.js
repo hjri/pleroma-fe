@@ -610,6 +610,7 @@ const PostStatusForm = {
       this.newStatus.files = []
       this.newStatus.poll = null
       this.newStatus.quote = null
+      this.newStatus.nsfw = this.defaultNewStatus.nsfw
       this.newStatus.mediaDescriptions = {}
       this.$refs.mediaUpload && this.$refs.mediaUpload.clearFile()
       this.clearQuoteForm()
