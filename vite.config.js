@@ -241,6 +241,10 @@ export default defineConfig(async ({ mode, command }) => {
     test: {
       globals: true,
       exclude: [...configDefaults.exclude, 'test/e2e-playwright/**'],
+      coverage: {
+        provider: 'v8',
+        exclude: ['**/*.style.js', 'public/**'],
+      },
       browser: {
         enabled: true,
         headless: true,
