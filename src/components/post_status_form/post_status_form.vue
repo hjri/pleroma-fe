@@ -208,9 +208,9 @@
                 class="input form-post-body"
                 :class="{ 'scrollable-form': !!maxHeight }"
                 v-bind="propsToNative(inputProps)"
-                @keydown.exact.enter="submitOnEnter && postStatus($event, newStatus)"
+                @keydown.exact.enter="submitOnEnter && postStatus($event)"
                 @keydown.meta.enter="postStatus($event, newStatus)"
-                @keydown.ctrl.enter="!submitOnEnter && postStatus($event, newStatus)"
+                @keydown.ctrl.enter="!submitOnEnter && postStatus($event)"
                 @input="resize"
                 @compositionupdate="resize"
                 @paste="paste"
@@ -328,7 +328,7 @@
           <button
             class="btn button-default post-button"
             :disabled="isOverLengthLimit || posting || uploadingFiles || disableSubmit"
-            @click.stop.prevent="postStatus($event, newStatus)"
+            @click.stop.prevent="postStatus($event)"
           >
             <template v-if="posting">
               {{ $t('post_status.posting') }}

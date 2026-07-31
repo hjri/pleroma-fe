@@ -207,12 +207,12 @@ export const BUTTONS = [
       return dispatch('fetchStatusSource', { id: status.id }).then((data) =>
         useEditStatusStore().openEditStatusModal({
           statusId: status.id,
-          subject: data.spoiler_text,
+          statusSubject: data.spoiler_text,
           statusText: data.text,
           statusIsSensitive: status.nsfw,
           statusPoll: status.poll,
           statusFiles: [...status.attachments],
-          visibility: status.visibility,
+          statusVisibility: status.visibility,
           statusContentType: data.content_type,
         }),
       )

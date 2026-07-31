@@ -2,7 +2,7 @@ import { createTestingPinia } from '@pinia/testing'
 import { shallowMount } from '@vue/test-utils'
 import { setActivePinia } from 'pinia'
 
-import ChatView from './chat_view.vue'
+import ChatView from 'src/components/chat_view/chat_view.vue'
 
 const message1 = {
   id: '1',

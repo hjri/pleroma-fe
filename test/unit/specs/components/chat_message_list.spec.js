@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils'
 
-import ChatMessageList from './chat_message_list.vue'
+import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
 
 describe('ChatMessageList', () => {
   describe('computed.chatItems', () => {

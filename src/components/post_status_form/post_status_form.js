@@ -81,7 +81,7 @@ const PostStatusForm = {
     statusQuote: Object,
     statusFiles: Array,
     statusMediaDescriptions: Object,
-    statusScope: String,
+    statusVisibility: String,
     statusContentType: String,
 
     // Replies/mentions
@@ -306,7 +306,7 @@ const PostStatusForm = {
         defaultNewStatus.status = this.mentionsString + statusText
       }
 
-      defaultNewStatus.mentions = this.mentionsString
+      defaultNewStatus.mentions = this.mentionsString.trim()
       defaultNewStatus.spoilerText = this.repliedSubjectString ?? ''
       defaultNewStatus.nsfw = this.userDefaultSensitive
       defaultNewStatus.visibility = scope
@@ -351,18 +351,10 @@ const PostStatusForm = {
       return this.newStatus.quote !== null
     },
     quotable() {
-      return this.quotingAvailable && this.repliedStatus?.id
-    },
-    defaultQuotable() {
       if (
         !this.quotingAvailable ||
-        !this.isReply ||
-        !useMergedConfigStore().mergedConfig.quoteReply
+        !this.isReply
       ) {
-        return false
-      }
-
-      if (!this.repliedStatus) {
         return false
       }
 
@@ -379,8 +371,9 @@ const PostStatusForm = {
       return false
     },
     quoteId() {
-      return this.newStatus.quote?.id
+      return this.newStatus.quote?.id ?? null
     },
+    // This is for "reply/quote" toggle
     quoteThreadToggled: {
       get() {
         return this.newStatus.quote?.thread
@@ -394,6 +387,24 @@ const PostStatusForm = {
           this.newStatus.quote = null
         }
       },
+    },
+    postingOptions() {
+      const poll = this.hasPoll ? pollFormToMasto(this.newStatus.poll) : null
+
+      return {
+        status: this.newStatusContent,
+        spoilerText: this.newStatus.spoilerText,
+        visibility: this.newStatus.visibility,
+        sensitive: this.newStatus.nsfw,
+        media: this.newStatus.files,
+        inReplyToStatusId: this.inReplyToStatusId,
+        quoteId: this.quoteId,
+        contentType: this.newStatus.contentType,
+        poll,
+        idempotencyKey: this.idempotencyKey,
+
+        store: this.$store,
+      }
     },
 
     // Emoji stuff
@@ -596,8 +607,7 @@ const PostStatusForm = {
     },
     onMentionsLineUpdate(e) {
       if (this.mentionsLineReadOnly) return
-      // TODO
-      //this.newStatus.mentions = e
+      this.newStatus.mentions = e
     },
     changeVis(visibility) {
       this.newStatus.visibility = visibility
@@ -605,7 +615,7 @@ const PostStatusForm = {
     clearStatus() {
       this.saveInhibited = true
       this.newStatus.status = ''
-      this.newStatus.mentions = null
+      this.newStatus.mentions = ''
       this.newStatus.spoilerText = ''
       this.newStatus.files = []
       this.newStatus.poll = null
@@ -613,7 +623,6 @@ const PostStatusForm = {
       this.newStatus.nsfw = this.defaultNewStatus.nsfw
       this.newStatus.mediaDescriptions = {}
       this.$refs.mediaUpload && this.$refs.mediaUpload.clearFile()
-      this.clearQuoteForm()
       if (this.preserveFocus) {
         this.$nextTick(() => {
           this.$refs.textarea.focus()
@@ -626,7 +635,7 @@ const PostStatusForm = {
       if (this.preview) this.previewStatus()
       this.saveable = false
     },
-    async postStatus(event, newStatus) {
+    async postStatus(event) {
       if (this.posting && !this.optimisticPosting) {
         return
       }
@@ -653,7 +662,6 @@ const PostStatusForm = {
         return
       }
 
-      const poll = this.hasPoll ? pollFormToMasto(newStatus.poll) : {}
       if (this.pollContentError) {
         this.error = this.pollContentError
         return
@@ -669,25 +677,11 @@ const PostStatusForm = {
         return
       }
 
-      const postingOptions = {
-        status: this.newStatusContent,
-        spoilerText: newStatus.spoilerText ?? null,
-        visibility: newStatus.visibility,
-        sensitive: newStatus.nsfw,
-        media: newStatus.files,
-        store: this.$store,
-        inReplyToStatusId: this.inReplyToStatusId,
-        quoteId: this.quoteId,
-        contentType: newStatus.contentType,
-        poll,
-        idempotencyKey: this.idempotencyKey,
-      }
-
       const postHandler = this.postHandler
         ? this.postHandler
         : statusPoster.postStatus
 
-      postHandler(postingOptions)
+      postHandler(this.postingOptions)
         .then((data) => {
           this.abandonDraft()
           this.clearStatus()
@@ -714,17 +708,9 @@ const PostStatusForm = {
 
       statusPoster
         .postStatus({
-          status: this.newStatusContent,
-          spoilerText: newStatus.spoilerText || null,
-          visibility: newStatus.visibility,
-          sensitive: newStatus.nsfw,
+          ...this.postingOptions,
           media: [],
-          store: this.$store,
-          inReplyToStatusId: this.inReplyToStatusId,
-          quoteId: this.quoteId,
-          contentType: newStatus.contentType,
           poll: null,
-          quote: null,
           preview: true,
         })
         .then((data) => {
@@ -789,12 +775,14 @@ const PostStatusForm = {
     shiftUpMediaFile(fileInfo) {
       const { files } = this.newStatus
       const index = this.newStatus.files.indexOf(fileInfo)
+      if (index === 0) return
       files.splice(index, 1)
       files.splice(index - 1, 0, fileInfo)
     },
     shiftDnMediaFile(fileInfo) {
       const { files } = this.newStatus
       const index = this.newStatus.files.indexOf(fileInfo)
+      if (index === files.length - 1) return
       files.splice(index, 1)
       files.splice(index + 1, 0, fileInfo)
     },
@@ -973,7 +961,7 @@ const PostStatusForm = {
     },
 
     // Quote
-    toggleQuoteForm() {
+    toggleQuoteForm() { // This is for the "attach quote" button
       if (!this.hasQuote) {
         this.newStatus.quote = {}
         this.newStatus.quote.thread = false
@@ -981,11 +969,6 @@ const PostStatusForm = {
         this.newStatus.quote.url = ''
       } else {
         this.newStatus.quote = null
-      }
-    },
-    clearQuoteForm() {
-      if (this.$refs.quoteForm) {
-        this.$refs.quoteForm.clear()
       }
     },
 
