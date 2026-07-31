@@ -37,8 +37,8 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(matchedComponents[0].components.default.name).to.eql(
-      'AsyncComponentWrapper',
+    expect(matchedComponents[0].components.default.__file).to.contain(
+      'user_profile.vue',
     )
   })
 
@@ -47,8 +47,8 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(matchedComponents[0].components.default.name).to.eql(
-      'AsyncComponentWrapper',
+    expect(matchedComponents[0].components.default.__file).to.contain(
+      'user_profile.vue',
     )
   })
 
@@ -56,9 +56,8 @@ describe('routes', () => {
     await router.push('/lists')
 
     const matchedComponents = router.currentRoute.value.matched
-
-    expect(matchedComponents[0].components.default.name).to.eql(
-      'AsyncComponentWrapper',
+    expect(matchedComponents[0].components.default.__file).to.contain(
+      'lists.vue',
     )
   })
 
@@ -67,8 +66,8 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(matchedComponents[0].components.default.name).to.eql(
-      'AsyncComponentWrapper',
+    expect(matchedComponents[0].components.default.__file).to.contain(
+      'lists_timeline.vue',
     )
   })
 
@@ -77,8 +76,8 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(matchedComponents[0].components.default.name).to.eql(
-      'AsyncComponentWrapper',
+    expect(matchedComponents[0].components.default.__file).to.contain(
+      'lists_edit.vue',
     )
   })
 })

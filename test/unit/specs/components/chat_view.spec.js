@@ -33,6 +33,10 @@ const global = {
       state: {
         api: {},
         users: {},
+        statuses: {
+          allStatusesObject: {
+          },
+        },
       },
     },
     $route: {
@@ -69,7 +73,7 @@ describe('ChatView methods', () => {
       expect(component.vm.messages.length).to.eql(2)
     })
 
-    it('Updates minId and lastMessage and newMessageCount', () => {
+    it('Updates minId and lastMessage and newMessageCount', async () => {
       component.vm.addMessages({ messages: [message1] })
       expect(component.vm.maxId).to.eql(message1.id)
       expect(component.vm.minId).to.eql(message1.id)
@@ -80,7 +84,7 @@ describe('ChatView methods', () => {
       expect(component.vm.minId).to.eql(message1.id)
       expect(component.vm.newMessageCount).to.eql(2)
 
-      component.vm.readChat()
+      await component.vm.readChat()
       expect(component.vm.newMessageCount).to.eql(0)
       expect(component.vm.lastReadMessageId).to.eql(message2.id)
 

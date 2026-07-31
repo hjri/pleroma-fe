@@ -183,6 +183,7 @@ const Chat = {
     },
     async replyStatus(newVal) {
       await nextTick() // wait for changes to propagate to postStatusForm
+      if (this.testMode) return
       this.$refs.postStatusForm.update()
     },
     $route: async function (newVal) {
@@ -246,12 +247,13 @@ const Chat = {
 
       if (!isNewMessage) return
 
-      if (!this.testMode)
+      if (!this.testMode) {
         await readChat({
           id: this.chat.id,
           lastReadId,
           credentials: useOAuthStore().token,
         })
+      }
 
       useChatsStore().readChat(this.chat.id)
       this.lastReadMessageId = this.maxId
