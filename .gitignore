@@ -13,3 +13,6 @@ config/local.json
 src/assets/emoji.json
 logs/
 __screenshots__/
+.vitest-attachments/
+html/
+coverage/

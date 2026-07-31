@@ -247,7 +247,7 @@ export default defineConfig(async ({ mode, command }) => {
       },
       browser: {
         enabled: true,
-        headless: true,
+        headless: false,
         provider: playwright(),
         // https://github.com/mswjs/msw/issues/2757
         instances: [{ browser: 'chromium' }],
