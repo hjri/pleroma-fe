@@ -266,7 +266,7 @@ export const editStatus = ({
   contentType,
 }) => {
   const form = new FormData()
-  const pollOptions = poll.options || []
+  const pollOptions = poll?.options || []
 
   form.append('status', status)
   if (spoilerText) form.append('spoiler_text', spoilerText)
