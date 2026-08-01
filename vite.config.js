@@ -241,9 +241,15 @@ export default defineConfig(async ({ mode, command }) => {
     test: {
       globals: true,
       exclude: [...configDefaults.exclude, 'test/e2e-playwright/**'],
+      coverage: {
+        provider: 'v8',
+        all: true,
+        reporter: ['text-summary', ['lcov', { subdir: './src' }]],
+        exclude: ['**/*.style.js', 'public/**', '**/*.scss'],
+      },
       browser: {
         enabled: true,
-        headless: true,
+        headless: false,
         provider: playwright(),
         // https://github.com/mswjs/msw/issues/2757
         instances: [{ browser: 'chromium' }],
