@@ -244,10 +244,7 @@ export default defineConfig(async ({ mode, command }) => {
       coverage: {
         provider: 'v8',
         all: true,
-        reporter: [
-          'text-summary',
-          ['lcov', { subdir: './src' }],
-        ],
+        reporter: ['text-summary', ['lcov', { subdir: './src' }]],
         exclude: ['**/*.style.js', 'public/**', '**/*.scss'],
       },
       browser: {
