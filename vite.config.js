@@ -243,7 +243,12 @@ export default defineConfig(async ({ mode, command }) => {
       exclude: [...configDefaults.exclude, 'test/e2e-playwright/**'],
       coverage: {
         provider: 'v8',
-        exclude: ['**/*.style.js', 'public/**'],
+        all: true,
+        reporter: [
+          'text-summary',
+          ['lcov', { subdir: './src' }],
+        ],
+        exclude: ['**/*.style.js', 'public/**', '**/*.scss'],
       },
       browser: {
         enabled: true,
