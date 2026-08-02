@@ -983,8 +983,15 @@ const PostStatusForm = {
     saveDraft() {
       if (!this.disableDraft && !this.saveInhibited) {
         if (this.safeToSaveDraft) {
-          return this.$store
-            .dispatch('addOrSaveDraft', { draft: this.newStatus })
+          return this
+            .$store
+            .dispatch('addOrSaveDraft', {
+              draft: {
+                type: this.statusType,
+                refId: this.refId,
+                ...this.newStatus
+              }
+            })
             .then((id) => {
               if (this.newStatus.id !== id) {
                 this.newStatus.id = id
@@ -1016,7 +1023,7 @@ const PostStatusForm = {
       }
     },
     abandonDraft() {
-      return this.$store.dispatch('abandonDraft', { id: this.newStatus.id })
+      return this.$store.dispatch('abandonDraft', { id: this.draftId })
     },
     getDraft() {
       const maybeDraft = this.$store.state.drafts.drafts[this.draftId]
