@@ -126,7 +126,7 @@ const generateTheme = (inputRuleset, callbacks, debug) => {
     const chunk = chunks[counter]
     Promise.all(chunk.map((x) => x())).then((result) => {
       getCssRules(
-        result.filter((x) => x),
+        result.filter(Boolean),
         debug,
       ).forEach((rule) => {
         onNewRule(rule, true)

@@ -335,7 +335,7 @@ export default {
               this.pauseMfm ? '-pause' : '',
               this.scaleMfm ? '-scale' : '',
             ]
-              .filter((x) => x)
+              .filter(Boolean)
               .join(' ')
             newAttrs['data-mfm-operator'] = mfmOperator
             switch (mfmOperator) {

@@ -749,7 +749,7 @@ export const useInterfaceStore = defineStore('interface', {
           this.styleDataUsed,
           paletteIss,
           hacks,
-        ].filter((x) => x)
+        ].filter(Boolean)
 
         return applyTheme(
           rulesetArray.flat(),

@@ -62,6 +62,6 @@ export const serialize = (ruleset) => {
 
       return `${header} {\n${content.join(';\n')}\n}`
     })
-    .filter((x) => x)
+    .filter(Boolean)
     .join('\n\n')
 }

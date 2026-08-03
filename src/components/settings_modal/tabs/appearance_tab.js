@@ -401,7 +401,7 @@ const AppearanceTab = {
           }
 
           theme3 = init({
-            inputRuleset: [...input, paletteRule].filter((x) => x),
+            inputRuleset: [...input, paletteRule].filter(Boolean),
             ultimateBackgroundColor: '#000000',
             liteMode: true,
             onlyNormalState: true,

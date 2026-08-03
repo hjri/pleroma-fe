@@ -602,7 +602,7 @@ export default {
           .map((x) => Object.entries(x.directives))
           .flat()
       })
-      .filter((x) => x)
+      .filter(Boolean)
       .flat()
       .map(([name, value]) => {
         const [valType, valVal] = value.split('|')
