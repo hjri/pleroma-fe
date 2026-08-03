@@ -63,7 +63,7 @@ const parsedInitialResults = () => {
 
 const decodeUTF8Base64 = (data) => {
   const rawData = atob(data)
-  const array = Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)))
+  const array = Uint8Array.from([...rawData].map((char) => char.codePointAt(0)))
   const text = new TextDecoder().decode(array)
   return text
 }
