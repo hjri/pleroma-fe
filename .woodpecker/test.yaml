@@ -44,6 +44,14 @@ steps:
           [ "${CI_PIPELINE_EVENT}" = "pull_request" ] || zip -9qr ${CI_COMMIT_SHA:0:8}-screenshots.zip $(find . -type d -name __screenshots__)
           exit 1
         fi
+  code-analysis:
+    image: ghcr.io/j04n-f/sonar-plugin
+    settings:
+      sonar_token:
+        from_secret: sonarqube-token
+      sonar_url: https://sonarqube.pleroma.dev
+      sonar_project_key: Pleroma-FE
+      sonar_project_name: "Pleroma FE"
 
   upload-artifacts:
     image: docker.io/woodpeckercommunity/plugin-gitea-package:0.5.0
