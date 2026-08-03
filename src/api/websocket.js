@@ -141,13 +141,11 @@ export const handleMastoWS = (
         if (data.result === 'success') {
           console.debug('[WS] Successfully authenticated')
           onAuthenticated()
+        } else if (data.error === 'already_authenticated') {
+          onAuthenticated()
         } else {
-          if (data.error === 'already_authenticated') {
-            onAuthenticated()
-          } else {
-            console.error('[WS] Unable to authenticate:', data.error)
-            wsEvent.target.close()
-          }
+          console.error('[WS] Unable to authenticate:', data.error)
+          wsEvent.target.close()
         }
       }
       return null
