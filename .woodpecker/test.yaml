@@ -48,7 +48,8 @@ steps:
   code-analysis:
     image: ghcr.io/j04n-f/sonar-plugin
     when:
-      - branch: ${CI_REPO_DEFAULT_BRANCH}
+      - event: push
+        branch: ${CI_REPO_DEFAULT_BRANCH}
     settings:
       sonar_token:
         from_secret: sonarqube-token
