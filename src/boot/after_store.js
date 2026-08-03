@@ -409,7 +409,7 @@ const getNodeInfo = async ({ store }) => {
 
       useInstanceCapabilitiesStore().set(
         'tagPolicyAvailable',
-        typeof federation.mrf_policies === 'undefined'
+        federation.mrf_policies === undefined
           ? false
           : metadata.federation.mrf_policies.includes('TagPolicy'),
       )
@@ -421,7 +421,7 @@ const getNodeInfo = async ({ store }) => {
       useInstanceStore().set({
         path: 'federating',
         value:
-          typeof federation.enabled === 'undefined' ? true : federation.enabled,
+          federation.enabled === undefined ? true : federation.enabled,
       })
 
       const accountActivationRequired = metadata.accountActivationRequired
@@ -547,7 +547,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
 
   const overrides = window.___pleromafe_dev_overrides || {}
   const server =
-    typeof overrides.target !== 'undefined'
+    overrides.target !== undefined
       ? overrides.target
       : window.location.origin
   useInstanceStore().set({ path: 'server', value: server })

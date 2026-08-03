@@ -34,15 +34,15 @@ const VideoAttachment = {
       // If hasAudio is false, we've already marked this video to not have audio,
       // a video can't gain audio out of nowhere so don't bother checking again.
       if (!this.hasAudio) return
-      if (typeof target.webkitAudioDecodedByteCount !== 'undefined') {
+      if (target.webkitAudioDecodedByteCount !== undefined) {
         // non-zero if video has audio track
         if (target.webkitAudioDecodedByteCount > 0) return
       }
-      if (typeof target.mozHasAudio !== 'undefined') {
+      if (target.mozHasAudio !== undefined) {
         // true if video has audio track
         if (target.mozHasAudio) return
       }
-      if (typeof target.audioTracks !== 'undefined') {
+      if (target.audioTracks !== undefined) {
         if (target.audioTracks.length > 0) return
       }
       this.hasAudio = false

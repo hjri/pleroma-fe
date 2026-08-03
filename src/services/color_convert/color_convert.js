@@ -271,7 +271,7 @@ export const getTextColor = function (bg, text, preserve) {
     contrast = getContrastRatio(bg, convert(result).rgb)
   }
 
-  const base = typeof text.a !== 'undefined' ? { a: text.a } : {}
+  const base = text.a !== undefined ? { a: text.a } : {}
   return Object.assign(convert(result).rgb, base)
 }
 

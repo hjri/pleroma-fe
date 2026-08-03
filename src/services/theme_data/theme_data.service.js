@@ -523,7 +523,7 @@ export const generateColors = (themeData) => {
     (acc, [k, v]) => {
       if (!v) return acc
       acc.solid[k] = rgb2hex(v)
-      acc.complete[k] = typeof v.a === 'undefined' ? rgb2hex(v) : rgba2css(v)
+      acc.complete[k] = v.a === undefined ? rgb2hex(v) : rgba2css(v)
       return acc
     },
     { complete: {}, solid: {} },
@@ -545,7 +545,7 @@ export const generateColors = (themeData) => {
 export const generateRadii = (input) => {
   let inputRadii = input.radii || {}
   // v1 -> v2
-  if (typeof input.btnRadius !== 'undefined') {
+  if (input.btnRadius !== undefined) {
     inputRadii = Object.entries(input)
       .filter(([k]) => k.endsWith('Radius'))
       .reduce((acc, e) => {

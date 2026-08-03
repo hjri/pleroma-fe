@@ -59,7 +59,7 @@ const Chat = {
   },
   mounted() {
     window.addEventListener('scroll', this.handleScroll)
-    if (typeof document.hidden !== 'undefined') {
+    if (document.hidden !== undefined) {
       document.addEventListener(
         'visibilitychange',
         this.handleVisibilityChange,
@@ -74,7 +74,7 @@ const Chat = {
   unmounted() {
     window.removeEventListener('scroll', this.handleScroll)
     window.removeEventListener('resize', this.handleResize)
-    if (typeof document.hidden !== 'undefined')
+    if (document.hidden !== undefined)
       document.removeEventListener(
         'visibilitychange',
         this.handleVisibilityChange,

@@ -147,7 +147,7 @@ export default {
     })
   },
   mounted() {
-    if (typeof this.shadowSelected === 'undefined') {
+    if (this.shadowSelected === undefined) {
       this.shadowSelected = this.shadowsAvailable[0]
     }
   },
@@ -634,15 +634,15 @@ export default {
         if (input.version) version = input.version
         // Old v1 naming: fg is text, btn is foreground
         if (
-          typeof colors.text === 'undefined' &&
-          typeof colors.fg !== 'undefined'
+          colors.text === undefined &&
+          colors.fg !== undefined
         ) {
           version = 1
         }
         // New v2 naming: text is text, fg is foreground
         if (
-          typeof colors.text !== 'undefined' &&
-          typeof colors.fg !== 'undefined'
+          colors.text !== undefined &&
+          colors.fg !== undefined
         ) {
           version = 2
         }
@@ -679,7 +679,7 @@ export default {
       if (opacity && !this.keepOpacity) {
         this.clearOpacity()
         Object.entries(opacity).forEach(([k, v]) => {
-          if (typeof v === 'undefined' || v === null || Number.isNaN(v)) return
+          if (v === undefined || v === null || Number.isNaN(v)) return
           this[k + 'OpacityLocal'] = v
         })
       }
