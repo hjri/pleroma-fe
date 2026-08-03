@@ -46,16 +46,17 @@ steps:
         fi
 
   code-analysis:
-    image: ghcr.io/j04n-f/sonar-plugin
+    image: sonarsource/sonar-scanner-cli:11
+    entrypoint: [""]
+
+    environment:
+      SONAR_TOKEN:
+        from_secret: sonarqube-token
     when:
       - event: push
         branch: ${CI_REPO_DEFAULT_BRANCH}
-    settings:
-      sonar_token:
-        from_secret: sonarqube-token
-      sonar_url: https://sonarqube.pleroma.dev
-      sonar_project_key: Pleroma-FE
-      sonar_project_name: "Pleroma FE"
+        commands:
+          - sonar-scanner -Dsonar.host.url="${SONAR_HOST_URL}"
 
   upload-artifacts:
     image: docker.io/woodpeckercommunity/plugin-gitea-package:0.5.0
