@@ -44,6 +44,7 @@ steps:
           [ "${CI_PIPELINE_EVENT}" = "pull_request" ] || zip -9qr ${CI_COMMIT_SHA:0:8}-screenshots.zip $(find . -type d -name __screenshots__)
           exit 1
         fi
+
   code-analysis:
     image: ghcr.io/j04n-f/sonar-plugin
     settings:
