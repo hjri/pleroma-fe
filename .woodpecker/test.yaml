@@ -50,6 +50,8 @@ steps:
     when:
       - event: push
         branch: ${CI_REPO_DEFAULT_BRANCH}
+      - event: manual
+        branch: ${CI_REPO_DEFAULT_BRANCH}
     environment:
       SONAR_TOKEN:
         from_secret: sonarqube-token
