@@ -7,100 +7,92 @@ import {
 } from 'src/services/entity_normalizer/entity_normalizer.service.js'
 
 const makeMockUserMasto = (overrides = {}) => {
-  return Object.assign(
-    {
-      acct: 'hj',
-      avatar:
-        'https://shigusegubu.club/media/1657b945-8d5b-4ce6-aafb-4c3fc5772120/8ce851029af84d55de9164e30cc7f46d60cbf12eee7e96c5c0d35d9038ddade1.png',
-      avatar_static:
-        'https://shigusegubu.club/media/1657b945-8d5b-4ce6-aafb-4c3fc5772120/8ce851029af84d55de9164e30cc7f46d60cbf12eee7e96c5c0d35d9038ddade1.png',
-      bot: false,
-      created_at: '2017-12-17T21:54:14.000Z',
-      display_name: 'whatever whatever whatever witch',
-      emojis: [],
-      fields: [],
-      followers_count: 705,
-      following_count: 326,
-      header:
-        'https://shigusegubu.club/media/7ab024d9-2a8a-4fbc-9ce8-da06756ae2db/6aadefe4e264133bc377ab450e6b045b6f5458542a5c59e6c741f86107f0388b.png',
-      header_static:
-        'https://shigusegubu.club/media/7ab024d9-2a8a-4fbc-9ce8-da06756ae2db/6aadefe4e264133bc377ab450e6b045b6f5458542a5c59e6c741f86107f0388b.png',
-      id: '1',
-      locked: false,
-      note: 'Volatile Internet Weirdo. Name pronounced as Hee Jay. JS and Java dark arts mage, Elixir trainee. I love sampo and lain. Matrix is <span><a data-user="1" href="https://shigusegubu.club/users/hj">@<span>hj</span></a></span>:matrix.heldscal.la Pronouns are whatever. Do not DM me unless it\'s truly private matter and you\'re instance\'s admin or you risk your DM to be reposted publicly.Wish i was Finnish girl.',
-      pleroma: { confirmation_pending: false, tags: null },
-      source: { note: '', privacy: 'public', sensitive: false },
-      statuses_count: 41775,
-      url: 'https://shigusegubu.club/users/hj',
-      username: 'hj',
-    },
-    overrides,
-  )
+  return {
+    acct: 'hj',
+    avatar:
+    'https://shigusegubu.club/media/1657b945-8d5b-4ce6-aafb-4c3fc5772120/8ce851029af84d55de9164e30cc7f46d60cbf12eee7e96c5c0d35d9038ddade1.png',
+    avatar_static:
+    'https://shigusegubu.club/media/1657b945-8d5b-4ce6-aafb-4c3fc5772120/8ce851029af84d55de9164e30cc7f46d60cbf12eee7e96c5c0d35d9038ddade1.png',
+    bot: false,
+    created_at: '2017-12-17T21:54:14.000Z',
+    display_name: 'whatever whatever whatever witch',
+    emojis: [],
+    fields: [],
+    followers_count: 705,
+    following_count: 326,
+    header:
+    'https://shigusegubu.club/media/7ab024d9-2a8a-4fbc-9ce8-da06756ae2db/6aadefe4e264133bc377ab450e6b045b6f5458542a5c59e6c741f86107f0388b.png',
+    header_static:
+    'https://shigusegubu.club/media/7ab024d9-2a8a-4fbc-9ce8-da06756ae2db/6aadefe4e264133bc377ab450e6b045b6f5458542a5c59e6c741f86107f0388b.png',
+    id: '1',
+    locked: false,
+    note: 'Volatile Internet Weirdo. Name pronounced as Hee Jay. JS and Java dark arts mage, Elixir trainee. I love sampo and lain. Matrix is <span><a data-user="1" href="https://shigusegubu.club/users/hj">@<span>hj</span></a></span>:matrix.heldscal.la Pronouns are whatever. Do not DM me unless it\'s truly private matter and you\'re instance\'s admin or you risk your DM to be reposted publicly.Wish i was Finnish girl.',
+    pleroma: { confirmation_pending: false, tags: null },
+    source: { note: '', privacy: 'public', sensitive: false },
+    statuses_count: 41775,
+    url: 'https://shigusegubu.club/users/hj',
+    username: 'hj',
+    ...overrides,
+  }
 }
 
 const makeMockStatusMasto = (overrides = {}) => {
-  return Object.assign(
-    {
-      account: makeMockUserMasto(),
-      application: { name: 'Web', website: null },
-      content:
-        '<span><a data-user="14660" href="https://pleroma.soykaf.com/users/sampo">@<span>sampo</span></a></span> god i wish i was there',
-      created_at: '2019-01-17T16:29:23.000Z',
-      emojis: [],
-      favourited: false,
-      favourites_count: 1,
-      id: '10423476',
-      in_reply_to_account_id: '14660',
-      in_reply_to_id: '10423197',
-      language: null,
-      media_attachments: [],
-      mentions: [
-        {
-          acct: 'sampo@pleroma.soykaf.com',
-          id: '14660',
-          url: 'https://pleroma.soykaf.com/users/sampo',
-          username: 'sampo',
-        },
-      ],
-      muted: false,
-      reblog: null,
-      reblogged: false,
-      reblogs_count: 0,
-      replies_count: 0,
-      sensitive: false,
-      spoiler_text: '',
-      tags: [],
-      uri: 'https://shigusegubu.club/objects/16033fbb-97c0-4f0e-b834-7abb92fb8639',
-      url: 'https://shigusegubu.club/objects/16033fbb-97c0-4f0e-b834-7abb92fb8639',
-      visibility: 'public',
-      pleroma: {
-        local: true,
+  return {
+    account: makeMockUserMasto(),
+    application: { name: 'Web', website: null },
+    content:
+    '<span><a data-user="14660" href="https://pleroma.soykaf.com/users/sampo">@<span>sampo</span></a></span> god i wish i was there',
+    created_at: '2019-01-17T16:29:23.000Z',
+    emojis: [],
+    favourited: false,
+    favourites_count: 1,
+    id: '10423476',
+    in_reply_to_account_id: '14660',
+    in_reply_to_id: '10423197',
+    language: null,
+    media_attachments: [],
+    mentions: [
+      {
+        acct: 'sampo@pleroma.soykaf.com',
+        id: '14660',
+        url: 'https://pleroma.soykaf.com/users/sampo',
+        username: 'sampo',
       },
+    ],
+    muted: false,
+    reblog: null,
+    reblogged: false,
+    reblogs_count: 0,
+    replies_count: 0,
+    sensitive: false,
+    spoiler_text: '',
+    tags: [],
+    uri: 'https://shigusegubu.club/objects/16033fbb-97c0-4f0e-b834-7abb92fb8639',
+    url: 'https://shigusegubu.club/objects/16033fbb-97c0-4f0e-b834-7abb92fb8639',
+    visibility: 'public',
+    pleroma: {
+      local: true,
     },
-    overrides,
-  )
+    ...overrides,
+  }
 }
 
 const makeMockEmojiMasto = (overrides = [{}]) => {
   return [
-    Object.assign(
-      {
-        shortcode: 'image',
-        static_url: 'https://example.com/image.png',
-        url: 'https://example.com/image.png',
-        visible_in_picker: false,
-      },
-      overrides[0],
-    ),
-    Object.assign(
-      {
-        shortcode: 'thinking',
-        static_url: 'https://example.com/think.png',
-        url: 'https://example.com/think.png',
-        visible_in_picker: false,
-      },
-      overrides[1],
-    ),
+    {
+      shortcode: 'image',
+      static_url: 'https://example.com/image.png',
+      url: 'https://example.com/image.png',
+      visible_in_picker: false,
+      ...overrides[0],
+    },
+    {
+      shortcode: 'thinking',
+      static_url: 'https://example.com/think.png',
+      url: 'https://example.com/think.png',
+      visible_in_picker: false,
+      ...overrides[1],
+    },
   ]
 }
 
