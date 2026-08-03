@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/playwright:v1.61.0-jammy
 
 RUN addgroup -S playwright \
-    && adduser -S playwright -G playwright
+    && adduser --system playwright -G playwright --shell=/bin/bash
 
 USER playwright
 
