@@ -1,9 +1,9 @@
+@use "panel";
 @import '@fortawesome/fontawesome-svg-core/styles.css';
 @import '@kazvmoe-infra/pinch-zoom-element/dist/pinch-zoom.css';
 
 // stylelint-disable rscss/class-format
 /* stylelint-disable no-descending-specificity */
-@use "panel";
 
 :root {
   --status-margin: 0.75em;
@@ -22,7 +22,7 @@
 
 html {
   font-size: var(--textSize, 1rem);
-
+kjkkkk
   --navbar-height: var(--navbarSize, 3.5rem);
   --emoji-size: var(--emojiSize, 32px);
   --panel-header-height: var(--panelHeaderSize, 3.2rem);
