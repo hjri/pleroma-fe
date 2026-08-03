@@ -47,7 +47,6 @@ steps:
 
   code-analysis:
     image: sonarsource/sonar-scanner-cli:11
-    entrypoint: [""]
 
     environment:
       SONAR_TOKEN:
