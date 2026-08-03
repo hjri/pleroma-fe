@@ -353,19 +353,19 @@ const getNodeInfo = async ({ store }) => {
       const uploadLimits = metadata.uploadLimits
       useInstanceStore().set({
         path: 'limits.uploadlimit',
-        value: parseInt(uploadLimits.general),
+        value: Number.parseInt(uploadLimits.general),
       })
       useInstanceStore().set({
         path: 'limits.avatarlimit',
-        value: parseInt(uploadLimits.avatar),
+        value: Number.parseInt(uploadLimits.avatar),
       })
       useInstanceStore().set({
         path: 'limits.backgroundlimit',
-        value: parseInt(uploadLimits.background),
+        value: Number.parseInt(uploadLimits.background),
       })
       useInstanceStore().set({
         path: 'limits.bannerlimit',
-        value: parseInt(uploadLimits.banner),
+        value: Number.parseInt(uploadLimits.banner),
       })
       useInstanceStore().set({
         path: 'limits.fieldsLimits',

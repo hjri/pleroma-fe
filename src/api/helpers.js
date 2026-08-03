@@ -109,7 +109,7 @@ export const promisedRequest = async ({
       .get('content-type')
       .split(';')
       .map((x) => x.toLowerCase().trim())
-    const contentLength = parseInt(response.headers.get('content-length'))
+    const contentLength = Number.parseInt(response.headers.get('content-length'))
     if (contentLength === 0) return null
 
     switch (contentType) {

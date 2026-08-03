@@ -253,7 +253,7 @@ const extractStyleConfig = ({
     contentColumnWidth,
     notifsColumnWidth,
     themeEditorMinWidth:
-      parseInt(themeEditorMinWidth) === 0 ? 'fit-content' : themeEditorMinWidth,
+      Number.parseInt(themeEditorMinWidth) === 0 ? 'fit-content' : themeEditorMinWidth,
     emojiReactionsScale,
     emojiSize,
     navbarSize,
