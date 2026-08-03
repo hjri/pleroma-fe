@@ -13,7 +13,7 @@ Object.keys(emojis).map((k) => {
 
 const res = {}
 Object.keys(emojis).forEach((k) => {
-  const groupId = k.replace('&', 'and').replaceAll(/ /, '-').toLowerCase()
+  const groupId = k.replace('&', 'and').replaceAll(' ', '-').toLowerCase()
   res[groupId] = emojis[k]
 })
 
