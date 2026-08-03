@@ -1,5 +1,10 @@
 FROM mcr.microsoft.com/playwright:v1.61.0-jammy
 
+RUN addgroup -S playwright \
+    && adduser -S playwright -G playwright
+
+USER playwright
+
 WORKDIR /app
 
 ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
