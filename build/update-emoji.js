@@ -1,7 +1,7 @@
+import fs from 'node:fs'
 import emojis from '@kazvmoe-infra/unicode-emoji-json/data-by-group.json' with {
   type: 'json',
 }
-import fs from 'node:fs'
 
 Object.keys(emojis).map((k) => {
   emojis[k].forEach((e) => {

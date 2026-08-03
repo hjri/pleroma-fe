@@ -420,8 +420,7 @@ const getNodeInfo = async ({ store }) => {
       })
       useInstanceStore().set({
         path: 'federating',
-        value:
-          federation.enabled === undefined ? true : federation.enabled,
+        value: federation.enabled === undefined ? true : federation.enabled,
       })
 
       const accountActivationRequired = metadata.accountActivationRequired
@@ -548,9 +547,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
 
   const overrides = window.___pleromafe_dev_overrides || {}
   const server =
-    overrides.target !== undefined
-      ? overrides.target
-      : window.location.origin
+    overrides.target !== undefined ? overrides.target : window.location.origin
   useInstanceStore().set({ path: 'server', value: server })
 
   await setConfig({ store })

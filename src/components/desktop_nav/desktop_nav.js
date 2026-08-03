@@ -75,7 +75,7 @@ export default {
     logoBgStyle() {
       const mask = this.enableMask
         ? {}
-        : {'background-color': this.enableMask ? '' : 'transparent'}
+        : { 'background-color': this.enableMask ? '' : 'transparent' }
 
       return {
         margin: `${this.logoMargin} 0`,

@@ -633,17 +633,11 @@ export default {
       if (version === 0) {
         if (input.version) version = input.version
         // Old v1 naming: fg is text, btn is foreground
-        if (
-          colors.text === undefined &&
-          colors.fg !== undefined
-        ) {
+        if (colors.text === undefined && colors.fg !== undefined) {
           version = 1
         }
         // New v2 naming: text is text, fg is foreground
-        if (
-          colors.text !== undefined &&
-          colors.fg !== undefined
-        ) {
+        if (colors.text !== undefined && colors.fg !== undefined) {
           version = 2
         }
       }

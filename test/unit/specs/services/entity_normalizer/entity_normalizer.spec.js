@@ -10,9 +10,9 @@ const makeMockUserMasto = (overrides = {}) => {
   return {
     acct: 'hj',
     avatar:
-    'https://shigusegubu.club/media/1657b945-8d5b-4ce6-aafb-4c3fc5772120/8ce851029af84d55de9164e30cc7f46d60cbf12eee7e96c5c0d35d9038ddade1.png',
+      'https://shigusegubu.club/media/1657b945-8d5b-4ce6-aafb-4c3fc5772120/8ce851029af84d55de9164e30cc7f46d60cbf12eee7e96c5c0d35d9038ddade1.png',
     avatar_static:
-    'https://shigusegubu.club/media/1657b945-8d5b-4ce6-aafb-4c3fc5772120/8ce851029af84d55de9164e30cc7f46d60cbf12eee7e96c5c0d35d9038ddade1.png',
+      'https://shigusegubu.club/media/1657b945-8d5b-4ce6-aafb-4c3fc5772120/8ce851029af84d55de9164e30cc7f46d60cbf12eee7e96c5c0d35d9038ddade1.png',
     bot: false,
     created_at: '2017-12-17T21:54:14.000Z',
     display_name: 'whatever whatever whatever witch',
@@ -21,9 +21,9 @@ const makeMockUserMasto = (overrides = {}) => {
     followers_count: 705,
     following_count: 326,
     header:
-    'https://shigusegubu.club/media/7ab024d9-2a8a-4fbc-9ce8-da06756ae2db/6aadefe4e264133bc377ab450e6b045b6f5458542a5c59e6c741f86107f0388b.png',
+      'https://shigusegubu.club/media/7ab024d9-2a8a-4fbc-9ce8-da06756ae2db/6aadefe4e264133bc377ab450e6b045b6f5458542a5c59e6c741f86107f0388b.png',
     header_static:
-    'https://shigusegubu.club/media/7ab024d9-2a8a-4fbc-9ce8-da06756ae2db/6aadefe4e264133bc377ab450e6b045b6f5458542a5c59e6c741f86107f0388b.png',
+      'https://shigusegubu.club/media/7ab024d9-2a8a-4fbc-9ce8-da06756ae2db/6aadefe4e264133bc377ab450e6b045b6f5458542a5c59e6c741f86107f0388b.png',
     id: '1',
     locked: false,
     note: 'Volatile Internet Weirdo. Name pronounced as Hee Jay. JS and Java dark arts mage, Elixir trainee. I love sampo and lain. Matrix is <span><a data-user="1" href="https://shigusegubu.club/users/hj">@<span>hj</span></a></span>:matrix.heldscal.la Pronouns are whatever. Do not DM me unless it\'s truly private matter and you\'re instance\'s admin or you risk your DM to be reposted publicly.Wish i was Finnish girl.',
@@ -41,7 +41,7 @@ const makeMockStatusMasto = (overrides = {}) => {
     account: makeMockUserMasto(),
     application: { name: 'Web', website: null },
     content:
-    '<span><a data-user="14660" href="https://pleroma.soykaf.com/users/sampo">@<span>sampo</span></a></span> god i wish i was there',
+      '<span><a data-user="14660" href="https://pleroma.soykaf.com/users/sampo">@<span>sampo</span></a></span> god i wish i was there',
     created_at: '2019-01-17T16:29:23.000Z',
     emojis: [],
     favourited: false,
