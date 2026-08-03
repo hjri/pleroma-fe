@@ -18,5 +18,9 @@ Object.keys(emojis).forEach((k) => {
 })
 
 console.info('Updating emojis...')
-fs.writeFileSync('src/assets/emoji.json', JSON.stringify(res))
-console.info('Done.')
+try {
+  fs.writeFileSync('src/assets/emoji.json', JSON.stringify(res))
+  console.info('Done.')
+} catch (e) {
+  console.error('Failed updating emoji')
+}
