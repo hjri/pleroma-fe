@@ -6,12 +6,12 @@ export const paramsString = (params = {}) => {
   if (params == null || params === undefined) return ''
 
   if (typeof params !== 'object' || Array.isArray(params)) {
-    throw new Error('Params are not an object!')
+    throw new TypeError('Params are not an object!')
   }
 
   const entries = (() => {
     if (params instanceof Map) {
-      return params.entries()
+      return [...params.entries()]
     } else {
       return Object.entries(params)
     }
@@ -26,7 +26,7 @@ export const paramsString = (params = {}) => {
       (typeof v === 'object' && !Array.isArray(v)) ||
       typeof v === 'function'
     ) {
-      throw new Error('Param cannot be non-primitive!')
+      throw new TypeError('Param cannot be non-primitive!')
     }
     if (Array.isArray(v)) {
       arrays.push([k, v])
@@ -42,7 +42,7 @@ export const paramsString = (params = {}) => {
         typeof v === 'function' ||
         typeof v === 'undefined'
       )
-        throw new Error('Array param cannot contain non-primitives!')
+        throw new TypeError('Array param cannot contain non-primitives!')
     })
   })
 
