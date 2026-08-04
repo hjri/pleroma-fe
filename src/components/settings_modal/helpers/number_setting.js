@@ -28,7 +28,7 @@ export default {
   methods: {
     ...Setting.methods,
     getValue(e) {
-      if (!this.truncate === 1) {
+      if (this.truncate === 1) {
         return Number.parseInt(e.target.value)
       } else if (this.truncate > 1) {
         return Math.trunc(e.target.value / this.truncate) * this.truncate
