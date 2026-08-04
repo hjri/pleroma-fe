@@ -190,19 +190,24 @@ const FilteringTab = {
       }
       return valid
     },
-    createFilter({
-      type = 'word',
-      value = '',
-      name = 'New Filter',
-      enabled = true,
-      expires = null,
-      hide = false,
-    }) {
+    createFilter(filter) {
       const newId = uuidv4()
+      const newFilter = {
+        type: 'word',
+        value: '',
+        name: 'New Filter',
+        enabled: true,
+        expires: null,
+        hide: false,
+        ...filter,
+      }
 
-      filter.order = this.muteFilters.length + 2
-      this.muteFiltersDraftObject[newId] = filter
-      this.setSimplePrefAndSave({ path: 'muteFilters.' + newId, value: filter })
+      newFilter.order = this.muteFilters.length + 2
+      this.muteFiltersDraftObject[newId] = newFilter
+      this.setSimplePrefAndSave({
+        path: 'muteFilters.' + newId,
+        value: newFilter,
+      })
     },
     exportFilter(id) {
       this.exportedFilter = { ...this.muteFiltersDraftObject[id] }
