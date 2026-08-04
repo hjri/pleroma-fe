@@ -566,12 +566,16 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
 
   // Now we can try getting the server settings and logging in
   // Most of these are preloaded into the index.html so blocking is minimized
-  await Promise.all([
-    checkOAuthToken({ store }),
-    getInstancePanel({ store }),
-    getNodeInfo({ store }),
-    getInstanceConfig({ store }),
-  ])
+  try {
+    await Promise.all([
+      checkOAuthToken({ store }),
+      getInstancePanel({ store }),
+      getNodeInfo({ store }),
+      getInstanceConfig({ store }),
+    ])
+  } catch (e) {
+    console.error('Error loading instance data:', e)
+  }
 
   getTOS({ store })
   getStickers({ store })
