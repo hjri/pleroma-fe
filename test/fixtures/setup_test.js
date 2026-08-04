@@ -26,6 +26,7 @@ const getDefaultOpts = ({
   global: {
     plugins: [
       applyAfterStore(makeMockStore(), afterStore),
+      createTestingPinia(),
       VueVirtualScroller,
       createRouter({
         history: createMemoryHistory(),
@@ -41,7 +42,6 @@ const getDefaultOpts = ({
       (Vue) => {
         Vue.directive('body-scroll-lock', {})
       },
-      createTestingPinia(),
     ],
     components: {
       RichContent,

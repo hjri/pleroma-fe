@@ -1,10 +1,11 @@
 export default {
   name: 'Chat',
-  selector: '.chat-message-list',
+  selector: '.ChatMessageList',
   validInnerComponents: ['Text', 'Link', 'Icon', 'Avatar', 'ChatMessage'],
   defaultRules: [
     {
       directives: {
+        backgroundNoCssColor: 'yes',
         background: '--bg',
         blur: '5px',
       },

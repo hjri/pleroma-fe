@@ -39,9 +39,7 @@
   }
 
   .post-status-form {
-    form {
-      margin-top: 0;
-    }
+    margin: 0.5em;
   }
 
   .signed-in {

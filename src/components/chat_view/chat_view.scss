@@ -1,6 +1,16 @@
 .chat-view {
   display: flex;
-  height: 100%;
+
+  .chat-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .top-spacer {
+    flex: 1 1 0;
+    min-height: 0;
+  }
 
   .chat-view-inner {
     height: auto;
@@ -36,6 +46,10 @@
 
   .footer {
     position: sticky;
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    padding: 0;
     bottom: 0;
     z-index: 1;
   }
@@ -94,5 +108,12 @@
         width: 100%;
       }
     }
+  }
+
+  .reply-to-text {
+    text-align: center;
+    line-height: 1.2;
+    padding-top: 0.5em;
+    margin-bottom: -0.5em;
   }
 }

@@ -1,4 +1,4 @@
-import { unescape as ldUnescape, uniqBy } from 'lodash'
+import { uniqBy } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 
 import AvatarList from 'src/components/avatar_list/avatar_list.vue'
@@ -377,19 +377,6 @@ const Status = {
         return user && user.screen_name_ui
       }
     },
-    replySubject() {
-      if (!this.status.summary) return ''
-      const decodedSummary = ldUnescape(this.status.summary)
-      const behavior = this.mergedConfig.subjectLineBehavior
-      const startsWithRe = decodedSummary.match(/^re[: ]/i)
-      if ((behavior !== 'noop' && startsWithRe) || behavior === 'masto') {
-        return decodedSummary
-      } else if (behavior === 'email') {
-        return 're: '.concat(decodedSummary)
-      } else if (behavior === 'noop') {
-        return ''
-      }
-    },
     combinedFavsAndRepeatsUsers() {
       // Use the status from the global status repository since favs and repeats are saved in it
       const combinedUsers = [].concat(
@@ -553,10 +540,9 @@ const Status = {
     toggleThreadDisplay() {
       this.controlledToggleThreadDisplay()
     },
-    scrollIfFocused(focusedId) {
+    scrollIfFocused(focused) {
       if (this.$el.getBoundingClientRect == null) return
-      const id = focusedId
-      if (this.status.id === id) {
+      if (focused) {
         const rect = this.$el.getBoundingClientRect()
         if (rect.top < 100) {
           // Post is above screen, match its top to screen top

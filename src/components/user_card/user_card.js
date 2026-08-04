@@ -491,8 +491,7 @@ export default {
     },
     mentionUser() {
       usePostStatusStore().openPostStatusModal({
-        profileMention: true,
-        repliedUser: this.user,
+        profileMention: this.user,
       })
     },
     onAvatarClickHandler(e) {

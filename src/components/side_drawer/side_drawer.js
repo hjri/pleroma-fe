@@ -7,6 +7,7 @@ import GestureService from '../../services/gesture_service/gesture_service'
 import { unseenNotificationsFromStore } from '../../services/notification_utils/notification_utils'
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useChatsStore } from 'src/stores/chats.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface'
@@ -113,7 +114,8 @@ const SideDrawer = {
       sitename: (store) => store.instanceIdentity.name,
       hideSitename: (store) => store.instanceIdentity.hideSitename,
     }),
-    ...mapGetters(['unreadChatCount', 'draftCount']),
+    ...mapState(useChatsStore, ['unreadChatsCount']),
+    ...mapGetters(['draftCount']),
   },
   methods: {
     toggleDrawer() {

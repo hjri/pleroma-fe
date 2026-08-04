@@ -514,6 +514,7 @@
 
           <StatusActionButtons
             v-if="!noHeading && !isPreview"
+            class="status-action-buttons"
             :status="status"
             :replying="replying"
             @toggle-replying="toggleReplyForm"
@@ -545,11 +546,7 @@
           ref="postStatusForm"
           class="reply-body"
           :closeable="true"
-          :reply-to="status.id"
-          :attentions="status.attentions"
-          :replied-user="status.user"
-          :copy-message-scope="status.visibility"
-          :subject="replySubject"
+          :replied-status="status"
           @posted="closeReplyForm"
           @draft-done="closeReplyForm"
           @close-accepted="closeReplyForm"

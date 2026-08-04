@@ -385,4 +385,8 @@
       text-decoration: underline;
     }
   }
+
+  .status-action-buttons {
+    margin-top: var(--status-margin);
+  }
 }

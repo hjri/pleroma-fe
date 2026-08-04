@@ -1,6 +1,5 @@
 import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
-import { mapGetters } from 'vuex'
 
 import NavigationPins from 'src/components/navigation/navigation_pins.vue'
 import GestureService from '../../services/gesture_service/gesture_service'
@@ -10,6 +9,7 @@ import {
 } from '../../services/notification_utils/notification_utils'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
+import { useChatsStore } from 'src/stores/chats.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
@@ -68,6 +68,7 @@ const MobileNav = {
         countExtraNotifications(
           this.$store,
           useMergedConfigStore().mergedConfig,
+          useChatsStore().unreadChatsCount,
           useAnnouncementsStore().unreadAnnouncementCount,
         )
       )
@@ -87,18 +88,18 @@ const MobileNav = {
     isChat() {
       return this.$route.name === 'chat'
     },
-    ...mapState(useAnnouncementsStore, ['unreadAnnouncementCount']),
-    ...mapState(useMergedConfigStore, {
-      pinnedItems: (store) =>
-        new Set(store.prefsStorage.collections.pinnedNavItems).has('chats'),
-    }),
     shouldConfirmLogout() {
       return useMergedConfigStore().mergedConfig.modalOnLogout
     },
     closingDrawerMarksAsSeen() {
       return useMergedConfigStore().mergedConfig.closingDrawerMarksAsSeen
     },
-    ...mapGetters(['unreadChatCount']),
+    ...mapState(useAnnouncementsStore, ['unreadAnnouncementCount']),
+    ...mapState(useMergedConfigStore, {
+      pinnedItems: (store) =>
+        new Set(store.prefsStorage.collections.pinnedNavItems).has('chats'),
+    }),
+    ...mapState(useChatsStore, ['unreadChatsCount']),
   },
   methods: {
     toggleMobileSidebar() {
