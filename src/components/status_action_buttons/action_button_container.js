@@ -4,6 +4,7 @@ import Popover from 'src/components/popover/popover.vue'
 import ActionButton from './action_button.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
+import genRandomSeed from 'src/services/random_seed/random_seed.service.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -47,6 +48,11 @@ export default {
   mounted() {
     if (this.button.name === 'mute') {
       this.$store.dispatch('fetchDomainMutes')
+    }
+  },
+  data() {
+    return {
+      randomSeed: genRandomSeed(),
     }
   },
   computed: {
