@@ -320,7 +320,7 @@ const Status = {
         // Muted user
         relationship.muting ||
         // Muted user of a reprööt
-        (relationshipReblog?.muting)
+        relationshipReblog?.muting
       )
     },
     shouldNotMute() {
@@ -333,7 +333,7 @@ const Status = {
           // Don't mute user's posts on user timeline (except reblogs)
           ((!reblog && status.user.id === this.profileUserId) ||
             // Same as above but also allow self-reblogs
-            (reblog?.user.id === this.profileUserId))) ||
+            reblog?.user.id === this.profileUserId)) ||
           // Don't mute statuses in muted conversation when said conversation is opened
           (this.inConversation && status.thread_muted)) &&
         // No excuses if post has muted words

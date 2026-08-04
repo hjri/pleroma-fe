@@ -229,10 +229,7 @@ export const getLayerSlot = (
  */
 export const SLOT_ORDERED = topoSort(
   Object.entries(SLOT_INHERITANCE)
-    .sort(
-      ([, aV], [, bV]) =>
-        ((aV?.priority) || 0) - ((bV && bV.priority) || 0),
-    )
+    .sort(([, aV], [, bV]) => (aV?.priority || 0) - (bV?.priority || 0))
     .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {}),
 )
 

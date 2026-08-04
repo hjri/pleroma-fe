@@ -138,7 +138,7 @@ export default {
       const existingReaction = this.status.emoji_reactions.find(
         (r) => r.name === emoji,
       )
-      if (existingReaction && existingReaction.me) {
+      if (existingReaction?.me) {
         this.$store.dispatch('unreactWithEmoji', { id: this.status.id, emoji })
       } else {
         this.$store.dispatch('reactWithEmoji', { id: this.status.id, emoji })
