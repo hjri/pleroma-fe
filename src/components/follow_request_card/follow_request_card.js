@@ -29,7 +29,7 @@ const FollowRequestCard = {
           notif.from_profile.id === this.user.id &&
           notif.type === 'follow_request',
       )
-      return notif && notif.id
+      return notif?.id
     },
     showApproveConfirmDialog() {
       this.showingApproveConfirmDialog = true

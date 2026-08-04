@@ -89,7 +89,7 @@ export default {
       this.error = false
 
       const notice = this.noticeRegex.exec(value)
-      if (notice && notice.length === 4) {
+      if (notice?.length === 4) {
         this.$emit('update:id', notice[3])
       } else if (value) {
         this.loading = true
@@ -102,7 +102,7 @@ export default {
             type: 'statuses',
           })
           .then((data) => {
-            if (data && data.statuses && data.statuses.length === 1) {
+            if (data?.statuses && data.statuses.length === 1) {
               this.$emit('update:id', data.statuses[0].id)
             } else {
               this.handleError(true)

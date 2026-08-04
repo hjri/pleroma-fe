@@ -231,7 +231,7 @@ export const SLOT_ORDERED = topoSort(
   Object.entries(SLOT_INHERITANCE)
     .sort(
       ([, aV], [, bV]) =>
-        ((aV && aV.priority) || 0) - ((bV && bV.priority) || 0),
+        ((aV?.priority) || 0) - ((bV && bV.priority) || 0),
     )
     .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {}),
 )
@@ -408,7 +408,7 @@ export const getColors = (sourceColors, sourceOpacity) =>
           delete outputColor.a
         } else {
           // Otherwise try to assign opacity
-          if (dependencyColor && dependencyColor.a === 0) {
+          if (dependencyColor?.a === 0) {
             // transparent dependency shall make dependents transparent too
             outputColor.a = 0
           } else {

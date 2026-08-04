@@ -225,7 +225,7 @@
                   />
                 </button>
                 <button
-                  v-if="inThreadForest && replies && replies.length && !simpleTree"
+                  v-if="inThreadForest && replies?.length && !simpleTree"
                   class="button-unstyled"
                   :title="threadShowing ? $t('status.thread_hide') : $t('status.thread_show')"
                   :aria-expanded="threadShowing ? 'true' : 'false'"
@@ -426,7 +426,7 @@
           />
 
           <div
-            v-if="inConversation && !isPreview && replies && replies.length"
+            v-if="inConversation && !isPreview && replies?.length"
             class="replies"
           >
             <button

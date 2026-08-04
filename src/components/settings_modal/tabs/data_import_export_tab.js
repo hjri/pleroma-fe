@@ -95,7 +95,7 @@ const DataImportExportTab = {
       return users
         .map((user) => {
           // check is it's a local user
-          if (user && user.is_local) {
+          if (user?.is_local) {
             // append the instance address
             return user.screen_name + '@' + location.hostname
           }

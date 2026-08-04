@@ -316,11 +316,11 @@ const Status = {
       return (
         (status.muted && !status.thread_muted) ||
         // Reprööt of a muted post according to BE
-        (reblog && reblog.muted && !reblog.thread_muted) ||
+        (reblog?.muted && !reblog.thread_muted) ||
         // Muted user
         relationship.muting ||
         // Muted user of a reprööt
-        (relationshipReblog && relationshipReblog.muting)
+        (relationshipReblog?.muting)
       )
     },
     shouldNotMute() {
@@ -333,7 +333,7 @@ const Status = {
           // Don't mute user's posts on user timeline (except reblogs)
           ((!reblog && status.user.id === this.profileUserId) ||
             // Same as above but also allow self-reblogs
-            (reblog && reblog.user.id === this.profileUserId))) ||
+            (reblog?.user.id === this.profileUserId))) ||
           // Don't mute statuses in muted conversation when said conversation is opened
           (this.inConversation && status.thread_muted)) &&
         // No excuses if post has muted words
@@ -374,7 +374,7 @@ const Status = {
         const user = this.$store.getters.findUser(
           this.status.in_reply_to_user_id,
         )
-        return user && user.screen_name_ui
+        return user?.screen_name_ui
       }
     },
     combinedFavsAndRepeatsUsers() {

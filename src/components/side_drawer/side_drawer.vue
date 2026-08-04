@@ -220,7 +220,7 @@
           </router-link>
         </li>
         <li
-          v-if="currentUser && currentUser.role === 'admin'"
+          v-if="currentUser?.role === 'admin'"
           @click="toggleDrawer"
         >
           <button

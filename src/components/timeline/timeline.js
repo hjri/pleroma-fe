@@ -231,7 +231,7 @@ const Timeline = {
             tag: this.tag,
           })
           .then(({ statuses }) => {
-            if (statuses && statuses.length === 0) {
+            if (statuses?.length === 0) {
               this.bottomedOut = true
             }
           })

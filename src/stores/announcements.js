@@ -74,7 +74,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
       } catch (error) {
         // If and only if backend does not support announcements, it would return 404.
         // In this case, silently ignores it.
-        if (error && error.statusCode === 404) {
+        if (error?.statusCode === 404) {
           this.supportsAnnouncements = false
         } else {
           throw error

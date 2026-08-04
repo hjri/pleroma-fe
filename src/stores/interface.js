@@ -790,7 +790,7 @@ export const normalizeThemeData = (input) => {
   // New theme presets don't have 'theme' property, they use 'source'
 
   let out // shout, shout let it all out
-  if (themeSource && themeSource.themeEngineVersion === CURRENT_VERSION) {
+  if (themeSource?.themeEngineVersion === CURRENT_VERSION) {
     // There are some themes in wild that have completely broken source
     out = { ...(themeData || {}), ...themeSource }
   } else {

@@ -53,7 +53,7 @@
           :user-screen-name="message.in_reply_to_screen_name"
         />
         <!-- v-if is there because status might not be loaded yet -->
-        <template v-if="customReplyTo && customReplyTo.text.trim().length > 0">
+        <template v-if="customReplyTo?.text.trim().length > 0">
           :
           <StatusBody
             class="reply-body faint"
