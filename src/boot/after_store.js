@@ -70,7 +70,7 @@ const decodeUTF8Base64 = (data) => {
 
 const preloadFetch = async (request) => {
   const data = parsedInitialResults()
-  if (data?.[request]) {
+  if (!data?.[request]) {
     return window.fetch(request)
   }
   const decoded = decodeUTF8Base64(data[request])
@@ -566,16 +566,12 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
 
   // Now we can try getting the server settings and logging in
   // Most of these are preloaded into the index.html so blocking is minimized
-  try {
-    await Promise.all([
-      checkOAuthToken({ store }),
-      getInstancePanel({ store }),
-      getNodeInfo({ store }),
-      getInstanceConfig({ store }),
-    ])
-  } catch (e) {
-    console.error('Error loading instance data:', e)
-  }
+  await Promise.all([
+    checkOAuthToken({ store }),
+    getInstancePanel({ store }),
+    getNodeInfo({ store }),
+    getInstanceConfig({ store }),
+  ])
 
   getTOS({ store })
   getStickers({ store })
