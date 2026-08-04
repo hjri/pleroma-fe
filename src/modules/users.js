@@ -40,6 +40,8 @@ import {
   muteUser as apiMuteUser,
   unblockUser as apiUnblockUser,
   unmuteUser as apiUnmuteUser,
+  muteDomain as apiMuteDomain,
+  unmuteDomain as apiUnmuteDomain,
   fetchBlocks,
   fetchDomainMutes,
   fetchMutes,
@@ -170,14 +172,14 @@ const showReblogs = (store, userId) => {
 }
 
 const muteDomain = (store, domain) => {
-  return muteDomain({
+  return apiMuteDomain({
     domain,
     credentials: useOAuthStore().token,
   }).then(() => store.commit('addDomainMute', domain))
 }
 
 const unmuteDomain = (store, domain) => {
-  return unmuteDomain({
+  return apiUnmuteDomain({
     domain,
     credentials: useOAuthStore().token,
   }).then(() => store.commit('removeDomainMute', domain))
