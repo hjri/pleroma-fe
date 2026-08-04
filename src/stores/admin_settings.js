@@ -1,4 +1,4 @@
-import { cloneDeep, differenceWith, flatten, get, isEqual, set } from 'lodash'
+import { cloneDeep, differenceWith, get, isEqual, set } from 'lodash'
 import { defineStore } from 'pinia'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
@@ -209,11 +209,11 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       }
 
       // Getting all group-keys used in config
-      const allGroupKeys = flatten(
-        Object.entries(this.config).map(([group, lv1data]) =>
+      const allGroupKeys = Object.entries(this.config)
+        .map(([group, lv1data]) =>
           Object.keys(lv1data).map((key) => ({ group, key })),
-        ),
-      )
+        )
+        .flat()
 
       // Only using group-keys where there are changes detected
       const changedGroupKeys = allGroupKeys.filter(({ group, key }) => {

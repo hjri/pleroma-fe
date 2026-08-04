@@ -1,4 +1,4 @@
-import { concat, last } from 'lodash'
+import { last } from 'lodash'
 
 import { paramsString, promisedRequest } from './helpers.js'
 import { fetchFriends, MASTODON_STATUS_URL } from './public.js'
@@ -412,7 +412,7 @@ export const exportFriends = ({ id, credentials }) => {
           credentials,
           withRelationships: true,
         })
-        friends = concat(friends, users)
+        friends = [...friends, ...users]
         if (users.length === 0) {
           more = false
         }
