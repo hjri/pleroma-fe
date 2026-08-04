@@ -359,7 +359,9 @@ export const getResourcesIndex = async (url, parser = (x) => x) => {
 
   const total = [...custom, ...builtin]
   if (total.length === 0) {
-    throw new Error(`Resource at ${url} and ${customUrl} completely unavailable. Panicking`)
+    throw new Error(
+      `Resource at ${url} and ${customUrl} completely unavailable. Panicking`,
+    )
   }
   return Object.fromEntries(total)
 }

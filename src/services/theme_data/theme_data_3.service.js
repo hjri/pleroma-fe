@@ -262,7 +262,7 @@ export const init = ({
           ...r,
         })),
       )
-      .flat()
+      .flat(),
     ...inputRuleset,
   ].map((rule) => {
     normalizeCombination(rule)

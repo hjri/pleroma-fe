@@ -95,8 +95,7 @@ export const filteredNotificationsFromStore = (
   types,
 ) => {
   // map is just to clone the array since sort mutates it and it causes some issues
-  const sortedNotifications = notificationsFromStore(store)
-    .sort(sortById)
+  const sortedNotifications = notificationsFromStore(store).sort(sortById)
   // TODO implement sorting elsewhere and make it optional
   return sortedNotifications.filter((notification) =>
     (types || visibleTypes(notificationVisibility)).includes(notification.type),
