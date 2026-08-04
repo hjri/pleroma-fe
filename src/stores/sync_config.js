@@ -7,9 +7,9 @@ import {
   get,
   groupBy,
   isEqual,
+  last,
   set,
   take,
-  last,
   uniqWith,
   unset,
 } from 'lodash'
