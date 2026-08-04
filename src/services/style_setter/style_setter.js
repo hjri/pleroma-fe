@@ -307,7 +307,7 @@ export const applyStyleConfig = (input) => {
   adoptStyleSheets()
 }
 
-export const getResourcesIndex = async (url, parser = (x) => x) => {
+export const getResourcesIndex = async (url, parser = Boolean) => {
   const cache = 'no-store'
   const customUrl = url.replace(/\.(\w+)$/, '.custom.$1')
   let builtin

@@ -394,7 +394,7 @@ export default {
         },
       })
 
-    const getEditedElement = (component, directive, postProcess = (x) => x) =>
+    const getEditedElement = (component, directive, postProcess = Boolean) =>
       computed({
         get() {
           let usedRule
