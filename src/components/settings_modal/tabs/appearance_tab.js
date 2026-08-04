@@ -277,7 +277,7 @@ const AppearanceTab = {
       return !window.IntersectionObserver
     },
     instanceWallpaper() {
-      useInstanceStore().instanceIdentity.background
+      return useInstanceStore().instanceIdentity.background
     },
     instanceWallpaperUsed() {
       return (
