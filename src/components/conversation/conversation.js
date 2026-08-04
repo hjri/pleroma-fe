@@ -309,7 +309,7 @@ const conversation = {
             (k) =>
               this.getReplies(cur.id)
                 .map((v) => v.id)
-                .indexOf(k.id) === -1,
+                .includes(k.id),
           ),
         this.conversation,
       )

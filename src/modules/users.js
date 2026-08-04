@@ -269,7 +269,7 @@ export const mutations = {
     state.currentUser.blockIds = blockIds
   },
   addBlockId(state, blockId) {
-    if (state.currentUser.blockIds.indexOf(blockId) === -1) {
+    if (state.currentUser.blockIds.includes(blockId)) {
       state.currentUser.blockIds.push(blockId)
     }
   },
@@ -283,7 +283,7 @@ export const mutations = {
     state.currentUser.muteIdsMaxId = muteIdsMaxId
   },
   addMuteId(state, muteId) {
-    if (state.currentUser.muteIds.indexOf(muteId) === -1) {
+    if (state.currentUser.muteIds.includes(muteId)) {
       state.currentUser.muteIds.push(muteId)
     }
   },
@@ -291,7 +291,7 @@ export const mutations = {
     state.currentUser.domainMutes = domainMutes
   },
   addDomainMute(state, domain) {
-    if (state.currentUser.domainMutes.indexOf(domain) === -1) {
+    if (state.currentUser.domainMutes.includes(domain)) {
       state.currentUser.domainMutes.push(domain)
     }
   },
