@@ -29,7 +29,7 @@ export const createStyleSheet = (id, priority = 1000) => {
     addRule(rule) {
       let newRule = rule
       if (!CSS.supports?.('backdrop-filter', 'blur()')) {
-        newRule = newRule.replaceAll('backdrop-filter:[^;]+;', '') // Remove backdrop-filter
+        newRule = newRule.replaceAll(/backdrop-filter:[^;]+;/g, '') // Remove backdrop-filter
       }
 
       if (newRule.startsWith('::-webkit')) {
@@ -44,7 +44,7 @@ export const createStyleSheet = (id, priority = 1000) => {
       }
 
       this.rules.push(
-        newRule.replaceAll('var\(--shadowFilter\)[^;]*;', ''), // Remove shadowFilter references
+        newRule.replaceAll(/var\(--shadowFilter\)[^;]*;/g, ''), // Remove shadowFilter references
       )
     },
   }
