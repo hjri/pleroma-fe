@@ -1,8 +1,11 @@
-import { mapGetters, mapState } from 'vuex'
+import { mapState as mapPiniaState } from 'pinia'
+import { mapState } from 'vuex'
 
 import ChatListItem from 'src/components/chat_list_item/chat_list_item.vue'
 import ChatNew from 'src/components/chat_new/chat_new.vue'
 import List from 'src/components/list/list.vue'
+
+import { useChatsStore } from 'src/stores/chats.js'
 
 const ChatList = {
   components: {
@@ -14,7 +17,7 @@ const ChatList = {
     ...mapState({
       currentUser: (state) => state.users.currentUser,
     }),
-    ...mapGetters(['sortedChatList']),
+    ...mapPiniaState(useChatsStore, ['sortedChatList']),
   },
   data() {
     return {
@@ -22,12 +25,12 @@ const ChatList = {
     }
   },
   created() {
-    this.$store.dispatch('fetchChats', { latest: true })
+    useChatsStore().fetchChats()
   },
   methods: {
     cancelNewChat() {
       this.isNew = false
-      this.$store.dispatch('fetchChats', { latest: true })
+      useChatsStore().fetchChats()
     },
     newChat() {
       this.isNew = true

@@ -51,7 +51,7 @@
           @pause="$emit('mediapause', attachment.id)"
         />
         <div
-          v-if="draft.poll.options"
+          v-if="draft.poll?.options"
           class="poll-indicator-container"
           :title="$t('drafts.poll_tooltip')"
         >

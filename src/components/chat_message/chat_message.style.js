@@ -4,6 +4,9 @@ export default {
   variants: {
     outgoing: '.outgoing',
   },
+  states: {
+    focused: '.-focused',
+  },
   validInnerComponents: ['Text', 'Icon', 'Border', 'PollGraph'],
   defaultRules: [
     {
@@ -16,6 +19,12 @@ export default {
       variant: 'outgoing',
       directives: {
         background: '--bg, 5',
+      },
+    },
+    {
+      state: ['focused'],
+      directives: {
+        background: '--inheritedBackground, 10',
       },
     },
   ],

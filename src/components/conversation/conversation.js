@@ -2,8 +2,11 @@ import { clone, filter, findIndex, get, reduce } from 'lodash'
 import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
+import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
+import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
 import QuickViewSettings from 'src/components/quick_view_settings/quick_view_settings.vue'
+import RichContent from 'src/components/rich_content/rich_content.jsx'
 import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
 
 import { useInterfaceStore } from 'src/stores/interface'
@@ -18,9 +21,17 @@ import {
   faAngleDoubleDown,
   faAngleDoubleLeft,
   faChevronLeft,
+  faReply,
+  faTimes,
 } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faAngleDoubleDown, faAngleDoubleLeft, faChevronLeft)
+library.add(
+  faAngleDoubleDown,
+  faAngleDoubleLeft,
+  faChevronLeft,
+  faReply,
+  faTimes,
+)
 
 const sortById = (a, b) => {
   const idA = a.type === 'retweet' ? a.retweeted_status.id : a.id
@@ -127,14 +138,14 @@ const conversation = {
     displayStyle() {
       return this.mergedConfig.conversationDisplay
     },
-    isTreeView() {
-      return !this.isLinearView
-    },
     treeViewIsSimple() {
       return !this.mergedConfig.conversationTreeAdvanced
     },
+    isTreeView() {
+      return this.displayStyle === 'tree'
+    },
     isLinearView() {
-      return this.displayStyle === 'linear'
+      return this.displayStyle !== 'tree'
     },
     shouldFadeAncestors() {
       return this.mergedConfig.conversationTreeFadeAncestors
@@ -404,6 +415,9 @@ const conversation = {
     ThreadTree,
     QuickFilterSettings,
     QuickViewSettings,
+    ChatMessageList,
+    PostStatusForm,
+    RichContent,
   },
   watch: {
     statusId(newVal, oldVal) {
@@ -609,6 +623,11 @@ const conversation = {
         this.unsuspendibleIds.add(id)
       } else {
         this.unsuspendibleIds.delete(id)
+      }
+    },
+    onPosted(data) {
+      if (this.isPage) {
+        this.$router.push({ name: 'conversation', params: { id: data.id } })
       }
     },
   },

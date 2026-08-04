@@ -8,7 +8,6 @@
     grid-auto-flow: row dense;
     grid-auto-rows: 1fr;
     grid-gap: 0.5em 0.1em;
-    margin-top: var(--status-margin);
   }
 
   .pin-action-button {
@@ -16,6 +15,12 @@
     z-index: 1;
     padding: 0.5em;
     margin: 0;
+  }
+
+  .quick-action.popover-wrapper {
+    button {
+      padding: 0
+    }
   }
 }
 // popover

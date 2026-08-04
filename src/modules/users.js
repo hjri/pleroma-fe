@@ -21,6 +21,7 @@ import {
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
+import { useChatsStore } from 'src/stores/chats.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -726,7 +727,7 @@ const users = {
           store.dispatch('stopFetchingFollowRequests')
           store.commit('clearNotifications')
           store.commit('resetStatuses')
-          store.dispatch('resetChats')
+          useChatsStore().resetChats()
           oauth.clearToken()
           Cookies.remove('__Host-pleroma_key', { path: '/' })
           useInterfaceStore().setLastTimeline('public-timeline')

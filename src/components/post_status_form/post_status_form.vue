@@ -2,6 +2,7 @@
   <div
     ref="form"
     class="post-status-form"
+    v-if="initialized"
   >
     <form
       autocomplete="off"
@@ -10,7 +11,7 @@
     >
       <div class="form-group">
         <div
-          v-if="!$store.state.users.currentUser.locked && newStatus.visibility == 'private' && !disableLockWarning"
+          v-if="!currentUser.locked && newStatus.visibility == 'private' && !disableLockWarning"
           class="visibility-notice notice-dismissible"
         >
           <i18n-t
@@ -58,7 +59,7 @@
           </a>
         </p>
         <p
-          v-else-if="!hideScopeNotice && newStatus.visibility === 'private' && $store.state.users.currentUser.locked"
+          v-else-if="!hideScopeNotice && newStatus.visibility === 'private' && currentUser.locked"
           class="visibility-notice notice-dismissible"
         >
           <span>{{ $t('post_status.scope_notice.private') }}</span>
@@ -73,7 +74,7 @@
           </a>
         </p>
         <p
-          v-else-if="newStatus.visibility === 'direct'"
+          v-else-if="!hideScopeNotice && newStatus.visibility === 'direct'"
           class="visibility-notice notice-dismissible"
         >
           <span v-if="safeDMEnabled">{{ $t('post_status.direct_warning_to_first_only') }}</span>
@@ -172,6 +173,16 @@
               >
             </template>
           </EmojiInput>
+          <input
+            v-if="mentionsLine"
+            :value="mentionsLineReadOnly ? mentionsString : newStatus.mentionsLine"
+            @change="onMentionsLineUpdate"
+            type="text"
+            :placeholder="$t('post_status.mentions_line')"
+            :disabled="mentionsLineReadOnly || (posting && !optimisticPosting)"
+            size="1"
+            class="input mentions-input form-post-mentions unstyled"
+          >
           <EmojiInput
             ref="emoji-input"
             v-model="newStatus.status"
@@ -197,9 +208,9 @@
                 class="input form-post-body"
                 :class="{ 'scrollable-form': !!maxHeight }"
                 v-bind="propsToNative(inputProps)"
-                @keydown.exact.enter="submitOnEnter && postStatus($event, newStatus)"
+                @keydown.exact.enter="submitOnEnter && postStatus($event)"
                 @keydown.meta.enter="postStatus($event, newStatus)"
-                @keydown.ctrl.enter="!submitOnEnter && postStatus($event, newStatus)"
+                @keydown.ctrl.enter="!submitOnEnter && postStatus($event)"
                 @input="resize"
                 @compositionupdate="resize"
                 @paste="paste"
@@ -220,11 +231,12 @@
         >
           <scope-selector
             v-if="!disableVisibilitySelector"
+            ref="scopeSelector"
             :show-all="showAllScopes"
             :user-default="userDefaultScope"
-            :original-scope="copyMessageScope"
+            :original-scope="newStatus.visibility"
             :initial-scope="newStatus.visibility"
-            :on-scope-change="changeVis"
+            @change="changeVis"
           />
 
           <div
@@ -260,14 +272,14 @@
         v-if="pollsAvailable"
         ref="pollForm"
         :visible="pollFormVisible"
-        :params="newStatus.poll"
+        v-model="newStatus.poll"
       />
       <QuoteForm
         v-if="quotingAvailable"
-        :id="newStatus.quote.id"
         ref="quoteForm"
         :visible="quoteFormVisible"
-        :url="newStatus.quote.url"
+        :id="newStatus.quote?.id"
+        :url="newStatus.quote?.url"
         @update:url="url => newStatus.quote.url = url"
         @update:id="id => newStatus.quote.id = id"
       />
@@ -316,7 +328,7 @@
           <button
             class="btn button-default post-button"
             :disabled="isOverLengthLimit || posting || uploadingFiles || disableSubmit"
-            @click.stop.prevent="postStatus($event, newStatus)"
+            @click.stop.prevent="postStatus($event)"
           >
             <template v-if="posting">
               {{ $t('post_status.posting') }}
@@ -370,6 +382,14 @@
           </Popover>
         </div>
       </div>
+      <small class="keyboard-enter-hint faint">
+        <i v-if="submitOnEnter">
+          {{ $t('post_status.enter_submits') }}
+        </i>
+        <i v-else>
+          {{ $t('post_status.enter_newline') }}
+        </i>
+      </small>
       <div
         v-show="showDropIcon !== 'hide'"
         :style="{ animation: showDropIcon === 'show' ? 'fade-in 0.25s' : 'fade-out 0.5s' }"

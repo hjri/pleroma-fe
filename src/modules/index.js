@@ -1,5 +1,4 @@
 import api from './api.js'
-import chats from './chats.js'
 import drafts from './drafts.js'
 import notifications from './notifications.js'
 import profileConfig from './profileConfig.js'
@@ -13,5 +12,4 @@ export default {
   api,
   profileConfig,
   drafts,
-  chats,
 }

@@ -10,6 +10,7 @@
         <ActionButton
           :button="button"
           :status="status"
+          :hide-label="hideLabel"
           v-bind.prop="$attrs"
         />
       </template>
@@ -131,6 +132,7 @@
       v-else
       :button="button"
       :status="status"
+      :hide-label="hideLabel"
       v-bind="$attrs"
       @emoji-picker-shown="e => $emit('emojiPickerShown', e)"
     />

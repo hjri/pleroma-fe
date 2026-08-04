@@ -191,6 +191,7 @@ export const prepareNotificationObject = (notification, i18n) => {
 export const countExtraNotifications = (
   store,
   mergedConfig,
+  unreadChatsCount,
   unreadAnnouncementCount,
 ) => {
   const rootGetters = store.rootGetters || store.getters
@@ -200,9 +201,7 @@ export const countExtraNotifications = (
   }
 
   return [
-    mergedConfig.showChatsInExtraNotifications
-      ? rootGetters.unreadChatCount
-      : 0,
+    mergedConfig.showChatsInExtraNotifications ? unreadChatsCount : 0,
     mergedConfig.showAnnouncementsInExtraNotifications
       ? unreadAnnouncementCount
       : 0,

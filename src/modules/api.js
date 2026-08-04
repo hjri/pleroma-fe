@@ -2,6 +2,7 @@ import { Socket } from 'phoenix'
 
 import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'
 
+import { useChatsStore } from 'src/stores/chats.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
@@ -174,7 +175,7 @@ const api = {
             ) {
               dispatch('stopFetchingTimeline', { timeline: 'friends' })
               dispatch('stopFetchingNotifications')
-              dispatch('stopFetchingChats')
+              useChatsStore().stopFetchingChats()
             }
             commit('resetRetryMultiplier')
             commit('setMastoUserSocketStatus', WSConnectionStatus.JOINED)

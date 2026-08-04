@@ -479,7 +479,8 @@ export default {
       >
         {this.collapse
           ? pass2.map((x) => {
-              if (!Array.isArray(x)) return x.replace(/\n/g, ' ')
+              if (typeof x === 'string') return x.replace(/\n/g, ' ')
+              if (!Array.isArray(x)) return x
               return x.map((y) => (y.type === 'br' ? ' ' : y))
             })
           : pass2}

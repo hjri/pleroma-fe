@@ -1,5 +1,5 @@
 import { mapState as mapPiniaState } from 'pinia'
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'vuex'
 
 import BookmarkFoldersMenuContent from 'src/components/bookmark_folders_menu/bookmark_folders_menu_content.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
@@ -10,6 +10,7 @@ import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
 import NavigationPins from 'src/components/navigation/navigation_pins.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useChatsStore } from 'src/stores/chats.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
@@ -131,6 +132,7 @@ const NavPanel = {
       currentUser: (state) => state.users.currentUser,
       followRequestCount: (state) => state.api.followRequests.length,
     }),
+    ...mapPiniaState(useChatsStore, ['unreadChatsCount']),
     timelinesItems() {
       return filterNavigation(
         Object.entries({ ...TIMELINES })
@@ -162,7 +164,6 @@ const NavPanel = {
         },
       )
     },
-    ...mapGetters(['unreadChatCount']),
   },
 }
 

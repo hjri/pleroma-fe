@@ -17,11 +17,14 @@ import {
   faCheck,
   faChevronDown,
   faChevronRight,
+  faComments,
   faExternalLinkAlt,
   faEye,
   faEyeSlash,
   faHistory,
+  faList,
   faMinus,
+  faPencil,
   faPlus,
   faReply,
   faRetweet,
@@ -53,7 +56,10 @@ library.add(
   faEyeSlash,
   faEye,
   faThumbtack,
+  faPencil,
   faShareAlt,
+  faComments,
+  faList,
   faExternalLinkAlt,
   faHistory,
 )
@@ -69,6 +75,8 @@ export default {
     'getComponent',
     'doAction',
     'outerClose',
+    'defaultButtonStyle',
+    'hideLabel',
   ],
   components: {
     StatusBookmarkFolderMenu,
@@ -103,11 +111,14 @@ export default {
       return useMergedConfigStore().mergedConfig.hidePostStats
     },
     buttonInnerClass() {
+      const buttonStyleClass = this.defaultButtonStyle
+        ? 'button-default'
+        : 'button-unstyled'
       return [
         this.button.name + '-button',
         {
           'main-button': this.extra,
-          'button-unstyled': !this.extra,
+          [buttonStyleClass]: !this.extra,
           '-active': this.button.active?.(this.funcArg),
           disabled: this.button.interactive
             ? !this.button.interactive(this.funcArg)

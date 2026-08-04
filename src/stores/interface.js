@@ -188,7 +188,6 @@ export const useInterfaceStore = defineStore('interface', {
       this.globalNotices = this.globalNotices.filter((n) => n !== notice)
     },
     setGlobalError({ error, instance, info }) {
-      console.log(info)
       switch (info) {
         case 'https://vuejs.org/error-reference/#runtime-13': {
           this.globalError = {
@@ -206,7 +205,6 @@ export const useInterfaceStore = defineStore('interface', {
           break
         }
       }
-      console.log(this.globalError)
     },
     clearGlobalError() {
       this.globalError = null

@@ -1,6 +1,5 @@
 import { mapState } from 'pinia'
 import { computed } from 'vue'
-import { mapGetters } from 'vuex'
 
 import ExtraNotifications from 'src/components/extra_notifications/extra_notifications.vue'
 import Notification from 'src/components/notification/notification.vue'
@@ -16,6 +15,7 @@ import notificationsFetcher from '../../services/notifications_fetcher/notificat
 import NotificationFilters from './notification_filters.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
+import { useChatsStore } from 'src/stores/chats.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
@@ -115,13 +115,14 @@ const Notifications = {
       return countExtraNotifications(
         this.$store,
         useMergedConfigStore().mergedConfig,
+        useChatsStore().unreadChatsCount,
         useAnnouncementsStore().unreadAnnouncementCount,
       )
     },
     unseenCountTitle() {
       return (
         this.unseenNotifications.length +
-        this.unreadChatCount +
+        this.unreadChatsCount +
         this.unreadAnnouncementCount
       )
     },
@@ -160,7 +161,7 @@ const Notifications = {
       return !this.noExtra
     },
     ...mapState(useAnnouncementsStore, ['unreadAnnouncementCount']),
-    ...mapGetters(['unreadChatCount']),
+    ...mapState(useChatsStore, ['unreadChatsCount']),
   },
   mounted() {
     this.scrollerRef = this.$refs.root.closest('.column.-scrollable')

@@ -83,6 +83,13 @@
             {{ $t('settings.subject_line_behavior') }}
           </ChoiceSetting>
         </li>
+        <li>
+          <BooleanSetting
+            path="chatSubmitOnEnter"
+          >
+            {{ $t('settings.submit_on_enter_in_chats') }}
+          </BooleanSetting>
+        </li>
       </ul>
       <h3 v-if="expertLevel > 0">
         {{ $t('settings.attachments') }}

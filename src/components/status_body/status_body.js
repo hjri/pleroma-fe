@@ -1,5 +1,7 @@
 import { mapState } from 'pinia'
 
+import RichContent from 'src/components/rich_content/rich_content.jsx'
+
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -15,6 +17,9 @@ library.add(faFile, faMusic, faImage, faLink, faPollH)
 
 const StatusBody = {
   name: 'StatusBody',
+  components: {
+    RichContent,
+  },
   props: {
     status: {
       // Main thing
@@ -41,6 +46,12 @@ const StatusBody = {
     inConversation: {
       // Is status rendered within open conversation?
       // Used to automatically expand subjects (if collapsed)
+      type: Boolean,
+      default: false,
+    },
+    ignoreSubject: {
+      // Pretend subject line doesn't exist. Useful for chat messages
+      // to indicate what post reply belongs to
       type: Boolean,
       default: false,
     },
@@ -76,7 +87,7 @@ const StatusBody = {
       return this.status.summary.length > 240
     },
     hasSubject() {
-      return !!this.status.summary
+      return !!this.status.summary && !this.ignoreSubject
     },
     // When a status has a subject and is also tall, we should only have one show more/less
     // button. If the default is to collapse statuses with subjects, we just treat it like
@@ -140,7 +151,6 @@ const StatusBody = {
     },
     ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
-  components: {},
   mounted() {
     this.status.attentions &&
       this.status.attentions.forEach((attn) => {

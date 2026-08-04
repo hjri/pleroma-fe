@@ -1,10 +1,8 @@
 import { showDesktopNotification } from '../desktop_notification_utils/desktop_notification_utils.js'
 
-export const maybeShowChatNotification = (store, chat) => {
+export const maybeShowChatNotification = (chat) => {
   if (!chat.lastMessage) return
-  if (store.rootState.chats.currentChatId === chat.id && !document.hidden)
-    return
-  if (store.rootState.users.currentUser.id === chat.lastMessage.account_id)
+  if (window.vuex.state.users.currentUser.id === chat.lastMessage.account_id)
     return
 
   const opts = {
@@ -21,7 +19,7 @@ export const maybeShowChatNotification = (store, chat) => {
     opts.image = chat.lastMessage.attachment.preview_url
   }
 
-  showDesktopNotification(store.rootState, opts)
+  showDesktopNotification(window.vuex.state, opts)
 }
 
 export const buildFakeMessage = ({

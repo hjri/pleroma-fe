@@ -106,10 +106,10 @@
               icon="comments"
             /> {{ $t("nav.chats") }}
             <span
-              v-if="unreadChatCount"
+              v-if="unreadChatsCount"
               class="badge -notification"
             >
-              {{ unreadChatCount }}
+              {{ unreadChatsCount }}
             </span>
           </router-link>
         </li>

@@ -26,10 +26,10 @@ const chatNew = {
     }
   },
   async created() {
-    const { chatList } = await chats({
+    const { data } = await chats({
       credentials: useOAuthStore().token,
     })
-    chatList.forEach((chat) => this.suggestions.push(chat.account))
+    data.forEach((chat) => this.suggestions.push(chat.account))
   },
   computed: {
     users() {

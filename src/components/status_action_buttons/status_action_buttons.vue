@@ -21,6 +21,8 @@
           :close="() => { /* no-op */ }"
           :do-action="doAction"
           @emoji-picker-shown="onEmojiPickerShown"
+          :default-button-style="useDefaultButtons"
+          :hide-label="hideLabels"
         />
         <button
           v-if="showPin && currentUser"
@@ -40,6 +42,7 @@
       <Popover
         trigger="click"
         :trigger-attrs="triggerAttrs"
+        :normal-button="useDefaultButtons"
         class="quick-action"
         :tabindex="0"
         placement="bottom"
@@ -75,6 +78,8 @@
                 :get-component="getComponent"
                 :outer-close="close"
                 :do-action="doAction"
+                :default-button-style="useDefaultButtons"
+                :hide-label="hideLabels"
               />
               <button
                 v-if="showPin && currentUser"
