@@ -336,7 +336,7 @@ const api = {
       }
     },
     disconnectFromSocket({ commit, state }) {
-      state.socket && state.socket.disconnect()
+      state.socket?.disconnect()
       commit('setSocket', null)
     },
   },

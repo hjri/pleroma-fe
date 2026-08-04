@@ -245,7 +245,7 @@ export const OPACITIES = Object.entries(SLOT_INHERITANCE).reduce((acc, [k]) => {
       [opacity]: {
         defaultValue: DEFAULT_OPACITY[opacity] || 1,
         affectedSlots: [
-          ...((acc[opacity] && acc[opacity].affectedSlots) || []),
+          ...((acc[opacity]?.affectedSlots) || []),
           k,
         ],
       },
@@ -413,7 +413,7 @@ export const getColors = (sourceColors, sourceOpacity) =>
             outputColor.a = Number(
               opacityOverriden
                 ? sourceOpacity[opacitySlot]
-                : (OPACITIES[opacitySlot] || {}).defaultValue,
+                : OPACITIES[opacitySlot]?.defaultValue,
             )
           }
         }

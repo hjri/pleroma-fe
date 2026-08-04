@@ -11,7 +11,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
  */
 const toInstanceReasonObject = (instances, info, key) => {
   return instances.map((instance) => {
-    if (info[key] && info[key][instance] && info[key][instance].reason) {
+    if (info[key]?.[instance]?.reason) {
       return { instance, reason: info[key][instance].reason }
     }
     return { instance, reason: '' }

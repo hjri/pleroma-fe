@@ -43,7 +43,7 @@ const EditStatusModal = {
     isFormVisible(val) {
       if (val) {
         this.$nextTick(
-          () => this.$el && this.$el.querySelector('textarea').focus(),
+          () => this.$el?.querySelector('textarea').focus(),
         )
       }
     },

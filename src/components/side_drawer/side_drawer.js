@@ -61,7 +61,7 @@ const SideDrawer = {
       this.toggleDrawer,
     )
 
-    if (this.currentUser && this.currentUser.locked) {
+    if (this.currentUser?.locked) {
       this.$store.dispatch('startFetchingFollowRequests')
     }
   },

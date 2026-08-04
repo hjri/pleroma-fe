@@ -185,7 +185,7 @@ export const piniaPersistPlugin =
       }
 
       const fallbackValue = await storage.getItem(vuexKey)
-      if (fallbackValue && fallbackValue[id]) {
+      if (fallbackValue?.[id]) {
         console.info(`Migrating ${id} store data from vuex to pinia`)
         const res = fallbackValue[id]
         await storage.setItem(key, res)

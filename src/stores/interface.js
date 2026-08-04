@@ -60,8 +60,7 @@ export const useInterfaceStore = defineStore('interface', {
     },
     browserSupport: {
       cssFilter:
-        window.CSS &&
-        window.CSS.supports &&
+        window.CSS?.supports &&
         (window.CSS.supports('filter', 'drop-shadow(0 0)') ||
           window.CSS.supports('-webkit-filter', 'drop-shadow(0 0)')),
       localFonts: typeof window.queryLocalFonts === 'function',

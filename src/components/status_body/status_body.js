@@ -152,11 +152,10 @@ const StatusBody = {
     ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   mounted() {
-    this.status.attentions &&
-      this.status.attentions.forEach((attn) => {
-        const { id } = attn
-        this.$store.dispatch('fetchUserIfMissing', id)
-      })
+    this.status.attentions?.forEach((attn) => {
+      const { id } = attn
+      this.$store.dispatch('fetchUserIfMissing', id)
+    })
   },
   methods: {
     onParseReady(event) {

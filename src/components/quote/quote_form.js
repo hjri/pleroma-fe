@@ -102,7 +102,7 @@ export default {
             type: 'statuses',
           })
           .then((data) => {
-            if (data?.statuses && data.statuses.length === 1) {
+            if (data?.statuses?.length === 1) {
               this.$emit('update:id', data.statuses[0].id)
             } else {
               this.handleError(true)

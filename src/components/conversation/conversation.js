@@ -375,7 +375,7 @@ const conversation = {
       return !!(this.expanded || this.isPage)
     },
     hiddenStyle() {
-      const height = (this.status && this.status.virtualHeight) || '120px'
+      const height = this.status?.virtualHeight || '120px'
       return this.virtualHidden ? { height } : {}
     },
     threadDisplayStatus() {

@@ -251,7 +251,7 @@ export default {
           return ['', [mentionsLinePadding, renderImage(opener)], '']
         } else if (Tag === 'a' && this.handleLinks) {
           // replace mentions with MentionLink
-          if (fullAttrs.class && fullAttrs.class.includes('mention')) {
+          if (fullAttrs.class?.includes('mention')) {
             // Handling mentions here
             return renderMention(attrs, children)
           } else {
@@ -260,8 +260,7 @@ export default {
         } else if (Tag === 'span') {
           if (
             this.handleLinks &&
-            fullAttrs.class &&
-            fullAttrs.class.includes('h-card')
+            fullAttrs.class?.includes('h-card')
           ) {
             return ['', children.map(processItem), '']
           }
@@ -300,7 +299,7 @@ export default {
             const attrs = getAttrs(opener, () => true)
             // should only be this
             if (
-              (fullAttrs.class && fullAttrs.class.includes('hashtag')) || // Pleroma style
+              (fullAttrs.class?.includes('hashtag')) || // Pleroma style
               fullAttrs.rel === 'tag' // Mastodon style
             ) {
               return renderHashtag(attrs, children, encounteredTextReverse)

@@ -39,13 +39,13 @@ export default {
       return storePoll || {}
     },
     options() {
-      return (this.poll && this.poll.options) || []
+      return (this.poll?.options) || []
     },
     expiresAt() {
-      return (this.poll && this.poll.expires_at) || null
+      return (this.poll?.expires_at) || null
     },
     expired() {
-      return (this.poll && this.poll.expired) || false
+      return (this.poll?.expired) || false
     },
     expirationLabel() {
       if (useMergedConfigStore().mergedConfig.useAbsoluteTimeFormat) {

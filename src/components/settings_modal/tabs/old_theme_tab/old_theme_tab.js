@@ -346,7 +346,7 @@ export default {
       },
     },
     currentShadowFallback() {
-      return (this.previewTheme.shadows || {})[this.shadowSelected]
+      return this.previewTheme.shadows?.[this.shadowSelected]
     },
     currentShadow: {
       get() {
@@ -425,8 +425,8 @@ export default {
       this.dismissWarning()
       const version =
         origin === 'localStorage' && !theme.colors ? 'l1' : fileVersion
-      const snapshotEngineVersion = (theme || {}).themeEngineVersion
-      const themeEngineVersion = (source || {}).themeEngineVersion || 2
+      const snapshotEngineVersion = theme?.themeEngineVersion
+      const themeEngineVersion = source?.themeEngineVersion || 2
       const versionsMatch = themeEngineVersion === CURRENT_VERSION
       const sourceSnapshotMismatch =
         theme !== undefined &&

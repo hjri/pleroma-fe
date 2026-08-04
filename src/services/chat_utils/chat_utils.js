@@ -13,8 +13,7 @@ export const maybeShowChatNotification = (chat) => {
   }
 
   if (
-    chat.lastMessage.attachment &&
-    chat.lastMessage.attachment.type === 'image'
+    chat.lastMessage.attachment?.type === 'image'
   ) {
     opts.image = chat.lastMessage.attachment.preview_url
   }
