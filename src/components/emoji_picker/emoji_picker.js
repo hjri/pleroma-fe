@@ -408,7 +408,7 @@ const EmojiPicker = {
             isFirstRow: index === 0,
           })),
         )
-        .reduce((a, c) => a.concat(c), [])
+        .flat()
     },
     languages() {
       return ensureFinalFallback(

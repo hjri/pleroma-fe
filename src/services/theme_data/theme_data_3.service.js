@@ -262,7 +262,7 @@ export const init = ({
           ...r,
         })),
       )
-      .reduce((acc, arr) => [...acc, ...arr], []),
+      .flat()
     ...inputRuleset,
   ].map((rule) => {
     normalizeCombination(rule)
@@ -705,7 +705,7 @@ export const init = ({
       .map((variant) => {
         return stateCombinations.map((state) => ({ variant, state }))
       })
-      .reduce((acc, x) => [...acc, ...x], [])
+      .flat()
 
     stateVariantCombination.forEach((combination) => {
       combination.component = component.name

@@ -239,9 +239,9 @@ const conversation = {
                 depth,
               },
               walk(forest, forest[id], depth + 1, processed),
-            ].reduce((a, b) => a.concat(b), [])
+            ].flat()
           })
-          .reduce((a, b) => a.concat(b), [])
+          .flat()
 
       const linearized = walk(
         threads.forest,
