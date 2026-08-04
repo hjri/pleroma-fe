@@ -405,7 +405,7 @@ const ModerationTools = {
       )
     },
     isAdmin() {
-      this.$store.state.users.currentUser.role === 'admin'
+      return this.$store.state.users.currentUser.role === 'admin'
     },
   },
   methods: {
