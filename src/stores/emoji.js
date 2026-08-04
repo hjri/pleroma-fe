@@ -146,7 +146,7 @@ export const useEmojiStore = defineStore('emoji', {
     async getStaticEmoji() {
       try {
         // See build/emojis_plugin for more details
-        const values = (await import('/src/assets/emoji.json')).default
+        const values = (await import('src/assets/emoji.json')).default
 
         const emoji = Object.keys(values).reduce((res, groupId) => {
           res[groupId] = values[groupId].map((e) => ({
