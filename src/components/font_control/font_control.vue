@@ -2,7 +2,7 @@
   <div class="font-control">
     <div class="setting-item">
       <Checkbox
-        v-if="typeof fallback !== 'undefined'"
+        v-if="fallback !== undefined"
         :id="name + '-o'"
         class="font-checkbox setting-control setting-label"
         :model-value="present"

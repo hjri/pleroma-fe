@@ -11,7 +11,7 @@ import { contrastRatio, convert, invertLightness } from 'chromatism'
  * @param {Number} [b] - Blue component
  */
 export const rgb2hex = (r, g, b) => {
-  if (r === null || typeof r === 'undefined') {
+  if (r === null || r === undefined) {
     return undefined
   }
   // TODO: clean up this mess
@@ -130,7 +130,7 @@ export const arithmeticBlend = (origin, value, operator) => {
  * @returns {Object} sRGB of resulting color
  */
 export const alphaBlend = (fg, fga, bg) => {
-  if (fga === 1 || typeof fga === 'undefined') {
+  if (fga === 1 || fga === undefined) {
     return fg
   }
 

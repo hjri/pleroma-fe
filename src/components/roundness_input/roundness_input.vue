@@ -11,7 +11,7 @@
       {{ label }}
     </label>
     <Checkbox
-      v-if="typeof fallback !== 'undefined'"
+      v-if="fallback !== undefined"
       :model-value="present"
       :disabled="disabled"
       class="opt"

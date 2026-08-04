@@ -40,7 +40,7 @@ export const paramsString = (params = {}) => {
       if (
         typeof v === 'object' ||
         typeof v === 'function' ||
-        typeof v === 'undefined'
+        v === undefined
       )
         throw new TypeError('Array param cannot contain non-primitives!')
     })

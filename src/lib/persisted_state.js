@@ -74,7 +74,7 @@ export default function createPersistedState({
           if (saveImmedeatelyActions.includes(mutation.type)) {
             setState(key, reducer(cloneDeep(state), paths), storage).then(
               (success) => {
-                if (typeof success !== 'undefined') {
+                if (success !== undefined) {
                   if (
                     mutation.type === 'setOption' ||
                     mutation.type === 'setCurrentUser'
