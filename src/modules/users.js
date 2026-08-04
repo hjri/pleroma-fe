@@ -73,7 +73,7 @@ const mergeArrayLength = (oldValue, newValue) => {
   }
 }
 
-const getNotificationPermission = () => {
+const getNotificationPermission = async () => {
   const Notification = window.Notification
 
   if (!Notification) return null
@@ -383,7 +383,7 @@ const users = {
   mutations,
   getters,
   actions: {
-    fetchUserIfMissing(store, id) {
+    async fetchUserIfMissing(store, id) {
       const user = store.getters.findUser(id)
       if (!user) {
         return store.dispatch('fetchUser', id)
