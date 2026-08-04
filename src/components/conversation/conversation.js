@@ -62,7 +62,7 @@ const sortAndFilterConversation = (conversation, statusoid) => {
   } else {
     conversation = filter(conversation, (status) => status.type !== 'retweet')
   }
-  return conversation.filter((_) => _).sort(sortById)
+  return conversation.filter(Boolean).sort(sortById)
 }
 
 const conversation = {

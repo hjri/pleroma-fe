@@ -635,7 +635,7 @@ const users = {
     },
     addNewNotifications(store, { notifications }) {
       const users = map(notifications, 'from_profile')
-      const targetUsers = map(notifications, 'target').filter((_) => _)
+      const targetUsers = map(notifications, 'target').filter(Boolean)
       const notificationIds = notifications.map((_) => _.id)
       store.commit('addNewUsers', users)
       store.commit('addNewUsers', targetUsers)

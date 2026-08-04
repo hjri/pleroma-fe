@@ -35,7 +35,7 @@ const getAllAccessibleAnnotations = async (projectRoot) => {
       }),
     )
   )
-    .filter((k) => k)
+    .filter(Boolean)
     .join(',\n')
 
   return `

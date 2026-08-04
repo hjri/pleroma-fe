@@ -57,7 +57,7 @@ const maybeLocalizedKeywords = (emoji, languages, nameLocalizer) => {
     languages.forEach((lang) => {
       const keywords = emoji.annotations[lang]?.keywords || []
       const name = emoji.annotations[lang]?.name
-      res.push(...keywords.concat([name]).filter((k) => k))
+      res.push(...keywords.concat([name]).filter(Boolean))
     })
   }
   return res

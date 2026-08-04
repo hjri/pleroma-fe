@@ -128,7 +128,7 @@ const registration = {
       this.user.captcha_answer_data = this.captcha.answer_data
       if (this.user.language) {
         this.user.language = localeService.internalToBackendLocaleMulti(
-          this.user.language.filter((k) => k),
+          this.user.language.filter(Boolean),
         )
       }
 

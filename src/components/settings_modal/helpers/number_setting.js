@@ -33,7 +33,7 @@ export default {
       } else if (this.truncate > 1) {
         return Math.trunc(e.target.value / this.truncate) * this.truncate
       }
-      return parseFloat(e.target.value)
+      return Number.parseFloat(e.target.value)
     },
   },
 }

@@ -25,7 +25,7 @@ const visibleTypes = (notificationVisibility) => {
     notificationVisibility.emojiReactions && 'pleroma:emoji_reaction',
     notificationVisibility.reports && 'pleroma:report',
     notificationVisibility.polls && 'poll',
-  ].filter((_) => _)
+  ].filter(Boolean)
 }
 
 const statusNotifications = new Set([
@@ -96,7 +96,6 @@ export const filteredNotificationsFromStore = (
 ) => {
   // map is just to clone the array since sort mutates it and it causes some issues
   const sortedNotifications = notificationsFromStore(store)
-    .map((_) => _)
     .sort(sortById)
   // TODO implement sorting elsewhere and make it optional
   return sortedNotifications.filter((notification) =>

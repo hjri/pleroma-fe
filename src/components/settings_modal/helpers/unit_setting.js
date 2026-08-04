@@ -67,7 +67,7 @@ export default {
       return this.$t(['settings', 'units', this.unitSet, value].join('.'))
     },
     updateValue(e) {
-      this.configSink(this.path, parseFloat(e.target.value) + this.stateUnit)
+      this.configSink(this.path, Number.parseFloat(e.target.value) + this.stateUnit)
     },
     updateUnit(e) {
       let value = this.stateValue

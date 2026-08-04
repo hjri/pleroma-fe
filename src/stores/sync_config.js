@@ -836,7 +836,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
           : [path, finalValue]
       })
       newState.prefsStorage.simple = Object.fromEntries(
-        newEntries.filter((_) => _),
+        newEntries.filter(Boolean),
       )
       return newState
     },
