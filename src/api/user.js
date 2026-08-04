@@ -613,7 +613,7 @@ export const listAliases = ({ credentials }) =>
     method: 'GET',
     credentials,
     params: {
-      _cacheBooster: Date().now(),
+      _cacheBooster: Date.now(),
     },
   })
 
@@ -799,7 +799,7 @@ export const listBackups = ({ credentials }) =>
     method: 'GET',
     credentials,
     params: {
-      _cacheBooster: Date().now(),
+      _cacheBooster: Date.now(),
     },
   })
 
