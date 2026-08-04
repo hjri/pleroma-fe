@@ -11,8 +11,9 @@
     >
       <h1 class="title">
         <RichContent
-          v-if="conversation[0]?.summary"
-          :html="conversation[0].summary"
+          v-if="conversation[0]?.summary_raw_html"
+          :html="conversation[0].summary_raw_html"
+          :emoji="conversation[0].emojis"
           />
         <template v-else>
         {{ $t('timeline.conversation') }}
