@@ -18,7 +18,7 @@ export const chats = ({ credentials }) =>
     url: PLEROMA_CHATS_URL,
     credentials,
   }).then(({ data }) => ({
-    data: data.map(parseChat).filter((c) => c),
+    data: data.map(parseChat).filter(Boolean),
   }))
 
 export const getOrCreateChat = ({ accountId, credentials }) =>
@@ -40,7 +40,7 @@ export const chatMessages = ({
     method: 'GET',
     credentials,
   }).then(({ data }) => ({
-    data: data.map(parseChatMessage).filter((c) => c),
+    data: data.map(parseChatMessage).filter(Boolean),
   }))
 }
 

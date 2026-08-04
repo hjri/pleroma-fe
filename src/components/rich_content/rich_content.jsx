@@ -381,13 +381,13 @@ export default {
                   x ? 'mfm-spinX' : null,
                   y ? 'mfm-spinY' : null,
                   'mfm-spin',
-                ].filter((a) => a)[0]
+                ].filter(Boolean)[0]
 
                 const direction = [
                   alternate ? 'alternate' : null,
                   left ? 'reverse' : null,
                   'normal',
-                ].filter((a) => a)[0]
+                ].filter(Boolean)[0]
 
                 newAttrs.style = [
                   `animation-name: ${anim}`,

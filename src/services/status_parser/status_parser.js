@@ -88,5 +88,5 @@ export const muteFilterHits = (muteFilters, status) => {
         }
       }
     })
-    .filter((_) => _)
+    .filter(Boolean)
 }

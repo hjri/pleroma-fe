@@ -294,7 +294,7 @@ export const useInterfaceStore = defineStore('interface', {
           path: 'palettesIndex',
           value: { _error: e },
         })
-        return Promise.resolve({})
+        return {}
       }
     },
     setPalette(value) {
@@ -332,7 +332,7 @@ export const useInterfaceStore = defineStore('interface', {
           path: 'simple.stylesIndex',
           value: { _error: e },
         })
-        return Promise.resolve({})
+        return {}
       }
     },
     setStyle(value) {
@@ -375,7 +375,7 @@ export const useInterfaceStore = defineStore('interface', {
           path: 'themesIndex',
           value: { _error: e },
         })
-        return Promise.resolve({})
+        return {}
       }
     },
     setTheme(value) {

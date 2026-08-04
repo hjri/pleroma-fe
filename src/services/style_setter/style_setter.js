@@ -316,7 +316,7 @@ export const getResourcesIndex = async (url, parser = (x) => x) => {
   const resourceTransform = (resources) => {
     return Object.entries(resources).map(([k, v]) => {
       if (typeof v === 'object') {
-        return [k, () => Promise.resolve(v)]
+        return [k, () => v]
       } else if (typeof v === 'string') {
         return [
           k,
@@ -359,11 +359,9 @@ export const getResourcesIndex = async (url, parser = (x) => x) => {
 
   const total = [...custom, ...builtin]
   if (total.length === 0) {
-    return Promise.reject(
-      new Error(
-        `Resource at ${url} and ${customUrl} completely unavailable. Panicking`,
-      ),
+    throw new Error(
+      `Resource at ${url} and ${customUrl} completely unavailable. Panicking`,
     )
   }
-  return Promise.resolve(Object.fromEntries(total))
+  return Object.fromEntries(total)
 }

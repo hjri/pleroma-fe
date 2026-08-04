@@ -62,7 +62,7 @@ const sortAndFilterConversation = (conversation, statusoid) => {
   } else {
     conversation = filter(conversation, (status) => status.type !== 'retweet')
   }
-  return conversation.filter((_) => _).sort(sortById)
+  return conversation.filter(Boolean).sort(sortById)
 }
 
 const conversation = {
@@ -239,9 +239,9 @@ const conversation = {
                 depth,
               },
               walk(forest, forest[id], depth + 1, processed),
-            ].reduce((a, b) => a.concat(b), [])
+            ].flat()
           })
-          .reduce((a, b) => a.concat(b), [])
+          .flat()
 
       const linearized = walk(
         threads.forest,
@@ -305,11 +305,10 @@ const conversation = {
     topLevel() {
       const topLevel = this.conversation.reduce(
         (tl, cur) =>
-          tl.filter(
-            (k) =>
-              this.getReplies(cur.id)
-                .map((v) => v.id)
-                .indexOf(k.id) === -1,
+          tl.filter((k) =>
+            this.getReplies(cur.id)
+              .map((v) => v.id)
+              .includes(k.id),
           ),
         this.conversation,
       )

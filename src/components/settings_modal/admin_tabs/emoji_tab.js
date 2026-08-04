@@ -122,7 +122,7 @@ const EmojiTab = {
             return this.refreshPackList()
           } else {
             this.displayError(resp.error)
-            return Promise.reject(resp)
+            throw new Error(resp)
           }
         })
         .then(() => {
@@ -139,7 +139,7 @@ const EmojiTab = {
             return this.refreshPackList()
           } else {
             this.displayError(resp.error)
-            return Promise.reject(resp)
+            throw new Error(resp)
           }
         })
         .then(() => {
@@ -239,7 +239,7 @@ const EmojiTab = {
             return this.refreshPackList()
           } else {
             this.displayError(resp.error)
-            return Promise.reject(resp)
+            throw new Error(resp)
           }
         })
         .then(() => {
@@ -259,7 +259,7 @@ const EmojiTab = {
             return this.refreshPackList()
           } else {
             this.displayError(resp.error)
-            return Promise.reject(resp)
+            throw new Error(resp)
           }
         })
         .then(() => {
@@ -280,7 +280,7 @@ const EmojiTab = {
             return this.refreshPackList()
           } else {
             this.displayError(resp.error)
-            return Promise.reject(resp)
+            throw new Error(resp)
           }
         })
         .then(() => {

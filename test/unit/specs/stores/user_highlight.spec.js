@@ -55,7 +55,7 @@ describe('The UserHighlight store', () => {
           user: 'highlight@testing',
           type: 'test',
         })
-        expect(store.highlight._journal.length).to.eql(1)
+        expect(store.highlight._journal).to.have.length(1)
         expect(store.highlight._journal[0]).to.eql({
           user: 'highlight@testing',
           operation: 'set',
@@ -74,7 +74,7 @@ describe('The UserHighlight store', () => {
           user: 'highlight@testing.xyz',
           type: 'test',
         })
-        expect(store.highlight._journal.length).to.eql(1)
+        expect(store.highlight._journal).to.have.length(1)
         expect(store.highlight._journal[0]).to.eql({
           user: 'highlight@testing.xyz',
           operation: 'set',
@@ -98,7 +98,7 @@ describe('The UserHighlight store', () => {
           user: 'a@test.xyz',
           type: 'foo',
         })
-        expect(store.highlight._journal.length).to.eql(1)
+        expect(store.highlight._journal).to.have.length(1)
       })
     })
   })

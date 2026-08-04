@@ -61,7 +61,7 @@ export const useChatsStore = defineStore('chats', {
     addNewChats(chats) {
       window.vuex.commit(
         'addNewUsers',
-        chats.map((k) => k.account).filter((k) => k),
+        chats.map((k) => k.account).filter(Boolean),
       )
 
       chats.forEach((updatedChat) => {

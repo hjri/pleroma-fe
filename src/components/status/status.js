@@ -262,7 +262,7 @@ const Status = {
         this.muteFilterHits.length > 0 ? 'filtered' : null,
         this.muteBotStatuses && this.botStatus ? 'bot' : null,
         this.muteSensitiveStatuses && this.sensitiveStatus ? 'nsfw' : null,
-      ].filter((_) => _)
+      ].filter(Boolean)
     },
     muteLocalized() {
       if (this.muteReasons.length === 0) return null

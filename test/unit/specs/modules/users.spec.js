@@ -68,7 +68,7 @@ describe('The users module', () => {
         },
       }
       const name = 'Guy'
-      expect(getters.findUser(state)(name)).to.eql(undefined)
+      expect(getters.findUser(state)(name)).to.be.undefined
     })
 
     it('returns user with matching id', () => {
@@ -114,7 +114,7 @@ describe('The users module', () => {
         },
       }
       const id = '1'
-      expect(getters.findUserByName(state)(id)).to.eql(undefined)
+      expect(getters.findUserByName(state)(id)).to.be.undefined
     })
   })
 })

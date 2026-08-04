@@ -188,8 +188,8 @@ const EmojiInput = {
         }
 
         return {
-          names: names.filter((k) => k),
-          keywords: keywords.filter((k) => k),
+          names: names.filter(Boolean),
+          keywords: keywords.filter(Boolean),
         }
       }
     },

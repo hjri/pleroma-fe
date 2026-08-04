@@ -325,7 +325,7 @@ const api = {
       const token = state.wsToken
       if (
         useInstanceCapabilitiesStore().shoutAvailable &&
-        typeof token !== 'undefined' &&
+        token !== undefined &&
         state.socket === null
       ) {
         const socket = new Socket('/socket', { params: { token } })

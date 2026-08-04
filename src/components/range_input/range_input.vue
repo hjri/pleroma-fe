@@ -11,7 +11,7 @@
       {{ label }}
     </label>
     <input
-      v-if="typeof fallback !== 'undefined'"
+      v-if="fallback !== undefined"
       :id="name + '-o'"
       :aria-labelledby="name + '-label'"
       class="input -checkbox opt visible-for-screenreader-only"
@@ -20,7 +20,7 @@
       @change="$emit('update:modelValue', !present ? fallback : undefined)"
     >
     <label
-      v-if="typeof fallback !== 'undefined'"
+      v-if="fallback !== undefined"
       class="opt-l"
       :for="name + '-o'"
       :aria-hidden="true"

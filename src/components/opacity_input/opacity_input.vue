@@ -11,7 +11,7 @@
       {{ label || $t('settings.style.themes3.editor.opacity') }}
     </label>
     <Checkbox
-      v-if="typeof fallback !== 'undefined'"
+      v-if="fallback !== undefined"
       :model-value="present"
       :disabled="disabled"
       class="opt"

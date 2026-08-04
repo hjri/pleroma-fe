@@ -76,10 +76,10 @@ const mergeArrayLength = (oldValue, newValue) => {
 const getNotificationPermission = () => {
   const Notification = window.Notification
 
-  if (!Notification) return Promise.resolve(null)
+  if (!Notification) return null
   if (Notification.permission === 'default')
     return Notification.requestPermission()
-  return Promise.resolve(Notification.permission)
+  return Notification.permission
 }
 
 const blockUser = (store, args) => {
@@ -269,7 +269,7 @@ export const mutations = {
     state.currentUser.blockIds = blockIds
   },
   addBlockId(state, blockId) {
-    if (state.currentUser.blockIds.indexOf(blockId) === -1) {
+    if (state.currentUser.blockIds.includes(blockId)) {
       state.currentUser.blockIds.push(blockId)
     }
   },
@@ -283,7 +283,7 @@ export const mutations = {
     state.currentUser.muteIdsMaxId = muteIdsMaxId
   },
   addMuteId(state, muteId) {
-    if (state.currentUser.muteIds.indexOf(muteId) === -1) {
+    if (state.currentUser.muteIds.includes(muteId)) {
       state.currentUser.muteIds.push(muteId)
     }
   },
@@ -291,7 +291,7 @@ export const mutations = {
     state.currentUser.domainMutes = domainMutes
   },
   addDomainMute(state, domain) {
-    if (state.currentUser.domainMutes.indexOf(domain) === -1) {
+    if (state.currentUser.domainMutes.includes(domain)) {
       state.currentUser.domainMutes.push(domain)
     }
   },
@@ -388,7 +388,7 @@ const users = {
       if (!user) {
         return store.dispatch('fetchUser', id)
       } else {
-        return Promise.resolve(user)
+        return user
       }
     },
     updateUserAdminData(store, { userAdminData }) {
@@ -635,7 +635,7 @@ const users = {
     },
     addNewNotifications(store, { notifications }) {
       const users = map(notifications, 'from_profile')
-      const targetUsers = map(notifications, 'target').filter((_) => _)
+      const targetUsers = map(notifications, 'target').filter(Boolean)
       const notificationIds = notifications.map((_) => _.id)
       store.commit('addNewUsers', users)
       store.commit('addNewUsers', targetUsers)

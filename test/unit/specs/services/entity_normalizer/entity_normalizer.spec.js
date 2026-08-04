@@ -101,7 +101,7 @@ describe('API Entities normalizer', () => {
     describe('Mastoapi preprocessing and converting', () => {
       it("doesn't blow up", () => {
         const parsed = mastoapidata.map(parseStatus)
-        expect(parsed.length).to.eq(mastoapidata.length)
+        expect(parsed).to.have.length(mastoapidata.length)
       })
 
       it('processes repeats correctly', () => {

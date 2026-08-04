@@ -104,7 +104,7 @@ const _verifyPrefs = (state) => {
 
   // Simple
   Object.entries(defaultState.prefsStorage.simple).forEach(([k, v]) => {
-    if (typeof v === 'undefined') return
+    if (v === undefined) return
     if (typeof v === 'number' || typeof v === 'boolean') return
     if (typeof v === 'object') return
     console.warn(
@@ -836,7 +836,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
           : [path, finalValue]
       })
       newState.prefsStorage.simple = Object.fromEntries(
-        newEntries.filter((_) => _),
+        newEntries.filter(Boolean),
       )
       return newState
     },

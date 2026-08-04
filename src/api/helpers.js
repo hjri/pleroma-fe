@@ -37,11 +37,7 @@ export const paramsString = (params = {}) => {
 
   arrays.forEach(([k, array]) => {
     array.forEach((v) => {
-      if (
-        typeof v === 'object' ||
-        typeof v === 'function' ||
-        typeof v === 'undefined'
-      )
+      if (typeof v === 'object' || typeof v === 'function' || v === undefined)
         throw new TypeError('Array param cannot contain non-primitives!')
     })
   })
