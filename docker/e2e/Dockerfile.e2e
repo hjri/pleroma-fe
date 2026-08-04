@@ -13,7 +13,7 @@ ENV PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1
 COPY package.json yarn.lock ./
 RUN yarn --frozen-lockfile
 
-COPY --chown=playwright ./build ./src ./test ./public ./static ./node_modules ./yarn.lock ./package.json .
+COPY --chown=playwright ./build ./src ./test ./public ./static ./yarn.lock ./package.json .
 
 ENV CI=1
 
