@@ -22,5 +22,5 @@ try {
   fs.writeFileSync('src/assets/emoji.json', JSON.stringify(res))
   console.info('Done.')
 } catch (e) {
-  console.error('Failed updating emoji')
+  console.error('Failed updating emoji', e)
 }
