@@ -43,7 +43,7 @@ const Draft = {
         return { statusId: this.draft.refId }
       } else if (this.draft.type === 'reply') {
         return {
-          repliedStatus: this.refStatus
+          repliedStatus: this.refStatus,
         }
       } else {
         return {}

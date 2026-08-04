@@ -34,8 +34,7 @@ const global = {
         api: {},
         users: {},
         statuses: {
-          allStatusesObject: {
-          },
+          allStatusesObject: {},
         },
       },
     },

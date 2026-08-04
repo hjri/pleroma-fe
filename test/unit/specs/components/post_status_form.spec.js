@@ -1,8 +1,5 @@
-import { vi } from 'vitest'
-
-import { createTestingPinia } from '@pinia/testing'
 import { mount } from '@vue/test-utils'
-import { setActivePinia } from 'pinia'
+import { vi } from 'vitest'
 
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import { mountOpts } from '../../../fixtures/setup_test'
@@ -69,9 +66,12 @@ describe('PostStatusForm', () => {
   })
 
   it('Initializes a reply form', () => {
-    const wrapper = mount(PostStatusForm, replyMountOpts({
-      repliedStatus: repliedStatus,
-    }))
+    const wrapper = mount(
+      PostStatusForm,
+      replyMountOpts({
+        repliedStatus: repliedStatus,
+      }),
+    )
 
     useInstanceCapabilitiesStore().quotingAvailable = true
 
@@ -89,9 +89,12 @@ describe('PostStatusForm', () => {
   })
 
   it('Copies scope and subject line, disables quoting for locked posts', () => {
-    const wrapper = mount(PostStatusForm, replyMountOpts({
-      repliedStatus: repliedStatus2,
-    }))
+    const wrapper = mount(
+      PostStatusForm,
+      replyMountOpts({
+        repliedStatus: repliedStatus2,
+      }),
+    )
 
     useInstanceCapabilitiesStore().quotingAvailable = true
 
@@ -125,7 +128,7 @@ describe('PostStatusForm', () => {
     // ...set our settings...
     useMergedConfigStore().mergedConfig = {
       ...useMergedConfigStore().mergedConfig,
-      subjectLineBehavior: 'masto'
+      subjectLineBehavior: 'masto',
     }
 
     // ...and only then mount our component
@@ -145,11 +148,14 @@ describe('PostStatusForm', () => {
   })
 
   it('Sets status to statusText without mentions if mentions line is enabled', () => {
-    const wrapper = mount(PostStatusForm, replyMountOpts({
-      repliedStatus: repliedStatus2,
-      statusText: 'testing',
-      mentionsLine: true,
-    }))
+    const wrapper = mount(
+      PostStatusForm,
+      replyMountOpts({
+        repliedStatus: repliedStatus2,
+        statusText: 'testing',
+        mentionsLine: true,
+      }),
+    )
 
     expect(wrapper.vm.statusType).to.equal('reply')
     expect(wrapper.vm.isReply).to.equal(true)
@@ -158,9 +164,12 @@ describe('PostStatusForm', () => {
   })
 
   it('Sets mention when asked for it', () => {
-    const wrapper = mount(PostStatusForm, replyMountOpts({
-      profileMention: repliedUser,
-    }))
+    const wrapper = mount(
+      PostStatusForm,
+      replyMountOpts({
+        profileMention: repliedUser,
+      }),
+    )
 
     expect(wrapper.vm.statusType).to.equal('mention')
     expect(wrapper.vm.isReply).to.equal(false)
@@ -169,9 +178,12 @@ describe('PostStatusForm', () => {
   })
 
   it('Initializes quote when reply/quote toggled to quote', () => {
-    const wrapper = mount(PostStatusForm, replyMountOpts({
-      repliedStatus: repliedStatus2,
-    }))
+    const wrapper = mount(
+      PostStatusForm,
+      replyMountOpts({
+        repliedStatus: repliedStatus2,
+      }),
+    )
 
     expect(wrapper.vm.statusType).to.equal('reply')
     expect(wrapper.vm.isReply).to.equal(true)
@@ -182,9 +194,12 @@ describe('PostStatusForm', () => {
   })
 
   it('Resets quote when reply/quote toggled to reply', () => {
-    const wrapper = mount(PostStatusForm, replyMountOpts({
-      repliedStatus: repliedStatus2,
-    }))
+    const wrapper = mount(
+      PostStatusForm,
+      replyMountOpts({
+        repliedStatus: repliedStatus2,
+      }),
+    )
 
     expect(wrapper.vm.statusType).to.equal('reply')
     expect(wrapper.vm.isReply).to.equal(true)
@@ -196,32 +211,42 @@ describe('PostStatusForm', () => {
   })
 
   it('Initializes and reset quote when toggling quote attachment', () => {
-    const wrapper = mount(PostStatusForm, replyMountOpts({
-      repliedStatus: repliedStatus2,
-    }))
+    const wrapper = mount(
+      PostStatusForm,
+      replyMountOpts({
+        repliedStatus: repliedStatus2,
+      }),
+    )
 
     expect(wrapper.vm.statusType).to.equal('reply')
     expect(wrapper.vm.isReply).to.equal(true)
 
     wrapper.vm.toggleQuoteForm()
-    expect(wrapper.vm.newStatus.quote).to.eql({ thread: false, id: null, url: '' })
+    expect(wrapper.vm.newStatus.quote).to.eql({
+      thread: false,
+      id: null,
+      url: '',
+    })
     wrapper.vm.toggleQuoteForm()
     expect(wrapper.vm.newStatus.quote).to.eql(null)
   })
 
   it('Status editing', () => {
-    const wrapper = mount(PostStatusForm, replyMountOpts({
-      statusId: 'edited',
-      statusText: 'text',
-      statusSubject: 'heading',
-      statusIsSensitive: true,
-      statusPoll: {},
-      statusQuote: {},
-      statusFiles: [],
-      statusMediaDescriptions: {},
-      statusVisibility: 'unlisted',
-      statusContentType: 'text/markdown',
-    }))
+    const wrapper = mount(
+      PostStatusForm,
+      replyMountOpts({
+        statusId: 'edited',
+        statusText: 'text',
+        statusSubject: 'heading',
+        statusIsSensitive: true,
+        statusPoll: {},
+        statusQuote: {},
+        statusFiles: [],
+        statusMediaDescriptions: {},
+        statusVisibility: 'unlisted',
+        statusContentType: 'text/markdown',
+      }),
+    )
 
     expect(wrapper.vm.statusType).to.equal('edit')
     expect(wrapper.vm.isReply).to.equal(false) // edits don't support changing reply-to so it's pretty much ignored

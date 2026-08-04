@@ -351,17 +351,14 @@ const PostStatusForm = {
       return this.newStatus.quote !== null
     },
     quotable() {
-      if (
-        !this.quotingAvailable ||
-        !this.isReply
-      ) {
+      if (!this.quotingAvailable || !this.isReply) {
         return false
       }
 
       if (
         this.repliedStatus.visibility === 'public' ||
-          this.repliedStatus.visibility === 'unlisted' ||
-          this.repliedStatus.visibility === 'local'
+        this.repliedStatus.visibility === 'unlisted' ||
+        this.repliedStatus.visibility === 'local'
       ) {
         return true
       } else if (this.repliedStatus.visibility === 'private') {
@@ -703,7 +700,6 @@ const PostStatusForm = {
         this.previewLoading = false
         return
       }
-      const newStatus = this.newStatus
       this.previewLoading = true
 
       statusPoster
@@ -961,7 +957,8 @@ const PostStatusForm = {
     },
 
     // Quote
-    toggleQuoteForm() { // This is for the "attach quote" button
+    toggleQuoteForm() {
+      // This is for the "attach quote" button
       if (!this.hasQuote) {
         this.newStatus.quote = {}
         this.newStatus.quote.thread = false
@@ -983,14 +980,13 @@ const PostStatusForm = {
     saveDraft() {
       if (!this.disableDraft && !this.saveInhibited) {
         if (this.safeToSaveDraft) {
-          return this
-            .$store
+          return this.$store
             .dispatch('addOrSaveDraft', {
               draft: {
                 type: this.statusType,
                 refId: this.refId,
-                ...this.newStatus
-              }
+                ...this.newStatus,
+              },
             })
             .then((id) => {
               if (this.newStatus.id !== id) {

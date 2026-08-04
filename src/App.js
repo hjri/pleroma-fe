@@ -186,7 +186,11 @@ export default {
       return useShoutStore().joined
     },
     isChats() {
-      return this.$route.name === 'chat' || this.$route.name === 'chats' || this.$route.name === 'conversation2'
+      return (
+        this.$route.name === 'chat' ||
+        this.$route.name === 'chats' ||
+        this.$route.name === 'conversation2'
+      )
     },
     isListEdit() {
       return this.$route.name === 'lists-edit'
