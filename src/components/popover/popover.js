@@ -411,7 +411,7 @@ const Popover = {
     if (!scrollable) scrollable = window
     this.scrollable = scrollable
     let parent = this.$parent
-    while (parent?.$.type.name !== 'Popover') {
+    while (parent && parent.$.type.name !== 'Popover') {
       parent = parent.$parent
     }
     this.parentPopover = parent

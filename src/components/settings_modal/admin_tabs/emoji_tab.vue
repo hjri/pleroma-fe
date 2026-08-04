@@ -343,7 +343,7 @@
           <li>
             <div class="meta-buttons">
               <button
-                v-if="pack?.remote === undefined"
+                v-if="pack && pack.remote === undefined"
                 class="button button-default btn"
                 type="button"
                 @click="savePackMetadata"
@@ -351,7 +351,7 @@
                 {{ $t('admin_dash.emoji.save_meta') }}
               </button>
               <button
-                v-if="pack?.remote === undefined"
+                v-if="pack && pack.remote === undefined"
                 class="button button-default btn"
                 type="button"
                 @click="savePackMetadata"
