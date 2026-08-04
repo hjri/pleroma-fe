@@ -33,8 +33,8 @@ const AnnouncementsPage = {
       return useAnnouncementsStore().announcements
     },
     canPostAnnouncement() {
-      return (
-        this.currentUser?.privileges.has('announcements_manage_announcements')
+      return this.currentUser?.privileges.has(
+        'announcements_manage_announcements',
       )
     },
   },

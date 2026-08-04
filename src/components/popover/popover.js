@@ -129,9 +129,7 @@ const Popover = {
       // Popover will be anchored around this element, trigger ref is the container, so
       // its children are what are inside the slot. Expect only one v-slot:trigger.
       const anchorEl =
-        this.anchorEl ||
-        (this.$refs.trigger?.children[0]) ||
-        this.$el
+        this.anchorEl || this.$refs.trigger?.children[0] || this.$el
       // SVGs don't have offsetWidth/Height, use fallback
       const anchorHeight = anchorEl.offsetHeight || anchorEl.clientHeight
       const anchorWidth = anchorEl.offsetWidth || anchorEl.clientWidth
@@ -246,12 +244,12 @@ const Popover = {
         if (bottomBoundary + content.offsetHeight > yBounds.max) usingTop = true
         if (topBoundary - content.offsetHeight < yBounds.min) usingTop = false
 
-        const yOffset = (this.offset?.y) || 0
+        const yOffset = this.offset?.y || 0
         translateY = usingTop
           ? topBoundary - yOffset - content.offsetHeight
           : bottomBoundary + yOffset
 
-        const xOffset = (this.offset?.x) || 0
+        const xOffset = this.offset?.x || 0
         translateX = origin.x + horizOffset + xOffset
       } else {
         // Default to whatever user wished with placement prop
@@ -267,12 +265,12 @@ const Popover = {
         if (rightBoundary + content.offsetWidth > xBounds.max) usingLeft = true
         if (leftBoundary - content.offsetWidth < xBounds.min) usingLeft = false
 
-        const xOffset = (this.offset?.x) || 0
+        const xOffset = this.offset?.x || 0
         translateX = usingLeft
           ? leftBoundary - xOffset - content.offsetWidth
           : rightBoundary + xOffset
 
-        const yOffset = (this.offset?.y) || 0
+        const yOffset = this.offset?.y || 0
         translateY = origin.y + vertOffset + yOffset
       }
 

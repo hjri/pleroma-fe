@@ -258,10 +258,7 @@ export default {
             currentMentions = null
           }
         } else if (Tag === 'span') {
-          if (
-            this.handleLinks &&
-            fullAttrs.class?.includes('h-card')
-          ) {
+          if (this.handleLinks && fullAttrs.class?.includes('h-card')) {
             return ['', children.map(processItem), '']
           }
         }
@@ -299,7 +296,7 @@ export default {
             const attrs = getAttrs(opener, () => true)
             // should only be this
             if (
-              (fullAttrs.class?.includes('hashtag')) || // Pleroma style
+              fullAttrs.class?.includes('hashtag') || // Pleroma style
               fullAttrs.rel === 'tag' // Mastodon style
             ) {
               return renderHashtag(attrs, children, encounteredTextReverse)

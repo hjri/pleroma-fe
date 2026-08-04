@@ -244,10 +244,7 @@ export const OPACITIES = Object.entries(SLOT_INHERITANCE).reduce((acc, [k]) => {
       ...acc,
       [opacity]: {
         defaultValue: DEFAULT_OPACITY[opacity] || 1,
-        affectedSlots: [
-          ...((acc[opacity]?.affectedSlots) || []),
-          k,
-        ],
+        affectedSlots: [...(acc[opacity]?.affectedSlots || []), k],
       },
     }
   } else {

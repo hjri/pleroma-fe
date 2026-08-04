@@ -195,9 +195,10 @@ export const _getRecentData = (cache, live, isTest) => {
 }
 
 export const _getAllFlags = (recent, stale) => {
+  const recentStorage = toRaw(recent?.flagStorage)
+  const staleStorage = toRaw(stale?.flagStorage)
+
   return Array.from(
-    recentStorage = toRaw(recent?.flagStorage)
-    staleStorage = toRaw(stale?.flagStorage)
     new Set([
       ...Object.keys(recentStorage || {}),
       ...Object.keys(staleStorage || {}),

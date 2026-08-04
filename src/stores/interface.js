@@ -577,7 +577,8 @@ export const useInterfaceStore = defineStore('interface', {
             return { name: x.variant, ...cleanDirectives }
           })
           .forEach((palette) => {
-            const key = 'style.' + palette.name.toLowerCase().replaceAll(' ', '_')
+            const key =
+              'style.' + palette.name.toLowerCase().replaceAll(' ', '_')
             if (!firstStylePaletteName) firstStylePaletteName = key
             palettesIndex[key] = () => Promise.resolve(palette)
           })
