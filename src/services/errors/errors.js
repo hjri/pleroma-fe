@@ -14,7 +14,7 @@ export function StatusCodeError(statusCode, body, options, response) {
   this.name = 'StatusCodeError'
   this.statusCode = statusCode
   this.statusText = body.error || body.errors || body
-  this.details = JSON && JSON.stringify ? JSON.stringify(body) : body
+  this.details = JSON.stringify(body)
   this.errorData = body.error || body.errors
   this.message = this.statusCode + ' - ' + this.statusText
   this.error = body // legacy attribute

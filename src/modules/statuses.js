@@ -3,14 +3,12 @@ import {
   find,
   findIndex,
   first,
-  isArray,
   last,
   maxBy,
   merge,
   minBy,
   omitBy,
   remove,
-  slice,
 } from 'lodash'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -206,7 +204,7 @@ const addNewStatuses = (
   },
 ) => {
   // Sanity check
-  if (!isArray(statuses)) {
+  if (!Array.isArray(statuses)) {
     return false
   }
 
@@ -410,7 +408,7 @@ export const mutations = {
     const oldTimeline = state.timelines[timeline]
 
     oldTimeline.newStatusCount = 0
-    oldTimeline.visibleStatuses = slice(oldTimeline.statuses, 0, 50)
+    oldTimeline.visibleStatuses = oldTimeline.statuses.slice(0, 50)
     oldTimeline.minVisibleId = last(oldTimeline.visibleStatuses).id
     oldTimeline.minId = oldTimeline.minVisibleId
     oldTimeline.visibleStatusesObject = {}

@@ -73,17 +73,15 @@ export default {
           }
     },
     logoBgStyle() {
-      return Object.assign(
-        {
-          margin: `${this.logoMargin} 0`,
-          opacity: this.searchBarHidden ? 1 : 0,
-        },
-        this.enableMask
-          ? {}
-          : {
-              'background-color': this.enableMask ? '' : 'transparent',
-            },
-      )
+      const mask = this.enableMask
+        ? {}
+        : { 'background-color': this.enableMask ? '' : 'transparent' }
+
+      return {
+        margin: `${this.logoMargin} 0`,
+        opacity: this.searchBarHidden ? 1 : 0,
+        ...mask,
+      }
     },
     ...mapState(useInstanceStore, ['privateMode']),
     ...mapState(useInstanceStore, {

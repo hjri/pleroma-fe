@@ -68,7 +68,7 @@
               >
                 <button
                   v-if="editable"
-                  :disabled="newName && newName.length === 0"
+                  :disabled="newName?.length === 0"
                   class="btn button-unstyled edit-banner-button"
                   @click="changeBanner"
                 >

@@ -47,7 +47,7 @@ export default {
       // In case of controlled component
       if (this.activeTab) {
         return this.slots().findIndex(
-          (slot) => slot && slot.props && this.activeTab === slot.props.key,
+          (slot) => slot?.props && this.activeTab === slot.props.key,
         )
       } else {
         return this.active

@@ -229,10 +229,7 @@ export const getLayerSlot = (
  */
 export const SLOT_ORDERED = topoSort(
   Object.entries(SLOT_INHERITANCE)
-    .sort(
-      ([, aV], [, bV]) =>
-        ((aV && aV.priority) || 0) - ((bV && bV.priority) || 0),
-    )
+    .sort(([, aV], [, bV]) => (aV?.priority || 0) - (bV?.priority || 0))
     .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {}),
 )
 
@@ -408,7 +405,7 @@ export const getColors = (sourceColors, sourceOpacity) =>
           delete outputColor.a
         } else {
           // Otherwise try to assign opacity
-          if (dependencyColor && dependencyColor.a === 0) {
+          if (dependencyColor?.a === 0) {
             // transparent dependency shall make dependents transparent too
             outputColor.a = 0
           } else {
@@ -523,7 +520,7 @@ export const generateColors = (themeData) => {
     (acc, [k, v]) => {
       if (!v) return acc
       acc.solid[k] = rgb2hex(v)
-      acc.complete[k] = typeof v.a === 'undefined' ? rgb2hex(v) : rgba2css(v)
+      acc.complete[k] = v.a === undefined ? rgb2hex(v) : rgba2css(v)
       return acc
     },
     { complete: {}, solid: {} },
@@ -545,7 +542,7 @@ export const generateColors = (themeData) => {
 export const generateRadii = (input) => {
   let inputRadii = input.radii || {}
   // v1 -> v2
-  if (typeof input.btnRadius !== 'undefined') {
+  if (input.btnRadius !== undefined) {
     inputRadii = Object.entries(input)
       .filter(([k]) => k.endsWith('Radius'))
       .reduce((acc, e) => {

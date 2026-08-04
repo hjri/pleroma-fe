@@ -125,10 +125,7 @@ const generateTheme = (inputRuleset, callbacks, debug) => {
   const processChunk = () => {
     const chunk = chunks[counter]
     Promise.all(chunk.map((x) => x())).then((result) => {
-      getCssRules(
-        result.filter((x) => x),
-        debug,
-      ).forEach((rule) => {
+      getCssRules(result.filter(Boolean), debug).forEach((rule) => {
         onNewRule(rule, true)
       })
       // const t1 = performance.now()
@@ -253,7 +250,9 @@ const extractStyleConfig = ({
     contentColumnWidth,
     notifsColumnWidth,
     themeEditorMinWidth:
-      parseInt(themeEditorMinWidth) === 0 ? 'fit-content' : themeEditorMinWidth,
+      Number.parseInt(themeEditorMinWidth) === 0
+        ? 'fit-content'
+        : themeEditorMinWidth,
     emojiReactionsScale,
     emojiSize,
     navbarSize,

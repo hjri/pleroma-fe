@@ -173,9 +173,9 @@ export const hex2rgb = (hex) => {
 
   return result
     ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
+        r: Number.parseInt(result[1], 16),
+        g: Number.parseInt(result[2], 16),
+        b: Number.parseInt(result[3], 16),
       }
     : null
 }
@@ -271,7 +271,7 @@ export const getTextColor = function (bg, text, preserve) {
     contrast = getContrastRatio(bg, convert(result).rgb)
   }
 
-  const base = typeof text.a !== 'undefined' ? { a: text.a } : {}
+  const base = text.a !== undefined ? { a: text.a } : {}
   return Object.assign(convert(result).rgb, base)
 }
 

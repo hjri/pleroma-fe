@@ -159,7 +159,7 @@ export default {
       return this.source || this.defaultSource
     },
     realDraftMode() {
-      return typeof this.draftMode === 'undefined'
+      return this.draftMode === undefined
         ? this.defaultDraftMode
         : this.draftMode
     },

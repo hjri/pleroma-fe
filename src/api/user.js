@@ -1,4 +1,4 @@
-import { concat, last } from 'lodash'
+import { last } from 'lodash'
 
 import { paramsString, promisedRequest } from './helpers.js'
 import { fetchFriends, MASTODON_STATUS_URL } from './public.js'
@@ -220,7 +220,7 @@ export const postStatus = ({
   })
   if (pollOptions.some((option) => option !== '')) {
     const normalizedPoll = {
-      expires_in: parseInt(poll.expiresIn, 10),
+      expires_in: Number.parseInt(poll.expiresIn, 10),
       multiple: poll.multiple,
     }
     Object.keys(normalizedPoll).forEach((key) => {
@@ -278,7 +278,7 @@ export const editStatus = ({
 
   if (pollOptions.some((option) => option !== '')) {
     const normalizedPoll = {
-      expires_in: parseInt(poll.expiresIn, 10),
+      expires_in: Number.parseInt(poll.expiresIn, 10),
       multiple: poll.multiple,
     }
     Object.keys(normalizedPoll).forEach((key) => {
@@ -412,7 +412,7 @@ export const exportFriends = ({ id, credentials }) => {
           credentials,
           withRelationships: true,
         })
-        friends = concat(friends, users)
+        friends = [...friends, ...users]
         if (users.length === 0) {
           more = false
         }
@@ -613,7 +613,7 @@ export const listAliases = ({ credentials }) =>
     method: 'GET',
     credentials,
     params: {
-      _cacheBooster: new Date().getTime(),
+      _cacheBooster: Date.now(),
     },
   })
 
@@ -799,7 +799,7 @@ export const listBackups = ({ credentials }) =>
     method: 'GET',
     credentials,
     params: {
-      _cacheBooster: new Date().getTime(),
+      _cacheBooster: Date.now(),
     },
   })
 

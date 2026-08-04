@@ -1,5 +1,3 @@
-import { uniq } from 'lodash'
-
 import * as DateUtils from 'src/services/date_utils/date_utils.js'
 
 const pollFallbackValues = {
@@ -19,9 +17,9 @@ export const pollFormToMasto = (poll) => {
     pollFallback(poll, 'expiryAmount'),
   )
 
-  const options = uniq(
-    pollFallback(poll, 'options').filter((option) => option !== ''),
-  )
+  const options = [
+    ...new Set(pollFallback(poll, 'options').filter((option) => option !== '')),
+  ]
   if (options.length < 2) {
     return { errorKey: 'polls.not_enough_options' }
   }

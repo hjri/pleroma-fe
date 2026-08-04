@@ -558,9 +558,9 @@ export const convertTheme2To3 = (data) => {
   )
 
   const flatExtRules = extendedRules
-    .filter((x) => x)
+    .filter(Boolean)
     .reduce((acc, x) => [...acc, ...x], [])
-    .filter((x) => x)
+    .filter(Boolean)
     .reduce((acc, x) => [...acc, ...x], [])
 
   return [

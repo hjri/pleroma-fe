@@ -50,7 +50,7 @@
             />
           </button>
           <button
-            v-if="currentUser && currentUser.role === 'admin'"
+            v-if="currentUser?.role === 'admin'"
             class="button-unstyled nav-icon"
             target="_blank"
             :title="$t('nav.administration')"

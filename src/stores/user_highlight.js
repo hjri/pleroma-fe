@@ -2,10 +2,9 @@ import {
   merge as _merge,
   clone,
   cloneDeep,
-  flatten,
   groupBy,
   isEqual,
-  takeRight,
+  last,
 } from 'lodash'
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
@@ -117,25 +116,26 @@ export const _getRecentData = (cache, live, isTest) => {
 
 const _mergeJournal = (...journals) => {
   // Ignore invalid journal entries
-  const allJournals = flatten(
-    journals.map((j) => (Array.isArray(j) ? j : [])),
-  ).filter(
-    (entry) =>
-      Object.hasOwn(entry, 'user') &&
-      Object.hasOwn(entry, 'operation') &&
-      Object.hasOwn(entry, 'args') &&
-      Object.hasOwn(entry, 'timestamp'),
-  )
+  const allJournals = journals
+    .map((j) => (Array.isArray(j) ? j : []))
+    .flat()
+    .filter(
+      (entry) =>
+        Object.hasOwn(entry, 'user') &&
+        Object.hasOwn(entry, 'operation') &&
+        Object.hasOwn(entry, 'args') &&
+        Object.hasOwn(entry, 'timestamp'),
+    )
   const grouped = groupBy(allJournals, 'user')
   const trimmedGrouped = Object.entries(grouped).map(([user, journal]) => {
     // side effect
     journal.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
 
-    return takeRight(journal)
+    return [last(journal)]
   })
-  return flatten(trimmedGrouped).sort((a, b) =>
-    a.timestamp > b.timestamp ? 1 : -1,
-  )
+  return trimmedGrouped
+    .flat()
+    .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
 }
 
 export const _mergeHighlights = (recent, stale) => {

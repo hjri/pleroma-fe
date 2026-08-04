@@ -154,7 +154,7 @@ const Timeline = {
     })
   },
   mounted() {
-    if (typeof document.hidden !== 'undefined') {
+    if (document.hidden !== undefined) {
       document.addEventListener(
         'visibilitychange',
         this.handleVisibilityChange,
@@ -168,7 +168,7 @@ const Timeline = {
   unmounted() {
     window.removeEventListener('scroll', this.handleScroll)
     window.removeEventListener('keydown', this.handleShortKey)
-    if (typeof document.hidden !== 'undefined')
+    if (document.hidden !== undefined)
       document.removeEventListener(
         'visibilitychange',
         this.handleVisibilityChange,
@@ -231,7 +231,7 @@ const Timeline = {
             tag: this.tag,
           })
           .then(({ statuses }) => {
-            if (statuses && statuses.length === 0) {
+            if (statuses?.length === 0) {
               this.bottomedOut = true
             }
           })

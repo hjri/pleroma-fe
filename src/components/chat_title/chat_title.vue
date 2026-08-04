@@ -16,7 +16,7 @@
     <RichContent
       v-if="user"
       class="username"
-      :title="'@'+(user && user.screen_name_ui)"
+      :title="'@'+(user?.screen_name_ui)"
       :html="htmlTitle"
       :emoji="user.emoji || []"
       :allow-non-square-emoji="allowNonSquareEmoji"

@@ -177,7 +177,7 @@ export const parseUser = (data) => {
     // deactivated was changed to is_active in Pleroma 2.3.0
     // so check if is_active is present
     output.deactivated =
-      typeof data.pleroma.is_active !== 'undefined'
+      data.pleroma.is_active !== undefined
         ? !data.pleroma.is_active // new backend
         : data.pleroma.deactivated // old backend
 
@@ -372,7 +372,7 @@ export const parseNotification = (data) => {
   }
 
   output.created_at = new Date(data.created_at)
-  output.id = parseInt(data.id)
+  output.id = Number.parseInt(data.id)
 
   return output
 }
@@ -385,8 +385,8 @@ export const parseLinkHeaderPagination = (linkHeader, opts = {}) => {
   const minId = parsedLinkHeader.prev?.min_id
 
   return {
-    maxId: flakeId ? maxId : parseInt(maxId, 10),
-    minId: flakeId ? minId : parseInt(minId, 10),
+    maxId: flakeId ? maxId : Number.parseInt(maxId, 10),
+    minId: flakeId ? minId : Number.parseInt(minId, 10),
   }
 }
 

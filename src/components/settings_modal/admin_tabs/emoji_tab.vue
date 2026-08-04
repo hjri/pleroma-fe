@@ -374,7 +374,7 @@
           class="emoji-list setting-list"
         >
           <EmojiEditingPopover
-            v-if="pack && pack.remote === undefined"
+            v-if="pack?.remote === undefined"
             class="emoji-item"
             placement="bottom"
             new-upload

@@ -42,7 +42,7 @@ export default {
   emits: ['update:modelValue'],
   computed: {
     present() {
-      return typeof this.modelValue !== 'undefined'
+      return this.modelValue !== undefined
     },
   },
 }

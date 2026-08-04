@@ -134,7 +134,7 @@ export default {
   emits: ['update:modelValue'],
   computed: {
     present() {
-      return typeof this.modelValue !== 'undefined'
+      return this.modelValue !== undefined
     },
     validColor() {
       return hex2rgb(this.modelValue || this.fallback)

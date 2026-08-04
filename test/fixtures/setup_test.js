@@ -132,7 +132,7 @@ export const waitForEvent = (
   return vi.waitFor(
     () => {
       const e = wrapper.emitted(event)
-      if (e && e.length >= timesEmitted) {
+      if (e?.length >= timesEmitted) {
         return
       }
       throw new Error('event is not emitted')

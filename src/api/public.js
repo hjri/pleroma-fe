@@ -105,7 +105,7 @@ export const fetchUserByName = ({ name, credentials }) =>
   })
     .then(({ data }) => data.id)
     .catch((error) => {
-      if (error && error.statusCode === 404) {
+      if (error?.statusCode === 404) {
         // Either the backend does not support lookup endpoint,
         // or there is no user with such name. Fallback and treat name as id.
         return name

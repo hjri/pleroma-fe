@@ -111,7 +111,7 @@ const ChatMessage = {
         const user = this.$store.getters.findUser(
           this.message.in_reply_to_user_id,
         )
-        return user && user.screen_name_ui
+        return user?.screen_name_ui
       }
     },
     replyProfileLink() {

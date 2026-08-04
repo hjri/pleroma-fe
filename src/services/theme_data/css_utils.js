@@ -104,7 +104,7 @@ export const getCssRules = (rules, debug) =>
                     : '',
                   '  --background: ' + v,
                 ]
-                  .filter((x) => x)
+                  .filter(Boolean)
                   .join(';\n')
               }
               const color = getCssColorString(
@@ -115,7 +115,7 @@ export const getCssRules = (rules, debug) =>
               if (rule.directives.backgroundNoCssColor !== 'yes') {
                 cssDirectives.push('background-color: ' + color)
               }
-              return cssDirectives.filter((x) => x).join(';\n')
+              return cssDirectives.filter(Boolean).join(';\n')
             }
             case 'blur': {
               const cssDirectives = []
@@ -157,7 +157,7 @@ export const getCssRules = (rules, debug) =>
               return null
           }
         })
-        .filter((x) => x)
+        .filter(Boolean)
         .map((x) => '  ' + x + ';')
         .join('\n')
 
@@ -172,10 +172,10 @@ export const getCssRules = (rules, debug) =>
         virtualDirectives,
         footer,
       ]
-        .filter((x) => x)
+        .filter(Boolean)
         .join('\n')
     })
-    .filter((x) => x)
+    .filter(Boolean)
 
 export const getScopedVersion = (rules, newScope) => {
   return rules.map((x) => {

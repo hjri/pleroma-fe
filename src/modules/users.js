@@ -1,14 +1,5 @@
 import Cookies from 'js-cookie'
-import {
-  compact,
-  concat,
-  each,
-  isArray,
-  last,
-  map,
-  mergeWith,
-  uniq,
-} from 'lodash'
+import { compact, each, last, map, mergeWith } from 'lodash'
 
 import {
   registerPushNotifications,
@@ -76,7 +67,7 @@ export const mergeOrAdd = (arr, obj, item) => {
 }
 
 const mergeArrayLength = (oldValue, newValue) => {
-  if (isArray(oldValue) && isArray(newValue)) {
+  if (Array.isArray(oldValue) && Array.isArray(newValue)) {
     oldValue.length = newValue.length
     return mergeWith(oldValue, newValue, mergeArrayLength)
   }
@@ -234,11 +225,11 @@ export const mutations = {
   },
   saveFriendIds(state, { id, friendIds }) {
     const user = state.usersObject[id]
-    user.friendIds = uniq(concat(user.friendIds || [], friendIds))
+    user.friendIds = [...new Set([...(user.friendIds || []), ...friendIds])]
   },
   saveFollowerIds(state, { id, followerIds }) {
     const user = state.usersObject[id]
-    user.followerIds = uniq(concat(user.followerIds || [], followerIds))
+    user.followerIds = [...new Set([user.followerIds || [], ...followerIds])]
   },
   // Because frontend doesn't have a reason to keep these stuff in memory
   // outside of viewing someones user profile.

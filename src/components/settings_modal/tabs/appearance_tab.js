@@ -236,7 +236,7 @@ const AppearanceTab = {
     },
     stylePalettes() {
       const ruleset = useInterfaceStore().styleDataUsed || []
-      if (!ruleset && ruleset.length === 0) return
+      if (!ruleset?.length === 0) return
       const meta = ruleset.find((x) => x.component === '@meta')
       const result = ruleset
         .filter((x) => x.component.startsWith('@palette'))
@@ -401,7 +401,7 @@ const AppearanceTab = {
           }
 
           theme3 = init({
-            inputRuleset: [...input, paletteRule].filter((x) => x),
+            inputRuleset: [...input, paletteRule].filter(Boolean),
             ultimateBackgroundColor: '#000000',
             liteMode: true,
             onlyNormalState: true,

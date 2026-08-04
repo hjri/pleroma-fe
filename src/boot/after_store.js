@@ -63,14 +63,14 @@ const parsedInitialResults = () => {
 
 const decodeUTF8Base64 = (data) => {
   const rawData = atob(data)
-  const array = Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)))
+  const array = Uint8Array.from([...rawData].map((char) => char.codePointAt(0)))
   const text = new TextDecoder().decode(array)
   return text
 }
 
 const preloadFetch = async (request) => {
   const data = parsedInitialResults()
-  if (!data || !data[request]) {
+  if (!data?.[request]) {
     return window.fetch(request)
   }
   const decoded = decodeUTF8Base64(data[request])
@@ -170,9 +170,9 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
   let config = {}
   if (overrides.staticConfigPreference && env === 'development') {
     console.warn('OVERRIDING API CONFIG WITH STATIC CONFIG')
-    config = Object.assign({}, apiConfig, staticConfig)
+    config = { ...apiConfig, ...staticConfig }
   } else {
-    config = Object.assign({}, staticConfig, apiConfig)
+    config = { ...staticConfig, ...apiConfig }
   }
 
   Object.keys(INSTANCE_IDENTITY_DEFAULT_DEFINITIONS).forEach((source) => {
@@ -353,19 +353,19 @@ const getNodeInfo = async ({ store }) => {
       const uploadLimits = metadata.uploadLimits
       useInstanceStore().set({
         path: 'limits.uploadlimit',
-        value: parseInt(uploadLimits.general),
+        value: Number.parseInt(uploadLimits.general),
       })
       useInstanceStore().set({
         path: 'limits.avatarlimit',
-        value: parseInt(uploadLimits.avatar),
+        value: Number.parseInt(uploadLimits.avatar),
       })
       useInstanceStore().set({
         path: 'limits.backgroundlimit',
-        value: parseInt(uploadLimits.background),
+        value: Number.parseInt(uploadLimits.background),
       })
       useInstanceStore().set({
         path: 'limits.bannerlimit',
-        value: parseInt(uploadLimits.banner),
+        value: Number.parseInt(uploadLimits.banner),
       })
       useInstanceStore().set({
         path: 'limits.fieldsLimits',
@@ -409,7 +409,7 @@ const getNodeInfo = async ({ store }) => {
 
       useInstanceCapabilitiesStore().set(
         'tagPolicyAvailable',
-        typeof federation.mrf_policies === 'undefined'
+        federation.mrf_policies === undefined
           ? false
           : metadata.federation.mrf_policies.includes('TagPolicy'),
       )
@@ -420,8 +420,7 @@ const getNodeInfo = async ({ store }) => {
       })
       useInstanceStore().set({
         path: 'federating',
-        value:
-          typeof federation.enabled === 'undefined' ? true : federation.enabled,
+        value: federation.enabled === undefined ? true : federation.enabled,
       })
 
       const accountActivationRequired = metadata.accountActivationRequired
@@ -443,7 +442,7 @@ const getNodeInfo = async ({ store }) => {
 const setConfig = async ({ store }) => {
   // apiConfig, staticConfig
   const configInfos = await Promise.all([
-    getBackendProvidedConfig({ store }),
+    getBackendProvidedConfig(),
     getStaticConfig(),
   ])
   const apiConfig = configInfos[0]
@@ -457,7 +456,7 @@ const checkOAuthToken = async ({ store }) => {
   if (oauth.userToken) {
     return store.dispatch('loginUser', oauth.userToken)
   }
-  return Promise.resolve()
+  return
 }
 
 const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
@@ -485,7 +484,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     if (process.env.NODE_ENV === 'development') {
       // do some checks to avoid common errors
       if (!Object.keys(allStores).length) {
-        throw new Error(
+        throw new TypeError(
           'No stores are available. Check the code in src/boot/after_store.js',
         )
       }
@@ -495,7 +494,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
         const isStoreName = (name) => name.startsWith('use')
         if (process.env.NODE_ENV === 'development') {
           if (Object.keys(mod).filter(isStoreName).length !== 1) {
-            throw new Error(
+            throw new TypeError(
               'Each store file must export exactly one store as a named export. Check your code in src/stores/',
             )
           }
@@ -504,13 +503,13 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
         if (storeFuncName && typeof mod[storeFuncName] === 'function') {
           const p = mod[storeFuncName]().$persistLoaded
           if (!(p instanceof Promise)) {
-            throw new Error(
+            throw new TypeError(
               `${name} store's $persistLoaded is not a Promise. The persist plugin is not applied.`,
             )
           }
           await p
         } else {
-          throw new Error(
+          throw new TypeError(
             `Store module ${name} does not export a 'use...' function`,
           )
         }
@@ -518,14 +517,15 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     )
   }
 
+  let newStorageError
   try {
     await waitForAllStoresToLoad()
   } catch (e) {
     console.error('Cannot load stores:', e)
-    storageError = e
+    newStorageError = e
   }
 
-  if (storageError) {
+  if (storageError || newStorageError) {
     useInterfaceStore().pushGlobalNotice({
       messageKey: 'errors.storage_unavailable',
       level: 'error',
@@ -547,9 +547,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
 
   const overrides = window.___pleromafe_dev_overrides || {}
   const server =
-    typeof overrides.target !== 'undefined'
-      ? overrides.target
-      : window.location.origin
+    overrides.target !== undefined ? overrides.target : window.location.origin
   useInstanceStore().set({ path: 'server', value: server })
 
   await setConfig({ store })
@@ -561,7 +559,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
       })
   } catch (e) {
     window.splashError(e)
-    return Promise.reject(e)
+    throw e
   }
 
   applyStyleConfig(useMergedConfigStore().mergedConfig, i18n.global)
@@ -573,7 +571,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     getInstancePanel({ store }),
     getNodeInfo({ store }),
     getInstanceConfig({ store }),
-  ]).catch((e) => Promise.reject(e))
+  ])
 
   getTOS({ store })
   getStickers({ store })
@@ -583,7 +581,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     routes: routes(store),
     scrollBehavior: (to, _from, savedPosition) => {
       if (to.matched.some((m) => m.meta.dontScroll)) {
-        return false
+        return {}
       }
       return savedPosition || { left: 0, top: 0 }
     },

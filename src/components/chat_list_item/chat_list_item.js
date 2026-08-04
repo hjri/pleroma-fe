@@ -39,7 +39,7 @@ const ChatListItem = {
     messageForStatusContent() {
       const message = this.chat.lastMessage
       const messageEmojis = message ? message.emojis : []
-      const isYou = message && message.account_id === this.currentUser.id
+      const isYou = message?.account_id === this.currentUser.id
       const content = message ? this.attachmentInfo || message.content : ''
       const messagePreview = isYou
         ? `<i>${this.$t('chats.you')}</i> ${content}`

@@ -338,10 +338,10 @@ export const init = ({
     const relevantRules = ruleset.filter((r) => r.component === component.name)
     const backgrounds = relevantRules
       .map((r) => r.directives.background)
-      .filter((x) => x)
+      .filter(Boolean)
     const opacities = relevantRules
       .map((r) => r.directives.opacity)
-      .filter((x) => x)
+      .filter(Boolean)
     if (
       backgrounds.some((x) => x.match(/--parent/)) ||
       opacities.some((x) => x != null && x < 1)
@@ -596,7 +596,7 @@ export const init = ({
               const shadow = value
                 .split(/,/g)
                 .map((s) => s.trim())
-                .filter((x) => x)
+                .filter(Boolean)
               dynamicVars[k] = shadow
               if (combination.component === rootComponentName) {
                 staticVars[k.substring(2)] = shadow
@@ -752,7 +752,7 @@ export const init = ({
         return processCombination(combination)
       }
     })
-    .filter((x) => x)
+    .filter(Boolean)
   const t2 = performance.now()
   if (debug) {
     console.debug('Eager processing took ' + (t2 - t1) + ' ms')

@@ -4,13 +4,12 @@ import {
   clamp,
   cloneDeep,
   findLastIndex,
-  flatten,
   get,
   groupBy,
   isEqual,
+  last,
   set,
   take,
-  takeRight,
   uniqWith,
   unset,
 } from 'lodash'
@@ -222,15 +221,16 @@ export const _mergeFlags = (recent, stale, allFlagKeys) => {
 
 export const _mergeJournal = (...journals) => {
   // Ignore invalid journal entries
-  const allJournals = flatten(
-    journals.map((j) => (Array.isArray(j) ? j : [])),
-  ).filter(
-    (entry) =>
-      Object.hasOwn(entry, 'path') &&
-      Object.hasOwn(entry, 'operation') &&
-      Object.hasOwn(entry, 'args') &&
-      Object.hasOwn(entry, 'timestamp'),
-  )
+  const allJournals = journals
+    .map((j) => (Array.isArray(j) ? j : []))
+    .flat()
+    .filter(
+      (entry) =>
+        Object.hasOwn(entry, 'path') &&
+        Object.hasOwn(entry, 'operation') &&
+        Object.hasOwn(entry, 'args') &&
+        Object.hasOwn(entry, 'timestamp'),
+    )
   const grouped = groupBy(allJournals, 'path')
   const trimmedGrouped = Object.entries(grouped).map(([path, rawJournal]) => {
     const journal = rawJournal
@@ -271,13 +271,14 @@ export const _mergeJournal = (...journals) => {
       })
     } else if (path.startsWith('simple')) {
       // Only the last record is important
-      return takeRight(journal)
+      return [last(journal)]
     } else {
       return journal
     }
   })
 
-  const flat = flatten(trimmedGrouped)
+  const flat = trimmedGrouped
+    .flat()
     .map((data, index) => ({ data, index }))
     .toSorted(({ data: a, index: ai }, { data: b, index: bi }) => {
       if (a.timestamp === b.timestamp) {
