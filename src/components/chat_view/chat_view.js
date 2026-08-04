@@ -367,7 +367,6 @@ const Chat = {
       }
     },
     async startFetching() {
-      console.log(this.statusId, this.chatUserId)
       if (!this.isConversation) {
         try {
           const { data } = await getOrCreateChat({
