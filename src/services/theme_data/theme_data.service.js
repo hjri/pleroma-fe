@@ -460,7 +460,7 @@ export const generatePreset = (input) => {
   return composePreset(
     colors,
     generateRadii(input),
-    generateShadows(input, colors.theme.colors, colors.mod),
+    generateShadows(input, colors.theme.colors),
     generateFonts(input),
   )
 }

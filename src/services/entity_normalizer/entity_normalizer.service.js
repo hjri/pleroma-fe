@@ -62,8 +62,8 @@ export const parseUser = (data) => {
   })
   output.fields_text = data.fields.map((field) => {
     return {
-      name: unescape(field.name.replace(/<[^>]*>/g, '')),
-      value: unescape(field.value.replace(/<[^>]*>/g, '')),
+      name: unescape(field.name.replaceAll('<[^>]*>', '')),
+      value: unescape(field.value.replaceAll('<[^>]*>', '')),
     }
   })
 

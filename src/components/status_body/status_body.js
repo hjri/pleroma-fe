@@ -147,7 +147,7 @@ const StatusBody = {
       return this.status.attachments.map((file) => file.type)
     },
     collapsedStatus() {
-      return this.status.raw_html.replace(/(\n|<br\s?\/?>)/g, ' ')
+      return this.status.raw_html.replaceAll('(\n|<br\s?\/?>)', ' ')
     },
     ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
@@ -168,7 +168,7 @@ const StatusBody = {
         .filter((mention) => !mention.notifying)
         .forEach((mention) => {
           const { content, url } = mention
-          const cleanedString = content.replace(/<[^>]+?>/gi, '') // remove all tags
+          const cleanedString = content.replaceAll(/<[^>]+?>/gi, '') // remove all tags
           if (!cleanedString.startsWith('@')) return
           const handle = cleanedString.slice(1)
           const host = url.replace(/^https?:\/\//, '').replace(/\/.+?$/, '')

@@ -3,7 +3,7 @@ import emojis from '@kazvmoe-infra/unicode-emoji-json/data-by-group.json' with {
   type: 'json',
 }
 
-Object.keys(emojis).map((k) => {
+Object.keys(emojis).forEach((k) => {
   emojis[k].forEach((e) => {
     delete e.unicode_version
     delete e.emoji_version

@@ -196,7 +196,7 @@ export default {
   },
   computed: {
     escapedNewBio() {
-      return ldEscape(this.newBio).replace(/\n/g, '<br>')
+      return ldEscape(this.newBio).replaceAll('\n', '<br>')
     },
     somethingToSave() {
       if (this.newName !== this.user.name_unescaped) return true

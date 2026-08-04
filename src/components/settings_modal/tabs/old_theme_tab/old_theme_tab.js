@@ -319,7 +319,7 @@ export default {
       return useInterfaceStore().themeDataUsed
     },
     shadowsAvailable() {
-      return Object.keys(DEFAULT_SHADOWS).sort()
+      return Object.keys(DEFAULT_SHADOWS).sort((a, b) => a.localeCompare(b))
     },
     currentShadowOverriden: {
       get() {

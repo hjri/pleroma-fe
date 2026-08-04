@@ -231,7 +231,7 @@ export const useEmojiStore = defineStore('emoji', {
         .then((allPacks) => {
           // Sort by key
           return Object.keys(allPacks)
-            .sort()
+            .sort((a, b) => a.localeCompare(b))
             .reduce((acc, key) => {
               if (key.length === 0) return acc
               acc[key] = allPacks[key]
