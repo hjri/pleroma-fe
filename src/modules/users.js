@@ -76,10 +76,10 @@ const mergeArrayLength = (oldValue, newValue) => {
 const getNotificationPermission = () => {
   const Notification = window.Notification
 
-  if (!Notification) return Promise.resolve(null)
+  if (!Notification) return null
   if (Notification.permission === 'default')
     return Notification.requestPermission()
-  return Promise.resolve(Notification.permission)
+  return Notification.permission
 }
 
 const blockUser = (store, args) => {
@@ -388,7 +388,7 @@ const users = {
       if (!user) {
         return store.dispatch('fetchUser', id)
       } else {
-        return Promise.resolve(user)
+        return user
       }
     },
     updateUserAdminData(store, { userAdminData }) {

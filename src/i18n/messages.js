@@ -20,7 +20,7 @@ const languageFileMap = import.meta.glob(['./*.json', '!./en.json'])
 
 const loadLanguageFile = (code) => {
   const jsonName = langCodeToJsonName(code)
-  if (jsonName === 'en') return Promise.resolve({ default: enMessages })
+  if (jsonName === 'en') return { default: enMessages }
   return languageFileMap[`./${jsonName}.json`]()
 }
 

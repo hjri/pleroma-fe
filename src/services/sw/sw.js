@@ -40,10 +40,10 @@ function subscribePush(registration, isEnabled, vapidPublicKey) {
   return registration.pushManager.subscribe(subscribeOptions)
 }
 
-function unsubscribePush(registration) {
+async function unsubscribePush(registration) {
   return registration.pushManager.getSubscription().then((subscription) => {
     if (subscription === null) {
-      return Promise.resolve('No subscription')
+      return 'No subscription'
     }
     return subscription.unsubscribe()
   })
