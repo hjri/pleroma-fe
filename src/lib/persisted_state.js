@@ -198,7 +198,7 @@ export const piniaPersistPlugin =
     const setState = (state) => {
       if (!loadedGuard.loaded) {
         console.info('waiting for old state to be loaded...')
-        return Promise.reject()
+        throw new Error('Waiting')
       } else {
         return storage.setItem(key, state)
       }

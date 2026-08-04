@@ -262,7 +262,7 @@ export default {
         .then((resp) => {
           if (resp.error !== undefined) {
             this.$emit('displayError', resp.error)
-            return Promise.reject(resp.error)
+            throw new Error(resp.error)
           }
 
           return resp.json()

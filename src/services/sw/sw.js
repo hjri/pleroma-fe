@@ -29,9 +29,9 @@ function getOrCreateServiceWorker() {
 
 function subscribePush(registration, isEnabled, vapidPublicKey) {
   if (!isEnabled)
-    return Promise.reject(new Error('Web Push is disabled in config'))
+    throw new Error('Web Push is disabled in config')
   if (!vapidPublicKey)
-    return Promise.reject(new Error('VAPID public key is not found'))
+    throw new Error('VAPID public key is not found')
 
   const subscribeOptions = {
     userVisibleOnly: false,

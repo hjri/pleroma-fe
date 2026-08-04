@@ -512,7 +512,7 @@ export const convertTheme2To3 = (data) => {
             { ...newRule, component: 'Tab' },
             { ...newRule, component: 'ScrollbarElement' },
           ]
-          if (newRule.state?.indexOf('toggled') >= 0) {
+          if (newRule.state?.includes('toggled')) {
             rules.push({ ...newRule, state: [...newRule.state, 'focused'] })
             rules.push({ ...newRule, state: [...newRule.state, 'hover'] })
             rules.push({
@@ -520,7 +520,7 @@ export const convertTheme2To3 = (data) => {
               state: [...newRule.state, 'hover', 'focused'],
             })
           }
-          if (newRule.state?.indexOf('hover') >= 0) {
+          if (newRule.state?.includes('hover')) {
             rules.push({ ...newRule, state: [...newRule.state, 'focused'] })
           }
           return rules

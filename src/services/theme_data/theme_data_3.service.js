@@ -690,11 +690,11 @@ export const init = ({
               .map((combination) => ['normal', ...combination])
               .filter((combo) => {
                 // Optimization: filter out some hard-coded combinations that don't make sense
-                if (combo.indexOf('disabled') >= 0) {
+                if (combo.includes('disabled')) {
                   return !(
-                    combo.indexOf('hover') >= 0 ||
-                    combo.indexOf('focused') >= 0 ||
-                    combo.indexOf('pressed') >= 0
+                    combo.includes('hover') ||
+                    combo.includes('focused') ||
+                    combo.includes('pressed')
                   )
                 }
                 return true
@@ -711,7 +711,7 @@ export const init = ({
       combination.component = component.name
       combination.lazy = component.lazy || parent?.lazy
       combination.parent = parent
-      if (!liteMode && combination.state.indexOf('hover') >= 0) {
+      if (!liteMode && combination.state.includes('hover')) {
         combination.lazy = true
       }
 
