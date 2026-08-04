@@ -14,9 +14,9 @@
           v-if="conversation[0]?.summary_raw_html"
           :html="conversation[0].summary_raw_html"
           :emoji="conversation[0].emojis"
-          />
+        />
         <template v-else>
-        {{ $t('timeline.conversation') }}
+          {{ $t('timeline.conversation') }}
         </template>
       </h1>
       <button

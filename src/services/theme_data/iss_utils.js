@@ -110,13 +110,6 @@ export const genericRuleToSelector =
       let arraySelector = Array.isArray(selector) ? selector : [selector]
       if (ignoreOutOfTreeSelector || liteMode)
         arraySelector = [arraySelector[0]]
-      arraySelector
-        .sort((a) => {
-          if (a.startsWith(':')) return 1
-          if (/^[a-z]/.exec(a)) return -1
-          else return 0
-        })
-        .join('')
       return arraySelector
     })
 

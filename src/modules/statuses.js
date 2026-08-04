@@ -134,7 +134,7 @@ const sortById = (a, b) => {
 const sortTimeline = (timeline) => {
   timeline.visibleStatuses = timeline.visibleStatuses.sort(sortById)
   timeline.statuses = timeline.statuses.sort(sortById)
-  timeline.minVisibleId = (last(timeline.visibleStatuses) || {}).id
+  timeline.minVisibleId = last(timeline.visibleStatuses)?.id
   return timeline
 }
 

@@ -316,7 +316,7 @@ const PostStatusForm = {
     },
     // -Edit
     isEdit() {
-      return typeof this.statusId !== 'undefined' && this.statusId.trim() !== ''
+      return this.statusId !== undefined && this.statusId.trim() !== ''
     },
     // -Reply
     isReply() {
@@ -619,7 +619,7 @@ const PostStatusForm = {
       this.newStatus.quote = null
       this.newStatus.nsfw = this.defaultNewStatus.nsfw
       this.newStatus.mediaDescriptions = {}
-      this.$refs.mediaUpload && this.$refs.mediaUpload.clearFile()
+      this.$refs.mediaUpload?.clearFile()
       if (this.preserveFocus) {
         this.$nextTick(() => {
           this.$refs.textarea.focus()
@@ -809,7 +809,7 @@ const PostStatusForm = {
       }
     },
     fileDrop(e) {
-      if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+      if (e.dataTransfer?.types.includes('Files')) {
         e.preventDefault() // allow dropping text like before
         this.dropFiles = e.dataTransfer.files
         clearTimeout(this.dropStopTimeout)
@@ -826,7 +826,7 @@ const PostStatusForm = {
     },
     fileDrag(e) {
       e.dataTransfer.dropEffect = this.uploadFileLimitReached ? 'none' : 'copy'
-      if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+      if (e.dataTransfer?.types.includes('Files')) {
         clearTimeout(this.dropStopTimeout)
         this.showDropIcon = 'show'
       }

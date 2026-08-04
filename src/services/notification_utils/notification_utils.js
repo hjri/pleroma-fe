@@ -175,13 +175,7 @@ export const prepareNotificationObject = (notification, i18n) => {
   }
 
   // Shows first attached non-nsfw image, if any. Should add configuration for this somehow...
-  if (
-    status &&
-    status.attachments &&
-    status.attachments.length > 0 &&
-    !status.nsfw &&
-    status.attachments[0].mimetype.startsWith('image/')
-  ) {
+  if (!status.nsfw && status?.attachments?.[0]?.mimetype.startsWith('image/')) {
     notifObj.image = status.attachments[0].url
   }
 

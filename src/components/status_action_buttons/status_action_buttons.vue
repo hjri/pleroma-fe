@@ -20,9 +20,9 @@
           :get-component="getComponent"
           :close="() => { /* no-op */ }"
           :do-action="doAction"
-          @emoji-picker-shown="onEmojiPickerShown"
           :default-button-style="useDefaultButtons"
           :hide-label="hideLabels"
+          @emoji-picker-shown="onEmojiPickerShown"
         />
         <button
           v-if="showPin && currentUser"

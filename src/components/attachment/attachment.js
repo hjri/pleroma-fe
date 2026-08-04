@@ -165,16 +165,16 @@ const Attachment = {
       useMediaViewerStore().setCurrentMedia(this.attachment)
     },
     onEdit(event) {
-      this.edit && this.edit(this.attachment, event)
+      this.edit?.(this.attachment, event)
     },
     onRemove() {
-      this.remove && this.remove(this.attachment)
+      this.remove?.(this.attachment)
     },
     onShiftUp() {
-      this.shiftUp && this.shiftUp(this.attachment)
+      this.shiftUp?.(this.attachment)
     },
     onShiftDn() {
-      this.shiftDn && this.shiftDn(this.attachment)
+      this.shiftDn?.(this.attachment)
     },
     stopFlash() {
       this.$refs.flash.closePlayer()

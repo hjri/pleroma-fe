@@ -1,8 +1,8 @@
 <template>
   <div
+    v-if="initialized"
     ref="form"
     class="post-status-form"
-    v-if="initialized"
   >
     <form
       autocomplete="off"
@@ -176,12 +176,12 @@
           <input
             v-if="mentionsLine"
             :value="mentionsLineReadOnly ? mentionsString : newStatus.mentionsLine"
-            @change="onMentionsLineUpdate"
             type="text"
             :placeholder="$t('post_status.mentions_line')"
             :disabled="mentionsLineReadOnly || (posting && !optimisticPosting)"
             size="1"
             class="input mentions-input form-post-mentions unstyled"
+            @change="onMentionsLineUpdate"
           >
           <EmojiInput
             ref="emoji-input"
@@ -271,14 +271,14 @@
       <PollForm
         v-if="pollsAvailable"
         ref="pollForm"
-        :visible="pollFormVisible"
         v-model="newStatus.poll"
+        :visible="pollFormVisible"
       />
       <QuoteForm
         v-if="quotingAvailable"
+        :id="newStatus.quote?.id"
         ref="quoteForm"
         :visible="quoteFormVisible"
-        :id="newStatus.quote?.id"
         :url="newStatus.quote?.url"
         @update:url="url => newStatus.quote.url = url"
         @update:id="id => newStatus.quote.id = id"

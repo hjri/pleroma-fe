@@ -154,7 +154,7 @@ const registration = {
       })
     },
     replaceNewlines(str) {
-      return str.replace(/\s*\n\s*/g, ' \n')
+      return str.replaceAll(/\s*\n\s*/g, ' \n')
     },
   },
 }

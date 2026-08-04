@@ -257,7 +257,7 @@ const AppearanceTab = {
 
           const result = {
             name: `${meta.directives.name || this.$t('settings.style.themes3.palette.imported')}: ${variant}`,
-            key: `style.${variant.toLowerCase().replace(/ /g, '_')}`,
+            key: `style.${variant.toLowerCase().replaceAll(' ', '_')}`,
             bg,
             fg,
             text,

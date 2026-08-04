@@ -3,7 +3,7 @@ import { capitalize } from 'lodash'
 function humanizeErrors(errors) {
   return Object.entries(errors).reduce((errs, [k, val]) => {
     const message = val.reduce((acc, message) => {
-      const key = capitalize(k.replace(/_/g, ' '))
+      const key = capitalize(k.replaceAll('_', ' '))
       return acc + [key, message].join(' ') + '. '
     }, '')
     return [...errs, message]

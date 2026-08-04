@@ -300,7 +300,7 @@ const EmojiTab = {
     sortPackFiles(nameOfPack) {
       // Sort by key
       const sorted = Object.keys(this.knownPacks[nameOfPack].files)
-        .sort()
+        .sort((a, b) => a.localeCompare(b))
         .reduce((acc, key) => {
           if (key.length === 0) return acc
           acc[key] = this.knownPacks[nameOfPack].files[key]

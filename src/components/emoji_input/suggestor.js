@@ -79,7 +79,7 @@ export const suggestUsers = ({ dispatch, state }) => {
 
   const userSearch = (query) => dispatch('searchUsers', { query })
   const debounceUserSearch = (query) => {
-    cancelUserSearch && cancelUserSearch()
+    cancelUserSearch?.()
     return new Promise((resolve, reject) => {
       timeout = setTimeout(() => {
         userSearch(query).then(resolve).catch(reject)

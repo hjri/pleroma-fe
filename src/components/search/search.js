@@ -122,7 +122,7 @@ const Search = {
       return 'statuses'
     },
     lastHistoryRecord(hashtag) {
-      return hashtag.history && hashtag.history[0]
+      return hashtag.history?.[0]
     },
   },
 }

@@ -128,8 +128,7 @@ const Status = {
   computed: {
     showReasonMutedThread() {
       return (
-        (this.status.thread_muted ||
-          (this.status.reblog && this.status.reblog.thread_muted)) &&
+        (this.status.thread_muted || this.status.reblog?.thread_muted) &&
         !this.inConversation
       )
     },

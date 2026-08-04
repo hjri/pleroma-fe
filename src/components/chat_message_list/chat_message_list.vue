@@ -7,7 +7,7 @@
       :previous-item="getPreviousItem(index)"
       :hovered-message-chain="chatItem.messageChainId === hoveredMessageChainId"
       :focused="chatItem.id === focusedId"
-      :repliedTo="chatItem.id === repliedId"
+      :replied-to="chatItem.id === repliedId"
       @hover="onMessageHover"
       @delete="onMessageDelete"
       @reply-requested="onReplyRequested"

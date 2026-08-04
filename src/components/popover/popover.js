@@ -129,9 +129,7 @@ const Popover = {
       // Popover will be anchored around this element, trigger ref is the container, so
       // its children are what are inside the slot. Expect only one v-slot:trigger.
       const anchorEl =
-        this.anchorEl ||
-        (this.$refs.trigger && this.$refs.trigger.children[0]) ||
-        this.$el
+        this.anchorEl || this.$refs.trigger?.children[0] || this.$el
       // SVGs don't have offsetWidth/Height, use fallback
       const anchorHeight = anchorEl.offsetHeight || anchorEl.clientHeight
       const anchorWidth = anchorEl.offsetWidth || anchorEl.clientWidth
@@ -155,8 +153,7 @@ const Popover = {
 
       // Minor optimization, don't call a slow reflow call if we don't have to
       const parentScreenBox =
-        this.boundTo &&
-        (this.boundTo.x === 'container' || this.boundTo.y === 'container') &&
+        (this.boundTo?.x === 'container' || this.boundTo?.y === 'container') &&
         this.containerBoundingClientRect()
 
       const margin = this.margin || {}
@@ -164,7 +161,7 @@ const Popover = {
       // What are the screen bounds for the popover? Viewport vs container
       // when using viewport, using default margin values to dodge the navbar
       const xBounds =
-        this.boundTo && this.boundTo.x === 'container'
+        this.boundTo?.x === 'container'
           ? {
               min: parentScreenBox.left + (margin.left || 0),
               max: parentScreenBox.right - (margin.right || 0),
@@ -175,7 +172,7 @@ const Popover = {
             }
 
       const yBounds =
-        this.boundTo && this.boundTo.y === 'container'
+        this.boundTo?.y === 'container'
           ? {
               min: parentScreenBox.top + (margin.top || 0),
               max: parentScreenBox.bottom - (margin.bottom || 0),
@@ -247,12 +244,12 @@ const Popover = {
         if (bottomBoundary + content.offsetHeight > yBounds.max) usingTop = true
         if (topBoundary - content.offsetHeight < yBounds.min) usingTop = false
 
-        const yOffset = (this.offset && this.offset.y) || 0
+        const yOffset = this.offset?.y || 0
         translateY = usingTop
           ? topBoundary - yOffset - content.offsetHeight
           : bottomBoundary + yOffset
 
-        const xOffset = (this.offset && this.offset.x) || 0
+        const xOffset = this.offset?.x || 0
         translateX = origin.x + horizOffset + xOffset
       } else {
         // Default to whatever user wished with placement prop
@@ -268,12 +265,12 @@ const Popover = {
         if (rightBoundary + content.offsetWidth > xBounds.max) usingLeft = true
         if (leftBoundary - content.offsetWidth < xBounds.min) usingLeft = false
 
-        const xOffset = (this.offset && this.offset.x) || 0
+        const xOffset = this.offset?.x || 0
         translateX = usingLeft
           ? leftBoundary - xOffset - content.offsetWidth
           : rightBoundary + xOffset
 
-        const yOffset = (this.offset && this.offset.y) || 0
+        const yOffset = this.offset?.y || 0
         translateY = origin.y + vertOffset + yOffset
       }
 
@@ -298,7 +295,7 @@ const Popover = {
       }, 0)
       const wasHidden = this.hidden
       this.hidden = false
-      this.parentPopover && this.parentPopover.onChildPopoverState(this, true)
+      this.parentPopover?.onChildPopoverState(this, true)
       if (this.trigger === 'click' || this.stayOnClick) {
         document.addEventListener('click', this.onClickOutside)
       }
@@ -316,7 +313,7 @@ const Popover = {
       if (this.disabled) return
       if (!this.hidden) this.$emit('close')
       this.hidden = true
-      this.parentPopover && this.parentPopover.onChildPopoverState(this, false)
+      this.parentPopover?.onChildPopoverState(this, false)
       if (this.trigger === 'click') {
         document.removeEventListener('click', this.onClickOutside)
       }
@@ -366,7 +363,7 @@ const Popover = {
     onClickOutside(e) {
       if (this.disableClickOutside) return
       if (this.hidden) return
-      if (this.$refs.content && this.$refs.content.contains(e.target)) return
+      if (this.$refs.content?.contains(e.target)) return
       if (this.$el.contains(e.target)) return
       if (this.childrenShown.size > 0) return
       this.hidePopover()

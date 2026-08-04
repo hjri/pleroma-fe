@@ -60,8 +60,7 @@ export const useInterfaceStore = defineStore('interface', {
     },
     browserSupport: {
       cssFilter:
-        window.CSS &&
-        window.CSS.supports &&
+        window.CSS?.supports &&
         (window.CSS.supports('filter', 'drop-shadow(0 0)') ||
           window.CSS.supports('-webkit-filter', 'drop-shadow(0 0)')),
       localFonts: typeof window.queryLocalFonts === 'function',
@@ -578,7 +577,8 @@ export const useInterfaceStore = defineStore('interface', {
             return { name: x.variant, ...cleanDirectives }
           })
           .forEach((palette) => {
-            const key = 'style.' + palette.name.toLowerCase().replace(/ /g, '_')
+            const key =
+              'style.' + palette.name.toLowerCase().replaceAll(' ', '_')
             if (!firstStylePaletteName) firstStylePaletteName = key
             palettesIndex[key] = () => Promise.resolve(palette)
           })
