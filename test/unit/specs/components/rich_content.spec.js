@@ -363,7 +363,10 @@ describe('RichContent', () => {
     })
 
     expect(
-      wrapper.html().replaceAll('\n', '').replaceAll(/<!--.*?-->/g, ''),
+      wrapper
+        .html()
+        .replaceAll('\n', '')
+        .replaceAll(/<!--.*?-->/g, ''),
     ).to.eql(compwrap(expected))
   })
 
@@ -433,7 +436,10 @@ describe('RichContent', () => {
     })
 
     expect(
-      wrapper.html().replaceAll('\n', '').replaceAll(/<!--.*?-->/g, ''),
+      wrapper
+        .html()
+        .replaceAll('\n', '')
+        .replaceAll(/<!--.*?-->/g, ''),
     ).to.eql(compwrap(expected))
   })
 
