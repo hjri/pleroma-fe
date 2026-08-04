@@ -210,16 +210,16 @@ export const rgba2css = function (rgba) {
   }
 
   if (rgba !== null) {
-    if (rgba.r !== undefined && !isNaN(rgba.r)) {
+    if (rgba.r !== undefined && !Number.isNaN(rgba.r)) {
       base.r = rgba.r
     }
-    if (rgba.g !== undefined && !isNaN(rgba.g)) {
+    if (rgba.g !== undefined && !Number.isNaN(rgba.g)) {
       base.g = rgba.g
     }
-    if (rgba.b !== undefined && !isNaN(rgba.b)) {
+    if (rgba.b !== undefined && !Number.isNaN(rgba.b)) {
       base.b = rgba.b
     }
-    if (rgba.a !== undefined && !isNaN(rgba.a)) {
+    if (rgba.a !== undefined && !Number.isNaN(rgba.a)) {
       base.a = rgba.a
     }
   } else {

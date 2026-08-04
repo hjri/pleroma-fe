@@ -190,16 +190,14 @@ const FilteringTab = {
       }
       return valid
     },
-    createFilter(
-      filter = {
-        type: 'word',
-        value: '',
-        name: 'New Filter',
-        enabled: true,
-        expires: null,
-        hide: false,
-      },
-    ) {
+    createFilter({
+      type = 'word',
+      value = '',
+      name = 'New Filter',
+      enabled = true,
+      expires = null,
+      hide = false,
+    }) {
       const newId = uuidv4()
 
       filter.order = this.muteFilters.length + 2

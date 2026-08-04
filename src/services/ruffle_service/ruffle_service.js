@@ -25,13 +25,13 @@ const createRuffleService = () => {
       script.src = '/static/ruffle/ruffle.js'
       script.type = 'text/javascript'
       script.onerror = (e) => {
-        reject(e)
+        reject(new Error('Ruffle script errorred', e))
       }
       script.onabort = (e) => {
-        reject(e)
+        reject(new Error('Ruffle script aborted', e))
       }
       script.oncancel = (e) => {
-        reject(e)
+        reject(new Error('Ruffle script cancelled', e))
       }
       script.onload = () => {
         ruffleInstance = window.RufflePlayer
