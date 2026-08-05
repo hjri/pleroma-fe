@@ -133,12 +133,11 @@ const Notifications = {
       return this.minimalMode || layoutType === 'mobile'
     },
     teleportTarget() {
-      const { layoutType } = useInterfaceStore()
       const map = {
         wide: '#notifs-column',
         mobile: '#mobile-notifications',
       }
-      return map[layoutType] || '#notifs-sidebar'
+      return map[this.layoutType] || '#notifs-sidebar'
     },
     popoversZLayer() {
       const { layoutType } = useInterfaceStore()
@@ -161,6 +160,9 @@ const Notifications = {
     },
     ...mapState(useAnnouncementsStore, ['unreadAnnouncementCount']),
     ...mapGetters(['unreadChatCount']),
+    ...mapState(useInterfaceStore, [
+      'layoutType',
+    ]),
   },
   mounted() {
     this.scrollerRef = this.$refs.root.closest('.column.-scrollable')

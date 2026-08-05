@@ -105,6 +105,7 @@
             id="thirdColumnMode"
             path="thirdColumnMode"
             :options="thirdColumnModeOptions"
+            @change="updateLayout"
           >
             {{ $t('settings.third_column_mode') }}
           </ChoiceSetting>

@@ -74,6 +74,8 @@ export default {
   },
   data: () => ({
     mobileActivePanel: 'timeline',
+    updateMobileState: null,
+    updateScrollState: null,
   }),
   provide() {
     return {
@@ -207,22 +209,26 @@ export default {
     hideShoutbox() {
       return useMergedConfigStore().mergedConfig.hideShoutbox
     },
+    thirdColumnMode() {
+      return this.mergedConfig.thirdColumnMode
+    },
+    reverseSetting() {
+      return this.mergedConfig.sidebarRight
+    },
     reverseLayout() {
-      const { thirdColumnMode, sidebarRight: reverseSetting } =
-        useMergedConfigStore().mergedConfig
       if (this.layoutType !== 'wide') {
-        return reverseSetting
+        return this.reverseSetting
       } else {
-        return thirdColumnMode === 'notifications'
-          ? reverseSetting
-          : !reverseSetting
+        return this.thirdColumnMode === 'notifications'
+          ? this.reverseSetting
+          : !this.reverseSetting
       }
     },
     noSticky() {
-      return useMergedConfigStore().mergedConfig.disableStickyHeaders
+      return this.mergedConfig.disableStickyHeaders
     },
     showScrollbars() {
-      return useMergedConfigStore().mergedConfig.showScrollbars
+      return this.mergedConfig.showScrollbars
     },
     scrollParent() {
       return window /* this.$refs.appContentRef */
@@ -230,7 +236,7 @@ export default {
     showInstanceSpecificPanel() {
       return (
         this.instanceSpecificPanelPresent &&
-        !useMergedConfigStore().mergedConfig.hideISP
+        !this.mergedConfig.hideISP
       )
     },
     ...mapState(useMergedConfigStore, ['mergedConfig']),
