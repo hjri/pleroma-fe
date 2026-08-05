@@ -11,14 +11,15 @@
       <div class="input-container">
         <input
           :id="`poll-${index}`"
-          v-model="options[index]"
+          :model-value="options[index]"
           size="1"
           class="input poll-option-input"
           type="text"
           :placeholder="$t('polls.option')"
           :maxlength="maxLength"
+          :aria-label="$t('polls.option')"
           @keydown.enter.stop.prevent="nextOption(index)"
-          @change="updateOption"
+          @change="(e) => updateOption(index, e.target.value)"
         >
       </div>
       <button
@@ -69,6 +70,7 @@
           class="input expiry-amount hide-number-spinner"
           :min="minExpirationInCurrentUnit"
           :max="maxExpirationInCurrentUnit"
+          :aria-label="$t('polls.expiry_amount')"
           @change="expiryAmountChange"
         >
         {{ ' ' }}
@@ -77,6 +79,7 @@
           unstyled="true"
           class="expiry-unit"
           @change="expiryAmountChange"
+          :aria-label="$t('polls.expiry_unit')"
         >
           <option
             v-for="unit in expiryUnits"
