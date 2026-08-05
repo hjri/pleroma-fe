@@ -14,7 +14,10 @@ depends_on:
   - test-e2e
 
 clone:
-  depth: 0
+  - name: git
+    image: woodpeckerci/plugin-git
+    settings:
+      depth: 0
 
 variables:
   script_file_entrypoint: &script_file_entrypoint
