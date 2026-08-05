@@ -70,6 +70,9 @@ const ImageCropper = {
       )
     },
     onCropperSelectionChange(event) {
+      if (!this.$refs.cropperCanvas) {
+        return // Cropper sends even before component is fully initialized
+      }
       const cropperCanvas = this.$refs.cropperCanvas
       const cropperCanvasRect = cropperCanvas.getBoundingClientRect()
       const selection = event.detail
