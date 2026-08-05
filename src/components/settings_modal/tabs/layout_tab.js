@@ -7,6 +7,7 @@ import UnitSetting from '../helpers/unit_setting.vue'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 const GeneralTab = {
   data() {
@@ -45,6 +46,11 @@ const GeneralTab = {
       }
     },
     ...SharedComputedObject(),
+  },
+  methods: {
+    updateLayout() {
+      useInterfaceStore().setLayoutWidth()
+    },
   },
 }
 
