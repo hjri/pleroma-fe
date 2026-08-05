@@ -161,9 +161,7 @@ const Notifications = {
     },
     ...mapState(useAnnouncementsStore, ['unreadAnnouncementCount']),
     ...mapState(useChatsStore, ['unreadChatsCount']),
-    ...mapState(useInterfaceStore, [
-      'layoutType',
-    ]),
+    ...mapState(useInterfaceStore, ['layoutType']),
   },
   mounted() {
     this.scrollerRef = this.$refs.root.closest('.column.-scrollable')
