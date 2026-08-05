@@ -113,6 +113,7 @@ export default {
       localDraft: null,
     }
   },
+  emits: ['update:modelValue'],
   created() {
     if (
       this.realDraftMode &&
@@ -244,7 +245,9 @@ export default {
     },
     configSink() {
       if (this.path == null) {
-        return (k, v) => this.$emit('update:modelValue', v)
+        return () => {
+          /* no-op */
+        }
       }
 
       switch (this.realSource) {
@@ -385,11 +388,13 @@ export default {
       if (this.realDraftMode) {
         this.draft = this.getValue(e)
       } else {
+        this.$emit('update:modelValue', this.getValue(e))
         this.configSink(this.path, this.getValue(e))
       }
     },
     commitDraft() {
       if (this.realDraftMode) {
+        this.$emit('update:modelValue', this.draft)
         this.configSink(this.path, this.draft)
       }
     },
