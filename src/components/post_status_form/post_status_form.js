@@ -510,7 +510,7 @@ const PostStatusForm = {
     // Error handling
     pollContentError() {
       return (
-        this.pollFormVisible && this.newStatus.poll && this.newStatus.poll.error
+        this.pollFormVisible && this.newStatus.poll?.error
       )
     },
 

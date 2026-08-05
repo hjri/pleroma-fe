@@ -10,6 +10,7 @@
         size="1"
         class="input"
         :placeholder="$t('post_status.quote_url')"
+        :aria-label="$t('post_status.quote_url')"
       >
     </div>
     <Quote
