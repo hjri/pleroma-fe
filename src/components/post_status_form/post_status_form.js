@@ -378,8 +378,8 @@ const PostStatusForm = {
       set(value) {
         if (value) {
           this.newStatus.quote = {}
-          this.newStatus.quote.thread = value
-          this.newStatus.quote.id = value ? this.repliedStatus.id : ''
+          this.newStatus.quote.thread = true
+          this.newStatus.quote.id = this.repliedStatus.id
         } else {
           this.newStatus.quote = null
         }
@@ -959,6 +959,7 @@ const PostStatusForm = {
     // Quote
     toggleQuoteForm() {
       // This is for the "attach quote" button
+      if (this.newStatus.quote?.thread) return
       if (!this.hasQuote) {
         this.newStatus.quote = {}
         this.newStatus.quote.thread = false
