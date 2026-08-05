@@ -1,12 +1,15 @@
-# Pleroma-FE 
+# Pleroma-FE
 
 > Highly-customizable frontend designed for Pleroma.
 
 ![screenshot](./image-1.png)
 
+[![Pipeline Status](https://ci.pleroma.com/api/badges/2/status.svg)](https://ci.pleroma.com/repos/2) [![Coverage](https://sonarqube.pleroma.dev/api/project_badges/measure?project=Pleroma-FE&metric=coverage&token=sqb_f8a5ec836caede0e2c6c62a9bfe66e62a89e2b01)](https://sonarqube.pleroma.dev/dashboard?id=Pleroma-FE) [![Maintainability Rating](https://sonarqube.pleroma.dev/api/project_badges/measure?project=Pleroma-FE&metric=software_quality_maintainability_rating&token=sqb_f8a5ec836caede0e2c6c62a9bfe66e62a89e2b01)](https://sonarqube.pleroma.dev/dashboard?id=Pleroma-FE) [![Reliability Rating](https://sonarqube.pleroma.dev/api/project_badges/measure?project=Pleroma-FE&metric=software_quality_reliability_rating&token=sqb_f8a5ec836caede0e2c6c62a9bfe66e62a89e2b01)](https://sonarqube.pleroma.dev/dashboard?id=Pleroma-FE) [![Security Rating](https://sonarqube.pleroma.dev/api/project_badges/measure?project=Pleroma-FE&metric=software_quality_security_rating&token=sqb_f8a5ec836caede0e2c6c62a9bfe66e62a89e2b01)](https://sonarqube.pleroma.dev/dashboard?id=Pleroma-FE)
+
+
 # For Translators
 
-To translate Pleroma-FE, use our weblate server: https://translate.pleroma.social/. If you need to add your language it should be added as a json file in [src/i18n/](https://git.pleroma.social/pleroma/pleroma-fe/src/src/i18n/) folder and added in a list within [src/i18n/languages.js](https://git.pleroma.social/pleroma/pleroma-fe/src/src/i18n/languages.js). 
+To translate Pleroma-FE, use our weblate server: https://translate.pleroma.social/. If you need to add your language it should be added as a json file in [src/i18n/](https://git.pleroma.social/pleroma/pleroma-fe/src/src/i18n/) folder and added in a list within [src/i18n/languages.js](https://git.pleroma.social/pleroma/pleroma-fe/src/src/i18n/languages.js).
 
 Pleroma-FE will set your language by your browser locale, but you can change language in settings.
 
