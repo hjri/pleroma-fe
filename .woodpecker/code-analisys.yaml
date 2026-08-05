@@ -18,6 +18,7 @@ clone:
     image: woodpeckerci/plugin-git
     settings:
       depth: 0
+      partial: false
 
 variables:
   script_file_entrypoint: &script_file_entrypoint
