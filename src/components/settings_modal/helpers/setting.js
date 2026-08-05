@@ -245,7 +245,9 @@ export default {
     },
     configSink() {
       if (this.path == null) {
-        return () => {/* no-op */}
+        return () => {
+          /* no-op */
+        }
       }
 
       switch (this.realSource) {
