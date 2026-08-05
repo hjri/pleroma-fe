@@ -238,10 +238,7 @@ export default {
       return window /* this.$refs.appContentRef */
     },
     showInstanceSpecificPanel() {
-      return (
-        this.instanceSpecificPanelPresent &&
-        !this.mergedConfig.hideISP
-      )
+      return this.instanceSpecificPanelPresent && !this.mergedConfig.hideISP
     },
     ...mapState(useMergedConfigStore, ['mergedConfig']),
     ...mapState(useInterfaceStore, [

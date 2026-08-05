@@ -245,7 +245,7 @@ export default {
     },
     configSink() {
       if (this.path == null) {
-        return () => {}
+        return () => {/* no-op */}
       }
 
       switch (this.realSource) {
@@ -392,7 +392,7 @@ export default {
     },
     commitDraft() {
       if (this.realDraftMode) {
-        this.$emit('update:modelValue', v)
+        this.$emit('update:modelValue', this.draft)
         this.configSink(this.path, this.draft)
       }
     },
