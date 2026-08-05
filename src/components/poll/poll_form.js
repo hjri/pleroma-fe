@@ -116,7 +116,7 @@ export default {
       if (this.options.length < this.maxOptions) {
         this.$emit('update:modelValue', {
           ...this.modelValue,
-          options: [...this.options, '']
+          options: [...this.options, ''],
         })
 
         return true
@@ -130,7 +130,7 @@ export default {
 
         this.$emit('update:modelValue', {
           ...this.modelValue,
-          options
+          options,
         })
       }
     },
@@ -140,7 +140,7 @@ export default {
 
       this.$emit('update:modelValue', {
         ...this.modelValue,
-        options
+        options,
       })
     },
     convertExpiryToUnit(unit, amount) {
