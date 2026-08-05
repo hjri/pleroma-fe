@@ -198,6 +198,10 @@ self.addEventListener('push', async (event) => {
 self.addEventListener('message', async (event) => {
   await setSettings()
   const { type, content } = event.data
+  if (self.location.origin !== event.origin) {
+    console.error('SW Message with strange origin received', event)
+    return
+  }
 
   if (type === 'desktopNotification') {
     const { title, ...rest } = content
