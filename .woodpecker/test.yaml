@@ -10,6 +10,9 @@ labels:
   platform: linux/amd64
   memory: 'high'
 
+depends_on:
+  - build
+
 variables:
   artifacts_uploader_settings: &artifacts_uploader_settings
     user:
@@ -44,20 +47,6 @@ steps:
           [ "${CI_PIPELINE_EVENT}" = "pull_request" ] || zip -9qr ${CI_COMMIT_SHA:0:8}-screenshots.zip $(find . -type d -name __screenshots__)
           exit 1
         fi
-
-  code-analysis:
-    image: sonarsource/sonar-scanner-cli:11
-    when:
-      - event: push
-        branch: ${CI_REPO_DEFAULT_BRANCH}
-      - event: manual
-        branch: ${CI_REPO_DEFAULT_BRANCH}
-    environment:
-      SONAR_TOKEN:
-        from_secret: sonarqube-token
-    entrypoint: *script_file_entrypoint
-    commands:
-      - sonar-scanner
 
   upload-artifacts:
     image: docker.io/woodpeckercommunity/plugin-gitea-package:0.5.0

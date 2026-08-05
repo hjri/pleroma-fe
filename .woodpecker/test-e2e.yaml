@@ -10,6 +10,10 @@ labels:
   platform: linux/amd64
   memory: 'high'
 
+depends_on:
+  - build
+  - test
+
 variables:
   artifacts_uploader_settings: &artifacts_uploader_settings
     user:
