@@ -23,8 +23,7 @@ variables:
     - 'printf "%s" "$CI_SCRIPT" | base64 -d > /tmp/ci-script.sh && /bin/sh -xe /tmp/ci-script.sh'
 
 steps:
-  # Needed to generate coverage
-  test:
+  generate-coverage:
     image: mcr.microsoft.com/playwright:v1.61.0-jammy
     environment:
       FF_NETWORK_PER_BUILD: "true"

@@ -8,7 +8,6 @@ when:
 
 labels:
   platform: linux/amd64
-  memory: 'high'
 
 steps:
   build:
