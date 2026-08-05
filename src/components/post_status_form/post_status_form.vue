@@ -234,7 +234,7 @@
             ref="scopeSelector"
             :show-all="showAllScopes"
             :user-default="userDefaultScope"
-            :original-scope="newStatus.visibility"
+            :original-scope="repliedStatus?.visibility"
             :initial-scope="newStatus.visibility"
             @change="changeVis"
           />
