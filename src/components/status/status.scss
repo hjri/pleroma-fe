@@ -119,6 +119,7 @@
     display: flex;
     flex-shrink: 0;
     align-self: baseline;
+    word-break: keep-all;
 
     .button-unstyled {
       padding: 0.2em;
