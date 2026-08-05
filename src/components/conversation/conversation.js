@@ -305,10 +305,11 @@ const conversation = {
     topLevel() {
       const topLevel = this.conversation.reduce(
         (tl, cur) =>
-          tl.filter((k) =>
-            this.getReplies(cur.id)
-              .map((v) => v.id)
-              .includes(k.id),
+          tl.filter(
+            (k) =>
+              !this.getReplies(cur.id)
+                .map((v) => v.id)
+                .includes(k.id),
           ),
         this.conversation,
       )
