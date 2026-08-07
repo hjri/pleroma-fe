@@ -229,8 +229,6 @@ const addNewStatuses = (
     (minNew < timelineObject.minId || timelineObject.minId === '') &&
     statuses.length > 0
 
-  console.log(minNew, maxNew)
-
   if (!noIdUpdate && newer) {
     timelineObject.maxId = maxNew
   }
