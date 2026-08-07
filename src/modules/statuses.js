@@ -49,8 +49,8 @@ const emptyTl = (userId = 0) => ({
   visibleStatuses: [],
   visibleStatusesObject: {},
   newStatusCount: 0,
-  maxId: '0',
-  minId: '0',
+  maxId: '',
+  minId: '',
   minVisibleId: 0,
   loading: false,
   followers: [],
@@ -64,7 +64,7 @@ export const defaultState = () => ({
   scrobblesNextFetch: {},
   allStatusesObject: {},
   conversationsObject: {},
-  maxId: '0',
+  maxId: '',
   favorites: new Set(),
   timelines: {
     mentions: emptyTl(),
@@ -222,12 +222,14 @@ const addNewStatuses = (
 
   const newer =
     timeline &&
-    (maxNew > timelineObject.maxId || timelineObject.maxId === 0) &&
+    (maxNew > timelineObject.maxId || timelineObject.maxId === '') &&
     statuses.length > 0
   const older =
     timeline &&
-    (minNew < timelineObject.minId || timelineObject.minId === 0) &&
+    (minNew < timelineObject.minId || timelineObject.minId === '') &&
     statuses.length > 0
+
+  console.log(minNew, maxNew)
 
   if (!noIdUpdate && newer) {
     timelineObject.maxId = maxNew
