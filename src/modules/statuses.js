@@ -876,12 +876,16 @@ const statuses = {
         following,
         type,
         credentials: useOAuthStore().token,
-      }).then(({ data }) => {
-        store.commit('addNewUsers', data.accounts)
-        store.commit(
-          'addNewUsers',
-          data.statuses.map((s) => s.user).filter(Boolean),
-        )
+      }).then((result) => {
+        const { data, ...rest } = result
+        useUsersStore().addNewUsers({
+          ...rest,
+          data: data.accounts,
+        })
+        useUsersStore().addNewUsers({
+          ...rest,
+          data: data.statuses.map((s) => s.user).filter(Boolean),
+        })
         store.commit('addNewStatuses', {
           statuses: data.statuses,
         })

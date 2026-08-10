@@ -1,15 +1,16 @@
 import { groupBy, map } from 'lodash'
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 const StaffPanel = {
   created() {
     const nicknames = useInstanceStore().staffAccounts
     nicknames.forEach((nickname) =>
-      this.$store.dispatch('fetchUserIfMissing', nickname),
+      useUsersStore().fetchUserIfMissing(nickname),
     )
   },
   components: {
@@ -27,10 +28,8 @@ const StaffPanel = {
         { role: 'moderator', users: groupedStaffAccounts.moderator },
       ].filter((group) => group.users)
     },
-    ...mapGetters(['findUserByName']),
-    ...mapState({
-      staffAccounts: (state) => useInstanceStore().staffAccounts,
-    }),
+    ...mapState(useUsersStore, ['findUserByName']),
+    ...mapState(useInstanceStore, ['staffAccounts']),
   },
 }
 

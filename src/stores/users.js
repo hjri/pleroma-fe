@@ -68,6 +68,7 @@ export const useUsersStore = defineStore('users', {
     usersByName: new Map(),
     usersByURL: new Map(),
     relationships: new Map(),
+    timestamps: new WeakMap(),
   }),
   getters: {
     loggedIn: (state) => !!state.currentUser,
@@ -137,9 +138,16 @@ export const useUsersStore = defineStore('users', {
         user.followerIds = []
       }
     },
-    addNewUsers(users, timestamp) {
+    addNewUsers(response) {
+      const { data, timestamp } = response
+      const users = Array.isArray(data) ? data : [data]
+
       users.forEach((user) => {
         const existing = this.users.get(user.id) ?? {}
+        const oldTimestamp = this.timestamps.get(existing)
+
+        // implicit: if oldTimestamp is undefined this will still be false
+        if (oldTimestamp > timestamp) return // not overwriting old data with new
 
         const { relationship, ...old } = existing
         const { relationshop, ...neu } = user
@@ -148,6 +156,7 @@ export const useUsersStore = defineStore('users', {
         this.users.set(user.id, newUser)
         this.usersByName.set(user.screen_name.toLowerCase(), newUser)
         this.usersByURL.set(user.url.toLowerCase(), newUser)
+        this.timestamps.set(newUser, timestamp)
 
         if (user.id === this.currentUser.id) {
           this.currentUser = newUser
@@ -277,7 +286,8 @@ export const useUsersStore = defineStore('users', {
       return fetchBlocks({
         maxId,
         credentials: useOAuthStore().token,
-      }).then(({ data: blocks }) => {
+      }).then((result) => {
+        const { data: blocks } = result
         if (reset) {
           this.saveBlockIds(blocks.map(({ id }) => id))
         } else {
@@ -286,7 +296,7 @@ export const useUsersStore = defineStore('users', {
         if (blocks.length) {
           this.setBlockIdsMaxId(last(blocks).id)
         }
-        this.addNewUsers(blocks)
+        this.addNewUsers(result)
         return blocks
       })
     },
@@ -337,7 +347,8 @@ export const useUsersStore = defineStore('users', {
       return fetchMutes({
         maxId,
         credentials: useOAuthStore().token,
-      }).then(({ data: mutes }) => {
+      }).then((result) => {
+        const { data: mutes } = result
         if (reset) {
           this.saveMuteIds(mutes.map(({ id }) => id))
         } else {
@@ -346,7 +357,7 @@ export const useUsersStore = defineStore('users', {
         if (mutes.length) {
           this.setMuteIdsMaxId(last(mutes).id)
         }
-        this.addNewUsers(mutes)
+        this.addNewUsers(result)
         return mutes
       })
     },
@@ -541,7 +552,7 @@ export const useUsersStore = defineStore('users', {
         verifyCredentials({
           credentials: useOAuthStore().token,
         })
-          .then(({ data: user }) => {
+          .then(({ data: user, ...rest }) => {
             // user.credentials = userCredentials
             user.credentials = accessToken
             user.blockIds = []
@@ -559,7 +570,7 @@ export const useUsersStore = defineStore('users', {
                   })
               })
             useUserHighlightStore().initUserHighlight(user)
-            this.addNewUsers([user])
+            this.addNewUsers({ data: user, ...rest })
 
             useEmojiStore().fetchEmoji()
 
@@ -598,7 +609,7 @@ export const useUsersStore = defineStore('users', {
 
               if (useInstanceCapabilitiesStore().pleromaChatMessagesAvailable) {
                 // Start fetching chats
-                dispatch('startFetchingChats')
+                useChatsStore().startFetchingChats()
               }
             }
 
@@ -643,7 +654,7 @@ export const useUsersStore = defineStore('users', {
             useInterfaceStore().setLayoutHeight(windowHeight())
 
             // Fetch our friends
-            fetchFriends({ id: user.id }).then(({ data: friends }) =>
+            fetchFriends({ id: user.id }).then((friends) =>
               this.addNewUsers(friends),
             )
             this.loggingIn = false
@@ -668,6 +679,11 @@ export const useUsersStore = defineStore('users', {
             }
           })
       })
+    },
+  },
+  persist: {
+    afterLoad({ lastLoginName }) {
+      return { lastLoginName }
     },
   },
 })

@@ -370,11 +370,12 @@ const Chat = {
     async startFetching() {
       if (!this.isConversation) {
         try {
-          const { data } = await getOrCreateChat({
+          const result = await getOrCreateChat({
             accountId: this.chatUserId,
             credentials: useOAuthStore().token,
           })
-          this.$store.commit('addNewUsers', [data.account])
+          useUsersStore().addNewUsers(result)
+          const { data } = result
           data.account = useUsersStore().findUser(data.account.id)
           this.chat = data
         } catch (e) {

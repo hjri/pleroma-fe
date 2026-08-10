@@ -123,7 +123,7 @@ export const promisedRequest = async ({
   const { ok, status } = response
 
   if (ok) {
-    return { response, status, data }
+    return { response, status, data, timestamp: Date.now() }
   } else {
     throw new StatusCodeError(response.status, data, { url, options }, response)
   }

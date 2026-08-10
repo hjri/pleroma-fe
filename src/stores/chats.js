@@ -5,6 +5,7 @@ import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'
 import { promiseInterval } from '../services/promise_interval/promise_interval.js'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { chats } from 'src/api/chats.js'
 
@@ -41,11 +42,11 @@ export const useChatsStore = defineStore('chats', {
       this.setChatListFetcher(null)
     },
     async fetchChats() {
-      const { data } = await chats({
-        credentials: useOAuthStore().token,
-      })
-
-      this.addNewChats(data)
+      this.addNewChats(
+        await chats({
+          credentials: useOAuthStore().token,
+        }),
+      )
     },
     setChatListFetcher(fetcher) {
       const prevFetcher = this.chatListFetcher
@@ -58,11 +59,11 @@ export const useChatsStore = defineStore('chats', {
       this.chatList = emptyChatList()
       this.setChatListFetcher(null)
     },
-    addNewChats(chats) {
-      window.vuex.commit(
-        'addNewUsers',
-        chats.map((k) => k.account).filter(Boolean),
-      )
+    addNewChats(result) {
+      useUsersStore().addNewUsers({
+        ...result,
+        data: result.data.map((k) => k.account).filter(Boolean),
+      })
 
       chats.forEach((updatedChat) => {
         const chat = getChatById(this, updatedChat.id)

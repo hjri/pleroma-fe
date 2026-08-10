@@ -48,7 +48,7 @@ const ListsNew = {
       .then(() => {
         this.membersUserIds = this.findListAccounts(this.id)
         this.membersUserIds.forEach((userId) => {
-          this.$store.dispatch('fetchUserIfMissing', userId)
+          useUsersStore().fetchUserIfMissing(userId)
         })
       })
   },

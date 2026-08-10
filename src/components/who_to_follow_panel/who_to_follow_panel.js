@@ -22,11 +22,10 @@ function showWhoToFollow(panel, reply) {
     fetchUser({
       id: name,
       credentials: useOAuthStore().token,
-    }).then(({ data: externalUser }) => {
-      if (!externalUser.error) {
-        panel.$store.commit('addNewUsers', [externalUser])
-        toFollow.id = externalUser.id
-      }
+    }).then((result) => {
+      const { data: externalUser } = result
+      useUsersStore().addNewUsers(result)
+      toFollow.id = externalUser.id
     })
   })
 }

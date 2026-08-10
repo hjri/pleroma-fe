@@ -20,7 +20,7 @@ const UserProfileAdminView = {
     }
   },
   created() {
-    this.$store.dispatch('fetchUserIfMissing', this.userId)
+    useUsersStore().fetchUserIfMissing(this.userId)
     useInterfaceStore().setForeignProfileBackground(this.user?.background_image)
   },
   updated() {
