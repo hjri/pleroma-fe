@@ -1,9 +1,9 @@
 import { defineAsyncComponent } from 'vue'
 
-import { notificationsFromStore } from '../../services/notification_utils/notification_utils.js'
 import BasicUserCard from '../basic_user_card/basic_user_card.vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { approveUser, denyUser } from 'src/api/user.js'
@@ -24,7 +24,7 @@ const FollowRequestCard = {
   },
   methods: {
     findFollowRequestNotificationId() {
-      const notif = notificationsFromStore(this.$store).find(
+      const notif = useNotificationsStore().data.find(
         (notif) =>
           notif.from_profile.id === this.user.id &&
           notif.type === 'follow_request',

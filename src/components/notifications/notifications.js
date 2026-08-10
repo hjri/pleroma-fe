@@ -7,9 +7,8 @@ import FaviconService from '../../services/favicon_service/favicon_service.js'
 import {
   ACTIONABLE_NOTIFICATION_TYPES,
   countExtraNotifications,
-  filteredNotificationsFromStore,
-  notificationsFromStore,
-  unseenNotificationsFromStore,
+  filteredNotifications,
+  unseenNotifications,
 } from '../../services/notification_utils/notification_utils.js'
 import notificationsFetcher from '../../services/notifications_fetcher/notifications_fetcher.service.js'
 import NotificationFilters from './notification_filters.vue'
@@ -18,6 +17,7 @@ import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useChatsStore } from 'src/stores/chats.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -71,14 +71,13 @@ const Notifications = {
       return this.minimalMode ? '' : 'panel panel-default'
     },
     notifications() {
-      return notificationsFromStore(this.$store)
+      return useNotificationsStore().data
     },
     error() {
-      return this.$store.state.notifications.error
+      return useNotificationsStore().error
     },
     unseenNotifications() {
-      return unseenNotificationsFromStore(
-        this.$store,
+      return unseenNotifications(
         useMergedConfigStore().mergedConfig.notificationVisibility,
         useMergedConfigStore().mergedConfig.ignoreInactionableSeen,
       )
@@ -86,18 +85,15 @@ const Notifications = {
     filteredNotifications() {
       if (this.unseenAtTop) {
         return [
-          ...filteredNotificationsFromStore(
-            this.$store,
+          ...filteredNotifications(
             useMergedConfigStore().mergedConfig.notificationVisibility,
           ).filter((n) => this.shouldShowUnseen(n)),
-          ...filteredNotificationsFromStore(
-            this.$store,
+          ...filteredNotifications(
             useMergedConfigStore().mergedConfig.notificationVisibility,
           ).filter((n) => !this.shouldShowUnseen(n)),
         ]
       } else {
-        return filteredNotificationsFromStore(
-          this.$store,
+        return filteredNotifications(
           useMergedConfigStore().mergedConfig.notificationVisibility,
           this.filterMode,
         )
@@ -128,7 +124,7 @@ const Notifications = {
       )
     },
     loading() {
-      return this.$store.state.notifications.loading
+      return useNotificationsStore().loading
     },
     noHeading() {
       const { layoutType } = useInterfaceStore()
@@ -225,14 +221,14 @@ const Notifications = {
      */
     notificationClicked(notification) {
       const { id } = notification
-      this.$store.dispatch('notificationClicked', { id })
+      useNotificationsStore().notificationClicked(id)
     },
     notificationInteracted(notification) {
       const { id } = notification
-      this.$store.dispatch('markSingleNotificationAsSeen', { id })
+      useNotificationsStore().markSingleNotificationAsSeen(id)
     },
     markAsSeen() {
-      this.$store.dispatch('markNotificationsAsSeen')
+      useNotificationsStore().markNotificationsAsSeen()
       this.seenToDisplayCount = DEFAULT_SEEN_TO_DISPLAY_COUNT
     },
     fetchOlderNotifications() {
@@ -253,7 +249,7 @@ const Notifications = {
 
       const store = this.$store
       const credentials = useUsersStore().currentUser.credentials
-      store.commit('setNotificationsLoading', { value: true })
+      useNotificationsStore().setNotificationsLoading(true)
       notificationsFetcher
         .fetchAndUpdate({
           store,
@@ -261,7 +257,7 @@ const Notifications = {
           older: true,
         })
         .then((notifs) => {
-          store.commit('setNotificationsLoading', { value: false })
+          useNotificationsStore().setNotificationsLoading(false)
           if (notifs.length === 0) {
             this.bottomedOut = true
           }

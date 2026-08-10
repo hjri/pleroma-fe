@@ -3,12 +3,10 @@ import { promiseInterval } from '../promise_interval/promise_interval.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useNotificationsStore } from 'src/stores/notifications.js'
 
 import { fetchTimeline } from 'src/api/timelines.js'
 
-const update = ({ store, notifications, older }) => {
-  store.dispatch('addNewNotifications', { notifications, older })
-}
 //
 // For using include_types when fetching notifications.
 // Note: chat_mention excluded as pleroma-fe polls them separately
@@ -25,10 +23,9 @@ const mastoApiNotificationTypes = new Set([
   'pleroma:report',
 ])
 
-const fetchAndUpdate = ({ store, credentials, older = false, sinceId }) => {
+const fetchAndUpdate = ({ credentials, older = false, sinceId }) => {
   const args = { credentials }
-  const rootState = store.rootState || store.state
-  const timelineData = rootState.notifications
+  const timelineData = useNotificationsStore()
   const hideMutedPosts = useMergedConfigStore().mergedConfig.hideMutedPosts
 
   if (useInstanceCapabilitiesStore().pleromaChatMessagesAvailable) {
@@ -43,7 +40,7 @@ const fetchAndUpdate = ({ store, credentials, older = false, sinceId }) => {
     if (timelineData.minId !== Number.POSITIVE_INFINITY) {
       args.maxId = timelineData.minId
     }
-    return fetchNotifications({ store, args, older })
+    return fetchNotifications({ args, older })
   } else {
     // fetch new notifications
     if (
@@ -54,7 +51,7 @@ const fetchAndUpdate = ({ store, credentials, older = false, sinceId }) => {
     } else if (sinceId !== null) {
       args.sinceId = sinceId
     }
-    const result = fetchNotifications({ store, args, older })
+    const result = fetchNotifications({ args, older })
 
     // If there's any unread notifications, try fetch notifications since
     // the newest read notification to check if any of the unread notifs
@@ -72,7 +69,7 @@ const fetchAndUpdate = ({ store, credentials, older = false, sinceId }) => {
       if (minId !== Infinity) {
         args.sinceId = null // Don't use since_id since it sorta conflicts with min_id
         args.minId = minId - 1 // go beyond
-        fetchNotifications({ store, args, older })
+        fetchNotifications({ args, older })
       }
     }
 
@@ -80,11 +77,13 @@ const fetchAndUpdate = ({ store, credentials, older = false, sinceId }) => {
   }
 }
 
-const fetchNotifications = ({ store, args, older }) => {
+const fetchNotifications = ({ args, older }) => {
   return fetchTimeline(args)
     .then((response) => {
       const notifications = response.data
-      update({ store, notifications, older })
+
+      useNotificationsStore().addNewNotifications(response)
+
       return notifications
     })
     .catch((error) => {
@@ -97,7 +96,7 @@ const fetchNotifications = ({ store, args, older }) => {
           .toArray()
           .map((x) => x[1])
           .forEach((x) => mastoApiNotificationTypes.delete(x))
-        return fetchNotifications({ store, args, older })
+        return fetchNotifications({ args, older })
       }
 
       useInterfaceStore().pushGlobalNotice({
@@ -114,7 +113,7 @@ const startFetching = ({ credentials, store }) => {
   // Initially there's set flag to silence all desktop notifications so
   // that there won't spam of them when user just opened up the FE we
   // reset that flag after a while to show new notifications once again.
-  setTimeout(() => store.dispatch('setNotificationsSilence', false), 10000)
+  setTimeout(() => useNotificationsStore().setNotificationsSilence(false), 10000)
   const boundFetchAndUpdate = () => fetchAndUpdate({ credentials, store })
   boundFetchAndUpdate()
   return promiseInterval(boundFetchAndUpdate, 10000)

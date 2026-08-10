@@ -5,6 +5,7 @@ import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'
 import { useChatsStore } from 'src/stores/chats.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useShoutStore } from 'src/stores/shout.js'
 
@@ -117,9 +118,9 @@ const api = {
             ({ detail: message }) => {
               if (!message) return // pings
               if (message.event === 'notification') {
-                dispatch('addNewNotifications', {
-                  notifications: [message.notification],
-                  older: false,
+                useNotificationsStore().addNewNotifications({
+                  timestamp: Date.now(),
+                  data: message.notification,
                 })
               } else if (message.event === 'update') {
                 dispatch('addNewStatuses', {
@@ -212,7 +213,6 @@ const api = {
                 if (state.mastoUserSocketStatus !== WSConnectionStatus.ERROR) {
                   dispatch('startFetchingTimeline', { timeline: 'friends' })
                   dispatch('startFetchingNotifications')
-                  dispatch('startFetchingChats')
                   useInterfaceStore().pushGlobalNotice({
                     level: 'error',
                     messageKey: 'timeline.socket_broke',
@@ -234,7 +234,6 @@ const api = {
     stopMastoUserSocket({ state, dispatch }) {
       dispatch('startFetchingTimeline', { timeline: 'friends' })
       dispatch('startFetchingNotifications')
-      dispatch('startFetchingChats')
       state.mastoUserSocket.close()
     },
 
@@ -289,7 +288,6 @@ const api = {
     startFetchingNotifications(store) {
       if (store.state.fetchers.notifications) return
       const fetcher = notificationsFetcher.startFetching({
-        store,
         credentials: useOAuthStore().token,
       })
       store.commit('addFetcher', { fetcherName: 'notifications', fetcher })

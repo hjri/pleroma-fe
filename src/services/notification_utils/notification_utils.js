@@ -1,6 +1,8 @@
 import { showDesktopNotification } from '../desktop_notification_utils/desktop_notification_utils.js'
 import { muteFilterHits } from '../status_parser/status_parser.js'
 
+import { useNotificationsStore } from 'src/stores/notifications.js'
+
 import FaviconService from 'src/services/favicon_service/favicon_service.js'
 
 export const ACTIONABLE_NOTIFICATION_TYPES = new Set([
@@ -10,8 +12,6 @@ export const ACTIONABLE_NOTIFICATION_TYPES = new Set([
 ])
 
 let cachedBadgeUrl = null
-
-export const notificationsFromStore = (store) => store.state.notifications.data
 
 const visibleTypes = (notificationVisibility) => {
   return [
@@ -69,14 +69,11 @@ const isMutedNotification = (muteFilters, notification) => {
 }
 
 export const maybeShowNotification = (
-  store,
   notificationVisibility,
   muteFilters,
   notification,
   i18n,
 ) => {
-  const rootState = store.rootState || store.state
-
   if (notification.seen) return
   if (!visibleTypes(notificationVisibility).includes(notification.type)) return
   if (
@@ -86,28 +83,23 @@ export const maybeShowNotification = (
     return
 
   const notificationObject = prepareNotificationObject(notification, i18n)
-  showDesktopNotification(rootState, notificationObject)
+  showDesktopNotification(notificationObject)
 }
 
-export const filteredNotificationsFromStore = (
-  store,
-  notificationVisibility,
-  types,
-) => {
+export const filteredNotifications = (notificationVisibility, types) => {
   // map is just to clone the array since sort mutates it and it causes some issues
-  const sortedNotifications = notificationsFromStore(store).sort(sortById)
+  const sortedNotifications = useNotificationsStore().data.sort(sortById)
   // TODO implement sorting elsewhere and make it optional
   return sortedNotifications.filter((notification) =>
     (types || visibleTypes(notificationVisibility)).includes(notification.type),
   )
 }
 
-export const unseenNotificationsFromStore = (
-  store,
+export const unseenNotifications = (
   notificationVisibility,
   ignoreInactionableSeen,
 ) => {
-  return filteredNotificationsFromStore(store, notificationVisibility).filter(
+  return filteredNotifications(notificationVisibility).filter(
     ({ seen, type }) => {
       if (!ignoreInactionableSeen) return !seen
       if (seen) return false

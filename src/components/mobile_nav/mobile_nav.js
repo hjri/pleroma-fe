@@ -5,7 +5,7 @@ import NavigationPins from 'src/components/navigation/navigation_pins.vue'
 import GestureService from '../../services/gesture_service/gesture_service'
 import {
   countExtraNotifications,
-  unseenNotificationsFromStore,
+  unseenNotifications,
 } from '../../services/notification_utils/notification_utils'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
@@ -57,8 +57,7 @@ const MobileNav = {
       return useUsersStore().currentUser
     },
     unseenNotifications() {
-      return unseenNotificationsFromStore(
-        this.$store,
+      return unseenNotifications(
         useMergedConfigStore().mergedConfig.notificationVisibility,
         useMergedConfigStore().mergedConfig.ignoreInactionableSeen,
       )

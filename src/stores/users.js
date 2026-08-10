@@ -697,7 +697,7 @@ export const useUsersStore = defineStore('users', {
                 .then(() => {
                   dispatch('fetchChats', { latest: true })
                   setTimeout(
-                    () => dispatch('setNotificationsSilence', false),
+                    () => useNotificationsStore().setNotificationsSilence(false),
                     10000,
                   )
                 })

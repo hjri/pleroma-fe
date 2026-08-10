@@ -1,3 +1,5 @@
+import { defineStore } from 'pinia'
+
 import {
   closeAllDesktopNotifications,
   closeDesktopNotification,
@@ -17,70 +19,56 @@ import { useUsersStore } from 'src/stores/users.js'
 
 import { dismissNotification, markNotificationsAsSeen } from 'src/api/user.js'
 
-const emptyNotifications = () => ({
+export const defaultState = () => ({
   desktopNotificationSilence: true,
   maxId: 0,
   minId: Number.POSITIVE_INFINITY,
   data: [],
-  idStore: {},
+  statusNotificationRelations: new WeakMap(),
+  idStore: new Map(),
   loading: false,
 })
 
-export const defaultState = () => ({
-  ...emptyNotifications(),
-})
-
-export const notifications = {
-  state: defaultState(),
-  mutations: {
-    addNewNotifications(state, { notifications }) {
-      notifications.forEach((notification) => {
-        state.data.push(notification)
-        state.idStore[notification.id] = notification
-      })
-    },
-    clearNotifications(state) {
+export const useNotificationsStore = defineStore('notifications', {
+  state: defaultState,
+  actions: {
+    clearNotifications() {
       const blankState = defaultState()
-      Object.keys(state).forEach((k) => {
-        state[k] = blankState[k]
+
+      Object.keys(defaultState()).forEach((k) => {
+        this[k] = blankState[k]
       })
     },
-    updateNotificationsMinMaxId(state, id) {
-      state.maxId = id > state.maxId ? id : state.maxId
-      state.minId = id < state.minId ? id : state.minId
+    updateNotificationsMinMaxId(id) {
+      this.maxId = id > this.maxId ? id : this.maxId
+      this.minId = id < this.minId ? id : this.minId
     },
-    setNotificationsLoading(state, { value }) {
-      state.loading = value
+    setNotificationsLoading(value) {
+      this.loading = value
     },
-    setNotificationsSilence(state, { value }) {
-      state.desktopNotificationSilence = value
+    setNotificationsSilence(value) {
+      this.desktopNotificationSilence = value
     },
-    markNotificationsAsSeen(state) {
-      state.data.forEach((notification) => {
-        notification.seen = true
-      })
-    },
-    markSingleNotificationAsSeen(state, { id }) {
-      const notification = state.idStore[id]
-      if (notification) notification.seen = true
-    },
-    dismissNotification(state, { id }) {
-      state.data = state.data.filter((n) => n.id !== id)
-      delete state.idStore[id]
-    },
-    updateNotification(state, { id, updater }) {
-      const notification = state.idStore[id]
+    updateNotification({ id, updater }) {
+      const notification = this.idStore.get(id)
       notification && updater(notification)
     },
-  },
-  actions: {
-    addNewNotifications(store, { notifications }) {
-      const { commit, dispatch, state, rootState } = store
+    addNewNotifications(result) {
+      const { timestamp, data: notifications } = result
+
+      useUsersStore().addNewUsers({
+        timestamp,
+        data: notifications.map((n) => n.from_profile),
+      })
+      notifications.forEach(
+        (n) => (n.from_profile = useUsersStore().findUser(n.from_profile.id)),
+      )
+
       const validNotifications = notifications.filter((notification) => {
         // If invalid notification, update ids but don't add it to store
         if (!isValidNotification(notification)) {
           console.error('Invalid notification:', notification)
-          commit('updateNotificationsMinMaxId', notification.id)
+          this.updateNotificationsMinMaxId(notification.id)
           return false
         }
         return true
@@ -92,7 +80,8 @@ export const notifications = {
       )
 
       // Synchronous commit to add all the statuses
-      commit('addNewStatuses', {
+      window.vuex.commit('addNewStatuses', {
+        timestamp,
         statuses: statusNotifications.map(
           (notification) => notification.status,
         ),
@@ -101,7 +90,7 @@ export const notifications = {
       // Update references to statuses in notifications to ones in the store
       statusNotifications.forEach((notification) => {
         const id = notification.status.id
-        const referenceStatus = rootState.statuses.allStatusesObject[id]
+        const referenceStatus = window.vuex.state.statuses.allStatusesObject[id]
 
         if (referenceStatus) {
           notification.status = referenceStatus
@@ -114,28 +103,36 @@ export const notifications = {
         }
 
         if (notification.type === 'pleroma:emoji_reaction') {
-          dispatch('fetchEmojiReactionsBy', notification.status.id)
+          window.vuex.dispatch('fetchEmojiReactionsBy', notification.status.id)
         }
 
         // Only add a new notification if we don't have one for the same action
-        if (!Object.hasOwn(state.idStore, notification.id)) {
-          commit('updateNotificationsMinMaxId', notification.id)
-          commit('addNewNotifications', { notifications: [notification] })
+        if (!this.idStore.has(notification.id)) {
+          this.updateNotificationsMinMaxId(notification.id)
+
+          notifications.forEach((notification) => {
+            this.data.push(notification)
+            this.idStore.set(notification.id, notification)
+          })
+
+          this.statusNotificationRelations.set(
+            notification.status,
+            this.idStore.get(notification.id),
+          )
 
           maybeShowNotification(
-            store,
             useMergedConfigStore().mergedConfig.notificationVisibility,
             Object.values(useSyncConfigStore().prefsStorage.simple.muteFilters),
             notification,
             useI18nStore().i18n,
           )
         } else if (notification.seen) {
-          state.idStore[notification.id].seen = true
+          this.idStore.get(notification.id).seen = true
         }
       })
     },
-    notificationClicked({ state, dispatch }, { id }) {
-      const notification = state.idStore[id]
+    notificationClicked(id) {
+      const notification = this.idStore.get(id)
       const { type, seen } = notification
 
       if (!seen) {
@@ -145,49 +142,45 @@ export const notifications = {
           case 'follow_request':
             break
           default:
-            dispatch('markSingleNotificationAsSeen', { id })
+            this.markSingleNotificationAsSeen({ id })
         }
       }
     },
-    setNotificationsLoading({ commit }, { value }) {
-      commit('setNotificationsLoading', { value })
-    },
-    setNotificationsSilence({ commit }, { value }) {
-      commit('setNotificationsSilence', { value })
-    },
-    markNotificationsAsSeen({ rootState, state, commit }) {
-      commit('markNotificationsAsSeen')
+    markNotificationsAsSeen() {
+      this.data.forEach((notification) => {
+        notification.seen = true
+      })
+
       markNotificationsAsSeen({
-        id: state.maxId,
+        id: this.maxId,
         credentials: useUsersStore().currentUser.credentials,
       }).then(() => {
-        closeAllDesktopNotifications(rootState)
+        closeAllDesktopNotifications()
       })
     },
-    markSingleNotificationAsSeen({ rootState, commit }, { id }) {
-      commit('markSingleNotificationAsSeen', { id })
+    markSingleNotificationAsSeen({ id }) {
+      const notification = this.idStore.get(id)
+      if (notification) notification.seen = true
+
       markNotificationsAsSeen({
         single: true,
         id,
         credentials: useUsersStore().currentUser.credentials,
       }).then(() => {
-        closeDesktopNotification(rootState, { id })
+        closeDesktopNotification(id)
       })
     },
-    dismissNotificationLocal({ commit }, { id }) {
-      commit('dismissNotification', { id })
+    dismissNotificationLocal(id) {
+      this.data = this.data.filter((n) => n.id !== id)
+      delete this.idStore.delete(id)
     },
-    dismissNotification({ rootState, commit }, { id }) {
-      commit('dismissNotification', { id })
+    dismissNotification(id) {
+      this.dismissNotificationLocal(id)
+
       dismissNotification({
         id,
         credentials: useOAuthStore().token,
       })
     },
-    updateNotification({ commit }, { id, updater }) {
-      commit('updateNotification', { id, updater })
-    },
   },
-}
-
-export default notifications
+})

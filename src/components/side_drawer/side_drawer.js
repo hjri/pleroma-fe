@@ -4,7 +4,7 @@ import { mapGetters } from 'vuex'
 import { USERNAME_ROUTES } from 'src/components/navigation/navigation.js'
 import UserCard from 'src/components/user_card/user_card.vue'
 import GestureService from '../../services/gesture_service/gesture_service'
-import { unseenNotificationsFromStore } from '../../services/notification_utils/notification_utils'
+import { unseenNotifications } from '../../services/notification_utils/notification_utils'
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useChatsStore } from 'src/stores/chats.js'
@@ -77,8 +77,7 @@ const SideDrawer = {
       return useShoutStore().joined
     },
     unseenNotifications() {
-      return unseenNotificationsFromStore(
-        this.$store,
+      return unseenNotifications(
         useMergedConfigStore().mergedConfig.notificationVisibility,
         useMergedConfigStore().mergedConfig.ignoreInactionableSeen,
       )
