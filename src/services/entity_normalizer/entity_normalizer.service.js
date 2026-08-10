@@ -329,6 +329,7 @@ export const parseStatus = (data) => {
   output.attentions = (data.mentions || []).map(parseUser)
 
   output.attachments = (data.media_attachments || []).map(parseAttachment)
+  output.deleted = false
 
   const retweetedStatus = data.reblog
   if (retweetedStatus) {
