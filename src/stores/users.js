@@ -233,7 +233,6 @@ export const useUsersStore = defineStore('users', {
       let findFunc
       let fetchFunc
       let map
-      let otherMap
       let identifier
 
       if (id) {
@@ -250,14 +249,19 @@ export const useUsersStore = defineStore('users', {
         throw new TypeError('No identifier provided')
       }
 
+      // Search in cache
       const user = findFunc(identifier)
 
+      // not found => fetch
       if (!user) {
         let promise
 
+        // Did we already search for this user?
         if (map.has(identifier)) {
+          // if so, reuse the promise
           promise = map.get(identifier)
         } else {
+          // if not, make a new one
           promise = fetchFunc(identifier)
         }
 
@@ -268,6 +272,7 @@ export const useUsersStore = defineStore('users', {
         if (result?.data) {
           const { id, screen_name } = result.data
 
+          // Save promise for future use
           this.fetchesIds.set(id, promise)
           this.fetchesNames.set(screen_name, promise)
           this.addNewUsers(result)
@@ -288,11 +293,8 @@ export const useUsersStore = defineStore('users', {
 
         this.addNewUsers(result)
         return this.users.get(result.data.id)
-      } catch(error) {
-        if (
-          error.name === 'StatusCodeError' &&
-          error.statusCode === 404
-        ) {
+      } catch (error) {
+        if (error.name === 'StatusCodeError' && error.statusCode === 404) {
           console.warn(`User ${id} not found`)
           return null
         } else {
@@ -310,12 +312,9 @@ export const useUsersStore = defineStore('users', {
         this.addNewUsers(result)
 
         return this.users.get(result.data.id)
-      } catch(error) {
-        if (
-          error.name === 'StatusCodeError' &&
-          error.statusCode === 404
-        ) {
-          console.warn(`User ${id} not found`)
+      } catch (error) {
+        if (error.name === 'StatusCodeError' && error.statusCode === 404) {
+          console.warn(`User ${name} not found`)
           return null
         } else {
           throw error

@@ -20,10 +20,7 @@ import messages from './i18n/messages.js'
 import createPersistedState, {
   piniaPersistPlugin,
 } from './lib/persisted_state.js'
-import {
-  piniaPushNotificationsPlugin,
-  vuexPushNotificationsPlugin,
-} from './lib/push_notifications_plugin.js'
+import { piniaPushNotificationsPlugin } from './lib/push_notifications_plugin.js'
 import vuexModules from './modules/index.js'
 
 import { piniaLanguagePlugin } from 'src/lib/language.js'
@@ -72,7 +69,7 @@ const persistedStateOptions = {
 
   try {
     let storageError
-    const plugins = [vuexPushNotificationsPlugin]
+    const plugins = []
     const pinia = createPinia()
     pinia.use(piniaPersistPlugin())
     pinia.use(piniaLanguagePlugin)

@@ -65,7 +65,7 @@ export const useChatsStore = defineStore('chats', {
         data: result.data.map((k) => k.account).filter(Boolean),
       })
 
-      chats.forEach((updatedChat) => {
+      result.data.forEach((updatedChat) => {
         const chat = getChatById(this, updatedChat.id)
 
         if (chat) {

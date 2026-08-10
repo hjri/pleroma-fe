@@ -4,20 +4,16 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 export const piniaPushNotificationsPlugin = ({ store }) => {
-  if (
-    store.$id !== 'sync_config' &&
-    store.$id !== 'instance' &&
-    store.$id !== 'interface'
-  )
-    return
+  const validActions = {
+    sync_config: new Set(['setPreference']),
+    interface: new Set(['setNotificationPermission', 'setLoginStatus']),
+    user: new Set(['setCurrentUser', 'clearCurrentUser']),
+  }
+
+  if (!validActions[store.$id]) return // Not applicable to the store
 
   store.$onAction(({ name: actionName, args }) => {
-    if (
-      store.$id === 'interface' &&
-      actionName !== 'setNotificationPermission' &&
-      actionName !== 'setLoginStatus'
-    )
-      return
+    if (!validActions[store.$id].has(actionName)) return // Not applicable to action
 
     // Initial state
     let vapidPublicKey = useInstanceStore().vapidPublicKey
@@ -60,9 +56,9 @@ export const piniaPushNotificationsPlugin = ({ store }) => {
     }
 
     if (permissionGranted && enabled && user) {
-      return window.vuex.dispatch('registerPushNotifications')
+      return useUsersStore().registerPushNotifications()
     } else {
-      return window.vuex.dispatch('unregisterPushNotifications')
+      return useUsersStore().unregisterPushNotifications()
     }
   })
 }
