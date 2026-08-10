@@ -153,7 +153,6 @@
           </div>
         </template>
         <template #item="{item}">
-          {{ item }}
           <DomainMuteCard :domain="item" />
         </template>
         <template #empty>
