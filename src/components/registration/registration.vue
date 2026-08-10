@@ -28,7 +28,7 @@
                 <input
                   id="sign-up-username"
                   v-model.trim="v$.user.username.$model"
-                  :disabled="isPending"
+                  :disabled="signUpPending"
                   class="input form-control"
                   :aria-required="true"
                   :placeholder="$t('registration.username_placeholder')"
@@ -56,7 +56,7 @@
                 <input
                   id="sign-up-fullname"
                   v-model.trim="v$.user.fullname.$model"
-                  :disabled="isPending"
+                  :disabled="signUpPending"
                   class="input form-control"
                   :aria-required="true"
                   :placeholder="$t('registration.fullname_placeholder')"
@@ -84,7 +84,7 @@
                 <input
                   id="email"
                   v-model="v$.user.email.$model"
-                  :disabled="isPending"
+                  :disabled="signUpPending"
                   class="input form-control"
                   type="email"
                   :aria-required="accountActivationRequired"
@@ -109,7 +109,7 @@
                 <textarea
                   id="bio"
                   v-model="user.bio"
-                  :disabled="isPending"
+                  :disabled="signUpPending"
                   class="input form-control"
                   :placeholder="bioPlaceholder"
                 />
@@ -126,7 +126,7 @@
                 <input
                   id="sign-up-password"
                   v-model="user.password"
-                  :disabled="isPending"
+                  :disabled="signUpPending"
                   class="input form-control"
                   type="password"
                   :aria-required="true"
@@ -154,7 +154,7 @@
                 <input
                   id="sign-up-password-confirmation"
                   v-model="user.confirm"
-                  :disabled="isPending"
+                  :disabled="signUpPending"
                   class="input form-control"
                   type="password"
                   :aria-required="true"
@@ -187,7 +187,7 @@
                 <input
                   id="sign-up-birthday"
                   v-model="user.birthday"
-                  :disabled="isPending"
+                  :disabled="signUpPending"
                   class="input form-control"
                   type="date"
                   :max="birthdayRequired ? birthdayMinAttr : undefined"
@@ -232,7 +232,7 @@
                 <textarea
                   id="reason"
                   v-model="user.reason"
-                  :disabled="isPending"
+                  :disabled="signUpPending"
                   class="input form-control"
                   :placeholder="reasonPlaceholder"
                 />
@@ -259,7 +259,7 @@
                   <input
                     id="captcha-answer"
                     v-model="captcha.solution"
-                    :disabled="isPending"
+                    :disabled="signUpPending"
                     class="input form-control"
                     type="text"
                     autocomplete="off"
@@ -285,7 +285,7 @@
               </div>
               <div class="form-group">
                 <button
-                  :disabled="isPending"
+                  :disabled="signUpPending"
                   type="submit"
                   class="btn button-default"
                 >
@@ -308,7 +308,7 @@
           >
             <div class="alert error">
               <span
-                v-for="error in serverValidationErrors"
+                v-for="error in signUpErrors"
                 :key="error"
               >{{ error }}</span>
             </div>
