@@ -292,6 +292,7 @@ export const useUsersStore = defineStore('users', {
         })
 
         this.addNewUsers(result)
+
         return this.users.get(result.data.id)
       } catch (error) {
         if (error.name === 'StatusCodeError' && error.statusCode === 404) {
@@ -304,7 +305,7 @@ export const useUsersStore = defineStore('users', {
     },
     async fetchUserByName(name) {
       try {
-        const result = fetchUserByName({
+        const result = await fetchUserByName({
           name,
           credentials: useOAuthStore().token,
         })
