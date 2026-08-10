@@ -1,8 +1,10 @@
 import Timeline from 'src/components/timeline/timeline.vue'
 
+import { useStatusesStore } from 'src/stores/statuses.js'
+
 const TagTimeline = {
   created() {
-    this.$store.commit('clearTimeline', { timeline: 'tag' })
+    useStatusesStore().clearTimeline({ timeline: 'tag' })
     this.$store.dispatch('startFetchingTimeline', {
       timeline: 'tag',
       tag: this.tag,
@@ -21,7 +23,7 @@ const TagTimeline = {
   },
   watch: {
     tag() {
-      this.$store.commit('clearTimeline', { timeline: 'tag' })
+      useStatusesStore().clearTimeline({ timeline: 'tag' })
       this.$store.dispatch('startFetchingTimeline', {
         timeline: 'tag',
         tag: this.tag,

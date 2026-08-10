@@ -19,6 +19,7 @@ import { useChatsStore } from 'src/stores/chats.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import {
@@ -122,7 +123,7 @@ const Chat = {
   },
   computed: {
     conversationId() {
-      const status = this.$store.state.statuses.allStatusesObject[this.statusId]
+      const status = useStatusesStore().allStatuses.get(this.statusId)
       return get(
         status,
         'retweeted_status.statusnet_conversation_id',

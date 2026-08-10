@@ -1,4 +1,4 @@
-import { each, first, last, maxBy, merge, minBy, omitBy, remove } from 'lodash'
+import { first, last, maxBy, minBy } from 'lodash'
 import { defineStore } from 'pinia'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -33,7 +33,7 @@ import {
   unretweet,
 } from 'src/api/user.js'
 
-const emptyTl = () => ({
+const emptyTl = (userId) => ({
   statuses: new Map(),
   faves: [],
   visibleStatuses: new Map(),
@@ -71,49 +71,6 @@ export const defaultState = () => ({
   },
 })
 
-const mergeOrAdd = (map, status, timestamp) => {
-  const existing = map.get(status.id)
-  const oldTimestamp = this.timestamps.get(existing)
-
-  const { user: unused0, ...old } = existing ?? {}
-  const { user: statusUser, ...neu } = status
-
-  const [user] = useUsersStore().addNewUsers({ data: statusUser, timestamp })
-
-  existing.user = user
-
-  // implicit: if oldTimestamp is undefined this will still be false
-  if (oldTimestamp > timestamp) return [existing, false] // not overwriting old data with new
-
-  const newStatus = {
-    ...old,
-    ...neu,
-    user,
-  }
-
-  map.set(item.id, item)
-
-  this.timestamps.set(newStatus, timestamp)
-
-  return [map.get(item.id), true]
-}
-
-const sortById = (a, b) => {
-  const seqA = Number(a.id)
-  const seqB = Number(b.id)
-  const isSeqA = !Number.isNaN(seqA)
-  const isSeqB = !Number.isNaN(seqB)
-  if (isSeqA && isSeqB) {
-    return seqA > seqB ? -1 : 1
-  } else if (isSeqA && !isSeqB) {
-    return 1
-  } else if (!isSeqA && isSeqB) {
-    return -1
-  } else {
-    return a.id > b.id ? -1 : 1
-  }
-}
-
 const getLatestScrobble = (user) => {
   const scrobblesSupport =
     useInstanceCapabilitiesStore().pleromaScrobblesAvailable
@@ -149,7 +106,6 @@ const getLatestScrobble = (user) => {
     })
 }
 
-
 const USER_TIMELINES = new Set(['user', 'userPinned', 'media'])
 
 export const useStatusesStore = defineStore('statuses', {
@@ -160,8 +116,8 @@ export const useStatusesStore = defineStore('statuses', {
       showImmediately = false,
       timelineName,
       user = {},
+      userId,
       noIdUpdate = false,
-      Id,
       pagination = {},
       timestamp,
     }) {
@@ -179,17 +135,14 @@ export const useStatusesStore = defineStore('statuses', {
       // This makes sure that user timeline won't get data meant for other
       // user. I.e. opening different user profiles makes request which could
       // return data late after user already viewing different user profile
-      if (
-        USER_TIMELINES.has(timelineName) &&
-        timeline.userId !== userId
-      ) {
+      if (USER_TIMELINES.has(timelineName) && timeline.userId !== userId) {
         return
       }
 
       const addStatus = (data, showImmediately, addToTimeline = true) => {
         getLatestScrobble(data.user)
 
-        const [status] = mergeOrAdd(this.allStatuses, data)
+        const [status] = this.mergeOrAdd(this.allStatuses, data)
 
         // Add to conversation
         const conversations = this.conversations
@@ -210,7 +163,7 @@ export const useStatusesStore = defineStore('statuses', {
 
           // Add the mention to the mentions timeline
           if (timeline !== mentions) {
-            const [, isNew] = mergeOrAdd(mentions.statuses, status)
+            const [, isNew] = this.mergeOrAdd(mentions.statuses, data)
             if (isNew) mentions.newStatusCount += 1
           }
         }
@@ -218,21 +171,23 @@ export const useStatusesStore = defineStore('statuses', {
         if (status.visibility === 'direct') {
           const dms = this.timelines.dms
 
-          const [, isNew] = mergeOrAdd(dms.statuses, status)
+          const [, isNew] = this.mergeOrAdd(dms.statuses, data)
           if (isNew) dms.newStatusCount += 1
         }
 
         // Some statuses should only be added to the global status repository.
         if (timeline && addToTimeline) {
           // Decide if we should treat the status as new for this timeline.
-          const [status, isNew] = mergeOrAdd(timeline.statuses, status)
-          if (showImmediately) {
-            // Add it directly to the visibleStatuses, don't change
-            // newStatusCount
-            timeline.visibleStatuses.add(status.id, status)
-          } else {
-            // Just change newStatuscount
-            timeline.newStatusCount += 1
+          const [status, isNew] = this.mergeOrAdd(timeline.statuses, data)
+          if (isNew) {
+            if (showImmediately) {
+              // Add it directly to the visibleStatuses, don't change
+              // newStatusCount
+              timeline.visibleStatuses.set(status.id, status)
+            } else {
+              // Just change newStatuscount
+              timeline.newStatusCount += 1
+            }
           }
         }
 
@@ -256,12 +211,17 @@ export const useStatusesStore = defineStore('statuses', {
         },
         retweet: (status) => {
           // RetweetedStatuses are never shown immediately
-          const retweetedStatus = addStatus(status.retweeted_status, false, false)
+          const retweetedStatus = addStatus(
+            status.retweeted_status,
+            false,
+            false,
+          )
 
           let retweet
           // If the retweeted status is already there, don't add the retweet
           // to the timeline.
-          if (timeline?.statuses.values().some((s) => {
+          if (
+            [...(timeline?.statuses.values() ?? [])].some((s) => {
               if (s.retweeted_status) {
                 return (
                   s.id === retweetedStatus.id ||
@@ -312,6 +272,35 @@ export const useStatusesStore = defineStore('statuses', {
         const processor = processors[type] ?? processors.default
         processor(status)
       })
+    },
+    mergeOrAdd(map, status, timestamp) {
+      const existing = map.get(status.id) ?? {}
+      const oldTimestamp = this.timestamps.get(existing)
+
+      const { user: unused0, ...old } = existing
+      const { user: statusUser, ...neu } = status
+
+      const [user] = useUsersStore().addNewUsers({
+        data: statusUser,
+        timestamp,
+      })
+
+      existing.user = user // reactive update in case we return old
+
+      // implicit: if oldTimestamp is undefined this will still be false
+      if (oldTimestamp > timestamp) return [existing, false] // not overwriting old data with new
+
+      const newStatus = {
+        ...old,
+        ...neu,
+        user,
+      }
+
+      map.set(newStatus.id, newStatus)
+
+      this.timestamps.set(newStatus, timestamp)
+
+      return [map.get(newStatus.id), true]
     },
     fetchStatus(id) {
       return fetchStatus({ id }).then(({ data: status, timestamp }) =>
@@ -376,10 +365,7 @@ export const useStatusesStore = defineStore('statuses', {
       )
     },
     fetchFavsAndRepeats(id) {
-      return Promise.all([
-        this.fetchFavs(id),
-        this.fetchRepeats(id),
-      ])
+      return Promise.all([this.fetchFavs(id), this.fetchRepeats(id)])
     },
 
     // Updates
@@ -414,8 +400,8 @@ export const useStatusesStore = defineStore('statuses', {
       const minNew = pagination.maxId ?? minBy(statuses, 'id').id ?? ''
       const maxNew = pagination.minId ?? maxBy(statuses, 'id').id ?? ''
 
-      const newer = (maxNew > timeline.maxId || timeline.maxId === '')
-      const older = (minNew < timeline.minId || timeline.minId === '')
+      const newer = maxNew > timeline.maxId || timeline.maxId === ''
+      const older = minNew < timeline.minId || timeline.minId === ''
 
       if (newer) {
         timeline.maxId = maxNew
@@ -429,8 +415,10 @@ export const useStatusesStore = defineStore('statuses', {
 
       timeline.newStatusCount = 0
 
-      timeline.visibleStatuses = new Map([...timeline.statuses.entries()].slice(0, 50))
-      timeline.minVisibleId = last(timeline.visibleStatuses).id
+      timeline.visibleStatuses = new Map(
+        [...timeline.statuses.entries()].slice(0, 50),
+      )
+      timeline.minVisibleId = last(timeline.visibleStatuses.keys())
       timeline.minId = ''
       timeline.maxId = ''
       this.updateTimelineExtremes(timeline, [...timeline.statuses.values()])
@@ -442,9 +430,9 @@ export const useStatusesStore = defineStore('statuses', {
         this[key] = value
       })
     },
-    clearTimeline(state, { timeline, excludeUserId = false }) {
-      const userId = excludeUserId ? state.timelines[timeline].userId : undefined
-      state.timelines[timeline] = emptyTl(userId)
+    clearTimeline({ timeline, excludeUserId = false }) {
+      const userId = excludeUserId ? this.timelines[timeline].userId : undefined
+      this.timelines[timeline] = emptyTl(userId)
     },
     queueFlush({ timeline, id }) {
       this.timelines[timeline].flushMarker = id
@@ -650,8 +638,8 @@ export const useStatusesStore = defineStore('statuses', {
     },
     setBookmarked({ id, value, bookmark_folder_id }) {
       const status = this.allStatuses.get(id)
-      newStatus.bookmarked = value
-      newStatus.bookmark_folder_id = value ? bookmark_folder_id : null
+      status.bookmarked = value
+      status.bookmark_folder_id = value ? bookmark_folder_id : null
     },
 
     /// Mute
@@ -659,25 +647,29 @@ export const useStatusesStore = defineStore('statuses', {
       return muteConversation({
         id,
         credentials: useOAuthStore().token,
-      }).then(({ data: status, timestamp }) => {
-        this.addNewStatuses({
-          statuses: [status],
-          timestamp,
+      })
+        .then(({ data: status, timestamp }) => {
+          this.addNewStatuses({
+            statuses: [status],
+            timestamp,
+          })
+          return status
         })
-        return status
-      }).then((status) => this.setMutedStatus(status))
+        .then((status) => this.setMutedStatus(status))
     },
     unmuteConversation(id) {
       return unmuteConversation({
         id,
         credentials: useOAuthStore().token,
-      }).then(({ data: status, timestamp }) => {
-        this.addNewStatuses({
-          statuses: [status],
-          timestamp,
+      })
+        .then(({ data: status, timestamp }) => {
+          this.addNewStatuses({
+            statuses: [status],
+            timestamp,
+          })
+          return status
         })
-        return status
-      }).then((status) => this.setMutedStatus(status))
+        .then((status) => this.setMutedStatus(status))
     },
     setMutedStatus({ id, thread_muted }) {
       // Setting thread_muted flag on all other known statuses
@@ -686,11 +678,11 @@ export const useStatusesStore = defineStore('statuses', {
       newStatus.thread_muted = thread_muted
 
       if (newStatus.thread_muted !== undefined) {
-        state.conversations.get(newStatus.statusnet_conversation_id).forEach(
-          (status) => {
+        this.conversations
+          .get(newStatus.statusnet_conversation_id)
+          .forEach((status) => {
             status.thread_muted = thread_muted
-          },
-        )
+          })
       }
     },
 
@@ -774,9 +766,7 @@ export const useStatusesStore = defineStore('statuses', {
           statuses: data.statuses,
         })
 
-        data.statuses = data.statuses.map(
-          (s) => this.allStatuses.get(s.id),
-        )
+        data.statuses = data.statuses.map((s) => this.allStatuses.get(s.id))
         return data
       })
     },
@@ -785,8 +775,7 @@ export const useStatusesStore = defineStore('statuses', {
     removeUserStatuses({ timelineName, userId }) {
       const timeline = this.timelines[timelineName]
 
-      timeline
-        .statuses
+      timeline.statuses
         .values()
         .filter(({ user }) => user.id === userId)
         .forEach(({ id }) => {
@@ -795,8 +784,8 @@ export const useStatusesStore = defineStore('statuses', {
         })
       timeline.minVisibleId =
         timeline.visibleStatuses.length > 0
-        ? last(timeline.visibleStatuses).id
-        : 0
+          ? last(timeline.visibleStatuses).id
+          : 0
       timeline.maxId =
         timeline.statuses.length > 0 ? first(timeline.statuses).id : 0
     },
@@ -807,8 +796,8 @@ export const useStatusesStore = defineStore('statuses', {
       const status = this.allStatuses.get(id)
       status.poll = poll
     },
-    setLoading(state, { timeline, value }) {
-      state.timelines[timeline].loading = value
+    setLoading({ timeline, value }) {
+      this.timelines[timeline].loading = value
     },
   },
 })

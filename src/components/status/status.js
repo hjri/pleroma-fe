@@ -23,6 +23,7 @@ import {
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 import { useUsersStore } from 'src/stores/users.js'
@@ -206,7 +207,7 @@ const Status = {
     },
     statusFromGlobalRepository() {
       // NOTE: Consider to replace status with statusFromGlobalRepository
-      return this.$store.state.statuses.allStatusesObject[this.status.id]
+      return useStatusesStore().allStatuses.get(this.status.id)
     },
     loggedIn() {
       return !!this.currentUser

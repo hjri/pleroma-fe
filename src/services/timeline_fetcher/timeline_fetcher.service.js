@@ -5,12 +5,12 @@ import { promiseInterval } from '../promise_interval/promise_interval.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { fetchTimeline } from 'src/api/timelines.js'
 
 const update = ({
-  store,
   statuses,
   timeline,
   showImmediately,
@@ -20,8 +20,8 @@ const update = ({
 }) => {
   const ccTimeline = camelCase(timeline)
 
-  store.dispatch('addNewStatuses', {
-    timeline: ccTimeline,
+  useStatusesStore().addNewStatuses({
+    timelineName: ccTimeline,
     userId,
     listId,
     statuses,
@@ -31,7 +31,6 @@ const update = ({
 }
 
 const fetchAndUpdate = ({
-  store,
   credentials,
   timeline = 'friends',
   older = false,
@@ -45,8 +44,7 @@ const fetchAndUpdate = ({
   sinceId,
 }) => {
   const args = { timeline, credentials }
-  const rootState = store.rootState || store.state
-  const timelineData = rootState.statuses.timelines[camelCase(timeline)]
+  const timelineData = useStatusesStore().timelines[camelCase(timeline)]
   const { hideMutedPosts, replyVisibility } =
     useMergedConfigStore().mergedConfig
   const loggedIn = !!useUsersStore().currentUser
@@ -86,10 +84,9 @@ const fetchAndUpdate = ({
         !timelineData.loading &&
         numStatusesBeforeFetch > 0
       ) {
-        store.dispatch('queueFlush', { timeline, id: timelineData.maxId })
+        useStatusesStore().queueFlush({ timeline, id: timelineData.maxId })
       }
       update({
-        store,
         statuses,
         timeline,
         showImmediately,
@@ -116,23 +113,21 @@ const fetchAndUpdate = ({
 const startFetching = ({
   timeline = 'friends',
   credentials,
-  store,
   userId,
   listId,
   statusId,
   bookmarkFolderId,
   tag,
 }) => {
-  const rootState = store.rootState || store.state
-  const timelineData = rootState.statuses.timelines[camelCase(timeline)]
-  const showImmediately = timelineData.visibleStatuses.length === 0
+  const timelineData = useStatusesStore().timelines[camelCase(timeline)]
+  const showImmediately = timelineData.visibleStatuses.size === 0
+  console.log(timeline)
   timelineData.userId = userId
   timelineData.listId = listId
   timelineData.bookmarkFolderId = bookmarkFolderId
   fetchAndUpdate({
     timeline,
     credentials,
-    store,
     showImmediately,
     userId,
     listId,
@@ -144,7 +139,6 @@ const startFetching = ({
     fetchAndUpdate({
       timeline,
       credentials,
-      store,
       userId,
       listId,
       statusId,

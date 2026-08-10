@@ -9,6 +9,7 @@ import UserCard from 'src/components/user_card/user_card.vue'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -106,7 +107,9 @@ const UserProfile = {
       const startFetchingTimeline = (timeline, userId) => {
         // Clear timeline only if load another user's profile
         if (userId !== this.$store.state.statuses.timelines[timeline].userId) {
-          this.$store.commit('clearTimeline', { timeline })
+          useStatusesStore().clearTimeline({ timeline: 'user' })
+          useStatusesStore().clearTimeline({ timeline: 'userPinned' })
+          useStatusesStore().clearTimeline({ timeline: 'media' })
         }
         this.$store.dispatch('startFetchingTimeline', { timeline, userId })
       }

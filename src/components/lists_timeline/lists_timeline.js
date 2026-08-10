@@ -1,6 +1,7 @@
 import Timeline from 'src/components/timeline/timeline.vue'
 
 import { useListsStore } from 'src/stores/lists.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 
 const ListsTimeline = {
   data() {
@@ -21,7 +22,7 @@ const ListsTimeline = {
       if (route.name === 'lists-timeline' && route.params.id !== this.listId) {
         this.listId = route.params.id
         this.$store.dispatch('stopFetchingTimeline', 'list')
-        this.$store.commit('clearTimeline', { timeline: 'list' })
+        useStatusesStore().clearTimeline({ timeline: 'list' })
         useListsStore().fetchList({ listId: this.listId })
         this.$store.dispatch('startFetchingTimeline', {
           timeline: 'list',
@@ -40,7 +41,7 @@ const ListsTimeline = {
   },
   unmounted() {
     this.$store.dispatch('stopFetchingTimeline', 'list')
-    this.$store.commit('clearTimeline', { timeline: 'list' })
+    useStatusesStore().clearTimeline({ timeline: 'list' })
   },
 }
 

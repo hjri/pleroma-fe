@@ -6,6 +6,7 @@ import PostStatusForm from 'src/components/post_status_form/post_status_form.vue
 import StatusContent from 'src/components/status_content/status_content.vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPollH } from '@fortawesome/free-solid-svg-icons'
@@ -65,7 +66,7 @@ const Draft = {
     },
     refStatus() {
       return this.draft.refId
-        ? this.$store.state.statuses.allStatusesObject[this.draft.refId]
+        ? useStatusesStore().allStatuses.get(this.draft.refId)
         : undefined
     },
     localCollapseSubjectDefault() {

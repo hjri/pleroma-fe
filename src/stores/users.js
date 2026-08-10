@@ -20,7 +20,9 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useListsStore } from 'src/stores/lists.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
@@ -144,12 +146,12 @@ export const useUsersStore = defineStore('users', {
       const { data, timestamp } = response
       const users = Array.isArray(data) ? data : [data]
 
-      users.forEach((user) => {
+      return users.map((user) => {
         const existing = this.users.get(user.id) ?? {}
         const oldTimestamp = this.timestamps.get(existing)
 
         // implicit: if oldTimestamp is undefined this will still be false
-        if (oldTimestamp > timestamp) return // not overwriting old data with new
+        if (oldTimestamp > timestamp) return existing // not overwriting old data with new
 
         const { relationship: unused0, ...old } = existing
         const { relationship: unused1, ...neu } = user
@@ -163,6 +165,8 @@ export const useUsersStore = defineStore('users', {
         if (user.id === this.currentUser.id) {
           this.currentUser = newUser
         }
+
+        return this.users.get(user.id)
       })
     },
     updateUserRelationship(relationships) {
@@ -594,7 +598,7 @@ export const useUsersStore = defineStore('users', {
           useBookmarkFoldersStore().stopFetching()
           store.dispatch('stopFetchingFollowRequests')
           store.commit('clearNotifications')
-          store.commit('resetStatuses')
+          useStatusesStore().resetStatuses()
           useChatsStore().resetChats()
           oauth.clearToken()
           Cookies.remove('__Host-pleroma_key', { path: '/' })

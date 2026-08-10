@@ -14,6 +14,7 @@ import { useI18nStore } from 'src/stores/i18n.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useReportsStore } from 'src/stores/reports.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUsersStore } from 'src/stores/users.js'
 
@@ -80,7 +81,7 @@ export const useNotificationsStore = defineStore('notifications', {
       )
 
       // Synchronous commit to add all the statuses
-      window.vuex.commit('addNewStatuses', {
+      useStatusesStore().addNewStatuses({
         timestamp,
         statuses: statusNotifications.map(
           (notification) => notification.status,
@@ -90,7 +91,7 @@ export const useNotificationsStore = defineStore('notifications', {
       // Update references to statuses in notifications to ones in the store
       statusNotifications.forEach((notification) => {
         const id = notification.status.id
-        const referenceStatus = window.vuex.state.statuses.allStatusesObject[id]
+        const referenceStatus = useStatusesStore().allStatuses.get(id)
 
         if (referenceStatus) {
           notification.status = referenceStatus
@@ -103,7 +104,7 @@ export const useNotificationsStore = defineStore('notifications', {
         }
 
         if (notification.type === 'pleroma:emoji_reaction') {
-          window.vuex.dispatch('fetchEmojiReactionsBy', notification.status.id)
+          useStatusesStore().fetchEmojiReactionsBy(notification.status.id)
         }
 
         // Only add a new notification if we don't have one for the same action

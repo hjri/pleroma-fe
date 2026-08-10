@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 
 import { setReportState } from 'src/api/admin.js'
 
@@ -18,8 +19,8 @@ export const useReportsStore = defineStore('reports', {
   }),
   actions: {
     openUserReportingModal({ userId, statusIds = [] }) {
-      const preTickedStatuses = statusIds.map(
-        (id) => window.vuex.state.statuses.allStatusesObject[id],
+      const preTickedStatuses = statusIds.map((id) =>
+        useStatusesStore().allStatuses.get(id),
       )
       const preTickedIds = statusIds
       const statuses = preTickedStatuses.concat(

@@ -8,6 +8,7 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useShoutStore } from 'src/stores/shout.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 
 import { fetchTimeline } from 'src/api/timelines.js'
 import {
@@ -123,14 +124,16 @@ const api = {
                   data: message.notification,
                 })
               } else if (message.event === 'update') {
-                dispatch('addNewStatuses', {
+                useStatusesStore().addNewStatuses({
+                  timestamp: Date.now(),
                   statuses: [message.status],
                   userId: false,
                   showImmediately: timelineData.visibleStatuses.length === 0,
                   timeline: 'friends',
                 })
               } else if (message.event === 'status.update') {
-                dispatch('addNewStatuses', {
+                useStatusesStore().addNewStatuses({
+                  timestamp: Date.now(),
                   statuses: [message.status],
                   userId: false,
                   showImmediately:

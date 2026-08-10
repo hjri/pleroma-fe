@@ -19,6 +19,7 @@ import UserPopover from 'src/components/user_popover/user_popover.vue'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -100,9 +101,9 @@ const ChatMessage = {
       return !this.message.in_reply_to_status_id
     },
     customReplyTo() {
-      return this.$store.state.statuses.allStatusesObject[
-        this.message.in_reply_to_status_id
-      ]
+      return useStatusesStore().allStatuses.get(
+        this.message.in_reply_to_status_id,
+      )
     },
     replyToName() {
       if (this.message.in_reply_to_screen_name) {

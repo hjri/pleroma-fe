@@ -1,8 +1,10 @@
 import Timeline from 'src/components/timeline/timeline.vue'
 
+import { useStatusesStore } from 'src/stores/statuses.js'
+
 const Bookmarks = {
   created() {
-    this.$store.commit('clearTimeline', { timeline: 'bookmarks' })
+    useStatusesStore().clearTimeline({ timeline: 'bookmarks' })
     this.$store.dispatch('startFetchingTimeline', {
       timeline: 'bookmarks',
       bookmarkFolderId: this.folderId || null,
@@ -21,7 +23,7 @@ const Bookmarks = {
   },
   watch: {
     folderId() {
-      this.$store.commit('clearTimeline', { timeline: 'bookmarks' })
+      useStatusesStore().clearTimeline({ timeline: 'bookmarks' })
       this.$store.dispatch('stopFetchingTimeline', 'bookmarks')
       this.$store.dispatch('startFetchingTimeline', {
         timeline: 'bookmarks',
@@ -30,7 +32,7 @@ const Bookmarks = {
     },
   },
   unmounted() {
-    this.$store.commit('clearTimeline', { timeline: 'bookmarks' })
+    useStatusesStore().clearTimeline({ timeline: 'bookmarks' })
     this.$store.dispatch('stopFetchingTimeline', 'bookmarks')
   },
 }

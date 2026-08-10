@@ -1,6 +1,6 @@
-import { find } from 'lodash'
-
 import Popover from 'src/components/popover/popover.vue'
+
+import { useStatusesStore } from 'src/stores/statuses.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
@@ -17,7 +17,7 @@ const StatusPopover = {
   },
   computed: {
     status() {
-      return find(this.$store.state.statuses.allStatuses, { id: this.statusId })
+      return useStatusesStore().allStatuses.get(this.statusId)
     },
   },
   components: {
@@ -30,8 +30,8 @@ const StatusPopover = {
           this.error = true
           return
         }
-        this.$store
-          .dispatch('fetchStatus', this.statusId)
+        useStatusesStore()
+          .fetchStatus(this.statusId)
           .then(() => (this.error = false))
           .catch(() => (this.error = true))
       }

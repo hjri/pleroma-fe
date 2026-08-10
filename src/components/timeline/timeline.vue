@@ -90,7 +90,7 @@
           :status-id="status.id"
           :in-profile="inProfile"
           :profile-user-id="userId"
-          :virtual-hidden="virtualScrollingEnabled && !statusesToDisplay.includes(status.id)"
+          :virtual-hidden="virtualScrollingEnabled && !statusesToDisplay.has(status.id)"
           collapsable
         />
       </div>

@@ -1,4 +1,4 @@
-import { clone, filter, findIndex, get, reduce } from 'lodash'
+import { get, reduce } from 'lodash'
 import { mapState as mapPiniaState } from 'pinia'
 import { mapState } from 'vuex'
 
@@ -9,9 +9,10 @@ import QuickViewSettings from 'src/components/quick_view_settings/quick_view_set
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
 
-import { useInterfaceStore } from 'src/stores/interface'
+import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 
 import { fetchConversation, fetchStatus } from 'src/api/public.js'
 import { WSConnectionStatus } from 'src/api/websocket.js'
@@ -49,20 +50,6 @@ const sortById = (a, b) => {
   } else {
     return idA < idB ? -1 : 1
   }
-}
-
-const sortAndFilterConversation = (conversation, statusoid) => {
-  if (statusoid.type === 'retweet') {
-    conversation = filter(
-      conversation,
-      (status) =>
-        status.type === 'retweet' ||
-        status.id !== statusoid.retweeted_status.id,
-    )
-  } else {
-    conversation = filter(conversation, (status) => status.type !== 'retweet')
-  }
-  return conversation.filter(Boolean).sort(sortById)
 }
 
 const conversation = {
@@ -166,7 +153,7 @@ const conversation = {
       return this.virtualHidden && this.suspendable
     },
     status() {
-      return this.$store.state.statuses.allStatusesObject[this.statusId]
+      return useStatusesStore().allStatuses.get(this.statusId)
     },
     originalStatusId() {
       if (this.status.retweeted_status) {
@@ -187,15 +174,11 @@ const conversation = {
         return [this.status]
       }
 
-      const conversation = clone(
-        this.$store.state.statuses.conversationsObject[this.conversationId],
+      const conversation = useStatusesStore().conversations.get(
+        this.conversationId,
       )
-      const statusIndex = findIndex(conversation, { id: this.originalStatusId })
-      if (statusIndex !== -1) {
-        conversation[statusIndex] = this.status
-      }
 
-      return sortAndFilterConversation(conversation, this.status)
+      return [...conversation.values()].toSorted(sortById)
     },
     statusMap() {
       return this.conversation.reduce((res, s) => {
@@ -441,7 +424,7 @@ const conversation = {
       }
     },
     virtualHidden() {
-      this.$store.dispatch('setVirtualHeight', {
+      useStatusesStore().setVirtualHeight({
         statusId: this.statusId,
         height: `${this.$el.clientHeight}px`,
       })
@@ -453,9 +436,12 @@ const conversation = {
         fetchConversation({
           id: this.statusId,
           credentials: useOAuthStore().token,
-        }).then(({ data: { ancestors, descendants } }) => {
-          this.$store.dispatch('addNewStatuses', { statuses: ancestors })
-          this.$store.dispatch('addNewStatuses', { statuses: descendants })
+        }).then(({ data: { ancestors, descendants }, timestamp }) => {
+          useStatusesStore().addNewStatuses({ statuses: ancestors, timestamp })
+          useStatusesStore().addNewStatuses({
+            statuses: descendants,
+            timestamp,
+          })
           this.setFocused(this.originalStatusId)
         })
       } else {
@@ -482,17 +468,17 @@ const conversation = {
       this.focused = id
 
       if (!this.streamingEnabled) {
-        this.$store.dispatch('fetchStatus', id)
+        useStatusesStore().fetchStatus(id)
       }
 
-      this.$store.dispatch('fetchFavsAndRepeats', id)
-      this.$store.dispatch('fetchEmojiReactionsBy', id)
+      useStatusesStore().fetchFavsAndRepeats(id)
+      useStatusesStore().fetchEmojiReactionsBy(id)
     },
     toggleExpanded() {
       this.expanded = !this.expanded
     },
     getConversationId(statusId) {
-      const status = this.$store.state.statuses.allStatusesObject[statusId]
+      const status = useStatusesStore().allStatuses.get(statusId)
       return get(
         status,
         'retweeted_status.statusnet_conversation_id',

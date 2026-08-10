@@ -2,6 +2,7 @@ import { cloneDeep, differenceWith, get, isEqual, set } from 'lodash'
 import { defineStore } from 'pinia'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 
 import {
   addNewEmojiFile,
@@ -362,6 +363,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     async fetchStatuses(opts) {
       const {
         data: { total, activities },
+        timestamp,
       } = await listStatuses({
         credentials: useOAuthStore().token,
         opts,
@@ -369,7 +371,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
 
       const statuses = activities.map(parseStatus)
 
-      await window.vuex.dispatch('addNewStatuses', { statuses })
+      useStatusesStore().addNewStatuses({ statuses, timestamp })
 
       return {
         items: statuses,
@@ -377,13 +379,13 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       }
     },
     async changeStatusScope(opts) {
-      const { data } = await changeStatusScope({
+      const { data, timestamp } = await changeStatusScope({
         credentials: useOAuthStore().token,
         opts,
       })
       const status = parseStatus(data)
 
-      await window.vuex.dispatch('addNewStatuses', { statuses: [status] })
+      useStatusesStore().addNewStatuses({ statuses: [status], timestamp })
     },
 
     // Users stuff

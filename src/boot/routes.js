@@ -1,15 +1,11 @@
 import AuthForm from 'src/components/auth_form/auth_form.js'
 import BookmarkTimeline from 'src/components/bookmark_timeline/bookmark_timeline.vue'
-import BubbleTimeline from 'src/components/bubble_timeline/bubble_timeline.vue'
 import ConversationPage from 'src/components/conversation-page/conversation-page.vue'
-import DMs from 'src/components/dm_timeline/dm_timeline.vue'
-import FriendsTimeline from 'src/components/friends_timeline/friends_timeline.vue'
 import NavPanel from 'src/components/nav_panel/nav_panel.vue'
-import PublicAndExternalTimeline from 'src/components/public_and_external_timeline/public_and_external_timeline.vue'
-import PublicTimeline from 'src/components/public_timeline/public_timeline.vue'
 import QuotesTimeline from 'src/components/quotes_timeline/quotes_timeline.vue'
 import RemoteUserResolver from 'src/components/remote_user_resolver/remote_user_resolver.vue'
 import TagTimeline from 'src/components/tag_timeline/tag_timeline.vue'
+import Timeline from 'src/components/timeline/timeline.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -42,22 +38,38 @@ export default (store) => {
     {
       name: 'public-external-timeline',
       path: '/main/all',
-      component: PublicAndExternalTimeline,
+      component: Timeline,
+      props: () => ({
+        timelineName: 'publicAndExternal',
+      }),
     },
     {
       name: 'public-timeline',
       path: '/main/public',
-      component: PublicTimeline,
+      component: Timeline,
+      props: () => ({
+        timelineName: 'public',
+      }),
     },
     {
       name: 'friends',
       path: '/main/friends',
-      component: FriendsTimeline,
+      component: Timeline,
       beforeEnter: validateAuthenticatedRoute,
+      props: () => ({
+        timelineName: 'friends',
+      }),
     },
     { name: 'tag-timeline', path: '/tag/:tag', component: TagTimeline },
     { name: 'bookmarks', path: '/bookmarks', component: BookmarkTimeline },
-    { name: 'bubble', path: '/bubble', component: BubbleTimeline },
+    {
+      name: 'bubble',
+      path: '/bubble',
+      component: Timeline,
+      props: () => ({
+        timelineName: 'bubble',
+      }),
+    },
     {
       name: 'conversation',
       path: '/notice/:id',
@@ -105,8 +117,11 @@ export default (store) => {
     {
       name: 'dms',
       path: '/users/:username/dms',
-      component: DMs,
+      component: Timeline,
       beforeEnter: validateAuthenticatedRoute,
+      props: () => ({
+        timelineName: 'dms',
+      }),
     },
     {
       name: 'registration',

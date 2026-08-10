@@ -1,5 +1,6 @@
 import { map } from 'lodash'
 
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import {
@@ -38,9 +39,10 @@ const postStatus = ({
     poll,
     preview,
     idempotencyKey,
-  }).then(({ data }) => {
+  }).then(({ data, timestamp }) => {
     if (!preview)
-      store.dispatch('addNewStatuses', {
+      useStatusesStore().addNewStatuses({
+        timestamp,
         statuses: [data],
         timeline: 'friends',
         showImmediately: true,

@@ -3,6 +3,7 @@ import UserListPopover from 'src/components/user_list_popover/user_list_popover.
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -62,10 +63,7 @@ const EmojiReactions = {
     async fetchEmojiReactionsByIfMissing() {
       const hasNoAccounts = this.status.emoji_reactions.find((r) => !r.accounts)
       if (hasNoAccounts) {
-        return await this.$store.dispatch(
-          'fetchEmojiReactionsBy',
-          this.status.id,
-        )
+        return await useStatusesStore().fetchEmojiReactionsBy(this.status.id)
       }
     },
     reactWith(emoji) {

@@ -9,6 +9,7 @@ import TimelineMenu from 'src/components/timeline_menu/timeline_menu.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import timelineFetcher from 'src/services/timeline_fetcher/timeline_fetcher.service.js'
@@ -26,21 +27,19 @@ import {
 library.add(faCircleNotch, faCog, faMinus, faArrowUp, faCirclePlus, faCheck)
 
 const Timeline = {
-  props: [
-    'timeline',
-    'timelineName',
-    'title',
-    'userId',
-    'listId',
-    'statusId',
-    'bookmarkFolderId',
-    'tag',
-    'embedded',
-    'count',
-    'pinnedStatusIds',
-    'inProfile',
-    'footerSlipgate', // reference to an element where we should put our footer
-  ],
+  props: {
+    timelineName: String,
+    userId: String,
+    listId: String,
+    statusId: String,
+    bookmarkFolderId: String,
+    tag: String,
+    embedded: Boolean,
+    count: Number,
+    pinnedStatusIds: Set,
+    inProfile: Boolean,
+    footerSlipgate: Object, // reference to an element where we should put our footer
+  },
   data() {
     return {
       showScrollTop: false,
@@ -59,8 +58,11 @@ const Timeline = {
     QuickViewSettings,
   },
   computed: {
+    timeline() {
+      return useStatusesStore().timelines[this.timelineName]
+    },
     filteredVisibleStatuses() {
-      return this.timeline.visibleStatuses.filter(
+      return [...this.timeline.visibleStatuses.values()].filter(
         (status) =>
           this.timelineName !== 'user' ||
           (status.id >= this.timeline.minId &&
@@ -116,13 +118,13 @@ const Timeline = {
       return keyBy(this.pinnedStatusIds)
     },
     statusesToDisplay() {
-      const amount = this.timeline.visibleStatuses.length
+      const amount = this.timeline.visibleStatuses.size
       const statusesPerSide = Math.ceil(Math.max(3, window.innerHeight / 80))
       const nonPinnedIndex =
         this.virtualScrollIndex - this.filteredPinnedStatusIds.length
       const min = Math.max(0, nonPinnedIndex - statusesPerSide)
       const max = Math.min(amount, nonPinnedIndex + statusesPerSide)
-      return this.timeline.visibleStatuses.slice(min, max).map((_) => _.id)
+      return new Set([...this.timeline.visibleStatuses.keys()].slice(min, max))
     },
     virtualScrollingEnabled() {
       return useMergedConfigStore().mergedConfig.virtualScrolling
@@ -143,7 +145,6 @@ const Timeline = {
     }
 
     timelineFetcher.fetchAndUpdate({
-      store,
       credentials,
       timeline: this.timelineName,
       showImmediately,
@@ -175,7 +176,7 @@ const Timeline = {
         this.handleVisibilityChange,
         false,
       )
-    this.$store.commit('setLoading', {
+    useStatusesStore().setLoading({
       timeline: this.timelineName,
       value: false,
     })
@@ -197,30 +198,31 @@ const Timeline = {
     },
     showNewStatuses() {
       if (this.timeline.flushMarker !== 0) {
-        this.$store.commit('clearTimeline', {
+        useStatusesStore().clearTimeline({
           timeline: this.timelineName,
           excludeUserId: true,
         })
-        this.$store.commit('queueFlush', { timeline: this.timelineName, id: 0 })
+        useStatusesStore().queueFlush({ timeline: this.timelineName, id: 0 })
         if (this.timelineName === 'user') {
           this.$store.dispatch('fetchPinnedStatuses', this.userId)
         }
         this.fetchOlderStatuses()
       } else {
         this.blockClicksTemporarily()
-        this.$store.commit('showNewStatuses', { timeline: this.timelineName })
+        useStatusesStore().showNewStatuses(this.timelineName)
         this.paused = false
       }
       window.scrollTo({ top: 0 })
     },
     fetchOlderStatuses: throttle(
       function () {
-        const store = this.$store
         const credentials = useUsersStore().currentUser.credentials
-        store.commit('setLoading', { timeline: this.timelineName, value: true })
+        useStatusesStore().setLoading({
+          timeline: this.timelineName,
+          value: true,
+        })
         timelineFetcher
           .fetchAndUpdate({
-            store,
             credentials,
             timeline: this.timelineName,
             older: true,
@@ -237,7 +239,7 @@ const Timeline = {
             }
           })
           .finally(() =>
-            store.commit('setLoading', {
+            useStatusesStore().setLoading({
               timeline: this.timelineName,
               value: false,
             }),

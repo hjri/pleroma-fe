@@ -1,8 +1,10 @@
 import Timeline from 'src/components/timeline/timeline.vue'
 
+import { useStatusesStore } from 'src/stores/statuses.js'
+
 const QuotesTimeline = {
   created() {
-    this.$store.commit('clearTimeline', { timeline: 'quotes' })
+    useStatusesStore().clearTimeline({ timeline: 'tag' })
     this.$store.dispatch('startFetchingTimeline', {
       timeline: 'quotes',
       statusId: this.statusId,
@@ -21,7 +23,7 @@ const QuotesTimeline = {
   },
   watch: {
     statusId() {
-      this.$store.commit('clearTimeline', { timeline: 'quotes' })
+      useStatusesStore().clearTimeline({ timeline: 'tag' })
       this.$store.dispatch('startFetchingTimeline', {
         timeline: 'quotes',
         statusId: this.statusId,

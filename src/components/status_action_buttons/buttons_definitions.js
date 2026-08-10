@@ -3,6 +3,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useReportsStore } from 'src/stores/reports.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useStatusHistoryStore } from 'src/stores/statusHistory.js'
 
 const PRIVATE_SCOPES = new Set(['private', 'direct'])
@@ -52,7 +53,7 @@ export const BUTTONS = [
       (currentUser.id === status.user.id ||
         !PRIVATE_SCOPES.has(status.visibility)),
     toggleable: true,
-    confirm: ({ status, getters }) =>
+    confirm: ({ status }) =>
       !status.repeated && useMergedConfigStore().mergedConfig.modalOnRepeat,
     confirmStrings: {
       title: 'status.repeat_confirm_title',
@@ -60,11 +61,11 @@ export const BUTTONS = [
       confirm: 'status.repeat_confirm_accept_button',
       cancel: 'status.repeat_confirm_cancel_button',
     },
-    action({ status, dispatch }) {
+    action({ status }) {
       if (!status.repeated) {
-        return dispatch('retweet', { id: status.id })
+        return useStatusesStore().retweet(status.id)
       } else {
-        return dispatch('unretweet', { id: status.id })
+        return useStatusesStore().unretweet(status.id)
       }
     },
   },
@@ -82,11 +83,11 @@ export const BUTTONS = [
     counter: ({ status }) => status.fave_num,
     anonLink: true,
     toggleable: true,
-    action({ status, dispatch }) {
+    action({ status }) {
       if (!status.favorited) {
-        return dispatch('favorite', { id: status.id })
+        return useStatusesStore().favorite(status.id)
       } else {
-        return dispatch('unfavorite', { id: status.id })
+        return useStatusesStore().unfavorite(status.id)
       }
     },
   },
@@ -112,7 +113,7 @@ export const BUTTONS = [
     if: ({ loggedIn }) => loggedIn,
     toggleable: false,
     dropdown: true,
-    action({ status, dispatch, emit }) {
+    action({ status, emit }) {
       /* prevent hiding */
     },
   },
@@ -130,11 +131,11 @@ export const BUTTONS = [
         PUBLIC_SCOPES.has(status.visibility)
       )
     },
-    action({ status, dispatch }) {
+    action({ status }) {
       if (status.pinned) {
-        return dispatch('unpinStatus', status.id)
+        return useStatusesStore().unpinStatus(status.id)
       } else {
-        return dispatch('pinStatus', status.id)
+        return useStatusesStore().pinStatus(status.id)
       }
     },
   },
@@ -150,11 +151,11 @@ export const BUTTONS = [
     label: ({ status }) =>
       status.bookmarked ? 'status.unbookmark' : 'status.bookmark',
     if: ({ loggedIn }) => loggedIn,
-    action({ status, dispatch }) {
+    action({ status }) {
       if (status.bookmarked) {
-        return dispatch('unbookmark', { id: status.id })
+        return useStatusesStore().unbookmark(status.id)
       } else {
-        return dispatch('bookmark', { id: status.id })
+        return useStatusesStore().bookmark(status.id)
       }
     },
   },
@@ -165,7 +166,7 @@ export const BUTTONS = [
     name: 'editHistory',
     icon: 'history',
     label: 'status.status_history',
-    if({ status, state }) {
+    if({ status }) {
       return (
         useInstanceCapabilitiesStore().editingAvailable &&
         status.edited_at !== null
@@ -196,26 +197,28 @@ export const BUTTONS = [
     name: 'edit',
     icon: 'pen',
     label: 'status.edit',
-    if({ status, loggedIn, currentUser, state }) {
+    if({ status, loggedIn, currentUser }) {
       return (
         loggedIn &&
         useInstanceCapabilitiesStore().editingAvailable &&
         status.user.id === currentUser.id
       )
     },
-    action({ dispatch, status }) {
-      return dispatch('fetchStatusSource', { id: status.id }).then((data) =>
-        useEditStatusStore().openEditStatusModal({
-          statusId: status.id,
-          statusSubject: data.spoiler_text,
-          statusText: data.text,
-          statusIsSensitive: status.nsfw,
-          statusPoll: status.poll,
-          statusFiles: [...status.attachments],
-          statusVisibility: status.visibility,
-          statusContentType: data.content_type,
-        }),
-      )
+    action({ status }) {
+      return useStatusesStore()
+        .fetchStatusSource(status.id)
+        .then((data) =>
+          useEditStatusStore().openEditStatusModal({
+            statusId: status.id,
+            statusSubject: data.spoiler_text,
+            statusText: data.text,
+            statusIsSensitive: status.nsfw,
+            statusPoll: status.poll,
+            statusFiles: [...status.attachments],
+            statusVisibility: status.visibility,
+            statusContentType: data.content_type,
+          }),
+        )
     },
   },
   {
@@ -260,15 +263,15 @@ export const BUTTONS = [
           currentUser.privileges.has('messages_delete'))
       )
     },
-    confirm: ({ getters }) => useMergedConfigStore().mergedConfig.modalOnDelete,
+    confirm: () => useMergedConfigStore().mergedConfig.modalOnDelete,
     confirmStrings: {
       title: 'status.delete_confirm_title',
       body: 'status.delete_confirm',
       confirm: 'status.delete_confirm_accept_button',
       cancel: 'status.delete_confirm_cancel_button',
     },
-    action({ dispatch, status }) {
-      return dispatch('deleteStatus', { id: status.id })
+    action({ status }) {
+      return useStatusesStore().deleteStatus(status.id)
     },
   },
   {
@@ -287,7 +290,7 @@ export const BUTTONS = [
     },
     toggleable: false,
     dropdown: true,
-    action({ status, dispatch, emit }) {
+    action({ status, emit }) {
       /* prevent hiding */
     },
   },
@@ -298,7 +301,7 @@ export const BUTTONS = [
     name: 'share',
     icon: 'share-alt',
     label: 'status.copy_link',
-    action({ state, status, router }) {
+    action({ status, router }) {
       navigator.clipboard.writeText(
         [
           useInstanceStore().server,
