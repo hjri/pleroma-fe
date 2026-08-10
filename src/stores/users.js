@@ -151,8 +151,8 @@ export const useUsersStore = defineStore('users', {
         // implicit: if oldTimestamp is undefined this will still be false
         if (oldTimestamp > timestamp) return // not overwriting old data with new
 
-        const { relationship, ...old } = existing
-        const { relationshop, ...neu } = user
+        const { relationship: unused0, ...old } = existing
+        const { relationship: unused1, ...neu } = user
         const newUser = { ...old, ...neu }
 
         this.users.set(user.id, newUser)
@@ -697,7 +697,8 @@ export const useUsersStore = defineStore('users', {
                 .then(() => {
                   dispatch('fetchChats', { latest: true })
                   setTimeout(
-                    () => useNotificationsStore().setNotificationsSilence(false),
+                    () =>
+                      useNotificationsStore().setNotificationsSilence(false),
                     10000,
                   )
                 })
