@@ -155,7 +155,7 @@ const StatusBody = {
   mounted() {
     this.status.attentions?.forEach((attn) => {
       const { id } = attn
-      useUsersStore().fetchUserIfMissing(id)
+      useUsersStore().fetchUserIfMissing({ id })
     })
   },
   methods: {
@@ -172,7 +172,7 @@ const StatusBody = {
           if (!cleanedString.startsWith('@')) return
           const handle = cleanedString.slice(1)
           const host = url.replace(/^https?:\/\//, '').replace(/\/.+?$/, '')
-          useUsersStore().fetchUserIfMissing(`${handle}@${host}`)
+          useUsersStore().fetchUserIfMissing({ name: `${handle}@${host}` })
         })
       /* This is a bit of a hack to make current tall status detector work
        * with rich mentions. Invisible mentions are detected at RichContent level

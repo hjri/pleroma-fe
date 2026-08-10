@@ -9,8 +9,8 @@ import { useUsersStore } from 'src/stores/users.js'
 const StaffPanel = {
   created() {
     const nicknames = useInstanceStore().staffAccounts
-    nicknames.forEach((nickname) =>
-      useUsersStore().fetchUserIfMissing(nickname),
+    nicknames.forEach((name) =>
+      useUsersStore().fetchUserIfMissing({ name }),
     )
   },
   components: {

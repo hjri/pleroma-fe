@@ -69,6 +69,8 @@ export const useUsersStore = defineStore('users', {
     usersByURL: new Map(),
     relationships: new Map(),
     timestamps: new WeakMap(),
+    fetchesIds: new Map(),
+    fetchesNames: new Map(),
   }),
   getters: {
     loggedIn: (state) => !!state.currentUser,
@@ -102,7 +104,7 @@ export const useUsersStore = defineStore('users', {
       user.rights = newRights
     },
     async updateUserAdminData({ user }) {
-      const localUser = await this.fetchUserIfMissing(user.id)
+      const localUser = await this.fetchUserIfMissing({ id: user.id })
 
       localUser.adminData = user
       localUser.deactivated = !user.is_active
@@ -227,39 +229,98 @@ export const useUsersStore = defineStore('users', {
       }
       notification.from_profile = this.users.get(notification.from_profile.id)
     },
-    async fetchUserIfMissing(id) {
-      const user = this.findUser(id)
+    async fetchUserIfMissing({ id, name }) {
+      let findFunc
+      let fetchFunc
+      let map
+      let otherMap
+      let identifier
+
+      if (id) {
+        findFunc = this.findUser
+        fetchFunc = this.fetchUser
+        map = this.fetchesIds
+        identifier = id
+      } else if (name) {
+        findFunc = this.findUserByName
+        fetchFunc = this.fetchUserByName
+        map = this.fetchesNames
+        identifier = name
+      } else {
+        throw new TypeError('No identifier provided')
+      }
+
+      const user = findFunc(identifier)
+
       if (!user) {
-        return this.fetchUser(id)
+        let promise
+
+        if (map.has(identifier)) {
+          promise = map.get(identifier)
+        } else {
+          promise = fetchFunc(identifier)
+        }
+
+        map.set(identifier, promise)
+
+        const result = await promise
+
+        if (result?.data) {
+          const { id, screen_name } = result.data
+
+          this.fetchesIds.set(id, promise)
+          this.fetchesNames.set(screen_name, promise)
+          this.addNewUsers(result)
+          return this.users.get(id)
+        } else {
+          return null
+        }
       } else {
         return user
       }
     },
-    fetchUser(id) {
-      return fetchUser({
-        id,
-        credentials: useOAuthStore().token,
-      })
-        .then(({ data: user }) => {
-          this.addNewUsers([user])
-          return user
+    async fetchUser(id) {
+      try {
+        const result = await fetchUser({
+          id,
+          credentials: useOAuthStore().token,
         })
-        .catch((error) => {
-          if (error.statusCode === 404) {
-            console.warn(`User ${id} not found`)
-          } else {
-            throw error
-          }
-        })
+
+        this.addNewUsers(result)
+        return this.users.get(result.data.id)
+      } catch(error) {
+        if (
+          error.name === 'StatusCodeError' &&
+          error.statusCode === 404
+        ) {
+          console.warn(`User ${id} not found`)
+          return null
+        } else {
+          throw error
+        }
+      }
     },
-    fetchUserByName(name) {
-      return fetchUserByName({
-        name,
-        credentials: useOAuthStore().token,
-      }).then(({ data: user }) => {
-        this.addNewUsers([user])
-        return user
-      })
+    async fetchUserByName(name) {
+      try {
+        const result = fetchUserByName({
+          name,
+          credentials: useOAuthStore().token,
+        })
+
+        this.addNewUsers(result)
+
+        return this.users.get(result.data.id)
+      } catch(error) {
+        if (
+          error.name === 'StatusCodeError' &&
+          error.statusCode === 404
+        ) {
+          console.warn(`User ${id} not found`)
+          return null
+        } else {
+          throw error
+        }
+      }
     },
     fetchUserRelationship(id) {
       if (this.currentUser) {
@@ -682,8 +743,6 @@ export const useUsersStore = defineStore('users', {
     },
   },
   persist: {
-    afterLoad({ lastLoginName }) {
-      return { lastLoginName }
-    },
+    paths: ['lastLoginName'],
   },
 })
