@@ -19,6 +19,7 @@ import { useChatsStore } from 'src/stores/chats.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import {
   chatMessages,
@@ -164,9 +165,9 @@ const Chat = {
       mobileLayout: (store) => store.layoutType === 'mobile',
     }),
     ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
+    ...mapPiniaState(useUsersStore, ['currentUser']),
     ...mapState({
       mastoUserSocketStatus: (state) => state.api.mastoUserSocketStatus,
-      currentUser: (state) => state.users.currentUser,
     }),
   },
   watch: {
@@ -374,7 +375,7 @@ const Chat = {
             credentials: useOAuthStore().token,
           })
           this.$store.commit('addNewUsers', [data.account])
-          data.account = this.$store.getters.findUser(data.account.id)
+          data.account = useUsersStore().findUser(data.account.id)
           this.chat = data
         } catch (e) {
           console.error('Error creating or getting a chat', e)

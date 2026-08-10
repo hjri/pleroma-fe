@@ -1,5 +1,4 @@
-import { mapState as mapPiniaState } from 'pinia'
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
 import ListsUserSearch from 'src/components/lists_user_search/lists_user_search.vue'
@@ -9,6 +8,7 @@ import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useListsStore } from 'src/stores/lists.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons'
@@ -66,11 +66,8 @@ const ListsNew = {
         .map((userId) => this.findUser(userId))
         .filter(Boolean)
     },
-    ...mapState({
-      currentUser: (state) => state.users.currentUser,
-    }),
-    ...mapPiniaState(useListsStore, ['findListTitle', 'findListAccounts']),
-    ...mapGetters(['findUser']),
+    ...mapState(useUsersStore, ['currentUser', 'findUser']),
+    ...mapState(useListsStore, ['findListTitle', 'findListAccounts']),
   },
   methods: {
     onInput() {

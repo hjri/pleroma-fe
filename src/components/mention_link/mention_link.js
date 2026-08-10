@@ -1,5 +1,4 @@
-import { mapState as mapPiniaState } from 'pinia'
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import UnicodeDomainIndicator from 'src/components/unicode_domain_indicator/unicode_domain_indicator.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
@@ -12,6 +11,7 @@ import {
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
@@ -75,7 +75,7 @@ const MentionLink = {
   },
   computed: {
     user() {
-      return this.url && this.$store?.getters.findUserByUrl(this.url)
+      return this.url && useUsersStore().findUserByUrl(this.url)
     },
     isYou() {
       // FIXME why user !== currentUser???
@@ -156,11 +156,9 @@ const MentionLink = {
     shouldFadeDomain() {
       return this.mergedConfig.mentionLinkFadeDomain
     },
-    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
-    ...mapPiniaState(useUserHighlightStore, ['highlight']),
-    ...mapState({
-      currentUser: (state) => state.users.currentUser,
-    }),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
+    ...mapState(useUserHighlightStore, ['highlight']),
+    ...mapState(useUsersStore, ['currentUser']),
   },
 }
 

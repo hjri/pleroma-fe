@@ -20,6 +20,7 @@ import VerticalTabSwitcher from './helpers/vertical_tab_switcher.jsx'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -97,10 +98,10 @@ const SettingsModalAdminContent = {
   },
   computed: {
     user() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
     isLoggedIn() {
-      return !!this.$store.state.users.currentUser
+      return !!useUsersStore().currentUser
     },
     open() {
       return useInterfaceStore().settingsModalState !== 'hidden'

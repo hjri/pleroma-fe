@@ -1,5 +1,7 @@
 import { map } from 'lodash'
 
+import { useUsersStore } from 'src/stores/users.js'
+
 import {
   editStatus as apiEditStatus,
   postStatus as apiPostStatus,
@@ -24,7 +26,7 @@ const postStatus = ({
   const mediaIds = map(media, 'id')
 
   return apiPostStatus({
-    credentials: store.state.users.currentUser.credentials,
+    credentials: useUsersStore().currentUser.credentials,
     status,
     spoilerText,
     visibility,
@@ -63,7 +65,7 @@ const editStatus = ({
 
   return apiEditStatus({
     id: statusId,
-    credentials: store.state.users.currentUser.credentials,
+    credentials: useUsersStore().currentUser.credentials,
     status,
     spoilerText,
     sensitive,
@@ -90,12 +92,12 @@ const editStatus = ({
 }
 
 const uploadMedia = ({ store, formData }) => {
-  const credentials = store.state.users.currentUser.credentials
+  const credentials = useUsersStore().currentUser.credentials
   return apiUploadMedia({ credentials, formData }).then(({ data }) => data)
 }
 
 const setMediaDescription = ({ store, id, description }) => {
-  const credentials = store.state.users.currentUser.credentials
+  const credentials = useUsersStore().currentUser.credentials
   return apiSetMediaDescription({ credentials, id, description }).then(
     ({ data }) => data,
   )

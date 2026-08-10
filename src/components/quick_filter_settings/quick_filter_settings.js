@@ -6,6 +6,7 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faFilter, faFont, faWrench } from '@fortawesome/free-solid-svg-icons'
@@ -54,7 +55,7 @@ const QuickFilterSettings = {
       }
     },
     loggedIn() {
-      return !!this.$store.state.users.currentUser
+      return !!useUsersStore().currentUser
     },
     replyVisibilitySelf: {
       get() {

@@ -13,6 +13,7 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useReportsStore } from 'src/stores/reports.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { dismissNotification, markNotificationsAsSeen } from 'src/api/user.js'
 
@@ -158,7 +159,7 @@ export const notifications = {
       commit('markNotificationsAsSeen')
       markNotificationsAsSeen({
         id: state.maxId,
-        credentials: rootState.users.currentUser.credentials,
+        credentials: useUsersStore().currentUser.credentials,
       }).then(() => {
         closeAllDesktopNotifications(rootState)
       })
@@ -168,7 +169,7 @@ export const notifications = {
       markNotificationsAsSeen({
         single: true,
         id,
-        credentials: rootState.users.currentUser.credentials,
+        credentials: useUsersStore().currentUser.credentials,
       }).then(() => {
         closeDesktopNotification(rootState, { id })
       })

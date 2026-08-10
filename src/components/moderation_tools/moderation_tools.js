@@ -5,6 +5,7 @@ import Popover from 'src/components/popover/popover.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
@@ -405,7 +406,7 @@ const ModerationTools = {
       )
     },
     isAdmin() {
-      return this.$store.state.users.currentUser.role === 'admin'
+      return useUsersStore().currentUser.role === 'admin'
     },
   },
   methods: {
@@ -452,7 +453,7 @@ const ModerationTools = {
     },
     privileged(privilege) {
       if (this.isAdmin) return true
-      return this.$store.state.users.currentUser.privileges.has(privilege)
+      return useUsersStore().currentUser.privileges.has(privilege)
     },
     setTag(tag, value) {
       useAdminSettingsStore().setUsersTags({

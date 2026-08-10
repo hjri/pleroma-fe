@@ -9,6 +9,7 @@ import TimelineMenu from 'src/components/timeline_menu/timeline_menu.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import timelineFetcher from 'src/services/timeline_fetcher/timeline_fetcher.service.js'
 
@@ -132,7 +133,7 @@ const Timeline = {
   },
   created() {
     const store = this.$store
-    const credentials = store.state.users.currentUser.credentials
+    const credentials = useUsersStore().currentUser.credentials
     const showImmediately = this.timeline.visibleStatuses.length === 0
 
     window.addEventListener('scroll', this.handleScroll)
@@ -215,7 +216,7 @@ const Timeline = {
     fetchOlderStatuses: throttle(
       function () {
         const store = this.$store
-        const credentials = store.state.users.currentUser.credentials
+        const credentials = useUsersStore().currentUser.credentials
         store.commit('setLoading', { timeline: this.timelineName, value: true })
         timelineFetcher
           .fetchAndUpdate({

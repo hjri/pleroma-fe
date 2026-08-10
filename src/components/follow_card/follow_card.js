@@ -3,6 +3,8 @@ import FollowButton from 'src/components/follow_button/follow_button.vue'
 import RemoteFollow from 'src/components/remote_follow/remote_follow.vue'
 import RemoveFollowerButton from 'src/components/remove_follower_button/remove_follower_button.vue'
 
+import { useUsersStore } from 'src/stores/users.js'
+
 const FollowCard = {
   props: ['user', 'noFollowsYou'],
   components: {
@@ -13,10 +15,10 @@ const FollowCard = {
   },
   computed: {
     isMe() {
-      return this.$store.state.users.currentUser.id === this.user.id
+      return useUsersStore().currentUser.id === this.user.id
     },
     loggedIn() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
     relationship() {
       return this.$store.getters.relationship(this.user.id)

@@ -1,10 +1,10 @@
-import { mapState as mapPiniaState } from 'pinia'
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import { getListEntries } from 'src/components/navigation/filter.js'
 import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
 
 import { useListsStore } from 'src/stores/lists.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 export const ListsMenuContent = {
   props: ['showPin'],
@@ -12,12 +12,10 @@ export const ListsMenuContent = {
     NavigationEntry,
   },
   computed: {
-    ...mapPiniaState(useListsStore, {
+    ...mapState(useListsStore, {
       lists: getListEntries,
     }),
-    ...mapState({
-      currentUser: (state) => state.users.currentUser,
-    }),
+    ...mapState(useUsersStore, ['currentUser']),
   },
 }
 

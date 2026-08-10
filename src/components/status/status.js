@@ -25,6 +25,7 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
@@ -309,9 +310,9 @@ const Status = {
       if (this.statusoid.user.id === this.currentUser.id) return false
       const { status } = this
       const { reblog } = status
-      const relationship = this.$store.getters.relationship(status.user.id)
+      const relationship = useUsersStore().relationship(status.user.id)
       const relationshipReblog =
-        reblog && this.$store.getters.relationship(reblog.user.id)
+        reblog && useUsersStore().relationship(reblog.user.id)
       return (
         (status.muted && !status.thread_muted) ||
         // Reprööt of a muted post according to BE
@@ -411,7 +412,7 @@ const Status = {
       return this.mergedConfig.hideBotIndication
     },
     currentUser() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
     mergedConfig() {
       return useMergedConfigStore().mergedConfig

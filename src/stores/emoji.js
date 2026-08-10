@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { listEmojiPacks } from 'src/api/public.js'
 import { ensureFinalFallback } from 'src/i18n/languages.js'
@@ -194,7 +195,7 @@ export const useEmojiStore = defineStore('emoji', {
     },
 
     async getAdminPacks(instance, listFunction) {
-      const currentUser = window.vuex.state.users.currentUser
+      const currentUser = useUsersStore().currentUser
 
       if (!currentUser.rights.admin) return
 

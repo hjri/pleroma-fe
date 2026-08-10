@@ -4,6 +4,7 @@ import { defineAsyncComponent } from 'vue'
 import Modal from 'src/components/modal/modal.vue'
 
 import { useEditStatusStore } from 'src/stores/editStatus.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 const EditStatusModal = {
   components: {
@@ -19,7 +20,7 @@ const EditStatusModal = {
   },
   computed: {
     isLoggedIn() {
-      return !!this.$store.state.users.currentUser
+      return !!useUsersStore().currentUser
     },
     modalActivated() {
       return useEditStatusStore().modalActivated

@@ -5,6 +5,7 @@ import genRandomSeed from '../../services/random_seed/random_seed.service.js'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { usePollsStore } from 'src/stores/polls.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 export default {
   name: 'Poll',
@@ -64,7 +65,7 @@ export default {
       return useMergedConfigStore().mergedConfig.scaleMfm
     },
     loggedIn() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
     showResults() {
       return this.poll.voted || this.expired || !this.loggedIn

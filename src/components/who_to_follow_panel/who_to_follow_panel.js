@@ -3,6 +3,7 @@ import { shuffle } from 'lodash'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { fetchUser, suggestions } from 'src/api/public.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
@@ -31,7 +32,7 @@ function showWhoToFollow(panel, reply) {
 }
 
 function getWhoToFollow(panel) {
-  const credentials = panel.$store.state.users.currentUser.credentials
+  const credentials = panel.$useUsersStore().currentUser.credentials
   if (credentials) {
     panel.usersToFollow.forEach((toFollow) => {
       toFollow.name = 'Loading...'
@@ -48,7 +49,7 @@ const WhoToFollowPanel = {
   }),
   computed: {
     user: function () {
-      return this.$store.state.users.currentUser.screen_name
+      return useUsersStore().currentUser.screen_name
     },
     suggestionsEnabled() {
       return useInstanceCapabilitiesStore().suggestionsEnabled

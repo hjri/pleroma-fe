@@ -7,6 +7,7 @@ import UserLink from 'src/components/user_link/user_link.vue'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useReportsStore } from 'src/stores/reports.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { reportUser } from 'src/api/user.js'
 
@@ -28,7 +29,7 @@ const UserReportingModal = {
   },
   computed: {
     isLoggedIn() {
-      return !!this.$store.state.users.currentUser
+      return !!useUsersStore().currentUser
     },
     isOpen() {
       return this.isLoggedIn && this.reportModal.activated
@@ -37,7 +38,7 @@ const UserReportingModal = {
       return this.reportModal.userId
     },
     user() {
-      return this.$store.getters.findUser(this.userId)
+      return useUsersStore().findUser(this.userId)
     },
     remoteInstance() {
       return (

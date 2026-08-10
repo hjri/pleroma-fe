@@ -3,6 +3,7 @@ import UserListPopover from 'src/components/user_list_popover/user_list_popover.
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCheck, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
@@ -40,7 +41,7 @@ const EmojiReactions = {
       }, {})
     },
     loggedIn() {
-      return !!this.$store.state.users.currentUser
+      return !!useUsersStore().currentUser
     },
     remoteInteractionLink() {
       return useInstanceStore().getRemoteInteractionLink({

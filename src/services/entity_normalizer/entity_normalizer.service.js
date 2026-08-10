@@ -27,6 +27,7 @@ export const parseUser = (data) => {
 
   output.screen_name = data.acct
   output.fqn = data.fqn
+  output.url = data.url
   output.statusnet_profile_url = data.url
 
   if (Object.hasOwn(data, 'mute_expires_at')) {

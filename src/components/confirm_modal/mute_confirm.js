@@ -4,6 +4,7 @@ import { defineAsyncComponent } from 'vue'
 import Select from 'src/components/select/select.vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 export default {
   props: ['type', 'user', 'status'],
@@ -33,9 +34,7 @@ export default {
       return this.status.conversation_muted
     },
     domainIsMuted() {
-      return new Set(this.$store.state.users.currentUser.domainMutes).has(
-        this.domain,
-      )
+      return new Set(useUsersStore().currentUser.domainMutes).has(this.domain)
     },
     shouldConfirm() {
       switch (this.type) {

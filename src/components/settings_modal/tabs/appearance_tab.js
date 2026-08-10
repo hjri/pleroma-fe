@@ -13,6 +13,7 @@ import Preview from './old_theme_tab/theme_preview.vue'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { normalizeThemeData, useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { updateProfileImages } from 'src/api/user.js'
 import { newImporter } from 'src/services/export_import/export_import.js'
@@ -220,7 +221,7 @@ const AppearanceTab = {
   },
   computed: {
     isDefaultBackground() {
-      return !this.$store.state.users.currentUser.background_image
+      return !useUsersStore().currentUser.background_image
     },
     switchInProgress() {
       return useInterfaceStore().themeChangeInProgress
@@ -282,7 +283,7 @@ const AppearanceTab = {
     instanceWallpaperUsed() {
       return (
         useInstanceStore().instanceIdentity.background &&
-        !this.$store.state.users.currentUser.background_image
+        !useUsersStore().currentUser.background_image
       )
     },
     customThemeVersion() {
@@ -490,9 +491,8 @@ const AppearanceTab = {
         background,
         credentials: useOAuthStore().token,
       })
-        .then(({ data }) => {
-          this.$store.commit('addNewUsers', [data])
-          this.$store.commit('setCurrentUser', data)
+        .then((result) => {
+          useUsersStore().addNewUsers(result)
           this.backgroundPreview = null
           this.backgroundError = null
         })

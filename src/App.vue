@@ -26,7 +26,7 @@
         class="column -scrollable"
         :class="{ '-show-scrollbar': showScrollbars }"
       >
-        <user-panel />
+        <UserPanel />
         <template v-if="layoutType !== 'mobile'">
           <NavPanel />
           <InstanceSpecificPanel v-if="showInstanceSpecificPanel" />

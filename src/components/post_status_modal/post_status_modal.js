@@ -4,6 +4,7 @@ import Modal from 'src/components/modal/modal.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 
 import { usePostStatusStore } from 'src/stores/post_status.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 const PostStatusModal = {
   components: {
@@ -17,7 +18,7 @@ const PostStatusModal = {
   },
   computed: {
     isLoggedIn() {
-      return !!this.$store.state.users.currentUser
+      return !!useUsersStore().currentUser
     },
     modalActivated() {
       return usePostStatusStore().modalActivated

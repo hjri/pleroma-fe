@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 const PASSWORD_STRATEGY = 'password'
 const TOKEN_STRATEGY = 'token'
@@ -63,7 +64,7 @@ export const useAuthFlowStore = defineStore('authFlow', {
     },
     async login({ access_token: accessToken }) {
       useOAuthStore().setToken(accessToken)
-      await window.vuex.dispatch('loginUser', accessToken, { root: true })
+      useUsersStore().loginUser(accessToken, { root: true })
       this.resetState()
     },
   },

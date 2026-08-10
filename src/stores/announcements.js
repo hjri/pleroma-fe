@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { dismissAnnouncement, getAnnouncements } from 'src/api/user.js'
 
@@ -16,7 +17,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
   }),
   getters: {
     unreadAnnouncementCount() {
-      if (!window.vuex.state.users.currentUser) {
+      if (!useUsersStore().currentUser) {
         return 0
       }
 
@@ -30,7 +31,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
     async fetchAnnouncements() {
       if (!this.supportsAnnouncements) return
 
-      const currentUser = window.vuex.state.users.currentUser
+      const currentUser = useUsersStore().currentUser
       const isAdmin =
         currentUser &&
         currentUser.privileges.has('announcements_manage_announcements')

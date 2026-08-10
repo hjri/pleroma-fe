@@ -1,5 +1,5 @@
+import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
-import { mapState } from 'vuex'
 
 import Report from 'src/components/report/report.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
@@ -17,6 +17,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { approveUser, denyUser } from 'src/api/user.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
@@ -194,19 +195,19 @@ const Notification = {
       )
     },
     user() {
-      return this.$store.getters.findUser(this.notification.from_profile.id)
+      return useUsersStore().findUser(this.notification.from_profile.id)
     },
     userProfileLink() {
       return this.generateUserProfileLink(this.user)
     },
     targetUser() {
-      return this.$store.getters.findUser(this.notification.target.id)
+      return useUsersStore().findUser(this.notification.target.id)
     },
     targetUserProfileLink() {
       return this.generateUserProfileLink(this.targetUser)
     },
     needMute() {
-      return this.$store.getters.relationship(this.user.id).muting
+      return useUsersStore().relationship(this.user.id).muting
     },
     isStatusNotification() {
       return isStatusNotification(this.notification.type)
@@ -229,9 +230,7 @@ const Notification = {
     shouldConfirmDeny() {
       return this.mergedConfig.modalOnDenyFollow
     },
-    ...mapState({
-      currentUser: (state) => state.users.currentUser,
-    }),
+    ...mapState(useUsersStore, ['currentUser']),
   },
 }
 

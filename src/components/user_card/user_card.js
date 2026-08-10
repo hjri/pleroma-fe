@@ -25,6 +25,7 @@ import { useMediaViewerStore } from 'src/stores/media_viewer'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { usePostStatusStore } from 'src/stores/post_status'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { updateProfile } from 'src/api/user.js'
 import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
@@ -158,7 +159,7 @@ export default {
     ),
   },
   data() {
-    const user = this.$store.getters.findUser(this.userId)
+    const user = useUsersStore().findUser(this.userId)
 
     return {
       followRequestInProgress: false,
@@ -192,7 +193,7 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('fetchUserRelationship', this.user.id)
+    useUsersStore().fetchUserRelationship(this.user.id)
   },
   computed: {
     escapedNewBio() {
@@ -228,23 +229,23 @@ export default {
         : ['Person', 'Service']
     },
     user() {
-      return this.$store.getters.findUser(this.userId)
+      return useUsersStore().findUser(this.userId)
     },
     role() {
       return this.user.role
     },
     relationship() {
-      return this.$store.getters.relationship(this.userId)
+      return useUsersStore().relationship(this.userId)
     },
     isOtherUser() {
-      return this.user.id !== this.$store.state.users.currentUser.id
+      return this.user.id !== useUsersStore().currentUser.id
     },
     subscribeUrl() {
       const serverUrl = new URL(this.user.statusnet_profile_url)
       return `${serverUrl.protocol}//${serverUrl.host}/main/ostatus`
     },
     loggedIn() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
     dailyAvg() {
       const days = Math.ceil(
@@ -394,17 +395,15 @@ export default {
     isDefaultAvatar() {
       const baseAvatar = useInstanceStore().instanceIdenitity.defaultAvatar
       return (
-        !this.$store.state.users.currentUser.profile_image_url ||
-        this.$store.state.users.currentUser.profile_image_url.includes(
-          baseAvatar,
-        )
+        !useUsersStore().currentUser.profile_image_url ||
+        useUsersStore().currentUser.profile_image_url.includes(baseAvatar)
       )
     },
     isDefaultBanner() {
       const baseBanner = useInstanceStore().instanceIdentity.defaultBanner
       return (
-        !this.$store.state.users.currentUser.cover_photo ||
-        this.$store.state.users.currentUser.cover_photo.includes(baseBanner)
+        !useUsersStore().currentUser.cover_photo ||
+        useUsersStore().currentUser.cover_photo.includes(baseBanner)
       )
     },
     fieldsLimits() {
@@ -557,7 +556,7 @@ export default {
       return
     },
     resetState() {
-      const user = this.$store.state.users.currentUser
+      const user = useUsersStore().currentUser
 
       this.newName = user.name_unescaped
       this.newBio = ldUnescape(user.description)
@@ -603,11 +602,10 @@ export default {
       }
 
       updateProfile({ params })
-        .then(({ data: user }) => {
+        .then(({ data: user, ...rest }) => {
           this.newFields.splice(this.newFields.length)
           merge(this.newFields, user.fields)
-          this.$store.commit('addNewUsers', [user])
-          this.$store.commit('setCurrentUser', user)
+          useUsersStore().addNewUsers({ data: user, ...rest })
           this.resetState()
         })
         .catch((error) => {

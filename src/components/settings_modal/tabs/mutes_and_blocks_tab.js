@@ -12,6 +12,7 @@ import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { importBlocks, importFollows } from 'src/api/user.js'
 
@@ -40,16 +41,16 @@ const MutesAndBlocks = {
       return useInstanceStore().knownDomains
     },
     user() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
     blocks() {
-      return get(this.$store.state.users.currentUser, 'blockIds', [])
+      return get(useUsersStore().currentUser, 'blockIds', [])
     },
     mutes() {
-      return get(this.$store.state.users.currentUser, 'muteIds', [])
+      return get(useUsersStore().currentUser, 'muteIds', [])
     },
     domains() {
-      return get(this.$store.state.users.currentUser, 'domainMutes', [])
+      return get(useUsersStore().currentUser, 'domainMutes', [])
     },
   },
   methods: {
@@ -94,13 +95,13 @@ const MutesAndBlocks = {
     },
     filterUnblockedUsers(userIds) {
       return reject(userIds, (userId) => {
-        const relationship = this.$store.getters.relationship(this.userId)
+        const relationship = useUsersStore().relationship(this.userId)
         return relationship.blocking || userId === this.user.id
       })
     },
     filterUnMutedUsers(userIds) {
       return reject(userIds, (userId) => {
-        const relationship = this.$store.getters.relationship(this.userId)
+        const relationship = useUsersStore().relationship(this.userId)
         return relationship.muting || userId === this.user.id
       })
     },

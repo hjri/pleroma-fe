@@ -1,9 +1,10 @@
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import Announcement from 'src/components/announcement/announcement.vue'
 import AnnouncementEditor from 'src/components/announcement_editor/announcement_editor.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 const AnnouncementsPage = {
   components: {
@@ -26,9 +27,7 @@ const AnnouncementsPage = {
     useAnnouncementsStore().fetchAnnouncements()
   },
   computed: {
-    ...mapState({
-      currentUser: (state) => state.users.currentUser,
-    }),
+    ...mapState(useUsersStore, ['currentUser']),
     announcements() {
       return useAnnouncementsStore().announcements
     },

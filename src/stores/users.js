@@ -59,18 +59,16 @@ const getNotificationPermission = async () => {
   return Notification.permission
 }
 
-export const defaultState = {
-  loggingIn: false,
-  lastLoginName: null,
-  currentUser: null,
-  users: new Map(),
-  usersByName: new Map(),
-  usersByURL: new Map(),
-  relationships: new Map(),
-}
-
 export const useUsersStore = defineStore('users', {
-  state: defaultState,
+  state: () => ({
+    loggingIn: false,
+    lastLoginName: null,
+    currentUser: null,
+    users: new Map(),
+    usersByName: new Map(),
+    usersByURL: new Map(),
+    relationships: new Map(),
+  }),
   getters: {
     loggedIn: (state) => !!state.currentUser,
     findUser: (state) => (query) => {
@@ -141,7 +139,7 @@ export const useUsersStore = defineStore('users', {
     },
     addNewUsers(users, timestamp) {
       users.forEach((user) => {
-        const existing = users.get(user.id) ?? {}
+        const existing = this.users.get(user.id) ?? {}
 
         const { relationship, ...old } = existing
         const { relationshop, ...neu } = user
@@ -150,6 +148,10 @@ export const useUsersStore = defineStore('users', {
         this.users.set(user.id, newUser)
         this.usersByName.set(user.screen_name.toLowerCase(), newUser)
         this.usersByURL.set(user.url.toLowerCase(), newUser)
+
+        if (user.id === this.currentUser.id) {
+          this.currentUser = newUser
+        }
       })
     },
     updateUserRelationship(relationships) {

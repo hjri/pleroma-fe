@@ -1,6 +1,7 @@
 import { get, set } from 'lodash'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { updateNotificationSettings, updateProfile } from 'src/api/user.js'
 
@@ -10,9 +11,8 @@ const defaultApi = ({ rootState, commit }, { path, value }) => {
   return updateProfile({
     params,
     credentials: useOAuthStore().token,
-  }).then(({ data: result }) => {
-    commit('addNewUsers', [result])
-    commit('setCurrentUser', result)
+  }).then((result) => {
+    useUsersStore().addNewUsers(result)
   })
 }
 

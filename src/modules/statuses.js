@@ -14,6 +14,7 @@ import {
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import {
   fetchEmojiReactions,
@@ -619,7 +620,7 @@ const statuses = {
         showImmediately,
         timeline,
         noIdUpdate,
-        user: rootState.users.currentUser,
+        user: useUsersStore().currentUser,
         userId,
         pagination,
       })
@@ -671,7 +672,7 @@ const statuses = {
       }).then(({ data: status }) =>
         commit('setFavoritedConfirm', {
           status,
-          user: rootState.users.currentUser,
+          user: useUsersStore().currentUser,
         }),
       )
     },
@@ -684,7 +685,7 @@ const statuses = {
       }).then(({ data: status }) =>
         commit('setFavoritedConfirm', {
           status,
-          user: rootState.users.currentUser,
+          user: useUsersStore().currentUser,
         }),
       )
     },
@@ -739,7 +740,7 @@ const statuses = {
       }).then(({ data: status }) =>
         commit('setRetweetedConfirm', {
           status: status.retweeted_status,
-          user: rootState.users.currentUser,
+          user: useUsersStore().currentUser,
         }),
       )
     },
@@ -752,7 +753,7 @@ const statuses = {
       }).then(({ data: status }) =>
         commit('setRetweetedConfirm', {
           status,
-          user: rootState.users.currentUser,
+          user: useUsersStore().currentUser,
         }),
       )
     },
@@ -795,17 +796,17 @@ const statuses = {
         commit('addFavs', {
           id,
           favoritedByUsers,
-          currentUser: rootState.users.currentUser,
+          currentUser: useUsersStore().currentUser,
         })
         commit('addRepeats', {
           id,
           rebloggedByUsers,
-          currentUser: rootState.users.currentUser,
+          currentUser: useUsersStore().currentUser,
         })
       })
     },
     reactWithEmoji({ rootState, dispatch, commit }, { id, emoji }) {
-      const currentUser = rootState.users.currentUser
+      const currentUser = useUsersStore().currentUser
       if (!currentUser) return
 
       commit('addOwnReaction', { id, emoji, currentUser })
@@ -818,14 +819,14 @@ const statuses = {
       })
     },
     unreactWithEmoji({ rootState, dispatch, commit }, { id, emoji }) {
-      const currentUser = rootState.users.currentUser
+      const currentUser = useUsersStore().currentUser
       if (!currentUser) return
 
       commit('removeOwnReaction', { id, emoji, currentUser })
       unreactWithEmoji({
         id,
         emoji,
-        currentUser: rootState.users.currentUser,
+        currentUser: useUsersStore().currentUser,
       }).then(() => {
         dispatch('fetchEmojiReactionsBy', id)
       })
@@ -838,7 +839,7 @@ const statuses = {
         commit('addEmojiReactionsBy', {
           id,
           emojiReactions,
-          currentUser: rootState.users.currentUser,
+          currentUser: useUsersStore().currentUser,
         })
       })
     },
@@ -850,7 +851,7 @@ const statuses = {
         commit('addFavs', {
           id,
           favoritedByUsers,
-          currentUser: rootState.users.currentUser,
+          currentUser: useUsersStore().currentUser,
         }),
       )
     },
@@ -862,7 +863,7 @@ const statuses = {
         commit('addRepeats', {
           id,
           rebloggedByUsers,
-          currentUser: rootState.users.currentUser,
+          currentUser: useUsersStore().currentUser,
         }),
       )
     },

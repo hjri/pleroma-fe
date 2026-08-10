@@ -16,8 +16,6 @@ const defaultReducer = (state, paths) =>
 
 const saveImmedeatelyActions = [
   'markNotificationsAsSeen',
-  'clearCurrentUser',
-  'setCurrentUser',
   'setHighlight',
   'setOption',
   'setClientData',
@@ -75,19 +73,13 @@ export default function createPersistedState({
             setState(key, reducer(cloneDeep(state), paths), storage).then(
               (success) => {
                 if (success !== undefined) {
-                  if (
-                    mutation.type === 'setOption' ||
-                    mutation.type === 'setCurrentUser'
-                  ) {
+                  if (mutation.type === 'setOption') {
                     useInterfaceStore().settingsSaved({ success })
                   }
                 }
               },
               (error) => {
-                if (
-                  mutation.type === 'setOption' ||
-                  mutation.type === 'setCurrentUser'
-                ) {
+                if (mutation.type === 'setOption') {
                   useInterfaceStore().settingsSaved({ error })
                 }
               },

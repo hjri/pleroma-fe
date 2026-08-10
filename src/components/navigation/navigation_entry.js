@@ -1,11 +1,11 @@
-import { mapState as mapPiniaState, mapStores } from 'pinia'
-import { mapState } from 'vuex'
+import { mapState, mapStores } from 'pinia'
 
 import { routeTo } from 'src/components/navigation/navigation.js'
 import OptionalRouterLink from 'src/components/optional_router_link/optional_router_link.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faThumbtack } from '@fortawesome/free-solid-svg-icons'
@@ -44,10 +44,8 @@ const NavigationEntry = {
       return this.$store.getters
     },
     ...mapStores(useAnnouncementsStore),
-    ...mapState({
-      currentUser: (state) => state.users.currentUser,
-    }),
-    ...mapPiniaState(useSyncConfigStore, {
+    ...mapState(useUsersStore, ['currentUser']),
+    ...mapState(useSyncConfigStore, {
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems),
     }),

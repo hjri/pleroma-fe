@@ -17,6 +17,7 @@ import StyleTab from './tabs/style_tab/style_tab.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -75,7 +76,7 @@ const SettingsModalContent = {
   },
   computed: {
     isLoggedIn() {
-      return !!this.$store.state.users.currentUser
+      return !!useUsersStore().currentUser
     },
     open() {
       return useInterfaceStore().settingsModalState !== 'hidden'

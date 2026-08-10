@@ -1,9 +1,10 @@
 import { showDesktopNotification } from '../desktop_notification_utils/desktop_notification_utils.js'
 
+import { useUsersStore } from 'src/stores/users.js'
+
 export const maybeShowChatNotification = (chat) => {
   if (!chat.lastMessage) return
-  if (window.vuex.state.users.currentUser.id === chat.lastMessage.account_id)
-    return
+  if (useUsersStore().currentUser.id === chat.lastMessage.account_id) return
 
   const opts = {
     tag: chat.lastMessage.id,

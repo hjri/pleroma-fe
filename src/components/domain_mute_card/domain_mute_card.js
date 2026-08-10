@@ -1,5 +1,7 @@
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
 
+import { useUsersStore } from 'src/stores/users.js'
+
 const DomainMuteCard = {
   props: ['domain'],
   components: {
@@ -7,7 +9,7 @@ const DomainMuteCard = {
   },
   computed: {
     user() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
     muted() {
       return this.user.domainMutes.includes(this.domain)

@@ -10,6 +10,7 @@ import { deserialize } from '../services/theme_data/iss_deserializer.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import {
   CURRENT_VERSION,
@@ -245,7 +246,7 @@ export const useInterfaceStore = defineStore('interface', {
       const mobileLayout = width <= 800
       const normalOrMobile = mobileLayout ? 'mobile' : 'normal'
       const { thirdColumnMode } = useMergedConfigStore().mergedConfig
-      if (thirdColumnMode === 'none' || !window.vuex.state.users.currentUser) {
+      if (thirdColumnMode === 'none' || !useUsersStore().currentUser) {
         this.layoutType = normalOrMobile
       } else {
         const wideLayout = width >= 1300

@@ -5,6 +5,7 @@ import { defineAsyncComponent } from 'vue'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -91,9 +92,7 @@ export default {
       sitename: (store) => store.instanceIdentity.name,
       hideSitename: (store) => store.instanceIdentity.hideSitename,
     }),
-    currentUser() {
-      return this.$store.state.users.currentUser
-    },
+    ...mapState(useUsersStore, ['currentUser']),
     shouldConfirmLogout() {
       return useMergedConfigStore().mergedConfig.modalOnLogout
     },

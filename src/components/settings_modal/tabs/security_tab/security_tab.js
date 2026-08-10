@@ -5,6 +5,7 @@ import Mfa from './mfa.vue'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens'
+import { useUsersStore } from 'src/stores/users.js'
 
 import {
   addAlias,
@@ -52,7 +53,7 @@ const SecurityTab = {
   },
   computed: {
     user() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
     pleromaExtensionsAvailable() {
       return useInstanceCapabilitiesStore().pleromaExtensionsAvailable

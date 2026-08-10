@@ -5,6 +5,7 @@ import { promiseInterval } from '../promise_interval/promise_interval.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { fetchTimeline } from 'src/api/timelines.js'
 
@@ -48,7 +49,7 @@ const fetchAndUpdate = ({
   const timelineData = rootState.statuses.timelines[camelCase(timeline)]
   const { hideMutedPosts, replyVisibility } =
     useMergedConfigStore().mergedConfig
-  const loggedIn = !!rootState.users.currentUser
+  const loggedIn = !!useUsersStore().currentUser
 
   if (older) {
     // When minId = 0 we need to fetch without maxId param

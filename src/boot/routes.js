@@ -13,10 +13,11 @@ import TagTimeline from 'src/components/tag_timeline/tag_timeline.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 export default (store) => {
   const validateAuthenticatedRoute = (to, from, next) => {
-    if (store.state.users.currentUser) {
+    if (useUsersStore().currentUser) {
       next()
     } else {
       next(
@@ -31,7 +32,7 @@ export default (store) => {
       path: '/',
       redirect: () => {
         return (
-          (store.state.users.currentUser
+          (useUsersStore().currentUser
             ? useInstanceStore().instanceIdentity.redirectRootLogin
             : useInstanceStore().instanceIdentity.redirectRootNoLogin) ||
           '/main/all'

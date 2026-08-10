@@ -18,6 +18,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useListsStore } from 'src/stores/lists'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -76,8 +77,8 @@ const NavPanel = {
       'pleromaChatMessagesAvailable',
       'localBubble',
     ]),
+    ...mapPiniaState(useUsersStore, ['currentUser']),
     ...mapState({
-      currentUser: (state) => state.users.currentUser,
       followRequestCount: (state) => state.api.followRequests.length,
     }),
     pinnedList() {

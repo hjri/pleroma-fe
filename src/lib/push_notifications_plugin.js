@@ -1,6 +1,7 @@
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 export const piniaPushNotificationsPlugin = ({ store }) => {
   if (
@@ -25,7 +26,7 @@ export const piniaPushNotificationsPlugin = ({ store }) => {
       useInterfaceStore().notificationPermission === 'granted'
     let permissionPresent =
       useInterfaceStore().notificationPermission !== undefined
-    let user = !!window.vuex.state.users.currentUser
+    let user = !!useUsersStore().currentUser
 
     if (store.$id === 'instance') {
       if (actionName === 'set' && args[0].path === 'vapidPublicKey') {
@@ -66,6 +67,7 @@ export const piniaPushNotificationsPlugin = ({ store }) => {
   })
 }
 
+// TODO make it work with pinia
 export const vuexPushNotificationsPlugin = (store) => {
   store.subscribe((mutation, state) => {
     // Initial state

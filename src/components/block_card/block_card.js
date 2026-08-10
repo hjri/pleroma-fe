@@ -4,15 +4,16 @@ import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
 import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 const BlockCard = {
   props: ['userId'],
   computed: {
     user() {
-      return this.$store.getters.findUser(this.userId)
+      return useUsersStore().findUser(this.userId)
     },
     relationship() {
-      return this.$store.getters.relationship(this.userId)
+      return useUsersStore().relationship(this.userId)
     },
     blocked() {
       return this.relationship.blocking

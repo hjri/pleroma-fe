@@ -6,6 +6,7 @@ import { mountOpts } from '../../../fixtures/setup_test'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 const currentUser = {
   id: 'current-user',
@@ -35,7 +36,7 @@ const replyMountOpts = (props) =>
   mountOpts({
     props,
     afterStore(store) {
-      store.state.users.currentUser = currentUser
+      useUsersStore().currentUser = currentUser
       store.state.statuses.allStatusesObject = {
         [repliedStatus.id]: repliedStatus,
       }

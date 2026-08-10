@@ -5,6 +5,7 @@ import UserCard from 'src/components/user_card/user_card.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
@@ -38,7 +39,7 @@ const UserProfileAdminView = {
       }
     },
     user() {
-      return this.$store.getters.findUser(this.userId)
+      return useUsersStore().findUser(this.userId)
     },
     userId() {
       return this.$route.params.id

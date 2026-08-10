@@ -1,6 +1,5 @@
-import { mapState as mapPiniaState } from 'pinia'
+import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
-import { mapState } from 'vuex'
 
 import Attachment from 'src/components/attachment/attachment.vue'
 import ChatMessageDate from 'src/components/chat_message_date/chat_message_date.vue'
@@ -20,6 +19,7 @@ import UserPopover from 'src/components/user_popover/user_popover.vue'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -79,7 +79,7 @@ const ChatMessage = {
       return this.isStatus ? this.message.user.id : this.message.account_id
     },
     author() {
-      return this.$store.getters.findUser(this.authorId)
+      return useUsersStore().findUser(this.authorId)
     },
     isCurrentUser() {
       // mini-hack/optimizaiton:
@@ -108,17 +108,13 @@ const ChatMessage = {
       if (this.message.in_reply_to_screen_name) {
         return this.message.in_reply_to_screen_name
       } else {
-        const user = this.$store.getters.findUser(
-          this.message.in_reply_to_user_id,
-        )
+        const user = useUsersStore().findUser(this.message.in_reply_to_user_id)
         return user?.screen_name_ui
       }
     },
     replyProfileLink() {
       if (this.isCustomReply) {
-        const user = this.$store.getters.findUser(
-          this.message.in_reply_to_user_id,
-        )
+        const user = useUsersStore().findUser(this.message.in_reply_to_user_id)
         // FIXME Why user not found sometimes???
         return user ? user.statusnet_profile_url : 'NOT_FOUND'
       }
@@ -167,14 +163,12 @@ const ChatMessage = {
     },
 
     // Global stuff
-    ...mapPiniaState(useInterfaceStore, {
+    ...mapState(useInterfaceStore, {
       betterShadow: (store) => store.browserSupport.cssFilter,
     }),
-    ...mapState({
-      currentUser: (state) => state.users.currentUser,
-      restrictedNicknames: (state) => useInstanceStore().restrictedNicknames,
-    }),
-    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
+    ...mapState(useUsersStore, ['currentUser']),
+    ...mapState(useInstanceStore, ['restrictedNicknames']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
   data() {
     return {

@@ -39,6 +39,7 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import VBodyScrollLock from 'src/directives/body_scroll_lock'
 import {
@@ -454,7 +455,7 @@ const setConfig = async ({ store }) => {
 const checkOAuthToken = async ({ store }) => {
   const oauth = useOAuthStore()
   if (oauth.userToken) {
-    return store.dispatch('loginUser', oauth.userToken)
+    return useUsersStore().loginUser(oauth.userToken)
   }
   return
 }

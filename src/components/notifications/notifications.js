@@ -18,6 +18,7 @@ import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useChatsStore } from 'src/stores/chats.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -251,7 +252,7 @@ const Notifications = {
       }
 
       const store = this.$store
-      const credentials = store.state.users.currentUser.credentials
+      const credentials = useUsersStore().currentUser.credentials
       store.commit('setNotificationsLoading', { value: true })
       notificationsFetcher
         .fetchAndUpdate({

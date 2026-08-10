@@ -5,6 +5,7 @@ import { mapState } from 'pinia'
 import { useAdminSettingsStore } from 'src/stores/admin_settings'
 import { useEmojiStore } from 'src/stores/emoji'
 import { useInterfaceStore } from 'src/stores/interface'
+import { useUsersStore } from 'src/stores/users.js'
 
 export default {
   components: { Popover, SelectComponent },
@@ -25,7 +26,7 @@ export default {
   },
   computed: {
     isUserAdmin() {
-      return this.$store.state.users.currentUser?.rights.admin
+      return useUsersStore().currentUser?.rights.admin
     },
     ...mapState(useEmojiStore, ['adminPacksLocal', 'adminPacksLocalLoading']),
   },

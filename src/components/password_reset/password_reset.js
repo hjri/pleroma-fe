@@ -1,7 +1,7 @@
-import { mapState as mapPiniaState } from 'pinia'
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { resetPassword } from 'src/api/public.js'
 
@@ -21,13 +21,11 @@ const passwordReset = {
     error: null,
   }),
   computed: {
-    ...mapState({
-      signedIn: (state) => !!state.users.currentUser,
-    }),
-    ...mapPiniaState(useInstanceStore, ['mailerEnabled']),
+    ...mapState(useUsersStore, ['loggedIn']),
+    ...mapState(useInstanceStore, ['mailerEnabled']),
   },
   created() {
-    if (this.signedIn) {
+    if (this.loggedIn) {
       this.$router.push({ name: 'root' })
     }
   },

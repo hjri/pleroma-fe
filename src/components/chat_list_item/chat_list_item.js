@@ -1,10 +1,12 @@
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import AvatarList from 'src/components/avatar_list/avatar_list.vue'
 import ChatTitle from 'src/components/chat_title/chat_title.vue'
 import StatusBody from 'src/components/status_content/status_content.vue'
 import Timeago from 'src/components/timeago/timeago.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+
+import { useUsersStore } from 'src/stores/users.js'
 
 const ChatListItem = {
   name: 'ChatListItem',
@@ -17,9 +19,7 @@ const ChatListItem = {
     StatusBody,
   },
   computed: {
-    ...mapState({
-      currentUser: (state) => state.users.currentUser,
-    }),
+    ...mapState(useUsersStore, ['currentUser']),
     attachmentInfo() {
       if (this.chat.lastMessage.attachments.length === 0) {
         return
