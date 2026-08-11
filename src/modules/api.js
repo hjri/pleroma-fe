@@ -212,7 +212,7 @@ const api = {
                 if (state.mastoUserSocketStatus !== WSConnectionStatus.ERROR) {
                   dispatch('startFetchingTimeline', { timeline: 'friends' })
                   dispatch('startFetchingNotifications')
-                  dispatch('startFetchingChats')
+                  useChatsStore().startFetchingChats()
                   useInterfaceStore().pushGlobalNotice({
                     level: 'error',
                     messageKey: 'timeline.socket_broke',
@@ -234,7 +234,7 @@ const api = {
     stopMastoUserSocket({ state, dispatch }) {
       dispatch('startFetchingTimeline', { timeline: 'friends' })
       dispatch('startFetchingNotifications')
-      dispatch('startFetchingChats')
+      useChatsStore().startFetchingChats()
       state.mastoUserSocket.close()
     },
 
