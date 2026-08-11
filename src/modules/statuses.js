@@ -881,7 +881,7 @@ const statuses = {
           'addNewUsers',
           data.statuses.map((s) => s.user).filter((u) => u),
         )
-        store.commit('addNewStatuses', {
+        store.dispatch('addNewStatuses', {
           statuses: data.statuses,
         })
 
