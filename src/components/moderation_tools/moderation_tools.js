@@ -516,8 +516,7 @@ const ModerationTools = {
     setOpen(value) {
       this.open = value
     },
-    maybeShowConfirm(close, { group, name, action, value }) {
-      close()
+    maybeShowConfirm({ group, name, action, value }) {
       this.confirmDialogName = name
       this.confirmDialogGroup = group
       this.confirmDialogAction = () => action()
