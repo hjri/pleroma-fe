@@ -45,11 +45,11 @@ import {
 import {
   blockUser as apiBlockUser,
   editUserNote as apiEditUserNote,
+  muteDomain as apiMuteDomain,
   muteUser as apiMuteUser,
   unblockUser as apiUnblockUser,
-  unmuteUser as apiUnmuteUser,
-  muteDomain as apiMuteDomain,
   unmuteDomain as apiUnmuteDomain,
+  unmuteUser as apiUnmuteUser,
   fetchBlocks,
   fetchDomainMutes,
   fetchMutes,
