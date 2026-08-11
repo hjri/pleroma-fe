@@ -7,7 +7,7 @@ import Timeago from 'src/components/timeago/timeago.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserLink from 'src/components/user_link/user_link.vue'
 import UserPopover from 'src/components/user_popover/user_popover.vue'
-import { isStatusNotification } from '../../services/notification_utils/notification_utils.js'
+import { isStatusNotification } from '../../services/notification_utils/notification_utils_sw.js'
 import {
   highlightClass,
   highlightStyle,

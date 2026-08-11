@@ -4,7 +4,7 @@ import { unescape as lodashUnescape } from 'lodash'
 import punycode from 'punycode.js'
 
 import { fileType } from '../file_type/file_type.service.js'
-import { isStatusNotification } from '../notification_utils/notification_utils.js'
+import { isStatusNotification } from '../notification_utils/notification_utils_sw.js'
 
 /** NOTICE! **
  * Do not initialize UI-generated data here.
