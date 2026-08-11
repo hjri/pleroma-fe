@@ -26,7 +26,7 @@
             >
               <button
                 class="main-button"
-                @click="() => maybeShowConfirm(close, entry)"
+                @click="() => maybeShowConfirm(entry)"
               >
                 <span
                   v-if="entry.checkbox"
