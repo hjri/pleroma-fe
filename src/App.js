@@ -215,12 +215,6 @@ export default {
     reverseSetting() {
       return this.mergedConfig.sidebarRight
     },
-    thirdColumnMode() {
-      return this.mergedConfig.thirdColumnMode
-    },
-    reverseSetting() {
-      return this.mergedConfig.sidebarRight
-    },
     reverseLayout() {
       if (this.layoutType !== 'wide') {
         return this.reverseSetting
