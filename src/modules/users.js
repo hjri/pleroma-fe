@@ -627,8 +627,11 @@ const users = {
     addNewStatuses(store, { statuses }) {
       const users = map(statuses, 'user')
       const retweetedUsers = compact(map(statuses, 'retweeted_status.user'))
+      const quotedUsers = compact(map(statuses, 'quote.user'))
+
       store.commit('addNewUsers', users)
       store.commit('addNewUsers', retweetedUsers)
+      store.commit('addNewUsers', quotedUsers)
 
       each(statuses, (status) => {
         // Reconnect users to statuses
