@@ -798,7 +798,7 @@ const users = {
 
               if (useInstanceCapabilitiesStore().pleromaChatMessagesAvailable) {
                 // Start fetching chats
-                dispatch('startFetchingChats')
+                useChatsStore().startFetchingChats()
               }
             }
 
