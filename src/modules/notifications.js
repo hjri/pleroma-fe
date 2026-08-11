@@ -85,9 +85,10 @@ export const notifications = {
         return true
       })
 
-      commit('addNewUsers', validNotifications.map(
-        (notification) => notification.from_profile,
-      ))
+      commit(
+        'addNewUsers',
+        validNotifications.map((notification) => notification.from_profile),
+      )
 
       const statusNotifications = validNotifications.filter(
         (notification) =>
