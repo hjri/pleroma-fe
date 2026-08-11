@@ -168,7 +168,7 @@ export default {
         setTimeout(() => {
           this.animationState = false
         }, 500)
-        if(!this.button.dropdown) close()
+        if (!this.button.dropdown) close()
       }
     },
   },
