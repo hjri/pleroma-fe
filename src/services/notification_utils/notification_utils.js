@@ -1,6 +1,9 @@
 import { showDesktopNotification } from '../desktop_notification_utils/desktop_notification_utils.js'
 import { muteFilterHits } from '../status_parser/status_parser.js'
-import { prepareNotificationObject, isStatusNotification } from './notification_utils_sw.js'
+import {
+  isStatusNotification,
+  prepareNotificationObject,
+} from './notification_utils_sw.js'
 
 import { useNotificationsStore } from 'src/stores/notifications.js'
 

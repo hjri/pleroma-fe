@@ -8,7 +8,6 @@
         <UserCard
           :user-id="userId"
           :switcher="true"
-          :selected="timeline.viewing"
           :compact="compactProfiles"
           avatar-action="zoom"
           :has-note-editor="true"
@@ -19,19 +18,21 @@
         :render-only-focused="true"
         :on-switch="onTabSwitch"
       >
-        <Timeline
-          key="statuses"
+        <div
+          class="statuses"
           :label="$t('user_card.statuses')"
           :count="user.statuses_count"
-          :embedded="true"
           :title="$t('user_profile.timeline_title')"
-          :timeline="timeline"
-          timeline-name="user"
-          :user-id="userId"
-          :pinned-status-ids="user.pinnedStatusIds"
-          :in-profile="true"
-          :footer-slipgate="footerRef"
-        />
+        >
+          <Timeline
+            key="statuses"
+            :embedded="true"
+            timeline-name="user"
+            :argument="userId"
+            :in-profile="true"
+            :footer-slipgate="footerRef"
+          />
+        </div>
         <div
           v-if="followsTabVisible"
           key="followees"
@@ -74,8 +75,7 @@
           :embedded="true"
           :title="$t('user_card.media')"
           timeline-name="media"
-          :timeline="media"
-          :user-id="userId"
+          :argument="userId"
           :in-profile="true"
           :footer-slipgate="footerRef"
         />
@@ -87,8 +87,7 @@
           :embedded="true"
           :title="$t('user_card.favorites')"
           timeline-name="favorites"
-          :timeline="favorites"
-          :user-id="isUs ? undefined : userId"
+          :argument="isUs ? undefined : userId"
           :in-profile="true"
           :footer-slipgate="footerRef"
         />

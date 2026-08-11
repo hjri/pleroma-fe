@@ -23,6 +23,7 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
+import { useTimelinesStore } from 'src/stores/timelines.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
@@ -667,7 +668,7 @@ export const useUsersStore = defineStore('users', {
 
             const startPolling = () => {
               // Start getting fresh posts.
-              dispatch('startFetchingTimeline', { timeline: 'friends' })
+              useTimelinesStore().startFetchingTimeline('friends')
 
               // Start fetching notifications
               dispatch('startFetchingNotifications')

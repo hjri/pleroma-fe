@@ -10,7 +10,6 @@ import { useOAuthStore } from 'src/stores/oauth.js'
 import { useShoutStore } from 'src/stores/shout.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 
-import { fetchTimeline } from 'src/api/timelines.js'
 import {
   getMastodonSocketURI,
   ProcessedWS,
@@ -18,7 +17,6 @@ import {
 } from 'src/api/websocket.js'
 import followRequestFetcher from 'src/services/follow_request_fetcher/follow_request_fetcher.service'
 import notificationsFetcher from 'src/services/notifications_fetcher/notifications_fetcher.service.js'
-import timelineFetcher from 'src/services/timeline_fetcher/timeline_fetcher.service.js'
 
 const retryTimeout = (multiplier) => 1000 * multiplier
 
@@ -238,53 +236,6 @@ const api = {
       dispatch('startFetchingTimeline', { timeline: 'friends' })
       dispatch('startFetchingNotifications')
       state.mastoUserSocket.close()
-    },
-
-    // Timelines
-    startFetchingTimeline(
-      store,
-      {
-        timeline = 'friends',
-        tag = false,
-        userId = false,
-        listId = false,
-        statusId = false,
-        bookmarkFolderId = false,
-      },
-    ) {
-      if (
-        timeline === 'favourites' &&
-        !useInstanceCapabilitiesStore().pleromaPublicFavouritesAvailable
-      )
-        return
-      if (store.state.fetchers[timeline]) return
-
-      const fetcher = timelineFetcher.startFetching({
-        timeline,
-        store,
-        userId,
-        listId,
-        statusId,
-        bookmarkFolderId,
-        tag,
-        credentials: useOAuthStore().token,
-      })
-
-      store.commit('addFetcher', { fetcherName: timeline, fetcher })
-    },
-    stopFetchingTimeline(store, timeline) {
-      const fetcher = store.state.fetchers[timeline]
-      if (!fetcher) return
-      store.commit('removeFetcher', { fetcherName: timeline, fetcher })
-    },
-
-    fetchTimeline(store, { timeline, ...rest }) {
-      fetchTimeline({
-        store,
-        timeline,
-        ...rest,
-        credentials: useOAuthStore().token,
-      })
     },
 
     // Notifications

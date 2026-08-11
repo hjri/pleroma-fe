@@ -9,7 +9,7 @@ import UserCard from 'src/components/user_card/user_card.vue'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useStatusesStore } from 'src/stores/statuses.js'
+import { useTimelinesStore } from 'src/stores/statuses.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -44,14 +44,11 @@ const UserProfile = {
     this.$store.dispatch('clearFriends', this.userId)
   },
   computed: {
-    timeline() {
-      return this.$store.state.statuses.timelines.user
-    },
     favorites() {
-      return this.$store.state.statuses.timelines.favorites
+      return useTimelinesStore().favorites
     },
     media() {
-      return this.$store.state.statuses.timelines.media
+      return useTimelinesStore().media
     },
     isUs() {
       return (
@@ -99,32 +96,12 @@ const UserProfile = {
     },
     fetchUsers(group) {
       return () =>
-        this.$store
-          .dispatch('fetch' + group, this.userId)
+        useUsersStore()['fetch' + group](this.userId)
           .then((result) => ({ items: result }))
     },
     load(userNameOrId) {
-      const startFetchingTimeline = (timeline, userId) => {
-        // Clear timeline only if load another user's profile
-        if (userId !== this.$store.state.statuses.timelines[timeline].userId) {
-          useStatusesStore().clearTimeline({ timeline: 'user' })
-          useStatusesStore().clearTimeline({ timeline: 'userPinned' })
-          useStatusesStore().clearTimeline({ timeline: 'media' })
-        }
-        this.$store.dispatch('startFetchingTimeline', { timeline, userId })
-      }
-
       const loadById = (userId) => {
         this.userId = userId
-        startFetchingTimeline('user', userId)
-        startFetchingTimeline('media', userId)
-        if (this.isUs) {
-          startFetchingTimeline('favorites')
-        } else if (!this.user.hide_favorites) {
-          startFetchingTimeline('favorites', userId)
-        }
-        // Fetch all pinned statuses immediately
-        this.$store.dispatch('fetchPinnedStatuses', userId)
       }
 
       // Reset view
@@ -138,6 +115,7 @@ const UserProfile = {
       const user = maybeId
         ? useUsersStore().findUser(maybeId)
         : useUsersStore().findUserByName(maybeName)
+
       if (user) {
         loadById(user.id)
       } else {
@@ -159,13 +137,7 @@ const UserProfile = {
           })
       }
     },
-    stopFetching() {
-      this.$store.dispatch('stopFetchingTimeline', 'user')
-      this.$store.dispatch('stopFetchingTimeline', 'favorites')
-      this.$store.dispatch('stopFetchingTimeline', 'media')
-    },
     switchUser(userNameOrId) {
-      this.stopFetching()
       this.load(userNameOrId)
     },
     onTabSwitch(tab) {

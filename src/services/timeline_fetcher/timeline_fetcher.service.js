@@ -6,94 +6,81 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
+import { ARGUMENT_MAP, useTimelinesStore } from 'src/stores/timelines.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { fetchTimeline } from 'src/api/timelines.js'
 
-const update = ({
-  statuses,
-  timeline,
-  showImmediately,
-  userId,
-  listId,
-  pagination,
-}) => {
-  const ccTimeline = camelCase(timeline)
-
-  useStatusesStore().addNewStatuses({
-    timelineName: ccTimeline,
-    userId,
-    listId,
-    statuses,
-    showImmediately,
-    pagination,
-  })
-}
+const REPLY_VISIBILITY_TIMELINES = new Set([
+  'friends',
+  'public',
+  'publicAndExternal',
+  'bubble',
+])
 
 const fetchAndUpdate = ({
+  timeline,
+  argument,
   credentials,
-  timeline = 'friends',
-  older = false,
-  showImmediately = false,
-  userId,
-  listId,
-  statusId,
-  bookmarkFolderId,
-  tag,
+}, {
   maxId,
   sinceId,
+  older = false,
+  showImmediately = false,
 }) => {
-  const args = { timeline, credentials }
-  const timelineData = useStatusesStore().timelines[camelCase(timeline)]
+  timeline.loading = true
   const { hideMutedPosts, replyVisibility } =
     useMergedConfigStore().mergedConfig
-  const loggedIn = !!useUsersStore().currentUser
+  const loggedIn = useUsersStore().loggedIn
+
+  const args = { timeline: timeline.name, credentials }
+  args[ARGUMENT_MAP[timeline.name]] = argument
 
   if (older) {
     // When minId = 0 we need to fetch without maxId param
-    args.maxId = maxId || timelineData.minId || null
+    args.maxId = maxId || timeline.minId || null
   } else {
     if (sinceId === undefined) {
-      args.sinceId = timelineData.maxId
+      args.sinceId = timeline.maxId
     } else if (sinceId !== null) {
       args.sinceId = sinceId
     }
   }
 
-  args.userId = userId
-  args.listId = listId
-  args.statusId = statusId
-  args.bookmarkFolderId = bookmarkFolderId
-  args.tag = tag
   args.withMuted = !hideMutedPosts
-  if (
-    loggedIn &&
-    ['friends', 'public', 'publicAndExternal', 'bubble'].includes(timeline)
-  ) {
+  if (loggedIn && REPLY_VISIBILITY_TIMELINES.has(timeline)) {
     args.replyVisibility = replyVisibility
   }
 
-  const numStatusesBeforeFetch = timelineData.statuses.length
+  const numStatusesBeforeFetch = timeline.statuses.size
 
   return fetchTimeline(args)
     .then((response) => {
-      const { data: statuses, pagination } = response
+      const { data: statuses, pagination, timestamp } = response
       if (
         !older &&
         statuses.length >= 20 &&
-        !timelineData.loading &&
+        !timeline.loading &&
         numStatusesBeforeFetch > 0
       ) {
-        useStatusesStore().queueFlush({ timeline, id: timelineData.maxId })
+        useTimelinesStore().queueFlush(timeline.name, timeline.maxId)
       }
-      update({
-        statuses,
-        timeline,
-        showImmediately,
-        userId,
-        listId,
-        pagination,
-      })
+
+      const processed = useStatusesStore()
+        .addNewStatuses({ statuses, timestamp })
+        .filter(Boolean)
+
+      console.log(timeline.name, argument, showImmediately, processed.length)
+
+      useTimelinesStore().addStatusesToTimeline(
+        timeline.name,
+        argument,
+        {
+          statuses,
+          showImmediately,
+          pagination,
+        }
+      )
       return { statuses, pagination }
     })
     .catch((error) => {
@@ -108,48 +95,53 @@ const fetchAndUpdate = ({
         timeout: 5000,
       })
     })
+    .finally(() => {
+      timeline.loading = false
+    })
 }
 
-const startFetching = ({
-  timeline = 'friends',
-  credentials,
-  userId,
-  listId,
-  statusId,
-  bookmarkFolderId,
-  tag,
-}) => {
-  const timelineData = useStatusesStore().timelines[camelCase(timeline)]
-  const showImmediately = timelineData.visibleStatuses.size === 0
-  console.log(timeline)
-  timelineData.userId = userId
-  timelineData.listId = listId
-  timelineData.bookmarkFolderId = bookmarkFolderId
-  fetchAndUpdate({
-    timeline,
-    credentials,
+const timelineFetcher = (timeline, argument, argumentKey, credentials) => {
+  const state = {
+    interval: null
+  }
+
+  const boundFetchAndUpdate = ({
     showImmediately,
-    userId,
-    listId,
-    statusId,
-    bookmarkFolderId,
-    tag,
+    maxId,
+    sinceId,
+    older,
+  } = {}) => fetchAndUpdate({
+    timeline,
+    argument,
+    argumentKey,
+    credentials,
+  }, {
+    maxId,
+    sinceId,
+    older,
+    showImmediately,
   })
-  const boundFetchAndUpdate = () =>
-    fetchAndUpdate({
-      timeline,
-      credentials,
-      userId,
-      listId,
-      statusId,
-      bookmarkFolderId,
-      tag,
+
+  const startFetching = () => {
+    if (state.interval) throw new Error('Interval already exists!')
+
+    boundFetchAndUpdate({
+      showImmediately: timeline.visibleStatusesIds.size === 0
     })
-  return promiseInterval(boundFetchAndUpdate, 10000)
-}
-const timelineFetcher = {
-  fetchAndUpdate,
-  startFetching,
+
+    state.interval = promiseInterval(boundFetchAndUpdate, 10000)
+  }
+
+  const stopFetching = () => {
+    state.interval.stop()
+    state.interval = null
+  }
+
+  return {
+    startFetching,
+    stopFetching,
+    fetchAndUpdate: boundFetchAndUpdate,
+  }
 }
 
 export default timelineFetcher

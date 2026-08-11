@@ -8,9 +8,7 @@ import {
   isValidNotification,
   maybeShowNotification,
 } from '../services/notification_utils/notification_utils.js'
-import {
-  isStatusNotification,
-} from '../services/notification_utils/notification_utils_sw.js'
+import { isStatusNotification } from '../services/notification_utils/notification_utils_sw.js'
 
 import { useI18nStore } from 'src/stores/i18n.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'

@@ -1,4 +1,3 @@
-import { first, last, maxBy, minBy } from 'lodash'
 import { defineStore } from 'pinia'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -33,42 +32,12 @@ import {
   unretweet,
 } from 'src/api/user.js'
 
-const emptyTl = (userId) => ({
-  statuses: new Map(),
-  faves: [],
-  visibleStatuses: new Map(),
-  newStatusCount: 0,
-  maxId: '',
-  minId: '',
-  minVisibleId: 0,
-  loading: false,
-  followers: [],
-  friends: [],
-  userId,
-  flushMarker: 0,
-})
-
 export const defaultState = () => ({
   allStatuses: new Map(),
   timestamps: new WeakMap(),
   scrobblesNextFetch: {},
   conversations: new Map(),
   favorites: new Set(),
-  timelines: {
-    mentions: emptyTl(),
-    public: emptyTl(),
-    user: emptyTl(),
-    userPinned: emptyTl(),
-    favorites: emptyTl(),
-    media: emptyTl(),
-    publicAndExternal: emptyTl(),
-    friends: emptyTl(),
-    tag: emptyTl(),
-    dms: emptyTl(),
-    bookmarks: emptyTl(),
-    list: emptyTl(),
-    bubble: emptyTl(),
-  },
 })
 
 const getLatestScrobble = (user) => {
@@ -106,40 +75,19 @@ const getLatestScrobble = (user) => {
     })
 }
 
-const USER_TIMELINES = new Set(['user', 'userPinned', 'media'])
-
 export const useStatusesStore = defineStore('statuses', {
   state: defaultState,
   actions: {
-    addNewStatuses({
-      statuses,
-      showImmediately = false,
-      timelineName,
-      user = {},
-      userId,
-      noIdUpdate = false,
-      pagination = {},
-      timestamp,
-    }) {
+    addNewStatuses({ statuses, user = {}, userId, timestamp }) {
       // Sanity check
       if (!Array.isArray(statuses)) {
-        return false
+        throw new TypeError("Statuses aren't an array!")
       }
 
-      const timeline = this.timelines[timelineName]
-
-      if (timeline && !noIdUpdate && statuses.length > 0) {
-        this.updateTimelineExtremes(timeline, statuses, pagination)
-      }
-
-      // This makes sure that user timeline won't get data meant for other
-      // user. I.e. opening different user profiles makes request which could
-      // return data late after user already viewing different user profile
-      if (USER_TIMELINES.has(timelineName) && timeline.userId !== userId) {
-        return
-      }
-
-      const addStatus = (data, showImmediately, addToTimeline = true) => {
+      // addStatus should always return "main" status,
+      // not "sub-status" i.e. retweeted/quoted/liked status
+      // in case of likes (which are not statuses) it should return null
+      const addStatus = (data) => {
         getLatestScrobble(data.user)
 
         const [status] = this.mergeOrAdd(this.allStatuses, data)
@@ -154,49 +102,9 @@ export const useStatusesStore = defineStore('statuses', {
           conversations.set(conversationId, new Map([[status.id, status]]))
         }
 
-        // We are mentioned in a post
-        if (
-          status.type === 'status' &&
-          status.attentions.some(({ id }) => id === user.id)
-        ) {
-          const mentions = this.timelines.mentions
-
-          // Add the mention to the mentions timeline
-          if (timeline !== mentions) {
-            const [, isNew] = this.mergeOrAdd(mentions.statuses, data)
-            if (isNew) mentions.newStatusCount += 1
-          }
-        }
-
-        if (status.visibility === 'direct') {
-          const dms = this.timelines.dms
-
-          const [, isNew] = this.mergeOrAdd(dms.statuses, data)
-          if (isNew) dms.newStatusCount += 1
-        }
-
-        // Some statuses should only be added to the global status repository.
-        if (timeline && addToTimeline) {
-          // Decide if we should treat the status as new for this timeline.
-          const [status, isNew] = this.mergeOrAdd(timeline.statuses, data)
-          if (isNew) {
-            if (showImmediately) {
-              // Add it directly to the visibleStatuses, don't change
-              // newStatusCount
-              timeline.visibleStatuses.set(status.id, status)
-            } else {
-              // Just change newStatuscount
-              timeline.newStatusCount += 1
-            }
-          }
-        }
-
+        // Work on quote
         if (status.quote) {
-          addStatus(
-            status.quote,
-            /* showImmediately = */ false,
-            /* addToTimeline = */ false,
-          )
+          status.quote = addStatus(status.quote)
         }
 
         return status
@@ -204,41 +112,15 @@ export const useStatusesStore = defineStore('statuses', {
 
       const processors = {
         status: (status) => {
-          addStatus(status, showImmediately)
+          return addStatus(status)
         },
         edit: (status) => {
-          addStatus(status, showImmediately)
+          return addStatus(status)
         },
         retweet: (status) => {
           // RetweetedStatuses are never shown immediately
-          const retweetedStatus = addStatus(
-            status.retweeted_status,
-            false,
-            false,
-          )
-
-          let retweet
-          // If the retweeted status is already there, don't add the retweet
-          // to the timeline.
-          if (
-            [...(timeline?.statuses.values() ?? [])].some((s) => {
-              if (s.retweeted_status) {
-                return (
-                  s.id === retweetedStatus.id ||
-                  s.retweeted_status.id === retweetedStatus.id
-                )
-              } else {
-                return s.id === retweetedStatus.id
-              }
-            })
-          ) {
-            // Already have it visible (either as the original or another RT), don't add to timeline, don't show.
-            retweet = addStatus(status, false, false)
-          } else {
-            retweet = addStatus(status, showImmediately)
-          }
-
-          retweet.retweeted_status = retweetedStatus
+          if (status.retweeted_status) addStatus(status.retweeted_status)
+          return addStatus(status)
         },
         favorite: (favorite) => {
           // Only update if this is a new favorite.
@@ -258,19 +140,22 @@ export const useStatusesStore = defineStore('statuses', {
             }
             return status
           }
+          return null
         },
         follow: () => {
           // NOOP, it is known status but we don't do anything about it for now
+          return null
         },
         default: (unknown) => {
           console.warn('unknown status type', unknown)
+          return null
         },
       }
 
-      statuses.forEach((status) => {
+      return statuses.map((status) => {
         const type = status.type
         const processor = processors[type] ?? processors.default
-        processor(status)
+        return processor(status)
       })
     },
     mergeOrAdd(map, status, timestamp) {
@@ -305,21 +190,6 @@ export const useStatusesStore = defineStore('statuses', {
     fetchStatus(id) {
       return fetchStatus({ id }).then(({ data: status, timestamp }) =>
         this.addNewStatuses({ statuses: [status], timestamp }),
-      )
-    },
-    fetchPinnedStatuses(userId) {
-      return fetchPinnedStatuses({
-        id: userId,
-        credentials: useOAuthStore().token,
-      }).then(({ data: statuses, timestamp }) =>
-        this.addNewStatuses({
-          statuses,
-          timeline: 'userPinned',
-          userId,
-          showImmediately: true,
-          noIdUpdate: true,
-          timestamp,
-        }),
       )
     },
     fetchStatusSource(id) {
@@ -392,55 +262,6 @@ export const useStatusesStore = defineStore('statuses', {
     addEmojiReactionsBy({ id, emojiReactions }) {
       const status = this.allStatuses.get(id)
       status.emoji_reactions = emojiReactions
-    },
-
-    // Queues & Timeline manip
-    updateTimelineExtremes(timeline, statuses, pagination = {}) {
-      // Can't use Math.min/max because it doesn't work with string (duh)
-      const minNew = pagination.maxId ?? minBy(statuses, 'id').id ?? ''
-      const maxNew = pagination.minId ?? maxBy(statuses, 'id').id ?? ''
-
-      const newer = maxNew > timeline.maxId || timeline.maxId === ''
-      const older = minNew < timeline.minId || timeline.minId === ''
-
-      if (newer) {
-        timeline.maxId = maxNew
-      }
-      if (older) {
-        timeline.minId = minNew
-      }
-    },
-    showNewStatuses(timelineName) {
-      const timeline = this.timelines[timelineName]
-
-      timeline.newStatusCount = 0
-
-      timeline.visibleStatuses = new Map(
-        [...timeline.statuses.entries()].slice(0, 50),
-      )
-      timeline.minVisibleId = last(timeline.visibleStatuses.keys())
-      timeline.minId = ''
-      timeline.maxId = ''
-      this.updateTimelineExtremes(timeline, [...timeline.statuses.values()])
-    },
-    resetStatuses() {
-      const emptyState = defaultState()
-
-      Object.entries(emptyState).forEach(([key, value]) => {
-        this[key] = value
-      })
-    },
-    clearTimeline({ timeline, excludeUserId = false }) {
-      const userId = excludeUserId ? this.timelines[timeline].userId : undefined
-      this.timelines[timeline] = emptyTl(userId)
-    },
-    queueFlush({ timeline, id }) {
-      this.timelines[timeline].flushMarker = id
-    },
-    queueFlushAll() {
-      Object.keys(this.timelines).forEach((timeline) => {
-        this.timelines[timeline].flushMarker = this.timelines[timeline].maxId
-      })
     },
 
     // Actions
@@ -770,34 +591,12 @@ export const useStatusesStore = defineStore('statuses', {
         return data
       })
     },
-
-    // Misc
-    removeUserStatuses({ timelineName, userId }) {
-      const timeline = this.timelines[timelineName]
-
-      timeline.statuses
-        .values()
-        .filter(({ user }) => user.id === userId)
-        .forEach(({ id }) => {
-          timeline.statuses.delete(id)
-          timeline.visibleStatuses.delete(id)
-        })
-      timeline.minVisibleId =
-        timeline.visibleStatuses.length > 0
-          ? last(timeline.visibleStatuses).id
-          : 0
-      timeline.maxId =
-        timeline.statuses.length > 0 ? first(timeline.statuses).id : 0
-    },
     setVirtualHeight({ statusId, height }) {
       this.allStatuses.get(statusId).virtualHeight = height
     },
     updateStatusWithPoll({ id, poll }) {
       const status = this.allStatuses.get(id)
       status.poll = poll
-    },
-    setLoading({ timeline, value }) {
-      this.timelines[timeline].loading = value
     },
   },
 })

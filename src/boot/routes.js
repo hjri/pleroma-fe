@@ -1,10 +1,7 @@
 import AuthForm from 'src/components/auth_form/auth_form.js'
-import BookmarkTimeline from 'src/components/bookmark_timeline/bookmark_timeline.vue'
 import ConversationPage from 'src/components/conversation-page/conversation-page.vue'
 import NavPanel from 'src/components/nav_panel/nav_panel.vue'
-import QuotesTimeline from 'src/components/quotes_timeline/quotes_timeline.vue'
 import RemoteUserResolver from 'src/components/remote_user_resolver/remote_user_resolver.vue'
-import TagTimeline from 'src/components/tag_timeline/tag_timeline.vue'
 import Timeline from 'src/components/timeline/timeline.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -40,7 +37,7 @@ export default (store) => {
       path: '/main/all',
       component: Timeline,
       props: () => ({
-        timelineName: 'publicAndExternal',
+        timelineRef: { name: 'publicAndExternal' },
       }),
     },
     {
@@ -48,7 +45,7 @@ export default (store) => {
       path: '/main/public',
       component: Timeline,
       props: () => ({
-        timelineName: 'public',
+        timelineRef: { name: 'public' },
       }),
     },
     {
@@ -57,17 +54,31 @@ export default (store) => {
       component: Timeline,
       beforeEnter: validateAuthenticatedRoute,
       props: () => ({
-        timelineName: 'friends',
+        timelineRef: { name: 'friends' },
       }),
     },
-    { name: 'tag-timeline', path: '/tag/:tag', component: TagTimeline },
-    { name: 'bookmarks', path: '/bookmarks', component: BookmarkTimeline },
+    {
+      name: 'tag-timeline',
+      path: '/tag/:id',
+      component: Timeline,
+      props: (route) => ({
+        timelineRef: { name: 'tag', argument: route.params.id },
+      }),
+    },
+    {
+      name: 'bookmarks',
+      path: '/bookmarks',
+      component: Timeline,
+      props: (route) => ({
+        timelineRef: { name: 'bookmarks', argument: null },
+      }),
+    },
     {
       name: 'bubble',
       path: '/bubble',
       component: Timeline,
       props: () => ({
-        timelineName: 'bubble',
+        timelineRef: { name: 'bubble' },
       }),
     },
     {
@@ -84,7 +95,14 @@ export default (store) => {
       meta: { dontScroll: true },
       beforeEnter: validateAuthenticatedRoute,
     },
-    { name: 'quotes', path: '/notice/:id/quotes', component: QuotesTimeline },
+    {
+      name: 'quotes',
+      path: '/notice/:id/quotes',
+      component: Timeline,
+      props: (route) => ({
+        timelineRef: { name: 'quotes', argument: route.params.id },
+      }),
+    },
     {
       name: 'remote-user-profile-acct',
       path: '/remote-users/:_(@)?:username([^/@]+)@:hostname([^/@]+)',
@@ -120,7 +138,7 @@ export default (store) => {
       component: Timeline,
       beforeEnter: validateAuthenticatedRoute,
       props: () => ({
-        timelineName: 'dms',
+        timelineRef: { name: 'dms' },
       }),
     },
     {
@@ -218,8 +236,10 @@ export default (store) => {
     {
       name: 'lists-timeline',
       path: '/lists/:id',
-      component: () =>
-        import('src/components/lists_timeline/lists_timeline.vue'),
+      component: Timeline,
+      props: (route) => ({
+        timelineRef: { name: 'lists', argument: route.params.id },
+      }),
     },
     {
       name: 'lists-edit',
@@ -253,7 +273,10 @@ export default (store) => {
     {
       name: 'bookmark-folder',
       path: '/bookmarks/:id',
-      component: BookmarkTimeline,
+      component: Timeline,
+      props: (route) => ({
+        timelineRef: { name: 'bookmarks', argument: route.params.id },
+      }),
     },
     {
       name: 'bookmark-folder-edit',
