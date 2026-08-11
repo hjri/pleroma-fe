@@ -581,8 +581,11 @@ const PostStatusForm = {
     }),
   },
   watch: {
-    isDirty(newVal, oldVal) {
-      this.statusChanged()
+    newStatus: {
+      deep: true,
+      handler() {
+        this.statusChanged()
+      },
     },
     saveable(val) {
       // https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeunload_event#usage_notes
