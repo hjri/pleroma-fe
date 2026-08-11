@@ -307,7 +307,9 @@ export const applyStyleConfig = (input) => {
   adoptStyleSheets()
 }
 
-export const getResourcesIndex = async (url, parser = (x) => x) => {
+const noop = (x) => x
+
+export const getResourcesIndex = async (url, parser = noop) => {
   const cache = 'no-store'
   const customUrl = url.replace(/\.(\w+)$/, '.custom.$1')
   let builtin
@@ -324,6 +326,7 @@ export const getResourcesIndex = async (url, parser = (x) => x) => {
             promisedRequest({
               url: v,
               cache,
+              forceContentType: parser === noop ? null : 'text/plain',
             })
               .then(({ data: text }) => parser(text))
               .catch((e) => {
