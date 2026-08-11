@@ -115,6 +115,7 @@ export const fetchTimeline = ({
     publicAndExternal: MASTODON_PUBLIC_TIMELINE,
     dms: MASTODON_DIRECT_MESSAGES_TIMELINE_URL,
     user: MASTODON_USER_TIMELINE_URL,
+    userPinned: MASTODON_USER_TIMELINE_URL,
     media: MASTODON_USER_TIMELINE_URL,
     list: MASTODON_LIST_TIMELINE_URL,
     favorites: MASTODON_USER_FAVORITES_TIMELINE_URL,
@@ -130,6 +131,7 @@ export const fetchTimeline = ({
 
   const twoArgs = new Set([
     'user',
+    'userPinned',
     'media',
     'list',
     'publicFavorites',
@@ -147,6 +149,7 @@ export const fetchTimeline = ({
   const id = (() => {
     switch (timeline) {
       case 'user':
+      case 'userPinned':
       case 'media':
         return userId
       case 'list':
@@ -162,6 +165,9 @@ export const fetchTimeline = ({
 
   if (timeline === 'media') {
     params.onlyMedia = true
+  }
+  if (timeline === 'userPinned') {
+    params.pinned = true
   }
   if (timeline === 'public') {
     params.local = true

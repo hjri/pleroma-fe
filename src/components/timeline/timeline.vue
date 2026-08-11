@@ -72,17 +72,6 @@
         role="feed"
       >
         <Conversation
-          v-for="statusId in filteredPinnedStatusIds"
-          :key="statusId + '-pinned'"
-          role="listitem"
-          class="status-fadein"
-          :status-id="statusId"
-          :pinned-status-ids-object="pinnedStatusIdsObject"
-          :in-profile="inProfile"
-          :profile-user-id="userId"
-          collapsable
-        />
-        <Conversation
           v-for="status in filteredVisibleStatuses"
           :key="status.id"
           role="listitem"

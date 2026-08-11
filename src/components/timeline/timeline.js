@@ -28,12 +28,11 @@ library.add(faCircleNotch, faCog, faMinus, faArrowUp, faCirclePlus, faCheck)
 const Timeline = {
   props: {
     timelineRef: Object,
-    argument: String,
-    embedded: Boolean,
     count: Number,
-    pinnedStatusIds: Set,
-    inProfile: Boolean,
     footerSlipgate: Object, // reference to an element where we should put our footer
+    embedded: Boolean,
+    inProfile: Boolean,
+    skipPinned: Boolean,
   },
   data() {
     return {
@@ -58,17 +57,8 @@ const Timeline = {
     },
     filteredVisibleStatuses() {
       return [...this.timeline.visibleStatusesIds.keys()]
-        .filter(
-          (id) =>
-            this.timelineRef.name !== 'user' ||
-            (id >= this.timeline.minId && id <= this.timeline.maxId),
-        )
         .map((id) => this.timeline.statuses.get(id))
-    },
-    filteredPinnedStatusIds() {
-      return (this.pinnedStatusIds || []).filter(
-        (statusId) => this.timeline.statusesObject[statusId],
-      )
+        .filter(({ pinned }) => this.skipPinned ? !pinned : true)
     },
     newStatusCount() {
       return this.timeline.newStatusCount
@@ -109,17 +99,11 @@ const Timeline = {
         ),
       }
     },
-    // id map of statuses which need to be hidden in the main list due to pinning logic
-    pinnedStatusIdsObject() {
-      return keyBy(this.pinnedStatusIds)
-    },
     statusesToDisplay() {
       const amount = this.timeline.visibleStatusesIds.size
       const statusesPerSide = Math.ceil(Math.max(3, window.innerHeight / 80))
-      const nonPinnedIndex =
-        this.virtualScrollIndex - this.filteredPinnedStatusIds.length
-      const min = Math.max(0, nonPinnedIndex - statusesPerSide)
-      const max = Math.min(amount, nonPinnedIndex + statusesPerSide)
+      const min = Math.max(0, this.virtualScrollIndex - statusesPerSide)
+      const max = Math.min(amount, this.virtualScrollIndex + statusesPerSide)
       return new Set(
         [...this.timeline.visibleStatusesIds.keys()].slice(min, max),
       )
@@ -159,6 +143,11 @@ const Timeline = {
   },
   methods: {
     timelineChange(newTimeline, oldTimeline) {
+      // TODO this might not be necessary if we optimize mergeOrAdd
+      const sameName = newTimeline?.name === oldTimeline?.name
+      const sameArgument = newTimeline?.argument === oldTimeline?.argument
+      if (sameName && sameArgument) return
+
       if (oldTimeline && oldTimeline.name !== 'friends') {
         useTimelinesStore().clearTimeline(oldTimeline.name)
       }

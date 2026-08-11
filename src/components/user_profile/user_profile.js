@@ -9,7 +9,7 @@ import UserCard from 'src/components/user_card/user_card.vue'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useTimelinesStore } from 'src/stores/statuses.js'
+import { useTimelinesStore } from 'src/stores/timelines.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -38,7 +38,6 @@ const UserProfile = {
     useInterfaceStore().setForeignProfileBackground(this.user?.background_image)
   },
   unmounted() {
-    this.stopFetching()
     useInterfaceStore().setForeignProfileBackground(null)
     this.$store.dispatch('clearFollowers', this.userId)
     this.$store.dispatch('clearFriends', this.userId)
@@ -101,6 +100,7 @@ const UserProfile = {
     },
     load(userNameOrId) {
       const loadById = (userId) => {
+        console.log('LOAD', userId)
         this.userId = userId
       }
 
@@ -119,10 +119,11 @@ const UserProfile = {
       if (user) {
         loadById(user.id)
       } else {
-        ;(maybeId
-          ? this.$store.dispatch('fetchUser', maybeId)
-          : this.$store.dispatch('fetchUserByName', maybeName)
-        )
+        const promise = maybeId
+          ? useUsersStore().fetchUser(maybeId)
+          : useUsersStore().fetchUserByName(maybeName)
+
+        promise
           .then(({ id }) => loadById(id))
           .catch((reason) => {
             const errorMessage = get(reason, 'error.error')
@@ -138,6 +139,7 @@ const UserProfile = {
       }
     },
     switchUser(userNameOrId) {
+      console.log('USER SWITCH')
       this.load(userNameOrId)
     },
     onTabSwitch(tab) {

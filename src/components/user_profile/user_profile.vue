@@ -14,22 +14,32 @@
         />
       </div>
       <tab-switcher
+        v-if="userId"
         :active-tab="tab"
         :render-only-focused="true"
         :on-switch="onTabSwitch"
       >
         <div
+          key="statuses"
           class="statuses"
           :label="$t('user_card.statuses')"
           :count="user.statuses_count"
           :title="$t('user_profile.timeline_title')"
         >
+          <!--
           <Timeline
             key="statuses"
-            :embedded="true"
-            timeline-name="user"
-            :argument="userId"
-            :in-profile="true"
+            :timeline-ref="{ name: 'userPinned', argument: userId }"
+            embedded
+            in-profile
+            :footer-slipgate="footerRef"
+          />
+          -->
+          <Timeline
+            :timeline-ref="{ name: 'user', argument: userId }"
+            embedded
+            in-profile
+            skip-pinned
             :footer-slipgate="footerRef"
           />
         </div>
@@ -71,24 +81,23 @@
         <Timeline
           key="media"
           :label="$t('user_card.media')"
-          :disabled="!media.visibleStatuses.length"
-          :embedded="true"
+          :disabled="!media.visibleStatusesIds.size"
           :title="$t('user_card.media')"
-          timeline-name="media"
-          :argument="userId"
-          :in-profile="true"
+          :timeline-ref="{ name: 'media', argument: userId }"
+          embedded
+          in-profile
           :footer-slipgate="footerRef"
         />
         <Timeline
           v-if="favoritesTabVisible"
           key="favorites"
           :label="$t('user_card.favorites')"
-          :disabled="!favorites.visibleStatuses.length"
-          :embedded="true"
+          :disabled="!favorites.visibleStatusesIds.size"
           :title="$t('user_card.favorites')"
-          timeline-name="favorites"
+          :timeline-ref="{ name: 'favorites', argument: userId }"
           :argument="isUs ? undefined : userId"
-          :in-profile="true"
+          embedded
+          in-profile
           :footer-slipgate="footerRef"
         />
       </tab-switcher>

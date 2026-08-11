@@ -21,7 +21,7 @@ const emptyTl = (name, argument = null) => {
     fetcher: null,
   }
 
-  const property = USER_TIMELINES.has(name) ? 'userId' : ARGUMENT_MAP[name]
+  const property = ARGUMENT_MAP[name]
 
   if (property) {
     result[property] = argument
@@ -36,6 +36,9 @@ export const ARGUMENT_MAP = {
   bookmarks: 'bookmarkFolderId',
   quotes: 'statusId',
   search: 'query',
+  user: 'userId',
+  userPinned: 'userId',
+  media: 'userId',
 }
 
 export const defaultState = () => {
@@ -58,7 +61,6 @@ export const defaultState = () => {
   ].map((name) => [name, emptyTl(name)]))
 }
 
-const USER_TIMELINES = new Set(['user', 'userPinned', 'media', 'favorites'])
 //const CUSTOM_SORT = new Set(['bookmarks', 'favorites'])
 
 export const useTimelinesStore = defineStore('timelines', {
@@ -82,7 +84,7 @@ export const useTimelinesStore = defineStore('timelines', {
       // user. I.e. opening different user profiles makes request which could
       // return data late after user already viewing different user profile
       // Same can happen with tags etc.
-      const property = USER_TIMELINES.has(name) ? 'userId' : ARGUMENT_MAP[name]
+      const property = ARGUMENT_MAP[name]
 
       if (property && timeline[property] !== argument) {
         return
@@ -148,7 +150,6 @@ export const useTimelinesStore = defineStore('timelines', {
       timeline.fetcher = timelineFetcher(
         timeline,
         argument,
-        ARGUMENT_MAP[timeline.name],
         useOAuthStore().token,
       )
 

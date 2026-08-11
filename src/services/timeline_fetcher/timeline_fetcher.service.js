@@ -100,7 +100,7 @@ const fetchAndUpdate = ({
     })
 }
 
-const timelineFetcher = (timeline, argument, argumentKey, credentials) => {
+const timelineFetcher = (timeline, argument, credentials) => {
   const state = {
     interval: null
   }
@@ -113,7 +113,6 @@ const timelineFetcher = (timeline, argument, argumentKey, credentials) => {
   } = {}) => fetchAndUpdate({
     timeline,
     argument,
-    argumentKey,
     credentials,
   }, {
     maxId,
