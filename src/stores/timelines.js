@@ -13,9 +13,9 @@ const emptyTl = (name, argument = null) => {
     statuses: new Map(),
     visibleStatusesIds: new Set(),
     newStatusCount: 0,
-    maxId: 0,
-    minId: 0,
-    minVisibleId: 0,
+    maxId: '',
+    minId: '',
+    minVisibleId: '',
     loading: false,
     flushMarker: 0,
     fetcher: null,
@@ -167,13 +167,13 @@ export const useTimelinesStore = defineStore('timelines', {
       const minNew = pagination.maxId ?? min(...statuses) ?? ''
       const maxNew = pagination.minId ?? max(...statuses) ?? ''
 
-      const newer = maxNew > timeline.maxId || timeline.maxId === ''
-      const older = minNew < timeline.minId || timeline.minId === ''
+      const newer = maxNew > timeline.maxId
+      const older = minNew < timeline.minId
 
-      if (newer) {
+      if (newer || timeline.maxId === '') {
         timeline.maxId = maxNew
       }
-      if (older) {
+      if (older || timeline.minId === '') {
         timeline.minId = minNew
       }
     },

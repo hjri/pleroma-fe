@@ -182,7 +182,10 @@ const Timeline = {
     fetchOlderStatuses: throttle(
       function () {
         this.timeline.fetcher
-          .fetchAndUpdate()
+          .fetchAndUpdate({
+            older: true,
+            showImmediately: true,
+          })
           .then(({ statuses }) => {
             if (statuses?.length === 0) {
               this.bottomedOut = true

@@ -34,7 +34,8 @@ const fetchAndUpdate = ({
   const loggedIn = useUsersStore().loggedIn
 
   const args = { timeline: timeline.name, credentials }
-  args[ARGUMENT_MAP[timeline.name]] = argument
+  const mainArg = ARGUMENT_MAP[timeline.name]
+  if (mainArg) args[mainArg] = argument
 
   if (older) {
     // When minId = 0 we need to fetch without maxId param
@@ -69,8 +70,6 @@ const fetchAndUpdate = ({
       const processed = useStatusesStore()
         .addNewStatuses({ statuses, timestamp })
         .filter(Boolean)
-
-      console.log(timeline.name, argument, showImmediately, processed.length)
 
       useTimelinesStore().addStatusesToTimeline(
         timeline.name,
