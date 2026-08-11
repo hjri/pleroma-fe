@@ -49,8 +49,8 @@ const emptyTl = (userId = 0) => ({
   visibleStatuses: [],
   visibleStatusesObject: {},
   newStatusCount: 0,
-  maxId: 0,
-  minId: 0,
+  maxId: '',
+  minId: '',
   minVisibleId: 0,
   loading: false,
   followers: [],
@@ -64,7 +64,7 @@ export const defaultState = () => ({
   scrobblesNextFetch: {},
   allStatusesObject: {},
   conversationsObject: {},
-  maxId: 0,
+  maxId: '',
   favorites: new Set(),
   timelines: {
     mentions: emptyTl(),
@@ -134,7 +134,7 @@ const sortById = (a, b) => {
 const sortTimeline = (timeline) => {
   timeline.visibleStatuses = timeline.visibleStatuses.sort(sortById)
   timeline.statuses = timeline.statuses.sort(sortById)
-  timeline.minVisibleId = (last(timeline.visibleStatuses) || {}).id
+  timeline.minVisibleId = last(timeline.visibleStatuses)?.id
   return timeline
 }
 
@@ -222,11 +222,11 @@ const addNewStatuses = (
 
   const newer =
     timeline &&
-    (maxNew > timelineObject.maxId || timelineObject.maxId === 0) &&
+    (maxNew > timelineObject.maxId || timelineObject.maxId === '') &&
     statuses.length > 0
   const older =
     timeline &&
-    (minNew < timelineObject.minId || timelineObject.minId === 0) &&
+    (minNew < timelineObject.minId || timelineObject.minId === '') &&
     statuses.length > 0
 
   if (!noIdUpdate && newer) {
@@ -525,7 +525,7 @@ export const mutations = {
   },
   addRepeats(state, { id, rebloggedByUsers, currentUser }) {
     const newStatus = state.allStatusesObject[id]
-    newStatus.rebloggedBy = rebloggedByUsers.filter((_) => _)
+    newStatus.rebloggedBy = rebloggedByUsers.filter(Boolean)
     // repeats stats can be incorrect based on polling condition, let's update them using the most recent data
     newStatus.repeat_num = newStatus.rebloggedBy.length
     newStatus.repeated = !!newStatus.rebloggedBy.find(
@@ -534,7 +534,7 @@ export const mutations = {
   },
   addFavs(state, { id, favoritedByUsers, currentUser }) {
     const newStatus = state.allStatusesObject[id]
-    newStatus.favoritedBy = favoritedByUsers.filter((_) => _)
+    newStatus.favoritedBy = favoritedByUsers.filter(Boolean)
     // favorites stats can be incorrect based on polling condition, let's update them using the most recent data
     newStatus.fave_num = newStatus.favoritedBy.length
     newStatus.favorited = !!newStatus.favoritedBy.find(
@@ -879,7 +879,7 @@ const statuses = {
         store.commit('addNewUsers', data.accounts)
         store.commit(
           'addNewUsers',
-          data.statuses.map((s) => s.user).filter((u) => u),
+          data.statuses.map((s) => s.user).filter(Boolean),
         )
         store.dispatch('addNewStatuses', {
           statuses: data.statuses,

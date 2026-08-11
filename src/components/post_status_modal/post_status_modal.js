@@ -40,9 +40,7 @@ const PostStatusModal = {
     },
     isFormVisible(val) {
       if (val) {
-        this.$nextTick(
-          () => this.$el && this.$el.querySelector('textarea').focus(),
-        )
+        this.$nextTick(() => this.$el?.querySelector('textarea').focus())
       }
     },
   },

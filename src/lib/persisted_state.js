@@ -74,7 +74,7 @@ export default function createPersistedState({
           if (saveImmedeatelyActions.includes(mutation.type)) {
             setState(key, reducer(cloneDeep(state), paths), storage).then(
               (success) => {
-                if (typeof success !== 'undefined') {
+                if (success !== undefined) {
                   if (
                     mutation.type === 'setOption' ||
                     mutation.type === 'setCurrentUser'
@@ -185,7 +185,7 @@ export const piniaPersistPlugin =
       }
 
       const fallbackValue = await storage.getItem(vuexKey)
-      if (fallbackValue && fallbackValue[id]) {
+      if (fallbackValue?.[id]) {
         console.info(`Migrating ${id} store data from vuex to pinia`)
         const res = fallbackValue[id]
         await storage.setItem(key, res)
@@ -198,7 +198,7 @@ export const piniaPersistPlugin =
     const setState = (state) => {
       if (!loadedGuard.loaded) {
         console.info('waiting for old state to be loaded...')
-        return Promise.reject()
+        throw new Error('Waiting')
       } else {
         return storage.setItem(key, state)
       }

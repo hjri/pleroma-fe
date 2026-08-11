@@ -43,7 +43,7 @@ const _verifyHighlights = (state) => {
 
   // Simple
   Object.entries(defaultState.highlight).forEach(([k, v]) => {
-    if (typeof v === 'undefined') return
+    if (v === undefined) return
     if (typeof v === 'object') return
     console.warn(`User highlight ${k} is invalid type ${typeof v}, unsetting`)
     delete state.highlight[k]

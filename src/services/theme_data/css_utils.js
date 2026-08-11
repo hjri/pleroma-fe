@@ -165,7 +165,7 @@ export const getCssRules = (rules, debug) =>
         header,
         directives,
         rule.component === 'Text' &&
-        rule.state.indexOf('faint') < 0 &&
+        !rule.state.includes('faint') &&
         rule.directives.textNoCssColor !== 'yes'
           ? '  color: var(--text);'
           : '',

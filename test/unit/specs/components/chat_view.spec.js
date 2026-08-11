@@ -66,10 +66,10 @@ describe('ChatView methods', () => {
     it("Doesn't add duplicates", () => {
       component.vm.addMessages({ messages: [message1] })
       component.vm.addMessages({ messages: [message1] })
-      expect(component.vm.messages.length).to.eql(1)
+      expect(component.vm.messages).to.have.length(1)
 
       component.vm.addMessages({ messages: [message2] })
-      expect(component.vm.messages.length).to.eql(2)
+      expect(component.vm.messages).to.have.length(2)
     })
 
     it('Updates minId and lastMessage and newMessageCount', async () => {
@@ -127,11 +127,11 @@ describe('ChatView methods', () => {
         })
       }
       component.vm.cullOlder()
-      expect(component.vm.messages.length).to.eql(50)
+      expect(component.vm.messages).to.have.length(50)
       expect(component.vm.messages[0].id).to.eql('a0.051')
       expect(component.vm.minId).to.eql('a0.051')
       expect(component.vm.messages[49].id).to.eql('a0.100')
-      expect(Object.keys(component.vm.messagesIndex).length).to.eql(50)
+      expect(Object.keys(component.vm.messagesIndex)).to.have.length(50)
     })
   })
 })

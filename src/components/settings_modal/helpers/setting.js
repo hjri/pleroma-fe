@@ -180,7 +180,7 @@ export default {
           [
             'admin_dash',
             'temp_overrides',
-            ...this.canonPath.map((p) => p.replace(/\./g, '_DOT_')),
+            ...this.canonPath.map((p) => p.replaceAll('.', '_DOT_')),
             'label',
           ].join('.'),
         )
@@ -199,7 +199,7 @@ export default {
           [
             'admin_dash',
             'temp_overrides',
-            ...this.canonPath.map((p) => p.replace(/\./g, '_DOT_')),
+            ...this.canonPath.map((p) => p.replaceAll('.', '_DOT_')),
             'description',
           ].join('.'),
         )

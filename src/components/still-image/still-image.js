@@ -51,7 +51,7 @@ const StillImage = {
       }
       const image = this.$refs.src
       if (!image) return
-      this.imageLoadHandler && this.imageLoadHandler(image)
+      this.imageLoadHandler?.(image)
       const canvas = this.$refs.canvas
       if (!canvas) return
       const width = image.naturalWidth
@@ -61,7 +61,7 @@ const StillImage = {
       canvas.getContext('2d').drawImage(image, 0, 0, width, height)
     },
     onError() {
-      this.imageLoadError && this.imageLoadError()
+      this.imageLoadError?.()
     },
   },
   watch: {

@@ -50,7 +50,7 @@ const ImageCropper = {
     },
     readFile() {
       const fileInput = this.$refs.input
-      if (fileInput.files != null && fileInput.files[0] != null) {
+      if (fileInput?.files?.[0]) {
         this.file = fileInput.files[0]
         const reader = new window.FileReader()
         reader.onload = (e) => {

@@ -181,7 +181,7 @@ export default {
     }
 
     // Processor to use with html_tree_converter
-    const processItem = (item, index, array, what) => {
+    const processItem = (item, index, array) => {
       // Handle text nodes - just add emoji
       if (typeof item === 'string') {
         const emptyText = item.trim() === ''
@@ -251,18 +251,14 @@ export default {
           return ['', [mentionsLinePadding, renderImage(opener)], '']
         } else if (Tag === 'a' && this.handleLinks) {
           // replace mentions with MentionLink
-          if (fullAttrs.class && fullAttrs.class.includes('mention')) {
+          if (fullAttrs.class?.includes('mention')) {
             // Handling mentions here
             return renderMention(attrs, children)
           } else {
             currentMentions = null
           }
         } else if (Tag === 'span') {
-          if (
-            this.handleLinks &&
-            fullAttrs.class &&
-            fullAttrs.class.includes('h-card')
-          ) {
+          if (this.handleLinks && fullAttrs.class?.includes('h-card')) {
             return ['', children.map(processItem), '']
           }
         }
@@ -281,7 +277,7 @@ export default {
 
     // Processor for back direction (for finding "last" stuff, just easier this way)
     let encounteredTextReverse = false
-    const processItemReverse = (item, index, array, what) => {
+    const processItemReverse = (item, index, array) => {
       // Handle text nodes - just add emoji
       if (typeof item === 'string') {
         const emptyText = item.trim() === ''
@@ -300,7 +296,7 @@ export default {
             const attrs = getAttrs(opener, () => true)
             // should only be this
             if (
-              (fullAttrs.class && fullAttrs.class.includes('hashtag')) || // Pleroma style
+              fullAttrs.class?.includes('hashtag') || // Pleroma style
               fullAttrs.rel === 'tag' // Mastodon style
             ) {
               return renderHashtag(attrs, children, encounteredTextReverse)
@@ -385,13 +381,13 @@ export default {
                   x ? 'mfm-spinX' : null,
                   y ? 'mfm-spinY' : null,
                   'mfm-spin',
-                ].filter((a) => a)[0]
+                ].filter(Boolean)[0]
 
                 const direction = [
                   alternate ? 'alternate' : null,
                   left ? 'reverse' : null,
                   'normal',
-                ].filter((a) => a)[0]
+                ].filter(Boolean)[0]
 
                 newAttrs.style = [
                   `animation-name: ${anim}`,
@@ -479,7 +475,7 @@ export default {
       >
         {this.collapse
           ? pass2.map((x) => {
-              if (typeof x === 'string') return x.replace(/\n/g, ' ')
+              if (typeof x === 'string') return x.replaceAll('\n', ' ')
               if (!Array.isArray(x)) return x
               return x.map((y) => (y.type === 'br' ? ' ' : y))
             })
@@ -547,8 +543,8 @@ export const preProcessPerLine = (html, greentext) => {
         (string.includes('&gt;') || string.includes('&lt;'))
       ) {
         const cleanedString = string
-          .replace(/<[^>]+?>/gi, '') // remove all tags
-          .replace(/@\w+/gi, '') // remove mentions (even failed ones)
+          .replaceAll(/<[^>]+?>/gi, '') // remove all tags
+          .replaceAll(/@\w+/gi, '') // remove mentions (even failed ones)
           .trim()
         if (cleanedString.startsWith('&gt;')) {
           return `<span class='greentext'>${string}</span>`

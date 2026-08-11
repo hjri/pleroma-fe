@@ -11,7 +11,7 @@ import { contrastRatio, convert, invertLightness } from 'chromatism'
  * @param {Number} [b] - Blue component
  */
 export const rgb2hex = (r, g, b) => {
-  if (r === null || typeof r === 'undefined') {
+  if (r === null || r === undefined) {
     return undefined
   }
   // TODO: clean up this mess
@@ -130,7 +130,7 @@ export const arithmeticBlend = (origin, value, operator) => {
  * @returns {Object} sRGB of resulting color
  */
 export const alphaBlend = (fg, fga, bg) => {
-  if (fga === 1 || typeof fga === 'undefined') {
+  if (fga === 1 || fga === undefined) {
     return fg
   }
 
@@ -210,16 +210,16 @@ export const rgba2css = function (rgba) {
   }
 
   if (rgba !== null) {
-    if (rgba.r !== undefined && !isNaN(rgba.r)) {
+    if (rgba.r !== undefined && !Number.isNaN(rgba.r)) {
       base.r = rgba.r
     }
-    if (rgba.g !== undefined && !isNaN(rgba.g)) {
+    if (rgba.g !== undefined && !Number.isNaN(rgba.g)) {
       base.g = rgba.g
     }
-    if (rgba.b !== undefined && !isNaN(rgba.b)) {
+    if (rgba.b !== undefined && !Number.isNaN(rgba.b)) {
       base.b = rgba.b
     }
-    if (rgba.a !== undefined && !isNaN(rgba.a)) {
+    if (rgba.a !== undefined && !Number.isNaN(rgba.a)) {
       base.a = rgba.a
     }
   } else {

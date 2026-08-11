@@ -316,7 +316,7 @@ const PostStatusForm = {
     },
     // -Edit
     isEdit() {
-      return typeof this.statusId !== 'undefined' && this.statusId.trim() !== ''
+      return this.statusId !== undefined && this.statusId.trim() !== ''
     },
     // -Reply
     isReply() {
@@ -378,8 +378,8 @@ const PostStatusForm = {
       set(value) {
         if (value) {
           this.newStatus.quote = {}
-          this.newStatus.quote.thread = value
-          this.newStatus.quote.id = value ? this.repliedStatus.id : ''
+          this.newStatus.quote.thread = true
+          this.newStatus.quote.id = this.repliedStatus.id
         } else {
           this.newStatus.quote = null
         }
@@ -509,9 +509,7 @@ const PostStatusForm = {
 
     // Error handling
     pollContentError() {
-      return (
-        this.pollFormVisible && this.newStatus.poll && this.newStatus.poll.error
-      )
+      return this.pollFormVisible && this.newStatus.poll?.error
     },
 
     // Featureset detection
@@ -622,7 +620,7 @@ const PostStatusForm = {
       this.newStatus.quote = null
       this.newStatus.nsfw = this.defaultNewStatus.nsfw
       this.newStatus.mediaDescriptions = {}
-      this.$refs.mediaUpload && this.$refs.mediaUpload.clearFile()
+      this.$refs.mediaUpload?.clearFile()
       if (this.preserveFocus) {
         this.$nextTick(() => {
           this.$refs.textarea.focus()
@@ -812,7 +810,7 @@ const PostStatusForm = {
       }
     },
     fileDrop(e) {
-      if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+      if (e.dataTransfer?.types.includes('Files')) {
         e.preventDefault() // allow dropping text like before
         this.dropFiles = e.dataTransfer.files
         clearTimeout(this.dropStopTimeout)
@@ -829,7 +827,7 @@ const PostStatusForm = {
     },
     fileDrag(e) {
       e.dataTransfer.dropEffect = this.uploadFileLimitReached ? 'none' : 'copy'
-      if (e.dataTransfer && e.dataTransfer.types.includes('Files')) {
+      if (e.dataTransfer?.types.includes('Files')) {
         clearTimeout(this.dropStopTimeout)
         this.showDropIcon = 'show'
       }
@@ -962,6 +960,7 @@ const PostStatusForm = {
     // Quote
     toggleQuoteForm() {
       // This is for the "attach quote" button
+      if (this.newStatus.quote?.thread) return
       if (!this.hasQuote) {
         this.newStatus.quote = {}
         this.newStatus.quote.thread = false

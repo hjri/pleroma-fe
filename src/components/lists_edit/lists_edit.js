@@ -59,12 +59,12 @@ const ListsNew = {
     membersUsers() {
       return [...this.membersUserIds, ...this.addedUserIds]
         .map((userId) => this.findUser(userId))
-        .filter((user) => user)
+        .filter(Boolean)
     },
     searchUsers() {
       return this.searchUserIds
         .map((userId) => this.findUser(userId))
-        .filter((user) => user)
+        .filter(Boolean)
     },
     ...mapState({
       currentUser: (state) => state.users.currentUser,

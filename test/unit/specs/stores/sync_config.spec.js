@@ -125,7 +125,7 @@ describe('The SyncConfig store', () => {
           },
         })
 
-        expect(store.prefsStorage._journal.length).to.eql(500)
+        expect(store.prefsStorage._journal).to.have.length(500)
       })
 
       it('should reset local timestamp to remote if contents are the same', async () => {
@@ -173,7 +173,7 @@ describe('The SyncConfig store', () => {
         }
         store.setPreference({ path: 'simple.palette', value: '1' })
         expect(store.prefsStorage.simple.palette).to.eql('1')
-        expect(store.prefsStorage._journal.length).to.eql(1)
+        expect(store.prefsStorage._journal).to.have.length(1)
         expect(store.prefsStorage._journal[0]).to.eql({
           path: 'simple.palette',
           operation: 'set',
@@ -199,7 +199,7 @@ describe('The SyncConfig store', () => {
         store.updateCache({ username: 'test' })
         expect(store.prefsStorage.simple.palette).to.eql(2)
         expect(store.prefsStorage.collections.palette).to.eql([])
-        expect(store.prefsStorage._journal.length).to.eql(2)
+        expect(store.prefsStorage._journal).to.have.length(2)
         expect(store.prefsStorage._journal[0]).to.eql({
           path: 'simple.palette',
           operation: 'set',
@@ -229,7 +229,7 @@ describe('The SyncConfig store', () => {
         store.updateCache({ username: 'test' })
         expect(store.prefsStorage.simple.palette).to.eql(1)
         expect(store.prefsStorage.collections.palette).to.eql([2])
-        expect(store.prefsStorage._journal.length).to.eql(2)
+        expect(store.prefsStorage._journal).to.have.length(2)
       })
 
       // TODO We need a proper test for object-based stores
@@ -245,7 +245,7 @@ describe('The SyncConfig store', () => {
         expect(store.prefsStorage.simple.fontInput).to.not.have.property(
           'family',
         )
-        expect(store.prefsStorage._journal.length).to.eql(1)
+        expect(store.prefsStorage._journal).to.have.length(1)
       })
 
       it('should not allow unsetting depth <= 2', () => {

@@ -104,7 +104,7 @@ const _verifyPrefs = (state) => {
 
   // Simple
   Object.entries(defaultState.prefsStorage.simple).forEach(([k, v]) => {
-    if (typeof v === 'undefined') return
+    if (v === undefined) return
     if (typeof v === 'number' || typeof v === 'boolean') return
     if (typeof v === 'object') return
     console.warn(
@@ -195,10 +195,13 @@ export const _getRecentData = (cache, live, isTest) => {
 }
 
 export const _getAllFlags = (recent, stale) => {
+  const recentStorage = toRaw(recent?.flagStorage)
+  const staleStorage = toRaw(stale?.flagStorage)
+
   return Array.from(
     new Set([
-      ...Object.keys(toRaw((recent || {}).flagStorage || {})),
-      ...Object.keys(toRaw((stale || {}).flagStorage || {})),
+      ...Object.keys(recentStorage || {}),
+      ...Object.keys(staleStorage || {}),
     ]),
   )
 }
@@ -833,7 +836,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
           : [path, finalValue]
       })
       newState.prefsStorage.simple = Object.fromEntries(
-        newEntries.filter((_) => _),
+        newEntries.filter(Boolean),
       )
       return newState
     },

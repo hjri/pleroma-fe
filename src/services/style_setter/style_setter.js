@@ -29,7 +29,7 @@ export const createStyleSheet = (id, priority = 1000) => {
     addRule(rule) {
       let newRule = rule
       if (!CSS.supports?.('backdrop-filter', 'blur()')) {
-        newRule = newRule.replace(/backdrop-filter:[^;]+;/g, '') // Remove backdrop-filter
+        newRule = newRule.replaceAll(/backdrop-filter:[^;]+;/g, '') // Remove backdrop-filter
       }
 
       if (newRule.startsWith('::-webkit')) {
@@ -44,7 +44,7 @@ export const createStyleSheet = (id, priority = 1000) => {
       }
 
       this.rules.push(
-        newRule.replace(/var\(--shadowFilter\)[^;]*;/g, ''), // Remove shadowFilter references
+        newRule.replaceAll(/var\(--shadowFilter\)[^;]*;/g, ''), // Remove shadowFilter references
       )
     },
   }
@@ -91,6 +91,11 @@ export const adoptStyleSheets = throttle(() => {
 
 const EAGER_STYLE_ID = 'pleroma-eager-styles'
 const LAZY_STYLE_ID = 'pleroma-lazy-styles'
+
+export const hasInvalidCachedThemeRules = (data) =>
+  data
+    .flat()
+    .some((rule) => /--(?:mono)?font:\s*\[object Object\](?:;|$)/i.test(rule))
 
 const generateTheme = (inputRuleset, callbacks, debug) => {
   const {
@@ -151,7 +156,8 @@ export const tryLoadCache = async () => {
     if (
       cache.engineChecksum === getEngineChecksum() &&
       cache.checksum !== undefined &&
-      cache.checksum === useMergedConfigStore().mergedConfig.themeChecksum
+      cache.checksum === useMergedConfigStore().mergedConfig.themeChecksum &&
+      !hasInvalidCachedThemeRules(cache.data)
     ) {
       const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
       const lazyStyles = createStyleSheet(LAZY_STYLE_ID, 20)
@@ -318,7 +324,7 @@ export const getResourcesIndex = async (url, parser = noop) => {
   const resourceTransform = (resources) => {
     return Object.entries(resources).map(([k, v]) => {
       if (typeof v === 'object') {
-        return [k, () => Promise.resolve(v)]
+        return [k, () => v]
       } else if (typeof v === 'string') {
         return [
           k,
@@ -362,11 +368,9 @@ export const getResourcesIndex = async (url, parser = noop) => {
 
   const total = [...custom, ...builtin]
   if (total.length === 0) {
-    return Promise.reject(
-      new Error(
-        `Resource at ${url} and ${customUrl} completely unavailable. Panicking`,
-      ),
+    throw new Error(
+      `Resource at ${url} and ${customUrl} completely unavailable. Panicking`,
     )
   }
-  return Promise.resolve(Object.fromEntries(total))
+  return Object.fromEntries(total)
 }

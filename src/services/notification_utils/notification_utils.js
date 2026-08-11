@@ -25,7 +25,7 @@ const visibleTypes = (notificationVisibility) => {
     notificationVisibility.emojiReactions && 'pleroma:emoji_reaction',
     notificationVisibility.reports && 'pleroma:report',
     notificationVisibility.polls && 'poll',
-  ].filter((_) => _)
+  ].filter(Boolean)
 }
 
 const statusNotifications = new Set([
@@ -95,9 +95,7 @@ export const filteredNotificationsFromStore = (
   types,
 ) => {
   // map is just to clone the array since sort mutates it and it causes some issues
-  const sortedNotifications = notificationsFromStore(store)
-    .map((_) => _)
-    .sort(sortById)
+  const sortedNotifications = notificationsFromStore(store).sort(sortById)
   // TODO implement sorting elsewhere and make it optional
   return sortedNotifications.filter((notification) =>
     (types || visibleTypes(notificationVisibility)).includes(notification.type),
@@ -175,13 +173,7 @@ export const prepareNotificationObject = (notification, i18n) => {
   }
 
   // Shows first attached non-nsfw image, if any. Should add configuration for this somehow...
-  if (
-    status &&
-    status.attachments &&
-    status.attachments.length > 0 &&
-    !status.nsfw &&
-    status.attachments[0].mimetype.startsWith('image/')
-  ) {
+  if (!status.nsfw && status?.attachments?.[0]?.mimetype.startsWith('image/')) {
     notifObj.image = status.attachments[0].url
   }
 

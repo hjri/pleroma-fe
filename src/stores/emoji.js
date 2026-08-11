@@ -120,23 +120,19 @@ export const useEmojiStore = defineStore('emoji', {
       }, {})
     },
     standardEmojiList(state) {
-      return (
-        SORTED_EMOJI_GROUP_IDS.map((groupId) =>
-          (this.emoji[groupId] || []).map((k) =>
-            injectAnnotations(k, this.unicodeEmojiAnnotations),
-          ),
-        ).reduce((a, b) => a.concat(b), []) ?? []
-      )
+      return SORTED_EMOJI_GROUP_IDS.map((groupId) =>
+        (this.emoji[groupId] || []).map((k) =>
+          injectAnnotations(k, this.unicodeEmojiAnnotations),
+        ),
+      ).flat()
     },
     standardEmojiGroupList(state) {
-      return (
-        SORTED_EMOJI_GROUP_IDS.map((groupId) => ({
-          id: groupId,
-          emojis: (this.emoji[groupId] || []).map((k) =>
-            injectAnnotations(k, this.unicodeEmojiAnnotations),
-          ),
-        })) ?? []
-      )
+      return SORTED_EMOJI_GROUP_IDS.map((groupId) => ({
+        id: groupId,
+        emojis: (this.emoji[groupId] || []).map((k) =>
+          injectAnnotations(k, this.unicodeEmojiAnnotations),
+        ),
+      }))
     },
   },
   actions: {
@@ -146,7 +142,7 @@ export const useEmojiStore = defineStore('emoji', {
     async getStaticEmoji() {
       try {
         // See build/emojis_plugin for more details
-        const values = (await import('/src/assets/emoji.json')).default
+        const values = (await import('src/assets/emoji.json')).default
 
         const emoji = Object.keys(values).reduce((res, groupId) => {
           res[groupId] = values[groupId].map((e) => ({
@@ -231,7 +227,7 @@ export const useEmojiStore = defineStore('emoji', {
         .then((allPacks) => {
           // Sort by key
           return Object.keys(allPacks)
-            .sort()
+            .sort((a, b) => a.localeCompare(b))
             .reduce((acc, key) => {
               if (key.length === 0) return acc
               acc[key] = allPacks[key]

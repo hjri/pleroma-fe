@@ -263,7 +263,10 @@ const Timeline = {
 
       // Start from approximating the index of some visible status by using the
       // the center of the screen on the timeline.
-      let approxIndex = Math.floor(statuses.length * (centerOfScreen / height))
+      let approxIndex = Math.min(
+        Math.floor(statuses.length * (centerOfScreen / height)),
+        statuses.length - 1,
+      )
       let err = statuses[approxIndex].getBoundingClientRect().y
 
       // if we have a previous scroll index that can be used, test if it's

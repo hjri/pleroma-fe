@@ -236,7 +236,7 @@ const AppearanceTab = {
     },
     stylePalettes() {
       const ruleset = useInterfaceStore().styleDataUsed || []
-      if (!ruleset?.length === 0) return
+      if (ruleset.length === 0) return
       const meta = ruleset.find((x) => x.component === '@meta')
       const result = ruleset
         .filter((x) => x.component.startsWith('@palette'))
@@ -257,7 +257,7 @@ const AppearanceTab = {
 
           const result = {
             name: `${meta.directives.name || this.$t('settings.style.themes3.palette.imported')}: ${variant}`,
-            key: `style.${variant.toLowerCase().replace(/ /g, '_')}`,
+            key: `style.${variant.toLowerCase().replaceAll(' ', '_')}`,
             bg,
             fg,
             text,
@@ -277,7 +277,7 @@ const AppearanceTab = {
       return !window.IntersectionObserver
     },
     instanceWallpaper() {
-      useInstanceStore().instanceIdentity.background
+      return useInstanceStore().instanceIdentity.background
     },
     instanceWallpaperUsed() {
       return (

@@ -47,7 +47,7 @@ const highlightStyle = (prefs) => {
 
 const highlightClass = (user) => {
   return (
-    'USER____' + user.screen_name?.replace(/\./g, '_').replace(/@/g, '_AT_')
+    'USER____' + user.screen_name?.replaceAll('.', '_').replaceAll('@', '_AT_')
   )
 }
 

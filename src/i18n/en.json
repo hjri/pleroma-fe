@@ -242,6 +242,8 @@
     "single_choice": "Single choice",
     "multiple_choices": "Multiple choices",
     "expiry": "Poll age",
+    "expiry_unit": "Expiry unit",
+    "expiry_amount": "Expiry amount",
     "expires_at": "Poll ends {0}",
     "expires_in": "Poll ends in {0}",
     "expired": "Poll ended {0} ago",

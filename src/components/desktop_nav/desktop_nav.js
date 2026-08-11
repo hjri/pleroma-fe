@@ -45,8 +45,7 @@ export default {
   data: () => ({
     searchBarHidden: true,
     supportsMask:
-      window.CSS &&
-      window.CSS.supports &&
+      window.CSS?.supports &&
       (window.CSS.supports('mask-size', 'contain') ||
         window.CSS.supports('-webkit-mask-size', 'contain') ||
         window.CSS.supports('-moz-mask-size', 'contain') ||

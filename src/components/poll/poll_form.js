@@ -25,6 +25,10 @@ export default {
   },
   emits: ['update:modelValue'],
   computed: {
+    // Model value
+    options() {
+      return pollFallback(this.modelValue, 'options')
+    },
     pollType: {
       get() {
         return pollFallback(this.modelValue, 'pollType')
@@ -34,14 +38,6 @@ export default {
           ...this.modelValue,
           pollType: newVal,
         })
-      },
-    },
-    options: {
-      get() {
-        return pollFallback(this.modelValue, 'options')
-      },
-      set(newVal) {
-        this.$emit('update:modelValue', { ...this.modelValue, options: newVal })
       },
     },
     expiryAmount: {
@@ -66,6 +62,8 @@ export default {
         })
       },
     },
+
+    // Configuration
     pollLimits() {
       return useInstanceStore().limits.pollLimits
     },
@@ -116,19 +114,34 @@ export default {
     },
     addOption() {
       if (this.options.length < this.maxOptions) {
-        this.options = [...this.options, '']
+        this.$emit('update:modelValue', {
+          ...this.modelValue,
+          options: [...this.options, ''],
+        })
+
         return true
       }
       return false
     },
     deleteOption(index) {
       if (this.options.length > 2) {
-        this.options.splice(index, 1)
-        this.options = this.options
+        const options = [...this.options]
+        options.splice(index, 1)
+
+        this.$emit('update:modelValue', {
+          ...this.modelValue,
+          options,
+        })
       }
     },
     updateOption(index, value) {
-      this.options = this.options
+      const options = [...this.options]
+      options[index] = value
+
+      this.$emit('update:modelValue', {
+        ...this.modelValue,
+        options,
+      })
     },
     convertExpiryToUnit(unit, amount) {
       // Note: we want seconds and not milliseconds

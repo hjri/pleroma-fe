@@ -75,13 +75,11 @@ const MentionLink = {
   },
   computed: {
     user() {
-      return (
-        this.url && this.$store && this.$store.getters.findUserByUrl(this.url)
-      )
+      return this.url && this.$store?.getters.findUserByUrl(this.url)
     },
     isYou() {
       // FIXME why user !== currentUser???
-      return this.user && this.user.id === this.currentUser.id
+      return this.user?.id === this.currentUser.id
     },
     userName() {
       return this.user && this.userNameFullUi.split('@')[0]
@@ -94,10 +92,10 @@ const MentionLink = {
       )
     },
     userNameFull() {
-      return this.user && this.user.screen_name
+      return this.user?.screen_name
     },
     userNameFullUi() {
-      return this.user && this.user.screen_name_ui
+      return this.user?.screen_name_ui
     },
     highlightData() {
       return this.highlight[this.user?.screen_name]

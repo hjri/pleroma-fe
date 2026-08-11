@@ -107,7 +107,7 @@ describe('Statuses module', () => {
         showImmediately: true,
         timeline: 'public',
       })
-      expect(state.timelines.public.maxId).to.eql('1')
+      expect(state.timelines.public.maxId).to.equal('1')
 
       mutations.addNewStatuses(state, {
         statuses: [secondStatus],
@@ -120,7 +120,7 @@ describe('Statuses module', () => {
         secondStatus,
         status,
       ])
-      expect(state.timelines.public.maxId).to.eql('1')
+      expect(state.timelines.public.maxId).to.equal('1')
     })
 
     it('keeps a descending by id order in timeline.visibleStatuses and timeline.statuses', () => {
@@ -278,7 +278,7 @@ describe('Statuses module', () => {
         timeline: 'public',
       })
 
-      expect(state.timelines.public.visibleStatuses.length).to.eql(1)
+      expect(state.timelines.public.visibleStatuses).to.have.length(1)
       expect(state.timelines.public.visibleStatuses[0].fave_num).to.eql(1)
       expect(state.timelines.public.maxId).to.eq(favorite.id)
 
@@ -289,7 +289,7 @@ describe('Statuses module', () => {
         timeline: 'public',
       })
 
-      expect(state.timelines.public.visibleStatuses.length).to.eql(1)
+      expect(state.timelines.public.visibleStatuses).to.have.length(1)
       expect(state.timelines.public.visibleStatuses[0].fave_num).to.eql(1)
       expect(state.timelines.public.maxId).to.eq(favorite.id)
 
@@ -314,7 +314,7 @@ describe('Statuses module', () => {
         user,
       })
 
-      expect(state.timelines.public.visibleStatuses.length).to.eql(1)
+      expect(state.timelines.public.visibleStatuses).to.have.length(1)
       expect(state.timelines.public.visibleStatuses[0].fave_num).to.eql(1)
       expect(state.timelines.public.visibleStatuses[0].favorited).to.eql(true)
     })
@@ -340,7 +340,7 @@ describe('Statuses module', () => {
       expect(state.allStatusesObject['1'].emoji_reactions[0].me).to.eql(true)
       expect(
         state.allStatusesObject['1'].emoji_reactions[0].accounts[0].id,
-      ).to.eql('me')
+      ).to.equal('me')
     })
 
     it('adds a new reaction', () => {
@@ -362,7 +362,7 @@ describe('Statuses module', () => {
       expect(state.allStatusesObject['1'].emoji_reactions[0].me).to.eql(true)
       expect(
         state.allStatusesObject['1'].emoji_reactions[0].accounts[0].id,
-      ).to.eql('me')
+      ).to.equal('me')
     })
 
     it('decreases count in existing reaction', () => {
@@ -406,7 +406,7 @@ describe('Statuses module', () => {
         emoji: '😂',
         currentUser: { id: 'me' },
       })
-      expect(state.allStatusesObject['1'].emoji_reactions.length).to.eql(0)
+      expect(state.allStatusesObject['1'].emoji_reactions).to.have.length(0)
     })
   })
 
@@ -428,9 +428,9 @@ describe('Statuses module', () => {
       state.timelines.public.minId = '5'
       mutations.showNewStatuses(state, { timeline: 'public' })
 
-      expect(state.timelines.public.visibleStatuses.length).to.eql(2)
-      expect(state.timelines.public.minVisibleId).to.eql('10')
-      expect(state.timelines.public.minId).to.eql('10')
+      expect(state.timelines.public.visibleStatuses).to.have.length(2)
+      expect(state.timelines.public.minVisibleId).to.equal('10')
+      expect(state.timelines.public.minId).to.equal('10')
     })
   })
 

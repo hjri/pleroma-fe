@@ -1,9 +1,9 @@
 <template>
   <div
     v-if="isMessage"
+    :id="`chatmessage-${message.id}`"
     class="chat-message-wrapper"
     :class="[classnames, { 'hovered-message-chain': hoveredMessageChain }]"
-    :id="`chatmessage-${message.id}`"
     @mouseover="onHover(true)"
     @mouseleave="onHover(false)"
   >
@@ -40,7 +40,10 @@
             </template>
           </i18n-t>
         </StatusPopover>
-        <span v-else class="reply-label">
+        <span
+          v-else
+          class="reply-label"
+        >
           {{ $t('status.broken_reply') }}
         </span>
       </template>
@@ -83,7 +86,10 @@
             :user="author"
           />
         </UserPopover>
-        <div v-else class="avatar-spacer" />
+        <div
+          v-else
+          class="avatar-spacer"
+        />
       </div>
       <div class="chat-message-inner">
         <div class="message-bubble-wrapper">
@@ -98,7 +104,6 @@
               @mouseenter="hovered = true"
               @mouseleave="hovered = false"
             >
-
               <StatusActionButtons
                 v-if="isStatus"
                 class="chat-message-toolbar"
@@ -112,9 +117,9 @@
                 @toggle-replying="$emit('replyRequested', message)"
               />
               <div
+                v-else
                 class="chat-message-toolbar"
                 :class="{ '-visible': hovered || menuOpened }"
-                v-else
               >
                 <Popover
                   trigger="click"
@@ -221,7 +226,10 @@
             v-if="isStatus && repliedTo"
             class="reply-indicator"
           >
-            <FAIcon class="icon" icon="reply" />
+            <FAIcon
+              class="icon"
+              icon="reply"
+            />
           </div>
           <div class="end-spacer" />
         </div>
@@ -232,7 +240,10 @@
     v-else
     class="chat-message-date-separator"
   >
-    <ChatMessageDate :date="chatItem.date" :show-time="chatItem.isTime" />
+    <ChatMessageDate
+      :date="chatItem.date"
+      :show-time="chatItem.isTime"
+    />
   </div>
 </template>
 

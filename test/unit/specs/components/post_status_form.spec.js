@@ -80,8 +80,8 @@ describe('PostStatusForm', () => {
     expect(wrapper.vm.refId).to.equal('status-1')
     expect(wrapper.vm.quotable).to.equal(true)
     expect(wrapper.vm.inReplyToStatusId).to.equal('status-1')
-    expect(wrapper.vm.newStatus.quote).to.eql(null)
-    expect(wrapper.vm.newStatus.poll).to.eql(null)
+    expect(wrapper.vm.newStatus.quote).to.be.null
+    expect(wrapper.vm.newStatus.poll).to.be.null
     expect(wrapper.vm.newStatus.spoilerText).to.eql('')
     expect(wrapper.vm.newStatus.mentions).to.eql('@replied')
     expect(wrapper.vm.newStatus.status).to.eql('@replied ')
@@ -101,8 +101,8 @@ describe('PostStatusForm', () => {
     expect(wrapper.vm.statusType).to.equal('reply')
     expect(wrapper.vm.isReply).to.equal(true)
     expect(wrapper.vm.quotable).to.equal(false)
-    expect(wrapper.vm.newStatus.quote).to.eql(null)
-    expect(wrapper.vm.newStatus.poll).to.eql(null)
+    expect(wrapper.vm.newStatus.quote).to.be.null
+    expect(wrapper.vm.newStatus.poll).to.be.null
     expect(wrapper.vm.newStatus.spoilerText).to.eql('re: subject')
     expect(wrapper.vm.newStatus.mentions).to.eql('@replied')
     expect(wrapper.vm.newStatus.status).to.eql('@replied ')
@@ -114,9 +114,9 @@ describe('PostStatusForm', () => {
     expect(wrapper.vm.postingOptions.sensitive).to.eql(false)
     expect(wrapper.vm.postingOptions.media).to.eql([])
     expect(wrapper.vm.postingOptions.inReplyToStatusId).to.eql('status-2')
-    expect(wrapper.vm.postingOptions.quoteId).to.eql(null)
+    expect(wrapper.vm.postingOptions.quoteId).to.be.null
     expect(wrapper.vm.postingOptions.contentType).to.eql('text/plain')
-    expect(wrapper.vm.postingOptions.poll).to.eql(null)
+    expect(wrapper.vm.postingOptions.poll).to.be.null
   })
 
   it('Forces direct mode when replying to a DM, mastodon style subject handling', () => {
@@ -139,8 +139,8 @@ describe('PostStatusForm', () => {
     expect(wrapper.vm.statusType).to.equal('reply')
     expect(wrapper.vm.isReply).to.equal(true)
     expect(wrapper.vm.quotable).to.equal(false)
-    expect(wrapper.vm.newStatus.quote).to.eql(null)
-    expect(wrapper.vm.newStatus.poll).to.eql(null)
+    expect(wrapper.vm.newStatus.quote).to.be.null
+    expect(wrapper.vm.newStatus.poll).to.be.null
     expect(wrapper.vm.newStatus.spoilerText).to.eql('subject')
     expect(wrapper.vm.newStatus.mentions).to.eql('@replied')
     expect(wrapper.vm.newStatus.status).to.eql('@replied ')
@@ -207,7 +207,7 @@ describe('PostStatusForm', () => {
     wrapper.vm.quoteThreadToggled = true
     wrapper.vm.quoteThreadToggled = false
 
-    expect(wrapper.vm.newStatus.quote).to.eql(null)
+    expect(wrapper.vm.newStatus.quote).to.be.null
   })
 
   it('Initializes and reset quote when toggling quote attachment', () => {
@@ -228,7 +228,7 @@ describe('PostStatusForm', () => {
       url: '',
     })
     wrapper.vm.toggleQuoteForm()
-    expect(wrapper.vm.newStatus.quote).to.eql(null)
+    expect(wrapper.vm.newStatus.quote).to.be.null
   })
 
   it('Status editing', () => {

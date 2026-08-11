@@ -50,7 +50,7 @@ describe('RichContent', () => {
       },
     })
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(html))
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(compwrap(html))
   })
 
   it('unescapes everything as needed', () => {
@@ -67,7 +67,7 @@ describe('RichContent', () => {
       },
     })
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(compwrap(expected))
   })
 
   it('replaces mention with mentionsline', () => {
@@ -83,7 +83,7 @@ describe('RichContent', () => {
       },
     })
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(
       compwrap(p(mentionsLine(1), ' how are you doing today?')),
     )
   })
@@ -116,7 +116,7 @@ describe('RichContent', () => {
       },
     })
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(compwrap(expected))
   })
 
   it('Does not touch links if link handling is disabled', () => {
@@ -211,7 +211,7 @@ describe('RichContent', () => {
       },
     })
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(compwrap(expected))
   })
 
   it("Doesn't add nonexistent emoji to post", () => {
@@ -228,7 +228,7 @@ describe('RichContent', () => {
       },
     })
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(html))
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(compwrap(html))
   })
 
   it('Greentext + last mentions', () => {
@@ -279,7 +279,7 @@ describe('RichContent', () => {
       },
     })
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(compwrap(expected))
   })
 
   it('buggy example/hashtags', () => {
@@ -315,7 +315,7 @@ describe('RichContent', () => {
       },
     })
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(compwrap(expected))
   })
 
   it('rich contents of a mention are handled properly', () => {
@@ -365,8 +365,8 @@ describe('RichContent', () => {
     expect(
       wrapper
         .html()
-        .replace(/\n/g, '')
-        .replace(/<!--.*?-->/g, ''),
+        .replaceAll('\n', '')
+        .replaceAll(/<!--.*?-->/g, ''),
     ).to.eql(compwrap(expected))
   })
 
@@ -438,8 +438,8 @@ describe('RichContent', () => {
     expect(
       wrapper
         .html()
-        .replace(/\n/g, '')
-        .replace(/<!--.*?-->/g, ''),
+        .replaceAll('\n', '')
+        .replaceAll(/<!--.*?-->/g, ''),
     ).to.eql(compwrap(expected))
   })
 
@@ -484,7 +484,7 @@ describe('RichContent', () => {
       },
     })
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(compwrap(expected))
   })
 
   it.skip('[INFORMATIVE] Performance testing, 10 000 simple posts', () => {

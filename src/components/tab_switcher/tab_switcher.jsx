@@ -111,7 +111,11 @@ export default {
               type="button"
               role="tab"
             >
-              <img src={props.image} title={props['image-tooltip']} />
+              <img
+                src={props.image}
+                alt={props['image-tooltip']}
+                title={props['image-tooltip']}
+              />
               {props.label ? '' : props.label}
             </button>
           </div>

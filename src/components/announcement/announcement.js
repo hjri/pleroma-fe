@@ -29,9 +29,8 @@ const Announcement = {
       currentUser: (state) => state.users.currentUser,
     }),
     canEditAnnouncement() {
-      return (
-        this.currentUser &&
-        this.currentUser.privileges.has('announcements_manage_announcements')
+      return this.currentUser?.privileges.has(
+        'announcements_manage_announcements',
       )
     },
     content() {

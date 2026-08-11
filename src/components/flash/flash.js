@@ -44,7 +44,7 @@ const Flash = {
       })
     },
     closePlayer() {
-      this.ruffleInstance && this.ruffleInstance.remove()
+      this.ruffleInstance?.remove()
       this.player = false
       this.$emit('playerClosed')
     },

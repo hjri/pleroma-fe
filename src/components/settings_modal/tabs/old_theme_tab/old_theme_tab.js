@@ -319,7 +319,7 @@ export default {
       return useInterfaceStore().themeDataUsed
     },
     shadowsAvailable() {
-      return Object.keys(DEFAULT_SHADOWS).sort()
+      return Object.keys(DEFAULT_SHADOWS).sort((a, b) => a.localeCompare(b))
     },
     currentShadowOverriden: {
       get() {
@@ -346,7 +346,7 @@ export default {
       },
     },
     currentShadowFallback() {
-      return (this.previewTheme.shadows || {})[this.shadowSelected]
+      return this.previewTheme.shadows?.[this.shadowSelected]
     },
     currentShadow: {
       get() {
@@ -425,8 +425,8 @@ export default {
       this.dismissWarning()
       const version =
         origin === 'localStorage' && !theme.colors ? 'l1' : fileVersion
-      const snapshotEngineVersion = (theme || {}).themeEngineVersion
-      const themeEngineVersion = (source || {}).themeEngineVersion || 2
+      const snapshotEngineVersion = theme?.themeEngineVersion
+      const themeEngineVersion = source?.themeEngineVersion || 2
       const versionsMatch = themeEngineVersion === CURRENT_VERSION
       const sourceSnapshotMismatch =
         theme !== undefined &&
@@ -611,7 +611,7 @@ export default {
      */
     normalizeLocalState(theme, version = 0, source, forceSource = false) {
       let input
-      if (typeof source !== 'undefined') {
+      if (source !== undefined) {
         if (forceSource || source?.themeEngineVersion === CURRENT_VERSION) {
           input = source
           version = source.themeEngineVersion

@@ -11,11 +11,11 @@
       {{ label }}
     </label>
     <Checkbox
-      v-if="typeof fallback !== 'undefined' && showOptionalCheckbox && !hideOptionalCheckbox"
+      v-if="fallback !== undefined && showOptionalCheckbox && !hideOptionalCheckbox"
       :model-value="present"
       :disabled="disabled"
       class="opt"
-      @update:model-value="updateValue(typeof modelValue === 'undefined' ? fallback : undefined)"
+      @update:model-value="updateValue(modelValue === undefined ? fallback : undefined)"
     />
     <div
       class="input color-input-field"

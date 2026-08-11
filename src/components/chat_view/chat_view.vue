@@ -24,7 +24,7 @@
                 v-if="messages[0]?.summary_raw_html"
                 :html="messages[0].summary_raw_html"
                 :emoji="messages[0].emojis"
-                />
+              />
               <template v-else>
                 {{ $t('timeline.conversation') }}
               </template>

@@ -24,7 +24,7 @@ export const getAllPossibleCombinations = (array) => {
       const nonSelf = array.filter((x) => !selfSet.has(x))
       return nonSelf.map((x) => [...self, x])
     })
-    const flatCombos = newCombos.reduce((acc, x) => [...acc, ...x], [])
+    const flatCombos = newCombos.flat()
     const uniqueComboStrings = new Set()
     const uniqueCombos = flatCombos.map(sortBy).filter((x) => {
       if (uniqueComboStrings.has(x.join())) {
@@ -36,7 +36,7 @@ export const getAllPossibleCombinations = (array) => {
     })
     combos.push(uniqueCombos)
   }
-  return combos.reduce((acc, x) => [...acc, ...x], [])
+  return combos.flat()
 }
 
 /**
@@ -110,13 +110,6 @@ export const genericRuleToSelector =
       let arraySelector = Array.isArray(selector) ? selector : [selector]
       if (ignoreOutOfTreeSelector || liteMode)
         arraySelector = [arraySelector[0]]
-      arraySelector
-        .sort((a) => {
-          if (a.startsWith(':')) return 1
-          if (/^[a-z]/.exec(a)) return -1
-          else return 0
-        })
-        .join('')
       return arraySelector
     })
 
