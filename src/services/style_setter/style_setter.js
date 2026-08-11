@@ -92,6 +92,11 @@ export const adoptStyleSheets = throttle(() => {
 const EAGER_STYLE_ID = 'pleroma-eager-styles'
 const LAZY_STYLE_ID = 'pleroma-lazy-styles'
 
+export const hasInvalidCachedThemeRules = (data) =>
+  data
+    .flat()
+    .some((rule) => /--(?:mono)?font:\s*\[object Object\](?:;|$)/i.test(rule))
+
 const generateTheme = (inputRuleset, callbacks, debug) => {
   const {
     onNewRule = () => {
@@ -151,7 +156,8 @@ export const tryLoadCache = async () => {
     if (
       cache.engineChecksum === getEngineChecksum() &&
       cache.checksum !== undefined &&
-      cache.checksum === useMergedConfigStore().mergedConfig.themeChecksum
+      cache.checksum === useMergedConfigStore().mergedConfig.themeChecksum &&
+      !hasInvalidCachedThemeRules(cache.data)
     ) {
       const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
       const lazyStyles = createStyleSheet(LAZY_STYLE_ID, 20)
