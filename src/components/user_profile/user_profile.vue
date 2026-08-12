@@ -44,7 +44,7 @@
           />
         </div>
         <div
-          v-if="followsTabVisible"
+          v-if="followsTabVisible && user"
           key="followees"
           class="panel-body"
           :label="$t('user_card.followees')"
@@ -60,7 +60,7 @@
           </List>
         </div>
         <div
-          v-if="followersTabVisible"
+          v-if="followersTabVisible && user"
           key="followers"
           class="panel-body"
           :label="$t('user_card.followers')"

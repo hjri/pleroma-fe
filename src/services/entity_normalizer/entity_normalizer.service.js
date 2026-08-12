@@ -81,6 +81,9 @@ export const parseUser = (data) => {
 
   output.privileges = []
 
+  output.friendIds = new Set()
+  output.followerIds = new Set()
+
   if (data.pleroma) {
     if (data.pleroma.settings_store) {
       output.storage = data.pleroma.settings_store['pleroma-fe']

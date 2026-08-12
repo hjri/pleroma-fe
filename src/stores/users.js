@@ -121,26 +121,26 @@ export const useUsersStore = defineStore('users', {
       this.currentUser = null
       this.lastLoginName = null
     },
-    saveFriendIds({ id, friendIds }) {
+    saveFriendIds(id, friendIds) {
       const user = this.users.get(id)
-      user.friendIds = [...new Set([...(user.friendIds || []), ...friendIds])]
+      user.friendIds = new Set([...user.friendIds, ...friendIds])
     },
-    saveFollowerIds({ id, followerIds }) {
+    saveFollowerIds(id, followerIds) {
       const user = this.users.get(id)
-      user.followerIds = [...new Set([user.followerIds || [], ...followerIds])]
+      user.followerIds = new Set([...user.followerIds, ...followerIds])
     },
     // Because frontend doesn't have a reason to keep these stuff in memory
     // outside of viewing someones user profile.
     clearFriends(userId) {
       const user = this.users.get(userId)
       if (user) {
-        user.friendIds = []
+        user.friendIds = new Set()
       }
     },
     clearFollowers(userId) {
       const user = this.users.get(userId)
       if (user) {
-        user.followerIds = []
+        user.followerIds = new Set()
       }
     },
     addNewUsers(response) {
@@ -154,13 +154,18 @@ export const useUsersStore = defineStore('users', {
         // implicit: if oldTimestamp is undefined this will still be false
         if (oldTimestamp > timestamp) return existing // not overwriting old data with new
 
-        const { relationship: unused0, ...old } = existing
-        const { relationship: unused1, ...neu } = user
-        const newUser = { ...old, ...neu }
+        // TODO: Optimize
+        const { relationship: oldRelationship, ...oldUser } = existing
+        const { relationship: newRelationship, ...neuUser } = user
+
+        const relationship = { ...oldRelationship, ...newRelationship }
+        const newUser = { ...oldUser, ...neuUser, relationship }
 
         this.users.set(user.id, newUser)
         this.usersByName.set(user.screen_name.toLowerCase(), newUser)
         this.usersByURL.set(user.url.toLowerCase(), newUser)
+        this.relationships.set(user.id, newRelationship)
+
         this.timestamps.set(newUser, timestamp)
 
         if (user.id === this.currentUser.id) {
@@ -507,10 +512,10 @@ export const useUsersStore = defineStore('users', {
         id,
         maxId,
         credentials: useOAuthStore().token,
-      }).then(({ data: friends }) => {
-        this.addNewUsers(friends)
-        this.saveFriendIds({ id, friendIds: map(friends, 'id') })
-        return friends
+      }).then((result) => {
+        this.addNewUsers(result)
+        this.saveFriendIds(id, map(result.data, 'id'))
+        return result.data
       })
     },
     fetchFollowers(id) {
@@ -520,10 +525,10 @@ export const useUsersStore = defineStore('users', {
         id,
         maxId,
         credentials: useOAuthStore().token,
-      }).then(({ data: followers }) => {
-        this.addNewUsers(followers)
-        this.saveFollowerIds({ id, followerIds: map(followers, 'id') })
-        return followers
+      }).then((result) => {
+        this.addNewUsers(result)
+        this.saveFollowerIds(id, map(result.data, 'id'))
+        return result.data
       })
     },
     subscribeUser(id) {
