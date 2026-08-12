@@ -1,4 +1,4 @@
-import { debounce, keyBy, throttle } from 'lodash'
+import { debounce, throttle } from 'lodash'
 import { mapState } from 'pinia'
 
 import Conversation from 'src/components/conversation/conversation.vue'
@@ -9,9 +9,7 @@ import TimelineMenu from 'src/components/timeline_menu/timeline_menu.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useStatusesStore } from 'src/stores/statuses.js'
 import { useTimelinesStore } from 'src/stores/timelines.js'
-import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

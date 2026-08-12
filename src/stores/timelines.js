@@ -3,9 +3,9 @@ import { defineStore } from 'pinia'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
-import { useUsersStore } from 'src/stores/users.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
-import { useStreamingStore, TIMELINE_STREAM_MAP } from 'src/stores/streaming.js'
+import { TIMELINE_STREAM_MAP, useStreamingStore } from 'src/stores/streaming.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import timelineFetcher from 'src/services/timeline_fetcher/timeline_fetcher.service.js'
 
@@ -67,9 +67,7 @@ const TIMELINES = new Set([
 ])
 
 export const defaultState = () => {
-  return Object.fromEntries(
-    [...TIMELINES].map((name) => [name, emptyTl(name)]),
-  )
+  return Object.fromEntries([...TIMELINES].map((name) => [name, emptyTl(name)]))
 }
 
 //const CUSTOM_SORT = new Set(['bookmarks', 'favorites'])
@@ -150,7 +148,7 @@ export const useTimelinesStore = defineStore('timelines', {
     },
 
     activatePersistents() {
-      TIMELINES.forEach(name => {
+      TIMELINES.forEach((name) => {
         if (this[name].persistent) {
           this.activate(name, undefined, true)
         }
@@ -180,9 +178,15 @@ export const useTimelinesStore = defineStore('timelines', {
 
       if (streamName) {
         const et = new EventTarget()
-        et.addEventListener('open', () => this.onStreamConnect(timelineName, argument))
-        et.addEventListener('close', () => this.onStreamDisconnect(timelineName, argument))
-        et.addEventListener('update', ({ detail: message }) => this.onStreamMessage(timelineName, argument, message))
+        et.addEventListener('open', () =>
+          this.onStreamConnect(timelineName, argument),
+        )
+        et.addEventListener('close', () =>
+          this.onStreamDisconnect(timelineName, argument),
+        )
+        et.addEventListener('update', ({ detail: message }) =>
+          this.onStreamMessage(timelineName, argument, message),
+        )
 
         timeline.socket = {
           stream: {

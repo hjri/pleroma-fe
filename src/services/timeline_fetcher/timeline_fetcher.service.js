@@ -1,5 +1,3 @@
-import { camelCase } from 'lodash'
-
 import { promiseInterval } from '../promise_interval/promise_interval.js'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -66,7 +64,7 @@ const fetchAndUpdate = (
         .filter(Boolean)
 
       useTimelinesStore().addStatusesToTimeline(timeline.name, argument, {
-        statuses,
+        statuses: processed,
         showImmediately,
         pagination,
       })

@@ -3,13 +3,12 @@ import { defineStore } from 'pinia'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
-import { useUsersStore } from 'src/stores/users.js'
 import { useStreamingStore } from 'src/stores/streaming.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import {
   fetchEmojiReactions,
   fetchFavoritedByUsers,
-  fetchPinnedStatuses,
   fetchRebloggedByUsers,
   fetchScrobbles,
   fetchStatus,
@@ -83,7 +82,6 @@ export const useStatusesStore = defineStore('statuses', {
     attachSocket() {
       const et = new EventTarget()
       const handleStatusMessage = ({ data, timestamp }) => {
-        console.log('STATUSES', data)
         this.addNewStatuses({ statuses: [data.status], timestamp })
       }
 

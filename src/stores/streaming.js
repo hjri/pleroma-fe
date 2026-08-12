@@ -56,11 +56,11 @@ export const useStreamingStore = defineStore('streaming', {
       this.subscribers.add(subscriber)
       if (this.state === WSConnectionStatus.JOINED) {
         this.socket.subscribe(...this.getSubArgs(stream))
-        subscriber.et.dispatchEvent(new CustomEvent('open'))
+        et.dispatchEvent(new CustomEvent('open'))
       }
     },
     removeSubscriber(subscriber) {
-      const { stream, et } = subscriber
+      const { stream } = subscriber
 
       this.subscribers.delete(subscriber)
       this.subscriptions.get(stream.name).delete(stream.argument)
@@ -128,16 +128,15 @@ export const useStreamingStore = defineStore('streaming', {
 
       const totalSubs = [
         ...this.globalSubscriptions.values(),
-        subscriber
+        subscriber,
       ].filter(Boolean)
 
       totalSubs.forEach(({ stream, et }) => {
-        et.dispatchEvent(new CustomEvent(
-          eventName,
-          {
+        et.dispatchEvent(
+          new CustomEvent(eventName, {
             detail: { streamName, streamArgument, data, timestamp },
-          }
-        ))
+          }),
+        )
       })
 
       console.log('WS', message)

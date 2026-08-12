@@ -23,9 +23,9 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useTimelinesStore } from 'src/stores/timelines.js'
-import { useStreamingStore } from 'src/stores/streaming.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 import { revokeToken } from 'src/api/oauth.js'
@@ -134,7 +134,7 @@ export const useUsersStore = defineStore('users', {
     saveFollowerIds(id, followerIds) {
       const user = this.users.get(id)
       const list = this.relationshipsLists.followers.get(user)
-      followersIds.forEach((id) => list.add(id))
+      followerIds.forEach((id) => list.add(id))
     },
     // Because frontend doesn't have a reason to keep these stuff in memory
     // outside of viewing someones user profile.
@@ -168,7 +168,6 @@ export const useUsersStore = defineStore('users', {
         // implicit: if oldTimestamp is undefined this will still be false
         if (oldTimestamp > timestamp) return existing // not overwriting old data with new
 
-        const { relationship: unused0, ...oldUser } = existing
         const { relationship: unused1, ...newUser } = user
 
         // Initializing reactivity
@@ -463,7 +462,7 @@ export const useUsersStore = defineStore('users', {
       return Promise.all(data.map((d) => unblockUser(d)))
     },
     editUserNote({ id, comment }) {
-      return editUserNote({ id, comment }).then((relationship) =>
+      return editUserNote({ id, comment }).then(({ data }) =>
         this.updateUserRelationships(data),
       )
     },
@@ -501,7 +500,7 @@ export const useUsersStore = defineStore('users', {
         id,
         expiresIn,
         credentials: useOAuthStore().token,
-      }).then(({ data: relationship }) => {
+      }).then(({ data }) => {
         this.updateUserRelationships(data)
         this.addMuteId(id)
       })
@@ -514,7 +513,7 @@ export const useUsersStore = defineStore('users', {
         data: [predictedRelationship],
       })
 
-      return unmuteUser({ id }).then(({ data: relationship }) =>
+      return unmuteUser({ id }).then(({ data }) =>
         this.updateUserRelationships(data),
       )
     },
@@ -523,14 +522,14 @@ export const useUsersStore = defineStore('users', {
         id,
         reblogs: false,
         credentials: useOAuthStore().token,
-      }).then(({ data: relationship }) => this.updateUserRelationships(data))
+      }).then(({ data }) => this.updateUserRelationships(data))
     },
     showReblogs(id) {
       return followUser({
         id,
         reblogs: true,
         credentials: useOAuthStore().token,
-      }).then(({ data: relationship }) => this.updateUserRelationships(data))
+      }).then(({ data }) => this.updateUserRelationships(data))
     },
     muteUsers(data = []) {
       return Promise.all(data.map((d) => this.muteUser(d)))
@@ -595,14 +594,14 @@ export const useUsersStore = defineStore('users', {
         id,
         notify: true,
         credentials: useOAuthStore().token,
-      }).then(({ data: relationship }) => this.updateUserRelationships(data))
+      }).then(({ data }) => this.updateUserRelationships(data))
     },
     unsubscribeUser(id) {
       return followUser({
         id,
         notify: false,
         credentials: useOAuthStore().token,
-      }).then(({ data: relationship }) => this.updateUserRelationships(data))
+      }).then(({ data }) => this.updateUserRelationships(data))
     },
     registerPushNotifications() {
       const token = this.currentUser.credentials
@@ -660,6 +659,7 @@ export const useUsersStore = defineStore('users', {
           store.dispatch('stopFetchingFollowRequests')
           store.commit('clearNotifications')
           useStatusesStore().resetStatuses()
+          useNotificationsStore().clearNotifications()
           useChatsStore().resetChats()
           oauth.clearToken()
           Cookies.remove('__Host-pleroma_key', { path: '/' })
