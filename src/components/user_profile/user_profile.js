@@ -79,11 +79,11 @@ const UserProfile = {
       return useMergedConfigStore().mergedConfig.compactProfiles
     },
     friends() {
-      return [...this.user.friendIds.keys()]
+      return [...useUsersStore().relationshipsLists.friends.get(this.user).keys()]
         .map((id) => useUsersStore().findUser(id))
     },
     followers() {
-      return [...this.user.followerIds.keys()]
+      return [...useUsersStore().relationshipsLists.followers.get(this.user).keys()]
         .map((id) => useUsersStore().findUser(id))
     },
   },

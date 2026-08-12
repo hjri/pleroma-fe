@@ -71,6 +71,10 @@ export const useUsersStore = defineStore('users', {
     usersByName: new Map(),
     usersByURL: new Map(),
     relationships: new Map(),
+    relationshipsLists: {
+      friends: new WeakMap(),
+      followers: new WeakMap(),
+    },
     timestamps: new WeakMap(),
     fetchesIds: new Map(),
     fetchesNames: new Map(),
@@ -123,11 +127,13 @@ export const useUsersStore = defineStore('users', {
     },
     saveFriendIds(id, friendIds) {
       const user = this.users.get(id)
-      user.friendIds = new Set([...user.friendIds, ...friendIds])
+      const list = this.relationshipsLists.friends.get(user)
+      friendIds.forEach((id) => list.add(id))
     },
     saveFollowerIds(id, followerIds) {
       const user = this.users.get(id)
-      user.followerIds = new Set([...user.followerIds, ...followerIds])
+      const list = this.relationshipsLists.followers.get(user)
+      followersIds.forEach((id) => list.add(id))
     },
     // Because frontend doesn't have a reason to keep these stuff in memory
     // outside of viewing someones user profile.
@@ -154,25 +160,37 @@ export const useUsersStore = defineStore('users', {
         // implicit: if oldTimestamp is undefined this will still be false
         if (oldTimestamp > timestamp) return existing // not overwriting old data with new
 
-        // TODO: Optimize
         const { relationship: oldRelationship, ...oldUser } = existing
-        const { relationship: newRelationship, ...neuUser } = user
+        const { relationship: newRelationship, ...newUser } = user
 
         const relationship = { ...oldRelationship, ...newRelationship }
-        const newUser = { ...oldUser, ...neuUser, relationship }
-
-        this.users.set(user.id, newUser)
-        this.usersByName.set(user.screen_name.toLowerCase(), newUser)
-        this.usersByURL.set(user.url.toLowerCase(), newUser)
         this.relationships.set(user.id, newRelationship)
+        existing.relationship = relationship
 
-        this.timestamps.set(newUser, timestamp)
+        // Relying on object reactivity to avoid mutating the Map
+        Object.entries(newUser).forEach(([k, v]) => {
+          existing[k] = v
+        })
+
+        if (!this.users.has(user.id)) {
+          this.users.set(user.id, existing)
+          this.usersByName.set(user.screen_name.toLowerCase(), existing)
+          this.usersByURL.set(user.url.toLowerCase(), existing)
+        }
+
+        this.timestamps.set(existing, timestamp)
 
         if (user.id === this.currentUser.id) {
           this.currentUser = newUser
         }
 
-        return this.users.get(user.id)
+        const result = this.users.get(user.id)
+
+        const { friends, followers } = this.relationshipsLists
+        if (!friends.has(result)) friends.set(result, new Set())
+        if (!followers.has(result)) followers.set(result, new Set())
+
+        return result
       })
     },
     updateUserRelationship(relationships) {
@@ -507,7 +525,7 @@ export const useUsersStore = defineStore('users', {
     },
     fetchFriends(id) {
       const user = this.users.get(id)
-      const maxId = last(user.friendIds)
+      const maxId = last([...this.relationshipsLists.friends.get(user)])
       return fetchFriends({
         id,
         maxId,
@@ -520,7 +538,7 @@ export const useUsersStore = defineStore('users', {
     },
     fetchFollowers(id) {
       const user = this.users.get(id)
-      const maxId = last(user.followerIds)
+      const maxId = last([...this.relationshipsLists.followers.get(user)])
       return fetchFollowers({
         id,
         maxId,
