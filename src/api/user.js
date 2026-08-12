@@ -410,7 +410,6 @@ export const exportFriends = ({ id, credentials }) => {
           id,
           maxId,
           credentials,
-          withRelationships: true,
         })
         friends = [...friends, ...users]
         if (users.length === 0) {
