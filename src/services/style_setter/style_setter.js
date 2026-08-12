@@ -348,7 +348,11 @@ export const getResourcesIndex = async (url, parser = noop) => {
   }
 
   try {
-    const { data: builtinData } = await promisedRequest({ url, cache })
+    const { data: builtinData } = await promisedRequest({
+      url,
+      cache,
+      forceContentType: 'application/json',
+    })
     builtin = resourceTransform(builtinData)
   } catch {
     builtin = []
@@ -359,6 +363,7 @@ export const getResourcesIndex = async (url, parser = noop) => {
     const { data: customData } = await promisedRequest({
       url: customUrl,
       cache,
+      forceContentType: 'application/json',
     })
     custom = resourceTransform(customData)
   } catch {
