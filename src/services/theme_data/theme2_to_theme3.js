@@ -266,7 +266,7 @@ export const convertTheme2To3 = (data) => {
     Object.keys(data.fonts || {}).forEach((key) => {
       if (!fontsKeys.has(key)) return
       if (!data.fonts[key]) return
-      const originalFont = data.fonts[key]
+      const originalFont = data.fonts[key].family
       const rule = { source: '2to3' }
 
       switch (key) {

@@ -117,9 +117,17 @@ export const fetchUserByName = ({ name, credentials }) =>
 
 export const fetchFriends = ({ id, maxId, sinceId, limit = 20, credentials }) =>
   promisedRequest({
-    url: MASTODON_FOLLOWING_URL(id, { maxId, sinceId, limit }),
+    url: MASTODON_FOLLOWING_URL(id, {
+      maxId,
+      sinceId,
+      limit,
+      withRelationships: true,
+    }),
     credentials,
-  }).then(({ data, ...rest }) => ({ ...rest, data: data.map(parseUser) }))
+  }).then(({ data, ...rest }) => ({
+    ...rest,
+    data: data.map(parseUser),
+  }))
 
 export const fetchFollowers = ({
   id,
@@ -136,7 +144,10 @@ export const fetchFollowers = ({
       withRelationships: true,
     }),
     credentials,
-  }).then(({ data, ...rest }) => ({ ...rest, data: data.map(parseUser) }))
+  }).then(({ data, ...rest }) => ({
+    ...rest,
+    data: data.map(parseUser),
+  }))
 
 export const fetchConversation = ({ id, credentials }) =>
   promisedRequest({

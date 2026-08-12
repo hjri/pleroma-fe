@@ -9,7 +9,7 @@
       @show="setOpen(true)"
       @close="setOpen(false)"
     >
-      <template #content="{close}">
+      <template #content>
         <div class="dropdown-menu">
           <template v-for="(entry, index) in entries">
             <div
@@ -26,7 +26,7 @@
             >
               <button
                 class="main-button"
-                @click="() => maybeShowConfirm(close, entry)"
+                @click="() => maybeShowConfirm(entry)"
               >
                 <span
                   v-if="entry.checkbox"
