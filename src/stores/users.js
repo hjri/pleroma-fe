@@ -157,45 +157,81 @@ export const useUsersStore = defineStore('users', {
         const existing = this.users.get(user.id) ?? {}
         const oldTimestamp = this.timestamps.get(existing)
 
+        // Relationship might have different timestamp and
+        // might need updating separate from user
+        const relationship = this.updateUserRelationships({
+          timestamp,
+          data: { id: user.id, ...(user.relationship ?? {}) },
+        })[0]
+
         // implicit: if oldTimestamp is undefined this will still be false
         if (oldTimestamp > timestamp) return existing // not overwriting old data with new
 
-        const { relationship: oldRelationship, ...oldUser } = existing
-        const { relationship: newRelationship, ...newUser } = user
+        const { relationship: unused0, ...oldUser } = existing
+        const { relationship: unused1, ...newUser } = user
 
-        const relationship = { ...oldRelationship, ...newRelationship }
-        this.relationships.set(user.id, newRelationship)
-        existing.relationship = relationship
+        // Initializing reactivity
+        if (!this.users.has(user.id)) this.users.set(user.id, existing)
+        const reactive = this.users.get(user.id)
 
         // Relying on object reactivity to avoid mutating the Map
+        reactive.relationship = relationship
+
         Object.entries(newUser).forEach(([k, v]) => {
-          existing[k] = v
+          reactive[k] = v
         })
 
-        if (!this.users.has(user.id)) {
-          this.users.set(user.id, existing)
-          this.usersByName.set(user.screen_name.toLowerCase(), existing)
-          this.usersByURL.set(user.url.toLowerCase(), existing)
-        }
+        // Updating the timestamp
+        this.timestamps.set(reactive, timestamp)
 
-        this.timestamps.set(existing, timestamp)
+        // Avoiding excessive Map mutation
+        if (!this.users.has(user.id)) {
+          this.usersByName.set(user.screen_name.toLowerCase(), reactive)
+          this.usersByURL.set(user.url.toLowerCase(), reactive)
+        }
 
         if (user.id === this.currentUser.id) {
-          this.currentUser = newUser
+          this.currentUser = reactive
         }
 
-        const result = this.users.get(user.id)
-
+        // Initialize some stuff
         const { friends, followers } = this.relationshipsLists
-        if (!friends.has(result)) friends.set(result, new Set())
-        if (!followers.has(result)) followers.set(result, new Set())
+        if (!friends.has(reactive)) friends.set(reactive, new Set())
+        if (!followers.has(reactive)) followers.set(reactive, new Set())
 
-        return result
+        return reactive
       })
     },
-    updateUserRelationship(relationships) {
-      relationships.forEach((relationship) => {
-        this.relationships[relationship.id] = relationship
+    updateUserRelationships({ timestamp, optimism, data }) {
+      const relationships = Array.isArray(data) ? data : [data]
+
+      return relationships.map((relationship) => {
+        const { id } = relationship
+        const existing = this.relationships.get(id) ?? {}
+        const oldTimestamp = this.timestamps.get(existing)
+
+        // implicit: if oldTimestamp is undefined this will still be false
+        if (!optimism && oldTimestamp > timestamp) existing
+
+        // Initializing reactivity
+        if (!this.relationships.has(id)) this.relationships.set(id, existing)
+        const reactive = this.relationships.get(id)
+
+        // Relying on reactivity
+        Object.entries(relationship).forEach(([k, v]) => {
+          reactive[k] = v
+        })
+
+        if (timestamp) {
+          this.timestamps.set(reactive)
+        }
+
+        // Updating user property if there is such a user
+        if (this.users.has(id)) {
+          this.users.get(id).relationship = reactive
+        }
+
+        return reactive
       })
     },
     updateUserInLists({ id, inLists }) {
@@ -355,8 +391,8 @@ export const useUsersStore = defineStore('users', {
         fetchUserRelationship({
           id,
           credentials: useOAuthStore().token,
-        }).then(({ data: relationships }) =>
-          this.updateUserRelationship(relationships),
+        }).then((result) =>
+          this.updateUserRelationships(result),
         )
       }
     },
@@ -393,11 +429,14 @@ export const useUsersStore = defineStore('users', {
       const store = window.vuex
 
       const predictedRelationship = this.relationships[id] || { id }
-      this.updateUserRelationship([predictedRelationship])
+      this.updateUserRelationships({
+        optimism: true,
+        data: [predictedRelationship]
+      })
       this.addBlockId(id)
 
-      return blockUser({ id, expiresIn }).then(({ data: relationship }) => {
-        this.updateUserRelationship([relationship])
+      return blockUser({ id, expiresIn }).then((result) => {
+        this.updateUserRelationships(result)
         this.addBlockId(id)
 
         store.commit('removeStatus', { timeline: 'friends', userId: id })
@@ -409,13 +448,13 @@ export const useUsersStore = defineStore('users', {
       })
     },
     unblockUser(id) {
-      return unblockUser({ id }).then(({ data: relationship }) =>
-        this.updateUserRelationship([relationship]),
+      return unblockUser({ id }).then((data) =>
+        this.updateUserRelationships(data),
       )
     },
     removeUserFromFollowers(id) {
-      return removeUserFromFollowers({ id }).then((relationship) =>
-        this.updateUserRelationship([relationship]),
+      return removeUserFromFollowers({ id }).then((data) =>
+        this.updateUserRelationships(data),
       )
     },
     blockUsers(data = []) {
@@ -426,7 +465,7 @@ export const useUsersStore = defineStore('users', {
     },
     editUserNote({ id, comment }) {
       return editUserNote({ id, comment }).then((relationship) =>
-        this.updateUserRelationship([relationship]),
+        this.updateUserRelationships(data),
       )
     },
     fetchMutes(args) {
@@ -452,7 +491,11 @@ export const useUsersStore = defineStore('users', {
     },
     muteUser(id, expiresIn = 0) {
       const predictedRelationship = this.relationships[id] || { id }
-      this.updateUserRelationship([predictedRelationship])
+      predictedRelationship.muting = true
+      this.updateUserRelationships({
+        optimism: true,
+        data: [predictedRelationship]
+      })
       this.addMuteId(id)
 
       return muteUser({
@@ -460,17 +503,20 @@ export const useUsersStore = defineStore('users', {
         expiresIn,
         credentials: useOAuthStore().token,
       }).then(({ data: relationship }) => {
-        this.updateUserRelationship([relationship])
+        this.updateUserRelationships(data)
         this.addMuteId(id)
       })
     },
     unmuteUser(id) {
       const predictedRelationship = this.relationships[id] || { id }
       predictedRelationship.muting = false
-      this.updateUserRelationship([predictedRelationship])
+      this.updateUserRelationships({
+        optimism: true,
+        data: [predictedRelationship]
+      })
 
       return unmuteUser({ id }).then(({ data: relationship }) =>
-        this.updateUserRelationship([relationship]),
+        this.updateUserRelationships(data),
       )
     },
     hideReblogs(id) {
@@ -479,7 +525,7 @@ export const useUsersStore = defineStore('users', {
         reblogs: false,
         credentials: useOAuthStore().token,
       }).then(({ data: relationship }) =>
-        this.updateUserRelationship([relationship]),
+        this.updateUserRelationships(data),
       )
     },
     showReblogs(id) {
@@ -488,7 +534,7 @@ export const useUsersStore = defineStore('users', {
         reblogs: true,
         credentials: useOAuthStore().token,
       }).then(({ data: relationship }) =>
-        this.updateUserRelationship([relationship]),
+        this.updateUserRelationships(data),
       )
     },
     muteUsers(data = []) {
@@ -555,7 +601,7 @@ export const useUsersStore = defineStore('users', {
         notify: true,
         credentials: useOAuthStore().token,
       }).then(({ data: relationship }) =>
-        this.updateUserRelationship([relationship]),
+        this.updateUserRelationships(data),
       )
     },
     unsubscribeUser(id) {
@@ -564,7 +610,7 @@ export const useUsersStore = defineStore('users', {
         notify: false,
         credentials: useOAuthStore().token,
       }).then(({ data: relationship }) =>
-        this.updateUserRelationship([relationship]),
+        this.updateUserRelationships(data),
       )
     },
     registerPushNotifications() {
