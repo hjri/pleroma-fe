@@ -4,6 +4,7 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useUsersStore } from 'src/stores/users.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
 
 import {
   fetchEmojiReactions,
@@ -78,7 +79,30 @@ const getLatestScrobble = (user) => {
 export const useStatusesStore = defineStore('statuses', {
   state: defaultState,
   actions: {
-    addNewStatuses({ statuses, user = {}, userId, timestamp }) {
+    // Init
+    attachSocket() {
+      const et = new EventTarget()
+      const handleStatusMessage = ({ data, timestamp }) => {
+        console.log('STATUSES', data)
+        this.addNewStatuses({ statuses: [data.status], timestamp })
+      }
+
+      et.addEventListener('update', ({ detail: message }) => {
+        handleStatusMessage(message)
+      })
+
+      et.addEventListener('status.update', ({ detail: message }) => {
+        handleStatusMessage(message)
+      })
+
+      et.addEventListener('delete', ({ detail: message }) => {
+        console.log('DELETE', message)
+        this.deleteStatus(message.data)
+      })
+
+      useStreamingStore().addSubscriber({ et })
+    },
+    addNewStatuses({ statuses, timestamp }) {
       // Sanity check
       if (!Array.isArray(statuses)) {
         throw new TypeError("Statuses aren't an array!")
@@ -132,7 +156,7 @@ export const useStatusesStore = defineStore('statuses', {
 
             if (status) {
               // This is our favorite, so the relevant bit.
-              if (favorite.user.id === user.id) {
+              if (favorite.user.id === useUsersStore().currentUser?.id) {
                 status.favorited = true
               } else {
                 status.fave_num += 1

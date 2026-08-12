@@ -126,14 +126,14 @@ export const handleMastoWS = (
   const { data } = wsEvent
   if (!data) return
   const parsedEvent = JSON.parse(data)
-  const { event, payload } = parsedEvent
+  const { event, stream, payload } = parsedEvent
   if (
     MASTODON_STREAMING_EVENTS.has(event) ||
     PLEROMA_STREAMING_EVENTS.has(event)
   ) {
     // MastoBE and PleromaBE both send payload for delete as a PLAIN string
     if (event === 'delete') {
-      return { event, id: payload }
+      return { event, stream, id: payload }
     }
     const data = payload ? JSON.parse(payload) : null
     if (event === 'pleroma:respond') {
@@ -150,13 +150,13 @@ export const handleMastoWS = (
       }
       return null
     } else if (event === 'update') {
-      return { event, status: parseStatus(data) }
+      return { event, stream, status: parseStatus(data) }
     } else if (event === 'status.update') {
-      return { event, status: parseStatus(data) }
+      return { event, stream, status: parseStatus(data) }
     } else if (event === 'notification') {
-      return { event, notification: parseNotification(data) }
+      return { event, stream, notification: parseNotification(data) }
     } else if (event === 'pleroma:chat_update') {
-      return { event, chatUpdate: parseChat(data) }
+      return { event, stream, chatUpdate: parseChat(data) }
     }
   } else {
     console.warn('Unknown event', wsEvent)

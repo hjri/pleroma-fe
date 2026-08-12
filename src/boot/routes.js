@@ -238,7 +238,7 @@ export default (store) => {
       path: '/lists/:id',
       component: Timeline,
       props: (route) => ({
-        timelineRef: { name: 'lists', argument: route.params.id },
+        timelineRef: { name: 'list', argument: route.params.id },
       }),
     },
     {

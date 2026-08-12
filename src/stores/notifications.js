@@ -77,7 +77,9 @@ export const useNotificationsStore = defineStore('notifications', {
 
       useUsersStore().addNewUsers({
         timestamp,
-        data: validNotifications.map((notification) => notification.from_profile),
+        data: validNotifications.map(
+          (notification) => notification.from_profile,
+        ),
       })
 
       const statusNotifications = validNotifications.filter(

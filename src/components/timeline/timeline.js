@@ -58,7 +58,7 @@ const Timeline = {
     filteredVisibleStatuses() {
       return [...this.timeline.visibleStatusesIds.keys()]
         .map((id) => this.timeline.statuses.get(id))
-        .filter(({ pinned }) => this.skipPinned ? !pinned : true)
+        .filter(({ pinned }) => (this.skipPinned ? !pinned : true))
     },
     newStatusCount() {
       return this.timeline.newStatusCount
@@ -132,6 +132,7 @@ const Timeline = {
     setTimeout(this.determineVisibleStatuses, 250)
   },
   unmounted() {
+    this.timelineChange(null, this.timelineRef)
     window.removeEventListener('scroll', this.handleScroll)
     window.removeEventListener('keydown', this.handleShortKey)
     if (document.hidden !== undefined)
@@ -143,15 +144,16 @@ const Timeline = {
   },
   methods: {
     timelineChange(newTimeline, oldTimeline) {
-      // TODO this might not be necessary if we optimize mergeOrAdd
       const sameName = newTimeline?.name === oldTimeline?.name
       const sameArgument = newTimeline?.argument === oldTimeline?.argument
       if (sameName && sameArgument) return
 
-      if (oldTimeline && oldTimeline.name !== 'friends') {
-        useTimelinesStore().clearTimeline(oldTimeline.name)
+      if (oldTimeline) {
+        useTimelinesStore().deactivate(oldTimeline.name)
       }
-      useTimelinesStore().startFetchingTimeline(newTimeline.name, newTimeline.argument)
+      if (newTimeline) {
+        useTimelinesStore().activate(newTimeline.name, newTimeline.argument)
+      }
     },
     stopBlockingClicks: debounce(function () {
       this.blockingClicks = false

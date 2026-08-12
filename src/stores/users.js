@@ -23,8 +23,9 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
-import { useTimelinesStore } from 'src/stores/timelines.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useTimelinesStore } from 'src/stores/timelines.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
 import { revokeToken } from 'src/api/oauth.js'
@@ -391,9 +392,7 @@ export const useUsersStore = defineStore('users', {
         fetchUserRelationship({
           id,
           credentials: useOAuthStore().token,
-        }).then((result) =>
-          this.updateUserRelationships(result),
-        )
+        }).then((result) => this.updateUserRelationships(result))
       }
     },
     fetchUserInLists(id) {
@@ -431,7 +430,7 @@ export const useUsersStore = defineStore('users', {
       const predictedRelationship = this.relationships[id] || { id }
       this.updateUserRelationships({
         optimism: true,
-        data: [predictedRelationship]
+        data: [predictedRelationship],
       })
       this.addBlockId(id)
 
@@ -494,7 +493,7 @@ export const useUsersStore = defineStore('users', {
       predictedRelationship.muting = true
       this.updateUserRelationships({
         optimism: true,
-        data: [predictedRelationship]
+        data: [predictedRelationship],
       })
       this.addMuteId(id)
 
@@ -512,7 +511,7 @@ export const useUsersStore = defineStore('users', {
       predictedRelationship.muting = false
       this.updateUserRelationships({
         optimism: true,
-        data: [predictedRelationship]
+        data: [predictedRelationship],
       })
 
       return unmuteUser({ id }).then(({ data: relationship }) =>
@@ -524,18 +523,14 @@ export const useUsersStore = defineStore('users', {
         id,
         reblogs: false,
         credentials: useOAuthStore().token,
-      }).then(({ data: relationship }) =>
-        this.updateUserRelationships(data),
-      )
+      }).then(({ data: relationship }) => this.updateUserRelationships(data))
     },
     showReblogs(id) {
       return followUser({
         id,
         reblogs: true,
         credentials: useOAuthStore().token,
-      }).then(({ data: relationship }) =>
-        this.updateUserRelationships(data),
-      )
+      }).then(({ data: relationship }) => this.updateUserRelationships(data))
     },
     muteUsers(data = []) {
       return Promise.all(data.map((d) => this.muteUser(d)))
@@ -600,18 +595,14 @@ export const useUsersStore = defineStore('users', {
         id,
         notify: true,
         credentials: useOAuthStore().token,
-      }).then(({ data: relationship }) =>
-        this.updateUserRelationships(data),
-      )
+      }).then(({ data: relationship }) => this.updateUserRelationships(data))
     },
     unsubscribeUser(id) {
       return followUser({
         id,
         notify: false,
         credentials: useOAuthStore().token,
-      }).then(({ data: relationship }) =>
-        this.updateUserRelationships(data),
-      )
+      }).then(({ data: relationship }) => this.updateUserRelationships(data))
     },
     registerPushNotifications() {
       const token = this.currentUser.credentials
@@ -729,55 +720,31 @@ export const useUsersStore = defineStore('users', {
             /**/
 
             if (user.token) {
+              // Shoutbox
               dispatch('setWsToken', user.token)
-
-              // Initialize the shout socket.
               dispatch('initializeSocket')
             }
 
-            const startPolling = () => {
-              // Start getting fresh posts.
-              useTimelinesStore().startFetchingTimeline('friends')
+            // DMs and Home
+            useTimelinesStore().activatePersistents()
 
-              // Start fetching notifications
-              dispatch('startFetchingNotifications')
-
-              if (useInstanceCapabilitiesStore().pleromaChatMessagesAvailable) {
-                // Start fetching chats
-                useChatsStore().startFetchingChats()
-              }
+            if (useInstanceCapabilitiesStore().pleromaChatMessagesAvailable) {
+              // Start fetching chats
+              useChatsStore().startFetchingChats()
             }
 
             useListsStore().startFetching()
             useBookmarkFoldersStore().startFetching()
+            useStatusesStore().attachSocket()
+            //useNotificationsStore().attachSocket()
 
             if (user.locked) {
               dispatch('startFetchingFollowRequests')
             }
 
+            useStreamingStore().initSocket()
             if (useMergedConfigStore().mergedConfig.useStreamingApi) {
-              dispatch('fetchTimeline', {
-                timeline: 'friends',
-                sinceId: null,
-              })
-              dispatch('fetchNotifications', { sinceId: null })
-              dispatch('enableMastoSockets', true)
-                .catch((error) => {
-                  console.error(
-                    'Failed initializing MastoAPI Streaming socket',
-                    error,
-                  )
-                })
-                .then(() => {
-                  dispatch('fetchChats', { latest: true })
-                  setTimeout(
-                    () =>
-                      useNotificationsStore().setNotificationsSilence(false),
-                    10000,
-                  )
-                })
-            } else {
-              startPolling()
+              useStreamingStore().initSocket()
             }
 
             // Start fetching things that don't need to block the UI

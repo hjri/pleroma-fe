@@ -18,16 +18,10 @@ const REPLY_VISIBILITY_TIMELINES = new Set([
   'bubble',
 ])
 
-const fetchAndUpdate = ({
-  timeline,
-  argument,
-  credentials,
-}, {
-  maxId,
-  sinceId,
-  older = false,
-  showImmediately = false,
-}) => {
+const fetchAndUpdate = (
+  { timeline, argument, credentials },
+  { maxId, sinceId, older = false, showImmediately = false },
+) => {
   timeline.loading = true
   const { hideMutedPosts, replyVisibility } =
     useMergedConfigStore().mergedConfig
@@ -71,15 +65,11 @@ const fetchAndUpdate = ({
         .addNewStatuses({ statuses, timestamp })
         .filter(Boolean)
 
-      useTimelinesStore().addStatusesToTimeline(
-        timeline.name,
-        argument,
-        {
-          statuses,
-          showImmediately,
-          pagination,
-        }
-      )
+      useTimelinesStore().addStatusesToTimeline(timeline.name, argument, {
+        statuses,
+        showImmediately,
+        pagination,
+      })
       return { statuses, pagination }
     })
     .catch((error) => {
@@ -101,7 +91,7 @@ const fetchAndUpdate = ({
 
 const timelineFetcher = (timeline, argument, credentials) => {
   const state = {
-    interval: null
+    interval: null,
   }
 
   const boundFetchAndUpdate = ({
@@ -109,22 +99,26 @@ const timelineFetcher = (timeline, argument, credentials) => {
     maxId,
     sinceId,
     older,
-  } = {}) => fetchAndUpdate({
-    timeline,
-    argument,
-    credentials,
-  }, {
-    maxId,
-    sinceId,
-    older,
-    showImmediately,
-  })
+  } = {}) =>
+    fetchAndUpdate(
+      {
+        timeline,
+        argument,
+        credentials,
+      },
+      {
+        maxId,
+        sinceId,
+        older,
+        showImmediately,
+      },
+    )
 
   const startFetching = () => {
     if (state.interval) throw new Error('Interval already exists!')
 
     boundFetchAndUpdate({
-      showImmediately: timeline.visibleStatusesIds.size === 0
+      showImmediately: timeline.visibleStatusesIds.size === 0,
     })
 
     state.interval = promiseInterval(boundFetchAndUpdate, 10000)

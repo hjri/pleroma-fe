@@ -4,6 +4,8 @@ import { defineStore } from 'pinia'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useUsersStore } from 'src/stores/users.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
+import { useStreamingStore, TIMELINE_STREAM_MAP } from 'src/stores/streaming.js'
 
 import timelineFetcher from 'src/services/timeline_fetcher/timeline_fetcher.service.js'
 
@@ -17,6 +19,7 @@ const emptyTl = (name, argument = null) => {
     minId: '',
     minVisibleId: '',
     loading: false,
+    streaming: false,
     flushMarker: 0,
     fetcher: null,
   }
@@ -25,6 +28,10 @@ const emptyTl = (name, argument = null) => {
 
   if (property) {
     result[property] = argument
+  }
+
+  if (name === 'dms' || name === 'friends') {
+    result.persistent = true
   }
 
   return result
@@ -41,24 +48,28 @@ export const ARGUMENT_MAP = {
   media: 'userId',
 }
 
+const TIMELINES = new Set([
+  'mentions',
+  'public',
+  'user',
+  'userPinned',
+  'media',
+  'favorites',
+  'publicAndExternal',
+  'friends',
+  'tag',
+  'dms',
+  'bookmarks',
+  'list',
+  'bubble',
+  'quotes',
+  'search',
+])
+
 export const defaultState = () => {
-  return Object.fromEntries([
-    'mentions',
-    'public',
-    'user',
-    'userPinned',
-    'media',
-    'favorites',
-    'publicAndExternal',
-    'friends',
-    'tag',
-    'dms',
-    'bookmarks',
-    'list',
-    'bubble',
-    'quotes',
-    'search',
-  ].map((name) => [name, emptyTl(name)]))
+  return Object.fromEntries(
+    [...TIMELINES].map((name) => [name, emptyTl(name)]),
+  )
 }
 
 //const CUSTOM_SORT = new Set(['bookmarks', 'favorites'])
@@ -123,7 +134,10 @@ export const useTimelinesStore = defineStore('timelines', {
         ) {
           // Add the mention to the mentions timeline
           if (timeline !== this.mentions) {
-            this.addStatusesToTimeline('mentions', null, { statuses, nested: true })
+            this.addStatusesToTimeline('mentions', null, {
+              statuses,
+              nested: true,
+            })
           }
         }
 
@@ -135,10 +149,17 @@ export const useTimelinesStore = defineStore('timelines', {
       })
     },
 
-    // Fetchers
-    startFetchingTimeline(timelineName, argument) {
+    activatePersistents() {
+      TIMELINES.forEach(name => {
+        if (this[name].persistent) {
+          this.activate(name, undefined, true)
+        }
+      })
+    },
+
+    activate(timelineName, argument, persistent) {
       const timeline = this[timelineName]
-      if (timeline.fetcher) return
+      if (timeline.persistent && !persistent) return
 
       if (
         timelineName === 'favourites' &&
@@ -153,12 +174,64 @@ export const useTimelinesStore = defineStore('timelines', {
         useOAuthStore().token,
       )
 
+      this.startFetchingTimeline(timelineName, argument)
+
+      const streamName = TIMELINE_STREAM_MAP[timelineName]
+
+      if (streamName) {
+        const et = new EventTarget()
+        et.addEventListener('open', () => this.onStreamConnect(timelineName, argument))
+        et.addEventListener('close', () => this.onStreamDisconnect(timelineName, argument))
+        et.addEventListener('update', ({ detail: message }) => this.onStreamMessage(timelineName, argument, message))
+
+        timeline.socket = {
+          stream: {
+            name: streamName,
+            argument,
+          },
+          et,
+        }
+
+        useStreamingStore().addSubscriber(timeline.socket)
+      }
+    },
+    deactivate(timelineName) {
+      const timeline = this[timelineName]
+      if (timeline.persistent) return
+      this.clearTimeline(timelineName)
+    },
+
+    onStreamMessage(timeline, argument, event) {
+      // This relies on statuses store to process this event first
+      const status = useStatusesStore().allStatuses.get(event.data.status.id)
+
+      this.addStatusesToTimeline(timeline, argument, {
+        statuses: [status],
+      })
+    },
+
+    onStreamConnect(timeline) {
+      console.log('STREAM OK', timeline)
+      this[timeline].streaming = true
+      this.stopFetchingTimeline(timeline)
+    },
+
+    onStreamDisconnect(timeline, argument) {
+      console.log('STREAM DED', timeline, argument)
+      this[timeline].streaming = false
+      this.startFetchingTimeline(timeline, argument)
+    },
+
+    // Fetchers
+    startFetchingTimeline(timelineName, argument) {
+      console.log('START FETCHING', timelineName, argument)
+      const timeline = this[timelineName]
       timeline.fetcher.startFetching()
     },
     stopFetchingTimeline(timelineName) {
+      console.log('STOP FETCHING', timelineName)
       const timeline = this[timelineName]
-      timeline.fetcher?.stopFetching()
-      timeline.fetcher = null
+      timeline.fetcher.stopFetching()
     },
 
     // Queues & Timeline manip
@@ -198,10 +271,16 @@ export const useTimelinesStore = defineStore('timelines', {
 
       this.updateTimelineExtremes(timeline, [...timeline.statuses.keys()])
     },
-    clearTimeline(timeline, excludeUserId = false) {
-      const userId = excludeUserId ? this[timeline].userId : undefined
-      this.stopFetchingTimeline(timeline)
-      this[timeline] = emptyTl(timeline, userId)
+    clearTimeline(timeline) {
+      console.log('CLEAR TIMELINE', timeline)
+      const data = this[timeline]
+      if (!data.streaming) {
+        this.stopFetchingTimeline(timeline)
+      }
+      if (data.socket) {
+        useStreamingStore().removeSubscriber(data.socket)
+      }
+      this[timeline] = emptyTl(timeline)
     },
     queueFlush(timeline, id) {
       this[timeline].flushMarker = id

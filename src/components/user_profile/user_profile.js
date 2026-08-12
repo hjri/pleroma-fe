@@ -79,12 +79,14 @@ const UserProfile = {
       return useMergedConfigStore().mergedConfig.compactProfiles
     },
     friends() {
-      return [...useUsersStore().relationshipsLists.friends.get(this.user).keys()]
-        .map((id) => useUsersStore().findUser(id))
+      return [
+        ...useUsersStore().relationshipsLists.friends.get(this.user).keys(),
+      ].map((id) => useUsersStore().findUser(id))
     },
     followers() {
-      return [...useUsersStore().relationshipsLists.followers.get(this.user).keys()]
-        .map((id) => useUsersStore().findUser(id))
+      return [
+        ...useUsersStore().relationshipsLists.followers.get(this.user).keys(),
+      ].map((id) => useUsersStore().findUser(id))
     },
   },
   methods: {
@@ -93,7 +95,8 @@ const UserProfile = {
     },
     fetchUsers(group) {
       return () =>
-        useUsersStore()['fetch' + group](this.userId)
+        useUsersStore()
+          ['fetch' + group](this.userId)
           .then((result) => ({ items: result }))
     },
     load(userNameOrId) {
