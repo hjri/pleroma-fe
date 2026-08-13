@@ -6,7 +6,7 @@
     >
       <TimelineMenu
         v-if="!embedded"
-        :timeline-name="timelineName"
+        :timeline-name="timelineRef.name"
       />
       <ScrollTopButton />
       <template v-if="mobileLayout">
@@ -78,7 +78,7 @@
           class="status-fadein"
           :status-id="status.id"
           :in-profile="inProfile"
-          :profile-user-id="userId"
+          :profile-user-id="timelineRef.argument"
           :virtual-hidden="virtualScrollingEnabled && !statusesToDisplay.has(status.id)"
           collapsable
         />
