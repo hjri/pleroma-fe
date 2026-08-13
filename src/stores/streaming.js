@@ -147,6 +147,7 @@ export const useStreamingStore = defineStore('streaming', {
       this.state = WSConnectionStatus.JOINED
     },
     onOpen() {
+      this.retryMultiplier = 1
       this.subscribers.forEach(({ stream, et }) => {
         et.dispatchEvent(new StreamStateEvent('open'))
       })
@@ -207,6 +208,7 @@ export const useStreamingStore = defineStore('streaming', {
         )
 
         this.state = WSConnectionStatus.CLOSED
+        this.retryMultiplier = 1
 
         this.subscribers.forEach(({ et }) => {
           et.dispatchEvent(new StreamStateEvent('close', closeEvent))
