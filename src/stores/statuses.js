@@ -86,10 +86,8 @@ export const useStatusesStore = defineStore('statuses', {
         this.addNewStatuses({ statuses: [data.status], timestamp })
       }
       const handleUpdate = ({ detail: message }) => handleStatusMessage(message)
-      const handleDelete = ({ detail: message }) => {
-        console.log('DELETE', message)
-        this.deleteStatus(message.data)
-      }
+      const handleDelete = ({ detail: message }) => this.setDeleted(message.data.id)
+
       const socket = {
         et,
         handlers: {
@@ -581,7 +579,7 @@ export const useStatusesStore = defineStore('statuses', {
         credentials: useOAuthStore().token,
       })
         .then(() => {
-          this.setDeleted({ id })
+          this.setDeleted(id)
         })
         .catch((e) => {
           useInterfaceStore().pushGlobalNotice({
@@ -592,7 +590,7 @@ export const useStatusesStore = defineStore('statuses', {
           })
         })
     },
-    setDeleted({ id }) {
+    setDeleted(id) {
       const newStatus = this.allStatuses.get(id)
       if (newStatus) newStatus.deleted = true
     },
