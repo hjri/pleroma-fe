@@ -23,6 +23,37 @@ export const TIMELINE_STREAM_MAP = {
 
 const retryTimeout = (multiplier) => 1000 * multiplier
 
+export class StreamStateEvent extends Event {
+  original
+
+  constructor(name, original) {
+    super(name)
+    this.original = original
+  }
+}
+
+export class StreamErrorEvent extends Event {
+  error
+
+  constructor(error) {
+    super('error', error)
+    this.error = error
+  }
+}
+
+export class StreamMessageEvent extends Event {
+  data
+  stream
+  timestamp
+
+  constructor(name, stream, data) {
+    super(name)
+    this.data = data
+    this.stream = stream
+    this.timestamp = Date.now()
+  }
+}
+
 export const useStreamingStore = defineStore('streaming', {
   state: () => ({
     socket: null,
@@ -56,7 +87,7 @@ export const useStreamingStore = defineStore('streaming', {
       this.subscribers.add(subscriber)
       if (this.state === WSConnectionStatus.JOINED) {
         this.socket.subscribe(...this.getSubArgs(stream))
-        et.dispatchEvent(new CustomEvent('open'))
+        et.dispatchEvent(new StreamStateEvent('open'))
       }
     },
     removeSubscriber(subscriber) {
@@ -105,7 +136,7 @@ export const useStreamingStore = defineStore('streaming', {
     },
     onAuth() {
       this.subscribers.forEach(({ stream, et }) => {
-        et.dispatchEvent(new CustomEvent('authenticated'))
+        et.dispatchEvent(new StreamStateEvent('authenticated'))
 
         if (stream) {
           this.socket.subscribe(...this.getSubArgs(stream))
@@ -115,12 +146,11 @@ export const useStreamingStore = defineStore('streaming', {
     },
     onOpen() {
       this.subscribers.forEach(({ stream, et }) => {
-        et.dispatchEvent(new CustomEvent('open'))
+        et.dispatchEvent(new StreamStateEvent('open'))
       })
     },
-    onMessage({ detail: message }) {
+    onMessage({ data: message }) {
       if (!message) return // pings
-      const timestamp = Date.now()
       const { event: eventName, stream: eventStream, ...data } = message
       const [streamName, streamArgument] = eventStream ?? []
 
@@ -131,23 +161,39 @@ export const useStreamingStore = defineStore('streaming', {
         subscriber,
       ].filter(Boolean)
 
+      const eventData = (() => {
+        switch (eventName) {
+          case 'status.update':
+          case 'update':
+            return [data.status]
+          case 'notification':
+            return [data.notification]
+          case 'delete':
+            return [data.id]
+          default:
+            return data
+        }
+      })()
+
+      const event = new StreamMessageEvent(
+        eventName,
+        { name: streamName, argument: streamArgument },
+        eventData,
+      )
+
       totalSubs.forEach(({ stream, et }) => {
-        et.dispatchEvent(
-          new CustomEvent(eventName, {
-            detail: { streamName, streamArgument, data, timestamp },
-          }),
-        )
+        et.dispatchEvent(event)
       })
 
       console.log('WS', message)
     },
-    onError({ detail: error }) {
+    onError({ data: error }) {
       this.subscribers.forEach(({ stream, et }) => {
-        et.dispatchEvent(new CustomEvent('error', error))
+        et.dispatchEvent(new StreamErrorEvent(error))
       })
       console.error('Error in MastoAPI websocket:', error)
     },
-    onClose({ detail: closeEvent }) {
+    onClose({ data: closeEvent }) {
       const ignoreCodes = new Set([
         1000, // Normal (intended) closure
         1001, // Going away
@@ -162,7 +208,7 @@ export const useStreamingStore = defineStore('streaming', {
         this.state = WSConnectionStatus.CLOSED
 
         this.subscribers.forEach(({ et }) => {
-          et.dispatchEvent(new CustomEvent('close', closeEvent))
+          et.dispatchEvent(new StreamStateEvent('close', closeEvent))
         })
       } else {
         console.warn(
@@ -177,7 +223,7 @@ export const useStreamingStore = defineStore('streaming', {
 
         if (this.state !== WSConnectionStatus.ERROR) {
           this.subscribers.forEach(({ et }) => {
-            et.dispatchEvent(new CustomEvent('close', closeEvent))
+            et.dispatchEvent(new StreamStateEvent('close', closeEvent))
           })
         }
 

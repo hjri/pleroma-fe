@@ -82,11 +82,10 @@ export const useStatusesStore = defineStore('statuses', {
     // Init
     attachSocket() {
       const et = new EventTarget()
-      const handleStatusMessage = ({ data, timestamp }) => {
-        this.addNewStatuses({ statuses: [data.status], timestamp })
-      }
-      const handleUpdate = ({ detail: message }) => handleStatusMessage(message)
-      const handleDelete = ({ detail: message }) => this.setDeleted(message.data.id)
+      const handleUpdate = ({ data, timestamp }) =>
+        this.addNewStatuses({ statuses: data, timestamp })
+      const handleDelete = ({ data }) =>
+        data.forEach((id) => this.setDeleted(id))
 
       const socket = {
         et,

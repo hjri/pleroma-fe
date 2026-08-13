@@ -26,8 +26,26 @@ const PLEROMA_STREAMING_EVENTS = new Set([
   'pleroma:respond',
 ])
 
+export const WSConnectionStatus = Object.freeze({
+  JOINED: 1,
+  CLOSED: 2,
+  ERROR: 3,
+  DISABLED: 4,
+  STARTING: 5,
+  STARTING_INITIAL: 6,
+})
+
+export class WSEvent extends Event {
+  data
+
+  constructor(name, data, original) {
+    super(name)
+    this.data = data
+  }
+}
+
 // A thin wrapper around WebSocket API that allows adding a pre-processor to it
-// Uses EventTarget and a CustomEvent to proxy events
+// Uses EventTarget and a WSEvent to proxy events
 export const ProcessedWS = ({
   url,
   preprocessor = handleMastoWS,
@@ -39,9 +57,7 @@ export const ProcessedWS = ({
   if (!socket) throw new Error(`Failed to create socket ${id}`)
   const proxy = (original, eventName, processor = (a) => a) => {
     original.addEventListener(eventName, (eventData) => {
-      eventTarget.dispatchEvent(
-        new CustomEvent(eventName, { detail: processor(eventData) }),
-      )
+      eventTarget.dispatchEvent(new WSEvent(eventName, processor(eventData)))
     })
   }
   socket.addEventListener('open', (wsEvent) => {
@@ -75,7 +91,7 @@ export const ProcessedWS = ({
   /**/
 
   const onAuthenticated = () => {
-    eventTarget.dispatchEvent(new CustomEvent('pleroma:authenticated'))
+    eventTarget.dispatchEvent(new WSEvent('pleroma:authenticated'))
   }
 
   proxy(socket, 'open')
@@ -163,12 +179,3 @@ export const handleMastoWS = (
     return null
   }
 }
-
-export const WSConnectionStatus = Object.freeze({
-  JOINED: 1,
-  CLOSED: 2,
-  ERROR: 3,
-  DISABLED: 4,
-  STARTING: 5,
-  STARTING_INITIAL: 6,
-})

@@ -40,26 +40,11 @@ export const useNotificationsStore = defineStore('notifications', {
     // Init
     attachSocket() {
       const et = new EventTarget()
-      const handleNotificationMessage = ({ data, timestamp }) => {
-        this.addNewNotifications({ data: [data.notification], timestamp })
-      }
-      const notificationHandler = ({ detail: message }) => {
-        handleNotificationMessage(message)
-      }
-      const openHandler = () => this.onStreamConnect()
-      const closeHandler = () => this.onStreamDisconnect()
-      const socket = {
-        et,
-        handlers: {
-          openHandler,
-          closeHandler,
-          notificationHandler,
-        },
-      }
+      const socket = { et }
 
-      et.addEventListener('notification', notificationHandler)
-      et.addEventListener('open', openHandler)
-      et.addEventListener('close', closeHandler)
+      et.addEventListener('notification', this.addNewNotifications)
+      et.addEventListener('open', this.onStreamConnect)
+      et.addEventListener('close', this.onStreamDisconnect)
 
       useStreamingStore().addSubscriber(socket)
       this.socket = socket
@@ -82,12 +67,11 @@ export const useNotificationsStore = defineStore('notifications', {
       }
 
       useStreamingStore().removeSubscriber(this.socket)
-      const { openHandler, closeHandler, notificationHandler } =
-        this.socket.handlers
 
-      this.socket.et.removeEventListener('notification', openHandler)
-      this.socket.et.removeEventListener('notification', closeHandler)
-      this.socket.et.removeEventListener('notification', notificationHandler)
+      const { et } = this.socket
+      et.removeEventListener('notification', this.addNewNotifications)
+      et.removeEventListener('open', this.onStreamConnect)
+      et.removeEventListener('close', this.onStreamDisconnect)
 
       const blankState = defaultState()
       Object.keys(blankState).forEach((k) => {
