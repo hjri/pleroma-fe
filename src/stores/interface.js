@@ -9,9 +9,11 @@ import { deserialize } from '../services/theme_data/iss_deserializer.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUsersStore } from 'src/stores/users.js'
 
+import { WSConnectionStatus } from 'src/api/websocket.js'
 import {
   CURRENT_VERSION,
   generatePreset,
@@ -74,6 +76,34 @@ export const useInterfaceStore = defineStore('interface', {
     foreignProfileBackground: null,
   }),
   actions: {
+    attachSocket() {
+      const et = new EventTarget()
+      const socket = { et }
+
+      et.addEventListener('open', this.onStreamConnect)
+      et.addEventListener('close', this.onStreamDisconnect)
+
+      useStreamingStore().addSubscriber(socket)
+    },
+    onStreamConnect() {
+      if (useStreamingStore().state !== WSConnectionStatus.STARTING_INITIAL) {
+        this.pushGlobalNotice({
+          level: 'success',
+          messageKey: 'timeline.socket_reconnected',
+          timeout: 5000,
+        })
+      }
+    },
+    onStreamDisconnect(closeEvent) {
+      // TODO better explanation/localization
+      const { code } = closeEvent
+      this.pushGlobalNotice({
+        level: 'error',
+        messageKey: 'timeline.socket_broke',
+        messageArgs: [code],
+        timeout: 5000,
+      })
+    },
     setTemporaryChanges({ confirm, revert }) {
       this.temporaryChangesCountdown = 10
       this.temporaryChangesConfirm = confirm

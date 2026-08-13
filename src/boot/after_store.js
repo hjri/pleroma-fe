@@ -37,6 +37,7 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 import { useUsersStore } from 'src/stores/users.js'
@@ -589,6 +590,10 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
   })
 
   useI18nStore().setI18n(i18n)
+
+  // Global WS handlers
+  useInterfaceStore().attachSocket()
+  useStatusesStore().attachSocket()
 
   app.use(router)
   app.use(store)

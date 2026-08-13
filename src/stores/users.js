@@ -725,7 +725,6 @@ export const useUsersStore = defineStore('users', {
             }
 
             // DMs and Home
-            useStatusesStore().attachSocket()
             useNotificationsStore().activate()
             useTimelinesStore().activatePersistents()
 
@@ -741,9 +740,9 @@ export const useUsersStore = defineStore('users', {
               dispatch('startFetchingFollowRequests')
             }
 
-            useStreamingStore().initSocket()
+            useStreamingStore().initSocket(true)
             if (useMergedConfigStore().mergedConfig.useStreamingApi) {
-              useStreamingStore().initSocket()
+              useStreamingStore().initSocket(true)
             }
 
             // Start fetching things that don't need to block the UI

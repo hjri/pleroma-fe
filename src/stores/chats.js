@@ -5,6 +5,7 @@ import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'
 import { promiseInterval } from '../services/promise_interval/promise_interval.js'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { chats } from 'src/api/chats.js'
@@ -34,6 +35,14 @@ export const useChatsStore = defineStore('chats', {
     },
   },
   actions: {
+    attachSocket() {
+      const et = new EventTarget()
+      const socket = { et }
+
+      et.addEventListener('pleroma:chat_update', this.updateChat)
+
+      useStreamingStore().addSubscriber(socket)
+    },
     startFetchingChats() {
       const fetcher = () => this.fetchChats()
       this.setChatListFetcher(() => promiseInterval(fetcher, 5000))
