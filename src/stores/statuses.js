@@ -38,6 +38,7 @@ export const defaultState = () => ({
   scrobblesNextFetch: {},
   conversations: new Map(),
   favorites: new Set(),
+  socket: null,
 })
 
 const getLatestScrobble = (user) => {
@@ -84,22 +85,36 @@ export const useStatusesStore = defineStore('statuses', {
       const handleStatusMessage = ({ data, timestamp }) => {
         this.addNewStatuses({ statuses: [data.status], timestamp })
       }
-
-      et.addEventListener('update', ({ detail: message }) => {
-        handleStatusMessage(message)
-      })
-
-      et.addEventListener('status.update', ({ detail: message }) => {
-        handleStatusMessage(message)
-      })
-
-      et.addEventListener('delete', ({ detail: message }) => {
+      const handleUpdate = ({ detail: message }) => handleStatusMessage(message)
+      const handleDelete = ({ detail: message }) => {
         console.log('DELETE', message)
         this.deleteStatus(message.data)
-      })
+      }
+      const socket = {
+        et,
+        handlers: {
+          handleUpdate, handleDelete
+        }
+      }
 
-      useStreamingStore().addSubscriber({ et })
+      et.addEventListener('update', handleUpdate)
+      et.addEventListener('status.update', handleUpdate)
+      et.addEventListener('delete', handleDelete)
+
+      useStreamingStore().addSubscriber(socket)
+      this.socket = socket
     },
+    resetStatuses() {
+      this.socket.et.removeEventListener('update', this.socket.handleUpdate)
+      this.socket.et.removeEventListener('status.update', this.socket.handleUpdate)
+      this.socket.et.removeEventListener('delete', this.socket.handleDelete)
+
+      const emptyState = defaultState()
+      Object.entries(emptyState).forEach(([key, value]) => {
+        this[key] = value
+      })
+    },
+
     addNewStatuses({ statuses, timestamp }) {
       // Sanity check
       if (!Array.isArray(statuses)) {
@@ -209,6 +224,8 @@ export const useStatusesStore = defineStore('statuses', {
 
       return [map.get(newStatus.id), true]
     },
+
+    // Fetches
     fetchStatus(id) {
       return fetchStatus({ id }).then(({ data: status, timestamp }) =>
         this.addNewStatuses({ statuses: [status], timestamp }),

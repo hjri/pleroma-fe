@@ -3,12 +3,13 @@ import { defineStore } from 'pinia'
 import {
   closeAllDesktopNotifications,
   closeDesktopNotification,
-} from '../services/desktop_notification_utils/desktop_notification_utils.js'
+} from 'src/services/desktop_notification_utils/desktop_notification_utils.js'
 import {
   isValidNotification,
   maybeShowNotification,
-} from '../services/notification_utils/notification_utils.js'
-import { isStatusNotification } from '../services/notification_utils/notification_utils_sw.js'
+} from 'src/services/notification_utils/notification_utils.js'
+import { isStatusNotification } from 'src/services/notification_utils/notification_utils_sw.js'
+import notificationsFetcher from 'src/services/notifications_fetcher/notifications_fetcher.service.js'
 
 import { useI18nStore } from 'src/stores/i18n.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -16,39 +17,112 @@ import { useOAuthStore } from 'src/stores/oauth.js'
 import { useReportsStore } from 'src/stores/reports.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { dismissNotification, markNotificationsAsSeen } from 'src/api/user.js'
 
 export const defaultState = () => ({
   desktopNotificationSilence: true,
-  maxId: 0,
-  minId: Number.POSITIVE_INFINITY,
+  maxId: '',
+  minId: '',
   data: [],
   statusNotificationRelations: new WeakMap(),
   idStore: new Map(),
   loading: false,
+  socket: null,
+  streaming: false,
+  fetcher: null,
 })
 
 export const useNotificationsStore = defineStore('notifications', {
   state: defaultState,
   actions: {
-    clearNotifications() {
-      const blankState = defaultState()
+    // Init
+    attachSocket() {
+      const et = new EventTarget()
+      const handleNotificationMessage = ({ data, timestamp }) => {
+        console.log(data)
+        this.addNewNotifications({ statuses: [data.notification], timestamp })
+      }
+      const notificationHandler = ({ detail: message }) => {
+        handleNotificationMessage(message)
+      }
+      const openHandler = () => this.onStreamConnect()
+      const closeHandler = () => this.onStreamDisconnect()
+      const socket = {
+        et,
+        handlers: {
+          openHandler,
+          closeHandler,
+          notificationHandler,
+        }
+      }
 
-      Object.keys(defaultState()).forEach((k) => {
+      et.addEventListener('notification', notificationHandler)
+      et.addEventListener('open', openHandler)
+      et.addEventListener('close', closeHandler)
+
+      useStreamingStore().addSubscriber(socket)
+      this.socket = socket
+    },
+    activate() {
+      this.attachSocket()
+
+      // Initially there's set flag to silence all desktop notifications so
+      // that there won't spam of them when user just opened up the FE we
+      // reset that flag after a while to show new notifications once again.
+      setTimeout(
+        () => this.desktopNotificationSilence = false,
+        10000,
+      )
+
+      if (this.fetcher) throw new Error('Fetcher already exists!')
+      this.fetcher = notificationsFetcher(useOAuthStore().token)
+      this.startFetching('Notifications activated')
+    },
+    deactivate() {
+      if (!this.streaming) {
+        this.stopFetching('Notifications deactivated')
+      }
+
+      useStreamingStore().removeSubscriber(this.socket)
+        const { openHandler, closeHandler, notificationHandler } = timeline.socket.handlers
+
+      this.socket.et.removeEventListener('notification', openHandler)
+      this.socket.et.removeEventListener('notification', closeHandler)
+      this.socket.et.removeEventListener('notification', notificationHandler)
+
+      const blankState = defaultState()
+      Object.keys(blankState).forEach((k) => {
         this[k] = blankState[k]
       })
     },
+
+    // Poll & Push
+    onStreamConnect() {
+      console.debug('[Notifications] Notifications stream connected')
+      this.streaming = true
+      this.stopFetching('Socket connected')
+    },
+    onStreamDisconnect() {
+      console.debug('[Notifications] Notifications stream disconnected')
+      this.streaming = false
+      this.startFetching('Socket disconnected')
+    },
+    startFetching(reason) {
+      console.debug('[Notifications] Starting fetching notifications', 'Reason:', reason)
+      this.fetcher.startFetching()
+    },
+    stopFetching(reason) {
+      console.debug('[Notifications] Stopped fetching notifications', 'Reason:', reason)
+      this.fetcher.stopFetching()
+    },
+
+    // Updates
     updateNotificationsMinMaxId(id) {
       this.maxId = id > this.maxId ? id : this.maxId
       this.minId = id < this.minId ? id : this.minId
-    },
-    setNotificationsLoading(value) {
-      this.loading = value
-    },
-    setNotificationsSilence(value) {
-      this.desktopNotificationSilence = value
     },
     updateNotification({ id, updater }) {
       const notification = this.idStore.get(id)
@@ -139,6 +213,8 @@ export const useNotificationsStore = defineStore('notifications', {
         }
       })
     },
+
+    // Seen / Dismiss
     notificationClicked(id) {
       const notification = this.idStore.get(id)
       const { type, seen } = notification
@@ -189,6 +265,11 @@ export const useNotificationsStore = defineStore('notifications', {
         id,
         credentials: useOAuthStore().token,
       })
+    },
+
+    // Misc
+    setLoading(value) {
+      this.loading = value
     },
   },
 })

@@ -75,6 +75,86 @@ export const defaultState = () => {
 export const useTimelinesStore = defineStore('timelines', {
   state: defaultState,
   actions: {
+    // (De)Initialization stuff
+    activate(timelineName, argument, persistent) {
+      const timeline = this[timelineName]
+      if (timeline.persistent && !persistent) return
+
+      if (
+        timelineName === 'favourites' &&
+        !useInstanceCapabilitiesStore().pleromaPublicFavouritesAvailable
+      ) {
+        return
+      }
+
+      timeline.fetcher = timelineFetcher(
+        timeline,
+        argument,
+        useOAuthStore().token,
+      )
+
+      this.startFetchingTimeline(timelineName, argument, 'Timeline activated')
+
+      const streamName = TIMELINE_STREAM_MAP[timelineName]
+
+      if (streamName) {
+        const et = new EventTarget()
+        const openHandler = () => this.onStreamConnect(timelineName, argument)
+        const closeHandler = () => this.onStreamDisconnect(timelineName, argument)
+        const messageHandler = () => ({ detail: message }) =>
+          this.onStreamMessage(timelineName, argument, message)
+
+        et.addEventListener('open', openHandler)
+        et.addEventListener('close', closeHandler)
+        et.addEventListener('update', messageHandler)
+
+        timeline.socket = {
+          stream: {
+            name: streamName,
+            argument,
+          },
+          et,
+          handlers: {
+            openHandler,
+            closeHandler,
+            messageHandler,
+          }
+        }
+
+        useStreamingStore().addSubscriber(timeline.socket)
+      }
+    },
+    deactivate(timelineName, persistent) {
+      const timeline = this[timelineName]
+      if (timeline.persistent && !persistent) return
+      if (!timeline.streaming) {
+        this.stopFetchingTimeline(timelineName, 'Timeline deactivation')
+      }
+
+      if (data.socket) {
+        useStreamingStore().removeSubscriber(timeline.socket)
+        const { openHandler, closeHandler, messageHandler } = timeline.socket.handlers
+        et.removeEventListener('open', openHandler)
+        et.removeEventListener('close', closeHandler)
+        et.removeEventListener('message', messageHandler)
+      }
+
+      this[timelineName] = emptyTl(timelineName)
+    },
+    activatePersistents() {
+      TIMELINES.forEach((name) => {
+        if (this[name].persistent) {
+          this.activate(name, undefined, true)
+        }
+      })
+    },
+    deactivateAll() {
+      TIMELINES.forEach((name) => {
+        this.deactivate(name, true)
+      })
+    },
+
+    // Update stuff
     addStatusesToTimeline(
       timelineName,
       argument,
@@ -146,65 +226,6 @@ export const useTimelinesStore = defineStore('timelines', {
         }
       })
     },
-
-    activatePersistents() {
-      TIMELINES.forEach((name) => {
-        if (this[name].persistent) {
-          this.activate(name, undefined, true)
-        }
-      })
-    },
-
-    activate(timelineName, argument, persistent) {
-      const timeline = this[timelineName]
-      if (timeline.persistent && !persistent) return
-
-      if (
-        timelineName === 'favourites' &&
-        !useInstanceCapabilitiesStore().pleromaPublicFavouritesAvailable
-      ) {
-        return
-      }
-
-      timeline.fetcher = timelineFetcher(
-        timeline,
-        argument,
-        useOAuthStore().token,
-      )
-
-      this.startFetchingTimeline(timelineName, argument)
-
-      const streamName = TIMELINE_STREAM_MAP[timelineName]
-
-      if (streamName) {
-        const et = new EventTarget()
-        et.addEventListener('open', () =>
-          this.onStreamConnect(timelineName, argument),
-        )
-        et.addEventListener('close', () =>
-          this.onStreamDisconnect(timelineName, argument),
-        )
-        et.addEventListener('update', ({ detail: message }) =>
-          this.onStreamMessage(timelineName, argument, message),
-        )
-
-        timeline.socket = {
-          stream: {
-            name: streamName,
-            argument,
-          },
-          et,
-        }
-
-        useStreamingStore().addSubscriber(timeline.socket)
-      }
-    },
-    deactivate(timelineName) {
-      const timeline = this[timelineName]
-      if (timeline.persistent) return
-      this.clearTimeline(timelineName)
-    },
-
     onStreamMessage(timeline, argument, event) {
       // This relies on statuses store to process this event first
       const status = useStatusesStore().allStatuses.get(event.data.status.id)
@@ -214,26 +235,24 @@ export const useTimelinesStore = defineStore('timelines', {
       })
     },
 
+    // Poll & Push
     onStreamConnect(timeline) {
-      console.log('STREAM OK', timeline)
+      console.debug('[Timelines] Stream connected', timeline)
       this[timeline].streaming = true
-      this.stopFetchingTimeline(timeline)
+      this.stopFetchingTimeline(timeline, 'Socket connected')
     },
-
     onStreamDisconnect(timeline, argument) {
-      console.log('STREAM DED', timeline, argument)
+      console.debug('[Timelines] Stream disconnected', timeline, argument)
       this[timeline].streaming = false
-      this.startFetchingTimeline(timeline, argument)
+      this.startFetchingTimeline(timeline, argument, 'Socket disconnected')
     },
-
-    // Fetchers
-    startFetchingTimeline(timelineName, argument) {
-      console.log('START FETCHING', timelineName, argument)
+    startFetchingTimeline(timelineName, argument, reason) {
+      console.debug('[Timelines] Starting fetching timeline', timelineName, argument, 'Reason:', reason)
       const timeline = this[timelineName]
       timeline.fetcher.startFetching()
     },
-    stopFetchingTimeline(timelineName) {
-      console.log('STOP FETCHING', timelineName)
+    stopFetchingTimeline(timelineName, reason) {
+      console.debug('[Timelines] Stopped fetching timeline', timelineName, 'Reason:', reason)
       const timeline = this[timelineName]
       timeline.fetcher.stopFetching()
     },
@@ -254,13 +273,6 @@ export const useTimelinesStore = defineStore('timelines', {
         timeline.minId = minNew
       }
     },
-    resetStatuses() {
-      const emptyState = defaultState()
-
-      Object.entries(emptyState).forEach(([key, value]) => {
-        this[key] = value
-      })
-    },
     showNewStatuses(timelineName) {
       const timeline = this[timelineName]
 
@@ -276,15 +288,6 @@ export const useTimelinesStore = defineStore('timelines', {
       this.updateTimelineExtremes(timeline, [...timeline.statuses.keys()])
     },
     clearTimeline(timeline) {
-      console.log('CLEAR TIMELINE', timeline)
-      const data = this[timeline]
-      if (!data.streaming) {
-        this.stopFetchingTimeline(timeline)
-      }
-      if (data.socket) {
-        useStreamingStore().removeSubscriber(data.socket)
-      }
-      this[timeline] = emptyTl(timeline)
     },
     queueFlush(timeline, id) {
       this[timeline].flushMarker = id

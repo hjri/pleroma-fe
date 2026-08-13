@@ -7,7 +7,6 @@ import { useNotificationsStore } from 'src/stores/notifications.js'
 
 import { fetchTimeline } from 'src/api/timelines.js'
 
-//
 // For using include_types when fetching notifications.
 // Note: chat_mention excluded as pleroma-fe polls them separately
 const mastoApiNotificationTypes = new Set([
@@ -23,7 +22,11 @@ const mastoApiNotificationTypes = new Set([
   'pleroma:report',
 ])
 
-const fetchAndUpdate = ({ credentials, older = false, sinceId }) => {
+const fetchAndUpdate = (
+  { credentials },
+  { older = false, sinceId }
+) => {
+  useNotificationsStore().setLoading(true)
   const args = { credentials }
   const timelineData = useNotificationsStore()
   const hideMutedPosts = useMergedConfigStore().mergedConfig.hideMutedPosts
@@ -107,24 +110,38 @@ const fetchNotifications = ({ args, older }) => {
       })
       console.error(error)
     })
+    .finally(() => {
+      useNotificationsStore().setLoading(false)
+    })
 }
 
-const startFetching = ({ credentials, store }) => {
-  // Initially there's set flag to silence all desktop notifications so
-  // that there won't spam of them when user just opened up the FE we
-  // reset that flag after a while to show new notifications once again.
-  setTimeout(
-    () => useNotificationsStore().setNotificationsSilence(false),
-    10000,
-  )
-  const boundFetchAndUpdate = () => fetchAndUpdate({ credentials, store })
-  boundFetchAndUpdate()
-  return promiseInterval(boundFetchAndUpdate, 10000)
-}
 
-const notificationsFetcher = {
-  fetchAndUpdate,
-  startFetching,
+const notificationsFetcher = (credentials) => {
+  const state = {
+    interval: null,
+  }
+
+  const boundFetchAndUpdate = ({ older = false, sinceId } = {}) =>
+    fetchAndUpdate({ credentials }, { older, sinceId })
+
+  const startFetching = () => {
+    if (state.interval) throw new Error('Interval already exists!')
+
+    boundFetchAndUpdate()
+
+    state.interval = promiseInterval(boundFetchAndUpdate, 10000)
+  }
+
+  const stopFetching = () => {
+    state.interval.stop()
+    state.interval = null
+  }
+
+  return {
+    startFetching,
+    stopFetching,
+    fetchAndUpdate: boundFetchAndUpdate,
+  }
 }
 
 export default notificationsFetcher

@@ -651,13 +651,12 @@ export const useUsersStore = defineStore('users', {
         })
         .then(() => {
           this.clearCurrentUser()
-          store.dispatch('disconnectFromSocket')
-          store.dispatch('stopFetchingTimeline', 'friends')
           store.dispatch('stopFetchingNotifications')
           useListsStore().stopFetching()
           useBookmarkFoldersStore().stopFetching()
           store.dispatch('stopFetchingFollowRequests')
           store.commit('clearNotifications')
+          useTimelinesStore().deactivateAll()
           useStatusesStore().resetStatuses()
           useNotificationsStore().clearNotifications()
           useChatsStore().resetChats()
@@ -726,6 +725,8 @@ export const useUsersStore = defineStore('users', {
             }
 
             // DMs and Home
+            useStatusesStore().attachSocket()
+            useNotificationsStore().activate()
             useTimelinesStore().activatePersistents()
 
             if (useInstanceCapabilitiesStore().pleromaChatMessagesAvailable) {
@@ -735,8 +736,6 @@ export const useUsersStore = defineStore('users', {
 
             useListsStore().startFetching()
             useBookmarkFoldersStore().startFetching()
-            useStatusesStore().attachSocket()
-            //useNotificationsStore().attachSocket()
 
             if (user.locked) {
               dispatch('startFetchingFollowRequests')
