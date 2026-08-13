@@ -86,7 +86,9 @@ export const useStreamingStore = defineStore('streaming', {
 
       this.subscribers.add(subscriber)
       if (this.state === WSConnectionStatus.JOINED) {
-        this.socket.subscribe(...this.getSubArgs(stream))
+        if (stream) {
+          this.socket.subscribe(...this.getSubArgs(stream))
+        }
         et.dispatchEvent(new StreamStateEvent('open'))
       }
     },
@@ -171,6 +173,7 @@ export const useStreamingStore = defineStore('streaming', {
           case 'delete':
             return [data.id]
           default:
+            console.log('UNKNOWN', eventName, eventStream, data)
             return data
         }
       })()

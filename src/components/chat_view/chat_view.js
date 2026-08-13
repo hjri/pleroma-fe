@@ -1,7 +1,6 @@
 import { get, maxBy, minBy, sortBy, throttle } from 'lodash'
-import { mapState as mapPiniaState } from 'pinia'
+import { mapState } from 'pinia'
 import { nextTick } from 'vue'
-import { mapState } from 'vuex'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
 import ChatTitle from 'src/components/chat_title/chat_title.vue'
@@ -20,6 +19,7 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import {
@@ -87,6 +87,8 @@ const Chat = {
 
       // Internal network stuff
       fetcher: null,
+      socket: null,
+      streaming: false,
       errorLoadingChat: false,
       messageRetriers: {},
       idempotencyKeyIndex: {},
@@ -94,7 +96,8 @@ const Chat = {
   },
   created() {
     if (this.testMode) return
-    this.startFetching()
+    this.activate()
+    this.attachSocket()
   },
   mounted() {
     window.addEventListener('resize', this.handleResize)
@@ -120,6 +123,9 @@ const Chat = {
         this.handleVisibilityChange,
         false,
       )
+
+    if (this.testMode) return
+    this.deactivate()
   },
   computed: {
     conversationId() {
@@ -159,17 +165,14 @@ const Chat = {
       if (this.isConversation) return false // Unsupported
       return (
         this.mergedConfig.useStreamingApi &&
-        this.mastoUserSocketStatus === WSConnectionStatus.JOINED
+        useStreamingStore().state === WSConnectionStatus.JOINED
       )
     },
-    ...mapPiniaState(useInterfaceStore, {
+    ...mapState(useInterfaceStore, {
       mobileLayout: (store) => store.layoutType === 'mobile',
     }),
-    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
-    ...mapPiniaState(useUsersStore, ['currentUser']),
-    ...mapState({
-      mastoUserSocketStatus: (state) => state.api.mastoUserSocketStatus,
-    }),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
+    ...mapState(useUsersStore, ['currentUser']),
   },
   watch: {
     messages(old, neu) {
@@ -228,16 +231,85 @@ const Chat = {
         return
       }
 
-      this.clear()
-      this.startFetching()
-    },
-    mastoUserSocketStatus(newValue) {
-      if (newValue === WSConnectionStatus.JOINED) {
-        this.fetchChat({ isFirstFetch: true })
-      }
+      this.deactivate()
+      this.activate()
     },
   },
   methods: {
+    async activate() {
+      if (!this.isConversation) {
+        try {
+          const result = await getOrCreateChat({
+            accountId: this.chatUserId,
+            credentials: useOAuthStore().token,
+          })
+          useUsersStore().addNewUsers(result)
+          const { data } = result
+          data.account = useUsersStore().findUser(data.account.id)
+          this.chat = data
+        } catch (e) {
+          console.error('Error creating or getting a chat', e)
+          this.errorLoadingChat = true
+        }
+      }
+
+      if (this.isConversation || this.chat) {
+        this.$nextTick(() => {
+          this.scrollDown({ forceRead: true })
+        })
+        this.startFetching('Chat activated', true)
+      }
+    },
+    deactivate() {
+      this.clear()
+      if (!this.streaming) {
+        this.stopFetching()
+      }
+    },
+    attachSocket() {
+      const et = new EventTarget()
+      const socket = { et }
+
+      et.addEventListener('update', this.onStreamMessage)
+      et.addEventListener('open', this.onStreamConnect)
+      et.addEventListener('close', this.onStreamDisconnect)
+
+      useStreamingStore().addSubscriber(socket)
+      this.socket = socket
+    },
+    detachSocket() {
+      const { et } = this.socket
+
+      et.removeEventListener('update', this.onStreamMessage)
+      et.removeEventListener('open', this.onStreamConnect)
+      et.removeEventListener('close', this.onStreamDisconnect)
+
+      useStreamingStore().removeSubscriber(this.socket)
+    },
+
+    // Poll & Push
+    onStreamConnect() {
+      this.streaming = true
+      this.stopFetching('Socket connected')
+    },
+    onStreamDisconnect(closeEvent) {
+      this.streaming = false
+      this.startFetching('Socket disconnected')
+    },
+    startFetching(reason, isFirstFetch) {
+      console.debug('[Chat View] Started fetching', 'Reason:', reason)
+      this.fetcher = promiseInterval(
+        () => this.fetchChat({ fetchLatest: true }),
+        5000,
+      )
+      this.fetchChat({ isFirstFetch })
+    },
+    stopFetching(reason) {
+      console.debug('[Chat View] Stopped fetching', 'Reason:', reason)
+      this.fetcher.stop()
+      this.fetcher = null
+    },
+
     // Actions
     async readChat() {
       if (this.conversationId) return // Unsupported
@@ -261,18 +333,8 @@ const Chat = {
       this.lastReadMessageId = this.maxId
       this.newMessageCount = 0
     },
-    scrollDown(options = {}) {
-      const { behavior = 'auto', forceRead = false } = options
-      this.$nextTick(() => {
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior,
-        })
-      })
-      if (forceRead) {
-        this.readChat()
-      }
-    },
+
+    // Clears
     cullOlder() {
       const maxIndex = this.messages.length
       const minIndex = maxIndex - 50
@@ -368,36 +430,12 @@ const Chat = {
         })
       }
     },
-    async startFetching() {
-      if (!this.isConversation) {
-        try {
-          const result = await getOrCreateChat({
-            accountId: this.chatUserId,
-            credentials: useOAuthStore().token,
-          })
-          useUsersStore().addNewUsers(result)
-          const { data } = result
-          data.account = useUsersStore().findUser(data.account.id)
-          this.chat = data
-        } catch (e) {
-          console.error('Error creating or getting a chat', e)
-          this.errorLoadingChat = true
-        }
-      }
-
-      if (this.isConversation || this.chat) {
-        this.$nextTick(() => {
-          this.scrollDown({ forceRead: true })
-        })
-        this.doStartFetching()
-      }
-    },
-    doStartFetching() {
-      this.fetcher = promiseInterval(
-        () => this.fetchChat({ fetchLatest: true }),
-        5000,
+    onStreamMessage({ data }) {
+      const messages = data.filter(
+        ({ statusnet_conversation_id }) =>
+          statusnet_conversation_id === this.conversationId,
       )
-      this.fetchChat({ isFirstFetch: true })
+      this.addMessages({ messages })
     },
     addMessages({ messages: newMessages }) {
       for (let i = 0; i < newMessages.length; i++) {
@@ -440,9 +478,6 @@ const Chat = {
           this.idempotencyKeyIndex[message.idempotency_key] = true
         }
       }
-    },
-    goBack() {
-      this.$router.back()
     },
 
     // Optimistic posting (chats only)
@@ -619,6 +654,23 @@ const Chat = {
         // to account for the potential delay in the DOM update.
         this.scrollDown({ forceRead: true })
       })
+    },
+
+    // Misc
+    scrollDown(options = {}) {
+      const { behavior = 'auto', forceRead = false } = options
+      this.$nextTick(() => {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior,
+        })
+      })
+      if (forceRead) {
+        this.readChat()
+      }
+    },
+    goBack() {
+      this.$router.back()
     },
 
     // Ugly

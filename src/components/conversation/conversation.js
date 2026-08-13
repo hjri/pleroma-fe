@@ -451,7 +451,7 @@ const conversation = {
           credentials: useOAuthStore().token,
         })
           .then(({ data: status }) => {
-            this.$store.dispatch('addNewStatuses', { statuses: [status] })
+            useStatusesStore().addNewStatuses({ statuses: [status] })
             this.fetchConversation()
           })
           .catch((error) => {
