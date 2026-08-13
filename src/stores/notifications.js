@@ -1,5 +1,15 @@
 import { defineStore } from 'pinia'
 
+import { useI18nStore } from 'src/stores/i18n.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
+import { useReportsStore } from 'src/stores/reports.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
+
+import { dismissNotification, markNotificationsAsSeen } from 'src/api/user.js'
 import {
   closeAllDesktopNotifications,
   closeDesktopNotification,
@@ -10,17 +20,6 @@ import {
 } from 'src/services/notification_utils/notification_utils.js'
 import { isStatusNotification } from 'src/services/notification_utils/notification_utils_sw.js'
 import notificationsFetcher from 'src/services/notifications_fetcher/notifications_fetcher.service.js'
-
-import { useI18nStore } from 'src/stores/i18n.js'
-import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
-import { useReportsStore } from 'src/stores/reports.js'
-import { useStatusesStore } from 'src/stores/statuses.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
-import { useStreamingStore } from 'src/stores/streaming.js'
-import { useUsersStore } from 'src/stores/users.js'
-
-import { dismissNotification, markNotificationsAsSeen } from 'src/api/user.js'
 
 export const defaultState = () => ({
   desktopNotificationSilence: true,
@@ -42,8 +41,7 @@ export const useNotificationsStore = defineStore('notifications', {
     attachSocket() {
       const et = new EventTarget()
       const handleNotificationMessage = ({ data, timestamp }) => {
-        console.log(data)
-        this.addNewNotifications({ statuses: [data.notification], timestamp })
+        this.addNewNotifications({ data: [data.notification], timestamp })
       }
       const notificationHandler = ({ detail: message }) => {
         handleNotificationMessage(message)
@@ -56,7 +54,7 @@ export const useNotificationsStore = defineStore('notifications', {
           openHandler,
           closeHandler,
           notificationHandler,
-        }
+        },
       }
 
       et.addEventListener('notification', notificationHandler)
@@ -72,10 +70,7 @@ export const useNotificationsStore = defineStore('notifications', {
       // Initially there's set flag to silence all desktop notifications so
       // that there won't spam of them when user just opened up the FE we
       // reset that flag after a while to show new notifications once again.
-      setTimeout(
-        () => this.desktopNotificationSilence = false,
-        10000,
-      )
+      setTimeout(() => (this.desktopNotificationSilence = false), 10000)
 
       if (this.fetcher) throw new Error('Fetcher already exists!')
       this.fetcher = notificationsFetcher(useOAuthStore().token)
@@ -87,7 +82,8 @@ export const useNotificationsStore = defineStore('notifications', {
       }
 
       useStreamingStore().removeSubscriber(this.socket)
-        const { openHandler, closeHandler, notificationHandler } = timeline.socket.handlers
+      const { openHandler, closeHandler, notificationHandler } =
+        this.socket.handlers
 
       this.socket.et.removeEventListener('notification', openHandler)
       this.socket.et.removeEventListener('notification', closeHandler)
@@ -111,11 +107,19 @@ export const useNotificationsStore = defineStore('notifications', {
       this.startFetching('Socket disconnected')
     },
     startFetching(reason) {
-      console.debug('[Notifications] Starting fetching notifications', 'Reason:', reason)
+      console.debug(
+        '[Notifications] Starting fetching notifications',
+        'Reason:',
+        reason,
+      )
       this.fetcher.startFetching()
     },
     stopFetching(reason) {
-      console.debug('[Notifications] Stopped fetching notifications', 'Reason:', reason)
+      console.debug(
+        '[Notifications] Stopped fetching notifications',
+        'Reason:',
+        reason,
+      )
       this.fetcher.stopFetching()
     },
 

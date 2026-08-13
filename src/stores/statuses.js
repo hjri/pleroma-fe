@@ -93,8 +93,9 @@ export const useStatusesStore = defineStore('statuses', {
       const socket = {
         et,
         handlers: {
-          handleUpdate, handleDelete
-        }
+          handleUpdate,
+          handleDelete,
+        },
       }
 
       et.addEventListener('update', handleUpdate)
@@ -106,7 +107,10 @@ export const useStatusesStore = defineStore('statuses', {
     },
     resetStatuses() {
       this.socket.et.removeEventListener('update', this.socket.handleUpdate)
-      this.socket.et.removeEventListener('status.update', this.socket.handleUpdate)
+      this.socket.et.removeEventListener(
+        'status.update',
+        this.socket.handleUpdate,
+      )
       this.socket.et.removeEventListener('delete', this.socket.handleDelete)
 
       const emptyState = defaultState()

@@ -100,9 +100,12 @@ export const useTimelinesStore = defineStore('timelines', {
       if (streamName) {
         const et = new EventTarget()
         const openHandler = () => this.onStreamConnect(timelineName, argument)
-        const closeHandler = () => this.onStreamDisconnect(timelineName, argument)
-        const messageHandler = () => ({ detail: message }) =>
-          this.onStreamMessage(timelineName, argument, message)
+        const closeHandler = () =>
+          this.onStreamDisconnect(timelineName, argument)
+        const messageHandler =
+          () =>
+          ({ detail: message }) =>
+            this.onStreamMessage(timelineName, argument, message)
 
         et.addEventListener('open', openHandler)
         et.addEventListener('close', closeHandler)
@@ -118,7 +121,7 @@ export const useTimelinesStore = defineStore('timelines', {
             openHandler,
             closeHandler,
             messageHandler,
-          }
+          },
         }
 
         useStreamingStore().addSubscriber(timeline.socket)
@@ -131,12 +134,14 @@ export const useTimelinesStore = defineStore('timelines', {
         this.stopFetchingTimeline(timelineName, 'Timeline deactivation')
       }
 
-      if (data.socket) {
+      if (timeline.socket) {
         useStreamingStore().removeSubscriber(timeline.socket)
-        const { openHandler, closeHandler, messageHandler } = timeline.socket.handlers
-        et.removeEventListener('open', openHandler)
-        et.removeEventListener('close', closeHandler)
-        et.removeEventListener('message', messageHandler)
+
+        const { openHandler, closeHandler, messageHandler } =
+          timeline.socket.handlers
+        timeline.socket.et.removeEventListener('open', openHandler)
+        timeline.socket.et.removeEventListener('close', closeHandler)
+        timeline.socket.et.removeEventListener('message', messageHandler)
       }
 
       this[timelineName] = emptyTl(timelineName)
@@ -247,12 +252,23 @@ export const useTimelinesStore = defineStore('timelines', {
       this.startFetchingTimeline(timeline, argument, 'Socket disconnected')
     },
     startFetchingTimeline(timelineName, argument, reason) {
-      console.debug('[Timelines] Starting fetching timeline', timelineName, argument, 'Reason:', reason)
+      console.debug(
+        '[Timelines] Starting fetching timeline',
+        timelineName,
+        argument,
+        'Reason:',
+        reason,
+      )
       const timeline = this[timelineName]
       timeline.fetcher.startFetching()
     },
     stopFetchingTimeline(timelineName, reason) {
-      console.debug('[Timelines] Stopped fetching timeline', timelineName, 'Reason:', reason)
+      console.debug(
+        '[Timelines] Stopped fetching timeline',
+        timelineName,
+        'Reason:',
+        reason,
+      )
       const timeline = this[timelineName]
       timeline.fetcher.stopFetching()
     },
@@ -286,8 +302,6 @@ export const useTimelinesStore = defineStore('timelines', {
       timeline.maxId = ''
 
       this.updateTimelineExtremes(timeline, [...timeline.statuses.keys()])
-    },
-    clearTimeline(timeline) {
     },
     queueFlush(timeline, id) {
       this[timeline].flushMarker = id

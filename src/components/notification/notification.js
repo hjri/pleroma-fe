@@ -18,6 +18,7 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 import { useUsersStore } from 'src/stores/users.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 
 import { approveUser, denyUser } from 'src/api/user.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
@@ -182,6 +183,11 @@ const Notification = {
     },
   },
   computed: {
+    status() {
+      if (this.notification.status) {
+        return useStatusesStore().allStatuses.get(this.notification.status.id)
+      }
+    },
     userClass() {
       return highlightClass(this.notification.from_profile)
     },

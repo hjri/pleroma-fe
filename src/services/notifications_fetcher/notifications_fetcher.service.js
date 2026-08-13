@@ -22,10 +22,7 @@ const mastoApiNotificationTypes = new Set([
   'pleroma:report',
 ])
 
-const fetchAndUpdate = (
-  { credentials },
-  { older = false, sinceId }
-) => {
+const fetchAndUpdate = ({ credentials }, { older = false, sinceId }) => {
   useNotificationsStore().setLoading(true)
   const args = { credentials }
   const timelineData = useNotificationsStore()
@@ -114,7 +111,6 @@ const fetchNotifications = ({ args, older }) => {
       useNotificationsStore().setLoading(false)
     })
 }
-
 
 const notificationsFetcher = (credentials) => {
   const state = {

@@ -6,7 +6,7 @@
     <Status
       class="Notification panel-body"
       :compact="true"
-      :statusoid="notification.status"
+      :statusoid="status"
       @click="interacted"
     />
   </article>
@@ -261,7 +261,7 @@
           <StatusContent
             class="status-content"
             :compact="!statusExpanded"
-            :status="notification.status"
+            :status="status"
             :collapse="!statusExpanded"
             @click="onContentClick"
           />
