@@ -184,8 +184,6 @@ export const useStreamingStore = defineStore('streaming', {
       totalSubs.forEach(({ stream, et }) => {
         et.dispatchEvent(event)
       })
-
-      console.log('WS', message)
     },
     onError({ data: error }) {
       this.subscribers.forEach(({ stream, et }) => {
