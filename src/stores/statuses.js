@@ -336,6 +336,7 @@ export const useStatusesStore = defineStore('statuses', {
         .catch((error) => {
           optimisticCall(id, oldValue, argument)
 
+          console.error('Interact Error', error)
           useInterfaceStore().pushGlobalNotice({
             level: 'error',
             messageKey: 'status.interact_error',

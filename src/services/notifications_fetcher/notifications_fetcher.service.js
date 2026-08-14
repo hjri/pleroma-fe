@@ -99,13 +99,13 @@ const fetchNotifications = ({ args, older }) => {
         return fetchNotifications({ args, older })
       }
 
+      console.error('Notifications Error', error)
       useInterfaceStore().pushGlobalNotice({
         level: 'error',
         messageKey: 'notifications.error',
         messageArgs: [error.message],
         timeout: 5000,
       })
-      console.error(error)
     })
     .finally(() => {
       useNotificationsStore().setLoading(false)

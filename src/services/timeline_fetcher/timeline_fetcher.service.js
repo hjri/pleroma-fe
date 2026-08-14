@@ -75,6 +75,7 @@ const fetchAndUpdate = (
         useInstanceCapabilitiesStore().pleromaPublicFavouritesAvailable = false
         return
       }
+      console.error('Timeline Error', error)
       useInterfaceStore().pushGlobalNotice({
         level: 'error',
         messageKey: 'timeline.error',
