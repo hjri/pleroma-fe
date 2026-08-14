@@ -98,12 +98,13 @@ const List = {
 
       this.fetchFunction(this.page)
         .then((result) => {
+          console.log(result)
           this.loading = false
-          this.bottomedOut = isEmpty(result.items)
+          this.bottomedOut = isEmpty(result)
           if (this.externalItems) return
           this.page += 1
-          this.total = result.count
-          this.items.push(...result.items)
+          this.total = result.length
+          this.items.push(...result)
         })
         .catch((error) => {
           this.loading = false

@@ -241,9 +241,7 @@ export const useUsersStore = defineStore('users', {
       this.currentUser.blockIds = blockIds
     },
     addBlockId(blockId) {
-      if (this.currentUser.blockIds.includes(blockId)) {
-        this.currentUser.blockIds.push(blockId)
-      }
+      this.currentUser.blockIds.add(blockId)
     },
     setBlockIdsMaxId(blockIdsMaxId) {
       this.currentUser.blockIdsMaxId = blockIdsMaxId
@@ -255,9 +253,7 @@ export const useUsersStore = defineStore('users', {
       this.currentUser.muteIdsMaxId = muteIdsMaxId
     },
     addMuteId(muteId) {
-      if (this.currentUser.muteIds.includes(muteId)) {
-        this.currentUser.muteIds.push(muteId)
-      }
+      this.currentUser.muteIds.add(muteId)
     },
     saveDomainMutes(domainMutes) {
       this.currentUser.domainMutes = domainMutes
@@ -412,7 +408,7 @@ export const useUsersStore = defineStore('users', {
       }).then((result) => {
         const { data: blocks } = result
         if (reset) {
-          this.saveBlockIds(blocks.map(({ id }) => id))
+          this.saveBlockIds(new Set(blocks.map(({ id }) => id)))
         } else {
           blocks.forEach(({ id }) => this.addBlockId(id))
         }
@@ -476,7 +472,7 @@ export const useUsersStore = defineStore('users', {
       }).then((result) => {
         const { data: mutes } = result
         if (reset) {
-          this.saveMuteIds(mutes.map(({ id }) => id))
+          this.saveMuteIds(new Set(mutes.map(({ id }) => id)))
         } else {
           mutes.forEach(({ id }) => this.addMuteId(id))
         }
@@ -680,9 +676,9 @@ export const useUsersStore = defineStore('users', {
           .then(({ data: user, ...rest }) => {
             // user.credentials = userCredentials
             user.credentials = accessToken
-            user.blockIds = []
-            user.muteIds = []
-            user.domainMutes = []
+            user.blockIds = new Set()
+            user.muteIds = new Set()
+            user.domainMutes = new Set()
             this.setCurrentUser(user)
 
             useSyncConfigStore()

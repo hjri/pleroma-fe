@@ -44,18 +44,18 @@ const MutesAndBlocks = {
       return useUsersStore().currentUser
     },
     blocks() {
-      return get(useUsersStore().currentUser, 'blockIds', [])
+      return get(this.user, 'blockIds', [])
     },
     mutes() {
-      return get(useUsersStore().currentUser, 'muteIds', [])
+      return get(this.user, 'muteIds', [])
     },
     domains() {
-      return get(useUsersStore().currentUser, 'domainMutes', [])
+      return get(this.user, 'domainMutes', [])
     },
   },
   methods: {
     fetchItems(group) {
-      return () => this.$store.dispatch('fetch' + group, this.userId)
+      return () => useUsersStore()['fetch' + group](this.userId)
     },
     importFollows(file) {
       return importFollows({
@@ -111,16 +111,16 @@ const MutesAndBlocks = {
         .then((users) => map(users, 'id'))
     },
     blockUsers(ids) {
-      return this.$store.dispatch('blockUsers', ids)
+      return useUsersStore().blockUsers(ids)
     },
     unblockUsers(ids) {
-      return this.$store.dispatch('unblockUsers', ids)
+      return useUsersStore().unblockUsers(ids)
     },
     muteUsers(ids) {
-      return this.$store.dispatch('muteUsers', ids)
+      return useUsersStore().muteUsers(ids)
     },
     unmuteUsers(ids) {
-      return this.$store.dispatch('unmuteUsers', ids)
+      return useUsersStore().unmuteUsers(ids)
     },
     filterUnMutedDomains(urls) {
       return urls.filter((url) => !this.user.domainMutes.includes(url))
