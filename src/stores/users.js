@@ -170,9 +170,15 @@ export const useUsersStore = defineStore('users', {
 
         const { relationship: unused1, ...newUser } = user
 
-        // Initializing reactivity
-        if (!this.users.has(user.id)) this.users.set(user.id, existing)
-        const reactive = this.users.get(user.id)
+        let reactive = this.users.get(user.id)
+        // Initializing reactivity & avoiding excessive Map mutation
+        if (!reactive) {
+          this.users.set(user.id, existing)
+
+          reactive = this.users.get(user.id)
+          this.usersByName.set(user.screen_name.toLowerCase(), reactive)
+          this.usersByURL.set(user.url.toLowerCase(), reactive)
+        }
 
         // Relying on object reactivity to avoid mutating the Map
         reactive.relationship = relationship
@@ -183,12 +189,6 @@ export const useUsersStore = defineStore('users', {
 
         // Updating the timestamp
         this.timestamps.set(reactive, timestamp)
-
-        // Avoiding excessive Map mutation
-        if (!this.users.has(user.id)) {
-          this.usersByName.set(user.screen_name.toLowerCase(), reactive)
-          this.usersByURL.set(user.url.toLowerCase(), reactive)
-        }
 
         if (user.id === this.currentUser?.id) {
           this.currentUser = reactive
