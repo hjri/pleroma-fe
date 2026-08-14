@@ -148,6 +148,14 @@
   background-image:
     linear-gradient(to bottom, var(--background), var(--background)),
     linear-gradient(to bottom, var(--__panel-background), var(--__panel-background));
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  .title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
   --_shadow: var(--shadow);
 

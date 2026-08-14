@@ -45,8 +45,10 @@ import {
 import {
   blockUser as apiBlockUser,
   editUserNote as apiEditUserNote,
+  muteDomain as apiMuteDomain,
   muteUser as apiMuteUser,
   unblockUser as apiUnblockUser,
+  unmuteDomain as apiUnmuteDomain,
   unmuteUser as apiUnmuteUser,
   fetchBlocks,
   fetchDomainMutes,
@@ -178,14 +180,14 @@ const showReblogs = (store, userId) => {
 }
 
 const muteDomain = (store, domain) => {
-  return muteDomain({
+  return apiMuteDomain({
     domain,
     credentials: useOAuthStore().token,
   }).then(() => store.commit('addDomainMute', domain))
 }
 
 const unmuteDomain = (store, domain) => {
-  return unmuteDomain({
+  return apiUnmuteDomain({
     domain,
     credentials: useOAuthStore().token,
   }).then(() => store.commit('removeDomainMute', domain))
@@ -625,8 +627,11 @@ const users = {
     addNewStatuses(store, { statuses }) {
       const users = map(statuses, 'user')
       const retweetedUsers = compact(map(statuses, 'retweeted_status.user'))
+      const quotedUsers = compact(map(statuses, 'quote.user'))
+
       store.commit('addNewUsers', users)
       store.commit('addNewUsers', retweetedUsers)
+      store.commit('addNewUsers', quotedUsers)
 
       each(statuses, (status) => {
         // Reconnect users to statuses

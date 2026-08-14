@@ -92,6 +92,11 @@ export const adoptStyleSheets = throttle(() => {
 const EAGER_STYLE_ID = 'pleroma-eager-styles'
 const LAZY_STYLE_ID = 'pleroma-lazy-styles'
 
+export const hasInvalidCachedThemeRules = (data) =>
+  data
+    .flat()
+    .some((rule) => /--(?:mono)?font:\s*\[object Object\](?:;|$)/i.test(rule))
+
 const generateTheme = (inputRuleset, callbacks, debug) => {
   const {
     onNewRule = () => {
@@ -154,7 +159,8 @@ export const tryLoadCache = async () => {
     if (
       cache.engineChecksum === getEngineChecksum() &&
       cache.checksum !== undefined &&
-      cache.checksum === useMergedConfigStore().mergedConfig.themeChecksum
+      cache.checksum === useMergedConfigStore().mergedConfig.themeChecksum &&
+      !hasInvalidCachedThemeRules(cache.data)
     ) {
       const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
       const lazyStyles = createStyleSheet(LAZY_STYLE_ID, 20)
@@ -308,7 +314,9 @@ export const applyStyleConfig = (input) => {
   adoptStyleSheets()
 }
 
-export const getResourcesIndex = async (url, parser = (x) => x) => {
+const noop = (x) => x
+
+export const getResourcesIndex = async (url, parser = noop) => {
   const cache = 'no-store'
   const customUrl = url.replace(/\.(\w+)$/, '.custom.$1')
   let builtin
@@ -325,6 +333,7 @@ export const getResourcesIndex = async (url, parser = (x) => x) => {
             promisedRequest({
               url: v,
               cache,
+              forceContentType: parser === noop ? null : 'text/plain',
             })
               .then(({ data: text }) => parser(text))
               .catch((e) => {
@@ -340,7 +349,11 @@ export const getResourcesIndex = async (url, parser = (x) => x) => {
   }
 
   try {
-    const { data: builtinData } = await promisedRequest({ url, cache })
+    const { data: builtinData } = await promisedRequest({
+      url,
+      cache,
+      forceContentType: 'application/json',
+    })
     builtin = resourceTransform(builtinData)
   } catch {
     builtin = []
@@ -351,6 +364,7 @@ export const getResourcesIndex = async (url, parser = (x) => x) => {
     const { data: customData } = await promisedRequest({
       url: customUrl,
       cache,
+      forceContentType: 'application/json',
     })
     custom = resourceTransform(customData)
   } catch {

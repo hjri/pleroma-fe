@@ -410,7 +410,6 @@ export const exportFriends = ({ id, credentials }) => {
           id,
           maxId,
           credentials,
-          withRelationships: true,
         })
         friends = concat(friends, users)
         if (users.length === 0) {

@@ -71,6 +71,7 @@ export const promisedRequest = async ({
   url,
   payload,
   formData,
+  forceContentType,
   cache,
   credentials,
   headers = {},
@@ -79,7 +80,7 @@ export const promisedRequest = async ({
     method,
     credentials: 'same-origin',
     headers: {
-      Accept: 'application/json',
+      Accept: forceContentType ?? 'application/json',
       ...headers,
     },
   }
@@ -112,7 +113,7 @@ export const promisedRequest = async ({
     const contentLength = parseInt(response.headers.get('content-length'))
     if (contentLength === 0) return null
 
-    switch (contentType) {
+    switch (forceContentType ?? contentType) {
       case 'text/plain':
         return await response.text()
       case 'application/json':
