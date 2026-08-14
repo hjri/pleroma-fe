@@ -223,9 +223,6 @@ const Status = {
     botStatus() {
       return this.status.user.actor_type === 'Service'
     },
-    showActorTypeIndicator() {
-      return !this.hideBotIndication
-    },
     sensitiveStatus() {
       return this.status.nsfw
     },

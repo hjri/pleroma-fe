@@ -55,8 +55,7 @@
         <UserAvatar
           v-if="retweet"
           class="left-side repeater-avatar"
-          :show-actor-type-indicator="showActorTypeIndicator"
-          :user="statusoid.user"
+          :user-id="statusoid.user.id"
         />
         <div class="right-side faint">
           <bdi
@@ -114,15 +113,14 @@
             >
               <UserAvatar
                 class="post-avatar"
-                :show-actor-type-indicator="showActorTypeIndicator"
                 :compact="compact"
-                :user="status?.user"
+                :user-id="status?.user.id"
               />
             </UserPopover>
           </a>
           <UserAvatar
             v-else
-            :user="status?.user"
+            :user-id="status?.user.id"
             class="post-avatar"
             :compact="compact"
             :title="$t('status.unknown_user_info')"
@@ -529,7 +527,6 @@
           <UserAvatar
             class="post-avatar"
             :compact="compact"
-            :show-actor-type-indicator="showActorTypeIndicator"
           />
         </div>
         <div class="right-side">

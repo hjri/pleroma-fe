@@ -31,7 +31,7 @@
           <UserAvatar
             v-if="shouldShowAvatar"
             class="mention-avatar"
-            :user="user"
+            :user-id="user.id"
           /><span
             class="shortName"
           >@<span

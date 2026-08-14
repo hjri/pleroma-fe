@@ -6,6 +6,11 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useUsersStore } from 'src/stores/users.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
+
+import {
+  WSConnectionStatus,
+} from 'src/api/websocket.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -20,6 +25,8 @@ import {
   faSignOutAlt,
   faTachometerAlt,
   faUserPlus,
+  faPlug,
+  faPlugCircleXmark
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -34,6 +41,8 @@ library.add(
   faTachometerAlt,
   faCog,
   faInfoCircle,
+  faPlug,
+  faPlugCircleXmark
 )
 
 export default {
@@ -93,9 +102,23 @@ export default {
       hideSitename: (store) => store.instanceIdentity.hideSitename,
     }),
     ...mapState(useUsersStore, ['currentUser']),
+    ...mapState(useStreamingStore, {
+      streamingConnected: (store) => store.state === WSConnectionStatus.JOINED
+    }),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
     shouldConfirmLogout() {
-      return useMergedConfigStore().mergedConfig.modalOnLogout
+      return this.mergedConfig.modalOnLogout
     },
+    streamingEnabled() {
+      return this.mergedConfig.useStreamingApi
+    },
+    streamingTooltip() {
+      if (this.streamingConnected) {
+        return this.$t('timeline.socket_reconnected')
+      } else {
+        return this.$t('timeline.socket_disconnected')
+      }
+    }
   },
   methods: {
     scrollToTop() {

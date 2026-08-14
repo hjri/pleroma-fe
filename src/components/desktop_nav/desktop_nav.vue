@@ -15,6 +15,25 @@
         >
           {{ sitename }}
         </router-link>
+        <div
+          class="nav-icon"
+          v-if="streamingEnabled"
+          :title="streamingTooltip"
+        >
+          <FAIcon
+            v-if="streamingConnected"
+            fixed-width
+            class="fa-scale-110 fa-old-padding"
+            icon="plug"
+          />
+
+          <FAIcon
+            v-else
+            fixed-width
+            class="fa-scale-110 fa-old-padding"
+            icon="plug-circle-xmark"
+          />
+        </div>
       </div>
       <router-link
         class="logo"

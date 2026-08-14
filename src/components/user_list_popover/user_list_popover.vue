@@ -17,7 +17,7 @@
             class="user-list-row"
           >
             <UserAvatar
-              :user="user"
+              :user-id="user.id"
               class="avatar-small"
               :compact="true"
             />

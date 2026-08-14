@@ -95,14 +95,26 @@ export const useInterfaceStore = defineStore('interface', {
       }
     },
     onStreamDisconnect(closeEvent) {
-      // TODO better explanation/localization
-      const { code } = closeEvent
-      this.pushGlobalNotice({
-        level: 'error',
-        messageKey: 'timeline.socket_broke',
-        messageArgs: [code],
-        timeout: 5000,
-      })
+      const intendedCodes = new Set([
+        1000, // Normal (intended) closure
+        1001, // Going away
+      ])
+      const { code } = closeEvent.original
+      if (intendedCodes.has(code)) {
+        this.pushGlobalNotice({
+          level: 'success',
+          messageKey: 'timeline.socket_closed',
+          messageArgs: [code],
+          timeout: 5000,
+        })
+      } else {
+        this.pushGlobalNotice({
+          level: 'error',
+          messageKey: 'timeline.socket_broke',
+          messageArgs: [code],
+          timeout: 5000,
+        })
+      }
     },
     setTemporaryChanges({ confirm, revert }) {
       this.temporaryChangesCountdown = 10

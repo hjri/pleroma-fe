@@ -57,7 +57,7 @@
           <UserAvatar
             class="post-avatar"
             :compact="true"
-            :user="notification.from_profile"
+            :user-id="notification.from_profile.id"
           />
         </UserPopover>
       </a>

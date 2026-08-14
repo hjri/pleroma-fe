@@ -7,7 +7,7 @@
       class="avatars-item"
     >
       <UserAvatar
-        :user="user"
+        :user-id="user.id"
         class="avatar-small"
       />
     </router-link>
