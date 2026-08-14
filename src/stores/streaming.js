@@ -60,6 +60,7 @@ export const useStreamingStore = defineStore('streaming', {
     error: null,
     state: null,
     retryMultiplier: 1,
+    retrying: false,
     subscribers: new Set(),
     subscriptions: new Map(),
     globalSubscriptions: new Set(),
@@ -126,6 +127,7 @@ export const useStreamingStore = defineStore('streaming', {
     },
     stopSocket() {
       this.socket.close()
+      this.state = WSConnectionStatus.CLOSED
     },
 
     getSubArgs(stream) {
@@ -150,6 +152,8 @@ export const useStreamingStore = defineStore('streaming', {
     },
     onOpen() {
       this.retryMultiplier = 1
+      this.retrying = false,
+      this.error = null
       this.subscribers.forEach(({ stream, et }) => {
         et.dispatchEvent(new StreamStateEvent('open'))
       })
@@ -195,6 +199,7 @@ export const useStreamingStore = defineStore('streaming', {
       this.subscribers.forEach(({ stream, et }) => {
         et.dispatchEvent(new StreamErrorEvent(error))
       })
+      this.error = error
       console.error('Error in MastoAPI websocket:', error)
     },
     onClose({ data: closeEvent }) {
@@ -210,6 +215,8 @@ export const useStreamingStore = defineStore('streaming', {
         )
 
         this.state = WSConnectionStatus.CLOSED
+        this.retrying = false
+        this.error = null
         this.retryMultiplier = 1
 
         this.subscribers.forEach(({ et }) => {
@@ -226,12 +233,13 @@ export const useStreamingStore = defineStore('streaming', {
 
         this.retryMultiplier += 1
 
-        if (this.state !== WSConnectionStatus.ERROR) {
+        if (!this.retrying) {
           this.subscribers.forEach(({ et }) => {
             et.dispatchEvent(new StreamStateEvent('close', closeEvent))
           })
         }
 
+        this.retrying = true
         this.state = WSConnectionStatus.ERROR
       }
     },
