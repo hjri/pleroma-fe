@@ -740,7 +740,6 @@ export const useUsersStore = defineStore('users', {
               dispatch('startFetchingFollowRequests')
             }
 
-            useStreamingStore().initSocket(true)
             if (useMergedConfigStore().mergedConfig.useStreamingApi) {
               useStreamingStore().initSocket(true)
             }

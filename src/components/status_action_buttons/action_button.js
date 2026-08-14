@@ -6,6 +6,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useUsersStore } from 'src/stores/users.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -140,9 +141,9 @@ export default {
         (r) => r.name === emoji,
       )
       if (existingReaction?.me) {
-        this.$store.dispatch('unreactWithEmoji', { id: this.status.id, emoji })
+        useStatusesStore().unreactWithEmoji(this.status.id, emoji)
       } else {
-        this.$store.dispatch('reactWithEmoji', { id: this.status.id, emoji })
+        useStatusesStore().reactWithEmoji(this.status.id, emoji)
       }
     },
     onShowEmojiPicker() {

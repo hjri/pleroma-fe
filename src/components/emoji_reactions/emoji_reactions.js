@@ -67,10 +67,10 @@ const EmojiReactions = {
       }
     },
     reactWith(emoji) {
-      this.$store.dispatch('reactWithEmoji', { id: this.status.id, emoji })
+      useStatusesStore().reactWithEmoji(this.status.id, emoji)
     },
     unreact(emoji) {
-      this.$store.dispatch('unreactWithEmoji', { id: this.status.id, emoji })
+      useStatusesStore().unreactWithEmoji(this.status.id, emoji)
     },
     async emojiOnClick(emoji) {
       if (!this.loggedIn) return

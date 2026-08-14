@@ -143,14 +143,14 @@ export const bookmarkStatus = ({ id, credentials, ...options }) =>
     payload: {
       folder_id: options.folder_id,
     },
-  })
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
 
 export const unbookmarkStatus = ({ id, credentials }) =>
   promisedRequest({
     url: MASTODON_UNBOOKMARK_STATUS_URL(id),
     credentials,
     method: 'POST',
-  })
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseStatus(data) }))
 
 export const pinOwnStatus = ({ id, credentials }) =>
   promisedRequest({
