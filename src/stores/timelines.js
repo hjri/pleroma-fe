@@ -84,6 +84,7 @@ export const useTimelinesStore = defineStore('timelines', {
         timelineName === 'favourites' &&
         !useInstanceCapabilitiesStore().pleromaPublicFavouritesAvailable
       ) {
+        console.warn('Instance doesn\'t support public favorites timeline')
         return
       }
 
@@ -218,7 +219,7 @@ export const useTimelinesStore = defineStore('timelines', {
           // Add the mention to the mentions timeline
           if (timeline !== this.mentions) {
             this.addStatusesToTimeline('mentions', null, {
-              statuses,
+              statuses: [status],
               nested: true,
             })
           }
@@ -226,7 +227,7 @@ export const useTimelinesStore = defineStore('timelines', {
 
         if (status.visibility === 'direct') {
           if (timeline !== this.dms) {
-            this.addStatusesToTimeline('dms', null, { statuses, nested: true })
+            this.addStatusesToTimeline('dms', null, { statuses: [status], nested: true })
           }
         }
       })
