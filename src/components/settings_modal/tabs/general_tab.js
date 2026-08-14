@@ -12,9 +12,9 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUsersStore } from 'src/stores/users.js'
-import { useStreamingStore } from 'src/stores/streaming.js'
 
 import { updateProfile } from 'src/api/user.js'
 import localeService from 'src/services/locale/locale.service.js'

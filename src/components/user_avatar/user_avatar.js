@@ -1,7 +1,7 @@
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
-import { useUsersStore } from 'src/stores/users.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPeopleGroup, faRobot } from '@fortawesome/free-solid-svg-icons'

@@ -5,12 +5,10 @@ import { defineAsyncComponent } from 'vue'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useUsersStore } from 'src/stores/users.js'
 import { useStreamingStore } from 'src/stores/streaming.js'
+import { useUsersStore } from 'src/stores/users.js'
 
-import {
-  WSConnectionStatus,
-} from 'src/api/websocket.js'
+import { WSConnectionStatus } from 'src/api/websocket.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -20,13 +18,13 @@ import {
   faComments,
   faHome,
   faInfoCircle,
+  faPlug,
+  faPlugCircleXmark,
   faSearch,
   faSignInAlt,
   faSignOutAlt,
   faTachometerAlt,
   faUserPlus,
-  faPlug,
-  faPlugCircleXmark
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -42,7 +40,7 @@ library.add(
   faCog,
   faInfoCircle,
   faPlug,
-  faPlugCircleXmark
+  faPlugCircleXmark,
 )
 
 export default {
@@ -103,7 +101,7 @@ export default {
     }),
     ...mapState(useUsersStore, ['currentUser']),
     ...mapState(useStreamingStore, {
-      streamingConnected: (store) => store.state === WSConnectionStatus.JOINED
+      streamingConnected: (store) => store.state === WSConnectionStatus.JOINED,
     }),
     ...mapState(useMergedConfigStore, ['mergedConfig']),
     shouldConfirmLogout() {
@@ -118,7 +116,7 @@ export default {
       } else {
         return this.$t('timeline.socket_disconnected')
       }
-    }
+    },
   },
   methods: {
     scrollToTop() {

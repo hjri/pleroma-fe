@@ -152,7 +152,7 @@ export const useStreamingStore = defineStore('streaming', {
     },
     onOpen() {
       this.retryMultiplier = 1
-      this.retrying = false,
+      this.retrying = false
       this.error = null
       this.subscribers.forEach(({ stream, et }) => {
         et.dispatchEvent(new StreamStateEvent('open'))

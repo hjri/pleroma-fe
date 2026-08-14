@@ -5,8 +5,8 @@ import EmojiPicker from '../emoji_picker/emoji_picker.vue'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useUsersStore } from 'src/stores/users.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

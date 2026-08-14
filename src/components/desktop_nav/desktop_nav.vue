@@ -26,7 +26,6 @@
             class="fa-scale-110 fa-old-padding"
             icon="plug"
           />
-
           <FAIcon
             v-else
             fixed-width
