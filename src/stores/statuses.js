@@ -305,34 +305,66 @@ export const useStatusesStore = defineStore('statuses', {
     },
 
     // Actions
+    requestInteract({ name, id, optimisticCall, apiCall, argument, value }) {
+      const oldValue = !value // Assumption
+
+      const apiArgs = (() => {
+        switch (name) {
+          case 'emoji':
+            return { emoji: argument }
+          case 'bookmark':
+            return { folder_id: argument }
+          default:
+            return {}
+        }
+      })()
+
+      // Optimistic
+      optimisticCall(id, value, argument)
+
+      return apiCall({
+        id,
+        ...apiArgs,
+        credentials: useOAuthStore().token,
+      })
+        .then(({ data: status, timestamp }) => {
+          this.addNewStatuses({
+            statuses: [status],
+            timestamp,
+          })
+        })
+        .catch((error) => {
+          optimisticCall(id, oldValue, argument)
+
+          useInterfaceStore().pushGlobalNotice({
+            level: 'error',
+            messageKey: 'status.react_error',
+            messageArgs: [error],
+            timeout: 5000,
+          })
+        })
+    },
+
     /// Favorite
     favorite(id) {
-      this.setFavorited({ id, value: true })
-
-      favorite({
-        id: status.id,
-        credentials: useOAuthStore().token,
-      }).then(({ data: status, timestamp }) => {
-        this.addNewStatuses({
-          statuses: [status],
-          timestamp,
-        })
+      return this.requestInteract({
+        name: 'favorite',
+        id,
+        apiCall: favorite,
+        optimisticCall: this.setFavorited,
+        value: true,
       })
     },
     unfavorite(id) {
-      this.setFavorited({ id, value: false })
-
-      unfavorite({
+      return this.requestInteract({
+        name: 'favorite',
         id,
-        credentials: useOAuthStore().token,
-      }).then(({ data: status, timestamp }) => {
-        this.addNewStatuses({
-          statuses: [status],
-          timestamp,
-        })
+        apiCall: unfavorite,
+        optimisticCall: this.setFavorited,
+        value: false,
       })
     },
-    setFavorited({ id, value }) {
+    setFavorited(id, value) {
       const newStatus = this.allStatuses.get(id)
 
       if (newStatus.favorited !== value) {
@@ -348,33 +380,25 @@ export const useStatusesStore = defineStore('statuses', {
 
     /// Reprööt
     retweet(id) {
-      this.setRetweeted({ id, value: true })
-
-      retweet({
+      return this.requestInteract({
+        name: 'retweet',
         id,
-        credentials: useOAuthStore().token,
-      }).then(({ data: status, timestamp }) => {
-        this.addNewStatuses({
-          statuses: [status],
-          timestamp,
-        })
+        apiCall: retweet,
+        optimisticCall: this.setRetweeted,
+        value: true,
       })
     },
     unretweet(id) {
-      this.setRetweeted({ id, value: false })
-
-      unretweet({
+      return this.requestInteract({
+        name: 'retweet',
         id,
-        credentials: useOAuthStore().token,
-      }).then(({ data: status, timestamp }) => {
-        this.addNewStatuses({
-          statuses: [status],
-          timestamp,
-        })
+        apiCall: unretweet,
+        optimisticCall: this.setRetweeted,
+        value: false,
       })
     },
-    setRetweeted({ statusId, value }) {
-      const newStatus = this.allStatuses.get(statusId)
+    setRetweeted(id, value) {
+      const newStatus = this.allStatuses.get(id)
 
       if (newStatus.repeated !== value) {
         if (value) {
@@ -389,185 +413,151 @@ export const useStatusesStore = defineStore('statuses', {
 
     // React
     reactWithEmoji(id, emoji) {
-      this.addOwnReaction({ id, emoji })
-
-      reactWithEmoji({
+      return this.requestInteract({
+        name: 'emoji',
         id,
-        emoji,
-        credentials: useOAuthStore().token,
-      }).then(({ data: status, timestamp }) => {
-        this.addNewStatuses({
-          statuses: [status],
-          timestamp,
-        })
+        apiCall: reactWithEmoji,
+        optimisticCall: this.setOwnReaction,
+        argument: emoji,
+        value: true,
       })
     },
     unreactWithEmoji(id, emoji) {
-      this.removeOwnReaction({ id, emoji })
-
-      unreactWithEmoji({
+      return this.requestInteract({
+        name: 'emoji',
         id,
-        emoji,
-        credentials: useOAuthStore().token,
-      }).then(({ data: status, timestamp }) => {
-        this.addNewStatuses({
-          statuses: [status],
-          timestamp,
-        })
+        apiCall: unreactWithEmoji,
+        optimisticCall: this.setOwnReaction,
+        argument: emoji,
+        value: false,
       })
     },
-    addOwnReaction(id, emoji) {
+    setOwnReaction(id, value, emoji) {
       const currentUser = useUsersStore().currentUser
       const status = this.allStatuses.get(id)
       const reactionIndex = status.emoji_reactions.findIndex(
         (react) => react.name === emoji,
       )
+      const reactionPresent = reactionIndex >= 0
+      if (!value && !reactionPresent) return
+
       const reaction = status.emoji_reactions[reactionIndex] || {
         name: emoji,
         count: 0,
         accounts: [],
       }
 
-      const newReaction = {
-        ...reaction,
-        count: reaction.count + 1,
-        me: true,
-        accounts: [...reaction.accounts, currentUser],
-      }
+      const count = value ? reaction.count + 1 : reaction.count - 1
 
-      // Update count of existing reaction if it exists, otherwise append at the end
-      if (reactionIndex >= 0) {
-        status.emoji_reactions[reactionIndex] = newReaction
-      } else {
-        status.emoji_reactions.push(newReaction)
-      }
-    },
-    removeOwnReaction(id, emoji) {
-      const currentUser = useUsersStore().currentUser
-      const status = this.allStatuses.get(id)
-      const reactionIndex = status.emoji_reactions.findIndex(
-        (react) => react.name === emoji,
-      )
-      if (reactionIndex < 0) return
-
-      const reaction = status.emoji_reactions[reactionIndex]
-      const accounts = reaction.accounts || []
+      const accounts = value
+        ? [...reaction.accounts, currentUser]
+        : accounts.filter((acc) => acc.id !== currentUser.id)
 
       const newReaction = {
         ...reaction,
-        count: reaction.count - 1,
-        me: false,
-        accounts: accounts.filter((acc) => acc.id !== currentUser.id),
+        count,
+        me: value,
+        accounts,
       }
 
-      if (newReaction.count > 0) {
+      if (reactionPresent && count > 0) {
         status.emoji_reactions[reactionIndex] = newReaction
-      } else {
+      } else if (count === 0) {
         status.emoji_reactions = status.emoji_reactions.filter(
           (r) => r.name !== emoji,
         )
+      } else {
+        status.emoji_reactions.push(newReaction)
       }
     },
 
     /// Bookmark
     bookmark(id, bookmark_folder_id) {
-      this.setBookmarked({ id, value: true, bookmark_folder_id })
-
-      bookmarkStatus({
+      return this.requestInteract({
+        name: 'bookmark',
         id,
-        folder_id: bookmark_folder_id,
-        credentials: useOAuthStore().token,
-      }).then(({ data: status, timestamp }) => {
-        this.addNewStatuses({
-          statuses: [status],
-          timestamp,
-        })
+        apiCall: bookmarkStatus,
+        optimisticCall: this.setBookmarked,
+        argument: bookmark_folder_id,
+        value: false,
       })
     },
     unbookmark(id) {
-      this.setBookmarked({ id, value: false })
-
-      unbookmarkStatus({
+      return this.requestInteract({
+        name: 'bookmark',
         id,
-        credentials: useOAuthStore().token,
-      }).then(({ data: status, timestamp }) => {
-        this.addNewStatuses({
-          statuses: [status],
-          timestamp,
-        })
+        apiCall: unbookmarkStatus,
+        optimisticCall: this.setBookmarked,
+        value: false,
       })
     },
-    setBookmarked({ id, value, bookmark_folder_id }) {
+    setBookmarked(id, value, bookmark_folder_id) {
       const status = this.allStatuses.get(id)
       status.bookmarked = value
-      status.bookmark_folder_id = value ? bookmark_folder_id : null
+
+      // When unbookmarking we don't specify folder so we wanna keep
+      // reference to the folder even when setting bookmarked to false
+      // the proper reference will be updated when api call resolves
+      if (bookmark_folder_id) {
+        status.bookmark_folder_id = value ? bookmark_folder_id : null
+      }
     },
 
     /// Mute
     muteConversation(id) {
-      return muteConversation({
+      return this.requestInteract({
+        name: 'mute',
         id,
-        credentials: useOAuthStore().token,
+        apiCall: muteConversation,
+        optimisticCall: this.setMutedStatus,
+        value: false,
       })
-        .then(({ data: status, timestamp }) => {
-          this.addNewStatuses({
-            statuses: [status],
-            timestamp,
-          })
-          return status
-        })
-        .then((status) => this.setMutedStatus(status))
     },
     unmuteConversation(id) {
-      return unmuteConversation({
+      return this.requestInteract({
+        name: 'mute',
         id,
-        credentials: useOAuthStore().token,
+        apiCall: unmuteConversation,
+        optimisticCall: this.setMutedStatus,
+        value: false,
       })
-        .then(({ data: status, timestamp }) => {
-          this.addNewStatuses({
-            statuses: [status],
-            timestamp,
-          })
-          return status
-        })
-        .then((status) => this.setMutedStatus(status))
     },
-    setMutedStatus({ id, thread_muted }) {
+    setMutedStatus(id, value) {
       // Setting thread_muted flag on all other known statuses
       // belonging to same conversation
       const newStatus = this.allStatuses.get(id)
-      newStatus.thread_muted = thread_muted
+      newStatus.thread_muted = value
 
       if (newStatus.thread_muted !== undefined) {
         this.conversations
           .get(newStatus.statusnet_conversation_id)
           .forEach((status) => {
-            status.thread_muted = thread_muted
+            status.thread_muted = value
           })
       }
     },
 
     /// Pin
     pinStatus(id) {
-      return pinOwnStatus({
+      return this.requestInteract({
+        name: 'pin',
         id,
-        credentials: useOAuthStore().token,
-      }).then(({ data: status, timestamp }) => {
-        this.addNewStatuses({
-          statuses: [status],
-          timestamp,
-        })
+        apiCall: pinOwnStatus,
+        optimisticCall: () => {
+          /* no-op */
+        },
+        value: true,
       })
     },
     unpinStatus(id) {
-      return unpinOwnStatus({
+      return this.requestInteract({
+        name: 'pin',
         id,
-        credentials: useOAuthStore().token,
-      }).then(({ data: status, timestamp }) => {
-        this.addNewStatuses({
-          statuses: [status],
-          timestamp,
-        })
+        apiCall: unpinOwnStatus,
+        optimisticCall: () => {
+          /* no-op */
+        },
+        value: false,
       })
     },
 
