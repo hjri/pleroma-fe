@@ -7,7 +7,9 @@ export const getCommitHash = () => {
   } else {
     try {
       return childProcess
-        .execSync('git rev-parse --short HEAD')
+        .execSync(
+          'PATH=/usr/bin:/bin:/usr/local/bin:/sbin:/usr/sbin git rev-parse --short HEAD',
+        )
         .toString()
         .trim()
     } catch (e) {
