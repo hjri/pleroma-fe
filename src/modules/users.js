@@ -231,7 +231,9 @@ export const mutations = {
   },
   saveFollowerIds(state, { id, followerIds }) {
     const user = state.usersObject[id]
-    user.followerIds = [...new Set([user.followerIds || [], ...followerIds])]
+    user.followerIds = [
+      ...new Set([...(user.followerIds || []), ...followerIds]),
+    ]
   },
   // Because frontend doesn't have a reason to keep these stuff in memory
   // outside of viewing someones user profile.
