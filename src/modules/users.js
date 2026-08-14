@@ -47,6 +47,7 @@ import {
   editUserNote as apiEditUserNote,
   muteDomain as apiMuteDomain,
   muteUser as apiMuteUser,
+  removeUserFromFollowers as apiRemoveUserFromFollowers,
   unblockUser as apiUnblockUser,
   unmuteDomain as apiUnmuteDomain,
   unmuteUser as apiUnmuteUser,
@@ -120,7 +121,7 @@ const unblockUser = (store, id) => {
 }
 
 const removeUserFromFollowers = (store, id) => {
-  return removeUserFromFollowers({ id }).then((relationship) =>
+  return apiRemoveUserFromFollowers({ id }).then(({ data: relationship }) =>
     store.commit('updateUserRelationship', [relationship]),
   )
 }
