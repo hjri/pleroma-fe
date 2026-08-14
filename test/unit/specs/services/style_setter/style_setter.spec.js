@@ -30,7 +30,7 @@ describe('resource index', () => {
     const resources = await getResourcesIndex('/static/styles.json')
 
     expect(Object.keys(resources)).to.deep.equal(['builtin'])
-    expect(resources.builtin()).to.deep.equal({ version: 1 })
+    expect(await resources.builtin()).to.deep.equal({ version: 1 })
   })
 })
 
