@@ -35,9 +35,10 @@ export const BUTTONS = [
     name: 'retweet',
     label: ({ status }) =>
       status.repeated ? 'tool_tip.unrepeat' : 'tool_tip.repeat',
-    icon({ status, currentUser }) {
+    icon({ status, loggedIn, currentUser }) {
       if (
-        currentUser.id !== status.user.id &&
+        loggedIn &&
+        status.user.id !== currentUser.id &&
         PRIVATE_SCOPES.has(status.visibility)
       ) {
         return 'lock'

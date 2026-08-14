@@ -190,7 +190,7 @@ export const useUsersStore = defineStore('users', {
           this.usersByURL.set(user.url.toLowerCase(), reactive)
         }
 
-        if (user.id === this.currentUser.id) {
+        if (user.id === this.currentUser?.id) {
           this.currentUser = reactive
         }
 
@@ -647,11 +647,10 @@ export const useUsersStore = defineStore('users', {
         })
         .then(() => {
           this.clearCurrentUser()
-          store.dispatch('stopFetchingNotifications')
+          useNotificationsStore().deactivate()
           useListsStore().stopFetching()
           useBookmarkFoldersStore().stopFetching()
           store.dispatch('stopFetchingFollowRequests')
-          store.commit('clearNotifications')
           useTimelinesStore().deactivateAll()
           useStatusesStore().resetStatuses()
           useNotificationsStore().clearNotifications()

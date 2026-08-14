@@ -155,7 +155,7 @@ export default {
       ]
     },
     userBackground() {
-      return this.currentUser.background_image
+      return this.currentUser?.background_image
     },
     foreignProfileBackground() {
       return (

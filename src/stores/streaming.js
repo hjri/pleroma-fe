@@ -96,7 +96,9 @@ export const useStreamingStore = defineStore('streaming', {
       const { stream } = subscriber
 
       this.subscribers.delete(subscriber)
-      this.subscriptions.get(stream.name).delete(stream.argument)
+      if (stream) {
+        this.subscriptions.get(stream.name).delete(stream.argument)
+      }
 
       if (this.state === WSConnectionStatus.JOINED) {
         this.socket.unsubscribe(...this.getSubArgs(stream))

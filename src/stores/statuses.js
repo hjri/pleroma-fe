@@ -286,7 +286,7 @@ export const useStatusesStore = defineStore('statuses', {
       // repeats stats can be incorrect based on polling condition, let's update them using the most recent data
       newStatus.repeat_num = newStatus.rebloggedBy.length
       newStatus.repeated = !!newStatus.rebloggedBy.find(
-        ({ id }) => currentUser.id === id,
+        ({ id }) => currentUser?.id === id,
       )
     },
     addFavs({ id, favoritedByUsers }) {
@@ -296,7 +296,7 @@ export const useStatusesStore = defineStore('statuses', {
       // favorites stats can be incorrect based on polling condition, let's update them using the most recent data
       newStatus.fave_num = newStatus.favoritedBy.length
       newStatus.favorited = !!newStatus.favoritedBy.find(
-        ({ id }) => currentUser.id === id,
+        ({ id }) => currentUser?.id === id,
       )
     },
     addEmojiReactionsBy({ id, emojiReactions }) {

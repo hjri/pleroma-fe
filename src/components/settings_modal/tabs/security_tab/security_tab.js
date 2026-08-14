@@ -80,7 +80,7 @@ const SecurityTab = {
         password: this.deleteAccountConfirmPasswordInput,
       }).then(({ data: res }) => {
         if (res.status === 'success') {
-          this.$store.dispatch('logout')
+          useUsersStore().logout()
           this.$router.push({ name: 'root' })
         } else {
           this.deleteAccountError = res.error
@@ -172,7 +172,7 @@ const SecurityTab = {
         })
     },
     logout() {
-      this.$store.dispatch('logout')
+      useUsersStore().logout()
       this.$router.replace('/')
     },
     revokeToken(id) {

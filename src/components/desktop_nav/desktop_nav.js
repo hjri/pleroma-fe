@@ -139,7 +139,7 @@ export default {
     },
     doLogout() {
       this.$router.replace('/main/public')
-      this.$store.dispatch('logout')
+      useUsersStore().logout()
       this.hideConfirmLogout()
     },
     onSearchBarToggled(hidden) {

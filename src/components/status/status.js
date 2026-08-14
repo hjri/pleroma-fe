@@ -299,11 +299,11 @@ const Status = {
     },
     muted() {
       if (this.ignoreMute) return false
-      if (this.statusoid.user.id === this.currentUser.id) return false
+      if (this.statusoid.user.id === this.currentUser?.id) return false
       return !this.unmuted && !this.shouldNotMute && this.muteReasons.length > 0
     },
     userIsMuted() {
-      if (this.statusoid.user.id === this.currentUser.id) return false
+      if (this.statusoid.user.id === this.currentUser?.id) return false
       const { status } = this
       const { reblog } = status
       const relationship = useUsersStore().relationship(status.user.id)
