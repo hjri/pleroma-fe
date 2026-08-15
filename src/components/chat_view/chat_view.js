@@ -538,11 +538,14 @@ const Chat = {
 
     // Event handlers
     onPosted(data) {
-      this.explicitReplyStatus = null
-      this.$router.push({
-        name: 'conversation2',
-        params: { statusId: data.id },
-      })
+      // only conversation poster has the returned data
+      if (this.isConversation) {
+        this.explicitReplyStatus = null
+        this.$router.push({
+          name: 'conversation2',
+          params: { statusId: data.id },
+        })
+      }
     },
     handleVisibilityChange() {
       this.$nextTick(() => {
