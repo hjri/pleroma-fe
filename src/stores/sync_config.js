@@ -683,82 +683,12 @@ export const useSyncConfigStore = defineStore('sync_config', {
         )
         recent = _wrapData({
           flagStorage: { ...flagsTemplate },
-          prefsStorage: { ...defaultState.prefsStorage },
+          prefsStorage: cloneDeep(defaultState.prefsStorage),
         })
       }
 
       recent = recent && (await _doMigrations(recent, this.setPreference))
       stale = stale && (await _doMigrations(stale, this.setPreference))
-
-      // Various migrations
-      console.debug('Migrating from old config')
-      const vuexState = (await storage.getItem('vuex-lz')) ?? {}
-      const config = vuexState.config ?? {}
-
-      const migratedEntries = new Set(config._syncMigration ?? [])
-      console.debug(
-        `Already migrated Values: ${[...migratedEntries].join() || '[none]'}`,
-      )
-
-      Object.entries(oldDefaultConfigSync).forEach(([key, value]) => {
-        const oldValue = config[key]
-        const defaultValue = value
-
-        const present = oldValue !== undefined
-        const migrated = migratedEntries.has(key)
-        const different = !isEqual(oldValue, defaultValue)
-
-        if (present && !migrated && different) {
-          console.debug(`Migrating config ${key}: ${oldValue}`)
-          if (key === 'theme3hacks') {
-            useLocalConfigStore().set({
-              path: 'fontInterface',
-              value: oldValue.fonts.interface,
-            })
-            useLocalConfigStore().set({
-              path: 'fontInput',
-              value: oldValue.fonts.input,
-            })
-            useLocalConfigStore().set({
-              path: 'fontPost',
-              value: oldValue.fonts.post,
-            })
-            useLocalConfigStore().set({
-              path: 'fontMonospace',
-              value: oldValue.fonts.monospace,
-            })
-            useSyncConfigStore().setSimplePrefAndSave({
-              path: 'underlay',
-              value: oldValue.underlay,
-            })
-          } else if (key == 'muteWords') {
-            oldValue.forEach((word, order) => {
-              const uniqueId = uuidv4()
-
-              useSyncConfigStore().setPreference({
-                path: 'simple.muteFilters.' + uniqueId,
-                value: {
-                  type: 'word',
-                  value: word,
-                  name: word,
-                  enabled: true,
-                  expires: null,
-                  hide: false,
-                  order,
-                },
-              })
-            })
-          } else {
-            this.setPreference({ path: `simple.${key}`, value: oldValue })
-          }
-          migratedEntries.add(key)
-          needUpload = true
-        }
-      })
-
-      config._syncMigration = [...migratedEntries]
-      vuexState.config = config
-      storage.setItem('vuex-lz', vuexState)
 
       if (!needUpload && recent && stale) {
         console.debug('Checking if data needs merging...')
@@ -790,14 +720,99 @@ export const useSyncConfigStore = defineStore('sync_config', {
       recent.flagStorage = { ...flagsTemplate, ...totalFlags }
       recent.prefsStorage = { ...defaultState.prefsStorage, ...totalPrefs }
 
-      this.dirty = dirty || needUpload
       this.cache = recent
+      this.flagStorage = this.cache.flagStorage
+      this.prefsStorage = this.cache.prefsStorage
+      if (!Array.isArray(this.prefsStorage._journal)) {
+        this.prefsStorage._journal = []
+      }
+
+      // Various migrations
+      console.debug('Migrating from old config')
+      const vuexState = (await storage.getItem('vuex-lz')) ?? {}
+      const config = vuexState.config ?? {}
+
+      const migratedEntries = new Set(config._syncMigration ?? [])
+      console.debug(
+        `Already migrated Values: ${[...migratedEntries].join() || '[none]'}`,
+      )
+
+      Object.entries(oldDefaultConfigSync).forEach(([key, value]) => {
+        const oldValue = config[key]
+        const defaultValue = value
+        const migrated = migratedEntries.has(key)
+        const preferencePath =
+          key === 'theme3hacks' ? 'simple.underlay' : `simple.${key}`
+
+        const present = oldValue !== undefined
+        const different = !isEqual(oldValue, defaultValue)
+        const preferenceHandled =
+          get(this.prefsStorage, preferencePath) !== undefined ||
+          this.prefsStorage._journal.some(
+            (entry) =>
+              entry?.path === preferencePath ||
+              entry?.path?.startsWith?.(`${preferencePath}.`),
+          )
+
+        if (present && different && !preferenceHandled) {
+          console.debug(`Migrating config ${key}: ${oldValue}`)
+          if (key === 'theme3hacks') {
+            if (!migrated) {
+              useLocalConfigStore().set({
+                path: 'fontInterface',
+                value: oldValue.fonts.interface,
+              })
+              useLocalConfigStore().set({
+                path: 'fontInput',
+                value: oldValue.fonts.input,
+              })
+              useLocalConfigStore().set({
+                path: 'fontPosts',
+                value: oldValue.fonts.post,
+              })
+              useLocalConfigStore().set({
+                path: 'fontMonospace',
+                value: oldValue.fonts.monospace,
+              })
+            }
+            this.setPreference({
+              path: 'simple.underlay',
+              value: oldValue.underlay,
+            })
+          } else if (key == 'muteWords') {
+            oldValue.forEach((word, order) => {
+              const uniqueId = uuidv4()
+
+              this.setPreference({
+                path: 'simple.muteFilters.' + uniqueId,
+                value: {
+                  type: 'word',
+                  value: word,
+                  name: word,
+                  enabled: true,
+                  expires: null,
+                  hide: false,
+                  order,
+                },
+              })
+            })
+          } else {
+            this.setPreference({ path: preferencePath, value: oldValue })
+          }
+          migratedEntries.add(key)
+          needUpload = true
+        }
+      })
+
+      config._syncMigration = [...migratedEntries]
+      vuexState.config = config
+      storage.setItem('vuex-lz', vuexState)
+
+      this.dirty = dirty || needUpload
       // set local timestamp to smaller one if we don't have any changes
       if (stale && recent && !this.dirty) {
         this.cache._timestamp = Math.min(stale._timestamp, recent._timestamp)
       }
-      this.flagStorage = this.cache.flagStorage
-      this.prefsStorage = this.cache.prefsStorage
       this.pushSyncConfig()
     },
     pushSyncConfig({ force = false } = {}) {
