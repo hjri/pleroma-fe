@@ -11,7 +11,7 @@
       >
         <UserAvatar
           class="user-avatar avatar"
-          :user="user"
+          :user-id="user.id"
           @click.prevent
         />
       </UserPopover>
