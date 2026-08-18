@@ -10,7 +10,6 @@ import {
   fetchEmojiReactions,
   fetchFavoritedByUsers,
   fetchRebloggedByUsers,
-  fetchScrobbles,
   fetchStatus,
   fetchStatusSource,
   search2,
@@ -39,41 +38,6 @@ export const defaultState = () => ({
   favorites: new Set(),
   socket: null,
 })
-
-const getLatestScrobble = (user) => {
-  const scrobblesSupport =
-    useInstanceCapabilitiesStore().pleromaScrobblesAvailable
-
-  if (!scrobblesSupport || !user.name || user.id === 'undefined') {
-    return
-  }
-
-  if (
-    this.scrobblesNextFetch[user.id] &&
-    this.scrobblesNextFetch[user.id] > Date.now()
-  ) {
-    return
-  }
-
-  this.scrobblesNextFetch[user.id] = Date.now() + 24 * 60 * 60 * 1000
-  if (!scrobblesSupport) return
-  fetchScrobbles({ accountId: user.id })
-    .then(({ data: scrobbles }) => {
-      if (scrobbles?.error) {
-        useInstanceCapabilitiesStore().set('pleromaScrobblesAvailable', false)
-        return
-      }
-
-      if (scrobbles.length > 0) {
-        user.latestScrobble = scrobbles[0]
-
-        this.scrobblesNextFetch[user.id] = Date.now() + 60 * 1000
-      }
-    })
-    .catch((e) => {
-      console.warn('cannot fetch scrobbles', e)
-    })
-}
 
 export const useStatusesStore = defineStore('statuses', {
   state: defaultState,
@@ -125,8 +89,6 @@ export const useStatusesStore = defineStore('statuses', {
       // not "sub-status" i.e. retweeted/quoted/liked status
       // in case of likes (which are not statuses) it should return null
       const addStatus = (data) => {
-        getLatestScrobble(data.user)
-
         const [status] = this.mergeOrAdd(this.allStatuses, data, timestamp)
 
         // Add to conversation

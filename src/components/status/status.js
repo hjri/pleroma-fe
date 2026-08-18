@@ -27,6 +27,7 @@ import { useStatusesStore } from 'src/stores/statuses.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 import { useUsersStore } from 'src/stores/users.js'
+import { useScrobblesStore } from 'src/stores/scrobbles.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
@@ -127,6 +128,9 @@ const Status = {
       error: null,
       headTailLinks: null,
     }
+  },
+  created() {
+    useScrobblesStore().getLatestScrobble(this.status.user.id)
   },
   computed: {
     status() {

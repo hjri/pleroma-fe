@@ -3,6 +3,7 @@ import { snakeCase } from 'lodash'
 import { setActivePinia } from 'pinia'
 
 import { useStatusesStore } from 'src/stores/statuses.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import * as PUBLIC_API from 'src/api/public.js'
@@ -94,6 +95,35 @@ const DEFAULT_OPTIONS = (method = 'GET') => ({
 describe('Statuses store', () => {
   beforeEach(() => {
     setActivePinia(createTestingPinia({ stubActions: false }))
+  })
+
+  it('init', () => {
+    const store = useStatusesStore()
+    const sub = vi.fn()
+    useStreamingStore().addSubscriber = sub
+
+    store.attachSocket()
+
+    expect(store.socket).to.not.be.null
+    expect(sub).to.have.been.called
+  })
+
+  it('resetStatuses', () => {
+    const store = useStatusesStore()
+    const statuses = [...new Array(20)].map((empty, index) =>
+      mockStatus({
+        id: 's' + index,
+        statusUser: mockUser({ id: 'u' + index }),
+      }),
+    )
+
+    store.attachSocket()
+    store.addNewStatuses({
+      statuses,
+      timestamp: 1,
+    })
+    store.resetStatuses()
+    expect(store.allStatuses).to.have.length(0)
   })
 
   describe('addNewStatuses', () => {
