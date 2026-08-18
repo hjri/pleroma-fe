@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import {
   addNewEmojiFile,
@@ -399,12 +400,10 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
 
       return {
         items: await Promise.all(
-          users.map(
-            async (userAdminData) =>
-              await window.vuex.dispatch('updateUserAdminData', {
-                userAdminData,
-              }),
-          ),
+          users.map((user) => {
+            useUsersStore().updateUserAdminData(user.id, user)
+            return useUsersStore().findUser(user.id)
+          }),
         ),
         count,
       }
@@ -418,7 +417,8 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         screen_name,
       })
 
-      window.vuex.commit('updateUserAdminData', { user: result.data })
+      const { data } = result
+      useUsersStore().updateUserAdminData(data.id, data)
     },
     async deleteUsers({ users }) {
       const screen_names = users.map((u) => u.screen_name)
@@ -491,7 +491,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
 
       users.forEach((user) => {
-        window.vuex.commit('updateRight', { user, right, value })
+        useUsersStore().updateRight(user.id, right, value)
       })
     },
     async setUsersActivationStatus({ users, value }) {
@@ -505,7 +505,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
 
       resultUsers.data.forEach((user) => {
-        window.vuex.commit('updateUserAdminData', { user })
+        useUsersStore().updateUserAdminData(user.id, user)
       })
     },
     async setUsersSuggestionStatus({ users, value }) {
@@ -519,7 +519,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
 
       resultUsers.data.forEach((user) => {
-        window.vuex.commit('updateUserAdminData', { user })
+        useUsersStore().updateUserAdminData(user.id, user)
       })
     },
     async setUsersConfirmationStatus({ users }) {
@@ -545,7 +545,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
 
       resultUsers.data.forEach((user) => {
-        window.vuex.commit('updateUserAdminData', { user })
+        useUsersStore().updateUserAdminData(user.id, user)
       })
     },
     reloadEmoji() {

@@ -63,7 +63,7 @@ export const paramsString = (params = {}) => {
 }
 
 export const promisedRequest = async ({
-  method,
+  method = 'GET',
   url,
   payload,
   formData,

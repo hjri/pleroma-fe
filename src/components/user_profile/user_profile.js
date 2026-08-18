@@ -39,8 +39,7 @@ const UserProfile = {
   },
   unmounted() {
     useInterfaceStore().setForeignProfileBackground(null)
-    this.$store.dispatch('clearFollowers', this.userId)
-    this.$store.dispatch('clearFriends', this.userId)
+    useUsersStore().clearFollowLists(this.userId)
   },
   computed: {
     favorites() {

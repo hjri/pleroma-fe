@@ -7,7 +7,6 @@ export const piniaPushNotificationsPlugin = ({ store }) => {
   const validActions = {
     sync_config: new Set(['setPreference']),
     interface: new Set(['setNotificationPermission', 'setLoginStatus']),
-    user: new Set(['setCurrentUser', 'clearCurrentUser']),
   }
 
   if (!validActions[store.$id]) return // Not applicable to the store
@@ -56,9 +55,9 @@ export const piniaPushNotificationsPlugin = ({ store }) => {
     }
 
     if (permissionGranted && enabled && user) {
-      return useUsersStore().registerPushNotifications()
+      return useInterfaceStore().registerPushNotifications()
     } else {
-      return useUsersStore().unregisterPushNotifications()
+      return useInterfaceStore().unregisterPushNotifications()
     }
   })
 }

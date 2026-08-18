@@ -592,6 +592,15 @@ export const useStatusesStore = defineStore('statuses', {
       })
     },
 
+    // For when blocking a user
+    wipeUserStatuses(userId) {
+      this.allStatuses.values().forEach((status) => {
+        if (status.user.id === userId) {
+          this.allStatuses.delete(status.id)
+        }
+      })
+    },
+
     // Search
     search({ q, resolve, limit, offset, following, type }) {
       return search2({

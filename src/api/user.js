@@ -34,8 +34,8 @@ const MASTODON_UNFAVORITE_URL = (id) => `/api/v1/statuses/${id}/unfavourite`
 const MASTODON_RETWEET_URL = (id) => `/api/v1/statuses/${id}/reblog`
 const MASTODON_UNRETWEET_URL = (id) => `/api/v1/statuses/${id}/unreblog`
 const MASTODON_DELETE_URL = (id) => `/api/v1/statuses/${id}`
-const MASTODON_FOLLOW_URL = (id) => `/api/v1/accounts/${id}/follow`
-const MASTODON_UNFOLLOW_URL = (id) => `/api/v1/accounts/${id}/unfollow`
+export const MASTODON_FOLLOW_URL = (id) => `/api/v1/accounts/${id}/follow`
+export const MASTODON_UNFOLLOW_URL = (id) => `/api/v1/accounts/${id}/unfollow`
 
 const MASTODON_FOLLOW_REQUESTS_URL = '/api/v1/follow_requests'
 const MASTODON_APPROVE_USER_URL = (id) =>
@@ -43,30 +43,31 @@ const MASTODON_APPROVE_USER_URL = (id) =>
 const MASTODON_DENY_USER_URL = (id) => `/api/v1/follow_requests/${id}/reject`
 const MASTODON_USER_RELATIONSHIPS_URL = ({ id, withSuspended }) =>
   `/api/v1/accounts/relationships/${paramsString({ id, withSuspended })}`
-const MASTODON_USER_IN_LISTS = (id) => `/api/v1/accounts/${id}/lists`
+export const MASTODON_USER_IN_LISTS = (id) => `/api/v1/accounts/${id}/lists`
 export const MASTODON_LIST_URL = (id = '') => `/api/v1/lists/${id}`
 export const MASTODON_LIST_ACCOUNTS_URL = (id) => `/api/v1/lists/${id}/accounts`
-const MASTODON_USER_BLOCKS_URL = ({
+export const MASTODON_USER_BLOCKS_URL = ({
   maxId,
   sinceId,
   limit,
   withRelationships,
 }) =>
   `/api/v1/blocks/${paramsString({ maxId, sinceId, limit, withRelationships })}`
-const MASTODON_USER_MUTES_URL = ({
+export const MASTODON_USER_MUTES_URL = ({
   maxId,
   sinceId,
   limit,
   withRelationships,
 }) =>
   `/api/v1/mutes/${paramsString({ maxId, sinceId, limit, withRelationships })}`
-const MASTODON_BLOCK_USER_URL = (id) => `/api/v1/accounts/${id}/block`
-const MASTODON_UNBLOCK_USER_URL = (id) => `/api/v1/accounts/${id}/unblock`
-const MASTODON_MUTE_USER_URL = (id) => `/api/v1/accounts/${id}/mute`
-const MASTODON_UNMUTE_USER_URL = (id) => `/api/v1/accounts/${id}/unmute`
-const MASTODON_REMOVE_USER_FROM_FOLLOWERS = (id) =>
+export const MASTODON_BLOCK_USER_URL = (id) => `/api/v1/accounts/${id}/block`
+export const MASTODON_UNBLOCK_USER_URL = (id) =>
+  `/api/v1/accounts/${id}/unblock`
+export const MASTODON_MUTE_USER_URL = (id) => `/api/v1/accounts/${id}/mute`
+export const MASTODON_UNMUTE_USER_URL = (id) => `/api/v1/accounts/${id}/unmute`
+export const MASTODON_REMOVE_USER_FROM_FOLLOWERS_URL = (id) =>
   `/api/v1/accounts/${id}/remove_from_followers`
-const MASTODON_USER_NOTE_URL = (id) => `/api/v1/accounts/${id}/note`
+export const MASTODON_USER_NOTE_URL = (id) => `/api/v1/accounts/${id}/note`
 const MASTODON_BOOKMARK_STATUS_URL = (id) => `/api/v1/statuses/${id}/bookmark`
 const MASTODON_UNBOOKMARK_STATUS_URL = (id) =>
   `/api/v1/statuses/${id}/unbookmark`
@@ -79,7 +80,7 @@ const MASTODON_PIN_OWN_STATUS = (id) => `/api/v1/statuses/${id}/pin`
 const MASTODON_UNPIN_OWN_STATUS = (id) => `/api/v1/statuses/${id}/unpin`
 const MASTODON_MUTE_CONVERSATION = (id) => `/api/v1/statuses/${id}/mute`
 const MASTODON_UNMUTE_CONVERSATION = (id) => `/api/v1/statuses/${id}/unmute`
-const MASTODON_DOMAIN_BLOCKS_URL = '/api/v1/domain_blocks'
+export const MASTODON_DOMAIN_BLOCKS_URL = '/api/v1/domain_blocks'
 const MASTODON_ANNOUNCEMENTS_URL = '/api/v1/announcements'
 const MASTODON_ANNOUNCEMENTS_DISMISS_URL = (id) =>
   `/api/v1/announcements/${id}/dismiss`
@@ -656,7 +657,7 @@ export const fetchUserInLists = ({ id, credentials }) =>
 
 export const removeUserFromFollowers = ({ id, credentials }) =>
   promisedRequest({
-    url: MASTODON_REMOVE_USER_FROM_FOLLOWERS(id),
+    url: MASTODON_REMOVE_USER_FROM_FOLLOWERS_URL(id),
     credentials,
     method: 'POST',
   })

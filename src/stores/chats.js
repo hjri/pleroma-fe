@@ -43,11 +43,11 @@ export const useChatsStore = defineStore('chats', {
 
       useStreamingStore().addSubscriber(socket)
     },
-    startFetchingChats() {
+    startFetching() {
       const fetcher = () => this.fetchChats()
       this.setChatListFetcher(() => promiseInterval(fetcher, 5000))
     },
-    stopFetchingChats() {
+    stopFetching() {
       this.setChatListFetcher(null)
     },
     async fetchChats() {

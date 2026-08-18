@@ -13,12 +13,12 @@ const MASTODON_REGISTRATION_URL = '/api/v1/accounts'
 const MASTODON_PASSWORD_RESET_URL = ({ email }) =>
   `/auth/password${paramsString({ email })}`
 
-const MASTODON_FOLLOWING_URL = (
+export const MASTODON_FOLLOWING_URL = (
   id,
   { minId, maxId, sinceId, limit, withRelationships },
 ) =>
   `/api/v1/accounts/${id}/following${paramsString({ minId, maxId, sinceId, limit, withRelationships })}`
-const MASTODON_FOLLOWERS_URL = (
+export const MASTODON_FOLLOWERS_URL = (
   id,
   { minId, maxId, sinceId, limit, withRelationships },
 ) =>

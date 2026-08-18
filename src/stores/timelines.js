@@ -317,22 +317,24 @@ export const useTimelinesStore = defineStore('timelines', {
     },
 
     // Misc
-    removeUserStatuses({ timelineName, userId }) {
-      const timeline = this.timelines[timelineName]
+    wipeUserStatuses(userId) {
+      TIMELINES.forEach((timelineName) => {
+        const timeline = this.timelines[timelineName]
 
-      timeline.statuses
-        .values()
-        .filter(({ user }) => user.id === userId)
-        .forEach(({ id }) => {
-          timeline.statuses.delete(id)
-          timeline.visibleStatusesIds.delete(id)
-        })
-      timeline.minVisibleId =
-        timeline.visibleStatusesIds.size > 0
-          ? last(timeline.visibleStatusesIds).id
-          : 0
-      timeline.maxId =
-        timeline.statuses.length > 0 ? first(timeline.statuses).id : 0
+        timeline.statuses
+          .values()
+          .filter(({ user }) => user.id === userId)
+          .forEach(({ id }) => {
+            timeline.statuses.delete(id)
+            timeline.visibleStatusesIds.delete(id)
+          })
+        timeline.minVisibleId =
+          timeline.visibleStatusesIds.size > 0
+            ? last(timeline.visibleStatusesIds).id
+            : 0
+        timeline.maxId =
+          timeline.statuses.length > 0 ? first(timeline.statuses).id : 0
+      })
     },
   },
 })

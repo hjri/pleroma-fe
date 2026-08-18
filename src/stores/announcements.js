@@ -96,7 +96,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
         this.announcements[index].read = true
       })
     },
-    startFetchingAnnouncements() {
+    startFetching() {
       if (this.fetchAnnouncementsTimer) {
         return
       }
@@ -109,7 +109,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
 
       return this.fetchAnnouncements()
     },
-    stopFetchingAnnouncements() {
+    stopFetching() {
       const interval = this.fetchAnnouncementsTimer
       this.fetchAnnouncementsTimer = undefined
       clearInterval(interval)
