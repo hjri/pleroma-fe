@@ -4,6 +4,7 @@ import Popover from 'src/components/popover/popover.vue'
 import ActionButton from './action_button.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import genRandomSeed from 'src/services/random_seed/random_seed.service.js'
@@ -105,13 +106,13 @@ export default {
       }
     },
     unmuteUser() {
-      return this.$store.dispatch('unmuteUser', this.user.id)
+      return useUsersStore().unmuteUser(this.user.id)
     },
     unmuteConversation() {
-      return this.$store.dispatch('unmuteConversation', { id: this.status.id })
+      return useStatusesStore().unmuteConversation(this.status.id)
     },
     unmuteDomain() {
-      return this.$store.dispatch('unmuteDomain', this.domain)
+      return useUsersStore().unmuteDomain(this.domain)
     },
     toggleUserMute() {
       if (this.userIsMuted) {

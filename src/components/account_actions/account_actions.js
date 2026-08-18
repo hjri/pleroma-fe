@@ -48,10 +48,10 @@ const AccountActions = {
       this.showingConfirmBlock = false
     },
     showRepeats() {
-      this.$store.dispatch('showReblogs', this.user.id)
+      useUsersStore().showReblogs(this.user.id)
     },
     hideRepeats() {
-      this.$store.dispatch('hideReblogs', this.user.id)
+      useUsersStore().hideReblogs(this.user.id)
     },
     blockUser() {
       if (this.$refs.timedBlockDialog) {
@@ -65,11 +65,11 @@ const AccountActions = {
       }
     },
     doBlockUser() {
-      this.$store.dispatch('blockUser', { id: this.user.id })
+      useUsersStore().blockUser(this.user.id)
       this.hideConfirmBlock()
     },
     unblockUser() {
-      this.$store.dispatch('unblockUser', this.user.id)
+      useUsersStore().unblockUser(this.user.id)
     },
     removeUserFromFollowers() {
       if (!this.shouldConfirmRemoveUserFromFollowers) {
@@ -79,7 +79,7 @@ const AccountActions = {
       }
     },
     doRemoveUserFromFollowers() {
-      this.$store.dispatch('removeUserFromFollowers', this.user.id)
+      useUsersStore().removeUserFromFollowers(this.user.id)
       this.hideConfirmRemoveUserFromFollowers()
     },
     reportUser() {

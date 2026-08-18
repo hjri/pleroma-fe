@@ -36,13 +36,13 @@ const BlockCard = {
   },
   methods: {
     unblockUser() {
-      this.$store.dispatch('unblockUser', this.user.id)
+      useUsersStore().unblockUser(this.user.id)
     },
     blockUser() {
       if (this.blockExpiration) {
         this.$refs.timedBlockDialog.optionallyPrompt()
       } else {
-        this.$store.dispatch('blockUser', { id: this.user.id })
+        useUsersStore().blockUser(this.user.id)
       }
     },
   },

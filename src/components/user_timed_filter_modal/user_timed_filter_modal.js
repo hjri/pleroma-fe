@@ -5,6 +5,7 @@ import Select from 'src/components/select/select.vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { durationStrToMs } from 'src/services/date_utils/date_utils.js'
 
@@ -64,13 +65,6 @@ const UserTimedFilterModal = {
     expirySeconds() {
       return Math.floor(durationStrToMs(this.expiryString) / 1000)
     },
-    requestBody() {
-      const object = { id: this.user.id }
-      if (!this.forever) {
-        object.expiresIn = this.expirySeconds
-      }
-      return object
-    },
   },
   watch: {
     expiration(newVal) {
@@ -89,7 +83,10 @@ const UserTimedFilterModal = {
     },
     accept() {
       if (this.isMute) {
-        this.$store.dispatch('muteUser', this.requestBody)
+        useUsersStore().muteUser(
+          this.user.id,
+          this.forever ? undefined : this.expirySeconds,
+        )
         if (this.dontAskAgain) {
           useSyncConfigStore().setSimplePrefAndSave({
             path: 'onMuteDefaultAction',
@@ -97,7 +94,10 @@ const UserTimedFilterModal = {
           })
         }
       } else {
-        this.$store.dispatch('blockUser', this.requestBody)
+        useUsersStore().blockUser(
+          this.user.id,
+          this.forever ? undefined : this.expirySeconds,
+        )
         if (this.dontAskAgain) {
           useSyncConfigStore().setSimplePrefAndSave({
             path: 'onBlockDefaultAction',

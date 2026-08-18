@@ -454,13 +454,13 @@ export default {
       this.$refs.timedMuteDialog.optionallyPrompt()
     },
     unmuteUser() {
-      this.$store.dispatch('unmuteUser', this.user.id)
+      return useUsersStore().unmuteUser(this.user.id)
     },
     subscribeUser() {
-      return this.$store.dispatch('subscribeUser', this.user.id)
+      return useUsersStore().subscribeUser(this.user.id)
     },
     unsubscribeUser() {
-      return this.$store.dispatch('unsubscribeUser', this.user.id)
+      return useUsersStore().unsubscribeUser(this.user.id)
     },
     linkClicked({ target }) {
       if (target.tagName === 'SPAN') {

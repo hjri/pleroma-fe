@@ -4,6 +4,7 @@ import { defineAsyncComponent } from 'vue'
 import Select from 'src/components/select/select.vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 export default {
@@ -69,17 +70,17 @@ export default {
       switch (this.type) {
         case 'domain': {
           if (!this.domainIsMuted) {
-            this.$store.dispatch('muteDomain', this.domain)
+            useUsersStore().muteDomain(this.domain)
           } else {
-            this.$store.dispatch('unmuteDomain', this.domain)
+            useUsersStore().unmuteDomain(this.domain)
           }
           break
         }
         case 'conversation': {
           if (!this.conversationIsMuted) {
-            this.$store.dispatch('muteConversation', { id: this.status.id })
+            useStatusesStore().muteConversation(this.status.id)
           } else {
-            this.$store.dispatch('unmuteConversation', { id: this.status.id })
+            useStatusesStore().unmuteConversation(this.status.id)
           }
           break
         }
