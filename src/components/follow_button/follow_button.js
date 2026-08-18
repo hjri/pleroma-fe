@@ -63,7 +63,7 @@ export default {
       this.inProgress = true
       useUsersStore()
         .followUser(this.relationship.id)
-        .then(() => {
+        .finally(() => {
           this.inProgress = false
         })
     },
@@ -79,12 +79,8 @@ export default {
       this.inProgress = true
       useUsersStore()
         .unfollowUser(this.relationship.id)
-        .then(() => {
+        .finally(() => {
           this.inProgress = false
-          store.commit('removeStatus', {
-            timeline: 'friends',
-            userId: this.relationship.id,
-          })
         })
 
       this.hideConfirmUnfollow()

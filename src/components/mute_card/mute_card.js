@@ -32,7 +32,7 @@ const MuteCard = {
   },
   methods: {
     unmuteUser() {
-      this.$store.dispatch('unmuteUser', this.userId)
+      useUsersStore().unmuteUser(this.user.id)
     },
     muteUser() {
       this.$refs.timedMuteDialog.optionallyPrompt()
