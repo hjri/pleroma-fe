@@ -407,7 +407,7 @@
 
           <StatusContent
             ref="content"
-            :status="status"
+            :status="mainStatus"
             :focused="focused"
             :in-conversation="inConversation"
             @mediaplay="addMediaPlaying($event)"

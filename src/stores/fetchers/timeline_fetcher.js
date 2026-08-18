@@ -51,7 +51,6 @@ const timelineFetcher = (timeline, argument, credentials) => {
       .then(({ data: statuses, pagination, timestamp }) => {
         if (
           !older &&
-          !loading.value &&
           statuses.length >= 20 &&
           numStatusesBeforeFetch > 0
         ) {
