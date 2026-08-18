@@ -57,7 +57,7 @@ describe('The users store', () => {
     screen_name = userScreenName,
     name = userName,
     url = userUrl,
-    id = userId
+    id = userId,
   } = {}) => ({
     id,
     acct: screen_name,
@@ -366,26 +366,44 @@ describe('The users store', () => {
 
     describe('relationships', () => {
       it.each(['Friends', 'Followers'])('fetch%s', async (group) => {
-        const mockFetch = vi.fn()
+        const mockFetch = vi
+          .fn()
           .mockResolvedValueOnce(
-            new Response(JSON.stringify([
-              mastoApiUser({ screen_name: 'snake', name: 'John', id: '2' }),
-              mastoApiUser({ screen_name: 'zero', name: 'David Oh', id: '3' }),
-            ]), {
-              headers: { 'Content-Type': 'application/json' },
-            }),
+            new Response(
+              JSON.stringify([
+                mastoApiUser({ screen_name: 'snake', name: 'John', id: '2' }),
+                mastoApiUser({
+                  screen_name: 'zero',
+                  name: 'David Oh',
+                  id: '3',
+                }),
+              ]),
+              {
+                headers: { 'Content-Type': 'application/json' },
+              },
+            ),
           )
           .mockResolvedValueOnce(
-            new Response(JSON.stringify([
-              mastoApiUser({ screen_name: 'sigint', name: 'Mr.Anderson', id: '4' }),
-              mastoApiUser({ screen_name: 'paramedic', name: 'Dr.Clark', id: '5' }),
-            ]), {
-              headers: { 'Content-Type': 'application/json' },
-            }),
+            new Response(
+              JSON.stringify([
+                mastoApiUser({
+                  screen_name: 'sigint',
+                  name: 'Mr.Anderson',
+                  id: '4',
+                }),
+                mastoApiUser({
+                  screen_name: 'paramedic',
+                  name: 'Dr.Clark',
+                  id: '5',
+                }),
+              ]),
+              {
+                headers: { 'Content-Type': 'application/json' },
+              },
+            ),
           )
 
         vi.stubGlobal('fetch', mockFetch)
-
 
         const store = useUsersStore()
         store.addNewUsers({ timestamp: 1, data: user() })
@@ -401,7 +419,9 @@ describe('The users store', () => {
           }),
           DEFAULT_OPTIONS('GET'),
         )
-        expect(store.relationshipsLists[group.toLowerCase()].get(us)).to.have.length(2)
+        expect(
+          store.relationshipsLists[group.toLowerCase()].get(us),
+        ).to.have.length(2)
 
         await store[`fetch${group}`](userId)
         expect(mockFetch).to.have.been.calledWith(
@@ -412,26 +432,47 @@ describe('The users store', () => {
           }),
           DEFAULT_OPTIONS('GET'),
         )
-        expect(store.relationshipsLists[group.toLowerCase()].get(us)).to.have.length(4)
+        expect(
+          store.relationshipsLists[group.toLowerCase()].get(us),
+        ).to.have.length(4)
       })
 
       it.each(['Mutes', 'Blocks'])('fetch%s', async (group) => {
-        const mockFetch = vi.fn()
+        const mockFetch = vi
+          .fn()
           .mockResolvedValueOnce(
-            new Response(JSON.stringify([
-              mastoApiUser({ screen_name: 'snake', name: 'John', id: '2' }),
-              mastoApiUser({ screen_name: 'zero', name: 'David Oh', id: '3' }),
-            ]), {
-              headers: { 'Content-Type': 'application/json' },
-            }),
+            new Response(
+              JSON.stringify([
+                mastoApiUser({ screen_name: 'snake', name: 'John', id: '2' }),
+                mastoApiUser({
+                  screen_name: 'zero',
+                  name: 'David Oh',
+                  id: '3',
+                }),
+              ]),
+              {
+                headers: { 'Content-Type': 'application/json' },
+              },
+            ),
           )
           .mockResolvedValueOnce(
-            new Response(JSON.stringify([
-              mastoApiUser({ screen_name: 'sigint', name: 'Mr.Anderson', id: '4' }),
-              mastoApiUser({ screen_name: 'paramedic', name: 'Dr.Clark', id: '5' }),
-            ]), {
-              headers: { 'Content-Type': 'application/json' },
-            }),
+            new Response(
+              JSON.stringify([
+                mastoApiUser({
+                  screen_name: 'sigint',
+                  name: 'Mr.Anderson',
+                  id: '4',
+                }),
+                mastoApiUser({
+                  screen_name: 'paramedic',
+                  name: 'Dr.Clark',
+                  id: '5',
+                }),
+              ]),
+              {
+                headers: { 'Content-Type': 'application/json' },
+              },
+            ),
           )
 
         vi.stubGlobal('fetch', mockFetch)
@@ -464,15 +505,11 @@ describe('The users store', () => {
       })
 
       it('fetchDomainMutes', async () => {
-        const mockFetch = vi.fn()
-          .mockResolvedValueOnce(
-            new Response(JSON.stringify([
-              'example.com',
-              'example.org',
-            ]), {
-              headers: { 'Content-Type': 'application/json' },
-            }),
-          )
+        const mockFetch = vi.fn().mockResolvedValueOnce(
+          new Response(JSON.stringify(['example.com', 'example.org']), {
+            headers: { 'Content-Type': 'application/json' },
+          }),
+        )
 
         vi.stubGlobal('fetch', mockFetch)
 
@@ -489,7 +526,9 @@ describe('The users store', () => {
           DEFAULT_OPTIONS('GET'),
         )
 
-        expect(us.domainMutes).to.have.eql(new Set(['example.com', 'example.org']))
+        expect(us.domainMutes).to.have.eql(
+          new Set(['example.com', 'example.org']),
+        )
       })
 
       it('fetchInLists', async () => {
@@ -497,12 +536,11 @@ describe('The users store', () => {
           { exclusive: false, id: '1', title: 'Operatives' },
           { exclusive: true, id: '2', title: 'Agents' },
         ]
-        const mockFetch = vi.fn()
-          .mockResolvedValueOnce(
-            new Response(JSON.stringify(inLists), {
-              headers: { 'Content-Type': 'application/json' },
-            }),
-          )
+        const mockFetch = vi.fn().mockResolvedValueOnce(
+          new Response(JSON.stringify(inLists), {
+            headers: { 'Content-Type': 'application/json' },
+          }),
+        )
 
         vi.stubGlobal('fetch', mockFetch)
 
@@ -513,7 +551,7 @@ describe('The users store', () => {
             user(),
             { ...user({ name: 'John', screen_name: 'snake', id: '2' }) },
             { ...user({ name: 'David Oh', screen_name: 'zero', id: '3' }) },
-          ]
+          ],
         })
 
         const us = store.users.get(userId)
