@@ -109,6 +109,11 @@ const conversation = {
     }
   },
   computed: {
+    status() {
+      console.log(this.statusId)
+      console.log(useStatusesStore().allStatuses.get(this.statusId))
+      return useStatusesStore().allStatuses.get(this.statusId)
+    },
     maxDepthToShowByDefault() {
       // maxDepthInThread = max number of depths that is *visible*
       // since our depth starts with 0 and "showing" means "showing children"
@@ -152,9 +157,6 @@ const conversation = {
     hideStatus() {
       return this.virtualHidden && this.suspendable
     },
-    status() {
-      return useStatusesStore().allStatuses.get(this.statusId)
-    },
     originalStatusId() {
       if (this.status.retweeted_status) {
         return this.status.retweeted_status.id
@@ -178,7 +180,9 @@ const conversation = {
         this.conversationId,
       )
 
-      return [...conversation.values()].toSorted(sortById)
+      return [...conversation.keys()]
+        .map((k) => useStatusesStore().allStatuses.get(k))
+        .toSorted(sortById)
     },
     statusMap() {
       return this.conversation.reduce((res, s) => {
@@ -472,7 +476,7 @@ const conversation = {
       }
 
       useStatusesStore().fetchFavsAndRepeats(id)
-      useStatusesStore().fetchEmojiReactionsBy(id)
+      useStatusesStore().fetchEmojiReactions(id)
     },
     toggleExpanded() {
       this.expanded = !this.expanded

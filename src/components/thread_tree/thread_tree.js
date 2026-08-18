@@ -11,7 +11,7 @@ const ThreadTree = {
   name: 'ThreadTree',
   props: {
     depth: Number,
-    status: Object,
+    statusId: String,
     inProfile: Boolean,
     conversation: Array,
     collapsable: Boolean,
@@ -34,8 +34,8 @@ const ThreadTree = {
   computed: {
     reverseLookupTable() {
       return this.conversation.reduce(
-        (table, status, index) => {
-          table[status.id] = index
+        (table, statusId, index) => {
+          table[statusId] = index
           return table
         },
         {
@@ -44,12 +44,10 @@ const ThreadTree = {
       )
     },
     currentReplies() {
-      return this.getReplies(this.status.id).map(({ id }) =>
-        this.statusById(id),
-      )
+      return this.getReplies(this.statusId).map(({ id }) => this.statusById(id))
     },
     threadShowing() {
-      return this.threadDisplayStatus[this.status.id] === 'showing'
+      return this.threadDisplayStatus[this.statusId] === 'showing'
     },
   },
   methods: {

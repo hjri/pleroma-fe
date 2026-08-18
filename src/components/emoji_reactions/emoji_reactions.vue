@@ -56,7 +56,7 @@
         class="emoji-reaction-popover"
         :normal-button="true"
         :trigger-attrs="counterTriggerAttrs(reaction)"
-        @show="fetchEmojiReactionsByIfMissing()"
+        @show="fetchEmojiReactionsIfMissing()"
       >
         <span class="emoji-reaction-counts">{{ reaction.count }}</span>
       </UserListPopover>

@@ -14,7 +14,7 @@
       <Status
         v-if="status"
         :is-preview="true"
-        :statusoid="status"
+        :status-id="statusId"
         :compact="true"
         :ignore-mute="true"
       />

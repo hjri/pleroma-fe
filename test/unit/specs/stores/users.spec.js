@@ -43,47 +43,47 @@ const actionKeys = (action) => {
   return result
 }
 
-describe('The users store', () => {
-  beforeEach(() => {
-    setActivePinia(createTestingPinia({ stubActions: false }))
-  })
+const userId = '1'
+const userScreenName = 'user'
+const userName = 'Guy'
+const userUrl = 'http://localhost/user'
 
-  const userId = '1'
-  const userScreenName = 'user'
-  const userName = 'Guy'
-  const userUrl = 'http://localhost/user'
+const mockMastoAPIUser = ({
+  screen_name = userScreenName,
+  name = userName,
+  url = userUrl,
+  id = userId,
+} = {}) => ({
+  id,
+  acct: screen_name,
+  display_name: name,
+  fields: [],
+  avatar: '',
+  url,
+})
 
-  const mastoApiUser = ({
-    screen_name = userScreenName,
-    name = userName,
-    url = userUrl,
-    id = userId,
-  } = {}) => ({
-    id,
-    acct: screen_name,
-    display_name: name,
-    fields: [],
-    avatar: '',
-    url,
-  })
-
-  const user = ({
-    screen_name = userScreenName,
-    id = userId,
-    name = userName,
-    url = userUrl,
-  } = {}) => ({
-    _original: mastoApiUser({
-      screen_name,
-      id,
-      name,
-      url,
-    }),
+const mockUser = ({
+  screen_name = userScreenName,
+  id = userId,
+  name = userName,
+  url = userUrl,
+} = {}) => ({
+  _original: mockMastoAPIUser({
+    screen_name,
     id,
     name,
-    screen_name,
     url,
-    relationship: undefined,
+  }),
+  id,
+  name,
+  screen_name,
+  url,
+  relationship: undefined,
+})
+
+describe('Users store', () => {
+  beforeEach(() => {
+    setActivePinia(createTestingPinia({ stubActions: false }))
   })
 
   describe('addNewUsers', () => {
@@ -91,9 +91,9 @@ describe('The users store', () => {
       it('adds new users to the set, merging in new information for old users', () => {
         const store = useUsersStore()
 
-        const modUser = user({ name: 'Dude' })
+        const modUser = mockUser({ name: 'Dude' })
 
-        store.addNewUsers({ data: [user()], timestamp: 1 })
+        store.addNewUsers({ data: [mockUser()], timestamp: 1 })
         expect(store.users).to.have.length(1)
         expect(store.users).to.have.all.keys(userId)
 
@@ -106,9 +106,9 @@ describe('The users store', () => {
       it('ignores new users if timestamp is older', () => {
         const store = useUsersStore()
 
-        const modUser = user({ name: 'Old guy' })
+        const modUser = mockUser({ name: 'Old guy' })
 
-        store.addNewUsers({ data: [user()], timestamp: 2000 })
+        store.addNewUsers({ data: [mockUser()], timestamp: 2000 })
         expect(store.users).to.have.length(1)
         expect(store.users).to.have.all.keys(userId)
         expect(store.users.get(userId).name).to.eql('Guy')
@@ -123,18 +123,18 @@ describe('The users store', () => {
         const store = useUsersStore()
 
         const userFields = {
-          ...user(),
+          ...mockUser(),
           fields: [{ name: 'Label 1', value: 'Content 1' }],
         }
         const firstModUser = {
-          ...user(),
+          ...mockUser(),
           fields: [
             { name: 'Label 2', value: 'Content 2' },
             { name: 'Label 3', value: 'Content 3' },
           ],
         }
         const secondModUser = {
-          ...user(),
+          ...mockUser(),
           fields: [{ name: 'Label 4', value: 'Content 4' }],
         }
 
@@ -159,14 +159,14 @@ describe('The users store', () => {
         const store = useUsersStore()
 
         const modUser = {
-          ...user(),
+          ...mockUser(),
           relationship: {
             id: userId,
             following: true,
           },
         }
 
-        store.addNewUsers({ data: [user()], timestamp: 1 })
+        store.addNewUsers({ data: [mockUser()], timestamp: 1 })
         store.addNewUsers({ data: [modUser], timestamp: 2 })
 
         expect(store.relationships).to.have.length(1)
@@ -179,14 +179,14 @@ describe('The users store', () => {
         const store = useUsersStore()
 
         const modUser = {
-          ...user({ name: 'Old Dude' }),
+          ...mockUser({ name: 'Old Dude' }),
           relationship: {
             id: userId,
             following: true,
           },
         }
 
-        store.addNewUsers({ data: [user()], timestamp: 2000 })
+        store.addNewUsers({ data: [mockUser()], timestamp: 2000 })
         store.addNewUsers({ data: [modUser], timestamp: 1991 })
 
         expect(store.relationships).to.have.length(1)
@@ -198,10 +198,12 @@ describe('The users store', () => {
       it("doesn't erase relationship information if new data has it missing", () => {
         const store = useUsersStore()
 
-        const modUser = user({ name: 'Dude' })
+        const modUser = mockUser({ name: 'Dude' })
 
         store.addNewUsers({
-          data: [{ ...user(), relationship: { id: userId, following: true } }],
+          data: [
+            { ...mockUser(), relationship: { id: userId, following: true } },
+          ],
           timestamp: 1,
         })
         store.addNewUsers({ data: [modUser], timestamp: 2 })
@@ -219,7 +221,7 @@ describe('The users store', () => {
       const store = useUsersStore()
       const relationship = { id: userId, following: true }
 
-      store.addNewUsers({ data: [user()], timestamp: 1 })
+      store.addNewUsers({ data: [mockUser()], timestamp: 1 })
       store.updateUserRelationships({ data: relationship, timestamp: 2 })
 
       expect(store.relationship(userId)).to.eql({ id: userId, following: true })
@@ -240,7 +242,7 @@ describe('The users store', () => {
       const relationship = { id: userId, following: true }
 
       store.updateUserRelationships({ data: relationship, timestamp: 1 })
-      store.addNewUsers({ data: [user()], timestamp: 2 })
+      store.addNewUsers({ data: [mockUser()], timestamp: 2 })
 
       expect(store.relationship(userId)).to.eql({ id: userId, following: true })
       expect(store.findUser(userId).relationship).to.eql({
@@ -255,7 +257,7 @@ describe('The users store', () => {
       const newRelationship = { id: userId, following: false }
 
       store.addNewUsers({
-        data: [{ ...user(), relationship: newRelationship }],
+        data: [{ ...mockUser(), relationship: newRelationship }],
         timestamp: 2000,
       })
       store.updateUserRelationships({ data: oldRelationship, timestamp: 1991 })
@@ -274,13 +276,13 @@ describe('The users store', () => {
         vi.stubGlobal(
           'fetch',
           vi.fn().mockResolvedValueOnce(
-            new Response(JSON.stringify(mastoApiUser()), {
+            new Response(JSON.stringify(mockMastoAPIUser()), {
               headers: { 'Content-Type': 'application/json' },
             }),
           ),
         )
 
-        const expected = user()
+        const expected = mockUser()
         const store = useUsersStore()
         const resultUser = await store.fetchUserIfMissing({ id: '1' })
 
@@ -300,14 +302,14 @@ describe('The users store', () => {
             )
             // fetch by name yields user id which we request next
             .mockResolvedValueOnce(
-              new Response(JSON.stringify(mastoApiUser()), {
+              new Response(JSON.stringify(mockMastoAPIUser()), {
                 headers: { 'Content-Type': 'application/json' },
               }),
             )
             .mockThrowOnce(new Error("Shouldn't be called more than once")),
         )
 
-        const expected = user()
+        const expected = mockUser()
         const store = useUsersStore()
         const resultUser1 = await store.fetchUserIfMissing({ name: 'user' })
         const resultUser2 = await store.fetchUserIfMissing({ id: '1' })
@@ -323,11 +325,11 @@ describe('The users store', () => {
           vi.fn().mockThrowOnce(new Error("Shouldn't be called at all")),
         )
         const store = useUsersStore()
-        store.addNewUsers({ data: [user()], timestamp: 1 })
+        store.addNewUsers({ data: [mockUser()], timestamp: 1 })
 
         const resultUser1 = await store.fetchUserIfMissing({ id: '1' })
         const resultUser2 = await store.fetchUserIfMissing({ name: 'user' })
-        const expected = user()
+        const expected = mockUser()
 
         expect(resultUser1).to.deep.include(expected)
         expect(resultUser2).to.deep.include(expected)
@@ -338,7 +340,7 @@ describe('The users store', () => {
         vi.stubGlobal(
           'fetch',
           vi.fn().mockResolvedValueOnce(
-            new Response(JSON.stringify(mastoApiUser()), {
+            new Response(JSON.stringify(mockMastoAPIUser()), {
               status: 404,
               statusText: 'Not Found',
               headers: { 'Content-Type': 'application/json' },
@@ -371,8 +373,12 @@ describe('The users store', () => {
           .mockResolvedValueOnce(
             new Response(
               JSON.stringify([
-                mastoApiUser({ screen_name: 'snake', name: 'John', id: '2' }),
-                mastoApiUser({
+                mockMastoAPIUser({
+                  screen_name: 'snake',
+                  name: 'John',
+                  id: '2',
+                }),
+                mockMastoAPIUser({
                   screen_name: 'zero',
                   name: 'David Oh',
                   id: '3',
@@ -386,12 +392,12 @@ describe('The users store', () => {
           .mockResolvedValueOnce(
             new Response(
               JSON.stringify([
-                mastoApiUser({
+                mockMastoAPIUser({
                   screen_name: 'sigint',
                   name: 'Mr.Anderson',
                   id: '4',
                 }),
-                mastoApiUser({
+                mockMastoAPIUser({
                   screen_name: 'paramedic',
                   name: 'Dr.Clark',
                   id: '5',
@@ -406,7 +412,7 @@ describe('The users store', () => {
         vi.stubGlobal('fetch', mockFetch)
 
         const store = useUsersStore()
-        store.addNewUsers({ timestamp: 1, data: user() })
+        store.addNewUsers({ timestamp: 1, data: mockUser() })
 
         const urlGroup = group === 'Friends' ? 'Following' : group
         const us = store.users.get(userId)
@@ -443,8 +449,12 @@ describe('The users store', () => {
           .mockResolvedValueOnce(
             new Response(
               JSON.stringify([
-                mastoApiUser({ screen_name: 'snake', name: 'John', id: '2' }),
-                mastoApiUser({
+                mockMastoAPIUser({
+                  screen_name: 'snake',
+                  name: 'John',
+                  id: '2',
+                }),
+                mockMastoAPIUser({
                   screen_name: 'zero',
                   name: 'David Oh',
                   id: '3',
@@ -458,12 +468,12 @@ describe('The users store', () => {
           .mockResolvedValueOnce(
             new Response(
               JSON.stringify([
-                mastoApiUser({
+                mockMastoAPIUser({
                   screen_name: 'sigint',
                   name: 'Mr.Anderson',
                   id: '4',
                 }),
-                mastoApiUser({
+                mockMastoAPIUser({
                   screen_name: 'paramedic',
                   name: 'Dr.Clark',
                   id: '5',
@@ -478,7 +488,7 @@ describe('The users store', () => {
         vi.stubGlobal('fetch', mockFetch)
 
         const store = useUsersStore()
-        store.addNewUsers({ timestamp: 1, data: user() })
+        store.addNewUsers({ timestamp: 1, data: mockUser() })
 
         const us = store.users.get(userId)
 
@@ -514,7 +524,7 @@ describe('The users store', () => {
         vi.stubGlobal('fetch', mockFetch)
 
         const store = useUsersStore()
-        store.addNewUsers({ timestamp: 1, data: user() })
+        store.addNewUsers({ timestamp: 1, data: mockUser() })
 
         const us = store.users.get(userId)
         store.currentUser = us
@@ -548,9 +558,9 @@ describe('The users store', () => {
         store.addNewUsers({
           timestamp: 1,
           data: [
-            user(),
-            { ...user({ name: 'John', screen_name: 'snake', id: '2' }) },
-            { ...user({ name: 'David Oh', screen_name: 'zero', id: '3' }) },
+            mockUser(),
+            { ...mockUser({ name: 'John', screen_name: 'snake', id: '2' }) },
+            { ...mockUser({ name: 'David Oh', screen_name: 'zero', id: '3' }) },
           ],
         })
 
@@ -572,7 +582,7 @@ describe('The users store', () => {
   describe('misc updates', () => {
     it('updateUserAdminData', () => {
       const store = useUsersStore()
-      store.addNewUsers({ data: [user()], timestamp: 1 })
+      store.addNewUsers({ data: [mockUser()], timestamp: 1 })
       const adminData = { is_active: true, tags: ['one', 'two'] }
       store.updateUserAdminData(userId, adminData)
 
@@ -583,7 +593,7 @@ describe('The users store', () => {
 
     it('updateRight', () => {
       const store = useUsersStore()
-      store.addNewUsers({ data: [user()], timestamp: 1 })
+      store.addNewUsers({ data: [mockUser()], timestamp: 1 })
       store.updateRight(userId, 'right1', true)
       store.updateRight(userId, 'right2', false)
 
@@ -594,7 +604,7 @@ describe('The users store', () => {
 
     it('clearFollowLists', () => {
       const store = useUsersStore()
-      store.addNewUsers({ data: [user()], timestamp: 1 })
+      store.addNewUsers({ data: [mockUser()], timestamp: 1 })
       const userData = store.users.get(userId)
       store.relationshipsLists.friends.get(userData).add('2')
       store.relationshipsLists.friends.get(userData).add('3')
@@ -613,7 +623,7 @@ describe('The users store', () => {
         vi.stubGlobal(
           'fetch',
           vi.fn().mockResolvedValueOnce(
-            new Response(JSON.stringify(mastoApiUser()), {
+            new Response(JSON.stringify(mockMastoAPIUser()), {
               headers: { 'Content-Type': 'application/json' },
             }),
           ),
@@ -653,9 +663,9 @@ describe('The users store', () => {
         // Adding some users to verify they are getting cleaned afterwards
         store.addNewUsers({
           data: [
-            user(),
-            { ...user({ name: 'John', screen_name: 'snake' }) },
-            { ...user({ name: 'David Oh', screen_name: 'zero' }) },
+            mockUser(),
+            { ...mockUser({ name: 'John', screen_name: 'snake' }) },
+            { ...mockUser({ name: 'David Oh', screen_name: 'zero' }) },
           ],
           timestamp: 2000,
         })
@@ -679,7 +689,7 @@ describe('The users store', () => {
         vi.stubGlobal(
           'fetch',
           vi.fn().mockResolvedValueOnce(
-            new Response(JSON.stringify(mastoApiUser()), {
+            new Response(JSON.stringify(mockMastoAPIUser()), {
               status: 403,
               statusText: 'Forbidden',
               headers: { 'Content-Type': 'application/json' },
@@ -756,17 +766,17 @@ describe('The users store', () => {
         useMergedConfigStore().mergedConfig = { useStreamingApi: true }
 
         const store = useUsersStore()
-        store.currentUser = user()
+        store.currentUser = mockUser()
 
         // Adding some users to verify they are getting cleaned afterwards
         store.addNewUsers({
           data: [
-            user(),
+            mockUser(),
             {
-              ...user({ name: 'John', screen_name: 'snake' }),
+              ...mockUser({ name: 'John', screen_name: 'snake' }),
               relationship: { id: userId, following: true },
             },
-            { ...user({ name: 'David Oh', screen_name: 'zero' }) },
+            { ...mockUser({ name: 'David Oh', screen_name: 'zero' }) },
           ],
           timestamp: 2000,
         })
@@ -1168,7 +1178,7 @@ describe('The users store', () => {
       vi.stubGlobal('fetch', mockFetch)
 
       const store = useUsersStore()
-      store.currentUser = user()
+      store.currentUser = mockUser()
       store.currentUser.domainMutes = new Set()
       if (action === 'unmute') {
         store.currentUser.domainMutes.add('example.com')
@@ -1198,14 +1208,6 @@ describe('The users store', () => {
       'blockUser',
       'unblockUser',
     ])('%ss', async (action) => {
-      const mockFetch = vi.fn().mockResolvedValueOnce(
-        new Response(JSON.stringify({ id: userId }), {
-          headers: { 'Content-Type': 'application/json' },
-        }),
-      )
-
-      vi.stubGlobal('fetch', mockFetch)
-
       const store = useUsersStore()
       store[action] = vi.fn().mockResolvedValue(async () => {
         /* no-op */
@@ -1226,30 +1228,30 @@ describe('The users store', () => {
 
     it('relationship returns a placeholder if relationship info is missing while user is present', () => {
       const store = useUsersStore()
-      store.addNewUsers({ data: [user()], timestamp: 1 })
+      store.addNewUsers({ data: [mockUser()], timestamp: 1 })
 
       expect(store.relationship(userId)).to.eql({ id: userId, loading: true })
     })
 
     it('findUser returns user with matching id', () => {
       const store = useUsersStore()
-      store.addNewUsers({ data: [user()], timestamp: 1 })
+      store.addNewUsers({ data: [mockUser()], timestamp: 1 })
 
       expect(store.findUser(userId).id).to.eql(userId)
     })
 
     it('findUserByName returns user with matching screen_name', () => {
       const store = useUsersStore()
-      store.addNewUsers({ data: [user()], timestamp: 1 })
+      store.addNewUsers({ data: [mockUser()], timestamp: 1 })
 
-      expect(store.findUserByName(user().screen_name).id).to.eql(userId)
+      expect(store.findUserByName(mockUser().screen_name).id).to.eql(userId)
     })
 
     it('findUserByName returns user with matching url', () => {
       const store = useUsersStore()
-      store.addNewUsers({ data: [user()], timestamp: 1 })
+      store.addNewUsers({ data: [mockUser()], timestamp: 1 })
 
-      expect(store.findUserByUrl(user().url).id).to.eql(userId)
+      expect(store.findUserByUrl(mockUser().url).id).to.eql(userId)
     })
   })
 })

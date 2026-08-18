@@ -184,6 +184,7 @@ const Notification = {
   },
   computed: {
     status() {
+      // Used for StatusContent
       if (this.notification.status) {
         return useStatusesStore().allStatuses.get(this.notification.status.id)
       }

@@ -187,7 +187,7 @@ export const BUTTONS = [
         'summary_raw_html',
       ]
       stripFieldsList.forEach((p) => delete originalStatus[p])
-      useStatusHistoryStore().openStatusHistoryModal(originalStatus)
+      useStatusHistoryStore().openModal(originalStatus.id)
       return Promise.resolve()
     },
   },

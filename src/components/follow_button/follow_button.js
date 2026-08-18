@@ -75,7 +75,6 @@ export default {
       }
     },
     doUnfollow() {
-      const store = this.$store
       this.inProgress = true
       useUsersStore()
         .unfollowUser(this.relationship.id)

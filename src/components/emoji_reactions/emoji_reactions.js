@@ -60,10 +60,10 @@ const EmojiReactions = {
     reactedWith(emoji) {
       return this.status.emoji_reactions.find((r) => r.name === emoji).me
     },
-    async fetchEmojiReactionsByIfMissing() {
+    async fetchEmojiReactionsIfMissing() {
       const hasNoAccounts = this.status.emoji_reactions.find((r) => !r.accounts)
-      if (hasNoAccounts) {
-        return await useStatusesStore().fetchEmojiReactionsBy(this.status.id)
+      if (!hasNoAccounts) {
+        return await useStatusesStore().fetchEmojiReactions(this.status.id)
       }
     },
     reactWith(emoji) {
@@ -75,7 +75,7 @@ const EmojiReactions = {
     async emojiOnClick(emoji) {
       if (!this.loggedIn) return
 
-      await this.fetchEmojiReactionsByIfMissing()
+      await this.fetchEmojiReactionsIfMissing()
       if (this.reactedWith(emoji)) {
         this.unreact(emoji)
       } else {

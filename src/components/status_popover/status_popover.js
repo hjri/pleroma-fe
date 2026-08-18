@@ -15,11 +15,6 @@ const StatusPopover = {
       error: false,
     }
   },
-  computed: {
-    status() {
-      return useStatusesStore().allStatuses.get(this.statusId)
-    },
-  },
   components: {
     Popover,
   },

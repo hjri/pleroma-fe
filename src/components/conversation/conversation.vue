@@ -99,7 +99,7 @@
               ref="statusComponent"
               class="conversation-status status-fadein panel-body"
 
-              :statusoid="status"
+              :status-id="status.id"
               :replies="getReplies(status.id)"
 
               :expandable="!isExpanded"
@@ -152,7 +152,7 @@
           ref="statusComponent"
           :depth="0"
 
-          :status="status"
+          :status-id="status.id"
           :in-profile="inProfile"
           :conversation="conversation"
           :collapsable="collapsable"
@@ -186,7 +186,7 @@
             :key="status.id"
             ref="statusComponent"
             class="conversation-status status-fadein panel-body"
-            :statusoid="status"
+            :status-id="status.id"
             :replies="getReplies(status.id)"
 
             :expandable="!isExpanded"

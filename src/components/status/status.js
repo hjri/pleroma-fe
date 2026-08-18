@@ -94,6 +94,7 @@ const Status = {
     StatusActionButtons,
   },
   props: {
+    statusId: String,
     statusoid: Object,
     replies: Array,
 
@@ -128,9 +129,13 @@ const Status = {
     }
   },
   computed: {
+    status() {
+      return this.statusoid ?? useStatusesStore().allStatuses.get(this.statusId)
+    },
     showReasonMutedThread() {
       return (
-        (this.status.thread_muted || this.status.reblog?.thread_muted) &&
+        (this.mainStatus.thread_muted ||
+          this.smainSatus.reblog?.thread_muted) &&
         !this.inConversation
       )
     },
@@ -144,27 +149,27 @@ const Status = {
       return this.mergedConfig.scaleMfm
     },
     repeaterClass() {
-      const user = this.statusoid.user
+      const user = this.status.user
       return highlightClass(user)
     },
     userClass() {
       const user = this.retweet
-        ? this.statusoid.retweeted_status.user
-        : this.statusoid.user
+        ? this.status.retweeted_status.user
+        : this.status.user
       return highlightClass(user)
     },
     deleted() {
-      return this.statusoid.deleted
+      return this.status.deleted
     },
     repeaterStyle() {
-      const user = this.statusoid.user
+      const user = this.status.user
       return highlightStyle(useUserHighlightStore().get(user.screen_name))
     },
     userStyle() {
       if (this.noHeading) return
       const user = this.retweet
-        ? this.statusoid.retweeted_status.user
-        : this.statusoid.user
+        ? this.status.retweeted_status.user
+        : this.status.user
       return highlightStyle(useUserHighlightStore().get(user.screen_name))
     },
     userProfileLink() {
@@ -181,28 +186,28 @@ const Status = {
       }
     },
     retweet() {
-      return !!this.statusoid.retweeted_status
+      return !!this.status.retweeted_status
     },
     retweeterUser() {
-      return this.statusoid.user
+      return this.status.user
     },
     retweeter() {
-      return this.statusoid.user.name || this.statusoid.user.screen_name_ui
+      return this.status.user.name || this.status.user.screen_name_ui
     },
     retweeterHtml() {
-      return this.statusoid.user.name
+      return this.status.user.name
     },
     retweeterProfileLink() {
       return this.generateUserProfileLink(
-        this.statusoid.user.id,
-        this.statusoid.user.screen_name,
+        this.status.user.id,
+        this.status.user.screen_name,
       )
     },
-    status() {
+    mainStatus() {
       if (this.retweet) {
-        return this.statusoid.retweeted_status
+        return this.status.retweeted_status
       } else {
-        return this.statusoid
+        return this.status
       }
     },
     statusFromGlobalRepository() {
@@ -231,14 +236,14 @@ const Status = {
       const writtenSet = new Set(
         this.headTailLinks.writtenMentions.map((_) => _.url),
       )
-      return this.status.attentions
+      return this.mainStatus.attentions
         .filter((attn) => {
           // no reply user
           return (
-            attn.id !== this.status.in_reply_to_user_id &&
+            attn.id !== this.mainStatus.in_reply_to_user_id &&
             // no self-replies
             attn.statusnet_profile_url !==
-              this.status.user.statusnet_profile_url &&
+              this.mainStatus.user.statusnet_profile_url &&
             // don't include if mentions is written
             !writtenSet.has(attn.statusnet_profile_url)
           )
@@ -255,7 +260,7 @@ const Status = {
     muteReasons() {
       return [
         this.userIsMuted ? 'user' : null,
-        this.status.thread_muted ? 'thread' : null,
+        this.mainStatus.thread_muted ? 'thread' : null,
         this.muteFilterHits.length > 0 ? 'filtered' : null,
         this.muteBotStatuses && this.botStatus ? 'bot' : null,
         this.muteSensitiveStatuses && this.sensitiveStatus ? 'nsfw' : null,
@@ -299,14 +304,13 @@ const Status = {
     },
     muted() {
       if (this.ignoreMute) return false
-      if (this.statusoid.user.id === this.currentUser?.id) return false
+      if (this.status.user.id === this.currentUser?.id) return false
       return !this.unmuted && !this.shouldNotMute && this.muteReasons.length > 0
     },
     userIsMuted() {
-      if (this.statusoid.user.id === this.currentUser?.id) return false
-      const { status } = this
-      const { reblog } = status
-      const relationship = useUsersStore().relationship(status.user.id)
+      if (this.status.user.id === this.currentUser?.id) return false
+      const { reblog } = this.status
+      const relationship = useUsersStore().relationship(this.status.user.id)
       const relationshipReblog =
         reblog && useUsersStore().relationship(reblog.user.id)
       return (
@@ -322,8 +326,7 @@ const Status = {
     shouldNotMute() {
       if (this.ignoreMute) return true
       if (this.focused) return true
-      const { status } = this
-      const { reblog } = status
+      const { reblog } = this.status
       return (
         ((this.inProfile &&
           // Don't mute user's posts on user timeline (except reblogs)
@@ -576,7 +579,7 @@ const Status = {
       }
     },
     isSuspendable: function (suspend) {
-      this.$emit('suspendableStateChange', { id: this.statusoid.id, suspend })
+      this.$emit('suspendableStateChange', { id: this.status.id, suspend })
     },
   },
 }

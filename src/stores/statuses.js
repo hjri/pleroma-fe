@@ -12,7 +12,6 @@ import {
   fetchRebloggedByUsers,
   fetchScrobbles,
   fetchStatus,
-  fetchStatusHistory,
   fetchStatusSource,
   search2,
 } from 'src/api/public.js'
@@ -128,16 +127,16 @@ export const useStatusesStore = defineStore('statuses', {
       const addStatus = (data) => {
         getLatestScrobble(data.user)
 
-        const [status] = this.mergeOrAdd(this.allStatuses, data)
+        const [status] = this.mergeOrAdd(this.allStatuses, data, timestamp)
 
         // Add to conversation
         const conversations = this.conversations
         const conversationId = status.statusnet_conversation_id
 
         if (conversations.has(conversationId)) {
-          conversations.get(conversationId).set(status.id, status)
+          conversations.get(conversationId).add(status.id)
         } else {
-          conversations.set(conversationId, new Map([[status.id, status]]))
+          conversations.set(conversationId, new Set([status.id]))
         }
 
         // Work on quote
@@ -159,30 +158,6 @@ export const useStatusesStore = defineStore('statuses', {
           // RetweetedStatuses are never shown immediately
           if (status.retweeted_status) addStatus(status.retweeted_status)
           return addStatus(status)
-        },
-        favorite: (favorite) => {
-          // Only update if this is a new favorite.
-          // Ignore our own favorites because we get info about likes as response to like request
-          if (!this.favorites.has(favorite.id)) {
-            this.favorites.add(favorite.id)
-
-            const status = this.allStatuses.get(favorite.in_reply_to_status_id)
-
-            if (status) {
-              // This is our favorite, so the relevant bit.
-              if (favorite.user.id === useUsersStore().currentUser?.id) {
-                status.favorited = true
-              } else {
-                status.fave_num += 1
-              }
-            }
-            return status
-          }
-          return null
-        },
-        follow: () => {
-          // NOOP, it is known status but we don't do anything about it for now
-          return null
         },
         default: (unknown) => {
           console.warn('unknown status type', unknown)
@@ -228,7 +203,10 @@ export const useStatusesStore = defineStore('statuses', {
 
     // Fetches
     fetchStatus(id) {
-      return fetchStatus({ id }).then(({ data: status, timestamp }) =>
+      return fetchStatus({
+        id,
+        credentials: useOAuthStore().token,
+      }).then(({ data: status, timestamp }) =>
         this.addNewStatuses({ statuses: [status], timestamp }),
       )
     },
@@ -238,10 +216,7 @@ export const useStatusesStore = defineStore('statuses', {
         credentials: useOAuthStore().token,
       }).then(({ data }) => data)
     },
-    fetchStatusHistory(status) {
-      return fetchStatusHistory({ status }).then(({ data }) => data)
-    },
-    fetchEmojiReactionsBy(id) {
+    fetchEmojiReactions(id) {
       return fetchEmojiReactions({
         id,
         credentials: useOAuthStore().token,
@@ -452,7 +427,7 @@ export const useStatusesStore = defineStore('statuses', {
 
       const accounts = value
         ? [...reaction.accounts, currentUser]
-        : accounts.filter((acc) => acc.id !== currentUser.id)
+        : reaction.accounts.filter((acc) => acc.id !== currentUser.id)
 
       const newReaction = {
         ...reaction,
@@ -480,7 +455,7 @@ export const useStatusesStore = defineStore('statuses', {
         apiCall: bookmarkStatus,
         optimisticCall: this.setBookmarked,
         argument: bookmark_folder_id,
-        value: false,
+        value: true,
       })
     },
     unbookmark(id) {
@@ -511,7 +486,7 @@ export const useStatusesStore = defineStore('statuses', {
         id,
         apiCall: muteConversation,
         optimisticCall: this.setMutedStatus,
-        value: false,
+        value: true,
       })
     },
     unmuteConversation(id) {
@@ -532,8 +507,8 @@ export const useStatusesStore = defineStore('statuses', {
       if (newStatus.thread_muted !== undefined) {
         this.conversations
           .get(newStatus.statusnet_conversation_id)
-          .forEach((status) => {
-            status.thread_muted = value
+          .forEach((statusId) => {
+            this.allStatuses.get(statusId).thread_muted = value
           })
       }
     },
@@ -564,7 +539,7 @@ export const useStatusesStore = defineStore('statuses', {
 
     /// Delete
     deleteStatus(id) {
-      deleteStatus({
+      return deleteStatus({
         id,
         credentials: useOAuthStore().token,
       })
@@ -584,17 +559,10 @@ export const useStatusesStore = defineStore('statuses', {
       const newStatus = this.allStatuses.get(id)
       if (newStatus) newStatus.deleted = true
     },
-    setManyDeleted(condition) {
-      this.allStatuses.values().forEach((status) => {
-        if (condition(status)) {
-          status.deleted = true
-        }
-      })
-    },
 
     // For when blocking a user
     wipeUserStatuses(userId) {
-      this.allStatuses.values().forEach((status) => {
+      this.allStatuses.forEach((status) => {
         if (status.user.id === userId) {
           this.allStatuses.delete(status.id)
         }

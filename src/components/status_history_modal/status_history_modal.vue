@@ -15,10 +15,10 @@
           v-if="historyCount > 0"
           class="history-body"
         >
-          <status
+          <StatusContent
             v-for="status in history"
             :key="status.id"
-            :statusoid="status"
+            :status="status"
             :is-preview="true"
             class="conversation-status status-fadein panel-body"
           />

@@ -6,7 +6,7 @@
     <Status
       class="Notification panel-body"
       :compact="true"
-      :statusoid="status"
+      :status-id="notification.status?.id"
       @click="interacted"
     />
   </article>

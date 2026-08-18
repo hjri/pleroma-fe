@@ -173,7 +173,7 @@ export const useNotificationsStore = defineStore('notifications', {
         }
 
         if (notification.type === 'pleroma:emoji_reaction') {
-          useStatusesStore().fetchEmojiReactionsBy(notification.status.id)
+          useStatusesStore().fetchEmojiReactions(notification.status.id)
         }
 
         // Only add a new notification if we don't have one for the same action
