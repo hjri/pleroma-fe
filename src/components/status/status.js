@@ -322,15 +322,15 @@ const Status = {
     shouldNotMute() {
       if (this.ignoreMute) return true
       if (this.focused) return true
-      const { reblog } = this.status
+      const { reblog } = this.mainStatus
       return (
         ((this.inProfile &&
           // Don't mute user's posts on user timeline (except reblogs)
-          ((!reblog && status.user.id === this.profileUserId) ||
+          ((!reblog && this.mainStatus.user.id === this.profileUserId) ||
             // Same as above but also allow self-reblogs
             reblog?.user.id === this.profileUserId)) ||
           // Don't mute statuses in muted conversation when said conversation is opened
-          (this.inConversation && status.thread_muted)) &&
+          (this.inConversation && this.mainStatus.thread_muted)) &&
         // No excuses if post has muted words
         !this.muteFilterHits.length > 0
       )

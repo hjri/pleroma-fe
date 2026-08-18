@@ -559,8 +559,8 @@ export const useUsersStore = defineStore('users', {
       return blockUser({ id, expiresIn }).then((result) => {
         this.updateUserRelationships(result)
 
-        useStatusesStore().wipeUserStatuses(id)
-        useTimelinesStore().wipeUserStatuses(id)
+        const ids = useStatusesStore().wipeUserStatuses(id)
+        useTimelinesStore().wipeStatuses(ids)
       })
     },
     blockUsers(data = []) {

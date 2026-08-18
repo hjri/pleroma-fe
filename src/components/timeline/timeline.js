@@ -38,7 +38,6 @@ const Timeline = {
       showScrollTop: false,
       paused: false,
       unfocused: false,
-      bottomedOut: false,
       virtualScrollIndex: 0,
       blockingClicks: false,
     }
@@ -183,16 +182,7 @@ const Timeline = {
     },
     fetchOlderStatuses: throttle(
       function () {
-        this.timeline.fetcher
-          .fetchAndUpdate({
-            older: true,
-            showImmediately: true,
-          })
-          .then(({ statuses }) => {
-            if (statuses?.length === 0) {
-              this.bottomedOut = true
-            }
-          })
+        this.timeline.fetcher.fetchOlder()
       },
       1000,
       this,
@@ -222,7 +212,7 @@ const Timeline = {
       let err = statuses[approxIndex].getBoundingClientRect().y
 
       // if we have a previous scroll index that can be used, test if it's
-      // closer than the previous approximation, use it if so
+
 
       const virtualScrollIndexY =
         statuses[cappedScrollIndex].getBoundingClientRect().y
@@ -250,7 +240,7 @@ const Timeline = {
       const bodyBRect = document.body.getBoundingClientRect()
       const height = Math.max(bodyBRect.height, -bodyBRect.y)
       if (
-        this.timeline.loading === false &&
+        !this.timeline.fetcher.loading.value &&
         this.$el.offsetHeight > 0 &&
         window.innerHeight + window.pageYOffset >= height - 750
       ) {

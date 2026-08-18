@@ -90,19 +90,19 @@
         :disabled="!embedded || !footerSlipgate"
       >
         <div
-          v-if="count===0"
+          v-if="count === 0"
           class="new-status-notification text-center faint"
         >
           {{ $t('timeline.no_statuses') }}
         </div>
         <div
-          v-else-if="bottomedOut"
+          v-else-if="timeline.fetcher.bottomedOut"
           class="new-status-notification text-center faint"
         >
           {{ $t('timeline.no_more_statuses') }}
         </div>
         <button
-          v-else-if="!timeline.loading"
+          v-else-if="!timeline.fetcher.loading"
           class="button-unstyled -link"
           @click.prevent="fetchOlderStatuses()"
         >

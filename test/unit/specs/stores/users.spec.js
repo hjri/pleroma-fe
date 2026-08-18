@@ -1119,7 +1119,7 @@ describe('Users store', () => {
           },
         )
 
-        vi.spyOn(useTimelinesStore(), 'wipeUserStatuses').mockImplementation(
+        vi.spyOn(useTimelinesStore(), 'wipeStatuses').mockImplementation(
           async () => {
             /* no-op */
           },
@@ -1150,7 +1150,7 @@ describe('Users store', () => {
           },
         )
 
-        vi.spyOn(useTimelinesStore(), 'wipeUserStatuses').mockImplementation(
+        vi.spyOn(useTimelinesStore(), 'wipeStatuses').mockImplementation(
           async () => {
             /* no-op */
           },

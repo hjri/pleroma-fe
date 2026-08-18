@@ -7,7 +7,7 @@ import { useStatusesStore } from 'src/stores/statuses.js'
 import { TIMELINE_STREAM_MAP, useStreamingStore } from 'src/stores/streaming.js'
 import { useUsersStore } from 'src/stores/users.js'
 
-import timelineFetcher from 'src/services/timeline_fetcher/timeline_fetcher.service.js'
+import timelineFetcher from 'src/stores/fetchers/timeline_fetcher.js'
 
 const emptyTl = (name, argument = null) => {
   const result = {
@@ -18,7 +18,6 @@ const emptyTl = (name, argument = null) => {
     newStatusCount: 0,
     maxId: '',
     minId: '',
-    loading: false,
     streaming: false,
     flushMarker: 0,
     fetcher: null,
