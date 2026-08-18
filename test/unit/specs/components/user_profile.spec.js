@@ -51,125 +51,12 @@ const externalProfileStore = createStore({
   mutations,
   actions,
   getters: testGetters,
-  state: {
-    interface: {
-      browserSupport: '',
-    },
-    instance: {
-      hideUserStats: true,
-    },
-    statuses: {
-      timelines: {
-        user: {
-          statuses: [],
-          statusesObject: {},
-          faves: [],
-          visibleStatuses: [],
-          visibleStatusesObject: {},
-          newStatusCount: 0,
-          maxId: 0,
-          minVisibleId: 0,
-          loading: false,
-          followers: [],
-          friends: [],
-          viewing: 'statuses',
-          userId: 100,
-          flushMarker: 0,
-        },
-        media: {
-          statuses: [],
-          statusesObject: {},
-          faves: [],
-          visibleStatuses: [],
-          visibleStatusesObject: {},
-          newStatusCount: 0,
-          maxId: 0,
-          minVisibleId: 0,
-          loading: false,
-          followers: [],
-          friends: [],
-          viewing: 'statuses',
-          userId: 100,
-          flushMarker: 0,
-        },
-      },
-    },
-    users: {
-      currentUser: {
-        credentials: '',
-      },
-      usersObject: { 100: extUser },
-      usersByNameObject: {},
-      users: [extUser],
-      relationships: {},
-    },
-  },
 })
 
 const localProfileStore = createStore({
   mutations,
   actions,
   getters: testGetters,
-  state: {
-    interface: {
-      browserSupport: '',
-    },
-    config: {
-      colors: '',
-      highlight: {},
-      customTheme: {
-        colors: [],
-      },
-    },
-    instance: {
-      hideUserStats: true,
-    },
-    statuses: {
-      timelines: {
-        user: {
-          statuses: [],
-          statusesObject: {},
-          faves: [],
-          visibleStatuses: [],
-          visibleStatusesObject: {},
-          newStatusCount: 0,
-          maxId: 0,
-          minVisibleId: 0,
-          loading: false,
-          followers: [],
-          friends: [],
-          viewing: 'statuses',
-          userId: 100,
-          flushMarker: 0,
-        },
-        media: {
-          statuses: [],
-          statusesObject: {},
-          faves: [],
-          visibleStatuses: [],
-          visibleStatusesObject: {},
-          newStatusCount: 0,
-          maxId: 0,
-          minVisibleId: 0,
-          loading: false,
-          followers: [],
-          friends: [],
-          viewing: 'statuses',
-          userId: 100,
-          flushMarker: 0,
-        },
-      },
-    },
-    users: {
-      currentUser: {
-        credentials: '',
-      },
-      usersObject: { 100: localUser },
-      usersByNameObject: { testuser: localUser },
-      users: [localUser],
-      relationships: {},
-    },
-  },
 })
 
 // https://github.com/vuejs/test-utils/issues/1382

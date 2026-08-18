@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
 
-import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStreamingStore } from 'src/stores/streaming.js'
@@ -239,6 +238,10 @@ export const useStatusesStore = defineStore('statuses', {
     addEmojiReactionsBy({ id, emojiReactions }) {
       const status = this.allStatuses.get(id)
       status.emoji_reactions = emojiReactions
+    },
+    updateStatusWithPoll(id, poll) {
+      const status = this.allStatuses.get(id)
+      status.poll = poll
     },
 
     // Actions
@@ -524,49 +527,20 @@ export const useStatusesStore = defineStore('statuses', {
 
     // For when blocking a user
     wipeUserStatuses(userId) {
+      const removed = new Set()
       this.allStatuses.forEach((status) => {
         if (status.user.id === userId) {
           this.allStatuses.delete(status.id)
+
+          removed.add(status.id)
         }
       })
+      return removed
     },
 
-    // Search
-    search({ q, resolve, limit, offset, following, type }) {
-      return search2({
-        q,
-        resolve,
-        limit,
-        offset,
-        following,
-        type,
-        credentials: useOAuthStore().token,
-      }).then((result) => {
-        const { data, ...rest } = result
-        useUsersStore().addNewUsers({
-          ...rest,
-          data: data.accounts,
-        })
-
-        useUsersStore().addNewUsers({
-          ...rest,
-          data: data.statuses.map((s) => s.user).filter(Boolean),
-        })
-
-        this.addNewStatuses({
-          statuses: data.statuses,
-        })
-
-        data.statuses = data.statuses.map((s) => this.allStatuses.get(s.id))
-        return data
-      })
-    },
+    // Misc
     setVirtualHeight({ statusId, height }) {
       this.allStatuses.get(statusId).virtualHeight = height
-    },
-    updateStatusWithPoll({ id, poll }) {
-      const status = this.allStatuses.get(id)
-      status.poll = poll
     },
   },
 })

@@ -27,7 +27,7 @@
             icon="retweet"
           />
           <user-link
-            :user="status.user"
+            :user="repeater"
             :at="false"
           />
         </small>
@@ -53,32 +53,31 @@
         class="status-container repeat-info"
       >
         <UserAvatar
-          v-if="retweet"
           class="left-side repeater-avatar"
-          :user-id="statusoid.user.id"
+          :user-id="repeater.id"
         />
         <div class="right-side faint">
           <bdi
             class="status-username repeater-name"
-            :title="retweeter"
+            :title="repeaterName"
           >
             <router-link
-              v-if="retweeterHtml"
-              :to="retweeterProfileLink"
+              v-if="repeaterHtml"
+              :to="repeaterProfileLink"
             >
               <RichContent
-                :html="retweeterHtml"
-                :emoji="retweeterUser.emoji"
+                :html="repeaterHtml"
+                :emoji="repeater.emoji"
                 :allow-non-square-emoji="allowNonSquareEmoji"
                 :pause-mfm="pauseMfm"
                 :scale-mfm="scaleMfm"
-                :is-local="retweeterUser.is_local"
+                :is-local="repeater.is_local"
               />
             </router-link>
             <router-link
               v-else
-              :to="retweeterProfileLink"
-            >{{ retweeter }}</router-link>
+              :to="repeaterProfileLink"
+            >{{ repeaterName }}</router-link>
           </bdi>
           <div class="repeat-label">
             <FAIcon
@@ -103,24 +102,24 @@
           class="left-side"
         >
           <a
-            v-if="status.user?.name"
+            v-if="user.name"
             :href="$router.resolve(userProfileLink).href"
             @click.prevent
           >
             <UserPopover
-              :user-id="status.user.id"
+              :user-id="user.id"
               :overlay-centers="true"
             >
               <UserAvatar
                 class="post-avatar"
                 :compact="compact"
-                :user-id="status?.user.id"
+                :user-id="user.id"
               />
             </UserPopover>
           </a>
           <UserAvatar
             v-else
-            :user-id="status?.user.id"
+            :user-id="user.id"
             class="post-avatar"
             :compact="compact"
             :title="$t('status.unknown_user_info')"
@@ -133,38 +132,38 @@
           >
             <div class="heading-name-row">
               <div
-                v-if="status.user"
+                v-if="user"
                 class="heading-left"
               >
                 <h4
-                  v-if="status.user.name_html"
+                  v-if="user.name_html"
                   class="status-username"
-                  :title="status.user.name"
+                  :title="user.name"
                 >
                   <RichContent
-                    :html="status.user.name"
-                    :emoji="status.user.emoji"
+                    :html="user.name"
+                    :emoji="user.emoji"
                     :allow-non-square-emoji="allowNonSquareEmoji"
-                    :is-local="status.user.is_local"
+                    :is-local="user.is_local"
                   />
                 </h4>
                 <h4
                   v-else
                   class="status-username"
-                  :title="status.user.name"
+                  :title="user.name"
                 >
-                  {{ status.user.name }}
+                  {{ user.name }}
                 </h4>
                 <user-link
                   class="account-name"
-                  :title="status.user.screen_name_ui"
-                  :user="status.user"
+                  :title="user.screen_name_ui"
+                  :user="user"
                   :at="false"
                 />
                 <img
-                  v-if="!!(status.user && status.user.favicon)"
+                  v-if="!!(user && user.favicon)"
                   class="status-favicon"
-                  :src="status.user.favicon"
+                  :src="user.favicon"
                 >
               </div>
 
@@ -184,12 +183,12 @@
                   :to="{ name: 'conversation', params: { id: status.id } }"
                 >
                   <Timeago
-                    :time="status.created_at"
+                    :time="mainStatus.created_at"
                     :auto-update="60"
                   />
                 </router-link>
                 <span
-                  v-if="status.visibility"
+                  v-if="mainStatus.visibility"
                   class="visibility-icon"
                   :title="visibilityLocalized"
                 >
@@ -305,10 +304,10 @@
                   <template #replyToWithIcon>
                     <StatusPopover
                       v-if="!isPreview"
-                      :status-id="status.parent_visible && status.in_reply_to_status_id"
+                      :status-id="mainStatus.parent_visible && mainStatus.in_reply_to_status_id"
                       class="reply-to-popover"
                       style="min-width: 0;"
-                      :class="{ '-strikethrough': !status.parent_visible }"
+                      :class="{ '-strikethrough': !mainStatus.parent_visible }"
                     >
                       <button
                         class="button-unstyled reply-to"
@@ -397,7 +396,7 @@
                 <template #time>
                   <Timeago
                     template-key="time.in_past"
-                    :time="status.edited_at"
+                    :time="mainStatus.edited_at"
                     :auto-update="60"
                     :long-format="true"
                   />
@@ -462,31 +461,31 @@
             >
               <div class="stats">
                 <UserListPopover
-                  v-if="statusFromGlobalRepository.rebloggedBy && statusFromGlobalRepository.rebloggedBy.length > 0"
-                  :users="statusFromGlobalRepository.rebloggedBy"
+                  v-if="mainStatus.rebloggedBy && mainStatus.rebloggedBy.length > 0"
+                  :users="mainStatus.rebloggedBy"
                 >
                   <div class="stat-count">
                     <a class="stat-title">{{ $t('status.repeats') }}</a>
                     <div class="stat-number">
-                      {{ statusFromGlobalRepository.rebloggedBy.length }}
+                      {{ mainStatus.rebloggedBy.length }}
                     </div>
                   </div>
                 </UserListPopover>
                 <UserListPopover
-                  v-if="statusFromGlobalRepository.favoritedBy && statusFromGlobalRepository.favoritedBy.length > 0"
-                  :users="statusFromGlobalRepository.favoritedBy"
+                  v-if="mainStatus.favoritedBy && mainStatus.favoritedBy.length > 0"
+                  :users="mainStatus.favoritedBy"
                 >
                   <div
                     class="stat-count"
                   >
                     <a class="stat-title">{{ $t('status.favorites') }}</a>
                     <div class="stat-number">
-                      {{ statusFromGlobalRepository.favoritedBy.length }}
+                      {{ mainStatus.favoritedBy.length }}
                     </div>
                   </div>
                 </UserListPopover>
                 <router-link
-                  v-if="statusFromGlobalRepository.quotes_count > 0"
+                  v-if="mainStatus.quotes_count > 0"
                   :to="{ name: 'quotes', params: { id: status.id } }"
                 >
                   <div
@@ -494,7 +493,7 @@
                   >
                     <a class="stat-title">{{ $t('status.quotes') }}</a>
                     <div class="stat-number">
-                      {{ statusFromGlobalRepository.quotes_count }}
+                      {{ mainStatus.quotes_count }}
                     </div>
                   </div>
                 </router-link>
@@ -507,13 +506,13 @@
 
           <EmojiReactions
             v-if="(mergedConfig.emojiReactionsOnTimeline || focused) && (!noHeading && !isPreview)"
-            :status="status"
+            :status="mainStatus"
           />
 
           <StatusActionButtons
             v-if="!noHeading && !isPreview"
             class="status-action-buttons"
-            :status="status"
+            :status="mainStatus"
             :replying="replying"
             @toggle-replying="toggleReplyForm"
           />

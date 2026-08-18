@@ -12,16 +12,17 @@ import timelineFetcher from 'src/services/timeline_fetcher/timeline_fetcher.serv
 const emptyTl = (name, argument = null) => {
   const result = {
     name,
-    statuses: new Map(),
-    visibleStatusesIds: new Set(),
+    order: [],
+    statusIds: new Set(),
+    visibleStatusIds: new Set(),
     newStatusCount: 0,
     maxId: '',
     minId: '',
-    minVisibleId: '',
     loading: false,
     streaming: false,
     flushMarker: 0,
     fetcher: null,
+    socket: null,
   }
 
   const property = ARGUMENT_MAP[name]
@@ -86,6 +87,11 @@ export const useTimelinesStore = defineStore('timelines', {
       ) {
         console.warn("Instance doesn't support public favorites timeline")
         return
+      }
+
+      const property = ARGUMENT_MAP[timelineName]
+      if (property) {
+        timeline[property] = argument
       }
 
       timeline.fetcher = timelineFetcher(
@@ -156,7 +162,11 @@ export const useTimelinesStore = defineStore('timelines', {
     },
     deactivateAll() {
       TIMELINES.forEach((name) => {
-        this.deactivate(name, true)
+        try {
+          this.deactivate(name, true)
+        } catch (e) {
+          console.error(`Failed to deactivate timeline ${name}`)
+        }
       })
     },
 
@@ -169,7 +179,7 @@ export const useTimelinesStore = defineStore('timelines', {
         showImmediately = false,
         noIdUpdate = false,
         pagination = {},
-        nested = false,
+        older = false
       },
     ) {
       if (statuses.length === 0) return
@@ -179,7 +189,7 @@ export const useTimelinesStore = defineStore('timelines', {
       // user. I.e. opening different user profiles makes request which could
       // return data late after user already viewing different user profile
       // Same can happen with tags etc.
-      const property = ARGUMENT_MAP[name]
+      const property = ARGUMENT_MAP[timelineName]
 
       if (property && timeline[property] !== argument) {
         return
@@ -188,59 +198,36 @@ export const useTimelinesStore = defineStore('timelines', {
       if (!noIdUpdate) {
         this.updateTimelineExtremes(
           timeline,
-          statuses.map((x) => x.id),
           pagination,
         )
       }
 
-      statuses.forEach((status) => {
-        const isNew = !timeline.statuses.has(status.id)
-        timeline.statuses.set(status.id, status)
+      const filtered = statuses.filter((id) => !timeline.statusIds.has(id))
+      if (older) {
+        timeline.order.push(...filtered)
+      } else {
+        timeline.order.unshift(...filtered)
+      }
+
+      statuses.forEach((statusId) => {
+        const isNew = !timeline.statusIds.has(statusId)
+        timeline.statusIds.add(statusId)
 
         if (isNew) {
           if (showImmediately) {
             // Add it directly to the visibleStatuses, don't change
             // newStatusCount
-            timeline.visibleStatusesIds.add(status.id)
+            timeline.visibleStatusIds.add(statusId)
           } else {
             // Just change newStatuscount
             timeline.newStatusCount += 1
           }
         }
-
-        if (nested) return
-        // We are mentioned in a post
-        if (
-          status.type === 'status' &&
-          status.attentions.some(
-            ({ id }) => id === useUsersStore().currentUser?.id,
-          )
-        ) {
-          // Add the mention to the mentions timeline
-          if (timeline !== this.mentions) {
-            this.addStatusesToTimeline('mentions', null, {
-              statuses: [status],
-              nested: true,
-            })
-          }
-        }
-
-        if (status.visibility === 'direct') {
-          if (timeline !== this.dms) {
-            this.addStatusesToTimeline('dms', null, {
-              statuses: [status],
-              nested: true,
-            })
-          }
-        }
       })
     },
     onStreamMessage(timeline, argument, event) {
-      // This relies on statuses store to process this event first
-      const status = useStatusesStore().allStatuses.get(event.data.status.id)
-
       this.addStatusesToTimeline(timeline, argument, {
-        statuses: [status],
+        statuses: [event.data.status.id],
       })
     },
 
@@ -278,10 +265,10 @@ export const useTimelinesStore = defineStore('timelines', {
     },
 
     // Queues & Timeline manip
-    updateTimelineExtremes(timeline, statuses, pagination = {}) {
+    updateTimelineExtremes(timeline, pagination = {}) {
       // Can't use Math.min/max because it doesn't work with string (duh)
-      const minNew = pagination.maxId ?? min(...statuses) ?? ''
-      const maxNew = pagination.minId ?? max(...statuses) ?? ''
+      const minNew = pagination.maxId ?? last(timeline.order) ?? ''
+      const maxNew = pagination.minId ?? first(timeline.order) ?? ''
 
       const newer = maxNew > timeline.maxId
       const older = minNew < timeline.minId
@@ -292,20 +279,17 @@ export const useTimelinesStore = defineStore('timelines', {
       if (older || timeline.minId === '') {
         timeline.minId = minNew
       }
+
+      this.syncOrder(timeline)
     },
     showNewStatuses(timelineName) {
       const timeline = this[timelineName]
 
       timeline.newStatusCount = 0
-
-      timeline.visibleStatusesIds = new Set(
-        [...timeline.statuses.keys()].slice(0, 50),
-      )
-      timeline.minVisibleId = last(timeline.visibleStatusesIds.keys())
-      timeline.minId = ''
-      timeline.maxId = ''
-
-      this.updateTimelineExtremes(timeline, [...timeline.statuses.keys()])
+      timeline.visibleStatusIds = new Set([...timeline.statusIds])
+    },
+    syncOrder(timeline) {
+      timeline.order = timeline.order.filter((id) => timeline.statusIds.has(id))
     },
     queueFlush(timeline, id) {
       this[timeline].flushMarker = id
@@ -317,23 +301,16 @@ export const useTimelinesStore = defineStore('timelines', {
     },
 
     // Misc
-    wipeUserStatuses(userId) {
+    wipeStatuses(ids) {
       TIMELINES.forEach((timelineName) => {
-        const timeline = this.timelines[timelineName]
+        const timeline = this[timelineName]
 
-        timeline.statuses
-          .values()
-          .filter(({ user }) => user.id === userId)
-          .forEach(({ id }) => {
-            timeline.statuses.delete(id)
-            timeline.visibleStatusesIds.delete(id)
-          })
-        timeline.minVisibleId =
-          timeline.visibleStatusesIds.size > 0
-            ? last(timeline.visibleStatusesIds).id
-            : 0
-        timeline.maxId =
-          timeline.statuses.length > 0 ? first(timeline.statuses).id : 0
+        ids.forEach((id) => {
+          timeline.statusIds.delete(id)
+          timeline.visibleStatusIds.delete(id)
+        })
+
+        this.syncOrder(timeline)
       })
     },
   },

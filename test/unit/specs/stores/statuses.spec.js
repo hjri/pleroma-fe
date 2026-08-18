@@ -626,8 +626,9 @@ describe('Statuses store', () => {
       timestamp: 1,
     })
 
-    store.wipeUserStatuses('u19')
+    const result = store.wipeUserStatuses('u19')
 
     expect(store.allStatuses).to.have.length(19)
+    expect(result).to.eql(new Set(['s19']))
   })
 })

@@ -23,11 +23,11 @@ import {
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useScrobblesStore } from 'src/stores/scrobbles.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 import { useUsersStore } from 'src/stores/users.js'
-import { useScrobblesStore } from 'src/stores/scrobbles.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
@@ -136,6 +136,12 @@ const Status = {
     status() {
       return this.statusoid ?? useStatusesStore().allStatuses.get(this.statusId)
     },
+    repeater() {
+      return useUsersStore().findUser(this.status.user.id)
+    },
+    user() {
+      return useUsersStore().findUser(this.mainStatus.user.id)
+    },
     showReasonMutedThread() {
       return (
         (this.mainStatus.thread_muted ||
@@ -153,38 +159,31 @@ const Status = {
       return this.mergedConfig.scaleMfm
     },
     repeaterClass() {
-      const user = this.status.user
-      return highlightClass(user)
+      return highlightClass(this.repeater)
     },
     userClass() {
-      const user = this.retweet
-        ? this.status.retweeted_status.user
-        : this.status.user
-      return highlightClass(user)
+      return highlightClass(this.user)
     },
     deleted() {
       return this.status.deleted
     },
     repeaterStyle() {
       const user = this.status.user
-      return highlightStyle(useUserHighlightStore().get(user.screen_name))
+      return highlightStyle(useUserHighlightStore().get(this.repeater.screen_name))
     },
     userStyle() {
       if (this.noHeading) return
-      const user = this.retweet
-        ? this.status.retweeted_status.user
-        : this.status.user
-      return highlightStyle(useUserHighlightStore().get(user.screen_name))
+      return highlightStyle(useUserHighlightStore().get(this.user.screen_name))
     },
     userProfileLink() {
       return this.generateUserProfileLink(
-        this.status.user.id,
-        this.status.user.screen_name,
+        this.user.id,
+        this.user.screen_name,
       )
     },
     replyProfileLink() {
       if (this.isReply) {
-        const user = useUsersStore().findUser(this.status.in_reply_to_user_id)
+        const user = useUsersStore().findUser(this.mainStatus.in_reply_to_user_id)
         // FIXME Why user not found sometimes???
         return user ? user.statusnet_profile_url : 'NOT_FOUND'
       }
@@ -192,19 +191,16 @@ const Status = {
     retweet() {
       return !!this.status.retweeted_status
     },
-    retweeterUser() {
-      return this.status.user
-    },
-    retweeter() {
+    repeaterName() {
       return this.status.user.name || this.status.user.screen_name_ui
     },
-    retweeterHtml() {
+    repeaterHtml() {
       return this.status.user.name
     },
-    retweeterProfileLink() {
+    repeaterProfileLink() {
       return this.generateUserProfileLink(
-        this.status.user.id,
-        this.status.user.screen_name,
+        this.repeater.id,
+        this.repeater.screen_name,
       )
     },
     mainStatus() {
@@ -213,10 +209,6 @@ const Status = {
       } else {
         return this.status
       }
-    },
-    statusFromGlobalRepository() {
-      // NOTE: Consider to replace status with statusFromGlobalRepository
-      return useStatusesStore().allStatuses.get(this.status.id)
     },
     loggedIn() {
       return !!this.currentUser
@@ -367,22 +359,22 @@ const Status = {
     },
     isReply() {
       return !!(
-        this.status.in_reply_to_status_id && this.status.in_reply_to_user_id
+        this.mainStatus.in_reply_to_status_id && this.mainStatus.in_reply_to_user_id
       )
     },
     replyToName() {
-      if (this.status.in_reply_to_screen_name) {
+      if (this.mainStatus.in_reply_to_screen_name) {
         return this.status.in_reply_to_screen_name
       } else {
-        const user = useUsersStore().findUser(this.status.in_reply_to_user_id)
+        const user = useUsersStore().findUser(this.mainStatus.in_reply_to_user_id)
         return user?.screen_name_ui
       }
     },
     combinedFavsAndRepeatsUsers() {
       // Use the status from the global status repository since favs and repeats are saved in it
       const combinedUsers = [].concat(
-        this.statusFromGlobalRepository.favoritedBy,
-        this.statusFromGlobalRepository.rebloggedBy,
+        this.mainStatus.favoritedBy,
+        this.mainStatus.rebloggedBy,
       )
       return uniqBy(combinedUsers, 'id')
     },
@@ -400,7 +392,7 @@ const Status = {
         !this.hidePostStats &&
         this.focused &&
         (this.combinedFavsAndRepeatsUsers.length > 0 ||
-          this.statusFromGlobalRepository.quotes_count)
+          this.mainStatus.quotes_count)
       )
     },
     muteBotStatuses() {
@@ -431,7 +423,7 @@ const Status = {
       return this.$i18n.t('general.scope_in_timeline.' + this.status.visibility)
     },
     isEdited() {
-      return this.status.edited_at !== null
+      return this.mainStatus.edited_at !== null
     },
     editingAvailable() {
       return useInstanceCapabilitiesStore().editingAvailable
@@ -562,22 +554,22 @@ const Status = {
     focused: function (id) {
       this.scrollIfFocused(id)
     },
-    'status.repeat_num': function (num) {
+    'mainStatus.repeat_num': function (num) {
       // refetch repeats when repeat_num is changed in any way
       if (
         this.focused &&
-        this.statusFromGlobalRepository.rebloggedBy &&
-        this.statusFromGlobalRepository.rebloggedBy.length !== num
+        this.mainStatus.rebloggedBy &&
+        this.mainStatus.rebloggedBy.length !== num
       ) {
         this.$store.dispatch('fetchRepeats', this.status.id)
       }
     },
-    'status.fave_num': function (num) {
+    'mainStatus.fave_num': function (num) {
       // refetch favs when fave_num is changed in any way
       if (
         this.focused &&
-        this.statusFromGlobalRepository.favoritedBy &&
-        this.statusFromGlobalRepository.favoritedBy.length !== num
+        this.mainStatus.favoritedBy &&
+        this.mainStatus.favoritedBy.length !== num
       ) {
         this.$store.dispatch('fetchFavs', this.status.id)
       }

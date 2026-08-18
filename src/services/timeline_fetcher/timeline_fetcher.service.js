@@ -18,7 +18,7 @@ const REPLY_VISIBILITY_TIMELINES = new Set([
 
 const fetchAndUpdate = (
   { timeline, argument, credentials },
-  { maxId, sinceId, older = false, showImmediately = false },
+  { older = false, showImmediately = false },
 ) => {
   timeline.loading = true
   const { hideMutedPosts, replyVisibility } =
@@ -31,13 +31,9 @@ const fetchAndUpdate = (
 
   if (older) {
     // When minId = 0 we need to fetch without maxId param
-    args.maxId = maxId || timeline.minId || null
+    args.maxId = timeline.minId || null
   } else {
-    if (sinceId === undefined) {
-      args.sinceId = timeline.maxId
-    } else if (sinceId !== null) {
-      args.sinceId = sinceId
-    }
+    args.sinceId = timeline.maxId || null
   }
 
   args.withMuted = !hideMutedPosts
@@ -45,7 +41,7 @@ const fetchAndUpdate = (
     args.replyVisibility = replyVisibility
   }
 
-  const numStatusesBeforeFetch = timeline.statuses.size
+  const numStatusesBeforeFetch = timeline.statusIds.size
 
   return fetchTimeline(args)
     .then((response) => {
@@ -62,10 +58,12 @@ const fetchAndUpdate = (
       const processed = useStatusesStore()
         .addNewStatuses({ statuses, timestamp })
         .filter(Boolean)
+        .map(({ id }) => id)
 
       useTimelinesStore().addStatusesToTimeline(timeline.name, argument, {
         statuses: processed,
         showImmediately,
+        older,
         pagination,
       })
       return { statuses, pagination }
@@ -95,8 +93,6 @@ const timelineFetcher = (timeline, argument, credentials) => {
 
   const boundFetchAndUpdate = ({
     showImmediately,
-    maxId,
-    sinceId,
     older,
   } = {}) =>
     fetchAndUpdate(
@@ -106,8 +102,6 @@ const timelineFetcher = (timeline, argument, credentials) => {
         credentials,
       },
       {
-        maxId,
-        sinceId,
         older,
         showImmediately,
       },
@@ -117,7 +111,7 @@ const timelineFetcher = (timeline, argument, credentials) => {
     if (state.interval) throw new Error('Interval already exists!')
 
     boundFetchAndUpdate({
-      showImmediately: timeline.visibleStatusesIds.size === 0,
+      showImmediately: timeline.visibleStatusIds.size === 0,
     })
 
     state.interval = promiseInterval(boundFetchAndUpdate, 10000)

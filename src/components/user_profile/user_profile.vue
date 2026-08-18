@@ -81,7 +81,7 @@
         <Timeline
           key="media"
           :label="$t('user_card.media')"
-          :disabled="!media.visibleStatusesIds.size"
+          :disabled="media.visibleStatusIds.size === 0"
           :title="$t('user_card.media')"
           :timeline-ref="{ name: 'media', argument: userId }"
           embedded
@@ -92,7 +92,7 @@
           v-if="favoritesTabVisible"
           key="favorites"
           :label="$t('user_card.favorites')"
-          :disabled="!favorites.visibleStatusesIds.size"
+          :disabled="favorites.visibleStatusIds.size === 0"
           :title="$t('user_card.favorites')"
           :timeline-ref="{ name: 'favorites', argument: userId }"
           :argument="isUs ? undefined : userId"

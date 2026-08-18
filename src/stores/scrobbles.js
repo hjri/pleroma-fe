@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
-import {
-  fetchScrobbles,
-} from 'src/api/public.js'
+
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useUsersStore } from 'src/stores/users.js'
+
+import { fetchScrobbles } from 'src/api/public.js'
 
 export const defaultState = () => ({
   scrobblesNextFetch: new Map(),
@@ -13,7 +14,7 @@ export const useScrobblesStore = defineStore('scrobbles', {
   actions: {
     getLatestScrobble(userId) {
       const scrobblesSupport =
-            useInstanceCapabilitiesStore().pleromaScrobblesAvailable
+        useInstanceCapabilitiesStore().pleromaScrobblesAvailable
 
       if (!scrobblesSupport) {
         return
@@ -29,12 +30,12 @@ export const useScrobblesStore = defineStore('scrobbles', {
         .then(({ data: scrobbles }) => {
           useUsersStore().findUser(userId).latestScrobble = scrobbles[0]
 
-          this.scrobblesNextFetch.set(user.id, Date.now() + 60 * 1000)
+          this.scrobblesNextFetch.set(userId, Date.now() + 60 * 1000)
         })
         .catch((e) => {
           useInstanceCapabilitiesStore().set('pleromaScrobblesAvailable', false)
           console.warn('cannot fetch scrobbles', e)
         })
-    }
-  }
+    },
+  },
 })

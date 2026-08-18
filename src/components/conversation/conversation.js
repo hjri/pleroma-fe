@@ -110,8 +110,6 @@ const conversation = {
   },
   computed: {
     status() {
-      console.log(this.statusId)
-      console.log(useStatusesStore().allStatuses.get(this.statusId))
       return useStatusesStore().allStatuses.get(this.statusId)
     },
     maxDepthToShowByDefault() {

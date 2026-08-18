@@ -746,17 +746,6 @@ export const useUsersStore = defineStore('users', {
           useInterfaceStore().onLogout()
         })
     },
-
-    // Search
-    searchUsers({ query }) {
-      return searchUsers({
-        query,
-        credentials: useOAuthStore().token,
-      }).then(({ data: users }) => {
-        this.addNewUsers(users)
-        return users
-      })
-    },
   },
   persist: {
     paths: ['lastLoginName'],

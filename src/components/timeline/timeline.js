@@ -8,6 +8,7 @@ import ScrollTopButton from 'src/components/scroll_top_button/scroll_top_button.
 import TimelineMenu from 'src/components/timeline_menu/timeline_menu.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useTimelinesStore } from 'src/stores/timelines.js'
 
@@ -54,8 +55,9 @@ const Timeline = {
       return useTimelinesStore()[this.timelineRef.name]
     },
     filteredVisibleStatuses() {
-      return [...this.timeline.visibleStatusesIds.keys()]
-        .map((id) => this.timeline.statuses.get(id))
+      return this.timeline.order
+        .filter((id) => this.timeline.visibleStatusIds.has(id))
+        .map((id) => useStatusesStore().allStatuses.get(id))
         .filter(({ pinned }) => (this.skipPinned ? !pinned : true))
     },
     newStatusCount() {
@@ -98,12 +100,12 @@ const Timeline = {
       }
     },
     statusesToDisplay() {
-      const amount = this.timeline.visibleStatusesIds.size
+      const amount = this.timeline.visibleStatusIds.size
       const statusesPerSide = Math.ceil(Math.max(3, window.innerHeight / 80))
       const min = Math.max(0, this.virtualScrollIndex - statusesPerSide)
       const max = Math.min(amount, this.virtualScrollIndex + statusesPerSide)
       return new Set(
-        [...this.timeline.visibleStatusesIds.keys()].slice(min, max),
+        this.timeline.order.slice(min, max),
       )
     },
     virtualScrollingEnabled() {
