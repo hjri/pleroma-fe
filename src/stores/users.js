@@ -623,6 +623,7 @@ export const useUsersStore = defineStore('users', {
         this.usersByURL = new Map()
         this.relationships = new Map()
 
+        useInterfaceStore().onLogin()
         useSyncConfigStore()
           .initSyncConfig(user)
           .then(() => {
@@ -637,8 +638,6 @@ export const useUsersStore = defineStore('users', {
         this.addNewUsers({ data: user, ...rest })
 
         useEmojiStore().fetchEmoji()
-
-        useInterfaceStore().onLogin()
 
         // Do server-side storage migrations
 
