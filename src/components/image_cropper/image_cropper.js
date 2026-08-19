@@ -74,6 +74,10 @@ const ImageCropper = {
         return // Cropper sends even before component is fully initialized
       }
       const cropperCanvas = this.$refs.cropperCanvas
+      if (!cropperCanvas) {
+        return
+      }
+
       const cropperCanvasRect = cropperCanvas.getBoundingClientRect()
       const selection = event.detail
       const maxSelection = {
