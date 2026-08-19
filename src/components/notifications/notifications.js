@@ -10,7 +10,6 @@ import {
   filteredNotifications,
   unseenNotifications,
 } from '../../services/notification_utils/notification_utils.js'
-import notificationsFetcher from '../../services/notifications_fetcher/notifications_fetcher.service.js'
 import NotificationFilters from './notification_filters.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
@@ -54,7 +53,6 @@ const Notifications = {
   data() {
     return {
       showScrollTop: false,
-      bottomedOut: false,
       // How many seen notifications to display in the list. The more there are,
       // the heavier the page becomes. This count is increased when loading
       // older notifications, and cut back to default whenever hitting "Read!".
@@ -124,7 +122,10 @@ const Notifications = {
       )
     },
     loading() {
-      return useNotificationsStore().loading
+      return useNotificationsStore().fetcher.loading.value
+    },
+    bottomedOut() {
+      return useNotificationsStore().fetcher.bottomedOut.value
     },
     noHeading() {
       const { layoutType } = useInterfaceStore()
@@ -247,22 +248,7 @@ const Notifications = {
         this.seenToDisplayCount = seenCount
       }
 
-      const store = this.$store
-      const credentials = useUsersStore().currentUser.credentials
-      useNotificationsStore().setNotificationsLoading(true)
-      notificationsFetcher
-        .fetchAndUpdate({
-          store,
-          credentials,
-          older: true,
-        })
-        .then((notifs) => {
-          useNotificationsStore().setNotificationsLoading(false)
-          if (notifs.length === 0) {
-            this.bottomedOut = true
-          }
-          this.seenToDisplayCount += notifs.length
-        })
+      useNotificationsStore().fetcher.fetchOlder()
     },
   },
 }

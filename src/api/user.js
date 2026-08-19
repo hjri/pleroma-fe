@@ -18,7 +18,7 @@ const CHANGE_PASSWORD_URL = '/api/pleroma/change_password'
 const MOVE_ACCOUNT_URL = '/api/pleroma/move_account'
 const ALIASES_URL = '/api/pleroma/aliases'
 const NOTIFICATION_SETTINGS_URL = '/api/pleroma/notification_settings'
-const NOTIFICATION_READ_URL = '/api/v1/pleroma/notifications/read'
+export const NOTIFICATION_READ_URL = '/api/v1/pleroma/notifications/read'
 
 const MFA_SETTINGS_URL = '/api/pleroma/accounts/mfa'
 const MFA_BACKUP_CODES_URL = '/api/pleroma/accounts/mfa/backup_codes'
@@ -27,7 +27,7 @@ const MFA_SETUP_OTP_URL = '/api/pleroma/accounts/mfa/setup/totp'
 const MFA_CONFIRM_OTP_URL = '/api/pleroma/accounts/mfa/confirm/totp'
 const MFA_DISABLE_OTP_URL = '/api/pleroma/accounts/mfa/totp'
 
-const MASTODON_DISMISS_NOTIFICATION_URL = (id) =>
+export const MASTODON_DISMISS_NOTIFICATION_URL = (id) =>
   `/api/v1/notifications/${id}/dismiss`
 export const MASTODON_FAVORITE_URL = (id) => `/api/v1/statuses/${id}/favourite`
 export const MASTODON_UNFAVORITE_URL = (id) =>

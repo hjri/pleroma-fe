@@ -4,7 +4,7 @@ import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useUsersStore } from 'src/stores/users.js'
 
-import { search2 } from 'src/api/public.js'
+import { search2, searchUsers } from 'src/api/public.js'
 
 export const useSearchStore = defineStore('search', {
   actions: {

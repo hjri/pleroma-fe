@@ -168,22 +168,22 @@ const Status = {
       return this.status.deleted
     },
     repeaterStyle() {
-      const user = this.status.user
-      return highlightStyle(useUserHighlightStore().get(this.repeater.screen_name))
+      return highlightStyle(
+        useUserHighlightStore().get(this.repeater.screen_name),
+      )
     },
     userStyle() {
       if (this.noHeading) return
       return highlightStyle(useUserHighlightStore().get(this.user.screen_name))
     },
     userProfileLink() {
-      return this.generateUserProfileLink(
-        this.user.id,
-        this.user.screen_name,
-      )
+      return this.generateUserProfileLink(this.user.id, this.user.screen_name)
     },
     replyProfileLink() {
       if (this.isReply) {
-        const user = useUsersStore().findUser(this.mainStatus.in_reply_to_user_id)
+        const user = useUsersStore().findUser(
+          this.mainStatus.in_reply_to_user_id,
+        )
         // FIXME Why user not found sometimes???
         return user ? user.statusnet_profile_url : 'NOT_FOUND'
       }
@@ -359,14 +359,17 @@ const Status = {
     },
     isReply() {
       return !!(
-        this.mainStatus.in_reply_to_status_id && this.mainStatus.in_reply_to_user_id
+        this.mainStatus.in_reply_to_status_id &&
+        this.mainStatus.in_reply_to_user_id
       )
     },
     replyToName() {
       if (this.mainStatus.in_reply_to_screen_name) {
         return this.status.in_reply_to_screen_name
       } else {
-        const user = useUsersStore().findUser(this.mainStatus.in_reply_to_user_id)
+        const user = useUsersStore().findUser(
+          this.mainStatus.in_reply_to_user_id,
+        )
         return user?.screen_name_ui
       }
     },

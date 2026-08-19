@@ -1,13 +1,10 @@
-import { first, last, max, min } from 'lodash'
+import { first, last } from 'lodash'
 import { defineStore } from 'pinia'
 
+import timelineFetcher from 'src/stores/fetchers/timeline_fetcher.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
-import { useStatusesStore } from 'src/stores/statuses.js'
 import { TIMELINE_STREAM_MAP, useStreamingStore } from 'src/stores/streaming.js'
-import { useUsersStore } from 'src/stores/users.js'
-
-import timelineFetcher from 'src/stores/fetchers/timeline_fetcher.js'
 
 const emptyTl = (name, argument = null) => {
   const result = {
@@ -164,7 +161,7 @@ export const useTimelinesStore = defineStore('timelines', {
         try {
           this.deactivate(name, true)
         } catch (e) {
-          console.error(`Failed to deactivate timeline ${name}`)
+          console.error(`Failed to deactivate timeline ${name}:`, e)
         }
       })
     },
@@ -178,7 +175,7 @@ export const useTimelinesStore = defineStore('timelines', {
         showImmediately = false,
         noIdUpdate = false,
         pagination = {},
-        older = false
+        older = false,
       },
     ) {
       if (statuses.length === 0) return
@@ -195,10 +192,7 @@ export const useTimelinesStore = defineStore('timelines', {
       }
 
       if (!noIdUpdate) {
-        this.updateTimelineExtremes(
-          timeline,
-          pagination,
-        )
+        this.updateTimelineExtremes(timeline, pagination)
       }
 
       const filtered = statuses.filter((id) => !timeline.statusIds.has(id))

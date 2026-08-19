@@ -154,12 +154,6 @@ const Notification = {
       this.$store.dispatch('markSingleNotificationAsSeen', {
         id: this.notification.id,
       })
-      this.$store.dispatch('updateNotification', {
-        id: this.notification.id,
-        updater: (notification) => {
-          notification.type = 'follow'
-        },
-      })
       this.hideApproveConfirmDialog()
     },
     denyUser() {

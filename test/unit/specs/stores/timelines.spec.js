@@ -1,9 +1,8 @@
 import { createTestingPinia } from '@pinia/testing'
 import { setActivePinia } from 'pinia'
 
-import { useStatusesStore } from 'src/stores/statuses.js'
-import { useTimelinesStore } from 'src/stores/timelines.js'
 import { useStreamingStore } from 'src/stores/streaming.js'
+import { useTimelinesStore } from 'src/stores/timelines.js'
 
 describe('Timelines store', () => {
   beforeEach(() => {
@@ -49,14 +48,15 @@ describe('Timelines store', () => {
       const store = useTimelinesStore()
       const unsub = vi.fn()
       useStreamingStore().removeSubscriber = unsub
+      useStreamingStore().addSubscriber = vi.fn()
 
       store.activate('friends', undefined, true)
       // Checking so that they were set properly before
       // since reset changes them to ''
       store.friends.maxId = '3'
       store.friends.minId = '4'
-      store.friends.statusIds = new Set(['3','4'])
-      store.friends.visibleStausIds = new Set(['3','4'])
+      store.friends.statusIds = new Set(['3', '4'])
+      store.friends.visibleStausIds = new Set(['3', '4'])
       store.deactivate('friends', true)
 
       expect(unsub).to.have.been.called
@@ -72,14 +72,15 @@ describe('Timelines store', () => {
       const store = useTimelinesStore()
       const unsub = vi.fn()
       useStreamingStore().removeSubscriber = unsub
+      useStreamingStore().addSubscriber = vi.fn()
 
       store.activate('user', '1')
       // Checking so that they were set properly before
       // since reset changes them to ''
       store.user.maxId = '3'
       store.user.minId = '4'
-      store.user.statusIds = new Set(['3','4'])
-      store.user.visibleStausIds = new Set(['3','4'])
+      store.user.statusIds = new Set(['3', '4'])
+      store.user.visibleStausIds = new Set(['3', '4'])
       store.deactivate('user')
 
       expect(unsub).to.not.have.been.called
@@ -96,7 +97,7 @@ describe('Timelines store', () => {
     it('should derive extremes from data', () => {
       const store = useTimelinesStore()
       const timeline = useTimelinesStore().friends
-      timeline.order = ['4','1','3','2']
+      timeline.order = ['4', '1', '3', '2']
       timeline.statusesIds = new Set(timeline.order)
       store.updateTimelineExtremes(timeline)
 
@@ -107,10 +108,7 @@ describe('Timelines store', () => {
     it('should use extremes from pagination', () => {
       const store = useTimelinesStore()
       const timeline = useTimelinesStore().friends
-      store.updateTimelineExtremes(
-        timeline,
-        { maxId: '1', minId: '2' }
-      )
+      store.updateTimelineExtremes(timeline, { maxId: '1', minId: '2' })
 
       // Min and max are swapped!
       expect(store.friends).to.have.property('maxId', '2')
@@ -121,17 +119,13 @@ describe('Timelines store', () => {
   describe('addStatusesToTimeline', () => {
     it('adds the status to the given timeline', () => {
       const store = useTimelinesStore()
-      const statuses = ['1','2','3']
+      const statuses = ['1', '2', '3']
 
       store.activate('list', '1')
-      store.addStatusesToTimeline(
-        'list',
-        '1',
-        {
-          statuses,
-          pagination: { minId: '1', maxId: '3' }
-        }
-      )
+      store.addStatusesToTimeline('list', '1', {
+        statuses,
+        pagination: { minId: '1', maxId: '3' },
+      })
 
       expect(store.list.order).to.eql(statuses)
       expect(store.list.statusIds).to.eql(new Set(statuses))
@@ -143,25 +137,17 @@ describe('Timelines store', () => {
 
     it('ignores duplicates', () => {
       const store = useTimelinesStore()
-      const statuses = ['1','2','3']
+      const statuses = ['1', '2', '3']
 
       store.activate('list', '1')
-      store.addStatusesToTimeline(
-        'list',
-        '1',
-        {
-          statuses,
-          pagination: { minId: '1', maxId: '3' }
-        }
-      )
-      store.addStatusesToTimeline(
-        'list',
-        '1',
-        {
-          statuses,
-          pagination: { minId: '1', maxId: '3' }
-        }
-      )
+      store.addStatusesToTimeline('list', '1', {
+        statuses,
+        pagination: { minId: '1', maxId: '3' },
+      })
+      store.addStatusesToTimeline('list', '1', {
+        statuses,
+        pagination: { minId: '1', maxId: '3' },
+      })
 
       expect(store.list.order).to.eql(statuses)
       expect(store.list.statusIds).to.eql(new Set(statuses))
@@ -173,18 +159,14 @@ describe('Timelines store', () => {
 
     it('adds the status the given timeline, directly visible', () => {
       const store = useTimelinesStore()
-      const statuses = ['1','2','3']
+      const statuses = ['1', '2', '3']
 
       store.activate('list', '1')
-      store.addStatusesToTimeline(
-        'list',
-        '1',
-        {
-          statuses,
-          showImmediately: true,
-          pagination: { minId: '1', maxId: '3' }
-        }
-      )
+      store.addStatusesToTimeline('list', '1', {
+        statuses,
+        showImmediately: true,
+        pagination: { minId: '1', maxId: '3' },
+      })
 
       expect(store.list.order).to.eql(statuses)
       expect(store.list.statusIds).to.eql(new Set(statuses))
@@ -196,18 +178,14 @@ describe('Timelines store', () => {
 
     it('does not update the maxId when the noIdUpdate flag is set', () => {
       const store = useTimelinesStore()
-      const statuses = ['1','2','3']
+      const statuses = ['1', '2', '3']
 
       store.activate('list', '1')
-      store.addStatusesToTimeline(
-        'list',
-        '1',
-        {
-          statuses,
-          noIdUpdate: true,
-          pagination: { minId: '1', maxId: '3' }
-        }
-      )
+      store.addStatusesToTimeline('list', '1', {
+        statuses,
+        noIdUpdate: true,
+        pagination: { minId: '1', maxId: '3' },
+      })
 
       expect(store.list.order).to.eql(statuses)
       expect(store.list.statusIds).to.eql(new Set(statuses))
@@ -219,18 +197,14 @@ describe('Timelines store', () => {
 
     it('does not update timeline if it belongs to a different arugment', () => {
       const store = useTimelinesStore()
-      const statuses = ['1','2','3']
+      const statuses = ['1', '2', '3']
 
       store.activate('list', '1')
-      store.addStatusesToTimeline(
-        'list',
-        '2',
-        {
-          statuses,
-          noIdUpdate: true,
-          pagination: { minId: '1', maxId: '3' }
-        }
-      )
+      store.addStatusesToTimeline('list', '2', {
+        statuses,
+        noIdUpdate: true,
+        pagination: { minId: '1', maxId: '3' },
+      })
 
       expect(store.list.order).to.eql([])
       expect(store.list.statusIds).to.eql(new Set())
@@ -242,26 +216,18 @@ describe('Timelines store', () => {
 
     it('prepends timeline with new statuses', () => {
       const store = useTimelinesStore()
-      const statuses1 = ['3','2','1']
-      const statuses2 = ['6','5','4']
+      const statuses1 = ['3', '2', '1']
+      const statuses2 = ['6', '5', '4']
 
       store.activate('list', '1')
-      store.addStatusesToTimeline(
-        'list',
-        '1',
-        {
-          statuses: statuses1,
-          pagination: { minId: '3', maxId: '1' }
-        }
-      )
-      store.addStatusesToTimeline(
-        'list',
-        '1',
-        {
-          statuses: statuses2,
-          pagination: { minId: '6', maxId: '4' }
-        }
-      )
+      store.addStatusesToTimeline('list', '1', {
+        statuses: statuses1,
+        pagination: { minId: '3', maxId: '1' },
+      })
+      store.addStatusesToTimeline('list', '1', {
+        statuses: statuses2,
+        pagination: { minId: '6', maxId: '4' },
+      })
 
       const newOrder = [...statuses2, ...statuses1]
       expect(store.list.order).to.eql(newOrder)
@@ -274,27 +240,19 @@ describe('Timelines store', () => {
 
     it('appends timeline with new statuses if fetching older', () => {
       const store = useTimelinesStore()
-      const statuses1 = ['6','5','4']
-      const statuses2 = ['3','2','1']
+      const statuses1 = ['6', '5', '4']
+      const statuses2 = ['3', '2', '1']
 
       store.activate('list', '1')
-      store.addStatusesToTimeline(
-        'list',
-        '1',
-        {
-          statuses: statuses1,
-          pagination: { minId: '6', maxId: '4' },
-        }
-      )
-      store.addStatusesToTimeline(
-        'list',
-        '1',
-        {
-          statuses: statuses2,
-          pagination: { minId: '3', maxId: '1' },
-          older: true,
-        }
-      )
+      store.addStatusesToTimeline('list', '1', {
+        statuses: statuses1,
+        pagination: { minId: '6', maxId: '4' },
+      })
+      store.addStatusesToTimeline('list', '1', {
+        statuses: statuses2,
+        pagination: { minId: '3', maxId: '1' },
+        older: true,
+      })
 
       const newOrder = [...statuses1, ...statuses2]
       expect(store.list.order).to.eql(newOrder)
@@ -309,17 +267,13 @@ describe('Timelines store', () => {
   describe('showNewStatuses', () => {
     it('resets counter and makes all ids visible', () => {
       const store = useTimelinesStore()
-      const statuses = ['1','2','3']
+      const statuses = ['1', '2', '3']
 
       store.activate('public')
-      store.addStatusesToTimeline(
-        'public',
-        undefined,
-        {
-          statuses,
-          pagination: { minId: '1', maxId: '3' }
-        }
-      )
+      store.addStatusesToTimeline('public', undefined, {
+        statuses,
+        pagination: { minId: '1', maxId: '3' },
+      })
 
       expect(store.public.statusIds).to.eql(new Set(statuses))
       expect(store.public.visibleStatusIds).to.eql(new Set())
@@ -336,20 +290,12 @@ describe('Timelines store', () => {
 
       store.activate('friends')
       store.activate('public')
-      store.addStatusesToTimeline(
-        'public',
-        undefined,
-        {
-          statuses: ['1','2','3','0']
-        }
-      )
-      store.addStatusesToTimeline(
-        'friends',
-        undefined,
-        {
-          statuses: ['5','0','9','1']
-        }
-      )
+      store.addStatusesToTimeline('public', undefined, {
+        statuses: ['1', '2', '3', '0'],
+      })
+      store.addStatusesToTimeline('friends', undefined, {
+        statuses: ['5', '0', '9', '1'],
+      })
       store.wipeStatuses(['0'])
       expect(store.friends.statusIds).to.not.have.members('0')
       expect(store.public.statusIds).to.not.have.members('0')

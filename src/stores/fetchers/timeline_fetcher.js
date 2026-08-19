@@ -1,5 +1,4 @@
 import { ref } from 'vue'
-import { promiseInterval } from 'src/services/promise_interval/promise_interval.js'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
@@ -9,6 +8,7 @@ import { ARGUMENT_MAP, useTimelinesStore } from 'src/stores/timelines.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { fetchTimeline } from 'src/api/timelines.js'
+import { promiseInterval } from 'src/services/promise_interval/promise_interval.js'
 
 const REPLY_VISIBILITY_TIMELINES = new Set([
   'friends',
@@ -49,11 +49,7 @@ const timelineFetcher = (timeline, argument, credentials) => {
 
     return fetchTimeline(args)
       .then(({ data: statuses, pagination, timestamp }) => {
-        if (
-          !older &&
-          statuses.length >= 20 &&
-          numStatusesBeforeFetch > 0
-        ) {
+        if (!older && statuses.length >= 20 && numStatusesBeforeFetch > 0) {
           useTimelinesStore().queueFlush(timeline.name, timeline.maxId)
         }
 
@@ -111,7 +107,6 @@ const timelineFetcher = (timeline, argument, credentials) => {
     startFetching,
     stopFetching,
     fetchOlder: () => fetchAndUpdate({ showImmediately: true, older: true }),
-    fetchNewer: () => fetchAndUpdate({ showImmediately: true, older: false }),
     loading,
     bottomedOut,
   }

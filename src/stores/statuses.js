@@ -11,7 +11,6 @@ import {
   fetchRebloggedByUsers,
   fetchStatus,
   fetchStatusSource,
-  search2,
 } from 'src/api/public.js'
 import {
   bookmarkStatus,

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 
+import notificationsFetcher from 'src/stores/fetchers/notifications_fetcher.js'
 import { useI18nStore } from 'src/stores/i18n.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
@@ -19,7 +20,6 @@ import {
   maybeShowNotification,
 } from 'src/services/notification_utils/notification_utils.js'
 import { isStatusNotification } from 'src/services/notification_utils/notification_utils_sw.js'
-import notificationsFetcher from 'src/services/notifications_fetcher/notifications_fetcher.service.js'
 
 export const defaultState = () => ({
   desktopNotificationSilence: true,
@@ -28,7 +28,7 @@ export const defaultState = () => ({
   data: [],
   statusNotificationRelations: new WeakMap(),
   idStore: new Map(),
-  loading: false,
+  statusIdStore: new Set(),
   socket: null,
   streaming: false,
   fetcher: null,
@@ -108,30 +108,35 @@ export const useNotificationsStore = defineStore('notifications', {
     },
 
     // Updates
-    updateNotificationsMinMaxId(id) {
-      this.maxId = id > this.maxId ? id : this.maxId
-      this.minId = id < this.minId ? id : this.minId
+    updateExtremes(id) {
+      if (this.maxId === '' || id > this.maxId) {
+        this.maxId = id
+      }
+      if (this.minId === '' || id < this.minId) {
+        this.minId = id
+      }
     },
-    updateNotification({ id, updater }) {
-      const notification = this.idStore.get(id)
-      notification && updater(notification)
-    },
-    addNewNotifications(result) {
-      const { timestamp, data: notifications } = result
+    addNewNotifications(result, older) {
+      const { timestamp, data } = result
+
+      const notifications = older
+        ? data
+        : [...data].reverse()
 
       useUsersStore().addNewUsers({
         timestamp,
         data: notifications.map((n) => n.from_profile),
       })
-      notifications.forEach(
-        (n) => (n.from_profile = useUsersStore().findUser(n.from_profile.id)),
-      )
+
+      notifications.forEach((n) => {
+        n.from_profile = useUsersStore().findUser(n.from_profile.id)
+      })
 
       const validNotifications = notifications.filter((notification) => {
         // If invalid notification, update ids but don't add it to store
         if (!isValidNotification(notification)) {
           console.error('Invalid notification:', notification)
-          this.updateNotificationsMinMaxId(notification.id)
+          this.updateExtremes(notification.id)
           return false
         }
         return true
@@ -178,12 +183,14 @@ export const useNotificationsStore = defineStore('notifications', {
 
         // Only add a new notification if we don't have one for the same action
         if (!this.idStore.has(notification.id)) {
-          this.updateNotificationsMinMaxId(notification.id)
+          this.updateExtremes(notification.id)
 
-          notifications.forEach((notification) => {
+          if (older) {
             this.data.push(notification)
-            this.idStore.set(notification.id, notification)
-          })
+          } else {
+            this.data.unshift(notification)
+          }
+          this.idStore.set(notification.id, notification)
 
           this.statusNotificationRelations.set(
             notification.status,
@@ -192,7 +199,7 @@ export const useNotificationsStore = defineStore('notifications', {
 
           maybeShowNotification(
             useMergedConfigStore().mergedConfig.notificationVisibility,
-            Object.values(useSyncConfigStore().prefsStorage.simple.muteFilters),
+            Object.values(useSyncConfigStore().prefsStorage.simple.muteFilters ?? {}),
             notification,
             useI18nStore().i18n,
           )
@@ -225,26 +232,26 @@ export const useNotificationsStore = defineStore('notifications', {
 
       markNotificationsAsSeen({
         id: this.maxId,
-        credentials: useUsersStore().currentUser.credentials,
+        credentials: useOAuthStore().token,
       }).then(() => {
         closeAllDesktopNotifications()
       })
     },
-    markSingleNotificationAsSeen({ id }) {
+    markSingleNotificationAsSeen(id) {
       const notification = this.idStore.get(id)
       if (notification) notification.seen = true
 
       markNotificationsAsSeen({
         single: true,
         id,
-        credentials: useUsersStore().currentUser.credentials,
+        credentials: useOAuthStore().token,
       }).then(() => {
         closeDesktopNotification(id)
       })
     },
     dismissNotificationLocal(id) {
-      this.data = this.data.filter((n) => n.id !== id)
-      delete this.idStore.delete(id)
+      this.idStore.delete(id)
+      this.syncOrder()
     },
     dismissNotification(id) {
       this.dismissNotificationLocal(id)
@@ -254,10 +261,27 @@ export const useNotificationsStore = defineStore('notifications', {
         credentials: useOAuthStore().token,
       })
     },
+    syncOrder() {
+      this.minId = ''
+      this.maxId = ''
+      this.data = this.data.filter(({ id }) => {
+        const present = this.idStore.has(id)
+        if (present) {
+          this.updateExtremes(id) // Side-effect
+        }
+        return present
+      })
+    },
+    wipeStatuses(ids) {
+      const set = new Set(ids)
+      this.data.forEach((notification) => {
+        const status = isStatusNotification(notification.type) && notification.status
+        if (status && set.has(status.id)) {
+          this.idStore.delete(notification.id)
+        }
+      })
 
-    // Misc
-    setLoading(value) {
-      this.loading = value
+      this.syncOrder()
     },
   },
 })

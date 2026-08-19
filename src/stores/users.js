@@ -25,7 +25,6 @@ import {
   fetchFriends,
   fetchUser,
   fetchUserByName,
-  searchUsers,
   verifyCredentials,
 } from 'src/api/public.js'
 import {

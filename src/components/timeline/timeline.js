@@ -8,8 +8,8 @@ import ScrollTopButton from 'src/components/scroll_top_button/scroll_top_button.
 import TimelineMenu from 'src/components/timeline_menu/timeline_menu.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
-import { useStatusesStore } from 'src/stores/statuses.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useTimelinesStore } from 'src/stores/timelines.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -103,9 +103,7 @@ const Timeline = {
       const statusesPerSide = Math.ceil(Math.max(3, window.innerHeight / 80))
       const min = Math.max(0, this.virtualScrollIndex - statusesPerSide)
       const max = Math.min(amount, this.virtualScrollIndex + statusesPerSide)
-      return new Set(
-        this.timeline.order.slice(min, max),
-      )
+      return new Set(this.timeline.order.slice(min, max))
     },
     virtualScrollingEnabled() {
       return useMergedConfigStore().mergedConfig.virtualScrolling
@@ -212,7 +210,6 @@ const Timeline = {
       let err = statuses[approxIndex].getBoundingClientRect().y
 
       // if we have a previous scroll index that can be used, test if it's
-
 
       const virtualScrollIndexY =
         statuses[cappedScrollIndex].getBoundingClientRect().y
