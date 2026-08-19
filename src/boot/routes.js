@@ -8,7 +8,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useUsersStore } from 'src/stores/users.js'
 
-export default (store) => {
+export default () => {
   const validateAuthenticatedRoute = (to, from, next) => {
     if (useUsersStore().currentUser) {
       next()

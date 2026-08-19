@@ -1,12 +1,12 @@
 import { createTestingPinia } from '@pinia/testing'
 import { setActivePinia } from 'pinia'
 
-import { useNotificationsStore } from 'src/stores/notifications.js'
-import { useStatusesStore } from 'src/stores/statuses.js'
-import { useUsersStore } from 'src/stores/users.js'
-import { useReportsStore } from 'src/stores/reports.js'
-import { useStreamingStore } from 'src/stores/streaming.js'
 import { useI18nStore } from 'src/stores/i18n.js'
+import { useNotificationsStore } from 'src/stores/notifications.js'
+import { useReportsStore } from 'src/stores/reports.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import * as USER_API from 'src/api/user.js'
 
@@ -97,7 +97,11 @@ describe('Notifications store', () => {
   beforeEach(() => {
     vi.useFakeTimers()
     setActivePinia(createTestingPinia({ stubActions: false }))
-    useI18nStore().i18n = { t: () => { /* no-op */} }
+    useI18nStore().i18n = {
+      t: () => {
+        /* no-op */
+      },
+    }
   })
 
   afterEach(() => {
@@ -209,13 +213,16 @@ describe('Notifications store', () => {
         ],
       })
 
-      store.addNewNotifications({
-        timestamp: 1,
-        data: [
-          mockStatusNotification({ id: '2' }),
-          mockStatusNotification({ id: '1' }),
-        ],
-      }, true)
+      store.addNewNotifications(
+        {
+          timestamp: 1,
+          data: [
+            mockStatusNotification({ id: '2' }),
+            mockStatusNotification({ id: '1' }),
+          ],
+        },
+        true,
+      )
 
       // must be ordered
       expect(store.data.map(({ id }) => id)).to.eql(['4', '3', '2', '1'])
@@ -236,13 +243,17 @@ describe('Notifications store', () => {
 
       expect(mock).to.have.been.called
       expect(mock.mock.calls[0][0]).to.have.property('timestamp', 1337)
-      expect(mock.mock.calls[0][0].data[0]).to.eql(mockedNotification.from_profile)
+      expect(mock.mock.calls[0][0].data[0]).to.eql(
+        mockedNotification.from_profile,
+      )
     })
 
     it('should update reportsStore', (notificationType) => {
       const store = useNotificationsStore()
       const mock = vi.spyOn(useReportsStore(), 'addReport')
-      const mockedNotification = mockStatusNotification({ type: 'pleroma:report' })
+      const mockedNotification = mockStatusNotification({
+        type: 'pleroma:report',
+      })
       mockedNotification.report = { data: '123' }
 
       store.addNewNotifications({
@@ -264,7 +275,9 @@ describe('Notifications store', () => {
       const store = useNotificationsStore()
       const mock = vi.fn()
       useStatusesStore().addNewStatuses = mock
-      const mockedNotification = mockStatusNotification({ type: notificationType })
+      const mockedNotification = mockStatusNotification({
+        type: notificationType,
+      })
 
       store.addNewNotifications({
         timestamp: 1337,
@@ -273,7 +286,9 @@ describe('Notifications store', () => {
 
       expect(mock).to.have.been.called
       expect(mock.mock.calls[0][0]).to.have.property('timestamp', 1337)
-      expect(mock.mock.calls[0][0].statuses[0]).to.eql(mockedNotification.status)
+      expect(mock.mock.calls[0][0].statuses[0]).to.eql(
+        mockedNotification.status,
+      )
     })
   })
 
@@ -284,8 +299,14 @@ describe('Notifications store', () => {
       store.addNewNotifications({
         timestamp: 1,
         data: [
-          mockStatusNotification({ id: 'n2', status: mockStatus({ id: 's2' }) }),
-          mockStatusNotification({ id: 'n1', status: mockStatus({ id: 's1' }) }),
+          mockStatusNotification({
+            id: 'n2',
+            status: mockStatus({ id: 's2' }),
+          }),
+          mockStatusNotification({
+            id: 'n1',
+            status: mockStatus({ id: 's1' }),
+          }),
         ],
       })
 

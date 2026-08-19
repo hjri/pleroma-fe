@@ -2,6 +2,7 @@ import { createTestingPinia } from '@pinia/testing'
 import { flushPromises, mount } from '@vue/test-utils'
 import { setActivePinia } from 'pinia'
 import { nextTick } from 'vue'
+import { useUsersStore } from 'src/stores/users.js'
 
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import { $t, mountOpts, waitForEvent } from '../../../fixtures/setup_test'
@@ -34,13 +35,20 @@ const saveManually = async (wrapper) => {
 
 const waitSaveTime = 4000
 
-afterEach(() => {
-  vi.useRealTimers()
-})
+const currentUser = {
+  id: 'current-user',
+  default_scope: 'public',
+  locked: false,
+}
 
 describe('Draft saving', () => {
   beforeEach(() => {
     setActivePinia(createTestingPinia())
+    useUsersStore().currentUser = currentUser
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   autoSaveOrNot(

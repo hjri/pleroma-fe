@@ -571,9 +571,7 @@ const PostStatusForm = {
     },
 
     // Global stuff
-    currentUser() {
-      return useUsersStore().currentUser
-    },
+    ...mapState(useUsersStore, ['currentUser']),
     ...mapState(useMergedConfigStore, ['mergedConfig']),
     ...mapState(useInterfaceStore, {
       mobileLayout: (store) => store.mobileLayout,

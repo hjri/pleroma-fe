@@ -119,9 +119,7 @@ export const useNotificationsStore = defineStore('notifications', {
     addNewNotifications(result, older) {
       const { timestamp, data } = result
 
-      const notifications = older
-        ? data
-        : [...data].reverse()
+      const notifications = older ? data : [...data].reverse()
 
       useUsersStore().addNewUsers({
         timestamp,
@@ -199,7 +197,9 @@ export const useNotificationsStore = defineStore('notifications', {
 
           maybeShowNotification(
             useMergedConfigStore().mergedConfig.notificationVisibility,
-            Object.values(useSyncConfigStore().prefsStorage.simple.muteFilters ?? {}),
+            Object.values(
+              useSyncConfigStore().prefsStorage.simple.muteFilters ?? {},
+            ),
             notification,
             useI18nStore().i18n,
           )
@@ -275,7 +275,8 @@ export const useNotificationsStore = defineStore('notifications', {
     wipeStatuses(ids) {
       const set = new Set(ids)
       this.data.forEach((notification) => {
-        const status = isStatusNotification(notification.type) && notification.status
+        const status =
+          isStatusNotification(notification.type) && notification.status
         if (status && set.has(status.id)) {
           this.idStore.delete(notification.id)
         }

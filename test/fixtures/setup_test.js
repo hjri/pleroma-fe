@@ -26,7 +26,6 @@ const getDefaultOpts = ({
   global: {
     plugins: [
       applyAfterStore(makeMockStore(), afterStore),
-      createTestingPinia(),
       VueVirtualScroller,
       createRouter({
         history: createMemoryHistory(),
