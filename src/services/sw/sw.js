@@ -1,5 +1,3 @@
-import { useNotificationsStore } from 'src/stores/notifications.js'
-
 /* global process */
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
@@ -96,7 +94,7 @@ function sendSubscriptionToBackEnd(
       return responseData
     })
 }
-export async function initServiceWorker() {
+export async function initServiceWorker(notificationsStore) {
   if (!isSWSupported()) return
   await getOrCreateServiceWorker()
   navigator.serviceWorker.addEventListener('message', (event) => {
@@ -104,7 +102,7 @@ export async function initServiceWorker() {
 
     switch (type) {
       case 'notificationClicked':
-        useNotificationsStore().notificationClicked(rest.id)
+        notificationsStore.notificationClicked(rest.id)
     }
   })
 }
