@@ -32,27 +32,11 @@ const ThreadTree = {
   },
   emits: ['suspendableStateChange', 'goto', 'dive'],
   computed: {
-    reverseLookupTable() {
-      return this.conversation.reduce(
-        (table, statusId, index) => {
-          table[statusId] = index
-          return table
-        },
-        {
-          /* no-op */
-        },
-      )
-    },
     currentReplies() {
-      return this.getReplies(this.statusId).map(({ id }) => this.statusById(id))
+      return this.getReplies(this.statusId).map(({ id }) => id)
     },
     threadShowing() {
       return this.threadDisplayStatus[this.statusId] === 'showing'
-    },
-  },
-  methods: {
-    statusById(id) {
-      return this.conversation[this.reverseLookupTable[id]]
     },
   },
 }

@@ -28,7 +28,7 @@
       class="thread-tree-replies"
     >
       <ThreadTree
-        v-for="replyStatus in currentReplies"
+        v-for="replyStatusId in currentReplies"
         :key="replyStatusId"
         ref="childComponent"
         :depth="depth + 1"
