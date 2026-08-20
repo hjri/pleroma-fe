@@ -41,14 +41,17 @@ const postStatus = ({
     preview,
     idempotencyKey,
   }).then(({ data, timestamp }) => {
-    if (!preview)
+    if (!preview) {
       useStatusesStore().addNewStatuses({
         timestamp,
         statuses: [data],
-        timeline: 'friends',
+      })
+      useTimelinesStore().addStatusesToTimeline('friends', undefined, {
+        statuses: [data.id],
         showImmediately: true,
         noIdUpdate: true, // To prevent missing notices on next pull.
       })
+    }
 
     return data
   })
@@ -82,7 +85,7 @@ const editStatus = ({
         timestamp,
       })
       useTimelinesStore().addStatusesToTimeline('friends', undefined, {
-        statuses: [data],
+        statuses: [data.id],
         showImmediately: true,
         noIdUpdate: true, // To prevent missing notices on next pull.
       })
