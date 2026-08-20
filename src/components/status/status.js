@@ -432,13 +432,13 @@ const Status = {
       return useInstanceCapabilitiesStore().editingAvailable
     },
     quoteId() {
-      return this.status.quote_id
+      return this.mainStatus.quote_id
     },
     quoteUrl() {
-      return this.status.quote_url
+      return this.mainStatus.quote_url
     },
     quoteVisible() {
-      return this.status.quote_visible
+      return this.mainStatus.quote_visible
     },
     quoteExpanded() {
       return !this.inQuote
