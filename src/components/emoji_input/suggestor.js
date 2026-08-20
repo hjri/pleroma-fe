@@ -1,3 +1,5 @@
+import { useSearchStore } from 'src/stores/search.js'
+
 /**
  * suggest - generates a suggestor function to be used by emoji-input
  * data: object providing source information for specific types of suggestions:
@@ -77,7 +79,7 @@ export const suggestUsers = ({ dispatch, state }) => {
   let timeout = null
   let cancelUserSearch = null
 
-  const userSearch = (query) => dispatch('searchUsers', { query })
+  const userSearch = (query) => useSearchStore().searchUsers({ query })
   const debounceUserSearch = (query) => {
     cancelUserSearch?.()
     return new Promise((resolve, reject) => {

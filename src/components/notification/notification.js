@@ -15,6 +15,7 @@ import {
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
@@ -150,10 +151,9 @@ const Notification = {
         id: this.user.id,
         credentials: useOAuthStore().token,
       })
+      // TODO Fix this
       this.$store.dispatch('removeFollowRequest', this.user)
-      this.$store.dispatch('markSingleNotificationAsSeen', {
-        id: this.notification.id,
-      })
+      useNotificationsStore().markSingleNotificationAsSeen(this.notification.id)
       this.hideApproveConfirmDialog()
     },
     denyUser() {
@@ -168,9 +168,8 @@ const Notification = {
         id: this.user.id,
         credentials: useOAuthStore().token,
       }).then(() => {
-        this.$store.dispatch('dismissNotificationLocal', {
-          id: this.notification.id,
-        })
+        useNotificationsStore().dismissNotificationLocal(this.notification.id)
+        // TODO Fix this
         this.$store.dispatch('removeFollowRequest', this.user)
       })
       this.hideDenyConfirmDialog()

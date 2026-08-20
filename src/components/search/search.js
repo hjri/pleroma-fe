@@ -4,6 +4,7 @@ import Conversation from 'src/components/conversation/conversation.vue'
 import FollowCard from 'src/components/follow_card/follow_card.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 
+import { useSearchStore } from 'src/stores/search.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useUsersStore } from 'src/stores/users.js'
 
@@ -79,8 +80,8 @@ const Search = {
         this.lastStatusFetchCount = 0
       }
 
-      this.$store
-        .dispatch('search', {
+      useSearchStore()
+        .search({
           q: query,
           resolve: true,
           offset: this.statusesOffset,

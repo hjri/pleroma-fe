@@ -55,10 +55,11 @@ const FollowRequestCard = {
         id: this.user.id,
         credentials: useOAuthStore().token,
       })
+      // TODO fix
       this.$store.dispatch('removeFollowRequest', this.user)
 
       const notifId = this.findFollowRequestNotificationId()
-      this.$store.dispatch('markSingleNotificationAsSeen', { id: notifId })
+      useNotificationsStore().markSingleNotificationAsSeen(notifId)
       this.hideApproveConfirmDialog()
     },
     denyUser() {
@@ -75,7 +76,8 @@ const FollowRequestCard = {
         id: this.user.id,
         credentials: useOAuthStore().token,
       }).then(() => {
-        this.$store.dispatch('dismissNotificationLocal', { id: notifId })
+        useNotificationsStore().dismissNotificationLocal(notifId)
+        // TODO fix
         this.$store.dispatch('removeFollowRequest', this.user)
       })
       this.hideDenyConfirmDialog()

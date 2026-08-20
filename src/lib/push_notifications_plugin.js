@@ -61,30 +61,3 @@ export const piniaPushNotificationsPlugin = ({ store }) => {
     }
   })
 }
-
-// TODO make it work with pinia
-export const vuexPushNotificationsPlugin = (store) => {
-  store.subscribe((mutation, state) => {
-    // Initial state
-    const vapidPublicKey = useInstanceStore().vapidPublicKey
-    const enabled = useMergedConfigStore().mergedConfig.webPushNotifications
-    const permissionGranted =
-      useInterfaceStore().notificationPermission === 'granted'
-    const permissionPresent =
-      useInterfaceStore().notificationPermission !== undefined
-    const user = state.users.currentUser
-
-    if (!permissionPresent || !vapidPublicKey) return
-
-    if (
-      mutation.type === 'setCurrentUser' ||
-      mutation.type === 'clearCurrentUser'
-    ) {
-      if (user && permissionGranted && enabled) {
-        return store.dispatch('registerPushNotifications')
-      } else {
-        return store.dispatch('unregisterPushNotifications')
-      }
-    }
-  })
-}

@@ -85,14 +85,6 @@ const mockStatusNotification = ({
   from_profile: user,
 })
 
-const DEFAULT_OPTIONS = (method = 'POST') => ({
-  method,
-  credentials: 'same-origin',
-  headers: {
-    Accept: 'application/json',
-  },
-})
-
 describe('Notifications store', () => {
   beforeEach(() => {
     vi.useFakeTimers()
@@ -328,7 +320,6 @@ describe('Notifications store', () => {
       vi.stubGlobal('fetch', mockFetch)
 
       const store = useNotificationsStore()
-      const mockedNotification = mockStatusNotification()
 
       store.addNewNotifications({
         timestamp: 1337,
@@ -366,7 +357,6 @@ describe('Notifications store', () => {
       vi.stubGlobal('fetch', mockFetch)
 
       const store = useNotificationsStore()
-      const mockedNotification = mockStatusNotification()
 
       // FormData is weird to test
       store.addNewNotifications({

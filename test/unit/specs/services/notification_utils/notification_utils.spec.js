@@ -1,8 +1,8 @@
-import { setActivePinia } from 'pinia'
 import { createTestingPinia } from '@pinia/testing'
+import { setActivePinia } from 'pinia'
 
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useNotificationsStore } from 'src/stores/notifications.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import * as NotificationUtils from 'src/services/notification_utils/notification_utils.js'
 

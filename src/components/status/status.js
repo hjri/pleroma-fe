@@ -564,7 +564,7 @@ const Status = {
         this.mainStatus.rebloggedBy &&
         this.mainStatus.rebloggedBy.length !== num
       ) {
-        this.$store.dispatch('fetchRepeats', this.status.id)
+        useStatusesStore().fetchRepeats(this.status.id)
       }
     },
     'mainStatus.fave_num': function (num) {
@@ -574,7 +574,7 @@ const Status = {
         this.mainStatus.favoritedBy &&
         this.mainStatus.favoritedBy.length !== num
       ) {
-        this.$store.dispatch('fetchFavs', this.status.id)
+        useStatusesStore().fetchFavs(this.status.id)
       }
     },
     isSuspendable: function (suspend) {

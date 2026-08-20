@@ -1,5 +1,7 @@
 import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
 
+import { useUsersStore } from 'src/stores/users.js'
+
 const UserNote = {
   props: {
     user: Object,
@@ -29,11 +31,8 @@ const UserNote = {
     finalizeEditing() {
       this.frozen = true
 
-      this.$store
-        .dispatch('editUserNote', {
-          id: this.user.id,
-          comment: this.localNote,
-        })
+      useUsersStore()
+        .editUserNote(this.user.id, this.localNote)
         .then(() => {
           this.frozen = false
           this.editing = false

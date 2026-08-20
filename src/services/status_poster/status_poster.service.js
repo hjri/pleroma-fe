@@ -1,6 +1,7 @@
 import { map } from 'lodash'
 
 import { useStatusesStore } from 'src/stores/statuses.js'
+import { useTimelinesStore } from 'src/stores/timelines.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import {
@@ -75,10 +76,13 @@ const editStatus = ({
     mediaIds,
     contentType,
   })
-    .then(({ data }) => {
-      store.dispatch('addNewStatuses', {
+    .then(({ data, timestamp }) => {
+      useStatusesStore().addNewStatuses({
         statuses: [data],
-        timeline: 'friends',
+        timestamp,
+      })
+      useTimelinesStore().addStatusesToTimeline('friends', undefined, {
+        statuses: [data],
         showImmediately: true,
         noIdUpdate: true, // To prevent missing notices on next pull.
       })

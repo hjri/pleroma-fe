@@ -12,6 +12,7 @@ import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens.js'
+import { useSearchStore } from 'src/stores/search.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { importBlocks, importFollows } from 'src/api/user.js'
@@ -106,8 +107,8 @@ const MutesAndBlocks = {
       })
     },
     queryUserIds(query) {
-      return this.$store
-        .dispatch('searchUsers', { query })
+      return useSearchStore()
+        .searchUsers({ query })
         .then((users) => map(users, 'id'))
     },
     blockUsers(ids) {
@@ -133,7 +134,7 @@ const MutesAndBlocks = {
       })
     },
     unmuteDomains(domains) {
-      return this.$store.dispatch('unmuteDomains', domains)
+      return useUsersStore().unmuteDomains(domains)
     },
   },
 }

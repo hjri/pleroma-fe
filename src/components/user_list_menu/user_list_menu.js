@@ -3,6 +3,7 @@ import { mapState } from 'pinia'
 import Popover from 'src/components/popover/popover.vue'
 
 import { useListsStore } from 'src/stores/lists.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
@@ -18,7 +19,7 @@ const UserListMenu = {
     Popover,
   },
   created() {
-    this.$store.dispatch('fetchUserInLists', this.user.id)
+    useUsersStore().fetchUserInLists(this.user.id)
   },
   computed: {
     ...mapState(useListsStore, {
@@ -49,7 +50,7 @@ const UserListMenu = {
             if (!response.ok) {
               return
             }
-            this.$store.dispatch('fetchUserInLists', this.user.id)
+            useUsersStore().fetchUserInLists(this.user.id)
           })
       } else {
         useListsStore()
@@ -58,7 +59,7 @@ const UserListMenu = {
             if (!response.ok) {
               return
             }
-            this.$store.dispatch('fetchUserInLists', this.user.id)
+            useUsersStore().fetchUserInLists(this.user.id)
           })
       }
     },

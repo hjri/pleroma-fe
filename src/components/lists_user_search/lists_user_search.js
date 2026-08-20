@@ -32,8 +32,8 @@ const ListsUserSearch = {
       this.loading = true
       this.$emit('loading')
       this.userIds = []
-      this.$store
-        .dispatch('search', {
+      this.useSearchStore()
+        .search({
           q: query,
           resolve: true,
           type: 'accounts',

@@ -17,10 +17,10 @@ const DomainMuteCard = {
   },
   methods: {
     unmuteDomain() {
-      return this.$store.dispatch('unmuteDomain', this.domain)
+      return useUsersStore().unmuteDomain(this.domain)
     },
     muteDomain() {
-      return this.$store.dispatch('muteDomain', this.domain)
+      return useUsersStore().muteDomain(this.domain)
     },
   },
 }

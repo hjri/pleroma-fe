@@ -93,8 +93,8 @@ export default {
         this.$emit('update:id', notice[3])
       } else if (value) {
         this.loading = true
-        this.$store
-          .dispatch('search', {
+        this.useSearchStore()
+          .search({
             q: value,
             resolve: true,
             offset: 0,

@@ -71,7 +71,8 @@ const chatNew = {
       this.loading = true
       this.userIds = []
       this.$store
-        .dispatch('search', { q: query, resolve: true, type: 'accounts' })
+      this.useSearchStore()
+        .search({ q: query, resolve: true, type: 'accounts' })
         .then((data) => {
           this.loading = false
           this.userIds = data.accounts.map((a) => a.id)

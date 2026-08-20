@@ -543,7 +543,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
   window.highlightConfig = useUserHighlightStore()
 
   FaviconService.initFaviconService()
-  initServiceWorker(store)
+  initServiceWorker()
 
   window.addEventListener('focus', () => updateFocus())
 

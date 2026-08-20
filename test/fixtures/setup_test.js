@@ -1,4 +1,3 @@
-import { createTestingPinia } from '@pinia/testing'
 import { config } from '@vue/test-utils'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import VueVirtualScroller from 'vue-virtual-scroller'

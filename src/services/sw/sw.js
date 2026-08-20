@@ -1,3 +1,5 @@
+import { useNotificationsStore } from 'src/stores/notifications.js'
+
 /* global process */
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
@@ -94,16 +96,15 @@ function sendSubscriptionToBackEnd(
       return responseData
     })
 }
-export async function initServiceWorker(store) {
+export async function initServiceWorker() {
   if (!isSWSupported()) return
   await getOrCreateServiceWorker()
   navigator.serviceWorker.addEventListener('message', (event) => {
-    const { dispatch } = store
     const { type, ...rest } = event.data
 
     switch (type) {
       case 'notificationClicked':
-        dispatch('notificationClicked', { id: rest.id })
+        useNotificationsStore().notificationClicked(rest.id)
     }
   })
 }

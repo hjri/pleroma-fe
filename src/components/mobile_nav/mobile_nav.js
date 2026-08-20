@@ -12,6 +12,7 @@ import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useChatsStore } from 'src/stores/chats.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -149,7 +150,7 @@ const MobileNav = {
       this.hideConfirmLogout()
     },
     markNotificationsAsSeen() {
-      this.$store.dispatch('markNotificationsAsSeen')
+      useNotificationsStore().markNotificationsAsSeen()
     },
     onScroll({ target: { scrollTop, clientHeight, scrollHeight } }) {
       this.notificationsAtTop = scrollTop > 0

@@ -13,6 +13,7 @@ import UnitSetting from '../helpers/unit_setting.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
@@ -139,10 +140,10 @@ const ComposingTab = {
     clearCache(key) {
       clearCache(key)
         .then(() => {
-          this.$store.dispatch('settingsSaved', { success: true })
+          useInterfaceStore().settingsSaved({ success: true })
         })
         .catch((error) => {
-          this.$store.dispatch('settingsSaved', { error })
+          useInterfaceStore().settingsSaved({ error })
         })
     },
     tooSmall() {

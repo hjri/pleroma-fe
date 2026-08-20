@@ -50,7 +50,7 @@ export default {
   emits: ['emojiPickerShown'],
   mounted() {
     if (this.button.name === 'mute') {
-      this.$store.dispatch('fetchDomainMutes')
+      useUsersStore().fetchDomainMutes()
     }
   },
   data() {
