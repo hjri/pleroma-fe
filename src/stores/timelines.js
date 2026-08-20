@@ -149,6 +149,16 @@ export const useTimelinesStore = defineStore('timelines', {
 
       this[timelineName] = emptyTl(timelineName)
     },
+    clearTimeline(timelineName) {
+      const timeline = this[timelineName]
+
+      timeline.order = []
+      timeline.statusIds = new Set()
+      timeline.visibleStatusIds = new Set()
+      timeline.newStatusCount = 0
+      timeline.maxId = ''
+      timeline.minId = ''
+    },
     activatePersistents() {
       TIMELINES.forEach((name) => {
         if (this[name].persistent) {
