@@ -136,6 +136,9 @@ const Status = {
     status() {
       return this.statusoid ?? useStatusesStore().allStatuses.get(this.statusId)
     },
+    retweetedStatus() {
+      return useStatusesStore().allStatuses.get(this.status.retweeted_status.id)
+    },
     repeater() {
       return useUsersStore().findUser(this.status.user.id)
     },
@@ -205,7 +208,7 @@ const Status = {
     },
     mainStatus() {
       if (this.retweet) {
-        return this.status.retweeted_status
+        return this.retweetedStatus
       } else {
         return this.status
       }
