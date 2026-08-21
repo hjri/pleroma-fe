@@ -136,7 +136,7 @@ const Status = {
     status() {
       return this.statusoid ?? useStatusesStore().allStatuses.get(this.statusId)
     },
-    retweetedStatus() {
+    repeatedStatus() {
       return useStatusesStore().allStatuses.get(this.status.retweeted_status.id)
     },
     repeater() {
@@ -167,7 +167,7 @@ const Status = {
     userClass() {
       return highlightClass(this.user)
     },
-    deleted() {
+    isDeleted() {
       return this.status.deleted
     },
     repeaterStyle() {
@@ -187,11 +187,13 @@ const Status = {
         const user = useUsersStore().findUser(
           this.mainStatus.in_reply_to_user_id,
         )
-        // FIXME Why user not found sometimes???
-        return user ? user.statusnet_profile_url : 'NOT_FOUND'
+
+        // User referenced in post might not be yet present in store
+        // since their data is not included in status data
+        return user?.statusnet_profile_url
       }
     },
-    retweet() {
+    isRepeat() {
       return !!this.status.retweeted_status
     },
     repeaterName() {
@@ -207,8 +209,8 @@ const Status = {
       )
     },
     mainStatus() {
-      if (this.retweet) {
-        return this.retweetedStatus
+      if (this.isRepeat) {
+        return this.repeatedStatus
       } else {
         return this.status
       }

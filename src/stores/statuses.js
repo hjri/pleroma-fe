@@ -115,7 +115,6 @@ export const useStatusesStore = defineStore('statuses', {
           return addStatus(status)
         },
         retweet: (status) => {
-          // RetweetedStatuses are never shown immediately
           if (status.retweeted_status) addStatus(status.retweeted_status)
           return addStatus(status)
         },
@@ -142,6 +141,11 @@ export const useStatusesStore = defineStore('statuses', {
         data: statusUser,
         timestamp,
       })
+
+      const { in_reply_to_user_id } = status
+      if (in_reply_to_user_id) {
+        useUsersStore().fetchUserIfMissing({ id: in_reply_to_user_id })
+      }
 
       existing.user = user // reactive update in case we return old
 

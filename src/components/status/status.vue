@@ -22,7 +22,7 @@
       <div class="status-container muted">
         <small class="status-username">
           <FAIcon
-            v-if="muted && retweet"
+            v-if="muted && isRepeat"
             class="fa-scale-110 fa-old-padding repeat-icon"
             icon="retweet"
           />
@@ -47,7 +47,7 @@
     </template>
     <template v-else>
       <div
-        v-if="retweet && !noHeading && !inConversation"
+        v-if="isRepeat && !noHeading && !inConversation"
         :class="[repeaterClass, { highlighted: repeaterStyle }]"
         :style="[repeaterStyle]"
         class="status-container repeat-info"
@@ -91,8 +91,8 @@
       </div>
 
       <div
-        v-if="!deleted"
-        :class="[userClass, { highlighted: userStyle, '-repeat': retweet && !inConversation }]"
+        v-if="!isDeleted"
+        :class="[userClass, { highlighted: userStyle, '-repeat': isRepeat && !inConversation }]"
         :style="[ userStyle ]"
         class="status-container"
         :data-tags="tags"
