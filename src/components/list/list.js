@@ -98,7 +98,6 @@ const List = {
 
       this.fetchFunction(this.page)
         .then((result) => {
-          console.log(result)
           this.loading = false
           this.bottomedOut = isEmpty(result)
           if (this.externalItems) return

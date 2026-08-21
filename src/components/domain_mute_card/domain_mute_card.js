@@ -12,7 +12,7 @@ const DomainMuteCard = {
       return useUsersStore().currentUser
     },
     muted() {
-      return this.user.domainMutes.includes(this.domain)
+      return this.user.domainMutes.has(this.domain)
     },
   },
   methods: {
