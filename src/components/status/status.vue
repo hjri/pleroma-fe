@@ -542,7 +542,7 @@
           ref="postStatusForm"
           class="reply-body"
           :closeable="true"
-          :replied-status="status"
+          :replied-status="mainStatus"
           @posted="closeReplyForm"
           @draft-done="closeReplyForm"
           @close-accepted="closeReplyForm"
