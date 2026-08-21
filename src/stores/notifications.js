@@ -190,10 +190,12 @@ export const useNotificationsStore = defineStore('notifications', {
           }
           this.idStore.set(notification.id, notification)
 
-          this.statusNotificationRelations.set(
-            notification.status,
-            this.idStore.get(notification.id),
-          )
+          if (notification.status) {
+            this.statusNotificationRelations.set(
+              notification.status,
+              this.idStore.get(notification.id),
+            )
+          }
 
           maybeShowNotification(
             useMergedConfigStore().mergedConfig.notificationVisibility,
