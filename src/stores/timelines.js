@@ -158,6 +158,7 @@ export const useTimelinesStore = defineStore('timelines', {
       timeline.newStatusCount = 0
       timeline.maxId = ''
       timeline.minId = ''
+      timeline.flushMarker = 0
     },
     activatePersistents() {
       TIMELINES.forEach((name) => {
