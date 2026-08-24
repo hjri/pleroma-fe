@@ -259,7 +259,7 @@ export const parseStatus = (data) => {
   output.raw_html = data.content
   output.emojis = data.emojis
 
-  output.tags = data.tags
+  output.tags = new Set(data.tags ?? [])
 
   output.edited_at = data.edited_at
 

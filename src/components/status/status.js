@@ -392,7 +392,7 @@ const Status = {
       return uniqBy(combinedUsers, 'id')
     },
     tags() {
-      return this.status.tags
+      return [...this.status.tags]
         .filter((tagObj) => Object.hasOwn(tagObj, 'name'))
         .map((tagObj) => tagObj.name)
         .join(' ')

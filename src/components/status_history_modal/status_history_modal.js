@@ -1,14 +1,14 @@
 import { mapState } from 'pinia'
 
 import Modal from 'src/components/modal/modal.vue'
-import StatusContent from 'src/components/status_content/status_content.vue'
+import Status from 'src/components/status/status.vue'
 
 import { useStatusHistoryStore } from 'src/stores/statusHistory.js'
 
 const StatusHistoryModal = {
   components: {
     Modal,
-    StatusContent,
+    Status,
   },
   data() {
     return {
