@@ -1,5 +1,5 @@
-import { mapState as mapPiniaState } from 'pinia'
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
+import { mapState as mapVuexState } from 'vuex'
 
 import BookmarkFoldersMenuContent from 'src/components/bookmark_folders_menu/bookmark_folders_menu_content.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
@@ -111,29 +111,29 @@ const NavPanel = {
     },
   },
   computed: {
-    ...mapPiniaState(useAnnouncementsStore, {
+    ...mapState(useAnnouncementsStore, {
       unreadAnnouncementCount: 'unreadAnnouncementCount',
       supportsAnnouncements: (store) => store.supportsAnnouncements,
     }),
-    ...mapPiniaState(useInstanceCapabilitiesStore, [
+    ...mapState(useInstanceCapabilitiesStore, [
       'pleromaChatMessagesAvailable',
       'pleromaBookmarkFoldersAvailable',
       'localBubble',
     ]),
-    ...mapPiniaState(useInstanceStore, ['federating']),
-    ...mapPiniaState(useInstanceStore, {
+    ...mapState(useInstanceStore, ['federating']),
+    ...mapState(useInstanceStore, {
       privateMode: (store) => store.private,
     }),
-    ...mapPiniaState(useSyncConfigStore, {
+    ...mapState(useSyncConfigStore, {
       collapsed: (store) => store.prefsStorage.simple.collapseNav,
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems),
     }),
-    ...mapPiniaState(useUsersStore, ['currentUser']),
-    ...mapState({
+    ...mapState(useUsersStore, ['currentUser']),
+    ...mapVuexState({
       followRequestCount: (state) => state.api.followRequests.length,
     }),
-    ...mapPiniaState(useChatsStore, ['unreadChatsCount']),
+    ...mapState(useChatsStore, ['unreadChatsCount']),
     timelinesItems() {
       return filterNavigation(
         Object.entries({ ...TIMELINES })

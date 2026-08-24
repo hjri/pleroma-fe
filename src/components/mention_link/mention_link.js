@@ -78,8 +78,8 @@ const MentionLink = {
       return this.url && useUsersStore().findUserByUrl(this.url)
     },
     isYou() {
-      // FIXME why user !== currentUser???
-      return this.user?.id === this.currentUser.id
+      if (!this.currentUser) return false
+      return this.user === this.currentUser
     },
     userName() {
       return this.user && this.userNameFullUi.split('@')[0]

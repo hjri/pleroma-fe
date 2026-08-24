@@ -118,9 +118,6 @@ const Notification = {
         useInstanceStore().restrictedNicknames,
       )
     },
-    getUser(notification) {
-      return this.$store.state.users.usersObject[notification.from_profile.id]
-    },
     interacted() {
       this.$emit('interacted')
     },

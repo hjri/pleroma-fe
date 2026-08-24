@@ -1,6 +1,5 @@
 import { get, reduce } from 'lodash'
-import { mapState as mapPiniaState } from 'pinia'
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
@@ -13,6 +12,7 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
 
 import { fetchConversation, fetchStatus } from 'src/api/public.js'
 import { WSConnectionStatus } from 'src/api/websocket.js'
@@ -388,11 +388,11 @@ const conversation = {
     maybeFocused() {
       return this.isExpanded ? this.focused : null
     },
-    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
-    ...mapState({
-      mastoUserSocketStatus: (state) => state.api.mastoUserSocketStatus,
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
+    ...mapState(useStreamingStore, {
+      mastoUserSocketStatus: (state) => state.state,
     }),
-    ...mapPiniaState(useInterfaceStore, {
+    ...mapState(useInterfaceStore, {
       mobileLayout: (store) => store.layoutType === 'mobile',
     }),
   },

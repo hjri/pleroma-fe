@@ -1,5 +1,5 @@
-import { mapState as mapPiniaState } from 'pinia'
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
+import { mapState as mapVuexState } from 'vuex'
 
 import {
   filterNavigation,
@@ -59,26 +59,26 @@ const NavPanel = {
     getters() {
       return this.$store.getters
     },
-    ...mapPiniaState(useListsStore, {
+    ...mapState(useListsStore, {
       lists: getListEntries,
     }),
-    ...mapPiniaState(useAnnouncementsStore, {
+    ...mapState(useAnnouncementsStore, {
       supportsAnnouncements: (store) => store.supportsAnnouncements,
     }),
-    ...mapPiniaState(useBookmarkFoldersStore, {
+    ...mapState(useBookmarkFoldersStore, {
       bookmarks: getBookmarkFolderEntries,
     }),
-    ...mapPiniaState(useSyncConfigStore, {
+    ...mapState(useSyncConfigStore, {
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems),
     }),
-    ...mapPiniaState(useInstanceStore, ['privateMode', 'federating']),
-    ...mapPiniaState(useInstanceCapabilitiesStore, [
+    ...mapState(useInstanceStore, ['privateMode', 'federating']),
+    ...mapState(useInstanceCapabilitiesStore, [
       'pleromaChatMessagesAvailable',
       'localBubble',
     ]),
-    ...mapPiniaState(useUsersStore, ['currentUser']),
-    ...mapState({
+    ...mapState(useUsersStore, ['currentUser']),
+    ...mapVuexState({
       followRequestCount: (state) => state.api.followRequests.length,
     }),
     pinnedList() {
