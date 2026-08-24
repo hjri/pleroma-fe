@@ -118,7 +118,13 @@ const Status = {
 
     threadDisplayStatus: String,
   },
-  emits: ['goto', 'dive', 'toggleExpanded', 'suspendableStateChange', 'heightChange'],
+  emits: [
+    'goto',
+    'dive',
+    'toggleExpanded',
+    'suspendableStateChange',
+    'heightChange',
+  ],
   data() {
     return {
       replying: false,

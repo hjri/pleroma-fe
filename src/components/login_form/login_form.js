@@ -2,8 +2,8 @@ import { mapActions, mapState } from 'pinia'
 
 import { useAuthFlowStore } from 'src/stores/auth_flow.js'
 import { useInstanceStore } from 'src/stores/instance.js'
-import { useUsersStore } from 'src/stores/users.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { getLoginUrl, getTokenWithCredentials } from 'src/api/oauth.js'
 

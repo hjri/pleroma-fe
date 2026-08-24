@@ -622,9 +622,12 @@ const conversation = {
     },
     updateVirtualHeight() {
       this.$nextTick(() => {
-        console.log('LMAO', this.$refs.body.clientHeight)
         this.virtualHeight = this.$refs.body.clientHeight
-        this.$emit('update:virtualHeight', { id: this.status.id, height: this.virtualHeight, top: this.$el.clientTop })
+        this.$emit('update:virtualHeight', {
+          id: this.status.id,
+          height: this.virtualHeight,
+          top: this.$el.clientTop,
+        })
       })
     },
   },
