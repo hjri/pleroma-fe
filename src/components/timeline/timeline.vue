@@ -8,6 +8,16 @@
         v-if="!embedded"
         :timeline-name="timelineRef.name"
       />
+      <div
+        v-if="timeline.fetcher.loadingNewer"
+        class="loadingIndicator"
+      >
+        <FAIcon
+          fixed-width
+          icon="circle-notch"
+          spin
+        />
+      </div>
       <ScrollTopButton />
       <template v-if="mobileLayout">
         <div
@@ -102,7 +112,7 @@
           {{ $t('timeline.no_more_statuses') }}
         </div>
         <button
-          v-else-if="!timeline.fetcher.loading"
+          v-else-if="!timeline.fetcher.loadingOlder"
           class="button-unstyled -link"
           @click.prevent="fetchOlderStatuses()"
         >

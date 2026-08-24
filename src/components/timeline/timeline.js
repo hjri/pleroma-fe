@@ -238,7 +238,7 @@ const Timeline = {
       const bodyBRect = document.body.getBoundingClientRect()
       const height = Math.max(bodyBRect.height, -bodyBRect.y)
       if (
-        !this.timeline.fetcher.loading.value &&
+        !this.timeline.fetcher.loadingOlder.value &&
         this.$el.offsetHeight > 0 &&
         window.innerHeight + window.pageYOffset >= height - 750
       ) {

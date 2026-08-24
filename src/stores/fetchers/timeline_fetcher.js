@@ -18,12 +18,17 @@ const REPLY_VISIBILITY_TIMELINES = new Set([
 ])
 
 const timelineFetcher = (timeline, argument, credentials) => {
-  const loading = ref(false)
+  const loadingNewer = ref(false)
+  const loadingOlder = ref(false)
   const bottomedOut = ref(false)
   const interval = ref(null)
 
   const fetchAndUpdate = ({ older = false, showImmediately = false } = {}) => {
-    loading.value = true
+    if (older) {
+      loadingOlder.value = true
+    } else {
+      loadingNewer.value = true
+    }
 
     const { hideMutedPosts, replyVisibility } =
       useMergedConfigStore().mergedConfig
@@ -85,7 +90,11 @@ const timelineFetcher = (timeline, argument, credentials) => {
         })
       })
       .finally(() => {
-        loading.value = false
+        if (older) {
+          loadingOlder.value = false
+        } else {
+          loadingNewer.value = false
+        }
       })
   }
 
@@ -108,7 +117,8 @@ const timelineFetcher = (timeline, argument, credentials) => {
     startFetching,
     stopFetching,
     fetchOlder: () => fetchAndUpdate({ showImmediately: true, older: true }),
-    loading,
+    loadingOlder,
+    loadingNewer,
     bottomedOut,
   }
 }
