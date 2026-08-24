@@ -36,7 +36,7 @@ const ClutterTab = {
   // Updating nested properties
   watch: {
     replyVisibility() {
-      useStatusesStore().queueFlushAll()
+      useStatusesStore().requireReloadAll()
     },
   },
 }

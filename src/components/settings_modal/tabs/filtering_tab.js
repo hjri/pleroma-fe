@@ -266,7 +266,7 @@ const FilteringTab = {
   // Updating nested properties
   watch: {
     replyVisibility() {
-      useStatusesStore().queueFlushAll()
+      useStatusesStore().requireReloadAll()
     },
     muteFiltersObject() {
       this.muteFiltersDraftObject = cloneDeep(

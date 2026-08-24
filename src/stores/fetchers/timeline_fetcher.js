@@ -50,7 +50,7 @@ const timelineFetcher = (timeline, argument, credentials) => {
     return fetchTimeline(args)
       .then(({ data: statuses, pagination, timestamp }) => {
         if (!older && statuses.length >= 20 && numStatusesBeforeFetch > 0) {
-          useTimelinesStore().queueFlush(timeline.name, timeline.maxId)
+          useTimelinesStore().requireReload(timeline.name)
         }
 
         if (older && statuses.length === 0) {

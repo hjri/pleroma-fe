@@ -16,7 +16,7 @@ const emptyTl = (name, argument = null) => {
     maxId: '',
     minId: '',
     streaming: false,
-    flushMarker: 0,
+    reloadNeeded: false,
     fetcher: null,
     socket: null,
   }
@@ -158,7 +158,7 @@ export const useTimelinesStore = defineStore('timelines', {
       timeline.newStatusCount = 0
       timeline.maxId = ''
       timeline.minId = ''
-      timeline.flushMarker = 0
+      timeline.reloadNeeded = false
     },
     activatePersistents() {
       TIMELINES.forEach((name) => {
@@ -295,12 +295,12 @@ export const useTimelinesStore = defineStore('timelines', {
     syncOrder(timeline) {
       timeline.order = timeline.order.filter((id) => timeline.statusIds.has(id))
     },
-    queueFlush(timeline, id) {
-      this[timeline].flushMarker = id
+    requireReload(timeline, id) {
+      this[timeline].reloadNeeded = true
     },
-    queueFlushAll() {
+    requireReloadAll() {
       Object.keys(this).forEach((timeline) => {
-        this[timeline].flushMarker = this[timeline].maxId
+        this[timeline].reloadNeeded = true
       })
     },
 

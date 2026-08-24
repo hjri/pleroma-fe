@@ -63,17 +63,17 @@ const Timeline = {
       return this.timeline.newStatusCount
     },
     showLoadButton() {
-      return this.timeline.newStatusCount > 0 || this.timeline.flushMarker !== 0
+      return this.timeline.newStatusCount > 0 || this.timeline.reloadNeeded
     },
     loadButtonString() {
-      if (this.timeline.flushMarker !== 0) {
+      if (this.timeline.reloadNeeded) {
         return this.$t('timeline.reload')
       } else {
         return `${this.$t('timeline.show_new')} (${this.newStatusCount})`
       }
     },
     mobileLoadButtonString() {
-      if (this.timeline.flushMarker !== 0) {
+      if (this.timeline.reloadNeeded) {
         return '+'
       } else {
         return this.newStatusCount > 99 ? '∞' : this.newStatusCount
@@ -167,9 +167,8 @@ const Timeline = {
       if (e.key === '.') this.showNewStatuses()
     },
     showNewStatuses() {
-      if (this.timeline.flushMarker !== 0) {
+      if (this.timeline.reloadNeeded) {
         useTimelinesStore().clearTimeline(this.timelineRef.name)
-        useTimelinesStore().queueFlush(this.timelineRef.name, '')
         this.fetchOlderStatuses()
       } else {
         this.blockClicksTemporarily()

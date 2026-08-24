@@ -28,7 +28,7 @@ const QuickFilterSettings = {
         path: 'replyVisibility',
         value: visibility,
       })
-      useStatusesStore().queueFlushAll()
+      useStatusesStore().requireReloadAll()
     },
     openTab(tab) {
       useInterfaceStore().openSettingsModalTab(tab)
