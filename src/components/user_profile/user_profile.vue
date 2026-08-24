@@ -23,18 +23,14 @@
           key="statuses"
           class="statuses"
           :label="$t('user_card.statuses')"
-          :count="user.statuses_count"
           :title="$t('user_profile.timeline_title')"
         >
-          <!--
           <Timeline
             key="statuses"
             :timeline-ref="{ name: 'userPinned', argument: userId }"
             embedded
             in-profile
-            :footer-slipgate="footerRef"
           />
-          -->
           <Timeline
             :timeline-ref="{ name: 'user', argument: userId }"
             embedded
@@ -81,7 +77,6 @@
         <Timeline
           key="media"
           :label="$t('user_card.media')"
-          :disabled="media.visibleStatusIds.size === 0"
           :title="$t('user_card.media')"
           :timeline-ref="{ name: 'media', argument: userId }"
           embedded

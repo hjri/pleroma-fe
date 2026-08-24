@@ -169,7 +169,7 @@
 
               <span class="heading-right">
                 <span
-                  v-if="showPinned"
+                  v-if="mainStatus.pinned"
                   class="pin"
                 >
                   <FAIcon

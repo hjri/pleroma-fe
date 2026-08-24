@@ -101,6 +101,10 @@ export default {
         classesTab.push('active')
         classesWrapper.push('active')
       }
+      if (props.disabled) {
+        classesTab.push('disabled')
+        classesWrapper.push('disabled')
+      }
       if (props.image) {
         return (
           <div class={classesWrapper.join(' ')}>

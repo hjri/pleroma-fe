@@ -27,11 +27,10 @@ library.add(faCircleNotch, faCog, faMinus, faArrowUp, faCirclePlus, faCheck)
 const Timeline = {
   props: {
     timelineRef: Object,
-    count: Number,
     footerSlipgate: Object, // reference to an element where we should put our footer
     embedded: Boolean,
     inProfile: Boolean,
-    skipPinned: Boolean,
+    skipPinned: Boolean
   },
   data() {
     return {
@@ -58,6 +57,9 @@ const Timeline = {
         .filter((id) => this.timeline.visibleStatusIds.has(id))
         .map((id) => useStatusesStore().allStatuses.get(id))
         .filter(({ pinned }) => (this.skipPinned ? !pinned : true))
+    },
+    count() {
+      return this.timeline.order.length
     },
     newStatusCount() {
       return this.timeline.newStatusCount
@@ -190,12 +192,11 @@ const Timeline = {
       if (!this.virtualScrollingEnabled) return
 
       const statuses = this.$refs.timeline.children
+      if (statuses.length === 0) return
       const cappedScrollIndex = Math.max(
         0,
         Math.min(this.virtualScrollIndex, statuses.length - 1),
       )
-
-      if (statuses.length === 0) return
 
       const height = Math.max(document.body.offsetHeight, window.pageYOffset)
 

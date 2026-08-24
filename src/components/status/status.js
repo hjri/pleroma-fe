@@ -105,7 +105,6 @@ const Status = {
     isPreview: Boolean,
     noHeading: Boolean,
     inlineExpanded: Boolean,
-    showPinned: Boolean,
     inProfile: Boolean,
     inConversation: Boolean,
     inQuote: Boolean,

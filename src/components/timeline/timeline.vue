@@ -84,7 +84,7 @@
         />
       </div>
     </div>
-    <div :class="classes.footer">
+    <div v-if="!embedded || footerSlipgate" :class="classes.footer">
       <teleport
         :to="footerSlipgate"
         :disabled="!embedded || !footerSlipgate"

@@ -100,7 +100,6 @@ const UserProfile = {
     },
     load(userNameOrId) {
       const loadById = (userId) => {
-        console.log('LOAD', userId)
         this.userId = userId
       }
 
@@ -139,7 +138,6 @@ const UserProfile = {
       }
     },
     switchUser(userNameOrId) {
-      console.log('USER SWITCH')
       this.load(userNameOrId)
     },
     onTabSwitch(tab) {
