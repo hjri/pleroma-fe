@@ -118,7 +118,7 @@ const Status = {
 
     threadDisplayStatus: String,
   },
-  emits: ['goto', 'dive', 'toggleExpanded', 'suspendableStateChange'],
+  emits: ['goto', 'dive', 'toggleExpanded', 'suspendableStateChange', 'heightChange'],
   data() {
     return {
       replying: false,
@@ -539,6 +539,7 @@ const Status = {
       this.headTailLinks = headTailLinks
     },
     toggleThreadDisplay() {
+      // FIXME
       this.controlledToggleThreadDisplay()
     },
     scrollIfFocused(focused) {
@@ -557,8 +558,22 @@ const Status = {
         }
       }
     },
+    onTransitionEnd() {
+      this.$nextTick(() => {
+        this.$emit('heightChange')
+      })
+    },
   },
   watch: {
+    status: {
+      deep: true,
+      handler() {
+        this.$emit('heightChange')
+      },
+    },
+    replying() {
+      this.$emit('heightChange')
+    },
     focused: function (id) {
       this.scrollIfFocused(id)
     },
@@ -584,6 +599,7 @@ const Status = {
     },
     isSuspendable: function (suspend) {
       this.$emit('suspendableStateChange', { id: this.status.id, suspend })
+      this.$emit('heightChange')
     },
   },
 }

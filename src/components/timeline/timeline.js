@@ -99,6 +99,7 @@ const Timeline = {
       }
     },
     statusesToDisplay() {
+      if (!this.virtualScrollingEnabled) return this.visibleStatusIds
       const amount = this.timeline.visibleStatusIds.size
       const statusesPerSide = Math.ceil(Math.max(3, window.innerHeight / 80))
       const min = Math.max(0, this.virtualScrollIndex - statusesPerSide)

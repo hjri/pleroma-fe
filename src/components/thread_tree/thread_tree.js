@@ -30,7 +30,7 @@ const ThreadTree = {
     totalReplyCount: Object,
     totalReplyDepth: Object,
   },
-  emits: ['suspendableStateChange', 'goto', 'dive'],
+  emits: ['suspendableStateChange', 'goto', 'dive', 'heightChange'],
   computed: {
     currentReplies() {
       return this.getReplies(this.statusId).map(({ id }) => id)

@@ -22,6 +22,7 @@
       @goto="$emit('goto', statusId)"
       @toggle-expanded="toggleExpanded"
       @suspendable-state-change="e => $emit('suspendableStateChange', e)"
+      @height-change="e => $emit('height-change', e)"
     />
     <div
       v-if="currentReplies.length > 0 && threadShowing"
@@ -55,6 +56,7 @@
         @goto="(e) => $emit('goto', e)"
         @dive="(e) => $emit('dive', e)"
         @suspendable-state-change="e => $emit('suspendableStateChange', e)"
+        @height-change="e => $emit('height-change', e)"
       />
     </div>
     <div

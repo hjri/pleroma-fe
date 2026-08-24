@@ -433,12 +433,6 @@ const conversation = {
     virtualHidden() {
       this.updateVirtualHeight()
     },
-    status: {
-      handler() {
-        this.updateVirtualHeight()
-      },
-      deep: true,
-    }
   },
   methods: {
     fetchConversation() {
@@ -615,9 +609,6 @@ const conversation = {
       this.threadDisplayStatusObject = {}
     },
     onStatusSuspendStateChange({ id, suspend }) {
-      this.$nextTick(() => {
-        this.virtualHeight = this.$refs.body.clientHeight
-      })
       if (!suspend) {
         this.unsuspendibleIds.add(id)
       } else {
@@ -630,8 +621,11 @@ const conversation = {
       }
     },
     updateVirtualHeight() {
-      this.$emit('update:virtualHeight', { id: this.status.id, height: this.virtualHeight })
-      this.virtualHeight = this.$refs.body.clientHeight
+      this.$nextTick(() => {
+        console.log('LMAO', this.$refs.body.clientHeight)
+        this.virtualHeight = this.$refs.body.clientHeight
+        this.$emit('update:virtualHeight', { id: this.status.id, height: this.virtualHeight, top: this.$el.clientTop })
+      })
     },
   },
 }

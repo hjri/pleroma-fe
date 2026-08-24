@@ -118,6 +118,7 @@
               @goto="setFocused"
               @dive="() => diveIntoStatus(status.id)"
               @suspendable-state-change="onStatusSuspendStateChange"
+              @height-change="updateVirtualHeight"
             />
             <div
               v-if="showOtherRepliesButtonBelowStatus && getReplies(status.id).length > 1"
@@ -176,6 +177,7 @@
           @goto="setFocused"
           @dive="diveIntoStatus"
           @suspendable-state-change="onStatusSuspendStateChange"
+          @height-change="updateVirtualHeight"
         />
       </div>
       <div
@@ -202,6 +204,7 @@
             @goto="setFocused"
             @toggle-expanded="toggleExpanded"
             @suspendable-state-change="onStatusSuspendStateChange"
+            @height-change="updateVirtualHeight"
           />
         </article>
       </div>

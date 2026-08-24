@@ -454,7 +454,10 @@
             </StatusPopover>
           </div>
 
-          <transition name="fade">
+          <Transition
+            @after-leave="onTransitionEnd"
+            name="fade"
+          >
             <div
               v-if="shouldDisplayFavsAndRepeats"
               class="favs-repeated-users"
@@ -502,7 +505,7 @@
                 </div>
               </div>
             </div>
-          </transition>
+          </Transition>
 
           <EmojiReactions
             v-if="(mergedConfig.emojiReactionsOnTimeline || focused) && (!noHeading && !isPreview)"
