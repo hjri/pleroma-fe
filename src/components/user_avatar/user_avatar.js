@@ -12,7 +12,7 @@ const UserAvatar = {
   props: {
     // UserID of a user to show avatar of
     userId: {
-      required: true,
+      required: false, // You can pass null to just render a placeholder
       type: String,
     },
     // Use less space and use alternative roundness
