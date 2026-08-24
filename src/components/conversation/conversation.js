@@ -93,6 +93,7 @@ const conversation = {
       default: false,
     },
   },
+  emits: ['update:virtualHeight'],
   data() {
     return {
       focused: null,
@@ -101,12 +102,16 @@ const conversation = {
       inlineDivePosition: null,
       loadStatusError: null,
       unsuspendibleIds: new Set(),
+      virtualHeight: 120,
     }
   },
   created() {
     if (this.isPage) {
       this.fetchConversation()
     }
+  },
+  mounted() {
+    this.updateVirtualHeight()
   },
   computed: {
     status() {
@@ -360,8 +365,8 @@ const conversation = {
       return !!(this.expanded || this.isPage)
     },
     hiddenStyle() {
-      const height = this.status?.virtualHeight || '120px'
-      return this.virtualHidden ? { height } : {}
+      if (this.expanded) return {}
+      return { height: this.virtualHeight + 'px' }
     },
     threadDisplayStatus() {
       return this.conversation.reduce((a, k) => {
@@ -426,11 +431,14 @@ const conversation = {
       }
     },
     virtualHidden() {
-      useStatusesStore().setVirtualHeight({
-        statusId: this.statusId,
-        height: `${this.$el.clientHeight}px`,
-      })
+      this.updateVirtualHeight()
     },
+    status: {
+      handler() {
+        this.updateVirtualHeight()
+      },
+      deep: true,
+    }
   },
   methods: {
     fetchConversation() {
@@ -607,6 +615,9 @@ const conversation = {
       this.threadDisplayStatusObject = {}
     },
     onStatusSuspendStateChange({ id, suspend }) {
+      this.$nextTick(() => {
+        this.virtualHeight = this.$refs.body.clientHeight
+      })
       if (!suspend) {
         this.unsuspendibleIds.add(id)
       } else {
@@ -617,6 +628,10 @@ const conversation = {
       if (this.isPage) {
         this.$router.push({ name: 'conversation', params: { id: data.id } })
       }
+    },
+    updateVirtualHeight() {
+      this.$emit('update:virtualHeight', { id: this.status.id, height: this.virtualHeight })
+      this.virtualHeight = this.$refs.body.clientHeight
     },
   },
 }

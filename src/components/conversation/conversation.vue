@@ -40,6 +40,7 @@
     <div
       v-if="isPage && !status"
       class="conversation-body"
+      ref="body"
       :class="{ 'panel-body': isExpanded }"
     >
       <p v-if="!loadStatusError">
@@ -56,6 +57,7 @@
     <div
       v-else
       class="conversation-body"
+      ref="body"
       :class="{ 'panel-body': isExpanded }"
     >
       <div

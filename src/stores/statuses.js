@@ -540,10 +540,5 @@ export const useStatusesStore = defineStore('statuses', {
       })
       return removed
     },
-
-    // Misc
-    setVirtualHeight({ statusId, height }) {
-      this.allStatuses.get(statusId).virtualHeight = height
-    },
   },
 })
