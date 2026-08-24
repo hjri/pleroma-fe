@@ -47,10 +47,12 @@ const UserProfileAdminView = {
   },
   methods: {
     fetchStatuses(page) {
-      return useAdminSettingsStore().fetchStatuses({
-        ...this.fetchOptions,
-        page,
-      }).then(({ items }) => items)
+      return useAdminSettingsStore()
+        .fetchStatuses({
+          ...this.fetchOptions,
+          page,
+        })
+        .then(({ items }) => items)
     },
   },
   components: {

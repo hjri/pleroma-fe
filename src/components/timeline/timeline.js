@@ -30,7 +30,7 @@ const Timeline = {
     footerSlipgate: Object, // reference to an element where we should put our footer
     embedded: Boolean,
     inProfile: Boolean,
-    skipPinned: Boolean
+    skipPinned: Boolean,
   },
   data() {
     return {
