@@ -622,7 +622,7 @@ const conversation = {
     },
     updateVirtualHeight() {
       this.$nextTick(() => {
-        this.virtualHeight = this.$refs.body.clientHeight
+        this.virtualHeight = this.$refs.body.getBoundingClientRect().height
         this.$emit('update:virtualHeight', {
           id: this.status.id,
           height: this.virtualHeight,
