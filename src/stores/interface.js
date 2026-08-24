@@ -854,7 +854,7 @@ export const useInterfaceStore = defineStore('interface', {
     },
 
     unregisterPushNotifications() {
-      const token = this.currentUser.credentials
+      const token = useOAuthStore().token
 
       unregisterPushNotifications(token)
     },

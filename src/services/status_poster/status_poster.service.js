@@ -2,7 +2,7 @@ import { map } from 'lodash'
 
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useTimelinesStore } from 'src/stores/timelines.js'
-import { useUsersStore } from 'src/stores/users.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import {
   editStatus as apiEditStatus,
@@ -28,7 +28,7 @@ const postStatus = ({
   const mediaIds = map(media, 'id')
 
   return apiPostStatus({
-    credentials: useUsersStore().currentUser.credentials,
+    credentials: useOAuthStore().token
     status,
     spoilerText,
     visibility,
@@ -71,7 +71,7 @@ const editStatus = ({
 
   return apiEditStatus({
     id: statusId,
-    credentials: useUsersStore().currentUser.credentials,
+    credentials: useOAuthStore().token
     status,
     spoilerText,
     sensitive,
@@ -101,12 +101,12 @@ const editStatus = ({
 }
 
 const uploadMedia = ({ store, formData }) => {
-  const credentials = useUsersStore().currentUser.credentials
+  const credentials = useOAuthStore().token
   return apiUploadMedia({ credentials, formData }).then(({ data }) => data)
 }
 
 const setMediaDescription = ({ store, id, description }) => {
-  const credentials = useUsersStore().currentUser.credentials
+  const credentials = useOAuthStore().token
   return apiSetMediaDescription({ credentials, id, description }).then(
     ({ data }) => data,
   )

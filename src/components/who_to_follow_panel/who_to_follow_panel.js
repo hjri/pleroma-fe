@@ -30,8 +30,8 @@ function showWhoToFollow(panel, reply) {
   })
 }
 
-function getWhoToFollow(panel) {
-  const credentials = panel.$useUsersStore().currentUser.credentials
+function getWhoToFollow() {
+  const credentials = useOAuthStore().token
   if (credentials) {
     panel.usersToFollow.forEach((toFollow) => {
       toFollow.name = 'Loading...'
@@ -66,7 +66,7 @@ const WhoToFollowPanel = {
   watch: {
     user: function () {
       if (this.suggestionsEnabled) {
-        getWhoToFollow(this)
+        getWhoToFollow()
       }
     },
   },
@@ -77,7 +77,7 @@ const WhoToFollowPanel = {
       id: 0,
     }))
     if (this.suggestionsEnabled) {
-      getWhoToFollow(this)
+      getWhoToFollow()
     }
   },
 }
