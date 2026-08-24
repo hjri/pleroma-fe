@@ -63,8 +63,8 @@ export const useAuthFlowStore = defineStore('authFlow', {
       this.settings = {}
     },
     async login({ access_token: accessToken }) {
-      useOAuthStore().setToken(accessToken)
-      useUsersStore().loginUser(accessToken, { root: true })
+      await useOAuthStore().setToken(accessToken)
+      await useUsersStore().loginUser(accessToken, { root: true })
       this.resetState()
     },
   },

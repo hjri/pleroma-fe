@@ -145,9 +145,9 @@ const MobileNav = {
       }
     },
     doLogout() {
-      this.$router.replace('/main/public')
       useUsersStore().logout()
       this.hideConfirmLogout()
+      this.$router.replace('/main/public')
     },
     markNotificationsAsSeen() {
       useNotificationsStore().markNotificationsAsSeen()

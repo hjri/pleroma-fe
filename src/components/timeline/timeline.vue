@@ -1,5 +1,7 @@
 <template>
-  <div :class="['Timeline', classes.root]">
+  <!-- there is a brief moment during logout when old timeline gets forcibly deactivated -->
+  <div v-if="timeline.fetcher" :class="['Timeline', classes.root]">
+    {{ timelineRef }}
     <div
       v-if="!embedded"
       :class="classes.header"

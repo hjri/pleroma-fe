@@ -53,7 +53,7 @@ export const useOAuthStore = defineStore('oauth', {
       this.userToken = token
     },
     clearToken() {
-      this.userToken = false
+      this.userToken = null
     },
     async createApp() {
       const instance = useInstanceStore().server

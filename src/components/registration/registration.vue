@@ -303,7 +303,7 @@
           <!-- eslint-enable vue/no-v-html -->
           </div>
           <div
-            v-if="serverValidationErrors.length"
+            v-if="signUpErrors.length"
             class="form-group"
           >
             <div class="alert error">

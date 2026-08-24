@@ -16,10 +16,10 @@ const oac = {
         clientSecret,
         instance: useInstanceStore().server,
         code: this.code,
-      }).then(({ data: result }) => {
+      }).then(async ({ data: result }) => {
         oauthStore.setToken(result.access_token)
 
-        useUsersStore().loginUser(result.access_token)
+        await useUsersStore().loginUser(result.access_token)
         this.$router.push({ name: 'friends' })
       })
     }

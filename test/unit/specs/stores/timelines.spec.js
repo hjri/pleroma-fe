@@ -21,7 +21,6 @@ describe('Timelines store', () => {
       const sub = vi.fn()
       useStreamingStore().addSubscriber = sub
 
-      console.log(store.activate)
       store.activate('friends', undefined, true)
 
       expect(sub).to.have.been.called
@@ -34,7 +33,6 @@ describe('Timelines store', () => {
       const sub = vi.fn()
       useStreamingStore().addSubscriber = sub
 
-      console.log(store.activate)
       store.activate('user', '1')
 
       expect(sub).to.not.have.been.called

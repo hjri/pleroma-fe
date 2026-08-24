@@ -180,7 +180,6 @@ export const useStreamingStore = defineStore('streaming', {
           case 'delete':
             return [data.id]
           default:
-            console.log('UNKNOWN', eventName, eventStream, data)
             return data
         }
       })()

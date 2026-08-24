@@ -135,9 +135,9 @@ export default {
         this.showConfirmLogout()
       }
     },
-    doLogout() {
+    async doLogout() {
+      await useUsersStore().logout()
       this.$router.replace('/main/public')
-      useUsersStore().logout()
       this.hideConfirmLogout()
     },
     onSearchBarToggled(hidden) {

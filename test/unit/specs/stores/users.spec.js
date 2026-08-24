@@ -1095,7 +1095,6 @@ describe('Users store', () => {
       const store = useUsersStore()
       const { storeAction, apiUrl } = actionKeys(action)
       await store[storeAction](userId)
-      console.log(apiUrl)
 
       expect(mockFetch).to.have.been.calledWith(
         USER_API[apiUrl](userId),

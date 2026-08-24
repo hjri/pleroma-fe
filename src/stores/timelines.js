@@ -258,14 +258,24 @@ export const useTimelinesStore = defineStore('timelines', {
       timeline.fetcher.startFetching()
     },
     stopFetchingTimeline(timelineName, reason) {
-      console.debug(
-        '[Timelines] Stopped fetching timeline',
-        timelineName,
-        'Reason:',
-        reason,
-      )
       const timeline = this[timelineName]
-      timeline.fetcher.stopFetching()
+      if (timeline.fetcher === null) {
+        console.debug(
+          '[Timelines] Already inactive timeline',
+          timelineName,
+          'Reason:',
+          reason,
+        )
+        return
+      } else {
+        timeline.fetcher.stopFetching()
+        console.debug(
+          '[Timelines] Stopped fetching timeline',
+          timelineName,
+          'Reason:',
+          reason,
+        )
+      }
     },
 
     // Queues & Timeline manip
