@@ -47,6 +47,7 @@ const timelineFetcher = (timeline, argument, credentials) => {
 
     const numStatusesBeforeFetch = timeline.statusIds.size
 
+    if (bottomedOut.value) return
     return fetchTimeline(args)
       .then(({ data: statuses, pagination, timestamp }) => {
         if (!older && statuses.length >= 20 && numStatusesBeforeFetch > 0) {
