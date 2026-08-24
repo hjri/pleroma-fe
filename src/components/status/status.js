@@ -195,7 +195,7 @@ const Status = {
         )
 
         // User referenced in post might not be yet present in store
-        // since their data is not included in status data
+        // since their data is not included in status data, just the id
         return user?.statusnet_profile_url
       }
     },
@@ -376,7 +376,7 @@ const Status = {
     },
     replyToName() {
       if (this.mainStatus.in_reply_to_screen_name) {
-        return this.status.in_reply_to_screen_name
+        return this.mainStatus.in_reply_to_screen_name
       } else {
         const user = useUsersStore().findUser(
           this.mainStatus.in_reply_to_user_id,

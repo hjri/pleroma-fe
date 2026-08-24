@@ -29,7 +29,7 @@ const MentionLink = {
   },
   props: {
     url: {
-      required: true,
+      required: false,
       type: String,
     },
     content: {
@@ -75,7 +75,7 @@ const MentionLink = {
   },
   computed: {
     user() {
-      return this.url && useUsersStore().findUserByUrl(this.url)
+      return this.url ? useUsersStore().findUserByUrl(this.url) : null
     },
     isYou() {
       if (!this.currentUser) return false
