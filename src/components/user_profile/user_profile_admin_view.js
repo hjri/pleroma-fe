@@ -50,7 +50,7 @@ const UserProfileAdminView = {
       return useAdminSettingsStore().fetchStatuses({
         ...this.fetchOptions,
         page,
-      })
+      }).then(({ items }) => items)
     },
   },
   components: {
