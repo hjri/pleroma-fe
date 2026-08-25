@@ -62,7 +62,7 @@ const EmojiReactions = {
     },
     async fetchEmojiReactionsIfMissing() {
       const hasNoAccounts = this.status.emoji_reactions.find((r) => !r.accounts)
-      if (!hasNoAccounts) {
+      if (hasNoAccounts) {
         return await useStatusesStore().fetchEmojiReactions(this.status.id)
       }
     },
