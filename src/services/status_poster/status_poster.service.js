@@ -28,7 +28,7 @@ const postStatus = ({
   const mediaIds = map(media, 'id')
 
   return apiPostStatus({
-    credentials: useOAuthStore().token
+    credentials: useOAuthStore().token,
     status,
     spoilerText,
     visibility,
@@ -71,7 +71,7 @@ const editStatus = ({
 
   return apiEditStatus({
     id: statusId,
-    credentials: useOAuthStore().token
+    credentials: useOAuthStore().token,
     status,
     spoilerText,
     sensitive,
