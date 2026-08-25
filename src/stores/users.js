@@ -2,6 +2,8 @@ import Cookies from 'js-cookie'
 import { last } from 'lodash'
 import { defineStore } from 'pinia'
 
+import { WSConnectionStatus } from 'src/api/websocket.js'
+
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
 import { useChatsStore } from 'src/stores/chats.js'
@@ -708,6 +710,16 @@ export const useUsersStore = defineStore('users', {
       const store = window.vuex
       const oauth = useOAuthStore()
 
+      // Pause fetching
+      useNotificationsStore().pause()
+      useTimelinesStore().pauseAll()
+
+      // Pause-less stores
+      useAnnouncementsStore().stopFetching()
+      useListsStore().stopFetching()
+      useBookmarkFoldersStore().stopFetching()
+      store?.dispatch('stopFetchingFollowRequests')
+
       // NOTE: No need to verify the app still exists, because if it doesn't,
       // the token will be invalid too
       return oauth
@@ -722,6 +734,8 @@ export const useUsersStore = defineStore('users', {
           return revokeToken(params)
         })
         .then(() => {
+          oauth.clearToken()
+
           this.currentUser = null
           this.lastLoginName = null
 
@@ -729,20 +743,44 @@ export const useUsersStore = defineStore('users', {
           this.usersByName = new Map()
           this.usersByURL = new Map()
           this.relationships = new Map()
+
           useNotificationsStore().deactivate()
-          useAnnouncementsStore().stopFetching()
-          useListsStore().stopFetching()
-          useBookmarkFoldersStore().stopFetching()
-          store?.dispatch('stopFetchingFollowRequests')
           useTimelinesStore().deactivateAll()
+
+          // Full reset on logout success
           useStatusesStore().resetStatuses()
-          if (useMergedConfigStore().mergedConfig.useStreamingApi) {
+          useTimelinesStore().deactivateAll()
+          useChatsStore().resetChats()
+
+          // Socket is most likely already closed by server
+          if (
+            useMergedConfigStore().mergedConfig.useStreamingApi
+              && useStreamingStore().state !== WSConnectionStatus.CLOSED
+          ) {
             useStreamingStore().stopSocket()
           }
-          useChatsStore().resetChats()
-          oauth.clearToken()
+
           Cookies.remove('__Host-pleroma_key', { path: '/' })
           useInterfaceStore().onLogout()
+        })
+        .catch((e) => {
+          useInterfaceStore().pushGlobalNotice({
+            messageKey: 'user.logout_failure',
+            messageArgs: {
+              error: e,
+            },
+            level: 'error',
+          })
+          console.error('Logout error!', e)
+
+          useAnnouncementsStore().startFetching()
+          useListsStore().startFetching()
+          useBookmarkFoldersStore().startFetching()
+          store?.dispatch('startFetchingFollowRequests')
+        })
+        .finally(() => {
+          useNotificationsStore().resume()
+          useTimelinesStore().resumeAll()
         })
     },
   },

@@ -31,7 +31,9 @@ export const defaultState = () => ({
   statusIdStore: new Set(),
   socket: null,
   streaming: false,
+  fetching: true,
   fetcher: null,
+  paused: false,
 })
 
 export const useNotificationsStore = defineStore('notifications', {
@@ -40,14 +42,29 @@ export const useNotificationsStore = defineStore('notifications', {
     // Init
     attachSocket() {
       const et = new EventTarget()
-      const socket = { et }
+      const socket = {
+        name: 'notifications',
+        et,
+      }
 
       et.addEventListener('notification', this.addNewNotifications)
       et.addEventListener('open', this.onStreamConnect)
       et.addEventListener('close', this.onStreamDisconnect)
 
-      useStreamingStore().addSubscriber(socket)
       this.socket = socket
+      useStreamingStore().addSubscriber(this.socket)
+    },
+    pause() {
+      this.paused = true
+      if (this.fetcher && this.fetching) {
+        this.stopFetching('Notifications paused')
+      }
+    },
+    resume() {
+      this.paused = false
+      if (this.fetcher && this.fetching) {
+        this.startFetching('Notifications resumed')
+      }
     },
     activate() {
       this.attachSocket()
@@ -62,7 +79,7 @@ export const useNotificationsStore = defineStore('notifications', {
       this.startFetching('Notifications activated')
     },
     deactivate() {
-      if (!this.streaming) {
+      if (this.fetching) {
         this.stopFetching('Notifications deactivated')
       }
 
@@ -77,6 +94,7 @@ export const useNotificationsStore = defineStore('notifications', {
       Object.keys(blankState).forEach((k) => {
         this[k] = blankState[k]
       })
+      console.log('[Notifications] Deactivated', this.fetcher)
     },
 
     // Poll & Push
@@ -91,20 +109,30 @@ export const useNotificationsStore = defineStore('notifications', {
       this.startFetching('Socket disconnected')
     },
     startFetching(reason) {
+      if (this.paused) {
+        console.debug(
+          '[Notificatiosn] NOT Starting notifications fetcher because it is paused',
+          'Original Reason:',
+          reason,
+        )
+        return
+      }
       console.debug(
-        '[Notifications] Starting fetching notifications',
+        '[Notifications] Starting notifications fetcher',
         'Reason:',
         reason,
       )
       this.fetcher.startFetching()
+      this.fetching = true
     },
     stopFetching(reason) {
+      this.fetcher.stopFetching()
+      this.fetching = false
       console.debug(
-        '[Notifications] Stopped fetching notifications',
+        '[Notifications] Stopped notifications fetcher',
         'Reason:',
         reason,
       )
-      this.fetcher.stopFetching()
     },
 
     // Updates

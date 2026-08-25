@@ -96,7 +96,10 @@ export const useInterfaceStore = defineStore('interface', {
   actions: {
     attachSocket() {
       const et = new EventTarget()
-      const socket = { et }
+      const socket = {
+        name: 'interface',
+        et,
+      }
 
       et.addEventListener('open', this.onStreamConnect)
       et.addEventListener('close', this.onStreamDisconnect)

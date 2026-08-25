@@ -16,9 +16,11 @@ const emptyTl = (name, argument = null) => {
     maxId: '',
     minId: '',
     streaming: false,
+    fetching: false,
     reloadNeeded: false,
     fetcher: null,
     socket: null,
+    paused: false,
   }
 
   const property = ARGUMENT_MAP[name]
@@ -114,6 +116,7 @@ export const useTimelinesStore = defineStore('timelines', {
         et.addEventListener('update', messageHandler)
 
         timeline.socket = {
+          name: 'timelines',
           stream: {
             name: streamName,
             argument,
@@ -132,7 +135,7 @@ export const useTimelinesStore = defineStore('timelines', {
     deactivate(timelineName, persistent) {
       const timeline = this[timelineName]
       if (timeline.persistent && !persistent) return
-      if (!timeline.streaming) {
+      if (timeline.fetching) {
         this.stopFetchingTimeline(timelineName, 'Timeline deactivation')
       }
 
@@ -172,6 +175,48 @@ export const useTimelinesStore = defineStore('timelines', {
           this.deactivate(name, true)
         } catch (e) {
           console.error(`Failed to deactivate timeline ${name}:`, e)
+        }
+      })
+    },
+
+    // Pause
+    pause(name) {
+      const timeline = this[name]
+      timeline.paused = true
+      console.debug(
+        '[Timelines] Pausing timeline',
+        name,
+      )
+      if (timeline.fetcher && timeline.fetching) {
+        timeline.fetcher.stopFetching()
+      }
+    },
+    resume(name) {
+      const timeline = this[name]
+      timeline.paused = false
+      console.debug(
+        '[Timelines] Resuming timeline',
+        name,
+      )
+      if (timeline.fetcher && timeline.fetching) {
+        timeline.fetcher.startFetching()
+      }
+    },
+    pauseAll() {
+      TIMELINES.forEach((name) => {
+        try {
+          this.pause(name)
+        } catch (e) {
+          console.error(`[Timelines] Failed to pause timeline ${name}:`, e)
+        }
+      })
+    },
+    resumeAll() {
+      TIMELINES.forEach((name) => {
+        try {
+          this.resume(name)
+        } catch (e) {
+          console.error(`[Timelines] Failed to pause timeline ${name}:`, e)
         }
       })
     },
@@ -246,15 +291,28 @@ export const useTimelinesStore = defineStore('timelines', {
       this.startFetchingTimeline(timeline, argument, 'Socket disconnected')
     },
     startFetchingTimeline(timelineName, argument, reason) {
+      const timeline = this[timelineName]
+      console.log('[Timelines]', toValue(timeline))
+      if (timeline.paused) {
+        console.debug(
+          '[Timelines] NOT Starting timeline fetcher because it is paused',
+          timelineName,
+          argument,
+          'Original Reason:',
+          reason,
+        )
+        return
+      }
+
       console.debug(
-        '[Timelines] Starting fetching timeline',
+        '[Timelines] Starting timeline fetcher',
         timelineName,
         argument,
         'Reason:',
         reason,
       )
-      const timeline = this[timelineName]
       timeline.fetcher.startFetching()
+      timeline.fetching = true
     },
     stopFetchingTimeline(timelineName, reason) {
       const timeline = this[timelineName]
@@ -274,6 +332,7 @@ export const useTimelinesStore = defineStore('timelines', {
           'Reason:',
           reason,
         )
+        timeline.fetching = false
       }
     },
 

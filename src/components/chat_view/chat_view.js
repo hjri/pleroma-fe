@@ -268,14 +268,17 @@ const Chat = {
     },
     attachSocket() {
       const et = new EventTarget()
-      const socket = { et }
+      const socket = {
+        name: 'chatview',
+        et,
+      }
 
       et.addEventListener('update', this.onStreamMessage)
       et.addEventListener('open', this.onStreamConnect)
       et.addEventListener('close', this.onStreamDisconnect)
 
-      useStreamingStore().addSubscriber(socket)
       this.socket = socket
+      useStreamingStore().addSubscriber(this.socket)
     },
     detachSocket() {
       const { et } = this.socket

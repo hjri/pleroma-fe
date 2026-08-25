@@ -49,6 +49,7 @@ export const useStatusesStore = defineStore('statuses', {
         data.forEach((id) => this.setDeleted(id))
 
       const socket = {
+        name: 'statuses',
         et,
         handlers: {
           handleUpdate,

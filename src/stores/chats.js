@@ -37,7 +37,10 @@ export const useChatsStore = defineStore('chats', {
   actions: {
     attachSocket() {
       const et = new EventTarget()
-      const socket = { et }
+      const socket = {
+        name: 'chats',
+        et,
+      }
 
       et.addEventListener('pleroma:chat_update', this.updateChat)
 
