@@ -121,10 +121,10 @@ const Notifications = {
       )
     },
     loading() {
-      return useNotificationsStore().fetcher.loading.value
+      return useNotificationsStore().fetcher.loading
     },
     bottomedOut() {
-      return useNotificationsStore().fetcher.bottomedOut.value
+      return useNotificationsStore().fetcher.bottomedOut
     },
     noHeading() {
       const { layoutType } = useInterfaceStore()
