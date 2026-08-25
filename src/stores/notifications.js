@@ -223,7 +223,7 @@ export const useNotificationsStore = defineStore('notifications', {
           case 'follow_request':
             break
           default:
-            this.markSingleNotificationAsSeen({ id })
+            this.markSingleNotificationAsSeen(id)
         }
       }
     },
