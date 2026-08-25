@@ -248,6 +248,7 @@ const Chat = {
           useUsersStore().addNewUsers({ ...result, data: data.account })
           data.account = useUsersStore().findUser(data.account.id)
           this.chat = data
+          this.maxId = this.chat.lastMessage?.id
         } catch (e) {
           console.error('Error creating or getting a chat', e)
           this.errorLoadingChat = true
@@ -255,10 +256,10 @@ const Chat = {
       }
 
       if (this.isConversation || this.chat) {
+        this.startFetching('Chat activated', true)
         this.$nextTick(() => {
           this.scrollDown({ forceRead: true })
         })
-        this.startFetching('Chat activated', true)
       }
     },
     deactivate() {
