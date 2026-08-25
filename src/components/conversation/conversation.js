@@ -155,9 +155,9 @@ const conversation = {
       return this.otherRepliesButtonPosition === 'inside'
     },
     suspendable() {
-      return this.unsuspendibleIds.size > 0
+      return this.unsuspendibleIds.size === 0
     },
-    hideStatus() {
+    hide() {
       return this.virtualHidden && this.suspendable
     },
     originalStatusId() {
@@ -365,7 +365,6 @@ const conversation = {
       return !!(this.expanded || this.isPage)
     },
     hiddenStyle() {
-      if (this.isExpanded || !this.virtualHidden) return {}
       return { height: this.virtualHeight + 'px' }
     },
     threadDisplayStatus() {
@@ -621,6 +620,7 @@ const conversation = {
       }
     },
     updateVirtualHeight() {
+      if (this.hide) return // no updates when not rendering
       this.$nextTick(() => {
         this.virtualHeight = this.$refs.body.getBoundingClientRect().height
         this.$emit('update:virtualHeight', {

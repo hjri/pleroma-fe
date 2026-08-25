@@ -1,7 +1,6 @@
 <template>
   <div
-    v-if="!hideStatus"
-    :style="hiddenStyle"
+    v-if="!hide"
     class="Conversation"
     :class="{ '-expanded' : isExpanded, 'panel' : isExpanded }"
   >

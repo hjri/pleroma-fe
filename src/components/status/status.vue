@@ -549,6 +549,7 @@
           @posted="closeReplyForm"
           @draft-done="closeReplyForm"
           @close-accepted="closeReplyForm"
+          @resize="$emit('heightChange')"
         />
       </div>
     </template>

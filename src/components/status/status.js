@@ -128,7 +128,6 @@ const Status = {
     return {
       replying: false,
       unmuted: false,
-      userExpanded: false,
       mediaPlaying: new Set(),
       error: null,
       headTailLinks: null,
@@ -524,9 +523,6 @@ const Status = {
     toggleMute() {
       this.unmuted = !this.unmuted
     },
-    toggleUserExpanded() {
-      this.userExpanded = !this.userExpanded
-    },
     generateUserProfileLink(id, name) {
       return generateProfileLink(
         id,
@@ -576,6 +572,12 @@ const Status = {
         this.$emit('heightChange')
       },
     },
+    unmuted() {
+      this.$emit('heightChange')
+    },
+    error() {
+      this.$emit('heightChange')
+    },
     replying() {
       this.$emit('heightChange')
     },
@@ -604,7 +606,6 @@ const Status = {
     },
     isSuspendable: function (suspend) {
       this.$emit('suspendableStateChange', { id: this.status.id, suspend })
-      this.$emit('heightChange')
     },
   },
 }
