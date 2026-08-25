@@ -70,7 +70,6 @@
 
     &.-placeholder {
       background-color: var(--background);
-      border: 1px solid var(--border)
     }
   }
 

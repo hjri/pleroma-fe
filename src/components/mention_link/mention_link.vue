@@ -8,20 +8,15 @@
       :href="url"
       class="original"
       target="_blank"
-    ><!-- eslint-enable vue/no-v-html -->
-      <UserAvatar
-        v-if="shouldShowAvatar"
-        class="mention-avatar"
-        :user-id="null"
-      />
-      <span v-html="content" />
-    </a>
+      v-html="content"
+    /><!-- eslint-enable vue/no-v-html -->
     <UserPopover
       v-else
       :user-id="user.id"
       :disabled="!shouldShowTooltip"
     >
       <span
+        v-if="user"
         class="new"
         :style="style"
         :class="classnames"
