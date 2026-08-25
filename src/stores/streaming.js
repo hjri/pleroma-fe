@@ -131,6 +131,7 @@ export const useStreamingStore = defineStore('streaming', {
     },
 
     getSubArgs(stream) {
+      if (stream === undefined) return undefined
       const argumentKey = ARGUMENT_MAP[stream.name]
       const args = argumentKey
         ? {

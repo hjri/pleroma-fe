@@ -105,10 +105,9 @@ export const useTimelinesStore = defineStore('timelines', {
         const openHandler = () => this.onStreamConnect(timelineName, argument)
         const closeHandler = () =>
           this.onStreamDisconnect(timelineName, argument)
-        const messageHandler =
-          () =>
-          ({ detail: message }) =>
-            this.onStreamMessage(timelineName, argument, message)
+        const messageHandler = (message) => {
+          this.onStreamMessage(timelineName, argument, message)
+        }
 
         et.addEventListener('open', openHandler)
         et.addEventListener('close', closeHandler)
@@ -231,7 +230,7 @@ export const useTimelinesStore = defineStore('timelines', {
     },
     onStreamMessage(timeline, argument, event) {
       this.addStatusesToTimeline(timeline, argument, {
-        statuses: [event.data.status.id],
+        statuses: event.data.map(({ id }) => id),
       })
     },
 
