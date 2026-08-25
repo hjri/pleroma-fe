@@ -149,7 +149,9 @@ export const useStatusesStore = defineStore('statuses', {
 
       const newStatus = {
         ...old,
-        ...Object.fromEntries(Object.entries(neu).filter(([, v]) => v !== undefined)),
+        ...Object.fromEntries(
+          Object.entries(neu).filter(([, v]) => v !== undefined),
+        ),
         user,
       }
 

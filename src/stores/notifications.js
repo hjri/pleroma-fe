@@ -94,7 +94,7 @@ export const useNotificationsStore = defineStore('notifications', {
       Object.keys(blankState).forEach((k) => {
         this[k] = blankState[k]
       })
-      console.log('[Notifications] Deactivated', this.fetcher)
+      console.debug('[Notifications] Deactivated', this.fetcher)
     },
 
     // Poll & Push

@@ -183,10 +183,7 @@ export const useTimelinesStore = defineStore('timelines', {
     pause(name) {
       const timeline = this[name]
       timeline.paused = true
-      console.debug(
-        '[Timelines] Pausing timeline',
-        name,
-      )
+      console.debug('[Timelines] Pausing timeline', name)
       if (timeline.fetcher && timeline.fetching) {
         timeline.fetcher.stopFetching()
       }
@@ -194,10 +191,7 @@ export const useTimelinesStore = defineStore('timelines', {
     resume(name) {
       const timeline = this[name]
       timeline.paused = false
-      console.debug(
-        '[Timelines] Resuming timeline',
-        name,
-      )
+      console.debug('[Timelines] Resuming timeline', name)
       if (timeline.fetcher && timeline.fetching) {
         timeline.fetcher.startFetching()
       }
@@ -286,13 +280,11 @@ export const useTimelinesStore = defineStore('timelines', {
       this.stopFetchingTimeline(timeline, 'Socket connected')
     },
     onStreamDisconnect(timeline, argument) {
-      console.debug('[Timelines] Stream disconnected', timeline, argument)
       this[timeline].streaming = false
       this.startFetchingTimeline(timeline, argument, 'Socket disconnected')
     },
     startFetchingTimeline(timelineName, argument, reason) {
       const timeline = this[timelineName]
-      console.log('[Timelines]', toValue(timeline))
       if (timeline.paused) {
         console.debug(
           '[Timelines] NOT Starting timeline fetcher because it is paused',

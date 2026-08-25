@@ -2,8 +2,6 @@ import Cookies from 'js-cookie'
 import { last } from 'lodash'
 import { defineStore } from 'pinia'
 
-import { WSConnectionStatus } from 'src/api/websocket.js'
-
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
 import { useChatsStore } from 'src/stores/chats.js'
@@ -46,6 +44,7 @@ import {
   unmuteDomain,
   unmuteUser,
 } from 'src/api/user.js'
+import { WSConnectionStatus } from 'src/api/websocket.js'
 import { promiseInterval } from 'src/services/promise_interval/promise_interval.js'
 
 export const useUsersStore = defineStore('users', {
@@ -755,8 +754,8 @@ export const useUsersStore = defineStore('users', {
 
           // Socket is most likely already closed by server
           if (
-            useMergedConfigStore().mergedConfig.useStreamingApi
-              && useStreamingStore().state !== WSConnectionStatus.CLOSED
+            useMergedConfigStore().mergedConfig.useStreamingApi &&
+            useStreamingStore().state !== WSConnectionStatus.CLOSED
           ) {
             useStreamingStore().stopSocket()
           }

@@ -30,7 +30,7 @@ function showWhoToFollow(panel, reply) {
   })
 }
 
-function getWhoToFollow() {
+function getWhoToFollow(panel) {
   const credentials = useOAuthStore().token
   if (credentials) {
     panel.usersToFollow.forEach((toFollow) => {

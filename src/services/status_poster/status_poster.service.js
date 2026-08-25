@@ -1,8 +1,8 @@
 import { map } from 'lodash'
 
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useTimelinesStore } from 'src/stores/timelines.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
 
 import {
   editStatus as apiEditStatus,
