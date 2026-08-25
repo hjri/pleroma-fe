@@ -89,14 +89,15 @@ const Chat = {
       fetcher: null,
       socket: null,
       streaming: false,
+      fetching: true,
       errorLoadingChat: false,
       messageRetriers: {},
       idempotencyKeyIndex: {},
     }
   },
-  created() {
+  async created() {
     if (this.testMode) return
-    this.activate()
+    await this.activate()
     this.attachSocket()
   },
   mounted() {
@@ -243,8 +244,8 @@ const Chat = {
             accountId: this.chatUserId,
             credentials: useOAuthStore().token,
           })
-          useUsersStore().addNewUsers(result)
           const { data } = result
+          useUsersStore().addNewUsers({ ...result, data: data.account })
           data.account = useUsersStore().findUser(data.account.id)
           this.chat = data
         } catch (e) {
@@ -262,8 +263,8 @@ const Chat = {
     },
     deactivate() {
       this.clear()
-      if (!this.streaming) {
-        this.stopFetching()
+      if (this.fetching) {
+        this.stopFetching('Chat deactivated')
       }
     },
     attachSocket() {
@@ -274,6 +275,7 @@ const Chat = {
       }
 
       et.addEventListener('update', this.onStreamMessage)
+      et.addEventListener('pleroma:chat_update', this.onChatUpdate)
       et.addEventListener('open', this.onStreamConnect)
       et.addEventListener('close', this.onStreamDisconnect)
 
@@ -284,6 +286,7 @@ const Chat = {
       const { et } = this.socket
 
       et.removeEventListener('update', this.onStreamMessage)
+      et.removeEventListener('pleroma:chat_update', this.onChatUpdate)
       et.removeEventListener('open', this.onStreamConnect)
       et.removeEventListener('close', this.onStreamDisconnect)
 
@@ -306,11 +309,13 @@ const Chat = {
         5000,
       )
       this.fetchChat({ isFirstFetch })
+      this.fetching = true
     },
     stopFetching(reason) {
       console.debug('[Chat View] Stopped fetching', 'Reason:', reason)
       this.fetcher.stop()
       this.fetcher = null
+      this.fetching = false
     },
 
     // Actions
@@ -438,6 +443,10 @@ const Chat = {
         ({ statusnet_conversation_id }) =>
           statusnet_conversation_id === this.conversationId,
       )
+      this.addMessages({ messages })
+    },
+    onChatUpdate({ data: { chatUpdate } }) {
+      const messages = [chatUpdate.lastMessage]
       this.addMessages({ messages })
     },
     addMessages({ messages: newMessages }) {
