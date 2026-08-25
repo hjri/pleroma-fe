@@ -19,7 +19,7 @@ export const useSearchStore = defineStore('search', {
         credentials: useOAuthStore().token,
       })
 
-      const { accounts, statuses } = data
+      const { accounts, statuses, hashtags } = data
 
       useUsersStore().addNewUsers({
         ...rest,
@@ -36,6 +36,7 @@ export const useSearchStore = defineStore('search', {
         useStatusesStore().allStatuses.get(s.id),
       )
       output.accounts = accounts.map((s) => useUsersStore().findUser(s.id))
+      output.hashtags = hashtags ?? []
       return output
     },
 

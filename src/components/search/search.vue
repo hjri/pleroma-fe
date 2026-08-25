@@ -119,7 +119,7 @@
         >
           <router-link
             class="list-item hashtag"
-            :to="{ name: 'tag-timeline', params: { tag: hashtag.name } }"
+            :to="{ name: 'tag-timeline', params: { id: hashtag.name } }"
           >
             <span class="name">
               #{{ hashtag.name }}
