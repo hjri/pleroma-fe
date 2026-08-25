@@ -29,6 +29,7 @@ import {
 import routes from './routes'
 
 import { useAuthFlowStore } from 'src/stores/auth_flow'
+import { useChatsStore } from 'src/stores/chats.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useI18nStore } from 'src/stores/i18n'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -593,6 +594,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
   useI18nStore().setI18n(i18n)
 
   // Global WS handlers
+  useChatsStore().attachSocket()
   useInterfaceStore().attachSocket()
   useStatusesStore().attachSocket()
 
