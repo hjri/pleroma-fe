@@ -86,9 +86,6 @@ export const useChatsStore = defineStore('chats', {
           chat.lastMessage = updatedChat.lastMessage
           chat.unread = updatedChat.unread
           chat.updated_at = updatedChat.updated_at
-          if (isNewMessage && chat.unread) {
-            maybeShowChatNotification(chat)
-          }
         } else {
           this.chatList.data.push(updatedChat)
           this.chatList.idStore[updatedChat.id] = updatedChat
@@ -107,10 +104,10 @@ export const useChatsStore = defineStore('chats', {
         chat.lastMessage = updatedChat.lastMessage
         chat.unread = updatedChat.unread
         chat.updated_at = updatedChat.updated_at
-      }
-      if (!chat) {
+      } else {
         this.chatList.data.unshift(updatedChat)
       }
+      maybeShowChatNotification(chat)
       this.chatList.idStore[updatedChat.id] = updatedChat
     },
     deleteChat(id) {

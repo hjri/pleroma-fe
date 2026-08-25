@@ -11,13 +11,14 @@ export const maybeShowChatNotification = (chat) => {
     title: chat.account.name,
     icon: chat.account.profile_image_url,
     body: chat.lastMessage.content,
+    type: 'chatMention',
   }
 
   if (chat.lastMessage.attachment?.type === 'image') {
     opts.image = chat.lastMessage.attachment.preview_url
   }
 
-  showDesktopNotification(window.vuex.state, opts)
+  showDesktopNotification(opts)
 }
 
 export const buildFakeMessage = ({
