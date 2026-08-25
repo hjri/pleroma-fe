@@ -617,12 +617,15 @@ export const useUsersStore = defineStore('users', {
         user.domainMutes = new Set()
 
         this.lastLoginName = user.screen_name
-        this.currentUser = user
+        useTimelinesStore().deactivateAll()
+        useStatusesStore().resetStatuses()
 
         this.users = new Map()
         this.usersByName = new Map()
         this.usersByURL = new Map()
         this.relationships = new Map()
+        this.currentUser = user
+        this.addNewUsers({ data: user, ...rest })
 
         useInterfaceStore().onLogin()
         useSyncConfigStore()
@@ -636,7 +639,6 @@ export const useUsersStore = defineStore('users', {
           })
 
         useUserHighlightStore().initUserHighlight(user)
-        this.addNewUsers({ data: user, ...rest })
 
         useEmojiStore().fetchEmoji()
 
@@ -662,8 +664,8 @@ export const useUsersStore = defineStore('users', {
         }
 
         // DMs and Home
-        useNotificationsStore().activate()
         useTimelinesStore().activatePersistents()
+        useNotificationsStore().activate()
 
         if (useInstanceCapabilitiesStore().pleromaChatMessagesAvailable) {
           // Start fetching chats
@@ -739,18 +741,17 @@ export const useUsersStore = defineStore('users', {
           this.currentUser = null
           this.lastLoginName = null
 
+          useNotificationsStore().deactivate()
+
+          // Full reset on logout success
+          useTimelinesStore().deactivateAll()
+          useStatusesStore().resetStatuses()
+          useChatsStore().resetChats()
+
           this.users = new Map()
           this.usersByName = new Map()
           this.usersByURL = new Map()
           this.relationships = new Map()
-
-          useNotificationsStore().deactivate()
-          useTimelinesStore().deactivateAll()
-
-          // Full reset on logout success
-          useStatusesStore().resetStatuses()
-          useTimelinesStore().deactivateAll()
-          useChatsStore().resetChats()
 
           // Socket is most likely already closed by server
           if (
