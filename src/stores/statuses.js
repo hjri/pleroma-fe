@@ -64,15 +64,9 @@ export const useStatusesStore = defineStore('statuses', {
       this.socket = socket
     },
     resetStatuses() {
-      this.socket.et.removeEventListener('update', this.socket.handleUpdate)
-      this.socket.et.removeEventListener(
-        'status.update',
-        this.socket.handleUpdate,
-      )
-      this.socket.et.removeEventListener('delete', this.socket.handleDelete)
-
       const emptyState = defaultState()
       Object.entries(emptyState).forEach(([key, value]) => {
+        if (key === 'socket') return
         this[key] = value
       })
     },
