@@ -127,6 +127,7 @@ const Chat = {
 
     if (this.testMode) return
     this.deactivate()
+    this.detachSocket()
   },
   computed: {
     conversationId() {
