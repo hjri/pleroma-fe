@@ -22,17 +22,41 @@ import {
 import { isStatusNotification } from 'src/services/notification_utils/notification_utils_sw.js'
 
 export const defaultState = () => ({
+  // Prevents desktop notification spam on startup
   desktopNotificationSilence: true,
+
+  // Pagination
   maxId: '',
   minId: '',
+
+  // Order
   data: [],
+
+  // TODO: Implement!
+  // Useful for making notification as seen
+  // when interacting with status
   statusNotificationRelations: new WeakMap(),
+
+  // ID to Object notification
   idStore: new Map(),
-  statusIdStore: new Set(),
+
+  // Reference to WS subscriber
   socket: null,
+
+  // Indicates whether notifications receive push updates
   streaming: false,
+
+  // Indicates whether notifications are SUPPOSED to be fetching
+  // this is partiualrly useful for when pausing/resuming. I.e.
+  // whether we need to start fetching again if timeline was resumed.
   fetching: true,
+
+  // Reference to fetcher, used for polling for new notifications
+  // and manually fetching old notifications
   fetcher: null,
+
+  // Whether notifications fetcher has been paused - it stops fetching
+  // (but still receives pushes!)
   paused: false,
 })
 

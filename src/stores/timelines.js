@@ -8,18 +8,49 @@ import { TIMELINE_STREAM_MAP, useStreamingStore } from 'src/stores/streaming.js'
 
 const emptyTl = (name, argument = null) => {
   const result = {
+    // Name of the timeline. Useful for debugging and logging
     name,
+
+    // Order of statuses, important for timelines that
+    // have different ordering, i.e. bookmarks and favorites
     order: [],
+
+    // All statuses belonging to the timeline
     statusIds: new Set(),
+
+    // Statuses shown to user
     visibleStatusIds: new Set(),
+
+    // Number of statuses not shown yet
     newStatusCount: 0,
+
+    // Pagination
     maxId: '',
     minId: '',
+
+    // Indicates whether timeline receives push updates
     streaming: false,
+
+    // Indicates whether timeline is SUPPOSED to be fetching
+    // this is partiualrly useful for when pausing/resuming
+    // timeline. I.e. whether we need to start fetching again
+    // if timeline was resumed.
     fetching: false,
+
+    // Indicates that in recent poll update we've hit more than or
+    // equal to 20 statuses and most likely missed some statuses
+    // between polls
     reloadNeeded: false,
+
+    // Reference to fetcher, used for polling for new statuses and
+    // manually fetching old statuses
     fetcher: null,
+
+    // Reference to WS subscriber
     socket: null,
+
+    // Whether the timeline has been paused - it stops fetching
+    // (but still receives pushes!)
     paused: false,
   }
 
