@@ -37,9 +37,7 @@ export const piniaPushNotificationsPlugin = ({ store }) => {
     if (store.$id === 'interface') {
       if (actionName === 'setNotificationPermission') {
         permissionGranted = args[0] === 'granted'
-      } else if (actionName === 'setLoginStatus') {
-        user = args[0]
-      } else {
+      } else if (actionName !== 'onLogin' && actionName !== 'onLogout') {
         return
       }
     } else if (store.$id === 'sync_config') {
