@@ -4,6 +4,7 @@ import { useUsersStore } from 'src/stores/users.js'
 
 export const maybeShowChatNotification = (chat) => {
   if (!chat.lastMessage) return
+  if (chat.unread === 0) return
   if (useUsersStore().currentUser.id === chat.lastMessage.account_id) return
 
   const opts = {
