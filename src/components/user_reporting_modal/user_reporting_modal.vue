@@ -52,8 +52,9 @@
         </div>
         <div class="user-reporting-panel-right">
           <List
-            :external-items="reportModal.statuses"
+            :external-items="reportModal.statusIds"
             :pre-select="reportModal.preTickedIds"
+            :get-key="(item) => item"
             selectable
             @select="onListSelect"
           >
@@ -61,7 +62,7 @@
               <Status
                 :in-conversation="false"
                 :focused="false"
-                :statusoid="item"
+                :status-id="item"
               />
             </template>
           </List>

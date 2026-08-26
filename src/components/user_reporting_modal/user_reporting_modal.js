@@ -56,7 +56,7 @@ const UserReportingModal = {
       // Reset state
       this.comment = ''
       this.forward = false
-      this.statusIdsToReport = new Set(this.reportModal.preTickedIds)
+      this.statusIdsToReport = new Set(this.reportModal.preTickedIds) // cloning
       this.processing = false
       this.error = false
     },

@@ -21,8 +21,8 @@ const List = {
       default: () => '',
     },
     preSelect: {
-      type: Array,
-      default: [],
+      type: Set,
+      default: new Set(),
     },
     nonInteractive: {
       type: Boolean,

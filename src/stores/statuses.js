@@ -30,6 +30,7 @@ import {
 
 export const defaultState = () => ({
   allStatuses: new Map(),
+  statusesPerUser: new Map(),
   timestamps: new WeakMap(),
   scrobblesNextFetch: {},
   conversations: new Map(),
@@ -83,6 +84,12 @@ export const useStatusesStore = defineStore('statuses', {
       // in case of likes (which are not statuses) it should return null
       const addStatus = (data) => {
         const [status] = this.mergeOrAdd(this.allStatuses, data, timestamp)
+        let userSet = this.statusesPerUser.get(status.user.id)
+        if (userSet === undefined) {
+          userSet = new Set()
+          this.statusesPerUser.set(status.user.id, userSet)
+        }
+        userSet.add(status.id)
 
         // Add to conversation
         const conversations = this.conversations
@@ -527,14 +534,11 @@ export const useStatusesStore = defineStore('statuses', {
 
     // For when blocking a user
     wipeUserStatuses(userId) {
-      const removed = new Set()
-      this.allStatuses.forEach((status) => {
-        if (status.user.id === userId) {
-          this.allStatuses.delete(status.id)
-
-          removed.add(status.id)
-        }
+      const removed = this.statusesPerUser.get(userId)
+      removed.forEach((statusId) => {
+        this.allStatuses.delete(statusId)
       })
+      this.statusesPerUser.delete(userId)
       return removed
     },
   },
