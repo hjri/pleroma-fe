@@ -48,7 +48,7 @@ const List = {
   data() {
     return {
       items: [],
-      selected: new Set(this.preSelect),
+      selected: new Set(this.preSelect), // clone
       loading: false,
       bottomedOut: true,
       error: null,

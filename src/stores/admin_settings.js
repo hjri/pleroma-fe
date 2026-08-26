@@ -430,11 +430,9 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
 
       resultUserIds.data.forEach((userId) => {
-        window.vuex.dispatch(
-          'markStatusesAsDeleted',
-          (status) => userId === status.user.id,
-        )
-        // TODO when migrated to pinia, also remove user
+        useStatusesStore().wipeUserStatuses(status.user.id)
+        // Users are technically never deleted, just deactivated
+        // so there's no real need to delete them from store.
       })
 
       return resultUserIds

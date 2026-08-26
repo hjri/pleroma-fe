@@ -32,10 +32,6 @@ const global = {
     $store: {
       state: {
         api: {},
-        users: {},
-        statuses: {
-          allStatusesObject: {},
-        },
       },
     },
     $route: {

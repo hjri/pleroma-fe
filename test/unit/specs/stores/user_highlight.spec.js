@@ -9,15 +9,6 @@ import {
 describe('The UserHighlight store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
-    window.vuex = {
-      state: {
-        users: {
-          currentUser: {
-            fqn: 'foo@bar.tld',
-          },
-        },
-      },
-    }
   })
 
   describe('mutations', () => {
