@@ -141,6 +141,7 @@ const Status = {
       return this.statusoid ?? useStatusesStore().allStatuses.get(this.statusId)
     },
     repeatedStatus() {
+      if (this.status.retweeted_status === undefined) return undefined
       return useStatusesStore().allStatuses.get(this.status.retweeted_status.id)
     },
     repeater() {
@@ -198,7 +199,7 @@ const Status = {
       }
     },
     isRepeat() {
-      return !!this.status.retweeted_status
+      return !!this.repeatedStatus
     },
     repeaterName() {
       return this.status.user.name || this.status.user.screen_name_ui
@@ -313,19 +314,19 @@ const Status = {
       return !this.unmuted && !this.shouldNotMute && this.muteReasons.length > 0
     },
     userIsMuted() {
-      if (this.status.user.id === this.currentUser?.id) return false
-      const { reblog } = this.status
-      const relationship = useUsersStore().relationship(this.status.user.id)
-      const relationshipReblog =
-        reblog && useUsersStore().relationship(reblog.user.id)
+      if (!this.currentUser) return false
+      if (this.user === this.currentUser) return false
+      if (this.repeater === this.currentUser) return false
+      const relationship = useUsersStore().relationship(this.user.id)
+      const relationshipRepeat = useUsersStore().relationship(this.repeater?.id)
       return (
-        (status.muted && !status.thread_muted) ||
+        (this.status.muted && !this.status.thread_muted) ||
         // Reprööt of a muted post according to BE
-        (reblog?.muted && !reblog.thread_muted) ||
+        (this.repeatedStatus?.muted && !this.repeatedStatus.thread_muted) ||
         // Muted user
         relationship.muting ||
         // Muted user of a reprööt
-        relationshipReblog?.muting
+        relationshipRepeat?.muting
       )
     },
     shouldNotMute() {
