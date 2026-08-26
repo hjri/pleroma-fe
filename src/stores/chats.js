@@ -79,13 +79,15 @@ export const useChatsStore = defineStore('chats', {
     updateChat(updatedChat) {
       const chat = this.data.get(updatedChat.id)
       if (chat) {
+        const isNewMessage = chat.lastMessage !== updatedChat.lastMessage
         chat.lastMessage = updatedChat.lastMessage
         chat.unread = updatedChat.unread
         chat.updated_at = updatedChat.updated_at
+        if (!isNewMessage) return
       } else {
         this.data.set(updatedChat.id, updatedChat)
       }
-      maybeShowChatNotification(chat ?? updatedChat)
+      maybeShowChatNotification(chat)
     },
     deleteChat(id) {
       this.data.delete(id)

@@ -5,8 +5,6 @@ import { useUsersStore } from 'src/stores/users.js'
 export const maybeShowChatNotification = (chat) => {
   // No messages
   if (!chat.lastMessage) return
-  // Already shown notification for this message
-  if (chat.lastMessage.id === chat.lastNotifiedMessageId) return
   // No unreads to display
   if (chat.unread === 0) return
   // Don't notify on outgoing message (shouldn't happen with condition above)
@@ -24,7 +22,6 @@ export const maybeShowChatNotification = (chat) => {
     opts.image = chat.lastMessage.attachment.preview_url
   }
 
-  chat.lastNotifiedMessageId = chat.lastMessage.id
   showDesktopNotification(opts)
 }
 
