@@ -81,11 +81,11 @@ export const useChatsStore = defineStore('chats', {
         chat.lastMessage = updatedChat.lastMessage
         chat.unread = updatedChat.unread
         chat.updated_at = updatedChat.updated_at
-        if (!isNewMessage) return
+        if (isNewMessage) maybeShowChatNotification(chat)
       } else {
         this.data.set(updatedChat.id, updatedChat)
+        maybeShowChatNotification(updatedChat)
       }
-      maybeShowChatNotification(chat)
     },
     deleteChat(id) {
       this.data.delete(id)
