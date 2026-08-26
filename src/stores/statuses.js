@@ -536,7 +536,15 @@ export const useStatusesStore = defineStore('statuses', {
     wipeUserStatuses(userId) {
       const removed = this.statusesPerUser.get(userId)
       removed.forEach((statusId) => {
+        const status = this.allStatuses.get(statusId)
         this.allStatuses.delete(statusId)
+        const conversationSet = this.conversations.get(
+          status.statusnet_conversation_id,
+        )
+        conversationSet.delete(statusId)
+        if (conversationSet.size === 0) {
+          this.conversations.delete(status.statusnet_conversation_id)
+        }
       })
       this.statusesPerUser.delete(userId)
       return removed
