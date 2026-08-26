@@ -430,7 +430,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
 
       resultUserIds.data.forEach((userId) => {
-        useStatusesStore().wipeUserStatuses(status.user.id)
+        useStatusesStore().wipeUserStatuses(userId)
         // Users are technically never deleted, just deactivated
         // so there's no real need to delete them from store.
       })
