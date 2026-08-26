@@ -66,7 +66,7 @@ export const useChatsStore = defineStore('chats', {
       })
 
       // We do unshift in update so we reverse the chat list here
-      result.data.forEach(chat => this.updateChat(chat))
+      result.data.forEach((chat) => this.updateChat(chat))
     },
     readChat(id) {
       const chat = this.data.get(id)
