@@ -561,6 +561,7 @@ export const useUsersStore = defineStore('users', {
 
         const ids = useStatusesStore().wipeUserStatuses(id)
         useTimelinesStore().wipeStatuses(ids)
+        useNotificationsStore().wipeStatuses(ids)
       })
     },
     blockUsers(data = []) {
