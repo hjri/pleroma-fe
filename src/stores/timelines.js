@@ -389,7 +389,10 @@ export const useTimelinesStore = defineStore('timelines', {
       const timeline = this[timelineName]
 
       timeline.newStatusCount = 0
-      timeline.visibleStatusIds = new Set([...timeline.statusIds])
+      timeline.order = timeline.order.slice(0, 50)
+      timeline.statusIds = new Set([...timeline.order])
+      timeline.visibleStatusIds = new Set([...timeline.order])
+      this.updateTimelineExtremes(timeline)
     },
     syncOrder(timeline) {
       timeline.order = timeline.order.filter((id) => timeline.statusIds.has(id))
