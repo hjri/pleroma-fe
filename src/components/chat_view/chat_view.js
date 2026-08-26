@@ -457,10 +457,16 @@ const Chat = {
 
         // Sanity check
         if (!this.isConversation && message.chat_id !== this.chat.id) {
+          // This is spammy, we get chat updates from a global chat update
+          // handler, which naturally receives updates for ALL chats.
+          // There is no way to subscribe to specific chat updates and listen
+          // to that in the API.
+          /*
           console.warn(
             `Chat message doesn't belong to current chat (id: ${this.chat.id})!!`,
             message,
           )
+          */
           return
         }
 
