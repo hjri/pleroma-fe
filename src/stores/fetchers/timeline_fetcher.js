@@ -46,7 +46,7 @@ const timelineFetcher = (timeline, argument, credentials) => {
     }
 
     args.withMuted = !hideMutedPosts
-    if (loggedIn && REPLY_VISIBILITY_TIMELINES.has(timeline)) {
+    if (loggedIn && REPLY_VISIBILITY_TIMELINES.has(timeline.name)) {
       args.replyVisibility = replyVisibility
     }
 
