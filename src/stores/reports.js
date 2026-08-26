@@ -19,8 +19,9 @@ export const useReportsStore = defineStore('reports', {
   actions: {
     openUserReportingModal({ userId, statusIds = [] }) {
       const preTickedIds = new Set(statusIds)
-      // There shouldn't be a case where this is undefined
-      const userAllStatusesIds = useStatusesStore().statusesPerUser.get(userId)
+      // There could be a case (i.e. user is only ever mentioned in someone else's post -> user popover)
+      // where user has no known posts
+      const userAllStatusesIds = useStatusesStore().statusesPerUser.get(userId) ?? new Set()
       // Set constructor should take care of duplicated IDs and order,
       // later duplicated IDs will be dropped in favor of earlier
       const sortedIds = new Set([...preTickedIds, ...userAllStatusesIds])

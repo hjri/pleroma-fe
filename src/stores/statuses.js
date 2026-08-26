@@ -534,7 +534,7 @@ export const useStatusesStore = defineStore('statuses', {
 
     // For when blocking a user
     wipeUserStatuses(userId) {
-      const removed = this.statusesPerUser.get(userId)
+      const removed = this.statusesPerUser.get(userId) ?? new Set()
       removed.forEach((statusId) => {
         const status = this.allStatuses.get(statusId)
         this.allStatuses.delete(statusId)
