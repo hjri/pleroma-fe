@@ -40,8 +40,8 @@ export const useChatsStore = defineStore('chats', {
       useStreamingStore().addSubscriber(socket)
     },
     startFetching() {
-      this.fetcher = () => promiseInterval(() => this.fetchChats(), 5000)
-      this.fetcher()
+      this.fetcher = promiseInterval(() => this.fetchChats(), 5000)
+      this.fetchChats()
     },
     stopFetching() {
       this.fetcher?.stop()
