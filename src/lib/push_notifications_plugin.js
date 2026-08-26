@@ -6,7 +6,7 @@ import { useUsersStore } from 'src/stores/users.js'
 export const piniaPushNotificationsPlugin = ({ store }) => {
   const validActions = {
     sync_config: new Set(['setPreference']),
-    interface: new Set(['setNotificationPermission', 'setLoginStatus']),
+    interface: new Set(['setNotificationPermission', 'onLogin', 'onLogout']),
   }
 
   if (!validActions[store.$id]) return // Not applicable to the store
@@ -21,7 +21,7 @@ export const piniaPushNotificationsPlugin = ({ store }) => {
       useInterfaceStore().notificationPermission === 'granted'
     let permissionPresent =
       useInterfaceStore().notificationPermission !== undefined
-    let user = !!useUsersStore().currentUser
+    let user = useUsersStore().loggedIn
 
     if (store.$id === 'instance') {
       if (actionName === 'set' && args[0].path === 'vapidPublicKey') {
