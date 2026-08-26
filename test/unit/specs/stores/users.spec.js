@@ -1124,6 +1124,12 @@ describe('Users store', () => {
           },
         )
 
+        vi.spyOn(useNotificationsStore(), 'wipeStatuses').mockImplementation(
+          async () => {
+            /* no-op */
+          },
+        )
+
         const store = useUsersStore()
         const { storeAction, apiUrl } = actionKeys(action)
         await store[storeAction](userId)
@@ -1150,6 +1156,12 @@ describe('Users store', () => {
         )
 
         vi.spyOn(useTimelinesStore(), 'wipeStatuses').mockImplementation(
+          async () => {
+            /* no-op */
+          },
+        )
+
+        vi.spyOn(useNotificationsStore(), 'wipeStatuses').mockImplementation(
           async () => {
             /* no-op */
           },
