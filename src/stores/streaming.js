@@ -101,7 +101,7 @@ export const useStreamingStore = defineStore('streaming', {
         this.subscriptions.get(stream.name).delete(stream.argument)
       }
 
-      if (this.state === WSConnectionStatus.JOINED) {
+      if (stream && this.state === WSConnectionStatus.JOINED) {
         this.socket.unsubscribe(...this.getSubArgs(stream))
       }
     },
@@ -131,7 +131,6 @@ export const useStreamingStore = defineStore('streaming', {
     },
 
     getSubArgs(stream) {
-      if (stream === undefined) return []
       const argumentKey = ARGUMENT_MAP[stream.name]
       const args = argumentKey
         ? {
