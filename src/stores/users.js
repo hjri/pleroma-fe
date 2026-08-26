@@ -746,6 +746,7 @@ export const useUsersStore = defineStore('users', {
           // Full reset on logout success
           useTimelinesStore().deactivateAll()
           useStatusesStore().resetStatuses()
+          useChatsStore().stopFetching()
           useChatsStore().resetChats()
 
           this.users = new Map()
@@ -777,6 +778,7 @@ export const useUsersStore = defineStore('users', {
           useAnnouncementsStore().startFetching()
           useListsStore().startFetching()
           useBookmarkFoldersStore().startFetching()
+          useChatsStore().startFetching()
           store?.dispatch('startFetchingFollowRequests')
         })
         .finally(() => {

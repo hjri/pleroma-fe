@@ -56,8 +56,6 @@ export const useChatsStore = defineStore('chats', {
     },
     resetChats() {
       this.data = new Map()
-      this.stopFetching()
-      this.startFetching()
     },
     addNewChats(result) {
       useUsersStore().addNewUsers({

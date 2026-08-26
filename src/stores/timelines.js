@@ -316,6 +316,14 @@ export const useTimelinesStore = defineStore('timelines', {
           reason,
         )
         return
+      } else if (timeline.paused) {
+        console.debug(
+          '[Timelines] Deactivating paused timeline',
+          timelineName,
+          'Reason:',
+          reason,
+        )
+        timeline.fetching = false
       } else {
         timeline.fetcher.stopFetching()
         console.debug(
