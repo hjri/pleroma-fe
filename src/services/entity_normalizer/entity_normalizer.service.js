@@ -342,10 +342,6 @@ export const parseStatus = (data) => {
   output.favoritedBy = []
   output.rebloggedBy = []
 
-  if (Object.hasOwn(data, 'originalStatus')) {
-    Object.assign(output, data.originalStatus)
-  }
-
   return output
 }
 

@@ -184,7 +184,10 @@ export const fetchStatusHistory = ({ id, credentials }) =>
     return {
       ...rest,
       data: [...data].reverse().map((item) => {
-        item.originalStatus = status
+        // History data is missing a lot of stuff present in original
+        // but we're really only missing the id for the timeago, the
+        // rest seem to render just fine.
+        item.id = id
         return parseStatus(item)
       }),
     }

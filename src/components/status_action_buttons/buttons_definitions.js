@@ -174,20 +174,7 @@ export const BUTTONS = [
       )
     },
     action({ status }) {
-      const originalStatus = { ...status }
-      const stripFieldsList = [
-        'attachments',
-        'created_at',
-        'emojis',
-        'text',
-        'raw_html',
-        'nsfw',
-        'poll',
-        'summary',
-        'summary_raw_html',
-      ]
-      stripFieldsList.forEach((p) => delete originalStatus[p])
-      useStatusHistoryStore().openModal(originalStatus.id)
+      useStatusHistoryStore().openModal(status.id)
       return Promise.resolve()
     },
   },
