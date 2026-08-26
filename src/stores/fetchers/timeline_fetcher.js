@@ -77,7 +77,7 @@ const timelineFetcher = (timeline, argument, credentials) => {
         return { statuses, pagination }
       })
       .catch((error) => {
-        if (error.statusCode === 403 && timeline === 'favorites') {
+        if (error.statusCode === 403 && timeline.name === 'favorites') {
           useInstanceCapabilitiesStore().pleromaPublicFavouritesAvailable = false
           return
         }

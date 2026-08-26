@@ -87,7 +87,6 @@
           v-if="favoritesTabVisible"
           key="favorites"
           :label="$t('user_card.favorites')"
-          :disabled="favorites.visibleStatusIds.size === 0"
           :title="$t('user_card.favorites')"
           :timeline-ref="{ name: 'favorites', argument: userId }"
           :argument="isUs ? undefined : userId"

@@ -80,7 +80,7 @@ export const useTimelinesStore = defineStore('timelines', {
       if (timeline.persistent && !persistent) return
 
       if (
-        timelineName === 'favourites' &&
+        timelineName === 'favorites' &&
         !useInstanceCapabilitiesStore().pleromaPublicFavouritesAvailable
       ) {
         console.warn("Instance doesn't support public favorites timeline")
