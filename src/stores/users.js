@@ -50,7 +50,6 @@ import { promiseInterval } from 'src/services/promise_interval/promise_interval.
 export const useUsersStore = defineStore('users', {
   state: () => ({
     loggingIn: false,
-    lastLoginName: null,
     currentUser: null,
     users: new Map(),
     usersByName: new Map(),
@@ -616,7 +615,6 @@ export const useUsersStore = defineStore('users', {
         user.muteIds = new Set()
         user.domainMutes = new Set()
 
-        this.lastLoginName = user.screen_name
         useTimelinesStore().deactivateAll()
         useStatusesStore().resetStatuses()
 
@@ -739,7 +737,6 @@ export const useUsersStore = defineStore('users', {
           oauth.clearToken()
 
           this.currentUser = null
-          this.lastLoginName = null
 
           useNotificationsStore().deactivate()
 
@@ -786,8 +783,5 @@ export const useUsersStore = defineStore('users', {
           useTimelinesStore().resumeAll()
         })
     },
-  },
-  persist: {
-    paths: ['lastLoginName'],
   },
 })

@@ -679,7 +679,6 @@ describe('Users store', () => {
         expect(store.usersByName).to.have.length(1)
         expect(store.usersByURL).to.have.length(1)
         expect(store.relationships).to.have.length(0)
-        expect(store.lastLoginName).to.eql(userScreenName)
         spies.forEach((spy, index) => {
           expect(spy, `Spy ${index} has failed`).to.have.been.called
         })
@@ -783,7 +782,6 @@ describe('Users store', () => {
         expect(store.loggedIn).to.eql(true)
         await store.logout()
         expect(store.loggedIn).to.eql(false)
-        expect(store.lastLoginName).to.eql(null)
         expect(revokeApi).to.have.been.called
         expect(store.users).to.have.length(0)
         expect(store.usersByName).to.have.length(0)
