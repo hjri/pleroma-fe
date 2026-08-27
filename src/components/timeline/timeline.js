@@ -31,6 +31,7 @@ const Timeline = {
     embedded: Boolean,
     inProfile: Boolean,
     skipPinned: Boolean,
+    hideEmpty: Boolean,
   },
   data() {
     return {

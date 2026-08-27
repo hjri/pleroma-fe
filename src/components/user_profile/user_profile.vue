@@ -30,6 +30,7 @@
             :timeline-ref="{ name: 'userPinned', argument: userId }"
             embedded
             in-profile
+            hide-empty
           />
           <Timeline
             :timeline-ref="{ name: 'user', argument: userId }"

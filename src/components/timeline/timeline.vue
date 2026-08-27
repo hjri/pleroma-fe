@@ -94,6 +94,24 @@
           collapsable
         />
       </div>
+      <template v-if="!hideEmpty && count === 0">
+        <div
+          v-if="timeline.fetcher.loadingNewer || timeline.fetcher.loadingOlder"
+          class="timeline-placeholder"
+        >
+          <FAIcon
+            icon="circle-notch"
+            spin
+            size="4x"
+          />
+        </div>
+        <div
+          v-else
+          class="timeline-placeholder faint"
+        >
+          {{ $t('timeline.no_statuses') }}
+        </div>
+      </template>
     </div>
     <div v-if="!embedded || footerSlipgate" :class="classes.footer">
       <teleport
@@ -101,28 +119,13 @@
         :disabled="!embedded || !footerSlipgate"
       >
         <div
-          v-if="count === 0"
-          class="new-status-notification text-center faint"
-        >
-          {{ $t('timeline.no_statuses') }}
-        </div>
-        <div
-          v-else-if="timeline.fetcher.bottomedOut"
+          v-if="timeline.fetcher.bottomedOut"
           class="new-status-notification text-center faint"
         >
           {{ $t('timeline.no_more_statuses') }}
         </div>
-        <button
-          v-else-if="!timeline.fetcher.loadingOlder"
-          class="button-unstyled -link"
-          @click.prevent="fetchOlderStatuses()"
-        >
-          <div class="new-status-notification text-center">
-            {{ $t('timeline.load_older') }}
-          </div>
-        </button>
         <div
-          v-else
+          v-else-if="timeline.fetcher.loadingOlder"
           class="new-status-notification text-center"
         >
           <FAIcon
@@ -131,6 +134,15 @@
             size="lg"
           />
         </div>
+        <button
+          v-else-if="timeline.minId !== ''"
+          class="button-unstyled -link"
+          @click.prevent="fetchOlderStatuses()"
+        >
+          <div class="new-status-notification text-center">
+            {{ $t('timeline.load_older') }}
+          </div>
+        </button>
       </teleport>
       <!-- spacer to avoid having empty shrug -->
       <span v-if="embedded && footerSlipgate" />

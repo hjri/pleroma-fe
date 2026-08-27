@@ -52,9 +52,13 @@ const timelineFetcher = (timeline, argument, credentials) => {
 
     const numStatusesBeforeFetch = timeline.statusIds.size
 
-    if (bottomedOut.value) return
+    if (older && bottomedOut.value) return
     return fetchTimeline(args)
       .then(({ data: statuses, pagination, timestamp }) => {
+        // No statuses for timeline, ever.
+        if (timeline.order.length === 0 && statuses.length === 0) {
+          bottomedOut.value = true
+        }
         if (!older && statuses.length >= 20 && numStatusesBeforeFetch > 0) {
           useTimelinesStore().requireReload(timeline.name)
         }

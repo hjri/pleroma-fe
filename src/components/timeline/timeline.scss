@@ -4,6 +4,14 @@
     backdrop-filter: none;
   }
 
+  .timeline-placeholder {
+    background: var(--background);
+    display: flex;
+    place-items: center;
+    place-content: center;
+    padding: 5em;
+  }
+
   .alert-badge {
     font-size: 0.75em;
     line-height: 1;
