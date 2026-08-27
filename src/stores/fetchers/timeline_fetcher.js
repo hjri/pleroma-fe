@@ -54,25 +54,36 @@ const timelineFetcher = (timeline, argument, credentials) => {
 
     if (older && bottomedOut.value) return
     return fetchTimeline(args)
-      .then(({ data: statuses, pagination, timestamp }) => {
+      .then(({ data, pagination, timestamp }) => {
         // No statuses for timeline, ever.
-        if (timeline.order.length === 0 && statuses.length === 0) {
+        if (timeline.order.length === 0 && data.length === 0) {
           bottomedOut.value = true
         }
-        if (!older && statuses.length >= 20 && numStatusesBeforeFetch > 0) {
+        if (!older && data.length >= 20 && numStatusesBeforeFetch > 0) {
           useTimelinesStore().requireReload(timeline.name)
         }
 
-        if (older && statuses.length === 0) {
+        if (older && data.length === 0) {
           bottomedOut.value = true
         }
 
-        const processed = useStatusesStore()
-          .addNewStatuses({ statuses, timestamp })
-          .map(({ id }) => id)
+        const processed = useStatusesStore().addNewStatuses({
+          statuses: data,
+          timestamp,
+        })
+
+        const statuses = processed.map(({ id }) => id)
+
+        const repeats = processed
+          .filter(({ retweeted_status }) => Boolean(retweeted_status))
+          .map(({ id, retweeted_status: { id: repeatedId } }) => [
+            id,
+            repeatedId,
+          ])
 
         useTimelinesStore().addStatusesToTimeline(timeline.name, argument, {
-          statuses: processed,
+          statuses,
+          repeats,
           showImmediately,
           older,
           pagination,

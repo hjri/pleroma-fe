@@ -122,6 +122,7 @@ describe('Timelines store', () => {
       store.activate('list', '1')
       store.addStatusesToTimeline('list', '1', {
         statuses,
+        repeats: [],
         pagination: { minId: '1', maxId: '3' },
       })
 
@@ -140,10 +141,12 @@ describe('Timelines store', () => {
       store.activate('list', '1')
       store.addStatusesToTimeline('list', '1', {
         statuses,
+        repeats: [],
         pagination: { minId: '1', maxId: '3' },
       })
       store.addStatusesToTimeline('list', '1', {
         statuses,
+        repeats: [],
         pagination: { minId: '1', maxId: '3' },
       })
 
@@ -162,6 +165,7 @@ describe('Timelines store', () => {
       store.activate('list', '1')
       store.addStatusesToTimeline('list', '1', {
         statuses,
+        repeats: [],
         showImmediately: true,
         pagination: { minId: '1', maxId: '3' },
       })
@@ -181,6 +185,7 @@ describe('Timelines store', () => {
       store.activate('list', '1')
       store.addStatusesToTimeline('list', '1', {
         statuses,
+        repeats: [],
         noIdUpdate: true,
         pagination: { minId: '1', maxId: '3' },
       })
@@ -200,6 +205,7 @@ describe('Timelines store', () => {
       store.activate('list', '1')
       store.addStatusesToTimeline('list', '2', {
         statuses,
+        repeats: [],
         noIdUpdate: true,
         pagination: { minId: '1', maxId: '3' },
       })
@@ -220,10 +226,12 @@ describe('Timelines store', () => {
       store.activate('list', '1')
       store.addStatusesToTimeline('list', '1', {
         statuses: statuses1,
+        repeats: [],
         pagination: { minId: '3', maxId: '1' },
       })
       store.addStatusesToTimeline('list', '1', {
         statuses: statuses2,
+        repeats: [],
         pagination: { minId: '6', maxId: '4' },
       })
 
@@ -244,10 +252,12 @@ describe('Timelines store', () => {
       store.activate('list', '1')
       store.addStatusesToTimeline('list', '1', {
         statuses: statuses1,
+        repeats: [],
         pagination: { minId: '6', maxId: '4' },
       })
       store.addStatusesToTimeline('list', '1', {
         statuses: statuses2,
+        repeats: [],
         pagination: { minId: '3', maxId: '1' },
         older: true,
       })
@@ -260,6 +270,171 @@ describe('Timelines store', () => {
       expect(store.list).to.have.property('maxId', '6')
       expect(store.list).to.have.property('minId', '1')
     })
+
+    describe('repeat de-duplication', () => {
+      it('handles repeat de-duplication (older)', () => {
+        const store = useTimelinesStore()
+        const statuses1 = ['s7s3', 's6s3', 's5', 's4s0', 's3', 's2']
+        const statuses2 = ['s1s0', 's0']
+
+        store.activate('list', '1')
+        store.addStatusesToTimeline('list', '1', {
+          statuses: statuses1,
+          repeats: [
+            ['s7s3', 's2'],
+            ['s6s3', 's2'],
+            ['s4s0', 's0'],
+          ],
+          pagination: { minId: 's7s3', maxId: 's2' },
+          showImmediately: true,
+        })
+        expect(store.list.order).to.eql(statuses1)
+        expect(store.list.statusIds).to.eql(new Set(statuses1))
+        expect(store.list.visibleStatusIds).to.eql(new Set([
+          's5',
+          's4s0',
+          's3',
+          's2',
+        ]))
+        expect(store.list).to.have.property('maxId', 's7s3')
+        expect(store.list).to.have.property('minId', 's2')
+
+        store.addStatusesToTimeline('list', '1', {
+          statuses: statuses2,
+          repeats: [
+            ['s1s0', 's0'],
+          ],
+          pagination: { minId: 's1', maxId: 's0' },
+          showImmediately: true,
+          older: true
+        })
+
+        const newOrder = [...statuses1, ...statuses2]
+        expect(store.list.order).to.eql(newOrder)
+        expect(store.list.statusIds).to.eql(new Set(newOrder))
+        expect(store.list.visibleStatusIds).to.eql(new Set([
+          's5',
+          's4s0',
+          's3',
+          's2',
+          's0',
+        ]))
+        expect(store.list).to.have.property('maxId', 's7s3')
+        expect(store.list).to.have.property('minId', 's0')
+      })
+
+      it('handles repeat de-duplication(reverse)', () => {
+        const store = useTimelinesStore()
+        const statuses1 = ['s6s2', 's5s2', 's4', 's3s0', 's2', 's1']
+        const statuses2 = ['sAs0', 's9s1', 's8', 's7s2']
+
+        store.activate('list', '1')
+        store.addStatusesToTimeline('list', '1', {
+          statuses: statuses1,
+          repeats: [
+            ['s6s2', 's2'],
+            ['s5s2', 's2'],
+            ['s3s0', 's0'],
+          ],
+          pagination: { minId: 's6s2', maxId: 's1' },
+          showImmediately: true,
+        })
+        expect(store.list.order).to.eql(statuses1)
+        expect(store.list.statusIds).to.eql(new Set(statuses1))
+        expect(store.list.visibleStatusIds).to.eql(new Set([
+          's4',
+          's3s0',
+          's2',
+          's1',
+        ]))
+        expect(store.list).to.have.property('maxId', 's6s2')
+        expect(store.list).to.have.property('minId', 's1')
+
+        store.addStatusesToTimeline('list', '1', {
+          statuses: statuses2,
+          repeats: [
+            ['sAs0', 's0'],
+            ['s9s1', 's1'],
+            ['s7s2', 's2'],
+          ],
+          pagination: { minId: 'sAs0', maxId: 's7s2' },
+          showImmediately: true,
+        })
+
+        const newOrder = [...statuses2, ...statuses1]
+        expect(store.list.order).to.eql(newOrder)
+        expect(store.list.statusIds).to.eql(new Set(newOrder))
+        expect(store.list.visibleStatusIds).to.eql(new Set([
+          's4',
+          's3s0',
+          's2',
+          's1',
+          // Newer
+          's8',
+        ]))
+        expect(store.list).to.have.property('maxId', 'sAs0')
+        expect(store.list).to.have.property('minId', 's1')
+      })
+
+      it('showNewStatuses follows de-duplication rules', () => {
+        const store = useTimelinesStore()
+        const statuses1 = ['s6s2', 's5s2', 's4', 's3s0', 's2', 's1']
+        const statuses2 = ['sAs0', 's9s1', 's8', 's7s2']
+
+        store.activate('list', '1')
+        store.addStatusesToTimeline('list', '1', {
+          statuses: statuses1,
+          repeats: [
+            ['s6s2', 's2'],
+            ['s5s2', 's2'],
+            ['s3s0', 's0'],
+          ],
+          pagination: { minId: 's6s2', maxId: 's1' },
+          showImmediately: true,
+        })
+        expect(store.list.order).to.eql(statuses1)
+        expect(store.list.statusIds).to.eql(new Set(statuses1))
+        expect(store.list.visibleStatusIds).to.eql(new Set([
+          's4',
+          's3s0',
+          's2',
+          's1',
+        ]))
+        expect(store.list).to.have.property('maxId', 's6s2')
+        expect(store.list).to.have.property('minId', 's1')
+
+        store.addStatusesToTimeline('list', '1', {
+          statuses: statuses2,
+          repeats: [
+            ['sAs0', 's0'],
+            ['s9s1', 's1'],
+            ['s7s2', 's2'],
+          ],
+          pagination: { minId: 'sAs0', maxId: 's7s2' },
+        })
+
+        const newOrder = [...statuses2, ...statuses1]
+        expect(store.list.order).to.eql(newOrder)
+        expect(store.list.statusIds).to.eql(new Set(newOrder))
+        expect(store.list.newStatusCount).to.eql(1)
+        expect(store.list.visibleStatusIds).to.eql(new Set([
+          's4',
+          's3s0',
+          's2',
+          's1',
+        ]))
+
+        store.showNewStatuses('list')
+        expect(store.list.visibleStatusIds).to.eql(new Set([
+          's4',
+          's3s0',
+          's2',
+          's1',
+          // Newer
+          's8',
+        ]))
+      })
+    })
   })
 
   describe('showNewStatuses', () => {
@@ -270,6 +445,7 @@ describe('Timelines store', () => {
       store.activate('public')
       store.addStatusesToTimeline('public', undefined, {
         statuses,
+        repeats: [],
         pagination: { minId: '1', maxId: '3' },
       })
 
@@ -278,6 +454,25 @@ describe('Timelines store', () => {
       expect(store.public.newStatusCount).to.equal(3)
       store.showNewStatuses('public')
       expect(store.public.visibleStatusIds).to.eql(new Set(statuses))
+      expect(store.public.newStatusCount).to.equal(0)
+    })
+
+    it('limits shown items to 50 for better performance', () => {
+      const store = useTimelinesStore()
+      const statuses = new Array(100).fill().map((_, index) => 's' + index)
+
+      store.activate('public')
+      store.addStatusesToTimeline('public', undefined, {
+        statuses,
+        repeats: [],
+        pagination: { minId: '1', maxId: '3' },
+      })
+
+      expect(store.public.statusIds).to.eql(new Set(statuses))
+      expect(store.public.visibleStatusIds).to.eql(new Set())
+      expect(store.public.newStatusCount).to.equal(100)
+      store.showNewStatuses('public')
+      expect(store.public.visibleStatusIds).to.eql(new Set(statuses.slice(0, 50)))
       expect(store.public.newStatusCount).to.equal(0)
     })
   })
@@ -290,9 +485,11 @@ describe('Timelines store', () => {
       store.activate('public')
       store.addStatusesToTimeline('public', undefined, {
         statuses: ['1', '2', '3', '0'],
+        repeats: [],
       })
       store.addStatusesToTimeline('friends', undefined, {
         statuses: ['5', '0', '9', '1'],
+        repeats: [],
       })
       store.wipeStatuses(['0'])
       expect(store.friends.statusIds).to.not.have.members('0')

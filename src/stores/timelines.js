@@ -21,6 +21,11 @@ const emptyTl = (name, argument = null) => {
     // Statuses shown to user
     visibleStatusIds: new Set(),
 
+    // Tracked reprööts, used to avoid displaying same reprööt more than once
+    repeatedToRepeat: new Map(),
+    repeatToRepeated: new Map(),
+    ignoredIds: new Set(),
+
     // Number of statuses not shown yet
     newStatusCount: 0,
 
@@ -188,6 +193,7 @@ export const useTimelinesStore = defineStore('timelines', {
       timeline.order = []
       timeline.statusIds = new Set()
       timeline.visibleStatusIds = new Set()
+      timeline.ignoredIds = new Set()
       timeline.newStatusCount = 0
       timeline.maxId = ''
       timeline.minId = ''
@@ -252,6 +258,7 @@ export const useTimelinesStore = defineStore('timelines', {
       argument,
       {
         statuses,
+        repeats,
         showImmediately = false,
         noIdUpdate = false,
         pagination = {},
@@ -260,6 +267,8 @@ export const useTimelinesStore = defineStore('timelines', {
     ) {
       if (statuses.length === 0) return
       const timeline = this[timelineName]
+
+      this.populateRepeats(timeline, repeats)
 
       // This makes sure that user timeline won't get data meant for other
       // user. I.e. opening different user profiles makes request which could
@@ -287,13 +296,18 @@ export const useTimelinesStore = defineStore('timelines', {
         timeline.statusIds.add(statusId)
 
         if (isNew) {
-          if (showImmediately) {
-            // Add it directly to the visibleStatuses, don't change
-            // newStatusCount
-            timeline.visibleStatusIds.add(statusId)
+          const seenBefore = this.checkSeenBefore(timeline, statusId)
+          if (!seenBefore) {
+            if (showImmediately) {
+              // Add it directly to the visibleStatuses, don't change
+              // newStatusCount
+              timeline.visibleStatusIds.add(statusId)
+            } else {
+              // Just change newStatuscount
+              timeline.newStatusCount += 1
+            }
           } else {
-            // Just change newStatuscount
-            timeline.newStatusCount += 1
+            timeline.ignoredIds.add(statusId)
           }
         }
       })
@@ -301,7 +315,41 @@ export const useTimelinesStore = defineStore('timelines', {
     onStreamMessage(timeline, argument, event) {
       this.addStatusesToTimeline(timeline, argument, {
         statuses: event.data.map(({ id }) => id),
+        repeats: event.data
+          .filter(({ retweeted_status }) => Boolean(retweeted_status))
+          .map(({ id, retweeted_status: { id: repeatedId } }) => [
+            id,
+            repeatedId,
+          ]),
       })
+    },
+
+    // Reprööt handling
+    populateRepeats(timeline, repeats) {
+      // Starting from oldest
+      ;[...repeats].reverse().forEach(([repeatId, repeatedId]) => {
+        timeline.repeatToRepeated.set(repeatId, repeatedId)
+        const knownRepeats =
+          timeline.repeatedToRepeat.get(repeatedId) ?? new Set()
+        knownRepeats.add(repeatId)
+        timeline.repeatedToRepeat.set(repeatedId, knownRepeats)
+      })
+    },
+    checkSeenBefore(timeline, statusId) {
+      // Check if this is a reprööt
+      const repeatedStatusId = timeline.repeatToRepeated.get(statusId)
+      // Non-reprööts are never seen before
+      if (!repeatedStatusId) return false
+      // We've seen this status already directly
+      if (timeline.statusIds.has(repeatedStatusId)) return true
+
+      // Check for reprööts
+      const knownRepeats = timeline.repeatedToRepeat.get(repeatedStatusId)
+
+      // If it's the only reprööt then we've never seen post before
+      if (knownRepeats.size === 1) return false
+      // If we're working on oldest known reprööt then we've never seen it before
+      return first(knownRepeats) !== statusId
     },
 
     // Poll & Push
@@ -391,7 +439,11 @@ export const useTimelinesStore = defineStore('timelines', {
       timeline.newStatusCount = 0
       timeline.order = timeline.order.slice(0, 50)
       timeline.statusIds = new Set([...timeline.order])
-      timeline.visibleStatusIds = new Set([...timeline.order])
+
+      // Reprööts CAN be present in order but some must be ignored
+      timeline.visibleStatusIds = new Set([
+        ...timeline.order.filter((id) => !timeline.ignoredIds.has(id)),
+      ])
       this.updateTimelineExtremes(timeline)
     },
     syncOrder(timeline) {
