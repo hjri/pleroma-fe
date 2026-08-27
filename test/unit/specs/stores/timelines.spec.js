@@ -290,35 +290,26 @@ describe('Timelines store', () => {
         })
         expect(store.list.order).to.eql(statuses1)
         expect(store.list.statusIds).to.eql(new Set(statuses1))
-        expect(store.list.visibleStatusIds).to.eql(new Set([
-          's5',
-          's4s0',
-          's3',
-          's2',
-        ]))
+        expect(store.list.visibleStatusIds).to.eql(
+          new Set(['s5', 's4s0', 's3', 's2']),
+        )
         expect(store.list).to.have.property('maxId', 's7s3')
         expect(store.list).to.have.property('minId', 's2')
 
         store.addStatusesToTimeline('list', '1', {
           statuses: statuses2,
-          repeats: [
-            ['s1s0', 's0'],
-          ],
+          repeats: [['s1s0', 's0']],
           pagination: { minId: 's1', maxId: 's0' },
           showImmediately: true,
-          older: true
+          older: true,
         })
 
         const newOrder = [...statuses1, ...statuses2]
         expect(store.list.order).to.eql(newOrder)
         expect(store.list.statusIds).to.eql(new Set(newOrder))
-        expect(store.list.visibleStatusIds).to.eql(new Set([
-          's5',
-          's4s0',
-          's3',
-          's2',
-          's0',
-        ]))
+        expect(store.list.visibleStatusIds).to.eql(
+          new Set(['s5', 's4s0', 's3', 's2', 's0']),
+        )
         expect(store.list).to.have.property('maxId', 's7s3')
         expect(store.list).to.have.property('minId', 's0')
       })
@@ -341,12 +332,9 @@ describe('Timelines store', () => {
         })
         expect(store.list.order).to.eql(statuses1)
         expect(store.list.statusIds).to.eql(new Set(statuses1))
-        expect(store.list.visibleStatusIds).to.eql(new Set([
-          's4',
-          's3s0',
-          's2',
-          's1',
-        ]))
+        expect(store.list.visibleStatusIds).to.eql(
+          new Set(['s4', 's3s0', 's2', 's1']),
+        )
         expect(store.list).to.have.property('maxId', 's6s2')
         expect(store.list).to.have.property('minId', 's1')
 
@@ -364,14 +352,16 @@ describe('Timelines store', () => {
         const newOrder = [...statuses2, ...statuses1]
         expect(store.list.order).to.eql(newOrder)
         expect(store.list.statusIds).to.eql(new Set(newOrder))
-        expect(store.list.visibleStatusIds).to.eql(new Set([
-          's4',
-          's3s0',
-          's2',
-          's1',
-          // Newer
-          's8',
-        ]))
+        expect(store.list.visibleStatusIds).to.eql(
+          new Set([
+            's4',
+            's3s0',
+            's2',
+            's1',
+            // Newer
+            's8',
+          ]),
+        )
         expect(store.list).to.have.property('maxId', 'sAs0')
         expect(store.list).to.have.property('minId', 's1')
       })
@@ -394,12 +384,9 @@ describe('Timelines store', () => {
         })
         expect(store.list.order).to.eql(statuses1)
         expect(store.list.statusIds).to.eql(new Set(statuses1))
-        expect(store.list.visibleStatusIds).to.eql(new Set([
-          's4',
-          's3s0',
-          's2',
-          's1',
-        ]))
+        expect(store.list.visibleStatusIds).to.eql(
+          new Set(['s4', 's3s0', 's2', 's1']),
+        )
         expect(store.list).to.have.property('maxId', 's6s2')
         expect(store.list).to.have.property('minId', 's1')
 
@@ -417,22 +404,21 @@ describe('Timelines store', () => {
         expect(store.list.order).to.eql(newOrder)
         expect(store.list.statusIds).to.eql(new Set(newOrder))
         expect(store.list.newStatusCount).to.eql(1)
-        expect(store.list.visibleStatusIds).to.eql(new Set([
-          's4',
-          's3s0',
-          's2',
-          's1',
-        ]))
+        expect(store.list.visibleStatusIds).to.eql(
+          new Set(['s4', 's3s0', 's2', 's1']),
+        )
 
         store.showNewStatuses('list')
-        expect(store.list.visibleStatusIds).to.eql(new Set([
-          's4',
-          's3s0',
-          's2',
-          's1',
-          // Newer
-          's8',
-        ]))
+        expect(store.list.visibleStatusIds).to.eql(
+          new Set([
+            's4',
+            's3s0',
+            's2',
+            's1',
+            // Newer
+            's8',
+          ]),
+        )
       })
     })
   })
@@ -472,7 +458,9 @@ describe('Timelines store', () => {
       expect(store.public.visibleStatusIds).to.eql(new Set())
       expect(store.public.newStatusCount).to.equal(100)
       store.showNewStatuses('public')
-      expect(store.public.visibleStatusIds).to.eql(new Set(statuses.slice(0, 50)))
+      expect(store.public.visibleStatusIds).to.eql(
+        new Set(statuses.slice(0, 50)),
+      )
       expect(store.public.newStatusCount).to.equal(0)
     })
   })
