@@ -643,6 +643,10 @@ const PostStatusForm = {
         })
         .finally(() => {
           this.previewLoading = false
+          // If we post right after doing a preview request
+          // backend treats non-preview request as preview one
+          // and "eats" the post
+          this.updateIdempotencyKey()
         })
     },
     debouncePreviewStatus: debounce(function () {
