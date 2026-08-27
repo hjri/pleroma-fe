@@ -40,7 +40,7 @@
           </button>
         </div>
         <div
-          v-else
+          v-else-if="!timeline.fetcher.loadingNewer"
           class="loadmore-text faint veryfaint rightside-icon"
           :title="$t('timeline.up_to_date')"
           :aria-disabled="true"
