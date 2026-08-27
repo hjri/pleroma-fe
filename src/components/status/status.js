@@ -152,8 +152,7 @@ const Status = {
     },
     showReasonMutedThread() {
       return (
-        (this.mainStatus.thread_muted ||
-          this.mainSatus.reblog?.thread_muted) &&
+        (this.mainStatus.thread_muted || this.mainSatus.reblog?.thread_muted) &&
         !this.inConversation
       )
     },
