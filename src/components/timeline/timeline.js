@@ -107,7 +107,7 @@ const Timeline = {
       const statusesPerSide = Math.ceil(Math.max(3, window.innerHeight / 80))
       const min = Math.max(0, this.virtualScrollIndex - statusesPerSide)
       const max = Math.min(amount, this.virtualScrollIndex + statusesPerSide)
-      return new Set(this.timeline.order.slice(min, max))
+      return new Set(this.filteredVisibleStatuses.slice(min, max).map(({id}) => id))
     },
     virtualScrollingEnabled() {
       return useMergedConfigStore().mergedConfig.virtualScrolling
