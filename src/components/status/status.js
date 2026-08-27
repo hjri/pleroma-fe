@@ -153,7 +153,7 @@ const Status = {
     showReasonMutedThread() {
       return (
         (this.mainStatus.thread_muted ||
-          this.smainSatus.reblog?.thread_muted) &&
+          this.mainSatus.reblog?.thread_muted) &&
         !this.inConversation
       )
     },
