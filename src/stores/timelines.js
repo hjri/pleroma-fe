@@ -258,7 +258,7 @@ export const useTimelinesStore = defineStore('timelines', {
       argument,
       {
         statuses,
-        repeats,
+        repeats = [],
         showImmediately = false,
         noIdUpdate = false,
         pagination = {},
