@@ -28,11 +28,8 @@ const UserReportingModal = {
     }
   },
   computed: {
-    isLoggedIn() {
-      return !!useUsersStore().currentUser
-    },
     isOpen() {
-      return this.isLoggedIn && this.reportModal.activated
+      return this.loggedIn && this.reportModal.activated
     },
     userId() {
       return this.reportModal.userId
@@ -47,6 +44,7 @@ const UserReportingModal = {
       )
     },
     ...mapState(useReportsStore, ['reportModal']),
+    ...mapState(useUsersStore, ['loggedIn']),
   },
   watch: {
     userId: 'resetState',
