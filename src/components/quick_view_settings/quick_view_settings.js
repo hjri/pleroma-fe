@@ -36,9 +36,7 @@ const QuickViewSettings = {
     ...mapState(useInterfaceStore, {
       mobileLayout: (state) => state.layoutType === 'mobile',
     }),
-    loggedIn() {
-      return !!useUsersStore().currentUser
-    },
+    ...mapState(useUsersStore, ['loggedIn']),
     conversationDisplay: {
       get() {
         return this.mergedConfig.conversationDisplay
