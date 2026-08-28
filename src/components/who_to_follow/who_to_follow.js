@@ -24,11 +24,9 @@ const WhoToFollow = {
           id,
           credentials: useOAuthStore().token,
         }).then((result) => {
-          const { data: externalUser } = result
-          if (!externalUser.error) {
-            useUsersStore().addNewUsers(result)
-            this.users.push(externalUser)
-          }
+          const [user] = useUsersStore().addNewUsers(result)
+
+          this.users.push(user)
         })
       })
     },
