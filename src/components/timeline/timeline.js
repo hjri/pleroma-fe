@@ -214,6 +214,7 @@ const Timeline = {
       let err = statuses[approxIndex].getBoundingClientRect().y
 
       // if we have a previous scroll index that can be used, test if it's
+      // closer than the previous approximation, use it if so
 
       const virtualScrollIndexY =
         statuses[cappedScrollIndex].getBoundingClientRect().y
