@@ -403,6 +403,7 @@ export const useStatusesStore = defineStore('statuses', {
         name: emoji,
         count: 0,
         accounts: [],
+        account_ids: [],
       }
 
       const count = value ? reaction.count + 1 : reaction.count - 1
@@ -410,12 +411,14 @@ export const useStatusesStore = defineStore('statuses', {
       const accounts = value
         ? [...reaction.accounts, currentUser]
         : reaction.accounts.filter((acc) => acc.id !== currentUser.id)
+      const account_ids = accounts.map(({ id }) => id)
 
       const newReaction = {
         ...reaction,
         count,
         me: value,
         accounts,
+        account_ids,
       }
 
       if (reactionPresent && count > 0) {
