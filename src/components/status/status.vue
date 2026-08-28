@@ -26,7 +26,7 @@
             class="fa-scale-110 fa-old-padding repeat-icon"
             icon="retweet"
           />
-          <user-link
+          <UserLink
             :user="repeater"
             :at="false"
           />
@@ -154,7 +154,7 @@
                 >
                   {{ user.name }}
                 </h4>
-                <user-link
+                <UserLink
                   class="account-name"
                   :title="user.screen_name_ui"
                   :user="user"

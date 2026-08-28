@@ -24,7 +24,7 @@
       class="Notification container -muted"
     >
       <small>
-        <user-link
+        <UserLink
           :user="notification.from_profile"
           :at="false"
         />
@@ -215,7 +215,7 @@
           v-if="notification.type === 'follow' || notification.type === 'follow_request'"
           class="follow-text"
         >
-          <user-link
+          <UserLink
             class="follow-name"
             :user="notification.from_profile"
           />
@@ -249,7 +249,7 @@
           v-else-if="notification.type === 'move'"
           class="move-text"
         >
-          <user-link
+          <UserLink
             :user="notification.target"
           />
         </div>
