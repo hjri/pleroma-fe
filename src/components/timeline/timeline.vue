@@ -10,7 +10,7 @@
         :timeline-name="timelineRef.name"
       />
       <div
-        v-if="timeline.fetcher.loadingNewer"
+        v-if="timeline.fetcher.loadingNewer && !showLoadButton"
         class="loadingIndicator"
       >
         <FAIcon
