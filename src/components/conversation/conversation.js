@@ -185,6 +185,7 @@ const conversation = {
 
       return [...conversation.keys()]
         .map((k) => useStatusesStore().allStatuses.get(k))
+        .filter((status) => status.type != 'repeat') // Old backend behavior?
         .toSorted(sortById)
     },
     statusMap() {
