@@ -16,7 +16,7 @@ library.add(faCircleNotch)
 const UserListPopover = {
   name: 'UserListPopover',
   props: {
-    userIds: Set
+    userIds: Set,
   },
   components: {
     UnicodeDomainIndicator,
@@ -25,7 +25,9 @@ const UserListPopover = {
   },
   computed: {
     usersCapped() {
-      return [...this.userIds].slice(0, 16).map((id) => useUsersStore().findUser(id))
+      return [...this.userIds]
+        .slice(0, 16)
+        .map((id) => useUsersStore().findUser(id))
     },
     allowNonSquareEmoji() {
       return useMergedConfigStore().mergedConfig.nonSquareEmoji

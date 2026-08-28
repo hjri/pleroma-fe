@@ -388,10 +388,7 @@ const Status = {
       }
     },
     combinedFavsAndRepeatsUsers() {
-      return new Set([
-        ...this.favoritedBy,
-        ...this.repeatedBy,
-      ])
+      return new Set([...this.favoritedBy, ...this.repeatedBy])
     },
     tags() {
       return [...this.status.tags]
@@ -589,19 +586,13 @@ const Status = {
     },
     'mainStatus.repeat_num': function (num) {
       // refetch repeats when repeat_num is changed in any way
-      if (
-        this.focused &&
-        this.repeatedBy.size !== num
-      ) {
+      if (this.focused && this.repeatedBy.size !== num) {
         useStatusesStore().fetchRepeats(this.mainStatus.id)
       }
     },
     'mainStatus.fave_num': function (num) {
       // refetch favs when fave_num is changed in any way
-      if (
-        this.focused &&
-        this.favoritedBy.size !== num
-      ) {
+      if (this.focused && this.favoritedBy.size !== num) {
         useStatusesStore().fetchFavs(this.mainStatus.id)
       }
     },
