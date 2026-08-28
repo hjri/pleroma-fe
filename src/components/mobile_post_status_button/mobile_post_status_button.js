@@ -34,9 +34,6 @@ const MobilePostStatusButton = {
     window.removeEventListener('resize', this.handleOSK)
   },
   computed: {
-    isLoggedIn() {
-      return useUsersStore().loggedIn
-    },
     isHidden() {
       if (HIDDEN_FOR_PAGES.has(this.$route.name)) {
         return true
@@ -52,6 +49,7 @@ const MobilePostStatusButton = {
     autohideFloatingPostButton() {
       return !!useMergedConfigStore().mergedConfig.autohideFloatingPostButton
     },
+    ...mapState(useUsersStore, ['loggedIn']),
   },
   watch: {
     autohideFloatingPostButton: function (isEnabled) {

@@ -1,6 +1,6 @@
 <template>
   <button
-    v-if="isLoggedIn"
+    v-if="loggedIn"
     class="MobilePostButton button-default new-status-button"
     :class="{ 'hidden': isHidden, 'always-show': isPersistent }"
     :title="$t('post_status.new_status')"

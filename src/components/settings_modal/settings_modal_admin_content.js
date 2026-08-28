@@ -100,9 +100,6 @@ const SettingsModalAdminContent = {
     user() {
       return useUsersStore().currentUser
     },
-    isLoggedIn() {
-      return !!useUsersStore().currentUser
-    },
     open() {
       return useInterfaceStore().settingsModalState !== 'hidden'
     },

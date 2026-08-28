@@ -14,7 +14,7 @@
       <GeneralTab />
     </div>
     <div
-      v-if="isLoggedIn"
+      v-if="loggedIn"
       :label="$t('settings.profile_tab')"
       icon="user"
       data-tab-name="profile"
@@ -23,7 +23,7 @@
       <ProfileTab />
     </div>
     <div
-      v-if="isLoggedIn"
+      v-if="loggedIn"
       :label="$t('settings.composing')"
       icon="pen-alt"
       data-tab-name="composing"
@@ -57,7 +57,7 @@
       <LayoutTab />
     </div>
     <div
-      v-if="isLoggedIn"
+      v-if="loggedIn"
       :full-width="true"
       :label="$t('settings.notifications')"
       icon="bell"
@@ -73,7 +73,7 @@
       <FilteringTab />
     </div>
     <div
-      v-if="isLoggedIn"
+      v-if="loggedIn"
       :label="$t('settings.mutes_and_blocks')"
       icon="eye-slash"
       data-tab-name="mutesAndBlocks"
@@ -90,7 +90,7 @@
       <ClutterTab />
     </div>
     <div
-      v-if="isLoggedIn"
+      v-if="loggedIn"
       :label="$t('settings.security_tab')"
       icon="lock"
       data-tab-name="security"
@@ -98,7 +98,7 @@
       <SecurityTab />
     </div>
     <div
-      v-if="isLoggedIn"
+      v-if="loggedIn"
       :label="$t('settings.data_import_export_tab')"
       icon="download"
       data-tab-name="dataImportExport"

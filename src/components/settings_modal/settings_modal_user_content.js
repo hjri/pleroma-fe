@@ -75,9 +75,6 @@ const SettingsModalContent = {
     OldThemeTab,
   },
   computed: {
-    isLoggedIn() {
-      return !!useUsersStore().currentUser
-    },
     open() {
       return useInterfaceStore().settingsModalState !== 'hidden'
     },
@@ -87,6 +84,7 @@ const SettingsModalContent = {
     expertLevel() {
       return useMergedConfigStore().mergedConfig.expertLevel
     },
+    ...mapState(useUsersStore, ['loggedIn']),
   },
   data() {
     return {
