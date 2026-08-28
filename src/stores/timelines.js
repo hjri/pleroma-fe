@@ -105,8 +105,6 @@ export const defaultState = () => {
   return Object.fromEntries([...TIMELINES].map((name) => [name, emptyTl(name)]))
 }
 
-//const CUSTOM_SORT = new Set(['bookmarks', 'favorites'])
-
 export const useTimelinesStore = defineStore('timelines', {
   state: defaultState,
   actions: {
