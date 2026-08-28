@@ -297,7 +297,7 @@ export const useStatusesStore = defineStore('statuses', {
           useInterfaceStore().pushGlobalNotice({
             level: 'error',
             messageKey: 'status.interact_error',
-            messageArgs: [error],
+            messageArgs: { error },
             timeout: 5000,
           })
         })
