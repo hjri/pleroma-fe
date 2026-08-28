@@ -411,7 +411,7 @@ export const useStatusesStore = defineStore('statuses', {
       const accounts = value
         ? [...reaction.accounts, currentUser]
         : reaction.accounts.filter((acc) => acc.id !== currentUser.id)
-      const account_ids = accounts.map(({ id }) => id)
+      const account_ids = accounts.filter(Boolean).map(({ id }) => id)
 
       const newReaction = {
         ...reaction,
