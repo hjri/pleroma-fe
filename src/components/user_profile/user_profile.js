@@ -49,10 +49,7 @@ const UserProfile = {
       return useTimelinesStore().media
     },
     isUs() {
-      return (
-        this.userId &&
-        this.userId === useUsersStore().currentUser?.id
-      )
+      return this.userId && this.userId === useUsersStore().currentUser?.id
     },
     user() {
       return useUsersStore().findUser(this.userId)

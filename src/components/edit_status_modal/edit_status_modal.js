@@ -1,4 +1,5 @@
 import { get } from 'lodash'
+import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 
 import Modal from 'src/components/modal/modal.vue'

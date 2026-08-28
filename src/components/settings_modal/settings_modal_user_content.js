@@ -1,3 +1,5 @@
+import { mapState } from 'pinia'
+
 import VerticalTabSwitcher from './helpers/vertical_tab_switcher.jsx'
 import AppearanceTab from './tabs/appearance_tab.vue'
 import ClutterTab from './tabs/clutter_tab.vue'

@@ -1,4 +1,5 @@
 import { get } from 'lodash'
+import { mapState } from 'pinia'
 
 import Modal from 'src/components/modal/modal.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'

@@ -4,8 +4,8 @@ import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
-import { useUsersStore } from 'src/stores/users.js'
 import { useSearchStore } from 'src/stores/search.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { chats } from 'src/api/chats.js'
 

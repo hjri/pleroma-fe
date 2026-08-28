@@ -209,7 +209,9 @@ export const useUsersStore = defineStore('users', {
     updateUserAdminData(id, data) {
       const user = this.users.get(id)
       if (!user) {
-        console.warn(`User id ${id} somehow not found during admin data update!`)
+        console.warn(
+          `User id ${id} somehow not found during admin data update!`,
+        )
         return
       }
       user.adminData = data

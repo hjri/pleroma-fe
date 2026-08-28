@@ -808,11 +808,14 @@ describe('Users store', () => {
           )
           .mockResolvedValueOnce(
             // Revoke Token
-            new Response(JSON.stringify('Oopsie-woopsie pleroma made a fucky-wucky'), {
-              status: 500,
-              statusText: 'Internal Server Error',
-              headers: { 'Content-Type': 'application/json' },
-            }),
+            new Response(
+              JSON.stringify('Oopsie-woopsie pleroma made a fucky-wucky'),
+              {
+                status: 500,
+                statusText: 'Internal Server Error',
+                headers: { 'Content-Type': 'application/json' },
+              },
+            ),
           )
 
         vi.stubGlobal('fetch', revokeApi)
