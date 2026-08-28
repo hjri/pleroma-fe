@@ -1,4 +1,3 @@
-import { uniqBy } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 
 import AvatarList from 'src/components/avatar_list/avatar_list.vue'
@@ -178,6 +177,12 @@ const Status = {
       return highlightStyle(
         useUserHighlightStore().get(this.repeater.screen_name),
       )
+    },
+    favoritedBy() {
+      return useStatusesStore().favs.get(this.mainStatus.id) ?? new Set()
+    },
+    repeatedBy() {
+      return useStatusesStore().repeats.get(this.mainStatus.id) ?? new Set()
     },
     userStyle() {
       if (this.noHeading) return
@@ -383,12 +388,10 @@ const Status = {
       }
     },
     combinedFavsAndRepeatsUsers() {
-      // Use the status from the global status repository since favs and repeats are saved in it
-      const combinedUsers = [].concat(
-        this.mainStatus.favoritedBy,
-        this.mainStatus.rebloggedBy,
-      )
-      return uniqBy(combinedUsers, 'id')
+      return new Set([
+        ...this.favoritedBy,
+        ...this.repeatedBy,
+      ])
     },
     tags() {
       return [...this.status.tags]
@@ -403,7 +406,7 @@ const Status = {
       return (
         !this.hidePostStats &&
         this.focused &&
-        (this.combinedFavsAndRepeatsUsers.length > 0 ||
+        (this.combinedFavsAndRepeatsUsers.size > 0 ||
           this.mainStatus.quotes_count)
       )
     },
@@ -588,20 +591,18 @@ const Status = {
       // refetch repeats when repeat_num is changed in any way
       if (
         this.focused &&
-        this.mainStatus.rebloggedBy &&
-        this.mainStatus.rebloggedBy.length !== num
+        this.repeatedBy.size !== num
       ) {
-        useStatusesStore().fetchRepeats(this.status.id)
+        useStatusesStore().fetchRepeats(this.mainStatus.id)
       }
     },
     'mainStatus.fave_num': function (num) {
       // refetch favs when fave_num is changed in any way
       if (
         this.focused &&
-        this.mainStatus.favoritedBy &&
-        this.mainStatus.favoritedBy.length !== num
+        this.favoritedBy.size !== num
       ) {
-        useStatusesStore().fetchFavs(this.status.id)
+        useStatusesStore().fetchFavs(this.mainStatus.id)
       }
     },
     isSuspendable: function (suspend) {

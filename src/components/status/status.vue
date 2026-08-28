@@ -464,26 +464,26 @@
             >
               <div class="stats">
                 <UserListPopover
-                  v-if="mainStatus.rebloggedBy && mainStatus.rebloggedBy.length > 0"
-                  :users="mainStatus.rebloggedBy"
+                  v-if="repeatedBy.size > 0"
+                  :user-ids="repeatedBy"
                 >
                   <div class="stat-count">
                     <a class="stat-title">{{ $t('status.repeats') }}</a>
                     <div class="stat-number">
-                      {{ mainStatus.rebloggedBy.length }}
+                      {{ repeatedBy.size }}
                     </div>
                   </div>
                 </UserListPopover>
                 <UserListPopover
-                  v-if="mainStatus.favoritedBy && mainStatus.favoritedBy.length > 0"
-                  :users="mainStatus.favoritedBy"
+                  v-if="favoritedBy.size > 0"
+                  :user-ids="favoritedBy"
                 >
                   <div
                     class="stat-count"
                   >
                     <a class="stat-title">{{ $t('status.favorites') }}</a>
                     <div class="stat-number">
-                      {{ mainStatus.favoritedBy.length }}
+                      {{ favoritedBy.size }}
                     </div>
                   </div>
                 </UserListPopover>
@@ -501,7 +501,7 @@
                   </div>
                 </router-link>
                 <div class="avatar-row">
-                  <AvatarList :users="combinedFavsAndRepeatsUsers" />
+                  <AvatarList :user-ids="combinedFavsAndRepeatsUsers" />
                 </div>
               </div>
             </div>

@@ -9,7 +9,7 @@
     </template>
     <template #content>
       <div class="user-list-popover">
-        <template v-if="users.length">
+        <template v-if="userIds.size > 0">
           <router-link
             v-for="(user) in usersCapped"
             :key="user.id"

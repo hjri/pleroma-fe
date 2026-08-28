@@ -36,6 +36,8 @@ export const defaultState = () => ({
   conversations: new Map(),
   favorites: new Set(),
   socket: null,
+  favs: new Map(),
+  repeats: new Map(),
 })
 
 export const useStatusesStore = defineStore('statuses', {
@@ -189,60 +191,53 @@ export const useStatusesStore = defineStore('statuses', {
         id,
         credentials: useOAuthStore().token,
       }).then(({ data: emojiReactions }) => {
-        this.addEmojiReactionsBy({
-          id,
-          emojiReactions,
-        })
+        this.addEmojiReactionsBy(id, emojiReactions)
       })
     },
     fetchFavs(id) {
       return fetchFavoritedByUsers({
         id,
         credentials: useOAuthStore().token,
-      }).then(({ data: favoritedByUsers }) =>
-        this.addFavs({
-          id,
-          favoritedByUsers,
-        }),
-      )
+      }).then((result) => {
+        const users = useUsersStore().addNewUsers(result)
+        return this.addFavs(id, new Set(users.map(({ id }) => id)))
+      })
     },
     fetchRepeats(id) {
       return fetchRebloggedByUsers({
         id,
         credentials: useOAuthStore().token,
-      }).then(({ data: rebloggedByUsers }) =>
-        this.addRepeats({
-          id,
-          rebloggedByUsers,
-        }),
-      )
+      }).then((result) => {
+        const users = useUsersStore().addNewUsers(result)
+        return this.addRepeats(id, new Set(users.map(({ id }) => id)))
+      })
     },
     fetchFavsAndRepeats(id) {
       return Promise.all([this.fetchFavs(id), this.fetchRepeats(id)])
     },
 
     // Updates
-    addRepeats({ id, rebloggedByUsers }) {
+    addRepeats(id, users) {
       const currentUser = useUsersStore().currentUser
       const newStatus = this.allStatuses.get(id)
-      newStatus.rebloggedBy = rebloggedByUsers.filter(Boolean)
-      // repeats stats can be incorrect based on polling condition, let's update them using the most recent data
-      newStatus.repeat_num = newStatus.rebloggedBy.length
-      newStatus.repeated = !!newStatus.rebloggedBy.find(
-        ({ id }) => currentUser?.id === id,
-      )
+      this.repeats.set(id, users)
+
+      // repeats stats can be incorrect based on polling
+      // condition, let's update them using the most recent data
+      newStatus.repeat_num = users.size
+      newStatus.repeated = users.has(currentUser?.id)
     },
-    addFavs({ id, favoritedByUsers }) {
+    addFavs(id, users) {
       const currentUser = useUsersStore().currentUser
       const newStatus = this.allStatuses.get(id)
-      newStatus.favoritedBy = favoritedByUsers.filter(Boolean)
-      // favorites stats can be incorrect based on polling condition, let's update them using the most recent data
-      newStatus.fave_num = newStatus.favoritedBy.length
-      newStatus.favorited = !!newStatus.favoritedBy.find(
-        ({ id }) => currentUser?.id === id,
-      )
+      this.favs.set(id, users)
+
+      // favorites stats can be incorrect based on polling
+      // condition, let's update them using the most recent data
+      newStatus.fave_num = users.size
+      newStatus.favorited = users.has(currentUser?.id)
     },
-    addEmojiReactionsBy({ id, emojiReactions }) {
+    addEmojiReactionsBy(id, emojiReactions) {
       const status = this.allStatuses.get(id)
       status.emoji_reactions = emojiReactions
     },
