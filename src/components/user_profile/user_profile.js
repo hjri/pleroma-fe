@@ -51,8 +51,7 @@ const UserProfile = {
     isUs() {
       return (
         this.userId &&
-        useUsersStore().currentUser.id &&
-        this.userId === useUsersStore().currentUser.id
+        this.userId === useUsersStore().currentUser?.id
       )
     },
     user() {
