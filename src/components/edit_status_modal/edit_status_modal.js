@@ -19,18 +19,16 @@ const EditStatusModal = {
     }
   },
   computed: {
-    isLoggedIn() {
-      return !!useUsersStore().currentUser
-    },
     modalActivated() {
       return useEditStatusStore().modalActivated
     },
     isFormVisible() {
-      return this.isLoggedIn && !this.resettingForm && this.modalActivated
+      return this.loggedIn && !this.resettingForm && this.modalActivated
     },
     params() {
       return useEditStatusStore().params || {}
     },
+    ...mapState(useUsersStore, ['loggedIn']),
   },
   watch: {
     params(newVal, oldVal) {
