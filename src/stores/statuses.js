@@ -192,7 +192,11 @@ export const useStatusesStore = defineStore('statuses', {
         credentials: useOAuthStore().token,
       }).then(({ data, timestamp }) => {
         data.forEach((reaction) => {
-          const users = useUsersStore().addNewUsers({ timestamp, data: reaction.accounts })
+          const users = useUsersStore().addNewUsers({
+            timestamp,
+            data: reaction.accounts,
+          })
+          reaction.accounts = users
         })
         this.addEmojiReactionsBy(id, data)
       })

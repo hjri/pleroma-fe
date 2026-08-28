@@ -290,7 +290,10 @@ describe('Statuses store', () => {
         'EmojiReactions',
         [
           {
-            accounts: [mockMastoAPIUser({ id: 'u1' }), mockMastoAPIUser({ id: 'u2' })],
+            accounts: [
+              mockMastoAPIUser({ id: 'u1' }),
+              mockMastoAPIUser({ id: 'u2' }),
+            ],
             count: 1,
             me: false,
             name: 'cofe',
@@ -298,8 +301,14 @@ describe('Statuses store', () => {
           },
         ],
       ],
-      ['Favs', [mockMastoAPIUser({ id: 'u1' }), mockMastoAPIUser({ id: 'u2' })]],
-      ['Repeats', [mockMastoAPIUser({ id: 'u1' }), mockMastoAPIUser({ id: 'u2' })]],
+      [
+        'Favs',
+        [mockMastoAPIUser({ id: 'u1' }), mockMastoAPIUser({ id: 'u2' })],
+      ],
+      [
+        'Repeats',
+        [mockMastoAPIUser({ id: 'u1' }), mockMastoAPIUser({ id: 'u2' })],
+      ],
     ])('fetch%s', async (group, mockedResponse) => {
       const mockFetch = vi.fn()
       mockFetch.mockResolvedValueOnce(
