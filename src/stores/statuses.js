@@ -190,8 +190,11 @@ export const useStatusesStore = defineStore('statuses', {
       return fetchEmojiReactions({
         id,
         credentials: useOAuthStore().token,
-      }).then(({ data: emojiReactions }) => {
-        this.addEmojiReactionsBy(id, emojiReactions)
+      }).then(({ data, timestamp }) => {
+        data.forEach((reaction) => {
+          const users = useUsersStore().addNewUsers({ timestamp, data: reaction.accounts })
+        })
+        this.addEmojiReactionsBy(id, data)
       })
     },
     fetchFavs(id) {

@@ -290,7 +290,7 @@ describe('Statuses store', () => {
         'EmojiReactions',
         [
           {
-            accounts: [mockMastoAPIUser()],
+            accounts: [mockMastoAPIUser({ id: 'u1' }), mockMastoAPIUser({ id: 'u2' })],
             count: 1,
             me: false,
             name: 'cofe',
@@ -298,8 +298,8 @@ describe('Statuses store', () => {
           },
         ],
       ],
-      ['Favs', [mockMastoAPIUser()]],
-      ['Repeats', [mockMastoAPIUser()]],
+      ['Favs', [mockMastoAPIUser({ id: 'u1' }), mockMastoAPIUser({ id: 'u2' })]],
+      ['Repeats', [mockMastoAPIUser({ id: 'u1' }), mockMastoAPIUser({ id: 'u2' })]],
     ])('fetch%s', async (group, mockedResponse) => {
       const mockFetch = vi.fn()
       mockFetch.mockResolvedValueOnce(
@@ -309,6 +309,7 @@ describe('Statuses store', () => {
       )
 
       vi.stubGlobal('fetch', mockFetch)
+      const addNewUsers = vi.spyOn(useUsersStore(), 'addNewUsers')
 
       let urlKey
       let prefix = 'MASTODON'
@@ -335,13 +336,29 @@ describe('Statuses store', () => {
       const result = await store[`fetch${group}`]('id')
       const updated = store.allStatuses.get('id')
 
+      // Fetch called
       expect(mockFetch).to.have.been.calledWith(url, DEFAULT_OPTIONS())
+
+      // Users updated
+      if (group !== 'StatusSource') {
+        // first call is the one for the status
+        expect(addNewUsers).to.have.been.calledTwice
+        const secondCallData = addNewUsers.mock.calls[1][0].data
+        expect(secondCallData).to.have.length(2)
+        expect(secondCallData[0]).to.have.property('id', 'u1')
+        expect(secondCallData[1]).to.have.property('id', 'u2')
+      }
+
       if (group === 'Favs') {
-        expect(updated.favoritedBy).to.have.length(1)
-        expect(updated.fave_num).to.eql(1)
+        expect(store.favs).to.have.length(1)
+        expect(store.favs.get('id')).to.have.length(2)
+        expect(store.favs.get('id')).to.eql(new Set(['u1', 'u2']))
+        expect(updated.fave_num).to.eql(2)
       } else if (group === 'Repeats') {
-        expect(updated.rebloggedBy).to.have.length(1)
-        expect(updated.repeat_num).to.eql(1)
+        expect(store.repeats).to.have.length(1)
+        expect(store.repeats.get('id')).to.have.length(2)
+        expect(store.repeats.get('id')).to.eql(new Set(['u1', 'u2']))
+        expect(updated.repeat_num).to.eql(2)
       } else if (group === 'EmojiReactions') {
         expect(updated.emoji_reactions).to.have.length(mockedResponse.length)
         expect(updated.emoji_reactions[0].name).to.eql(mockedResponse[0].name)
