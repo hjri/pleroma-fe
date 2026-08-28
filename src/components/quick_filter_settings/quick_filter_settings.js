@@ -35,6 +35,7 @@ const QuickFilterSettings = {
     },
   },
   computed: {
+    ...mapState(useUsersStore, ['loggedIn']),
     ...mapState(useMergedConfigStore, ['mergedConfig']),
     ...mapState(useInterfaceStore, {
       mobileLayout: (state) => state.layoutType === 'mobile',
@@ -54,9 +55,6 @@ const QuickFilterSettings = {
       } else {
         return 'dropdown-item'
       }
-    },
-    loggedIn() {
-      return !!useUsersStore().currentUser
     },
     replyVisibilitySelf: {
       get() {
