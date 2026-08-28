@@ -718,6 +718,8 @@ export const useUsersStore = defineStore('users', {
       useAnnouncementsStore().stopFetching()
       useListsStore().stopFetching()
       useBookmarkFoldersStore().stopFetching()
+      useChatsStore().stopFetching()
+
       store?.dispatch('stopFetchingFollowRequests')
 
       // NOTE: No need to verify the app still exists, because if it doesn't,
@@ -743,7 +745,6 @@ export const useUsersStore = defineStore('users', {
           // Full reset on logout success
           useTimelinesStore().deactivateAll()
           useStatusesStore().resetStatuses()
-          useChatsStore().stopFetching()
           useChatsStore().resetChats()
 
           this.users = new Map()

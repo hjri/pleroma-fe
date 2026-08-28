@@ -740,19 +740,24 @@ describe('Users store', () => {
 
         const spies = [
           // Misc initialization
-          vi.spyOn(useStatusesStore(), 'resetStatuses'),
-          vi.spyOn(useInterfaceStore(), 'onLogout'),
+          /* 0 */ vi.spyOn(useStatusesStore(), 'resetStatuses'),
+          /* 1 */ vi.spyOn(useInterfaceStore(), 'onLogout'),
 
           // Timeline / Notifications
-          vi.spyOn(useNotificationsStore(), 'deactivate'),
-          vi.spyOn(useTimelinesStore(), 'deactivateAll'),
+          /* 2 */ vi.spyOn(useNotificationsStore(), 'deactivate'),
+          /* 3 */ vi.spyOn(useNotificationsStore(), 'pause'),
+          /* 4 */ vi.spyOn(useNotificationsStore(), 'resume'),
+          /* 5 */ vi.spyOn(useTimelinesStore(), 'deactivateAll'),
+          /* 6 */ vi.spyOn(useTimelinesStore(), 'pauseAll'),
+          /* 7 */ vi.spyOn(useTimelinesStore(), 'resumeAll'),
 
           // Fetchers
-          vi.spyOn(useChatsStore(), 'resetChats'),
-          vi.spyOn(useListsStore(), 'stopFetching'),
-          vi.spyOn(useAnnouncementsStore(), 'stopFetching'),
-          vi.spyOn(useBookmarkFoldersStore(), 'stopFetching'),
-          vi.spyOn(useStreamingStore(), 'stopSocket'),
+          /* 8 */ vi.spyOn(useChatsStore(), 'resetChats'),
+          /* 9 */ vi.spyOn(useChatsStore(), 'stopFetching'),
+          /* 10 */ vi.spyOn(useListsStore(), 'stopFetching'),
+          /* 11 */ vi.spyOn(useAnnouncementsStore(), 'stopFetching'),
+          /* 12 */ vi.spyOn(useBookmarkFoldersStore(), 'stopFetching'),
+          /* 13 */ vi.spyOn(useStreamingStore(), 'stopSocket'),
         ]
 
         spies.forEach((spy) => {
@@ -787,6 +792,88 @@ describe('Users store', () => {
         expect(store.usersByName).to.have.length(0)
         expect(store.usersByURL).to.have.length(0)
         expect(store.relationships).to.have.length(0)
+        spies.forEach((spy, index) => {
+          expect(spy, `Spy ${index} has failed`).to.have.been.called
+        })
+      })
+
+      it('failed logout', async () => {
+        const revokeApi = vi
+          .fn()
+          .mockResolvedValueOnce(
+            // Ensure APP
+            new Response(JSON.stringify('ok'), {
+              headers: { 'Content-Type': 'application/json' },
+            }),
+          )
+          .mockResolvedValueOnce(
+            // Revoke Token
+            new Response(JSON.stringify('Oopsie-woopsie pleroma made a fucky-wucky'), {
+              status: 500,
+              statusText: 'Internal Server Error',
+              headers: { 'Content-Type': 'application/json' },
+            }),
+          )
+
+        vi.stubGlobal('fetch', revokeApi)
+
+        // NOTE: Order is not checked for!
+        const spies = [
+          // ## PAUSE ##
+          // Timeline / Notifications
+          /* 0 */ vi.spyOn(useTimelinesStore(), 'pauseAll'),
+          /* 1 */ vi.spyOn(useNotificationsStore(), 'pause'),
+
+          // Fetchers (Pauseless)
+          /* 2 */ vi.spyOn(useListsStore(), 'stopFetching'),
+          /* 3 */ vi.spyOn(useChatsStore(), 'stopFetching'),
+          /* 4 */ vi.spyOn(useAnnouncementsStore(), 'stopFetching'),
+          /* 5 */ vi.spyOn(useBookmarkFoldersStore(), 'stopFetching'),
+
+          // ## RESUME ##
+          // Timeline / Notifications
+          /* 6 */ vi.spyOn(useNotificationsStore(), 'resume'),
+          /* 7 */ vi.spyOn(useTimelinesStore(), 'resumeAll'),
+
+          // Fetchers (Pauseless)
+          /* 8 */ vi.spyOn(useListsStore(), 'startFetching'),
+          /* 9 */ vi.spyOn(useChatsStore(), 'startFetching'),
+          /* 10 */ vi.spyOn(useAnnouncementsStore(), 'startFetching'),
+          /* 11 */ vi.spyOn(useBookmarkFoldersStore(), 'startFetching'),
+        ]
+
+        spies.forEach((spy) => {
+          spy.mockImplementation(async () => {
+            /* no-op */
+          })
+        })
+
+        useInstanceCapabilitiesStore().pleromaChatMessagesAvailable = true
+        useMergedConfigStore().mergedConfig = { useStreamingApi: true }
+
+        const store = useUsersStore()
+        store.currentUser = mockUser()
+
+        // Adding some users to verify they are getting cleaned afterwards
+        store.addNewUsers({
+          data: [
+            mockUser(),
+            {
+              ...mockUser({ name: 'John', screen_name: 'snake' }),
+              relationship: { id: userId, following: true },
+            },
+            { ...mockUser({ name: 'David Oh', screen_name: 'zero' }) },
+          ],
+          timestamp: 2000,
+        })
+        expect(store.loggedIn).to.eql(true)
+        await store.logout()
+        expect(store.loggedIn).to.eql(true)
+        expect(revokeApi).to.have.been.called
+        expect(store.users).to.have.length(1)
+        expect(store.usersByName).to.have.length(1)
+        expect(store.usersByURL).to.have.length(1)
+        expect(store.relationships).to.have.length(1)
         spies.forEach((spy, index) => {
           expect(spy, `Spy ${index} has failed`).to.have.been.called
         })

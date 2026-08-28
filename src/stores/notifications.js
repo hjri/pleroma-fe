@@ -81,13 +81,15 @@ export const useNotificationsStore = defineStore('notifications', {
     pause() {
       this.paused = true
       if (this.fetcher && this.fetching) {
-        this.stopFetching('Notifications paused')
+        console.debug('[Notifications] Pausing notifications')
+        this.fetcher.stopFetching()
       }
     },
     resume() {
       this.paused = false
       if (this.fetcher && this.fetching) {
-        this.startFetching('Notifications resumed')
+        console.debug('[Notifications] Resuming notifications')
+        this.fetcher.startFetching()
       }
     },
     activate() {
