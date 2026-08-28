@@ -17,18 +17,16 @@ const PostStatusModal = {
     }
   },
   computed: {
-    isLoggedIn() {
-      return !!useUsersStore().currentUser
-    },
     modalActivated() {
       return usePostStatusStore().modalActivated
     },
     isFormVisible() {
-      return this.isLoggedIn && !this.resettingForm && this.modalActivated
+      return this.loggedIn && !this.resettingForm && this.modalActivated
     },
     params() {
       return usePostStatusStore().params || {}
     },
+    ...mapState(useUsersStore, ['loggedIn']),
   },
   watch: {
     params(newVal, oldVal) {

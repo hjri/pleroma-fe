@@ -1,6 +1,6 @@
 <template>
   <Modal
-    v-if="isLoggedIn && !resettingForm"
+    v-if="loggedIn && !resettingForm"
     :is-open="modalActivated"
     class="post-form-modal-view"
     @backdrop-clicked="closeModal"
