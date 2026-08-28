@@ -77,7 +77,8 @@ export const useChatsStore = defineStore('chats', {
     updateChat(updatedChat) {
       const chat = this.data.get(updatedChat.id)
       if (chat) {
-        const isNewMessage = chat.lastMessage?.id !== updatedChat.lastMessage?.id
+        const isNewMessage =
+          chat.lastMessage?.id !== updatedChat.lastMessage?.id
         chat.lastMessage = updatedChat.lastMessage
         chat.unread = updatedChat.unread
         chat.updated_at = updatedChat.updated_at
