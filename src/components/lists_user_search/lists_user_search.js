@@ -4,6 +4,7 @@ import Checkbox from 'src/components/checkbox/checkbox.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons'
+import { useSearchStore } from 'src/stores/search.js'
 
 library.add(faSearch, faChevronLeft)
 
@@ -32,7 +33,7 @@ const ListsUserSearch = {
       this.loading = true
       this.$emit('loading')
       this.userIds = []
-      this.useSearchStore()
+      useSearchStore()
         .search({
           q: query,
           resolve: true,

@@ -5,6 +5,7 @@ import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useUsersStore } from 'src/stores/users.js'
+import { useSearchStore } from 'src/stores/search.js'
 
 import { chats } from 'src/api/chats.js'
 
@@ -71,7 +72,7 @@ const chatNew = {
       this.loading = true
       this.userIds = []
       this.$store
-      this.useSearchStore()
+      useSearchStore()
         .search({ q: query, resolve: true, type: 'accounts' })
         .then((data) => {
           this.loading = false
