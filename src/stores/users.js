@@ -208,7 +208,10 @@ export const useUsersStore = defineStore('users', {
     // Misc updates
     updateUserAdminData(id, data) {
       const user = this.users.get(id)
-
+      if (!user) {
+        console.warn(`User id ${id} somehow not found during admin data update!`)
+        return
+      }
       user.adminData = data
       user.deactivated = !data.is_active
       user.tags = new Set(data.tags)
