@@ -37,9 +37,9 @@ const EmojiReactions = {
     },
     accountsForEmoji() {
       return this.status.emoji_reactions.reduce((acc, reaction) => {
-        acc[reaction.name] = reaction.accounts || []
+        acc.set(reaction.name, new Set(reaction.account_ids))
         return acc
-      }, {})
+      }, new Map())
     },
     loggedIn() {
       return !!useUsersStore().currentUser

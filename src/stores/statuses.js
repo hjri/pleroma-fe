@@ -191,14 +191,22 @@ export const useStatusesStore = defineStore('statuses', {
         id,
         credentials: useOAuthStore().token,
       }).then(({ data, timestamp }) => {
-        data.forEach((reaction) => {
+        const reactions = data.map((reaction) => {
           const users = useUsersStore().addNewUsers({
             timestamp,
             data: reaction.accounts,
           })
-          reaction.accounts = users
+
+          // Backend inconsistency - status data only has ids (account_ids)
+          // but reactions data has full info (accounts)
+          return {
+            ...reaction,
+            accounts: users,
+            account_ids: users.map(({ id }) => id),
+          }
         })
-        this.addEmojiReactionsBy(id, data)
+
+        this.addEmojiReactionsBy(id, reactions)
       })
     },
     fetchFavs(id) {

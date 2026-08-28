@@ -52,7 +52,7 @@
         </FALayers>
       </component>
       <UserListPopover
-        :users="accountsForEmoji[reaction.name]"
+        :user-ids="accountsForEmoji.get(reaction.name)"
         class="emoji-reaction-popover"
         :normal-button="true"
         :trigger-attrs="counterTriggerAttrs(reaction)"
