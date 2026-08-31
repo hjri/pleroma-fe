@@ -310,8 +310,8 @@ export const useTimelinesStore = defineStore('timelines', {
         }
       })
     },
-    onStreamMessage(timeline, argument, event) {
-      this.addStatusesToTimeline(timeline, argument, {
+    onStreamMessage(timelineName, argument, event) {
+      this.addStatusesToTimeline(timelineName, argument, {
         statuses: event.data.map(({ id }) => id),
         repeats: event.data
           .filter(({ retweeted_status }) => Boolean(retweeted_status))
