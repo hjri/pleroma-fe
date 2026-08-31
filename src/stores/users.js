@@ -679,10 +679,10 @@ export const useUsersStore = defineStore('users', {
         useListsStore().startFetching()
         useBookmarkFoldersStore().startFetching()
 
-        // if (user.locked) {
-        dispatch('startFetchingFollowRequests')
-        useFollowRequestsStore().startFetching()
-        // }
+        if (user.locked) {
+          dispatch('startFetchingFollowRequests')
+          useFollowRequestsStore().startFetching()
+        }
 
         if (useMergedConfigStore().mergedConfig.useStreamingApi) {
           useStreamingStore().initSocket(true)
@@ -726,9 +726,9 @@ export const useUsersStore = defineStore('users', {
       useListsStore().stopFetching()
       useBookmarkFoldersStore().stopFetching()
       useChatsStore().stopFetching()
-      // if (this.currentUser.locked) {
-      useFollowRequestsStore().stopFetching()
-      // }
+      if (this.currentUser.locked) {
+        useFollowRequestsStore().stopFetching()
+      }
 
       store?.dispatch('stopFetchingFollowRequests')
 
