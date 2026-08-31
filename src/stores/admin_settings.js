@@ -400,9 +400,13 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
 
       return {
         items: await Promise.all(
-          users.map((user) => {
-            useUsersStore().updateUserAdminData(user.id, user)
-            return useUsersStore().findUser(user.id)
+          users.map(async (user) => {
+            const fullUser = await useUsersStore().fetchUserIfMissing({
+              id: user.id,
+            })
+
+            if (fullUser) useUsersStore().updateUserAdminData(user.id, user)
+            return fullUser
           }),
         ),
         count,

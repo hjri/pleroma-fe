@@ -40,7 +40,7 @@ const UserAvatar = {
       return useUsersStore().findUser(this.userId)
     },
     showActorTypeIndicator() {
-      return useMergedConfigStore().mergedConfig.hideBotIndication
+      return !useMergedConfigStore().mergedConfig.hideBotIndication
     },
   },
   methods: {
