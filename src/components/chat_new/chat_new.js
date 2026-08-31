@@ -51,7 +51,7 @@ const chatNew = {
       this.$emit('cancel')
     },
     goToChat(user) {
-      this.$router.push({ name: 'chat', params: { recipient_id: user.id } })
+      this.$router.push({ name: 'chat', params: { chatUserId: user.id } })
     },
     onInput() {
       this.search(this.query)
