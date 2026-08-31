@@ -62,6 +62,23 @@ const TimelineMenu = {
         (route === 'bookmark-folder' || route === 'bookmarks')
       )
     },
+    timelineName() {
+      const route = this.$route.name
+      if (route === 'tag-timeline') {
+        return '#' + this.$route.params.tag
+      }
+      if (route === 'lists-timeline') {
+        console.log(useListsStore, this.$route.params.id)
+        return useListsStore().findListTitle(this.$route.params.id)
+      }
+      if (route === 'bookmark-folder') {
+        return useBookmarkFoldersStore().findBookmarkFolderName(
+          this.$route.params.id,
+        )
+      }
+      const i18nkey = timelineNames(this.bookmarkFolders)[this.$route.name]
+      return i18nkey ? this.$t(i18nkey) : route
+    },
     ...mapState(useInstanceCapabilitiesStore, [
       'pleromaChatMessagesAvailable',
       'pleromaBookmarkFoldersAvailable',
@@ -102,22 +119,6 @@ const TimelineMenu = {
       if (!this.isOpen) {
         event.stopPropagation()
       }
-    },
-    timelineName() {
-      const route = this.$route.name
-      if (route === 'tag-timeline') {
-        return '#' + this.$route.params.tag
-      }
-      if (route === 'lists-timeline') {
-        return useListsStore().findListTitle(this.$route.params.id)
-      }
-      if (route === 'bookmark-folder') {
-        return useBookmarkFoldersStore().findBookmarkFolderName(
-          this.$route.params.id,
-        )
-      }
-      const i18nkey = timelineNames(this.bookmarkFolders)[this.$route.name]
-      return i18nkey ? this.$t(i18nkey) : route
     },
   },
 }
