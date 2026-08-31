@@ -11,6 +11,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useListsStore } from 'src/stores/lists.js'
+import { useShoutStore } from 'src/stores/shout.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
@@ -663,8 +664,8 @@ export const useUsersStore = defineStore('users', {
 
         if (user.token) {
           // Shoutbox
-          dispatch('setWsToken', user.token)
-          dispatch('initializeSocket')
+          useShoutStore().initializeSocket()
+          useShoutStore().initializeShout()
         }
 
         // DMs and Home
@@ -747,6 +748,7 @@ export const useUsersStore = defineStore('users', {
         })
         .then(() => {
           oauth.clearToken()
+          useShoutStore().disconnectSocket()
 
           this.currentUser = null
 
