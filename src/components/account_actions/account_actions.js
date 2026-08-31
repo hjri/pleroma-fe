@@ -90,7 +90,7 @@ const AccountActions = {
         name: 'chat',
         params: {
           username: useUsersStore().currentUser.screen_name,
-          recipient_id: this.user.id,
+          chatUserId: this.user.id,
         },
       })
     },
