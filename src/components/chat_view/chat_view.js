@@ -472,8 +472,8 @@ const Chat = {
 
         // Clear any known pending messages
         if (message.idempotency_key) {
-          if (this.pendingMessagesIndex[message.idempotencyKeyIndex]) {
-            delete this.pendingMessagesIndex[message.idempotencyKeyIndex]
+          if (this.pendingMessagesIndex[message.idempotency_key]) {
+            delete this.pendingMessagesIndex[message.idempotency_key]
             this.pendingMessages = this.pendingMessages.filter(
               ({ idempotency_key }) =>
                 idempotency_key !== message.idempotency_key,
