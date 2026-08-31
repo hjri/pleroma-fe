@@ -8,6 +8,7 @@ import { unseenNotifications } from '../../services/notification_utils/notificat
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useChatsStore } from 'src/stores/chats.js'
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface'
@@ -85,9 +86,6 @@ const SideDrawer = {
     unseenNotificationsCount() {
       return this.unseenNotifications.length
     },
-    followRequestCount() {
-      return this.$store.state.api.followRequests.length
-    },
     timelinesRoute() {
       let name
       if (useInterfaceStore().lastTimeline) {
@@ -100,6 +98,7 @@ const SideDrawer = {
         return { name }
       }
     },
+    ...mapState(useFollowRequestsStore, ['followRequestsCount']),
     ...mapState(useAnnouncementsStore, [
       'supportsAnnouncements',
       'unreadAnnouncementCount',

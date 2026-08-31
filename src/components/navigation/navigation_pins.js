@@ -1,5 +1,4 @@
 import { mapState } from 'pinia'
-import { mapState as mapVuexState } from 'vuex'
 
 import {
   filterNavigation,
@@ -14,6 +13,7 @@ import {
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useListsStore } from 'src/stores/lists'
@@ -78,9 +78,7 @@ const NavPanel = {
       'localBubble',
     ]),
     ...mapState(useUsersStore, ['currentUser']),
-    ...mapVuexState({
-      followRequestCount: (state) => state.api.followRequests.length,
-    }),
+    ...mapState(useFollowRequestsStore, ['followRequestsCount']),
     pinnedList() {
       if (!this.currentUser) {
         return filterNavigation(

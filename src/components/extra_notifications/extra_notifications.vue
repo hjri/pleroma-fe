@@ -48,7 +48,7 @@
           class="fa-scale-110 icon"
           icon="user-plus"
         />
-        {{ $t('notifications.unread_follow_requests', { num: followRequestCount }, followRequestCount) }}
+        {{ $t('notifications.unread_follow_requests', { num: followRequestsCount }, followRequestsCount) }}
       </router-link>
     </div>
     <i18n-t

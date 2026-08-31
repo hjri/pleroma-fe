@@ -1,3 +1,5 @@
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
+
 import FollowRequestCard from 'src/components/follow_request_card/follow_request_card.vue'
 
 const FollowRequests = {
@@ -6,7 +8,7 @@ const FollowRequests = {
   },
   computed: {
     requests() {
-      return this.$store.state.api.followRequests
+      return useFollowRequestsStore().requests.values()
     },
   },
 }

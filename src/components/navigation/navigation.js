@@ -85,7 +85,7 @@ export const ROOT_ITEMS = {
     label: 'nav.friend_requests',
     badgeStyle: 'notification',
     criteria: ['lockedUser'],
-    badgeGetter: 'followRequestCount',
+    badgeGetter: 'followRequestsCount',
   },
   about: {
     route: 'about',

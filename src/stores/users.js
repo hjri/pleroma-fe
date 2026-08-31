@@ -6,6 +6,7 @@ import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
 import { useChatsStore } from 'src/stores/chats.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
@@ -678,9 +679,10 @@ export const useUsersStore = defineStore('users', {
         useListsStore().startFetching()
         useBookmarkFoldersStore().startFetching()
 
-        if (user.locked) {
-          dispatch('startFetchingFollowRequests')
-        }
+        // if (user.locked) {
+        dispatch('startFetchingFollowRequests')
+        useFollowRequestsStore().startFetching()
+        // }
 
         if (useMergedConfigStore().mergedConfig.useStreamingApi) {
           useStreamingStore().initSocket(true)
@@ -724,6 +726,9 @@ export const useUsersStore = defineStore('users', {
       useListsStore().stopFetching()
       useBookmarkFoldersStore().stopFetching()
       useChatsStore().stopFetching()
+      // if (this.currentUser.locked) {
+      useFollowRequestsStore().stopFetching()
+      // }
 
       store?.dispatch('stopFetchingFollowRequests')
 

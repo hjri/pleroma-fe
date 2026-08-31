@@ -1,19 +1,12 @@
 import { Socket } from 'phoenix'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
 import { useShoutStore } from 'src/stores/shout.js'
-
-import followRequestFetcher from 'src/services/follow_request_fetcher/follow_request_fetcher.service'
 
 const api = {
   state: {
     fetchers: {},
     socket: null,
-    followRequests: [],
-  },
-  getters: {
-    followRequestCount: (state) => state.followRequests.length,
   },
   mutations: {
     addFetcher(state, { fetcherName, fetcher }) {
@@ -29,27 +22,8 @@ const api = {
     setSocket(state, socket) {
       state.socket = socket
     },
-    setFollowRequests(state, value) {
-      state.followRequests = value
-    },
   },
   actions: {
-    // Follow requests
-    startFetchingFollowRequests(store) {
-      if (store.state.fetchers.followRequests) return
-      const fetcher = followRequestFetcher.startFetching({
-        store,
-        credentials: useOAuthStore().token,
-      })
-
-      store.commit('addFetcher', { fetcherName: 'followRequests', fetcher })
-    },
-    stopFetchingFollowRequests(store) {
-      const fetcher = store.state.fetchers.followRequests
-      if (!fetcher) return
-      store.commit('removeFetcher', { fetcherName: 'followRequests', fetcher })
-    },
-
     // Pleroma websocket
     setWsToken(store, token) {
       store.commit('setWsToken', token)

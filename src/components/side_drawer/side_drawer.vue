@@ -141,10 +141,10 @@
               icon="user-plus"
             /> {{ $t("nav.friend_requests") }}
             <span
-              v-if="followRequestCount > 0"
+              v-if="followRequestsCount > 0"
               class="badge -notification"
             >
-              {{ followRequestCount }}
+              {{ followRequestsCount }}
             </span>
           </router-link>
         </li>

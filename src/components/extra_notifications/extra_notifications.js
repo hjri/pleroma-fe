@@ -1,8 +1,8 @@
 import { mapState } from 'pinia'
-import { mapGetters } from 'vuex'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useChatsStore } from 'src/stores/chats.js'
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
@@ -37,7 +37,7 @@ const ExtraNotifications = {
       return (
         this.mergedConfig.showExtraNotifications &&
         this.mergedConfig.showFollowRequestsInExtraNotifications &&
-        this.followRequestCount
+        this.followRequestsCount
       )
     },
     hasAnythingToShow() {
@@ -55,12 +55,12 @@ const ExtraNotifications = {
     currentUser() {
       return useUsersStore().currentUser
     },
-    ...mapGetters(['followRequestCount']),
     ...mapState(useAnnouncementsStore, {
       unreadAnnouncementCount: 'unreadAnnouncementCount',
     }),
     ...mapState(useMergedConfigStore, ['mergedConfig']),
     ...mapState(useChatsStore, ['unreadChatsCount']),
+    ...mapState(useFollowRequestsStore, ['followRequestsCount']),
   },
   methods: {
     openNotificationSettings() {

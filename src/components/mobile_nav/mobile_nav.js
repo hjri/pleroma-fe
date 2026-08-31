@@ -10,6 +10,7 @@ import {
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useChatsStore } from 'src/stores/chats.js'
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useNotificationsStore } from 'src/stores/notifications.js'
@@ -67,10 +68,10 @@ const MobileNav = {
       return (
         this.unseenNotifications.length +
         countExtraNotifications(
-          this.$store,
           useMergedConfigStore().mergedConfig,
           useChatsStore().unreadChatsCount,
           useAnnouncementsStore().unreadAnnouncementCount,
+          useFollowRequestsStore().followRequestsCount,
         )
       )
     },
