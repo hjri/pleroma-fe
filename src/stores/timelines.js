@@ -414,7 +414,7 @@ export const useTimelinesStore = defineStore('timelines', {
     },
 
     // Queues & Timeline manip
-    updateTimelineExtremes(timeline, pagination = {}) {
+    updateTimelineExtremes(timeline, pagination = {}, force = false) {
       // Can't use Math.min/max because it doesn't work with string (duh)
       const minNew = pagination.maxId ?? last(timeline.order) ?? ''
       const maxNew = pagination.minId ?? first(timeline.order) ?? ''
@@ -422,10 +422,10 @@ export const useTimelinesStore = defineStore('timelines', {
       const newer = maxNew > timeline.maxId
       const older = minNew < timeline.minId
 
-      if (newer || timeline.maxId === '') {
+      if (force || newer || timeline.maxId === '') {
         timeline.maxId = maxNew
       }
-      if (older || timeline.minId === '') {
+      if (force || older || timeline.minId === '') {
         timeline.minId = minNew
       }
 
@@ -442,7 +442,7 @@ export const useTimelinesStore = defineStore('timelines', {
       timeline.visibleStatusIds = new Set([
         ...timeline.order.filter((id) => !timeline.ignoredIds.has(id)),
       ])
-      this.updateTimelineExtremes(timeline)
+      this.updateTimelineExtremes(timeline, {}, true)
     },
     syncOrder(timeline) {
       timeline.order = timeline.order.filter((id) => timeline.statusIds.has(id))
