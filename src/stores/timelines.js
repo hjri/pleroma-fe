@@ -347,7 +347,7 @@ export const useTimelinesStore = defineStore('timelines', {
       // If it's the only reprööt then we've never seen post before
       if (knownRepeats.size === 1) return false
       // If we're working on oldest known reprööt then we've never seen it before
-      return first(knownRepeats) !== statusId
+      return knownRepeats.values().next().value !== statusId
     },
 
     // Poll & Push
