@@ -1,14 +1,19 @@
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 const AvatarList = {
-  props: ['users'],
+  props: {
+    userIds: Set,
+  },
   computed: {
     slicedUsers() {
-      return this.users ? this.users.slice(0, 15) : []
+      return [...(this.userIds ?? [])]
+        .slice(0, 15)
+        .map((id) => useUsersStore().findUser(id))
     },
   },
   components: {

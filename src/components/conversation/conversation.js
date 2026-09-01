@@ -1,6 +1,5 @@
-import { clone, filter, findIndex, get, reduce } from 'lodash'
-import { mapState as mapPiniaState } from 'pinia'
-import { mapState } from 'vuex'
+import { get, reduce } from 'lodash'
+import { mapState } from 'pinia'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
@@ -9,9 +8,11 @@ import QuickViewSettings from 'src/components/quick_view_settings/quick_view_set
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
 
-import { useInterfaceStore } from 'src/stores/interface'
+import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
 
 import { fetchConversation, fetchStatus } from 'src/api/public.js'
 import { WSConnectionStatus } from 'src/api/websocket.js'
@@ -49,20 +50,6 @@ const sortById = (a, b) => {
   } else {
     return idA < idB ? -1 : 1
   }
-}
-
-const sortAndFilterConversation = (conversation, statusoid) => {
-  if (statusoid.type === 'retweet') {
-    conversation = filter(
-      conversation,
-      (status) =>
-        status.type === 'retweet' ||
-        status.id !== statusoid.retweeted_status.id,
-    )
-  } else {
-    conversation = filter(conversation, (status) => status.type !== 'retweet')
-  }
-  return conversation.filter(Boolean).sort(sortById)
 }
 
 const conversation = {
@@ -106,6 +93,7 @@ const conversation = {
       default: false,
     },
   },
+  emits: ['update:virtualHeight'],
   data() {
     return {
       focused: null,
@@ -114,6 +102,7 @@ const conversation = {
       inlineDivePosition: null,
       loadStatusError: null,
       unsuspendibleIds: new Set(),
+      virtualHeight: 120,
     }
   },
   created() {
@@ -121,7 +110,13 @@ const conversation = {
       this.fetchConversation()
     }
   },
+  mounted() {
+    this.updateVirtualHeight()
+  },
   computed: {
+    status() {
+      return useStatusesStore().allStatuses.get(this.statusId)
+    },
     maxDepthToShowByDefault() {
       // maxDepthInThread = max number of depths that is *visible*
       // since our depth starts with 0 and "showing" means "showing children"
@@ -160,13 +155,10 @@ const conversation = {
       return this.otherRepliesButtonPosition === 'inside'
     },
     suspendable() {
-      return this.unsuspendibleIds.size > 0
+      return this.unsuspendibleIds.size === 0
     },
-    hideStatus() {
+    hide() {
       return this.virtualHidden && this.suspendable
-    },
-    status() {
-      return this.$store.state.statuses.allStatusesObject[this.statusId]
     },
     originalStatusId() {
       if (this.status.retweeted_status) {
@@ -187,15 +179,14 @@ const conversation = {
         return [this.status]
       }
 
-      const conversation = clone(
-        this.$store.state.statuses.conversationsObject[this.conversationId],
+      const conversation = useStatusesStore().conversations.get(
+        this.conversationId,
       )
-      const statusIndex = findIndex(conversation, { id: this.originalStatusId })
-      if (statusIndex !== -1) {
-        conversation[statusIndex] = this.status
-      }
 
-      return sortAndFilterConversation(conversation, this.status)
+      return [...conversation.keys()]
+        .map((k) => useStatusesStore().allStatuses.get(k))
+        .filter((status) => status.type != 'repeat') // Old backend behavior?
+        .toSorted(sortById)
     },
     statusMap() {
       return this.conversation.reduce((res, s) => {
@@ -375,8 +366,7 @@ const conversation = {
       return !!(this.expanded || this.isPage)
     },
     hiddenStyle() {
-      const height = this.status?.virtualHeight || '120px'
-      return this.virtualHidden ? { height } : {}
+      return { height: this.virtualHeight + 'px' }
     },
     threadDisplayStatus() {
       return this.conversation.reduce((a, k) => {
@@ -403,11 +393,11 @@ const conversation = {
     maybeFocused() {
       return this.isExpanded ? this.focused : null
     },
-    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
-    ...mapState({
-      mastoUserSocketStatus: (state) => state.api.mastoUserSocketStatus,
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
+    ...mapState(useStreamingStore, {
+      mastoUserSocketStatus: (state) => state.state,
     }),
-    ...mapPiniaState(useInterfaceStore, {
+    ...mapState(useInterfaceStore, {
       mobileLayout: (store) => store.layoutType === 'mobile',
     }),
   },
@@ -441,10 +431,7 @@ const conversation = {
       }
     },
     virtualHidden() {
-      this.$store.dispatch('setVirtualHeight', {
-        statusId: this.statusId,
-        height: `${this.$el.clientHeight}px`,
-      })
+      this.updateVirtualHeight()
     },
   },
   methods: {
@@ -453,9 +440,12 @@ const conversation = {
         fetchConversation({
           id: this.statusId,
           credentials: useOAuthStore().token,
-        }).then(({ data: { ancestors, descendants } }) => {
-          this.$store.dispatch('addNewStatuses', { statuses: ancestors })
-          this.$store.dispatch('addNewStatuses', { statuses: descendants })
+        }).then(({ data: { ancestors, descendants }, timestamp }) => {
+          useStatusesStore().addNewStatuses({ statuses: ancestors, timestamp })
+          useStatusesStore().addNewStatuses({
+            statuses: descendants,
+            timestamp,
+          })
           this.setFocused(this.originalStatusId)
         })
       } else {
@@ -465,7 +455,7 @@ const conversation = {
           credentials: useOAuthStore().token,
         })
           .then(({ data: status }) => {
-            this.$store.dispatch('addNewStatuses', { statuses: [status] })
+            useStatusesStore().addNewStatuses({ statuses: [status] })
             this.fetchConversation()
           })
           .catch((error) => {
@@ -482,17 +472,17 @@ const conversation = {
       this.focused = id
 
       if (!this.streamingEnabled) {
-        this.$store.dispatch('fetchStatus', id)
+        useStatusesStore().fetchStatus(id)
       }
 
-      this.$store.dispatch('fetchFavsAndRepeats', id)
-      this.$store.dispatch('fetchEmojiReactionsBy', id)
+      useStatusesStore().fetchFavsAndRepeats(id)
+      useStatusesStore().fetchEmojiReactions(id)
     },
     toggleExpanded() {
       this.expanded = !this.expanded
     },
     getConversationId(statusId) {
-      const status = this.$store.state.statuses.allStatusesObject[statusId]
+      const status = useStatusesStore().allStatuses.get(statusId)
       return get(
         status,
         'retweeted_status.statusnet_conversation_id',
@@ -629,6 +619,18 @@ const conversation = {
       if (this.isPage) {
         this.$router.push({ name: 'conversation', params: { id: data.id } })
       }
+    },
+    updateVirtualHeight() {
+      if (this.hide) return // no updates when not rendering
+      if (!this.status) return // not loaded yet
+      this.$nextTick(() => {
+        this.virtualHeight = this.$refs.body.getBoundingClientRect().height
+        this.$emit('update:virtualHeight', {
+          id: this.status.id,
+          height: this.virtualHeight,
+          top: this.$el.clientTop,
+        })
+      })
     },
   },
 }

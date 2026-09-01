@@ -5,6 +5,10 @@ import { defineAsyncComponent } from 'vue'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
+import { useUsersStore } from 'src/stores/users.js'
+
+import { WSConnectionStatus } from 'src/api/websocket.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -14,6 +18,8 @@ import {
   faComments,
   faHome,
   faInfoCircle,
+  faPlug,
+  faPlugCircleXmark,
   faSearch,
   faSignInAlt,
   faSignOutAlt,
@@ -33,6 +39,8 @@ library.add(
   faTachometerAlt,
   faCog,
   faInfoCircle,
+  faPlug,
+  faPlugCircleXmark,
 )
 
 export default {
@@ -91,11 +99,23 @@ export default {
       sitename: (store) => store.instanceIdentity.name,
       hideSitename: (store) => store.instanceIdentity.hideSitename,
     }),
-    currentUser() {
-      return this.$store.state.users.currentUser
-    },
+    ...mapState(useUsersStore, ['currentUser']),
+    ...mapState(useStreamingStore, {
+      streamingConnected: (store) => store.state === WSConnectionStatus.JOINED,
+    }),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
     shouldConfirmLogout() {
-      return useMergedConfigStore().mergedConfig.modalOnLogout
+      return this.mergedConfig.modalOnLogout
+    },
+    streamingEnabled() {
+      return this.mergedConfig.useStreamingApi
+    },
+    streamingTooltip() {
+      if (this.streamingConnected) {
+        return this.$t('timeline.socket_reconnected')
+      } else {
+        return this.$t('timeline.socket_disconnected')
+      }
     },
   },
   methods: {
@@ -115,9 +135,9 @@ export default {
         this.showConfirmLogout()
       }
     },
-    doLogout() {
+    async doLogout() {
+      await useUsersStore().logout()
       this.$router.replace('/main/public')
-      this.$store.dispatch('logout')
       this.hideConfirmLogout()
     },
     onSearchBarToggled(hidden) {

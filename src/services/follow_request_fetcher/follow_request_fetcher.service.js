@@ -1,12 +1,15 @@
+import { useUsersStore } from 'src/stores/users.js'
+
 import { fetchFollowRequests } from 'src/api/user.js'
 import { promiseInterval } from 'src/services/promise_interval/promise_interval.js'
 
 const fetchAndUpdate = ({ store, credentials }) => {
   return fetchFollowRequests({ credentials })
     .then(
-      ({ data: requests }) => {
+      (result) => {
+        const { data: requests } = result
         store.commit('setFollowRequests', requests)
-        store.commit('addNewUsers', requests)
+        useUsersStore().addNewUsers(result)
       },
       (rej) => {
         console.error(rej)

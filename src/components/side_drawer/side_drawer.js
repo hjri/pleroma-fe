@@ -4,7 +4,7 @@ import { mapGetters } from 'vuex'
 import { USERNAME_ROUTES } from 'src/components/navigation/navigation.js'
 import UserCard from 'src/components/user_card/user_card.vue'
 import GestureService from '../../services/gesture_service/gesture_service'
-import { unseenNotificationsFromStore } from '../../services/notification_utils/notification_utils'
+import { unseenNotifications } from '../../services/notification_utils/notification_utils'
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useChatsStore } from 'src/stores/chats.js'
@@ -13,6 +13,7 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useShoutStore } from 'src/stores/shout'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -70,14 +71,13 @@ const SideDrawer = {
   },
   computed: {
     currentUser() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
     shout() {
       return useShoutStore().joined
     },
     unseenNotifications() {
-      return unseenNotificationsFromStore(
-        this.$store,
+      return unseenNotifications(
         useMergedConfigStore().mergedConfig.notificationVisibility,
         useMergedConfigStore().mergedConfig.ignoreInactionableSeen,
       )

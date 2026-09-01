@@ -1,6 +1,8 @@
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
 import ModerationTools from 'src/components/moderation_tools/moderation_tools.vue'
 
+import { useUsersStore } from 'src/stores/users.js'
+
 const AdminUserCard = {
   props: {
     userId: {
@@ -13,7 +15,7 @@ const AdminUserCard = {
   },
   computed: {
     user() {
-      return this.$store.getters.findUser(this.userId)
+      return useUsersStore().findUser(this.userId)
     },
     isAdmin() {
       return this.user.rights.admin

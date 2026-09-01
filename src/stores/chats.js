@@ -1,113 +1,95 @@
-import { find, omitBy, orderBy, sumBy } from 'lodash'
+import { orderBy, sumBy } from 'lodash'
 import { defineStore } from 'pinia'
 
 import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'
 import { promiseInterval } from '../services/promise_interval/promise_interval.js'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { chats } from 'src/api/chats.js'
 
-const emptyChatList = () => ({
-  data: [],
-  idStore: {},
-})
-
 const defaultState = {
-  chatList: emptyChatList(),
-  chatListFetcher: null,
-}
-
-const getChatById = (state, id) => {
-  return find(state.chatList.data, { id })
+  data: new Map(),
+  fetcher: null,
 }
 
 export const useChatsStore = defineStore('chats', {
   state: () => ({ ...defaultState }),
   getters: {
     sortedChatList(state) {
-      return orderBy(state.chatList.data, ['updated_at'], ['desc'])
+      return orderBy([...state.data.values()], ['updated_at'], ['desc'])
     },
     unreadChatsCount(state) {
-      return sumBy(state.chatList.data, 'unread')
+      return sumBy([...state.data.values()], 'unread')
     },
   },
   actions: {
-    startFetchingChats() {
-      const fetcher = () => this.fetchChats()
-      this.setChatListFetcher(() => promiseInterval(fetcher, 5000))
+    attachSocket() {
+      const et = new EventTarget()
+      const socket = {
+        name: 'chats',
+        et,
+      }
+
+      et.addEventListener('pleroma:chat_update', ({ data: { chatUpdate } }) => {
+        this.updateChat(chatUpdate)
+      })
+
+      useStreamingStore().addSubscriber(socket)
     },
-    stopFetchingChats() {
-      this.setChatListFetcher(null)
+    startFetching() {
+      this.fetcher = promiseInterval(() => this.fetchChats(), 5000)
+      this.fetchChats()
+    },
+    stopFetching() {
+      this.fetcher?.stop()
+      this.fetcher = null
     },
     async fetchChats() {
-      const { data } = await chats({
-        credentials: useOAuthStore().token,
-      })
-
-      this.addNewChats(data)
-    },
-    setChatListFetcher(fetcher) {
-      const prevFetcher = this.chatListFetcher
-      if (prevFetcher) {
-        prevFetcher.stop()
-      }
-      this.chatListFetcher = fetcher?.()
+      this.addNewChats(
+        await chats({
+          credentials: useOAuthStore().token,
+        }),
+      )
     },
     resetChats() {
-      this.chatList = emptyChatList()
-      this.setChatListFetcher(null)
+      this.data = new Map()
     },
-    addNewChats(chats) {
-      window.vuex.commit(
-        'addNewUsers',
-        chats.map((k) => k.account).filter(Boolean),
-      )
-
-      chats.forEach((updatedChat) => {
-        const chat = getChatById(this, updatedChat.id)
-
-        if (chat) {
-          const isNewMessage =
-            chat.lastMessage?.id !== updatedChat.lastMessage?.id
-          chat.lastMessage = updatedChat.lastMessage
-          chat.unread = updatedChat.unread
-          chat.updated_at = updatedChat.updated_at
-          if (isNewMessage && chat.unread) {
-            maybeShowChatNotification(chat)
-          }
-        } else {
-          this.chatList.data.push(updatedChat)
-          this.chatList.idStore[updatedChat.id] = updatedChat
-        }
+    addNewChats(result) {
+      useUsersStore().addNewUsers({
+        ...result,
+        data: result.data.map((k) => k.account).filter(Boolean),
       })
+
+      // We do unshift in update so we reverse the chat list here
+      result.data.forEach((chat) => this.updateChat(chat))
     },
     readChat(id) {
-      const chat = getChatById(this, id)
+      const chat = this.data.get(id)
       if (chat) {
         chat.unread = 0
+      } else {
+        console.error(`Chat ${id} not found!`)
       }
     },
-    updateChat({ chat: updatedChat }) {
-      const chat = getChatById(this, updatedChat.id)
+    updateChat(updatedChat) {
+      const chat = this.data.get(updatedChat.id)
       if (chat) {
+        const isNewMessage =
+          chat.lastMessage?.id !== updatedChat.lastMessage?.id
         chat.lastMessage = updatedChat.lastMessage
         chat.unread = updatedChat.unread
         chat.updated_at = updatedChat.updated_at
+        if (isNewMessage) maybeShowChatNotification(chat)
+      } else {
+        this.data.set(updatedChat.id, updatedChat)
+        maybeShowChatNotification(updatedChat)
       }
-      if (!chat) {
-        this.chatList.data.unshift(updatedChat)
-      }
-      this.chatList.idStore[updatedChat.id] = updatedChat
     },
     deleteChat(id) {
-      this.chats.data = this.chats.data.filter(
-        (conversation) => conversation.last_status.id !== id,
-      )
-      this.chats.idStore = omitBy(
-        this.chats.idStore,
-        (conversation) => conversation.last_status.id === id,
-      )
+      this.data.delete(id)
     },
   },
 })

@@ -9,6 +9,8 @@ import UserCard from 'src/components/user_card/user_card.vue'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useTimelinesStore } from 'src/stores/timelines.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
@@ -36,30 +38,21 @@ const UserProfile = {
     useInterfaceStore().setForeignProfileBackground(this.user?.background_image)
   },
   unmounted() {
-    this.stopFetching()
     useInterfaceStore().setForeignProfileBackground(null)
-    this.$store.dispatch('clearFollowers', this.userId)
-    this.$store.dispatch('clearFriends', this.userId)
+    useUsersStore().clearFollowLists(this.userId)
   },
   computed: {
-    timeline() {
-      return this.$store.state.statuses.timelines.user
-    },
     favorites() {
-      return this.$store.state.statuses.timelines.favorites
+      return useTimelinesStore().favorites
     },
     media() {
-      return this.$store.state.statuses.timelines.media
+      return useTimelinesStore().media
     },
     isUs() {
-      return (
-        this.userId &&
-        this.$store.state.users.currentUser.id &&
-        this.userId === this.$store.state.users.currentUser.id
-      )
+      return this.userId && this.userId === useUsersStore().currentUser?.id
     },
     user() {
-      return this.$store.getters.findUser(this.userId)
+      return useUsersStore().findUser(this.userId)
     },
     isExternal() {
       return this.$route.name === 'external-user-profile'
@@ -81,18 +74,14 @@ const UserProfile = {
       return useMergedConfigStore().mergedConfig.compactProfiles
     },
     friends() {
-      return get(
-        this.$store.getters.findUser(this.userId),
-        'friendIds',
-        [],
-      ).map((id) => this.$store.getters.findUser(id))
+      return [
+        ...useUsersStore().relationshipsLists.friends.get(this.user).keys(),
+      ].map((id) => useUsersStore().findUser(id))
     },
     followers() {
-      return get(
-        this.$store.getters.findUser(this.userId),
-        'followerIds',
-        [],
-      ).map((id) => this.$store.getters.findUser(id))
+      return [
+        ...useUsersStore().relationshipsLists.followers.get(this.user).keys(),
+      ].map((id) => useUsersStore().findUser(id))
     },
   },
   methods: {
@@ -101,30 +90,13 @@ const UserProfile = {
     },
     fetchUsers(group) {
       return () =>
-        this.$store
-          .dispatch('fetch' + group, this.userId)
+        useUsersStore()
+          ['fetch' + group](this.userId)
           .then((result) => ({ items: result }))
     },
     load(userNameOrId) {
-      const startFetchingTimeline = (timeline, userId) => {
-        // Clear timeline only if load another user's profile
-        if (userId !== this.$store.state.statuses.timelines[timeline].userId) {
-          this.$store.commit('clearTimeline', { timeline })
-        }
-        this.$store.dispatch('startFetchingTimeline', { timeline, userId })
-      }
-
       const loadById = (userId) => {
         this.userId = userId
-        startFetchingTimeline('user', userId)
-        startFetchingTimeline('media', userId)
-        if (this.isUs) {
-          startFetchingTimeline('favorites')
-        } else if (!this.user.hide_favorites) {
-          startFetchingTimeline('favorites', userId)
-        }
-        // Fetch all pinned statuses immediately
-        this.$store.dispatch('fetchPinnedStatuses', userId)
       }
 
       // Reset view
@@ -136,15 +108,17 @@ const UserProfile = {
 
       // Check if user data is already loaded in store
       const user = maybeId
-        ? this.$store.getters.findUser(maybeId)
-        : this.$store.getters.findUserByName(maybeName)
+        ? useUsersStore().findUser(maybeId)
+        : useUsersStore().findUserByName(maybeName)
+
       if (user) {
         loadById(user.id)
       } else {
-        ;(maybeId
-          ? this.$store.dispatch('fetchUser', maybeId)
-          : this.$store.dispatch('fetchUserByName', maybeName)
-        )
+        const promise = maybeId
+          ? useUsersStore().fetchUser(maybeId)
+          : useUsersStore().fetchUserByName(maybeName)
+
+        promise
           .then(({ id }) => loadById(id))
           .catch((reason) => {
             const errorMessage = get(reason, 'error.error')
@@ -159,13 +133,7 @@ const UserProfile = {
           })
       }
     },
-    stopFetching() {
-      this.$store.dispatch('stopFetchingTimeline', 'user')
-      this.$store.dispatch('stopFetchingTimeline', 'favorites')
-      this.$store.dispatch('stopFetchingTimeline', 'media')
-    },
     switchUser(userNameOrId) {
-      this.stopFetching()
       this.load(userNameOrId)
     },
     onTabSwitch(tab) {

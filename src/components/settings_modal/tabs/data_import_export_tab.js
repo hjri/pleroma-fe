@@ -1,4 +1,4 @@
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Exporter from 'src/components/exporter/exporter.vue'
@@ -6,6 +6,7 @@ import Importer from 'src/components/importer/importer.vue'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import {
   addBackup,
@@ -39,9 +40,7 @@ const DataImportExportTab = {
     Checkbox,
   },
   computed: {
-    ...mapState({
-      user: (state) => state.users.currentUser,
-    }),
+    ...mapState(useUsersStore, ['currentUser']),
   },
   methods: {
     getFollowsContent() {

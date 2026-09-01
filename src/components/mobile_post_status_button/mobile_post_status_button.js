@@ -1,7 +1,9 @@
 import { debounce } from 'lodash'
+import { mapState } from 'pinia'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { usePostStatusStore } from 'src/stores/post_status.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
@@ -33,9 +35,6 @@ const MobilePostStatusButton = {
     window.removeEventListener('resize', this.handleOSK)
   },
   computed: {
-    isLoggedIn() {
-      return !!this.$store.state.users.currentUser
-    },
     isHidden() {
       if (HIDDEN_FOR_PAGES.has(this.$route.name)) {
         return true
@@ -51,6 +50,7 @@ const MobilePostStatusButton = {
     autohideFloatingPostButton() {
       return !!useMergedConfigStore().mergedConfig.autohideFloatingPostButton
     },
+    ...mapState(useUsersStore, ['loggedIn']),
   },
   watch: {
     autohideFloatingPostButton: function (isEnabled) {

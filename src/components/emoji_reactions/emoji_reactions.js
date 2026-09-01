@@ -3,6 +3,8 @@ import UserListPopover from 'src/components/user_list_popover/user_list_popover.
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCheck, faMinus, faPlus } from '@fortawesome/free-solid-svg-icons'
@@ -35,12 +37,12 @@ const EmojiReactions = {
     },
     accountsForEmoji() {
       return this.status.emoji_reactions.reduce((acc, reaction) => {
-        acc[reaction.name] = reaction.accounts || []
+        acc.set(reaction.name, new Set(reaction.account_ids))
         return acc
-      }, {})
+      }, new Map())
     },
     loggedIn() {
-      return !!this.$store.state.users.currentUser
+      return !!useUsersStore().currentUser
     },
     remoteInteractionLink() {
       return useInstanceStore().getRemoteInteractionLink({
@@ -58,25 +60,22 @@ const EmojiReactions = {
     reactedWith(emoji) {
       return this.status.emoji_reactions.find((r) => r.name === emoji).me
     },
-    async fetchEmojiReactionsByIfMissing() {
+    async fetchEmojiReactionsIfMissing() {
       const hasNoAccounts = this.status.emoji_reactions.find((r) => !r.accounts)
       if (hasNoAccounts) {
-        return await this.$store.dispatch(
-          'fetchEmojiReactionsBy',
-          this.status.id,
-        )
+        return await useStatusesStore().fetchEmojiReactions(this.status.id)
       }
     },
     reactWith(emoji) {
-      this.$store.dispatch('reactWithEmoji', { id: this.status.id, emoji })
+      useStatusesStore().reactWithEmoji(this.status.id, emoji)
     },
     unreact(emoji) {
-      this.$store.dispatch('unreactWithEmoji', { id: this.status.id, emoji })
+      useStatusesStore().unreactWithEmoji(this.status.id, emoji)
     },
     async emojiOnClick(emoji) {
       if (!this.loggedIn) return
 
-      await this.fetchEmojiReactionsByIfMissing()
+      await this.fetchEmojiReactionsIfMissing()
       if (this.reactedWith(emoji)) {
         this.unreact(emoji)
       } else {

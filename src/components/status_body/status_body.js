@@ -3,6 +3,7 @@ import { mapState } from 'pinia'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -154,7 +155,7 @@ const StatusBody = {
   mounted() {
     this.status.attentions?.forEach((attn) => {
       const { id } = attn
-      this.$store.dispatch('fetchUserIfMissing', id)
+      useUsersStore().fetchUserIfMissing({ id })
     })
   },
   methods: {
@@ -171,7 +172,7 @@ const StatusBody = {
           if (!cleanedString.startsWith('@')) return
           const handle = cleanedString.slice(1)
           const host = url.replace(/^https?:\/\//, '').replace(/\/.+?$/, '')
-          this.$store.dispatch('fetchUserIfMissing', `${handle}@${host}`)
+          useUsersStore().fetchUserIfMissing({ name: `${handle}@${host}` })
         })
       /* This is a bit of a hack to make current tall status detector work
        * with rich mentions. Invisible mentions are detected at RichContent level

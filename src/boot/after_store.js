@@ -29,6 +29,7 @@ import {
 import routes from './routes'
 
 import { useAuthFlowStore } from 'src/stores/auth_flow'
+import { useChatsStore } from 'src/stores/chats.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useI18nStore } from 'src/stores/i18n'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -36,9 +37,12 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import VBodyScrollLock from 'src/directives/body_scroll_lock'
 import {
@@ -454,7 +458,7 @@ const setConfig = async ({ store }) => {
 const checkOAuthToken = async ({ store }) => {
   const oauth = useOAuthStore()
   if (oauth.userToken) {
-    return store.dispatch('loginUser', oauth.userToken)
+    return useUsersStore().loginUser(oauth.userToken)
   }
   return
 }
@@ -541,7 +545,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
   window.highlightConfig = useUserHighlightStore()
 
   FaviconService.initFaviconService()
-  initServiceWorker(store)
+  initServiceWorker(useNotificationsStore())
 
   window.addEventListener('focus', () => updateFocus())
 
@@ -588,6 +592,11 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
   })
 
   useI18nStore().setI18n(i18n)
+
+  // Global WS handlers
+  useChatsStore().attachSocket()
+  useInterfaceStore().attachSocket()
+  useStatusesStore().attachSocket()
 
   app.use(router)
   app.use(store)

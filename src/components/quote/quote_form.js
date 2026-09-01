@@ -4,6 +4,7 @@ import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Quote from './quote.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useSearchStore } from 'src/stores/search.js'
 
 export default {
   components: {
@@ -93,8 +94,8 @@ export default {
         this.$emit('update:id', notice[3])
       } else if (value) {
         this.loading = true
-        this.$store
-          .dispatch('search', {
+        useSearchStore()
+          .search({
             q: value,
             resolve: true,
             offset: 0,

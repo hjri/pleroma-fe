@@ -1,9 +1,9 @@
 import { defineAsyncComponent } from 'vue'
 
-import { notificationsFromStore } from '../../services/notification_utils/notification_utils.js'
 import BasicUserCard from '../basic_user_card/basic_user_card.vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { approveUser, denyUser } from 'src/api/user.js'
@@ -24,7 +24,7 @@ const FollowRequestCard = {
   },
   methods: {
     findFollowRequestNotificationId() {
-      const notif = notificationsFromStore(this.$store).find(
+      const notif = useNotificationsStore().data.find(
         (notif) =>
           notif.from_profile.id === this.user.id &&
           notif.type === 'follow_request',
@@ -55,16 +55,11 @@ const FollowRequestCard = {
         id: this.user.id,
         credentials: useOAuthStore().token,
       })
+      // TODO fix
       this.$store.dispatch('removeFollowRequest', this.user)
 
       const notifId = this.findFollowRequestNotificationId()
-      this.$store.dispatch('markSingleNotificationAsSeen', { id: notifId })
-      this.$store.dispatch('updateNotification', {
-        id: notifId,
-        updater: (notification) => {
-          notification.type = 'follow'
-        },
-      })
+      useNotificationsStore().markSingleNotificationAsSeen(notifId)
       this.hideApproveConfirmDialog()
     },
     denyUser() {
@@ -81,7 +76,8 @@ const FollowRequestCard = {
         id: this.user.id,
         credentials: useOAuthStore().token,
       }).then(() => {
-        this.$store.dispatch('dismissNotificationLocal', { id: notifId })
+        useNotificationsStore().dismissNotificationLocal(notifId)
+        // TODO fix
         this.$store.dispatch('removeFollowRequest', this.user)
       })
       this.hideDenyConfirmDialog()

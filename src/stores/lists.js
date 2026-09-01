@@ -49,6 +49,9 @@ export const useListsStore = defineStore('lists', {
     },
     setLists(value) {
       this.allLists = value
+      this.allListsObject = Object.fromEntries(
+        value.map((list) => [list.id, list]),
+      )
     },
     async createList({ title }) {
       return await createList({

@@ -1633,6 +1633,7 @@
     "no_more_statuses": "No more statuses",
     "no_statuses": "No statuses",
     "socket_reconnected": "Realtime connection established",
+    "socket_disconnected": "Realtime connection unavaialable",
     "socket_broke": "Realtime connection lost: CloseEvent code {0}",
     "quick_view_settings": "Quick view settings",
     "quick_filter_settings": "Quick filter settings",
@@ -1730,6 +1731,7 @@
     "more_actions": "More actions on this status",
     "loading": "Loading...",
     "load_error": "Unable to load status: {error}",
+    "interact_error": "Error interacting with status: {error}",
     "admin_change_scope": "Change visibility",
     "mark_as_sensitive": "Sensitive",
     "mark_as_non-sensitive": "Non-sensitive"

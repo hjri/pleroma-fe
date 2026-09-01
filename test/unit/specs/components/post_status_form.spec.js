@@ -1,4 +1,6 @@
+import { createTestingPinia } from '@pinia/testing'
 import { mount } from '@vue/test-utils'
+import { setActivePinia } from 'pinia'
 import { vi } from 'vitest'
 
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
@@ -6,6 +8,8 @@ import { mountOpts } from '../../../fixtures/setup_test'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 const currentUser = {
   id: 'current-user',
@@ -31,24 +35,18 @@ const repliedStatus2 = {
   user: repliedUser,
 }
 
-const replyMountOpts = (props) =>
-  mountOpts({
-    props,
-    afterStore(store) {
-      store.state.users.currentUser = currentUser
-      store.state.statuses.allStatusesObject = {
-        [repliedStatus.id]: repliedStatus,
-      }
-    },
-  })
-
 describe('PostStatusForm', () => {
   beforeEach(() => {
     vi.useFakeTimers()
+    setActivePinia(createTestingPinia())
+    useUsersStore().currentUser = currentUser
+    useStatusesStore().allStatuses = new Map([
+      [repliedStatus.id, repliedStatus],
+    ])
   })
 
   it('Clean empty initial state', () => {
-    const wrapper = mount(PostStatusForm, replyMountOpts())
+    const wrapper = mount(PostStatusForm, mountOpts())
 
     expect(wrapper.vm.statusType).to.equal('new')
     expect(wrapper.vm.newStatus.spoilerText).to.eql('')
@@ -57,7 +55,7 @@ describe('PostStatusForm', () => {
   })
 
   it('Reset cleans form to pristine state equal to state form was when created', () => {
-    const wrapper = mount(PostStatusForm, replyMountOpts())
+    const wrapper = mount(PostStatusForm, mountOpts())
 
     const initial = { ...wrapper.vm.newStatus }
     wrapper.vm.clearStatus()
@@ -68,8 +66,10 @@ describe('PostStatusForm', () => {
   it('Initializes a reply form', () => {
     const wrapper = mount(
       PostStatusForm,
-      replyMountOpts({
-        repliedStatus: repliedStatus,
+      mountOpts({
+        props: {
+          repliedStatus: repliedStatus,
+        },
       }),
     )
 
@@ -91,8 +91,10 @@ describe('PostStatusForm', () => {
   it('Copies scope and subject line, disables quoting for locked posts', () => {
     const wrapper = mount(
       PostStatusForm,
-      replyMountOpts({
-        repliedStatus: repliedStatus2,
+      mountOpts({
+        props: {
+          repliedStatus: repliedStatus2,
+        },
       }),
     )
 
@@ -121,8 +123,10 @@ describe('PostStatusForm', () => {
 
   it('Forces direct mode when replying to a DM, mastodon style subject handling', () => {
     // We need to initialize pinia first which is happening here...
-    const options = replyMountOpts({
-      repliedStatus: { ...repliedStatus2, visibility: 'direct' },
+    const options = mountOpts({
+      props: {
+        repliedStatus: { ...repliedStatus2, visibility: 'direct' },
+      },
     })
 
     // ...set our settings...
@@ -150,10 +154,12 @@ describe('PostStatusForm', () => {
   it('Sets status to statusText without mentions if mentions line is enabled', () => {
     const wrapper = mount(
       PostStatusForm,
-      replyMountOpts({
-        repliedStatus: repliedStatus2,
-        statusText: 'testing',
-        mentionsLine: true,
+      mountOpts({
+        props: {
+          repliedStatus: repliedStatus2,
+          statusText: 'testing',
+          mentionsLine: true,
+        },
       }),
     )
 
@@ -166,8 +172,10 @@ describe('PostStatusForm', () => {
   it('Sets mention when asked for it', () => {
     const wrapper = mount(
       PostStatusForm,
-      replyMountOpts({
-        profileMention: repliedUser,
+      mountOpts({
+        props: {
+          profileMention: repliedUser,
+        },
       }),
     )
 
@@ -180,8 +188,10 @@ describe('PostStatusForm', () => {
   it('Initializes quote when reply/quote toggled to quote', () => {
     const wrapper = mount(
       PostStatusForm,
-      replyMountOpts({
-        repliedStatus: repliedStatus2,
+      mountOpts({
+        props: {
+          repliedStatus: repliedStatus2,
+        },
       }),
     )
 
@@ -196,8 +206,10 @@ describe('PostStatusForm', () => {
   it('Resets quote when reply/quote toggled to reply', () => {
     const wrapper = mount(
       PostStatusForm,
-      replyMountOpts({
-        repliedStatus: repliedStatus2,
+      mountOpts({
+        props: {
+          repliedStatus: repliedStatus2,
+        },
       }),
     )
 
@@ -213,8 +225,10 @@ describe('PostStatusForm', () => {
   it('Initializes and reset quote when toggling quote attachment', () => {
     const wrapper = mount(
       PostStatusForm,
-      replyMountOpts({
-        repliedStatus: repliedStatus2,
+      mountOpts({
+        props: {
+          repliedStatus: repliedStatus2,
+        },
       }),
     )
 
@@ -234,17 +248,19 @@ describe('PostStatusForm', () => {
   it('Status editing', () => {
     const wrapper = mount(
       PostStatusForm,
-      replyMountOpts({
-        statusId: 'edited',
-        statusText: 'text',
-        statusSubject: 'heading',
-        statusIsSensitive: true,
-        statusPoll: {},
-        statusQuote: {},
-        statusFiles: [],
-        statusMediaDescriptions: {},
-        statusVisibility: 'unlisted',
-        statusContentType: 'text/markdown',
+      mountOpts({
+        props: {
+          statusId: 'edited',
+          statusText: 'text',
+          statusSubject: 'heading',
+          statusIsSensitive: true,
+          statusPoll: {},
+          statusQuote: {},
+          statusFiles: [],
+          statusMediaDescriptions: {},
+          statusVisibility: 'unlisted',
+          statusContentType: 'text/markdown',
+        },
       }),
     )
 
@@ -264,7 +280,7 @@ describe('PostStatusForm', () => {
 
   it('Posting should reset idempotency key', async () => {
     vi.setSystemTime(new Date(2027, 1, 1, 13))
-    const wrapper = mount(PostStatusForm, replyMountOpts())
+    const wrapper = mount(PostStatusForm, mountOpts())
     const oldIdempotency = wrapper.vm.idempotencyKey
 
     vi.setSystemTime(new Date(2028, 1, 1, 13))
@@ -278,7 +294,7 @@ describe('PostStatusForm', () => {
   // TODO Probably better to separate attachment upload/manipulation into its own component?
   // we need to upload-on-submit for compression setting anyway
   it('Attachments manipulations (moving, adding, removing)', () => {
-    const wrapper = mount(PostStatusForm, replyMountOpts())
+    const wrapper = mount(PostStatusForm, mountOpts())
 
     const i1 = { id: '1', url: 'a' }
     const i2 = { id: '2', url: 'b' }
@@ -308,7 +324,7 @@ describe('PostStatusForm', () => {
   })
 
   it('Attachment descriptions', () => {
-    const wrapper = mount(PostStatusForm, replyMountOpts())
+    const wrapper = mount(PostStatusForm, mountOpts())
 
     const i1 = { id: '1', url: 'a' }
 

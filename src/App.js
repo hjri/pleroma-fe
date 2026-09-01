@@ -21,6 +21,7 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useShoutStore } from 'src/stores/shout.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 // Helper to unwrap reactive proxies
 window.toValue = (x) => JSON.parse(JSON.stringify(x))
@@ -153,11 +154,8 @@ export default {
         ...(navbarColumnStretch ? ['-column-stretch'] : []),
       ]
     },
-    currentUser() {
-      return this.$store.state.users.currentUser
-    },
     userBackground() {
-      return this.currentUser.background_image
+      return this.currentUser?.background_image
     },
     foreignProfileBackground() {
       return (
@@ -246,6 +244,7 @@ export default {
       'styleDataUsed',
       'layoutType',
     ]),
+    ...mapState(useUsersStore, ['currentUser']),
     ...mapState(useInstanceStore, ['styleDataUsed']),
     ...mapState(useInstanceCapabilitiesStore, [
       'suggestionsEnabled',

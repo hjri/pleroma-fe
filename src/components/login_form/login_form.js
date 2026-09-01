@@ -1,9 +1,9 @@
-import { mapActions, mapState as mapPiniaState } from 'pinia'
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'pinia'
 
 import { useAuthFlowStore } from 'src/stores/auth_flow.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { getLoginUrl, getTokenWithCredentials } from 'src/api/oauth.js'
 
@@ -18,12 +18,10 @@ const LoginForm = {
     error: false,
   }),
   computed: {
-    ...mapState({
-      loggingIn: (state) => state.users.loggingIn,
-    }),
-    ...mapPiniaState(useOAuthStore, ['clientId', 'clientSecret']),
-    ...mapPiniaState(useInstanceStore, ['server', 'registrationOpen']),
-    ...mapPiniaState(useAuthFlowStore, {
+    ...mapState(useUsersStore, ['loggingIn']),
+    ...mapState(useOAuthStore, ['clientId', 'clientSecret']),
+    ...mapState(useInstanceStore, ['server', 'registrationOpen']),
+    ...mapState(useAuthFlowStore, {
       isTokenAuth: (store) => store.requiredToken,
       isPasswordAuth: (store) => !store.requiredToken,
     }),

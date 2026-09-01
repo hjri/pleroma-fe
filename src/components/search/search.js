@@ -4,6 +4,10 @@ import Conversation from 'src/components/conversation/conversation.vue'
 import FollowCard from 'src/components/follow_card/follow_card.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 
+import { useSearchStore } from 'src/stores/search.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
+import { useUsersStore } from 'src/stores/users.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch, faSearch } from '@fortawesome/free-solid-svg-icons'
 
@@ -34,14 +38,14 @@ const Search = {
   },
   computed: {
     users() {
-      return this.userIds.map((userId) => this.$store.getters.findUser(userId))
+      return this.userIds.map((userId) => useUsersStore().findUser(userId))
     },
     visibleStatuses() {
-      const allStatusesObject = this.$store.state.statuses.allStatusesObject
+      const allStatuses = useStatusesStore().allStatuses
 
       return this.statuses.filter(
         (status) =>
-          allStatusesObject[status.id] && !allStatusesObject[status.id].deleted,
+          allStatuses.has(status.id) && !allStatuses.get(status.id).deleted,
       )
     },
   },
@@ -76,8 +80,8 @@ const Search = {
         this.lastStatusFetchCount = 0
       }
 
-      this.$store
-        .dispatch('search', {
+      useSearchStore()
+        .search({
           q: query,
           resolve: true,
           offset: this.statusesOffset,

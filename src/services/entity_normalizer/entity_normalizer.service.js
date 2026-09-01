@@ -4,7 +4,7 @@ import { unescape as lodashUnescape } from 'lodash'
 import punycode from 'punycode.js'
 
 import { fileType } from '../file_type/file_type.service.js'
-import { isStatusNotification } from '../notification_utils/notification_utils.js'
+import { isStatusNotification } from '../notification_utils/notification_utils_sw.js'
 
 /** NOTICE! **
  * Do not initialize UI-generated data here.
@@ -27,6 +27,7 @@ export const parseUser = (data) => {
 
   output.screen_name = data.acct
   output.fqn = data.fqn
+  output.url = data.url
   output.statusnet_profile_url = data.url
 
   if (Object.hasOwn(data, 'mute_expires_at')) {
@@ -79,6 +80,9 @@ export const parseUser = (data) => {
   output.bot = data.bot
 
   output.privileges = []
+
+  output.friendIds = new Set()
+  output.followerIds = new Set()
 
   if (data.pleroma) {
     if (data.pleroma.settings_store) {
@@ -255,7 +259,7 @@ export const parseStatus = (data) => {
   output.raw_html = data.content
   output.emojis = data.emojis
 
-  output.tags = data.tags
+  output.tags = new Set(data.tags ?? [])
 
   output.edited_at = data.edited_at
 
@@ -328,6 +332,7 @@ export const parseStatus = (data) => {
   output.attentions = (data.mentions || []).map(parseUser)
 
   output.attachments = (data.media_attachments || []).map(parseAttachment)
+  output.deleted = false
 
   const retweetedStatus = data.reblog
   if (retweetedStatus) {
@@ -336,10 +341,6 @@ export const parseStatus = (data) => {
 
   output.favoritedBy = []
   output.rebloggedBy = []
-
-  if (Object.hasOwn(data, 'originalStatus')) {
-    Object.assign(output, data.originalStatus)
-  }
 
   return output
 }
@@ -384,10 +385,13 @@ export const parseLinkHeaderPagination = (linkHeader, opts = {}) => {
   const maxId = parsedLinkHeader.next?.max_id
   const minId = parsedLinkHeader.prev?.min_id
 
-  return {
-    maxId: flakeId ? maxId : Number.parseInt(maxId, 10),
-    minId: flakeId ? minId : Number.parseInt(minId, 10),
-  }
+  const result = {}
+  if (maxId !== undefined)
+    result.maxId = flakeId ? maxId : Number.parseInt(maxId, 10)
+  if (minId !== undefined)
+    result.minId = flakeId ? minId : Number.parseInt(minId, 10)
+
+  return result
 }
 
 export const parseChat = (chat) => {

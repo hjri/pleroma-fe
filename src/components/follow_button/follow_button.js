@@ -1,11 +1,8 @@
 import { defineAsyncComponent } from 'vue'
 
-import {
-  requestFollow,
-  requestUnfollow,
-} from '../../services/follow_manipulate/follow_manipulate'
-
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
+
 export default {
   props: ['relationship', 'user', 'labelFollowing', 'buttonClass'],
   components: {
@@ -64,9 +61,11 @@ export default {
     },
     follow() {
       this.inProgress = true
-      requestFollow(this.relationship.id, this.$store).then(() => {
-        this.inProgress = false
-      })
+      useUsersStore()
+        .followUser(this.relationship.id)
+        .finally(() => {
+          this.inProgress = false
+        })
     },
     unfollow() {
       if (this.shouldConfirmUnfollow) {
@@ -76,15 +75,12 @@ export default {
       }
     },
     doUnfollow() {
-      const store = this.$store
       this.inProgress = true
-      requestUnfollow(this.relationship.id, store).then(() => {
-        this.inProgress = false
-        store.commit('removeStatus', {
-          timeline: 'friends',
-          userId: this.relationship.id,
+      useUsersStore()
+        .unfollowUser(this.relationship.id)
+        .finally(() => {
+          this.inProgress = false
         })
-      })
 
       this.hideConfirmUnfollow()
     },

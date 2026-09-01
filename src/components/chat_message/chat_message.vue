@@ -83,7 +83,7 @@
           <UserAvatar
             v-if="author"
             :compact="true"
-            :user="author"
+            :user-id="author.id"
           />
         </UserPopover>
         <div

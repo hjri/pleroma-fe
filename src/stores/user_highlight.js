@@ -10,6 +10,7 @@ import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { updateProfileJSON } from 'src/api/user.js'
 import { storage } from 'src/lib/storage.js'
@@ -328,7 +329,7 @@ export const useUserHighlightStore = defineStore('user_highlight', {
     pushHighlight({ force = false } = {}) {
       const needPush = this.dirty || force
       if (!needPush) return
-      this.updateCache({ username: window.vuex.state.users.currentUser.fqn })
+      this.updateCache({ username: useUsersStore().currentUser.fqn })
       const params = {
         pleroma_settings_store: { user_highlight: this.cache },
       }

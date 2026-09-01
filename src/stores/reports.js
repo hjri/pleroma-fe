@@ -1,8 +1,8 @@
-import { filter } from 'lodash'
 import { defineStore } from 'pinia'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 
 import { setReportState } from 'src/api/admin.js'
 
@@ -10,28 +10,25 @@ export const useReportsStore = defineStore('reports', {
   state: () => ({
     reportModal: {
       userId: null,
-      statuses: [],
-      preTickedIds: [],
+      statusIds: new Set(),
+      preTickedIds: new Set(),
       activated: false,
     },
     reports: {},
   }),
   actions: {
     openUserReportingModal({ userId, statusIds = [] }) {
-      const preTickedStatuses = statusIds.map(
-        (id) => window.vuex.state.statuses.allStatusesObject[id],
-      )
-      const preTickedIds = statusIds
-      const statuses = preTickedStatuses.concat(
-        filter(
-          window.vuex.state.statuses.allStatuses,
-          (status) =>
-            status.user.id === userId && !preTickedIds.includes(status.id),
-        ),
-      )
+      const preTickedIds = new Set(statusIds)
+      // There could be a case (i.e. user is only ever mentioned in someone else's post -> user popover)
+      // where user has no known posts
+      const userAllStatusesIds =
+        useStatusesStore().statusesPerUser.get(userId) ?? new Set()
+      // Set constructor should take care of duplicated IDs and order,
+      // later duplicated IDs will be dropped in favor of earlier
+      const sortedIds = new Set([...preTickedIds, ...userAllStatusesIds])
 
       this.reportModal.userId = userId
-      this.reportModal.statuses = statuses
+      this.reportModal.statusIds = sortedIds
       this.reportModal.preTickedIds = preTickedIds
       this.reportModal.activated = true
     },

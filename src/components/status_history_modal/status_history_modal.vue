@@ -15,7 +15,7 @@
           v-if="historyCount > 0"
           class="history-body"
         >
-          <status
+          <Status
             v-for="status in history"
             :key="status.id"
             :statusoid="status"

@@ -1,5 +1,9 @@
 import { map } from 'lodash'
 
+import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
+import { useTimelinesStore } from 'src/stores/timelines.js'
+
 import {
   editStatus as apiEditStatus,
   postStatus as apiPostStatus,
@@ -24,7 +28,7 @@ const postStatus = ({
   const mediaIds = map(media, 'id')
 
   return apiPostStatus({
-    credentials: store.state.users.currentUser.credentials,
+    credentials: useOAuthStore().token,
     status,
     spoilerText,
     visibility,
@@ -36,14 +40,18 @@ const postStatus = ({
     poll,
     preview,
     idempotencyKey,
-  }).then(({ data }) => {
-    if (!preview)
-      store.dispatch('addNewStatuses', {
+  }).then(({ data, timestamp }) => {
+    if (!preview) {
+      useStatusesStore().addNewStatuses({
+        timestamp,
         statuses: [data],
-        timeline: 'friends',
+      })
+      useTimelinesStore().addStatusesToTimeline('friends', undefined, {
+        statuses: [data.id],
         showImmediately: true,
         noIdUpdate: true, // To prevent missing notices on next pull.
       })
+    }
 
     return data
   })
@@ -63,7 +71,7 @@ const editStatus = ({
 
   return apiEditStatus({
     id: statusId,
-    credentials: store.state.users.currentUser.credentials,
+    credentials: useOAuthStore().token,
     status,
     spoilerText,
     sensitive,
@@ -71,10 +79,13 @@ const editStatus = ({
     mediaIds,
     contentType,
   })
-    .then(({ data }) => {
-      store.dispatch('addNewStatuses', {
+    .then(({ data, timestamp }) => {
+      useStatusesStore().addNewStatuses({
         statuses: [data],
-        timeline: 'friends',
+        timestamp,
+      })
+      useTimelinesStore().addStatusesToTimeline('friends', undefined, {
+        statuses: [data.id],
         showImmediately: true,
         noIdUpdate: true, // To prevent missing notices on next pull.
       })
@@ -90,12 +101,12 @@ const editStatus = ({
 }
 
 const uploadMedia = ({ store, formData }) => {
-  const credentials = store.state.users.currentUser.credentials
+  const credentials = useOAuthStore().token
   return apiUploadMedia({ credentials, formData }).then(({ data }) => data)
 }
 
 const setMediaDescription = ({ store, id, description }) => {
-  const credentials = store.state.users.currentUser.credentials
+  const credentials = useOAuthStore().token
   return apiSetMediaDescription({ credentials, id, description }).then(
     ({ data }) => data,
   )

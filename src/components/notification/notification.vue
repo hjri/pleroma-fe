@@ -6,7 +6,7 @@
     <Status
       class="Notification panel-body"
       :compact="true"
-      :statusoid="notification.status"
+      :status-id="notification.status?.id"
       @click="interacted"
     />
   </article>
@@ -24,7 +24,7 @@
       class="Notification container -muted"
     >
       <small>
-        <user-link
+        <UserLink
           :user="notification.from_profile"
           :at="false"
         />
@@ -57,7 +57,7 @@
           <UserAvatar
             class="post-avatar"
             :compact="true"
-            :user="notification.from_profile"
+            :user-id="notification.from_profile.id"
           />
         </UserPopover>
       </a>
@@ -215,7 +215,7 @@
           v-if="notification.type === 'follow' || notification.type === 'follow_request'"
           class="follow-text"
         >
-          <user-link
+          <UserLink
             class="follow-name"
             :user="notification.from_profile"
           />
@@ -249,7 +249,7 @@
           v-else-if="notification.type === 'move'"
           class="move-text"
         >
-          <user-link
+          <UserLink
             :user="notification.target"
           />
         </div>
@@ -261,7 +261,7 @@
           <StatusContent
             class="status-content"
             :compact="!statusExpanded"
-            :status="notification.status"
+            :status="status"
             :collapse="!statusExpanded"
             @click="onContentClick"
           />

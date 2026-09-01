@@ -1,38 +1,39 @@
 <template>
   <article class="thread-tree">
     <Status
-      :key="status.id"
+      :key="statusId"
       ref="statusComponent"
-      :statusoid="status"
-      :replies="getReplies(status.id)"
+      :status-id="statusId"
+      :replies="getReplies(statusId)"
       :inline-expanded="collapsable && isExpanded"
       :expandable="!isExpanded"
       :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
       :in-conversation="isExpanded"
-      :focused="focused === status.id || focused === status.retweeted_status?.id"
+      :focused="focused === statusId"
       :in-profile="inProfile"
       :profile-user-id="profileUserId"
       class="conversation-status conversation-status-treeview status-fadein panel-body"
 
       :simple-tree="simple"
-      :thread-display-status="threadDisplayStatus[status.id]"
+      :thread-display-status="threadDisplayStatus[statusId]"
       :can-dive="canDive"
 
-      @dive="$emit('dive', status.id)"
-      @goto="$emit('goto', status.id)"
+      @dive="$emit('dive', statusId)"
+      @goto="$emit('goto', statusId)"
       @toggle-expanded="toggleExpanded"
       @suspendable-state-change="e => $emit('suspendableStateChange', e)"
+      @height-change="e => $emit('heightChange', e)"
     />
     <div
       v-if="currentReplies.length > 0 && threadShowing"
       class="thread-tree-replies"
     >
       <ThreadTree
-        v-for="replyStatus in currentReplies"
-        :key="replyStatus.id"
+        v-for="replyStatusId in currentReplies"
+        :key="replyStatusId"
         ref="childComponent"
         :depth="depth + 1"
-        :status="replyStatus"
+        :status-id="replyStatusId"
 
         :in-profile="inProfile"
         :conversation="conversation"
@@ -55,6 +56,7 @@
         @goto="(e) => $emit('goto', e)"
         @dive="(e) => $emit('dive', e)"
         @suspendable-state-change="e => $emit('suspendableStateChange', e)"
+        @height-change="e => $emit('heightChange', e)"
       />
     </div>
     <div
@@ -67,7 +69,7 @@
         tag="button"
         keypath="status.thread_follow_with_icon"
         class="button-unstyled -link thread-tree-show-replies-button"
-        @click.prevent="$emit('dive', status.id)"
+        @click.prevent="$emit('dive', statusId)"
       >
         <template #icon>
           <FAIcon
@@ -76,7 +78,7 @@
         </template>
         <template #text>
           <span>
-            {{ $t('status.thread_follow', { numStatus: totalReplyCount[status.id] }, totalReplyCount[status.id]) }}
+            {{ $t('status.thread_follow', { numStatus: totalReplyCount[statusId] }, totalReplyCount[statusId]) }}
           </span>
         </template>
       </i18n-t>
@@ -86,7 +88,7 @@
         tag="button"
         keypath="status.thread_show_full_with_icon"
         class="button-unstyled -link thread-tree-show-replies-button"
-        @click.prevent="showThreadRecursively(status.id)"
+        @click.prevent="showThreadRecursively(statusId)"
       >
         <template #icon>
           <FAIcon
@@ -95,7 +97,7 @@
         </template>
         <template #text>
           <span>
-            {{ $t('status.thread_show_full', { numStatus: totalReplyCount[status.id], depth: totalReplyDepth[status.id] }, totalReplyCount[status.id]) }}
+            {{ $t('status.thread_show_full', { numStatus: totalReplyCount[statusId], depth: totalReplyDepth[statusId] }, totalReplyCount[statusId]) }}
           </span>
         </template>
       </i18n-t>

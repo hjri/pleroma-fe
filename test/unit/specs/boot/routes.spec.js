@@ -3,20 +3,13 @@ import { createTestingPinia } from '@pinia/testing'
 createTestingPinia()
 
 import { createMemoryHistory, createRouter } from 'vue-router'
-import { createStore } from 'vuex'
 
 import routes from 'src/boot/routes'
-
-const store = createStore({
-  state: {
-    instance: {},
-  },
-})
 
 describe('routes', () => {
   const router = createRouter({
     history: createMemoryHistory(),
-    routes: routes(store),
+    routes: routes(),
   })
 
   it('root path', async () => {
@@ -24,12 +17,9 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(
-      Object.hasOwn(
-        matchedComponents[0].components.default.components,
-        'Timeline',
-      ),
-    ).to.eql(true)
+    expect(matchedComponents[0].components.default.__file).to.contain(
+      '/timeline.vue',
+    )
   })
 
   it("user's profile", async () => {
@@ -38,7 +28,7 @@ describe('routes', () => {
     const matchedComponents = router.currentRoute.value.matched
 
     expect(matchedComponents[0].components.default.__file).to.contain(
-      'user_profile.vue',
+      '/user_profile.vue',
     )
   })
 
@@ -48,7 +38,7 @@ describe('routes', () => {
     const matchedComponents = router.currentRoute.value.matched
 
     expect(matchedComponents[0].components.default.__file).to.contain(
-      'user_profile.vue',
+      '/user_profile.vue',
     )
   })
 
@@ -57,7 +47,7 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
     expect(matchedComponents[0].components.default.__file).to.contain(
-      'lists.vue',
+      '/lists.vue',
     )
   })
 
@@ -67,7 +57,7 @@ describe('routes', () => {
     const matchedComponents = router.currentRoute.value.matched
 
     expect(matchedComponents[0].components.default.__file).to.contain(
-      'lists_timeline.vue',
+      '/timeline.vue',
     )
   })
 
@@ -77,7 +67,7 @@ describe('routes', () => {
     const matchedComponents = router.currentRoute.value.matched
 
     expect(matchedComponents[0].components.default.__file).to.contain(
-      'lists_edit.vue',
+      '/lists_edit.vue',
     )
   })
 })

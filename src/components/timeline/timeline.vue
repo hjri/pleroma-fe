@@ -1,13 +1,24 @@
 <template>
-  <div :class="['Timeline', classes.root]">
+  <!-- there is a brief moment during logout when old timeline gets forcibly deactivated -->
+  <div v-if="timeline.fetcher" :class="['Timeline', classes.root]">
     <div
       v-if="!embedded"
       :class="classes.header"
     >
       <TimelineMenu
         v-if="!embedded"
-        :timeline-name="timelineName"
+        :timeline-name="timelineRef.name"
       />
+      <div
+        v-if="timeline.fetcher.loadingNewer && !showLoadButton"
+        class="loadingIndicator"
+      >
+        <FAIcon
+          fixed-width
+          icon="circle-notch"
+          spin
+        />
+      </div>
       <ScrollTopButton />
       <template v-if="mobileLayout">
         <div
@@ -29,7 +40,7 @@
           </button>
         </div>
         <div
-          v-else
+          v-else-if="!timeline.fetcher.loadingNewer"
           class="loadmore-text faint veryfaint rightside-icon"
           :title="$t('timeline.up_to_date')"
           :aria-disabled="true"
@@ -72,57 +83,49 @@
         role="feed"
       >
         <Conversation
-          v-for="statusId in filteredPinnedStatusIds"
-          :key="statusId + '-pinned'"
-          role="listitem"
-          class="status-fadein"
-          :status-id="statusId"
-          :pinned-status-ids-object="pinnedStatusIdsObject"
-          :in-profile="inProfile"
-          :profile-user-id="userId"
-          collapsable
-        />
-        <Conversation
           v-for="status in filteredVisibleStatuses"
           :key="status.id"
           role="listitem"
           class="status-fadein"
           :status-id="status.id"
           :in-profile="inProfile"
-          :profile-user-id="userId"
-          :virtual-hidden="virtualScrollingEnabled && !statusesToDisplay.includes(status.id)"
+          :profile-user-id="timelineRef.argument"
+          :virtual-hidden="virtualScrollingEnabled && !statusesToDisplay.has(status.id)"
           collapsable
         />
       </div>
+      <template v-if="!hideEmpty && count === 0">
+        <div
+          v-if="timeline.fetcher.loadingNewer || timeline.fetcher.loadingOlder"
+          class="timeline-placeholder"
+        >
+          <FAIcon
+            icon="circle-notch"
+            spin
+            size="4x"
+          />
+        </div>
+        <div
+          v-else
+          class="timeline-placeholder faint"
+        >
+          {{ $t('timeline.no_statuses') }}
+        </div>
+      </template>
     </div>
-    <div :class="classes.footer">
+    <div v-if="!embedded || footerSlipgate" :class="classes.footer">
       <teleport
         :to="footerSlipgate"
         :disabled="!embedded || !footerSlipgate"
       >
         <div
-          v-if="count===0"
-          class="new-status-notification text-center faint"
-        >
-          {{ $t('timeline.no_statuses') }}
-        </div>
-        <div
-          v-else-if="bottomedOut"
+          v-if="timeline.fetcher.bottomedOut"
           class="new-status-notification text-center faint"
         >
           {{ $t('timeline.no_more_statuses') }}
         </div>
-        <button
-          v-else-if="!timeline.loading"
-          class="button-unstyled -link"
-          @click.prevent="fetchOlderStatuses()"
-        >
-          <div class="new-status-notification text-center">
-            {{ $t('timeline.load_older') }}
-          </div>
-        </button>
         <div
-          v-else
+          v-else-if="timeline.fetcher.loadingOlder"
           class="new-status-notification text-center"
         >
           <FAIcon
@@ -131,6 +134,15 @@
             size="lg"
           />
         </div>
+        <button
+          v-else-if="timeline.minId !== ''"
+          class="button-unstyled -link"
+          @click.prevent="fetchOlderStatuses()"
+        >
+          <div class="new-status-notification text-center">
+            {{ $t('timeline.load_older') }}
+          </div>
+        </button>
       </teleport>
       <!-- spacer to avoid having empty shrug -->
       <span v-if="embedded && footerSlipgate" />

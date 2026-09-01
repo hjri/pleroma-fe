@@ -10,7 +10,7 @@
     >
       <UserAvatar
         class="titlebar-avatar"
-        :user="user"
+        :user-id="user.id"
       />
     </UserPopover>
     <RichContent

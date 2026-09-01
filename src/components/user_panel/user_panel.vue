@@ -1,12 +1,12 @@
 <template>
   <aside class="user-panel">
     <div
-      v-if="signedIn"
+      v-if="loggedIn"
       key="user-panel-signed"
       class="panel panel-default signed-in"
     >
       <UserCard
-        :user-id="user.id"
+        :user-id="currentUser.id"
         :hide-bio="true"
       />
       <PostStatusForm />

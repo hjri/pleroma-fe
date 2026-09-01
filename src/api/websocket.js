@@ -26,8 +26,26 @@ const PLEROMA_STREAMING_EVENTS = new Set([
   'pleroma:respond',
 ])
 
+export const WSConnectionStatus = Object.freeze({
+  JOINED: 1,
+  CLOSED: 2,
+  ERROR: 3,
+  DISABLED: 4,
+  STARTING: 5,
+  STARTING_INITIAL: 6,
+})
+
+export class WSEvent extends Event {
+  data
+
+  constructor(name, data, original) {
+    super(name)
+    this.data = data
+  }
+}
+
 // A thin wrapper around WebSocket API that allows adding a pre-processor to it
-// Uses EventTarget and a CustomEvent to proxy events
+// Uses EventTarget and a WSEvent to proxy events
 export const ProcessedWS = ({
   url,
   preprocessor = handleMastoWS,
@@ -39,9 +57,7 @@ export const ProcessedWS = ({
   if (!socket) throw new Error(`Failed to create socket ${id}`)
   const proxy = (original, eventName, processor = (a) => a) => {
     original.addEventListener(eventName, (eventData) => {
-      eventTarget.dispatchEvent(
-        new CustomEvent(eventName, { detail: processor(eventData) }),
-      )
+      eventTarget.dispatchEvent(new WSEvent(eventName, processor(eventData)))
     })
   }
   socket.addEventListener('open', (wsEvent) => {
@@ -75,7 +91,7 @@ export const ProcessedWS = ({
   /**/
 
   const onAuthenticated = () => {
-    eventTarget.dispatchEvent(new CustomEvent('pleroma:authenticated'))
+    eventTarget.dispatchEvent(new WSEvent('pleroma:authenticated'))
   }
 
   proxy(socket, 'open')
@@ -126,14 +142,14 @@ export const handleMastoWS = (
   const { data } = wsEvent
   if (!data) return
   const parsedEvent = JSON.parse(data)
-  const { event, payload } = parsedEvent
+  const { event, stream, payload } = parsedEvent
   if (
     MASTODON_STREAMING_EVENTS.has(event) ||
     PLEROMA_STREAMING_EVENTS.has(event)
   ) {
     // MastoBE and PleromaBE both send payload for delete as a PLAIN string
     if (event === 'delete') {
-      return { event, id: payload }
+      return { event, stream, id: payload }
     }
     const data = payload ? JSON.parse(payload) : null
     if (event === 'pleroma:respond') {
@@ -150,25 +166,16 @@ export const handleMastoWS = (
       }
       return null
     } else if (event === 'update') {
-      return { event, status: parseStatus(data) }
+      return { event, stream, status: parseStatus(data) }
     } else if (event === 'status.update') {
-      return { event, status: parseStatus(data) }
+      return { event, stream, status: parseStatus(data) }
     } else if (event === 'notification') {
-      return { event, notification: parseNotification(data) }
+      return { event, stream, notification: parseNotification(data) }
     } else if (event === 'pleroma:chat_update') {
-      return { event, chatUpdate: parseChat(data) }
+      return { event, stream, chatUpdate: parseChat(data) }
     }
   } else {
     console.warn('Unknown event', wsEvent)
     return null
   }
 }
-
-export const WSConnectionStatus = Object.freeze({
-  JOINED: 1,
-  CLOSED: 2,
-  ERROR: 3,
-  DISABLED: 4,
-  STARTING: 5,
-  STARTING_INITIAL: 6,
-})

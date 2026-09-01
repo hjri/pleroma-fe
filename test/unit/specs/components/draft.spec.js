@@ -7,6 +7,7 @@ import PostStatusForm from 'src/components/post_status_form/post_status_form.vue
 import { $t, mountOpts, waitForEvent } from '../../../fixtures/setup_test'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 const autoSaveOrNot = (caseFn, caseTitle, runFn) => {
   caseFn(`${caseTitle} with auto-save`, function () {
@@ -34,13 +35,20 @@ const saveManually = async (wrapper) => {
 
 const waitSaveTime = 4000
 
-afterEach(() => {
-  vi.useRealTimers()
-})
+const currentUser = {
+  id: 'current-user',
+  default_scope: 'public',
+  locked: false,
+}
 
 describe('Draft saving', () => {
   beforeEach(() => {
     setActivePinia(createTestingPinia())
+    useUsersStore().currentUser = currentUser
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   autoSaveOrNot(

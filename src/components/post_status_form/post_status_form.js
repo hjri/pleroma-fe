@@ -31,6 +31,7 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { pollFormToMasto } from 'src/services/poll/poll.service.js'
 
@@ -570,9 +571,7 @@ const PostStatusForm = {
     },
 
     // Global stuff
-    currentUser() {
-      return this.$store.state.users.currentUser
-    },
+    ...mapState(useUsersStore, ['currentUser']),
     ...mapState(useMergedConfigStore, ['mergedConfig']),
     ...mapState(useInterfaceStore, {
       mobileLayout: (store) => store.mobileLayout,

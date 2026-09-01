@@ -21,6 +21,7 @@ import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/updat
 
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { updateProfileJSON } from 'src/api/user.js'
 import { storage } from 'src/lib/storage.js'
@@ -822,7 +823,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
     pushSyncConfig({ force = false } = {}) {
       const needPush = this.dirty || force
       if (!needPush) return
-      this.updateCache({ username: window.vuex.state.users.currentUser.fqn })
+      this.updateCache({ username: useUsersStore().currentUser.fqn })
       const params = { pleroma_settings_store: { 'pleroma-fe': this.cache } }
       updateProfileJSON({
         params,

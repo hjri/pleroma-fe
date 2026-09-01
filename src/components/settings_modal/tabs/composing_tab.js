@@ -13,9 +13,11 @@ import UnitSetting from '../helpers/unit_setting.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { updateProfile } from 'src/api/user.js'
 import localeService from 'src/services/locale/locale.service.js'
@@ -92,7 +94,7 @@ const ComposingTab = {
           HTMLMediaElement.prototype,
           'audioTracks',
         ),
-      emailLanguage: this.$store.state.users.currentUser.language || [''],
+      emailLanguage: useUsersStore().currentUser.language || [''],
     }
   },
   components: {
@@ -138,10 +140,10 @@ const ComposingTab = {
     clearCache(key) {
       clearCache(key)
         .then(() => {
-          this.$store.dispatch('settingsSaved', { success: true })
+          useInterfaceStore().settingsSaved({ success: true })
         })
         .catch((error) => {
-          this.$store.dispatch('settingsSaved', { error })
+          useInterfaceStore().settingsSaved({ error })
         })
     },
     tooSmall() {
@@ -169,9 +171,8 @@ const ComposingTab = {
       updateProfile({
         params,
         credentials: useOAuthStore().token,
-      }).then(({ data: user }) => {
-        this.$store.commit('addNewUsers', [user])
-        this.$store.commit('setCurrentUser', user)
+      }).then((result) => {
+        useUsersStore().addNewUsers(result)
       })
     },
     updateFont(key, value) {

@@ -6,16 +6,37 @@ import {
   tryLoadCache,
 } from '../services/style_setter/style_setter.js'
 import { deserialize } from '../services/theme_data/iss_deserializer.js'
+import {
+  windowHeight,
+  windowWidth,
+} from '../services/window_utils/window_utils'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
+import { WSConnectionStatus } from 'src/api/websocket.js'
+import {
+  registerPushNotifications,
+  unregisterPushNotifications,
+} from 'src/services/sw/sw.js'
 import {
   CURRENT_VERSION,
   generatePreset,
 } from 'src/services/theme_data/theme_data.service.js'
 import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
+
+const getNotificationPermission = async () => {
+  const Notification = window.Notification
+
+  if (!Notification) return null
+  if (Notification.permission === 'default')
+    return Notification.requestPermission()
+  return Notification.permission
+}
 
 const GENERIC_FONT_NAMES = new Set([
   'serif',
@@ -73,6 +94,55 @@ export const useInterfaceStore = defineStore('interface', {
     foreignProfileBackground: null,
   }),
   actions: {
+    attachSocket() {
+      const et = new EventTarget()
+      const socket = {
+        name: 'interface',
+        et,
+      }
+
+      et.addEventListener('open', this.onStreamConnect)
+      et.addEventListener('close', this.onStreamDisconnect)
+
+      useStreamingStore().addSubscriber(socket)
+    },
+    onLogin() {
+      getNotificationPermission().then((permission) =>
+        useInterfaceStore().setNotificationPermission(permission),
+      )
+
+      this.setLayoutWidth(windowWidth())
+      this.setLayoutHeight(windowHeight())
+    },
+    onLogout() {
+      this.setLastTimeline('public-timeline')
+      this.setLayoutWidth(windowWidth())
+      this.setLayoutHeight(windowHeight())
+    },
+    onStreamConnect() {
+      if (useStreamingStore().state !== WSConnectionStatus.STARTING_INITIAL) {
+        this.pushGlobalNotice({
+          level: 'success',
+          messageKey: 'timeline.socket_reconnected',
+          timeout: 5000,
+        })
+      }
+    },
+    onStreamDisconnect(closeEvent) {
+      const intendedCodes = new Set([
+        1000, // Normal (intended) closure
+        1001, // Going away
+      ])
+      const { code } = closeEvent.original
+      if (!intendedCodes.has(code)) {
+        this.pushGlobalNotice({
+          level: 'error',
+          messageKey: 'timeline.socket_broke',
+          messageArgs: [code],
+          timeout: 5000,
+        })
+      }
+    },
     setTemporaryChanges({ confirm, revert }) {
       this.temporaryChangesCountdown = 10
       this.temporaryChangesConfirm = confirm
@@ -245,7 +315,7 @@ export const useInterfaceStore = defineStore('interface', {
       const mobileLayout = width <= 800
       const normalOrMobile = mobileLayout ? 'mobile' : 'normal'
       const { thirdColumnMode } = useMergedConfigStore().mergedConfig
-      if (thirdColumnMode === 'none' || !window.vuex.state.users.currentUser) {
+      if (thirdColumnMode === 'none' || !useUsersStore().currentUser) {
         this.layoutType = normalOrMobile
       } else {
         const wideLayout = width >= 1300
@@ -761,6 +831,28 @@ export const useInterfaceStore = defineStore('interface', {
         console.error(e)
         window.splashError(e)
       }
+    },
+
+    // Push notifications
+    registerPushNotifications() {
+      const token = useOAuthStore().token
+      const vapidPublicKey = useInstanceStore().vapidPublicKey
+      const isEnabled = useMergedConfigStore().mergedConfig.webPushNotifications
+      const notificationVisibility =
+        useMergedConfigStore().mergedConfig.notificationVisibility
+
+      registerPushNotifications(
+        isEnabled,
+        vapidPublicKey,
+        token,
+        notificationVisibility,
+      )
+    },
+
+    unregisterPushNotifications() {
+      const token = useOAuthStore().token
+
+      unregisterPushNotifications(token)
     },
   },
 })

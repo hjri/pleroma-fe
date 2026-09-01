@@ -1,4 +1,3 @@
-import { uniqBy } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 
 import AvatarList from 'src/components/avatar_list/avatar_list.vue'
@@ -23,8 +22,11 @@ import {
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useScrobblesStore } from 'src/stores/scrobbles.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
@@ -92,6 +94,7 @@ const Status = {
     StatusActionButtons,
   },
   props: {
+    statusId: String,
     statusoid: Object,
     replies: Array,
 
@@ -101,7 +104,6 @@ const Status = {
     isPreview: Boolean,
     noHeading: Boolean,
     inlineExpanded: Boolean,
-    showPinned: Boolean,
     inProfile: Boolean,
     inConversation: Boolean,
     inQuote: Boolean,
@@ -114,21 +116,59 @@ const Status = {
 
     threadDisplayStatus: String,
   },
-  emits: ['goto', 'dive', 'toggleExpanded', 'suspendableStateChange'],
+  emits: [
+    'goto',
+    'dive',
+    'toggleExpanded',
+    'suspendableStateChange',
+    'heightChange',
+  ],
   data() {
     return {
       replying: false,
       unmuted: false,
-      userExpanded: false,
       mediaPlaying: new Set(),
       error: null,
       headTailLinks: null,
     }
   },
+  created() {
+    useScrobblesStore().getLatestScrobble(this.status.user.id)
+  },
   computed: {
+    // Whatever we're given to work with
+    status() {
+      return this.statusoid ?? useStatusesStore().allStatuses.get(this.statusId)
+    },
+    // Status repeated
+    repeatedStatus() {
+      if (this.status.retweeted_status === undefined) return undefined
+      return useStatusesStore().allStatuses.get(this.status.retweeted_status.id)
+    },
+    // THE repeat
+    repeatStatus() {
+      if (this.isRepeat) {
+        return this.status
+      } else {
+        return null
+      }
+    },
+    mainStatus() {
+      if (this.isRepeat) {
+        return this.repeatedStatus
+      } else {
+        return this.status
+      }
+    },
+    repeater() {
+      return useUsersStore().findUser(this.status.user.id)
+    },
+    user() {
+      return useUsersStore().findUser(this.mainStatus.user.id)
+    },
     showReasonMutedThread() {
       return (
-        (this.status.thread_muted || this.status.reblog?.thread_muted) &&
+        (this.mainStatus.thread_muted || this.repeatStatus?.thread_muted) &&
         !this.inConversation
       )
     },
@@ -142,72 +182,57 @@ const Status = {
       return this.mergedConfig.scaleMfm
     },
     repeaterClass() {
-      const user = this.statusoid.user
-      return highlightClass(user)
+      return highlightClass(this.repeater)
     },
     userClass() {
-      const user = this.retweet
-        ? this.statusoid.retweeted_status.user
-        : this.statusoid.user
-      return highlightClass(user)
+      return highlightClass(this.user)
     },
-    deleted() {
-      return this.statusoid.deleted
+    isDeleted() {
+      return this.status.deleted
     },
     repeaterStyle() {
-      const user = this.statusoid.user
-      return highlightStyle(useUserHighlightStore().get(user.screen_name))
+      return highlightStyle(
+        useUserHighlightStore().get(this.repeater.screen_name),
+      )
+    },
+    favoritedBy() {
+      return useStatusesStore().favs.get(this.mainStatus.id) ?? new Set()
+    },
+    repeatedBy() {
+      return useStatusesStore().repeats.get(this.mainStatus.id) ?? new Set()
     },
     userStyle() {
       if (this.noHeading) return
-      const user = this.retweet
-        ? this.statusoid.retweeted_status.user
-        : this.statusoid.user
-      return highlightStyle(useUserHighlightStore().get(user.screen_name))
+      return highlightStyle(useUserHighlightStore().get(this.user.screen_name))
     },
     userProfileLink() {
-      return this.generateUserProfileLink(
-        this.status.user.id,
-        this.status.user.screen_name,
-      )
+      return this.generateUserProfileLink(this.user.id, this.user.screen_name)
     },
     replyProfileLink() {
       if (this.isReply) {
-        const user = this.$store.getters.findUser(
-          this.status.in_reply_to_user_id,
+        const user = useUsersStore().findUser(
+          this.mainStatus.in_reply_to_user_id,
         )
-        // FIXME Why user not found sometimes???
-        return user ? user.statusnet_profile_url : 'NOT_FOUND'
+
+        // User referenced in post might not be yet present in store
+        // since their data is not included in status data, just the id
+        return user?.statusnet_profile_url
       }
     },
-    retweet() {
-      return !!this.statusoid.retweeted_status
+    isRepeat() {
+      return !!this.repeatedStatus
     },
-    retweeterUser() {
-      return this.statusoid.user
+    repeaterName() {
+      return this.status.user.name || this.status.user.screen_name_ui
     },
-    retweeter() {
-      return this.statusoid.user.name || this.statusoid.user.screen_name_ui
+    repeaterHtml() {
+      return this.status.user.name
     },
-    retweeterHtml() {
-      return this.statusoid.user.name
-    },
-    retweeterProfileLink() {
+    repeaterProfileLink() {
       return this.generateUserProfileLink(
-        this.statusoid.user.id,
-        this.statusoid.user.screen_name,
+        this.repeater.id,
+        this.repeater.screen_name,
       )
-    },
-    status() {
-      if (this.retweet) {
-        return this.statusoid.retweeted_status
-      } else {
-        return this.statusoid
-      }
-    },
-    statusFromGlobalRepository() {
-      // NOTE: Consider to replace status with statusFromGlobalRepository
-      return this.$store.state.statuses.allStatusesObject[this.status.id]
     },
     loggedIn() {
       return !!this.currentUser
@@ -223,9 +248,6 @@ const Status = {
     botStatus() {
       return this.status.user.actor_type === 'Service'
     },
-    showActorTypeIndicator() {
-      return !this.hideBotIndication
-    },
     sensitiveStatus() {
       return this.status.nsfw
     },
@@ -234,14 +256,14 @@ const Status = {
       const writtenSet = new Set(
         this.headTailLinks.writtenMentions.map((_) => _.url),
       )
-      return this.status.attentions
+      return this.mainStatus.attentions
         .filter((attn) => {
           // no reply user
           return (
-            attn.id !== this.status.in_reply_to_user_id &&
+            attn.id !== this.mainStatus.in_reply_to_user_id &&
             // no self-replies
             attn.statusnet_profile_url !==
-              this.status.user.statusnet_profile_url &&
+              this.mainStatus.user.statusnet_profile_url &&
             // don't include if mentions is written
             !writtenSet.has(attn.statusnet_profile_url)
           )
@@ -258,7 +280,7 @@ const Status = {
     muteReasons() {
       return [
         this.userIsMuted ? 'user' : null,
-        this.status.thread_muted ? 'thread' : null,
+        this.mainStatus.thread_muted ? 'thread' : null,
         this.muteFilterHits.length > 0 ? 'filtered' : null,
         this.muteBotStatuses && this.botStatus ? 'bot' : null,
         this.muteSensitiveStatuses && this.sensitiveStatus ? 'nsfw' : null,
@@ -302,39 +324,37 @@ const Status = {
     },
     muted() {
       if (this.ignoreMute) return false
-      if (this.statusoid.user.id === this.currentUser.id) return false
+      if (this.status.user.id === this.currentUser?.id) return false
       return !this.unmuted && !this.shouldNotMute && this.muteReasons.length > 0
     },
     userIsMuted() {
-      if (this.statusoid.user.id === this.currentUser.id) return false
-      const { status } = this
-      const { reblog } = status
-      const relationship = this.$store.getters.relationship(status.user.id)
-      const relationshipReblog =
-        reblog && this.$store.getters.relationship(reblog.user.id)
+      if (!this.currentUser) return false
+      if (this.user === this.currentUser) return false
+      if (this.repeater === this.currentUser) return false
+      const relationship = useUsersStore().relationship(this.user.id)
+      const relationshipRepeat = useUsersStore().relationship(this.repeater?.id)
       return (
-        (status.muted && !status.thread_muted) ||
+        (this.status.muted && !this.status.thread_muted) ||
         // Reprööt of a muted post according to BE
-        (reblog?.muted && !reblog.thread_muted) ||
+        (this.repeatedStatus?.muted && !this.repeatedStatus.thread_muted) ||
         // Muted user
         relationship.muting ||
         // Muted user of a reprööt
-        relationshipReblog?.muting
+        relationshipRepeat?.muting
       )
     },
     shouldNotMute() {
       if (this.ignoreMute) return true
       if (this.focused) return true
-      const { status } = this
-      const { reblog } = status
+      const { reblog } = this.mainStatus
       return (
         ((this.inProfile &&
           // Don't mute user's posts on user timeline (except reblogs)
-          ((!reblog && status.user.id === this.profileUserId) ||
+          ((!reblog && this.mainStatus.user.id === this.profileUserId) ||
             // Same as above but also allow self-reblogs
             reblog?.user.id === this.profileUserId)) ||
           // Don't mute statuses in muted conversation when said conversation is opened
-          (this.inConversation && status.thread_muted)) &&
+          (this.inConversation && this.mainStatus.thread_muted)) &&
         // No excuses if post has muted words
         !this.muteFilterHits.length > 0
       )
@@ -363,29 +383,25 @@ const Status = {
     },
     isReply() {
       return !!(
-        this.status.in_reply_to_status_id && this.status.in_reply_to_user_id
+        this.mainStatus.in_reply_to_status_id &&
+        this.mainStatus.in_reply_to_user_id
       )
     },
     replyToName() {
-      if (this.status.in_reply_to_screen_name) {
-        return this.status.in_reply_to_screen_name
+      if (this.mainStatus.in_reply_to_screen_name) {
+        return this.mainStatus.in_reply_to_screen_name
       } else {
-        const user = this.$store.getters.findUser(
-          this.status.in_reply_to_user_id,
+        const user = useUsersStore().findUser(
+          this.mainStatus.in_reply_to_user_id,
         )
         return user?.screen_name_ui
       }
     },
     combinedFavsAndRepeatsUsers() {
-      // Use the status from the global status repository since favs and repeats are saved in it
-      const combinedUsers = [].concat(
-        this.statusFromGlobalRepository.favoritedBy,
-        this.statusFromGlobalRepository.rebloggedBy,
-      )
-      return uniqBy(combinedUsers, 'id')
+      return new Set([...this.favoritedBy, ...this.repeatedBy])
     },
     tags() {
-      return this.status.tags
+      return [...this.status.tags]
         .filter((tagObj) => Object.hasOwn(tagObj, 'name'))
         .map((tagObj) => tagObj.name)
         .join(' ')
@@ -397,8 +413,8 @@ const Status = {
       return (
         !this.hidePostStats &&
         this.focused &&
-        (this.combinedFavsAndRepeatsUsers.length > 0 ||
-          this.statusFromGlobalRepository.quotes_count)
+        (this.combinedFavsAndRepeatsUsers.size > 0 ||
+          this.mainStatus.quotes_count)
       )
     },
     muteBotStatuses() {
@@ -411,7 +427,7 @@ const Status = {
       return this.mergedConfig.hideBotIndication
     },
     currentUser() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
     mergedConfig() {
       return useMergedConfigStore().mergedConfig
@@ -429,19 +445,19 @@ const Status = {
       return this.$i18n.t('general.scope_in_timeline.' + this.status.visibility)
     },
     isEdited() {
-      return this.status.edited_at !== null
+      return this.mainStatus.edited_at !== null
     },
     editingAvailable() {
       return useInstanceCapabilitiesStore().editingAvailable
     },
     quoteId() {
-      return this.status.quote_id
+      return this.mainStatus.quote_id
     },
     quoteUrl() {
-      return this.status.quote_url
+      return this.mainStatus.quote_url
     },
     quoteVisible() {
-      return this.status.quote_visible
+      return this.mainStatus.quote_visible
     },
     quoteExpanded() {
       return !this.inQuote
@@ -517,9 +533,6 @@ const Status = {
     toggleMute() {
       this.unmuted = !this.unmuted
     },
-    toggleUserExpanded() {
-      this.userExpanded = !this.userExpanded
-    },
     generateUserProfileLink(id, name) {
       return generateProfileLink(
         id,
@@ -537,6 +550,7 @@ const Status = {
       this.headTailLinks = headTailLinks
     },
     toggleThreadDisplay() {
+      // FIXME
       this.controlledToggleThreadDisplay()
     },
     scrollIfFocused(focused) {
@@ -555,33 +569,45 @@ const Status = {
         }
       }
     },
+    onTransitionEnd() {
+      this.$nextTick(() => {
+        this.$emit('heightChange')
+      })
+    },
   },
   watch: {
+    status: {
+      deep: true,
+      handler() {
+        this.$emit('heightChange')
+      },
+    },
+    unmuted() {
+      this.$emit('heightChange')
+    },
+    error() {
+      this.$emit('heightChange')
+    },
+    replying() {
+      this.$emit('heightChange')
+    },
     focused: function (id) {
       this.scrollIfFocused(id)
     },
-    'status.repeat_num': function (num) {
+    'mainStatus.repeat_num': function (num) {
       // refetch repeats when repeat_num is changed in any way
-      if (
-        this.focused &&
-        this.statusFromGlobalRepository.rebloggedBy &&
-        this.statusFromGlobalRepository.rebloggedBy.length !== num
-      ) {
-        this.$store.dispatch('fetchRepeats', this.status.id)
+      if (this.focused && this.repeatedBy.size !== num) {
+        useStatusesStore().fetchRepeats(this.mainStatus.id)
       }
     },
-    'status.fave_num': function (num) {
+    'mainStatus.fave_num': function (num) {
       // refetch favs when fave_num is changed in any way
-      if (
-        this.focused &&
-        this.statusFromGlobalRepository.favoritedBy &&
-        this.statusFromGlobalRepository.favoritedBy.length !== num
-      ) {
-        this.$store.dispatch('fetchFavs', this.status.id)
+      if (this.focused && this.favoritedBy.size !== num) {
+        useStatusesStore().fetchFavs(this.mainStatus.id)
       }
     },
     isSuspendable: function (suspend) {
-      this.$emit('suspendableStateChange', { id: this.statusoid.id, suspend })
+      this.$emit('suspendableStateChange', { id: this.status.id, suspend })
     },
   },
 }

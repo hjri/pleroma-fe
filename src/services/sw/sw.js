@@ -94,16 +94,15 @@ function sendSubscriptionToBackEnd(
       return responseData
     })
 }
-export async function initServiceWorker(store) {
+export async function initServiceWorker(notificationsStore) {
   if (!isSWSupported()) return
   await getOrCreateServiceWorker()
   navigator.serviceWorker.addEventListener('message', (event) => {
-    const { dispatch } = store
     const { type, ...rest } = event.data
 
     switch (type) {
       case 'notificationClicked':
-        dispatch('notificationClicked', { id: rest.id })
+        notificationsStore.notificationClicked(rest.id)
     }
   })
 }

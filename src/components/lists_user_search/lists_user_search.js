@@ -2,6 +2,8 @@ import { debounce } from 'lodash'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 
+import { useSearchStore } from 'src/stores/search.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronLeft, faSearch } from '@fortawesome/free-solid-svg-icons'
 
@@ -32,8 +34,8 @@ const ListsUserSearch = {
       this.loading = true
       this.$emit('loading')
       this.userIds = []
-      this.$store
-        .dispatch('search', {
+      useSearchStore()
+        .search({
           q: query,
           resolve: true,
           type: 'accounts',

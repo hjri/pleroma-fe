@@ -7,6 +7,7 @@ import UserLink from 'src/components/user_link/user_link.vue'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useReportsStore } from 'src/stores/reports.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { reportUser } from 'src/api/user.js'
 
@@ -27,17 +28,14 @@ const UserReportingModal = {
     }
   },
   computed: {
-    isLoggedIn() {
-      return !!this.$store.state.users.currentUser
-    },
     isOpen() {
-      return this.isLoggedIn && this.reportModal.activated
+      return this.loggedIn && this.reportModal.activated
     },
     userId() {
       return this.reportModal.userId
     },
     user() {
-      return this.$store.getters.findUser(this.userId)
+      return useUsersStore().findUser(this.userId)
     },
     remoteInstance() {
       return (
@@ -46,6 +44,7 @@ const UserReportingModal = {
       )
     },
     ...mapState(useReportsStore, ['reportModal']),
+    ...mapState(useUsersStore, ['loggedIn']),
   },
   watch: {
     userId: 'resetState',
@@ -55,7 +54,7 @@ const UserReportingModal = {
       // Reset state
       this.comment = ''
       this.forward = false
-      this.statusIdsToReport = new Set(this.reportModal.preTickedIds)
+      this.statusIdsToReport = new Set(this.reportModal.preTickedIds) // cloning
       this.processing = false
       this.error = false
     },

@@ -1,6 +1,7 @@
 import { defineAsyncComponent } from 'vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 export default {
   props: ['user', 'relationship'],
@@ -43,9 +44,9 @@ export default {
     },
     doRemoveUserFromFollowers() {
       this.inProgress = true
-      this.$store
-        .dispatch('removeUserFromFollowers', this.relationship.id)
-        .then(() => {
+      useUsersStore()
+        .removeUserFromFollowers(this.relationship.id)
+        .finally(() => {
           this.inProgress = false
         })
       this.hideConfirmRemoveUserFromFollowers()

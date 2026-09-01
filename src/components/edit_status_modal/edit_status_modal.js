@@ -1,9 +1,11 @@
 import { get } from 'lodash'
+import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 
 import Modal from 'src/components/modal/modal.vue'
 
 import { useEditStatusStore } from 'src/stores/editStatus.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 const EditStatusModal = {
   components: {
@@ -18,18 +20,16 @@ const EditStatusModal = {
     }
   },
   computed: {
-    isLoggedIn() {
-      return !!this.$store.state.users.currentUser
-    },
     modalActivated() {
       return useEditStatusStore().modalActivated
     },
     isFormVisible() {
-      return this.isLoggedIn && !this.resettingForm && this.modalActivated
+      return this.loggedIn && !this.resettingForm && this.modalActivated
     },
     params() {
       return useEditStatusStore().params || {}
     },
+    ...mapState(useUsersStore, ['loggedIn']),
   },
   watch: {
     params(newVal, oldVal) {

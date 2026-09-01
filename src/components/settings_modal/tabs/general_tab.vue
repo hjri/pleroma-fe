@@ -129,6 +129,7 @@
             path="useStreamingApi"
             :local="true"
             expert="1"
+            @update:model-value="toggleStreaming"
           >
             {{ $t('settings.useStreamingApi') }}
           </BooleanSetting>

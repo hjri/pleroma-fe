@@ -52,11 +52,11 @@
         </FALayers>
       </component>
       <UserListPopover
-        :users="accountsForEmoji[reaction.name]"
+        :user-ids="accountsForEmoji.get(reaction.name)"
         class="emoji-reaction-popover"
         :normal-button="true"
         :trigger-attrs="counterTriggerAttrs(reaction)"
-        @show="fetchEmojiReactionsByIfMissing()"
+        @show="fetchEmojiReactionsIfMissing()"
       >
         <span class="emoji-reaction-counts">{{ reaction.count }}</span>
       </UserListPopover>

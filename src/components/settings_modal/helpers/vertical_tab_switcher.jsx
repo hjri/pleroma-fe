@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused
 
-import { mapState as mapPiniaState } from 'pinia'
+import { mapState } from 'pinia'
 import { Fragment } from 'vue'
 
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/vue-fontawesome'
@@ -60,7 +60,7 @@ export default {
         return this.$slots.default().findIndex(isWanted) === this.activeIndex
       }
     },
-    ...mapPiniaState(useInterfaceStore, {
+    ...mapState(useInterfaceStore, {
       mobileLayout: (store) => store.layoutType === 'mobile',
     }),
   },

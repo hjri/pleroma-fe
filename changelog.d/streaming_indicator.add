@@ -1,0 +1,3 @@
+Added an indicator next to instance's name showing WebSocket connection status (if enabled).
+Timeline no longer show "loading" indicator at the bottom when fetching newer posts.
+Added small indicator on top of timeline when new posts are being fetched

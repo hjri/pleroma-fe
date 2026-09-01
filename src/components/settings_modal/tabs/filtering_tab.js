@@ -15,6 +15,7 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useTimelinesStore } from 'src/stores/timelines.js'
 
 import {
   newExporter,
@@ -265,7 +266,7 @@ const FilteringTab = {
   // Updating nested properties
   watch: {
     replyVisibility() {
-      this.$store.dispatch('queueFlushAll')
+      useTimelinesStore().requireReloadAll()
     },
     muteFiltersObject() {
       this.muteFiltersDraftObject = cloneDeep(

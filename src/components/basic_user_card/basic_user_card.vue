@@ -11,7 +11,7 @@
       >
         <UserAvatar
           class="user-avatar avatar"
-          :user="user"
+          :user-id="user.id"
           @click.prevent
         />
       </UserPopover>
@@ -41,7 +41,7 @@
           {{ $t('admin_dash.users.labels.handle_colon') }}
           {{ ' ' }}
         </strong>
-        <user-link
+        <UserLink
           class="basic-user-card-screen-name"
           :user="user"
         />

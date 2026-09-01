@@ -1,14 +1,16 @@
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
 import UserTimedFilterModal from 'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
 
+import { useUsersStore } from 'src/stores/users.js'
+
 const MuteCard = {
   props: ['userId'],
   computed: {
     user() {
-      return this.$store.getters.findUser(this.userId)
+      return useUsersStore().findUser(this.userId)
     },
     relationship() {
-      return this.$store.getters.relationship(this.userId)
+      return useUsersStore().relationship(this.userId)
     },
     muted() {
       return this.relationship.muting
@@ -30,7 +32,7 @@ const MuteCard = {
   },
   methods: {
     unmuteUser() {
-      this.$store.dispatch('unmuteUser', this.userId)
+      useUsersStore().unmuteUser(this.user.id)
     },
     muteUser() {
       this.$refs.timedMuteDialog.optionallyPrompt()

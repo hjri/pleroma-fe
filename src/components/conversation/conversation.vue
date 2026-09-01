@@ -1,7 +1,6 @@
 <template>
   <div
-    v-if="!hideStatus"
-    :style="hiddenStyle"
+    v-if="!hide"
     class="Conversation"
     :class="{ '-expanded' : isExpanded, 'panel' : isExpanded }"
   >
@@ -40,6 +39,7 @@
     <div
       v-if="isPage && !status"
       class="conversation-body"
+      ref="body"
       :class="{ 'panel-body': isExpanded }"
     >
       <p v-if="!loadStatusError">
@@ -56,6 +56,7 @@
     <div
       v-else
       class="conversation-body"
+      ref="body"
       :class="{ 'panel-body': isExpanded }"
     >
       <div
@@ -99,7 +100,7 @@
               ref="statusComponent"
               class="conversation-status status-fadein panel-body"
 
-              :statusoid="status"
+              :status-id="status.id"
               :replies="getReplies(status.id)"
 
               :expandable="!isExpanded"
@@ -116,6 +117,7 @@
               @goto="setFocused"
               @dive="() => diveIntoStatus(status.id)"
               @suspendable-state-change="onStatusSuspendStateChange"
+              @height-change="updateVirtualHeight"
             />
             <div
               v-if="showOtherRepliesButtonBelowStatus && getReplies(status.id).length > 1"
@@ -152,7 +154,7 @@
           ref="statusComponent"
           :depth="0"
 
-          :status="status"
+          :status-id="status.id"
           :in-profile="inProfile"
           :conversation="conversation"
           :collapsable="collapsable"
@@ -174,6 +176,7 @@
           @goto="setFocused"
           @dive="diveIntoStatus"
           @suspendable-state-change="onStatusSuspendStateChange"
+          @height-change="updateVirtualHeight"
         />
       </div>
       <div
@@ -186,7 +189,7 @@
             :key="status.id"
             ref="statusComponent"
             class="conversation-status status-fadein panel-body"
-            :statusoid="status"
+            :status-id="status.id"
             :replies="getReplies(status.id)"
 
             :expandable="!isExpanded"
@@ -200,6 +203,7 @@
             @goto="setFocused"
             @toggle-expanded="toggleExpanded"
             @suspendable-state-change="onStatusSuspendStateChange"
+            @height-change="updateVirtualHeight"
           />
         </article>
       </div>

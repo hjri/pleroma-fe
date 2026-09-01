@@ -7,17 +7,16 @@ import FaviconService from '../../services/favicon_service/favicon_service.js'
 import {
   ACTIONABLE_NOTIFICATION_TYPES,
   countExtraNotifications,
-  filteredNotificationsFromStore,
-  notificationsFromStore,
-  unseenNotificationsFromStore,
+  filteredNotifications,
+  unseenNotifications,
 } from '../../services/notification_utils/notification_utils.js'
-import notificationsFetcher from '../../services/notifications_fetcher/notifications_fetcher.service.js'
 import NotificationFilters from './notification_filters.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useChatsStore } from 'src/stores/chats.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useNotificationsStore } from 'src/stores/notifications.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -53,7 +52,6 @@ const Notifications = {
   data() {
     return {
       showScrollTop: false,
-      bottomedOut: false,
       // How many seen notifications to display in the list. The more there are,
       // the heavier the page becomes. This count is increased when loading
       // older notifications, and cut back to default whenever hitting "Read!".
@@ -70,14 +68,13 @@ const Notifications = {
       return this.minimalMode ? '' : 'panel panel-default'
     },
     notifications() {
-      return notificationsFromStore(this.$store)
+      return useNotificationsStore().data
     },
     error() {
-      return this.$store.state.notifications.error
+      return useNotificationsStore().error
     },
     unseenNotifications() {
-      return unseenNotificationsFromStore(
-        this.$store,
+      return unseenNotifications(
         useMergedConfigStore().mergedConfig.notificationVisibility,
         useMergedConfigStore().mergedConfig.ignoreInactionableSeen,
       )
@@ -85,18 +82,15 @@ const Notifications = {
     filteredNotifications() {
       if (this.unseenAtTop) {
         return [
-          ...filteredNotificationsFromStore(
-            this.$store,
+          ...filteredNotifications(
             useMergedConfigStore().mergedConfig.notificationVisibility,
           ).filter((n) => this.shouldShowUnseen(n)),
-          ...filteredNotificationsFromStore(
-            this.$store,
+          ...filteredNotifications(
             useMergedConfigStore().mergedConfig.notificationVisibility,
           ).filter((n) => !this.shouldShowUnseen(n)),
         ]
       } else {
-        return filteredNotificationsFromStore(
-          this.$store,
+        return filteredNotifications(
           useMergedConfigStore().mergedConfig.notificationVisibility,
           this.filterMode,
         )
@@ -127,7 +121,10 @@ const Notifications = {
       )
     },
     loading() {
-      return this.$store.state.notifications.loading
+      return useNotificationsStore().fetcher.loading
+    },
+    bottomedOut() {
+      return useNotificationsStore().fetcher.bottomedOut
     },
     noHeading() {
       const { layoutType } = useInterfaceStore()
@@ -224,14 +221,14 @@ const Notifications = {
      */
     notificationClicked(notification) {
       const { id } = notification
-      this.$store.dispatch('notificationClicked', { id })
+      useNotificationsStore().notificationClicked(id)
     },
     notificationInteracted(notification) {
       const { id } = notification
-      this.$store.dispatch('markSingleNotificationAsSeen', { id })
+      useNotificationsStore().markSingleNotificationAsSeen(id)
     },
     markAsSeen() {
-      this.$store.dispatch('markNotificationsAsSeen')
+      useNotificationsStore().markNotificationsAsSeen()
       this.seenToDisplayCount = DEFAULT_SEEN_TO_DISPLAY_COUNT
     },
     fetchOlderNotifications() {
@@ -250,22 +247,7 @@ const Notifications = {
         this.seenToDisplayCount = seenCount
       }
 
-      const store = this.$store
-      const credentials = store.state.users.currentUser.credentials
-      store.commit('setNotificationsLoading', { value: true })
-      notificationsFetcher
-        .fetchAndUpdate({
-          store,
-          credentials,
-          older: true,
-        })
-        .then((notifs) => {
-          store.commit('setNotificationsLoading', { value: false })
-          if (notifs.length === 0) {
-            this.bottomedOut = true
-          }
-          this.seenToDisplayCount += notifs.length
-        })
+      useNotificationsStore().fetcher.fetchOlder()
     },
   },
 }

@@ -13,12 +13,12 @@ const MASTODON_REGISTRATION_URL = '/api/v1/accounts'
 const MASTODON_PASSWORD_RESET_URL = ({ email }) =>
   `/auth/password${paramsString({ email })}`
 
-const MASTODON_FOLLOWING_URL = (
+export const MASTODON_FOLLOWING_URL = (
   id,
   { minId, maxId, sinceId, limit, withRelationships },
 ) =>
   `/api/v1/accounts/${id}/following${paramsString({ minId, maxId, sinceId, limit, withRelationships })}`
-const MASTODON_FOLLOWERS_URL = (
+export const MASTODON_FOLLOWERS_URL = (
   id,
   { minId, maxId, sinceId, limit, withRelationships },
 ) =>
@@ -26,15 +26,17 @@ const MASTODON_FOLLOWERS_URL = (
 
 export const MASTODON_STATUS_URL = (id) => `/api/v1/statuses/${id}`
 const MASTODON_STATUS_CONTEXT_URL = (id) => `/api/v1/statuses/${id}/context`
-const MASTODON_STATUS_SOURCE_URL = (id) => `/api/v1/statuses/${id}/source`
-const MASTODON_STATUS_HISTORY_URL = (id) => `/api/v1/statuses/${id}/history`
+export const MASTODON_STATUS_SOURCE_URL = (id) =>
+  `/api/v1/statuses/${id}/source`
+export const MASTODON_STATUS_HISTORY_URL = (id) =>
+  `/api/v1/statuses/${id}/history`
 const MASTODON_USER_URL = '/api/v1/accounts'
 const MASTODON_USER_LOOKUP_URL = ({ acct }) =>
   `/api/v1/accounts/lookup${paramsString({ acct })}`
 const MASTODON_POLL_URL = (id = '') => `/api/v1/polls/${id}`
-const MASTODON_STATUS_FAVORITEDBY_URL = (id) =>
+export const MASTODON_STATUS_FAVORITEDBY_URL = (id) =>
   `/api/v1/statuses/${id}/favourited_by`
-const MASTODON_STATUS_REBLOGGEDBY_URL = (id) =>
+export const MASTODON_STATUS_REBLOGGEDBY_URL = (id) =>
   `/api/v1/statuses/${id}/reblogged_by`
 const MASTODON_SEARCH_2 = ({
   q,
@@ -51,7 +53,7 @@ const MASTODON_SEARCH_2 = ({
 const MASTODON_USER_SEARCH_URL = ({ q, resolve }) =>
   `/api/v1/accounts/search${paramsString({ q, resolve })}`
 const MASTODON_KNOWN_DOMAIN_LIST_URL = '/api/v1/instance/peers'
-const PLEROMA_EMOJI_REACTIONS_URL = (id) =>
+export const PLEROMA_EMOJI_REACTIONS_URL = (id) =>
   `/api/v1/pleroma/statuses/${id}/reactions`
 const PLEROMA_SCROBBLES_URL = (id, { maxId, sinceId, minId, limit, offset }) =>
   `/api/v1/pleroma/accounts/${id}/scrobbles${paramsString({ maxId, sinceId, minId, limit, offset })}`
@@ -174,15 +176,21 @@ export const fetchStatusSource = ({ id, credentials }) =>
     credentials,
   }).then(({ data, ...rest }) => ({ ...rest, data: parseSource(data) }))
 
-export const fetchStatusHistory = ({ status, credentials }) =>
+export const fetchStatusHistory = ({ id, credentials }) =>
   promisedRequest({
-    url: MASTODON_STATUS_HISTORY_URL(status.id),
+    url: MASTODON_STATUS_HISTORY_URL(id),
     credentials,
   }).then(({ data, ...rest }) => {
-    return [...data].reverse().map((item) => {
-      item.originalStatus = status
-      return { ...rest, data: parseStatus(item) }
-    })
+    return {
+      ...rest,
+      data: [...data].reverse().map((item) => {
+        // History data is missing a lot of stuff present in original
+        // but we're really only missing the id for the timeago, the
+        // rest seem to render just fine.
+        item.id = id
+        return parseStatus(item)
+      }),
+    }
   })
 
 export const listEmojiPacks = ({ page, pageSize, credentials }) =>

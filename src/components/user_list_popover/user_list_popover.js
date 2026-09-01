@@ -4,6 +4,7 @@ import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
@@ -14,15 +15,22 @@ library.add(faCircleNotch)
 
 const UserListPopover = {
   name: 'UserListPopover',
-  props: ['users'],
+  props: {
+    userIds: Set,
+  },
   components: {
     UnicodeDomainIndicator,
     Popover,
     UserAvatar,
   },
   computed: {
+    users() {
+      return [...this.userIds]
+        .map((id) => useUsersStore().findUser(id))
+        .filter(Boolean)
+    },
     usersCapped() {
-      return this.users.slice(0, 16)
+      return [...this.users].slice(0, 16)
     },
     allowNonSquareEmoji() {
       return useMergedConfigStore().mergedConfig.nonSquareEmoji

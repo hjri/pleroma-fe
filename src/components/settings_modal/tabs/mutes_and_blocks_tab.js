@@ -12,6 +12,8 @@ import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens.js'
+import { useSearchStore } from 'src/stores/search.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { importBlocks, importFollows } from 'src/api/user.js'
 
@@ -40,21 +42,21 @@ const MutesAndBlocks = {
       return useInstanceStore().knownDomains
     },
     user() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
     blocks() {
-      return get(this.$store.state.users.currentUser, 'blockIds', [])
+      return get(this.user, 'blockIds', [])
     },
     mutes() {
-      return get(this.$store.state.users.currentUser, 'muteIds', [])
+      return get(this.user, 'muteIds', [])
     },
     domains() {
-      return get(this.$store.state.users.currentUser, 'domainMutes', [])
+      return get(this.user, 'domainMutes', [])
     },
   },
   methods: {
     fetchItems(group) {
-      return () => this.$store.dispatch('fetch' + group, this.userId)
+      return () => useUsersStore()['fetch' + group](this.userId)
     },
     importFollows(file) {
       return importFollows({
@@ -94,35 +96,35 @@ const MutesAndBlocks = {
     },
     filterUnblockedUsers(userIds) {
       return reject(userIds, (userId) => {
-        const relationship = this.$store.getters.relationship(this.userId)
+        const relationship = useUsersStore().relationship(this.userId)
         return relationship.blocking || userId === this.user.id
       })
     },
     filterUnMutedUsers(userIds) {
       return reject(userIds, (userId) => {
-        const relationship = this.$store.getters.relationship(this.userId)
+        const relationship = useUsersStore().relationship(this.userId)
         return relationship.muting || userId === this.user.id
       })
     },
     queryUserIds(query) {
-      return this.$store
-        .dispatch('searchUsers', { query })
+      return useSearchStore()
+        .searchUsers({ query })
         .then((users) => map(users, 'id'))
     },
     blockUsers(ids) {
-      return this.$store.dispatch('blockUsers', ids)
+      return useUsersStore().blockUsers(ids)
     },
     unblockUsers(ids) {
-      return this.$store.dispatch('unblockUsers', ids)
+      return useUsersStore().unblockUsers(ids)
     },
     muteUsers(ids) {
-      return this.$store.dispatch('muteUsers', ids)
+      return useUsersStore().muteUsers(ids)
     },
     unmuteUsers(ids) {
-      return this.$store.dispatch('unmuteUsers', ids)
+      return useUsersStore().unmuteUsers(ids)
     },
     filterUnMutedDomains(urls) {
-      return urls.filter((url) => !this.user.domainMutes.includes(url))
+      return urls.filter((url) => !this.user.domainMutes.has(url))
     },
     queryKnownDomains(query) {
       return new Promise((resolve) => {
@@ -132,7 +134,7 @@ const MutesAndBlocks = {
       })
     },
     unmuteDomains(domains) {
-      return this.$store.dispatch('unmuteDomains', domains)
+      return useUsersStore().unmuteDomains(domains)
     },
   },
 }

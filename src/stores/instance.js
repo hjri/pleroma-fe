@@ -13,6 +13,7 @@ import {
 } from '../modules/default_config_state.js'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
 import { fetchKnownDomains } from 'src/api/public.js'
 
@@ -212,7 +213,7 @@ export const useInstanceStore = defineStore('instance', {
     async getKnownDomains() {
       try {
         const { data } = await fetchKnownDomains({
-          credentials: window.vuex.state.users.currentUser.credentials,
+          credentials: useOAuthStore().token,
         })
         this.knownDomains = data
       } catch (e) {

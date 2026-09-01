@@ -6,6 +6,7 @@ import ActionButtonContainer from './action_button_container.vue'
 import { BUTTONS } from './buttons_definitions.js'
 
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import genRandomSeed from 'src/services/random_seed/random_seed.service.js'
 
@@ -88,7 +89,7 @@ const StatusActionButtons = {
       return this.buttons.filter((x) => !this.pinnedItems.has(x.name))
     },
     currentUser() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
     funcArg() {
       return {
@@ -168,7 +169,7 @@ const StatusActionButtons = {
       useSyncConfigStore().pushSyncConfig()
     },
     getComponent(button) {
-      if (!this.$store.state.users.currentUser && button.anonLink) {
+      if (!useUsersStore().currentUser && button.anonLink) {
         return 'a'
       } else if (button.action == null && button.link != null) {
         return 'a'

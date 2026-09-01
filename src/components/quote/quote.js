@@ -1,3 +1,5 @@
+import { useStatusesStore } from 'src/stores/statuses.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
 
@@ -45,7 +47,7 @@ export default {
   computed: {
     quotedStatus() {
       return this.statusId
-        ? this.$store.state.statuses.allStatusesObject[this.statusId]
+        ? useStatusesStore().allStatuses.get(this.statusId)
         : undefined
     },
     shouldDisplayQuote() {
@@ -79,8 +81,8 @@ export default {
       this.fetchAttempted = true
       this.fetching = true
       this.$emit('loading', true)
-      this.$store
-        .dispatch('fetchStatus', this.statusId)
+      useStatusesStore()
+        .fetchStatus(this.statusId)
         .then(() => {
           this.displayQuote = true
         })

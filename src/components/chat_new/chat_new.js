@@ -1,9 +1,11 @@
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useSearchStore } from 'src/stores/search.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { chats } from 'src/api/chats.js'
 
@@ -42,17 +44,14 @@ const chatNew = {
         return this.suggestions
       }
     },
-    ...mapState({
-      currentUser: (state) => state.users.currentUser,
-    }),
-    ...mapGetters(['findUser']),
+    ...mapState(useUsersStore, ['currentUser', 'findUser']),
   },
   methods: {
     goBack() {
       this.$emit('cancel')
     },
     goToChat(user) {
-      this.$router.push({ name: 'chat', params: { recipient_id: user.id } })
+      this.$router.push({ name: 'chat', params: { chatUserId: user.id } })
     },
     onInput() {
       this.search(this.query)
@@ -73,7 +72,8 @@ const chatNew = {
       this.loading = true
       this.userIds = []
       this.$store
-        .dispatch('search', { q: query, resolve: true, type: 'accounts' })
+      useSearchStore()
+        .search({ q: query, resolve: true, type: 'accounts' })
         .then((data) => {
           this.loading = false
           this.userIds = data.accounts.map((a) => a.id)
