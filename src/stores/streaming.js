@@ -108,6 +108,8 @@ export const useStreamingStore = defineStore('streaming', {
       }
     },
     initSocket(initial) {
+      if (this.socket) throw new Error('Socket already exists!')
+
       this.state = initial
         ? WSConnectionStatus.STARTING_INITIAL
         : WSConnectionStatus.STARTING
