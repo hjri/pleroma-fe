@@ -134,14 +134,7 @@ export const useInterfaceStore = defineStore('interface', {
         1001, // Going away
       ])
       const { code } = closeEvent.original
-      if (intendedCodes.has(code)) {
-        this.pushGlobalNotice({
-          level: 'success',
-          messageKey: 'timeline.socket_closed',
-          messageArgs: [code],
-          timeout: 5000,
-        })
-      } else {
+      if (!intendedCodes.has(code)) {
         this.pushGlobalNotice({
           level: 'error',
           messageKey: 'timeline.socket_broke',

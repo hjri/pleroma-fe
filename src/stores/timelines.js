@@ -81,6 +81,7 @@ export const ARGUMENT_MAP = {
   user: 'userId',
   userPinned: 'userId',
   media: 'userId',
+  favorites: 'userId',
 }
 
 const TIMELINES = new Set([
@@ -180,7 +181,7 @@ export const useTimelinesStore = defineStore('timelines', {
           timeline.socket.handlers
         timeline.socket.et.removeEventListener('open', openHandler)
         timeline.socket.et.removeEventListener('close', closeHandler)
-        timeline.socket.et.removeEventListener('message', messageHandler)
+        timeline.socket.et.removeEventListener('update', messageHandler)
       }
 
       this[timelineName] = emptyTl(timelineName)
@@ -267,8 +268,6 @@ export const useTimelinesStore = defineStore('timelines', {
       if (statuses.length === 0) return
       const timeline = this[timelineName]
 
-      this.populateRepeats(timeline, repeats)
-
       // This makes sure that user timeline won't get data meant for other
       // user. I.e. opening different user profiles makes request which could
       // return data late after user already viewing different user profile
@@ -278,6 +277,8 @@ export const useTimelinesStore = defineStore('timelines', {
       if (property && timeline[property] !== argument) {
         return
       }
+
+      this.populateRepeats(timeline, repeats)
 
       const filtered = statuses.filter((id) => !timeline.statusIds.has(id))
       if (older) {

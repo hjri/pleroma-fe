@@ -131,6 +131,7 @@ export const useStreamingStore = defineStore('streaming', {
     },
     stopSocket() {
       this.socket.close()
+      this.socket = null
       this.state = WSConnectionStatus.CLOSED
       this.retrying = false
       this.retryMultiplier = 1

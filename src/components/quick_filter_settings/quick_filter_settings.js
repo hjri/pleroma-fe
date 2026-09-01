@@ -5,9 +5,9 @@ import Popover from 'src/components/popover/popover.vue'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useStatusesStore } from 'src/stores/statuses.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUsersStore } from 'src/stores/users.js'
+import { useTimelinesStore } from 'src/stores/timelines.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faFilter, faFont, faWrench } from '@fortawesome/free-solid-svg-icons'
@@ -28,7 +28,7 @@ const QuickFilterSettings = {
         path: 'replyVisibility',
         value: visibility,
       })
-      useStatusesStore().requireReloadAll()
+      useTimelinesStore().requireReloadAll()
     },
     openTab(tab) {
       useInterfaceStore().openSettingsModalTab(tab)

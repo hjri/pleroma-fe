@@ -14,7 +14,7 @@ import UnitSetting from '../helpers/unit_setting.vue'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useStatusesStore } from 'src/stores/statuses.js'
+import { useTimelinesStore } from 'src/stores/timelines.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import {
@@ -266,7 +266,7 @@ const FilteringTab = {
   // Updating nested properties
   watch: {
     replyVisibility() {
-      useStatusesStore().requireReloadAll()
+      useTimelinesStore().requireReloadAll()
     },
     muteFiltersObject() {
       this.muteFiltersDraftObject = cloneDeep(

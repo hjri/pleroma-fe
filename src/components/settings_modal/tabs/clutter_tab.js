@@ -11,7 +11,7 @@ import UnitSetting from '../helpers/unit_setting.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
-import { useStatusesStore } from 'src/stores/statuses.js'
+import { useTimelinesStore } from 'src/stores/timelines.js'
 
 const ClutterTab = {
   components: {
@@ -36,7 +36,7 @@ const ClutterTab = {
   // Updating nested properties
   watch: {
     replyVisibility() {
-      useStatusesStore().requireReloadAll()
+      useTimelinesStore().requireReloadAll()
     },
   },
 }

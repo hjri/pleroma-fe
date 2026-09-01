@@ -276,15 +276,21 @@ export const useUsersStore = defineStore('users', {
 
       const result = await promise
 
-      if (result) {
-        const { id, screen_name } = result
+      try {
+        if (result) {
+          const { id, screen_name } = result
 
-        // Save promise for future use
-        this.fetchesIds.set(id, promise)
-        this.fetchesNames.set(screen_name, promise)
-        return this.users.get(id)
-      } else {
-        return null
+          // Save promise for future use
+          this.fetchesIds.set(id, promise)
+          this.fetchesNames.set(screen_name, promise)
+          return this.users.get(id)
+        } else {
+          return null
+        }
+      } catch (e) {
+        console.error(`Failed fetching user ${identifier}`, e)
+        map.delete(identifier)
+        throw e
       }
     },
     async fetchUser(id) {
@@ -518,7 +524,7 @@ export const useUsersStore = defineStore('users', {
 
     /// Mute
     muteUser(id, expiresIn = 0) {
-      const predictedRelationship = this.relationships[id] || { id }
+      const predictedRelationship = this.relationships.get(id) || { id }
       predictedRelationship.muting = true
       this.updateUserRelationships({
         optimism: true,
@@ -537,7 +543,7 @@ export const useUsersStore = defineStore('users', {
       return Promise.all(data.map((d) => this.muteUser(d)))
     },
     unmuteUser(id) {
-      const predictedRelationship = this.relationships[id] || { id }
+      const predictedRelationship = this.relationships.get(id) || { id }
       predictedRelationship.muting = false
       this.updateUserRelationships({
         optimism: true,
@@ -554,7 +560,7 @@ export const useUsersStore = defineStore('users', {
 
     /// Block
     blockUser(id, expiresIn = 0) {
-      const predictedRelationship = this.relationships[id] || { id }
+      const predictedRelationship = this.relationships.get(id) || { id }
       this.updateUserRelationships({
         optimism: true,
         data: [predictedRelationship],

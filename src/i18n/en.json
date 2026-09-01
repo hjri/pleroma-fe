@@ -1634,7 +1634,6 @@
     "no_statuses": "No statuses",
     "socket_reconnected": "Realtime connection established",
     "socket_disconnected": "Realtime connection unavaialable",
-    "socket_closed": "Realtime connection closed",
     "socket_broke": "Realtime connection lost: CloseEvent code {0}",
     "quick_view_settings": "Quick view settings",
     "quick_filter_settings": "Quick filter settings",
