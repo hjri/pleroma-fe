@@ -196,6 +196,7 @@ export const useTimelinesStore = defineStore('timelines', {
       timeline.maxId = ''
       timeline.minId = ''
       timeline.reloadNeeded = false
+      timeline.fetcher.resetBottomedOut()
     },
     activatePersistents() {
       TIMELINES.forEach((name) => {
@@ -443,6 +444,7 @@ export const useTimelinesStore = defineStore('timelines', {
         ...timeline.order.filter((id) => !timeline.ignoredIds.has(id)),
       ])
       this.updateTimelineExtremes(timeline, {}, true)
+      timeline.fetcher.resetBottomedOut()
     },
     syncOrder(timeline) {
       timeline.order = timeline.order.filter((id) => timeline.statusIds.has(id))
