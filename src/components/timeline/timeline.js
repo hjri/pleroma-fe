@@ -103,9 +103,7 @@ const Timeline = {
     },
     statusesToDisplay() {
       if (!this.virtualScrollingEnabled) {
-        return new Set(
-          this.filteredVisibleStatuses.map(({ id }) => id),
-        )
+        return new Set(this.filteredVisibleStatuses.map(({ id }) => id))
       }
 
       const amount = this.timeline.visibleStatusIds.size

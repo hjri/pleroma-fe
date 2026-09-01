@@ -84,10 +84,7 @@ const notificationsFetcher = (credentials) => {
       return await fetchNotifications({ args, older })
     } else {
       // fetch new notifications
-      if (
-        sinceId === undefined &&
-        timelineData.maxId !== ''
-      ) {
+      if (sinceId === undefined && timelineData.maxId !== '') {
         args.sinceId = timelineData.maxId
       } else if (sinceId !== null) {
         args.sinceId = sinceId
