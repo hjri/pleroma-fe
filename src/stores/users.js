@@ -278,9 +278,8 @@ export const useUsersStore = defineStore('users', {
 
       map.set(identifier, promise)
 
-      const result = await promise
-
       try {
+        const result = await promise
         if (result) {
           const { id, screen_name } = result
 
