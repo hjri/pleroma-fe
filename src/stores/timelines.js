@@ -287,24 +287,30 @@ export const useTimelinesStore = defineStore('timelines', {
         timeline.order.unshift(...filtered)
       }
 
+      const newStatuses = new Set()
+
       statuses.forEach((statusId) => {
         const isNew = !timeline.statusIds.has(statusId)
         timeline.statusIds.add(statusId)
 
         if (isNew) {
-          const seenBefore = this.checkSeenBefore(timeline, statusId)
-          if (!seenBefore) {
-            if (showImmediately) {
-              // Add it directly to the visibleStatuses, don't change
-              // newStatusCount
-              timeline.visibleStatusIds.add(statusId)
-            } else {
-              // Just change newStatuscount
-              timeline.newStatusCount += 1
-            }
+          newStatuses.add(statusId)
+        }
+      })
+
+      newStatuses.forEach((statusId) => {
+        const seenBefore = this.checkSeenBefore(timeline, statusId)
+        if (!seenBefore) {
+          if (showImmediately) {
+            // Add it directly to the visibleStatuses, don't change
+            // newStatusCount
+            timeline.visibleStatusIds.add(statusId)
           } else {
-            timeline.ignoredIds.add(statusId)
+            // Just change newStatuscount
+            timeline.newStatusCount += 1
           }
+        } else {
+          timeline.ignoredIds.add(statusId)
         }
       })
 
