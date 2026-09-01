@@ -52,7 +52,11 @@ const timelineFetcher = (timeline, argument, credentials) => {
 
     const numStatusesBeforeFetch = timeline.statusIds.size
 
-    if (older && bottomedOut.value) return
+    if (older && bottomedOut.value) {
+      loadingOlder.value = false
+      return
+    }
+
     return fetchTimeline(args)
       .then(({ data, pagination, timestamp }) => {
         // No statuses for timeline, ever.
@@ -135,6 +139,9 @@ const timelineFetcher = (timeline, argument, credentials) => {
     loadingOlder,
     loadingNewer,
     bottomedOut,
+    resetBottomedOut: () => {
+      bottomedOut.value = false
+    },
   }
 }
 

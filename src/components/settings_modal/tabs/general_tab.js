@@ -27,7 +27,7 @@ const GeneralTab = {
         value: mode,
         label: this.$t(`settings.absolute_time_format_12h_${mode}`),
       })),
-      emailLanguage: useUsersStore().currentUser.language || [''],
+      emailLanguage: useUsersStore().currentUser?.language || [''],
     }
   },
   components: {
@@ -72,6 +72,9 @@ const GeneralTab = {
       useLocalConfigStore().set({ path, value })
     },
     toggleStreaming(value) {
+      // Streaming is not available for the unauthenticated
+      if (!useOAuthStore().token) return
+
       if (value) {
         useStreamingStore().initSocket()
       } else {

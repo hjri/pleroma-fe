@@ -162,9 +162,9 @@
             <div class="fun-monitor-display-bezel button-default">
               <div class="fun-monitor-display-screen input">
                 <img
-                  v-if="backgroundPreview || user.background_image || instanceWallpaper"
+                  v-if="backgroundPreview || user?.background_image || instanceWallpaper"
                   class="fun-monitor-display-screen-image"
-                  :src="backgroundPreview || user.background_image || instanceWallpaper"
+                  :src="backgroundPreview || user?.background_image || instanceWallpaper"
                 >
                 <div
                   v-else

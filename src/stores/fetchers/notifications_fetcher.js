@@ -36,7 +36,7 @@ const notificationsFetcher = (credentials) => {
       const notifications = response.data
       if (older && notifications.length === 0) bottomedOut.value = true
 
-      useNotificationsStore().addNewNotifications(response)
+      useNotificationsStore().addNewNotifications(response, older)
     } catch (error) {
       if (
         error.statusCode === 400 &&
@@ -78,16 +78,13 @@ const notificationsFetcher = (credentials) => {
 
     args.timeline = 'notifications'
     if (older) {
-      if (timelineData.minId !== Number.POSITIVE_INFINITY) {
+      if (timelineData.minId !== '') {
         args.maxId = timelineData.minId
       }
       return await fetchNotifications({ args, older })
     } else {
       // fetch new notifications
-      if (
-        sinceId === undefined &&
-        timelineData.maxId !== Number.POSITIVE_INFINITY
-      ) {
+      if (sinceId === undefined && timelineData.maxId !== '') {
         args.sinceId = timelineData.maxId
       } else if (sinceId !== null) {
         args.sinceId = sinceId

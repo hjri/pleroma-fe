@@ -81,6 +81,7 @@ export const ARGUMENT_MAP = {
   user: 'userId',
   userPinned: 'userId',
   media: 'userId',
+  favorites: 'userId',
 }
 
 const TIMELINES = new Set([
@@ -180,7 +181,7 @@ export const useTimelinesStore = defineStore('timelines', {
           timeline.socket.handlers
         timeline.socket.et.removeEventListener('open', openHandler)
         timeline.socket.et.removeEventListener('close', closeHandler)
-        timeline.socket.et.removeEventListener('message', messageHandler)
+        timeline.socket.et.removeEventListener('update', messageHandler)
       }
 
       this[timelineName] = emptyTl(timelineName)
@@ -196,6 +197,7 @@ export const useTimelinesStore = defineStore('timelines', {
       timeline.maxId = ''
       timeline.minId = ''
       timeline.reloadNeeded = false
+      timeline.fetcher.resetBottomedOut()
     },
     activatePersistents() {
       TIMELINES.forEach((name) => {
@@ -266,8 +268,6 @@ export const useTimelinesStore = defineStore('timelines', {
       if (statuses.length === 0) return
       const timeline = this[timelineName]
 
-      this.populateRepeats(timeline, repeats)
-
       // This makes sure that user timeline won't get data meant for other
       // user. I.e. opening different user profiles makes request which could
       // return data late after user already viewing different user profile
@@ -278,9 +278,7 @@ export const useTimelinesStore = defineStore('timelines', {
         return
       }
 
-      if (!noIdUpdate) {
-        this.updateTimelineExtremes(timeline, pagination)
-      }
+      this.populateRepeats(timeline, repeats)
 
       const filtered = statuses.filter((id) => !timeline.statusIds.has(id))
       if (older) {
@@ -289,26 +287,36 @@ export const useTimelinesStore = defineStore('timelines', {
         timeline.order.unshift(...filtered)
       }
 
+      const newStatuses = new Set()
+
       statuses.forEach((statusId) => {
         const isNew = !timeline.statusIds.has(statusId)
         timeline.statusIds.add(statusId)
 
         if (isNew) {
-          const seenBefore = this.checkSeenBefore(timeline, statusId)
-          if (!seenBefore) {
-            if (showImmediately) {
-              // Add it directly to the visibleStatuses, don't change
-              // newStatusCount
-              timeline.visibleStatusIds.add(statusId)
-            } else {
-              // Just change newStatuscount
-              timeline.newStatusCount += 1
-            }
-          } else {
-            timeline.ignoredIds.add(statusId)
-          }
+          newStatuses.add(statusId)
         }
       })
+
+      newStatuses.forEach((statusId) => {
+        const seenBefore = this.checkSeenBefore(timeline, statusId)
+        if (!seenBefore) {
+          if (showImmediately) {
+            // Add it directly to the visibleStatuses, don't change
+            // newStatusCount
+            timeline.visibleStatusIds.add(statusId)
+          } else {
+            // Just change newStatuscount
+            timeline.newStatusCount += 1
+          }
+        } else {
+          timeline.ignoredIds.add(statusId)
+        }
+      })
+
+      if (!noIdUpdate) {
+        this.updateTimelineExtremes(timeline, pagination)
+      }
     },
     onStreamMessage(timelineName, argument, event) {
       this.addStatusesToTimeline(timelineName, argument, {
@@ -347,7 +355,7 @@ export const useTimelinesStore = defineStore('timelines', {
       // If it's the only reprööt then we've never seen post before
       if (knownRepeats.size === 1) return false
       // If we're working on oldest known reprööt then we've never seen it before
-      return first(knownRepeats) !== statusId
+      return knownRepeats.values().next().value !== statusId
     },
 
     // Poll & Push
@@ -414,7 +422,7 @@ export const useTimelinesStore = defineStore('timelines', {
     },
 
     // Queues & Timeline manip
-    updateTimelineExtremes(timeline, pagination = {}) {
+    updateTimelineExtremes(timeline, pagination = {}, force = false) {
       // Can't use Math.min/max because it doesn't work with string (duh)
       const minNew = pagination.maxId ?? last(timeline.order) ?? ''
       const maxNew = pagination.minId ?? first(timeline.order) ?? ''
@@ -422,10 +430,10 @@ export const useTimelinesStore = defineStore('timelines', {
       const newer = maxNew > timeline.maxId
       const older = minNew < timeline.minId
 
-      if (newer || timeline.maxId === '') {
+      if (force || newer || timeline.maxId === '') {
         timeline.maxId = maxNew
       }
-      if (older || timeline.minId === '') {
+      if (force || older || timeline.minId === '') {
         timeline.minId = minNew
       }
 
@@ -442,7 +450,8 @@ export const useTimelinesStore = defineStore('timelines', {
       timeline.visibleStatusIds = new Set([
         ...timeline.order.filter((id) => !timeline.ignoredIds.has(id)),
       ])
-      this.updateTimelineExtremes(timeline)
+      this.updateTimelineExtremes(timeline, {}, true)
+      timeline.fetcher.resetBottomedOut()
     },
     syncOrder(timeline) {
       timeline.order = timeline.order.filter((id) => timeline.statusIds.has(id))
@@ -451,8 +460,10 @@ export const useTimelinesStore = defineStore('timelines', {
       this[timeline].reloadNeeded = true
     },
     requireReloadAll() {
-      Object.keys(this).forEach((timeline) => {
-        this[timeline].reloadNeeded = true
+      TIMELINES.forEach((timelineName) => {
+        const timeline = this[timelineName]
+
+        timeline.reloadNeeded = true
       })
     },
 

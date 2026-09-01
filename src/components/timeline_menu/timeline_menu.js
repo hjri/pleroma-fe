@@ -68,7 +68,6 @@ const TimelineMenu = {
         return '#' + this.$route.params.tag
       }
       if (route === 'lists-timeline') {
-        console.log(useListsStore, this.$route.params.id)
         return useListsStore().findListTitle(this.$route.params.id)
       }
       if (route === 'bookmark-folder') {

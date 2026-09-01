@@ -221,7 +221,7 @@ const AppearanceTab = {
   },
   computed: {
     isDefaultBackground() {
-      return !useUsersStore().currentUser.background_image
+      return !useUsersStore().currentUser?.background_image
     },
     switchInProgress() {
       return useInterfaceStore().themeChangeInProgress
@@ -283,7 +283,7 @@ const AppearanceTab = {
     instanceWallpaperUsed() {
       return (
         useInstanceStore().instanceIdentity.background &&
-        !useUsersStore().currentUser.background_image
+        !useUsersStore().currentUser?.background_image
       )
     },
     customThemeVersion() {

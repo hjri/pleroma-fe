@@ -622,6 +622,7 @@ const conversation = {
     },
     updateVirtualHeight() {
       if (this.hide) return // no updates when not rendering
+      if (!this.status) return // not loaded yet
       this.$nextTick(() => {
         this.virtualHeight = this.$refs.body.getBoundingClientRect().height
         this.$emit('update:virtualHeight', {
