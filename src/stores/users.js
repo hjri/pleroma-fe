@@ -707,7 +707,7 @@ export const useUsersStore = defineStore('users', {
           useOAuthStore().clearToken()
         }
 
-        if (error.tatusCode === 401) {
+        if (error.statusCode === 401) {
           throw new Error('Wrong username or password', error)
         } else {
           throw new Error('An error occurred, please try again', error)
