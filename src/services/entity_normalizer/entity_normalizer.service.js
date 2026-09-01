@@ -386,8 +386,10 @@ export const parseLinkHeaderPagination = (linkHeader, opts = {}) => {
   const minId = parsedLinkHeader.prev?.min_id
 
   const result = {}
-  if (maxId !== undefined) result.maxId = flakeId ? maxId : Number.parseInt(maxId, 10)
-  if (minId !== undefined) result.minId = flakeId ? minId : Number.parseInt(minId, 10)
+  if (maxId !== undefined)
+    result.maxId = flakeId ? maxId : Number.parseInt(maxId, 10)
+  if (minId !== undefined)
+    result.minId = flakeId ? minId : Number.parseInt(minId, 10)
 
   return result
 }

@@ -30,8 +30,7 @@ const UserListPopover = {
         .filter(Boolean)
     },
     usersCapped() {
-      return [...this.users]
-        .slice(0, 16)
+      return [...this.users].slice(0, 16)
     },
     allowNonSquareEmoji() {
       return useMergedConfigStore().mergedConfig.nonSquareEmoji
