@@ -24,10 +24,14 @@ const UserListPopover = {
     UserAvatar,
   },
   computed: {
-    usersCapped() {
+    users() {
       return [...this.userIds]
-        .slice(0, 16)
         .map((id) => useUsersStore().findUser(id))
+        .filter(Boolean)
+    },
+    usersCapped() {
+      return [...this.users]
+        .slice(0, 16)
     },
     allowNonSquareEmoji() {
       return useMergedConfigStore().mergedConfig.nonSquareEmoji
