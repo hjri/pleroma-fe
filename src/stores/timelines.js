@@ -454,8 +454,10 @@ export const useTimelinesStore = defineStore('timelines', {
       this[timeline].reloadNeeded = true
     },
     requireReloadAll() {
-      Object.keys(this).forEach((timeline) => {
-        this[timeline].reloadNeeded = true
+      TIMELINES.forEach((timelineName) => {
+        const timeline = this[timelineName]
+
+        timeline.reloadNeeded = true
       })
     },
 
