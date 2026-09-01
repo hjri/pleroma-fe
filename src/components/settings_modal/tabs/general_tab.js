@@ -72,6 +72,9 @@ const GeneralTab = {
       useLocalConfigStore().set({ path, value })
     },
     toggleStreaming(value) {
+      // Streaming is not available for the unauthenticated
+      if (!useOAuthStore().token) return
+
       if (value) {
         useStreamingStore().initSocket()
       } else {

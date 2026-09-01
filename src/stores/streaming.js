@@ -130,6 +130,9 @@ export const useStreamingStore = defineStore('streaming', {
     stopSocket() {
       this.socket.close()
       this.state = WSConnectionStatus.CLOSED
+      this.retrying = false
+      this.retryMultiplier = 1
+      this.error = null
     },
 
     getSubArgs(stream) {
@@ -229,6 +232,8 @@ export const useStreamingStore = defineStore('streaming', {
         )
 
         setTimeout(() => {
+          if (this.retrying) return // retry aborted (i.e. due to logout)
+
           this.initSocket()
         }, retryTimeout(this.retryMultiplier))
 
