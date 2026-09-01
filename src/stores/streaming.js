@@ -109,11 +109,16 @@ export const useStreamingStore = defineStore('streaming', {
     },
     initSocket(initial) {
       if (this.socket) {
-        console.error("Socket already exists! This shouldn't happen! Force-closing the socket just in case")
+        console.error(
+          "Socket already exists! This shouldn't happen! Force-closing the socket just in case",
+        )
         try {
-        this.socket.close()
+          this.socket.close()
         } catch (e) {
-          console.error("Error closing existing socket that shouldn't be there. Welp. Moving on.", e)
+          console.error(
+            "Error closing existing socket that shouldn't be there. Welp. Moving on.",
+            e,
+          )
         }
       }
 
@@ -137,7 +142,8 @@ export const useStreamingStore = defineStore('streaming', {
       this.socket.addEventListener('error', this.onError)
     },
     stopSocket() {
-      if (this.socket == null) console.error("Socket is already stopped! This shouldn't happen!")
+      if (this.socket == null)
+        console.error("Socket is already stopped! This shouldn't happen!")
       this.socket?.close()
       this.socket = null
       this.state = WSConnectionStatus.CLOSED
