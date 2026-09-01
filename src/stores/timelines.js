@@ -279,10 +279,6 @@ export const useTimelinesStore = defineStore('timelines', {
         return
       }
 
-      if (!noIdUpdate) {
-        this.updateTimelineExtremes(timeline, pagination)
-      }
-
       const filtered = statuses.filter((id) => !timeline.statusIds.has(id))
       if (older) {
         timeline.order.push(...filtered)
@@ -310,6 +306,10 @@ export const useTimelinesStore = defineStore('timelines', {
           }
         }
       })
+
+      if (!noIdUpdate) {
+        this.updateTimelineExtremes(timeline, pagination)
+      }
     },
     onStreamMessage(timelineName, argument, event) {
       this.addStatusesToTimeline(timelineName, argument, {
