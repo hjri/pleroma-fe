@@ -385,10 +385,11 @@ export const parseLinkHeaderPagination = (linkHeader, opts = {}) => {
   const maxId = parsedLinkHeader.next?.max_id
   const minId = parsedLinkHeader.prev?.min_id
 
-  return {
-    maxId: flakeId ? maxId : Number.parseInt(maxId, 10),
-    minId: flakeId ? minId : Number.parseInt(minId, 10),
-  }
+  const result = {}
+  if (maxId !== undefined) result.maxId = flakeId ? maxId : Number.parseInt(maxId, 10)
+  if (minId !== undefined) result.minId = flakeId ? minId : Number.parseInt(minId, 10)
+
+  return result
 }
 
 export const parseChat = (chat) => {
