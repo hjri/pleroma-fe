@@ -27,7 +27,7 @@ const GeneralTab = {
         value: mode,
         label: this.$t(`settings.absolute_time_format_12h_${mode}`),
       })),
-      emailLanguage: useUsersStore().currentUser.language || [''],
+      emailLanguage: useUsersStore().currentUser?.language || [''],
     }
   },
   components: {

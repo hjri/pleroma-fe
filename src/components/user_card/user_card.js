@@ -238,7 +238,7 @@ export default {
       return useUsersStore().relationship(this.userId)
     },
     isOtherUser() {
-      return this.user.id !== useUsersStore().currentUser.id
+      return this.user.id !== useUsersStore().currentUser?.id
     },
     subscribeUrl() {
       const serverUrl = new URL(this.user.statusnet_profile_url)

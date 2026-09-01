@@ -15,7 +15,7 @@ const FollowCard = {
   },
   computed: {
     isMe() {
-      return useUsersStore().currentUser.id === this.user.id
+      return useUsersStore().currentUser?.id === this.user.id
     },
     loggedIn() {
       return useUsersStore().currentUser
