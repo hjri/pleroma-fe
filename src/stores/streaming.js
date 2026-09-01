@@ -235,7 +235,7 @@ export const useStreamingStore = defineStore('streaming', {
         )
 
         setTimeout(() => {
-          if (this.retrying) return // retry aborted (i.e. due to logout)
+          if (!this.retrying) return // retry aborted (i.e. due to logout)
 
           this.initSocket()
         }, retryTimeout(this.retryMultiplier))
