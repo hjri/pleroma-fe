@@ -11,10 +11,10 @@
             <ScopeSelector
               class="scope-selector setting-control"
               :show-all="true"
-              :user-default="$store.state.profileConfig.defaultScope"
-              :initial-scope="$store.state.profileConfig.defaultScope"
-              :on-scope-change="changeDefaultScope"
+              :user-default="defaultScope"
+              :initial-scope="defaultScope"
               :unstyled="false"
+              @change="changeDefaultScope"
             />
           </label>
         </li>

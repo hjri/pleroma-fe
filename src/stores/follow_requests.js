@@ -32,6 +32,6 @@ export const useFollowRequestsStore = defineStore('followRequests', {
     },
     remove(id) {
       this.requests.delete(id)
-    }
+    },
   },
 })

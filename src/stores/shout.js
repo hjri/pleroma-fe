@@ -1,6 +1,6 @@
 import { Socket } from 'phoenix'
-
 import { defineStore } from 'pinia'
+
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useUsersStore } from 'src/stores/users.js'
 
@@ -14,7 +14,7 @@ export const useShoutStore = defineStore('shout', {
     socket: null,
   }),
   getters: {
-    token: () => useUsersStore().currentUser?.token
+    token: () => useUsersStore().currentUser?.token,
   },
   actions: {
     initializeSocket() {
@@ -50,6 +50,6 @@ export const useShoutStore = defineStore('shout', {
     disconnectSocket() {
       this.socket?.disconnect()
       this.socket = null
-    }
+    },
   },
 })

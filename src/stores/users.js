@@ -11,13 +11,14 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useListsStore } from 'src/stores/lists.js'
-import { useShoutStore } from 'src/stores/shout.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useShoutStore } from 'src/stores/shout.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useStreamingStore } from 'src/stores/streaming.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useProfileConfigStore } from 'src/stores/profile_config.js'
 import { useTimelinesStore } from 'src/stores/timelines.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 
@@ -142,6 +143,7 @@ export const useUsersStore = defineStore('users', {
 
         if (user.id === this.currentUser?.id) {
           this.currentUser = reactive
+          useProfileConfigStore().update(reactive)
         }
 
         // Initialize some stuff
@@ -648,6 +650,7 @@ export const useUsersStore = defineStore('users', {
                 console.error('Error setting theme', e)
               })
           })
+        useProfileConfigStore().onLogin(user)
 
         useUserHighlightStore().initUserHighlight(user)
 
@@ -780,6 +783,7 @@ export const useUsersStore = defineStore('users', {
 
           Cookies.remove('__Host-pleroma_key', { path: '/' })
           useInterfaceStore().onLogout()
+          useProfileConfigStore().onLogout()
         })
         .catch((e) => {
           useInterfaceStore().pushGlobalNotice({
