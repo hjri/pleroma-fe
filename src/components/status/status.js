@@ -136,12 +136,29 @@ const Status = {
     useScrobblesStore().getLatestScrobble(this.status.user.id)
   },
   computed: {
+    // Whatever we're given to work with
     status() {
       return this.statusoid ?? useStatusesStore().allStatuses.get(this.statusId)
     },
+    // Status repeated
     repeatedStatus() {
       if (this.status.retweeted_status === undefined) return undefined
       return useStatusesStore().allStatuses.get(this.status.retweeted_status.id)
+    },
+    // THE repeat
+    repeatStatus() {
+      if (this.isRepeat) {
+        return this.status
+      } else {
+        return null
+      }
+    },
+    mainStatus() {
+      if (this.isRepeat) {
+        return this.repeatedStatus
+      } else {
+        return this.status
+      }
     },
     repeater() {
       return useUsersStore().findUser(this.status.user.id)
@@ -151,7 +168,7 @@ const Status = {
     },
     showReasonMutedThread() {
       return (
-        (this.mainStatus.thread_muted || this.mainSatus.reblog?.thread_muted) &&
+        (this.mainStatus.thread_muted || this.repeatStatus?.thread_muted) &&
         !this.inConversation
       )
     },
@@ -216,13 +233,6 @@ const Status = {
         this.repeater.id,
         this.repeater.screen_name,
       )
-    },
-    mainStatus() {
-      if (this.isRepeat) {
-        return this.repeatedStatus
-      } else {
-        return this.status
-      }
     },
     loggedIn() {
       return !!this.currentUser
