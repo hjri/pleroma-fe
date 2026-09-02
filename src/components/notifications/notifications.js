@@ -110,7 +110,7 @@ const Notifications = {
       return countExtraNotifications(
         useMergedConfigStore().mergedConfig,
         useChatsStore().unreadChatsCount,
-        useAnnouncementsStore().unreadAnnouncementCount,
+        useAnnouncementsStore().unreadAnnouncementsCount,
         useFollowRequestsStore().followRequestsCount,
       )
     },
@@ -118,7 +118,7 @@ const Notifications = {
       return (
         this.unseenNotifications.length +
         this.unreadChatsCount +
-        this.unreadAnnouncementCount
+        this.unreadAnnouncementsCount
       )
     },
     loading() {
@@ -157,7 +157,7 @@ const Notifications = {
     showExtraNotifications() {
       return !this.noExtra
     },
-    ...mapState(useAnnouncementsStore, ['unreadAnnouncementCount']),
+    ...mapState(useAnnouncementsStore, ['unreadAnnouncementsCount']),
     ...mapState(useChatsStore, ['unreadChatsCount']),
     ...mapState(useInterfaceStore, ['layoutType']),
   },

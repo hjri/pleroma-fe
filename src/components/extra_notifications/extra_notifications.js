@@ -30,7 +30,7 @@ const ExtraNotifications = {
       return (
         this.mergedConfig.showExtraNotifications &&
         this.mergedConfig.showAnnouncementsInExtraNotifications &&
-        this.unreadAnnouncementCount
+        this.unreadAnnouncementsCount
       )
     },
     shouldShowFollowRequests() {
@@ -56,7 +56,7 @@ const ExtraNotifications = {
       return useUsersStore().currentUser
     },
     ...mapState(useAnnouncementsStore, {
-      unreadAnnouncementCount: 'unreadAnnouncementCount',
+      unreadAnnouncementsCount: 'unreadAnnouncementsCount',
     }),
     ...mapState(useMergedConfigStore, ['mergedConfig']),
     ...mapState(useChatsStore, ['unreadChatsCount']),

@@ -70,7 +70,7 @@ const MobileNav = {
         countExtraNotifications(
           useMergedConfigStore().mergedConfig,
           useChatsStore().unreadChatsCount,
-          useAnnouncementsStore().unreadAnnouncementCount,
+          useAnnouncementsStore().unreadAnnouncementsCount,
           useFollowRequestsStore().followRequestsCount,
         )
       )
@@ -96,7 +96,7 @@ const MobileNav = {
     closingDrawerMarksAsSeen() {
       return useMergedConfigStore().mergedConfig.closingDrawerMarksAsSeen
     },
-    ...mapState(useAnnouncementsStore, ['unreadAnnouncementCount']),
+    ...mapState(useAnnouncementsStore, ['unreadAnnouncementsCount']),
     ...mapState(useMergedConfigStore, {
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems).has('chats'),

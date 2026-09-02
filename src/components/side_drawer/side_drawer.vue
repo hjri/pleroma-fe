@@ -248,10 +248,10 @@
               icon="bullhorn"
             /> {{ $t("nav.announcements") }}
             <span
-              v-if="unreadAnnouncementCount"
+              v-if="unreadAnnouncementsCount"
               class="badge -notification"
             >
-              {{ unreadAnnouncementCount }}
+              {{ unreadAnnouncementsCount }}
             </span>
           </router-link>
         </li>

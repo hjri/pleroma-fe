@@ -112,7 +112,7 @@ const NavPanel = {
   },
   computed: {
     ...mapState(useAnnouncementsStore, {
-      unreadAnnouncementCount: 'unreadAnnouncementCount',
+      unreadAnnouncementsCount: 'unreadAnnouncementsCount',
       supportsAnnouncements: (store) => store.supportsAnnouncements,
     }),
     ...mapState(useInstanceCapabilitiesStore, [

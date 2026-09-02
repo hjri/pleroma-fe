@@ -59,7 +59,7 @@ const NavPanel = {
     badges() {
       return {
         drafts: this.draftsCount,
-        unreadAnnouncements: this.unreadAnnouncementCount,
+        unreadAnnouncements: this.unreadAnnouncementsCount,
         followRequests: this.followRequestsCount,
         unreadChats: this.unreadChatsCount,
       }

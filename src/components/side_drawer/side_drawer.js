@@ -97,7 +97,7 @@ const SideDrawer = {
     ...mapState(useFollowRequestsStore, ['followRequestsCount']),
     ...mapState(useAnnouncementsStore, [
       'supportsAnnouncements',
-      'unreadAnnouncementCount',
+      'unreadAnnouncementsCount',
     ]),
     ...mapState(useInstanceCapabilitiesStore, [
       'pleromaChatMessagesAvailable',
