@@ -21,6 +21,7 @@ import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useProfileConfigStore } from 'src/stores/profile_config.js'
 import { useTimelinesStore } from 'src/stores/timelines.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
+import { useDraftsStore } from 'src/stores/drafts.js'
 
 import { revokeToken } from 'src/api/oauth.js'
 import {
@@ -700,7 +701,7 @@ export const useUsersStore = defineStore('users', {
         useAnnouncementsStore().startFetching()
 
         this.fetchMutes()
-        dispatch('loadDrafts')
+        useDraftsStore().loadDrafts()
       } catch (error) {
         console.error(error)
 

@@ -7,6 +7,7 @@ import StatusContent from 'src/components/status_content/status_content.vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
+import { useDraftsStore } from 'src/stores/drafts.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPollH } from '@fortawesome/free-solid-svg-icons'
@@ -77,9 +78,9 @@ const Draft = {
     editing(newVal) {
       if (newVal) return
       if (this.safeToSave) {
-        this.$store.dispatch('addOrSaveDraft', { draft: this.draft })
+        useDraftsStore().addOrSaveDraft(this.draft)
       } else {
-        this.$store.dispatch('addOrSaveDraft', { draft: this.referenceDraft })
+        useDraftsStore().addOrSaveDraft(this.referenceDraft)
       }
     },
   },
@@ -91,7 +92,7 @@ const Draft = {
       this.showingConfirmDialog = true
     },
     doAbandon() {
-      this.$store.dispatch('abandonDraft', { id: this.draft.id }).then(() => {
+      useDraftsStore().abandonDraft(this.draft.id).then(() => {
         this.hideConfirmDialog()
       })
     },

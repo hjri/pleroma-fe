@@ -1,5 +1,4 @@
 import { mapActions, mapState } from 'pinia'
-import { mapGetters } from 'vuex'
 
 import { USERNAME_ROUTES } from 'src/components/navigation/navigation.js'
 import UserCard from 'src/components/user_card/user_card.vue'
@@ -15,6 +14,7 @@ import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useShoutStore } from 'src/stores/shout'
 import { useUsersStore } from 'src/stores/users.js'
+import { useDraftsStore } from 'src/stores/drafts.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -110,7 +110,7 @@ const SideDrawer = {
       hideSitename: (store) => store.instanceIdentity.hideSitename,
     }),
     ...mapState(useChatsStore, ['unreadChatsCount']),
-    ...mapGetters(['draftCount']),
+    ...mapState(useDraftsStore, ['draftCount']),
   },
   methods: {
     toggleDrawer() {

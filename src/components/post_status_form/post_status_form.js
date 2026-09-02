@@ -32,6 +32,7 @@ import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUsersStore } from 'src/stores/users.js'
+import { useDraftsStore } from 'src/stores/drafts.js'
 
 import { pollFormToMasto } from 'src/services/poll/poll.service.js'
 
@@ -985,13 +986,11 @@ const PostStatusForm = {
     saveDraft() {
       if (!this.disableDraft && !this.saveInhibited) {
         if (this.safeToSaveDraft) {
-          return this.$store
-            .dispatch('addOrSaveDraft', {
-              draft: {
-                type: this.statusType,
-                refId: this.refId,
-                ...this.newStatus,
-              },
+          return useDraftsStore()
+            .addOrSaveDraft({
+              type: this.statusType,
+              refId: this.refId,
+              ...this.newStatus,
             })
             .then((id) => {
               if (this.newStatus.id !== id) {
@@ -1024,14 +1023,14 @@ const PostStatusForm = {
       }
     },
     abandonDraft() {
-      return this.$store.dispatch('abandonDraft', { id: this.draftId })
+      return useDraftsStore().abandonDraft(this.draftId)
     },
     getDraft() {
-      const maybeDraft = this.$store.state.drafts.drafts[this.draftId]
+      const maybeDraft = useDraftsStore().drafts.get(this.draftId)
       if (this.draftId && maybeDraft) {
         return maybeDraft
       } else {
-        const existingDrafts = this.$store.getters.draftsByTypeAndRefId(
+        const existingDrafts = useDraftsStore().draftsByTypeAndRefId(
           this.statusType,
           this.refId,
         )
