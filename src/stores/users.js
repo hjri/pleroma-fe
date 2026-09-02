@@ -670,7 +670,7 @@ export const useUsersStore = defineStore('users', {
         useSyncConfigStore().setFlag({ flag: 'configMigration', value: 0 })
         /**/
 
-        if (user.token) {
+        if (user.token && useInstanceCapabilitiesStore().shoutAvailable) {
           // Shoutbox
           useShoutStore().initializeSocket()
           useShoutStore().initializeShout()

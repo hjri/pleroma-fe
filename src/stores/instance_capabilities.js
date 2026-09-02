@@ -38,10 +38,6 @@ export const useInstanceCapabilitiesStore = defineStore(
         }
 
         this[capability] = value
-
-        if (capability === 'shoutAvailable') {
-          window.vuex.dispatch('initializeSocket')
-        }
       },
     },
   },
