@@ -76,7 +76,7 @@ export const ROOT_ITEMS = {
     icon: 'comments',
     label: 'nav.chats',
     badgeStyle: 'notification',
-    badgeGetter: 'unreadChatsCount',
+    badgeGetter: 'unreadChats',
     criteria: ['chats'],
   },
   friendRequests: {
@@ -85,7 +85,7 @@ export const ROOT_ITEMS = {
     label: 'nav.friend_requests',
     badgeStyle: 'notification',
     criteria: ['lockedUser'],
-    badgeGetter: 'followRequestsCount',
+    badgeGetter: 'followRequests',
   },
   about: {
     route: 'about',
@@ -99,7 +99,7 @@ export const ROOT_ITEMS = {
     label: 'nav.announcements',
     store: 'announcements',
     badgeStyle: 'notification',
-    badgeGetter: 'unreadAnnouncementCount',
+    badgeGetter: 'unreadAnnouncements',
     criteria: ['announcements'],
   },
   drafts: {
@@ -107,7 +107,7 @@ export const ROOT_ITEMS = {
     icon: 'file-pen',
     label: 'nav.drafts',
     badgeStyle: 'neutral',
-    badgeGetter: 'draftCount',
+    badgeGetter: 'drafts',
   },
 }
 

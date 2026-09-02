@@ -6,6 +6,9 @@ import OptionalRouterLink from 'src/components/optional_router_link/optional_rou
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUsersStore } from 'src/stores/users.js'
+import { useDraftsStore } from 'src/stores/drafts.js'
+import { useChatsStore } from 'src/stores/chats.js'
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faThumbtack } from '@fortawesome/free-solid-svg-icons'
@@ -40,11 +43,19 @@ const NavigationEntry = {
     routeTo() {
       return routeTo(this.item, this.currentUser)
     },
-    getters() {
-      return this.$store.getters
+    badges() {
+      return {
+        drafts: this.draftsCount,
+        unreadAnnouncements: this.unreadAnnouncementCount,
+        followRequests: this.followRequestsCount,
+        unreadChats: this.unreadChatsCount,
+      }
     },
     ...mapStores(useAnnouncementsStore),
+    ...mapState(useDraftsStore, ['draftsCount']),
     ...mapState(useUsersStore, ['currentUser']),
+    ...mapState(useChatsStore, ['unreadChatsCount']),
+    ...mapState(useFollowRequestsStore, ['followRequestsCount']),
     ...mapState(useSyncConfigStore, {
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems),

@@ -56,8 +56,13 @@ const NavPanel = {
   },
   components: {},
   computed: {
-    getters() {
-      return this.$store.getters
+    badges() {
+      return {
+        drafts: this.draftsCount,
+        unreadAnnouncements: this.unreadAnnouncementCount,
+        followRequests: this.followRequestsCount,
+        unreadChats: this.unreadChatsCount,
+      }
     },
     ...mapState(useListsStore, {
       lists: getListEntries,

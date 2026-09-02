@@ -47,11 +47,11 @@
       </component>
       <slot />
       <div
-        v-if="item.badgeGetter && getters[item.badgeGetter]"
+        v-if="item.badgeGetter && badges[item.badgeGetter]"
         class="badge"
         :class="[`-${item.badgeStyle}`]"
       >
-        {{ getters[item.badgeGetter] }}
+        {{ badges[item.badgeGetter] }}
       </div>
       <div
         v-else-if="item.badgeGetter && item.store && this[`${item.store}Store`][item.badgeGetter]"

@@ -23,7 +23,7 @@
         :src="item.iconEmojiUrl"
       />
       <div
-        v-if="item.badgeGetter && getters[item.badgeGetter]"
+        v-if="item.badgeGetter && badges[item.badgeGetter]"
         class="badge -dot"
         :class="[`-${item.badgeStyle}`]"
       />
