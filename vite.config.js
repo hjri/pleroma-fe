@@ -2,11 +2,12 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-import vueDevTools from 'vite-plugin-vue-devtools'
 import { playwright } from '@vitest/browser-playwright'
 import { defineConfig } from 'vite'
+import biomePlugin from 'vite-plugin-biome'
 import eslint from 'vite-plugin-eslint2'
 import stylelint from 'vite-plugin-stylelint'
+import vueDevTools from 'vite-plugin-vue-devtools'
 import { configDefaults } from 'vitest/config'
 
 import { getCommitHash } from './build/commit_hash.js'
@@ -152,9 +153,13 @@ export default defineConfig(async ({ mode, command }) => {
         inUrl: '/static/ruffle',
         inFs: resolve(projectRoot, 'node_modules/@ruffle-rs/ruffle'),
       }),
+      biomePlugin({
+        mode: 'check',
+      }),
       eslint({
         lintInWorker: true,
         lintOnStart: true,
+        customOverlay: true,
         cacheLocation: resolve(projectRoot, 'node_modules/.cache/eslintcache'),
       }),
       stylelint({

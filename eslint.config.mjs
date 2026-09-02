@@ -1,5 +1,6 @@
 import { defineConfig, globalIgnores } from 'eslint/config'
 import vue from 'eslint-plugin-vue'
+import vueParser from 'vue-eslint-parser'
 
 export default defineConfig([
   ...vue.configs['flat/recommended'],
@@ -7,11 +8,8 @@ export default defineConfig([
   {
     files: ['src/**/*.vue'],
     languageOptions: {
-      parserOptions: {
-        parser: '@babel/eslint-parser',
-      },
+      parser: vueParser,
     },
-
     rules: {
       'vue/require-prop-types': 0,
       'vue/multi-word-component-names': 0,
