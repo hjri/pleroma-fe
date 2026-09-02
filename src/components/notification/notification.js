@@ -13,6 +13,7 @@ import {
   highlightStyle,
 } from '../../services/user_highlighter/user_highlighter.js'
 
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useNotificationsStore } from 'src/stores/notifications.js'
