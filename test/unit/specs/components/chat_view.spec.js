@@ -29,11 +29,6 @@ const message3 = {
 
 const global = {
   mocks: {
-    $store: {
-      state: {
-        api: {},
-      },
-    },
     $route: {
       params: {
         recipient_id: 2,

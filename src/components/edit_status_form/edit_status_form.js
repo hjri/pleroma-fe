@@ -17,7 +17,6 @@ const EditStatusForm = {
     },
     doEditStatus({ status, spoilerText, sensitive, media, contentType, poll }) {
       const params = {
-        store: this.$store,
         statusId: this.params.statusId,
         status,
         spoilerText,

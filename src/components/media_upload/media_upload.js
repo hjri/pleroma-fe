@@ -122,7 +122,6 @@ const mediaUpload = {
     },
     async uploadFile(file) {
       const self = this
-      const store = this.$store
       if (file.size > useInstanceStore().uploadlimit) {
         const filesize = fileSizeFormatService.fileSizeFormat(file.size)
         const allowedsize = fileSizeFormatService.fileSizeFormat(
@@ -145,7 +144,7 @@ const mediaUpload = {
       self.$emit('uploading')
       self.uploadCount++
 
-      statusPosterService.uploadMedia({ store, formData }).then(
+      statusPosterService.uploadMedia({ formData }).then(
         (fileData) => {
           self.$emit('uploaded', fileData)
           self.decreaseUploadCount()

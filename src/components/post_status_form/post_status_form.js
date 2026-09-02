@@ -401,8 +401,6 @@ const PostStatusForm = {
         contentType: this.newStatus.contentType,
         poll,
         idempotencyKey: this.idempotencyKey,
-
-        store: this.$store,
       }
     },
 
@@ -413,7 +411,6 @@ const PostStatusForm = {
           ...useEmojiStore().standardEmojiList,
           ...useEmojiStore().customEmoji,
         ],
-        store: this.$store,
       })
     },
     emojiSuggestor() {
@@ -575,7 +572,7 @@ const PostStatusForm = {
     ...mapState(useUsersStore, ['currentUser']),
     ...mapState(useMergedConfigStore, ['mergedConfig']),
     ...mapState(useInterfaceStore, {
-      mobileLayout: (store) => store.mobileLayout,
+      mobileLayout: (state) => state.mobileLayout,
     }),
   },
   watch: {
@@ -752,7 +749,6 @@ const PostStatusForm = {
       const description = this.newStatus.mediaDescriptions[id]
       if (!description || description.trim() === '') return
       return statusPoster.setMediaDescription({
-        store: this.$store,
         id,
         description,
       })

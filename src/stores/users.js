@@ -612,13 +612,6 @@ export const useUsersStore = defineStore('users', {
 
     // Login/Logout
     async loginUser(accessToken) {
-      const store = window.vuex
-      const dispatch =
-        store?.dispatch ??
-        (() => {
-          /* no-op */
-        }) // for tests
-
       this.loggingIn = true
 
       try {
@@ -723,7 +716,6 @@ export const useUsersStore = defineStore('users', {
       }
     },
     logout() {
-      const store = window.vuex
       const oauth = useOAuthStore()
 
       // Pause fetching

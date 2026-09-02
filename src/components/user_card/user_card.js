@@ -418,7 +418,6 @@ export default {
           ...useEmojiStore().standardEmojiList,
           ...useEmojiStore().customEmoji,
         ],
-        store: this.$store,
       })
     },
     emojiSuggestor() {

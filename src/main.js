@@ -102,7 +102,6 @@ const persistedStateOptions = {
       strict: false, // Socket modifies itself, let's ignore this for now.
       // strict: process.env.NODE_ENV !== 'production'
     })
-    window.vuex = store
     // Temporarily passing pinia and vuex stores along with storageError result until migration is fully complete.
     return await afterStoreSetup({ pinia, store, storageError, i18n })
   } catch (e) {
