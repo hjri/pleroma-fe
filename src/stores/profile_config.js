@@ -125,7 +125,7 @@ export const useProfileConfigStore = defineStore('profileConfig', {
           return
         }
 
-        useUsersStore().addNewUsers(result)
+        const [user] = useUsersStore().addNewUsers(result)
         this.update(user)
       } catch (e) {
         console.warn('Error setting server-side option:', e)
