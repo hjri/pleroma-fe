@@ -53,12 +53,6 @@
       >
         {{ badges[item.badgeGetter] }}
       </div>
-      <div
-        v-else-if="item.badgeGetter && item.store && badges[item.badgeGetter]"
-        class="badge badge-notification"
-      >
-        {{ this[`${item.store}Store`][item.badgeGetter] }}
-      </div>
       <button
         v-if="showPin && currentUser"
         type="button"
