@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-unused
-
 import { Fragment } from 'vue'
 
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/vue-fontawesome'

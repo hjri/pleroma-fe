@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-unused
-
 import { mapState } from 'pinia'
 import { Fragment } from 'vue'
 
