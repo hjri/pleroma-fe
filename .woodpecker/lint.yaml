@@ -9,7 +9,7 @@ when:
 steps:
   install-depends:
     image: &node-image
-      docker.io/node:20-alpine
+      docker.io/node:26-alpine
     commands:
       - yarn --frozen-lockfile
 

@@ -2,6 +2,7 @@ import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import vueDevTools from 'vite-plugin-vue-devtools'
 import { playwright } from '@vitest/browser-playwright'
 import { defineConfig } from 'vite'
 import eslint from 'vite-plugin-eslint2'
@@ -142,6 +143,7 @@ export default defineConfig(async ({ mode, command }) => {
           },
         },
       }),
+      vueDevTools(),
       vueJsx(),
       buildSwPlugin({ swSrc, swDest }),
       swMessagesPlugin(),
