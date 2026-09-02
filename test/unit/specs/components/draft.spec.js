@@ -1,10 +1,10 @@
 import { createTestingPinia } from '@pinia/testing'
 import { flushPromises, mount } from '@vue/test-utils'
 import { setActivePinia } from 'pinia'
+import { $t, mountOpts, waitForEvent } from 'test/fixtures/setup_test.js'
 import { nextTick } from 'vue'
 
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
-import { $t, mountOpts, waitForEvent } from '../../../fixtures/setup_test'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useUsersStore } from 'src/stores/users.js'

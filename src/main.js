@@ -33,10 +33,6 @@ const i18n = createI18n({
 
 messages.setLanguage(i18n.global, currentLocale)
 
-const persistedStateOptions = {
-  paths: ['oauth', 'config'],
-}
-
 ;(async () => {
   const isFox = Math.floor(Math.random() * 2) > 0 ? '_fox' : ''
 

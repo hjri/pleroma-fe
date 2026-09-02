@@ -16,8 +16,8 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useProfileConfigStore } from 'src/stores/profile_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { updateProfile } from 'src/api/user.js'

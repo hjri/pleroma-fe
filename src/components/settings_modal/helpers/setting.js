@@ -8,8 +8,8 @@ import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useProfileConfigStore } from 'src/stores/profile_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 export default {
   components: {
@@ -413,7 +413,8 @@ export default {
     hardReset() {
       switch (this.realSource) {
         case 'admin':
-          return useAdminSettingsStore().resetAdminSetting({ path: this.path })
+          return useAdminSettingsStore()
+            .resetAdminSetting({ path: this.path })
             .then(() => {
               this.draft = this.state
             })

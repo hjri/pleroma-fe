@@ -17,8 +17,11 @@ const CHANGE_EMAIL_URL = '/api/pleroma/change_email'
 const CHANGE_PASSWORD_URL = '/api/pleroma/change_password'
 const MOVE_ACCOUNT_URL = '/api/pleroma/move_account'
 const ALIASES_URL = '/api/pleroma/aliases'
-const NOTIFICATION_SETTINGS_URL = ({ blockFromStrangers, hideNotificationContents }) =>
-      `/api/pleroma/notification_settings${paramsString({ blockFromStrangers, hideNotificationContents })}`
+const NOTIFICATION_SETTINGS_URL = ({
+  blockFromStrangers,
+  hideNotificationContents,
+}) =>
+  `/api/pleroma/notification_settings${paramsString({ blockFromStrangers, hideNotificationContents })}`
 export const NOTIFICATION_READ_URL = '/api/v1/pleroma/notifications/read'
 
 const MFA_SETTINGS_URL = '/api/pleroma/accounts/mfa'

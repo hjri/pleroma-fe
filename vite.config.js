@@ -120,6 +120,7 @@ export default defineConfig(async ({ mode, command }) => {
   const swDest = 'sw-pleroma.js'
   const alias = {
     src: '/src',
+    test: '/test',
     components: '/src/components',
     ...(mode === 'test' ? { vue: 'vue/dist/vue.esm-bundler.js' } : {}),
   }

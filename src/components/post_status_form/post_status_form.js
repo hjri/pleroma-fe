@@ -24,6 +24,7 @@ import { findOffset } from '../../services/offset_finder/offset_finder.service.j
 import genRandomSeed from '../../services/random_seed/random_seed.service.js'
 import statusPoster from '../../services/status_poster/status_poster.service.js'
 
+import { useDraftsStore } from 'src/stores/drafts.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -32,7 +33,6 @@ import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUsersStore } from 'src/stores/users.js'
-import { useDraftsStore } from 'src/stores/drafts.js'
 
 import { pollFormToMasto } from 'src/services/poll/poll.service.js'
 

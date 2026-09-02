@@ -1,8 +1,9 @@
 import { defineAsyncComponent } from 'vue'
-import { useDraftsStore } from 'src/stores/drafts.js'
 
 import Draft from 'src/components/draft/draft.vue'
 import List from 'src/components/list/list.vue'
+
+import { useDraftsStore } from 'src/stores/drafts.js'
 
 const Drafts = {
   components: {
@@ -27,7 +28,8 @@ const Drafts = {
       this.showingConfirmDialog = true
     },
     doAbandonAll() {
-      useDraftsStore().abandonAllDrafts()
+      useDraftsStore()
+        .abandonAllDrafts()
         .then(() => this.hideConfirmDialog())
     },
     hideConfirmDialog() {

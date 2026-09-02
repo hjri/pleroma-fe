@@ -7,6 +7,7 @@ import { unseenNotifications } from '../../services/notification_utils/notificat
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useChatsStore } from 'src/stores/chats.js'
+import { useDraftsStore } from 'src/stores/drafts.js'
 import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -14,7 +15,6 @@ import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useShoutStore } from 'src/stores/shout'
 import { useUsersStore } from 'src/stores/users.js'
-import { useDraftsStore } from 'src/stores/drafts.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {

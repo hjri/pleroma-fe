@@ -97,7 +97,9 @@ export const settingsMap = {
 }
 
 export const defaultState = () => ({
-  config: Object.fromEntries(Object.keys(settingsMap).map((key) => [key, null]))
+  config: Object.fromEntries(
+    Object.keys(settingsMap).map((key) => [key, null]),
+  ),
 })
 
 export const useProfileConfigStore = defineStore('profileConfig', {

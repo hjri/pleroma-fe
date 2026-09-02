@@ -1,10 +1,6 @@
-import { cloneDeep, each, get, merge, set } from 'lodash'
+import { cloneDeep, get, set } from 'lodash'
 
 import { storage } from './storage.js'
-
-import { useInterfaceStore } from 'src/stores/interface'
-
-let loaded = false
 
 const defaultReducer = (state, paths) =>
   paths.length === 0
@@ -13,15 +9,6 @@ const defaultReducer = (state, paths) =>
         set(substate, path, get(state, path))
         return substate
       }, {})
-
-const saveImmedeatelyActions = [
-  'markNotificationsAsSeen',
-  'setHighlight',
-  'setOption',
-  'setClientData',
-  'setToken',
-  'clearToken',
-]
 
 const defaultStorage = (() => {
   return storage

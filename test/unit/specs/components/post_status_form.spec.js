@@ -1,10 +1,10 @@
 import { createTestingPinia } from '@pinia/testing'
 import { mount } from '@vue/test-utils'
 import { setActivePinia } from 'pinia'
+import { mountOpts } from 'test/fixtures/setup_test.js'
 import { vi } from 'vitest'
 
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
-import { mountOpts } from '../../../fixtures/setup_test'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'

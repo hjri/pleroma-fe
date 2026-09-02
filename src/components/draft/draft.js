@@ -5,9 +5,9 @@ import Gallery from 'src/components/gallery/gallery.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
 
+import { useDraftsStore } from 'src/stores/drafts.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
-import { useDraftsStore } from 'src/stores/drafts.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPollH } from '@fortawesome/free-solid-svg-icons'
@@ -92,9 +92,11 @@ const Draft = {
       this.showingConfirmDialog = true
     },
     doAbandon() {
-      useDraftsStore().abandonDraft(this.draft.id).then(() => {
-        this.hideConfirmDialog()
-      })
+      useDraftsStore()
+        .abandonDraft(this.draft.id)
+        .then(() => {
+          this.hideConfirmDialog()
+        })
     },
     hideConfirmDialog() {
       this.showingConfirmDialog = false

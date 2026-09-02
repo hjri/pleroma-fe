@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+
 import { storage } from 'src/lib/storage.js'
 
 const storageKey = 'pleroma-fe-drafts'
@@ -18,13 +19,13 @@ const storageKey = 'pleroma-fe-drafts'
 const getStorageData = async () => await storage.getItem(storageKey)
 
 const saveDraftToStorage = async (draft) => {
-  const currentData = await getStorageData() ?? {}
+  const currentData = (await getStorageData()) ?? {}
   currentData[draft.id] = JSON.parse(JSON.stringify(draft))
   await storage.setItem(storageKey, currentData)
 }
 
 const deleteDraftFromStorage = async (ids) => {
-  const currentData = await getStorageData() ?? {}
+  const currentData = (await getStorageData()) ?? {}
   ids.forEach((id) => {
     delete currentData[id]
   })
@@ -33,7 +34,7 @@ const deleteDraftFromStorage = async (ids) => {
 
 export const useDraftsStore = defineStore('drafts', {
   state: () => ({
-    drafts: new Map()
+    drafts: new Map(),
   }),
   getters: {
     draftsByTypeAndRefId(state) {
@@ -71,5 +72,5 @@ export const useDraftsStore = defineStore('drafts', {
       ids.forEach((id) => this.abandonDraft(id))
       await deleteDraftFromStorage(ids)
     },
-  }
+  },
 })
