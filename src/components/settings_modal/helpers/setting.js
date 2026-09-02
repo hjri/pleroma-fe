@@ -413,8 +413,7 @@ export default {
     hardReset() {
       switch (this.realSource) {
         case 'admin':
-          return this.$store
-            .dispatch('resetAdminSetting', { path: this.path })
+          return useAdminSettingsStore().resetAdminSetting({ path: this.path })
             .then(() => {
               this.draft = this.state
             })
