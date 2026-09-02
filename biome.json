@@ -18,7 +18,7 @@
       "vue": "recommended"
     },
     "rules": {
-      "recommended": false,
+      "preset": "none",
       "complexity": {
         "noAdjacentSpacesInRegex": "error",
         "noExtraBooleanCast": "error",
@@ -80,6 +80,9 @@
         "noUselessRegexBackrefs": "error",
         "noWith": "error",
         "useGetterReturn": "error"
+      },
+      "style": {
+        "useVueMultiWordComponentNames": "off"
       }
     }
   },
