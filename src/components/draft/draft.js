@@ -76,7 +76,9 @@ const Draft = {
   },
   watch: {
     editing(newVal) {
+      console.log('SAVE?', newVal)
       if (newVal) return
+      console.log('SAVE', newVal)
       if (this.safeToSave) {
         useDraftsStore().addOrSaveDraft(this.draft)
       } else {
