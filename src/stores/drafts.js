@@ -62,14 +62,13 @@ export const useDraftsStore = defineStore('drafts', {
     },
     async addOrSaveDraft(draft) {
       const id = draft.id ?? new Date().getTime().toString()
-      console.log('SAVE', id)
       const draftWithId = { ...draft, id }
-      this.drafts.set(draft.id, draftWithId)
+      this.drafts.set(id, draftWithId)
       await saveDraftToStorage(draftWithId)
       return id
     },
     async abandonAllDrafts(store) {
-      const ids = this.drafts.keys()
+      const ids = [...this.drafts.keys()]
       ids.forEach((id) => this.abandonDraft(id))
       await deleteDraftFromStorage(ids)
     },

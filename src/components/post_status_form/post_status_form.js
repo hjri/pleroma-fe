@@ -987,6 +987,8 @@ const PostStatusForm = {
               type: this.statusType,
               refId: this.refId,
               ...this.newStatus,
+              // Draft ID overwrites status ID (which is undefined for fresh statuses)
+              id: this.draftId,
             })
             .then((id) => {
               if (this.newStatus.id !== id) {

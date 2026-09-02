@@ -36,6 +36,7 @@ const Draft = {
     return {
       referenceDraft: cloneDeep(this.draft),
       editing: false,
+      showingForm: false,
       showingConfirmDialog: false,
     }
   },
@@ -52,7 +53,7 @@ const Draft = {
       }
     },
     safeToSave() {
-      return (
+      return Boolean(
         this.draft.status ||
         this.draft.files?.length ||
         this.draft.hasPoll ||
@@ -76,14 +77,9 @@ const Draft = {
   },
   watch: {
     editing(newVal) {
-      console.log('SAVE?', newVal)
+      this.showingForm = true
       if (newVal) return
-      console.log('SAVE', newVal)
-      if (this.safeToSave) {
-        useDraftsStore().addOrSaveDraft(this.draft)
-      } else {
-        useDraftsStore().addOrSaveDraft(this.referenceDraft)
-      }
+      this.showingForm = false
     },
   },
   methods: {

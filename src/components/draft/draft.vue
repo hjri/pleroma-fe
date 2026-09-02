@@ -64,14 +64,16 @@
         </div>
       </div>
     </div>
-    <div v-if="editing">
+    <div v-if="showingForm">
       <PostStatusForm
         v-if="draft.type !== 'edit'"
+        ref="postStatusForm"
         :hide-draft="true"
         v-bind="postStatusFormProps"
       />
       <EditStatusForm
         v-else
+        ref="editStatusForm"
         :hide-draft="true"
         :params="postStatusFormProps"
       />
