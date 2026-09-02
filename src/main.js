@@ -1,7 +1,6 @@
 /* global process */
 
 import { createPinia } from 'pinia'
-import { createStore } from 'vuex'
 
 import 'custom-event-polyfill'
 import './lib/event_target_polyfill.js'
@@ -17,11 +16,8 @@ import { createI18n } from 'vue-i18n'
 
 import afterStoreSetup from './boot/after_store.js'
 import messages from './i18n/messages.js'
-import createPersistedState, {
-  piniaPersistPlugin,
-} from './lib/persisted_state.js'
+import { piniaPersistPlugin } from './lib/persisted_state.js'
 import { piniaPushNotificationsPlugin } from './lib/push_notifications_plugin.js'
-import vuexModules from './modules/index.js'
 
 import { piniaLanguagePlugin } from 'src/lib/language.js'
 import { piniaStylePlugin } from 'src/lib/style.js'
@@ -69,20 +65,12 @@ const persistedStateOptions = {
 
   try {
     let storageError
-    const plugins = []
     const pinia = createPinia()
     pinia.use(piniaPersistPlugin())
     pinia.use(piniaLanguagePlugin)
     pinia.use(piniaStylePlugin)
     pinia.use(piniaPushNotificationsPlugin)
 
-    try {
-      const persistedState = await createPersistedState(persistedStateOptions)
-      plugins.push(persistedState)
-    } catch (e) {
-      console.error('Storage error', e)
-      storageError = e
-    }
     document.querySelector('#splash').classList.remove('initial-hidden')
     document.querySelector('#mascot').src =
       `/static/pleromatan_apology${isFox}_small.webp`
@@ -93,17 +81,8 @@ const persistedStateOptions = {
       'update.art_by',
       { linkToArtist: 'pipivovott' },
     )
-    const store = createStore({
-      modules: vuexModules,
-      plugins,
-      options: {
-        devtools: process.env.NODE_ENV !== 'production',
-      },
-      strict: false, // Socket modifies itself, let's ignore this for now.
-      // strict: process.env.NODE_ENV !== 'production'
-    })
-    // Temporarily passing pinia and vuex stores along with storageError result until migration is fully complete.
-    return await afterStoreSetup({ pinia, store, storageError, i18n })
+    // Temporarily passing pinia  stores along with storageError result until migration is fully complete.
+    return await afterStoreSetup({ pinia, storageError, i18n })
   } catch (e) {
     splashError(i18n, e)
   }
