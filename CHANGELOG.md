@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2.11.4
+### Fixed
+- Fix legacy settings migration being discarded after it ran.
+- Fix follower remove API call
+- Fix followers list showing followed users as non-followed
+- Prevent service worker from caching media-proxy responses
+- Fix posting not working when using preview
+
 ## 2.11.3
 ### Fixed
 - fixed tapping "Mute..." and "Change visiblity" (admin action) in extra status actions closing the dropdown

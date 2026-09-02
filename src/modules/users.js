@@ -47,6 +47,7 @@ import {
   editUserNote as apiEditUserNote,
   muteDomain as apiMuteDomain,
   muteUser as apiMuteUser,
+  removeUserFromFollowers as apiRemoveUserFromFollowers,
   unblockUser as apiUnblockUser,
   unmuteDomain as apiUnmuteDomain,
   unmuteUser as apiUnmuteUser,
@@ -120,7 +121,7 @@ const unblockUser = (store, id) => {
 }
 
 const removeUserFromFollowers = (store, id) => {
-  return removeUserFromFollowers({ id }).then((relationship) =>
+  return apiRemoveUserFromFollowers({ id }).then(({ data: relationship }) =>
     store.commit('updateUserRelationship', [relationship]),
   )
 }
@@ -239,7 +240,9 @@ export const mutations = {
   },
   saveFollowerIds(state, { id, followerIds }) {
     const user = state.usersObject[id]
-    user.followerIds = uniq(concat(user.followerIds || [], followerIds))
+    user.followerIds = [
+      ...new Set([...(user.followerIds || []), ...followerIds]),
+    ]
   },
   // Because frontend doesn't have a reason to keep these stuff in memory
   // outside of viewing someones user profile.
