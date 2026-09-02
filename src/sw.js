@@ -116,7 +116,9 @@ const isNotMedia = (req) => {
     return false
   }
   const url = new URL(req.url)
-  return !url.pathname.startsWith('/media/')
+  return (
+    !url.pathname.startsWith('/media/') && !url.pathname.startsWith('/proxy/')
+  )
 }
 const isAsset = (req) => {
   const url = new URL(req.url)

@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash'
 import { createPinia, setActivePinia } from 'pinia'
 
+import { useLocalConfigStore } from 'src/stores/local_config.js'
 import {
   _getAllFlags,
   _getRecentData,
@@ -16,9 +17,15 @@ import {
   VERSION,
 } from 'src/stores/sync_config.js'
 
+import { storage } from 'src/lib/storage.js'
+
 describe('The SyncConfig store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
   })
 
   describe('mutations', () => {
@@ -162,6 +169,204 @@ describe('The SyncConfig store', () => {
         expect(store.cache._version).to.eql(VERSION)
         expect(store.cache._timestamp).to.be.a('number')
         expect(store.cache.flagStorage).to.eql(defaultState.flagStorage)
+      })
+
+      it('should recover legacy preferences marked as migrated', async () => {
+        vi.spyOn(storage, 'getItem').mockResolvedValue({
+          config: {
+            _syncMigration: ['modalOnUnfollow'],
+            modalOnUnfollow: true,
+          },
+        })
+        vi.spyOn(storage, 'setItem').mockResolvedValue()
+        const store = useSyncConfigStore()
+        store.pushSyncConfig = vi.fn()
+
+        await store.initSyncConfig({ ...user })
+
+        expect(store.prefsStorage.simple.modalOnUnfollow).to.eql(true)
+        expect(store.cache.prefsStorage.simple.modalOnUnfollow).to.eql(true)
+        expect(store.prefsStorage._journal).to.deep.include({
+          path: 'simple.modalOnUnfollow',
+          operation: 'set',
+          args: [true],
+          timestamp: store.prefsStorage._journal[0].timestamp,
+        })
+        expect(store.dirty).to.eql(true)
+        expect(store.pushSyncConfig).toHaveBeenCalledOnce()
+        expect(defaultState.prefsStorage.simple.modalOnUnfollow).to.eql(
+          undefined,
+        )
+      })
+
+      it('should preserve an explicit synced preference during recovery', async () => {
+        vi.spyOn(storage, 'getItem').mockResolvedValue({
+          config: {
+            _syncMigration: ['modalOnRepeat'],
+            modalOnRepeat: true,
+          },
+        })
+        vi.spyOn(storage, 'setItem').mockResolvedValue()
+        const store = useSyncConfigStore()
+        store.pushSyncConfig = () => {
+          /* no-op */
+        }
+
+        await store.initSyncConfig({
+          ...user,
+          storage: {
+            _timestamp: 1,
+            _version: VERSION,
+            flagStorage: cloneDeep(defaultState.flagStorage),
+            prefsStorage: {
+              ...cloneDeep(defaultState.prefsStorage),
+              simple: {
+                ...cloneDeep(defaultState.prefsStorage.simple),
+                modalOnRepeat: false,
+              },
+            },
+          },
+        })
+
+        expect(store.prefsStorage.simple.modalOnRepeat).to.eql(false)
+      })
+
+      it('should preserve a journaled preference removal during recovery', async () => {
+        vi.spyOn(storage, 'getItem').mockResolvedValue({
+          config: {
+            _syncMigration: ['modalOnMute'],
+            modalOnMute: true,
+          },
+        })
+        vi.spyOn(storage, 'setItem').mockResolvedValue()
+        const store = useSyncConfigStore()
+        store.pushSyncConfig = () => {
+          /* no-op */
+        }
+
+        await store.initSyncConfig({
+          ...user,
+          storage: {
+            _timestamp: 1,
+            _version: VERSION,
+            flagStorage: cloneDeep(defaultState.flagStorage),
+            prefsStorage: {
+              ...cloneDeep(defaultState.prefsStorage),
+              _journal: [
+                {
+                  path: 'simple.modalOnMute',
+                  operation: 'unset',
+                  args: [],
+                  timestamp: 1,
+                },
+              ],
+            },
+          },
+        })
+
+        expect(store.prefsStorage.simple.modalOnMute).to.eql(undefined)
+      })
+
+      it('should preserve a journaled nested preference during recovery', async () => {
+        vi.spyOn(storage, 'getItem').mockResolvedValue({
+          config: {
+            _syncMigration: ['notificationVisibility'],
+            notificationVisibility: {
+              ...cloneDeep(
+                defaultState.prefsStorage.simple.notificationVisibility,
+              ),
+              likes: false,
+            },
+          },
+        })
+        vi.spyOn(storage, 'setItem').mockResolvedValue()
+        const store = useSyncConfigStore()
+        const setPreference = vi.spyOn(store, 'setPreference')
+        store.pushSyncConfig = () => {
+          /* no-op */
+        }
+
+        await store.initSyncConfig({
+          ...user,
+          storage: {
+            _timestamp: 1,
+            _version: VERSION,
+            flagStorage: cloneDeep(defaultState.flagStorage),
+            prefsStorage: {
+              ...cloneDeep(defaultState.prefsStorage),
+              _journal: [
+                {
+                  path: 'simple.notificationVisibility.likes',
+                  operation: 'unset',
+                  args: [],
+                  timestamp: 1,
+                },
+              ],
+            },
+          },
+        })
+
+        expect(setPreference).not.toHaveBeenCalled()
+      })
+
+      it('should recover with a malformed synced journal', async () => {
+        vi.spyOn(storage, 'getItem').mockResolvedValue({
+          config: {
+            _syncMigration: ['modalOnUnfollow'],
+            modalOnUnfollow: true,
+          },
+        })
+        vi.spyOn(storage, 'setItem').mockResolvedValue()
+        const store = useSyncConfigStore()
+        store.pushSyncConfig = () => {
+          /* no-op */
+        }
+
+        await store.initSyncConfig({
+          ...user,
+          storage: {
+            _timestamp: 1,
+            _version: VERSION,
+            flagStorage: cloneDeep(defaultState.flagStorage),
+            prefsStorage: {
+              ...cloneDeep(defaultState.prefsStorage),
+              _journal: [{ path: 1, operation: 'set' }],
+            },
+          },
+        })
+
+        expect(store.prefsStorage.simple.modalOnUnfollow).to.eql(true)
+      })
+
+      it('should not replay local theme migration during recovery', async () => {
+        vi.spyOn(storage, 'getItem').mockResolvedValue({
+          config: {
+            _syncMigration: ['theme3hacks'],
+            theme3hacks: {
+              underlay: 'grid',
+              fonts: {
+                interface: 'Legacy interface',
+                input: 'Legacy input',
+                post: 'Legacy posts',
+                monospace: 'Legacy monospace',
+              },
+            },
+          },
+        })
+        vi.spyOn(storage, 'setItem').mockResolvedValue()
+        const localStore = useLocalConfigStore()
+        localStore.set({ path: 'fontInterface', value: 'Current interface' })
+        const store = useSyncConfigStore()
+        store.pushSyncConfig = () => {
+          /* no-op */
+        }
+
+        await store.initSyncConfig({ ...user })
+
+        expect(store.prefsStorage.simple.underlay).to.eql('grid')
+        expect(localStore.prefsStorage.fontInterface).to.eql(
+          'Current interface',
+        )
       })
     })
     describe('setPreference', () => {
