@@ -62,10 +62,6 @@ const SideDrawer = {
       GestureService.DIRECTION_LEFT,
       this.toggleDrawer,
     )
-
-    if (this.currentUser?.locked) {
-      this.$store.dispatch('startFetchingFollowRequests')
-    }
   },
   components: {
     UserCard,

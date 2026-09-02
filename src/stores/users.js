@@ -689,7 +689,6 @@ export const useUsersStore = defineStore('users', {
         useBookmarkFoldersStore().startFetching()
 
         if (user.locked) {
-          dispatch('startFetchingFollowRequests')
           useFollowRequestsStore().startFetching()
         }
 
@@ -738,8 +737,6 @@ export const useUsersStore = defineStore('users', {
       if (this.currentUser.locked) {
         useFollowRequestsStore().stopFetching()
       }
-
-      store?.dispatch('stopFetchingFollowRequests')
 
       // NOTE: No need to verify the app still exists, because if it doesn't,
       // the token will be invalid too
@@ -798,7 +795,7 @@ export const useUsersStore = defineStore('users', {
           useListsStore().startFetching()
           useBookmarkFoldersStore().startFetching()
           useChatsStore().startFetching()
-          store?.dispatch('startFetchingFollowRequests')
+          useFollowRequestsStore().startFetching()
         })
         .finally(() => {
           useNotificationsStore().resume()

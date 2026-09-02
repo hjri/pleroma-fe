@@ -148,8 +148,7 @@ const Notification = {
         id: this.user.id,
         credentials: useOAuthStore().token,
       })
-      // TODO Fix this
-      this.$store.dispatch('removeFollowRequest', this.user)
+      useFollowRequestsStore().remove(this.user.id)
       useNotificationsStore().markSingleNotificationAsSeen(this.notification.id)
       this.hideApproveConfirmDialog()
     },
@@ -166,8 +165,7 @@ const Notification = {
         credentials: useOAuthStore().token,
       }).then(() => {
         useNotificationsStore().dismissNotificationLocal(this.notification.id)
-        // TODO Fix this
-        this.$store.dispatch('removeFollowRequest', this.user)
+        useFollowRequestsStore().remove(this.user.id)
       })
       this.hideDenyConfirmDialog()
     },
