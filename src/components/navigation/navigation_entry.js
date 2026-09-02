@@ -1,4 +1,4 @@
-import { mapState, mapStores } from 'pinia'
+import { mapState } from 'pinia'
 
 import { routeTo } from 'src/components/navigation/navigation.js'
 import OptionalRouterLink from 'src/components/optional_router_link/optional_router_link.vue'
@@ -51,7 +51,7 @@ const NavigationEntry = {
         unreadChats: this.unreadChatsCount,
       }
     },
-    ...mapStores(useAnnouncementsStore),
+    ...mapState(useAnnouncementsStore, ['unreadAnnouncementsCount']),
     ...mapState(useDraftsStore, ['draftsCount']),
     ...mapState(useUsersStore, ['currentUser']),
     ...mapState(useChatsStore, ['unreadChatsCount']),

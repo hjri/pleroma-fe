@@ -13,6 +13,8 @@ import {
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
+import { useChatsStore } from 'src/stores/chats.js'
+import { useDraftsStore } from 'src/stores/drafts.js'
 import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -69,10 +71,14 @@ const NavPanel = {
     }),
     ...mapState(useAnnouncementsStore, {
       supportsAnnouncements: (store) => store.supportsAnnouncements,
+      unreadAnnouncementsCount: 'unreadAnnouncementsCount',
     }),
+    ...mapState(useDraftsStore, ['draftsCount']),
+    ...mapState(useFollowRequestsStore, ['followRequestsCount']),
     ...mapState(useBookmarkFoldersStore, {
       bookmarks: getBookmarkFolderEntries,
     }),
+    ...mapState(useChatsStore, ['unreadChatsCount']),
     ...mapState(useSyncConfigStore, {
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems),
@@ -83,7 +89,6 @@ const NavPanel = {
       'localBubble',
     ]),
     ...mapState(useUsersStore, ['currentUser']),
-    ...mapState(useFollowRequestsStore, ['followRequestsCount']),
     pinnedList() {
       if (!this.currentUser) {
         return filterNavigation(
