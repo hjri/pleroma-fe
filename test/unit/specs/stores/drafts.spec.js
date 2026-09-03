@@ -123,7 +123,7 @@ describe('Drafts store', () => {
     describe('addOrSaveDraft', () => {
       it('create draft', async () => {
         const store = useDraftsStore()
-        vi.setSystemTime(new Date(1997, 2, 29))
+        vi.setSystemTime(new Date(859586400000))
 
         const id = await store.addOrSaveDraft({ status: 'draft' })
 
