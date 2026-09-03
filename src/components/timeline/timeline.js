@@ -1,4 +1,4 @@
-import { debounce, throttle } from 'lodash'
+import { debounce, throttle } from 'lodash-es'
 import { mapState } from 'pinia'
 
 import Conversation from 'src/components/conversation/conversation.vue'

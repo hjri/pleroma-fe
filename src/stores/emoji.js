@@ -1,4 +1,4 @@
-import { merge } from 'lodash'
+import { merge } from 'lodash-es'
 import { defineStore } from 'pinia'
 
 import { useInstanceStore } from 'src/stores/instance.js'

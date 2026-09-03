@@ -1,4 +1,4 @@
-import { orderBy, sumBy } from 'lodash'
+import { orderBy, sumBy } from 'lodash-es'
 import { defineStore } from 'pinia'
 
 import { maybeShowChatNotification } from '../services/chat_utils/chat_utils.js'

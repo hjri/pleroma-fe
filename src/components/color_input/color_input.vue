@@ -64,7 +64,7 @@
   </div>
 </template>
 <script>
-import { throttle } from 'lodash'
+import { throttle } from 'lodash-es'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import { hex2rgb } from '../../services/color_convert/color_convert.js'

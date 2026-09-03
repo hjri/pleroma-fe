@@ -1,4 +1,4 @@
-import { get, reduce } from 'lodash'
+import { get, reduce } from 'lodash-es'
 import { mapState } from 'pinia'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'

@@ -1,4 +1,4 @@
-import { chunk, debounce, trim } from 'lodash'
+import { chunk, debounce, trim } from 'lodash-es'
 import { defineAsyncComponent } from 'vue'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'

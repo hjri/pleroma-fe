@@ -1,4 +1,4 @@
-import { last } from 'lodash'
+import { last } from 'lodash-es'
 
 import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import Popover from 'src/components/popover/popover.vue'

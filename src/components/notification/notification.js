@@ -1,5 +1,4 @@
-import { mapState } from 'pinia'
-import { defineAsyncComponent } from 'vue'
+import { mapActions, mapState } from 'pinia'
 
 import Report from 'src/components/report/report.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
@@ -16,13 +15,10 @@ import {
 import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useNotificationsStore } from 'src/stores/notifications.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 import { useUsersStore } from 'src/stores/users.js'
 
-import { approveUser, denyUser } from 'src/api/user.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -58,8 +54,6 @@ const Notification = {
       selecting: false,
       statusExpanded: false,
       unmuted: false,
-      showingApproveConfirmDialog: false,
-      showingDenyConfirmDialog: false,
     }
   },
   props: ['notification'],
@@ -73,9 +67,6 @@ const Notification = {
 
     UserPopover,
     UserLink,
-    ConfirmModal: defineAsyncComponent(
-      () => import('src/components/confirm_modal/confirm_modal.vue'),
-    ),
   },
   mounted() {
     document.addEventListener('selectionchange', this.onContentSelect)
@@ -125,51 +116,7 @@ const Notification = {
     toggleMute() {
       this.unmuted = !this.unmuted
     },
-    showApproveConfirmDialog() {
-      this.showingApproveConfirmDialog = true
-    },
-    hideApproveConfirmDialog() {
-      this.showingApproveConfirmDialog = false
-    },
-    showDenyConfirmDialog() {
-      this.showingDenyConfirmDialog = true
-    },
-    hideDenyConfirmDialog() {
-      this.showingDenyConfirmDialog = false
-    },
-    approveUser() {
-      if (this.shouldConfirmApprove) {
-        this.showApproveConfirmDialog()
-      } else {
-        this.doApprove()
-      }
-    },
-    doApprove() {
-      approveUser({
-        id: this.user.id,
-        credentials: useOAuthStore().token,
-      })
-      useFollowRequestsStore().remove(this.user.id)
-      useNotificationsStore().markSingleNotificationAsSeen(this.notification.id)
-      this.hideApproveConfirmDialog()
-    },
-    denyUser() {
-      if (this.shouldConfirmDeny) {
-        this.showDenyConfirmDialog()
-      } else {
-        this.doDeny()
-      }
-    },
-    doDeny() {
-      denyUser({
-        id: this.user.id,
-        credentials: useOAuthStore().token,
-      }).then(() => {
-        useNotificationsStore().dismissNotificationLocal(this.notification.id)
-        useFollowRequestsStore().remove(this.user.id)
-      })
-      this.hideDenyConfirmDialog()
-    },
+    ...mapActions(useFollowRequestsStore, ['approve', 'deny']),
   },
   computed: {
     status() {
@@ -219,12 +166,6 @@ const Notification = {
     },
     scaleMfm() {
       return this.mergedConfig.scaleMfm
-    },
-    shouldConfirmApprove() {
-      return this.mergedConfig.modalOnApproveFollow
-    },
-    shouldConfirmDeny() {
-      return this.mergedConfig.modalOnDenyFollow
     },
     ...mapState(useUsersStore, ['currentUser']),
   },

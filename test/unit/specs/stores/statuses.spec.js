@@ -1,5 +1,5 @@
 import { createTestingPinia } from '@pinia/testing'
-import { snakeCase } from 'lodash'
+import { snakeCase } from 'lodash-es'
 import { setActivePinia } from 'pinia'
 
 import { useStatusesStore } from 'src/stores/statuses.js'

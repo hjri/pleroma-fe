@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie'
-import { last } from 'lodash'
+import { last } from 'lodash-es'
 import { defineStore } from 'pinia'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
@@ -706,7 +706,7 @@ export const useUsersStore = defineStore('users', {
           useOAuthStore().clearToken()
         }
 
-        if (error.tatusCode === 401) {
+        if (error.statusCode === 401) {
           throw new Error('Wrong username or password', error)
         } else {
           throw new Error('An error occurred, please try again', error)
@@ -717,6 +717,7 @@ export const useUsersStore = defineStore('users', {
     },
     logout() {
       const oauth = useOAuthStore()
+      const locked = this.currentUser.locked
 
       // Pause fetching
       useNotificationsStore().pause()
@@ -727,7 +728,7 @@ export const useUsersStore = defineStore('users', {
       useListsStore().stopFetching()
       useBookmarkFoldersStore().stopFetching()
       useChatsStore().stopFetching()
-      if (this.currentUser.locked) {
+      if (locked) {
         useFollowRequestsStore().stopFetching()
       }
 
@@ -788,7 +789,9 @@ export const useUsersStore = defineStore('users', {
           useListsStore().startFetching()
           useBookmarkFoldersStore().startFetching()
           useChatsStore().startFetching()
-          useFollowRequestsStore().startFetching()
+          if (locked) {
+            useFollowRequestsStore().startFetching()
+          }
         })
         .finally(() => {
           useNotificationsStore().resume()

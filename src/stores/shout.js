@@ -10,7 +10,6 @@ export const useShoutStore = defineStore('shout', {
     messages: [],
     channel: { state: '' },
     joined: false,
-    token: null,
     socket: null,
   }),
   getters: {
@@ -20,7 +19,7 @@ export const useShoutStore = defineStore('shout', {
     initializeSocket() {
       if (this.token === null) return
       if (!useInstanceCapabilitiesStore().shoutAvailable) return
-      if (this.socket !== null) throw new Error('Shout socket already exist!')
+      if (this.socket !== null) return
 
       this.socket = new Socket('/socket', { params: { token: this.token } })
       this.socket.connect()

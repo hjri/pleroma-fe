@@ -1,4 +1,4 @@
-import { cloneDeep, differenceWith, get, isEqual, set } from 'lodash'
+import { cloneDeep, differenceWith, get, isEqual, set } from 'lodash-es'
 import { defineStore } from 'pinia'
 
 import { useOAuthStore } from 'src/stores/oauth.js'

@@ -4,7 +4,7 @@ import {
   unescape as ldUnescape,
   reject,
   uniqBy,
-} from 'lodash'
+} from 'lodash-es'
 import { mapActions, mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 

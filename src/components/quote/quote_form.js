@@ -1,4 +1,4 @@
-import { debounce } from 'lodash'
+import { debounce } from 'lodash-es'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Quote from './quote.vue'

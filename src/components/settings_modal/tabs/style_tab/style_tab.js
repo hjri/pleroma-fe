@@ -1,4 +1,4 @@
-import { get, set, throttle, unset } from 'lodash'
+import { get, set, throttle, unset } from 'lodash-es'
 import {
   computed,
   getCurrentInstance,

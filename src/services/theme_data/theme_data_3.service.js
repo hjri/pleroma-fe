@@ -1,6 +1,6 @@
 import { brightness, convert } from 'chromatism'
 import sum from 'hash-sum'
-import { flattenDeep, sortBy } from 'lodash'
+import { flattenDeep, sortBy } from 'lodash-es'
 
 import {
   alphaBlend,

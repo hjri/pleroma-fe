@@ -110,7 +110,7 @@ const SideDrawer = {
       hideSitename: (store) => store.instanceIdentity.hideSitename,
     }),
     ...mapState(useChatsStore, ['unreadChatsCount']),
-    ...mapState(useDraftsStore, ['draftCount']),
+    ...mapState(useDraftsStore, ['draftsCount']),
   },
   methods: {
     toggleDrawer() {
