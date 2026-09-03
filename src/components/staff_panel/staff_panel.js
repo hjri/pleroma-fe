@@ -1,4 +1,4 @@
-import { groupBy, map } from 'lodash'
+import { groupBy, map } from 'lodash-es'
 import { mapState } from 'pinia'
 
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'

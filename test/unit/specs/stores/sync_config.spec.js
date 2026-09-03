@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash-es'
 import { createPinia, setActivePinia } from 'pinia'
 
 import { useLocalConfigStore } from 'src/stores/local_config.js'

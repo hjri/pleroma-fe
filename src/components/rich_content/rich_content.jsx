@@ -1,4 +1,4 @@
-import { flattenDeep, unescape as ldUnescape } from 'lodash'
+import { flattenDeep, unescape as ldUnescape } from 'lodash-es'
 
 import HashtagLink from 'src/components/hashtag_link/hashtag_link.vue'
 import { MENTIONS_LIMIT } from 'src/components/mentions_line/mentions_line.js'

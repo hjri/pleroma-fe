@@ -1,4 +1,4 @@
-import { get, maxBy, minBy, sortBy, throttle } from 'lodash'
+import { get, maxBy, minBy, sortBy, throttle } from 'lodash-es'
 import { mapState } from 'pinia'
 import { nextTick } from 'vue'
 

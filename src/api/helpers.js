@@ -1,4 +1,4 @@
-import { snakeCase } from 'lodash'
+import { snakeCase } from 'lodash-es'
 
 import { StatusCodeError } from 'src/services/errors/errors'
 

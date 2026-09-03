@@ -1,6 +1,6 @@
 import sum from 'hash-sum'
 import localforage from 'localforage'
-import { chunk, throttle } from 'lodash'
+import { chunk, throttle } from 'lodash-es'
 
 import { getCssRules } from '../theme_data/css_utils.js'
 import { getEngineChecksum, init } from '../theme_data/theme_data_3.service.js'

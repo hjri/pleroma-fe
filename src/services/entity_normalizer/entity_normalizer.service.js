@@ -1,6 +1,6 @@
 import { parseLinkHeader } from '@web3-storage/parse-link-header'
 import escapeHtml from 'escape-html'
-import { unescape as lodashUnescape } from 'lodash'
+import { unescape as lodashUnescape } from 'lodash-es'
 import punycode from 'punycode.js'
 
 import { fileType } from '../file_type/file_type.service.js'

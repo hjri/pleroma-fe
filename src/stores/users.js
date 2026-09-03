@@ -1,5 +1,5 @@
 import Cookies from 'js-cookie'
-import { last } from 'lodash'
+import { last } from 'lodash-es'
 import { defineStore } from 'pinia'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'

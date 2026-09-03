@@ -3,7 +3,7 @@ import {
   escape as ldEscape,
   unescape as ldUnescape,
   merge,
-} from 'lodash'
+} from 'lodash-es'
 import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 

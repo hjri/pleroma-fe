@@ -1,4 +1,4 @@
-import { cloneDeep, get, isEqual, set } from 'lodash'
+import { cloneDeep, get, isEqual, set } from 'lodash-es'
 
 import DraftButtons from './draft_buttons.vue'
 import LocalSettingIndicator from './local_setting_indicator.vue'

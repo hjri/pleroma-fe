@@ -2,7 +2,7 @@ import Checkbox from 'components/checkbox/checkbox.vue'
 import Popover from 'components/popover/popover.vue'
 import Select from 'components/select/select.vue'
 import StillImage from 'components/still-image/still-image.vue'
-import { clone } from 'lodash'
+import { clone } from 'lodash-es'
 import { defineAsyncComponent } from 'vue'
 
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'

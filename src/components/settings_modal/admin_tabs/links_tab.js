@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get } from 'lodash-es'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import AttachmentSetting from '../helpers/attachment_setting.vue'

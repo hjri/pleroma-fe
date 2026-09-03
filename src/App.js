@@ -1,4 +1,4 @@
-import { throttle } from 'lodash'
+import { throttle } from 'lodash-es'
 import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 

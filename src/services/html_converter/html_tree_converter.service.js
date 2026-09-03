@@ -1,4 +1,4 @@
-import { unescape as ldUnescape } from 'lodash'
+import { unescape as ldUnescape } from 'lodash-es'
 
 import { getTagName } from './utility.service.js'
 

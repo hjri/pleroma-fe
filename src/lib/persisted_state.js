@@ -1,4 +1,4 @@
-import { cloneDeep, get, set } from 'lodash'
+import { cloneDeep, get, set } from 'lodash-es'
 
 import { storage } from './storage.js'
 

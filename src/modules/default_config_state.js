@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get } from 'lodash-es'
 
 const browserLocale = (navigator.language || 'en').split('-')[0]
 

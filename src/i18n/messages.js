@@ -7,7 +7,7 @@
 // sed -i -e "s/'//gm" -e 's/"/\\"/gm' -re 's/^( +)(.+?): ((.+?))?(,?)(\{?)$/\1"\2": "\4"/gm' -e 's/\"\{\"/{/g' -e 's/,"$/",/g' file.json
 // There's only problem that apostrophe character ' gets replaced by \\ so you have to fix it manually, sorry.
 
-import { isEqual } from 'lodash'
+import { isEqual } from 'lodash-es'
 
 import enMessages from './en.json'
 import { langCodeToJsonName, languages } from './languages.js'

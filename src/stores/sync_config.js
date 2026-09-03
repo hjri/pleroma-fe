@@ -12,7 +12,7 @@ import {
   take,
   uniqWith,
   unset,
-} from 'lodash'
+} from 'lodash-es'
 import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
 import { toRaw } from 'vue'
