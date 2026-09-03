@@ -41,6 +41,7 @@ steps:
           mkdir -pv $APT_CACHE_DIR && apt-get -qq update
           apt-get -y install zip
         fi
+      - npm install --global yarn
       - yarn --frozen-lockfile
       - |
         if ! yarn unit-ci; then

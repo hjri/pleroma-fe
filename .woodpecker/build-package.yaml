@@ -16,6 +16,7 @@ steps:
   build:
     image: docker.io/node:26-alpine
     commands:
+      - npm install --global yarn
       - apk add --no-cache zip git
       - yarn --frozen-lockfile
       - yarn build

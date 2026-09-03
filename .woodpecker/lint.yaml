@@ -11,6 +11,7 @@ steps:
     image: &node-image
       docker.io/node:26-alpine
     commands:
+      - npm install --global yarn
       - yarn --frozen-lockfile
 
   biome:
