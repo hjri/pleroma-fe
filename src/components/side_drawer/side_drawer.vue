@@ -269,10 +269,10 @@
               icon="file-pen"
             /> {{ $t('nav.drafts') }}
             <span
-              v-if="draftCount"
+              v-if="draftsCount"
               class="badge -neutral"
             >
-              {{ draftCount }}
+              {{ draftsCount }}
             </span>
           </router-link>
         </li>

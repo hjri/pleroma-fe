@@ -57,7 +57,7 @@ export const useDraftsStore = defineStore('drafts', {
       await deleteDraftFromStorage([id])
     },
     async loadDrafts() {
-      const currentData = await getStorageData()
+      const currentData = (await getStorageData()) ?? {}
       this.drafts = new Map(Object.entries(currentData))
     },
     async addOrSaveDraft(draft) {
@@ -67,9 +67,9 @@ export const useDraftsStore = defineStore('drafts', {
       await saveDraftToStorage(draftWithId)
       return id
     },
-    async abandonAllDrafts(store) {
+    async abandonAllDrafts() {
       const ids = [...this.drafts.keys()]
-      ids.forEach((id) => this.abandonDraft(id))
+      ids.forEach((id) => this.drafts.delete(id))
       await deleteDraftFromStorage(ids)
     },
   },

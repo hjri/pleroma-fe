@@ -165,7 +165,9 @@ const Notification = {
         id: this.user.id,
         credentials: useOAuthStore().token,
       }).then(() => {
-        useNotificationsStore().dismissNotificationLocal(this.notification.id)
+        useNotificationsStore().markSingleNotificationAsSeen(
+          this.notification.id,
+        )
         useFollowRequestsStore().remove(this.user.id)
       })
       this.hideDenyConfirmDialog()

@@ -15,7 +15,7 @@ export const useFollowRequestsStore = defineStore('followRequests', {
   },
   actions: {
     startFetching() {
-      if (this.fetcher) throw 'Fetcher already exists!'
+      if (this.fetcher) throw new Error('Fetcher already exists!')
 
       this.fetcher = followRequestFetcher({
         credentials: useOAuthStore().token,
@@ -24,8 +24,9 @@ export const useFollowRequestsStore = defineStore('followRequests', {
       this.fetcher.startFetching()
     },
     stopFetching() {
-      if (!this.fetcher) throw "Fetcher doesn't exists!"
-      this.fetcher.stopFetching(), (this.fetcher = null)
+      if (!this.fetcher) throw new Error("Fetcher doesn't exists!")
+      this.fetcher.stopFetching()
+      this.fetcher = null
     },
     setFollowRequests(requests) {
       this.requests = new Map(requests.map((user) => [user.id, user]))
