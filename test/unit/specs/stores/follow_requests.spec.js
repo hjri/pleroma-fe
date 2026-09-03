@@ -222,6 +222,12 @@ describe('Follow Requests store', () => {
             }),
           )
 
+          mockFetch.mockResolvedValueOnce(
+            new Response(JSON.stringify('ok'), {
+              headers: { 'Content-Type': 'application/json' },
+            }),
+          )
+
           vi.stubGlobal('fetch', mockFetch)
 
           await store[doCall]('u99')
