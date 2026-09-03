@@ -117,7 +117,6 @@ describe('Follow Requests store', () => {
         (vis) => `${vis}${intent}ConfirmDialog`,
       )
 
-
       describe('Dialog calls', () => {
         it(`${modalCalls[0]} should show dialog and set tempId`, async () => {
           const store = useFollowRequestsStore()
@@ -141,7 +140,9 @@ describe('Follow Requests store', () => {
       describe('Fork calls', () => {
         it(`Should call ${doCall} if confirmations are disabled (${forkProperty} = false)`, async () => {
           const store = useFollowRequestsStore()
-          const modalSpy = vi.spyOn(store, modalCalls[0]).mockImplementation(() => ({}))
+          const modalSpy = vi
+            .spyOn(store, modalCalls[0])
+            .mockImplementation(() => ({}))
           const apiSpy = vi.spyOn(store, doCall).mockImplementation(() => ({}))
           useMergedConfigStore().mergedConfig = { [forkProperty]: false }
 
@@ -154,7 +155,9 @@ describe('Follow Requests store', () => {
 
         it(`Should call ${modalCalls[0]} if confirmations are enabled (${forkProperty} = true)`, async () => {
           const store = useFollowRequestsStore()
-          const modalSpy = vi.spyOn(store, modalCalls[0]).mockImplementation(() => ({}))
+          const modalSpy = vi
+            .spyOn(store, modalCalls[0])
+            .mockImplementation(() => ({}))
           const apiSpy = vi.spyOn(store, doCall).mockImplementation(() => ({}))
           useMergedConfigStore().mergedConfig = { [forkProperty]: true }
 
@@ -208,7 +211,10 @@ describe('Follow Requests store', () => {
           store.findFollowRequestNotificationId = vi.fn()
           store.findFollowRequestNotificationId.mockReturnValue('n91')
 
-          const spy = vi.spyOn(useNotificationsStore(), 'markSingleNotificationAsSeen')
+          const spy = vi.spyOn(
+            useNotificationsStore(),
+            'markSingleNotificationAsSeen',
+          )
 
           mockFetch.mockResolvedValueOnce(
             new Response(JSON.stringify('ok'), {
