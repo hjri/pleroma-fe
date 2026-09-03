@@ -15,10 +15,9 @@
     "e2e": "sh ./tools/e2e/run.sh",
     "test": "yarn run unit && yarn run e2e",
     "ci-biome": "yarn exec biome check",
-    "ci-eslint": "yarn exec eslint",
     "ci-stylelint": "yarn exec stylelint '**/*.scss' '**/*.vue'",
-    "lint": "yarn ci-biome; yarn ci-eslint; yarn ci-stylelint",
-    "lint-fix": "yarn exec eslint -- --fix; yarn exec stylelint '**/*.scss' '**/*.vue' --fix; biome check --write"
+    "lint": "yarn ci-biome; yarn ci-stylelint",
+    "lint-fix": "yarn exec stylelint '**/*.scss' '**/*.vue' --fix; biome check --write"
   },
   "dependencies": {
     "@chenfengyuan/vue-qrcode": "2.0.0",
@@ -71,8 +70,6 @@
     "autoprefixer": "10.4.21",
     "chalk": "5.6.2",
     "cross-spawn": "7.0.6",
-    "eslint": "^10.9.1",
-    "eslint-plugin-vue": "^10.10.0",
     "iso-639-1": "3.1.5",
     "msw": "2.14.6",
     "nightwatch": "3.12.2",
@@ -91,11 +88,9 @@
     "stylelint-config-standard": "38.0.0",
     "vite": "^8.0.0",
     "vite-plugin-biome": "^1.2.0",
-    "vite-plugin-eslint2": "^5.3.0",
     "vite-plugin-stylelint": "^6.1.0",
     "vite-plugin-vue-devtools": "^8.2.1",
-    "vitest": "^4.1.11",
-    "vue-eslint-parser": "^10.4.1"
+    "vitest": "^4.1.11"
   },
   "type": "module",
   "engines": {

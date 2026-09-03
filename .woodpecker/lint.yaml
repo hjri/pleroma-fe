@@ -13,12 +13,6 @@ steps:
     commands:
       - yarn --frozen-lockfile
 
-  eslint:
-    image: *node-image
-    depends_on: install-depends
-    commands:
-      - yarn ci-eslint
-
   biome:
     image: *node-image
     depends_on: install-depends
