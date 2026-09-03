@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
 
 import followRequestFetcher from 'src/stores/fetchers/follow_requests.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
-import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { approveUser, denyUser } from 'src/api/user.js'
 

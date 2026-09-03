@@ -788,7 +788,7 @@ export const useUsersStore = defineStore('users', {
           useListsStore().startFetching()
           useBookmarkFoldersStore().startFetching()
           useChatsStore().startFetching()
-          if (user.locked) {
+          if (this.currentUser.locked) {
             useFollowRequestsStore().startFetching()
           }
         })
