@@ -186,7 +186,7 @@ export const combinationsMatch = (criteria, subject, strict) => {
  */
 export const findRules = (criteria, strict) => (subject) => {
   // If we searching for "general" rules - ignore "specific" ones
-  if (criteria.parent === null && !!subject.parent) return false
+  if (criteria.parent === null && subject.parent) return false
   if (!combinationsMatch(criteria, subject, strict)) return false
 
   if (criteria.parent !== undefined && criteria.parent !== null) {

@@ -21,7 +21,7 @@ export default {
     ...Setting.methods,
     getValue(e) {
       // Basic tri-state toggle implementation
-      if (!!this.indeterminateState && !e && this.visibleState === true) {
+      if (this.indeterminateState && !e && this.visibleState === true) {
         // If we have indeterminate state, switching from true to false first goes through indeterminate
         return this.indeterminateState
       }
