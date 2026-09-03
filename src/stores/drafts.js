@@ -52,10 +52,6 @@ export const useDraftsStore = defineStore('drafts', {
     },
   },
   actions: {
-    async abandonDraft(id) {
-      this.drafts.delete(id)
-      await deleteDraftFromStorage([id])
-    },
     async loadDrafts() {
       const currentData = (await getStorageData()) ?? {}
       this.drafts = new Map(Object.entries(currentData))
@@ -66,6 +62,10 @@ export const useDraftsStore = defineStore('drafts', {
       this.drafts.set(id, draftWithId)
       await saveDraftToStorage(draftWithId)
       return id
+    },
+    async abandonDraft(id) {
+      this.drafts.delete(id)
+      await deleteDraftFromStorage([id])
     },
     async abandonAllDrafts() {
       const ids = [...this.drafts.keys()]
