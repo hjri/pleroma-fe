@@ -24,8 +24,6 @@ const followRequestFetcher = ({ credentials }) => {
   const startFetching = () => {
     if (interval.value) throw new Error('Interval already exists!')
 
-    fetchAndUpdate()
-
     interval.value = promiseInterval(fetchAndUpdate, 10000)
   }
 

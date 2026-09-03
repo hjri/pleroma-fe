@@ -49,6 +49,12 @@ export default {
     MobilePostStatusButton,
     MobileNav,
     DesktopNav,
+    FollowRequestConfirm: defineAsyncComponent(
+      () =>
+        import(
+          'src/components/follow_request_confirm/follow_request_confirm.vue'
+        ),
+    ),
     SettingsModal: defineAsyncComponent(
       () => import('src/components/settings_modal/settings_modal.vue'),
     ),

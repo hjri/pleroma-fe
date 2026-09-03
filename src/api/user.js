@@ -43,9 +43,10 @@ export const MASTODON_FOLLOW_URL = (id) => `/api/v1/accounts/${id}/follow`
 export const MASTODON_UNFOLLOW_URL = (id) => `/api/v1/accounts/${id}/unfollow`
 
 const MASTODON_FOLLOW_REQUESTS_URL = '/api/v1/follow_requests'
-const MASTODON_APPROVE_USER_URL = (id) =>
+export const MASTODON_APPROVE_USER_URL = (id) =>
   `/api/v1/follow_requests/${id}/authorize`
-const MASTODON_DENY_USER_URL = (id) => `/api/v1/follow_requests/${id}/reject`
+export const MASTODON_DENY_USER_URL = (id) =>
+  `/api/v1/follow_requests/${id}/reject`
 const MASTODON_USER_RELATIONSHIPS_URL = ({ id, withSuspended }) =>
   `/api/v1/accounts/relationships/${paramsString({ id, withSuspended })}`
 export const MASTODON_USER_IN_LISTS = (id) => `/api/v1/accounts/${id}/lists`

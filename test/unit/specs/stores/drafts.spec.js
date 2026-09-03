@@ -49,15 +49,39 @@ describe('Drafts store', () => {
     it('draftsByTypeAndRefId', async () => {
       const store = useDraftsStore()
 
-      await store.addOrSaveDraft({ id: 1, type: 'edit', refId: 'e1', status: 'draft' })
-      await store.addOrSaveDraft({ id: 2, type: 'reply', refId: 'r1', status: 'draft' })
+      await store.addOrSaveDraft({
+        id: 1,
+        type: 'edit',
+        refId: 'e1',
+        status: 'draft',
+      })
+      await store.addOrSaveDraft({
+        id: 2,
+        type: 'reply',
+        refId: 'r1',
+        status: 'draft',
+      })
       await store.addOrSaveDraft({ id: 3, status: 'draft' })
-      await store.addOrSaveDraft({ id: 4, type: 'edit', refId: 'e2', status: 'draft' })
-      await store.addOrSaveDraft({ id: 5, type: 'reply', refId: 'r2', status: 'draft' })
+      await store.addOrSaveDraft({
+        id: 4,
+        type: 'edit',
+        refId: 'e2',
+        status: 'draft',
+      })
+      await store.addOrSaveDraft({
+        id: 5,
+        type: 'reply',
+        refId: 'r2',
+        status: 'draft',
+      })
 
       expect(store.draftsByTypeAndRefId).to.be.a('function')
-      expect(store.draftsByTypeAndRefId('edit', 'e1')).to.eql([{ id: 1, type: 'edit', refId: 'e1', status: 'draft' }])
-      expect(store.draftsByTypeAndRefId('reply', 'r1')).to.eql([{ id: 2, type: 'reply', refId: 'r1', status: 'draft' }])
+      expect(store.draftsByTypeAndRefId('edit', 'e1')).to.eql([
+        { id: 1, type: 'edit', refId: 'e1', status: 'draft' },
+      ])
+      expect(store.draftsByTypeAndRefId('reply', 'r1')).to.eql([
+        { id: 2, type: 'reply', refId: 'r1', status: 'draft' },
+      ])
     })
   })
 
@@ -112,7 +136,7 @@ describe('Drafts store', () => {
           [id]: {
             id,
             status: 'draft',
-          }
+          },
         })
       })
 
@@ -128,10 +152,10 @@ describe('Drafts store', () => {
         expect(storage.getItem).to.have.been.calledTwice
         expect(storage.setItem).to.have.been.calledTwice
         expect(storage.setItem).to.have.been.calledWith('pleroma-fe-drafts', {
-          '1': {
+          1: {
             id: '1',
             status: 'draft',
-          }
+          },
         })
       })
     })
@@ -157,14 +181,14 @@ describe('Drafts store', () => {
         expect(storage.getItem).to.have.been.calledOnce
         expect(storage.setItem).to.have.been.calledOnce
         expect(storage.setItem).to.have.been.calledWith('pleroma-fe-drafts', {
-          'a': {
+          a: {
             id: 'a',
             status: 'draft',
           },
-          'c': {
+          c: {
             id: 'c',
             status: 'draft',
-          }
+          },
         })
       })
     })
