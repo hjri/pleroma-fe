@@ -11,19 +11,16 @@ steps:
     image: &node-image
       docker.io/node:24-alpine
     commands:
-      - npm install --global yarn
       - yarn --frozen-lockfile
 
   biome:
     image: *node-image
     depends_on: install-depends
     commands:
-      - npm install --global yarn
       - yarn ci-biome
 
   stylelint:
     image: *node-image
     depends_on: install-depends
     commands:
-      - npm install --global yarn
       - yarn ci-stylelint

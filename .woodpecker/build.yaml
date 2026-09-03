@@ -13,6 +13,5 @@ steps:
   build:
     image: docker.io/node:24-alpine
     commands:
-      - npm install --global yarn
       - yarn --frozen-lockfile
       - yarn build
