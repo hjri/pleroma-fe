@@ -717,6 +717,7 @@ export const useUsersStore = defineStore('users', {
     },
     logout() {
       const oauth = useOAuthStore()
+      const locked = this.currentUser.locked
 
       // Pause fetching
       useNotificationsStore().pause()
@@ -727,7 +728,7 @@ export const useUsersStore = defineStore('users', {
       useListsStore().stopFetching()
       useBookmarkFoldersStore().stopFetching()
       useChatsStore().stopFetching()
-      if (this.currentUser.locked) {
+      if (locked) {
         useFollowRequestsStore().stopFetching()
       }
 
@@ -788,7 +789,7 @@ export const useUsersStore = defineStore('users', {
           useListsStore().startFetching()
           useBookmarkFoldersStore().startFetching()
           useChatsStore().startFetching()
-          if (this.currentUser.locked) {
+          if (locked) {
             useFollowRequestsStore().startFetching()
           }
         })
