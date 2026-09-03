@@ -18,10 +18,12 @@ steps:
     image: *node-image
     depends_on: install-depends
     commands:
+      - npm install --global yarn
       - yarn ci-biome
 
   stylelint:
     image: *node-image
     depends_on: install-depends
     commands:
+      - npm install --global yarn
       - yarn ci-stylelint
