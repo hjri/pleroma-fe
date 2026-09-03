@@ -788,7 +788,9 @@ export const useUsersStore = defineStore('users', {
           useListsStore().startFetching()
           useBookmarkFoldersStore().startFetching()
           useChatsStore().startFetching()
-          useFollowRequestsStore().startFetching()
+          if (user.locked) {
+            useFollowRequestsStore().startFetching()
+          }
         })
         .finally(() => {
           useNotificationsStore().resume()
