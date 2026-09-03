@@ -4,6 +4,7 @@ import followRequestFetcher from 'src/stores/fetchers/follow_requests.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { approveUser, denyUser } from 'src/api/user.js'
 
@@ -79,27 +80,43 @@ export const useFollowRequestsStore = defineStore('followRequests', {
       const id = userId ?? this.tempId
       this.hideApproveConfirmDialog()
 
-      await approveUser({
-        id,
-        credentials: useOAuthStore().token,
-      })
+      try {
+        await approveUser({
+          id,
+          credentials: useOAuthStore().token,
+        })
 
-      const notifId = this.findFollowRequestNotificationId(id)
-      notifId && useNotificationsStore().markSingleNotificationAsSeen(notifId)
-      this.requests.delete(id)
+        const notifId = this.findFollowRequestNotificationId(id)
+        notifId && useNotificationsStore().markSingleNotificationAsSeen(notifId)
+        this.requests.delete(id)
+      } catch (error) {
+        useInterfaceStore().pushGlobalNotice({
+          messageKey: 'user_card.approve_error',
+          messageArgs: { error },
+          level: 'error',
+        })
+      }
     },
     async doDeny(userId) {
       const id = userId ?? this.tempId
       this.hideDenyConfirmDialog()
 
-      await denyUser({
-        id,
-        credentials: useOAuthStore().token,
-      })
+      try {
+        await denyUser({
+          id,
+          credentials: useOAuthStore().token,
+        })
 
-      const notifId = this.findFollowRequestNotificationId(id)
-      notifId && useNotificationsStore().markSingleNotificationAsSeen(notifId)
-      this.requests.delete(id)
+        const notifId = this.findFollowRequestNotificationId(id)
+        notifId && useNotificationsStore().markSingleNotificationAsSeen(notifId)
+        this.requests.delete(id)
+      } catch (error) {
+        useInterfaceStore().pushGlobalNotice({
+          messageKey: 'user_card.deny_error',
+          messageArgs: { error },
+          level: 'error',
+        })
+      }
     },
 
     // Utility
