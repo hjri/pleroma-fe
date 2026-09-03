@@ -5,26 +5,15 @@ import VueVirtualScroller from 'vue-virtual-scroller'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import Status from 'src/components/status/status.vue'
 import StillImage from 'src/components/still-image/still-image.vue'
-import makeMockStore from './mock_store'
 
 import routes from 'src/boot/routes'
 
 export const $t = (msg) => msg
 const $i18n = { t: (msg) => msg }
 
-const applyAfterStore = (store, afterStore) => {
-  afterStore(store)
-  return store
-}
-
-const getDefaultOpts = ({
-  afterStore = () => {
-    /* no-op */
-  },
-} = {}) => ({
+const getDefaultOpts = () => ({
   global: {
     plugins: [
-      applyAfterStore(makeMockStore(), afterStore),
       VueVirtualScroller,
       createRouter({
         history: createMemoryHistory(),
@@ -87,9 +76,8 @@ const customBehaviors = () => {
 
 config.plugins.VueWrapper.install(customBehaviors)
 
-export const mountOpts = (allOpts = {}) => {
-  const { afterStore, ...opts } = allOpts
-  const defaultOpts = getDefaultOpts({ afterStore })
+export const mountOpts = (opts = {}) => {
+  const defaultOpts = getDefaultOpts()
   const mergedOpts = {
     ...opts,
     global: {

@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get } from 'lodash-es'
 import { mapState } from 'pinia'
 
 import Modal from 'src/components/modal/modal.vue'

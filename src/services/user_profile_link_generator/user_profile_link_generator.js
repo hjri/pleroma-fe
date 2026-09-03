@@ -1,4 +1,4 @@
-import { includes } from 'lodash'
+import { includes } from 'lodash-es'
 
 const generateProfileLink = (id, screenName, restrictedNicknames) => {
   const complicated =

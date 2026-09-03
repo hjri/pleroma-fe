@@ -1,4 +1,4 @@
-import { capitalize } from 'lodash'
+import { capitalize } from 'lodash-es'
 
 function humanizeErrors(errors) {
   return Object.entries(errors).reduce((errs, [k, val]) => {

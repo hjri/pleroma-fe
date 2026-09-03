@@ -14,6 +14,7 @@ import NotificationFilters from './notification_filters.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useChatsStore } from 'src/stores/chats.js'
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useNotificationsStore } from 'src/stores/notifications.js'
@@ -107,17 +108,17 @@ const Notifications = {
     },
     extraNotificationsCount() {
       return countExtraNotifications(
-        this.$store,
         useMergedConfigStore().mergedConfig,
         useChatsStore().unreadChatsCount,
-        useAnnouncementsStore().unreadAnnouncementCount,
+        useAnnouncementsStore().unreadAnnouncementsCount,
+        useFollowRequestsStore().followRequestsCount,
       )
     },
     unseenCountTitle() {
       return (
         this.unseenNotifications.length +
         this.unreadChatsCount +
-        this.unreadAnnouncementCount
+        this.unreadAnnouncementsCount
       )
     },
     loading() {
@@ -156,7 +157,7 @@ const Notifications = {
     showExtraNotifications() {
       return !this.noExtra
     },
-    ...mapState(useAnnouncementsStore, ['unreadAnnouncementCount']),
+    ...mapState(useAnnouncementsStore, ['unreadAnnouncementsCount']),
     ...mapState(useChatsStore, ['unreadChatsCount']),
     ...mapState(useInterfaceStore, ['layoutType']),
   },

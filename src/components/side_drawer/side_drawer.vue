@@ -141,10 +141,10 @@
               icon="user-plus"
             /> {{ $t("nav.friend_requests") }}
             <span
-              v-if="followRequestCount > 0"
+              v-if="followRequestsCount > 0"
               class="badge -notification"
             >
-              {{ followRequestCount }}
+              {{ followRequestsCount }}
             </span>
           </router-link>
         </li>
@@ -248,10 +248,10 @@
               icon="bullhorn"
             /> {{ $t("nav.announcements") }}
             <span
-              v-if="unreadAnnouncementCount"
+              v-if="unreadAnnouncementsCount"
               class="badge -notification"
             >
-              {{ unreadAnnouncementCount }}
+              {{ unreadAnnouncementsCount }}
             </span>
           </router-link>
         </li>
@@ -269,10 +269,10 @@
               icon="file-pen"
             /> {{ $t('nav.drafts') }}
             <span
-              v-if="draftCount"
+              v-if="draftsCount"
               class="badge -neutral"
             >
-              {{ draftCount }}
+              {{ draftsCount }}
             </span>
           </router-link>
         </li>

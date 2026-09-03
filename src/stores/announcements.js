@@ -16,7 +16,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
     userActions: {},
   }),
   getters: {
-    unreadAnnouncementCount() {
+    unreadAnnouncementsCount() {
       if (!useUsersStore().currentUser) {
         return 0
       }

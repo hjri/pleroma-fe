@@ -47,17 +47,11 @@
       </component>
       <slot />
       <div
-        v-if="item.badgeGetter && getters[item.badgeGetter]"
+        v-if="item.badgeGetter && badges[item.badgeGetter]"
         class="badge"
         :class="[`-${item.badgeStyle}`]"
       >
-        {{ getters[item.badgeGetter] }}
-      </div>
-      <div
-        v-else-if="item.badgeGetter && item.store && this[`${item.store}Store`][item.badgeGetter]"
-        class="badge badge-notification"
-      >
-        {{ this[`${item.store}Store`][item.badgeGetter] }}
+        {{ badges[item.badgeGetter] }}
       </div>
       <button
         v-if="showPin && currentUser"

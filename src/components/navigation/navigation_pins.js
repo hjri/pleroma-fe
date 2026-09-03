@@ -1,5 +1,4 @@
 import { mapState } from 'pinia'
-import { mapState as mapVuexState } from 'vuex'
 
 import {
   filterNavigation,
@@ -14,6 +13,9 @@ import {
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
+import { useChatsStore } from 'src/stores/chats.js'
+import { useDraftsStore } from 'src/stores/drafts.js'
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useListsStore } from 'src/stores/lists'
@@ -56,18 +58,27 @@ const NavPanel = {
   },
   components: {},
   computed: {
-    getters() {
-      return this.$store.getters
+    badges() {
+      return {
+        drafts: this.draftsCount,
+        unreadAnnouncements: this.unreadAnnouncementsCount,
+        followRequests: this.followRequestsCount,
+        unreadChats: this.unreadChatsCount,
+      }
     },
     ...mapState(useListsStore, {
       lists: getListEntries,
     }),
     ...mapState(useAnnouncementsStore, {
       supportsAnnouncements: (store) => store.supportsAnnouncements,
+      unreadAnnouncementsCount: 'unreadAnnouncementsCount',
     }),
+    ...mapState(useDraftsStore, ['draftsCount']),
+    ...mapState(useFollowRequestsStore, ['followRequestsCount']),
     ...mapState(useBookmarkFoldersStore, {
       bookmarks: getBookmarkFolderEntries,
     }),
+    ...mapState(useChatsStore, ['unreadChatsCount']),
     ...mapState(useSyncConfigStore, {
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems),
@@ -78,9 +89,6 @@ const NavPanel = {
       'localBubble',
     ]),
     ...mapState(useUsersStore, ['currentUser']),
-    ...mapVuexState({
-      followRequestCount: (state) => state.api.followRequests.length,
-    }),
     pinnedList() {
       if (!this.currentUser) {
         return filterNavigation(

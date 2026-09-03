@@ -226,7 +226,7 @@
             <button
               class="button-unstyled"
               :title="$t('tool_tip.accept_follow_request')"
-              @click="approveUser()"
+              @click="() => approve(user.id)"
             >
               <FAIcon
                 icon="check"
@@ -236,7 +236,7 @@
             <button
               class="button-unstyled"
               :title="$t('tool_tip.reject_follow_request')"
-              @click="denyUser()"
+              @click="() => deny(user.id)"
             >
               <FAIcon
                 icon="times"
@@ -268,28 +268,6 @@
         </template>
       </div>
     </div>
-    <teleport to="#modal">
-      <ConfirmModal
-        v-if="showingApproveConfirmDialog"
-        :title="$t('user_card.approve_confirm_title')"
-        :confirm-text="$t('user_card.approve_confirm_accept_button')"
-        :cancel-text="$t('user_card.approve_confirm_cancel_button')"
-        @accepted="doApprove"
-        @cancelled="hideApproveConfirmDialog"
-      >
-        {{ $t('user_card.approve_confirm', { user: user.screen_name_ui }) }}
-      </ConfirmModal>
-      <ConfirmModal
-        v-if="showingDenyConfirmDialog"
-        :title="$t('user_card.deny_confirm_title')"
-        :confirm-text="$t('user_card.deny_confirm_accept_button')"
-        :cancel-text="$t('user_card.deny_confirm_cancel_button')"
-        @accepted="doDeny"
-        @cancelled="hideDenyConfirmDialog"
-      >
-        {{ $t('user_card.deny_confirm', { user: user.screen_name_ui }) }}
-      </ConfirmModal>
-    </teleport>
   </article>
 </template>
 

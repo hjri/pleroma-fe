@@ -1,4 +1,4 @@
-import { debounce } from 'lodash'
+import { debounce } from 'lodash-es'
 import { mapState } from 'pinia'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'

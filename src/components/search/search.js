@@ -1,4 +1,4 @@
-import { map, uniqBy } from 'lodash'
+import { map, uniqBy } from 'lodash-es'
 
 import Conversation from 'src/components/conversation/conversation.vue'
 import FollowCard from 'src/components/follow_card/follow_card.vue'

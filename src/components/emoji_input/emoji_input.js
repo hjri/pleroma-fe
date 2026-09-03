@@ -1,4 +1,4 @@
-import { take } from 'lodash'
+import { take } from 'lodash-es'
 
 import Popover from 'src/components/popover/popover.vue'
 import ScreenReaderNotice from 'src/components/screen_reader_notice/screen_reader_notice.vue'

@@ -4,7 +4,7 @@ import {
   unescape as ldUnescape,
   reject,
   uniqBy,
-} from 'lodash'
+} from 'lodash-es'
 import { mapActions, mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 
@@ -24,6 +24,7 @@ import { findOffset } from '../../services/offset_finder/offset_finder.service.j
 import genRandomSeed from '../../services/random_seed/random_seed.service.js'
 import statusPoster from '../../services/status_poster/status_poster.service.js'
 
+import { useDraftsStore } from 'src/stores/drafts.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -400,8 +401,6 @@ const PostStatusForm = {
         contentType: this.newStatus.contentType,
         poll,
         idempotencyKey: this.idempotencyKey,
-
-        store: this.$store,
       }
     },
 
@@ -412,7 +411,6 @@ const PostStatusForm = {
           ...useEmojiStore().standardEmojiList,
           ...useEmojiStore().customEmoji,
         ],
-        store: this.$store,
       })
     },
     emojiSuggestor() {
@@ -574,7 +572,7 @@ const PostStatusForm = {
     ...mapState(useUsersStore, ['currentUser']),
     ...mapState(useMergedConfigStore, ['mergedConfig']),
     ...mapState(useInterfaceStore, {
-      mobileLayout: (store) => store.mobileLayout,
+      mobileLayout: (state) => state.mobileLayout,
     }),
   },
   watch: {
@@ -751,7 +749,6 @@ const PostStatusForm = {
       const description = this.newStatus.mediaDescriptions[id]
       if (!description || description.trim() === '') return
       return statusPoster.setMediaDescription({
-        store: this.$store,
         id,
         description,
       })
@@ -985,13 +982,13 @@ const PostStatusForm = {
     saveDraft() {
       if (!this.disableDraft && !this.saveInhibited) {
         if (this.safeToSaveDraft) {
-          return this.$store
-            .dispatch('addOrSaveDraft', {
-              draft: {
-                type: this.statusType,
-                refId: this.refId,
-                ...this.newStatus,
-              },
+          return useDraftsStore()
+            .addOrSaveDraft({
+              type: this.statusType,
+              refId: this.refId,
+              ...this.newStatus,
+              // Draft ID overwrites status ID (which is undefined for fresh statuses)
+              id: this.draftId,
             })
             .then((id) => {
               if (this.newStatus.id !== id) {
@@ -1024,14 +1021,14 @@ const PostStatusForm = {
       }
     },
     abandonDraft() {
-      return this.$store.dispatch('abandonDraft', { id: this.draftId })
+      return useDraftsStore().abandonDraft(this.draftId)
     },
     getDraft() {
-      const maybeDraft = this.$store.state.drafts.drafts[this.draftId]
+      const maybeDraft = useDraftsStore().drafts.get(this.draftId)
       if (this.draftId && maybeDraft) {
         return maybeDraft
       } else {
-        const existingDrafts = this.$store.getters.draftsByTypeAndRefId(
+        const existingDrafts = useDraftsStore().draftsByTypeAndRefId(
           this.statusType,
           this.refId,
         )

@@ -98,13 +98,11 @@ export const unseenNotifications = (
 }
 
 export const countExtraNotifications = (
-  store,
   mergedConfig,
   unreadChatsCount,
-  unreadAnnouncementCount,
+  unreadAnnouncementsCount,
+  followRequestsCount,
 ) => {
-  const rootGetters = store.rootGetters || store.getters
-
   if (!mergedConfig.showExtraNotifications) {
     return 0
   }
@@ -112,10 +110,10 @@ export const countExtraNotifications = (
   return [
     mergedConfig.showChatsInExtraNotifications ? unreadChatsCount : 0,
     mergedConfig.showAnnouncementsInExtraNotifications
-      ? unreadAnnouncementCount
+      ? unreadAnnouncementsCount
       : 0,
     mergedConfig.showFollowRequestsInExtraNotifications
-      ? rootGetters.followRequestCount
+      ? followRequestsCount
       : 0,
   ].reduce((a, c) => a + c, 0)
 }

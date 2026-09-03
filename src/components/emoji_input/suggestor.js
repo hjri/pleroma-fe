@@ -15,7 +15,7 @@ import { useUsersStore } from 'src/stores/users.js'
 
 export default (data) => {
   const emojiCurry = suggestEmoji(data.emoji)
-  const usersCurry = data.store && suggestUsers(data.store)
+  const usersCurry = suggestUsers()
   return (input, nameKeywordLocalizer) => {
     const firstChar = input[0]
     if (firstChar === ':' && data.emoji) {

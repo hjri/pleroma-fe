@@ -1,11 +1,13 @@
 import { createTestingPinia } from '@pinia/testing'
-import { snakeCase } from 'lodash'
+import { snakeCase } from 'lodash-es'
 import { setActivePinia } from 'pinia'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
 import { useChatsStore } from 'src/stores/chats.js'
+import { useDraftsStore } from 'src/stores/drafts.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useListsStore } from 'src/stores/lists.js'
@@ -53,12 +55,14 @@ const mockMastoAPIUser = ({
   name = userName,
   url = userUrl,
   id = userId,
+  locked = true,
 } = {}) => ({
   id,
   acct: screen_name,
   display_name: name,
   fields: [],
   avatar: '',
+  locked,
   url,
 })
 
@@ -67,17 +71,20 @@ const mockUser = ({
   id = userId,
   name = userName,
   url = userUrl,
+  locked = true,
 } = {}) => ({
   _original: mockMastoAPIUser({
     screen_name,
     id,
     name,
     url,
+    locked,
   }),
   id,
   name,
   screen_name,
   url,
+  locked,
   relationship: undefined,
 })
 
@@ -631,22 +638,24 @@ describe('Users store', () => {
 
         const spies = [
           // Misc initialization
-          vi.spyOn(useSyncConfigStore(), 'initSyncConfig'),
-          vi.spyOn(useUserHighlightStore(), 'initUserHighlight'),
-          vi.spyOn(useInterfaceStore(), 'applyTheme'),
-          vi.spyOn(useInterfaceStore(), 'onLogin'),
-          vi.spyOn(useEmojiStore(), 'fetchEmoji'),
+          /* 0 */ vi.spyOn(useSyncConfigStore(), 'initSyncConfig'),
+          /* 1 */ vi.spyOn(useUserHighlightStore(), 'initUserHighlight'),
+          /* 2 */ vi.spyOn(useInterfaceStore(), 'applyTheme'),
+          /* 3 */ vi.spyOn(useInterfaceStore(), 'onLogin'),
+          /* 4 */ vi.spyOn(useEmojiStore(), 'fetchEmoji'),
+          /* 5 */ vi.spyOn(useDraftsStore(), 'loadDrafts'),
 
           // Timeline / Notifications
-          vi.spyOn(useNotificationsStore(), 'activate'),
-          vi.spyOn(useTimelinesStore(), 'activatePersistents'),
+          /* 6 */ vi.spyOn(useNotificationsStore(), 'activate'),
+          /* 7 */ vi.spyOn(useTimelinesStore(), 'activatePersistents'),
 
           // Fetchers
-          vi.spyOn(useChatsStore(), 'startFetching'),
-          vi.spyOn(useListsStore(), 'startFetching'),
-          vi.spyOn(useAnnouncementsStore(), 'startFetching'),
-          vi.spyOn(useBookmarkFoldersStore(), 'startFetching'),
-          vi.spyOn(useStreamingStore(), 'initSocket'),
+          /* 8 */ vi.spyOn(useChatsStore(), 'startFetching'),
+          /* 9 */ vi.spyOn(useListsStore(), 'startFetching'),
+          /* 10 */ vi.spyOn(useAnnouncementsStore(), 'startFetching'),
+          /* 11 */ vi.spyOn(useBookmarkFoldersStore(), 'startFetching'),
+          /* 12 */ vi.spyOn(useFollowRequestsStore(), 'startFetching'),
+          /* 13 */ vi.spyOn(useStreamingStore(), 'initSocket'),
         ]
 
         spies.forEach((spy) => {
@@ -758,6 +767,7 @@ describe('Users store', () => {
           /* 11 */ vi.spyOn(useAnnouncementsStore(), 'stopFetching'),
           /* 12 */ vi.spyOn(useBookmarkFoldersStore(), 'stopFetching'),
           /* 13 */ vi.spyOn(useStreamingStore(), 'stopSocket'),
+          /* 14 */ vi.spyOn(useFollowRequestsStore(), 'stopFetching'),
         ]
 
         spies.forEach((spy) => {
@@ -771,6 +781,7 @@ describe('Users store', () => {
 
         const store = useUsersStore()
         store.currentUser = mockUser()
+        store.currentUser.locked = true
 
         // Adding some users to verify they are getting cleaned afterwards
         store.addNewUsers({
@@ -832,17 +843,19 @@ describe('Users store', () => {
           /* 3 */ vi.spyOn(useChatsStore(), 'stopFetching'),
           /* 4 */ vi.spyOn(useAnnouncementsStore(), 'stopFetching'),
           /* 5 */ vi.spyOn(useBookmarkFoldersStore(), 'stopFetching'),
+          /* 6 */ vi.spyOn(useFollowRequestsStore(), 'stopFetching'),
 
           // ## RESUME ##
           // Timeline / Notifications
-          /* 6 */ vi.spyOn(useNotificationsStore(), 'resume'),
-          /* 7 */ vi.spyOn(useTimelinesStore(), 'resumeAll'),
+          /* 7 */ vi.spyOn(useNotificationsStore(), 'resume'),
+          /* 8 */ vi.spyOn(useTimelinesStore(), 'resumeAll'),
 
           // Fetchers (Pauseless)
-          /* 8 */ vi.spyOn(useListsStore(), 'startFetching'),
-          /* 9 */ vi.spyOn(useChatsStore(), 'startFetching'),
-          /* 10 */ vi.spyOn(useAnnouncementsStore(), 'startFetching'),
-          /* 11 */ vi.spyOn(useBookmarkFoldersStore(), 'startFetching'),
+          /* 9 */ vi.spyOn(useListsStore(), 'startFetching'),
+          /* 10 */ vi.spyOn(useChatsStore(), 'startFetching'),
+          /* 11 */ vi.spyOn(useAnnouncementsStore(), 'startFetching'),
+          /* 12 */ vi.spyOn(useBookmarkFoldersStore(), 'startFetching'),
+          /* 13 */ vi.spyOn(useFollowRequestsStore(), 'startFetching'),
         ]
 
         spies.forEach((spy) => {

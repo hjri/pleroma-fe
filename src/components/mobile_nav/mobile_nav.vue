@@ -19,7 +19,7 @@
             icon="bars"
           />
           <div
-            v-if="(unreadChatsCount && !chatsPinned) || unreadAnnouncementCount"
+            v-if="(unreadChatsCount && !chatsPinned) || unreadAnnouncementsCount"
             class="badge -dot -notification"
           />
         </button>

@@ -1,11 +1,10 @@
-import { cloneDeep } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 
 import Gallery from 'src/components/gallery/gallery.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
 
-import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useDraftsStore } from 'src/stores/drafts.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -33,7 +32,6 @@ const Draft = {
   },
   data() {
     return {
-      referenceDraft: cloneDeep(this.draft),
       editing: false,
       showingConfirmDialog: false,
     }
@@ -50,14 +48,6 @@ const Draft = {
         return {}
       }
     },
-    safeToSave() {
-      return (
-        this.draft.status ||
-        this.draft.files?.length ||
-        this.draft.hasPoll ||
-        this.draft.hasQuote
-      )
-    },
     postStatusFormProps() {
       return {
         draftId: this.draft.id,
@@ -69,18 +59,12 @@ const Draft = {
         ? useStatusesStore().allStatuses.get(this.draft.refId)
         : undefined
     },
-    localCollapseSubjectDefault() {
-      return useMergedConfigStore().mergedConfig.collapseMessageWithSubject
-    },
   },
   watch: {
     editing(newVal) {
       if (newVal) return
-      if (this.safeToSave) {
-        this.$store.dispatch('addOrSaveDraft', { draft: this.draft })
-      } else {
-        this.$store.dispatch('addOrSaveDraft', { draft: this.referenceDraft })
-      }
+      // (Post|Edit)StatusForm handles draft saving
+      this.$refs.form.saveDraft()
     },
   },
   methods: {
@@ -91,9 +75,11 @@ const Draft = {
       this.showingConfirmDialog = true
     },
     doAbandon() {
-      this.$store.dispatch('abandonDraft', { id: this.draft.id }).then(() => {
-        this.hideConfirmDialog()
-      })
+      useDraftsStore()
+        .abandonDraft(this.draft.id)
+        .then(() => {
+          this.hideConfirmDialog()
+        })
     },
     hideConfirmDialog() {
       this.showingConfirmDialog = false

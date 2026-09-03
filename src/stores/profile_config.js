@@ -1,34 +1,36 @@
-import { get, set } from 'lodash'
+import { get, set } from 'lodash-es'
+import { defineStore } from 'pinia'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useUsersStore } from 'src/stores/users.js'
 
-import { updateNotificationSettings, updateProfile } from 'src/api/user.js'
+import { updateNotificationSettings, updateProfileJSON } from 'src/api/user.js'
 
-const defaultApi = ({ rootState, commit }, { path, value }) => {
+const defaultApi = async ({ path, value }) => {
   const params = {}
   set(params, path, value)
-  return updateProfile({
+
+  return await updateProfileJSON({
     params,
     credentials: useOAuthStore().token,
-  }).then((result) => {
-    useUsersStore().addNewUsers(result)
   })
 }
 
-const notificationsApi = ({ rootState, commit }, { path, value, oldValue }) => {
+const notificationsApi = async ({ path, value, oldValue }) => {
   const settings = {}
   set(settings, path, value)
-  return updateNotificationSettings({
+
+  const result = await updateNotificationSettings({
     settings,
     credentials: useOAuthStore().token,
-  }).then(({ data: result }) => {
-    if (result.status === 'success') {
-      commit('confirmProfileOption', { name, value })
-    } else {
-      commit('confirmProfileOption', { name, value: oldValue })
-    }
   })
+
+  if (result.data.status === 'success') {
+    // a bit of a hack
+    return { ...result, success: true }
+  } else {
+    throw new Error('Failed updating notification settings', result)
+  }
 }
 
 /**
@@ -84,60 +86,67 @@ export const settingsMap = {
   // NotificationSettingsAPIs
   webPushHideContents: {
     get: 'pleroma.notification_settings.hide_notification_contents',
-    set: 'hide_notification_contents',
+    set: 'hideNotificationContents',
     api: notificationsApi,
   },
   blockNotificationsFromStrangers: {
     get: 'pleroma.notification_settings.block_from_strangers',
-    set: 'block_from_strangers',
+    set: 'blockFromStrangers',
     api: notificationsApi,
   },
 }
 
-export const defaultState = Object.fromEntries(
-  Object.keys(settingsMap).map((key) => [key, null]),
-)
+export const defaultState = () => ({
+  config: Object.fromEntries(
+    Object.keys(settingsMap).map((key) => [key, null]),
+  ),
+})
 
-const profileConfig = {
-  state: { ...defaultState },
-  mutations: {
-    confirmProfileOption(state, { name, value }) {
-      set(state, name, value)
-    },
-    wipeProfileOption(state, { name }) {
-      set(state, name, null)
-    },
-    wipeAllProfileOptions(state) {
-      Object.keys(settingsMap).forEach((key) => {
-        set(state, key, null)
-      })
+export const useProfileConfigStore = defineStore('profileConfig', {
+  state: defaultState,
+  actions: {
+    confirmProfileOption({ name, value }) {
+      set(this.config, name, value)
     },
     // Set the settings based on their path location
-    setCurrentUser(state, user) {
+    async setProfileOption({ name, value }) {
+      const oldValue = get(this, name)
+      const map = settingsMap[name]
+
+      if (!map) throw new Error('Invalid server-side setting')
+      const { set: path = map, api = defaultApi } = map
+      set(this.config, name, null)
+
+      try {
+        const result = await api({ path, value, oldValue })
+        const { success } = result
+        if (success) {
+          set(this.config, name, value)
+          return
+        }
+
+        const [user] = useUsersStore().addNewUsers(result)
+        this.update(user)
+      } catch (e) {
+        console.warn('Error setting server-side option:', e)
+
+        set(this.config, name, oldValue)
+      }
+    },
+    update(user) {
       Object.entries(settingsMap).forEach((map) => {
         const [name, value] = map
         const { get: path = value } = value
-        set(state, name, get(user._original, path))
+        set(this.config, name, get(user._original, path))
+      })
+    },
+    onLogin(user) {
+      this.update(user)
+    },
+    onLogout() {
+      Object.keys(settingsMap).forEach((key) => {
+        set(this.config, key, null)
       })
     },
   },
-  actions: {
-    setProfileOption({ rootState, state, commit }, { name, value }) {
-      const oldValue = get(state, name)
-      const map = settingsMap[name]
-      if (!map) throw new Error('Invalid server-side setting')
-      const { set: path = map, api = defaultApi } = map
-      commit('wipeProfileOption', { name })
-
-      api({ rootState, commit }, { path, value, oldValue }).catch((e) => {
-        console.warn('Error setting server-side option:', e)
-        commit('confirmProfileOption', { name, value: oldValue })
-      })
-    },
-    logout({ commit }) {
-      commit('wipeAllProfileOptions')
-    },
-  },
-}
-
-export default profileConfig
+})

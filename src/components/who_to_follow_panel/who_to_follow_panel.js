@@ -1,4 +1,4 @@
-import { shuffle } from 'lodash'
+import { shuffle } from 'lodash-es'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'

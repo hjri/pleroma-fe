@@ -1,4 +1,4 @@
-import { last } from 'lodash'
+import { last } from 'lodash-es'
 
 import { paramsString, promisedRequest } from './helpers.js'
 import { fetchFriends, MASTODON_STATUS_URL } from './public.js'
@@ -17,7 +17,11 @@ const CHANGE_EMAIL_URL = '/api/pleroma/change_email'
 const CHANGE_PASSWORD_URL = '/api/pleroma/change_password'
 const MOVE_ACCOUNT_URL = '/api/pleroma/move_account'
 const ALIASES_URL = '/api/pleroma/aliases'
-const NOTIFICATION_SETTINGS_URL = '/api/pleroma/notification_settings'
+const NOTIFICATION_SETTINGS_URL = ({
+  blockFromStrangers,
+  hideNotificationContents,
+}) =>
+  `/api/pleroma/notification_settings${paramsString({ blockFromStrangers, hideNotificationContents })}`
 export const NOTIFICATION_READ_URL = '/api/v1/pleroma/notifications/read'
 
 const MFA_SETTINGS_URL = '/api/pleroma/accounts/mfa'
@@ -39,9 +43,10 @@ export const MASTODON_FOLLOW_URL = (id) => `/api/v1/accounts/${id}/follow`
 export const MASTODON_UNFOLLOW_URL = (id) => `/api/v1/accounts/${id}/unfollow`
 
 const MASTODON_FOLLOW_REQUESTS_URL = '/api/v1/follow_requests'
-const MASTODON_APPROVE_USER_URL = (id) =>
+export const MASTODON_APPROVE_USER_URL = (id) =>
   `/api/v1/follow_requests/${id}/authorize`
-const MASTODON_DENY_USER_URL = (id) => `/api/v1/follow_requests/${id}/reject`
+export const MASTODON_DENY_USER_URL = (id) =>
+  `/api/v1/follow_requests/${id}/reject`
 const MASTODON_USER_RELATIONSHIPS_URL = ({ id, withSuspended }) =>
   `/api/v1/accounts/relationships/${paramsString({ id, withSuspended })}`
 export const MASTODON_USER_IN_LISTS = (id) => `/api/v1/accounts/${id}/lists`
@@ -432,10 +437,9 @@ export const exportFriends = ({ id, credentials }) => {
 // #Profile settings
 export const updateNotificationSettings = ({ credentials, settings }) => {
   return promisedRequest({
-    url: NOTIFICATION_SETTINGS_URL,
+    url: NOTIFICATION_SETTINGS_URL(settings),
     credentials,
     method: 'PUT',
-    payload: settings,
   })
 }
 

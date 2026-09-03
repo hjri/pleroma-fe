@@ -31,7 +31,7 @@
           class="fa-scale-110 icon"
           icon="bullhorn"
         />
-        {{ $t('notifications.unread_announcements', { num: unreadAnnouncementCount }, unreadAnnouncementCount) }}
+        {{ $t('notifications.unread_announcements', { num: unreadAnnouncementsCount }, unreadAnnouncementsCount) }}
       </router-link>
     </div>
     <div
@@ -48,7 +48,7 @@
           class="fa-scale-110 icon"
           icon="user-plus"
         />
-        {{ $t('notifications.unread_follow_requests', { num: followRequestCount }, followRequestCount) }}
+        {{ $t('notifications.unread_follow_requests', { num: followRequestsCount }, followRequestsCount) }}
       </router-link>
     </div>
     <i18n-t

@@ -1,4 +1,4 @@
-import { orderBy, uniqueId } from 'lodash'
+import { orderBy, uniqueId } from 'lodash-es'
 
 import ChatMessage from 'src/components/chat_message/chat_message.vue'
 

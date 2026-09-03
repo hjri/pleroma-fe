@@ -1,11 +1,13 @@
 import Cookies from 'js-cookie'
-import { last } from 'lodash'
+import { last } from 'lodash-es'
 import { defineStore } from 'pinia'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
 import { useChatsStore } from 'src/stores/chats.js'
+import { useDraftsStore } from 'src/stores/drafts.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
@@ -13,6 +15,8 @@ import { useListsStore } from 'src/stores/lists.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useProfileConfigStore } from 'src/stores/profile_config.js'
+import { useShoutStore } from 'src/stores/shout.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useStreamingStore } from 'src/stores/streaming.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
@@ -140,6 +144,7 @@ export const useUsersStore = defineStore('users', {
 
         if (user.id === this.currentUser?.id) {
           this.currentUser = reactive
+          useProfileConfigStore().update(reactive)
         }
 
         // Initialize some stuff
@@ -607,13 +612,6 @@ export const useUsersStore = defineStore('users', {
 
     // Login/Logout
     async loginUser(accessToken) {
-      const store = window.vuex
-      const dispatch =
-        store?.dispatch ??
-        (() => {
-          /* no-op */
-        }) // for tests
-
       this.loggingIn = true
 
       try {
@@ -645,6 +643,7 @@ export const useUsersStore = defineStore('users', {
                 console.error('Error setting theme', e)
               })
           })
+        useProfileConfigStore().onLogin(user)
 
         useUserHighlightStore().initUserHighlight(user)
 
@@ -665,10 +664,10 @@ export const useUsersStore = defineStore('users', {
         useSyncConfigStore().setFlag({ flag: 'configMigration', value: 0 })
         /**/
 
-        if (user.token) {
+        if (user.token && useInstanceCapabilitiesStore().shoutAvailable) {
           // Shoutbox
-          dispatch('setWsToken', user.token)
-          dispatch('initializeSocket')
+          useShoutStore().initializeSocket()
+          useShoutStore().initializeShout()
         }
 
         // DMs and Home
@@ -684,7 +683,7 @@ export const useUsersStore = defineStore('users', {
         useBookmarkFoldersStore().startFetching()
 
         if (user.locked) {
-          dispatch('startFetchingFollowRequests')
+          useFollowRequestsStore().startFetching()
         }
 
         if (useMergedConfigStore().mergedConfig.useStreamingApi) {
@@ -695,7 +694,7 @@ export const useUsersStore = defineStore('users', {
         useAnnouncementsStore().startFetching()
 
         this.fetchMutes()
-        dispatch('loadDrafts')
+        useDraftsStore().loadDrafts()
       } catch (error) {
         console.error(error)
 
@@ -717,8 +716,8 @@ export const useUsersStore = defineStore('users', {
       }
     },
     logout() {
-      const store = window.vuex
       const oauth = useOAuthStore()
+      const locked = this.currentUser.locked
 
       // Pause fetching
       useNotificationsStore().pause()
@@ -729,8 +728,9 @@ export const useUsersStore = defineStore('users', {
       useListsStore().stopFetching()
       useBookmarkFoldersStore().stopFetching()
       useChatsStore().stopFetching()
-
-      store?.dispatch('stopFetchingFollowRequests')
+      if (locked) {
+        useFollowRequestsStore().stopFetching()
+      }
 
       // NOTE: No need to verify the app still exists, because if it doesn't,
       // the token will be invalid too
@@ -747,6 +747,7 @@ export const useUsersStore = defineStore('users', {
         })
         .then(() => {
           oauth.clearToken()
+          useShoutStore().disconnectSocket()
 
           this.currentUser = null
 
@@ -772,6 +773,7 @@ export const useUsersStore = defineStore('users', {
 
           Cookies.remove('__Host-pleroma_key', { path: '/' })
           useInterfaceStore().onLogout()
+          useProfileConfigStore().onLogout()
         })
         .catch((e) => {
           useInterfaceStore().pushGlobalNotice({
@@ -787,7 +789,9 @@ export const useUsersStore = defineStore('users', {
           useListsStore().startFetching()
           useBookmarkFoldersStore().startFetching()
           useChatsStore().startFetching()
-          store?.dispatch('startFetchingFollowRequests')
+          if (locked) {
+            useFollowRequestsStore().startFetching()
+          }
         })
         .finally(() => {
           useNotificationsStore().resume()

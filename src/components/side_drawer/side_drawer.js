@@ -1,5 +1,4 @@
 import { mapActions, mapState } from 'pinia'
-import { mapGetters } from 'vuex'
 
 import { USERNAME_ROUTES } from 'src/components/navigation/navigation.js'
 import UserCard from 'src/components/user_card/user_card.vue'
@@ -8,6 +7,8 @@ import { unseenNotifications } from '../../services/notification_utils/notificat
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useChatsStore } from 'src/stores/chats.js'
+import { useDraftsStore } from 'src/stores/drafts.js'
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface'
@@ -61,10 +62,6 @@ const SideDrawer = {
       GestureService.DIRECTION_LEFT,
       this.toggleDrawer,
     )
-
-    if (this.currentUser?.locked) {
-      this.$store.dispatch('startFetchingFollowRequests')
-    }
   },
   components: {
     UserCard,
@@ -85,9 +82,6 @@ const SideDrawer = {
     unseenNotificationsCount() {
       return this.unseenNotifications.length
     },
-    followRequestCount() {
-      return this.$store.state.api.followRequests.length
-    },
     timelinesRoute() {
       let name
       if (useInterfaceStore().lastTimeline) {
@@ -100,9 +94,10 @@ const SideDrawer = {
         return { name }
       }
     },
+    ...mapState(useFollowRequestsStore, ['followRequestsCount']),
     ...mapState(useAnnouncementsStore, [
       'supportsAnnouncements',
-      'unreadAnnouncementCount',
+      'unreadAnnouncementsCount',
     ]),
     ...mapState(useInstanceCapabilitiesStore, [
       'pleromaChatMessagesAvailable',
@@ -115,7 +110,7 @@ const SideDrawer = {
       hideSitename: (store) => store.instanceIdentity.hideSitename,
     }),
     ...mapState(useChatsStore, ['unreadChatsCount']),
-    ...mapGetters(['draftCount']),
+    ...mapState(useDraftsStore, ['draftsCount']),
   },
   methods: {
     toggleDrawer() {

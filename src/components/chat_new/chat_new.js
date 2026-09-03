@@ -71,7 +71,6 @@ const chatNew = {
 
       this.loading = true
       this.userIds = []
-      this.$store
       useSearchStore()
         .search({ q: query, resolve: true, type: 'accounts' })
         .then((data) => {

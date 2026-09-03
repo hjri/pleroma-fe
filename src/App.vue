@@ -75,6 +75,7 @@
     <UpdateNotification />
     <GlobalError />
     <GlobalNoticeList />
+    <FollowRequestConfirm v-if="currentUser" />
   </div>
 </template>
 

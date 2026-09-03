@@ -5,7 +5,7 @@ import {
   groupBy,
   isEqual,
   last,
-} from 'lodash'
+} from 'lodash-es'
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
 

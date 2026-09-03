@@ -1,4 +1,4 @@
-import { clone } from 'lodash'
+import { clone } from 'lodash-es'
 
 import Attachment from 'src/components/attachment/attachment.vue'
 import MediaUpload from 'src/components/media_upload/media_upload.vue'

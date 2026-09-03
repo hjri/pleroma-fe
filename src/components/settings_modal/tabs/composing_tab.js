@@ -16,6 +16,7 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useProfileConfigStore } from 'src/stores/profile_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUsersStore } from 'src/stores/users.js'
 
@@ -109,6 +110,9 @@ const ComposingTab = {
     FontControl,
   },
   computed: {
+    defaultScope() {
+      return useProfileConfigStore().config.defaultScope
+    },
     postFormats() {
       return useInstanceCapabilitiesStore().postFormats
     },
@@ -135,7 +139,7 @@ const ComposingTab = {
   },
   methods: {
     changeDefaultScope(value) {
-      this.$store.dispatch('setProfileOption', { name: 'defaultScope', value })
+      useProfileConfigStore().setProfileOption({ name: 'defaultScope', value })
     },
     clearCache(key) {
       clearCache(key)

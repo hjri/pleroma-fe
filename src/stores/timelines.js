@@ -1,4 +1,4 @@
-import { first, last } from 'lodash'
+import { first, last } from 'lodash-es'
 import { defineStore } from 'pinia'
 
 import timelineFetcher from 'src/stores/fetchers/timeline_fetcher.js'

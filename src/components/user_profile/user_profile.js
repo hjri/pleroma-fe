@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get } from 'lodash-es'
 
 import FollowCard from 'src/components/follow_card/follow_card.vue'
 import List from 'src/components/list/list.vue'

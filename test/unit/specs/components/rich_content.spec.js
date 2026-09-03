@@ -1,9 +1,9 @@
 import { createTestingPinia } from '@pinia/testing'
 import { mount, shallowMount } from '@vue/test-utils'
 import { setActivePinia } from 'pinia'
+import { mountOpts } from 'test/fixtures/setup_test.js'
 
 import RichContent from 'src/components/rich_content/rich_content.jsx'
-import { mountOpts } from '../../../fixtures/setup_test'
 
 const attentions = []
 

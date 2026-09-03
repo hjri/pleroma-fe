@@ -1,4 +1,4 @@
-import { get, map, reject } from 'lodash'
+import { get, map, reject } from 'lodash-es'
 
 import Autosuggest from 'src/components/autosuggest/autosuggest.vue'
 import BlockCard from 'src/components/block_card/block_card.vue'

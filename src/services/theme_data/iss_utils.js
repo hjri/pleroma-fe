@@ -1,4 +1,4 @@
-import { sortBy } from 'lodash'
+import { sortBy } from 'lodash-es'
 
 // "Unrolls" a tree structure of item: { parent: { ...item2, parent: { ...item3, parent: {...} } }}
 // into an array [item2, item3] for iterating

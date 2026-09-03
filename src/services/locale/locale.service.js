@@ -1,5 +1,5 @@
 import ISO6391 from 'iso-639-1'
-import { map } from 'lodash'
+import { map } from 'lodash-es'
 
 import languagesObject from '../../i18n/messages'
 

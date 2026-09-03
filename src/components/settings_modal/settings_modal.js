@@ -1,4 +1,4 @@
-import { cloneDeep, isEqual } from 'lodash'
+import { cloneDeep, isEqual } from 'lodash-es'
 import { mapActions, mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 

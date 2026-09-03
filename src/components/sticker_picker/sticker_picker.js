@@ -29,14 +29,13 @@ const StickerPicker = {
       }
     },
     pick(sticker, name) {
-      const store = this.$store
       // TODO remove this workaround by finding a way to bypass reuploads
       fetch(sticker).then((res) => {
         res.blob().then((blob) => {
           const file = new File([blob], name, { mimetype: 'image/png' })
           const formData = new FormData()
           formData.append('file', file)
-          statusPosterService.uploadMedia({ store, formData }).then(
+          statusPosterService.uploadMedia({ formData }).then(
             (fileData) => {
               this.$emit('uploaded', fileData)
               this.clear()

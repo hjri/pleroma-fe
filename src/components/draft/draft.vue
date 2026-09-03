@@ -67,11 +67,13 @@
     <div v-if="editing">
       <PostStatusForm
         v-if="draft.type !== 'edit'"
+        ref="form"
         :hide-draft="true"
         v-bind="postStatusFormProps"
       />
       <EditStatusForm
         v-else
+        ref="form"
         :hide-draft="true"
         :params="postStatusFormProps"
       />
