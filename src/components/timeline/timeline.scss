@@ -4,6 +4,10 @@
     backdrop-filter: none;
   }
 
+  .vue-recycle-scroller.timeline {
+    overflow: visible;
+  }
+
   .timeline-placeholder {
     background: var(--background);
     display: flex;
