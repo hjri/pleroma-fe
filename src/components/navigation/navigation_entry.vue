@@ -87,7 +87,7 @@
   grid-template-columns: 1fr;
   grid-auto-columns: var(--__line-height);
   grid-auto-flow: column;
-  grid-gap: var(--__horizontal-gap);
+  gap: var(--__horizontal-gap);
   align-items: baseline;
 
   &[aria-expanded] {

@@ -71,7 +71,7 @@
   grid-auto-flow: column;
   grid-template-columns: minmax(50%, 1fr);
   grid-auto-columns: auto;
-  grid-column-gap: var(--__panel-heading-gap);
+  column-gap: var(--__panel-heading-gap);
   flex: none;
   background-size: cover;
   padding: var(--panel-heading-height-padding);

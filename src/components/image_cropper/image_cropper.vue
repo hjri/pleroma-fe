@@ -75,7 +75,7 @@
 
   &-buttons-wrapper {
     display: grid;
-    grid-gap: 0.5em;
+    gap: 0.5em;
     grid-template-columns: 1fr 1fr 1fr;
 
     button {

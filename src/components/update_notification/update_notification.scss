@@ -35,7 +35,7 @@
     grid-auto-flow: column;
     grid-template-columns: auto;
     grid-auto-columns: auto;
-    grid-column-gap: var(--__panel-heading-gap);
+    column-gap: var(--__panel-heading-gap);
     padding: var(--panel-heading-height-padding);
     height: var(--__panel-heading-height);
     line-height: var(--__panel-heading-height-inner);
