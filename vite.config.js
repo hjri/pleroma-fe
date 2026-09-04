@@ -12,7 +12,6 @@ import { configDefaults } from 'vitest/config'
 import { getCommitHash } from './build/commit_hash.js'
 import copyPlugin from './build/copy_plugin.js'
 import emojisPlugin from './build/emojis_plugin.js'
-import mswPlugin from './build/msw_plugin.js'
 import { buildSwPlugin, swMessagesPlugin } from './build/sw_plugin.js'
 
 const localConfigPath = '<projectRoot>/config/local.json'
@@ -163,7 +162,6 @@ export default defineConfig(async ({ mode, command }) => {
           'node_modules/.cache/stylelintcache',
         ),
       }),
-      ...(mode === 'test' ? [mswPlugin()] : []),
     ],
     css: {
       devSourcemap: true,
