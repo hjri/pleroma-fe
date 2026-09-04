@@ -11,7 +11,7 @@ labels:
 
 steps:
   build:
-    image: docker.io/node:20-alpine
+    image: docker.io/node:24-alpine
     commands:
       - yarn --frozen-lockfile
       - yarn build

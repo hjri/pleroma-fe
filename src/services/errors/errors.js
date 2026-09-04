@@ -40,7 +40,6 @@ export class RegistrationError extends Error {
       // the error is probably a JSON object with a single key, "errors", whose value is another JSON object containing the real errors
       if (typeof error === 'string') {
         error = JSON.parse(error)
-        // eslint-disable-next-line
         if (Object.hasOwn(error, 'error')) {
           error = JSON.parse(error.error)
         }

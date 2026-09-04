@@ -1180,28 +1180,27 @@ describe('Users store', () => {
       )
     })
 
-    it.each([
-      'unmute',
-      'unblock',
-      'removeUserFromFollowers',
-    ])('%s', async (action) => {
-      const mockFetch = vi.fn().mockResolvedValueOnce(
-        new Response(JSON.stringify({ id: userId }), {
-          headers: { 'Content-Type': 'application/json' },
-        }),
-      )
+    it.each(['unmute', 'unblock', 'removeUserFromFollowers'])(
+      '%s',
+      async (action) => {
+        const mockFetch = vi.fn().mockResolvedValueOnce(
+          new Response(JSON.stringify({ id: userId }), {
+            headers: { 'Content-Type': 'application/json' },
+          }),
+        )
 
-      vi.stubGlobal('fetch', mockFetch)
+        vi.stubGlobal('fetch', mockFetch)
 
-      const store = useUsersStore()
-      const { storeAction, apiUrl } = actionKeys(action)
-      await store[storeAction](userId)
+        const store = useUsersStore()
+        const { storeAction, apiUrl } = actionKeys(action)
+        await store[storeAction](userId)
 
-      expect(mockFetch).to.have.been.calledWith(
-        USER_API[apiUrl](userId),
-        DEFAULT_OPTIONS(),
-      )
-    })
+        expect(mockFetch).to.have.been.calledWith(
+          USER_API[apiUrl](userId),
+          DEFAULT_OPTIONS(),
+        )
+      },
+    )
 
     describe.each(['mute', 'block'])('%s', (action) => {
       it('normal', async () => {

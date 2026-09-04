@@ -13,7 +13,7 @@
     padding: 0.5em;
     display: grid;
     align-items: baseline;
-    grid-gap: 0.5em;
+    gap: 0.5em;
   }
 
   .never {
@@ -69,7 +69,7 @@
     grid-column: 1 / span 3;
     justify-self: end;
     display: inline-grid;
-    grid-gap: 0.5em;
+    gap: 0.5em;
     grid-template-columns: repeat(4, 1fr);
     max-width: 100%;
     justify-content: end;
@@ -81,7 +81,7 @@
     align-items: baseline;
     grid-auto-flow: column;
     grid-template-columns: 1fr;
-    grid-gap: 0.5em;
+    gap: 0.5em;
     margin: 0.5em 0;
 
     .total {

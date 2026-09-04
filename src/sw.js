@@ -1,5 +1,3 @@
-/* eslint-env serviceworker */
-
 // biome-ignore: side effect import of assets list
 import 'virtual:pleroma-fe/service_worker_env'
 

@@ -126,7 +126,7 @@
         height: auto;
         position: relative;
         display: grid;
-        grid-gap: 0.5em;
+        gap: 0.5em;
         grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
 
         .gallery-item {

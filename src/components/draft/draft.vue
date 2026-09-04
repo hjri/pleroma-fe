@@ -124,7 +124,7 @@
     grid-template-columns: 1fr;
     grid-auto-columns: 10em;
     grid-auto-flow: column;
-    grid-gap: 0.5em;
+    gap: 0.5em;
     align-items: start;
     max-width: 100%;
 

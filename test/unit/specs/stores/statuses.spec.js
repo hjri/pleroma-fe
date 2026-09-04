@@ -476,100 +476,105 @@ describe('Statuses store', () => {
       ])
       .flat()
 
-    it.each(
-      optimismInteractions,
-    )('%s - optimism call', async (method, property, count) => {
-      // Prepare our status
-      const status = mockStatus()
-      const negate = method.startsWith('un')
-      const oldCount = 9
-      const newCount = negate ? 8 : 10
-      status[property] = negate
-      if (count) {
-        status[count] = oldCount
-      }
-      if (method === 'unbookmark') {
-        status.bookmark_folder_id = 'argument'
-      }
+    it.each(optimismInteractions)(
+      '%s - optimism call',
+      async (method, property, count) => {
+        // Prepare our status
+        const status = mockStatus()
+        const negate = method.startsWith('un')
+        const oldCount = 9
+        const newCount = negate ? 8 : 10
+        status[property] = negate
+        if (count) {
+          status[count] = oldCount
+        }
+        if (method === 'unbookmark') {
+          status.bookmark_folder_id = 'argument'
+        }
 
-      // Insert it
-      const store = useStatusesStore()
-      store.addNewStatuses({
-        statuses: [status],
-        timestamp: 1,
-      })
+        // Insert it
+        const store = useStatusesStore()
+        store.addNewStatuses({
+          statuses: [status],
+          timestamp: 1,
+        })
 
-      const mockFetch = vi.fn()
-      mockFetch.mockResolvedValueOnce(
-        new Response(JSON.stringify(mockMastoAPIStatus({ text: 'Updated' })), {
-          headers: { 'Content-Type': 'application/json' },
-        }),
-      )
-
-      expect(store.allStatuses.get('1')).to.have.property(property, negate)
-      if (count) {
-        expect(store.allStatuses.get('1')).to.have.property(count, oldCount)
-      }
-      vi.stubGlobal('fetch', mockFetch)
-
-      store[method]('1', 'argument')
-      expect(store.allStatuses.get('1')).to.have.property(property, !negate)
-      if (count) {
-        expect(store.allStatuses.get('1')).to.have.property(count, newCount)
-      }
-      if (property === 'bookmarked') {
-        expect(store.allStatuses.get('1')).to.have.property(
-          'bookmark_folder_id',
-          'argument',
+        const mockFetch = vi.fn()
+        mockFetch.mockResolvedValueOnce(
+          new Response(
+            JSON.stringify(mockMastoAPIStatus({ text: 'Updated' })),
+            {
+              headers: { 'Content-Type': 'application/json' },
+            },
+          ),
         )
-      }
-    })
 
-    it.each(
-      optimismInteractions,
-    )('%s - optimism fail', async (method, property, count) => {
-      // Prepare our status
-      const status = mockStatus()
-      const negate = method.startsWith('un')
-      const oldCount = 9
-      status[property] = negate
-      if (count) {
-        status[count] = oldCount
-      }
-      if (method === 'unbookmark') {
-        status.bookmark_folder_id = 'argument'
-      }
+        expect(store.allStatuses.get('1')).to.have.property(property, negate)
+        if (count) {
+          expect(store.allStatuses.get('1')).to.have.property(count, oldCount)
+        }
+        vi.stubGlobal('fetch', mockFetch)
 
-      // Insert it
-      const store = useStatusesStore()
-      store.addNewStatuses({
-        statuses: [status],
-        timestamp: 1,
-      })
+        store[method]('1', 'argument')
+        expect(store.allStatuses.get('1')).to.have.property(property, !negate)
+        if (count) {
+          expect(store.allStatuses.get('1')).to.have.property(count, newCount)
+        }
+        if (property === 'bookmarked') {
+          expect(store.allStatuses.get('1')).to.have.property(
+            'bookmark_folder_id',
+            'argument',
+          )
+        }
+      },
+    )
 
-      const mockFetch = vi.fn()
-      mockFetch.mockRejectedValueOnce(new Error('Failure!'))
+    it.each(optimismInteractions)(
+      '%s - optimism fail',
+      async (method, property, count) => {
+        // Prepare our status
+        const status = mockStatus()
+        const negate = method.startsWith('un')
+        const oldCount = 9
+        status[property] = negate
+        if (count) {
+          status[count] = oldCount
+        }
+        if (method === 'unbookmark') {
+          status.bookmark_folder_id = 'argument'
+        }
 
-      expect(store.allStatuses.get('1')).to.have.property(property, negate)
-      if (count) {
-        expect(store.allStatuses.get('1')).to.have.property(count, oldCount)
-      }
-      vi.stubGlobal('fetch', mockFetch)
+        // Insert it
+        const store = useStatusesStore()
+        store.addNewStatuses({
+          statuses: [status],
+          timestamp: 1,
+        })
 
-      await store[method]('1', 'argument')
-      expect(store.allStatuses.get('1')).to.have.property(property, negate)
-      if (count) {
-        expect(store.allStatuses.get('1')).to.have.property(count, oldCount)
-      }
+        const mockFetch = vi.fn()
+        mockFetch.mockRejectedValueOnce(new Error('Failure!'))
 
-      // Failing 'bookmark' method SHOULD clear folder id
-      if (method === 'unbookmark') {
-        expect(store.allStatuses.get('1')).to.have.property(
-          'bookmark_folder_id',
-          'argument',
-        )
-      }
-    })
+        expect(store.allStatuses.get('1')).to.have.property(property, negate)
+        if (count) {
+          expect(store.allStatuses.get('1')).to.have.property(count, oldCount)
+        }
+        vi.stubGlobal('fetch', mockFetch)
+
+        await store[method]('1', 'argument')
+        expect(store.allStatuses.get('1')).to.have.property(property, negate)
+        if (count) {
+          expect(store.allStatuses.get('1')).to.have.property(count, oldCount)
+        }
+
+        // Failing 'bookmark' method SHOULD clear folder id
+        if (method === 'unbookmark') {
+          expect(store.allStatuses.get('1')).to.have.property(
+            'bookmark_folder_id',
+            'argument',
+          )
+        }
+      },
+    )
 
     it.each([
       ['reactWithEmoji', 0],

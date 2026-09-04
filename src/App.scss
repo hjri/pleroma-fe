@@ -664,7 +664,7 @@ option {
   display: grid;
   grid-auto-flow: row dense;
   grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
-  grid-gap: 0.5em;
+  gap: 0.5em;
 
   li {
     border: 1px solid var(--border);
@@ -923,7 +923,9 @@ option {
   margin: -1px;
   overflow: hidden;
   visibility: visible;
+  /* stylelint-disable property-no-deprecated */
   clip: rect(0 0 0 0);
+  /* stylelint-enable property-no-deprecated */
   padding: 0;
   position: absolute;
 }

@@ -7,7 +7,7 @@
     grid-template-columns: repeat(auto-fill, minmax(3.75em, 10%));
     grid-auto-flow: row dense;
     grid-auto-rows: 1fr;
-    grid-gap: 0.5em 0.1em;
+    gap: 0.5em 0.1em;
   }
 
   .pin-action-button {

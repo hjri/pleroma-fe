@@ -181,7 +181,7 @@ const updatePalette = (paletteKey, value) => {
   justify-content: space-around;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(5, 1fr) auto;
-  grid-gap: 0.5em;
+  gap: 0.5em;
   align-items: baseline;
 
   .buttons {
@@ -196,7 +196,7 @@ const updatePalette = (paletteKey, value) => {
     grid-auto-flow: row;
     grid-auto-rows: auto;
     grid-template-columns: repeat(auto-fill, 10em);
-    grid-gap: 0.5em;
+    gap: 0.5em;
     margin-bottom: 0.5em;
   }
 

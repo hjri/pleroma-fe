@@ -846,7 +846,7 @@ export default {
     exports.previewClass = computed(() => {
       const selectors = []
       if (
-        !!selectedComponent.value.variants?.normal ||
+        selectedComponent.value.variants?.normal ||
         selectedVariant.value !== 'normal'
       ) {
         selectors.push(selectedComponent.value.variants[selectedVariant.value])

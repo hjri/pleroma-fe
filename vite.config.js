@@ -4,14 +4,14 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import { playwright } from '@vitest/browser-playwright'
 import { defineConfig } from 'vite'
-import eslint from 'vite-plugin-eslint2'
+import biomePlugin from 'vite-plugin-biome'
 import stylelint from 'vite-plugin-stylelint'
+import vueDevTools from 'vite-plugin-vue-devtools'
 import { configDefaults } from 'vitest/config'
 
 import { getCommitHash } from './build/commit_hash.js'
 import copyPlugin from './build/copy_plugin.js'
 import emojisPlugin from './build/emojis_plugin.js'
-import mswPlugin from './build/msw_plugin.js'
 import { buildSwPlugin, swMessagesPlugin } from './build/sw_plugin.js'
 
 const localConfigPath = '<projectRoot>/config/local.json'
@@ -142,6 +142,7 @@ export default defineConfig(async ({ mode, command }) => {
           },
         },
       }),
+      vueDevTools(),
       vueJsx(),
       buildSwPlugin({ swSrc, swDest }),
       swMessagesPlugin(),
@@ -150,10 +151,8 @@ export default defineConfig(async ({ mode, command }) => {
         inUrl: '/static/ruffle',
         inFs: resolve(projectRoot, 'node_modules/@ruffle-rs/ruffle'),
       }),
-      eslint({
-        lintInWorker: true,
-        lintOnStart: true,
-        cacheLocation: resolve(projectRoot, 'node_modules/.cache/eslintcache'),
+      biomePlugin({
+        mode: 'check',
       }),
       stylelint({
         lintInWorker: true,
@@ -163,7 +162,6 @@ export default defineConfig(async ({ mode, command }) => {
           'node_modules/.cache/stylelintcache',
         ),
       }),
-      ...(mode === 'test' ? [mswPlugin()] : []),
     ],
     css: {
       devSourcemap: true,

@@ -2,7 +2,6 @@
 
 import { createPinia } from 'pinia'
 
-import 'custom-event-polyfill'
 import './lib/event_target_polyfill.js'
 
 // Polyfill for Array.prototype.toSorted (ES2023)

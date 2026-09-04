@@ -169,7 +169,7 @@ div.PWAManifestIconsSetting {
     list-style: none;
     display: grid;
     grid-template-columns: repeat(auto-fit, 12em);
-    grid-gap: 2em;
+    gap: 2em;
   }
 
   dl {
