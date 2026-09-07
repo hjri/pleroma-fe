@@ -20,7 +20,7 @@
             :key="status.id"
             :statusoid="status"
             :is-preview="true"
-            class="conversation-status status-fadein panel-body"
+            class="conversation-status panel-body"
           />
         </div>
       </div>

@@ -495,6 +495,13 @@ const conversation = {
         [id]: nextStatus,
       }
     },
+    getStatusClasses(status, active) {
+      return {
+        '-virtual-active': active,
+        '-last': status.id === this.conversation[this.conversation.length - 1].id,
+        '-first': status.id === this.conversation[0].id,
+      }
+    },
     toggleThreadDisplay(id) {
       const curStatus = this.threadDisplayStatus[id]
       const nextStatus = curStatus === 'showing' ? 'hidden' : 'showing'

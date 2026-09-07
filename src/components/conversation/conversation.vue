@@ -2,7 +2,7 @@
   <div
     v-if="!hide"
     class="Conversation"
-    :class="{ '-expanded' : isExpanded, 'panel' : isExpanded }"
+    :class="{ '-expanded' : isExpanded, '-page': isPage, 'panel' : isExpanded }"
   >
     <div
       v-if="isExpanded"
@@ -86,68 +86,78 @@
             </template>
           </i18n-t>
         </div>
-        <div
+        <DynamicScroller
           v-if="shouldShowAncestors"
           class="thread-ancestors"
+          :min-item-size="15"
+          :buffer="500"
+          :items="ancestorsOf(diveRoot)"
+          role="feed"
+          list-tag="article"
+          item-tag="article"
+          :item-class="{'thread-ancestor-has-other-replies': getReplies(status.id).length > 1, '-faded': shouldFadeAncestors, 'thread-ancestor': true }"
+          flow-mode
+          page-mode
         >
-          <article
-            v-for="status in ancestorsOf(diveRoot)"
-            :key="status.id"
-            class="thread-ancestor"
-            :class="{'thread-ancestor-has-other-replies': getReplies(status.id).length > 1, '-faded': shouldFadeAncestors}"
-          >
-            <Status
-              ref="statusComponent"
-              class="conversation-status status-fadein panel-body"
-
-              :status-id="status.id"
-              :replies="getReplies(status.id)"
-
-              :expandable="!isExpanded"
-              :focused="maybeFocused === status.id"
-              :inline-expanded="collapsable && isExpanded"
-              :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
-              :in-profile="inProfile"
-              :in-conversation="isExpanded"
-              :profile-user-id="profileUserId"
-              :simple-tree="treeViewIsSimple"
-              :show-other-replies-as-button="showOtherRepliesButtonInsideStatus"
-              can-dive
-
-              @goto="setFocused"
-              @dive="() => diveIntoStatus(status.id)"
-              @suspendable-state-change="onStatusSuspendStateChange"
-              @height-change="updateVirtualHeight"
-            />
-            <div
-              v-if="showOtherRepliesButtonBelowStatus && getReplies(status.id).length > 1"
-              class="thread-ancestor-dive-box"
+          <template #default="{ item: status, active }">
+            <DynamicScrollerItem
+              :item="status"
+              :active="active"
             >
+              <Status
+                ref="statusComponent"
+                class="conversation-status panel-body"
+                :class="getStatusClasses(status, active)"
+
+                :status-id="status.id"
+                :replies="getReplies(status.id)"
+
+                :expandable="!isExpanded"
+                :focused="maybeFocused === status.id"
+                :inline-expanded="collapsable && isExpanded"
+                :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
+                :in-profile="inProfile"
+                :in-conversation="isExpanded"
+                :profile-user-id="profileUserId"
+                :simple-tree="treeViewIsSimple"
+                :show-other-replies-as-button="showOtherRepliesButtonInsideStatus"
+                can-dive
+
+                @goto="setFocused"
+                @dive="() => diveIntoStatus(status.id)"
+                @suspendable-state-change="onStatusSuspendStateChange"
+                @height-change="updateVirtualHeight"
+              />
               <div
-                class="thread-ancestor-dive-box-inner"
+                v-if="showOtherRepliesButtonBelowStatus && getReplies(status.id).length > 1"
+                class="thread-ancestor-dive-box"
               >
-                <i18n-t
-                  tag="button"
-                  scope="global"
-                  keypath="status.ancestor_follow_with_icon"
-                  class="button-unstyled -link thread-tree-show-replies-button"
-                  @click.prevent="diveIntoStatus(status.id)"
+                <div
+                  class="thread-ancestor-dive-box-inner"
                 >
-                  <template #icon>
-                    <FAIcon
-                      icon="angle-double-right"
-                    />
-                  </template>
-                  <template #text>
-                    <span>
-                      {{ $t('status.ancestor_follow', { numReplies: getReplies(status.id, getReplies(status.id).length - 1).length - 1 }) }}
-                    </span>
-                  </template>
-                </i18n-t>
+                  <i18n-t
+                    tag="button"
+                    scope="global"
+                    keypath="status.ancestor_follow_with_icon"
+                    class="button-unstyled -link thread-tree-show-replies-button"
+                    @click.prevent="diveIntoStatus(status.id)"
+                  >
+                    <template #icon>
+                      <FAIcon
+                        icon="angle-double-right"
+                      />
+                    </template>
+                    <template #text>
+                      <span>
+                        {{ $t('status.ancestor_follow', { numReplies: getReplies(status.id, getReplies(status.id).length - 1).length - 1 }) }}
+                      </span>
+                    </template>
+                  </i18n-t>
+                </div>
               </div>
-            </div>
-          </article>
-        </div>
+            </DynamicScrollerItem>
+          </template>
+        </DynamicScroller>
         <ThreadTree
           v-for="status in showingTopLevel"
           :key="status.id"
@@ -179,34 +189,47 @@
           @height-change="updateVirtualHeight"
         />
       </div>
-      <div
+      <DynamicScroller
         v-else-if="isLinearView"
         class="thread-body"
+        :min-item-size="15"
+        :buffer="500"
+        :items="conversation"
+        page-mode
+        flow-mode
+        role="feed"
+        item-tag="article"
+        item-class="panel-body"
       >
-        <article>
-          <Status
-            v-for="status in conversation"
-            :key="status.id"
-            ref="statusComponent"
-            class="conversation-status status-fadein panel-body"
-            :status-id="status.id"
-            :replies="getReplies(status.id)"
+        <template #default="{ item: status, active }">
+          <DynamicScrollerItem
+            :item="status"
+            :active="active"
+          >
+            <Status
+              :key="status.id"
+              ref="statusComponent"
+              class="conversation-status"
+              :class="getStatusClasses(status, active)"
+              :status-id="status.id"
+              :replies="getReplies(status.id)"
 
-            :expandable="!isExpanded"
-            :focused="maybeFocused === status.id || maybeFocused === status.retweeted_status?.id"
-            :inline-expanded="collapsable && isExpanded"
-            :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
-            :in-profile="inProfile"
-            :in-conversation="isExpanded"
-            :profile-user-id="profileUserId"
+              :expandable="!isExpanded"
+              :focused="maybeFocused === status.id || maybeFocused === status.retweeted_status?.id"
+              :inline-expanded="collapsable && isExpanded"
+              :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
+              :in-profile="inProfile"
+              :in-conversation="isExpanded"
+              :profile-user-id="profileUserId"
 
-            @goto="setFocused"
-            @toggle-expanded="toggleExpanded"
-            @suspendable-state-change="onStatusSuspendStateChange"
-            @height-change="updateVirtualHeight"
-          />
-        </article>
-      </div>
+              @goto="setFocused"
+              @toggle-expanded="toggleExpanded"
+              @suspendable-state-change="onStatusSuspendStateChange"
+              @height-change="updateVirtualHeight"
+            />
+          </DynamicScrollerItem>
+        </template>
+      </DynamicScroller>
     </div>
   </div>
   <div

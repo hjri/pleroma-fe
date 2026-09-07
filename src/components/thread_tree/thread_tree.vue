@@ -12,7 +12,7 @@
       :focused="focused === statusId"
       :in-profile="inProfile"
       :profile-user-id="profileUserId"
-      class="conversation-status conversation-status-treeview status-fadein panel-body"
+      class="conversation-status conversation-status-treeview panel-body"
 
       :simple-tree="simple"
       :thread-display-status="threadDisplayStatus[statusId]"

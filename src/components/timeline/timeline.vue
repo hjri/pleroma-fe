@@ -80,24 +80,21 @@
       <DynamicScroller
         class="timeline"
         ref="timeline"
-        :min-item-size="120"
+        :min-item-size="15"
         :buffer="120"
         :items="filteredVisibleStatuses"
-        :emit-update="true"
         flow-mode
+        page-mode
         role="feed"
       >
-        <template #default="{ item: status, index, active }">
+        <template #default="{ item: status, active }">
           <DynamicScrollerItem
             :item="status"
             :active="active"
-            :index="index"
-            :size-dependencies="[status.status]"
           >
             <Conversation
               :key="status.id"
               role="listitem"
-              class="status-fadein"
               :status-id="status.id"
               :in-profile="inProfile"
               :profile-user-id="timelineRef.argument"

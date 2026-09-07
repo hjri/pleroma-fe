@@ -6,6 +6,15 @@
     backdrop-filter: var(--__panel-backdrop-filter);
   }
 
+  .conversation-status:not(.-last) {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .conversation-status:not(.-last)
+  .conversation-status:not(.-first) {
+    border-radius: 0;
+  }
+
   .conversation-dive-to-top-level-box {
     padding: var(--status-margin);
     border-bottom: 1px solid var(--border);
@@ -49,26 +58,12 @@
     padding: var(--status-margin);
   }
 
-  .conversation-status {
-    border-bottom: 1px solid var(--border);
-    border-radius: 0;
-  }
-
-  .thread-ancestor-has-other-replies .conversation-status,
-  &:last-child:not(.-expanded) .conversation-status,
-  &.-expanded .conversation-status:last-child,
-  .thread-ancestor:last-child .conversation-status,
-  .thread-ancestor:last-child .thread-ancestor-dive-box,
-  &.-expanded .thread-tree .conversation-status {
-    border-bottom: none;
-  }
-
   .thread-ancestors + .thread-tree > .conversation-status {
     border-top: 1px solid var(--border);
   }
 
   /* expanded conversation in timeline */
-  &.status-fadein.-expanded .thread-body {
+  &.-expanded .thread-body {
     border-left: 4px solid var(--cRed);
     border-radius: var(--roundness);
     border-top-left-radius: 0;
@@ -76,7 +71,7 @@
     border-bottom: 1px solid var(--border);
   }
 
-  &.-expanded.status-fadein {
+  &.-expanded:not(.-page) {
     --___margin: calc(var(--status-margin) / 2);
 
     background: var(--background);
