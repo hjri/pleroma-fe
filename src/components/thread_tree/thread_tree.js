@@ -19,7 +19,6 @@ const ThreadTree = {
     'suspendableStateChange',
     'goto',
     'dive',
-    'heightChange',
     'toggleExpanded',
     'showThreadRecursively',
   ],
