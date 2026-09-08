@@ -293,8 +293,10 @@ export const BUTTONS = [
       navigator.clipboard.writeText(
         [
           useInstanceStore().server,
-          router.resolve({ name: 'conversation', params: { statusId: status.id } })
-            .href,
+          router.resolve({
+            name: 'conversation',
+            params: { statusId: status.id },
+          }).href,
         ].join(''),
       )
       return Promise.resolve()

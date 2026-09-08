@@ -19,19 +19,19 @@
         </template>
       </h1>
       <button
-        v-if="collapsable"
+        v-if="!isPage"
         class="button-unstyled -link"
         @click.prevent="toggleExpanded"
       >
         {{ $t('timeline.collapse') }}
       </button>
       <QuickFilterSettings
-        v-if="!collapsable && mobileLayout"
+        v-if="isPage && mobileLayout"
         :conversation="true"
         class="rightside-button"
       />
       <QuickViewSettings
-        v-if="!collapsable"
+        v-if="isPage"
         :conversation="true"
         class="rightside-button"
       />
@@ -86,93 +86,61 @@
             </template>
           </i18n-t>
         </div>
-        <DynamicScroller
+        <div
           v-if="shouldShowAncestors"
           class="thread-ancestors"
-          :min-item-size="15"
-          :buffer="500"
-          :items="currentAncestors"
-          role="feed"
-          list-tag="article"
-          item-tag="article"
-          :item-class="{'thread-ancestor-has-other-replies': getReplies(status.id).size > 1, '-faded': shouldFadeAncestors, 'thread-ancestor': true }"
-          flow-mode
-          page-mode
         >
-          <template #default="{ item: status, active }">
-            <DynamicScrollerItem
-              :item="status"
-              :active="active"
+          <article
+            v-for="status in currentAncestors"
+            class="thread-ancestor"
+            :class="{'thread-ancestor-has-other-replies': getReplies(status.id).length > 1, '-faded': shouldFadeAncestors}"
+          >
+            <Status
+              class="conversation-status panel-body"
+              :class="getStatusClasses(status)"
+
+              :status-id="status.id"
+              :replies="getReplies(status.id)"
+
+              :focused="focused === status.id"
+              can-dive
+
+              @goto="setFocused"
+              @dive="() => diveIntoStatus(status.id)"
+              @suspendable-state-change="onStatusSuspendStateChange"
+            />
+            <div
+              v-if="showOtherRepliesButtonBelowStatus && getReplies(status.id).size > 1"
+              class="thread-ancestor-dive-box"
             >
-              <Status
-                class="conversation-status panel-body"
-                :class="getStatusClasses(status, active)"
-
-                :status-id="status.id"
-                :replies="getReplies(status.id)"
-
-                :expandable="!isExpanded"
-                :focused="maybeFocused === status.id"
-                :inline-expanded="collapsable && isExpanded"
-                :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
-                :in-profile="inProfile"
-                :in-conversation="isExpanded"
-                :profile-user-id="profileUserId"
-                :show-other-replies-as-button="showOtherRepliesButtonInsideStatus"
-                can-dive
-
-                @goto="setFocused"
-                @dive="() => diveIntoStatus(status.id)"
-                @suspendable-state-change="onStatusSuspendStateChange"
-              />
               <div
-                v-if="showOtherRepliesButtonBelowStatus && getReplies(status.id).size > 1"
-                class="thread-ancestor-dive-box"
+                class="thread-ancestor-dive-box-inner"
               >
-                <div
-                  class="thread-ancestor-dive-box-inner"
+                <i18n-t
+                  tag="button"
+                  scope="global"
+                  keypath="status.ancestor_follow_with_icon"
+                  class="button-unstyled -link thread-tree-show-replies-button"
+                  @click.prevent="diveIntoStatus(status.id)"
                 >
-                  <i18n-t
-                    tag="button"
-                    scope="global"
-                    keypath="status.ancestor_follow_with_icon"
-                    class="button-unstyled -link thread-tree-show-replies-button"
-                    @click.prevent="diveIntoStatus(status.id)"
-                  >
-                    <template #icon>
-                      <FAIcon
-                        icon="angle-double-right"
-                      />
-                    </template>
-                    <template #text>
-                      <span>
-                        {{ $t('status.ancestor_follow', { numReplies: getReplies(status.id, getReplies(status.id).size - 1).size - 1 }) }}
-                      </span>
-                    </template>
-                  </i18n-t>
-                </div>
+                  <template #icon>
+                    <FAIcon
+                      icon="angle-double-right"
+                    />
+                  </template>
+                  <template #text>
+                    <span>
+                      {{ $t('status.ancestor_follow', { numReplies: getReplies(status.id, getReplies(status.id).size - 1).size - 1 }) }}
+                    </span>
+                  </template>
+                </i18n-t>
               </div>
-            </DynamicScrollerItem>
-          </template>
-        </DynamicScroller>
+            </div>
+          </article>
+        </div>
         <ThreadTree
-          :key="currentStatus.id"
-          :depth="0"
-
           :status-id="currentStatus.id"
-          :in-profile="inProfile"
-          :conversation="conversation"
-          :collapsable="collapsable"
-          :is-expanded="isExpanded"
-          :pinned-status-ids-object="pinnedStatusIdsObject"
-          :profile-user-id="profileUserId"
-
-          :replies="replies"
-          :focused="maybeFocused"
-
-          :thread-display="threadDisplay"
-          :thread-display-default="threadDisplayDefault"
-          :can-dive="isExpanded"
+          :depth="0"
 
           @goto="setFocused"
           @dive="diveIntoStatus"
@@ -201,17 +169,11 @@
             <Status
               :key="status.id"
               class="conversation-status"
-              :class="getStatusClasses(status, active)"
+              :class="getStatusClasses(status)"
               :status-id="status.id"
               :replies="getReplies(status.id)"
 
-              :expandable="!isExpanded"
-              :focused="maybeFocused === status.id || maybeFocused === status.retweeted_status?.id"
-              :inline-expanded="collapsable && isExpanded"
-              :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
-              :in-profile="inProfile"
-              :in-conversation="isExpanded"
-              :profile-user-id="profileUserId"
+              :focused="focused === status.id || focused === status.retweeted_status?.id"
 
               @goto="setFocused"
               @toggle-expanded="toggleExpanded"

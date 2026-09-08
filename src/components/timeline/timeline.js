@@ -41,6 +41,11 @@ const Timeline = {
       blockingClicks: false,
     }
   },
+  provide() {
+    return {
+      profileUserId: this.inProfile && this.timelineRef.argument,
+    }
+  },
   components: {
     ScrollTopButton,
     Conversation,

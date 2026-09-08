@@ -3,7 +3,7 @@
     v-if="!hideStatus"
     ref="root"
     class="Status"
-    :class="[{ '-focused': focused }, { '-conversation': inlineExpanded }]"
+    :class="[{ '-focused': focused }, { '-conversation': !isPage && isExpanded }]"
   >
     <div
       v-if="error"
@@ -199,7 +199,7 @@
                   />
                 </span>
                 <button
-                  v-if="expandable && !isPreview"
+                  v-if="!isExpanded && !isPreview"
                   class="button-unstyled"
                   :title="$t('status.expand')"
                   @click.prevent="toggleExpanded"
@@ -235,7 +235,7 @@
                   />
                 </button>
                 <button
-                  v-if="canDive && !simpleTree"
+                  v-if="isExpanded && !simpleTree"
                   class="button-unstyled"
                   :title="$t('status.show_only_conversation_under_this')"
                   @click.prevent="$emit('dive')"

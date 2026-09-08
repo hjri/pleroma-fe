@@ -98,19 +98,12 @@ const Status = {
     statusoid: Object,
     replies: Set,
 
-    expandable: Boolean,
     focused: Boolean,
     compact: Boolean,
     isPreview: Boolean,
     noHeading: Boolean,
-    inlineExpanded: Boolean,
-    inProfile: Boolean,
-    inConversation: Boolean,
     inQuote: Boolean,
 
-    profileUserId: String,
-    showOtherRepliesAsButton: Boolean,
-    canDive: Boolean,
     ignoreMute: Boolean,
 
     threadDisplayState: String,
@@ -122,6 +115,11 @@ const Status = {
     'suspendableStateChange',
     'heightChange',
   ],
+  inject: {
+    profileUserId: { default: null },
+    isPage: { default: false },
+    isExpanded: { default: false },
+  },
   data() {
     return {
       replying: false,
@@ -138,6 +136,12 @@ const Status = {
     // Whatever we're given to work with
     status() {
       return this.statusoid ?? useStatusesStore().allStatuses.get(this.statusId)
+    },
+    inConversation() {
+      return this.isExpanded
+    },
+    inProfile() {
+      return this.profileUserId != null
     },
     // Status repeated
     repeatedStatus() {
@@ -167,6 +171,9 @@ const Status = {
     },
     simpleTree() {
       return !this.mergedConfig.conversationTreeAdvanced
+    },
+    showOtherRepliesAsButton() {
+      return this.mergedConfig.conversationOtherRepliesButton === 'inside'
     },
     showReasonMutedThread() {
       return (

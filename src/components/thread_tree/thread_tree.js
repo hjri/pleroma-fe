@@ -1,10 +1,10 @@
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faAngleDoubleDown,
   faAngleDoubleRight,
 } from '@fortawesome/free-solid-svg-icons'
-
-import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 library.add(faAngleDoubleDown, faAngleDoubleRight)
 
@@ -13,20 +13,7 @@ const ThreadTree = {
   name: 'ThreadTree',
   props: {
     statusId: String,
-    inProfile: Boolean,
-    collapsable: Boolean,
-    isExpanded: Boolean,
-    pinnedStatusIdsObject: Object,
-    profileUserId: String,
-
     depth: Number,
-    conversation: Array,
-    focused: String,
-    replies: Map,
-
-    canDive: Boolean,
-    threadDisplay: Map,
-    threadDisplayDefault: Map,
   },
   emits: [
     'suspendableStateChange',
@@ -36,6 +23,15 @@ const ThreadTree = {
     'toggleExpanded',
     'showThreadRecursively',
   ],
+  inject: [
+    'conversation',
+    'focused',
+    'replies',
+    'threadDisplay',
+    'threadDisplayDefault',
+    'isExpanded',
+    'isPage',
+  ],
   computed: {
     currentReplies() {
       return [...this.getReplies(this.statusId)].map(({ id }) => id)
@@ -44,8 +40,13 @@ const ThreadTree = {
       return !useMergedConfigStore().mergedConfig.conversationTreeAdvanced
     },
     threadShowing() {
-      const result = this.threadDisplay.get(this.statusId) ?? this.threadDisplayDefault.get(this.statusId)
+      const result =
+        this.threadDisplay.get(this.statusId) ??
+        this.threadDisplayDefault.get(this.statusId)
       return result === 'showing'
+    },
+    canDive() {
+      return this.isExpanded
     },
     totalReplyCount() {
       const sizes = {}
@@ -92,7 +93,7 @@ const ThreadTree = {
     getReplies(id) {
       return this.replies.get(id) ?? new Set()
     },
-  }
+  },
 }
 
 export default ThreadTree

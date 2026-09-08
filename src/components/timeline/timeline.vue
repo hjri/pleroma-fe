@@ -96,8 +96,6 @@
               :key="status.id"
               role="listitem"
               :status-id="status.id"
-              :in-profile="inProfile"
-              :profile-user-id="timelineRef.argument"
               collapsable
             />
           </DynamicScrollerItem>

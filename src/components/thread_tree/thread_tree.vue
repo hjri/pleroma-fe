@@ -2,20 +2,12 @@
   <article class="thread-tree">
     <Status
       :key="statusId"
-      ref="statusComponent"
+      class="conversation-status conversation-status-treeview panel-body"
       :status-id="statusId"
       :replies="getReplies(statusId)"
-      :inline-expanded="collapsable && isExpanded"
-      :expandable="!isExpanded"
-      :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
-      :in-conversation="isExpanded"
       :focused="focused === statusId"
-      :in-profile="inProfile"
-      :profile-user-id="profileUserId"
-      class="conversation-status conversation-status-treeview panel-body"
 
       :thread-display-state="threadDisplay.get(statusId)"
-      :can-dive="canDive"
 
       @dive="$emit('dive', statusId)"
       @goto="$emit('goto', statusId)"
@@ -30,24 +22,9 @@
       <ThreadTree
         v-for="replyStatusId in currentReplies"
         :key="replyStatusId"
-        ref="childComponent"
         :depth="depth + 1"
         :status-id="replyStatusId"
 
-        :in-profile="inProfile"
-        :conversation="conversation"
-        :collapsable="collapsable"
-        :is-expanded="isExpanded"
-        :pinned-status-ids-object="pinnedStatusIdsObject"
-        :profile-user-id="profileUserId"
-
-        :replies="replies"
-        :focused="focused"
-
-        :thread-display="threadDisplay"
-        :thread-display-default="threadDisplayDefault"
-
-        :can-dive="canDive"
         @show-thread-recursively="(e) => $emit('showThreadRecursively', e)"
         @goto="(e) => $emit('goto', e)"
         @dive="(e) => $emit('dive', e)"
