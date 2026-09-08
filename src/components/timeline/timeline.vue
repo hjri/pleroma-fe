@@ -86,7 +86,6 @@
           v-for="status in filteredVisibleStatuses"
           :key="status.id"
           :status-id="status.id"
-          :virtual-hidden="virtualScrollingEnabled && !statusesToDisplay.has(status.id)"
           role="listitem"
         />
       </div>

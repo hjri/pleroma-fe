@@ -38,7 +38,6 @@ const Timeline = {
       showScrollTop: false,
       paused: false,
       unfocused: false,
-      virtualScrollIndex: 0,
       blockingClicks: false,
     }
   },
@@ -107,20 +106,7 @@ const Timeline = {
       }
     },
     statusesToDisplay() {
-      if (!this.virtualScrollingEnabled) {
-        return new Set(this.filteredVisibleStatuses.map(({ id }) => id))
-      }
-
-      const amount = this.timeline.visibleStatusIds.size
-      const statusesPerSide = Math.ceil(Math.max(3, window.innerHeight / 80))
-      const min = Math.max(0, this.virtualScrollIndex - statusesPerSide)
-      const max = Math.min(amount, this.virtualScrollIndex + statusesPerSide)
-      return new Set(
-        this.filteredVisibleStatuses.slice(min, max).map(({ id }) => id),
-      )
-    },
-    virtualScrollingEnabled() {
-      return useMergedConfigStore().mergedConfig.virtualScrolling
+      return new Set(this.filteredVisibleStatuses.map(({ id }) => id))
     },
     ...mapState(useInterfaceStore, {
       mobileLayout: (store) => store.layoutType === 'mobile',
@@ -140,7 +126,6 @@ const Timeline = {
     }
     window.addEventListener('keydown', this.handleShortKey)
     window.addEventListener('scroll', this.handleScroll)
-    setTimeout(this.determineVisibleStatuses, 250)
   },
   unmounted() {
     this.timelineChange(null, this.timelineRef)
@@ -198,54 +183,6 @@ const Timeline = {
       1000,
       this,
     ),
-    determineVisibleStatuses() {
-      if (!this.$refs.timeline) return
-      if (!this.virtualScrollingEnabled) return
-
-      const statuses = this.$refs.timeline.children
-      if (statuses.length === 0) return
-      const cappedScrollIndex = Math.max(
-        0,
-        Math.min(this.virtualScrollIndex, statuses.length - 1),
-      )
-
-      const height = Math.max(document.body.offsetHeight, window.pageYOffset)
-
-      const centerOfScreen = window.pageYOffset + window.innerHeight * 0.5
-
-      // Start from approximating the index of some visible status by using the
-      // the center of the screen on the timeline.
-      let approxIndex = Math.min(
-        Math.floor(statuses.length * (centerOfScreen / height)),
-        statuses.length - 1,
-      )
-      let err = statuses[approxIndex].getBoundingClientRect().y
-
-      // if we have a previous scroll index that can be used, test if it's
-      // closer than the previous approximation, use it if so
-
-      const virtualScrollIndexY =
-        statuses[cappedScrollIndex].getBoundingClientRect().y
-      if (Math.abs(err) > virtualScrollIndexY) {
-        approxIndex = cappedScrollIndex
-        err = virtualScrollIndexY
-      }
-
-      // if the status is too far from viewport, check the next/previous ones if
-      // they happen to be better
-      while (err < -20 && approxIndex < statuses.length - 1) {
-        err += statuses[approxIndex].offsetHeight
-        approxIndex++
-      }
-      while (err > window.innerHeight + 100 && approxIndex > 0) {
-        approxIndex--
-        err -= statuses[approxIndex].offsetHeight
-      }
-
-      // this status is now the center point for virtual scrolling and visible
-      // statuses will be nearby statuses before and after it
-      this.virtualScrollIndex = approxIndex
-    },
     scrollLoad() {
       // TODO simplify this logic
       const bodyBRect = document.body.getBoundingClientRect()
@@ -258,7 +195,6 @@ const Timeline = {
       }
     },
     handleScroll: throttle(function (e) {
-      this.determineVisibleStatuses()
       this.scrollLoad(e)
     }, 200),
     handleVisibilityChange() {
