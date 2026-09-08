@@ -1,6 +1,7 @@
 <template>
   <div
     v-if="!hide"
+    ref="body"
     class="Conversation"
     :class="{ '-expanded' : isExpanded, '-page': isPage, 'panel' : isExpanded }"
   >
@@ -39,7 +40,6 @@
     <div
       v-if="isPage && !status"
       class="conversation-body"
-      ref="body"
       :class="{ 'panel-body': isExpanded }"
     >
       <p v-if="!loadStatusError">
@@ -56,7 +56,6 @@
     <div
       v-else
       class="conversation-body"
-      ref="body"
       :class="{ 'panel-body': isExpanded }"
     >
       <div
@@ -108,6 +107,7 @@
               @goto="setFocused"
               @dive="diveIntoStatus(status.id)"
               @suspendable-state-change="onStatusSuspendStateChange"
+              @height-change="updateVirtualHeight"
             />
             <div
               v-if="shouldShowOtherRepliesButton && statusReplies.size > 1"
@@ -147,6 +147,7 @@
           @toggle-expanded="toggleExpanded"
           @show-thread-recursively="showThreadRecursively"
           @suspendable-state-change="onStatusSuspendStateChange"
+          @height-change="updateVirtualHeight"
         />
       </div>
       <div
@@ -169,6 +170,7 @@
             @goto="setFocused"
             @toggle-expanded="toggleExpanded"
             @suspendable-state-change="onStatusSuspendStateChange"
+            @height-change="updateVirtualHeight"
           />
         </article>
       </div>

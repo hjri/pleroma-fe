@@ -1,6 +1,15 @@
 import { get } from 'lodash-es'
 import { storeToRefs } from 'pinia'
-import { computed, nextTick, provide, ref, toRefs, watch } from 'vue'
+import {
+  computed,
+  nextTick,
+  onMounted,
+  provide,
+  ref,
+  toRefs,
+  useTemplateRef,
+  watch,
+} from 'vue'
 import { useRouter } from 'vue-router'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
@@ -251,7 +260,12 @@ export default {
     }
 
     // # Virtual scrolling stuff
+    const body = useTemplateRef('body')
     const { virtualHidden } = toRefs(props)
+    const virtualHeight = ref(120)
+    const hiddenStyle = computed(() => ({
+      height: this.virtualHeight + 'px',
+    }))
     const unsuspendibleIds = ref(new Set())
     const suspendable = computed(() => unsuspendibleIds.value.size === 0)
     const hide = computed(() => virtualHidden.value && suspendable.value)
@@ -262,6 +276,21 @@ export default {
         unsuspendibleIds.value.delete(id)
       }
     }
+    const updateVirtualHeight = () => {
+      if (hide) return // no updates when not rendering
+      if (!status.value) return // not loaded yet
+      nextTick(() => {
+        virtualHeight.value = body.value.getBoundingClientRect().height
+        emit('update:virtualHeight', {
+          id: status.value.id,
+          height: virtualHeight.value,
+          top: body.value.clientTop,
+        })
+      })
+    }
+    onMounted(() => {
+      updateVirtualHeight()
+    })
 
     // # Misc UI things
     const firstStatus = computed(() => conversation.value[0])
@@ -437,7 +466,9 @@ export default {
       // # Virtual scrolling stuff
       hide,
       onStatusSuspendStateChange,
+      updateVirtualHeight,
       virtualHidden,
+      hiddenStyle,
 
       // # Misc UI things
       getStatusClasses,
