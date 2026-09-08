@@ -1,10 +1,21 @@
 <template>
   <div
-    v-if="!hide"
-    ref="body"
+    ref="root"
     class="Conversation"
     :class="{ '-expanded' : isExpanded, '-page': isPage, 'panel' : isExpanded }"
   >
+    <div class="panel panel-body" style="position:fixed;top:10em;left:2em">
+      <dl v-for="item in heightChartLinear">
+        <dt>
+          {{ item.type.toUpperCase() }}
+          <template v-if="item.type === 'status'">ID {{ item.id }}</template>
+          <template v-else>Size {{ item.ids.size }}</template>
+        </dt>
+        <dd>Top {{ item.top }}</dd>
+        <dd>Height {{ item.height }}</dd>
+        <dd>Bottom {{ item.bottom }}</dd>
+      </dl>
+    </div>
     <div
       v-if="isExpanded"
       class="panel-heading conversation-heading -sticky"
@@ -40,6 +51,7 @@
     <div
       v-if="isPage && !status"
       class="conversation-body"
+      ref="body"
       :class="{ 'panel-body': isExpanded }"
     >
       <p v-if="!loadStatusError">
@@ -56,6 +68,7 @@
     <div
       v-else
       class="conversation-body"
+      ref="body"
       :class="{ 'panel-body': isExpanded }"
     >
       <div
@@ -155,17 +168,23 @@
         class="thread-body"
       >
         <article
-          v-for="status in conversation"
+          v-for="element in heightChartLinear"
           class="panel-body"
+          :key="element.id ?? element.ids"
         >
+          <div
+            v-if="element.type === 'spacer'"
+            class="virtual-spacer"
+            :style="{ height: element.height + 'px' }"
+          />
           <Status
-            :key="status.id"
+            v-if="element.type === 'status'"
             class="conversation-status"
             :class="getStatusClasses(status)"
-            :status-id="status.id"
+            :status-id="element.status.id"
             :replies="getReplies(status.id)"
 
-            :focused="focused === status.id || focused === status.retweeted_status?.id"
+            :focused="focused === element.id || focused === element.status.retweeted_status?.id"
 
             @goto="setFocused"
             @toggle-expanded="toggleExpanded"
@@ -176,11 +195,6 @@
       </div>
     </div>
   </div>
-  <div
-    v-else
-    class="Conversation -hidden"
-    :style="hiddenStyle"
-  />
 </template>
 
 <script src="./conversation.js"></script>

@@ -13,6 +13,8 @@ import {
 import { useRouter } from 'vue-router'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
+import { useScrollPosition } from 'src/components/conversation/useScrollPosition.js'
+import { useWindowSize } from 'src/components/conversation/useWindowSize.js'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
 import QuickViewSettings from 'src/components/quick_view_settings/quick_view_settings.vue'
@@ -61,13 +63,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    virtualHidden: {
-      // Whether conversation is suspended. Controls rendering of statuses
-      type: Boolean,
-      default: false,
-    },
   },
-  emits: ['update:virtualHeight'],
   components: {
     ThreadTree,
     QuickFilterSettings,
@@ -76,8 +72,7 @@ export default {
     PostStatusForm,
     RichContent,
   },
-  setup(props, ctx) {
-    const { emit } = ctx
+  setup(props) {
     const { statusId } = toRefs(props)
 
     const router = useRouter()
@@ -260,26 +255,63 @@ export default {
     }
 
     // # Virtual scrolling stuff
+    const fontSizeSetting = computed(() => mergedConfig.value.textSize)
+    const fontSize = computed(() => {
+      // reading fontSizeSetting to make computed react to it
+      fontSizeSetting.value
+      const string = window
+        .getComputedStyle(document.body)
+        .getPropertyValue('font-size')
+      return Number.parseInt(string.slice(0, -2), 10) // remove the 'px'
+    })
+    const mutedStatusHeight = computed(() => {
+      return fontSize.value * 1.5
+    })
+    const normalStatusHeight = computed(() => {
+      return fontSize.value * 10
+    })
+    const heights = ref(new Map())
+    const totalHeight = computed(() =>
+      conversation.value.reduce((acc, item) => {
+        if (heights.value.has(item.id)) {
+          return acc + heights.value.get(item.id)
+        } else if (item.muted) {
+          return acc + mutedStatusHeight.value
+        } else {
+          return acc + normalStatusHeight.value
+        }
+      }, 0),
+    )
+
     const body = useTemplateRef('body')
-    const virtualHeight = ref(120)
-    const hiddenStyle = computed(() => ({
-      height: virtualHeight.value + 'px',
-    }))
-    const updateVirtualHeight = () => {
-      if (hide) return // no updates when not rendering
-      if (!status.value) return // not loaded yet
-      nextTick(() => {
-        virtualHeight.value = body.value.getBoundingClientRect().height
-        emit('update:virtualHeight', {
-          id: status.value.id,
-          height: virtualHeight.value,
-          top: body.value.clientTop,
-        })
-      })
+    const updateVirtualHeight = ({ id, height }) => {
+      heights.value.set(id, height)
     }
 
+    const { y: topScrollBoundary } = useScrollPosition()
+    const { height: windowHeight } = useWindowSize()
+
+    const realTopScrollBoundary = ref(0)
+    const realBottomScrollBoundary = ref(0)
+    const updateBoundaries = () => {
+      if (!body.value) return // Not mounted yet
+
+      const { top } = body.value.getBoundingClientRect()
+
+      const distanceItemTopToWindowTop = 0 - top
+      const distanceItemTopToWindowBottom = windowHeight.value - top
+
+      realTopScrollBoundary.value = distanceItemTopToWindowTop
+      realBottomScrollBoundary.value = distanceItemTopToWindowBottom
+    }
+
+    watch(topScrollBoundary, updateBoundaries)
+    watch(totalHeight, updateBoundaries)
+    onMounted(updateBoundaries)
+
+    const buffer = normalStatusHeight.value * 2
+
     const unsuspendibleIds = ref(new Set())
-    const suspendable = computed(() => unsuspendibleIds.value.size === 0)
     const onStatusSuspendStateChange = ({ id, suspend }) => {
       if (!suspend) {
         unsuspendibleIds.value.add(id)
@@ -288,10 +320,92 @@ export default {
       }
     }
 
-    const { virtualHidden } = toRefs(props)
-    const hide = computed(() => virtualHidden.value && suspendable.value)
-    onMounted(() => {
-      updateVirtualHeight()
+    const heightChartLinear = computed(() => {
+      // Map every height and suspendable state
+      const chart = conversation.value.map(({ id }) => {
+        const status = getStatusObject(id)
+        const height =
+          (() => {
+            if (heights.value.has(id)) {
+              return heights.value.get(id)
+            } else if (status?.muted) {
+              return mutedStatusHeight.value
+            } else {
+              return normalStatusHeight.value
+            }
+          })() + 1 //including border
+        const suspendable = !unsuspendibleIds.value.has(id)
+        return { id, height, suspendable, status }
+      })
+
+      // Walk over the list to set top offsets
+      chart.reduce((sum, item) => {
+        item.top = sum
+        return sum + item.height
+      }, 0)
+
+      // Determine visibility state
+      chart.forEach((heightChartItem) => {
+        const itemBottomBoundary = heightChartItem.top + heightChartItem.height
+        const itemTopBoundary = heightChartItem.top
+
+        const finalTopScrollBoundary = realTopScrollBoundary.value - buffer
+        const finalBottomScrollBoundary =
+          realBottomScrollBoundary.value + buffer
+
+        // console.log(
+        //   'TOP SCROLL',
+        //   itemBottomBoundary > finalTopScrollBoundary,
+        //   itemBottomBoundary, finalTopScrollBoundary,
+        // )
+        // console.log(
+        //   'BOTTOM SCROLL',
+        //   itemTopBoundary < finalBottomScrollBoundary,
+        //   itemTopBoundary, finalBottomScrollBoundary,
+        // )
+
+        // To be visible, item's bottom boundary shoud be below top scroll boundary)
+        const belowTopBoundary = itemBottomBoundary > finalTopScrollBoundary
+        // To be visible, item's top boundary shoud be above bottom scroll boundary)
+        const aboveBottomBoundary = itemTopBoundary < finalBottomScrollBoundary
+        // This accounts for the case where item's boundaries exceed scroll boundary
+
+        heightChartItem.visible = belowTopBoundary && aboveBottomBoundary
+      })
+
+      // Group invisible statuses into spacers
+      return chart.reduce((acc, heightChartItem) => {
+        const { suspendable, visible, height, top, bottom, id, status } =
+          heightChartItem
+        const present = visible || !suspendable
+        if (present) {
+          return [...acc, { type: 'status', height, top, bottom, id, status }]
+        } else {
+          const previousItem = acc[acc.length - 1]
+          const spacer =
+            previousItem?.type === 'spacer'
+              ? previousItem
+              : {
+                  type: 'spacer',
+                  top: Number.POSITIVE_INFINITY,
+                  bottom: Number.POSITIVE_INFINITY,
+                  height: 0,
+                  ids: new Set(),
+                }
+
+          spacer.ids.add(id)
+          spacer.id = [...spacer.ids].join()
+          spacer.height += height
+          if (top < spacer.top) spacer.top = top
+          if (bottom < spacer.bottom) spacer.bottom = bottom
+
+          if (previousItem?.type === 'spacer') {
+            return acc
+          } else {
+            return [...acc, spacer]
+          }
+        }
+      }, [])
     })
 
     // # Misc UI things
@@ -466,17 +580,15 @@ export default {
       toggleExpanded,
 
       // # Virtual scrolling stuff
-      hide,
       onStatusSuspendStateChange,
       updateVirtualHeight,
-      virtualHidden,
-      hiddenStyle,
 
       // # Misc UI things
       getStatusClasses,
 
       // # Linear style stuff
       isLinearView,
+      heightChartLinear,
 
       // # Tree style stuff
       isTreeView,

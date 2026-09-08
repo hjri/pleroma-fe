@@ -454,10 +454,7 @@
             </StatusPopover>
           </div>
 
-          <Transition
-            @after-leave="onTransitionEnd"
-            name="fade"
-          >
+          <Transition name="fade">
             <div
               v-if="shouldDisplayFavsAndRepeats"
               class="favs-repeated-users"
@@ -549,7 +546,6 @@
           @posted="closeReplyForm"
           @draft-done="closeReplyForm"
           @close-accepted="closeReplyForm"
-          @resize="$emit('heightChange')"
         />
       </div>
     </template>
