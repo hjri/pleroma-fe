@@ -4,18 +4,6 @@
     class="Conversation"
     :class="{ '-expanded' : isExpanded, '-page': isPage, 'panel' : isExpanded }"
   >
-    <div class="panel panel-body" style="position:fixed;top:10em;left:2em">
-      <dl v-for="item in heightChartLinear">
-        <dt>
-          {{ item.type.toUpperCase() }}
-          <template v-if="item.type === 'status'">ID {{ item.id }}</template>
-          <template v-else>Size {{ item.ids.size }}</template>
-        </dt>
-        <dd>Top {{ item.top }}</dd>
-        <dd>Height {{ item.height }}</dd>
-        <dd>Bottom {{ item.bottom }}</dd>
-      </dl>
-    </div>
     <div
       v-if="isExpanded"
       class="panel-heading conversation-heading -sticky"
