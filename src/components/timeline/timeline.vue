@@ -77,30 +77,19 @@
       />
     </div>
     <div :class="classes.body">
-      <DynamicScroller
+      <div
         class="timeline"
         ref="timeline"
-        :min-item-size="15"
-        :buffer="120"
-        :items="filteredVisibleStatuses"
-        flow-mode
-        page-mode
         role="feed"
       >
-        <template #default="{ item: status, active }">
-          <DynamicScrollerItem
-            :item="status"
-            :active="active"
-          >
-            <Conversation
-              :key="status.id"
-              role="listitem"
-              :status-id="status.id"
-              collapsable
-            />
-          </DynamicScrollerItem>
-        </template>
-      </DynamicScroller>
+        <Conversation
+          v-for="status in filteredVisibleStatuses"
+          :key="status.id"
+          :status-id="status.id"
+          :virtual-hidden="virtualScrollingEnabled && !statusesToDisplay.has(status.id)"
+          role="listitem"
+        />
+      </div>
       <template v-if="!hideEmpty && count === 0">
         <div
           v-if="timeline.fetcher.loadingNewer || timeline.fetcher.loadingOlder"

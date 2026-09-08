@@ -263,7 +263,7 @@ export default {
     const body = useTemplateRef('body')
     const virtualHeight = ref(120)
     const hiddenStyle = computed(() => ({
-      height: this.virtualHeight + 'px',
+      height: virtualHeight.value + 'px',
     }))
     const updateVirtualHeight = () => {
       if (hide) return // no updates when not rendering
