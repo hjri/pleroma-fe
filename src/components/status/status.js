@@ -96,7 +96,7 @@ const Status = {
   props: {
     statusId: String,
     statusoid: Object,
-    replies: Array,
+    replies: Set,
 
     expandable: Boolean,
     focused: Boolean,
@@ -109,12 +109,11 @@ const Status = {
     inQuote: Boolean,
 
     profileUserId: String,
-    simpleTree: Boolean,
     showOtherRepliesAsButton: Boolean,
     canDive: Boolean,
     ignoreMute: Boolean,
 
-    threadDisplayStatus: String,
+    threadDisplayState: String,
   },
   emits: [
     'goto',
@@ -165,6 +164,9 @@ const Status = {
     },
     user() {
       return useUsersStore().findUser(this.mainStatus.user.id)
+    },
+    simpleTree() {
+      return !this.mergedConfig.conversationTreeAdvanced
     },
     showReasonMutedThread() {
       return (
@@ -436,10 +438,10 @@ const Status = {
       return !this.replying && this.mediaPlaying.size === 0
     },
     inThreadForest() {
-      return !!this.threadDisplayStatus
+      return !!this.threadDisplayState
     },
     threadShowing() {
-      return this.threadDisplayStatus === 'showing'
+      return this.threadDisplayState === 'showing'
     },
     visibilityLocalized() {
       return this.$i18n.t('general.scope_in_timeline.' + this.status.visibility)

@@ -81,7 +81,7 @@
             </template>
             <template #text>
               <span>
-                {{ $t('status.show_all_conversation', { numStatus: otherTopLevelCount }, otherTopLevelCount) }}
+                {{ $t('status.show_all_conversation', { numStatus: topLevel.length - 1 }, topLevel.length - 1) }}
               </span>
             </template>
           </i18n-t>
@@ -91,11 +91,11 @@
           class="thread-ancestors"
           :min-item-size="15"
           :buffer="500"
-          :items="ancestorsOf(diveRoot)"
+          :items="currentAncestors"
           role="feed"
           list-tag="article"
           item-tag="article"
-          :item-class="{'thread-ancestor-has-other-replies': getReplies(status.id).length > 1, '-faded': shouldFadeAncestors, 'thread-ancestor': true }"
+          :item-class="{'thread-ancestor-has-other-replies': getReplies(status.id).size > 1, '-faded': shouldFadeAncestors, 'thread-ancestor': true }"
           flow-mode
           page-mode
         >
@@ -105,7 +105,6 @@
               :active="active"
             >
               <Status
-                ref="statusComponent"
                 class="conversation-status panel-body"
                 :class="getStatusClasses(status, active)"
 
@@ -119,17 +118,15 @@
                 :in-profile="inProfile"
                 :in-conversation="isExpanded"
                 :profile-user-id="profileUserId"
-                :simple-tree="treeViewIsSimple"
                 :show-other-replies-as-button="showOtherRepliesButtonInsideStatus"
                 can-dive
 
                 @goto="setFocused"
                 @dive="() => diveIntoStatus(status.id)"
                 @suspendable-state-change="onStatusSuspendStateChange"
-                @height-change="updateVirtualHeight"
               />
               <div
-                v-if="showOtherRepliesButtonBelowStatus && getReplies(status.id).length > 1"
+                v-if="showOtherRepliesButtonBelowStatus && getReplies(status.id).size > 1"
                 class="thread-ancestor-dive-box"
               >
                 <div
@@ -149,7 +146,7 @@
                     </template>
                     <template #text>
                       <span>
-                        {{ $t('status.ancestor_follow', { numReplies: getReplies(status.id, getReplies(status.id).length - 1).length - 1 }) }}
+                        {{ $t('status.ancestor_follow', { numReplies: getReplies(status.id, getReplies(status.id).size - 1).size - 1 }) }}
                       </span>
                     </template>
                   </i18n-t>
@@ -159,12 +156,10 @@
           </template>
         </DynamicScroller>
         <ThreadTree
-          v-for="status in showingTopLevel"
-          :key="status.id"
-          ref="statusComponent"
+          :key="currentStatus.id"
           :depth="0"
 
-          :status-id="status.id"
+          :status-id="currentStatus.id"
           :in-profile="inProfile"
           :conversation="conversation"
           :collapsable="collapsable"
@@ -172,21 +167,18 @@
           :pinned-status-ids-object="pinnedStatusIdsObject"
           :profile-user-id="profileUserId"
 
-          :get-replies="getReplies"
+          :replies="replies"
           :focused="maybeFocused"
-          :toggle-expanded="toggleExpanded"
 
-          :simple="treeViewIsSimple"
-          :thread-display-status="threadDisplayStatus"
-          :show-thread-recursively="showThreadRecursively"
-          :total-reply-count="totalReplyCount"
-          :total-reply-depth="totalReplyDepth"
-          :can-dive="canDive"
+          :thread-display="threadDisplay"
+          :thread-display-default="threadDisplayDefault"
+          :can-dive="isExpanded"
 
           @goto="setFocused"
           @dive="diveIntoStatus"
+          @toggle-expanded="toggleExpanded"
+          @show-thread-recursively="showThreadRecursively"
           @suspendable-state-change="onStatusSuspendStateChange"
-          @height-change="updateVirtualHeight"
         />
       </div>
       <DynamicScroller
@@ -208,7 +200,6 @@
           >
             <Status
               :key="status.id"
-              ref="statusComponent"
               class="conversation-status"
               :class="getStatusClasses(status, active)"
               :status-id="status.id"
@@ -225,7 +216,6 @@
               @goto="setFocused"
               @toggle-expanded="toggleExpanded"
               @suspendable-state-change="onStatusSuspendStateChange"
-              @height-change="updateVirtualHeight"
             />
           </DynamicScrollerItem>
         </template>

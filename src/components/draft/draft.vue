@@ -13,7 +13,7 @@
           <template #statusLink>
             <router-link
               class="faint-link"
-              :to="{ name: 'conversation', params: { id: draft.refId } }"
+              :to="{ name: 'conversation', params: { statusId: draft.refId } }"
             >
               {{ refStatus ? refStatus.external_url : $t('drafts.unavailable') }}
             </router-link>

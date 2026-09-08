@@ -180,7 +180,7 @@
                 </span>
                 <router-link
                   class="timeago faint"
-                  :to="{ name: 'conversation', params: { id: status.id } }"
+                  :to="{ name: 'conversation', params: { statusId: status.id } }"
                 >
                   <Timeago
                     :time="mainStatus.created_at"
@@ -222,7 +222,7 @@
                   />
                 </button>
                 <button
-                  v-if="inThreadForest && replies?.length && !simpleTree"
+                  v-if="inThreadForest && replies?.size && !simpleTree"
                   class="button-unstyled"
                   :title="threadShowing ? $t('status.thread_hide') : $t('status.thread_show')"
                   :aria-expanded="threadShowing ? 'true' : 'false'"
@@ -423,16 +423,16 @@
           />
 
           <div
-            v-if="inConversation && !isPreview && replies?.length"
+            v-if="inConversation && !isPreview && replies?.size"
             class="replies"
           >
             <button
-              v-if="showOtherRepliesAsButton && replies.length > 1"
+              v-if="showOtherRepliesAsButton && replies.size > 1"
               class="button-unstyled -link"
-              :title="$t('status.ancestor_follow', { numReplies: replies.length - 1 }, replies.length - 1)"
+              :title="$t('status.ancestor_follow', { numReplies: replies.size - 1 }, replies.size - 1)"
               @click.prevent="$emit('dive')"
             >
-              {{ $t('status.replies_list_with_others', { numReplies: replies.length - 1 }, replies.length - 1) }}
+              {{ $t('status.replies_list_with_others', { numReplies: replies.size - 1 }, replies.size - 1) }}
             </button>
             <span
               v-else
@@ -441,7 +441,7 @@
               {{ $t('status.replies_list') }}
             </span>
             <StatusPopover
-              v-for="reply in replies"
+              v-for="reply in replies.values()"
               :key="reply.id"
               :status-id="reply.id"
             >

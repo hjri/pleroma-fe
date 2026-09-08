@@ -1,5 +1,7 @@
 import { get, reduce } from 'lodash-es'
-import { mapState } from 'pinia'
+import { storeToRefs } from 'pinia'
+import { computed, nextTick, ref, watch, toRefs } from 'vue'
+import { useRouter } from 'vue-router'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
@@ -14,7 +16,7 @@ import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useStreamingStore } from 'src/stores/streaming.js'
 
-import { fetchConversation, fetchStatus } from 'src/api/public.js'
+import { fetchConversation as apiFetchConversation, fetchStatus } from 'src/api/public.js'
 import { WSConnectionStatus } from 'src/api/websocket.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -52,7 +54,7 @@ const sortById = (a, b) => {
   }
 }
 
-const conversation = {
+export default {
   props: {
     statusId: {
       // Main thing
@@ -94,313 +96,6 @@ const conversation = {
     },
   },
   emits: ['update:virtualHeight'],
-  data() {
-    return {
-      focused: null,
-      expanded: false,
-      threadDisplayStatusObject: {}, // id => 'showing' | 'hidden'
-      inlineDivePosition: null,
-      loadStatusError: null,
-      unsuspendibleIds: new Set(),
-      virtualHeight: 120,
-    }
-  },
-  created() {
-    if (this.isPage) {
-      this.fetchConversation()
-    }
-  },
-  mounted() {
-    this.updateVirtualHeight()
-  },
-  computed: {
-    status() {
-      return useStatusesStore().allStatuses.get(this.statusId)
-    },
-    maxDepthToShowByDefault() {
-      // maxDepthInThread = max number of depths that is *visible*
-      // since our depth starts with 0 and "showing" means "showing children"
-      // there is a -2 here
-      const maxDepth = this.mergedConfig.maxDepthInThread - 2
-      return maxDepth >= 1 ? maxDepth : 1
-    },
-    streamingEnabled() {
-      return (
-        this.mergedConfig.useStreamingApi &&
-        this.mastoUserSocketStatus === WSConnectionStatus.JOINED
-      )
-    },
-    displayStyle() {
-      return this.mergedConfig.conversationDisplay
-    },
-    treeViewIsSimple() {
-      return !this.mergedConfig.conversationTreeAdvanced
-    },
-    isTreeView() {
-      return this.displayStyle === 'tree'
-    },
-    isLinearView() {
-      return this.displayStyle !== 'tree'
-    },
-    shouldFadeAncestors() {
-      return this.mergedConfig.conversationTreeFadeAncestors
-    },
-    otherRepliesButtonPosition() {
-      return this.mergedConfig.conversationOtherRepliesButton
-    },
-    showOtherRepliesButtonBelowStatus() {
-      return this.otherRepliesButtonPosition === 'below'
-    },
-    showOtherRepliesButtonInsideStatus() {
-      return this.otherRepliesButtonPosition === 'inside'
-    },
-    suspendable() {
-      return this.unsuspendibleIds.size === 0
-    },
-    hide() {
-      return this.virtualHidden && this.suspendable
-    },
-    originalStatusId() {
-      if (this.status.retweeted_status) {
-        return this.status.retweeted_status.id
-      } else {
-        return this.statusId
-      }
-    },
-    conversationId() {
-      return this.getConversationId(this.statusId)
-    },
-    conversation() {
-      if (!this.status) {
-        return []
-      }
-
-      if (!this.isExpanded) {
-        return [this.status]
-      }
-
-      const conversation = useStatusesStore().conversations.get(
-        this.conversationId,
-      )
-
-      return [...conversation.keys()]
-        .map((k) => useStatusesStore().allStatuses.get(k))
-        .filter((status) => status.type != 'repeat') // Old backend behavior?
-        .toSorted(sortById)
-    },
-    statusMap() {
-      return this.conversation.reduce((res, s) => {
-        res[s.id] = s
-        return res
-      }, {})
-    },
-    threadTree() {
-      const reverseLookupTable = this.conversation.reduce(
-        (table, status, index) => {
-          table[status.id] = index
-          return table
-        },
-        {},
-      )
-
-      const threads = this.conversation.reduce(
-        (a, cur) => {
-          const id = cur.id
-          a.forest[id] = this.getReplies(id).map((s) => s.id)
-
-          return a
-        },
-        {
-          forest: {},
-        },
-      )
-
-      const walk = (forest, topLevel, depth = 0, processed = {}) =>
-        topLevel
-          .map((id) => {
-            if (processed[id]) {
-              return []
-            }
-
-            processed[id] = true
-            return [
-              {
-                status: this.conversation[reverseLookupTable[id]],
-                id,
-                depth,
-              },
-              walk(forest, forest[id], depth + 1, processed),
-            ].flat()
-          })
-          .flat()
-
-      const linearized = walk(
-        threads.forest,
-        this.topLevel.map((k) => k.id),
-      )
-
-      return linearized
-    },
-    replyIds() {
-      return this.conversation
-        .map((k) => k.id)
-        .reduce((res, id) => {
-          res[id] = (this.replies[id] || []).map((k) => k.id)
-          return res
-        }, {})
-    },
-    totalReplyCount() {
-      const sizes = {}
-      const subTreeSizeFor = (id) => {
-        if (sizes[id]) {
-          return sizes[id]
-        }
-        sizes[id] =
-          1 +
-          this.replyIds[id]
-            .map((cid) => subTreeSizeFor(cid))
-            .reduce((a, b) => a + b, 0)
-        return sizes[id]
-      }
-      this.conversation.map((k) => k.id).map(subTreeSizeFor)
-      return Object.keys(sizes).reduce((res, id) => {
-        res[id] = sizes[id] - 1 // exclude itself
-        return res
-      }, {})
-    },
-    totalReplyDepth() {
-      const depths = {}
-      const subTreeDepthFor = (id) => {
-        if (depths[id]) {
-          return depths[id]
-        }
-        depths[id] =
-          1 +
-          this.replyIds[id]
-            .map((cid) => subTreeDepthFor(cid))
-            .reduce((a, b) => (a > b ? a : b), 0)
-        return depths[id]
-      }
-      this.conversation.map((k) => k.id).map(subTreeDepthFor)
-      return Object.keys(depths).reduce((res, id) => {
-        res[id] = depths[id] - 1 // exclude itself
-        return res
-      }, {})
-    },
-    depths() {
-      return this.threadTree.reduce((a, k) => {
-        a[k.id] = k.depth
-        return a
-      }, {})
-    },
-    topLevel() {
-      const topLevel = this.conversation.reduce(
-        (tl, cur) =>
-          tl.filter(
-            (k) =>
-              !this.getReplies(cur.id)
-                .map((v) => v.id)
-                .includes(k.id),
-          ),
-        this.conversation,
-      )
-      return topLevel
-    },
-    otherTopLevelCount() {
-      return this.topLevel.length - 1
-    },
-    showingTopLevel() {
-      if (this.canDive && this.diveRoot) {
-        return [this.statusMap[this.diveRoot]]
-      }
-      return this.topLevel
-    },
-    diveRoot() {
-      const statusId = this.inlineDivePosition || this.statusId
-      const isTopLevel = !this.parentOf(statusId)
-      return isTopLevel ? null : statusId
-    },
-    diveDepth() {
-      return this.canDive && this.diveRoot ? this.depths[this.diveRoot] : 0
-    },
-    diveMode() {
-      return this.canDive && !!this.diveRoot
-    },
-    shouldShowAllConversationButton() {
-      // The "show all conversation" button tells the user that there exist
-      // other toplevel statuses, so do not show it if there is only a single root
-      return (
-        this.isTreeView &&
-        this.isExpanded &&
-        this.diveMode &&
-        this.topLevel.length > 1
-      )
-    },
-    shouldShowAncestors() {
-      return (
-        this.isTreeView &&
-        this.isExpanded &&
-        this.ancestorsOf(this.diveRoot).length
-      )
-    },
-    replies() {
-      let i = 1
-
-      return reduce(
-        this.conversation,
-        (result, { id, in_reply_to_status_id: irid }) => {
-          if (irid) {
-            result[irid] = result[irid] || []
-            result[irid].push({
-              name: `#${i}`,
-              id,
-            })
-          }
-          i++
-          return result
-        },
-        {},
-      )
-    },
-    isExpanded() {
-      return !!(this.expanded || this.isPage)
-    },
-    hiddenStyle() {
-      return { height: this.virtualHeight + 'px' }
-    },
-    threadDisplayStatus() {
-      return this.conversation.reduce((a, k) => {
-        const id = k.id
-        const depth = this.depths[id]
-        const status = (() => {
-          if (this.threadDisplayStatusObject[id]) {
-            return this.threadDisplayStatusObject[id]
-          }
-          if (depth - this.diveDepth <= this.maxDepthToShowByDefault) {
-            return 'showing'
-          } else {
-            return 'hidden'
-          }
-        })()
-
-        a[id] = status
-        return a
-      }, {})
-    },
-    canDive() {
-      return this.isTreeView && this.isExpanded
-    },
-    maybeFocused() {
-      return this.isExpanded ? this.focused : null
-    },
-    ...mapState(useMergedConfigStore, ['mergedConfig']),
-    ...mapState(useStreamingStore, {
-      mastoUserSocketStatus: (state) => state.state,
-    }),
-    ...mapState(useInterfaceStore, {
-      mobileLayout: (store) => store.layoutType === 'mobile',
-    }),
-  },
   components: {
     ThreadTree,
     QuickFilterSettings,
@@ -409,149 +104,316 @@ const conversation = {
     PostStatusForm,
     RichContent,
   },
-  watch: {
-    statusId(newVal, oldVal) {
-      const newConversationId = this.getConversationId(newVal)
-      const oldConversationId = this.getConversationId(oldVal)
-      if (
-        newConversationId &&
-        oldConversationId &&
-        newConversationId === oldConversationId
-      ) {
-        this.setFocused(this.originalStatusId)
-      } else {
-        this.fetchConversation()
-      }
-    },
-    expanded(value) {
-      if (value) {
-        this.fetchConversation()
-      } else {
-        this.resetDisplayState()
-      }
-    },
-    virtualHidden() {
-      this.updateVirtualHeight()
-    },
-  },
-  methods: {
-    fetchConversation() {
-      if (this.status) {
-        fetchConversation({
-          id: this.statusId,
-          credentials: useOAuthStore().token,
-        }).then(({ data: { ancestors, descendants }, timestamp }) => {
-          useStatusesStore().addNewStatuses({ statuses: ancestors, timestamp })
-          useStatusesStore().addNewStatuses({
-            statuses: descendants,
-            timestamp,
-          })
-          this.setFocused(this.originalStatusId)
-        })
-      } else {
-        this.loadStatusError = null
-        fetchStatus({
-          id: this.statusId,
-          credentials: useOAuthStore().token,
-        })
-          .then(({ data: status }) => {
-            useStatusesStore().addNewStatuses({ statuses: [status] })
-            this.fetchConversation()
-          })
-          .catch((error) => {
-            console.error(error)
-            this.loadStatusError = error
-          })
-      }
-    },
-    getReplies(id) {
-      return this.replies[id] || []
-    },
-    setFocused(id) {
-      if (!id) return
-      this.focused = id
+  setup(props, ctx) {
+    const { emit } = ctx
+    const {
+      statusId,
+      collapsable,
+      pinnedStatusIdsObject,
+      inProfile,
+      profileUserId,
+      virtualHidden,
+    } = toRefs(props)
+    const router = useRouter()
 
-      if (!this.streamingEnabled) {
-        useStatusesStore().fetchStatus(id)
-      }
+    const hoisted = {}
 
-      useStatusesStore().fetchFavsAndRepeats(id)
-      useStatusesStore().fetchEmojiReactions(id)
-    },
-    toggleExpanded() {
-      this.expanded = !this.expanded
-    },
-    getConversationId(statusId) {
-      const status = useStatusesStore().allStatuses.get(statusId)
+    // # Main Configuration
+    const { mergedConfig } = storeToRefs(useMergedConfigStore())
+    const { mastoUserSocketStatus } = storeToRefs(useStreamingStore())
+    const displayStyle = computed(() => mergedConfig.value.conversationDisplay)
+    const streamingEnabled = computed(() =>
+      mergedConfig.value.useStreamingApi &&
+        mastoUserSocketStatus === WSConnectionStatus.JOINED
+    )
+
+    // # Main things
+    const getStatusObject = (id) => useStatusesStore().allStatuses.get(id)
+    const getConversationId = (statusId) => {
+      const status = getStatusObject(statusId)
       return get(
         status,
         'retweeted_status.statusnet_conversation_id',
         get(status, 'statusnet_conversation_id'),
       )
-    },
-    setThreadDisplay(id, nextStatus) {
-      this.threadDisplayStatusObject = {
-        ...this.threadDisplayStatusObject,
-        [id]: nextStatus,
+    }
+
+    const status = computed(() => getStatusObject(statusId.value))
+    const mainStatusId = computed(() => {
+      if (status.value.retweeted_status) {
+        return status.value.retweeted_status.id
+      } else {
+        return statusId.value
       }
-    },
-    getStatusClasses(status, active) {
-      return {
-        '-virtual-active': active,
-        '-last': status.id === this.conversation[this.conversation.length - 1].id,
-        '-first': status.id === this.conversation[0].id,
+    })
+    const conversationId = computed(() => getConversationId(statusId.value))
+    const conversation = computed(() => {
+      if (!status.value) {
+        return []
       }
-    },
-    toggleThreadDisplay(id) {
-      const curStatus = this.threadDisplayStatus[id]
-      const nextStatus = curStatus === 'showing' ? 'hidden' : 'showing'
-      this.setThreadDisplay(id, nextStatus)
-    },
-    setThreadDisplayRecursively(id, nextStatus) {
-      this.setThreadDisplay(id, nextStatus)
-      this.getReplies(id)
-        .map((k) => k.id)
-        .map((id) => this.setThreadDisplayRecursively(id, nextStatus))
-    },
-    showThreadRecursively(id) {
-      this.setThreadDisplayRecursively(id, 'showing')
-    },
-    leastVisibleAncestor(id) {
-      let cur = id
-      let parent = this.parentOf(cur)
-      while (cur) {
-        // if the parent is showing it means cur is visible
-        if (this.threadDisplayStatus[parent] === 'showing') {
-          return cur
-        }
-        parent = this.parentOf(parent)
-        cur = this.parentOf(cur)
+
+      if (!isExpanded.value) {
+        return [status.value]
       }
-      // nothing found, fall back to toplevel
-      return this.topLevel[0] ? this.topLevel[0].id : undefined
-    },
-    diveIntoStatus(id) {
-      this.tryScrollTo(id)
-    },
-    diveToTopLevel() {
-      this.tryScrollTo(
-        this.topLevelAncestorOrSelfId(this.diveRoot) || this.topLevel[0].id,
+
+      const conversation = useStatusesStore().conversations.get(
+        conversationId.value,
       )
-    },
-    // only used when we are not on a page
-    undive() {
-      this.inlineDivePosition = null
-      this.setFocused(this.statusId)
-    },
-    tryScrollTo(id) {
+
+      return [...conversation.keys()]
+        .map((k) => useStatusesStore().allStatuses.get(k))
+        .filter((status) => status.type != 'repeat') // Old backend behavior?
+        .toSorted(sortById)
+    })
+    const replies = computed(() =>
+      conversation.value.reduce(
+        (
+          result,
+          { id, in_reply_to_status_id: irid },
+          index,
+        ) => {
+          if (irid) {
+            if (!result.has(irid)) {
+              result.set(irid, new Set())
+            }
+            result.get(irid).add({
+              name: `#${index}`,
+              id,
+            })
+          }
+          return result
+        },
+        new Map(),
+      )
+    )
+    const getReplies = (id) => replies.value.get(id) ?? new Set()
+
+    const fetchConversation = async () => {
+      if (status.value) {
+        const {
+          data: {
+            ancestors,
+            descendants
+          },
+          timestamp
+        } = await apiFetchConversation({
+          id: statusId.value,
+          credentials: useOAuthStore().token,
+        })
+
+        useStatusesStore().addNewStatuses({ statuses: ancestors, timestamp })
+        useStatusesStore().addNewStatuses({
+          statuses: descendants,
+          timestamp,
+        })
+        setFocused(mainStatusId.value)
+      } else {
+        try {
+          loadStatusError.value = null
+
+          const { data: status } = await fetchStatus({
+            id: statusId.value,
+            credentials: useOAuthStore().token,
+          })
+
+          useStatusesStore().addNewStatuses({ statuses: [status] })
+          fetchConversation()
+        } catch (error) {
+          console.error(error)
+          loadStatusError.value = error
+        }
+      }
+    }
+    const resetDisplayState = () => {
+      hoisted.undive()
+      threadDisplay.value = new Map()
+    }
+
+    // # Virtual scrolling stuff
+    const unsuspendibleIds = ref(new Set())
+    const suspendable = computed(() => unsuspendibleIds.value.size === 0)
+    const hide = computed(() => virtualHidden.value && suspendable.value)
+    const onStatusSuspendStateChange = ({ id, suspend }) => {
+      if (!suspend) {
+        unsuspendibleIds.value.add(id)
+      } else {
+        unsuspendibleIds.value.delete(id)
+      }
+    }
+
+    // # Misc UI things
+    const loadStatusError = ref(null)
+
+    const { layoutType } = storeToRefs(useInterfaceStore())
+    const mobileLayout = computed(() => layoutType.value === 'mobile')
+    const firstStatus = computed(() => conversation.value[0])
+    const lastStatus = computed(() => conversation.value[conversation.value.legnth - 1])
+    const getStatusClasses = (status, active) => ({
+      '-virtual-active': active,
+      '-first': status.id === firstStatus.value?.id,
+      '-last': status.id === lastStatus.value?.id,
+    })
+
+    // # Conversation Expansion
+    const expanded = ref(false)
+    const { isPage } = toRefs(props)
+    const isExpanded = computed(() => !!(expanded.value || isPage.value))
+    const toggleExpanded = () => {
+      expanded.value = !expanded.value
+    }
+    watch(expanded, (value) => {
+      if (value) {
+        fetchConversation()
+      } else {
+        resetDisplayState()
+      }
+    })
+
+    // # Focus
+    const focused = ref(null)
+    const maybeFocused = computed(() => isExpanded.value ? focused.value : null)
+    const setFocused = (id) => {
+      if (!id) return
+      focused.value = id
+
+      if (!streamingEnabled.value) {
+        useStatusesStore().fetchStatus(id)
+      }
+
+      useStatusesStore().fetchFavsAndRepeats(id)
+      useStatusesStore().fetchEmojiReactions(id)
+    }
+    watch(statusId, (newVal, oldVal) => {
+      const newConversationId = getConversationId(newVal)
+      const oldConversationId = getConversationId(oldVal)
+      if (
+        newConversationId &&
+        oldConversationId &&
+        newConversationId === oldConversationId
+      ) {
+        setFocused(mainStatusId.value)
+      } else {
+        fetchConversation()
+      }
+    })
+
+    // Component created
+    if (isPage.value) {
+      fetchConversation()
+    }
+
+    // # Linear style stuff
+    const isLinearView = computed(() => displayStyle.value !== 'tree')
+
+    // # Tree style stuff
+    const isTreeView = computed(() => displayStyle.value === 'tree')
+
+    // ## Tree view settings
+    const treeViewIsSimple = computed(() => !mergedConfig.value.conversationTreeAdvanced)
+    const shouldFadeAncestors = computed(() => mergedConfig.value.conversationTreeFadeAncestors)
+    const otherRepliesButtonPosition = computed(() => mergedConfig.value.conversationOtherRepliesButton)
+    const showOtherRepliesButtonBelowStatus = computed(() => otherRepliesButtonPosition.value === 'below')
+    const showOtherRepliesButtonInsideStatus = computed(() => otherRepliesButtonPosition.value === 'inside')
+    const maxDepthToShowByDefault = computed(() => {
+      // maxDepthInThread = max number of depths that is *visible*
+      // since our depth starts with 0 and "showing" means "showing children"
+      // there is a -2 here
+      const maxDepth = mergedConfig.value.maxDepthInThread - 2
+      return Math.min(1, maxDepth)
+    })
+
+    // ## Tree style state
+    // ### Dive
+    const inlineDivePosition = ref(null)
+    const currentStatusId = computed(() => inlineDivePosition.value ?? statusId.value)
+
+    // ### Topology
+    const ancestors = computed(() => {
+      // First we fill map with empty sets and add given id's parent
+      // as set's only element (if any)
+      const parentMap = conversation.value.reduce(
+        (
+          result,
+          { id, in_reply_to_status_id: irid },
+        ) => {
+          if (!result.has(id)) {
+            result.set(id, new Set())
+          }
+          if (irid) {
+            // Setting parent for current item
+            result.get(id).add(irid)
+          }
+          return result
+        },
+        new Map()
+      )
+
+      // Next we iterate over each entry and fill the whole ancestry chain
+      parentMap.entries().forEach(([originId, originSet]) => {
+        let current = originSet.values().next().value
+        while (current) {
+          originSet.add(current)
+
+          const parent = parentMap.get(current) ?? new Set()
+
+          current = parent.values().next().value
+        }
+      })
+      return parentMap
+    })
+    const getAncestorIds = (id) => ancestors.value.get(id) ?? new Set()
+    const getAncestors = (id) => [...getAncestorIds(id)].map(getStatusObject).filter(Boolean)
+    const currentAncestors = computed(() => getAncestors(currentStatusId.value).reverse())
+    const currentDepth = computed(() => currentAncestors.value.length)
+    const topLevel = computed(() => [...ancestors.value.entries()]
+      .filter(([id, ancestors]) => ancestors.size === 0)
+      .map(([id]) => getStatusObject(id))
+    )
+    const currentStatus = computed(() => getStatusObject(currentStatusId.value))
+
+    // ### Thread Display
+    const threadDisplay = ref(new Map()) // id => 'showing' | 'hidden'
+    const threadDisplayDefault = computed(() => {
+      return conversation.value.reduce((map, status) => {
+        const { id } = status
+        const depth = ancestors.value.get(id).size
+
+        const state = (() => {
+          if (depth - currentDepth.value <= maxDepthToShowByDefault.value) {
+            return 'showing'
+          } else {
+            return 'hidden'
+          }
+        })()
+
+        map.set(id, state)
+        return map
+      }, new Map())
+    })
+
+    const setThreadDisplayRecursively = (id, value) => {
+      threadDisplay.value.set(id, value)
+      ;[...getReplies(id)]
+        .map((k) => k.id)
+        .map((id) => setThreadDisplayRecursively(id, value))
+    }
+    const showThreadRecursively = (id) => {
+      setThreadDisplayRecursively(id, 'showing')
+    }
+
+    // ## Derived values
+    const shouldShowAllConversationButton = computed(() => currentAncestors.value.length > 0 && topLevel.value.length > 1)
+    const shouldShowAncestors = computed(() => isExpanded.value && ancestors.value.get(currentStatusId.value) != null)
+
+    // # Scrolling / diving
+    const tryScrollTo = (id) => {
       if (!id) {
         return
       }
-      if (this.isPage) {
-        // set statusId
-        this.$router.push({ name: 'conversation', params: { id } })
+      if (isPage.value) {
+        router.push({ name: 'conversation', params: { statusId: id } })
       } else {
-        this.inlineDivePosition = id
+        inlineDivePosition.value = id
       }
       // Because the conversation can be unmounted when out of sight
       // and mounted again when it comes into sight,
@@ -568,78 +430,64 @@ const conversation = {
       // different).
       // Here, let the components be rendered first, in order to trigger
       // the `focused` watcher.
-      this.$nextTick(() => {
-        this.setFocused(id)
+      nextTick(() => {
+        setFocused(id)
       })
-    },
-    goToCurrent() {
-      this.tryScrollTo(this.diveRoot || this.topLevel[0].id)
-    },
-    statusById(id) {
-      return this.statusMap[id]
-    },
-    parentOf(id) {
-      const status = this.statusById(id)
-      if (!status) {
-        return undefined
-      }
-      const { in_reply_to_status_id: parentId } = status
-      if (!this.statusMap[parentId]) {
-        return undefined
-      }
-      return parentId
-    },
-    parentOrSelf(id) {
-      return this.parentOf(id) || id
-    },
-    // Ancestors of some status, from top to bottom
-    ancestorsOf(id) {
-      const ancestors = []
-      let cur = this.parentOf(id)
-      while (cur) {
-        ancestors.unshift(this.statusMap[cur])
-        cur = this.parentOf(cur)
-      }
-      return ancestors
-    },
-    topLevelAncestorOrSelfId(id) {
-      let cur = id
-      let parent = this.parentOf(id)
-      while (parent) {
-        cur = this.parentOf(cur)
-        parent = this.parentOf(parent)
-      }
-      return cur
-    },
-    resetDisplayState() {
-      this.undive()
-      this.threadDisplayStatusObject = {}
-    },
-    onStatusSuspendStateChange({ id, suspend }) {
-      if (!suspend) {
-        this.unsuspendibleIds.add(id)
-      } else {
-        this.unsuspendibleIds.delete(id)
-      }
-    },
-    onPosted(data) {
-      if (this.isPage) {
-        this.$router.push({ name: 'conversation', params: { id: data.id } })
-      }
-    },
-    updateVirtualHeight() {
-      if (this.hide) return // no updates when not rendering
-      if (!this.status) return // not loaded yet
-      this.$nextTick(() => {
-        this.virtualHeight = this.$refs.body.getBoundingClientRect().height
-        this.$emit('update:virtualHeight', {
-          id: this.status.id,
-          height: this.virtualHeight,
-          top: this.$el.clientTop,
-        })
-      })
-    },
-  },
-}
+    }
+    const goToCurrent = () => {
+      tryScrollTo(diveRoot)
+    }
+    const diveIntoStatus = (id) => {
+      tryScrollTo(id)
+    }
+    const diveToTopLevel = () => {
+      tryScrollTo(currentAncestors.value[0].id)
+    }
+    const undive = () => {
+      inlineDivePosition.value = null
+      setFocused(statusId.value)
+    }
+    hoisted.undive = undive
 
-export default conversation
+    return {
+      ...hoisted,
+      isLinearView,
+      isTreeView,
+      isExpanded,
+      conversation,
+      hide,
+      collapsable,
+      mobileLayout,
+      toggleExpanded,
+      isPage,
+      status,
+      loadStatusError,
+      maybeFocused,
+      setFocused,
+      showOtherRepliesButtonBelowStatus,
+      showOtherRepliesButtonInsideStatus,
+      onStatusSuspendStateChange,
+      getStatusClasses,
+      getReplies,
+      currentAncestors,
+      statusId,
+      collapsable,
+      pinnedStatusIdsObject,
+      inProfile,
+      profileUserId,
+      virtualHidden,
+      shouldShowAncestors,
+      shouldShowAllConversationButton,
+      topLevel,
+      shouldFadeAncestors,
+      currentStatus,
+      treeViewIsSimple,
+      diveToTopLevel,
+      threadDisplay,
+      threadDisplayDefault,
+      replies,
+      diveIntoStatus,
+      showThreadRecursively,
+    }
+  }
+}

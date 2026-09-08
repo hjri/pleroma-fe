@@ -83,8 +83,9 @@ export default () => {
     },
     {
       name: 'conversation',
-      path: '/notice/:id',
+      path: '/notice/:statusId',
       component: ConversationPage,
+      props: true,
       meta: { dontScroll: true },
     },
     {

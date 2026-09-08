@@ -14,15 +14,14 @@
       :profile-user-id="profileUserId"
       class="conversation-status conversation-status-treeview panel-body"
 
-      :simple-tree="simple"
-      :thread-display-status="threadDisplayStatus[statusId]"
+      :thread-display-state="threadDisplay.get(statusId)"
       :can-dive="canDive"
 
       @dive="$emit('dive', statusId)"
       @goto="$emit('goto', statusId)"
-      @toggle-expanded="toggleExpanded"
-      @suspendable-state-change="e => $emit('suspendableStateChange', e)"
-      @height-change="e => $emit('heightChange', e)"
+      @toggle-expanded="$emit('toggleExpanded', statusId)"
+      @suspendable-state-change="$emit('suspendableStateChange', e)"
+      @height-change="$emit('heightChange', e)"
     />
     <div
       v-if="currentReplies.length > 0 && threadShowing"
@@ -42,20 +41,18 @@
         :pinned-status-ids-object="pinnedStatusIdsObject"
         :profile-user-id="profileUserId"
 
-        :get-replies="getReplies"
+        :replies="replies"
         :focused="focused"
-        :toggle-expanded="toggleExpanded"
 
-        :simple="simple"
-        :thread-display-status="threadDisplayStatus"
-        :show-thread-recursively="showThreadRecursively"
-        :total-reply-count="totalReplyCount"
-        :total-reply-depth="totalReplyDepth"
+        :thread-display="threadDisplay"
+        :thread-display-default="threadDisplayDefault"
 
         :can-dive="canDive"
+        @show-thread-recursively="(e) => $emit('showThreadRecursively', e)"
         @goto="(e) => $emit('goto', e)"
         @dive="(e) => $emit('dive', e)"
         @suspendable-state-change="e => $emit('suspendableStateChange', e)"
+        @toggle-expanded="(e) => $emit('toggleExpanded', e)"
         @height-change="e => $emit('heightChange', e)"
       />
     </div>
@@ -88,7 +85,7 @@
         tag="button"
         keypath="status.thread_show_full_with_icon"
         class="button-unstyled -link thread-tree-show-replies-button"
-        @click.prevent="showThreadRecursively(statusId)"
+        @click.prevent="$emit('showThreadRecursively', statusId)"
       >
         <template #icon>
           <FAIcon

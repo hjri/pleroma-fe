@@ -234,7 +234,7 @@ export const BUTTONS = [
       return chatView
     },
     action({ router, status }) {
-      router.push({ name: 'conversation', params: { id: status.id } })
+      router.push({ name: 'conversation', params: { statusId: status.id } })
     },
   },
   {
@@ -293,7 +293,7 @@ export const BUTTONS = [
       navigator.clipboard.writeText(
         [
           useInstanceStore().server,
-          router.resolve({ name: 'conversation', params: { id: status.id } })
+          router.resolve({ name: 'conversation', params: { statusId: status.id } })
             .href,
         ].join(''),
       )

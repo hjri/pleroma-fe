@@ -166,7 +166,7 @@
           >
             <router-link
               v-if="notification.status"
-              :to="{ name: 'conversation', params: { id: notification.status.id } }"
+              :to="{ name: 'conversation', params: { statusId: notification.status.id } }"
               class="timeago-link faint"
             >
               <Timeago
