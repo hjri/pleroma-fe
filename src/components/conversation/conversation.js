@@ -261,21 +261,10 @@ export default {
 
     // # Virtual scrolling stuff
     const body = useTemplateRef('body')
-    const { virtualHidden } = toRefs(props)
     const virtualHeight = ref(120)
     const hiddenStyle = computed(() => ({
       height: this.virtualHeight + 'px',
     }))
-    const unsuspendibleIds = ref(new Set())
-    const suspendable = computed(() => unsuspendibleIds.value.size === 0)
-    const hide = computed(() => virtualHidden.value && suspendable.value)
-    const onStatusSuspendStateChange = ({ id, suspend }) => {
-      if (!suspend) {
-        unsuspendibleIds.value.add(id)
-      } else {
-        unsuspendibleIds.value.delete(id)
-      }
-    }
     const updateVirtualHeight = () => {
       if (hide) return // no updates when not rendering
       if (!status.value) return // not loaded yet
@@ -288,6 +277,19 @@ export default {
         })
       })
     }
+
+    const unsuspendibleIds = ref(new Set())
+    const suspendable = computed(() => unsuspendibleIds.value.size === 0)
+    const onStatusSuspendStateChange = ({ id, suspend }) => {
+      if (!suspend) {
+        unsuspendibleIds.value.add(id)
+      } else {
+        unsuspendibleIds.value.delete(id)
+      }
+    }
+
+    const { virtualHidden } = toRefs(props)
+    const hide = computed(() => virtualHidden.value && suspendable.value)
     onMounted(() => {
       updateVirtualHeight()
     })
