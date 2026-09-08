@@ -18,7 +18,7 @@ import { useStreamingStore } from 'src/stores/streaming.js'
 
 import {
   fetchConversation as apiFetchConversation,
-  fetchStatus,
+  fetchStatus as apiFetchStatus,
 } from 'src/api/public.js'
 import { WSConnectionStatus } from 'src/api/websocket.js'
 
@@ -83,6 +83,27 @@ export default {
         mastoUserSocketStatus === WSConnectionStatus.JOINED,
     )
 
+    // # Misc
+    const loadStatusError = ref(null)
+    const { layoutType } = storeToRefs(useInterfaceStore())
+    const mobileLayout = computed(() => layoutType.value === 'mobile')
+
+    // # Focus
+    const focusedId = ref(statusId.value)
+    const focused = computed(() => (isExpanded.value ? focusedId.value : null))
+    const setFocused = (id) => {
+      if (!id) return
+      focusedId.value = id
+
+      if (!streamingEnabled.value) {
+        useStatusesStore().fetchStatus(id)
+      }
+
+      useStatusesStore().fetchFavsAndRepeats(id)
+      useStatusesStore().fetchEmojiReactions(id)
+    }
+    provide('focused', focused)
+
     // # Main things
     const getStatusObject = (id) => useStatusesStore().allStatuses.get(id)
     const getConversationId = (statusId) => {
@@ -93,13 +114,56 @@ export default {
         get(status, 'statusnet_conversation_id'),
       )
     }
+    const status = computed(() => getStatusObject(focusedId.value))
 
-    const status = computed(() => getStatusObject(statusId.value))
-    const mainStatusId = computed(() => {
-      if (status.value.retweeted_status) {
-        return status.value.retweeted_status.id
+    const fetchConversation = async () => {
+      if (status.value) {
+        const {
+          data: { ancestors, descendants },
+          timestamp,
+        } = await apiFetchConversation({
+          id: statusId.value,
+          credentials: useOAuthStore().token,
+        })
+
+        useStatusesStore().addNewStatuses({ statuses: ancestors, timestamp })
+        useStatusesStore().addNewStatuses({
+          statuses: descendants,
+          timestamp,
+        })
       } else {
-        return statusId.value
+        try {
+          loadStatusError.value = null
+
+          const { data: status } = await apiFetchStatus({
+            id: statusId.value,
+            credentials: useOAuthStore().token,
+          })
+
+          useStatusesStore().addNewStatuses({ statuses: [status] })
+          fetchConversation()
+        } catch (error) {
+          console.error(error)
+          loadStatusError.value = error
+        }
+      }
+    }
+    const resetDisplayState = () => {
+      setFocused(statusId.value)
+      threadDisplay.value = new Map()
+    }
+    watch(statusId, (newVal, oldVal) => {
+      const newConversationId = getConversationId(newVal)
+      const oldConversationId = getConversationId(oldVal)
+      if (
+        newConversationId &&
+        oldConversationId &&
+        newConversationId === oldConversationId
+      ) {
+        setFocused(newVal)
+      } else {
+        resetDisplayState()
+        fetchConversation()
       }
     })
 
@@ -157,73 +221,12 @@ export default {
       ),
     )
     const getReplies = (id) => replies.value.get(id) ?? new Set()
+    const statusReplies = computed(() => {
+      return getReplies(status.value.id)
+    })
 
     provide('conversation', conversation)
     provide('replies', replies)
-
-    const fetchConversation = async () => {
-      if (status.value) {
-        const {
-          data: { ancestors, descendants },
-          timestamp,
-        } = await apiFetchConversation({
-          id: statusId.value,
-          credentials: useOAuthStore().token,
-        })
-
-        useStatusesStore().addNewStatuses({ statuses: ancestors, timestamp })
-        useStatusesStore().addNewStatuses({
-          statuses: descendants,
-          timestamp,
-        })
-        setFocused(mainStatusId.value)
-      } else {
-        try {
-          loadStatusError.value = null
-
-          const { data: status } = await fetchStatus({
-            id: statusId.value,
-            credentials: useOAuthStore().token,
-          })
-
-          useStatusesStore().addNewStatuses({ statuses: [status] })
-          fetchConversation()
-        } catch (error) {
-          console.error(error)
-          loadStatusError.value = error
-        }
-      }
-    }
-    const resetDisplayState = () => {
-      setFocused(statusId.value)
-      threadDisplay.value = new Map()
-    }
-
-    // # Virtual scrolling stuff
-    const { virtualHidden } = toRefs(props)
-    const unsuspendibleIds = ref(new Set())
-    const suspendable = computed(() => unsuspendibleIds.value.size === 0)
-    const hide = computed(() => virtualHidden.value && suspendable.value)
-    const onStatusSuspendStateChange = ({ id, suspend }) => {
-      if (!suspend) {
-        unsuspendibleIds.value.add(id)
-      } else {
-        unsuspendibleIds.value.delete(id)
-      }
-    }
-
-    // # Misc UI things
-    const loadStatusError = ref(null)
-    const { layoutType } = storeToRefs(useInterfaceStore())
-    const mobileLayout = computed(() => layoutType.value === 'mobile')
-    const firstStatus = computed(() => conversation.value[0])
-    const lastStatus = computed(
-      () => conversation.value[conversation.value.legnth - 1],
-    )
-    const getStatusClasses = (status, active) => ({
-      '-first': status.id === firstStatus.value?.id,
-      '-last': status.id === lastStatus.value?.id,
-    })
 
     // # Conversation Expansion
     const expanded = ref(false)
@@ -242,39 +245,33 @@ export default {
     provide('isExpanded', isExpanded)
     provide('isPage', isPage)
 
-    // # Focus
-    const focusedId = ref(statusId.value)
-    const focused = computed(() => (isExpanded.value ? focusedId.value : null))
-    const setFocused = (id) => {
-      if (!id) return
-      focusedId.value = id
-
-      if (!streamingEnabled.value) {
-        useStatusesStore().fetchStatus(id)
-      }
-
-      useStatusesStore().fetchFavsAndRepeats(id)
-      useStatusesStore().fetchEmojiReactions(id)
-    }
-    watch(statusId, (newVal, oldVal) => {
-      const newConversationId = getConversationId(newVal)
-      const oldConversationId = getConversationId(oldVal)
-      if (
-        newConversationId &&
-        oldConversationId &&
-        newConversationId === oldConversationId
-      ) {
-        setFocused(mainStatusId.value)
-      } else {
-        fetchConversation()
-      }
-    })
-    provide('focused', focused)
-
     // Component created
     if (isPage.value) {
       fetchConversation()
     }
+
+    // # Virtual scrolling stuff
+    const { virtualHidden } = toRefs(props)
+    const unsuspendibleIds = ref(new Set())
+    const suspendable = computed(() => unsuspendibleIds.value.size === 0)
+    const hide = computed(() => virtualHidden.value && suspendable.value)
+    const onStatusSuspendStateChange = ({ id, suspend }) => {
+      if (!suspend) {
+        unsuspendibleIds.value.add(id)
+      } else {
+        unsuspendibleIds.value.delete(id)
+      }
+    }
+
+    // # Misc UI things
+    const firstStatus = computed(() => conversation.value[0])
+    const lastStatus = computed(
+      () => conversation.value[conversation.value.legnth - 1],
+    )
+    const getStatusClasses = (status, active) => ({
+      '-first': status.id === firstStatus.value?.id,
+      '-last': status.id === lastStatus.value?.id,
+    })
 
     // # Linear style stuff
     const isLinearView = computed(() => displayStyle.value !== 'tree')
@@ -282,25 +279,7 @@ export default {
     // # Tree style stuff
     const isTreeView = computed(() => displayStyle.value === 'tree')
 
-    // ## Tree view settings
-    const treeViewIsSimple = computed(
-      () => !mergedConfig.value.conversationTreeAdvanced,
-    )
-    const shouldFadeAncestors = computed(
-      () => mergedConfig.value.conversationTreeFadeAncestors,
-    )
-    const showOtherRepliesButtonBelowStatus = computed(
-      () => mergedConfig.value.conversationOtherRepliesButton === 'below',
-    )
-    const maxDepthToShowByDefault = computed(() => {
-      // maxDepthInThread = max number of depths that is *visible*
-      // since our depth starts with 0 and "showing" means "showing children"
-      // there is a -2 here
-      const maxDepth = mergedConfig.value.maxDepthInThread - 2
-      return Math.min(1, maxDepth)
-    })
-
-    // ## Tree style state
+    // ## Tree state
     // ### Topology
     const ancestors = computed(() => {
       // First we fill map with empty sets and add given id's parent
@@ -344,7 +323,6 @@ export default {
       getAncestors(focusedId.value).reverse(),
     )
     const currentDepth = computed(() => currentAncestors.value.length)
-    const currentStatus = computed(() => getStatusObject(focusedId.value))
 
     // ### Thread Display
     const threadDisplay = ref(new Map()) // id => 'showing' | 'hidden'
@@ -378,15 +356,31 @@ export default {
       setThreadDisplayRecursively(id, 'showing')
     }
 
-    // ## Derived values
+    // ## Derived values and config
+    const treeViewIsSimple = computed(
+      () => !mergedConfig.value.conversationTreeAdvanced,
+    )
+    const maxDepthToShowByDefault = computed(() => {
+      // maxDepthInThread = max number of depths that is *visible*
+      // since our depth starts with 0 and "showing" means "showing children"
+      // there is a -2 here
+      const maxDepth = mergedConfig.value.maxDepthInThread - 2
+      return Math.min(1, maxDepth)
+    })
     const shouldShowAllConversationButton = computed(
       () => currentAncestors.value.length > 0 && topLevel.value.length > 1,
     )
     const shouldShowAncestors = computed(
       () => isExpanded.value && ancestors.value.get(focusedId.value) != null,
     )
+    const shouldFadeAncestors = computed(
+      () => mergedConfig.value.conversationTreeFadeAncestors,
+    )
+    const shouldShowOtherRepliesButton = computed(
+      () => mergedConfig.value.conversationOtherRepliesButton === 'below',
+    )
 
-    // # Scrolling / diving
+    // # Scrolling
     const tryScrollTo = (id) => {
       if (!id) {
         return
@@ -421,37 +415,56 @@ export default {
     }
 
     return {
-      hide,
-      isLinearView,
-      isTreeView,
-      isExpanded,
-      conversation,
-      mobileLayout,
-      toggleExpanded,
-      isPage,
-      status,
+      // # Misc
       loadStatusError,
+      mobileLayout,
+
+      // # Focus
       focused,
       setFocused,
-      showOtherRepliesButtonBelowStatus,
+
+      // # Main things
+      status,
+      statusReplies,
+      conversation,
+
+      // # Conversation Expansion
+      isPage,
+      isExpanded,
+      toggleExpanded,
+
+      // # Virtual scrolling stuff
+      hide,
       onStatusSuspendStateChange,
-      getStatusClasses,
-      getReplies,
-      currentAncestors,
-      statusId,
       virtualHidden,
-      shouldShowAncestors,
-      shouldShowAllConversationButton,
+
+      // # Misc UI things
+      getStatusClasses,
+
+      // # Linear style stuff
+      isLinearView,
+
+      // # Tree style stuff
+      isTreeView,
+
+      // ## Tree state
+      // ### Topology
       topLevel,
-      shouldFadeAncestors,
-      currentStatus,
-      treeViewIsSimple,
-      diveToTopLevel,
-      threadDisplay,
-      threadDisplayDefault,
-      replies,
-      diveIntoStatus,
+      currentAncestors,
+
+      // ### Thread Display
       showThreadRecursively,
+
+      // ## Derived values and config
+      treeViewIsSimple,
+      shouldShowAllConversationButton,
+      shouldShowAncestors,
+      shouldFadeAncestors,
+      shouldShowOtherRepliesButton,
+
+      // # Scrolling
+      diveToTopLevel,
+      diveIntoStatus,
     }
   },
 }

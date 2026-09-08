@@ -93,24 +93,24 @@
           <article
             v-for="status in currentAncestors"
             class="thread-ancestor"
-            :class="{'thread-ancestor-has-other-replies': getReplies(status.id).length > 1, '-faded': shouldFadeAncestors}"
+            :class="{'thread-ancestor-has-other-replies': statusReplies.size > 1, '-faded': shouldFadeAncestors}"
           >
             <Status
               class="conversation-status panel-body"
               :class="getStatusClasses(status)"
 
               :status-id="status.id"
-              :replies="getReplies(status.id)"
+              :replies="statusReplies"
 
               :focused="focused === status.id"
               can-dive
 
               @goto="setFocused"
-              @dive="() => diveIntoStatus(status.id)"
+              @dive="diveIntoStatus(status.id)"
               @suspendable-state-change="onStatusSuspendStateChange"
             />
             <div
-              v-if="showOtherRepliesButtonBelowStatus && getReplies(status.id).size > 1"
+              v-if="shouldShowOtherRepliesButton && statusReplies.size > 1"
               class="thread-ancestor-dive-box"
             >
               <div
@@ -130,7 +130,7 @@
                   </template>
                   <template #text>
                     <span>
-                      {{ $t('status.ancestor_follow', { numReplies: getReplies(status.id, getReplies(status.id).size - 1).size - 1 }) }}
+                      {{ $t('status.ancestor_follow', { numReplies: statusReplies.size - 1 }) }}
                     </span>
                   </template>
                 </i18n-t>
@@ -139,7 +139,7 @@
           </article>
         </div>
         <ThreadTree
-          :status-id="currentStatus.id"
+          :status-id="status.id"
           :depth="0"
 
           @goto="setFocused"
