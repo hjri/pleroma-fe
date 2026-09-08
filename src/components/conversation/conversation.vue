@@ -149,39 +149,29 @@
           @suspendable-state-change="onStatusSuspendStateChange"
         />
       </div>
-      <DynamicScroller
+      <div
         v-else-if="isLinearView"
         class="thread-body"
-        :min-item-size="15"
-        :buffer="500"
-        :items="conversation"
-        page-mode
-        flow-mode
-        role="feed"
-        item-tag="article"
-        item-class="panel-body"
       >
-        <template #default="{ item: status, active }">
-          <DynamicScrollerItem
-            :item="status"
-            :active="active"
-          >
-            <Status
-              :key="status.id"
-              class="conversation-status"
-              :class="getStatusClasses(status)"
-              :status-id="status.id"
-              :replies="getReplies(status.id)"
+        <article
+          v-for="status in conversation"
+          class="panel-body"
+        >
+          <Status
+            :key="status.id"
+            class="conversation-status"
+            :class="getStatusClasses(status)"
+            :status-id="status.id"
+            :replies="getReplies(status.id)"
 
-              :focused="focused === status.id || focused === status.retweeted_status?.id"
+            :focused="focused === status.id || focused === status.retweeted_status?.id"
 
-              @goto="setFocused"
-              @toggle-expanded="toggleExpanded"
-              @suspendable-state-change="onStatusSuspendStateChange"
-            />
-          </DynamicScrollerItem>
-        </template>
-      </DynamicScroller>
+            @goto="setFocused"
+            @toggle-expanded="toggleExpanded"
+            @suspendable-state-change="onStatusSuspendStateChange"
+          />
+        </article>
+      </div>
     </div>
   </div>
   <div

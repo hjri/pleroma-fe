@@ -426,6 +426,7 @@ export default {
       // # Main things
       status,
       statusReplies,
+      getReplies,
       conversation,
 
       // # Conversation Expansion
