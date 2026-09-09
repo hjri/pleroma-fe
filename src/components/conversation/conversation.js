@@ -26,6 +26,7 @@ import { useStatusesStore } from 'src/stores/statuses.js'
 import { useStreamingStore } from 'src/stores/streaming.js'
 
 import { useScrollPosition } from 'src/composables/useScrollPosition.js'
+import { useTreeConversationTopology } from 'src/composables/useTreeConversationTopology.js'
 import { useWindowSize } from 'src/composables/useWindowSize.js'
 
 import {
@@ -155,7 +156,7 @@ export default {
     }
     const resetDisplayState = () => {
       setFocused(statusId.value)
-      threadDisplay.value = new Map()
+      resetThreadDisplay()
     }
     watch(statusId, (newVal, oldVal) => {
       const newConversationId = getConversationId(newVal)
@@ -415,98 +416,25 @@ export default {
     const isTreeView = computed(() => displayStyle.value === 'tree')
 
     // ## Tree state
-    // ### Topology
-    const ancestors = computed(() => {
-      // First we fill map with empty sets and add given id's parent
-      // as set's only element (if any)
-      const parentMap = conversation.value.reduce(
-        (result, { id, in_reply_to_status_id: irid }) => {
-          if (!result.has(id)) {
-            result.set(id, new Set())
-          }
-          if (irid) {
-            // Setting parent for current item
-            result.get(id).add(irid)
-          }
-          return result
-        },
-        new Map(),
-      )
-
-      // Next we iterate over each entry and fill the whole ancestry chain
-      parentMap.entries().forEach(([originId, originSet]) => {
-        let current = originSet.values().next().value
-        while (current) {
-          originSet.add(current)
-
-          const parent = parentMap.get(current) ?? new Set()
-
-          current = parent.values().next().value
-        }
-      })
-      return parentMap
-    })
-    const topLevel = computed(() =>
-      [...ancestors.value.entries()]
-        .filter(([id, ancestors]) => ancestors.size === 0)
-        .map(([id]) => getStatusObject(id)),
-    )
-    const getAncestorIds = (id) => ancestors.value.get(id) ?? new Set()
-    const getAncestors = (id) =>
-      [...getAncestorIds(id)].map(getStatusObject).filter(Boolean)
-    const currentAncestors = computed(() =>
-      getAncestors(focusedId.value).reverse(),
-    )
-    const currentDepth = computed(() => currentAncestors.value.length)
-
-    // ### Thread Display
-    const threadDisplay = ref(new Map()) // id => 'showing' | 'hidden'
-    const threadDisplayDefault = computed(() => {
-      return conversation.value.reduce((map, status) => {
-        const { id } = status
-        const depth = ancestors.value.get(id).size
-
-        const state = (() => {
-          if (depth - currentDepth.value <= maxDepthToShowByDefault.value) {
-            return 'showing'
-          } else {
-            return 'hidden'
-          }
-        })()
-
-        map.set(id, state)
-        return map
-      }, new Map())
-    })
-    provide('threadDisplay', threadDisplay)
-    provide('threadDisplayDefault', threadDisplayDefault)
-
-    const setThreadDisplayRecursively = (id, value) => {
-      threadDisplay.value.set(id, value)
-      ;[...getReplies(id)]
-        .map((k) => k.id)
-        .map((id) => setThreadDisplayRecursively(id, value))
-    }
-    const showThreadRecursively = (id) => {
-      setThreadDisplayRecursively(id, 'showing')
-    }
-
-    // ## Derived values and config
     const treeViewIsSimple = computed(
       () => !mergedConfig.value.conversationTreeAdvanced,
     )
-    const maxDepthToShowByDefault = computed(() => {
-      // maxDepthInThread = max number of depths that is *visible*
-      // since our depth starts with 0 and "showing" means "showing children"
-      // there is a -2 here
-      const maxDepth = mergedConfig.value.maxDepthInThread - 2
-      return Math.min(1, maxDepth)
-    })
+
+    // ### Topology
+    const {
+      topLevel,
+      currentAncestors,
+      threadDisplay,
+      showThreadRecursively,
+      resetThreadDisplay,
+    } = useTreeConversationTopology(conversation, replies, focusedId)
+    provide('threadDisplay', threadDisplay)
+
     const shouldShowAllConversationButton = computed(
       () => currentAncestors.value.length > 0 && topLevel.value.length > 1,
     )
     const shouldShowAncestors = computed(
-      () => isExpanded.value && ancestors.value.get(focusedId.value) != null,
+      () => isExpanded.value && currentAncestors.value.size > 0,
     )
     const shouldFadeAncestors = computed(
       () => mergedConfig.value.conversationTreeFadeAncestors,

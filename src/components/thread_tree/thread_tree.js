@@ -27,7 +27,6 @@ const ThreadTree = {
     'focused',
     'replies',
     'threadDisplay',
-    'threadDisplayDefault',
     'isExpanded',
     'isPage',
   ],
@@ -39,10 +38,7 @@ const ThreadTree = {
       return !useMergedConfigStore().mergedConfig.conversationTreeAdvanced
     },
     threadShowing() {
-      const result =
-        this.threadDisplay.get(this.statusId) ??
-        this.threadDisplayDefault.get(this.statusId)
-      return result === 'showing'
+      return this.threadDisplay.get(this.statusId) === 'showing'
     },
     canDive() {
       return this.isExpanded
