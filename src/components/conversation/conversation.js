@@ -3,7 +3,6 @@ import { storeToRefs } from 'pinia'
 import {
   computed,
   nextTick,
-  onMounted,
   provide,
   ref,
   toRefs,
@@ -25,9 +24,8 @@ import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useStreamingStore } from 'src/stores/streaming.js'
 
-import { useScrollPosition } from 'src/composables/useScrollPosition.js'
 import { useTreeConversationTopology } from 'src/composables/useTreeConversationTopology.js'
-import { useWindowSize } from 'src/composables/useWindowSize.js'
+import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
 
 import {
   fetchConversation as apiFetchConversation,
@@ -252,149 +250,6 @@ export default {
       fetchConversation()
     }
 
-    // # Virtual scrolling stuff
-    const fontSizeSetting = computed(() => mergedConfig.value.textSize)
-    const fontSize = computed(() => {
-      // reading fontSizeSetting to make computed react to it
-      fontSizeSetting.value
-      const string = window
-        .getComputedStyle(document.body)
-        .getPropertyValue('font-size')
-      return Number.parseInt(string.slice(0, -2), 10) // remove the 'px'
-    })
-    const mutedStatusHeight = computed(() => {
-      return fontSize.value * 1.5
-    })
-    const normalStatusHeight = computed(() => {
-      return fontSize.value * 10
-    })
-    const heights = ref(new Map())
-    const totalHeight = computed(() =>
-      conversation.value.reduce((acc, item) => {
-        if (heights.value.has(item.id)) {
-          return acc + heights.value.get(item.id)
-        } else if (item.muted) {
-          return acc + mutedStatusHeight.value
-        } else {
-          return acc + normalStatusHeight.value
-        }
-      }, 0),
-    )
-
-    const body = useTemplateRef('body')
-    const updateVirtualHeight = ({ id, height }) => {
-      heights.value.set(id, height)
-    }
-
-    const { y: topScrollBoundary } = useScrollPosition()
-    const { height: windowHeight } = useWindowSize()
-
-    const realTopScrollBoundary = ref(0)
-    const realBottomScrollBoundary = ref(0)
-    const updateBoundaries = () => {
-      if (!body.value) return // Not mounted yet
-
-      const { top } = body.value.getBoundingClientRect()
-
-      const distanceItemTopToWindowTop = 0 - top
-      const distanceItemTopToWindowBottom = windowHeight.value - top
-
-      realTopScrollBoundary.value = distanceItemTopToWindowTop
-      realBottomScrollBoundary.value = distanceItemTopToWindowBottom
-    }
-
-    watch(topScrollBoundary, updateBoundaries)
-    watch(totalHeight, updateBoundaries)
-    onMounted(updateBoundaries)
-
-    const buffer = normalStatusHeight.value * 2
-
-    const unsuspendibleIds = ref(new Set())
-    const onStatusSuspendStateChange = ({ id, suspend }) => {
-      if (!suspend) {
-        unsuspendibleIds.value.add(id)
-      } else {
-        unsuspendibleIds.value.delete(id)
-      }
-    }
-
-    const heightChartLinear = computed(() => {
-      // Map every height and suspendable state
-      const chart = conversation.value.map(({ id }) => {
-        const status = getStatusObject(id)
-        const height =
-          (() => {
-            if (heights.value.has(id)) {
-              return heights.value.get(id)
-            } else if (status?.muted) {
-              return mutedStatusHeight.value
-            } else {
-              return normalStatusHeight.value
-            }
-          })() + 1 //including border
-        const suspendable = !unsuspendibleIds.value.has(id)
-        return { id, height, suspendable, status }
-      })
-
-      // Walk over the list to set top offsets
-      chart.reduce((sum, item) => {
-        item.top = sum
-        return sum + item.height
-      }, 0)
-
-      // Determine visibility state
-      chart.forEach((heightChartItem) => {
-        const itemBottomBoundary = heightChartItem.top + heightChartItem.height
-        const itemTopBoundary = heightChartItem.top
-
-        const finalTopScrollBoundary = realTopScrollBoundary.value - buffer
-        const finalBottomScrollBoundary =
-          realBottomScrollBoundary.value + buffer
-
-        // To be visible, item's bottom boundary shoud be below top scroll boundary)
-        const belowTopBoundary = itemBottomBoundary > finalTopScrollBoundary
-        // To be visible, item's top boundary shoud be above bottom scroll boundary)
-        const aboveBottomBoundary = itemTopBoundary < finalBottomScrollBoundary
-        // This accounts for the case where item's boundaries exceed scroll boundary
-
-        heightChartItem.visible = belowTopBoundary && aboveBottomBoundary
-      })
-
-      // Group invisible statuses into spacers
-      return chart.reduce((acc, heightChartItem) => {
-        const { suspendable, visible, height, top, bottom, id, status } =
-          heightChartItem
-        const present = visible || !suspendable
-        if (present) {
-          return [...acc, { type: 'status', height, top, bottom, id, status }]
-        } else {
-          const previousItem = acc[acc.length - 1]
-          const spacer =
-            previousItem?.type === 'spacer'
-              ? previousItem
-              : {
-                  type: 'spacer',
-                  top: Number.POSITIVE_INFINITY,
-                  bottom: Number.POSITIVE_INFINITY,
-                  height: 0,
-                  ids: new Set(),
-                }
-
-          spacer.ids.add(id)
-          spacer.id = [...spacer.ids].join()
-          spacer.height += height
-          if (top < spacer.top) spacer.top = top
-          if (bottom < spacer.bottom) spacer.bottom = bottom
-
-          if (previousItem?.type === 'spacer') {
-            return acc
-          } else {
-            return [...acc, spacer]
-          }
-        }
-      }, [])
-    })
-
     // # Misc UI things
     const firstStatus = computed(() => conversation.value[0])
     const lastStatus = computed(
@@ -407,16 +262,15 @@ export default {
 
     // # Linear style stuff
     const isLinearView = computed(() => displayStyle.value !== 'tree')
+    const body = useTemplateRef('body')
+    const {
+      heightChart: heightChartLinear,
+      changeSuspendState: changeSuspendStateLinear,
+      updateVirtualHeight: updateVirtualHeightLinear,
+    } = useVirtualScrolling(conversation, body)
 
     // # Tree style stuff
     const isTreeView = computed(() => displayStyle.value === 'tree')
-
-    // ## Tree state
-    const treeViewIsSimple = computed(
-      () => !mergedConfig.value.conversationTreeAdvanced,
-    )
-
-    // ### Topology
     const {
       topLevel,
       currentAncestors,
@@ -426,6 +280,9 @@ export default {
     } = useTreeConversationTopology(conversation, replies, focusedId)
     provide('threadDisplay', threadDisplay)
 
+    const treeViewIsSimple = computed(
+      () => !mergedConfig.value.conversationTreeAdvanced,
+    )
     const shouldShowAllConversationButton = computed(
       () => currentAncestors.value.length > 0 && topLevel.value.length > 1,
     )
@@ -438,6 +295,14 @@ export default {
     const shouldShowOtherRepliesButton = computed(
       () => mergedConfig.value.conversationOtherRepliesButton === 'below',
     )
+
+    // # Virtual scrolling stuff
+    const onStatusSuspendStateChange = ({ id, suspend }) => {
+      changeSuspendStateLinear({ id, suspend })
+    }
+    const updateVirtualHeight = ({ id, height }) => {
+      updateVirtualHeightLinear({ id, height })
+    }
 
     // # Scrolling
     const tryScrollTo = (id) => {
@@ -483,9 +348,9 @@ export default {
       setFocused,
 
       // # Main things
+      conversation,
       currentStatus,
       getReplies,
-      conversation,
 
       // # Conversation Expansion
       isPage,
