@@ -11,15 +11,33 @@
         v-model="searchTerm"
         class="input search-input"
         :placeholder="$t('nav.search')"
-        @keyup.enter="newQuery(searchTerm)"
+        @keyup.enter="updateToQuery"
       >
       <button
         class="btn button-default search-button"
         type="submit"
-        @click="newQuery(searchTerm)"
+        @click="updateToQuery"
+        :aria-label="$t('nav.search')"
       >
         <FAIcon icon="search" />
       </button>
+      <button
+        class="btn button-default"
+        @click="toogleAdvanced"
+        :aria-label="$t('search.advanced')"
+      >
+        <FAIcon v-if="advancedMode" icon="chevron-up" />
+        <FAIcon v-else icon="chevron-down" />
+      </button>
+    </div>
+    <div v-if="advancedMode" class="panel-body search-advanced">
+      <label class="search-advanced-criterion">
+        <span class="search-advanced-criterion-label">{{ $t('search.by_author') }}</span>
+        <input
+          v-model="searchAuthor"
+          class="input"
+        >
+      </label>
     </div>
     <div
       v-if="loading && statusesOffset == 0"
@@ -187,6 +205,20 @@
 
   .search-button {
     margin-left: 0.5em;
+  }
+}
+
+.search-advanced-criterion {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.5rem;
+  .search-advanced-criterion-label {
+    flex: 0;
+  }
+  .input {
+    flex: 1;
+    margin-left: 0.5rem;
   }
 }
 

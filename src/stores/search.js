@@ -8,7 +8,7 @@ import { search2, searchUsers } from 'src/api/public.js'
 
 export const useSearchStore = defineStore('search', {
   actions: {
-    async search({ q, resolve, limit, offset, following, type }) {
+    async search({ q, resolve, limit, offset, following, type, accountId }) {
       const { data, ...rest } = await search2({
         q,
         resolve,
@@ -16,6 +16,7 @@ export const useSearchStore = defineStore('search', {
         offset,
         following,
         type,
+        accountId,
         credentials: useOAuthStore().token,
       })
 

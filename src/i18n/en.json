@@ -1972,7 +1972,9 @@
     "people_talking": "{count} people talking",
     "no_results": "No results",
     "no_more_results": "No more results",
-    "load_more": "Load more results"
+    "load_more": "Load more results",
+    "advanced": "Advanced search",
+    "by_author": "Author:"
   },
   "password_reset": {
     "forgot_password": "Forgot password?",
