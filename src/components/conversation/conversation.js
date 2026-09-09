@@ -26,6 +26,7 @@ import { useStreamingStore } from 'src/stores/streaming.js'
 import { useConversation } from 'src/composables/useConversation.js'
 import { useTreeConversationTopology } from 'src/composables/useTreeConversationTopology.js'
 import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
+import { useScrollPosition } from 'src/composables/useScrollPosition.js'
 
 import { WSConnectionStatus } from 'src/api/websocket.js'
 
@@ -90,12 +91,13 @@ export default {
       setFocused(id)
       const target = document.querySelector(`.Status[data-status-id=${id}]`)
       await nextTick()
-      target.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return await target.scrollIntoView({ behavior: 'smooth', block: 'center' })
     }
 
     const { statusId } = toRefs(props)
 
     const router = useRouter()
+    const scroller = useScrollPosition()
 
     // # Main Configuration / global state
     const { mergedConfig } = storeToRefs(useMergedConfigStore())
@@ -146,10 +148,10 @@ export default {
       loadError,
     } = useConversation(focusedId, isExpanded)
 
-    watch(expanded, (value) => {
-      tryScrollTo(currentStatus.value.id)
+    watch(expanded, async (value) => {
       if (value) {
-        fetchConversation()
+        await fetchConversation()
+        await tryScrollTo(currentStatus.value.id)
       } else {
         resetDisplayState()
       }
@@ -196,7 +198,7 @@ export default {
       heightChart: heightChartLinear,
       changeSuspendState: changeSuspendStateLinear,
       updateVirtualHeight: updateVirtualHeightLinear,
-    } = useVirtualScrolling(conversation, linearElement, currentStatus)
+    } = useVirtualScrolling(conversation, linearElement, scroller, true, currentStatus)
 
     // # Tree style stuff
     const isTreeView = computed(() => displayStyle.value === 'tree')
@@ -214,7 +216,7 @@ export default {
       heightChart: heightChartAncestors,
       changeSuspendState: changeSuspendStateAncestors,
       updateVirtualHeight: updateVirtualHeightAncestors,
-    } = useVirtualScrolling(currentAncestors, ancestorsElement)
+    } = useVirtualScrolling(currentAncestors, ancestorsElement, scroller, true)
 
     const currentLevel = computed(() => [currentStatus.value].filter(Boolean))
     const currentLevelElement = useTemplateRef('currentLevel')
@@ -223,7 +225,7 @@ export default {
       totalHeight: totalHeightCurrentLevel,
       changeSuspendState: changeSuspendStateCurrentLevel,
       updateVirtualHeight: updateVirtualHeightCurrentLevel,
-    } = useVirtualScrolling(currentLevel, currentLevelElement, currentStatus)
+    } = useVirtualScrolling(currentLevel, currentLevelElement, scroller, false)
 
     const treeViewIsSimple = computed(
       () => !mergedConfig.value.conversationTreeAdvanced,
@@ -239,12 +241,8 @@ export default {
     )
 
     // # Scrolling
-    const diveIntoStatus = (id) => {
-      tryScrollTo(id)
-    }
-    const diveToTopLevel = () => {
-      tryScrollTo(currentAncestors.value[0].id)
-    }
+    const diveIntoStatus = (id) => tryScrollTo(id)
+    const diveToTopLevel = () => tryScrollTo(currentAncestors.value[0].id)
 
     return {
       // # Misc

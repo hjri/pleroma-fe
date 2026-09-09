@@ -3,6 +3,7 @@ import { onMounted, onUnmounted, ref } from 'vue'
 export function useScrollPosition() {
   const x = ref(0)
   const y = ref(0)
+  const inProgress = ref(false)
 
   const update = (e) => {
     x.value = window.scrollX
@@ -17,5 +18,11 @@ export function useScrollPosition() {
     window.removeEventListener('scroll', update)
   })
 
-  return { x, y }
+  const scrollBy = async (x1, y1, options) => {
+    inProgress.value = true
+    await window.scrollBy(x1, y1, options)
+    inProgress.value = false
+  }
+
+  return { x, y, scrollBy, inProgress }
 }

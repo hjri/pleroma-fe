@@ -4,10 +4,15 @@ import { computed, ref, watch, nextTick } from 'vue'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 
-import { useScrollPosition } from 'src/composables/useScrollPosition.js'
 import { useWindowSize } from 'src/composables/useWindowSize.js'
 
-export function useVirtualScrolling(conversation, body, anchorStatus) {
+export function useVirtualScrolling(
+  conversation,
+  body,
+  scrollPosition,
+  scrollCompensation,
+  anchorStatus,
+) {
   const getStatusObject = (id) => useStatusesStore().allStatuses.get(id)
 
   const { mergedConfig } = storeToRefs(useMergedConfigStore())
@@ -64,7 +69,7 @@ export function useVirtualScrolling(conversation, body, anchorStatus) {
   }
 
   // Scrolling
-  const { y: scrollY } = useScrollPosition()
+  const { y: scrollY, inProgress: scrollInProgress } = scrollPosition
   const { height: windowHeight } = useWindowSize()
 
   const topScrollBoundary = ref(0)
@@ -125,6 +130,8 @@ export function useVirtualScrolling(conversation, body, anchorStatus) {
   })
 
   watch(heightChart, async (newVal, oldVal) => {
+    if (scrollInProgress) return
+    if (!scrollCompensation) return
     pauseWatchers()
     const getAnchoredEl = (list) => anchor.value
       ? list.find(({ id }) => id === anchor.value)
