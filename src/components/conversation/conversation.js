@@ -151,10 +151,11 @@ export default {
     watch(expanded, async (value) => {
       if (value) {
         await fetchConversation()
-        await tryScrollTo(currentStatus.value.id)
       } else {
         resetDisplayState()
       }
+      if (isPage.value) return
+      await tryScrollTo(currentStatus.value.id)
     }, { flush: 'post' })
 
     const resetDisplayState = () => {

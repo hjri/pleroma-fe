@@ -130,7 +130,7 @@ export function useVirtualScrolling(
   })
 
   watch(heightChart, async (newVal, oldVal) => {
-    if (scrollInProgress) return
+    if (scrollInProgress.value) return
     if (!scrollCompensation) return
     pauseWatchers()
     const getAnchoredEl = (list) => anchor.value
@@ -146,7 +146,7 @@ export function useVirtualScrolling(
     topScrollBoundary.value += diff
     bottomScrollBoundary.value += diff
     await nextTick()
-    window.scrollBy(0, diff)
+    scrollPosition.scrollBy(0, diff)
 
     updateBoundaries()
     resumeWatchers()
