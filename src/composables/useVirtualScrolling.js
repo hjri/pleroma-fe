@@ -63,11 +63,11 @@ export function useVirtualScrolling(conversation, body) {
   }
 
   // Scrolling
-  const { y: topScrollBoundary } = useScrollPosition()
+  const { y: scrollY } = useScrollPosition()
   const { height: windowHeight } = useWindowSize()
 
-  const realTopScrollBoundary = ref(0)
-  const realBottomScrollBoundary = ref(0)
+  const topScrollBoundary = ref(0)
+  const bottomScrollBoundary = ref(0)
   const updateBoundaries = () => {
     if (!body.value) return // Not mounted yet
 
@@ -76,11 +76,11 @@ export function useVirtualScrolling(conversation, body) {
     const distanceItemTopToWindowTop = 0 - top
     const distanceItemTopToWindowBottom = windowHeight.value - top
 
-    realTopScrollBoundary.value = distanceItemTopToWindowTop
-    realBottomScrollBoundary.value = distanceItemTopToWindowBottom
+    topScrollBoundary.value = distanceItemTopToWindowTop
+    bottomScrollBoundary.value = distanceItemTopToWindowBottom
   }
   watch(windowHeight, updateBoundaries)
-  watch(topScrollBoundary, updateBoundaries)
+  watch(scrollY, updateBoundaries)
   watch(totalHeight, updateBoundaries)
   onMounted(updateBoundaries)
 
@@ -113,17 +113,17 @@ export function useVirtualScrolling(conversation, body) {
       const itemBottomBoundary = heightChartItem.top + heightChartItem.height
       const itemTopBoundary = heightChartItem.top
 
-      const finalTopScrollBoundary = realTopScrollBoundary.value - buffer.value
+      const finalTopScrollBoundary = topScrollBoundary.value - buffer.value
       const finalBottomScrollBoundary =
-        realBottomScrollBoundary.value + buffer.value
+        bottomScrollBoundary.value + buffer.value
 
       // To be visible, item's bottom boundary shoud be below top scroll boundary)
-      const belowTopBoundary = itemBottomBoundary > finalTopScrollBoundary
+      const isBelowTopBoundary = itemBottomBoundary > finalTopScrollBoundary
       // To be visible, item's top boundary shoud be above bottom scroll boundary)
-      const aboveBottomBoundary = itemTopBoundary < finalBottomScrollBoundary
+      const isAboveBottomBoundary = itemTopBoundary < finalBottomScrollBoundary
       // This accounts for the case where item's boundaries exceed scroll boundary
 
-      heightChartItem.visible = belowTopBoundary && aboveBottomBoundary
+      heightChartItem.visible = isBelowTopBoundary && isAboveBottomBoundary
     })
 
     // Group invisible statuses into spacers

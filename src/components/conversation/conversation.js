@@ -20,17 +20,13 @@ import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useStreamingStore } from 'src/stores/streaming.js'
 
+import { useConversation } from 'src/composables/useConversation.js'
 import { useTreeConversationTopology } from 'src/composables/useTreeConversationTopology.js'
 import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
 
-import {
-  fetchConversation as apiFetchConversation,
-  fetchStatus as apiFetchStatus,
-} from 'src/api/public.js'
 import { WSConnectionStatus } from 'src/api/websocket.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -73,11 +69,22 @@ export default {
     RichContent,
   },
   setup(props) {
+    // # Helpers
+    const getStatusObject = (id) => useStatusesStore().allStatuses.get(id)
+    const getConversationId = (statusId) => {
+      const status = getStatusObject(statusId)
+      return get(
+        status,
+        'retweeted_status.statusnet_conversation_id',
+        get(status, 'statusnet_conversation_id'),
+      )
+    }
+
     const { statusId } = toRefs(props)
 
     const router = useRouter()
 
-    // # Main Configuration
+    // # Main Configuration / global state
     const { mergedConfig } = storeToRefs(useMergedConfigStore())
     const { mastoUserSocketStatus } = storeToRefs(useStreamingStore())
     const displayStyle = computed(() => mergedConfig.value.conversationDisplay)
@@ -86,11 +93,25 @@ export default {
         mergedConfig.value.useStreamingApi &&
         mastoUserSocketStatus === WSConnectionStatus.JOINED,
     )
-
-    // # Misc
-    const loadStatusError = ref(null)
     const { layoutType } = storeToRefs(useInterfaceStore())
     const mobileLayout = computed(() => layoutType.value === 'mobile')
+
+    // # Conversation Expansion
+    const expanded = ref(false)
+    const { isPage } = toRefs(props)
+    const isExpanded = computed(() => !!(expanded.value || isPage.value))
+    const toggleExpanded = () => {
+      expanded.value = !expanded.value
+    }
+    watch(expanded, (value) => {
+      if (value) {
+        fetchConversation()
+      } else {
+        resetDisplayState()
+      }
+    })
+    provide('isExpanded', isExpanded)
+    provide('isPage', isPage)
 
     // # Focus
     const focusedId = ref(statusId.value)
@@ -109,49 +130,15 @@ export default {
     provide('focused', focused)
 
     // # Main things
-    const getStatusObject = (id) => useStatusesStore().allStatuses.get(id)
-    const getConversationId = (statusId) => {
-      const status = getStatusObject(statusId)
-      return get(
-        status,
-        'retweeted_status.statusnet_conversation_id',
-        get(status, 'statusnet_conversation_id'),
-      )
-    }
-    const currentStatus = computed(() => getStatusObject(focusedId.value))
+    const {
+      currentStatus,
+      conversation,
+      replies,
+      getReplies,
+      fetchConversation,
+      loadError,
+    } = useConversation(focusedId, isExpanded)
 
-    const fetchConversation = async () => {
-      if (currentStatus.value) {
-        const {
-          data: { ancestors, descendants },
-          timestamp,
-        } = await apiFetchConversation({
-          id: statusId.value,
-          credentials: useOAuthStore().token,
-        })
-
-        useStatusesStore().addNewStatuses({ statuses: ancestors, timestamp })
-        useStatusesStore().addNewStatuses({
-          statuses: descendants,
-          timestamp,
-        })
-      } else {
-        try {
-          loadStatusError.value = null
-
-          const { data: status } = await apiFetchStatus({
-            id: statusId.value,
-            credentials: useOAuthStore().token,
-          })
-
-          useStatusesStore().addNewStatuses({ statuses: [status] })
-          fetchConversation()
-        } catch (error) {
-          console.error(error)
-          loadStatusError.value = error
-        }
-      }
-    }
     const resetDisplayState = () => {
       setFocused(statusId.value)
       resetThreadDisplay()
@@ -170,80 +157,6 @@ export default {
         fetchConversation()
       }
     })
-
-    const sortById = (a, b) => {
-      const idA = a.type === 'retweet' ? a.retweeted_status.id : a.id
-      const idB = b.type === 'retweet' ? b.retweeted_status.id : b.id
-      const seqA = Number(idA)
-      const seqB = Number(idB)
-      const isSeqA = !Number.isNaN(seqA)
-      const isSeqB = !Number.isNaN(seqB)
-      if (isSeqA && isSeqB) {
-        return seqA < seqB ? -1 : 1
-      } else if (isSeqA && !isSeqB) {
-        return -1
-      } else if (!isSeqA && isSeqB) {
-        return 1
-      } else {
-        return idA < idB ? -1 : 1
-      }
-    }
-    const conversationId = computed(() => getConversationId(statusId.value))
-    const conversation = computed(() => {
-      if (!currentStatus.value) {
-        return []
-      }
-
-      if (!isExpanded.value) {
-        return [currentStatus.value]
-      }
-
-      const conversation = useStatusesStore().conversations.get(
-        conversationId.value,
-      )
-
-      return [...conversation.keys()]
-        .map((k) => useStatusesStore().allStatuses.get(k))
-        .filter((status) => status.type != 'repeat') // Old backend behavior?
-        .toSorted(sortById)
-    })
-    const replies = computed(() =>
-      conversation.value.reduce(
-        (result, { id, in_reply_to_status_id: irid }, index) => {
-          if (irid) {
-            if (!result.has(irid)) {
-              result.set(irid, new Set())
-            }
-            result.get(irid).add({
-              name: `#${index}`,
-              id,
-            })
-          }
-          return result
-        },
-        new Map(),
-      ),
-    )
-    const getReplies = (id) => replies.value.get(id) ?? new Set()
-    provide('conversation', conversation)
-    provide('replies', replies)
-
-    // # Conversation Expansion
-    const expanded = ref(false)
-    const { isPage } = toRefs(props)
-    const isExpanded = computed(() => !!(expanded.value || isPage.value))
-    const toggleExpanded = () => {
-      expanded.value = !expanded.value
-    }
-    watch(expanded, (value) => {
-      if (value) {
-        fetchConversation()
-      } else {
-        resetDisplayState()
-      }
-    })
-    provide('isExpanded', isExpanded)
-    provide('isPage', isPage)
 
     // Component created
     if (isPage.value) {
@@ -280,6 +193,21 @@ export default {
     } = useTreeConversationTopology(conversation, replies, focusedId)
     provide('threadDisplay', threadDisplay)
 
+    const ancestorsElement = useTemplateRef('ancestors')
+    const {
+      heightChart: heightChartAncestors,
+      changeSuspendState: changeSuspendStateAncestors,
+      updateVirtualHeight: updateVirtualHeightAncestors,
+    } = useVirtualScrolling(currentAncestors, ancestorsElement)
+
+    const currentLevel = computed(() => [currentStatus.value])
+    const currentLevelElement = useTemplateRef('currentLevel')
+    const {
+      heightChart: heightChartCurrentLevel,
+      changeSuspendState: changeSuspendStateCurrentLevel,
+      updateVirtualHeight: updateVirtualHeightCurrentLevel,
+    } = useVirtualScrolling(currentLevel, currentLevelElement)
+
     const treeViewIsSimple = computed(
       () => !mergedConfig.value.conversationTreeAdvanced,
     )
@@ -295,14 +223,6 @@ export default {
     const shouldShowOtherRepliesButton = computed(
       () => mergedConfig.value.conversationOtherRepliesButton === 'below',
     )
-
-    // # Virtual scrolling stuff
-    const onStatusSuspendStateChange = ({ id, suspend }) => {
-      changeSuspendStateLinear({ id, suspend })
-    }
-    const updateVirtualHeight = ({ id, height }) => {
-      updateVirtualHeightLinear({ id, height })
-    }
 
     // # Scrolling
     const tryScrollTo = (id) => {
@@ -340,7 +260,7 @@ export default {
 
     return {
       // # Misc
-      loadStatusError,
+      loadError,
       mobileLayout,
 
       // # Focus
@@ -357,19 +277,27 @@ export default {
       isExpanded,
       toggleExpanded,
 
-      // # Virtual scrolling stuff
-      onStatusSuspendStateChange,
-      updateVirtualHeight,
-
       // # Misc UI things
       getStatusClasses,
 
       // # Linear style stuff
       isLinearView,
+
+      // ## Linear virtual scrolling
       heightChartLinear,
+      changeSuspendStateLinear,
+      updateVirtualHeightLinear,
 
       // # Tree style stuff
       isTreeView,
+
+      // ## Tree virtual scrolling
+      heightChartAncestors,
+      changeSuspendStateAncestors,
+      updateVirtualHeightAncestors,
+      heightChartCurrentLevel,
+      changeSuspendStateCurrentLevel,
+      updateVirtualHeightCurrentLevel,
 
       // ## Tree state
       // ### Topology
@@ -379,7 +307,7 @@ export default {
       // ### Thread Display
       showThreadRecursively,
 
-      // ## Derived values and config
+      // ### Derived values and config
       treeViewIsSimple,
       shouldShowAllConversationButton,
       shouldShowAncestors,

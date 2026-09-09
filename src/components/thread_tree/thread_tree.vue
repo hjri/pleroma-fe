@@ -1,5 +1,8 @@
 <template>
-  <article class="thread-tree">
+<article
+  ref="root"
+  class="thread-tree"
+>
     <Status
       :key="statusId"
       class="conversation-status conversation-status-treeview panel-body"
@@ -12,7 +15,7 @@
       @dive="$emit('dive', statusId)"
       @goto="$emit('goto', statusId)"
       @toggle-expanded="$emit('toggleExpanded', statusId)"
-      @suspendable-state-change="$emit('suspendableStateChange', e)"
+      @suspendable-state-change="(e) => $emit('suspendableStateChange', e)"
     />
     <div
       v-if="currentReplies.length > 0 && threadShowing"

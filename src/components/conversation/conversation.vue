@@ -42,7 +42,7 @@
       ref="body"
       :class="{ 'panel-body': isExpanded }"
     >
-      <p v-if="!loadStatusError">
+      <p v-if="!loadError">
         <FAIcon
           spin
           icon="circle-notch"
@@ -50,7 +50,7 @@
         {{ $t('status.loading') }}
       </p>
       <p v-else>
-        {{ $t('status.load_error', { error: loadStatusError }) }}
+        {{ $t('status.load_error', { error: loadError }) }}
       </p>
     </div>
     <div
@@ -88,6 +88,7 @@
         </div>
         <div
           v-if="shouldShowAncestors"
+          ref="ancestors"
           class="thread-ancestors"
         >
           <article
@@ -107,8 +108,8 @@
 
               @goto="setFocused"
               @dive="diveIntoStatus(status.id)"
-              @suspendable-state-change="onStatusSuspendStateChange"
-              @height-change="updateVirtualHeight"
+              @suspendable-state-change="changeSuspendStateAncestors"
+              @height-change="updateVirtualHeightAncestors"
             />
             <div
               v-if="shouldShowOtherRepliesButton && getReplies(status.id).size > 1"
@@ -139,17 +140,32 @@
             </div>
           </article>
         </div>
-        <ThreadTree
-          :status-id="currentStatus.id"
-          :depth="0"
+        <div
+          class="currentStatus"
+          ref="currentLevel"
+        >
+          <!-- Technically this will always have a single element but -->
+          <!-- it's more convenient for us to use a v-for here -->
+          <template v-for="element in heightChartCurrentLevel">
+            <ThreadTree
+              v-if="element.type === 'status'"
+              :status-id="currentStatus.id"
+              :depth="0"
 
-          @goto="setFocused"
-          @dive="diveIntoStatus"
-          @toggle-expanded="toggleExpanded"
-          @show-thread-recursively="showThreadRecursively"
-          @suspendable-state-change="onStatusSuspendStateChange"
-          @height-change="updateVirtualHeight"
-        />
+              @goto="setFocused"
+              @dive="diveIntoStatus"
+              @toggle-expanded="toggleExpanded"
+              @show-thread-recursively="showThreadRecursively"
+              @suspendable-state-change="changeSuspendStateCurrentLevel"
+              @height-change="updateVirtualHeightCurrentLevel"
+            />
+            <div
+              v-if="element.type === 'spacer'"
+              class="virtual-spacer"
+              :style="{ height: element.height + 'px' }"
+            />
+          </template>
+        </div>
       </div>
       <div
         v-else-if="isLinearView"
@@ -176,8 +192,8 @@
 
             @goto="setFocused"
             @toggle-expanded="toggleExpanded"
-            @suspendable-state-change="onStatusSuspendStateChange"
-            @height-change="updateVirtualHeight"
+            @suspendable-state-change="changeSuspendStateLinear"
+            @height-change="updateVirtualHeightLinear"
           />
         </article>
       </div>
