@@ -221,9 +221,6 @@ export default {
     const shouldFadeAncestors = computed(
       () => mergedConfig.value.conversationTreeFadeAncestors,
     )
-    const shouldShowOtherRepliesButton = computed(
-      () => mergedConfig.value.conversationOtherRepliesButton === 'below',
-    )
 
     // # Scrolling
     const tryScrollTo = (id) => {
@@ -313,7 +310,6 @@ export default {
       shouldShowAllConversationButton,
       shouldShowAncestors,
       shouldFadeAncestors,
-      shouldShowOtherRepliesButton,
 
       // # Scrolling
       diveToTopLevel,
