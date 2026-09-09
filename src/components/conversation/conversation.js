@@ -13,8 +13,6 @@ import {
 import { useRouter } from 'vue-router'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
-import { useScrollPosition } from 'src/composables/useScrollPosition.js'
-import { useWindowSize } from 'src/composables/useWindowSize.js'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
 import QuickViewSettings from 'src/components/quick_view_settings/quick_view_settings.vue'
@@ -26,6 +24,9 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useStreamingStore } from 'src/stores/streaming.js'
+
+import { useScrollPosition } from 'src/composables/useScrollPosition.js'
+import { useWindowSize } from 'src/composables/useWindowSize.js'
 
 import {
   fetchConversation as apiFetchConversation,

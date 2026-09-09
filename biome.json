@@ -140,7 +140,15 @@
               ":BLANK_LINE:",
               [":PATH:", "src/stores/**"],
               ":BLANK_LINE:",
-              [":PATH:", "src/**", "src/stores/**", "src/components/**"],
+              [":PATH:", "src/composables/**"],
+              ":BLANK_LINE:",
+              [
+                ":PATH:",
+                "src/**",
+                "src/stores/**",
+                "src/components/**",
+                "src/composables/**"
+              ],
               ":BLANK_LINE:",
               "@fortawesome/fontawesome-svg-core",
               "@fortawesome/*"
