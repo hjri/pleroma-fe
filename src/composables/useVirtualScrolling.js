@@ -1,5 +1,5 @@
 import { storeToRefs } from 'pinia'
-import { computed, ref, watch, nextTick } from 'vue'
+import { computed, ref, watch, nextTick, toValue } from 'vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
@@ -69,7 +69,7 @@ export function useVirtualScrolling(
   }
 
   // Scrolling
-  const { y: scrollY, inProgress: scrollInProgress } = scrollPosition
+  const { y: scrollY, inProgress: scrollInProgress, scrollBy } = scrollPosition
   const { height: windowHeight } = useWindowSize()
 
   const topScrollBoundary = ref(0)
@@ -130,8 +130,8 @@ export function useVirtualScrolling(
   })
 
   watch(heightChart, async (newVal, oldVal) => {
+    if (!toValue(scrollCompensation)) return
     if (scrollInProgress.value) return
-    if (!scrollCompensation) return
     pauseWatchers()
     const getAnchoredEl = (list) => anchor.value
       ? list.find(({ id }) => id === anchor.value)
@@ -143,10 +143,11 @@ export function useVirtualScrolling(
 
     const diff = newOffset - oldOffset // Positive = down, Negative = up
 
-    topScrollBoundary.value += diff
-    bottomScrollBoundary.value += diff
-    await nextTick()
-    scrollPosition.scrollBy(0, diff)
+    if (diff !== 0) {
+      topScrollBoundary.value += diff
+      bottomScrollBoundary.value += diff
+      scrollBy(0, diff)
+    }
 
     updateBoundaries()
     resumeWatchers()

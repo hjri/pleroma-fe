@@ -81,6 +81,7 @@ export default {
       )
     }
 
+    const scroller = useScrollPosition()
     const tryScrollTo = async (id) => {
       if (!id) {
         return
@@ -90,14 +91,12 @@ export default {
       }
       setFocused(id)
       const target = document.querySelector(`.Status[data-status-id=${id}]`)
-      await nextTick()
-      return await target.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return await scroller.scrollIntoView(target, { block: 'center' })
     }
 
     const { statusId } = toRefs(props)
 
     const router = useRouter()
-    const scroller = useScrollPosition()
 
     // # Main Configuration / global state
     const { mergedConfig } = storeToRefs(useMergedConfigStore())
@@ -195,11 +194,12 @@ export default {
     // # Linear style stuff
     const isLinearView = computed(() => displayStyle.value !== 'tree')
     const linearElement = useTemplateRef('linear')
+    const linearScrollCompensation = computed(() => isLinearView.value && isExpanded.value)
     const {
       heightChart: heightChartLinear,
       changeSuspendState: changeSuspendStateLinear,
       updateVirtualHeight: updateVirtualHeightLinear,
-    } = useVirtualScrolling(conversation, linearElement, scroller, true, currentStatus)
+    } = useVirtualScrolling(conversation, linearElement, scroller, linearScrollCompensation, currentStatus)
 
     // # Tree style stuff
     const isTreeView = computed(() => displayStyle.value === 'tree')
@@ -213,11 +213,12 @@ export default {
     provide('threadDisplay', threadDisplay)
 
     const ancestorsElement = useTemplateRef('ancestors')
+    const treeScrollCompensation = computed(() => isTreeView.value && isExpanded.value)
     const {
       heightChart: heightChartAncestors,
       changeSuspendState: changeSuspendStateAncestors,
       updateVirtualHeight: updateVirtualHeightAncestors,
-    } = useVirtualScrolling(currentAncestors, ancestorsElement, scroller, true)
+    } = useVirtualScrolling(currentAncestors, ancestorsElement, scroller, treeScrollCompensation)
 
     const currentLevel = computed(() => [currentStatus.value].filter(Boolean))
     const currentLevelElement = useTemplateRef('currentLevel')

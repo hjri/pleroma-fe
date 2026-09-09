@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, nextTick } from 'vue'
 
 export function useScrollPosition() {
   const x = ref(0)
@@ -24,5 +24,11 @@ export function useScrollPosition() {
     inProgress.value = false
   }
 
-  return { x, y, scrollBy, inProgress }
+  const scrollIntoView = async (element, options) => {
+    inProgress.value = true
+    await element.scrollIntoView(options)
+    inProgress.value = false
+  }
+
+  return { x, y, scrollBy, scrollIntoView, inProgress }
 }
