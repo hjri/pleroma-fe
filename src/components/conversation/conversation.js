@@ -1,14 +1,6 @@
 import { get } from 'lodash-es'
 import { storeToRefs } from 'pinia'
-import {
-  computed,
-  nextTick,
-  provide,
-  ref,
-  toRefs,
-  useTemplateRef,
-  watch,
-} from 'vue'
+import { computed, provide, ref, toRefs, useTemplateRef, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
@@ -24,9 +16,9 @@ import { useStatusesStore } from 'src/stores/statuses.js'
 import { useStreamingStore } from 'src/stores/streaming.js'
 
 import { useConversation } from 'src/composables/useConversation.js'
+import { useScrollPosition } from 'src/composables/useScrollPosition.js'
 import { useTreeConversationTopology } from 'src/composables/useTreeConversationTopology.js'
 import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
-import { useScrollPosition } from 'src/composables/useScrollPosition.js'
 
 import { WSConnectionStatus } from 'src/api/websocket.js'
 
@@ -147,15 +139,19 @@ export default {
       loadError,
     } = useConversation(focusedId, isExpanded)
 
-    watch(expanded, async (value) => {
-      if (value) {
-        await fetchConversation()
-      } else {
-        resetDisplayState()
-      }
-      if (isPage.value) return
-      await tryScrollTo(currentStatus.value.id)
-    }, { flush: 'post' })
+    watch(
+      expanded,
+      async (value) => {
+        if (value) {
+          await fetchConversation()
+        } else {
+          resetDisplayState()
+        }
+        if (isPage.value) return
+        await tryScrollTo(currentStatus.value.id)
+      },
+      { flush: 'post' },
+    )
 
     const resetDisplayState = () => {
       setFocused(statusId.value)
@@ -194,12 +190,20 @@ export default {
     // # Linear style stuff
     const isLinearView = computed(() => displayStyle.value !== 'tree')
     const linearElement = useTemplateRef('linear')
-    const linearScrollCompensation = computed(() => isLinearView.value && isExpanded.value)
+    const linearScrollCompensation = computed(
+      () => isLinearView.value && isExpanded.value,
+    )
     const {
       heightChart: heightChartLinear,
       changeSuspendState: changeSuspendStateLinear,
       updateVirtualHeight: updateVirtualHeightLinear,
-    } = useVirtualScrolling(conversation, linearElement, scroller, linearScrollCompensation, currentStatus)
+    } = useVirtualScrolling(
+      conversation,
+      linearElement,
+      scroller,
+      linearScrollCompensation,
+      currentStatus,
+    )
 
     // # Tree style stuff
     const isTreeView = computed(() => displayStyle.value === 'tree')
@@ -213,18 +217,24 @@ export default {
     provide('threadDisplay', threadDisplay)
 
     const ancestorsElement = useTemplateRef('ancestors')
-    const treeScrollCompensation = computed(() => isTreeView.value && isExpanded.value)
+    const treeScrollCompensation = computed(
+      () => isTreeView.value && isExpanded.value,
+    )
     const {
       heightChart: heightChartAncestors,
       changeSuspendState: changeSuspendStateAncestors,
       updateVirtualHeight: updateVirtualHeightAncestors,
-    } = useVirtualScrolling(currentAncestors, ancestorsElement, scroller, treeScrollCompensation)
+    } = useVirtualScrolling(
+      currentAncestors,
+      ancestorsElement,
+      scroller,
+      treeScrollCompensation,
+    )
 
     const currentLevel = computed(() => [currentStatus.value].filter(Boolean))
     const currentLevelElement = useTemplateRef('currentLevel')
     const {
       heightChart: heightChartCurrentLevel,
-      totalHeight: totalHeightCurrentLevel,
       changeSuspendState: changeSuspendStateCurrentLevel,
       updateVirtualHeight: updateVirtualHeightCurrentLevel,
     } = useVirtualScrolling(currentLevel, currentLevelElement, scroller, false)

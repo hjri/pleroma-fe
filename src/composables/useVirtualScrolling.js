@@ -1,5 +1,5 @@
 import { storeToRefs } from 'pinia'
-import { computed, ref, watch, nextTick, toValue } from 'vue'
+import { computed, ref, toValue, watch } from 'vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
@@ -133,9 +133,10 @@ export function useVirtualScrolling(
     if (!toValue(scrollCompensation)) return
     if (scrollInProgress.value) return
     pauseWatchers()
-    const getAnchoredEl = (list) => anchor.value
-      ? list.find(({ id }) => id === anchor.value)
-      : list[list.length - 1]
+    const getAnchoredEl = (list) =>
+      anchor.value
+        ? list.find(({ id }) => id === anchor.value)
+        : list[list.length - 1]
     const oldElement = getAnchoredEl(oldVal)
     const newElement = getAnchoredEl(newVal)
     const oldOffset = oldElement?.top ?? 0
@@ -169,7 +170,10 @@ export function useVirtualScrolling(
       const isAboveBottomBoundary = itemTopBoundary < finalBottomScrollBoundary
       // This accounts for the case where item's boundaries exceed scroll boundary
 
-      return { ...heightChartItem, visible: isBelowTopBoundary && isAboveBottomBoundary }
+      return {
+        ...heightChartItem,
+        visible: isBelowTopBoundary && isAboveBottomBoundary,
+      }
     })
 
     // Group invisible statuses into spacers

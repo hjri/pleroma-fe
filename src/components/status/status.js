@@ -149,7 +149,10 @@ const Status = {
   computed: {
     rootClasses() {
       return [
-        {'-focused': this.focused, '-conversation': !this.isPage && this.isExpanded },
+        {
+          '-focused': this.focused,
+          '-conversation': !this.isPage && this.isExpanded,
+        },
         `-conversation-rank-${this.conversationRank}`,
       ]
     },

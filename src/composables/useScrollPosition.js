@@ -1,4 +1,4 @@
-import { onMounted, onUnmounted, ref, nextTick } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 export function useScrollPosition() {
   const x = ref(0)
