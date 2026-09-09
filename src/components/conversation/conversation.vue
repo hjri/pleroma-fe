@@ -68,7 +68,7 @@
           class="conversation-dive-to-top-level-box"
         >
           <i18n-t
-            keypath="status.show_all_conversation_with_icon"
+            keypath="currentStatus.show_all_conversation_with_icon"
             tag="button"
             class="button-unstyled -link"
             scope="global"
@@ -111,7 +111,7 @@
               @height-change="updateVirtualHeight"
             />
             <div
-              v-if="shouldShowOtherRepliesButton && statusReplies.size > 1"
+              v-if="shouldShowOtherRepliesButton && getReplies(status.id).size > 1"
               class="thread-ancestor-dive-box"
             >
               <div
@@ -131,7 +131,7 @@
                   </template>
                   <template #text>
                     <span>
-                      {{ $t('status.ancestor_follow', { numReplies: statusReplies.size - 1 }) }}
+                      {{ $t('status.ancestor_follow', { numReplies: getReplies(status.id).size - 1 }) }}
                     </span>
                   </template>
                 </i18n-t>
@@ -140,7 +140,7 @@
           </article>
         </div>
         <ThreadTree
-          :status-id="status.id"
+          :status-id="currentStatus.id"
           :depth="0"
 
           @goto="setFocused"

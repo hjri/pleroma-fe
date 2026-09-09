@@ -120,10 +120,10 @@ export default {
         get(status, 'statusnet_conversation_id'),
       )
     }
-    const status = computed(() => getStatusObject(focusedId.value))
+    const currentStatus = computed(() => getStatusObject(focusedId.value))
 
     const fetchConversation = async () => {
-      if (status.value) {
+      if (currentStatus.value) {
         const {
           data: { ancestors, descendants },
           timestamp,
@@ -192,12 +192,12 @@ export default {
     }
     const conversationId = computed(() => getConversationId(statusId.value))
     const conversation = computed(() => {
-      if (!status.value) {
+      if (!currentStatus.value) {
         return []
       }
 
       if (!isExpanded.value) {
-        return [status.value]
+        return [currentStatus.value]
       }
 
       const conversation = useStatusesStore().conversations.get(
@@ -228,7 +228,7 @@ export default {
     )
     const getReplies = (id) => replies.value.get(id) ?? new Set()
     const statusReplies = computed(() => {
-      return getReplies(status.value.id)
+      return getReplies(currentStatus.value.id)
     })
 
     provide('conversation', conversation)
@@ -487,7 +487,7 @@ export default {
       setFocused,
 
       // # Main things
-      status,
+      currentStatus,
       statusReplies,
       getReplies,
       conversation,
