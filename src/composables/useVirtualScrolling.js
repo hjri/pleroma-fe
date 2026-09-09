@@ -1,5 +1,5 @@
 import { storeToRefs } from 'pinia'
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, nextTick } from 'vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
@@ -7,10 +7,11 @@ import { useStatusesStore } from 'src/stores/statuses.js'
 import { useScrollPosition } from 'src/composables/useScrollPosition.js'
 import { useWindowSize } from 'src/composables/useWindowSize.js'
 
-export function useVirtualScrolling(conversation, body) {
+export function useVirtualScrolling(conversation, body, anchorStatus) {
   const getStatusObject = (id) => useStatusesStore().allStatuses.get(id)
 
   const { mergedConfig } = storeToRefs(useMergedConfigStore())
+  const anchor = computed(() => anchorStatus?.value.id)
 
   const unsuspendibleIds = ref(new Set())
   const changeSuspendState = ({ id, suspend }) => {
@@ -32,7 +33,7 @@ export function useVirtualScrolling(conversation, body) {
     fontSize.value = Number.parseInt(string.slice(0, -2), 10) // remove the 'px'
   }
   // Update font size if user changed UI scale
-  watch(fontSizeSetting, updateFontSize)
+  watch(fontSizeSetting, updateFontSize, { immediate: true })
 
   // Placeholder heights.
   const mutedStatusHeight = computed(() => {
@@ -79,10 +80,22 @@ export function useVirtualScrolling(conversation, body) {
     topScrollBoundary.value = distanceItemTopToWindowTop
     bottomScrollBoundary.value = distanceItemTopToWindowBottom
   }
-  watch(windowHeight, updateBoundaries)
-  watch(scrollY, updateBoundaries)
-  watch(totalHeight, updateBoundaries)
-  watch(body, updateBoundaries)
+  const windowWatcher = watch(windowHeight, updateBoundaries)
+  const scrollWatcher = watch(scrollY, updateBoundaries)
+  const heightWatcher = watch(totalHeight, updateBoundaries)
+  const bodyWatcher = watch(body, updateBoundaries)
+  const pauseWatchers = () => {
+    windowWatcher.pause()
+    scrollWatcher.pause()
+    heightWatcher.pause()
+    bodyWatcher.pause()
+  }
+  const resumeWatchers = () => {
+    windowWatcher.resume()
+    scrollWatcher.resume()
+    heightWatcher.resume()
+    bodyWatcher.resume()
+  }
 
   const heightChart = computed(() => {
     // Map every height and suspendable state
@@ -108,8 +121,34 @@ export function useVirtualScrolling(conversation, body) {
       return sum + item.height
     }, 0)
 
+    return chart
+  })
+
+  watch(heightChart, async (newVal, oldVal) => {
+    pauseWatchers()
+    const getAnchoredEl = (list) => anchor.value
+      ? list.find(({ id }) => id === anchor.value)
+      : list[list.length - 1]
+    const oldElement = getAnchoredEl(oldVal)
+    const newElement = getAnchoredEl(newVal)
+    const oldOffset = oldElement?.top ?? 0
+    const newOffset = newElement?.top ?? 0
+
+    const diff = newOffset - oldOffset // Positive = down, Negative = up
+
+    console.log(diff, oldElement, newOffset)
+    topScrollBoundary.value += diff
+    bottomScrollBoundary.value += diff
+    await nextTick()
+    window.scrollBy(0, diff)
+
+    updateBoundaries()
+    resumeWatchers()
+  })
+
+  const heightChartGrouped = computed(() => {
     // Determine visibility state
-    chart.forEach((heightChartItem) => {
+    const chart = heightChart.value.map((heightChartItem) => {
       const itemBottomBoundary = heightChartItem.top + heightChartItem.height
       const itemTopBoundary = heightChartItem.top
 
@@ -123,7 +162,7 @@ export function useVirtualScrolling(conversation, body) {
       const isAboveBottomBoundary = itemTopBoundary < finalBottomScrollBoundary
       // This accounts for the case where item's boundaries exceed scroll boundary
 
-      heightChartItem.visible = isBelowTopBoundary && isAboveBottomBoundary
+      return { ...heightChartItem, visible: isBelowTopBoundary && isAboveBottomBoundary }
     })
 
     // Group invisible statuses into spacers
@@ -162,7 +201,7 @@ export function useVirtualScrolling(conversation, body) {
   })
 
   return {
-    heightChart,
+    heightChart: heightChartGrouped,
     changeSuspendState,
     updateVirtualHeight,
   }

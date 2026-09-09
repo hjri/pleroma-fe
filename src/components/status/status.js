@@ -121,19 +121,15 @@ const Status = {
   ],
   inject: {
     profileUserId: {
-      type: String,
       default: null,
     },
     isPage: {
-      type: Boolean,
       default: false,
     },
     isExpanded: {
-      type: Boolean,
       default: false,
     },
     expandable: {
-      type: Boolean,
       default: false,
     },
   },

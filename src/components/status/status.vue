@@ -199,7 +199,7 @@
                   />
                 </span>
                 <button
-                  v-if="!isExpanded && !isPreview"
+                  v-if="expandable && !isExpanded && !isPreview"
                   class="button-unstyled"
                   :title="$t('status.expand')"
                   @click.prevent="toggleExpanded"

@@ -106,6 +106,7 @@
 
               :focused="focused === element.status.id"
               conversation-rank="ancestor"
+              :data-status-id="element.id"
 
               @goto="setFocused"
               @dive="diveIntoStatus(element.status.id)"
@@ -165,6 +166,7 @@
 
             :focused="focused === element.id || focused === element.status.retweeted_status?.id"
 
+            :data-status-id="element.id"
             @goto="setFocused"
             @toggle-expanded="toggleExpanded"
             @suspendable-state-change="changeSuspendStateLinear"

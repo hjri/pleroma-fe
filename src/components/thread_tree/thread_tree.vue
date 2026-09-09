@@ -10,6 +10,7 @@
       :replies="getReplies(statusId)"
       :focused="focused === statusId"
 
+      :data-status-id="statusId"
       :conversation-rank="depth === 0 ? 'current' : 'child'"
       :thread-display-state="threadDisplay.get(statusId)"
 

@@ -80,6 +80,19 @@ export default {
       )
     }
 
+    const tryScrollTo = async (id) => {
+      if (!id) {
+        return
+      }
+      if (isPage.value) {
+        router.push({ name: 'conversation', params: { statusId: id } })
+      }
+      setFocused(id)
+      const target = document.querySelector(`.Status[data-status-id=${id}]`)
+      await nextTick()
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+
     const { statusId } = toRefs(props)
 
     const router = useRouter()
@@ -105,6 +118,7 @@ export default {
     }
     provide('isExpanded', isExpanded)
     provide('isPage', isPage)
+    provide('expandable', true)
 
     // # Focus
     const focusedId = ref(statusId.value)
@@ -133,12 +147,13 @@ export default {
     } = useConversation(focusedId, isExpanded)
 
     watch(expanded, (value) => {
+      tryScrollTo(currentStatus.value.id)
       if (value) {
         fetchConversation()
       } else {
         resetDisplayState()
       }
-    })
+    }, { flush: 'post' })
 
     const resetDisplayState = () => {
       setFocused(statusId.value)
@@ -181,7 +196,7 @@ export default {
       heightChart: heightChartLinear,
       changeSuspendState: changeSuspendStateLinear,
       updateVirtualHeight: updateVirtualHeightLinear,
-    } = useVirtualScrolling(conversation, linearElement)
+    } = useVirtualScrolling(conversation, linearElement, currentStatus)
 
     // # Tree style stuff
     const isTreeView = computed(() => displayStyle.value === 'tree')
@@ -205,9 +220,10 @@ export default {
     const currentLevelElement = useTemplateRef('currentLevel')
     const {
       heightChart: heightChartCurrentLevel,
+      totalHeight: totalHeightCurrentLevel,
       changeSuspendState: changeSuspendStateCurrentLevel,
       updateVirtualHeight: updateVirtualHeightCurrentLevel,
-    } = useVirtualScrolling(currentLevel, currentLevelElement)
+    } = useVirtualScrolling(currentLevel, currentLevelElement, currentStatus)
 
     const treeViewIsSimple = computed(
       () => !mergedConfig.value.conversationTreeAdvanced,
@@ -223,32 +239,6 @@ export default {
     )
 
     // # Scrolling
-    const tryScrollTo = (id) => {
-      if (!id) {
-        return
-      }
-      if (isPage.value) {
-        router.push({ name: 'conversation', params: { statusId: id } })
-      }
-      // Because the conversation can be unmounted when out of sight
-      // and mounted again when it comes into sight,
-      // the `mounted` or `created` function in `status` should not
-      // contain scrolling calls, as we do not want the page to jump
-      // when we scroll with an expanded conversation.
-      //
-      // Now the method is to rely solely on the `focused` watcher
-      // in `status` components.
-      // In linear views, all statuses are rendered at all times, but
-      // in tree views, it is possible that a change in active status
-      // removes and adds status components (e.g. an originally child
-      // status becomes an ancestor status, and thus they will be
-      // different).
-      // Here, let the components be rendered first, in order to trigger
-      // the `focused` watcher.
-      nextTick(() => {
-        setFocused(id)
-      })
-    }
     const diveIntoStatus = (id) => {
       tryScrollTo(id)
     }
@@ -261,6 +251,11 @@ export default {
       loadError,
       mobileLayout,
 
+      // # Conversation Expansion
+      isPage,
+      isExpanded,
+      toggleExpanded,
+
       // # Focus
       focused,
       setFocused,
@@ -269,11 +264,6 @@ export default {
       conversation,
       currentStatus,
       getReplies,
-
-      // # Conversation Expansion
-      isPage,
-      isExpanded,
-      toggleExpanded,
 
       // # Misc UI things
       getStatusClasses,
