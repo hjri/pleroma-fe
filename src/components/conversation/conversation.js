@@ -227,10 +227,6 @@ export default {
       ),
     )
     const getReplies = (id) => replies.value.get(id) ?? new Set()
-    const statusReplies = computed(() => {
-      return getReplies(currentStatus.value.id)
-    })
-
     provide('conversation', conversation)
     provide('replies', replies)
 
@@ -488,7 +484,6 @@ export default {
 
       // # Main things
       currentStatus,
-      statusReplies,
       getReplies,
       conversation,
 

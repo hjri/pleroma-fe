@@ -100,7 +100,7 @@
               :class="getStatusClasses(status)"
 
               :status-id="status.id"
-              :replies="statusReplies"
+              :replies="getReplies(status.id)"
 
               :focused="focused === status.id"
               can-dive
