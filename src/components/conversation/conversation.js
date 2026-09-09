@@ -83,7 +83,7 @@ export default {
       }
       setFocused(id)
       const target = document.querySelector(`.Status[data-status-id=${id}]`)
-      return await scroller.scrollIntoView(target, { block: 'center' })
+      return await scroller.scrollIntoView(target, { block: 'start' })
     }
 
     const { statusId } = toRefs(props)
