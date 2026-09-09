@@ -81,7 +81,7 @@ export function useTreeConversationTopology(conversation, replies, current) {
   })
   const threadDisplay = computed(() => {
     return new Map(
-      [...threadDisplayOverride.value.entries()].map(([k, v]) => [
+      [...threadDisplayDefault.value.entries()].map(([k, v]) => [
         k,
         threadDisplayOverride.value.get(k) ?? threadDisplayDefault.value.get(k),
       ]),

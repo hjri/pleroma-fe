@@ -103,13 +103,6 @@ export default {
     const toggleExpanded = () => {
       expanded.value = !expanded.value
     }
-    watch(expanded, (value) => {
-      if (value) {
-        fetchConversation()
-      } else {
-        resetDisplayState()
-      }
-    })
     provide('isExpanded', isExpanded)
     provide('isPage', isPage)
 
@@ -138,6 +131,14 @@ export default {
       fetchConversation,
       loadError,
     } = useConversation(focusedId, isExpanded)
+
+    watch(expanded, (value) => {
+      if (value) {
+        fetchConversation()
+      } else {
+        resetDisplayState()
+      }
+    })
 
     const resetDisplayState = () => {
       setFocused(statusId.value)
@@ -175,12 +176,12 @@ export default {
 
     // # Linear style stuff
     const isLinearView = computed(() => displayStyle.value !== 'tree')
-    const body = useTemplateRef('body')
+    const linearElement = useTemplateRef('linear')
     const {
       heightChart: heightChartLinear,
       changeSuspendState: changeSuspendStateLinear,
       updateVirtualHeight: updateVirtualHeightLinear,
-    } = useVirtualScrolling(conversation, body)
+    } = useVirtualScrolling(conversation, linearElement)
 
     // # Tree style stuff
     const isTreeView = computed(() => displayStyle.value === 'tree')
@@ -200,7 +201,7 @@ export default {
       updateVirtualHeight: updateVirtualHeightAncestors,
     } = useVirtualScrolling(currentAncestors, ancestorsElement)
 
-    const currentLevel = computed(() => [currentStatus.value])
+    const currentLevel = computed(() => [currentStatus.value].filter(Boolean))
     const currentLevelElement = useTemplateRef('currentLevel')
     const {
       heightChart: heightChartCurrentLevel,
@@ -215,7 +216,7 @@ export default {
       () => currentAncestors.value.length > 0 && topLevel.value.length > 1,
     )
     const shouldShowAncestors = computed(
-      () => isExpanded.value && currentAncestors.value.size > 0,
+      () => isExpanded.value && heightChartAncestors.value.length > 0,
     )
     const shouldFadeAncestors = computed(
       () => mergedConfig.value.conversationTreeFadeAncestors,

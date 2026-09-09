@@ -1,5 +1,5 @@
 import { storeToRefs } from 'pinia'
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
@@ -82,7 +82,7 @@ export function useVirtualScrolling(conversation, body) {
   watch(windowHeight, updateBoundaries)
   watch(scrollY, updateBoundaries)
   watch(totalHeight, updateBoundaries)
-  onMounted(updateBoundaries)
+  watch(body, updateBoundaries)
 
   const heightChart = computed(() => {
     // Map every height and suspendable state

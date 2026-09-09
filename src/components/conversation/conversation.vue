@@ -37,7 +37,7 @@
       />
     </div>
     <div
-      v-if="isPage && !status"
+      v-if="isPage && !currentStatus"
       class="conversation-body"
       ref="body"
       :class="{ 'panel-body': isExpanded }"
@@ -92,24 +92,30 @@
           class="thread-ancestors"
         >
           <article
-            v-for="status in currentAncestors"
+            v-for="element in heightChartAncestors"
             class="thread-ancestor"
-            :class="{'thread-ancestor-has-other-replies': statusReplies.size > 1, '-faded': shouldFadeAncestors}"
+            :class="{'thread-ancestor-has-other-replies': getReplies(element.id).size > 1, '-faded': shouldFadeAncestors}"
           >
             <Status
+              v-if="element.type === 'status'"
               class="conversation-status panel-body"
-              :class="getStatusClasses(status)"
+              :class="getStatusClasses(element.status)"
 
-              :status-id="status.id"
-              :replies="getReplies(status.id)"
+              :status-id="element.status.id"
+              :replies="getReplies(element.status.id)"
 
-              :focused="focused === status.id"
+              :focused="focused === element.status.id"
               can-dive
 
               @goto="setFocused"
-              @dive="diveIntoStatus(status.id)"
+              @dive="diveIntoStatus(element.status.id)"
               @suspendable-state-change="changeSuspendStateAncestors"
               @height-change="updateVirtualHeightAncestors"
+            />
+            <div
+              v-if="element.type === 'spacer'"
+              class="virtual-spacer"
+              :style="{ height: element.height + 'px' }"
             />
             <div
               v-if="shouldShowOtherRepliesButton && getReplies(status.id).size > 1"
@@ -141,7 +147,7 @@
           </article>
         </div>
         <div
-          class="currentStatus"
+          class="currentLevel"
           ref="currentLevel"
         >
           <!-- Technically this will always have a single element but -->
@@ -169,6 +175,7 @@
       </div>
       <div
         v-else-if="isLinearView"
+        ref="linear"
         class="thread-body"
       >
         <article
@@ -176,11 +183,6 @@
           class="panel-body"
           :key="element.id ?? element.ids"
         >
-          <div
-            v-if="element.type === 'spacer'"
-            class="virtual-spacer"
-            :style="{ height: element.height + 'px' }"
-          />
           <Status
             v-if="element.type === 'status'"
             class="conversation-status"
@@ -194,6 +196,11 @@
             @toggle-expanded="toggleExpanded"
             @suspendable-state-change="changeSuspendStateLinear"
             @height-change="updateVirtualHeightLinear"
+          />
+          <div
+            v-if="element.type === 'spacer'"
+            class="virtual-spacer"
+            :style="{ height: element.height + 'px' }"
           />
         </article>
       </div>
