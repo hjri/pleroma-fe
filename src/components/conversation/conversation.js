@@ -13,8 +13,8 @@ import {
 import { useRouter } from 'vue-router'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
-import { useScrollPosition } from 'src/components/conversation/useScrollPosition.js'
-import { useWindowSize } from 'src/components/conversation/useWindowSize.js'
+import { useScrollPosition } from 'src/composables/useScrollPosition.js'
+import { useWindowSize } from 'src/composables/useWindowSize.js'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
 import QuickViewSettings from 'src/components/quick_view_settings/quick_view_settings.vue'
@@ -352,17 +352,6 @@ export default {
         const finalTopScrollBoundary = realTopScrollBoundary.value - buffer
         const finalBottomScrollBoundary =
           realBottomScrollBoundary.value + buffer
-
-        // console.log(
-        //   'TOP SCROLL',
-        //   itemBottomBoundary > finalTopScrollBoundary,
-        //   itemBottomBoundary, finalTopScrollBoundary,
-        // )
-        // console.log(
-        //   'BOTTOM SCROLL',
-        //   itemTopBoundary < finalBottomScrollBoundary,
-        //   itemTopBoundary, finalBottomScrollBoundary,
-        // )
 
         // To be visible, item's bottom boundary shoud be below top scroll boundary)
         const belowTopBoundary = itemBottomBoundary > finalTopScrollBoundary
