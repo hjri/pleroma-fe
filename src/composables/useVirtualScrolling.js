@@ -136,7 +136,6 @@ export function useVirtualScrolling(conversation, body, anchorStatus) {
 
     const diff = newOffset - oldOffset // Positive = down, Negative = up
 
-    console.log(diff, oldElement, newOffset)
     topScrollBoundary.value += diff
     bottomScrollBoundary.value += diff
     await nextTick()
