@@ -105,7 +105,7 @@
               :replies="getReplies(element.status.id)"
 
               :focused="focused === element.status.id"
-              can-dive
+              conversation-rank="ancestor"
 
               @goto="setFocused"
               @dive="diveIntoStatus(element.status.id)"
@@ -117,33 +117,6 @@
               class="virtual-spacer"
               :style="{ height: element.height + 'px' }"
             />
-            <div
-              v-if="shouldShowOtherRepliesButton && getReplies(status.id).size > 1"
-              class="thread-ancestor-dive-box"
-            >
-              <div
-                class="thread-ancestor-dive-box-inner"
-              >
-                <i18n-t
-                  tag="button"
-                  scope="global"
-                  keypath="status.ancestor_follow_with_icon"
-                  class="button-unstyled -link thread-tree-show-replies-button"
-                  @click.prevent="diveIntoStatus(status.id)"
-                >
-                  <template #icon>
-                    <FAIcon
-                      icon="angle-double-right"
-                    />
-                  </template>
-                  <template #text>
-                    <span>
-                      {{ $t('status.ancestor_follow', { numReplies: getReplies(status.id).size - 1 }) }}
-                    </span>
-                  </template>
-                </i18n-t>
-              </div>
-            </div>
           </article>
         </div>
         <div
@@ -186,9 +159,9 @@
           <Status
             v-if="element.type === 'status'"
             class="conversation-status"
-            :class="getStatusClasses(status)"
+            :class="getStatusClasses(element.status)"
             :status-id="element.status.id"
-            :replies="getReplies(status.id)"
+            :replies="getReplies(element.status.id)"
 
             :focused="focused === element.id || focused === element.status.retweeted_status?.id"
 

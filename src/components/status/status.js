@@ -107,6 +107,10 @@ const Status = {
     ignoreMute: Boolean,
 
     threadDisplayState: String,
+    conversationRank: {
+      type: String,
+      default: 'linear',
+    },
   },
   emits: [
     'goto',
@@ -116,9 +120,22 @@ const Status = {
     'heightChange',
   ],
   inject: {
-    profileUserId: { default: null },
-    isPage: { default: false },
-    isExpanded: { default: false },
+    profileUserId: {
+      type: String,
+      default: null,
+    },
+    isPage: {
+      type: Boolean,
+      default: false,
+    },
+    isExpanded: {
+      type: Boolean,
+      default: false,
+    },
+    expandable: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -134,6 +151,12 @@ const Status = {
     useScrobblesStore().getLatestScrobble(this.status.user.id)
   },
   computed: {
+    rootClasses() {
+      return [
+        {'-focused': this.focused, '-conversation': !this.isPage && this.isExpanded },
+        `-conversation-rank-${this.conversationRank}`,
+      ]
+    },
     // Whatever we're given to work with
     status() {
       return this.statusoid ?? useStatusesStore().allStatuses.get(this.statusId)
@@ -173,8 +196,11 @@ const Status = {
     simpleTree() {
       return !this.mergedConfig.conversationTreeAdvanced
     },
-    showOtherRepliesAsButton() {
+    showOtherRepliesInside() {
       return this.mergedConfig.conversationOtherRepliesButton === 'inside'
+    },
+    showOtherRepliesBelow() {
+      return this.mergedConfig.conversationOtherRepliesButton === 'below'
     },
     showReasonMutedThread() {
       return (

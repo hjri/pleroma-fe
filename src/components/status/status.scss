@@ -3,6 +3,8 @@
   white-space: normal;
   overflow-wrap: break-word;
   text-wrap: pretty;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     --_still-image-img-visibility: visible;
@@ -281,6 +283,10 @@
     margin-top: var(--status-margin);
   }
 
+  .status-action-buttons {
+    margin-top: var(--status-margin);
+  }
+
   .muted {
     padding: 0.25em 0.6em;
     height: 1.2em;
@@ -372,7 +378,9 @@
     }
   }
 
-  .status-action-buttons {
-    margin-top: var(--status-margin);
+  .thread-tree-show-replies-button {
+    display: block;
+    padding: var(--status-margin);
+    padding-left: var(--status-margin);
   }
 }

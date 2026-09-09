@@ -3,7 +3,7 @@
     v-if="!hideStatus"
     ref="root"
     class="Status"
-    :class="[{ '-focused': focused }, { '-conversation': !isPage && isExpanded }]"
+    :class="rootClasses"
   >
     <div
       v-if="error"
@@ -427,7 +427,7 @@
             class="replies"
           >
             <button
-              v-if="showOtherRepliesAsButton && replies.size > 1"
+              v-if="showOtherRepliesInside && replies.size > 1"
               class="button-unstyled -link"
               :title="$t('status.ancestor_follow', { numReplies: replies.size - 1 }, replies.size - 1)"
               @click.prevent="$emit('dive')"
@@ -548,6 +548,25 @@
           @close-accepted="closeReplyForm"
         />
       </div>
+      <i18n-t
+        v-if="inConversation && conversationRank === 'ancestor' && !isPreview && showOtherRepliesBelow && replies?.size > 1"
+        tag="button"
+        scope="global"
+        keypath="status.ancestor_follow_with_icon"
+        class="button-unstyled -link thread-tree-show-replies-button"
+        @click.prevent="$emit('dive')"
+      >
+        <template #icon>
+          <FAIcon
+            icon="angle-double-right"
+          />
+        </template>
+        <template #text>
+          <span>
+            {{ $t('status.ancestor_follow', { numReplies: replies.size - 1 }) }}
+          </span>
+        </template>
+      </i18n-t>
     </template>
   </div>
 </template>

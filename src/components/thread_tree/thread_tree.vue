@@ -10,6 +10,7 @@
       :replies="getReplies(statusId)"
       :focused="focused === statusId"
 
+      :conversation-rank="depth === 0 ? 'current' : 'child'"
       :thread-display-state="threadDisplay.get(statusId)"
 
       @dive="$emit('dive', statusId)"
@@ -53,7 +54,7 @@
         </template>
         <template #text>
           <span>
-            {{ $t('status.thread_follow', { numStatus: totalReplyCount[statusId] }, totalReplyCount[statusId]) }}
+            {{ $t('status.thread_follow', { numStatus: totalReplyCount[status.id] }, totalReplyCount[status.id]) }}
           </span>
         </template>
       </i18n-t>
@@ -72,7 +73,7 @@
         </template>
         <template #text>
           <span>
-            {{ $t('status.thread_show_full', { numStatus: totalReplyCount[statusId], depth: totalReplyDepth[statusId] }, totalReplyCount[statusId]) }}
+            {{ $t('status.thread_show_full', { numStatus: totalReplyCount[status.id], depth: totalReplyDepth[status.id] }, totalReplyCount[status.id]) }}
           </span>
         </template>
       </i18n-t>

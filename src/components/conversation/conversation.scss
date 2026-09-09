@@ -40,24 +40,6 @@
     /* stylelint-enable declaration-no-important */
   }
 
-  .thread-ancestor-dive-box {
-    padding-left: var(--status-margin);
-    border-bottom: 1px solid var(--border);
-    border-radius: 0;
-
-    /* Make the button stretch along the whole row */
-    &,
-    &-inner {
-      display: flex;
-      align-items: stretch;
-      flex-direction: column;
-    }
-  }
-
-  .thread-ancestor-dive-box-inner {
-    padding: var(--status-margin);
-  }
-
   .thread-ancestors + .thread-tree > .conversation-status {
     border-top: 1px solid var(--border);
   }
