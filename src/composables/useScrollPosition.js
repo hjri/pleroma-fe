@@ -26,7 +26,7 @@ export function useScrollPosition() {
 
   const scrollIntoView = async (element, options) => {
     inProgress.value = true
-    await element.scrollIntoView(options)
+    await element.scrollIntoViewIfNeeded(options)
     inProgress.value = false
   }
 
