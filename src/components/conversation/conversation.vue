@@ -97,7 +97,7 @@
             :class="{'thread-ancestor-has-other-replies': getReplies(element.id).size > 1, '-faded': shouldFadeAncestors}"
           >
             <Status
-              v-if="element.type === 'status'"
+              v-if="element.type === 'item'"
               class="conversation-status panel-body"
               :class="getStatusClasses(element.item)"
 
