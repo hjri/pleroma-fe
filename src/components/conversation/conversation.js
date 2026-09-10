@@ -187,6 +187,27 @@ export default {
       '-last': status.id === lastStatus.value?.id,
     })
 
+    // Getting the actual font size in pixels since UI might have
+    // a different scale
+    const fontSizeSetting = computed(() => mergedConfig.value.textSize)
+    const fontSize = ref(0)
+    const updateFontSize = () => {
+      const string = window
+        .getComputedStyle(document.body)
+        .getPropertyValue('font-size')
+      fontSize.value = Number.parseInt(string.slice(0, -2), 10) // remove the 'px'
+    }
+    // Update font size if user changed UI scale
+    watch(fontSizeSetting, updateFontSize, { immediate: true })
+
+    // Placeholder heights.
+    const mutedStatusHeight = computed(() => fontSize.value * 1.5)
+    const normalStatusHeight = computed(() => fontSize.value * 10)
+    const getPlaceholderHeight = (id) =>
+      conversation.value.find((item) => item.id === id)?.muted
+        ? mutedStatusHeight
+        : normalStatusHeight
+
     // # Linear style stuff
     const isLinearView = computed(() => displayStyle.value !== 'tree')
     const linearElement = useTemplateRef('linear')
@@ -197,13 +218,14 @@ export default {
       heightChart: heightChartLinear,
       changeSuspendState: changeSuspendStateLinear,
       updateVirtualHeight: updateVirtualHeightLinear,
-    } = useVirtualScrolling(
-      conversation,
-      linearElement,
-      scroller,
-      linearScrollCompensation,
-      currentStatus,
-    )
+    } = useVirtualScrolling({
+      list: conversation,
+      body: linearElement,
+      scrollPositionInstance: scroller,
+      scrollCompensation: linearScrollCompensation,
+      anchorId: currentStatus.id,
+      getPlaceholderHeight,
+    })
 
     // # Tree style stuff
     const isTreeView = computed(() => displayStyle.value === 'tree')
@@ -224,12 +246,13 @@ export default {
       heightChart: heightChartAncestors,
       changeSuspendState: changeSuspendStateAncestors,
       updateVirtualHeight: updateVirtualHeightAncestors,
-    } = useVirtualScrolling(
-      currentAncestors,
-      ancestorsElement,
-      scroller,
-      treeScrollCompensation,
-    )
+    } = useVirtualScrolling({
+      list: currentAncestors,
+      body: ancestorsElement,
+      scrollPositionInstance: scroller,
+      scrollCompensation: treeScrollCompensation,
+      getPlaceholderHeight,
+    })
 
     const currentLevel = computed(() => [currentStatus.value].filter(Boolean))
     const currentLevelElement = useTemplateRef('currentLevel')
@@ -237,7 +260,13 @@ export default {
       heightChart: heightChartCurrentLevel,
       changeSuspendState: changeSuspendStateCurrentLevel,
       updateVirtualHeight: updateVirtualHeightCurrentLevel,
-    } = useVirtualScrolling(currentLevel, currentLevelElement, scroller, false)
+    } = useVirtualScrolling({
+      list: currentLevel,
+      body: currentLevelElement,
+      scrollPositionInstance: scroller,
+      scrollCompensation: false,
+      getPlaceholderHeight,
+    })
 
     const treeViewIsSimple = computed(
       () => !mergedConfig.value.conversationTreeAdvanced,

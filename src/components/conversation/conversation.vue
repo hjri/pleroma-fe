@@ -99,17 +99,17 @@
             <Status
               v-if="element.type === 'status'"
               class="conversation-status panel-body"
-              :class="getStatusClasses(element.status)"
+              :class="getStatusClasses(element.item)"
 
-              :status-id="element.status.id"
-              :replies="getReplies(element.status.id)"
+              :status-id="element.item.id"
+              :replies="getReplies(element.item.id)"
 
-              :focused="focused === element.status.id"
+              :focused="focused === element.item.id"
               conversation-rank="ancestor"
               :data-status-id="element.id"
 
               @goto="setFocused"
-              @dive="diveIntoStatus(element.status.id)"
+              @dive="diveIntoStatus(element.item.id)"
               @suspendable-state-change="changeSuspendStateAncestors"
               @height-change="updateVirtualHeightAncestors"
             />
@@ -128,7 +128,7 @@
           <!-- it's more convenient for us to use a v-for here -->
           <template v-for="element in heightChartCurrentLevel">
             <ThreadTree
-              v-if="element.type === 'status'"
+              v-if="element.type === 'item'"
               :status-id="currentStatus.id"
               :depth="0"
 
@@ -158,13 +158,13 @@
           :key="element.id ?? element.ids"
         >
           <Status
-            v-if="element.type === 'status'"
+            v-if="element.type === 'item'"
             class="conversation-status"
-            :class="getStatusClasses(element.status)"
-            :status-id="element.status.id"
-            :replies="getReplies(element.status.id)"
+            :class="getStatusClasses(element.item)"
+            :status-id="element.item.id"
+            :replies="getReplies(element.item.id)"
 
-            :focused="focused === element.id || focused === element.status.retweeted_status?.id"
+            :focused="focused === element.id || focused === element.item.retweeted_status?.id"
 
             :data-status-id="element.id"
             @goto="setFocused"

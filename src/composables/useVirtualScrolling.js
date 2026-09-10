@@ -1,23 +1,15 @@
-import { storeToRefs } from 'pinia'
 import { computed, ref, toValue, watch } from 'vue'
-
-import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useStatusesStore } from 'src/stores/statuses.js'
 
 import { useWindowSize } from 'src/composables/useWindowSize.js'
 
-export function useVirtualScrolling(
-  conversation,
+export function useVirtualScrolling({
+  list,
   body,
-  scrollPosition,
+  scrollPositionInstance,
   scrollCompensation,
-  anchorStatus,
-) {
-  const getStatusObject = (id) => useStatusesStore().allStatuses.get(id)
-
-  const { mergedConfig } = storeToRefs(useMergedConfigStore())
-  const anchor = computed(() => anchorStatus?.value.id)
-
+  anchorId,
+  getPlaceholderHeight,
+}) {
   const unsuspendibleIds = ref(new Set())
   const changeSuspendState = ({ id, suspend }) => {
     if (!suspend) {
@@ -27,97 +19,25 @@ export function useVirtualScrolling(
     }
   }
 
-  // Getting the actual font size in pixels since UI might have
-  // a different scale
-  const fontSizeSetting = computed(() => mergedConfig.value.textSize)
-  const fontSize = ref(0)
-  const updateFontSize = () => {
-    const string = window
-      .getComputedStyle(document.body)
-      .getPropertyValue('font-size')
-    fontSize.value = Number.parseInt(string.slice(0, -2), 10) // remove the 'px'
-  }
-  // Update font size if user changed UI scale
-  watch(fontSizeSetting, updateFontSize, { immediate: true })
-
-  // Placeholder heights.
-  const mutedStatusHeight = computed(() => {
-    return fontSize.value * 1.5
-  })
-  const normalStatusHeight = computed(() => {
-    return fontSize.value * 10
-  })
-
-  // Add buffer zone to boundary, equal to approx 3 statuses heights
-  const buffer = computed(() => normalStatusHeight.value * 3)
+  // Add buffer zone to boundary, equal to approx 3 items heights
+  const buffer = computed(() => getPlaceholderHeight().value * 3)
 
   // Heights map.
   const heights = ref(new Map())
-  const totalHeight = computed(() =>
-    conversation.value.reduce((acc, item) => {
-      if (heights.value.has(item.id)) {
-        return acc + heights.value.get(item.id)
-      } else if (item.muted) {
-        return acc + mutedStatusHeight.value
-      } else {
-        return acc + normalStatusHeight.value
-      }
-    }, 0),
-  )
-  const updateVirtualHeight = ({ id, height }) => {
-    heights.value.set(id, height)
-  }
-
-  // Scrolling
-  const { y: scrollY, inProgress: scrollInProgress, scrollBy } = scrollPosition
-  const { height: windowHeight } = useWindowSize()
-
-  const topScrollBoundary = ref(0)
-  const bottomScrollBoundary = ref(0)
-  const updateBoundaries = () => {
-    if (!body.value) return // Not mounted yet
-
-    const { top } = body.value.getBoundingClientRect()
-
-    const distanceItemTopToWindowTop = 0 - top
-    const distanceItemTopToWindowBottom = windowHeight.value - top
-
-    topScrollBoundary.value = distanceItemTopToWindowTop
-    bottomScrollBoundary.value = distanceItemTopToWindowBottom
-  }
-  const windowWatcher = watch(windowHeight, updateBoundaries)
-  const scrollWatcher = watch(scrollY, updateBoundaries)
-  const heightWatcher = watch(totalHeight, updateBoundaries)
-  const bodyWatcher = watch(body, updateBoundaries)
-  const pauseWatchers = () => {
-    windowWatcher.pause()
-    scrollWatcher.pause()
-    heightWatcher.pause()
-    bodyWatcher.pause()
-  }
-  const resumeWatchers = () => {
-    windowWatcher.resume()
-    scrollWatcher.resume()
-    heightWatcher.resume()
-    bodyWatcher.resume()
-  }
-
   const heightChart = computed(() => {
     // Map every height and suspendable state
-    const chart = conversation.value.map(({ id }) => {
-      const status = getStatusObject(id)
+    const chart = list.value.map((item) => {
+      const { id } = item
       const height =
         (() => {
           if (heights.value.has(id)) {
             return heights.value.get(id)
-          } else if (status?.muted) {
-            return mutedStatusHeight.value
           } else {
-            return normalStatusHeight.value
+            return getPlaceholderHeight(id).value
           }
         })() + 1 //including border
       const suspendable = !unsuspendibleIds.value.has(id)
-      return { id, height, suspendable, status }
+      return { id, height, suspendable, item }
     })
 
     // Walk over the list to set top offsets
@@ -129,14 +49,18 @@ export function useVirtualScrolling(
     return chart
   })
 
+  // Scroll compensation
   watch(heightChart, async (newVal, oldVal) => {
     if (!toValue(scrollCompensation)) return
     if (scrollInProgress.value) return
     pauseWatchers()
+
+    // If we're not given an achor, treat last element as one
     const getAnchoredEl = (list) =>
-      anchor.value
-        ? list.find(({ id }) => id === anchor.value)
+      anchorId?.value
+        ? list.find(({ id }) => id === anchorId?.value)
         : list[list.length - 1]
+
     const oldElement = getAnchoredEl(oldVal)
     const newElement = getAnchoredEl(newVal)
     const oldOffset = oldElement?.top ?? 0
@@ -153,6 +77,51 @@ export function useVirtualScrolling(
     updateBoundaries()
     resumeWatchers()
   })
+  const updateVirtualHeight = ({ id, height }) => {
+    heights.value.set(id, height)
+  }
+
+  // Scrolling
+  const {
+    y: scrollY,
+    inProgress: scrollInProgress,
+    scrollBy,
+  } = scrollPositionInstance
+  const { height: windowHeight } = useWindowSize()
+
+  // Real scroll boundary relative to body's bounds
+  const topScrollBoundary = ref(0)
+  const bottomScrollBoundary = ref(0)
+
+  const updateBoundaries = () => {
+    if (!body.value) return // Not mounted yet
+
+    const { top } = body.value.getBoundingClientRect()
+
+    const distanceItemTopToWindowTop = 0 - top
+    const distanceItemTopToWindowBottom = windowHeight.value - top
+
+    topScrollBoundary.value = distanceItemTopToWindowTop
+    bottomScrollBoundary.value = distanceItemTopToWindowBottom
+  }
+
+  const windowWatcher = watch(windowHeight, updateBoundaries)
+  const scrollWatcher = watch(scrollY, updateBoundaries)
+  const heightWatcher = watch(heightChart, updateBoundaries)
+  const bodyWatcher = watch(body, updateBoundaries)
+
+  const pauseWatchers = () => {
+    windowWatcher.pause()
+    scrollWatcher.pause()
+    heightWatcher.pause()
+    bodyWatcher.pause()
+  }
+  const resumeWatchers = () => {
+    windowWatcher.resume()
+    scrollWatcher.resume()
+    heightWatcher.resume()
+    bodyWatcher.resume()
+  }
 
   const heightChartGrouped = computed(() => {
     // Determine visibility state
@@ -176,13 +145,13 @@ export function useVirtualScrolling(
       }
     })
 
-    // Group invisible statuses into spacers
+    // Group invisible items into spacers
     return chart.reduce((acc, heightChartItem) => {
-      const { suspendable, visible, height, top, bottom, id, status } =
+      const { suspendable, visible, height, top, bottom, id, item } =
         heightChartItem
       const present = visible || !suspendable
       if (present) {
-        return [...acc, { type: 'status', height, top, bottom, id, status }]
+        return [...acc, { type: 'item', height, top, bottom, id, item }]
       } else {
         const previousItem = acc[acc.length - 1]
         const spacer =
