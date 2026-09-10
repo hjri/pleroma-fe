@@ -4,9 +4,9 @@ import {
   computed,
   onMounted,
   onUnmounted,
-  provide,
   ref,
   toRefs,
+  useTemplateRef,
   watch,
 } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -21,6 +21,10 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useTimelinesStore } from 'src/stores/timelines.js'
+
+import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
+import { useScrollPosition } from 'src/composables/useScrollPosition.js'
+import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -63,6 +67,27 @@ const Timeline = {
         .map((id) => useStatusesStore().allStatuses.get(id))
         .filter(({ pinned }) => (skipPinned.value ? !pinned : true))
     })
+
+    // Virtual scrolling
+    const { fontSize } = useInterfaceSizes()
+
+    // Placeholder heights.
+    const mutedStatusHeight = computed(() => fontSize.value * 1.5)
+    const normalStatusHeight = computed(() => fontSize.value * 10)
+    const getPlaceholderHeight = (id) =>
+      filteredVisibleStatuses.value.find((item) => item.id === id)?.muted
+        ? mutedStatusHeight
+        : normalStatusHeight
+
+    const body = useTemplateRef('timeline')
+    const { heightChart, changeSuspendState, updateVirtualHeight } =
+      useVirtualScrolling({
+        list: filteredVisibleStatuses,
+        body,
+        scrollPositionInstance: useScrollPosition(),
+        scrollCompensation: false,
+        getPlaceholderHeight,
+      })
 
     // Counter
     const count = computed(() => timeline.value.order.length)
@@ -239,6 +264,10 @@ const Timeline = {
       timelineRef,
       timeline,
       filteredVisibleStatuses,
+
+      heightChart,
+      updateVirtualHeight,
+      changeSuspendState,
 
       count,
       showLoadButton,

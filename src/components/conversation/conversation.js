@@ -1,6 +1,14 @@
 import { get } from 'lodash-es'
 import { storeToRefs } from 'pinia'
-import { computed, provide, ref, toRefs, useTemplateRef, watch } from 'vue'
+import {
+  computed,
+  onUnmounted,
+  provide,
+  ref,
+  toRefs,
+  useTemplateRef,
+  watch,
+} from 'vue'
 import { useRouter } from 'vue-router'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
@@ -62,7 +70,8 @@ export default {
     PostStatusForm,
     RichContent,
   },
-  setup(props) {
+  emits: ['heightChange', 'suspendableStateChange'],
+  setup(props, { emit }) {
     // # Helpers
     const getStatusObject = (id) => useStatusesStore().allStatuses.get(id)
     const getConversationId = (statusId) => {
@@ -190,6 +199,27 @@ export default {
 
     const { fontSize } = useInterfaceSizes()
 
+    // External virtual scrolling
+    const unsuspendableIds = ref(new Set())
+    const suspendable = computed(
+      () => !isExpanded.value && unsuspendableIds.value.size === 0,
+    )
+    const rootElement = useTemplateRef('root')
+    const updateVirtualHeight = (e) => {
+      const [entry] = e
+      emit('heightChange', {
+        id: statusId.value,
+        height: entry.contentRect.height,
+        element: rootElement,
+      })
+    }
+    const resizeObserver = ref(new ResizeObserver(updateVirtualHeight))
+    watch(rootElement, () => resizeObserver.value.observe(rootElement.value))
+    watch(suspendable, (value) =>
+      emit('suspendableStateChange', { suspend: value, id: statusId.value }),
+    )
+    onUnmounted(() => resizeObserver.value.disconnect())
+
     // Placeholder heights.
     const mutedStatusHeight = computed(() => fontSize.value * 1.5)
     const normalStatusHeight = computed(() => fontSize.value * 10)
@@ -215,6 +245,15 @@ export default {
       anchorRepeatId: currentStatus.value?.id,
       getPlaceholderHeight,
     })
+    const changeSuspendStateLinearLocal = (e) => {
+      changeSuspendStateLinear(e)
+      const { id, suspend } = e
+      if (suspend) {
+        unsuspendableIds.value.add(id)
+      } else {
+        unsuspendableIds.value.delete(id)
+      }
+    }
 
     // # Tree style stuff
     const isTreeView = computed(() => displayStyle.value === 'tree')
@@ -240,20 +279,24 @@ export default {
       scrollCompensation: treeScrollCompensation,
       getPlaceholderHeight,
     })
-
-    const currentLevel = computed(() => [currentStatus.value].filter(Boolean))
-    const currentLevelElement = useTemplateRef('currentLevel')
-    const {
-      heightChart: heightChartCurrentLevel,
-      changeSuspendState: changeSuspendStateCurrentLevel,
-      updateVirtualHeight: updateVirtualHeightCurrentLevel,
-    } = useVirtualScrolling({
-      list: currentLevel,
-      body: currentLevelElement,
-      scrollPositionInstance: scroller,
-      scrollCompensation: false,
-      getPlaceholderHeight,
-    })
+    const changeSuspendStateAncestorsLocal = (e) => {
+      changeSuspendStateAncestors(e)
+      const { id, suspend } = e
+      if (suspend) {
+        unsuspendableIds.value.add(id)
+      } else {
+        unsuspendableIds.value.delete(id)
+      }
+    }
+    const changeSuspendStateCurrentLevelLocal = (e) => {
+      changeSuspendStateLinear(e)
+      const { id, suspend } = e
+      if (suspend) {
+        unsuspendableIds.value.add(id)
+      } else {
+        unsuspendableIds.value.delete(id)
+      }
+    }
 
     const treeViewIsSimple = computed(
       () => !mergedConfig.value.conversationTreeAdvanced,
@@ -299,7 +342,7 @@ export default {
 
       // ## Linear virtual scrolling
       heightChartLinear,
-      changeSuspendStateLinear,
+      changeSuspendStateLinearLocal,
       updateVirtualHeightLinear,
 
       // # Tree style stuff
@@ -307,11 +350,10 @@ export default {
 
       // ## Tree virtual scrolling
       heightChartAncestors,
-      changeSuspendStateAncestors,
+      changeSuspendStateAncestorsLocal,
       updateVirtualHeightAncestors,
-      heightChartCurrentLevel,
-      changeSuspendStateCurrentLevel,
-      updateVirtualHeightCurrentLevel,
+
+      changeSuspendStateCurrentLevelLocal,
 
       // ## Tree state
       // ### Topology

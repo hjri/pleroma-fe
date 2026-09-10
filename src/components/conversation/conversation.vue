@@ -112,7 +112,7 @@
 
               @goto="setFocused"
               @dive="diveIntoStatus(element.item.id)"
-              @suspendable-state-change="changeSuspendStateAncestors"
+              @suspendable-state-change="changeSuspendStateAncestorsLocal"
               @height-change="updateVirtualHeightAncestors"
             />
             <div
@@ -122,32 +122,16 @@
             />
           </article>
         </div>
-        <div
-          class="currentLevel"
-          ref="currentLevel"
-        >
-          <!-- Technically this will always have a single element but -->
-          <!-- it's more convenient for us to use a v-for here -->
-          <template v-for="element in heightChartCurrentLevel">
-            <ThreadTree
-              v-if="element.type === 'item'"
-              :status-id="currentStatus.id"
-              :depth="0"
+        <ThreadTree
+          :status-id="currentStatus.id"
+          :depth="0"
 
-              @goto="setFocused"
-              @dive="diveIntoStatus"
-              @toggle-expanded="toggleExpanded"
-              @show-thread-recursively="showThreadRecursively"
-              @suspendable-state-change="changeSuspendStateCurrentLevel"
-              @height-change="updateVirtualHeightCurrentLevel"
-            />
-            <div
-              v-if="element.type === 'spacer'"
-              class="virtual-spacer"
-              :style="{ height: element.height + 'px' }"
-            />
-          </template>
-        </div>
+          @goto="setFocused"
+          @dive="diveIntoStatus"
+          @toggle-expanded="toggleExpanded"
+          @show-thread-recursively="showThreadRecursively"
+          @suspendable-state-change="changeSuspendStateCurrentLevelLocal"
+        />
       </div>
       <div
         v-else-if="isLinearView"
@@ -171,7 +155,7 @@
             :data-status-id="element.id"
             @goto="setFocused"
             @toggle-expanded="toggleExpanded"
-            @suspendable-state-change="changeSuspendStateLinear"
+            @suspendable-state-change="changeSuspendStateLinearLocal"
             @height-change="updateVirtualHeightLinear"
           />
           <div

@@ -82,12 +82,23 @@
         ref="timeline"
         role="feed"
       >
-        <Conversation
-          v-for="status in filteredVisibleStatuses"
-          :key="status.id"
-          :status-id="status.id"
-          role="listitem"
-        />
+        <template
+          v-for="element in heightChart"
+          :key="element.id"
+        >
+          <Conversation
+            v-if="element.type === 'item'"
+            :status-id="element.item.id"
+            role="listitem"
+            @suspendable-state-change="changeSuspendState"
+            @height-change="updateVirtualHeight"
+          />
+          <div
+            v-if="element.type === 'spacer'"
+            class="virtual-spacer"
+            :style="{ height: element.height + 'px' }"
+          />
+        </template>
       </div>
       <template v-if="!hideEmpty && count === 0">
         <div
