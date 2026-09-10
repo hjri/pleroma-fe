@@ -184,5 +184,7 @@ export function useVirtualScrolling({
     heightChart: heightChartGrouped,
     changeSuspendState,
     updateVirtualHeight,
+    pauseWatchers,
+    resumeWatchers,
   }
 }
