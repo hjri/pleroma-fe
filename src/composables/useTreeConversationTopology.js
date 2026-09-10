@@ -15,7 +15,7 @@ export function useTreeConversationTopology(conversation, replies, current) {
     // since our depth starts with 0 and "showing" means "showing children"
     // there is a -2 here
     const maxDepth = mergedConfig.value.maxDepthInThread - 2
-    return Math.min(1, maxDepth)
+    return Math.max(1, maxDepth)
   })
 
   const ancestors = computed(() => {
