@@ -1,4 +1,4 @@
-import { computed, ref, toValue, watch, nextTick } from 'vue'
+import { computed, nextTick, ref, toValue, watch } from 'vue'
 
 import { useWindowSize } from 'src/composables/useWindowSize.js'
 
@@ -63,11 +63,7 @@ export function useVirtualScrolling({
   }
 
   // ## Scroll compensation
-  const {
-    y: scrollY,
-    inProgress: scrollInProgress,
-    scrollBy,
-  } = scrollPositionInstance
+  const { y: scrollY, scrollBy } = scrollPositionInstance
   watch(heightChart, async (newVal, oldVal) => {
     if (!toValue(scrollCompensation)) return
     if (newVal.length === 0 && oldVal.length === 0) return
@@ -76,7 +72,10 @@ export function useVirtualScrolling({
     // If we're not given an achor, treat last element as one
     const getAnchoredEl = (list) =>
       toValue(anchorId)
-        ? list.find(({ id }) => id === toValue(anchorId) || id === toValue(anchorRepeatId))
+        ? list.find(
+            ({ id }) =>
+              id === toValue(anchorId) || id === toValue(anchorRepeatId),
+          )
         : list[list.length - 1]
 
     const oldElement = getAnchoredEl(oldVal)
@@ -85,8 +84,12 @@ export function useVirtualScrolling({
     const diff = (() => {
       if (oldElement && newElement) {
         // Generic shifting
-        const oldOffset = toValue(anchorId) ? oldElement.top : (oldElement.top + oldElement.height)
-        const newOffset = toValue(anchorId) ? newElement.top : (newElement.top + newElement.height)
+        const oldOffset = toValue(anchorId)
+          ? oldElement.top
+          : oldElement.top + oldElement.height
+        const newOffset = toValue(anchorId)
+          ? newElement.top
+          : newElement.top + newElement.height
         return newOffset - oldOffset
       } else if (!oldElement && newElement) {
         // Expansion
@@ -95,7 +98,9 @@ export function useVirtualScrolling({
         // Collapsing
         return 0 - oldElement.top - oldElement.height
       } else {
-        throw new Error("Somehow both new and old elements are missing, this shouldn't happen")
+        throw new Error(
+          "Somehow both new and old elements are missing, this shouldn't happen",
+        )
       }
     })()
 

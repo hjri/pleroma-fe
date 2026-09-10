@@ -22,7 +22,9 @@ export function useConversation(statusId, expanded) {
 
   const loadError = ref(null)
   const currentStatus = computed(() => getStatusObject(statusId.value))
-  const mainStatus = computed(() => currentStatus.value?.retweeted_status ?? currentStatus.value)
+  const mainStatus = computed(
+    () => currentStatus.value?.retweeted_status ?? currentStatus.value,
+  )
 
   const sortById = (a, b) => {
     const idA = a.type === 'retweet' ? a.retweeted_status.id : a.id

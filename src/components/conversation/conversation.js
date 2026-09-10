@@ -16,10 +16,10 @@ import { useStatusesStore } from 'src/stores/statuses.js'
 import { useStreamingStore } from 'src/stores/streaming.js'
 
 import { useConversation } from 'src/composables/useConversation.js'
+import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
 import { useScrollPosition } from 'src/composables/useScrollPosition.js'
 import { useTreeConversationTopology } from 'src/composables/useTreeConversationTopology.js'
 import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
-import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
 
 import { WSConnectionStatus } from 'src/api/websocket.js'
 
@@ -201,15 +201,11 @@ export default {
     // # Linear style stuff
     const isLinearView = computed(() => displayStyle.value !== 'tree')
     const linearElement = useTemplateRef('linear')
-    const linearScrollCompensation = computed(
-      () => isLinearView.value,
-    )
+    const linearScrollCompensation = computed(() => isLinearView.value)
     const {
       heightChart: heightChartLinear,
       changeSuspendState: changeSuspendStateLinear,
       updateVirtualHeight: updateVirtualHeightLinear,
-      pauseWatchers,
-      resumeWatchers,
     } = useVirtualScrolling({
       list: conversation,
       body: linearElement,
@@ -232,9 +228,7 @@ export default {
     provide('threadDisplay', threadDisplay)
 
     const ancestorsElement = useTemplateRef('ancestors')
-    const treeScrollCompensation = computed(
-      () => isTreeView.value,
-    )
+    const treeScrollCompensation = computed(() => isTreeView.value)
     const {
       heightChart: heightChartAncestors,
       changeSuspendState: changeSuspendStateAncestors,
