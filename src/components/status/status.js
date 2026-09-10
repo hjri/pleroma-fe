@@ -597,13 +597,17 @@ const Status = {
       })
     },
   },
-  mounted() {
-    this.resizeObserver.observe(this.$el)
-  },
   unmounted() {
     this.resizeObserver.disconnect()
   },
   watch: {
+    '$refs.root': function (element) {
+      if (element) {
+        this.resizeObserver.observe(this.$refs.root)
+      } else {
+        this.resizeObserver.disconnect()
+      }
+    },
     'mainStatus.repeat_num': function (num) {
       // refetch repeats when repeat_num is changed in any way
       if (this.focused && this.repeatedBy.size !== num) {

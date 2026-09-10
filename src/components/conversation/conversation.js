@@ -83,7 +83,7 @@ export default {
         router.push({ name: 'conversation', params: { statusId: id } })
       }
       setFocused(id)
-      const target = document.querySelector(`.Status[data-status-id=${id}]`)
+      const target = document.querySelector(`.Status[data-status-id="${id}"]`)
       return await scroller.scrollIntoView(target, { block: 'nearest' })
     }
 
