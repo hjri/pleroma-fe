@@ -1,5 +1,7 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 
+import { useWindowSize } from 'src/composables/useWindowSize.js'
+
 export function useScrollPosition() {
   const x = ref(0)
   const y = ref(0)
@@ -25,8 +27,24 @@ export function useScrollPosition() {
   }
 
   const scrollIntoView = async (element, options) => {
+    if (element == null) throw new TypeError(`Element is ${element}!`)
     inProgress.value = true
-    await element.scrollIntoViewIfNeeded(options)
+    let call = element.scrollIntoViewIfNeeded
+    if (!call) {
+      call = (options) => {
+        const { height: windowHeight } = useWindowSize()
+        const { top, height } = element.getBoundingClientRect()
+        const bottom = top + height
+
+        const biggerThanScreen = height > windowHeight
+        const aboveTop = top < 0
+        const belowBottom = bottom > windowHeight.value
+        if (aboveTop || belowBottom || biggerThanScreen) {
+          element.scrollIntoView(options)
+        }
+      }
+    }
+    await call(options)
     inProgress.value = false
   }
 

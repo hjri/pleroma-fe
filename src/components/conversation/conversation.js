@@ -19,6 +19,7 @@ import { useConversation } from 'src/composables/useConversation.js'
 import { useScrollPosition } from 'src/composables/useScrollPosition.js'
 import { useTreeConversationTopology } from 'src/composables/useTreeConversationTopology.js'
 import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
+import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
 
 import { WSConnectionStatus } from 'src/api/websocket.js'
 
@@ -83,7 +84,7 @@ export default {
       }
       setFocused(id)
       const target = document.querySelector(`.Status[data-status-id=${id}]`)
-      return await scroller.scrollIntoView(target, { block: 'start' })
+      return await scroller.scrollIntoView(target, { block: 'nearest' })
     }
 
     const { statusId } = toRefs(props)
@@ -148,7 +149,6 @@ export default {
           resetDisplayState()
         }
         if (isPage.value) return
-        await tryScrollTo(currentStatus.value.id)
       },
       { flush: 'post' },
     )
@@ -187,18 +187,7 @@ export default {
       '-last': status.id === lastStatus.value?.id,
     })
 
-    // Getting the actual font size in pixels since UI might have
-    // a different scale
-    const fontSizeSetting = computed(() => mergedConfig.value.textSize)
-    const fontSize = ref(0)
-    const updateFontSize = () => {
-      const string = window
-        .getComputedStyle(document.body)
-        .getPropertyValue('font-size')
-      fontSize.value = Number.parseInt(string.slice(0, -2), 10) // remove the 'px'
-    }
-    // Update font size if user changed UI scale
-    watch(fontSizeSetting, updateFontSize, { immediate: true })
+    const { fontSize } = useInterfaceSizes()
 
     // Placeholder heights.
     const mutedStatusHeight = computed(() => fontSize.value * 1.5)
@@ -218,6 +207,8 @@ export default {
       heightChart: heightChartLinear,
       changeSuspendState: changeSuspendStateLinear,
       updateVirtualHeight: updateVirtualHeightLinear,
+      pauseWatchers,
+      resumeWatchers,
     } = useVirtualScrolling({
       list: conversation,
       body: linearElement,
@@ -226,6 +217,16 @@ export default {
       anchorId: currentStatus.id,
       getPlaceholderHeight,
     })
+
+    watch(
+      expanded,
+      async (value) => {
+        pauseWatchers()
+        await tryScrollTo(currentStatus.value.id)
+        resumeWatchers()
+      },
+      { flush: 'post' },
+    )
 
     // # Tree style stuff
     const isTreeView = computed(() => displayStyle.value === 'tree')
