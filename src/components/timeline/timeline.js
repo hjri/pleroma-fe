@@ -1,5 +1,15 @@
 import { debounce, throttle } from 'lodash-es'
-import { mapState } from 'pinia'
+import { storeToRefs } from 'pinia'
+import {
+  computed,
+  onMounted,
+  onUnmounted,
+  provide,
+  ref,
+  toRefs,
+  watch,
+} from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import Conversation from 'src/components/conversation/conversation.vue'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
@@ -29,22 +39,8 @@ const Timeline = {
     timelineRef: Object,
     footerSlipgate: Object, // reference to an element where we should put our footer
     embedded: Boolean,
-    inProfile: Boolean,
     skipPinned: Boolean,
     hideEmpty: Boolean,
-  },
-  data() {
-    return {
-      showScrollTop: false,
-      paused: false,
-      unfocused: false,
-      blockingClicks: false,
-    }
-  },
-  provide() {
-    return {
-      profileUserId: this.inProfile && this.timelineRef.argument,
-    }
   },
   components: {
     ScrollTopButton,
@@ -53,93 +49,68 @@ const Timeline = {
     QuickFilterSettings,
     QuickViewSettings,
   },
-  computed: {
-    timeline() {
-      return useTimelinesStore()[this.timelineRef.name]
-    },
-    filteredVisibleStatuses() {
-      return this.timeline.order
-        .filter((id) => this.timeline.visibleStatusIds.has(id))
+  setup(props, ctx) {
+    const { t } = useI18n()
+    const unfocused = ref(false)
+
+    // Timeline
+    const { timelineRef } = toRefs(props)
+    const timeline = computed(() => useTimelinesStore()[timelineRef.value.name])
+    const { skipPinned } = toRefs(props)
+    const filteredVisibleStatuses = computed(() => {
+      return timeline.value.order
+        .filter((id) => timeline.value.visibleStatusIds.has(id))
         .map((id) => useStatusesStore().allStatuses.get(id))
-        .filter(({ pinned }) => (this.skipPinned ? !pinned : true))
-    },
-    count() {
-      return this.timeline.order.length
-    },
-    newStatusCount() {
-      return this.timeline.newStatusCount
-    },
-    showLoadButton() {
-      return this.timeline.newStatusCount > 0 || this.timeline.reloadNeeded
-    },
-    loadButtonString() {
-      if (this.timeline.reloadNeeded) {
-        return this.$t('timeline.reload')
+        .filter(({ pinned }) => (skipPinned.value ? !pinned : true))
+    })
+
+    // Counter
+    const count = computed(() => timeline.value.order.length)
+    const newStatusCount = computed(() => timeline.value.newStatusCount)
+    const showLoadButton = computed(
+      () => timeline.value.newStatusCount > 0 || timeline.value.reloadNeeded,
+    )
+
+    // Showing new
+    const paused = ref(false)
+    watch(newStatusCount, (count) => {
+      if (!useMergedConfigStore().mergedConfig.streaming) {
+        return
+      }
+      if (count <= 0) return
+      // only 'stream' them when you're scrolled to the top
+      const doc = document.documentElement
+      const top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0)
+      if (
+        top < 15 &&
+        !paused.value &&
+        !(
+          unfocused.value &&
+          useMergedConfigStore().mergedConfig.pauseOnUnfocused
+        )
+      ) {
+        showNewStatuses()
       } else {
-        return `${this.$t('timeline.show_new')} (${this.newStatusCount})`
+        paused.value = true
       }
-    },
-    mobileLoadButtonString() {
-      if (this.timeline.reloadNeeded) {
-        return '+'
+    })
+    const showNewStatuses = () => {
+      if (timeline.value.reloadNeeded) {
+        useTimelinesStore().clearTimeline(timelineRef.value.name)
+        fetchOlderStatuses()
       } else {
-        return this.newStatusCount > 99 ? '∞' : this.newStatusCount
+        blockClicksTemporarily()
+        useTimelinesStore().showNewStatuses(timelineRef.value.name)
+        paused.value = false
       }
-    },
-    classes() {
-      let rootClasses = !this.embedded
-        ? ['panel', 'panel-default']
-        : ['-embedded']
-      if (this.blockingClicks)
-        rootClasses = rootClasses.concat(['-blocked', '_misclick-prevention'])
-      return {
-        root: rootClasses,
-        header: ['timeline-heading'].concat(
-          !this.embedded ? ['panel-heading', '-sticky'] : ['panel-body'],
-        ),
-        body: ['timeline-body'].concat(
-          !this.embedded ? ['panel-body'] : ['panel-body'],
-        ),
-        footer: ['timeline-footer'].concat(
-          !this.embedded ? ['panel-footer'] : ['panel-body'],
-        ),
-      }
-    },
-    statusesToDisplay() {
-      return new Set(this.filteredVisibleStatuses.map(({ id }) => id))
-    },
-    ...mapState(useInterfaceStore, {
-      mobileLayout: (store) => store.layoutType === 'mobile',
-    }),
-  },
-  created() {
-    this.timelineChange(this.timelineRef)
-  },
-  mounted() {
-    if (document.hidden !== undefined) {
-      document.addEventListener(
-        'visibilitychange',
-        this.handleVisibilityChange,
-        false,
-      )
-      this.unfocused = document.hidden
+      window.scrollTo({ top: 0 })
     }
-    window.addEventListener('keydown', this.handleShortKey)
-    window.addEventListener('scroll', this.handleScroll)
-  },
-  unmounted() {
-    this.timelineChange(null, this.timelineRef)
-    window.removeEventListener('scroll', this.handleScroll)
-    window.removeEventListener('keydown', this.handleShortKey)
-    if (document.hidden !== undefined)
-      document.removeEventListener(
-        'visibilitychange',
-        this.handleVisibilityChange,
-        false,
-      )
-  },
-  methods: {
-    timelineChange(newTimeline, oldTimeline) {
+    const fetchOlderStatuses = throttle(() => {
+      timeline.value.fetcher.fetchOlder()
+    }, 1000)
+
+    // Timeline change
+    const timelineChange = (newTimeline, oldTimeline) => {
       const sameName = newTimeline?.name === oldTimeline?.name
       const sameArgument = newTimeline?.argument === oldTimeline?.argument
       if (sameName && sameArgument) return
@@ -150,83 +121,139 @@ const Timeline = {
       if (newTimeline) {
         useTimelinesStore().activate(newTimeline.name, newTimeline.argument)
       }
-    },
-    stopBlockingClicks: debounce(function () {
-      this.blockingClicks = false
-    }, 1000),
-    blockClicksTemporarily() {
-      if (!this.blockingClicks) {
-        this.blockingClicks = true
+    }
+    watch(timelineRef, timelineChange, { immediate: true })
+    onUnmounted(() => {
+      timelineChange(null, timelineRef.value) // ????
+    })
+
+    // Misclick prevention
+    const blockingClicks = ref(false)
+    const stopBlockingClicks = debounce(() => {
+      blockingClicks.value = false
+    }, 1000)
+    const blockClicksTemporarily = () => {
+      if (!blockingClicks.value) {
+        blockingClicks.value = true
       }
-      this.stopBlockingClicks()
-    },
-    handleShortKey(e) {
+      stopBlockingClicks()
+    }
+
+    // Shortcuts
+    const handleShortKey = (e) => {
       // Ignore when input fields are focused
       if (['textarea', 'input'].includes(e.target.tagName.toLowerCase())) return
-      if (e.key === '.') this.showNewStatuses()
-    },
-    showNewStatuses() {
-      if (this.timeline.reloadNeeded) {
-        useTimelinesStore().clearTimeline(this.timelineRef.name)
-        this.fetchOlderStatuses()
-      } else {
-        this.blockClicksTemporarily()
-        useTimelinesStore().showNewStatuses(this.timelineRef.name)
-        this.paused = false
-      }
-      window.scrollTo({ top: 0 })
-    },
-    fetchOlderStatuses: throttle(
-      function () {
-        this.timeline.fetcher.fetchOlder()
-      },
-      1000,
-      this,
-    ),
-    scrollLoad() {
+      if (e.key === '.') showNewStatuses()
+    }
+    onMounted(() => {
+      window.addEventListener('keydown', handleShortKey)
+    })
+    onUnmounted(() => {
+      window.removeEventListener('keydown', handleShortKey)
+    })
+
+    // Scroll
+    const scrollLoad = () => {
       // TODO simplify this logic
       const bodyBRect = document.body.getBoundingClientRect()
       const height = Math.max(bodyBRect.height, -bodyBRect.y)
       if (
-        !this.timeline.fetcher.loadingOlder &&
+        !timeline.value.fetcher.loadingOlder &&
         window.innerHeight + window.pageYOffset >= height - 750
       ) {
-        this.fetchOlderStatuses()
+        fetchOlderStatuses()
       }
-    },
-    handleScroll: throttle(function (e) {
-      this.scrollLoad(e)
-    }, 200),
-    handleVisibilityChange() {
-      this.unfocused = document.hidden
-    },
-  },
-  watch: {
-    timelineRef(newTimeline, oldTimeline) {
-      this.timelineChange(newTimeline, oldTimeline)
-    },
-    newStatusCount(count) {
-      if (!useMergedConfigStore().mergedConfig.streaming) {
-        return
+    }
+    const handleScroll = throttle((e) => {
+      scrollLoad(e)
+    }, 200)
+    onMounted(() => {
+      window.addEventListener('scroll', handleScroll)
+    })
+    onUnmounted(() => {
+      window.removeEventListener('scroll', handleScroll)
+    })
+
+    // Focused state
+    const handleVisibilityChange = () => {
+      unfocused.value = document.hidden
+    }
+    onMounted(() => {
+      if (document.hidden === undefined) return
+      document.addEventListener(
+        'visibilitychange',
+        handleVisibilityChange,
+        false,
+      )
+      unfocused.value = document.hidden
+    })
+    onUnmounted(() => {
+      if (document.hidden === undefined) return
+      document.removeEventListener(
+        'visibilitychange',
+        handleVisibilityChange,
+        false,
+      )
+    })
+
+    // Misc UI things
+    const classes = computed(() => {
+      let rootClasses = !embedded.value
+        ? ['panel', 'panel-default']
+        : ['-embedded']
+      if (blockingClicks.value)
+        rootClasses = rootClasses.concat(['-blocked', '_misclick-prevention'])
+      return {
+        root: rootClasses,
+        header: ['timeline-heading'].concat(
+          !embedded.value ? ['panel-heading', '-sticky'] : ['panel-body'],
+        ),
+        body: ['timeline-body'].concat(
+          !embedded.value ? ['panel-body'] : ['panel-body'],
+        ),
+        footer: ['timeline-footer'].concat(
+          !embedded.value ? ['panel-footer'] : ['panel-body'],
+        ),
       }
-      if (count > 0) {
-        // only 'stream' them when you're scrolled to the top
-        const doc = document.documentElement
-        const top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0)
-        if (
-          top < 15 &&
-          !this.paused &&
-          !(
-            this.unfocused &&
-            useMergedConfigStore().mergedConfig.pauseOnUnfocused
-          )
-        ) {
-          this.showNewStatuses()
-        } else {
-          this.paused = true
-        }
+    })
+    const loadButtonString = computed(() => {
+      if (timeline.value.reloadNeeded) {
+        return t('timeline.reload')
+      } else {
+        return `${t('timeline.show_new')} (${newStatusCount.value})`
       }
-    },
+    })
+    const mobileLoadButtonString = computed(() => {
+      if (timeline.value.reloadNeeded) {
+        return '+'
+      } else {
+        return newStatusCount.value > 99 ? '∞' : newStatusCount.value
+      }
+    })
+
+    const { layoutType } = storeToRefs(useInterfaceStore())
+    const mobileLayout = computed(() => layoutType.value === 'mobile')
+    const { footerSlipgate, embedded, hideEmpty } = toRefs(props)
+
+    return {
+      timelineRef,
+      timeline,
+      filteredVisibleStatuses,
+
+      count,
+      showLoadButton,
+
+      showNewStatuses,
+      fetchOlderStatuses,
+
+      classes,
+      loadButtonString,
+      mobileLoadButtonString,
+      mobileLayout,
+      footerSlipgate,
+      embedded,
+      hideEmpty,
+    }
   },
 }
 

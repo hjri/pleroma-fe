@@ -34,6 +34,11 @@ const UserProfile = {
     this.tab = get(this.$route, 'query.tab', defaultTabKey)
     useInterfaceStore().setForeignProfileBackground(this.user?.background_image)
   },
+  provide() {
+    return {
+      profileUserId: this.userId,
+    }
+  },
   updated() {
     useInterfaceStore().setForeignProfileBackground(this.user?.background_image)
   },
