@@ -1,4 +1,4 @@
-import { computed, ref, toValue, watch } from 'vue'
+import { computed, ref, toValue, watch, nextTick } from 'vue'
 
 import { useWindowSize } from 'src/composables/useWindowSize.js'
 
@@ -12,6 +12,7 @@ export function useVirtualScrolling({
   // ID of anchor element, used for scroll compensation.
   // Omitting it makes last element the anchor
   anchorId,
+  anchorRepeatId,
   // whether to use scroll compensation when elements above anchor change
   scrollCompensation,
   // Placeholder height specification. Must be a function.
@@ -69,27 +70,41 @@ export function useVirtualScrolling({
   } = scrollPositionInstance
   watch(heightChart, async (newVal, oldVal) => {
     if (!toValue(scrollCompensation)) return
-    if (scrollInProgress.value) return
+    if (newVal.length === 0 && oldVal.length === 0) return
     pauseWatchers()
 
     // If we're not given an achor, treat last element as one
     const getAnchoredEl = (list) =>
-      anchorId?.value
-        ? list.find(({ id }) => id === anchorId?.value)
+      toValue(anchorId)
+        ? list.find(({ id }) => id === toValue(anchorId) || id === toValue(anchorRepeatId))
         : list[list.length - 1]
 
     const oldElement = getAnchoredEl(oldVal)
     const newElement = getAnchoredEl(newVal)
-    const oldOffset = oldElement?.top ?? 0
-    const newOffset = newElement?.top ?? 0
 
-    const diff = newOffset - oldOffset // Positive = down, Negative = up
+    const diff = (() => {
+      if (oldElement && newElement) {
+        // Generic shifting
+        const oldOffset = toValue(anchorId) ? oldElement.top : (oldElement.top + oldElement.height)
+        const newOffset = toValue(anchorId) ? newElement.top : (newElement.top + newElement.height)
+        return newOffset - oldOffset
+      } else if (!oldElement && newElement) {
+        // Expansion
+        return newElement.top + newElement.height
+      } else if (oldElement && !newElement) {
+        // Collapsing
+        return 0 - oldElement.top - oldElement.height
+      } else {
+        throw new Error("Somehow both new and old elements are missing, this shouldn't happen")
+      }
+    })()
 
     if (diff !== 0) {
       // Scroll by amount offset changed to keep it in view
       topScrollBoundary.value += diff
       bottomScrollBoundary.value += diff
-      scrollBy(0, diff)
+      await nextTick()
+      await scrollBy(0, diff)
     }
 
     resumeWatchers()
@@ -212,5 +227,6 @@ export function useVirtualScrolling({
     updateVirtualHeight,
     pauseWatchers,
     resumeWatchers,
+    updateBoundaries,
   }
 }

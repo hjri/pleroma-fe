@@ -133,6 +133,7 @@ export default {
     // # Main things
     const {
       currentStatus,
+      mainStatus,
       conversation,
       replies,
       getReplies,
@@ -201,7 +202,7 @@ export default {
     const isLinearView = computed(() => displayStyle.value !== 'tree')
     const linearElement = useTemplateRef('linear')
     const linearScrollCompensation = computed(
-      () => isLinearView.value && isExpanded.value,
+      () => isLinearView.value,
     )
     const {
       heightChart: heightChartLinear,
@@ -214,19 +215,10 @@ export default {
       body: linearElement,
       scrollPositionInstance: scroller,
       scrollCompensation: linearScrollCompensation,
-      anchorId: currentStatus.id,
+      anchorId: mainStatus.value?.id,
+      anchorRepeatId: currentStatus.value?.id,
       getPlaceholderHeight,
     })
-
-    watch(
-      expanded,
-      async (value) => {
-        pauseWatchers()
-        await tryScrollTo(currentStatus.value.id)
-        resumeWatchers()
-      },
-      { flush: 'post' },
-    )
 
     // # Tree style stuff
     const isTreeView = computed(() => displayStyle.value === 'tree')
@@ -241,7 +233,7 @@ export default {
 
     const ancestorsElement = useTemplateRef('ancestors')
     const treeScrollCompensation = computed(
-      () => isTreeView.value && isExpanded.value,
+      () => isTreeView.value,
     )
     const {
       heightChart: heightChartAncestors,

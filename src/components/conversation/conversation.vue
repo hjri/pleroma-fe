@@ -107,6 +107,8 @@
               :focused="focused === element.item.id"
               conversation-rank="ancestor"
               :data-status-id="element.id"
+              :data-vs-height="element.height"
+              :data-vs-top="element.top"
 
               @goto="setFocused"
               @dive="diveIntoStatus(element.item.id)"

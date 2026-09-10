@@ -26,7 +26,7 @@ export function useTreeConversationTopology(conversation, replies, current) {
         if (!result.has(id)) {
           result.set(id, new Set())
         }
-        if (irid) {
+        if (irid && conversation.value.length !== 1) {
           // Setting parent for current item
           result.get(id).add(irid)
         }
