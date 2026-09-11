@@ -241,8 +241,6 @@ export default {
       body: linearElement,
       scrollPositionInstance: scroller,
       scrollCompensation: linearScrollCompensation,
-      anchorId: mainStatus.value?.id,
-      anchorRepeatId: currentStatus.value?.id,
       getPlaceholderHeight,
     })
     const changeSuspendStateLinearLocal = (e) => {
@@ -277,6 +275,7 @@ export default {
       body: ancestorsElement,
       scrollPositionInstance: scroller,
       scrollCompensation: treeScrollCompensation,
+      collapseMode: 'height',
       getPlaceholderHeight,
     })
     const changeSuspendStateAncestorsLocal = (e) => {

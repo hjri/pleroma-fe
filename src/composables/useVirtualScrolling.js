@@ -1,3 +1,4 @@
+import { last, first } from 'lodash-es'
 import { computed, nextTick, ref, toValue, watch } from 'vue'
 
 import { useWindowSize } from 'src/composables/useWindowSize.js'
@@ -9,12 +10,16 @@ export function useVirtualScrolling({
   body,
   // useScrollPosition composable, used to prevent dupicating instances
   scrollPositionInstance,
-  // ID of anchor element, used for scroll compensation.
-  // Omitting it makes last element the anchor
-  anchorId,
-  anchorRepeatId,
+  // buffer zone, the amount of placeholder heights to include
+  buffer,
   // whether to use scroll compensation when elements above anchor change
+  // set to 'positive' to only compensate for positive increase (useful when
+  // combined with infinite scroll)
   scrollCompensation,
+  // How to handle collapse/expansion (going from 0 elements to full and back)
+  // - false - don't do scroll compensation at all
+  // - 'height' - compensate scroll according to list's height
+  collapseMode,
   // Placeholder height specification. Must be a function.
   // function will be called either:
   // - without arguments (for generic placeholder, i.e. buffer zone size)
@@ -69,38 +74,47 @@ export function useVirtualScrolling({
     if (newVal.length === 0 && oldVal.length === 0) return
     pauseWatchers()
 
-    // If we're not given an achor, treat last element as one
-    const getAnchoredEl = (list) =>
-      toValue(anchorId)
-        ? list.find(
-            ({ id }) =>
-              id === toValue(anchorId) || id === toValue(anchorRepeatId),
-          )
-        : list[list.length - 1]
+    const oldTopElement = first(oldVal)
+    const newTopElement = first(newVal)
 
-    const oldElement = getAnchoredEl(oldVal)
-    const newElement = getAnchoredEl(newVal)
+    const oldBottomElement = last(oldVal)
+    const newBottomElement = last(newVal)
+
+    const expansion = oldTopElement == null && oldBottomElement == null
+    const collapse = newTopElement == null && newBottomElement == null
+
+    if (expansion && collapse) throw new Error("List expanded and collapsed at the same time? How? Why? What??")
+
+    const updatedTopElement = oldTopElement ? newVal.find(({ id }) => id === oldTopElement.id) : null
+    const updatedBottomElement = oldBottomElement ? newVal.find(({ id }) => id === oldBottomElement.id) : null
+
+    const topDisappeared = updatedTopElement == null
+    const bottomDisappeared = updatedBottomElement == null
+
+    const previousTopElement = newTopElement ? oldVal.find(({ id }) => id === newTopElement.id) : null
+    const previousBottomElement = newBottomElement ? oldVal.find(({ id }) => id === newBottomElement.id) : null
 
     const diff = (() => {
-      if (oldElement && newElement) {
-        // Generic shifting
-        const oldOffset = toValue(anchorId)
-          ? oldElement.top
-          : oldElement.top + oldElement.height
-        const newOffset = toValue(anchorId)
-          ? newElement.top
-          : newElement.top + newElement.height
-        return newOffset - oldOffset
-      } else if (!oldElement && newElement) {
-        // Expansion
-        return newElement.top + newElement.height
-      } else if (oldElement && !newElement) {
-        // Collapsing
-        return 0 - oldElement.top - oldElement.height
-      } else {
-        throw new Error(
-          "Somehow both new and old elements are missing, this shouldn't happen",
-        )
+      if (expansion) {
+        // List expanded
+        if (toValue(collapseMode) === 'height') {
+          return newBottomElement.top + newBottomElement.height
+        } else {
+          return 0
+        }
+      } else if (collapse) {
+        // List collapsed
+        if (toValue(collapseMode) === 'height') {
+          return 0 - oldBottomElement.top - oldBottomElement.height
+        } else {
+          return 0
+        }
+      } else if (oldTopElement && updatedTopElement) {
+        // Topmost element shifted
+        return updatedTopElement.top - oldTopElement.top
+      } else if (topDisappeared) {
+        // Topmost changed (and shifted)
+        return  0 - newTopElement.top - previousTopElement.top
       }
     })()
 
@@ -160,7 +174,7 @@ export function useVirtualScrolling({
 
   // # Visiblity
   // Add buffer zone to boundary, equal to approx 3 items heights
-  const buffer = computed(() => getPlaceholderHeight().value * 3)
+  const bufferZone = computed(() => getPlaceholderHeight().value * (toValue(buffer) ?? 3))
 
   const heightChartGrouped = computed(() => {
     // Determine visibility state
@@ -169,9 +183,9 @@ export function useVirtualScrolling({
       const itemBottomBoundary = heightChartItem.top + heightChartItem.height
 
       // Include buffer zone
-      const finalTopScrollBoundary = topScrollBoundary.value - buffer.value
+      const finalTopScrollBoundary = topScrollBoundary.value - bufferZone.value
       const finalBottomScrollBoundary =
-        bottomScrollBoundary.value + buffer.value
+        bottomScrollBoundary.value + bufferZone.value
 
       // To be visible, item's bottom boundary shoud be below top scroll boundary)
       const isBelowTopBoundary = itemBottomBoundary > finalTopScrollBoundary
