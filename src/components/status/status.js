@@ -592,7 +592,7 @@ const Status = {
       const [entry] = e
       this.$emit('heightChange', {
         id: this.status.id,
-        height: entry.contentRect.height,
+        height: entry.contentRect.height + 1,
         element: this.$el,
       })
     },
@@ -600,6 +600,9 @@ const Status = {
   mounted() {
     if (this.$refs.root) {
       this.resizeObserver.observe(this.$refs.root)
+      this.updateVirtualHeight([{
+        contentRect: this.$refs.root.getBoundingClientRect()
+      }])
     }
   },
   unmounted() {

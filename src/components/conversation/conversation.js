@@ -235,6 +235,7 @@ export default {
         ? mutedStatusHeight
         : normalStatusHeight
 
+    const anchorIds = computed(() => new Set([mainStatus.value?.id, currentStatus.value?.id]))
     // # Linear style stuff
     const isLinearView = computed(() => displayStyle.value !== 'tree')
     const linearElement = useTemplateRef('linear')
@@ -248,6 +249,7 @@ export default {
       body: linearElement,
       scrollPositionInstance: scroller,
       scrollCompensation: linearScrollCompensation,
+      anchorIds,
       getPlaceholderHeight,
     })
     const changeSuspendStateLinearLocal = (e) => {

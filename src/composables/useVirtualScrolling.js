@@ -20,6 +20,8 @@ export function useVirtualScrolling({
   // - false - don't do scroll compensation at all
   // - 'height' - compensate scroll according to list's height
   collapseMode,
+  // Anchor. Set of IDs of element relative to which do scroll compensation
+  anchorIds,
   // Placeholder height specification. Must be a function.
   // function will be called either:
   // - without arguments (for generic placeholder, i.e. buffer zone size)
@@ -50,7 +52,7 @@ export function useVirtualScrolling({
           } else {
             return getPlaceholderHeight(id).value
           }
-        })() + 1 //including border
+        })()
       const suspendable = !unsuspendibleIds.value.has(id)
       return { id, height, suspendable, item }
     })
@@ -74,50 +76,41 @@ export function useVirtualScrolling({
     if (newVal.length === 0 && oldVal.length === 0) return
     pauseWatchers()
 
-    const oldTopElement = first(oldVal)
-    const newTopElement = first(newVal)
-
-    const oldBottomElement = last(oldVal)
-    const newBottomElement = last(newVal)
-
-    const expansion = oldTopElement == null && oldBottomElement == null
-    const collapse = newTopElement == null && newBottomElement == null
-
-    if (expansion && collapse) throw new Error("List expanded and collapsed at the same time? How? Why? What??")
-
-    const updatedTopElement = oldTopElement ? newVal.find(({ id }) => id === oldTopElement.id) : null
-    const updatedBottomElement = oldBottomElement ? newVal.find(({ id }) => id === oldBottomElement.id) : null
-
-    const topDisappeared = updatedTopElement == null
-    const bottomDisappeared = updatedBottomElement == null
-
-    const previousTopElement = newTopElement ? oldVal.find(({ id }) => id === newTopElement.id) : null
-    const previousBottomElement = newBottomElement ? oldVal.find(({ id }) => id === newBottomElement.id) : null
+    const expansion = oldVal.length === 0 && newVal.length !== 0
+    const collapse = oldVal.length !== 0 && newVal.length === 0
 
     const diff = (() => {
-      if (expansion) {
-        // List expanded
+      if (expansion || collapse) {
         if (toValue(collapseMode) === 'height') {
-          return newBottomElement.top + newBottomElement.height
-        } else {
-          return 0
+          const oldBottomElement = last(oldVal)
+          const newBottomElement = last(newVal)
+
+          if (expansion) {
+            return newBottomElement.top + newBottomElement.height
+          } else if (collapse) {
+            return 0 - oldBottomElement.top - oldBottomElement.height
+          }
         }
-      } else if (collapse) {
-        // List collapsed
-        if (toValue(collapseMode) === 'height') {
-          return 0 - oldBottomElement.top - oldBottomElement.height
-        } else {
-          return 0
+        return 0
+      } else if (toValue(anchorIds) != null) {
+        const anchorOld = oldVal.find(({ id }) => toValue(anchorIds).has(id))
+        const anchorNew = newVal.find(({ id }) => toValue(anchorIds).has(id))
+        if (anchorOld == null) {
+          throw new Error('Anchor not found!')
         }
-      } else if (oldTopElement && updatedTopElement) {
-        // Topmost element shifted
-        return updatedTopElement.top - oldTopElement.top
-      } else if (topDisappeared) {
-        // Topmost changed (and shifted)
-        return  0 - newTopElement.top - previousTopElement.top
+
+        const disappeared = anchorOld != null && anchorNew == null
+        if (disappeared) {
+          throw new Error('Anchor disappeared!')
+        }
+
+        return anchorNew.top - anchorOld.top
+      } else {
+        return 0
       }
     })()
 
+    console.log(diff)
     if (diff !== 0) {
       // Scroll by amount offset changed to keep it in view
       topScrollBoundary.value += diff
