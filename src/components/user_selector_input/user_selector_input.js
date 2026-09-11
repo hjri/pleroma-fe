@@ -1,3 +1,4 @@
+import { debounce } from 'lodash-es'
 import { computed, ref, watch } from 'vue'
 
 import BasicUserCard from 'src/components/basic_user_card/basic_user_card.vue'
@@ -41,10 +42,9 @@ const UserSelectorInput = {
 
     const searchResults = ref([])
     const loading = ref(false)
-    watch(usernameInput, (newQuery, _, onCleanup) => {
+    const debouncedLoad = debounce((newQuery) => {
       let cancelled = false
       if (newQuery) {
-        loading.value = true
         useSearchStore()
           .searchUsers({ query: newQuery })
           .then((users) => {
@@ -54,8 +54,16 @@ const UserSelectorInput = {
             }
           })
       }
-      onCleanup(() => {
+      return () => {
         cancelled = true
+      }
+    }, 1000)
+    watch(usernameInput, (newQuery, _, onCleanup) => {
+      const cancel = debouncedLoad(newQuery)
+      onCleanup(() => {
+        if (cancel) {
+          cancel()
+        }
       })
     })
 
