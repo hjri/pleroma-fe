@@ -25,19 +25,21 @@
         class="btn button-default"
         @click="toogleAdvanced"
         :aria-label="$t('search.advanced')"
+        :aria-expanded="advancedMode"
       >
         <FAIcon v-if="advancedMode" icon="chevron-up" />
         <FAIcon v-else icon="chevron-down" />
       </button>
     </div>
     <div v-if="advancedMode" class="panel-body search-advanced">
-      <label class="search-advanced-criterion">
-        <span class="search-advanced-criterion-label">{{ $t('search.by_author') }}</span>
-        <input
+      <div class="search-advanced-criterion">
+        <UserSelectorInput
           v-model="searchAuthor"
-          class="input"
+          class="search-advanced-user-selector"
         >
-      </label>
+          <span class="search-advanced-criterion-label">{{ $t('search.by_author') }}</span>
+        </UserSelectorInput>
+      </div>
     </div>
     <div
       v-if="loading && statusesOffset == 0"
@@ -212,13 +214,11 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0.5rem;
-  .search-advanced-criterion-label {
-    flex: 0;
-  }
-  .input {
+  padding: 0.8rem;
+
+  .search-advanced-user-selector {
     flex: 1;
-    margin-left: 0.5rem;
+    max-width: 100%;
   }
 }
 

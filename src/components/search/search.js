@@ -1,15 +1,21 @@
-import { map, uniqBy, isEqual } from 'lodash-es'
+import { isEqual, map, uniqBy } from 'lodash-es'
 
 import Conversation from 'src/components/conversation/conversation.vue'
 import FollowCard from 'src/components/follow_card/follow_card.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
+import UserSelectorInput from 'src/components/user_selector_input/user_selector_input.vue'
 
 import { useSearchStore } from 'src/stores/search.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCircleNotch, faSearch, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
+import {
+  faChevronDown,
+  faChevronUp,
+  faCircleNotch,
+  faSearch,
+} from '@fortawesome/free-solid-svg-icons'
 
 library.add(faCircleNotch, faSearch, faChevronDown, faChevronUp)
 
@@ -17,7 +23,7 @@ const Search = {
   components: {
     FollowCard,
     Conversation,
-
+    UserSelectorInput,
     TabSwitcher,
   },
   props: ['query', 'author'],
@@ -45,7 +51,7 @@ const Search = {
     searchParams() {
       return {
         query: this.query,
-        author: this.author
+        author: this.author,
       }
     },
     users() {
@@ -71,7 +77,7 @@ const Search = {
     author(newValue) {
       this.searchAuthor = newValue
       this.searchCurrent()
-    }
+    },
   },
   methods: {
     toogleAdvanced() {
