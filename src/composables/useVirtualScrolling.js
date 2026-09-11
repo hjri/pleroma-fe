@@ -1,4 +1,4 @@
-import { last, first } from 'lodash-es'
+import { last } from 'lodash-es'
 import { computed, nextTick, ref, toValue, watch } from 'vue'
 
 import { useWindowSize } from 'src/composables/useWindowSize.js'
@@ -45,14 +45,13 @@ export function useVirtualScrolling({
     // Map every height and suspendable state
     const chart = list.value.map((item) => {
       const { id } = item
-      const height =
-        (() => {
-          if (heights.value.has(id)) {
-            return heights.value.get(id)
-          } else {
-            return getPlaceholderHeight(id).value
-          }
-        })()
+      const height = (() => {
+        if (heights.value.has(id)) {
+          return heights.value.get(id)
+        } else {
+          return getPlaceholderHeight(id).value
+        }
+      })()
       const suspendable = !unsuspendibleIds.value.has(id)
       return { id, height, suspendable, item }
     })
@@ -167,7 +166,9 @@ export function useVirtualScrolling({
 
   // # Visiblity
   // Add buffer zone to boundary, equal to approx 3 items heights
-  const bufferZone = computed(() => getPlaceholderHeight().value * (toValue(buffer) ?? 3))
+  const bufferZone = computed(
+    () => getPlaceholderHeight().value * (toValue(buffer) ?? 3),
+  )
 
   const heightChartGrouped = computed(() => {
     // Determine visibility state

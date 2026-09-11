@@ -600,16 +600,18 @@ const Status = {
   mounted() {
     if (this.$refs.root) {
       this.resizeObserver.observe(this.$refs.root)
-      this.updateVirtualHeight([{
-        contentRect: this.$refs.root.getBoundingClientRect()
-      }])
+      this.updateVirtualHeight([
+        {
+          contentRect: this.$refs.root.getBoundingClientRect(),
+        },
+      ])
     }
   },
   unmounted() {
     this.resizeObserver.disconnect()
   },
   watch: {
-    hideStatus: function (element) {
+    hideStatus: function () {
       if (this.$refs.root) {
         this.resizeObserver.observe(this.$refs.root)
       } else {
