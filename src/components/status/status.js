@@ -597,12 +597,17 @@ const Status = {
       })
     },
   },
+  mounted() {
+    if (this.$refs.root) {
+      this.resizeObserver.observe(this.$refs.root)
+    }
+  },
   unmounted() {
     this.resizeObserver.disconnect()
   },
   watch: {
-    '$refs.root': function (element) {
-      if (element) {
+    hideStatus: function (element) {
+      if (this.$refs.root) {
         this.resizeObserver.observe(this.$refs.root)
       } else {
         this.resizeObserver.disconnect()

@@ -90,6 +90,10 @@
             v-if="element.type === 'item'"
             :status-id="element.item.id"
             role="listitem"
+
+            :data-vs-height="element.height"
+            :data-vs-top="element.top"
+
             @suspendable-state-change="changeSuspendState"
             @height-change="updateVirtualHeight"
           />

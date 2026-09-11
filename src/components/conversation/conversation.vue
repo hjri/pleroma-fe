@@ -153,6 +153,9 @@
             :focused="focused === element.id || focused === element.item.retweeted_status?.id"
 
             :data-status-id="element.id"
+            :data-vs-height="element.height"
+            :data-vs-top="element.top"
+
             @goto="setFocused"
             @toggle-expanded="toggleExpanded"
             @suspendable-state-change="changeSuspendStateLinearLocal"
