@@ -1,5 +1,5 @@
 <template>
-  <div
+  <article
     v-if="!hideStatus"
     ref="root"
     class="Status"
@@ -568,7 +568,7 @@
         </template>
       </i18n-t>
     </template>
-  </div>
+  </article>
 </template>
 
 <script src="./status.js"></script>

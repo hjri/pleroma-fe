@@ -192,10 +192,17 @@ export default {
     const lastStatus = computed(
       () => conversation.value[conversation.value.legnth - 1],
     )
-    const getStatusClasses = (status, active) => ({
-      '-first': status.id === firstStatus.value?.id,
-      '-last': status.id === lastStatus.value?.id,
-    })
+    const getStatusClasses = (status, ancestor) => {
+      const result = {
+        '-first': status.id === firstStatus.value?.id,
+        '-last': status.id === lastStatus.value?.id,
+      }
+      if (ancestor) {
+        result['-ancestor'] = true
+        result['-fade'] = mergedConfig.value.conversationTreeFadeAncestors
+      }
+      return result
+    }
 
     const { fontSize } = useInterfaceSizes()
 
@@ -306,9 +313,6 @@ export default {
     const shouldShowAncestors = computed(
       () => isExpanded.value && heightChartAncestors.value.length > 0,
     )
-    const shouldFadeAncestors = computed(
-      () => mergedConfig.value.conversationTreeFadeAncestors,
-    )
 
     // # Scrolling
     const diveIntoStatus = (id) => tryScrollTo(id)
@@ -366,7 +370,6 @@ export default {
       treeViewIsSimple,
       shouldShowAllConversationButton,
       shouldShowAncestors,
-      shouldFadeAncestors,
 
       // # Scrolling
       diveToTopLevel,

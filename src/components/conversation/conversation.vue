@@ -91,15 +91,14 @@
           ref="ancestors"
           class="thread-ancestors"
         >
-          <article
+          <template
             v-for="element in heightChartAncestors"
-            class="thread-ancestor"
-            :class="{'thread-ancestor-has-other-replies': getReplies(element.id).size > 1, '-faded': shouldFadeAncestors}"
+            :key="element.id"
           >
             <Status
               v-if="element.type === 'item'"
               class="conversation-status panel-body"
-              :class="getStatusClasses(element.item)"
+              :class="getStatusClasses(element.item, true)"
 
               :status-id="element.item.id"
               :replies="getReplies(element.item.id)"
@@ -119,8 +118,9 @@
               v-if="element.type === 'spacer'"
               class="virtual-spacer"
               :style="{ height: element.height + 'px' }"
+              aria-hidden="true"
             />
-          </article>
+          </template>
         </div>
         <ThreadTree
           :status-id="currentStatus.id"
@@ -138,14 +138,13 @@
         ref="linear"
         class="thread-body"
       >
-        <article
+        <template
           v-for="element in heightChartLinear"
-          class="panel-body"
-          :key="element.id ?? element.ids"
+          :key="element.id"
         >
           <Status
             v-if="element.type === 'item'"
-            class="conversation-status"
+            class="panel-body conversation-status"
             :class="getStatusClasses(element.item)"
             :status-id="element.item.id"
             :replies="getReplies(element.item.id)"
@@ -163,10 +162,11 @@
           />
           <div
             v-if="element.type === 'spacer'"
-            class="virtual-spacer"
+            aria-hidden="true"
+            class="panel-body virtual-spacer"
             :style="{ height: element.height + 'px' }"
           />
-        </article>
+        </template>
       </div>
     </div>
   </div>
