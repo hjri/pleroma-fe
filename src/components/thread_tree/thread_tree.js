@@ -37,7 +37,7 @@ const ThreadTree = {
   ],
   inject: [
     'conversation',
-    'focused',
+    'focusedId',
     'replies',
     'threadDisplay',
     'isExpanded',

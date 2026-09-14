@@ -21,7 +21,6 @@ import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
-import { useStreamingStore } from 'src/stores/streaming.js'
 
 import { useConversation } from 'src/composables/useConversation.js'
 import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
@@ -72,18 +71,9 @@ export default {
   },
   emits: ['heightChange', 'suspendableStateChange'],
   setup(props, { emit }) {
-    // # Helpers
-    const getStatusObject = (id) => useStatusesStore().allStatuses.get(id)
-    const getConversationId = (statusId) => {
-      const status = getStatusObject(statusId)
-      return get(
-        status,
-        'retweeted_status.statusnet_conversation_id',
-        get(status, 'statusnet_conversation_id'),
-      )
-    }
-
+    const router = useRouter()
     const scroller = useScrollPosition()
+
     const tryScrollTo = async (id) => {
       if (!id) {
         return
@@ -96,19 +86,9 @@ export default {
       return await scroller.scrollIntoView(target, { block: 'nearest' })
     }
 
-    const { statusId } = toRefs(props)
-
-    const router = useRouter()
-
     // # Main Configuration / global state
     const { mergedConfig } = storeToRefs(useMergedConfigStore())
-    const { mastoUserSocketStatus } = storeToRefs(useStreamingStore())
     const displayStyle = computed(() => mergedConfig.value.conversationDisplay)
-    const streamingEnabled = computed(
-      () =>
-        mergedConfig.value.useStreamingApi &&
-        mastoUserSocketStatus === WSConnectionStatus.JOINED,
-    )
     const { layoutType } = storeToRefs(useInterfaceStore())
     const mobileLayout = computed(() => layoutType.value === 'mobile')
 
@@ -123,24 +103,11 @@ export default {
     provide('isPage', isPage)
     provide('expandable', true)
 
-    // # Focus
-    const focusedId = ref(statusId.value)
-    const focused = computed(() => (isExpanded.value ? focusedId.value : null))
-    const setFocused = (id) => {
-      if (!id) return
-      focusedId.value = id
-
-      if (!streamingEnabled.value) {
-        useStatusesStore().fetchStatus(id)
-      }
-
-      useStatusesStore().fetchFavsAndRepeats(id)
-      useStatusesStore().fetchEmojiReactions(id)
-    }
-    provide('focused', focused)
-
     // # Main things
+    const { statusId } = toRefs(props)
     const {
+      focusedId,
+      setFocused,
       currentStatus,
       mainStatus,
       conversation,
@@ -148,39 +115,17 @@ export default {
       getReplies,
       fetchConversation,
       loadError,
-    } = useConversation(focusedId, isExpanded)
+    } = useConversation(statusId, isExpanded)
 
     watch(
       expanded,
       async (value) => {
         if (value) {
           await fetchConversation()
-        } else {
-          resetDisplayState()
         }
-        if (isPage.value) return
       },
       { flush: 'post' },
     )
-
-    const resetDisplayState = () => {
-      setFocused(statusId.value)
-      resetThreadDisplay()
-    }
-    watch(statusId, (newVal, oldVal) => {
-      const newConversationId = getConversationId(newVal)
-      const oldConversationId = getConversationId(oldVal)
-      if (
-        newConversationId &&
-        oldConversationId &&
-        newConversationId === oldConversationId
-      ) {
-        setFocused(newVal)
-      } else {
-        resetDisplayState()
-        fetchConversation()
-      }
-    })
 
     // Component created
     if (isPage.value) {
@@ -204,8 +149,6 @@ export default {
       return result
     }
 
-    const { fontSize } = useInterfaceSizes()
-
     // External virtual scrolling
     const unsuspendableIds = ref(new Set())
     const suspendable = computed(
@@ -228,6 +171,7 @@ export default {
     onUnmounted(() => resizeObserver.value.disconnect())
 
     // Placeholder heights.
+    const { fontSize } = useInterfaceSizes()
     const mutedStatusHeight = computed(() => fontSize.value * 1.5)
     const normalStatusHeight = computed(() => fontSize.value * 10)
     const getPlaceholderHeight = (id) =>
@@ -238,6 +182,7 @@ export default {
     const anchorIds = computed(
       () => new Set([mainStatus.value?.id, currentStatus.value?.id]),
     )
+
     // # Linear style stuff
     const isLinearView = computed(() => displayStyle.value !== 'tree')
     const linearElement = useTemplateRef('linear')
@@ -274,6 +219,13 @@ export default {
       resetThreadDisplay,
     } = useTreeConversationTopology(conversation, replies, focusedId)
     provide('threadDisplay', threadDisplay)
+    watch(
+      isExpanded,
+      (value) => {
+        if (!value) resetThreadDisplay()
+      },
+      { flush: 'post' },
+    )
 
     const ancestorsElement = useTemplateRef('ancestors')
     const treeScrollCompensation = computed(() => isTreeView.value)
@@ -333,7 +285,7 @@ export default {
       toggleExpanded,
 
       // # Focus
-      focused,
+      focusedId,
       setFocused,
 
       // # Main things

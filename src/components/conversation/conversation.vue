@@ -103,7 +103,7 @@
               :status-id="element.item.id"
               :replies="getReplies(element.item.id)"
 
-              :focused="focused === element.item.id"
+              :focused="focusedId === element.item.id"
               conversation-rank="ancestor"
               :data-status-id="element.id"
               :data-vs-height="element.height"
@@ -149,7 +149,7 @@
             :status-id="element.item.id"
             :replies="getReplies(element.item.id)"
 
-            :focused="focused === element.id || focused === element.item.retweeted_status?.id"
+            :focused="focusedId === element.item.id || focusedId === element.item.retweeted_status?.id"
 
             :data-status-id="element.id"
             :data-vs-height="element.height"

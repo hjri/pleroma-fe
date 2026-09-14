@@ -1,8 +1,13 @@
 import { get } from 'lodash-es'
-import { computed, provide, ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { computed, provide, ref, watch } from 'vue'
 
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
+
+import { useMainStatus } from 'src/composables/useMainStatus.js'
 
 import {
   fetchConversation as apiFetchConversation,
@@ -10,20 +15,58 @@ import {
 } from 'src/api/public.js'
 
 export function useConversation(statusId, expanded) {
-  const getStatusObject = (id) => useStatusesStore().allStatuses.get(id)
-  const getConversationId = (statusId) => {
-    const status = getStatusObject(statusId)
-    return get(
-      status,
-      'retweeted_status.statusnet_conversation_id',
-      get(status, 'statusnet_conversation_id'),
-    )
-  }
-
   const loadError = ref(null)
-  const currentStatus = computed(() => getStatusObject(statusId.value))
-  const mainStatus = computed(
-    () => currentStatus.value?.retweeted_status ?? currentStatus.value,
+  const { status: currentStatus, mainStatus } = useMainStatus(statusId)
+
+  // # Config
+  const { mergedConfig } = storeToRefs(useMergedConfigStore())
+  const { mastoUserSocketStatus } = storeToRefs(useStreamingStore())
+  const streamingEnabled = computed(
+    () =>
+      mergedConfig.value.useStreamingApi &&
+      mastoUserSocketStatus === WSConnectionStatus.JOINED,
+  )
+
+  // # Focus
+  const focusedId = ref(null)
+  const { mainStatus: focusedStatus } = useMainStatus(focusedId)
+  const setFocused = (id) => {
+    focusedId.value = id
+    console.log('SF', id)
+  }
+  provide('focusedId', focusedId)
+
+  watch(mainStatus, (newStatus, oldStatus) => {
+    setFocused(newStatus.id)
+    const newConversationId = newStatus?.statusnet_conversation_id
+    const oldConversationId = oldStatus?.statusnet_conversation_id
+    if (
+      newConversationId &&
+        oldConversationId &&
+        newConversationId === oldConversationId
+    ) {
+    } else {
+      // resetDisplayState()
+      // fetchConversation()
+    }
+  })
+  watch(expanded, (value) => {
+    setFocused(value ? statusId.value : null)
+  }, { immediate: true })
+
+  watch(
+    focusedStatus,
+    (newVal, oldVal) => {
+      if (!newVal) return
+      if (newVal?.id === oldVal?.id) return // prevents infinite loop
+      if (!streamingEnabled.value) {
+        useStatusesStore().fetchStatus(newVal.id)
+      }
+
+      useStatusesStore().fetchFavsAndRepeats(newVal.id)
+      useStatusesStore().fetchEmojiReactions(newVal.id)
+    },
+    { immediate: true },
   )
 
   const sortById = (a, b) => {
@@ -43,7 +86,9 @@ export function useConversation(statusId, expanded) {
       return idA < idB ? -1 : 1
     }
   }
-  const conversationId = computed(() => getConversationId(statusId.value))
+  const conversationId = computed(
+    () => mainStatus.value.statusnet_conversation_id,
+  )
   const conversation = computed(() => {
     if (!currentStatus.value) {
       return []
@@ -117,6 +162,8 @@ export function useConversation(statusId, expanded) {
   }
 
   return {
+    focusedId,
+    setFocused,
     currentStatus,
     mainStatus,
     conversation,

@@ -8,8 +8,8 @@
       class="conversation-status conversation-status-treeview panel-body"
       :status-id="statusId"
       :replies="getReplies(statusId)"
-      :focused="focused === statusId"
 
+      :focused="focusedId === status.id"
       :data-status-id="statusId"
       :conversation-rank="depth === 0 ? 'current' : 'child'"
       :thread-display-state="threadDisplay.get(statusId)"
