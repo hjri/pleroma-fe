@@ -37,7 +37,9 @@ export function useConversation(statusId, expanded) {
 
   watch(mainStatus, (newStatus, oldStatus) => {
     if (newStatus) setFocused(newStatus.id)
-    fetchConversation()
+    if (newStatus.id !== oldStatus.id) {
+      fetchConversation()
+    }
   })
 
   watch(expanded, (value) => {

@@ -176,6 +176,7 @@ export function useVirtualScrolling({
           console.log('COMPENSATE', oldVal, newVal, topScrollBoundary.value)
           const oldVisible = oldVal.filter((item) => checkVisible(item))
           const oldItem = first(oldVisible)
+          if (!oldItem) return 0 // probably out of bounds in timeline
           const oldItemUpdated = newVal.find(({ id }) => id === oldItem.id)
           console.log('OLD', oldItem, oldItemUpdated)
           if (!oldItemUpdated) return 0 // context change?

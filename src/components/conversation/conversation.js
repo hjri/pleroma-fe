@@ -187,7 +187,7 @@ export default {
     // # Linear style stuff
     const isLinearView = computed(() => displayStyle.value !== 'tree')
     const linearElement = useTemplateRef('linear')
-    const linearScrollCompensation = computed(() => isLinearView.value)
+    const linearScrollCompensation = computed(() => isExpanded.value && isLinearView.value)
     const {
       heightChart: heightChartLinear,
       changeSuspendState: changeSuspendStateLinear,
@@ -233,7 +233,7 @@ export default {
 
     const currentAncestorsLite = computed(() => currentAncestors.value.map(({ id }) => ({ id })))
     const ancestorsElement = useTemplateRef('ancestors')
-    const treeScrollCompensation = computed(() => isTreeView.value)
+    const treeScrollCompensation = computed(() => isExpanded.value && isTreeView.value)
     const {
       heightChart: heightChartAncestors,
       changeSuspendState: changeSuspendStateAncestors,

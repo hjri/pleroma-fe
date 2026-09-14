@@ -88,7 +88,7 @@
         >
           <Conversation
             v-if="element.type === 'item'"
-            :status-id="element.item.id"
+            :status-id="element.id"
             role="listitem"
 
             :data-vs-height="element.height"
