@@ -1,4 +1,4 @@
-import { last, first } from 'lodash-es'
+import { first, last } from 'lodash-es'
 import { computed, nextTick, ref, toValue, watch } from 'vue'
 
 import { useWindowSize } from 'src/composables/useWindowSize.js'
@@ -127,7 +127,8 @@ export function useVirtualScrolling({
 
     // Include buffer zone
     const finalTopScrollBoundary = topScrollBoundary.value - bufferZone.value
-    const finalBottomScrollBoundary = bottomScrollBoundary.value + bufferZone.value
+    const finalBottomScrollBoundary =
+      bottomScrollBoundary.value + bufferZone.value
 
     // To be visible, item's bottom boundary shoud be below top scroll boundary)
     const isBelowTopBoundary = itemBottomBoundary > finalTopScrollBoundary
@@ -142,7 +143,7 @@ export function useVirtualScrolling({
     heightChart.value.map((heightChartItem) => ({
       ...heightChartItem,
       visible: checkVisible(heightChartItem),
-    }))
+    })),
   )
 
   // ## Scroll compensation
@@ -173,19 +174,20 @@ export function useVirtualScrolling({
 
           return 0 - oldBottomElement.top - oldBottomElement.height
         } else {
-          console.log('COMPENSATE', oldVal, newVal, topScrollBoundary.value)
           const oldVisible = oldVal.filter((item) => checkVisible(item))
           const oldItem = first(oldVisible)
           if (!oldItem) return 0 // probably out of bounds in timeline
           const oldItemUpdated = newVal.find(({ id }) => id === oldItem.id)
-          console.log('OLD', oldItem, oldItemUpdated)
           if (!oldItemUpdated) return 0 // context change?
-          return oldItemUpdated.top - oldItem.top - (oldItem.height - oldItemUpdated.height)
+          return (
+            oldItemUpdated.top -
+            oldItem.top -
+            (oldItem.height - oldItemUpdated.height)
+          )
         }
       })()
 
       if (diff !== 0) {
-        console.log('DIFF', diff)
         // Scroll by amount offset changed to keep it in view
         topScrollBoundary.value += diff
         bottomScrollBoundary.value += diff
@@ -195,14 +197,13 @@ export function useVirtualScrolling({
 
       resumeWatchers()
     },
-    { flush: 'post' }
+    { flush: 'post' },
   )
 
   const heightChartGrouped = computed(() =>
     // Group invisible items into spacers
     heightChartVisibility.value.reduce((acc, heightChartItem) => {
-      const { suspendable, visible, height, top, bottom, id } =
-        heightChartItem
+      const { suspendable, visible, height, top, bottom, id } = heightChartItem
       // Bottom value isn't really used otherwise for debugging
       const present = visible || !suspendable
       if (present) {
@@ -237,7 +238,7 @@ export function useVirtualScrolling({
           return [...acc, spacer]
         }
       }
-    }, [])
+    }, []),
   )
 
   const reset = async () => {

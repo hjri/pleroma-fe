@@ -1,4 +1,3 @@
-import { get } from 'lodash-es'
 import { storeToRefs } from 'pinia'
 import {
   computed,
@@ -20,15 +19,12 @@ import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useStatusesStore } from 'src/stores/statuses.js'
 
 import { useConversation } from 'src/composables/useConversation.js'
 import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
 import { useScrollPosition } from 'src/composables/useScrollPosition.js'
 import { useTreeConversationTopology } from 'src/composables/useTreeConversationTopology.js'
 import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
-
-import { WSConnectionStatus } from 'src/api/websocket.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -116,7 +112,9 @@ export default {
       fetchConversation,
       loadError,
     } = useConversation(statusId, isExpanded)
-    const conversationLite = computed(() => conversation.value.map(({ id }) => ({ id })))
+    const conversationLite = computed(() =>
+      conversation.value.map(({ id }) => ({ id })),
+    )
 
     watch(
       expanded,
@@ -187,7 +185,9 @@ export default {
     // # Linear style stuff
     const isLinearView = computed(() => displayStyle.value !== 'tree')
     const linearElement = useTemplateRef('linear')
-    const linearScrollCompensation = computed(() => isExpanded.value && isLinearView.value)
+    const linearScrollCompensation = computed(
+      () => isExpanded.value && isLinearView.value,
+    )
     const {
       heightChart: heightChartLinear,
       changeSuspendState: changeSuspendStateLinear,
@@ -231,9 +231,13 @@ export default {
       { flush: 'post' },
     )
 
-    const currentAncestorsLite = computed(() => currentAncestors.value.map(({ id }) => ({ id })))
+    const currentAncestorsLite = computed(() =>
+      currentAncestors.value.map(({ id }) => ({ id })),
+    )
     const ancestorsElement = useTemplateRef('ancestors')
-    const treeScrollCompensation = computed(() => isExpanded.value && isTreeView.value)
+    const treeScrollCompensation = computed(
+      () => isExpanded.value && isTreeView.value,
+    )
     const {
       heightChart: heightChartAncestors,
       changeSuspendState: changeSuspendStateAncestors,

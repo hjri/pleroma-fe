@@ -1,4 +1,3 @@
-import { get } from 'lodash-es'
 import { storeToRefs } from 'pinia'
 import { computed, provide, ref, watch } from 'vue'
 
@@ -13,6 +12,7 @@ import {
   fetchConversation as apiFetchConversation,
   fetchStatus as apiFetchStatus,
 } from 'src/api/public.js'
+import { WSConnectionStatus } from 'src/api/websocket.js'
 
 export function useConversation(statusId, expanded) {
   const loadError = ref(null)
@@ -42,9 +42,13 @@ export function useConversation(statusId, expanded) {
     }
   })
 
-  watch(expanded, (value) => {
-    setFocused(value ? statusId.value : null)
-  }, { immediate: true })
+  watch(
+    expanded,
+    (value) => {
+      setFocused(value ? statusId.value : null)
+    },
+    { immediate: true },
+  )
 
   watch(
     focusedStatus,
