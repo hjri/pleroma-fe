@@ -98,19 +98,19 @@
             <Status
               v-if="element.type === 'item'"
               class="conversation-status panel-body"
-              :class="getStatusClasses(element.item, true)"
+              :class="getStatusClasses(element.id, true)"
 
-              :status-id="element.item.id"
-              :replies="getReplies(element.item.id)"
+              :status-id="element.id"
+              :replies="getReplies(element.id)"
 
-              :focused="focusedId === element.item.id"
+              :focused="focusedId === element.id"
               conversation-rank="ancestor"
               :data-status-id="element.id"
               :data-vs-height="element.height"
               :data-vs-top="element.top"
 
               @goto="setFocused"
-              @dive="diveIntoStatus(element.item.id)"
+              @dive="diveIntoStatus(element.id)"
               @suspendable-state-change="changeSuspendStateAncestorsLocal"
               @height-change="updateVirtualHeightAncestors"
             />
@@ -145,11 +145,11 @@
           <Status
             v-if="element.type === 'item'"
             class="panel-body conversation-status"
-            :class="getStatusClasses(element.item)"
-            :status-id="element.item.id"
-            :replies="getReplies(element.item.id)"
+            :class="getStatusClasses(element.id)"
+            :status-id="element.id"
+            :replies="getReplies(element.id)"
 
-            :focused="focusedId === element.item.id || focusedId === element.item.retweeted_status?.id"
+            :focused="focusedId === element.id"
 
             :data-status-id="element.id"
             :data-vs-height="element.height"

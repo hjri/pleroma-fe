@@ -1,4 +1,4 @@
-import { last } from 'lodash-es'
+import { last, first } from 'lodash-es'
 import { computed, nextTick, ref, toValue, watch } from 'vue'
 
 import { useWindowSize } from 'src/composables/useWindowSize.js'
@@ -19,6 +19,8 @@ export function useVirtualScrolling({
   // How to handle collapse/expansion (going from 0 elements to full and back)
   // - false - don't do scroll compensation at all
   // - 'height' - compensate scroll according to list's height
+  // - 'item' - same as height but uses anchor element's top offset
+  //   instead of whole height
   collapseMode,
   // Anchor. Set of IDs of element relative to which do scroll compensation
   anchorIds,
@@ -53,7 +55,8 @@ export function useVirtualScrolling({
         }
       })()
       const suspendable = !unsuspendibleIds.value.has(id)
-      return { id, height, suspendable, item }
+      const real = heights.value.has(id)
+      return { id, height, suspendable, real }
     })
 
     // Walk over the list to set top offsets
@@ -68,59 +71,7 @@ export function useVirtualScrolling({
     heights.value.set(id, height)
   }
 
-  // ## Scroll compensation
   const { y: scrollY, scrollBy } = scrollPositionInstance
-  watch(heightChart, async (newVal, oldVal) => {
-    if (!toValue(scrollCompensation)) return
-    if (newVal.length === 0 && oldVal.length === 0) return
-    pauseWatchers()
-
-    const expansion = oldVal.length === 0 && newVal.length !== 0
-    const collapse = oldVal.length !== 0 && newVal.length === 0
-
-    const diff = (() => {
-      if (expansion || collapse) {
-        if (toValue(collapseMode) === 'height') {
-          const oldBottomElement = last(oldVal)
-          const newBottomElement = last(newVal)
-
-          if (expansion) {
-            return newBottomElement.top + newBottomElement.height
-          } else if (collapse) {
-            return 0 - oldBottomElement.top - oldBottomElement.height
-          }
-        }
-        return 0
-      } else if (toValue(anchorIds) != null) {
-        const anchorOld = oldVal.find(({ id }) => toValue(anchorIds).has(id))
-        const anchorNew = newVal.find(({ id }) => toValue(anchorIds).has(id))
-        if (anchorOld == null) {
-          throw new Error('Anchor not found!')
-        }
-
-        const disappeared = anchorOld != null && anchorNew == null
-        if (disappeared) {
-          throw new Error('Anchor disappeared!')
-        }
-
-        return anchorNew.top - anchorOld.top
-      } else {
-        return 0
-      }
-    })()
-
-    console.log(diff)
-    if (diff !== 0) {
-      // Scroll by amount offset changed to keep it in view
-      topScrollBoundary.value += diff
-      bottomScrollBoundary.value += diff
-      await nextTick()
-      await scrollBy(0, diff)
-    }
-
-    resumeWatchers()
-  })
-
   const { height: windowHeight } = useWindowSize()
 
   // Real scroll boundary, relative to body's bounds
@@ -170,37 +121,91 @@ export function useVirtualScrolling({
     () => getPlaceholderHeight().value * (toValue(buffer) ?? 3),
   )
 
-  const heightChartGrouped = computed(() => {
-    // Determine visibility state
-    const chart = heightChart.value.map((heightChartItem) => {
-      const itemTopBoundary = heightChartItem.top
-      const itemBottomBoundary = heightChartItem.top + heightChartItem.height
+  const checkVisible = ({ top, height }) => {
+    const itemTopBoundary = top
+    const itemBottomBoundary = top + height
 
-      // Include buffer zone
-      const finalTopScrollBoundary = topScrollBoundary.value - bufferZone.value
-      const finalBottomScrollBoundary =
-        bottomScrollBoundary.value + bufferZone.value
+    // Include buffer zone
+    const finalTopScrollBoundary = topScrollBoundary.value - bufferZone.value
+    const finalBottomScrollBoundary = bottomScrollBoundary.value + bufferZone.value
 
-      // To be visible, item's bottom boundary shoud be below top scroll boundary)
-      const isBelowTopBoundary = itemBottomBoundary > finalTopScrollBoundary
-      // To be visible, item's top boundary shoud be above bottom scroll boundary)
-      const isAboveBottomBoundary = itemTopBoundary < finalBottomScrollBoundary
-      // This accounts for the case where item's boundaries exceed scroll boundary
+    // To be visible, item's bottom boundary shoud be below top scroll boundary)
+    const isBelowTopBoundary = itemBottomBoundary > finalTopScrollBoundary
+    // To be visible, item's top boundary shoud be above bottom scroll boundary)
+    const isAboveBottomBoundary = itemTopBoundary < finalBottomScrollBoundary
+    // This accounts for the case where item's boundaries exceed scroll boundary
 
-      return {
-        ...heightChartItem,
-        visible: isBelowTopBoundary && isAboveBottomBoundary,
+    return isBelowTopBoundary && isAboveBottomBoundary
+  }
+
+  const heightChartVisibility = computed(() =>
+    heightChart.value.map((heightChartItem) => ({
+      ...heightChartItem,
+      visible: checkVisible(heightChartItem),
+    }))
+  )
+
+  // ## Scroll compensation
+  watch(
+    heightChart,
+    async (newVal, oldVal) => {
+      if (!toValue(scrollCompensation)) return
+      if (newVal.length === 0 && oldVal.length === 0) return
+
+      const diff = (() => {
+        const expansion = oldVal.length === 0 && newVal.length !== 0
+        const collapse = oldVal.length !== 0 && newVal.length === 0
+
+        if (expansion) {
+          if (toValue(collapseMode) === 'height') {
+            const newBottomElement = last(newVal)
+
+            return newBottomElement.top + newBottomElement.height
+          } else if (toValue(collapseMode) === 'item') {
+            const element = newVal.find(({ id }) => toValue(anchorIds).has(id))
+
+            return element.top
+          } else {
+            return 0
+          }
+        } else if (collapse) {
+          const oldBottomElement = last(oldVal)
+
+          return 0 - oldBottomElement.top - oldBottomElement.height
+        } else {
+          console.log('COMPENSATE', oldVal, newVal, topScrollBoundary.value)
+          const oldVisible = oldVal.filter((item) => checkVisible(item))
+          const oldItem = first(oldVisible)
+          const oldItemUpdated = newVal.find(({ id }) => id === oldItem.id)
+          console.log('OLD', oldItem, oldItemUpdated)
+          if (!oldItemUpdated) return 0 // context change?
+          return oldItemUpdated.top - oldItem.top - (oldItem.height - oldItemUpdated.height)
+        }
+      })()
+
+      if (diff !== 0) {
+        console.log('DIFF', diff)
+        // Scroll by amount offset changed to keep it in view
+        topScrollBoundary.value += diff
+        bottomScrollBoundary.value += diff
+        await scrollBy(0, diff)
+        await nextTick()
       }
-    })
 
+      resumeWatchers()
+    },
+    { flush: 'post' }
+  )
+
+  const heightChartGrouped = computed(() =>
     // Group invisible items into spacers
-    return chart.reduce((acc, heightChartItem) => {
-      const { suspendable, visible, height, top, bottom, id, item } =
+    heightChartVisibility.value.reduce((acc, heightChartItem) => {
+      const { suspendable, visible, height, top, bottom, id } =
         heightChartItem
       // Bottom value isn't really used otherwise for debugging
       const present = visible || !suspendable
       if (present) {
-        return [...acc, { type: 'item', height, top, bottom, id, item }]
+        return [...acc, { type: 'item', height, top, bottom, id }]
       } else {
         // Reusing previous item if possible
         const previousItem = acc[acc.length - 1]
@@ -232,7 +237,12 @@ export function useVirtualScrolling({
         }
       }
     }, [])
-  })
+  )
+
+  const reset = async () => {
+    unsuspendibleIds.value = new Set()
+    heights.value = new Map()
+  }
 
   return {
     heightChart: heightChartGrouped,
@@ -241,5 +251,6 @@ export function useVirtualScrolling({
     pauseWatchers,
     resumeWatchers,
     updateBoundaries,
+    reset,
   }
 }

@@ -32,24 +32,14 @@ export function useConversation(statusId, expanded) {
   const { mainStatus: focusedStatus } = useMainStatus(focusedId)
   const setFocused = (id) => {
     focusedId.value = id
-    console.log('SF', id)
   }
   provide('focusedId', focusedId)
 
   watch(mainStatus, (newStatus, oldStatus) => {
-    setFocused(newStatus.id)
-    const newConversationId = newStatus?.statusnet_conversation_id
-    const oldConversationId = oldStatus?.statusnet_conversation_id
-    if (
-      newConversationId &&
-        oldConversationId &&
-        newConversationId === oldConversationId
-    ) {
-    } else {
-      // resetDisplayState()
-      // fetchConversation()
-    }
+    if (newStatus) setFocused(newStatus.id)
+    fetchConversation()
   })
+
   watch(expanded, (value) => {
     setFocused(value ? statusId.value : null)
   }, { immediate: true })

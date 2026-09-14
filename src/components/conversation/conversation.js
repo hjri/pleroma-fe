@@ -116,6 +116,7 @@ export default {
       fetchConversation,
       loadError,
     } = useConversation(statusId, isExpanded)
+    const conversationLite = computed(() => conversation.value.map(({ id }) => ({ id })))
 
     watch(
       expanded,
@@ -137,10 +138,10 @@ export default {
     const lastStatus = computed(
       () => conversation.value[conversation.value.legnth - 1],
     )
-    const getStatusClasses = (status, ancestor) => {
+    const getStatusClasses = (statusId, ancestor) => {
       const result = {
-        '-first': status.id === firstStatus.value?.id,
-        '-last': status.id === lastStatus.value?.id,
+        '-first': statusId === firstStatus.value?.id,
+        '-last': statusId === lastStatus.value?.id,
       }
       if (ancestor) {
         result['-ancestor'] = true
@@ -191,12 +192,15 @@ export default {
       heightChart: heightChartLinear,
       changeSuspendState: changeSuspendStateLinear,
       updateVirtualHeight: updateVirtualHeightLinear,
+      reset: resetLinearScrollVirtualization,
     } = useVirtualScrolling({
-      list: conversation,
+      context: statusId,
+      list: conversationLite,
       body: linearElement,
       scrollPositionInstance: scroller,
       scrollCompensation: linearScrollCompensation,
       anchorIds,
+      collapseMode: 'item',
       getPlaceholderHeight,
     })
     const changeSuspendStateLinearLocal = (e) => {
@@ -227,14 +231,17 @@ export default {
       { flush: 'post' },
     )
 
+    const currentAncestorsLite = computed(() => currentAncestors.value.map(({ id }) => ({ id })))
     const ancestorsElement = useTemplateRef('ancestors')
     const treeScrollCompensation = computed(() => isTreeView.value)
     const {
       heightChart: heightChartAncestors,
       changeSuspendState: changeSuspendStateAncestors,
       updateVirtualHeight: updateVirtualHeightAncestors,
+      reset: resetTreeScrollVirtualization,
     } = useVirtualScrolling({
-      list: currentAncestors,
+      context: statusId,
+      list: currentAncestorsLite,
       body: ancestorsElement,
       scrollPositionInstance: scroller,
       scrollCompensation: treeScrollCompensation,
@@ -259,6 +266,11 @@ export default {
         unsuspendableIds.value.delete(id)
       }
     }
+
+    watch(statusId, (neu, old) => {
+      resetLinearScrollVirtualization()
+      resetTreeScrollVirtualization()
+    })
 
     const treeViewIsSimple = computed(
       () => !mergedConfig.value.conversationTreeAdvanced,
