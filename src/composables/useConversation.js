@@ -39,9 +39,7 @@ export function useConversation(statusId, expanded) {
   provide('focusedId', focusedId)
 
   watch(statusId, (neu, old) => {
-    console.log('focused', neu)
     if (neu) setFocused(neu)
-    console.log('focusedid', focusedId.value)
   }, { immediate: true })
 
   watch(statusId, (neu, old) => {
