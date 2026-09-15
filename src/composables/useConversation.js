@@ -88,6 +88,7 @@ export function useConversation(statusId, expanded) {
       return idA < idB ? -1 : 1
     }
   }
+  const fullConversation = ref(new Set([currentStatus.value?.id].filter(Boolean)))
   const conversationId = computed(
     () => mainStatus.value?.statusnet_conversation_id,
   )
@@ -100,9 +101,7 @@ export function useConversation(statusId, expanded) {
       return [currentStatus.value]
     }
 
-    const conversation = useStatusesStore().conversations.get(
-      conversationId.value,
-    )
+    const conversation = fullConversation.value
 
     return [...conversation.keys()]
       .map((k) => useStatusesStore().allStatuses.get(k))
@@ -145,6 +144,13 @@ export function useConversation(statusId, expanded) {
         statuses: descendants,
         timestamp,
       })
+
+      fullConversation.value = new Set([
+        ...ancestors,
+        currentStatus.value,
+        ...descendants
+      ].map(({ id }) => id))
+
     } else {
       try {
         loadError.value = null
@@ -155,6 +161,9 @@ export function useConversation(statusId, expanded) {
         })
 
         useStatusesStore().addNewStatuses({ statuses: [status] })
+        fullConversation.value = new Set([
+          currentStatus.value,
+        ].map(({ id }) => id))
         fetchConversation()
       } catch (error) {
         console.error(error)
@@ -165,6 +174,7 @@ export function useConversation(statusId, expanded) {
 
   return {
     focusedId,
+    focusedIdRaw: focused,
     conversationId,
     setFocused,
     currentStatus,
