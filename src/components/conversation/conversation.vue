@@ -109,6 +109,7 @@
               :data-status-id="element.id"
               :data-vs-height="element.height"
               :data-vs-top="element.top"
+              :data-vs-suspend="element.suspendable"
 
               @goto="setFocused"
               @dive="diveIntoStatus(element.id)"

@@ -230,9 +230,9 @@ export default {
       changeSuspendStateLinear(e)
       const { id, suspend } = e
       if (suspend) {
-        unsuspendableIds.value.add(id)
-      } else {
         unsuspendableIds.value.delete(id)
+      } else {
+        unsuspendableIds.value.add(id)
       }
     }
 
@@ -266,7 +266,6 @@ export default {
       changeSuspendState: changeSuspendStateAncestors,
       updateVirtualHeight: updateVirtualHeightAncestors,
       reset: resetTreeScrollVirtualization,
-      scrollTo: treeScrollTo,
     } = useVirtualScrolling({
       name: 'Ancestors',
       enabled: treeScrollCompensation,
@@ -315,9 +314,7 @@ export default {
 
     // # Scrolling
     const scrollTo = (ids) => {
-      if (isTreeView.value) {
-        return treeScrollTo(ids)
-      } else {
+      if (isLinearView.value) {
         return linearScrollTo(ids)
       }
     }
@@ -384,6 +381,7 @@ export default {
       // # Scrolling
       diveToTopLevel,
       diveIntoStatus,
+      unsuspendableIds,
     }
   },
 }
