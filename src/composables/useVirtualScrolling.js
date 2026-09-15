@@ -4,17 +4,21 @@ import { computed, nextTick, ref, toValue, watch } from 'vue'
 import { useWindowSize } from 'src/composables/useWindowSize.js'
 
 export function useVirtualScrolling({
+  // For debugging
+  name = 'Generic',
+  // Master toggle
+  enabled,
   // List of items
   list,
   // Container of items, used for measuring scroll position
   body,
+  // vertical offset to account for fixed and sticky headers
+  offset,
   // useScrollPosition composable, used to prevent dupicating instances
   scrollPositionInstance,
   // buffer zone, the amount of placeholder heights to include
   buffer,
   // whether to use scroll compensation when elements above anchor change
-  // set to 'positive' to only compensate for positive increase (useful when
-  // combined with infinite scroll)
   scrollCompensation,
   // How to handle collapse/expansion (going from 0 elements to full and back)
   // - false - don't do scroll compensation at all
@@ -56,7 +60,7 @@ export function useVirtualScrolling({
       })()
       const suspendable = !unsuspendibleIds.value.has(id)
       const real = heights.value.has(id)
-      return { id, height, suspendable, real }
+      return { id, height, suspendable, real, visible: true }
     })
 
     // Walk over the list to set top offsets
@@ -79,11 +83,12 @@ export function useVirtualScrolling({
   const bottomScrollBoundary = ref(0)
 
   const updateBoundaries = () => {
+    if (!toValue(enabled)) return
     if (!body.value) return // Not mounted yet
 
     const { top } = body.value.getBoundingClientRect()
 
-    const distanceItemTopToWindowTop = 0 - top
+    const distanceItemTopToWindowTop = 0 - top + offset.value
     const distanceItemTopToWindowBottom = windowHeight.value - top
 
     // Technically, bottom scroll boundary should be distance
@@ -115,6 +120,14 @@ export function useVirtualScrolling({
     updateBoundaries()
   }
 
+  watch(enabled, (val) => {
+    if (val) {
+      resumeWatchers()
+    } else {
+      pauseWatchers()
+    }
+  })
+
   // # Visiblity
   // Add buffer zone to boundary, equal to approx 3 items heights
   const bufferZone = computed(
@@ -145,64 +158,10 @@ export function useVirtualScrolling({
       visible: checkVisible(heightChartItem),
     })),
   )
-
-  // ## Scroll compensation
-  watch(
-    heightChart,
-    async (newVal, oldVal) => {
-      if (!toValue(scrollCompensation)) return
-      if (newVal.length === 0 && oldVal.length === 0) return
-
-      const diff = (() => {
-        const expansion = oldVal.length === 0 && newVal.length !== 0
-        const collapse = oldVal.length !== 0 && newVal.length === 0
-
-        if (expansion) {
-          if (toValue(collapseMode) === 'height') {
-            const newBottomElement = last(newVal)
-
-            return newBottomElement.top + newBottomElement.height
-          } else if (toValue(collapseMode) === 'item') {
-            const element = newVal.find(({ id }) => toValue(anchorIds).has(id))
-
-            return element.top
-          } else {
-            return 0
-          }
-        } else if (collapse) {
-          const oldBottomElement = last(oldVal)
-
-          return 0 - oldBottomElement.top - oldBottomElement.height
-        } else {
-          const oldVisible = oldVal.filter((item) => checkVisible(item))
-          const oldItem = first(oldVisible)
-          if (!oldItem) return 0 // probably out of bounds in timeline
-          const oldItemUpdated = newVal.find(({ id }) => id === oldItem.id)
-          if (!oldItemUpdated) return 0 // context change?
-          return (
-            oldItemUpdated.top -
-            oldItem.top -
-            (oldItem.height - oldItemUpdated.height)
-          )
-        }
-      })()
-
-      if (diff !== 0) {
-        // Scroll by amount offset changed to keep it in view
-        topScrollBoundary.value += diff
-        bottomScrollBoundary.value += diff
-        await scrollBy(0, diff)
-        await nextTick()
-      }
-
-      resumeWatchers()
-    },
-    { flush: 'post' },
-  )
-
-  const heightChartGrouped = computed(() =>
+  const heightChartGrouped = computed(() => {
+    const chart = enabled.value ? heightChartVisibility : heightChart
     // Group invisible items into spacers
-    heightChartVisibility.value.reduce((acc, heightChartItem) => {
+    return chart.value.reduce((acc, heightChartItem) => {
       const { suspendable, visible, height, top, bottom, id } = heightChartItem
       // Bottom value isn't really used otherwise for debugging
       const present = visible || !suspendable
@@ -238,12 +197,110 @@ export function useVirtualScrolling({
           return [...acc, spacer]
         }
       }
-    }, []),
+    }, [])
+  })
+
+  // ## Scroll compensation
+  watch(
+    heightChart,
+    async (newVal, oldVal) => {
+      if (!toValue(scrollCompensation)) return
+      if (newVal.length === 0 && oldVal.length === 0) return
+      const expansion = oldVal.length === 0 && newVal.length !== 0
+      const collapse = oldVal.length !== 0 && newVal.length === 0
+
+      const diff = (() => {
+        if (expansion) {
+          if (toValue(collapseMode) === 'height') {
+            const newBottomElement = last(newVal)
+
+            return newBottomElement.top + newBottomElement.height
+          } else if (toValue(collapseMode) === 'item') {
+            const element = newVal.find(({ id }) => toValue(anchorIds).has(id))
+
+            return element.top
+          } else {
+            return 0
+          }
+        } else if (collapse) {
+          const oldBottomElement = last(oldVal)
+
+          return 0 - oldBottomElement.top - oldBottomElement.height
+        } else {
+          const contextChange = (() => {
+            const oldIds = new Set(oldVal.map(({ id }) => id))
+            const newIds = new Set(newVal.map(({ id }) => id))
+
+            if (oldVal.length <= newVal.length) {
+              return [...oldIds].some((id) => !newIds.has(id))
+            } else {
+              return [...newIds].some((id) => !oldIds.has(id))
+            }
+          })()
+          if (contextChange) return 0
+
+          const expansion = (() => {
+            if (newVal.length < oldVal.length) return 0
+            const oldVisible = oldVal.filter((item) => checkVisible(item) && item.real)
+            const oldItem = first(oldVisible)
+            if (!oldItem) return 0 // probably out of bounds in timeline
+            const oldItemUpdated = newVal.find(({ id }) => id === oldItem.id)
+
+            return (
+              oldItemUpdated.top -
+                oldItem.top -
+                (oldItem.height - oldItemUpdated.height)
+            )
+          })()
+
+          const collapsing  = (() => {
+            if (newVal.length >= oldVal.length) return 0
+            const newVisible = newVal
+            const newItem = first(newVisible)
+            if (!newItem) return 0 // probably out of bounds in timeline
+            const newItemBefore = oldVal.find(({ id }) => id === newItem.id)
+
+            return (
+              newItem.top -
+                newItemBefore.top -
+                (newItemBefore.height - newItem.height)
+            )
+          })()
+
+          return expansion + collapsing
+        }
+      })()
+
+      if (diff !== 0) {
+        // Scroll by amount offset changed to keep it in view
+        topScrollBoundary.value += diff
+        bottomScrollBoundary.value += diff
+        await scrollBy(0, diff)
+        await nextTick()
+      }
+
+      resumeWatchers()
+    },
+    { flush: 'post' },
   )
 
+  // Misc
   const reset = async () => {
     unsuspendibleIds.value = new Set()
     heights.value = new Map()
+  }
+
+  const scrollTo = (anchors) => {
+    pauseWatchers()
+
+    const element = heightChart.value.find(({ id }) => anchors.has(id))
+    const elementMiddle = element.top + element.height / 2
+    const desiredTopBoundary = Math.min(element.top, elementMiddle - (windowHeight.value - offset.value) / 2)
+
+    console.log(element, desiredTopBoundary, topScrollBoundary.value)
+    scrollBy(0, desiredTopBoundary - topScrollBoundary.value)
+
+    resumeWatchers()
   }
 
   return {
@@ -254,5 +311,6 @@ export function useVirtualScrolling({
     resumeWatchers,
     updateBoundaries,
     reset,
+    scrollTo,
   }
 }

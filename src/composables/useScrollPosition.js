@@ -20,9 +20,9 @@ export function useScrollPosition() {
     window.removeEventListener('scroll', update)
   })
 
-  const scrollBy = async (x1, y1, options) => {
+  const scrollBy = async (...args) => {
     inProgress.value = true
-    await window.scrollBy(x1, y1, options)
+    await window.scrollBy(...args)
     inProgress.value = false
   }
 
@@ -40,8 +40,9 @@ export function useScrollPosition() {
       if (aboveTop || belowBottom || biggerThanScreen) {
         await element.scrollIntoView(options)
       }
+    } else {
+      await element.scrollIntoViewIfNeeded(options)
     }
-    await element.scrollIntoViewIfNeeded(options)
     inProgress.value = false
   }
 

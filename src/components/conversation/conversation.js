@@ -7,6 +7,7 @@ import {
   toRefs,
   useTemplateRef,
   watch,
+  nextTick,
 } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -65,22 +66,11 @@ export default {
     PostStatusForm,
     RichContent,
   },
-  emits: ['heightChange', 'suspendableStateChange'],
+  emits: ['heightChange', 'suspendableStateChange', 'expanded', 'collapsed'],
   setup(props, { emit }) {
     const router = useRouter()
     const scroller = useScrollPosition()
-
-    const tryScrollTo = async (id) => {
-      if (!id) {
-        return
-      }
-      if (isPage.value) {
-        router.push({ name: 'conversation', params: { statusId: id } })
-      }
-      setFocused(id)
-      const target = document.querySelector(`.Status[data-status-id="${id}"]`)
-      return await scroller.scrollIntoView(target, { block: 'nearest' })
-    }
+    const { statusId } = toRefs(props)
 
     // # Main Configuration / global state
     const { mergedConfig } = storeToRefs(useMergedConfigStore())
@@ -92,17 +82,27 @@ export default {
     const expanded = ref(false)
     const { isPage } = toRefs(props)
     const isExpanded = computed(() => !!(expanded.value || isPage.value))
-    const toggleExpanded = () => {
-      expanded.value = !expanded.value
+    const toggleExpanded = async () => {
+      const newVal = !expanded.value
+      if (newVal) {
+        virtualScrollingEnabled.value = newVal
+        await nextTick()
+        expanded.value = newVal
+      } else {
+        expanded.value = newVal
+        await nextTick()
+        virtualScrollingEnabled.value = newVal
+      }
     }
     provide('isExpanded', isExpanded)
     provide('isPage', isPage)
     provide('expandable', true)
+    watch(expanded, (val) => val ? emit('expanded') : emit('collapsed'), { flush: 'post' })
 
     // # Main things
-    const { statusId } = toRefs(props)
     const {
       focusedId,
+      conversationId,
       setFocused,
       currentStatus,
       mainStatus,
@@ -115,12 +115,13 @@ export default {
     const conversationLite = computed(() =>
       conversation.value.map(({ id }) => ({ id })),
     )
+    const mainStatusId = computed(() => mainStatus.value.id)
 
     watch(
       expanded,
-      async (value) => {
+      (value) => {
         if (value) {
-          await fetchConversation()
+          fetchConversation()
         }
       },
       { flush: 'post' },
@@ -154,8 +155,15 @@ export default {
       () => !isExpanded.value && unsuspendableIds.value.size === 0,
     )
     const rootElement = useTemplateRef('root')
+    const rootElementMargin = ref(null)
     const updateVirtualHeight = (e) => {
       const [entry] = e
+
+      const rootCss = window.getComputedStyle(rootElement.value)
+      const rootMarginString = rootCss.getPropertyValue('margin-top')
+      const rootMargin = Number.parseInt(rootMarginString.slice(0, -2), 10)
+      rootElementMargin.value = rootMargin
+
       emit('heightChange', {
         id: statusId.value,
         height: entry.contentRect.height,
@@ -168,15 +176,27 @@ export default {
       emit('suspendableStateChange', { suspend: value, id: statusId.value }),
     )
     onUnmounted(() => resizeObserver.value.disconnect())
+    // Internal virtual scrolling
+    const virtualScrollingEnabled = ref(isExpanded.value)
 
     // Placeholder heights.
-    const { fontSize } = useInterfaceSizes()
+    const { fontSize, navbarSize, panelHeaderSize } = useInterfaceSizes()
     const mutedStatusHeight = computed(() => fontSize.value * 1.5)
     const normalStatusHeight = computed(() => fontSize.value * 10)
     const getPlaceholderHeight = (id) =>
       conversation.value.find((item) => item.id === id)?.muted
         ? mutedStatusHeight
         : normalStatusHeight
+    const offset = computed(() => {
+      // The fontsize after navbar is the little gap between navbar and content
+      if (isPage.value) {
+        return navbarSize.value + fontSize.value + panelHeaderSize.value
+      } else if (expanded.value) {
+        return navbarSize.value + fontSize.value + panelHeaderSize.value * 2 + rootElementMargin.value
+      } else {
+        return navbarSize.value + fontSize.value
+      }
+    })
 
     const anchorIds = computed(
       () => new Set([mainStatus.value?.id, currentStatus.value?.id]),
@@ -186,17 +206,20 @@ export default {
     const isLinearView = computed(() => displayStyle.value !== 'tree')
     const linearElement = useTemplateRef('linear')
     const linearScrollCompensation = computed(
-      () => isExpanded.value && isLinearView.value,
+      () => virtualScrollingEnabled.value && isLinearView.value,
     )
     const {
       heightChart: heightChartLinear,
       changeSuspendState: changeSuspendStateLinear,
       updateVirtualHeight: updateVirtualHeightLinear,
       reset: resetLinearScrollVirtualization,
+      scrollTo: linearScrollTo,
     } = useVirtualScrolling({
-      context: statusId,
+      name: 'Linear',
+      enabled: linearScrollCompensation,
       list: conversationLite,
       body: linearElement,
+      offset,
       scrollPositionInstance: scroller,
       scrollCompensation: linearScrollCompensation,
       anchorIds,
@@ -236,17 +259,20 @@ export default {
     )
     const ancestorsElement = useTemplateRef('ancestors')
     const treeScrollCompensation = computed(
-      () => isExpanded.value && isTreeView.value,
+      () => virtualScrollingEnabled.value && isTreeView.value,
     )
     const {
       heightChart: heightChartAncestors,
       changeSuspendState: changeSuspendStateAncestors,
       updateVirtualHeight: updateVirtualHeightAncestors,
       reset: resetTreeScrollVirtualization,
+      scrollTo: treeScrollTo,
     } = useVirtualScrolling({
-      context: statusId,
+      name: 'Ancestors',
+      enabled: treeScrollCompensation,
       list: currentAncestorsLite,
       body: ancestorsElement,
+      offset,
       scrollPositionInstance: scroller,
       scrollCompensation: treeScrollCompensation,
       collapseMode: 'height',
@@ -271,10 +297,11 @@ export default {
       }
     }
 
-    watch(statusId, (neu, old) => {
+    watch(conversationId, (neu, old) => {
       resetLinearScrollVirtualization()
       resetTreeScrollVirtualization()
     })
+
 
     const treeViewIsSimple = computed(
       () => !mergedConfig.value.conversationTreeAdvanced,
@@ -287,8 +314,19 @@ export default {
     )
 
     // # Scrolling
-    const diveIntoStatus = (id) => tryScrollTo(id)
-    const diveToTopLevel = () => tryScrollTo(currentAncestors.value[0].id)
+    const scrollTo = (ids) => {
+      if (isTreeView.value) {
+        return treeScrollTo(ids)
+      } else {
+        return linearScrollTo(ids)
+      }
+    }
+    const diveIntoStatus = (id) => scrollTo(new Set([id]))
+    const diveToTopLevel = () => scrollTo(new Set([currentAncestors.value[0].id]))
+    watch(focusedId, async (neu) => {
+      if (!isPage.value) return
+      if (neu) scrollTo(new Set([neu]))
+    })
 
     return {
       // # Misc

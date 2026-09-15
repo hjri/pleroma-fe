@@ -17,6 +17,7 @@ import { WSConnectionStatus } from 'src/api/websocket.js'
 export function useConversation(statusId, expanded) {
   const loadError = ref(null)
   const { status: currentStatus, mainStatus } = useMainStatus(statusId)
+  const mainStatusId = computed(() => mainStatus.value?.id)
 
   // # Config
   const { mergedConfig } = storeToRefs(useMergedConfigStore())
@@ -28,16 +29,23 @@ export function useConversation(statusId, expanded) {
   )
 
   // # Focus
-  const focusedId = ref(null)
-  const { mainStatus: focusedStatus } = useMainStatus(focusedId)
+  const focused = ref(null)
+  const { mainStatus: focusedStatus } = useMainStatus(focused)
   const setFocused = (id) => {
-    focusedId.value = id
+    focused.value = id
   }
+  watch(mainStatusId, (val) => setFocused(val))
+  const focusedId = computed(() => expanded.value ? focusedStatus.value?.id : null)
   provide('focusedId', focusedId)
 
-  watch(mainStatus, (newStatus, oldStatus) => {
-    if (newStatus) setFocused(newStatus.id)
-    if (newStatus.id !== oldStatus.id) {
+  watch(statusId, (neu, old) => {
+    console.log('focused', neu)
+    if (neu) setFocused(neu)
+    console.log('focusedid', focusedId.value)
+  }, { immediate: true })
+
+  watch(statusId, (neu, old) => {
+    if (neu !== old) {
       fetchConversation()
     }
   })
@@ -45,7 +53,7 @@ export function useConversation(statusId, expanded) {
   watch(
     expanded,
     (value) => {
-      setFocused(value ? statusId.value : null)
+      setFocused(value ? mainStatusId.value : null)
     },
     { immediate: true },
   )
@@ -83,7 +91,7 @@ export function useConversation(statusId, expanded) {
     }
   }
   const conversationId = computed(
-    () => mainStatus.value.statusnet_conversation_id,
+    () => mainStatus.value?.statusnet_conversation_id,
   )
   const conversation = computed(() => {
     if (!currentStatus.value) {
@@ -159,6 +167,7 @@ export function useConversation(statusId, expanded) {
 
   return {
     focusedId,
+    conversationId,
     setFocused,
     currentStatus,
     mainStatus,

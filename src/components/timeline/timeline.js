@@ -8,6 +8,7 @@ import {
   toRefs,
   useTemplateRef,
   watch,
+  nextTick,
 } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -69,7 +70,7 @@ const Timeline = {
     })
 
     // Virtual scrolling
-    const { fontSize } = useInterfaceSizes()
+    const { fontSize, navbarSize, panelHeaderSize } = useInterfaceSizes()
 
     // Placeholder heights.
     const mutedStatusHeight = computed(() => fontSize.value * 1.5)
@@ -80,12 +81,27 @@ const Timeline = {
         : normalStatusHeight
 
     const body = useTemplateRef('timeline')
-    const { heightChart, changeSuspendState, updateVirtualHeight } =
+    const offset = computed(() => {
+      if (embedded.value) {
+      // The fontsize after navbar is the little gap between navbar and content
+        return navbarSize.value + fontsize.value
+      } else {
+        return 0
+      }
+    })
+    const {
+      heightChart,
+      changeSuspendState,
+      updateVirtualHeight,
+    } =
       useVirtualScrolling({
+        name: 'Timeline',
+        enabled: ref(true),
         list: filteredVisibleStatuses,
         body,
+        offset,
         scrollPositionInstance: useScrollPosition(),
-        scrollCompensation: false,
+        scrollCompensation: ref(false),
         getPlaceholderHeight,
       })
 

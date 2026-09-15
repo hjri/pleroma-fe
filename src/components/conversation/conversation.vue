@@ -6,6 +6,7 @@
   >
     <div
       v-if="isExpanded"
+      ref="panelHeader"
       class="panel-heading conversation-heading -sticky"
     >
       <h1 class="title">
