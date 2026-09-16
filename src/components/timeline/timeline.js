@@ -84,7 +84,7 @@ const Timeline = {
     const offset = computed(() => {
       if (embedded.value) {
       // The fontsize after navbar is the little gap between navbar and content
-        return navbarSize.value + fontsize.value
+        return navbarSize.value + fontSize.value
       } else {
         return 0
       }
