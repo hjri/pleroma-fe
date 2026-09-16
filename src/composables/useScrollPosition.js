@@ -26,25 +26,5 @@ export function useScrollPosition() {
     inProgress.value = false
   }
 
-  const scrollIntoView = async (element, options) => {
-    if (element == null) throw new TypeError(`Element is ${element}!`)
-    inProgress.value = true
-    if (!element.scrollIntoViewIfNeeded) {
-      const { height: windowHeight } = useWindowSize()
-      const { top, height } = element.getBoundingClientRect()
-      const bottom = top + height
-
-      const biggerThanScreen = height > windowHeight
-      const aboveTop = top < 0
-      const belowBottom = bottom > windowHeight.value
-      if (aboveTop || belowBottom || biggerThanScreen) {
-        await element.scrollIntoView(options)
-      }
-    } else {
-      await element.scrollIntoViewIfNeeded(options)
-    }
-    inProgress.value = false
-  }
-
-  return { x, y, scrollBy, scrollIntoView, inProgress }
+  return { x, y, scrollBy, inProgress }
 }
