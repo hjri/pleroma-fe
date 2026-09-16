@@ -51,7 +51,7 @@ export function useConversation(statusId, expanded) {
       return idA < idB ? -1 : 1
     }
   }
-  const fullConversation = ref(new Set([currentStatus.value?.id].filter(Boolean)))
+  const fullConversation = ref(new Set([mainStatus.value?.id].filter(Boolean)))
   const fullyLoaded = ref(false)
   const conversationId = computed(
     () => mainStatus.value?.statusnet_conversation_id,
@@ -113,7 +113,7 @@ export function useConversation(statusId, expanded) {
 
       fullConversation.value = new Set([
         ...ancestors,
-        currentStatus.value,
+        mainStatus.value,
         ...descendants
       ].map(({ id }) => id))
 
