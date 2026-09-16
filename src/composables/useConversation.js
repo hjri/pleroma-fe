@@ -67,6 +67,36 @@ export function useConversation(statusId, expanded) {
       return [currentStatus.value]
     }
 
+    /* It took me a week or so to figure this out.
+     *
+     * Virtual scrolling can compensate for posts being prepended to content,
+     * and prepended posts changing height. The problem is that it has to happen
+     * in prepended (i.e. either above visible post and/or above screen boundary)
+     *
+     * Here's the problem: showing conversation from store can be broken. UI might
+     * already know that some posts belong to a conversation, because you were
+     * mentioned in it, but doesn't know the rest of it. It ends up displaying this
+     * "partial" conversation, and then the rest loads in.
+     *
+     * Problem is, this partial conversation can be very fragmented, with missing
+     * pieces appearing in-between posts. These pieces don't have proper heights
+     * assigned to them yet but their neigbours do and neither me nor virtual
+     * scrolling knows how to compensate for it, it ends up either not compensating
+     * or compensating wrong.
+     *
+     * Using "fullyLoaded" ref helps with this, to ensure that we have stable
+     * conversation expansion process of focused post -> entire convo
+     *
+     * With fullyLoaded:
+     * **id:3** -> id:1 id:2 id:3 id:4 id:5 id:6
+     *
+     * Without fullyLoaded:
+     * id:1 **id:3** id:5 -> id:1 id:2 **id:3** id:4 id:5 id:6
+     * (focused post is **id:3**)
+     *
+     * After initial load, fullyLoaded remains true, allowing newer updates to
+     * appear in conversation.
+     */
     const fullConversation = useStatusesStore().conversations.get(
       conversationId.value,
     )
