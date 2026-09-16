@@ -312,6 +312,7 @@ const Status = {
     hasMentionsLine() {
       return this.mentionsLine.length > 0
     },
+    // TODO move muting logic into some store
     muteReasons() {
       return [
         this.userIsMuted ? 'user' : null,
