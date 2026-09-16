@@ -204,11 +204,11 @@ export function useVirtualScrolling({
     async (newVal, oldVal) => {
       if (!toValue(scrollCompensation)) return
       if (newVal.length === 0 && oldVal.length === 0) return
-      const expansion = oldVal.length === 0 && newVal.length !== 0
-      const collapse = oldVal.length !== 0 && newVal.length === 0
+      const explosion = oldVal.length === 0 && newVal.length !== 0
+      const implosion = oldVal.length !== 0 && newVal.length === 0
 
       const diff = (() => {
-        if (expansion) {
+        if (explosion) {
           if (toValue(collapseMode) === 'height') {
             const newBottomElement = last(newVal)
 
@@ -216,7 +216,7 @@ export function useVirtualScrolling({
           } else {
             return 0
           }
-        } else if (collapse) {
+        } else if (implosion) {
           const oldBottomElement = last(oldVal)
 
           return 0 - oldBottomElement.top - oldBottomElement.height
