@@ -51,7 +51,6 @@ export function useConversation(statusId, expanded) {
       return idA < idB ? -1 : 1
     }
   }
-  const fullConversation = ref(new Set([mainStatus.value?.id].filter(Boolean)))
   const fullyLoaded = ref(false)
   const conversationId = computed(
     () => mainStatus.value?.statusnet_conversation_id,
@@ -64,11 +63,15 @@ export function useConversation(statusId, expanded) {
       return []
     }
 
-    if (!expanded.value) {
+    if (!expanded.value || !fullyLoaded.value) {
       return [currentStatus.value]
     }
 
-    return [...fullConversation.value.keys()]
+    const fullConversation = useStatusesStore().conversations.get(
+      conversationId.value,
+    )
+
+    return [...fullConversation.keys()]
       .map((k) => useStatusesStore().allStatuses.get(k))
       .filter((status) => status.type != 'repeat') // Old backend behavior?
       .toSorted(sortById)
@@ -111,12 +114,6 @@ export function useConversation(statusId, expanded) {
         timestamp,
       })
 
-      fullConversation.value = new Set([
-        ...ancestors,
-        mainStatus.value,
-        ...descendants
-      ].map(({ id }) => id))
-
       await nextTick()
       fullyLoaded.value = true
     } else {
@@ -129,9 +126,7 @@ export function useConversation(statusId, expanded) {
         })
 
         useStatusesStore().addNewStatuses({ statuses: [status] })
-        fullConversation.value = new Set([
-          currentStatus.value,
-        ].map(({ id }) => id))
+
         fetchConversation()
       } catch (error) {
         console.error(error)
