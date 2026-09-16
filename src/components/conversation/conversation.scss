@@ -45,7 +45,7 @@
   }
 
   /* expanded conversation in timeline */
-  &.-expanded .thread-body {
+  &.-expanded:not(.-page) .thread-body {
     border-left: 4px solid var(--cRed);
     border-radius: var(--roundness);
     border-top-left-radius: 0;
