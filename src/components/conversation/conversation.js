@@ -322,7 +322,8 @@ export default {
     const diveToTopLevel = () => scrollTo(new Set([currentAncestors.value[0].id]))
 
     watch(focusedId, async (neu, old) => {
-      if (neu) scrollTo(new Set([neu]))
+      // Ignoring initial update (null -> id) since that is handled by scroll compensation
+      if (old && neu) scrollTo(new Set([neu]))
     })
 
     return {
