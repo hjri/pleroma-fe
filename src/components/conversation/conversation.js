@@ -181,12 +181,8 @@ export default {
 
     // Placeholder heights.
     const { fontSize, navbarSize, panelHeaderSize } = useInterfaceSizes()
-    const mutedStatusHeight = computed(() => fontSize.value * 1.5)
     const normalStatusHeight = computed(() => fontSize.value * 10)
-    const getPlaceholderHeight = (id) =>
-      conversation.value.find((item) => item.id === id)?.muted
-        ? mutedStatusHeight
-        : normalStatusHeight
+    const getPlaceholderHeight = (id) => normalStatusHeight
     const offset = computed(() => {
       // The fontsize after navbar is the little gap between navbar and content
       if (isPage.value) {
