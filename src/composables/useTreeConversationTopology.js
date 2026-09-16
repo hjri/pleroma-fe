@@ -1,12 +1,12 @@
 import { storeToRefs } from 'pinia'
-import { computed, ref } from 'vue'
+import { computed, ref, toValue } from 'vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 
 export function useTreeConversationTopology(conversation, replies, current) {
   const getStatusObject = (id) => useStatusesStore().allStatuses.get(id)
-  const getReplies = (id) => replies.value.get(id) ?? new Set()
+  const getReplies = (id) => toValue(replies).get(id) ?? new Set()
 
   const { mergedConfig } = storeToRefs(useMergedConfigStore())
 
@@ -21,12 +21,12 @@ export function useTreeConversationTopology(conversation, replies, current) {
   const ancestors = computed(() => {
     // First we fill map with empty sets and add given id's parent
     // as set's only element (if any)
-    const parentMap = conversation.value.reduce(
+    const parentMap = toValue(conversation).reduce(
       (result, { id, in_reply_to_status_id: irid }) => {
         if (!result.has(id)) {
           result.set(id, new Set())
         }
-        if (irid && conversation.value.length !== 1) {
+        if (irid && toValue(conversation).length !== 1) {
           // Setting parent for current item
           result.get(id).add(irid)
         }
@@ -48,26 +48,32 @@ export function useTreeConversationTopology(conversation, replies, current) {
     })
     return parentMap
   })
-  const topLevel = computed(() =>
+  const topLevelIds = computed(() =>
     [...ancestors.value.entries()]
       .filter(([id, ancestors]) => ancestors.size === 0)
-      .map(([id]) => getStatusObject(id)),
+      .map(([id]) => id),
+  )
+  const topLevel = computed(() =>
+    topLevelIds.value.map((id) => getStatusObject(id)),
   )
   const getAncestorIds = (id) => ancestors.value.get(id) ?? new Set()
   const getAncestors = (id) =>
     [...getAncestorIds(id)].map(getStatusObject).filter(Boolean)
-  const currentAncestors = computed(() => getAncestors(current.value).reverse())
+  const currentAncestors = computed(() =>
+    getAncestors(toValue(current)).reverse(),
+  )
   const currentDepth = computed(() => currentAncestors.value.length)
 
   // Thread Display, for collapsing/expanding tree branches
   // Map of id => 'showing' | 'hidden'
   const threadDisplayOverride = ref(new Map())
   const threadDisplayDefault = computed(() => {
-    return conversation.value.reduce((map, status) => {
+    return toValue(conversation).reduce((map, status) => {
       const { id } = status
       const depth = ancestors.value.get(id).size
 
       const state = (() => {
+        console.log(toValue(currentAncestors))
         if (depth - currentDepth.value <= maxDepthToShowByDefault.value) {
           return 'showing'
         } else {
@@ -107,5 +113,9 @@ export function useTreeConversationTopology(conversation, replies, current) {
     threadDisplay,
     showThreadRecursively,
     resetThreadDisplay,
+
+    // For testing
+    topLevelIds,
+    ancestors,
   }
 }
