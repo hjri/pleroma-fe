@@ -114,16 +114,9 @@ export default {
     const conversationLite = computed(() =>
       conversation.value.map(({ id }) => ({ id })),
     )
-
-    watch(
-      expanded,
-      (value) => {
-        if (value) {
-          fetchConversation()
-        }
-      },
-      { flush: 'post' },
-    )
+    provide('focusedId', focusedId)
+    provide('conversation', conversation)
+    provide('replies', replies)
 
     // Component created
     if (isPage.value) {

@@ -1,5 +1,5 @@
 import { storeToRefs } from 'pinia'
-import { computed, nextTick, provide, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch, toValue } from 'vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
@@ -52,7 +52,7 @@ export function useConversation(statusId, expanded) {
   }
   const fullyLoaded = ref(false)
   const conversationId = computed(
-    () => mainStatus.value?.statusnet_conversation_id,
+    () => mainStatus.value?.statusnet_conversation_id ?? null,
   )
   watch(conversationId, (neu, old) => {
     if (neu !== old) fullyLoaded.value = false
@@ -62,7 +62,7 @@ export function useConversation(statusId, expanded) {
       return []
     }
 
-    if (!expanded.value || !fullyLoaded.value) {
+    if (!toValue(expanded) || !fullyLoaded.value) {
       return [currentStatus.value]
     }
 
@@ -124,8 +124,6 @@ export function useConversation(statusId, expanded) {
     ),
   )
   const getReplies = (id) => replies.value.get(id) ?? new Set()
-  provide('conversation', conversation)
-  provide('replies', replies)
 
   const fetchConversation = async () => {
     if (currentStatus.value) {
@@ -133,7 +131,7 @@ export function useConversation(statusId, expanded) {
         data: { ancestors, descendants },
         timestamp,
       } = await apiFetchConversation({
-        id: statusId.value,
+        id: toValue(statusId),
         credentials: useOAuthStore().token,
       })
 
@@ -150,7 +148,7 @@ export function useConversation(statusId, expanded) {
         loadError.value = null
 
         const { data: status } = await apiFetchStatus({
-          id: statusId.value,
+          id: toValue(statusId),
           credentials: useOAuthStore().token,
         })
 
@@ -164,6 +162,16 @@ export function useConversation(statusId, expanded) {
     }
   }
 
+  watch(
+    expanded,
+    (value) => {
+      if (value) {
+        fetchConversation()
+      }
+    },
+    { flush: 'post' },
+  )
+
   // # Focus
   const focused = ref(null)
   const { mainStatus: focusedStatus } = useMainStatus(focused)
@@ -173,29 +181,28 @@ export function useConversation(statusId, expanded) {
   watch(statusId, (val) => setFocused(val), { immediate: true })
 
   const focusedId = computed(() =>
-    expanded.value && fullyLoaded.value ? focusedStatus.value?.id : null,
+    (toValue(expanded) && fullyLoaded.value) ? focusedStatus.value?.id : null,
   )
-  provide('focusedId', focusedId)
 
   watch(
-    focusedStatus,
+    focusedId,
     (newVal, oldVal) => {
       if (!newVal) return
-      if (newVal?.id === oldVal?.id) return // prevents infinite loop
+      if (newVal === oldVal) return // prevents infinite loop
       if (!streamingEnabled.value) {
-        useStatusesStore().fetchStatus(newVal.id)
+        useStatusesStore().fetchStatus(newVal)
       }
 
-      useStatusesStore().fetchFavsAndRepeats(newVal.id)
-      useStatusesStore().fetchEmojiReactions(newVal.id)
+      useStatusesStore().fetchFavsAndRepeats(newVal)
+      useStatusesStore().fetchEmojiReactions(newVal)
     },
     { immediate: true },
   )
 
   return {
     focusedId,
-    conversationId,
     setFocused,
+    conversationId,
     currentStatus,
     mainStatus,
     conversation,

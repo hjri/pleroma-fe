@@ -10,7 +10,7 @@ describe('useMainStatus', () => {
     setActivePinia(createTestingPinia())
     useStatusesStore().allStatuses = new Map([
       [1, { id: 1 }],
-      [2, { id: 2, retweeted_status: { id: 1 }}],
+      [2, { id: 2, retweeted_status: { id: 1 } }],
     ])
   })
 
@@ -24,7 +24,7 @@ describe('useMainStatus', () => {
   it('repeat', () => {
     const { status, mainStatus } = useMainStatus(2)
 
-    expect(status.value).to.eql({ id: 2, retweeted_status: { id: 1 }})
+    expect(status.value).to.eql({ id: 2, retweeted_status: { id: 1 } })
     expect(mainStatus.value).to.eql({ id: 1 })
   })
 })

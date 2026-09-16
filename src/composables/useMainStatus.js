@@ -6,7 +6,7 @@ export function useMainStatus(statusId) {
   const statusesStore = useStatusesStore()
   const getStatusObject = (id) => statusesStore.allStatuses.get(id)
 
-  const status = computed(() => getStatusObject(toValue(statusId)))
+  const status = computed(() => getStatusObject(toValue(statusId)) ?? null)
 
   const mainStatus = computed(() => {
     if (!status.value) return null
