@@ -1,7 +1,5 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 
-import { useWindowSize } from 'src/composables/useWindowSize.js'
-
 export function useScrollPosition() {
   const x = ref(0)
   const y = ref(0)

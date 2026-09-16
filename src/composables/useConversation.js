@@ -1,5 +1,5 @@
 import { storeToRefs } from 'pinia'
-import { computed, nextTick, ref, watch, toValue } from 'vue'
+import { computed, nextTick, ref, toValue, watch } from 'vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
@@ -181,7 +181,7 @@ export function useConversation(statusId, expanded) {
   watch(statusId, (val) => setFocused(val), { immediate: true })
 
   const focusedId = computed(() =>
-    (toValue(expanded) && fullyLoaded.value) ? focusedStatus.value?.id : null,
+    toValue(expanded) && fullyLoaded.value ? focusedStatus.value?.id : null,
   )
 
   watch(

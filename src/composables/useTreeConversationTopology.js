@@ -73,7 +73,6 @@ export function useTreeConversationTopology(conversation, replies, current) {
       const depth = ancestors.value.get(id).size
 
       const state = (() => {
-        console.log(toValue(currentAncestors))
         if (depth - currentDepth.value <= maxDepthToShowByDefault.value) {
           return 'showing'
         } else {

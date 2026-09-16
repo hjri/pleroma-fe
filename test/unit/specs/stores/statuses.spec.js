@@ -6,10 +6,6 @@ import {
   mockMastoAPIUser,
   mockStatus,
   mockUser,
-  userId,
-  userName,
-  userScreenName,
-  userUrl,
 } from 'test/fixtures/masto_api.js'
 
 import { useStatusesStore } from 'src/stores/statuses.js'
