@@ -1,5 +1,5 @@
 import { storeToRefs } from 'pinia'
-import { computed, provide, ref, watch } from 'vue'
+import { computed, provide, ref, watch, nextTick } from 'vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
@@ -28,48 +28,11 @@ export function useConversation(statusId, expanded) {
       mastoUserSocketStatus === WSConnectionStatus.JOINED,
   )
 
-  // # Focus
-  const focused = ref(null)
-  const { mainStatus: focusedStatus } = useMainStatus(focused)
-  const setFocused = (id) => {
-    focused.value = id
-  }
-  watch(mainStatusId, (val) => setFocused(val))
-  const focusedId = computed(() => expanded.value ? focusedStatus.value?.id : null)
-  provide('focusedId', focusedId)
-
-  watch(statusId, (neu, old) => {
-    if (neu) setFocused(neu)
-  }, { immediate: true })
-
   watch(statusId, (neu, old) => {
     if (neu !== old) {
       fetchConversation()
     }
   })
-
-  watch(
-    expanded,
-    (value) => {
-      setFocused(value ? mainStatusId.value : null)
-    },
-    { immediate: true },
-  )
-
-  watch(
-    focusedStatus,
-    (newVal, oldVal) => {
-      if (!newVal) return
-      if (newVal?.id === oldVal?.id) return // prevents infinite loop
-      if (!streamingEnabled.value) {
-        useStatusesStore().fetchStatus(newVal.id)
-      }
-
-      useStatusesStore().fetchFavsAndRepeats(newVal.id)
-      useStatusesStore().fetchEmojiReactions(newVal.id)
-    },
-    { immediate: true },
-  )
 
   const sortById = (a, b) => {
     const idA = a.type === 'retweet' ? a.retweeted_status.id : a.id
@@ -89,9 +52,13 @@ export function useConversation(statusId, expanded) {
     }
   }
   const fullConversation = ref(new Set([currentStatus.value?.id].filter(Boolean)))
+  const fullyLoaded = ref(false)
   const conversationId = computed(
     () => mainStatus.value?.statusnet_conversation_id,
   )
+  watch(conversationId, (neu, old) => {
+    if (neu !== old) fullyLoaded.value = false
+  })
   const conversation = computed(() => {
     if (!currentStatus.value) {
       return []
@@ -101,13 +68,12 @@ export function useConversation(statusId, expanded) {
       return [currentStatus.value]
     }
 
-    const conversation = fullConversation.value
-
-    return [...conversation.keys()]
+    return [...fullConversation.value.keys()]
       .map((k) => useStatusesStore().allStatuses.get(k))
       .filter((status) => status.type != 'repeat') // Old backend behavior?
       .toSorted(sortById)
   })
+
   const replies = computed(() =>
     conversation.value.reduce(
       (result, { id, in_reply_to_status_id: irid }, index) => {
@@ -151,6 +117,8 @@ export function useConversation(statusId, expanded) {
         ...descendants
       ].map(({ id }) => id))
 
+      await nextTick()
+      fullyLoaded.value = true
     } else {
       try {
         loadError.value = null
@@ -172,9 +140,34 @@ export function useConversation(statusId, expanded) {
     }
   }
 
+  // # Focus
+  const focused = ref(null)
+  const { mainStatus: focusedStatus } = useMainStatus(focused)
+  const setFocused = (id) => {
+    focused.value = id
+  }
+  watch(statusId, (val) => setFocused(val), { immediate: true })
+
+  const focusedId = computed(() => (expanded.value && fullyLoaded.value) ? focusedStatus.value?.id : null)
+  provide('focusedId', focusedId)
+
+  watch(
+    focusedStatus,
+    (newVal, oldVal) => {
+      if (!newVal) return
+      if (newVal?.id === oldVal?.id) return // prevents infinite loop
+      if (!streamingEnabled.value) {
+        useStatusesStore().fetchStatus(newVal.id)
+      }
+
+      useStatusesStore().fetchFavsAndRepeats(newVal.id)
+      useStatusesStore().fetchEmojiReactions(newVal.id)
+    },
+    { immediate: true },
+  )
+
   return {
     focusedId,
-    focusedIdRaw: focused,
     conversationId,
     setFocused,
     currentStatus,

@@ -297,7 +297,6 @@ export function useVirtualScrolling({
     const elementMiddle = element.top + element.height / 2
     const desiredTopBoundary = Math.min(element.top, elementMiddle - (windowHeight.value - offset.value) / 2)
 
-    console.log(element, desiredTopBoundary, topScrollBoundary.value)
     scrollBy(0, desiredTopBoundary - topScrollBoundary.value)
 
     resumeWatchers()

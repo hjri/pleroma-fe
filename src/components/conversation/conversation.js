@@ -102,7 +102,6 @@ export default {
     // # Main things
     const {
       focusedId,
-      focusedIdRaw,
       conversationId,
       setFocused,
       currentStatus,
@@ -321,8 +320,8 @@ export default {
     }
     const diveIntoStatus = (id) => scrollTo(new Set([id]))
     const diveToTopLevel = () => scrollTo(new Set([currentAncestors.value[0].id]))
-    watch(focusedIdRaw, async (neu) => {
-      if (!isPage.value) return
+
+    watch(focusedId, async (neu, old) => {
       if (neu) scrollTo(new Set([neu]))
     })
 
