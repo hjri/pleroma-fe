@@ -192,6 +192,9 @@ const Status = {
     user() {
       return useUsersStore().findUser(this.mainStatus.user.id)
     },
+    isTreeView() {
+      return this.mergedConfig.conversationDisplay === 'tree'
+    },
     simpleTree() {
       return !this.mergedConfig.conversationTreeAdvanced
     },

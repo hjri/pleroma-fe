@@ -149,7 +149,7 @@ export default {
       return result
     }
 
-    // External virtual scrolling
+    // # External virtual scrolling
     const unsuspendableIds = ref(new Set())
     const suspendable = computed(
       () => !isExpanded.value && unsuspendableIds.value.size === 0,
@@ -176,7 +176,8 @@ export default {
       emit('suspendableStateChange', { suspend: value, id: statusId.value }),
     )
     onUnmounted(() => resizeObserver.value.disconnect())
-    // Internal virtual scrolling
+
+    // # Internal virtual scrolling
     const virtualScrollingEnabled = ref(isExpanded.value)
 
     // Placeholder heights.
@@ -193,10 +194,6 @@ export default {
         return navbarSize.value + fontSize.value
       }
     })
-
-    const anchorIds = computed(
-      () => new Set([mainStatus.value?.id, currentStatus.value?.id]),
-    )
 
     // # Linear style stuff
     const isLinearView = computed(() => displayStyle.value !== 'tree')
@@ -218,8 +215,6 @@ export default {
       offset,
       scrollPositionInstance: scroller,
       scrollCompensation: linearScrollCompensation,
-      anchorIds,
-      collapseMode: 'item',
       getPlaceholderHeight,
     })
     const changeSuspendStateLinearLocal = (e) => {
@@ -296,7 +291,6 @@ export default {
       resetLinearScrollVirtualization()
       resetTreeScrollVirtualization()
     })
-
 
     const treeViewIsSimple = computed(
       () => !mergedConfig.value.conversationTreeAdvanced,

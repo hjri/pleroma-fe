@@ -235,7 +235,7 @@
                   />
                 </button>
                 <button
-                  v-if="isExpanded && !simpleTree"
+                  v-if="isExpanded && isTreeView && !simpleTree"
                   class="button-unstyled"
                   :title="$t('status.show_only_conversation_under_this')"
                   @click.prevent="$emit('dive')"

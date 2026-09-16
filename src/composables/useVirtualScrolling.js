@@ -26,8 +26,6 @@ export function useVirtualScrolling({
   // - 'item' - same as height but uses anchor element's top offset
   //   instead of whole height
   collapseMode,
-  // Anchor. Set of IDs of element relative to which do scroll compensation
-  anchorIds,
   // Placeholder height specification. Must be a function.
   // function will be called either:
   // - without arguments (for generic placeholder, i.e. buffer zone size)
@@ -215,10 +213,6 @@ export function useVirtualScrolling({
             const newBottomElement = last(newVal)
 
             return newBottomElement.top + newBottomElement.height
-          } else if (toValue(collapseMode) === 'item') {
-            const element = newVal.find(({ id }) => toValue(anchorIds).has(id))
-
-            return element.top
           } else {
             return 0
           }
