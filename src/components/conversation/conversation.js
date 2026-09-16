@@ -1,13 +1,13 @@
 import { storeToRefs } from 'pinia'
 import {
   computed,
+  nextTick,
   onUnmounted,
   provide,
   ref,
   toRefs,
   useTemplateRef,
   watch,
-  nextTick,
 } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -97,7 +97,9 @@ export default {
     provide('isExpanded', isExpanded)
     provide('isPage', isPage)
     provide('expandable', true)
-    watch(expanded, (val) => val ? emit('expanded') : emit('collapsed'), { flush: 'post' })
+    watch(expanded, (val) => (val ? emit('expanded') : emit('collapsed')), {
+      flush: 'post',
+    })
 
     // # Main things
     const {
@@ -189,7 +191,12 @@ export default {
       if (isPage.value) {
         return navbarSize.value + fontSize.value + panelHeaderSize.value
       } else if (expanded.value) {
-        return navbarSize.value + fontSize.value + panelHeaderSize.value * 2 + rootElementMargin.value
+        return (
+          navbarSize.value +
+          fontSize.value +
+          panelHeaderSize.value * 2 +
+          rootElementMargin.value
+        )
       } else {
         return navbarSize.value + fontSize.value
       }

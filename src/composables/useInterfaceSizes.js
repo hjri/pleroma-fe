@@ -20,17 +20,17 @@ export function useInterfaceSizes() {
   watch(fontSizeSetting, updateFontSize, { immediate: true })
 
   const navbarSize = computed(() => {
-    const string =
-      window.getComputedStyle(document.body).getPropertyValue('--navbarSize')
+    const string = window
+      .getComputedStyle(document.body)
+      .getPropertyValue('--navbarSize')
 
     return fontSize.value * Number.parseInt(string.slice(0, -3), 10) // remove the 'rem'
   })
 
   const panelHeaderSize = computed(() => {
-    const string =
-      window
-        .getComputedStyle(document.body)
-        .getPropertyValue('--panelHeaderSize')
+    const string = window
+      .getComputedStyle(document.body)
+      .getPropertyValue('--panelHeaderSize')
 
     return fontSize.value * Number.parseInt(string.slice(0, -3), 10) // remove the 'rem'
   })

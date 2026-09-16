@@ -2,13 +2,13 @@ import { debounce, throttle } from 'lodash-es'
 import { storeToRefs } from 'pinia'
 import {
   computed,
+  nextTick,
   onMounted,
   onUnmounted,
   ref,
   toRefs,
   useTemplateRef,
   watch,
-  nextTick,
 } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -83,17 +83,13 @@ const Timeline = {
     const body = useTemplateRef('timeline')
     const offset = computed(() => {
       if (embedded.value) {
-      // The fontsize after navbar is the little gap between navbar and content
+        // The fontsize after navbar is the little gap between navbar and content
         return navbarSize.value + fontSize.value
       } else {
         return 0
       }
     })
-    const {
-      heightChart,
-      changeSuspendState,
-      updateVirtualHeight,
-    } =
+    const { heightChart, changeSuspendState, updateVirtualHeight } =
       useVirtualScrolling({
         name: 'Timeline',
         enabled: ref(true),

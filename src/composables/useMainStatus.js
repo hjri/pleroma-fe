@@ -1,13 +1,12 @@
 import { computed, toValue } from 'vue'
-import { storeToRefs } from 'pinia'
 
 import { useStatusesStore } from 'src/stores/statuses.js'
 
 export function useMainStatus(statusId) {
-  const statusesStore = storeToRefs(useStatusesStore())
-  const getStatusObject = (id) => statusesStore.allStatuses.value.get(id)
+  const statusesStore = useStatusesStore()
+  const getStatusObject = (id) => statusesStore.allStatuses.get(id)
 
-  const status = computed(() => getStatusObject(statusId.value))
+  const status = computed(() => getStatusObject(toValue(statusId)))
 
   const mainStatus = computed(() => {
     if (!status.value) return null

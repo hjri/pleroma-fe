@@ -235,19 +235,21 @@ export function useVirtualScrolling({
 
           const expansion = (() => {
             if (newVal.length < oldVal.length) return 0
-            const oldVisible = oldVal.filter((item) => checkVisible(item) && item.real)
+            const oldVisible = oldVal.filter(
+              (item) => checkVisible(item) && item.real,
+            )
             const oldItem = first(oldVisible)
             if (!oldItem) return 0 // probably out of bounds in timeline
             const oldItemUpdated = newVal.find(({ id }) => id === oldItem.id)
 
             return (
               oldItemUpdated.top -
-                oldItem.top -
-                (oldItem.height - oldItemUpdated.height)
+              oldItem.top -
+              (oldItem.height - oldItemUpdated.height)
             )
           })()
 
-          const collapsing  = (() => {
+          const collapsing = (() => {
             if (newVal.length >= oldVal.length) return 0
             const newVisible = newVal
             const newItem = first(newVisible)
@@ -256,8 +258,8 @@ export function useVirtualScrolling({
 
             return (
               newItem.top -
-                newItemBefore.top -
-                (newItemBefore.height - newItem.height)
+              newItemBefore.top -
+              (newItemBefore.height - newItem.height)
             )
           })()
 
@@ -289,7 +291,10 @@ export function useVirtualScrolling({
 
     const element = heightChart.value.find(({ id }) => anchors.has(id))
     const elementMiddle = element.top + element.height / 2
-    const desiredTopBoundary = Math.min(element.top, elementMiddle - (windowHeight.value - offset.value) / 2)
+    const desiredTopBoundary = Math.min(
+      element.top,
+      elementMiddle - (windowHeight.value - offset.value) / 2,
+    )
 
     scrollBy(0, desiredTopBoundary - topScrollBoundary.value)
 
