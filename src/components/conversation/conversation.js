@@ -9,7 +9,6 @@ import {
   useTemplateRef,
   watch,
 } from 'vue'
-import { useRouter } from 'vue-router'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
@@ -68,7 +67,6 @@ export default {
   },
   emits: ['heightChange', 'suspendableStateChange', 'expanded', 'collapsed'],
   setup(props, { emit }) {
-    const router = useRouter()
     const scroller = useScrollPosition()
     const { statusId } = toRefs(props)
 
@@ -107,7 +105,6 @@ export default {
       conversationId,
       setFocused,
       currentStatus,
-      mainStatus,
       conversation,
       replies,
       getReplies,
@@ -117,7 +114,6 @@ export default {
     const conversationLite = computed(() =>
       conversation.value.map(({ id }) => ({ id })),
     )
-    const mainStatusId = computed(() => mainStatus.value.id)
 
     watch(
       expanded,

@@ -17,7 +17,6 @@ import { WSConnectionStatus } from 'src/api/websocket.js'
 export function useConversation(statusId, expanded) {
   const loadError = ref(null)
   const { status: currentStatus, mainStatus } = useMainStatus(statusId)
-  const mainStatusId = computed(() => mainStatus.value?.id)
 
   // # Config
   const { mergedConfig } = storeToRefs(useMergedConfigStore())

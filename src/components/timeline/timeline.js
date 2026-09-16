@@ -2,7 +2,6 @@ import { debounce, throttle } from 'lodash-es'
 import { storeToRefs } from 'pinia'
 import {
   computed,
-  nextTick,
   onMounted,
   onUnmounted,
   ref,
@@ -70,7 +69,7 @@ const Timeline = {
     })
 
     // Virtual scrolling
-    const { fontSize, navbarSize, panelHeaderSize } = useInterfaceSizes()
+    const { fontSize, navbarSize } = useInterfaceSizes()
 
     // Placeholder heights.
     const mutedStatusHeight = computed(() => fontSize.value * 1.5)

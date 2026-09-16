@@ -115,7 +115,6 @@ export function useTreeConversationTopology(conversation, replies, current) {
     resetThreadDisplay,
 
     // For testing
-    topLevelIds,
     ancestors,
   }
 }
