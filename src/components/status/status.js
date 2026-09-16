@@ -634,8 +634,8 @@ const Status = {
         useStatusesStore().fetchFavs(this.mainStatus.id)
       }
     },
-    isSuspendable: function (suspend) {
-      this.$emit('suspendableStateChange', { id: this.status.id, suspend })
+    isSuspendable: function (suspendable) {
+      this.$emit('suspendableStateChange', { id: this.status.id, suspendable })
     },
   },
 }

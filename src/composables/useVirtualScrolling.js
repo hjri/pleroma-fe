@@ -35,11 +35,11 @@ export function useVirtualScrolling({
 }) {
   // # Suspension
   const unsuspendibleIds = ref(new Set())
-  const changeSuspendState = ({ id, suspend }) => {
-    if (!suspend) {
-      unsuspendibleIds.value.add(id)
-    } else {
+  const changeSuspendState = ({ id, suspendable }) => {
+    if (suspendable) {
       unsuspendibleIds.value.delete(id)
+    } else {
+      unsuspendibleIds.value.add(id)
     }
   }
 

@@ -164,7 +164,7 @@ export default {
     const resizeObserver = ref(new ResizeObserver(updateVirtualHeight))
     watch(rootElement, () => resizeObserver.value.observe(rootElement.value))
     watch(suspendable, (value) =>
-      emit('suspendableStateChange', { suspend: value, id: statusId.value }),
+      emit('suspendableStateChange', { suspendable: value, id: statusId.value }),
     )
     onUnmounted(() => resizeObserver.value.disconnect())
 
@@ -215,8 +215,8 @@ export default {
     })
     const changeSuspendStateLinearLocal = (e) => {
       changeSuspendStateLinear(e)
-      const { id, suspend } = e
-      if (suspend) {
+      const { id, suspendable } = e
+      if (suspendable) {
         unsuspendableIds.value.delete(id)
       } else {
         unsuspendableIds.value.add(id)
@@ -266,20 +266,19 @@ export default {
     })
     const changeSuspendStateAncestorsLocal = (e) => {
       changeSuspendStateAncestors(e)
-      const { id, suspend } = e
-      if (suspend) {
-        unsuspendableIds.value.add(id)
-      } else {
+      const { id, suspendable } = e
+      if (suspendable) {
         unsuspendableIds.value.delete(id)
+      } else {
+        unsuspendableIds.value.add(id)
       }
     }
     const changeSuspendStateCurrentLevelLocal = (e) => {
-      changeSuspendStateLinear(e)
-      const { id, suspend } = e
-      if (suspend) {
-        unsuspendableIds.value.add(id)
-      } else {
+      const { id, suspendable } = e
+      if (suspendable) {
         unsuspendableIds.value.delete(id)
+      } else {
+        unsuspendableIds.value.add(id)
       }
     }
 
