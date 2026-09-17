@@ -133,6 +133,9 @@ const Status = {
       default: false,
     },
   },
+  provide: {
+    expandable: false, // for quotes
+  },
   data() {
     return {
       resizeObserver: new ResizeObserver(this.updateVirtualHeight),
