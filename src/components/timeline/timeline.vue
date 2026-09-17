@@ -93,6 +93,7 @@
 
             :data-vs-height="element.height"
             :data-vs-top="element.top"
+            :data-vs-id="element.id"
 
             @suspendable-state-change="changeSuspendState"
             @height-change="updateVirtualHeight"
