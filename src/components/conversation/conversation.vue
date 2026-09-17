@@ -125,7 +125,7 @@
           </template>
         </div>
         <ThreadTree
-          :status-id="focusedId ?? currentStatus.id"
+          :status-id="currentStatus.id"
           :depth="0"
 
           @goto="setFocused"
