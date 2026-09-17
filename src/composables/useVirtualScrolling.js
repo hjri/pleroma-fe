@@ -86,7 +86,7 @@ export function useVirtualScrolling({
 
     const { top } = body.value.getBoundingClientRect()
 
-    const distanceItemTopToWindowTop = 0 - top + offset.value
+    const distanceItemTopToWindowTop = 0 - top + (toValue(offset) ?? 0)
     const distanceItemTopToWindowBottom = windowHeight.value - top
 
     // Technically, bottom scroll boundary should be distance
@@ -160,11 +160,10 @@ export function useVirtualScrolling({
     const chart = enabled.value ? heightChartVisibility : heightChart
     // Group invisible items into spacers
     return chart.value.reduce((acc, heightChartItem) => {
-      const { suspendable, visible, height, top, bottom, id } = heightChartItem
-      // Bottom value isn't really used otherwise for debugging
+      const { suspendable, visible, height, top, id } = heightChartItem
       const present = visible || !suspendable
       if (present) {
-        return [...acc, { type: 'item', height, top, bottom, id }]
+        return [...acc, { type: 'item', height, top, id }]
       } else {
         // Reusing previous item if possible
         const previousItem = acc[acc.length - 1]
@@ -176,7 +175,6 @@ export function useVirtualScrolling({
           : {
               type: 'spacer',
               top: Number.POSITIVE_INFINITY,
-              bottom: Number.POSITIVE_INFINITY,
               height: 0,
               ids: new Set(),
             }
@@ -186,7 +184,6 @@ export function useVirtualScrolling({
         spacer.height += height
 
         if (top < spacer.top) spacer.top = top
-        if (bottom < spacer.bottom) spacer.bottom = bottom
 
         // If we used previous item there is no need to push it to array
         if (usingPreviousItem) {
@@ -281,7 +278,7 @@ export function useVirtualScrolling({
   )
 
   // Misc
-  const reset = async () => {
+  const reset = () => {
     unsuspendibleIds.value = new Set()
     heights.value = new Map()
   }

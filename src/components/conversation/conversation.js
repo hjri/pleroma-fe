@@ -164,7 +164,10 @@ export default {
     const resizeObserver = ref(new ResizeObserver(updateVirtualHeight))
     watch(rootElement, () => resizeObserver.value.observe(rootElement.value))
     watch(suspendable, (value) =>
-      emit('suspendableStateChange', { suspendable: value, id: statusId.value }),
+      emit('suspendableStateChange', {
+        suspendable: value,
+        id: statusId.value,
+      }),
     )
     onUnmounted(() => resizeObserver.value.disconnect())
 
