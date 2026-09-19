@@ -27,8 +27,7 @@
         :aria-label="$t('search.advanced')"
         :aria-expanded="advancedMode"
       >
-        <FAIcon v-if="advancedMode" icon="chevron-up" />
-        <FAIcon v-else icon="chevron-down" />
+        <FAIcon :icon="advancedMode ? 'chevron-up' : 'chevron-down'" />
       </button>
     </div>
     <div v-if="advancedMode" class="panel-body search-advanced">

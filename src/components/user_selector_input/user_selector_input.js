@@ -45,6 +45,7 @@ const UserSelectorInput = {
     const debouncedLoad = debounce((newQuery) => {
       let cancelled = false
       if (newQuery) {
+        loading.value = true
         useSearchStore()
           .searchUsers({ query: newQuery })
           .then((users) => {
@@ -53,6 +54,8 @@ const UserSelectorInput = {
               searchResults.value = users
             }
           })
+      } else {
+        loading.value = false
       }
       return () => {
         cancelled = true
@@ -67,23 +70,25 @@ const UserSelectorInput = {
       })
     })
 
+    const selectUser = (user) => {
+      emit('update:modelValue', user.id)
+      editing.value = false
+    }
+
+    const clear = () => {
+      emit('update:modelValue', '')
+      editing.value = false
+    }
+
     return {
       user,
       usernameInput,
       searchResults,
       loading,
       editing,
+      selectUser,
+      clear,
     }
-  },
-  methods: {
-    selectUser(user) {
-      this.$emit('update:modelValue', user.id)
-      this.editing = false
-    },
-    clear() {
-      this.$emit('update:modelValue', '')
-      this.editing = false
-    },
   },
 }
 
