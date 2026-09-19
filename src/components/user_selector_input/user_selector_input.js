@@ -42,10 +42,10 @@ const UserSelectorInput = {
 
     const searchResults = ref([])
     const loading = ref(false)
+    const outdated = computed(() => searchResults.value.length && loading.value)
     const debouncedLoad = debounce((newQuery) => {
       let cancelled = false
       if (newQuery) {
-        loading.value = true
         useSearchStore()
           .searchUsers({ query: newQuery })
           .then((users) => {
@@ -55,6 +55,7 @@ const UserSelectorInput = {
             }
           })
       } else {
+        searchResults.value = []
         loading.value = false
       }
       return () => {
@@ -62,6 +63,7 @@ const UserSelectorInput = {
       }
     }, 1000)
     watch(usernameInput, (newQuery, _, onCleanup) => {
+      loading.value = true
       const cancel = debouncedLoad(newQuery)
       onCleanup(() => {
         if (cancel) {
@@ -85,6 +87,7 @@ const UserSelectorInput = {
       usernameInput,
       searchResults,
       loading,
+      outdated,
       editing,
       selectUser,
       clear,

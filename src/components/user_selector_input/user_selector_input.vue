@@ -45,6 +45,8 @@
     </div>
     <List
       v-if="editing && searchResults.length"
+      class="search-results"
+      :class="{ '-faded': outdated }"
       :external-items="searchResults"
     >
       <template #item="{item}">
@@ -101,6 +103,11 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+  }
+
+  .search-results.-faded {
+    --text: var(--textFaint);
+    --link: var(--linkFaint);
   }
 }
 </style>
