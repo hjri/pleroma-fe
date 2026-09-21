@@ -66,7 +66,6 @@ library.add(faWrench)
 
 export default {
   components: { Popover },
-  props: ['changed'],
 }
 </script>
 
