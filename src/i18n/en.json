@@ -1972,7 +1972,16 @@
     "people_talking": "{count} people talking",
     "no_results": "No results",
     "no_more_results": "No more results",
-    "load_more": "Load more results"
+    "load_more": "Load more results",
+    "advanced": "Show advanced search",
+    "by_author": "Author:"
+  },
+  "user_selector": {
+    "select": "Select",
+    "username_input_placeholder": "Username, e.g. foo{'@'}example.org",
+    "edit": "Edit",
+    "clear": "Clear",
+    "none": "Not selected"
   },
   "password_reset": {
     "forgot_password": "Forgot password?",

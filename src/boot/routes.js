@@ -194,7 +194,10 @@ export default () => {
       name: 'search',
       path: '/search',
       component: () => import('src/components/search/search.vue'),
-      props: (route) => ({ query: route.query.query }),
+      props: (route) => ({
+        query: route.query.query,
+        author: route.query.author,
+      }),
     },
     {
       name: 'who-to-follow',

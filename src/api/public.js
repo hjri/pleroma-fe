@@ -269,6 +269,7 @@ export const search2 = ({
   limit,
   offset,
   following,
+  accountId,
   type,
 }) => {
   return promisedRequest({
@@ -278,6 +279,7 @@ export const search2 = ({
       limit,
       offset,
       following,
+      accountId,
       type,
       withRelationships: true,
     }),
