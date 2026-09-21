@@ -770,6 +770,14 @@ export const ROOT_CONFIG_DEFINITIONS = {
   ...THEME_CONFIG_DEFINITIONS,
 }
 
+const maybeThrow = (doThrow, error, fallback) => {
+  if (doThrow) {
+    throw new Error(error)
+  } else {
+    console.error(error)
+    return fallback
+  }
+}
 export const validateSetting = ({
   value,
   path: fullPath,
@@ -794,14 +802,9 @@ export const validateSetting = ({
   }
 
   if (get(defaultState, path.split('.')[0]) === undefined) {
-    const string = `Unknown option ${fullPath}, value: ${value}`
+    const error = `Unknown option ${fullPath}, value: ${value}`
 
-    if (throwError) {
-      throw new Error(string)
-    } else {
-      console.error(string)
-      return undefined
-    }
+    return maybeThrow(throwError, error)
   }
 
   let { required, type, default: defaultValue } = definition
@@ -811,25 +814,15 @@ export const validateSetting = ({
   }
 
   if (required && value == null) {
-    const string = `Value required for setting ${path} but was provided nullish; defaulting`
+    const error = `Value required for setting ${path} but was provided nullish; defaulting`
 
-    if (throwError) {
-      throw new Error(string)
-    } else {
-      console.error(string)
-      return defaultValue
-    }
+    return maybeThrow(throwError, error, defaultValue)
   }
 
   if (depth > 2 && value !== null && type != null && typeof value !== type) {
-    const string = `Invalid type for setting ${path}: expected type ${type}, got ${typeof value}, value ${value}; defaulting`
+    const error = `Invalid type for setting ${path}: expected type ${type}, got ${typeof value}, value ${value}; defaulting`
 
-    if (throwError) {
-      throw new Error(string)
-    } else {
-      console.error(string)
-      return defaultValue
-    }
+    return maybeThrow(throwError, error, defaultValue)
   }
 
   return value
