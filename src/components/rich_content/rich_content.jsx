@@ -69,6 +69,7 @@ export default {
     },
     attentions: {
       required: false,
+      type: Array,
       default: () => [],
     },
     // Emoji object, as in status.emojis, note the "s" at the end...
