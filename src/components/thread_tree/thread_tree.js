@@ -16,19 +16,7 @@ const ThreadTree = {
     statusId: String,
     depth: Number,
   },
-  data() {
-    return {
-      resizeObserver: new ResizeObserver(this.updateVirtualHeight),
-    }
-  },
-  mounted() {
-    this.resizeObserver.observe(this.$refs.root)
-  },
-  unmounted() {
-    this.resizeObserver.disconnect()
-  },
   emits: [
-    'heightChange',
     'suspendableStateChange',
     'goto',
     'dive',
@@ -70,14 +58,6 @@ const ThreadTree = {
   methods: {
     getReplies(id) {
       return this.replies.get(id) ?? new Set()
-    },
-    updateVirtualHeight(e) {
-      const [entry] = e
-      this.$emit('heightChange', {
-        id: this.statusId,
-        height: entry.contentRect.height,
-        element: this.$refs.root,
-      })
     },
   },
 }
