@@ -409,30 +409,25 @@ export const importFollows = ({ file, credentials }) => {
   }).then((response) => response.ok)
 }
 
-export const exportFriends = ({ id, credentials }) => {
-  // biome-ignore lint/suspicious/noAsyncPromiseExecutor: TODO refactor this
-  return new Promise(async (resolve, reject) => {
-    try {
-      let friends = []
-      let more = true
-      while (more) {
-        const maxId = friends.length > 0 ? last(friends).id : undefined
-        const users = await fetchFriends({
-          id,
-          maxId,
-          credentials,
-        })
-        friends = [...friends, ...users]
-        if (users.length === 0) {
-          more = false
-        }
-      }
-      resolve(friends)
-    } catch (err) {
-      reject(err)
+export const exportFriends = async ({ id, credentials }) => {
+  let friends = []
+  let more = true
+  while (more) {
+    const maxId = friends.length > 0 ? last(friends).id : undefined
+    const users = await fetchFriends({
+      id,
+      maxId,
+      credentials,
+    })
+
+    if (users.length === 0) {
+      more = false
+    } else {
+      friends = [...friends, ...users]
     }
-  })
-}
+  }
+  return friends
+})
 
 // #Profile settings
 export const updateNotificationSettings = ({ credentials, settings }) => {
