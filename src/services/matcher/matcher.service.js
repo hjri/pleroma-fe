@@ -21,10 +21,10 @@ export const extractTagFromUrl = (url) => {
   // https://git.pleroma.social/pleroma/elixir-libraries/linkify/-/blob/master/lib/linkify/parser.ex
   // https://www.pcre.org/original/doc/html/pcrepattern.html
   const regex =
-    /tag[s]*\/([\p{L}\p{N}_]*[\p{Alphabetic}_·\u{200c}][\p{L}\p{N}_·\p{M}\u{200c}]*)$/gu
+    /tags*\/([\p{L}\p{N}_]*[\p{Alphabetic}_·\u{200c}][\p{L}\p{N}_·\p{M}\u{200c}]*)$/gu
   const result = regex.exec(decoded)
   if (!result) {
-    return false
+    return null
   }
   return result[1]
 }

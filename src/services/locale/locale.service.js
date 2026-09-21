@@ -1,5 +1,4 @@
 import ISO6391 from 'iso-639-1'
-import { map } from 'lodash-es'
 
 import languagesObject from '../../i18n/messages'
 
@@ -35,7 +34,7 @@ const getLanguageName = (code) => {
   )
 }
 
-const languages = map(languagesObject.languages, (code) => ({
+const languages = languagesObject.languages.map((code) => ({
   code,
   name: getLanguageName(code),
 })).sort((a, b) => a.name.localeCompare(b.name))

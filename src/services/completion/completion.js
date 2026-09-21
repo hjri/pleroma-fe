@@ -41,8 +41,7 @@ export const addPositionToWords = (words) => {
 export const splitByWhitespaceBoundary = (str) => {
   const result = []
   let currentWord = ''
-  for (let i = 0; i < str.length; i++) {
-    const currentChar = str[i]
+  for (let currentChar of str) {
     // Starting a new word
     if (!currentWord) {
       currentWord = currentChar

@@ -73,10 +73,10 @@ describe('MatcherService', () => {
       expect(MatcherService.extractTagFromUrl(url)).to.eql('sky')
     })
 
-    it('should not return string but false if invalid url', () => {
+    it('should not return string but null if invalid url', () => {
       const url = 'https://website.com/users/sky'
 
-      expect(MatcherService.extractTagFromUrl(url)).to.eql(false)
+      expect(MatcherService.extractTagFromUrl(url)).to.eql(null)
     })
 
     it('should return tag name from non-ascii tags', () => {

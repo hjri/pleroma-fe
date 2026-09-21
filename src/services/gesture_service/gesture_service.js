@@ -16,7 +16,7 @@ const touchEventCoord = (e) => touchCoord(e.touches[0])
 
 const pointerEventCoord = (e) => [e.clientX, e.clientY]
 
-const vectorLength = (v) => Math.sqrt(v[0] * v[0] + v[1] * v[1])
+const vectorLength = (v) => Math.hypot(v[0] * v[0], v[1] * v[1])
 
 const perpendicular = (v) => [v[1], -v[0]]
 
