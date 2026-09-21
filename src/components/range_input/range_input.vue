@@ -53,18 +53,18 @@
 
 <script>
 export default {
-  props: [
-    'name',
-    'modelValue',
-    'fallback',
-    'disabled',
-    'label',
-    'max',
-    'min',
-    'step',
-    'hardMin',
-    'hardMax',
-  ],
+  props: {
+    name: String,
+    modelValue: String,
+    fallback: Number,
+    disabled: Boolean,
+    label: String,
+    max: Number,
+    min: Number,
+    step: Number,
+    hardMin: Number,
+    hardMax: Number,
+  },
   emits: ['update:modelValue'],
   computed: {
     present() {
