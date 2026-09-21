@@ -65,7 +65,7 @@ describe('useVirtualScrolling', () => {
       top: 1100,
       height: 900,
       ids: expect.any(Set),
-      id: expect.stringContaining('19i'),
+      id: 'i11',
     }
     expect(result.heightChart.value).toEqual([...items, spacer])
   })
@@ -100,7 +100,7 @@ describe('useVirtualScrolling', () => {
       top: 0,
       height: 200,
       ids: expect.any(Set),
-      id: expect.stringContaining('0i'),
+      id: 'i0',
     }
     const items = [...new Array(14)].map((i, index) => ({
       id: `${index + 2}i`,
@@ -113,7 +113,7 @@ describe('useVirtualScrolling', () => {
       top: 1600,
       height: 400,
       ids: expect.any(Set),
-      id: expect.stringContaining('19i'),
+      id: 'i16',
     }
     expect(result.heightChart.value).toEqual([spacer1, ...items, spacer2])
   })
@@ -164,7 +164,7 @@ describe('useVirtualScrolling', () => {
       top: 0,
       height: 700,
       ids: expect.any(Set),
-      id: expect.stringContaining('0ib'),
+      id: 'i0',
     }
     const itemsNew = [...new Array(3)].map((i, index) => ({
       id: `${index + 7}ib`,
@@ -183,7 +183,7 @@ describe('useVirtualScrolling', () => {
       top: 2200,
       height: 800,
       ids: expect.any(Set),
-      id: expect.stringContaining('9ia'),
+      id: 'i16',
     }
     expect(result.heightChart.value).toEqual([
       spacer1,
@@ -249,7 +249,7 @@ describe('useVirtualScrolling', () => {
       top: 1200,
       height: 800,
       ids: expect.any(Set),
-      id: expect.stringContaining('9ib'),
+      id: 'i6',
     }
     expect(result.heightChart.value).toEqual([...items, spacer])
   })
@@ -295,7 +295,7 @@ describe('useVirtualScrolling', () => {
       top: 0,
       height: 400,
       ids: expect.any(Set),
-      id: expect.stringContaining('0i'),
+      id: 'i0',
     }
     const items1 = [
       {
@@ -310,7 +310,7 @@ describe('useVirtualScrolling', () => {
       top: 600,
       height: 1000,
       ids: expect.any(Set),
-      id: expect.stringContaining('3i'),
+      id: 'i3',
     }
     const items2 = [...new Array(8)].map((i, index) => ({
       id: `${index + 8}i`,
@@ -323,7 +323,7 @@ describe('useVirtualScrolling', () => {
       top: 3200,
       height: 800,
       ids: expect.any(Set),
-      id: expect.stringContaining('19i'),
+      id: 'i16',
     }
     expect(result.heightChart.value).toEqual([
       spacer1,

@@ -176,12 +176,11 @@ export function useVirtualScrolling({
               type: 'spacer',
               top: Number.POSITIVE_INFINITY,
               height: 0,
-              initialIndex: index,
+              id: `i${index}`, // used for v-for key attribute
               ids: new Set(),
             }
 
         spacer.ids.add(id)
-        spacer.id = `i${spacer.initialIndex}s${spacer.ids.size}` // used for v-for key attribute
         spacer.height += height
 
         if (top < spacer.top) spacer.top = top
