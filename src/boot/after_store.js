@@ -460,7 +460,6 @@ const checkOAuthToken = async ({ store }) => {
   if (oauth.userToken) {
     return useUsersStore().loginUser(oauth.userToken)
   }
-  return
 }
 
 const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
