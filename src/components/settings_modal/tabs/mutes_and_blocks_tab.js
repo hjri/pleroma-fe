@@ -127,11 +127,7 @@ const MutesAndBlocks = {
       return urls.filter((url) => !this.user.domainMutes.has(url))
     },
     queryKnownDomains(query) {
-      return new Promise((resolve) => {
-        resolve(
-          this.knownDomains.filter((url) => url.toLowerCase().includes(query)),
-        )
-      })
+      return new Promise.resolve(this.knownDomains.filter((url) => url.toLowerCase().includes(query)))
     },
     unmuteDomains(domains) {
       return useUsersStore().unmuteDomains(domains)

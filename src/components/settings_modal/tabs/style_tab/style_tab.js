@@ -599,8 +599,7 @@ export default {
       .map((c) => {
         return c.defaultRules
           .filter((c) => c.component === 'Root')
-          .map((x) => Object.entries(x.directives))
-          .flat()
+          .flatMap((x) => Object.entries(x.directives))
       })
       .filter(Boolean)
       .flat()
