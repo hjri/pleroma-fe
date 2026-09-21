@@ -284,13 +284,14 @@ export function useVirtualScrolling({
   }
 
   const scrollTo = (anchors) => {
-    pauseWatchers()
-
     const element = heightChart.value.find(({ id }) => anchors.has(id))
     if (!element) {
       console.error(`No element with id matching ${[...anchors].join()} found`)
       return
     }
+
+    pauseWatchers()
+
     const elementMiddle = element.top + element.height / 2
     const desiredTopBoundary = Math.min(
       element.top,
