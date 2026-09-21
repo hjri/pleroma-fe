@@ -218,8 +218,8 @@ const EmojiTab = {
             this.sortPackFiles(`${pack}@${inst}`)
           }
         })
-        .catch((data) => {
-          this.displayError(data)
+        .catch((error) => {
+          this.displayError(error)
         })
     },
     downloadRemotePack() {
