@@ -121,13 +121,12 @@ const mediaUpload = {
       return false
     },
     async uploadFile(file) {
-      const self = this
       if (file.size > useInstanceStore().uploadlimit) {
         const filesize = fileSizeFormatService.fileSizeFormat(file.size)
         const allowedsize = fileSizeFormatService.fileSizeFormat(
           useInstanceStore().uploadlimit,
         )
-        self.$emit('upload-failed', 'file_too_big', {
+        this.$emit('upload-failed', 'file_too_big', {
           filesize: filesize.num,
           filesizeunit: filesize.unit,
           allowedsize: allowedsize.num,
@@ -141,18 +140,18 @@ const mediaUpload = {
       const formData = new FormData()
       formData.append('file', processedFile)
 
-      self.$emit('uploading')
-      self.uploadCount++
+      this.$emit('uploading')
+      this.uploadCount++
 
       statusPosterService.uploadMedia({ formData }).then(
         (fileData) => {
-          self.$emit('uploaded', fileData)
-          self.decreaseUploadCount()
+          this.$emit('uploaded', fileData)
+          this.decreaseUploadCount()
         },
         (error) => {
           console.error('Error uploading file', error)
-          self.$emit('upload-failed', 'default')
-          self.decreaseUploadCount()
+          this.$emit('upload-failed', 'default')
+          this.decreaseUploadCount()
         },
       )
     },

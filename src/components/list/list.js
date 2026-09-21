@@ -146,9 +146,9 @@ const List = {
     },
     toggleAll(value) {
       if (value) {
-        this.selected = new Set([...this.allKeys])
+        this.selected = new Set(this.allKeys)
       } else {
-        this.selected = new Set([])
+        this.selected = new Set()
       }
       this.$emit('select', this.selected)
     },
