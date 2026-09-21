@@ -288,7 +288,7 @@ export function useVirtualScrolling({
 
     const element = heightChart.value.find(({ id }) => anchors.has(id))
     if (!element) {
-      console.error(`Element ${id} not found`)
+      console.error(`No element with id matching ${[...anchors].join()} found`)
       return
     }
     const elementMiddle = element.top + element.height / 2

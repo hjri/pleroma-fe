@@ -122,9 +122,7 @@ export default {
 
     // # Misc UI things
     const firstStatus = computed(() => conversation.value[0])
-    const lastStatus = computed(
-      () => last(conversation.value),
-    )
+    const lastStatus = computed(() => last(conversation.value))
     const getStatusClasses = (statusId, ancestor) => {
       const result = {
         '-first': statusId === firstStatus.value?.id,

@@ -146,7 +146,6 @@ export function useConversation(statusId, expanded) {
         await nextTick()
         fullyLoaded.value = true
       } else {
-
         const { data: status } = await apiFetchStatus({
           id: toValue(statusId),
           credentials: useOAuthStore().token,
