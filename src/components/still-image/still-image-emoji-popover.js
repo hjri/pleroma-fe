@@ -58,7 +58,6 @@ export default {
         })
         .catch((e) => {
           this.displayError(e)
-          return
         })
     },
 

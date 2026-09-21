@@ -91,7 +91,7 @@ const registration = {
       return minDate
     },
     birthdayMinAttr() {
-      return this.birthdayMin.toJSON().replace(/T.+$/, '')
+      return this.birthdayMin.toJSON().slice(0, 10)
     },
     birthdayMinFormatted() {
       const browserLocale = localeService.internalToBrowserLocale(
@@ -195,7 +195,7 @@ const registration = {
       })
     },
     replaceNewlines(str) {
-      return str.replaceAll(/\s*\n\s*/g, ' \n')
+      return str.replaceAll(/\n/g, ' \n')
     },
   },
 }

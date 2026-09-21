@@ -14,7 +14,7 @@
 <script setup>
 import Popover from 'src/components/popover/popover.vue'
 
-const props = defineProps(['text'])
+const props = defineProps({ text: String })
 </script>
 
 <style lang="scss">

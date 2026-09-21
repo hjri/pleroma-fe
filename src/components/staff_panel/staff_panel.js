@@ -17,7 +17,7 @@ const StaffPanel = {
   computed: {
     groupedStaffAccounts() {
       const staffAccounts = map(this.staffAccounts, this.findUserByName).filter(
-        (_) => _,
+        Boolean,
       )
       const groupedStaffAccounts = groupBy(staffAccounts, 'role')
 

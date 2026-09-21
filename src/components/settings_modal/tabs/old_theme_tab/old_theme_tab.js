@@ -49,16 +49,11 @@ import { init } from 'src/services/theme_data/theme_data_3.service.js'
 import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
 
 // List of color values used in v1
-const v1OnlyNames = [
-  'bg',
-  'fg',
-  'text',
-  'link',
-  'cRed',
-  'cGreen',
-  'cBlue',
-  'cOrange',
-].map((_) => _ + 'ColorLocal')
+const v1OnlyNames = new Set(
+  ['bg', 'fg', 'text', 'link', 'cRed', 'cGreen', 'cBlue', 'cOrange'].map(
+    (_) => _ + 'ColorLocal',
+  ),
+)
 
 const colorConvert = (color) => {
   if (color.startsWith('--') || color === 'transparent') {
@@ -566,7 +561,7 @@ export default {
     clearV1() {
       Object.keys(this.$data)
         .filter((_) => _.endsWith('ColorLocal') || _.endsWith('OpacityLocal'))
-        .filter((_) => !v1OnlyNames.includes(_))
+        .filter((_) => !v1OnlyNames.has(_))
         .forEach((key) => {
           this.$data[key] = undefined
         })

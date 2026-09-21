@@ -148,7 +148,7 @@ const StatusBody = {
       return this.status.attachments.map((file) => file.type)
     },
     collapsedStatus() {
-      return this.status.raw_html.replaceAll('(\n|<br\s?\/?>)', ' ')
+      return this.status.raw_html.replaceAll(/(\n|<br\s?\/?>)/g, ' ')
     },
     ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
@@ -171,7 +171,10 @@ const StatusBody = {
           const cleanedString = content.replaceAll(/<[^>]+?>/gi, '') // remove all tags
           if (!cleanedString.startsWith('@')) return
           const handle = cleanedString.slice(1)
-          const host = url.replace(/^https?:\/\//, '').replace(/\/.+?$/, '')
+          const hostRegex = /^(?:https?:\/\/)([\w-.]+)/gi
+          const hostMatch = hostRegex.exec(url)
+          if (!hostMatch) return
+          const [, host] = hostMatch
           useUsersStore().fetchUserIfMissing({ name: `${handle}@${host}` })
         })
       /* This is a bit of a hack to make current tall status detector work

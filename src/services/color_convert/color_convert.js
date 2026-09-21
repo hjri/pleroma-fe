@@ -23,8 +23,8 @@ export const rgb2hex = (r, g, b) => {
   }
   ;[r, g, b] = [r, g, b].map((val) => {
     val = Math.ceil(val)
-    val = val < 0 ? 0 : val
-    val = val > 255 ? 255 : val
+    val = Math.max(val, 0)
+    val = Math.min(val, 255)
     return val
   })
   return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`

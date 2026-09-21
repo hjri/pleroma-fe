@@ -63,7 +63,12 @@ const maybeLocalizedKeywords = (emoji, languages, nameLocalizer) => {
   return res
 }
 
-const filterByKeyword = (list, keyword = '', languages, nameLocalizer) => {
+const filterByKeyword = (
+  list,
+  keyword = '',
+  languages = [],
+  nameLocalizer = () => '',
+) => {
   if (keyword === '') return list
 
   const keywordLowercase = keyword.toLowerCase()
@@ -91,7 +96,7 @@ const getOffset = (elem) => {
   if (!res) {
     return 0
   }
-  return res[1]
+  return Number.parseInt(res[1], 10)
 }
 
 const toHeaderId = (id) => {
@@ -362,7 +367,7 @@ const EmojiPicker = {
       if (useEmojiStore().stickers) {
         return useEmojiStore().stickers.length > 0
       }
-      return 0
+      return false
     },
     allCustomGroups() {
       if (this.hideCustomEmoji || this.hideCustomEmojiInPicker) {
@@ -399,16 +404,14 @@ const EmojiPicker = {
       }, 500)
     },
     emojiItems() {
-      return this.filteredEmojiGroups
-        .map((group) =>
-          chunk(group.emojis, this.itemPerRow).map((items, index) => ({
-            ...group,
-            id: index === 0 ? group.id : `row-${index}-${group.id}`,
-            emojis: items,
-            isFirstRow: index === 0,
-          })),
-        )
-        .flat()
+      return this.filteredEmojiGroups.flatMap((group) =>
+        chunk(group.emojis, this.itemPerRow).map((items, index) => ({
+          ...group,
+          id: index === 0 ? group.id : `row-${index}-${group.id}`,
+          emojis: items,
+          isFirstRow: index === 0,
+        })),
+      )
     },
     languages() {
       return ensureFinalFallback(

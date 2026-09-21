@@ -136,10 +136,10 @@ const Popover = {
       const anchorScreenBox = anchorEl.getBoundingClientRect()
 
       const anchorStyle = getComputedStyle(anchorEl)
-      const topPadding = parseFloat(anchorStyle.paddingTop)
-      const bottomPadding = parseFloat(anchorStyle.paddingBottom)
-      const rightPadding = parseFloat(anchorStyle.paddingRight)
-      const leftPadding = parseFloat(anchorStyle.paddingLeft)
+      const topPadding = Number.parseFloat(anchorStyle.paddingTop)
+      const bottomPadding = Number.parseFloat(anchorStyle.paddingBottom)
+      const rightPadding = Number.parseFloat(anchorStyle.paddingRight)
+      const leftPadding = Number.parseFloat(anchorStyle.paddingLeft)
 
       // Screen position of the origin point for popover = center of the anchor
       const origin = {

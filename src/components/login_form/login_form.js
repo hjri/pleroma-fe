@@ -72,7 +72,6 @@ const LoginForm = {
               this.error = error
               this.focusOnPasswordInput()
             }
-            return
           })
       })
     },

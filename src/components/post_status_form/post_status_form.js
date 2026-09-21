@@ -12,7 +12,7 @@ import Attachment from 'src/components/attachment/attachment.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import DraftCloser from 'src/components/draft_closer/draft_closer.vue'
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
-import suggestor from 'src/components/emoji_input/suggestor.js'
+import { suggest } from 'src/components/emoji_input/suggestor.js'
 import Gallery from 'src/components/gallery/gallery.vue'
 import MediaUpload from 'src/components/media_upload/media_upload.vue'
 import Popover from 'src/components/popover/popover.vue'
@@ -406,7 +406,7 @@ const PostStatusForm = {
 
     // Emoji stuff
     emojiUserSuggestor() {
-      return suggestor({
+      return suggest({
         emoji: [
           ...useEmojiStore().standardEmojiList,
           ...useEmojiStore().customEmoji,
@@ -414,7 +414,7 @@ const PostStatusForm = {
       })
     },
     emojiSuggestor() {
-      return suggestor({
+      return suggest({
         emoji: [
           ...useEmojiStore().standardEmojiList,
           ...useEmojiStore().customEmoji,

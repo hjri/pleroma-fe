@@ -9,19 +9,13 @@ export const muteFilterHits = (muteFilters, status) => {
 
   return muteFilters
     .toSorted((a, b) => b.order - a.order)
+    .filter((filter) => filter.enabled && filter.value !== '')
+    .filter(({ expires }) => {
+      if (expires !== null) return expires >= Date.now()
+      return true
+    })
     .map((filter) => {
-      const {
-        hide,
-        expires,
-        name,
-        value,
-        type,
-        enabled,
-        caseSensitive = false,
-      } = filter
-      if (!enabled) return false
-      if (value === '') return false
-      if (expires !== null && expires < Date.now()) return false
+      const { hide, name, value, type, caseSensitive = false } = filter
       switch (type) {
         case 'word': {
           let match = false
@@ -45,9 +39,9 @@ export const muteFilterHits = (muteFilters, status) => {
             if (re.test(statusText) || re.test(statusSummary)) {
               return { hide, name }
             }
-            return false
+            return null
           } catch {
-            return false
+            return null
           }
         }
         case 'user': {
@@ -81,9 +75,9 @@ export const muteFilterHits = (muteFilters, status) => {
             ) {
               return { hide, name }
             }
-            return false
+            return null
           } catch {
-            return false
+            return null
           }
         }
       }

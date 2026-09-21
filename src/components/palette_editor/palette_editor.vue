@@ -90,7 +90,12 @@ const paletteKeys = [
   'wallpaper',
 ]
 
-const props = defineProps(['modelValue', 'compact', 'apply', 'disabled'])
+const props = defineProps({
+  modelValue: Object,
+  compact: Boolean,
+  apply: Boolean,
+  disabled: Boolean,
+})
 const emit = defineEmits(['update:modelValue', 'applyPalette'])
 const getExportedObject = () =>
   paletteKeys.reduce((acc, key) => {

@@ -53,7 +53,6 @@ export default {
           this.error = error
           this.code = null
           this.focusOnCodeInput()
-          return
         })
     },
   },

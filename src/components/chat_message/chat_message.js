@@ -116,8 +116,7 @@ const ChatMessage = {
     replyProfileLink() {
       if (this.isCustomReply) {
         const user = useUsersStore().findUser(this.message.in_reply_to_user_id)
-        // FIXME Why user not found sometimes???
-        return user ? user.statusnet_profile_url : 'NOT_FOUND'
+        return user.statusnet_profile_url
       }
     },
 

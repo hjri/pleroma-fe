@@ -36,7 +36,12 @@
 
 <script>
 export default {
-  props: ['radio', 'modelValue', 'indeterminate', 'disabled'],
+  props: {
+    radio: Boolean,
+    modelValue: Boolean,
+    indeterminate: Boolean,
+    disabled: Boolean,
+  },
   emits: ['update:modelValue'],
   data: (vm) => ({
     indeterminateTransitionFix: vm.indeterminate,

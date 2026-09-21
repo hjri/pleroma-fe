@@ -533,7 +533,11 @@ const EmojiInput = {
       this.setCaret(e)
     },
     onKeyDown(e) {
-      const { ctrlKey, shiftKey, key } = e
+      this.postingKeyboardControl(e)
+      this.suggestionsKeyboardControl(e)
+    },
+    postingKeyboardControl(e) {
+      const { ctrlKey, key } = e
       if (this.newlineOnCtrlEnter && ctrlKey && key === 'Enter') {
         this.insert({ insertion: '\n', surroundingSpace: false })
         // Ensure only one new line is added on macos
@@ -545,35 +549,33 @@ const EmojiInput = {
           this.input.blur()
           this.input.focus()
         })
+        return
       }
+    },
+    suggestionsKeyboardControl(e) {
       // Disable suggestions hotkeys if suggestions are hidden
-      if (!this.temporarilyHideSuggestions) {
-        if (key === 'Tab') {
-          if (shiftKey) {
-            this.cycleBackward(e)
-          } else {
-            this.cycleForward(e)
-          }
-        }
-        if (key === 'ArrowUp') {
+      if (this.temporarilyHideSuggestions) {
+        return
+      }
+
+      // TODO Probably add optional keyboard controls for emoji picker?
+      const { ctrlKey, shiftKey, key } = e
+      if (key === 'Tab') {
+        if (shiftKey) {
           this.cycleBackward(e)
-        } else if (key === 'ArrowDown') {
+        } else {
           this.cycleForward(e)
         }
-        if (key === 'Enter') {
-          if (!ctrlKey) {
-            this.replaceText(e)
-          }
-        }
-      }
-      // Probably add optional keyboard controls for emoji picker?
-
-      // Escape hides suggestions, if suggestions are hidden it
-      // de-focuses the element (i.e. default browser behavior)
-      if (key === 'Escape') {
-        if (!this.temporarilyHideSuggestions) {
-          this.input.focus()
-        }
+      } else if (key === 'ArrowUp') {
+        this.cycleBackward(e)
+      } else if (key === 'ArrowDown') {
+        this.cycleForward(e)
+      } else if (key === 'Enter' && !ctrlKey) {
+        this.replaceText(e)
+      } else if (key === 'Escape') {
+        // Escape hides suggestions, if suggestions are hidden it
+        // de-focuses the element (i.e. default browser behavior)
+        this.input.focus()
       }
     },
     onInput(e) {

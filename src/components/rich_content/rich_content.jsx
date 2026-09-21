@@ -16,7 +16,7 @@ import {
 
 import './rich_content.scss'
 
-const MAYBE_LINE_BREAKING_ELEMENTS = [
+const MAYBE_LINE_BREAKING_ELEMENTS = new Set([
   'blockquote',
   'br',
   'hr',
@@ -35,7 +35,7 @@ const MAYBE_LINE_BREAKING_ELEMENTS = [
   'h3',
   'h4',
   'h5',
-]
+])
 
 /**
  * RichContent, The Über-powered component for rendering Post HTML.
@@ -69,6 +69,7 @@ export default {
     },
     attentions: {
       required: false,
+      type: Array,
       default: () => [],
     },
     // Emoji object, as in status.emojis, note the "s" at the end...
@@ -239,11 +240,11 @@ export default {
           !(
             children &&
             typeof children[0] === 'string' &&
-            children[0].match(/^\s/)
+            /^\s/.exec(children[0])
           )
             ? lastSpacing
             : ''
-        if (MAYBE_LINE_BREAKING_ELEMENTS.includes(Tag)) {
+        if (MAYBE_LINE_BREAKING_ELEMENTS.has(Tag)) {
           // all the elements that can cause a line change
           currentMentions = null
         } else if (Tag === 'img') {
@@ -381,13 +382,13 @@ export default {
                   x ? 'mfm-spinX' : null,
                   y ? 'mfm-spinY' : null,
                   'mfm-spin',
-                ].filter(Boolean)[0]
+                ].find(Boolean)
 
                 const direction = [
                   alternate ? 'alternate' : null,
                   left ? 'reverse' : null,
                   'normal',
-                ].filter(Boolean)[0]
+                ].find(Boolean)
 
                 newAttrs.style = [
                   `animation-name: ${anim}`,

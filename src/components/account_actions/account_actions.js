@@ -56,12 +56,10 @@ const AccountActions = {
     blockUser() {
       if (this.$refs.timedBlockDialog) {
         this.$refs.timedBlockDialog.optionallyPrompt()
+      } else if (!this.shouldConfirmBlock) {
+        this.doBlockUser()
       } else {
-        if (!this.shouldConfirmBlock) {
-          this.doBlockUser()
-        } else {
-          this.showingConfirmBlock = true
-        }
+        this.showingConfirmBlock = true
       }
     },
     doBlockUser() {

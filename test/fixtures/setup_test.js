@@ -6,7 +6,7 @@ import RichContent from 'src/components/rich_content/rich_content.jsx'
 import Status from 'src/components/status/status.vue'
 import StillImage from 'src/components/still-image/still-image.vue'
 
-import routes from 'src/boot/routes'
+import { getRoutes } from 'src/boot/routes.js'
 
 export const $t = (msg) => msg
 const $i18n = { t: (msg) => msg }
@@ -17,7 +17,7 @@ const getDefaultOpts = () => ({
       VueVirtualScroller,
       createRouter({
         history: createMemoryHistory(),
-        routes: routes({
+        routes: getRoutes({
           state: {
             users: {
               currentUser: {},

@@ -26,6 +26,51 @@ import { deserialize } from 'src/services/theme_data/iss_deserializer.js'
 import { init } from 'src/services/theme_data/theme_data_3.service.js'
 import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
 
+const getPalette = (data) => {
+  if (!data) {
+    throw new TypeError('Palette data is falsy!')
+  } else if (Array.isArray(data)) {
+    const [
+      name,
+      bg,
+      fg,
+      text,
+      link,
+      cRed = '#FF0000',
+      cGreen = '#00FF00',
+      cBlue = '#0000FF',
+      cOrange = '#E3FF00',
+    ] = data
+    return {
+      name,
+      bg,
+      fg,
+      text,
+      link,
+      cRed,
+      cGreen,
+      cBlue,
+      cOrange,
+    }
+  } else if (typeof data === 'object') {
+    const { key, name, bg, fg, text, link, cRed, cBlue, cGreen, cOrange } = data
+    return {
+      key,
+      name,
+      bg,
+      fg,
+      text,
+      link,
+      cRed,
+      cBlue,
+      cGreen,
+      cOrange,
+    }
+  } else {
+    throw new TypeError('Palette data is invalid!')
+  }
+}
+
 const AppearanceTab = {
   data() {
     return {
@@ -103,80 +148,51 @@ const AppearanceTab = {
     }
 
     updateIndex('style').then((styles) => {
-      styles.forEach(([key, stylePromise]) =>
-        stylePromise.then((data) => {
-          const meta = data.find((x) => x.component === '@meta')
-          this.availableThemesV3.push({
-            key,
-            data,
-            name: meta.directives.name,
-            version: 'v3',
-          })
-        }),
-      )
+      styles.forEach(async ([key, stylePromise]) => {
+        const data = await stylePromise
+        const meta = data.find((x) => x.component === '@meta')
+        this.availableThemesV3.push({
+          key,
+          data,
+          name: meta.directives.name,
+          version: 'v3',
+        })
+      })
     })
 
     updateIndex('theme').then((themes) => {
-      themes.forEach(([key, themePromise]) =>
-        themePromise.then((data) => {
-          if (!data) {
-            console.warn(`Theme with key ${key} is empty or malformed`)
-          } else if (Array.isArray(data)) {
-            console.warn(
-              `Theme with key ${key} is a v1 theme and should be moved to static/palettes/index.json`,
-            )
-          } else if (!data.source && !data.theme) {
-            console.warn(`Theme with key ${key} is malformed`)
-          } else {
-            this.availableThemesV2.push({
-              key,
-              data,
-              name: data.name,
-              version: 'v2',
-            })
-          }
-        }),
-      )
+      themes.forEach(async ([key, themePromise]) => {
+        const data = await themePromise
+        if (!data) {
+          console.warn(`Theme with key ${key} is empty or malformed`)
+        } else if (Array.isArray(data)) {
+          console.warn(
+            `Theme with key ${key} is a v1 theme and should be moved to static/palettes/index.json`,
+          )
+        } else if (!data.source && !data.theme) {
+          console.warn(`Theme with key ${key} is malformed`)
+        } else {
+          this.availableThemesV2.push({
+            key,
+            data,
+            name: data.name,
+            version: 'v2',
+          })
+        }
+      })
     })
 
     this.userPalette = useInterfaceStore().paletteDataUsed || {}
 
     updateIndex('palette').then((bundledPalettes) => {
-      bundledPalettes.forEach(([key, palettePromise]) =>
-        palettePromise.then((v) => {
-          let palette
-          if (Array.isArray(v)) {
-            const [
-              name,
-              bg,
-              fg,
-              text,
-              link,
-              cRed = '#FF0000',
-              cGreen = '#00FF00',
-              cBlue = '#0000FF',
-              cOrange = '#E3FF00',
-            ] = v
-            palette = {
-              key,
-              name,
-              bg,
-              fg,
-              text,
-              link,
-              cRed,
-              cBlue,
-              cGreen,
-              cOrange,
-            }
-          } else {
-            palette = { key, ...v }
-          }
-          if (!palette.key.startsWith('style.')) {
-            this.bundledPalettes.push(palette)
-          }
-        }),
-      )
+      bundledPalettes.forEach(async ([key, palettePromise]) => {
+        const palette = getPalette(await palettePromise)
+        palette.key = palette.key ?? key
+
+        if (!palette.key.startsWith('style.')) {
+          this.bundledPalettes.push(palette)
+        }
+      })
     })
 
     this.previewTheme('stock', 'v3')
@@ -332,7 +348,7 @@ const AppearanceTab = {
       } else if (filename.endsWith('.iss')) {
         if (!Array.isArray(parsed)) return false
         if (parsed.length < 1) return false
-        if (parsed.find((x) => x.component === '@meta') == null) return false
+        if (!parsed.some((x) => x.component === '@meta')) return false
         return true
       }
     },

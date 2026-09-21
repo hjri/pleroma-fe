@@ -11,7 +11,10 @@ import localeService from 'src/services/locale/locale.service.js'
 
 export default {
   name: 'Timeago',
-  props: ['date', 'showTime'],
+  props: {
+    date: Date,
+    showTime: Boolean,
+  },
   computed: {
     time12hFormat() {
       return useMergedConfigStore().mergedConfig.absoluteTimeFormat12h === '12h'
@@ -22,18 +25,16 @@ export default {
 
       if (this.date.getTime() === today.getTime()) {
         return this.$t('display_date.today')
+      } else if (this.showTime) {
+        return this.date.toLocaleTimeString(
+          localeService.internalToBrowserLocale(this.$i18n.locale),
+          { hour12: this.time12hFormat, hour: 'numeric', minute: 'numeric' },
+        )
       } else {
-        if (this.showTime) {
-          return this.date.toLocaleTimeString(
-            localeService.internalToBrowserLocale(this.$i18n.locale),
-            { hour12: this.time12hFormat, hour: 'numeric', minute: 'numeric' },
-          )
-        } else {
-          return this.date.toLocaleDateString(
-            localeService.internalToBrowserLocale(this.$i18n.locale),
-            { day: 'numeric', month: 'long' },
-          )
-        }
+        return this.date.toLocaleDateString(
+          localeService.internalToBrowserLocale(this.$i18n.locale),
+          { day: 'numeric', month: 'long' },
+        )
       }
     },
   },

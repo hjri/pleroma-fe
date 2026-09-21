@@ -69,7 +69,7 @@ const StillImage = {
       this.realSrc = this.src
     },
     dataSrc() {
-      this.$el.removeAttribute('data-loaded')
+      delete this.$el.dataset.loaded
     },
   },
 }

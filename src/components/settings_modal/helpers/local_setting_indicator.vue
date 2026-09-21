@@ -31,7 +31,9 @@ library.add(faDesktop)
 
 export default {
   components: { Popover },
-  props: ['isLocal'],
+  props: {
+    isLocal: Boolean,
+  },
 }
 </script>
 
