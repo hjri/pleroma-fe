@@ -23,7 +23,7 @@ export const rgb2hex = (r, g, b) => {
   }
   ;[r, g, b] = [r, g, b].map((val) => {
     val = Math.ceil(val)
-    val = Math.Max(val, 0)
+    val = Math.max(val, 0)
     val = Math.min(val, 255)
     return val
   })
