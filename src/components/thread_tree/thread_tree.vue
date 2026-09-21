@@ -55,7 +55,7 @@
         </template>
         <template #text>
           <span>
-            {{ $t('status.thread_follow', { numStatus: totalReplyCount[status.id] }, totalReplyCount[status.id]) }}
+            {{ $t('status.thread_follow', { numStatus: totalReplyCount.get(status.id) }, totalReplyCount.get(status.id)) }}
           </span>
         </template>
       </i18n-t>
@@ -74,7 +74,7 @@
         </template>
         <template #text>
           <span>
-            {{ $t('status.thread_show_full', { numStatus: totalReplyCount[status.id], depth: totalReplyDepth[status.id] }, totalReplyCount[status.id]) }}
+            {{ $t('status.thread_show_full', { numStatus: totalReplyCount.get(status.id), depth: totalReplyDepth.get(status.id) }, totalReplyCount.get(status.id)) }}
           </span>
         </template>
       </i18n-t>

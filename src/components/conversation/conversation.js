@@ -229,8 +229,12 @@ export default {
       threadDisplay,
       showThreadRecursively,
       resetThreadDisplay,
+      totalReplyCount,
+      totalReplyDepth,
     } = useTreeConversationTopology(conversation, replies, focusedId)
     provide('threadDisplay', threadDisplay)
+    provide('totalReplyCount', totalReplyCount)
+    provide('totalReplyDepth', totalReplyDepth)
     watch(
       isExpanded,
       (value) => {

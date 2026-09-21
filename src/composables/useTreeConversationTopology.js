@@ -106,12 +106,68 @@ export function useTreeConversationTopology(conversation, replies, current) {
     threadDisplayOverride.value = new Map()
   }
 
+  const totalReplyCount = computed(() => {
+    const sizes = new Map()
+    const subTreeSizeFor = (id) => {
+      if (sizes.has(id)) {
+        return sizes.get(id)
+      }
+      sizes.set(
+        id,
+        1 +
+        [...getReplies(id)]
+          .map(({ id }) => id)
+          .map((cid) => subTreeSizeFor(cid))
+          .reduce((a, b) => a + b, 0)
+      )
+      return sizes.get(id)
+    }
+
+    toValue(conversation).map(({ id }) => id).forEach(subTreeSizeFor)
+
+    return sizes.keys().reduce((res, id) => {
+      res.set(id, sizes.get(id) - 1) // exclude itself
+      return res
+    }, new Map())
+  })
+
+  const totalReplyDepth = computed(() => {
+    const depths = new Map()
+
+    const subTreeDepthFor = (id) => {
+      if (depths.has(id)) {
+        return depths.get(id)
+      }
+      depths.set(
+        id,
+        1 +
+        [...getReplies(id)]
+          .map(({ id }) => id)
+          .map((cid) => subTreeDepthFor(cid))
+          .reduce((a, b) => (a > b ? a : b), 0)
+      )
+      return depths.get(id)
+    }
+
+    toValue(conversation).map(({ id }) => id).forEach(subTreeDepthFor)
+
+    return depths.keys().reduce((res, id) => {
+      res.set(id, depths.get(id) - 1) // exclude itself
+      console.log('res', res)
+      return res
+    }, new Map())
+  })
+
   return {
     topLevel,
     currentAncestors,
     threadDisplay,
     showThreadRecursively,
     resetThreadDisplay,
+
+    // optimization
+    totalReplyCount,
+    totalReplyDepth,
 
     // For testing
     ancestors,
