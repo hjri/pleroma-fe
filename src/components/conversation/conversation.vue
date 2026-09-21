@@ -113,6 +113,7 @@
 
               @goto="setFocused"
               @dive="diveIntoStatus(element.id)"
+              @toggle-thread-display="toggleThreadDisplay"
               @suspendable-state-change="changeSuspendStateAncestorsLocal"
               @height-change="updateVirtualHeightAncestors"
             />
@@ -131,6 +132,7 @@
           @goto="setFocused"
           @dive="diveIntoStatus"
           @toggle-expanded="toggleExpanded"
+          @toggle-thread-display="toggleThreadDisplay"
           @show-thread-recursively="showThreadRecursively"
           @suspendable-state-change="changeSuspendStateCurrentLevelLocal"
         />
@@ -159,6 +161,7 @@
 
             @goto="setFocused"
             @toggle-expanded="toggleExpanded"
+            @toggle-thread-display="toggleThreadDisplay"
             @suspendable-state-change="changeSuspendStateLinearLocal"
             @height-change="updateVirtualHeightLinear"
           />

@@ -227,6 +227,7 @@ export default {
       topLevel,
       currentAncestors,
       threadDisplay,
+      setThreadDisplayRecursively,
       showThreadRecursively,
       resetThreadDisplay,
       totalReplyCount,
@@ -242,6 +243,12 @@ export default {
       },
       { flush: 'post' },
     )
+
+    const toggleThreadDisplay = (id) => {
+      const current = threadDisplay.value.get(id)
+      const next = current === 'hidden' ? 'showing' : 'hidden'
+      setThreadDisplayRecursively(id, next)
+    }
 
     const currentAncestorsLite = computed(() =>
       currentAncestors.value.map(({ id }) => ({ id })),
@@ -360,6 +367,7 @@ export default {
 
       // ### Thread Display
       showThreadRecursively,
+      toggleThreadDisplay,
 
       // ### Derived values and config
       treeViewIsSimple,

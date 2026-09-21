@@ -17,6 +17,7 @@
       @dive="$emit('dive', statusId)"
       @goto="$emit('goto', statusId)"
       @toggle-expanded="$emit('toggleExpanded', statusId)"
+      @toggle-thread-display="$emit('toggleThreadDisplay', statusId)"
       @suspendable-state-change="(e) => $emit('suspendableStateChange', e)"
     />
     <div
@@ -32,6 +33,7 @@
         @show-thread-recursively="(e) => $emit('showThreadRecursively', e)"
         @goto="(e) => $emit('goto', e)"
         @dive="(e) => $emit('dive', e)"
+        @toggle-thread-display="e => $emit('toggleThreadDisplay', e)"
         @suspendable-state-change="e => $emit('suspendableStateChange', e)"
         @toggle-expanded="(e) => $emit('toggleExpanded', e)"
       />

@@ -116,6 +116,7 @@ const Status = {
     'goto',
     'dive',
     'toggleExpanded',
+    'toggleThreadDisplay',
     'suspendableStateChange',
     'heightChange',
   ],
@@ -592,8 +593,7 @@ const Status = {
       this.headTailLinks = headTailLinks
     },
     toggleThreadDisplay() {
-      // FIXME
-      this.controlledToggleThreadDisplay()
+      this.$emit('toggleThreadDisplay')
     },
     updateVirtualHeight(e) {
       const [entry] = e

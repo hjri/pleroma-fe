@@ -33,6 +33,7 @@ const ThreadTree = {
     'goto',
     'dive',
     'toggleExpanded',
+    'toggleThreadDisplay',
     'showThreadRecursively',
   ],
   inject: [

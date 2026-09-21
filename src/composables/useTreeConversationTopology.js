@@ -162,6 +162,7 @@ export function useTreeConversationTopology(conversation, replies, current) {
     topLevel,
     currentAncestors,
     threadDisplay,
+    setThreadDisplayRecursively,
     showThreadRecursively,
     resetThreadDisplay,
 
