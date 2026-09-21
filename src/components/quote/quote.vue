@@ -27,7 +27,7 @@
     <Status
       v-if="shouldDisplayQuote"
       :statusoid="quotedStatus"
-      :in-quote="true"
+      in-quote
     />
   </article>
   <p

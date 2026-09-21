@@ -1,6 +1,12 @@
 import { createTestingPinia } from '@pinia/testing'
 import { snakeCase } from 'lodash-es'
 import { setActivePinia } from 'pinia'
+import {
+  mockMastoAPIStatus,
+  mockMastoAPIUser,
+  mockStatus,
+  mockUser,
+} from 'test/fixtures/masto_api.js'
 
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useStreamingStore } from 'src/stores/streaming.js'
@@ -8,80 +14,6 @@ import { useUsersStore } from 'src/stores/users.js'
 
 import * as PUBLIC_API from 'src/api/public.js'
 import * as USER_API from 'src/api/user.js'
-
-const userId = '1'
-const userScreenName = 'user'
-const userName = 'Guy'
-const userUrl = 'http://localhost/user'
-
-const mockMastoAPIUser = ({
-  screen_name = userScreenName,
-  name = userName,
-  url = userUrl,
-  id = userId,
-} = {}) => ({
-  id,
-  acct: screen_name,
-  display_name: name,
-  fields: [],
-  avatar: '',
-  url,
-  pleroma: {
-    emoji_reactions: [],
-  },
-})
-
-const mockUser = ({
-  screen_name = userScreenName,
-  id = userId,
-  name = userName,
-  url = userUrl,
-} = {}) => ({
-  _original: mockMastoAPIUser({
-    screen_name,
-    id,
-    name,
-    url,
-  }),
-  id,
-  name,
-  screen_name,
-  url,
-  relationship: undefined,
-})
-
-const mockStatus = ({
-  id = '1',
-  text,
-  type = 'status',
-  statusUser = mockUser(),
-} = {}) => ({
-  id,
-  user: statusUser,
-  name: 'status',
-  text: text ?? `Text number ${id}`,
-  uri: '',
-  type,
-  attentions: [],
-  statusnet_conversation_id: 'c1',
-  emoji_reactions: [],
-})
-
-const mockMastoAPIStatus = ({
-  id = '1',
-  text,
-  type = 'status',
-  statusUser = mockMastoAPIUser(),
-} = {}) => ({
-  id,
-  account: statusUser,
-  name: 'status',
-  content: text ?? `Text number ${id}`,
-  uri: '',
-  type,
-  attentions: [],
-  statusnet_conversation_id: 'c1',
-})
 
 const DEFAULT_OPTIONS = (method = 'GET') => ({
   method,

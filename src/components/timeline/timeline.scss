@@ -33,6 +33,10 @@
     cursor: progress;
   }
 
+  .timeline-conversation:not(:last-child) {
+    border-bottom: 1px solid var(--border);
+  }
+
   .conversation-heading {
     top: calc(var(--__panel-heading-height) * var(--currentPanelStack, 1) + var(--navbar-height));
     z-index: 2;

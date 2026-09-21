@@ -78,21 +78,34 @@
     </div>
     <div :class="classes.body">
       <div
-        ref="timeline"
         class="timeline"
+        ref="timeline"
         role="feed"
       >
-        <Conversation
-          v-for="status in filteredVisibleStatuses"
-          :key="status.id"
-          role="listitem"
-          class="status-fadein"
-          :status-id="status.id"
-          :in-profile="inProfile"
-          :profile-user-id="timelineRef.argument"
-          :virtual-hidden="virtualScrollingEnabled && !statusesToDisplay.has(status.id)"
-          collapsable
-        />
+        <template
+          v-for="element in heightChart"
+          :key="element.id"
+        >
+          <Conversation
+            v-if="element.type === 'item'"
+            class="timeline-conversation"
+            :status-id="element.id"
+            role="listitem"
+
+            :data-vs-height="element.height"
+            :data-vs-top="element.top"
+            :data-vs-id="element.id"
+
+            @suspendable-state-change="changeSuspendState"
+            @height-change="updateVirtualHeight"
+          />
+          <div
+            v-if="element.type === 'spacer'"
+            class="virtual-spacer"
+            aria-hidden="true"
+            :style="{ height: element.height + 'px' }"
+          />
+        </template>
       </div>
       <template v-if="!hideEmpty && count === 0">
         <div

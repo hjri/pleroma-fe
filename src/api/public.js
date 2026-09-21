@@ -25,7 +25,8 @@ export const MASTODON_FOLLOWERS_URL = (
   `/api/v1/accounts/${id}/followers${paramsString({ minId, maxId, sinceId, limit, withRelationships })}`
 
 export const MASTODON_STATUS_URL = (id) => `/api/v1/statuses/${id}`
-const MASTODON_STATUS_CONTEXT_URL = (id) => `/api/v1/statuses/${id}/context`
+export const MASTODON_STATUS_CONTEXT_URL = (id) =>
+  `/api/v1/statuses/${id}/context`
 export const MASTODON_STATUS_SOURCE_URL = (id) =>
   `/api/v1/statuses/${id}/source`
 export const MASTODON_STATUS_HISTORY_URL = (id) =>

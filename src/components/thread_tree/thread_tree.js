@@ -1,3 +1,6 @@
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faAngleDoubleDown,
@@ -10,33 +13,51 @@ const ThreadTree = {
   components: {},
   name: 'ThreadTree',
   props: {
-    depth: Number,
     statusId: String,
-    inProfile: Boolean,
-    conversation: Array,
-    collapsable: Boolean,
-    isExpanded: Boolean,
-    pinnedStatusIdsObject: Object,
-    profileUserId: String,
-
-    focused: String,
-    getReplies: Function,
-    toggleExpanded: Function,
-
-    simple: Boolean,
-    canDive: Boolean,
-    threadDisplayStatus: Object,
-    showThreadRecursively: Function,
-    totalReplyCount: Object,
-    totalReplyDepth: Object,
+    depth: Number,
   },
-  emits: ['suspendableStateChange', 'goto', 'dive', 'heightChange'],
+  emits: [
+    'suspendableStateChange',
+    'goto',
+    'dive',
+    'toggleExpanded',
+    'toggleThreadDisplay',
+    'showThreadRecursively',
+  ],
+  inject: [
+    'conversation',
+    'focusedId',
+    'replies',
+    'threadDisplay',
+    'isExpanded',
+    'isPage',
+    'totalReplyCount',
+    'totalReplyDepth',
+  ],
   computed: {
+    status() {
+      const status = useStatusesStore().allStatuses.get(this.statusId)
+      if (status.retweeted_status) {
+        return useStatusesStore().allStatuses.get(status.retweeted_status.id)
+      }
+      return status
+    },
     currentReplies() {
-      return this.getReplies(this.statusId).map(({ id }) => id)
+      return [...this.getReplies(this.status.id)].map(({ id }) => id)
+    },
+    simple() {
+      return !useMergedConfigStore().mergedConfig.conversationTreeAdvanced
     },
     threadShowing() {
-      return this.threadDisplayStatus[this.statusId] === 'showing'
+      return this.threadDisplay.get(this.status.id) === 'showing'
+    },
+    canDive() {
+      return this.isExpanded
+    },
+  },
+  methods: {
+    getReplies(id) {
+      return this.replies.get(id) ?? new Set()
     },
   },
 }

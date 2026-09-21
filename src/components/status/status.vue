@@ -1,9 +1,9 @@
 <template>
-  <div
+  <article
     v-if="!hideStatus"
     ref="root"
     class="Status"
-    :class="[{ '-focused': focused }, { '-conversation': inlineExpanded }]"
+    :class="rootClasses"
   >
     <div
       v-if="error"
@@ -180,7 +180,7 @@
                 </span>
                 <router-link
                   class="timeago faint"
-                  :to="{ name: 'conversation', params: { id: status.id } }"
+                  :to="{ name: 'conversation', params: { statusId: status.id } }"
                 >
                   <Timeago
                     :time="mainStatus.created_at"
@@ -199,7 +199,7 @@
                   />
                 </span>
                 <button
-                  v-if="expandable && !isPreview"
+                  v-if="expandable && !isExpanded && !isPreview"
                   class="button-unstyled"
                   :title="$t('status.expand')"
                   @click.prevent="toggleExpanded"
@@ -222,7 +222,7 @@
                   />
                 </button>
                 <button
-                  v-if="inThreadForest && replies?.length && !simpleTree"
+                  v-if="inThreadForest && replies?.size && !simpleTree"
                   class="button-unstyled"
                   :title="threadShowing ? $t('status.thread_hide') : $t('status.thread_show')"
                   :aria-expanded="threadShowing ? 'true' : 'false'"
@@ -235,7 +235,7 @@
                   />
                 </button>
                 <button
-                  v-if="canDive && !simpleTree"
+                  v-if="isExpanded && isTreeView && !simpleTree"
                   class="button-unstyled"
                   :title="$t('status.show_only_conversation_under_this')"
                   @click.prevent="$emit('dive')"
@@ -423,16 +423,16 @@
           />
 
           <div
-            v-if="inConversation && !isPreview && replies?.length"
+            v-if="inConversation && !isPreview && replies?.size"
             class="replies"
           >
             <button
-              v-if="showOtherRepliesAsButton && replies.length > 1"
+              v-if="showOtherRepliesInside && replies.size > 1"
               class="button-unstyled -link"
-              :title="$t('status.ancestor_follow', { numReplies: replies.length - 1 }, replies.length - 1)"
+              :title="$t('status.ancestor_follow', { numReplies: replies.size - 1 }, replies.size - 1)"
               @click.prevent="$emit('dive')"
             >
-              {{ $t('status.replies_list_with_others', { numReplies: replies.length - 1 }, replies.length - 1) }}
+              {{ $t('status.replies_list_with_others', { numReplies: replies.size - 1 }, replies.size - 1) }}
             </button>
             <span
               v-else
@@ -441,7 +441,7 @@
               {{ $t('status.replies_list') }}
             </span>
             <StatusPopover
-              v-for="reply in replies"
+              v-for="reply in replies.values()"
               :key="reply.id"
               :status-id="reply.id"
             >
@@ -454,10 +454,7 @@
             </StatusPopover>
           </div>
 
-          <Transition
-            @after-leave="onTransitionEnd"
-            name="fade"
-          >
+          <Transition name="fade">
             <div
               v-if="shouldDisplayFavsAndRepeats"
               class="favs-repeated-users"
@@ -549,11 +546,29 @@
           @posted="closeReplyForm"
           @draft-done="closeReplyForm"
           @close-accepted="closeReplyForm"
-          @resize="$emit('heightChange')"
         />
       </div>
+      <i18n-t
+        v-if="inConversation && conversationRank === 'ancestor' && !isPreview && showOtherRepliesBelow && replies?.size > 1"
+        tag="button"
+        scope="global"
+        keypath="status.ancestor_follow_with_icon"
+        class="button-unstyled -link thread-tree-show-replies-button"
+        @click.prevent="$emit('dive')"
+      >
+        <template #icon>
+          <FAIcon
+            icon="angle-double-right"
+          />
+        </template>
+        <template #text>
+          <span>
+            {{ $t('status.ancestor_follow', { numReplies: replies.size - 1 }) }}
+          </span>
+        </template>
+      </i18n-t>
     </template>
-  </div>
+  </article>
 </template>
 
 <script src="./status.js"></script>

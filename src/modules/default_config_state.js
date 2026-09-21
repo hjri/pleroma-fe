@@ -457,10 +457,6 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
     description: 'Hide user stats (followers etc)',
     default: false,
   },
-  virtualScrolling: {
-    description: 'Timeline virtual scrolling',
-    default: true,
-  },
   sensitiveByDefault: {
     description: 'Assume attachments are NSFW by default',
     default: false,

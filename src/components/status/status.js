@@ -96,35 +96,50 @@ const Status = {
   props: {
     statusId: String,
     statusoid: Object,
-    replies: Array,
+    replies: Set,
 
-    expandable: Boolean,
     focused: Boolean,
     compact: Boolean,
     isPreview: Boolean,
     noHeading: Boolean,
-    inlineExpanded: Boolean,
-    inProfile: Boolean,
-    inConversation: Boolean,
     inQuote: Boolean,
 
-    profileUserId: String,
-    simpleTree: Boolean,
-    showOtherRepliesAsButton: Boolean,
-    canDive: Boolean,
     ignoreMute: Boolean,
 
-    threadDisplayStatus: String,
+    threadDisplayState: String,
+    conversationRank: {
+      type: String,
+      default: 'linear',
+    },
   },
   emits: [
     'goto',
     'dive',
     'toggleExpanded',
+    'toggleThreadDisplay',
     'suspendableStateChange',
     'heightChange',
   ],
+  inject: {
+    profileUserId: {
+      default: null,
+    },
+    isPage: {
+      default: false,
+    },
+    isExpanded: {
+      default: false,
+    },
+    expandable: {
+      default: false,
+    },
+  },
+  provide: {
+    expandable: false, // for quotes
+  },
   data() {
     return {
+      resizeObserver: new ResizeObserver(this.updateVirtualHeight),
       replying: false,
       unmuted: false,
       mediaPlaying: new Set(),
@@ -136,9 +151,24 @@ const Status = {
     useScrobblesStore().getLatestScrobble(this.status.user.id)
   },
   computed: {
+    rootClasses() {
+      return [
+        {
+          '-focused': this.focused,
+          '-conversation': !this.isPage && this.isExpanded,
+        },
+        `-conversation-rank-${this.conversationRank}`,
+      ]
+    },
     // Whatever we're given to work with
     status() {
       return this.statusoid ?? useStatusesStore().allStatuses.get(this.statusId)
+    },
+    inConversation() {
+      return this.isExpanded
+    },
+    inProfile() {
+      return this.profileUserId != null
     },
     // Status repeated
     repeatedStatus() {
@@ -165,6 +195,18 @@ const Status = {
     },
     user() {
       return useUsersStore().findUser(this.mainStatus.user.id)
+    },
+    isTreeView() {
+      return this.mergedConfig.conversationDisplay === 'tree'
+    },
+    simpleTree() {
+      return !this.mergedConfig.conversationTreeAdvanced
+    },
+    showOtherRepliesInside() {
+      return this.mergedConfig.conversationOtherRepliesButton === 'inside'
+    },
+    showOtherRepliesBelow() {
+      return this.mergedConfig.conversationOtherRepliesButton === 'below'
     },
     showReasonMutedThread() {
       return (
@@ -277,6 +319,7 @@ const Status = {
     hasMentionsLine() {
       return this.mentionsLine.length > 0
     },
+    // TODO move muting logic into some store
     muteReasons() {
       return [
         this.userIsMuted ? 'user' : null,
@@ -436,10 +479,10 @@ const Status = {
       return !this.replying && this.mediaPlaying.size === 0
     },
     inThreadForest() {
-      return !!this.threadDisplayStatus
+      return !!this.threadDisplayState
     },
     threadShowing() {
-      return this.threadDisplayStatus === 'showing'
+      return this.threadDisplayState === 'showing'
     },
     visibilityLocalized() {
       return this.$i18n.t('general.scope_in_timeline.' + this.status.visibility)
@@ -550,49 +593,40 @@ const Status = {
       this.headTailLinks = headTailLinks
     },
     toggleThreadDisplay() {
-      // FIXME
-      this.controlledToggleThreadDisplay()
+      this.$emit('toggleThreadDisplay')
     },
-    scrollIfFocused(focused) {
-      if (this.$el.getBoundingClientRect == null) return
-      if (focused) {
-        const rect = this.$el.getBoundingClientRect()
-        if (rect.top < 100) {
-          // Post is above screen, match its top to screen top
-          window.scrollBy(0, rect.top - 100)
-        } else if (rect.height >= window.innerHeight - 50) {
-          // Post we want to see is taller than screen so match its top to screen top
-          window.scrollBy(0, rect.top - 100)
-        } else if (rect.bottom > window.innerHeight - 50) {
-          // Post is below screen, match its bottom to screen bottom
-          window.scrollBy(0, rect.bottom - window.innerHeight + 50)
-        }
-      }
-    },
-    onTransitionEnd() {
-      this.$nextTick(() => {
-        this.$emit('heightChange')
+    updateVirtualHeight(e) {
+      const [entry] = e
+      this.$emit('heightChange', {
+        id: this.status.id,
+        height: entry.contentRect.height + 1,
+        element: this.$el,
       })
     },
   },
+  mounted() {
+    if (this.$refs.root) {
+      this.resizeObserver.observe(this.$refs.root)
+      this.updateVirtualHeight([
+        {
+          contentRect: this.$refs.root.getBoundingClientRect(),
+        },
+      ])
+    }
+  },
+  unmounted() {
+    this.resizeObserver.disconnect()
+  },
   watch: {
-    status: {
-      deep: true,
+    hideStatus: {
       handler() {
-        this.$emit('heightChange')
+        if (this.$refs.root) {
+          this.resizeObserver.observe(this.$refs.root)
+        } else {
+          this.resizeObserver.disconnect()
+        }
       },
-    },
-    unmuted() {
-      this.$emit('heightChange')
-    },
-    error() {
-      this.$emit('heightChange')
-    },
-    replying() {
-      this.$emit('heightChange')
-    },
-    focused: function (id) {
-      this.scrollIfFocused(id)
+      flush: 'post',
     },
     'mainStatus.repeat_num': function (num) {
       // refetch repeats when repeat_num is changed in any way
@@ -606,8 +640,8 @@ const Status = {
         useStatusesStore().fetchFavs(this.mainStatus.id)
       }
     },
-    isSuspendable: function (suspend) {
-      this.$emit('suspendableStateChange', { id: this.status.id, suspend })
+    isSuspendable: function (suspendable) {
+      this.$emit('suspendableStateChange', { id: this.status.id, suspendable })
     },
   },
 }

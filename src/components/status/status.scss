@@ -3,6 +3,8 @@
   white-space: normal;
   overflow-wrap: break-word;
   text-wrap: pretty;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     --_still-image-img-visibility: visible;
@@ -271,21 +273,6 @@
     }
   }
 
-  .status-fadein {
-    animation-duration: 0.4s;
-    animation-name: fadein;
-  }
-
-  @keyframes fadein {
-    from {
-      opacity: 0;
-    }
-
-    to {
-      opacity: 1;
-    }
-  }
-
   .status-actions {
     position: relative;
     width: 100%;
@@ -293,6 +280,10 @@
     grid-template-columns: 1fr;
     grid-auto-columns: 1fr;
     grid-auto-flow: column;
+    margin-top: var(--status-margin);
+  }
+
+  .status-action-buttons {
     margin-top: var(--status-margin);
   }
 
@@ -387,7 +378,9 @@
     }
   }
 
-  .status-action-buttons {
-    margin-top: var(--status-margin);
+  .thread-tree-show-replies-button {
+    display: block;
+    padding: var(--status-margin);
+    padding-left: var(--status-margin);
   }
 }

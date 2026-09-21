@@ -1,4 +1,5 @@
 import { get } from 'lodash-es'
+import { computed } from 'vue'
 
 import FollowCard from 'src/components/follow_card/follow_card.vue'
 import List from 'src/components/list/list.vue'
@@ -33,6 +34,11 @@ const UserProfile = {
     this.load({ name: routeParams.name, id: routeParams.id })
     this.tab = get(this.$route, 'query.tab', defaultTabKey)
     useInterfaceStore().setForeignProfileBackground(this.user?.background_image)
+  },
+  provide() {
+    return {
+      profileUserId: computed(() => this.userId),
+    }
   },
   updated() {
     useInterfaceStore().setForeignProfileBackground(this.user?.background_image)

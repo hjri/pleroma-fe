@@ -1,8 +1,16 @@
-import { get, reduce } from 'lodash-es'
-import { mapState } from 'pinia'
+import { last } from 'lodash-es'
+import { storeToRefs } from 'pinia'
+import {
+  computed,
+  nextTick,
+  onUnmounted,
+  provide,
+  ref,
+  toRefs,
+  useTemplateRef,
+  watch,
+} from 'vue'
 
-import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
-import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
 import QuickViewSettings from 'src/components/quick_view_settings/quick_view_settings.vue'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
@@ -10,12 +18,12 @@ import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
-import { useStatusesStore } from 'src/stores/statuses.js'
-import { useStreamingStore } from 'src/stores/streaming.js'
 
-import { fetchConversation, fetchStatus } from 'src/api/public.js'
-import { WSConnectionStatus } from 'src/api/websocket.js'
+import { useConversation } from 'src/composables/useConversation.js'
+import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
+import { useScrollPosition } from 'src/composables/useScrollPosition.js'
+import { useTreeConversationTopology } from 'src/composables/useTreeConversationTopology.js'
+import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -34,36 +42,12 @@ library.add(
   faTimes,
 )
 
-const sortById = (a, b) => {
-  const idA = a.type === 'retweet' ? a.retweeted_status.id : a.id
-  const idB = b.type === 'retweet' ? b.retweeted_status.id : b.id
-  const seqA = Number(idA)
-  const seqB = Number(idB)
-  const isSeqA = !Number.isNaN(seqA)
-  const isSeqB = !Number.isNaN(seqB)
-  if (isSeqA && isSeqB) {
-    return seqA < seqB ? -1 : 1
-  } else if (isSeqA && !isSeqB) {
-    return -1
-  } else if (!isSeqA && isSeqB) {
-    return 1
-  } else {
-    return idA < idB ? -1 : 1
-  }
-}
-
-const conversation = {
+export default {
   props: {
     statusId: {
       // Main thing
       type: String,
       required: true,
-    },
-    collapsable: {
-      // Whether conversation can be collapsed
-      // i.e. when it's not a page
-      type: Boolean,
-      default: false,
     },
     isPage: {
       // Whether conversation is rendered as a standalone page
@@ -71,568 +55,329 @@ const conversation = {
       type: Boolean,
       default: false,
     },
-    pinnedStatusIdsObject: {
-      // Used for user profile, map of pinned statuses
-      type: Object,
-      default: null,
-    },
-    inProfile: {
-      // Whether conversation is rendered in a user profile
-      // used for overriding muted status
-      type: Boolean,
-      default: false,
-    },
-    profileUserId: {
-      // used with inProfile, user id of the profile
-      type: String,
-      default: null,
-    },
-    virtualHidden: {
-      // Whether conversation is suspended. Controls rendering of statuses
-      type: Boolean,
-      default: false,
-    },
-  },
-  emits: ['update:virtualHeight'],
-  data() {
-    return {
-      focused: null,
-      expanded: false,
-      threadDisplayStatusObject: {}, // id => 'showing' | 'hidden'
-      inlineDivePosition: null,
-      loadStatusError: null,
-      unsuspendibleIds: new Set(),
-      virtualHeight: 120,
-    }
-  },
-  created() {
-    if (this.isPage) {
-      this.fetchConversation()
-    }
-  },
-  mounted() {
-    this.updateVirtualHeight()
-  },
-  computed: {
-    status() {
-      return useStatusesStore().allStatuses.get(this.statusId)
-    },
-    maxDepthToShowByDefault() {
-      // maxDepthInThread = max number of depths that is *visible*
-      // since our depth starts with 0 and "showing" means "showing children"
-      // there is a -2 here
-      const maxDepth = this.mergedConfig.maxDepthInThread - 2
-      return maxDepth >= 1 ? maxDepth : 1
-    },
-    streamingEnabled() {
-      return (
-        this.mergedConfig.useStreamingApi &&
-        this.mastoUserSocketStatus === WSConnectionStatus.JOINED
-      )
-    },
-    displayStyle() {
-      return this.mergedConfig.conversationDisplay
-    },
-    treeViewIsSimple() {
-      return !this.mergedConfig.conversationTreeAdvanced
-    },
-    isTreeView() {
-      return this.displayStyle === 'tree'
-    },
-    isLinearView() {
-      return this.displayStyle !== 'tree'
-    },
-    shouldFadeAncestors() {
-      return this.mergedConfig.conversationTreeFadeAncestors
-    },
-    otherRepliesButtonPosition() {
-      return this.mergedConfig.conversationOtherRepliesButton
-    },
-    showOtherRepliesButtonBelowStatus() {
-      return this.otherRepliesButtonPosition === 'below'
-    },
-    showOtherRepliesButtonInsideStatus() {
-      return this.otherRepliesButtonPosition === 'inside'
-    },
-    suspendable() {
-      return this.unsuspendibleIds.size === 0
-    },
-    hide() {
-      return this.virtualHidden && this.suspendable
-    },
-    originalStatusId() {
-      if (this.status.retweeted_status) {
-        return this.status.retweeted_status.id
-      } else {
-        return this.statusId
-      }
-    },
-    conversationId() {
-      return this.getConversationId(this.statusId)
-    },
-    conversation() {
-      if (!this.status) {
-        return []
-      }
-
-      if (!this.isExpanded) {
-        return [this.status]
-      }
-
-      const conversation = useStatusesStore().conversations.get(
-        this.conversationId,
-      )
-
-      return [...conversation.keys()]
-        .map((k) => useStatusesStore().allStatuses.get(k))
-        .filter((status) => status.type != 'repeat') // Old backend behavior?
-        .toSorted(sortById)
-    },
-    statusMap() {
-      return this.conversation.reduce((res, s) => {
-        res[s.id] = s
-        return res
-      }, {})
-    },
-    threadTree() {
-      const reverseLookupTable = this.conversation.reduce(
-        (table, status, index) => {
-          table[status.id] = index
-          return table
-        },
-        {},
-      )
-
-      const threads = this.conversation.reduce(
-        (a, cur) => {
-          const id = cur.id
-          a.forest[id] = this.getReplies(id).map((s) => s.id)
-
-          return a
-        },
-        {
-          forest: {},
-        },
-      )
-
-      const walk = (forest, topLevel, depth = 0, processed = {}) =>
-        topLevel
-          .map((id) => {
-            if (processed[id]) {
-              return []
-            }
-
-            processed[id] = true
-            return [
-              {
-                status: this.conversation[reverseLookupTable[id]],
-                id,
-                depth,
-              },
-              walk(forest, forest[id], depth + 1, processed),
-            ].flat()
-          })
-          .flat()
-
-      const linearized = walk(
-        threads.forest,
-        this.topLevel.map((k) => k.id),
-      )
-
-      return linearized
-    },
-    replyIds() {
-      return this.conversation
-        .map((k) => k.id)
-        .reduce((res, id) => {
-          res[id] = (this.replies[id] || []).map((k) => k.id)
-          return res
-        }, {})
-    },
-    totalReplyCount() {
-      const sizes = {}
-      const subTreeSizeFor = (id) => {
-        if (sizes[id]) {
-          return sizes[id]
-        }
-        sizes[id] =
-          1 +
-          this.replyIds[id]
-            .map((cid) => subTreeSizeFor(cid))
-            .reduce((a, b) => a + b, 0)
-        return sizes[id]
-      }
-      this.conversation.map((k) => k.id).map(subTreeSizeFor)
-      return Object.keys(sizes).reduce((res, id) => {
-        res[id] = sizes[id] - 1 // exclude itself
-        return res
-      }, {})
-    },
-    totalReplyDepth() {
-      const depths = {}
-      const subTreeDepthFor = (id) => {
-        if (depths[id]) {
-          return depths[id]
-        }
-        depths[id] =
-          1 +
-          this.replyIds[id]
-            .map((cid) => subTreeDepthFor(cid))
-            .reduce((a, b) => (a > b ? a : b), 0)
-        return depths[id]
-      }
-      this.conversation.map((k) => k.id).map(subTreeDepthFor)
-      return Object.keys(depths).reduce((res, id) => {
-        res[id] = depths[id] - 1 // exclude itself
-        return res
-      }, {})
-    },
-    depths() {
-      return this.threadTree.reduce((a, k) => {
-        a[k.id] = k.depth
-        return a
-      }, {})
-    },
-    topLevel() {
-      const topLevel = this.conversation.reduce(
-        (tl, cur) =>
-          tl.filter(
-            (k) =>
-              !this.getReplies(cur.id)
-                .map((v) => v.id)
-                .includes(k.id),
-          ),
-        this.conversation,
-      )
-      return topLevel
-    },
-    otherTopLevelCount() {
-      return this.topLevel.length - 1
-    },
-    showingTopLevel() {
-      if (this.canDive && this.diveRoot) {
-        return [this.statusMap[this.diveRoot]]
-      }
-      return this.topLevel
-    },
-    diveRoot() {
-      const statusId = this.inlineDivePosition || this.statusId
-      const isTopLevel = !this.parentOf(statusId)
-      return isTopLevel ? null : statusId
-    },
-    diveDepth() {
-      return this.canDive && this.diveRoot ? this.depths[this.diveRoot] : 0
-    },
-    diveMode() {
-      return this.canDive && !!this.diveRoot
-    },
-    shouldShowAllConversationButton() {
-      // The "show all conversation" button tells the user that there exist
-      // other toplevel statuses, so do not show it if there is only a single root
-      return (
-        this.isTreeView &&
-        this.isExpanded &&
-        this.diveMode &&
-        this.topLevel.length > 1
-      )
-    },
-    shouldShowAncestors() {
-      return (
-        this.isTreeView &&
-        this.isExpanded &&
-        this.ancestorsOf(this.diveRoot).length
-      )
-    },
-    replies() {
-      let i = 1
-
-      return reduce(
-        this.conversation,
-        (result, { id, in_reply_to_status_id: irid }) => {
-          if (irid) {
-            result[irid] = result[irid] || []
-            result[irid].push({
-              name: `#${i}`,
-              id,
-            })
-          }
-          i++
-          return result
-        },
-        {},
-      )
-    },
-    isExpanded() {
-      return !!(this.expanded || this.isPage)
-    },
-    hiddenStyle() {
-      return { height: this.virtualHeight + 'px' }
-    },
-    threadDisplayStatus() {
-      return this.conversation.reduce((a, k) => {
-        const id = k.id
-        const depth = this.depths[id]
-        const status = (() => {
-          if (this.threadDisplayStatusObject[id]) {
-            return this.threadDisplayStatusObject[id]
-          }
-          if (depth - this.diveDepth <= this.maxDepthToShowByDefault) {
-            return 'showing'
-          } else {
-            return 'hidden'
-          }
-        })()
-
-        a[id] = status
-        return a
-      }, {})
-    },
-    canDive() {
-      return this.isTreeView && this.isExpanded
-    },
-    maybeFocused() {
-      return this.isExpanded ? this.focused : null
-    },
-    ...mapState(useMergedConfigStore, ['mergedConfig']),
-    ...mapState(useStreamingStore, {
-      mastoUserSocketStatus: (state) => state.state,
-    }),
-    ...mapState(useInterfaceStore, {
-      mobileLayout: (store) => store.layoutType === 'mobile',
-    }),
   },
   components: {
     ThreadTree,
     QuickFilterSettings,
     QuickViewSettings,
-    ChatMessageList,
-    PostStatusForm,
     RichContent,
   },
-  watch: {
-    statusId(newVal, oldVal) {
-      const newConversationId = this.getConversationId(newVal)
-      const oldConversationId = this.getConversationId(oldVal)
-      if (
-        newConversationId &&
-        oldConversationId &&
-        newConversationId === oldConversationId
-      ) {
-        this.setFocused(this.originalStatusId)
-      } else {
-        this.fetchConversation()
-      }
-    },
-    expanded(value) {
-      if (value) {
-        this.fetchConversation()
-      } else {
-        this.resetDisplayState()
-      }
-    },
-    virtualHidden() {
-      this.updateVirtualHeight()
-    },
-  },
-  methods: {
-    fetchConversation() {
-      if (this.status) {
-        fetchConversation({
-          id: this.statusId,
-          credentials: useOAuthStore().token,
-        }).then(({ data: { ancestors, descendants }, timestamp }) => {
-          useStatusesStore().addNewStatuses({ statuses: ancestors, timestamp })
-          useStatusesStore().addNewStatuses({
-            statuses: descendants,
-            timestamp,
-          })
-          this.setFocused(this.originalStatusId)
-        })
-      } else {
-        this.loadStatusError = null
-        fetchStatus({
-          id: this.statusId,
-          credentials: useOAuthStore().token,
-        })
-          .then(({ data: status }) => {
-            useStatusesStore().addNewStatuses({ statuses: [status] })
-            this.fetchConversation()
-          })
-          .catch((error) => {
-            console.error(error)
-            this.loadStatusError = error
-          })
-      }
-    },
-    getReplies(id) {
-      return this.replies[id] || []
-    },
-    setFocused(id) {
-      if (!id) return
-      this.focused = id
+  emits: ['heightChange', 'suspendableStateChange', 'expanded', 'collapsed'],
+  setup(props, { emit }) {
+    const scroller = useScrollPosition()
+    const { statusId } = toRefs(props)
 
-      if (!this.streamingEnabled) {
-        useStatusesStore().fetchStatus(id)
-      }
+    // # Main Configuration / global state
+    const { mergedConfig } = storeToRefs(useMergedConfigStore())
+    const displayStyle = computed(() => mergedConfig.value.conversationDisplay)
+    const { layoutType } = storeToRefs(useInterfaceStore())
+    const mobileLayout = computed(() => layoutType.value === 'mobile')
 
-      useStatusesStore().fetchFavsAndRepeats(id)
-      useStatusesStore().fetchEmojiReactions(id)
-    },
-    toggleExpanded() {
-      this.expanded = !this.expanded
-    },
-    getConversationId(statusId) {
-      const status = useStatusesStore().allStatuses.get(statusId)
-      return get(
-        status,
-        'retweeted_status.statusnet_conversation_id',
-        get(status, 'statusnet_conversation_id'),
-      )
-    },
-    setThreadDisplay(id, nextStatus) {
-      this.threadDisplayStatusObject = {
-        ...this.threadDisplayStatusObject,
-        [id]: nextStatus,
-      }
-    },
-    toggleThreadDisplay(id) {
-      const curStatus = this.threadDisplayStatus[id]
-      const nextStatus = curStatus === 'showing' ? 'hidden' : 'showing'
-      this.setThreadDisplay(id, nextStatus)
-    },
-    setThreadDisplayRecursively(id, nextStatus) {
-      this.setThreadDisplay(id, nextStatus)
-      this.getReplies(id)
-        .map((k) => k.id)
-        .map((id) => this.setThreadDisplayRecursively(id, nextStatus))
-    },
-    showThreadRecursively(id) {
-      this.setThreadDisplayRecursively(id, 'showing')
-    },
-    leastVisibleAncestor(id) {
-      let cur = id
-      let parent = this.parentOf(cur)
-      while (cur) {
-        // if the parent is showing it means cur is visible
-        if (this.threadDisplayStatus[parent] === 'showing') {
-          return cur
-        }
-        parent = this.parentOf(parent)
-        cur = this.parentOf(cur)
-      }
-      // nothing found, fall back to toplevel
-      return this.topLevel[0] ? this.topLevel[0].id : undefined
-    },
-    diveIntoStatus(id) {
-      this.tryScrollTo(id)
-    },
-    diveToTopLevel() {
-      this.tryScrollTo(
-        this.topLevelAncestorOrSelfId(this.diveRoot) || this.topLevel[0].id,
-      )
-    },
-    // only used when we are not on a page
-    undive() {
-      this.inlineDivePosition = null
-      this.setFocused(this.statusId)
-    },
-    tryScrollTo(id) {
-      if (!id) {
-        return
-      }
-      if (this.isPage) {
-        // set statusId
-        this.$router.push({ name: 'conversation', params: { id } })
+    // # Conversation Expansion
+    const expanded = ref(false)
+    const { isPage } = toRefs(props)
+    const isExpanded = computed(() => !!(expanded.value || isPage.value))
+    const toggleExpanded = async () => {
+      const newVal = !expanded.value
+      if (newVal) {
+        virtualScrollingEnabled.value = newVal
+        await nextTick()
+        expanded.value = newVal
       } else {
-        this.inlineDivePosition = id
+        expanded.value = newVal
+        await nextTick()
+        virtualScrollingEnabled.value = newVal
       }
-      // Because the conversation can be unmounted when out of sight
-      // and mounted again when it comes into sight,
-      // the `mounted` or `created` function in `status` should not
-      // contain scrolling calls, as we do not want the page to jump
-      // when we scroll with an expanded conversation.
-      //
-      // Now the method is to rely solely on the `focused` watcher
-      // in `status` components.
-      // In linear views, all statuses are rendered at all times, but
-      // in tree views, it is possible that a change in active status
-      // removes and adds status components (e.g. an originally child
-      // status becomes an ancestor status, and thus they will be
-      // different).
-      // Here, let the components be rendered first, in order to trigger
-      // the `focused` watcher.
-      this.$nextTick(() => {
-        this.setFocused(id)
+    }
+    provide('isExpanded', isExpanded)
+    provide('isPage', isPage)
+    provide('expandable', true)
+    watch(expanded, (val) => (val ? emit('expanded') : emit('collapsed')), {
+      flush: 'post',
+    })
+
+    // # Main things
+    const {
+      focusedId,
+      conversationId,
+      setFocused,
+      currentStatus,
+      conversation,
+      replies,
+      getReplies,
+      fetchConversation,
+      loadError,
+    } = useConversation(statusId, isExpanded)
+    const conversationLite = computed(() =>
+      conversation.value.map(({ id }) => ({ id })),
+    )
+    provide('focusedId', focusedId)
+    provide('conversation', conversation)
+    provide('replies', replies)
+
+    // Component created
+    if (isPage.value) {
+      fetchConversation()
+    }
+
+    // # Misc UI things
+    const firstStatus = computed(() => conversation.value[0])
+    const lastStatus = computed(() => last(conversation.value))
+    const getStatusClasses = (statusId, ancestor) => {
+      const result = {
+        '-first': statusId === firstStatus.value?.id,
+        '-last': statusId === lastStatus.value?.id,
+      }
+      if (ancestor) {
+        result['-ancestor'] = true
+        result['-fade'] = mergedConfig.value.conversationTreeFadeAncestors
+      }
+      return result
+    }
+
+    // # External virtual scrolling
+    const unsuspendableIds = ref(new Set())
+    const suspendable = computed(
+      () => !isExpanded.value && unsuspendableIds.value.size === 0,
+    )
+    const rootElement = useTemplateRef('root')
+    const rootElementMargin = ref(null)
+    const updateVirtualHeight = (e) => {
+      const [entry] = e
+
+      const rootCss = window.getComputedStyle(rootElement.value)
+      const rootMarginString = rootCss.getPropertyValue('margin-top')
+      const rootMargin = Number.parseInt(rootMarginString.slice(0, -2), 10)
+      rootElementMargin.value = rootMargin
+
+      emit('heightChange', {
+        id: statusId.value,
+        height: entry.contentRect.height,
+        element: rootElement,
       })
-    },
-    goToCurrent() {
-      this.tryScrollTo(this.diveRoot || this.topLevel[0].id)
-    },
-    statusById(id) {
-      return this.statusMap[id]
-    },
-    parentOf(id) {
-      const status = this.statusById(id)
-      if (!status) {
-        return undefined
-      }
-      const { in_reply_to_status_id: parentId } = status
-      if (!this.statusMap[parentId]) {
-        return undefined
-      }
-      return parentId
-    },
-    parentOrSelf(id) {
-      return this.parentOf(id) || id
-    },
-    // Ancestors of some status, from top to bottom
-    ancestorsOf(id) {
-      const ancestors = []
-      let cur = this.parentOf(id)
-      while (cur) {
-        ancestors.unshift(this.statusMap[cur])
-        cur = this.parentOf(cur)
-      }
-      return ancestors
-    },
-    topLevelAncestorOrSelfId(id) {
-      let cur = id
-      let parent = this.parentOf(id)
-      while (parent) {
-        cur = this.parentOf(cur)
-        parent = this.parentOf(parent)
-      }
-      return cur
-    },
-    resetDisplayState() {
-      this.undive()
-      this.threadDisplayStatusObject = {}
-    },
-    onStatusSuspendStateChange({ id, suspend }) {
-      if (!suspend) {
-        this.unsuspendibleIds.add(id)
+    }
+    const resizeObserver = ref(new ResizeObserver(updateVirtualHeight))
+    watch(rootElement, () => resizeObserver.value.observe(rootElement.value))
+    watch(suspendable, (value) =>
+      emit('suspendableStateChange', {
+        suspendable: value,
+        id: statusId.value,
+      }),
+    )
+    onUnmounted(() => resizeObserver.value.disconnect())
+
+    // # Internal virtual scrolling
+    const virtualScrollingEnabled = ref(isExpanded.value)
+
+    // Placeholder heights.
+    const { fontSize, navbarSize, panelHeaderSize } = useInterfaceSizes()
+    const normalStatusHeight = computed(() => fontSize.value * 10)
+    const getPlaceholderHeight = (id) => normalStatusHeight
+    const offset = computed(() => {
+      // The fontsize after navbar is the little gap between navbar and content
+      if (isPage.value) {
+        return navbarSize.value + fontSize.value + panelHeaderSize.value
+      } else if (expanded.value) {
+        return (
+          navbarSize.value +
+          fontSize.value +
+          panelHeaderSize.value * 2 +
+          rootElementMargin.value
+        )
       } else {
-        this.unsuspendibleIds.delete(id)
+        return navbarSize.value + fontSize.value
       }
-    },
-    onPosted(data) {
-      if (this.isPage) {
-        this.$router.push({ name: 'conversation', params: { id: data.id } })
+    })
+
+    // # Linear style stuff
+    const isLinearView = computed(() => displayStyle.value !== 'tree')
+    const linearElement = useTemplateRef('linear')
+    const linearScrollCompensation = computed(
+      () => virtualScrollingEnabled.value && isLinearView.value,
+    )
+    const {
+      heightChart: heightChartLinear,
+      changeSuspendState: changeSuspendStateLinear,
+      updateVirtualHeight: updateVirtualHeightLinear,
+      reset: resetLinearScrollVirtualization,
+      scrollTo: linearScrollTo,
+    } = useVirtualScrolling({
+      name: 'Linear',
+      enabled: linearScrollCompensation,
+      list: conversationLite,
+      body: linearElement,
+      offset,
+      scrollPositionInstance: scroller,
+      scrollCompensation: linearScrollCompensation,
+      getPlaceholderHeight,
+    })
+    const changeSuspendStateLinearLocal = (e) => {
+      changeSuspendStateLinear(e)
+      const { id, suspendable } = e
+      if (suspendable) {
+        unsuspendableIds.value.delete(id)
+      } else {
+        unsuspendableIds.value.add(id)
       }
-    },
-    updateVirtualHeight() {
-      if (this.hide) return // no updates when not rendering
-      if (!this.status) return // not loaded yet
-      this.$nextTick(() => {
-        this.virtualHeight = this.$refs.body.getBoundingClientRect().height
-        this.$emit('update:virtualHeight', {
-          id: this.status.id,
-          height: this.virtualHeight,
-          top: this.$el.clientTop,
-        })
-      })
-    },
+    }
+
+    // # Tree style stuff
+    const isTreeView = computed(() => displayStyle.value === 'tree')
+    const {
+      topLevel,
+      currentAncestors,
+      threadDisplay,
+      setThreadDisplayRecursively,
+      showThreadRecursively,
+      resetThreadDisplay,
+      totalReplyCount,
+      totalReplyDepth,
+    } = useTreeConversationTopology(conversation, replies, focusedId)
+    provide('threadDisplay', threadDisplay)
+    provide('totalReplyCount', totalReplyCount)
+    provide('totalReplyDepth', totalReplyDepth)
+    watch(
+      isExpanded,
+      (value) => {
+        if (!value) resetThreadDisplay()
+      },
+      { flush: 'post' },
+    )
+
+    const toggleThreadDisplay = (id) => {
+      const current = threadDisplay.value.get(id)
+      const next = current === 'hidden' ? 'showing' : 'hidden'
+      setThreadDisplayRecursively(id, next)
+    }
+
+    const currentAncestorsLite = computed(() =>
+      currentAncestors.value.map(({ id }) => ({ id })),
+    )
+    const ancestorsElement = useTemplateRef('ancestors')
+    const treeScrollCompensation = computed(
+      () => virtualScrollingEnabled.value && isTreeView.value,
+    )
+    const {
+      heightChart: heightChartAncestors,
+      changeSuspendState: changeSuspendStateAncestors,
+      updateVirtualHeight: updateVirtualHeightAncestors,
+      reset: resetTreeScrollVirtualization,
+    } = useVirtualScrolling({
+      name: 'Ancestors',
+      enabled: treeScrollCompensation,
+      list: currentAncestorsLite,
+      body: ancestorsElement,
+      offset,
+      scrollPositionInstance: scroller,
+      scrollCompensation: treeScrollCompensation,
+      collapseMode: 'height',
+      getPlaceholderHeight,
+    })
+    const changeSuspendStateAncestorsLocal = (e) => {
+      changeSuspendStateAncestors(e)
+      const { id, suspendable } = e
+      if (suspendable) {
+        unsuspendableIds.value.delete(id)
+      } else {
+        unsuspendableIds.value.add(id)
+      }
+    }
+    const changeSuspendStateCurrentLevelLocal = (e) => {
+      const { id, suspendable } = e
+      if (suspendable) {
+        unsuspendableIds.value.delete(id)
+      } else {
+        unsuspendableIds.value.add(id)
+      }
+    }
+
+    watch(conversationId, (neu, old) => {
+      resetLinearScrollVirtualization()
+      resetTreeScrollVirtualization()
+    })
+
+    const treeViewIsSimple = computed(
+      () => !mergedConfig.value.conversationTreeAdvanced,
+    )
+    const shouldShowAllConversationButton = computed(
+      () => currentAncestors.value.length > 0 && topLevel.value.length > 1,
+    )
+    const shouldShowAncestors = computed(
+      () => isExpanded.value && heightChartAncestors.value.length > 0,
+    )
+
+    // # Scrolling
+    const scrollTo = (ids) => {
+      if (isLinearView.value) {
+        return linearScrollTo(ids)
+      }
+    }
+    const diveIntoStatus = (id) => setFocused(id)
+    const diveToTopLevel = () => setFocused(currentAncestors.value[0].id)
+
+    watch(focusedId, async (neu, old) => {
+      // Ignoring initial update (null -> id) since that is handled by scroll compensation
+      if (old && neu) scrollTo(new Set([neu]))
+    })
+
+    return {
+      // # Misc
+      loadError,
+      mobileLayout,
+
+      // # Conversation Expansion
+      isPage,
+      isExpanded,
+      toggleExpanded,
+
+      // # Focus
+      focusedId,
+      setFocused,
+
+      // # Main things
+      conversation,
+      currentStatus,
+      getReplies,
+
+      // # Misc UI things
+      getStatusClasses,
+
+      // # Linear style stuff
+      isLinearView,
+
+      // ## Linear virtual scrolling
+      heightChartLinear,
+      changeSuspendStateLinearLocal,
+      updateVirtualHeightLinear,
+
+      // # Tree style stuff
+      isTreeView,
+
+      // ## Tree virtual scrolling
+      heightChartAncestors,
+      changeSuspendStateAncestorsLocal,
+      updateVirtualHeightAncestors,
+
+      changeSuspendStateCurrentLevelLocal,
+
+      // ## Tree state
+      // ### Topology
+      topLevel,
+      currentAncestors,
+
+      // ### Thread Display
+      showThreadRecursively,
+      toggleThreadDisplay,
+
+      // ### Derived values and config
+      treeViewIsSimple,
+      shouldShowAllConversationButton,
+      shouldShowAncestors,
+
+      // # Scrolling
+      diveToTopLevel,
+      diveIntoStatus,
+      unsuspendableIds,
+    }
   },
 }
-
-export default conversation
