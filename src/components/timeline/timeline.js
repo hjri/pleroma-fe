@@ -22,6 +22,7 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useTimelinesStore } from 'src/stores/timelines.js'
 
+import { useDocumentFocus } from 'src/composables/useDocumentFocus.js'
 import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
 import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
 import { useWindowScroll } from 'src/composables/useWindowScroll.js'
@@ -55,7 +56,9 @@ const Timeline = {
   },
   setup(props, ctx) {
     const { t } = useI18n()
-    const unfocused = ref(false)
+
+    const { focused } = useDocumentFocus()
+    const unfocused = computed(() => !focused.value)
 
     // Timeline
     const { timelineRef } = toRefs(props)
@@ -212,28 +215,6 @@ const Timeline = {
     })
     onUnmounted(() => {
       window.removeEventListener('scroll', handleScroll)
-    })
-
-    // Focused state
-    const handleVisibilityChange = () => {
-      unfocused.value = document.hidden
-    }
-    onMounted(() => {
-      if (document.hidden === undefined) return
-      document.addEventListener(
-        'visibilitychange',
-        handleVisibilityChange,
-        false,
-      )
-      unfocused.value = document.hidden
-    })
-    onUnmounted(() => {
-      if (document.hidden === undefined) return
-      document.removeEventListener(
-        'visibilitychange',
-        handleVisibilityChange,
-        false,
-      )
     })
 
     // Misc UI things
