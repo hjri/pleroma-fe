@@ -98,7 +98,7 @@ export function useConversation(statusId, expanded) {
      */
     const fullConversation = useStatusesStore().conversations.get(
       conversationId.value,
-    )
+    ) ?? new Map() // guard if this somehow fails (user wipe)
 
     return [...fullConversation.keys()]
       .map((k) => useStatusesStore().allStatuses.get(k))
