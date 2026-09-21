@@ -15,13 +15,7 @@ export const muteFilterHits = (muteFilters, status) => {
       return true
     })
     .map((filter) => {
-      const {
-        hide,
-        name,
-        value,
-        type,
-        caseSensitive = false,
-      } = filter
+      const { hide, name, value, type, caseSensitive = false } = filter
       switch (type) {
         case 'word': {
           let match = false

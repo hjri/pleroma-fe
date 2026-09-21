@@ -34,10 +34,12 @@ const getLanguageName = (code) => {
   )
 }
 
-const languages = languagesObject.languages.map((code) => ({
-  code,
-  name: getLanguageName(code),
-})).sort((a, b) => a.name.localeCompare(b.name))
+const languages = languagesObject.languages
+  .map((code) => ({
+    code,
+    name: getLanguageName(code),
+  }))
+  .sort((a, b) => a.name.localeCompare(b.name))
 
 const localeService = {
   internalToBrowserLocale,
