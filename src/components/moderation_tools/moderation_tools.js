@@ -591,7 +591,7 @@ const ModerationTools = {
                 : this.$t('user_card.admin_menu.confirm_modal.deactivate')
               break
             }
-            // Confirmation and Approval statuses cannot be revokedn(no API)
+            // Confirmation and Approval statuses cannot be revoked(no API)
             case 'confirmed': {
               this.confirmDialogTitle = this.$t(
                 'user_card.admin_menu.confirm_modal.confirm_title',
