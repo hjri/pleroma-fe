@@ -30,7 +30,7 @@ const visibleTypes = (notificationVisibility) => {
 
 export const isValidNotification = (notification) => {
   if (isStatusNotification(notification.type)) {
-    return !notification.status
+    return !!notification.status
   }
   return true
 }
