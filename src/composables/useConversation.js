@@ -102,7 +102,7 @@ export function useConversation(statusId, expanded) {
 
     return [...fullConversation.keys()]
       .map((k) => useStatusesStore().allStatuses.get(k))
-      .filter((status) => status.type != 'repeat') // Old backend behavior?
+      .filter((status) => status.type !== 'repeat') // Old backend behavior?
       .toSorted(sortById)
   })
 
