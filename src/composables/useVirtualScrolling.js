@@ -159,7 +159,7 @@ export function useVirtualScrolling({
   const heightChartGrouped = computed(() => {
     const chart = enabled.value ? heightChartVisibility : heightChart
     // Group invisible items into spacers
-    return chart.value.reduce((acc, heightChartItem) => {
+    return chart.value.reduce((acc, heightChartItem, index) => {
       const { suspendable, visible, height, top, id } = heightChartItem
       const present = visible || !suspendable
       if (present) {
@@ -176,11 +176,12 @@ export function useVirtualScrolling({
               type: 'spacer',
               top: Number.POSITIVE_INFINITY,
               height: 0,
+              initialIndex: index,
               ids: new Set(),
             }
 
         spacer.ids.add(id)
-        spacer.id = [...spacer.ids].join() // used for v-for key attribute
+        spacer.id = `i${spacer.initialIndex}s${spacer.ids.size}` // used for v-for key attribute
         spacer.height += height
 
         if (top < spacer.top) spacer.top = top

@@ -167,6 +167,7 @@
           />
           <div
             v-if="element.type === 'spacer'"
+            :data-vs-id="element.id"
             aria-hidden="true"
             class="panel-body virtual-spacer"
             :style="{ height: element.height + 'px' }"
