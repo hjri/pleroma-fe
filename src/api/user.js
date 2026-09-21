@@ -427,7 +427,7 @@ export const exportFriends = async ({ id, credentials }) => {
     }
   }
   return friends
-})
+}
 
 // #Profile settings
 export const updateNotificationSettings = ({ credentials, settings }) => {
