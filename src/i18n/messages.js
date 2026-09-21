@@ -31,7 +31,7 @@ const messages = {
   },
   setLanguage: async (i18n, language) => {
     const languages = (Array.isArray(language) ? language : [language]).filter(
-      (k) => k,
+      Boolean,
     )
 
     if (!languages.includes(ULTIMATE_FALLBACK_LOCALE)) {

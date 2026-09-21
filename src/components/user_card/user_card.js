@@ -249,7 +249,7 @@ export default {
     },
     dailyAvg() {
       const days = Math.ceil(
-        (new Date() - new Date(this.user.created_at)) / (60 * 60 * 24 * 1000),
+        (Date().now() - new Date(this.user.created_at)) / (60 * 60 * 24 * 1000),
       )
       return Math.round(this.user.statuses_count / days)
     },
