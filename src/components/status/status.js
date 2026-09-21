@@ -618,12 +618,15 @@ const Status = {
     this.resizeObserver.disconnect()
   },
   watch: {
-    hideStatus: function () {
-      if (this.$refs.root) {
-        this.resizeObserver.observe(this.$refs.root)
-      } else {
-        this.resizeObserver.disconnect()
-      }
+    hideStatus: {
+      handler() {
+        if (this.$refs.root) {
+          this.resizeObserver.observe(this.$refs.root)
+        } else {
+          this.resizeObserver.disconnect()
+        }
+      },
+      flush: 'post',
     },
     'mainStatus.repeat_num': function (num) {
       // refetch repeats when repeat_num is changed in any way
