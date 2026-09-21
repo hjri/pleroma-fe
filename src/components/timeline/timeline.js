@@ -68,6 +68,9 @@ const Timeline = {
         .filter(({ pinned }) => (skipPinned.value ? !pinned : true))
     })
 
+    // Scroll position // FIXME unify scroll position logic in timelines
+    const scroller = useScrollPosition()
+    const { y: scrollY } = scroller
     // Virtual scrolling
     const { fontSize, navbarSize } = useInterfaceSizes()
 
@@ -88,6 +91,7 @@ const Timeline = {
         return 0
       }
     })
+    const compensate = computed(() => scrollY.value > 15)
     const { heightChart, changeSuspendState, updateVirtualHeight } =
       useVirtualScrolling({
         name: 'Timeline',
@@ -95,8 +99,8 @@ const Timeline = {
         list: filteredVisibleStatuses,
         body,
         offset,
-        scrollPositionInstance: useScrollPosition(),
-        scrollCompensation: ref(true),
+        scrollPositionInstance: scroller,
+        scrollCompensation: compensate, // don't compensate when scrolled to the top
         getPlaceholderHeight,
       })
 
