@@ -45,9 +45,9 @@ export const muteFilterHits = (muteFilters, status) => {
             if (re.test(statusText) || re.test(statusSummary)) {
               return { hide, name }
             }
-            return false
+            return null
           } catch {
-            return false
+            return null
           }
         }
         case 'user': {
@@ -81,9 +81,9 @@ export const muteFilterHits = (muteFilters, status) => {
             ) {
               return { hide, name }
             }
-            return false
+            return null
           } catch {
-            return false
+            return null
           }
         }
       }
