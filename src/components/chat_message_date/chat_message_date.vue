@@ -11,7 +11,10 @@ import localeService from 'src/services/locale/locale.service.js'
 
 export default {
   name: 'Timeago',
-  props: ['date', 'showTime'],
+  props: {
+    date: Date,
+    showTime: Boolean,
+  },
   computed: {
     time12hFormat() {
       return useMergedConfigStore().mergedConfig.absoluteTimeFormat12h === '12h'
