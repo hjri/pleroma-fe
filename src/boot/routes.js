@@ -1,5 +1,5 @@
 import AuthForm from 'src/components/auth_form/auth_form.js'
-import ConversationPage from 'src/components/conversation-page/conversation-page.vue'
+import Conversation from 'src/components/conversation/conversation.vue'
 import NavPanel from 'src/components/nav_panel/nav_panel.vue'
 import RemoteUserResolver from 'src/components/remote_user_resolver/remote_user_resolver.vue'
 import Timeline from 'src/components/timeline/timeline.vue'
@@ -84,8 +84,8 @@ export default () => {
     {
       name: 'conversation',
       path: '/notice/:statusId',
-      component: ConversationPage,
-      props: true,
+      component: Conversation,
+      props: (route) => ({ statusId: route.params.statusId, isPage: true }),
       meta: { dontScroll: true },
     },
     {
