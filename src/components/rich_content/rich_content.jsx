@@ -240,7 +240,7 @@ export default {
           !(
             children &&
             typeof children[0] === 'string' &&
-            children[0].match(/^\s/)
+              /^\s/.exec(children[0])
           )
             ? lastSpacing
             : ''
@@ -382,13 +382,13 @@ export default {
                   x ? 'mfm-spinX' : null,
                   y ? 'mfm-spinY' : null,
                   'mfm-spin',
-                ].filter(Boolean)[0]
+                ].find(Boolean)
 
                 const direction = [
                   alternate ? 'alternate' : null,
                   left ? 'reverse' : null,
                   'normal',
-                ].filter(Boolean)[0]
+                ].find(Boolean)
 
                 newAttrs.style = [
                   `animation-name: ${anim}`,
