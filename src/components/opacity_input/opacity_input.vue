@@ -38,7 +38,13 @@ export default {
   components: {
     Checkbox,
   },
-  props: ['name', 'label', 'modelValue', 'fallback', 'disabled'],
+  props: {
+    name: String,
+    label: String,
+    modelValue: Number,
+    fallback: Number,
+    disabled: Boolean,
+  },
   emits: ['update:modelValue'],
   computed: {
     present() {
