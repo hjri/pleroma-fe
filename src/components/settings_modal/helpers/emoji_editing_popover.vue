@@ -233,18 +233,18 @@ export default {
       return null
     },
     isEdited() {
-      return (
-        !this.newUpload &&
-        (this.editedShortcode !== this.shortcode ||
-          this.editedFile !== this.file)
-      )
+      if (this.newUpload) return false
+      return this.editedShortcode !== this.shortcode ||
+        this.editedFile !== this.file
+
+    },
+    isRemote() {
+      return this.remote !== undefined
     },
     saveButtonDisabled() {
-      if (this.remote === undefined)
-        return this.newUpload
-          ? this.uploadURL === '' && this.uploadFile.length == 0
-          : !this.isEdited
-      else return this.copyToPack === ''
+      if (this.isRemote) return this.copyToPack === ''
+      if (this.newUpload) return this.uploadURL === '' && this.uploadFile.length == 0
+      return !this.isEdited
     },
   },
   methods: {
