@@ -160,7 +160,7 @@ const Timeline = {
     }
     watch(timelineRef, timelineChange, { immediate: true })
     onUnmounted(() => {
-      timelineChange(null, timelineRef.value) // ????
+      timelineChange(null, timelineRef.value)
     })
 
     // Misclick prevention
