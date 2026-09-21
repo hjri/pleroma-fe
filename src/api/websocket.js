@@ -131,6 +131,43 @@ export const ProcessedWS = ({
   return eventTarget
 }
 
+const prepareEvent = ({ event, stream, payload }) {
+  const data = (() => {
+    // MastoBE and PleromaBE both send payload for delete as a plain string
+    if (event === 'delete') {
+      return payload
+    } else if (payload) {
+      return JSON.parse(payload)
+    } else {
+      return null
+    }
+  })()
+
+  if (event === 'delete') {
+    return { event, stream, id: data }
+  } else if (event === 'update' || event === 'statusUpdate') {
+    return { event, stream, status: parseStatus(data) }
+  } else if (event === 'notification') {
+    return { event, stream, notification: parseNotification(data) }
+  } else if (event === 'pleroma:chat_update') {
+    return { event, stream, chatUpdate: parseChat(data) }
+  } else {
+    return { event, stream, data }
+  }
+}
+
+const handleEvent = ({ event, stream, payload }) => {
+  if (event === 'pleroma:respond' && data.type === 'pleroma:authenticate') {
+    if (data.result === 'success' || data.error === 'already_authenticated') {
+      console.debug('[WS] Successfully authenticated')
+      onAuthenticated()
+    } else {
+      console.error('[WS] Unable to authenticate:', data.error)
+      wsEvent.target.close()
+    }
+  }
+}
+
 export const handleMastoWS = (
   wsEvent,
   {
@@ -143,39 +180,13 @@ export const handleMastoWS = (
   if (!data) return
   const parsedEvent = JSON.parse(data)
   const { event, stream, payload } = parsedEvent
+
   if (
-    MASTODON_STREAMING_EVENTS.has(event) ||
-    PLEROMA_STREAMING_EVENTS.has(event)
+    !MASTODON_STREAMING_EVENTS.has(event) &&
+    !PLEROMA_STREAMING_EVENTS.has(event)
   ) {
-    // MastoBE and PleromaBE both send payload for delete as a PLAIN string
-    if (event === 'delete') {
-      return { event, stream, id: payload }
-    }
-    const data = payload ? JSON.parse(payload) : null
-    if (event === 'pleroma:respond') {
-      if (data.type === 'pleroma:authenticate') {
-        if (data.result === 'success') {
-          console.debug('[WS] Successfully authenticated')
-          onAuthenticated()
-        } else if (data.error === 'already_authenticated') {
-          onAuthenticated()
-        } else {
-          console.error('[WS] Unable to authenticate:', data.error)
-          wsEvent.target.close()
-        }
-      }
-      return null
-    } else if (event === 'update') {
-      return { event, stream, status: parseStatus(data) }
-    } else if (event === 'status.update') {
-      return { event, stream, status: parseStatus(data) }
-    } else if (event === 'notification') {
-      return { event, stream, notification: parseNotification(data) }
-    } else if (event === 'pleroma:chat_update') {
-      return { event, stream, chatUpdate: parseChat(data) }
-    }
-  } else {
     console.warn('Unknown event', wsEvent)
     return null
   }
+  return prepareEvent({ event, stream, payload })
 }
