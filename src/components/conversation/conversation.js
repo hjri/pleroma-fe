@@ -1,3 +1,4 @@
+import { last } from 'lodash-es'
 import { storeToRefs } from 'pinia'
 import {
   computed,
@@ -10,8 +11,6 @@ import {
   watch,
 } from 'vue'
 
-import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
-import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
 import QuickViewSettings from 'src/components/quick_view_settings/quick_view_settings.vue'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
@@ -61,8 +60,6 @@ export default {
     ThreadTree,
     QuickFilterSettings,
     QuickViewSettings,
-    ChatMessageList,
-    PostStatusForm,
     RichContent,
   },
   emits: ['heightChange', 'suspendableStateChange', 'expanded', 'collapsed'],
@@ -126,7 +123,7 @@ export default {
     // # Misc UI things
     const firstStatus = computed(() => conversation.value[0])
     const lastStatus = computed(
-      () => conversation.value[conversation.value.legnth - 1],
+      () => last(conversation.value),
     )
     const getStatusClasses = (statusId, ancestor) => {
       const result = {

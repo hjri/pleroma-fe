@@ -101,6 +101,7 @@
           <div
             v-if="element.type === 'spacer'"
             class="virtual-spacer"
+            aria-hidden="true"
             :style="{ height: element.height + 'px' }"
           />
         </template>

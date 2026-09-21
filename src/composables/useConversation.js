@@ -24,7 +24,7 @@ export function useConversation(statusId, expanded) {
   const streamingEnabled = computed(
     () =>
       mergedConfig.value.useStreamingApi &&
-      mastoUserSocketStatus === WSConnectionStatus.JOINED,
+      mastoUserSocketStatus.value === WSConnectionStatus.JOINED,
   )
 
   watch(statusId, (neu, old) => {
@@ -126,26 +126,26 @@ export function useConversation(statusId, expanded) {
   const getReplies = (id) => replies.value.get(id) ?? new Set()
 
   const fetchConversation = async () => {
-    if (currentStatus.value) {
-      const {
-        data: { ancestors, descendants },
-        timestamp,
-      } = await apiFetchConversation({
-        id: toValue(statusId),
-        credentials: useOAuthStore().token,
-      })
+    try {
+      loadError.value = null
+      if (currentStatus.value) {
+        const {
+          data: { ancestors, descendants },
+          timestamp,
+        } = await apiFetchConversation({
+          id: toValue(statusId),
+          credentials: useOAuthStore().token,
+        })
 
-      useStatusesStore().addNewStatuses({ statuses: ancestors, timestamp })
-      useStatusesStore().addNewStatuses({
-        statuses: descendants,
-        timestamp,
-      })
+        useStatusesStore().addNewStatuses({ statuses: ancestors, timestamp })
+        useStatusesStore().addNewStatuses({
+          statuses: descendants,
+          timestamp,
+        })
 
-      await nextTick()
-      fullyLoaded.value = true
-    } else {
-      try {
-        loadError.value = null
+        await nextTick()
+        fullyLoaded.value = true
+      } else {
 
         const { data: status } = await apiFetchStatus({
           id: toValue(statusId),
@@ -155,10 +155,10 @@ export function useConversation(statusId, expanded) {
         useStatusesStore().addNewStatuses({ statuses: [status] })
 
         fetchConversation()
-      } catch (error) {
-        console.error(error)
-        loadError.value = error
       }
+    } catch (error) {
+      console.error(error)
+      loadError.value = error
     }
   }
 

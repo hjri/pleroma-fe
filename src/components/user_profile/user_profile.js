@@ -1,4 +1,5 @@
 import { get } from 'lodash-es'
+import { computed } from 'vue'
 
 import FollowCard from 'src/components/follow_card/follow_card.vue'
 import List from 'src/components/list/list.vue'
@@ -36,7 +37,7 @@ const UserProfile = {
   },
   provide() {
     return {
-      profileUserId: this.userId,
+      profileUserId: computed(() => this.userId),
     }
   },
   updated() {
