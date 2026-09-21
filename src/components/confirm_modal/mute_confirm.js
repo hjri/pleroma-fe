@@ -38,14 +38,11 @@ export default {
       return new Set(useUsersStore().currentUser.domainMutes).has(this.domain)
     },
     shouldConfirm() {
-      switch (this.type) {
-        case 'domain': {
-          return this.mergedConfig.modalOnMuteDomain
-        }
-        default: {
-          // conversation
-          return this.mergedConfig.modalOnMuteConversation
-        }
+      if (this.type === 'domain') {
+        return this.mergedConfig.modalOnMuteDomain
+      } else {
+        // conversation
+        return this.mergedConfig.modalOnMuteConversation
       }
     },
     ...mapState(useMergedConfigStore, ['mergedConfig']),
