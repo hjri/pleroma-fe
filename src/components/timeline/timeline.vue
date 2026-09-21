@@ -88,6 +88,7 @@
         >
           <Conversation
             v-if="element.type === 'item'"
+            class="timeline-conversation"
             :status-id="element.id"
             role="listitem"
 

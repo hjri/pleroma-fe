@@ -140,7 +140,7 @@
       <div
         v-else-if="isLinearView"
         ref="linear"
-        class="thread-body"
+        class="thread-body linear-view"
       >
         <template
           v-for="element in heightChartLinear"
