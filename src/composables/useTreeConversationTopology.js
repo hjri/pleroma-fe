@@ -153,7 +153,6 @@ export function useTreeConversationTopology(conversation, replies, current) {
 
     return depths.keys().reduce((res, id) => {
       res.set(id, depths.get(id) - 1) // exclude itself
-      console.log('res', res)
       return res
     }, new Map())
   })
