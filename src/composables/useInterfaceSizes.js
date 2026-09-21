@@ -22,7 +22,7 @@ export function useInterfaceSizes() {
   const navbarSize = computed(() => {
     const string = window
       .getComputedStyle(document.body)
-      .getPropertyValue('--navbarSize')
+      .getPropertyValue('--navbar-height')
 
     return fontSize.value * Number.parseInt(string.slice(0, -3), 10) // remove the 'rem'
   })
@@ -30,7 +30,7 @@ export function useInterfaceSizes() {
   const panelHeaderSize = computed(() => {
     const string = window
       .getComputedStyle(document.body)
-      .getPropertyValue('--panelHeaderSize')
+      .getPropertyValue('--panel-header-height')
 
     return fontSize.value * Number.parseInt(string.slice(0, -3), 10) // remove the 'rem'
   })
