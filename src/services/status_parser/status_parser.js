@@ -9,19 +9,19 @@ export const muteFilterHits = (muteFilters, status) => {
 
   return muteFilters
     .toSorted((a, b) => b.order - a.order)
+    .filter((filter) => filter.enabled && filter.value !== '')
+    .filter(({ expires }) => {
+      if (expires !== null) return expires >= Date.now()
+      return true
+    })
     .map((filter) => {
       const {
         hide,
-        expires,
         name,
         value,
         type,
-        enabled,
         caseSensitive = false,
       } = filter
-      if (!enabled) return false
-      if (value === '') return false
-      if (expires !== null && expires < Date.now()) return false
       switch (type) {
         case 'word': {
           let match = false
