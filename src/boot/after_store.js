@@ -26,7 +26,6 @@ import {
   windowHeight,
   windowWidth,
 } from '../services/window_utils/window_utils'
-import routes from './routes'
 
 import { useAuthFlowStore } from 'src/stores/auth_flow'
 import { useChatsStore } from 'src/stores/chats.js'
@@ -44,6 +43,7 @@ import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 import { useUsersStore } from 'src/stores/users.js'
 
+import { getRoutes } from 'src/boot/routes.js'
 import VBodyScrollLock from 'src/directives/body_scroll_lock'
 import {
   INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
@@ -581,7 +581,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
 
   const router = createRouter({
     history: createWebHistory(),
-    routes: routes(store),
+    routes: getRoutes(store),
     scrollBehavior: (to, _from, savedPosition) => {
       if (to.matched.some((m) => m.meta.dontScroll)) {
         return {}

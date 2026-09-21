@@ -4,7 +4,7 @@ createTestingPinia()
 
 import { createMemoryHistory, createRouter } from 'vue-router'
 
-import getRoutes from 'src/boot/routes.js'
+import { getRoutes } from 'src/boot/routes.js'
 
 describe('routes', () => {
   const router = createRouter({

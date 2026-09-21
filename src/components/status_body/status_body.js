@@ -148,7 +148,7 @@ const StatusBody = {
       return this.status.attachments.map((file) => file.type)
     },
     collapsedStatus() {
-      return this.status.raw_html.replaceAll('(\n|<br\s?\/?>)', ' ')
+      return this.status.raw_html.replaceAll(/(\n|<br\s?\/?>)/g, ' ')
     },
     ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
