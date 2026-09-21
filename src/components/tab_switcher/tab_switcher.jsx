@@ -105,7 +105,7 @@ export default {
       }
       if (props.image) {
         return (
-          <div class={classesWrapper.join(' ')}>
+          <div key={props.index} class={classesWrapper.join(' ')}>
             <button
               disabled={props.disabled}
               onClick={this.clickTab(index)}
@@ -124,7 +124,7 @@ export default {
         )
       }
       return (
-        <div class={classesWrapper.join(' ')}>
+        <div key={props.index} class={classesWrapper.join(' ')}>
           <button
             disabled={props.disabled}
             onClick={this.clickTab(index)}
@@ -167,7 +167,11 @@ export default {
       const renderSlot =
         !delayRender && (!this.renderOnlyFocused || active) ? slot : ''
 
-      return <div class={classes}>{renderSlot}</div>
+      return (
+        <div key={index} class={classes}>
+          {renderSlot}
+        </div>
+      )
     })
 
     return (
