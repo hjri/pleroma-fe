@@ -23,8 +23,8 @@ import { useStatusesStore } from 'src/stores/statuses.js'
 import { useTimelinesStore } from 'src/stores/timelines.js'
 
 import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
-import { useScrollPosition } from 'src/composables/useScrollPosition.js'
 import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
+import { useWindowScroll } from 'src/composables/useWindowScroll.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -69,7 +69,7 @@ const Timeline = {
     })
 
     // Scroll position // FIXME unify scroll position logic in timelines
-    const scroller = useScrollPosition()
+    const scroller = useWindowScroll()
     const { y: scrollY } = scroller
     // Virtual scrolling
     const { fontSize, navbarSize } = useInterfaceSizes()

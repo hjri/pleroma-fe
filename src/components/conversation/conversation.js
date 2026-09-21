@@ -3,7 +3,6 @@ import { storeToRefs } from 'pinia'
 import {
   computed,
   nextTick,
-  onUnmounted,
   provide,
   ref,
   toRefs,
@@ -19,11 +18,12 @@ import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
+import { useClientRectSize } from 'src/composables/useClientRectSize.js'
 import { useConversation } from 'src/composables/useConversation.js'
 import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
-import { useScrollPosition } from 'src/composables/useScrollPosition.js'
 import { useTreeConversationTopology } from 'src/composables/useTreeConversationTopology.js'
 import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
+import { useWindowScroll } from 'src/composables/useWindowScroll.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -64,7 +64,7 @@ export default {
   },
   emits: ['heightChange', 'suspendableStateChange', 'expanded', 'collapsed'],
   setup(props, { emit }) {
-    const scroller = useScrollPosition()
+    const scroller = useWindowScroll()
     const { statusId } = toRefs(props)
 
     // # Main Configuration / global state
@@ -142,9 +142,8 @@ export default {
     )
     const rootElement = useTemplateRef('root')
     const rootElementMargin = ref(null)
-    const updateVirtualHeight = (e) => {
-      const [entry] = e
-
+    const { height } = useClientRectSize(rootElement)
+    watch(height, (value) => {
       const rootCss = window.getComputedStyle(rootElement.value)
       const rootMarginString = rootCss.getPropertyValue('margin-top')
       const rootMargin = Number.parseInt(rootMarginString.slice(0, -2), 10)
@@ -152,19 +151,17 @@ export default {
 
       emit('heightChange', {
         id: statusId.value,
-        height: entry.contentRect.height,
+        height: value,
         element: rootElement,
       })
-    }
-    const resizeObserver = ref(new ResizeObserver(updateVirtualHeight))
-    watch(rootElement, () => resizeObserver.value.observe(rootElement.value))
+    })
+
     watch(suspendable, (value) =>
       emit('suspendableStateChange', {
         suspendable: value,
         id: statusId.value,
       }),
     )
-    onUnmounted(() => resizeObserver.value.disconnect())
 
     // # Internal virtual scrolling
     const virtualScrollingEnabled = ref(isExpanded.value)
