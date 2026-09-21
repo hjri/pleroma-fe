@@ -96,9 +96,8 @@ export function useConversation(statusId, expanded) {
      * After initial load, fullyLoaded remains true, allowing newer updates to
      * appear in conversation.
      */
-    const fullConversation = useStatusesStore().conversations.get(
-      conversationId.value,
-    ) ?? new Map() // guard if this somehow fails (user wipe)
+    const fullConversation =
+      useStatusesStore().conversations.get(conversationId.value) ?? new Map() // guard if this somehow fails (user wipe)
 
     return [...fullConversation.keys()]
       .map((k) => useStatusesStore().allStatuses.get(k))

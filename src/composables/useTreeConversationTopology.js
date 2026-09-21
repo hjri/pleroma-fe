@@ -115,15 +115,17 @@ export function useTreeConversationTopology(conversation, replies, current) {
       sizes.set(
         id,
         1 +
-        [...getReplies(id)]
-          .map(({ id }) => id)
-          .map((cid) => subTreeSizeFor(cid))
-          .reduce((a, b) => a + b, 0)
+          [...getReplies(id)]
+            .map(({ id }) => id)
+            .map((cid) => subTreeSizeFor(cid))
+            .reduce((a, b) => a + b, 0),
       )
       return sizes.get(id)
     }
 
-    toValue(conversation).map(({ id }) => id).forEach(subTreeSizeFor)
+    toValue(conversation)
+      .map(({ id }) => id)
+      .forEach(subTreeSizeFor)
 
     return sizes.keys().reduce((res, id) => {
       res.set(id, sizes.get(id) - 1) // exclude itself
@@ -141,15 +143,17 @@ export function useTreeConversationTopology(conversation, replies, current) {
       depths.set(
         id,
         1 +
-        [...getReplies(id)]
-          .map(({ id }) => id)
-          .map((cid) => subTreeDepthFor(cid))
-          .reduce((a, b) => (a > b ? a : b), 0)
+          [...getReplies(id)]
+            .map(({ id }) => id)
+            .map((cid) => subTreeDepthFor(cid))
+            .reduce((a, b) => (a > b ? a : b), 0),
       )
       return depths.get(id)
     }
 
-    toValue(conversation).map(({ id }) => id).forEach(subTreeDepthFor)
+    toValue(conversation)
+      .map(({ id }) => id)
+      .forEach(subTreeDepthFor)
 
     return depths.keys().reduce((res, id) => {
       res.set(id, depths.get(id) - 1) // exclude itself
