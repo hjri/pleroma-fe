@@ -16,7 +16,7 @@ import {
 
 import './rich_content.scss'
 
-const MAYBE_LINE_BREAKING_ELEMENTS = [
+const MAYBE_LINE_BREAKING_ELEMENTS = new Set([
   'blockquote',
   'br',
   'hr',
@@ -35,7 +35,7 @@ const MAYBE_LINE_BREAKING_ELEMENTS = [
   'h3',
   'h4',
   'h5',
-]
+])
 
 /**
  * RichContent, The Über-powered component for rendering Post HTML.
@@ -243,7 +243,7 @@ export default {
           )
             ? lastSpacing
             : ''
-        if (MAYBE_LINE_BREAKING_ELEMENTS.includes(Tag)) {
+        if (MAYBE_LINE_BREAKING_ELEMENTS.has(Tag)) {
           // all the elements that can cause a line change
           currentMentions = null
         } else if (Tag === 'img') {
