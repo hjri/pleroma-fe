@@ -10,7 +10,7 @@ import { defineAsyncComponent } from 'vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
-import suggestor from 'src/components/emoji_input/suggestor.js'
+import { suggest } from 'src/components/emoji_input/suggestor.js'
 import FollowButton from 'src/components/follow_button/follow_button.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import Select from 'src/components/select/select.vue'
@@ -413,7 +413,7 @@ export default {
       return this.fieldsLimits ? this.fieldsLimits.maxFields : 0
     },
     emojiUserSuggestor() {
-      return suggestor({
+      return suggest({
         emoji: [
           ...useEmojiStore().standardEmojiList,
           ...useEmojiStore().customEmoji,
@@ -421,7 +421,7 @@ export default {
       })
     },
     emojiSuggestor() {
-      return suggestor({
+      return suggest({
         emoji: [
           ...useEmojiStore().standardEmojiList,
           ...useEmojiStore().customEmoji,

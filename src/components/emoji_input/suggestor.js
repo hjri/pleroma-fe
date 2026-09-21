@@ -13,7 +13,7 @@ import { useUsersStore } from 'src/stores/users.js'
  * doesn't support user linking you can just provide only emoji.
  */
 
-export default (data) => {
+export const suggest = (data) => {
   const emojiCurry = suggestEmoji(data.emoji)
   const usersCurry = suggestUsers()
   return (input, nameKeywordLocalizer) => {
