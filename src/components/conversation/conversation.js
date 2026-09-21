@@ -18,12 +18,15 @@ import ThreadTree from 'src/components/thread_tree/thread_tree.vue'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
+import { useBodyScroller } from 'src/composables/useBodyScroller.js'
 import { useClientRectSize } from 'src/composables/useClientRectSize.js'
 import { useConversation } from 'src/composables/useConversation.js'
 import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
+import { useScrollPosition } from 'src/composables/useScrollPosition.js'
 import { useTreeConversationTopology } from 'src/composables/useTreeConversationTopology.js'
 import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
 import { useWindowScroll } from 'src/composables/useWindowScroll.js'
+import { useWindowSize } from 'src/composables/useWindowSize.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -64,7 +67,9 @@ export default {
   },
   emits: ['heightChange', 'suspendableStateChange', 'expanded', 'collapsed'],
   setup(props, { emit }) {
-    const scroller = useWindowScroll()
+    const scroller = useScrollPosition(
+      useBodyScroller(useWindowScroll(), useWindowSize()),
+    )
     const { statusId } = toRefs(props)
 
     // # Main Configuration / global state

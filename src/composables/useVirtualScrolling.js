@@ -1,8 +1,6 @@
 import { first, last } from 'lodash-es'
 import { computed, nextTick, ref, toValue, watch } from 'vue'
 
-import { useWindowSize } from 'src/composables/useWindowSize.js'
-
 export function useVirtualScrolling({
   // For debugging
   name = 'Generic',
@@ -73,8 +71,7 @@ export function useVirtualScrolling({
     heights.value.set(id, height)
   }
 
-  const { y: scrollY, scrollBy } = scrollPositionInstance
-  const { height: windowHeight } = useWindowSize()
+  const { top: scrollY, scrollBy, vHeight } = scrollPositionInstance
 
   // Real scroll boundary, relative to body's bounds
   const topScrollBoundary = ref(0)
@@ -87,7 +84,7 @@ export function useVirtualScrolling({
     const { top } = body.value.getBoundingClientRect()
 
     const distanceItemTopToWindowTop = 0 - top + (toValue(offset) ?? 0)
-    const distanceItemTopToWindowBottom = windowHeight.value - top
+    const distanceItemTopToWindowBottom = vHeight.value - top
 
     // Technically, bottom scroll boundary should be distance
     // from element's top border to window's bottom border,
@@ -98,7 +95,7 @@ export function useVirtualScrolling({
     bottomScrollBoundary.value = distanceItemTopToWindowBottom
   }
 
-  const windowWatcher = watch(windowHeight, updateBoundaries)
+  const windowWatcher = watch(vHeight, updateBoundaries)
   const scrollWatcher = watch(scrollY, updateBoundaries)
   const heightWatcher = watch(heightChart, updateBoundaries)
   const bodyWatcher = watch(body, updateBoundaries)
@@ -295,7 +292,7 @@ export function useVirtualScrolling({
     const elementMiddle = element.top + element.height / 2
     const desiredTopBoundary = Math.min(
       element.top,
-      elementMiddle - (windowHeight.value - offset.value) / 2,
+      elementMiddle - (vHeight.value - offset.value) / 2,
     )
 
     scrollBy(0, desiredTopBoundary - topScrollBoundary.value)

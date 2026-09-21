@@ -22,10 +22,13 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useTimelinesStore } from 'src/stores/timelines.js'
 
+import { useBodyScroller } from 'src/composables/useBodyScroller.js'
 import { useDocumentFocus } from 'src/composables/useDocumentFocus.js'
 import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
+import { useScrollPosition } from 'src/composables/useScrollPosition.js'
 import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
 import { useWindowScroll } from 'src/composables/useWindowScroll.js'
+import { useWindowSize } from 'src/composables/useWindowSize.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -71,9 +74,11 @@ const Timeline = {
         .filter(({ pinned }) => (skipPinned.value ? !pinned : true))
     })
 
-    // Scroll position // FIXME unify scroll position logic in timelines
-    const scroller = useWindowScroll()
-    const { y: scrollY } = scroller
+    // Scroll position
+    const scroller = useScrollPosition(
+      useBodyScroller(useWindowScroll(), useWindowSize()),
+    )
+    const { hasReachedTop, shouldLoadBottom } = scroller
     // Virtual scrolling
     const { fontSize, navbarSize } = useInterfaceSizes()
 
@@ -94,7 +99,7 @@ const Timeline = {
         return 0
       }
     })
-    const compensate = computed(() => scrollY.value > 15)
+    const compensate = computed(() => !hasReachedTop.value)
     const { heightChart, changeSuspendState, updateVirtualHeight } =
       useVirtualScrolling({
         name: 'Timeline',
@@ -122,10 +127,8 @@ const Timeline = {
       }
       if (count <= 0) return
       // only 'stream' them when you're scrolled to the top
-      const doc = document.documentElement
-      const top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0)
       if (
-        top < 15 &&
+        hasReachedTop &&
         !paused.value &&
         !(
           unfocused.value &&
@@ -196,25 +199,9 @@ const Timeline = {
     })
 
     // Scroll
-    const scrollLoad = () => {
-      // TODO simplify this logic
-      const bodyBRect = document.body.getBoundingClientRect()
-      const height = Math.max(bodyBRect.height, -bodyBRect.y)
-      if (
-        !timeline.value.fetcher.loadingOlder &&
-        window.innerHeight + window.pageYOffset >= height - 750
-      ) {
-        fetchOlderStatuses()
-      }
-    }
-    const handleScroll = throttle((e) => {
-      scrollLoad(e)
-    }, 200)
-    onMounted(() => {
-      window.addEventListener('scroll', handleScroll)
-    })
-    onUnmounted(() => {
-      window.removeEventListener('scroll', handleScroll)
+    watch(shouldLoadBottom, (value) => {
+      if (!value) return
+      fetchOlderStatuses()
     })
 
     // Misc UI things
