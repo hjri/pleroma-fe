@@ -51,20 +51,9 @@ const getPalette = (data) => {
       cGreen,
       cBlue,
       cOrange,
-    ]
-  } else if (typeof data === 'object'){
-    const {
-      key,
-      name,
-      bg,
-      fg,
-      text,
-      link,
-      cRed,
-      cBlue,
-      cGreen,
-      cOrange,
-    } = data
+    }
+  } else if (typeof data === 'object') {
+    const { key, name, bg, fg, text, link, cRed, cBlue, cGreen, cOrange } = data
     return {
       key,
       name,
@@ -159,7 +148,7 @@ const AppearanceTab = {
     }
 
     updateIndex('style').then((styles) => {
-      styles.forEach(async ([key, stylePromise]) =>
+      styles.forEach(async ([key, stylePromise]) => {
         const data = await stylePromise
         const meta = data.find((x) => x.component === '@meta')
         this.availableThemesV3.push({
@@ -168,11 +157,11 @@ const AppearanceTab = {
           name: meta.directives.name,
           version: 'v3',
         })
-      )
+      })
     })
 
     updateIndex('theme').then((themes) => {
-      themes.forEach(async ([key, themePromise]) =>
+      themes.forEach(async ([key, themePromise]) => {
         const data = await themePromise
         if (!data) {
           console.warn(`Theme with key ${key} is empty or malformed`)
@@ -190,13 +179,13 @@ const AppearanceTab = {
             version: 'v2',
           })
         }
-      )
+      })
     })
 
     this.userPalette = useInterfaceStore().paletteDataUsed || {}
 
     updateIndex('palette').then((bundledPalettes) => {
-      bundledPalettes.forEach(([key, palettePromise]) => {
+      bundledPalettes.forEach(async ([key, palettePromise]) => {
         const palette = getPalette(await palettePromise)
         palette.key = palette.key ?? key
 

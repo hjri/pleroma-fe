@@ -234,16 +234,17 @@ export default {
     },
     isEdited() {
       if (this.newUpload) return false
-      return this.editedShortcode !== this.shortcode ||
-        this.editedFile !== this.file
-
+      return (
+        this.editedShortcode !== this.shortcode || this.editedFile !== this.file
+      )
     },
     isRemote() {
       return this.remote !== undefined
     },
     saveButtonDisabled() {
       if (this.isRemote) return this.copyToPack === ''
-      if (this.newUpload) return this.uploadURL === '' && this.uploadFile.length == 0
+      if (this.newUpload)
+        return this.uploadURL === '' && this.uploadFile.length == 0
       return !this.isEdited
     },
   },

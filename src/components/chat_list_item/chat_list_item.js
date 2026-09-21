@@ -25,7 +25,9 @@ const ChatListItem = {
         return
       }
 
-      const types = new Set(this.chat.lastMessage.attachments.map((file) => file.type))
+      const types = new Set(
+        this.chat.lastMessage.attachments.map((file) => file.type),
+      )
       if (types.has('video')) {
         return this.$t('file_type.video')
       } else if (types.has('audio')) {

@@ -537,7 +537,7 @@ const EmojiInput = {
       this.suggestionsKeyboardControl(e)
     },
     postingKeyboardControl(e) {
-      const { ctrlKey, shiftKey, key } = e
+      const { ctrlKey, key } = e
       if (this.newlineOnCtrlEnter && ctrlKey && key === 'Enter') {
         this.insert({ insertion: '\n', surroundingSpace: false })
         // Ensure only one new line is added on macos

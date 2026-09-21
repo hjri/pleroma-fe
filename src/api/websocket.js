@@ -131,7 +131,7 @@ export const ProcessedWS = ({
   return eventTarget
 }
 
-const prepareEvent = ({ event, stream, payload }) {
+const prepareEvent = ({ event, stream, payload, socket }) => {
   const data = (() => {
     // MastoBE and PleromaBE both send payload for delete as a plain string
     if (event === 'delete') {
@@ -143,27 +143,28 @@ const prepareEvent = ({ event, stream, payload }) {
     }
   })()
 
+  const result = { event, stream, socket }
   if (event === 'delete') {
-    return { event, stream, id: data }
+    return { ...result, id: data }
   } else if (event === 'update' || event === 'statusUpdate') {
-    return { event, stream, status: parseStatus(data) }
+    return { ...result, status: parseStatus(data) }
   } else if (event === 'notification') {
-    return { event, stream, notification: parseNotification(data) }
+    return { ...result, notification: parseNotification(data) }
   } else if (event === 'pleroma:chat_update') {
-    return { event, stream, chatUpdate: parseChat(data) }
+    return { ...result, chatUpdate: parseChat(data) }
   } else {
-    return { event, stream, data }
+    return { ...result, data }
   }
 }
 
-const handleEvent = ({ event, stream, payload }) => {
+const handleEvent = ({ event, data, socket }, onAuthenticated) => {
   if (event === 'pleroma:respond' && data.type === 'pleroma:authenticate') {
     if (data.result === 'success' || data.error === 'already_authenticated') {
       console.debug('[WS] Successfully authenticated')
       onAuthenticated()
     } else {
       console.error('[WS] Unable to authenticate:', data.error)
-      wsEvent.target.close()
+      socket.close()
     }
   }
 }
@@ -176,7 +177,7 @@ export const handleMastoWS = (
     },
   } = {},
 ) => {
-  const { data } = wsEvent
+  const { data, target: socket } = wsEvent
   if (!data) return
   const parsedEvent = JSON.parse(data)
   const { event, stream, payload } = parsedEvent
@@ -188,5 +189,7 @@ export const handleMastoWS = (
     console.warn('Unknown event', wsEvent)
     return null
   }
-  return prepareEvent({ event, stream, payload })
+  const result = prepareEvent({ event, stream, payload, socket })
+  handleEvent(result, onAuthenticated)
+  return result
 }

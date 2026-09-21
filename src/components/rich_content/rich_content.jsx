@@ -240,7 +240,7 @@ export default {
           !(
             children &&
             typeof children[0] === 'string' &&
-              /^\s/.exec(children[0])
+            /^\s/.exec(children[0])
           )
             ? lastSpacing
             : ''

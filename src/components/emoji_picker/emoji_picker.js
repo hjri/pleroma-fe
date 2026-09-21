@@ -63,7 +63,12 @@ const maybeLocalizedKeywords = (emoji, languages, nameLocalizer) => {
   return res
 }
 
-const filterByKeyword = (list, keyword = '', languages = [], nameLocalizer = () => '') => {
+const filterByKeyword = (
+  list,
+  keyword = '',
+  languages = [],
+  nameLocalizer = () => '',
+) => {
   if (keyword === '') return list
 
   const keywordLowercase = keyword.toLowerCase()
@@ -399,15 +404,14 @@ const EmojiPicker = {
       }, 500)
     },
     emojiItems() {
-      return this.filteredEmojiGroups
-        .flatMap((group) =>
-          chunk(group.emojis, this.itemPerRow).map((items, index) => ({
-            ...group,
-            id: index === 0 ? group.id : `row-${index}-${group.id}`,
-            emojis: items,
-            isFirstRow: index === 0,
-          })),
-        )
+      return this.filteredEmojiGroups.flatMap((group) =>
+        chunk(group.emojis, this.itemPerRow).map((items, index) => ({
+          ...group,
+          id: index === 0 ? group.id : `row-${index}-${group.id}`,
+          emojis: items,
+          isFirstRow: index === 0,
+        })),
+      )
     },
     languages() {
       return ensureFinalFallback(
