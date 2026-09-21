@@ -8,7 +8,7 @@ export const filterNavigation = (
     currentUser,
     supportsBookmarkFolders,
     supportsBubbleTimeline,
-  },
+  } = {},
 ) => {
   return list.filter(({ criteria, anon, anonRoute }) => {
     const set = new Set(criteria || [])
