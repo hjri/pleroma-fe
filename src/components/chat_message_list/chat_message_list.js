@@ -67,20 +67,17 @@ const ChatMessageList = {
 
           if (newerItem == null) {
             chatItem.messageChainId = uniqueId()
-          } else {
-            if (newerItem.type === 'date') {
+          } else if (newerItem.type === 'date') {
+            chatItem.messageChainId = uniqueId()
+          } else if (newerItem.type === 'message') {
+            const newerUser = newerItem.data.account_id || newerItem.data.user.id
+            const olderUser = message.account_id || message.user.id
+            if (newerUser !== olderUser) {
               chatItem.messageChainId = uniqueId()
-            } else if (newerItem.type === 'message') {
-              const newerUser =
-                newerItem.data.account_id || newerItem.data.user.id
-              const olderUser = message.account_id || message.user.id
-              if (newerUser !== olderUser) {
-                chatItem.messageChainId = uniqueId()
-              } else {
-                chatItem.messageChainId = newerItem.messageChainId
-                chatItem.isTail = false
-                newerItem.isHead = false
-              }
+            } else {
+              chatItem.messageChainId = newerItem.messageChainId
+              chatItem.isTail = false
+              newerItem.isHead = false
             }
           }
 
