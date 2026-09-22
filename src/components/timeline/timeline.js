@@ -91,7 +91,6 @@ const Timeline = {
         return 0
       }
     })
-    const compensate = computed(() => scrollY.value > 15)
     const { heightChart, changeSuspendState, updateVirtualHeight } =
       useVirtualScrolling({
         name: 'Timeline',
@@ -100,7 +99,7 @@ const Timeline = {
         body,
         offset,
         scrollPositionInstance: scroller,
-        scrollCompensation: compensate, // don't compensate when scrolled to the top
+        scrollCompensation: ref(false),
         getPlaceholderHeight,
       })
 
