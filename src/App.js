@@ -23,8 +23,8 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useShoutStore } from 'src/stores/shout.js'
 import { useUsersStore } from 'src/stores/users.js'
 
-import { useScrollPosition } from 'src/composables/useScrollPosition.js'
 import { useBodyScroller } from 'src/composables/useBodyScroller.js'
+import { useScrollPosition } from 'src/composables/useScrollPosition.js'
 import { useWindowScroll } from 'src/composables/useWindowScroll.js'
 import { useWindowSize } from 'src/composables/useWindowSize.js'
 
@@ -85,9 +85,10 @@ export default {
     GlobalNoticeList,
   },
   setup() {
-    provide('bodyScrollPosition', useScrollPosition(
-      useBodyScroller(useWindowScroll(), useWindowSize()),
-    ))
+    provide(
+      'bodyScrollPosition',
+      useScrollPosition(useBodyScroller(useWindowScroll(), useWindowSize())),
+    )
   },
   data: () => ({
     mobileActivePanel: 'timeline',

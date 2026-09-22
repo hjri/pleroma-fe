@@ -2,13 +2,13 @@ import { debounce, throttle } from 'lodash-es'
 import { storeToRefs } from 'pinia'
 import {
   computed,
+  inject,
   onMounted,
   onUnmounted,
   ref,
   toRefs,
   useTemplateRef,
   watch,
-  inject,
 } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -59,9 +59,6 @@ const Timeline = {
 
     const { focused } = useDocumentFocus()
     const unfocused = computed(() => !focused.value)
-
-    // Config
-    const { mergedConfig } = storeToRefs(useMergedConfigStore())
 
     // Timeline
     const { timelineRef } = toRefs(props)
@@ -119,11 +116,12 @@ const Timeline = {
 
     // Showing new
     const paused = ref(false)
+    const { mergedConfig } = storeToRefs(useMergedConfigStore())
     const unfocusedPause = computed(
-      () => unfocused.value && mergedConfig.value.pauseOnUnfocused
+      () => unfocused.value && mergedConfig.value.pauseOnUnfocused,
     )
     const showNewAutomatically = computed(
-      () => useMergedConfigStore().mergedConfig.streaming
+      () => useMergedConfigStore().mergedConfig.streaming,
     )
 
     watch(newStatusCount, (count) => {
@@ -131,11 +129,7 @@ const Timeline = {
       if (count <= 0) return
 
       // only 'stream' them when you're scrolled to the top
-      if (
-        hasReachedTop.value &&
-        !paused.value &&
-        !unfocusedPause.value
-      ) {
+      if (hasReachedTop.value && !paused.value && !unfocusedPause.value) {
         showNewStatuses()
       } else {
         paused.value = true

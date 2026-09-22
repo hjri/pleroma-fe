@@ -2,13 +2,13 @@ import { last } from 'lodash-es'
 import { storeToRefs } from 'pinia'
 import {
   computed,
+  inject,
   nextTick,
   provide,
   ref,
   toRefs,
   useTemplateRef,
   watch,
-  inject,
 } from 'vue'
 
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
