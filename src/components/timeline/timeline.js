@@ -122,7 +122,7 @@ const Timeline = {
       if (count <= 0) return
       // only 'stream' them when you're scrolled to the top
       if (
-        hasReachedTop &&
+        hasReachedTop.value &&
         !paused.value &&
         !(
           unfocused.value &&
