@@ -8,6 +8,7 @@ import {
   toRefs,
   useTemplateRef,
   watch,
+  inject,
 } from 'vue'
 
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
@@ -63,7 +64,7 @@ export default {
   },
   emits: ['heightChange', 'suspendableStateChange', 'expanded', 'collapsed'],
   setup(props, { emit }) {
-    const scroller = useInterfaceStore().bodyScroller
+    const scroller = inject('bodyScrollPosition')
     const { statusId } = toRefs(props)
 
     // # Main Configuration / global state

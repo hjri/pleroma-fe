@@ -18,11 +18,6 @@ import { useStreamingStore } from 'src/stores/streaming.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUsersStore } from 'src/stores/users.js'
 
-import { useScrollPosition } from 'src/composables/useScrollPosition.js'
-import { useBodyScroller } from 'src/composables/useBodyScroller.js'
-import { useWindowScroll } from 'src/composables/useWindowScroll.js'
-import { useWindowSize } from 'src/composables/useWindowSize.js'
-
 import { WSConnectionStatus } from 'src/api/websocket.js'
 import {
   registerPushNotifications,
@@ -860,11 +855,6 @@ export const useInterfaceStore = defineStore('interface', {
       unregisterPushNotifications(token)
     },
   },
-  getters: {
-    bodyScroller: () => useScrollPosition(
-      useBodyScroller(useWindowScroll(), useWindowSize()),
-    )
-  }
 })
 
 export const normalizeThemeData = (input) => {

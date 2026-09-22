@@ -25,6 +25,20 @@ export function useScrollPosition(scroller) {
   const shouldLoadLeft = computed(() => distanceToLeft.value < loadMargin)
   const shouldLoadRight = computed(() => distanceToRight.value < loadMargin)
 
+  const scrollTo = (position = {}) => {
+    const amount = {
+      left: 0,
+      top: 0,
+    }
+    if (position.left != null) {
+      amount.left = position.left - left.value
+    }
+    if (position.top != null) {
+      amount.top = position.top - top.value
+    }
+    scrollBy(amount.left, amount.top)
+  }
+
   return {
     top,
     left,
@@ -47,5 +61,6 @@ export function useScrollPosition(scroller) {
     shouldLoadBottom,
 
     scrollBy,
+    scrollTo,
   }
 }

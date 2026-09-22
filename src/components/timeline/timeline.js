@@ -8,6 +8,7 @@ import {
   toRefs,
   useTemplateRef,
   watch,
+  inject,
 } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -59,6 +60,9 @@ const Timeline = {
     const { focused } = useDocumentFocus()
     const unfocused = computed(() => !focused.value)
 
+    // Config
+    const { mergedConfig } = storeToRefs(useMergedConfigStore())
+
     // Timeline
     const { timelineRef } = toRefs(props)
     const timeline = computed(() => useTimelinesStore()[timelineRef.value.name])
@@ -71,7 +75,7 @@ const Timeline = {
     })
 
     // Scroll position
-    const scroller = useInterfaceStore().bodyScroller
+    const scroller = inject('bodyScrollPosition')
     const { hasReachedTop, shouldLoadBottom } = scroller
     // Virtual scrolling
     const { fontSize, navbarSize } = useInterfaceSizes()
@@ -115,25 +119,29 @@ const Timeline = {
 
     // Showing new
     const paused = ref(false)
+    const unfocusedPause = computed(
+      () => unfocused.value && mergedConfig.value.pauseOnUnfocused
+    )
+    const showNewAutomatically = computed(
+      () => useMergedConfigStore().mergedConfig.streaming
+    )
+
     watch(newStatusCount, (count) => {
-      if (!useMergedConfigStore().mergedConfig.streaming) {
-        return
-      }
+      if (!showNewAutomatically.value) return
       if (count <= 0) return
+
       // only 'stream' them when you're scrolled to the top
       if (
         hasReachedTop.value &&
         !paused.value &&
-        !(
-          unfocused.value &&
-          useMergedConfigStore().mergedConfig.pauseOnUnfocused
-        )
+        !unfocusedPause.value
       ) {
         showNewStatuses()
       } else {
         paused.value = true
       }
     })
+
     const showNewStatuses = () => {
       if (timeline.value.reloadNeeded) {
         useTimelinesStore().clearTimeline(timelineRef.value.name)
@@ -141,9 +149,9 @@ const Timeline = {
       } else {
         blockClicksTemporarily()
         useTimelinesStore().showNewStatuses(timelineRef.value.name)
-        paused.value = false
       }
-      window.scrollTo({ top: 0 })
+      paused.value = false
+      scroller.scrollTo({ top: 0 })
     }
     const fetchOlderStatuses = throttle(() => {
       timeline.value.fetcher.fetchOlder()
