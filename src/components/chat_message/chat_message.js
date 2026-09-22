@@ -64,6 +64,7 @@ const ChatMessage = {
     Quote: defineAsyncComponent(() => import('src/components/quote/quote.vue')),
     Timeago,
   },
+  inject: ['deleteChatMessage'],
   computed: {
     isMessage() {
       return this.chatItem.type === 'message'
@@ -203,7 +204,7 @@ const ChatMessage = {
     async deleteMessage() {
       const confirmed = window.confirm(this.$t('chats.delete_confirm'))
       if (confirmed) {
-        await this.$emit('delete', {
+        await this.deleteChatMessage({
           messageId: this.message.id,
           chatId: this.message.chat_id,
         })

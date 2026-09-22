@@ -43,10 +43,9 @@
             header-date
             :messages="messages"
             :pending-messages="pendingMessages"
-            :replied-id="replyStatus?.id"
-            :focused-id="statusId"
-            @message-delete="deleteChatMessage"
-            @reply-requested="e => explicitReplyStatus = e"
+            :replied-id="replyTo?.id"
+            :focused-id="focusedId"
+            @reply-requested="e => explicitReply = e"
           />
         </div>
         <div

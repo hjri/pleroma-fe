@@ -1,52 +1,33 @@
-import { get, maxBy, minBy, sortBy, throttle } from 'lodash-es'
-import { mapState } from 'pinia'
-import { nextTick } from 'vue'
+import { storeToRefs } from 'pinia'
+import {
+  computed,
+  inject,
+  nextTick,
+  provide,
+  ref,
+  toRefs,
+  useTemplateRef,
+  watch,
+} from 'vue'
+import { useRouter } from 'vue-router'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
 import ChatTitle from 'src/components/chat_title/chat_title.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
-import { buildFakeMessage } from '../../services/chat_utils/chat_utils.js'
-import { promiseInterval } from '../../services/promise_interval/promise_interval.js'
-import {
-  getNewTopPosition,
-  getScrollPosition,
-  isBottomedOut,
-  isScrollable,
-} from './chat_layout_utils.js'
 
-import { useChatsStore } from 'src/stores/chats.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
-import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
-import { useStatusesStore } from 'src/stores/statuses.js'
-import { useStreamingStore } from 'src/stores/streaming.js'
-import { useUsersStore } from 'src/stores/users.js'
 
-import {
-  chatMessages,
-  deleteChatMessage,
-  getOrCreateChat,
-  readChat,
-  sendChatMessage,
-} from 'src/api/chats.js'
-import { fetchConversation, fetchStatus } from 'src/api/public.js'
-import { WSConnectionStatus } from 'src/api/websocket.js'
+import { useClientRectSize } from 'src/composables/useClientRectSize.js'
+import { useConversation } from 'src/composables/useConversation.js'
+import { useDocumentFocus } from 'src/composables/useDocumentFocus.js'
+import { usePleromaChat } from 'src/composables/usePleromaChat.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronDown, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faChevronDown, faChevronLeft)
 
-const BOTTOMED_OUT_OFFSET = 10
-const JUMP_TO_BOTTOM_BUTTON_VISIBILITY_OFFSET = 10
-const SAFE_RESIZE_TIME_OFFSET = 100
 const MARK_AS_READ_DELAY = 1500
-const MAX_RETRIES = 10
-
-const isConfirmation = (storage, message) => {
-  if (!message.idempotency_key) return
-  return storage.idempotencyKeyIndex[message.idempotency_key]
-}
 
 const Chat = {
   components: {
@@ -63,662 +44,200 @@ const Chat = {
       type: String,
       default: null,
     },
-    testMode: Boolean,
   },
-  data() {
-    return {
-      // Main info
-      chat: null,
-      messages: [],
-      messagesIndex: {},
-      pendingMessages: [],
-      pendingMessagesIndex: {},
-      minId: undefined,
-      maxId: undefined,
+  setup(props) {
+    const { statusId, chatUserId } = toRefs(props)
 
-      // Conversation stuff
-      explicitReplyStatus: null,
-
-      // Unread stuff
-      newMessageCount: 0,
-      lastReadMessageId: null,
-      lastScrollPosition: {},
-      jumpToBottomButtonVisible: false,
-
-      // Internal network stuff
-      fetcher: null,
-      socket: null,
-      streaming: false,
-      fetching: true,
-      errorLoadingChat: false,
-      messageRetriers: {},
-      idempotencyKeyIndex: {},
-    }
-  },
-  async created() {
-    if (this.testMode) return
-    await this.activate()
-    this.attachSocket()
-  },
-  mounted() {
-    window.addEventListener('resize', this.handleResize)
-    window.addEventListener('scroll', this.handleScroll)
-    if (document.hidden !== undefined) {
-      document.addEventListener(
-        'visibilitychange',
-        this.handleVisibilityChange,
-        false,
-      )
-    }
-
-    this.$nextTick(() => {
-      this.handleResize()
+    const isConversation = computed(() => !!statusId.value)
+    const isChat = computed(() => !!chatUserId.value)
+    const isValid = computed(() => !!isChat.value !== !!isConversation.value) // Logical XOR
+    watch(isValid, (value) => {
+      if (!value)
+        throw TypeError(
+          'Chat view must have either statusId or chatUserId, but not both',
+        )
     })
-  },
-  unmounted() {
-    window.removeEventListener('scroll', this.handleScroll)
-    window.removeEventListener('resize', this.handleResize)
-    if (document.hidden !== undefined)
-      document.removeEventListener(
-        'visibilitychange',
-        this.handleVisibilityChange,
-        false,
-      )
 
-    if (this.testMode) return
-    this.deactivate()
-    this.detachSocket()
-  },
-  computed: {
-    conversationId() {
-      const status = useStatusesStore().allStatuses.get(this.statusId)
-      return get(
-        status,
-        'retweeted_status.statusnet_conversation_id',
-        get(status, 'statusnet_conversation_id'),
-      )
-    },
-    isConversation() {
-      return this.statusId !== null
-    },
-    recipient() {
-      return this.chat?.account
-    },
-    formPlaceholder() {
-      if (this.recipient) {
-        return this.$t('chats.message_user', {
-          nickname: this.recipient.screen_name_ui,
-        })
-      } else {
-        return ''
+    // # Conversation stuff
+    const {
+      conversation: conversationMessages,
+      loadError: conversationError,
+
+      focusedId,
+      setFocused,
+      fetchConversation,
+    } = useConversation(statusId, true)
+    watch(isConversation, (value) => {
+      if (!value) return
+      fetchConversation()
+    })
+
+    // # Chat stuff
+    const {
+      activate: chatActivate,
+      deactivate: chatDeactivate,
+      markAsRead: chatMarkRead,
+      fetchOlder: chatFetchOlder,
+      messages: chatMessages,
+      pendingMessages: chatPendingMessages,
+      newMessagesCount: chatNewMessagesCount,
+      fetchError: chatError,
+
+      sendMessage,
+      deleteChatMessage,
+    } = usePleromaChat(chatUserId)
+    provide('deleteChatMessage', deleteChatMessage)
+    watch(chatUserId, (neu, old) => {
+      if (old) {
+        chatDeactivate()
       }
-    },
+      if (neu) {
+        chatActivate()
+      }
+    })
 
-    // Conversation stuff
-    lastStatus() {
-      return this.messages[this.messages.length - 1]
-    },
-    replyStatus() {
-      return this.explicitReplyStatus ?? this.lastStatus
-    },
+    // # Forks
+    const messages = computed(() => {
+      if (isConversation.value) {
+        return conversationMessages.value
+      } else {
+        return chatMessages.value
+      }
+    })
+    const pendingMessages = computed(() => {
+      if (isConversation.value) {
+        return [] // Not implemented yet
+      } else {
+        return chatPendingMessages.value
+      }
+    })
+    const newMessagesCount = computed(() => {
+      if (isConversation.value) {
+        return 0 // Not implemented yet
+      } else {
+        return chatNewMessagesCount.value
+      }
+    })
+    const error = computed(() => {
+      if (isConversation.value) {
+        return conversationError.value
+      } else {
+        return chatError.value
+      }
+    })
 
-    // Global Stuff
-    streamingEnabled() {
-      if (this.isConversation) return false // Unsupported
-      return (
-        this.mergedConfig.useStreamingApi &&
-        useStreamingStore().state === WSConnectionStatus.JOINED
-      )
-    },
-    ...mapState(useInterfaceStore, {
-      mobileLayout: (store) => store.layoutType === 'mobile',
-    }),
-    ...mapState(useMergedConfigStore, ['mergedConfig']),
-    ...mapState(useUsersStore, ['currentUser']),
-  },
-  watch: {
-    messages(old, neu) {
-      if (old.length === neu.length) return
+    const fetchOlder = () => {
+      if (isChat.value) {
+        chatFetchOlder()
+      }
+      // Unsupported in conversations
+    }
+    const markAsRead = () => {
+      if (isChat.value) {
+        chatMarkRead()
+      }
+      // Unsupported in conversations
+    }
+
+    // Reply-to
+    const explicitReply = ref(null)
+    const lastMessage = computed(() => messages.value?.at(-1))
+    const replyTo = computed(() => explicitReply.value ?? lastMessage.value)
+
+    const scroller = inject('bodyScrollPosition')
+    const rootElement = useTemplateRef('root')
+    const postForm = useTemplateRef('postform')
+
+    // Post form stuff
+    watch(replyTo, () => {
+      if (isConversation.value) postForm.update()
+    })
+
+    // # Scroll stuff
+    const { hasReachedBottom, cHeight, scrollTo } = scroller
+
+    // ## Bottom-sticking stuff
+    const stickToBottom = async (forceRead) => {
       // We don't want to scroll to the bottom on a new message when the user is viewing older messages.
       // Therefore we need to know whether the scroll position was at the bottom before the DOM update.
-      const bottomedOutBeforeUpdate = isBottomedOut(BOTTOMED_OUT_OFFSET)
-      this.$nextTick(() => {
-        if (bottomedOutBeforeUpdate) {
-          this.scrollDown()
-        }
-      })
-    },
-    async replyStatus(newVal) {
-      await nextTick() // wait for changes to propagate to postStatusForm
-      if (this.testMode) return
-      this.$refs.postStatusForm.update()
-    },
-    $route: async function (newVal) {
-      if (this.messagesIndex[newVal.params.statusId]) {
-        const focused = document.getElementById(
-          `chatmessage-${this.$route.params.statusId}`,
-        )
-        if (focused?.getBoundingClientRect == null) return
-        const bottomBoundary =
-          window.innerHeight - this.$refs.footer.clientHeight
-        const topBoundary =
-          this.$refs.header.clientHeight +
-          document.getElementById('nav').clientHeight
-        const margin = Number(
-          window
-            .getComputedStyle(this.$refs.messageList.$el)
-            .gap.replace('px', ''),
-        )
-
-        const rect = focused.getBoundingClientRect()
-        const scrollAmount = (() => {
-          if (rect.top < topBoundary) {
-            // Post is above screen, match its top to screen top
-            return rect.top - topBoundary - margin
-          } else if (rect.height >= bottomBoundary) {
-            // Post we want to see is taller than screen so match its top to screen top
-            return rect.top - topBoundary - margin
-          } else if (rect.bottom > bottomBoundary) {
-            // Post is below screen, match its bottom to screen bottom
-            return rect.bottom - bottomBoundary + margin
-          } else {
-            return 0
-          }
-        })()
-
-        if (scrollAmount !== 0) {
-          window.scrollBy(0, scrollAmount)
-        }
-
-        return
-      }
-
-      this.deactivate()
-      this.activate()
-    },
-  },
-  methods: {
-    async activate() {
-      if (!this.isConversation) {
-        try {
-          const result = await getOrCreateChat({
-            accountId: this.chatUserId,
-            credentials: useOAuthStore().token,
-          })
-          const { data } = result
-          useUsersStore().addNewUsers({ ...result, data: data.account })
-          data.account = useUsersStore().findUser(data.account.id)
-          this.chat = data
-          this.maxId = this.chat.lastMessage?.id
-        } catch (e) {
-          console.error('Error creating or getting a chat', e)
-          this.errorLoadingChat = true
-        }
-      }
-
-      if (this.isConversation || this.chat) {
-        this.startFetching('Chat activated', true)
-        this.$nextTick(() => {
-          this.scrollDown({ forceRead: true })
-        })
-      }
-    },
-    deactivate() {
-      this.clear()
-      if (this.fetching) {
-        this.stopFetching('Chat deactivated')
-      }
-    },
-    attachSocket() {
-      const et = new EventTarget()
-      const socket = {
-        name: 'chatview',
-        et,
-      }
-
-      et.addEventListener('update', this.onStreamMessage)
-      et.addEventListener('pleroma:chat_update', this.onChatUpdate)
-      et.addEventListener('open', this.onStreamConnect)
-      et.addEventListener('close', this.onStreamDisconnect)
-
-      this.socket = socket
-      useStreamingStore().addSubscriber(this.socket)
-    },
-    detachSocket() {
-      const { et } = this.socket
-
-      et.removeEventListener('update', this.onStreamMessage)
-      et.removeEventListener('pleroma:chat_update', this.onChatUpdate)
-      et.removeEventListener('open', this.onStreamConnect)
-      et.removeEventListener('close', this.onStreamDisconnect)
-
-      useStreamingStore().removeSubscriber(this.socket)
-    },
-
-    // Poll & Push
-    onStreamConnect() {
-      this.streaming = true
-      this.stopFetching('Socket connected')
-    },
-    onStreamDisconnect(closeEvent) {
-      this.streaming = false
-      this.startFetching('Socket disconnected')
-    },
-    startFetching(reason, isFirstFetch) {
-      console.debug('[Chat View] Started fetching', 'Reason:', reason)
-      this.fetcher = promiseInterval(
-        () => this.fetchChat({ fetchLatest: true }),
-        5000,
-      )
-      this.fetchChat({ isFirstFetch })
-      this.fetching = true
-    },
-    stopFetching(reason) {
-      console.debug('[Chat View] Stopped fetching', 'Reason:', reason)
-      this.fetcher.stop()
-      this.fetcher = null
-      this.fetching = false
-    },
-
-    // Actions
-    async readChat() {
-      if (this.conversationId) return // Unsupported
-      if (!this.maxId || document.hidden) {
-        return
-      }
-      const lastReadId = this.maxId
-      const isNewMessage = this.lastReadMessageId !== lastReadId
-
-      if (!isNewMessage) return
-
-      if (!this.testMode) {
-        await readChat({
-          id: this.chat.id,
-          lastReadId,
-          credentials: useOAuthStore().token,
-        })
-      }
-
-      useChatsStore().readChat(this.chat.id)
-      this.lastReadMessageId = this.maxId
-      this.newMessageCount = 0
-    },
-
-    // Clears
-    cullOlder() {
-      const maxIndex = this.messages.length
-      const minIndex = maxIndex - 50
-      if (maxIndex <= 50) return
-
-      this.messages = sortBy(this.messages, ['id'])
-      this.minId = this.messages[minIndex].id
-
-      for (const message of this.messages) {
-        if (message.id < this.minId) {
-          delete this.messagesIndex[message.id]
-          delete this.idempotencyKeyIndex[message.idempotency_key]
-        }
-      }
-
-      this.messages = this.messages.slice(minIndex, maxIndex)
-    },
-    clear() {
-      this.messages = this.messages.filter((m) => m.error)
-      this.messagesIndex = this.messages.reduce(
-        (acc, m) => ({
-          ...acc,
-          [m.id]: m,
-        }),
-        {},
-      )
-      this.newMessageCount = 0
-      this.lastReadMessageId = null
-      this.minId = undefined
-      this.maxId = undefined
-    },
-    async fetchChat({ isFirstFetch = false, fetchLatest = false, maxId }) {
-      if (fetchLatest && this.streamingEnabled) {
-        return
-      }
-
-      let messages
-      if (this.isConversation) {
-        const [
-          { data: status },
-          {
-            data: { ancestors, descendants },
-          },
-        ] = await Promise.all([
-          fetchStatus({
-            id: this.statusId,
-            credentials: useOAuthStore().token,
-          }),
-          fetchConversation({
-            id: this.statusId,
-            credentials: useOAuthStore().token,
-          }),
-        ])
-        messages = [...ancestors, status, ...descendants]
-      } else {
-        const { data } = await chatMessages({
-          id: this.chat.id,
-          maxId,
-          sinceId: fetchLatest ? this.maxId : null,
-          credentials: useOAuthStore().token,
-        })
-        messages = data
-      }
-
-      // Clear the current chat in case we're recovering from a ws connection loss.
-      if (isFirstFetch) {
-        this.clear()
-      }
-
-      const positionBeforeUpdate = getScrollPosition()
-      this.addMessages({ messages })
-
+      if (!hasReachedBottom.value) return
       await nextTick()
-      if (isFirstFetch) {
-        this.scrollDown()
-      }
-
-      const fetchOlderMessages = !!maxId
-      if (fetchOlderMessages) {
-        this.handleScrollUp(positionBeforeUpdate)
-      }
-
-      // In vertical screens, the first batch of fetched messages may not always take the
-      // full height of the scrollable container.
-      // If this is the case, we want to fetch the messages until the scrollable container
-      // is fully populated so that the user has the ability to scroll up and load the history.
-      //
-      // Conversation fetching doesn't support pagination and spews out everything at once
-      // so we both can't and don't need to fetch previous posts
-      if (!this.isConversation && !isScrollable() && messages.length > 0) {
-        this.fetchChat({
-          maxId: this.minId,
-        })
-      }
-    },
-    onStreamMessage({ data }) {
-      const messages = data.filter(
-        ({ statusnet_conversation_id }) =>
-          statusnet_conversation_id === this.conversationId,
-      )
-      this.addMessages({ messages })
-    },
-    onChatUpdate({ data: { chatUpdate } }) {
-      const messages = [chatUpdate.lastMessage]
-      this.addMessages({ messages })
-    },
-    addMessages({ messages: newMessages }) {
-      for (let i = 0; i < newMessages.length; i++) {
-        const message = newMessages[i]
-
-        // Sanity check
-        if (!this.isConversation && message.chat_id !== this.chat.id) {
-          // This is spammy, we get chat updates from a global chat update
-          // handler, which naturally receives updates for ALL chats.
-          // There is no way to subscribe to specific chat updates and listen
-          // to that in the API.
-          /*
-          console.warn(
-            `Chat message doesn't belong to current chat (id: ${this.chat.id})!!`,
-            message,
-          )
-          */
-          return
-        }
-
-        // Clear any known pending messages
-        if (message.idempotency_key) {
-          if (this.pendingMessagesIndex[message.idempotency_key]) {
-            delete this.pendingMessagesIndex[message.idempotency_key]
-            this.pendingMessages = this.pendingMessages.filter(
-              ({ idempotency_key }) =>
-                idempotency_key !== message.idempotency_key,
-            )
-          }
-        }
-
-        if (!this.minId || (!message.pending && message.id < this.minId)) {
-          this.minId = message.id
-        }
-
-        if (!this.maxId || message.id > this.maxId) {
-          this.maxId = message.id
-        }
-
-        if (!this.messagesIndex[message.id] && !isConfirmation(this, message)) {
-          if (this.lastReadMessageId < message.id) {
-            this.newMessageCount++
-          }
-          this.messagesIndex[message.id] = message
-          this.messages.push(this.messagesIndex[message.id])
-          this.idempotencyKeyIndex[message.idempotency_key] = true
-        }
-      }
-    },
-
-    // Optimistic posting (chats only)
-    async sendMessage({ status, media, idempotencyKey }) {
-      const params = {
-        id: this.chat.id,
-        content: status,
-        idempotencyKey,
-      }
-
-      if (media[0]) {
-        params.mediaId = media[0].id
-      }
-
-      const fakeMessage = buildFakeMessage({
-        attachments: media,
-        chatId: this.chat.id,
-        content: status,
-        userId: this.currentUser.id,
-        idempotencyKey,
+      scrollTo({
+        top: cHeight.value,
       })
-
-      this.pendingMessages.push(fakeMessage)
-      this.pendingMessagesIndex[idempotencyKey] = fakeMessage
-
-      this.handleAttachmentPosting()
-
-      return this.doSendMessage({
-        params,
-        retriesLeft: MAX_RETRIES,
-      })
-    },
-    async doSendMessage({ params, retriesLeft = MAX_RETRIES }) {
-      if (retriesLeft <= 0) return
-
-      try {
-        const { data } = await sendChatMessage({
-          ...params,
-          credentials: useOAuthStore().token,
-        })
-
-        this.addMessages({
-          messages: [{ ...data }],
-        })
-      } catch (error) {
-        if (
-          error.name !== 'StatusCodeError' ||
-          error.message === 'Failed to fetch'
-        )
-          throw error
-        console.error('Error sending message', error)
-
-        this.handleMessageError({
-          chatId: this.chat.id,
-          idempotencyKey: params.idempotencyKey,
-          isRetry: retriesLeft !== MAX_RETRIES,
-        })
-
-        if (
-          (error.statusCode >= 500 && error.statusCode < 600) ||
-          error.message === 'Failed to fetch'
-        ) {
-          this.messageRetriers[params.idempotencyKey] = setTimeout(
-            () => {
-              this.doSendMessage({
-                params,
-                retriesLeft: retriesLeft - 1,
-              })
-            },
-            1000 * 2 ** (MAX_RETRIES - retriesLeft),
-          )
-        }
+      if (forceRead) {
+        markAsRead()
       }
-    },
-    handleMessageError(idempotencyKey, isRetry) {
-      const fakeMessage = this.pendingMessagesIndex[idempotencyKey]
+    }
 
-      if (fakeMessage) {
-        fakeMessage.error = true
-        fakeMessage.pending = false
-      }
-    },
+    const postFormElement = computed(() => postForm.value?.$el)
+    const { focused } = useDocumentFocus()
+    const { height: postFormHeight } = useClientRectSize(postFormElement)
+    const { vHeight: viewportHeight } = scroller
+    watch(viewportHeight, stickToBottom)
+    watch(postFormHeight, stickToBottom)
+    watch(focused, async (value) => {
+      if (!value) return
+      stickToBottom(true)
+    })
+    watch(messages, (old, neu) => {
+      if (old.length === neu.length) return
+      stickToBottom(true)
+    })
 
-    // Checks
-    hasReachedTop() {
-      return window.scrollY <= 0
-    },
-    cullOlderCheck() {
-      if (this.conversationId) return
+    // ## Load / Read
+    const { shouldLoadTop } = scroller
+    watch(shouldLoadTop, (value) => {
+      if (value) fetchOlder()
+    })
+    watch(hasReachedBottom, (value) => {
+      if (!value) return
       window.setTimeout(() => {
-        if (isBottomedOut(JUMP_TO_BOTTOM_BUTTON_VISIBILITY_OFFSET)) {
-          this.cullOlder()
+        if (
+          newMessagesCount.value > 0 &&
+          rootElement.value &&
+          hasReachedBottom.value
+        ) {
+          markAsRead()
         }
-      }, 5000)
-    },
+      }, MARK_AS_READ_DELAY)
+    })
 
-    // Event handlers
-    onPosted(data) {
-      // only conversation poster has the returned data
-      if (this.isConversation) {
-        this.explicitReplyStatus = null
-        this.$router.push({
+    // Misc UI stuff
+    const { layoutType } = storeToRefs(useInterfaceStore())
+    const mobileLayout = computed(() => layoutType.value === 'mobile')
+    const jumpToBottomButtonVisible = computed(() => !hasReachedBottom.value)
+    const router = useRouter()
+    const onPosted = (data) => {
+      explicitReply.value = null
+
+      if (isConversation.value) {
+        router.push({
           name: 'conversation2',
           params: { statusId: data.id },
         })
       }
-    },
-    handleVisibilityChange() {
-      this.$nextTick(() => {
-        if (!document.hidden && isBottomedOut(BOTTOMED_OUT_OFFSET)) {
-          this.scrollDown({ forceRead: true })
-        }
-      })
-    },
-    onFilesDropped() {
-      this.$nextTick(() => {
-        this.handleResize()
-      })
-    },
-    handleResize(opts = {}) {
-      // "Sticks" scroll to bottom instead of top, helps with OSK resizing the viewport
-      const { delayed = false } = opts
+    }
 
-      if (delayed) {
-        setTimeout(() => {
-          this.handleResize({ ...opts, delayed: false })
-        }, SAFE_RESIZE_TIME_OFFSET)
-        return
-      }
+    return {
+      messages,
+      pendingMessages,
+      newMessagesCount,
+      error,
 
-      this.$nextTick(() => {
-        const { offsetHeight = undefined } = getScrollPosition()
-        const diff = offsetHeight - this.lastScrollPosition.offsetHeight
-        if (diff !== 0 && !isBottomedOut()) {
-          this.$nextTick(() => {
-            window.scrollBy({ top: -Math.trunc(diff) })
-          })
-        }
-        this.lastScrollPosition = getScrollPosition()
-      })
-    },
-    handleScroll: throttle(function () {
-      if (!this.chat) {
-        return
-      }
-      this.lastScrollPosition = getScrollPosition()
+      // Conversation-exclusive
+      isConversation,
+      setFocused,
+      focusedId,
 
-      if (this.hasReachedTop()) {
-        this.fetchChat({ maxId: this.minId })
-      } else if (isBottomedOut(JUMP_TO_BOTTOM_BUTTON_VISIBILITY_OFFSET)) {
-        this.jumpToBottomButtonVisible = false
-        this.cullOlderCheck()
-        if (this.newMessageCount > 0) {
-          // Use a delay before marking as read to prevent situation where new messages
-          // arrive just as you're leaving the view and messages that you didn't actually
-          // get to see get marked as read.
-          window.setTimeout(() => {
-            // Don't mark as read if the element doesn't exist, user has left chat view
-            if (this.$el) this.readChat()
-          }, MARK_AS_READ_DELAY)
-        }
-      } else {
-        this.jumpToBottomButtonVisible = true
-      }
-    }, 200),
-    handleScrollUp(positionBeforeLoading) {
-      const positionAfterLoading = getScrollPosition()
+      // Chats-exclusive
+      sendMessage,
 
-      window.scrollTo({
-        top: getNewTopPosition(positionBeforeLoading, positionAfterLoading),
-      })
-    },
-    handleAttachmentPosting() {
-      this.$nextTick(() => {
-        this.handleResize()
-        // When the posting form size changes because of a media attachment, we need an extra resize
-        // to account for the potential delay in the DOM update.
-        this.scrollDown({ forceRead: true })
-      })
-    },
-
-    // Misc
-    scrollDown(options = {}) {
-      const { behavior = 'auto', forceRead = false } = options
-      this.$nextTick(() => {
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior,
-        })
-      })
-      if (forceRead) {
-        this.readChat()
-      }
-    },
-    goBack() {
-      this.$router.back()
-    },
-
-    // Ugly
-    // TODO move to ChatMessage
-    async deleteChatMessage({ chatId, messageId }) {
-      if (!this.testMode)
-        await deleteChatMessage({
-          chatId,
-          messageId,
-          credentials: useOAuthStore().token,
-        })
-
-      this.messages = this.messages.filter((m) => m.id !== messageId)
-      delete this.messagesIndex[messageId]
-
-      if (this.maxId === messageId) {
-        const lastMessage = maxBy(this.messages, 'id')
-        this.maxId = lastMessage.id
-      }
-
-      if (this.minId === messageId) {
-        const firstMessage = minBy(this.messages, 'id')
-        this.minId = firstMessage.id
-      }
-    },
+      // Misc
+      onPosted,
+      mobileLayout,
+      jumpToBottomButtonVisible,
+    }
   },
 }
 
