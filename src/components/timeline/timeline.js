@@ -70,7 +70,6 @@ const Timeline = {
 
     // Scroll position // FIXME unify scroll position logic in timelines
     const scroller = useScrollPosition()
-    const { y: scrollY } = scroller
     // Virtual scrolling
     const { fontSize, navbarSize } = useInterfaceSizes()
 
