@@ -71,7 +71,12 @@ export function useVirtualScrolling({
     heights.value.set(id, height)
   }
 
-  const { top: scrollY, scrollBy, vHeight } = scrollPositionInstance
+  const {
+    top: scrollY,
+    scrollBy,
+    vHeight,
+    hasReachedTop,
+  } = scrollPositionInstance
 
   // Real scroll boundary, relative to body's bounds
   const topScrollBoundary = ref(0)
@@ -196,13 +201,14 @@ export function useVirtualScrolling({
   watch(
     heightChart,
     async (newVal, oldVal) => {
-      if (!toValue(scrollCompensation)) return
       if (newVal.length === 0 && oldVal.length === 0) return
       const explosion = oldVal.length === 0 && newVal.length !== 0
       const implosion = oldVal.length !== 0 && newVal.length === 0
 
+      const compensation = toValue(scrollCompensation)
       const diff = (() => {
         if (explosion) {
+          if (!compensation) return 0
           if (toValue(collapseMode) === 'height') {
             const newBottomElement = last(newVal)
 
@@ -211,6 +217,7 @@ export function useVirtualScrolling({
             return 0
           }
         } else if (implosion) {
+          if (!compensation) return 0
           const oldBottomElement = last(oldVal)
 
           return 0 - oldBottomElement.top - oldBottomElement.height
@@ -227,6 +234,47 @@ export function useVirtualScrolling({
           })()
           if (contextChange) return 0
 
+          /* Ok, here's a thing. Both Timeline and Conversation have virtual scrolling.
+           * But since Conversation can be inside Timeline (in fact it's chock-full of
+           * them) it creates a problem. Virtual scrolling involves a lot of scroll
+           * compensation. Elements appearing, disappearing, changing sizes etc. What
+           * happens if a single conversation gets expanded? Conversation sees influx
+           * of new posts and compensates for them appearing above to keep old items
+           * in screen. Next, timeline sees that Conversation changed height and ALSO
+           * compensates for that changed height. We get double the compensation and
+           * result ends up being all wrong, we scrolled way past the conversation.
+           *
+           * Easy, just don't compensate in Timeline, right? Wrong. We still have two
+           * cases where we do want compensation in Timeline - all the cases that
+           * aren't handled by Conversation. Namely:
+           * - Change in amount of Conversations
+           * - Change in height of freshly-rendered Conversations.
+           *
+           * First one is simple. We scrolled down and made a new post - it appeared
+           * at the top but we don't want screen to scroll.
+           *
+           * Second one is tricky. Here's a real situation:
+           * 1. We scroll down in Timeline.
+           * 2. Open a thread (navigate to it, not expand!)
+           * 3. Press "back".
+           * Now we have a situation: vue-router restored our scroll position but
+           * since Timeline was removed and re-created its heightChart is full of
+           * fake placeholders. This naturally means our actual scroll position is
+           * all wrong. TODO: Store heightchart in timelines store?
+           * But it gets worse - when you start scrolling up elements begin getting
+           * their real heights back, and since there's no compensation timeline gets
+           * all jumpy! We can somewhat live with wrong scroll position but timeline
+           * being jumpy is unacceptable.
+           *
+           * So, basically - if amount of elements changes, or amount of REAL elements
+           * changes - compensate anyway even if compensation is disabled.
+           */
+          const compensateBecauseLengthChange =
+            newVal.length !== oldVal.length && hasReachedTop.value
+          const compensateBecauseReal =
+            newVal.filter(({ real }) => real).length !==
+            oldVal.filter(({ real }) => real).length
+
           const expansion = (() => {
             if (newVal.length < oldVal.length) return 0
             const oldVisible = oldVal.filter(
@@ -236,11 +284,19 @@ export function useVirtualScrolling({
             if (!oldItem) return 0 // probably out of bounds in timeline
             const oldItemUpdated = newVal.find(({ id }) => id === oldItem.id)
 
-            return (
-              oldItemUpdated.top -
-              oldItem.top -
-              (oldItem.height - oldItemUpdated.height)
-            )
+            if (
+              compensation ||
+              compensateBecauseReal ||
+              compensateBecauseLengthChange
+            ) {
+              return (
+                oldItemUpdated.top -
+                oldItem.top -
+                (oldItem.height - oldItemUpdated.height)
+              )
+            } else {
+              return 0
+            }
           })()
 
           const collapsing = (() => {
@@ -250,11 +306,19 @@ export function useVirtualScrolling({
             if (!newItem) return 0 // probably out of bounds in timeline
             const newItemBefore = oldVal.find(({ id }) => id === newItem.id)
 
-            return (
-              newItem.top -
-              newItemBefore.top -
-              (newItemBefore.height - newItem.height)
-            )
+            if (
+              compensation ||
+              compensateBecauseReal ||
+              compensateBecauseLengthChange
+            ) {
+              return (
+                newItem.top -
+                newItemBefore.top -
+                (newItemBefore.height - newItem.height)
+              )
+            } else {
+              return 0
+            }
           })()
 
           return expansion + collapsing
