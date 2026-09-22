@@ -12,7 +12,7 @@ export function useVirtualScrolling({
   body,
   // vertical offset to account for fixed and sticky headers
   offset,
-  // useWindowScroll composable, used to prevent dupicating instances
+  // useScrollPosition composable, used to prevent dupicating instances
   scrollPositionInstance,
   // buffer zone, the amount of placeholder heights to include
   buffer,

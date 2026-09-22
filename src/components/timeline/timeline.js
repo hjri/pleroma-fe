@@ -22,13 +22,9 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useTimelinesStore } from 'src/stores/timelines.js'
 
-import { useBodyScroller } from 'src/composables/useBodyScroller.js'
 import { useDocumentFocus } from 'src/composables/useDocumentFocus.js'
 import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
-import { useScrollPosition } from 'src/composables/useScrollPosition.js'
 import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
-import { useWindowScroll } from 'src/composables/useWindowScroll.js'
-import { useWindowSize } from 'src/composables/useWindowSize.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -75,9 +71,7 @@ const Timeline = {
     })
 
     // Scroll position
-    const scroller = useScrollPosition(
-      useBodyScroller(useWindowScroll(), useWindowSize()),
-    )
+    const scroller = useInterfaceStore().bodyScroller
     const { hasReachedTop, shouldLoadBottom } = scroller
     // Virtual scrolling
     const { fontSize, navbarSize } = useInterfaceSizes()
