@@ -1,5 +1,4 @@
 import { toRefs, ref, computed, useTemplateRef, inject } from 'vue'
-import { orderBy } from 'lodash-es'
 import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
 import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
 
@@ -30,14 +29,14 @@ const ChatMessageList = {
     const hoveredMessageChainId = ref(null)
     const chatItems = computed(() => {
       const allMessages = [
-        ...orderBy(messages.value, ['pending', 'id'], ['asc', 'asc']),
+        ...[...messages.value].reverse(),
         ...pendingMessages.value.map((m) => ({ ...m, pending: true })),
       ]
       return allMessages
         .reduceRight((acc, message, index) => {
           const date = new Date(message.created_at)
 
-          const olderMessage = messages.value[index - 1]
+          const olderMessage = allMessages[index - 1]
           const newerItem = acc[acc.length - 1]
 
           const diff = olderMessage
