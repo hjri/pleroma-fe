@@ -210,12 +210,12 @@ export function usePleromaChat(userId) {
     try {
       const { data: messages } = await chatMessages({
         id: chat.value.id,
-        maxId: older ? maxId.value : null,
+        maxId: older ? minId.value : null,
         sinceId: older ? null : maxId.value,
         credentials: useOAuthStore().token,
       })
 
-      addMessages([...messages].reverse())
+      addMessages(messages)
       fetchError.value = null
     } catch (e) {
       console.error('Error fetching chat', e)
@@ -257,7 +257,7 @@ export function usePleromaChat(userId) {
           newMessagesCount.value++
         }
         messagesIndex.value.set(message.id, message)
-        messages.value.push(messagesIndex.value.get(message.id))
+        messages.value.unshift(messagesIndex.value.get(message.id))
         idempotencyKeyIndex.value.set(message.idempotency_key, true)
       }
     }
