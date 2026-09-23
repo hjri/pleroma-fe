@@ -211,12 +211,12 @@ export function usePleromaChat(userId) {
     try {
       const { data: messages } = await chatMessages({
         id: chat.value.id,
-        maxId: maxId.value,
+        maxId: older ? maxId.value : null,
         sinceId: older ? null : maxId.value,
         credentials: useOAuthStore().token,
       })
 
-      addMessages(messages)
+      addMessages([...messages].reverse())
       fetchError.value = null
     } catch (e) {
       console.error('Error fetching chat', e)
@@ -311,13 +311,11 @@ export function usePleromaChat(userId) {
       data.account = useUsersStore().findUser(data.account.id)
 
       chat.value = data
-      maxId.value = chat.value.lastMessage?.id
+      startFetching('Chat activated', true)
     } catch (e) {
       console.error('Error creating or getting a chat', e)
       error.value = e
     }
-
-    startFetching('Chat activated', true)
   }
   const deactivate = () => {
     if (fetching.value) {

@@ -29,7 +29,7 @@ const ChatMessageList = {
     const hoveredMessageChainId = ref(null)
     const chatItems = computed(() => {
       const allMessages = [
-        ...[...messages.value].reverse(),
+        ...messages.value,
         ...pendingMessages.value.map((m) => ({ ...m, pending: true })),
       ]
       return allMessages
@@ -37,7 +37,7 @@ const ChatMessageList = {
           const date = new Date(message.created_at)
 
           const olderMessage = allMessages[index - 1]
-          const newerItem = acc[acc.length - 1]
+          const newerItem = acc.at(-1)
 
           const diff = olderMessage
             ? message.created_at - olderMessage.created_at
