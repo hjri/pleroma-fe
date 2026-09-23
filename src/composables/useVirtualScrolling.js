@@ -296,8 +296,12 @@ export function useVirtualScrolling({
             if (newVal.length < oldVal.length) return 0
             const oldVisible = oldVal.filter((item) => checkVisible(item))
             const oldItem = toValue(invertDirection)
-              ? oldVal.find(({ top }) => top > bottomScrollBoundary.value) ?? last(oldVal)
-              : oldVal.findLast(({ top, height }) => (top + height) < topScrollBoundary.value) ?? first(oldVal)
+              ? (oldVisible.find(
+                  ({ top }) => top > bottomScrollBoundary.value,
+                ) ?? last(oldVisible))
+              : (oldVisible.findLast(
+                  ({ top, height }) => top + height < topScrollBoundary.value,
+                ) ?? first(oldVisible))
             if (!oldItem) return 0 // probably out of bounds in timeline
             const oldItemUpdated = newVal.find(({ id }) => id === oldItem.id)
 

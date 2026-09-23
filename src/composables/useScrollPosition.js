@@ -1,7 +1,16 @@
 import { computed, ref } from 'vue'
 
 export function useScrollPosition(scroller) {
-  const { x, y, cWidth, cHeight, vWidth, vHeight, scrollBy: realScrollBy, scrollTo: realScrollTo } = scroller
+  const {
+    x,
+    y,
+    cWidth,
+    cHeight,
+    vWidth,
+    vHeight,
+    scrollBy: realScrollBy,
+    scrollTo: realScrollTo,
+  } = scroller
   const priorityInProgress = ref(false)
 
   const top = computed(() => y.value)
