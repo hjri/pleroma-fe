@@ -73,8 +73,8 @@ export function usePleromaChat(userId) {
       idempotencyKey,
     })
 
-    pendingMessages.push(fakeMessage)
-    pendingMessagesIndex.set(idempotencyKey, fakeMessage)
+    pendingMessages.value.push(fakeMessage)
+    pendingMessagesIndex.value.set(idempotencyKey, fakeMessage)
 
     return doSendMessage({
       params,
@@ -85,7 +85,7 @@ export function usePleromaChat(userId) {
     if (retriesLeft <= 0) return
 
     const handleMessageError = ({ idempotencyKey, isRetry }) => {
-      const fakeMessage = pendingMessagesIndex.get(idempotencyKey)
+      const fakeMessage = pendingMessagesIndex.value.get(idempotencyKey)
 
       if (fakeMessage) {
         fakeMessage.error = true
@@ -99,9 +99,7 @@ export function usePleromaChat(userId) {
         credentials: useOAuthStore().token,
       })
 
-      addMessages({
-        messages: [{ ...data }],
-      })
+      addMessages([{ ...data }])
     } catch (error) {
       if (
         error.name !== 'StatusCodeError' ||
@@ -138,6 +136,7 @@ export function usePleromaChat(userId) {
   // # Poll & Push
   const startFetching = (reason, isFirstFetch) => {
     console.debug('[Pleroma Chat] Started fetching', 'Reason:', reason)
+    fetchOlder()
     fetcher.value = promiseInterval(() => fetchChat({ latest: true }), 5000)
     clear()
     fetching.value = true
@@ -158,7 +157,7 @@ export function usePleromaChat(userId) {
   }
   const onChatUpdate = ({ data: { chatUpdate } }) => {
     const messages = [chatUpdate.lastMessage]
-    addMessages({ messages })
+    addMessages(messages)
   }
 
   // # Actions
@@ -216,7 +215,7 @@ export function usePleromaChat(userId) {
         credentials: useOAuthStore().token,
       })
 
-      addMessages({ messages })
+      addMessages(messages)
       fetchError.value = null
     } catch (e) {
       console.error('Error fetching chat', e)
@@ -250,16 +249,16 @@ export function usePleromaChat(userId) {
       }
       const isConfirmation = (message) => {
         if (!message.idempotency_key) return
-        return idempotencyKeyIndex.has(message.idempotency_key)
+        return idempotencyKeyIndex.value.has(message.idempotency_key)
       }
 
-      if (!messagesIndex.has(message.id) && !isConfirmation(message)) {
+      if (!messagesIndex.value.has(message.id) && !isConfirmation(message)) {
         if (lastReadMessageId < message.id) {
           newMessagesCount.value++
         }
         messagesIndex.value.set(message.id, message)
         messages.value.push(messagesIndex.value.get(message.id))
-        idempotencyKeyIndex.set(message.idempotency_key, true)
+        idempotencyKeyIndex.value.set(message.idempotency_key, true)
       }
     }
   }
@@ -302,7 +301,7 @@ export function usePleromaChat(userId) {
     try {
       attachSocket()
       const result = await getOrCreateChat({
-        accountId: userId,
+        accountId: userId.value,
         credentials: useOAuthStore().token,
       })
       const { data } = result
@@ -327,6 +326,9 @@ export function usePleromaChat(userId) {
     detachSocket()
   }
 
+  const ready = computed(() => !!chat.value)
+  const recipient = computed(() => chat.value?.account)
+
   return {
     activate,
     deactivate,
@@ -335,8 +337,10 @@ export function usePleromaChat(userId) {
     markAsRead,
     deleteChatMessage,
     messages,
-    messagesIndex,
+    pendingMessages,
     fetchError,
     fetchOlder,
+    ready,
+    recipient,
   }
 }

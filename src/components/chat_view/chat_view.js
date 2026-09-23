@@ -7,6 +7,7 @@ import {
   ref,
   toRefs,
   useTemplateRef,
+  onUnmounted,
   watch,
 } from 'vue'
 import { useRouter } from 'vue-router'
@@ -19,7 +20,6 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { useClientRectSize } from 'src/composables/useClientRectSize.js'
 import { useConversation } from 'src/composables/useConversation.js'
-import { useDocumentFocus } from 'src/composables/useDocumentFocus.js'
 import { usePleromaChat } from 'src/composables/usePleromaChat.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -66,11 +66,11 @@ const Chat = {
       focusedId,
       setFocused,
       fetchConversation,
-    } = useConversation(statusId, true)
+    } = useConversation(statusId, ref(true))
     watch(isConversation, (value) => {
       if (!value) return
       fetchConversation()
-    })
+    }, { immediate: true })
 
     // # Chat stuff
     const {
@@ -83,6 +83,8 @@ const Chat = {
       newMessagesCount: chatNewMessagesCount,
       fetchError: chatError,
 
+      ready: chatReady,
+      recipient: chatRecipient,
       sendMessage,
       deleteChatMessage,
     } = usePleromaChat(chatUserId)
@@ -94,7 +96,8 @@ const Chat = {
       if (neu) {
         chatActivate()
       }
-    })
+    }, { immediate: true })
+    onUnmounted(() => { chatDeactivate() })
 
     // # Forks
     const messages = computed(() => {
@@ -146,43 +149,23 @@ const Chat = {
 
     const scroller = inject('bodyScrollPosition')
     const rootElement = useTemplateRef('root')
-    const postForm = useTemplateRef('postform')
+    const postForm = useTemplateRef('postStatusForm')
 
     // Post form stuff
     watch(replyTo, () => {
-      if (isConversation.value) postForm.update()
+      if (isConversation.value) postForm.value.update()
     })
 
     // # Scroll stuff
-    const { hasReachedBottom, cHeight, scrollTo } = scroller
-
-    // ## Bottom-sticking stuff
-    const stickToBottom = async (forceRead) => {
-      // We don't want to scroll to the bottom on a new message when the user is viewing older messages.
-      // Therefore we need to know whether the scroll position was at the bottom before the DOM update.
-      if (!hasReachedBottom.value) return
-      await nextTick()
-      scrollTo({
-        top: cHeight.value,
-      })
-      if (forceRead) {
-        markAsRead()
-      }
-    }
+    const { hasReachedBottom } = scroller
 
     const postFormElement = computed(() => postForm.value?.$el)
-    const { focused } = useDocumentFocus()
     const { height: postFormHeight } = useClientRectSize(postFormElement)
-    const { vHeight: viewportHeight } = scroller
-    watch(viewportHeight, stickToBottom)
-    watch(postFormHeight, stickToBottom)
-    watch(focused, async (value) => {
-      if (!value) return
-      stickToBottom(true)
-    })
-    watch(messages, (old, neu) => {
-      if (old.length === neu.length) return
-      stickToBottom(true)
+    const { scrollBy } = scroller
+
+    // ### Post form size compensation
+    watch(postFormHeight, (neu, old) => {
+      scrollBy(0, neu - old)
     })
 
     // ## Load / Read
@@ -224,6 +207,8 @@ const Chat = {
       pendingMessages,
       newMessagesCount,
       error,
+      replyTo,
+      explicitReply,
 
       // Conversation-exclusive
       isConversation,
@@ -231,7 +216,10 @@ const Chat = {
       focusedId,
 
       // Chats-exclusive
+      isChat,
       sendMessage,
+      chatReady,
+      chatRecipient,
 
       // Misc
       onPosted,

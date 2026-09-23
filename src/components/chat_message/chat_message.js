@@ -39,14 +39,12 @@ const ChatMessage = {
   props: [
     'edited',
     'noHeading',
-    'previousItem',
     'chatItem',
-    'previousItem',
     'hoveredMessageChain',
     'focused',
     'repliedTo',
   ],
-  emits: ['hover', 'replyRequested'],
+  emits: ['hover', 'replyRequested', 'heightChange'],
   components: {
     Popover,
     Attachment,
@@ -73,6 +71,9 @@ const ChatMessage = {
       if (!this.isMessage) return null
       return this.chatItem.data.retweeted_status ?? this.chatItem.data
     },
+    previousItem() {
+      return this.chatItem.olderMessage
+    },
     isStatus() {
       // ChatMessage only has account_id while Status has full user data
       return !!this.message.user
@@ -95,7 +96,7 @@ const ChatMessage = {
     isCustomReply() {
       if (!this.previousItem) return false
       if (!this.message.in_reply_to_status_id) return false
-      return this.previousItem.data.id !== this.message.in_reply_to_status_id
+      return this.previousItem.id !== this.message.in_reply_to_status_id
     },
     isBrokenReply() {
       if (!this.previousItem) return false
@@ -173,15 +174,37 @@ const ChatMessage = {
   },
   data() {
     return {
+      resizeObserver: new ResizeObserver(this.updateVirtualHeight),
       hovered: false,
       menuOpened: false,
     }
+  },
+  mounted() {
+    if (this.$refs.root) {
+      this.resizeObserver.observe(this.$refs.root)
+      this.updateVirtualHeight([
+        {
+          contentRect: this.$refs.root.getBoundingClientRect(),
+        },
+      ])
+    }
+  },
+  unmounted() {
+    this.resizeObserver.disconnect()
   },
   methods: {
     onHover(bool) {
       this.$emit('hover', {
         isHovered: bool,
         messageChainId: this.chatItem.messageChainId,
+      })
+    },
+    updateVirtualHeight(e) {
+      const [entry] = e
+      this.$emit('heightChange', {
+        id: this.chatItem.id,
+        height: entry.contentRect.height + 1,
+        element: this.$el,
       })
     },
     visibilityIcon(visibility) {

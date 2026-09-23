@@ -1,6 +1,7 @@
 <template>
   <div
     v-if="isMessage"
+    ref="root"
     :id="`chatmessage-${message.id}`"
     class="chat-message-wrapper"
     :class="[classnames, { 'hovered-message-chain': hoveredMessageChain }]"
@@ -239,6 +240,7 @@
   <div
     v-else
     class="chat-message-date-separator"
+    ref="root"
   >
     <ChatMessageDate
       :date="chatItem.date"

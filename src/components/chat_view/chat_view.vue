@@ -31,7 +31,7 @@
             </template>
             <ChatTitle
               v-else
-              :user="recipient"
+              :user="chatRecipient"
               :with-avatar="true"
             />
           </div>
@@ -60,10 +60,10 @@
             <span>
               <FAIcon icon="chevron-down" />
               <div
-                v-if="newMessageCount"
+                v-if="newMessagesCount"
                 class="badge -notification unread-chat-count unread-message-count"
               >
-                {{ newMessageCount }}
+                {{ newMessagesCount }}
               </div>
             </span>
           </div>
@@ -72,11 +72,11 @@
             class="auto-reply-to-section"
           >
             <div class="reply-to-text">
-              {{ explicitReplyStatus ? $t('status.reply_to_selected') : $t('status.reply_to_last') }}
+              {{ explicitReply ? $t('status.reply_to_selected') : $t('status.reply_to_last') }}
               <button
-                v-if="explicitReplyStatus"
+                v-if="explicitReply"
                 class="button-default"
-                @click="explicitReplyStatus = null"
+                @click="explicitReply = null"
               >
                 <FAIcon icon="times" />
                 {{ $t('general.cancel') }}
@@ -85,21 +85,21 @@
           </div>
           <PostStatusForm
             ref="postStatusForm"
-            :replied-status="replyStatus"
+            :replied-status="replyTo"
             :mentions-line="isConversation"
             mentions-line-read-only
 
             disable-quotes
             disable-notice
             disable-lock-warning
-            :disable-subject="!isConversation"
-            :disable-scope-selector="!isConversation"
-            :disable-polls="!isConversation"
-            :disable-sensitivity-checkbox="!isConversation"
-            :disable-preview="!isConversation"
-            :disable-draft="!isConversation"
+            :disable-subject="isChat"
+            :disable-scope-selector="isChat"
+            :disable-polls="isChat"
+            :disable-sensitivity-checkbox="isChat"
+            :disable-preview="isChat"
+            :disable-draft="isChat"
 
-            :disable-submit="isConversation ? !replyStatus : (errorLoadingChat || !chat)"
+            :disable-submit="isConversation ? !replyTo : (!!error || !chatReady)"
             :optimistic-posting="!isConversation"
 
             chat-view
@@ -110,7 +110,6 @@
             :max-height="160"
             emoji-picker-placement="top"
             :post-handler="isConversation ? null : sendMessage"
-            @resize="handleResize"
             @posted="onPosted"
           />
         </div>
