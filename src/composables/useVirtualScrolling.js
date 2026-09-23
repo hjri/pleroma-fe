@@ -283,7 +283,7 @@ export function useVirtualScrolling({
            * changes - compensate anyway even if compensation is disabled.
            */
           const isSticking = toValue(invertDirection) ? hasReachedBottom.value : hasReachedTop.value
-          const compensateBecauseLengthChange = isSticking &&
+          const compensateBecauseLengthChange = !isSticking &&
                 newVal.length !== oldVal.length
           const oldReal = newVal.filter(({ real }) => real).length
           const newReal = oldVal.filter(({ real }) => real).length
