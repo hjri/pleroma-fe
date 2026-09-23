@@ -11,7 +11,7 @@ const ScrollTopButton = {
     scrollToTop() {
       const speed = this.fast ? 'instant' : 'smooth'
 
-      this.bodyScrollPosition.scrollTo({ top: 0, behavior: speed })
+      this.bodyScrollPosition.scrollToPriority({ top: 0, behavior: speed })
     },
   },
 }

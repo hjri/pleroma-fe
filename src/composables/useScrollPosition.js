@@ -1,7 +1,8 @@
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 export function useScrollPosition(scroller) {
-  const { x, y, cWidth, cHeight, vWidth, vHeight, scrollBy } = scroller
+  const { x, y, cWidth, cHeight, vWidth, vHeight, scrollBy: realScrollBy, scrollTo: realScrollTo } = scroller
+  const priorityInProgress = ref(false)
 
   const top = computed(() => y.value)
   const bottom = computed(() => y.value + vHeight.value)
@@ -25,18 +26,26 @@ export function useScrollPosition(scroller) {
   const shouldLoadLeft = computed(() => distanceToLeft.value < loadMargin)
   const shouldLoadRight = computed(() => distanceToRight.value < loadMargin)
 
-  const scrollTo = (position = {}) => {
-    const amount = {
-      left: 0,
-      top: 0,
-    }
-    if (position.left != null) {
-      amount.left = position.left - left.value
-    }
-    if (position.top != null) {
-      amount.top = position.top - top.value
-    }
-    scrollBy(amount.left, amount.top)
+  const scrollTo = async (...args) => {
+    if (priorityInProgress.value) return true
+    return await realScrollTo(...args)
+  }
+  const scrollBy = async (...args) => {
+    if (priorityInProgress.value) return true
+    return await realScrollBy(...args)
+  }
+
+  const scrollToPriority = async (...args) => {
+    priorityInProgress.value = true
+    const result = await realScrollTo(...args)
+    priorityInProgress.value = false
+    return result
+  }
+  const scrollByPriority = async (...args) => {
+    priorityInProgress.value = true
+    const result = await realScrollBy(...args)
+    priorityInProgress.value = false
+    return result
   }
 
   return {
@@ -62,5 +71,7 @@ export function useScrollPosition(scroller) {
 
     scrollBy,
     scrollTo,
+    scrollByPriority,
+    scrollToPriority,
   }
 }

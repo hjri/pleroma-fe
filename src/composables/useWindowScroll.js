@@ -3,7 +3,6 @@ import { onMounted, onUnmounted, ref } from 'vue'
 export function useWindowScroll() {
   const x = ref(0)
   const y = ref(0)
-  const inProgress = ref(false)
 
   const update = (e) => {
     x.value = window.scrollX
@@ -18,11 +17,8 @@ export function useWindowScroll() {
     window.removeEventListener('scroll', update)
   })
 
-  const scrollBy = async (...args) => {
-    inProgress.value = true
-    await window.scrollBy(...args)
-    inProgress.value = false
-  }
+  const scrollBy = window.scrollBy
+  const scrollTo = window.scrollTo
 
-  return { x, y, scrollBy, inProgress }
+  return { x, y, scrollBy, scrollTo }
 }

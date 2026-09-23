@@ -146,7 +146,7 @@ const Timeline = {
       }
       paused.value = false
       await nextTick()
-      scroller.scrollTo({ top: 0 })
+      scroller.scrollToPriority({ top: 0, behavior: 'smooth' })
     }
     const fetchOlderStatuses = throttle(() => {
       timeline.value.fetcher.fetchOlder()
