@@ -138,7 +138,6 @@ export function usePleromaChat(userId) {
     console.debug('[Pleroma Chat] Started fetching', 'Reason:', reason)
     fetchOlder()
     fetcher.value = promiseInterval(() => fetchChat({ latest: true }), 5000)
-    clear()
     fetching.value = true
   }
   const stopFetching = (reason) => {
@@ -307,6 +306,7 @@ export function usePleromaChat(userId) {
       })
       const { data } = result
 
+      newMessagesCount.value = data.unread
       useUsersStore().addNewUsers({ ...result, data: data.account })
       data.account = useUsersStore().findUser(data.account.id)
 

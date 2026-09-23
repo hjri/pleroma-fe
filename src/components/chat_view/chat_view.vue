@@ -1,5 +1,8 @@
 <template>
-  <div class="chat-view">
+<div
+  class="chat-view"
+  ref="root"
+>
     <div class="chat-view-inner">
       <div
         ref="inner"
