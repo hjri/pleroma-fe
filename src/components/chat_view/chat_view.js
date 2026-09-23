@@ -2,16 +2,15 @@ import { storeToRefs } from 'pinia'
 import {
   computed,
   inject,
-  nextTick,
+  onUnmounted,
   provide,
   ref,
   toRefs,
   useTemplateRef,
-  onUnmounted,
   watch,
 } from 'vue'
-import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { useRouter } from 'vue-router'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
 import ChatTitle from 'src/components/chat_title/chat_title.vue'
@@ -68,10 +67,14 @@ const Chat = {
       setFocused,
       fetchConversation,
     } = useConversation(statusId, ref(true))
-    watch(isConversation, (value) => {
-      if (!value) return
-      fetchConversation()
-    }, { immediate: true })
+    watch(
+      isConversation,
+      (value) => {
+        if (!value) return
+        fetchConversation()
+      },
+      { immediate: true },
+    )
 
     // # Chat stuff
     const {
@@ -90,15 +93,21 @@ const Chat = {
       deleteChatMessage,
     } = usePleromaChat(chatUserId)
     provide('deleteChatMessage', deleteChatMessage)
-    watch(chatUserId, (neu, old) => {
-      if (old) {
-        chatDeactivate()
-      }
-      if (neu) {
-        chatActivate()
-      }
-    }, { immediate: true })
-    onUnmounted(() => { chatDeactivate() })
+    watch(
+      chatUserId,
+      (neu, old) => {
+        if (old) {
+          chatDeactivate()
+        }
+        if (neu) {
+          chatActivate()
+        }
+      },
+      { immediate: true },
+    )
+    onUnmounted(() => {
+      chatDeactivate()
+    })
 
     // # Forks
     const messages = computed(() => {

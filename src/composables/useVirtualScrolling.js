@@ -282,19 +282,22 @@ export function useVirtualScrolling({
            * So, basically - if amount of elements changes, or amount of REAL elements
            * changes - compensate anyway even if compensation is disabled.
            */
-          const isSticking = toValue(invertDirection) ? hasReachedBottom.value : hasReachedTop.value
-          const compensateBecauseLengthChange = !isSticking &&
-                newVal.length !== oldVal.length
+          const isSticking = toValue(invertDirection)
+            ? hasReachedBottom.value
+            : hasReachedTop.value
+          const compensateBecauseLengthChange =
+            !isSticking && newVal.length !== oldVal.length
           const oldReal = newVal.filter(({ real }) => real).length
           const newReal = oldVal.filter(({ real }) => real).length
-          const compensateBecauseReal = oldReal > 0 && newReal > 0 && oldReal !== newReal
+          const compensateBecauseReal =
+            oldReal > 0 && newReal > 0 && oldReal !== newReal
 
           const expansion = (() => {
             if (newVal.length < oldVal.length) return 0
-            const oldVisible = oldVal.filter(
-              (item) => checkVisible(item),
-            )
-            const oldItem = toValue(invertDirection) ? last(oldVisible) : first(oldVisible)
+            const oldVisible = oldVal.filter((item) => checkVisible(item))
+            const oldItem = toValue(invertDirection)
+              ? last(oldVisible)
+              : first(oldVisible)
             if (!oldItem) return 0 // probably out of bounds in timeline
             const oldItemUpdated = newVal.find(({ id }) => id === oldItem.id)
 
@@ -303,7 +306,8 @@ export function useVirtualScrolling({
               compensateBecauseReal ||
               compensateBecauseLengthChange
             ) {
-              const oldItemUpdatedBottom = oldItemUpdated.top + oldItemUpdated.height
+              const oldItemUpdatedBottom =
+                oldItemUpdated.top + oldItemUpdated.height
               const oldItemBottom = oldItem.top + oldItem.height
 
               if (toValue(invertDirection)) {
@@ -319,7 +323,9 @@ export function useVirtualScrolling({
           const collapsing = (() => {
             if (newVal.length >= oldVal.length) return 0
             const newVisible = newVal
-            const newItem = toValue(invertDirection) ? last(newVisible) : first(newVisible)
+            const newItem = toValue(invertDirection)
+              ? last(newVisible)
+              : first(newVisible)
             if (!newItem) return 0 // probably out of bounds in timeline
             const newItemBefore = oldVal.find(({ id }) => id === newItem.id)
 
@@ -329,7 +335,8 @@ export function useVirtualScrolling({
               compensateBecauseLengthChange
             ) {
               const newItemBottom = newItem.top + newItem.height
-              const newItemBeforeBottom = newItemBefore.top + newItemBefore.height
+              const newItemBeforeBottom =
+                newItemBefore.top + newItemBefore.height
 
               if (toValue(invertDirection)) {
                 return newItemBottom - newItemBeforeBottom

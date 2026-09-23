@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia'
 import {
   computed,
   inject,
+  nextTick,
   onMounted,
   onUnmounted,
   ref,

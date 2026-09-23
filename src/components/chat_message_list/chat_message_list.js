@@ -1,8 +1,9 @@
-import { toRefs, ref, computed, useTemplateRef, inject } from 'vue'
-import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
-import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
+import { computed, inject, ref, toRefs, useTemplateRef } from 'vue'
 
 import ChatMessage from 'src/components/chat_message/chat_message.vue'
+
+import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
+import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
 
 const ChatMessageList = {
   components: {
@@ -21,11 +22,7 @@ const ChatMessageList = {
   },
   emits: ['replyRequested'],
   setup(props, { emit }) {
-    const {
-      messages,
-      pendingMessages,
-      headerDate,
-    } = toRefs(props)
+    const { messages, pendingMessages, headerDate } = toRefs(props)
     const hoveredMessageChainId = ref(null)
     const chatItems = computed(() => {
       const allMessages = [
@@ -108,19 +105,18 @@ const ChatMessageList = {
       chatItems.value.reduce((map, value) => {
         map.set(value.id, value)
         return map
-      }, new Map())
+      }, new Map()),
     )
 
     const getCurrentItem = (id) => chatItemsIndex.value.get(id)
 
     const scroller = inject('bodyScrollPosition')
     const body = useTemplateRef('body')
-    const offset = computed(() => 0)
     const { fontSize } = useInterfaceSizes()
     const normalStatusHeight = computed(() => fontSize.value * 5)
     const getPlaceholderHeight = (id) => normalStatusHeight
 
-    const { heightChart, changeSuspendState, updateVirtualHeight, scrollTo } =
+    const { heightChart, changeSuspendState, updateVirtualHeight } =
       useVirtualScrolling({
         name: 'ChatMessageList',
         enabled: ref(true),
@@ -132,10 +128,7 @@ const ChatMessageList = {
         invertDirection: true,
       })
 
-    const {
-      focusedId,
-      repliedId,
-    } = toRefs(props)
+    const { focusedId, repliedId } = toRefs(props)
 
     const onMessageHover = ({ isHovered, messageChainId }) => {
       hoveredMessageChainId.value = isHovered ? messageChainId : undefined
