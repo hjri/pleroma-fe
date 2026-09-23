@@ -332,9 +332,9 @@ export function useVirtualScrolling({
               const newItemBeforeBottom = newItemBefore.top + newItemBefore.height
 
               if (toValue(invertDirection)) {
-                return newItemTop - newItemBeforeTop
+                return newItemBottom - newItemBeforeBottom
               } else {
-                return newItemBeforeTop - newItemTop
+                return newItemBeforeBottom - newItemBottom
               }
             } else {
               return 0
