@@ -245,7 +245,11 @@ export function useVirtualScrolling({
               return [...newIds].some((id) => !oldIds.has(id))
             }
           })()
-          if (contextChange) return 0
+          if (contextChange) {
+            // Context changed, reset everything.
+            heights.value = new Map()
+            return 0
+          }
 
           /* Ok, here's a thing. Both Timeline and Conversation have virtual scrolling.
            * But since Conversation can be inside Timeline (in fact it's chock-full of
