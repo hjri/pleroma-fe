@@ -130,13 +130,13 @@ const Timeline = {
 
       // only 'stream' them when you're scrolled to the top
       if (hasReachedTop.value && !paused.value && !unfocusedPause.value) {
-        showNewStatuses()
+        showNewStatuses(true)
       } else {
         paused.value = true
       }
     })
 
-    const showNewStatuses = async () => {
+    const showNewStatuses = async (fast = false) => {
       if (timeline.value.reloadNeeded) {
         useTimelinesStore().clearTimeline(timelineRef.value.name)
         fetchOlderStatuses()
@@ -146,7 +146,7 @@ const Timeline = {
       }
       paused.value = false
       await nextTick()
-      scroller.scrollToPriority({ top: 0, behavior: 'smooth' })
+      scroller.scrollToPriority({ top: 0, behavior: fast ? 'instant' : 'smooth' })
     }
     const fetchOlderStatuses = throttle(() => {
       timeline.value.fetcher.fetchOlder()
