@@ -1,7 +1,7 @@
 import { nextTick, onMounted, onUnmounted, ref } from 'vue'
 
 export function useDocumentFocus() {
-  const focused = ref(false)
+  const focused = ref(!document.hidden)
 
   const handleVisibilityChange = async () => {
     focused.value = !document.hidden

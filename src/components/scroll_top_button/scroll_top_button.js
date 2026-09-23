@@ -6,11 +6,12 @@ const ScrollTopButton = {
       default: false,
     },
   },
+  inject: ['bodyScrollPosition'],
   methods: {
     scrollToTop() {
       const speed = this.fast ? 'instant' : 'smooth'
 
-      window.scrollTo({ top: 0, behavior: speed })
+      this.bodyScrollPosition.scrollTo({ top: 0, behavior: speed })
     },
   },
 }
