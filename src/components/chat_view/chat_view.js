@@ -11,6 +11,7 @@ import {
   watch,
 } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
 import ChatTitle from 'src/components/chat_title/chat_title.vue'
@@ -191,6 +192,16 @@ const Chat = {
     const mobileLayout = computed(() => layoutType.value === 'mobile')
     const jumpToBottomButtonVisible = computed(() => !hasReachedBottom.value)
     const router = useRouter()
+    const { t } = useI18n()
+    const formPlaceholder = computed(() => {
+      if (chatRecipient) {
+        return t('chats.message_user', {
+          nickname: chatRecipient.screen_name_ui,
+        })
+      } else {
+        return ''
+      }
+    })
     const onPosted = (data) => {
       explicitReply.value = null
 
@@ -225,6 +236,7 @@ const Chat = {
       onPosted,
       mobileLayout,
       jumpToBottomButtonVisible,
+      formPlaceholder,
     }
   },
 }
