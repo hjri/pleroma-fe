@@ -135,7 +135,7 @@ const Timeline = {
       }
     })
 
-    const showNewStatuses = () => {
+    const showNewStatuses = async () => {
       if (timeline.value.reloadNeeded) {
         useTimelinesStore().clearTimeline(timelineRef.value.name)
         fetchOlderStatuses()
@@ -144,6 +144,7 @@ const Timeline = {
         useTimelinesStore().showNewStatuses(timelineRef.value.name)
       }
       paused.value = false
+      await nextTick()
       scroller.scrollTo({ top: 0 })
     }
     const fetchOlderStatuses = throttle(() => {
