@@ -143,7 +143,7 @@ export function usePleromaChat(userId) {
   }
   const stopFetching = (reason) => {
     console.debug('[Pleroma Chat] Stopped fetching', 'Reason:', reason)
-    if (!fetching) return
+    if (!fetching.value) return
     fetcher.value.stop()
     fetcher.value = null
     fetching.value = false
