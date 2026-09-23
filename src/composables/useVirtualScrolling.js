@@ -285,9 +285,9 @@ export function useVirtualScrolling({
           const isSticking = toValue(invertDirection) ? hasReachedBottom.value : hasReachedTop.value
           const compensateBecauseLengthChange = isSticking &&
                 newVal.length !== oldVal.length
-          const compensateBecauseReal =
-            newVal.filter(({ real }) => real).length !==
-            oldVal.filter(({ real }) => real).length
+          const oldReal = newVal.filter(({ real }) => real).length
+          const newReal = oldVal.filter(({ real }) => real).length
+          const compensateBecauseReal = oldReal > 0 && newReal > 0 && oldReal !== newReal
 
           const expansion = (() => {
             if (newVal.length < oldVal.length) return 0
@@ -303,14 +303,13 @@ export function useVirtualScrolling({
               compensateBecauseReal ||
               compensateBecauseLengthChange
             ) {
+              const oldItemUpdatedBottom = oldItemUpdated.top + oldItemUpdated.height
+              const oldItemBottom = oldItem.top + oldItem.height
+
               if (toValue(invertDirection)) {
-                const oldItemUpdatedBottom = oldItemUpdated.top + oldItemUpdated.height
-                const oldItemBottom = oldItem.top + oldItem.height
                 return oldItemBottom - oldItemUpdatedBottom
               } else {
-                const oldItemUpdatedTop = oldItemUpdated.top
-                const oldItemTop = oldItem.top
-                return oldItemUpdatedTop - oldItemTop
+                return oldItemUpdatedBottom - oldItemBottom
               }
             } else {
               return 0
@@ -329,14 +328,13 @@ export function useVirtualScrolling({
               compensateBecauseReal ||
               compensateBecauseLengthChange
             ) {
+              const newItemBottom = newItem.top + newItem.height
+              const newItemBeforeBottom = newItemBefore.top + newItemBefore.height
+
               if (toValue(invertDirection)) {
-                const newItemTop = newItem.top
-                const newItemBeforeTop = newItemBefore.top
                 return newItemTop - newItemBeforeTop
               } else {
-                const newItemBottom = newItem.top + newItem.height
-                const newItemBeforeBottom = newItemBefore.top + newItemBefore.height
-                return newItemBottom - newItemBeforeBottom
+                return newItemBeforeTop - newItemTop
               }
             } else {
               return 0
