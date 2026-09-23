@@ -9,15 +9,6 @@
           ref="header"
           class="panel-heading -sticky chat-view-heading"
         >
-          <button
-            class="button-unstyled go-back-button"
-            @click="goBack"
-          >
-            <FAIcon
-              size="lg"
-              icon="chevron-left"
-            />
-          </button>
           <div class="title">
             <template v-if="isConversation">
               <RichContent
