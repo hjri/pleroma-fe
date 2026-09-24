@@ -255,8 +255,6 @@ export function useVirtualScrolling({
             }
           })()
           if (contextChange) {
-            // Context changed, reset everything.
-            heights.value = new Map()
             return 0
           }
 
