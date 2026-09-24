@@ -9,8 +9,8 @@ const scrollPositionInstance = {
   y: ref(0),
   vHeight: ref(768),
   vWidth: ref(1024),
-  vHeight: ref(768),
-  vWidth: ref(1024),
+  cHeight: ref(768),
+  cWidth: ref(1024),
   scrollBy: vi.fn(),
   hasReachedTop: ref(false),
   hasReachedBottom: ref(false),
@@ -146,15 +146,9 @@ describe('useVirtualScrolling', () => {
     list.value = [...listNew, ...listOld]
     result.updateBoundaries()
     await vi.advanceTimersToNextTimerAsync()
-    expect(scrollPositionInstance.scrollBy).to.have.been.calledWith(
-      0,
-      100,
-    )
+    expect(scrollPositionInstance.scrollBy).to.have.been.calledWith(0, 100)
     const amount = 1000
-    expect(scrollPositionInstance.scrollBy).to.have.been.calledWith(
-      0,
-      amount,
-    )
+    expect(scrollPositionInstance.scrollBy).to.have.been.calledWith(0, amount)
     topPosition -= amount
     result.updateBoundaries()
 
@@ -227,16 +221,10 @@ describe('useVirtualScrolling', () => {
 
     list.value = listB
     result.updateBoundaries()
-    expect(scrollPositionInstance.scrollBy).to.have.been.calledWith(
-      0,
-      100,
-    )
+    expect(scrollPositionInstance.scrollBy).to.have.been.calledWith(0, 100)
     await vi.advanceTimersToNextTimerAsync()
     const amount = -2000
-    expect(scrollPositionInstance.scrollBy).to.have.been.calledWith(
-      0,
-      amount,
-    )
+    expect(scrollPositionInstance.scrollBy).to.have.been.calledWith(0, amount)
     // topPosition -= amount // not doing this because it would overscroll
     result.updateBoundaries()
     await vi.advanceTimersToNextTimerAsync()

@@ -1,24 +1,25 @@
 import { createTestingPinia } from '@pinia/testing'
-import { setActivePinia } from 'pinia'
 import { shallowMount } from '@vue/test-utils'
+import { setActivePinia } from 'pinia'
 import { ref } from 'vue'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
+
 const scrollPositionInstance = {
   x: ref(0),
   y: ref(0),
   vHeight: ref(768),
   vWidth: ref(1024),
-  vHeight: ref(768),
-  vWidth: ref(1024),
+  cHeight: ref(768),
+  cWidth: ref(1024),
   scrollBy: vi.fn(),
   hasReachedTop: ref(false),
   hasReachedBottom: ref(false),
 }
 const global = {
   provide: {
-    bodyScrollPosition: scrollPositionInstance
-  }
+    bodyScrollPosition: scrollPositionInstance,
+  },
 }
 
 describe('ChatMessageList', () => {
@@ -178,7 +179,9 @@ describe('ChatMessageList', () => {
       ])
 
       // Chain head/Tail checks
-      expect(component.vm._test.chatItems.value.map((i) => [i.isHead, i.isTail])).to.eql([
+      expect(
+        component.vm._test.chatItems.value.map((i) => [i.isHead, i.isTail]),
+      ).to.eql([
         [true, true],
         [undefined, undefined],
         [true, true],
