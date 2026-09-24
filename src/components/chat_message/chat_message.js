@@ -44,7 +44,15 @@ const ChatMessage = {
     'focused',
     'repliedTo',
   ],
-  emits: ['hover', 'replyRequested', 'heightChange'],
+  emits: ['hover', 'replyRequested', 'heightChange', 'suspendableStateChange'],
+  data() {
+    return {
+      resizeObserver: new ResizeObserver(this.updateVirtualHeight),
+      mediaPlaying: new Set(),
+      hovered: false,
+      menuOpened: false,
+    }
+  },
   components: {
     Popover,
     Attachment,
@@ -163,6 +171,9 @@ const ChatMessage = {
         return { left: 50 }
       }
     },
+    isSuspendable() {
+      return !this.replying && this.mediaPlaying.size === 0
+    },
 
     // Global stuff
     ...mapState(useInterfaceStore, {
@@ -171,26 +182,6 @@ const ChatMessage = {
     ...mapState(useUsersStore, ['currentUser']),
     ...mapState(useInstanceStore, ['restrictedNicknames']),
     ...mapState(useMergedConfigStore, ['mergedConfig']),
-  },
-  data() {
-    return {
-      resizeObserver: new ResizeObserver(this.updateVirtualHeight),
-      hovered: false,
-      menuOpened: false,
-    }
-  },
-  mounted() {
-    if (this.$refs.root) {
-      this.resizeObserver.observe(this.$refs.root)
-      this.updateVirtualHeight([
-        {
-          contentRect: this.$refs.root.getBoundingClientRect(),
-        },
-      ])
-    }
-  },
-  unmounted() {
-    this.resizeObserver.disconnect()
   },
   methods: {
     onHover(bool) {
@@ -235,7 +226,18 @@ const ChatMessage = {
       this.hovered = false
       this.menuOpened = false
     },
+    addMediaPlaying(id) {
+      this.mediaPlaying.add(id)
+    },
+    removeMediaPlaying(id) {
+      this.mediaPlaying.delete(id)
+    },
   },
+  watch: {
+    isSuspendable: function (suspendable) {
+      this.$emit('suspendableStateChange', { id: this.status.id, suspendable })
+    },
+  }
 }
 
 export default ChatMessage

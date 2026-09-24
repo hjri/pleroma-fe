@@ -152,6 +152,8 @@
                 :class="{ faint: message.pending }"
                 :status="messageForStatusContent"
                 :full-content="true"
+                @mediaplay="addMediaPlaying($event)"
+                @mediapause="removeMediaPlaying($event)"
               >
                 <template #footer>
                   <EmojiReactions

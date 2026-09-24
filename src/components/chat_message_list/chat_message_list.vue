@@ -18,6 +18,7 @@
         @hover="onMessageHover"
         @reply-requested="onReplyRequested"
         @height-change="updateVirtualHeight"
+        @suspendable-state-change="changeSuspendState"
       />
       <div
         v-if="element.type === 'spacer'"

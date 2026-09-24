@@ -134,6 +134,8 @@ const ChatMessageList = {
       updateVirtualHeight,
       getCurrentItem,
       hoveredMessageChainId,
+      changeSuspendState,
+
 
       focusedId,
       repliedId,
