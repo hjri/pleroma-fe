@@ -10,6 +10,11 @@
         :hovered-message-chain="getCurrentItem(element.id).messageChainId === hoveredMessageChainId"
         :focused="element.id === focusedId"
         :replied-to="element.id === repliedId"
+
+        :data-vs-height="element.height"
+        :data-vs-top="element.top"
+        :data-vs-id="element.id"
+
         @hover="onMessageHover"
         @reply-requested="onReplyRequested"
         @height-change="updateVirtualHeight"

@@ -31,15 +31,18 @@
           </div>
         </div>
         <div class="chat-list-wrapper panel-body">
-          <div class="top-spacer" />
           <ChatMessageList
             ref="messageList"
             header-date
             :messages="messages"
-            :pending-messages="pendingMessages"
             :replied-id="replyTo?.id"
             :focused-id="focusedId"
             @reply-requested="e => explicitReply = e"
+          />
+          <ChatMessageList
+            pending
+            ref="pendingMessageList"
+            :messages="pendingMessages"
           />
         </div>
         <div

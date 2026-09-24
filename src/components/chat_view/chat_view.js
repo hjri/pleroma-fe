@@ -8,6 +8,7 @@ import {
   toRefs,
   useTemplateRef,
   watch,
+  watchEffect,
 } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
@@ -179,9 +180,9 @@ const Chat = {
     })
 
     // ## Load / Read
-    const { shouldLoadTop } = scroller
-    watch(shouldLoadTop, (value) => {
-      if (value) fetchOlder()
+    const { shouldLoadTop, distanceToTop } = scroller
+    watchEffect(() => {
+      if (shouldLoadTop.value && messages.value.length > 0) fetchOlder()
     })
     watch(hasReachedBottom, (value) => {
       if (!value) return

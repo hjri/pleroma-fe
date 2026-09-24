@@ -1,5 +1,7 @@
 import { computed, ref } from 'vue'
 
+import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
+
 export function useScrollPosition(scroller) {
   const {
     x,
@@ -23,17 +25,19 @@ export function useScrollPosition(scroller) {
   const distanceToBottom = computed(() => cHeight.value - bottom.value)
   const distanceToRight = computed(() => cWidth.value - right.value)
 
-  const reachMargin = 15
-  const hasReachedTop = computed(() => distanceToTop.value < reachMargin)
-  const hasReachedBottom = computed(() => distanceToBottom.value < reachMargin)
-  const hasReachedLeft = computed(() => distanceToLeft.value < reachMargin)
-  const hasReachedRight = computed(() => distanceToRight.value < reachMargin)
+  const { fontSize } = useInterfaceSizes()
 
-  const loadMargin = 750
-  const shouldLoadTop = computed(() => distanceToTop.value < loadMargin)
-  const shouldLoadBottom = computed(() => distanceToBottom.value < loadMargin)
-  const shouldLoadLeft = computed(() => distanceToLeft.value < loadMargin)
-  const shouldLoadRight = computed(() => distanceToRight.value < loadMargin)
+  const reachMargin = computed(() => fontSize.value)
+  const hasReachedTop = computed(() => distanceToTop.value < reachMargin.value)
+  const hasReachedBottom = computed(() => distanceToBottom.value < reachMargin.value)
+  const hasReachedLeft = computed(() => distanceToLeft.value < reachMargin.value)
+  const hasReachedRight = computed(() => distanceToRight.value < reachMargin.value)
+
+  const loadMargin = computed(() => fontSize.value * 25)
+  const shouldLoadTop = computed(() => distanceToTop.value < loadMargin.value)
+  const shouldLoadBottom = computed(() => distanceToBottom.value < loadMargin.value)
+  const shouldLoadLeft = computed(() => distanceToLeft.value < loadMargin.value)
+  const shouldLoadRight = computed(() => distanceToRight.value < loadMargin.value)
 
   const scrollTo = async (...args) => {
     if (priorityInProgress.value) return true
@@ -62,6 +66,11 @@ export function useScrollPosition(scroller) {
     left,
     right,
     bottom,
+
+    distanceToTop,
+    distanceToLeft,
+    distanceToRight,
+    distanceToBottom,
 
     cWidth,
     cHeight,

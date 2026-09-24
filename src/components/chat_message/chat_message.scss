@@ -1,5 +1,4 @@
 .chat-message-wrapper {
-  padding-top: 0.5em;
   &.hovered-message-chain {
     .animated.Avatar {
       canvas {
@@ -66,6 +65,7 @@
 
   .chat-message {
     display: flex;
+    padding-top: 0.5em;
 
     .status-body:hover {
       --_still-image-img-visibility: visible;

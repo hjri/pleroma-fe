@@ -10,30 +10,22 @@ const ChatMessageList = {
     ChatMessage,
   },
   props: {
+    pending: Boolean,
     messages: Array,
-    pendingMessages: {
-      type: Array,
-      required: false,
-      default: [],
-    },
     headerDate: Boolean,
     focusedId: String,
     repliedId: String,
   },
   emits: ['replyRequested'],
   setup(props, { emit }) {
-    const { messages, pendingMessages, headerDate } = toRefs(props)
+    const { messages, headerDate } = toRefs(props)
     const hoveredMessageChainId = ref(null)
     const chatItems = computed(() => {
-      const allMessages = [
-        ...messages.value,
-        ...pendingMessages.value.map((m) => ({ ...m, pending: true })),
-      ]
-      return allMessages
+      return messages.value
         .reduceRight((acc, message, index) => {
           const date = new Date(message.created_at)
 
-          const olderMessage = allMessages[index - 1]
+          const olderMessage = messages.value[index - 1]
           const newerItem = acc.at(-1)
 
           const diff = olderMessage
@@ -92,7 +84,7 @@ const ChatMessageList = {
                 date,
                 isDate: dateDiffs,
                 isTime: diff > MAX_DIFF && !dateDiffs,
-                id: date.getTime().toString(),
+                id: 'fake-date-' + date.getTime().toString(),
               },
             ]
           } else {
@@ -113,12 +105,14 @@ const ChatMessageList = {
     const scroller = inject('bodyScrollPosition')
     const body = useTemplateRef('body')
     const { fontSize } = useInterfaceSizes()
-    const normalStatusHeight = computed(() => fontSize.value * 5)
-    const getPlaceholderHeight = (id) => normalStatusHeight
+    const normalHeight = computed(() => fontSize.value * 3)
+    const dateHeight = computed(() => fontSize.value * 1.5)
+    const getPlaceholderHeight = (id) => id?.startsWith('fake-date-') ? dateHeight : normalHeight
 
+    const { pending } = toRefs(props)
     const { heightChart, changeSuspendState, updateVirtualHeight } =
       useVirtualScrolling({
-        name: 'ChatMessageList',
+        name: pending.value ? 'ChatMessageList<Pending>' : 'ChatMessageList<Real>',
         enabled: ref(true),
         list: chatItems,
         body,

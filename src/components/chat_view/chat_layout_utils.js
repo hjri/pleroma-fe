@@ -16,11 +16,6 @@ export const getNewTopPosition = (previousPosition, newPosition) => {
   )
 }
 
-export const isBottomedOut = (offset = 0) => {
-  const scrollHeight = window.scrollY + offset
-  const totalHeight = document.documentElement.scrollHeight - window.innerHeight
-  return totalHeight <= scrollHeight
-}
 // Returns whether or not the scrollbar is visible.
 export const isScrollable = () => {
   return document.documentElement.scrollHeight > window.innerHeight

@@ -214,7 +214,7 @@ export function useVirtualScrolling({
   watch(
     heightChart,
     async (newVal, oldVal) => {
-      if (newVal.length === 0 && oldVal.length === 0) return
+      if (newVal.length === 0 && oldVal.length === 0) return 0
       const explosion = oldVal.length === 0 && newVal.length !== 0
       const implosion = oldVal.length !== 0 && newVal.length === 0
 
@@ -236,8 +236,9 @@ export function useVirtualScrolling({
           return 0 - oldBottomElement.top - oldBottomElement.height
         } else {
           const contextChange = (() => {
-            const oldIds = new Set(oldVal.map(({ id }) => id))
-            const newIds = new Set(newVal.map(({ id }) => id))
+            // HACK ignore date separators and fake messages in chat view
+            const oldIds = new Set(oldVal.map(({ id }) => id).filter((id) => !id.startsWith('fake-')))
+            const newIds = new Set(newVal.map(({ id }) => id).filter((id) => !id.startsWith('fake-')))
 
             if (oldVal.length <= newVal.length) {
               return [...oldIds].some((id) => !newIds.has(id))
@@ -296,67 +297,59 @@ export function useVirtualScrolling({
           const compensateBecauseReal =
             oldReal > 0 && newReal > 0 && oldReal !== newReal
 
+          if (!(compensation || compensateBecauseReal || compensateBecauseLengthChange)) {
+            return 0
+          }
+
+          // Section is used for debugging only
+          const getShift = (section, a, b, find, getter) => {
+            const aItem = find(a)
+            if (!aItem) return 0
+            const bItem = b.find(({ id }) => id === aItem.id)
+            return getter(bItem) - getter(aItem)
+          }
+
           const expansion = (() => {
             if (newVal.length < oldVal.length) return 0
-            const oldVisible = oldVal.filter((item) => checkVisible(item))
-            const oldItem = toValue(invertDirection)
-              ? (oldVisible.find(
-                  ({ top }) => top > bottomScrollBoundary.value,
-                ) ?? last(oldVisible))
-              : (oldVisible.findLast(
-                  ({ top, height }) => top + height < topScrollBoundary.value,
-                ) ?? first(oldVisible))
-            if (!oldItem) return 0 // probably out of bounds in timeline
-            const oldItemUpdated = newVal.find(({ id }) => id === oldItem.id)
+            return getShift(
+              'expansion',
+              oldVal.filter((item) => checkVisible(item)),
+              newVal,
+              (list) => list.find(({ top, height }) => top + height < topScrollBoundary.value) ?? first(list),
+              ({ top, height }) => top + height,
+            )
+          })()
 
-            if (
-              compensation ||
-              compensateBecauseReal ||
-              compensateBecauseLengthChange
-            ) {
-              const oldItemUpdatedBottom =
-                oldItemUpdated.top + oldItemUpdated.height
-              const oldItemBottom = oldItem.top + oldItem.height
-
-              if (toValue(invertDirection)) {
-                return oldItemBottom - oldItemUpdatedBottom
-              } else {
-                return oldItemUpdatedBottom - oldItemBottom
-              }
+          const inverseCompensation = (() => {
+            if (!toValue(invertDirection)) return 0
+            if (newVal.length < oldVal.length) return 0
+            const shift = getShift(
+              'inverse',
+              oldVal.filter((item) => checkVisible(item)),
+              newVal,
+              (list) => list.findLast(({ top }) => top > bottomScrollBoundary.value) ?? last(list),
+              ({ top }) => top,
+            )
+            if (isSticking) {
+              // For whatever reason Number.POSITIVE_INFINITY doesn't work. Sad!
+              return 999999999999 // keep sticking
             } else {
-              return 0
+              return shift
             }
           })()
 
           const collapsing = (() => {
             if (newVal.length >= oldVal.length) return 0
-            const newVisible = newVal
-            const newItem = toValue(invertDirection)
-              ? last(newVisible)
-              : first(newVisible)
-            if (!newItem) return 0 // probably out of bounds in timeline
-            const newItemBefore = oldVal.find(({ id }) => id === newItem.id)
-
-            if (
-              compensation ||
-              compensateBecauseReal ||
-              compensateBecauseLengthChange
-            ) {
-              const newItemBottom = newItem.top + newItem.height
-              const newItemBeforeBottom =
-                newItemBefore.top + newItemBefore.height
-
-              if (toValue(invertDirection)) {
-                return newItemBeforeBottom - newItemBottom
-              } else {
-                return newItemBottom - newItemBeforeBottom
-              }
-            } else {
-              return 0
-            }
+            return -getShift(
+              'collapse',
+              newVal,
+              oldVal,
+              (list) => first(list),
+              ({ top, height }) => top + height,
+            )
           })()
 
-          return expansion + collapsing
+          return (toValue(invertDirection) ? inverseCompensation : expansion) + collapsing
         }
       })()
 
@@ -365,7 +358,6 @@ export function useVirtualScrolling({
         topScrollBoundary.value += diff
         bottomScrollBoundary.value += diff
         await scrollBy(0, diff)
-        await nextTick()
       }
 
       resumeWatchers()

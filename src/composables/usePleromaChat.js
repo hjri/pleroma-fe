@@ -215,7 +215,7 @@ export function usePleromaChat(userId) {
         credentials: useOAuthStore().token,
       })
 
-      addMessages(messages)
+      addMessages(messages, true)
       fetchError.value = null
     } catch (e) {
       console.error('Error fetching chat', e)
@@ -227,7 +227,7 @@ export function usePleromaChat(userId) {
   }
 
   // # Message list forming
-  const addMessages = (newMessages) => {
+  const addMessages = (newMessages, prepend = false) => {
     for (let message of newMessages) {
       // Clear any known pending messages
       if (message.idempotency_key) {
@@ -257,7 +257,11 @@ export function usePleromaChat(userId) {
           newMessagesCount.value++
         }
         messagesIndex.value.set(message.id, message)
-        messages.value.unshift(messagesIndex.value.get(message.id))
+        if (prepend) {
+          messages.value.unshift(messagesIndex.value.get(message.id))
+        } else {
+          messages.value.push(messagesIndex.value.get(message.id))
+        }
         idempotencyKeyIndex.value.set(message.idempotency_key, true)
       }
     }

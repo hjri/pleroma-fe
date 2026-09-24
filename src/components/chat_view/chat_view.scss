@@ -3,6 +3,7 @@
 
   .chat-list-wrapper {
     display: flex;
+    justify-content: end;
     flex-direction: column;
     height: 100%;
   }
