@@ -188,7 +188,7 @@ export function usePleromaChat(userId) {
     })
 
     messages.value = messages.value.filter((m) => m.id !== messageId)
-    messagesIndex.delete(messageId)
+    messagesIndex.value.delete(messageId)
 
     if (maxId.value === messageId) {
       const lastMessage = maxBy(messages.value, 'id')
@@ -253,7 +253,7 @@ export function usePleromaChat(userId) {
       }
 
       if (!messagesIndex.value.has(message.id) && !isConfirmation(message)) {
-        if (lastReadMessageId < message.id) {
+        if (lastReadMessageId.value < message.id) {
           newMessagesCount.value++
         }
         messagesIndex.value.set(message.id, message)
@@ -345,5 +345,12 @@ export function usePleromaChat(userId) {
     fetchOlder,
     ready,
     recipient,
+    _test: {
+      chat,
+      addMessages,
+      minId,
+      maxId,
+      lastReadMessageId,
+    },
   }
 }
