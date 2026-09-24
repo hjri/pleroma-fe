@@ -71,6 +71,19 @@ const ChatMessage = {
     Timeago,
   },
   inject: ['deleteChatMessage'],
+  mounted() {
+    if (this.$refs.root) {
+      this.resizeObserver.observe(this.$refs.root)
+      this.updateVirtualHeight([
+        {
+          contentRect: this.$refs.root.getBoundingClientRect(),
+        },
+      ])
+    }
+  },
+  unmounted() {
+    this.resizeObserver.disconnect()
+  },
   computed: {
     isMessage() {
       return this.chatItem.type === 'message'

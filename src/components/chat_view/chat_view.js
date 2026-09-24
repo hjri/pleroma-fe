@@ -107,7 +107,9 @@ const Chat = {
       { immediate: true },
     )
     onUnmounted(() => {
-      chatDeactivate()
+      if (chatUserId.value) {
+        chatDeactivate()
+      }
     })
 
     // # Forks

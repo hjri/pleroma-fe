@@ -332,8 +332,9 @@ export function useVirtualScrolling({
               ({ top }) => top,
             )
             if (isSticking) {
-              // For whatever reason Number.POSITIVE_INFINITY doesn't work. Sad!
-              return 999999999999 // keep sticking
+              // Don't do 99999 here, it breaks virtual scrolling
+              const { height } = body.value.getBoundingClientRect()
+              return height // keep sticking
             } else {
               return shift
             }
