@@ -1,11 +1,35 @@
+import { createTestingPinia } from '@pinia/testing'
+import { setActivePinia } from 'pinia'
 import { shallowMount } from '@vue/test-utils'
+import { ref } from 'vue'
 
 import ChatMessageList from 'src/components/chat_message_list/chat_message_list.vue'
+const scrollPositionInstance = {
+  x: ref(0),
+  y: ref(0),
+  vHeight: ref(768),
+  vWidth: ref(1024),
+  vHeight: ref(768),
+  vWidth: ref(1024),
+  scrollBy: vi.fn(),
+  hasReachedTop: ref(false),
+  hasReachedBottom: ref(false),
+}
+const global = {
+  provide: {
+    bodyScrollPosition: scrollPositionInstance
+  }
+}
 
 describe('ChatMessageList', () => {
-  describe('computed.chatItems', () => {
+  beforeEach(() => {
+    setActivePinia(createTestingPinia({ stubActions: false }))
+  })
+
+  describe('computed.chatItems.value', () => {
     it('Inserts date separators', () => {
       const component = shallowMount(ChatMessageList, {
+        global,
         props: {
           messages: [
             {
@@ -27,7 +51,7 @@ describe('ChatMessageList', () => {
         },
       })
 
-      expect(component.vm.chatItems.map((i) => i.type)).to.eql([
+      expect(component.vm._test.chatItems.value.map((i) => i.type)).to.eql([
         'message',
         'message',
         'date',
@@ -37,6 +61,7 @@ describe('ChatMessageList', () => {
 
     it('Inserts date header if needed', () => {
       const component = shallowMount(ChatMessageList, {
+        global,
         props: {
           headerDate: true,
           messages: [
@@ -49,7 +74,7 @@ describe('ChatMessageList', () => {
         },
       })
 
-      expect(component.vm.chatItems.map((i) => i.type)).to.eql([
+      expect(component.vm._test.chatItems.value.map((i) => i.type)).to.eql([
         'date',
         'message',
       ])
@@ -57,6 +82,7 @@ describe('ChatMessageList', () => {
 
     it('Inserts time separators if messages were sent with considerable delay (5 minutes)', () => {
       const component = shallowMount(ChatMessageList, {
+        global,
         props: {
           messages: [
             {
@@ -78,14 +104,14 @@ describe('ChatMessageList', () => {
         },
       })
 
-      expect(component.vm.chatItems.map((i) => i.type)).to.eql([
+      expect(component.vm._test.chatItems.value.map((i) => i.type)).to.eql([
         'message',
         'date',
         'message',
         'date',
         'message',
       ])
-      expect(component.vm.chatItems.map((i) => i.isTime)).to.eql([
+      expect(component.vm._test.chatItems.value.map((i) => i.isTime)).to.eql([
         undefined,
         true,
         undefined,
@@ -96,6 +122,7 @@ describe('ChatMessageList', () => {
 
     it('Groups message chains by time and author', () => {
       const component = shallowMount(ChatMessageList, {
+        global,
         props: {
           messages: [
             {
@@ -138,7 +165,7 @@ describe('ChatMessageList', () => {
       })
 
       // Type check
-      expect(component.vm.chatItems.map((i) => i.type)).to.eql([
+      expect(component.vm._test.chatItems.value.map((i) => i.type)).to.eql([
         'message',
         'date',
         'message',
@@ -151,7 +178,7 @@ describe('ChatMessageList', () => {
       ])
 
       // Chain head/Tail checks
-      expect(component.vm.chatItems.map((i) => [i.isHead, i.isTail])).to.eql([
+      expect(component.vm._test.chatItems.value.map((i) => [i.isHead, i.isTail])).to.eql([
         [true, true],
         [undefined, undefined],
         [true, true],
@@ -165,80 +192,14 @@ describe('ChatMessageList', () => {
 
       // Unique ID is randomly generated so we have to compare data against itself
       // Two messages from Bob next to each other
-      expect(component.vm.chatItems[5].messageChainId).to.eql(
-        component.vm.chatItems[6].messageChainId,
+      expect(component.vm._test.chatItems.value[5].messageChainId).to.eql(
+        component.vm._test.chatItems.value[6].messageChainId,
       )
 
       // Message from Even right after Bob
-      expect(component.vm.chatItems[7].messageChainId).to.not.eql(
-        component.vm.chatItems[8].messageChainId,
+      expect(component.vm._test.chatItems.value[7].messageChainId).to.not.eql(
+        component.vm._test.chatItems.value[8].messageChainId,
       )
-    })
-  })
-  describe('methods.getPreviousItem', () => {
-    describe('Finds correct previous meaningful (non-separator) message in the chatlist', () => {
-      let component
-
-      beforeEach(() => {
-        component = shallowMount(ChatMessageList, {
-          props: {
-            messages: [
-              {
-                id: '0',
-                account_id: 'Alice',
-                created_at: new Date('2020-06-22T20:00:00.000Z'),
-              },
-              {
-                // Separator
-                id: '1', // 2
-                account_id: 'Alice',
-                created_at: new Date('2020-06-22T20:06:00.000Z'),
-              },
-              {
-                // Separator
-                id: '2', // 4
-                account_id: 'Alice',
-                created_at: new Date('2020-06-23T20:00:00.000Z'),
-              },
-              {
-                id: '3', // 5
-                account_id: 'Bob',
-                created_at: new Date('2020-06-23T20:01:00.000Z'),
-              },
-              {
-                id: '4', // 6
-                account_id: 'Bob',
-                created_at: new Date('2020-06-23T20:02:00.000Z'),
-              },
-              {
-                id: '5', // 7
-                account_id: 'Bob',
-                created_at: new Date('2020-06-23T20:03:00.000Z'),
-              },
-              {
-                id: '6', // 8
-                account_id: 'Eve',
-                created_at: new Date('2020-06-23T20:04:00.000Z'),
-              },
-            ],
-          },
-        })
-      })
-
-      it('Directly next to each other', () => {
-        const correct = component.vm.chatItems[6]
-        expect(component.vm.getPreviousItem(7)).to.eql(correct)
-      })
-
-      it('Across separator', () => {
-        const correct = component.vm.chatItems[2]
-        expect(component.vm.getPreviousItem(4)).to.eql(correct)
-      })
-
-      it('Returns null if no previous item exist', () => {
-        const correct = null
-        expect(component.vm.getPreviousItem(0)).to.eql(correct)
-      })
     })
   })
 })

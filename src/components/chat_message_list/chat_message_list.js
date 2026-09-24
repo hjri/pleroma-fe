@@ -144,6 +144,9 @@ const ChatMessageList = {
 
       onReplyRequested,
       onMessageHover,
+      _test: {
+        chatItems,
+      },
     }
   },
 }
