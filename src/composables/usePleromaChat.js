@@ -37,7 +37,7 @@ export function usePleromaChat(userId) {
   const error = ref(null)
   const streaming = ref(false)
   const fetcher = ref(null)
-  const fetching = ref(true)
+  const fetching = ref(false)
 
   const minId = ref(undefined)
   const maxId = ref(undefined)

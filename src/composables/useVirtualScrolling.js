@@ -306,6 +306,7 @@ export function useVirtualScrolling({
             const aItem = find(a)
             if (!aItem) return 0
             const bItem = b.find(({ id }) => id === aItem.id)
+            if (!bItem) return 0
             return getter(bItem) - getter(aItem)
           }
 
