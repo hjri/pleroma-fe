@@ -395,26 +395,6 @@ export function useVirtualScrolling({
     heights.value = new Map()
   }
 
-  const scrollTo = (anchors) => {
-    const element = heightChart.value.find(({ id }) => anchors.has(id))
-    if (!element) {
-      console.error(`No element with id matching ${[...anchors].join()} found`)
-      return
-    }
-
-    pauseWatchers()
-
-    const elementMiddle = element.top + element.height / 2
-    const desiredTopBoundary = Math.min(
-      element.top,
-      elementMiddle - (vHeight.value - offset.value) / 2,
-    )
-
-    scrollBy(0, desiredTopBoundary - topScrollBoundary.value)
-
-    resumeWatchers()
-  }
-
   return {
     heightChart: heightChartGrouped,
     changeSuspendState,
@@ -423,6 +403,5 @@ export function useVirtualScrolling({
     resumeWatchers,
     updateBoundaries,
     reset,
-    scrollTo,
   }
 }

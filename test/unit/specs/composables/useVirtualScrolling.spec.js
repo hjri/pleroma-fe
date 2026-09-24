@@ -4,20 +4,17 @@ import { ref } from 'vue'
 
 import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
 
-const windowSize = {
-  width: ref(1024),
-  height: ref(768),
-}
-
 const scrollPositionInstance = {
   x: ref(0),
   y: ref(0),
+  vHeight: ref(768),
+  vWidth: ref(1024),
+  vHeight: ref(768),
+  vWidth: ref(1024),
   scrollBy: vi.fn(),
+  hasReachedTop: ref(false),
+  hasReachedBottom: ref(false),
 }
-
-vi.mock(import('src/composables/useWindowSize.js'), () => ({
-  useWindowSize: () => windowSize,
-}))
 
 describe('useVirtualScrolling', () => {
   beforeEach(() => {
@@ -30,8 +27,6 @@ describe('useVirtualScrolling', () => {
     vi.resetAllMocks()
     scrollPositionInstance.x.value = 0
     scrollPositionInstance.y.value = 0
-    windowSize.width.value = 1024
-    windowSize.height.value = 768
   })
 
   it('should init boundaries and compute a height chart', () => {
@@ -151,8 +146,12 @@ describe('useVirtualScrolling', () => {
     list.value = [...listNew, ...listOld]
     result.updateBoundaries()
     await vi.advanceTimersToNextTimerAsync()
+    expect(scrollPositionInstance.scrollBy).to.have.been.calledWith(
+      0,
+      100,
+    )
     const amount = 1000
-    expect(scrollPositionInstance.scrollBy).to.have.been.calledOnceWith(
+    expect(scrollPositionInstance.scrollBy).to.have.been.calledWith(
       0,
       amount,
     )
@@ -228,9 +227,13 @@ describe('useVirtualScrolling', () => {
 
     list.value = listB
     result.updateBoundaries()
+    expect(scrollPositionInstance.scrollBy).to.have.been.calledWith(
+      0,
+      100,
+    )
     await vi.advanceTimersToNextTimerAsync()
     const amount = -2000
-    expect(scrollPositionInstance.scrollBy).to.have.been.calledOnceWith(
+    expect(scrollPositionInstance.scrollBy).to.have.been.calledWith(
       0,
       amount,
     )
