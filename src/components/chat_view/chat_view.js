@@ -182,7 +182,7 @@ const Chat = {
     })
 
     // ## Load / Read
-    const { shouldLoadTop, distanceToTop } = scroller
+    const { shouldLoadTop } = scroller
     watchEffect(() => {
       if (shouldLoadTop.value && messages.value.length > 0) fetchOlder()
     })

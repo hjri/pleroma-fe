@@ -107,12 +107,15 @@ const ChatMessageList = {
     const { fontSize } = useInterfaceSizes()
     const normalHeight = computed(() => fontSize.value * 3)
     const dateHeight = computed(() => fontSize.value * 1.5)
-    const getPlaceholderHeight = (id) => id?.startsWith('fake-date-') ? dateHeight : normalHeight
+    const getPlaceholderHeight = (id) =>
+      id?.startsWith('fake-date-') ? dateHeight : normalHeight
 
     const { pending } = toRefs(props)
     const { heightChart, changeSuspendState, updateVirtualHeight } =
       useVirtualScrolling({
-        name: pending.value ? 'ChatMessageList<Pending>' : 'ChatMessageList<Real>',
+        name: pending.value
+          ? 'ChatMessageList<Pending>'
+          : 'ChatMessageList<Real>',
         enabled: ref(true),
         list: chatItems,
         body,
@@ -135,7 +138,6 @@ const ChatMessageList = {
       getCurrentItem,
       hoveredMessageChainId,
       changeSuspendState,
-
 
       focusedId,
       repliedId,

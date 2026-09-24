@@ -1,5 +1,5 @@
 import { first, last } from 'lodash-es'
-import { computed, nextTick, ref, toValue, watch } from 'vue'
+import { computed, ref, toValue, watch } from 'vue'
 
 export function useVirtualScrolling({
   // For debugging
@@ -237,8 +237,16 @@ export function useVirtualScrolling({
         } else {
           const contextChange = (() => {
             // HACK ignore date separators and fake messages in chat view
-            const oldIds = new Set(oldVal.map(({ id }) => id).filter((id) => !id.startsWith('fake-')))
-            const newIds = new Set(newVal.map(({ id }) => id).filter((id) => !id.startsWith('fake-')))
+            const oldIds = new Set(
+              oldVal
+                .map(({ id }) => id)
+                .filter((id) => !id.startsWith('fake-')),
+            )
+            const newIds = new Set(
+              newVal
+                .map(({ id }) => id)
+                .filter((id) => !id.startsWith('fake-')),
+            )
 
             if (oldVal.length <= newVal.length) {
               return [...oldIds].some((id) => !newIds.has(id))
@@ -297,7 +305,13 @@ export function useVirtualScrolling({
           const compensateBecauseReal =
             oldReal > 0 && newReal > 0 && oldReal !== newReal
 
-          if (!(compensation || compensateBecauseReal || compensateBecauseLengthChange)) {
+          if (
+            !(
+              compensation ||
+              compensateBecauseReal ||
+              compensateBecauseLengthChange
+            )
+          ) {
             return 0
           }
 
@@ -316,7 +330,10 @@ export function useVirtualScrolling({
               'expansion',
               oldVal.filter((item) => checkVisible(item)),
               newVal,
-              (list) => list.find(({ top, height }) => top + height < topScrollBoundary.value) ?? first(list),
+              (list) =>
+                list.find(
+                  ({ top, height }) => top + height < topScrollBoundary.value,
+                ) ?? first(list),
               ({ top, height }) => top + height,
             )
           })()
@@ -328,7 +345,9 @@ export function useVirtualScrolling({
               'inverse',
               oldVal.filter((item) => checkVisible(item)),
               newVal,
-              (list) => list.findLast(({ top }) => top > bottomScrollBoundary.value) ?? last(list),
+              (list) =>
+                list.findLast(({ top }) => top > bottomScrollBoundary.value) ??
+                last(list),
               ({ top }) => top,
             )
             if (isSticking) {
@@ -351,7 +370,10 @@ export function useVirtualScrolling({
             )
           })()
 
-          return (toValue(invertDirection) ? inverseCompensation : expansion) + collapsing
+          return (
+            (toValue(invertDirection) ? inverseCompensation : expansion) +
+            collapsing
+          )
         }
       })()
 

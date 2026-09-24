@@ -250,7 +250,7 @@ const ChatMessage = {
     isSuspendable: function (suspendable) {
       this.$emit('suspendableStateChange', { id: this.status.id, suspendable })
     },
-  }
+  },
 }
 
 export default ChatMessage

@@ -29,15 +29,25 @@ export function useScrollPosition(scroller) {
 
   const reachMargin = computed(() => fontSize.value)
   const hasReachedTop = computed(() => distanceToTop.value < reachMargin.value)
-  const hasReachedBottom = computed(() => distanceToBottom.value < reachMargin.value)
-  const hasReachedLeft = computed(() => distanceToLeft.value < reachMargin.value)
-  const hasReachedRight = computed(() => distanceToRight.value < reachMargin.value)
+  const hasReachedBottom = computed(
+    () => distanceToBottom.value < reachMargin.value,
+  )
+  const hasReachedLeft = computed(
+    () => distanceToLeft.value < reachMargin.value,
+  )
+  const hasReachedRight = computed(
+    () => distanceToRight.value < reachMargin.value,
+  )
 
   const loadMargin = computed(() => fontSize.value * 25)
   const shouldLoadTop = computed(() => distanceToTop.value < loadMargin.value)
-  const shouldLoadBottom = computed(() => distanceToBottom.value < loadMargin.value)
+  const shouldLoadBottom = computed(
+    () => distanceToBottom.value < loadMargin.value,
+  )
   const shouldLoadLeft = computed(() => distanceToLeft.value < loadMargin.value)
-  const shouldLoadRight = computed(() => distanceToRight.value < loadMargin.value)
+  const shouldLoadRight = computed(
+    () => distanceToRight.value < loadMargin.value,
+  )
 
   const scrollTo = async (...args) => {
     if (priorityInProgress.value) return true
