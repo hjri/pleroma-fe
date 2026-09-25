@@ -1,5 +1,5 @@
 import { first, last } from 'lodash-es'
-import { computed, ref, toValue, watch } from 'vue'
+import { computed, ref, toValue, watch, nextTick } from 'vue'
 
 export function useVirtualScrolling({
   // For debugging
@@ -379,6 +379,7 @@ export function useVirtualScrolling({
         // Scroll by amount offset changed to keep it in view
         topScrollBoundary.value += diff
         bottomScrollBoundary.value += diff
+        await nextTick()
         await scrollBy(0, diff)
       }
 
