@@ -208,7 +208,7 @@ const Chat = {
     const formPlaceholder = computed(() => {
       if (chatRecipient) {
         return t('chats.message_user', {
-          nickname: chatRecipient.screen_name_ui,
+          nickname: chatRecipient.value?.screen_name_ui,
         })
       } else {
         return ''
