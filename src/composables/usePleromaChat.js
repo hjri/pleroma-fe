@@ -34,7 +34,6 @@ export function usePleromaChat(userId) {
   const chat = ref(null)
   const socket = ref(null)
 
-  const error = ref(null)
   const streaming = ref(false)
   const fetcher = ref(null)
   const fetching = ref(false)
@@ -324,7 +323,7 @@ export function usePleromaChat(userId) {
       startFetching('Chat activated', true)
     } catch (e) {
       console.error('Error creating or getting a chat', e)
-      error.value = e
+      fetchError.value = e
     }
   }
   const deactivate = () => {
