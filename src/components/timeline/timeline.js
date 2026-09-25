@@ -203,10 +203,7 @@ const Timeline = {
       fetchOlderStatuses()
     }, 100)
     // Scroll
-    watch(
-      [shouldLoadBottom, scrollY],
-      infiniteLoadWatcher,
-    )
+    watch([shouldLoadBottom, scrollY], infiniteLoadWatcher)
     onUnmounted(() => {
       infiniteLoadWatcher.cancel()
     })
