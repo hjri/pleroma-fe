@@ -24,9 +24,9 @@ import { useConversation } from 'src/composables/useConversation.js'
 import { usePleromaChat } from 'src/composables/usePleromaChat.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faChevronDown, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faChevronDown, faChevronLeft)
+library.add(faChevronDown)
 
 const MARK_AS_READ_DELAY = 1500
 
