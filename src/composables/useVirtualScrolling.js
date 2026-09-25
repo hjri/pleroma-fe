@@ -1,5 +1,5 @@
 import { first, last } from 'lodash-es'
-import { computed, ref, toValue, watch, nextTick } from 'vue'
+import { computed, nextTick, ref, toValue, watch } from 'vue'
 
 export function useVirtualScrolling({
   // For debugging
