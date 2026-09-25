@@ -290,6 +290,11 @@ export function useVirtualScrolling({
            * all jumpy! We can somewhat live with wrong scroll position but timeline
            * being jumpy is unacceptable.
            *
+           * TODO: Probably a good way to avoid it all is just to:
+           * - Don't do scroll compensation when nested
+           * - For expanded conversations use animated priority scrollTo
+           * something to do for Virtual Scrolling 2.2
+           *
            * So, basically - if amount of elements changes, or amount of REAL elements
            * changes - compensate anyway even if compensation is disabled.
            */
