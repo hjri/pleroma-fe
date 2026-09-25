@@ -248,7 +248,7 @@ const ChatMessage = {
   },
   watch: {
     isSuspendable: function (suspendable) {
-      this.$emit('suspendableStateChange', { id: this.status.id, suspendable })
+      this.$emit('suspendableStateChange', { id: this.chatItem.id, suspendable })
     },
   },
 }
