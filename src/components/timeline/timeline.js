@@ -74,7 +74,7 @@ const Timeline = {
 
     // Scroll position
     const scroller = inject('bodyScrollPosition')
-    const { hasReachedTop, shouldLoadBottom } = scroller
+    const { hasReachedTop, shouldLoadBottom, top: scrollY } = scroller
     // Virtual scrolling
     const { fontSize, navbarSize } = useInterfaceSizes()
 
@@ -199,10 +199,10 @@ const Timeline = {
     })
 
     // Scroll
-    watch(shouldLoadBottom, (value) => {
+    watch([shouldLoadBottom, scrollY], debounce(([value]) => {
       if (!value) return
       fetchOlderStatuses()
-    })
+    }, 100))
 
     // Misc UI things
     const classes = computed(() => {
