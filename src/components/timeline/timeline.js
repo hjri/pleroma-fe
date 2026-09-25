@@ -199,10 +199,13 @@ const Timeline = {
     })
 
     // Scroll
-    watch([shouldLoadBottom, scrollY], debounce(([value]) => {
-      if (!value) return
-      fetchOlderStatuses()
-    }, 100))
+    watch(
+      [shouldLoadBottom, scrollY],
+      debounce(([value]) => {
+        if (!value) return
+        fetchOlderStatuses()
+      }, 100),
+    )
 
     // Misc UI things
     const classes = computed(() => {
