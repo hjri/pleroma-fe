@@ -298,8 +298,8 @@ export function useVirtualScrolling({
             : hasReachedTop.value
           const compensateBecauseLengthChange =
             !isSticking && newVal.length !== oldVal.length
-          const oldReal = newVal.filter(({ real }) => real).length
-          const newReal = oldVal.filter(({ real }) => real).length
+          const newReal = newVal.filter(({ real }) => real).length
+          const oldReal = oldVal.filter(({ real }) => real).length
           const compensateBecauseReal =
             oldReal > 0 && newReal > 0 && oldReal !== newReal
 
