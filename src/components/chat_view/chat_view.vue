@@ -32,7 +32,6 @@
         </div>
         <div class="chat-list-wrapper panel-body">
           <ChatMessageList
-            ref="messageList"
             header-date
             :messages="messages"
             :replied-id="replyTo?.id"
@@ -41,7 +40,6 @@
           />
           <ChatMessageList
             pending
-            ref="pendingMessageList"
             :messages="pendingMessages"
           />
         </div>

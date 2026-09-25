@@ -133,7 +133,7 @@ export function usePleromaChat(userId) {
   }
 
   // # Poll & Push
-  const startFetching = (reason, isFirstFetch) => {
+  const startFetching = (reason) => {
     console.debug('[Pleroma Chat] Started fetching', 'Reason:', reason)
     fetchOlder()
     fetcher.value = promiseInterval(() => fetchChat({ latest: true }), 5000)
