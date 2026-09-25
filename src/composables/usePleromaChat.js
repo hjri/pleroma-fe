@@ -191,12 +191,12 @@ export function usePleromaChat(userId) {
 
     if (maxId.value === messageId) {
       const lastMessage = maxBy(messages.value, 'id')
-      maxId.value = lastMessage.id
+      maxId.value = lastMessage?.id
     }
 
     if (minId.value === messageId) {
       const firstMessage = minBy(messages.value, 'id')
-      minId.value = firstMessage.id
+      minId.value = firstMessage?.id
     }
   }
 
