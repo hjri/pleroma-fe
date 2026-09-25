@@ -117,7 +117,7 @@ export function usePleromaChat(userId) {
 
       const error5xx = error.statusCode >= 500 && error.statusCode < 600
       if (error5xx || error.message === 'Failed to fetch') {
-        messageRetriers.set(
+        messageRetriers.value.set(
           params.idempotencyKey,
           setTimeout(
             () => {
@@ -281,6 +281,7 @@ export function usePleromaChat(userId) {
     lastReadMessageId.value = null
     minId.value = undefined
     maxId.value = undefined
+    messageRetriers.value.values().forEach((timeout) => clearTimeout(timeout))
   }
 
   const attachSocket = () => {
