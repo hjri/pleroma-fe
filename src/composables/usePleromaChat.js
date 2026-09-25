@@ -229,6 +229,11 @@ export function usePleromaChat(userId) {
   // # Message list forming
   const addMessages = (newMessages, prepend = false) => {
     for (let message of newMessages) {
+      // Chats we're getting from streaming might belong to someone else instead
+      if (message.chat_id !== chat.value.id) {
+        return
+      }
+
       // Clear any known pending messages
       if (message.idempotency_key) {
         if (pendingMessagesIndex.value.has(message.idempotency_key)) {
