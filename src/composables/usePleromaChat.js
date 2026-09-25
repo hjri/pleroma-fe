@@ -83,7 +83,7 @@ export function usePleromaChat(userId) {
   const doSendMessage = async ({ params, retriesLeft = MAX_RETRIES }) => {
     if (retriesLeft <= 0) return
 
-    const handleMessageError = ({ idempotencyKey, isRetry }) => {
+    const handleMessageError = ({ idempotencyKey }) => {
       const fakeMessage = pendingMessagesIndex.value.get(idempotencyKey)
 
       if (fakeMessage) {
@@ -111,7 +111,6 @@ export function usePleromaChat(userId) {
       handleMessageError({
         chatId: chat.value.id,
         idempotencyKey: params.idempotencyKey,
-        isRetry: retriesLeft !== MAX_RETRIES,
       })
 
       const error5xx = error.statusCode >= 500 && error.statusCode < 600
@@ -230,7 +229,7 @@ export function usePleromaChat(userId) {
     for (let message of newMessages) {
       // Chats we're getting from streaming might belong to someone else instead
       if (message.chat_id !== chat.value.id) {
-        return
+        continue
       }
 
       // Clear any known pending messages

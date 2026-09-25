@@ -206,7 +206,7 @@ const Chat = {
     const router = useRouter()
     const { t } = useI18n()
     const formPlaceholder = computed(() => {
-      if (chatRecipient) {
+      if (chatRecipient.value) {
         return t('chats.message_user', {
           nickname: chatRecipient.value?.screen_name_ui,
         })

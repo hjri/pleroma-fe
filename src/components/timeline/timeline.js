@@ -198,14 +198,18 @@ const Timeline = {
       window.removeEventListener('keydown', handleShortKey)
     })
 
+    const infiniteLoadWatcher = debounce((value) => {
+      if (!value) return
+      fetchOlderStatuses()
+    }, 100)
     // Scroll
     watch(
       [shouldLoadBottom, scrollY],
-      debounce(([value]) => {
-        if (!value) return
-        fetchOlderStatuses()
-      }, 100),
+      infiniteLoadWatcher,
     )
+    onUnmounted(() => {
+      infiniteLoadWatcher.cancel()
+    })
 
     // Misc UI things
     const classes = computed(() => {

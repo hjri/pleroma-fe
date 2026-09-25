@@ -17,8 +17,8 @@ export function useWindowScroll() {
     window.removeEventListener('scroll', update)
   })
 
-  const scrollBy = window.scrollBy
-  const scrollTo = window.scrollTo
+  const scrollBy = (...args) => window.scrollBy(...args)
+  const scrollTo = (...args) => window.scrollTo(...args)
 
   return { x, y, scrollBy, scrollTo }
 }
