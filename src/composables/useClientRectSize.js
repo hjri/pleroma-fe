@@ -28,7 +28,7 @@ export function useClientRectSize(element) {
       update()
     }
   })
-  onUnmounted(() => resizeObserver.disconnect)
+  onUnmounted(() => resizeObserver.disconnect())
 
   return {
     width,
