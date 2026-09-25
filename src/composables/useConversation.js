@@ -20,7 +20,7 @@ export function useConversation(statusId, expanded) {
 
   // # Config
   const { mergedConfig } = storeToRefs(useMergedConfigStore())
-  const { mastoUserSocketStatus } = storeToRefs(useStreamingStore())
+  const { state: mastoUserSocketStatus } = storeToRefs(useStreamingStore())
   const streamingEnabled = computed(
     () =>
       mergedConfig.value.useStreamingApi &&

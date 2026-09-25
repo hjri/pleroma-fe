@@ -23,12 +23,12 @@ const MAX_RETRIES = 10
 
 export function usePleromaChat(userId) {
   const { mergedConfig } = storeToRefs(useMergedConfigStore())
-  const { mastoUserSocketStatus } = storeToRefs(useStreamingStore())
+  const { state: mastoUserSocketStatus } = storeToRefs(useStreamingStore())
 
   const streamingEnabled = computed(
     () =>
       mergedConfig.value.useStreamingApi &&
-      mastoUserSocketStatus === WSConnectionStatus.JOINED,
+      mastoUserSocketStatus.value === WSConnectionStatus.JOINED,
   )
 
   const chat = ref(null)
