@@ -185,7 +185,7 @@ const ChatMessage = {
       }
     },
     isSuspendable() {
-      return !this.replying && this.mediaPlaying.size === 0
+      return this.mediaPlaying.size === 0
     },
 
     // Global stuff
