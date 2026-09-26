@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 
 import {
@@ -22,6 +23,7 @@ export const TIMELINE_STREAM_MAP = {
 }
 
 const retryTimeout = (multiplier) => 1000 * multiplier
+const REFUSED_AFTER_FAILED_STARTS = 3
 
 export class StreamStateEvent extends Event {
   original
@@ -61,6 +63,10 @@ export const useStreamingStore = defineStore('streaming', {
     state: null,
     retryMultiplier: 1,
     retrying: false,
+    // a socket opened at least once this session
+    everOpened: false,
+    // sockets in a row that closed before they opened
+    failedStarts: 0,
     subscribers: new Set(),
     subscriptions: new Map(),
     globalSubscriptions: new Set(),
@@ -149,6 +155,7 @@ export const useStreamingStore = defineStore('streaming', {
       this.state = WSConnectionStatus.CLOSED
       this.retrying = false
       this.retryMultiplier = 1
+      this.failedStarts = 0
       this.error = null
     },
 
@@ -173,6 +180,8 @@ export const useStreamingStore = defineStore('streaming', {
       this.state = WSConnectionStatus.JOINED
     },
     onOpen() {
+      this.everOpened = true
+      this.failedStarts = 0
       this.retryMultiplier = 1
       this.retrying = false
       this.error = null
@@ -243,6 +252,19 @@ export const useStreamingStore = defineStore('streaming', {
         this.subscribers.forEach(({ et }) => {
           et.dispatchEvent(new StreamStateEvent('close', closeEvent))
         })
+      } else if (
+        useInstanceStore().hosted &&
+        !this.everOpened &&
+        ++this.failedStarts >= REFUSED_AFTER_FAILED_STARTS
+      ) {
+        // hosted: the instance refuses sockets from this site (Pleroma's
+        // origin check), polling it is. An instance serving the page keeps
+        // retrying: it may just be restarting.
+        console.info('Streaming not available here, polling instead')
+        this.socket = null
+        this.state = WSConnectionStatus.DISABLED
+        this.retrying = false
+        this.retryMultiplier = 1
       } else {
         console.warn(
           `MastoAPI websocket disconnected, restarting. CloseEvent code: ${code}`,
