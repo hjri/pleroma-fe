@@ -3,6 +3,8 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useUsersStore } from 'src/stores/users.js'
 
+import { serverUrl } from 'src/api/api_base.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPeopleGroup, faRobot } from '@fortawesome/free-solid-svg-icons'
 
@@ -31,7 +33,11 @@ const UserAvatar = {
   data() {
     return {
       showPlaceholder: false,
-      defaultAvatar: `${useInstanceStore().server + useInstanceStore().instanceIdentity.defaultAvatar}`,
+      // the instance's file (hosted: a full URL on it already)
+      defaultAvatar: serverUrl(
+        useInstanceStore().server,
+        useInstanceStore().instanceIdentity.defaultAvatar,
+      ),
       betterShadow: useInterfaceStore().browserSupport.cssFilter,
     }
   },

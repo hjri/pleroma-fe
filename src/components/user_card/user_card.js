@@ -27,6 +27,7 @@ import { usePostStatusStore } from 'src/stores/post_status'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 import { useUsersStore } from 'src/stores/users.js'
 
+import { serverUrl } from 'src/api/api_base.js'
 import { updateProfile } from 'src/api/user.js'
 import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
 import localeService from 'src/services/locale/locale.service.js'
@@ -380,16 +381,17 @@ export default {
         this.newBanner === null ? this.defaultBanner : this.newBanner
       return this.newBanner === null ? currentUrl : newUrl
     },
+    // the instance's files (hosted: a full URL on it already)
     defaultAvatar() {
-      return (
-        useInstanceStore().server +
-        useInstanceStore().instanceIdentity.defaultAvatar
+      return serverUrl(
+        useInstanceStore().server,
+        useInstanceStore().instanceIdentity.defaultAvatar,
       )
     },
     defaultBanner() {
-      return (
-        useInstanceStore().server +
-        useInstanceStore().instanceIdentity.defaultBanner
+      return serverUrl(
+        useInstanceStore().server,
+        useInstanceStore().instanceIdentity.defaultBanner,
       )
     },
     isDefaultAvatar() {
