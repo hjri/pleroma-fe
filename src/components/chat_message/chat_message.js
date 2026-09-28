@@ -39,14 +39,20 @@ const ChatMessage = {
   props: [
     'edited',
     'noHeading',
-    'previousItem',
     'chatItem',
-    'previousItem',
     'hoveredMessageChain',
     'focused',
     'repliedTo',
   ],
-  emits: ['hover', 'replyRequested'],
+  emits: ['hover', 'replyRequested', 'heightChange', 'suspendableStateChange'],
+  data() {
+    return {
+      resizeObserver: new ResizeObserver(this.updateVirtualHeight),
+      mediaPlaying: new Set(),
+      hovered: false,
+      menuOpened: false,
+    }
+  },
   components: {
     Popover,
     Attachment,
@@ -64,6 +70,20 @@ const ChatMessage = {
     Quote: defineAsyncComponent(() => import('src/components/quote/quote.vue')),
     Timeago,
   },
+  inject: ['deleteChatMessage'],
+  mounted() {
+    if (this.$refs.root) {
+      this.resizeObserver.observe(this.$refs.root)
+      this.updateVirtualHeight([
+        {
+          contentRect: this.$refs.root.getBoundingClientRect(),
+        },
+      ])
+    }
+  },
+  unmounted() {
+    this.resizeObserver.disconnect()
+  },
   computed: {
     isMessage() {
       return this.chatItem.type === 'message'
@@ -71,6 +91,9 @@ const ChatMessage = {
     message() {
       if (!this.isMessage) return null
       return this.chatItem.data.retweeted_status ?? this.chatItem.data
+    },
+    previousItem() {
+      return this.chatItem.olderMessage
     },
     isStatus() {
       // ChatMessage only has account_id while Status has full user data
@@ -94,7 +117,7 @@ const ChatMessage = {
     isCustomReply() {
       if (!this.previousItem) return false
       if (!this.message.in_reply_to_status_id) return false
-      return this.previousItem.data.id !== this.message.in_reply_to_status_id
+      return this.previousItem.id !== this.message.in_reply_to_status_id
     },
     isBrokenReply() {
       if (!this.previousItem) return false
@@ -161,6 +184,9 @@ const ChatMessage = {
         return { left: 50 }
       }
     },
+    isSuspendable() {
+      return this.mediaPlaying.size === 0
+    },
 
     // Global stuff
     ...mapState(useInterfaceStore, {
@@ -170,17 +196,19 @@ const ChatMessage = {
     ...mapState(useInstanceStore, ['restrictedNicknames']),
     ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
-  data() {
-    return {
-      hovered: false,
-      menuOpened: false,
-    }
-  },
   methods: {
     onHover(bool) {
       this.$emit('hover', {
         isHovered: bool,
         messageChainId: this.chatItem.messageChainId,
+      })
+    },
+    updateVirtualHeight(e) {
+      const [entry] = e
+      this.$emit('heightChange', {
+        id: this.chatItem.id,
+        height: entry.contentRect.height + 1,
+        element: this.$el,
       })
     },
     visibilityIcon(visibility) {
@@ -203,13 +231,27 @@ const ChatMessage = {
     async deleteMessage() {
       const confirmed = window.confirm(this.$t('chats.delete_confirm'))
       if (confirmed) {
-        await this.$emit('delete', {
+        await this.deleteChatMessage({
           messageId: this.message.id,
           chatId: this.message.chat_id,
         })
       }
       this.hovered = false
       this.menuOpened = false
+    },
+    addMediaPlaying(id) {
+      this.mediaPlaying.add(id)
+    },
+    removeMediaPlaying(id) {
+      this.mediaPlaying.delete(id)
+    },
+  },
+  watch: {
+    isSuspendable: function (suspendable) {
+      this.$emit('suspendableStateChange', {
+        id: this.chatItem.id,
+        suspendable,
+      })
     },
   },
 }

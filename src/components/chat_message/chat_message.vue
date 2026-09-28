@@ -1,6 +1,7 @@
 <template>
   <div
     v-if="isMessage"
+    ref="root"
     :id="`chatmessage-${message.id}`"
     class="chat-message-wrapper"
     :class="[classnames, { 'hovered-message-chain': hoveredMessageChain }]"
@@ -151,6 +152,8 @@
                 :class="{ faint: message.pending }"
                 :status="messageForStatusContent"
                 :full-content="true"
+                @mediaplay="addMediaPlaying($event)"
+                @mediapause="removeMediaPlaying($event)"
               >
                 <template #footer>
                   <EmojiReactions
@@ -239,6 +242,7 @@
   <div
     v-else
     class="chat-message-date-separator"
+    ref="root"
   >
     <ChatMessageDate
       :date="chatItem.date"

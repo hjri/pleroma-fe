@@ -382,7 +382,10 @@
           </Popover>
         </div>
       </div>
-      <small class="keyboard-enter-hint faint">
+      <small
+        v-if="chatView"
+        class="keyboard-enter-hint faint"
+      >
         <i v-if="submitOnEnter">
           {{ $t('post_status.enter_submits') }}
         </i>

@@ -1,6 +1,6 @@
 import { throttle } from 'lodash-es'
 import { mapState } from 'pinia'
-import { defineAsyncComponent } from 'vue'
+import { defineAsyncComponent, provide } from 'vue'
 
 import DesktopNav from 'src/components/desktop_nav/desktop_nav.vue'
 import FeaturesPanel from 'src/components/features_panel/features_panel.vue'
@@ -22,6 +22,11 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useShoutStore } from 'src/stores/shout.js'
 import { useUsersStore } from 'src/stores/users.js'
+
+import { useBodyScroller } from 'src/composables/useBodyScroller.js'
+import { useScrollPosition } from 'src/composables/useScrollPosition.js'
+import { useWindowScroll } from 'src/composables/useWindowScroll.js'
+import { useWindowSize } from 'src/composables/useWindowSize.js'
 
 // Helper to unwrap reactive proxies
 window.toValue = (x) => JSON.parse(JSON.stringify(x))
@@ -78,6 +83,12 @@ export default {
     ),
     GlobalError,
     GlobalNoticeList,
+  },
+  setup() {
+    provide(
+      'bodyScrollPosition',
+      useScrollPosition(useBodyScroller(useWindowScroll(), useWindowSize())),
+    )
   },
   data: () => ({
     mobileActivePanel: 'timeline',

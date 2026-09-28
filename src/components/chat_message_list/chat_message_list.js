@@ -1,40 +1,32 @@
-import { orderBy, uniqueId } from 'lodash-es'
+import { computed, inject, ref, toRefs, useTemplateRef } from 'vue'
 
 import ChatMessage from 'src/components/chat_message/chat_message.vue'
+
+import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
+import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
 
 const ChatMessageList = {
   components: {
     ChatMessage,
   },
   props: {
+    pending: Boolean,
     messages: Array,
-    pendingMessages: {
-      type: Array,
-      required: false,
-      default: [],
-    },
     headerDate: Boolean,
     focusedId: String,
     repliedId: String,
   },
-  data() {
-    return {
-      hoveredMessageChainId: undefined,
-    }
-  },
-  emits: ['messageDelete', 'replyRequested'],
-  computed: {
-    chatItems() {
-      const messages = [
-        ...orderBy(this.messages, ['pending', 'id'], ['asc', 'asc']),
-        ...this.pendingMessages.map((m) => ({ ...m, pending: true })),
-      ]
-      return messages
+  emits: ['replyRequested'],
+  setup(props, { emit }) {
+    const { messages, headerDate } = toRefs(props)
+    const hoveredMessageChainId = ref(null)
+    const chatItems = computed(() => {
+      return messages.value
         .reduceRight((acc, message, index) => {
           const date = new Date(message.created_at)
 
-          const olderMessage = messages[index - 1]
-          const newerItem = acc[acc.length - 1]
+          const olderMessage = messages.value[index - 1]
+          const newerItem = acc.at(-1)
 
           const diff = olderMessage
             ? message.created_at - olderMessage.created_at
@@ -63,18 +55,19 @@ const ChatMessageList = {
             id: message.id,
             isTail: true,
             isHead: true,
+            olderMessage,
           }
 
           if (newerItem == null) {
-            chatItem.messageChainId = uniqueId()
+            chatItem.messageChainId = message.id
           } else if (newerItem.type === 'date') {
-            chatItem.messageChainId = uniqueId()
+            chatItem.messageChainId = message.id
           } else if (newerItem.type === 'message') {
             const newerUser =
               newerItem.data.account_id || newerItem.data.user.id
             const olderUser = message.account_id || message.user.id
             if (newerUser !== olderUser) {
-              chatItem.messageChainId = uniqueId()
+              chatItem.messageChainId = message.id
             } else {
               chatItem.messageChainId = newerItem.messageChainId
               chatItem.isTail = false
@@ -82,7 +75,7 @@ const ChatMessageList = {
             }
           }
 
-          if (diff > MAX_DIFF || (!olderMessage && this.headerDate)) {
+          if (diff > MAX_DIFF || (!olderMessage && headerDate.value)) {
             return [
               ...acc,
               chatItem,
@@ -91,7 +84,7 @@ const ChatMessageList = {
                 date,
                 isDate: dateDiffs,
                 isTime: diff > MAX_DIFF && !dateDiffs,
-                id: date.getTime().toString(),
+                id: 'fake-date-' + date.getTime().toString(),
               },
             ]
           } else {
@@ -99,34 +92,62 @@ const ChatMessageList = {
           }
         }, [])
         .reverse()
-    },
-  },
-  methods: {
-    onMessageHover({ isHovered, messageChainId }) {
-      this.hoveredMessageChainId = isHovered ? messageChainId : undefined
-    },
-    onMessageDelete({ messageId, chatId }) {
-      this.$emit('messageDelete', { messageId, chatId })
-    },
-    onReplyRequested(message) {
-      this.$emit('replyRequested', message)
-    },
-    getPreviousItem(index) {
-      let result = null
+    })
+    const chatItemsIndex = computed(() =>
+      chatItems.value.reduce((map, value) => {
+        map.set(value.id, value)
+        return map
+      }, new Map()),
+    )
 
-      this.chatItems
-        .slice(0, index)
-        .reverse()
-        .some((item) => {
-          const isMessage = item.type === 'message'
-          if (isMessage) {
-            result = item
-          }
-          return isMessage
-        })
+    const getCurrentItem = (id) => chatItemsIndex.value.get(id)
 
-      return result
-    },
+    const scroller = inject('bodyScrollPosition')
+    const body = useTemplateRef('body')
+    const { fontSize } = useInterfaceSizes()
+    const normalHeight = computed(() => fontSize.value * 3)
+    const dateHeight = computed(() => fontSize.value * 1.5)
+    const getPlaceholderHeight = (id) =>
+      id?.startsWith('fake-date-') ? dateHeight : normalHeight
+
+    const { pending } = toRefs(props)
+    const { heightChart, changeSuspendState, updateVirtualHeight } =
+      useVirtualScrolling({
+        name: pending.value
+          ? 'ChatMessageList<Pending>'
+          : 'ChatMessageList<Real>',
+        enabled: ref(true),
+        list: chatItems,
+        body,
+        scrollPositionInstance: scroller,
+        scrollCompensation: true,
+        getPlaceholderHeight,
+        invertDirection: true,
+      })
+
+    const { focusedId, repliedId } = toRefs(props)
+
+    const onMessageHover = ({ isHovered, messageChainId }) => {
+      hoveredMessageChainId.value = isHovered ? messageChainId : undefined
+    }
+    const onReplyRequested = (message) => emit('replyRequested', message)
+
+    return {
+      heightChart,
+      updateVirtualHeight,
+      getCurrentItem,
+      hoveredMessageChainId,
+      changeSuspendState,
+
+      focusedId,
+      repliedId,
+
+      onReplyRequested,
+      onMessageHover,
+      _test: {
+        chatItems,
+      },
+    }
   },
 }
 

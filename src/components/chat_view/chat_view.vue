@@ -1,5 +1,8 @@
 <template>
-  <div class="chat-view">
+<div
+  class="chat-view"
+  ref="root"
+>
     <div class="chat-view-inner">
       <div
         ref="inner"
@@ -9,15 +12,6 @@
           ref="header"
           class="panel-heading -sticky chat-view-heading"
         >
-          <button
-            class="button-unstyled go-back-button"
-            @click="goBack"
-          >
-            <FAIcon
-              size="lg"
-              icon="chevron-left"
-            />
-          </button>
           <div class="title">
             <template v-if="isConversation">
               <RichContent
@@ -31,22 +25,22 @@
             </template>
             <ChatTitle
               v-else
-              :user="recipient"
+              :user="chatRecipient"
               :with-avatar="true"
             />
           </div>
         </div>
         <div class="chat-list-wrapper panel-body">
-          <div class="top-spacer" />
           <ChatMessageList
-            ref="messageList"
             header-date
             :messages="messages"
-            :pending-messages="pendingMessages"
-            :replied-id="replyStatus?.id"
-            :focused-id="statusId"
-            @message-delete="deleteChatMessage"
-            @reply-requested="e => explicitReplyStatus = e"
+            :replied-id="replyTo?.id"
+            :focused-id="focusedId"
+            @reply-requested="e => explicitReply = e"
+          />
+          <ChatMessageList
+            pending
+            :messages="pendingMessages"
           />
         </div>
         <div
@@ -61,10 +55,10 @@
             <span>
               <FAIcon icon="chevron-down" />
               <div
-                v-if="newMessageCount"
+                v-if="newMessagesCount"
                 class="badge -notification unread-chat-count unread-message-count"
               >
-                {{ newMessageCount }}
+                {{ newMessagesCount }}
               </div>
             </span>
           </div>
@@ -73,11 +67,11 @@
             class="auto-reply-to-section"
           >
             <div class="reply-to-text">
-              {{ explicitReplyStatus ? $t('status.reply_to_selected') : $t('status.reply_to_last') }}
+              {{ explicitReply ? $t('status.reply_to_selected') : $t('status.reply_to_last') }}
               <button
-                v-if="explicitReplyStatus"
+                v-if="explicitReply"
                 class="button-default"
-                @click="explicitReplyStatus = null"
+                @click="explicitReply = null"
               >
                 <FAIcon icon="times" />
                 {{ $t('general.cancel') }}
@@ -86,21 +80,21 @@
           </div>
           <PostStatusForm
             ref="postStatusForm"
-            :replied-status="replyStatus"
+            :replied-status="replyTo"
             :mentions-line="isConversation"
             mentions-line-read-only
 
             disable-quotes
             disable-notice
             disable-lock-warning
-            :disable-subject="!isConversation"
-            :disable-scope-selector="!isConversation"
-            :disable-polls="!isConversation"
-            :disable-sensitivity-checkbox="!isConversation"
-            :disable-preview="!isConversation"
-            :disable-draft="!isConversation"
+            :disable-subject="isChat"
+            :disable-scope-selector="isChat"
+            :disable-polls="isChat"
+            :disable-sensitivity-checkbox="isChat"
+            :disable-preview="isChat"
+            :disable-draft="isChat"
 
-            :disable-submit="isConversation ? !replyStatus : (errorLoadingChat || !chat)"
+            :disable-submit="isConversation ? !replyTo : (!!error || !chatReady)"
             :optimistic-posting="!isConversation"
 
             chat-view
@@ -111,7 +105,6 @@
             :max-height="160"
             emoji-picker-placement="top"
             :post-handler="isConversation ? null : sendMessage"
-            @resize="handleResize"
             @posted="onPosted"
           />
         </div>

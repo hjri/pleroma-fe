@@ -2,6 +2,8 @@ import { debounce, throttle } from 'lodash-es'
 import { storeToRefs } from 'pinia'
 import {
   computed,
+  inject,
+  nextTick,
   onMounted,
   onUnmounted,
   ref,
@@ -22,8 +24,8 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useTimelinesStore } from 'src/stores/timelines.js'
 
+import { useDocumentFocus } from 'src/composables/useDocumentFocus.js'
 import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
-import { useScrollPosition } from 'src/composables/useScrollPosition.js'
 import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -55,7 +57,9 @@ const Timeline = {
   },
   setup(props, ctx) {
     const { t } = useI18n()
-    const unfocused = ref(false)
+
+    const { focused } = useDocumentFocus()
+    const unfocused = computed(() => !focused.value)
 
     // Timeline
     const { timelineRef } = toRefs(props)
@@ -68,8 +72,9 @@ const Timeline = {
         .filter(({ pinned }) => (skipPinned.value ? !pinned : true))
     })
 
-    // Scroll position // FIXME unify scroll position logic in timelines
-    const scroller = useScrollPosition()
+    // Scroll position
+    const scroller = inject('bodyScrollPosition')
+    const { hasReachedTop, shouldLoadBottom, top: scrollY } = scroller
     // Virtual scrolling
     const { fontSize, navbarSize } = useInterfaceSizes()
 
@@ -98,7 +103,7 @@ const Timeline = {
         body,
         offset,
         scrollPositionInstance: scroller,
-        scrollCompensation: ref(false),
+        scrollCompensation: false,
         getPlaceholderHeight,
       })
 
@@ -111,37 +116,40 @@ const Timeline = {
 
     // Showing new
     const paused = ref(false)
+    const { mergedConfig } = storeToRefs(useMergedConfigStore())
+    const unfocusedPause = computed(
+      () => unfocused.value && mergedConfig.value.pauseOnUnfocused,
+    )
+    const showNewAutomatically = computed(
+      () => useMergedConfigStore().mergedConfig.streaming,
+    )
+
     watch(newStatusCount, (count) => {
-      if (!useMergedConfigStore().mergedConfig.streaming) {
-        return
-      }
+      if (!showNewAutomatically.value) return
       if (count <= 0) return
+
       // only 'stream' them when you're scrolled to the top
-      const doc = document.documentElement
-      const top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0)
-      if (
-        top < 15 &&
-        !paused.value &&
-        !(
-          unfocused.value &&
-          useMergedConfigStore().mergedConfig.pauseOnUnfocused
-        )
-      ) {
-        showNewStatuses()
+      if (hasReachedTop.value && !paused.value && !unfocusedPause.value) {
+        showNewStatuses(true)
       } else {
         paused.value = true
       }
     })
-    const showNewStatuses = () => {
+
+    const showNewStatuses = async (fast = false) => {
       if (timeline.value.reloadNeeded) {
         useTimelinesStore().clearTimeline(timelineRef.value.name)
         fetchOlderStatuses()
       } else {
         blockClicksTemporarily()
         useTimelinesStore().showNewStatuses(timelineRef.value.name)
-        paused.value = false
       }
-      window.scrollTo({ top: 0 })
+      paused.value = false
+      await nextTick()
+      scroller.scrollToPriority({
+        top: 0,
+        behavior: fast ? 'instant' : 'smooth',
+      })
     }
     const fetchOlderStatuses = throttle(() => {
       timeline.value.fetcher.fetchOlder()
@@ -190,48 +198,14 @@ const Timeline = {
       window.removeEventListener('keydown', handleShortKey)
     })
 
+    const infiniteLoadWatcher = debounce((value) => {
+      if (!value) return
+      fetchOlderStatuses()
+    }, 100)
     // Scroll
-    const scrollLoad = () => {
-      // TODO simplify this logic
-      const bodyBRect = document.body.getBoundingClientRect()
-      const height = Math.max(bodyBRect.height, -bodyBRect.y)
-      if (
-        !timeline.value.fetcher.loadingOlder &&
-        window.innerHeight + window.pageYOffset >= height - 750
-      ) {
-        fetchOlderStatuses()
-      }
-    }
-    const handleScroll = throttle((e) => {
-      scrollLoad(e)
-    }, 200)
-    onMounted(() => {
-      window.addEventListener('scroll', handleScroll)
-    })
+    watch([shouldLoadBottom, scrollY], infiniteLoadWatcher)
     onUnmounted(() => {
-      window.removeEventListener('scroll', handleScroll)
-    })
-
-    // Focused state
-    const handleVisibilityChange = () => {
-      unfocused.value = document.hidden
-    }
-    onMounted(() => {
-      if (document.hidden === undefined) return
-      document.addEventListener(
-        'visibilitychange',
-        handleVisibilityChange,
-        false,
-      )
-      unfocused.value = document.hidden
-    })
-    onUnmounted(() => {
-      if (document.hidden === undefined) return
-      document.removeEventListener(
-        'visibilitychange',
-        handleVisibilityChange,
-        false,
-      )
+      infiniteLoadWatcher.cancel()
     })
 
     // Misc UI things
