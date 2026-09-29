@@ -4,7 +4,7 @@
     popover-class="popover-default user-popover"
     :overlay-centers-selector="overlayCentersSelector || '.user-info .Avatar'"
     :overlay-centers="overlayCenters && userPopoverOverlay"
-    :disabled="disabled"
+    v-bind="$attrs"
   >
     <template #trigger>
       <slot />

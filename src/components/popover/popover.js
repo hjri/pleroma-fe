@@ -49,6 +49,12 @@ const Popover = {
     // Use styled button (to avoid nested buttons)
     normalButton: Boolean,
 
+    // Use <a> instead of <button>
+    link: {
+      type: Boolean,
+      default: false,
+    },
+
     // Whether to hide the trigger totally
     hideTrigger: {
       type: Boolean,
@@ -110,6 +116,15 @@ const Popover = {
       }
 
       return attrs
+    },
+    triggerClass() {
+      if (this.link) {
+        return ''
+      } else if (this.normalButton) {
+        return 'button-default btn'
+      } else {
+        return 'button-unstyled'
+      }
     },
   },
   methods: {

@@ -5,17 +5,18 @@
     @mouseenter="onMouseenter"
     @mouseleave="onMouseleave"
   >
-    <button
+    <component
       ref="trigger"
+      :is="link ? 'a' : 'button'"
       class="popover-trigger-button"
-      :class="normalButton ? 'button-default btn' : 'button-unstyled'"
+      :class="triggerClass"
       type="button"
       v-bind="allTriggerAttrs"
-      :aria-haspopup="tooltip ? undefined : true"
-      @click="onClick"
+      :aria-haspopup="tooltip ? undefined : !disabled"
+      @click.prevent="onClick"
     >
       <slot name="trigger" />
-    </button>
+    </component>
     <teleport
       :disabled="!teleport"
       to="#popovers"

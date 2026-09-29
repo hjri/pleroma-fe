@@ -123,9 +123,19 @@ const MentionLink = {
           '-you': this.isYou && this.shouldBoldenYou,
           '-highlighted': !!this.highlightData,
           '-has-selection': this.hasSelection,
+          '-with-tooltip': this.shouldShowTooltip,
         },
+        'short',
+        'new',
         this.highlightType,
       ]
+    },
+    popoverAttrs() {
+      return {
+        href: this.url,
+        style: this.style,
+        class: this.classnames,
+      }
     },
     isRemote() {
       return this.userName !== this.userNameFull

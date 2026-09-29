@@ -2,10 +2,6 @@
   overflow-wrap: break-word;
   text-wrap: pretty;
 
-  .mention-link:not(:first-child)::before {
-    content: " ";
-  }
-
   .showMoreLess {
     margin-left: 0.5em;
     white-space: normal;

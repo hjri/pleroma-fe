@@ -7,7 +7,7 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const UserPopover = {
   name: 'UserPopover',
-  props: ['userId', 'overlayCenters', 'disabled', 'overlayCentersSelector'],
+  props: ['userId', 'overlayCenters', 'overlayCentersSelector'],
   components: {
     UserCard,
     Popover,
