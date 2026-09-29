@@ -1,5 +1,5 @@
 <template>
-<article
+<div
   ref="root"
   class="thread-tree"
 >
@@ -81,7 +81,7 @@
         </template>
       </i18n-t>
     </div>
-  </article>
+  </div>
 </template>
 
 <script src="./thread_tree.js"></script>

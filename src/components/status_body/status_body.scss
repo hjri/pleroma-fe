@@ -21,7 +21,9 @@
   .summary {
     display: block;
     font-style: italic;
-    padding-bottom: 0.5em;
+    margin: 0;
+    font-size: initial;
+    font-weight: normal;
   }
 
   .text {
@@ -34,6 +36,7 @@
   }
 
   .summary-wrapper {
+    margin-top: 0;
     margin-bottom: 0.5em;
     border-style: solid;
     border-width: 0 0 1px;

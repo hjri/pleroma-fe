@@ -4,7 +4,7 @@
     :class="{ '-compact': compact, '-single-line': singleLine }"
   >
     <div class="body">
-      <div
+      <h3
         v-if="hasSubject"
         class="summary-wrapper"
         :class="{ '-tall': (hasLongSubject && !showingLongSubject) }"
@@ -33,7 +33,7 @@
         >
           {{ $t("status.show_full_subject") }}
         </button>
-      </div>
+      </h3>
       <div
         class="text-wrapper"
         :class="{'-tall-status': hideTallStatus, '-hidden': shouldHide, '-expanded': showingMore }"

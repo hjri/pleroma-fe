@@ -4,6 +4,7 @@
     ref="root"
     class="Status"
     :class="rootClasses"
+    :aria-label="mainStatus.summary || $t('status.unsubjected')"
   >
     <div
       v-if="error"
@@ -135,7 +136,7 @@
                 v-if="user"
                 class="heading-left"
               >
-                <h4
+                <div
                   v-if="user.name_html"
                   class="status-username"
                   :title="user.name"
@@ -146,14 +147,14 @@
                     :allow-non-square-emoji="allowNonSquareEmoji"
                     :is-local="user.is_local"
                   />
-                </h4>
-                <h4
+                </div>
+                <div
                   v-else
                   class="status-username"
                   :title="user.name"
                 >
                   {{ user.name }}
-                </h4>
+                </div>
                 <UserLink
                   class="account-name"
                   :title="user.screen_name_ui"
@@ -163,6 +164,7 @@
                 <img
                   v-if="!!(user && user.favicon)"
                   class="status-favicon"
+                  :title="$t('status.favicon')"
                   :src="user.favicon"
                 >
               </div>

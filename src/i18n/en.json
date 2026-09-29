@@ -1623,6 +1623,7 @@
   "timeline": {
     "collapse": "Collapse",
     "conversation": "Conversation",
+    "unsubjected_conversation": "Untitled conversation",
     "error": "Error fetching timeline: {0}",
     "load_older": "Load older statuses",
     "no_retweet_hint": "Post is marked as followers-only or direct and cannot be repeated",
@@ -1643,6 +1644,8 @@
     "favorites": "Favorites",
     "repeats": "Repeats",
     "quotes": "Quotes",
+    "unsubjected": "Untitled status",
+    "favicon": "Instance favicon",
     "repeat_confirm": "Do you really want to repeat this status?",
     "repeat_confirm_title": "Repeat confirmation",
     "repeat_confirm_accept_button": "Repeat",
