@@ -9,6 +9,7 @@
           <div class="header-overlay">
             <div class="banner-image">
               <img
+                :title="$t('user_card.banner')"
                 :src="bannerImgSrc"
                 :class="{ 'hide-bio': hideBio }"
               >
@@ -22,6 +23,7 @@
             v-if="avatarAction === 'zoom'"
             class="user-info-avatar -link"
             @click="zoomAvatar"
+            :title="$t('user_card.avatar')"
           >
             <UserAvatar :user-id="user.id" />
             <div class="user-info-avatar -link -overlay">
@@ -36,6 +38,7 @@
             class="user-info-avatar button-unstyled -link"
             :class="{ '-editable': editable }"
             @click="changeAvatar"
+            :title="$t('user_card.avatar')"
           >
             <UserAvatar
               :user-id="user.id"
@@ -53,11 +56,13 @@
             class="user-info-avatar"
             :user-id="user.id"
             @click="avatarAction"
+            :title="$t('user_card.avatar')"
           />
           <router-link
             v-else
             class="user-info-avatar"
             :to="userProfileLink(user)"
+            :title="$t('user_card.avatar')"
           >
             <UserAvatar :user-id="user.id" />
           </router-link>
@@ -65,9 +70,12 @@
             <div class="top-line">
               <div
                 class="other-actions"
-              >
+                role="menubar"
+                :title="$t('user_card.actions')"
+                >
                 <button
                   v-if="editable"
+                  role="menuitem"
                   :disabled="newName?.length === 0"
                   class="btn button-unstyled edit-banner-button"
                   @click="changeBanner"
@@ -82,7 +90,9 @@
                 </button>
                 <button
                   v-else-if="!editable && !isOtherUser && user.is_local"
+                  role="menuitem"
                   class="button-unstyled edit-profile-button"
+                  :title="$t('user_card.edit')"
                   @click.stop="openProfileTab"
                 >
                   <FAIcon
@@ -94,6 +104,8 @@
                 </button>
                 <a
                   v-if="isOtherUser && !user.is_local"
+                  role="menuitem"
+                  :title="$t('user_card.external_view')"
                   :href="user.statusnet_profile_url"
                   target="_blank"
                   class="button-unstyled external-link-button"
@@ -110,6 +122,8 @@
                 />
                 <router-link
                   v-if="showExpand"
+                  role="menuitem"
+                  :title="$t('user_card.open_profile')"
                   :to="userProfileLink(user)"
                   class="button-unstyled external-link-button"
                   @click="$emit('close')"
@@ -121,6 +135,8 @@
                 </router-link>
                 <button
                   v-if="showClose"
+                  role="menuitem"
+                  :title="$t('general.close')"
                   class="button-unstyled external-link-button"
                   @click="$emit('close')"
                 >
@@ -232,11 +248,14 @@
         <div
           v-if="loggedIn && isOtherUser && !hideButtons"
           class="user-interactions"
+          role="menubar"
+          :title="$t('user_card.interactions')"
         >
-          <div class="btn-group">
+          <div class="btn-group" role="group">
             <FollowButton
               :relationship="relationship"
               :user="user"
+              role="menuitem"
             />
             <template v-if="relationship.following">
               <ProgressButton
@@ -244,6 +263,7 @@
                 class="btn button-default"
                 :click="subscribeUser"
                 :title="$t('user_card.subscribe')"
+                role="menuitem"
               >
                 <FAIcon icon="bell" />
               </ProgressButton>
@@ -252,6 +272,7 @@
                 class="btn button-default toggled"
                 :click="unsubscribeUser"
                 :title="$t('user_card.unsubscribe')"
+                role="menuitem"
               >
                 <FALayers>
                   <FAIcon
@@ -273,6 +294,7 @@
             class="btn button-default btn-mute toggled"
             :disabled="user.deactivated"
             @click="unmuteUser"
+            role="menuitem"
           >
             {{ $t('user_card.muted') }}
           </button>
@@ -281,6 +303,7 @@
             class="btn button-default btn-mute"
             :disabled="user.deactivated"
             @click="muteUser"
+            role="menuitem"
           >
             {{ $t('user_card.mute') }}
           </button>
@@ -288,6 +311,7 @@
             class="btn button-default btn-mention"
             :disabled="user.deactivated"
             @click="mentionUser"
+            role="menuitem"
           >
             {{ $t('user_card.mention') }}
           </button>
@@ -299,6 +323,7 @@
         <div
           v-if="!loggedIn && user.is_local"
           class="user-interactions"
+          role="menuitem"
         >
           <RemoteFollow :user="user" />
         </div>
@@ -492,6 +517,8 @@
         :pause-mfm="pauseMfm"
         :scale-mfm="scaleMfm"
         :handle-links="true"
+        :aria-label="$t('user_card.bio')"
+        role="article"
       />
     </template>
     <template v-else-if="editingBio">

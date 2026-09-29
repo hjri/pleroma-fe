@@ -1,16 +1,21 @@
 <template>
-  <div class="AccountActions">
+<div
+  class="AccountActions"
+  role="presentation"
+>
     <Popover
       trigger="click"
       placement="bottom"
       remove-padding
+      :trigger-attrs="{ 'aria-label': $t('user_card.other'), role: 'menuitem' }"
     >
       <template #content>
-        <div class="dropdown-menu">
+        <div role="menu" class="dropdown-menu">
           <template v-if="relationship.following">
             <div
               v-if="relationship.showing_reblogs"
               class="menu-item dropdown-item"
+              role="menuitem"
             >
               <button
                 class="main-button"
@@ -22,6 +27,7 @@
             <div
               v-if="!relationship.showing_reblogs"
               class="menu-item dropdown-item"
+              role="menuitem"
             >
               <button
                 class="main-button"
@@ -39,6 +45,7 @@
           <div
             v-if="relationship.followed_by"
             class="menu-item dropdown-item"
+            role="menuitem"
           >
             <button
               class="main-button"
@@ -47,7 +54,10 @@
               {{ $t('user_card.remove_follower') }}
             </button>
           </div>
-          <div class="menu-item dropdown-item">
+          <div
+            class="menu-item dropdown-item"
+            role="menuitem"
+          >
             <button
               v-if="relationship.blocking"
               class="main-button"
@@ -63,7 +73,10 @@
               {{ $t('user_card.block') }}
             </button>
           </div>
-          <div class="menu-item dropdown-item">
+          <div
+            class="menu-item dropdown-item"
+            role="menuitem"
+          >
             <button
               class="main-button"
               @click="reportUser"
@@ -74,6 +87,7 @@
           <div
             v-if="pleromaChatMessagesAvailable"
             class="menu-item dropdown-item"
+            role="menuitem"
           >
             <button
               class="main-button"
@@ -85,12 +99,10 @@
         </div>
       </template>
       <template #trigger>
-        <button class="button-unstyled ellipsis-button">
-          <FAIcon
-            class="icon"
-            icon="ellipsis-v"
-          />
-        </button>
+        <FAIcon
+          class="icon"
+          icon="ellipsis-v"
+        />
       </template>
     </Popover>
     <teleport to="#modal">
@@ -150,12 +162,4 @@
 <script src="./account_actions.js"></script>
 
 <style lang="scss">
-.AccountActions {
-  .ellipsis-button {
-    width: 2.5em;
-    margin: -0.5em 0;
-    padding: 0.5em 0;
-    text-align: center;
-  }
-}
 </style>

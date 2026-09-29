@@ -1748,7 +1748,17 @@
     "mark_as_non-sensitive": "Non-sensitive"
   },
   "user_card": {
+    "banner": "User banner image",
+    "avatar": "User avatar",
+    "edit": "Edit profile",
     "approve": "Approve",
+    "make_post": "Make a new post",
+    "external_view": "Open external profile",
+    "open_profile": "Open profile",
+    "actions": "Actions",
+    "interactions": "Interactions",
+    "bio": "User description/bio",
+    "other": "Other",
     "approve_confirm_title": "Approve confirmation",
     "approve_confirm_accept_button": "Approve",
     "approve_confirm_cancel_button": "Do not approve",

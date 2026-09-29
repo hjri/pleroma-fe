@@ -8,9 +8,11 @@
       :offset="{ y: 5 }"
       @show="setOpen(true)"
       @close="setOpen(false)"
+      :trigger-attrs="{ role: 'menuitem' }"
+      normal-button
     >
       <template #content>
-        <div class="dropdown-menu">
+        <div role="menu" class="dropdown-menu">
           <template v-for="(entry, index) in entries">
             <div
               v-if="entry === 'separator'"
@@ -21,6 +23,7 @@
             <div
               v-else
               :key="entry.label"
+              role="menuitem"
               class="menu-item dropdown-item"
               :class="entry.checkbox ? '-icon' : '-icon-space'"
             >
@@ -40,27 +43,21 @@
         </div>
       </template>
       <template #trigger>
-        <button
-          class="btn button-default btn-block moderation-tools-button"
-          :class="{ toggled: open, disabled }"
-          :disabled="disabled"
+        {{ $t('user_card.admin_menu.moderation') }}
+        <FAIcon
+          v-if="ready"
+          icon="chevron-down"
+        />
+        <span
+          v-else
+          class="loading-spinner"
         >
-          {{ $t('user_card.admin_menu.moderation') }}
           <FAIcon
-            v-if="ready"
-            icon="chevron-down"
+            class="fa-old-padding"
+            spin
+            icon="circle-notch"
           />
-          <span
-            v-else
-            class="loading-spinner"
-          >
-            <FAIcon
-              class="fa-old-padding"
-              spin
-              icon="circle-notch"
-            />
-          </span>
-        </button>
+        </span>
       </template>
     </Popover>
     <teleport to="#modal">
