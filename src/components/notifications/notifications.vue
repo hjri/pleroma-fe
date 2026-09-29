@@ -54,17 +54,15 @@
         <div
           role="feed"
         >
-          <div
+          <article
             v-if="showExtraNotifications"
-            role="listitem"
             class="notification"
           >
             <extra-notifications />
-          </div>
-          <div
+          </article>
+          <article
             v-for="notification in notificationsToDisplay"
             :key="notification.id"
-            role="listitem"
             class="notification"
             :class="{unseen: !minimalMode && shouldShowUnseen(notification)}"
             @click="e => notificationClicked(notification)"
@@ -74,7 +72,7 @@
               :notification="notification"
               @interacted="e => notificationInteracted(notification)"
             />
-          </div>
+          </article>
         </div>
         <div class="panel-footer">
           <div
