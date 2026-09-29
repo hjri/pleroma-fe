@@ -178,6 +178,7 @@
         :is="videoTag"
         v-if="attachment.type === 'video' && !hidden"
         class="video-container"
+        :title="videoTag === 'button' ? $t('status.open_gallery') : undefined"
         :href="attachment.url"
         @click.stop.prevent="openModal"
       >

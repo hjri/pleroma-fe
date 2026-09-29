@@ -246,7 +246,7 @@
             <Select
               v-model="newStatus.contentType"
               class="input form-control unstyled"
-              :attrs="{ 'aria-label': $t('post_status.content_type_selection') }"
+              :aria-label="$t('post_status.content_type_selection')"
               unstyled="true"
             >
               <option

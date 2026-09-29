@@ -4,6 +4,7 @@
     class="NotificationFilters"
     placement="bottom"
     :bound-to="{ x: 'container' }"
+    :trigger-attrs="{ title: $t('timeline.quick_filter_settings')}"
   >
     <template #content>
       <div class="dropdown-menu">
@@ -98,9 +99,7 @@
       </div>
     </template>
     <template #trigger>
-      <button class="filter-trigger-button button-unstyled">
-        <FAIcon icon="filter" />
-      </button>
+      <FAIcon icon="filter" />
     </template>
   </Popover>
 </template>
