@@ -3,6 +3,7 @@
     class="still-image"
     :class="{ animated: animated }"
     :style="style"
+    role="presentation"
   >
     <canvas
       v-if="animated"

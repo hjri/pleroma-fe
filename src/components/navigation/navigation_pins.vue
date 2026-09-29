@@ -21,11 +21,13 @@
       <span
         v-if="item.iconLetter && !item.iconEmoji"
         class="iconLetter fa-scale-110 fa-old-padding"
+        :title="item.labelRaw || $t(item.label)"
       >{{ item.iconLetter }}</span>
       <StillImage
         v-if="item.iconEmoji"
         class="bookmark-emoji"
         :src="item.iconEmojiUrl"
+        :alt="item.labelRaw || $t(item.label)"
       />
       <div
         v-if="item.badgeGetter && badges[item.badgeGetter]"
