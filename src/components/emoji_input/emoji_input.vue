@@ -6,10 +6,10 @@
   >
     <slot
       :id="'textbox-' + randomSeed"
-      :aria-owns="suggestionListId"
+      :aria-owns="showSuggestions ? suggestionListId : undefined"
       aria-autocomplete="both"
-      :aria-expanded="showSuggestions"
-      :aria-activedescendant="(!showSuggestions || highlighted === -1) ? '' : suggestionItemId(highlighted)"
+      :aria-activedescendant="(!showSuggestions || highlighted === -1) ? undefined : suggestionItemId(highlighted)"
+      aria-haspopup="listbox"
     />
     <!-- TODO: make the 'x' disappear if at the end maybe? -->
     <div
