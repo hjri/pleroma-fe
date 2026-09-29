@@ -106,6 +106,7 @@ const StatusActionButtons = {
     triggerAttrs() {
       return {
         title: this.$t('status.more_actions'),
+        role: 'menuitem',
         'aria-controls': `popup-menu-${this.randomSeed}`,
         'aria-haspopup': 'menu',
       }

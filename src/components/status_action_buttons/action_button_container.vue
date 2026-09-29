@@ -1,10 +1,11 @@
 <template>
-  <div>
+  <div role="presentation">
     <Popover
       v-if="button.dropdown?.()"
       :trigger="$attrs.extra ? 'hover' : 'click'"
       :offset="{ y: 5 }"
       :placement="$attrs.extra ? 'right' : 'bottom'"
+      :trigger-attrs="{ role: 'presentation' }"
     >
       <template #trigger>
         <ActionButton

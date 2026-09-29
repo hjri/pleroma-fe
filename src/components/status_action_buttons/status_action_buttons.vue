@@ -3,11 +3,13 @@
     <span
       class="quick-action-buttons"
       :class="{ '-pin': showPin }"
+      role="menubar"
     >
       <span
         v-for="button in quickButtons"
         :key="button.name"
         class="quick-action"
+        role="presentation"
         :class="{ '-pin': showPin, '-toggle': button.dropdown?.(), '-with-extra': button.name === 'bookmark' }"
       >
         <ActionButtonContainer
