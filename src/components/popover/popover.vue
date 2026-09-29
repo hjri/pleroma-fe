@@ -1,6 +1,7 @@
 <template>
   <span
     class="popover-wrapper"
+    role="presentation"
     @mouseenter="onMouseenter"
     @mouseleave="onMouseleave"
   >

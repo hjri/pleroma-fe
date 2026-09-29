@@ -46,7 +46,7 @@
         :trigger-attrs="triggerAttrs"
         :normal-button="useDefaultButtons"
         class="quick-action"
-        :tabindex="0"
+        role="presentation"
         placement="bottom"
         :offset="{ y: 5 }"
         remove-padding
