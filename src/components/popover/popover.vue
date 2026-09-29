@@ -10,6 +10,7 @@
       :class="normalButton ? 'button-default btn' : 'button-unstyled'"
       type="button"
       v-bind="allTriggerAttrs"
+      :aria-haspopup="tooltip ? undefined : true"
       @click="onClick"
     >
       <slot name="trigger" />

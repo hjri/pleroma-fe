@@ -1,5 +1,5 @@
 <template>
-  <Popover trigger="hover">
+  <Popover trigger="hover" tooltip>
     <template #trigger>
       <slot />
     </template>

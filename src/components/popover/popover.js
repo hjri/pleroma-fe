@@ -59,6 +59,9 @@ const Popover = {
       type: Object,
       default: {},
     },
+
+    // Used to set or unset aria-haspopup (attribute not set for tooltips)
+    tooltip: Boolean,
   },
   inject: {
     // override popover z layer
