@@ -36,6 +36,7 @@
       </h3>
       <div
         class="text-wrapper"
+        role="presentation"
         :class="{'-tall-status': hideTallStatus, '-hidden': shouldHide, '-expanded': showingMore }"
       >
         <RichContent
