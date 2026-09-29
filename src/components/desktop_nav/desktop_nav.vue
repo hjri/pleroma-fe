@@ -1,8 +1,9 @@
 <template>
-  <nav
+  <header
     id="nav"
-    class="DesktopNav"
+    class="DesktopNav topBar"
     :class="{ '-logoLeft': logoLeft }"
+    aria-labelledby="sitename"
     @click="scrollToTop()"
   >
     <div class="inner-nav">
@@ -10,6 +11,7 @@
         <router-link
           v-if="!hideSitename"
           class="site-name"
+          id="sitename"
           :to="{ name: 'root' }"
           active-class="home"
         >
@@ -109,7 +111,7 @@
         {{ $t('login.logout_confirm') }}
       </ConfirmModal>
     </teleport>
-  </nav>
+  </header>
 </template>
 <script src="./desktop_nav.js"></script>
 

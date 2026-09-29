@@ -30,7 +30,10 @@
     </template>
     <template #trigger>
       <span class="button-unstyled timeline-menu-title">
-        <h1 class="title timeline-title">{{ timelineName }}</h1>
+        <h1
+          id="timeline-header"
+          class="title timeline-title"
+        >{{ timelineName }}</h1>
         <span>
           <FAIcon
             size="sm"

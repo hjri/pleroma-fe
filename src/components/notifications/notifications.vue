@@ -8,6 +8,7 @@
       ref="root"
       :class="{ minimal: minimalMode }"
       class="Notifications"
+      :aria-label="$t('notifications.notifications')"
     >
       <div :class="mainClass">
         <div

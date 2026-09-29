@@ -1,10 +1,15 @@
 <template>
-  <span class="NavigationPins">
+<span
+  class="NavigationPins"
+  role="menubar"
+  :aria-label="$t('nav.quick_items')"
+  >
     <router-link
       v-for="item in pinnedList"
       :key="item.name"
       class="button-unstyled pinned-item"
       active-class="toggled"
+      role="menuitem"
       :to="getRouteTo(item)"
       :title="item.labelRaw || $t(item.label)"
     >

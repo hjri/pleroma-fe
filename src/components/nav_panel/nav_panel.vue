@@ -1,5 +1,9 @@
 <template>
-  <div class="NavPanel">
+<nav
+  class="NavPanel"
+  :aria-label="$t('nav.navigation')"
+  :aria-expanded="!collapsed"
+  >
     <div class="panel panel-default">
       <div
         v-if="!forceExpand"
@@ -8,6 +12,7 @@
         <NavigationPins :limit="6" />
         <div class="spacer" />
         <button
+          :title="$t('nav.expand_navigation')"
           class="button-unstyled"
           @click="toggleCollapse"
         >
@@ -21,12 +26,16 @@
       <ul
         v-if="!collapsed || forceExpand"
         class="panel-body"
+        role="menu"
+        :title="$t('nav.all_navigation')"
       >
         <NavigationEntry
           v-if="currentUser || !privateMode"
           :show-pin="false"
           :item="{ icon: 'stream', label: 'nav.timelines' }"
-          :aria-expanded="showTimelines ? 'true' : 'false'"
+          role="menuitem"
+          aria-controls="nav-timelines-list"
+          :aria-expanded="showTimelines"
           @click="toggleTimelines"
         >
           <FAIcon
@@ -39,6 +48,10 @@
           v-show="showTimelines"
           class="timelines-background menu-item-collapsible"
           :class="{ '-expanded': showTimelines }"
+          id="nav-timelines-list"
+          :aria-label="$t('nav.timelines')"
+          :aria-expanded="showTimelines"
+          role="group"
         >
           <div class="timelines">
             <NavigationEntry
@@ -54,6 +67,9 @@
           :show-pin="false"
           :item="{ icon: 'list', label: 'nav.lists' }"
           :aria-expanded="showLists ? 'true' : 'false'"
+          role="menuitem"
+          aria-controls="nav-lists-list"
+          :aria-label="$t('nav.lists')"
           @click="toggleLists"
         >
           <router-link
@@ -77,6 +93,10 @@
           v-show="showLists"
           class="timelines-background menu-item-collapsible"
           :class="{ '-expanded': showLists }"
+          id="nav-lists-list"
+          :aria-label="$t('nav.lists')"
+          :aria-expanded="showLists"
+          role="group"
         >
           <ListsMenuContent
             :show-pin="editMode || forceEditMode"
@@ -88,6 +108,9 @@
           :show-pin="false"
           :item="{ icon: 'bookmark', label: 'nav.bookmarks' }"
           :aria-expanded="showBookmarkFolders ? 'true' : 'false'"
+          role="menuitem"
+          aria-controls="nav-bookmark-folders-list"
+          :aria-label="$t('nav.bookmarks')"
           @click="toggleBookmarkFolders"
         >
           <router-link
@@ -111,6 +134,10 @@
           v-show="showBookmarkFolders"
           class="timelines-background menu-item-collapsible"
           :class="{ '-expanded': showBookmarkFolders }"
+          :aria-label="$t('nav.bookmark_folders')"
+          :aria-expanded="showLists"
+          id="nav-bookmark-folders-list"
+          role="group"
         >
           <BookmarkFoldersMenuContent
             :show-pin="editMode || forceEditMode"
@@ -131,7 +158,7 @@
         />
       </ul>
     </div>
-  </div>
+  </nav>
 </template>
 
 <script src="./nav_panel.js"></script>

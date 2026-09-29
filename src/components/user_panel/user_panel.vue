@@ -1,5 +1,8 @@
 <template>
-  <aside class="user-panel">
+  <aside
+    :aria-label="$t('nav.user_panel')"
+    class="user-panel"
+  >
     <div
       v-if="loggedIn"
       key="user-panel-signed"

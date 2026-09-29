@@ -200,12 +200,20 @@
     "edit_pinned": "Edit pinned items",
     "edit_finish": "Done editing",
     "mobile_sidebar": "Toggle mobile sidebar",
-    "mobile_notifications": "Open notifications (there are unread ones)",
+    "mobile_notifications": "Open notifications",
+    "mobile_notifications_unread_active": "Open notifications (there are unread ones)",
     "mobile_notifications_close": "Close notifications",
     "mobile_notifications_mark_as_seen": "Mark all as seen",
     "announcements": "Announcements",
     "quotes": "Quotes",
-    "drafts": "Drafts"
+    "drafts": "Drafts",
+    "navigation": "Navigation",
+    "quick_items": "Quick Navigation",
+    "all_navigation": "All pages",
+    "expand_navigation": "Expand navigation",
+    "user_panel": "User panel",
+    "instance-specific-panel": "Instance-specific Panel",
+    "content": "Content"
   },
   "notifications": {
     "broken_favorite": "Unknown status, searching for it…",

@@ -1,7 +1,8 @@
 <template>
-  <div
+  <aside
     class="side-drawer-container mobile-drawer"
     :class="{ 'side-drawer-container-closed': closed, 'side-drawer-container-open': !closed }"
+    :aria-label="$t('nav.navigation')"
   >
     <div
       class="side-drawer-darken"
@@ -30,14 +31,16 @@
           <span v-if="!hideSitename">{{ sitename }}</span>
         </div>
       </div>
-      <ul>
+      <ul role="menu">
         <li
           v-if="!currentUser"
           @click="toggleDrawer"
+          role="menuitem"
         >
           <router-link
             :to="{ name: 'login' }"
             class="menu-item"
+            role="menuitem"
           >
             <FAIcon
               fixed-width
@@ -49,6 +52,7 @@
         <li
           v-if="currentUser || !privateMode"
           @click="toggleDrawer"
+          role="menuitem"
         >
           <router-link
             :to="timelinesRoute"
@@ -64,6 +68,7 @@
         <li
           v-if="currentUser"
           @click="toggleDrawer"
+          role="menuitem"
         >
           <router-link
             :to="{ name: 'lists' }"
@@ -79,6 +84,7 @@
         <li
           v-if="currentUser"
           @click="toggleDrawer"
+          role="menuitem"
         >
           <router-link
             :to="{ name: 'bookmarks' }"
@@ -94,6 +100,7 @@
         <li
           v-if="currentUser && pleromaChatMessagesAvailable"
           @click="toggleDrawer"
+          role="menuitem"
         >
           <router-link
             :to="{ name: 'chats', params: { username: currentUser.screen_name } }"
@@ -114,8 +121,8 @@
           </router-link>
         </li>
       </ul>
-      <ul v-if="currentUser">
-        <li @click="toggleDrawer">
+      <ul role="menu" v-if="currentUser">
+        <li @click="toggleDrawer" role="menuitem">
           <router-link
             :to="{ name: 'interactions', params: { username: currentUser.screen_name } }"
             class="menu-item"
@@ -130,6 +137,7 @@
         <li
           v-if="currentUser.locked"
           @click="toggleDrawer"
+          role="menuitem"
         >
           <router-link
             to="/friend-requests"
@@ -151,6 +159,7 @@
         <li
           v-if="shout"
           @click="toggleDrawer"
+          role="menuitem"
         >
           <router-link
             :to="{ name: 'shout-panel' }"
@@ -164,10 +173,11 @@
           </router-link>
         </li>
       </ul>
-      <ul>
+      <ul role="menu">
         <li
           v-if="currentUser || !privateMode"
           @click="toggleDrawer"
+          role="menuitem"
         >
           <router-link
             :to="{ name: 'search' }"
@@ -183,6 +193,8 @@
         <li
           v-if="currentUser && suggestionsEnabled"
           @click="toggleDrawer"
+          class="menu-item"
+          role="menuitem"
         >
           <router-link
             :to="{ name: 'who-to-follow' }"
@@ -195,7 +207,10 @@
             /> {{ $t("nav.who_to_follow") }}
           </router-link>
         </li>
-        <li @click="toggleDrawer">
+        <li
+          @click="toggleDrawer"
+          role="menuitem"
+          >
           <button
             class="menu-item"
             @click="openSettingsModal('user')"
@@ -207,7 +222,10 @@
             /> {{ $t("settings.settings") }}
           </button>
         </li>
-        <li @click="toggleDrawer">
+        <li
+          @click="toggleDrawer"
+          role="menuitem"
+          >
           <router-link
             :to="{ name: 'about'}"
             class="menu-item"
@@ -222,6 +240,7 @@
         <li
           v-if="currentUser?.role === 'admin'"
           @click="toggleDrawer"
+          role="menuitem"
         >
           <button
             class="menu-item"
@@ -237,6 +256,7 @@
         <li
           v-if="currentUser && supportsAnnouncements"
           @click="toggleDrawer"
+          role="menuitem"
         >
           <router-link
             :to="{ name: 'announcements' }"
@@ -258,6 +278,7 @@
         <li
           v-if="currentUser"
           @click="toggleDrawer"
+          role="menuitem"
         >
           <router-link
             :to="{ name: 'drafts' }"
@@ -279,6 +300,7 @@
         <li
           v-if="currentUser"
           @click="toggleDrawer"
+          role="menuitem"
         >
           <router-link
             :to="{ name: 'edit-navigation' }"
@@ -294,6 +316,7 @@
         <li
           v-if="currentUser"
           @click="toggleDrawer"
+          role="menuitem"
         >
           <button
             class="menu-item"
@@ -313,7 +336,7 @@
       :class="{'side-drawer-click-outside-closed': closed}"
       @click.stop.prevent="toggleDrawer"
     />
-  </div>
+  </aside>
 </template>
 
 <script src="./side_drawer.js"></script>

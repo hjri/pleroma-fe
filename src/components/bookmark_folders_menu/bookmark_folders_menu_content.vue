@@ -1,5 +1,5 @@
 <template>
-  <ul>
+  <ul role="presentation">
     <NavigationEntry
       :item="{
         name: 'bookmarks',

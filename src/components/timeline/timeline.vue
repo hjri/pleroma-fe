@@ -1,6 +1,9 @@
 <template>
   <!-- there is a brief moment during logout when old timeline gets forcibly deactivated -->
-  <div v-if="timeline.fetcher" :class="['Timeline', classes.root]">
+  <div
+    v-if="timeline.fetcher"
+    :class="['Timeline', classes.root]"
+  >
     <div
       v-if="!embedded"
       :class="classes.header"
@@ -81,6 +84,7 @@
         class="timeline"
         ref="timeline"
         role="feed"
+        aria-labelledby="timeline-header"
       >
         <template
           v-for="element in heightChart"
@@ -90,7 +94,6 @@
             v-if="element.type === 'item'"
             class="timeline-conversation"
             :status-id="element.id"
-            role="listitem"
 
             :data-vs-height="element.height"
             :data-vs-top="element.top"
