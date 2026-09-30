@@ -4,10 +4,14 @@
     class="settings-modal"
     :class="{ minimize: modalMinimized }"
     :no-background="modalMinimized"
+    aria-labelledby="settings-modal-header"
   >
-    <div class="settings-modal-panel panel">
+    <div
+      class="settings-modal-panel panel"
+      role="presentation"
+    >
       <div class="panel-heading">
-        <h1 class="title">
+        <h1 id="settings-modal-header" class="title">
           {{ modalMode === 'user' ? $t('settings.settings') : $t('admin_dash.window_title') }}
         </h1>
         <transition name="fade">
