@@ -13,7 +13,7 @@
       type="button"
       v-bind="allTriggerAttrs"
       :aria-haspopup="tooltip ? undefined : !disabled"
-      @click.prevent="onClick"
+      @click="onClick"
     >
       <slot name="trigger" />
     </component>

@@ -369,8 +369,9 @@ const Popover = {
         this.graceTimeout = setTimeout(() => this.hidePopover(), 1)
       }
     },
-    onClick() {
+    onClick(e) {
       if (this.trigger === 'click') {
+        e.preventDefault()
         if (this.hidden) {
           this.showPopover()
         } else {
