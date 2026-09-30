@@ -213,10 +213,11 @@
           </div>
         </div>
         <div class="banner-background-input">
-          <h4>{{ $t('settings.set_new_background') }}</h4>
+          <h4 id="new-background-header">{{ $t('settings.set_new_background') }}</h4>
           <input
             type="file"
             class="input"
+            aria-labelledby="new-background-header"
             @change="uploadFile('background', $event)"
           >
           <div class="custom-bg-control">

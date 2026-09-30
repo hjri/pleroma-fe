@@ -8,6 +8,7 @@
       :model-value="visibleState"
       :disabled="shouldBeDisabled"
       :indeterminate="isIndeterminate"
+      role="presentation"
       @update:model-value="update"
     >
       <span

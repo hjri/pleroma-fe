@@ -2,6 +2,7 @@
   <label
     class="Select input"
     :class="{ disabled, unstyled }"
+    role="presentation"
   >
     <select
       :disabled="disabled"
