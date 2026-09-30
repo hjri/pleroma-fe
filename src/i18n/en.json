@@ -896,6 +896,7 @@
       "update_preview": "Update preview",
       "themes3": {
         "define": "Override",
+        "styles": "Styles",
         "palette": {
           "label": "Color schemes",
           "name_label": "Color scheme name",
@@ -1025,6 +1026,8 @@
       },
       "common": {
         "color": "Color",
+        "picker": "Color picker",
+        "hex": "Hex code #RRGGBB",
         "opacity": "Opacity",
         "contrast": {
           "label": "Contrast indicator",

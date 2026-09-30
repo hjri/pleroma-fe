@@ -3,16 +3,19 @@
     class="appearance-tab"
     :label="$t('settings.interface')"
     icon="table-columns"
+    role="presentation"
   >
     <div
       class="setting-section"
       :label="$t('settings.theme')"
       icon="paintbrush"
     >
-      <h3>{{ $t('settings.style.style_section') }}</h3>
-      <ul
+      <h3 id="style-header">{{ $t('settings.style.style_section') }}</h3>
+      <div
         ref="themeList"
         class="theme-list"
+        role="list"
+        :aria-label="$t('settings.style.themes3.styles')"
       >
         <button
           class="button-default theme-preview"
@@ -20,6 +23,8 @@
           :class="{ toggled: isStyleActive('stock'), disabled: switchInProgress }"
           :disabled="switchInProgress"
           @click="resetTheming"
+          role="listitem"
+          :aria-label="$t('settings.style.stock_theme_used')"
         >
           <preview id="theme-preview-stock" />
           <span class="theme-name">
@@ -31,6 +36,8 @@
           v-if="isCustomThemeUsed"
           disabled
           class="button-default theme-preview toggled"
+          :aria-label="$t('settings.style.custom_theme_used')"
+          role="listitem"
         >
           <preview />
           <span class="theme-name">
@@ -42,6 +49,8 @@
           v-if="isCustomStyleUsed"
           disabled
           class="button-default theme-preview toggled"
+          :aria-label="$t('settings.style.custom_style_used')"
+          role="listitem"
         >
           <preview />
           <span class="theme-name">
@@ -57,6 +66,8 @@
           :class="{ toggled: isStyleActive(style.key), disabled: switchInProgress }"
           :disabled="switchInProgress"
           @click="style.version === 'v2' ? setTheme(style.key) : setStyle(style.key)"
+          role="listitem"
+          :aria-label="style.name"
         >
           <preview :id="'theme-preview-' + style.key" />
           <span class="theme-name">
@@ -64,26 +75,35 @@
             <span class="alert neutral version">{{ style.version }}</span>
           </span>
         </button>
-      </ul>
-      <div class="import-file-container">
-        <button
-          class="btn button-default"
-          :class="{ disabled: switchInProgress }"
-          :disabled="switchInProgress"
-          @click="importFile"
-        >
-          <FAIcon icon="folder-open" />
-          {{ $t('settings.style.themes3.editor.load_style') }}
-        </button>
-        <h4>{{ $t('settings.style.themes3.palette.label') }}</h4>
+      </div>
+      <button
+        class="btn button-default"
+        :class="{ disabled: switchInProgress }"
+        :disabled="switchInProgress"
+        @click="importFile"
+      >
+        <FAIcon icon="folder-open" />
+        {{ $t('settings.style.themes3.editor.load_style') }}
+      </button>
+      <div>
+        <h4 id="palette-header">{{ $t('settings.style.themes3.palette.label') }}</h4>
         <div
           v-if="customThemeVersion === 'v3'"
           class="palettes-container"
+          aria-labelledby="palette-header"
         >
-          <h5 v-if="stylePalettes?.length > 0">
+          <h5
+            v-if="stylePalettes?.length > 0"
+            id="style-palettes-header"
+          >
             {{ $t('settings.style.themes3.palette.style') }}
           </h5>
-          <div class="palettes">
+          <div
+            v-if="stylePalettes?.length > 0"
+            class="palettes"
+            role="list"
+            aria-labelledby="style-palettes-header"
+          >
             <button
               v-for="p in stylePalettes || []"
               :key="p.name"
@@ -91,6 +111,7 @@
               :class="{ toggled: isPaletteActive(p.key), disabled: switchInProgress }"
               :disabled="switchInProgress"
               @click="() => setPalette(p.key, p)"
+              role="listitem"
             >
               <div class="palette-label">
                 <label>
@@ -106,7 +127,13 @@
                 />
               </div>
             </button>
-            <h5>{{ $t('settings.style.themes3.palette.bundled') }}</h5>
+          </div>
+          <h5 id="bundled-palettes-header">{{ $t('settings.style.themes3.palette.bundled') }}</h5>
+          <div
+            class="palettes"
+            role="list"
+            aria-labelledby="bundled-palettes-header"
+          >
             <button
               v-for="p in bundledPalettes"
               :key="p.name"
@@ -114,6 +141,7 @@
               :class="{ toggled: isPaletteActive(p.key), disabled: switchInProgress }"
               :disabled="switchInProgress"
               @click="() => setPalette(p.key, p)"
+              role="listitem"
             >
               <div class="palette-label">
                 <label>
@@ -131,27 +159,25 @@
             </button>
           </div>
         </div>
-        <div>
-          <template v-if="customThemeVersion === 'v3'">
-            <h5 v-if="expertLevel > 0">
-              {{ $t('settings.style.themes3.palette.user') }}
-            </h5>
-            <PaletteEditor
-              v-if="expertLevel > 0"
-              v-model="userPalette"
-              class="userPalette"
-              :compact="true"
-              :apply="true"
-              :disabled="switchInProgress"
-              @apply-palette="data => setPaletteCustom(data)"
-            />
-          </template>
-          <template v-else-if="customThemeVersion === 'v2'">
-            <div class="alert neutral theme-notice unsupported-theme-v2">
-              {{ $t('settings.style.themes3.palette.v2_unsupported') }}
-            </div>
-          </template>
-        </div>
+        <template v-if="customThemeVersion === 'v3' && expertLevel > 0">
+          <h5 id="user-palette-header">
+            {{ $t('settings.style.themes3.palette.user') }}
+          </h5>
+          <PaletteEditor
+            v-model="userPalette"
+            class="userPalette"
+            :compact="true"
+            :apply="true"
+            :disabled="switchInProgress"
+            @apply-palette="data => setPaletteCustom(data)"
+            aria-labelledby="user-palette-header"
+          />
+        </template>
+        <template v-else-if="customThemeVersion === 'v2'">
+          <div class="alert neutral theme-notice unsupported-theme-v2">
+            {{ $t('settings.style.themes3.palette.v2_unsupported') }}
+          </div>
+        </template>
       </div>
       <h3>{{ $t('settings.background') }}</h3>
       <div class="banner-background">
@@ -165,6 +191,7 @@
                   v-if="backgroundPreview || user?.background_image || instanceWallpaper"
                   class="fun-monitor-display-screen-image"
                   :src="backgroundPreview || user?.background_image || instanceWallpaper"
+                  :alt="$t('settings.style.themes3.palette.wallpaper')"
                 >
                 <div
                   v-else
@@ -242,7 +269,6 @@
       <ul class="setting-list">
         <li>
           <ChoiceSetting
-            id="forcedRoundness"
             path="forcedRoundness"
             :options="forcedRoundnessOptions"
           >
@@ -251,7 +277,6 @@
         </li>
         <li>
           <ChoiceSetting
-            id="underlayOverride"
             path="underlay"
             :options="underlayOverrideModes"
           >

@@ -30,7 +30,6 @@
       box-sizing: border-box;
       margin: 0;
       /* should still be visible to screenreaders */
-      border-bottom: 1px solid var(--border);
       max-height: 0;
       overflow: hidden;
 
@@ -101,6 +100,7 @@
     > .contents {
       .tab-content-label {
         max-height: unset;
+        border-bottom: 1px solid var(--border);
       }
     }
 

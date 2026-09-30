@@ -1,3 +1,4 @@
+import { useId } from 'vue'
 import { cloneDeep, get, isEqual, set } from 'lodash-es'
 
 import DraftButtons from './draft_buttons.vue'
@@ -109,6 +110,11 @@ export default {
       default: false,
     },
   },
+  setup() {
+    const uniqueId = useId()
+
+    return { uniqueId }
+  },
   data() {
     return {
       localDraft: null,
@@ -124,6 +130,9 @@ export default {
     }
   },
   computed: {
+    idPrefix() {
+      return `setting-${this.uniqueId}-`
+    },
     draft: {
       get() {
         if (this.realSource === 'admin' || this.path == null) {

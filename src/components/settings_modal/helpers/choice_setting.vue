@@ -2,6 +2,8 @@
   <label
     v-if="matchesExpertLevel"
     class="ChoiceSetting setting-item"
+    :for="idPrefix + 'select'"
+    :id="idPrefix + 'label'"
     :class="{ 'faint': shouldBeDisabled }"
   >
     <span class="setting-label">
@@ -20,8 +22,10 @@
     </span>
     <Select
       class="setting-control"
+      :id="idPrefix + 'select'"
       :model-value="realDraftMode ? draft : state"
       :disabled="shouldBeDisabled"
+      :aria-labelledby="idPrefix + 'label'"
       @update:model-value="update"
     >
       <option
