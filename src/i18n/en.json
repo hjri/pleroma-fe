@@ -112,6 +112,7 @@
     "no": "No",
     "none": "None",
     "add": "Add",
+    "suggestions": "Autocomplete suggestions",
     "remove": "Remove",
     "move_dn": "Move downwards",
     "move_up": "Move upwards",
@@ -267,6 +268,7 @@
   "emoji": {
     "stickers": "Stickers",
     "emoji": "Emoji",
+    "picker": "Emoji Picker",
     "keep_open": "Keep picker open",
     "search_emoji": "Search for an emoji",
     "add_emoji": "Insert emoji",

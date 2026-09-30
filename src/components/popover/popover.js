@@ -1,6 +1,8 @@
-/* global process */
+import { useId } from 'vue'
+
 const Popover = {
   name: 'Popover',
+  inheritAttrs: false,
   props: {
     // Action to trigger popover: either 'hover' or 'click'
     trigger: String,
@@ -75,6 +77,11 @@ const Popover = {
       default: '',
     },
   },
+  setup() {
+    const uniqueId = useId()
+
+    return { uniqueId }
+  },
   data() {
     return {
       // lockReEntry is a flag that is set when mouse cursor is leaving the popover's content
@@ -97,6 +104,9 @@ const Popover = {
     }
   },
   computed: {
+    idPrefix() {
+      return `popover-${this.uniqueId}-`
+    },
     allTriggerAttrs() {
       if (process.env.NODE_ENV === 'development') {
         if ('aria-hidden' in this.triggerAttrs) {

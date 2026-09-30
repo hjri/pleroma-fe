@@ -5,11 +5,11 @@
     :class="{ '-with-picker': !hideEmojiButton, '-textarea': input?.tagName === 'TEXTAREA' }"
   >
     <slot
-      :id="'textbox-' + randomSeed"
-      :aria-owns="showSuggestions ? suggestionListId : undefined"
-      aria-autocomplete="both"
+      :id="'textbox-' + uniqueId"
+      :aria-owns="ariaOwns"
+      aria-autocomplete="list"
       :aria-activedescendant="(!showSuggestions || highlighted === -1) ? undefined : suggestionItemId(highlighted)"
-      aria-haspopup="listbox"
+      aria-haspopup="menu"
     />
     <!-- TODO: make the 'x' disappear if at the end maybe? -->
     <div
@@ -41,6 +41,7 @@
       </button>
       <EmojiPicker
         v-if="enableEmojiPicker"
+        :id="emojiPickerId"
         ref="picker"
         :enable-sticker-picker="enableStickerPicker"
         class="emoji-picker-panel"
@@ -54,6 +55,7 @@
     <Popover
       ref="suggestorPopover"
       class="autocomplete-panel"
+      :aria-label="$t('general.suggestions')"
       placement="bottom"
       :hide-trigger="true"
     >
@@ -62,23 +64,25 @@
           :id="suggestionListId"
           ref="panel-body"
           class="autocomplete-panel-body"
-          role="listbox"
+          role="menu"
         >
           <div
             v-for="(suggestion, index) in suggestions"
             :id="suggestionItemId(index)"
             :key="index"
             class="menu-item autocomplete-item"
-            role="option"
+            role="menuitemradio"
             :class="{ '-active': index === highlighted }"
             :aria-label="autoCompleteItemLabel(suggestion)"
-            :aria-selected="index === highlighted"
+            :aria-checked="index === highlighted"
             @click.stop.prevent="onClick($event, suggestion)"
           >
             <span class="image">
               <img
                 v-if="suggestion.img"
                 :src="suggestion.img"
+                :alt="$t('emoji.emoji')"
+                :title="$t('emoji.emoji')"
               >
               <span v-else>{{ suggestion.replacement }}</span>
             </span>
@@ -138,7 +142,7 @@
     }
   }
 
-  .emoji-picker-panel {
+  .popover-wrapper {
     position: absolute;
     z-index: 20;
     margin-top: 0.2em;

@@ -7,6 +7,8 @@
     placement="bottom"
     @show="onPopoverShown"
     @close="onPopoverClosed"
+    :aria-label="$t('emoji.picker')"
+    v-bind="$attrs"
   >
     <template #content>
       <div
@@ -15,6 +17,7 @@
         <div class="emoji-search">
           <input
             ref="search"
+            role="search"
             v-model="keyword"
             type="text"
             class="input form-control"
@@ -31,6 +34,7 @@
           ref="header"
           v-body-scroll-lock="isInModal"
           class="emoji-tabs"
+          role="tablist"
           @wheel.prevent="groupScroll"
         >
           <span
@@ -42,7 +46,8 @@
               toggled: activeGroupView === group.id
             }"
             :title="group.text"
-            role="button"
+            role="tab"
+            :aria-selected="activeGroupView === group.id"
             @click.prevent="highlight(group.id)"
           >
             <span
@@ -64,12 +69,14 @@
         <span
           v-if="stickerPickerEnabled"
           class="additional-tabs"
+          role="tablist"
         >
           <span
             class="button-unstyled stickers-tab-icon additional-tabs-item"
             :class="{toggled: showingStickers}"
             :title="$t('emoji.stickers')"
             @click.prevent="toggleStickers"
+            role="tab"
           >
             <FAIcon
               icon="sticky-note"
@@ -99,6 +106,7 @@
             @update="onScroll"
             @visible="recalculateItemPerRow"
             @resize="recalculateItemPerRow"
+            role="tabpanel"
           >
             <template #default="{ item: group, index, active }">
               <DynamicScrollerItem
@@ -113,12 +121,12 @@
                   :class="{ ['first-row']: group.isFirstRow }"
                   :style="{ '--__amount': itemPerRow }"
                 >
-                  <h6
+                  <h1
                     v-if="group.isFirstRow"
                     class="emoji-group-title"
                   >
                     {{ group.text }}
-                  </h6>
+                  </h1>
                   <span
                     v-for="emoji in group.emojis"
                     :key="group.id + emoji.displayText"

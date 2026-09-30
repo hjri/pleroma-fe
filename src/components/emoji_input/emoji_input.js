@@ -1,3 +1,4 @@
+import { useId } from 'vue'
 import { take } from 'lodash-es'
 
 import Popover from 'src/components/popover/popover.vue'
@@ -5,7 +6,6 @@ import ScreenReaderNotice from 'src/components/screen_reader_notice/screen_reade
 import { ensureFinalFallback } from '../../i18n/languages.js'
 import Completion from '../../services/completion/completion.js'
 import { findOffset } from '../../services/offset_finder/offset_finder.service.js'
-import genRandomSeed from '../../services/random_seed/random_seed.service.js'
 import EmojiPicker from '../emoji_picker/emoji_picker.vue'
 import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
 
@@ -109,9 +109,13 @@ const EmojiInput = {
       default: false,
     },
   },
+  setup() {
+    const uniqueId = useId()
+
+    return { uniqueId }
+  },
   data() {
     return {
-      randomSeed: genRandomSeed(),
       input: undefined,
       caretEl: undefined,
       highlighted: -1,
@@ -212,11 +216,23 @@ const EmojiInput = {
         return emoji.displayText
       }
     },
+    ariaOwns() {
+      if (this.showSuggestions) {
+        return this.suggestionListId
+      } else if (this.pickerShown) {
+        return this.emojiPickerId
+      } else {
+        return undefined
+      }
+    },
     suggestionListId() {
-      return `suggestions-${this.randomSeed}`
+      return `suggestions-${this.uniqueId}`
+    },
+    emojiPickerId() {
+      return `emoji-picker-${this.uniqueId}`
     },
     suggestionItemId() {
-      return (index) => `suggestion-item-${index}-${this.randomSeed}`
+      return (index) => `suggestion-item-${index}-${this.uniqueId}`
     },
   },
   mounted() {
