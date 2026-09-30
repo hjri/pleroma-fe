@@ -19,7 +19,7 @@ export default {
     {
       state: ['faint'],
       directives: {
-        textOpacity: 0.5,
+        textOpacity: 0.75,
       },
     },
     {
