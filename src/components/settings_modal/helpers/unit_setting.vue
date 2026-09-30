@@ -4,7 +4,7 @@
     class="UnitSetting setting-item"
   >
     <label
-      :for="path"
+      :for="idPrefix + 'value'"
       class="setting-label size-label"
     >
       <LocalSettingIndicator :is-local="isLocalSetting" />
@@ -17,7 +17,7 @@
     </label>
     <span class="no-break setting-control">
       <input
-        :id="path"
+        :id="idPrefix + 'value'"
         class="input number-input"
         type="number"
         :step="step"
@@ -27,11 +27,13 @@
         @change="updateValue"
       >
       <Select
-        :id="path"
+        :id="idPrefix + 'unit'"
         :model-value="stateUnit"
         :disabled="disabled"
         class="unit-input unstyled"
+        unstyled
         @change="updateUnit"
+        :aria-label="$t('settings.style.common.unit')"
       >
         <option
           v-for="option in units"

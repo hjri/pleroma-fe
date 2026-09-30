@@ -1028,6 +1028,7 @@
         "color": "Color",
         "picker": "Color picker",
         "hex": "Hex code #RRGGBB",
+        "unit": "Unit",
         "opacity": "Opacity",
         "contrast": {
           "label": "Contrast indicator",
