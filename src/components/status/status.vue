@@ -38,6 +38,7 @@
         <button
           class="unmute button-unstyled"
           @click.prevent="toggleMute"
+          :title="$t('status.show_muted_status')"
         >
           <FAIcon
             icon="eye-slash"
