@@ -1,5 +1,5 @@
 <template>
-  <aside
+  <footer
     class="instance-specific-panel"
     :aria-label="$t('nav.instance-specific-panel')"
   >
@@ -10,7 +10,7 @@
         <!-- eslint-enable vue/no-v-html -->
       </div>
     </div>
-  </aside>
+  </footer>
 </template>
 
 <script src="./instance_specific_panel.js"></script>

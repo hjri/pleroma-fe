@@ -3,18 +3,24 @@
     ref="galleryContainer"
     class="Gallery"
     :class="{ '-long': tooManyAttachments && hidingLong }"
+    role="list"
   >
-    <div class="gallery-rows">
+    <div
+      class="gallery-rows"
+      role="presentation"
+    >
       <div
         v-for="(row, rowIndex) in rows"
         :key="rowIndex"
         class="gallery-row"
         :style="rowStyle(row)"
         :class="{ '-audio': row.audio, '-minimal': row.minimal, '-grid': grid }"
+        role="presentation"
       >
         <div
           class="gallery-row-inner"
           :class="{ '-grid': grid }"
+          role="presentation"
         >
           <Attachment
             v-for="(attachment, attachmentIndex) in row.items"
@@ -36,6 +42,8 @@
             @natural-size-load="onNaturalSizeLoad"
             @play="() => onMediaStateChange(true, attachment.id)"
             @pause="() => onMediaStateChange(false, attachment.id)"
+            role="listitem"
+            :aria-label="$t('status.attachment')"
           />
         </div>
       </div>

@@ -20,11 +20,15 @@
     <div
       v-if="edit || remove"
       class="attachment-buttons"
+      role="menubar"
+      :aria-label="$t('status.attachment_actions')"
     >
       <button
         v-if="remove"
         class="button-default attachment-button -transparent"
         @click.prevent="onRemove"
+        role="menuitem"
+        :title="$t('status.remove_attachment')"
       >
         <FAIcon icon="trash-alt" />
       </button>
@@ -39,6 +43,7 @@
         type="text"
         class="input description-field"
         :placeholder="$t('post_status.media_description')"
+        :aria-label="$t('post_status.media_description')"
       />
     </div>
   </button>
@@ -50,6 +55,7 @@
     <div
       v-show="!isEmpty"
       class="attachment-wrapper"
+      role="presentation"
     >
       <a
         v-if="hidden"
@@ -63,6 +69,8 @@
           :key="nsfwImage"
           class="nsfw"
           :src="nsfwImage"
+          :alt="$t('status.nsfw_placeholder')"
+          :title="$t('status.nsfw_placeholder')"
         >
         <FAIcon
           v-if="attachment.type === 'video'"
@@ -73,12 +81,15 @@
       <div
         v-if="!hidden"
         class="attachment-buttons"
+        role="menubar"
+        :aria-label="$t('status.attachment_actions')"
       >
         <button
           v-if="attachment.type === 'flash' && flashLoaded"
           class="button-default attachment-button -transparent"
           :title="$t('status.attachment_stop_flash')"
           @click.prevent="stopFlash"
+          role="menuitem"
         >
           <FAIcon icon="stop" />
         </button>
@@ -86,7 +97,8 @@
           v-if="attachment.description && size !== 'small' && !edit && attachment.type !== 'unknown'"
           trigger="click"
           popover-class="popover popover-default description-popover"
-          :trigger-attrs="{ 'class': 'button-default attachment-button -transparent', 'title': $t('status.attachment_description') }"
+          normal-button
+          :trigger-attrs="{ class: 'attachment-button -transparent', title: $t('status.attachment_description'), role: 'menuitem' }"
         >
           <template #trigger>
             <FAIcon icon="align-right" />
@@ -102,6 +114,8 @@
           v-if="!useModal && attachment.type !== 'unknown'"
           class="button-default attachment-button -transparent"
           :title="$t('status.show_attachment_in_modal')"
+          role="menuitem"
+          aria-haspopup="dialog"
           @click.prevent="openModalForce"
         >
           <FAIcon icon="search-plus" />
@@ -110,6 +124,7 @@
           v-if="nsfw && hideNsfwLocal"
           class="button-default attachment-button -transparent"
           :title="$t('status.hide_attachment')"
+          role="menuitem"
           @click.prevent="toggleHidden"
         >
           <FAIcon icon="times" />
@@ -118,6 +133,7 @@
           v-if="shiftUp"
           class="button-default attachment-button -transparent"
           :title="$t('status.move_up')"
+          role="menuitem"
           @click.prevent="onShiftUp"
         >
           <FAIcon icon="chevron-left" />
@@ -126,6 +142,7 @@
           v-if="shiftDn"
           class="button-default attachment-button -transparent"
           :title="$t('status.move_down')"
+          role="menuitem"
           @click.prevent="onShiftDn"
         >
           <FAIcon icon="chevron-right" />
@@ -134,6 +151,7 @@
           v-if="remove"
           class="button-default attachment-button -transparent"
           :title="$t('status.remove_attachment')"
+          role="menuitem"
           @click.prevent="onRemove"
         >
           <FAIcon icon="trash-alt" />
@@ -147,6 +165,7 @@
         :href="attachment.url"
         target="_blank"
         @click.stop.prevent="openModal"
+        aria-haspopup="dialog"
       >
         <StillImage
           class="image"
@@ -154,7 +173,7 @@
           :mimetype="attachment.mimetype"
           :src="attachment.large_thumb_url || attachment.url"
           :image-load-handler="onImageLoad"
-          :alt="attachment.description"
+          :alt="attachment.description || $t('status.attachment')"
         />
       </a>
 
@@ -167,10 +186,10 @@
         <FAIcon
           :size="compact ? '2x' : '5x'"
           :icon="placeholderIconClass"
-          :title="localDescription"
+          :title="localDescription || $t('status.attachment')"
         />
         <p v-if="!compact">
-          {{ localDescription }}
+          {{ localDescription || $t('status.attachment') }}
         </p>
       </a>
 
@@ -178,9 +197,10 @@
         :is="videoTag"
         v-if="attachment.type === 'video' && !hidden"
         class="video-container"
-        :title="videoTag === 'button' ? $t('status.open_gallery') : undefined"
+        :title="videoTag === 'button' ? $t('status.show_attachment_in_modal') : undefined"
         :href="attachment.url"
         @click.stop.prevent="openModal"
+        :aria-haspopup="videoTag === 'button' ? 'dialog' : 'false'"
       >
         <VideoAttachment
           class="video"
@@ -213,25 +233,6 @@
         />
       </span>
 
-      <div
-        v-if="attachment.type === 'html' && attachment.oembed"
-        class="oembed-container"
-        @click.prevent="linkClicked"
-      >
-        <div
-          v-if="attachment.thumb_url"
-          class="image"
-        >
-          <img :src="attachment.thumb_url">
-        </div>
-        <div class="text">
-          <!-- eslint-disable vue/no-v-html -->
-          <h1><a :href="attachment.url">{{ attachment.oembed.title }}</a></h1>
-          <div v-html="attachment.oembed.oembedHTML" />
-          <!-- eslint-enable vue/no-v-html -->
-        </div>
-      </div>
-
       <span
         v-if="attachment.type === 'flash' && !hidden"
         class="flash-container"
@@ -257,6 +258,7 @@
         type="text"
         class="input description-field"
         :placeholder="$t('post_status.media_description')"
+        :aria-label="$t('post_status.media_description')"
       />
     </div>
   </div>

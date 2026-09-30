@@ -23,6 +23,7 @@
             v-if="reaction.url"
             :src="reaction.url"
             class="reaction-emoji-content"
+            :alt="reaction.url ? reaction.name : undefined"
             :class="{ ['-wide']: allowNonSquareEmoji }"
           />
           <span

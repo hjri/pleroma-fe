@@ -39,6 +39,7 @@
         :size="attachmentSize"
         @play="$emit('mediaplay')"
         @pause="$emit('mediapause')"
+        :aria-label="$t('status.attachments')"
       />
 
       <div

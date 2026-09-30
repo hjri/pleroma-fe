@@ -434,6 +434,7 @@
         :shift-dn-attachment="newStatus.files.length > 1 && shiftDnMediaFile"
         @play="$emit('mediaplay', 'newStatus')"
         @pause="$emit('mediapause', 'newStatus')"
+        :aria-label="$t('status.attachments')"
       />
       <div
         v-if="newStatus.files.length > 0 && !disableSensitivityCheckbox"

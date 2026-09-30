@@ -49,6 +49,7 @@
           size="small"
           @play="$emit('mediaplay', attachment.id)"
           @pause="$emit('mediapause', attachment.id)"
+          :aria-label="$t('status.attachments')"
         />
         <div
           v-if="draft.poll?.options"

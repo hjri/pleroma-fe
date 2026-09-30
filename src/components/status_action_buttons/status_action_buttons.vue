@@ -4,6 +4,7 @@
       class="quick-action-buttons"
       :class="{ '-pin': showPin }"
       role="menubar"
+      :aria-label="$t('status.status_actions')"
     >
       <span
         v-for="button in quickButtons"
