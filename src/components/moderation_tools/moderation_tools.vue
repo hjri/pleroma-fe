@@ -14,7 +14,7 @@
       <template #content>
         <div role="menu" class="dropdown-menu">
           <template v-for="(entry, index) in entries">
-            <div
+            <hr
               v-if="entry === 'separator'"
               :key="index"
               role="separator"

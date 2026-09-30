@@ -64,7 +64,7 @@
               />{{ $t('settings.reply_visibility_self_short') }}
             </button>
           </div>
-          <div
+          <hr
             v-if="!conversation"
             role="separator"
             class="dropdown-divider"

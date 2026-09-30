@@ -36,7 +36,7 @@
                 {{ $t('user_card.show_repeats') }}
               </button>
             </div>
-            <div
+            <hr
               role="separator"
               class="dropdown-divider"
             />

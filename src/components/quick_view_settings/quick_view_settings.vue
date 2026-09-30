@@ -16,7 +16,7 @@
         >
           <QuickFilterSettings :nested="true" />
         </div>
-        <div
+        <hr
           v-if="mobileLayout"
           role="separator"
           class="dropdown-divider"
@@ -59,7 +59,7 @@
             </button>
           </div>
         </div>
-        <div
+        <hr
           role="separator"
           class="dropdown-divider"
         />
