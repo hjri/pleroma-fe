@@ -4,8 +4,9 @@
     :class="{ '-compact': compact, '-single-line': singleLine }"
   >
     <div class="body">
-      <h3
+      <component
         v-if="hasSubject"
+        :is="headerTag"
         class="summary-wrapper"
         :class="{ '-tall': (hasLongSubject && !showingLongSubject) }"
       >
@@ -33,7 +34,7 @@
         >
           {{ $t("status.show_full_subject") }}
         </button>
-      </h3>
+      </component>
       <div
         class="text-wrapper"
         role="presentation"

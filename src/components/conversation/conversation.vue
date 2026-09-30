@@ -10,7 +10,7 @@
       ref="panelHeader"
       class="panel-heading conversation-heading -sticky"
     >
-      <component :is="isPage ? 'h2' : 'h3'" class="title">
+      <component :is="isPage ? 'h1' : 'h2'" class="title">
         <RichContent
           v-if="conversation[0]?.summary_raw_html"
           :html="conversation[0].summary_raw_html"
@@ -121,6 +121,7 @@
             <div
               v-if="element.type === 'spacer'"
               class="virtual-spacer"
+              role="presentation"
               :style="{ height: element.height + 'px' }"
               aria-hidden="true"
             />

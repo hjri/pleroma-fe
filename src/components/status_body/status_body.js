@@ -67,9 +67,26 @@ const StatusBody = {
     }
   },
   emits: ['parseReady'],
+  inject: {
+    isPage: {
+      default: false,
+    },
+    isExpanded: {
+      default: false,
+    },
+  },
   computed: {
     allowNonSquareEmoji() {
       return this.mergedConfig.nonSquareEmoji
+    },
+    headerLevel() {
+      return [
+        this.isPage ? 0 : 1,
+        this.isExpanded ? 1 : 0,
+      ].reduce((acc, item) => acc + item, 1)
+    },
+    headerTag() {
+      return `h${this.headerLevel}`
     },
     pauseMfm() {
       return this.mergedConfig.pauseMfm

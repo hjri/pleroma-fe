@@ -168,6 +168,7 @@
               v-if="notification.status"
               :to="{ name: 'conversation', params: { statusId: notification.status.id } }"
               class="timeago-link faint"
+              :aria-label="$t('status.open_in_thread_view')"
             >
               <Timeago
                 :time="notification.created_at"

@@ -183,6 +183,7 @@
                 <router-link
                   class="timeago faint"
                   :to="{ name: 'conversation', params: { statusId: status.id } }"
+                  :aria-label="$t('status.open_in_thread_view')"
                 >
                   <Timeago
                     :time="mainStatus.created_at"
