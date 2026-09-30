@@ -2,6 +2,7 @@
   <span
     class="popover-wrapper"
     role="presentation"
+    :class="rootClass"
     @mouseenter="onMouseenter"
     @mouseleave="onMouseleave"
   >

@@ -339,7 +339,7 @@
           </button>
           <Popover
             v-if="!hideExtraActions"
-            class="more-post-actions"
+            root-class="more-post-actions"
             :normal-button="true"
             trigger="click"
             placement="bottom"

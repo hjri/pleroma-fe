@@ -70,6 +70,9 @@ const Popover = {
 
     // Used to set or unset aria-haspopup (attribute not set for tooltips)
     tooltip: Boolean,
+
+    // Rarely-useful class for the wrapper element
+    rootClass: String,
   },
   inject: {
     // override popover z layer
