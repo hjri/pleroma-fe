@@ -354,9 +354,10 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
     },
 
-    installFrontend() {
+    installFrontend({ payload }) {
       return installFrontend({
         credentials: useOAuthStore().token,
+        payload,
       }).then(({ data }) => data)
     },
 
