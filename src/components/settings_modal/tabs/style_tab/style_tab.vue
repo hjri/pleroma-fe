@@ -180,7 +180,10 @@
               :hide-optional-checkbox="true"
             />
             <Tooltip :text="$t('settings.style.themes3.editor.include_in_rule')">
-              <Checkbox v-model="isBackgroundColorPresent" />
+              <Checkbox
+                :title="$t('settings.style.themes3.editor.include_in_rule')"
+                v-model="isBackgroundColorPresent"
+              />
             </Tooltip>
             <ColorInput
               v-if="componentHas('Text')"
