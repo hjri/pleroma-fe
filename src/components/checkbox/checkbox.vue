@@ -17,6 +17,7 @@
       :checked="modelValue"
       :indeterminate="indeterminate"
       @change="$emit('update:modelValue', $event.target.checked)"
+      v-bind="$attrs"
     >
     <i
       class="input checkbox-indicator"

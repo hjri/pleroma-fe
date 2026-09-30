@@ -198,7 +198,10 @@
               v-if="componentHas('Text')"
               :text="$t('settings.style.themes3.editor.include_in_rule')"
             >
-              <Checkbox v-model="isTextColorPresent" />
+              <Checkbox
+                :title="$t('settings.style.themes3.editor.include_in_rule')"
+                v-model="isTextColorPresent"
+              />
             </Tooltip>
             <div
               v-if="componentHas('Text')"
@@ -231,7 +234,10 @@
               v-if="componentHas('Text')"
               :text="$t('settings.style.themes3.editor.include_in_rule')"
             >
-              <Checkbox v-model="isTextAutoPresent" />
+              <Checkbox
+                :title="$t('settings.style.themes3.editor.include_in_rule')"
+                v-model="isTextAutoPresent"
+              />
             </Tooltip>
             <div
               v-if="componentHas('Text')"
@@ -259,7 +265,10 @@
               v-if="componentHas('Link')"
               :text="$t('settings.style.themes3.editor.include_in_rule')"
             >
-              <Checkbox v-model="isLinkColorPresent" />
+              <Checkbox
+                :title="$t('settings.style.themes3.editor.include_in_rule')"
+                v-model="isLinkColorPresent"
+              />
             </Tooltip>
             <ColorInput
               v-if="componentHas('Icon')"
@@ -274,7 +283,10 @@
               v-if="componentHas('Icon')"
               :text="$t('settings.style.themes3.editor.include_in_rule')"
             >
-              <Checkbox v-model="isIconColorPresent" />
+              <Checkbox
+                :title="$t('settings.style.themes3.editor.include_in_rule')"
+                v-model="isIconColorPresent"
+                />
             </Tooltip>
             <ColorInput
               v-if="componentHas('Border')"
@@ -289,7 +301,10 @@
               v-if="componentHas('Border')"
               :text="$t('settings.style.themes3.editor.include_in_rule')"
             >
-              <Checkbox v-model="isBorderColorPresent" />
+              <Checkbox
+                :title="$t('settings.style.themes3.editor.include_in_rule')"
+                v-model="isBorderColorPresent"
+              />
             </Tooltip>
             <OpacityInput
               v-model="editedOpacity"
@@ -298,7 +313,10 @@
               :label="$t('settings.style.themes3.editor.opacity')"
             />
             <Tooltip :text="$t('settings.style.themes3.editor.include_in_rule')">
-              <Checkbox v-model="isOpacityPresent" />
+              <Checkbox
+                :title="$t('settings.style.themes3.editor.include_in_rule')"
+                v-model="isOpacityPresent"
+              />
             </Tooltip>
             <RoundnessInput
               v-model="editedRoundness"
@@ -307,7 +325,10 @@
               :label="$t('settings.style.themes3.editor.roundness')"
             />
             <Tooltip :text="$t('settings.style.themes3.editor.include_in_rule')">
-              <Checkbox v-model="isRoundnessPresent" />
+              <Checkbox
+                :title="$t('settings.style.themes3.editor.include_in_rule')"
+                v-model="isRoundnessPresent"
+              />
             </Tooltip>
           </div>
           <div

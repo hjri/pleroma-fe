@@ -92,12 +92,13 @@
         {{ $t('settings.style.shadows.light_grid') }}
       </Checkbox>
       <div class="style-control">
-        <label class="label">
+        <label for="zoom-input" class="label">
           {{ $t('settings.style.shadows.zoom') }}
         </label>
         <input
+          id="zoom-input"
           v-model="zoom"
-          class="input input-number y-shift-number"
+          class="input input-number"
           type="number"
         >
       </div>
