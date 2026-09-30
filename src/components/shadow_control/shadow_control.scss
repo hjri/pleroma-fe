@@ -5,6 +5,8 @@
   grid-template-areas: "selector preview tweak";
   gap: 0.5em;
   justify-content: stretch;
+  border: 0;
+  padding: 0;
 
   .style-control {
     display: flex;

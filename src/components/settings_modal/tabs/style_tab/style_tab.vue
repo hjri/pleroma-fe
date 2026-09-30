@@ -112,6 +112,7 @@
             {{ $t('settings.style.themes3.editor.variant_selector') }}
           </label>
           <Select
+            id="variant-selector"
             v-model="selectedVariant"
           >
             <option

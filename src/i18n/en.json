@@ -111,6 +111,10 @@
     "yes": "Yes",
     "no": "No",
     "none": "None",
+    "add": "Add",
+    "remove": "Remove",
+    "move_dn": "Move downwards",
+    "move_up": "Move upwards",
     "not_applicable": "N/A",
     "not_available": "N/A",
     "peek": "Peek",
@@ -1088,6 +1092,7 @@
       },
       "shadows": {
         "_tab_label": "Shadow and lighting",
+        "shadows_list": "Shadows list",
         "component": "Component",
         "override": "Override",
         "shadow_id": "Shadow #{value}",
