@@ -1027,6 +1027,7 @@
         "color": "Color",
         "opacity": "Opacity",
         "contrast": {
+          "label": "Contrast indicator",
           "hint": "Contrast ratio is {ratio}, it {level} {context}",
           "level": {
             "aa": "meets Level AA guideline (minimal)",

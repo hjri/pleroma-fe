@@ -1,10 +1,10 @@
 <template>
-  <Popover trigger="hover" tooltip>
+  <Popover trigger="hover" tooltip v-bind="$attrs">
     <template #trigger>
       <slot />
     </template>
     <template #content>
-      <div class="tooltip">
+      <div class="tooltip" role="tooltip">
         {{ props.text }}
       </div>
     </template>
