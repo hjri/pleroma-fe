@@ -6,9 +6,9 @@ import MentionLink from 'src/components/mention_link/mention_link.vue'
 import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import StatusActionButtons from 'src/components/status_action_buttons/status_action_buttons.vue'
+import StatusHeader from 'src/components/status_header/status_header.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
 import StatusPopover from 'src/components/status_popover/status_popover.vue'
-import Timeago from 'src/components/timeago/timeago.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserLink from 'src/components/user_link/user_link.vue'
 import UserListPopover from 'src/components/user_list_popover/user_list_popover.vue'
@@ -81,11 +81,11 @@ const Status = {
     PostStatusForm,
     UserAvatar,
     AvatarList,
-    Timeago,
     StatusPopover,
     UserListPopover,
     EmojiReactions,
     StatusContent,
+    StatusHeader,
     MentionLink,
     MentionsLine,
     UserPopover,
@@ -113,7 +113,6 @@ const Status = {
     },
   },
   emits: [
-    'goto',
     'dive',
     'toggleExpanded',
     'toggleThreadDisplay',
@@ -204,9 +203,6 @@ const Status = {
     },
     isTreeView() {
       return this.mergedConfig.conversationDisplay === 'tree'
-    },
-    simpleTree() {
-      return !this.mergedConfig.conversationTreeAdvanced
     },
     showOtherRepliesInside() {
       return this.mergedConfig.conversationOtherRepliesButton === 'inside'
@@ -484,12 +480,6 @@ const Status = {
     isSuspendable() {
       return !this.replying && this.mediaPlaying.size === 0
     },
-    inThreadForest() {
-      return !!this.threadDisplayState
-    },
-    threadShowing() {
-      return this.threadDisplayState === 'showing'
-    },
     visibilityLocalized() {
       return this.$i18n.t('general.scope_in_timeline.' + this.status.visibility)
     },
@@ -571,9 +561,6 @@ const Status = {
     closeReplyForm() {
       this.replying = false
     },
-    toggleExpanded() {
-      this.$emit('toggleExpanded')
-    },
     toggleMute() {
       this.unmuted = !this.unmuted
     },
@@ -592,9 +579,6 @@ const Status = {
     },
     setHeadTailLinks(headTailLinks) {
       this.headTailLinks = headTailLinks
-    },
-    toggleThreadDisplay() {
-      this.$emit('toggleThreadDisplay')
     },
     updateVirtualHeight(e) {
       const [entry] = e

@@ -9,6 +9,7 @@
 
   .status-content {
     cursor: pointer;
+    margin-top: calc(var(--status-margin) / 2);
   }
 
   --emoji-size: 1em;
@@ -110,7 +111,8 @@
     display: flex;
     flex: 1;
     flex-wrap: nowrap;
-    padding: 0.6em;
+    padding: var(--status-margin);
+    gap: var(--status-margin);
     min-width: 0;
   }
 
@@ -147,15 +149,11 @@
   }
 
   .notification-right {
-    flex: 1;
-    padding-left: 0.8em;
+    flex: 1 1 auto;
     min-width: 0;
-    margin-right: calc(var(--status-margin) / -2);
-
-    .button-unstyled {
-      margin: calc(var(--status-margin) / -2) 0;
-      padding: calc(var(--status-margin) / 2);
-    }
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--status-margin) / 4);
   }
 
   .emoji-reaction-emoji {
@@ -172,59 +170,5 @@
   .emoji-reaction-emoji-image {
     vertical-align: middle;
     object-fit: contain;
-  }
-
-  .notification-details {
-    min-width: 0;
-    line-height: var(--post-line-height);
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    flex: 1 1 0;
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-
-    .name-and-action {
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      line-height: 1.3;
-    }
-
-    .username {
-      font-weight: bolder;
-      max-width: 100%;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .timeago {
-      margin-right: 0.2em;
-    }
-
-    .status-content {
-      margin: 0;
-      max-height: 300px;
-    }
-
-    h1 {
-      overflow-wrap: break-word;
-      text-wrap: pretty;
-      margin: 0 0 0.3em;
-      padding: 0;
-      font-size: 1em;
-      line-height: 1.5;
-
-      small {
-        font-weight: lighter;
-      }
-    }
-
-    p {
-      margin: 0;
-      margin-top: 0;
-      margin-bottom: 0.3em;
-    }
   }
 }
