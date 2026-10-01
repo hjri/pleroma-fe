@@ -13,7 +13,7 @@
       v-else
       :user-id="user.id"
       :disabled="!shouldShowTooltip"
-      :trigger-attrs="popoverAttrs"
+      v-bind="popoverAttrs"
       link
       @click="onClick"
     >

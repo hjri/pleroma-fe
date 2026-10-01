@@ -2,8 +2,7 @@
 <Popover
   trigger="hover"
   tooltip
-  :trigger-attrs="{ 'aria-label': props.text }"
-  v-bind="$attrs"
+  v-bind="{ 'aria-label': props.text, ...$attrs }"
 >
     <template #trigger>
       <slot />

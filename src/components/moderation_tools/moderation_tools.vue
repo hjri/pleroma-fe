@@ -8,7 +8,6 @@
       :offset="{ y: 5 }"
       @show="setOpen(true)"
       @close="setOpen(false)"
-      :trigger-attrs="{ role: 'menuitem' }"
       normal-button
     >
       <template #content>

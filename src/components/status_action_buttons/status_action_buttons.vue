@@ -3,7 +3,7 @@
     <span
       class="quick-action-buttons"
       :class="{ '-pin': showPin }"
-      role="menubar"
+      role="toolbar"
       :aria-label="$t('status.status_actions')"
     >
       <span
@@ -44,7 +44,7 @@
       </span>
       <Popover
         trigger="click"
-        :trigger-attrs="triggerAttrs"
+        v-bind="triggerAttrs"
         :normal-button="useDefaultButtons"
         class="quick-action"
         role="presentation"
@@ -107,7 +107,6 @@
             >
               <button
                 class="main-button"
-                role="menuitem"
                 :tabindex="0"
                 @click.stop="() => { resize(); showPin = !showPin }"
               >

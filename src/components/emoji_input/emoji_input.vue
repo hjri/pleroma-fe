@@ -22,7 +22,77 @@
       <span
         ref="hiddenOverlayCaret"
         class="caret"
-      >x</span>
+      >
+        x
+        <Popover
+          ref="suggestorPopover"
+          class="autocomplete-panel"
+          :aria-label="$t('general.suggestions')"
+          placement="bottom"
+          :hide-trigger="true"
+        >
+          <template #content>
+            <div
+              :id="suggestionListId"
+              ref="panel-body"
+              class="autocomplete-panel-body"
+              role="menu"
+            >
+              <div
+                v-for="(suggestion, index) in suggestions"
+                :id="suggestionItemId(index)"
+                :key="index"
+                class="menu-item autocomplete-item"
+                role="menuitemradio"
+                :class="{ '-active': index === highlighted }"
+                :aria-label="autoCompleteItemLabel(suggestion)"
+                :aria-checked="index === highlighted"
+                @click.stop.prevent="onClick($event, suggestion)"
+              >
+                <span class="image">
+                  <img
+                    v-if="suggestion.img"
+                    :src="suggestion.img"
+                    :alt="$t('emoji.emoji')"
+                    :title="$t('emoji.emoji')"
+                  >
+                  <span v-else>{{ suggestion.replacement }}</span>
+                </span>
+                <div class="label">
+                  <span
+                    v-if="suggestion.user"
+                    class="displayText"
+                  >
+                    {{ suggestion.displayText }}<UnicodeDomainIndicator
+                      :user="suggestion.user"
+                      :at="false"
+                    />
+                  </span>
+                  <span
+                    v-if="!suggestion.user"
+                    class="displayText"
+                  >
+                    {{ maybeLocalizedEmojiName(suggestion) }}
+                  </span>
+                  <span class="detailText">{{ suggestion.detailText }}</span>
+                </div>
+              </div>
+            </div>
+          </template>
+        </Popover>
+        <EmojiPicker
+          v-if="enableEmojiPicker"
+          :id="emojiPickerId"
+          ref="picker"
+          :enable-sticker-picker="enableStickerPicker"
+          class="emoji-picker-panel"
+          @emoji="insert"
+          @sticker-uploaded="onStickerUploaded"
+          @sticker-upload-failed="onStickerUploadFailed"
+          @show="onPickerShown"
+          @close="onPickerClosed"
+        />
+      </span>
       <span>{{ postText }}</span>
     </div>
     <screen-reader-notice
@@ -39,75 +109,7 @@
       >
         <FAIcon :icon="['far', 'face-smile-beam']" />
       </button>
-      <EmojiPicker
-        v-if="enableEmojiPicker"
-        :id="emojiPickerId"
-        ref="picker"
-        :enable-sticker-picker="enableStickerPicker"
-        class="emoji-picker-panel"
-        @emoji="insert"
-        @sticker-uploaded="onStickerUploaded"
-        @sticker-upload-failed="onStickerUploadFailed"
-        @show="onPickerShown"
-        @close="onPickerClosed"
-      />
     </template>
-    <Popover
-      ref="suggestorPopover"
-      class="autocomplete-panel"
-      :aria-label="$t('general.suggestions')"
-      placement="bottom"
-      :hide-trigger="true"
-    >
-      <template #content>
-        <div
-          :id="suggestionListId"
-          ref="panel-body"
-          class="autocomplete-panel-body"
-          role="menu"
-        >
-          <div
-            v-for="(suggestion, index) in suggestions"
-            :id="suggestionItemId(index)"
-            :key="index"
-            class="menu-item autocomplete-item"
-            role="menuitemradio"
-            :class="{ '-active': index === highlighted }"
-            :aria-label="autoCompleteItemLabel(suggestion)"
-            :aria-checked="index === highlighted"
-            @click.stop.prevent="onClick($event, suggestion)"
-          >
-            <span class="image">
-              <img
-                v-if="suggestion.img"
-                :src="suggestion.img"
-                :alt="$t('emoji.emoji')"
-                :title="$t('emoji.emoji')"
-              >
-              <span v-else>{{ suggestion.replacement }}</span>
-            </span>
-            <div class="label">
-              <span
-                v-if="suggestion.user"
-                class="displayText"
-              >
-                {{ suggestion.displayText }}<UnicodeDomainIndicator
-                  :user="suggestion.user"
-                  :at="false"
-                />
-              </span>
-              <span
-                v-if="!suggestion.user"
-                class="displayText"
-              >
-                {{ maybeLocalizedEmojiName(suggestion) }}
-              </span>
-              <span class="detailText">{{ suggestion.detailText }}</span>
-            </div>
-          </div>
-        </div>
-      </template>
-    </Popover>
   </div>
 </template>
 
@@ -139,16 +141,6 @@
     .emoji-picker-icon {
       height: auto;
       padding: 0.2em;
-    }
-  }
-
-  .popover-wrapper {
-    position: absolute;
-    z-index: 20;
-    margin-top: 0.2em;
-
-    &.hide {
-      display: none;
     }
   }
 
@@ -186,6 +178,10 @@
       width: 0;
       margin-right: calc(-1ch - 1px);
       border: 1px solid red;
+
+      .popover-trigger-button {
+        height: 100%;
+      }
     }
   }
 }

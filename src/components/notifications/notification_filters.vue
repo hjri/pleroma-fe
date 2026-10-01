@@ -4,7 +4,7 @@
     class="NotificationFilters"
     placement="bottom"
     :bound-to="{ x: 'container' }"
-    :trigger-attrs="{ title: $t('timeline.quick_filter_settings')}"
+    :title="$t('timeline.quick_filter_settings')"
   >
     <template #content>
       <div class="dropdown-menu">

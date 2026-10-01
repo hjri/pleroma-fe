@@ -67,19 +67,19 @@ library.add(
 )
 
 export default {
-  props: [
-    'button',
-    'status',
-    'extra',
-    'status',
-    'funcArg',
-    'getClass',
-    'getComponent',
-    'doAction',
-    'outerClose',
-    'defaultButtonStyle',
-    'hideLabel',
-  ],
+  props: {
+    button: Object,
+    status: Object,
+    extra: Boolean,
+    funcArg: Function,
+    getClass: Function,
+    getComponent: Function,
+    doAction: Function,
+    outerClose: Function,
+    defaultButtonStyle: Boolean,
+    hideLabel: Boolean,
+    popoverTrigger: Boolean,
+  },
   components: {
     StatusBookmarkFolderMenu,
     EmojiPicker,

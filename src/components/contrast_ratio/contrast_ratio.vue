@@ -9,7 +9,7 @@
     <Tooltip
       :text="hint"
       class="rating"
-      :trigger-attrs="{ 'aria-label': $t('settings.style.common.contrast.label') }"
+      :aria-label="$t('settings.style.common.contrast.label')"
     >
       <span v-if="contrast.aaa">
         <FAIcon
@@ -34,7 +34,7 @@
       v-if="contrast && large"
       :text="hint_18pt"
       class="rating"
-      :trigger-attrs="{ 'aria-label': $t('settings.style.common.contrast.label') }"
+      :aria-label="$t('settings.style.common.contrast.label')"
     >
       <span v-if="contrast.laaa">
         <FAIcon

@@ -3,7 +3,7 @@
     <Popover
       trigger="hover"
       placement="right"
-      :trigger-attrs="triggerAttrs"
+      v-bind="triggerAttrs"
       remove-padding
     >
       <template #content>

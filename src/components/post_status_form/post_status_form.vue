@@ -339,12 +339,11 @@
           </button>
           <Popover
             v-if="!hideExtraActions"
-            root-class="more-post-actions"
-            :normal-button="true"
             trigger="click"
             placement="bottom"
             :offset="{ y: 5 }"
-            :trigger-attrs="{ 'aria-label': $t('post_status.more_post_actions') }"
+            normal-button
+            :aria-label="$t('post_status.more_post_actions')"
           >
             <template #trigger>
               <FAIcon

@@ -2,7 +2,6 @@ import { useId } from 'vue'
 
 const Popover = {
   name: 'Popover',
-  inheritAttrs: false,
   props: {
     // Action to trigger popover: either 'hover' or 'click'
     trigger: String,
@@ -63,16 +62,8 @@ const Popover = {
       default: false,
     },
 
-    triggerAttrs: {
-      type: Object,
-      default: {},
-    },
-
     // Used to set or unset aria-haspopup (attribute not set for tooltips)
     tooltip: Boolean,
-
-    // Rarely-useful class for the wrapper element
-    rootClass: String,
   },
   inject: {
     // override popover z layer
@@ -112,15 +103,15 @@ const Popover = {
     },
     allTriggerAttrs() {
       if (process.env.NODE_ENV === 'development') {
-        if ('aria-hidden' in this.triggerAttrs) {
+        if ('aria-hidden' in this.$attrs) {
           throw new Error(
-            'Do not use aria-hidden in triggerAttrs. Instead set hideTrigger to true',
+            'Do not use aria-hidden in attrs. Instead set hideTrigger to true',
           )
         }
       }
 
       const attrs = {
-        ...this.triggerAttrs,
+        ...this.$attrs,
       }
 
       if (this.hideTrigger) {
@@ -160,7 +151,7 @@ const Popover = {
       // Popover will be anchored around this element, trigger ref is the container, so
       // its children are what are inside the slot. Expect only one v-slot:trigger.
       const anchorEl =
-        this.anchorEl || this.$refs.trigger?.children[0] || this.$el
+        this.anchorEl || this.$refs.trigger?.children[0] || this.$refs.trigger
       // SVGs don't have offsetWidth/Height, use fallback
       const anchorHeight = anchorEl.offsetHeight || anchorEl.clientHeight
       const anchorWidth = anchorEl.offsetWidth || anchorEl.clientWidth

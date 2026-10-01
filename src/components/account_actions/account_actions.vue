@@ -7,7 +7,7 @@
       trigger="click"
       placement="bottom"
       remove-padding
-      :trigger-attrs="{ 'aria-label': $t('user_card.other'), role: 'menuitem' }"
+      :aria-label="$t('user_card.other')"
     >
       <template #content>
         <div role="menu" class="dropdown-menu">

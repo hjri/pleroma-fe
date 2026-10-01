@@ -3,7 +3,7 @@
     trigger="click"
     class="QuickViewSettings"
     :bound-to="{ x: 'container' }"
-    :trigger-attrs="{ title: $t('timeline.quick_view_settings')}"
+    :title="$t('timeline.quick_view_settings')"
   >
     <template #content>
       <div

@@ -7,7 +7,7 @@
     >
       <component
         :is="loggedIn ? 'button' : 'a'"
-        v-bind="!loggedIn ? { href: remoteInteractionLink } : {}"
+        :href="loggedIn ? undefined : remoteInteractionLink"
         role="button"
         class="emoji-reaction btn button-default"
         :class="{ '-picked-reaction': reactedWith(reaction.name), toggled: reactedWith(reaction.name) }"
@@ -56,10 +56,10 @@
         :user-ids="accountsForEmoji.get(reaction.name)"
         class="emoji-reaction-popover"
         :normal-button="true"
-        :trigger-attrs="counterTriggerAttrs(reaction)"
+        v-bind="counterTriggerAttrs(reaction)"
         @show="fetchEmojiReactionsIfMissing()"
       >
-        <span class="emoji-reaction-counts">{{ reaction.count }}</span>
+        {{ reaction.count }}
       </UserListPopover>
     </span>
     <a

@@ -2,12 +2,13 @@
   <div
     class="action-button"
     :class="buttonClass"
+    role="presentation"
   >
     <component
-      :is="getComponent(button)"
+      :is="popoverTrigger ? 'span' : getComponent(button)"
       class="action-button-inner"
       :class="buttonInnerClass"
-      role="menuitem"
+      :role="popoverTrigger ? 'presentation' : 'button'"
       type="button"
       placement="bottom"
       :title="$t(button.label(funcArg))"
@@ -71,11 +72,11 @@
     />
     <Popover
       v-if="button.name === 'bookmark'"
-      class="chevron-popover"
+      class="extra-button"
       :trigger="extra ? 'hover' : 'click'"
       :placement="extra ? 'right' : 'bottom'"
       :offset="extra ? { x: 10 } : { y: 10 }"
-      :trigger-attrs="{ class: 'extra-button', role: 'menuitem', 'aria-label': $t('nav.bookmark_folders') }"
+      :aria-label="$t('nav.bookmark_folders')"
     >
       <template #trigger>
         <FAIcon

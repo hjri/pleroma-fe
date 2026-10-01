@@ -1,24 +1,18 @@
 <template>
-  <span
-    class="popover-wrapper"
-    role="presentation"
-    :class="rootClass"
+  <component
+    :is="link ? 'a' : 'button'"
+    :type="link ? undefined : 'button'"
+    :aria-haspopup="tooltip ? undefined : !disabled"
+    :aria-owns="hidden ? undefined : `${idPrefix}content`"
+    class="popover-trigger-button"
+    :class="triggerClass"
     @mouseenter="onMouseenter"
     @mouseleave="onMouseleave"
+    @click="onClick"
+    v-bind="allTriggerAttrs"
+    ref="trigger"
   >
-    <component
-      ref="trigger"
-      :is="link ? 'a' : 'button'"
-      class="popover-trigger-button"
-      :class="triggerClass"
-      type="button"
-      v-bind="allTriggerAttrs"
-      :aria-haspopup="tooltip ? undefined : !disabled"
-      :aria-owns="hidden ? undefined : `${idPrefix}content`"
-      @click="onClick"
-    >
-      <slot name="trigger" />
-    </component>
+    <slot name="trigger" />
     <teleport
       :disabled="!teleport"
       to="#popovers"
@@ -47,7 +41,7 @@
         </div>
       </transition>
     </teleport>
-  </span>
+  </component>
 </template>
 
 <script src="./popover.js" />

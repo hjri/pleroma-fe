@@ -20,14 +20,13 @@
     <div
       v-if="edit || remove"
       class="attachment-buttons"
-      role="menubar"
+      role="toolbar"
       :aria-label="$t('status.attachment_actions')"
     >
       <button
         v-if="remove"
         class="button-default attachment-button -transparent"
         @click.prevent="onRemove"
-        role="menuitem"
         :title="$t('status.remove_attachment')"
       >
         <FAIcon icon="trash-alt" />
@@ -81,7 +80,7 @@
       <div
         v-if="!hidden"
         class="attachment-buttons"
-        role="menubar"
+        role="toolbar"
         :aria-label="$t('status.attachment_actions')"
       >
         <button
@@ -89,7 +88,6 @@
           class="button-default attachment-button -transparent"
           :title="$t('status.attachment_stop_flash')"
           @click.prevent="stopFlash"
-          role="menuitem"
         >
           <FAIcon icon="stop" />
         </button>
@@ -98,7 +96,8 @@
           trigger="click"
           popover-class="popover popover-default description-popover"
           normal-button
-          :trigger-attrs="{ class: 'attachment-button -transparent', title: $t('status.attachment_description'), role: 'menuitem' }"
+          class="attachment-button -transparent"
+          :title="$t('status.attachment_description')"
         >
           <template #trigger>
             <FAIcon icon="align-right" />
@@ -114,7 +113,6 @@
           v-if="!useModal && attachment.type !== 'unknown'"
           class="button-default attachment-button -transparent"
           :title="$t('status.show_attachment_in_modal')"
-          role="menuitem"
           aria-haspopup="dialog"
           @click.prevent="openModalForce"
         >
@@ -124,7 +122,6 @@
           v-if="nsfw && hideNsfwLocal"
           class="button-default attachment-button -transparent"
           :title="$t('status.hide_attachment')"
-          role="menuitem"
           @click.prevent="toggleHidden"
         >
           <FAIcon icon="times" />
@@ -133,7 +130,6 @@
           v-if="shiftUp"
           class="button-default attachment-button -transparent"
           :title="$t('status.move_up')"
-          role="menuitem"
           @click.prevent="onShiftUp"
         >
           <FAIcon icon="chevron-left" />
@@ -142,7 +138,6 @@
           v-if="shiftDn"
           class="button-default attachment-button -transparent"
           :title="$t('status.move_down')"
-          role="menuitem"
           @click.prevent="onShiftDn"
         >
           <FAIcon icon="chevron-right" />
@@ -151,7 +146,6 @@
           v-if="remove"
           class="button-default attachment-button -transparent"
           :title="$t('status.remove_attachment')"
-          role="menuitem"
           @click.prevent="onRemove"
         >
           <FAIcon icon="trash-alt" />

@@ -5,13 +5,13 @@
       :trigger="$attrs.extra ? 'hover' : 'click'"
       :offset="{ y: 5 }"
       :placement="$attrs.extra ? 'right' : 'bottom'"
-      :trigger-attrs="{ role: 'presentation' }"
     >
       <template #trigger>
         <ActionButton
           :button="button"
           :status="status"
           :hide-label="hideLabel"
+          popover-trigger
           v-bind.prop="$attrs"
         />
       </template>

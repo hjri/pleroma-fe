@@ -70,12 +70,11 @@
             <div class="top-line">
               <div
                 class="other-actions"
-                role="menubar"
+                role="toolbar"
                 :title="$t('user_card.actions')"
                 >
                 <button
                   v-if="editable"
-                  role="menuitem"
                   :disabled="newName?.length === 0"
                   class="btn button-unstyled edit-banner-button"
                   @click="changeBanner"
@@ -90,7 +89,6 @@
                 </button>
                 <button
                   v-else-if="!editable && !isOtherUser && user.is_local"
-                  role="menuitem"
                   class="button-unstyled edit-profile-button"
                   :title="$t('user_card.edit')"
                   @click.stop="openProfileTab"
@@ -104,7 +102,7 @@
                 </button>
                 <a
                   v-if="isOtherUser && !user.is_local"
-                  role="menuitem"
+                  role="button"
                   :title="$t('user_card.external_view')"
                   :href="user.statusnet_profile_url"
                   target="_blank"
@@ -122,7 +120,7 @@
                 />
                 <router-link
                   v-if="showExpand"
-                  role="menuitem"
+                  role="button"
                   :title="$t('user_card.open_profile')"
                   :to="userProfileLink(user)"
                   class="button-unstyled external-link-button"
@@ -135,7 +133,6 @@
                 </router-link>
                 <button
                   v-if="showClose"
-                  role="menuitem"
                   :title="$t('general.close')"
                   class="button-unstyled external-link-button"
                   @click="$emit('close')"

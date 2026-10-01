@@ -9,7 +9,7 @@
       v-if="$parent.isDirty"
       trigger="hover"
       normal-button
-      :trigger-attrs="{ 'aria-label': $t('settings.commit_value_tooltip') }"
+      :aria-label="$t('settings.commit_value_tooltip')"
       @click="$parent.commitDraft"
     >
       <template #trigger>
@@ -25,7 +25,7 @@
       v-if="$parent.isDirty"
       trigger="hover"
       normal-button
-      :trigger-attrs="{ 'aria-label': $t('settings.reset_value_tooltip') }"
+      :aria-label="$t('settings.reset_value_tooltip')"
       @click="$parent.reset"
     >
       <template #trigger>
@@ -41,7 +41,7 @@
       v-if="$parent.canHardReset"
       trigger="hover"
       normal-button
-      :trigger-attrs="{ 'aria-label': $t('settings.hard_reset_value_tooltip') }"
+      :aria-label="$t('settings.hard_reset_value_tooltip')"
       @click="$parent.hardReset"
     >
       <template #trigger>

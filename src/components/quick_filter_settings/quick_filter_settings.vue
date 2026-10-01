@@ -4,7 +4,7 @@
     class="QuickFilterSettings"
     :bound-to="{ x: 'container' }"
     :position="nested ? 'right' : 'top'"
-    :trigger-attrs="triggerAttrs"
+    v-bind="triggerAttrs"
   >
     <template #content>
       <div

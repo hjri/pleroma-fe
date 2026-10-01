@@ -124,7 +124,8 @@
               >
                 <Popover
                   trigger="click"
-                  :trigger-attrs="{ 'class': 'button-default menu-icon simple-button', title: $t('chats.more') }"
+                  class="button-default menu-icon simple-button"
+                  :title="$t('chats.more')"
                   placement="top"
                   :margin="popoverMarginStyle"
                   @show="menuOpened = true"
