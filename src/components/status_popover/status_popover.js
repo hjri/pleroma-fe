@@ -25,7 +25,7 @@ const StatusPopover = {
     statusLink() {
       return this.$router.resolve({
         name: 'conversation',
-            params: { statusId: this.statusId },
+        params: { statusId: this.statusId },
       }).href
     }
   },
@@ -44,6 +44,12 @@ const StatusPopover = {
           .then(() => (this.error = false))
           .catch(() => (this.error = true))
       }
+    },
+    navigate() {
+      this.$router.push({
+        name: 'conversation',
+        params: { statusId: this.statusId },
+      })
     },
   },
   watch: {

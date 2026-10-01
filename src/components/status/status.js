@@ -571,11 +571,6 @@ const Status = {
     closeReplyForm() {
       this.replying = false
     },
-    gotoOriginal(id) {
-      if (this.inConversation) {
-        this.$emit('goto', id)
-      }
-    },
     toggleExpanded() {
       this.$emit('toggleExpanded')
     },

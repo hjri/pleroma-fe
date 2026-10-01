@@ -5,10 +5,11 @@
     :stay-on-click="true"
     popover-class="popover-default status-popover"
     :bound-to="{ x: 'container' }"
-    :href="link ? statusLink : undefined"
+    :href="statusLink"
     @show="enter"
-    :link="link"
+    link
     v-bind="$attrs"
+    @click.prevent="navigate"
   >
     <template #trigger>
       <slot />

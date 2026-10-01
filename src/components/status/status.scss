@@ -166,16 +166,6 @@
   }
 
   .reply-to-popover {
-    .reply-to:hover::before {
-      content: "";
-      display: block;
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      border-bottom: 1px solid var(--faint);
-      pointer-events: none;
-    }
-
     .faint-link:hover {
       // override default
       text-decoration: none;

@@ -312,32 +312,27 @@
                       class="reply-to-popover"
                       style="min-width: 0;"
                       :class="{ '-strikethrough': !mainStatus.parent_visible }"
+                      :aria-label="$t('tool_tip.reply')"
                     >
-                      <button
-                        class="button-unstyled reply-to"
-                        :aria-label="$t('tool_tip.reply')"
-                        @click.prevent="gotoOriginal(status.in_reply_to_status_id)"
-                      >
                         <i18n-t
                           keypath="status.reply_to_with_icon"
                           scope="global"
                         >
-                          <template #icon>
-                            <FAIcon
-                              class="fa-scale-110 fa-old-padding"
-                              icon="reply"
-                              flip="horizontal"
-                            />
-                          </template>
-                          <template #replyTo>
-                            <span
-                              class="reply-to-text"
-                            >
-                              {{ $t('status.reply_to') }}
-                            </span>
-                          </template>
-                        </i18n-t>
-                      </button>
+                        <template #icon>
+                          <FAIcon
+                            class="fa-scale-110 fa-old-padding"
+                            icon="reply"
+                            flip="horizontal"
+                          />
+                        </template>
+                        <template #replyTo>
+                          <span
+                            class="reply-to-text"
+                          >
+                            {{ $t('status.reply_to') }}
+                          </span>
+                        </template>
+                      </i18n-t>
                     </StatusPopover>
 
                     <span
@@ -449,15 +444,13 @@
             <span role="list" :aria-label="$t('status.replies_list')">
               <span
                 v-for="reply in replies.values()"
+                :key="reply.id"
                 role="listitem"
                 :aria-label="reply.name"
               >
                 <StatusPopover
-                  :key="reply.id"
                   :status-id="reply.id"
-                  @click.prevent="gotoOriginal(reply.id)"
                   class="reply-link"
-                  link
                 >
                   {{ reply.name }}
                 </StatusPopover>
