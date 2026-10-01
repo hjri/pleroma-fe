@@ -139,6 +139,15 @@ body {
 a {
   text-decoration: none;
   color: var(--link);
+
+  &:focus,
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.underline-links a {
+  text-decoration: underline;
 }
 
 h4 {

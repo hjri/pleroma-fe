@@ -107,6 +107,16 @@ export default {
     currentTheme() {
       this.setThemeBodyClass()
     },
+    underlineLinks: {
+      handler(value) {
+        if (value) {
+          document.body.classList.add('underline-links')
+        } else {
+          document.body.classList.remove('underline-links')
+        }
+      },
+      immediate: true,
+    },
     layoutType() {
       document.getElementById('modal').classList = ['-' + this.layoutType]
     },
@@ -150,6 +160,9 @@ export default {
       }
 
       return 'stock'
+    },
+    underlineLinks() {
+      return useMergedConfigStore().mergedConfig.underlineLinks
     },
     layoutModalClass() {
       return '-' + this.layoutType

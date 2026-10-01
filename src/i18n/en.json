@@ -1185,6 +1185,7 @@
     "cache": "Cache",
     "clear_asset_cache": "Clear asset cache",
     "clear_emoji_cache": "Clear emoji cache",
+    "underline_links": "Make all links always underlined",
     "compact_profiles": "Reduce profile height on user pages"
   },
   "admin_dash": {
