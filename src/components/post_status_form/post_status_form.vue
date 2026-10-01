@@ -247,7 +247,7 @@
               v-model="newStatus.contentType"
               class="input form-control unstyled"
               :aria-label="$t('post_status.content_type_selection')"
-              unstyled="true"
+              unstyled
             >
               <option
                 v-for="postFormat in postFormats"

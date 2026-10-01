@@ -440,22 +440,29 @@
             </button>
             <span
               v-else
+              role="header"
+              :aria-level="headerLevel"
               class="faint"
             >
               {{ $t('status.replies_list') }}
             </span>
-            <StatusPopover
-              v-for="reply in replies.values()"
-              :key="reply.id"
-              :status-id="reply.id"
-            >
-              <button
-                class="button-unstyled -link reply-link"
-                @click.prevent="gotoOriginal(reply.id)"
+            <span role="list" :aria-label="$t('status.replies_list')">
+              <span
+                v-for="reply in replies.values()"
+                role="listitem"
+                :aria-label="reply.name"
               >
-                {{ reply.name }}
-              </button>
-            </StatusPopover>
+                <StatusPopover
+                  :key="reply.id"
+                  :status-id="reply.id"
+                  @click.prevent="gotoOriginal(reply.id)"
+                  class="reply-link"
+                  link
+                >
+                  {{ reply.name }}
+                </StatusPopover>
+              </span>
+            </span>
           </div>
 
           <Transition name="fade">

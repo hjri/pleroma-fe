@@ -360,7 +360,7 @@
           class="highlighter-color"
           :show-optional-checkbox="false"
           name="'userHighlightColorTx'+user.id"
-          :unstyled="true"
+          unstyled
         />
       </div>
     </div>

@@ -9,14 +9,14 @@
       class="action-button-inner"
       :class="buttonInnerClass"
       :role="popoverTrigger ? 'presentation' : 'button'"
-      type="button"
+      :type="popoverTrigger ? undefined : 'button'"
       placement="bottom"
       :title="$t(button.label(funcArg))"
       target="_blank"
       :tabindex="0"
       :disabled="button.interactive ? !button.interactive(funcArg) : false"
       :href="getComponent(button) == 'a' ? button.link?.(funcArg) || remoteInteractionLink : undefined"
-      @click="doActionWrap(button, outerClose)"
+      @click="popoverTrigger ? undefined : doActionWrap(button, outerClose)"
     >
       <FALayers>
         <FAIcon
