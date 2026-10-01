@@ -54,6 +54,9 @@
 
   .right-side {
     flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--status-margin) / 2);
   }
 
   .usercard {
@@ -78,10 +81,6 @@
     width: 1.2em;
     margin-right: 0.4em;
     object-fit: contain;
-  }
-
-  .status-heading {
-    margin-bottom: 0.5em;
   }
 
   .heading-name-row {
@@ -122,14 +121,12 @@
     flex-shrink: 0;
     align-self: baseline;
     word-break: keep-all;
+    margin-right: -0.25em;
 
+    .visibility-icon,
     .button-unstyled {
-      padding: 0.2em;
-      margin: -0.2em;
-    }
-
-    .svg-inline--fa {
-      margin-left: 0.25em;
+      margin: -0.25em 0;
+      padding: 0.25em;
     }
   }
 
@@ -139,7 +136,7 @@
   }
 
   .timeago {
-    margin-right: 0.2em;
+    margin-right: 0.25em;
   }
 
   & .heading-reply-row,
@@ -147,7 +144,6 @@
     position: relative;
     align-content: baseline;
     font-size: 0.85em;
-    margin-top: 0.2em;
     line-height: 130%;
     max-width: 100%;
     align-items: stretch;
@@ -233,11 +229,11 @@
 
     .right-side {
       display: flex;
+      flex-direction: row;
       flex: 1 1 auto;
       overflow-x: hidden;
       text-overflow: ellipsis;
       margin-right: 0;
-      gap: 0.5em;
 
       .repeater-name {
         flex: 0 1 auto;
@@ -270,10 +266,6 @@
     grid-template-columns: 1fr;
     grid-auto-columns: 1fr;
     grid-auto-flow: column;
-    margin-top: var(--status-margin);
-  }
-
-  .status-action-buttons {
     margin-top: var(--status-margin);
   }
 

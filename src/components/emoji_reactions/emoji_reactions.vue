@@ -1,5 +1,8 @@
 <template>
-  <div class="EmojiReactions">
+  <div
+    v-if="emojiReactions.length > 0"
+    class="EmojiReactions"
+  >
     <span
       v-for="(reaction) in emojiReactions"
       :key="reaction.url || reaction.name"

@@ -2,7 +2,6 @@
 
 .EmojiReactions {
   display: flex;
-  margin-top: 0.25em;
   flex-wrap: wrap;
 
   --emoji-size: calc(var(--emojiSize, 1.25em) * var(--emojiReactionsScale, 1));
