@@ -10,7 +10,11 @@
         v-if="useImage && imageLoaded"
         class="card-image"
       >
-        <img :src="card.image">
+        <img
+          :src="card.image"
+          :alt="$t('general.preview')"
+          :title="$t('general.preview')"
+        >
       </div>
       <div class="card-content">
         <span class="card-host faint">

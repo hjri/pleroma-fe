@@ -103,14 +103,6 @@ const StatusActionButtons = {
         chatView: !!this.inChatView,
       }
     },
-    triggerAttrs() {
-      return {
-        title: this.$t('status.more_actions'),
-        role: 'menuitem',
-        'aria-controls': `popup-menu-${this.randomSeed}`,
-        'aria-haspopup': 'menu',
-      }
-    },
   },
   methods: {
     doAction(button) {

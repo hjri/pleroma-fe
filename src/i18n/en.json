@@ -88,6 +88,7 @@
     "more": "More",
     "no_more": "No more items",
     "loading": "Loading…",
+    "preview": "Preview",
     "generic_error": "An error occured",
     "generic_error_message": "An error occured: {0}",
     "generic_error_details": "Technical info:",

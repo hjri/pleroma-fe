@@ -44,10 +44,9 @@
       </span>
       <Popover
         trigger="click"
-        v-bind="triggerAttrs"
+        :title="$t('status.more_actions')"
         :normal-button="useDefaultButtons"
         class="quick-action"
-        role="presentation"
         placement="bottom"
         :offset="{ y: 5 }"
         remove-padding
