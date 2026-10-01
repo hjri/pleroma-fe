@@ -91,13 +91,13 @@
           v-if="!disablePreview"
           class="preview-heading"
         >
-          <a
-            class="preview-toggle faint"
+          <button
+            class="button-unstyled preview-toggle faint"
             @click.stop.prevent="togglePreview"
           >
             {{ $t('post_status.preview') }}
             <FAIcon :icon="showPreview ? 'chevron-left' : 'chevron-right'" />
-          </a>
+          </button>
           <div
             v-show="previewLoading"
             class="preview-spinner"
