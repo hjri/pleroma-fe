@@ -18,6 +18,7 @@ export const BUTTONS = [
     icon: 'reply',
     active: ({ replying }) => replying,
     counter: ({ status }) => status.replies_count,
+    counterLabel: 'replies_counter',
     anon: true,
     anonLink: true,
     toggleable: true,
@@ -48,6 +49,7 @@ export const BUTTONS = [
     animated: true,
     active: ({ status }) => status.repeated,
     counter: ({ status }) => status.repeat_num,
+    counterLabel: 'repeats_counter',
     anonLink: true,
     interactive: ({ status, currentUser }) =>
       !!currentUser &&
@@ -82,6 +84,7 @@ export const BUTTONS = [
     animated: true,
     active: ({ status }) => status.favorited,
     counter: ({ status }) => status.fave_num,
+    counterLabel: 'favorites_counter',
     anonLink: true,
     toggleable: true,
     action({ status }) {

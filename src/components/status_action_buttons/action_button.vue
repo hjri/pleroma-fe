@@ -18,7 +18,7 @@
       :href="getComponent(button) == 'a' ? button.link?.(funcArg) || remoteInteractionLink : undefined"
       @click="popoverTrigger ? undefined : doActionWrap(button, outerClose)"
     >
-      <FALayers>
+      <FALayers role="presentation">
         <FAIcon
           class="fa-scale-110"
           :icon="button.icon(funcArg)"
@@ -63,6 +63,7 @@
     <span
       v-if="!hidePostStats && button.counter?.(funcArg) > 0 && !hideLabel"
       class="action-counter"
+      :aria-label="$t(`status.${button.counterLabel()}`, [button.counter?.(funcArg)])"
     >
       {{ button.counter?.(funcArg) }}
     </span>
