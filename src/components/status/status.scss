@@ -121,22 +121,18 @@
     flex-shrink: 0;
     align-self: baseline;
     word-break: keep-all;
-    margin-right: -0.25em;
+    margin-right: calc(var(--status-margin) / -2);
 
     .visibility-icon,
     .button-unstyled {
-      margin: -0.25em 0;
-      padding: 0.25em;
+      margin: calc(var(--status-margin) / -2) 0;
+      padding: calc(var(--status-margin) / 2);
     }
   }
 
   .glued-label {
     display: inline-flex;
     white-space: nowrap;
-  }
-
-  .timeago {
-    margin-right: 0.25em;
   }
 
   & .heading-reply-row,

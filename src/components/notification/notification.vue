@@ -41,7 +41,7 @@
     </div>
     <div
       v-else
-      class="Notification non-mention"
+      class="Notification -non-mention"
       :class="[userClass, { highlighted: userStyle }, '-type--' + notification.type]"
       :style="[ userStyle ]"
     >

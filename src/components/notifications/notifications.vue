@@ -68,7 +68,7 @@
             @click="e => notificationClicked(notification)"
           >
             <div class="notification-overlay" />
-            <notification
+            <Notification
               :notification="notification"
               @interacted="e => notificationInteracted(notification)"
             />
