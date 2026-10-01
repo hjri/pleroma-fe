@@ -245,14 +245,13 @@
         <div
           v-if="loggedIn && isOtherUser && !hideButtons"
           class="user-interactions"
-          role="menubar"
+          role="toolbar"
           :title="$t('user_card.interactions')"
         >
           <div class="btn-group" role="group">
             <FollowButton
               :relationship="relationship"
               :user="user"
-              role="menuitem"
             />
             <template v-if="relationship.following">
               <ProgressButton
@@ -260,7 +259,6 @@
                 class="btn button-default"
                 :click="subscribeUser"
                 :title="$t('user_card.subscribe')"
-                role="menuitem"
               >
                 <FAIcon icon="bell" />
               </ProgressButton>
@@ -269,7 +267,6 @@
                 class="btn button-default toggled"
                 :click="unsubscribeUser"
                 :title="$t('user_card.unsubscribe')"
-                role="menuitem"
               >
                 <FALayers>
                   <FAIcon
@@ -291,7 +288,6 @@
             class="btn button-default btn-mute toggled"
             :disabled="user.deactivated"
             @click="unmuteUser"
-            role="menuitem"
           >
             {{ $t('user_card.muted') }}
           </button>
@@ -300,7 +296,6 @@
             class="btn button-default btn-mute"
             :disabled="user.deactivated"
             @click="muteUser"
-            role="menuitem"
           >
             {{ $t('user_card.mute') }}
           </button>
@@ -308,7 +303,6 @@
             class="btn button-default btn-mention"
             :disabled="user.deactivated"
             @click="mentionUser"
-            role="menuitem"
           >
             {{ $t('user_card.mention') }}
           </button>
@@ -320,7 +314,6 @@
         <div
           v-if="!loggedIn && user.is_local"
           class="user-interactions"
-          role="menuitem"
         >
           <RemoteFollow :user="user" />
         </div>

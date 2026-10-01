@@ -1,7 +1,7 @@
 <template>
 <span
   class="NavigationPins"
-  role="menubar"
+  role="toolbar"
   :aria-label="$t('nav.quick_items')"
   >
     <router-link
@@ -9,7 +9,6 @@
       :key="item.name"
       class="button-unstyled pinned-item"
       active-class="toggled"
-      role="menuitem"
       :to="getRouteTo(item)"
       :title="item.labelRaw || $t(item.label)"
     >

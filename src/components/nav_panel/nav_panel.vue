@@ -26,7 +26,8 @@
       <ul
         v-if="!collapsed || forceExpand"
         class="panel-body"
-        role="menu"
+        role="menubar"
+        aria-orientation="vertical"
         :title="$t('nav.all_navigation')"
       >
         <NavigationEntry
