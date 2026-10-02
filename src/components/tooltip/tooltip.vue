@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { useId, computed } from 'vue'
+import { computed, useId } from 'vue'
 
 import Popover from 'src/components/popover/popover.vue'
 

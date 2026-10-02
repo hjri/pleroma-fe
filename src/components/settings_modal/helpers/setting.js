@@ -1,5 +1,5 @@
-import { useId } from 'vue'
 import { cloneDeep, get, isEqual, set } from 'lodash-es'
+import { useId } from 'vue'
 
 import DraftButtons from './draft_buttons.vue'
 import LocalSettingIndicator from './local_setting_indicator.vue'

@@ -80,10 +80,10 @@ const StatusBody = {
       return this.mergedConfig.nonSquareEmoji
     },
     headerLevel() {
-      return [
-        this.isPage ? 0 : 1,
-        this.isExpanded ? 1 : 0,
-      ].reduce((acc, item) => acc + item, 1)
+      return [this.isPage ? 0 : 1, this.isExpanded ? 1 : 0].reduce(
+        (acc, item) => acc + item,
+        1,
+      )
     },
     headerTag() {
       return `h${this.headerLevel}`

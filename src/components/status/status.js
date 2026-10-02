@@ -6,14 +6,14 @@ import MentionLink from 'src/components/mention_link/mention_link.vue'
 import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import StatusActionButtons from 'src/components/status_action_buttons/status_action_buttons.vue'
-import StatusHeader from 'src/components/status_header/status_header.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
+import StatusHeader from 'src/components/status_header/status_header.vue'
 import StatusPopover from 'src/components/status_popover/status_popover.vue'
+import Timeago from 'src/components/timeago/timeago.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserLink from 'src/components/user_link/user_link.vue'
 import UserListPopover from 'src/components/user_list_popover/user_list_popover.vue'
 import UserPopover from 'src/components/user_popover/user_popover.vue'
-import Timeago from 'src/components/timeago/timeago.vue'
 import { muteFilterHits } from '../../services/status_parser/status_parser.js'
 import {
   highlightClass,
@@ -153,10 +153,10 @@ const Status = {
   },
   computed: {
     headerLevel() {
-      return [
-        this.isPage ? 0 : 1,
-        this.isExpanded ? 1 : 0,
-      ].reduce((acc, item) => acc + item, 1)
+      return [this.isPage ? 0 : 1, this.isExpanded ? 1 : 0].reduce(
+        (acc, item) => acc + item,
+        1,
+      )
     },
     rootClasses() {
       return [

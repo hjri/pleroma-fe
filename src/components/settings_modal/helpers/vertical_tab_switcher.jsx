@@ -37,7 +37,7 @@ export default {
     const uniqueId = useId()
 
     return {
-      uniqueId
+      uniqueId,
     }
   },
   data() {
@@ -191,10 +191,7 @@ export default {
           role="presentation"
           id={`${this.idPrefix}tabpanel-${index}`}
         >
-          <div
-            class="tab-mobile-header"
-            role="presentation"
-          >
+          <div class="tab-mobile-header" role="presentation">
             {header}
           </div>
           <div
@@ -202,10 +199,7 @@ export default {
             role="tabpanel"
             aria-label={props.label}
           >
-            <div
-              class={contentClasses}
-              role="presentation"
-            >
+            <div class={contentClasses} role="presentation">
               {renderSlot}
             </div>
           </div>

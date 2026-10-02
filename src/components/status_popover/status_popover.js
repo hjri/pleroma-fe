@@ -27,7 +27,7 @@ const StatusPopover = {
         name: 'conversation',
         params: { statusId: this.statusId },
       }).href
-    }
+    },
   },
   components: {
     Popover,
