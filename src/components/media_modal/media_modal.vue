@@ -210,6 +210,10 @@ $modal-view-button-icon-margin: 0.5em;
     &.loading {
       opacity: 0.5;
     }
+
+    &.still-image img {
+      will-change: transform;
+    }
   }
 
   .loading-spinner {
