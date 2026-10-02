@@ -181,6 +181,7 @@
 
       .popover-trigger-button {
         height: 100%;
+        position: absolute;
       }
     }
   }
