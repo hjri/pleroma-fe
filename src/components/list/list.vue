@@ -1,7 +1,6 @@
 <template>
   <div
     class="List"
-    role="list"
     :class="{ '-scrollable': scrollable }"
   >
     <div
@@ -24,16 +23,12 @@
         />
       </div>
     </div>
-    <div
-      class="list"
-      role="list"
-    >
-      <div
+    <ul class="list">
+      <li
         v-for="item in finalItems"
         :key="getKey(item)"
         class="list-item"
         :class="[getClass(item), nonInteractive ? '-non-interactive' : '']"
-        role="listitem"
       >
         <div
           v-if="selectable"
@@ -49,14 +44,14 @@
           name="item"
           :item="item"
         />
-      </div>
-      <div
+      </li>
+      <li
         v-if="finalItems.length === 0 && !!$slots.empty"
         class="list-item list-empty-content faint"
       >
         <slot name="empty" />
-      </div>
-      <div class="footer">
+      </li>
+      <li class="footer">
         <button
           v-if="error"
           class="button-unstyled -link -fullwidth alert error"
@@ -69,19 +64,19 @@
           spin
           icon="circle-notch"
         />
-        <a
+        <button
           v-else-if="!bottomedOut"
-          role="button"
           tabindex="0"
+          class="button-unstyled"
           @click="fetchEntries"
         >
           {{ $t('general.more') }}
-        </a>
+        </button>
         <span v-else-if="finalItems.length !== 0">
           {{ $t('general.no_more') }}
         </span>
-      </div>
-    </div>
+      </li>
+    </ul>
   </div>
 </template>
 

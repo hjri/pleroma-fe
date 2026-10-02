@@ -13,8 +13,12 @@
     <template #content>
       <div
         class="heading"
+        role="presentation"
       >
-        <div class="emoji-search">
+        <div
+          class="emoji-search"
+          role="presentation"
+        >
           <input
             ref="search"
             role="search"
@@ -22,6 +26,7 @@
             type="text"
             class="input form-control"
             :placeholder="$t('emoji.search_emoji')"
+            :title="$t('emoji.search_emoji')"
             @input="$event.target.composing = false"
           >
         </div>
@@ -37,7 +42,7 @@
           role="tablist"
           @wheel.prevent="groupScroll"
         >
-          <span
+          <button
             v-for="group in filteredEmojiGroups"
             :ref="setGroupRef('group-header-' + group.id)"
             :key="group.id"
@@ -64,7 +69,7 @@
               :icon="group.icon"
               fixed-width
             />
-          </span>
+          </button>
         </span>
         <span
           v-if="stickerPickerEnabled"
@@ -127,12 +132,11 @@
                   >
                     {{ group.text }}
                   </h1>
-                  <span
+                  <button
                     v-for="emoji in group.emojis"
                     :key="group.id + emoji.displayText"
                     :title="maybeLocalizedEmojiName(emoji)"
-                    class="emoji-item"
-                    role="button"
+                    class="button-unstyled emoji-item"
                     @click.stop.prevent="onEmoji(emoji)"
                   >
                     <span
@@ -147,7 +151,7 @@
                       :src="emoji.imageUrl"
                       :data-emoji-name="group.id + emoji.displayText"
                     />
-                  </span>
+                  </button>
                 </div>
               </DynamicScrollerItem>
             </template>
