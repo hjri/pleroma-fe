@@ -33,45 +33,39 @@
           class="visibility-notice notice-dismissible"
         >
           <span>{{ $t('post_status.scope_notice.public') }}</span>
-          <a
-            class="fa-scale-110 fa-old-padding dismiss"
+          <button
+            class="button-unstyled fa-scale-110 fa-old-padding dismiss"
             :title="$t('post_status.scope_notice_dismiss')"
-            role="button"
-            tabindex="0"
             @click.prevent="dismissScopeNotice()"
           >
             <FAIcon icon="times" />
-          </a>
+          </button>
         </p>
         <p
           v-else-if="!hideScopeNotice && newStatus.visibility === 'unlisted'"
           class="visibility-notice notice-dismissible"
         >
           <span>{{ $t('post_status.scope_notice.unlisted') }}</span>
-          <a
-            class="fa-scale-110 fa-old-padding dismiss"
+          <button
+            class="button-unstyled fa-scale-110 fa-old-padding dismiss"
             :title="$t('post_status.scope_notice_dismiss')"
-            role="button"
-            tabindex="0"
             @click.prevent="dismissScopeNotice()"
           >
             <FAIcon icon="times" />
-          </a>
+          </button>
         </p>
         <p
           v-else-if="!hideScopeNotice && newStatus.visibility === 'private' && currentUser.locked"
           class="visibility-notice notice-dismissible"
         >
           <span>{{ $t('post_status.scope_notice.private') }}</span>
-          <a
-            class="fa-scale-110 fa-old-padding dismiss"
+          <button
+            class="button-unstyled fa-scale-110 fa-old-padding dismiss"
             :title="$t('post_status.scope_notice_dismiss')"
-            role="button"
-            tabindex="0"
             @click.prevent="dismissScopeNotice()"
           >
             <FAIcon icon="times" />
-          </a>
+          </button>
         </p>
         <p
           v-else-if="!hideScopeNotice && newStatus.visibility === 'direct'"
@@ -115,17 +109,16 @@
           >
             <Checkbox
               v-model="quoteThreadToggled"
-              :radio="true"
               :disabled="quoteFormVisible"
+              radio
             >
               {{ $t('post_status.quote_option') }}
             </Checkbox>
             <Checkbox
-              role="radio"
-              :radio="true"
               :model-value="!quoteThreadToggled"
               :disabled="quoteFormVisible"
               @update:model-value="e => quoteThreadToggled = !e"
+              radio
             >
               {{ $t('post_status.reply_option') }}
             </Checkbox>
@@ -167,6 +160,7 @@
                 type="text"
                 :placeholder="$t('post_status.content_warning')"
                 :disabled="posting && !optimisticPosting"
+                :title="$t('post_status.content_warning')"
                 v-bind="propsToNative(inputProps)"
                 size="1"
                 class="input form-post-subject unstyled"
@@ -178,6 +172,7 @@
             :value="mentionsLineReadOnly ? mentionsString : newStatus.mentionsLine"
             type="text"
             :placeholder="$t('post_status.mentions_line')"
+            :title="$t('post_status.mentions_line')"
             :disabled="mentionsLineReadOnly || (posting && !optimisticPosting)"
             size="1"
             class="input mentions-input form-post-mentions unstyled"
@@ -202,6 +197,7 @@
                 ref="textarea"
                 v-model="newStatus.status"
                 :placeholder="placeholder || $t('post_status.default')"
+                :title="$t('post_status.post_content')"
                 rows="1"
                 cols="1"
                 :disabled="posting && !optimisticPosting"

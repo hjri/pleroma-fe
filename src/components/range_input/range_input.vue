@@ -13,7 +13,7 @@
     <input
       v-if="fallback !== undefined"
       :id="name + '-o'"
-      :aria-labelledby="name + '-label'"
+      :title="label"
       class="input -checkbox opt visible-for-screenreader-only"
       type="checkbox"
       :checked="present"
@@ -22,6 +22,7 @@
     <label
       v-if="fallback !== undefined"
       class="opt-l"
+      :title="$t('settings.style.themes3.define')"
       :for="name + '-o'"
       :aria-hidden="true"
     />
@@ -40,7 +41,7 @@
       :id="name + '-numeric'"
       class="input input-number"
       type="number"
-      :aria-labelledby="name + '-label'"
+      :title="label"
       :value="modelValue || fallback"
       :disabled="!present || disabled"
       :max="hardMax"

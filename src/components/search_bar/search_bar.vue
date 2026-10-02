@@ -24,6 +24,7 @@
         v-model="searchTerm"
         class="input search-bar-input"
         :placeholder="$t('nav.search')"
+        :title="$t('nav.search')"
         type="text"
         @keyup.enter="find(searchTerm)"
       >

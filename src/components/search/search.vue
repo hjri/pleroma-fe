@@ -11,6 +11,7 @@
         v-model="searchTerm"
         class="input search-input"
         :placeholder="$t('nav.search')"
+        :title="$t('nav.search')"
         @keyup.enter="updateToQuery"
       >
       <button

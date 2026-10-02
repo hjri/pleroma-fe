@@ -45,11 +45,11 @@
     <div class="poll-type-expiry">
       <div
         class="poll-type"
-        :title="$t('polls.type')"
       >
         <Select
           v-model="pollType"
           class="poll-type-select"
+          :title="$t('polls.type')"
           unstyled
         >
           <option value="single">

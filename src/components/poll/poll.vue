@@ -36,7 +36,6 @@
         </div>
         <div
           v-else
-          tabindex="0"
           :role="poll.multiple ? 'checkbox' : 'radio'"
           :aria-labelledby="`option-vote-${randomSeed}-${index}`"
           :aria-checked="choices[index]"
