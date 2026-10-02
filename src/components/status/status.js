@@ -13,6 +13,7 @@ import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserLink from 'src/components/user_link/user_link.vue'
 import UserListPopover from 'src/components/user_list_popover/user_list_popover.vue'
 import UserPopover from 'src/components/user_popover/user_popover.vue'
+import Timeago from 'src/components/timeago/timeago.vue'
 import { muteFilterHits } from '../../services/status_parser/status_parser.js'
 import {
   highlightClass,
@@ -90,6 +91,7 @@ const Status = {
     MentionsLine,
     UserPopover,
     UserLink,
+    Timeago,
     Quote: defineAsyncComponent(() => import('src/components/quote/quote.vue')),
     StatusActionButtons,
   },

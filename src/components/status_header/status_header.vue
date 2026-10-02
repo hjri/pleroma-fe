@@ -1,9 +1,5 @@
-
 <template>
-  <div
-    v-if="!noHeading"
-    class="StatusHeader"
-  >
+  <div class="StatusHeader">
     <div class="heading-name-row">
       <div
         v-if="user"
@@ -126,7 +122,7 @@
           v-if="nonMention && status"
           class="button-unstyled expand-icon"
           :title="$t('tool_tip.toggle_expand')"
-          :aria-expanded="statusExpanded"
+          :aria-expanded="expanded"
           @click.prevent="$emit('toggleExpanded')"
         >
           <FAIcon

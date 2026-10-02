@@ -71,7 +71,7 @@ export default {
     button: Object,
     status: Object,
     extra: Boolean,
-    funcArg: Function,
+    funcArg: Object,
     getClass: Function,
     getComponent: Function,
     doAction: Function,

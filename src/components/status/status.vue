@@ -129,6 +129,7 @@
         </div>
         <div class="right-side">
           <StatusHeader
+            v-if="!noHeading"
             :status-id="mainStatus.id"
             :user-id="user.id"
             :unmuted="unmuted"
