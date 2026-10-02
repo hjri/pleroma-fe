@@ -40,15 +40,18 @@
         class="logo"
         :to="{ name: 'root' }"
         :style="logoBgStyle"
-        :title="sitename"
+        :title="$t('general.logo')"
       >
         <div
           class="mask"
           :style="logoMaskStyle"
+          role="presentation"
         />
         <img
           :src="logo"
           :style="logoStyle"
+          :title="$t('general.logo')"
+          :alt="$t('general.logo')"
         >
       </router-link>
       <div class="item right actions">

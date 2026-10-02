@@ -53,8 +53,8 @@
                   <img
                     v-if="suggestion.img"
                     :src="suggestion.img"
-                    :alt="$t('emoji.emoji')"
-                    :title="$t('emoji.emoji')"
+                    :alt="suggestion.user ? $t('user_card.avatar') : $t('emoji.emoji')"
+                    :title="suggestion.user ? $t('user_card.avatar') : $t('emoji.emoji')"
                   >
                   <span v-else>{{ suggestion.replacement }}</span>
                 </span>
