@@ -39,7 +39,7 @@
     </div>
     <div
       v-else
-      class="Notification -non-mention activity-layout -width-efficient"
+      class="Notification -non-mention activity-layout -width-efficient -compact"
       :class="[userClass, { highlighted: userStyle }, '-type--' + notification.type]"
       :style="[ userStyle ]"
     >
@@ -68,6 +68,7 @@
         @toggle-expanded="toggleStatusExpanded"
         :expanded="statusExpanded"
         non-mention
+        multiline
       />
       <div class="activity-subheader">
         <span v-if="notification.type === 'like'">

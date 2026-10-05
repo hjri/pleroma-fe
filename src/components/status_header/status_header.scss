@@ -1,56 +1,72 @@
-.StatusHeader {
-  display: flex;
-  justify-content: space-between;
+.ActivityHeader {
+  display: grid;
   line-height: 1.1;
-  overflow: hidden;
-  white-space: nowrap;
-  gap: var(--status-margin);
+  grid-template-columns: auto auto minmax(min-content, 1fr);
+  grid-template-rows: 1.1em;
+  grid-template-areas:
+    "title handle misc";
+  gap: calc(var(--status-margin) / 4) calc(var(--status-margin) / 2);
 
-  .heading-left {
-    flex: 1 1 5em;
-    align-items: baseline;;
-    min-width: 0;
-    overflow: hidden;
+  &.-multiline {
+    grid-template-columns: max-content minmax(min-content, 1fr);
+    grid-template-rows: 1.1em 1.1em;
+    grid-template-areas:
+      "title misc"
+      "handle handle";
+  }
+
+  .user-title,
+  .user-handle {
+    white-space: nowrap;
+  }
+
+  .user-title {
+    grid-area: title;
+    font-weight: bold;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+
+    .emoji {
+      vertical-align: top;
+    }
+
+    --_still_image-label-scale: 0.25;
+    --emoji-size: 1em;
+  }
+
+  .user-handle {
+    grid-area: handle;
     display: flex;
-    gap: calc(var(--status-margin) / 2);
+    min-width: 1em;
 
-    .status-username,
-    .account-handle {
-      white-space: nowrap;
+    .user-profile-link {
+      flex: 0 1 auto;
       overflow-x: hidden;
       text-overflow: ellipsis;
-    }
 
-    .status-username {
-      font-weight: bold;
-      flex-shrink: 0;
-
-      .emoji {
-        vertical-align: top;
+      &::after {
+        content: ' ';
+        display: inline-block;
+        width: 0.25em;
       }
-
-      --_still_image-label-scale: 0.25;
-      --emoji-size: 1em;
     }
 
-    .account-handle {
-      flex-shrink: 1;
-      min-width: 1em;
-    }
-
-    .status-favicon {
-      height: 1.2em;
-      width: 1.2em;
-      min-width: 1.2em;
+    .instance-favicon {
+      flex: 0 0 auto;
+      height: 1.1em;
+      width: 1.1em;
+      min-width: 1.1em;
       object-fit: contain;
-      align-self: center;
+      vertical-align: middle;
     }
   }
 
-  .heading-right {
+  .misc {
+    grid-area: misc;
     flex: 0 0 auto;
     display: flex;
     word-break: keep-all;
+    justify-self: end;
 
     .visibility-icon,
     .button-unstyled {

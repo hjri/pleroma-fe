@@ -125,6 +125,8 @@
   .repeat-info {
     padding: 0.4em var(--status-margin);
 
+    --emoji-size: 1em;
+
     .repeater-avatar {
       border-radius: var(--roundness);
       margin-left: 2em; // 3.5 (poster avatar size) - 1.5 (repeater avatar size)
@@ -141,13 +143,6 @@
         vertical-align: middle;
         color: var(--cGreen);
       }
-    }
-
-    .emoji {
-      width: 1em;
-      height: 1em;
-      vertical-align: middle;
-      object-fit: contain;
     }
   }
 
@@ -199,7 +194,6 @@
   .stats {
     width: 100%;
     display: flex;
-    line-height: 1em;
   }
 
   .avatar-row {

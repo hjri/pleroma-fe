@@ -540,20 +540,6 @@ const Status = {
     ]),
   },
   methods: {
-    visibilityIcon(visibility) {
-      switch (visibility) {
-        case 'private':
-          return 'lock'
-        case 'unlisted':
-          return 'lock-open'
-        case 'direct':
-          return 'envelope'
-        case 'local':
-          return 'igloo'
-        default:
-          return 'globe'
-      }
-    },
     showError(error) {
       this.error = error
     },

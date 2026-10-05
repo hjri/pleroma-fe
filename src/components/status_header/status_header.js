@@ -50,8 +50,8 @@ library.add(
   faPlay,
 )
 
-const Status = {
-  name: 'Status',
+const ActivityHeader = {
+  name: 'ActivityHeader',
   components: {
     Timeago,
     UserLink,
@@ -67,6 +67,7 @@ const Status = {
     time: Date,
     threadDisplayState: String,
     unmuted: Boolean,
+    multiline: Boolean,
     // for notifications
     nonMention: Boolean,
   },
@@ -79,6 +80,10 @@ const Status = {
     user() {
       return this.userObject ?? useUsersStore().findUser(this.userId)
     },
+    // Config
+    mergedConfig() {
+      return useMergedConfigStore().mergedConfig
+    },
     isTreeView() {
       return this.mergedConfig.conversationDisplay === 'tree'
     },
@@ -88,15 +93,14 @@ const Status = {
     allowNonSquareEmoji() {
       return this.mergedConfig.nonSquareEmoji
     },
-    mergedConfig() {
-      return useMergedConfigStore().mergedConfig
-    },
+    // Threading
     inThreadForest() {
       return !!this.threadDisplayState
     },
     threadShowing() {
       return this.threadDisplayState === 'showing'
     },
+    // localization
     visibilityLocalized() {
       return this.$i18n.t(
         'general.scope_in_timeline.' + this.status?.visibility,
@@ -119,4 +123,4 @@ const Status = {
   },
 }
 
-export default Status
+export default ActivityHeader

@@ -1,12 +1,14 @@
 <template>
-  <div class="StatusHeader">
-    <div
+<div
+  class="ActivityHeader"
+  :class="{ '-multiline': multiline }"
+>
+    <template
       v-if="user"
-      class="heading-left"
     >
       <RichContent
         v-if="user.name_html"
-        class="status-username"
+        class="user-title"
         :html="user.name"
         :emoji="user.emoji"
         :allow-non-square-emoji="allowNonSquareEmoji"
@@ -21,23 +23,23 @@
         {{ user.name }}
       </span>
       {{ ' ' }}
-      <UserLink
-        class="account-handle"
-        :title="user.screen_name_ui"
-        :user="user"
-        :at="false"
-      />
-      {{ ' ' }}
-      <img
-        v-if="!!(user && user.favicon)"
-        class="status-favicon"
-        :title="$t('status.favicon')"
-        :alt="$t('status.favicon')"
-        :src="user.favicon"
-      >
-    </div>
+      <span class="user-handle">
+        <UserLink
+          :title="user.screen_name_ui"
+          :user="user"
+          :at="false"
+        />
+        <img
+          v-if="!!(user && user.favicon)"
+          class="instance-favicon"
+          :title="$t('status.favicon')"
+          :alt="$t('status.favicon')"
+          :src="user.favicon"
+        >
+      </span>
+    </template>
 
-    <span class="heading-right" :class="{ '-has-actions': true }">
+    <span class="misc" :class="{ '-has-actions': true }">
       <span
         v-if="!nonMention && status?.pinned"
         class="pin"

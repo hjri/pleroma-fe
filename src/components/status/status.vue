@@ -93,7 +93,7 @@
 
       <div
         v-if="!isDeleted"
-        :class="[userClass, { highlighted: userStyle, '-repeat': isRepeat && !inConversation, '-width-efficient': shouldBeWidthEfficient }]"
+        :class="[userClass, { highlighted: userStyle, '-repeat': isRepeat && !inConversation, '-width-efficient': shouldBeWidthEfficient, '-compact': compact }]"
         :style="[ userStyle ]"
         class="activity-layout"
         :data-tags="tags"
@@ -129,6 +129,8 @@
           :unmuted="unmuted"
           :time="mainStatus.created_at"
           :replies="replies"
+          :multiline="shouldBeWidthEfficient"
+          :compact="compact"
 
           :expandable="expandable"
           :expanded="isExpanded"

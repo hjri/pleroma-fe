@@ -7,8 +7,9 @@
     "avatar  header"
     "avatar  subheader"
     "avatar  content"
+    "avatar  content"
     "actions actions";
-  gap: calc(var(--status-margin) / 4) var(--status-margin);
+  gap: calc(var(--status-margin) / 2) var(--status-margin);
   overflow: hidden;
   padding-top: var(--status-margin);
   padding-left: var(--status-margin);
@@ -19,7 +20,17 @@
       "avatar  header"
       "avatar  subheader"
       "content content"
+      "content content"
       "actions actions";
+
+    &.-compact {
+      grid-template-areas:
+        "avatar  header"
+        "avatar  header"
+        "subheader subheader"
+        "content content"
+        "actions actions";
+    }
   }
 
   /* action buttons have HUGE height so we don't need as much margin at bottom */
@@ -43,7 +54,6 @@
   .activity-header {
     grid-area: header;
     min-width: 0;
-    height: 1.1em;
   }
 
   .activity-subheader {
