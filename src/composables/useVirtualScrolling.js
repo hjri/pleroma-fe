@@ -1,5 +1,5 @@
-import { first, last, throttle, debounce } from 'lodash-es'
-import { computed, nextTick, ref, toValue, watch, onUnmounted } from 'vue'
+import { debounce, first, last, throttle } from 'lodash-es'
+import { computed, nextTick, onUnmounted, ref, toValue, watch } from 'vue'
 
 export function useVirtualScrolling({
   // For debugging
@@ -72,7 +72,9 @@ export function useVirtualScrolling({
 
     heightChart.value = chart
   })
-  watch([list, heights, unsuspendibleIds], updateHeightChart, { immediate: true })
+  watch([list, heights, unsuspendibleIds], updateHeightChart, {
+    immediate: true,
+  })
   onUnmounted(() => {
     updateHeightChart.cancel()
   })
@@ -175,14 +177,15 @@ export function useVirtualScrolling({
 
   const recalculateChartVisibility = throttle(
     (newVal, oldVal) => {
-      heightChartVisibility.value =
-        heightChart.value.map((heightChartItem) => ({
+      heightChartVisibility.value = heightChart.value.map(
+        (heightChartItem) => ({
           ...heightChartItem,
           visible: checkVisible(heightChartItem),
-        }))
+        }),
+      )
     },
     32, // 32ms = ~30fps
-    { leading: true, trailing: true }
+    { leading: true, trailing: true },
   )
   watch(heightChartVisibility, recalculateChartVisibility, { immediate: true })
 
