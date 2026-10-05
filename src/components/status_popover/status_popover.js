@@ -46,6 +46,7 @@ const StatusPopover = {
       }
     },
     navigate() {
+      if (!this.link) return
       this.$router.push({
         name: 'conversation',
         params: { statusId: this.statusId },

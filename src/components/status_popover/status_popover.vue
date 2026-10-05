@@ -7,7 +7,7 @@
     :bound-to="{ x: 'container' }"
     :href="statusLink"
     @show="enter"
-    link
+    :link="link"
     v-bind="$attrs"
     @click.prevent="navigate"
   >

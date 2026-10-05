@@ -203,6 +203,7 @@
                     style="min-width: 0;"
                     :class="{ '-strikethrough': !mainStatus.parent_visible }"
                     :aria-label="$t('tool_tip.reply')"
+                    :link="isExpanded"
                   >
                       <i18n-t
                         keypath="status.reply_to_with_icon"
@@ -343,6 +344,7 @@
                 <StatusPopover
                   :status-id="reply.id"
                   class="reply-link"
+                  link
                 >
                   {{ reply.name }}
                 </StatusPopover>
