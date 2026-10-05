@@ -1,8 +1,8 @@
 import { mapActions, mapState } from 'pinia'
 
+import ActivityHeader from 'src/components/activity_header/activity_header.vue'
 import Report from 'src/components/report/report.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
-import ActivityHeader from 'src/components/activity_header/activity_header.vue'
 import Timeago from 'src/components/timeago/timeago.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserLink from 'src/components/user_link/user_link.vue'

@@ -1,6 +1,7 @@
-import { defineAsyncComponent } from 'vue'
 import { mapState } from 'pinia'
+import { defineAsyncComponent } from 'vue'
 
+import ActivityHeader from 'src/components/activity_header/activity_header.vue'
 import AvatarList from 'src/components/avatar_list/avatar_list.vue'
 import EmojiReactions from 'src/components/emoji_reactions/emoji_reactions.vue'
 import MentionLink from 'src/components/mention_link/mention_link.vue'
@@ -8,7 +9,6 @@ import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import StatusActionButtons from 'src/components/status_action_buttons/status_action_buttons.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
-import ActivityHeader from 'src/components/activity_header/activity_header.vue'
 import StatusPopover from 'src/components/status_popover/status_popover.vue'
 import Timeago from 'src/components/timeago/timeago.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
@@ -23,13 +23,13 @@ import {
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useScrobblesStore } from 'src/stores/scrobbles.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 import { useUsersStore } from 'src/stores/users.js'
-import { useInterfaceStore } from 'src/stores/interface.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
@@ -535,9 +535,7 @@ const Status = {
     scrobble() {
       return this.status.user?.latestScrobble
     },
-    ...mapState(useInterfaceStore, [
-      'layoutType',
-    ]),
+    ...mapState(useInterfaceStore, ['layoutType']),
   },
   methods: {
     showError(error) {
