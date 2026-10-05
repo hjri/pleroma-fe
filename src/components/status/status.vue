@@ -122,7 +122,7 @@
           :compact="compact"
           :title="$t('status.unknown_user_info')"
         />
-        <StatusHeader
+        <ActivityHeader
           class="activity-header"
           :status-id="mainStatus.id"
           :user-id="user.id"

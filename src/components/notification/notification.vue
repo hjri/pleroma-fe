@@ -60,7 +60,7 @@
           </UserPopover>
         </a>
       </div>
-      <StatusHeader
+      <ActivityHeader
         class="activity-header"
         :statusoid="status"
         :time="notification.created_at"

@@ -8,7 +8,7 @@ import MentionsLine from 'src/components/mentions_line/mentions_line.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import StatusActionButtons from 'src/components/status_action_buttons/status_action_buttons.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
-import StatusHeader from 'src/components/status_header/status_header.vue'
+import ActivityHeader from 'src/components/activity_header/activity_header.vue'
 import StatusPopover from 'src/components/status_popover/status_popover.vue'
 import Timeago from 'src/components/timeago/timeago.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
@@ -88,7 +88,7 @@ const Status = {
     UserListPopover,
     EmojiReactions,
     StatusContent,
-    StatusHeader,
+    ActivityHeader,
     MentionLink,
     MentionsLine,
     UserPopover,

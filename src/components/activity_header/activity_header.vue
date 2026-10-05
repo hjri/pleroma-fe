@@ -145,5 +145,5 @@
     </span>
   </div>
 </template>
-<script src="./status_header.js"></script>
-<style src="./status_header.scss"></style>
+<script src="./activity_header.js"></script>
+<style src="./activity_header.scss"></style>
