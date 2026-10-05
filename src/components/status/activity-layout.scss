@@ -1,0 +1,55 @@
+// This code is shared between Status and Notification
+.activity-layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto auto auto;
+  grid-template-areas:
+    "avatar  header"
+    "avatar  subheader"
+    "avatar  content"
+    "actions actions";
+  gap: calc(var(--status-margin) / 4) var(--status-margin);
+  overflow: hidden;
+  padding-top: var(--status-margin);
+  padding-left: var(--status-margin);
+  padding-right: var(--status-margin);
+  /* action buttons have HUGE height so we don't need as much margin at bottom */
+  padding-bottom: calc(var(--status-margin) / 2);
+
+  &:hover .animated.Avatar {
+    canvas {
+      display: none;
+    }
+
+    img {
+      visibility: visible;
+    }
+  }
+
+  .activity-avatar {
+    grid-area: avatar;
+    min-width: 0;
+  }
+
+  .activity-header {
+    grid-area: header;
+    min-width: 0;
+  }
+
+  .activity-subheader {
+    grid-area: subheader;
+    display: grid;
+    min-width: 0;
+  }
+
+  .activity-content {
+    grid-area: content;
+    padding: calc(var(--status-margin) / 2) 0;
+    min-width: 0;
+  }
+
+  .activity-actions {
+    grid-area: actions;
+    min-width: 0;
+  }
+}

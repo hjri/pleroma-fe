@@ -20,7 +20,7 @@
       </button>
     </div>
     <template v-if="muted && !isPreview">
-      <div class="status-container muted">
+      <div class="muted">
         <small class="status-username">
           <FAIcon
             v-if="muted && isRepeat"
@@ -49,101 +49,97 @@
     </template>
     <template v-else>
       <div
-        v-if="isRepeat && !noHeading && !inConversation"
+        v-if="isRepeat && !inConversation"
         :class="[repeaterClass, { highlighted: repeaterStyle }]"
         :style="[repeaterStyle]"
-        class="status-container repeat-info"
+        class="repeat-info"
       >
         <UserAvatar
-          class="left-side repeater-avatar"
+          class="repeater-avatar"
           :user-id="repeater.id"
         />
-        <div class="right-side faint">
-          <bdi
-            class="status-username repeater-name"
-            :title="repeaterName"
+        <bdi
+          class="faint status-username repeater-name"
+          :title="repeaterName"
+        >
+          <router-link
+            v-if="repeaterHtml"
+            :to="repeaterProfileLink"
           >
-            <router-link
-              v-if="repeaterHtml"
-              :to="repeaterProfileLink"
-            >
-              <RichContent
-                :html="repeaterHtml"
-                :emoji="repeater.emoji"
-                :allow-non-square-emoji="allowNonSquareEmoji"
-                :pause-mfm="pauseMfm"
-                :scale-mfm="scaleMfm"
-                :is-local="repeater.is_local"
-              />
-            </router-link>
-            <router-link
-              v-else
-              :to="repeaterProfileLink"
-            >{{ repeaterName }}</router-link>
-          </bdi>
-          <div class="repeat-label">
-            <FAIcon
-              icon="retweet"
-              class="repeat-icon"
-              :title="$t('tool_tip.repeat')"
+            <RichContent
+              :html="repeaterHtml"
+              :emoji="repeater.emoji"
+              :allow-non-square-emoji="allowNonSquareEmoji"
+              :pause-mfm="pauseMfm"
+              :scale-mfm="scaleMfm"
+              :is-local="repeater.is_local"
             />
-            {{ $t('timeline.repeated') }}
-          </div>
-        </div>
+          </router-link>
+          <router-link
+            v-else
+            :to="repeaterProfileLink"
+          >{{ repeaterName }}</router-link>
+        </bdi>
+        {{ ' ' }}
+        <span class="repeat-label">
+          <FAIcon
+            icon="retweet"
+            class="repeat-icon"
+            :title="$t('tool_tip.repeat')"
+          />
+          {{ $t('timeline.repeated') }}
+        </span>
       </div>
 
       <div
         v-if="!isDeleted"
         :class="[userClass, { highlighted: userStyle, '-repeat': isRepeat && !inConversation }]"
         :style="[ userStyle ]"
-        class="status-container"
+        class="activity-layout"
         :data-tags="tags"
       >
-        <div
-          v-if="!noHeading"
-          class="left-side"
+        <a
+          v-if="user.name"
+          :href="$router.resolve(userProfileLink).href"
+          class="activity-avatar"
+          @click.prevent
         >
-          <a
-            v-if="user.name"
-            :href="$router.resolve(userProfileLink).href"
-            @click.prevent
+          <UserPopover
+            :user-id="user.id"
+            :overlay-centers="true"
           >
-            <UserPopover
+            <UserAvatar
+              class="post-avatar"
+              :compact="compact"
               :user-id="user.id"
-              :overlay-centers="true"
-            >
-              <UserAvatar
-                class="post-avatar"
-                :compact="compact"
-                :user-id="user.id"
-              />
-            </UserPopover>
-          </a>
-          <UserAvatar
-            v-else
-            :user-id="user.id"
-            class="post-avatar"
-            :compact="compact"
-            :title="$t('status.unknown_user_info')"
-          />
-        </div>
-        <div class="right-side">
-          <StatusHeader
-            v-if="!noHeading"
-            :status-id="mainStatus.id"
-            :user-id="user.id"
-            :unmuted="unmuted"
-            :time="mainStatus.created_at"
-            :replies="replies"
+            />
+          </UserPopover>
+        </a>
+        <UserAvatar
+          v-else
+          :user-id="user.id"
+          class="activity-avatar"
+          :compact="compact"
+          :title="$t('status.unknown_user_info')"
+        />
+        <StatusHeader
+          class="activity-header"
+          :status-id="mainStatus.id"
+          :user-id="user.id"
+          :unmuted="unmuted"
+          :time="mainStatus.created_at"
+          :replies="replies"
 
-            :expandable="expandable"
-            :expanded="isExpanded"
-            :thread-display-state="threadDisplayState"
+          :expandable="expandable"
+          :expanded="isExpanded"
+          :thread-display-state="threadDisplayState"
 
-            @toggle-expanded="$emit('toggleExpanded')"
-            @toggle-thread-display="$emit('toggleThreadDisplay')"
-            @dive="$emit('dive')"
-          />
+          @toggle-muted="toggleMute"
+          @toggle-expanded="$emit('toggleExpanded')"
+          @toggle-thread-display="$emit('toggleThreadDisplay')"
+          @dive="$emit('dive')"
+        />
+        <div class="activity-subheader">
           <div
             v-if="scrobblePresent"
             class="status-rich-presence"
@@ -294,9 +290,12 @@
               </template>
             </i18n-t>
           </div>
+        </div>
+        <div
+          class="activity-content"
+        >
           <StatusContent
             ref="content"
-            class="status-content"
             :status="mainStatus"
             :focused="focused"
             :in-conversation="inConversation"
@@ -400,38 +399,34 @@
           </Transition>
 
           <EmojiReactions
-            v-if="(mergedConfig.emojiReactionsOnTimeline || focused) && (!noHeading && !isPreview)"
+            v-if="(mergedConfig.emojiReactionsOnTimeline || focused) && (!isPreview)"
             :status="mainStatus"
-          />
-
-          <StatusActionButtons
-            v-if="!noHeading && !isPreview"
-            class="status-action-buttons"
-            :status="mainStatus"
-            :replying="replying"
-            @toggle-replying="toggleReplyForm"
           />
         </div>
+
+        <StatusActionButtons
+          v-if="!isPreview"
+          class="activity-actions"
+          :status="mainStatus"
+          :replying="replying"
+          @toggle-replying="toggleReplyForm"
+        />
       </div>
       <div
         v-else
         class="gravestone"
       >
-        <div class="left-side">
-          <UserAvatar
-            class="post-avatar"
-            :compact="compact"
-          />
-        </div>
-        <div class="right-side">
-          <div class="deleted-text">
-            {{ $t('status.status_deleted') }}
-          </div>
+        <UserAvatar
+          class="post-avatar"
+          :compact="compact"
+        />
+        <div class="deleted-text">
+          {{ $t('status.status_deleted') }}
         </div>
       </div>
       <div
         v-if="replying"
-        class="status-container reply-form"
+        class="reply-form"
       >
         <PostStatusForm
           ref="postStatusForm"
@@ -469,3 +464,4 @@
 <script src="./status.js"></script>
 
 <style src="./status.scss" lang="scss"></style>
+<style src="./activity-layout.scss" lang="scss"></style>

@@ -38,7 +38,6 @@ const ChatMessage = {
   name: 'ChatMessage',
   props: [
     'edited',
-    'noHeading',
     'chatItem',
     'hoveredMessageChain',
     'focused',

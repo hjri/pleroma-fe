@@ -51,9 +51,7 @@
           </button>
           <NotificationFilters class="rightside-button" />
         </div>
-        <div
-          role="feed"
-        >
+        <div role="feed">
           <article
             v-if="showExtraNotifications"
             class="notification"

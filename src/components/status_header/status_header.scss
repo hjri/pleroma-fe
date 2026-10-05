@@ -1,68 +1,65 @@
 .StatusHeader {
-  .status-username {
-    white-space: nowrap;
-    overflow: hidden;
-    max-width: 85%;
-    font-weight: bold;
-    flex-shrink: 1;
-    margin-right: 0.4em;
-    text-overflow: ellipsis;
-
-    --_still_image-label-scale: 0.25;
-    --emoji-size: 1em;
-  }
-
-  .status-favicon {
-    height: 1.2em;
-    width: 1.2em;
-    margin-right: 0.4em;
-    object-fit: contain;
-  }
-
-  .heading-name-row {
-    display: flex;
-    justify-content: space-between;
-    line-height: 1;
-
-    a {
-      display: inline-block;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      width: 100%
-    }
-  }
-
-  .account-name {
-    display: inline-block;
-    min-width: 1em;
-    margin-right: 0.4em;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex: 1 1 0;
-
-    &.unknown {
-      min-width: 8em;
-    }
-  }
+  display: flex;
+  justify-content: space-between;
+  line-height: 1.1;
+  overflow: hidden;
+  white-space: nowrap;
+  gap: var(--status-margin);
 
   .heading-left {
-    display: flex;
+    flex: 1 1 5em;
+    align-items: baseline;;
     min-width: 0;
+    overflow: hidden;
+    display: flex;
+    gap: calc(var(--status-margin) / 2);
+
+    .status-username,
+    .account-handle {
+      white-space: nowrap;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .status-username {
+      font-weight: bold;
+      flex-shrink: 0;
+
+      .emoji {
+        vertical-align: top;
+      }
+
+      --_still_image-label-scale: 0.25;
+      --emoji-size: 1em;
+    }
+
+    .account-handle {
+      flex-shrink: 1;
+      min-width: 1em;
+    }
+
+    .status-favicon {
+      height: 1.2em;
+      width: 1.2em;
+      min-width: 1.2em;
+      object-fit: contain;
+      align-self: center;
+    }
   }
 
   .heading-right {
+    flex: 0 0 auto;
     display: flex;
-    flex-shrink: 0;
-    align-self: baseline;
     word-break: keep-all;
-    margin-right: calc(var(--status-margin) / -2);
 
     .visibility-icon,
     .button-unstyled {
       margin: calc(var(--status-margin) / -2) 0;
       padding: calc(var(--status-margin) / 2);
+
+      &:last-child {
+        margin-right: calc(var(--status-margin) / -2);
+      }
     }
   }
 }

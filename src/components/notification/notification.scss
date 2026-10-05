@@ -97,25 +97,6 @@
     flex: 1;
   }
 
-  &:hover .animated.Avatar {
-    canvas {
-      display: none;
-    }
-
-    img {
-      visibility: visible;
-    }
-  }
-
-  &.-non-mention {
-    display: flex;
-    flex: 1;
-    flex-wrap: nowrap;
-    padding: var(--status-margin);
-    gap: var(--status-margin);
-    min-width: 0;
-  }
-
   .follow-request-accept {
     &:hover {
       color: var(--text);
@@ -142,18 +123,6 @@
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-  }
-
-  time {
-    white-space: nowrap;
-  }
-
-  .notification-right {
-    flex: 1 1 auto;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--status-margin) / 4);
   }
 
   .emoji-reaction-emoji {

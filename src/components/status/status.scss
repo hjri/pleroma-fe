@@ -22,20 +22,6 @@
     }
   }
 
-  .status-container {
-    display: flex;
-    padding-top: var(--status-margin);
-    padding-left: var(--status-margin);
-    padding-right: var(--status-margin);
-    /* action buttons have HUGE height so we don't need as much margin at bottom */
-    padding-bottom: calc(var(--status-margin) / 2);
-    gap: var(--status-margin);
-
-    > * {
-      min-width: 0;
-    }
-  }
-
   .pin {
     display: flex;
     align-items: center;
@@ -50,36 +36,6 @@
       pointer-events: initial;
       cursor: initial;
     }
-  }
-
-  .left-side {
-    flex: 0 0 auto;
-  }
-
-  .right-side {
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--status-margin) / 4);
-  }
-
-  .status-username {
-    white-space: nowrap;
-    overflow: hidden;
-    max-width: 85%;
-    font-weight: bold;
-    flex-shrink: 1;
-    margin-right: 0.4em;
-    text-overflow: ellipsis;
-
-    --_still_image-label-scale: 0.25;
-    --emoji-size: 1em;
-  }
-
-  .status-content {
-    margin-top: calc(var(--status-margin));
-    /* action buttons have HUGE height so we don't need as much margin at bottom */
-    margin-bottom: calc(var(--status-margin) / 2);
   }
 
   .usercard {
@@ -167,58 +123,32 @@
   }
 
   .repeat-info {
-    display: flex;
-    align-items: center;
     padding: 0.4em var(--status-margin);
 
     .repeater-avatar {
-      flex: 0 0 1.5em;
       border-radius: var(--roundness);
       margin-left: 2em; // 3.5 (poster avatar size) - 1.5 (repeater avatar size)
       width: 1.5em;
       height: 1.5em;
+      margin-right: var(--status-margin);
+      vertical-align: middle;
     }
 
-    .right-side {
-      display: flex;
-      flex-direction: row;
-      flex: 1 1 auto;
-      overflow-x: hidden;
-      text-overflow: ellipsis;
-      margin-right: 0;
+    .repeat-label {
+      white-space: nowrap;
 
-      .repeater-name {
-        flex: 0 1 auto;
-        margin: 0;
-      }
-
-      .repeat-label {
-        white-space: nowrap;
-        flex: 0 0 auto;
-
-        .repeat-icon {
-          vertical-align: middle;
-          color: var(--cGreen);
-        }
-      }
-
-      .emoji {
-        width: 1em;
-        height: 1em;
+      .repeat-icon {
         vertical-align: middle;
-        object-fit: contain;
+        color: var(--cGreen);
       }
     }
-  }
 
-  .status-actions {
-    position: relative;
-    width: 100%;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-auto-columns: 1fr;
-    grid-auto-flow: column;
-    margin-top: var(--status-margin);
+    .emoji {
+      width: 1em;
+      height: 1em;
+      vertical-align: middle;
+      object-fit: contain;
+    }
   }
 
   .muted {
