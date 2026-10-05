@@ -346,6 +346,7 @@
                 >
                   {{ reply.name }}
                 </StatusPopover>
+                {{ ' ' }}
               </span>
             </span>
           </div>
