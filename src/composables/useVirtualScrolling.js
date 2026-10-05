@@ -62,7 +62,7 @@ export function useVirtualScrolling({
       const suspendable = !unsuspendibleIds.value.has(id)
       const real = heights.value.has(id)
       return { id, height, suspendable, real, visible: true }
-    }, 32) // 32ms = ~30fps
+    })
 
     // Walk over the list to set top offsets
     chart.reduce((sum, item) => {
@@ -71,9 +71,10 @@ export function useVirtualScrolling({
     }, 0)
 
     heightChart.value = chart
-  })
+  }, 32) // 32ms = ~30fps
   watch([list, heights, unsuspendibleIds], updateHeightChart, {
     immediate: true,
+    deep: true
   })
   onUnmounted(() => {
     updateHeightChart.cancel()
@@ -187,7 +188,7 @@ export function useVirtualScrolling({
     32, // 32ms = ~30fps
     { leading: true, trailing: true },
   )
-  watch(heightChartVisibility, recalculateChartVisibility, { immediate: true })
+  watch(heightChart, recalculateChartVisibility, { immediate: true })
 
   const heightChartGrouped = computed(() => {
     const chart = enabled.value ? heightChartVisibility : heightChart
