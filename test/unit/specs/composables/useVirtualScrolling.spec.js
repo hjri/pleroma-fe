@@ -67,6 +67,54 @@ describe('useVirtualScrolling', () => {
     expect(result.heightChart.value).toEqual([...items, spacer])
   })
 
+  it('should update a height chart on list update', async () => {
+    const body = ref({
+      getBoundingClientRect: () => ({
+        top: 0,
+      }),
+    })
+    const list = ref([...new Array(40)].map((i, index) => ({
+      id: `${index}i`,
+    })))
+    const result = useVirtualScrolling({
+      name: 'Test',
+      enabled: ref(true),
+      list,
+      body: ref(body),
+      offset: 0,
+      getPlaceholderHeight: () => ref(100),
+      scrollPositionInstance,
+    })
+
+    result.updateBoundaries()
+    const items = [...new Array(18)].map((i, index) => ({
+      id: `${index}i`,
+      top: index * 100,
+      height: 100,
+      type: 'item',
+    }))
+    const spacerOld = {
+      type: 'spacer',
+      top: 1800,
+      height: 2200,
+      ids: expect.any(Set),
+      id: 'i18',
+    }
+    const spacerNew = {
+      type: 'spacer',
+      top: 1800,
+      height: 2300,
+      ids: expect.any(Set),
+      id: 'i18',
+    }
+    await vi.advanceTimersByTime(32)
+    expect(result.heightChart.value).toEqual([...items, spacerOld])
+    list.value.push({ id: 'new' })
+    await vi.advanceTimersByTime(32)
+    await vi.advanceTimersByTime(32)
+    expect(result.heightChart.value).toEqual([...items, spacerNew])
+  })
+
   it('should update boundaries and compute a height chart on scroll', async () => {
     let topPosition = 0
     const body = ref({
