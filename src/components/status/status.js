@@ -1,4 +1,5 @@
 import { defineAsyncComponent } from 'vue'
+import { mapState } from 'pinia'
 
 import AvatarList from 'src/components/avatar_list/avatar_list.vue'
 import EmojiReactions from 'src/components/emoji_reactions/emoji_reactions.vue'
@@ -28,6 +29,7 @@ import { useStatusesStore } from 'src/stores/statuses.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 import { useUsersStore } from 'src/stores/users.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
@@ -107,6 +109,7 @@ const Status = {
     inQuote: Boolean,
 
     ignoreMute: Boolean,
+    widthEfficient: Boolean,
 
     threadDisplayState: String,
     conversationRank: {
@@ -152,6 +155,9 @@ const Status = {
     useScrobblesStore().getLatestScrobble(this.status.user.id)
   },
   computed: {
+    shouldBeWidthEfficient() {
+      return this.widthEfficient || this.layoutType === 'mobile'
+    },
     headerLevel() {
       return [this.isPage ? 0 : 1, this.isExpanded ? 1 : 0].reduce(
         (acc, item) => acc + item,
@@ -529,6 +535,9 @@ const Status = {
     scrobble() {
       return this.status.user?.latestScrobble
     },
+    ...mapState(useInterfaceStore, [
+      'layoutType',
+    ]),
   },
   methods: {
     visibilityIcon(visibility) {

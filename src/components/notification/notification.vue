@@ -1,15 +1,13 @@
 <template>
-  <article
+  <Status
     v-if="notification.type === 'mention' || notification.type === 'status'"
     ref="root"
-  >
-    <Status
-      class="Notification panel-body"
-      :compact="true"
-      :status-id="notification.status?.id"
-      @click="interacted"
-    />
-  </article>
+    class="Notification panel-body"
+    :compact="true"
+    :status-id="notification.status?.id"
+    @click="interacted"
+    width-efficient
+  />
   <article
     v-else
     ref="root"
@@ -41,7 +39,7 @@
     </div>
     <div
       v-else
-      class="Notification -non-mention activity-layout"
+      class="Notification -non-mention activity-layout -width-efficient"
       :class="[userClass, { highlighted: userStyle }, '-type--' + notification.type]"
       :style="[ userStyle ]"
     >

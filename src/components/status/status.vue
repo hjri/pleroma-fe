@@ -93,7 +93,7 @@
 
       <div
         v-if="!isDeleted"
-        :class="[userClass, { highlighted: userStyle, '-repeat': isRepeat && !inConversation }]"
+        :class="[userClass, { highlighted: userStyle, '-repeat': isRepeat && !inConversation, '-width-efficient': shouldBeWidthEfficient }]"
         :style="[ userStyle ]"
         class="activity-layout"
         :data-tags="tags"
