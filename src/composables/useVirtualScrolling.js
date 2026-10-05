@@ -74,7 +74,7 @@ export function useVirtualScrolling({
   }, 32) // 32ms = ~30fps
   watch([list, heights, unsuspendibleIds], updateHeightChart, {
     immediate: true,
-    deep: true
+    deep: true,
   })
   onUnmounted(() => {
     updateHeightChart.cancel()
@@ -189,14 +189,9 @@ export function useVirtualScrolling({
     { leading: true, trailing: true },
   )
   watch(
-    [
-      heightChart,
-      topScrollBoundary,
-      bottomScrollBoundary,
-      bufferZone,
-    ],
+    [heightChart, topScrollBoundary, bottomScrollBoundary, bufferZone],
     recalculateChartVisibility,
-    { immediate: true }
+    { immediate: true },
   )
 
   const heightChartGrouped = computed(() => {

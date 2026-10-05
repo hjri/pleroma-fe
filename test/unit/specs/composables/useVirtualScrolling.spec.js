@@ -73,9 +73,11 @@ describe('useVirtualScrolling', () => {
         top: 0,
       }),
     })
-    const list = ref([...new Array(40)].map((i, index) => ({
-      id: `${index}i`,
-    })))
+    const list = ref(
+      [...new Array(40)].map((i, index) => ({
+        id: `${index}i`,
+      })),
+    )
     const result = useVirtualScrolling({
       name: 'Test',
       enabled: ref(true),
