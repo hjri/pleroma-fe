@@ -29,7 +29,7 @@ describe('useVirtualScrolling', () => {
     scrollPositionInstance.y.value = 0
   })
 
-  it('should init boundaries and compute a height chart', () => {
+  it('should init boundaries and compute a height chart', async () => {
     const body = ref({
       getBoundingClientRect: () => ({
         top: 0,
@@ -43,6 +43,7 @@ describe('useVirtualScrolling', () => {
       enabled: ref(true),
       list: ref(list),
       body: ref(body),
+      buffer: 3,
       offset: 0,
       getPlaceholderHeight: () => ref(100),
       scrollPositionInstance,
@@ -62,10 +63,11 @@ describe('useVirtualScrolling', () => {
       ids: expect.any(Set),
       id: 'i11',
     }
+    await vi.advanceTimersByTime(32)
     expect(result.heightChart.value).toEqual([...items, spacer])
   })
 
-  it('should update boundaries and compute a height chart on scroll', () => {
+  it('should update boundaries and compute a height chart on scroll', async () => {
     let topPosition = 0
     const body = ref({
       getBoundingClientRect: () => ({
@@ -80,6 +82,7 @@ describe('useVirtualScrolling', () => {
       enabled: ref(true),
       list: ref(list),
       body: ref(body),
+      buffer: 3,
       offset: 0,
       getPlaceholderHeight: () => ref(100),
       scrollPositionInstance,
@@ -110,6 +113,7 @@ describe('useVirtualScrolling', () => {
       ids: expect.any(Set),
       id: 'i16',
     }
+    await vi.advanceTimersByTime(32)
     expect(result.heightChart.value).toEqual([spacer1, ...items, spacer2])
   })
 
@@ -133,6 +137,7 @@ describe('useVirtualScrolling', () => {
       list,
       body: ref(body),
       offset: 0,
+      buffer: 3,
       getPlaceholderHeight: () => ref(100),
       scrollCompensation: true,
       scrollPositionInstance,
@@ -177,6 +182,7 @@ describe('useVirtualScrolling', () => {
       ids: expect.any(Set),
       id: 'i16',
     }
+    await vi.advanceTimersByTime(32)
     expect(result.heightChart.value).toEqual([
       spacer1,
       ...itemsNew,
@@ -208,6 +214,7 @@ describe('useVirtualScrolling', () => {
       list,
       body: ref(body),
       offset: 0,
+      buffer: 3,
       getPlaceholderHeight: () => ref(100),
       scrollCompensation: true,
       scrollPositionInstance,
@@ -240,6 +247,7 @@ describe('useVirtualScrolling', () => {
       ids: expect.any(Set),
       id: 'i6',
     }
+    await vi.advanceTimersByTime(32)
     expect(result.heightChart.value).toEqual([...items, spacer])
   })
 
@@ -261,6 +269,7 @@ describe('useVirtualScrolling', () => {
       list,
       body: ref(body),
       offset: 0,
+      buffer: 3,
       getPlaceholderHeight: () => ref(100),
       scrollPositionInstance,
     })
@@ -314,6 +323,7 @@ describe('useVirtualScrolling', () => {
       ids: expect.any(Set),
       id: 'i16',
     }
+    await vi.advanceTimersByTime(32)
     expect(result.heightChart.value).toEqual([
       spacer1,
       ...items1,
