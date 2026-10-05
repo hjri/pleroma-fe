@@ -1,5 +1,5 @@
-import { first, last } from 'lodash-es'
-import { computed, nextTick, ref, toValue, watch } from 'vue'
+import { first, last, throttle, debounce } from 'lodash-es'
+import { computed, nextTick, ref, toValue, watch, onUnmounted } from 'vue'
 
 export function useVirtualScrolling({
   // For debugging
@@ -47,7 +47,8 @@ export function useVirtualScrolling({
 
   // # Heights mapping.
   const heights = ref(new Map())
-  const heightChart = computed(() => {
+  const heightChart = ref([])
+  const updateHeightChart = debounce(() => {
     // Map every height and suspendable state
     const chart = list.value.map((item) => {
       const { id } = item
@@ -61,7 +62,7 @@ export function useVirtualScrolling({
       const suspendable = !unsuspendibleIds.value.has(id)
       const real = heights.value.has(id)
       return { id, height, suspendable, real, visible: true }
-    })
+    }, 32) // 32ms = ~30fps
 
     // Walk over the list to set top offsets
     chart.reduce((sum, item) => {
@@ -69,8 +70,13 @@ export function useVirtualScrolling({
       return sum + item.height
     }, 0)
 
-    return chart
+    heightChart.value = chart
   })
+  watch([list, heights, unsuspendibleIds], updateHeightChart, { immediate: true })
+  onUnmounted(() => {
+    updateHeightChart.cancel()
+  })
+
   const updateVirtualHeight = ({ id, height }) => {
     heights.value.set(id, height)
   }
@@ -142,9 +148,9 @@ export function useVirtualScrolling({
   })
 
   // # Visiblity
-  // Add buffer zone to boundary, equal to approx 3 items heights
+  // Add buffer zone to boundary, equal to approx 10 items heights
   const bufferZone = computed(
-    () => getPlaceholderHeight().value * (toValue(buffer) ?? 3),
+    () => getPlaceholderHeight().value * (toValue(buffer) ?? 10),
   )
 
   const checkVisible = ({ top, height }) => {
@@ -165,12 +171,21 @@ export function useVirtualScrolling({
     return isBelowTopBoundary && isAboveBottomBoundary
   }
 
-  const heightChartVisibility = computed(() =>
-    heightChart.value.map((heightChartItem) => ({
-      ...heightChartItem,
-      visible: checkVisible(heightChartItem),
-    })),
+  const heightChartVisibility = ref(null)
+
+  const recalculateChartVisibility = throttle(
+    (newVal, oldVal) => {
+      heightChartVisibility.value =
+        heightChart.value.map((heightChartItem) => ({
+          ...heightChartItem,
+          visible: checkVisible(heightChartItem),
+        }))
+    },
+    32, // 32ms = ~30fps
+    { leading: true, trailing: true }
   )
+  watch(heightChartVisibility, recalculateChartVisibility, { immediate: true })
+
   const heightChartGrouped = computed(() => {
     const chart = enabled.value ? heightChartVisibility : heightChart
     // Group invisible items into spacers
