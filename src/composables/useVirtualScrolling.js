@@ -188,7 +188,16 @@ export function useVirtualScrolling({
     32, // 32ms = ~30fps
     { leading: true, trailing: true },
   )
-  watch(heightChart, recalculateChartVisibility, { immediate: true })
+  watch(
+    [
+      heightChart,
+      topScrollBoundary,
+      bottomScrollBoundary,
+      bufferZone,
+    ],
+    recalculateChartVisibility,
+    { immediate: true }
+  )
 
   const heightChartGrouped = computed(() => {
     const chart = enabled.value ? heightChartVisibility : heightChart
