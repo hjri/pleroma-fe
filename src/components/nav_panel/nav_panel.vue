@@ -28,7 +28,7 @@
         class="panel-body"
         role="menubar"
         aria-orientation="vertical"
-        :title="$t('nav.all_navigation')"
+        :aria-label="$t('nav.all_navigation')"
       >
         <NavigationEntry
           v-if="currentUser || !privateMode"
