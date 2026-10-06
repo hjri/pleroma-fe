@@ -1268,8 +1268,10 @@
       "queues": "Queues"
     },
     "rate_limit": {
+      "global": "Global settings",
       "rate_limit": "Rate Limit",
       "amount": "Amount",
+      "all": "Everyone",
       "unauthenticated": "Unauthenticated",
       "authenticated": "Authenticated",
       "period": "Time period",
