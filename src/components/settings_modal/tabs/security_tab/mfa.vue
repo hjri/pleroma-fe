@@ -34,7 +34,6 @@
           >
             {{ $t('settings.mfa.generate_new_recovery_codes') }}
           </button>
-
           <div v-if="confirmNewBackupCodes">
             <confirm
               :disabled="backupCodes.inProgress"
@@ -66,7 +65,7 @@
         >
           {{ $t('general.cancel') }}
         </button>
-
+        {{ ' ' }}
         <button
           v-if="canSetupOTP"
           class="btn button-default"
@@ -95,9 +94,12 @@
 
               <div class="verify">
                 <h4>{{ $t('general.verify') }}</h4>
-                <p>{{ $t('settings.mfa.verify.desc') }}</p>
+                <p>
+                  {{ $t('settings.mfa.verify.desc') }}
+                </p>
                 <input
                   v-model="otpConfirmToken"
+                  :title="$t('settings.mfa.verify.label')"
                   type="text"
                   class="input"
                 >
@@ -106,6 +108,7 @@
                 <input
                   v-model="currentPassword"
                   type="password"
+                  :title="$t('settings.current_password')"
                   class="input"
                 >
                 <div class="confirm-otp-actions">
@@ -146,6 +149,18 @@
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: baseline;
+  }
+
+  h4 {
+    margin-left: 0;
+  }
+
+  p {
+    margin: 0 0 0.5em;
+  }
+
+  input {
+    margin-bottom: 1em
   }
 
   .warning {

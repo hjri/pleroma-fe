@@ -516,7 +516,8 @@
         "secret_code": "Key"
       },
       "verify": {
-        "desc": "To enable two-factor authentication, enter the code from your two-factor app:"
+        "desc": "To enable two-factor authentication, enter the code from your two-factor app:",
+        "label": "One-time code"
       }
     },
     "units": {
