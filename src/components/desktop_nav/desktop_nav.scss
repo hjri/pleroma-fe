@@ -45,6 +45,13 @@
       );
   }
 
+  .button-unstyled {
+    &:focus-visible {
+      border-radius: var(--roundness);
+      outline: 2px solid var(--text);
+    }
+  }
+
   .button-default {
     &,
     svg {

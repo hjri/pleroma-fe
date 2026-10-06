@@ -1,7 +1,7 @@
 <template>
   <label
     class="Select input"
-    :class="{ disabled, unstyled }"
+    :class="[rootClass, { disabled, unstyled }]"
     role="presentation"
   >
     <select

@@ -31,7 +31,6 @@
   }
 
   .user-info {
-    margin: 0.6em 0.6em 0;
 
     .Avatar {
       width: 5em;

@@ -36,7 +36,6 @@
 
   .user-info {
     width: 100%;
-    margin: 1.2em;
   }
 
   .user-identity {

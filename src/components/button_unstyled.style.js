@@ -15,6 +15,7 @@ export default {
       directives: {
         shadow: [],
       },
+      roundness: 3,
     },
     {
       component: 'Icon',

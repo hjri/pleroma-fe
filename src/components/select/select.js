@@ -6,6 +6,7 @@ library.add(faChevronDown)
 export default {
   emits: ['update:modelValue'],
   props: {
+    rootClass: String,
     modelValue: String,
     disabled: Boolean,
     unstyled: Boolean,

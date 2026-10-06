@@ -1,8 +1,8 @@
 <template>
-<div
-  class="AccountActions"
-  role="presentation"
->
+  <div
+    class="AccountActions"
+    role="presentation"
+  >
     <Popover
       trigger="click"
       placement="bottom"
