@@ -84,6 +84,7 @@
 
   .setting-item {
     display: grid;
+    border: 0;
     grid-template-areas:
       "label control"
       "label desc"
@@ -95,6 +96,7 @@
     line-height: 1.5em;
 
     .setting-label {
+      float: left;
       grid-area: label;
       text-align: right;
     }

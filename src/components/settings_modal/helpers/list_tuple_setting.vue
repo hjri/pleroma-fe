@@ -1,9 +1,9 @@
 <template>
-  <div
+  <fieldset
     v-if="matchesExpertLevel"
     class="ListTupleSetting"
   >
-    <label
+    <legend
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
@@ -14,7 +14,7 @@
         MISSING LABEL FOR {{ path }}
       </template>
       <slot v-else />
-    </label>
+    </legend>
     <p
       v-if="backendDescriptionDescription"
       class="setting-description"
@@ -32,12 +32,14 @@
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :value="item.tuple[0]"
+            :title="backendDescriptionSuggestions[0][0]"
             @change="e => update({ event: e, index, eventType: 'edit', tuple: 0 })"
           >
           <input
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :value="item.tuple[1]"
+            :title="backendDescriptionSuggestions[0][1]"
             @change="e => update({ event: e, index, eventType: 'edit', tuple: 1 })"
           >
           <button
@@ -56,6 +58,7 @@
             :class="{ disabled: shouldBeDisabled }"
             :disabled="shouldBeDisabled"
             :placeholder="backendDescriptionSuggestions[0][0]"
+            :title="backendDescriptionSuggestions[0][0]"
           >
           <input
             v-model="newValue[1]"
@@ -63,6 +66,7 @@
             :class="{ disabled: shouldBeDisabled }"
             :disabled="shouldBeDisabled"
             :placeholder="backendDescriptionSuggestions[0][1]"
+            :title="backendDescriptionSuggestions[0][1]"
           >
           <button
             class="button-default"
@@ -78,7 +82,7 @@
       :onclick="reset"
     />
     <DraftButtons />
-  </div>
+  </fieldset>
 </template>
 
 <script src="./list_tuple_setting.js"></script>
