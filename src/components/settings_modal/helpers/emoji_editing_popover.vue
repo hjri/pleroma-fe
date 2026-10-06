@@ -38,6 +38,7 @@
             type="file"
             accept="image/*"
             class="emoji-tab-popover-file input"
+            :title="$t('general.select_file')"
             @change="uploadFile = $event.target.files"
           >
         </div>
@@ -45,6 +46,7 @@
           <input
             v-model="uploadURL"
             :placeholder="$t('admin_dash.emoji.upload_url')"
+            :title="$t('admin_dash.emoji.upload_url')"
             class="emoji-data-input input"
           >
         </div>
@@ -58,6 +60,7 @@
               v-model="editedShortcode"
               class="emoji-data-input input"
               :placeholder="$t('admin_dash.emoji.new_shortcode')"
+              :title="$t('admin_dash.emoji.new_shortcode')"
             >
           </label>
         </div>
@@ -81,7 +84,7 @@
           <label>
             {{ $t('admin_dash.emoji.copy_to') }}
 
-            <SelectComponent
+            <Select
               v-model="copyToPack"
               class="form-control"
             >
@@ -99,7 +102,7 @@
               >
                 {{ listPackName }}
               </option>
-            </SelectComponent>
+            </Select>
           </label>
         </div>
 
@@ -150,7 +153,7 @@
 
 <script>
 import Popover from 'components/popover/popover.vue'
-import SelectComponent from 'components/select/select.vue'
+import Select from 'components/select/select.vue'
 import { defineAsyncComponent } from 'vue'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
@@ -168,7 +171,7 @@ export default {
       () => import('src/components/confirm_modal/confirm_modal.vue'),
     ),
 
-    SelectComponent,
+    Select,
   },
 
   inject: ['emojiAddr'],
