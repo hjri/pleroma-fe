@@ -69,7 +69,7 @@
   box-sizing: border-box;
   display: grid;
   grid-auto-flow: column;
-  grid-template-columns: minmax(50%, 1fr);
+  grid-template-columns: minmax(auto, 1fr);
   grid-auto-columns: auto;
   column-gap: var(--__panel-heading-gap);
   flex: none;
