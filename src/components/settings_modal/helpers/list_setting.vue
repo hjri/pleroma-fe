@@ -1,9 +1,9 @@
 <template>
-  <div
+  <fieldset
     v-if="matchesExpertLevel"
     class="ListSetting setting-item"
   >
-    <label
+    <legend
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
@@ -14,7 +14,7 @@
         MISSING LABEL FOR {{ path }}
       </template>
       <slot v-else />
-    </label>
+    </legend>
     <p
       v-if="backendDescriptionDescription"
       class="setting-description"
@@ -77,16 +77,24 @@
     />
     <LocalSettingIndicator :is-local="isLocalSetting" />
     <DraftButtons />
-  </div>
+  </fieldset>
 </template>
 
 <script src="./list_setting.js"></script>
 <style lang="scss">
 .ListSetting {
+  border: none;
+  margin: 0;
+
+  legend {
+    float: left;
+  }
+
   .setting-list {
-    .checkbox {
-      padding: 0.5em 0;
-    }
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
   }
 }
 </style>
