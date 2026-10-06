@@ -77,7 +77,7 @@
             icon="star"
           />
           {{ ' ' }}
-          <small>{{ $t('notifications.favorited_you') }}</small>
+          {{ $t('notifications.favorited_you') }}
         </span>
         <span v-if="notification.type === 'repeat'">
           <FAIcon
@@ -86,7 +86,7 @@
             :title="$t('tool_tip.repeat')"
           />
           {{ ' ' }}
-          <small>{{ $t('notifications.repeated_you') }}</small>
+          {{ $t('notifications.repeated_you') }}
         </span>
         <span v-if="notification.type === 'follow'">
           <FAIcon
@@ -94,7 +94,7 @@
             icon="user-plus"
           />
           {{ ' ' }}
-          <small>{{ $t('notifications.followed_you') }}</small>
+          {{ $t('notifications.followed_you') }}
         </span>
         <span v-if="notification.type === 'follow_request'">
           <FAIcon
@@ -102,7 +102,7 @@
             icon="user"
           />
           {{ ' ' }}
-          <small>{{ $t('notifications.follow_request') }}</small>
+          {{ $t('notifications.follow_request') }}
         </span>
         <span v-if="notification.type === 'move'">
           <FAIcon
@@ -110,31 +110,29 @@
             icon="suitcase-rolling"
           />
           {{ ' ' }}
-          <small>{{ $t('notifications.migrated_to') }}</small>
+          {{ $t('notifications.migrated_to') }}
         </span>
         <span v-if="notification.type === 'pleroma:emoji_reaction'">
-          <small>
-            <i18n-t
-              scope="global"
-              keypath="notifications.reacted_with"
+          <i18n-t
+            scope="global"
+            keypath="notifications.reacted_with"
+          >
+            <img
+              v-if="notification.emoji_url"
+              class="emoji-reaction-emoji emoji-reaction-emoji-image"
+              :src="notification.emoji_url"
+              :alt="notification.emoji"
+              :title="notification.emoji"
+              :class="{ ['-wide']: allowNonSquareEmoji }"
             >
-              <img
-                v-if="notification.emoji_url"
-                class="emoji-reaction-emoji emoji-reaction-emoji-image"
-                :src="notification.emoji_url"
-                :alt="notification.emoji"
-                :title="notification.emoji"
-                :class="{ ['-wide']: allowNonSquareEmoji }"
-              >
-              <span
-                v-else
-                class="emoji-reaction-emoji"
-              >{{ notification.emoji }}</span>
-            </i18n-t>
-          </small>
+            <span
+              v-else
+              class="emoji-reaction-emoji"
+            >{{ notification.emoji }}</span>
+          </i18n-t>
         </span>
         <span v-if="notification.type === 'pleroma:report'">
-          <small>{{ $t('notifications.submitted_report') }}</small>
+          {{ $t('notifications.submitted_report') }}
         </span>
         <span v-if="notification.type === 'poll'">
           <FAIcon
@@ -142,7 +140,7 @@
             icon="poll-h"
           />
           {{ ' ' }}
-          <small>{{ $t('notifications.poll_ended') }}</small>
+          {{ $t('notifications.poll_ended') }}
         </span>
       </div>
       <div class="activity-content">
@@ -168,14 +166,16 @@
           v-else-if="notification.type === 'pleroma:report'"
           :report-id="notification.report.id"
         />
-        <StatusContent
-          v-if="status"
-          class="activity-container"
-          :compact="!statusExpanded"
-          :status="status"
-          :collapse="!statusExpanded"
-          @click="onContentClick"
-        />
+        <small>
+          <StatusContent
+            v-if="status"
+            class="activity-container"
+            :compact="!statusExpanded"
+            :status="status"
+            :collapse="!statusExpanded"
+            @click="onContentClick"
+          />
+        </small>
       </div>
       <div
         v-if="notification.type === 'follow_request'"
