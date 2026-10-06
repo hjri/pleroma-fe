@@ -9,6 +9,8 @@
     @mouseenter="onMouseenter"
     @mouseleave="onMouseleave"
     @click="onClick"
+    @focus="onMouseenter"
+    @blur="onMouseleave"
     v-bind="allTriggerAttrs"
     ref="trigger"
   >
