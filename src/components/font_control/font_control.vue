@@ -15,9 +15,7 @@
           keypath="settings.style.fonts.override"
           tag="span"
         >
-          <span>
-            {{ label }}
-          </span>
+          {{ label }}
         </i18n-t>
       </Checkbox>
     </div>
