@@ -42,3 +42,15 @@
     flex: 1;
   }
 }
+
+/* hosted: which instance this logs into, and a way to pick another */
+.login-hosted {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  align-items: baseline;
+
+  .login-hosted-instance {
+    font-weight: 600;
+  }
+}

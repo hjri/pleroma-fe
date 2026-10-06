@@ -1,3 +1,4 @@
+import { streamingUrl } from './api_base.js'
 import { paramsString } from './helpers.js'
 
 import {
@@ -7,7 +8,7 @@ import {
 } from 'src/services/entity_normalizer/entity_normalizer.service.js'
 
 const MASTODON_STREAMING = ({ accessToken, stream }) =>
-  `/api/v1/streaming${paramsString({ accessToken, stream })}`
+  streamingUrl(`/api/v1/streaming${paramsString({ accessToken, stream })}`)
 
 export const getMastodonSocketURI = ({ credentials, stream }) => {
   return MASTODON_STREAMING({ accessToken: credentials, stream })

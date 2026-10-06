@@ -6,6 +6,7 @@ import { useOAuthStore } from 'src/stores/oauth.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { getLoginUrl, getTokenWithCredentials } from 'src/api/oauth.js'
+import { forgetInstance } from 'src/services/hosted/hosted.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -13,6 +14,9 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 library.add(faTimes)
 
 const LoginForm = {
+  inject: {
+    reloadPage: { default: () => () => window.location.reload() },
+  },
   data: () => ({
     user: {},
     error: false,
@@ -20,7 +24,12 @@ const LoginForm = {
   computed: {
     ...mapState(useUsersStore, ['loggingIn']),
     ...mapState(useOAuthStore, ['clientId', 'clientSecret']),
-    ...mapState(useInstanceStore, ['server', 'registrationOpen']),
+    ...mapState(useInstanceStore, [
+      'server',
+      'registrationOpen',
+      'hosted',
+      'instanceDomain',
+    ]),
     ...mapState(useAuthFlowStore, {
       isTokenAuth: (store) => store.requiredToken,
       isPasswordAuth: (store) => !store.requiredToken,
@@ -29,6 +38,16 @@ const LoginForm = {
   methods: {
     ...mapActions(useAuthFlowStore, ['requireMFA', 'login']),
     ...mapActions(useOAuthStore, ['ensureAppToken']),
+    // hosted: back to the instance picker; the app registration and any
+    // login token belong to the instance being left
+    changeInstance() {
+      const oauth = useOAuthStore()
+      oauth.setClientData({ clientId: false, clientSecret: false })
+      oauth.setAppToken(false)
+      oauth.clearToken()
+      forgetInstance()
+      this.reloadPage()
+    },
     submit() {
       this.isTokenAuth ? this.submitToken() : this.submitPassword()
     },
