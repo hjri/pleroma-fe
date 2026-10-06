@@ -59,7 +59,7 @@
           :user-id="repeater.id"
         />
         <bdi
-          class="faint status-username repeater-name"
+          class="status-username repeater-name"
           :title="repeaterName"
         >
           <router-link
@@ -81,7 +81,7 @@
           >{{ repeaterName }}</router-link>
         </bdi>
         {{ ' ' }}
-        <span class="repeat-label">
+        <span class="repeat-label faint">
           <FAIcon
             icon="retweet"
             class="repeat-icon"

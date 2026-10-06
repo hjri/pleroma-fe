@@ -123,17 +123,26 @@
   }
 
   .repeat-info {
+    line-height: 1;
     padding: 0.4em var(--status-margin);
 
     --emoji-size: 1em;
 
     .repeater-avatar {
       border-radius: var(--roundness);
-      margin-left: 2em; // 3.5 (poster avatar size) - 1.5 (repeater avatar size)
-      width: 1.5em;
-      height: 1.5em;
+      margin-left: 2em; // 3.6 (poster avatar size) - 1.6 (repeater avatar size)
+      width: 1.6em;
+      height: 1.6em;
       margin-right: var(--status-margin);
       vertical-align: middle;
+    }
+
+    .repeater-name {
+
+      a {
+        font-weight: bold;
+        color: var(--text);
+      }
     }
 
     .repeat-label {

@@ -258,7 +258,7 @@
 
     &.-overlay {
       position: absolute;
-      inset: -var(--user-card-margin);
+      inset: var(--user-card-margin);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -345,6 +345,7 @@
 
       .user-name {
         mask: linear-gradient(to left, transparent 0.1em, white 0.5em) right no-repeat;
+        color: var(--text);
       }
 
       .user-name:hover {
