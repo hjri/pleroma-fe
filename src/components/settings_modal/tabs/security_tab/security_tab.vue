@@ -4,39 +4,55 @@
       <h3>{{ $t('settings.change_email') }}</h3>
       <ul class="setting-list">
         <li>
-          <h4>{{ $t('settings.new_email') }}</h4>
-          <input
-            v-model="newEmail"
-            type="email"
-            autocomplete="email"
-            class="input"
-          >
-        </li>
-        <li>
-          <h4>{{ $t('settings.current_password') }}</h4>
-          <input
-            v-model="changeEmailPassword"
-            type="password"
-            autocomplete="current-password"
-            class="input"
-          >
-        </li>
-        <li>
-          <button
-            class="btn button-default"
-            @click="changeEmail"
-          >
-            {{ $t('settings.save') }}
-          </button>
-        </li>
-        <li>
-          <p v-if="changedEmail">
-            {{ $t('settings.changed_email') }}
-          </p>
-          <template v-if="changeEmailError !== false">
-            <p>{{ $t('settings.change_email_error') }}</p>
-            <p>{{ changeEmailError }}</p>
-          </template>
+          <span class="setting-item">
+            <label
+              class="setting-label"
+              for="new-email"
+            >
+              {{ $t('settings.new_email') }}
+            </label>
+            <input
+              id="new-email"
+              v-model="newEmail"
+              type="email"
+              autocomplete="email"
+              class="input"
+            >
+          </span>
+          <span class="setting-item">
+            <label
+              class="setting-label"
+              for="new-email-password"
+            >
+              {{ $t('settings.current_password') }}
+            </label>
+            <input
+              id="new-email-password"
+              v-model="changeEmailPassword"
+              type="password"
+              autocomplete="current-password"
+              class="input setting-control"
+            >
+          </span>
+          <span class="setting-item">
+            <span class="setting-control">
+              <button
+                class="btn button-default"
+                @click="changeEmail"
+              >
+                {{ $t('settings.save') }}
+              </button>
+            </span>
+          </span>
+          <center>
+            <p v-if="changedEmail">
+              {{ $t('settings.changed_email') }}
+            </p>
+            <template v-if="changeEmailError !== false">
+              <p>{{ $t('settings.change_email_error') }}</p>
+              <p>{{ changeEmailError }}</p>
+            </template>
+          </center>
         </li>
       </ul>
     </div>
@@ -45,120 +61,154 @@
       <h3>{{ $t('settings.change_password') }}</h3>
       <ul class="setting-list">
         <li>
-          <h4>{{ $t('settings.current_password') }}</h4>
-          <input
-            v-model="changePasswordInputs[0]"
-            type="password"
-            class="input"
-          >
-        </li>
-        <li>
-          <h4>{{ $t('settings.new_password') }}</h4>
-          <input
-            v-model="changePasswordInputs[1]"
-            type="password"
-            class="input"
-          >
-        </li>
-        <li>
-          <h4>{{ $t('settings.confirm_new_password') }}</h4>
-          <input
-            v-model="changePasswordInputs[2]"
-            type="password"
-            class="input"
-          >
-        </li>
-        <li>
-          <button
-            class="btn button-default"
-            @click="changePassword"
-          >
-            {{ $t('settings.save') }}
-          </button>
-        </li>
-        <li>
-          <p v-if="changedPassword">
-            {{ $t('settings.changed_password') }}
-          </p>
-          <p v-else-if="changePasswordError !== false">
-            {{ $t('settings.change_password_error') }}
-          </p>
-          <p v-if="changePasswordError">
-            {{ changePasswordError }}
-          </p>
+          <span class="setting-item">
+            <label
+              class="setting-label"
+              for="new-password-current"
+            >
+              {{ $t('settings.current_password') }}
+            </label>
+            <input
+              id="new-password-current"
+              v-model="changePasswordInputs[0]"
+              type="password"
+              class="input setting-control"
+            >
+          </span>
+          <span class="setting-item">
+            <label
+              class="setting-label"
+              for="new-password-new"
+            >
+              {{ $t('settings.new_password') }}
+            </label>
+            <input
+              id="new-password-new"
+              v-model="changePasswordInputs[1]"
+              type="password"
+              class="input setting-control"
+            >
+          </span>
+          <span class="setting-item">
+            <label
+              class="setting-label"
+              for="new-password-again"
+            >
+              {{ $t('settings.confirm_new_password') }}
+            </label>
+            <input
+              id="new-password-again"
+              v-model="changePasswordInputs[2]"
+              type="password"
+              class="input setting-control"
+            >
+          </span>
+          <span class="setting-item">
+            <span class="setting-control">
+              <button
+                class="btn button-default"
+                @click="changePassword"
+              >
+                {{ $t('settings.save') }}
+              </button>
+            </span>
+          </span>
+          <center>
+            <p v-if="changedPassword">
+              {{ $t('settings.changed_password') }}
+            </p>
+            <p v-else-if="changePasswordError !== false">
+              {{ $t('settings.change_password_error') }}
+            </p>
+            <p v-if="changePasswordError">
+              {{ changePasswordError }}
+            </p>
+          </center>
         </li>
       </ul>
     </div>
 
     <div class="setting-section">
       <h3>{{ $t('settings.account_alias') }}</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>{{ $t('settings.account_alias_table_head') }}</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="alias in aliases"
-            :key="alias"
+      <ul class="setting-list">
+        <li>
+          <table v-if="aliases.length > 0">
+            <thead>
+              <tr>
+                <th>{{ $t('settings.account_alias_table_head') }}</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="alias in aliases"
+                :key="alias"
+              >
+                <td>{{ alias }}</td>
+                <td class="actions">
+                  <button
+                    class="btn button-default"
+                    @click="removeAlias(alias)"
+                  >
+                    {{ $t('settings.remove_alias') }}
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div
+            v-if="listAliasesError"
+            class="alert error"
           >
-            <td>{{ alias }}</td>
-            <td class="actions">
+            {{ $t('settings.list_aliases_error', { error }) }}
+            <FAIcon
+              class="fa-scale-110 fa-old-padding"
+              icon="times"
+              :title="$t('settings.hide_list_aliases_error_action')"
+              @click="listAliasesError = false"
+            />
+          </div>
+        </li>
+        <li>
+          <div class="setting-item">
+            <i18n-t
+              scope="global"
+              keypath="settings.new_alias_target"
+              for="add-alias-target"
+              tag="label"
+              class="setting-label"
+            >
+              <template #example>
+                <code>foo@example.org</code>
+              </template>
+            </i18n-t>
+            <input
+              id="add-alias-target"
+              v-model="addAliasTarget"
+              class="input setting-control"
+            >
+          </div>
+          <div class="setting-item">
+            <span class="setting-control">
               <button
                 class="btn button-default"
-                @click="removeAlias(alias)"
+                @click="addAlias"
               >
-                {{ $t('settings.remove_alias') }}
+                {{ $t('settings.save') }}
               </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div
-        v-if="listAliasesError"
-        class="alert error"
-      >
-        {{ $t('settings.list_aliases_error', { error }) }}
-        <FAIcon
-          class="fa-scale-110 fa-old-padding"
-          icon="times"
-          :title="$t('settings.hide_list_aliases_error_action')"
-          @click="listAliasesError = false"
-        />
-      </div>
-      <div>
-        <i18n-t
-          scope="global"
-          keypath="settings.new_alias_target"
-          tag="p"
-        >
-          <code
-            place="example"
-          >
-            foo@example.org
-          </code>
-        </i18n-t>
-        <input
-          v-model="addAliasTarget"
-          class="input"
-        >
-      </div>
-      <button
-        class="btn button-default"
-        @click="addAlias"
-      >
-        {{ $t('settings.save') }}
-      </button>
-      <p v-if="addedAlias">
-        {{ $t('settings.added_alias') }}
-      </p>
-      <template v-if="addAliasError !== false">
-        <p>{{ $t('settings.add_alias_error', { error: addAliasError }) }}</p>
-      </template>
+            </span>
+          </div>
+          <center>
+            <p v-if="addedAlias">
+              {{ $t('settings.added_alias') }}
+            </p>
+            <template v-if="addAliasError !== false">
+              <p>{{ $t('settings.add_alias_error', { error: addAliasError }) }}</p>
+            </template>
+          </center>
+        </li>
+      </ul>
     </div>
-
 
     <div class="setting-section">
       <h3>{{ $t('settings.oauth_tokens') }}</h3>
@@ -194,44 +244,61 @@
     <div class="setting-section">
       <h3>{{ $t('settings.move_account') }}</h3>
       <p>{{ $t('settings.move_account_notes') }}</p>
-      <div>
-        <i18n-t
-          keypath="settings.move_account_target"
-          tag="p"
-          scope="global"
-        >
-          <template #example>
-            <code>
-              foo@example.org
-            </code>
-          </template>
-        </i18n-t>
-        <input
-          v-model="moveAccountTarget"
-          class="input"
-        >
-      </div>
-      <div>
-        <p>{{ $t('settings.current_password') }}</p>
-        <input
-          v-model="moveAccountPassword"
-          type="password"
-          autocomplete="current-password"
-          class="input"
-        >
-      </div>
-      <button
-        class="btn button-default"
-        @click="moveAccount"
-      >
-        {{ $t('settings.save') }}
-      </button>
-      <p v-if="movedAccount">
-        {{ $t('settings.moved_account') }}
-      </p>
-      <template v-if="moveAccountError !== false">
-        <p>{{ $t('settings.move_account_error', { error: moveAccountError }) }}</p>
-      </template>
+      <ul class="setting-list">
+        <li>
+          <div class="setting-item">
+            <i18n-t
+              keypath="settings.move_account_target"
+              tag="label"
+              scope="global"
+              class="setting-label"
+              for="move-account-target"
+            >
+              <template #example>
+                <code>foo@example.org</code>
+              </template>
+            </i18n-t>
+            <input
+              id="move-account-target"
+              v-model="moveAccountTarget"
+              class="input setting-control"
+            >
+          </div>
+          <div class="setting-item">
+            <label
+              class="setting-label"
+              for="move-account-target"
+            >
+              {{ $t('settings.current_password') }}
+            </label>
+            <input
+              id="move-account-password"
+              v-model="moveAccountPassword"
+              type="password"
+              autocomplete="current-password"
+              class="input"
+            >
+          </div>
+          <div class="setting-item">
+            <div class="setting-control">
+              <button
+                class="btn button-default"
+                @click="moveAccount"
+              >
+                {{ $t('settings.save') }}
+              </button>
+            </div>
+          </div>
+          <center>
+            <p v-if="movedAccount">
+              {{ $t('settings.moved_account') }}
+            </p>
+            <template v-if="moveAccountError !== false">
+              <p>{{ $t('settings.move_account_error', { error: moveAccountError }) }}</p>
+            </template>
+          </center>
+        </li>
+      </ul>
     </div>
 
     <div class="setting-section">
@@ -262,7 +329,7 @@
       </p>
       <button
         v-if="!deletingAccount"
-        class="btn button-default"
+        class="btn button-default -danger"
         @click="confirmDelete"
       >
         {{ $t('settings.delete_account') }}

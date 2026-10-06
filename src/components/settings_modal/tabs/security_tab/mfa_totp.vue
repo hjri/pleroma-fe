@@ -29,6 +29,7 @@
       {{ $t('settings.enter_current_password_to_confirm') }}:
       <input
         v-model="currentPassword"
+        :title="$t('settings.current_password')"
         type="password"
         class="input"
       >
