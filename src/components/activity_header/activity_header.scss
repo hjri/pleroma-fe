@@ -1,14 +1,14 @@
 .ActivityHeader {
   display: grid;
   line-height: var(--__header-line-height);
-  grid-template-columns: auto auto minmax(min-content, 1fr);
+  grid-template-columns: auto auto 1fr auto;
   grid-template-rows: var(--__header-height);
   grid-template-areas:
-    "title handle misc";
+    "title handle . misc";
   gap: 0 calc(var(--status-margin) / 2);
 
   &.-multiline {
-    grid-template-columns: max-content minmax(min-content, 1fr);
+    grid-template-columns: auto auto;
     grid-template-rows: var(--__header-height) var(--__header-height);
     grid-template-areas:
       "title misc"
@@ -26,7 +26,7 @@
     overflow-x: clip;
     text-overflow: clip;
     overflow-clip-margin: 0.5em;
-    min-width: 3em;
+    min-width: 0;
 
     .emoji {
       vertical-align: top;
