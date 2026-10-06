@@ -105,6 +105,7 @@
     }
 
     .setting-control {
+      display: flex;
       grid-area: control;
 
       &.textarea {
