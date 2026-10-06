@@ -1,15 +1,15 @@
 .ActivityHeader {
   display: grid;
-  line-height: 1.1;
+  line-height: var(--__header-line-height);
   grid-template-columns: auto auto minmax(min-content, 1fr);
-  grid-template-rows: 1.1em;
+  grid-template-rows: var(--__header-height);
   grid-template-areas:
     "title handle misc";
-  gap: calc(var(--status-margin) / 4) calc(var(--status-margin) / 2);
+  gap: 0 calc(var(--status-margin) / 2);
 
   &.-multiline {
     grid-template-columns: max-content minmax(min-content, 1fr);
-    grid-template-rows: 1.1em 1.1em;
+    grid-template-rows: var(--__header-height) var(--__header-height);
     grid-template-areas:
       "title misc"
       "handle handle";
@@ -23,8 +23,9 @@
   .user-title {
     grid-area: title;
     font-weight: bold;
-    overflow-x: hidden;
-    text-overflow: ellipsis;
+    overflow-x: clip;
+    text-overflow: clip;
+    min-width: 3em;
 
     .emoji {
       vertical-align: top;

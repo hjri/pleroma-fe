@@ -98,23 +98,19 @@
         class="activity-layout"
         :data-tags="tags"
       >
-        <a
+        <UserPopover
           v-if="user.name"
-          :href="$router.resolve(userProfileLink).href"
           class="activity-avatar"
-          @click.prevent
+          :user-id="user.id"
+          overlay-centers
+          link
         >
-          <UserPopover
+          <UserAvatar
+            class="post-avatar"
+            :compact="compact"
             :user-id="user.id"
-            :overlay-centers="true"
-          >
-            <UserAvatar
-              class="post-avatar"
-              :compact="compact"
-              :user-id="user.id"
-            />
-          </UserPopover>
-        </a>
+          />
+        </UserPopover>
         <UserAvatar
           v-else
           :user-id="user.id"
@@ -211,7 +207,7 @@
                       >
                       <template #icon>
                         <FAIcon
-                          class="fa-scale-110 fa-old-padding"
+                          class="fa-scale-110"
                           icon="reply"
                           flip="horizontal"
                         />

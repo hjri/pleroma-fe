@@ -1,6 +1,7 @@
 <template>
   <Popover
     ref="emojiPopover"
+    class="emoji-trigger"
     trigger="click"
     placement="top"
     :bound-to="{ x: 'container' }"
@@ -70,28 +71,37 @@
 <script src="./still-image-emoji-popover" />
 
 <style>
-  .emoji-popover {
-    margin: 0 0.5em 0.5em;
-    text-align: center;
+.emoji-trigger {
+  border-radius: var(--roundness);
 
-    .emoji {
-      width: calc(var(--emoji-size) * 3);
-      height: calc(var(--emoji-size) * 3);
-    }
-
-    .emoji-popover-centered {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .emoji-popover-button {
-      width: 100%;
-      margin-top: 0.5em;
-    }
-
-    .Select {
-      width: 100%;
-    }
+  &:focus,
+  &:focus-visible {
+    box-shadow: 0 0 0 2px var(--accent);
   }
+}
+
+.emoji-popover {
+  margin: 0 0.5em 0.5em;
+  text-align: center;
+
+  .emoji {
+    width: calc(var(--emoji-size) * 3);
+    height: calc(var(--emoji-size) * 3);
+  }
+
+  .emoji-popover-centered {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .emoji-popover-button {
+    width: 100%;
+    margin-top: 0.5em;
+  }
+
+  .Select {
+    width: 100%;
+  }
+}
 </style>
