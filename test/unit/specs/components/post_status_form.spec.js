@@ -28,12 +28,14 @@ const saveManually = async (wrapper) => {
     'button',
     $t('post_status.more_post_actions'),
   )
+  console.log(morePostActions)
   await morePostActions.trigger('click')
 
   const btn = wrapper.findByText(
-    'button',
+    '.menu-item button',
     $t('post_status.save_to_drafts_button'),
   )
+  console.log(btn)
   await btn.trigger('click')
 }
 

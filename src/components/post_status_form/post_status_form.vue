@@ -339,7 +339,7 @@
             placement="bottom"
             :offset="{ y: 5 }"
             normal-button
-            :aria-label="$t('post_status.more_post_actions')"
+            :title="$t('post_status.more_post_actions')"
           >
             <template #trigger>
               <FAIcon
@@ -354,12 +354,11 @@
               >
                 <div
                   class="menu-item dropdown-item"
-                  :class="{ disabled: !safeToSaveDraft }"
+                  role="menuitem"
                 >
                   <button
                     v-if="!hideDraft || !disableDraft"
                     class="main-button"
-                    role="menu"
                     :disabled="!safeToSaveDraft"
                     @click.prevent="saveDraft"
                     @click="close"
