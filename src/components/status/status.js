@@ -156,7 +156,11 @@ const Status = {
   },
   computed: {
     shouldBeWidthEfficient() {
-      return this.widthEfficient || this.layoutType === 'mobile' || this.mergedConfig.widthEfficientPostLayout
+      return (
+        this.widthEfficient ||
+        this.layoutType === 'mobile' ||
+        this.mergedConfig.widthEfficientPostLayout
+      )
     },
     headerLevel() {
       return [this.isPage ? 0 : 1, this.isExpanded ? 1 : 0].reduce(
