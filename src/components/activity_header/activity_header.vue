@@ -96,7 +96,7 @@
       <button
         v-if="unmuted"
         class="button-unstyled"
-        @click.prevent="toggleMute"
+        @click.prevent="$emit('toggleMuted')"
       >
         <FAIcon
           fixed-width

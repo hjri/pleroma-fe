@@ -257,9 +257,6 @@ const Status = {
       if (this.noHeading) return
       return highlightStyle(useUserHighlightStore().get(this.user.screen_name))
     },
-    userProfileLink() {
-      return this.generateUserProfileLink(this.user.id, this.user.screen_name)
-    },
     replyProfileLink() {
       if (this.isReply) {
         const user = useUsersStore().findUser(

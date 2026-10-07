@@ -71,7 +71,7 @@ const ActivityHeader = {
     // for notifications
     nonMention: Boolean,
   },
-  emits: ['dive', 'toggleExpanded', 'toggleThreadDisplay'],
+  emits: ['dive', 'toggleExpanded', 'toggleThreadDisplay', 'toggleMuted'],
   computed: {
     // Whatever we're given to work with
     status() {
