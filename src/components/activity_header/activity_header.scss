@@ -45,6 +45,7 @@
       flex: 0 1 auto;
       overflow-x: clip;
       text-overflow: ellipsis;
+      min-width: 0;
 
       &::after {
         content: ' ';
