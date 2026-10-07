@@ -11,7 +11,7 @@
         :key="button.name"
         class="quick-action"
         role="presentation"
-        :class="{ '-pin': showPin, '-toggle': button.dropdown?.(), '-with-extra': button.name === 'bookmark' }"
+        :class="quickButtonClass(button)"
       >
         <ActionButtonContainer
           :class="{ '-pin': showPin }"
@@ -46,7 +46,7 @@
         trigger="click"
         :title="$t('status.more_actions')"
         :normal-button="useDefaultButtons"
-        class="quick-action"
+        class="quick-action -more-actions"
         placement="bottom"
         :offset="{ y: 5 }"
         remove-padding

@@ -14,6 +14,14 @@
     white-space: nowrap;
   }
 
+  &.-counter {
+    justify-self: start;
+  }
+
+  &.-more-actions {
+    justify-self: end;
+  }
+
   .action-button-inner,
   .extra-button {
     padding: 0.5em;

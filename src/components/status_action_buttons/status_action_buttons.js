@@ -129,6 +129,14 @@ const StatusActionButtons = {
         this.doActionReal(button)
       }
     },
+    quickButtonClass(button) {
+      return {
+        '-pin': this.showPin,
+        '-toggle': button.dropdown?.(),
+        '-with-extra': button.name === 'bookmark',
+        '-counter': button.counter,
+      }
+    },
     doActionReal(button) {
       const promise = button.action?.(this.funcArg) ?? Promise.resolve()
       promise
