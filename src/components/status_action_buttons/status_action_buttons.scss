@@ -3,7 +3,7 @@
 .StatusActionButtons {
   .quick-action-buttons {
     display: grid;
-    margin-left: -0.5em;
+    margin: 0 -0.5em;
     grid-template-columns: repeat(auto-fit, minmax(3.75em, 10%));
     grid-auto-flow: row dense;
     grid-auto-rows: 1fr;
