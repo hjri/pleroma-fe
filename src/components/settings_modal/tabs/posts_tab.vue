@@ -9,6 +9,11 @@
           </BooleanSetting>
         </li>
         <li>
+          <BooleanSetting path="widthEfficientPostLayout">
+            {{ $t('settings.width_efficient_post_layout') }}
+          </BooleanSetting>
+        </li>
+        <li>
           <ChoiceSetting
             id="conversationDisplay"
             path="conversationDisplay"
