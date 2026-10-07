@@ -101,10 +101,12 @@ const UsersTab = {
   },
   methods: {
     fetchUsers(page) {
-      return useAdminSettingsStore().fetchUsers({
-        ...this.fetchOptions,
-        page,
-      })
+      return useAdminSettingsStore()
+        .fetchUsers({
+          ...this.fetchOptions,
+          page,
+        })
+        .then((k) => k.items)
     },
   },
   watch: {

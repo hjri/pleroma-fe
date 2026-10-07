@@ -6,6 +6,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import VueVirtualScroller from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
+import InstancePicker from 'src/components/instance_picker/instance_picker.vue'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import Status from 'src/components/status/status.vue'
 import StillImage from 'src/components/still-image/still-image.vue'
@@ -43,6 +44,7 @@ import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 import { useUsersStore } from 'src/stores/users.js'
 
+import { apiUrl, setApiBase } from 'src/api/api_base.js'
 import { getRoutes } from 'src/boot/routes.js'
 import VBodyScrollLock from 'src/directives/body_scroll_lock'
 import {
@@ -50,6 +52,11 @@ import {
   INSTANCE_IDENTITY_DEFAULT_DEFINITIONS,
   INSTANCE_IDENTIY_EXTERNAL,
 } from 'src/modules/default_config_state.js'
+import {
+  chosenInstance,
+  instanceConfig,
+  isHosted,
+} from 'src/services/hosted/hosted.js'
 
 let staticInitialResults = null
 
@@ -75,7 +82,7 @@ const decodeUTF8Base64 = (data) => {
 const preloadFetch = async (request) => {
   const data = parsedInitialResults()
   if (!data?.[request]) {
-    return window.fetch(request)
+    return window.fetch(apiUrl(request))
   }
   const decoded = decodeUTF8Base64(data[request])
   const requestData = JSON.parse(decoded)
@@ -134,7 +141,9 @@ const getInstanceConfig = async ({ store }) => {
 
 const getBackendProvidedConfig = async () => {
   try {
-    const res = await window.fetch('/api/pleroma/frontend_configurations')
+    const res = await window.fetch(
+      apiUrl('/api/pleroma/frontend_configurations'),
+    )
     if (res.ok) {
       const data = await res.json()
       return data.pleroma_fe
@@ -202,7 +211,7 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
 
 const getTOS = async ({ store }) => {
   try {
-    const res = await window.fetch('/static/terms-of-service.html')
+    const res = await window.fetch(apiUrl('/static/terms-of-service.html'))
     if (res.ok) {
       const html = await res.text()
       useInstanceStore().set({ path: 'instanceIdentity.tos', value: html })
@@ -233,12 +242,14 @@ const getInstancePanel = async ({ store }) => {
 
 const getStickers = async ({ store }) => {
   try {
-    const res = await window.fetch('/static/stickers.json')
+    // the instance's sticker packs (hosted: on the instance)
+    const res = await window.fetch(apiUrl('/static/stickers.json'))
     if (res.ok) {
       const values = await res.json()
       const stickers = (
         await Promise.all(
-          Object.entries(values).map(async ([name, path]) => {
+          Object.entries(values).map(async ([name, packPath]) => {
+            const path = apiUrl(packPath)
             const resPack = await window.fetch(path + 'pack.json')
             let meta = {}
             if (resPack.ok) {
@@ -443,16 +454,30 @@ const getNodeInfo = async ({ store }) => {
   }
 }
 
-const setConfig = async ({ store }) => {
-  // apiConfig, staticConfig
-  const configInfos = await Promise.all([
-    getBackendProvidedConfig(),
-    getStaticConfig(),
-  ])
-  const apiConfig = configInfos[0]
-  const staticConfig = configInfos[1]
+const setConfig = async ({ store, staticConfig, backendConfig }) => {
+  // hosted: the instance's paths point at the instance, login redirects
+  const apiConfig = isHosted(staticConfig)
+    ? instanceConfig(await getBackendProvidedConfig(), apiUrl)
+    : backendConfig
 
   await setSettings({ store, apiConfig, staticConfig })
+}
+
+// Hosted mode with no instance chosen yet: ask for one instead of starting
+// the app. The theme is applied first so the question looks like the app.
+const showInstancePicker = async ({ pinia, i18n }) => {
+  try {
+    await useInterfaceStore().applyTheme()
+  } catch (e) {
+    console.warn('No theme for the instance picker', e)
+  }
+  const picker = createApp(InstancePicker)
+  picker.use(pinia)
+  picker.use(i18n)
+  picker.component('FAIcon', FontAwesomeIcon)
+  picker.mount('#app')
+  document.querySelector('#splash')?.remove()
+  document.querySelector('#app').classList.remove('hidden')
 }
 
 const checkOAuthToken = async ({ store }) => {
@@ -548,12 +573,28 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
 
   window.addEventListener('focus', () => updateFocus())
 
+  // both at once; a hosted site asks the chosen instance again in setConfig
+  const [staticConfig, backendConfig] = await Promise.all([
+    getStaticConfig(),
+    getBackendProvidedConfig(),
+  ])
+  const hosted = isHosted(staticConfig)
+  if (hosted && !chosenInstance()) {
+    await showInstancePicker({ pinia, i18n })
+    return app
+  }
+  if (hosted) setApiBase(chosenInstance())
+  useInstanceStore().set({ path: 'hosted', value: hosted })
+
   const overrides = window.___pleromafe_dev_overrides || {}
-  const server =
-    overrides.target !== undefined ? overrides.target : window.location.origin
+  const server = hosted
+    ? chosenInstance()
+    : overrides.target !== undefined
+      ? overrides.target
+      : window.location.origin
   useInstanceStore().set({ path: 'server', value: server })
 
-  await setConfig({ store })
+  await setConfig({ store, staticConfig, backendConfig })
   try {
     await useInterfaceStore()
       .applyTheme()

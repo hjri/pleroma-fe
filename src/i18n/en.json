@@ -82,6 +82,17 @@
     "error_fetching_user": "Error fetching user",
     "find_user": "Find user"
   },
+  "hosted": {
+    "title": "Pleroma-FE",
+    "intro": "Log into your fediverse account with this frontend. Which instance is it on?",
+    "instance": "Your instance",
+    "continue": "Continue",
+    "checking": "Checking…",
+    "not_a_domain": "That does not look like an instance name. Type its domain, like pleroma.example.",
+    "unreachable": "That instance did not answer, or does not let other sites use its API.",
+    "note": "Works with Pleroma and Akkoma. Nothing is stored here except the name of your instance; your login goes through the instance itself.",
+    "change": "Change instance"
+  },
   "general": {
     "apply": "Apply",
     "submit": "Submit",

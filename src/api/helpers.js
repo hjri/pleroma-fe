@@ -1,5 +1,6 @@
 import { snakeCase } from 'lodash-es'
 
+import { apiUrl } from 'src/api/api_base.js'
 import { StatusCodeError } from 'src/services/errors/errors'
 
 export const paramsString = (params = {}) => {
@@ -100,7 +101,7 @@ export const promisedRequest = async ({
     }
   }
 
-  const response = await fetch(url, options)
+  const response = await fetch(apiUrl(url), options)
   const data = await (async () => {
     const [contentType] = response.headers
       .get('content-type')

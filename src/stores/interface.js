@@ -129,6 +129,9 @@ export const useInterfaceStore = defineStore('interface', {
       }
     },
     onStreamDisconnect(closeEvent) {
+      // hosted and never connected: nothing broke (an instance that refuses
+      // sockets from this site is polled instead)
+      if (useInstanceStore().hosted && !useStreamingStore().everOpened) return
       const intendedCodes = new Set([
         1000, // Normal (intended) closure
         1001, // Going away
@@ -835,6 +838,9 @@ export const useInterfaceStore = defineStore('interface', {
 
     // Push notifications
     registerPushNotifications() {
+      // hosted: the service worker would ask this site, not the instance,
+      // for the pushed notification
+      if (useInstanceStore().hosted) return
       const token = useOAuthStore().token
       const vapidPublicKey = useInstanceStore().vapidPublicKey
       const isEnabled = useMergedConfigStore().mergedConfig.webPushNotifications
