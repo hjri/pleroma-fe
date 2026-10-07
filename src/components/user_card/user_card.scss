@@ -336,16 +336,22 @@
         flex: 1;
         font-weight: 600;
         line-height: 2;
-        margin-right: 1em;
-        text-overflow: clip;
-        overflow: clip;
-        min-width: 3em;
-        text-decoration: none;
+        min-width: 0;
       }
 
       .user-name {
-        mask: linear-gradient(to left, transparent 0.1em, white 0.5em) right no-repeat;
         color: var(--text);
+        overflow-x: clip;
+
+        /* make mask "compatible" with outline */
+        display: flex;
+
+        span {
+          max-width: 100%;
+
+          /* make mask "compatible" with outline */
+          mask: linear-gradient(to left, transparent 0.1em, white 0.5em) right no-repeat;
+        }
       }
 
       .user-name:hover {
