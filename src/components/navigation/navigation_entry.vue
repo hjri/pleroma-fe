@@ -99,6 +99,10 @@
   .main-link {
     line-height: var(--__line-height);
     box-sizing: border-box;
+
+    &:focus-visible {
+      outline: none;
+    }
   }
 
   .menu-icon {

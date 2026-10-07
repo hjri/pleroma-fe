@@ -44,21 +44,17 @@
       :style="[ userStyle ]"
     >
       <div class="activity-avatar">
-        <a
-          :href="$router.resolve(userProfileLink).href"
-          @click.prevent
+        <UserPopover
+          :user-id="notification.from_profile.id"
+          overlay-centers
+          link
         >
-          <UserPopover
+          <UserAvatar
+            class="post-avatar"
+            :compact="true"
             :user-id="notification.from_profile.id"
-            :overlay-centers="true"
-          >
-            <UserAvatar
-              class="post-avatar"
-              :compact="true"
-              :user-id="notification.from_profile.id"
-            />
-          </UserPopover>
-        </a>
+          />
+        </UserPopover>
       </div>
       <ActivityHeader
         class="activity-header"

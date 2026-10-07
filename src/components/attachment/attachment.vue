@@ -156,6 +156,7 @@
         v-if="attachment.type === 'image' && (!hidden || preloadImage)"
         class="image-container"
         :class="{'-hidden': hidden && preloadImage }"
+        :tabindex="hidden ? -1 : 0"
         :href="attachment.url"
         target="_blank"
         @click.stop.prevent="openModal"
