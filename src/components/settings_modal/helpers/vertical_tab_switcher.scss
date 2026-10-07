@@ -29,6 +29,7 @@
     .tab-content-label {
       box-sizing: border-box;
       margin: 0;
+
       /* should still be visible to screenreaders */
       max-height: 0;
       overflow: hidden;

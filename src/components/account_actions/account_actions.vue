@@ -160,6 +160,3 @@
 </template>
 
 <script src="./account_actions.js"></script>
-
-<style lang="scss">
-</style>
