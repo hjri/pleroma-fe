@@ -13,6 +13,7 @@ const UserPopover = {
   name: 'UserPopover',
   props: {
     userId: String,
+    userObject: Object,
     overlayCenters: Boolean,
     disabled: Boolean,
     link: Boolean,
@@ -27,6 +28,7 @@ const UserPopover = {
       return this.userObject ?? useUsersStore().findUser(this.userId)
     },
     href() {
+      if (!this.user) return ''
       return this.$router.resolve(
         generateProfileLink(
           this.user.id,
