@@ -167,7 +167,6 @@
 <style lang="scss">
 .NavPanel {
   .panel {
-    overflow: hidden;
     box-shadow: var(--shadow);
   }
 

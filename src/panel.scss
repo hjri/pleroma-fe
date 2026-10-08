@@ -148,7 +148,8 @@
   background-image:
     linear-gradient(to bottom, var(--background), var(--background)),
     linear-gradient(to bottom, var(--__panel-background), var(--__panel-background));
-  overflow: hidden;
+  overflow: clip;
+  overflow-clip-margin: 1em;
   text-overflow: ellipsis;
 
   .title {

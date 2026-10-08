@@ -43,8 +43,7 @@
 .NavigationPins {
   display: flex;
   flex-wrap: wrap;
-  overflow: hidden;
-  height: 100%;
+  height: var(--panel-header-height);
 
   &.alert-dot-notification {
     background-color: var(--badgeNotification);
