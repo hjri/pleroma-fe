@@ -267,7 +267,7 @@
           <div class="setting-item">
             <label
               class="setting-label"
-              for="move-account-target"
+              for="move-account-password"
             >
               {{ $t('settings.current_password') }}
             </label>
