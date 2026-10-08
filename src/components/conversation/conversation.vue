@@ -22,7 +22,7 @@
       </component>
       <button
         v-if="!isPage"
-        class="button-unstyled -link"
+        class="button-unstyled"
         @click.prevent="toggleExpanded"
       >
         {{ $t('timeline.collapse') }}
@@ -72,9 +72,9 @@
           <i18n-t
             keypath="currentStatus.show_all_conversation_with_icon"
             tag="button"
-            class="button-unstyled -link"
+            class="button-unstyled"
             scope="global"
-            @click.prevent="diveToTopLevel"
+            @click.prevent="focusTopLevel"
           >
             <template #icon>
               <FAIcon
@@ -112,8 +112,7 @@
               :data-vs-top="element.top"
               :data-vs-suspend="element.suspendable"
 
-              @goto="setFocused"
-              @dive="diveIntoStatus(element.id)"
+              @request-focus="setFocused"
               @toggle-thread-display="toggleThreadDisplay"
               @suspendable-state-change="changeSuspendStateAncestorsLocal"
               @height-change="updateVirtualHeightAncestors"
@@ -131,8 +130,7 @@
           :status-id="focusedId ?? currentStatus.id"
           :depth="0"
 
-          @goto="setFocused"
-          @dive="diveIntoStatus"
+          @request-focus="setFocused"
           @toggle-expanded="toggleExpanded"
           @toggle-thread-display="toggleThreadDisplay"
           @show-thread-recursively="showThreadRecursively"
@@ -161,7 +159,7 @@
             :data-vs-height="element.height"
             :data-vs-top="element.top"
 
-            @goto="setFocused"
+            @request-focus="setFocused"
             @toggle-expanded="toggleExpanded"
             @toggle-thread-display="toggleThreadDisplay"
             @suspendable-state-change="changeSuspendStateLinearLocal"

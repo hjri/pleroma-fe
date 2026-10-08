@@ -121,7 +121,7 @@
         v-if="!nonMention && expanded && isTreeView && !simpleTree"
         class="button-unstyled"
         :title="$t('status.show_only_conversation_under_this')"
-        @click.prevent="$emit('dive')"
+        @click.prevent="$emit('requestFocus')"
       >
         <FAIcon
           fixed-width

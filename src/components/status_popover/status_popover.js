@@ -13,6 +13,7 @@ const StatusPopover = {
     statusId: String,
     link: Boolean,
   },
+  emits: ['navigate'],
   data() {
     return {
       error: false,
@@ -46,11 +47,15 @@ const StatusPopover = {
       }
     },
     navigate() {
-      if (!this.link) return
-      this.$router.push({
-        name: 'conversation',
-        params: { statusId: this.statusId },
-      })
+      if (this.link) {
+        this.$router.push({
+          name: 'conversation',
+          params: { statusId: this.statusId },
+        })
+      } else {
+        console.log(this.statusId)
+        this.$emit('navigate', this.statusId)
+      }
     },
   },
   watch: {

@@ -118,7 +118,7 @@ const Status = {
     },
   },
   emits: [
-    'dive',
+    'requestFocus',
     'toggleExpanded',
     'toggleThreadDisplay',
     'suspendableStateChange',

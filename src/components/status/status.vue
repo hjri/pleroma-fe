@@ -63,6 +63,7 @@
           :title="repeaterName"
         >
           <router-link
+            class="button-unstyled"
             v-if="repeaterHtml"
             :to="repeaterProfileLink"
           >
@@ -132,10 +133,10 @@
           :expanded="isExpanded"
           :thread-display-state="threadDisplayState"
 
+          @request-focus="$emit('requestFocus', mainStatus.id)"
           @toggle-muted="toggleMute"
           @toggle-expanded="$emit('toggleExpanded')"
           @toggle-thread-display="$emit('toggleThreadDisplay')"
-          @dive="$emit('dive')"
         />
         <div class="activity-subheader">
           <div
@@ -194,12 +195,12 @@
                 <template #replyToWithIcon>
                   <StatusPopover
                     v-if="!isPreview"
-                    :status-id="mainStatus.parent_visible && mainStatus.in_reply_to_status_id"
                     class="reply-to-popover"
-                    style="min-width: 0;"
                     :class="{ '-strikethrough': !mainStatus.parent_visible }"
+                    :status-id="mainStatus.parent_visible && mainStatus.in_reply_to_status_id"
+                    :link="isPage"
                     :aria-label="$t('tool_tip.reply')"
-                    :link="isExpanded"
+                    @navigate="$emit('requestFocus', mainStatus.parent_visible && mainStatus.in_reply_to_status_id)"
                   >
                       <i18n-t
                         keypath="status.reply_to_with_icon"
@@ -318,7 +319,7 @@
               v-if="showOtherRepliesInside && replies.size > 1"
               class="button-unstyled -link"
               :title="$t('status.ancestor_follow', { numReplies: replies.size - 1 }, replies.size - 1)"
-              @click.prevent="$emit('dive')"
+              @click.prevent="$emit('requestFocus', mainStatus.id)"
             >
               {{ $t('status.replies_list_with_others', { numReplies: replies.size - 1 }, replies.size - 1) }}
             </button>
@@ -330,23 +331,27 @@
             >
               {{ $t('status.replies_list') }}
             </span>
-            <span role="list" :aria-label="$t('status.replies_list')">
-              <span
+            {{ ' ' }}
+            <ol
+              class="replies-list"
+              :aria-label="$t('status.replies_list')"
+            >
+              <li
                 v-for="reply in replies.values()"
                 :key="reply.id"
-                role="listitem"
                 :aria-label="reply.name"
               >
                 <StatusPopover
                   :status-id="reply.id"
+                  :link="isPage"
                   class="reply-link"
-                  link
+                  @navigate="$emit('requestFocus', reply.id)"
                 >
                   {{ reply.name }}
                 </StatusPopover>
                 {{ ' ' }}
-              </span>
-            </span>
+              </li>
+            </ol>
           </div>
 
           <Transition name="fade">

@@ -153,6 +153,13 @@ a {
 
 
 .button-unstyled {
+  text-decoration: underline dotted var(--icon);
+
+  &:hover,
+  &:focus {
+    text-decoration: underline solid;
+  }
+
   &:focus-visible {
     border-radius: var(--roundness);
     outline: 2px solid var(--text);
@@ -502,11 +509,6 @@ header {
   cursor: pointer;
   box-sizing: content-box;
   color: inherit;
-
-  &.-link {
-    /* stylelint-disable-next-line declaration-no-important */
-    color: var(--link) !important;
-  }
 }
 
 label {
