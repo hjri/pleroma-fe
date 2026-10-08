@@ -5,7 +5,6 @@
       :trigger="$attrs.extra ? 'hover' : 'click'"
       :offset="{ y: 5 }"
       :placement="$attrs.extra ? 'right' : 'bottom'"
-      :tabindex="-1"
     >
       <template #trigger>
         <ActionButton

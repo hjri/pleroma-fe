@@ -13,7 +13,7 @@
       placement="bottom"
       :title="$t(button.label(funcArg))"
       target="_blank"
-      :tabindex="0"
+      :tabindex="popoverTrigger ? undefined : 0"
       :disabled="button.interactive ? !button.interactive(funcArg) : false"
       :href="getComponent(button) == 'a' ? button.link?.(funcArg) || remoteInteractionLink : undefined"
       @click="popoverTrigger ? undefined : doActionWrap(button, outerClose)"
