@@ -87,6 +87,8 @@ const Popover = {
       teleport: false,
       lockReEntry: false,
       hidden: true,
+      nextFocus: null,
+      redirectFocus: false,
       styles: {},
       oldSize: { width: 0, height: 0 },
       scrollable: null,
@@ -334,6 +336,8 @@ const Popover = {
     hidePopover() {
       if (this.disabled) return
       if (!this.hidden) this.$emit('close')
+      this.redirectFocus = false
+      this.nextFocus = null
       this.hidden = true
       this.parentPopover?.onChildPopoverState(this, false)
       if (this.trigger === 'click') {
@@ -372,6 +376,65 @@ const Popover = {
       if (this.trigger === 'hover' && this.childrenShown.size === 0) {
         this.graceTimeout = setTimeout(() => this.hidePopover(), 1)
       }
+    },
+
+    // # Focus management.
+    //
+    // Since our content is far away in separate #modals or #popovers container
+    // the native tabindex flow is broken, but we still want user to be able to
+    // focus popover contents. To do so we do a bit of focus management.
+    //
+    // We do a little focus trapping and redirecting. First, we must establish
+    // our order. Opening a popover (including auto-open by hover/focus) and
+    // hitting tab should select content's first focusable element. Shift-tab
+    // away from popover trigger should hide popover and continue on as normal.
+    // While inside content, shift-tabbing from first focusable element should
+    // focus trigger again, and tabbing beyond last focusable element should
+    // focus element next in line relative to trigger.
+    //
+    // We use two tricks here:
+    // 1. we add two bogus ".focus-trap" elements before and after popover
+    // contents. Those are aria-hidden="1" and empty spans so they don't
+    // interfere with the UI or accessibility. We use them to detect when
+    // user tab-navigated beyond first and last focusable elements and act
+    // accordingly
+    // 2. when we open up a popover we listen for "Tab" keypress and engage
+    // "redirectFocus", so that when trigger loses focus (immideately after)
+    // we a) focus content's first focusable element and b) save reference
+    // to the next intended focus target.
+    //
+    // There is a blind spot in this approach. If user opened a popover and
+    // navigated in it with a mouse we never get to know the "next intended
+    // focus target" so focus order ends up being broken.
+    //
+    // There's probably a better way to figure out this "next target" but for
+    // now this will do.
+    onFocus(e) {
+      if (this.trigger === 'hover') {
+        this.showPopover()
+      }
+    },
+    onBlur(e) {
+      if (this.redirectFocus) {
+        const firstFocusable = this.$refs.content?.querySelector('*:not(.focus-trap)').querySelector('a[href], button, [tabindex="0"], input')
+        if (firstFocusable) {
+          firstFocusable?.focus()
+          this.nextFocus = e.relatedTarget
+        } else {
+          this.hidePopover()
+        }
+      }
+      this.redirectFocus = false
+    },
+    onTab(e) {
+      this.redirectFocus = true
+    },
+    onForwardTabContentFocus() {
+      this.nextFocus?.focus()
+      this.hidePopover()
+    },
+    onReverseTabContentFocus() {
+      this.$refs.trigger.focus()
     },
     onClick(e) {
       if (this.trigger === 'click') {

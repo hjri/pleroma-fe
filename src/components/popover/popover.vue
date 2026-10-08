@@ -9,8 +9,10 @@
     @mouseenter="onMouseenter"
     @mouseleave="onMouseleave"
     @click="onClick"
-    @focus="onMouseenter"
-    @blur="onMouseleave"
+    @focus="onFocus"
+    @blur="onBlur"
+    @keydown.tab.exact="onTab"
+    @keydown.tab.shift.exact="hidePopover"
     v-bind="allTriggerAttrs"
     ref="trigger"
   >
@@ -34,11 +36,23 @@
           @click="onClickContent"
           v-bind="$attrs"
         >
+          <span
+            class="focus-trap -before"
+            aria-hidden="1"
+            tabindex="0"
+            @focus="onReverseTabContentFocus"
+          />
           <slot
             name="content"
             class="popover-inner"
             :close="hidePopover"
             :resize="resizePopover"
+          />
+          <span
+            class="focus-trap -after"
+            aria-hidden="1"
+            tabindex="0"
+            @focus="onForwardTabContentFocus"
           />
         </div>
       </transition>
