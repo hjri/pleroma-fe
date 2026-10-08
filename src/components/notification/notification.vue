@@ -61,10 +61,12 @@
         :statusoid="status"
         :time="notification.created_at"
         :user-id="notification.from_profile.id"
-        @toggle-expanded="toggleStatusExpanded"
+        :unmuted="unmuted"
         :expanded="statusExpanded"
         non-mention
         multiline
+        @toggle-muted="toggleMute"
+        @toggle-expanded="toggleStatusExpanded"
       />
       <div class="activity-subheader">
         <span v-if="notification.type === 'like'">
