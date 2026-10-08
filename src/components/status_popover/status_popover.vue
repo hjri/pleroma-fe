@@ -1,15 +1,16 @@
 <template>
   <Popover
     ref="popover"
-    trigger="hover"
-    :stay-on-click="true"
     popover-class="popover-default status-popover"
-    :bound-to="{ x: 'container' }"
-    :href="statusLink"
-    @show="enter"
+    trigger="hover"
     :link="link"
-    v-bind="$attrs"
+    :href="statusLink"
+    :stay-on-click="true"
+    :bound-to="{ x: 'container' }"
+    aria-haspopup="dialog"
+    @show="enter"
     @click.prevent="navigate"
+    v-bind="$attrs"
   >
     <template #trigger>
       <slot />

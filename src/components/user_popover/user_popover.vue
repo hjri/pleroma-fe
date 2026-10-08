@@ -6,6 +6,7 @@
     :overlay-centers="overlayCenters && userPopoverOverlay"
     :link="link"
     :href="href"
+    aria-haspopup="dialog"
     v-bind="$attrs"
   >
     <template #trigger>

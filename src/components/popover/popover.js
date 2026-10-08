@@ -2,6 +2,7 @@ import { useId } from 'vue'
 
 const Popover = {
   name: 'Popover',
+  inheritAttrs: false,
   props: {
     // Action to trigger popover: either 'hover' or 'click'
     trigger: String,
@@ -118,10 +119,17 @@ const Popover = {
 
       if (this.hideTrigger) {
         attrs['aria-hidden'] = true
-        attrs.tabindex = 1
+        attrs.tabindex = 0
       }
 
       return attrs
+    },
+    ariaHasPopup() {
+      if (this.tooltip || this.disabled) {
+        return undefined
+      } else {
+        return this.$attrs['aria-haspopup'] ?? 'menu'
+      }
     },
     triggerClass() {
       if (this.link) {

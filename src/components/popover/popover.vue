@@ -1,11 +1,13 @@
 <template>
   <component
+    ref="trigger"
     :is="link ? 'a' : 'button'"
     :type="link ? undefined : 'button'"
-    :aria-haspopup="tooltip ? undefined : !disabled"
-    :aria-owns="hidden ? undefined : `${idPrefix}content`"
     class="popover-trigger-button"
     :class="triggerClass"
+    :aria-haspopup="ariaHasPopup"
+    :aria-owns="hidden ? undefined : `${idPrefix}content`"
+    :aria-expanded="!hidden"
     @mouseenter="onMouseenter"
     @mouseleave="onMouseleave"
     @click="onClick"
@@ -14,7 +16,6 @@
     @keydown.tab.exact="onTab"
     @keydown.tab.shift.exact="hidePopover"
     v-bind="allTriggerAttrs"
-    ref="trigger"
   >
     <slot name="trigger" />
     <teleport
@@ -24,7 +25,7 @@
       <transition name="fade">
         <div
           v-if="!hidden"
-          :id="$attrs.id ?? idPrefix + 'content'"
+          :id="($attrs.id ?? idPrefix) + 'content'"
           ref="content"
           :style="styles"
           class="popover"
@@ -34,7 +35,6 @@
           @mouseenter="onMouseenterContent"
           @mouseleave="onMouseleaveContent"
           @click="onClickContent"
-          v-bind="$attrs"
         >
           <span
             class="focus-trap -before"
