@@ -2,7 +2,6 @@
   <div
     v-show="themeApplied"
     id="app-loaded"
-    role="presentation"
     :style="bgStyle"
   >
     <div
