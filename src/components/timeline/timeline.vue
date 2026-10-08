@@ -31,7 +31,7 @@
           <button
             class="button-unstyled loadmore-button"
             :title="loadButtonString"
-            @click.prevent="showNewStatuses"
+            @click.prevent="showNewStatuses(false)"
           >
             <FAIcon
               fixed-width
@@ -59,7 +59,7 @@
         <button
           v-if="showLoadButton"
           class="button-default loadmore-button"
-          @click.prevent="showNewStatuses"
+          @click.prevent="showNewStatuses(false)"
         >
           {{ loadButtonString }}
         </button>

@@ -33,6 +33,11 @@ const ROOT_STATE_DEFINITIONS = {
     required: true,
     type: 'string',
   },
+  hosted: {
+    description: 'Served from its own site, not by the instance',
+    type: 'boolean',
+    default: false,
+  },
   privateMode: {
     description: 'Private instance?',
     required: true,

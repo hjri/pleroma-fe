@@ -5,6 +5,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useUsersStore } from 'src/stores/users.js'
 
+import { apiUrl } from 'src/api/api_base.js'
 import { listEmojiPacks } from 'src/api/public.js'
 import { ensureFinalFallback } from 'src/i18n/languages.js'
 
@@ -242,9 +243,9 @@ export const useEmojiStore = defineStore('emoji', {
 
     async getCustomEmoji() {
       try {
-        let res = await window.fetch('/api/v1/pleroma/emoji')
+        let res = await window.fetch(apiUrl('/api/v1/pleroma/emoji'))
         if (!res.ok) {
-          res = await window.fetch('/api/pleroma/emoji.json')
+          res = await window.fetch(apiUrl('/api/pleroma/emoji.json'))
         }
         if (res.ok) {
           const result = await res.json()
