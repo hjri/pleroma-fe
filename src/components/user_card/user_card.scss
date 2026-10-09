@@ -347,7 +347,7 @@
         display: flex;
 
         span {
-          max-width: 100%;
+          width: 100%;
 
           /* make mask "compatible" with outline */
           mask: linear-gradient(to left, transparent 0.1em, white 0.5em) right no-repeat;
