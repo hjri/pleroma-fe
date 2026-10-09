@@ -7,9 +7,9 @@
       {{ contrast.text }}
     </span>
     <Tooltip
-      :text="hint"
       class="rating"
-      :aria-label="$t('settings.style.common.contrast.label')"
+      :text="hint"
+      :label="$t('settings.style.common.contrast.label')"
     >
       <span v-if="contrast.aaa">
         <FAIcon
@@ -32,9 +32,9 @@
     </Tooltip>
     <Tooltip
       v-if="contrast && large"
-      :text="hint_18pt"
       class="rating"
-      :aria-label="$t('settings.style.common.contrast.label')"
+      :text="hint_18pt"
+      :label="$t('settings.style.common.contrast.label')"
     >
       <span v-if="contrast.laaa">
         <FAIcon

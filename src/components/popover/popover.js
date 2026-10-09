@@ -7,6 +7,9 @@ const Popover = {
     // Action to trigger popover: either 'hover' or 'click'
     trigger: String,
 
+    // Accessible label
+    label: String,
+
     // 'top', 'bottom', 'left', 'right'
     placement: String,
 
