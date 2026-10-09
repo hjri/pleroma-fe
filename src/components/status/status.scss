@@ -128,21 +128,27 @@
   }
 
   .repeat-info {
+    display: flex;
     line-height: 1;
     padding: 0.4em var(--status-margin);
+    white-space: nowrap;
+    gap: var(--status-margin);
+    align-items: center;
 
+    --_avatar-size: 1.6em;
     --emoji-size: 1em;
 
     .repeater-avatar {
+      flex: 0 0 var(--_avatar-size);
       border-radius: var(--roundness);
-      margin-left: 2em; // 3.6 (poster avatar size) - 1.6 (repeater avatar size)
-      width: 1.6em;
-      height: 1.6em;
-      margin-right: var(--status-margin);
-      vertical-align: middle;
+      margin-left: calc(3.6em - var(--_avatar-size)); // 3.6 (main avatar size)
     }
 
     .repeater-name {
+      flex: 0 1 auto;
+      min-width: 0;
+      overflow-x: clip;
+
       a {
         font-weight: bold;
         color: var(--text);
@@ -150,6 +156,7 @@
     }
 
     .repeat-label {
+      flex: 0 0 auto;
       white-space: nowrap;
 
       .repeat-icon {
