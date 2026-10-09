@@ -36,12 +36,12 @@
         </div>
         <div
           v-else
-          :aria-labelledby="`option-vote-${uniqueId}-${index}`"
         >
           <Checkbox
             :radio="!poll.multiple"
             :disabled="loading"
             :model-value="choices[index]"
+            :aria-labelledby="`option-vote-${uniqueId}-${index}`"
             @update:model-value="value => activateOption(index, value)"
           >
             <RichContent
