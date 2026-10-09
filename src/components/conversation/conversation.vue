@@ -70,7 +70,7 @@
           class="conversation-dive-to-top-level-box"
         >
           <i18n-t
-            keypath="currentStatus.show_all_conversation_with_icon"
+            keypath="status.show_all_conversation_with_icon"
             tag="button"
             class="button-unstyled"
             scope="global"
