@@ -20,7 +20,7 @@
         <div
           class="gallery-row-inner"
           :class="{ '-grid': grid }"
-          role="presentation"
+          role="listitem"
         >
           <Attachment
             v-for="(attachment, attachmentIndex) in row.items"
@@ -42,7 +42,6 @@
             @natural-size-load="onNaturalSizeLoad"
             @play="() => onMediaStateChange(true, attachment.id)"
             @pause="() => onMediaStateChange(false, attachment.id)"
-            role="listitem"
             :aria-label="$t('status.attachment')"
           />
         </div>
