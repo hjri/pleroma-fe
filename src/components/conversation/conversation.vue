@@ -3,7 +3,7 @@
     ref="root"
     class="Conversation"
     :class="{ '-expanded' : isExpanded, '-page': isPage, 'panel' : isExpanded }"
-    :aria-label="conversation[0]?.summary || $t('timeline.unsubjected_conversation')"
+    :aria-label="conversation[0]?.summary || conversation[0]?.retweeted_status?.summary || $t('timeline.unsubjected_conversation')"
   >
     <div
       v-if="isExpanded"
