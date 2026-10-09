@@ -46,7 +46,7 @@
         tag="button"
         keypath="status.thread_follow_with_icon"
         class="button-unstyled -link thread-tree-show-replies-button"
-        @click.prevent="$emit('dive', statusId)"
+        @click.prevent="$emit('requestFocus', statusId)"
       >
         <template #icon>
           <FAIcon

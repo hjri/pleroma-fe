@@ -250,11 +250,9 @@
               <span
                 class="mentions"
                 :aria-label="$t('tool_tip.mentions')"
-                @click.prevent="gotoOriginal(status.in_reply_to_status_id)"
+                @click.prevent="$emit('requestFocus', status.in_reply_to_status_id)"
               >
-                <span
-                  class="mentions-text"
-                >
+                <span class="mentions-text">
                   {{ $t('status.mentions') }}
                 </span>
               </span>
@@ -450,7 +448,7 @@
         scope="global"
         keypath="status.ancestor_follow_with_icon"
         class="button-unstyled -link thread-tree-show-replies-button"
-        @click.prevent="$emit('dive')"
+        @click.prevent="$emit('requestFocus', mainStatus.id)"
       >
         <template #icon>
           <FAIcon
