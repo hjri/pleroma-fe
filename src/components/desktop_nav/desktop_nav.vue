@@ -3,7 +3,7 @@
     id="nav"
     class="DesktopNav topBar"
     :class="{ '-logoLeft': logoLeft }"
-    aria-labelledby="sitename"
+    :aria-label="sitename"
     @click="scrollToTop()"
   >
     <div class="inner-nav">
