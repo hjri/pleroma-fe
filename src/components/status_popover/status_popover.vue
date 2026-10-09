@@ -4,7 +4,7 @@
     popover-class="popover-default status-popover"
     trigger="hover"
     :link="link"
-    :href="statusLink"
+    :href="link ? statusLink : undefined"
     :stay-on-click="true"
     :bound-to="{ x: 'container' }"
     aria-haspopup="dialog"
