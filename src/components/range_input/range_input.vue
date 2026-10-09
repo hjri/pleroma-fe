@@ -12,20 +12,12 @@
     </label>
     <input
       v-if="fallback !== undefined"
-      :id="name + '-o'"
-      :title="label"
-      class="input -checkbox opt visible-for-screenreader-only"
+      :title="$t('settings.style.themes3.define')"
+      class="input -checkbox opt"
       type="checkbox"
       :checked="present"
       @change="$emit('update:modelValue', !present ? fallback : undefined)"
     >
-    <label
-      v-if="fallback !== undefined"
-      class="opt-l"
-      :title="$t('settings.style.themes3.define')"
-      :for="name + '-o'"
-      :aria-hidden="true"
-    />
     <input
       :id="name"
       class="input input-number"

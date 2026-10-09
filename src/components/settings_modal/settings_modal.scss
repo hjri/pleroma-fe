@@ -118,6 +118,7 @@
       &.checkbox {
         display: grid;
         grid-template-columns: subgrid;
+        grid-template-rows: subgrid;
 
         .label {
           grid-area: label;
@@ -126,9 +127,7 @@
 
         .checkbox-indicator {
           grid-area: control;
-          height: 1.5em;
-          line-height: 1.5em;
-          align-self: baseline;
+          align-self: end;
         }
 
         .-mobile & {

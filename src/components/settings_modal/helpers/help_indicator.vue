@@ -1,8 +1,9 @@
 <template>
   <span class="HelpIndicator">
     <Popover
-      trigger="click"
-      :aria-label="$t('settings.setting_changed')"
+      trigger="hover"
+      :aria-label="$t('general.help')"
+      tooltip
     >
       <template #trigger>
         <FAIcon icon="circle-question" />

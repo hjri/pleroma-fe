@@ -134,6 +134,7 @@
     "not_available": "N/A",
     "peek": "Peek",
     "scroll_to_top": "Scroll to top",
+    "help": "Help",
     "role": {
       "admin": "Admin",
       "moderator": "Moderator"

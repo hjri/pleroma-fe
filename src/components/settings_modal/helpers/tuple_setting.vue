@@ -5,7 +5,6 @@
   >
     <legend
       v-if="!hideLabel"
-      :for="path"
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >

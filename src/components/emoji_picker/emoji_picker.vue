@@ -76,18 +76,19 @@
           class="additional-tabs"
           role="tablist"
         >
-          <span
+          <button
             class="button-unstyled stickers-tab-icon additional-tabs-item"
             :class="{toggled: showingStickers}"
             :title="$t('emoji.stickers')"
             @click.prevent="toggleStickers"
+            :aria-selected="showingStickers"
             role="tab"
           >
             <FAIcon
               icon="sticky-note"
               fixed-width
             />
-          </span>
+          </button>
         </span>
       </div>
       <div

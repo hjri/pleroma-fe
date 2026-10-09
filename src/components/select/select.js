@@ -4,7 +4,7 @@ import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 library.add(faChevronDown)
 
 export default {
-  emits: ['update:modelValue'],
+  inheritAttrs: false,
   props: {
     rootClass: String,
     modelValue: String,
@@ -12,5 +12,12 @@ export default {
     unstyled: Boolean,
     kind: String,
   },
-  inheritAttrs: false,
+  computed: {
+    inputAttrs() {
+      const { class: _unused, ...rest } = this.$attrs
+
+      return rest
+    }
+  },
+  emits: ['update:modelValue'],
 }

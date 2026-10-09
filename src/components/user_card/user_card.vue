@@ -337,7 +337,7 @@
         <Select
           :id="'userHighlightSel'+user.id"
           v-model="userHighlightType"
-          :root-class="['userHighlightSel', { '-none': userHighlightType === 'disabled' }]"
+          :class="['userHighlightSel', { '-none': userHighlightType === 'disabled' }]"
           unstyled
         >
           <option value="disabled">
