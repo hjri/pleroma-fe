@@ -1,3 +1,5 @@
+import { useId } from 'vue'
+
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const DialogModal = {
@@ -12,6 +14,11 @@ const DialogModal = {
       },
       type: Function,
     },
+  },
+  setup() {
+    const uniqueId = useId()
+
+    return { uniqueId }
   },
   computed: {
     mobileCenter() {

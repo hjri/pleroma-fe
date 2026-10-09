@@ -6,10 +6,16 @@
   >
     <div
       class="dialog-modal panel panel-default"
+      role="dialog"
+      aria-modal="true"
+      :aria-labelledby="uniqueId + 'header'"
       @click.stop=""
     >
       <div class="panel-heading dialog-modal-heading">
-        <h1 class="title">
+        <h1
+          :id="uniqueId + 'header'"
+          class="title"
+        >
           <slot name="header" />
         </h1>
       </div>

@@ -188,16 +188,16 @@ export default {
       return (
         <div
           class={wrapperClasses}
-          role="presentation"
           id={`${this.idPrefix}tabpanel-${index}`}
+          aria-label={props.label}
+          role="tabpanel"
         >
           <div class="tab-mobile-header" role="presentation">
             {header}
           </div>
           <div
             class={slotWrapperClasses}
-            role="tabpanel"
-            aria-label={props.label}
+            role="presentation"
           >
             <div class={contentClasses} role="presentation">
               {renderSlot}

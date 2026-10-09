@@ -1,6 +1,7 @@
 <template>
   <div
     role="dialog"
+    aria-modal="true"
     v-show="isOpen"
     v-body-scroll-lock="isOpen && !noBackground"
     class="modal-view"
