@@ -1,5 +1,5 @@
 <template>
-  <ul role="presentation">
+  <ul>
     <NavigationEntry
       v-for="item in lists"
       :key="item.name"

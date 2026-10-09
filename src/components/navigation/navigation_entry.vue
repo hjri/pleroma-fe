@@ -6,7 +6,6 @@
     <li
       class="NavigationEntry menu-item"
       :class="{ '-active': isActive }"
-      role="menuitem"
       :aria-label="item.labelRaw ?? $t(item.label)"
       v-bind="$attrs"
     >
