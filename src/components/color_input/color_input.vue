@@ -14,7 +14,7 @@
       :model-value="present"
       :disabled="disabled"
       class="opt"
-      :aria-label="$t('settings.style.themes3.define')"
+      :title="label + ' - ' + $t('settings.style.themes3.define')"
       @update:model-value="updateValue(modelValue === undefined ? fallback : undefined)"
     />
     <div

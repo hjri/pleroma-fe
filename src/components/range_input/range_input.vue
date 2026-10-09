@@ -12,7 +12,7 @@
     </label>
     <input
       v-if="fallback !== undefined"
-      :title="$t('settings.style.themes3.define')"
+      :title="label + ' - ' + $t('settings.style.themes3.define')"
       class="input -checkbox opt"
       type="checkbox"
       :checked="present"
