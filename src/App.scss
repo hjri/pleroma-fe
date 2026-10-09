@@ -386,7 +386,7 @@ header {
   }
 
   &.-mobile {
-    grid-template-columns: 100vw;
+    grid-template-columns: 100%;
     grid-template-areas: "content";
     padding: 0;
 
