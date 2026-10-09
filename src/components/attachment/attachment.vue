@@ -66,7 +66,7 @@
       >
         <img
           :key="nsfwImage"
-          class="nsfw"
+          class="nsfw image"
           :src="nsfwImage"
           :alt="$t('status.nsfw_placeholder')"
           :title="$t('status.nsfw_placeholder')"
@@ -157,6 +157,7 @@
         class="image-container"
         :class="{'-hidden': hidden && preloadImage }"
         :tabindex="hidden ? -1 : 0"
+        :aria-hidden="hidden"
         :href="attachment.url"
         target="_blank"
         @click.stop.prevent="openModal"
