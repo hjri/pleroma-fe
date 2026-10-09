@@ -3,6 +3,7 @@
     v-if="showing"
     class="media-modal-view"
     @backdrop-clicked="hideIfNotSwiped"
+    :aria-label="$t('media_modal.modal_label')"
   >
     <SwipeClick
       v-if="currentMedia.type === 'image'"

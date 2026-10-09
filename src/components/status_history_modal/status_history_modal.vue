@@ -2,11 +2,15 @@
   <Modal
     v-if="modalActivated"
     class="status-history-modal-view"
+    aria-labelledby="status-history-modal-title"
     @backdrop-clicked="closeModal"
   >
     <div class="status-history-modal-panel panel">
       <div class="panel-heading">
-        <h1 class="title">
+        <h1
+          id="status-history-modal-title"
+          class="title"
+        >
           {{ $t('status.status_history') }} ({{ historyCount }})
         </h1>
       </div>

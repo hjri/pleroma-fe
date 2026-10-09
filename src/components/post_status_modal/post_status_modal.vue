@@ -4,6 +4,7 @@
     :is-open="modalActivated"
     class="post-form-modal-view"
     @backdrop-clicked="closeModal"
+    :aria-label="$t('post_status.new_status')"
   >
     <div class="post-form-modal-panel panel">
       <div class="panel-heading">

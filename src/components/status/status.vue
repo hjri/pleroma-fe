@@ -199,7 +199,6 @@
                     :class="{ '-strikethrough': !mainStatus.parent_visible }"
                     :status-id="mainStatus.parent_visible && mainStatus.in_reply_to_status_id"
                     :link="isPage"
-                    :aria-label="$t('tool_tip.reply')"
                     @navigate="$emit('requestFocus', mainStatus.parent_visible && mainStatus.in_reply_to_status_id)"
                   >
                       <i18n-t

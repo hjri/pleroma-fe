@@ -3,6 +3,7 @@
     v-if="isFormVisible"
     class="edit-form-modal-view"
     @backdrop-clicked="closeModal"
+    :aria-label="$t('post_status.edit_status')"
   >
     <div class="edit-form-modal-panel panel">
       <div class="panel-heading">

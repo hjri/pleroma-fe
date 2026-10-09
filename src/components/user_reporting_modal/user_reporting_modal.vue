@@ -1,11 +1,13 @@
 <template>
   <Modal
     v-if="isOpen"
+    aria-labelledby="user-reporting-title"
     @backdrop-clicked="closeModal"
   >
     <div class="user-reporting-panel panel">
       <div class="panel-heading">
         <i18n-t
+          id="user-reporting-title"
           tag="h1"
           keypath="user_reporting.title"
           class="title"

@@ -113,9 +113,16 @@ const Popover = {
         }
       }
 
-      const attrs = {
+      const allAttrs = {
         ...this.$attrs,
       }
+      const {
+        'aria-hidden': _unused0,
+        'aria-label': _unused1,
+        ...rest
+      } = allAttrs
+
+      const attrs = { ...rest }
 
       if (this.hideTrigger) {
         attrs['aria-hidden'] = true
