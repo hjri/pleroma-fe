@@ -195,10 +195,7 @@ export default {
           <div class="tab-mobile-header" role="presentation">
             {header}
           </div>
-          <div
-            class={slotWrapperClasses}
-            role="presentation"
-          >
+          <div class={slotWrapperClasses} role="presentation">
             <div class={contentClasses} role="presentation">
               {renderSlot}
             </div>

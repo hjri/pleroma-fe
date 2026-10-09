@@ -17,7 +17,7 @@ export default {
       const { class: _unused, ...rest } = this.$attrs
 
       return rest
-    }
+    },
   },
   emits: ['update:modelValue'],
 }

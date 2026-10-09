@@ -60,7 +60,7 @@ export default {
       const { class: _unused, ...rest } = this.$attrs
 
       return rest
-    }
+    },
   },
   methods: {
     onTransitionEnd() {

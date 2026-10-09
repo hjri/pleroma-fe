@@ -71,7 +71,12 @@ const ActivityHeader = {
     // for notifications
     nonMention: Boolean,
   },
-  emits: ['requestFocus', 'toggleExpanded', 'toggleThreadDisplay', 'toggleMuted'],
+  emits: [
+    'requestFocus',
+    'toggleExpanded',
+    'toggleThreadDisplay',
+    'toggleMuted',
+  ],
   computed: {
     // Whatever we're given to work with
     status() {
