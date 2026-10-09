@@ -322,7 +322,7 @@
             </button>
             <span
               v-else
-              role="header"
+              role="heading"
               :aria-level="headerLevel"
               class="faint"
             >
