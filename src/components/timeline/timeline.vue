@@ -11,6 +11,7 @@
       <TimelineMenu
         v-if="!embedded"
         :timeline-name="timelineRef.name"
+        id="timeline-header"
       />
       <div
         v-if="timeline.fetcher.loadingNewer && !showLoadButton"
