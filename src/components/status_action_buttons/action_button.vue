@@ -11,7 +11,7 @@
       :role="popoverTrigger ? 'presentation' : 'button'"
       :type="popoverTrigger ? undefined : 'button'"
       placement="bottom"
-      :title="$t(button.label(funcArg))"
+      :title="popoverTrigger ? undefined : $t(button.label(funcArg))"
       target="_blank"
       :tabindex="popoverTrigger ? undefined : 0"
       :disabled="button.interactive ? !button.interactive(funcArg) : false"
