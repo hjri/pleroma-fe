@@ -97,6 +97,7 @@
         v-if="unmuted"
         class="button-unstyled"
         @click.prevent="$emit('toggleMuted')"
+        :title="$t('tool_tip.toggle_mute')"
       >
         <FAIcon
           fixed-width
