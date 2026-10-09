@@ -1,7 +1,6 @@
-import { useId } from 'vue'
-
 import Checkbox from 'components/checkbox/checkbox.vue'
 import Timeago from 'components/timeago/timeago.vue'
+import { useId } from 'vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { usePollsStore } from 'src/stores/polls.js'
