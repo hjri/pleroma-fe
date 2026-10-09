@@ -70,14 +70,9 @@
               fixed-width
             />
           </button>
-        </span>
-        <span
-          v-if="stickerPickerEnabled"
-          class="additional-tabs"
-          role="tablist"
-        >
           <button
-            class="button-unstyled stickers-tab-icon additional-tabs-item"
+            v-if="stickerPickerEnabled"
+            class="button-unstyled stickers-tab-icon"
             :class="{toggled: showingStickers}"
             :title="$t('emoji.stickers')"
             @click.prevent="toggleStickers"
