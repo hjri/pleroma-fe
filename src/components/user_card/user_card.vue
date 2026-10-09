@@ -72,7 +72,8 @@
                 class="other-actions"
                 role="toolbar"
                 :title="$t('user_card.actions')"
-                >
+                :aria-label="$t('user_card.actions')"
+              >
                 <button
                   v-if="editable"
                   :disabled="newName?.length === 0"
@@ -247,6 +248,7 @@
           class="user-interactions"
           role="toolbar"
           :title="$t('user_card.interactions')"
+          :aria-label="$t('user_card.interactions')"
         >
           <div class="btn-group" role="group">
             <FollowButton

@@ -125,6 +125,7 @@
     "yes": "Yes",
     "no": "No",
     "none": "None",
+    "rearrange": "Rearrange elements",
     "add": "Add",
     "suggestions": "Autocomplete suggestions",
     "remove": "Remove",

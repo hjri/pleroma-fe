@@ -2,6 +2,7 @@
   <div
     class="SelectMotion btn-group"
     role="toolbar"
+    :aria-label="$t('general.rearrange')"
   >
     <button
       class="btn button-default"
