@@ -77,80 +77,6 @@
           icon="play-circle"
         />
       </a>
-      <div
-        v-if="!hidden"
-        class="attachment-buttons"
-        role="toolbar"
-        :aria-label="$t('status.attachment_actions')"
-      >
-        <button
-          v-if="attachment.type === 'flash' && flashLoaded"
-          class="button-default attachment-button -transparent"
-          :title="$t('status.attachment_stop_flash')"
-          @click.prevent="stopFlash"
-        >
-          <FAIcon icon="stop" />
-        </button>
-        <Popover
-          v-if="attachment.description && size !== 'small' && !edit && attachment.type !== 'unknown'"
-          trigger="click"
-          popover-class="popover popover-default description-popover"
-          normal-button
-          class="attachment-button -transparent"
-          :title="$t('status.attachment_description')"
-        >
-          <template #trigger>
-            <FAIcon icon="align-right" />
-          </template>
-          <template #content>
-            <details open>
-              <summary>{{ $t('status.attachment_description') }}</summary>
-              <span>{{ localDescription }}</span>
-            </details>
-          </template>
-        </Popover>
-        <button
-          v-if="!useModal && attachment.type !== 'unknown'"
-          class="button-default attachment-button -transparent"
-          :title="$t('status.show_attachment_in_modal')"
-          aria-haspopup="dialog"
-          @click.prevent="openModalForce"
-        >
-          <FAIcon icon="search-plus" />
-        </button>
-        <button
-          v-if="nsfw && hideNsfwLocal"
-          class="button-default attachment-button -transparent"
-          :title="$t('status.hide_attachment')"
-          @click.prevent="toggleHidden"
-        >
-          <FAIcon icon="times" />
-        </button>
-        <button
-          v-if="shiftUp"
-          class="button-default attachment-button -transparent"
-          :title="$t('status.move_up')"
-          @click.prevent="onShiftUp"
-        >
-          <FAIcon icon="chevron-left" />
-        </button>
-        <button
-          v-if="shiftDn"
-          class="button-default attachment-button -transparent"
-          :title="$t('status.move_down')"
-          @click.prevent="onShiftDn"
-        >
-          <FAIcon icon="chevron-right" />
-        </button>
-        <button
-          v-if="remove"
-          class="button-default attachment-button -transparent"
-          :title="$t('status.remove_attachment')"
-          @click.prevent="onRemove"
-        >
-          <FAIcon icon="trash-alt" />
-        </button>
-      </div>
 
       <a
         v-if="attachment.type === 'image' && (!hidden || preloadImage)"
@@ -243,6 +169,81 @@
           @player-closed="setFlashLoaded(false)"
         />
       </span>
+
+      <div
+        v-if="!hidden"
+        class="attachment-buttons"
+        role="toolbar"
+        :aria-label="$t('status.attachment_actions')"
+      >
+        <button
+          v-if="attachment.type === 'flash' && flashLoaded"
+          class="button-default attachment-button -transparent"
+          :title="$t('status.attachment_stop_flash')"
+          @click.prevent="stopFlash"
+        >
+          <FAIcon icon="stop" />
+        </button>
+        <Popover
+          v-if="attachment.description && size !== 'small' && !edit && attachment.type !== 'unknown'"
+          trigger="click"
+          popover-class="popover popover-default description-popover"
+          normal-button
+          class="attachment-button -transparent"
+          :title="$t('status.attachment_description')"
+        >
+          <template #trigger>
+            <FAIcon icon="align-right" />
+          </template>
+          <template #content>
+            <details open>
+              <summary>{{ $t('status.attachment_description') }}</summary>
+              <span>{{ localDescription }}</span>
+            </details>
+          </template>
+        </Popover>
+        <button
+          v-if="!useModal && attachment.type !== 'unknown'"
+          class="button-default attachment-button -transparent"
+          :title="$t('status.show_attachment_in_modal')"
+          aria-haspopup="dialog"
+          @click.prevent="openModalForce"
+        >
+          <FAIcon icon="search-plus" />
+        </button>
+        <button
+          v-if="nsfw && hideNsfwLocal"
+          class="button-default attachment-button -transparent"
+          :title="$t('status.hide_attachment')"
+          @click.prevent="toggleHidden"
+        >
+          <FAIcon icon="times" />
+        </button>
+        <button
+          v-if="shiftUp"
+          class="button-default attachment-button -transparent"
+          :title="$t('status.move_up')"
+          @click.prevent="onShiftUp"
+        >
+          <FAIcon icon="chevron-left" />
+        </button>
+        <button
+          v-if="shiftDn"
+          class="button-default attachment-button -transparent"
+          :title="$t('status.move_down')"
+          @click.prevent="onShiftDn"
+        >
+          <FAIcon icon="chevron-right" />
+        </button>
+        <button
+          v-if="remove"
+          class="button-default attachment-button -transparent"
+          :title="$t('status.remove_attachment')"
+          @click.prevent="onRemove"
+        >
+          <FAIcon icon="trash-alt" />
+        </button>
+      </div>
     </div>
     <div
       v-if="size !== 'hide' && !hideDescription && edit"
