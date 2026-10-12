@@ -29,6 +29,7 @@
       </small>
       <button
         class="button-unstyled unmute"
+        :title="$t('status.show_muted_status')"
         @click.prevent="toggleMute"
       >
         <FAIcon
