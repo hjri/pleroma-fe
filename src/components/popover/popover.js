@@ -461,6 +461,7 @@ const Popover = {
         if (e.ctrlKey) return
         if (e.shiftKey) return
         if (e.metaKey) return
+        if (e.button > 0) return
         e.preventDefault()
         if (this.hidden) {
           this.showPopover()
