@@ -436,7 +436,7 @@ const Popover = {
       if (this.redirectFocus) {
         const firstFocusable = this.$refs.content
           ?.querySelector('*:not(.focus-trap)')
-          .querySelector('a[href], button, [tabindex="0"], input')
+          ?.querySelector('a[href], button, [tabindex="0"], input')
         if (firstFocusable) {
           firstFocusable?.focus()
           this.nextFocus = e.relatedTarget
