@@ -31,16 +31,14 @@
           <span v-if="!hideSitename">{{ sitename }}</span>
         </div>
       </div>
-      <ul role="menu">
+      <ul>
         <li
           v-if="!currentUser"
           @click="toggleDrawer"
-          role="menuitem"
         >
           <router-link
             :to="{ name: 'login' }"
             class="menu-item"
-            role="menuitem"
           >
             <FAIcon
               fixed-width
@@ -52,7 +50,6 @@
         <li
           v-if="currentUser || !privateMode"
           @click="toggleDrawer"
-          role="menuitem"
         >
           <router-link
             :to="timelinesRoute"
@@ -68,7 +65,6 @@
         <li
           v-if="currentUser"
           @click="toggleDrawer"
-          role="menuitem"
         >
           <router-link
             :to="{ name: 'lists' }"
@@ -84,7 +80,6 @@
         <li
           v-if="currentUser"
           @click="toggleDrawer"
-          role="menuitem"
         >
           <router-link
             :to="{ name: 'bookmarks' }"
@@ -100,7 +95,6 @@
         <li
           v-if="currentUser && pleromaChatMessagesAvailable"
           @click="toggleDrawer"
-          role="menuitem"
         >
           <router-link
             :to="{ name: 'chats', params: { username: currentUser.screen_name } }"
@@ -122,7 +116,7 @@
         </li>
       </ul>
       <ul role="menu" v-if="currentUser">
-        <li @click="toggleDrawer" role="menuitem">
+        <li @click="toggleDrawer">
           <router-link
             :to="{ name: 'interactions', params: { username: currentUser.screen_name } }"
             class="menu-item"
@@ -137,7 +131,6 @@
         <li
           v-if="currentUser.locked"
           @click="toggleDrawer"
-          role="menuitem"
         >
           <router-link
             to="/friend-requests"
@@ -159,7 +152,6 @@
         <li
           v-if="shout"
           @click="toggleDrawer"
-          role="menuitem"
         >
           <router-link
             :to="{ name: 'shout-panel' }"
@@ -177,7 +169,6 @@
         <li
           v-if="currentUser || !privateMode"
           @click="toggleDrawer"
-          role="menuitem"
         >
           <router-link
             :to="{ name: 'search' }"
@@ -194,7 +185,6 @@
           v-if="currentUser && suggestionsEnabled"
           @click="toggleDrawer"
           class="menu-item"
-          role="menuitem"
         >
           <router-link
             :to="{ name: 'who-to-follow' }"
@@ -209,7 +199,6 @@
         </li>
         <li
           @click="toggleDrawer"
-          role="menuitem"
           >
           <button
             class="menu-item"
@@ -224,8 +213,7 @@
         </li>
         <li
           @click="toggleDrawer"
-          role="menuitem"
-          >
+        >
           <router-link
             :to="{ name: 'about'}"
             class="menu-item"
@@ -240,7 +228,6 @@
         <li
           v-if="currentUser?.role === 'admin'"
           @click="toggleDrawer"
-          role="menuitem"
         >
           <button
             class="menu-item"
@@ -256,7 +243,6 @@
         <li
           v-if="currentUser && supportsAnnouncements"
           @click="toggleDrawer"
-          role="menuitem"
         >
           <router-link
             :to="{ name: 'announcements' }"
@@ -278,7 +264,6 @@
         <li
           v-if="currentUser"
           @click="toggleDrawer"
-          role="menuitem"
         >
           <router-link
             :to="{ name: 'drafts' }"
@@ -300,7 +285,6 @@
         <li
           v-if="currentUser"
           @click="toggleDrawer"
-          role="menuitem"
         >
           <router-link
             :to="{ name: 'edit-navigation' }"
@@ -316,7 +300,6 @@
         <li
           v-if="currentUser"
           @click="toggleDrawer"
-          role="menuitem"
         >
           <button
             class="menu-item"
