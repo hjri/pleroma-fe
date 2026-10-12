@@ -53,7 +53,6 @@ const StatusPopover = {
           params: { statusId: this.statusId },
         })
       } else {
-        console.log(this.statusId)
         this.$emit('navigate', this.statusId)
       }
     },
