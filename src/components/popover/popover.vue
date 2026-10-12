@@ -8,7 +8,7 @@
     :aria-haspopup="ariaHasPopup"
     :aria-owns="hidden ? undefined : `${idPrefix}content`"
     :aria-expanded="!hidden ? 'true' : 'false'"
-    :aria-label="label"
+    :aria-label="label ?? $attrs['aria-label']"
     @mouseenter="onMouseenter"
     @mouseleave="onMouseleave"
     @click="onClick"
