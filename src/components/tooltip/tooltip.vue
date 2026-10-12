@@ -2,7 +2,8 @@
 <Popover
   trigger="hover"
   tooltip
-  :label="label ?? $t('general.help')"
+  :label="label"
+  :aria-describedby="idPrefix + 'content'"
   v-bind="$attrs"
 >
   <template #trigger>
@@ -23,7 +24,7 @@ import Popover from 'src/components/popover/popover.vue'
 
 const props = defineProps({ text: String, label: String })
 const uniqueId = useId()
-const idPrefix = computed(() => `tooltip-${uniqueId.value}`)
+const idPrefix = computed(() => `tooltip-${uniqueId}`)
 </script>
 
 <style lang="scss">

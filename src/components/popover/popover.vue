@@ -30,7 +30,7 @@
           ref="content"
           :style="styles"
           class="popover"
-          role="dialog"
+          :role="tooltip ? 'tooltip' : 'dialog'"
           :aria-label="$attrs['aria-label']"
           :class="popoverClass || 'popover-default'"
           @mouseenter="onMouseenterContent"
