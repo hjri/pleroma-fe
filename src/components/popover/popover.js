@@ -458,6 +458,7 @@ const Popover = {
     },
     onClick(e) {
       if (this.trigger === 'click') {
+        if (e.ctrlKey) return
         e.preventDefault()
         if (this.hidden) {
           this.showPopover()
