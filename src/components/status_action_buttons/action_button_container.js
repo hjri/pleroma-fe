@@ -1,8 +1,8 @@
 import { defineAsyncComponent } from 'vue'
 
 import Popover from 'src/components/popover/popover.vue'
-import ActionButton from './action_button.vue'
 import EmojiPicker from '../emoji_picker/emoji_picker.vue'
+import ActionButton from './action_button.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useStatusesStore } from 'src/stores/statuses.js'

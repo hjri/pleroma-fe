@@ -69,12 +69,7 @@ const Popover = {
     // Used to set or unset aria-haspopup (attribute not set for tooltips)
     tooltip: Boolean,
   },
-  emits: [
-    'show',
-    'close',
-    'forwardTabContentFocus',
-    'reverseTabContentFocus',
-  ],
+  emits: ['show', 'close', 'forwardTabContentFocus', 'reverseTabContentFocus'],
   inject: {
     // override popover z layer
     popoversZLayer: {

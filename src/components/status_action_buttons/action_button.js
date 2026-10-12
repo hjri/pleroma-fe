@@ -135,8 +135,11 @@ export default {
     },
     href() {
       if (this.getComponent(this.button) !== 'a') return undefined
-      return this.functionWrap('link', remoteInteractionLink)(this.funcArg) ?? remoteInteractionLink
-    }
+      return (
+        this.functionWrap('link', this.remoteInteractionLink)(this.funcArg) ??
+        this.remoteInteractionLink
+      )
+    },
   },
   methods: {
     functionWrap(property, fallback) {
