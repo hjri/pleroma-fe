@@ -102,7 +102,6 @@ export const BUTTONS = [
     name: 'emoji',
     label: 'tool_tip.add_reaction',
     icon: ['far', 'face-smile-beam'],
-    interactive: () => true,
     active: ({ emojiPickerShown }) => emojiPickerShown,
     toggleable: true,
     anonLink: true,

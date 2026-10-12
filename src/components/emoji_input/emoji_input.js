@@ -127,6 +127,7 @@ const EmojiInput = {
       suggestions: [],
       overlayStyle: {},
       pickerShown: false,
+      suggestShown: false,
     }
   },
   components: {
@@ -148,7 +149,7 @@ const EmojiInput = {
     postText() {
       return this.modelValue.slice(this.caret)
     },
-    showSuggestions() {
+    shouldShowSuggestions() {
       return (
         this.focused &&
         this.suggestions &&
@@ -217,7 +218,7 @@ const EmojiInput = {
       }
     },
     ariaOwns() {
-      if (this.showSuggestions) {
+      if (this.suggestShown) {
         return this.suggestionListId
       } else if (this.pickerShown) {
         return this.emojiPickerId
@@ -236,16 +237,16 @@ const EmojiInput = {
     },
   },
   mounted() {
-    const { root, hiddenOverlayCaret, suggestorPopover } = this.$refs
+    const { root, hiddenOverlayCaret, suggest, picker } = this.$refs
     const input =
       root.querySelector('.emoji-input > input') ||
       root.querySelector('.emoji-input > textarea')
     if (!input) return
     this.input = input
     this.caretEl = hiddenOverlayCaret
-    if (suggestorPopover.setAnchorEl) {
-      suggestorPopover.setAnchorEl(this.caretEl) // unit test compat
-      this.$refs.picker.setAnchorEl(this.caretEl)
+    if (this.caretEl) {
+      suggest.setAnchorEl(this.caretEl) // unit test compat
+      picker.setAnchorEl(this.caretEl)
     } else {
       console.warn('setAnchorEl not found, are we in a unit test?')
     }
@@ -283,12 +284,12 @@ const EmojiInput = {
     }
   },
   watch: {
-    showSuggestions: function (newValue) {
-      this.$emit('shown', newValue)
+    shouldShowSuggestions: function (newValue) {
+      this.$emit('suggestionsShown', newValue)
       if (newValue) {
-        this.$refs.suggestorPopover.showPopover()
+        this.$refs.suggest.showPopover()
       } else {
-        this.$refs.suggestorPopover.hidePopover()
+        this.$refs.suggest.hidePopover()
       }
     },
     textAtCaret: async function (newWord) {
@@ -512,6 +513,17 @@ const EmojiInput = {
     onPickerClosed() {
       this.pickerShown = false
     },
+    onSuggestShown() {
+      this.suggestShown = true
+    },
+    onSuggestClosed() {
+      this.suggestShown = false
+    },
+    focusInput() {
+      this.$refs.picker.hidePicker()
+      this.$refs.suggest.hidePopover()
+      this.input.focus()
+    },
     onBlur(e) {
       // Clicking on any suggestion removes focus from autocomplete,
       // preventing click handler ever executing.
@@ -607,7 +619,7 @@ const EmojiInput = {
     setCaret({ target: { selectionStart } }) {
       this.caret = selectionStart
       this.$nextTick(() => {
-        this.$refs.suggestorPopover?.updateStyles()
+        this.$refs.suggest?.updateStyles()
       })
     },
     autoCompleteItemLabel(suggestion) {

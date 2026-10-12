@@ -3,13 +3,18 @@
     ref="popover"
     trigger="click"
     popover-class="emoji-picker popover-default"
-    :hide-trigger="true"
+    :hide-trigger="hideTrigger"
     placement="bottom"
+    :aria-label="$t('emoji.picker')"
     @show="onPopoverShown"
     @close="onPopoverClosed"
-    :aria-label="$t('emoji.picker')"
+    @forward-tab-content-focus="$emit('forwardTabContentFocus')"
+    @reverse-tab-content-focus="$emit('reverseTabContentFocus')"
     v-bind="$attrs"
   >
+    <template #trigger>
+      <slot />
+    </template>
     <template #content>
       <div
         class="heading"

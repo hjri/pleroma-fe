@@ -69,6 +69,12 @@ const Popover = {
     // Used to set or unset aria-haspopup (attribute not set for tooltips)
     tooltip: Boolean,
   },
+  emits: [
+    'show',
+    'close',
+    'forwardTabContentFocus',
+    'reverseTabContentFocus',
+  ],
   inject: {
     // override popover z layer
     popoversZLayer: {
@@ -129,7 +135,7 @@ const Popover = {
 
       if (this.hideTrigger) {
         attrs['aria-hidden'] = true
-        attrs.tabindex = 0
+        attrs.tabindex = -1
       }
 
       return attrs
@@ -452,9 +458,12 @@ const Popover = {
     onForwardTabContentFocus() {
       this.nextFocus?.focus()
       this.hidePopover()
+      this.$emit('forwardTabContentFocus')
     },
     onReverseTabContentFocus() {
-      this.$refs.trigger.focus()
+      const triggerer = this.anchorEl ?? this.$refs.trigger
+      triggerer.focus()
+      this.$emit('reverseTabContentFocus')
     },
     onClick(e) {
       if (this.trigger === 'click') {

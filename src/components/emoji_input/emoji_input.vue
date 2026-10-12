@@ -25,11 +25,15 @@
       >
         x
         <Popover
-          ref="suggestorPopover"
+          ref="suggest"
           class="autocomplete-panel"
           :aria-label="$t('general.suggestions')"
           placement="bottom"
-          :hide-trigger="true"
+          hide-trigger
+          @show="onSuggestShown"
+          @close="onSuggestClosed"
+          @forward-tab-content-focus="focusInput"
+          @reverse-tab-content-focus="focusInput"
         >
           <template #content>
             <div
@@ -86,11 +90,14 @@
           ref="picker"
           :enable-sticker-picker="enableStickerPicker"
           class="emoji-picker-panel"
+          hide-trigger
           @emoji="insert"
           @sticker-uploaded="onStickerUploaded"
           @sticker-upload-failed="onStickerUploadFailed"
           @show="onPickerShown"
           @close="onPickerClosed"
+          @forward-tab-content-focus="focusInput"
+          @reverse-tab-content-focus="focusInput"
         />
       </span>
       <span>{{ postText }}</span>

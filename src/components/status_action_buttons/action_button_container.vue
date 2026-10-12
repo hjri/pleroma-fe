@@ -1,7 +1,25 @@
 <template>
   <div role="presentation">
+    <EmojiPicker
+      v-if="button.name === 'emoji'"
+      ref="picker"
+      :enable-sticker-picker="false"
+      :hide-custom-emoji="hideCustomEmoji"
+      class="emoji-picker-panel"
+      @emoji="addReaction"
+      @show="onShowEmojiPicker"
+      @close="onHideEmojiPicker"
+      @emoji-picker-shown="e => $emit('emojiPickerShown', e)"
+    >
+      <ActionButton
+        :button="button" :status="status"
+        :hide-label="hideLabel"
+        popover-trigger
+        v-bind.prop="$attrs"
+      />
+    </EmojiPicker>
     <Popover
-      v-if="button.dropdown?.()"
+      v-else-if="button.dropdown?.()"
       :trigger="$attrs.extra ? 'hover' : 'click'"
       :offset="{ y: 5 }"
       :placement="$attrs.extra ? 'right' : 'bottom'"
@@ -136,7 +154,6 @@
       :status="status"
       :hide-label="hideLabel"
       v-bind="$attrs"
-      @emoji-picker-shown="e => $emit('emojiPickerShown', e)"
     />
     <teleport to="#modal">
       <MuteConfirm

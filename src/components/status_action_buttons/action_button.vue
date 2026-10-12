@@ -14,8 +14,8 @@
       :title="popoverTrigger ? undefined : $t(button.label(funcArg))"
       target="_blank"
       :tabindex="popoverTrigger ? undefined : 0"
-      :disabled="button.interactive ? !button.interactive(funcArg) : false"
-      :href="getComponent(button) == 'a' ? button.link?.(funcArg) || remoteInteractionLink : undefined"
+      :disabled="!isInteractive"
+      :href="href"
       @click="popoverTrigger ? undefined : doActionWrap(button, outerClose)"
     >
       <FALayers role="presentation">
@@ -94,17 +94,6 @@
         />
       </template>
     </Popover>
-
-    <EmojiPicker
-      v-if="button.name === 'emoji'"
-      ref="picker"
-      :enable-sticker-picker="false"
-      :hide-custom-emoji="hideCustomEmoji"
-      class="emoji-picker-panel"
-      @emoji="addReaction"
-      @show="onShowEmojiPicker"
-      @close="onHideEmojiPicker"
-    />
   </div>
 </template>
 

@@ -1,11 +1,9 @@
 import Popover from 'src/components/popover/popover.vue'
 import StatusBookmarkFolderMenu from 'src/components/status_bookmark_folder_menu/status_bookmark_folder_menu.vue'
-import EmojiPicker from '../emoji_picker/emoji_picker.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useStatusesStore } from 'src/stores/statuses.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -82,7 +80,6 @@ export default {
   },
   components: {
     StatusBookmarkFolderMenu,
-    EmojiPicker,
     Popover,
   },
   data: () => ({
@@ -133,24 +130,21 @@ export default {
         statusId: this.status.id,
       })
     },
+    isInteractive() {
+      return this.functionWrap('interactive', true)(this.funcArg)
+    },
+    href() {
+      if (this.getComponent(this.button) !== 'a') return undefined
+      return this.functionWrap('link', remoteInteractionLink)(this.funcArg) ?? remoteInteractionLink
+    }
   },
   methods: {
-    addReaction(event) {
-      const emoji = event.insertion
-      const existingReaction = this.status.emoji_reactions.find(
-        (r) => r.name === emoji,
-      )
-      if (existingReaction?.me) {
-        useStatusesStore().unreactWithEmoji(this.status.id, emoji)
-      } else {
-        useStatusesStore().reactWithEmoji(this.status.id, emoji)
-      }
-    },
-    onShowEmojiPicker() {
-      this.$emit('emojiPickerShown', true)
-    },
-    onHideEmojiPicker() {
-      this.$emit('emojiPickerShown', false)
+    functionWrap(property, fallback) {
+      const isFunction = typeof this.button[property] === 'function'
+
+      return isFunction
+        ? this.button[property]
+        : () => this.button[property] ?? fallback
     },
     doActionWrap(
       button,
@@ -158,20 +152,13 @@ export default {
         /* no-op */
       },
     ) {
-      if (
-        this.button.interactive ? !this.button.interactive(this.funcArg) : false
-      )
-        return
-      if (button.name === 'emoji') {
-        this.$refs.picker.togglePicker()
-      } else {
-        this.animationState = true
-        this.getComponent(button) === 'button' && this.doAction(button)
-        setTimeout(() => {
-          this.animationState = false
-        }, 500)
-        if (!this.button.dropdown) close()
-      }
+      if (!this.isInteractive) return
+      this.animationState = true
+      this.getComponent(button) === 'button' && this.doAction(button)
+      setTimeout(() => {
+        this.animationState = false
+      }, 500)
+      if (!this.button.dropdown) close()
     },
   },
 }
