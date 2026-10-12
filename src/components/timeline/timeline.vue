@@ -11,7 +11,7 @@
       <TimelineMenu
         v-if="!embedded"
         :timeline-name="timelineRef.name"
-        id="timeline-header"
+        :id="'timeline-header-' + uniqueId"
       />
       <div
         v-if="timeline.fetcher.loadingNewer && !showLoadButton"
@@ -85,7 +85,7 @@
         class="timeline"
         ref="timeline"
         role="feed"
-        aria-labelledby="timeline-header"
+        :aria-labelledby="embedded ? undefined : ('timeline-header-'+ uniqueId)"
       >
         <template
           v-for="element in heightChart"

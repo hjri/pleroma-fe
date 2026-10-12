@@ -10,6 +10,7 @@ import {
   toRefs,
   useTemplateRef,
   watch,
+  useId,
 } from 'vue'
 import { useI18n } from 'vue-i18n'
 
@@ -246,6 +247,7 @@ const Timeline = {
     const { layoutType } = storeToRefs(useInterfaceStore())
     const mobileLayout = computed(() => layoutType.value === 'mobile')
     const { footerSlipgate, embedded, hideEmpty } = toRefs(props)
+    const uniqueId = useId()
 
     return {
       timelineRef,
@@ -269,6 +271,7 @@ const Timeline = {
       footerSlipgate,
       embedded,
       hideEmpty,
+      uniqueId,
     }
   },
 }
