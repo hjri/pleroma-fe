@@ -22,7 +22,7 @@ const NavigationEntry = {
       type: Object,
       required: true,
     },
-    showPin: Boolean
+    showPin: Boolean,
   },
   components: {
     OptionalRouterLink,
