@@ -460,6 +460,7 @@ const Popover = {
       if (this.trigger === 'click') {
         if (e.ctrlKey) return
         if (e.shiftKey) return
+        if (e.metaKey) return
         e.preventDefault()
         if (this.hidden) {
           this.showPopover()
