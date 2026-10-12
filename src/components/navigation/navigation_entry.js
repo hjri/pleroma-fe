@@ -16,28 +16,16 @@ import { faThumbtack } from '@fortawesome/free-solid-svg-icons'
 library.add(faThumbtack)
 
 const NavigationEntry = {
-  props: ['item', 'showPin'],
+  inheritAttrs: false,
+  props: {
+    item: {
+      type: Object,
+      required: true,
+    },
+    showPin: Boolean
+  },
   components: {
     OptionalRouterLink,
-  },
-  methods: {
-    isPinned(value) {
-      return this.pinnedItems.has(value)
-    },
-    togglePin(value) {
-      if (this.isPinned(value)) {
-        useSyncConfigStore().removeCollectionPreference({
-          path: 'collections.pinnedNavItems',
-          value,
-        })
-      } else {
-        useSyncConfigStore().addCollectionPreference({
-          path: 'collections.pinnedNavItems',
-          value,
-        })
-      }
-      useSyncConfigStore().pushSyncConfig()
-    },
   },
   computed: {
     routeTo() {
@@ -60,6 +48,25 @@ const NavigationEntry = {
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems),
     }),
+  },
+  methods: {
+    isPinned(value) {
+      return this.pinnedItems.has(value)
+    },
+    togglePin(value) {
+      if (this.isPinned(value)) {
+        useSyncConfigStore().removeCollectionPreference({
+          path: 'collections.pinnedNavItems',
+          value,
+        })
+      } else {
+        useSyncConfigStore().addCollectionPreference({
+          path: 'collections.pinnedNavItems',
+          value,
+        })
+      }
+      useSyncConfigStore().pushSyncConfig()
+    },
   },
 }
 
