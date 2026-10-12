@@ -2,7 +2,6 @@
 <nav
   class="NavPanel"
   :aria-label="$t('nav.navigation')"
-  :aria-expanded="!collapsed"
   >
     <div class="panel panel-default">
       <div
@@ -14,6 +13,7 @@
         <button
           :title="$t('nav.expand_navigation')"
           class="button-unstyled"
+          :aria-expanded="!collapsed"
           @click="toggleCollapse"
         >
           <FAIcon
