@@ -3,11 +3,10 @@
     ref="galleryContainer"
     class="Gallery"
     :class="{ '-long': tooManyAttachments && hidingLong }"
-    role="list"
   >
     <div
       class="gallery-rows"
-      role="presentation"
+      role="list"
     >
       <div
         v-for="(row, rowIndex) in rows"
@@ -20,7 +19,7 @@
         <div
           class="gallery-row-inner"
           :class="{ '-grid': grid }"
-          role="listitem"
+          role="presentation"
         >
           <Attachment
             v-for="(attachment, attachmentIndex) in row.items"
@@ -35,14 +34,15 @@
             :shift-up="!(attachmentIndex === 0 && rowIndex === 0) && shiftUpAttachment"
             :shift-dn="!(attachmentIndex === row.items.length - 1 && rowIndex === rows.length - 1) && shiftDnAttachment"
             :edit="editAttachment"
-            :description="descriptions && descriptions[attachment.id]"
+            :description="descriptions?.[attachment.id]"
             :hide-description="size === 'small' || tooManyAttachments && hidingLong"
             :style="itemStyle(attachment.id, row.items)"
+            role="listitem"
+            :aria-label="$t('status.attachment') + ' ' + attachmentIndex"
             @set-media="onMedia"
             @natural-size-load="onNaturalSizeLoad"
             @play="() => onMediaStateChange(true, attachment.id)"
             @pause="() => onMediaStateChange(false, attachment.id)"
-            :aria-label="$t('status.attachment')"
           />
         </div>
       </div>
