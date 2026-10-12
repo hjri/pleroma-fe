@@ -3,6 +3,7 @@
     :is-open="!!shouldShow"
     class="UpdateNotification"
     :no-background="true"
+    :aria-label="$t('update.big_update_title')"
   >
     <div
       class="UpdateNotificationModal panel"
