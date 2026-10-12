@@ -134,7 +134,7 @@
         v-if="nonMention && status"
         class="button-unstyled expand-icon"
         :title="$t('tool_tip.toggle_expand')"
-        :aria-expanded="expanded"
+        :aria-expanded="expanded ? 'true' : 'false'"
         @click.prevent="$emit('toggleExpanded')"
       >
         <FAIcon

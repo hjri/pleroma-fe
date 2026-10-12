@@ -26,7 +26,7 @@
         class="btn button-default"
         @click="toogleAdvanced"
         :aria-label="$t('search.advanced')"
-        :aria-expanded="advancedMode"
+        :aria-expanded="advancedMode ? 'true' : 'false'"
       >
         <FAIcon :icon="advancedMode ? 'chevron-up' : 'chevron-down'" />
       </button>

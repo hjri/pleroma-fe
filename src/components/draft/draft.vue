@@ -94,7 +94,7 @@
     <div class="actions">
       <button
         class="btn button-default"
-        :aria-expanded="editing"
+        :aria-expanded="editing ? 'true' : 'false'"
         @click.prevent.stop="toggleEditing"
       >
         {{ editing ? $t('drafts.save') : $t('drafts.continue') }}

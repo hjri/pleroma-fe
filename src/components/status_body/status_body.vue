@@ -63,7 +63,7 @@
         >
           <button
             class="btn button-default toggle-button"
-            :aria-expanded="showingMore"
+            :aria-expanded="showingMore ? 'true' : 'false'"
             @click.prevent="toggleShowMore"
           >
             {{ toggleText }}

@@ -13,7 +13,7 @@
         <button
           :title="$t('nav.expand_navigation')"
           class="button-unstyled"
-          :aria-expanded="!collapsed"
+          :aria-expanded="!collapsed ? 'true' : 'false'"
           @click="toggleCollapse"
         >
           <FAIcon
@@ -33,7 +33,7 @@
           :show-pin="false"
           :item="{ icon: 'stream', label: 'nav.timelines' }"
           aria-controls="nav-timelines-list"
-          :aria-expanded="showTimelines"
+          :aria-expanded="showTimelines ? 'true' : 'false'"
           @click="toggleTimelines"
         >
           <FAIcon
@@ -48,7 +48,7 @@
           :class="{ '-expanded': showTimelines }"
           id="nav-timelines-list"
           :aria-label="$t('nav.timelines')"
-          :aria-expanded="showTimelines"
+          :aria-expanded="showTimelines ? 'true' : 'false'"
           role="group"
         >
           <div class="timelines">
@@ -92,7 +92,7 @@
           :class="{ '-expanded': showLists }"
           id="nav-lists-list"
           :aria-label="$t('nav.lists')"
-          :aria-expanded="showLists"
+          :aria-expanded="showLists ? 'true' : 'false'"
           role="group"
         >
           <ListsMenuContent
@@ -131,7 +131,7 @@
           class="timelines-background menu-item-collapsible"
           :class="{ '-expanded': showBookmarkFolders }"
           :aria-label="$t('nav.bookmark_folders')"
-          :aria-expanded="showBookmarkFolders"
+          :aria-expanded="showBookmarkFolders ? 'true' : 'false'"
           id="nav-bookmark-folders-list"
           role="group"
         >

@@ -5,7 +5,7 @@
   >
     <button
       class="button-unstyled -link display-quoted-status-button"
-      :aria-expanded="shouldDisplayQuote"
+      :aria-expanded="shouldDisplayQuote ? 'true' : 'false'"
       @click="toggleDisplayQuote"
     >
       {{ shouldDisplayQuote ? $t('status.hide_quote') : $t('status.display_quote') }}

@@ -7,7 +7,7 @@
     :class="triggerClass"
     :aria-haspopup="ariaHasPopup"
     :aria-owns="hidden ? undefined : `${idPrefix}content`"
-    :aria-expanded="!hidden"
+    :aria-expanded="!hidden ? 'true' : 'false'"
     :aria-label="label"
     @mouseenter="onMouseenter"
     @mouseleave="onMouseleave"

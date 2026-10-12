@@ -17,7 +17,7 @@
     <div
       v-if="needMute && !unmuted"
       :id="'notif-' +notification.id"
-      :aria-expanded="statusExpanded"
+      :aria-expanded="statusExpanded ? 'true' : 'false'"
       :aria-controls="'notif-' +notification.id"
       class="Notification container -muted"
     >
