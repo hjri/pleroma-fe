@@ -67,15 +67,6 @@
     overflow: auto hidden;
   }
 
-  .additional-tabs {
-    display: flex;
-    border-left: 1px solid;
-    border-left-color: var(--border);
-    padding-left: 0.5em;
-    flex: 0 0 auto;
-  }
-
-  .additional-tabs,
   .emoji-tabs {
     flex-basis: auto;
     display: flex;
