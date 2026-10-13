@@ -5,12 +5,14 @@ export function useWindowScroll() {
   const y = ref(0)
 
   const update = (e) => {
-    x.value = window.scrollX
-    y.value = window.scrollY
+    requestAnimationFrame(() => {
+      x.value = window.scrollX
+      y.value = window.scrollY
+    })
   }
 
   onMounted(() => {
-    window.addEventListener('scroll', update)
+    window.addEventListener('scroll', update, { capture: false, passive: true })
     update()
   })
   onUnmounted(() => {

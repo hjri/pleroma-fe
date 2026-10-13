@@ -148,10 +148,11 @@ export default {
       const rootMarginString = rootCss.getPropertyValue('margin-top')
       const rootMargin = Number.parseInt(rootMarginString.slice(0, -2), 10)
       rootElementMargin.value = rootMargin
+      const border = isExpanded.value ? 2 : 1
 
       emit('heightChange', {
         id: statusId.value,
-        height: value,
+        height: value + border,
         element: rootElement,
       })
     })

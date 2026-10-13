@@ -153,7 +153,7 @@ export function useVirtualScrolling({
   // # Visiblity
   // Add buffer zone to boundary, equal to approx 10 items heights
   const bufferZone = computed(
-    () => getPlaceholderHeight().value * (toValue(buffer) ?? 10),
+    () => getPlaceholderHeight().value * (toValue(buffer) ?? 5),
   )
 
   const checkVisible = ({ top, height }) => {
