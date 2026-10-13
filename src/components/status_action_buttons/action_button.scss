@@ -44,26 +44,6 @@
     grid-auto-flow: column;
     grid-auto-columns: max-content;
     align-items: center;
-
-    @include mixins.unfocused-style {
-      .focus-marker {
-        visibility: hidden;
-      }
-
-      .active-marker {
-        visibility: visible;
-      }
-    }
-
-    @include mixins.focused-style {
-      .focus-marker {
-        visibility: visible;
-      }
-
-      .active-marker {
-        visibility: hidden;
-      }
-    }
   }
 
   &.-pin {
@@ -98,29 +78,6 @@
   grid-auto-flow: column;
   align-items: center;
   padding: 0;
-
-  .action-button-inner {
-    &:hover,
-    &.-active {
-      &.reply-button:not(.disabled) {
-        .svg-inline--fa {
-          color: var(--cBlue);
-        }
-      }
-
-      &.retweet-button:not(.disabled) {
-        .svg-inline--fa {
-          color: var(--cGreen);
-        }
-      }
-
-      &.favorite-button:not(.disabled) {
-        .svg-inline--fa {
-          color: var(--cOrange);
-        }
-      }
-    }
-  }
 
   &.-extra {
     .action-counter {

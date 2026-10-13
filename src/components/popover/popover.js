@@ -55,16 +55,13 @@ const Popover = {
     normalButton: Boolean,
 
     // Use <a> instead of <button>
-    link: {
-      type: Boolean,
-      default: false,
-    },
+    link: Boolean,
+
+    // Don't put button classes on trigger
+    menuitem: Boolean,
 
     // Whether to hide the trigger totally
-    hideTrigger: {
-      type: Boolean,
-      default: false,
-    },
+    hideTrigger: Boolean,
 
     // Used to set or unset aria-haspopup (attribute not set for tooltips)
     tooltip: Boolean,
@@ -143,7 +140,7 @@ const Popover = {
       }
     },
     triggerClass() {
-      if (this.link) {
+      if (this.link || this.menuitem) {
         return ''
       } else if (this.normalButton) {
         return 'button-default btn'

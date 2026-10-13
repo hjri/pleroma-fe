@@ -110,18 +110,24 @@ export default {
       return useMergedConfigStore().mergedConfig.hidePostStats
     },
     buttonInnerClass() {
-      const buttonStyleClass = this.defaultButtonStyle
-        ? 'button-default'
-        : 'button-unstyled'
+      const buttonStyleClass = (() => {
+        if (this.popoverTrigger || this.extra) {
+          return ''
+        } else if (this.defaultButtonStyle) {
+          return 'button-default'
+        } else {
+          return 'button-unstyled'
+        }
+      })()
+
       return [
         this.button.name + '-button',
+        buttonStyleClass,
         {
+          'interactive-part': !this.popoverTrigger,
           'main-button': this.extra,
-          [buttonStyleClass]: !this.extra,
-          '-active': this.button.active?.(this.funcArg),
-          disabled: this.button.interactive
-            ? !this.button.interactive(this.funcArg)
-            : false,
+          '-active': this.isActive,
+          disabled: !this.isInteractive,
         },
       ]
     },
@@ -132,6 +138,9 @@ export default {
     },
     isInteractive() {
       return this.functionWrap('interactive', true)(this.funcArg)
+    },
+    isActive() {
+      return this.functionWrap('active', false)(this.funcArg)
     },
     href() {
       if (this.getComponent(this.button) !== 'a') return undefined

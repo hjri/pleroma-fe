@@ -10,7 +10,7 @@
     @close="onPopoverClosed"
     @forward-tab-content-focus="$emit('forwardTabContentFocus')"
     @reverse-tab-content-focus="$emit('reverseTabContentFocus')"
-    v-bind="$attrs"
+    v-bind.props="$attrs"
   >
     <template #trigger>
       <slot />

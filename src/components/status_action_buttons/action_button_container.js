@@ -57,6 +57,7 @@ export default {
       type: Object,
       required: true,
     },
+    extra: Boolean,
     defaultButton: Boolean,
     hideLabel: Boolean,
   },
@@ -72,16 +73,6 @@ export default {
     }
   },
   computed: {
-    buttonClass() {
-      return [
-        this.button.name + '-button',
-        {
-          '-with-extra': this.button.name === 'bookmark',
-          '-extra': this.extra,
-          '-quick': !this.extra,
-        },
-      ]
-    },
     user() {
       return this.status.user
     },
