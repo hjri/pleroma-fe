@@ -199,7 +199,7 @@ const Timeline = {
       window.removeEventListener('keydown', handleShortKey)
     })
 
-    const infiniteLoadWatcher = debounce((value) => {
+    const infiniteLoadWatcher = debounce(([value]) => {
       if (!value) return
       fetchOlderStatuses()
     }, 100)
