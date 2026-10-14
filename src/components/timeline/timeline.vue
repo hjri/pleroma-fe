@@ -95,10 +95,12 @@
             v-if="element.type === 'item'"
             class="timeline-conversation"
             :status-id="element.id"
+            :scroll-compensation="element.visible"
 
             :data-vs-height="element.height"
             :data-vs-top="element.top"
             :data-vs-id="element.id"
+            :data-vs-visible="element.visible"
 
             @suspendable-state-change="changeSuspendState"
             @height-change="updateVirtualHeight"

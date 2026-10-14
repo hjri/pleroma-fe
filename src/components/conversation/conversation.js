@@ -49,11 +49,13 @@ export default {
       type: String,
       required: true,
     },
-    isPage: {
-      // Whether conversation is rendered as a standalone page
-      // as opposed to embedded into a timeline
+    // Whether conversation is rendered as a standalone page
+    // as opposed to embedded into a timeline
+    isPage: Boolean,
+    // Whether to engage virtual scrolling scroll compensation
+    scrollCompensation: {
       type: Boolean,
-      default: false,
+      default: true,
     },
   },
   components: {
@@ -186,12 +188,13 @@ export default {
         return navbarSize.value + fontSize.value
       }
     })
+    const { scrollCompensation } = toRefs(props)
 
     // # Linear style stuff
     const isLinearView = computed(() => displayStyle.value !== 'tree')
     const linearElement = useTemplateRef('linear')
     const linearScrollCompensation = computed(
-      () => virtualScrollingEnabled.value && isLinearView.value,
+      () => virtualScrollingEnabled.value && isLinearView.value && scrollCompensation.value,
     )
     const {
       heightChart: heightChartLinear,
@@ -253,7 +256,7 @@ export default {
     )
     const ancestorsElement = useTemplateRef('ancestors')
     const treeScrollCompensation = computed(
-      () => virtualScrollingEnabled.value && isTreeView.value,
+      () => virtualScrollingEnabled.value && isTreeView.value && scrollCompensation.value,
     )
     const {
       heightChart: heightChartAncestors,

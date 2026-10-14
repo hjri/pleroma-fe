@@ -104,7 +104,7 @@ const Timeline = {
         body,
         offset,
         scrollPositionInstance: scroller,
-        scrollCompensation: false,
+        scrollCompensation: true,
         getPlaceholderHeight,
       })
 

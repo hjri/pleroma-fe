@@ -48,7 +48,7 @@ export function useVirtualScrolling({
   // # Heights mapping.
   const heights = ref(new Map())
   const heightChart = ref([])
-  const updateHeightChart = debounce(() => {
+  const updateHeightChart = () => {
     // Map every height and suspendable state
     const chart = list.value.map((item) => {
       const { id } = item
@@ -71,13 +71,10 @@ export function useVirtualScrolling({
     }, 0)
 
     heightChart.value = chart
-  }, 32) // 32ms = ~30fps
+  }
   watch([list, heights, unsuspendibleIds], updateHeightChart, {
     immediate: true,
     deep: true,
-  })
-  onUnmounted(() => {
-    updateHeightChart.cancel()
   })
 
   const updateVirtualHeight = ({ id, height }) => {
@@ -156,7 +153,26 @@ export function useVirtualScrolling({
     () => getPlaceholderHeight().value * (toValue(buffer) ?? 5),
   )
 
+  // Stuff that's on screen
   const checkVisible = ({ top, height }) => {
+    const itemTopBoundary = top
+    const itemBottomBoundary = top + height
+
+    // Include buffer zone
+    const finalTopScrollBoundary = topScrollBoundary.value
+    const finalBottomScrollBoundary = bottomScrollBoundary.value
+
+    // To be visible, item's bottom boundary shoud be below top scroll boundary)
+    const isBelowTopBoundary = itemBottomBoundary > finalTopScrollBoundary
+    // To be visible, item's top boundary shoud be above bottom scroll boundary)
+    const isAboveBottomBoundary = itemTopBoundary < finalBottomScrollBoundary
+    // This accounts for the case where item's boundaries exceed scroll boundary
+
+    return isBelowTopBoundary && isAboveBottomBoundary
+  }
+
+  // Same thing but including buffer zone
+  const checkRendered = ({ top, height }) => {
     const itemTopBoundary = top
     const itemBottomBoundary = top + height
 
@@ -182,6 +198,7 @@ export function useVirtualScrolling({
         (heightChartItem) => ({
           ...heightChartItem,
           visible: checkVisible(heightChartItem),
+          rendered: checkRendered(heightChartItem),
         }),
       )
     },
@@ -198,10 +215,10 @@ export function useVirtualScrolling({
     const chart = enabled.value ? heightChartVisibility : heightChart
     // Group invisible items into spacers
     return chart.value.reduce((acc, heightChartItem, index) => {
-      const { suspendable, visible, height, top, id } = heightChartItem
-      const present = visible || !suspendable
+      const { suspendable, rendered, visible, height, top, id } = heightChartItem
+      const present = rendered || !suspendable
       if (present) {
-        return [...acc, { type: 'item', height, top, id }]
+        return [...acc, { type: 'item', height, top, id, visible }]
       } else {
         // Reusing previous item if possible
         const previousItem = acc[acc.length - 1]
@@ -281,63 +298,10 @@ export function useVirtualScrolling({
             return 0
           }
 
-          /* Ok, here's a thing. Both Timeline and Conversation have virtual scrolling.
-           * But since Conversation can be inside Timeline (in fact it's chock-full of
-           * them) it creates a problem. Virtual scrolling involves a lot of scroll
-           * compensation. Elements appearing, disappearing, changing sizes etc. What
-           * happens if a single conversation gets expanded? Conversation sees influx
-           * of new posts and compensates for them appearing above to keep old items
-           * in screen. Next, timeline sees that Conversation changed height and ALSO
-           * compensates for that changed height. We get double the compensation and
-           * result ends up being all wrong, we scrolled way past the conversation.
-           *
-           * Easy, just don't compensate in Timeline, right? Wrong. We still have two
-           * cases where we do want compensation in Timeline - all the cases that
-           * aren't handled by Conversation. Namely:
-           * - Change in amount of Conversations
-           * - Change in height of freshly-rendered Conversations.
-           *
-           * First one is simple. We scrolled down and made a new post - it appeared
-           * at the top but we don't want screen to scroll.
-           *
-           * Second one is tricky. Here's a real situation:
-           * 1. We scroll down in Timeline.
-           * 2. Open a thread (navigate to it, not expand!)
-           * 3. Press "back".
-           * Now we have a situation: vue-router restored our scroll position but
-           * since Timeline was removed and re-created its heightChart is full of
-           * fake placeholders. This naturally means our actual scroll position is
-           * all wrong. TODO: Store heightchart in timelines store?
-           * But it gets worse - when you start scrolling up elements begin getting
-           * their real heights back, and since there's no compensation timeline gets
-           * all jumpy! We can somewhat live with wrong scroll position but timeline
-           * being jumpy is unacceptable.
-           *
-           * TODO: Probably a good way to avoid it all is just to:
-           * - Don't do scroll compensation when nested
-           * - For expanded conversations use animated priority scrollTo
-           * something to do for Virtual Scrolling 2.2
-           *
-           * So, basically - if amount of elements changes, or amount of REAL elements
-           * changes - compensate anyway even if compensation is disabled.
-           */
           const isSticking = toValue(invertDirection)
             ? hasReachedBottom.value
             : hasReachedTop.value
-          const compensateBecauseLengthChange =
-            !isSticking && newVal.length !== oldVal.length
-          const newReal = newVal.filter(({ real }) => real).length
-          const oldReal = oldVal.filter(({ real }) => real).length
-          const compensateBecauseReal =
-            oldReal > 0 && newReal > 0 && oldReal !== newReal
-
-          if (
-            !(
-              compensation ||
-              compensateBecauseReal ||
-              compensateBecauseLengthChange
-            )
-          ) {
+          if (!compensation) {
             return 0
           }
 
@@ -354,7 +318,7 @@ export function useVirtualScrolling({
             if (newVal.length < oldVal.length) return 0
             return getShift(
               'expansion',
-              oldVal.filter((item) => checkVisible(item)),
+              oldVal.filter((item) => !item.visible && item.rendered),
               newVal,
               (list) =>
                 list.find(
@@ -369,7 +333,7 @@ export function useVirtualScrolling({
             if (newVal.length < oldVal.length) return 0
             const shift = getShift(
               'inverse',
-              oldVal.filter((item) => checkVisible(item)),
+              oldVal.filter((item) => !item.visible && item.rendered),
               newVal,
               (list) =>
                 list.findLast(({ top }) => top > bottomScrollBoundary.value) ??
