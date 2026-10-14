@@ -212,13 +212,13 @@ export function useVirtualScrolling({
   )
 
   const heightChartGrouped = computed(() => {
-    const chart = enabled.value ? heightChartVisibility : heightChart
+    const chart = heightChartVisibility
     // Group invisible items into spacers
     return chart.value.reduce((acc, heightChartItem, index) => {
       const { suspendable, rendered, visible, height, top, id } = heightChartItem
-      const present = rendered || !suspendable
+      const present = rendered || !suspendable || !enabled.value
       if (present) {
-        return [...acc, { type: 'item', height, top, id, visible }]
+        return [...acc, { type: 'item', height, top, id, visible, rendered, present }]
       } else {
         // Reusing previous item if possible
         const previousItem = acc[acc.length - 1]
@@ -252,7 +252,7 @@ export function useVirtualScrolling({
 
   // ## Scroll compensation
   watch(
-    heightChart,
+    heightChartVisibility,
     async (newVal, oldVal) => {
       if (newVal.length === 0 && oldVal.length === 0) return 0
       const explosion = oldVal.length === 0 && newVal.length !== 0
