@@ -148,25 +148,6 @@
             </template>
           </button>
         </div>
-        <teleport to="#modal">
-          <MuteConfirm
-            ref="confirmConversation"
-            type="conversation"
-            :status="status"
-            :user="user"
-          />
-          <MuteConfirm
-            ref="confirmDomain"
-            type="domain"
-            :status="status"
-            :user="user"
-          />
-          <UserTimedFilterModal
-            ref="confirmUser"
-            :is-mute="true"
-            :user="user"
-          />
-        </teleport>
       </div>
     </template>
   </Popover>
@@ -179,6 +160,25 @@
     :hide-label="hideLabel"
     v-bind="$attrs"
   />
+  <teleport to="#modal">
+    <MuteConfirm
+      ref="confirmConversation"
+      type="conversation"
+      :status="status"
+      :user="user"
+    />
+    <MuteConfirm
+      ref="confirmDomain"
+      type="domain"
+      :status="status"
+      :user="user"
+    />
+    <UserTimedFilterModal
+      ref="confirmUser"
+      :is-mute="true"
+      :user="user"
+    />
+  </teleport>
 </template>
 
 <script src="./action_button_container.js" />
