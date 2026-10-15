@@ -48,7 +48,6 @@
           :class="{ '-expanded': showTimelines }"
           id="nav-timelines-list"
           :aria-label="$t('nav.timelines')"
-          :aria-expanded="showTimelines ? 'true' : 'false'"
           role="group"
         >
           <div class="timelines">
@@ -92,7 +91,6 @@
           :class="{ '-expanded': showLists }"
           id="nav-lists-list"
           :aria-label="$t('nav.lists')"
-          :aria-expanded="showLists ? 'true' : 'false'"
           role="group"
         >
           <ListsMenuContent
@@ -131,7 +129,6 @@
           class="timelines-background menu-item-collapsible"
           :class="{ '-expanded': showBookmarkFolders }"
           :aria-label="$t('nav.bookmark_folders')"
-          :aria-expanded="showBookmarkFolders ? 'true' : 'false'"
           id="nav-bookmark-folders-list"
           role="group"
         >
