@@ -29,7 +29,7 @@ const StatusLink = {
       if (!this.link) {
         this.$emit('navigate', this.statusId)
       }
-    }
+    },
   },
   computed: {
     destination() {

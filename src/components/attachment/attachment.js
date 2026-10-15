@@ -232,11 +232,6 @@ const Attachment = {
       const height = image.naturalHeight
       this.$emit('naturalSizeLoad', { id: this.attachment.id, width, height })
     },
-    onLinkClick(e) {
-      if (e.pointerType !== '') {
-
-      }
-    }
   },
 }
 
