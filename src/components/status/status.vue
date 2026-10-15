@@ -104,7 +104,6 @@
           class="activity-avatar"
           :user-id="user.id"
           overlay-centers
-          link
         >
           <UserAvatar
             class="post-avatar"
@@ -193,7 +192,7 @@
                 scope="global"
               >
                 <template #replyToWithIcon>
-                  <StatusPopover
+                  <StatusLink
                     v-if="!isPreview"
                     class="reply-to-popover"
                     :class="{ '-strikethrough': !mainStatus.parent_visible }"
@@ -201,10 +200,10 @@
                     :link="isPage"
                     @navigate="$emit('requestFocus', mainStatus.parent_visible && mainStatus.in_reply_to_status_id)"
                   >
-                      <i18n-t
-                        keypath="status.reply_to_with_icon"
-                        scope="global"
-                      >
+                    <i18n-t
+                      keypath="status.reply_to_with_icon"
+                      scope="global"
+                    >
                       <template #icon>
                         <FAIcon
                           class="fa-scale-110"
@@ -220,7 +219,7 @@
                         </span>
                       </template>
                     </i18n-t>
-                  </StatusPopover>
+                  </StatusLink>
 
                   <span
                     v-else
@@ -338,14 +337,14 @@
                 :key="reply.id"
                 :aria-label="reply.name"
               >
-                <StatusPopover
+                <StatusLink
                   :status-id="reply.id"
                   :link="isPage"
                   class="reply-link"
                   @navigate="$emit('requestFocus', reply.id)"
                 >
                   {{ reply.name }}
-                </StatusPopover>
+                </StatusLink>
                 {{ ' ' }}
               </li>
             </ol>

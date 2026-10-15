@@ -1,0 +1,8 @@
+.StatusLink {
+  &.-link {
+    /* Let <a> styles take over */
+    &, &:hover, &:focus, &:focus-visible {
+      text-decoration: none;
+    }
+  }
+}

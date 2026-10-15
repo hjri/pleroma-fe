@@ -4,9 +4,8 @@
     popover-class="popover-default user-popover"
     :overlay-centers-selector="overlayCentersSelector || '.user-info .Avatar'"
     :overlay-centers="overlayCenters && userPopoverOverlay"
-    :link="link"
-    :href="link ? href : undefined"
     aria-haspopup="dialog"
+    :aria-label="$t('user_card.popover_open')"
     v-bind="$attrs"
   >
     <template #trigger>

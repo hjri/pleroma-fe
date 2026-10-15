@@ -54,9 +54,6 @@ const Popover = {
     // Use styled button (to avoid nested buttons)
     normalButton: Boolean,
 
-    // Use <a> instead of <button>
-    link: Boolean,
-
     // Don't put button classes on trigger
     menuitem: Boolean,
 
@@ -140,7 +137,7 @@ const Popover = {
       }
     },
     triggerClass() {
-      if (this.link || this.menuitem) {
+      if (this.menuitem) {
         return ''
       } else if (this.normalButton) {
         return 'button-default btn'
@@ -463,7 +460,6 @@ const Popover = {
         if (e.shiftKey) return
         if (e.metaKey) return
         if (e.button > 0) return
-        e.preventDefault()
         if (this.hidden) {
           this.showPopover()
         } else {

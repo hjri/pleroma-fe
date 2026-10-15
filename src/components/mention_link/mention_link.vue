@@ -11,36 +11,47 @@
     />
     <UserPopover
       v-else
+      class="new"
+      :class="{ '-no-link-click': shouldShowTooltip }"
       :user-id="user.id"
       :disabled="!shouldShowTooltip"
       v-bind="popoverAttrs"
-      link
-      @click="onClick"
     >
-      <UserAvatar
-        v-if="shouldShowAvatar"
-        class="mention-avatar"
-        :user-id="user.id"
-      /><span
-        class="shortName"
-      >@<span
-        class="userName"
-        v-html="userName"
-      /><span
-        v-if="shouldShowFullUserName"
-        class="serverName"
-        :class="{ '-faded': shouldFadeDomain }"
-        v-html="'@' + serverName"
-      /><UnicodeDomainIndicator
-        v-if="shouldShowFullUserName"
-        :user="user"
-      />
-      </span>
-      <span
-        v-if="isYou && shouldShowYous"
-        :class="{ '-you': shouldBoldenYou }"
-      > {{ ' ' + $t('status.you') }}</span>
-      <!-- eslint-enable vue/no-v-html -->
+      <router-link
+        :to="link"
+        custom
+        v-slot="{ href, navigate }"
+      >
+        <a
+          :href="href"
+          @click.left.exact.prevent="e => onClick(e, navigate)"
+          :aria-label="$t('user_card.open_profile')"
+        >
+          <UserAvatar
+            v-if="shouldShowAvatar"
+            class="mention-avatar"
+            :user-id="user.id"
+          /><span
+            class="shortName"
+          >@<span
+            class="userName"
+            v-html="userName"
+          /><span
+            v-if="shouldShowFullUserName"
+            class="serverName"
+            :class="{ '-faded': shouldFadeDomain }"
+            v-html="'@' + serverName"
+          /><UnicodeDomainIndicator
+            v-if="shouldShowFullUserName"
+            :user="user"
+          />
+          </span>
+          <span
+            v-if="isYou && shouldShowYous"
+            :class="{ '-you': shouldBoldenYou }"
+          > {{ ' ' + $t('status.you') }}</span>
+        </a>
+      </router-link>
     </UserPopover>
     <span
       v-if="user"

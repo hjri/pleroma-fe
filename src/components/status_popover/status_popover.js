@@ -11,9 +11,8 @@ const StatusPopover = {
   name: 'StatusPopover',
   props: {
     statusId: String,
-    link: Boolean,
   },
-  emits: ['navigate'],
+  emits: ['click'],
   data() {
     return {
       error: false,
@@ -23,17 +22,14 @@ const StatusPopover = {
     status() {
       return useStatusesStore().allStatuses.get(this.statusId)
     },
-    statusLink() {
-      return this.$router.resolve({
-        name: 'conversation',
-        params: { statusId: this.statusId },
-      }).href
-    },
   },
   components: {
     Popover,
   },
   methods: {
+    onClick(e) {
+      this.$emit('click', e)
+    },
     enter() {
       if (!this.status) {
         if (!this.statusId) {
@@ -44,16 +40,6 @@ const StatusPopover = {
           .fetchStatus(this.statusId)
           .then(() => (this.error = false))
           .catch(() => (this.error = true))
-      }
-    },
-    navigate() {
-      if (this.link) {
-        this.$router.push({
-          name: 'conversation',
-          params: { statusId: this.statusId },
-        })
-      } else {
-        this.$emit('navigate', this.statusId)
       }
     },
   },

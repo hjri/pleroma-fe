@@ -4,9 +4,16 @@
   display: inline;
   word-break: normal;
 
-  & .new,
-  & .original {
+  .new,
+  .original {
     display: inline;
+  }
+
+  .new {
+    /* Let <a> styles take over */
+    &, &:hover, &:focus, &:focus-visible {
+      text-decoration: none;
+    }
   }
 
   .mention-avatar {

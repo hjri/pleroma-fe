@@ -48,7 +48,6 @@
         <UserPopover
           :user-id="notification.from_profile.id"
           overlay-centers
-          link
         >
           <UserAvatar
             class="post-avatar"

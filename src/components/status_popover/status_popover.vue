@@ -3,13 +3,12 @@
     ref="popover"
     popover-class="popover-default status-popover"
     trigger="hover"
-    :link="link"
-    :href="link ? statusLink : undefined"
     :stay-on-click="true"
     :bound-to="{ x: 'container' }"
     aria-haspopup="dialog"
+    :aria-label="$t('status.open_popover')"
     @show="enter"
-    @click.prevent="navigate"
+    @click="onClick"
     v-bind="$attrs"
   >
     <template #trigger>
