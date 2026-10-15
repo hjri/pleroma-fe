@@ -62,7 +62,6 @@
           <div
             :id="`popup-menu-${randomSeed}`"
             class="dropdown-menu extra-action-buttons"
-            role="menu"
           >
             <div
               v-for="button in extraButtons"

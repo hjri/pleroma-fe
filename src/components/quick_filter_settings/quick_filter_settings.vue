@@ -7,20 +7,17 @@
     v-bind="triggerAttrs"
   >
     <template #content>
-      <div
-        class="dropdown-menu"
-        role="menu"
-      >
+      <div class="dropdown-menu">
         <div
           v-if="loggedIn"
-          role="group"
+          role="radiogroup"
         >
           <div class="menu-item dropdown-item -icon">
             <button
               v-if="!conversation"
               class="main-button"
               :aria-checked="replyVisibilityAll"
-              role="menuitemradio"
+              role="radio"
               @click="replyVisibilityAll = true"
             >
               <span
@@ -37,7 +34,7 @@
             <button
               class="main-button"
               :aria-checked="replyVisibilityFollowing"
-              role="menuitemradio"
+              role="radio"
               @click="replyVisibilityFollowing = true"
             >
               <span
@@ -54,7 +51,7 @@
             <button
               class="main-button"
               :aria-checked="replyVisibilitySelf"
-              role="menuitemradio"
+              role="radio"
               @click="replyVisibilitySelf = true"
             >
               <span
@@ -73,7 +70,7 @@
         <div class="menu-item dropdown-item -icon">
           <button
             class="main-button"
-            role="menuitemcheckbox"
+            role="checkbox"
             :aria-checked="muteBotStatuses"
             @click="muteBotStatuses = !muteBotStatuses"
           >
@@ -87,7 +84,7 @@
         <div class="menu-item dropdown-item -icon">
           <button
             class="main-button"
-            role="menuitemcheckbox"
+            role="checkbox"
             :aria-checked="muteSensitiveStatuses"
             @click="muteSensitiveStatuses = !muteSensitiveStatuses"
           >
@@ -101,7 +98,7 @@
         <div class="menu-item dropdown-item -icon">
           <button
             class="main-button"
-            role="menuitemcheckbox"
+            role="checkbox"
             :aria-checked="hideMedia"
             @click="hideMedia = !hideMedia"
           >
@@ -115,7 +112,7 @@
         <div class="menu-item dropdown-item -icon">
           <button
             class="main-button"
-            role="menuitemcheckbox"
+            role="checkbox"
             :aria-checked="hideMutedPosts"
             @click="hideMutedPosts = !hideMutedPosts"
           >
@@ -129,7 +126,6 @@
         <div class="menu-item dropdown-item -icon">
           <button
             class="main-button"
-            role="menuitem"
             @click="openTab('filtering')"
           >
             <FAIcon

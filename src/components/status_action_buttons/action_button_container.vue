@@ -44,7 +44,6 @@
         v-if="button.name === 'changeScope'"
         :id="`popup-menu-scope-${randomSeed}`"
         class="dropdown-menu"
-        role="menu"
       >
         <div
           v-for="visibility in availableScopes"
@@ -97,7 +96,6 @@
         v-if="button.name === 'mute'"
         :id="`popup-menu-${randomSeed}`"
         class="dropdown-menu"
-        role="menu"
       >
         <div class="menu-item dropdown-item extra-action -icon">
           <button

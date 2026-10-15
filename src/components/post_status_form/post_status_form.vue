@@ -348,14 +348,8 @@
               />
             </template>
             <template #content="{close}">
-              <div
-                class="dropdown-menu"
-                role="menu"
-              >
-                <div
-                  class="menu-item dropdown-item"
-                  role="menuitem"
-                >
+              <div class="dropdown-menu">
+                <div class="menu-item dropdown-item">
                   <button
                     v-if="!hideDraft || !disableDraft"
                     class="main-button"

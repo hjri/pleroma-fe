@@ -11,7 +11,7 @@
       normal-button
     >
       <template #content>
-        <div role="menu" class="dropdown-menu">
+        <div class="dropdown-menu">
           <template v-for="(entry, index) in entries">
             <hr
               v-if="entry === 'separator'"
@@ -22,7 +22,6 @@
             <div
               v-else
               :key="entry.label"
-              role="menuitem"
               class="menu-item dropdown-item"
               :class="entry.checkbox ? '-icon' : '-icon-space'"
             >

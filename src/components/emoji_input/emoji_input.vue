@@ -40,14 +40,13 @@
               :id="suggestionListId"
               ref="panel-body"
               class="autocomplete-panel-body"
-              role="menu"
             >
               <div
                 v-for="(suggestion, index) in suggestions"
                 :id="suggestionItemId(index)"
                 :key="index"
                 class="menu-item autocomplete-item"
-                role="menuitemradio"
+                role="radio"
                 :class="{ '-active': index === highlighted }"
                 :aria-label="autoCompleteItemLabel(suggestion)"
                 :aria-checked="index === highlighted"
