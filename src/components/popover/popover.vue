@@ -6,6 +6,7 @@
     :class="triggerClass"
     :aria-haspopup="ariaHasPopup"
     :aria-owns="hidden ? undefined : `${idPrefix}content`"
+    :aria-describedby="tooltip ? `${idPrefix}content` : undefined"
     :aria-expanded="!hidden ? 'true' : 'false'"
     :aria-label="label ?? $attrs['aria-label']"
     @mouseenter="onMouseenter"
