@@ -1771,6 +1771,7 @@
     "move_up": "Shift attachment left",
     "move_down": "Shift attachment right",
     "nsfw_placeholder": "Sensitive attachment placeholder",
+    "nsfw_prefix": "Sensitive: ",
     "open_gallery": "Open gallery",
     "thread_hide": "Hide this thread",
     "thread_show": "Show this thread",
