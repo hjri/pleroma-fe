@@ -1708,7 +1708,6 @@
     "pinned": "Pinned",
     "bookmark": "Bookmark",
     "unbookmark": "Unbookmark",
-    "popover_open": "Open status popover",
     "delete_confirm": "Do you really want to delete this status?",
     "delete_confirm_title": "Delete confirmation",
     "delete_confirm_accept_button": "Delete",
@@ -1798,7 +1797,6 @@
     "mark_as_non-sensitive": "Non-sensitive"
   },
   "user_card": {
-    "popover_open": "Open user popover",
     "banner": "User banner image",
     "avatar": "User avatar",
     "edit": "Edit profile",

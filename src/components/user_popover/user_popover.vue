@@ -5,7 +5,6 @@
     :overlay-centers-selector="overlayCentersSelector || '.user-info .Avatar'"
     :overlay-centers="overlayCenters && userPopoverOverlay"
     aria-haspopup="dialog"
-    :aria-label="$t('user_card.popover_open')"
     v-bind="$attrs"
   >
     <template #trigger>

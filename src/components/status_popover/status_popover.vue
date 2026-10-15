@@ -6,7 +6,6 @@
     :stay-on-click="true"
     :bound-to="{ x: 'container' }"
     aria-haspopup="dialog"
-    :aria-label="$t('status.open_popover')"
     @show="enter"
     @click="onClick"
     v-bind="$attrs"
