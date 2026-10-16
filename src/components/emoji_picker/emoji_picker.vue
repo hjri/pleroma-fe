@@ -19,6 +19,7 @@
       <div
         class="heading"
         role="presentation"
+        ref="content"
       >
         <div
           class="emoji-search"

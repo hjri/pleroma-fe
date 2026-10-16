@@ -156,7 +156,7 @@ const EmojiPicker = {
       e.currentTarget.scrollLeft += e.deltaY + e.deltaX
     },
     updateEmojiSize() {
-      const css = window.getComputedStyle(this.$refs.popover.$el)
+      const css = window.getComputedStyle(this.$refs.content)
       const fontSize = css.getPropertyValue('font-size') || '1rem'
       const emojiSize = css.getPropertyValue('--emojiSize') || '2.2rem'
 
