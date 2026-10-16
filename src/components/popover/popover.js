@@ -57,6 +57,9 @@ const Popover = {
     // Use <a> instead of <button>
     link: Boolean,
 
+    // Use <router-link> instead of <button>
+    routerLink: Boolean,
+
     // Don't put button classes on trigger
     menuitem: Boolean,
 
@@ -140,7 +143,7 @@ const Popover = {
       }
     },
     triggerClass() {
-      if (this.link || this.menuitem) {
+      if (this.menuitem) {
         return ''
       } else if (this.normalButton) {
         return 'button-default btn'
@@ -156,8 +159,8 @@ const Popover = {
     },
     containerBoundingClientRect() {
       const container = this.boundToSelector
-        ? this.$el.closest(this.boundToSelector)
-        : this.$el.offsetParent
+        ? this.$refs.trigger.closest(this.boundToSelector)
+        : this.$refs.trigger.offsetParent
       return container.getBoundingClientRect()
     },
     updateStyles() {
@@ -457,25 +460,35 @@ const Popover = {
       triggerer.focus()
       this.$emit('reverseTabContentFocus')
     },
-    onClick(e) {
-      if (this.trigger === 'click') {
-        if (e.ctrlKey) return
-        if (e.shiftKey) return
-        if (e.metaKey) return
-        if (e.button > 0) return
+    onClick(e, navigate) {
+      const modifierKeysHeld = e.ctrlKey || e.altKey || e.shiftKey || e.metaKey
+      const leftButton = e.button === 0
+      const singleClick = e.detail <= 1
+
+      if (this.trigger === 'click' && !modifierKeysHeld && leftButton && singleClick) {
         e.preventDefault()
         if (this.hidden) {
           this.showPopover()
         } else {
           this.hidePopover()
         }
+        return
       }
+
+      // Router-link navigation
+      if (navigate) {
+        e.preventDefault()
+        navigate()
+        return
+      }
+
+      // Otherwise let browser navigate the link
     },
     onClickOutside(e) {
       if (this.disableClickOutside) return
       if (this.hidden) return
       if (this.$refs.content?.contains(e.target)) return
-      if (this.$el.contains(e.target)) return
+      if (this.$refs.trigger.contains(e.target)) return
       if (this.childrenShown.size > 0) return
       this.hidePopover()
       if (this.parentPopover) this.parentPopover.onClickOutside(e)

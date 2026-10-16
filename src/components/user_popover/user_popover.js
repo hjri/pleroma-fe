@@ -3,6 +3,7 @@ import { mapState } from 'pinia'
 import Popover from 'src/components/popover/popover.vue'
 import UserCard from 'src/components/user_card/user_card.vue'
 
+import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useUsersStore } from 'src/stores/users.js'
 
@@ -26,15 +27,12 @@ const UserPopover = {
     user() {
       return this.userObject ?? useUsersStore().findUser(this.userId)
     },
-    href() {
-      if (!this.user) return ''
-      return this.$router.resolve(
-        generateProfileLink(
-          this.user.id,
-          this.user.screen_name,
-          useInstanceStore().restrictedNicknames,
-        ),
-      ).href
+    to() {
+      return generateProfileLink(
+        this.user.id,
+        this.user.screen_name,
+        useInstanceStore().restrictedNicknames,
+      )
     },
     ...mapState(useMergedConfigStore, {
       userPopoverAvatarAction: (state) =>

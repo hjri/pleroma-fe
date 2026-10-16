@@ -151,7 +151,8 @@
       "private": "Followers-only",
       "public": "Public",
       "unlisted": "Unlisted"
-    }
+    },
+    "popover_link_a11y": "Popover link. Clicking the link will open the popover. Double-click or Shift-click will navigate the link."
   },
   "image_cropper": {
     "crop_picture": "Crop picture",
