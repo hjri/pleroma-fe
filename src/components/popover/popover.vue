@@ -1,7 +1,8 @@
 <template>
-  <button
+  <component
     ref="trigger"
-    type="button"
+    :is="link ? 'a' : 'button'"
+    :type="link ? undefined : 'button'"
     class="popover-trigger-button"
     :class="triggerClass"
     :aria-haspopup="ariaHasPopup"
@@ -58,7 +59,7 @@
         </div>
       </transition>
     </teleport>
-  </button>
+  </component>
 </template>
 
 <script src="./popover.js" />

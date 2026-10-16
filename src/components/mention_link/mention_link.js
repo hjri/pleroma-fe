@@ -51,15 +51,13 @@ const MentionLink = {
     }
   },
   methods: {
-    onClick(e, navigate) {
-      // Mouse, Pen, Touch all have respective pointerType, other
-      // AT possibly might have vendor-specific strings but
-      // interacting with Tab and Enter however gives empty string
-      if (!this.shouldShowTooltip || e.pointerType === '') {
-        // Don't open popover as we're about to navigate
-        e.stopPropagation()
-        navigate()
-      }
+    onClick() {
+      if (this.shouldShowTooltip) return
+      const link = generateProfileLink(
+        this.userId || this.user.id,
+        this.userScreenName || this.user.screen_name,
+      )
+      this.$router.push(link)
     },
     handleSelection() {
       if (this.$refs.full) {
@@ -78,12 +76,6 @@ const MentionLink = {
   computed: {
     user() {
       return this.url ? useUsersStore().findUserByUrl(this.url) : null
-    },
-    link() {
-      return generateProfileLink(
-        this.userId || this.user.id,
-        this.userScreenName || this.user.screen_name,
-      )
     },
     isYou() {
       if (!this.currentUser) return false

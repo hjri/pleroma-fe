@@ -4,6 +4,8 @@
     popover-class="popover-default user-popover"
     :overlay-centers-selector="overlayCentersSelector || '.user-info .Avatar'"
     :overlay-centers="overlayCenters && userPopoverOverlay"
+    :link="link"
+    :href="link ? href : undefined"
     aria-haspopup="dialog"
     v-bind="$attrs"
   >
