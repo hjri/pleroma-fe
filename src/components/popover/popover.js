@@ -465,7 +465,12 @@ const Popover = {
       const leftButton = e.button === 0
       const singleClick = e.detail <= 1
 
-      if (this.trigger === 'click' && !modifierKeysHeld && leftButton && singleClick) {
+      if (
+        this.trigger === 'click' &&
+        !modifierKeysHeld &&
+        leftButton &&
+        singleClick
+      ) {
         e.preventDefault()
         if (this.hidden) {
           this.showPopover()
