@@ -194,7 +194,10 @@ export default {
     const isLinearView = computed(() => displayStyle.value !== 'tree')
     const linearElement = useTemplateRef('linear')
     const linearScrollCompensation = computed(
-      () => virtualScrollingEnabled.value && isLinearView.value && scrollCompensation.value,
+      () =>
+        virtualScrollingEnabled.value &&
+        isLinearView.value &&
+        scrollCompensation.value,
     )
     const {
       heightChart: heightChartLinear,
@@ -256,7 +259,10 @@ export default {
     )
     const ancestorsElement = useTemplateRef('ancestors')
     const treeScrollCompensation = computed(
-      () => virtualScrollingEnabled.value && isTreeView.value && scrollCompensation.value,
+      () =>
+        virtualScrollingEnabled.value &&
+        isTreeView.value &&
+        scrollCompensation.value,
     )
     const {
       heightChart: heightChartAncestors,

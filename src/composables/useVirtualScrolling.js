@@ -1,5 +1,5 @@
-import { debounce, first, last, throttle } from 'lodash-es'
-import { computed, nextTick, onUnmounted, ref, toValue, watch } from 'vue'
+import { first, last, throttle } from 'lodash-es'
+import { computed, nextTick, ref, toValue, watch } from 'vue'
 
 export function useVirtualScrolling({
   // For debugging
@@ -210,10 +210,14 @@ export function useVirtualScrolling({
     const chart = heightChartVisibility
     // Group invisible items into spacers
     return chart.value.reduce((acc, heightChartItem, index) => {
-      const { suspendable, rendered, visible, height, top, id } = heightChartItem
+      const { suspendable, rendered, visible, height, top, id } =
+        heightChartItem
       const present = rendered || !suspendable || !enabled.value
       if (present) {
-        return [...acc, { type: 'item', height, top, id, visible, rendered, present }]
+        return [
+          ...acc,
+          { type: 'item', height, top, id, visible, rendered, present },
+        ]
       } else {
         // Reusing previous item if possible
         const previousItem = acc[acc.length - 1]
