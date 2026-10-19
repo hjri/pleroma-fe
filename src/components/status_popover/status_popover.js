@@ -23,11 +23,11 @@ const StatusPopover = {
     status() {
       return useStatusesStore().allStatuses.get(this.statusId)
     },
-    statusLink() {
-      return this.$router.resolve({
+    destination() {
+      return {
         name: 'conversation',
         params: { statusId: this.statusId },
-      }).href
+      }
     },
   },
   components: {
@@ -47,12 +47,7 @@ const StatusPopover = {
       }
     },
     navigate() {
-      if (this.link) {
-        this.$router.push({
-          name: 'conversation',
-          params: { statusId: this.statusId },
-        })
-      } else {
+      if (!this.link) {
         this.$emit('navigate', this.statusId)
       }
     },
