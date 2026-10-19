@@ -79,7 +79,6 @@
           unstyled
           class="expiry-unit"
           :aria-label="$t('polls.expiry_unit')"
-          @change="expiryAmountChange"
         >
           <option
             v-for="unit in expiryUnits"

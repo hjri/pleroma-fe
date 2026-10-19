@@ -55,10 +55,14 @@ export default {
       get() {
         return pollFallback(this.modelValue, 'expiryUnit')
       },
+      // the unit and the amount it allows in one update: a second one in
+      // the same tick would start from the old unit (the prop catches up
+      // only on the parent's next render)
       set(newVal) {
         this.$emit('update:modelValue', {
           ...this.modelValue,
           expiryUnit: newVal,
+          expiryAmount: this.clampExpiry(newVal, this.expiryAmount),
         })
       },
     },
@@ -81,20 +85,10 @@ export default {
       )
     },
     minExpirationInCurrentUnit() {
-      return Math.ceil(
-        this.convertExpiryToUnit(
-          this.expiryUnit,
-          this.pollLimits.min_expiration,
-        ),
-      )
+      return this.expiryLimits(this.expiryUnit).min
     },
     maxExpirationInCurrentUnit() {
-      return Math.floor(
-        this.convertExpiryToUnit(
-          this.expiryUnit,
-          this.pollLimits.max_expiration,
-        ),
-      )
+      return this.expiryLimits(this.expiryUnit).max
     },
   },
   methods: {
@@ -150,15 +144,23 @@ export default {
     convertExpiryFromUnit(unit, amount) {
       return DateUtils.unitToSeconds(unit, amount)
     },
-    expiryAmountChange() {
-      this.expiryAmount = Math.max(
-        this.minExpirationInCurrentUnit,
-        this.expiryAmount,
-      )
-      this.expiryAmount = Math.min(
-        this.maxExpirationInCurrentUnit,
-        this.expiryAmount,
-      )
+    expiryLimits(unit) {
+      return {
+        min: Math.ceil(
+          this.convertExpiryToUnit(unit, this.pollLimits.min_expiration),
+        ),
+        max: Math.floor(
+          this.convertExpiryToUnit(unit, this.pollLimits.max_expiration),
+        ),
+      }
+    },
+    clampExpiry(unit, amount) {
+      const { min, max } = this.expiryLimits(unit)
+      return Math.min(max, Math.max(min, Number(amount)))
+    },
+    // from the field itself: the prop can still hold the value before
+    expiryAmountChange(event) {
+      this.expiryAmount = this.clampExpiry(this.expiryUnit, event.target.value)
     },
   },
 }

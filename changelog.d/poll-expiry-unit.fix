@@ -1,0 +1,1 @@
+Polls set to hours or days no longer end after minutes: the unit went back to minutes while the field still showed the chosen one.
