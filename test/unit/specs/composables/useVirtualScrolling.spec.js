@@ -55,7 +55,13 @@ describe('useVirtualScrolling', () => {
       top: index * 100,
       height: 100,
       type: 'item',
+      present: true,
+      rendered: true,
+      visible: true,
     }))
+    items[8].visible = false
+    items[9].visible = false
+    items[10].visible = false
     const spacer = {
       type: 'spacer',
       top: 1100,
@@ -84,6 +90,7 @@ describe('useVirtualScrolling', () => {
       list,
       body: ref(body),
       offset: 0,
+      buffer: 10,
       getPlaceholderHeight: () => ref(100),
       scrollPositionInstance,
     })
@@ -94,7 +101,13 @@ describe('useVirtualScrolling', () => {
       top: index * 100,
       height: 100,
       type: 'item',
+      present: true,
+      rendered: true,
+      visible: true,
     }))
+    for(let i = 8; i < 18; i++) {
+      items[i].visible = false
+    }
     const spacerOld = {
       type: 'spacer',
       top: 1800,
@@ -155,7 +168,16 @@ describe('useVirtualScrolling', () => {
       top: (index + 2) * 100,
       height: 100,
       type: 'item',
+      present: true,
+      rendered: true,
+      visible: true,
     }))
+    for(let i = 0; i < 3; i++) {
+      items[i].visible = false
+    }
+    for(let i = 11; i < 14; i++) {
+      items[i].visible = false
+    }
     const spacer2 = {
       type: 'spacer',
       top: 1600,
@@ -218,13 +240,25 @@ describe('useVirtualScrolling', () => {
       top: (index + 7) * 100,
       height: 100,
       type: 'item',
+      present: true,
+      rendered: true,
+      visible: true,
     }))
+    for(let i = 0; i < 3; i++) {
+      itemsNew[i].visible = false
+    }
     const itemsOld = [...new Array(6)].map((i, index) => ({
       id: `${index}ia`,
       top: index * 200 + 1000,
       height: 200,
       type: 'item',
+      present: true,
+      rendered: true,
+      visible: true,
     }))
+    for(let i = 4; i < 6; i++) {
+      itemsOld[i].visible = false
+    }
     const spacer2 = {
       type: 'spacer',
       top: 2200,
@@ -289,7 +323,13 @@ describe('useVirtualScrolling', () => {
       top: index * 200,
       height: 200,
       type: 'item',
+      present: true,
+      rendered: true,
+      visible: true,
     }))
+    for(let i = 4; i < 6; i++) {
+      items[i].visible = false
+    }
     const spacer = {
       type: 'spacer',
       top: 1200,
@@ -351,6 +391,9 @@ describe('useVirtualScrolling', () => {
         top: 400,
         height: 200,
         type: 'item',
+        present: true,
+        rendered: false,
+        visible: false,
       },
     ]
     const spacer2 = {
@@ -365,7 +408,16 @@ describe('useVirtualScrolling', () => {
       top: (index + 8) * 200,
       height: 200,
       type: 'item',
+      present: true,
+      rendered: true,
+      visible: true,
     }))
+    for(let i = 0; i < 2; i++) {
+      items2[i].visible = false
+    }
+    for(let i = 6; i < 8; i++) {
+      items2[i].visible = false
+    }
     const spacer3 = {
       type: 'spacer',
       top: 3200,
