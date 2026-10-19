@@ -6,13 +6,14 @@
     <li
       class="NavigationEntry menu-item"
       :class="{ '-active': isActive }"
-      v-bind="$attrs"
+      :aria-label="item.labelRaw ?? $t(item.label)"
     >
       <component
         :is="routeTo ? 'a' : 'button'"
         class="main-link"
         :href="href"
         @click="navigate"
+        v-bind="$attrs"
       >
         <span>
           <FAIcon

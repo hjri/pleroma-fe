@@ -1,9 +1,13 @@
 <template>
-  <div class="AccountActions">
+  <div
+    class="AccountActions"
+    role="presentation"
+  >
     <Popover
       trigger="click"
       placement="bottom"
       remove-padding
+      :aria-label="$t('user_card.other')"
     >
       <template #content>
         <div class="dropdown-menu">
@@ -30,7 +34,7 @@
                 {{ $t('user_card.show_repeats') }}
               </button>
             </div>
-            <div
+            <hr
               role="separator"
               class="dropdown-divider"
             />
@@ -85,12 +89,10 @@
         </div>
       </template>
       <template #trigger>
-        <button class="button-unstyled ellipsis-button">
-          <FAIcon
-            class="icon"
-            icon="ellipsis-v"
-          />
-        </button>
+        <FAIcon
+          class="icon"
+          icon="ellipsis-v"
+        />
       </template>
     </Popover>
     <teleport to="#modal">
@@ -148,14 +150,3 @@
 </template>
 
 <script src="./account_actions.js"></script>
-
-<style lang="scss">
-.AccountActions {
-  .ellipsis-button {
-    width: 2.5em;
-    margin: -0.5em 0;
-    padding: 0.5em 0;
-    text-align: center;
-  }
-}
-</style>

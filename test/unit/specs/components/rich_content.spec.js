@@ -425,6 +425,7 @@ describe('RichContent', () => {
       '</span>',
       '</a>',
       '</span>',
+      ' ',
       '<span class="MentionLink mention-link">',
       '<a href="lol" class="original" target="_blank">',
       '<span>',

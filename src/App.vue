@@ -7,6 +7,7 @@
     <div
       id="app_bg_wrapper"
       class="app-bg-wrapper"
+      aria-hidden="true"
     />
     <MobileNav v-if="layoutType === 'mobile'" />
     <DesktopNav
@@ -19,8 +20,12 @@
       ref="appContentRef"
       class="app-layout container"
       :class="classes"
+      role="presentation"
     >
-      <div class="underlay" />
+      <div
+        class="underlay"
+        aria-hidden="true"
+      />
       <div
         id="sidebar"
         class="column -scrollable"
@@ -39,6 +44,7 @@
         id="main-scroller"
         class="column main"
         :class="{ '-full-height': isChats || isListEdit }"
+        :aria-label="$t('nav.content')"
       >
         <div
           v-if="!currentUser"

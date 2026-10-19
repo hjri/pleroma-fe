@@ -3,10 +3,12 @@
 .StatusActionButtons {
   .quick-action-buttons {
     display: grid;
-    margin-left: -0.5em;
-    grid-template-columns: repeat(auto-fill, minmax(3.75em, 10%));
+    margin: 0 -0.5em;
+    grid-template-columns: repeat(auto-fit, minmax(3.75em, 10%));
     grid-auto-flow: row dense;
     grid-auto-rows: 1fr;
+    justify-content: space-between;
+    justify-items: center;
     gap: 0.5em 0.1em;
   }
 
@@ -15,12 +17,6 @@
     z-index: 1;
     padding: 0.5em;
     margin: 0;
-  }
-
-  .quick-action.popover-wrapper {
-    button {
-      padding: 0
-    }
   }
 }
 // popover

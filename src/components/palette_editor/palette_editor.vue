@@ -1,7 +1,8 @@
 <template>
-  <div
+  <fieldset
     class="PaletteEditor"
     :class="{ '-compact': compact, '-apply': apply, '-mobile': mobile }"
+    v-bind="$attrs"
   >
     <div class="palette">
       <div
@@ -52,7 +53,7 @@
         {{ $t('settings.style.themes3.palette.apply') }}
       </button>
     </div>
-  </div>
+  </fieldset>
 </template>
 
 <script setup>
@@ -188,6 +189,8 @@ const updatePalette = (paletteKey, value) => {
   grid-template-rows: repeat(5, 1fr) auto;
   gap: 0.5em;
   align-items: baseline;
+  border: 0;
+  padding: 0;
 
   .buttons {
     margin-top: 0.5em;

@@ -18,8 +18,7 @@ const ThreadTree = {
   },
   emits: [
     'suspendableStateChange',
-    'goto',
-    'dive',
+    'requestFocus',
     'toggleExpanded',
     'toggleThreadDisplay',
     'showThreadRecursively',
@@ -50,9 +49,6 @@ const ThreadTree = {
     },
     threadShowing() {
       return this.threadDisplay.get(this.status.id) === 'showing'
-    },
-    canDive() {
-      return this.isExpanded
     },
   },
   methods: {

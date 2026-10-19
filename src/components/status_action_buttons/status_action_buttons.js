@@ -103,13 +103,6 @@ const StatusActionButtons = {
         chatView: !!this.inChatView,
       }
     },
-    triggerAttrs() {
-      return {
-        title: this.$t('status.more_actions'),
-        'aria-controls': `popup-menu-${this.randomSeed}`,
-        'aria-haspopup': 'menu',
-      }
-    },
   },
   methods: {
     doAction(button) {
@@ -134,6 +127,14 @@ const StatusActionButtons = {
         this.showingConfirmDialog = true
       } else {
         this.doActionReal(button)
+      }
+    },
+    quickButtonClass(button) {
+      return {
+        '-pin': this.showPin,
+        '-toggle': button.dropdown?.(),
+        '-with-extra': button.name === 'bookmark',
+        '-counter': button.counter,
       }
     },
     doActionReal(button) {

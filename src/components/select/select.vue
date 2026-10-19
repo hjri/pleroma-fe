@@ -1,12 +1,12 @@
 <template>
   <label
     class="Select input"
-    :class="{ disabled, unstyled }"
+    :class="[$attrs.class, { disabled, unstyled }]"
   >
     <select
       :disabled="disabled"
       :value="modelValue"
-      v-bind="$attrs"
+      v-bind="inputAttrs"
       @change="$emit('update:modelValue', $event.target.value)"
     >
       <slot />

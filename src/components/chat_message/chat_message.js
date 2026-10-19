@@ -36,14 +36,7 @@ library.add(faTimes, faEllipsisH, faCircleNotch, faReply, faStar, faRetweet)
 
 const ChatMessage = {
   name: 'ChatMessage',
-  props: [
-    'edited',
-    'noHeading',
-    'chatItem',
-    'hoveredMessageChain',
-    'focused',
-    'repliedTo',
-  ],
+  props: ['edited', 'chatItem', 'hoveredMessageChain', 'focused', 'repliedTo'],
   emits: ['hover', 'replyRequested', 'heightChange', 'suspendableStateChange'],
   data() {
     return {

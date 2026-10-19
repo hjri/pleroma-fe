@@ -139,6 +139,35 @@ body {
 a {
   text-decoration: none;
   color: var(--link);
+
+  &:focus,
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:not(.button-unstyled):focus-visible {
+    border-radius: var(--roundness);
+    outline: 2px solid var(--link);
+  }
+}
+
+
+.button-unstyled {
+  text-decoration: underline dotted var(--icon);
+
+  &:hover,
+  &:focus {
+    text-decoration: underline solid;
+  }
+
+  &:focus-visible {
+    border-radius: var(--roundness);
+    outline: 2px solid var(--text);
+  }
+}
+
+.underline-links a {
+  text-decoration: underline;
 }
 
 h4 {
@@ -176,7 +205,7 @@ i[class*="icon-"],
   color: var(--icon);
 }
 
-nav {
+header {
   z-index: var(--ZI_navbar);
   box-shadow: var(--shadow);
   box-sizing: border-box;
@@ -357,7 +386,7 @@ nav {
   }
 
   &.-mobile {
-    grid-template-columns: 100vw;
+    grid-template-columns: 100%;
     grid-template-areas: "content";
     padding: 0;
 
@@ -480,11 +509,6 @@ nav {
   cursor: pointer;
   box-sizing: content-box;
   color: inherit;
-
-  &.-link {
-    /* stylelint-disable-next-line declaration-no-important */
-    color: var(--link) !important;
-  }
 }
 
 label {
@@ -679,22 +703,19 @@ option {
   display: inline-flex;
   vertical-align: middle;
 
-  > *,
-  > * .button-default {
+  > .button-default {
     --_roundness-left: 0;
     --_roundness-right: 0;
 
     position: relative;
-  }
 
-  > *:first-child,
-  > *:first-child .button-default {
-    --_roundness-left: var(--roundness);
-  }
+    &:first-child {
+      --_roundness-left: var(--roundness);
+    }
 
-  > *:last-child,
-  > *:last-child .button-default {
-    --_roundness-right: var(--roundness);
+    &:last-child {
+      --_roundness-right: var(--roundness);
+    }
   }
 }
 

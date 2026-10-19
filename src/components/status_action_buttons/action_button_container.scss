@@ -1,0 +1,47 @@
+@use "../../mixins";
+
+.ActionButtonContainer {
+  .interactive-part,
+  &.interactive-part {
+    @include mixins.unfocused-style {
+      .focus-marker {
+        visibility: hidden;
+      }
+
+      .active-marker {
+        visibility: visible;
+      }
+    }
+
+    @include mixins.focused-style {
+      .focus-marker {
+        visibility: visible;
+      }
+
+      .active-marker {
+        visibility: hidden;
+      }
+    }
+
+    &:hover,
+    &.-active {
+      &.reply-button:not(.disabled) {
+        .svg-inline--fa {
+          color: var(--cBlue);
+        }
+      }
+
+      &.retweet-button:not(.disabled) {
+        .svg-inline--fa {
+          color: var(--cGreen);
+        }
+      }
+
+      &.favorite-button:not(.disabled) {
+        .svg-inline--fa {
+          color: var(--cOrange);
+        }
+      }
+    }
+  }
+}

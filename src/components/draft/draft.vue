@@ -49,6 +49,7 @@
           size="small"
           @play="$emit('mediaplay', attachment.id)"
           @pause="$emit('mediapause', attachment.id)"
+          :aria-label="$t('status.attachments')"
         />
         <div
           v-if="draft.poll?.options"
@@ -93,7 +94,7 @@
     <div class="actions">
       <button
         class="btn button-default"
-        :aria-expanded="editing"
+        :aria-expanded="editing ? 'true' : 'false'"
         @click.prevent.stop="toggleEditing"
       >
         {{ editing ? $t('drafts.save') : $t('drafts.continue') }}

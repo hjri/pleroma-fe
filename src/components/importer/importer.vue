@@ -5,6 +5,7 @@
         ref="input"
         class="input"
         type="file"
+        :title="$t('general.select_file')"
         @change="change"
       >
     </form>

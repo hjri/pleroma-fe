@@ -8,7 +8,7 @@
       class="button-unstyled nav-icon"
       :title="$t('nav.search')"
       type="button"
-      :aria-expanded="!hidden"
+      :aria-expanded="!hidden ? 'true' : 'false'"
       @click.prevent.stop="toggleHidden"
     >
       <FAIcon
@@ -24,6 +24,7 @@
         v-model="searchTerm"
         class="input search-bar-input"
         :placeholder="$t('nav.search')"
+        :title="$t('nav.search')"
         type="text"
         @keyup.enter="find(searchTerm)"
       >
@@ -42,7 +43,7 @@
         class="button-unstyled cancel-search"
         type="button"
         :title="$t('nav.search_close')"
-        :aria-expanded="!hidden"
+        :aria-expanded="!hidden ? 'true' : 'false'"
         @click.prevent.stop="toggleHidden"
       >
         <FAIcon

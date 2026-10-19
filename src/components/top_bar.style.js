@@ -1,6 +1,6 @@
 export default {
   name: 'TopBar',
-  selector: 'nav',
+  selector: '.topBar',
   validInnerComponents: [
     'Link',
     'Text',

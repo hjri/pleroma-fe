@@ -1,8 +1,9 @@
 <template>
-  <nav
+  <header
     id="nav"
-    class="DesktopNav"
+    class="DesktopNav topBar"
     :class="{ '-logoLeft': logoLeft }"
+    :aria-label="sitename"
     @click="scrollToTop()"
   >
     <div class="inner-nav">
@@ -10,6 +11,7 @@
         <router-link
           v-if="!hideSitename"
           class="site-name"
+          id="sitename"
           :to="{ name: 'root' }"
           active-class="home"
         >
@@ -38,15 +40,18 @@
         class="logo"
         :to="{ name: 'root' }"
         :style="logoBgStyle"
-        :title="sitename"
+        :title="$t('general.logo')"
       >
         <div
           class="mask"
           :style="logoMaskStyle"
+          role="presentation"
         />
         <img
           :src="logo"
           :style="logoStyle"
+          :title="$t('general.logo')"
+          :alt="$t('general.logo')"
         >
       </router-link>
       <div class="item right actions">
@@ -109,7 +114,7 @@
         {{ $t('login.logout_confirm') }}
       </ConfirmModal>
     </teleport>
-  </nav>
+  </header>
 </template>
 <script src="./desktop_nav.js"></script>
 

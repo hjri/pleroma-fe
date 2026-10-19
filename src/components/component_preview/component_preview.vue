@@ -47,6 +47,7 @@
       :class="{ disabled }"
       class="input input-range x-shift-slider"
       type="range"
+      :title="$t('settings.style.shadows.offset-x')"
       max="20"
       min="-20"
       @input="e => updateProperty('x', e.target.value)"
@@ -58,6 +59,7 @@
       :class="{ disabled }"
       class="input input-range y-shift-slider"
       type="range"
+      :title="$t('settings.style.shadows.offset-y')"
       max="20"
       min="-20"
       @input="e => updateProperty('y', e.target.value)"
@@ -90,12 +92,13 @@
         {{ $t('settings.style.shadows.light_grid') }}
       </Checkbox>
       <div class="style-control">
-        <label class="label">
+        <label for="zoom-input" class="label">
           {{ $t('settings.style.shadows.zoom') }}
         </label>
         <input
+          id="zoom-input"
           v-model="zoom"
-          class="input input-number y-shift-number"
+          class="input input-number"
           type="number"
         >
       </div>

@@ -12,19 +12,12 @@
     </label>
     <input
       v-if="fallback !== undefined"
-      :id="name + '-o'"
-      :aria-labelledby="name + '-label'"
-      class="input -checkbox opt visible-for-screenreader-only"
+      :title="label + ' - ' + $t('settings.style.themes3.define')"
+      class="input -checkbox opt"
       type="checkbox"
       :checked="present"
       @change="$emit('update:modelValue', !present ? fallback : undefined)"
     >
-    <label
-      v-if="fallback !== undefined"
-      class="opt-l"
-      :for="name + '-o'"
-      :aria-hidden="true"
-    />
     <input
       :id="name"
       class="input input-number"
@@ -40,7 +33,7 @@
       :id="name + '-numeric'"
       class="input input-number"
       type="number"
-      :aria-labelledby="name + '-label'"
+      :title="label"
       :value="modelValue || fallback"
       :disabled="!present || disabled"
       :max="hardMax"

@@ -106,15 +106,11 @@ const toHeaderId = (id) => {
 const EmojiPicker = {
   props: {
     enableStickerPicker: {
-      required: false,
       type: Boolean,
       default: true,
     },
-    hideCustomEmoji: {
-      required: false,
-      type: Boolean,
-      default: false,
-    },
+    hideCustomEmoji: Boolean,
+    hideTrigger: Boolean,
   },
   inject: {
     popoversZLayer: {
@@ -140,12 +136,19 @@ const EmojiPicker = {
       width: 0,
     }
   },
+  emits: [
+    'emojiPickerShown',
+    'stickerUploaded',
+    'stickerUploadFailed',
+    'emoji',
+    'forwardTabContentFocus',
+    'reverseTabContentFocus',
+  ],
   components: {
     StickerPicker: defineAsyncComponent(
       () => import('src/components/sticker_picker/sticker_picker.vue'),
     ),
     Checkbox,
-
     Popover,
   },
   methods: {
@@ -153,7 +156,7 @@ const EmojiPicker = {
       e.currentTarget.scrollLeft += e.deltaY + e.deltaX
     },
     updateEmojiSize() {
-      const css = window.getComputedStyle(this.$refs.popover.$el)
+      const css = window.getComputedStyle(this.$refs.content)
       const fontSize = css.getPropertyValue('font-size') || '1rem'
       const emojiSize = css.getPropertyValue('--emojiSize') || '2.2rem'
 
@@ -189,9 +192,6 @@ const EmojiPicker = {
     },
     showPicker() {
       this.$refs.popover.showPopover()
-      this.$nextTick(() => {
-        this.onShowing()
-      })
     },
     hidePicker() {
       this.$refs.popover.hidePopover()
@@ -205,16 +205,21 @@ const EmojiPicker = {
       }
     },
     onPopoverShown() {
+      this.$emit('emojiPickerShown', true)
       this.popoverShown = true
+      this.$nextTick(() => {
+        this.onShowing()
+      })
     },
     onPopoverClosed() {
+      this.$emit('emojiPickerShown', false)
       this.popoverShown = false
     },
     onStickerUploaded(e) {
       this.$emit('sticker-uploaded', e)
     },
     onStickerUploadFailed(e) {
-      this.$emit('sticker-upload-failed', e)
+      this.$emit('stickerUploadFailed', e)
     },
     onEmoji(emoji) {
       const value = emoji.imageUrl

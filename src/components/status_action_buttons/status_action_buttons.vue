@@ -3,12 +3,15 @@
     <span
       class="quick-action-buttons"
       :class="{ '-pin': showPin }"
+      role="toolbar"
+      :aria-label="$t('status.status_actions')"
     >
       <span
         v-for="button in quickButtons"
         :key="button.name"
         class="quick-action"
-        :class="{ '-pin': showPin, '-toggle': button.dropdown?.(), '-with-extra': button.name === 'bookmark' }"
+        role="presentation"
+        :class="quickButtonClass(button)"
       >
         <ActionButtonContainer
           :class="{ '-pin': showPin }"
@@ -41,10 +44,9 @@
       </span>
       <Popover
         trigger="click"
-        :trigger-attrs="triggerAttrs"
+        :title="$t('status.more_actions')"
         :normal-button="useDefaultButtons"
-        class="quick-action"
-        :tabindex="0"
+        class="quick-action -more-actions"
         placement="bottom"
         :offset="{ y: 5 }"
         remove-padding
@@ -60,7 +62,6 @@
           <div
             :id="`popup-menu-${randomSeed}`"
             class="dropdown-menu extra-action-buttons"
-            role="menu"
           >
             <div
               v-for="button in extraButtons"
@@ -104,7 +105,6 @@
             >
               <button
                 class="main-button"
-                role="menuitem"
                 :tabindex="0"
                 @click.stop="() => { resize(); showPin = !showPin }"
               >

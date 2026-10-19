@@ -309,8 +309,7 @@ export default {
         return linearScrollTo(ids)
       }
     }
-    const diveIntoStatus = (id) => setFocused(id)
-    const diveToTopLevel = () => setFocused(currentAncestors.value[0].id)
+    const focusTopLevel = () => setFocused(currentAncestors.value[0].id)
 
     watch(focusedId, async (neu, old) => {
       // Ignoring initial update (null -> id) since that is handled by scroll compensation
@@ -372,8 +371,7 @@ export default {
       shouldShowAncestors,
 
       // # Scrolling
-      diveToTopLevel,
-      diveIntoStatus,
+      focusTopLevel,
       unsuspendableIds,
     }
   },

@@ -36,19 +36,16 @@
         </div>
         <div
           v-else
-          tabindex="0"
-          :role="poll.multiple ? 'checkbox' : 'radio'"
-          :aria-labelledby="`option-vote-${randomSeed}-${index}`"
-          :aria-checked="choices[index]"
         >
           <Checkbox
             :radio="!poll.multiple"
             :disabled="loading"
             :model-value="choices[index]"
+            :aria-labelledby="`option-vote-${uniqueId}-${index}`"
             @update:model-value="value => activateOption(index, value)"
           >
             <RichContent
-              :id="`option-vote-${randomSeed}-${index}`"
+              :id="`option-vote-${uniqueId}-${index}`"
               :html="option.title_html"
               :handle-links="false"
               :emoji="emoji"

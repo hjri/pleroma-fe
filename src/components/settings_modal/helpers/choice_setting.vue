@@ -1,25 +1,33 @@
 <template>
-  <label
+  <div
     v-if="matchesExpertLevel"
     class="ChoiceSetting setting-item"
     :class="{ 'faint': shouldBeDisabled }"
   >
-    <span class="setting-label">
+    <div
+      class="setting-label"
+    >
       <ModifiedIndicator
         :changed="isChanged"
         :onclick="reset"
       />
       <LocalSettingIndicator :is-local="isLocalSetting" />
       {{ ' ' }}
-      <template v-if="backendDescriptionLabel">
-        {{ backendDescriptionLabel }}
-      </template>
-      <template v-else>
-        <slot />
-      </template>
-    </span>
+      <label
+        :for="idPrefix + 'select'"
+        :id="idPrefix + 'label'"
+      >
+        <template v-if="backendDescriptionLabel">
+          {{ backendDescriptionLabel }}
+        </template>
+        <template v-else>
+          <slot />
+        </template>
+      </label>
+    </div>
     <Select
       class="setting-control"
+      :id="idPrefix + 'select'"
       :model-value="realDraftMode ? draft : state"
       :disabled="shouldBeDisabled"
       @update:model-value="update"
@@ -40,7 +48,7 @@
     >
       {{ backendDescriptionDescription + ' ' }}
     </p>
-  </label>
+  </div>
 </template>
 
 <script src="./choice_setting.js"></script>

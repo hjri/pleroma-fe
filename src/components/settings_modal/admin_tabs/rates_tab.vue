@@ -1,7 +1,7 @@
 <template>
-  <div :label="$t('admin_dash.tabs.instance')">
+  <div :label="$t('admin_dash.tabs.rate_limit')">
     <div class="setting-section">
-      <h3>{{ $t('admin_dash.rate_limit.account_confirmation_resend') }}</h3>
+      <h3>{{ $t('admin_dash.rate_limit.global') }}</h3>
       <ul class="setting-list">
         <li>
           <RateSetting path=":pleroma.:rate_limit.:account_confirmation_resend" />

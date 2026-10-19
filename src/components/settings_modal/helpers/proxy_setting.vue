@@ -5,7 +5,8 @@
   >
     <label
       v-if="!hideLabel"
-      :for="path"
+      :for="idPrefix + 'input'"
+      :id="idPrefix + 'label'"
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
@@ -20,7 +21,7 @@
     {{ ' ' }}
     <div class="setting-control">
       <input
-        :id="path"
+        :id="idPrefix + 'input'"
         class="input string-input"
         :class="{ disabled: shouldBeDisabled }"
         :disabled="shouldBeDisabled"
@@ -33,6 +34,7 @@
         :model-value="socksState"
         :disabled="shouldBeDisabled"
         :indeterminate="isIndeterminate"
+        style="margin-left: 1em"
         @update:model-value="event => update({ event, isProxy: true})"
       >
         SOCKS5

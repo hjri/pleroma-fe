@@ -1,7 +1,9 @@
 <template>
-  <div
+  <component
     v-if="!collapsed || !floating"
     class="shout-panel"
+    :is="floating ? 'aside' : 'article'"
+    :aria-label="$t('shoutbox.title')"
   >
     <div class="panel panel-default">
       <div
@@ -50,10 +52,11 @@
         />
       </div>
     </div>
-  </div>
-  <div
+  </component>
+  <aside
     v-else
     class="shout-panel"
+    :aria-label="$t('shoutbox.title')"
   >
     <div class="panel panel-default">
       <div
@@ -69,7 +72,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </aside>
 </template>
 
 <script src="./shout_panel.js"></script>

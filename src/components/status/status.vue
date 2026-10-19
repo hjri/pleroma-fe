@@ -4,6 +4,7 @@
     ref="root"
     class="Status"
     :class="rootClasses"
+    :aria-label="mainStatus.summary || $t('status.unsubjected')"
   >
     <div
       v-if="error"
@@ -19,7 +20,7 @@
       </button>
     </div>
     <template v-if="muted && !isPreview">
-      <div class="status-container muted">
+      <div class="muted">
         <small class="status-username">
           <FAIcon
             v-if="muted && isRepeat"
@@ -37,6 +38,7 @@
         <button
           class="unmute button-unstyled"
           @click.prevent="toggleMute"
+          :title="$t('status.show_muted_status')"
         >
           <FAIcon
             icon="eye-slash"
@@ -47,364 +49,248 @@
     </template>
     <template v-else>
       <div
-        v-if="isRepeat && !noHeading && !inConversation"
+        v-if="isRepeat && !inConversation"
         :class="[repeaterClass, { highlighted: repeaterStyle }]"
         :style="[repeaterStyle]"
-        class="status-container repeat-info"
+        class="repeat-info"
       >
         <UserAvatar
-          class="left-side repeater-avatar"
+          class="repeater-avatar"
           :user-id="repeater.id"
         />
-        <div class="right-side faint">
-          <bdi
-            class="status-username repeater-name"
-            :title="repeaterName"
+        <bdi
+          class="status-username repeater-name"
+          :title="repeaterName"
+        >
+          <router-link
+            class="button-unstyled"
+            v-if="repeaterHtml"
+            :to="repeaterProfileLink"
           >
-            <router-link
-              v-if="repeaterHtml"
-              :to="repeaterProfileLink"
-            >
-              <RichContent
-                :html="repeaterHtml"
-                :emoji="repeater.emoji"
-                :allow-non-square-emoji="allowNonSquareEmoji"
-                :pause-mfm="pauseMfm"
-                :scale-mfm="scaleMfm"
-                :is-local="repeater.is_local"
-              />
-            </router-link>
-            <router-link
-              v-else
-              :to="repeaterProfileLink"
-            >{{ repeaterName }}</router-link>
-          </bdi>
-          <div class="repeat-label">
-            <FAIcon
-              icon="retweet"
-              class="repeat-icon"
-              :title="$t('tool_tip.repeat')"
+            <RichContent
+              :html="repeaterHtml"
+              :emoji="repeater.emoji"
+              :allow-non-square-emoji="allowNonSquareEmoji"
+              :pause-mfm="pauseMfm"
+              :scale-mfm="scaleMfm"
+              :is-local="repeater.is_local"
             />
-            {{ $t('timeline.repeated') }}
-          </div>
-        </div>
+          </router-link>
+          <router-link
+            v-else
+            :to="repeaterProfileLink"
+          >{{ repeaterName }}</router-link>
+        </bdi>
+        {{ ' ' }}
+        <span class="repeat-label faint">
+          <FAIcon
+            icon="retweet"
+            class="repeat-icon"
+            :title="$t('tool_tip.repeat')"
+          />
+          {{ $t('timeline.repeated') }}
+        </span>
       </div>
 
       <div
         v-if="!isDeleted"
-        :class="[userClass, { highlighted: userStyle, '-repeat': isRepeat && !inConversation }]"
+        :class="[userClass, { highlighted: userStyle, '-repeat': isRepeat && !inConversation, '-width-efficient': shouldBeWidthEfficient, '-compact': compact }]"
         :style="[ userStyle ]"
-        class="status-container"
+        class="activity-layout"
         :data-tags="tags"
       >
-        <div
-          v-if="!noHeading"
-          class="left-side"
+        <UserPopover
+          v-if="user.name"
+          class="activity-avatar"
+          :user-id="user.id"
+          overlay-centers
+          link
         >
-          <a
-            v-if="user.name"
-            :href="$router.resolve(userProfileLink).href"
-            @click.prevent
-          >
-            <UserPopover
-              :user-id="user.id"
-              :overlay-centers="true"
-            >
-              <UserAvatar
-                class="post-avatar"
-                :compact="compact"
-                :user-id="user.id"
-              />
-            </UserPopover>
-          </a>
           <UserAvatar
-            v-else
-            :user-id="user.id"
             class="post-avatar"
             :compact="compact"
-            :title="$t('status.unknown_user_info')"
+            :user-id="user.id"
           />
-        </div>
-        <div class="right-side">
+        </UserPopover>
+        <UserAvatar
+          v-else
+          :user-id="user.id"
+          class="activity-avatar"
+          :compact="compact"
+          :title="$t('status.unknown_user_info')"
+        />
+        <ActivityHeader
+          class="activity-header"
+          :status-id="mainStatus.id"
+          :user-id="user.id"
+          :unmuted="unmuted"
+          :time="mainStatus.created_at"
+          :replies="replies"
+          :multiline="shouldBeWidthEfficient"
+          :compact="compact"
+
+          :expandable="expandable"
+          :expanded="isExpanded"
+          :thread-display-state="threadDisplayState"
+
+          @request-focus="$emit('requestFocus', mainStatus.id)"
+          @toggle-muted="toggleMute"
+          @toggle-expanded="$emit('toggleExpanded')"
+          @toggle-thread-display="$emit('toggleThreadDisplay')"
+        />
+        <div class="activity-subheader">
           <div
-            v-if="!noHeading"
-            class="status-heading"
+            v-if="scrobblePresent"
+            class="status-rich-presence"
           >
-            <div class="heading-name-row">
-              <div
-                v-if="user"
-                class="heading-left"
-              >
-                <h4
-                  v-if="user.name_html"
-                  class="status-username"
-                  :title="user.name"
-                >
-                  <RichContent
-                    :html="user.name"
-                    :emoji="user.emoji"
-                    :allow-non-square-emoji="allowNonSquareEmoji"
-                    :is-local="user.is_local"
-                  />
-                </h4>
-                <h4
-                  v-else
-                  class="status-username"
-                  :title="user.name"
-                >
-                  {{ user.name }}
-                </h4>
-                <UserLink
-                  class="account-name"
-                  :title="user.screen_name_ui"
-                  :user="user"
-                  :at="false"
-                />
-                <img
-                  v-if="!!(user && user.favicon)"
-                  class="status-favicon"
-                  :src="user.favicon"
-                >
-              </div>
-
-              <span class="heading-right">
-                <span
-                  v-if="mainStatus.pinned"
-                  class="pin"
-                >
-                  <FAIcon
-                    icon="thumbtack"
-                    class="faint"
-                  />
-                  <span class="faint">{{ $t('status.pinned') }}</span>
-                </span>
-                <router-link
-                  class="timeago faint"
-                  :to="{ name: 'conversation', params: { statusId: status.id } }"
-                >
-                  <Timeago
-                    :time="mainStatus.created_at"
-                    :auto-update="60"
-                  />
-                </router-link>
-                <span
-                  v-if="mainStatus.visibility"
-                  class="visibility-icon"
-                  :title="visibilityLocalized"
-                >
-                  <FAIcon
-                    fixed-width
-                    class="fa-scale-110"
-                    :icon="visibilityIcon(status.visibility)"
-                  />
-                </span>
-                <button
-                  v-if="expandable && !isExpanded && !isPreview"
-                  class="button-unstyled"
-                  :title="$t('status.expand')"
-                  @click.prevent="toggleExpanded"
-                >
-                  <FAIcon
-                    fixed-width
-                    class="fa-scale-110"
-                    icon="plus-square"
-                  />
-                </button>
-                <button
-                  v-if="unmuted"
-                  class="button-unstyled"
-                  @click.prevent="toggleMute"
-                >
-                  <FAIcon
-                    fixed-width
-                    icon="eye-slash"
-                    class="fa-scale-110"
-                  />
-                </button>
-                <button
-                  v-if="inThreadForest && replies?.size && !simpleTree"
-                  class="button-unstyled"
-                  :title="threadShowing ? $t('status.thread_hide') : $t('status.thread_show')"
-                  :aria-expanded="threadShowing ? 'true' : 'false'"
-                  @click.prevent="toggleThreadDisplay"
-                >
-                  <FAIcon
-                    fixed-width
-                    class="fa-scale-110"
-                    :icon="threadShowing ? 'chevron-up' : 'chevron-down'"
-                  />
-                </button>
-                <button
-                  v-if="isExpanded && isTreeView && !simpleTree"
-                  class="button-unstyled"
-                  :title="$t('status.show_only_conversation_under_this')"
-                  @click.prevent="$emit('dive')"
-                >
-                  <FAIcon
-                    fixed-width
-                    class="fa-scale-110"
-                    :icon="'angle-double-right'"
-                  />
-                </button>
-              </span>
-            </div>
-            <div
-              v-if="scrobblePresent"
-              class="status-rich-presence"
+            <a
+              v-if="scrobble.externalLink"
+              :href="scrobble.externalLink"
+              target="_blank"
             >
-              <a
-                v-if="scrobble.externalLink"
-                :href="scrobble.externalLink"
-                target="_blank"
-              >
-                {{ scrobble.artist }} — {{ scrobble.title }}
-                <FAIcon
-                  class="fa-scale-110 fa-old-padding"
-                  icon="play"
-                />
-                <span class="status-rich-presence-time">
-                  <Timeago
-                    template-key="time.in_past"
-                    :time="scrobble.created_at"
-                    :auto-update="60"
-                  />
-                </span>
-              </a>
-              <span v-if="!scrobble.externalLink">
-                <FAIcon
-                  class="fa-scale-110 fa-old-padding"
-                  icon="music"
-                />
-                {{ scrobble.artist }} — {{ scrobble.title }}
-                <FAIcon
-                  class="fa-scale-110 fa-old-padding"
-                  icon="play"
-                />
-                <span class="status-rich-presence-time">
-                  <Timeago
-                    template-key="time.in_past"
-                    :time="scrobble.created_at"
-                    :auto-update="60"
-                  />
-                </span>
-              </span>
-            </div>
-            <div
-              v-if="isReply || hasMentionsLine"
-              class="heading-reply-row"
-            >
-              <span
-                v-if="isReply"
-                class="glued-label reply-glued-label"
-              >
-                <i18n-t
-                  keypath="status.reply_to_with_arg"
-                  scope="global"
-                >
-                  <template #replyToWithIcon>
-                    <StatusPopover
-                      v-if="!isPreview"
-                      :status-id="mainStatus.parent_visible && mainStatus.in_reply_to_status_id"
-                      class="reply-to-popover"
-                      style="min-width: 0;"
-                      :class="{ '-strikethrough': !mainStatus.parent_visible }"
-                    >
-                      <button
-                        class="button-unstyled reply-to"
-                        :aria-label="$t('tool_tip.reply')"
-                        @click.prevent="gotoOriginal(status.in_reply_to_status_id)"
-                      >
-                        <i18n-t
-                          keypath="status.reply_to_with_icon"
-                          scope="global"
-                        >
-                          <template #icon>
-                            <FAIcon
-                              class="fa-scale-110 fa-old-padding"
-                              icon="reply"
-                              flip="horizontal"
-                            />
-                          </template>
-                          <template #replyTo>
-                            <span
-                              class="reply-to-text"
-                            >
-                              {{ $t('status.reply_to') }}
-                            </span>
-                          </template>
-                        </i18n-t>
-                      </button>
-                    </StatusPopover>
-
-                    <span
-                      v-else
-                      class="reply-to-no-popover"
-                    >
-                      <span class="reply-to-text">{{ $t('status.reply_to') }}</span>
-                    </span>
-                  </template>
-                  <template #user>
-                    <MentionLink
-                      :content="replyToName"
-                      :url="replyProfileLink"
-                      :user-id="status.in_reply_to_user_id"
-                      :user-screen-name="status.in_reply_to_screen_name"
-                    />
-                  </template>
-                </i18n-t>
-              </span>
-
-              <!-- This little wrapper is made for sole purpose of "gluing" -->
-              <!-- "Mentions" label to the first mention -->
-              <span
-                v-if="hasMentionsLine"
-                class="glued-label"
-              >
-                <span
-                  class="mentions"
-                  :aria-label="$t('tool_tip.mentions')"
-                  @click.prevent="gotoOriginal(status.in_reply_to_status_id)"
-                >
-                  <span
-                    class="mentions-text"
-                  >
-                    {{ $t('status.mentions') }}
-                  </span>
-                </span>
-                <MentionsLine
-                  v-if="hasMentionsLine"
-                  :mentions="mentionsLine.slice(0, 1)"
-                  class="mentions-line-first"
-                />
-              </span>
-              {{ ' ' }}
-              <MentionsLine
-                v-if="hasMentionsLine"
-                :mentions="mentionsLine.slice(1)"
-                class="mentions-line"
+              {{ scrobble.artist }} — {{ scrobble.title }}
+              <FAIcon
+                class="fa-scale-110 fa-old-padding"
+                icon="play"
               />
-            </div>
-            <div
-              v-if="isEdited && editingAvailable && !isPreview"
-              class="heading-edited-row"
+              <span class="status-rich-presence-time">
+                <Timeago
+                  template-key="time.in_past"
+                  :time="scrobble.created_at"
+                  :auto-update="60"
+                />
+              </span>
+            </a>
+            <span v-if="!scrobble.externalLink">
+              <FAIcon
+                class="fa-scale-110 fa-old-padding"
+                icon="music"
+              />
+              {{ scrobble.artist }} — {{ scrobble.title }}
+              <FAIcon
+                class="fa-scale-110 fa-old-padding"
+                icon="play"
+              />
+              <span class="status-rich-presence-time">
+                <Timeago
+                  template-key="time.in_past"
+                  :time="scrobble.created_at"
+                  :auto-update="60"
+                />
+              </span>
+            </span>
+          </div>
+          <div
+            v-if="isReply || hasMentionsLine"
+            class="heading-reply-row"
+          >
+            <span
+              v-if="isReply"
+              class="glued-label reply-glued-label"
             >
               <i18n-t
+                keypath="status.reply_to_with_arg"
                 scope="global"
-                keypath="status.edited_at"
-                tag="span"
               >
-                <template #time>
-                  <Timeago
-                    template-key="time.in_past"
-                    :time="mainStatus.edited_at"
-                    :auto-update="60"
-                    :long-format="true"
+                <template #replyToWithIcon>
+                  <StatusPopover
+                    v-if="!isPreview"
+                    class="reply-to-popover"
+                    :class="{ '-strikethrough': !mainStatus.parent_visible }"
+                    :status-id="mainStatus.parent_visible && mainStatus.in_reply_to_status_id"
+                    :link="isPage"
+                    @navigate="$emit('requestFocus', mainStatus.parent_visible && mainStatus.in_reply_to_status_id)"
+                  >
+                      <i18n-t
+                        keypath="status.reply_to_with_icon"
+                        scope="global"
+                      >
+                      <template #icon>
+                        <FAIcon
+                          class="fa-scale-110"
+                          icon="reply"
+                          flip="horizontal"
+                        />
+                      </template>
+                      <template #replyTo>
+                        <span
+                          class="reply-to-text"
+                        >
+                          {{ $t('status.reply_to') }}
+                        </span>
+                      </template>
+                    </i18n-t>
+                  </StatusPopover>
+
+                  <span
+                    v-else
+                    class="reply-to-no-popover"
+                  >
+                    <span class="reply-to-text">{{ $t('status.reply_to') }}</span>
+                  </span>
+                </template>
+                <template #user>
+                  <MentionLink
+                    :content="replyToName"
+                    :url="replyProfileLink"
+                    :user-id="status.in_reply_to_user_id"
+                    :user-screen-name="status.in_reply_to_screen_name"
                   />
                 </template>
               </i18n-t>
-            </div>
-          </div>
+            </span>
 
+            <!-- This little wrapper is made for sole purpose of "gluing" -->
+            <!-- "Mentions" label to the first mention -->
+            <span
+              v-if="hasMentionsLine"
+              class="glued-label"
+            >
+              <span
+                class="mentions"
+                :aria-label="$t('tool_tip.mentions')"
+                @click.prevent="$emit('requestFocus', status.in_reply_to_status_id)"
+              >
+                <span class="mentions-text">
+                  {{ $t('status.mentions') }}
+                </span>
+              </span>
+              <MentionsLine
+                v-if="hasMentionsLine"
+                :mentions="mentionsLine.slice(0, 1)"
+                class="mentions-line-first"
+              />
+            </span>
+            {{ ' ' }}
+            <MentionsLine
+              v-if="hasMentionsLine"
+              :mentions="mentionsLine.slice(1)"
+              class="mentions-line"
+            />
+          </div>
+          <div
+            v-if="isEdited && editingAvailable && !isPreview"
+            class="heading-edited-row"
+          >
+            <i18n-t
+              scope="global"
+              keypath="status.edited_at"
+              tag="span"
+            >
+              <template #time>
+                <Timeago
+                  template-key="time.in_past"
+                  :time="mainStatus.edited_at"
+                  :auto-update="60"
+                  :long-format="true"
+                />
+              </template>
+            </i18n-t>
+          </div>
+        </div>
+        <div
+          class="activity-content"
+        >
           <StatusContent
             ref="content"
             :status="mainStatus"
@@ -430,28 +316,39 @@
               v-if="showOtherRepliesInside && replies.size > 1"
               class="button-unstyled -link"
               :title="$t('status.ancestor_follow', { numReplies: replies.size - 1 }, replies.size - 1)"
-              @click.prevent="$emit('dive')"
+              @click.prevent="$emit('requestFocus', mainStatus.id)"
             >
               {{ $t('status.replies_list_with_others', { numReplies: replies.size - 1 }, replies.size - 1) }}
             </button>
             <span
               v-else
+              role="heading"
+              :aria-level="headerLevel"
               class="faint"
             >
               {{ $t('status.replies_list') }}
             </span>
-            <StatusPopover
-              v-for="reply in replies.values()"
-              :key="reply.id"
-              :status-id="reply.id"
+            {{ ' ' }}
+            <ol
+              class="replies-list"
+              :aria-label="$t('status.replies_list')"
             >
-              <button
-                class="button-unstyled -link reply-link"
-                @click.prevent="gotoOriginal(reply.id)"
+              <li
+                v-for="reply in replies.values()"
+                :key="reply.id"
+                :aria-label="reply.name"
               >
-                {{ reply.name }}
-              </button>
-            </StatusPopover>
+                <StatusPopover
+                  :status-id="reply.id"
+                  :link="isPage"
+                  class="reply-link"
+                  @navigate="$emit('requestFocus', reply.id)"
+                >
+                  {{ reply.name }}
+                </StatusPopover>
+                {{ ' ' }}
+              </li>
+            </ol>
           </div>
 
           <Transition name="fade">
@@ -505,38 +402,34 @@
           </Transition>
 
           <EmojiReactions
-            v-if="(mergedConfig.emojiReactionsOnTimeline || focused) && (!noHeading && !isPreview)"
+            v-if="(mergedConfig.emojiReactionsOnTimeline || focused) && (!isPreview)"
             :status="mainStatus"
-          />
-
-          <StatusActionButtons
-            v-if="!noHeading && !isPreview"
-            class="status-action-buttons"
-            :status="mainStatus"
-            :replying="replying"
-            @toggle-replying="toggleReplyForm"
           />
         </div>
+
+        <StatusActionButtons
+          v-if="!isPreview"
+          class="activity-actions"
+          :status="mainStatus"
+          :replying="replying"
+          @toggle-replying="toggleReplyForm"
+        />
       </div>
       <div
         v-else
         class="gravestone"
       >
-        <div class="left-side">
-          <UserAvatar
-            class="post-avatar"
-            :compact="compact"
-          />
-        </div>
-        <div class="right-side">
-          <div class="deleted-text">
-            {{ $t('status.status_deleted') }}
-          </div>
+        <UserAvatar
+          class="post-avatar"
+          :compact="compact"
+        />
+        <div class="deleted-text">
+          {{ $t('status.status_deleted') }}
         </div>
       </div>
       <div
         v-if="replying"
-        class="status-container reply-form"
+        class="reply-form"
       >
         <PostStatusForm
           ref="postStatusForm"
@@ -554,7 +447,7 @@
         scope="global"
         keypath="status.ancestor_follow_with_icon"
         class="button-unstyled -link thread-tree-show-replies-button"
-        @click.prevent="$emit('dive')"
+        @click.prevent="$emit('requestFocus', mainStatus.id)"
       >
         <template #icon>
           <FAIcon
@@ -574,3 +467,4 @@
 <script src="./status.js"></script>
 
 <style src="./status.scss" lang="scss"></style>
+<style src="./activity-layout.scss" lang="scss"></style>

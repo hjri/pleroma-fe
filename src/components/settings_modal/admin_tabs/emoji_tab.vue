@@ -41,6 +41,7 @@
                   v-model="remotePackInstance"
                   class="input"
                   :placeholder="$t('admin_dash.emoji.remote_pack_instance')"
+                  :title="$t('admin_dash.emoji.remote_pack_instance')"
                 >
                 <button
                   class="button button-default emoji-tab-popover-button"
@@ -72,13 +73,15 @@
                 <input
                   v-model="newPackName"
                   :placeholder="$t('admin_dash.emoji.new_pack_name')"
+                  :title="$t('admin_dash.emoji.new_pack_name')"
                   class="input"
                 >
-                <h3>Import pack from URL</h3>
+                <h3>{{ $t('admin_dash.emoji.import_pack_url') }}</h3>
                 <input
                   v-model="remotePackURL"
                   class="input"
-                  placeholder="Pack .zip URL"
+                  :placeholder="$t('admin_dash.emoji.remote_pack_url')"
+                  :title="$t('admin_dash.emoji.remote_pack_url')"
                 >
                 <button
                   class="button button-default btn emoji-tab-popover-button"
@@ -86,13 +89,14 @@
                   :disabled="newPackName.trim() === '' || remotePackURL.trim() === ''"
                   @click="downloadRemoteURLPack"
                 >
-                  Import
+                  {{ $t('importer.import') }}
                 </button>
-                <h3>Import pack from a file</h3>
+                <h3>{{ $t('admin_dash.emoji.import_pack_file') }}</h3>
                 <input
                   type="file"
                   accept="application/zip"
                   class="emoji-tab-popover-file input"
+                  :title="$t('general.select_file')"
                   @change="remotePackFile = $event.target.files"
                 >
                 <button
@@ -101,7 +105,7 @@
                   :disabled="newPackName.trim() === '' || remotePackFile === null || remotePackFile.length === 0"
                   @click="downloadRemoteFilePack"
                 >
-                  Import
+                  {{ $t('importer.import') }}
                 </button>
               </div>
             </template>

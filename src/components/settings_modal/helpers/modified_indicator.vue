@@ -5,7 +5,8 @@
   >
     <Popover
       trigger="hover"
-      :trigger-attrs="{ 'aria-label': $t('settings.setting_changed') }"
+      :aria-label="$t('settings.setting_changed')"
+      tooltip
     >
       <template #trigger>
         <FAIcon

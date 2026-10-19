@@ -54,6 +54,7 @@
       type="file"
       class="input image-cropper-img-input"
       :accept="mimes"
+      :title="$t('general.select_file')"
     >
   </div>
 </template>

@@ -10,17 +10,17 @@
     .conversation-status:not(.-last) {
       border-bottom: 1px solid var(--border);
     }
+  }
 
-    .conversation-dive-to-top-level-box {
-      padding: var(--status-margin);
-      border-bottom: 1px solid var(--border);
-      border-radius: 0;
+  .conversation-dive-to-top-level-box {
+    padding: var(--status-margin);
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
 
-      /* Make the button stretch along the whole row */
-      display: flex;
-      align-items: stretch;
-      flex-direction: column;
-    }
+    /* Make the button stretch along the whole row */
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .thread-ancestors {

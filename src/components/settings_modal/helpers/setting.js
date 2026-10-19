@@ -1,4 +1,5 @@
 import { cloneDeep, get, isEqual, set } from 'lodash-es'
+import { useId } from 'vue'
 
 import DraftButtons from './draft_buttons.vue'
 import LocalSettingIndicator from './local_setting_indicator.vue'
@@ -109,6 +110,11 @@ export default {
       default: false,
     },
   },
+  setup() {
+    const uniqueId = useId()
+
+    return { uniqueId }
+  },
   data() {
     return {
       localDraft: null,
@@ -124,6 +130,9 @@ export default {
     }
   },
   computed: {
+    idPrefix() {
+      return `setting-${this.uniqueId}-`
+    },
     draft: {
       get() {
         if (this.realSource === 'admin' || this.path == null) {

@@ -1,0 +1,1 @@
+Notifications and Posts in Mobile view use different layout that prioritizes filling up whole width. Added option to use this layout on desktop mode also.

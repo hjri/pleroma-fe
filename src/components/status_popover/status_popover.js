@@ -9,7 +9,11 @@ library.add(faCircleNotch)
 
 const StatusPopover = {
   name: 'StatusPopover',
-  props: ['statusId'],
+  props: {
+    statusId: String,
+    link: Boolean,
+  },
+  emits: ['navigate'],
   data() {
     return {
       error: false,
@@ -18,6 +22,12 @@ const StatusPopover = {
   computed: {
     status() {
       return useStatusesStore().allStatuses.get(this.statusId)
+    },
+    destination() {
+      return {
+        name: 'conversation',
+        params: { statusId: this.statusId },
+      }
     },
   },
   components: {
@@ -34,6 +44,11 @@ const StatusPopover = {
           .fetchStatus(this.statusId)
           .then(() => (this.error = false))
           .catch(() => (this.error = true))
+      }
+    },
+    navigate() {
+      if (!this.link) {
+        this.$emit('navigate', this.statusId)
       }
     },
   },

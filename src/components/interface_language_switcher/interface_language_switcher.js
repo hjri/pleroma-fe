@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid'
+import { useId } from 'vue'
 
 import Select from 'src/components/select/select.vue'
 import localeService from '../../services/locale/locale.service.js'
@@ -21,12 +21,16 @@ export default {
     },
   },
   emits: ['update:modelValue'],
+  setup() {
+    const uniqueId = useId()
+
+    return {
+      uniqueId,
+    }
+  },
   computed: {
     languages() {
       return localeService.languages
-    },
-    uniqueId() {
-      return uuidv4()
     },
     controlledLanguage: {
       get: function () {

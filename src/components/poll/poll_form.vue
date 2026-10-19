@@ -45,12 +45,12 @@
     <div class="poll-type-expiry">
       <div
         class="poll-type"
-        :title="$t('polls.type')"
       >
         <Select
           v-model="pollType"
           class="poll-type-select"
-          unstyled="true"
+          :title="$t('polls.type')"
+          unstyled
         >
           <option value="single">
             {{ $t('polls.single_choice') }}
@@ -76,7 +76,7 @@
         {{ ' ' }}
         <Select
           v-model="expiryUnit"
-          unstyled="true"
+          unstyled
           class="expiry-unit"
           :aria-label="$t('polls.expiry_unit')"
           @change="expiryAmountChange"

@@ -5,8 +5,8 @@
     :src="attachment.url + '#t=0.00000000000001'"
     :loop="loopVideo"
     :controls="controls"
-    :alt="attachment.description"
-    :title="attachment.description"
+    :alt="attachment.description || $t('status.attachment')"
+    :title="attachment.description || $t('status.attachment')"
     playsinline
     @playing="onPlaying"
     @pause="onPaused"

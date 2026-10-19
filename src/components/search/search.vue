@@ -11,6 +11,7 @@
         v-model="searchTerm"
         class="input search-input"
         :placeholder="$t('nav.search')"
+        :title="$t('nav.search')"
         @keyup.enter="updateToQuery"
       >
       <button
@@ -25,7 +26,7 @@
         class="btn button-default"
         @click="toogleAdvanced"
         :aria-label="$t('search.advanced')"
-        :aria-expanded="advancedMode"
+        :aria-expanded="advancedMode ? 'true' : 'false'"
       >
         <FAIcon :icon="advancedMode ? 'chevron-up' : 'chevron-down'" />
       </button>

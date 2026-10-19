@@ -1,6 +1,7 @@
 import { defineAsyncComponent } from 'vue'
 
 import Popover from 'src/components/popover/popover.vue'
+import EmojiPicker from '../emoji_picker/emoji_picker.vue'
 import ActionButton from './action_button.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
@@ -45,8 +46,21 @@ export default {
           'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
         ),
     ),
+    EmojiPicker,
   },
-  props: ['button', 'status', 'defaultButton', 'hideLabel'],
+  props: {
+    button: {
+      type: Object,
+      required: true,
+    },
+    status: {
+      type: Object,
+      required: true,
+    },
+    extra: Boolean,
+    defaultButton: Boolean,
+    hideLabel: Boolean,
+  },
   emits: ['emojiPickerShown'],
   mounted() {
     if (this.button.name === 'mute') {
@@ -59,16 +73,6 @@ export default {
     }
   },
   computed: {
-    buttonClass() {
-      return [
-        this.button.name + '-button',
-        {
-          '-with-extra': this.button.name === 'bookmark',
-          '-extra': this.extra,
-          '-quick': !this.extra,
-        },
-      ]
-    },
     user() {
       return this.status.user
     },
@@ -91,6 +95,17 @@ export default {
     },
   },
   methods: {
+    addReaction(event) {
+      const emoji = event.insertion
+      const existingReaction = this.status.emoji_reactions.find(
+        (r) => r.name === emoji,
+      )
+      if (existingReaction?.me) {
+        useStatusesStore().unreactWithEmoji(this.status.id, emoji)
+      } else {
+        useStatusesStore().reactWithEmoji(this.status.id, emoji)
+      }
+    },
     visibilityIcon(visibility) {
       switch (visibility) {
         case 'private':

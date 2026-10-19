@@ -5,7 +5,7 @@
   >
     <label
       v-if="!hideLabel"
-      :for="path"
+      :for="idPrefix + 'label'"
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
@@ -24,7 +24,7 @@
       <slot v-else />
     </label>
     <input
-      :id="path"
+      :id="idPrefix + 'label'"
       class="setting-control input string-input"
       :class="{ disabled: shouldBeDisabled }"
       :disabled="shouldBeDisabled"

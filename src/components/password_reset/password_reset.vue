@@ -45,6 +45,7 @@
                 v-model="user.email"
                 :disabled="isPending"
                 :placeholder="$t('password_reset.placeholder')"
+                :title="$t('password_reset.email')"
                 class="input form-control"
                 type="input"
               >

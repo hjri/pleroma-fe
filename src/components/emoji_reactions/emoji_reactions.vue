@@ -1,5 +1,8 @@
 <template>
-  <div class="EmojiReactions">
+  <div
+    v-if="emojiReactions.length > 0"
+    class="EmojiReactions"
+  >
     <span
       v-for="(reaction) in emojiReactions"
       :key="reaction.url || reaction.name"
@@ -7,7 +10,7 @@
     >
       <component
         :is="loggedIn ? 'button' : 'a'"
-        v-bind="!loggedIn ? { href: remoteInteractionLink } : {}"
+        :href="loggedIn ? undefined : remoteInteractionLink"
         role="button"
         class="emoji-reaction btn button-default"
         :class="{ '-picked-reaction': reactedWith(reaction.name), toggled: reactedWith(reaction.name) }"
@@ -23,6 +26,7 @@
             v-if="reaction.url"
             :src="reaction.url"
             class="reaction-emoji-content"
+            :alt="reaction.url ? reaction.name : undefined"
             :class="{ ['-wide']: allowNonSquareEmoji }"
           />
           <span
@@ -55,10 +59,10 @@
         :user-ids="accountsForEmoji.get(reaction.name)"
         class="emoji-reaction-popover"
         :normal-button="true"
-        :trigger-attrs="counterTriggerAttrs(reaction)"
+        v-bind="counterTriggerAttrs(reaction)"
         @show="fetchEmojiReactionsIfMissing()"
       >
-        <span class="emoji-reaction-counts">{{ reaction.count }}</span>
+        {{ reaction.count }}
       </UserListPopover>
     </span>
     <a

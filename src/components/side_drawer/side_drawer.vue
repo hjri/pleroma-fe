@@ -1,7 +1,8 @@
 <template>
-  <div
+  <aside
     class="side-drawer-container mobile-drawer"
     :class="{ 'side-drawer-container-closed': closed, 'side-drawer-container-open': !closed }"
+    :aria-label="$t('nav.navigation')"
   >
     <div
       class="side-drawer-darken"
@@ -183,6 +184,7 @@
         <li
           v-if="currentUser && suggestionsEnabled"
           @click="toggleDrawer"
+          class="menu-item"
         >
           <router-link
             :to="{ name: 'who-to-follow' }"
@@ -195,7 +197,9 @@
             /> {{ $t("nav.who_to_follow") }}
           </router-link>
         </li>
-        <li @click="toggleDrawer">
+        <li
+          @click="toggleDrawer"
+          >
           <button
             class="menu-item"
             @click="openSettingsModal('user')"
@@ -207,7 +211,9 @@
             /> {{ $t("settings.settings") }}
           </button>
         </li>
-        <li @click="toggleDrawer">
+        <li
+          @click="toggleDrawer"
+        >
           <router-link
             :to="{ name: 'about'}"
             class="menu-item"
@@ -313,7 +319,7 @@
       :class="{'side-drawer-click-outside-closed': closed}"
       @click.stop.prevent="toggleDrawer"
     />
-  </div>
+  </aside>
 </template>
 
 <script src="./side_drawer.js"></script>

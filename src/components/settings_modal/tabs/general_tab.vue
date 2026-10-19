@@ -106,6 +106,11 @@
             </li>
           </ul>
         </li>
+        <li>
+          <BooleanSetting path="underlineLinks">
+            {{ $t('settings.underline_links') }}
+          </BooleanSetting>
+        </li>
       </ul>
       <h3>{{ $t('settings.timelines') }}</h3>
       <ul class="setting-list">

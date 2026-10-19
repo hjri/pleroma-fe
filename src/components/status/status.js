@@ -1,5 +1,7 @@
+import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 
+import ActivityHeader from 'src/components/activity_header/activity_header.vue'
 import AvatarList from 'src/components/avatar_list/avatar_list.vue'
 import EmojiReactions from 'src/components/emoji_reactions/emoji_reactions.vue'
 import MentionLink from 'src/components/mention_link/mention_link.vue'
@@ -21,6 +23,7 @@ import {
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useScrobblesStore } from 'src/stores/scrobbles.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
@@ -81,15 +84,16 @@ const Status = {
     PostStatusForm,
     UserAvatar,
     AvatarList,
-    Timeago,
     StatusPopover,
     UserListPopover,
     EmojiReactions,
     StatusContent,
+    ActivityHeader,
     MentionLink,
     MentionsLine,
     UserPopover,
     UserLink,
+    Timeago,
     Quote: defineAsyncComponent(() => import('src/components/quote/quote.vue')),
     StatusActionButtons,
   },
@@ -105,6 +109,7 @@ const Status = {
     inQuote: Boolean,
 
     ignoreMute: Boolean,
+    widthEfficient: Boolean,
 
     threadDisplayState: String,
     conversationRank: {
@@ -113,8 +118,7 @@ const Status = {
     },
   },
   emits: [
-    'goto',
-    'dive',
+    'requestFocus',
     'toggleExpanded',
     'toggleThreadDisplay',
     'suspendableStateChange',
@@ -151,6 +155,19 @@ const Status = {
     useScrobblesStore().getLatestScrobble(this.status.user.id)
   },
   computed: {
+    shouldBeWidthEfficient() {
+      return (
+        this.widthEfficient ||
+        this.layoutType === 'mobile' ||
+        this.mergedConfig.widthEfficientPostLayout
+      )
+    },
+    headerLevel() {
+      return [this.isPage ? 0 : 1, this.isExpanded ? 1 : 0].reduce(
+        (acc, item) => acc + item,
+        1,
+      )
+    },
     rootClasses() {
       return [
         {
@@ -199,9 +216,6 @@ const Status = {
     isTreeView() {
       return this.mergedConfig.conversationDisplay === 'tree'
     },
-    simpleTree() {
-      return !this.mergedConfig.conversationTreeAdvanced
-    },
     showOtherRepliesInside() {
       return this.mergedConfig.conversationOtherRepliesButton === 'inside'
     },
@@ -246,9 +260,6 @@ const Status = {
     userStyle() {
       if (this.noHeading) return
       return highlightStyle(useUserHighlightStore().get(this.user.screen_name))
-    },
-    userProfileLink() {
-      return this.generateUserProfileLink(this.user.id, this.user.screen_name)
     },
     replyProfileLink() {
       if (this.isReply) {
@@ -478,12 +489,6 @@ const Status = {
     isSuspendable() {
       return !this.replying && this.mediaPlaying.size === 0
     },
-    inThreadForest() {
-      return !!this.threadDisplayState
-    },
-    threadShowing() {
-      return this.threadDisplayState === 'showing'
-    },
     visibilityLocalized() {
       return this.$i18n.t('general.scope_in_timeline.' + this.status.visibility)
     },
@@ -531,22 +536,9 @@ const Status = {
     scrobble() {
       return this.status.user?.latestScrobble
     },
+    ...mapState(useInterfaceStore, ['layoutType']),
   },
   methods: {
-    visibilityIcon(visibility) {
-      switch (visibility) {
-        case 'private':
-          return 'lock'
-        case 'unlisted':
-          return 'lock-open'
-        case 'direct':
-          return 'envelope'
-        case 'local':
-          return 'igloo'
-        default:
-          return 'globe'
-      }
-    },
     showError(error) {
       this.error = error
     },
@@ -564,14 +556,6 @@ const Status = {
     },
     closeReplyForm() {
       this.replying = false
-    },
-    gotoOriginal(id) {
-      if (this.inConversation) {
-        this.$emit('goto', id)
-      }
-    },
-    toggleExpanded() {
-      this.$emit('toggleExpanded')
     },
     toggleMute() {
       this.unmuted = !this.unmuted
@@ -591,9 +575,6 @@ const Status = {
     },
     setHeadTailLinks(headTailLinks) {
       this.headTailLinks = headTailLinks
-    },
-    toggleThreadDisplay() {
-      this.$emit('toggleThreadDisplay')
     },
     updateVirtualHeight(e) {
       const [entry] = e

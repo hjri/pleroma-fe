@@ -5,11 +5,12 @@
   >
     <Popover
       trigger="hover"
+      :aria-label="$t('settings.setting_local_side')"
+      tooltip
     >
       <template #trigger>
         <FAIcon
           icon="desktop"
-          :aria-label="$t('settings.setting_local_side')"
         />
       </template>
       <template #content>

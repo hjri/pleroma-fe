@@ -1,5 +1,8 @@
 <template>
-  <aside class="user-panel">
+  <aside
+    :aria-label="$t('nav.user_panel')"
+    class="user-panel"
+  >
     <div
       v-if="loggedIn"
       key="user-panel-signed"
@@ -28,8 +31,6 @@
   }
 
   .user-info {
-    margin: 0.6em 0.6em 0;
-
     .Avatar {
       width: 5em;
       width: calc(min(5em, 20cqw));

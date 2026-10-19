@@ -4,7 +4,11 @@
     popover-class="popover-default user-popover"
     :overlay-centers-selector="overlayCentersSelector || '.user-info .Avatar'"
     :overlay-centers="overlayCenters && userPopoverOverlay"
-    :disabled="disabled"
+    :router-link="link"
+    :to="link ? to : undefined"
+    aria-haspopup="dialog"
+    @click="e => $emit('click', e)"
+    v-bind="$attrs"
   >
     <template #trigger>
       <slot />
@@ -34,7 +38,6 @@
 
   .user-info {
     width: 100%;
-    margin: 1.2em;
   }
 
   .user-identity {

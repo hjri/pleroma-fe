@@ -39,60 +39,60 @@
         </span>
       </details>
       <div class="right-side">
-        <label
+        <span
           v-if="user.is_local && isAdmin"
           class="alert neutral user-role"
         >
           {{ $t('admin_dash.users.indicator.admin') }}
-        </label>
-        <label
+        </span>
+        <span
           v-if="user.is_local && isModerator"
           class="alert neutral user-role"
         >
           {{ $t('admin_dash.users.indicator.moderator') }}
-        </label>
-        <label
+        </span>
+        <span
           v-if="isActivated"
           class="alert success user-role"
         >
           {{ $t('admin_dash.users.indicator.active') }}
-        </label>
-        <label
+        </span>
+        <span
           v-if="!isActivated"
           class="alert error user-role"
         >
           {{ $t('admin_dash.users.indicator.deactivated') }}
-        </label>
-        <label
+        </span>
+        <span
           v-if="user.is_local && user.adminData.is_confirmed"
           class="alert success user-role"
         >
           {{ $t('admin_dash.users.indicator.confirmed') }}
-        </label>
-        <label
+        </span>
+        <span
           v-if="user.is_local && !user.adminData.is_confirmed"
           class="alert warning user-role"
         >
           {{ $t('admin_dash.users.indicator.unconfirmed') }}
-        </label>
-        <label
+        </span>
+        <span
           v-if="user.is_local && user.adminData.is_approved"
           class="alert success user-role"
         >
           {{ $t('admin_dash.users.indicator.approved') }}
-        </label>
-        <label
+        </span>
+        <span
           v-if="user.is_local && !user.adminData.is_approved"
           class="alert warning user-role"
         >
           {{ $t('admin_dash.users.indicator.unapproved') }}
-        </label>
-        <label
+        </span>
+        <span
           v-if="user.adminData.is_suggested"
           class="alert info user-role"
         >
           {{ $t('admin_dash.users.indicator.suggested') }}
-        </label>
+        </span>
         <ModerationTools
           class="moderation-menu"
           :users="[user]"

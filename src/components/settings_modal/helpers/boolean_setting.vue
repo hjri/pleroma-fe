@@ -1,25 +1,19 @@
 <template>
-  <label
+  <div
     v-if="matchesExpertLevel"
     class="BooleanSetting setting-item"
   >
-    <Checkbox
-      class="setting-control setting-label"
-      :model-value="visibleState"
-      :disabled="shouldBeDisabled"
-      :indeterminate="isIndeterminate"
-      @update:model-value="update"
+    <span
+      class="setting-label"
+      :class="{ 'faint': shouldBeDisabled }"
     >
-      <span
-        class="label"
-        :class="{ 'faint': shouldBeDisabled }"
-      >
-        <ModifiedIndicator
-          :changed="isChanged"
-          :onclick="reset"
-        />
-        <LocalSettingIndicator :is-local="isLocalSetting" />
-        {{ ' ' }}
+      <ModifiedIndicator
+        :changed="isChanged"
+        :onclick="reset"
+      />
+      <LocalSettingIndicator :is-local="isLocalSetting" />
+      {{ ' ' }}
+      <label :for="idPrefix + 'checkbox'">
         <template v-if="backendDescriptionLabel">
           {{ backendDescriptionLabel }}
         </template>
@@ -27,8 +21,16 @@
           MISSING LABEL FOR {{ path }}
         </template>
         <slot v-else />
-      </span>
-    </Checkbox>
+      </label>
+    </span>
+    <Checkbox
+      :id="idPrefix + 'checkbox'"
+      class="setting-control"
+      :model-value="visibleState"
+      :disabled="shouldBeDisabled"
+      :indeterminate="isIndeterminate"
+      @update:model-value="update"
+    />
     <p
       v-if="backendDescriptionDescription || showDescription"
       class="setting-description"
@@ -39,7 +41,7 @@
       </slot>
     </p>
     <DraftButtons />
-  </label>
+  </div>
 </template>
 
 <script src="./boolean_setting.js"></script>

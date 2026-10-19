@@ -245,13 +245,15 @@
               >
                 <label
                   class="form--label"
-                  for="captcha-label"
+                  for="captcha-answer"
                 >{{ $t('registration.captcha') }}</label>
 
                 <template v-if="['kocaptcha', 'native'].includes(captcha.type)">
                   <img
                     :src="captcha.url"
                     @click="setCaptcha"
+                    :alt="$t('registration.captcha')"
+                    :title="$t('registration.captcha')"
                   >
 
                   <sub>{{ $t('registration.new_captcha') }}</sub>

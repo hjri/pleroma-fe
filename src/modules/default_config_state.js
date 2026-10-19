@@ -554,6 +554,14 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
     required: true,
     default: 'none',
   },
+  underlineLinks: {
+    description: 'Force links to have underline decoration',
+    default: false,
+  },
+  widthEfficientPostLayout: {
+    description: 'Force post content to take full width',
+    default: false,
+  },
   compactProfiles: {
     description: 'Reduce profile height on user pages',
     default: false,

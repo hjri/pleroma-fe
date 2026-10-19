@@ -29,8 +29,10 @@
     .tab-content-label {
       box-sizing: border-box;
       margin: 0;
-      border-bottom: 1px solid var(--border);
-      display: none;
+
+      /* should still be visible to screenreaders */
+      max-height: 0;
+      overflow: hidden;
 
       button {
         box-sizing: border-box;
@@ -98,7 +100,8 @@
   &.-mobile {
     > .contents {
       .tab-content-label {
-        display: block
+        max-height: unset;
+        border-bottom: 1px solid var(--border);
       }
     }
 

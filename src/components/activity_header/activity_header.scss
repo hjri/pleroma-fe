@@ -1,0 +1,84 @@
+.ActivityHeader {
+  display: grid;
+  line-height: var(--__header-line-height);
+  grid-template-columns: auto auto 1fr auto;
+  grid-template-rows: var(--__header-height);
+  grid-template-areas:
+    "title handle . misc";
+  gap: 0 calc(var(--status-margin) / 2);
+
+  &.-multiline {
+    grid-template-columns: auto auto;
+    grid-template-rows: var(--__header-height) var(--__header-height);
+    grid-template-areas:
+      "title misc"
+      "handle handle";
+  }
+
+  .user-title,
+  .user-handle {
+    white-space: nowrap;
+  }
+
+  .user-title {
+    grid-area: title;
+    font-weight: bold;
+    overflow-x: clip;
+    text-overflow: clip;
+    overflow-clip-margin: 0.5em;
+    min-width: 0;
+
+    .emoji {
+      vertical-align: top;
+    }
+
+    --_still_image-label-scale: 0.25;
+    --emoji-size: 1em;
+  }
+
+  .user-handle {
+    grid-area: handle;
+    display: flex;
+    min-width: 1em;
+
+    .user-profile-link {
+      flex: 0 1 auto;
+      overflow-x: clip;
+      text-overflow: ellipsis;
+      min-width: 0;
+
+      &::after {
+        content: ' ';
+        display: inline-block;
+        width: 0.25em;
+      }
+    }
+
+    .instance-favicon {
+      flex: 0 0 auto;
+      height: 1.1em;
+      width: 1.1em;
+      min-width: 1.1em;
+      object-fit: contain;
+      vertical-align: middle;
+    }
+  }
+
+  .misc {
+    grid-area: misc;
+    flex: 0 0 auto;
+    display: flex;
+    word-break: keep-all;
+    justify-self: end;
+
+    .visibility-icon,
+    .button-unstyled {
+      margin: calc(var(--status-margin) / -2) 0;
+      padding: calc(var(--status-margin) / 2);
+
+      &:last-child {
+        margin-right: calc(var(--status-margin) / -2);
+      }
+    }
+  }
+}

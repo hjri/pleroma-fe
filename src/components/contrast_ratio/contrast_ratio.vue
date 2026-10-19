@@ -7,8 +7,9 @@
       {{ contrast.text }}
     </span>
     <Tooltip
-      :text="hint"
       class="rating"
+      :text="hint"
+      :label="$t('settings.style.common.contrast.label')"
     >
       <span v-if="contrast.aaa">
         <FAIcon
@@ -31,8 +32,9 @@
     </Tooltip>
     <Tooltip
       v-if="contrast && large"
-      :text="hint_18pt"
       class="rating"
+      :text="hint_18pt"
+      :label="$t('settings.style.common.contrast.label')"
     >
       <span v-if="contrast.laaa">
         <FAIcon
@@ -149,6 +151,10 @@ export default {
   .rating {
     display: inline-block;
     margin-left: 0.5em;
+
+    button {
+      padding: 0.25em;
+    }
   }
 }
 </style>
