@@ -105,7 +105,7 @@ describe('useVirtualScrolling', () => {
       rendered: true,
       visible: true,
     }))
-    for(let i = 8; i < 18; i++) {
+    for (let i = 8; i < 18; i++) {
       items[i].visible = false
     }
     const spacerOld = {
@@ -172,10 +172,10 @@ describe('useVirtualScrolling', () => {
       rendered: true,
       visible: true,
     }))
-    for(let i = 0; i < 3; i++) {
+    for (let i = 0; i < 3; i++) {
       items[i].visible = false
     }
-    for(let i = 11; i < 14; i++) {
+    for (let i = 11; i < 14; i++) {
       items[i].visible = false
     }
     const spacer2 = {
@@ -244,7 +244,7 @@ describe('useVirtualScrolling', () => {
       rendered: true,
       visible: true,
     }))
-    for(let i = 0; i < 3; i++) {
+    for (let i = 0; i < 3; i++) {
       itemsNew[i].visible = false
     }
     const itemsOld = [...new Array(6)].map((i, index) => ({
@@ -256,7 +256,7 @@ describe('useVirtualScrolling', () => {
       rendered: true,
       visible: true,
     }))
-    for(let i = 4; i < 6; i++) {
+    for (let i = 4; i < 6; i++) {
       itemsOld[i].visible = false
     }
     const spacer2 = {
@@ -327,7 +327,7 @@ describe('useVirtualScrolling', () => {
       rendered: true,
       visible: true,
     }))
-    for(let i = 4; i < 6; i++) {
+    for (let i = 4; i < 6; i++) {
       items[i].visible = false
     }
     const spacer = {
@@ -412,10 +412,10 @@ describe('useVirtualScrolling', () => {
       rendered: true,
       visible: true,
     }))
-    for(let i = 0; i < 2; i++) {
+    for (let i = 0; i < 2; i++) {
       items2[i].visible = false
     }
-    for(let i = 6; i < 8; i++) {
+    for (let i = 6; i < 8; i++) {
       items2[i].visible = false
     }
     const spacer3 = {
