@@ -461,16 +461,11 @@ const Popover = {
       this.$emit('reverseTabContentFocus')
     },
     onClick(e, navigate) {
-      const modifierKeysHeld = e.ctrlKey || e.altKey || e.shiftKey || e.metaKey
-      const leftButton = e.button === 0
       const singleClick = e.detail <= 1
 
-      if (
-        this.trigger === 'click' &&
-        !modifierKeysHeld &&
-        leftButton &&
-        singleClick
-      ) {
+      if (!singleClick) return // Let the browser do whatever
+
+      if (this.trigger === 'click') {
         e.preventDefault()
         if (this.hidden) {
           this.showPopover()

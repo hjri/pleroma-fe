@@ -19,7 +19,7 @@
 
       @mouseenter="onMouseenter"
       @mouseleave="onMouseleave"
-      @click="e => onClick(e, navigate)"
+      @click.left.exact="e => onClick(e, navigate)"
       @focus="onFocus"
       @blur="onBlur"
       @keydown.tab.exact="onTab"
@@ -45,7 +45,7 @@
 
     @mouseenter="onMouseenter"
     @mouseleave="onMouseleave"
-    @click="onClick"
+    @click.left.exact="onClick"
     @focus="onFocus"
     @blur="onBlur"
     @keydown.tab.exact="onTab"
@@ -69,7 +69,7 @@
 
     @mouseenter="onMouseenter"
     @mouseleave="onMouseleave"
-    @click="onClick"
+    @click.left.exact="onClick"
     @focus="onFocus"
     @blur="onBlur"
     @keydown.tab.exact="onTab"
