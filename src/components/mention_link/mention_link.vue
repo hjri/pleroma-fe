@@ -13,9 +13,9 @@
       v-else
       :user-id="user.id"
       :disabled="!shouldShowTooltip"
-      v-bind="popoverAttrs"
       link
       @click="onClick"
+      v-bind="popoverAttrs"
     >
       <UserAvatar
         v-if="shouldShowAvatar"

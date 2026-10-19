@@ -4,9 +4,10 @@
     popover-class="popover-default user-popover"
     :overlay-centers-selector="overlayCentersSelector || '.user-info .Avatar'"
     :overlay-centers="overlayCenters && userPopoverOverlay"
-    router-link
+    :router-link="link"
     :to="link ? to : undefined"
     aria-haspopup="dialog"
+    @click="e => $emit('click', e)"
     v-bind="$attrs"
   >
     <template #trigger>

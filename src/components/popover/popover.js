@@ -69,7 +69,7 @@ const Popover = {
     // Used to set or unset aria-haspopup (attribute not set for tooltips)
     tooltip: Boolean,
   },
-  emits: ['show', 'close', 'forwardTabContentFocus', 'reverseTabContentFocus'],
+  emits: ['click', 'show', 'close', 'forwardTabContentFocus', 'reverseTabContentFocus'],
   inject: {
     // override popover z layer
     popoversZLayer: {
@@ -461,18 +461,22 @@ const Popover = {
       this.$emit('reverseTabContentFocus')
     },
     onClick(e, navigate) {
-      const singleClick = e.detail <= 1
+      this.$emit('click', e)
 
-      if (!singleClick) return // Let the browser do whatever
+      if (!e.disablePopover) {
+        const singleClick = e.detail <= 1
 
-      if (this.trigger === 'click') {
-        e.preventDefault()
-        if (this.hidden) {
-          this.showPopover()
-        } else {
-          this.hidePopover()
+        if (!singleClick) return // Let the browser do whatever
+
+        if (this.trigger === 'click') {
+          e.preventDefault()
+          if (this.hidden) {
+            this.showPopover()
+          } else {
+            this.hidePopover()
+          }
+          return
         }
-        return
       }
 
       // Router-link navigation

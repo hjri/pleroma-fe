@@ -51,13 +51,9 @@ const MentionLink = {
     }
   },
   methods: {
-    onClick() {
-      if (this.shouldShowTooltip) return
-      const link = generateProfileLink(
-        this.userId || this.user.id,
-        this.userScreenName || this.user.screen_name,
-      )
-      this.$router.push(link)
+    onClick(e) {
+      // Passed into popover's handler
+      e.disablePopover = !this.shouldShowTooltip
     },
     handleSelection() {
       if (this.$refs.full) {
@@ -132,7 +128,6 @@ const MentionLink = {
     },
     popoverAttrs() {
       return {
-        href: this.url,
         style: this.style,
         class: this.classnames,
       }

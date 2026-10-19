@@ -19,6 +19,7 @@ const UserPopover = {
     link: Boolean,
     overlayCentersSelector: String,
   },
+  emits: ['click'],
   components: {
     UserCard,
     Popover,
