@@ -19,6 +19,7 @@ const UserPopover = {
     link: Boolean,
     overlayCentersSelector: String,
   },
+  emits: ['click'],
   components: {
     UserCard,
     Popover,
@@ -27,15 +28,12 @@ const UserPopover = {
     user() {
       return this.userObject ?? useUsersStore().findUser(this.userId)
     },
-    href() {
-      if (!this.user) return ''
-      return this.$router.resolve(
-        generateProfileLink(
-          this.user.id,
-          this.user.screen_name,
-          useInstanceStore().restrictedNicknames,
-        ),
-      ).href
+    to() {
+      return generateProfileLink(
+        this.user.id,
+        this.user.screen_name,
+        useInstanceStore().restrictedNicknames,
+      )
     },
     ...mapState(useMergedConfigStore, {
       userPopoverAvatarAction: (state) =>

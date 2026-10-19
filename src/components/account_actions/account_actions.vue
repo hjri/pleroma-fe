@@ -10,12 +10,11 @@
       :aria-label="$t('user_card.other')"
     >
       <template #content>
-        <div role="menu" class="dropdown-menu">
+        <div class="dropdown-menu">
           <template v-if="relationship.following">
             <div
               v-if="relationship.showing_reblogs"
               class="menu-item dropdown-item"
-              role="menuitem"
             >
               <button
                 class="main-button"
@@ -27,7 +26,6 @@
             <div
               v-if="!relationship.showing_reblogs"
               class="menu-item dropdown-item"
-              role="menuitem"
             >
               <button
                 class="main-button"
@@ -45,7 +43,6 @@
           <div
             v-if="relationship.followed_by"
             class="menu-item dropdown-item"
-            role="menuitem"
           >
             <button
               class="main-button"
@@ -54,10 +51,7 @@
               {{ $t('user_card.remove_follower') }}
             </button>
           </div>
-          <div
-            class="menu-item dropdown-item"
-            role="menuitem"
-          >
+          <div class="menu-item dropdown-item">
             <button
               v-if="relationship.blocking"
               class="main-button"
@@ -73,10 +67,7 @@
               {{ $t('user_card.block') }}
             </button>
           </div>
-          <div
-            class="menu-item dropdown-item"
-            role="menuitem"
-          >
+          <div class="menu-item dropdown-item">
             <button
               class="main-button"
               @click="reportUser"
@@ -87,7 +78,6 @@
           <div
             v-if="pleromaChatMessagesAvailable"
             class="menu-item dropdown-item"
-            role="menuitem"
           >
             <button
               class="main-button"

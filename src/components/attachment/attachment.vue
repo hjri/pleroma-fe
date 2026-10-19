@@ -1,57 +1,27 @@
 <template>
-  <button
-    v-if="usePlaceholder"
-    class="Attachment -placeholder button-default"
-    :class="classNames"
-    @click="openModal"
-  >
-    <a
-      v-if="attachment.type !== 'html'"
-      class="placeholder"
-      target="_blank"
-      :href="attachment.url"
-      :alt="attachment.description"
-      :title="attachment.description"
-      @click.prevent
-    >
-      <FAIcon :icon="placeholderIconClass" />
-      <b>{{ nsfw ? "NSFW / " : "" }}</b>{{ edit ? '' : placeholderName }}
-    </a>
-    <div
-      v-if="edit || remove"
-      class="attachment-buttons"
-      role="toolbar"
-      :aria-label="$t('status.attachment_actions')"
-    >
-      <button
-        v-if="remove"
-        class="button-default attachment-button -transparent"
-        @click.prevent="onRemove"
-        :title="$t('status.remove_attachment')"
-      >
-        <FAIcon icon="trash-alt" />
-      </button>
-    </div>
-    <div
-      v-if="size !== 'hide' && !hideDescription && edit"
-      class="description-container"
-      :class="{ '-static': !edit }"
-    >
-      <textarea
-        v-model="localDescription"
-        type="text"
-        class="input description-field"
-        :placeholder="$t('post_status.media_description')"
-        :aria-label="$t('post_status.media_description')"
-      />
-    </div>
-  </button>
   <div
-    v-else
     class="Attachment"
     :class="classNames"
   >
     <div
+      v-if="usePlaceholder"
+      class="attachment-wrapper"
+      role="presentation"
+    >
+      <a
+        class="placeholder"
+        target="_blank"
+        :href="attachment.url"
+        :alt="attachment.description"
+        :title="attachment.description"
+        @click.left.exact.stop="openModal"
+      >
+        <FAIcon :icon="placeholderIconClass" />
+        <b v-if="nsfw">{{ $t('status.nsfw_prefix') }}</b>{{ placeholderName }}
+      </a>
+    </div>
+    <div
+      v-else
       v-show="!isEmpty"
       class="attachment-wrapper"
       role="presentation"
@@ -60,16 +30,14 @@
         v-if="hidden"
         class="image-container"
         :href="attachment.url"
-        :alt="attachment.description"
         :title="attachment.description"
-        @click.prevent.stop="toggleHidden"
+        @click.left.exact.stop="toggleHidden"
       >
         <img
           :key="nsfwImage"
           class="nsfw image"
           :src="nsfwImage"
           :alt="$t('status.nsfw_placeholder')"
-          :title="$t('status.nsfw_placeholder')"
         >
         <FAIcon
           v-if="attachment.type === 'video'"
@@ -86,7 +54,7 @@
         :aria-hidden="hidden"
         :href="attachment.url"
         target="_blank"
-        @click.stop.prevent="openModal"
+        @click.left.exact.stop="openModal"
         aria-haspopup="dialog"
       >
         <StillImage
@@ -121,8 +89,8 @@
         class="video-container"
         :title="videoTag === 'button' ? $t('status.show_attachment_in_modal') : undefined"
         :href="attachment.url"
-        @click.stop.prevent="openModal"
         :aria-haspopup="videoTag === 'button' ? 'dialog' : 'false'"
+        @click.left.exact.stop="openModal"
       >
         <VideoAttachment
           class="video"
@@ -142,7 +110,7 @@
         v-if="attachment.type === 'audio' && !hidden"
         class="audio-container"
         :href="attachment.url"
-        @click.stop.prevent="openModal"
+        @click.left.exact.stop="openModal"
       >
         <audio
           v-if="attachment.type === 'audio'"
@@ -159,7 +127,7 @@
         v-if="attachment.type === 'flash' && !hidden"
         class="flash-container"
         :href="attachment.url"
-        @click.stop.prevent="openModal"
+        @click.left.exact.stop="openModal"
       >
         <Flash
           ref="flash"
@@ -180,7 +148,8 @@
           v-if="attachment.type === 'flash' && flashLoaded"
           class="button-default attachment-button -transparent"
           :title="$t('status.attachment_stop_flash')"
-          @click.prevent="stopFlash"
+          type="button"
+          @click.left.exact="stopFlash"
         >
           <FAIcon icon="stop" />
         </button>
@@ -207,7 +176,8 @@
           class="button-default attachment-button -transparent"
           :title="$t('status.show_attachment_in_modal')"
           aria-haspopup="dialog"
-          @click.prevent="openModalForce"
+          type="button"
+          @click.left.exact="openModalForce"
         >
           <FAIcon icon="search-plus" />
         </button>
@@ -215,7 +185,8 @@
           v-if="nsfw && hideNsfwLocal"
           class="button-default attachment-button -transparent"
           :title="$t('status.hide_attachment')"
-          @click.prevent="toggleHidden"
+          type="button"
+          @click.left.exact="toggleHidden"
         >
           <FAIcon icon="times" />
         </button>
@@ -223,7 +194,8 @@
           v-if="shiftUp"
           class="button-default attachment-button -transparent"
           :title="$t('status.move_up')"
-          @click.prevent="onShiftUp"
+          type="button"
+          @click.left.exact="onShiftUp"
         >
           <FAIcon icon="chevron-left" />
         </button>
@@ -231,7 +203,8 @@
           v-if="shiftDn"
           class="button-default attachment-button -transparent"
           :title="$t('status.move_down')"
-          @click.prevent="onShiftDn"
+          type="button"
+          @click.left.exact="onShiftDn"
         >
           <FAIcon icon="chevron-right" />
         </button>
@@ -239,7 +212,8 @@
           v-if="remove"
           class="button-default attachment-button -transparent"
           :title="$t('status.remove_attachment')"
-          @click.prevent="onRemove"
+          type="button"
+          @click.left.exact="onRemove"
         >
           <FAIcon icon="trash-alt" />
         </button>

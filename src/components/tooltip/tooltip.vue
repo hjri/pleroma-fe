@@ -3,16 +3,14 @@
   trigger="hover"
   tooltip
   :label="label"
-  :aria-describedby="idPrefix + 'content'"
+  popover-class="popover-default tooltip"
   v-bind="$attrs"
 >
   <template #trigger>
     <slot />
   </template>
   <template #content>
-    <div class="tooltip" role="tooltip" :id="idPrefix + 'content'">
-      {{ props.text }}
-    </div>
+    {{ props.text }}
   </template>
 </Popover>
 </template>
@@ -29,6 +27,6 @@ const idPrefix = computed(() => `tooltip-${uniqueId}`)
 
 <style lang="scss">
 .tooltip {
-  margin: 0.5em 1em;
+  padding: 0.5em 1em;
 }
 </style>

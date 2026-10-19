@@ -44,7 +44,6 @@
         v-if="button.name === 'changeScope'"
         :id="`popup-menu-scope-${randomSeed}`"
         class="dropdown-menu"
-        role="menu"
       >
         <div
           v-for="visibility in availableScopes"
@@ -97,7 +96,6 @@
         v-if="button.name === 'mute'"
         :id="`popup-menu-${randomSeed}`"
         class="dropdown-menu"
-        role="menu"
       >
         <div class="menu-item dropdown-item extra-action -icon">
           <button
@@ -150,25 +148,6 @@
             </template>
           </button>
         </div>
-        <teleport to="#modal">
-          <MuteConfirm
-            ref="confirmConversation"
-            type="conversation"
-            :status="status"
-            :user="user"
-          />
-          <MuteConfirm
-            ref="confirmDomain"
-            type="domain"
-            :status="status"
-            :user="user"
-          />
-          <UserTimedFilterModal
-            ref="confirmUser"
-            :is-mute="true"
-            :user="user"
-          />
-        </teleport>
       </div>
     </template>
   </Popover>
@@ -181,6 +160,25 @@
     :hide-label="hideLabel"
     v-bind="$attrs"
   />
+  <teleport to="#modal">
+    <MuteConfirm
+      ref="confirmConversation"
+      type="conversation"
+      :status="status"
+      :user="user"
+    />
+    <MuteConfirm
+      ref="confirmDomain"
+      type="domain"
+      :status="status"
+      :user="user"
+    />
+    <UserTimedFilterModal
+      ref="confirmUser"
+      :is-mute="true"
+      :user="user"
+    />
+  </teleport>
 </template>
 
 <script src="./action_button_container.js" />

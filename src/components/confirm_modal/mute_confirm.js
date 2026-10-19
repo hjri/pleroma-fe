@@ -29,6 +29,8 @@ export default {
         return 'user_card.mute_domain_confirm'
       } else if (this.type === 'conversation') {
         return 'user_card.mute_conversation_confirm'
+      } else {
+        return 'user_card.mute_confirm'
       }
     },
     conversationIsMuted() {

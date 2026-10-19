@@ -13,8 +13,6 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
 import { useUsersStore } from 'src/stores/users.js'
 
-import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
-
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faAt } from '@fortawesome/free-solid-svg-icons'
 
@@ -51,13 +49,9 @@ const MentionLink = {
     }
   },
   methods: {
-    onClick() {
-      if (this.shouldShowTooltip) return
-      const link = generateProfileLink(
-        this.userId || this.user.id,
-        this.userScreenName || this.user.screen_name,
-      )
-      this.$router.push(link)
+    onClick(e) {
+      // Passed into popover's handler
+      e.disablePopover = !this.shouldShowTooltip
     },
     handleSelection() {
       if (this.$refs.full) {
@@ -132,7 +126,6 @@ const MentionLink = {
     },
     popoverAttrs() {
       return {
-        href: this.url,
         style: this.style,
         class: this.classnames,
       }

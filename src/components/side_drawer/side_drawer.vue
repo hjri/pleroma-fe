@@ -115,7 +115,7 @@
           </router-link>
         </li>
       </ul>
-      <ul role="menu" v-if="currentUser">
+      <ul v-if="currentUser">
         <li @click="toggleDrawer">
           <router-link
             :to="{ name: 'interactions', params: { username: currentUser.screen_name } }"
@@ -165,7 +165,7 @@
           </router-link>
         </li>
       </ul>
-      <ul role="menu">
+      <ul>
         <li
           v-if="currentUser || !privateMode"
           @click="toggleDrawer"

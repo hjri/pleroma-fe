@@ -227,46 +227,14 @@
     }
   }
 
-  &.-placeholder {
-    display: inline-block;
-    color: var(--link);
+  .placeholder {
+    box-sizing: border-box;
+    padding: 0.5em;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: clip;
     white-space: nowrap;
-    height: auto;
-    line-height: 1.5;
-
-    &:not(.-editable) {
-      border: none;
-    }
-
-    &.-editable {
-      display: flex;
-      flex-direction: row;
-      align-items: baseline;
-
-      & .description-container,
-      & .attachment-buttons {
-        margin: 0;
-        padding: 0;
-        position: relative;
-      }
-
-      .description-container {
-        flex: 1;
-        padding-left: 0.5em;
-      }
-
-      .attachment-buttons {
-        order: 99;
-        align-self: center;
-      }
-    }
-
-    a {
-      display: inline-block;
-      max-width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    text-overflow: ellipsis;
 
     svg {
       color: inherit;

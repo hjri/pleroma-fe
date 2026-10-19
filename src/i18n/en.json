@@ -151,7 +151,8 @@
       "private": "Followers-only",
       "public": "Public",
       "unlisted": "Unlisted"
-    }
+    },
+    "popover_link_a11y": "Popover link. Clicking the link will open the popover. Double-click or Shift-click will navigate the link."
   },
   "image_cropper": {
     "crop_picture": "Crop picture",
@@ -1770,6 +1771,7 @@
     "move_up": "Shift attachment left",
     "move_down": "Shift attachment right",
     "nsfw_placeholder": "Sensitive attachment placeholder",
+    "nsfw_prefix": "Sensitive: ",
     "open_gallery": "Open gallery",
     "thread_hide": "Hide this thread",
     "thread_show": "Show this thread",
@@ -1850,6 +1852,7 @@
     "mute_confirm_title": "Mute confirmation",
     "mute_confirm": "Do you really want to mute {user}?",
     "mute_domain_confirm": "Do you really want to mute entire {domain}?",
+    "mute_conversation_confirm": "Do you really want to mute this conversation?",
     "mute_confirm_accept_button": "Mute",
     "mute_confirm_cancel_button": "Do not mute",
     "mute_or": "or",

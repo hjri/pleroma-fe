@@ -245,8 +245,8 @@ const EmojiInput = {
     this.input = input
     this.caretEl = hiddenOverlayCaret
     if (this.caretEl) {
-      suggest.setAnchorEl(this.caretEl) // unit test compat
-      picker.setAnchorEl(this.caretEl)
+      suggest.setAnchorEl?.(this.caretEl) // unit test compat
+      picker.setAnchorEl?.(this.caretEl)
     } else {
       console.warn('setAnchorEl not found, are we in a unit test?')
     }
