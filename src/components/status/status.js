@@ -581,7 +581,7 @@ const Status = {
       this.$emit('heightChange', {
         id: this.status.id,
         height: entry.contentRect.height + 1,
-        element: this.$el,
+        element: this.$refs.root,
       })
     },
   },
