@@ -1,0 +1,1 @@
+Fix avatar change attempt resulting in error due to missing canvas element ref
