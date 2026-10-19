@@ -47,8 +47,7 @@ export function useVirtualScrolling({
 
   // # Heights mapping.
   const heights = ref(new Map())
-  const heightChart = ref([])
-  const updateHeightChart = () => {
+  const heightChart = computed(() => {
     // Map every height and suspendable state
     const chart = list.value.map((item) => {
       const { id } = item
@@ -70,11 +69,7 @@ export function useVirtualScrolling({
       return sum + item.height
     }, 0)
 
-    heightChart.value = chart
-  }
-  watch([list, heights, unsuspendibleIds], updateHeightChart, {
-    immediate: true,
-    deep: true,
+    return chart
   })
 
   const updateVirtualHeight = ({ id, height }) => {
@@ -318,7 +313,7 @@ export function useVirtualScrolling({
             if (newVal.length < oldVal.length) return 0
             return getShift(
               'expansion',
-              oldVal.filter((item) => !item.visible && item.rendered),
+              oldVal,
               newVal,
               (list) =>
                 list.find(
@@ -333,7 +328,7 @@ export function useVirtualScrolling({
             if (newVal.length < oldVal.length) return 0
             const shift = getShift(
               'inverse',
-              oldVal.filter((item) => !item.visible && item.rendered),
+              oldVal,
               newVal,
               (list) =>
                 list.findLast(({ top }) => top > bottomScrollBoundary.value) ??
