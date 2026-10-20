@@ -57,6 +57,12 @@ export default {
       type: Boolean,
       default: true,
     },
+    // For embedded conversation, what is its top offset in timeline
+    // (used for scrolling)
+    top: {
+      type: Number,
+      default: 0,
+    }
   },
   components: {
     ThreadTree,
@@ -201,10 +207,10 @@ export default {
     )
     const {
       heightChart: heightChartLinear,
+      heightChartFull: heightChartFullLinear,
       changeSuspendState: changeSuspendStateLinear,
       updateVirtualHeight: updateVirtualHeightLinear,
       reset: resetLinearScrollVirtualization,
-      scrollTo: linearScrollTo,
     } = useVirtualScrolling({
       name: 'Linear',
       enabled: linearScrollCompensation,
@@ -314,16 +320,55 @@ export default {
     )
 
     // # Scrolling
-    const scrollTo = (ids) => {
-      if (isLinearView.value) {
-        return linearScrollTo(ids)
-      }
-    }
     const focusTopLevel = () => setFocused(currentAncestors.value[0].id)
+    const scrollOffset = computed(() => {
+      const { vHeight } = scroller
+      const screenMiddle = vHeight.value / 2
 
+      const panelHeadersAmount = isPage ? 1 : 2
+      return navbarSize.value + panelHeaderSize.value * panelHeadersAmount + rootTop.value - screenMiddle
+    })
+
+    const { top: rootTop } = toRefs(props)
     watch(focusedId, async (neu, old) => {
-      // Ignoring initial update (null -> id) since that is handled by scroll compensation
-      if (old && neu) scrollTo(new Set([neu]))
+      // tree view has its own weirdness and doesn't require scroll
+      if (!isLinearView.value) return
+
+      setTimeout(() => {
+        // Ignoring initial update (null -> id) since that is handled by scroll compensation
+        const element = heightChartFullLinear.value.find(({ id }) => id === neu)
+        if (!element) return
+        const { top, height } = element
+        const elementMiddle = top + height / 2
+
+        const targetScrollPosition = Math.max(elementMiddle + scrollOffset.value, 0)
+
+        scroller.scrollToPriority({ top: targetScrollPosition, behavior: 'smooth' })
+      }, 5) // let other scroll stuff happen first (scroll compensation etc)
+    })
+    const treeElement = useTemplateRef('tree')
+    watch(isExpanded, async (neu) => {
+      setTimeout(() => {
+        if (neu) {
+          if (isLinearView.value) {
+            return // handled in focus watcher
+          } else {
+            const wrapperElement = treeElement.value.$el
+            const top = wrapperElement.offsetTop
+            const element = wrapperElement.querySelector('.Status')
+            const height = element.offsetHeight
+
+            const elementMiddle = top + height / 2
+
+            const targetScrollPosition = Math.max(elementMiddle + scrollOffset.value, 0)
+
+            scroller.scrollToPriority({ top: targetScrollPosition, behavior: 'smooth' })
+          }
+        } else {
+          const targetScrollPosition = Math.max(height.value / 2 + scrollOffset.value, 0)
+          scroller.scrollToPriority({ top: targetScrollPosition, behavior: 'smooth' })
+        }
+      }, 5) // let other scroll stuff happen first (scroll compensation etc)
     })
 
     return {

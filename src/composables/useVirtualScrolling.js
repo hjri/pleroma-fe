@@ -387,6 +387,7 @@ export function useVirtualScrolling({
 
   return {
     heightChart: heightChartGrouped,
+    heightChartFull: heightChartVisibility,
     changeSuspendState,
     updateVirtualHeight,
     pauseWatchers,
