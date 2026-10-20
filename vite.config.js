@@ -182,6 +182,7 @@ export default defineConfig(async ({ mode, command }) => {
       COMMIT_HASH: JSON.stringify(
         command === 'serve' ? 'DEV' : getCommitHash(),
       ),
+      HOSTED_MODE: process.env.PLEROMAFE_HOSTED_MODE,
       DEV_OVERRIDES: JSON.stringify(command === 'serve' ? settings : undefined),
       __VUE_OPTIONS_API__: true,
       __VUE_PROD_DEVTOOLS__: false,

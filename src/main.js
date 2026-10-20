@@ -88,4 +88,5 @@ messages.setLanguage(i18n.global, currentLocale)
 window.___pleromafe_mode = process.env
 window.___pleromafe_commit_hash = COMMIT_HASH
 window.___pleromafe_dev_overrides = DEV_OVERRIDES
+window.___pleromafe_hosted_mode = HOSTED_MODE
 // biome-ignore-end lint: added in build process
