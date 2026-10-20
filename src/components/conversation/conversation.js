@@ -365,8 +365,10 @@ export default {
             return // handled in focus watcher
           } else {
             const wrapperElement = treeElement.value.$el
+            if (!wrapperElement) return
             const top = wrapperElement.offsetTop
             const element = wrapperElement.querySelector('.Status')
+            if (!element) return
             const height = element.offsetHeight
 
             const elementMiddle = top + height / 2
