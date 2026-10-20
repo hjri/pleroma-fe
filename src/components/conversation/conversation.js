@@ -62,7 +62,7 @@ export default {
     top: {
       type: Number,
       default: 0,
-    }
+    },
   },
   components: {
     ThreadTree,
@@ -326,7 +326,12 @@ export default {
       const screenMiddle = vHeight.value / 2
 
       const panelHeadersAmount = isPage ? 1 : 2
-      return navbarSize.value + panelHeaderSize.value * panelHeadersAmount + rootTop.value - screenMiddle
+      return (
+        navbarSize.value +
+        panelHeaderSize.value * panelHeadersAmount +
+        rootTop.value -
+        screenMiddle
+      )
     })
 
     const { top: rootTop } = toRefs(props)
@@ -341,9 +346,15 @@ export default {
         const { top, height } = element
         const elementMiddle = top + height / 2
 
-        const targetScrollPosition = Math.max(elementMiddle + scrollOffset.value, 0)
+        const targetScrollPosition = Math.max(
+          elementMiddle + scrollOffset.value,
+          0,
+        )
 
-        scroller.scrollToPriority({ top: targetScrollPosition, behavior: 'smooth' })
+        scroller.scrollToPriority({
+          top: targetScrollPosition,
+          behavior: 'smooth',
+        })
       }, 5) // let other scroll stuff happen first (scroll compensation etc)
     })
     const treeElement = useTemplateRef('tree')
@@ -360,13 +371,25 @@ export default {
 
             const elementMiddle = top + height / 2
 
-            const targetScrollPosition = Math.max(elementMiddle + scrollOffset.value, 0)
+            const targetScrollPosition = Math.max(
+              elementMiddle + scrollOffset.value,
+              0,
+            )
 
-            scroller.scrollToPriority({ top: targetScrollPosition, behavior: 'smooth' })
+            scroller.scrollToPriority({
+              top: targetScrollPosition,
+              behavior: 'smooth',
+            })
           }
         } else {
-          const targetScrollPosition = Math.max(height.value / 2 + scrollOffset.value, 0)
-          scroller.scrollToPriority({ top: targetScrollPosition, behavior: 'smooth' })
+          const targetScrollPosition = Math.max(
+            height.value / 2 + scrollOffset.value,
+            0,
+          )
+          scroller.scrollToPriority({
+            top: targetScrollPosition,
+            behavior: 'smooth',
+          })
         }
       }, 5) // let other scroll stuff happen first (scroll compensation etc)
     })
