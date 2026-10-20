@@ -340,7 +340,6 @@ export default {
       if (!isLinearView.value) return
 
       setTimeout(() => {
-        // Ignoring initial update (null -> id) since that is handled by scroll compensation
         const element = heightChartFullLinear.value.find(({ id }) => id === neu)
         if (!element) return
         const { top, height } = element
