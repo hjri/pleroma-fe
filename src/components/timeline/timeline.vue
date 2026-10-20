@@ -96,6 +96,7 @@
             class="timeline-conversation"
             :status-id="element.id"
             :scroll-compensation="element.visible"
+            :top="element.top"
 
             :data-vs-height="element.height"
             :data-vs-top="element.top"
