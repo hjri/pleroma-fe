@@ -65,7 +65,7 @@ const emptyTl = (name, argument = null) => {
     result[property] = argument
   }
 
-  if (name === 'dms' || name === 'friends') {
+  if (name === 'friends') {
     result.persistent = true
   }
 

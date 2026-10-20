@@ -61,13 +61,17 @@ export function useScrollPosition(scroller) {
   const scrollToPriority = async (...args) => {
     priorityInProgress.value = true
     const result = await realScrollTo(...args)
-    priorityInProgress.value = false
+    setTimeout(() => {
+      priorityInProgress.value = false
+    }, 100)
     return result
   }
   const scrollByPriority = async (...args) => {
     priorityInProgress.value = true
     const result = await realScrollBy(...args)
-    priorityInProgress.value = false
+    setTimeout(() => {
+      priorityInProgress.value = false
+    }, 1000)
     return result
   }
 

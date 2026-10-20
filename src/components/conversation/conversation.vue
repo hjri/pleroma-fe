@@ -127,6 +127,7 @@
           </template>
         </div>
         <ThreadTree
+          ref="tree"
           :status-id="focusedId ?? currentStatus.id"
           :depth="0"
 

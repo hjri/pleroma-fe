@@ -1,0 +1,1 @@
+Removed DMs timeline from persistent timelines so that Akkoma users don't get continious "404 - Not Implemented" banner all the time. Proper fix will be in the works shortly.
