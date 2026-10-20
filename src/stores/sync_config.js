@@ -823,6 +823,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
     pushSyncConfig({ force = false } = {}) {
       const needPush = this.dirty || force
       if (!needPush) return
+      if (!useUsersStore().currentUser) return
       this.updateCache({ username: useUsersStore().currentUser.fqn })
       const params = { pleroma_settings_store: { 'pleroma-fe': this.cache } }
       updateProfileJSON({
