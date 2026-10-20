@@ -976,7 +976,7 @@ const PostStatusForm = {
       this.autoPreview()
       this.updateIdempotencyKey()
       this.debouncedMaybeAutoSaveDraft()
-      this.saveable = true
+      this.saveable = this.isDirty
       this.saveInhibited = false
     },
     saveDraft() {
