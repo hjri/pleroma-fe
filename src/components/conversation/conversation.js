@@ -325,7 +325,7 @@ export default {
       const { vHeight } = scroller
       const screenMiddle = vHeight.value / 2
 
-      const panelHeadersAmount = isPage ? 1 : 2
+      const panelHeadersAmount = isPage.value ? 1 : 2
       return (
         navbarSize.value +
         panelHeaderSize.value * panelHeadersAmount +
