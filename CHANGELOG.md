@@ -3,6 +3,41 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 2.11.4
+### Fixed
+- Fix legacy settings migration being discarded after it ran.
+- Fix follower remove API call
+- Fix followers list showing followed users as non-followed
+- Prevent service worker from caching media-proxy responses
+- Fix posting not working when using preview
+
+## 2.11.3
+### Fixed
+- fixed tapping "Mute..." and "Change visiblity" (admin action) in extra status actions closing the dropdown
+- fix image cropper error preventing avatar upload
+- fix pinned indicator looking wrong on CJK locales
+- domain mute fixedw
+- Fix followers list showing followed users as non-followed
+- Fixed moderation actions requiring confirmation closing user popover
+- fix moderation tools button possibly not appearing for admins
+- Fixed server-side domain mutes rendering/api calls
+- Fix Theme 2 fonts falling back to serif after upgrade
+- Fix theme lists failing to load when custom resource indexes are unavailable
+- Fix Themes 2.0 applying incorrect fonts
+- Fixed themes 3 not loading in appearance tab
+- Fixed layout selector (third column/reverse) not working immideately upon change
+- Fixed status index approxmiation in timeline rendering for dynamically changing viewport geometries
+
+## 2.11.2
+### Fixed
+- Do not crash even on css rule insertion failure
+- Fixed serif-fonts being used by default in some cases
+- Fix MFA login and recovery code authentication.
+- Fixed font select component showing and using objects instead of strings
+- Fixed generic ('sans-serif', 'monospace' etc) fonts not working
+- Fix style of extra notifications
+- Potentially fixed theme rendering on Firefox 153
+
 ## 2.11.1
 ### Fixed
 - User note not working
