@@ -19,7 +19,7 @@ import {
   ROOT_CONFIG,
   ROOT_CONFIG_DEFINITIONS,
   validateSetting,
-} from 'src/modules/default_config_state.js'
+} from 'src/stores/default_state/default_config_state.js'
 import {
   newExporter,
   newImporter,

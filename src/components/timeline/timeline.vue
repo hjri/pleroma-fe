@@ -80,6 +80,19 @@
         class="rightside-button"
       />
     </div>
+    <div
+      v-if="paginationEnabled && page > 0"
+      class="pagination panel-subheading"
+    >
+      <button
+        class="panel-body button-unstyled"
+        @click.left.prevent="previousPage"
+      >
+        <div class="new-status-notification text-center">
+          {{ $t('timeline.previous_page') }}
+        </div>
+      </button>
+    </div>
     <div :class="classes.body">
       <div
         class="timeline"
@@ -139,30 +152,55 @@
         :disabled="!embedded || !footerSlipgate"
       >
         <div
-          v-if="timeline.fetcher.bottomedOut"
-          class="new-status-notification text-center faint"
+          v-if="paginationEnabled"
+          class="pagination"
         >
-          {{ $t('timeline.no_more_statuses') }}
+          <button
+            v-if="!isLastPage"
+            class="button-unstyled"
+            @click.left.prevent="nextPage"
+          >
+            <div class="new-status-notification text-center">
+              {{ $t('timeline.next_page') }}
+            </div>
+          </button>
+          <div
+            v-else
+            class="new-status-notification text-center faint"
+          >
+            {{ $t('timeline.no_more_statuses') }}
+          </div>
         </div>
         <div
-          v-else-if="timeline.fetcher.loadingOlder"
-          class="new-status-notification text-center"
+          v-else
+          class="infinite-scroll"
         >
-          <FAIcon
-            icon="circle-notch"
-            spin
-            size="lg"
-          />
-        </div>
-        <button
-          v-else-if="timeline.minId !== ''"
-          class="button-unstyled -link"
-          @click.prevent="fetchOlderStatuses()"
-        >
-          <div class="new-status-notification text-center">
-            {{ $t('timeline.load_older') }}
+          <div
+            v-if="timeline.fetcher.bottomedOut"
+            class="new-status-notification text-center faint"
+          >
+            {{ $t('timeline.no_more_statuses') }}
           </div>
-        </button>
+          <div
+            v-else-if="timeline.fetcher.loadingOlder"
+            class="new-status-notification text-center"
+          >
+            <FAIcon
+              icon="circle-notch"
+              spin
+              size="lg"
+            />
+          </div>
+          <button
+            v-else-if="timeline.minId !== ''"
+            class="button-unstyled"
+            @click.prevent="fetchOlderStatuses()"
+          >
+            <div class="new-status-notification text-center">
+              {{ $t('timeline.load_older') }}
+            </div>
+          </button>
+        </div>
       </teleport>
       <!-- spacer to avoid having empty shrug -->
       <span v-if="embedded && footerSlipgate" />

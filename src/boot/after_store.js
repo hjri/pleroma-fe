@@ -51,7 +51,7 @@ import {
   INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
   INSTANCE_IDENTITY_DEFAULT_DEFINITIONS,
   INSTANCE_IDENTIY_EXTERNAL,
-} from 'src/modules/default_config_state.js'
+} from 'src/stores/default_state/default_config_state.js'
 import {
   chosenInstance,
   instanceConfig,

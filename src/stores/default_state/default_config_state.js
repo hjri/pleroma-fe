@@ -216,6 +216,10 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
     description: 'Pause showing new posts when tab is unfocused',
     default: true,
   },
+  timelinePagination: {
+    description: 'Use pagination instead of infinite scrolling',
+    default: false,
+  },
   emojiReactionsOnTimeline: {
     description: 'Show emoji reactions on timeline',
     default: true,

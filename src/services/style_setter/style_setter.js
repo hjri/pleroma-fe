@@ -9,7 +9,7 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { promisedRequest } from 'src/api/helpers.js'
-import { ROOT_CONFIG } from 'src/modules/default_config_state.js'
+import { ROOT_CONFIG } from 'src/stores/default_state/default_config_state.js'
 
 // On platforms where this is not supported, it will return undefined
 // Otherwise it will return an array

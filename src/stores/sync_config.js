@@ -30,8 +30,8 @@ import {
   ROOT_CONFIG,
   ROOT_CONFIG_DEFINITIONS,
   validateSetting,
-} from 'src/modules/default_config_state.js'
-import { oldDefaultConfigSync } from 'src/modules/old_default_config_state.js'
+} from 'src/stores/default_state/default_config_state.js'
+import { oldDefaultConfigSync } from 'src/stores/default_state/old_default_config_state.js'
 
 export const VERSION = 2
 export const NEW_USER_DATE = new Date('2026-03-16') // date of writing this, basically

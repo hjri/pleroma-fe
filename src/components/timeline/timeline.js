@@ -58,6 +58,7 @@ const Timeline = {
   },
   setup(props, ctx) {
     const { t } = useI18n()
+    const { mergedConfig } = storeToRefs(useMergedConfigStore())
 
     const { focused } = useDocumentFocus()
     const unfocused = computed(() => !focused.value)
@@ -75,7 +76,41 @@ const Timeline = {
 
     // Scroll position
     const scroller = inject('bodyScrollPosition')
-    const { hasReachedTop, shouldLoadBottom, top: scrollY } = scroller
+    const { hasReachedTop, shouldLoadBottom, top: scrollY, scrollToPriority } = scroller
+
+    // Pagination
+    const paginationEnabled = computed(() => mergedConfig.value.timelinePagination)
+    const page = ref(0)
+    const PAGE_SIZE = 20
+    const pageStart = computed(() => page.value * PAGE_SIZE)
+    const pageEnd = computed(() => pageStart.value + PAGE_SIZE)
+    const currentSlice = computed(() => {
+      if (paginationEnabled.value) {
+        return filteredVisibleStatuses.value.slice(pageStart.value, pageEnd.value)
+      } else {
+        return filteredVisibleStatuses.value
+      }
+    })
+    const isFirstPage = computed(() => page.value <= 0)
+    const isLastPage = computed(() => {
+      const bottomedOut = timeline.value.fetcher.bottomedOut
+      const lastId = timeline.value.minId
+      const lastIdInPage = currentSlice.value.find(({ id }) => timeline.value.minId)
+      return bottomedOut && lastId && lastIdInPage
+    })
+
+    const nextPage = () => {
+      if (isLastPage.value) return
+      fetchOlderStatuses()
+      page.value++
+      scrollToPriority({ top: 0, behavior: 'smooth' })
+    }
+    const previousPage = () => {
+      if (isFirstPage.value) return
+      page.value--
+      scrollToPriority({ top: 0, behavior: 'smooth' })
+    }
+
     // Virtual scrolling
     const { fontSize, navbarSize } = useInterfaceSizes()
 
@@ -83,7 +118,7 @@ const Timeline = {
     const mutedStatusHeight = computed(() => fontSize.value * 1.5)
     const normalStatusHeight = computed(() => fontSize.value * 10)
     const getPlaceholderHeight = (id) =>
-      filteredVisibleStatuses.value.find((item) => item.id === id)?.muted
+      currentSlice.value.find((item) => item.id === id)?.muted
         ? mutedStatusHeight
         : normalStatusHeight
 
@@ -100,7 +135,7 @@ const Timeline = {
       useVirtualScrolling({
         name: 'Timeline',
         enabled: ref(true),
-        list: filteredVisibleStatuses,
+        list: currentSlice,
         body,
         offset,
         scrollPositionInstance: scroller,
@@ -117,12 +152,11 @@ const Timeline = {
 
     // Showing new
     const paused = ref(false)
-    const { mergedConfig } = storeToRefs(useMergedConfigStore())
     const unfocusedPause = computed(
       () => unfocused.value && mergedConfig.value.pauseOnUnfocused,
     )
     const showNewAutomatically = computed(
-      () => useMergedConfigStore().mergedConfig.streaming,
+      () => mergedConfig.value.streaming,
     )
 
     watch(newStatusCount, (count) => {
@@ -130,7 +164,7 @@ const Timeline = {
       if (count <= 0) return
 
       // only 'stream' them when you're scrolled to the top
-      if (hasReachedTop.value && !paused.value && !unfocusedPause.value) {
+      if (hasReachedTop.value && !paused.value && !unfocusedPause.value && page.value === 0) {
         showNewStatuses(true)
       } else {
         paused.value = true
@@ -145,6 +179,7 @@ const Timeline = {
         blockClicksTemporarily()
         useTimelinesStore().showNewStatuses(timelineRef.value.name)
       }
+      page.value = 0
       paused.value = false
       await nextTick()
       scroller.scrollToPriority({
@@ -201,6 +236,7 @@ const Timeline = {
 
     const infiniteLoadWatcher = debounce(([value]) => {
       if (!value) return
+      if (paginationEnabled.value) return
       fetchOlderStatuses()
     }, 100)
     // Scroll
@@ -252,7 +288,11 @@ const Timeline = {
     return {
       timelineRef,
       timeline,
-      filteredVisibleStatuses,
+
+      paginationEnabled,
+      page,
+      nextPage,
+      previousPage,
 
       heightChart,
       updateVirtualHeight,

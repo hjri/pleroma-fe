@@ -10,7 +10,7 @@ import {
   LOCAL_DEFAULT_CONFIG,
   LOCAL_DEFAULT_CONFIG_DEFINITIONS,
   validateSetting,
-} from '../modules/default_config_state.js'
+} from 'src/stores/default_state/default_config_state.js'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'

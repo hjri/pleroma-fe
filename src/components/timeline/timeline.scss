@@ -4,6 +4,13 @@
     backdrop-filter: none;
   }
 
+  .pagination,
+  .infinite-scroll {
+    background: var(--background);
+    display: grid;
+    place-items: center;
+  }
+
   .timeline-placeholder {
     background: var(--background);
     display: flex;

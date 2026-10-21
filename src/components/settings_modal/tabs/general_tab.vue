@@ -139,6 +139,11 @@
             {{ $t('settings.useStreamingApi') }}
           </BooleanSetting>
         </li>
+        <li>
+          <BooleanSetting path="timelinePagination">
+            {{ $t('settings.timeline_pagination') }}
+          </BooleanSetting>
+        </li>
       </ul>
       <h3 v-if="expertLevel > 0">
         {{ $t('settings.confirmations') }}

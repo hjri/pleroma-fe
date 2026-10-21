@@ -7,7 +7,7 @@ import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import {
   LOCAL_ONLY_KEYS,
   ROOT_CONFIG,
-} from 'src/modules/default_config_state.js'
+} from 'src/stores/default_state/default_config_state.js'
 
 export const useMergedConfigStore = defineStore('merged_config', {
   getters: {
