@@ -229,10 +229,7 @@ export const getLayerSlot = (
  */
 export const SLOT_ORDERED = topoSort(
   Object.entries(SLOT_INHERITANCE)
-    .sort(
-      ([, aV], [, bV]) =>
-        ((aV && aV.priority) || 0) - ((bV && bV.priority) || 0),
-    )
+    .sort(([, aV], [, bV]) => (aV?.priority || 0) - (bV?.priority || 0))
     .reduce((acc, [k, v]) => ({ ...acc, [k]: v }), {}),
 )
 
@@ -247,10 +244,7 @@ export const OPACITIES = Object.entries(SLOT_INHERITANCE).reduce((acc, [k]) => {
       ...acc,
       [opacity]: {
         defaultValue: DEFAULT_OPACITY[opacity] || 1,
-        affectedSlots: [
-          ...((acc[opacity] && acc[opacity].affectedSlots) || []),
-          k,
-        ],
+        affectedSlots: [...(acc[opacity]?.affectedSlots || []), k],
       },
     }
   } else {
@@ -408,7 +402,7 @@ export const getColors = (sourceColors, sourceOpacity) =>
           delete outputColor.a
         } else {
           // Otherwise try to assign opacity
-          if (dependencyColor && dependencyColor.a === 0) {
+          if (dependencyColor?.a === 0) {
             // transparent dependency shall make dependents transparent too
             outputColor.a = 0
           } else {
@@ -416,7 +410,7 @@ export const getColors = (sourceColors, sourceOpacity) =>
             outputColor.a = Number(
               opacityOverriden
                 ? sourceOpacity[opacitySlot]
-                : (OPACITIES[opacitySlot] || {}).defaultValue,
+                : OPACITIES[opacitySlot]?.defaultValue,
             )
           }
         }
@@ -463,7 +457,7 @@ export const generatePreset = (input) => {
   return composePreset(
     colors,
     generateRadii(input),
-    generateShadows(input, colors.theme.colors, colors.mod),
+    generateShadows(input, colors.theme.colors),
     generateFonts(input),
   )
 }
@@ -523,7 +517,7 @@ export const generateColors = (themeData) => {
     (acc, [k, v]) => {
       if (!v) return acc
       acc.solid[k] = rgb2hex(v)
-      acc.complete[k] = typeof v.a === 'undefined' ? rgb2hex(v) : rgba2css(v)
+      acc.complete[k] = v.a === undefined ? rgb2hex(v) : rgba2css(v)
       return acc
     },
     { complete: {}, solid: {} },
@@ -545,7 +539,7 @@ export const generateColors = (themeData) => {
 export const generateRadii = (input) => {
   let inputRadii = input.radii || {}
   // v1 -> v2
-  if (typeof input.btnRadius !== 'undefined') {
+  if (input.btnRadius !== undefined) {
     inputRadii = Object.entries(input)
       .filter(([k]) => k.endsWith('Radius'))
       .reduce((acc, e) => {

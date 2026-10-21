@@ -1,5 +1,5 @@
 <template>
-  <div
+  <fieldset
     class="ShadowControl label shadow-control"
     :class="{ disabled: disabled || !present, '-no-preview': noPreview, '-compact': compact }"
   >
@@ -19,6 +19,7 @@
         v-model="selectedId"
         class="shadow-list"
         size="4"
+        :aria-label="$t('settings.style.shadows.shadows_list')"
         :disabled="disabled || shadowsAreNull"
       >
         <option
@@ -231,7 +232,7 @@
         </Popover>
       </template>
     </div>
-  </div>
+  </fieldset>
 </template>
 
 <script src="./shadow_control.js"></script>

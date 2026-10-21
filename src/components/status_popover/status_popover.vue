@@ -1,11 +1,16 @@
 <template>
   <Popover
     ref="popover"
-    trigger="hover"
-    :stay-on-click="true"
     popover-class="popover-default status-popover"
+    trigger="hover"
+    :router-link="link"
+    :to="link ? destination : undefined"
+    :stay-on-click="true"
     :bound-to="{ x: 'container' }"
+    aria-haspopup="dialog"
     @show="enter"
+    @click="navigate"
+    v-bind="$attrs"
   >
     <template #trigger>
       <slot />
@@ -14,7 +19,7 @@
       <Status
         v-if="status"
         :is-preview="true"
-        :statusoid="status"
+        :status-id="statusId"
         :compact="true"
         :ignore-mute="true"
       />

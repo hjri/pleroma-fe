@@ -66,13 +66,10 @@ export default {
             hour: 'numeric',
             hour12: this.time12hFormat,
           })
-        } else if (DateUtils.isSameMonth(this.timeAsDate, now)) {
-          return new Intl.DateTimeFormat(this.browserLocale, {
-            month: 'short',
-            day: 'numeric',
-            hour12: this.time12hFormat,
-          })
-        } else if (DateUtils.isSameYear(this.timeAsDate, now)) {
+        } else if (
+          DateUtils.isSameMonth(this.timeAsDate, now) ||
+          DateUtils.isSameYear(this.timeAsDate, now)
+        ) {
           return new Intl.DateTimeFormat(this.browserLocale, {
             month: 'short',
             day: 'numeric',

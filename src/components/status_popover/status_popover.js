@@ -1,6 +1,6 @@
-import { find } from 'lodash'
-
 import Popover from 'src/components/popover/popover.vue'
+
+import { useStatusesStore } from 'src/stores/statuses.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons'
@@ -9,7 +9,11 @@ library.add(faCircleNotch)
 
 const StatusPopover = {
   name: 'StatusPopover',
-  props: ['statusId'],
+  props: {
+    statusId: String,
+    link: Boolean,
+  },
+  emits: ['navigate'],
   data() {
     return {
       error: false,
@@ -17,7 +21,13 @@ const StatusPopover = {
   },
   computed: {
     status() {
-      return find(this.$store.state.statuses.allStatuses, { id: this.statusId })
+      return useStatusesStore().allStatuses.get(this.statusId)
+    },
+    destination() {
+      return {
+        name: 'conversation',
+        params: { statusId: this.statusId },
+      }
     },
   },
   components: {
@@ -30,10 +40,15 @@ const StatusPopover = {
           this.error = true
           return
         }
-        this.$store
-          .dispatch('fetchStatus', this.statusId)
+        useStatusesStore()
+          .fetchStatus(this.statusId)
           .then(() => (this.error = false))
           .catch(() => (this.error = true))
+      }
+    },
+    navigate() {
+      if (!this.link) {
+        this.$emit('navigate', this.statusId)
       }
     },
   },

@@ -14,6 +14,7 @@ export default {
     {
       directives: {
         shadow: [],
+        roundness: 3,
       },
     },
     {

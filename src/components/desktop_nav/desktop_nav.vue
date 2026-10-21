@@ -1,8 +1,9 @@
 <template>
-  <nav
+  <header
     id="nav"
-    class="DesktopNav"
+    class="DesktopNav topBar"
     :class="{ '-logoLeft': logoLeft }"
+    :aria-label="sitename"
     @click="scrollToTop()"
   >
     <div class="inner-nav">
@@ -10,25 +11,47 @@
         <router-link
           v-if="!hideSitename"
           class="site-name"
+          id="sitename"
           :to="{ name: 'root' }"
           active-class="home"
         >
           {{ sitename }}
         </router-link>
+        <div
+          class="nav-icon"
+          v-if="streamingEnabled"
+          :title="streamingTooltip"
+        >
+          <FAIcon
+            v-if="streamingConnected"
+            fixed-width
+            class="fa-scale-110 fa-old-padding"
+            icon="plug"
+          />
+          <FAIcon
+            v-else
+            fixed-width
+            class="fa-scale-110 fa-old-padding"
+            icon="plug-circle-xmark"
+          />
+        </div>
       </div>
       <router-link
         class="logo"
         :to="{ name: 'root' }"
         :style="logoBgStyle"
-        :title="sitename"
+        :title="$t('general.logo')"
       >
         <div
           class="mask"
           :style="logoMaskStyle"
+          role="presentation"
         />
         <img
           :src="logo"
           :style="logoStyle"
+          :title="$t('general.logo')"
+          :alt="$t('general.logo')"
         >
       </router-link>
       <div class="item right actions">
@@ -50,7 +73,7 @@
             />
           </button>
           <button
-            v-if="currentUser && currentUser.role === 'admin'"
+            v-if="currentUser?.role === 'admin'"
             class="button-unstyled nav-icon"
             target="_blank"
             :title="$t('nav.administration')"
@@ -91,7 +114,7 @@
         {{ $t('login.logout_confirm') }}
       </ConfirmModal>
     </teleport>
-  </nav>
+  </header>
 </template>
 <script src="./desktop_nav.js"></script>
 

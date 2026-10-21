@@ -1,12 +1,14 @@
 import FollowRequestCard from 'src/components/follow_request_card/follow_request_card.vue'
 
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
+
 const FollowRequests = {
   components: {
     FollowRequestCard,
   },
   computed: {
     requests() {
-      return this.$store.state.api.followRequests
+      return useFollowRequestsStore().requests.values()
     },
   },
 }

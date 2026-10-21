@@ -1,4 +1,5 @@
-import { cloneDeep, get, isEqual, set } from 'lodash'
+import { cloneDeep, get, isEqual, set } from 'lodash-es'
+import { useId } from 'vue'
 
 import DraftButtons from './draft_buttons.vue'
 import LocalSettingIndicator from './local_setting_indicator.vue'
@@ -8,6 +9,7 @@ import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useProfileConfigStore } from 'src/stores/profile_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 export default {
@@ -108,6 +110,11 @@ export default {
       default: false,
     },
   },
+  setup() {
+    const uniqueId = useId()
+
+    return { uniqueId }
+  },
   data() {
     return {
       localDraft: null,
@@ -123,6 +130,9 @@ export default {
     }
   },
   computed: {
+    idPrefix() {
+      return `setting-${this.uniqueId}-`
+    },
     draft: {
       get() {
         if (this.realSource === 'admin' || this.path == null) {
@@ -160,7 +170,7 @@ export default {
       return this.source || this.defaultSource
     },
     realDraftMode() {
-      return typeof this.draftMode === 'undefined'
+      return this.draftMode === undefined
         ? this.defaultDraftMode
         : this.draftMode
     },
@@ -180,7 +190,7 @@ export default {
           [
             'admin_dash',
             'temp_overrides',
-            ...this.canonPath.map((p) => p.replace(/\./g, '_DOT_')),
+            ...this.canonPath.map((p) => p.replaceAll('.', '_DOT_')),
             'label',
           ].join('.'),
         )
@@ -199,7 +209,7 @@ export default {
           [
             'admin_dash',
             'temp_overrides',
-            ...this.canonPath.map((p) => p.replace(/\./g, '_DOT_')),
+            ...this.canonPath.map((p) => p.replaceAll('.', '_DOT_')),
             'description',
           ].join('.'),
         )
@@ -236,7 +246,7 @@ export default {
     configSource() {
       switch (this.realSource) {
         case 'profile':
-          return this.$store.state.profileConfig
+          return useProfileConfigStore().config
         case 'admin':
           return useAdminSettingsStore().config
         default:
@@ -253,7 +263,7 @@ export default {
       switch (this.realSource) {
         case 'profile':
           return (k, v) =>
-            this.$store.dispatch('setProfileOption', { name: k, value: v })
+            useProfileConfigStore().setProfileOption({ name: k, value: v })
         case 'admin':
           return (k, v) =>
             useAdminSettingsStore().pushAdminSetting({ path: k, value: v })
@@ -412,8 +422,8 @@ export default {
     hardReset() {
       switch (this.realSource) {
         case 'admin':
-          return this.$store
-            .dispatch('resetAdminSetting', { path: this.path })
+          return useAdminSettingsStore()
+            .resetAdminSetting({ path: this.path })
             .then(() => {
               this.draft = this.state
             })

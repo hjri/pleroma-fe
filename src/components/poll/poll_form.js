@@ -16,44 +16,58 @@ export default {
   },
   name: 'PollForm',
   props: {
-    visible: {},
-    params: {
+    visible: Boolean,
+    modelValue: {
       type: Object,
-      required: true,
+      required: false,
+      default: null,
     },
   },
+  emits: ['update:modelValue'],
   computed: {
+    // Model value
+    options() {
+      return pollFallback(this.modelValue, 'options')
+    },
     pollType: {
       get() {
-        return pollFallback(this.params, 'pollType')
+        return pollFallback(this.modelValue, 'pollType')
       },
       set(newVal) {
-        this.params.pollType = newVal
+        this.$emit('update:modelValue', {
+          ...this.modelValue,
+          pollType: newVal,
+        })
       },
-    },
-    options() {
-      const hasOptions = !!this.params.options
-      if (!hasOptions) {
-        this.params.options = pollFallback(this.params, 'options')
-      }
-      return this.params.options
     },
     expiryAmount: {
       get() {
-        return pollFallback(this.params, 'expiryAmount')
+        return pollFallback(this.modelValue, 'expiryAmount')
       },
       set(newVal) {
-        this.params.expiryAmount = newVal
+        this.$emit('update:modelValue', {
+          ...this.modelValue,
+          expiryAmount: newVal,
+        })
       },
     },
     expiryUnit: {
       get() {
-        return pollFallback(this.params, 'expiryUnit')
+        return pollFallback(this.modelValue, 'expiryUnit')
       },
+      // the unit and the amount it allows in one update: a second one in
+      // the same tick would start from the old unit (the prop catches up
+      // only on the parent's next render)
       set(newVal) {
-        this.params.expiryUnit = newVal
+        this.$emit('update:modelValue', {
+          ...this.modelValue,
+          expiryUnit: newVal,
+          expiryAmount: this.clampExpiry(newVal, this.expiryAmount),
+        })
       },
     },
+
+    // Configuration
     pollLimits() {
       return useInstanceStore().limits.pollLimits
     },
@@ -71,29 +85,13 @@ export default {
       )
     },
     minExpirationInCurrentUnit() {
-      return Math.ceil(
-        this.convertExpiryToUnit(
-          this.expiryUnit,
-          this.pollLimits.min_expiration,
-        ),
-      )
+      return this.expiryLimits(this.expiryUnit).min
     },
     maxExpirationInCurrentUnit() {
-      return Math.floor(
-        this.convertExpiryToUnit(
-          this.expiryUnit,
-          this.pollLimits.max_expiration,
-        ),
-      )
+      return this.expiryLimits(this.expiryUnit).max
     },
   },
   methods: {
-    clear() {
-      this.pollType = 'single'
-      this.options = ['', '']
-      this.expiryAmount = 10
-      this.expiryUnit = 'minutes'
-    },
     nextOption(index) {
       const element = this.$el.querySelector(`#poll-${index + 1}`)
       if (element) {
@@ -110,15 +108,34 @@ export default {
     },
     addOption() {
       if (this.options.length < this.maxOptions) {
-        this.options.push('')
+        this.$emit('update:modelValue', {
+          ...this.modelValue,
+          options: [...this.options, ''],
+        })
+
         return true
       }
       return false
     },
     deleteOption(index) {
       if (this.options.length > 2) {
-        this.options.splice(index, 1)
+        const options = [...this.options]
+        options.splice(index, 1)
+
+        this.$emit('update:modelValue', {
+          ...this.modelValue,
+          options,
+        })
       }
+    },
+    updateOption(index, value) {
+      const options = [...this.options]
+      options[index] = value
+
+      this.$emit('update:modelValue', {
+        ...this.modelValue,
+        options,
+      })
     },
     convertExpiryToUnit(unit, amount) {
       // Note: we want seconds and not milliseconds
@@ -127,15 +144,23 @@ export default {
     convertExpiryFromUnit(unit, amount) {
       return DateUtils.unitToSeconds(unit, amount)
     },
-    expiryAmountChange() {
-      this.expiryAmount = Math.max(
-        this.minExpirationInCurrentUnit,
-        this.expiryAmount,
-      )
-      this.expiryAmount = Math.min(
-        this.maxExpirationInCurrentUnit,
-        this.expiryAmount,
-      )
+    expiryLimits(unit) {
+      return {
+        min: Math.ceil(
+          this.convertExpiryToUnit(unit, this.pollLimits.min_expiration),
+        ),
+        max: Math.floor(
+          this.convertExpiryToUnit(unit, this.pollLimits.max_expiration),
+        ),
+      }
+    },
+    clampExpiry(unit, amount) {
+      const { min, max } = this.expiryLimits(unit)
+      return Math.min(max, Math.max(min, Number(amount)))
+    },
+    // from the field itself: the prop can still hold the value before
+    expiryAmountChange(event) {
+      this.expiryAmount = this.clampExpiry(this.expiryUnit, event.target.value)
     },
   },
 }

@@ -5,6 +5,7 @@
   align-self: flex-start;
   line-height: 0;
   height: 100%;
+  width: 100%;
   border-style: solid;
   border-width: 1px;
   border-radius: var(--roundness);
@@ -12,9 +13,14 @@
 
   .attachment-wrapper {
     flex: 1 1 auto;
-    height: 100%;
+    min-height: 0;
     position: relative;
-    overflow: hidden;
+    display: grid;
+    grid-template-rows: 100%;
+    grid-template-columns: 100%;
+    grid-template-areas: "center";
+    place-content: center;
+    place-items: center;
   }
 
   .description-container {
@@ -56,10 +62,23 @@
   & .video-container,
   & .flash-container,
   & .oembed-container {
-    display: flex;
-    justify-content: center;
     width: 100%;
     height: 100%;
+    object-fit: contain;
+    grid-area: center;
+
+    &.-hidden {
+      position: absolute;
+      top: 0;
+      left: 0;
+      max-width: 0;
+      max-height: 0;
+      pointer-events: none;
+    }
+  }
+
+  .nsfw.image {
+    object-fit: cover;
   }
 
   .image-container {
@@ -208,47 +227,14 @@
     }
   }
 
-  &.-placeholder {
-    display: inline-block;
-    color: var(--link);
-    overflow: hidden;
+  .placeholder {
+    box-sizing: border-box;
+    padding: 0.5em;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: clip;
     white-space: nowrap;
-    height: auto;
-    line-height: 1.5;
-
-    &:not(.-editable) {
-      border: none;
-    }
-
-    &.-editable {
-      display: flex;
-      flex-direction: row;
-      align-items: baseline;
-
-      & .description-container,
-      & .attachment-buttons {
-        margin: 0;
-        padding: 0;
-        position: relative;
-      }
-
-      .description-container {
-        flex: 1;
-        padding-left: 0.5em;
-      }
-
-      .attachment-buttons {
-        order: 99;
-        align-self: center;
-      }
-    }
-
-    a {
-      display: inline-block;
-      max-width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
+    text-overflow: ellipsis;
 
     svg {
       color: inherit;

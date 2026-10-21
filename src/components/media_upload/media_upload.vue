@@ -25,6 +25,7 @@
       ref="input"
       class="hidden-input-file"
       :disabled="disabled"
+      :title="$t('tool_tip.media_upload')"
       type="file"
       multiple="true"
       :accept="acceptTypes"

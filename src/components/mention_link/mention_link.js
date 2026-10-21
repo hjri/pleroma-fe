@@ -1,5 +1,4 @@
-import { mapState as mapPiniaState } from 'pinia'
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import UnicodeDomainIndicator from 'src/components/unicode_domain_indicator/unicode_domain_indicator.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
@@ -12,8 +11,7 @@ import {
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
-
-import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faAt } from '@fortawesome/free-solid-svg-icons'
@@ -29,7 +27,7 @@ const MentionLink = {
   },
   props: {
     url: {
-      required: true,
+      required: false,
       type: String,
     },
     content: {
@@ -51,13 +49,9 @@ const MentionLink = {
     }
   },
   methods: {
-    onClick() {
-      if (this.shouldShowTooltip) return
-      const link = generateProfileLink(
-        this.userId || this.user.id,
-        this.userScreenName || this.user.screen_name,
-      )
-      this.$router.push(link)
+    onClick(e) {
+      // Passed into popover's handler
+      e.disablePopover = !this.shouldShowTooltip
     },
     handleSelection() {
       if (this.$refs.full) {
@@ -75,13 +69,11 @@ const MentionLink = {
   },
   computed: {
     user() {
-      return (
-        this.url && this.$store && this.$store.getters.findUserByUrl(this.url)
-      )
+      return this.url ? useUsersStore().findUserByUrl(this.url) : null
     },
     isYou() {
-      // FIXME why user !== currentUser???
-      return this.user && this.user.id === this.currentUser.id
+      if (!this.currentUser) return false
+      return this.user === this.currentUser
     },
     userName() {
       return this.user && this.userNameFullUi.split('@')[0]
@@ -94,10 +86,10 @@ const MentionLink = {
       )
     },
     userNameFull() {
-      return this.user && this.user.screen_name
+      return this.user?.screen_name
     },
     userNameFullUi() {
-      return this.user && this.user.screen_name_ui
+      return this.user?.screen_name_ui
     },
     highlightData() {
       return this.highlight[this.user?.screen_name]
@@ -125,9 +117,18 @@ const MentionLink = {
           '-you': this.isYou && this.shouldBoldenYou,
           '-highlighted': !!this.highlightData,
           '-has-selection': this.hasSelection,
+          '-with-tooltip': this.shouldShowTooltip,
         },
+        'short',
+        'new',
         this.highlightType,
       ]
+    },
+    popoverAttrs() {
+      return {
+        style: this.style,
+        class: this.classnames,
+      }
     },
     isRemote() {
       return this.userName !== this.userNameFull
@@ -158,11 +159,9 @@ const MentionLink = {
     shouldFadeDomain() {
       return this.mergedConfig.mentionLinkFadeDomain
     },
-    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
-    ...mapPiniaState(useUserHighlightStore, ['highlight']),
-    ...mapState({
-      currentUser: (state) => state.users.currentUser,
-    }),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
+    ...mapState(useUserHighlightStore, ['highlight']),
+    ...mapState(useUsersStore, ['currentUser']),
   },
 }
 

@@ -1,23 +1,18 @@
 import { createTestingPinia } from '@pinia/testing'
-import { HttpResponse, http } from 'msw'
 import { setActivePinia } from 'pinia'
-
-import { test as it } from '/test/fixtures/mock_api.js'
 
 import { useListsStore } from 'src/stores/lists.js'
 
 import { MASTODON_LIST_ACCOUNTS_URL, MASTODON_LIST_URL } from 'src/api/user.js'
 
 describe('The lists store', () => {
-  let store
-
   beforeEach(() => {
     setActivePinia(createTestingPinia({ stubActions: false }))
-    store = useListsStore()
   })
 
   describe('actions', () => {
     it('updates array of all lists', () => {
+      const store = useListsStore()
       const list = { id: '1', title: 'testList' }
 
       store.setLists([list])
@@ -25,19 +20,33 @@ describe('The lists store', () => {
       expect(store.allLists).to.eql([list])
     })
 
-    it('adds a new list with a title, updating the title for existing lists', async ({
-      worker,
-    }) => {
+    it('adds a new list with a title, updating the title for existing lists', async () => {
+      const store = useListsStore()
       const list = { id: '1', title: 'testList' }
       const modList = { id: '1', title: 'anotherTestTitle' }
 
-      worker.use(
-        http.put(MASTODON_LIST_URL(':id'), () =>
-          HttpResponse.json({ ok: true }),
-        ),
-      )
+      const mockFetch = vi
+        .fn()
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ ok: true }), {
+            headers: { 'Content-Type': 'application/json' },
+          }),
+        )
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ ok: true }), {
+            headers: { 'Content-Type': 'application/json' },
+          }),
+        )
+
+      vi.stubGlobal('fetch', mockFetch)
 
       await store.setList({ listId: list.id, title: list.title })
+
+      expect(mockFetch).to.have.been.calledOnce
+      expect(mockFetch.mock.calls[0][0]).to.eql(MASTODON_LIST_URL('1'))
+      expect(mockFetch.mock.calls[0][1]).to.have.property('method', 'PUT')
+      mockFetch.mockClear()
+
       expect(store.allListsObject[list.id]).to.eql({
         title: list.title,
         accountIds: [],
@@ -46,6 +55,11 @@ describe('The lists store', () => {
       expect(store.allLists[0]).to.eql(list)
 
       await store.setList({ listId: modList.id, title: modList.title })
+
+      expect(mockFetch).to.have.been.calledOnce
+      expect(mockFetch.mock.calls[0][0]).to.eql(MASTODON_LIST_URL('1'))
+      expect(mockFetch.mock.calls[0][1]).to.have.property('method', 'PUT')
+
       expect(store.allListsObject[modList.id]).to.eql({
         title: modList.title,
         accountIds: [],
@@ -54,25 +68,39 @@ describe('The lists store', () => {
       expect(store.allLists[0]).to.eql(modList)
     })
 
-    it('adds a new list with an array of IDs, updating the IDs for existing lists', async ({
-      worker,
-    }) => {
+    it('adds a new list with an array of IDs, updating the IDs for existing lists', async () => {
+      const store = useListsStore()
       const list = { id: '1', accountIds: ['1', '2', '3'] }
       const modList = { id: '1', accountIds: ['3', '4', '5'] }
 
-      worker.use(
-        http.post(MASTODON_LIST_ACCOUNTS_URL(':id'), () =>
-          HttpResponse.json({ ok: true }),
-        ),
-        http.delete(MASTODON_LIST_ACCOUNTS_URL(':id'), () =>
-          HttpResponse.json({ ok: true }),
-        ),
-      )
+      const mockFetch = vi
+        .fn()
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ ok: true }), {
+            headers: { 'Content-Type': 'application/json' },
+          }),
+        )
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ ok: true }), {
+            headers: { 'Content-Type': 'application/json' },
+          }),
+        )
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify({ ok: true }), {
+            headers: { 'Content-Type': 'application/json' },
+          }),
+        )
+      vi.stubGlobal('fetch', mockFetch)
 
       await store.setListAccounts({
         listId: list.id,
         accountIds: list.accountIds,
       })
+      expect(mockFetch).to.have.been.calledOnce
+      expect(mockFetch.mock.calls[0][0]).to.eql(MASTODON_LIST_ACCOUNTS_URL('1'))
+      expect(mockFetch.mock.calls[0][1]).to.have.property('method', 'POST')
+      mockFetch.mockClear()
+
       expect(store.allListsObject[list.id].accountIds).to.eql(list.accountIds)
 
       await store.setListAccounts({
@@ -80,12 +108,19 @@ describe('The lists store', () => {
         accountIds: modList.accountIds,
       })
 
+      expect(mockFetch).to.have.been.calledTwice
+      expect(mockFetch.mock.calls[0][0]).to.eql(MASTODON_LIST_ACCOUNTS_URL('1'))
+      expect(mockFetch.mock.calls[0][1]).to.have.property('method', 'POST')
+      expect(mockFetch.mock.calls[1][0]).to.eql(MASTODON_LIST_ACCOUNTS_URL('1'))
+      expect(mockFetch.mock.calls[1][1]).to.have.property('method', 'DELETE')
+
       expect(store.allListsObject[modList.id].accountIds).to.eql(
         modList.accountIds,
       )
     })
 
-    it('deletes a list', async ({ worker }) => {
+    it('deletes a list', async () => {
+      const store = useListsStore()
       store.$patch({
         allLists: [{ id: '1', title: 'testList' }],
         allListsObject: {
@@ -94,11 +129,12 @@ describe('The lists store', () => {
       })
       const listId = '1'
 
-      worker.use(
-        http.delete(MASTODON_LIST_URL(':id'), () =>
-          HttpResponse.json({ ok: true }),
-        ),
+      const mockFetch = vi.fn().mockResolvedValueOnce(
+        new Response(JSON.stringify({ ok: true }), {
+          headers: { 'Content-Type': 'application/json' },
+        }),
       )
+      vi.stubGlobal('fetch', mockFetch)
 
       await store.deleteList({ listId })
       expect(store.allLists).to.have.length(0)
@@ -108,6 +144,7 @@ describe('The lists store', () => {
 
   describe('getters', () => {
     it('returns list title', () => {
+      const store = useListsStore()
       store.$patch({
         allLists: [{ id: '1', title: 'testList' }],
         allListsObject: {
@@ -120,6 +157,7 @@ describe('The lists store', () => {
     })
 
     it('returns list accounts', () => {
+      const store = useListsStore()
       store.$patch({
         allLists: [{ id: '1', title: 'testList' }],
         allListsObject: {

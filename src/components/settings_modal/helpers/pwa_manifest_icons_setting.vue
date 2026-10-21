@@ -1,9 +1,9 @@
 <template>
-  <div
+  <fieldset
     v-if="matchesExpertLevel"
     class="PWAManifestIconsSetting setting-item"
   >
-    <label
+    <legend
       class="pwa-label setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
@@ -19,7 +19,7 @@
         MISSING LABEL FOR {{ path }}
       </template>
       <slot v-else />
-    </label>
+    </legend>
     <p
       v-if="backendDescriptionDescription"
       class="setting-description"
@@ -56,9 +56,9 @@
                 hide-description
               />
               <div class="src-url">
-                <label for="path">{{ $t('settings.url') }}</label>
+                <label :for="idPrefix + 'url' + index">{{ $t('settings.url') }}</label>
                 <input
-                  :id="path"
+                  :id="idPrefix + 'url' + index"
                   class="input string-input"
                   :disabled="shouldBeDisabled"
                   :value="item[':src']"
@@ -78,6 +78,7 @@
               <dt>{{ $t('admin_dash.instance.pwa.icon.purpose') }}</dt>
               <dd>
                 <Select
+                  :id="idPrefix + 'purpose' + index"
                   :class="{ disabled: shouldBeDisabled }"
                   :disabled="shouldBeDisabled"
                   :model-value="item[':purpose']"
@@ -92,18 +93,28 @@
                   </option>
                 </Select>
               </dd>
-              <dt><code>sizes</code>{{ $t('admin_dash.instance.pwa.optional') }}</dt>
+              <dt>
+                <label :for="idPrefix + 'sizes' + index">
+                  <code>sizes</code>{{ $t('admin_dash.instance.pwa.optional') }}
+                </label>
+              </dt>
               <dd>
                 <input
+                  :id="idPrefix + 'sizes' + index"
                   class="input string-input"
                   :class="{ disabled: shouldBeDisabled }"
                   :value="item[':sizes']"
                   @change="e => update({ event: e, index, eventType: 'edit', field: ':sizes' })"
                 >
               </dd>
-              <dt><code>type</code>{{ $t('admin_dash.instance.pwa.optional') }}</dt>
+              <dt>
+                <label :for="idPrefix + 'type' + index">
+                  <code>type</code>{{ $t('admin_dash.instance.pwa.optional') }}
+                </label>
+              </dt>
               <dd>
                 <input
+                  :id="idPrefix + 'type' + index"
                   class="input string-input"
                   :class="{ disabled: shouldBeDisabled }"
                   :value="item[':type']"
@@ -130,12 +141,12 @@
         </li>
       </ul>
     </div>
-  </div>
+  </fieldset>
 </template>
 
 <script src="./pwa_manifest_icons_setting.js"></script>
 <style lang="scss">
-div.PWAManifestIconsSetting {
+fieldset.PWAManifestIconsSetting {
   margin-left: 3em;
 
   &.setting-item {
@@ -169,7 +180,7 @@ div.PWAManifestIconsSetting {
     list-style: none;
     display: grid;
     grid-template-columns: repeat(auto-fit, 12em);
-    grid-gap: 2em;
+    gap: 2em;
   }
 
   dl {

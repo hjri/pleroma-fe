@@ -1,13 +1,28 @@
 <template>
-  <div :class="['Timeline', classes.root]">
+  <!-- there is a brief moment during logout when old timeline gets forcibly deactivated -->
+  <div
+    v-if="timeline.fetcher"
+    :class="['Timeline', classes.root]"
+  >
     <div
       v-if="!embedded"
       :class="classes.header"
     >
       <TimelineMenu
         v-if="!embedded"
-        :timeline-name="timelineName"
+        :timeline-name="timelineRef.name"
+        :id="'timeline-header-' + uniqueId"
       />
+      <div
+        v-if="timeline.fetcher.loadingNewer && !showLoadButton"
+        class="loadingIndicator"
+      >
+        <FAIcon
+          fixed-width
+          icon="circle-notch"
+          spin
+        />
+      </div>
       <ScrollTopButton />
       <template v-if="mobileLayout">
         <div
@@ -17,7 +32,7 @@
           <button
             class="button-unstyled loadmore-button"
             :title="loadButtonString"
-            @click.prevent="showNewStatuses"
+            @click.prevent="showNewStatuses(false)"
           >
             <FAIcon
               fixed-width
@@ -29,7 +44,7 @@
           </button>
         </div>
         <div
-          v-else
+          v-else-if="!timeline.fetcher.loadingNewer"
           class="loadmore-text faint veryfaint rightside-icon"
           :title="$t('timeline.up_to_date')"
           :aria-disabled="true"
@@ -45,7 +60,7 @@
         <button
           v-if="showLoadButton"
           class="button-default loadmore-button"
-          @click.prevent="showNewStatuses"
+          @click.prevent="showNewStatuses(false)"
         >
           {{ loadButtonString }}
         </button>
@@ -67,62 +82,70 @@
     </div>
     <div :class="classes.body">
       <div
-        ref="timeline"
         class="timeline"
+        ref="timeline"
         role="feed"
+        :aria-labelledby="embedded ? undefined : ('timeline-header-'+ uniqueId)"
       >
-        <Conversation
-          v-for="statusId in filteredPinnedStatusIds"
-          :key="statusId + '-pinned'"
-          role="listitem"
-          class="status-fadein"
-          :status-id="statusId"
-          :pinned-status-ids-object="pinnedStatusIdsObject"
-          :in-profile="inProfile"
-          :profile-user-id="userId"
-          collapsable
-        />
-        <Conversation
-          v-for="status in filteredVisibleStatuses"
-          :key="status.id"
-          role="listitem"
-          class="status-fadein"
-          :status-id="status.id"
-          :in-profile="inProfile"
-          :profile-user-id="userId"
-          :virtual-hidden="virtualScrollingEnabled && !statusesToDisplay.includes(status.id)"
-          collapsable
-        />
+        <template
+          v-for="element in heightChart"
+          :key="element.id"
+        >
+          <Conversation
+            v-if="element.type === 'item'"
+            class="timeline-conversation"
+            :status-id="element.id"
+            :scroll-compensation="element.visible"
+            :top="element.top"
+
+            :data-vs-height="element.height"
+            :data-vs-top="element.top"
+            :data-vs-id="element.id"
+            :data-vs-visible="element.visible"
+
+            @suspendable-state-change="changeSuspendState"
+            @height-change="updateVirtualHeight"
+          />
+          <div
+            v-if="element.type === 'spacer'"
+            class="virtual-spacer"
+            aria-hidden="true"
+            :style="{ height: element.height + 'px' }"
+          />
+        </template>
       </div>
+      <template v-if="!hideEmpty && count === 0">
+        <div
+          v-if="timeline.fetcher.loadingNewer || timeline.fetcher.loadingOlder"
+          class="timeline-placeholder"
+        >
+          <FAIcon
+            icon="circle-notch"
+            spin
+            size="4x"
+          />
+        </div>
+        <div
+          v-else
+          class="timeline-placeholder faint"
+        >
+          {{ $t('timeline.no_statuses') }}
+        </div>
+      </template>
     </div>
-    <div :class="classes.footer">
+    <div v-if="!embedded || footerSlipgate" :class="classes.footer">
       <teleport
         :to="footerSlipgate"
         :disabled="!embedded || !footerSlipgate"
       >
         <div
-          v-if="count===0"
-          class="new-status-notification text-center faint"
-        >
-          {{ $t('timeline.no_statuses') }}
-        </div>
-        <div
-          v-else-if="bottomedOut"
+          v-if="timeline.fetcher.bottomedOut"
           class="new-status-notification text-center faint"
         >
           {{ $t('timeline.no_more_statuses') }}
         </div>
-        <button
-          v-else-if="!timeline.loading"
-          class="button-unstyled -link"
-          @click.prevent="fetchOlderStatuses()"
-        >
-          <div class="new-status-notification text-center">
-            {{ $t('timeline.load_older') }}
-          </div>
-        </button>
         <div
-          v-else
+          v-else-if="timeline.fetcher.loadingOlder"
           class="new-status-notification text-center"
         >
           <FAIcon
@@ -131,6 +154,15 @@
             size="lg"
           />
         </div>
+        <button
+          v-else-if="timeline.minId !== ''"
+          class="button-unstyled -link"
+          @click.prevent="fetchOlderStatuses()"
+        >
+          <div class="new-status-notification text-center">
+            {{ $t('timeline.load_older') }}
+          </div>
+        </button>
       </teleport>
       <!-- spacer to avoid having empty shrug -->
       <span v-if="embedded && footerSlipgate" />

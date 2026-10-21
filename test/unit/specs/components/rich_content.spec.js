@@ -1,24 +1,11 @@
+import { createTestingPinia } from '@pinia/testing'
 import { mount, shallowMount } from '@vue/test-utils'
+import { setActivePinia } from 'pinia'
+import { mountOpts } from 'test/fixtures/setup_test.js'
 
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 
 const attentions = []
-const global = {
-  mocks: {
-    $store: {
-      state: {},
-      getters: {
-        mergedConfig: () => ({
-          mentionLinkShowTooltip: true,
-        }),
-        findUserByUrl: () => null,
-      },
-    },
-  },
-  stubs: {
-    FAIcon: true,
-  },
-}
 
 const makeMention = (who, noClass) => {
   attentions.push({ statusnet_profile_url: `https://fake.tld/@${who}` })
@@ -37,53 +24,63 @@ const mentionsLine = (times) =>
   ].join('')
 
 describe('RichContent', () => {
+  beforeEach(() => {
+    setActivePinia(createTestingPinia())
+  })
+
   it('renders simple post without exploding', () => {
     const html = p('Hello world!')
-    const wrapper = shallowMount(RichContent, {
-      global,
-      props: {
-        attentions,
-        handleLinks: true,
-        greentext: true,
-        emoji: [],
-        html,
-      },
-    })
+    const wrapper = shallowMount(
+      RichContent,
+      mountOpts({
+        props: {
+          attentions,
+          handleLinks: true,
+          greentext: true,
+          emoji: [],
+          html,
+        },
+      }),
+    )
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(html))
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(compwrap(html))
   })
 
   it('unescapes everything as needed', () => {
     const html = [p('Testing &#39;em all'), 'Testing &#39;em all'].join('')
     const expected = [p("Testing 'em all"), "Testing 'em all"].join('')
-    const wrapper = shallowMount(RichContent, {
-      global,
-      props: {
-        attentions,
-        handleLinks: true,
-        greentext: true,
-        emoji: [],
-        html,
-      },
-    })
+    const wrapper = shallowMount(
+      RichContent,
+      mountOpts({
+        props: {
+          attentions,
+          handleLinks: true,
+          greentext: true,
+          emoji: [],
+          html,
+        },
+      }),
+    )
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(compwrap(expected))
   })
 
   it('replaces mention with mentionsline', () => {
     const html = p(makeMention('John'), ' how are you doing today?')
-    const wrapper = shallowMount(RichContent, {
-      global,
-      props: {
-        attentions,
-        handleLinks: true,
-        greentext: true,
-        emoji: [],
-        html,
-      },
-    })
+    const wrapper = shallowMount(
+      RichContent,
+      mountOpts({
+        props: {
+          attentions,
+          handleLinks: true,
+          greentext: true,
+          emoji: [],
+          html,
+        },
+      }),
+    )
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(
       compwrap(p(mentionsLine(1), ' how are you doing today?')),
     )
   })
@@ -105,18 +102,20 @@ describe('RichContent', () => {
       ),
     ].join('')
 
-    const wrapper = shallowMount(RichContent, {
-      global,
-      props: {
-        attentions,
-        handleLinks: true,
-        greentext: true,
-        emoji: [],
-        html,
-      },
-    })
+    const wrapper = shallowMount(
+      RichContent,
+      mountOpts({
+        props: {
+          attentions,
+          handleLinks: true,
+          greentext: true,
+          emoji: [],
+          html,
+        },
+      }),
+    )
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(compwrap(expected))
   })
 
   it('Does not touch links if link handling is disabled', () => {
@@ -141,16 +140,18 @@ describe('RichContent', () => {
       ].join(''),
     ].join('\n')
 
-    const wrapper = shallowMount(RichContent, {
-      global,
-      props: {
-        attentions,
-        handleLinks: false,
-        greentext: true,
-        emoji: [],
-        html,
-      },
-    })
+    const wrapper = shallowMount(
+      RichContent,
+      mountOpts({
+        props: {
+          attentions,
+          handleLinks: false,
+          greentext: true,
+          emoji: [],
+          html,
+        },
+      }),
+    )
 
     expect(wrapper.html()).to.eql(compwrap(strippedHtml))
   })
@@ -162,16 +163,18 @@ describe('RichContent', () => {
       '<span class="greentext">&gt;any year</span>',
     ].join('\n')
 
-    const wrapper = shallowMount(RichContent, {
-      global,
-      props: {
-        attentions,
-        handleLinks: false,
-        greentext: true,
-        emoji: [],
-        html,
-      },
-    })
+    const wrapper = shallowMount(
+      RichContent,
+      mountOpts({
+        props: {
+          attentions,
+          handleLinks: false,
+          greentext: true,
+          emoji: [],
+          html,
+        },
+      }),
+    )
 
     expect(wrapper.html()).to.eql(compwrap(expected))
   })
@@ -179,16 +182,18 @@ describe('RichContent', () => {
   it('Does not add greentext and cyantext if setting is set to false', () => {
     const html = ['&gt;preordering videogames', '&gt;any year'].join('\n')
 
-    const wrapper = shallowMount(RichContent, {
-      global,
-      props: {
-        attentions,
-        handleLinks: false,
-        greentext: false,
-        emoji: [],
-        html,
-      },
-    })
+    const wrapper = shallowMount(
+      RichContent,
+      mountOpts({
+        props: {
+          attentions,
+          handleLinks: false,
+          greentext: false,
+          emoji: [],
+          html,
+        },
+      }),
+    )
 
     expect(wrapper.html()).to.eql(compwrap(html))
   })
@@ -200,35 +205,39 @@ describe('RichContent', () => {
       '<anonymous-stub shortcode="spurdo" islocal="true" class="emoji img" src="about:blank" title=":spurdo:" alt=":spurdo:"></anonymous-stub>',
     )
 
-    const wrapper = shallowMount(RichContent, {
-      global,
-      props: {
-        attentions,
-        handleLinks: false,
-        greentext: false,
-        emoji: [{ url: 'about:blank', shortcode: 'spurdo' }],
-        html,
-      },
-    })
+    const wrapper = shallowMount(
+      RichContent,
+      mountOpts({
+        props: {
+          attentions,
+          handleLinks: false,
+          greentext: false,
+          emoji: [{ url: 'about:blank', shortcode: 'spurdo' }],
+          html,
+        },
+      }),
+    )
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(compwrap(expected))
   })
 
   it("Doesn't add nonexistent emoji to post", () => {
     const html = p('Lol :lol:')
 
-    const wrapper = shallowMount(RichContent, {
-      global,
-      props: {
-        attentions,
-        handleLinks: false,
-        greentext: false,
-        emoji: [],
-        html,
-      },
-    })
+    const wrapper = shallowMount(
+      RichContent,
+      mountOpts({
+        props: {
+          attentions,
+          handleLinks: false,
+          greentext: false,
+          emoji: [],
+          html,
+        },
+      }),
+    )
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(html))
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(compwrap(html))
   })
 
   it('Greentext + last mentions', () => {
@@ -245,16 +254,18 @@ describe('RichContent', () => {
       '<span class="greentext">&gt;quote</span>',
     ].join('\n')
 
-    const wrapper = shallowMount(RichContent, {
-      global,
-      props: {
-        attentions,
-        handleLinks: true,
-        greentext: true,
-        emoji: [],
-        html,
-      },
-    })
+    const wrapper = shallowMount(
+      RichContent,
+      mountOpts({
+        props: {
+          attentions,
+          handleLinks: true,
+          greentext: true,
+          emoji: [],
+          html,
+        },
+      }),
+    )
 
     expect(wrapper.html()).to.eql(compwrap(expected))
   })
@@ -268,18 +279,20 @@ describe('RichContent', () => {
     ].join('<br>')
     const expected = ['Bruh', 'Bruh', mentionsLine(3), 'Bruh'].join('<br>')
 
-    const wrapper = shallowMount(RichContent, {
-      global,
-      props: {
-        attentions,
-        handleLinks: true,
-        greentext: true,
-        emoji: [],
-        html,
-      },
-    })
+    const wrapper = shallowMount(
+      RichContent,
+      mountOpts({
+        props: {
+          attentions,
+          handleLinks: true,
+          greentext: true,
+          emoji: [],
+          html,
+        },
+      }),
+    )
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(compwrap(expected))
   })
 
   it('buggy example/hashtags', () => {
@@ -304,18 +317,20 @@ describe('RichContent', () => {
       ' </p>',
     ].join('')
 
-    const wrapper = shallowMount(RichContent, {
-      global,
-      props: {
-        attentions,
-        handleLinks: true,
-        greentext: true,
-        emoji: [],
-        html,
-      },
-    })
+    const wrapper = shallowMount(
+      RichContent,
+      mountOpts({
+        props: {
+          attentions,
+          handleLinks: true,
+          greentext: true,
+          emoji: [],
+          html,
+        },
+      }),
+    )
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(compwrap(expected))
   })
 
   it('rich contents of a mention are handled properly', () => {
@@ -351,22 +366,24 @@ describe('RichContent', () => {
       p('Testing'),
     ].join('')
 
-    const wrapper = mount(RichContent, {
-      global,
-      props: {
-        attentions,
-        handleLinks: true,
-        greentext: true,
-        emoji: [],
-        html,
-      },
-    })
+    const wrapper = mount(
+      RichContent,
+      mountOpts({
+        props: {
+          attentions,
+          handleLinks: true,
+          greentext: true,
+          emoji: [],
+          html,
+        },
+      }),
+    )
 
     expect(
       wrapper
         .html()
-        .replace(/\n/g, '')
-        .replace(/<!--.*?-->/g, ''),
+        .replaceAll('\n', '')
+        .replaceAll(/<!--.*?-->/g, ''),
     ).to.eql(compwrap(expected))
   })
 
@@ -408,6 +425,7 @@ describe('RichContent', () => {
       '</span>',
       '</a>',
       '</span>',
+      ' ',
       '<span class="MentionLink mention-link">',
       '<a href="lol" class="original" target="_blank">',
       '<span>',
@@ -424,22 +442,24 @@ describe('RichContent', () => {
       'Testing',
     ].join('')
 
-    const wrapper = mount(RichContent, {
-      global,
-      props: {
-        attentions,
-        handleLinks: true,
-        greentext: true,
-        emoji: [],
-        html,
-      },
-    })
+    const wrapper = mount(
+      RichContent,
+      mountOpts({
+        props: {
+          attentions,
+          handleLinks: true,
+          greentext: true,
+          emoji: [],
+          html,
+        },
+      }),
+    )
 
     expect(
       wrapper
         .html()
-        .replace(/\n/g, '')
-        .replace(/<!--.*?-->/g, ''),
+        .replaceAll('\n', '')
+        .replaceAll(/<!--.*?-->/g, ''),
     ).to.eql(compwrap(expected))
   })
 
@@ -473,18 +493,20 @@ describe('RichContent', () => {
       '</p>',
     ].join('')
 
-    const wrapper = shallowMount(RichContent, {
-      global,
-      props: {
-        attentions,
-        handleLinks: true,
-        greentext: true,
-        emoji: [],
-        html,
-      },
-    })
+    const wrapper = shallowMount(
+      RichContent,
+      mountOpts({
+        props: {
+          attentions,
+          handleLinks: true,
+          greentext: true,
+          emoji: [],
+          html,
+        },
+      }),
+    )
 
-    expect(wrapper.html().replace(/\n/g, '')).to.eql(compwrap(expected))
+    expect(wrapper.html().replaceAll('\n', '')).to.eql(compwrap(expected))
   })
 
   it.skip('[INFORMATIVE] Performance testing, 10 000 simple posts', () => {
@@ -519,14 +541,16 @@ describe('RichContent', () => {
     const ptest = (handleLinks, vhtml) => {
       const t0 = performance.now()
 
-      const wrapper = mount(TestComponent, {
-        global,
-        props: {
-          attentions,
-          handleLinks,
-          vhtml,
-        },
-      })
+      const wrapper = mount(
+        TestComponent,
+        mountOpts({
+          props: {
+            attentions,
+            handleLinks,
+            vhtml,
+          },
+        }),
+      )
 
       const t1 = performance.now()
 

@@ -1,6 +1,8 @@
 import Notifications from 'src/components/notifications/notifications.vue'
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
 
+import { useUsersStore } from 'src/stores/users.js'
+
 const tabModeDict = {
   mentions: ['mention'],
   statuses: ['status'],
@@ -14,10 +16,9 @@ const tabModeDict = {
 const Interactions = {
   data() {
     return {
-      allowFollowingMove:
-        this.$store.state.users.currentUser.allow_following_move,
+      allowFollowingMove: useUsersStore().currentUser.allow_following_move,
       filterMode: tabModeDict.mentions,
-      canSeeReports: this.$store.state.users.currentUser.privileges.has(
+      canSeeReports: useUsersStore().currentUser.privileges.has(
         'reports_manage_reports',
       ),
     }

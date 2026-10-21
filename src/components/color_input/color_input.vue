@@ -1,21 +1,21 @@
 <template>
-  <div
+  <fieldset
     class="color-input style-control"
     :class="{ disabled: !present || disabled, '-compact': compact }"
   >
-    <label
-      :for="name"
+    <legend
       class="label"
       :class="{ faint: !present || disabled }"
     >
       {{ label }}
-    </label>
+    </legend>
     <Checkbox
-      v-if="typeof fallback !== 'undefined' && showOptionalCheckbox && !hideOptionalCheckbox"
+      v-if="fallback !== undefined && showOptionalCheckbox && !hideOptionalCheckbox"
       :model-value="present"
       :disabled="disabled"
       class="opt"
-      @update:model-value="updateValue(typeof modelValue === 'undefined' ? fallback : undefined)"
+      :title="label + ' - ' + $t('settings.style.themes3.define')"
+      @update:model-value="updateValue(modelValue === undefined ? fallback : undefined)"
     />
     <div
       class="input color-input-field"
@@ -29,6 +29,7 @@
         :value="modelValue ?? fallback"
         :disabled="!present || disabled"
         @input="updateValue($event.target.value)"
+        :aria-label="$t('settings.style.common.hex')"
       >
       <div
         v-if="validColor"
@@ -58,13 +59,14 @@
           :disabled="!present || disabled"
           :class="{ disabled: !present || disabled }"
           @input="updateValue($event.target.value)"
+          :aria-label="$t('settings.style.common.picker')"
         >
       </label>
     </div>
-  </div>
+  </fieldset>
 </template>
 <script>
-import { throttle } from 'lodash'
+import { throttle } from 'lodash-es'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import { hex2rgb } from '../../services/color_convert/color_convert.js'
@@ -134,7 +136,7 @@ export default {
   emits: ['update:modelValue'],
   computed: {
     present() {
-      return typeof this.modelValue !== 'undefined'
+      return this.modelValue !== undefined
     },
     validColor() {
       return hex2rgb(this.modelValue || this.fallback)

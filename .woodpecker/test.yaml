@@ -10,6 +10,9 @@ labels:
   platform: linux/amd64
   memory: 'high'
 
+depends_on:
+  - build
+
 variables:
   artifacts_uploader_settings: &artifacts_uploader_settings
     user:
@@ -33,6 +36,7 @@ steps:
       PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
     entrypoint: *script_file_entrypoint
     commands:
+      - npm install --global yarn
       - |
         if [ "${CI_PIPELINE_EVENT}" != "pull_request" ]; then
           mkdir -pv $APT_CACHE_DIR && apt-get -qq update

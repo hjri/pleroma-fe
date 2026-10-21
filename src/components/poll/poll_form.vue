@@ -11,13 +11,15 @@
       <div class="input-container">
         <input
           :id="`poll-${index}`"
-          v-model="options[index]"
+          :model-value="options[index]"
           size="1"
           class="input poll-option-input"
           type="text"
           :placeholder="$t('polls.option')"
           :maxlength="maxLength"
+          :aria-label="$t('polls.option')"
           @keydown.enter.stop.prevent="nextOption(index)"
+          @change="(e) => updateOption(index, e.target.value)"
         >
       </div>
       <button
@@ -43,12 +45,12 @@
     <div class="poll-type-expiry">
       <div
         class="poll-type"
-        :title="$t('polls.type')"
       >
         <Select
           v-model="pollType"
           class="poll-type-select"
-          unstyled="true"
+          :title="$t('polls.type')"
+          unstyled
         >
           <option value="single">
             {{ $t('polls.single_choice') }}
@@ -68,15 +70,15 @@
           class="input expiry-amount hide-number-spinner"
           :min="minExpirationInCurrentUnit"
           :max="maxExpirationInCurrentUnit"
+          :aria-label="$t('polls.expiry_amount')"
           @change="expiryAmountChange"
         >
         {{ ' ' }}
         <Select
           v-model="expiryUnit"
-          unstyled="true"
+          unstyled
           class="expiry-unit"
           :aria-label="$t('polls.expiry_unit')"
-          @change="expiryAmountChange"
         >
           <option
             v-for="unit in expiryUnits"

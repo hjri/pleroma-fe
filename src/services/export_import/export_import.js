@@ -23,7 +23,7 @@ export const newExporter = ({
 
     document.body.appendChild(e)
     e.click()
-    document.body.removeChild(e)
+    e.remove()
   },
 })
 
@@ -63,6 +63,6 @@ export const newImporter = ({
 
     document.body.appendChild(filePicker)
     filePicker.click()
-    document.body.removeChild(filePicker)
+    filePicker.remove()
   },
 })

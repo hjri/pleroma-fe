@@ -1,4 +1,4 @@
-import { get, set, throttle, unset } from 'lodash'
+import { get, set, throttle, unset } from 'lodash-es'
 import {
   computed,
   getCurrentInstance,
@@ -599,10 +599,9 @@ export default {
       .map((c) => {
         return c.defaultRules
           .filter((c) => c.component === 'Root')
-          .map((x) => Object.entries(x.directives))
-          .flat()
+          .flatMap((x) => Object.entries(x.directives))
       })
-      .filter((x) => x)
+      .filter(Boolean)
       .flat()
       .map(([name, value]) => {
         const [valType, valVal] = value.split('|')
@@ -846,7 +845,7 @@ export default {
     exports.previewClass = computed(() => {
       const selectors = []
       if (
-        !!selectedComponent.value.variants?.normal ||
+        selectedComponent.value.variants?.normal ||
         selectedVariant.value !== 'normal'
       ) {
         selectors.push(selectedComponent.value.variants[selectedVariant.value])

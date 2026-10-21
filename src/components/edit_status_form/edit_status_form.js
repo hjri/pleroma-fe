@@ -15,9 +15,11 @@ const EditStatusForm = {
     requestClose() {
       this.$refs.postStatusForm.requestClose()
     },
+    saveDraft() {
+      this.$refs.postStatusForm.saveDraft()
+    },
     doEditStatus({ status, spoilerText, sensitive, media, contentType, poll }) {
       const params = {
-        store: this.$store,
         statusId: this.params.statusId,
         status,
         spoilerText,

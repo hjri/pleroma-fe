@@ -49,6 +49,20 @@
           <p>{{ $t('login.description') }}</p>
         </div>
 
+        <div
+          v-if="hosted"
+          class="form-group login-hosted"
+        >
+          <span class="login-hosted-instance">{{ instanceDomain }}</span>
+          <button
+            type="button"
+            class="button-unstyled -link"
+            @click="changeInstance"
+          >
+            {{ $t('hosted.change') }}
+          </button>
+        </div>
+
         <div class="form-group">
           <div class="login-bottom">
             <div>

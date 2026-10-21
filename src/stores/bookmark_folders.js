@@ -1,4 +1,4 @@
-import { find, remove } from 'lodash'
+import { find, remove } from 'lodash-es'
 import { defineStore } from 'pinia'
 
 import { useOAuthStore } from 'src/stores/oauth.js'

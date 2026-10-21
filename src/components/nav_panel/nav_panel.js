@@ -1,5 +1,4 @@
-import { mapState as mapPiniaState } from 'pinia'
-import { mapGetters, mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import BookmarkFoldersMenuContent from 'src/components/bookmark_folders_menu/bookmark_folders_menu_content.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
@@ -10,9 +9,12 @@ import NavigationEntry from 'src/components/navigation/navigation_entry.vue'
 import NavigationPins from 'src/components/navigation/navigation_pins.vue'
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
+import { useChatsStore } from 'src/stores/chats.js'
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -109,28 +111,27 @@ const NavPanel = {
     },
   },
   computed: {
-    ...mapPiniaState(useAnnouncementsStore, {
-      unreadAnnouncementCount: 'unreadAnnouncementCount',
+    ...mapState(useAnnouncementsStore, {
+      unreadAnnouncementsCount: 'unreadAnnouncementsCount',
       supportsAnnouncements: (store) => store.supportsAnnouncements,
     }),
-    ...mapPiniaState(useInstanceCapabilitiesStore, [
+    ...mapState(useInstanceCapabilitiesStore, [
       'pleromaChatMessagesAvailable',
       'pleromaBookmarkFoldersAvailable',
       'localBubble',
     ]),
-    ...mapPiniaState(useInstanceStore, ['federating']),
-    ...mapPiniaState(useInstanceStore, {
+    ...mapState(useInstanceStore, ['federating']),
+    ...mapState(useInstanceStore, {
       privateMode: (store) => store.private,
     }),
-    ...mapPiniaState(useSyncConfigStore, {
+    ...mapState(useSyncConfigStore, {
       collapsed: (store) => store.prefsStorage.simple.collapseNav,
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems),
     }),
-    ...mapState({
-      currentUser: (state) => state.users.currentUser,
-      followRequestCount: (state) => state.api.followRequests.length,
-    }),
+    ...mapState(useUsersStore, ['currentUser']),
+    ...mapState(useFollowRequestsStore, ['followRequestsCount']),
+    ...mapState(useChatsStore, ['unreadChatsCount']),
     timelinesItems() {
       return filterNavigation(
         Object.entries({ ...TIMELINES })
@@ -162,7 +163,6 @@ const NavPanel = {
         },
       )
     },
-    ...mapGetters(['unreadChatCount']),
   },
 }
 

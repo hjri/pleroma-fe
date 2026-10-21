@@ -40,12 +40,12 @@
 
   display: inline-block;
   position: relative;
-  width: 3.5em;
-  height: 3.5em;
+  width: var(--_avatar-size, 3.5em);
+  height: var(--_avatar-size, 3.5em);
 
   &.-compact {
-    width: 2.2em;
-    height: 2.2em;
+    width: var(--_avatar-size, 2.2em);
+    height: var(--_avatar-size, 2.2em);
     border-radius: var(--roundness);
   }
 

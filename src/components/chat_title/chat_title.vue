@@ -10,13 +10,13 @@
     >
       <UserAvatar
         class="titlebar-avatar"
-        :user="user"
+        :user-id="user.id"
       />
     </UserPopover>
     <RichContent
       v-if="user"
       class="username"
-      :title="'@'+(user && user.screen_name_ui)"
+      :title="'@'+(user?.screen_name_ui)"
       :html="htmlTitle"
       :emoji="user.emoji || []"
       :allow-non-square-emoji="allowNonSquareEmoji"

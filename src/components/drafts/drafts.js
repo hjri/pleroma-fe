@@ -3,6 +3,8 @@ import { defineAsyncComponent } from 'vue'
 import Draft from 'src/components/draft/draft.vue'
 import List from 'src/components/list/list.vue'
 
+import { useDraftsStore } from 'src/stores/drafts.js'
+
 const Drafts = {
   components: {
     Draft,
@@ -18,7 +20,7 @@ const Drafts = {
   },
   computed: {
     drafts() {
-      return this.$store.getters.draftsArray
+      return useDraftsStore().draftsArray
     },
   },
   methods: {
@@ -26,8 +28,8 @@ const Drafts = {
       this.showingConfirmDialog = true
     },
     doAbandonAll() {
-      this.$store
-        .dispatch('abandonAllDrafts')
+      useDraftsStore()
+        .abandonAllDrafts()
         .then(() => this.hideConfirmDialog())
     },
     hideConfirmDialog() {

@@ -1,6 +1,6 @@
-import { throttle } from 'lodash'
+import { throttle } from 'lodash-es'
 import { mapState } from 'pinia'
-import { defineAsyncComponent } from 'vue'
+import { defineAsyncComponent, provide } from 'vue'
 
 import DesktopNav from 'src/components/desktop_nav/desktop_nav.vue'
 import FeaturesPanel from 'src/components/features_panel/features_panel.vue'
@@ -21,6 +21,12 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useShoutStore } from 'src/stores/shout.js'
+import { useUsersStore } from 'src/stores/users.js'
+
+import { useBodyScroller } from 'src/composables/useBodyScroller.js'
+import { useScrollPosition } from 'src/composables/useScrollPosition.js'
+import { useWindowScroll } from 'src/composables/useWindowScroll.js'
+import { useWindowSize } from 'src/composables/useWindowSize.js'
 
 // Helper to unwrap reactive proxies
 window.toValue = (x) => JSON.parse(JSON.stringify(x))
@@ -48,6 +54,12 @@ export default {
     MobilePostStatusButton,
     MobileNav,
     DesktopNav,
+    FollowRequestConfirm: defineAsyncComponent(
+      () =>
+        import(
+          'src/components/follow_request_confirm/follow_request_confirm.vue'
+        ),
+    ),
     SettingsModal: defineAsyncComponent(
       () => import('src/components/settings_modal/settings_modal.vue'),
     ),
@@ -72,6 +84,12 @@ export default {
     GlobalError,
     GlobalNoticeList,
   },
+  setup() {
+    provide(
+      'bodyScrollPosition',
+      useScrollPosition(useBodyScroller(useWindowScroll(), useWindowSize())),
+    )
+  },
   data: () => ({
     mobileActivePanel: 'timeline',
     updateMobileState: null,
@@ -88,6 +106,16 @@ export default {
     },
     currentTheme() {
       this.setThemeBodyClass()
+    },
+    underlineLinks: {
+      handler(value) {
+        if (value) {
+          document.body.classList.add('underline-links')
+        } else {
+          document.body.classList.remove('underline-links')
+        }
+      },
+      immediate: true,
     },
     layoutType() {
       document.getElementById('modal').classList = ['-' + this.layoutType]
@@ -133,6 +161,9 @@ export default {
 
       return 'stock'
     },
+    underlineLinks() {
+      return useMergedConfigStore().mergedConfig.underlineLinks
+    },
     layoutModalClass() {
       return '-' + this.layoutType
     },
@@ -153,11 +184,8 @@ export default {
         ...(navbarColumnStretch ? ['-column-stretch'] : []),
       ]
     },
-    currentUser() {
-      return this.$store.state.users.currentUser
-    },
     userBackground() {
-      return this.currentUser.background_image
+      return this.currentUser?.background_image
     },
     foreignProfileBackground() {
       return (
@@ -188,7 +216,11 @@ export default {
       return useShoutStore().joined
     },
     isChats() {
-      return this.$route.name === 'chat' || this.$route.name === 'chats'
+      return (
+        this.$route.name === 'chat' ||
+        this.$route.name === 'chats' ||
+        this.$route.name === 'conversation2'
+      )
     },
     isListEdit() {
       return this.$route.name === 'lists-edit'
@@ -207,7 +239,13 @@ export default {
       )
     },
     hideShoutbox() {
-      return useMergedConfigStore().mergedConfig.hideShoutbox
+      return this.isChats || useMergedConfigStore().mergedConfig.hideShoutbox
+    },
+    thirdColumnMode() {
+      return this.mergedConfig.thirdColumnMode
+    },
+    reverseSetting() {
+      return this.mergedConfig.sidebarRight
     },
     thirdColumnMode() {
       return this.mergedConfig.thirdColumnMode
@@ -242,6 +280,7 @@ export default {
       'styleDataUsed',
       'layoutType',
     ]),
+    ...mapState(useUsersStore, ['currentUser']),
     ...mapState(useInstanceStore, ['styleDataUsed']),
     ...mapState(useInstanceCapabilitiesStore, [
       'suggestionsEnabled',

@@ -1,4 +1,4 @@
-import { includes } from 'lodash'
+import { includes } from 'lodash-es'
 
 const generateProfileLink = (id, screenName, restrictedNicknames) => {
   const complicated =
@@ -11,6 +11,6 @@ const generateProfileLink = (id, screenName, restrictedNicknames) => {
   }
 }
 
-const isExternal = (screenName) => screenName && screenName.includes('@')
+const isExternal = (screenName) => screenName?.includes('@')
 
 export default generateProfileLink

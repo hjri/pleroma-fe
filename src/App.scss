@@ -1,9 +1,10 @@
-// stylelint-disable rscss/class-format
-/* stylelint-disable no-descending-specificity */
 @use "panel";
 
 @import '@fortawesome/fontawesome-svg-core/styles.css';
 @import '@kazvmoe-infra/pinch-zoom-element/dist/pinch-zoom.css';
+
+// stylelint-disable rscss/class-format
+/* stylelint-disable no-descending-specificity */
 
 :root {
   --status-margin: 0.75em;
@@ -138,6 +139,35 @@ body {
 a {
   text-decoration: none;
   color: var(--link);
+
+  &:focus,
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:not(.button-unstyled):focus-visible {
+    border-radius: var(--roundness);
+    outline: 2px solid var(--link);
+  }
+}
+
+
+.button-unstyled {
+  text-decoration: underline dotted var(--icon);
+
+  &:hover,
+  &:focus {
+    text-decoration: underline solid;
+  }
+
+  &:focus-visible {
+    border-radius: var(--roundness);
+    outline: 2px solid var(--text);
+  }
+}
+
+.underline-links a {
+  text-decoration: underline;
 }
 
 h4 {
@@ -175,7 +205,7 @@ i[class*="icon-"],
   color: var(--icon);
 }
 
-nav {
+header {
   z-index: var(--ZI_navbar);
   box-shadow: var(--shadow);
   box-sizing: border-box;
@@ -356,7 +386,7 @@ nav {
   }
 
   &.-mobile {
-    grid-template-columns: 100vw;
+    grid-template-columns: 100%;
     grid-template-areas: "content";
     padding: 0;
 
@@ -479,11 +509,6 @@ nav {
   cursor: pointer;
   box-sizing: content-box;
   color: inherit;
-
-  &.-link {
-    /* stylelint-disable-next-line declaration-no-important */
-    color: var(--link) !important;
-  }
 }
 
 label {
@@ -663,7 +688,7 @@ option {
   display: grid;
   grid-auto-flow: row dense;
   grid-template-columns: repeat(auto-fit, minmax(20em, 1fr));
-  grid-gap: 0.5em;
+  gap: 0.5em;
 
   li {
     border: 1px solid var(--border);
@@ -678,22 +703,19 @@ option {
   display: inline-flex;
   vertical-align: middle;
 
-  > *,
-  > * .button-default {
+  > .button-default {
     --_roundness-left: 0;
     --_roundness-right: 0;
 
     position: relative;
-  }
 
-  > *:first-child,
-  > *:first-child .button-default {
-    --_roundness-left: var(--roundness);
-  }
+    &:first-child {
+      --_roundness-left: var(--roundness);
+    }
 
-  > *:last-child,
-  > *:last-child .button-default {
-    --_roundness-right: var(--roundness);
+    &:last-child {
+      --_roundness-right: var(--roundness);
+    }
   }
 }
 
@@ -922,7 +944,9 @@ option {
   margin: -1px;
   overflow: hidden;
   visibility: visible;
+  /* stylelint-disable property-no-deprecated */
   clip: rect(0 0 0 0);
+  /* stylelint-enable property-no-deprecated */
   padding: 0;
   position: absolute;
 }
@@ -934,7 +958,6 @@ option {
 
 #splash {
   pointer-events: none;
-  // transition: opacity 0.5s;
 
   #status {
     &.css-ok {

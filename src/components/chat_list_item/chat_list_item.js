@@ -1,10 +1,12 @@
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import AvatarList from 'src/components/avatar_list/avatar_list.vue'
 import ChatTitle from 'src/components/chat_title/chat_title.vue'
 import StatusBody from 'src/components/status_content/status_content.vue'
 import Timeago from 'src/components/timeago/timeago.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
+
+import { useUsersStore } from 'src/stores/users.js'
 
 const ChatListItem = {
   name: 'ChatListItem',
@@ -17,20 +19,20 @@ const ChatListItem = {
     StatusBody,
   },
   computed: {
-    ...mapState({
-      currentUser: (state) => state.users.currentUser,
-    }),
+    ...mapState(useUsersStore, ['currentUser']),
     attachmentInfo() {
       if (this.chat.lastMessage.attachments.length === 0) {
         return
       }
 
-      const types = this.chat.lastMessage.attachments.map((file) => file.type)
-      if (types.includes('video')) {
+      const types = new Set(
+        this.chat.lastMessage.attachments.map((file) => file.type),
+      )
+      if (types.has('video')) {
         return this.$t('file_type.video')
-      } else if (types.includes('audio')) {
+      } else if (types.has('audio')) {
         return this.$t('file_type.audio')
-      } else if (types.includes('image')) {
+      } else if (types.has('image')) {
         return this.$t('file_type.image')
       } else {
         return this.$t('file_type.file')
@@ -39,7 +41,7 @@ const ChatListItem = {
     messageForStatusContent() {
       const message = this.chat.lastMessage
       const messageEmojis = message ? message.emojis : []
-      const isYou = message && message.account_id === this.currentUser.id
+      const isYou = message?.account_id === this.currentUser.id
       const content = message ? this.attachmentInfo || message.content : ''
       const messagePreview = isYou
         ? `<i>${this.$t('chats.you')}</i> ${content}`
@@ -60,7 +62,7 @@ const ChatListItem = {
           name: 'chat',
           params: {
             username: this.currentUser.screen_name,
-            recipient_id: this.chat.account.id,
+            chatUserId: this.chat.account.id,
           },
         })
       }

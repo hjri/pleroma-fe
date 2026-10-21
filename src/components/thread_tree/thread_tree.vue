@@ -1,60 +1,39 @@
 <template>
-  <article class="thread-tree">
+<div
+  ref="root"
+  class="thread-tree"
+>
     <Status
-      :key="status.id"
-      ref="statusComponent"
-      :statusoid="status"
-      :replies="getReplies(status.id)"
-      :inline-expanded="collapsable && isExpanded"
-      :expandable="!isExpanded"
-      :show-pinned="pinnedStatusIdsObject && pinnedStatusIdsObject[status.id]"
-      :in-conversation="isExpanded"
-      :focused="focused === status.id || focused === status.retweeted_status?.id"
-      :in-profile="inProfile"
-      :profile-user-id="profileUserId"
-      class="conversation-status conversation-status-treeview status-fadein panel-body"
+      :key="statusId"
+      class="conversation-status conversation-status-treeview panel-body"
+      :status-id="statusId"
+      :replies="getReplies(statusId)"
 
-      :simple-tree="simple"
-      :thread-display-status="threadDisplayStatus[status.id]"
-      :can-dive="canDive"
+      :focused="focusedId === status.id"
+      :data-status-id="statusId"
+      :conversation-rank="depth === 0 ? 'current' : 'child'"
+      :thread-display-state="threadDisplay.get(statusId)"
 
-      @dive="$emit('dive', status.id)"
-      @goto="$emit('goto', status.id)"
-      @toggle-expanded="toggleExpanded"
-      @suspendable-state-change="e => $emit('suspendableStateChange', e)"
+      @request-focus="(e) => $emit('requestFocus', e)"
+      @toggle-expanded="$emit('toggleExpanded', statusId)"
+      @toggle-thread-display="$emit('toggleThreadDisplay', statusId)"
+      @suspendable-state-change="(e) => $emit('suspendableStateChange', e)"
     />
     <div
       v-if="currentReplies.length > 0 && threadShowing"
       class="thread-tree-replies"
     >
       <ThreadTree
-        v-for="replyStatus in currentReplies"
-        :key="replyStatus.id"
-        ref="childComponent"
+        v-for="replyStatusId in currentReplies"
+        :key="replyStatusId"
         :depth="depth + 1"
-        :status="replyStatus"
+        :status-id="replyStatusId"
 
-        :in-profile="inProfile"
-        :conversation="conversation"
-        :collapsable="collapsable"
-        :is-expanded="isExpanded"
-        :pinned-status-ids-object="pinnedStatusIdsObject"
-        :profile-user-id="profileUserId"
-
-        :get-replies="getReplies"
-        :focused="focused"
-        :toggle-expanded="toggleExpanded"
-
-        :simple="simple"
-        :thread-display-status="threadDisplayStatus"
-        :show-thread-recursively="showThreadRecursively"
-        :total-reply-count="totalReplyCount"
-        :total-reply-depth="totalReplyDepth"
-
-        :can-dive="canDive"
-        @goto="(e) => $emit('goto', e)"
-        @dive="(e) => $emit('dive', e)"
+        @request-focus="(e) => $emit('requestFocus', e)"
+        @show-thread-recursively="(e) => $emit('showThreadRecursively', e)"
+        @toggle-thread-display="e => $emit('toggleThreadDisplay', e)"
         @suspendable-state-change="e => $emit('suspendableStateChange', e)"
+        @toggle-expanded="(e) => $emit('toggleExpanded', e)"
       />
     </div>
     <div
@@ -67,7 +46,7 @@
         tag="button"
         keypath="status.thread_follow_with_icon"
         class="button-unstyled -link thread-tree-show-replies-button"
-        @click.prevent="$emit('dive', status.id)"
+        @click.prevent="$emit('requestFocus', statusId)"
       >
         <template #icon>
           <FAIcon
@@ -76,7 +55,7 @@
         </template>
         <template #text>
           <span>
-            {{ $t('status.thread_follow', { numStatus: totalReplyCount[status.id] }, totalReplyCount[status.id]) }}
+            {{ $t('status.thread_follow', { numStatus: totalReplyCount.get(status.id) }, totalReplyCount.get(status.id)) }}
           </span>
         </template>
       </i18n-t>
@@ -86,7 +65,7 @@
         tag="button"
         keypath="status.thread_show_full_with_icon"
         class="button-unstyled -link thread-tree-show-replies-button"
-        @click.prevent="showThreadRecursively(status.id)"
+        @click.prevent="$emit('showThreadRecursively', statusId)"
       >
         <template #icon>
           <FAIcon
@@ -95,12 +74,12 @@
         </template>
         <template #text>
           <span>
-            {{ $t('status.thread_show_full', { numStatus: totalReplyCount[status.id], depth: totalReplyDepth[status.id] }, totalReplyCount[status.id]) }}
+            {{ $t('status.thread_show_full', { numStatus: totalReplyCount.get(status.id), depth: totalReplyDepth.get(status.id) }, totalReplyCount.get(status.id)) }}
           </span>
         </template>
       </i18n-t>
     </div>
-  </article>
+  </div>
 </template>
 
 <script src="./thread_tree.js"></script>

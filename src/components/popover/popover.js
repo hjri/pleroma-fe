@@ -1,9 +1,14 @@
-/* global process */
+import { useId } from 'vue'
+
 const Popover = {
   name: 'Popover',
+  inheritAttrs: false,
   props: {
     // Action to trigger popover: either 'hover' or 'click'
     trigger: String,
+
+    // Accessible label
+    label: String,
 
     // 'top', 'bottom', 'left', 'right'
     placement: String,
@@ -49,22 +54,38 @@ const Popover = {
     // Use styled button (to avoid nested buttons)
     normalButton: Boolean,
 
-    // Whether to hide the trigger totally
-    hideTrigger: {
-      type: Boolean,
-      default: false,
-    },
+    // Use <a> instead of <button>
+    link: Boolean,
 
-    triggerAttrs: {
-      type: Object,
-      default: {},
-    },
+    // Use <router-link> instead of <button>
+    routerLink: Boolean,
+
+    // Don't put button classes on trigger
+    menuitem: Boolean,
+
+    // Whether to hide the trigger totally
+    hideTrigger: Boolean,
+
+    // Used to set or unset aria-haspopup (attribute not set for tooltips)
+    tooltip: Boolean,
   },
+  emits: [
+    'click',
+    'show',
+    'close',
+    'forwardTabContentFocus',
+    'reverseTabContentFocus',
+  ],
   inject: {
     // override popover z layer
     popoversZLayer: {
       default: '',
     },
+  },
+  setup() {
+    const uniqueId = useId()
+
+    return { uniqueId }
   },
   data() {
     return {
@@ -77,6 +98,8 @@ const Popover = {
       teleport: false,
       lockReEntry: false,
       hidden: true,
+      nextFocus: null,
+      redirectFocus: false,
       styles: {},
       oldSize: { width: 0, height: 0 },
       scrollable: null,
@@ -88,25 +111,51 @@ const Popover = {
     }
   },
   computed: {
+    idPrefix() {
+      return `popover-${this.uniqueId}-`
+    },
     allTriggerAttrs() {
       if (process.env.NODE_ENV === 'development') {
-        if ('aria-hidden' in this.triggerAttrs) {
+        if ('aria-hidden' in this.$attrs) {
           throw new Error(
-            'Do not use aria-hidden in triggerAttrs. Instead set hideTrigger to true',
+            'Do not use aria-hidden in attrs. Instead set hideTrigger to true',
           )
         }
       }
 
-      const attrs = {
-        ...this.triggerAttrs,
+      const allAttrs = {
+        ...this.$attrs,
       }
+      const {
+        'aria-hidden': _unused0,
+        'aria-label': _unused1,
+        ...rest
+      } = allAttrs
+
+      const attrs = { ...rest }
 
       if (this.hideTrigger) {
         attrs['aria-hidden'] = true
-        attrs.tabindex = 1
+        attrs.tabindex = -1
       }
 
       return attrs
+    },
+    ariaHasPopup() {
+      if (this.tooltip || this.disabled) {
+        return undefined
+      } else {
+        return this.$attrs['aria-haspopup'] ?? 'menu'
+      }
+    },
+    triggerClass() {
+      if (this.menuitem) {
+        return ''
+      } else if (this.normalButton) {
+        return 'button-default btn'
+      } else {
+        return 'button-unstyled'
+      }
     },
   },
   methods: {
@@ -116,8 +165,8 @@ const Popover = {
     },
     containerBoundingClientRect() {
       const container = this.boundToSelector
-        ? this.$el.closest(this.boundToSelector)
-        : this.$el.offsetParent
+        ? this.$refs.trigger.closest(this.boundToSelector)
+        : this.$refs.trigger.offsetParent
       return container.getBoundingClientRect()
     },
     updateStyles() {
@@ -129,19 +178,17 @@ const Popover = {
       // Popover will be anchored around this element, trigger ref is the container, so
       // its children are what are inside the slot. Expect only one v-slot:trigger.
       const anchorEl =
-        this.anchorEl ||
-        (this.$refs.trigger && this.$refs.trigger.children[0]) ||
-        this.$el
+        this.anchorEl || this.$refs.trigger?.children[0] || this.$refs.trigger
       // SVGs don't have offsetWidth/Height, use fallback
       const anchorHeight = anchorEl.offsetHeight || anchorEl.clientHeight
       const anchorWidth = anchorEl.offsetWidth || anchorEl.clientWidth
       const anchorScreenBox = anchorEl.getBoundingClientRect()
 
       const anchorStyle = getComputedStyle(anchorEl)
-      const topPadding = parseFloat(anchorStyle.paddingTop)
-      const bottomPadding = parseFloat(anchorStyle.paddingBottom)
-      const rightPadding = parseFloat(anchorStyle.paddingRight)
-      const leftPadding = parseFloat(anchorStyle.paddingLeft)
+      const topPadding = Number.parseFloat(anchorStyle.paddingTop)
+      const bottomPadding = Number.parseFloat(anchorStyle.paddingBottom)
+      const rightPadding = Number.parseFloat(anchorStyle.paddingRight)
+      const leftPadding = Number.parseFloat(anchorStyle.paddingLeft)
 
       // Screen position of the origin point for popover = center of the anchor
       const origin = {
@@ -155,8 +202,7 @@ const Popover = {
 
       // Minor optimization, don't call a slow reflow call if we don't have to
       const parentScreenBox =
-        this.boundTo &&
-        (this.boundTo.x === 'container' || this.boundTo.y === 'container') &&
+        (this.boundTo?.x === 'container' || this.boundTo?.y === 'container') &&
         this.containerBoundingClientRect()
 
       const margin = this.margin || {}
@@ -164,7 +210,7 @@ const Popover = {
       // What are the screen bounds for the popover? Viewport vs container
       // when using viewport, using default margin values to dodge the navbar
       const xBounds =
-        this.boundTo && this.boundTo.x === 'container'
+        this.boundTo?.x === 'container'
           ? {
               min: parentScreenBox.left + (margin.left || 0),
               max: parentScreenBox.right - (margin.right || 0),
@@ -175,7 +221,7 @@ const Popover = {
             }
 
       const yBounds =
-        this.boundTo && this.boundTo.y === 'container'
+        this.boundTo?.y === 'container'
           ? {
               min: parentScreenBox.top + (margin.top || 0),
               max: parentScreenBox.bottom - (margin.bottom || 0),
@@ -247,12 +293,12 @@ const Popover = {
         if (bottomBoundary + content.offsetHeight > yBounds.max) usingTop = true
         if (topBoundary - content.offsetHeight < yBounds.min) usingTop = false
 
-        const yOffset = (this.offset && this.offset.y) || 0
+        const yOffset = this.offset?.y || 0
         translateY = usingTop
           ? topBoundary - yOffset - content.offsetHeight
           : bottomBoundary + yOffset
 
-        const xOffset = (this.offset && this.offset.x) || 0
+        const xOffset = this.offset?.x || 0
         translateX = origin.x + horizOffset + xOffset
       } else {
         // Default to whatever user wished with placement prop
@@ -268,12 +314,12 @@ const Popover = {
         if (rightBoundary + content.offsetWidth > xBounds.max) usingLeft = true
         if (leftBoundary - content.offsetWidth < xBounds.min) usingLeft = false
 
-        const xOffset = (this.offset && this.offset.x) || 0
+        const xOffset = this.offset?.x || 0
         translateX = usingLeft
           ? leftBoundary - xOffset - content.offsetWidth
           : rightBoundary + xOffset
 
-        const yOffset = (this.offset && this.offset.y) || 0
+        const yOffset = this.offset?.y || 0
         translateY = origin.y + vertOffset + yOffset
       }
 
@@ -298,7 +344,7 @@ const Popover = {
       }, 0)
       const wasHidden = this.hidden
       this.hidden = false
-      this.parentPopover && this.parentPopover.onChildPopoverState(this, true)
+      this.parentPopover?.onChildPopoverState(this, true)
       if (this.trigger === 'click' || this.stayOnClick) {
         document.addEventListener('click', this.onClickOutside)
       }
@@ -315,8 +361,10 @@ const Popover = {
     hidePopover() {
       if (this.disabled) return
       if (!this.hidden) this.$emit('close')
+      this.redirectFocus = false
+      this.nextFocus = null
       this.hidden = true
-      this.parentPopover && this.parentPopover.onChildPopoverState(this, false)
+      this.parentPopover?.onChildPopoverState(this, false)
       if (this.trigger === 'click') {
         document.removeEventListener('click', this.onClickOutside)
       }
@@ -354,20 +402,103 @@ const Popover = {
         this.graceTimeout = setTimeout(() => this.hidePopover(), 1)
       }
     },
-    onClick() {
-      if (this.trigger === 'click') {
-        if (this.hidden) {
-          this.showPopover()
+
+    // # Focus management.
+    //
+    // Since our content is far away in separate #modals or #popovers container
+    // the native tabindex flow is broken, but we still want user to be able to
+    // focus popover contents. To do so we do a bit of focus management.
+    //
+    // We do a little focus trapping and redirecting. First, we must establish
+    // our order. Opening a popover (including auto-open by hover/focus) and
+    // hitting tab should select content's first focusable element. Shift-tab
+    // away from popover trigger should hide popover and continue on as normal.
+    // While inside content, shift-tabbing from first focusable element should
+    // focus trigger again, and tabbing beyond last focusable element should
+    // focus element next in line relative to trigger.
+    //
+    // We use two tricks here:
+    // 1. we add two bogus ".focus-trap" elements before and after popover
+    // contents. Those are aria-hidden="1" and empty spans so they don't
+    // interfere with the UI or accessibility. We use them to detect when
+    // user tab-navigated beyond first and last focusable elements and act
+    // accordingly
+    // 2. when we open up a popover we listen for "Tab" keypress and engage
+    // "redirectFocus", so that when trigger loses focus (immideately after)
+    // we a) focus content's first focusable element and b) save reference
+    // to the next intended focus target.
+    //
+    // There is a blind spot in this approach. If user opened a popover and
+    // navigated in it with a mouse we never get to know the "next intended
+    // focus target" so focus order ends up being broken.
+    //
+    // There's probably a better way to figure out this "next target" but for
+    // now this will do.
+    onFocus(e) {
+      if (this.trigger === 'hover') {
+        this.showPopover()
+      }
+    },
+    onBlur(e) {
+      if (this.redirectFocus) {
+        const firstFocusable = this.$refs.content
+          ?.querySelector('*:not(.focus-trap)')
+          ?.querySelector('a[href], button, [tabindex="0"], input')
+        if (firstFocusable) {
+          firstFocusable?.focus()
+          this.nextFocus = e.relatedTarget
         } else {
           this.hidePopover()
         }
       }
+      this.redirectFocus = false
+    },
+    onTab(e) {
+      this.redirectFocus = true
+    },
+    onForwardTabContentFocus() {
+      this.nextFocus?.focus()
+      this.hidePopover()
+      this.$emit('forwardTabContentFocus')
+    },
+    onReverseTabContentFocus() {
+      const triggerer = this.anchorEl ?? this.$refs.trigger
+      triggerer.focus()
+      this.$emit('reverseTabContentFocus')
+    },
+    onClick(e, navigate) {
+      this.$emit('click', e)
+
+      if (!e.disablePopover) {
+        const singleClick = e.detail <= 1
+
+        if (!singleClick) return // Let the browser do whatever
+
+        if (this.trigger === 'click') {
+          e.preventDefault()
+          if (this.hidden) {
+            this.showPopover()
+          } else {
+            this.hidePopover()
+          }
+          return
+        }
+      }
+
+      // Router-link navigation
+      if (navigate) {
+        e.preventDefault()
+        navigate()
+        return
+      }
+
+      // Otherwise let browser navigate the link
     },
     onClickOutside(e) {
       if (this.disableClickOutside) return
       if (this.hidden) return
-      if (this.$refs.content && this.$refs.content.contains(e.target)) return
-      if (this.$el.contains(e.target)) return
+      if (this.$refs.content?.contains(e.target)) return
+      if (this.$refs.trigger.contains(e.target)) return
       if (this.childrenShown.size > 0) return
       this.hidePopover()
       if (this.parentPopover) this.parentPopover.onClickOutside(e)

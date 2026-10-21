@@ -1,5 +1,9 @@
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
+
+import { serverUrl } from 'src/api/api_base.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPeopleGroup, faRobot } from '@fortawesome/free-solid-svg-icons'
@@ -8,19 +12,13 @@ library.add(faRobot, faPeopleGroup)
 
 const UserAvatar = {
   props: {
-    // User object to show avatar of
-    user: {
+    // UserID of a user to show avatar of
+    userId: {
       required: true,
-      type: Object,
+      type: String,
     },
     // Use less space and use alternative roundness
     compact: {
-      required: false,
-      type: Boolean,
-      default: false,
-    },
-    // Show small icon indicating if account is a bot or group
-    showActorTypeIndicator: {
       required: false,
       type: Boolean,
       default: false,
@@ -35,11 +33,22 @@ const UserAvatar = {
   data() {
     return {
       showPlaceholder: false,
-      defaultAvatar: `${useInstanceStore().server + useInstanceStore().instanceIdentity.defaultAvatar}`,
+      // the instance's file (hosted: a full URL on it already)
+      defaultAvatar: serverUrl(
+        useInstanceStore().server,
+        useInstanceStore().instanceIdentity.defaultAvatar,
+      ),
       betterShadow: useInterfaceStore().browserSupport.cssFilter,
     }
   },
-  components: {},
+  computed: {
+    user() {
+      return useUsersStore().findUser(this.userId)
+    },
+    showActorTypeIndicator() {
+      return !useMergedConfigStore().mergedConfig.hideBotIndication
+    },
+  },
   methods: {
     imgSrc(src) {
       return !src || this.showPlaceholder ? this.defaultAvatar : src

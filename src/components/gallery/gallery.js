@@ -1,4 +1,4 @@
-import { set, sumBy } from 'lodash'
+import { set, sumBy } from 'lodash-es'
 
 import Attachment from 'src/components/attachment/attachment.vue'
 

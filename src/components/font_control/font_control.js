@@ -35,7 +35,7 @@ export default {
         'sans-serif',
         'monospace',
         ...(this.options || []),
-      ].filter((_) => _),
+      ].filter(Boolean),
     }
   },
   methods: {

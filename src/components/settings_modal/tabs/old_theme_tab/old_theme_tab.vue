@@ -181,14 +181,14 @@
               name="accentColor"
               :fallback="previewTheme.colors?.link"
               :label="$t('settings.accent')"
-              :show-optional-checkbox="typeof linkColorLocal !== 'undefined'"
+              :show-optional-checkbox="linkColorLocal !== undefined"
             />
             <ColorInput
               v-model="linkColorLocal"
               name="linkColor"
               :fallback="previewTheme.colors?.accent"
               :label="$t('settings.links')"
-              :show-optional-checkbox="typeof accentColorLocal !== 'undefined'"
+              :show-optional-checkbox="accentColorLocal !== undefined"
             />
             <ContrastRatio :contrast="previewContrast.bgLink" />
           </div>

@@ -1,9 +1,11 @@
-import { merge } from 'lodash'
+import { merge } from 'lodash-es'
 import { defineStore } from 'pinia'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
+import { apiUrl } from 'src/api/api_base.js'
 import { listEmojiPacks } from 'src/api/public.js'
 import { ensureFinalFallback } from 'src/i18n/languages.js'
 
@@ -120,23 +122,19 @@ export const useEmojiStore = defineStore('emoji', {
       }, {})
     },
     standardEmojiList(state) {
-      return (
-        SORTED_EMOJI_GROUP_IDS.map((groupId) =>
-          (this.emoji[groupId] || []).map((k) =>
-            injectAnnotations(k, this.unicodeEmojiAnnotations),
-          ),
-        ).reduce((a, b) => a.concat(b), []) ?? []
-      )
+      return SORTED_EMOJI_GROUP_IDS.map((groupId) =>
+        (this.emoji[groupId] || []).map((k) =>
+          injectAnnotations(k, this.unicodeEmojiAnnotations),
+        ),
+      ).flat()
     },
     standardEmojiGroupList(state) {
-      return (
-        SORTED_EMOJI_GROUP_IDS.map((groupId) => ({
-          id: groupId,
-          emojis: (this.emoji[groupId] || []).map((k) =>
-            injectAnnotations(k, this.unicodeEmojiAnnotations),
-          ),
-        })) ?? []
-      )
+      return SORTED_EMOJI_GROUP_IDS.map((groupId) => ({
+        id: groupId,
+        emojis: (this.emoji[groupId] || []).map((k) =>
+          injectAnnotations(k, this.unicodeEmojiAnnotations),
+        ),
+      }))
     },
   },
   actions: {
@@ -146,7 +144,7 @@ export const useEmojiStore = defineStore('emoji', {
     async getStaticEmoji() {
       try {
         // See build/emojis_plugin for more details
-        const values = (await import('/src/assets/emoji.json')).default
+        const values = (await import('src/assets/emoji.json')).default
 
         const emoji = Object.keys(values).reduce((res, groupId) => {
           res[groupId] = values[groupId].map((e) => ({
@@ -198,7 +196,7 @@ export const useEmojiStore = defineStore('emoji', {
     },
 
     async getAdminPacks(instance, listFunction) {
-      const currentUser = window.vuex.state.users.currentUser
+      const currentUser = useUsersStore().currentUser
 
       if (!currentUser.rights.admin) return
 
@@ -231,7 +229,7 @@ export const useEmojiStore = defineStore('emoji', {
         .then((allPacks) => {
           // Sort by key
           return Object.keys(allPacks)
-            .sort()
+            .sort((a, b) => a.localeCompare(b))
             .reduce((acc, key) => {
               if (key.length === 0) return acc
               acc[key] = allPacks[key]
@@ -245,9 +243,9 @@ export const useEmojiStore = defineStore('emoji', {
 
     async getCustomEmoji() {
       try {
-        let res = await window.fetch('/api/v1/pleroma/emoji')
+        let res = await window.fetch(apiUrl('/api/v1/pleroma/emoji'))
         if (!res.ok) {
-          res = await window.fetch('/api/pleroma/emoji.json')
+          res = await window.fetch(apiUrl('/api/pleroma/emoji.json'))
         }
         if (res.ok) {
           const result = await res.json()

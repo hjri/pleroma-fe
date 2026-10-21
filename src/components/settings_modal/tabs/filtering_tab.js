@@ -1,4 +1,4 @@
-import { cloneDeep } from 'lodash'
+import { cloneDeep } from 'lodash-es'
 import { mapActions, mapState } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -15,6 +15,7 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useTimelinesStore } from 'src/stores/timelines.js'
 
 import {
   newExporter,
@@ -190,21 +191,24 @@ const FilteringTab = {
       }
       return valid
     },
-    createFilter(
-      filter = {
+    createFilter(filter) {
+      const newId = uuidv4()
+      const newFilter = {
         type: 'word',
         value: '',
         name: 'New Filter',
         enabled: true,
         expires: null,
         hide: false,
-      },
-    ) {
-      const newId = uuidv4()
+        ...filter,
+      }
 
-      filter.order = this.muteFilters.length + 2
-      this.muteFiltersDraftObject[newId] = filter
-      this.setSimplePrefAndSave({ path: 'muteFilters.' + newId, value: filter })
+      newFilter.order = this.muteFilters.length + 2
+      this.muteFiltersDraftObject[newId] = newFilter
+      this.setSimplePrefAndSave({
+        path: 'muteFilters.' + newId,
+        value: newFilter,
+      })
     },
     exportFilter(id) {
       this.exportedFilter = { ...this.muteFiltersDraftObject[id] }
@@ -262,7 +266,7 @@ const FilteringTab = {
   // Updating nested properties
   watch: {
     replyVisibility() {
-      this.$store.dispatch('queueFlushAll')
+      useTimelinesStore().requireReloadAll()
     },
     muteFiltersObject() {
       this.muteFiltersDraftObject = cloneDeep(

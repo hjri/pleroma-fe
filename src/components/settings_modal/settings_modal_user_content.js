@@ -1,3 +1,5 @@
+import { mapState } from 'pinia'
+
 import VerticalTabSwitcher from './helpers/vertical_tab_switcher.jsx'
 import AppearanceTab from './tabs/appearance_tab.vue'
 import ClutterTab from './tabs/clutter_tab.vue'
@@ -17,6 +19,7 @@ import StyleTab from './tabs/style_tab/style_tab.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -74,9 +77,6 @@ const SettingsModalContent = {
     OldThemeTab,
   },
   computed: {
-    isLoggedIn() {
-      return !!this.$store.state.users.currentUser
-    },
     open() {
       return useInterfaceStore().settingsModalState !== 'hidden'
     },
@@ -86,6 +86,7 @@ const SettingsModalContent = {
     expertLevel() {
       return useMergedConfigStore().mergedConfig.expertLevel
     },
+    ...mapState(useUsersStore, ['loggedIn']),
   },
   data() {
     return {

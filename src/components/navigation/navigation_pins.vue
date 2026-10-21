@@ -1,5 +1,9 @@
 <template>
-  <span class="NavigationPins">
+<span
+  class="NavigationPins"
+  role="toolbar"
+  :aria-label="$t('nav.quick_items')"
+  >
     <router-link
       v-for="item in pinnedList"
       :key="item.name"
@@ -16,14 +20,16 @@
       <span
         v-if="item.iconLetter && !item.iconEmoji"
         class="iconLetter fa-scale-110 fa-old-padding"
+        :title="item.labelRaw || $t(item.label)"
       >{{ item.iconLetter }}</span>
       <StillImage
         v-if="item.iconEmoji"
         class="bookmark-emoji"
         :src="item.iconEmojiUrl"
+        :alt="item.labelRaw || $t(item.label)"
       />
       <div
-        v-if="item.badgeGetter && getters[item.badgeGetter]"
+        v-if="item.badgeGetter && badges[item.badgeGetter]"
         class="badge -dot"
         :class="[`-${item.badgeStyle}`]"
       />
@@ -37,8 +43,7 @@
 .NavigationPins {
   display: flex;
   flex-wrap: wrap;
-  overflow: hidden;
-  height: 100%;
+  height: var(--panel-header-height);
 
   &.alert-dot-notification {
     background-color: var(--badgeNotification);

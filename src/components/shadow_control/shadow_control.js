@@ -1,4 +1,4 @@
-import { flattenDeep, throttle } from 'lodash'
+import { flattenDeep, throttle } from 'lodash-es'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'

@@ -2,7 +2,7 @@ import Checkbox from 'components/checkbox/checkbox.vue'
 import Popover from 'components/popover/popover.vue'
 import Select from 'components/select/select.vue'
 import StillImage from 'components/still-image/still-image.vue'
-import { clone } from 'lodash'
+import { clone } from 'lodash-es'
 import { defineAsyncComponent } from 'vue'
 
 import TabSwitcher from 'src/components/tab_switcher/tab_switcher.jsx'
@@ -122,7 +122,7 @@ const EmojiTab = {
             return this.refreshPackList()
           } else {
             this.displayError(resp.error)
-            return Promise.reject(resp)
+            throw new Error(resp)
           }
         })
         .then(() => {
@@ -139,7 +139,7 @@ const EmojiTab = {
             return this.refreshPackList()
           } else {
             this.displayError(resp.error)
-            return Promise.reject(resp)
+            throw new Error(resp)
           }
         })
         .then(() => {
@@ -218,8 +218,8 @@ const EmojiTab = {
             this.sortPackFiles(`${pack}@${inst}`)
           }
         })
-        .catch((data) => {
-          this.displayError(data)
+        .catch((error) => {
+          this.displayError(error)
         })
     },
     downloadRemotePack() {
@@ -239,7 +239,7 @@ const EmojiTab = {
             return this.refreshPackList()
           } else {
             this.displayError(resp.error)
-            return Promise.reject(resp)
+            throw new Error(resp)
           }
         })
         .then(() => {
@@ -259,7 +259,7 @@ const EmojiTab = {
             return this.refreshPackList()
           } else {
             this.displayError(resp.error)
-            return Promise.reject(resp)
+            throw new Error(resp)
           }
         })
         .then(() => {
@@ -280,7 +280,7 @@ const EmojiTab = {
             return this.refreshPackList()
           } else {
             this.displayError(resp.error)
-            return Promise.reject(resp)
+            throw new Error(resp)
           }
         })
         .then(() => {
@@ -300,7 +300,7 @@ const EmojiTab = {
     sortPackFiles(nameOfPack) {
       // Sort by key
       const sorted = Object.keys(this.knownPacks[nameOfPack].files)
-        .sort()
+        .sort((a, b) => a.localeCompare(b))
         .reduce((acc, key) => {
           if (key.length === 0) return acc
           acc[key] = this.knownPacks[nameOfPack].files[key]

@@ -4,17 +4,22 @@
     class="Gallery"
     :class="{ '-long': tooManyAttachments && hidingLong }"
   >
-    <div class="gallery-rows">
+    <div
+      class="gallery-rows"
+      role="list"
+    >
       <div
         v-for="(row, rowIndex) in rows"
         :key="rowIndex"
         class="gallery-row"
         :style="rowStyle(row)"
         :class="{ '-audio': row.audio, '-minimal': row.minimal, '-grid': grid }"
+        role="presentation"
       >
         <div
           class="gallery-row-inner"
           :class="{ '-grid': grid }"
+          role="presentation"
         >
           <Attachment
             v-for="(attachment, attachmentIndex) in row.items"
@@ -29,9 +34,11 @@
             :shift-up="!(attachmentIndex === 0 && rowIndex === 0) && shiftUpAttachment"
             :shift-dn="!(attachmentIndex === row.items.length - 1 && rowIndex === rows.length - 1) && shiftDnAttachment"
             :edit="editAttachment"
-            :description="descriptions && descriptions[attachment.id]"
+            :description="descriptions?.[attachment.id]"
             :hide-description="size === 'small' || tooManyAttachments && hidingLong"
             :style="itemStyle(attachment.id, row.items)"
+            role="listitem"
+            :aria-label="$t('status.attachment') + ' ' + attachmentIndex"
             @set-media="onMedia"
             @natural-size-load="onNaturalSizeLoad"
             @play="() => onMediaStateChange(true, attachment.id)"
@@ -126,7 +133,7 @@
         height: auto;
         position: relative;
         display: grid;
-        grid-gap: 0.5em;
+        gap: 0.5em;
         grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
 
         .gallery-item {

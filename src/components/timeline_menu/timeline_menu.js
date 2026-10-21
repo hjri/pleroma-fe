@@ -1,5 +1,4 @@
-import { mapState as mapPiniaState } from 'pinia'
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import BookmarkFoldersMenuContent from 'src/components/bookmark_folders_menu/bookmark_folders_menu_content.vue'
 import ListsMenuContent from 'src/components/lists_menu/lists_menu_content.vue'
@@ -13,6 +12,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useInterfaceStore } from 'src/stores/interface'
 import { useListsStore } from 'src/stores/lists'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
@@ -62,16 +62,30 @@ const TimelineMenu = {
         (route === 'bookmark-folder' || route === 'bookmarks')
       )
     },
-    ...mapPiniaState(useInstanceCapabilitiesStore, [
+    timelineName() {
+      const route = this.$route.name
+      if (route === 'tag-timeline') {
+        return '#' + this.$route.params.tag
+      }
+      if (route === 'lists-timeline') {
+        return useListsStore().findListTitle(this.$route.params.id)
+      }
+      if (route === 'bookmark-folder') {
+        return useBookmarkFoldersStore().findBookmarkFolderName(
+          this.$route.params.id,
+        )
+      }
+      const i18nkey = timelineNames(this.bookmarkFolders)[this.$route.name]
+      return i18nkey ? this.$t(i18nkey) : route
+    },
+    ...mapState(useInstanceCapabilitiesStore, [
       'pleromaChatMessagesAvailable',
       'pleromaBookmarkFoldersAvailable',
       'bookmarkFolders',
       'localBubble',
     ]),
-    ...mapPiniaState(useInstanceStore, ['privateMode', 'federating']),
-    ...mapState({
-      currentUser: (state) => state.users.currentUser,
-    }),
+    ...mapState(useInstanceStore, ['privateMode', 'federating']),
+    ...mapState(useUsersStore, ['currentUser']),
     timelinesList() {
       return filterNavigation(
         Object.entries(TIMELINES).map(([k, v]) => ({ ...v, name: k })),
@@ -104,22 +118,6 @@ const TimelineMenu = {
       if (!this.isOpen) {
         event.stopPropagation()
       }
-    },
-    timelineName() {
-      const route = this.$route.name
-      if (route === 'tag-timeline') {
-        return '#' + this.$route.params.tag
-      }
-      if (route === 'lists-timeline') {
-        return useListsStore().findListTitle(this.$route.params.id)
-      }
-      if (route === 'bookmark-folder') {
-        return useBookmarkFoldersStore().findBookmarkFolderName(
-          this.$route.params.id,
-        )
-      }
-      const i18nkey = timelineNames(this.bookmarkFolders)[this.$route.name]
-      return i18nkey ? this.$t(i18nkey) : route
     },
   },
 }

@@ -1,6 +1,6 @@
 import sum from 'hash-sum'
 import localforage from 'localforage'
-import { chunk, throttle } from 'lodash'
+import { chunk, throttle } from 'lodash-es'
 
 import { getCssRules } from '../theme_data/css_utils.js'
 import { getEngineChecksum, init } from '../theme_data/theme_data_3.service.js'
@@ -29,7 +29,7 @@ export const createStyleSheet = (id, priority = 1000) => {
     addRule(rule) {
       let newRule = rule
       if (!CSS.supports?.('backdrop-filter', 'blur()')) {
-        newRule = newRule.replace(/backdrop-filter:[^;]+;/g, '') // Remove backdrop-filter
+        newRule = newRule.replaceAll(/backdrop-filter:[^;]+;/g, '') // Remove backdrop-filter
       }
 
       if (newRule.startsWith('::-webkit')) {
@@ -44,7 +44,7 @@ export const createStyleSheet = (id, priority = 1000) => {
       }
 
       this.rules.push(
-        newRule.replace(/var\(--shadowFilter\)[^;]*;/g, ''), // Remove shadowFilter references
+        newRule.replaceAll(/var\(--shadowFilter\)[^;]*;/g, ''), // Remove shadowFilter references
       )
     },
   }
@@ -130,10 +130,7 @@ const generateTheme = (inputRuleset, callbacks, debug) => {
   const processChunk = () => {
     const chunk = chunks[counter]
     Promise.all(chunk.map((x) => x())).then((result) => {
-      getCssRules(
-        result.filter((x) => x),
-        debug,
-      ).forEach((rule) => {
+      getCssRules(result.filter(Boolean), debug).forEach((rule) => {
         onNewRule(rule, true)
       })
       // const t1 = performance.now()
@@ -191,7 +188,7 @@ export const applyTheme = (
   onFinish = () => {
     /* no-op */
   },
-  debug,
+  debug = false,
 ) => {
   const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
   const lazyStyles = createStyleSheet(LAZY_STYLE_ID, 20)
@@ -259,7 +256,9 @@ const extractStyleConfig = ({
     contentColumnWidth,
     notifsColumnWidth,
     themeEditorMinWidth:
-      parseInt(themeEditorMinWidth) === 0 ? 'fit-content' : themeEditorMinWidth,
+      Number.parseInt(themeEditorMinWidth) === 0
+        ? 'fit-content'
+        : themeEditorMinWidth,
     emojiReactionsScale,
     emojiSize,
     navbarSize,
@@ -325,7 +324,7 @@ export const getResourcesIndex = async (url, parser = noop) => {
   const resourceTransform = (resources) => {
     return Object.entries(resources).map(([k, v]) => {
       if (typeof v === 'object') {
-        return [k, () => Promise.resolve(v)]
+        return [k, () => v]
       } else if (typeof v === 'string') {
         return [
           k,
@@ -374,11 +373,9 @@ export const getResourcesIndex = async (url, parser = noop) => {
 
   const total = [...custom, ...builtin]
   if (total.length === 0) {
-    return Promise.reject(
-      new Error(
-        `Resource at ${url} and ${customUrl} completely unavailable. Panicking`,
-      ),
+    throw new Error(
+      `Resource at ${url} and ${customUrl} completely unavailable. Panicking`,
     )
   }
-  return Promise.resolve(Object.fromEntries(total))
+  return Object.fromEntries(total)
 }

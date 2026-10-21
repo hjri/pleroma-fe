@@ -1,7 +1,8 @@
 <template>
-  <div
+  <fieldset
     class="PaletteEditor"
     :class="{ '-compact': compact, '-apply': apply, '-mobile': mobile }"
+    v-bind="$attrs"
   >
     <div class="palette">
       <div
@@ -52,7 +53,7 @@
         {{ $t('settings.style.themes3.palette.apply') }}
       </button>
     </div>
-  </div>
+  </fieldset>
 </template>
 
 <script setup>
@@ -90,7 +91,12 @@ const paletteKeys = [
   'wallpaper',
 ]
 
-const props = defineProps(['modelValue', 'compact', 'apply', 'disabled'])
+const props = defineProps({
+  modelValue: Object,
+  compact: Boolean,
+  apply: Boolean,
+  disabled: Boolean,
+})
 const emit = defineEmits(['update:modelValue', 'applyPalette'])
 const getExportedObject = () =>
   paletteKeys.reduce((acc, key) => {
@@ -181,8 +187,10 @@ const updatePalette = (paletteKey, value) => {
   justify-content: space-around;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(5, 1fr) auto;
-  grid-gap: 0.5em;
+  gap: 0.5em;
   align-items: baseline;
+  border: 0;
+  padding: 0;
 
   .buttons {
     margin-top: 0.5em;
@@ -196,7 +204,7 @@ const updatePalette = (paletteKey, value) => {
     grid-auto-flow: row;
     grid-auto-rows: auto;
     grid-template-columns: repeat(auto-fill, 10em);
-    grid-gap: 0.5em;
+    gap: 0.5em;
     margin-bottom: 0.5em;
   }
 

@@ -1,11 +1,10 @@
 <template>
-  <span
+  <fieldset
     v-if="matchesExpertLevel"
     class="setting-item"
   >
-    <label
+    <legend
       v-if="!hideLabel"
-      :for="path"
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
@@ -22,24 +21,23 @@
         MISSING LABEL FOR {{ path }}
       </template>
       <slot v-else />
-    </label>
+    </legend>
     <span class="setting-control">
       <input
-        :id="path"
-        class="input string-input"
-        :class="{ disabled: shouldBeDisabled }"
+        class="input string-input" :class="{ disabled: shouldBeDisabled }"
         :disabled="shouldBeDisabled"
         :placeholder="backendDescriptionSuggestions?.[0]?.[0]"
+        :title="backendDescriptionSuggestions?.[0]?.[0]"
         :value="visibleState?.tuple?.[0]"
         @change="e => update({ e, side: 0 })"
       >
       {{ ' ' }}
       <input
-        :id="path"
         class="input string-input"
         :class="{ disabled: shouldBeDisabled }"
         :disabled="shouldBeDisabled"
         :placeholder="backendDescriptionSuggestions?.[0]?.[1]"
+        :title="backendDescriptionSuggestions?.[0]?.[1]"
         :value="visibleState?.tuple?.[1]"
         @change="e => update({ e, side: 1 })"
       >
@@ -52,7 +50,7 @@
     >
       {{ backendDescriptionDescription + ' ' }}
     </p>
-  </span>
+  </fieldset>
 </template>
 
 <script src="./tuple_setting.js"></script>

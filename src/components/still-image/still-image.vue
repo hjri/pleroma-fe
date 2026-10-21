@@ -3,10 +3,12 @@
     class="still-image"
     :class="{ animated: animated }"
     :style="style"
+    role="presentation"
   >
     <canvas
       v-if="animated"
       ref="canvas"
+      :title="alt"
     />
     <!-- NOTE: key is required to force to re-render img tag when src is changed -->
     <img

@@ -3,14 +3,14 @@ import {
   escape as ldEscape,
   unescape as ldUnescape,
   merge,
-} from 'lodash'
+} from 'lodash-es'
 import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
 import EmojiInput from 'src/components/emoji_input/emoji_input.vue'
-import suggestor from 'src/components/emoji_input/suggestor.js'
+import { suggest } from 'src/components/emoji_input/suggestor.js'
 import FollowButton from 'src/components/follow_button/follow_button.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
 import Select from 'src/components/select/select.vue'
@@ -25,7 +25,9 @@ import { useMediaViewerStore } from 'src/stores/media_viewer'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { usePostStatusStore } from 'src/stores/post_status'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
+import { useUsersStore } from 'src/stores/users.js'
 
+import { serverUrl } from 'src/api/api_base.js'
 import { updateProfile } from 'src/api/user.js'
 import { propsToNative } from 'src/services/attributes_helper/attributes_helper.service.js'
 import localeService from 'src/services/locale/locale.service.js'
@@ -158,7 +160,7 @@ export default {
     ),
   },
   data() {
-    const user = this.$store.getters.findUser(this.userId)
+    const user = useUsersStore().findUser(this.userId)
 
     return {
       followRequestInProgress: false,
@@ -192,11 +194,11 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('fetchUserRelationship', this.user.id)
+    useUsersStore().fetchUserRelationship(this.user.id)
   },
   computed: {
     escapedNewBio() {
-      return ldEscape(this.newBio).replace(/\n/g, '<br>')
+      return ldEscape(this.newBio).replaceAll('\n', '<br>')
     },
     somethingToSave() {
       if (this.newName !== this.user.name_unescaped) return true
@@ -228,27 +230,27 @@ export default {
         : ['Person', 'Service']
     },
     user() {
-      return this.$store.getters.findUser(this.userId)
+      return useUsersStore().findUser(this.userId)
     },
     role() {
       return this.user.role
     },
     relationship() {
-      return this.$store.getters.relationship(this.userId)
+      return useUsersStore().relationship(this.userId)
     },
     isOtherUser() {
-      return this.user.id !== this.$store.state.users.currentUser.id
+      return this.user.id !== useUsersStore().currentUser?.id
     },
     subscribeUrl() {
       const serverUrl = new URL(this.user.statusnet_profile_url)
       return `${serverUrl.protocol}//${serverUrl.host}/main/ostatus`
     },
     loggedIn() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
     dailyAvg() {
       const days = Math.ceil(
-        (new Date() - new Date(this.user.created_at)) / (60 * 60 * 24 * 1000),
+        (Date.now() - new Date(this.user.created_at)) / (60 * 60 * 24 * 1000),
       )
       return Math.round(this.user.statuses_count / days)
     },
@@ -379,32 +381,31 @@ export default {
         this.newBanner === null ? this.defaultBanner : this.newBanner
       return this.newBanner === null ? currentUrl : newUrl
     },
+    // the instance's files (hosted: a full URL on it already)
     defaultAvatar() {
-      return (
-        useInstanceStore().server +
-        useInstanceStore().instanceIdentity.defaultAvatar
+      return serverUrl(
+        useInstanceStore().server,
+        useInstanceStore().instanceIdentity.defaultAvatar,
       )
     },
     defaultBanner() {
-      return (
-        useInstanceStore().server +
-        useInstanceStore().instanceIdentity.defaultBanner
+      return serverUrl(
+        useInstanceStore().server,
+        useInstanceStore().instanceIdentity.defaultBanner,
       )
     },
     isDefaultAvatar() {
       const baseAvatar = useInstanceStore().instanceIdenitity.defaultAvatar
       return (
-        !this.$store.state.users.currentUser.profile_image_url ||
-        this.$store.state.users.currentUser.profile_image_url.includes(
-          baseAvatar,
-        )
+        !useUsersStore().currentUser.profile_image_url ||
+        useUsersStore().currentUser.profile_image_url.includes(baseAvatar)
       )
     },
     isDefaultBanner() {
       const baseBanner = useInstanceStore().instanceIdentity.defaultBanner
       return (
-        !this.$store.state.users.currentUser.cover_photo ||
-        this.$store.state.users.currentUser.cover_photo.includes(baseBanner)
+        !useUsersStore().currentUser.cover_photo ||
+        useUsersStore().currentUser.cover_photo.includes(baseBanner)
       )
     },
     fieldsLimits() {
@@ -414,16 +415,15 @@ export default {
       return this.fieldsLimits ? this.fieldsLimits.maxFields : 0
     },
     emojiUserSuggestor() {
-      return suggestor({
+      return suggest({
         emoji: [
           ...useEmojiStore().standardEmojiList,
           ...useEmojiStore().customEmoji,
         ],
-        store: this.$store,
       })
     },
     emojiSuggestor() {
-      return suggestor({
+      return suggest({
         emoji: [
           ...useEmojiStore().standardEmojiList,
           ...useEmojiStore().customEmoji,
@@ -455,13 +455,13 @@ export default {
       this.$refs.timedMuteDialog.optionallyPrompt()
     },
     unmuteUser() {
-      this.$store.dispatch('unmuteUser', this.user.id)
+      return useUsersStore().unmuteUser(this.user.id)
     },
     subscribeUser() {
-      return this.$store.dispatch('subscribeUser', this.user.id)
+      return useUsersStore().subscribeUser(this.user.id)
     },
     unsubscribeUser() {
-      return this.$store.dispatch('unsubscribeUser', this.user.id)
+      return useUsersStore().unsubscribeUser(this.user.id)
     },
     linkClicked({ target }) {
       if (target.tagName === 'SPAN') {
@@ -491,8 +491,7 @@ export default {
     },
     mentionUser() {
       usePostStatusStore().openPostStatusModal({
-        profileMention: true,
-        repliedUser: this.user,
+        profileMention: this.user,
       })
     },
     onAvatarClickHandler(e) {
@@ -558,7 +557,7 @@ export default {
       return
     },
     resetState() {
-      const user = this.$store.state.users.currentUser
+      const user = useUsersStore().currentUser
 
       this.newName = user.name_unescaped
       this.newBio = ldUnescape(user.description)
@@ -604,11 +603,10 @@ export default {
       }
 
       updateProfile({ params })
-        .then(({ data: user }) => {
+        .then(({ data: user, ...rest }) => {
           this.newFields.splice(this.newFields.length)
           merge(this.newFields, user.fields)
-          this.$store.commit('addNewUsers', [user])
-          this.$store.commit('setCurrentUser', user)
+          useUsersStore().addNewUsers({ data: user, ...rest })
           this.resetState()
         })
         .catch((error) => {

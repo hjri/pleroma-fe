@@ -1,4 +1,4 @@
-import { find, remove } from 'lodash'
+import { find, remove } from 'lodash-es'
 import { defineStore } from 'pinia'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
@@ -49,6 +49,9 @@ export const useListsStore = defineStore('lists', {
     },
     setLists(value) {
       this.allLists = value
+      this.allListsObject = Object.fromEntries(
+        value.map((list) => [list.id, list]),
+      )
     },
     async createList({ title }) {
       return await createList({

@@ -1,11 +1,12 @@
 <template>
   <div
     class="StatusBody"
-    :class="{ '-compact': compact }"
+    :class="{ '-compact': compact, '-single-line': singleLine }"
   >
     <div class="body">
-      <div
+      <component
         v-if="hasSubject"
+        :is="headerTag"
         class="summary-wrapper"
         :class="{ '-tall': (hasLongSubject && !showingLongSubject) }"
       >
@@ -33,10 +34,11 @@
         >
           {{ $t("status.show_full_subject") }}
         </button>
-      </div>
+      </component>
       <div
         class="text-wrapper"
-        :class="{'-tall-status': hideTallStatus, '-hidden': shouldHide, '-expanded': showingMore}"
+        role="presentation"
+        :class="{'-tall-status': hideTallStatus, '-hidden': shouldHide, '-expanded': showingMore }"
       >
         <RichContent
           v-if="!(singleLine && hasSubject) && !shouldHide"
@@ -61,7 +63,7 @@
         >
           <button
             class="btn button-default toggle-button"
-            :aria-expanded="showingMore"
+            :aria-expanded="showingMore ? 'true' : 'false'"
             @click.prevent="toggleShowMore"
           >
             {{ toggleText }}

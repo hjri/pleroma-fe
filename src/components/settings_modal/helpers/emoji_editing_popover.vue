@@ -38,6 +38,7 @@
             type="file"
             accept="image/*"
             class="emoji-tab-popover-file input"
+            :title="$t('general.select_file')"
             @change="uploadFile = $event.target.files"
           >
         </div>
@@ -45,6 +46,7 @@
           <input
             v-model="uploadURL"
             :placeholder="$t('admin_dash.emoji.upload_url')"
+            :title="$t('admin_dash.emoji.upload_url')"
             class="emoji-data-input input"
           >
         </div>
@@ -58,6 +60,7 @@
               v-model="editedShortcode"
               class="emoji-data-input input"
               :placeholder="$t('admin_dash.emoji.new_shortcode')"
+              :title="$t('admin_dash.emoji.new_shortcode')"
             >
           </label>
         </div>
@@ -81,7 +84,7 @@
           <label>
             {{ $t('admin_dash.emoji.copy_to') }}
 
-            <SelectComponent
+            <Select
               v-model="copyToPack"
               class="form-control"
             >
@@ -99,7 +102,7 @@
               >
                 {{ listPackName }}
               </option>
-            </SelectComponent>
+            </Select>
           </label>
         </div>
 
@@ -150,7 +153,7 @@
 
 <script>
 import Popover from 'components/popover/popover.vue'
-import SelectComponent from 'components/select/select.vue'
+import Select from 'components/select/select.vue'
 import { defineAsyncComponent } from 'vue'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
@@ -168,7 +171,7 @@ export default {
       () => import('src/components/confirm_modal/confirm_modal.vue'),
     ),
 
-    SelectComponent,
+    Select,
   },
 
   inject: ['emojiAddr'],
@@ -233,18 +236,19 @@ export default {
       return null
     },
     isEdited() {
+      if (this.newUpload) return false
       return (
-        !this.newUpload &&
-        (this.editedShortcode !== this.shortcode ||
-          this.editedFile !== this.file)
+        this.editedShortcode !== this.shortcode || this.editedFile !== this.file
       )
     },
+    isRemote() {
+      return this.remote !== undefined
+    },
     saveButtonDisabled() {
-      if (this.remote === undefined)
-        return this.newUpload
-          ? this.uploadURL === '' && this.uploadFile.length == 0
-          : !this.isEdited
-      else return this.copyToPack === ''
+      if (this.isRemote) return this.copyToPack === ''
+      if (this.newUpload)
+        return this.uploadURL === '' && this.uploadFile.length == 0
+      return !this.isEdited
     },
   },
   methods: {
@@ -262,7 +266,7 @@ export default {
         .then((resp) => {
           if (resp.error !== undefined) {
             this.$emit('displayError', resp.error)
-            return Promise.reject(resp.error)
+            throw new Error(resp.error)
           }
 
           return resp.json()

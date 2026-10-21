@@ -43,7 +43,7 @@ export const fileTypeExt = (url) => {
 }
 
 export const fileMatchesSomeType = (types, file) =>
-  types.some((type) => fileType(file.mimetype) === type)
+  types.includes(fileType(file.mimetype))
 
 const fileTypeService = {
   fileType,

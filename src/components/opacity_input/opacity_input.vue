@@ -11,7 +11,7 @@
       {{ label || $t('settings.style.themes3.editor.opacity') }}
     </label>
     <Checkbox
-      v-if="typeof fallback !== 'undefined'"
+      v-if="fallback !== undefined"
       :model-value="present"
       :disabled="disabled"
       class="opt"
@@ -38,11 +38,17 @@ export default {
   components: {
     Checkbox,
   },
-  props: ['name', 'label', 'modelValue', 'fallback', 'disabled'],
+  props: {
+    name: String,
+    label: String,
+    modelValue: Number,
+    fallback: Number,
+    disabled: Boolean,
+  },
   emits: ['update:modelValue'],
   computed: {
     present() {
-      return typeof this.modelValue !== 'undefined'
+      return this.modelValue !== undefined
     },
   },
 }

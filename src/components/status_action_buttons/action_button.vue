@@ -2,22 +2,23 @@
   <div
     class="action-button"
     :class="buttonClass"
+    role="presentation"
   >
     <component
-      :is="getComponent(button)"
+      :is="popoverTrigger ? 'span' : getComponent(button)"
       class="action-button-inner"
       :class="buttonInnerClass"
-      role="menuitem"
-      type="button"
+      :role="popoverTrigger ? 'presentation' : 'button'"
+      :type="popoverTrigger ? undefined : 'button'"
       placement="bottom"
-      :title="$t(button.label(funcArg))"
+      :title="popoverTrigger ? undefined : $t(button.label(funcArg))"
       target="_blank"
-      :tabindex="0"
-      :disabled="button.interactive ? !button.interactive(funcArg) : false"
-      :href="getComponent(button) == 'a' ? button.link?.(funcArg) || remoteInteractionLink : undefined"
-      @click="doActionWrap(button, outerClose)"
+      :tabindex="popoverTrigger ? undefined : 0"
+      :disabled="!isInteractive"
+      :href="href"
+      @click="popoverTrigger ? undefined : doActionWrap(button, outerClose)"
     >
-      <FALayers>
+      <FALayers role="presentation">
         <FAIcon
           class="fa-scale-110"
           :icon="button.icon(funcArg)"
@@ -60,8 +61,9 @@
       />
     </component>
     <span
-      v-if="!hidePostStats && button.counter?.(funcArg) > 0"
+      v-if="!hidePostStats && button.counter?.(funcArg) > 0 && !hideLabel"
       class="action-counter"
+      :aria-label="$t(`status.${button.counterLabel()}`, [button.counter?.(funcArg)])"
     >
       {{ button.counter?.(funcArg) }}
     </span>
@@ -71,11 +73,11 @@
     />
     <Popover
       v-if="button.name === 'bookmark'"
-      class="chevron-popover"
+      class="extra-button"
       :trigger="extra ? 'hover' : 'click'"
       :placement="extra ? 'right' : 'bottom'"
       :offset="extra ? { x: 10 } : { y: 10 }"
-      :trigger-attrs="{ class: 'extra-button' }"
+      :aria-label="$t('nav.bookmark_folders')"
     >
       <template #trigger>
         <FAIcon
@@ -92,17 +94,6 @@
         />
       </template>
     </Popover>
-
-    <EmojiPicker
-      v-if="button.name === 'emoji'"
-      ref="picker"
-      :enable-sticker-picker="false"
-      :hide-custom-emoji="hideCustomEmoji"
-      class="emoji-picker-panel"
-      @emoji="addReaction"
-      @show="onShowEmojiPicker"
-      @close="onHideEmojiPicker"
-    />
   </div>
 </template>
 

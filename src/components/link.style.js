@@ -16,7 +16,7 @@ export default {
       component: 'Link',
       state: ['faint'],
       directives: {
-        textOpacity: 0.5,
+        textOpacity: 0.75,
         textOpacityMode: 'fake',
       },
     },

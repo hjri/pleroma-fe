@@ -3,22 +3,36 @@
     ref="popover"
     trigger="click"
     popover-class="emoji-picker popover-default"
-    :hide-trigger="true"
+    :hide-trigger="hideTrigger"
     placement="bottom"
+    :aria-label="$t('emoji.picker')"
     @show="onPopoverShown"
     @close="onPopoverClosed"
+    @forward-tab-content-focus="$emit('forwardTabContentFocus')"
+    @reverse-tab-content-focus="$emit('reverseTabContentFocus')"
+    v-bind.props="$attrs"
   >
+    <template #trigger>
+      <slot />
+    </template>
     <template #content>
       <div
         class="heading"
+        role="presentation"
+        ref="content"
       >
-        <div class="emoji-search">
+        <div
+          class="emoji-search"
+          role="presentation"
+        >
           <input
             ref="search"
+            role="search"
             v-model="keyword"
             type="text"
             class="input form-control"
             :placeholder="$t('emoji.search_emoji')"
+            :title="$t('emoji.search_emoji')"
             @input="$event.target.composing = false"
           >
         </div>
@@ -31,9 +45,10 @@
           ref="header"
           v-body-scroll-lock="isInModal"
           class="emoji-tabs"
+          role="tablist"
           @wheel.prevent="groupScroll"
         >
-          <span
+          <button
             v-for="group in filteredEmojiGroups"
             :ref="setGroupRef('group-header-' + group.id)"
             :key="group.id"
@@ -42,7 +57,8 @@
               toggled: activeGroupView === group.id
             }"
             :title="group.text"
-            role="button"
+            role="tab"
+            :aria-selected="activeGroupView === group.id"
             @click.prevent="highlight(group.id)"
           >
             <span
@@ -59,23 +75,21 @@
               :icon="group.icon"
               fixed-width
             />
-          </span>
-        </span>
-        <span
-          v-if="stickerPickerEnabled"
-          class="additional-tabs"
-        >
-          <span
-            class="button-unstyled stickers-tab-icon additional-tabs-item"
+          </button>
+          <button
+            v-if="stickerPickerEnabled"
+            class="button-unstyled stickers-tab-icon"
             :class="{toggled: showingStickers}"
             :title="$t('emoji.stickers')"
             @click.prevent="toggleStickers"
+            :aria-selected="showingStickers"
+            role="tab"
           >
             <FAIcon
               icon="sticky-note"
               fixed-width
             />
-          </span>
+          </button>
         </span>
       </div>
       <div
@@ -99,6 +113,7 @@
             @update="onScroll"
             @visible="recalculateItemPerRow"
             @resize="recalculateItemPerRow"
+            role="tabpanel"
           >
             <template #default="{ item: group, index, active }">
               <DynamicScrollerItem
@@ -113,18 +128,17 @@
                   :class="{ ['first-row']: group.isFirstRow }"
                   :style="{ '--__amount': itemPerRow }"
                 >
-                  <h6
+                  <h1
                     v-if="group.isFirstRow"
                     class="emoji-group-title"
                   >
                     {{ group.text }}
-                  </h6>
-                  <span
+                  </h1>
+                  <button
                     v-for="emoji in group.emojis"
                     :key="group.id + emoji.displayText"
                     :title="maybeLocalizedEmojiName(emoji)"
-                    class="emoji-item"
-                    role="button"
+                    class="button-unstyled emoji-item"
                     @click.stop.prevent="onEmoji(emoji)"
                   >
                     <span
@@ -139,7 +153,7 @@
                       :src="emoji.imageUrl"
                       :data-emoji-name="group.id + emoji.displayText"
                     />
-                  </span>
+                  </button>
                 </div>
               </DynamicScrollerItem>
             </template>

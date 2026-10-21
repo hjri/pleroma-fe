@@ -1,9 +1,14 @@
 import { defineAsyncComponent } from 'vue'
 
 import Popover from 'src/components/popover/popover.vue'
+import EmojiPicker from '../emoji_picker/emoji_picker.vue'
 import ActionButton from './action_button.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
+import { useUsersStore } from 'src/stores/users.js'
+
+import genRandomSeed from 'src/services/random_seed/random_seed.service.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -41,30 +46,38 @@ export default {
           'src/components/user_timed_filter_modal/user_timed_filter_modal.vue'
         ),
     ),
+    EmojiPicker,
   },
-  props: ['button', 'status'],
+  props: {
+    button: {
+      type: Object,
+      required: true,
+    },
+    status: {
+      type: Object,
+      required: true,
+    },
+    extra: Boolean,
+    defaultButton: Boolean,
+    hideLabel: Boolean,
+  },
   emits: ['emojiPickerShown'],
   mounted() {
     if (this.button.name === 'mute') {
-      this.$store.dispatch('fetchDomainMutes')
+      useUsersStore().fetchDomainMutes()
+    }
+  },
+  data() {
+    return {
+      randomSeed: genRandomSeed(),
     }
   },
   computed: {
-    buttonClass() {
-      return [
-        this.button.name + '-button',
-        {
-          '-with-extra': this.button.name === 'bookmark',
-          '-extra': this.extra,
-          '-quick': !this.extra,
-        },
-      ]
-    },
     user() {
       return this.status.user
     },
     userIsMuted() {
-      return this.$store.getters.relationship(this.user.id).muting
+      return useUsersStore().relationship(this.user.id).muting
     },
     conversationIsMuted() {
       return this.status.thread_muted
@@ -73,9 +86,7 @@ export default {
       return this.user.fqn.split('@')[1]
     },
     domainIsMuted() {
-      return new Set(this.$store.state.users.currentUser.domainMutes).has(
-        this.domain,
-      )
+      return new Set(useUsersStore().currentUser.domainMutes).has(this.domain)
     },
     availableScopes() {
       return ['private', 'unlisted', 'direct', 'public'].filter((scope) => {
@@ -84,6 +95,17 @@ export default {
     },
   },
   methods: {
+    addReaction(event) {
+      const emoji = event.insertion
+      const existingReaction = this.status.emoji_reactions.find(
+        (r) => r.name === emoji,
+      )
+      if (existingReaction?.me) {
+        useStatusesStore().unreactWithEmoji(this.status.id, emoji)
+      } else {
+        useStatusesStore().reactWithEmoji(this.status.id, emoji)
+      }
+    },
     visibilityIcon(visibility) {
       switch (visibility) {
         case 'private':
@@ -99,13 +121,13 @@ export default {
       }
     },
     unmuteUser() {
-      return this.$store.dispatch('unmuteUser', this.user.id)
+      return useUsersStore().unmuteUser(this.user.id)
     },
     unmuteConversation() {
-      return this.$store.dispatch('unmuteConversation', { id: this.status.id })
+      return useStatusesStore().unmuteConversation(this.status.id)
     },
     unmuteDomain() {
-      return this.$store.dispatch('unmuteDomain', this.domain)
+      return useUsersStore().unmuteDomain(this.domain)
     },
     toggleUserMute() {
       if (this.userIsMuted) {

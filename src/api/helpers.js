@@ -1,17 +1,18 @@
-import { snakeCase } from 'lodash'
+import { snakeCase } from 'lodash-es'
 
+import { apiUrl } from 'src/api/api_base.js'
 import { StatusCodeError } from 'src/services/errors/errors'
 
 export const paramsString = (params = {}) => {
   if (params == null || params === undefined) return ''
 
   if (typeof params !== 'object' || Array.isArray(params)) {
-    throw new Error('Params are not an object!')
+    throw new TypeError('Params are not an object!')
   }
 
   const entries = (() => {
     if (params instanceof Map) {
-      return params.entries()
+      return [...params.entries()]
     } else {
       return Object.entries(params)
     }
@@ -26,7 +27,7 @@ export const paramsString = (params = {}) => {
       (typeof v === 'object' && !Array.isArray(v)) ||
       typeof v === 'function'
     ) {
-      throw new Error('Param cannot be non-primitive!')
+      throw new TypeError('Param cannot be non-primitive!')
     }
     if (Array.isArray(v)) {
       arrays.push([k, v])
@@ -37,12 +38,8 @@ export const paramsString = (params = {}) => {
 
   arrays.forEach(([k, array]) => {
     array.forEach((v) => {
-      if (
-        typeof v === 'object' ||
-        typeof v === 'function' ||
-        typeof v === 'undefined'
-      )
-        throw new Error('Array param cannot contain non-primitives!')
+      if (typeof v === 'object' || typeof v === 'function' || v === undefined)
+        throw new TypeError('Array param cannot contain non-primitives!')
     })
   })
 
@@ -67,7 +64,7 @@ export const paramsString = (params = {}) => {
 }
 
 export const promisedRequest = async ({
-  method,
+  method = 'GET',
   url,
   payload,
   formData,
@@ -104,13 +101,15 @@ export const promisedRequest = async ({
     }
   }
 
-  const response = await fetch(url, options)
+  const response = await fetch(apiUrl(url), options)
   const data = await (async () => {
     const [contentType] = response.headers
       .get('content-type')
       .split(';')
       .map((x) => x.toLowerCase().trim())
-    const contentLength = parseInt(response.headers.get('content-length'))
+    const contentLength = Number.parseInt(
+      response.headers.get('content-length'),
+    )
     if (contentLength === 0) return null
 
     switch (forceContentType ?? contentType) {
@@ -126,7 +125,7 @@ export const promisedRequest = async ({
   const { ok, status } = response
 
   if (ok) {
-    return { response, status, data }
+    return { response, status, data, timestamp: Date.now() }
   } else {
     throw new StatusCodeError(response.status, data, { url, options }, response)
   }

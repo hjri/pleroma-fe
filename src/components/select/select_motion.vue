@@ -1,10 +1,13 @@
 <template>
   <div
     class="SelectMotion btn-group"
+    role="toolbar"
+    :aria-label="$t('general.rearrange')"
   >
     <button
       class="btn button-default"
       :disabled="disabled"
+      :title="$t('general.add')"
       @click="add"
     >
       <FAIcon
@@ -16,6 +19,7 @@
       class="btn button-default"
       :disabled="disabled || !moveUpValid"
       :class="{ disabled: disabled || !moveUpValid }"
+      :title="$t('general.move_up')"
       @click="moveUp"
     >
       <FAIcon
@@ -27,6 +31,7 @@
       class="btn button-default"
       :disabled="disabled || !moveDnValid"
       :class="{ disabled: disabled || !moveDnValid }"
+      :title="$t('general.move_dn')"
       @click="moveDn"
     >
       <FAIcon
@@ -38,6 +43,7 @@
       class="btn button-default"
       :disabled="disabled || !present"
       :class="{ disabled: disabled || !present }"
+      :title="$t('general.remove')"
       @click="del"
     >
       <FAIcon

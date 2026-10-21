@@ -7,6 +7,7 @@
     <div
       id="app_bg_wrapper"
       class="app-bg-wrapper"
+      aria-hidden="true"
     />
     <MobileNav v-if="layoutType === 'mobile'" />
     <DesktopNav
@@ -19,14 +20,18 @@
       ref="appContentRef"
       class="app-layout container"
       :class="classes"
+      role="presentation"
     >
-      <div class="underlay" />
+      <div
+        class="underlay"
+        aria-hidden="true"
+      />
       <div
         id="sidebar"
         class="column -scrollable"
         :class="{ '-show-scrollbar': showScrollbars }"
       >
-        <user-panel />
+        <UserPanel />
         <template v-if="layoutType !== 'mobile'">
           <NavPanel />
           <InstanceSpecificPanel v-if="showInstanceSpecificPanel" />
@@ -39,6 +44,7 @@
         id="main-scroller"
         class="column main"
         :class="{ '-full-height': isChats || isListEdit }"
+        :aria-label="$t('nav.content')"
       >
         <div
           v-if="!currentUser"
@@ -75,6 +81,7 @@
     <UpdateNotification />
     <GlobalError />
     <GlobalNoticeList />
+    <FollowRequestConfirm v-if="currentUser" />
   </div>
 </template>
 

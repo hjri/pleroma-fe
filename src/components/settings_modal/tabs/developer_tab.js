@@ -4,6 +4,7 @@ import BooleanSetting from '../helpers/boolean_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
 
 import { cacheKey, clearCache, emojiCacheKey } from 'src/services/sw/sw.js'
 
@@ -35,10 +36,10 @@ const VersionTab = {
     clearCache(key) {
       clearCache(key)
         .then(() => {
-          this.$store.dispatch('settingsSaved', { success: true })
+          useInterfaceStore().settingsSaved({ success: true })
         })
         .catch((error) => {
-          this.$store.dispatch('settingsSaved', { error })
+          useInterfaceStore().settingsSaved({ error })
         })
     },
   },

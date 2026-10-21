@@ -1,5 +1,5 @@
 <template>
-  <basic-user-card :user="user">
+  <BasicUserCard :user="user">
     <div class="follow-card-content-container">
       <span
         v-if="isMe || (!noFollowsYou && relationship.followed_by)"
@@ -30,7 +30,7 @@
         />
       </template>
     </div>
-  </basic-user-card>
+  </BasicUserCard>
 </template>
 
 <script src="./follow_card.js"></script>

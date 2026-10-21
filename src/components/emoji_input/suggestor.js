@@ -1,3 +1,6 @@
+import { useSearchStore } from 'src/stores/search.js'
+import { useUsersStore } from 'src/stores/users.js'
+
 /**
  * suggest - generates a suggestor function to be used by emoji-input
  * data: object providing source information for specific types of suggestions:
@@ -10,9 +13,9 @@
  * doesn't support user linking you can just provide only emoji.
  */
 
-export default (data) => {
+export const suggest = (data) => {
   const emojiCurry = suggestEmoji(data.emoji)
-  const usersCurry = data.store && suggestUsers(data.store)
+  const usersCurry = suggestUsers()
   return (input, nameKeywordLocalizer) => {
     const firstChar = input[0]
     if (firstChar === ':' && data.emoji) {
@@ -69,7 +72,7 @@ export const suggestEmoji = (emojis) => (input, nameKeywordLocalizer) => {
     })
 }
 
-export const suggestUsers = ({ dispatch, state }) => {
+export const suggestUsers = () => {
   // Keep some persistent values in closure, most importantly for the
   // custom debounce to work. Lodash debounce does not return a promise.
   let suggestions = []
@@ -77,9 +80,9 @@ export const suggestUsers = ({ dispatch, state }) => {
   let timeout = null
   let cancelUserSearch = null
 
-  const userSearch = (query) => dispatch('searchUsers', { query })
+  const userSearch = (query) => useSearchStore().searchUsers({ query })
   const debounceUserSearch = (query) => {
-    cancelUserSearch && cancelUserSearch()
+    cancelUserSearch?.()
     return new Promise((resolve, reject) => {
       timeout = setTimeout(() => {
         userSearch(query).then(resolve).catch(reject)
@@ -105,7 +108,7 @@ export const suggestUsers = ({ dispatch, state }) => {
       await debounceUserSearch(noPrefix)
     }
 
-    const newSuggestions = state.users.users
+    const newSuggestions = [...useUsersStore().users.values()]
       .filter(
         (user) =>
           user.screen_name &&

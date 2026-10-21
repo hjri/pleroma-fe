@@ -4,6 +4,7 @@ import BooleanSetting from '../helpers/boolean_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { updateProfile } from 'src/api/user.js'
 
@@ -20,7 +21,7 @@ const ProfileTab = {
   data() {
     return {
       // Whether user is locked or not
-      locked: this.$store.state.users.currentUser.locked,
+      locked: useUsersStore().currentUser.locked,
     }
   },
   components: {
@@ -30,7 +31,7 @@ const ProfileTab = {
   },
   computed: {
     user() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
     ...SharedComputedObject(),
   },
@@ -43,9 +44,8 @@ const ProfileTab = {
         params,
         credentials: useOAuthStore().token,
       })
-        .then(({ data: user }) => {
-          this.$store.commit('addNewUsers', [user])
-          this.$store.commit('setCurrentUser', user)
+        .then((result) => {
+          useUsersStore().addNewUsers(result)
         })
         .catch((error) => {
           this.displayUploadError(error)

@@ -1,11 +1,11 @@
-import { cloneDeep } from 'lodash'
 import { defineAsyncComponent } from 'vue'
 
 import Gallery from 'src/components/gallery/gallery.vue'
 import PostStatusForm from 'src/components/post_status_form/post_status_form.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
 
-import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useDraftsStore } from 'src/stores/drafts.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPollH } from '@fortawesome/free-solid-svg-icons'
@@ -32,7 +32,6 @@ const Draft = {
   },
   data() {
     return {
-      referenceDraft: cloneDeep(this.draft),
       editing: false,
       showingConfirmDialog: false,
     }
@@ -42,18 +41,12 @@ const Draft = {
       if (this.draft.type === 'edit') {
         return { statusId: this.draft.refId }
       } else if (this.draft.type === 'reply') {
-        return { replyTo: this.draft.refId }
+        return {
+          repliedStatus: this.refStatus,
+        }
       } else {
         return {}
       }
-    },
-    safeToSave() {
-      return (
-        this.draft.status ||
-        this.draft.files?.length ||
-        this.draft.hasPoll ||
-        this.draft.hasQuote
-      )
     },
     postStatusFormProps() {
       return {
@@ -63,21 +56,15 @@ const Draft = {
     },
     refStatus() {
       return this.draft.refId
-        ? this.$store.state.statuses.allStatusesObject[this.draft.refId]
+        ? useStatusesStore().allStatuses.get(this.draft.refId)
         : undefined
-    },
-    localCollapseSubjectDefault() {
-      return useMergedConfigStore().mergedConfig.collapseMessageWithSubject
     },
   },
   watch: {
     editing(newVal) {
       if (newVal) return
-      if (this.safeToSave) {
-        this.$store.dispatch('addOrSaveDraft', { draft: this.draft })
-      } else {
-        this.$store.dispatch('addOrSaveDraft', { draft: this.referenceDraft })
-      }
+      // (Post|Edit)StatusForm handles draft saving
+      this.$refs.form.saveDraft()
     },
   },
   methods: {
@@ -88,9 +75,11 @@ const Draft = {
       this.showingConfirmDialog = true
     },
     doAbandon() {
-      this.$store.dispatch('abandonDraft', { id: this.draft.id }).then(() => {
-        this.hideConfirmDialog()
-      })
+      useDraftsStore()
+        .abandonDraft(this.draft.id)
+        .then(() => {
+          this.hideConfirmDialog()
+        })
     },
     hideConfirmDialog() {
       this.showingConfirmDialog = false

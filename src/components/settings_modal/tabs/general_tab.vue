@@ -106,6 +106,11 @@
             </li>
           </ul>
         </li>
+        <li>
+          <BooleanSetting path="underlineLinks">
+            {{ $t('settings.underline_links') }}
+          </BooleanSetting>
+        </li>
       </ul>
       <h3>{{ $t('settings.timelines') }}</h3>
       <ul class="setting-list">
@@ -129,6 +134,7 @@
             path="useStreamingApi"
             :local="true"
             expert="1"
+            @update:model-value="toggleStreaming"
           >
             {{ $t('settings.useStreamingApi') }}
           </BooleanSetting>

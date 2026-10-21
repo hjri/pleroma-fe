@@ -1,4 +1,4 @@
-import { kebabCase } from 'lodash'
+import { kebabCase } from 'lodash-es'
 
 const propsToNative = (props) =>
   Object.keys(props).reduce((acc, cur) => {

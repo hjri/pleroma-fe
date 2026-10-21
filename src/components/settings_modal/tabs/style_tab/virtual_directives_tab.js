@@ -104,15 +104,12 @@ export default {
       draftVirtualDirective,
       (directive) => {
         try {
-          switch (selectedVirtualDirective.value.valType) {
-            case 'shadow': {
-              props.modelValue[selectedVirtualDirectiveId.value].value =
-                directive.map((x) => serializeShadow(x)).join(', ')
-              break
-            }
-            default:
-              props.modelValue[selectedVirtualDirectiveId.value].value =
-                directive
+          if (selectedVirtualDirective.value.valType === 'shadow') {
+            props.modelValue[selectedVirtualDirectiveId.value].value = directive
+              .map((x) => serializeShadow(x))
+              .join(', ')
+          } else {
+            props.modelValue[selectedVirtualDirectiveId.value].value = directive
           }
           draftVirtualDirectiveValid.value = true
         } catch (e) {

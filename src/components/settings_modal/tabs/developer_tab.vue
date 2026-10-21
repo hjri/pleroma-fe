@@ -29,14 +29,6 @@
       <ul class="setting-list">
         <li>
           <BooleanSetting
-            :local="true"
-            path="virtualScrolling"
-          >
-            {{ $t('settings.virtual_scrolling') }}
-          </BooleanSetting>
-        </li>
-        <li>
-          <BooleanSetting
             path="themeDebug"
             :local="true"
             :expert="1"

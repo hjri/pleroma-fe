@@ -39,7 +39,7 @@ const USERS_URL_LIST = ({
     isAdmin && 'is_admin',
     isModerator && 'is_moderator',
   ]
-    .filter((x) => x)
+    .filter(Boolean)
     .join(',')
   return `/api/v1/pleroma/admin/users?page=${page}&page_size=${pageSize}&filters=${filters_str}&query=${query}&name=${name}&email=${email}`
 }
@@ -236,11 +236,11 @@ export const changeStatusScope = ({
   opts: { id, sensitive, visibility },
   credentials,
 }) => {
-  var payload = {}
-  if (typeof sensitive !== 'undefined') {
+  const payload = {}
+  if (sensitive !== undefined) {
     payload['sensitive'] = sensitive
   }
-  if (typeof visibility !== 'undefined') {
+  if (visibility !== undefined) {
     payload['visibility'] = visibility
   }
 
@@ -260,15 +260,15 @@ export const announcementToPayload = ({
 }) => {
   const payload = { content }
 
-  if (typeof startsAt !== 'undefined') {
+  if (startsAt !== undefined) {
     payload.starts_at = startsAt ? new Date(startsAt).toISOString() : null
   }
 
-  if (typeof endsAt !== 'undefined') {
+  if (endsAt !== undefined) {
     payload.ends_at = endsAt ? new Date(endsAt).toISOString() : null
   }
 
-  if (typeof allDay !== 'undefined') {
+  if (allDay !== undefined) {
     payload.all_day = allDay
   }
 

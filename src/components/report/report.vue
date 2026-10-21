@@ -38,7 +38,7 @@
       <router-link
         v-for="status in report.statuses"
         :key="status.id"
-        :to="{ name: 'conversation', params: { id: status.id } }"
+        :to="{ name: 'conversation', params: { statusId: status.id } }"
         class="reported-status"
       >
         <div class="reported-status-heading">

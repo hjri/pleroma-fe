@@ -6,6 +6,7 @@ import ActionButtonContainer from './action_button_container.vue'
 import { BUTTONS } from './buttons_definitions.js'
 
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import genRandomSeed from 'src/services/random_seed/random_seed.service.js'
 
@@ -15,7 +16,35 @@ import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
 library.add(faEllipsisH)
 
 const StatusActionButtons = {
-  props: ['status', 'replying'],
+  props: {
+    status: {
+      type: Object,
+      required: true,
+    },
+    replying: {
+      type: Boolean,
+      default: false,
+    },
+    fixedPinned: {
+      type: Boolean,
+      default: false,
+    },
+    pinned: {
+      type: Set,
+    },
+    useDefaultButtons: {
+      type: Boolean,
+      default: false,
+    },
+    hideLabels: {
+      type: Boolean,
+      default: false,
+    },
+    inChatView: {
+      type: Boolean,
+      default: false,
+    },
+  },
   emits: ['toggleReplying', 'onSuccess', 'onError'],
   data() {
     return {
@@ -36,14 +65,20 @@ const StatusActionButtons = {
     ConfirmModal: defineAsyncComponent(
       () => import('src/components/confirm_modal/confirm_modal.vue'),
     ),
-
     ActionButtonContainer,
   },
   computed: {
     ...mapState(useSyncConfigStore, {
-      pinnedItems: (store) =>
+      userPinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedStatusActions),
     }),
+    pinnedItems() {
+      if (this.fixedPinned) {
+        return this.pinned
+      } else {
+        return this.userPinnedItems
+      }
+    },
     buttons() {
       return BUTTONS.filter((x) => (x.if ? x.if(this.funcArg) : true))
     },
@@ -54,7 +89,7 @@ const StatusActionButtons = {
       return this.buttons.filter((x) => !this.pinnedItems.has(x.name))
     },
     currentUser() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
     funcArg() {
       return {
@@ -62,19 +97,10 @@ const StatusActionButtons = {
         replying: this.replying,
         emojiPickerShown: this.emojiPickerShown,
         emit: this.$emit,
-        dispatch: this.$store.dispatch,
-        state: this.$store.state,
-        getters: this.$store.getters,
         router: this.$router,
         currentUser: this.currentUser,
         loggedIn: !!this.currentUser,
-      }
-    },
-    triggerAttrs() {
-      return {
-        title: this.$t('status.more_actions'),
-        'aria-controls': `popup-menu-${this.randomSeed}`,
-        'aria-haspopup': 'menu',
+        chatView: !!this.inChatView,
       }
     },
   },
@@ -101,6 +127,14 @@ const StatusActionButtons = {
         this.showingConfirmDialog = true
       } else {
         this.doActionReal(button)
+      }
+    },
+    quickButtonClass(button) {
+      return {
+        '-pin': this.showPin,
+        '-toggle': button.dropdown?.(),
+        '-with-extra': button.name === 'bookmark',
+        '-counter': button.counter,
       }
     },
     doActionReal(button) {
@@ -133,7 +167,7 @@ const StatusActionButtons = {
       useSyncConfigStore().pushSyncConfig()
     },
     getComponent(button) {
-      if (!this.$store.state.users.currentUser && button.anonLink) {
+      if (!useUsersStore().currentUser && button.anonLink) {
         return 'a'
       } else if (button.action == null && button.link != null) {
         return 'a'

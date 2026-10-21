@@ -1,10 +1,13 @@
 <template>
   <div
+    role="dialog"
+    aria-modal="true"
     v-show="isOpen"
     v-body-scroll-lock="isOpen && !noBackground"
     class="modal-view"
     :class="classes"
     @click.self="$emit('backdropClicked')"
+    v-bind="$attrs"
   >
     <slot />
   </div>

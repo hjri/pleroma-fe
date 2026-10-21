@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { dismissAnnouncement, getAnnouncements } from 'src/api/user.js'
 
@@ -15,8 +16,8 @@ export const useAnnouncementsStore = defineStore('announcements', {
     userActions: {},
   }),
   getters: {
-    unreadAnnouncementCount() {
-      if (!window.vuex.state.users.currentUser) {
+    unreadAnnouncementsCount() {
+      if (!useUsersStore().currentUser) {
         return 0
       }
 
@@ -30,7 +31,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
     async fetchAnnouncements() {
       if (!this.supportsAnnouncements) return
 
-      const currentUser = window.vuex.state.users.currentUser
+      const currentUser = useUsersStore().currentUser
       const isAdmin =
         currentUser &&
         currentUser.privileges.has('announcements_manage_announcements')
@@ -74,7 +75,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
       } catch (error) {
         // If and only if backend does not support announcements, it would return 404.
         // In this case, silently ignores it.
-        if (error && error.statusCode === 404) {
+        if (error?.statusCode === 404) {
           this.supportsAnnouncements = false
         } else {
           throw error
@@ -95,7 +96,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
         this.announcements[index].read = true
       })
     },
-    startFetchingAnnouncements() {
+    startFetching() {
       if (this.fetchAnnouncementsTimer) {
         return
       }
@@ -108,7 +109,7 @@ export const useAnnouncementsStore = defineStore('announcements', {
 
       return this.fetchAnnouncements()
     },
-    stopFetchingAnnouncements() {
+    stopFetching() {
       const interval = this.fetchAnnouncementsTimer
       this.fetchAnnouncementsTimer = undefined
       clearInterval(interval)

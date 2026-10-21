@@ -1,10 +1,10 @@
 import Popover from 'src/components/popover/popover.vue'
 import StatusBookmarkFolderMenu from 'src/components/status_bookmark_folder_menu/status_bookmark_folder_menu.vue'
-import EmojiPicker from '../emoji_picker/emoji_picker.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -17,11 +17,14 @@ import {
   faCheck,
   faChevronDown,
   faChevronRight,
+  faComments,
   faExternalLinkAlt,
   faEye,
   faEyeSlash,
   faHistory,
+  faList,
   faMinus,
+  faPencil,
   faPlus,
   faReply,
   faRetweet,
@@ -53,26 +56,30 @@ library.add(
   faEyeSlash,
   faEye,
   faThumbtack,
+  faPencil,
   faShareAlt,
+  faComments,
+  faList,
   faExternalLinkAlt,
   faHistory,
 )
 
 export default {
-  props: [
-    'button',
-    'status',
-    'extra',
-    'status',
-    'funcArg',
-    'getClass',
-    'getComponent',
-    'doAction',
-    'outerClose',
-  ],
+  props: {
+    button: Object,
+    status: Object,
+    extra: Boolean,
+    funcArg: Object,
+    getClass: Function,
+    getComponent: Function,
+    doAction: Function,
+    outerClose: Function,
+    defaultButtonStyle: Boolean,
+    hideLabel: Boolean,
+    popoverTrigger: Boolean,
+  },
   components: {
     StatusBookmarkFolderMenu,
-    EmojiPicker,
     Popover,
   },
   data: () => ({
@@ -90,7 +97,7 @@ export default {
       ]
     },
     userIsMuted() {
-      return this.$store.getters.relationship(this.status.user.id).muting
+      return useUsersStore().relationship(this.status.user.id).muting
     },
     threadIsMuted() {
       return this.status.thread_muted
@@ -103,15 +110,24 @@ export default {
       return useMergedConfigStore().mergedConfig.hidePostStats
     },
     buttonInnerClass() {
+      const buttonStyleClass = (() => {
+        if (this.popoverTrigger || this.extra) {
+          return ''
+        } else if (this.defaultButtonStyle) {
+          return 'button-default'
+        } else {
+          return 'button-unstyled'
+        }
+      })()
+
       return [
         this.button.name + '-button',
+        buttonStyleClass,
         {
+          'interactive-part': !this.popoverTrigger,
           'main-button': this.extra,
-          'button-unstyled': !this.extra,
-          '-active': this.button.active?.(this.funcArg),
-          disabled: this.button.interactive
-            ? !this.button.interactive(this.funcArg)
-            : false,
+          '-active': this.isActive,
+          disabled: !this.isInteractive,
         },
       ]
     },
@@ -120,24 +136,27 @@ export default {
         statusId: this.status.id,
       })
     },
+    isInteractive() {
+      return this.functionWrap('interactive', true)(this.funcArg)
+    },
+    isActive() {
+      return this.functionWrap('active', false)(this.funcArg)
+    },
+    href() {
+      if (this.getComponent(this.button) !== 'a') return undefined
+      return (
+        this.functionWrap('link', this.remoteInteractionLink)(this.funcArg) ??
+        this.remoteInteractionLink
+      )
+    },
   },
   methods: {
-    addReaction(event) {
-      const emoji = event.insertion
-      const existingReaction = this.status.emoji_reactions.find(
-        (r) => r.name === emoji,
-      )
-      if (existingReaction && existingReaction.me) {
-        this.$store.dispatch('unreactWithEmoji', { id: this.status.id, emoji })
-      } else {
-        this.$store.dispatch('reactWithEmoji', { id: this.status.id, emoji })
-      }
-    },
-    onShowEmojiPicker() {
-      this.$emit('emojiPickerShown', true)
-    },
-    onHideEmojiPicker() {
-      this.$emit('emojiPickerShown', false)
+    functionWrap(property, fallback) {
+      const isFunction = typeof this.button[property] === 'function'
+
+      return isFunction
+        ? this.button[property]
+        : () => this.button[property] ?? fallback
     },
     doActionWrap(
       button,
@@ -145,20 +164,13 @@ export default {
         /* no-op */
       },
     ) {
-      if (
-        this.button.interactive ? !this.button.interactive(this.funcArg) : false
-      )
-        return
-      if (button.name === 'emoji') {
-        this.$refs.picker.togglePicker()
-      } else {
-        this.animationState = true
-        this.getComponent(button) === 'button' && this.doAction(button)
-        setTimeout(() => {
-          this.animationState = false
-        }, 500)
-        if (!this.button.dropdown) close()
-      }
+      if (!this.isInteractive) return
+      this.animationState = true
+      this.getComponent(button) === 'button' && this.doAction(button)
+      setTimeout(() => {
+        this.animationState = false
+      }, 500)
+      if (!this.button.dropdown) close()
     },
   },
 }

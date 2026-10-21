@@ -1,9 +1,10 @@
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import AnnouncementEditor from 'src/components/announcement_editor/announcement_editor.vue'
 import localeService from '../../services/locale/locale.service.js'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 const Announcement = {
   components: {
@@ -25,13 +26,10 @@ const Announcement = {
     announcement: Object,
   },
   computed: {
-    ...mapState({
-      currentUser: (state) => state.users.currentUser,
-    }),
+    ...mapState(useUsersStore, ['currentUser']),
     canEditAnnouncement() {
-      return (
-        this.currentUser &&
-        this.currentUser.privileges.has('announcements_manage_announcements')
+      return this.currentUser?.privileges.has(
+        'announcements_manage_announcements',
       )
     },
     content() {

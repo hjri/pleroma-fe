@@ -5,7 +5,7 @@
   >
     <div class="chat-list-item-left">
       <UserAvatar
-        :user="chat.account"
+        :user-id="chat.account.id"
         height="48px"
         width="48px"
       />

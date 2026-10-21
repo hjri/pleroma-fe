@@ -3,6 +3,7 @@ import { mapState } from 'pinia'
 import Popover from 'src/components/popover/popover.vue'
 
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronRight, faFolder } from '@fortawesome/free-solid-svg-icons'
@@ -30,8 +31,8 @@ const StatusBookmarkFolderMenu = {
     toggleFolder(id) {
       const value = id === this.folderId ? null : id
 
-      this.$store
-        .dispatch('bookmark', { id: this.status.id, bookmark_folder_id: value })
+      useStatusesStore()
+        .bookmark(this.status.id, value)
         .then(() => this.$emit('success'))
         .catch((err) => this.$emit('error', err.error.error))
     },

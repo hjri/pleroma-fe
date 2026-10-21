@@ -39,19 +39,27 @@ library.add(
 )
 
 const Attachment = {
-  props: [
-    'attachment',
-    'compact',
-    'description',
-    'hideDescription',
-    'nsfw',
-    'size',
-    'setMedia',
-    'remove',
-    'shiftUp',
-    'shiftDn',
-    'edit',
-  ],
+  props: {
+    attachment: {
+      type: Object,
+      required: true,
+    },
+    compact: Boolean,
+    description: String,
+    hideDescription: Boolean,
+    nsfw: Boolean,
+    size: {
+      type: String,
+      default: 'normal',
+    },
+
+    // TODO: Refactor those into events
+    setMedia: Function,
+    remove: Function,
+    shiftUp: Function,
+    shiftDn: Function,
+    edit: Function,
+  },
   emits: ['play', 'pause', 'naturalSizeLoad'],
   data() {
     return {
@@ -152,7 +160,13 @@ const Attachment = {
         window.open(target.href, '_blank')
       }
     },
-    openModal() {
+    openModal(e) {
+      if (e.target.tagName === 'A' && e.pointerType === '') {
+        return
+      } else {
+        e.preventDefault()
+      }
+
       if (this.useModal) {
         this.$emit('setMedia')
         useMediaViewerStore().setCurrentMedia(this.attachment)
@@ -165,16 +179,16 @@ const Attachment = {
       useMediaViewerStore().setCurrentMedia(this.attachment)
     },
     onEdit(event) {
-      this.edit && this.edit(this.attachment, event)
+      this.edit?.(this.attachment, event)
     },
     onRemove() {
-      this.remove && this.remove(this.attachment)
+      this.remove?.(this.attachment)
     },
     onShiftUp() {
-      this.shiftUp && this.shiftUp(this.attachment)
+      this.shiftUp?.(this.attachment)
     },
     onShiftDn() {
-      this.shiftDn && this.shiftDn(this.attachment)
+      this.shiftDn?.(this.attachment)
     },
     stopFlash() {
       this.$refs.flash.closePlayer()
@@ -182,14 +196,20 @@ const Attachment = {
     setFlashLoaded(event) {
       this.flashLoaded = event
     },
-    toggleHidden(event) {
+    toggleHidden(e) {
+      if (e.target.tagName === 'A' && e.pointerType === '') {
+        return
+      } else {
+        e.preventDefault()
+      }
+
       if (
         this.mergedConfig.useOneClickNsfw &&
         !this.showHidden &&
         (this.attachment.type !== 'video' ||
           this.mergedConfig.playVideosInModal)
       ) {
-        this.openModal(event)
+        this.openModal(e)
         return
       }
       if (this.img && !this.preloadImage) {

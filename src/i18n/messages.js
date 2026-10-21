@@ -7,7 +7,7 @@
 // sed -i -e "s/'//gm" -e 's/"/\\"/gm' -re 's/^( +)(.+?): ((.+?))?(,?)(\{?)$/\1"\2": "\4"/gm' -e 's/\"\{\"/{/g' -e 's/,"$/",/g' file.json
 // There's only problem that apostrophe character ' gets replaced by \\ so you have to fix it manually, sorry.
 
-import { isEqual } from 'lodash'
+import { isEqual } from 'lodash-es'
 
 import enMessages from './en.json'
 import { langCodeToJsonName, languages } from './languages.js'
@@ -18,9 +18,9 @@ const hasLanguageFile = (code) => languages.includes(code)
 
 const languageFileMap = import.meta.glob(['./*.json', '!./en.json'])
 
-const loadLanguageFile = (code) => {
+const loadLanguageFile = async (code) => {
   const jsonName = langCodeToJsonName(code)
-  if (jsonName === 'en') return Promise.resolve({ default: enMessages })
+  if (jsonName === 'en') return { default: enMessages }
   return languageFileMap[`./${jsonName}.json`]()
 }
 
@@ -31,7 +31,7 @@ const messages = {
   },
   setLanguage: async (i18n, language) => {
     const languages = (Array.isArray(language) ? language : [language]).filter(
-      (k) => k,
+      Boolean,
     )
 
     if (!languages.includes(ULTIMATE_FALLBACK_LOCALE)) {

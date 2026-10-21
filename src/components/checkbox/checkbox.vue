@@ -1,7 +1,7 @@
 <template>
   <label
     class="checkbox"
-    :class="[{ ['-disabled']: disabled, indeterminate, 'indeterminate-fix': indeterminateTransitionFix }, radio ? '-radio' : '-checkbox']"
+    :class="[$attrs.class, { ['-disabled']: disabled, indeterminate, 'indeterminate-fix': indeterminateTransitionFix }, radio ? '-radio' : '-checkbox']"
   >
     <span
       v-if="!!$slots.before"
@@ -17,6 +17,7 @@
       :checked="modelValue"
       :indeterminate="indeterminate"
       @change="$emit('update:modelValue', $event.target.checked)"
+      v-bind="inputAttrs"
     >
     <i
       class="input checkbox-indicator"
@@ -36,7 +37,13 @@
 
 <script>
 export default {
-  props: ['radio', 'modelValue', 'indeterminate', 'disabled'],
+  inheritAttrs: false,
+  props: {
+    radio: Boolean,
+    modelValue: Boolean,
+    indeterminate: Boolean,
+    disabled: Boolean,
+  },
   emits: ['update:modelValue'],
   data: (vm) => ({
     indeterminateTransitionFix: vm.indeterminate,
@@ -46,6 +53,13 @@ export default {
       if (e) {
         this.indeterminateTransitionFix = true
       }
+    },
+  },
+  computed: {
+    inputAttrs() {
+      const { class: _unused, ...rest } = this.$attrs
+
+      return rest
     },
   },
   methods: {

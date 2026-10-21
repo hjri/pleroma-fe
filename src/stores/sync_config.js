@@ -4,16 +4,15 @@ import {
   clamp,
   cloneDeep,
   findLastIndex,
-  flatten,
   get,
   groupBy,
   isEqual,
+  last,
   set,
   take,
-  takeRight,
   uniqWith,
   unset,
-} from 'lodash'
+} from 'lodash-es'
 import { defineStore } from 'pinia'
 import { v4 as uuidv4 } from 'uuid'
 import { toRaw } from 'vue'
@@ -22,6 +21,7 @@ import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/updat
 
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { updateProfileJSON } from 'src/api/user.js'
 import { storage } from 'src/lib/storage.js'
@@ -105,7 +105,7 @@ const _verifyPrefs = (state) => {
 
   // Simple
   Object.entries(defaultState.prefsStorage.simple).forEach(([k, v]) => {
-    if (typeof v === 'undefined') return
+    if (v === undefined) return
     if (typeof v === 'number' || typeof v === 'boolean') return
     if (typeof v === 'object') return
     console.warn(
@@ -196,10 +196,13 @@ export const _getRecentData = (cache, live, isTest) => {
 }
 
 export const _getAllFlags = (recent, stale) => {
+  const recentStorage = toRaw(recent?.flagStorage)
+  const staleStorage = toRaw(stale?.flagStorage)
+
   return Array.from(
     new Set([
-      ...Object.keys(toRaw((recent || {}).flagStorage || {})),
-      ...Object.keys(toRaw((stale || {}).flagStorage || {})),
+      ...Object.keys(recentStorage || {}),
+      ...Object.keys(staleStorage || {}),
     ]),
   )
 }
@@ -222,15 +225,16 @@ export const _mergeFlags = (recent, stale, allFlagKeys) => {
 
 export const _mergeJournal = (...journals) => {
   // Ignore invalid journal entries
-  const allJournals = flatten(
-    journals.map((j) => (Array.isArray(j) ? j : [])),
-  ).filter(
-    (entry) =>
-      Object.hasOwn(entry, 'path') &&
-      Object.hasOwn(entry, 'operation') &&
-      Object.hasOwn(entry, 'args') &&
-      Object.hasOwn(entry, 'timestamp'),
-  )
+  const allJournals = journals
+    .map((j) => (Array.isArray(j) ? j : []))
+    .flat()
+    .filter(
+      (entry) =>
+        Object.hasOwn(entry, 'path') &&
+        Object.hasOwn(entry, 'operation') &&
+        Object.hasOwn(entry, 'args') &&
+        Object.hasOwn(entry, 'timestamp'),
+    )
   const grouped = groupBy(allJournals, 'path')
   const trimmedGrouped = Object.entries(grouped).map(([path, rawJournal]) => {
     const journal = rawJournal
@@ -271,13 +275,14 @@ export const _mergeJournal = (...journals) => {
       })
     } else if (path.startsWith('simple')) {
       // Only the last record is important
-      return takeRight(journal)
+      return [last(journal)]
     } else {
       return journal
     }
   })
 
-  const flat = flatten(trimmedGrouped)
+  const flat = trimmedGrouped
+    .flat()
     .map((data, index) => ({ data, index }))
     .toSorted(({ data: a, index: ai }, { data: b, index: bi }) => {
       if (a.timestamp === b.timestamp) {
@@ -818,7 +823,8 @@ export const useSyncConfigStore = defineStore('sync_config', {
     pushSyncConfig({ force = false } = {}) {
       const needPush = this.dirty || force
       if (!needPush) return
-      this.updateCache({ username: window.vuex.state.users.currentUser.fqn })
+      if (!useUsersStore().currentUser) return
+      this.updateCache({ username: useUsersStore().currentUser.fqn })
       const params = { pleroma_settings_store: { 'pleroma-fe': this.cache } }
       updateProfileJSON({
         params,
@@ -847,7 +853,7 @@ export const useSyncConfigStore = defineStore('sync_config', {
           : [path, finalValue]
       })
       newState.prefsStorage.simple = Object.fromEntries(
-        newEntries.filter((_) => _),
+        newEntries.filter(Boolean),
       )
       return newState
     },

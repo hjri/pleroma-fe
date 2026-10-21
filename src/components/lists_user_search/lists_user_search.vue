@@ -11,7 +11,9 @@
         ref="search"
         v-model="query"
         class="input"
+        role="search"
         :placeholder="$t('lists.search')"
+        :title="$t('lists.search')"
         @input="onInput"
       >
     </div>

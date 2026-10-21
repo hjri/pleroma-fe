@@ -1,7 +1,5 @@
-// eslint-disable-next-line no-unused
-
-import { mapState as mapPiniaState } from 'pinia'
-import { Fragment } from 'vue'
+import { mapState } from 'pinia'
+import { Fragment, useId } from 'vue'
 
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/vue-fontawesome'
 
@@ -35,6 +33,13 @@ export default {
       default: false,
     },
   },
+  setup() {
+    const uniqueId = useId()
+
+    return {
+      uniqueId,
+    }
+  },
   data() {
     return {
       active: findFirstUsable(this.slots()),
@@ -47,11 +52,14 @@ export default {
       // In case of controlled component
       if (this.activeTab) {
         return this.slots().findIndex(
-          (slot) => slot && slot.props && this.activeTab === slot.props.key,
+          (slot) => slot?.props && this.activeTab === slot.props.key,
         )
       } else {
         return this.active
       }
+    },
+    idPrefix() {
+      return `tab-switcher-${this.uniqueId}-`
     },
     isActive() {
       return (tabName) => {
@@ -60,7 +68,7 @@ export default {
         return this.$slots.default().findIndex(isWanted) === this.activeIndex
       }
     },
-    ...mapPiniaState(useInterfaceStore, {
+    ...mapState(useInterfaceStore, {
       mobileLayout: (store) => store.layoutType === 'mobile',
     }),
   },
@@ -115,6 +123,9 @@ export default {
           class={classesTab.join(' ')}
           type="button"
           role="tab"
+          id={`${this.idPrefix}tab-${index}`}
+          aria-selected={this.activeIndex === index}
+          aria-controls={`${this.idPrefix}tabpanel-${index}`}
           title={props.label}
         >
           {!props.icon ? (
@@ -142,7 +153,7 @@ export default {
 
       const headerClasses = ['tab-content-label']
       const header = (
-        <h2 class={headerClasses}>
+        <h2 class={headerClasses} aria-label={props.label}>
           <button
             type="button"
             onClick={() => this.changeNavSide('tabs')}
@@ -175,10 +186,19 @@ export default {
         slotWrapperClasses.push('-full-height')
       }
       return (
-        <div class={wrapperClasses}>
-          <div class="tab-mobile-header">{header}</div>
-          <div class={slotWrapperClasses}>
-            <div class={contentClasses}>{renderSlot}</div>
+        <div
+          class={wrapperClasses}
+          id={`${this.idPrefix}tabpanel-${index}`}
+          aria-label={props.label}
+          role="tabpanel"
+        >
+          <div class="tab-mobile-header" role="presentation">
+            {header}
+          </div>
+          <div class={slotWrapperClasses} role="presentation">
+            <div class={contentClasses} role="presentation">
+              {renderSlot}
+            </div>
           </div>
         </div>
       )
@@ -201,7 +221,7 @@ export default {
           {tabs}
         </div>
         <div
-          role="tabpanel"
+          role="presentation"
           class="contents"
           v-body-scroll-lock={this.bodyScrollLock}
           ref="contents"

@@ -47,8 +47,8 @@ const ensureFinalFallback = (codes) => {
 }
 
 export {
-  languages,
-  langCodeToJsonName,
-  langCodeToCldrName,
   ensureFinalFallback,
+  langCodeToCldrName,
+  langCodeToJsonName,
+  languages,
 }

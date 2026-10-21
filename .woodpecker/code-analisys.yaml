@@ -1,0 +1,45 @@
+when:
+  - event: push
+    branch: ${CI_REPO_DEFAULT_BRANCH}
+  - event: manual
+    branch: ${CI_REPO_DEFAULT_BRANCH}
+
+labels:
+  platform: linux/amd64
+  memory: 'high'
+
+depends_on:
+  - build
+  - test
+  - test-e2e
+
+clone:
+  - name: git
+    image: woodpeckerci/plugin-git
+    settings:
+      depth: 0
+      partial: false
+
+variables:
+  script_file_entrypoint: &script_file_entrypoint
+    - /bin/sh
+    - -c
+    - 'printf "%s" "$CI_SCRIPT" | base64 -d > /tmp/ci-script.sh && /bin/sh -xe /tmp/ci-script.sh'
+
+steps:
+  generate-coverage:
+    image: mcr.microsoft.com/playwright:v1.61.0-jammy
+    environment:
+      FF_NETWORK_PER_BUILD: "true"
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+    entrypoint: *script_file_entrypoint
+    commands:
+      - yarn --frozen-lockfile
+      - yarn unit-ci-coverage
+
+  code-analysis:
+    image: sonarsource/sonar-scanner-cli:11
+    environment:
+      SONAR_TOKEN:
+        from_secret: sonarqube-token
+    entrypoint: sonar-scanner

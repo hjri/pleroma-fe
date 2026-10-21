@@ -31,7 +31,6 @@ export const buildSwPlugin = ({ swSrc, swDest }) => {
     name: 'build-sw-plugin',
     enforce: 'post',
     configResolved(resolvedConfig) {
-      resolvedConfig
       config = {
         define: resolvedConfig.define,
         resolve: resolvedConfig.resolve,
@@ -60,7 +59,7 @@ export const buildSwPlugin = ({ swSrc, swDest }) => {
       sequential: true,
       async handler(_, bundle) {
         const assets = Object.keys(bundle)
-          .filter((name) => !/\.map$/.test(name))
+          .filter((name) => !name.endsWith('.map'))
           .map((name) => '/' + name)
 
         config.plugins.push({

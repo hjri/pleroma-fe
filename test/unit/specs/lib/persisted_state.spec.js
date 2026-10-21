@@ -187,7 +187,7 @@ describe('piniaPersistPlugin', () => {
 
     const test = useTestStore()
     test.$patch({ a: 3 })
-    expect(await mockStorage.getItem('pinia-local-test')).to.eql(undefined)
+    expect(await mockStorage.getItem('pinia-local-test')).to.be.undefined
     // NOTE: it should not even have tried to save, because the subscribe function
     // is called only after loading the initial state.
     expect(mockStorage.setItem).not.toHaveBeenCalled()

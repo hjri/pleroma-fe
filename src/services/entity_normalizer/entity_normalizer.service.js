@@ -1,10 +1,10 @@
 import { parseLinkHeader } from '@web3-storage/parse-link-header'
 import escapeHtml from 'escape-html'
-import { unescape as lodashUnescape } from 'lodash'
+import { unescape as lodashUnescape } from 'lodash-es'
 import punycode from 'punycode.js'
 
 import { fileType } from '../file_type/file_type.service.js'
-import { isStatusNotification } from '../notification_utils/notification_utils.js'
+import { isStatusNotification } from '../notification_utils/notification_utils_sw.js'
 
 /** NOTICE! **
  * Do not initialize UI-generated data here.
@@ -27,6 +27,7 @@ export const parseUser = (data) => {
 
   output.screen_name = data.acct
   output.fqn = data.fqn
+  output.url = data.url
   output.statusnet_profile_url = data.url
 
   if (Object.hasOwn(data, 'mute_expires_at')) {
@@ -62,8 +63,8 @@ export const parseUser = (data) => {
   })
   output.fields_text = data.fields.map((field) => {
     return {
-      name: unescape(field.name.replace(/<[^>]*>/g, '')),
-      value: unescape(field.value.replace(/<[^>]*>/g, '')),
+      name: unescape(field.name.replaceAll(/<[^>]*>/g, '')),
+      value: unescape(field.value.replaceAll(/<[^>]*>/g, '')),
     }
   })
 
@@ -79,6 +80,9 @@ export const parseUser = (data) => {
   output.bot = data.bot
 
   output.privileges = []
+
+  output.friendIds = new Set()
+  output.followerIds = new Set()
 
   if (data.pleroma) {
     if (data.pleroma.settings_store) {
@@ -177,7 +181,7 @@ export const parseUser = (data) => {
     // deactivated was changed to is_active in Pleroma 2.3.0
     // so check if is_active is present
     output.deactivated =
-      typeof data.pleroma.is_active !== 'undefined'
+      data.pleroma.is_active !== undefined
         ? !data.pleroma.is_active // new backend
         : data.pleroma.deactivated // old backend
 
@@ -191,7 +195,7 @@ export const parseUser = (data) => {
 
   // Convert punycode to unicode for UI
   output.screen_name_ui = output.screen_name
-  if (output.screen_name && output.screen_name.includes('@')) {
+  if (output.screen_name?.includes('@')) {
     const parts = output.screen_name.split('@')
     const unicodeDomain = punycode.toUnicode(parts[1])
     if (unicodeDomain !== parts[1]) {
@@ -255,7 +259,7 @@ export const parseStatus = (data) => {
   output.raw_html = data.content
   output.emojis = data.emojis
 
-  output.tags = data.tags
+  output.tags = new Set(data.tags ?? [])
 
   output.edited_at = data.edited_at
 
@@ -328,6 +332,7 @@ export const parseStatus = (data) => {
   output.attentions = (data.mentions || []).map(parseUser)
 
   output.attachments = (data.media_attachments || []).map(parseAttachment)
+  output.deleted = false
 
   const retweetedStatus = data.reblog
   if (retweetedStatus) {
@@ -336,10 +341,6 @@ export const parseStatus = (data) => {
 
   output.favoritedBy = []
   output.rebloggedBy = []
-
-  if (Object.hasOwn(data, 'originalStatus')) {
-    Object.assign(output, data.originalStatus)
-  }
 
   return output
 }
@@ -372,7 +373,7 @@ export const parseNotification = (data) => {
   }
 
   output.created_at = new Date(data.created_at)
-  output.id = parseInt(data.id)
+  output.id = Number.parseInt(data.id)
 
   return output
 }
@@ -384,10 +385,13 @@ export const parseLinkHeaderPagination = (linkHeader, opts = {}) => {
   const maxId = parsedLinkHeader.next?.max_id
   const minId = parsedLinkHeader.prev?.min_id
 
-  return {
-    maxId: flakeId ? maxId : parseInt(maxId, 10),
-    minId: flakeId ? minId : parseInt(minId, 10),
-  }
+  const result = {}
+  if (maxId !== undefined)
+    result.maxId = flakeId ? maxId : Number.parseInt(maxId, 10)
+  if (minId !== undefined)
+    result.minId = flakeId ? minId : Number.parseInt(minId, 10)
+
+  return result
 }
 
 export const parseChat = (chat) => {

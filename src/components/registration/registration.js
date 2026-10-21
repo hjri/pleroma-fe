@@ -1,14 +1,16 @@
 import useVuelidate from '@vuelidate/core'
 import { required, requiredIf, sameAs } from '@vuelidate/validators'
-import { mapState as mapPiniaState } from 'pinia'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState } from 'pinia'
 
 import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
 import TermsOfServicePanel from 'src/components/terms_of_service_panel/terms_of_service_panel.vue'
 import localeService from '../../services/locale/locale.service.js'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
+import { getCaptcha, register } from 'src/api/public.js'
 import { DAY } from 'src/services/date_utils/date_utils.js'
 
 const registration = {
@@ -26,6 +28,9 @@ const registration = {
       reason: '',
       language: [''],
     },
+    signUpPending: false,
+    signUpErrors: [],
+    signUpNotice: {},
     captcha: {},
   }),
   components: {
@@ -58,7 +63,7 @@ const registration = {
     }
   },
   created() {
-    if ((!this.registrationOpen && !this.token) || this.signedIn) {
+    if ((!this.registrationOpen && !this.token) || this.loggedIn) {
       this.$router.push({ name: 'root' })
     }
 
@@ -86,7 +91,7 @@ const registration = {
       return minDate
     },
     birthdayMinAttr() {
-      return this.birthdayMin.toJSON().replace(/T.+$/, '')
+      return this.birthdayMin.toJSON().slice(0, 10)
     },
     birthdayMinFormatted() {
       const browserLocale = localeService.internalToBrowserLocale(
@@ -100,7 +105,10 @@ const registration = {
         )
       )
     },
-    ...mapPiniaState(useInstanceStore, {
+    hasSignUpNotice(state) {
+      return this.signUpNotice.message
+    },
+    ...mapState(useInstanceStore, {
       registrationOpen: (store) => store.registrationOpen,
       embeddedToS: (store) => store.embeddedToS,
       termsOfService: (store) => store.tos,
@@ -109,16 +117,49 @@ const registration = {
       birthdayRequired: (store) => store.birthdayRequired,
       birthdayMinAge: (store) => store.birthdayMinAge,
     }),
-    ...mapState({
-      signedIn: (state) => !!state.users.currentUser,
-      isPending: (state) => state.users.signUpPending,
-      serverValidationErrors: (state) => state.users.signUpErrors,
-      signUpNotice: (state) => state.users.signUpNotice,
-      hasSignUpNotice: (state) => !!state.users.signUpNotice.message,
-    }),
+    ...mapState(useUsersStore, ['loggedIn']),
   },
   methods: {
-    ...mapActions(['signUp', 'getCaptcha']),
+    ...mapActions(useUsersStore, ['loginUser']),
+    getCaptcha(store) {
+      return getCaptcha({
+        credentials: useOAuthStore().token,
+      }).then(({ data }) => data)
+    },
+    async signUp(userInfo) {
+      const oauthStore = useOAuthStore()
+
+      this.signUpPending = true
+      this.signUpErrors = []
+      this.signUpNotice = {}
+
+      try {
+        const token = await oauthStore.ensureAppToken()
+        const { data } = await register({
+          credentials: token,
+          params: { ...userInfo },
+        })
+
+        if (data.access_token) {
+          this.signUpPending = false
+          oauthStore.setToken(data.access_token)
+          await this.loginUser(data.access_token)
+          return 'ok'
+        } else {
+          // Request succeeded, but user cannot login yet.
+          this.signUpErrors = []
+          this.signUpNotice = data
+          return 'request_sent'
+        }
+      } catch (e) {
+        const errors = e.message
+        this.signUpErrors = errors
+        this.signUpNotice = {}
+        throw e
+      } finally {
+        this.signUpPending = false
+      }
+    },
     async submit() {
       this.user.nickname = this.user.username
       this.user.token = this.token
@@ -128,7 +169,7 @@ const registration = {
       this.user.captcha_answer_data = this.captcha.answer_data
       if (this.user.language) {
         this.user.language = localeService.internalToBackendLocaleMulti(
-          this.user.language.filter((k) => k),
+          this.user.language.filter(Boolean),
         )
       }
 
@@ -154,7 +195,7 @@ const registration = {
       })
     },
     replaceNewlines(str) {
-      return str.replace(/\s*\n\s*/g, ' \n')
+      return str.replaceAll(/\n/g, ' \n')
     },
   },
 }

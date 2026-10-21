@@ -197,7 +197,7 @@
                 </Checkbox>
               </div>
               <div class="filter-type filter-field">
-                <label :for="'filterType' + filter[0]">
+                <span class="filter-field-label">
                   <HelpIndicator>
                     <p>
                       {{ $t('settings.filter.help.word') }}
@@ -219,8 +219,10 @@
                       </template>
                     </i18n-t>
                   </HelpIndicator>
-                  {{ $t('settings.filter.type') }}
-                </label>
+                  <label :for="'filterType' + filter[0]">
+                    {{ $t('settings.filter.type') }}
+                  </label>
+                </span>
                 <Select
                   :id="'filterType' + filter[0]"
                   class="filter-field-value"
@@ -243,6 +245,7 @@
               </div>
               <div class="filter-value filter-field">
                 <label
+                  class="filter-field-label"
                   :for="'filterValue' + filter[0]"
                 >
                   {{ $t('settings.filter.value') }}

@@ -1,12 +1,14 @@
-import { get } from 'lodash'
+import { mapState } from 'pinia'
 
 import Modal from 'src/components/modal/modal.vue'
+import Status from 'src/components/status/status.vue'
 
 import { useStatusHistoryStore } from 'src/stores/statusHistory.js'
 
 const StatusHistoryModal = {
   components: {
     Modal,
+    Status,
   },
   data() {
     return {
@@ -14,48 +16,14 @@ const StatusHistoryModal = {
     }
   },
   computed: {
-    modalActivated() {
-      return useStatusHistoryStore().modalActivated
-    },
-    params() {
-      return useStatusHistoryStore().params
-    },
-    statusId() {
-      return this.params.id
-    },
     historyCount() {
-      return this.statuses.length
+      return this.history.length
     },
-    history() {
-      return this.statuses
-    },
-  },
-  watch: {
-    params(newVal, oldVal) {
-      const newStatusId = get(newVal, 'id') !== get(oldVal, 'id')
-      if (newStatusId) {
-        this.resetHistory()
-      }
-
-      if (
-        newStatusId ||
-        get(newVal, 'edited_at') !== get(oldVal, 'edited_at')
-      ) {
-        this.fetchStatusHistory()
-      }
-    },
+    ...mapState(useStatusHistoryStore, ['modalActivated', 'history']),
   },
   methods: {
-    resetHistory() {
-      this.statuses = []
-    },
-    fetchStatusHistory() {
-      this.$store.dispatch('fetchStatusHistory', this.params).then((data) => {
-        this.statuses = data
-      })
-    },
     closeModal() {
-      useStatusHistoryStore().closeStatusHistoryModal()
+      useStatusHistoryStore().closeModal()
     },
   },
 }

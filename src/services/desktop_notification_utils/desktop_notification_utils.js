@@ -4,14 +4,16 @@ import {
   showDesktopNotification as swDesktopNotification,
 } from '../sw/sw.js'
 
+import { useNotificationsStore } from 'src/stores/notifications.js'
+
 const state = { failCreateNotif: false }
 
-export const showDesktopNotification = (rootState, desktopNotificationOpts) => {
+export const showDesktopNotification = (desktopNotificationOpts) => {
   if (
     !('Notification' in window && window.Notification.permission === 'granted')
   )
     return
-  if (rootState.notifications.desktopNotificationSilence) {
+  if (useNotificationsStore().desktopNotificationSilence) {
     return
   }
 
@@ -30,7 +32,7 @@ export const showDesktopNotification = (rootState, desktopNotificationOpts) => {
   }
 }
 
-export const closeDesktopNotification = (rootState, { id }) => {
+export const closeDesktopNotification = (id) => {
   if (
     !('Notification' in window && window.Notification.permission === 'granted')
   )

@@ -1,9 +1,10 @@
-import { debounce } from 'lodash'
+import { debounce } from 'lodash-es'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Quote from './quote.vue'
 
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useSearchStore } from 'src/stores/search.js'
 
 export default {
   components: {
@@ -89,12 +90,12 @@ export default {
       this.error = false
 
       const notice = this.noticeRegex.exec(value)
-      if (notice && notice.length === 4) {
+      if (notice?.length === 4) {
         this.$emit('update:id', notice[3])
       } else if (value) {
         this.loading = true
-        this.$store
-          .dispatch('search', {
+        useSearchStore()
+          .search({
             q: value,
             resolve: true,
             offset: 0,
@@ -102,7 +103,7 @@ export default {
             type: 'statuses',
           })
           .then((data) => {
-            if (data && data.statuses && data.statuses.length === 1) {
+            if (data?.statuses?.length === 1) {
               this.$emit('update:id', data.statuses[0].id)
             } else {
               this.handleError(true)

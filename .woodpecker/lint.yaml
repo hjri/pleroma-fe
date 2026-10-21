@@ -9,15 +9,9 @@ when:
 steps:
   install-depends:
     image: &node-image
-      docker.io/node:20-alpine
+      docker.io/node:24-alpine
     commands:
       - yarn --frozen-lockfile
-
-  eslint:
-    image: *node-image
-    depends_on: install-depends
-    commands:
-      - yarn ci-eslint
 
   biome:
     image: *node-image

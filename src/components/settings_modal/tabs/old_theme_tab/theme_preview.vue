@@ -1,5 +1,5 @@
 <template>
-  <div class="theme-preview-container">
+  <div class="theme-preview-container" aria-hidden="true">
     <div class="underlay underlay-preview" />
     <div class="panel dummy">
       <div class="panel-heading">

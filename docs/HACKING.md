@@ -81,7 +81,7 @@ In 99% cases PleromaFE uses [MastoAPI](https://docs.joinmastodon.org/api/) with 
 
 PleromaFE supports both formats by transforming them into internal format which is basically QvitterAPI one with some additions and renaming. All data is passed trough [Entity Normalizer](https://git.pleroma.social/pleroma/pleroma-fe/src/src/services/entity_normalizer/entity_normalizer.service.js) which can serve as a reference of API and what's actually used, it's also a host for all the hacks and data transformation.
 
-For most part, PleromaFE tries to store all the info it can get in global vuex store - every user and post are passed trough updating mechanism where data is either added or merged with existing data, reactively updating the information throughout UI, so if in newest request user's post counter increased, it will be instantly updated in open user profile cards. This is also used to find users, posts and sometimes to build timelines and/or request parameters.
+For most part, PleromaFE tries to store all the info it can get in global pinia store - every user and post are passed trough updating mechanism where data is either added or merged with existing data, reactively updating the information throughout UI, so if in newest request user's post counter increased, it will be instantly updated in open user profile cards. This is also used to find users, posts and sometimes to build timelines and/or request parameters.
 
 PleromaFE also tries to persist this store, however only stable data is stored, such as user authentication and preferences, user highlights. Persistence is performed by saving and loading chunk of vuex store in browser's LocalStorage/IndexedDB.
 

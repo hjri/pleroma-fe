@@ -1,7 +1,8 @@
 <template>
-  <div
+  <aside
     class="side-drawer-container mobile-drawer"
     :class="{ 'side-drawer-container-closed': closed, 'side-drawer-container-open': !closed }"
+    :aria-label="$t('nav.navigation')"
   >
     <div
       class="side-drawer-darken"
@@ -106,10 +107,10 @@
               icon="comments"
             /> {{ $t("nav.chats") }}
             <span
-              v-if="unreadChatCount"
+              v-if="unreadChatsCount"
               class="badge -notification"
             >
-              {{ unreadChatCount }}
+              {{ unreadChatsCount }}
             </span>
           </router-link>
         </li>
@@ -141,10 +142,10 @@
               icon="user-plus"
             /> {{ $t("nav.friend_requests") }}
             <span
-              v-if="followRequestCount > 0"
+              v-if="followRequestsCount > 0"
               class="badge -notification"
             >
-              {{ followRequestCount }}
+              {{ followRequestsCount }}
             </span>
           </router-link>
         </li>
@@ -183,6 +184,7 @@
         <li
           v-if="currentUser && suggestionsEnabled"
           @click="toggleDrawer"
+          class="menu-item"
         >
           <router-link
             :to="{ name: 'who-to-follow' }"
@@ -195,7 +197,9 @@
             /> {{ $t("nav.who_to_follow") }}
           </router-link>
         </li>
-        <li @click="toggleDrawer">
+        <li
+          @click="toggleDrawer"
+          >
           <button
             class="menu-item"
             @click="openSettingsModal('user')"
@@ -207,7 +211,9 @@
             /> {{ $t("settings.settings") }}
           </button>
         </li>
-        <li @click="toggleDrawer">
+        <li
+          @click="toggleDrawer"
+        >
           <router-link
             :to="{ name: 'about'}"
             class="menu-item"
@@ -220,7 +226,7 @@
           </router-link>
         </li>
         <li
-          v-if="currentUser && currentUser.role === 'admin'"
+          v-if="currentUser?.role === 'admin'"
           @click="toggleDrawer"
         >
           <button
@@ -248,10 +254,10 @@
               icon="bullhorn"
             /> {{ $t("nav.announcements") }}
             <span
-              v-if="unreadAnnouncementCount"
+              v-if="unreadAnnouncementsCount"
               class="badge -notification"
             >
-              {{ unreadAnnouncementCount }}
+              {{ unreadAnnouncementsCount }}
             </span>
           </router-link>
         </li>
@@ -269,10 +275,10 @@
               icon="file-pen"
             /> {{ $t('nav.drafts') }}
             <span
-              v-if="draftCount"
+              v-if="draftsCount"
               class="badge -neutral"
             >
-              {{ draftCount }}
+              {{ draftsCount }}
             </span>
           </router-link>
         </li>
@@ -313,7 +319,7 @@
       :class="{'side-drawer-click-outside-closed': closed}"
       @click.stop.prevent="toggleDrawer"
     />
-  </div>
+  </aside>
 </template>
 
 <script src="./side_drawer.js"></script>

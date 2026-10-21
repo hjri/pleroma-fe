@@ -1,5 +1,6 @@
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { getToken } from 'src/api/oauth.js'
 
@@ -15,9 +16,10 @@ const oac = {
         clientSecret,
         instance: useInstanceStore().server,
         code: this.code,
-      }).then(({ data: result }) => {
+      }).then(async ({ data: result }) => {
         oauthStore.setToken(result.access_token)
-        this.$store.dispatch('loginUser', result.access_token)
+
+        await useUsersStore().loginUser(result.access_token)
         this.$router.push({ name: 'friends' })
       })
     }

@@ -1,9 +1,9 @@
 <template>
-  <div
+  <fieldset
     v-if="matchesExpertLevel"
     class="RateSetting setting-item"
   >
-    <label
+    <legend
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
@@ -20,7 +20,7 @@
         MISSING LABEL FOR {{ path }}
       </template>
       <slot v-else />
-    </label>
+    </legend>
     <p
       v-if="backendDescriptionDescription"
       class="setting-description"
@@ -32,22 +32,24 @@
       <table>
         <thead>
           <tr>
-            <th>&nbsp;</th>
-            <th>
+            <td>&nbsp;</td>
+            <th :id="idPrefix + 'header-period'">
               {{ $t('admin_dash.rate_limit.period') }}
             </th>
-            <th>
+            <th :id="idPrefix + 'header-amount'">
               {{ $t('admin_dash.rate_limit.amount') }}
             </th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td>
-              {{ isSeparate ? $t('admin_dash.rate_limit.unauthenticated') : $t('admin_dash.rate_limit.rate_limit') }}
-            </td>
+            <th scope="row">
+              {{ isSeparate ? $t('admin_dash.rate_limit.unauthenticated') : $t('admin_dash.rate_limit.all') }}
+            </th>
             <td>
               <input
+                :id="idPrefix + 'period'"
+                :aria-labelledby="idPrefix + 'header-period'"
                 class="input string-input"
                 type="number"
                 :value="normalizedState[0][0]"
@@ -56,6 +58,8 @@
             </td>
             <td>
               <input
+                :id="idPrefix + 'amount'"
+                :aria-labelledby="idPrefix + 'header-amount'"
                 class="input string-input"
                 type="number"
                 :value="normalizedState[0][1]"
@@ -64,11 +68,13 @@
             </td>
           </tr>
           <tr v-if="isSeparate">
-            <td>
+            <th scope="row">
               {{ $t('admin_dash.rate_limit.authenticated') }}
-            </td>
+            </th>
             <td>
               <input
+                :id="idPrefix + 'period2'"
+                :aria-labelledby="idPrefix + 'header-period'"
                 class="input string-input"
                 type="number"
                 :value="normalizedState[1][0]"
@@ -77,6 +83,8 @@
             </td>
             <td>
               <input
+                :id="idPrefix + 'amount2'"
+                :aria-labelledby="idPrefix + 'header-amount'"
                 class="input string-input"
                 type="number"
                 :value="normalizedState[1][1]"
@@ -94,7 +102,7 @@
       </Checkbox>
     </div>
     <DraftButtons />
-  </div>
+  </fieldset>
 </template>
 
 <script src="./rate_setting.js"></script>
@@ -118,6 +126,8 @@
 
     .setting-control {
       align-self: end;
+      flex-direction: column;
+      align-items: start;
     }
   }
 
@@ -127,6 +137,10 @@
 
   th {
     font-weight: normal;
+  }
+
+  tbody th {
+    text-align: right;
   }
 
   td {

@@ -1,11 +1,13 @@
 <template>
   <Modal
     v-if="isOpen"
+    aria-labelledby="user-reporting-title"
     @backdrop-clicked="closeModal"
   >
     <div class="user-reporting-panel panel">
       <div class="panel-heading">
         <i18n-t
+          id="user-reporting-title"
           tag="h1"
           keypath="user_reporting.title"
           class="title"
@@ -52,8 +54,9 @@
         </div>
         <div class="user-reporting-panel-right">
           <List
-            :external-items="reportModal.statuses"
+            :external-items="reportModal.statusIds"
             :pre-select="reportModal.preTickedIds"
+            :get-key="(item) => item"
             selectable
             @select="onListSelect"
           >
@@ -61,7 +64,7 @@
               <Status
                 :in-conversation="false"
                 :focused="false"
-                :statusoid="item"
+                :status-id="item"
               />
             </template>
           </List>

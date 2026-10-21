@@ -2,15 +2,15 @@ import {
   merge as _merge,
   clone,
   cloneDeep,
-  flatten,
   groupBy,
   isEqual,
-  takeRight,
-} from 'lodash'
+  last,
+} from 'lodash-es'
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { updateProfileJSON } from 'src/api/user.js'
 import { storage } from 'src/lib/storage.js'
@@ -44,7 +44,7 @@ const _verifyHighlights = (state) => {
 
   // Simple
   Object.entries(defaultState.highlight).forEach(([k, v]) => {
-    if (typeof v === 'undefined') return
+    if (v === undefined) return
     if (typeof v === 'object') return
     console.warn(`User highlight ${k} is invalid type ${typeof v}, unsetting`)
     delete state.highlight[k]
@@ -117,25 +117,26 @@ export const _getRecentData = (cache, live, isTest) => {
 
 const _mergeJournal = (...journals) => {
   // Ignore invalid journal entries
-  const allJournals = flatten(
-    journals.map((j) => (Array.isArray(j) ? j : [])),
-  ).filter(
-    (entry) =>
-      Object.hasOwn(entry, 'user') &&
-      Object.hasOwn(entry, 'operation') &&
-      Object.hasOwn(entry, 'args') &&
-      Object.hasOwn(entry, 'timestamp'),
-  )
+  const allJournals = journals
+    .map((j) => (Array.isArray(j) ? j : []))
+    .flat()
+    .filter(
+      (entry) =>
+        Object.hasOwn(entry, 'user') &&
+        Object.hasOwn(entry, 'operation') &&
+        Object.hasOwn(entry, 'args') &&
+        Object.hasOwn(entry, 'timestamp'),
+    )
   const grouped = groupBy(allJournals, 'user')
   const trimmedGrouped = Object.entries(grouped).map(([user, journal]) => {
     // side effect
     journal.sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
 
-    return takeRight(journal)
+    return [last(journal)]
   })
-  return flatten(trimmedGrouped).sort((a, b) =>
-    a.timestamp > b.timestamp ? 1 : -1,
-  )
+  return trimmedGrouped
+    .flat()
+    .sort((a, b) => (a.timestamp > b.timestamp ? 1 : -1))
 }
 
 export const _mergeHighlights = (recent, stale) => {
@@ -328,7 +329,7 @@ export const useUserHighlightStore = defineStore('user_highlight', {
     pushHighlight({ force = false } = {}) {
       const needPush = this.dirty || force
       if (!needPush) return
-      this.updateCache({ username: window.vuex.state.users.currentUser.fqn })
+      this.updateCache({ username: useUsersStore().currentUser.fqn })
       const params = {
         pleroma_settings_store: { user_highlight: this.cache },
       }

@@ -82,12 +82,26 @@
     "error_fetching_user": "Error fetching user",
     "find_user": "Find user"
   },
+  "hosted": {
+    "title": "Pleroma-FE",
+    "intro": "Log into your fediverse account with this frontend. Which instance is it on?",
+    "instance": "Your instance",
+    "continue": "Continue",
+    "checking": "Checking…",
+    "not_a_domain": "That does not look like an instance name. Type its domain, like pleroma.example.",
+    "unreachable": "That instance did not answer, or does not let other sites use its API.",
+    "note": "Works with Pleroma and Akkoma. Nothing is stored here except the name of your instance; your login goes through the instance itself.",
+    "change": "Change instance"
+  },
   "general": {
     "apply": "Apply",
     "submit": "Submit",
     "more": "More",
+    "logo": "Logo",
+    "select_file": "Select file",
     "no_more": "No more items",
     "loading": "Loading…",
+    "preview": "Preview",
     "generic_error": "An error occured",
     "generic_error_message": "An error occured: {0}",
     "generic_error_details": "Technical info:",
@@ -111,10 +125,17 @@
     "yes": "Yes",
     "no": "No",
     "none": "None",
+    "rearrange": "Rearrange elements",
+    "add": "Add",
+    "suggestions": "Autocomplete suggestions",
+    "remove": "Remove",
+    "move_dn": "Move downwards",
+    "move_up": "Move upwards",
     "not_applicable": "N/A",
     "not_available": "N/A",
     "peek": "Peek",
     "scroll_to_top": "Scroll to top",
+    "help": "Help",
     "role": {
       "admin": "Admin",
       "moderator": "Moderator"
@@ -130,7 +151,8 @@
       "private": "Followers-only",
       "public": "Public",
       "unlisted": "Unlisted"
-    }
+    },
+    "popover_link_a11y": "Popover link. Clicking the link will open the popover. Double-click or Shift-click will navigate the link."
   },
   "image_cropper": {
     "crop_picture": "Crop picture",
@@ -167,6 +189,7 @@
     }
   },
   "media_modal": {
+    "modal_label": "Media view",
     "previous": "Previous",
     "next": "Next",
     "counter": "{current} / {total}",
@@ -200,12 +223,20 @@
     "edit_pinned": "Edit pinned items",
     "edit_finish": "Done editing",
     "mobile_sidebar": "Toggle mobile sidebar",
-    "mobile_notifications": "Open notifications (there are unread ones)",
+    "mobile_notifications": "Open notifications",
+    "mobile_notifications_unread_active": "Open notifications (there are unread ones)",
     "mobile_notifications_close": "Close notifications",
     "mobile_notifications_mark_as_seen": "Mark all as seen",
     "announcements": "Announcements",
     "quotes": "Quotes",
-    "drafts": "Drafts"
+    "drafts": "Drafts",
+    "navigation": "Navigation",
+    "quick_items": "Quick Navigation",
+    "all_navigation": "All pages",
+    "expand_navigation": "Expand navigation",
+    "user_panel": "User panel",
+    "instance-specific-panel": "Instance-specific Panel",
+    "content": "Content"
   },
   "notifications": {
     "broken_favorite": "Unknown status, searching for it…",
@@ -242,6 +273,8 @@
     "single_choice": "Single choice",
     "multiple_choices": "Multiple choices",
     "expiry": "Poll age",
+    "expiry_unit": "Expiry unit",
+    "expiry_amount": "Expiry amount",
     "expires_at": "Poll ends {0}",
     "expires_in": "Poll ends in {0}",
     "expired": "Poll ended {0} ago",
@@ -253,6 +286,7 @@
   "emoji": {
     "stickers": "Stickers",
     "emoji": "Emoji",
+    "picker": "Emoji Picker",
     "keep_open": "Keep picker open",
     "search_emoji": "Search for an emoji",
     "add_emoji": "Insert emoji",
@@ -306,7 +340,11 @@
     },
     "content_type_selection": "Post format",
     "content_warning": "Subject (optional)",
+    "mentions_line": "Mentioned users",
+    "enter_submits": "Enter key sends the post",
+    "enter_newline": "Enter key adds a newline",
     "default": "Just landed in L.A.",
+    "post_content": "Post content",
     "direct_warning_to_all": "This post will be visible to all the mentioned users.",
     "direct_warning_to_first_only": "This post will only be visible to the mentioned users at the beginning of the message.",
     "edit_remote_warning": "Other remote instances may not support editing and unable to receive the latest version of your post.",
@@ -493,7 +531,8 @@
         "secret_code": "Key"
       },
       "verify": {
-        "desc": "To enable two-factor authentication, enter the code from your two-factor app:"
+        "desc": "To enable two-factor authentication, enter the code from your two-factor app:",
+        "label": "One-time code"
       }
     },
     "units": {
@@ -777,6 +816,7 @@
     "subject_line_email": "Like email: \"re: subject\"",
     "subject_line_mastodon": "Like mastodon: copy as is",
     "subject_line_noop": "Do not copy",
+    "submit_on_enter_in_chats": "Send message on Enter in chats",
     "force_theme_recompilation_debug": "Disable theme cahe, force recompile on each boot",
     "conversation_display": "Conversation display style",
     "conversation_display_tree": "Tree-style",
@@ -882,6 +922,7 @@
       "update_preview": "Update preview",
       "themes3": {
         "define": "Override",
+        "styles": "Styles",
         "palette": {
           "label": "Color schemes",
           "name_label": "Color scheme name",
@@ -1011,8 +1052,12 @@
       },
       "common": {
         "color": "Color",
+        "picker": "Color picker",
+        "hex": "Hex code #RRGGBB",
+        "unit": "Unit",
         "opacity": "Opacity",
         "contrast": {
+          "label": "Contrast indicator",
           "hint": "Contrast ratio is {ratio}, it {level} {context}",
           "level": {
             "aa": "meets Level AA guideline (minimal)",
@@ -1069,6 +1114,7 @@
       },
       "shadows": {
         "_tab_label": "Shadow and lighting",
+        "shadows_list": "Shadows list",
         "component": "Component",
         "override": "Override",
         "shadow_id": "Shadow #{value}",
@@ -1158,6 +1204,8 @@
     "cache": "Cache",
     "clear_asset_cache": "Clear asset cache",
     "clear_emoji_cache": "Clear emoji cache",
+    "underline_links": "Make all links always underlined",
+    "width_efficient_post_layout": "Make post content always stretch the whole width",
     "compact_profiles": "Reduce profile height on user pages"
   },
   "admin_dash": {
@@ -1237,8 +1285,10 @@
       "queues": "Queues"
     },
     "rate_limit": {
+      "global": "Global settings",
       "rate_limit": "Rate Limit",
       "amount": "Amount",
+      "all": "Everyone",
       "unauthenticated": "Unauthenticated",
       "authenticated": "Authenticated",
       "period": "Time period",
@@ -1397,6 +1447,9 @@
       "remote_packs_short": "Remote",
       "do_list": "List",
       "remote_pack_instance": "Remote pack instance",
+      "remote_pack_url": "Pack .zip URL",
+      "import_pack_url": "Import pack from URL",
+      "import_pack_file": "Import pack from a file",
       "emoji_pack": "Emoji pack",
       "edit_pack": "Edit pack",
       "metadata": "Metadata",
@@ -1617,6 +1670,7 @@
   "timeline": {
     "collapse": "Collapse",
     "conversation": "Conversation",
+    "unsubjected_conversation": "Untitled conversation",
     "error": "Error fetching timeline: {0}",
     "load_older": "Load older statuses",
     "no_retweet_hint": "Post is marked as followers-only or direct and cannot be repeated",
@@ -1627,6 +1681,7 @@
     "no_more_statuses": "No more statuses",
     "no_statuses": "No statuses",
     "socket_reconnected": "Realtime connection established",
+    "socket_disconnected": "Realtime connection unavaialable",
     "socket_broke": "Realtime connection lost: CloseEvent code {0}",
     "quick_view_settings": "Quick view settings",
     "quick_filter_settings": "Quick filter settings",
@@ -1636,6 +1691,9 @@
     "favorites": "Favorites",
     "repeats": "Repeats",
     "quotes": "Quotes",
+    "unsubjected": "Untitled status",
+    "favicon": "Instance favicon",
+    "status_actions": "Post actions",
     "repeat_confirm": "Do you really want to repeat this status?",
     "repeat_confirm_title": "Repeat confirmation",
     "repeat_confirm_accept_button": "Repeat",
@@ -1644,6 +1702,8 @@
     "delete_error": "Error deleting status: {0}",
     "edit": "Edit status",
     "edited_at": "(last edited {time})",
+    "open_in_chat_view": "Open in chat view",
+    "open_in_thread_view": "Open in thread view",
     "pin": "Pin on profile",
     "unpin": "Unpin from profile",
     "pinned": "Pinned",
@@ -1654,11 +1714,19 @@
     "delete_confirm_accept_button": "Delete",
     "delete_confirm_cancel_button": "Keep",
     "reply_to": "Reply to",
+    "reply_to_selected": "Replying to selected message",
+    "reply_to_last": "Replying to last message",
     "reply_to_with_icon": "{icon} {replyTo}",
+    "broken_reply": "Message belongs to the thread but is not a reply",
     "reply_to_with_arg": "{replyToWithIcon} {user}",
     "mentions": "Mentions",
     "replies_list": "Replies:",
     "replies_list_with_others": "Replies (+{numReplies} other): | Replies (+{numReplies} others):",
+    "replies_counter": "1 reply | {0} replies",
+    "favorites_counter": "1 favorite | {0} favorites",
+    "repeats_counter": "1 repeat | {0} repeats",
+    "reacts_counter": "1 react | {0} reacts",
+    "show_muted_status": "Show muted status",
     "mute_ellipsis": "Mute…",
     "mute_user": "Mute user",
     "unmute_user": "Unmute user",
@@ -1688,6 +1756,9 @@
     "expand": "Expand",
     "you": "(You)",
     "plus_more": "+{number} more",
+    "attachment": "Attachment",
+    "attachment_actions": "Attachment actions",
+    "attachments": "Attachments",
     "many_attachments": "Post has {number} attachment(s)",
     "collapse_attachments": "Collapse attachments",
     "show_all_attachments": "Show all attachments",
@@ -1699,6 +1770,8 @@
     "attachment_stop_flash": "Stop Flash player",
     "move_up": "Shift attachment left",
     "move_down": "Shift attachment right",
+    "nsfw_placeholder": "Sensitive attachment placeholder",
+    "nsfw_prefix": "Sensitive: ",
     "open_gallery": "Open gallery",
     "thread_hide": "Hide this thread",
     "thread_show": "Show this thread",
@@ -1719,16 +1792,28 @@
     "more_actions": "More actions on this status",
     "loading": "Loading...",
     "load_error": "Unable to load status: {error}",
+    "interact_error": "Error interacting with status: {error}",
     "admin_change_scope": "Change visibility",
     "mark_as_sensitive": "Sensitive",
     "mark_as_non-sensitive": "Non-sensitive"
   },
   "user_card": {
+    "banner": "User banner image",
+    "avatar": "User avatar",
+    "edit": "Edit profile",
     "approve": "Approve",
+    "make_post": "Make a new post",
+    "external_view": "Open external profile",
+    "open_profile": "Open profile",
+    "actions": "Actions",
+    "interactions": "Interactions",
+    "bio": "User description/bio",
+    "other": "Other",
     "approve_confirm_title": "Approve confirmation",
     "approve_confirm_accept_button": "Approve",
     "approve_confirm_cancel_button": "Do not approve",
     "approve_confirm": "Do you want to approve {user}'s follow request?",
+    "approve_error": "Failure approving follow request: {error}",
     "block": "Block",
     "blocked": "Blocked!",
     "block_confirm_title": "Block confirmation",
@@ -1741,6 +1826,7 @@
     "deny_confirm_accept_button": "Deny",
     "deny_confirm_cancel_button": "Do not deny",
     "deny_confirm": "Do you want to deny {user}'s follow request?",
+    "deny_error": "Failure denying follow request: {error}",
     "edit_profile": "Edit profile",
     "favorites": "Favorites",
     "follow": "Follow",
@@ -1766,6 +1852,7 @@
     "mute_confirm_title": "Mute confirmation",
     "mute_confirm": "Do you really want to mute {user}?",
     "mute_domain_confirm": "Do you really want to mute entire {domain}?",
+    "mute_conversation_confirm": "Do you really want to mute this conversation?",
     "mute_confirm_accept_button": "Mute",
     "mute_confirm_cancel_button": "Do not mute",
     "mute_or": "or",
@@ -1957,11 +2044,21 @@
     "people_talking": "{count} people talking",
     "no_results": "No results",
     "no_more_results": "No more results",
-    "load_more": "Load more results"
+    "load_more": "Load more results",
+    "advanced": "Show advanced search",
+    "by_author": "Author:"
+  },
+  "user_selector": {
+    "select": "Select",
+    "username_input_placeholder": "Username, e.g. foo{'@'}example.org",
+    "edit": "Edit",
+    "clear": "Clear",
+    "none": "Not selected"
   },
   "password_reset": {
     "forgot_password": "Forgot password?",
     "password_reset": "Password reset",
+    "email": "Email",
     "instruction": "Enter your email address or username. We will send you a link to reset your password.",
     "placeholder": "Your email or username",
     "check_email": "Check your email for a link to reset your password.",

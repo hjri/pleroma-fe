@@ -11,15 +11,35 @@
         v-model="searchTerm"
         class="input search-input"
         :placeholder="$t('nav.search')"
-        @keyup.enter="newQuery(searchTerm)"
+        :title="$t('nav.search')"
+        @keyup.enter="updateToQuery"
       >
       <button
         class="btn button-default search-button"
         type="submit"
-        @click="newQuery(searchTerm)"
+        @click="updateToQuery"
+        :aria-label="$t('nav.search')"
       >
         <FAIcon icon="search" />
       </button>
+      <button
+        class="btn button-default"
+        @click="toogleAdvanced"
+        :aria-label="$t('search.advanced')"
+        :aria-expanded="advancedMode ? 'true' : 'false'"
+      >
+        <FAIcon :icon="advancedMode ? 'chevron-up' : 'chevron-down'" />
+      </button>
+    </div>
+    <div v-if="advancedMode" class="panel-body search-advanced">
+      <div class="search-advanced-criterion">
+        <UserSelectorInput
+          v-model="searchAuthor"
+          class="search-advanced-user-selector"
+        >
+          <span class="search-advanced-criterion-label">{{ $t('search.by_author') }}</span>
+        </UserSelectorInput>
+      </div>
     </div>
     <div
       v-if="loading && statusesOffset == 0"
@@ -119,7 +139,7 @@
         >
           <router-link
             class="list-item hashtag"
-            :to="{ name: 'tag-timeline', params: { tag: hashtag.name } }"
+            :to="{ name: 'tag-timeline', params: { id: hashtag.name } }"
           >
             <span class="name">
               #{{ hashtag.name }}
@@ -187,6 +207,18 @@
 
   .search-button {
     margin-left: 0.5em;
+  }
+}
+
+.search-advanced-criterion {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.8rem;
+
+  .search-advanced-user-selector {
+    flex: 1;
+    max-width: 100%;
   }
 }
 

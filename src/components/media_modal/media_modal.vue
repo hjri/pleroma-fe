@@ -3,6 +3,7 @@
     v-if="showing"
     class="media-modal-view"
     @backdrop-clicked="hideIfNotSwiped"
+    :aria-label="$t('media_modal.modal_label')"
   >
     <SwipeClick
       v-if="currentMedia.type === 'image'"
@@ -209,6 +210,10 @@ $modal-view-button-icon-margin: 0.5em;
 
     &.loading {
       opacity: 0.5;
+    }
+
+    &.still-image img {
+      will-change: transform;
     }
   }
 

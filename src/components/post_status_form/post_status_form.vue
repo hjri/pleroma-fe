@@ -1,5 +1,6 @@
 <template>
   <div
+    v-if="initialized"
     ref="form"
     class="post-status-form"
   >
@@ -10,7 +11,7 @@
     >
       <div class="form-group">
         <div
-          v-if="!$store.state.users.currentUser.locked && newStatus.visibility == 'private' && !disableLockWarning"
+          v-if="!currentUser.locked && newStatus.visibility == 'private' && !disableLockWarning"
           class="visibility-notice notice-dismissible"
         >
           <i18n-t
@@ -32,48 +33,42 @@
           class="visibility-notice notice-dismissible"
         >
           <span>{{ $t('post_status.scope_notice.public') }}</span>
-          <a
-            class="fa-scale-110 fa-old-padding dismiss"
+          <button
+            class="button-unstyled fa-scale-110 fa-old-padding dismiss"
             :title="$t('post_status.scope_notice_dismiss')"
-            role="button"
-            tabindex="0"
             @click.prevent="dismissScopeNotice()"
           >
             <FAIcon icon="times" />
-          </a>
+          </button>
         </p>
         <p
           v-else-if="!hideScopeNotice && newStatus.visibility === 'unlisted'"
           class="visibility-notice notice-dismissible"
         >
           <span>{{ $t('post_status.scope_notice.unlisted') }}</span>
-          <a
-            class="fa-scale-110 fa-old-padding dismiss"
+          <button
+            class="button-unstyled fa-scale-110 fa-old-padding dismiss"
             :title="$t('post_status.scope_notice_dismiss')"
-            role="button"
-            tabindex="0"
             @click.prevent="dismissScopeNotice()"
           >
             <FAIcon icon="times" />
-          </a>
+          </button>
         </p>
         <p
-          v-else-if="!hideScopeNotice && newStatus.visibility === 'private' && $store.state.users.currentUser.locked"
+          v-else-if="!hideScopeNotice && newStatus.visibility === 'private' && currentUser.locked"
           class="visibility-notice notice-dismissible"
         >
           <span>{{ $t('post_status.scope_notice.private') }}</span>
-          <a
-            class="fa-scale-110 fa-old-padding dismiss"
+          <button
+            class="button-unstyled fa-scale-110 fa-old-padding dismiss"
             :title="$t('post_status.scope_notice_dismiss')"
-            role="button"
-            tabindex="0"
             @click.prevent="dismissScopeNotice()"
           >
             <FAIcon icon="times" />
-          </a>
+          </button>
         </p>
         <p
-          v-else-if="newStatus.visibility === 'direct'"
+          v-else-if="!hideScopeNotice && newStatus.visibility === 'direct'"
           class="visibility-notice notice-dismissible"
         >
           <span v-if="safeDMEnabled">{{ $t('post_status.direct_warning_to_first_only') }}</span>
@@ -90,13 +85,13 @@
           v-if="!disablePreview"
           class="preview-heading"
         >
-          <a
-            class="preview-toggle faint"
+          <button
+            class="button-unstyled preview-toggle faint"
             @click.stop.prevent="togglePreview"
           >
             {{ $t('post_status.preview') }}
             <FAIcon :icon="showPreview ? 'chevron-left' : 'chevron-right'" />
-          </a>
+          </button>
           <div
             v-show="previewLoading"
             class="preview-spinner"
@@ -114,17 +109,16 @@
           >
             <Checkbox
               v-model="quoteThreadToggled"
-              :radio="true"
               :disabled="quoteFormVisible"
+              radio
             >
               {{ $t('post_status.quote_option') }}
             </Checkbox>
             <Checkbox
-              role="radio"
-              :radio="true"
               :model-value="!quoteThreadToggled"
               :disabled="quoteFormVisible"
               @update:model-value="e => quoteThreadToggled = !e"
+              radio
             >
               {{ $t('post_status.reply_option') }}
             </Checkbox>
@@ -166,12 +160,24 @@
                 type="text"
                 :placeholder="$t('post_status.content_warning')"
                 :disabled="posting && !optimisticPosting"
+                :title="$t('post_status.content_warning')"
                 v-bind="propsToNative(inputProps)"
                 size="1"
                 class="input form-post-subject unstyled"
               >
             </template>
           </EmojiInput>
+          <input
+            v-if="mentionsLine"
+            :value="mentionsLineReadOnly ? mentionsString : newStatus.mentionsLine"
+            type="text"
+            :placeholder="$t('post_status.mentions_line')"
+            :title="$t('post_status.mentions_line')"
+            :disabled="mentionsLineReadOnly || (posting && !optimisticPosting)"
+            size="1"
+            class="input mentions-input form-post-mentions unstyled"
+            @change="onMentionsLineUpdate"
+          >
           <EmojiInput
             ref="emoji-input"
             v-model="newStatus.status"
@@ -191,15 +197,16 @@
                 ref="textarea"
                 v-model="newStatus.status"
                 :placeholder="placeholder || $t('post_status.default')"
+                :title="$t('post_status.post_content')"
                 rows="1"
                 cols="1"
                 :disabled="posting && !optimisticPosting"
                 class="input form-post-body"
                 :class="{ 'scrollable-form': !!maxHeight }"
                 v-bind="propsToNative(inputProps)"
-                @keydown.exact.enter="submitOnEnter && postStatus($event, newStatus)"
+                @keydown.exact.enter="submitOnEnter && postStatus($event)"
                 @keydown.meta.enter="postStatus($event, newStatus)"
-                @keydown.ctrl.enter="!submitOnEnter && postStatus($event, newStatus)"
+                @keydown.ctrl.enter="!submitOnEnter && postStatus($event)"
                 @input="resize"
                 @compositionupdate="resize"
                 @paste="paste"
@@ -220,11 +227,12 @@
         >
           <scope-selector
             v-if="!disableVisibilitySelector"
+            ref="scopeSelector"
             :show-all="showAllScopes"
             :user-default="userDefaultScope"
-            :original-scope="copyMessageScope"
+            :original-scope="repliedStatus?.visibility"
             :initial-scope="newStatus.visibility"
-            :on-scope-change="changeVis"
+            @change="changeVis"
           />
 
           <div
@@ -234,8 +242,8 @@
             <Select
               v-model="newStatus.contentType"
               class="input form-control unstyled"
-              :attrs="{ 'aria-label': $t('post_status.content_type_selection') }"
-              unstyled="true"
+              :aria-label="$t('post_status.content_type_selection')"
+              unstyled
             >
               <option
                 v-for="postFormat in postFormats"
@@ -259,15 +267,15 @@
       <PollForm
         v-if="pollsAvailable"
         ref="pollForm"
+        v-model="newStatus.poll"
         :visible="pollFormVisible"
-        :params="newStatus.poll"
       />
       <QuoteForm
         v-if="quotingAvailable"
-        :id="newStatus.quote.id"
+        :id="newStatus.quote?.id"
         ref="quoteForm"
         :visible="quoteFormVisible"
-        :url="newStatus.quote.url"
+        :url="newStatus.quote?.url"
         @update:url="url => newStatus.quote.url = url"
         @update:id="id => newStatus.quote.id = id"
       />
@@ -316,7 +324,7 @@
           <button
             class="btn button-default post-button"
             :disabled="isOverLengthLimit || posting || uploadingFiles || disableSubmit"
-            @click.stop.prevent="postStatus($event, newStatus)"
+            @click.stop.prevent="postStatus($event)"
           >
             <template v-if="posting">
               {{ $t('post_status.posting') }}
@@ -327,12 +335,11 @@
           </button>
           <Popover
             v-if="!hideExtraActions"
-            class="more-post-actions"
-            :normal-button="true"
             trigger="click"
             placement="bottom"
             :offset="{ y: 5 }"
-            :trigger-attrs="{ 'aria-label': $t('post_status.more_post_actions') }"
+            normal-button
+            :title="$t('post_status.more_post_actions')"
           >
             <template #trigger>
               <FAIcon
@@ -341,18 +348,11 @@
               />
             </template>
             <template #content="{close}">
-              <div
-                class="dropdown-menu"
-                role="menu"
-              >
-                <div
-                  class="menu-item dropdown-item"
-                  :class="{ disabled: !safeToSaveDraft }"
-                >
+              <div class="dropdown-menu">
+                <div class="menu-item dropdown-item">
                   <button
                     v-if="!hideDraft || !disableDraft"
                     class="main-button"
-                    role="menu"
                     :disabled="!safeToSaveDraft"
                     @click.prevent="saveDraft"
                     @click="close"
@@ -370,6 +370,17 @@
           </Popover>
         </div>
       </div>
+      <small
+        v-if="chatView"
+        class="keyboard-enter-hint faint"
+      >
+        <i v-if="submitOnEnter">
+          {{ $t('post_status.enter_submits') }}
+        </i>
+        <i v-else>
+          {{ $t('post_status.enter_newline') }}
+        </i>
+      </small>
       <div
         v-show="showDropIcon !== 'hide'"
         :style="{ animation: showDropIcon === 'show' ? 'fade-in 0.25s' : 'fade-out 0.5s' }"
@@ -411,6 +422,7 @@
         :shift-dn-attachment="newStatus.files.length > 1 && shiftDnMediaFile"
         @play="$emit('mediaplay', 'newStatus')"
         @pause="$emit('mediapause', 'newStatus')"
+        :aria-label="$t('status.attachments')"
       />
       <div
         v-if="newStatus.files.length > 0 && !disableSensitivityCheckbox"

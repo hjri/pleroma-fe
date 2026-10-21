@@ -1,6 +1,6 @@
 import { brightness, convert } from 'chromatism'
 import sum from 'hash-sum'
-import { flattenDeep, sortBy } from 'lodash'
+import { flattenDeep, sortBy } from 'lodash-es'
 
 import {
   alphaBlend,
@@ -262,7 +262,7 @@ export const init = ({
           ...r,
         })),
       )
-      .reduce((acc, arr) => [...acc, ...arr], []),
+      .flat(),
     ...inputRuleset,
   ].map((rule) => {
     normalizeCombination(rule)
@@ -338,10 +338,10 @@ export const init = ({
     const relevantRules = ruleset.filter((r) => r.component === component.name)
     const backgrounds = relevantRules
       .map((r) => r.directives.background)
-      .filter((x) => x)
+      .filter(Boolean)
     const opacities = relevantRules
       .map((r) => r.directives.opacity)
-      .filter((x) => x)
+      .filter(Boolean)
     if (
       backgrounds.some((x) => x.match(/--parent/)) ||
       opacities.some((x) => x != null && x < 1)
@@ -596,7 +596,7 @@ export const init = ({
               const shadow = value
                 .split(/,/g)
                 .map((s) => s.trim())
-                .filter((x) => x)
+                .filter(Boolean)
               dynamicVars[k] = shadow
               if (combination.component === rootComponentName) {
                 staticVars[k.substring(2)] = shadow
@@ -690,11 +690,11 @@ export const init = ({
               .map((combination) => ['normal', ...combination])
               .filter((combo) => {
                 // Optimization: filter out some hard-coded combinations that don't make sense
-                if (combo.indexOf('disabled') >= 0) {
+                if (combo.includes('disabled')) {
                   return !(
-                    combo.indexOf('hover') >= 0 ||
-                    combo.indexOf('focused') >= 0 ||
-                    combo.indexOf('pressed') >= 0
+                    combo.includes('hover') ||
+                    combo.includes('focused') ||
+                    combo.includes('pressed')
                   )
                 }
                 return true
@@ -705,13 +705,13 @@ export const init = ({
       .map((variant) => {
         return stateCombinations.map((state) => ({ variant, state }))
       })
-      .reduce((acc, x) => [...acc, ...x], [])
+      .flat()
 
     stateVariantCombination.forEach((combination) => {
       combination.component = component.name
       combination.lazy = component.lazy || parent?.lazy
       combination.parent = parent
-      if (!liteMode && combination.state.indexOf('hover') >= 0) {
+      if (!liteMode && combination.state.includes('hover')) {
         combination.lazy = true
       }
 
@@ -752,7 +752,7 @@ export const init = ({
         return processCombination(combination)
       }
     })
-    .filter((x) => x)
+    .filter(Boolean)
   const t2 = performance.now()
   if (debug) {
     console.debug('Eager processing took ' + (t2 - t1) + ' ms')

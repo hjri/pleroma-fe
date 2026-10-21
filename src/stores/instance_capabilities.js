@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia'
 
+import { useShoutStore } from 'src/stores/shout.js'
+import { useUsersStore } from 'src/stores/users.js'
+
 const defaultState = {
   postFormats: [],
   mailerEnabled: false,
@@ -39,8 +42,11 @@ export const useInstanceCapabilitiesStore = defineStore(
 
         this[capability] = value
 
-        if (capability === 'shoutAvailable') {
-          window.vuex.dispatch('initializeSocket')
+        if (
+          capability === 'shoutAvailable' &&
+          useUsersStore().currentUser?.token
+        ) {
+          useShoutStore().initializeSocket()
         }
       },
     },

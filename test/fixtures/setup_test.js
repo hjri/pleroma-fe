@@ -1,4 +1,3 @@
-import { createTestingPinia } from '@pinia/testing'
 import { config } from '@vue/test-utils'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import VueVirtualScroller from 'vue-virtual-scroller'
@@ -6,30 +5,19 @@ import VueVirtualScroller from 'vue-virtual-scroller'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import Status from 'src/components/status/status.vue'
 import StillImage from 'src/components/still-image/still-image.vue'
-import makeMockStore from './mock_store'
 
-import routes from 'src/boot/routes'
+import { getRoutes } from 'src/boot/routes.js'
 
 export const $t = (msg) => msg
 const $i18n = { t: (msg) => msg }
 
-const applyAfterStore = (store, afterStore) => {
-  afterStore(store)
-  return store
-}
-
-const getDefaultOpts = ({
-  afterStore = () => {
-    /* no-op */
-  },
-} = {}) => ({
+const getDefaultOpts = () => ({
   global: {
     plugins: [
-      applyAfterStore(makeMockStore(), afterStore),
       VueVirtualScroller,
       createRouter({
         history: createMemoryHistory(),
-        routes: routes({
+        routes: getRoutes({
           state: {
             users: {
               currentUser: {},
@@ -41,7 +29,6 @@ const getDefaultOpts = ({
       (Vue) => {
         Vue.directive('body-scroll-lock', {})
       },
-      createTestingPinia(),
     ],
     components: {
       RichContent,
@@ -89,9 +76,8 @@ const customBehaviors = () => {
 
 config.plugins.VueWrapper.install(customBehaviors)
 
-export const mountOpts = (allOpts = {}) => {
-  const { afterStore, ...opts } = allOpts
-  const defaultOpts = getDefaultOpts({ afterStore })
+export const mountOpts = (opts = {}) => {
+  const defaultOpts = getDefaultOpts()
   const mergedOpts = {
     ...opts,
     global: {
@@ -132,7 +118,7 @@ export const waitForEvent = (
   return vi.waitFor(
     () => {
       const e = wrapper.emitted(event)
-      if (e && e.length >= timesEmitted) {
+      if (e?.length >= timesEmitted) {
         return
       }
       throw new Error('event is not emitted')

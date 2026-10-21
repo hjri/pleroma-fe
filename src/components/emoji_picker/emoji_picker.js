@@ -1,4 +1,4 @@
-import { chunk, debounce, trim } from 'lodash'
+import { chunk, debounce, trim } from 'lodash-es'
 import { defineAsyncComponent } from 'vue'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
@@ -57,13 +57,18 @@ const maybeLocalizedKeywords = (emoji, languages, nameLocalizer) => {
     languages.forEach((lang) => {
       const keywords = emoji.annotations[lang]?.keywords || []
       const name = emoji.annotations[lang]?.name
-      res.push(...keywords.concat([name]).filter((k) => k))
+      res.push(...keywords.concat([name]).filter(Boolean))
     })
   }
   return res
 }
 
-const filterByKeyword = (list, keyword = '', languages, nameLocalizer) => {
+const filterByKeyword = (
+  list,
+  keyword = '',
+  languages = [],
+  nameLocalizer = () => '',
+) => {
   if (keyword === '') return list
 
   const keywordLowercase = keyword.toLowerCase()
@@ -91,7 +96,7 @@ const getOffset = (elem) => {
   if (!res) {
     return 0
   }
-  return res[1]
+  return Number.parseInt(res[1], 10)
 }
 
 const toHeaderId = (id) => {
@@ -101,15 +106,11 @@ const toHeaderId = (id) => {
 const EmojiPicker = {
   props: {
     enableStickerPicker: {
-      required: false,
       type: Boolean,
       default: true,
     },
-    hideCustomEmoji: {
-      required: false,
-      type: Boolean,
-      default: false,
-    },
+    hideCustomEmoji: Boolean,
+    hideTrigger: Boolean,
   },
   inject: {
     popoversZLayer: {
@@ -135,12 +136,19 @@ const EmojiPicker = {
       width: 0,
     }
   },
+  emits: [
+    'emojiPickerShown',
+    'stickerUploaded',
+    'stickerUploadFailed',
+    'emoji',
+    'forwardTabContentFocus',
+    'reverseTabContentFocus',
+  ],
   components: {
     StickerPicker: defineAsyncComponent(
       () => import('src/components/sticker_picker/sticker_picker.vue'),
     ),
     Checkbox,
-
     Popover,
   },
   methods: {
@@ -148,7 +156,7 @@ const EmojiPicker = {
       e.currentTarget.scrollLeft += e.deltaY + e.deltaX
     },
     updateEmojiSize() {
-      const css = window.getComputedStyle(this.$refs.popover.$el)
+      const css = window.getComputedStyle(this.$refs.content)
       const fontSize = css.getPropertyValue('font-size') || '1rem'
       const emojiSize = css.getPropertyValue('--emojiSize') || '2.2rem'
 
@@ -184,9 +192,6 @@ const EmojiPicker = {
     },
     showPicker() {
       this.$refs.popover.showPopover()
-      this.$nextTick(() => {
-        this.onShowing()
-      })
     },
     hidePicker() {
       this.$refs.popover.hidePopover()
@@ -200,16 +205,21 @@ const EmojiPicker = {
       }
     },
     onPopoverShown() {
+      this.$emit('emojiPickerShown', true)
       this.popoverShown = true
+      this.$nextTick(() => {
+        this.onShowing()
+      })
     },
     onPopoverClosed() {
+      this.$emit('emojiPickerShown', false)
       this.popoverShown = false
     },
     onStickerUploaded(e) {
       this.$emit('sticker-uploaded', e)
     },
     onStickerUploadFailed(e) {
-      this.$emit('sticker-upload-failed', e)
+      this.$emit('stickerUploadFailed', e)
     },
     onEmoji(emoji) {
       const value = emoji.imageUrl
@@ -362,7 +372,7 @@ const EmojiPicker = {
       if (useEmojiStore().stickers) {
         return useEmojiStore().stickers.length > 0
       }
-      return 0
+      return false
     },
     allCustomGroups() {
       if (this.hideCustomEmoji || this.hideCustomEmojiInPicker) {
@@ -399,16 +409,14 @@ const EmojiPicker = {
       }, 500)
     },
     emojiItems() {
-      return this.filteredEmojiGroups
-        .map((group) =>
-          chunk(group.emojis, this.itemPerRow).map((items, index) => ({
-            ...group,
-            id: index === 0 ? group.id : `row-${index}-${group.id}`,
-            emojis: items,
-            isFirstRow: index === 0,
-          })),
-        )
-        .reduce((a, c) => a.concat(c), [])
+      return this.filteredEmojiGroups.flatMap((group) =>
+        chunk(group.emojis, this.itemPerRow).map((items, index) => ({
+          ...group,
+          id: index === 0 ? group.id : `row-${index}-${group.id}`,
+          emojis: items,
+          isFirstRow: index === 0,
+        })),
+      )
     },
     languages() {
       return ensureFinalFallback(

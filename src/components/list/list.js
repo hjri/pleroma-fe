@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash'
+import { isEmpty } from 'lodash-es'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 
@@ -21,8 +21,8 @@ const List = {
       default: () => '',
     },
     preSelect: {
-      type: Array,
-      default: [],
+      type: Set,
+      default: new Set(),
     },
     nonInteractive: {
       type: Boolean,
@@ -48,7 +48,7 @@ const List = {
   data() {
     return {
       items: [],
-      selected: new Set(this.preSelect),
+      selected: new Set(this.preSelect), // clone
       loading: false,
       bottomedOut: true,
       error: null,
@@ -99,11 +99,11 @@ const List = {
       this.fetchFunction(this.page)
         .then((result) => {
           this.loading = false
-          this.bottomedOut = isEmpty(result.items)
+          this.bottomedOut = isEmpty(result)
           if (this.externalItems) return
           this.page += 1
-          this.total = result.count
-          this.items.push(...result.items)
+          this.total = result.length
+          this.items.push(...result)
         })
         .catch((error) => {
           this.loading = false
@@ -146,9 +146,9 @@ const List = {
     },
     toggleAll(value) {
       if (value) {
-        this.selected = new Set([...this.allKeys])
+        this.selected = new Set(this.allKeys)
       } else {
-        this.selected = new Set([])
+        this.selected = new Set()
       }
       this.$emit('select', this.selected)
     },

@@ -1,10 +1,11 @@
-import { last } from 'lodash'
+import { last } from 'lodash-es'
 
 import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 import Popover from 'src/components/popover/popover.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
@@ -223,7 +224,7 @@ const ModerationTools = {
                   return () => this.disableMFA()
                 case 'statuses':
                   return () =>
-                    this.$router.push(`/users/\$${this.users[0].id}/admin_view`)
+                    this.$router.push(`/users/$${this.users[0].id}/admin_view`)
                 case 'require_password_change':
                   return () => this.requirePasswordChange()
                 default:
@@ -405,7 +406,7 @@ const ModerationTools = {
       )
     },
     isAdmin() {
-      return this.$store.state.users.currentUser.role === 'admin'
+      return useUsersStore().currentUser.role === 'admin'
     },
   },
   methods: {
@@ -452,7 +453,7 @@ const ModerationTools = {
     },
     privileged(privilege) {
       if (this.isAdmin) return true
-      return this.$store.state.users.currentUser.privileges.has(privilege)
+      return useUsersStore().currentUser.privileges.has(privilege)
     },
     setTag(tag, value) {
       useAdminSettingsStore().setUsersTags({
@@ -590,7 +591,7 @@ const ModerationTools = {
                 : this.$t('user_card.admin_menu.confirm_modal.deactivate')
               break
             }
-            // Confirmation and Approval statuses cannot be revokedn(no API)
+            // Confirmation and Approval statuses cannot be revoked(no API)
             case 'confirmed': {
               this.confirmDialogTitle = this.$t(
                 'user_card.admin_menu.confirm_modal.confirm_title',

@@ -13,7 +13,7 @@
           <template #statusLink>
             <router-link
               class="faint-link"
-              :to="{ name: 'conversation', params: { id: draft.refId } }"
+              :to="{ name: 'conversation', params: { statusId: draft.refId } }"
             >
               {{ refStatus ? refStatus.external_url : $t('drafts.unavailable') }}
             </router-link>
@@ -49,9 +49,10 @@
           size="small"
           @play="$emit('mediaplay', attachment.id)"
           @pause="$emit('mediapause', attachment.id)"
+          :aria-label="$t('status.attachments')"
         />
         <div
-          v-if="draft.poll.options"
+          v-if="draft.poll?.options"
           class="poll-indicator-container"
           :title="$t('drafts.poll_tooltip')"
         >
@@ -67,11 +68,13 @@
     <div v-if="editing">
       <PostStatusForm
         v-if="draft.type !== 'edit'"
+        ref="form"
         :hide-draft="true"
         v-bind="postStatusFormProps"
       />
       <EditStatusForm
         v-else
+        ref="form"
         :hide-draft="true"
         :params="postStatusFormProps"
       />
@@ -91,7 +94,7 @@
     <div class="actions">
       <button
         class="btn button-default"
-        :aria-expanded="editing"
+        :aria-expanded="editing ? 'true' : 'false'"
         @click.prevent.stop="toggleEditing"
       >
         {{ editing ? $t('drafts.save') : $t('drafts.continue') }}
@@ -122,7 +125,7 @@
     grid-template-columns: 1fr;
     grid-auto-columns: 10em;
     grid-auto-flow: column;
-    grid-gap: 0.5em;
+    gap: 0.5em;
     align-items: start;
     max-width: 100%;
 

@@ -1,5 +1,4 @@
-import { mapState as mapPiniaState } from 'pinia'
-import { mapState } from 'vuex'
+import { mapState } from 'pinia'
 
 import {
   filterNavigation,
@@ -14,10 +13,14 @@ import {
 
 import { useAnnouncementsStore } from 'src/stores/announcements'
 import { useBookmarkFoldersStore } from 'src/stores/bookmark_folders'
+import { useChatsStore } from 'src/stores/chats.js'
+import { useDraftsStore } from 'src/stores/drafts.js'
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useListsStore } from 'src/stores/lists'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -55,31 +58,37 @@ const NavPanel = {
   },
   components: {},
   computed: {
-    getters() {
-      return this.$store.getters
+    badges() {
+      return {
+        drafts: this.draftsCount,
+        unreadAnnouncements: this.unreadAnnouncementsCount,
+        followRequests: this.followRequestsCount,
+        unreadChats: this.unreadChatsCount,
+      }
     },
-    ...mapPiniaState(useListsStore, {
+    ...mapState(useListsStore, {
       lists: getListEntries,
     }),
-    ...mapPiniaState(useAnnouncementsStore, {
+    ...mapState(useAnnouncementsStore, {
       supportsAnnouncements: (store) => store.supportsAnnouncements,
+      unreadAnnouncementsCount: 'unreadAnnouncementsCount',
     }),
-    ...mapPiniaState(useBookmarkFoldersStore, {
+    ...mapState(useDraftsStore, ['draftsCount']),
+    ...mapState(useFollowRequestsStore, ['followRequestsCount']),
+    ...mapState(useBookmarkFoldersStore, {
       bookmarks: getBookmarkFolderEntries,
     }),
-    ...mapPiniaState(useSyncConfigStore, {
+    ...mapState(useChatsStore, ['unreadChatsCount']),
+    ...mapState(useSyncConfigStore, {
       pinnedItems: (store) =>
         new Set(store.prefsStorage.collections.pinnedNavItems),
     }),
-    ...mapPiniaState(useInstanceStore, ['privateMode', 'federating']),
-    ...mapPiniaState(useInstanceCapabilitiesStore, [
+    ...mapState(useInstanceStore, ['privateMode', 'federating']),
+    ...mapState(useInstanceCapabilitiesStore, [
       'pleromaChatMessagesAvailable',
       'localBubble',
     ]),
-    ...mapState({
-      currentUser: (state) => state.users.currentUser,
-      followRequestCount: (state) => state.api.followRequests.length,
-    }),
+    ...mapState(useUsersStore, ['currentUser']),
     pinnedList() {
       if (!this.currentUser) {
         return filterNavigation(

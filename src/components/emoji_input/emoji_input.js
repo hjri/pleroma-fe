@@ -1,11 +1,11 @@
-import { take } from 'lodash'
+import { take } from 'lodash-es'
+import { useId } from 'vue'
 
 import Popover from 'src/components/popover/popover.vue'
 import ScreenReaderNotice from 'src/components/screen_reader_notice/screen_reader_notice.vue'
 import { ensureFinalFallback } from '../../i18n/languages.js'
 import Completion from '../../services/completion/completion.js'
 import { findOffset } from '../../services/offset_finder/offset_finder.service.js'
-import genRandomSeed from '../../services/random_seed/random_seed.service.js'
 import EmojiPicker from '../emoji_picker/emoji_picker.vue'
 import UnicodeDomainIndicator from '../unicode_domain_indicator/unicode_domain_indicator.vue'
 
@@ -109,9 +109,13 @@ const EmojiInput = {
       default: false,
     },
   },
+  setup() {
+    const uniqueId = useId()
+
+    return { uniqueId }
+  },
   data() {
     return {
-      randomSeed: genRandomSeed(),
       input: undefined,
       caretEl: undefined,
       highlighted: -1,
@@ -123,6 +127,7 @@ const EmojiInput = {
       suggestions: [],
       overlayStyle: {},
       pickerShown: false,
+      suggestShown: false,
     }
   },
   components: {
@@ -144,7 +149,7 @@ const EmojiInput = {
     postText() {
       return this.modelValue.slice(this.caret)
     },
-    showSuggestions() {
+    shouldShowSuggestions() {
       return (
         this.focused &&
         this.suggestions &&
@@ -188,8 +193,8 @@ const EmojiInput = {
         }
 
         return {
-          names: names.filter((k) => k),
-          keywords: keywords.filter((k) => k),
+          names: names.filter(Boolean),
+          keywords: keywords.filter(Boolean),
         }
       }
     },
@@ -212,24 +217,36 @@ const EmojiInput = {
         return emoji.displayText
       }
     },
+    ariaOwns() {
+      if (this.suggestShown) {
+        return this.suggestionListId
+      } else if (this.pickerShown) {
+        return this.emojiPickerId
+      } else {
+        return undefined
+      }
+    },
     suggestionListId() {
-      return `suggestions-${this.randomSeed}`
+      return `suggestions-${this.uniqueId}`
+    },
+    emojiPickerId() {
+      return `emoji-picker-${this.uniqueId}`
     },
     suggestionItemId() {
-      return (index) => `suggestion-item-${index}-${this.randomSeed}`
+      return (index) => `suggestion-item-${index}-${this.uniqueId}`
     },
   },
   mounted() {
-    const { root, hiddenOverlayCaret, suggestorPopover } = this.$refs
+    const { root, hiddenOverlayCaret, suggest, picker } = this.$refs
     const input =
       root.querySelector('.emoji-input > input') ||
       root.querySelector('.emoji-input > textarea')
     if (!input) return
     this.input = input
     this.caretEl = hiddenOverlayCaret
-    if (suggestorPopover.setAnchorEl) {
-      suggestorPopover.setAnchorEl(this.caretEl) // unit test compat
-      this.$refs.picker.setAnchorEl(this.caretEl)
+    if (this.caretEl) {
+      suggest.setAnchorEl?.(this.caretEl) // unit test compat
+      picker.setAnchorEl?.(this.caretEl)
     } else {
       console.warn('setAnchorEl not found, are we in a unit test?')
     }
@@ -267,12 +284,12 @@ const EmojiInput = {
     }
   },
   watch: {
-    showSuggestions: function (newValue) {
-      this.$emit('shown', newValue)
+    shouldShowSuggestions: function (newValue) {
+      this.$emit('suggestionsShown', newValue)
       if (newValue) {
-        this.$refs.suggestorPopover.showPopover()
+        this.$refs.suggest.showPopover()
       } else {
-        this.$refs.suggestorPopover.hidePopover()
+        this.$refs.suggest.hidePopover()
       }
     },
     textAtCaret: async function (newWord) {
@@ -496,6 +513,17 @@ const EmojiInput = {
     onPickerClosed() {
       this.pickerShown = false
     },
+    onSuggestShown() {
+      this.suggestShown = true
+    },
+    onSuggestClosed() {
+      this.suggestShown = false
+    },
+    focusInput() {
+      this.$refs.picker.hidePicker()
+      this.$refs.suggest.hidePopover()
+      this.input.focus()
+    },
     onBlur(e) {
       // Clicking on any suggestion removes focus from autocomplete,
       // preventing click handler ever executing.
@@ -533,7 +561,11 @@ const EmojiInput = {
       this.setCaret(e)
     },
     onKeyDown(e) {
-      const { ctrlKey, shiftKey, key } = e
+      this.postingKeyboardControl(e)
+      this.suggestionsKeyboardControl(e)
+    },
+    postingKeyboardControl(e) {
+      const { ctrlKey, key } = e
       if (this.newlineOnCtrlEnter && ctrlKey && key === 'Enter') {
         this.insert({ insertion: '\n', surroundingSpace: false })
         // Ensure only one new line is added on macos
@@ -545,35 +577,33 @@ const EmojiInput = {
           this.input.blur()
           this.input.focus()
         })
+        return
       }
+    },
+    suggestionsKeyboardControl(e) {
       // Disable suggestions hotkeys if suggestions are hidden
-      if (!this.temporarilyHideSuggestions) {
-        if (key === 'Tab') {
-          if (shiftKey) {
-            this.cycleBackward(e)
-          } else {
-            this.cycleForward(e)
-          }
-        }
-        if (key === 'ArrowUp') {
+      if (this.temporarilyHideSuggestions) {
+        return
+      }
+
+      // TODO Probably add optional keyboard controls for emoji picker?
+      const { ctrlKey, shiftKey, key } = e
+      if (key === 'Tab') {
+        if (shiftKey) {
           this.cycleBackward(e)
-        } else if (key === 'ArrowDown') {
+        } else {
           this.cycleForward(e)
         }
-        if (key === 'Enter') {
-          if (!ctrlKey) {
-            this.replaceText(e)
-          }
-        }
-      }
-      // Probably add optional keyboard controls for emoji picker?
-
-      // Escape hides suggestions, if suggestions are hidden it
-      // de-focuses the element (i.e. default browser behavior)
-      if (key === 'Escape') {
-        if (!this.temporarilyHideSuggestions) {
-          this.input.focus()
-        }
+      } else if (key === 'ArrowUp') {
+        this.cycleBackward(e)
+      } else if (key === 'ArrowDown') {
+        this.cycleForward(e)
+      } else if (key === 'Enter' && !ctrlKey) {
+        this.replaceText(e)
+      } else if (key === 'Escape') {
+        // Escape hides suggestions, if suggestions are hidden it
+        // de-focuses the element (i.e. default browser behavior)
+        this.input.focus()
       }
     },
     onInput(e) {
@@ -589,7 +619,7 @@ const EmojiInput = {
     setCaret({ target: { selectionStart } }) {
       this.caret = selectionStart
       this.$nextTick(() => {
-        this.$refs.suggestorPopover?.updateStyles()
+        this.$refs.suggest?.updateStyles()
       })
     },
     autoCompleteItemLabel(suggestion) {

@@ -3,20 +3,13 @@ import { createTestingPinia } from '@pinia/testing'
 createTestingPinia()
 
 import { createMemoryHistory, createRouter } from 'vue-router'
-import { createStore } from 'vuex'
 
-import routes from 'src/boot/routes'
-
-const store = createStore({
-  state: {
-    instance: {},
-  },
-})
+import { getRoutes } from 'src/boot/routes.js'
 
 describe('routes', () => {
   const router = createRouter({
     history: createMemoryHistory(),
-    routes: routes(store),
+    routes: getRoutes(),
   })
 
   it('root path', async () => {
@@ -24,12 +17,9 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(
-      Object.hasOwn(
-        matchedComponents[0].components.default.components,
-        'Timeline',
-      ),
-    ).to.eql(true)
+    expect(matchedComponents[0].components.default.__file).to.contain(
+      '/timeline.vue',
+    )
   })
 
   it("user's profile", async () => {
@@ -37,8 +27,8 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(matchedComponents[0].components.default.name).to.eql(
-      'AsyncComponentWrapper',
+    expect(matchedComponents[0].components.default.__file).to.contain(
+      '/user_profile.vue',
     )
   })
 
@@ -47,8 +37,8 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(matchedComponents[0].components.default.name).to.eql(
-      'AsyncComponentWrapper',
+    expect(matchedComponents[0].components.default.__file).to.contain(
+      '/user_profile.vue',
     )
   })
 
@@ -56,9 +46,8 @@ describe('routes', () => {
     await router.push('/lists')
 
     const matchedComponents = router.currentRoute.value.matched
-
-    expect(matchedComponents[0].components.default.name).to.eql(
-      'AsyncComponentWrapper',
+    expect(matchedComponents[0].components.default.__file).to.contain(
+      '/lists.vue',
     )
   })
 
@@ -67,8 +56,8 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(matchedComponents[0].components.default.name).to.eql(
-      'AsyncComponentWrapper',
+    expect(matchedComponents[0].components.default.__file).to.contain(
+      '/timeline.vue',
     )
   })
 
@@ -77,8 +66,8 @@ describe('routes', () => {
 
     const matchedComponents = router.currentRoute.value.matched
 
-    expect(matchedComponents[0].components.default.name).to.eql(
-      'AsyncComponentWrapper',
+    expect(matchedComponents[0].components.default.__file).to.contain(
+      '/lists_edit.vue',
     )
   })
 })

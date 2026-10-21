@@ -2,66 +2,56 @@
   <span
     class="MentionLink"
   >
-    <!-- eslint-disable vue/no-v-html -->
     <a
       v-if="!user"
       :href="url"
       class="original"
       target="_blank"
       v-html="content"
-    /><!-- eslint-enable vue/no-v-html -->
+    />
     <UserPopover
       v-else
       :user-id="user.id"
       :disabled="!shouldShowTooltip"
+      link
+      @click="onClick"
+      v-bind="popoverAttrs"
     >
-      <span
-        v-if="user"
-        class="new"
-        :style="style"
-        :class="classnames"
-      >
-        <a
-          class="short"
-          :class="{ '-with-tooltip': shouldShowTooltip }"
-          :href="url"
-          @click.prevent="onClick"
-        >
-          <!-- eslint-disable vue/no-v-html -->
-          <UserAvatar
-            v-if="shouldShowAvatar"
-            class="mention-avatar"
-            :user="user"
-          /><span
-            class="shortName"
-          >@<span
-            class="userName"
-            v-html="userName"
-          /><span
-            v-if="shouldShowFullUserName"
-            class="serverName"
-            :class="{ '-faded': shouldFadeDomain }"
-            v-html="'@' + serverName"
-          /><UnicodeDomainIndicator
-            v-if="shouldShowFullUserName"
-            :user="user"
-          />
-          </span>
-          <span
-            v-if="isYou && shouldShowYous"
-            :class="{ '-you': shouldBoldenYou }"
-          > {{ ' ' + $t('status.you') }}</span>
-          <!-- eslint-enable vue/no-v-html -->
-        </a><span
-          ref="full"
-          class="full"
-        >
-          <!-- eslint-disable vue/no-v-html -->
-          @<span v-html="userName" /><span v-html="'@' + serverName" />
-          <!-- eslint-enable vue/no-v-html -->
-        </span>
+      <UserAvatar
+        v-if="shouldShowAvatar"
+        class="mention-avatar"
+        :user-id="user.id"
+      /><span
+        class="shortName"
+      >@<span
+        class="userName"
+        v-html="userName"
+      /><span
+        v-if="shouldShowFullUserName"
+        class="serverName"
+        :class="{ '-faded': shouldFadeDomain }"
+        v-html="'@' + serverName"
+      /><UnicodeDomainIndicator
+        v-if="shouldShowFullUserName"
+        :user="user"
+      />
       </span>
+      <span
+        v-if="isYou && shouldShowYous"
+        :class="{ '-you': shouldBoldenYou }"
+      > {{ ' ' + $t('status.you') }}</span>
+      <!-- eslint-enable vue/no-v-html -->
     </UserPopover>
+    <span
+      v-if="user"
+      ref="full"
+      class="full"
+      aria-hidden="true"
+    >
+      <!-- eslint-disable vue/no-v-html -->
+      @<span v-html="userName" /><span v-html="'@' + serverName" />
+      <!-- eslint-enable vue/no-v-html -->
+    </span>
   </span>
 </template>
 

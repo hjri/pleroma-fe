@@ -54,7 +54,7 @@ const run = () => {
 
   // Sort by key
   const sorted = Object.keys(emojisObject)
-    .sort()
+    .sort((a, b) => a.localeCompare(b))
     .reduce((acc, key) => {
       if (key.length === 0) return acc
       acc[key] = emojisObject[key]

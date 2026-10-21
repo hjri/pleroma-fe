@@ -1,5 +1,3 @@
-// eslint-disable-next-line no-unused
-
 import { Fragment } from 'vue'
 
 import { FontAwesomeIcon as FAIcon } from '@fortawesome/vue-fontawesome'
@@ -47,7 +45,7 @@ export default {
       // In case of controlled component
       if (this.activeTab) {
         return this.slots().findIndex(
-          (slot) => slot && slot.props && this.activeTab === slot.props.key,
+          (slot) => slot?.props && this.activeTab === slot.props.key,
         )
       } else {
         return this.active
@@ -101,9 +99,13 @@ export default {
         classesTab.push('active')
         classesWrapper.push('active')
       }
+      if (props.disabled) {
+        classesTab.push('disabled')
+        classesWrapper.push('disabled')
+      }
       if (props.image) {
         return (
-          <div class={classesWrapper.join(' ')}>
+          <div key={props.index} class={classesWrapper.join(' ')}>
             <button
               disabled={props.disabled}
               onClick={this.clickTab(index)}
@@ -111,14 +113,18 @@ export default {
               type="button"
               role="tab"
             >
-              <img src={props.image} title={props['image-tooltip']} />
+              <img
+                src={props.image}
+                alt={props['image-tooltip']}
+                title={props['image-tooltip']}
+              />
               {props.label ? '' : props.label}
             </button>
           </div>
         )
       }
       return (
-        <div class={classesWrapper.join(' ')}>
+        <div key={props.index} class={classesWrapper.join(' ')}>
           <button
             disabled={props.disabled}
             onClick={this.clickTab(index)}
@@ -161,7 +167,11 @@ export default {
       const renderSlot =
         !delayRender && (!this.renderOnlyFocused || active) ? slot : ''
 
-      return <div class={classes}>{renderSlot}</div>
+      return (
+        <div key={index} class={classes}>
+          {renderSlot}
+        </div>
+      )
     })
 
     return (

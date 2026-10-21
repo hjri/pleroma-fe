@@ -1,0 +1,70 @@
+.Conversation {
+  z-index: 1;
+
+  &.-hidden {
+    background: var(--__panel-background);
+    backdrop-filter: var(--__panel-backdrop-filter);
+  }
+
+  .linear-view {
+    .conversation-status:not(.-last) {
+      border-bottom: 1px solid var(--border);
+    }
+  }
+
+  .conversation-dive-to-top-level-box {
+    padding: var(--status-margin);
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+
+    /* Make the button stretch along the whole row */
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .thread-ancestors {
+    margin-left: var(--status-margin);
+    border-left: 2px solid var(--border);
+  }
+
+  .thread-ancestor.-faded .RichContent {
+    /* stylelint-disable declaration-no-important */
+    --text: var(--textFaint) !important;
+    --link: var(--linkFaint) !important;
+    --funtextGreentext: var(--funtextGreentextFaint) !important;
+    --funtextCyantext: var(--funtextCyantextFaint) !important;
+    /* stylelint-enable declaration-no-important */
+  }
+
+  .thread-ancestors + .thread-tree > .conversation-status {
+    border-top: 1px solid var(--border);
+  }
+
+  /* expanded conversation in timeline */
+  &.-expanded:not(.-page) .thread-body {
+    border-left: 4px solid var(--cRed);
+    border-radius: var(--roundness);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  &.-expanded:not(.-page) {
+    --___margin: calc(var(--status-margin) / 2);
+
+    background: var(--background);
+    margin: var(--___margin);
+
+    &::before {
+      z-index: -1;
+      content: "";
+      display: block;
+      position: absolute;
+      inset: calc(var(--___margin) * -1);
+      margin-bottom: -1px;
+      border-bottom: 1px solid var(--border);
+      background: var(--background);
+      backdrop-filter: var(--__panel-backdrop-filter);
+    }
+  }
+}

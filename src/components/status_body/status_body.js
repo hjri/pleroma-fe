@@ -1,6 +1,9 @@
 import { mapState } from 'pinia'
 
+import RichContent from 'src/components/rich_content/rich_content.jsx'
+
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -15,6 +18,9 @@ library.add(faFile, faMusic, faImage, faLink, faPollH)
 
 const StatusBody = {
   name: 'StatusBody',
+  components: {
+    RichContent,
+  },
   props: {
     status: {
       // Main thing
@@ -44,6 +50,12 @@ const StatusBody = {
       type: Boolean,
       default: false,
     },
+    ignoreSubject: {
+      // Pretend subject line doesn't exist. Useful for chat messages
+      // to indicate what post reply belongs to
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -55,9 +67,26 @@ const StatusBody = {
     }
   },
   emits: ['parseReady'],
+  inject: {
+    isPage: {
+      default: false,
+    },
+    isExpanded: {
+      default: false,
+    },
+  },
   computed: {
     allowNonSquareEmoji() {
       return this.mergedConfig.nonSquareEmoji
+    },
+    headerLevel() {
+      return [this.isPage ? 0 : 1, this.isExpanded ? 1 : 0].reduce(
+        (acc, item) => acc + item,
+        1,
+      )
+    },
+    headerTag() {
+      return `h${this.headerLevel}`
     },
     pauseMfm() {
       return this.mergedConfig.pauseMfm
@@ -76,7 +105,7 @@ const StatusBody = {
       return this.status.summary.length > 240
     },
     hasSubject() {
-      return !!this.status.summary
+      return !!this.status.summary && !this.ignoreSubject
     },
     // When a status has a subject and is also tall, we should only have one show more/less
     // button. If the default is to collapse statuses with subjects, we just treat it like
@@ -136,17 +165,15 @@ const StatusBody = {
       return this.status.attachments.map((file) => file.type)
     },
     collapsedStatus() {
-      return this.status.raw_html.replace(/(\n|<br\s?\/?>)/g, ' ')
+      return this.status.raw_html.replaceAll(/(\n|<br\s?\/?>)/g, ' ')
     },
     ...mapState(useMergedConfigStore, ['mergedConfig']),
   },
-  components: {},
   mounted() {
-    this.status.attentions &&
-      this.status.attentions.forEach((attn) => {
-        const { id } = attn
-        this.$store.dispatch('fetchUserIfMissing', id)
-      })
+    this.status.attentions?.forEach((attn) => {
+      const { id } = attn
+      useUsersStore().fetchUserIfMissing({ id })
+    })
   },
   methods: {
     onParseReady(event) {
@@ -158,11 +185,14 @@ const StatusBody = {
         .filter((mention) => !mention.notifying)
         .forEach((mention) => {
           const { content, url } = mention
-          const cleanedString = content.replace(/<[^>]+?>/gi, '') // remove all tags
+          const cleanedString = content.replaceAll(/<[^>]+?>/gi, '') // remove all tags
           if (!cleanedString.startsWith('@')) return
           const handle = cleanedString.slice(1)
-          const host = url.replace(/^https?:\/\//, '').replace(/\/.+?$/, '')
-          this.$store.dispatch('fetchUserIfMissing', `${handle}@${host}`)
+          const hostRegex = /^(?:https?:\/\/)([\w-.]+)/gi
+          const hostMatch = hostRegex.exec(url)
+          if (!hostMatch) return
+          const [, host] = hostMatch
+          useUsersStore().fetchUserIfMissing({ name: `${handle}@${host}` })
         })
       /* This is a bit of a hack to make current tall status detector work
        * with rich mentions. Invisible mentions are detected at RichContent level

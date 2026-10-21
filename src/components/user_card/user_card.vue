@@ -9,6 +9,7 @@
           <div class="header-overlay">
             <div class="banner-image">
               <img
+                :title="$t('user_card.banner')"
                 :src="bannerImgSrc"
                 :class="{ 'hide-bio': hideBio }"
               >
@@ -22,8 +23,9 @@
             v-if="avatarAction === 'zoom'"
             class="user-info-avatar -link"
             @click="zoomAvatar"
+            :title="$t('user_card.avatar')"
           >
-            <UserAvatar :user="user" />
+            <UserAvatar :user-id="user.id" />
             <div class="user-info-avatar -link -overlay">
               <FAIcon
                 class="fa-scale-110 fa-old-padding"
@@ -36,9 +38,10 @@
             class="user-info-avatar button-unstyled -link"
             :class="{ '-editable': editable }"
             @click="changeAvatar"
+            :title="$t('user_card.avatar')"
           >
             <UserAvatar
-              :user="user"
+              :user-id="user.id"
               :url="avatarImgSrc"
             />
             <div class="user-info-avatar -link -overlay">
@@ -51,24 +54,29 @@
           <UserAvatar
             v-else-if="typeof avatarAction === 'function'"
             class="user-info-avatar"
-            :user="user"
+            :user-id="user.id"
             @click="avatarAction"
+            :title="$t('user_card.avatar')"
           />
           <router-link
             v-else
             class="user-info-avatar"
             :to="userProfileLink(user)"
+            :title="$t('user_card.avatar')"
           >
-            <UserAvatar :user="user" />
+            <UserAvatar :user-id="user.id" />
           </router-link>
           <div class="user-summary">
             <div class="top-line">
               <div
                 class="other-actions"
+                role="toolbar"
+                :title="$t('user_card.actions')"
+                :aria-label="$t('user_card.actions')"
               >
                 <button
                   v-if="editable"
-                  :disabled="newName && newName.length === 0"
+                  :disabled="newName?.length === 0"
                   class="btn button-unstyled edit-banner-button"
                   @click="changeBanner"
                 >
@@ -83,6 +91,7 @@
                 <button
                   v-else-if="!editable && !isOtherUser && user.is_local"
                   class="button-unstyled edit-profile-button"
+                  :title="$t('user_card.edit')"
                   @click.stop="openProfileTab"
                 >
                   <FAIcon
@@ -94,6 +103,8 @@
                 </button>
                 <a
                   v-if="isOtherUser && !user.is_local"
+                  role="button"
+                  :title="$t('user_card.external_view')"
                   :href="user.statusnet_profile_url"
                   target="_blank"
                   class="button-unstyled external-link-button"
@@ -110,6 +121,8 @@
                 />
                 <router-link
                   v-if="showExpand"
+                  role="button"
+                  :title="$t('user_card.open_profile')"
                   :to="userProfileLink(user)"
                   class="button-unstyled external-link-button"
                   @click="$emit('close')"
@@ -121,6 +134,7 @@
                 </router-link>
                 <button
                   v-if="showClose"
+                  :title="$t('general.close')"
                   class="button-unstyled external-link-button"
                   @click="$emit('close')"
                 >
@@ -232,8 +246,11 @@
         <div
           v-if="loggedIn && isOtherUser && !hideButtons"
           class="user-interactions"
+          role="toolbar"
+          :title="$t('user_card.interactions')"
+          :aria-label="$t('user_card.interactions')"
         >
-          <div class="btn-group">
+          <div class="btn-group" role="group">
             <FollowButton
               :relationship="relationship"
               :user="user"
@@ -322,8 +339,8 @@
         <Select
           :id="'userHighlightSel'+user.id"
           v-model="userHighlightType"
-          class="userHighlightSel unstyled"
-          :class="{ '-none': userHighlightType === 'disabled' }"
+          :class="['userHighlightSel', { '-none': userHighlightType === 'disabled' }]"
+          unstyled
         >
           <option value="disabled">
             {{ $t('user_card.highlight_new.disabled') }}
@@ -345,7 +362,7 @@
           class="highlighter-color"
           :show-optional-checkbox="false"
           name="'userHighlightColorTx'+user.id"
-          :unstyled="true"
+          unstyled
         />
       </div>
     </div>
@@ -492,6 +509,8 @@
         :pause-mfm="pauseMfm"
         :scale-mfm="scaleMfm"
         :handle-links="true"
+        :aria-label="$t('user_card.bio')"
+        role="article"
       />
     </template>
     <template v-else-if="editingBio">

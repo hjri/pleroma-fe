@@ -10,7 +10,7 @@
     "x-slide    x-slide    x-slide    .      "
     "x-num      x-num      y-num      y-num  "
     "assists    assists    assists    assists";
-  grid-gap: 0.5em;
+  gap: 0.5em;
 
   &:not(.-shadow-controls) {
     grid-template-areas:
@@ -45,7 +45,7 @@
     display: grid;
     grid-auto-flow: row;
     grid-auto-rows: 2em;
-    grid-gap: 0.5em;
+    gap: 0.5em;
   }
 
   .input-light-grid {

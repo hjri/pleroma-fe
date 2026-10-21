@@ -13,6 +13,7 @@ import Preview from './old_theme_tab/theme_preview.vue'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { normalizeThemeData, useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { updateProfileImages } from 'src/api/user.js'
 import { newImporter } from 'src/services/export_import/export_import.js'
@@ -24,6 +25,51 @@ import { getCssRules } from 'src/services/theme_data/css_utils.js'
 import { deserialize } from 'src/services/theme_data/iss_deserializer.js'
 import { init } from 'src/services/theme_data/theme_data_3.service.js'
 import { convertTheme2To3 } from 'src/services/theme_data/theme2_to_theme3.js'
+
+const getPalette = (data) => {
+  if (!data) {
+    throw new TypeError('Palette data is falsy!')
+  } else if (Array.isArray(data)) {
+    const [
+      name,
+      bg,
+      fg,
+      text,
+      link,
+      cRed = '#FF0000',
+      cGreen = '#00FF00',
+      cBlue = '#0000FF',
+      cOrange = '#E3FF00',
+    ] = data
+    return {
+      name,
+      bg,
+      fg,
+      text,
+      link,
+      cRed,
+      cGreen,
+      cBlue,
+      cOrange,
+    }
+  } else if (typeof data === 'object') {
+    const { key, name, bg, fg, text, link, cRed, cBlue, cGreen, cOrange } = data
+    return {
+      key,
+      name,
+      bg,
+      fg,
+      text,
+      link,
+      cRed,
+      cBlue,
+      cGreen,
+      cOrange,
+    }
+  } else {
+    throw new TypeError('Palette data is invalid!')
+  }
+}
 
 const AppearanceTab = {
   data() {
@@ -102,80 +148,51 @@ const AppearanceTab = {
     }
 
     updateIndex('style').then((styles) => {
-      styles.forEach(([key, stylePromise]) =>
-        stylePromise.then((data) => {
-          const meta = data.find((x) => x.component === '@meta')
-          this.availableThemesV3.push({
-            key,
-            data,
-            name: meta.directives.name,
-            version: 'v3',
-          })
-        }),
-      )
+      styles.forEach(async ([key, stylePromise]) => {
+        const data = await stylePromise
+        const meta = data.find((x) => x.component === '@meta')
+        this.availableThemesV3.push({
+          key,
+          data,
+          name: meta.directives.name,
+          version: 'v3',
+        })
+      })
     })
 
     updateIndex('theme').then((themes) => {
-      themes.forEach(([key, themePromise]) =>
-        themePromise.then((data) => {
-          if (!data) {
-            console.warn(`Theme with key ${key} is empty or malformed`)
-          } else if (Array.isArray(data)) {
-            console.warn(
-              `Theme with key ${key} is a v1 theme and should be moved to static/palettes/index.json`,
-            )
-          } else if (!data.source && !data.theme) {
-            console.warn(`Theme with key ${key} is malformed`)
-          } else {
-            this.availableThemesV2.push({
-              key,
-              data,
-              name: data.name,
-              version: 'v2',
-            })
-          }
-        }),
-      )
+      themes.forEach(async ([key, themePromise]) => {
+        const data = await themePromise
+        if (!data) {
+          console.warn(`Theme with key ${key} is empty or malformed`)
+        } else if (Array.isArray(data)) {
+          console.warn(
+            `Theme with key ${key} is a v1 theme and should be moved to static/palettes/index.json`,
+          )
+        } else if (!data.source && !data.theme) {
+          console.warn(`Theme with key ${key} is malformed`)
+        } else {
+          this.availableThemesV2.push({
+            key,
+            data,
+            name: data.name,
+            version: 'v2',
+          })
+        }
+      })
     })
 
     this.userPalette = useInterfaceStore().paletteDataUsed || {}
 
     updateIndex('palette').then((bundledPalettes) => {
-      bundledPalettes.forEach(([key, palettePromise]) =>
-        palettePromise.then((v) => {
-          let palette
-          if (Array.isArray(v)) {
-            const [
-              name,
-              bg,
-              fg,
-              text,
-              link,
-              cRed = '#FF0000',
-              cGreen = '#00FF00',
-              cBlue = '#0000FF',
-              cOrange = '#E3FF00',
-            ] = v
-            palette = {
-              key,
-              name,
-              bg,
-              fg,
-              text,
-              link,
-              cRed,
-              cBlue,
-              cGreen,
-              cOrange,
-            }
-          } else {
-            palette = { key, ...v }
-          }
-          if (!palette.key.startsWith('style.')) {
-            this.bundledPalettes.push(palette)
-          }
-        }),
-      )
+      bundledPalettes.forEach(async ([key, palettePromise]) => {
+        const palette = getPalette(await palettePromise)
+        palette.key = palette.key ?? key
+
+        if (!palette.key.startsWith('style.')) {
+          this.bundledPalettes.push(palette)
+        }
+      })
     })
 
     this.previewTheme('stock', 'v3')
@@ -220,7 +237,7 @@ const AppearanceTab = {
   },
   computed: {
     isDefaultBackground() {
-      return !this.$store.state.users.currentUser.background_image
+      return !useUsersStore().currentUser?.background_image
     },
     switchInProgress() {
       return useInterfaceStore().themeChangeInProgress
@@ -236,7 +253,7 @@ const AppearanceTab = {
     },
     stylePalettes() {
       const ruleset = useInterfaceStore().styleDataUsed || []
-      if (!ruleset && ruleset.length === 0) return
+      if (ruleset.length === 0) return
       const meta = ruleset.find((x) => x.component === '@meta')
       const result = ruleset
         .filter((x) => x.component.startsWith('@palette'))
@@ -257,7 +274,7 @@ const AppearanceTab = {
 
           const result = {
             name: `${meta.directives.name || this.$t('settings.style.themes3.palette.imported')}: ${variant}`,
-            key: `style.${variant.toLowerCase().replace(/ /g, '_')}`,
+            key: `style.${variant.toLowerCase().replaceAll(' ', '_')}`,
             bg,
             fg,
             text,
@@ -277,12 +294,12 @@ const AppearanceTab = {
       return !window.IntersectionObserver
     },
     instanceWallpaper() {
-      useInstanceStore().instanceIdentity.background
+      return useInstanceStore().instanceIdentity.background
     },
     instanceWallpaperUsed() {
       return (
         useInstanceStore().instanceIdentity.background &&
-        !this.$store.state.users.currentUser.background_image
+        !useUsersStore().currentUser?.background_image
       )
     },
     customThemeVersion() {
@@ -331,7 +348,7 @@ const AppearanceTab = {
       } else if (filename.endsWith('.iss')) {
         if (!Array.isArray(parsed)) return false
         if (parsed.length < 1) return false
-        if (parsed.find((x) => x.component === '@meta') == null) return false
+        if (!parsed.some((x) => x.component === '@meta')) return false
         return true
       }
     },
@@ -401,7 +418,7 @@ const AppearanceTab = {
           }
 
           theme3 = init({
-            inputRuleset: [...input, paletteRule].filter((x) => x),
+            inputRuleset: [...input, paletteRule].filter(Boolean),
             ultimateBackgroundColor: '#000000',
             liteMode: true,
             onlyNormalState: true,
@@ -490,9 +507,8 @@ const AppearanceTab = {
         background,
         credentials: useOAuthStore().token,
       })
-        .then(({ data }) => {
-          this.$store.commit('addNewUsers', [data])
-          this.$store.commit('setCurrentUser', data)
+        .then((result) => {
+          useUsersStore().addNewUsers(result)
           this.backgroundPreview = null
           this.backgroundError = null
         })

@@ -8,6 +8,7 @@ import UserListMenu from 'src/components/user_list_menu/user_list_menu.vue'
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useReportsStore } from 'src/stores/reports'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
@@ -47,28 +48,26 @@ const AccountActions = {
       this.showingConfirmBlock = false
     },
     showRepeats() {
-      this.$store.dispatch('showReblogs', this.user.id)
+      useUsersStore().showReblogs(this.user.id)
     },
     hideRepeats() {
-      this.$store.dispatch('hideReblogs', this.user.id)
+      useUsersStore().hideReblogs(this.user.id)
     },
     blockUser() {
       if (this.$refs.timedBlockDialog) {
         this.$refs.timedBlockDialog.optionallyPrompt()
+      } else if (!this.shouldConfirmBlock) {
+        this.doBlockUser()
       } else {
-        if (!this.shouldConfirmBlock) {
-          this.doBlockUser()
-        } else {
-          this.showingConfirmBlock = true
-        }
+        this.showingConfirmBlock = true
       }
     },
     doBlockUser() {
-      this.$store.dispatch('blockUser', { id: this.user.id })
+      useUsersStore().blockUser(this.user.id)
       this.hideConfirmBlock()
     },
     unblockUser() {
-      this.$store.dispatch('unblockUser', this.user.id)
+      useUsersStore().unblockUser(this.user.id)
     },
     removeUserFromFollowers() {
       if (!this.shouldConfirmRemoveUserFromFollowers) {
@@ -78,7 +77,7 @@ const AccountActions = {
       }
     },
     doRemoveUserFromFollowers() {
-      this.$store.dispatch('removeUserFromFollowers', this.user.id)
+      useUsersStore().removeUserFromFollowers(this.user.id)
       this.hideConfirmRemoveUserFromFollowers()
     },
     reportUser() {
@@ -88,8 +87,8 @@ const AccountActions = {
       this.$router.push({
         name: 'chat',
         params: {
-          username: this.$store.state.users.currentUser.screen_name,
-          recipient_id: this.user.id,
+          username: useUsersStore().currentUser.screen_name,
+          chatUserId: this.user.id,
         },
       })
     },

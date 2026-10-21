@@ -6,10 +6,16 @@
   >
     <div
       class="dialog-modal panel panel-default"
+      role="dialog"
+      aria-modal="true"
+      :aria-labelledby="uniqueId + 'header'"
       @click.stop=""
     >
       <div class="panel-heading dialog-modal-heading">
-        <h1 class="title">
+        <h1
+          :id="uniqueId + 'header'"
+          class="title"
+        >
           <slot name="header" />
         </h1>
       </div>
@@ -73,7 +79,7 @@
     border-top: 1px solid var(--border);
     display: grid;
     justify-content: end;
-    grid-gap: 0.5em;
+    gap: 0.5em;
     grid-template-columns: min-content;
     grid-auto-columns: min-content;
     grid-auto-flow: column dense;

@@ -8,6 +8,7 @@
       ref="root"
       :class="{ minimal: minimalMode }"
       class="Notifications"
+      :aria-label="$t('notifications.notifications')"
     >
       <div :class="mainClass">
         <div
@@ -50,30 +51,26 @@
           </button>
           <NotificationFilters class="rightside-button" />
         </div>
-        <div
-          role="feed"
-        >
-          <div
+        <div role="feed">
+          <article
             v-if="showExtraNotifications"
-            role="listitem"
             class="notification"
           >
             <extra-notifications />
-          </div>
-          <div
+          </article>
+          <article
             v-for="notification in notificationsToDisplay"
             :key="notification.id"
-            role="listitem"
             class="notification"
             :class="{unseen: !minimalMode && shouldShowUnseen(notification)}"
             @click="e => notificationClicked(notification)"
           >
             <div class="notification-overlay" />
-            <notification
+            <Notification
               :notification="notification"
               @interacted="e => notificationInteracted(notification)"
             />
-          </div>
+          </article>
         </div>
         <div class="panel-footer">
           <div

@@ -1,4 +1,4 @@
-import { flattenDeep } from 'lodash'
+import { flattenDeep } from 'lodash-es'
 
 export const deserializeShadow = (string) => {
   const modes = [

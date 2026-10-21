@@ -1,11 +1,13 @@
 <template>
   <div
     class="MobileNav"
+    role="presentation"
   >
-    <nav
+    <header
       id="nav"
-      class="mobile-nav"
+      class="mobile-nav topBar"
       @click="scrollToTop()"
+      role="presentation"
     >
       <div class="item">
         <button
@@ -19,7 +21,7 @@
             icon="bars"
           />
           <div
-            v-if="(unreadChatCount && !chatsPinned) || unreadAnnouncementCount"
+            v-if="(unreadChatsCount && !chatsPinned) || unreadAnnouncementsCount"
             class="badge -dot -notification"
           />
         </button>
@@ -38,16 +40,18 @@
           <div
             v-if="unseenNotificationsCount"
             class="badge -dot -notification"
+            aria-hidden="true"
           />
         </button>
       </div>
-    </nav>
+    </header>
     <aside
       v-if="currentUser"
       class="mobile-notifications-drawer mobile-drawer"
       :class="{ '-closed': !notificationsOpen }"
       @touchstart.stop="notificationsTouchStart"
       @touchmove.stop="notificationsTouchMove"
+      :aria-label="$t('notifications.notifications')"
     >
       <div class="panel-heading mobile-notifications-header">
         <h1 class="title">

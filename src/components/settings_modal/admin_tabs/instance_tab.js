@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get } from 'lodash-es'
 
 import AttachmentSetting from '../helpers/attachment_setting.vue'
 import BooleanSetting from '../helpers/boolean_setting.vue'

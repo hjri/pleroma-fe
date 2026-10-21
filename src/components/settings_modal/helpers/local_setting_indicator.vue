@@ -5,11 +5,12 @@
   >
     <Popover
       trigger="hover"
+      :aria-label="$t('settings.setting_local_side')"
+      tooltip
     >
       <template #trigger>
         <FAIcon
           icon="desktop"
-          :aria-label="$t('settings.setting_local_side')"
         />
       </template>
       <template #content>
@@ -31,7 +32,9 @@ library.add(faDesktop)
 
 export default {
   components: { Popover },
-  props: ['isLocal'],
+  props: {
+    isLocal: Boolean,
+  },
 }
 </script>
 

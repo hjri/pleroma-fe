@@ -1,17 +1,20 @@
 import { mapState } from 'pinia'
 import { defineAsyncComponent } from 'vue'
-import { mapGetters } from 'vuex'
 
 import NavigationPins from 'src/components/navigation/navigation_pins.vue'
 import GestureService from '../../services/gesture_service/gesture_service'
 import {
   countExtraNotifications,
-  unseenNotificationsFromStore,
+  unseenNotifications,
 } from '../../services/notification_utils/notification_utils'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
+import { useChatsStore } from 'src/stores/chats.js'
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useNotificationsStore } from 'src/stores/notifications.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -53,11 +56,10 @@ const MobileNav = {
   },
   computed: {
     currentUser() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
     unseenNotifications() {
-      return unseenNotificationsFromStore(
-        this.$store,
+      return unseenNotifications(
         useMergedConfigStore().mergedConfig.notificationVisibility,
         useMergedConfigStore().mergedConfig.ignoreInactionableSeen,
       )
@@ -66,9 +68,10 @@ const MobileNav = {
       return (
         this.unseenNotifications.length +
         countExtraNotifications(
-          this.$store,
           useMergedConfigStore().mergedConfig,
-          useAnnouncementsStore().unreadAnnouncementCount,
+          useChatsStore().unreadChatsCount,
+          useAnnouncementsStore().unreadAnnouncementsCount,
+          useFollowRequestsStore().followRequestsCount,
         )
       )
     },
@@ -87,18 +90,18 @@ const MobileNav = {
     isChat() {
       return this.$route.name === 'chat'
     },
-    ...mapState(useAnnouncementsStore, ['unreadAnnouncementCount']),
-    ...mapState(useMergedConfigStore, {
-      pinnedItems: (store) =>
-        new Set(store.prefsStorage.collections.pinnedNavItems).has('chats'),
-    }),
     shouldConfirmLogout() {
       return useMergedConfigStore().mergedConfig.modalOnLogout
     },
     closingDrawerMarksAsSeen() {
       return useMergedConfigStore().mergedConfig.closingDrawerMarksAsSeen
     },
-    ...mapGetters(['unreadChatCount']),
+    ...mapState(useAnnouncementsStore, ['unreadAnnouncementsCount']),
+    ...mapState(useMergedConfigStore, {
+      pinnedItems: (store) =>
+        new Set(store.prefsStorage.collections.pinnedNavItems).has('chats'),
+    }),
+    ...mapState(useChatsStore, ['unreadChatsCount']),
   },
   methods: {
     toggleMobileSidebar() {
@@ -143,12 +146,12 @@ const MobileNav = {
       }
     },
     doLogout() {
-      this.$router.replace('/main/public')
-      this.$store.dispatch('logout')
+      useUsersStore().logout()
       this.hideConfirmLogout()
+      this.$router.replace('/main/public')
     },
     markNotificationsAsSeen() {
-      this.$store.dispatch('markNotificationsAsSeen')
+      useNotificationsStore().markNotificationsAsSeen()
     },
     onScroll({ target: { scrollTop, clientHeight, scrollHeight } }) {
       this.notificationsAtTop = scrollTop > 0

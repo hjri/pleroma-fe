@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const arg = process.argv[2]
 
-if (typeof arg === 'undefined') {
+if (arg === undefined) {
   console.info('This is a very simple and tiny tool that checks en.json with any other language and')
   console.info('outputs all the things present in english but missing in foreign language.')
   console.info('')

@@ -1,7 +1,9 @@
-import { cloneDeep, differenceWith, flatten, get, isEqual, set } from 'lodash'
+import { cloneDeep, differenceWith, get, isEqual, set } from 'lodash-es'
 import { defineStore } from 'pinia'
 
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import {
   addNewEmojiFile,
@@ -209,11 +211,11 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       }
 
       // Getting all group-keys used in config
-      const allGroupKeys = flatten(
-        Object.entries(this.config).map(([group, lv1data]) =>
+      const allGroupKeys = Object.entries(this.config)
+        .map(([group, lv1data]) =>
           Object.keys(lv1data).map((key) => ({ group, key })),
-        ),
-      )
+        )
+        .flat()
 
       // Only using group-keys where there are changes detected
       const changedGroupKeys = allGroupKeys.filter(({ group, key }) => {
@@ -352,9 +354,10 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
     },
 
-    installFrontend() {
+    installFrontend({ payload }) {
       return installFrontend({
         credentials: useOAuthStore().token,
+        payload,
       }).then(({ data }) => data)
     },
 
@@ -362,6 +365,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
     async fetchStatuses(opts) {
       const {
         data: { total, activities },
+        timestamp,
       } = await listStatuses({
         credentials: useOAuthStore().token,
         opts,
@@ -369,7 +373,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
 
       const statuses = activities.map(parseStatus)
 
-      await window.vuex.dispatch('addNewStatuses', { statuses })
+      useStatusesStore().addNewStatuses({ statuses, timestamp })
 
       return {
         items: statuses,
@@ -377,13 +381,13 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       }
     },
     async changeStatusScope(opts) {
-      const { data } = await changeStatusScope({
+      const { data, timestamp } = await changeStatusScope({
         credentials: useOAuthStore().token,
         opts,
       })
       const status = parseStatus(data)
 
-      await window.vuex.dispatch('addNewStatuses', { statuses: [status] })
+      useStatusesStore().addNewStatuses({ statuses: [status], timestamp })
     },
 
     // Users stuff
@@ -397,12 +401,14 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
 
       return {
         items: await Promise.all(
-          users.map(
-            async (userAdminData) =>
-              await window.vuex.dispatch('updateUserAdminData', {
-                userAdminData,
-              }),
-          ),
+          users.map(async (user) => {
+            const fullUser = await useUsersStore().fetchUserIfMissing({
+              id: user.id,
+            })
+
+            if (fullUser) useUsersStore().updateUserAdminData(user.id, user)
+            return fullUser
+          }),
         ),
         count,
       }
@@ -416,7 +422,8 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         screen_name,
       })
 
-      window.vuex.commit('updateUserAdminData', { user: result.data })
+      const { data } = result
+      useUsersStore().updateUserAdminData(data.id, data)
     },
     async deleteUsers({ users }) {
       const screen_names = users.map((u) => u.screen_name)
@@ -428,11 +435,9 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
 
       resultUserIds.data.forEach((userId) => {
-        window.vuex.dispatch(
-          'markStatusesAsDeleted',
-          (status) => userId === status.user.id,
-        )
-        // TODO when migrated to pinia, also remove user
+        useStatusesStore().wipeUserStatuses(userId)
+        // Users are technically never deleted, just deactivated
+        // so there's no real need to delete them from store.
       })
 
       return resultUserIds
@@ -489,7 +494,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
 
       users.forEach((user) => {
-        window.vuex.commit('updateRight', { user, right, value })
+        useUsersStore().updateRight(user.id, right, value)
       })
     },
     async setUsersActivationStatus({ users, value }) {
@@ -503,7 +508,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
 
       resultUsers.data.forEach((user) => {
-        window.vuex.commit('updateUserAdminData', { user })
+        useUsersStore().updateUserAdminData(user.id, user)
       })
     },
     async setUsersSuggestionStatus({ users, value }) {
@@ -517,7 +522,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
 
       resultUsers.data.forEach((user) => {
-        window.vuex.commit('updateUserAdminData', { user })
+        useUsersStore().updateUserAdminData(user.id, user)
       })
     },
     async setUsersConfirmationStatus({ users }) {
@@ -543,7 +548,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       })
 
       resultUsers.data.forEach((user) => {
-        window.vuex.commit('updateUserAdminData', { user })
+        useUsersStore().updateUserAdminData(user.id, user)
       })
     },
     reloadEmoji() {

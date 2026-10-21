@@ -1,24 +1,25 @@
-import { defineAsyncComponent } from 'vue'
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'pinia'
 
+import ActivityHeader from 'src/components/activity_header/activity_header.vue'
 import Report from 'src/components/report/report.vue'
 import StatusContent from 'src/components/status_content/status_content.vue'
 import Timeago from 'src/components/timeago/timeago.vue'
 import UserAvatar from 'src/components/user_avatar/user_avatar.vue'
 import UserLink from 'src/components/user_link/user_link.vue'
 import UserPopover from 'src/components/user_popover/user_popover.vue'
-import { isStatusNotification } from '../../services/notification_utils/notification_utils.js'
+import { isStatusNotification } from '../../services/notification_utils/notification_utils_sw.js'
 import {
   highlightClass,
   highlightStyle,
 } from '../../services/user_highlighter/user_highlighter.js'
 
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
+import { useUsersStore } from 'src/stores/users.js'
 
-import { approveUser, denyUser } from 'src/api/user.js'
 import generateProfileLink from 'src/services/user_profile_link_generator/user_profile_link_generator'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -54,14 +55,13 @@ const Notification = {
       selecting: false,
       statusExpanded: false,
       unmuted: false,
-      showingApproveConfirmDialog: false,
-      showingDenyConfirmDialog: false,
     }
   },
   props: ['notification'],
   emits: ['interacted'],
   components: {
     StatusContent,
+    ActivityHeader,
     UserAvatar,
     Timeago,
 
@@ -69,9 +69,6 @@ const Notification = {
 
     UserPopover,
     UserLink,
-    ConfirmModal: defineAsyncComponent(
-      () => import('src/components/confirm_modal/confirm_modal.vue'),
-    ),
   },
   mounted() {
     document.addEventListener('selectionchange', this.onContentSelect)
@@ -115,72 +112,21 @@ const Notification = {
         useInstanceStore().restrictedNicknames,
       )
     },
-    getUser(notification) {
-      return this.$store.state.users.usersObject[notification.from_profile.id]
-    },
     interacted() {
       this.$emit('interacted')
     },
     toggleMute() {
       this.unmuted = !this.unmuted
     },
-    showApproveConfirmDialog() {
-      this.showingApproveConfirmDialog = true
-    },
-    hideApproveConfirmDialog() {
-      this.showingApproveConfirmDialog = false
-    },
-    showDenyConfirmDialog() {
-      this.showingDenyConfirmDialog = true
-    },
-    hideDenyConfirmDialog() {
-      this.showingDenyConfirmDialog = false
-    },
-    approveUser() {
-      if (this.shouldConfirmApprove) {
-        this.showApproveConfirmDialog()
-      } else {
-        this.doApprove()
-      }
-    },
-    doApprove() {
-      approveUser({
-        id: this.user.id,
-        credentials: useOAuthStore().token,
-      })
-      this.$store.dispatch('removeFollowRequest', this.user)
-      this.$store.dispatch('markSingleNotificationAsSeen', {
-        id: this.notification.id,
-      })
-      this.$store.dispatch('updateNotification', {
-        id: this.notification.id,
-        updater: (notification) => {
-          notification.type = 'follow'
-        },
-      })
-      this.hideApproveConfirmDialog()
-    },
-    denyUser() {
-      if (this.shouldConfirmDeny) {
-        this.showDenyConfirmDialog()
-      } else {
-        this.doDeny()
-      }
-    },
-    doDeny() {
-      denyUser({
-        id: this.user.id,
-        credentials: useOAuthStore().token,
-      }).then(() => {
-        this.$store.dispatch('dismissNotificationLocal', {
-          id: this.notification.id,
-        })
-        this.$store.dispatch('removeFollowRequest', this.user)
-      })
-      this.hideDenyConfirmDialog()
-    },
+    ...mapActions(useFollowRequestsStore, ['approve', 'deny']),
   },
   computed: {
+    status() {
+      // Used for StatusContent
+      if (this.notification.status) {
+        return useStatusesStore().allStatuses.get(this.notification.status.id)
+      }
+    },
     userClass() {
       return highlightClass(this.notification.from_profile)
     },
@@ -194,19 +140,19 @@ const Notification = {
       )
     },
     user() {
-      return this.$store.getters.findUser(this.notification.from_profile.id)
+      return useUsersStore().findUser(this.notification.from_profile.id)
     },
     userProfileLink() {
       return this.generateUserProfileLink(this.user)
     },
     targetUser() {
-      return this.$store.getters.findUser(this.notification.target.id)
+      return useUsersStore().findUser(this.notification.target.id)
     },
     targetUserProfileLink() {
       return this.generateUserProfileLink(this.targetUser)
     },
     needMute() {
-      return this.$store.getters.relationship(this.user.id).muting
+      return useUsersStore().relationship(this.user.id).muting
     },
     isStatusNotification() {
       return isStatusNotification(this.notification.type)
@@ -223,15 +169,7 @@ const Notification = {
     scaleMfm() {
       return this.mergedConfig.scaleMfm
     },
-    shouldConfirmApprove() {
-      return this.mergedConfig.modalOnApproveFollow
-    },
-    shouldConfirmDeny() {
-      return this.mergedConfig.modalOnDenyFollow
-    },
-    ...mapState({
-      currentUser: (state) => state.users.currentUser,
-    }),
+    ...mapState(useUsersStore, ['currentUser']),
   },
 }
 

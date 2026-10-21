@@ -2,7 +2,7 @@
   <div class="font-control">
     <div class="setting-item">
       <Checkbox
-        v-if="typeof fallback !== 'undefined'"
+        v-if="fallback !== undefined"
         :id="name + '-o'"
         class="font-checkbox setting-control setting-label"
         :model-value="present"
@@ -15,9 +15,7 @@
           keypath="settings.style.fonts.override"
           tag="span"
         >
-          <span>
-            {{ label }}
-          </span>
+          {{ label }}
         </i18n-t>
       </Checkbox>
     </div>

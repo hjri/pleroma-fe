@@ -12,7 +12,9 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStreamingStore } from 'src/stores/streaming.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { updateProfile } from 'src/api/user.js'
 import localeService from 'src/services/locale/locale.service.js'
@@ -25,7 +27,7 @@ const GeneralTab = {
         value: mode,
         label: this.$t(`settings.absolute_time_format_12h_${mode}`),
       })),
-      emailLanguage: this.$store.state.users.currentUser.language || [''],
+      emailLanguage: useUsersStore().currentUser?.language || [''],
     }
   },
   components: {
@@ -62,13 +64,22 @@ const GeneralTab = {
       updateProfile({
         params,
         credentials: useOAuthStore().token,
-      }).then(({ data: user }) => {
-        this.$store.commit('addNewUsers', [user])
-        this.$store.commit('setCurrentUser', user)
+      }).then((result) => {
+        useUsersStore().addNewUsers(result)
       })
     },
     updateFont(path, value) {
       useLocalConfigStore().set({ path, value })
+    },
+    toggleStreaming(value) {
+      // Streaming is not available for the unauthenticated
+      if (!useOAuthStore().token) return
+
+      if (value) {
+        useStreamingStore().initSocket()
+      } else {
+        useStreamingStore().stopSocket()
+      }
     },
   },
 }

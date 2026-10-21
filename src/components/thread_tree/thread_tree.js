@@ -1,3 +1,6 @@
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
   faAngleDoubleDown,
@@ -10,51 +13,47 @@ const ThreadTree = {
   components: {},
   name: 'ThreadTree',
   props: {
+    statusId: String,
     depth: Number,
-    status: Object,
-    inProfile: Boolean,
-    conversation: Array,
-    collapsable: Boolean,
-    isExpanded: Boolean,
-    pinnedStatusIdsObject: Object,
-    profileUserId: String,
-
-    focused: String,
-    getReplies: Function,
-    toggleExpanded: Function,
-
-    simple: Boolean,
-    canDive: Boolean,
-    threadDisplayStatus: Object,
-    showThreadRecursively: Function,
-    totalReplyCount: Object,
-    totalReplyDepth: Object,
   },
-  emits: ['suspendableStateChange', 'goto', 'dive'],
+  emits: [
+    'suspendableStateChange',
+    'requestFocus',
+    'toggleExpanded',
+    'toggleThreadDisplay',
+    'showThreadRecursively',
+  ],
+  inject: [
+    'conversation',
+    'focusedId',
+    'replies',
+    'threadDisplay',
+    'isExpanded',
+    'isPage',
+    'totalReplyCount',
+    'totalReplyDepth',
+  ],
   computed: {
-    reverseLookupTable() {
-      return this.conversation.reduce(
-        (table, status, index) => {
-          table[status.id] = index
-          return table
-        },
-        {
-          /* no-op */
-        },
-      )
+    status() {
+      const status = useStatusesStore().allStatuses.get(this.statusId)
+      if (status.retweeted_status) {
+        return useStatusesStore().allStatuses.get(status.retweeted_status.id)
+      }
+      return status
     },
     currentReplies() {
-      return this.getReplies(this.status.id).map(({ id }) =>
-        this.statusById(id),
-      )
+      return [...this.getReplies(this.status.id)].map(({ id }) => id)
+    },
+    simple() {
+      return !useMergedConfigStore().mergedConfig.conversationTreeAdvanced
     },
     threadShowing() {
-      return this.threadDisplayStatus[this.status.id] === 'showing'
+      return this.threadDisplay.get(this.status.id) === 'showing'
     },
   },
   methods: {
-    statusById(id) {
-      return this.conversation[this.reverseLookupTable[id]]
+    getReplies(id) {
+      return this.replies.get(id) ?? new Set()
     },
   },
 }

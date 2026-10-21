@@ -1,6 +1,6 @@
 <template>
   <FAIcon
-    v-if="user && user.screen_name_ui_contains_non_ascii"
+    v-if="user?.screen_name_ui_contains_non_ascii"
     icon="code"
     :title="$t('unicode_domain_indicator.tooltip')"
   />

@@ -1,12 +1,15 @@
 <template>
-  <aside class="user-panel">
+  <aside
+    :aria-label="$t('nav.user_panel')"
+    class="user-panel"
+  >
     <div
-      v-if="signedIn"
+      v-if="loggedIn"
       key="user-panel-signed"
       class="panel panel-default signed-in"
     >
       <UserCard
-        :user-id="user.id"
+        :user-id="currentUser.id"
         :hide-bio="true"
       />
       <PostStatusForm />
@@ -28,8 +31,6 @@
   }
 
   .user-info {
-    margin: 0.6em 0.6em 0;
-
     .Avatar {
       width: 5em;
       width: calc(min(5em, 20cqw));
@@ -39,9 +40,7 @@
   }
 
   .post-status-form {
-    form {
-      margin-top: 0;
-    }
+    margin: 0.5em;
   }
 
   .signed-in {

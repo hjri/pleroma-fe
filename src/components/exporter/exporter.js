@@ -34,7 +34,7 @@ const Exporter = {
         fileToDownload.style.display = 'none'
         document.body.appendChild(fileToDownload)
         fileToDownload.click()
-        document.body.removeChild(fileToDownload)
+        fileToDownload.remove()
         // Add delay before hiding processing state since browser takes some time to handle file download
         setTimeout(() => {
           this.processing = false

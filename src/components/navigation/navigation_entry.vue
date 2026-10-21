@@ -6,13 +6,14 @@
     <li
       class="NavigationEntry menu-item"
       :class="{ '-active': isActive }"
-      v-bind="$attrs"
+      :aria-label="item.labelRaw ?? $t(item.label)"
     >
       <component
         :is="routeTo ? 'a' : 'button'"
         class="main-link"
         :href="href"
         @click="navigate"
+        v-bind="$attrs"
       >
         <span>
           <FAIcon
@@ -47,17 +48,11 @@
       </component>
       <slot />
       <div
-        v-if="item.badgeGetter && getters[item.badgeGetter]"
+        v-if="item.badgeGetter && badges[item.badgeGetter]"
         class="badge"
         :class="[`-${item.badgeStyle}`]"
       >
-        {{ getters[item.badgeGetter] }}
-      </div>
-      <div
-        v-else-if="item.badgeGetter && item.store && this[`${item.store}Store`][item.badgeGetter]"
-        class="badge badge-notification"
-      >
-        {{ this[`${item.store}Store`][item.badgeGetter] }}
+        {{ badges[item.badgeGetter] }}
       </div>
       <button
         v-if="showPin && currentUser"
@@ -93,7 +88,7 @@
   grid-template-columns: 1fr;
   grid-auto-columns: var(--__line-height);
   grid-auto-flow: column;
-  grid-gap: var(--__horizontal-gap);
+  gap: var(--__horizontal-gap);
   align-items: baseline;
 
   &[aria-expanded] {

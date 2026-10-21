@@ -3,19 +3,17 @@
     trigger="click"
     class="QuickViewSettings"
     :bound-to="{ x: 'container' }"
+    :title="$t('timeline.quick_view_settings')"
   >
     <template #content>
-      <div
-        class="dropdown-menu"
-        role="menu"
-      >
+      <div class="dropdown-menu">
         <div
           v-if="mobileLayout"
           class="menu-item dropdown-item -icon"
         >
           <QuickFilterSettings :nested="true" />
         </div>
-        <div
+        <hr
           v-if="mobileLayout"
           role="separator"
           class="dropdown-divider"
@@ -25,7 +23,7 @@
             <button
               class="main-button"
               :aria-checked="conversationDisplay === 'tree'"
-              role="menuitemradio"
+              role="radio"
               @click="conversationDisplay = 'tree'"
             >
               <span
@@ -43,7 +41,7 @@
             <button
               class="main-button"
               :aria-checked="conversationDisplay === 'linear'"
-              role="menuitemradio"
+              role="radio"
               @click="conversationDisplay = 'linear'"
             >
               <span
@@ -58,14 +56,14 @@
             </button>
           </div>
         </div>
-        <div
+        <hr
           role="separator"
           class="dropdown-divider"
         />
         <div class="menu-item dropdown-item -icon">
           <button
             class="main-button"
-            role="menuitemcheckbox"
+            role="checkbox"
             :aria-checked="showUserAvatars"
             @click="showUserAvatars = !showUserAvatars"
           >
@@ -82,7 +80,7 @@
         >
           <button
             class="main-button"
-            role="menuitemcheckbox"
+            role="checkbox"
             :aria-checked="autoUpdate"
             @click="autoUpdate = !autoUpdate"
           >
@@ -99,7 +97,7 @@
         >
           <button
             class="main-button"
-            role="menuitemcheckbox"
+            role="checkbox"
             :aria-checked="collapseWithSubjects"
             @click="collapseWithSubjects = !collapseWithSubjects"
           >
@@ -113,7 +111,6 @@
         <div class="menu-item dropdown-item -icon">
           <button
             class="main-button"
-            role="menuitem"
             @click="openTab('general')"
           >
             <FAIcon

@@ -1,10 +1,12 @@
-import { mapState as mapPiniaState } from 'pinia'
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
 
 import { useAnnouncementsStore } from 'src/stores/announcements.js'
+import { useChatsStore } from 'src/stores/chats.js'
+import { useFollowRequestsStore } from 'src/stores/follow_requests.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -21,21 +23,21 @@ const ExtraNotifications = {
       return (
         this.mergedConfig.showExtraNotifications &&
         this.mergedConfig.showChatsInExtraNotifications &&
-        this.unreadChatCount
+        this.unreadChatsCount
       )
     },
     shouldShowAnnouncements() {
       return (
         this.mergedConfig.showExtraNotifications &&
         this.mergedConfig.showAnnouncementsInExtraNotifications &&
-        this.unreadAnnouncementCount
+        this.unreadAnnouncementsCount
       )
     },
     shouldShowFollowRequests() {
       return (
         this.mergedConfig.showExtraNotifications &&
         this.mergedConfig.showFollowRequestsInExtraNotifications &&
-        this.followRequestCount
+        this.followRequestsCount
       )
     },
     hasAnythingToShow() {
@@ -51,13 +53,14 @@ const ExtraNotifications = {
       )
     },
     currentUser() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
-    ...mapGetters(['unreadChatCount', 'followRequestCount']),
-    ...mapPiniaState(useAnnouncementsStore, {
-      unreadAnnouncementCount: 'unreadAnnouncementCount',
+    ...mapState(useAnnouncementsStore, {
+      unreadAnnouncementsCount: 'unreadAnnouncementsCount',
     }),
-    ...mapPiniaState(useMergedConfigStore, ['mergedConfig']),
+    ...mapState(useMergedConfigStore, ['mergedConfig']),
+    ...mapState(useChatsStore, ['unreadChatsCount']),
+    ...mapState(useFollowRequestsStore, ['followRequestsCount']),
   },
   methods: {
     openNotificationSettings() {

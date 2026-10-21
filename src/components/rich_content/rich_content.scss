@@ -166,11 +166,6 @@
   }
 }
 
-a .RichContent {
-  /* stylelint-disable-next-line declaration-no-important */
-  color: var(--link) !important;
-}
-
 @keyframes mfm-spin {
   0% {
     transform: rotate(0deg);

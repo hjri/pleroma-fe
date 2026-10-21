@@ -54,6 +54,7 @@
       type="file"
       class="input image-cropper-img-input"
       :accept="mimes"
+      :title="$t('general.select_file')"
     >
   </div>
 </template>
@@ -75,7 +76,7 @@
 
   &-buttons-wrapper {
     display: grid;
-    grid-gap: 0.5em;
+    gap: 0.5em;
     grid-template-columns: 1fr 1fr 1fr;
 
     button {

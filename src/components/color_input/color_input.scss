@@ -1,7 +1,9 @@
 .color-input {
   display: inline-flex;
   flex-wrap: wrap;
-  max-width: 10em;
+  border: 0;
+  padding: 0;
+  gap: 0.5em;
 
   &.-compact {
     max-width: none;
@@ -10,11 +12,12 @@
   .label {
     flex: 1 1 auto;
     grid-area: label;
+    float: left; /* dumb fix for <legend> positioning */
+    padding: 0;
   }
 
   .opt {
     grid-area: checkbox;
-    margin-right: 0.5em;
   }
 
   &-field.input {

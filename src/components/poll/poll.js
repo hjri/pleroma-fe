@@ -1,10 +1,10 @@
 import Checkbox from 'components/checkbox/checkbox.vue'
 import Timeago from 'components/timeago/timeago.vue'
-
-import genRandomSeed from '../../services/random_seed/random_seed.service.js'
+import { useId } from 'vue'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { usePollsStore } from 'src/stores/polls.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 export default {
   name: 'Poll',
@@ -14,11 +14,15 @@ export default {
 
     Checkbox,
   },
+  setup() {
+    const uniqueId = useId()
+
+    return { uniqueId }
+  },
   data() {
     return {
       loading: false,
       choices: [],
-      randomSeed: genRandomSeed(),
     }
   },
   created() {
@@ -39,13 +43,13 @@ export default {
       return storePoll || {}
     },
     options() {
-      return (this.poll && this.poll.options) || []
+      return this.poll?.options || []
     },
     expiresAt() {
-      return (this.poll && this.poll.expires_at) || null
+      return this.poll?.expires_at || null
     },
     expired() {
-      return (this.poll && this.poll.expired) || false
+      return this.poll?.expired || false
     },
     expirationLabel() {
       if (useMergedConfigStore().mergedConfig.useAbsoluteTimeFormat) {
@@ -64,7 +68,7 @@ export default {
       return useMergedConfigStore().mergedConfig.scaleMfm
     },
     loggedIn() {
-      return this.$store.state.users.currentUser
+      return useUsersStore().currentUser
     },
     showResults() {
       return this.poll.voted || this.expired || !this.loggedIn

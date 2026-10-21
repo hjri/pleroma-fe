@@ -6,6 +6,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import VueVirtualScroller from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
+import InstancePicker from 'src/components/instance_picker/instance_picker.vue'
 import RichContent from 'src/components/rich_content/rich_content.jsx'
 import Status from 'src/components/status/status.vue'
 import StillImage from 'src/components/still-image/still-image.vue'
@@ -26,9 +27,9 @@ import {
   windowHeight,
   windowWidth,
 } from '../services/window_utils/window_utils'
-import routes from './routes'
 
 import { useAuthFlowStore } from 'src/stores/auth_flow'
+import { useChatsStore } from 'src/stores/chats.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useI18nStore } from 'src/stores/i18n'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -36,16 +37,26 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useNotificationsStore } from 'src/stores/notifications.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUserHighlightStore } from 'src/stores/user_highlight.js'
+import { useUsersStore } from 'src/stores/users.js'
 
+import { apiUrl, setApiBase } from 'src/api/api_base.js'
+import { getRoutes } from 'src/boot/routes.js'
 import VBodyScrollLock from 'src/directives/body_scroll_lock'
 import {
   INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
   INSTANCE_IDENTITY_DEFAULT_DEFINITIONS,
   INSTANCE_IDENTIY_EXTERNAL,
 } from 'src/modules/default_config_state.js'
+import {
+  chosenInstance,
+  instanceConfig,
+  isHosted,
+} from 'src/services/hosted/hosted.js'
 
 let staticInitialResults = null
 
@@ -63,15 +74,15 @@ const parsedInitialResults = () => {
 
 const decodeUTF8Base64 = (data) => {
   const rawData = atob(data)
-  const array = Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)))
+  const array = Uint8Array.from([...rawData].map((char) => char.codePointAt(0)))
   const text = new TextDecoder().decode(array)
   return text
 }
 
 const preloadFetch = async (request) => {
   const data = parsedInitialResults()
-  if (!data || !data[request]) {
-    return window.fetch(request)
+  if (!data?.[request]) {
+    return window.fetch(apiUrl(request))
   }
   const decoded = decodeUTF8Base64(data[request])
   const requestData = JSON.parse(decoded)
@@ -130,7 +141,9 @@ const getInstanceConfig = async ({ store }) => {
 
 const getBackendProvidedConfig = async () => {
   try {
-    const res = await window.fetch('/api/pleroma/frontend_configurations')
+    const res = await window.fetch(
+      apiUrl('/api/pleroma/frontend_configurations'),
+    )
     if (res.ok) {
       const data = await res.json()
       return data.pleroma_fe
@@ -170,9 +183,9 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
   let config = {}
   if (overrides.staticConfigPreference && env === 'development') {
     console.warn('OVERRIDING API CONFIG WITH STATIC CONFIG')
-    config = Object.assign({}, apiConfig, staticConfig)
+    config = { ...apiConfig, ...staticConfig }
   } else {
-    config = Object.assign({}, staticConfig, apiConfig)
+    config = { ...staticConfig, ...apiConfig }
   }
 
   Object.keys(INSTANCE_IDENTITY_DEFAULT_DEFINITIONS).forEach((source) => {
@@ -198,7 +211,7 @@ const setSettings = async ({ apiConfig, staticConfig, store }) => {
 
 const getTOS = async ({ store }) => {
   try {
-    const res = await window.fetch('/static/terms-of-service.html')
+    const res = await window.fetch(apiUrl('/static/terms-of-service.html'))
     if (res.ok) {
       const html = await res.text()
       useInstanceStore().set({ path: 'instanceIdentity.tos', value: html })
@@ -229,12 +242,14 @@ const getInstancePanel = async ({ store }) => {
 
 const getStickers = async ({ store }) => {
   try {
-    const res = await window.fetch('/static/stickers.json')
+    // the instance's sticker packs (hosted: on the instance)
+    const res = await window.fetch(apiUrl('/static/stickers.json'))
     if (res.ok) {
       const values = await res.json()
       const stickers = (
         await Promise.all(
-          Object.entries(values).map(async ([name, path]) => {
+          Object.entries(values).map(async ([name, packPath]) => {
+            const path = apiUrl(packPath)
             const resPack = await window.fetch(path + 'pack.json')
             let meta = {}
             if (resPack.ok) {
@@ -353,19 +368,19 @@ const getNodeInfo = async ({ store }) => {
       const uploadLimits = metadata.uploadLimits
       useInstanceStore().set({
         path: 'limits.uploadlimit',
-        value: parseInt(uploadLimits.general),
+        value: Number.parseInt(uploadLimits.general),
       })
       useInstanceStore().set({
         path: 'limits.avatarlimit',
-        value: parseInt(uploadLimits.avatar),
+        value: Number.parseInt(uploadLimits.avatar),
       })
       useInstanceStore().set({
         path: 'limits.backgroundlimit',
-        value: parseInt(uploadLimits.background),
+        value: Number.parseInt(uploadLimits.background),
       })
       useInstanceStore().set({
         path: 'limits.bannerlimit',
-        value: parseInt(uploadLimits.banner),
+        value: Number.parseInt(uploadLimits.banner),
       })
       useInstanceStore().set({
         path: 'limits.fieldsLimits',
@@ -409,7 +424,7 @@ const getNodeInfo = async ({ store }) => {
 
       useInstanceCapabilitiesStore().set(
         'tagPolicyAvailable',
-        typeof federation.mrf_policies === 'undefined'
+        federation.mrf_policies === undefined
           ? false
           : metadata.federation.mrf_policies.includes('TagPolicy'),
       )
@@ -420,8 +435,7 @@ const getNodeInfo = async ({ store }) => {
       })
       useInstanceStore().set({
         path: 'federating',
-        value:
-          typeof federation.enabled === 'undefined' ? true : federation.enabled,
+        value: federation.enabled === undefined ? true : federation.enabled,
       })
 
       const accountActivationRequired = metadata.accountActivationRequired
@@ -440,24 +454,37 @@ const getNodeInfo = async ({ store }) => {
   }
 }
 
-const setConfig = async ({ store }) => {
-  // apiConfig, staticConfig
-  const configInfos = await Promise.all([
-    getBackendProvidedConfig({ store }),
-    getStaticConfig(),
-  ])
-  const apiConfig = configInfos[0]
-  const staticConfig = configInfos[1]
+const setConfig = async ({ store, staticConfig, backendConfig }) => {
+  // hosted: the instance's paths point at the instance, login redirects
+  const apiConfig = isHosted(staticConfig)
+    ? instanceConfig(await getBackendProvidedConfig(), apiUrl)
+    : backendConfig
 
   await setSettings({ store, apiConfig, staticConfig })
+}
+
+// Hosted mode with no instance chosen yet: ask for one instead of starting
+// the app. The theme is applied first so the question looks like the app.
+const showInstancePicker = async ({ pinia, i18n }) => {
+  try {
+    await useInterfaceStore().applyTheme()
+  } catch (e) {
+    console.warn('No theme for the instance picker', e)
+  }
+  const picker = createApp(InstancePicker)
+  picker.use(pinia)
+  picker.use(i18n)
+  picker.component('FAIcon', FontAwesomeIcon)
+  picker.mount('#app')
+  document.querySelector('#splash')?.remove()
+  document.querySelector('#app').classList.remove('hidden')
 }
 
 const checkOAuthToken = async ({ store }) => {
   const oauth = useOAuthStore()
   if (oauth.userToken) {
-    return store.dispatch('loginUser', oauth.userToken)
+    return useUsersStore().loginUser(oauth.userToken)
   }
-  return Promise.resolve()
 }
 
 const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
@@ -485,7 +512,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     if (process.env.NODE_ENV === 'development') {
       // do some checks to avoid common errors
       if (!Object.keys(allStores).length) {
-        throw new Error(
+        throw new TypeError(
           'No stores are available. Check the code in src/boot/after_store.js',
         )
       }
@@ -495,7 +522,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
         const isStoreName = (name) => name.startsWith('use')
         if (process.env.NODE_ENV === 'development') {
           if (Object.keys(mod).filter(isStoreName).length !== 1) {
-            throw new Error(
+            throw new TypeError(
               'Each store file must export exactly one store as a named export. Check your code in src/stores/',
             )
           }
@@ -504,13 +531,13 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
         if (storeFuncName && typeof mod[storeFuncName] === 'function') {
           const p = mod[storeFuncName]().$persistLoaded
           if (!(p instanceof Promise)) {
-            throw new Error(
+            throw new TypeError(
               `${name} store's $persistLoaded is not a Promise. The persist plugin is not applied.`,
             )
           }
           await p
         } else {
-          throw new Error(
+          throw new TypeError(
             `Store module ${name} does not export a 'use...' function`,
           )
         }
@@ -518,14 +545,15 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     )
   }
 
+  let newStorageError
   try {
     await waitForAllStoresToLoad()
   } catch (e) {
     console.error('Cannot load stores:', e)
-    storageError = e
+    newStorageError = e
   }
 
-  if (storageError) {
+  if (storageError || newStorageError) {
     useInterfaceStore().pushGlobalNotice({
       messageKey: 'errors.storage_unavailable',
       level: 'error',
@@ -541,18 +569,32 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
   window.highlightConfig = useUserHighlightStore()
 
   FaviconService.initFaviconService()
-  initServiceWorker(store)
+  initServiceWorker(useNotificationsStore())
 
   window.addEventListener('focus', () => updateFocus())
 
+  // both at once; a hosted site asks the chosen instance again in setConfig
+  const [staticConfig, backendConfig] = await Promise.all([
+    getStaticConfig(),
+    getBackendProvidedConfig(),
+  ])
+  const hosted = isHosted(staticConfig)
+  if (hosted && !chosenInstance()) {
+    await showInstancePicker({ pinia, i18n })
+    return app
+  }
+  if (hosted) setApiBase(chosenInstance())
+  useInstanceStore().set({ path: 'hosted', value: hosted })
+
   const overrides = window.___pleromafe_dev_overrides || {}
-  const server =
-    typeof overrides.target !== 'undefined'
+  const server = hosted
+    ? chosenInstance()
+    : overrides.target !== undefined
       ? overrides.target
       : window.location.origin
   useInstanceStore().set({ path: 'server', value: server })
 
-  await setConfig({ store })
+  await setConfig({ store, staticConfig, backendConfig })
   try {
     await useInterfaceStore()
       .applyTheme()
@@ -561,7 +603,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
       })
   } catch (e) {
     window.splashError(e)
-    return Promise.reject(e)
+    throw e
   }
 
   applyStyleConfig(useMergedConfigStore().mergedConfig, i18n.global)
@@ -573,23 +615,28 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     getInstancePanel({ store }),
     getNodeInfo({ store }),
     getInstanceConfig({ store }),
-  ]).catch((e) => Promise.reject(e))
+  ])
 
   getTOS({ store })
   getStickers({ store })
 
   const router = createRouter({
     history: createWebHistory(),
-    routes: routes(store),
+    routes: getRoutes(store),
     scrollBehavior: (to, _from, savedPosition) => {
       if (to.matched.some((m) => m.meta.dontScroll)) {
-        return false
+        return {}
       }
       return savedPosition || { left: 0, top: 0 }
     },
   })
 
   useI18nStore().setI18n(i18n)
+
+  // Global WS handlers
+  useChatsStore().attachSocket()
+  useInterfaceStore().attachSocket()
+  useStatusesStore().attachSocket()
 
   app.use(router)
   app.use(store)

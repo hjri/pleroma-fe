@@ -7,8 +7,9 @@
       {{ contrast.text }}
     </span>
     <Tooltip
-      :text="hint"
       class="rating"
+      :text="hint"
+      :label="$t('settings.style.common.contrast.label')"
     >
       <span v-if="contrast.aaa">
         <FAIcon
@@ -31,8 +32,9 @@
     </Tooltip>
     <Tooltip
       v-if="contrast && large"
-      :text="hint_18pt"
       class="rating"
+      :text="hint_18pt"
+      :label="$t('settings.style.common.contrast.label')"
     >
       <span v-if="contrast.laaa">
         <FAIcon
@@ -95,11 +97,15 @@ export default {
   },
   computed: {
     hint() {
-      const levelVal = this.contrast.aaa
-        ? 'aaa'
-        : this.contrast.aa
-          ? 'aa'
-          : 'bad'
+      const levelVal = (() => {
+        if (this.contrast.aaa) {
+          return 'aaa'
+        } else if (this.contrast.aa) {
+          return 'aa'
+        } else {
+          return 'bad'
+        }
+      })()
       const level = this.$t(`settings.style.common.contrast.level.${levelVal}`)
       const context = this.$t('settings.style.common.contrast.context.text')
       const ratio = this.contrast.text
@@ -110,11 +116,15 @@ export default {
       })
     },
     hint_18pt() {
-      const levelVal = this.contrast.laaa
-        ? 'aaa'
-        : this.contrast.laa
-          ? 'aa'
-          : 'bad'
+      const levelVal = (() => {
+        if (this.contrast.laaa) {
+          return 'aaa'
+        } else if (this.contrast.laa) {
+          return 'aa'
+        } else {
+          return 'bad'
+        }
+      })()
       const level = this.$t(`settings.style.common.contrast.level.${levelVal}`)
       const context = this.$t('settings.style.common.contrast.context.18pt')
       const ratio = this.contrast.text
@@ -141,6 +151,10 @@ export default {
   .rating {
     display: inline-block;
     margin-left: 0.5em;
+
+    button {
+      padding: 0.25em;
+    }
   }
 }
 </style>

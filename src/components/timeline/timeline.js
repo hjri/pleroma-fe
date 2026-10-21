@@ -1,5 +1,18 @@
-import { debounce, keyBy, throttle } from 'lodash'
-import { mapState } from 'pinia'
+import { debounce, throttle } from 'lodash-es'
+import { storeToRefs } from 'pinia'
+import {
+  computed,
+  inject,
+  nextTick,
+  onMounted,
+  onUnmounted,
+  ref,
+  toRefs,
+  useId,
+  useTemplateRef,
+  watch,
+} from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import Conversation from 'src/components/conversation/conversation.vue'
 import QuickFilterSettings from 'src/components/quick_filter_settings/quick_filter_settings.vue'
@@ -9,8 +22,12 @@ import TimelineMenu from 'src/components/timeline_menu/timeline_menu.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useStatusesStore } from 'src/stores/statuses.js'
+import { useTimelinesStore } from 'src/stores/timelines.js'
 
-import timelineFetcher from 'src/services/timeline_fetcher/timeline_fetcher.service.js'
+import { useDocumentFocus } from 'src/composables/useDocumentFocus.js'
+import { useInterfaceSizes } from 'src/composables/useInterfaceSizes.js'
+import { useVirtualScrolling } from 'src/composables/useVirtualScrolling.js'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import {
@@ -25,30 +42,12 @@ import {
 library.add(faCircleNotch, faCog, faMinus, faArrowUp, faCirclePlus, faCheck)
 
 const Timeline = {
-  props: [
-    'timeline',
-    'timelineName',
-    'title',
-    'userId',
-    'listId',
-    'statusId',
-    'bookmarkFolderId',
-    'tag',
-    'embedded',
-    'count',
-    'pinnedStatusIds',
-    'inProfile',
-    'footerSlipgate', // reference to an element where we should put our footer
-  ],
-  data() {
-    return {
-      showScrollTop: false,
-      paused: false,
-      unfocused: false,
-      bottomedOut: false,
-      virtualScrollIndex: 0,
-      blockingClicks: false,
-    }
+  props: {
+    timelineRef: Object,
+    footerSlipgate: Object, // reference to an element where we should put our footer
+    embedded: Boolean,
+    skipPinned: Boolean,
+    hideEmpty: Boolean,
   },
   components: {
     ScrollTopButton,
@@ -57,288 +56,223 @@ const Timeline = {
     QuickFilterSettings,
     QuickViewSettings,
   },
-  computed: {
-    filteredVisibleStatuses() {
-      return this.timeline.visibleStatuses.filter(
-        (status) =>
-          this.timelineName !== 'user' ||
-          (status.id >= this.timeline.minId &&
-            status.id <= this.timeline.maxId),
-      )
-    },
-    filteredPinnedStatusIds() {
-      return (this.pinnedStatusIds || []).filter(
-        (statusId) => this.timeline.statusesObject[statusId],
-      )
-    },
-    newStatusCount() {
-      return this.timeline.newStatusCount
-    },
-    showLoadButton() {
-      return this.timeline.newStatusCount > 0 || this.timeline.flushMarker !== 0
-    },
-    loadButtonString() {
-      if (this.timeline.flushMarker !== 0) {
-        return this.$t('timeline.reload')
+  setup(props, ctx) {
+    const { t } = useI18n()
+
+    const { focused } = useDocumentFocus()
+    const unfocused = computed(() => !focused.value)
+
+    // Timeline
+    const { timelineRef } = toRefs(props)
+    const timeline = computed(() => useTimelinesStore()[timelineRef.value.name])
+    const { skipPinned } = toRefs(props)
+    const filteredVisibleStatuses = computed(() => {
+      return timeline.value.order
+        .filter((id) => timeline.value.visibleStatusIds.has(id))
+        .map((id) => useStatusesStore().allStatuses.get(id))
+        .filter(({ pinned }) => (skipPinned.value ? !pinned : true))
+    })
+
+    // Scroll position
+    const scroller = inject('bodyScrollPosition')
+    const { hasReachedTop, shouldLoadBottom, top: scrollY } = scroller
+    // Virtual scrolling
+    const { fontSize, navbarSize } = useInterfaceSizes()
+
+    // Placeholder heights.
+    const mutedStatusHeight = computed(() => fontSize.value * 1.5)
+    const normalStatusHeight = computed(() => fontSize.value * 10)
+    const getPlaceholderHeight = (id) =>
+      filteredVisibleStatuses.value.find((item) => item.id === id)?.muted
+        ? mutedStatusHeight
+        : normalStatusHeight
+
+    const body = useTemplateRef('timeline')
+    const offset = computed(() => {
+      if (embedded.value) {
+        // The fontsize after navbar is the little gap between navbar and content
+        return navbarSize.value + fontSize.value
       } else {
-        return `${this.$t('timeline.show_new')} (${this.newStatusCount})`
+        return 0
       }
-    },
-    mobileLoadButtonString() {
-      if (this.timeline.flushMarker !== 0) {
-        return '+'
+    })
+    const { heightChart, changeSuspendState, updateVirtualHeight } =
+      useVirtualScrolling({
+        name: 'Timeline',
+        enabled: ref(true),
+        list: filteredVisibleStatuses,
+        body,
+        offset,
+        scrollPositionInstance: scroller,
+        scrollCompensation: true,
+        getPlaceholderHeight,
+      })
+
+    // Counter
+    const count = computed(() => timeline.value.order.length)
+    const newStatusCount = computed(() => timeline.value.newStatusCount)
+    const showLoadButton = computed(
+      () => timeline.value.newStatusCount > 0 || timeline.value.reloadNeeded,
+    )
+
+    // Showing new
+    const paused = ref(false)
+    const { mergedConfig } = storeToRefs(useMergedConfigStore())
+    const unfocusedPause = computed(
+      () => unfocused.value && mergedConfig.value.pauseOnUnfocused,
+    )
+    const showNewAutomatically = computed(
+      () => useMergedConfigStore().mergedConfig.streaming,
+    )
+
+    watch(newStatusCount, (count) => {
+      if (!showNewAutomatically.value) return
+      if (count <= 0) return
+
+      // only 'stream' them when you're scrolled to the top
+      if (hasReachedTop.value && !paused.value && !unfocusedPause.value) {
+        showNewStatuses(true)
       } else {
-        return this.newStatusCount > 99 ? '∞' : this.newStatusCount
+        paused.value = true
       }
-    },
-    classes() {
-      let rootClasses = !this.embedded
+    })
+
+    const showNewStatuses = async (fast = false) => {
+      if (timeline.value.reloadNeeded) {
+        useTimelinesStore().clearTimeline(timelineRef.value.name)
+        fetchOlderStatuses()
+      } else {
+        blockClicksTemporarily()
+        useTimelinesStore().showNewStatuses(timelineRef.value.name)
+      }
+      paused.value = false
+      await nextTick()
+      scroller.scrollToPriority({
+        top: 0,
+        behavior: fast ? 'instant' : 'smooth',
+      })
+    }
+    const fetchOlderStatuses = throttle(() => {
+      timeline.value.fetcher.fetchOlder()
+    }, 1000)
+
+    // Timeline change
+    const timelineChange = (newTimeline, oldTimeline) => {
+      const sameName = newTimeline?.name === oldTimeline?.name
+      const sameArgument = newTimeline?.argument === oldTimeline?.argument
+      if (sameName && sameArgument) return
+
+      if (oldTimeline) {
+        useTimelinesStore().deactivate(oldTimeline.name)
+      }
+      if (newTimeline) {
+        useTimelinesStore().activate(newTimeline.name, newTimeline.argument)
+      }
+    }
+    watch(timelineRef, timelineChange, { immediate: true })
+    onUnmounted(() => {
+      timelineChange(null, timelineRef.value)
+    })
+
+    // Misclick prevention
+    const blockingClicks = ref(false)
+    const stopBlockingClicks = debounce(() => {
+      blockingClicks.value = false
+    }, 1000)
+    const blockClicksTemporarily = () => {
+      if (!blockingClicks.value) {
+        blockingClicks.value = true
+      }
+      stopBlockingClicks()
+    }
+
+    // Shortcuts
+    const handleShortKey = (e) => {
+      // Ignore when input fields are focused
+      if (['textarea', 'input'].includes(e.target.tagName.toLowerCase())) return
+      if (e.key === '.') showNewStatuses()
+    }
+    onMounted(() => {
+      window.addEventListener('keydown', handleShortKey)
+    })
+    onUnmounted(() => {
+      window.removeEventListener('keydown', handleShortKey)
+    })
+
+    const infiniteLoadWatcher = debounce(([value]) => {
+      if (!value) return
+      fetchOlderStatuses()
+    }, 100)
+    // Scroll
+    watch([shouldLoadBottom, scrollY], infiniteLoadWatcher)
+    onUnmounted(() => {
+      infiniteLoadWatcher.cancel()
+    })
+
+    // Misc UI things
+    const classes = computed(() => {
+      let rootClasses = !embedded.value
         ? ['panel', 'panel-default']
         : ['-embedded']
-      if (this.blockingClicks)
+      if (blockingClicks.value)
         rootClasses = rootClasses.concat(['-blocked', '_misclick-prevention'])
       return {
         root: rootClasses,
         header: ['timeline-heading'].concat(
-          !this.embedded ? ['panel-heading', '-sticky'] : ['panel-body'],
+          !embedded.value ? ['panel-heading', '-sticky'] : ['panel-body'],
         ),
         body: ['timeline-body'].concat(
-          !this.embedded ? ['panel-body'] : ['panel-body'],
+          !embedded.value ? ['panel-body'] : ['panel-body'],
         ),
         footer: ['timeline-footer'].concat(
-          !this.embedded ? ['panel-footer'] : ['panel-body'],
+          !embedded.value ? ['panel-footer'] : ['panel-body'],
         ),
       }
-    },
-    // id map of statuses which need to be hidden in the main list due to pinning logic
-    pinnedStatusIdsObject() {
-      return keyBy(this.pinnedStatusIds)
-    },
-    statusesToDisplay() {
-      const amount = this.timeline.visibleStatuses.length
-      const statusesPerSide = Math.ceil(Math.max(3, window.innerHeight / 80))
-      const nonPinnedIndex =
-        this.virtualScrollIndex - this.filteredPinnedStatusIds.length
-      const min = Math.max(0, nonPinnedIndex - statusesPerSide)
-      const max = Math.min(amount, nonPinnedIndex + statusesPerSide)
-      return this.timeline.visibleStatuses.slice(min, max).map((_) => _.id)
-    },
-    virtualScrollingEnabled() {
-      return useMergedConfigStore().mergedConfig.virtualScrolling
-    },
-    ...mapState(useInterfaceStore, {
-      mobileLayout: (store) => store.layoutType === 'mobile',
-    }),
-  },
-  created() {
-    const store = this.$store
-    const credentials = store.state.users.currentUser.credentials
-    const showImmediately = this.timeline.visibleStatuses.length === 0
-
-    window.addEventListener('scroll', this.handleScroll)
-
-    if (store.state.api.fetchers[this.timelineName]) {
-      return false
-    }
-
-    timelineFetcher.fetchAndUpdate({
-      store,
-      credentials,
-      timeline: this.timelineName,
-      showImmediately,
-      userId: this.userId,
-      listId: this.listId,
-      statusId: this.statusId,
-      bookmarkFolderId: this.bookmarkFolderId,
-      tag: this.tag,
     })
-  },
-  mounted() {
-    if (typeof document.hidden !== 'undefined') {
-      document.addEventListener(
-        'visibilitychange',
-        this.handleVisibilityChange,
-        false,
-      )
-      this.unfocused = document.hidden
-    }
-    window.addEventListener('keydown', this.handleShortKey)
-    setTimeout(this.determineVisibleStatuses, 250)
-  },
-  unmounted() {
-    window.removeEventListener('scroll', this.handleScroll)
-    window.removeEventListener('keydown', this.handleShortKey)
-    if (typeof document.hidden !== 'undefined')
-      document.removeEventListener(
-        'visibilitychange',
-        this.handleVisibilityChange,
-        false,
-      )
-    this.$store.commit('setLoading', {
-      timeline: this.timelineName,
-      value: false,
-    })
-  },
-  methods: {
-    stopBlockingClicks: debounce(function () {
-      this.blockingClicks = false
-    }, 1000),
-    blockClicksTemporarily() {
-      if (!this.blockingClicks) {
-        this.blockingClicks = true
-      }
-      this.stopBlockingClicks()
-    },
-    handleShortKey(e) {
-      // Ignore when input fields are focused
-      if (['textarea', 'input'].includes(e.target.tagName.toLowerCase())) return
-      if (e.key === '.') this.showNewStatuses()
-    },
-    showNewStatuses() {
-      if (this.timeline.flushMarker !== 0) {
-        this.$store.commit('clearTimeline', {
-          timeline: this.timelineName,
-          excludeUserId: true,
-        })
-        this.$store.commit('queueFlush', { timeline: this.timelineName, id: 0 })
-        if (this.timelineName === 'user') {
-          this.$store.dispatch('fetchPinnedStatuses', this.userId)
-        }
-        this.fetchOlderStatuses()
+    const loadButtonString = computed(() => {
+      if (timeline.value.reloadNeeded) {
+        return t('timeline.reload')
       } else {
-        this.blockClicksTemporarily()
-        this.$store.commit('showNewStatuses', { timeline: this.timelineName })
-        this.paused = false
+        return `${t('timeline.show_new')} (${newStatusCount.value})`
       }
-      window.scrollTo({ top: 0 })
-    },
-    fetchOlderStatuses: throttle(
-      function () {
-        const store = this.$store
-        const credentials = store.state.users.currentUser.credentials
-        store.commit('setLoading', { timeline: this.timelineName, value: true })
-        timelineFetcher
-          .fetchAndUpdate({
-            store,
-            credentials,
-            timeline: this.timelineName,
-            older: true,
-            showImmediately: true,
-            userId: this.userId,
-            listId: this.listId,
-            statusId: this.statusId,
-            bookmarkFolderId: this.bookmarkFolderId,
-            tag: this.tag,
-          })
-          .then(({ statuses }) => {
-            if (statuses && statuses.length === 0) {
-              this.bottomedOut = true
-            }
-          })
-          .finally(() =>
-            store.commit('setLoading', {
-              timeline: this.timelineName,
-              value: false,
-            }),
-          )
-      },
-      1000,
-      this,
-    ),
-    determineVisibleStatuses() {
-      if (!this.$refs.timeline) return
-      if (!this.virtualScrollingEnabled) return
-
-      const statuses = this.$refs.timeline.children
-      const cappedScrollIndex = Math.max(
-        0,
-        Math.min(this.virtualScrollIndex, statuses.length - 1),
-      )
-
-      if (statuses.length === 0) return
-
-      const height = Math.max(document.body.offsetHeight, window.pageYOffset)
-
-      const centerOfScreen = window.pageYOffset + window.innerHeight * 0.5
-
-      // Start from approximating the index of some visible status by using the
-      // the center of the screen on the timeline.
-      let approxIndex = Math.min(
-        Math.floor(statuses.length * (centerOfScreen / height)),
-        statuses.length - 1,
-      )
-      let err = statuses[approxIndex].getBoundingClientRect().y
-
-      // if we have a previous scroll index that can be used, test if it's
-      // closer than the previous approximation, use it if so
-
-      const virtualScrollIndexY =
-        statuses[cappedScrollIndex].getBoundingClientRect().y
-      if (Math.abs(err) > virtualScrollIndexY) {
-        approxIndex = cappedScrollIndex
-        err = virtualScrollIndexY
+    })
+    const mobileLoadButtonString = computed(() => {
+      if (timeline.value.reloadNeeded) {
+        return '+'
+      } else {
+        return newStatusCount.value > 99 ? '∞' : newStatusCount.value
       }
+    })
 
-      // if the status is too far from viewport, check the next/previous ones if
-      // they happen to be better
-      while (err < -20 && approxIndex < statuses.length - 1) {
-        err += statuses[approxIndex].offsetHeight
-        approxIndex++
-      }
-      while (err > window.innerHeight + 100 && approxIndex > 0) {
-        approxIndex--
-        err -= statuses[approxIndex].offsetHeight
-      }
+    const { layoutType } = storeToRefs(useInterfaceStore())
+    const mobileLayout = computed(() => layoutType.value === 'mobile')
+    const { footerSlipgate, embedded, hideEmpty } = toRefs(props)
+    const uniqueId = useId()
 
-      // this status is now the center point for virtual scrolling and visible
-      // statuses will be nearby statuses before and after it
-      this.virtualScrollIndex = approxIndex
-    },
-    scrollLoad() {
-      const bodyBRect = document.body.getBoundingClientRect()
-      const height = Math.max(bodyBRect.height, -bodyBRect.y)
-      if (
-        this.timeline.loading === false &&
-        this.$el.offsetHeight > 0 &&
-        window.innerHeight + window.pageYOffset >= height - 750
-      ) {
-        this.fetchOlderStatuses()
-      }
-    },
-    handleScroll: throttle(function (e) {
-      this.determineVisibleStatuses()
-      this.scrollLoad(e)
-    }, 200),
-    handleVisibilityChange() {
-      this.unfocused = document.hidden
-    },
-  },
-  watch: {
-    filteredVisibleStatuses() {
-      this.determineVisibleStatuses()
-    },
-    newStatusCount(count) {
-      if (!useMergedConfigStore().mergedConfig.streaming) {
-        return
-      }
-      if (count > 0) {
-        // only 'stream' them when you're scrolled to the top
-        const doc = document.documentElement
-        const top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0)
-        if (
-          top < 15 &&
-          !this.paused &&
-          !(
-            this.unfocused &&
-            useMergedConfigStore().mergedConfig.pauseOnUnfocused
-          )
-        ) {
-          this.showNewStatuses()
-        } else {
-          this.paused = true
-        }
-      }
-    },
+    return {
+      timelineRef,
+      timeline,
+      filteredVisibleStatuses,
+
+      heightChart,
+      updateVirtualHeight,
+      changeSuspendState,
+
+      count,
+      showLoadButton,
+
+      showNewStatuses,
+      fetchOlderStatuses,
+
+      classes,
+      loadButtonString,
+      mobileLoadButtonString,
+      mobileLayout,
+      footerSlipgate,
+      embedded,
+      hideEmpty,
+      uniqueId,
+    }
   },
 }
 
