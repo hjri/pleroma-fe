@@ -4,8 +4,7 @@
 
 const INSTANCE_KEY = 'pleroma-fe-hosted-instance'
 
-export const isHosted = (staticConfig) =>
-  staticConfig?.hosted === true || window.___pleromafe_hosted_mode
+export const isHosted = (staticConfig) => staticConfig?.hosted === true || Boolean(window.___pleromafe_hosted_mode)
 
 // "pleroma.example", "@me@pleroma.example" or a URL on it -> its origin
 export const instanceOrigin = (input) => {
