@@ -76,17 +76,27 @@ const Timeline = {
 
     // Scroll position
     const scroller = inject('bodyScrollPosition')
-    const { hasReachedTop, shouldLoadBottom, top: scrollY, scrollToPriority } = scroller
+    const {
+      hasReachedTop,
+      shouldLoadBottom,
+      top: scrollY,
+      scrollToPriority,
+    } = scroller
 
     // Pagination
-    const paginationEnabled = computed(() => mergedConfig.value.timelinePagination)
+    const paginationEnabled = computed(
+      () => mergedConfig.value.timelinePagination,
+    )
     const page = ref(0)
     const PAGE_SIZE = 20
     const pageStart = computed(() => page.value * PAGE_SIZE)
     const pageEnd = computed(() => pageStart.value + PAGE_SIZE)
     const currentSlice = computed(() => {
       if (paginationEnabled.value) {
-        return filteredVisibleStatuses.value.slice(pageStart.value, pageEnd.value)
+        return filteredVisibleStatuses.value.slice(
+          pageStart.value,
+          pageEnd.value,
+        )
       } else {
         return filteredVisibleStatuses.value
       }
@@ -95,7 +105,9 @@ const Timeline = {
     const isLastPage = computed(() => {
       const bottomedOut = timeline.value.fetcher.bottomedOut
       const lastId = timeline.value.minId
-      const lastIdInPage = currentSlice.value.find(({ id }) => timeline.value.minId)
+      const lastIdInPage = currentSlice.value.find(
+        ({ id }) => timeline.value.minId,
+      )
       return bottomedOut && lastId && lastIdInPage
     })
 
@@ -155,16 +167,19 @@ const Timeline = {
     const unfocusedPause = computed(
       () => unfocused.value && mergedConfig.value.pauseOnUnfocused,
     )
-    const showNewAutomatically = computed(
-      () => mergedConfig.value.streaming,
-    )
+    const showNewAutomatically = computed(() => mergedConfig.value.streaming)
 
     watch(newStatusCount, (count) => {
       if (!showNewAutomatically.value) return
       if (count <= 0) return
 
       // only 'stream' them when you're scrolled to the top
-      if (hasReachedTop.value && !paused.value && !unfocusedPause.value && page.value === 0) {
+      if (
+        hasReachedTop.value &&
+        !paused.value &&
+        !unfocusedPause.value &&
+        page.value === 0
+      ) {
         showNewStatuses(true)
       } else {
         paused.value = true

@@ -1,13 +1,12 @@
 import { defineStore } from 'pinia'
 
-import { useInstanceStore } from 'src/stores/instance.js'
-import { useLocalConfigStore } from 'src/stores/local_config.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
-
 import {
   LOCAL_ONLY_KEYS,
   ROOT_CONFIG,
 } from 'src/stores/default_state/default_config_state.js'
+import { useInstanceStore } from 'src/stores/instance.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 export const useMergedConfigStore = defineStore('merged_config', {
   getters: {
