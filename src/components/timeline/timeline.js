@@ -113,13 +113,30 @@ const Timeline = {
 
     const nextPage = async () => {
       if (isLastPage.value) return
-      if (!nextSliceReady.value) {
-        pageLoading.value = true
-        // Until either next slice is full or fetcher bottomed out
-        // (leaving less than 20 entries in next slice)
-        while (!nextSliceReady.value && !timeline.value.fetcher.bottomedOut) {
-          await timeline.value.fetcher.fetchOlder()
+      try {
+        if (!nextSliceReady.value) {
+          let attempts = 3 // Prevent accidental infinite loops
+          let statusesLoaded = 0
+          pageLoading.value = true
+
+          // Until either next slice is full or fetcher bottomed out
+          // (leaving less than 20 entries in next slice)
+          while (!nextSliceReady.value && !timeline.value.fetcher.bottomedOut && attempts > 0) {
+            attempts--
+            const { statuses } = await timeline.value.fetcher.fetchOlder()
+            statusesLoaded += statuses.length
+
+            // Exit early if there's nothing more to load
+            // Shouldn't really happen (nextSliceReady should change before this)
+            if (statuses.length === 0) break
+          }
+
+          if (statusesLoaded === 0) {
+            pageLoading.value = false
+            return // somehow we got nothing. shouldn't really happen. Abort navigation
+          }
         }
+      } finally {
         pageLoading.value = false
       }
       page.value++
