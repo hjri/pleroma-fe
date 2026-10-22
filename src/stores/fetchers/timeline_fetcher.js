@@ -67,7 +67,7 @@ const timelineFetcher = (timeline, argument, credentials) => {
           useTimelinesStore().requireReload(timeline.name)
         }
 
-        if (older && data.length < 20) {
+        if (older && data.length === 0) {
           bottomedOut.value = true
         }
 
