@@ -90,7 +90,7 @@ const Timeline = {
     const page = ref(0)
     const pageLoading = ref(false)
 
-    watch(paginationEnabled, () => page.value = 0)
+    watch(paginationEnabled, () => (page.value = 0))
 
     const PAGE_SIZE = 20
     const getSlice = (page) => {
@@ -103,7 +103,9 @@ const Timeline = {
         return filteredVisibleStatuses.value
       }
     }
-    const maxPages = computed(() => Math.ceil(filteredVisibleStatuses.value.length / PAGE_SIZE))
+    const maxPages = computed(() =>
+      Math.ceil(filteredVisibleStatuses.value.length / PAGE_SIZE),
+    )
 
     watch(maxPages, (neu, old) => {
       if (neu < old) {
