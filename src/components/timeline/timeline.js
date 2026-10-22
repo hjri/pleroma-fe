@@ -147,9 +147,6 @@ const Timeline = {
       page.value--
       scrollToPriority({ top: 0, behavior: 'smooth' })
     }
-    watch(timeline, () => {
-      page.value = 0
-    })
 
     // Virtual scrolling
     const { fontSize, navbarSize } = useInterfaceSizes()
@@ -246,6 +243,8 @@ const Timeline = {
       if (newTimeline) {
         useTimelinesStore().activate(newTimeline.name, newTimeline.argument)
       }
+
+      page.value = 0
     }
     watch(timelineRef, timelineChange, { immediate: true })
     onUnmounted(() => {
