@@ -110,7 +110,7 @@ const Timeline = {
     watch(maxPages, (neu, old) => {
       if (neu < old) {
         // Clamp page to new maximum possible page
-        page.value = Math.min(neu, page.value)
+        page.value = Math.min(Math.max(neu - 1, 0), page.value)
       }
     })
 
