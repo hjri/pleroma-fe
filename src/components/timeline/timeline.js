@@ -96,10 +96,7 @@ const Timeline = {
         const pageStart = page * PAGE_SIZE
         const pageEnd = pageStart + PAGE_SIZE
 
-        return filteredVisibleStatuses.value.slice(
-          pageStart,
-          pageEnd,
-        )
+        return filteredVisibleStatuses.value.slice(pageStart, pageEnd)
       } else {
         return filteredVisibleStatuses.value
       }
@@ -110,7 +107,9 @@ const Timeline = {
     const nextSliceReady = computed(() => nextSlice.value.length >= PAGE_SIZE)
 
     const isFirstPage = computed(() => page.value <= 0)
-    const isLastPage = computed(() => timeline.value.fetcher.bottomedOut && nextSlice.value.length === 0)
+    const isLastPage = computed(
+      () => timeline.value.fetcher.bottomedOut && nextSlice.value.length === 0,
+    )
 
     const nextPage = async () => {
       if (isLastPage.value) return
