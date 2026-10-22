@@ -89,56 +89,38 @@ const Timeline = {
     )
     const page = ref(0)
     const pageLoading = ref(false)
+
     const PAGE_SIZE = 20
-
-    const pageStart = computed(() => page.value * PAGE_SIZE)
-    const pageEnd = computed(() => pageStart.value + PAGE_SIZE)
-
-    const currentSlice = computed(() => {
+    const getSlice = (page) => {
       if (paginationEnabled.value) {
+        const pageStart = page * PAGE_SIZE
+        const pageEnd = pageStart + PAGE_SIZE
+
         return filteredVisibleStatuses.value.slice(
-          pageStart.value,
-          pageEnd.value,
+          pageStart,
+          pageEnd,
         )
       } else {
         return filteredVisibleStatuses.value
       }
-    })
-    const nextSlice = computed(() => {
-      if (paginationEnabled.value) {
-        return filteredVisibleStatuses.value.slice(
-          pageStart.value + PAGE_SIZE,
-          pageEnd.value + PAGE_SIZE,
-        )
-      } else {
-        return filteredVisibleStatuses.value
-      }
-    })
-    const nextSliceReady = computed(() => {
-      if (nextSlice.value.length >= PAGE_SIZE) {
-        return true
-      } else {
-        return nextSlice.value.find(
-          ({ id }) => timeline.value.minId,
-        )
-      }
-    })
+    }
+
+    const currentSlice = computed(() => getSlice(page.value))
+    const nextSlice = computed(() => getSlice(page.value + 1))
+    const nextSliceReady = computed(() => nextSlice.value.length >= PAGE_SIZE)
 
     const isFirstPage = computed(() => page.value <= 0)
-    const isLastPage = computed(() => {
-      const bottomedOut = timeline.value.fetcher.bottomedOut
-      const lastId = timeline.value.minId
-      const lastIdInPage = currentSlice.value.find(
-        ({ id }) => timeline.value.minId,
-      )
-      return bottomedOut && lastId && lastIdInPage
-    })
+    const isLastPage = computed(() => timeline.value.fetcher.bottomedOut && nextSlice.value.length === 0)
 
     const nextPage = async () => {
       if (isLastPage.value) return
       if (!nextSliceReady.value) {
         pageLoading.value = true
-        await fetchOlderStatuses()
+        // Until either next slice is full or fetcher bottomed out
+        // (leaving less than 20 entries in next slice)
+        do {
+          await timeline.value.fetcher.fetchOlder()
+        } while (!nextSliceReady.value && !timeline.value.fetcher.bottomedOut)
         pageLoading.value = false
       }
       page.value++

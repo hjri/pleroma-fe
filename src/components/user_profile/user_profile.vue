@@ -32,6 +32,7 @@
           hide-empty
         />
         <Timeline
+          key="statuses"
           :timeline-ref="{ name: 'user', argument: userId }"
           embedded
           in-profile
