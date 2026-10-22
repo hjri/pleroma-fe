@@ -118,9 +118,9 @@ const Timeline = {
         pageLoading.value = true
         // Until either next slice is full or fetcher bottomed out
         // (leaving less than 20 entries in next slice)
-        do {
+        while (!nextSliceReady.value && !timeline.value.fetcher.bottomedOut) {
           await timeline.value.fetcher.fetchOlder()
-        } while (!nextSliceReady.value && !timeline.value.fetcher.bottomedOut)
+        }
         pageLoading.value = false
       }
       page.value++
