@@ -121,7 +121,11 @@ const Timeline = {
 
           // Until either next slice is full or fetcher bottomed out
           // (leaving less than 20 entries in next slice)
-          while (!nextSliceReady.value && !timeline.value.fetcher.bottomedOut && attempts > 0) {
+          while (
+            !nextSliceReady.value &&
+            !timeline.value.fetcher.bottomedOut &&
+            attempts > 0
+          ) {
             attempts--
             const { statuses } = await timeline.value.fetcher.fetchOlder()
             statusesLoaded += statuses.length
