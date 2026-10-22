@@ -117,15 +117,16 @@ const timelineFetcher = (timeline, argument, credentials) => {
       })
   }
 
-  const startFetching = async () => {
+  const startFetching = () => {
     if (interval.value) throw new Error('Interval already exists!')
 
-    await fetchAndUpdate({
+    fetchAndUpdate({
       showImmediately: timeline.visibleStatusIds.size === 0,
+    }).then(() => {
+      if (timeline.order.length < 20) {
+        bottomedOut.value = true
+      }
     })
-    if (timeline.order.length < 20) {
-      bottomedOut.value = true
-    }
 
     interval.value = promiseInterval(fetchAndUpdate, 10000)
   }
