@@ -155,8 +155,18 @@
           v-if="paginationEnabled"
           class="pagination"
         >
+          <div
+            v-if="pageLoading"
+            class="new-status-notification text-center"
+          >
+            <FAIcon
+              icon="circle-notch"
+              spin
+              size="lg"
+            />
+          </div>
           <button
-            v-if="!isLastPage"
+            v-else-if="!isLastPage"
             class="button-unstyled"
             @click.left.prevent="nextPage"
           >

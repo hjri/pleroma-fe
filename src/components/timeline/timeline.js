@@ -88,9 +88,12 @@ const Timeline = {
       () => mergedConfig.value.timelinePagination,
     )
     const page = ref(0)
+    const pageLoading = ref(false)
     const PAGE_SIZE = 20
+
     const pageStart = computed(() => page.value * PAGE_SIZE)
     const pageEnd = computed(() => pageStart.value + PAGE_SIZE)
+
     const currentSlice = computed(() => {
       if (paginationEnabled.value) {
         return filteredVisibleStatuses.value.slice(
@@ -101,6 +104,26 @@ const Timeline = {
         return filteredVisibleStatuses.value
       }
     })
+    const nextSlice = computed(() => {
+      if (paginationEnabled.value) {
+        return filteredVisibleStatuses.value.slice(
+          pageStart.value + PAGE_SIZE,
+          pageEnd.value + PAGE_SIZE,
+        )
+      } else {
+        return filteredVisibleStatuses.value
+      }
+    })
+    const nextSliceReady = computed(() => {
+      if (nextSlice.value.length >= PAGE_SIZE) {
+        return true
+      } else {
+        return nextSlice.value.find(
+          ({ id }) => timeline.value.minId,
+        )
+      }
+    })
+
     const isFirstPage = computed(() => page.value <= 0)
     const isLastPage = computed(() => {
       const bottomedOut = timeline.value.fetcher.bottomedOut
@@ -111,9 +134,13 @@ const Timeline = {
       return bottomedOut && lastId && lastIdInPage
     })
 
-    const nextPage = () => {
+    const nextPage = async () => {
       if (isLastPage.value) return
-      fetchOlderStatuses()
+      if (!nextSliceReady.value) {
+        pageLoading.value = true
+        await fetchOlderStatuses()
+        pageLoading.value = false
+      }
       page.value++
       scrollToPriority({ top: 0, behavior: 'smooth' })
     }
@@ -122,6 +149,9 @@ const Timeline = {
       page.value--
       scrollToPriority({ top: 0, behavior: 'smooth' })
     }
+    watch(timeline, () => {
+      page.value = 0
+    })
 
     // Virtual scrolling
     const { fontSize, navbarSize } = useInterfaceSizes()
@@ -202,8 +232,8 @@ const Timeline = {
         behavior: fast ? 'instant' : 'smooth',
       })
     }
-    const fetchOlderStatuses = throttle(() => {
-      timeline.value.fetcher.fetchOlder()
+    const fetchOlderStatuses = throttle(async () => {
+      await timeline.value.fetcher.fetchOlder()
     }, 1000)
 
     // Timeline change
@@ -306,8 +336,11 @@ const Timeline = {
 
       paginationEnabled,
       page,
+      pageLoading,
       nextPage,
       previousPage,
+      isLastPage,
+      isFirstPage,
 
       heightChart,
       updateVirtualHeight,
