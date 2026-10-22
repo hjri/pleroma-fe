@@ -19,19 +19,19 @@ import { toRaw } from 'vue'
 
 import { CURRENT_UPDATE_COUNTER } from 'src/components/update_notification/update_notification.js'
 
+import {
+  makeUndefined,
+  ROOT_CONFIG,
+  ROOT_CONFIG_DEFINITIONS,
+  validateSetting,
+} from 'src/stores/default_state/default_config_state.js'
+import { oldDefaultConfigSync } from 'src/stores/default_state/old_default_config_state.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { updateProfileJSON } from 'src/api/user.js'
 import { storage } from 'src/lib/storage.js'
-import {
-  makeUndefined,
-  ROOT_CONFIG,
-  ROOT_CONFIG_DEFINITIONS,
-  validateSetting,
-} from 'src/modules/default_config_state.js'
-import { oldDefaultConfigSync } from 'src/modules/old_default_config_state.js'
 
 export const VERSION = 2
 export const NEW_USER_DATE = new Date('2026-03-16') // date of writing this, basically

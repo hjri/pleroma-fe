@@ -853,6 +853,7 @@
     "auto_update": "Show new posts automatically",
     "user_mutes": "Users",
     "useStreamingApi": "Receive posts and notifications real-time",
+    "timeline_pagination": "Use pagination instead of infinite scroll for timelines",
     "use_websockets": "Use websockets (Realtime updates)",
     "text": "Text",
     "theme": "Theme",
@@ -1685,7 +1686,9 @@
     "socket_broke": "Realtime connection lost: CloseEvent code {0}",
     "quick_view_settings": "Quick view settings",
     "quick_filter_settings": "Quick filter settings",
-    "filter_settings": "Filter"
+    "filter_settings": "Filter",
+    "next_page": "Next page",
+    "previous_page": "Previous page"
   },
   "status": {
     "favorites": "Favorites",

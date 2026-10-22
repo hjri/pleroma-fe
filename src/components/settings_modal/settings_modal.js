@@ -9,17 +9,17 @@ import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
 import Popover from 'src/components/popover/popover.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
-import { useInterfaceStore } from 'src/stores/interface.js'
-import { useLocalConfigStore } from 'src/stores/local_config.js'
-import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
-
 import {
   LOCAL_ONLY_KEYS,
   ROOT_CONFIG,
   ROOT_CONFIG_DEFINITIONS,
   validateSetting,
-} from 'src/modules/default_config_state.js'
+} from 'src/stores/default_state/default_config_state.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
+
 import {
   newExporter,
   newImporter,

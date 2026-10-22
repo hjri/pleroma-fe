@@ -56,28 +56,20 @@
   }
 }
 
+
 .panel-heading,
+.panel-subheading,
 .panel-footer {
   --panel-heading-height-padding: calc(var(--panel-header-height) * 0.2);
   --__panel-heading-gap: calc(var(--panel-header-height) * 0.1565);
   --__panel-heading-height: var(--panel-header-height);
   --__panel-heading-height-inner: calc(var(--__panel-heading-height) - 2 * var(--panel-heading-height-padding, 0));
 
-  font-size: calc(var(--panelHeaderSize) / 3.2);
-  backdrop-filter: var(--__panel-backdrop-filter);
-  position: relative;
   box-sizing: border-box;
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-columns: minmax(auto, 1fr);
-  grid-auto-columns: auto;
-  column-gap: var(--__panel-heading-gap);
-  flex: none;
-  background-size: cover;
+  background-color: var(--__panel-background);
   padding: var(--panel-heading-height-padding);
   height: var(--__panel-heading-height);
   line-height: var(--__panel-heading-height-inner);
-  z-index: 4;
 
   &.-flexible-height {
     --__panel-heading-height: auto;
@@ -87,6 +79,15 @@
       display: none;
     }
   }
+}
+
+.panel-heading,
+.panel-footer {
+  font-size: calc(var(--panelHeaderSize) / 3.2);
+  backdrop-filter: var(--__panel-backdrop-filter);
+  position: relative;
+  background-size: cover;
+  z-index: 4;
 
   &.-stub {
     &,
@@ -99,49 +100,16 @@
     position: sticky;
     top: var(--navbar-height);
   }
-
-  &::after,
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-  }
-
-  .title {
-    font-size: 1.3em;
-    margin: 0;
-    font-weight: normal;
-  }
-
-  .alert {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow-x: hidden;
-  }
-
-  &:not(.-flexible-height) {
-    > .button-default,
-    > .alert {
-      height: var(--__panel-heading-height-inner);
-      min-height: 0;
-      box-sizing: border-box;
-      margin: 0;
-      min-width: 1px;
-      padding-top: 0;
-      padding-bottom: 0;
-      align-self: stretch;
-    }
-
-    > .alert {
-      line-height: calc(var(--__panel-heading-height-inner) - 2px);
-    }
-  }
 }
 
 // TODO Should refactor panels into separate component and utilize slots
 
 .panel-heading {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: minmax(auto, 1fr);
+  grid-auto-columns: auto;
+  column-gap: var(--__panel-heading-gap);
   border-radius: var(--roundness) var(--roundness) 0 0;
   border-width: 0 0 1px;
   align-items: start;
@@ -152,25 +120,15 @@
   overflow-clip-margin: 1em;
   text-overflow: ellipsis;
 
+  --_shadow: var(--shadow);
+
   .title {
+    font-size: 1.3em;
+    font-weight: normal;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  --_shadow: var(--shadow);
-
-  &::after {
-    background-color: var(--background);
-    z-index: -2;
-    border-radius: var(--roundness) var(--roundness) 0 0;
-    box-shadow: var(--_shadow);
-  }
-
-  &:not(.-flexible-height) {
-    > .button-default {
-      flex-shrink: 0;
-    }
+    margin: 0;
   }
 
   .rightside-button {
@@ -204,15 +162,63 @@
       font-size: 1.2em;
     }
   }
+
+  .alert {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+  }
+
+  &::after,
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  &::after {
+    background-color: var(--background);
+    z-index: -2;
+    border-radius: var(--roundness) var(--roundness) 0 0;
+    box-shadow: var(--_shadow);
+  }
+
+  &:not(.-flexible-height) {
+    > .button-default {
+      flex-shrink: 0;
+    }
+
+    > .button-default,
+    > .alert {
+      height: var(--__panel-heading-height-inner);
+      min-height: 0;
+      box-sizing: border-box;
+      margin: 0;
+      min-width: 1px;
+      padding-top: 0;
+      padding-bottom: 0;
+      align-self: stretch;
+    }
+
+    > .alert {
+      line-height: calc(var(--__panel-heading-height-inner) - 2px);
+    }
+  }
+}
+
+.panel-subheading {
+  border-radius: 0;
+  border-width: 0 0 1px;
+  border-style: solid;
+  border-color: var(--border);
 }
 
 .panel-footer {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  align-items: center;
   border-width: 1px 0 0;
   border-style: solid;
   border-color: var(--border);
-  background-color: var(--__panel-background);
 }
 /* stylelint-enable no-descending-specificity */

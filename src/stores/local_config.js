@@ -6,7 +6,7 @@ import {
   LOCAL_DEFAULT_CONFIG_DEFINITIONS,
   makeUndefined,
   validateSetting,
-} from 'src/modules/default_config_state'
+} from 'src/stores/default_state/default_config_state.js'
 
 export const defaultState = {
   prefsStorage: {

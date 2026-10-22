@@ -58,6 +58,7 @@ const Timeline = {
   },
   setup(props, ctx) {
     const { t } = useI18n()
+    const { mergedConfig } = storeToRefs(useMergedConfigStore())
 
     const { focused } = useDocumentFocus()
     const unfocused = computed(() => !focused.value)
@@ -75,7 +76,95 @@ const Timeline = {
 
     // Scroll position
     const scroller = inject('bodyScrollPosition')
-    const { hasReachedTop, shouldLoadBottom, top: scrollY } = scroller
+    const {
+      hasReachedTop,
+      shouldLoadBottom,
+      top: scrollY,
+      scrollToPriority,
+    } = scroller
+
+    // Pagination
+    const paginationEnabled = computed(
+      () => mergedConfig.value.timelinePagination,
+    )
+    const page = ref(0)
+    const pageLoading = ref(false)
+
+    watch(paginationEnabled, () => (page.value = 0))
+
+    const PAGE_SIZE = 20
+    const getSlice = (page) => {
+      if (paginationEnabled.value) {
+        const pageStart = page * PAGE_SIZE
+        const pageEnd = pageStart + PAGE_SIZE
+
+        return filteredVisibleStatuses.value.slice(pageStart, pageEnd)
+      } else {
+        return filteredVisibleStatuses.value
+      }
+    }
+    const maxPages = computed(() =>
+      Math.ceil(filteredVisibleStatuses.value.length / PAGE_SIZE),
+    )
+
+    watch(maxPages, (neu, old) => {
+      if (neu < old) {
+        // Clamp page to new maximum possible page
+        page.value = Math.min(Math.max(neu - 1, 0), page.value)
+      }
+    })
+
+    const currentSlice = computed(() => getSlice(page.value))
+    const nextSlice = computed(() => getSlice(page.value + 1))
+    const nextSliceReady = computed(() => nextSlice.value.length >= PAGE_SIZE)
+
+    const isFirstPage = computed(() => page.value <= 0)
+    const isLastPage = computed(
+      () => timeline.value.fetcher.bottomedOut && nextSlice.value.length === 0,
+    )
+
+    const nextPage = async () => {
+      if (isLastPage.value) return
+      try {
+        if (!nextSliceReady.value) {
+          let attempts = 3 // Prevent accidental infinite loops
+          let statusesLoaded = 0
+          pageLoading.value = true
+
+          // Until either next slice is full or fetcher bottomed out
+          // (leaving less than 20 entries in next slice)
+          while (
+            !nextSliceReady.value &&
+            !timeline.value.fetcher.bottomedOut &&
+            attempts > 0
+          ) {
+            attempts--
+            const result = await timeline.value.fetcher.fetchOlder()
+            const statuses = result?.statuses ?? []
+            statusesLoaded += statuses.length
+
+            // Exit early if there's nothing more to load
+            // Shouldn't really happen (nextSliceReady should change before this)
+            if (statuses.length === 0) break
+          }
+
+          if (statusesLoaded === 0) {
+            pageLoading.value = false
+            return // somehow we got nothing. shouldn't really happen. Abort navigation
+          }
+        }
+      } finally {
+        pageLoading.value = false
+      }
+      page.value++
+      scrollToPriority({ top: 0, behavior: 'smooth' })
+    }
+    const previousPage = () => {
+      if (isFirstPage.value) return
+      page.value--
+      scrollToPriority({ top: 0, behavior: 'smooth' })
+    }
+
     // Virtual scrolling
     const { fontSize, navbarSize } = useInterfaceSizes()
 
@@ -83,7 +172,7 @@ const Timeline = {
     const mutedStatusHeight = computed(() => fontSize.value * 1.5)
     const normalStatusHeight = computed(() => fontSize.value * 10)
     const getPlaceholderHeight = (id) =>
-      filteredVisibleStatuses.value.find((item) => item.id === id)?.muted
+      currentSlice.value.find((item) => item.id === id)?.muted
         ? mutedStatusHeight
         : normalStatusHeight
 
@@ -100,7 +189,7 @@ const Timeline = {
       useVirtualScrolling({
         name: 'Timeline',
         enabled: ref(true),
-        list: filteredVisibleStatuses,
+        list: currentSlice,
         body,
         offset,
         scrollPositionInstance: scroller,
@@ -117,20 +206,22 @@ const Timeline = {
 
     // Showing new
     const paused = ref(false)
-    const { mergedConfig } = storeToRefs(useMergedConfigStore())
     const unfocusedPause = computed(
       () => unfocused.value && mergedConfig.value.pauseOnUnfocused,
     )
-    const showNewAutomatically = computed(
-      () => useMergedConfigStore().mergedConfig.streaming,
-    )
+    const showNewAutomatically = computed(() => mergedConfig.value.streaming)
 
     watch(newStatusCount, (count) => {
       if (!showNewAutomatically.value) return
       if (count <= 0) return
 
       // only 'stream' them when you're scrolled to the top
-      if (hasReachedTop.value && !paused.value && !unfocusedPause.value) {
+      if (
+        hasReachedTop.value &&
+        !paused.value &&
+        !unfocusedPause.value &&
+        page.value === 0
+      ) {
         showNewStatuses(true)
       } else {
         paused.value = true
@@ -145,6 +236,7 @@ const Timeline = {
         blockClicksTemporarily()
         useTimelinesStore().showNewStatuses(timelineRef.value.name)
       }
+      page.value = 0
       paused.value = false
       await nextTick()
       scroller.scrollToPriority({
@@ -152,8 +244,8 @@ const Timeline = {
         behavior: fast ? 'instant' : 'smooth',
       })
     }
-    const fetchOlderStatuses = throttle(() => {
-      timeline.value.fetcher.fetchOlder()
+    const fetchOlderStatuses = throttle(async () => {
+      await timeline.value.fetcher.fetchOlder()
     }, 1000)
 
     // Timeline change
@@ -168,6 +260,8 @@ const Timeline = {
       if (newTimeline) {
         useTimelinesStore().activate(newTimeline.name, newTimeline.argument)
       }
+
+      page.value = 0
     }
     watch(timelineRef, timelineChange, { immediate: true })
     onUnmounted(() => {
@@ -201,6 +295,7 @@ const Timeline = {
 
     const infiniteLoadWatcher = debounce(([value]) => {
       if (!value) return
+      if (paginationEnabled.value) return
       fetchOlderStatuses()
     }, 100)
     // Scroll
@@ -252,7 +347,14 @@ const Timeline = {
     return {
       timelineRef,
       timeline,
-      filteredVisibleStatuses,
+
+      paginationEnabled,
+      page,
+      pageLoading,
+      nextPage,
+      previousPage,
+      isLastPage,
+      isFirstPage,
 
       heightChart,
       updateVirtualHeight,

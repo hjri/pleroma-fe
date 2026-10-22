@@ -30,6 +30,11 @@ import {
 
 import { useAuthFlowStore } from 'src/stores/auth_flow'
 import { useChatsStore } from 'src/stores/chats.js'
+import {
+  INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
+  INSTANCE_IDENTITY_DEFAULT_DEFINITIONS,
+  INSTANCE_IDENTIY_EXTERNAL,
+} from 'src/stores/default_state/default_config_state.js'
 import { useEmojiStore } from 'src/stores/emoji.js'
 import { useI18nStore } from 'src/stores/i18n'
 import { useInstanceStore } from 'src/stores/instance.js'
@@ -47,11 +52,6 @@ import { useUsersStore } from 'src/stores/users.js'
 import { apiUrl, setApiBase } from 'src/api/api_base.js'
 import { getRoutes } from 'src/boot/routes.js'
 import VBodyScrollLock from 'src/directives/body_scroll_lock'
-import {
-  INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
-  INSTANCE_IDENTITY_DEFAULT_DEFINITIONS,
-  INSTANCE_IDENTIY_EXTERNAL,
-} from 'src/modules/default_config_state.js'
 import {
   chosenInstance,
   instanceConfig,

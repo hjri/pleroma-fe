@@ -122,6 +122,10 @@ const timelineFetcher = (timeline, argument, credentials) => {
 
     fetchAndUpdate({
       showImmediately: timeline.visibleStatusIds.size === 0,
+    }).then(() => {
+      if (timeline.order.length < 20) {
+        bottomedOut.value = true
+      }
     })
 
     interval.value = promiseInterval(fetchAndUpdate, 10000)
