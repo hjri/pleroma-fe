@@ -32,8 +32,7 @@
         <img
           v-if="!!(user && user.favicon)"
           class="instance-favicon"
-          :title="$t('status.favicon')"
-          :alt="$t('status.favicon')"
+          aria-hidden="true"
           :src="user.favicon"
         >
       </span>
