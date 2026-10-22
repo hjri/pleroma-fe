@@ -127,7 +127,8 @@ const Timeline = {
             attempts > 0
           ) {
             attempts--
-            const { statuses } = await timeline.value.fetcher.fetchOlder()
+            const result = await timeline.value.fetcher.fetchOlder()
+            const statuses = result?.statuses ?? []
             statusesLoaded += statuses.length
 
             // Exit early if there's nothing more to load
