@@ -287,12 +287,20 @@ export const parseStatus = (data) => {
     output.summary = data.spoiler_text
   }
 
-  const quoteRaw = pleroma?.quote || data.quote
+  // `quote` is a status (Akkoma) or a Mastodon 4.4+ quote entity
+  // ({ state, quoted_status } or, one level deep, { state, quoted_status_id }).
+  const quoteEntity = data.quote?.state ? data.quote : undefined
+  const quoteStatus = quoteEntity ? quoteEntity.quoted_status : data.quote
+  const quoteRaw = pleroma?.quote || quoteStatus
   const quoteData = quoteRaw ? parseStatus(quoteRaw) : undefined
   output.quote = quoteData
   output.quote_id =
-    data.quote?.id ?? data.quote_id ?? quoteData?.id ?? pleroma?.quote_id
-  output.quote_url = data.quote?.url ?? quoteData?.url ?? pleroma?.quote_url
+    quoteStatus?.id ??
+    quoteEntity?.quoted_status_id ??
+    data.quote_id ??
+    quoteData?.id ??
+    pleroma?.quote_id
+  output.quote_url = quoteStatus?.url ?? quoteData?.url ?? pleroma?.quote_url
 
   output.in_reply_to_status_id = data.in_reply_to_id
   output.in_reply_to_user_id = data.in_reply_to_account_id
