@@ -287,7 +287,7 @@ export const parseStatus = (data) => {
     output.summary = data.spoiler_text
   }
 
-  const quoteRaw = pleroma?.quote || data.quote
+  const quoteRaw = pleroma?.quote
   const quoteData = quoteRaw ? parseStatus(quoteRaw) : undefined
   output.quote = quoteData
   output.quote_id =
