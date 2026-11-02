@@ -57,12 +57,6 @@ export default {
       type: Boolean,
       default: true,
     },
-    // For embedded conversation, what is its top offset in timeline
-    // (used for scrolling)
-    top: {
-      type: Number,
-      default: 0,
-    },
   },
   components: {
     ThreadTree,
@@ -322,19 +316,33 @@ export default {
     // # Scrolling
     const focusTopLevel = () => setFocused(currentAncestors.value[0].id)
     const scrollOffset = computed(() => {
-      const { vHeight } = scroller
-      const screenMiddle = vHeight.value / 2
+      // User profile offsets
+      const tabSwitcherPanel = rootElement.value.closest('.tab-switcher .contents')
+      const tabSwitcherPanelOffset = tabSwitcherPanel?.offsetTop ?? 0
+      const userProfileOffset = tabSwitcherPanelOffset
 
-      const panelHeadersAmount = isPage.value ? 1 : 2
+      // Timeline offset
+      const timeline = rootElement.value.closest('.Timeline')
+      const timelineOffset = (() => {
+        if (!timeline) return 0
+        const headerSize = timeline.className.includes('-embedded')
+          ? 0
+          : panelHeaderSize.value
+
+        return timeline.offsetTop - headerSize
+      })()
+      const rootOffset = rootElement.value.offsetTop
+
+      const expandOffset = 0
+
       return (
-        navbarSize.value +
-        panelHeaderSize.value * panelHeadersAmount +
-        rootTop.value -
-        screenMiddle
+        userProfileOffset +
+        timelineOffset +
+        rootOffset +
+        expandOffset
       )
     })
 
-    const { top: rootTop } = toRefs(props)
     watch(focusedId, async (neu, old) => {
       // tree view has its own weirdness and doesn't require scroll
       if (!isLinearView.value) return
@@ -345,8 +353,9 @@ export default {
         const { top, height } = element
         const elementMiddle = top + height / 2
 
+        const targetScrollCenter = elementMiddle + scrollOffset.value
         const targetScrollPosition = Math.max(
-          elementMiddle + scrollOffset.value,
+          targetScrollCenter - scroller.vHeight.value / 2,
           0,
         )
 
@@ -357,9 +366,9 @@ export default {
       }, 5) // let other scroll stuff happen first (scroll compensation etc)
     })
     const treeElement = useTemplateRef('tree')
-    watch(isExpanded, async (neu) => {
+    watch(isExpanded, async (expanded) => {
       setTimeout(() => {
-        if (neu) {
+        if (expanded) {
           if (isLinearView.value) {
             return // handled in focus watcher
           } else {
@@ -371,9 +380,9 @@ export default {
             const height = element.offsetHeight
 
             const elementMiddle = top + height / 2
-
+            const targetScrollCenter = elementMiddle + scrollOffset.value
             const targetScrollPosition = Math.max(
-              elementMiddle + scrollOffset.value,
+              targetScrollCenter - scroller.vHeight.value / 2,
               0,
             )
 
@@ -383,8 +392,11 @@ export default {
             })
           }
         } else {
+          const elementMiddle = height.value / 2
+          const targetScrollCenter = elementMiddle + scrollOffset.value
+
           const targetScrollPosition = Math.max(
-            height.value / 2 + scrollOffset.value,
+            targetScrollCenter - scroller.vHeight.value / 2,
             0,
           )
           scroller.scrollToPriority({
