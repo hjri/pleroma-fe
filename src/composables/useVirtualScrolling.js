@@ -303,19 +303,15 @@ export function useVirtualScrolling({
           // Section is used for debugging only
           const getShift = (section, a, b, find, getter) => {
             const aItem = find(a)
-            const aIndex = a.findIndex(item => item === aItem)
+            const aIndex = a.findIndex((item) => item === aItem)
             if (!aItem) return 0
             const bIndex = b.findIndex(({ id }) => id === aItem.id)
             const bItem = b[bIndex]
             if (!bItem) return 0
 
             if (isSticking) {
-              const expectedIndex = toValue(invertDirection)
-                ? a.length - 1
-                : 0
-              const extreme = toValue(invertDirection)
-                ? b.length - 1
-                : 0
+              const expectedIndex = toValue(invertDirection) ? a.length - 1 : 0
+              const extreme = toValue(invertDirection) ? b.length - 1 : 0
               const distance = Math.abs(bIndex - extreme)
 
               if (aIndex === expectedIndex && distance > 0) {
@@ -347,9 +343,8 @@ export function useVirtualScrolling({
               oldVal,
               newVal,
               (list) =>
-                list.findLast(
-                  ({ top }) => top > bottomScrollBoundary.value,
-                ) ?? last(list),
+                list.findLast(({ top }) => top > bottomScrollBoundary.value) ??
+                last(list),
               ({ top }) => top,
             )
           })()

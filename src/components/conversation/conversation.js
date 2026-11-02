@@ -317,7 +317,9 @@ export default {
     const focusTopLevel = () => setFocused(currentAncestors.value[0].id)
     const scrollOffset = computed(() => {
       // User profile offsets
-      const tabSwitcherPanel = rootElement.value.closest('.tab-switcher .contents')
+      const tabSwitcherPanel = rootElement.value.closest(
+        '.tab-switcher .contents',
+      )
       const tabSwitcherPanelOffset = tabSwitcherPanel?.offsetTop ?? 0
       const userProfileOffset = tabSwitcherPanelOffset
 
@@ -335,12 +337,7 @@ export default {
 
       const expandOffset = 0
 
-      return (
-        userProfileOffset +
-        timelineOffset +
-        rootOffset +
-        expandOffset
-      )
+      return userProfileOffset + timelineOffset + rootOffset + expandOffset
     })
 
     watch(focusedId, async (neu, old) => {
