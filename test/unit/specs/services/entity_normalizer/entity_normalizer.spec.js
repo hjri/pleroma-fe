@@ -119,6 +119,49 @@ describe('API Entities normalizer', () => {
           'deadbeef',
         )
       })
+
+      describe('Mastodon quote entity', () => {
+        const quoted = makeMockStatusMasto({ id: 'quoted', url: 'https://q' })
+
+        it('reads the quoted status out of the entity', () => {
+          const parsed = parseStatus(
+            makeMockStatusMasto({
+              pleroma: { local: true, quote: null },
+              quote: { state: 'accepted', quoted_status: quoted },
+            }),
+          )
+          expect(parsed.quote).to.have.property('id', 'quoted')
+          expect(parsed.quote_id).to.equal('quoted')
+          expect(parsed.quote_url).to.equal('https://q')
+        })
+
+        it('keeps only the id of a shallow quote', () => {
+          const parsed = parseStatus(
+            makeMockStatusMasto({
+              pleroma: { local: true, quote: null, quote_id: 'quoted' },
+              quote: { state: 'accepted', quoted_status_id: 'quoted' },
+            }),
+          )
+          expect(parsed.quote).to.equal(undefined)
+          expect(parsed.quote_id).to.equal('quoted')
+        })
+
+        it('has no quote when the quoted post is gone', () => {
+          const parsed = parseStatus(
+            makeMockStatusMasto({
+              pleroma: { local: true, quote: null },
+              quote: { state: 'deleted', quoted_status: null },
+            }),
+          )
+          expect(parsed.quote).to.equal(undefined)
+        })
+
+        it('still reads a quote that is a plain status', () => {
+          const parsed = parseStatus(makeMockStatusMasto({ quote: quoted }))
+          expect(parsed.quote).to.have.property('id', 'quoted')
+          expect(parsed.quote_id).to.equal('quoted')
+        })
+      })
     })
   })
 
