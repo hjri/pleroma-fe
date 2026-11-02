@@ -317,15 +317,13 @@ export function useVirtualScrolling({
                 ? b.length - 1
                 : 0
               const distance = Math.abs(bIndex - extreme)
+
               if (aIndex === expectedIndex && distance > 0) {
                 const eItem = b[extreme]
                 return getter(eItem) - getter(bItem)
-              } else {
-                return getter(bItem) - getter(aItem)
               }
-            } else {
-              return getter(bItem) - getter(aItem)
             }
+            return getter(bItem) - getter(aItem)
           }
 
           const expansion = (() => {
