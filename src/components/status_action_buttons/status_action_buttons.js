@@ -5,6 +5,7 @@ import Popover from 'src/components/popover/popover.vue'
 import ActionButtonContainer from './action_button_container.vue'
 import { BUTTONS } from './buttons_definitions.js'
 
+import { useInterfaceStore } from 'src/stores/interface.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUsersStore } from 'src/stores/users.js'
 
@@ -21,29 +22,15 @@ const StatusActionButtons = {
       type: Object,
       required: true,
     },
-    replying: {
-      type: Boolean,
-      default: false,
-    },
-    fixedPinned: {
-      type: Boolean,
-      default: false,
-    },
     pinned: {
       type: Set,
     },
-    useDefaultButtons: {
-      type: Boolean,
-      default: false,
-    },
-    hideLabels: {
-      type: Boolean,
-      default: false,
-    },
-    inChatView: {
-      type: Boolean,
-      default: false,
-    },
+    replying: Boolean,
+    fixedPinned: Boolean,
+    useDefaultButtons: Boolean,
+    hideLabels: Boolean,
+    inChatView: Boolean,
+    wide: Boolean,
   },
   emits: ['toggleReplying', 'onSuccess', 'onError'],
   data() {
@@ -83,7 +70,18 @@ const StatusActionButtons = {
       return BUTTONS.filter((x) => (x.if ? x.if(this.funcArg) : true))
     },
     quickButtons() {
-      return this.buttons.filter((x) => this.pinnedItems.has(x.name))
+      const buttons = this.buttons.filter((x) => this.pinnedItems.has(x.name))
+      if (buttons.length >= 5) return buttons
+      return [
+        ...buttons,
+        ...[...new Array(5 - buttons.length)].map((i, index) => ({
+          name: `spacer${index}`,
+          spacer: true,
+        })),
+      ]
+    },
+    wideLayout() {
+      return this.wide || this.mobileLayout || this.quickButtons.length > 7
     },
     extraButtons() {
       return this.buttons.filter((x) => !this.pinnedItems.has(x.name))
@@ -103,6 +101,9 @@ const StatusActionButtons = {
         chatView: !!this.inChatView,
       }
     },
+    ...mapState(useInterfaceStore, {
+      mobileLayout: (state) => state.layoutType === 'mobile',
+    }),
   },
   methods: {
     doAction(button) {
