@@ -64,11 +64,6 @@
     }
   ],
   "prefer_related_applications": false,
-  "categories": [
-    "social networking"
-  ],
-  "display_override": [
-    "window-controls-overlay",
-    "standalone"
-  ]
+  "categories": ["social networking"],
+  "display_override": ["window-controls-overlay", "standalone"]
 }
