@@ -379,7 +379,8 @@ export default {
             if (!element) return
             const height = element.offsetHeight
 
-            const elementMiddle = top + Math.min(height, scroller.vHeight.value) / 2
+            const elementMiddle =
+              top + Math.min(height, scroller.vHeight.value) / 2
             const targetScrollCenter = elementMiddle + scrollOffset.value
             const targetScrollPosition = Math.max(
               targetScrollCenter - scroller.vHeight.value / 2,
@@ -392,7 +393,8 @@ export default {
             })
           }
         } else {
-          const elementMiddle = Math.min(height.value, scroller.vHeight.value) / 2
+          const elementMiddle =
+            Math.min(height.value, scroller.vHeight.value) / 2
           const targetScrollCenter = elementMiddle + scrollOffset.value
 
           const targetScrollPosition = Math.max(
