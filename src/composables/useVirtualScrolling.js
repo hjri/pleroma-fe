@@ -1,4 +1,4 @@
-import { first, last, throttle } from 'lodash-es'
+import { last, throttle } from 'lodash-es'
 import { computed, nextTick, ref, toValue, watch } from 'vue'
 
 export function useVirtualScrolling({
@@ -259,8 +259,8 @@ export function useVirtualScrolling({
 
       const compensation = toValue(scrollCompensation)
       const diff = (() => {
+        if (!compensation) return 0
         if (explosion) {
-          if (!compensation) return 0
           if (toValue(collapseMode) === 'height' || toValue(invertDirection)) {
             const newBottomElement = last(newVal)
 
@@ -269,7 +269,6 @@ export function useVirtualScrolling({
             return 0
           }
         } else if (implosion) {
-          if (!compensation) return 0
           const oldBottomElement = last(oldVal)
 
           return 0 - oldBottomElement.top - oldBottomElement.height
@@ -300,17 +299,48 @@ export function useVirtualScrolling({
           const isSticking = toValue(invertDirection)
             ? hasReachedBottom.value
             : hasReachedTop.value
-          if (!compensation) {
-            return 0
-          }
 
           // Section is used for debugging only
-          const getShift = (section, a, b, find, getter) => {
-            const aItem = find(a)
-            if (!aItem) return 0
-            const bItem = b.find(({ id }) => id === aItem.id)
-            if (!bItem) return 0
-            return getter(bItem) - getter(aItem)
+          const getShift = (section, a, b, findIndex, getter, boundary) => {
+            const aIndex = findIndex(a.map(getter))
+            const aItem = a[aIndex]
+
+            if (aItem !== undefined) {
+              const bIndex = b.findIndex(({ id }) => id === aItem.id)
+              const bItem = b[bIndex]
+              if (!bItem) return 0
+              return getter(bItem) - getter(aItem)
+            } else {
+              if (isSticking && boundary === 'top') return 0
+              if (!isSticking && boundary === 'bottom') return 0
+
+              const getExtreme = (list) =>
+                boundary === 'top' ? 0 : list.length - 1
+
+              const aeItem = a[getExtreme(a)]
+
+              // Find nearest added item
+              const aeIndexNew = b.findIndex(({ id }) => id === aeItem.id)
+              const shiftIndex = boundary === 'top' ? -1 : 1
+
+              // Got the closest and the furthermost items, time to figure out
+              // their combined height
+              const beItem = b[getExtreme(b)]
+              const bNearestItem = b[aeIndexNew + shiftIndex]
+
+              // No items were added, abort scrolling
+              if (bNearestItem === undefined) return 0
+
+              const [beginning, end] =
+                boundary === 'top'
+                  ? [beItem, bNearestItem]
+                  : [bNearestItem, beItem]
+
+              const topBoundary = beginning.top
+              const bottomBoundary = end.top + end.height
+
+              return bottomBoundary - topBoundary
+            }
           }
 
           const expansion = (() => {
@@ -320,32 +350,25 @@ export function useVirtualScrolling({
               oldVal,
               newVal,
               (list) =>
-                list.find(
-                  ({ top, height }) => top + height < topScrollBoundary.value,
-                ) ?? first(list),
+                list.findIndex((value) => value < topScrollBoundary.value),
               ({ top, height }) => top + height,
+              'top',
             )
           })()
 
           const inverseCompensation = (() => {
-            if (!toValue(invertDirection)) return 0
             if (newVal.length < oldVal.length) return 0
-            const shift = getShift(
+            return getShift(
               'inverse',
               oldVal,
               newVal,
               (list) =>
-                list.findLast(({ top }) => top > bottomScrollBoundary.value) ??
-                last(list),
+                list.findLastIndex(
+                  (value) => value > bottomScrollBoundary.value,
+                ),
               ({ top }) => top,
+              'bottom',
             )
-            if (isSticking) {
-              // Don't do 99999 here, it breaks virtual scrolling
-              const { height } = body.value.getBoundingClientRect()
-              return height // keep sticking
-            } else {
-              return shift
-            }
           })()
 
           const collapsing = (() => {
@@ -354,8 +377,9 @@ export function useVirtualScrolling({
               'collapse',
               newVal,
               oldVal,
-              (list) => first(list),
+              (list) => 0,
               ({ top, height }) => top + height,
+              'bottom',
             )
           })()
 
