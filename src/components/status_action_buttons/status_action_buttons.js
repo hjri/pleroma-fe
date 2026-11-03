@@ -74,7 +74,10 @@ const StatusActionButtons = {
       if (buttons.length >= 5) return buttons
       return [
         ...buttons,
-        ...[...new Array(5 - buttons.length)].map((i, index) => ({ name: `spacer${index}`, spacer: true }))
+        ...[...new Array(5 - buttons.length)].map((i, index) => ({
+          name: `spacer${index}`,
+          spacer: true,
+        })),
       ]
     },
     wideLayout() {
