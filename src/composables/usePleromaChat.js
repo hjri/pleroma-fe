@@ -279,7 +279,7 @@ export function usePleromaChat(userId) {
     lastReadMessageId.value = null
     minId.value = undefined
     maxId.value = undefined
-    messageRetriers.value.values().forEach((timeout) => clearTimeout(timeout))
+    messageRetriers.value.forEach((timeout) => clearTimeout(timeout))
   }
 
   const attachSocket = () => {
@@ -352,6 +352,7 @@ export function usePleromaChat(userId) {
     _test: {
       chat,
       addMessages,
+      clear,
       minId,
       maxId,
       lastReadMessageId,

@@ -1,0 +1,1 @@
+Fixed conversations and chats crashing on browsers without iterator helpers (Firefox before 131, Safari before 18.4)
