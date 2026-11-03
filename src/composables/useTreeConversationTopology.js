@@ -36,7 +36,7 @@ export function useTreeConversationTopology(conversation, replies, current) {
     )
 
     // Next we iterate over each entry and fill the whole ancestry chain
-    parentMap.entries().forEach(([originId, originSet]) => {
+    parentMap.forEach((originSet) => {
       let current = originSet.values().next().value
       while (current) {
         originSet.add(current)
@@ -127,7 +127,7 @@ export function useTreeConversationTopology(conversation, replies, current) {
       .map(({ id }) => id)
       .forEach(subTreeSizeFor)
 
-    return sizes.keys().reduce((res, id) => {
+    return [...sizes.keys()].reduce((res, id) => {
       res.set(id, sizes.get(id) - 1) // exclude itself
       return res
     }, new Map())
@@ -155,7 +155,7 @@ export function useTreeConversationTopology(conversation, replies, current) {
       .map(({ id }) => id)
       .forEach(subTreeDepthFor)
 
-    return depths.keys().reduce((res, id) => {
+    return [...depths.keys()].reduce((res, id) => {
       res.set(id, depths.get(id) - 1) // exclude itself
       return res
     }, new Map())

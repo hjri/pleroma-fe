@@ -1,5 +1,6 @@
 import { createTestingPinia } from '@pinia/testing'
 import { setActivePinia } from 'pinia'
+import { hideIteratorHelpers } from 'test/fixtures/without_iterator_helpers.js'
 
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useStatusesStore } from 'src/stores/statuses.js'
@@ -158,6 +159,23 @@ describe('useTreeConversationTopology', () => {
           [6, 'hidden'],
         ]),
       )
+    })
+  })
+
+  describe('without iterator helpers', () => {
+    let restore
+    beforeEach(() => {
+      restore = hideIteratorHelpers()
+    })
+    afterEach(() => restore())
+
+    it('should still compute the topology and reply stats', () => {
+      const { ancestors, totalReplyCount, totalReplyDepth } =
+        useTreeConversationTopology(conversation, replies, 3)
+
+      expect(ancestors.value.get(6)).to.eql(new Set([3, 2, 1]))
+      expect(totalReplyCount.value.get(1)).to.eql(5)
+      expect(totalReplyDepth.value.get(1)).to.eql(3)
     })
   })
 })

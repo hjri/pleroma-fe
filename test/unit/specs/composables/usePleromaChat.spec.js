@@ -1,5 +1,6 @@
 import { createTestingPinia } from '@pinia/testing'
 import { setActivePinia } from 'pinia'
+import { hideIteratorHelpers } from 'test/fixtures/without_iterator_helpers.js'
 
 import { usePleromaChat } from 'src/composables/usePleromaChat.js'
 
@@ -100,6 +101,17 @@ describe('usePleromaChat', () => {
       await composable.deleteChatMessage({ messageId: message1.id })
       expect(composable._test.maxId.value).to.eql(message2.id)
       expect(composable._test.minId.value).to.eql(message2.id)
+    })
+  })
+
+  describe('clear', () => {
+    it('works without iterator helpers', () => {
+      const restore = hideIteratorHelpers()
+      try {
+        expect(() => composable._test.clear()).not.to.throw()
+      } finally {
+        restore()
+      }
     })
   })
 })
