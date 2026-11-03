@@ -33,6 +33,12 @@
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
+    },
+    {
+      "src": "/static/PWA/192_bg.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
     }
   ],
   "screenshots": [
@@ -40,22 +46,15 @@
       "src": "/static/PWA/mobile.png",
       "sizes": "1082x2426",
       "type": "image/png",
-      "label": "Mobile view",
+      "label": "Timeline view (Mobile)",
       "form_factor": "narrow"
     },
     {
       "src": "/static/PWA/tablet_landscape.png",
       "sizes": "2752x2064",
       "type": "image/png",
-      "label": "Desktop/tablet landscape",
+      "label": "Timeline view (Desktop)",
       "form_factor": "wide"
-    },
-    {
-      "src": "/static/PWA/tablet_portrait.png",
-      "sizes": "2064x2752",
-      "type": "image/png",
-      "label": "Desktop/tablet portrait",
-      "form_factor": "narrow"
     }
   ]
 }
