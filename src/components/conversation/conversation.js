@@ -330,8 +330,11 @@ export default {
         const headerSize = timeline.className.includes('-embedded')
           ? 0
           : panelHeaderSize.value
-
-        return timeline.offsetTop - headerSize
+        if (isExpanded.value) {
+          return timeline.offsetTop + headerSize
+        } else {
+          return timeline.offsetTop
+        }
       })()
       const rootOffset = rootElement.value.offsetTop
 
@@ -348,7 +351,7 @@ export default {
         const element = heightChartFullLinear.value.find(({ id }) => id === neu)
         if (!element) return
         const { top, height } = element
-        const elementMiddle = top + height / 2
+        const elementMiddle = top + Math.min(height, scroller.vHeight.value) / 2
 
         const targetScrollCenter = elementMiddle + scrollOffset.value
         const targetScrollPosition = Math.max(
@@ -376,7 +379,7 @@ export default {
             if (!element) return
             const height = element.offsetHeight
 
-            const elementMiddle = top + height / 2
+            const elementMiddle = top + Math.min(height, scroller.vHeight.value) / 2
             const targetScrollCenter = elementMiddle + scrollOffset.value
             const targetScrollPosition = Math.max(
               targetScrollCenter - scroller.vHeight.value / 2,
@@ -389,7 +392,7 @@ export default {
             })
           }
         } else {
-          const elementMiddle = height.value / 2
+          const elementMiddle = Math.min(height.value, scroller.vHeight.value) / 2
           const targetScrollCenter = elementMiddle + scrollOffset.value
 
           const targetScrollPosition = Math.max(
