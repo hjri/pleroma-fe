@@ -412,6 +412,7 @@
           class="activity-actions"
           :status="mainStatus"
           :replying="replying"
+          :wide="compact"
           @toggle-replying="toggleReplyForm"
         />
       </div>

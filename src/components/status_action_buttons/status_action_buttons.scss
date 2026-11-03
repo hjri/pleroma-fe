@@ -10,6 +10,10 @@
     justify-content: space-between;
     justify-items: center;
     gap: 0.5em 0.1em;
+
+    &:not(.-wide) {
+      margin-left: calc(3.5em + var(--status-margin));
+    }
   }
 
   .pin-action-button {
