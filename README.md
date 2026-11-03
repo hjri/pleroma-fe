@@ -2,7 +2,7 @@
 
 > Highly-customizable frontend designed for Pleroma.
 
-![screenshot](./image-1.png)
+![screenshot](./public/static/PWA/table_landscape.png)
 
 [![Pipeline Status](https://ci.pleroma.com/api/badges/2/status.svg)](https://ci.pleroma.com/repos/2) [![Coverage](https://sonarqube.pleroma.dev/api/project_badges/measure?project=Pleroma-FE&metric=coverage&token=sqb_f8a5ec836caede0e2c6c62a9bfe66e62a89e2b01)](https://sonarqube.pleroma.dev/dashboard?id=Pleroma-FE) [![Maintainability Rating](https://sonarqube.pleroma.dev/api/project_badges/measure?project=Pleroma-FE&metric=software_quality_maintainability_rating&token=sqb_f8a5ec836caede0e2c6c62a9bfe66e62a89e2b01)](https://sonarqube.pleroma.dev/dashboard?id=Pleroma-FE) [![Reliability Rating](https://sonarqube.pleroma.dev/api/project_badges/measure?project=Pleroma-FE&metric=software_quality_reliability_rating&token=sqb_f8a5ec836caede0e2c6c62a9bfe66e62a89e2b01)](https://sonarqube.pleroma.dev/dashboard?id=Pleroma-FE) [![Security Rating](https://sonarqube.pleroma.dev/api/project_badges/measure?project=Pleroma-FE&metric=software_quality_security_rating&token=sqb_f8a5ec836caede0e2c6c62a9bfe66e62a89e2b01)](https://sonarqube.pleroma.dev/dashboard?id=Pleroma-FE) <a href="https://translate.pleroma.social/engage/pleroma/"><img src="https://translate.pleroma.social/widget/pleroma/pleroma-fe/svg-badge.svg" alt="Translation status"></a>
 
