@@ -355,7 +355,10 @@ export const uploadedMedia = ({ credentials }) =>
     url: PLEROMA_MEDIA_LIST_UPLOADED,
     method: 'GET',
     credentials,
-  }).then(({ data }) => data)
+  }).then(({ data }) => data.map(e => {
+    e.attachment = parseAttachment(e.attachment)
+    return e
+  }))
 
 // #Notifications
 export const dismissNotification = ({ credentials, id }) =>

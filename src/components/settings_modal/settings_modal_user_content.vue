@@ -107,7 +107,7 @@
     </div>
     <div
       v-if="loggedIn"
-      :label="$t('settings.uploaded_media')"
+      :label="$t('settings.uploaded_media.title')"
       icon="image"
       data-tab-name="dataUploadedMedia"
     >
