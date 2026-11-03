@@ -1,4 +1,4 @@
-import { first, last, throttle } from 'lodash-es'
+import { last, throttle } from 'lodash-es'
 import { computed, nextTick, ref, toValue, watch } from 'vue'
 
 export function useVirtualScrolling({
