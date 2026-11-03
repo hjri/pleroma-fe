@@ -301,25 +301,48 @@ export function useVirtualScrolling({
             : hasReachedTop.value
 
           // Section is used for debugging only
-          const getShift = (section, a, b, find, getter) => {
-            const aItem = find(a)
-            const aIndex = a.findIndex((item) => item === aItem)
-            if (!aItem) return 0
-            const bIndex = b.findIndex(({ id }) => id === aItem.id)
-            const bItem = b[bIndex]
-            if (!bItem) return 0
+          const getShift = (section, a, b, findIndex, getter, boundary) => {
+            const aIndex = findIndex(a.map(getter))
+            const aItem = a[aIndex]
 
-            if (isSticking) {
-              const expectedIndex = toValue(invertDirection) ? a.length - 1 : 0
-              const extreme = toValue(invertDirection) ? b.length - 1 : 0
-              const distance = Math.abs(bIndex - extreme)
+            if (aItem !== undefined) {
+              const bIndex = b.findIndex(({ id }) => id === aItem.id)
+              const bItem = b[bIndex]
+              if (!bItem) return 0
+              return getter(bItem) - getter(aItem)
+            } else {
+              if (isSticking && boundary === 'top') return 0
+              if (!isSticking && boundary === 'bottom') return 0
 
-              if (aIndex === expectedIndex && distance > 0) {
-                const eItem = b[extreme]
-                return getter(eItem) - getter(bItem)
-              }
+              const getExtreme = (list) =>
+                boundary === 'top'
+                  ? 0
+                  : list.length - 1
+
+              const aeItem = a[getExtreme(a)]
+
+              // Find nearest added item
+              const aeIndexNew = b.findIndex(({ id }) => id === aeItem.id)
+              const shiftIndex = boundary === 'top' ? -1 : 1
+
+              // Got the closest and the furthermost items, time to figure out
+              // their combined height
+              const beItem = b[getExtreme(b)]
+              const bNearestItem = b[aeIndexNew + shiftIndex]
+
+              // No items were added, abort scrolling
+              if (bNearestItem === undefined) return 0
+
+              const [beginning, end] =
+                boundary === 'top'
+                  ? [beItem, bNearestItem]
+                  : [bNearestItem, beItem]
+
+              const topBoundary = beginning.top
+              const bottomBoundary = end.top + end.height
+
+              return bottomBoundary - topBoundary
             }
-            return getter(bItem) - getter(aItem)
           }
 
           const expansion = (() => {
@@ -329,10 +352,9 @@ export function useVirtualScrolling({
               oldVal,
               newVal,
               (list) =>
-                list.find(
-                  ({ top, height }) => top + height < topScrollBoundary.value,
-                ) ?? first(list),
+                list.findIndex((value) => value < topScrollBoundary.value),
               ({ top, height }) => top + height,
+              'top',
             )
           })()
 
@@ -343,9 +365,9 @@ export function useVirtualScrolling({
               oldVal,
               newVal,
               (list) =>
-                list.findLast(({ top }) => top > bottomScrollBoundary.value) ??
-                last(list),
+                list.findLastIndex((value) => value > bottomScrollBoundary.value),
               ({ top }) => top,
+              'bottom',
             )
           })()
 
@@ -355,8 +377,9 @@ export function useVirtualScrolling({
               'collapse',
               newVal,
               oldVal,
-              (list) => first(list),
+              (list) => 0,
               ({ top, height }) => top + height,
+              'bottom',
             )
           })()
 
