@@ -8,6 +8,7 @@ export const hostedModePlugin = () => {
           '<link rel="manifest" href="/static/PWA/manifest.json">',
           '<meta name="theme-color" content="#1e2734">',
           '<link rel="apple-touch-icon" href="/static/PWA/192_bg.png">',
+          '<link rel="icon" href="/static/PWA/192.png">'
         ].map((x) => '    ' + x)
 
         return html.replace(
