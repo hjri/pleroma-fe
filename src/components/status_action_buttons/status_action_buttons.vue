@@ -2,46 +2,55 @@
   <div class="StatusActionButtons">
     <span
       class="quick-action-buttons"
-      :class="{ '-pin': showPin }"
+      :class="{ '-pin': showPin, '-wide': wideLayout }"
       role="toolbar"
       :aria-label="$t('status.status_actions')"
     >
-      <span
+      <template
         v-for="button in quickButtons"
         :key="button.name"
-        class="quick-action"
-        role="presentation"
-        :class="quickButtonClass(button)"
       >
-        <ActionButtonContainer
-          :class="{ '-pin': showPin }"
-          :button="button"
-          :status="status"
-          :extra="false"
-          :func-arg="funcArg"
-          :get-class="getClass"
-          :get-component="getComponent"
-          :close="() => { /* no-op */ }"
-          :do-action="doAction"
-          :default-button-style="useDefaultButtons"
-          :hide-label="hideLabels"
-          @emoji-picker-shown="onEmojiPickerShown"
+        <span
+          v-if="button.spacer"
+          class="spacer"
+          aria-hidden="true"
         />
-        <button
-          v-if="showPin && currentUser"
-          type="button"
-          class="button-unstyled pin-action-button"
-          :title="$t('general.unpin')"
-          :aria-pressed="true"
-          @click.stop.prevent="unpin(button)"
+        <span
+          v-else
+          class="quick-action"
+          role="presentation"
+          :class="quickButtonClass(button)"
         >
-          <FAIcon
-            v-if="showPin && currentUser"
-            fixed-width
-            icon="thumbtack"
+          <ActionButtonContainer
+            :class="{ '-pin': showPin }"
+            :button="button"
+            :status="status"
+            :extra="false"
+            :func-arg="funcArg"
+            :get-class="getClass"
+            :get-component="getComponent"
+            :close="() => { /* no-op */ }"
+            :do-action="doAction"
+            :default-button-style="useDefaultButtons"
+            :hide-label="hideLabels"
+            @emoji-picker-shown="onEmojiPickerShown"
           />
-        </button>
-      </span>
+          <button
+            v-if="showPin && currentUser"
+            type="button"
+            class="button-unstyled pin-action-button"
+            :title="$t('general.unpin')"
+            :aria-pressed="true"
+            @click.stop.prevent="unpin(button)"
+          >
+            <FAIcon
+              v-if="showPin && currentUser"
+              fixed-width
+              icon="thumbtack"
+            />
+          </button>
+        </span>
+      </template>
       <Popover
         trigger="click"
         :title="$t('status.more_actions')"
