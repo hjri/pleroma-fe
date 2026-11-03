@@ -80,6 +80,7 @@ export const MASTODON_UNBOOKMARK_STATUS_URL = (id) =>
   `/api/v1/statuses/${id}/unbookmark`
 const MASTODON_POST_STATUS_URL = '/api/v1/statuses'
 const MASTODON_MEDIA_UPLOAD_URL = '/api/v1/media'
+const MASTODON_MEDIA_MODIFY_URL = (id) => `/api/v1/media/${id}`
 const MASTODON_VOTE_URL = (id) => `/api/v1/polls/${id}/votes`
 const MASTODON_PROFILE_UPDATE_URL = '/api/v1/accounts/update_credentials'
 const MASTODON_REPORT_USER_URL = '/api/v1/reports'
@@ -102,6 +103,7 @@ const PLEROMA_BACKUP_URL = '/api/v1/pleroma/backups'
 const PLEROMA_BOOKMARK_FOLDERS_URL = '/api/v1/pleroma/bookmark_folders'
 const PLEROMA_BOOKMARK_FOLDER_URL = (id) =>
   `/api/v1/pleroma/bookmark_folders/${id}`
+const PLEROMA_MEDIA_LIST_UPLOADED = '/api/pleroma/uploaded_media'
 
 // #Posts
 export const favorite = ({ id, credentials }) =>
@@ -326,13 +328,34 @@ export const uploadMedia = ({ formData, credentials }) =>
 
 export const setMediaDescription = ({ id, description, credentials }) =>
   promisedRequest({
-    url: `${MASTODON_MEDIA_UPLOAD_URL}/${id}`,
+    url: MASTODON_MEDIA_MODIFY_URL(id),
     method: 'PUT',
     credentials,
     payload: {
       description,
     },
   }).then(({ data, ...rest }) => ({ ...rest, data: parseAttachment(data) }))
+
+export const getMedia = ({ id, credentials, withUsage }) =>
+  promisedRequest({
+    url: MASTODON_MEDIA_MODIFY_URL(id) + paramsString({ attachment_usage: withUsage }),
+    method: 'GET',
+    credentials,
+  }).then(({ data, ...rest }) => ({ ...rest, data: parseAttachment(data) }))
+
+export const deleteMedia = ({ id, credentials }) =>
+  promisedRequest({
+    url: MASTODON_MEDIA_MODIFY_URL(id),
+    method: 'DELETE',
+    credentials,
+  }).then(result => result.status == 200)
+
+export const uploadedMedia = ({ credentials }) =>
+  promisedRequest({
+    url: PLEROMA_MEDIA_LIST_UPLOADED,
+    method: 'GET',
+    credentials,
+  }).then(({ data }) => data)
 
 // #Notifications
 export const dismissNotification = ({ credentials, id }) =>

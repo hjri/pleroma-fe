@@ -106,6 +106,14 @@
       <DataImportExportTab />
     </div>
     <div
+      v-if="loggedIn"
+      :label="$t('settings.uploaded_media')"
+      icon="image"
+      data-tab-name="dataUploadedMedia"
+    >
+      <UploadedMediaTab />
+    </div>
+    <div
       v-if="expertLevel > 0"
       :label="$t('settings.style.themes3.editor.title')"
       icon="palette"

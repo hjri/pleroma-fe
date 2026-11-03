@@ -229,6 +229,9 @@ export const parseAttachment = (data) => {
   output.large_thumb_url = data.preview_url
   output.description = lodashUnescape(data.description)
 
+  if (data.pleroma?.usage)
+    output.usage = data.pleroma.usage
+
   return output
 }
 

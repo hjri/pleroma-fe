@@ -5,6 +5,7 @@ import AppearanceTab from './tabs/appearance_tab.vue'
 import ClutterTab from './tabs/clutter_tab.vue'
 import ComposingTab from './tabs/composing_tab.vue'
 import DataImportExportTab from './tabs/data_import_export_tab.vue'
+import UploadedMediaTab from './tabs/uploaded_media_tab.vue'
 import DeveloperTab from './tabs/developer_tab.vue'
 import FilteringTab from './tabs/filtering_tab.vue'
 import GeneralTab from './tabs/general_tab.vue'
@@ -75,6 +76,7 @@ const SettingsModalContent = {
     StyleTab,
     DeveloperTab,
     OldThemeTab,
+    UploadedMediaTab,
   },
   computed: {
     open() {
