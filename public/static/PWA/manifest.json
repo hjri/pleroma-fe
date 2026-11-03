@@ -56,5 +56,13 @@
       "label": "Timeline view (Desktop)",
       "form_factor": "wide"
     }
+  ],
+  "prefer_related_applications": false,
+  "categories": [
+    "social networking"
+  ],
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
   ]
 }
