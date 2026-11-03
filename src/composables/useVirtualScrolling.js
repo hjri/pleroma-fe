@@ -315,9 +315,7 @@ export function useVirtualScrolling({
               if (!isSticking && boundary === 'bottom') return 0
 
               const getExtreme = (list) =>
-                boundary === 'top'
-                  ? 0
-                  : list.length - 1
+                boundary === 'top' ? 0 : list.length - 1
 
               const aeItem = a[getExtreme(a)]
 
@@ -365,7 +363,9 @@ export function useVirtualScrolling({
               oldVal,
               newVal,
               (list) =>
-                list.findLastIndex((value) => value > bottomScrollBoundary.value),
+                list.findLastIndex(
+                  (value) => value > bottomScrollBoundary.value,
+                ),
               ({ top }) => top,
               'bottom',
             )
