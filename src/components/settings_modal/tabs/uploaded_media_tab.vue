@@ -204,7 +204,7 @@ export default {
     },
   },
   mounted() {
-    this.refreshMedia()
+    if (this.managementAvailable) this.refreshMedia()
   },
 }
 </script>
