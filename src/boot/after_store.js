@@ -352,6 +352,10 @@ const getNodeInfo = async ({ store }) => {
         'blockExpiration',
         features.includes('pleroma:block_expiration'),
       )
+      useInstanceCapabilitiesStore().set(
+        'mediaManagementAvailable',
+        features.includes('pleroma:user_media_management'),
+      )
       useInstanceStore().set({
         path: 'localBubbleInstances',
         value: metadata.localBubbleInstances ?? [],

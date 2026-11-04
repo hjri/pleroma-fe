@@ -103,7 +103,8 @@ const PLEROMA_BACKUP_URL = '/api/v1/pleroma/backups'
 const PLEROMA_BOOKMARK_FOLDERS_URL = '/api/v1/pleroma/bookmark_folders'
 const PLEROMA_BOOKMARK_FOLDER_URL = (id) =>
   `/api/v1/pleroma/bookmark_folders/${id}`
-const PLEROMA_MEDIA_LIST_UPLOADED = (offset) => "/api/pleroma/uploaded_media" + paramsString({offset})
+const PLEROMA_MEDIA_LIST_UPLOADED = (offset) =>
+  '/api/pleroma/uploaded_media' + paramsString({ offset })
 
 // #Posts
 export const favorite = ({ id, credentials }) =>
@@ -338,7 +339,9 @@ export const setMediaDescription = ({ id, description, credentials }) =>
 
 export const getMedia = ({ id, credentials, withUsage }) =>
   promisedRequest({
-    url: MASTODON_MEDIA_MODIFY_URL(id) + paramsString({ attachment_usage: withUsage }),
+    url:
+      MASTODON_MEDIA_MODIFY_URL(id) +
+      paramsString({ attachment_usage: withUsage }),
     method: 'GET',
     credentials,
   }).then(({ data, ...rest }) => ({ ...rest, data: parseAttachment(data) }))
@@ -348,17 +351,19 @@ export const deleteMedia = ({ id, credentials }) =>
     url: MASTODON_MEDIA_MODIFY_URL(id),
     method: 'DELETE',
     credentials,
-  }).then(result => result.status == 200)
+  }).then((result) => result.status == 200)
 
 export const uploadedMedia = ({ credentials, offset }) =>
   promisedRequest({
     url: PLEROMA_MEDIA_LIST_UPLOADED(offset),
     method: 'GET',
-    credentials
-  }).then(({ data }) => data.map(e => {
-    e.attachment = parseAttachment(e.attachment)
-    return e
-  }))
+    credentials,
+  }).then(({ data }) =>
+    data.map((e) => {
+      e.attachment = parseAttachment(e.attachment)
+      return e
+    }),
+  )
 
 // #Notifications
 export const dismissNotification = ({ credentials, id }) =>

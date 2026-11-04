@@ -1227,7 +1227,8 @@
       "delete_title": "Are you sure you want to delete this attachment?",
       "accept_button": "Yes",
       "cancel_button": "No",
-      "load_more": "Load more results"
+      "load_more": "Load more results",
+      "unavailable": "Your instance does not support user media management"
     }
   },
   "admin_dash": {

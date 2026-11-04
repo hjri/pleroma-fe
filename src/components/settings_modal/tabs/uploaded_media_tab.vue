@@ -1,7 +1,8 @@
 <template>
   <div
     class="uploaded-media-tab"
-    :label="$t('settings.uploaded_media.title')">
+    :label="$t('settings.uploaded_media.title')"
+    v-if="managementAvailable">
 
     <div class="setting-section">
       <h3>{{ $t('settings.uploaded_media.title') }}</h3>
@@ -41,6 +42,13 @@
                <span class="setting-label">{{$t('settings.uploaded_media.duplicates')}}</span>
 
                <textarea v-if="media.usage" class="input setting-control" disabled>{{$t('settings.uploaded_media.known_dupes', [media.usage?.duplicates.own ?? 0, media.usage?.duplicates.other ?? 0])}}</textarea>
+               <span v-else-if="media.loadingUsages" class="settings-control" >
+                 <FAIcon
+                   class="fa-old-padding"
+                   spin
+                   icon="circle-notch"
+                 />
+               </span>
                <textarea v-else class="input setting-control" disabled>{{$t('settings.uploaded_media.unknown_dupes')}}</textarea>
              </label>
           </li>
@@ -90,93 +98,115 @@
       <button class="btn button-default" @click="loadMore()">{{ $t('settings.uploaded_media.load_more') }}</button>
     </div>
   </div>
+  <div v-else class="uploaded-media-tab" :label="$t('settings.uploaded_media.title')">
+    <div class="setting-section">
+      <h3>{{ $t('settings.uploaded_media.title') }}</h3>
+    </div>
+
+    <div>{{ $t('settings.uploaded_media.unavailable') }}</div>
+  </div>
 </template>
 
 <script>
-  import { remove } from 'lodash-es'
+import { remove } from 'lodash-es'
 
-  import Attachment from 'src/components/attachment/attachment.vue'
-  import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
+import Attachment from 'src/components/attachment/attachment.vue'
+import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
 
-  import { useInterfaceStore } from 'src/stores/interface.js'
-  import { useOAuthStore } from 'src/stores/oauth.js'
-  import { useMediaViewerStore } from 'src/stores/media_viewer.js'
-  import {
-    getMedia, uploadedMedia, deleteMedia
-  } from 'src/api/user.js'
+import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
+import { useInterfaceStore } from 'src/stores/interface.js'
+import { useMediaViewerStore } from 'src/stores/media_viewer.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 
-  const PAGE_SIZE = 50
+import { deleteMedia, getMedia, uploadedMedia } from 'src/api/user.js'
 
-  export default {
-    components: { Attachment, ConfirmModal },
-    data() {
-      return {
-        knownMedia: [],
-        deleteModalVisible: false,
-        mediaToDelete: 0,
-        offset: 0,
-        noMoreResults: false
-      }
+const PAGE_SIZE = 50
+
+export default {
+  components: { Attachment, ConfirmModal },
+  data() {
+    return {
+      knownMedia: [],
+      deleteModalVisible: false,
+      mediaToDelete: 0,
+      offset: 0,
+      noMoreResults: false,
+    }
+  },
+  methods: {
+    fetchUsage(media) {
+      media.loadingUsages = true
+      getMedia({ id: media.attachment.id, withUsage: true }).then((result) => {
+        media.usage = result.data.usage
+        delete media.loadingUsages
+      })
     },
-    methods: {
-      fetchUsage(media) {
-        getMedia({id: media.attachment.id, withUsage: true}).then(result => {
-          media.usage = result.data.usage
-        })
-      },
-      showDeleteModal(media) {
-        this.deleteModalVisible = true
-        this.mediaToDelete = media.attachment.id
-      },
-      deleteMedia() {
-        deleteMedia({
-          credentials: useOAuthStore().token, id: this.mediaToDelete
-        }).then(result => {
+    showDeleteModal(media) {
+      this.deleteModalVisible = true
+      this.mediaToDelete = media.attachment.id
+    },
+    deleteMedia() {
+      deleteMedia({
+        credentials: useOAuthStore().token,
+        id: this.mediaToDelete,
+      })
+        .then((result) => {
           useInterfaceStore().pushGlobalNotice({
-            messageKey: result ? 'settings.uploaded_media.delete_success' : 'settings.uploaded_media.delete_error',
-            level: result ? 'success' : 'error'
+            messageKey: result
+              ? 'settings.uploaded_media.delete_success'
+              : 'settings.uploaded_media.delete_error',
+            level: result ? 'success' : 'error',
           })
           this.deleteModalVisible = false
 
           if (result) {
-            remove(this.knownMedia, m => m.attachment.id == this.mediaToDelete)
+            remove(
+              this.knownMedia,
+              (m) => m.attachment.id == this.mediaToDelete,
+            )
           }
-        }).catch(err => {
+        })
+        .catch((err) => {
           useInterfaceStore().pushGlobalNotice({
             messageKey: 'settings.uploaded_media.delete_error',
             messageArgs: { e: err.statusText },
-            level: 'error'
+            level: 'error',
           })
           this.deleteModalVisible = false
         })
-      },
-
-      refreshMedia() {
-        this.knownMedia = []
-        this.offset = 0
-        this.noMoreResults = false
-
-        this.loadMore()
-      },
-      loadMore() {
-        uploadedMedia({
-          credentials: useOAuthStore().token, offset: this.offset
-        }).then(result => {
-          if (result.length < PAGE_SIZE)
-            this.noMoreResults = true
-          this.offset += result.length
-          this.knownMedia = this.knownMedia.concat(result)
-        })
-      },
-
-      onMediaPreview(attachment) {
-        useMediaViewerStore().setMedia([attachment])
-      }
     },
-    mounted() {
-      this.refreshMedia()
-    }
-  }
+
+    refreshMedia() {
+      this.knownMedia = []
+      this.offset = 0
+      this.noMoreResults = false
+
+      this.loadMore()
+    },
+    loadMore() {
+      uploadedMedia({
+        credentials: useOAuthStore().token,
+        offset: this.offset,
+      }).then((result) => {
+        if (result.length < PAGE_SIZE) this.noMoreResults = true
+        this.offset += result.length
+        this.knownMedia = this.knownMedia.concat(result)
+      })
+    },
+
+    onMediaPreview(attachment) {
+      useMediaViewerStore().setMedia([attachment])
+    },
+  },
+  computed: {
+    managementAvailable() {
+      return useInstanceCapabilitiesStore().mediaManagementAvailable
+    },
+  },
+  mounted() {
+    this.refreshMedia()
+  },
+}
 </script>
 
 <style>
@@ -213,6 +243,20 @@
     .load-more {
       margin-top: 1em;
       margin-bottom: 1em;
+    }
+
+    .loading-spinner {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      svg {
+        color: white;
+      }
     }
   }
 </style>

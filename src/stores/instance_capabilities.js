@@ -26,6 +26,7 @@ const defaultState = {
   pollsAvailable: false,
   localBubble: false, // Akkoma
   scrobblesSupport: false,
+  mediaManagementAvailable: false,
 }
 
 export const useInstanceCapabilitiesStore = defineStore(
