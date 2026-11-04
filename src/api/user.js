@@ -103,7 +103,7 @@ const PLEROMA_BACKUP_URL = '/api/v1/pleroma/backups'
 const PLEROMA_BOOKMARK_FOLDERS_URL = '/api/v1/pleroma/bookmark_folders'
 const PLEROMA_BOOKMARK_FOLDER_URL = (id) =>
   `/api/v1/pleroma/bookmark_folders/${id}`
-const PLEROMA_MEDIA_LIST_UPLOADED = '/api/pleroma/uploaded_media'
+const PLEROMA_MEDIA_LIST_UPLOADED = (offset) => "/api/pleroma/uploaded_media" + paramsString({offset})
 
 // #Posts
 export const favorite = ({ id, credentials }) =>
@@ -350,11 +350,11 @@ export const deleteMedia = ({ id, credentials }) =>
     credentials,
   }).then(result => result.status == 200)
 
-export const uploadedMedia = ({ credentials }) =>
+export const uploadedMedia = ({ credentials, offset }) =>
   promisedRequest({
-    url: PLEROMA_MEDIA_LIST_UPLOADED,
+    url: PLEROMA_MEDIA_LIST_UPLOADED(offset),
     method: 'GET',
-    credentials,
+    credentials
   }).then(({ data }) => data.map(e => {
     e.attachment = parseAttachment(e.attachment)
     return e

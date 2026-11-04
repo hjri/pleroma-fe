@@ -85,6 +85,10 @@
         </ConfirmModal>
       </div>
     </div>
+
+    <div class="text-center load-more" v-if="!noMoreResults">
+      <button class="btn button-default" @click="loadMore()">{{ $t('settings.uploaded_media.load_more') }}</button>
+    </div>
   </div>
 </template>
 
@@ -101,13 +105,17 @@
     getMedia, uploadedMedia, deleteMedia
   } from 'src/api/user.js'
 
+  const PAGE_SIZE = 50
+
   export default {
     components: { Attachment, ConfirmModal },
     data() {
       return {
         knownMedia: [],
         deleteModalVisible: false,
-        mediaToDelete: 0
+        mediaToDelete: 0,
+        offset: 0,
+        noMoreResults: false
       }
     },
     methods: {
@@ -145,12 +153,19 @@
 
       refreshMedia() {
         this.knownMedia = []
+        this.offset = 0
+        this.noMoreResults = false
+
+        this.loadMore()
+      },
+      loadMore() {
         uploadedMedia({
-          credentials: useOAuthStore().token
+          credentials: useOAuthStore().token, offset: this.offset
         }).then(result => {
-          for (let m of result) {
-            this.knownMedia.push(m)
-          }
+          if (result.length < PAGE_SIZE)
+            this.noMoreResults = true
+          this.offset += result.length
+          this.knownMedia = this.knownMedia.concat(result)
         })
       },
 
@@ -186,6 +201,8 @@
 
     .media-management-buttons {
       margin-top: 1em;
+      margin-bottom: 1em;
+
       display: flex;
       justify-content: space-between;
 
@@ -193,6 +210,11 @@
     }
     .media-management-buttons > * {
       flex: auto;
+    }
+
+    .load-more {
+      margin-top: 1em;
+      margin-bottom: 1em;
     }
   }
 </style>
