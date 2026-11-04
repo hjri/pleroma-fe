@@ -68,7 +68,7 @@
 
           <li>
             <div class="media-management-buttons">
-              <button class="btn button-default" @click="fetchUsage(media)">{{$t('settings.uploaded_media.fetch_usage')}}</button>
+              <button class="btn button-default" :disabled="media.loadingUsages || media.usage" @click="fetchUsage(media)">{{$t('settings.uploaded_media.fetch_usage')}}</button>
               <button class="btn button-default" @click="showDeleteModal(media)">{{$t('settings.uploaded_media.delete')}}</button>
             </div>
           </li>
