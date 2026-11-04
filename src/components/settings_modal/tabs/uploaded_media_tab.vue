@@ -188,7 +188,6 @@
 
     .media-entry {
       padding-top: 1em;
-
       display: flex;
       gap: 1em;
     }
@@ -202,12 +201,11 @@
     .media-management-buttons {
       margin-top: 1em;
       margin-bottom: 1em;
-
       display: flex;
       justify-content: space-between;
-
       gap: 0.5em;
     }
+
     .media-management-buttons > * {
       flex: auto;
     }
