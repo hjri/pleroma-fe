@@ -425,7 +425,8 @@
     "state_resolved": "Resolved"
   },
   "selectable_list": {
-    "select_all": "Select all"
+    "select_all": "Select all",
+    "select": "Select"
   },
   "settings": {
     "invalid_settings_imported": "Error importing settings",

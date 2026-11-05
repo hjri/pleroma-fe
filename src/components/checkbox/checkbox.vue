@@ -2,6 +2,7 @@
   <label
     class="checkbox"
     :class="[$attrs.class, { ['-disabled']: disabled, indeterminate, 'indeterminate-fix': indeterminateTransitionFix }, radio ? '-radio' : '-checkbox']"
+    :title="[$attrs.title]"
   >
     <span
       v-if="!!$slots.before"
@@ -52,6 +53,8 @@ export default {
     indeterminate(e) {
       if (e) {
         this.indeterminateTransitionFix = true
+      } else if (this.modelValue) {
+        this.indeterminateTransitionFix = false
       }
     },
   },

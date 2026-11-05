@@ -1,0 +1,45 @@
+.Tokens {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  grid-template-rows: auto;
+  grid-auto-rows: auto auto;
+  gap: 0.5em;
+  padding: 0.5em;
+  margin: -0.5em;
+
+  thead,
+  tbody {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    grid-template-rows: subgrid;
+  }
+
+  thead {
+    grid-row: 1;
+  }
+
+  tbody {
+    grid-row: 2;
+    grid-template-rows: auto;
+    grid-auto-rows: auto;
+    gap: 0.5em;
+    max-height: 20em;
+    overflow: clip auto;
+  }
+
+  tr {
+    display: grid;
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    place-items: center start;
+  }
+
+  .selecton {
+    align-self: center;
+  }
+
+  thead {
+    overflow-y: auto;
+  }
+}

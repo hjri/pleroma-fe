@@ -212,32 +212,7 @@
 
     <div class="setting-section">
       <h3>{{ $t('settings.oauth_tokens') }}</h3>
-      <table class="oauth-tokens">
-        <thead>
-          <tr>
-            <th>{{ $t('settings.app_name') }}</th>
-            <th>{{ $t('settings.valid_until') }}</th>
-            <th />
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="oauthToken in oauthTokens"
-            :key="oauthToken.id"
-          >
-            <td>{{ oauthToken.appName }}</td>
-            <td>{{ oauthToken.validUntil }}</td>
-            <td class="actions">
-              <button
-                class="btn button-default"
-                @click="revokeToken(oauthToken.id)"
-              >
-                {{ $t('settings.revoke_token') }}
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <Tokens />
     </div>
     <mfa />
 

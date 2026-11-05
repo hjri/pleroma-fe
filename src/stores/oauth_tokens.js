@@ -12,6 +12,7 @@ import { fetchOAuthTokens, revokeOAuthToken } from 'src/api/user.js'
 export const useOAuthTokensStore = defineStore('oauthTokens', {
   state: () => ({
     tokens: [],
+    usTokens: [], // Shouldn't be more than one but just for consistency sake
   }),
   actions: {
     fetchTokens() {
@@ -27,12 +28,16 @@ export const useOAuthTokensStore = defineStore('oauthTokens', {
         credentials: useOAuthStore().token,
       }).then(({ status }) => {
         if (status === 201) {
-          this.swapTokens(this.tokens.filter((token) => token.id !== id))
+          this.swapTokens([
+            ...this.tokens.filter((token) => token.id !== id),
+            ...this.usTokens.filter((token) => token.id !== id),
+          ])
         }
       })
     },
     swapTokens(tokens) {
-      this.tokens = tokens
+      this.tokens = tokens.filter((t) => !t.current)
+      this.usTokens = tokens.filter((t) => t.current)
     },
   },
 })
