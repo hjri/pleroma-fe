@@ -24,17 +24,17 @@ const isClientDataRejected = (error) =>
 
 export const useOAuthStore = defineStore('oauth', {
   state: () => ({
-    clientId: false,
-    clientSecret: false,
+    clientId: null,
+    clientSecret: null,
     /* App token is authentication for app without any user, used mostly for
      * MastoAPI's registration of new users, stored so that we can fall back to
      * it on logout
      */
-    appToken: false,
+    appToken: null,
     /* User token is authentication for app with user, this is for every calls
      * that need authorized user to be successful (i.e. posting, liking etc)
      */
-    userToken: false,
+    userToken: null,
   }),
   getters: {
     token() {
