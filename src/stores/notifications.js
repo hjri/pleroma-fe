@@ -282,6 +282,7 @@ export const useNotificationsStore = defineStore('notifications', {
       }
     },
     markNotificationsAsSeen() {
+      if (this.data.every((n) => n.seen)) return
       this.data.forEach((notification) => {
         notification.seen = true
       })
@@ -294,7 +295,9 @@ export const useNotificationsStore = defineStore('notifications', {
       })
     },
     markSingleNotificationAsSeen(id) {
+      // every click on a mention lands here: send only the first one
       const notification = this.idStore.get(id)
+      if (notification?.seen) return
       if (notification) notification.seen = true
 
       markNotificationsAsSeen({

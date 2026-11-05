@@ -1,0 +1,1 @@
+Clicks on notifications that are already read no longer send a read request to the server
