@@ -2,7 +2,7 @@
   <div
     class="uploaded-media-tab"
     :label="$t('settings.uploaded_media.title')"
-    v-if="managementAvailable">
+    v-if="mediaManagementAvailable">
 
     <div class="setting-section">
       <h3>{{ $t('settings.uploaded_media.title') }}</h3>
@@ -11,7 +11,7 @@
     <button class="btn button-default" @click="refreshMedia()">{{ $t('settings.uploaded_media.refresh') }}</button>
 
     <div>
-      <div class="media-entry" v-for="media in knownMedia">
+      <div class="media-entry" v-for="media in knownMedia" key="media.attachment.id">
         <ul class="setting-list">
           <li>
             <label class="setting-item">
@@ -55,7 +55,7 @@
           <li>
             <h4>{{$t('settings.uploaded_media.used_in')}}</h4>
             <ul v-if="media.usage" class="used-in-objects-list">
-              <li v-for="obj in media.usage.objects">
+              <li v-for="obj in media.usage.objects" key="obj">
                 <a target="_blank" :href="obj">
                   {{ obj }}
                 </a>
@@ -107,156 +107,6 @@
   </div>
 </template>
 
-<script>
-import { remove } from 'lodash-es'
+<script src="./uploaded_media_tab.js"></script>
 
-import Attachment from 'src/components/attachment/attachment.vue'
-import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
-
-import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
-import { useInterfaceStore } from 'src/stores/interface.js'
-import { useMediaViewerStore } from 'src/stores/media_viewer.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
-
-import { deleteMedia, getMedia, uploadedMedia } from 'src/api/user.js'
-
-const PAGE_SIZE = 50
-
-export default {
-  components: { Attachment, ConfirmModal },
-  data() {
-    return {
-      knownMedia: [],
-      deleteModalVisible: false,
-      mediaToDelete: 0,
-      offset: 0,
-      noMoreResults: false,
-    }
-  },
-  methods: {
-    fetchUsage(media) {
-      media.loadingUsages = true
-      getMedia({ id: media.attachment.id, withUsage: true }).then((result) => {
-        media.usage = result.data.usage
-        delete media.loadingUsages
-      })
-    },
-    showDeleteModal(media) {
-      this.deleteModalVisible = true
-      this.mediaToDelete = media.attachment.id
-    },
-    deleteMedia() {
-      deleteMedia({
-        credentials: useOAuthStore().token,
-        id: this.mediaToDelete,
-      })
-        .then((result) => {
-          useInterfaceStore().pushGlobalNotice({
-            messageKey: result
-              ? 'settings.uploaded_media.delete_success'
-              : 'settings.uploaded_media.delete_error',
-            level: result ? 'success' : 'error',
-          })
-          this.deleteModalVisible = false
-
-          if (result) {
-            remove(
-              this.knownMedia,
-              (m) => m.attachment.id == this.mediaToDelete,
-            )
-          }
-        })
-        .catch((err) => {
-          useInterfaceStore().pushGlobalNotice({
-            messageKey: 'settings.uploaded_media.delete_error',
-            messageArgs: { e: err.statusText },
-            level: 'error',
-          })
-          this.deleteModalVisible = false
-        })
-    },
-
-    refreshMedia() {
-      this.knownMedia = []
-      this.offset = 0
-      this.noMoreResults = false
-
-      this.loadMore()
-    },
-    loadMore() {
-      uploadedMedia({
-        credentials: useOAuthStore().token,
-        offset: this.offset,
-      }).then((result) => {
-        if (result.length < PAGE_SIZE) this.noMoreResults = true
-        this.offset += result.length
-        this.knownMedia = this.knownMedia.concat(result)
-      })
-    },
-
-    onMediaPreview(attachment) {
-      useMediaViewerStore().setMedia([attachment])
-    },
-  },
-  computed: {
-    managementAvailable() {
-      return useInstanceCapabilitiesStore().mediaManagementAvailable
-    },
-  },
-  mounted() {
-    if (this.managementAvailable) this.refreshMedia()
-  },
-}
-</script>
-
-<style>
-  .uploaded-media-tab {
-    .preview-image {
-      max-width: 15em;
-      max-height: 15em;
-    }
-
-    .media-entry {
-      padding-top: 1em;
-      display: flex;
-      gap: 1em;
-    }
-
-    .used-in-objects-list {
-      overflow-y: auto;
-      max-height: 10em;
-      min-width: 100%;
-    }
-
-    .media-management-buttons {
-      margin-top: 1em;
-      margin-bottom: 1em;
-      display: flex;
-      justify-content: space-between;
-      gap: 0.5em;
-    }
-
-    .media-management-buttons > * {
-      flex: auto;
-    }
-
-    .load-more {
-      margin-top: 1em;
-      margin-bottom: 1em;
-    }
-
-    .loading-spinner {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      pointer-events: none;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-
-      svg {
-        color: white;
-      }
-    }
-  }
-</style>
+<style lang="scss" src="./uploaded_media_tab.scss"></style>
