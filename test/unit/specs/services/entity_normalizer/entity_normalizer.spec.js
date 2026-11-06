@@ -120,6 +120,29 @@ describe('API Entities normalizer', () => {
         )
       })
 
+      // Pleroma renders a repeat whose post it cannot find with `reblog: null`
+      // and no `pleroma.emoji_reactions`; Mastodon has no `pleroma` at all.
+      it('defaults emoji_reactions to an empty list', () => {
+        expect(parseStatus(makeMockStatusMasto())).to.have.deep.property(
+          'emoji_reactions',
+          [],
+        )
+        expect(
+          parseStatus(makeMockStatusMasto({ pleroma: undefined })),
+        ).to.have.deep.property('emoji_reactions', [])
+      })
+
+      it('keeps emoji_reactions from the pleroma field', () => {
+        const emojiReactions = [{ name: '👍', count: 1, me: false }]
+        const parsed = parseStatus(
+          makeMockStatusMasto({
+            pleroma: { local: true, emoji_reactions: emojiReactions },
+          }),
+        )
+
+        expect(parsed).to.have.deep.property('emoji_reactions', emojiReactions)
+      })
+
       describe('Mastodon quote entity', () => {
         const quoted = makeMockStatusMasto({ id: 'quoted', url: 'https://q' })
 
