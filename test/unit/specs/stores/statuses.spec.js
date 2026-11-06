@@ -594,4 +594,24 @@ describe('Statuses store', () => {
     expect(store.allStatuses).to.have.length(19)
     expect(result).to.eql(new Set(['s19']))
   })
+
+  it('wipeUserStatuses also wipes repeats of the wiped statuses', () => {
+    const store = useStatusesStore()
+    const blocked = mockUser({ id: 'blocked' })
+    const status = mockStatus({ id: 's1', statusUser: blocked })
+    const repeat = mockStatus({
+      id: 'r1',
+      type: 'retweet',
+      statusUser: mockUser({ id: 'repeater' }),
+    })
+    repeat.retweeted_status = status
+
+    store.addNewStatuses({ statuses: [repeat], timestamp: 1 })
+
+    const result = store.wipeUserStatuses('blocked')
+
+    expect(result).to.eql(new Set(['s1', 'r1']))
+    expect(store.allStatuses.has('r1')).to.be.false
+    expect(store.statusesPerUser.get('repeater')).to.eql(new Set())
+  })
 })

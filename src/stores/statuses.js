@@ -547,10 +547,17 @@ export const useStatusesStore = defineStore('statuses', {
 
     // For when blocking a user
     wipeUserStatuses(userId) {
-      const removed = this.statusesPerUser.get(userId) ?? new Set()
+      const own = this.statusesPerUser.get(userId) ?? new Set()
+      // Other users' repeats of these statuses would be left without the
+      // status they repeat
+      const repeats = [...this.allStatuses.values()]
+        .filter((status) => own.has(status.retweeted_status?.id))
+        .map((status) => status.id)
+      const removed = new Set([...own, ...repeats])
       removed.forEach((statusId) => {
         const status = this.allStatuses.get(statusId)
         this.allStatuses.delete(statusId)
+        this.statusesPerUser.get(status.user.id)?.delete(statusId)
         const conversationSet = this.conversations.get(
           status.statusnet_conversation_id,
         )
