@@ -210,10 +210,7 @@
       </ul>
     </div>
 
-    <div class="setting-section">
-      <h3>{{ $t('settings.oauth_tokens') }}</h3>
-      <Tokens />
-    </div>
+    <Tokens />
     <mfa />
 
     <div class="setting-section">

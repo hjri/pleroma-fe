@@ -6,6 +6,14 @@ import wait from 'src/services/wait/wait.js'
 import localeService from 'src/services/locale/locale.service.js'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import {
+  faCircleNotch,
+  faTimes,
+} from '@fortawesome/free-solid-svg-icons'
+
+library.add(faCircleNotch, faTimes)
+
 const Tokens = {
   components: {
     ConfirmModal: defineAsyncComponent(
@@ -15,8 +23,8 @@ const Tokens = {
   },
   setup() {
     const { locale } = useI18n()
-    const showConfirm = ref(false)
 
+    // Data
     const {
       tokens,
       usTokens,
@@ -25,8 +33,10 @@ const Tokens = {
       fetchTokens,
       revokeToken,
     } = useOAuthTokensStore()
+
     fetchTokens()
 
+    const noUs = computed(() => usTokens.value.length === 0)
     const allTokens = computed(() => [
       ...usTokens.value,
       ...tokens.value,
@@ -37,6 +47,7 @@ const Tokens = {
       )
     })))
 
+    // Selection
     const selected = ref(new Set())
     const allSelected = computed(() => selected.value.size >= tokens.value.length)
     const someSelected = computed(() => selected.value.size > 0 && !allSelected.value)
@@ -55,44 +66,83 @@ const Tokens = {
       }
     }
 
+    // Queue management
+    const showConfirm = ref(false)
     const revokeQueue = ref([])
-    const revokeTokens = async () => {
+    const revokeSingleToken = (id) => {
+      revokeQueue.value = [id]
+      showConfirm.value = true
+    }
+    const revokeSelected = () => {
       revokeQueue.value = [...selected.value]
+      showConfirm.value = true
+    }
 
+    // Queue execution
+    const error = ref(null)
+    const revokeProgress = ref(false)
+    const revokeTokens = async () => {
+      showConfirm.value = false
+      revokeProgress.value = true
       try {
         const maxAttempts = 3
         let attempts = 0
-        while (revokeQueue.value.length > 0) {
+        let id = revokeQueue.value.shift()
+        while (revokeProgress.value) {
           try {
-            const id = revokeQueue.value.shift()
-
             attempts++
             await revokeToken(id)
             attempts = 0
 
             selected.value.delete(id)
+            id = revokeQueue.value.shift()
           } catch (e) {
             console.error('Error revoking token:' + e)
-            if (attempts > maxAttempts) {
+
+            const recoverable = (() => {
+              if (e.statusCode) {
+                if (e.statusCode >= 400 && e.statusCode < 500) {
+                  // 4xx - "We Messed Up"
+                  return false
+                } else {
+                  // 5xx - "Server Messed Up", should potentially be recoverable
+                  return true
+                }
+              } else {
+                // Probably recoverable
+                return true
+              }
+            })()
+
+            if (attempts > maxAttempts || !recoverable) {
               throw e
+            } else {
+              await wait(1000)
             }
           } finally {
-            if (revokeQueue.value.length > 0) {
+            if (id !== undefined) {
               await wait(250)
+            } else {
+              revokeProgress.value = false
             }
           }
         }
       } catch (e) {
         revokeQueue.value = []
+        error.value = e
+      } finally {
+        revokeProgress.value = false
       }
     }
-
     const revokeAbort = () => {
       revokeQueue.value = []
+      revokeProgress.value = false
+      showConfirm.value = false
     }
 
     return {
-      showConfirm,
+      noUs,
+      allTokens,
 
       selected,
       toggleSelect,
@@ -100,9 +150,13 @@ const Tokens = {
       allSelected,
       someSelected,
 
-      allTokens,
-
+      showConfirm,
+      error,
       revokeQueue,
+      revokeSingleToken,
+      revokeSelected,
+
+      revokeProgress,
       revokeTokens,
       revokeAbort,
     }

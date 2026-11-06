@@ -16,14 +16,14 @@ export const useOAuthTokensStore = defineStore('oauthTokens', {
   }),
   actions: {
     fetchTokens() {
-      fetchOAuthTokens({
+      return fetchOAuthTokens({
         credentials: useOAuthStore().token,
       }).then(({ data: tokens }) => {
         this.swapTokens(tokens)
       })
     },
     revokeToken(id) {
-      revokeOAuthToken({
+      return revokeOAuthToken({
         id,
         credentials: useOAuthStore().token,
       }).then(({ status }) => {
@@ -36,8 +36,9 @@ export const useOAuthTokensStore = defineStore('oauthTokens', {
       })
     },
     swapTokens(tokens) {
-      this.tokens = tokens.filter((t) => !t.current)
-      this.usTokens = tokens.filter((t) => t.current)
+      const sortedTokens = tokens.reverse()
+      this.tokens = sortedTokens.filter((t) => !t.current)
+      this.usTokens = sortedTokens.filter((t) => t.current)
     },
   },
 })
