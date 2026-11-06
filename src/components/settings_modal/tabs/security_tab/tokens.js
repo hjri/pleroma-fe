@@ -1,16 +1,16 @@
 import { storeToRefs } from 'pinia'
-import { ref, computed, defineAsyncComponent } from 'vue'
-import { useOAuthTokensStore } from 'src/stores/oauth_tokens.js'
+import { computed, defineAsyncComponent, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import wait from 'src/services/wait/wait.js'
-import localeService from 'src/services/locale/locale.service.js'
+
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 
+import { useOAuthTokensStore } from 'src/stores/oauth_tokens.js'
+
+import localeService from 'src/services/locale/locale.service.js'
+import wait from 'src/services/wait/wait.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
-import {
-  faCircleNotch,
-  faTimes,
-} from '@fortawesome/free-solid-svg-icons'
+import { faCircleNotch, faTimes } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faCircleNotch, faTimes)
 
@@ -25,32 +25,29 @@ const Tokens = {
     const { locale } = useI18n()
 
     // Data
-    const {
-      tokens,
-      usTokens,
-    } = storeToRefs(useOAuthTokensStore())
-    const {
-      fetchTokens,
-      revokeToken,
-    } = useOAuthTokensStore()
+    const { tokens, usTokens } = storeToRefs(useOAuthTokensStore())
+    const { fetchTokens, revokeToken } = useOAuthTokensStore()
 
     fetchTokens()
 
     const noUs = computed(() => usTokens.value.length === 0)
-    const allTokens = computed(() => [
-      ...usTokens.value,
-      ...tokens.value,
-    ].map((t) => ({
-      ...t,
-      validLocalized: t.validUntil.toLocaleDateString(
-        localeService.internalToBrowserLocale(locale),
-      )
-    })))
+    const allTokens = computed(() =>
+      [...usTokens.value, ...tokens.value].map((t) => ({
+        ...t,
+        validLocalized: t.validUntil.toLocaleDateString(
+          localeService.internalToBrowserLocale(locale),
+        ),
+      })),
+    )
 
     // Selection
     const selected = ref(new Set())
-    const allSelected = computed(() => selected.value.size >= tokens.value.length)
-    const someSelected = computed(() => selected.value.size > 0 && !allSelected.value)
+    const allSelected = computed(
+      () => selected.value.size >= tokens.value.length,
+    )
+    const someSelected = computed(
+      () => selected.value.size > 0 && !allSelected.value,
+    )
     const toggleSelect = (id, value) => {
       if (value) {
         selected.value.add(id)
