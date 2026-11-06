@@ -46,7 +46,6 @@ const Tokens = {
       } else {
         selected.value.delete(id)
       }
-      console.log('ALL ' + allSelected.value, 'SOME ' + someSelected.value)
     }
     const toggleSelectAll = (value) => {
       if (value) {
