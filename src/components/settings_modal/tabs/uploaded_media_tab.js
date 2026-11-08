@@ -1,4 +1,5 @@
 import { remove } from 'lodash-es'
+import { mapState } from 'pinia'
 
 import Attachment from 'src/components/attachment/attachment.vue'
 import ConfirmModal from 'src/components/confirm_modal/confirm_modal.vue'
@@ -7,7 +8,6 @@ import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.j
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
-import { mapState } from 'pinia'
 
 import { deleteMedia, getMedia, uploadedMedia } from 'src/api/user.js'
 
@@ -41,7 +41,7 @@ export default {
         credentials: useOAuthStore().token,
         id: this.mediaToDelete,
       })
-        .then(result => {
+        .then((result) => {
           useInterfaceStore().pushGlobalNotice({
             messageKey: 'settings.uploaded_media.delete_success',
             level: 'success',
@@ -61,7 +61,8 @@ export default {
             level: 'error',
           })
           this.deleteModalVisible = false
-        }).finall(() => {
+        })
+        .finall(() => {
           this.deleteModalVisible = false
         })
     },
@@ -89,7 +90,7 @@ export default {
     },
   },
   computed: {
-    ...mapState(useInstanceCapabilitiesStore, ["mediaManagementAvailable"])
+    ...mapState(useInstanceCapabilitiesStore, ['mediaManagementAvailable']),
   },
   mounted() {
     if (this.mediaManagementAvailable) this.refreshMedia()
