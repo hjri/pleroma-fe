@@ -9,7 +9,7 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMediaViewerStore } from 'src/stores/media_viewer.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 
-import { deleteMedia, getMedia, uploadedMedia } from 'src/api/user.js'
+import { deleteMedia, uploadedMedia, uploadedMediaUsage } from 'src/api/user.js'
 
 const PAGE_SIZE = 50
 
@@ -27,8 +27,8 @@ export default {
   methods: {
     fetchUsage(media) {
       media.loadingUsages = true
-      getMedia({ id: media.attachment.id, withUsage: true }).then((result) => {
-        media.usage = result.data.usage
+      uploadedMediaUsage({ id: media.attachment.id }).then((result) => {
+        media.usage = result.data
         delete media.loadingUsages
       })
     },
