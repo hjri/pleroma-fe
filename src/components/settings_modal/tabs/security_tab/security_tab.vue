@@ -211,7 +211,8 @@
     </div>
 
     <Tokens />
-    <mfa />
+
+    <MFA />
 
     <div class="setting-section">
       <h3>{{ $t('settings.move_account') }}</h3>

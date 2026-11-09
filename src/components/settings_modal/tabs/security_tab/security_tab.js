@@ -1,6 +1,6 @@
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
-import Mfa from './mfa.vue'
+import MFA from './mfa.vue'
 import Tokens from './tokens.vue'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
@@ -46,7 +46,7 @@ const SecurityTab = {
   },
   components: {
     ProgressButton,
-    Mfa,
+    MFA,
     Checkbox,
     Tokens,
   },

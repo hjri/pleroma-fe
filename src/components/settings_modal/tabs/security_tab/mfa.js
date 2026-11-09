@@ -42,8 +42,8 @@ const Mfa = {
     readyInit: false,
   }),
   components: {
-    'recovery-codes': RecoveryCodes,
-    'totp-item': TOTP,
+    RecoveryCodes,
+    'TOTPItem': TOTP,
     qrcode: VueQrcode,
     confirm: Confirm,
   },
