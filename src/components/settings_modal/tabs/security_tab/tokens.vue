@@ -63,6 +63,7 @@
         >
           <td class="selection">
             <Checkbox
+              v-if="!oauthToken.current"
               :model-value="selected.has(oauthToken.id)"
               @update:model-value="e => toggleSelect(oauthToken.id, e)"
               :title="$t('selectable_list.select')"
@@ -82,9 +83,9 @@
           <td>{{ oauthToken.validLocalized }}</td>
           <td class="actions">
             <button
+              v-if="!oauthToken.current"
               class="btn button-default"
               @click="revokeSingleToken(oauthToken.id)"
-              :class="{ '-danger': oauthToken.current }"
             >
               {{ $t('settings.revoke_token') }}
             </button>

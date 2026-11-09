@@ -37,7 +37,7 @@ const Tokens = {
       [...usTokens.value, ...tokens.value].map((t) => ({
         ...t,
         validLocalized: t.validUntil.toLocaleDateString(
-          localeService.internalToBrowserLocale(locale),
+          localeService.internalToBrowserLocale(locale.value),
         ),
       })),
     )
@@ -45,7 +45,7 @@ const Tokens = {
     // Selection
     const selected = ref(new Set())
     const allSelected = computed(
-      () => selected.value.size >= tokens.value.length,
+      () => selected.value.size > 0 && selected.value.size >= tokens.value.length,
     )
     const someSelected = computed(
       () => selected.value.size > 0 && !allSelected.value,
@@ -81,6 +81,7 @@ const Tokens = {
     const error = ref(null)
     const revokeProgress = ref(false)
     const revokeTokens = async () => {
+      if (revokeQueue.value.length === 0) return
       showConfirm.value = false
       revokeProgress.value = true
       try {

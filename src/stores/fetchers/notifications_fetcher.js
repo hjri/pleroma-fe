@@ -40,9 +40,9 @@ const notificationsFetcher = (credentials) => {
     } catch (error) {
       if (
         error.statusCode === 400 &&
-        error.statusText.includes('Invalid value for enum')
+        error.errorData.includes('Invalid value for enum')
       ) {
-        error.statusText
+        error.errorData
           .matchAll(/(\w+) - Invalid value for enum./g)
           .toArray()
           .map((x) => x[1])
