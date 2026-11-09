@@ -43,7 +43,7 @@ const Mfa = {
   }),
   components: {
     RecoveryCodes,
-    'TOTPItem': TOTP,
+    TOTPItem: TOTP,
     qrcode: VueQrcode,
     confirm: Confirm,
   },
