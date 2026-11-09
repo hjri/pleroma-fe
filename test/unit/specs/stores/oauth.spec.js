@@ -101,8 +101,8 @@ describe('oauth store', () => {
       const store = useOAuthStore()
       const res = store.createApp()
       await expect(res).rejects.toThrowError('Throttled')
-      expect(store.clientId).to.eql(false)
-      expect(store.clientSecret).to.eql(false)
+      expect(store.clientId).to.eql(null)
+      expect(store.clientSecret).to.eql(null)
     })
   })
 
@@ -158,7 +158,7 @@ describe('oauth store', () => {
       store.clientSecret = 'bad-secret'
 
       await expect(store.getAppToken()).rejects.toThrowError('400')
-      expect(store.appToken).to.eql(false)
+      expect(store.appToken).to.eql(null)
     })
   })
 

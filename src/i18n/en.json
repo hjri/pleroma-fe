@@ -96,6 +96,7 @@
   "general": {
     "apply": "Apply",
     "submit": "Submit",
+    "abort": "Abort",
     "more": "More",
     "logo": "Logo",
     "select_file": "Select file",
@@ -425,7 +426,8 @@
     "state_resolved": "Resolved"
   },
   "selectable_list": {
-    "select_all": "Select all"
+    "select_all": "Select all",
+    "select": "Select"
   },
   "settings": {
     "invalid_settings_imported": "Error importing settings",
@@ -778,6 +780,18 @@
     "refresh_token": "Refresh token",
     "valid_until": "Valid until",
     "revoke_token": "Revoke",
+    "tokens": {
+      "confirm_title": "Revoke tokens",
+      "confirm_content": "Revoke selected token?|Revoke {n} tokens?",
+      "current": "(Current session)",
+      "no_current_info": "Your instance doesn't report which token is current.",
+      "no_current_consequences": "Revoking a token might log you out from current session.",
+      "in_progress": "Revoking is in progress",
+      "progress_status": "Revoking last token|1 token left|{n} tokens left",
+      "revoke_selected": "Revoke selected",
+      "error": "An unrecoverable error occured when revoking tokens",
+      "last_active": "Last active"
+    },
     "panelRadius": "Panels",
     "pause_on_unfocused": "Pause when tab is not focused",
     "presets": "Presets",

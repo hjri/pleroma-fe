@@ -1,0 +1,1 @@
+Token management now supports bulk revokation + displaying current token and last activity time (if supported by backend)

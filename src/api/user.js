@@ -812,7 +812,18 @@ export const fetchOAuthTokens = ({ credentials }) =>
   promisedRequest({
     url: '/api/oauth_tokens.json',
     credentials,
-  })
+  }).then(({ data, ...rest }) => ({
+    ...rest,
+    data: data.map(
+      ({ id, app_name, valid_until, is_current_token, last_active }) => ({
+        id,
+        appName: app_name,
+        validUntil: new Date(valid_until + 'Z'),
+        lastActive: last_active ? new Date(last_active + 'Z') : null,
+        current: is_current_token,
+      }),
+    ),
+  }))
 
 export const revokeOAuthToken = ({ id, credentials }) =>
   promisedRequest({

@@ -1,8 +1,8 @@
 <template>
   <div class="mfa-backup-codes">
-    <h4 v-if="displayTitle">
+    <h5 v-if="displayTitle">
       {{ $t('settings.mfa.recovery_codes') }}
-    </h4>
+    </h5>
     <i v-if="inProgress">{{ $t('settings.mfa.waiting_a_recovery_codes') }}</i>
     <template v-if="ready">
       <p class="alert warning">

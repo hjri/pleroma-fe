@@ -1,10 +1,10 @@
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ProgressButton from 'src/components/progress_button/progress_button.vue'
-import Mfa from './mfa.vue'
+import MFA from './mfa.vue'
+import Tokens from './tokens.vue'
 
 import { useInstanceCapabilitiesStore } from 'src/stores/instance_capabilities.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
-import { useOAuthTokensStore } from 'src/stores/oauth_tokens'
 import { useUsersStore } from 'src/stores/users.js'
 
 import {
@@ -16,7 +16,6 @@ import {
   listAliases,
   moveAccount,
 } from 'src/api/user.js'
-import localeService from 'src/services/locale/locale.service.js'
 
 const SecurityTab = {
   data() {
@@ -43,13 +42,13 @@ const SecurityTab = {
     }
   },
   created() {
-    useOAuthTokensStore().fetchTokens()
     this.fetchAliases()
   },
   components: {
     ProgressButton,
-    Mfa,
+    MFA,
     Checkbox,
+    Tokens,
   },
   computed: {
     user() {
@@ -57,17 +56,6 @@ const SecurityTab = {
     },
     pleromaExtensionsAvailable() {
       return useInstanceCapabilitiesStore().pleromaExtensionsAvailable
-    },
-    oauthTokens() {
-      return useOAuthTokensStore().tokens.map((oauthToken) => {
-        return {
-          id: oauthToken.id,
-          appName: oauthToken.app_name,
-          validUntil: new Date(oauthToken.valid_until).toLocaleDateString(
-            localeService.internalToBrowserLocale(this.$i18n.locale),
-          ),
-        }
-      })
     },
   },
   methods: {
@@ -174,11 +162,6 @@ const SecurityTab = {
     logout() {
       useUsersStore().logout()
       this.$router.replace('/')
-    },
-    revokeToken(id) {
-      if (window.confirm(`${this.$i18n.t('settings.revoke_token')}?`)) {
-        useOAuthTokensStore().revokeToken(id)
-      }
     },
   },
 }

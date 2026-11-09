@@ -12,27 +12,37 @@ import { fetchOAuthTokens, revokeOAuthToken } from 'src/api/user.js'
 export const useOAuthTokensStore = defineStore('oauthTokens', {
   state: () => ({
     tokens: [],
+    usTokens: [], // Shouldn't be more than one but just for consistency sake
   }),
   actions: {
     fetchTokens() {
-      fetchOAuthTokens({
+      return fetchOAuthTokens({
         credentials: useOAuthStore().token,
       }).then(({ data: tokens }) => {
         this.swapTokens(tokens)
       })
     },
     revokeToken(id) {
-      revokeOAuthToken({
+      return revokeOAuthToken({
         id,
         credentials: useOAuthStore().token,
       }).then(({ status }) => {
         if (status === 201) {
-          this.swapTokens(this.tokens.filter((token) => token.id !== id))
+          this.swapTokens([
+            ...this.tokens.filter((token) => token.id !== id),
+            ...this.usTokens.filter((token) => token.id !== id),
+          ])
         }
       })
     },
     swapTokens(tokens) {
-      this.tokens = tokens
+      const sortedTokens = tokens.sort((a, b) => {
+        const idScore = b.id - a.id
+        const lastActiveScore = b.lastActive - a.lastActive
+        return idScore + lastActiveScore * 1000
+      })
+      this.tokens = sortedTokens.filter((t) => !t.current)
+      this.usTokens = sortedTokens.filter((t) => t.current)
     },
   },
 })

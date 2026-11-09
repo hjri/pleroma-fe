@@ -96,9 +96,9 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
             backendDbConfig,
           }),
         )
-        .catch(({ statusCode, statusText }) => {
+        .catch(({ statusCode, errorData }) => {
           if (statusCode === 400) {
-            if (/configurable_from_database/.test(statusText)) {
+            if (/configurable_from_database/.test(errorData)) {
               this.setInstanceAdminNoDbConfig()
             }
           }
