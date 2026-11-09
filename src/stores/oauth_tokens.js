@@ -36,7 +36,11 @@ export const useOAuthTokensStore = defineStore('oauthTokens', {
       })
     },
     swapTokens(tokens) {
-      const sortedTokens = tokens.reverse()
+      const sortedTokens = tokens.sort((a, b) => {
+        const idScore = b.id - a.id
+        const lastActiveScore = b.lastActive - a.lastActive
+        return idScore + lastActiveScore * 1000
+      })
       this.tokens = sortedTokens.filter((t) => !t.current)
       this.usTokens = sortedTokens.filter((t) => t.current)
     },

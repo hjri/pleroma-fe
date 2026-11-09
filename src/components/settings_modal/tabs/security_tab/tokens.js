@@ -3,6 +3,7 @@ import { computed, defineAsyncComponent, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import Checkbox from 'src/components/checkbox/checkbox.vue'
+import Timeago from 'src/components/timeago/timeago.vue'
 
 import { useOAuthTokensStore } from 'src/stores/oauth_tokens.js'
 
@@ -20,6 +21,7 @@ const Tokens = {
       () => import('src/components/confirm_modal/confirm_modal.vue'),
     ),
     Checkbox,
+    Timeago,
   },
   setup() {
     const { locale } = useI18n()
@@ -100,7 +102,11 @@ const Tokens = {
               if (e.statusCode) {
                 if (e.statusCode >= 400 && e.statusCode < 500) {
                   // 4xx - "We Messed Up"
-                  return false
+                  if (e.statusCode === 429) {
+                    return true // Throttled / Too Many Requests
+                  } else {
+                    return false
+                  }
                 } else {
                   // 5xx - "Server Messed Up", should potentially be recoverable
                   return true

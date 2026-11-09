@@ -814,12 +814,15 @@ export const fetchOAuthTokens = ({ credentials }) =>
     credentials,
   }).then(({ data, ...rest }) => ({
     ...rest,
-    data: data.map(({ id, app_name, valid_until, is_current_token }) => ({
-      id,
-      appName: app_name,
-      validUntil: new Date(valid_until),
-      current: is_current_token,
-    })),
+    data: data.map(
+      ({ id, app_name, valid_until, is_current_token, last_active }) => ({
+        id,
+        appName: app_name,
+        validUntil: new Date(valid_until + 'Z'),
+        lastActive: last_active ? new Date(last_active + 'Z') : null,
+        current: is_current_token,
+      }),
+    ),
   }))
 
 export const revokeOAuthToken = ({ id, credentials }) =>

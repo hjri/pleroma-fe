@@ -41,6 +41,7 @@
             />
           </th>
           <th>{{ $t('settings.app_name') }}</th>
+          <th>{{ $t('settings.tokens.last_active') }}</th>
           <th>{{ $t('settings.valid_until') }}</th>
 
           <th class="actions">
@@ -69,6 +70,14 @@
           </td>
           <td>
             {{ oauthToken.appName }} {{ oauthToken.current ? $t('settings.tokens.current') : '' }}
+          </td>
+          <td>
+            <Timeago
+              v-if="oauthToken.lastActive"
+              :time="oauthToken.lastActive"
+              template-key="time.in_past"
+              :auto-update="60"
+            />
           </td>
           <td>{{ oauthToken.validLocalized }}</td>
           <td class="actions">

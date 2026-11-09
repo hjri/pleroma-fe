@@ -789,7 +789,8 @@
       "in_progress": "Revoking is in progress",
       "progress_status": "Revoking last token|1 token left|{n} tokens left",
       "revoke_selected": "Revoke selected",
-      "error": "An unrecoverable error occured when revoking tokens"
+      "error": "An unrecoverable error occured when revoking tokens",
+      "last_active": "Last active"
     },
     "panelRadius": "Panels",
     "pause_on_unfocused": "Pause when tab is not focused",

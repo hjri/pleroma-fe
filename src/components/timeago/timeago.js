@@ -47,7 +47,8 @@ export default {
 
       if (
         typeof this.templateKey === 'string' &&
-        this.relativeTime.key !== 'time.now'
+        this.relativeTime.key !== 'time.now' &&
+        this.relativeTime.key !== 'time.now_short'
       ) {
         return this.$i18n.t(this.templateKey, [timeString])
       }
