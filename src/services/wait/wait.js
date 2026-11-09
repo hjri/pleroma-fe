@@ -1,10 +1,12 @@
 export default (millis) => {
   let timeoutId
-  const promise = new Promise((resolve) => {
+  let promiseReject
+  const promise = new Promise((resolve, reject) => {
+    promiseReject = reject
     timeoutId = setTimeout(() => resolve(), millis)
   })
-  // Careful, this will make promise to never resolve
   promise.abort = () => {
+    promiseReject?.(new Error('aborted'))
     clearTimeout(timeoutId)
   }
   return promise
