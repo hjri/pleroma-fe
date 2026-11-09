@@ -45,7 +45,8 @@ const Tokens = {
     // Selection
     const selected = ref(new Set())
     const allSelected = computed(
-      () => selected.value.size > 0 && selected.value.size >= tokens.value.length,
+      () =>
+        selected.value.size > 0 && selected.value.size >= tokens.value.length,
     )
     const someSelected = computed(
       () => selected.value.size > 0 && !allSelected.value,
