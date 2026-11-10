@@ -4,6 +4,8 @@ import statusPosterService from '../../services/status_poster/status_poster.serv
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
+import { isAnimated } from 'src/services/animated_image/animated_image.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch, faUpload } from '@fortawesome/free-solid-svg-icons'
 
@@ -38,12 +40,9 @@ const mediaUpload = {
         return file
       }
 
-      // For PNGs, check if animated
-      if (file.type === 'image/png') {
-        const isAnimated = await this.isAnimatedPng(file)
-        if (isAnimated) {
-          return file
-        }
+      // Animated pictures would lose their animation on the canvas
+      if (await isAnimated(file)) {
+        return file
       }
 
       return new Promise((resolve) => {
@@ -102,23 +101,6 @@ const mediaUpload = {
         }
         img.src = URL.createObjectURL(file)
       })
-    },
-    async isAnimatedPng(file) {
-      const buffer = await file.arrayBuffer()
-      const view = new Uint8Array(buffer)
-      // Look for animated PNG chunks (acTL)
-      for (let i = 0; i < view.length - 8; i++) {
-        if (
-          view[i] === 0x61 && // a
-          view[i + 1] === 0x63 && // c
-          view[i + 2] === 0x54 && // T
-          view[i + 3] === 0x4c
-        ) {
-          // L
-          return true
-        }
-      }
-      return false
     },
     async uploadFile(file) {
       if (file.size > useInstanceStore().uploadlimit) {
