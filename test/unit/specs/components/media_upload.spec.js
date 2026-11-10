@@ -34,4 +34,11 @@ describe('MediaUpload image compression', () => {
     )
     expect(await resize(svg)).to.equal(svg)
   })
+
+  it('uploads the original when the browser cannot read the picture', async () => {
+    const broken = new File(['not a picture'], 'photo.heic', {
+      type: 'image/heic',
+    })
+    expect(await resize(broken)).to.equal(broken)
+  })
 })

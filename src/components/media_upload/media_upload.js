@@ -51,7 +51,13 @@ const mediaUpload = {
 
       return new Promise((resolve) => {
         const img = new Image()
+        // The browser cannot read it (e.g. HEIC in Chrome): upload it as it is
+        img.onerror = () => {
+          URL.revokeObjectURL(img.src)
+          resolve(file)
+        }
         img.onload = () => {
+          URL.revokeObjectURL(img.src)
           // Calculate new dimensions
           let width = img.width
           let height = img.height
@@ -92,8 +98,8 @@ const mediaUpload = {
 
           canvas.toBlob(
             (blob) => {
-              // Keep the original if compressing did not make it smaller
-              if (blob.size >= file.size) {
+              // Keep the original if compressing failed or did not make it smaller
+              if (!blob || blob.size >= file.size) {
                 resolve(file)
                 return
               }
