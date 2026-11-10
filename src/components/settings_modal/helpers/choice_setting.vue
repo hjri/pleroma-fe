@@ -17,8 +17,8 @@
         :for="idPrefix + 'select'"
         :id="idPrefix + 'label'"
       >
-        <template v-if="backendDescriptionLabel">
-          {{ backendDescriptionLabel }}
+        <template v-if="realLabel">
+          {{ realLabel }}
         </template>
         <template v-else>
           <slot />
@@ -43,10 +43,10 @@
     </Select>
     <DraftButtons />
     <p
-      v-if="backendDescriptionDescription"
+      v-if="realDescription"
       class="setting-description"
     >
-      {{ backendDescriptionDescription + ' ' }}
+      {{ realDescription + ' ' }}
     </p>
   </div>
 </template>

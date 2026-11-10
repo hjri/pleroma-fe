@@ -58,7 +58,7 @@ export default {
       return new Set(this.visibleState)
     },
     suggestionsSet() {
-      const suggestions = this.backendDescriptionSuggestions
+      const suggestions = this.realSuggestions
       if (suggestions) {
         return new Set(suggestions)
       } else {

@@ -10,8 +10,8 @@
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
-      <template v-if="backendDescriptionLabel">
-        {{ backendDescriptionLabel + ' ' }}
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
       </template>
       <template v-else-if="source === 'admin'">
         MISSING LABEL FOR {{ path }}
@@ -25,7 +25,7 @@
         class="input string-input"
         :class="{ disabled: shouldBeDisabled }"
         :disabled="shouldBeDisabled"
-        :placeholder="backendDescriptionSuggestions[0]"
+        :placeholder="realSuggestions[0]"
         :value="displayState"
         @change="event => update({ event })"
       >
@@ -48,11 +48,11 @@
     />
     <DraftButtons v-if="!hideDraftButtons" />
     <p
-      v-if="backendDescriptionDescription"
+      v-if="realDescription"
       class="setting-description"
       :class="{ 'faint': shouldBeDisabled }"
     >
-      {{ backendDescriptionDescription + ' ' }}
+      {{ realDescription + ' ' }}
     </p>
   </label>
 </template>

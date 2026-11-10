@@ -9,8 +9,8 @@
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
-      <template v-if="backendDescriptionLabel">
-        {{ backendDescriptionLabel + ' ' }}
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
       </template>
       <template v-else-if="source === 'admin'">
         MISSING LABEL FOR {{ path }}
@@ -24,7 +24,7 @@
       class="setting-control color-setting-input"
       :class="{ disabled: shouldBeDisabled }"
       :disabled="shouldBeDisabled"
-      :placeholder="backendDescriptionSuggestions"
+      :placeholder="realSuggestions"
       :model-value="realDraftMode ? draft : state"
       @update:model-value="update"
     />
@@ -36,11 +36,11 @@
     <LocalSettingIndicator :is-local="isLocalSetting" />
     <DraftButtons v-if="!hideDraftButtons" />
     <p
-      v-if="backendDescriptionDescription"
+      v-if="realDescription"
       class="setting-description"
       :class="{ 'faint': shouldBeDisabled }"
     >
-      {{ backendDescriptionDescription + ' ' }}
+      {{ realDescription + ' ' }}
     </p>
   </label>
 </template>

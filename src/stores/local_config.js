@@ -38,7 +38,7 @@ export const useLocalConfigStore = defineStore('local_config', {
     setTemporarily({ path, value }) {
       set(this.tempStorage, path, value)
     },
-    unsetTemporarily({ path, value }) {
+    unsetTemporarily({ path }) {
       set(this.tempStorage, path, undefined)
     },
     unset({ path, value }) {

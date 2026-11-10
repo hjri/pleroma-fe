@@ -31,12 +31,12 @@ export default {
       }
       if (this.realSource === 'admin') {
         if (
-          !this.backendDescriptionSuggestions?.length ||
-          this.backendDescriptionSuggestions?.length === 0
+          !this.realSuggestions?.length ||
+          this.realSuggestions?.length === 0
         ) {
           return this.options
         }
-        return this.backendDescriptionSuggestions.map((x) => ({
+        return this.realSuggestions.map((x) => ({
           key: x,
           value: x,
           label: this.optionLabelMap[x] || x,

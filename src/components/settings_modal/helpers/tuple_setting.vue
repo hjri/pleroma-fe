@@ -14,8 +14,8 @@
       />
       <LocalSettingIndicator :is-local="isLocalSetting" />
       {{ ' ' }}
-      <template v-if="backendDescriptionLabel">
-        {{ backendDescriptionLabel + ' ' }}
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
       </template>
       <template v-else-if="source === 'admin'">
         MISSING LABEL FOR {{ path }}
@@ -26,8 +26,8 @@
       <input
         class="input string-input" :class="{ disabled: shouldBeDisabled }"
         :disabled="shouldBeDisabled"
-        :placeholder="backendDescriptionSuggestions?.[0]?.[0]"
-        :title="backendDescriptionSuggestions?.[0]?.[0]"
+        :placeholder="realSuggestions?.[0]?.[0]"
+        :title="realSuggestions?.[0]?.[0]"
         :value="visibleState?.tuple?.[0]"
         @change="e => update({ e, side: 0 })"
       >
@@ -36,19 +36,19 @@
         class="input string-input"
         :class="{ disabled: shouldBeDisabled }"
         :disabled="shouldBeDisabled"
-        :placeholder="backendDescriptionSuggestions?.[0]?.[1]"
-        :title="backendDescriptionSuggestions?.[0]?.[1]"
+        :placeholder="realSuggestions?.[0]?.[1]"
+        :title="realSuggestions?.[0]?.[1]"
         :value="visibleState?.tuple?.[1]"
         @change="e => update({ e, side: 1 })"
       >
     </span>
     <DraftButtons v-if="!hideDraftButtons" />
     <p
-      v-if="backendDescriptionDescription"
+      v-if="realDescription"
       class="setting-description"
       :class="{ 'faint': shouldBeDisabled }"
     >
-      {{ backendDescriptionDescription + ' ' }}
+      {{ realDescription + ' ' }}
     </p>
   </fieldset>
 </template>

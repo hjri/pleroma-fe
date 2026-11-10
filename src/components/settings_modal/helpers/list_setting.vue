@@ -7,8 +7,8 @@
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
-      <template v-if="backendDescriptionLabel">
-        {{ backendDescriptionLabel + ' ' }}
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
       </template>
       <template v-else-if="source === 'admin'">
         MISSING LABEL FOR {{ path }}
@@ -16,11 +16,11 @@
       <slot v-else />
     </legend>
     <p
-      v-if="backendDescriptionDescription"
+      v-if="realDescription"
       class="setting-description"
       :class="{ 'faint': shouldBeDisabled }"
     >
-      {{ backendDescriptionDescription + ' ' }}
+      {{ realDescription + ' ' }}
     </p>
     <ul class="setting-list">
       <li

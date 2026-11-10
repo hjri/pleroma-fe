@@ -14,8 +14,8 @@
       <LocalSettingIndicator :is-local="isLocalSetting" />
       {{ ' ' }}
       <label :for="idPrefix + 'checkbox'">
-        <template v-if="backendDescriptionLabel">
-          {{ backendDescriptionLabel }}
+        <template v-if="realLabel">
+          {{ realLabel }}
         </template>
         <template v-else-if="source === 'admin'">
           MISSING LABEL FOR {{ path }}
@@ -26,18 +26,17 @@
     <Checkbox
       :id="idPrefix + 'checkbox'"
       class="setting-control"
-      :model-value="visibleState"
-      :disabled="shouldBeDisabled"
+      v-model="visibleState"
       :indeterminate="isIndeterminate"
-      @update:model-value="update"
+      :disabled="shouldBeDisabled"
     />
     <p
-      v-if="backendDescriptionDescription || showDescription"
+      v-if="realDescription"
       class="setting-description"
       :class="{ 'faint': shouldBeDisabled }"
     >
       <slot name="description">
-        {{ backendDescriptionDescription + ' ' }}
+        {{ realDescription + ' ' }}
       </slot>
     </p>
     <DraftButtons />

@@ -7,8 +7,8 @@
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
-      <template v-if="backendDescriptionLabel">
-        {{ backendDescriptionLabel + ' ' }}
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
       </template>
       <template v-else-if="source === 'admin'">
         MISSING LABEL FOR {{ path }}
@@ -16,11 +16,11 @@
       <slot v-else />
     </legend>
     <p
-      v-if="backendDescriptionDescription"
+      v-if="realDescription"
       class="setting-description"
       :class="{ 'faint': shouldBeDisabled }"
     >
-      {{ backendDescriptionDescription + ' ' }}
+      {{ realDescription + ' ' }}
     </p>
     <ul class="setting-list">
       <li
@@ -32,14 +32,14 @@
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :value="item.tuple[0]"
-            :title="backendDescriptionSuggestions[0][0]"
+            :title="realSuggestions[0][0]"
             @change="e => update({ event: e, index, eventType: 'edit', tuple: 0 })"
           >
           <input
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :value="item.tuple[1]"
-            :title="backendDescriptionSuggestions[0][1]"
+            :title="realSuggestions[0][1]"
             @change="e => update({ event: e, index, eventType: 'edit', tuple: 1 })"
           >
           <button
@@ -57,16 +57,16 @@
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :disabled="shouldBeDisabled"
-            :placeholder="backendDescriptionSuggestions[0][0]"
-            :title="backendDescriptionSuggestions[0][0]"
+            :placeholder="realSuggestions[0][0]"
+            :title="realSuggestions[0][0]"
           >
           <input
             v-model="newValue[1]"
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :disabled="shouldBeDisabled"
-            :placeholder="backendDescriptionSuggestions[0][1]"
-            :title="backendDescriptionSuggestions[0][1]"
+            :placeholder="realSuggestions[0][1]"
+            :title="realSuggestions[0][1]"
           >
           <button
             class="button-default"
