@@ -119,6 +119,20 @@
         >
           {{ $t("settings.expert_mode") }}
         </Checkbox>
+        <Select
+          v-if="modalMode === 'user'"
+          v-model="mode"
+        >
+          <option value="sync">
+            SYNC
+          </option>
+          <option value="local">
+            LOCAL
+          </option>
+          <option value="fe-admin">
+            FE-ADMIN
+          </option>
+        </Select>
         <span v-if="modalMode === 'admin'">
           <i18n-t
             scope="global"

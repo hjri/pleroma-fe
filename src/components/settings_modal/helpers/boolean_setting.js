@@ -14,6 +14,9 @@ export default {
   computed: {
     ...Setting.computed,
     isIndeterminate() {
+      if (this.realSource === 'fe-admin' || (this.realSource === 'local' && !this.localOnly)) {
+        return this.visibleState === undefined
+      }
       return this.visibleState === this.indeterminateState
     },
   },

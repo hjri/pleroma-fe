@@ -4,16 +4,24 @@ import { defineStore } from 'pinia'
 import {
   LOCAL_DEFAULT_CONFIG,
   LOCAL_DEFAULT_CONFIG_DEFINITIONS,
+  INSTANCE_DEFAULT_CONFIG,
+  INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
   makeUndefined,
   validateSetting,
 } from 'src/stores/default_state/default_config_state.js'
 
 export const defaultState = {
   prefsStorage: {
-    ...makeUndefined(LOCAL_DEFAULT_CONFIG),
+    ...makeUndefined({
+      ...INSTANCE_DEFAULT_CONFIG,
+      ...LOCAL_DEFAULT_CONFIG,
+    }),
   },
   tempStorage: {
-    ...makeUndefined(LOCAL_DEFAULT_CONFIG),
+    ...makeUndefined({
+      ...INSTANCE_DEFAULT_CONFIG,
+      ...LOCAL_DEFAULT_CONFIG,
+    }),
   },
 }
 
@@ -23,15 +31,21 @@ export const useLocalConfigStore = defineStore('local_config', {
   },
   actions: {
     set({ path, value }) {
-      const definition = LOCAL_DEFAULT_CONFIG_DEFINITIONS[path]
+      const definition =
+        LOCAL_DEFAULT_CONFIG_DEFINITIONS[path] ??
+        INSTANCE_DEFAULT_CONFIG_DEFINITIONS[path]
 
       const finalValue = validateSetting({
         path,
         value,
         definition,
         throwError: false,
-        defaultState: LOCAL_DEFAULT_CONFIG,
+        defaultState: {
+          ...INSTANCE_DEFAULT_CONFIG,
+          ...LOCAL_DEFAULT_CONFIG,
+        },
       })
+      console.log(path, value, finalValue)
 
       set(this.prefsStorage, path, finalValue)
     },

@@ -308,9 +308,9 @@ export default {
         case 'admin':
           return {}
         case 'local':
-          return {}
+          return undefined
         case 'fe-admin':
-          return {}
+          return undefined
         default: {
           return get(useMergedConfigStore().mergedConfigDefault, this.canonPath)
         }
@@ -458,6 +458,9 @@ export default {
             .then(() => {
               this.draft = this.state
             })
+        case 'local':
+        case 'fe-admin':
+          this.visibleState = undefined
         default:
           console.warn('Hard reset not implemented yet!')
       }
