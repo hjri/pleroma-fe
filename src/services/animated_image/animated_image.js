@@ -31,11 +31,17 @@ export const isAnimatedAvif = async (file) => {
   return false
 }
 
-// an acTL chunk
+// an acTL chunk before the first IDAT, as APNG needs; the chunks are
+// walked, so the letters inside other data do not count
 export const isAnimatedPng = async (file) => {
+  if (ascii(await head(file), 0, 8) !== '\x89PNG\r\n\x1a\n') return false
   const bytes = new Uint8Array(await file.arrayBuffer())
-  for (let i = 0; i < bytes.length - 3; i++) {
-    if (ascii(bytes, i, i + 4) === 'acTL') return true
+  const view = new DataView(bytes.buffer)
+  // a chunk: length, type, data, CRC
+  for (let pos = 8; pos + 8 <= bytes.length; pos += 12 + view.getUint32(pos)) {
+    const type = ascii(bytes, pos + 4, pos + 8)
+    if (type === 'acTL') return true
+    if (type === 'IDAT') return false
   }
   return false
 }
@@ -43,4 +49,4 @@ export const isAnimatedPng = async (file) => {
 export const isAnimated = async (file) =>
   (await isAnimatedWebP(file)) ||
   (await isAnimatedAvif(file)) ||
-  (file.type === 'image/png' && (await isAnimatedPng(file)))
+  (await isAnimatedPng(file))
