@@ -18,3 +18,16 @@ export const photo = (width, height, name = 'photo.png') =>
       'image/png',
     )
   })
+
+// A flat PNG, which PNG stores in fewer bytes than WebP or JPEG when small
+export const flat = (width, height, name = 'photo.png') =>
+  new Promise((resolve) => {
+    const canvas = document.createElement('canvas')
+    canvas.width = width
+    canvas.height = height
+    canvas.getContext('2d').fillRect(0, 0, width, height)
+    canvas.toBlob(
+      (blob) => resolve(new File([blob], name, { type: 'image/png' })),
+      'image/png',
+    )
+  })

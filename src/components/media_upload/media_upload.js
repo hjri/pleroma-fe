@@ -92,6 +92,11 @@ const mediaUpload = {
 
           canvas.toBlob(
             (blob) => {
+              // Keep the original if compressing did not make it smaller
+              if (blob.size >= file.size) {
+                resolve(file)
+                return
+              }
               resolve(
                 new File([blob], newFileName, {
                   type,

@@ -1,7 +1,7 @@
 import { createTestingPinia } from '@pinia/testing'
 import { mount } from '@vue/test-utils'
 import { setActivePinia } from 'pinia'
-import { photo } from 'test/fixtures/photo.js'
+import { flat, photo } from 'test/fixtures/photo.js'
 import { mountOpts } from 'test/fixtures/setup_test.js'
 
 import MediaUpload from 'src/components/media_upload/media_upload.vue'
@@ -19,6 +19,11 @@ describe('MediaUpload image compression', () => {
   it('compresses a picture', async () => {
     const out = await resize(await photo(100, 100))
     expect(out.name).to.match(/^photo\.(webp|jpg)$/)
+  })
+
+  it('uploads the original when the compressed picture is not smaller', async () => {
+    const picture = await flat(4, 4)
+    expect(await resize(picture)).to.equal(picture)
   })
 
   it('does not rasterize SVG', async () => {
