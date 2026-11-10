@@ -30,8 +30,12 @@ const mediaUpload = {
       }
     },
     async resizeImage(file) {
-      // Skip if not an image or if it's a GIF
-      if (!file.type.startsWith('image/') || file.type === 'image/gif') {
+      // Skip if not an image, a GIF or an SVG
+      if (
+        !file.type.startsWith('image/') ||
+        file.type === 'image/gif' ||
+        file.type === 'image/svg+xml'
+      ) {
         return file
       }
 
