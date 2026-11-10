@@ -33,18 +33,18 @@
             :class="{ disabled: shouldBeDisabled }"
             :value="item[0]"
             :title="realSuggestions[0][0]"
-            @change="e => update({ event: e, key: item[0], eventType: 'edit', isKey: true })"
+            @change="event => edit({ event, key: item[0], isKey: true })"
           >
           <input
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :value="item[1]"
             :title="realSuggestions[0][1]"
-            @change="e => update({ event: e, key: item[0], eventType: 'edit', isKey: false })"
+            @change="event => edit({ event, key: item[0], isKey: false })"
           >
           <button
             class="button-default"
-            @click="e => update({ key: item[0], eventType: 'remove' })"
+            @click="e => remove(item[0])"
           >
             <FAIcon icon="times" />
           </button>
@@ -70,7 +70,7 @@
           >
           <button
             class="button-default"
-            @click="e => update({ eventType: 'add' })"
+            @click="add"
           >
             <FAIcon icon="plus" />
           </button>

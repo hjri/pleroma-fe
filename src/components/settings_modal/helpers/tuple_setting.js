@@ -2,15 +2,28 @@ import Setting from './setting.js'
 
 export default {
   ...Setting,
-  methods: {
-    ...Setting.methods,
-    getValue({ e, side }) {
-      const [a, b] = this.visibleState || []
-      if (side === 0) {
-        return { tuple: [e.target.value, b] }
-      } else {
-        return { tuple: [a, e.target.value] }
-      }
+  computed: {
+    ...Setting.computed,
+    guardedState() {
+      return this.visibleState?.tuple ?? []
+    },
+    a: {
+      get() {
+        return this.guardedState[0]
+      },
+      set(e) {
+        const string = e.target.value
+        this.visibleState = { tuple: [string, this.guradredState[1]] }
+      },
+    },
+    b: {
+      get() {
+        return this.guardedState[1]
+      },
+      set(e) {
+        const string = e.target.value
+        this.visibleState = { tuple: [this.guradredState[0], string] }
+      },
     },
   },
 }

@@ -24,22 +24,20 @@
     </legend>
     <span class="setting-control">
       <input
+        v-model="a"
         class="input string-input" :class="{ disabled: shouldBeDisabled }"
         :disabled="shouldBeDisabled"
         :placeholder="realSuggestions?.[0]?.[0]"
         :title="realSuggestions?.[0]?.[0]"
-        :value="visibleState?.tuple?.[0]"
-        @change="e => update({ e, side: 0 })"
       >
       {{ ' ' }}
       <input
+        v-model="b"
         class="input string-input"
         :class="{ disabled: shouldBeDisabled }"
         :disabled="shouldBeDisabled"
         :placeholder="realSuggestions?.[0]?.[1]"
         :title="realSuggestions?.[0]?.[1]"
-        :value="visibleState?.tuple?.[1]"
-        @change="e => update({ e, side: 1 })"
       >
     </span>
     <DraftButtons v-if="!hideDraftButtons" />

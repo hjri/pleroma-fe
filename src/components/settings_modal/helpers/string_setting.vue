@@ -5,7 +5,7 @@
   >
     <label
       v-if="!hideLabel"
-      :for="idPrefix + 'label'"
+      :for="idPrefix + 'text'"
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
@@ -24,13 +24,13 @@
       <slot v-else />
     </label>
     <input
-      :id="idPrefix + 'label'"
+      :id="idPrefix + 'text'"
+      v-model="visibleState"
       class="setting-control input string-input"
       :class="{ disabled: shouldBeDisabled }"
       :disabled="shouldBeDisabled"
       :placeholder="realSuggestions"
       :value="realDraftMode ? draft : state"
-      @change="update"
     >
     {{ ' ' }}
     <DraftButtons v-if="!hideDraftButtons" />

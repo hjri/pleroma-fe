@@ -5,7 +5,7 @@
   >
     <label
       v-if="!hideLabel"
-      :for="path"
+      :for="idPrefix + 'color'"
       class="setting-label"
       :class="{ 'faint': shouldBeDisabled }"
     >
@@ -19,14 +19,13 @@
     </label>
     {{ ' ' }}
     <ColorInput
-      :id="path"
+      v-model="visibleState"
+      :id="idPrefix + 'color'"
       :name="path"
       class="setting-control color-setting-input"
       :class="{ disabled: shouldBeDisabled }"
       :disabled="shouldBeDisabled"
       :placeholder="realSuggestions"
-      :model-value="realDraftMode ? draft : state"
-      @update:model-value="update"
     />
     {{ ' ' }}
     <ModifiedIndicator

@@ -22,20 +22,19 @@
     <div class="setting-control">
       <input
         :id="idPrefix + 'input'"
+        v-model="urlField"
         class="input string-input"
         :class="{ disabled: shouldBeDisabled }"
         :disabled="shouldBeDisabled"
         :placeholder="realSuggestions[0]"
         :value="displayState"
-        @change="event => update({ event })"
       >
       {{ ' ' }}
       <Checkbox
-        :model-value="socksState"
+        v-model="socksField"
         :disabled="shouldBeDisabled"
         :indeterminate="isIndeterminate"
         style="margin-left: 1em"
-        @update:model-value="event => update({ event, isProxy: true})"
       >
         SOCKS5
         {{ ' ' }}

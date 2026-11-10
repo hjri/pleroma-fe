@@ -25,7 +25,7 @@ export default {
   computed: {
     ...Setting.computed,
     attachment() {
-      const path = this.realDraftMode ? this.draft : this.state
+      const path = this.visibleState
       // The "server" part is primarily for local dev, but could be useful for alt-domain or multiuser usage.
       const url = path.includes('://') ? path : useInstanceStore().server + path
       return {
@@ -37,11 +37,7 @@ export default {
   methods: {
     ...Setting.methods,
     setMediaFile(fileInfo) {
-      if (this.realDraftMode) {
-        this.draft = fileInfo.url
-      } else {
-        this.configSink(this.path, fileInfo.url)
-      }
+      this.visibleState = fileInfo.url
     },
   },
 }

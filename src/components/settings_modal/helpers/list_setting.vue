@@ -30,7 +30,7 @@
         <Checkbox
           :disabled="shouldBeDisabled"
           :model-value="optionPresent(item.value)"
-          @update:model-value="event => update({ event, value: item.value, eventType: 'toggle' })"
+          @update:model-value="event => toggle(event, item.value)"
         >
           {{ item.label }}
         </Checkbox>
@@ -44,11 +44,11 @@
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :value="item"
-            @change="e => update({ event: e, index, eventType: 'edit' })"
+            @change="event => edit(event, index)"
           >
           <button
             class="button-default"
-            @click="e => update({ index, eventType: 'remove' })"
+            @click="e => remove(index)"
           >
             <FAIcon icon="times" />
           </button>
@@ -64,7 +64,7 @@
           >
           <button
             class="button-default"
-            @click="e => update({ eventType: 'add' })"
+            @click="e => add()"
           >
             <FAIcon icon="plus" />
           </button>

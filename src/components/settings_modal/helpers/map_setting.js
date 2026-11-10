@@ -24,50 +24,48 @@ export default {
   },
   methods: {
     ...Setting.methods,
-    getValue({ event, key, eventType, isKey }) {
-      switch (eventType) {
-        case 'add': {
-          if (key === '') return this.visibleState
-          const res = {
-            ...this.visibleState,
-            ...Object.fromEntries([this.newValue]),
-          }
-          this.newValue = ['', '']
-          return res
-        }
-
-        case 'remove': {
-          // initial state for this type is empty array
-          if (Array.isArray(this.visibleState)) return this.visibleState
-          const newEntries = Object.entries(this.visibleState).filter(
-            ([k]) => k !== key,
-          )
-
-          if (newEntries.length === 0) return []
-          return Object.fromEntries(newEntries)
-        }
-
-        case 'edit': {
-          const string = event.target.value
-          const newEntries = Object.entries(this.visibleState).map(([k, v]) => {
-            if (isKey) {
-              if (k === key) {
-                return [string, v]
-              } else {
-                return [k, v]
-              }
-            } else {
-              if (k === key) {
-                return [k, string]
-              } else {
-                return [k, v]
-              }
-            }
-          })
-
-          return Object.fromEntries(newEntries)
-        }
+    getValue(e) {
+      return e
+    },
+    add() {
+      this.visibleSate = {
+        ...this.visibleState,
+        ...Object.fromEntries([this.newValue]),
       }
+      this.newValue = ['', '']
+    },
+    remove(key) {
+      // initial state for this type is empty array
+      if (Array.isArray(this.visibleState)) return
+      const newEntries = Object.entries(this.visibleState).filter(
+        ([k]) => k !== key,
+      )
+
+      if (newEntries.length === 0) {
+        this.visibleState = []
+      } else {
+        this.visibleState = Object.fromEntries(newEntries)
+      }
+    },
+    edit({ event, key, isKey }) {
+      const string = event.target.value
+      const newEntries = Object.entries(this.visibleState).map(([k, v]) => {
+        if (isKey) {
+          if (k === key) {
+            return [string, v]
+          } else {
+            return [k, v]
+          }
+        } else {
+          if (k === key) {
+            return [k, string]
+          } else {
+            return [k, v]
+          }
+        }
+      })
+
+      this.visibleState = Object.fromEntries(newEntries)
     },
   },
 }

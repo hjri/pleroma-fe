@@ -7,38 +7,31 @@ export default {
       newValue: ['', ''],
     }
   },
+  computed: {
+    ...ListSetting.computed,
+    newValid() {
+      return Boolean(this.newValue[0]) && Boolean(this.newValue[1])
+    },
+  },
   methods: {
     ...ListSetting.methods,
-    getValue({ event, index, eventType, tuple }) {
-      switch (eventType) {
-        case 'add': {
-          if (!this.newValue[0] || !this.newValue[1]) return this.visibleState
-          const res = [...this.visibleState, this.newValue]
-          this.newValue = ['', '']
-          return res
-        }
+    resetNew() {
+      this.newValue = ['', '']
+    },
+    edit(event, index, tuple) {
+      const string = event.target.value
+      if (!string) return
 
-        case 'remove': {
-          const pre = this.visibleState.slice(0, index)
-          const post = this.visibleState.slice(index + 1)
+      const pre = this.extraEntries.slice(0, index)
+      const post = this.extraEntries.slice(index + 1)
+      const item = this.extraEntries[index]
 
-          return [...pre, ...post]
-        }
-
-        case 'edit': {
-          const pre = this.visibleState.slice(0, index)
-          const post = this.visibleState.slice(index + 1)
-          const item = this.visibleState[index]
-          const string = event.target.value
-          if (!string) return this.visibleState
-
-          if (tuple === 0) {
-            return [...pre, [string, item[1]], ...post]
-          } else {
-            return [...pre, [item[0], string], ...post]
-          }
-        }
+      if (tuple === 0) {
+        this.extraEntries = [...pre, [string, item[1]], ...post]
+      } else {
+        this.extraEntries = [...pre, [item[0], string], ...post]
       }
+      this.update()
     },
   },
 }

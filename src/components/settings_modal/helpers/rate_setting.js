@@ -31,22 +31,19 @@ export default {
   },
   methods: {
     ...Setting.methods,
-    getValue({ event, side, index, eventType }) {
-      if (eventType === 'edit') {
-        const value = Number(event.target.value)
-        if (Number.isNaN(value)) return this.visibleState
+    edit({ event, side, index }) {
+      const value = Number(event.target.value)
+      if (Number.isNaN(value)) return this.visibleState
 
-        const newVal = [...this.normalizedState.map((x) => [...x])]
-        newVal[side][index] = value
-        return newVal
-      }
-
-      if (eventType === 'toggleMode') {
-        if (event === 'split') {
-          return [this.normalizedState[0], this.normalizedState[0]]
-        } else if (event === 'join') {
-          return this.normalizedState[0]
-        }
+      const newVal = [...this.normalizedState.map((x) => [...x])]
+      newVal[side][index] = value
+      this.visibleState = newVal
+    },
+    toggleMode(event) {
+      if (event === 'split') {
+        this.visibleState = [this.normalizedState[0], this.normalizedState[0]]
+      } else if (event === 'join') {
+        this.visibleState = this.normalizedState[0]
       }
     },
   },

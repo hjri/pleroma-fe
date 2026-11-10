@@ -37,7 +37,7 @@
           <button
             v-if="visibleState.length === 0"
             class="button-default add-button"
-            @click="e => update({ eventType: 'add' })"
+            @click="e => add()"
           >
             <FAIcon icon="plus" />
           </button>
@@ -62,7 +62,7 @@
                   class="input string-input"
                   :disabled="shouldBeDisabled"
                   :value="item[':src']"
-                  @change="event => update({ event, index, eventType: 'edit', field: ':src' })"
+                  @change="event => edit(event, index, ':src')"
                 >
               </div>
               <MediaUpload
@@ -104,7 +104,7 @@
                   class="input string-input"
                   :class="{ disabled: shouldBeDisabled }"
                   :value="item[':sizes']"
-                  @change="e => update({ event: e, index, eventType: 'edit', field: ':sizes' })"
+                  @change="e => edit(event, index, ':sizes')"
                 >
               </dd>
               <dt>
@@ -118,7 +118,7 @@
                   class="input string-input"
                   :class="{ disabled: shouldBeDisabled }"
                   :value="item[':type']"
-                  @change="e => update({ event: e, index, eventType: 'edit', field: ':type' })"
+                  @change="e => edit(event, index, ':type')"
                 >
               </dd>
             </dl>
@@ -126,13 +126,13 @@
               <button
                 v-if="index === visibleState.length - 1"
                 class="button-default add-button"
-                @click="e => update({ eventType: 'add' })"
+                @click="e => add()"
               >
                 <FAIcon icon="plus" />
               </button>
               <button
                 class="button-default delete-button"
-                @click="e => update({ index, eventType: 'remove' })"
+                @click="e => remove(index)"
               >
                 <FAIcon icon="times" />
               </button>

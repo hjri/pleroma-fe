@@ -204,9 +204,9 @@ export default {
         }
       },
       set(value) {
-        this.$emit('update:modelValue', )
+        this.$emit('update:modelValue')
         this.configSink(this.path, value)
-      }
+      },
     },
     visibleState: {
       get() {
@@ -222,7 +222,7 @@ export default {
         } else {
           this.state = this.getValue(value)
         }
-      }
+      },
     },
 
     // Data access
@@ -322,6 +322,7 @@ export default {
       return get(useAdminSettingsStore().descriptions, this.descriptionPath)
     },
     realLabel() {
+      if (this.hideLabel) return ''
       if (this.label) return this.label
       if (this.realSource !== 'admin') return ''
       if (!this.backendDescription || this.overrideBackendDescriptionLabel) {
@@ -340,9 +341,9 @@ export default {
       }
     },
     realDescription() {
+      if (this.hideDescription) return ''
       if (this.description) return this.description
       if (this.realSource !== 'admin') return ''
-      if (this.hideDescription) return null
       if (!this.backendDescription || this.overrideBackendDescription) {
         return this.$t(
           [
@@ -405,7 +406,9 @@ export default {
     canHardReset() {
       switch (this.realSource) {
         case 'admin':
-          return useAdminSettingsStore().modifiedPaths?.has(this.canonPath.join(' -> '))
+          return useAdminSettingsStore().modifiedPaths?.has(
+            this.canonPath.join(' -> '),
+          )
         case 'local':
         case 'fe-admin':
           return this.state !== undefined
@@ -428,7 +431,7 @@ export default {
     // Function that meant to be overriden by consumers to output
     // correct value given the model-value update event
     getValue(e) {
-      return e.target.value
+      return e
     },
     commitDraft() {
       if (this.realDraftMode) {

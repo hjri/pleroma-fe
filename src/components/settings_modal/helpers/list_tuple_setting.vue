@@ -33,18 +33,18 @@
             :class="{ disabled: shouldBeDisabled }"
             :value="item.tuple[0]"
             :title="realSuggestions[0][0]"
-            @change="e => update({ event: e, index, eventType: 'edit', tuple: 0 })"
+            @change="event => edit(event, index, 0)"
           >
           <input
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :value="item.tuple[1]"
             :title="realSuggestions[0][1]"
-            @change="e => update({ event: e, index, eventType: 'edit', tuple: 1 })"
+            @change="event => edit(event, index, 1)"
           >
           <button
             class="button-default"
-            @click="e => update({ index, eventType: 'remove' })"
+            @click="e => remove(index)"
           >
             <FAIcon icon="times" />
           </button>
@@ -70,7 +70,7 @@
           >
           <button
             class="button-default"
-            @click="e => update({ eventType: 'add' })"
+            @click="e => add()"
           >
             <FAIcon icon="plus" />
           </button>

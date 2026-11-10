@@ -25,8 +25,8 @@
     </span>
     <Checkbox
       :id="idPrefix + 'checkbox'"
-      class="setting-control"
       v-model="visibleState"
+      class="setting-control"
       :indeterminate="isIndeterminate"
       :disabled="shouldBeDisabled"
     />

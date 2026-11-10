@@ -45,10 +45,4 @@ export default {
       return this.options
     },
   },
-  methods: {
-    ...Setting.methods,
-    getValue(e) {
-      return e
-    },
-  },
 }

@@ -7,6 +7,7 @@ export default {
   ...Setting,
   data() {
     return {
+      extraEntries: [],
       newValue: '',
     }
   },
@@ -65,13 +66,6 @@ export default {
         return new Set()
       }
     },
-    extraEntries() {
-      if (this.ignoreSuggestions) return [...this.valueSet.values()]
-      if (!this.suggestionsSet) return []
-      return [...this.valueSet.values()].filter((x) => {
-        return !this.builtinEntriesValueSet.has(x)
-      })
-    },
     builtinEntries() {
       if (this.ignoreSuggestions) return []
       if (this.overrideAvailableOptions) {
@@ -88,48 +82,62 @@ export default {
     builtinEntriesValueSet() {
       return new Set(this.builtinEntries.map((x) => x.value))
     },
+    builtinEntriesSelected() {
+      return new Set(
+        this.builtinEntriesValueSet.values().filter((x) => {
+          return this.valueSet.has(x)
+        }),
+      )
+    },
+    newValid() {
+      return Boolean(this.newValue)
+    },
   },
   methods: {
     ...Setting.methods,
     optionPresent(option) {
       return this.valueSet.has(option)
     },
-    getValue({ event, value, index, eventType }) {
-      switch (eventType) {
-        case 'toggle': {
-          this.newValue = ''
-          const newSet = new Set(this.valueSet.values())
-          if (event) {
-            newSet.add(value)
-          } else {
-            newSet.delete(value)
-          }
-          return [...newSet.values()]
-        }
-
-        case 'add': {
-          if (!this.newValue) return this.valueSet.values()
-          const res = [...this.valueSet.values(), this.newValue]
-          this.newValue = ''
-          return res
-        }
-
-        case 'remove': {
-          const pre = [...this.valueSet.values()].slice(0, index)
-          const post = [...this.valueSet.values()].slice(index + 1)
-
-          return [...pre, ...post]
-        }
-
-        case 'edit': {
-          const pre = [...this.valueSet.values()].slice(0, index)
-          const post = [...this.valueSet.values()].slice(index + 1)
-          const string = event.target.value
-          if (!string) return [...this.valueSet.values()]
-
-          return [...pre, string, ...post]
-        }
+    resetNew() {
+      this.newValue = ''
+    },
+    getValue(e) {
+      return e
+    },
+    update() {
+      this.visibleState = [
+        ...this.builtinEntriesSelected.values(),
+        ...this.extraEntries,
+      ]
+    },
+    toggle(event, value) {
+      const newSet = new Set(this.builtinEntriesSelected)
+      if (event) {
+        newSet.add(value)
+      } else {
+        newSet.delete(value)
       }
+      this.visibleState = [...newSet.values(), ...this.extraEntries]
+    },
+    add() {
+      if (!this.newValid) return
+      this.extraEntries = [...this.extraEntries, this.newValue]
+      this.update()
+      this.resetNew()
+    },
+    remove(index) {
+      const pre = [...this.extraEntries].slice(0, index)
+      const post = [...this.extraEntries].slice(index + 1)
+      this.extraEntries = [...pre, ...post]
+      this.update()
+    },
+    edit(event, index) {
+      const string = event.target.value
+      if (!string) return
+      const pre = [...this.extraEntries].slice(0, index)
+      const post = [...this.extraEntries].slice(index + 1)
+      this.extraEntries = [...pre, string, ...post]
+      this.update()
     },
   },
 }
