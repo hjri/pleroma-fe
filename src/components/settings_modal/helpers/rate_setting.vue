@@ -4,14 +4,18 @@
     class="RateSetting setting-item"
   >
     <legend
+      v-if="!hideLabel"
       class="setting-label"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
       <ModifiedIndicator
         :changed="isChanged"
         :onclick="reset"
       />
-      <LocalSettingIndicator :is-local="isLocalSetting" />
+      <LocalSettingIndicator
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
+      />
       {{ ' ' }}
       <template v-if="realLabel">
         {{ realLabel + ' ' }}
@@ -24,10 +28,11 @@
     <p
       v-if="realDescription"
       class="setting-description"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
       {{ realDescription + ' ' }}
     </p>
+    <DraftButtons v-if="!hideDraftButtons" />
     <div class="setting-control">
       <table>
         <thead>
@@ -101,7 +106,6 @@
         {{ $t('admin_dash.rate_limit.separate') }}
       </Checkbox>
     </div>
-    <DraftButtons />
   </fieldset>
 </template>
 

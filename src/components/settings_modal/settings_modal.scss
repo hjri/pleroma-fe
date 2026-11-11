@@ -3,19 +3,19 @@
 
   h2 {
     font-size: 1.3rem;
-    font-weight: 500;
     margin-top: 2em;
     margin-bottom: 1em;
     margin-left: -1em;
     width: 100%;
     padding-right: 1em;
     padding-left: 1em;
+    font-weight: 700;
   }
 
   h3 {
     box-sizing: border-box;
     font-size: 1.2rem;
-    font-weight: 500;
+    font-weight: 600;
     border-bottom: 4px double var(--border);
     margin-top: 1em;
     margin-bottom: 0.5em;
@@ -29,6 +29,7 @@
     margin-top: 1em;
     margin-bottom: 0.5em;
     border-bottom: 2px solid var(--border);
+    font-weight: 600;
   }
 
   h5 {
@@ -102,6 +103,10 @@
       float: left;
       grid-area: label;
       text-align: right;
+
+      &.-overriden {
+        font-style: italic;
+      }
     }
 
     .ModifiedIndicator,

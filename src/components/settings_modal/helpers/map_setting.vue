@@ -4,9 +4,19 @@
     class="MapSetting setting-item"
   >
     <legend
+      v-if="!hideLabel"
       class="setting-label"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
+      <ModifiedIndicator
+        :changed="isChanged"
+        :onclick="reset"
+      />
+      <LocalSettingIndicator
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
+      />
+      {{ ' ' }}
       <template v-if="realLabel">
         {{ realLabel + ' ' }}
       </template>
@@ -18,10 +28,11 @@
     <p
       v-if="realDescription"
       class="setting-description"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
       {{ realDescription + ' ' }}
     </p>
+    <DraftButtons v-if="!hideDraftButtons" />
     <ul class="setting-list">
       <li
         v-for="(item, i) in displayState"
@@ -82,7 +93,6 @@
       :onclick="reset"
     />
     <LocalSettingIndicator :is-local="isLocalSetting" />
-    <DraftButtons />
   </fieldset>
 </template>
 

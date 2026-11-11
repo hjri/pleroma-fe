@@ -1,9 +1,10 @@
 <template>
   <span
-    v-if="isLocal"
+    v-if="isLocal || isOverriden"
     class="LocalSettingIndicator"
   >
     <Popover
+      v-if="isLocal"
       trigger="hover"
       :aria-label="$t('settings.setting_local_side')"
       tooltip
@@ -19,6 +20,23 @@
         </div>
       </template>
     </Popover>
+    <Popover
+      v-if="isOverriden"
+      trigger="hover"
+      :aria-label="$t('settings.setting_local_override')"
+      tooltip
+    >
+      <template #trigger>
+        <FAIcon
+          icon="screwdriver-wrench"
+        />
+      </template>
+      <template #content>
+        <div class="profilesetting-tooltip">
+          {{ $t('settings.setting_local_override') }}
+        </div>
+      </template>
+    </Popover>
   </span>
 </template>
 
@@ -26,14 +44,15 @@
 import Popover from 'src/components/popover/popover.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faDesktop } from '@fortawesome/free-solid-svg-icons'
+import { faDesktop, faScrewdriverWrench } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faDesktop)
+library.add(faDesktop, faScrewdriverWrench)
 
 export default {
   components: { Popover },
   props: {
     isLocal: Boolean,
+    isOverriden: Boolean,
   },
 }
 </script>

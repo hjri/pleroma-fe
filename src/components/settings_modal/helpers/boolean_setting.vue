@@ -3,26 +3,30 @@
     v-if="matchesExpertLevel"
     class="BooleanSetting setting-item"
   >
-    <span
+    <label
+      v-if="!hideLabel"
+      :for="idPrefix + 'checkbox'"
       class="setting-label"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
       <ModifiedIndicator
         :changed="isChanged"
         :onclick="reset"
       />
-      <LocalSettingIndicator :is-local="isLocalSetting" />
+      <LocalSettingIndicator
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
+      />
       {{ ' ' }}
-      <label :for="idPrefix + 'checkbox'">
-        <template v-if="realLabel">
-          {{ realLabel }}
-        </template>
-        <template v-else-if="source === 'admin'">
-          MISSING LABEL FOR {{ path }}
-        </template>
-        <slot v-else />
-      </label>
-    </span>
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
+      </template>
+      <template v-else-if="source === 'admin'">
+        MISSING LABEL FOR {{ path }}
+      </template>
+      <slot v-else />
+    </label>
+    {{ ' ' }}
     <Checkbox
       :id="idPrefix + 'checkbox'"
       v-model="visibleState"
@@ -30,16 +34,17 @@
       :indeterminate="isIndeterminate"
       :disabled="shouldBeDisabled"
     />
+    {{ ' ' }}
+    <DraftButtons v-if="!hideDraftButtons" />
     <p
       v-if="realDescription"
       class="setting-description"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
       <slot name="description">
         {{ realDescription + ' ' }}
       </slot>
     </p>
-    <DraftButtons />
   </div>
 </template>
 

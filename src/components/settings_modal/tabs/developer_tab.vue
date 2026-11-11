@@ -28,20 +28,12 @@
       <h3>{{ $t('settings.debug') }}</h3>
       <ul class="setting-list">
         <li>
-          <BooleanSetting
-            path="themeDebug"
-            :local="true"
-            :expert="1"
-          >
+          <BooleanSetting path="themeDebug">
             {{ $t('settings.theme_debug') }}
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting
-            path="forceThemeRecompilation"
-            :local="true"
-            :expert="1"
-          >
+          <BooleanSetting path="forceThemeRecompilation">
             {{ $t('settings.force_theme_recompilation_debug') }}
           </BooleanSetting>
         </li>

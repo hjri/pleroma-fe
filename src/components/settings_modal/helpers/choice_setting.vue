@@ -2,29 +2,31 @@
   <div
     v-if="matchesExpertLevel"
     class="ChoiceSetting setting-item"
-    :class="{ 'faint': shouldBeDisabled }"
   >
-    <div
+    <label
+      v-if="!hideLabel"
+      :for="idPrefix + 'select'"
       class="setting-label"
+      :class="labelClasses"
     >
       <ModifiedIndicator
         :changed="isChanged"
         :onclick="reset"
       />
-      <LocalSettingIndicator :is-local="isLocalSetting" />
+      <LocalSettingIndicator
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
+      />
       {{ ' ' }}
-      <label
-        :for="idPrefix + 'select'"
-        :id="idPrefix + 'label'"
-      >
-        <template v-if="realLabel">
-          {{ realLabel }}
-        </template>
-        <template v-else>
-          <slot />
-        </template>
-      </label>
-    </div>
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
+      </template>
+      <template v-else-if="source === 'admin'">
+        MISSING LABEL FOR {{ path }}
+      </template>
+      <slot v-else />
+    </label>
+    {{ ' ' }}
     <Select
       class="setting-control"
       :id="idPrefix + 'select'"

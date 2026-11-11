@@ -7,18 +7,12 @@
           <h4>{{ $t('admin_dash.limits.posts') }}</h4>
           <ul class="setting-list">
             <li>
-              <IntegerSetting
-                source="admin"
-                path=":pleroma.:instance.:limit"
-                draft-mode
-              />
+              <IntegerSetting path=":pleroma.:instance.:limit" />
             </li>
             <li>
               <IntegerSetting
-                source="admin"
                 path=":pleroma.:instance.:remote_limit"
-                expert="1"
-                draft-mode
+                :expert="1"
               />
             </li>
           </ul>
@@ -27,25 +21,13 @@
           <h4>{{ $t('admin_dash.limits.uploads') }}</h4>
           <ul class="setting-list">
             <li>
-              <IntegerSetting
-                source="admin"
-                path=":pleroma.:instance.:description_limit"
-                draft-mode
-              />
+              <IntegerSetting path=":pleroma.:instance.:description_limit" />
             </li>
             <li>
-              <IntegerSetting
-                source="admin"
-                path=":pleroma.:instance.:upload_limit"
-                draft-mode
-              />
+              <IntegerSetting path=":pleroma.:instance.:upload_limit" />
             </li>
             <li>
-              <IntegerSetting
-                source="admin"
-                path=":pleroma.:instance.:max_media_attachments"
-                draft-mode
-              />
+              <IntegerSetting path=":pleroma.:instance.:max_media_attachments" />
             </li>
           </ul>
         </li>
@@ -53,57 +35,31 @@
           <h4>{{ $t('admin_dash.limits.users') }}</h4>
           <ul class="setting-list">
             <li>
-              <IntegerSetting
-                source="admin"
-                path=":pleroma.:instance.:max_pinned_statuses"
-                draft-mode
-              />
+              <IntegerSetting path=":pleroma.:instance.:max_pinned_statuses" />
             </li>
             <li>
-              <IntegerSetting
-                source="admin"
-                path=":pleroma.:instance.:user_bio_length"
-                draft-mode
-              />
+              <IntegerSetting path=":pleroma.:instance.:user_bio_length" />
             </li>
             <li>
-              <IntegerSetting
-                source="admin"
-                path=":pleroma.:instance.:user_name_length"
-                draft-mode
-              />
+              <IntegerSetting path=":pleroma.:instance.:user_name_length" />
             </li>
             <li>
               <h5>{{ $t('admin_dash.limits.profile_fields') }}</h5>
               <ul class="setting-list">
                 <li>
-                  <IntegerSetting
-                    source="admin"
-                    path=":pleroma.:instance.:max_account_fields"
-                    draft-mode
-                  />
+                  <IntegerSetting path=":pleroma.:instance.:max_account_fields" />
                 </li>
                 <li>
                   <IntegerSetting
-                    source="admin"
                     path=":pleroma.:instance.:max_remote_account_fields"
-                    draft-mode
                     expert="1"
                   />
                 </li>
                 <li>
-                  <IntegerSetting
-                    source="admin"
-                    path=":pleroma.:instance.:account_field_name_length"
-                    draft-mode
-                  />
+                  <IntegerSetting path=":pleroma.:instance.:account_field_name_length" />
                 </li>
                 <li>
-                  <IntegerSetting
-                    source="admin"
-                    path=":pleroma.:instance.:account_field_value_length"
-                    draft-mode
-                  />
+                  <IntegerSetting path=":pleroma.:instance.:account_field_value_length" />
                 </li>
               </ul>
             </li>
@@ -111,18 +67,11 @@
               <h5>{{ $t('admin_dash.limits.user_uploads') }}</h5>
               <ul class="setting-list">
                 <li>
-                  <IntegerSetting
-                    source="admin"
-                    path=":pleroma.:instance.:avatar_upload_limit"
-                    draft-mode
+                  <IntegerSetting path=":pleroma.:instance.:avatar_upload_limit"
                   />
                 </li>
                 <li>
-                  <IntegerSetting
-                    source="admin"
-                    path=":pleroma.:instance.:banner_upload_limit"
-                    draft-mode
-                  />
+                  <IntegerSetting path=":pleroma.:instance.:banner_upload_limit" />
                 </li>
               </ul>
             </li>
@@ -132,18 +81,10 @@
           <h4>{{ $t('admin_dash.limits.other') }}</h4>
           <ul class="setting-list">
             <li>
-              <IntegerSetting
-                source="admin"
-                path=":pleroma.:instance.:max_report_comment_size"
-                draft-mode
-              />
+              <IntegerSetting path=":pleroma.:instance.:max_report_comment_size" />
             </li>
             <li>
-              <IntegerSetting
-                source="admin"
-                path=":pleroma.:instance.:max_endorsed_users"
-                draft-mode
-              />
+              <IntegerSetting path=":pleroma.:instance.:max_endorsed_users" />
             </li>
           </ul>
         </li>

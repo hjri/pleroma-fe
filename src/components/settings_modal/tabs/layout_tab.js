@@ -19,6 +19,11 @@ const GeneralTab = {
           label: this.$t(`settings.third_column_mode_${mode}`),
         }),
       ),
+      userPopoverAvatarActionOptions: ['close', 'zoom', 'open'].map((mode) => ({
+        key: mode,
+        value: mode,
+        label: this.$t(`settings.user_popover_avatar_action_${mode}`),
+      })),
     }
   },
   components: {

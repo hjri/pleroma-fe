@@ -11,12 +11,6 @@ import SharedComputedObject from '../helpers/shared_computed_object.js'
 import StringSetting from '../helpers/string_setting.vue'
 
 const OtherTab = {
-  provide() {
-    return {
-      defaultDraftMode: true,
-      defaultSource: 'admin',
-    }
-  },
   components: {
     BooleanSetting,
     ChoiceSetting,

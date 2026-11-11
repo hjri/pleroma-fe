@@ -29,7 +29,6 @@
             id="postContentType"
             path="postContentType"
             :options="postContentOptions"
-            :local="true"
           >
             {{ $t('settings.default_post_status_content_type') }}
           </ChoiceSetting>
@@ -40,10 +39,7 @@
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting
-            path="autocompleteSelect"
-            expert="1"
-          >
+          <BooleanSetting path="autocompleteSelect">
             {{ $t('settings.autocomplete_select_first') }}
           </BooleanSetting>
         </li>
@@ -56,10 +52,8 @@
         </li>
         <li v-if="!mergedConfig.autoSaveDraft">
           <ChoiceSetting
-            id="unsavedPostAction"
             path="unsavedPostAction"
             :options="unsavedPostActionOptions"
-            expert="1"
           >
             {{ $t('settings.unsaved_post_action') }}
           </ChoiceSetting>
@@ -96,21 +90,12 @@
       </h3>
       <ul class="setting-list">
         <li>
-          <BooleanSetting
-            path="imageCompression"
-            :local="true"
-            expert="1"
-          >
+          <BooleanSetting path="imageCompression">
             {{ $t('settings.image_compression') }}
           </BooleanSetting>
           <ul class="setting-list suboptions">
             <li>
-              <BooleanSetting
-                path="alwaysUseJpeg"
-                :local="true"
-                expert="1"
-                parent-path="imageCompression"
-              >
+              <BooleanSetting path="alwaysUseJpeg">
                 {{ $t('settings.always_use_jpeg') }}
               </BooleanSetting>
             </li>

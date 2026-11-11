@@ -40,7 +40,6 @@
             :units="['px', 'rem']"
             :reset-default="{ 'px': 14, 'rem': 1 }"
             timed-apply-mode
-            :local="true"
           >
             {{ $t('settings.text_size') }}
           </UnitSetting>
@@ -86,7 +85,6 @@
           <UnitSetting
             path="emojiSize"
             :step="0.1"
-            :local="true"
             :units="['px', 'rem']"
             :reset-default="{ 'px': 32, 'rem': 2.2 }"
           >
@@ -99,7 +97,6 @@
               <FloatSetting
                 v-if="user"
                 path="emojiReactionsScale"
-                :local="true"
               >
                 {{ $t('settings.emoji_reactions_scale') }}
               </FloatSetting>
@@ -120,10 +117,7 @@
           </BooleanSetting>
           <ul class="setting-list suboptions">
             <li>
-              <BooleanSetting
-                path="pauseOnUnfocused"
-                parent-path="streaming"
-              >
+              <BooleanSetting path="pauseOnUnfocused">
                 {{ $t('settings.pause_on_unfocused') }}
               </BooleanSetting>
             </li>
@@ -132,8 +126,6 @@
         <li>
           <BooleanSetting
             path="useStreamingApi"
-            :local="true"
-            expert="1"
             @update:model-value="toggleStreaming"
           >
             {{ $t('settings.useStreamingApi') }}

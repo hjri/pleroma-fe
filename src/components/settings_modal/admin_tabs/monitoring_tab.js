@@ -13,12 +13,6 @@ import { faGlobe } from '@fortawesome/free-solid-svg-icons'
 library.add(faGlobe)
 
 const MonitoringTab = {
-  provide() {
-    return {
-      defaultDraftMode: true,
-      defaultSource: 'admin',
-    }
-  },
   components: {
     BooleanSetting,
     ChoiceSetting,

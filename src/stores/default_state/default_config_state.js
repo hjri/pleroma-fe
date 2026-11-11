@@ -156,13 +156,19 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
     // bad name
     description: 'Hide posts of muted users entirely',
     default: false,
+    parent: 'hideFilteredStatuses',
+    parentInvert: true,
   },
   hideMutedThreads: {
     description: 'Hide muted threads entirely',
     default: true,
+    parent: 'hideFilteredStatuses',
+    parentInvert: true,
   },
   hideWordFilteredPosts: {
     description: 'Hide wordfiltered posts entirely',
+    parent: 'hideFilteredStatuses',
+    parentInvert: true,
     default: false,
   },
   muteBotStatuses: {
@@ -200,10 +206,13 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
   loopVideo: {
     description: 'Loop videos',
     default: true,
+    expert: 1,
   },
   loopVideoSilentOnly: {
     description: 'Loop only videos without sound',
     default: true,
+    expert: 1,
+    parent: 'loopVideo',
   },
   /// This is not the streaming API configuration, but rather an option
   /// for automatically loading new posts into the timeline without
@@ -223,15 +232,18 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
   emojiReactionsOnTimeline: {
     description: 'Show emoji reactions on timeline',
     default: true,
+    expert: 1,
   },
   alwaysShowNewPostButton: {
     description: 'Always show mobile "new post" button, even in desktop mode',
     default: false,
+    expert: 1,
   },
   autohideFloatingPostButton: {
     description:
       'Automatically hide mobile "new post" button when scrolling down',
     default: false,
+    expert: 1,
   },
   stopGifs: {
     description: 'Play animated gifs on hover only',
@@ -292,9 +304,11 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
   webPushNotifications: {
     description: 'Use WebPush',
     default: false,
+    expert: 1,
   },
   webPushAlwaysShowNotifications: {
     description: 'Ignore filter when using WebPush',
+    parent: 'webPushNotifications',
     default: false,
   },
   interfaceLanguage: {
@@ -326,6 +340,9 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
   hideFilteredStatuses: {
     description: 'Hide wordfiltered entirely',
     default: false,
+    expert: 1,
+    parent: 'hideWordFilteredPosts',
+    parentInvert: true,
   },
 
   // Confirmations
@@ -391,10 +408,12 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
   playVideosInModal: {
     description: 'Play videos in gallery view',
     default: false,
+    expert: 1,
   },
   useContainFit: {
     description: 'Use object-fit: contain for attachments',
     default: true,
+    expert: 1,
   },
   disableStickyHeaders: {
     description: 'Disable sticky headers',
@@ -411,6 +430,7 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
   userPopoverOverlay: {
     description: 'Overlay user popover with centering on avatar',
     default: false,
+    expert: 1,
   },
   userCardLeftJustify: {
     description: 'Justify user bio to the left',
@@ -431,6 +451,7 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
   mentionLinkShowTooltip: {
     description: 'Show tooltips for mention links',
     default: true,
+    expert: 1,
   },
   mentionLinkShowAvatar: {
     description: 'Show avatar next to mention link',
@@ -444,10 +465,12 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
   mentionLinkShowYous: {
     description: 'Show (you)s when you are mentioned',
     default: false,
+    expert: 1,
   },
   mentionLinkBoldenYou: {
     description: 'Boldern mentionlink of you',
     default: true,
+    expert: 1,
   },
   hidePostStats: {
     description: 'Hide post stats (rt, favs)',
@@ -476,10 +499,12 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
   conversationOtherRepliesButton: {
     description: 'Where to show "other replies" in tree conversation view',
     default: 'below',
+    expert: 1,
   },
   conversationTreeFadeAncestors: {
     description: 'Fade ancestors in tree conversation view',
     default: false,
+    expert: 1,
   },
   showExtraNotifications: {
     description:
@@ -505,10 +530,12 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
   maxDepthInThread: {
     description: 'Maximum depth in tree conversation view',
     default: 6,
+    expert: 1,
   },
   autocompleteSelect: {
     description: '',
     default: false,
+    expert: 1,
   },
   closingDrawerMarksAsSeen: {
     description: 'Closing mobile notification pane marks everything as seen',
@@ -516,6 +543,7 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
   },
   unseenAtTop: {
     description: 'Show unseen notifications above others',
+    expert: 1,
     default: false,
   },
   ignoreInactionableSeen: {
@@ -525,6 +553,7 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
   unsavedPostAction: {
     description: 'What to do if post is aborted',
     default: 'confirm',
+    expert: 1,
   },
   autoSaveDraft: {
     description: 'Save drafts automatically',
@@ -575,7 +604,7 @@ export const INSTANCE_DEFAULT_CONFIG = convertDefinitions(
   INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
 )
 
-export const LOCAL_DEFAULT_CONFIG_DEFINITIONS = {
+const LOCAL_DEFAULT_CONFIG_DEFINITIONS_RAW = {
   // TODO these two used to be separate but since separation feature got broken it doesn't matter
   hideAttachments: {
     description: 'Hide attachments in timeline',
@@ -592,10 +621,14 @@ export const LOCAL_DEFAULT_CONFIG_DEFINITIONS = {
   useOneClickNsfw: {
     description: 'Open NSFW images directly in media modal',
     default: false,
+    expert: 1,
+    parent: 'hideNsfw',
   },
   preloadImage: {
     description: 'Preload images for NSFW',
     default: true,
+    expert: 1,
+    parent: 'hideNsfw',
   },
   postContentType: {
     description: 'Default post content type',
@@ -608,18 +641,22 @@ export const LOCAL_DEFAULT_CONFIG_DEFINITIONS = {
   sidebarColumnWidth: {
     description: 'Sidebar column width',
     default: '25rem',
+    expert: 1,
   },
   contentColumnWidth: {
     description: 'Middle column width',
     default: '45rem',
+    expert: 1,
   },
   notifsColumnWidth: {
     description: 'Notifications column width',
     default: '25rem',
+    expert: 1,
   },
   themeEditorMinWidth: {
     description: 'Hack for theme editor on mobile',
     default: '0rem',
+    expert: 1,
   },
   emojiReactionsScale: {
     description: 'Emoji reactions scale factor',
@@ -652,13 +689,17 @@ export const LOCAL_DEFAULT_CONFIG_DEFINITIONS = {
   imageCompression: {
     description: 'Image compression (WebP/JPEG)',
     default: true,
+    expert: 1,
   },
   alwaysUseJpeg: {
     description: 'Compress images using JPEG only',
     default: false,
+    expert: 1,
+    parent: 'imageCompression',
   },
   useStreamingApi: {
     description: 'Streaming API (WebSocket)',
+    expert: 1,
     default: false,
   },
   fontInterface: {
@@ -690,12 +731,20 @@ export const LOCAL_DEFAULT_CONFIG_DEFINITIONS = {
     description:
       'Debug mode that uses computed backgrounds instead of real ones to debug contrast functions',
     default: false,
+    expert: 1,
   },
   forceThemeRecompilation: {
     description: 'Flag that forces recompilation on boot even if cache exists',
     default: false,
+    expert: 1,
   },
 }
+export const LOCAL_DEFAULT_CONFIG_DEFINITIONS = Object.fromEntries(
+  Object.entries(LOCAL_DEFAULT_CONFIG_DEFINITIONS_RAW).map(([k, v]) => [
+    k,
+    { ...v, localOnly: true },
+  ]),
+)
 export const LOCAL_DEFAULT_CONFIG = convertDefinitions(
   LOCAL_DEFAULT_CONFIG_DEFINITIONS,
 )

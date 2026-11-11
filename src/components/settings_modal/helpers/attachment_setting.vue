@@ -5,10 +5,20 @@
     :class="{ '-compact': compact }"
   >
     <label
+      v-if="!hideLabel"
+      :for="idPrefix + 'file'"
       class="setting-label"
-      :for="path"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
+      <ModifiedIndicator
+        :changed="isChanged"
+        :onclick="reset"
+      />
+      <LocalSettingIndicator
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
+      />
+      {{ ' ' }}
       <template v-if="realLabel">
         {{ realLabel + ' ' }}
       </template>
@@ -16,20 +26,21 @@
         MISSING LABEL FOR {{ path }}
       </template>
       <slot v-else />
-
     </label>
+    {{ ' ' }}
     <p
       v-if="realDescription"
       class="setting-description"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
       {{ realDescription + ' ' }}
     </p>
+    <DraftButtons v-if="!hideDraftButtons" />
     <div class="attachment-input">
       <div class="controls control-field">
         <label for="path">{{ $t('settings.url') }}</label>
         <input
-          :id="path"
+          :id="idPrefix + 'file'"
           class="input string-input"
           :disabled="shouldBeDisabled"
           :value="realDraftMode ? draft : state"
@@ -60,7 +71,6 @@
         />
       </div>
     </div>
-    <DraftButtons />
   </span>
 </template>
 

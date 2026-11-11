@@ -6,6 +6,10 @@ import LocalSettingIndicator from './local_setting_indicator.vue'
 import ModifiedIndicator from './modified_indicator.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
+import {
+  INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
+  LOCAL_DEFAULT_CONFIG_DEFINITIONS,
+} from 'src/stores/default_state/default_config_state.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -32,18 +36,13 @@ export default {
     },
     // Whether setting is meant to be an "expert" one
     expert: {
-      type: [Number, String],
+      type: Number,
       default: 0,
     },
     // Backend admin thing
     subgroup: {
       type: String,
       required: false,
-    },
-    // Local-only setting
-    localOnly: {
-      type: Boolean,
-      default: false,
     },
     // Whether to use draft mode, i.e. writing to a draft first instead of real storage
     draftMode: {
@@ -65,7 +64,7 @@ export default {
     // Whether to disable setting when parent is true instead of false
     parentInvert: {
       type: Boolean,
-      default: false,
+      default: undefined,
     },
 
     // # Direct mode
@@ -235,7 +234,7 @@ export default {
         case 'fe-admin':
           throw Error('Not implemented')
         default:
-          if (this.realSource === 'local' || this.localOnly) {
+          if (this.realSource === 'local' || this.isLocalOnly) {
             return useLocalConfigStore().prefsStorage
           } else {
             return useMergedConfigStore().mergedConfig
@@ -259,7 +258,7 @@ export default {
         default:
           return (path, value) => {
             if (!this.timedApplyMode) {
-              if (this.realSource === 'local' || this.localOnly) {
+              if (this.realSource === 'local' || this.isLocalOnly) {
                 useLocalConfigStore().set({
                   path,
                   value,
@@ -279,7 +278,7 @@ export default {
               useLocalConfigStore().setTemporarily({ path, value })
 
               const confirm = () => {
-                if (this.realSource === 'local' || this.localOnly) {
+                if (this.realSource === 'local' || this.isLocalOnly) {
                   useLocalConfigStore().set({ path, value })
                 } else {
                   useSyncConfigStore().setSimplePrefAndSave({
@@ -304,17 +303,32 @@ export default {
     defaultState() {
       switch (this.realSource) {
         case 'profile':
-          return {}
         case 'admin':
           return {}
         case 'local':
-          return undefined
         case 'fe-admin':
           return undefined
         default: {
           return get(useMergedConfigStore().mergedConfigDefault, this.canonPath)
         }
       }
+    },
+    definitions() {
+      switch (this.realSource) {
+        case 'profile':
+        case 'admin':
+          return {}
+        case 'fe-admin':
+        default:
+          return {
+            ...LOCAL_DEFAULT_CONFIG_DEFINITIONS,
+            ...INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
+          }
+      }
+    },
+
+    definition() {
+      return get(this.definitions, this.canonPath)
     },
 
     // Labels & Descriptions
@@ -362,29 +376,40 @@ export default {
     realSuggestions() {
       return this.suggestions || this.backendDescription?.suggestions
     },
+    realExpert() {
+      return this.expert ?? this.definition?.expert
+    },
+    realParentPath() {
+      return this.parentPath ?? this.definition?.parent
+    },
+    realParentInvert() {
+      console.log(this.parentInvert, this.definition?.parentInvert)
+      return this.parentInvert ?? this.definition?.parentInvert
+    },
 
     // Supporting misc states
     shouldBeDisabled() {
       if (this.path == null) return this.disabled
 
       const parentValue = (() => {
-        if (this.parentPath === undefined) return undefined
+        if (this.realParentPath === undefined) return undefined
         if (this.realSource === 'admin') {
-          return get(useAdminSettingsStore().draft, this.parentPath)
+          return get(useAdminSettingsStore().draft, this.realParentPath)
         } else {
-          return get(this.configSource, this.parentPath)
+          return get(this.configSource, this.realParentPath)
         }
       })()
 
       if (parentValue === undefined) return this.disabled
 
-      return this.parentInvert ? parentValue : !parentValue
+      console.log(this.realParentInvert)
+      return this.realParentInvert ? parentValue : !parentValue
     },
     isProfileSetting() {
       return this.realSource === 'profile'
     },
-    isLocalSetting() {
-      return this.localOnly
+    isLocalOnly() {
+      return this.definition?.localOnly ?? false
     },
     isChanged() {
       if (this.path == null) return false
@@ -403,7 +428,21 @@ export default {
       }
       return !isEqual(this.draft, this.state)
     },
+    isOverriden() {
+      if (this.realSource !== 'sync') return false
+      if (this.isLocalOnly) return false
+      return (
+        get(useLocalConfigStore().prefsStorage, this.canonPath) !== undefined
+      )
+    },
+    labelClasses() {
+      return {
+        faint: this.shouldBeDisabled,
+        '-overriden': this.isOverriden,
+      }
+    },
     canHardReset() {
+      if (this.isLocalOnly) return false
       switch (this.realSource) {
         case 'admin':
           return useAdminSettingsStore().modifiedPaths?.has(
@@ -417,7 +456,7 @@ export default {
       }
     },
     matchesExpertLevel() {
-      const settingExpertLevel = this.expert || 0
+      const settingExpertLevel = this.realExpert
       const userToggleExpert =
         useMergedConfigStore().mergedConfig.expertLevel || 0
 
@@ -461,6 +500,7 @@ export default {
         case 'local':
         case 'fe-admin':
           this.visibleState = undefined
+          return
         default:
           console.warn('Hard reset not implemented yet!')
       }

@@ -6,13 +6,16 @@
     <legend
       v-if="!hideLabel"
       class="setting-label"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
       <ModifiedIndicator
         :changed="isChanged"
         :onclick="reset"
       />
-      <LocalSettingIndicator :is-local="isLocalSetting" />
+      <LocalSettingIndicator
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
+      />
       {{ ' ' }}
       <template v-if="realLabel">
         {{ realLabel + ' ' }}
@@ -22,6 +25,7 @@
       </template>
       <slot v-else />
     </legend>
+    {{ ' ' }}
     <span class="setting-control">
       <input
         v-model="a"
@@ -40,14 +44,14 @@
         :title="realSuggestions?.[0]?.[1]"
       >
     </span>
-    <DraftButtons v-if="!hideDraftButtons" />
     <p
       v-if="realDescription"
       class="setting-description"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
       {{ realDescription + ' ' }}
     </p>
+    <DraftButtons v-if="!hideDraftButtons" />
   </fieldset>
 </template>
 

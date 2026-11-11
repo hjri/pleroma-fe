@@ -6,10 +6,18 @@
     <label
       v-if="!hideLabel"
       :for="idPrefix + 'input'"
-      :id="idPrefix + 'label'"
       class="setting-label"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
+      <ModifiedIndicator
+        :changed="isChanged"
+        :onclick="reset"
+      />
+      <LocalSettingIndicator
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
+      />
+      {{ ' ' }}
       <template v-if="realLabel">
         {{ realLabel + ' ' }}
       </template>
@@ -41,18 +49,14 @@
       </Checkbox>
     </div>
     {{ ' ' }}
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
-    <DraftButtons v-if="!hideDraftButtons" />
     <p
       v-if="realDescription"
       class="setting-description"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
       {{ realDescription + ' ' }}
     </p>
+    <DraftButtons v-if="!hideDraftButtons" />
   </label>
 </template>
 

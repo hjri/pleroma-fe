@@ -453,6 +453,7 @@
     "setting_changed": "Setting is different from default",
     "setting_server_side": "This setting is tied to your profile and affects all sessions and clients",
     "setting_local_side": "This setting is tied to current session and doesn't affects other devices and browsers",
+    "setting_local_override": "This setting is overriden in current session, see your Local config",
     "enter_current_password_to_confirm": "Enter your current password to confirm your identity",
     "post_look_feel": "Posts Look & Feel",
     "posts": "Posts",

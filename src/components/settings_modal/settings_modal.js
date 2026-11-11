@@ -1,13 +1,13 @@
 import { cloneDeep, isEqual } from 'lodash-es'
 import { mapActions, mapState } from 'pinia'
-import { defineAsyncComponent, computed } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
 
 import AsyncComponentError from 'src/components/async_component_error/async_component_error.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
-import Select from 'src/components/select/select.vue'
 import Modal from 'src/components/modal/modal.vue'
 import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
 import Popover from 'src/components/popover/popover.vue'
+import Select from 'src/components/select/select.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import {

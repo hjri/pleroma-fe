@@ -31,10 +31,7 @@
               </BooleanSetting>
             </li>
             <li>
-              <BooleanSetting
-                path="conversationTreeFadeAncestors"
-                :expert="1"
-              >
+              <BooleanSetting path="conversationTreeFadeAncestors">
                 {{ $t('settings.tree_fade_ancestors') }}
               </BooleanSetting>
             </li>
@@ -42,17 +39,14 @@
               <IntegerSetting
                 path="maxDepthInThread"
                 :min="3"
-                :expert="1"
               >
                 {{ $t('settings.max_depth_in_thread') }}
               </IntegerSetting>
             </li>
             <li>
               <ChoiceSetting
-                id="conversationOtherRepliesButton"
                 path="conversationOtherRepliesButton"
                 :options="conversationOtherRepliesButtonOptions"
-                :expert="1"
               >
                 {{ $t('settings.conversation_other_replies_button') }}
               </ChoiceSetting>
@@ -90,10 +84,7 @@
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting
-            path="emojiReactionsOnTimeline"
-            expert="1"
-          >
+          <BooleanSetting path="emojiReactionsOnTimeline">
             {{ $t('settings.emoji_reactions_on_timeline') }}
           </BooleanSetting>
         </li>
@@ -104,7 +95,6 @@
           <ChoiceSetting
             id="mentionLinkDisplay"
             path="mentionLinkDisplay"
-            :local="true"
             :options="mentionLinkDisplayOptions"
           >
             {{ $t('settings.mention_link_display') }}
@@ -121,10 +111,7 @@
           </ul>
         </li>
         <li>
-          <BooleanSetting
-            path="mentionLinkShowTooltip"
-            expert="1"
-          >
+          <BooleanSetting path="mentionLinkShowTooltip">
             {{ $t('settings.mention_link_use_tooltip') }}
           </BooleanSetting>
         </li>
@@ -134,10 +121,7 @@
           </BooleanSetting>
         </li>
         <li v-if="user">
-          <BooleanSetting
-            path="mentionLinkBoldenYou"
-            expert="1"
-          >
+          <BooleanSetting path="mentionLinkBoldenYou">
             {{ $t('settings.mention_link_bolden_you') }}
           </BooleanSetting>
         </li>
@@ -146,7 +130,7 @@
             v-if="user"
             source="profile"
             path="stripRichContent"
-            expert="1"
+            :expert="1"
           >
             {{ $t('settings.no_rich_text_description') }}
           </BooleanSetting>
@@ -190,48 +174,30 @@
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting
-            :local="true"
-            path="hideNsfw"
-          >
+          <BooleanSetting path="hideNsfw">
             {{ $t('settings.nsfw_clickthrough') }}
           </BooleanSetting>
           <ul class="setting-list suboptions">
             <li>
-              <BooleanSetting
-                path="preloadImage"
-                expert="1"
-                :local="true"
-                parent-path="hideNsfw"
-              >
+              <BooleanSetting path="preloadImage">
                 {{ $t('settings.preload_images') }}
               </BooleanSetting>
             </li>
             <li>
-              <BooleanSetting
-                path="useOneClickNsfw"
-                expert="1"
-                :local="true"
-                parent-path="hideNsfw"
-              >
+              <BooleanSetting path="useOneClickNsfw">
                 {{ $t('settings.use_one_click_nsfw') }}
               </BooleanSetting>
             </li>
           </ul>
         </li>
         <li>
-          <BooleanSetting
-            path="loopVideo"
-            expert="1"
-          >
+          <BooleanSetting path="loopVideo">
             {{ $t('settings.loop_video') }}
           </BooleanSetting>
           <ul class="setting-list suboptions">
             <li>
               <BooleanSetting
                 path="loopVideoSilentOnly"
-                expert="1"
-                parent-path="loopVideo"
                 :disabled="!loopSilentAvailable"
               >
                 {{ $t('settings.loop_video_silent_only') }}
@@ -246,18 +212,12 @@
           </ul>
         </li>
         <li>
-          <BooleanSetting
-            path="playVideosInModal"
-            expert="1"
-          >
+          <BooleanSetting path="playVideosInModal">
             {{ $t('settings.play_videos_in_modal') }}
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting
-            path="useContainFit"
-            expert="1"
-          >
+          <BooleanSetting path="useContainFit">
             {{ $t('settings.use_contain_fit') }}
           </BooleanSetting>
         </li>

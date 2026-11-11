@@ -15,12 +15,6 @@ import StringSetting from '../helpers/string_setting.vue'
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 
 const InstanceTab = {
-  provide() {
-    return {
-      defaultDraftMode: true,
-      defaultSource: 'admin',
-    }
-  },
   components: {
     BooleanSetting,
     ChoiceSetting,

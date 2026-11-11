@@ -7,8 +7,11 @@
       :changed="isChanged"
       :onclick="reset"
     />
-    <LocalSettingIndicator :is-local="isLocalSetting" />
-    <DraftButtons />
+    <LocalSettingIndicator
+      :is-local="isLocalOnly"
+      :is-overriden="isOverriden"
+    />
+    <DraftButtons v-if="!hideDraftButtons" />
   </span>
 </template>
 

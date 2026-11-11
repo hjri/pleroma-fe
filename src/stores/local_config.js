@@ -2,10 +2,10 @@ import { cloneDeep, set } from 'lodash-es'
 import { defineStore } from 'pinia'
 
 import {
-  LOCAL_DEFAULT_CONFIG,
-  LOCAL_DEFAULT_CONFIG_DEFINITIONS,
   INSTANCE_DEFAULT_CONFIG,
   INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
+  LOCAL_DEFAULT_CONFIG,
+  LOCAL_DEFAULT_CONFIG_DEFINITIONS,
   makeUndefined,
   validateSetting,
 } from 'src/stores/default_state/default_config_state.js'

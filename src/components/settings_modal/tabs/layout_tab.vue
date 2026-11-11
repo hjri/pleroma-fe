@@ -9,28 +9,27 @@
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting
-            path="alwaysShowNewPostButton"
-            expert="1"
-          >
+          <BooleanSetting path="alwaysShowNewPostButton">
             {{ $t('settings.always_show_post_button') }}
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting
-            path="autohideFloatingPostButton"
-            expert="1"
-          >
+          <BooleanSetting path="autohideFloatingPostButton">
             {{ $t('settings.autohide_floating_post_button') }}
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting
-            path="userPopoverOverlay"
-            expert="1"
-          >
+          <BooleanSetting path="userPopoverOverlay">
             {{ $t('settings.user_popover_avatar_overlay') }}
           </BooleanSetting>
+        </li>
+        <li>
+          <ChoiceSetting
+            path="userPopoverAvatarAction"
+            :options="userPopoverAvatarActionOptions"
+          >
+            {{ $t('settings.user_popover_avatar_action') }}
+          </ChoiceSetting>
         </li>
         <li>
           <BooleanSetting path="userCardLeftJustify">
@@ -40,9 +39,7 @@
         <li>
           <UnitSetting
             path="themeEditorMinWidth"
-            :local="true"
             :units="['px', 'rem']"
-            expert="1"
           >
             {{ $t('settings.theme_editor_min_width') }}
           </UnitSetting>
@@ -51,7 +48,6 @@
           <UnitSetting
             path="navbarSize"
             :step="0.1"
-            :local="true"
             :units="['px', 'rem']"
             :reset-default="{ 'px': 55, 'rem': 3.5 }"
           >
@@ -74,7 +70,6 @@
         <li>
           <UnitSetting
             path="panelHeaderSize"
-            :local="true"
             :step="0.1"
             :units="['px', 'rem']"
             :reset-default="{ 'px': 52, 'rem': 3.2 }"
@@ -85,7 +80,6 @@
         </li>
         <li>
           <BooleanSetting
-            :local="true"
             path="sidebarRight"
           >
             {{ $t('settings.right_sidebar') }}
@@ -93,7 +87,6 @@
         </li>
         <li>
           <BooleanSetting
-            :local="true"
             path="navbarColumnStretch"
           >
             {{ $t('settings.navbar_column_stretch') }}
@@ -116,9 +109,7 @@
             <UnitSetting
               v-for="column in columns"
               :key="column"
-              :local="true"
               :path="column + 'ColumnWidth'"
-              expert="1"
             >
               {{ $t('settings.column_sizes_' + column) }}
             </UnitSetting>

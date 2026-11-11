@@ -14,10 +14,14 @@ export default {
   computed: {
     ...Setting.computed,
     isIndeterminate() {
-      if (this.realSource === 'fe-admin' || (this.realSource === 'local' && !this.localOnly)) {
-        return this.visibleState === undefined
+      if (this.isLocalOnly) return false
+      switch (this.realSource) {
+        case 'local':
+        case 'fe-admin':
+          return this.state !== undefined
+        default:
+          return this.visibleState === this.indeterminateState
       }
-      return this.visibleState === this.indeterminateState
     },
   },
   methods: {

@@ -7,12 +7,6 @@ import StringSetting from '../helpers/string_setting.vue'
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 
 const UploadsTab = {
-  provide() {
-    return {
-      defaultDraftMode: true,
-      defaultSource: 'admin',
-    }
-  },
   data() {
     return {
       uploaders: [

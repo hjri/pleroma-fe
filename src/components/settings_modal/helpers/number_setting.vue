@@ -5,17 +5,19 @@
   >
     <label
       v-if="!hideLabel"
-      :for="path"
+      :for="idPrefix + 'text'"
       class="setting-label"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
       <ModifiedIndicator
         :changed="isChanged"
         :onclick="reset"
       />
-      <LocalSettingIndicator :is-local="isLocalSetting" />
+      <LocalSettingIndicator
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
+      />
       {{ ' ' }}
-      <DraftButtons v-if="!hideDraftButtons" />
       <template v-if="realLabel">
         {{ realLabel + ' ' }}
       </template>
@@ -26,7 +28,7 @@
     </label>
     {{ ' ' }}
     <input
-      :id="path"
+      :id="idPrefix + 'text'"
       class="input number-input setting-control"
       type="number"
       :step="step || 1"
@@ -36,13 +38,15 @@
       :value="realDraftMode ? draft :state"
       @change="update"
     >
+    {{ ' ' }}
     <p
       v-if="realDescription"
       class="setting-description"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
       {{ realDescription + ' ' }}
     </p>
+    <DraftButtons v-if="!hideDraftButtons" />
   </span>
 </template>
 

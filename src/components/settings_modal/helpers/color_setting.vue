@@ -7,8 +7,17 @@
       v-if="!hideLabel"
       :for="idPrefix + 'color'"
       class="setting-label"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
+      <ModifiedIndicator
+        :changed="isChanged"
+        :onclick="reset"
+      />
+      <LocalSettingIndicator
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
+      />
+      {{ ' ' }}
       <template v-if="realLabel">
         {{ realLabel + ' ' }}
       </template>
@@ -28,19 +37,14 @@
       :placeholder="realSuggestions"
     />
     {{ ' ' }}
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
-    <LocalSettingIndicator :is-local="isLocalSetting" />
-    <DraftButtons v-if="!hideDraftButtons" />
     <p
       v-if="realDescription"
       class="setting-description"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
       {{ realDescription + ' ' }}
     </p>
+    <DraftButtons v-if="!hideDraftButtons" />
   </label>
 </template>
 
@@ -60,7 +64,11 @@
     }
 
     .setting-control {
-      align-self: end;
+      place-self: end start;
+    }
+
+    legend {
+      display: none;
     }
   }
 

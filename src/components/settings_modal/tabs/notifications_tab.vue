@@ -17,10 +17,7 @@
           </p>
         </li>
         <li>
-          <BooleanSetting
-            path="unseenAtTop"
-            expert="1"
-          >
+          <BooleanSetting path="unseenAtTop">
             {{ $t('settings.notification_setting_unseen_at_top') }}
           </BooleanSetting>
         </li>
@@ -247,20 +244,12 @@
       <h3>{{ $t('settings.notification_setting_privacy') }}</h3>
       <ul class="setting-list">
         <li>
-          <BooleanSetting
-            path="webPushNotifications"
-            :local="true"
-            expert="1"
-          >
+          <BooleanSetting path="webPushNotifications">
             {{ $t('settings.enable_web_push_notifications') }}
           </BooleanSetting>
           <ul class="setting-list suboptions">
             <li>
-              <BooleanSetting
-                path="webPushAlwaysShowNotifications"
-                :local="true"
-                :disabled="!mergedConfig.webPushNotifications"
-              >
+              <BooleanSetting path="webPushAlwaysShowNotifications">
                 {{ $t('settings.enable_web_push_always_show') }}
               </BooleanSetting>
               <p
@@ -275,9 +264,8 @@
         <li>
           <BooleanSetting
             source="profile"
-            :local="true"
             path="webPushHideContents"
-            expert="1"
+            :expert="1"
           >
             {{ $t('settings.notification_setting_hide_notification_contents') }}
           </BooleanSetting>

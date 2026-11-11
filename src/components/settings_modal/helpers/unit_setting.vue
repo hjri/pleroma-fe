@@ -4,17 +4,29 @@
     class="UnitSetting setting-item"
   >
     <label
+      v-if="!hideLabel"
       :for="idPrefix + 'value'"
-      class="setting-label size-label"
+      class="setting-label"
+      :class="labelClasses"
     >
-      <LocalSettingIndicator :is-local="isLocalSetting" />
       <ModifiedIndicator
         :changed="isChanged"
         :onclick="reset"
       />
+      <LocalSettingIndicator
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
+      />
       {{ ' ' }}
-      <slot />
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
+      </template>
+      <template v-else-if="source === 'admin'">
+        MISSING LABEL FOR {{ path }}
+      </template>
+      <slot v-else />
     </label>
+    {{ ' ' }}
     <span class="no-break setting-control">
       <input
         :id="idPrefix + 'value'"
@@ -45,6 +57,14 @@
       </Select>
     </span>
     {{ ' ' }}
+    <p
+      v-if="realDescription"
+      class="setting-description"
+      :class="labelClasses"
+    >
+      {{ realDescription + ' ' }}
+    </p>
+    <DraftButtons v-if="!hideDraftButtons" />
   </span>
 </template>
 

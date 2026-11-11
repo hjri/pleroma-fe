@@ -29,11 +29,6 @@ const PostsTab = {
           label: this.$t(`settings.mention_link_display_${mode}`),
         }),
       ),
-      userPopoverAvatarActionOptions: ['close', 'zoom', 'open'].map((mode) => ({
-        key: mode,
-        value: mode,
-        label: this.$t(`settings.user_popover_avatar_action_${mode}`),
-      })),
       unsavedPostActionOptions: ['save', 'discard', 'confirm'].map((mode) => ({
         key: mode,
         value: mode,

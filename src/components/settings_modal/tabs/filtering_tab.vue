@@ -88,35 +88,22 @@
           </BooleanSetting>
           <ul class="setting-list suboptions">
             <li>
-              <BooleanSetting
-                parent-path="hideFilteredStatuses"
-                :parent-invert="true"
-                path="hideWordFilteredPosts"
-                expert="1"
-              >
+              <BooleanSetting path="hideWordFilteredPosts">
                 {{ $t('settings.hide_filtered_statuses') }}
               </BooleanSetting>
             </li>
-            <li>
-              <BooleanSetting
-                v-if="user"
-                parent-path="hideFilteredStatuses"
-                :parent-invert="true"
-                path="hideMutedThreads"
-              >
-                {{ $t('settings.hide_muted_threads') }}
-              </BooleanSetting>
-            </li>
-            <li>
-              <BooleanSetting
-                v-if="user"
-                parent-path="hideFilteredStatuses"
-                :parent-invert="true"
-                path="hideMutedPosts"
-              >
-                {{ $t('settings.hide_muted_posts') }}
-              </BooleanSetting>
-            </li>
+            <template v-if="user">
+              <li>
+                <BooleanSetting path="hideMutedThreads">
+                  {{ $t('settings.hide_muted_threads') }}
+                </BooleanSetting>
+              </li>
+              <li>
+                <BooleanSetting path="hideMutedPosts">
+                  {{ $t('settings.hide_muted_posts') }}
+                </BooleanSetting>
+              </li>
+            </template>
           </ul>
         </li>
         <li>

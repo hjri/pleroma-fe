@@ -7,13 +7,16 @@
       v-if="!hideLabel"
       :for="idPrefix + 'text'"
       class="setting-label"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
       <ModifiedIndicator
         :changed="isChanged"
         :onclick="reset"
       />
-      <LocalSettingIndicator :is-local="isLocalSetting" />
+      <LocalSettingIndicator
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
+      />
       {{ ' ' }}
       <template v-if="realLabel">
         {{ realLabel + ' ' }}
@@ -23,6 +26,7 @@
       </template>
       <slot v-else />
     </label>
+    {{ ' ' }}
     <input
       :id="idPrefix + 'text'"
       v-model="visibleState"
@@ -33,14 +37,14 @@
       :value="realDraftMode ? draft : state"
     >
     {{ ' ' }}
-    <DraftButtons v-if="!hideDraftButtons" />
     <p
       v-if="realDescription"
       class="setting-description"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="labelClasses"
     >
       {{ realDescription + ' ' }}
     </p>
+    <DraftButtons v-if="!hideDraftButtons" />
   </span>
 </template>
 

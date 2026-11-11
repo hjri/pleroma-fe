@@ -72,18 +72,12 @@
           </IntegerSetting>
         </li>
         <li>
-          <BooleanSetting
-            :local="true"
-            path="hideAttachments"
-          >
+          <BooleanSetting path="hideAttachments">
             {{ $t('settings.hide_attachments_in_tl') }}
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting
-            :local="true"
-            path="hideAttachmentsInConv"
-          >
+          <BooleanSetting path="hideAttachmentsInConv">
             {{ $t('settings.hide_attachments_in_convo') }}
           </BooleanSetting>
         </li>
