@@ -60,9 +60,8 @@ export default {
             messageArgs: { e: err.statusText },
             level: 'error',
           })
-          this.deleteModalVisible = false
         })
-        .finall(() => {
+        .finally(() => {
           this.deleteModalVisible = false
         })
     },
