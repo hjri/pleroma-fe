@@ -16,6 +16,7 @@ import PostsTab from './tabs/posts_tab.vue'
 import ProfileTab from './tabs/profile_tab.vue'
 import SecurityTab from './tabs/security_tab/security_tab.vue'
 import StyleTab from './tabs/style_tab/style_tab.vue'
+import UploadedMediaTab from './tabs/uploaded_media_tab.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -75,6 +76,7 @@ const SettingsModalContent = {
     StyleTab,
     DeveloperTab,
     OldThemeTab,
+    UploadedMediaTab,
   },
   computed: {
     open() {

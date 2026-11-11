@@ -1221,7 +1221,29 @@
     "clear_emoji_cache": "Clear emoji cache",
     "underline_links": "Make all links always underlined",
     "width_efficient_post_layout": "Make post content always stretch the whole width",
-    "compact_profiles": "Reduce profile height on user pages"
+    "compact_profiles": "Reduce profile height on user pages",
+    "uploaded_media": {
+      "title": "Media management",
+      "delete_success": "Attachment deleted successfully",
+      "delete_error": "Errow while deleting attachment: {e}",
+      "id": "ID",
+      "uploaded": "Uploaded",
+      "media_type": "Media type",
+      "media_desc": "Media description",
+      "duplicates": "Duplicates",
+      "unknown_dupes": "Not fetched",
+      "known_dupes": "Own: {0}, Other: {1}",
+      "used_in": "Used in",
+      "fetch_usage": "Fetch usage",
+      "delete": "Delete",
+      "refresh": "Refresh",
+      "delete_text": "This will delete the attachment if it is not used in any post.\nIf there are no duplicates of this file on the server, it will be deleted from the server as well",
+      "delete_title": "Are you sure you want to delete this attachment?",
+      "accept_button": "Yes",
+      "cancel_button": "No",
+      "load_more": "Load more results",
+      "unavailable": "Your instance does not support user media management"
+    }
   },
   "admin_dash": {
     "window_title": "Administration",
