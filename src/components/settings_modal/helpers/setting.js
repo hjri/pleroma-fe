@@ -266,6 +266,7 @@ export default {
               ':pleroma_fe',
             ]
             const settings = cloneDeep(useAdminSettingsStore().frontendConfig)
+            set(settings, path, value)
             const formatted = Object.fromEntries(
               Object.entries(settings).map(([k, v]) => [`:${k}`, v]),
             )
