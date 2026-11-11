@@ -235,7 +235,7 @@ export default {
         case 'admin':
           return useAdminSettingsStore().config
         case 'fe-admin':
-          throw Error('Not implemented')
+          return useAdminSettingsStore().frontendConfig
         default:
           if (this.realSource === 'local' || this.isLocalOnly) {
             return useLocalConfigStore().mergedConfig
@@ -258,6 +258,23 @@ export default {
         case 'admin':
           return (path, value) =>
             useAdminSettingsStore().pushAdminSetting({ path, value })
+        case 'fe-admin':
+          return (path, value) => {
+            const prefix = [
+              ':pleroma',
+              ':frontend_configurations',
+              ':pleroma_fe',
+            ]
+            const settings = cloneDeep(useAdminSettingsStore().frontendConfig)
+            const formatted = Object.fromEntries(
+              Object.entries(settings).map(([k, v]) => [`:${k}`, v]),
+            )
+
+            useAdminSettingsStore().pushAdminSetting({
+              path: prefix.join('.'),
+              value: formatted,
+            })
+          }
         default:
           return (path, value) => {
             if (!this.realTimed) {
@@ -393,13 +410,14 @@ export default {
       return this.parentPath ?? this.definition?.parent
     },
     realParentInvert() {
-      console.log(this.parentInvert, this.definition?.parentInvert)
       return this.parentInvert ?? this.definition?.parentInvert
     },
 
     // Supporting misc states
     shouldBeDisabled() {
       if (this.path == null) return this.disabled
+      if (this.source === 'profile' && this.defaultSource === 'fe-admin')
+        return true
 
       const parentValue = (() => {
         if (this.realParentPath === undefined) return undefined
@@ -412,7 +430,6 @@ export default {
 
       if (parentValue === undefined) return this.disabled
 
-      console.log(this.realParentInvert)
       return this.realParentInvert ? parentValue : !parentValue
     },
     isProfileSetting() {
@@ -512,7 +529,7 @@ export default {
           this.visibleState = undefined
           return
         default:
-          console.warn('Hard reset not implemented yet!')
+          console.error('Hard reset not implemented yet!')
       }
     },
   },

@@ -18,7 +18,7 @@ export default {
       switch (this.realSource) {
         case 'local':
         case 'fe-admin':
-          return this.state !== undefined
+          return this.state === undefined
         default:
           return this.visibleState === this.indeterminateState
       }
