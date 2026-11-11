@@ -12,49 +12,33 @@
           <ul class="setting-list suboptions">
             <template v-if="uploader === 'Pleroma.Uploaders.Local'">
               <li>
-                <StringSetting
-                  :path="[':pleroma','Pleroma.Uploaders.Local',':uploads']"
-                />
+                <StringSetting :path="[':pleroma','Pleroma.Uploaders.Local',':uploads']" />
               </li>
             </template>
             <template v-else-if="uploader === 'Pleroma.Uploaders.IPFS'">
               <li>
-                <StringSetting
-                  :path="[':pleroma','Pleroma.Uploaders.IPFS',':get_gateway_url']"
-                />
+                <StringSetting :path="[':pleroma','Pleroma.Uploaders.IPFS',':get_gateway_url']" />
               </li>
               <li>
-                <StringSetting
-                  :path="[':pleroma','Pleroma.Uploaders.IPFS',':post_gateway_url']"
-                />
+                <StringSetting :path="[':pleroma','Pleroma.Uploaders.IPFS',':post_gateway_url']" />
               </li>
             </template>
             <template v-else-if="uploader === 'Pleroma.Uploaders.S3'">
               <li>
-                <StringSetting
-                  :path="[':pleroma','Pleroma.Uploaders.S3',':bucket']"
-                />
+                <StringSetting :path="[':pleroma','Pleroma.Uploaders.S3',':bucket']" />
               </li>
               <li>
-                <StringSetting
-                  :path="[':pleroma','Pleroma.Uploaders.S3',':bucket_namespace']"
-                />
+                <StringSetting :path="[':pleroma','Pleroma.Uploaders.S3',':bucket_namespace']" />
               </li>
               <li>
-                <BooleanSetting
-                  :path="[':pleroma','Pleroma.Uploaders.S3',':streaming_enabled']"
-                />
+                <BooleanSetting :path="[':pleroma','Pleroma.Uploaders.S3',':streaming_enabled']" />
               </li>
               <li>
-                <StringSetting
-                  :path="[':pleroma','Pleroma.Uploaders.S3',':truncated_namespace']"
-                />
+                <StringSetting :path="[':pleroma','Pleroma.Uploaders.S3',':truncated_namespace']" />
               </li>
             </template>
             <li>
-              <IntegerSetting
-                :path="[':pleroma','Pleroma.Uploaders.Uploader',':timeout']"
-              />
+              <IntegerSetting :path="[':pleroma','Pleroma.Uploaders.Uploader',':timeout']" />
             </li>
           </ul>
         </li>

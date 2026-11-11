@@ -97,22 +97,6 @@ const AppearanceTab = {
       ],
       userPalette: {},
       intersectionObserver: null,
-      forcedRoundnessOptions: ['disabled', 'sharp', 'nonsharp', 'round'].map(
-        (mode, i) => ({
-          key: mode,
-          value: i - 1,
-          label: this.$t(
-            `settings.style.themes3.hacks.forced_roundness_mode_${mode}`,
-          ),
-        }),
-      ),
-      underlayOverrideModes: ['none', 'opaque', 'transparent'].map((mode) => ({
-        key: mode,
-        value: mode,
-        label: this.$t(
-          `settings.style.themes3.hacks.underlay_override_mode_${mode}`,
-        ),
-      })),
       backgroundUploading: false,
       background: null,
       backgroundError: null,

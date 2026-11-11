@@ -4,82 +4,48 @@
       <h3>{{ $t('settings.interface') }}</h3>
       <ul class="setting-list">
         <li>
-          <BooleanSetting path="alwaysShowSubjectInput">
-            {{ $t('settings.subject_input_always_show') }}
-          </BooleanSetting>
+          <BooleanSetting path="alwaysShowSubjectInput" />
         </li>
         <li>
-          <BooleanSetting path="minimalScopesMode">
-            {{ $t('settings.minimal_scopes_mode') }}
-          </BooleanSetting>
+          <BooleanSetting path="minimalScopesMode" />
         </li>
         <li>
-          <BooleanSetting path="hidePostStats">
-            {{ $t('settings.hide_post_stats') }}
-          </BooleanSetting>
+          <BooleanSetting path="hidePostStats" />
         </li>
         <li>
-          <BooleanSetting path="hideUserStats">
-            {{ $t('settings.hide_user_stats') }}
-          </BooleanSetting>
+          <BooleanSetting path="hideUserStats" />
         </li>
         <li>
-          <BooleanSetting path="hideBotIndication">
-            {{ $t('settings.hide_actor_type_indication') }}
-          </BooleanSetting>
+          <BooleanSetting path="hideBotIndication" />
         </li>
         <li>
-          <BooleanSetting path="hideScrobbles">
-            {{ $t('settings.hide_scrobbles') }}
-          </BooleanSetting>
+          <BooleanSetting path="hideScrobbles" />
           <ul class="setting-list suboptions">
             <li>
-              <UnitSetting
-                key="hideScrobblesAfter"
-                path="hideScrobblesAfter"
-                :units="['m', 'h', 'd']"
-                unit-set="time"
-              >
-                {{ $t('settings.hide_scrobbles_after') }}
-              </UnitSetting>
+              <UnitSetting path="hideScrobblesAfter" />
             </li>
             <li v-if="instanceSpecificPanelPresent">
-              <BooleanSetting path="hideISP">
-                {{ $t('settings.hide_isp') }}
-              </BooleanSetting>
+              <BooleanSetting path="hideISP" />
             </li>
           </ul>
         </li>
         <li>
-          <BooleanSetting path="userCardHidePersonalMarks">
-            {{ $t('settings.user_card_hide_personal_marks') }}
-          </BooleanSetting>
+          <BooleanSetting path="userCardHidePersonalMarks" />
         </li>
         <li v-if="shoutAvailable">
-          <BooleanSetting path="hideShoutbox">
-            {{ $t('settings.hide_shoutbox') }}
-          </BooleanSetting>
+          <BooleanSetting path="hideShoutbox" />
         </li>
       </ul>
       <h3>{{ $t('settings.attachments') }}</h3>
       <ul class="setting-list">
         <li>
-          <IntegerSetting
-            path="maxThumbnails"
-            :min="0"
-          >
-            {{ $t('settings.max_thumbnails') }}
-          </IntegerSetting>
+          <IntegerSetting path="maxThumbnails" />
         </li>
         <li>
-          <BooleanSetting path="hideAttachments">
-            {{ $t('settings.hide_attachments_in_tl') }}
-          </BooleanSetting>
+          <BooleanSetting path="hideAttachments" />
         </li>
         <li>
-          <BooleanSetting path="hideAttachmentsInConv">
-            {{ $t('settings.hide_attachments_in_convo') }}
-          </BooleanSetting>
+          <BooleanSetting path="hideAttachmentsInConv" />
         </li>
       </ul>
     </div>

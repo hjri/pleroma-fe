@@ -269,35 +269,19 @@
       </div>
       <ul class="setting-list">
         <li>
-          <ChoiceSetting
-            path="forcedRoundness"
-            :options="forcedRoundnessOptions"
-          >
-            {{ $t('settings.style.themes3.hacks.force_interface_roundness') }}
-          </ChoiceSetting>
+          <ChoiceSetting path="forcedRoundness" />
         </li>
         <li>
-          <ChoiceSetting
-            path="underlay"
-            :options="underlayOverrideModes"
-          >
-            {{ $t('settings.style.themes3.hacks.underlay_overrides') }}
-          </ChoiceSetting>
+          <ChoiceSetting path="underlay" />
         </li>
         <li v-if="instanceWallpaperUsed">
-          <BooleanSetting path="hideInstanceWallpaper">
-            {{ $t('settings.hide_wallpaper') }}
-          </BooleanSetting>
+          <BooleanSetting path="hideInstanceWallpaper" />
         </li>
         <li>
-          <BooleanSetting path="allowForeignUserBackground">
-            {{ $t('settings.foreign_user_background') }}
-          </BooleanSetting>
+          <BooleanSetting path="allowForeignUserBackground" />
         </li>
         <li>
-          <BooleanSetting path="compactProfiles">
-            {{ $t('settings.compact_profiles') }}
-          </BooleanSetting>
+          <BooleanSetting path="compactProfiles" />
         </li>
       </ul>
     </div>

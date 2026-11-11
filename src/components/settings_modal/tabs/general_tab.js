@@ -22,11 +22,6 @@ import localeService from 'src/services/locale/locale.service.js'
 const GeneralTab = {
   data() {
     return {
-      absoluteTime12hOptions: ['24h', '12h'].map((mode) => ({
-        key: mode,
-        value: mode,
-        label: this.$t(`settings.absolute_time_format_12h_${mode}`),
-      })),
       emailLanguage: useUsersStore().currentUser?.language || [''],
     }
   },

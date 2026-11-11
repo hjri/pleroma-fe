@@ -42,6 +42,16 @@ export default {
           label: this.optionLabelMap[x] || x,
         }))
       }
+      if (this.definition?.options) {
+        return this.definition.options.map((option) => {
+          const [key, value] = Array.isArray(option) ? option : [option, option]
+          return {
+            key,
+            value,
+            label: this.$t(this.definition.optionLabel(key, value)),
+          }
+        })
+      }
       return this.options
     },
   },

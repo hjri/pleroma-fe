@@ -4,52 +4,28 @@
       <h3>{{ $t('settings.posts_appearance') }}</h3>
       <ul class="setting-list">
         <li>
-          <BooleanSetting path="collapseMessageWithSubject">
-            {{ $t('settings.collapse_subject') }}
-          </BooleanSetting>
+          <BooleanSetting path="collapseMessageWithSubject" />
         </li>
         <li>
-          <BooleanSetting path="widthEfficientPostLayout">
-            {{ $t('settings.width_efficient_post_layout') }}
-          </BooleanSetting>
+          <BooleanSetting path="widthEfficientPostLayout" />
         </li>
         <li>
-          <ChoiceSetting
-            id="conversationDisplay"
-            path="conversationDisplay"
-            :options="conversationDisplayOptions"
-          >
-            {{ $t('settings.conversation_display') }}
-          </ChoiceSetting>
+          <ChoiceSetting path="conversationDisplay" />
           <ul
             v-if="mergedConfig.conversationDisplay !== 'linear'"
             class="setting-list suboptions"
           >
             <li>
-              <BooleanSetting path="conversationTreeAdvanced">
-                {{ $t('settings.tree_advanced') }}
-              </BooleanSetting>
+              <BooleanSetting path="conversationTreeAdvanced" />
             </li>
             <li>
-              <BooleanSetting path="conversationTreeFadeAncestors">
-                {{ $t('settings.tree_fade_ancestors') }}
-              </BooleanSetting>
+              <BooleanSetting path="conversationTreeFadeAncestors" />
             </li>
             <li>
-              <IntegerSetting
-                path="maxDepthInThread"
-                :min="3"
-              >
-                {{ $t('settings.max_depth_in_thread') }}
-              </IntegerSetting>
+              <IntegerSetting path="maxDepthInThread" />
             </li>
             <li>
-              <ChoiceSetting
-                path="conversationOtherRepliesButton"
-                :options="conversationOtherRepliesButtonOptions"
-              >
-                {{ $t('settings.conversation_other_replies_button') }}
-              </ChoiceSetting>
+              <ChoiceSetting path="conversationOtherRepliesButton" />
             </li>
           </ul>
         </li>
@@ -84,50 +60,30 @@
           </BooleanSetting>
         </li>
         <li>
-          <BooleanSetting path="emojiReactionsOnTimeline">
-            {{ $t('settings.emoji_reactions_on_timeline') }}
-          </BooleanSetting>
+          <BooleanSetting path="emojiReactionsOnTimeline" />
         </li>
       </ul>
       <h3>{{ $t('settings.mention_links') }}</h3>
       <ul class="setting-list">
         <li>
-          <ChoiceSetting
-            id="mentionLinkDisplay"
-            path="mentionLinkDisplay"
-            :options="mentionLinkDisplayOptions"
-          >
-            {{ $t('settings.mention_link_display') }}
-          </ChoiceSetting>
+          <ChoiceSetting path="mentionLinkDisplay" />
           <ul class="setting-list suboptions">
-            <li>
-              <BooleanSetting
-                v-if="mergedConfig.mentionLinkDisplay !== 'short'"
-                path="mentionLinkFadeDomain"
-              >
-                {{ $t('settings.mention_link_fade_domain') }}
-              </BooleanSetting>
+            <li v-if="mergedConfig.mentionLinkDisplay !== 'short'">
+              <BooleanSetting path="mentionLinkFadeDomain" />
             </li>
           </ul>
         </li>
         <li>
-          <BooleanSetting path="mentionLinkShowTooltip">
-            {{ $t('settings.mention_link_use_tooltip') }}
-          </BooleanSetting>
+          <BooleanSetting path="mentionLinkShowTooltip" />
         </li>
         <li>
-          <BooleanSetting path="mentionLinkShowAvatar">
-            {{ $t('settings.mention_link_show_avatar') }}
-          </BooleanSetting>
+          <BooleanSetting path="mentionLinkShowAvatar" />
         </li>
         <li v-if="user">
-          <BooleanSetting path="mentionLinkBoldenYou">
-            {{ $t('settings.mention_link_bolden_you') }}
-          </BooleanSetting>
+          <BooleanSetting path="mentionLinkBoldenYou" />
         </li>
-        <li>
+        <li v-if="user">
           <BooleanSetting
-            v-if="user"
             source="profile"
             path="stripRichContent"
             :expert="1"
@@ -139,14 +95,7 @@
             class="setting-list suboptions"
           >
             <li>
-              <UnitSetting
-                path="absoluteTimeFormatMinAge"
-                unit-set="time"
-                :units="['s', 'm', 'h', 'd']"
-                :min="0"
-              >
-                {{ $t('settings.absolute_time_format_min_age') }}
-              </UnitSetting>
+              <UnitSetting path="absoluteTimeFormatMinAge" />
             </li>
           </ul>
         </li>
@@ -154,54 +103,36 @@
       <h3>{{ $t('settings.attachments') }}</h3>
       <ul class="setting-list">
         <li>
-          <BooleanSetting path="stopGifs">
-            {{ $t('settings.stop_gifs') }}
-          </BooleanSetting>
+          <BooleanSetting path="stopGifs" />
         </li>
         <li>
-          <BooleanSetting path="nonSquareEmoji">
-            {{ $t('settings.non_square_emoji') }}
-          </BooleanSetting>
+          <BooleanSetting path="nonSquareEmoji" />
         </li>
         <li>
-          <BooleanSetting path="scaleMfm">
-            {{ $t('settings.scale_mfm') }}
-          </BooleanSetting>
+          <BooleanSetting path="scaleMfm" />
         </li>
         <li>
-          <BooleanSetting path="pauseMfm">
-            {{ $t('settings.pause_mfm') }}
-          </BooleanSetting>
+          <BooleanSetting path="pauseMfm" />
         </li>
         <li>
-          <BooleanSetting path="hideNsfw">
-            {{ $t('settings.nsfw_clickthrough') }}
-          </BooleanSetting>
+          <BooleanSetting path="hideNsfw" />
           <ul class="setting-list suboptions">
             <li>
-              <BooleanSetting path="preloadImage">
-                {{ $t('settings.preload_images') }}
-              </BooleanSetting>
+              <BooleanSetting path="preloadImage" />
             </li>
             <li>
-              <BooleanSetting path="useOneClickNsfw">
-                {{ $t('settings.use_one_click_nsfw') }}
-              </BooleanSetting>
+              <BooleanSetting path="useOneClickNsfw" />
             </li>
           </ul>
         </li>
         <li>
-          <BooleanSetting path="loopVideo">
-            {{ $t('settings.loop_video') }}
-          </BooleanSetting>
+          <BooleanSetting path="loopVideo" />
           <ul class="setting-list suboptions">
             <li>
               <BooleanSetting
                 path="loopVideoSilentOnly"
                 :disabled="!loopSilentAvailable"
-              >
-                {{ $t('settings.loop_video_silent_only') }}
-              </BooleanSetting>
+               />
               <div
                 v-if="!loopSilentAvailable"
                 class="unavailable"
@@ -212,14 +143,10 @@
           </ul>
         </li>
         <li>
-          <BooleanSetting path="playVideosInModal">
-            {{ $t('settings.play_videos_in_modal') }}
-          </BooleanSetting>
+          <BooleanSetting path="playVideosInModal" />
         </li>
         <li>
-          <BooleanSetting path="useContainFit">
-            {{ $t('settings.use_contain_fit') }}
-          </BooleanSetting>
+          <BooleanSetting path="useContainFit" />
         </li>
       </ul>
       <h3 v-if="expertLevel > 0">
@@ -230,9 +157,7 @@
         class="setting-list"
       >
         <li v-if="user">
-          <BooleanSetting path="mentionLinkShowYous">
-            {{ $t('settings.show_yous') }}
-          </BooleanSetting>
+          <BooleanSetting path="mentionLinkShowYous" />
         </li>
       </ul>
     </div>

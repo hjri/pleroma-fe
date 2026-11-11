@@ -17,32 +17,16 @@
           @update:model-value="updateProfile()"
         />
         <li>
-          <BooleanSetting path="useAbsoluteTimeFormat">
-            {{ $t('settings.absolute_time_format') }}
-          </BooleanSetting>
+          <BooleanSetting path="useAbsoluteTimeFormat" />
         </li>
         <li>
-          <ChoiceSetting
-            id="absoluteTime12h"
-            path="absoluteTime12h"
-            :options="absoluteTime12hOptions"
-          >
-            {{ $t('settings.absolute_time_format_12h') }}
-          </ChoiceSetting>
+          <ChoiceSetting path="absoluteTime12h" />
         </li>
       </ul>
       <h3>{{ $t('settings.scale_and_font') }}</h3>
       <ul class="setting-list">
         <li>
-          <UnitSetting
-            path="textSize"
-            :step="0.1"
-            :units="['px', 'rem']"
-            :reset-default="{ 'px': 14, 'rem': 1 }"
-            timed-apply-mode
-          >
-            {{ $t('settings.text_size') }}
-          </UnitSetting>
+          <UnitSetting path="textSize" />
           <p class="sidenote">
             <i18n-t
               scope="global"
@@ -82,44 +66,27 @@
           />
         </li>
         <li>
-          <UnitSetting
-            path="emojiSize"
-            :step="0.1"
-            :units="['px', 'rem']"
-            :reset-default="{ 'px': 32, 'rem': 2.2 }"
-          >
-            {{ $t('settings.emoji_size') }}
-          </UnitSetting>
+          <UnitSetting path="emojiSize" />
           <ul
+            v-if="user"
             class="setting-list suboptions"
           >
             <li>
-              <FloatSetting
-                v-if="user"
-                path="emojiReactionsScale"
-              >
-                {{ $t('settings.emoji_reactions_scale') }}
-              </FloatSetting>
+              <FloatSetting path="emojiReactionsScale" />
             </li>
           </ul>
         </li>
         <li>
-          <BooleanSetting path="underlineLinks">
-            {{ $t('settings.underline_links') }}
-          </BooleanSetting>
+          <BooleanSetting path="underlineLinks" />
         </li>
       </ul>
       <h3>{{ $t('settings.timelines') }}</h3>
       <ul class="setting-list">
         <li>
-          <BooleanSetting path="streaming">
-            {{ $t('settings.streaming') }}
-          </BooleanSetting>
+          <BooleanSetting path="streaming" />
           <ul class="setting-list suboptions">
             <li>
-              <BooleanSetting path="pauseOnUnfocused">
-                {{ $t('settings.pause_on_unfocused') }}
-              </BooleanSetting>
+              <BooleanSetting path="pauseOnUnfocused" />
             </li>
           </ul>
         </li>
@@ -127,14 +94,10 @@
           <BooleanSetting
             path="useStreamingApi"
             @update:model-value="toggleStreaming"
-          >
-            {{ $t('settings.useStreamingApi') }}
-          </BooleanSetting>
+          />
         </li>
         <li>
-          <BooleanSetting path="timelinePagination">
-            {{ $t('settings.timeline_pagination') }}
-          </BooleanSetting>
+          <BooleanSetting path="timelinePagination" />
         </li>
       </ul>
       <h3 v-if="expertLevel > 0">
@@ -150,58 +113,36 @@
           </h4>
           <ul class="option-list">
             <li>
-              <BooleanSetting path="modalOnRepeat">
-                {{ $t('settings.confirm_dialogs_repeat') }}
-              </BooleanSetting>
+              <BooleanSetting path="modalOnRepeat" />
             </li>
             <li>
-              <BooleanSetting path="modalOnUnfollow">
-                {{ $t('settings.confirm_dialogs_unfollow') }}
-              </BooleanSetting>
+              <BooleanSetting path="modalOnUnfollow" />
             </li>
             <li
               v-if="!blockExpiration"
             >
-              <BooleanSetting
-                path="modalOnBlock"
-              >
-                {{ $t('settings.confirm_dialogs_block') }}
-              </BooleanSetting>
+              <BooleanSetting path="modalOnBlock" />
             </li>
             <li>
-              <BooleanSetting path="modalOnMuteConversation">
-                {{ $t('settings.confirm_dialogs_mute_conversation') }}
-              </BooleanSetting>
+              <BooleanSetting path="modalOnMuteConversation" />
             </li>
             <li>
-              <BooleanSetting path="modalOnMuteDomain">
-                {{ $t('settings.confirm_dialogs_mute_domain') }}
-              </BooleanSetting>
+              <BooleanSetting path="modalOnMuteDomain" />
             </li>
             <li>
-              <BooleanSetting path="modalOnDelete">
-                {{ $t('settings.confirm_dialogs_delete') }}
-              </BooleanSetting>
+              <BooleanSetting path="modalOnDelete" />
             </li>
             <li>
-              <BooleanSetting path="modalOnLogout">
-                {{ $t('settings.confirm_dialogs_logout') }}
-              </BooleanSetting>
+              <BooleanSetting path="modalOnLogout" />
             </li>
             <li>
-              <BooleanSetting path="modalOnApproveFollow">
-                {{ $t('settings.confirm_dialogs_approve_follow') }}
-              </BooleanSetting>
+              <BooleanSetting path="modalOnApproveFollow" />
             </li>
             <li>
-              <BooleanSetting path="modalOnDenyFollow">
-                {{ $t('settings.confirm_dialogs_deny_follow') }}
-              </BooleanSetting>
+              <BooleanSetting path="modalOnDenyFollow" />
             </li>
             <li>
-              <BooleanSetting path="modalOnRemoveUserFromFollowers">
-                {{ $t('settings.confirm_dialogs_remove_follower') }}
-              </BooleanSetting>
+              <BooleanSetting path="modalOnRemoveUserFromFollowers" />
             </li>
           </ul>
         </li>

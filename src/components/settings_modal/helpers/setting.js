@@ -51,9 +51,9 @@ export default {
     },
     // When changing setting, apply it temporarily and let user confirm the change
     // or revert after a timeout. Only supported in sync/local sources
-    timedApplyMode: {
+    timed: {
       type: Boolean,
-      default: false,
+      default: undefined,
     },
 
     // ## Option dependency
@@ -170,6 +170,9 @@ export default {
     realDraftMode() {
       return this.draftMode ?? this.defaultDraftMode
     },
+    realTimed() {
+      return this.timed ?? this.definition?.timed
+    },
 
     // Main state
     draft: {
@@ -235,7 +238,7 @@ export default {
           throw Error('Not implemented')
         default:
           if (this.realSource === 'local' || this.isLocalOnly) {
-            return useLocalConfigStore().prefsStorage
+            return useLocalConfigStore().mergedConfig
           } else {
             return useMergedConfigStore().mergedConfig
           }
@@ -257,7 +260,7 @@ export default {
             useAdminSettingsStore().pushAdminSetting({ path, value })
         default:
           return (path, value) => {
-            if (!this.timedApplyMode) {
+            if (!this.realTimed) {
               if (this.realSource === 'local' || this.isLocalOnly) {
                 useLocalConfigStore().set({
                   path,
@@ -275,23 +278,29 @@ export default {
                 return
               }
 
-              useLocalConfigStore().setTemporarily({ path, value })
+              const oldValue = get(this.configSource, path)
+              if (this.realSource === 'local' || this.isLocalOnly) {
+                useLocalConfigStore().setTemporarily({ path, value })
+              } else {
+                useSyncConfigStore().setPreference({ path, value })
+              }
 
               const confirm = () => {
                 if (this.realSource === 'local' || this.isLocalOnly) {
                   useLocalConfigStore().set({ path, value })
+                  useLocalConfigStore().unsetTemporarily({ path })
                 } else {
-                  useSyncConfigStore().setSimplePrefAndSave({
-                    path,
-                    value,
-                  })
+                  useSyncConfigStore().pushSyncConfig()
                 }
-                useLocalConfigStore().unsetTemporarily({ path })
                 useInterfaceStore().clearTemporaryChanges()
               }
 
               const revert = () => {
-                useLocalConfigStore().unsetTemporarily({ path })
+                if (this.realSource === 'local' || this.isLocalOnly) {
+                  useLocalConfigStore().unsetTemporarily({ path })
+                } else {
+                  useSyncConfigStore().setPreference({ path, value: oldValue })
+                }
                 useInterfaceStore().clearTemporaryChanges()
               }
 
@@ -338,6 +347,7 @@ export default {
     realLabel() {
       if (this.hideLabel) return ''
       if (this.label) return this.label
+      if (this.definition?.label) return this.$t(this.definition?.label)
       if (this.realSource !== 'admin') return ''
       if (!this.backendDescription || this.overrideBackendDescriptionLabel) {
         return this.$t(

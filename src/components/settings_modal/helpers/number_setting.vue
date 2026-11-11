@@ -28,15 +28,14 @@
     </label>
     {{ ' ' }}
     <input
+      v-model="visibleState"
       :id="idPrefix + 'text'"
       class="input number-input setting-control"
       type="number"
-      :step="step || 1"
+      :step="realStep || 1"
       :disabled="shouldBeDisabled"
       :placeholder="realSuggestions"
-      :min="min || 0"
-      :value="realDraftMode ? draft :state"
-      @change="update"
+      :min="realMin || 0"
     >
     {{ ' ' }}
     <p

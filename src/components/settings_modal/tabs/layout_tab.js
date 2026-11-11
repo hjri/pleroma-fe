@@ -10,22 +10,6 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 const GeneralTab = {
-  data() {
-    return {
-      thirdColumnModeOptions: ['none', 'notifications', 'postform'].map(
-        (mode) => ({
-          key: mode,
-          value: mode,
-          label: this.$t(`settings.third_column_mode_${mode}`),
-        }),
-      ),
-      userPopoverAvatarActionOptions: ['close', 'zoom', 'open'].map((mode) => ({
-        key: mode,
-        value: mode,
-        label: this.$t(`settings.user_popover_avatar_action_${mode}`),
-      })),
-    }
-  },
   components: {
     BooleanSetting,
     ChoiceSetting,

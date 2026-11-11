@@ -4,25 +4,21 @@ export default {
   ...Setting,
   props: {
     ...Setting.props,
-    min: {
-      type: Number,
-      required: false,
-      default: 1,
+    min: Number,
+    max: Number,
+    step: Number,
+    truncate: Number,
+  },
+  computed: {
+    ...Setting.computed,
+    realMin() {
+      return this.min ?? this.definition?.min ?? 0
     },
-    max: {
-      type: Number,
-      required: false,
-      default: 1,
+    realMax() {
+      return this.max ?? this.definition?.max
     },
-    step: {
-      type: Number,
-      required: false,
-      default: 1,
-    },
-    truncate: {
-      type: Number,
-      required: false,
-      default: 1,
+    realStep() {
+      return this.step ?? this.definition?.step
     },
   },
   methods: {

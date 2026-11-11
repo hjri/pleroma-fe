@@ -44,7 +44,10 @@
 import Popover from 'src/components/popover/popover.vue'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faDesktop, faScrewdriverWrench } from '@fortawesome/free-solid-svg-icons'
+import {
+  faDesktop,
+  faScrewdriverWrench,
+} from '@fortawesome/free-solid-svg-icons'
 
 library.add(faDesktop, faScrewdriverWrench)
 

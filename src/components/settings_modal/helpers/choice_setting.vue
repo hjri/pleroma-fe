@@ -28,11 +28,10 @@
     </label>
     {{ ' ' }}
     <Select
+      v-model="visibleState"
       class="setting-control"
       :id="idPrefix + 'select'"
-      :model-value="realDraftMode ? draft : state"
       :disabled="shouldBeDisabled"
-      @update:model-value="update"
     >
       <option
         v-for="option in realOptions"

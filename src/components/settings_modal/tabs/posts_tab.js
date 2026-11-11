@@ -10,25 +10,6 @@ import { useLocalConfigStore } from 'src/stores/local_config.js'
 const PostsTab = {
   data() {
     return {
-      conversationDisplayOptions: ['tree', 'linear'].map((mode) => ({
-        key: mode,
-        value: mode,
-        label: this.$t(`settings.conversation_display_${mode}`),
-      })),
-      conversationOtherRepliesButtonOptions: ['below', 'inside'].map(
-        (mode) => ({
-          key: mode,
-          value: mode,
-          label: this.$t(`settings.conversation_other_replies_button_${mode}`),
-        }),
-      ),
-      mentionLinkDisplayOptions: ['short', 'full_for_remote', 'full'].map(
-        (mode) => ({
-          key: mode,
-          value: mode,
-          label: this.$t(`settings.mention_link_display_${mode}`),
-        }),
-      ),
       unsavedPostActionOptions: ['save', 'discard', 'confirm'].map((mode) => ({
         key: mode,
         value: mode,

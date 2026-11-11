@@ -3,15 +3,8 @@
     <div class="setting-section">
       <h3>{{ $t('settings.filter.mute_filter') }}</h3>
       <ul class="setting-list">
-        <li>
-          <ChoiceSetting
-            v-if="user"
-            id="replyVisibility"
-            path="replyVisibility"
-            :options="replyVisibilityOptions"
-          >
-            {{ $t('settings.replies_in_timeline') }}
-          </ChoiceSetting>
+        <li v-if="user">
+          <ChoiceSetting path="replyVisibility" />
         </li>
         <li>
           <span class="setting-item">
@@ -36,14 +29,7 @@
             class="setting-list suboptions"
           >
             <li>
-              <UnitSetting
-                path="onMuteDefaultAction"
-                unit-set="time"
-                :units="['s', 'm', 'h', 'd']"
-                :min="0"
-              >
-                {{ $t('user_card.default_expiration_time') }}
-              </UnitSetting>
+              <UnitSetting path="onMuteDefaultAction" />
             </li>
           </ul>
         </li>
@@ -71,50 +57,31 @@
             class="setting-list suboptions"
           >
             <li>
-              <UnitSetting
-                path="onBlockDefaultAction"
-                unit-set="time"
-                :units="['s', 'm', 'h', 'd']"
-                :min="0"
-              >
-                {{ $t('user_card.default_expiration_time') }}
-              </UnitSetting>
+              <UnitSetting path="onBlockDefaultAction" />
             </li>
           </ul>
         </li>
         <li>
-          <BooleanSetting path="hideFilteredStatuses">
-            {{ $t('settings.hide_muted_statuses') }}
-          </BooleanSetting>
+          <BooleanSetting path="hideFilteredStatuses" />
           <ul class="setting-list suboptions">
             <li>
-              <BooleanSetting path="hideWordFilteredPosts">
-                {{ $t('settings.hide_filtered_statuses') }}
-              </BooleanSetting>
+              <BooleanSetting path="hideWordFilteredPosts" />
             </li>
             <template v-if="user">
               <li>
-                <BooleanSetting path="hideMutedThreads">
-                  {{ $t('settings.hide_muted_threads') }}
-                </BooleanSetting>
+                <BooleanSetting path="hideMutedThreads" />
               </li>
               <li>
-                <BooleanSetting path="hideMutedPosts">
-                  {{ $t('settings.hide_muted_posts') }}
-                </BooleanSetting>
+                <BooleanSetting path="hideMutedPosts" />
               </li>
             </template>
           </ul>
         </li>
         <li>
-          <BooleanSetting path="muteBotStatuses">
-            {{ $t('settings.mute_bot_posts') }}
-          </BooleanSetting>
+          <BooleanSetting path="muteBotStatuses" />
         </li>
         <li>
-          <BooleanSetting path="muteSensitiveStatuses">
-            {{ $t('settings.mute_sensitive_posts') }}
-          </BooleanSetting>
+          <BooleanSetting path="muteSensitiveStatuses" />
         </li>
         <li>
           <h3>{{ $t('settings.filter.custom_filters') }}</h3>

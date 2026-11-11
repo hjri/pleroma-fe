@@ -8,6 +8,10 @@
             class="setting-item "
             for="default-vis"
           >
+            <span class="setting-label">
+              <ProfileSettingIndicator :is-profile="true" />
+              {{ $t('settings.default_vis') }}
+            </span>
             <ScopeSelector
               class="scope-selector setting-control"
               :show-all="true"
@@ -20,69 +24,37 @@
         </li>
         <li>
           <!-- <BooleanSetting source="profile" path="defaultNSFW"> -->
-          <BooleanSetting path="sensitiveByDefault">
-            {{ $t('settings.sensitive_by_default') }}
-          </BooleanSetting>
+          <BooleanSetting path="sensitiveByDefault" />
         </li>
         <li v-if="postFormats.length > 0">
           <ChoiceSetting
-            id="postContentType"
             path="postContentType"
             :options="postContentOptions"
-          >
-            {{ $t('settings.default_post_status_content_type') }}
-          </ChoiceSetting>
+          />
         </li>
         <li>
-          <BooleanSetting path="padEmoji">
-            {{ $t('settings.pad_emoji') }}
-          </BooleanSetting>
+          <BooleanSetting path="padEmoji" />
         </li>
         <li>
-          <BooleanSetting path="autocompleteSelect">
-            {{ $t('settings.autocomplete_select_first') }}
-          </BooleanSetting>
+          <BooleanSetting path="autocompleteSelect" />
         </li>
         <li>
-          <BooleanSetting
-            path="autoSaveDraft"
-          >
-            {{ $t('settings.auto_save_draft') }}
-          </BooleanSetting>
+          <BooleanSetting path="autoSaveDraft" />
         </li>
         <li v-if="!mergedConfig.autoSaveDraft">
-          <ChoiceSetting
-            path="unsavedPostAction"
-            :options="unsavedPostActionOptions"
-          >
-            {{ $t('settings.unsaved_post_action') }}
-          </ChoiceSetting>
+          <ChoiceSetting path="unsavedPostAction" />
         </li>
       </ul>
       <h3>{{ $t('settings.replies') }}</h3>
       <ul class="setting-list">
         <li>
-          <BooleanSetting
-            path="scopeCopy"
-          >
-            {{ $t('settings.scope_copy') }}
-          </BooleanSetting>
+          <BooleanSetting path="scopeCopy" />
         </li>
         <li>
-          <ChoiceSetting
-            id="subjectLineBehavior"
-            path="subjectLineBehavior"
-            :options="subjectLineOptions"
-          >
-            {{ $t('settings.subject_line_behavior') }}
-          </ChoiceSetting>
+          <ChoiceSetting path="subjectLineBehavior" />
         </li>
         <li>
-          <BooleanSetting
-            path="chatSubmitOnEnter"
-          >
-            {{ $t('settings.submit_on_enter_in_chats') }}
-          </BooleanSetting>
+          <BooleanSetting path="chatSubmitOnEnter" />
         </li>
       </ul>
       <h3 v-if="expertLevel > 0">
@@ -90,14 +62,10 @@
       </h3>
       <ul class="setting-list">
         <li>
-          <BooleanSetting path="imageCompression">
-            {{ $t('settings.image_compression') }}
-          </BooleanSetting>
+          <BooleanSetting path="imageCompression" />
           <ul class="setting-list suboptions">
             <li>
-              <BooleanSetting path="alwaysUseJpeg">
-                {{ $t('settings.always_use_jpeg') }}
-              </BooleanSetting>
+              <BooleanSetting path="alwaysUseJpeg" />
             </li>
           </ul>
         </li>

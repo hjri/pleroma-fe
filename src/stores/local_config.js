@@ -65,6 +65,14 @@ export const useLocalConfigStore = defineStore('local_config', {
       })
     },
   },
+  getters: {
+    mergedConfig() {
+      return {
+        ...this.prefsStorage,
+        ...this.tempStorage,
+      }
+    }
+  },
   persist: {
     afterLoad(state) {
       return {

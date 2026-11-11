@@ -29,26 +29,24 @@
     {{ ' ' }}
     <span class="no-break setting-control">
       <input
+        v-model="stateValue"
         :id="idPrefix + 'value'"
         class="input number-input"
         type="number"
-        :step="step"
+        :step="realStep"
         :disabled="disabled"
-        :min="min || 0"
-        :value="stateValue"
-        @change="updateValue"
+        :min="realMin"
       >
       <Select
+        v-model="stateUnit"
         :id="idPrefix + 'unit'"
-        :model-value="stateUnit"
         :disabled="disabled"
         class="unit-input unstyled"
         unstyled
-        @change="updateUnit"
         :aria-label="$t('settings.style.common.unit')"
       >
         <option
-          v-for="option in units"
+          v-for="option in realUnits"
           :key="option"
           :value="option"
         >
