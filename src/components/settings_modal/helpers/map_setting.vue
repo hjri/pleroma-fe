@@ -88,11 +88,6 @@
         </div>
       </li>
     </ul>
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
-    <LocalSettingIndicator :is-local="isLocalSetting" />
   </fieldset>
 </template>
 

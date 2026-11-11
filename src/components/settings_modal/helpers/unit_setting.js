@@ -69,7 +69,7 @@ export default {
         }
 
         this.visibleState = value + newUnit
-      }
+      },
     },
     stateValue: {
       get() {

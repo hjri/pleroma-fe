@@ -71,7 +71,7 @@ export const useLocalConfigStore = defineStore('local_config', {
         ...this.prefsStorage,
         ...this.tempStorage,
       }
-    }
+    },
   },
   persist: {
     afterLoad(state) {
