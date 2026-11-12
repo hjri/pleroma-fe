@@ -63,7 +63,10 @@
         </li>
         <li>
           <BooleanSetting path="hideFilteredStatuses" />
-          <ul class="setting-list suboptions">
+          <ul
+            v-if="expertLevel > 0"
+            class="setting-list suboptions"
+          >
             <li>
               <BooleanSetting path="hideWordFilteredPosts" />
             </li>

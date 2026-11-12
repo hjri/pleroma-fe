@@ -37,7 +37,7 @@ export default {
     // Whether setting is meant to be an "expert" one
     expert: {
       type: Number,
-      default: 0,
+      default: undefined,
     },
     // Backend admin thing
     subgroup: {
@@ -414,7 +414,7 @@ export default {
       return ''
     },
     realExpert() {
-      return this.expert ?? this.definition?.expert
+      return this.expert ?? this.definition?.expert ?? 0
     },
     realParentPath() {
       return this.parentPath ?? this.definition?.parent

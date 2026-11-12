@@ -184,6 +184,9 @@
       border-bottom: 1px dotted var(--border);
     }
 
+    li:empty {
+      display: none;
+    }
 
     .btn:not(.dropdown-button) {
       padding: 0 2em;

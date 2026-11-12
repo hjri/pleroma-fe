@@ -57,7 +57,7 @@
           <BooleanSetting path="chatSubmitOnEnter" />
         </li>
       </ul>
-      <h3 v-if="expertLevel > 0">
+      <h3>
         {{ $t('settings.attachments') }}
       </h3>
       <ul class="setting-list">
