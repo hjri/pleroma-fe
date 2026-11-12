@@ -3,11 +3,8 @@
     v-if="matchesExpertLevel"
     class="GroupSetting setting-item"
   >
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
-    <LocalSettingIndicator
+    <SettingIndicators
+      :is-changed="isChanged"
       :is-local="isLocalOnly"
       :is-overriden="isOverriden"
     />

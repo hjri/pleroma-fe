@@ -9,11 +9,8 @@
       class="setting-label"
       :class="classes"
     >
-      <ModifiedIndicator
-        :changed="isChanged"
-        :onclick="reset"
-      />
-      <LocalSettingIndicator
+      <SettingIndicators
+        :is-changed="isChanged"
         :is-local="isLocalOnly"
         :is-overriden="isOverriden"
       />

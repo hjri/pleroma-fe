@@ -1,7 +1,4 @@
-import Checkbox from 'src/components/checkbox/checkbox.vue'
-import Popover from 'src/components/popover/popover.vue'
 import Select from 'src/components/select/select.vue'
-import LocalSettingIndicator from 'src/components/settings_modal/helpers/local_setting_indicator.vue'
 
 import { useInterfaceStore } from 'src/stores/interface.js'
 
@@ -17,9 +14,6 @@ library.add(faExclamationTriangle, faKeyboard, faFont)
 export default {
   components: {
     Select,
-    Checkbox,
-    Popover,
-    LocalSettingIndicator,
   },
   props: {
     id: String,

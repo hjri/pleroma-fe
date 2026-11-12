@@ -2,7 +2,7 @@ import { cloneDeep, get, isEqual, set } from 'lodash-es'
 import { useId } from 'vue'
 
 import DraftButtons from './draft_buttons.vue'
-import LocalSettingIndicator from './local_setting_indicator.vue'
+import SettingIndicators from './setting_indicators.vue'
 import ModifiedIndicator from './modified_indicator.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
@@ -20,7 +20,7 @@ export default {
   components: {
     ModifiedIndicator,
     DraftButtons,
-    LocalSettingIndicator,
+    SettingIndicators,
   },
   props: {
     // # Main props.

@@ -10,11 +10,8 @@
       class="setting-label"
       :class="classes"
     >
-      <ModifiedIndicator
-        :changed="isChanged"
-        :onclick="reset"
-      />
-      <LocalSettingIndicator
+      <SettingIndicators
+        :is-changed="isChanged"
         :is-local="isLocalOnly"
         :is-overriden="isOverriden"
       />
@@ -47,11 +44,6 @@
           @change="update"
         >
         {{ ' ' }}
-        <ModifiedIndicator
-          :changed="isChanged"
-          :onclick="reset"
-        />
-        <LocalSettingIndicator :is-local="isLocalSetting" />
       </div>
       <div v-if="!compact">{{ $t('settings.preview') }}</div>
       <Attachment
