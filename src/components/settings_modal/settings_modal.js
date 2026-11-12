@@ -265,6 +265,9 @@ const SettingsModal = {
       modalOpenedOnceAdmin: (store) => store.settingsModalLoadedAdmin,
       modalMinimized: (store) => store.settingsModalState === 'minimized',
     }),
+    ...mapState(useUsersStore, {
+      isAdmin: (store) => store.currentUser?.rights.admin
+    }),
     expertLevel: {
       get() {
         return useMergedConfigStore().mergedConfig.expertLevel > 0
@@ -288,7 +291,7 @@ const SettingsModal = {
       this.minimizeModal()
     },
     mode(value) {
-      if (value === 'fe-admin' && useUsersStore().currentUser?.rights.admin) {
+      if (value === 'fe-admin' && this.isAdmin) {
         useAdminSettingsStore().loadAdminStuff()
       }
     }

@@ -124,13 +124,16 @@
           v-model="mode"
         >
           <option value="sync">
-            SYNC
+            {{ $t("settings.sync_mode") }}
           </option>
           <option value="local">
-            LOCAL
+            {{ $t("settings.local_mode") }}
           </option>
-          <option value="fe-admin">
-            FE-ADMIN
+          <option
+            v-if="isAdmin"
+            value="fe-admin"
+          >
+            {{ $t("settings.fe_admin_mode") }}
           </option>
         </Select>
         <span v-if="modalMode === 'admin'">
