@@ -24,6 +24,7 @@ export default {
   methods: {
     ...Setting.methods,
     getValue(e) {
+      if (e === undefined) return undefined
       if (this.truncate === 1) {
         return Number.parseInt(e)
       } else if (this.truncate > 1) {

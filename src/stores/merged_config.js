@@ -17,10 +17,11 @@ export const useMergedConfigStore = defineStore('merged_config', {
       const syncPrefs = useSyncConfigStore().prefsStorage
 
       const getValue = (k) => {
-        if (LOCAL_ONLY_KEYS.has(k)) {
-          return tempPrefs[k] ?? localPrefs[k] ?? syncPrefs.simple[k]
+        if (Object.hasOwn(tempPrefs, k)) {
+          // Handling case where value is explicitly undefined
+          return tempPrefs[k]
         } else {
-          return tempPrefs[k] ?? syncPrefs.simple[k]
+          return tempPrefs[k] ?? localPrefs[k] ?? syncPrefs.simple[k]
         }
       }
       const getDefault = (k) => instancePrefs[k] ?? ROOT_CONFIG[k]

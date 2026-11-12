@@ -545,7 +545,11 @@ export const useSyncConfigStore = defineStore('sync_config', {
         defaultState: ROOT_CONFIG,
       })
 
-      if (finalValue !== undefined) set(this.prefsStorage, path, finalValue)
+      if (finalValue === undefined) {
+        unset(this.prefsStorage, path)
+      } else {
+        set(this.prefsStorage, path, finalValue)
+      }
 
       this.prefsStorage._journal = [
         ...this.prefsStorage._journal,

@@ -48,6 +48,12 @@
       <template #content>
         <div class="indicator-tooltip">
           {{ $t( 'settings.setting_changed') }}
+          <button
+            class="btn button-default"
+            @click="$parent.hardReset"
+          >
+            {{ $t( 'settings.reset_value') }}
+          </button>
         </div>
       </template>
     </Popover>

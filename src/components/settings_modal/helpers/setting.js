@@ -198,7 +198,7 @@ export default {
       get() {
         if (this.path == null) return this.modelValue
 
-        const value = get(this.configSource, this.canonPath)
+        const value = get(this.realSource, this.canonPath)
         if (value === undefined) {
           return this.defaultState
         } else {
@@ -236,12 +236,10 @@ export default {
           return useAdminSettingsStore().config
         case 'fe-admin':
           return useAdminSettingsStore().frontendConfig
-        default:
-          if (this.realSource === 'local' || this.isLocalOnly) {
-            return useLocalConfigStore().mergedConfig
-          } else {
-            return useMergedConfigStore().mergedConfig
-          }
+        case 'local':
+          return useLocalConfigStore().mergedConfig
+        default: // local-only also get data from merged config!
+          return useMergedConfigStore().mergedConfig
       }
     },
     configSink() {
@@ -328,6 +326,9 @@ export default {
       }
     },
     defaultState() {
+      if (this.isLocalOnly) {
+        return get(useMergedConfigStore().mergedConfigDefault, this.canonPath)
+      }
       switch (this.realSource) {
         case 'profile':
         case 'admin':
@@ -405,7 +406,7 @@ export default {
       return this.suggestions || this.backendDescription?.suggestions
     },
     realPlaceholder() {
-      if (this.realSource === 'local' && !this.isLocalOnly) {
+      if (this.realSource === 'local' || this.isLocalOnly) {
         return get(useMergedConfigStore().mergedConfig, this.canonPath)
       }
       if (this.realSource === 'fe-admin') {
@@ -455,7 +456,7 @@ export default {
         case 'admin':
           return false
         default:
-          return this.state !== this.defaultState
+          return this.visibleState !== this.defaultState
       }
     },
     isDirty() {
@@ -542,12 +543,8 @@ export default {
             .then(() => {
               this.draft = this.state
             })
-        case 'local':
-        case 'fe-admin':
-          this.visibleState = undefined
-          return
         default:
-          console.error('Hard reset not implemented yet!')
+          this.visibleState = undefined
       }
     },
   },

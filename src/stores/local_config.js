@@ -1,4 +1,4 @@
-import { cloneDeep, set } from 'lodash-es'
+import { cloneDeep, set, unset } from 'lodash-es'
 import { defineStore } from 'pinia'
 
 import {
@@ -52,10 +52,10 @@ export const useLocalConfigStore = defineStore('local_config', {
       set(this.tempStorage, path, value)
     },
     unsetTemporarily({ path }) {
-      set(this.tempStorage, path, undefined)
+      unset(this.tempStorage, path)
     },
     unset({ path, value }) {
-      set(this.prefsStorage, path, undefined)
+      unset(this.prefsStorage, path)
     },
     clearLocalConfig() {
       Object.keys(this).forEach((k) => {
