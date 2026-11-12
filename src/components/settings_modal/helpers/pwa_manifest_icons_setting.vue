@@ -6,7 +6,7 @@
     <legend
       v-if="!hideLabel"
       class="pwa-label setting-label"
-      :class="labelClasses"
+      :class="classes"
     >
       <ModifiedIndicator
         :changed="isChanged"
@@ -29,7 +29,7 @@
     <p
       v-if="realDescription"
       class="setting-description"
-      :class="labelClasses"
+      :class="classes"
     >
       {{ realDescription + ' ' }}
     </p>

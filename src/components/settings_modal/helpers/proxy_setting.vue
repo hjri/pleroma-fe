@@ -7,7 +7,7 @@
       v-if="!hideLabel"
       :for="idPrefix + 'input'"
       class="setting-label"
-      :class="labelClasses"
+      :class="classes"
     >
       <ModifiedIndicator
         :changed="isChanged"
@@ -52,7 +52,7 @@
     <p
       v-if="realDescription"
       class="setting-description"
-      :class="labelClasses"
+      :class="classes"
     >
       {{ realDescription + ' ' }}
     </p>

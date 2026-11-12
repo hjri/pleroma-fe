@@ -7,7 +7,7 @@
       v-if="!hideLabel"
       :for="idPrefix + 'value'"
       class="setting-label"
-      :class="labelClasses"
+      :class="classes"
     >
       <ModifiedIndicator
         :changed="isChanged"
@@ -32,9 +32,11 @@
         v-model="stateValue"
         :id="idPrefix + 'value'"
         class="input number-input"
+        :class="classes"
         type="number"
         :step="realStep"
         :disabled="disabled"
+        :placeholder="realSuggestions ?? placeholderValue"
         :min="realMin"
       >
       <Select
@@ -43,6 +45,7 @@
         :disabled="disabled"
         class="unit-input unstyled"
         unstyled
+        :placeholder="placeholderUnit"
         :aria-label="$t('settings.style.common.unit')"
       >
         <option
@@ -58,7 +61,7 @@
     <p
       v-if="realDescription"
       class="setting-description"
-      :class="labelClasses"
+      :class="classes"
     >
       {{ realDescription + ' ' }}
     </p>

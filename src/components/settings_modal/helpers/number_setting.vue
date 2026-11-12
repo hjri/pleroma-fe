@@ -7,7 +7,7 @@
       v-if="!hideLabel"
       :for="idPrefix + 'text'"
       class="setting-label"
-      :class="labelClasses"
+      :class="classes"
     >
       <ModifiedIndicator
         :changed="isChanged"
@@ -31,17 +31,18 @@
       v-model="visibleState"
       :id="idPrefix + 'text'"
       class="input number-input setting-control"
+      :class="classes"
       type="number"
-      :step="realStep || 1"
+      :step="realStep"
       :disabled="shouldBeDisabled"
-      :placeholder="realSuggestions"
-      :min="realMin || 0"
+      :placeholder="realSuggestions ?? realPlaceholder"
+      :min="realMin"
     >
     {{ ' ' }}
     <p
       v-if="realDescription"
       class="setting-description"
-      :class="labelClasses"
+      :class="classes"
     >
       {{ realDescription + ' ' }}
     </p>

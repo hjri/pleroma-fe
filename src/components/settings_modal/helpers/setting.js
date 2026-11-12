@@ -404,6 +404,15 @@ export default {
     realSuggestions() {
       return this.suggestions || this.backendDescription?.suggestions
     },
+    realPlaceholder() {
+      if (this.realSource === 'local' && !this.isLocalOnly) {
+        return get(useMergedConfigStore().mergedConfig, this.canonPath)
+      }
+      if (this.realSource === 'fe-admin') {
+        return this.definition?.default
+      }
+      return ''
+    },
     realExpert() {
       return this.expert ?? this.definition?.expert
     },
@@ -463,10 +472,18 @@ export default {
         get(useLocalConfigStore().prefsStorage, this.canonPath) !== undefined
       )
     },
-    labelClasses() {
+    isDefined() {
+      if (this.realSource !== 'fe-admin' && this.realSource !== 'local') return false
+      if (this.isLocalOnly) return false
+      return (
+        this.visibleState !== undefined
+      )
+    },
+    classes() {
       return {
         faint: this.shouldBeDisabled,
         '-overriden': this.isOverriden,
+        '-defined': this.isDefined,
       }
     },
     canHardReset() {

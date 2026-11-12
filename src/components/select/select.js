@@ -11,6 +11,7 @@ export default {
     disabled: Boolean,
     unstyled: Boolean,
     kind: String,
+    placeholder: String,
   },
   computed: {
     inputAttrs() {

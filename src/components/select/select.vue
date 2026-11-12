@@ -3,6 +3,12 @@
     class="Select input"
     :class="[$attrs.class, { disabled, unstyled }]"
   >
+    <span
+      class="placeholder"
+      v-if="modelValue === undefined"
+    >
+      {{ placeholder }}
+    </span>
     <select
       :disabled="disabled"
       :value="modelValue"
@@ -28,13 +34,23 @@ label.Select {
   padding: 0;
   display: flex;
 
+  .placeholder, select {
+    padding: 0 2em 0 0.5em;
+  }
+
+  .placeholder {
+    position: absolute;
+    inset: 0;
+    color: var(--textFaint);
+    pointer-events: none;
+  }
+
   select {
     appearance: none;
     background: transparent;
     border: none;
     color: var(--text);
     margin: 0;
-    padding: 0 2em 0 0.5em;
     font-family: var(--font);
     font-size: 1em;
     width: 100%;

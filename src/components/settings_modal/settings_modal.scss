@@ -107,6 +107,10 @@
       &.-overriden {
         font-style: italic;
       }
+
+      &.-defined {
+        font-weight: 600;
+      }
     }
 
     .ModifiedIndicator,
@@ -143,6 +147,10 @@
             text-align: left;
           }
         }
+      }
+
+      &.-overriden {
+        text-decoration: line-through;
       }
     }
 

@@ -7,7 +7,7 @@
       v-if="!hideLabel"
       :for="idPrefix + 'select'"
       class="setting-label"
-      :class="labelClasses"
+      :class="classes"
     >
       <ModifiedIndicator
         :changed="isChanged"
@@ -30,8 +30,10 @@
     <Select
       v-model="visibleState"
       class="setting-control"
+      :class="classes"
       :id="idPrefix + 'select'"
       :disabled="shouldBeDisabled"
+      :placeholder="localizedPlaceholder"
     >
       <option
         v-for="option in realOptions"

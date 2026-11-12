@@ -56,7 +56,7 @@ export default {
       get() {
         return typeof this.visibleState === 'string'
           ? this.visibleState.replace(/[0-9,.]+/, '')
-          : ''
+          : undefined
       },
       set(newUnit) {
         let value = this.stateValue
@@ -75,12 +75,18 @@ export default {
       get() {
         return typeof this.visibleState === 'string'
           ? this.visibleState.replace(/[^0-9,.]+/, '')
-          : ''
+          : undefined
       },
       set(e) {
         const value = Number.parseFloat(e)
         this.visibleState = value + this.stateUnit
       },
+    },
+    placeholderUnit() {
+      return this.realPlaceholder?.replace(/[0-9,.]+/, '')
+    },
+    placeholderValue() {
+      return this.realPlaceholder?.replace(/[^0-9,.]+/, '')
     },
   },
   methods: {
