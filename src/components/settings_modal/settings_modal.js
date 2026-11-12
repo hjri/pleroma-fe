@@ -16,6 +16,7 @@ import {
   ROOT_CONFIG_DEFINITIONS,
   validateSetting,
 } from 'src/stores/default_state/default_config_state.js'
+import { useUsersStore } from 'src/stores/users.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
@@ -286,6 +287,11 @@ const SettingsModal = {
     $route(r) {
       this.minimizeModal()
     },
+    mode(value) {
+      if (value === 'fe-admin' && useUsersStore().currentUser?.rights.admin) {
+        useAdminSettingsStore().loadAdminStuff()
+      }
+    }
   },
 }
 
