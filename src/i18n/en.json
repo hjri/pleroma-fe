@@ -471,6 +471,10 @@
     "text_size_tip2": "Values other than {0} might break some things and themes",
     "emoji_size": "Emoji size",
     "navbar_size": "Top bar size",
+    "interface_font": "Interface font",
+    "input_font": "Input fields font",
+    "post_font": "Post font",
+    "monospace_font": "Monospaced font",
     "panel_header_size": "Panel header size",
     "visual_tweaks": "Minor visual tweaks",
     "theme_debug": "Show what background theme engine assumes when dealing with transparancy",
@@ -1019,6 +1023,7 @@
           "forced_roundness_mode_round": "Force round edges"
         },
         "font": {
+          "default": "Default",
           "group-builtin": "Browser default fonts",
           "builtin": {
             "serif": "Serif",

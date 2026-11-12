@@ -1,8 +1,8 @@
 import { mapState } from 'pinia'
 
-import FontControl from 'src/components/font_control/font_control.vue'
 import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
 import BooleanSetting from '../helpers/boolean_setting.vue'
+import FontSetting from '../helpers/font_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import FloatSetting from '../helpers/float_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
@@ -30,7 +30,7 @@ const GeneralTab = {
     ChoiceSetting,
     UnitSetting,
     FloatSetting,
-    FontControl,
+    FontSetting,
     InterfaceLanguageSwitcher,
   },
   computed: {

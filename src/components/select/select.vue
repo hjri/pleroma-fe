@@ -5,7 +5,7 @@
   >
     <span
       class="placeholder"
-      v-if="modelValue === undefined"
+      v-if="modelValue == null"
     >
       {{ placeholder }}
     </span>
@@ -13,7 +13,7 @@
       :disabled="disabled"
       :value="modelValue"
       v-bind="inputAttrs"
-      @change="$emit('update:modelValue', $event.target.value)"
+      @change="$emit('update:modelValue', $event.target.value || undefined)"
     >
       <slot />
     </select>
@@ -32,7 +32,7 @@
 /* TODO fix order of styles */
 label.Select {
   padding: 0;
-  display: flex;
+  display: inline-flex;
 
   .placeholder, select {
     padding: 0 2em 0 0.5em;

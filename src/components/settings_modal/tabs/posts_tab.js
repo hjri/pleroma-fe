@@ -1,4 +1,4 @@
-import FontControl from 'src/components/font_control/font_control.vue'
+import FontSetting from '../helpers/font_setting.vue'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import IntegerSetting from '../helpers/integer_setting.vue'
@@ -37,7 +37,7 @@ const PostsTab = {
     BooleanSetting,
     ChoiceSetting,
     IntegerSetting,
-    FontControl,
+    FontSetting,
     UnitSetting,
   },
   computed: {

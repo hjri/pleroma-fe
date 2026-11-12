@@ -872,21 +872,25 @@ const LOCAL_DEFAULT_CONFIG_DEFINITIONS_RAW = {
     description: 'Interface font override',
     type: 'string',
     default: null,
+    label: 'settings.interface_font',
   },
   fontInput: {
     description: 'Input font override',
     type: 'string',
     default: null,
+    label: 'settings.input_font',
   },
   fontPosts: {
     description: 'Post font override',
     type: 'string',
     default: null,
+    label: 'settings.style.fonts.components.post',
   },
   fontMonospace: {
     description: 'Monospace font override',
     type: 'string',
     default: null,
+    label: 'settings.style.fonts.components.monospace',
   },
   chatSubmitOnEnter: {
     description: 'Post status on enter key in chats and chat view',

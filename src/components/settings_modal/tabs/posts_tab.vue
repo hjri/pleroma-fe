@@ -30,22 +30,10 @@
           </ul>
         </li>
         <li>
-          <FontControl
-            :model-value="mergedConfig.fontPosts"
-            name="post"
-            fallback="inherit"
-            :label="$t('settings.style.fonts.components.post')"
-            @update:model-value="v => updateFont('fontPosts', v)"
-          />
+          <FontSetting path="fontPosts" />
         </li>
         <li>
-          <FontControl
-            :model-value="mergedConfig.fontMonospace"
-            name="postCode"
-            fallback="monospace"
-            :label="$t('settings.style.fonts.components.monospace')"
-            @update:model-value="v => updateFont('fontMonospace', v)"
-          />
+          <FontSetting path="fontMonospace" />
         </li>
         <li>
           <BooleanSetting path="greentext">

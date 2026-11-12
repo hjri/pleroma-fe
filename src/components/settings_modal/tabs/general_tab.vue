@@ -47,23 +47,13 @@
           </p>
         </li>
         <li>
-          <FontControl
-            :model-value="mergedConfig.fontInterface"
-            name="ui"
-            :label="$t('settings.style.fonts.components_inline.interface')"
-            fallback="sans-serif"
-            no-inherit="1"
-            @update:model-value="v => updateFont('fontInterface', v)"
+          <FontSetting
+            path="fontInterface"
+            no-inherit
           />
         </li>
         <li>
-          <FontControl
-            :model-value="mergedConfig.fontInput"
-            name="input"
-            fallback="inherit"
-            :label="$t('settings.style.fonts.components_inline.input')"
-            @update:model-value="v => updateFont('fontInput', v)"
-          />
+          <FontSetting path="fontInput" />
         </li>
         <li>
           <UnitSetting path="emojiSize" />
