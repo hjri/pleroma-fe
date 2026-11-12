@@ -198,7 +198,7 @@ export default {
       get() {
         if (this.path == null) return this.modelValue
 
-        const value = get(this.realSource, this.canonPath)
+        const value = get(this.configSource, this.canonPath)
         if (value === undefined) {
           return this.defaultState
         } else {
