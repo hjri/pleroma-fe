@@ -1,7 +1,7 @@
 <template>
   <span
     v-if="matchesExpertLevel"
-    class="StringSetting setting-item"
+    class="FontSetting setting-item"
   >
     <label
       v-if="!hideLabel"
@@ -34,7 +34,6 @@
       :class="classes"
       :disabled="shouldBeDisabled"
       :placeholder="realSuggestions ?? realPlaceholder"
-      :value="realDraftMode ? draft : state"
     />
     {{ ' ' }}
     <p

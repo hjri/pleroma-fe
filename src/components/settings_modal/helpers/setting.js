@@ -254,7 +254,7 @@ export default {
       switch (this.realSource) {
         case 'profile':
           return (path, value) =>
-            useProfileConfigStore().setProfileOption({ name, value })
+            useProfileConfigStore().setProfileOption({ name: path, value })
         case 'admin':
           return (path, value) =>
             useAdminSettingsStore().pushAdminSetting({ path, value })

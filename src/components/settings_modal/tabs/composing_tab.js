@@ -2,9 +2,9 @@ import { mapState } from 'pinia'
 
 import FontControl from 'src/components/font_control/font_control.vue'
 import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
-import ScopeSelector from 'src/components/scope_selector/scope_selector.vue'
 import Select from 'src/components/select/select.vue'
 import BooleanSetting from '../helpers/boolean_setting.vue'
+import ScopeSetting from '../helpers/scope_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import FloatSetting from '../helpers/float_setting.vue'
 import IntegerSetting from '../helpers/integer_setting.vue'
@@ -64,14 +64,11 @@ const ComposingTab = {
     FloatSetting,
     UnitSetting,
     InterfaceLanguageSwitcher,
-    ScopeSelector,
+    ScopeSetting,
     Select,
     FontControl,
   },
   computed: {
-    defaultScope() {
-      return useProfileConfigStore().config.defaultScope
-    },
     postFormats() {
       return useInstanceCapabilitiesStore().postFormats
     },

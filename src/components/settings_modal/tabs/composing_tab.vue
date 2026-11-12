@@ -4,23 +4,17 @@
       <h3>{{ $t('settings.general') }}</h3>
       <ul class="setting-list">
         <li>
-          <label
-            class="setting-item "
-            for="default-vis"
+          <ScopeSetting
+            source="profile"
+            name="defaultScope"
+            path="defaultScope"
+            :user-default="defaultScope"
+            :initial-scope="defaultScope"
+            :unstyled="false"
+            @change="changeDefaultScope"
           >
-            <span class="setting-label">
-              <ProfileSettingIndicator :is-profile="true" />
-              {{ $t('settings.default_vis') }}
-            </span>
-            <ScopeSelector
-              class="scope-selector setting-control"
-              :show-all="true"
-              :user-default="defaultScope"
-              :initial-scope="defaultScope"
-              :unstyled="false"
-              @change="changeDefaultScope"
-            />
-          </label>
+            {{ $t('settings.default_vis') }}
+          </ScopeSetting>
         </li>
         <li>
           <!-- <BooleanSetting source="profile" path="defaultNSFW"> -->
