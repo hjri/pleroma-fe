@@ -11,18 +11,8 @@ import {
 } from 'src/stores/default_state/default_config_state.js'
 
 export const defaultState = {
-  prefsStorage: {
-    ...makeUndefined({
-      ...INSTANCE_DEFAULT_CONFIG,
-      ...LOCAL_DEFAULT_CONFIG,
-    }),
-  },
-  tempStorage: {
-    ...makeUndefined({
-      ...INSTANCE_DEFAULT_CONFIG,
-      ...LOCAL_DEFAULT_CONFIG,
-    }),
-  },
+  prefsStorage: {},
+  tempStorage: {},
 }
 
 export const useLocalConfigStore = defineStore('local_config', {
@@ -59,8 +49,8 @@ export const useLocalConfigStore = defineStore('local_config', {
     },
     clearLocalConfig() {
       Object.keys(this).forEach((k) => {
-        this.prefsStorage[k] = undefined
-        this.tempStorage[k] = undefined
+        delete this.prefsStorage[k]
+        delete this.tempStorage[k]
       })
     },
   },
@@ -76,10 +66,8 @@ export const useLocalConfigStore = defineStore('local_config', {
   persist: {
     afterLoad(state) {
       return {
-        prefsStorage: state.prefsStorage ?? {
-          ...makeUndefined(LOCAL_DEFAULT_CONFIG),
-        },
-        tempStorage: { ...makeUndefined(LOCAL_DEFAULT_CONFIG) },
+        prefsStorage: state.prefsStorage ?? {},
+        tempStorage: {},
       }
     },
   },
