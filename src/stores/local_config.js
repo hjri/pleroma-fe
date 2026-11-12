@@ -45,7 +45,6 @@ export const useLocalConfigStore = defineStore('local_config', {
           ...LOCAL_DEFAULT_CONFIG,
         },
       })
-      console.log(path, value, finalValue)
 
       set(this.prefsStorage, path, finalValue)
     },

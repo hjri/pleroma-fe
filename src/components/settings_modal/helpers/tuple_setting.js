@@ -11,8 +11,7 @@ export default {
       get() {
         return this.guardedState[0]
       },
-      set(e) {
-        const string = e.target.value
+      set(string) {
         this.visibleState = { tuple: [string, this.guradredState[1]] }
       },
     },
@@ -20,8 +19,7 @@ export default {
       get() {
         return this.guardedState[1]
       },
-      set(e) {
-        const string = e.target.value
+      set(string) {
         this.visibleState = { tuple: [this.guradredState[0], string] }
       },
     },

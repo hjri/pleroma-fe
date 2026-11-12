@@ -78,7 +78,7 @@ export default {
           : ''
       },
       set(e) {
-        const value = Number.parseFloat(e.target.value)
+        const value = Number.parseFloat(e)
         this.visibleState = value + this.stateUnit
       },
     },

@@ -13,8 +13,7 @@ export default {
           return this.visibleState
         }
       },
-      set(e) {
-        const string = e.target.value
+      set(string) {
         if (this.socksField) {
           this.visibleState = { tuple: [':socks5', ...string.split(':')] }
         } else {
@@ -26,8 +25,8 @@ export default {
       get() {
         return this.visibleState?.tuple
       },
-      set(e) {
-        if (e) {
+      set(bool) {
+        if (bool) {
           this.visibleState = {
             tuple: [':socks5', ...this.urlField.split(':')],
           }

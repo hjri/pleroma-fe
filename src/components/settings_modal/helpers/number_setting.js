@@ -25,11 +25,11 @@ export default {
     ...Setting.methods,
     getValue(e) {
       if (this.truncate === 1) {
-        return Number.parseInt(e.target.value)
+        return Number.parseInt(e)
       } else if (this.truncate > 1) {
-        return Math.trunc(e.target.value / this.truncate) * this.truncate
+        return Math.trunc(e / this.truncate) * this.truncate
       }
-      return Number.parseFloat(e.target.value)
+      return Number.parseFloat(e)
     },
   },
 }
