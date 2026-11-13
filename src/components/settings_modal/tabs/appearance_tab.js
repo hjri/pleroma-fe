@@ -16,6 +16,7 @@ import { useOAuthStore } from 'src/stores/oauth.js'
 import { useUsersStore } from 'src/stores/users.js'
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { updateProfileImages } from 'src/api/user.js'
@@ -314,7 +315,7 @@ const AppearanceTab = {
         case 'local':
           return useLocalConfigStore().mergedConfig
         default:
-          return useMergedConfigStore().mergedConfig
+          return useSyncConfigStore().prefsStorage.simple
       }
     },
     ...SharedComputedObject(),

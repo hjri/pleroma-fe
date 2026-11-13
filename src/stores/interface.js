@@ -865,6 +865,7 @@ export const useInterfaceStore = defineStore('interface', {
             this.themeChangeInProgress = false
             if (store) {
               this.setPreference({ path: 'themeChecksum', value: cache.checksum, store })
+              this.pushPreferences({ store })
             }
           },
           themeDebug,
