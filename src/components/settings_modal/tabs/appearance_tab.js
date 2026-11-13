@@ -15,6 +15,8 @@ import { normalizeThemeData, useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useUsersStore } from 'src/stores/users.js'
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { updateProfileImages } from 'src/api/user.js'
 import { newImporter } from 'src/services/export_import/export_import.js'
@@ -297,12 +299,23 @@ const AppearanceTab = {
       return themeVersion
     },
     isCustomThemeUsed() {
-      const { customTheme, customThemeSource } = this.mergedConfig
+      const { customTheme, customThemeSource } = this.configSource
       return customTheme != null || customThemeSource != null
     },
     isCustomStyleUsed() {
-      const { styleCustomData } = this.mergedConfig
+      const { styleCustomData } = this.configSource
       return styleCustomData != null
+    },
+    // Data access
+    configSource() {
+      switch (this.defaultSource) {
+        case 'fe-admin':
+          return useAdminSettingsStore().frontendConfig ?? {}
+        case 'local':
+          return useLocalConfigStore().mergedConfig
+        default:
+          return useMergedConfigStore().mergedConfig
+      }
     },
     ...SharedComputedObject(),
   },
@@ -343,23 +356,13 @@ const AppearanceTab = {
       }
     },
     isThemeActive(key) {
-      return (
-        key ===
-        (this.mergedConfig.theme || useInstanceStore().instanceIdentity.theme)
-      )
+      return key === this.configSource.theme
     },
     isStyleActive(key) {
-      return (
-        key ===
-        (this.mergedConfig.style || useInstanceStore().instanceIdentity.style)
-      )
+      return key === this.configSource.style
     },
     isPaletteActive(key) {
-      return (
-        key ===
-        (this.mergedConfig.palette ||
-          useInstanceStore().instanceIdentity.palette)
-      )
+      return key === this.configSource.palette
     },
     setStyle(name) {
       useInterfaceStore().setStyle(name, this.defaultSource)
