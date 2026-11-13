@@ -63,7 +63,7 @@ export const useMergedConfigStore = defineStore('merged_config', {
     },
     mergedConfigWithoutDefaults: () => {
       const localPrefs = useLocalConfigStore().mergedConfig
-      const syncPrefs = useSyncConfigStore().prefsStorage
+      const syncPrefs = useSyncConfigStore().prefsStorage.simple
       const keys = new Set([
         ...Object.keys(localPrefs),
         ...Object.keys(syncPrefs),
@@ -71,7 +71,7 @@ export const useMergedConfigStore = defineStore('merged_config', {
 
       const definedIn = (k) => ({
         local: Object.hasOwn(localPrefs, k),
-        sync: syncPrefs.simple[k] !== undefined,
+        sync: syncPrefs[k] !== undefined,
       })
 
       const getValue = (k) => {
@@ -80,7 +80,7 @@ export const useMergedConfigStore = defineStore('merged_config', {
         if (local) {
           return localPrefs[k]
         } else if (sync) {
-          return syncPrefs.simple[k]
+          return syncPrefs[k]
         } else {
           return undefined
         }

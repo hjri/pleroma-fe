@@ -16,6 +16,8 @@ import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStreamingStore } from 'src/stores/streaming.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { WSConnectionStatus } from 'src/api/websocket.js'
@@ -353,6 +355,40 @@ export const useInterfaceStore = defineStore('interface', {
     setLastTimeline(value) {
       this.lastTimeline = value
     },
+    // Themes stuff
+    async setPreference({ path, value, store }) {
+      switch(store) {
+        case 'sync':
+          return useSyncConfigStore().setPreference({ path: `simple.${path}`, value })
+        case 'local':
+          return useLocalConfigStore().set({ path, value })
+        // Copypasta from setting.js
+        case 'fe-admin': {
+          const prefix = [
+            ':pleroma',
+            ':frontend_configurations',
+            ':pleroma_fe',
+          ]
+          const settings = cloneDeep(useAdminSettingsStore().frontendConfig)
+          set(settings, path, value)
+          const formatted = Object.fromEntries(
+            Object.entries(settings).map(([k, v]) => [`:${k}`, v]),
+          )
+
+          return useAdminSettingsStore().pushAdminSetting({
+            path: prefix.join('.'),
+            value: formatted,
+          })
+        }
+      }
+    },
+    async pushPreferences({ store }) {
+      if (store === 'sync') {
+        return useSyncConfigStore().pushSyncConfig()
+      } else {
+        return
+      }
+    },
     async fetchPalettesIndex() {
       try {
         const value = await getResourcesIndex('/static/palettes/index.json')
@@ -370,26 +406,27 @@ export const useInterfaceStore = defineStore('interface', {
         return {}
       }
     },
-    setPalette(value) {
-      this.resetThemeV3Palette()
-      this.resetThemeV2()
+    setPalette(value, store) {
+      this.resetThemeV3Palette(store)
+      this.resetThemeV2(store)
 
-      useSyncConfigStore().setPreference({ path: 'simple.palette', value })
-      useSyncConfigStore().pushSyncConfig()
+      this.setPreference({ path: 'palette', value, store })
+      this.pushPreferences({ store })
 
-      this.applyTheme({ recompile: true })
+      this.applyTheme({ recompile: true, store })
     },
-    setPaletteCustom(value) {
-      this.resetThemeV3Palette()
-      this.resetThemeV2()
+    setPaletteCustom(value, store) {
+      this.resetThemeV3Palette(store)
+      this.resetThemeV2(store)
 
-      useSyncConfigStore().setPreference({
-        path: 'simple.paletteCustomData',
+      this.setPreference({
+        path: 'paletteCustomData',
         value,
+        store,
       })
-      useSyncConfigStore().pushSyncConfig()
+      this.pushPreferences({ store })
 
-      this.applyTheme({ recompile: true })
+      this.applyTheme({ recompile: true, store })
     },
     async fetchStylesIndex() {
       try {
@@ -408,32 +445,33 @@ export const useInterfaceStore = defineStore('interface', {
         return {}
       }
     },
-    setStyle(value) {
-      this.resetThemeV3()
-      this.resetThemeV2()
-      this.resetThemeV3Palette()
+    setStyle(value, store) {
+      this.resetThemeV3(store)
+      this.resetThemeV2(store)
+      this.resetThemeV3Palette(store)
 
-      useSyncConfigStore().setPreference({ path: 'simple.style', value })
-      useSyncConfigStore().pushSyncConfig()
+      this.setPreference({ path: 'style', value, store })
+      this.pushPreferences({ store })
       this.useStylePalette = true
 
-      this.applyTheme({ recompile: true }).then(() => {
+      this.applyTheme({ recompile: true, store }).then(() => {
         this.useStylePalette = false
       })
     },
-    setStyleCustom(value) {
-      this.resetThemeV3()
-      this.resetThemeV2()
-      this.resetThemeV3Palette()
+    setStyleCustom(value, store) {
+      this.resetThemeV3(store)
+      this.resetThemeV2(store)
+      this.resetThemeV3Palette(store)
 
-      useSyncConfigStore().setPreference({
+      this.setPreference({
         path: 'simple.styleCustomData',
         value,
+        store,
       })
-      useSyncConfigStore().pushSyncConfig()
+      this.pushPreferences({ store })
 
       this.useStylePalette = true
-      this.applyTheme({ recompile: true }).then(() => {
+      this.applyTheme({ recompile: true, store }).then(() => {
         this.useStylePalette = false
       })
     },
@@ -451,56 +489,61 @@ export const useInterfaceStore = defineStore('interface', {
         return {}
       }
     },
-    setTheme(value) {
-      this.resetThemeV3()
-      this.resetThemeV3Palette()
-      this.resetThemeV2()
+    setTheme(value, store) {
+      this.resetThemeV3(store)
+      this.resetThemeV3Palette(store)
+      this.resetThemeV2(store)
 
-      useSyncConfigStore().setPreference({ path: 'simple.theme', value })
-      useSyncConfigStore().pushSyncConfig()
+      this.setPreference({ path: 'theme', value, store })
+      this.pushPreferences({ store })
 
-      this.applyTheme({ recompile: true })
+      this.applyTheme({ recompile: true, store })
     },
-    setThemeCustom(value) {
-      this.resetThemeV3()
-      this.resetThemeV3Palette()
-      this.resetThemeV2()
+    setThemeCustom(value, store) {
+      this.resetThemeV3(store)
+      this.resetThemeV3Palette(store)
+      this.resetThemeV2(store)
 
-      useSyncConfigStore().setPreference({ path: 'simple.customTheme', value })
-      useSyncConfigStore().setPreference({
-        path: 'simple.customThemeSource',
+      this.setPreference({ path: 'customTheme', value, store })
+      this.setPreference({
+        path: 'customThemeSource',
         value,
       })
-      useSyncConfigStore().pushSyncConfig()
+      this.pushPreferences({ store })
 
-      this.applyTheme({ recompile: true })
+      this.applyTheme({ recompile: true, store })
     },
-    resetThemeV3() {
-      useSyncConfigStore().setPreference({ path: 'simple.style', value: null })
-      useSyncConfigStore().setPreference({
-        path: 'simple.styleCustomData',
-        value: null,
-      })
-    },
-    resetThemeV3Palette() {
-      useSyncConfigStore().setPreference({
-        path: 'simple.palette',
-        value: null,
-      })
-      useSyncConfigStore().setPreference({
-        path: 'simple.paletteCustomData',
-        value: null,
+    resetThemeV3(store) {
+      this.setPreference({ path: 'style', value: undefined, store })
+      this.setPreference({
+        path: 'styleCustomData',
+        value: undefined,
+        store,
       })
     },
-    resetThemeV2() {
-      useSyncConfigStore().setPreference({ path: 'simple.theme', value: null })
-      useSyncConfigStore().setPreference({
-        path: 'simple.customTheme',
-        value: null,
+    resetThemeV3Palette(store) {
+      this.setPreference({
+        path: 'palette',
+        value: undefined,
+        store,
       })
-      useSyncConfigStore().setPreference({
-        path: 'simple.customThemeSource',
-        value: null,
+      this.setPreference({
+        path: 'paletteCustomData',
+        value: undefined,
+        store,
+      })
+    },
+    resetThemeV2(store) {
+      this.setPreference({ path: 'theme', value: undefined })
+      this.setPreference({
+        path: 'customTheme',
+        value: undefined,
+        store,
+      })
+      this.setPreference({
+        path: 'customThemeSource',
+        value: undefined,
+        store,
       })
     },
     async getThemeData() {
@@ -665,14 +708,6 @@ export const useInterfaceStore = defineStore('interface', {
             : userPaletteName || instancePaletteName,
         )
 
-        if (this.useStylePalette) {
-          useSyncConfigStore().setPreference({
-            path: 'simple.palette',
-            value: firstStylePaletteName,
-          })
-          useSyncConfigStore().pushSyncConfig()
-        }
-
         this.paletteNameUsed = palette.nameUsed
         this.paletteDataUsed = palette.dataUsed
 
@@ -727,7 +762,7 @@ export const useInterfaceStore = defineStore('interface', {
     async setThemeApplied() {
       this.themeApplied = true
     },
-    async applyTheme({ recompile = false } = {}) {
+    async applyTheme({ recompile = false, store } = {}) {
       const { mergedConfig } = useMergedConfigStore()
       const { forceThemeRecompilation, themeDebug } = mergedConfig
 
@@ -825,8 +860,11 @@ export const useInterfaceStore = defineStore('interface', {
         return applyTheme(
           rulesetArray.flat(),
           () => this.setThemeApplied(),
-          () => {
+          (cache) => {
             this.themeChangeInProgress = false
+            if (store) {
+              this.setPreference({ path: 'themeChecksum', value: cache.checksum, store })
+            }
           },
           themeDebug,
         )

@@ -14,6 +14,7 @@ import { useInstanceStore } from 'src/stores/instance.js'
 import { normalizeThemeData, useInterfaceStore } from 'src/stores/interface.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useUsersStore } from 'src/stores/users.js'
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 
 import { updateProfileImages } from 'src/api/user.js'
 import { newImporter } from 'src/services/export_import/export_import.js'
@@ -111,6 +112,11 @@ const AppearanceTab = {
     UnitSetting,
     Preview,
     PaletteEditor,
+  },
+  inject: {
+    defaultSource: {
+      default: 'sync',
+    },
   },
   mounted() {
     useInterfaceStore().getThemeData()
@@ -313,9 +319,9 @@ const AppearanceTab = {
     },
     onImport(parsed, filename) {
       if (filename.endsWith('.json')) {
-        useInterfaceStore().setThemeCustom(parsed.source || parsed.theme)
+        useInterfaceStore().setThemeCustom(parsed.source || parsed.theme, this.defaultSource)
       } else if (filename.endsWith('.iss')) {
-        useInterfaceStore().setStyleCustom(parsed)
+        useInterfaceStore().setStyleCustom(parsed, this.defaultSource)
       }
     },
     onImportFailure(result) {
@@ -355,17 +361,22 @@ const AppearanceTab = {
           useInstanceStore().instanceIdentity.palette)
       )
     },
-    ...mapActions(useInterfaceStore, ['setStyle', 'setTheme']),
+    setStyle(name) {
+      useInterfaceStore().setStyle(name, this.defaultSource)
+    },
+    setTheme(name) {
+      useInterfaceStore().setTheme(name, this.defaultSource)
+    },
     setPalette(name, data) {
-      useInterfaceStore().setPalette(name)
+      useInterfaceStore().setPalette(name, this.defaultSource)
       this.userPalette = data
     },
     setPaletteCustom(data) {
-      useInterfaceStore().setPaletteCustom(data)
+      useInterfaceStore().setPaletteCustom(data, this.defaultSource)
       this.userPalette = data
     },
     resetTheming() {
-      useInterfaceStore().setStyle('stock')
+      useInterfaceStore().setStyle('stock', this.defaultSource)
     },
     previewTheme(key, version, input) {
       let theme3

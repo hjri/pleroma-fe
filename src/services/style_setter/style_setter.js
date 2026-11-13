@@ -7,7 +7,6 @@ import { getEngineChecksum, init } from '../theme_data/theme_data_3.service.js'
 
 import { ROOT_CONFIG } from 'src/stores/default_state/default_config_state.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
-import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 import { promisedRequest } from 'src/api/helpers.js'
 
@@ -224,10 +223,6 @@ export const applyTheme = (
           engineChecksum: getEngineChecksum(),
           data,
         }
-        useSyncConfigStore().setSimplePrefAndSave({
-          path: 'themeChecksum',
-          value: checksum,
-        })
         onFinish(cache)
         localforage.setItem('pleromafe-theme-cache', cache)
         console.info('Theme cache stored')
