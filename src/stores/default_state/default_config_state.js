@@ -301,6 +301,7 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
     options: ['none', 'notifications', 'postform'],
     optionLabel: (key) => `settings.third_column_mode_${key}`,
   },
+  // TODO migrate this to something more coherent when I do better notifications settings matrix
   notificationVisibility: {
     description: 'What types of notifications to show',
     default: {

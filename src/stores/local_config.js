@@ -56,10 +56,18 @@ export const useLocalConfigStore = defineStore('local_config', {
   },
   getters: {
     mergedConfig() {
+      const keys = new Set([
+        ...Object.keys(this.prefsStorage),
+        ...Object.keys(this.tempStorage),
+      ])
+
       return Object.fromEntries(
-        Object.keys(this.prefsStorage).map((key) => {
-          return [key, this.tempStorage[key] ?? this.prefsStorage[key]]
-        })
+        [...keys].map((key) => [
+          key,
+          Object.hasOwn(this.tempStorage, key)
+            ? this.tempStorage[key]
+            : this.prefsStorage[key]
+        ])
       )
     },
   },
