@@ -165,10 +165,7 @@ const DEFAULT_STATE = {
   },
 
   // Instance admins can override default settings for the whole instance
-  prefsStorage: {
-    ...INSTANCE_DEFAULT_CONFIG,
-    ...LOCAL_DEFAULT_CONFIG,
-  },
+  prefsStorage: {},
 }
 
 export const useInstanceStore = defineStore('instance', {
@@ -180,26 +177,26 @@ export const useInstanceStore = defineStore('instance', {
   },
   actions: {
     set({ path, value }) {
-      let definition
       const pathArray = path.split('.')
       const subpath = pathArray[1] ?? pathArray[0]
 
-      if (path.startsWith('instanceIdentity.')) {
-        definition = INSTANCE_IDENTITY_DEFAULT_DEFINITIONS[subpath]
-      } else if (path.startsWith('prefsStorage.')) {
-        definition = {
-          ...LOCAL_DEFAULT_CONFIG_DEFINITIONS,
-          ...INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
-        }[subpath]
-      } else if (path.startsWith('limits.')) {
-        definition =
-          path === 'limits.pollLimits' || path === 'limits.fieldsLimits'
-            ? { required: true, type: 'object' }
-            : { required: true, type: 'number' }
-      } else {
-        const definitions = ROOT_STATE_DEFINITIONS
-        definition = definitions[subpath]
-      }
+      const definition = (() => {
+        if (path.startsWith('instanceIdentity.')) {
+          return INSTANCE_IDENTITY_DEFAULT_DEFINITIONS[subpath]
+        } else if (path.startsWith('prefsStorage.')) {
+          return {
+            ...LOCAL_DEFAULT_CONFIG_DEFINITIONS,
+            ...INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
+          }[subpath]
+        } else if (path.startsWith('limits.')) {
+          return path === 'limits.pollLimits' || path === 'limits.fieldsLimits'
+              ? { required: true, type: 'object' }
+              : { required: true, type: 'number' }
+        } else {
+          const definitions = ROOT_STATE_DEFINITIONS
+          return definitions[subpath]
+        }
+      })()
 
       const finalValue = validateSetting({
         path,

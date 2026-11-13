@@ -10,49 +10,62 @@ import { useSyncConfigStore } from 'src/stores/sync_config.js'
 
 export const useMergedConfigStore = defineStore('merged_config', {
   getters: {
-    mergedConfig: () => {
-      const instancePrefs = useInstanceStore().prefsStorage
-      const tempPrefs = useLocalConfigStore().tempStorage
-      const localPrefs = useLocalConfigStore().prefsStorage
-      const syncPrefs = useSyncConfigStore().prefsStorage
+    mergedConfig: (state) => {
+      const overrides = state.mergedConfigWithoutDefaults
+      const defaults = state.mergedConfigDefault
 
-      const getValue = (k) => {
-        if (Object.hasOwn(tempPrefs, k)) {
-          // Handling case where value is explicitly undefined
-          return tempPrefs[k]
-        } else {
-          return tempPrefs[k] ?? localPrefs[k] ?? syncPrefs.simple[k]
-        }
-      }
-      const getDefault = (k) => instancePrefs[k] ?? ROOT_CONFIG[k]
+      return Object.fromEntries(
+        Object.keys(defaults).map((key) => {
+          const override = overrides[key]
+          const defaultValue = defaults[key]
 
-      const result = Object.fromEntries(
-        Object.keys(ROOT_CONFIG).map((k) => [k, getValue(k) ?? getDefault(k)]),
+          return override !== undefined
+            ? [key, override]
+            : [key, defaultValue]
+        })
       )
-      return result
     },
     mergedConfigDefault: () => {
       const instancePrefs = useInstanceStore().prefsStorage
 
-      const getDefault = (k) => instancePrefs[k] ?? ROOT_CONFIG[k]
+      const getDefault = (k) => {
+        const value = instancePrefs[k]
 
-      const result = Object.fromEntries(
+        return value !== undefined
+          ? value
+          : ROOT_CONFIG[k]
+      }
+
+      return Object.fromEntries(
         Object.keys(ROOT_CONFIG).map((k) => [k, getDefault(k)]),
       )
-      return result
     },
     mergedConfigWithoutDefaults: () => {
-      const tempPrefs = useLocalConfigStore().tempStorage
-      const localPrefs = useLocalConfigStore().prefsStorage
+      const localPrefs = useLocalConfigStore().mergedConfig
       const syncPrefs = useSyncConfigStore().prefsStorage
+      const keys = new Set([
+        ...Object.keys(localPrefs),
+        ...Object.keys(syncPrefs),
+      ])
 
-      const getValue = (k) =>
-        tempPrefs[k] ?? localPrefs[k] ?? syncPrefs.simple[k]
+      const definedIn = (k) => ({
+        local: Object.hasOwn(localPrefs, k),
+        sync: syncPrefs.simple[k] !== undefined,
+      })
 
-      const result = Object.fromEntries(
-        Object.keys(ROOT_CONFIG).map((k) => [k, getValue(k)]),
-      )
-      return result
+      const getValue = (k) => {
+        const { local, sync } = definedIn(k)
+
+        if (local) {
+          return localPrefs[k]
+        } else if (sync) {
+          return syncPrefs.simple[k]
+        } else {
+          return undefined
+        }
+      }
+
+      return Object.fromEntries([...keys].map((k) => [k, getValue(k)]))
     },
   },
 })
