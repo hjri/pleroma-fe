@@ -54,6 +54,7 @@ const GENERIC_FONT_NAMES = new Set([
 export const useInterfaceStore = defineStore('interface', {
   state: () => ({
     localFonts: null,
+    prefersDarkMode: null,
     themeApplied: false,
     themeChangeInProgress: false,
     themeVersion: 'v3',
@@ -328,6 +329,12 @@ export const useInterfaceStore = defineStore('interface', {
         this.layoutType = wideLayout ? 'wide' : normalOrMobile
       }
     },
+    setPrefersDarkMode(value) {
+      if (this.prefersDark !== value) {
+        this.prefersDark = value
+        this.applyTheme()
+      }
+    },
     setFontsList(value) {
       this.localFonts = [...new Set(value.map(({ family }) => family)).values()]
     },
@@ -453,11 +460,8 @@ export const useInterfaceStore = defineStore('interface', {
 
       this.setPreference({ path: 'style', value, store })
       this.pushPreferences({ store })
-      this.useStylePalette = true
 
-      this.applyTheme({ recompile: true, store }).then(() => {
-        this.useStylePalette = false
-      })
+      this.applyTheme({ recompile: true, store })
     },
     setStyleCustom(value, store) {
       this.resetThemeV3(store)
@@ -471,10 +475,7 @@ export const useInterfaceStore = defineStore('interface', {
       })
       this.pushPreferences({ store })
 
-      this.useStylePalette = true
-      this.applyTheme({ recompile: true, store }).then(() => {
-        this.useStylePalette = false
-      })
+      this.applyTheme({ recompile: true, store })
     },
     async fetchThemesIndex() {
       try {
@@ -593,8 +594,6 @@ export const useInterfaceStore = defineStore('interface', {
         palette: instancePaletteName,
       } = useInstanceStore().instanceIdentity
 
-      let { themesIndex, stylesIndex, palettesIndex } = useInstanceStore()
-
       const {
         style: userStyleName,
         styleCustomData: userStyleCustomData,
@@ -652,18 +651,13 @@ export const useInterfaceStore = defineStore('interface', {
       }
 
       if (majorVersionUsed === 'v3') {
-        const result = await Promise.all([
+        await Promise.all([
           this.fetchPalettesIndex(),
           this.fetchStylesIndex(),
         ])
-
-        palettesIndex = result[0]
-        stylesIndex = result[1]
       } else {
         // Promise.all just to be uniform with v3
-        const result = await Promise.all([this.fetchThemesIndex()])
-
-        themesIndex = result[0]
+        await Promise.all([this.fetchThemesIndex()])
       }
 
       this.themeVersion = majorVersionUsed
@@ -676,37 +670,43 @@ export const useInterfaceStore = defineStore('interface', {
 
         const style = await getData(
           'style',
-          stylesIndex,
+          useInstanceStore().stylesIndex,
           userStyleCustomData,
           userStyleName || instanceStyleName,
         )
         this.styleNameUsed = style.nameUsed
         this.styleDataUsed = style.dataUsed
 
-        let firstStylePaletteName = null
-        style.dataUsed
-          ?.filter((x) => x.component === '@palette')
-          .map((x) => {
-            const cleanDirectives = Object.fromEntries(
-              Object.entries(x.directives).filter(([k]) => k),
-            )
+        const stylePalettes = Object.fromEntries(
+          (style.dataUsed ?? [])
+            .filter((x) => x.component === '@palette')
+            .map((x) => {
+              const cleanDirectives = Object.fromEntries(
+                Object.entries(x.directives).filter(([k]) => k),
+              )
 
-            return { name: x.variant, ...cleanDirectives }
-          })
-          .forEach((palette) => {
-            const key =
-              'style.' + palette.name.toLowerCase().replaceAll(' ', '_')
-            if (!firstStylePaletteName) firstStylePaletteName = key
-            palettesIndex[key] = () => Promise.resolve(palette)
-          })
+              return [
+                x.variant.replace(/\./g, '_'),
+                () => ({ name: x.variant, ...cleanDirectives })
+              ]
+            })
+        )
+
+        const allPalettes = {
+          ...stylePalettes,
+          ...useInstanceStore().palettesIndex,
+        }
+        const defaultPalette = (() => {
+          if (this.prefersDark === null) return null
+          const matchRegex = this.prefersDark ? /dark/i : /light/i
+          return Object.keys(allPalettes).find((x) => matchRegex.test(x))
+        })() ?? allPalettes[0]
 
         const palette = await getData(
           'palette',
-          palettesIndex,
+          allPalettes,
           userPaletteCustomData,
-          this.useStylePalette
-            ? firstStylePaletteName
-            : userPaletteName || instancePaletteName,
+          userPaletteName ?? defaultPalette,
         )
 
         this.paletteNameUsed = palette.nameUsed
@@ -752,7 +752,7 @@ export const useInterfaceStore = defineStore('interface', {
 
         const theme = await getData(
           'theme',
-          themesIndex,
+          useInstanceStore().themesIndex,
           userThemeV2Source || userThemeV2Snapshot,
           userThemeV2Name || instanceThemeName,
         )

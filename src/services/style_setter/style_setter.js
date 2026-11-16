@@ -181,12 +181,8 @@ export const tryLoadCache = async () => {
 
 export const applyTheme = (
   input,
-  onEagerFinish = () => {
-    /* no-op */
-  },
-  onFinish = () => {
-    /* no-op */
-  },
+  onEagerFinish,
+  onFinish,
   debug = false,
 ) => {
   const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
@@ -208,7 +204,7 @@ export const applyTheme = (
       onEagerFinished() {
         eagerStyles.ready = true
         adoptStyleSheets()
-        onEagerFinish()
+        onEagerFinish?.()
         console.info(
           'Eager part of theme finished, waiting for lazy part to finish to store cache',
         )
@@ -223,7 +219,7 @@ export const applyTheme = (
           engineChecksum: getEngineChecksum(),
           data,
         }
-        onFinish(cache)
+        onFinish?.(cache)
         localforage.setItem('pleromafe-theme-cache', cache)
         console.info('Theme cache stored')
       },

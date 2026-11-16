@@ -560,6 +560,15 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
     })
   }
 
+  const darkModeMatcher = window.matchMedia?.('(prefers-color-scheme: dark)')
+  const darkModeHandler = ({ matches } = {}) => {
+    if (matches !== undefined) {
+      useInterfaceStore().setPrefersDarkMode(matches)
+    }
+  }
+  darkModeMatcher.addEventListener('change', darkModeHandler)
+  darkModeHandler(darkModeMatcher)
+
   useInterfaceStore().setLayoutWidth(windowWidth())
   useInterfaceStore().setLayoutHeight(windowHeight())
 
