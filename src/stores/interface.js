@@ -1,4 +1,4 @@
-import { cloneDeep, set } from 'lodash-es'
+import { cloneDeep, set, unset } from 'lodash-es'
 import { defineStore } from 'pinia'
 
 import {
@@ -390,6 +390,32 @@ export const useInterfaceStore = defineStore('interface', {
         }
       }
     },
+    async unsetPreference({ path, value, store }) {
+      switch(store) {
+        case 'sync':
+          return useSyncConfigStore().setPreference({ path: `simple.${path}`, value: undefined })
+        case 'local':
+          return useLocalConfigStore().unset({ path, value })
+        // Copypasta from setting.js
+        case 'fe-admin': {
+          const prefix = [
+            ':pleroma',
+            ':frontend_configurations',
+            ':pleroma_fe',
+          ]
+          const settings = cloneDeep(useAdminSettingsStore().frontendConfig)
+          unset(settings, path)
+          const formatted = Object.fromEntries(
+            Object.entries(settings).map(([k, v]) => [`:${k}`, v]),
+          )
+
+          return useAdminSettingsStore().pushAdminSetting({
+            path: prefix.join('.'),
+            value: formatted,
+          })
+        }
+      }
+    },
     async pushPreferences({ store }) {
       if (store === 'sync') {
         return useSyncConfigStore().pushSyncConfig()
@@ -469,7 +495,7 @@ export const useInterfaceStore = defineStore('interface', {
       this.resetThemeV3Palette(store)
 
       this.setPreference({
-        path: 'simple.styleCustomData',
+        path: 'styleCustomData',
         value,
         store,
       })
@@ -516,35 +542,30 @@ export const useInterfaceStore = defineStore('interface', {
       this.applyTheme({ recompile: true, store })
     },
     resetThemeV3(store) {
-      this.setPreference({ path: 'style', value: undefined, store })
-      this.setPreference({
+      this.unsetPreference({ path: 'style', store })
+      this.unsetPreference({
         path: 'styleCustomData',
-        value: undefined,
         store,
       })
     },
     resetThemeV3Palette(store) {
-      this.setPreference({
+      this.unsetPreference({
         path: 'palette',
-        value: undefined,
         store,
       })
-      this.setPreference({
+      this.unsetPreference({
         path: 'paletteCustomData',
-        value: undefined,
         store,
       })
     },
     resetThemeV2(store) {
-      this.setPreference({ path: 'theme', value: undefined })
-      this.setPreference({
+      this.unsetPreference({ path: 'theme' })
+      this.unsetPreference({
         path: 'customTheme',
-        value: undefined,
         store,
       })
-      this.setPreference({
+      this.unsetPreference({
         path: 'customThemeSource',
-        value: undefined,
         store,
       })
     },

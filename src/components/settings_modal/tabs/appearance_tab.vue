@@ -18,6 +18,21 @@
         :aria-label="$t('settings.style.themes3.styles')"
       >
         <button
+          v-if="defaultSource !== 'sync'"
+          class="button-default theme-preview"
+          data-theme-key="undefined"
+          :class="{ toggled: !isStyleDefined, disabled: switchInProgress }"
+          :disabled="switchInProgress"
+          @click="unsetStyle"
+          role="listitem"
+          :aria-label="$t('settings.style.stock_theme_used')"
+        >
+          <preview id="theme-preview-default" />
+          <span class="theme-name">
+            {{ $t('settings.style.default_theme_used') }}
+          </span>
+        </button>
+        <button
           class="button-default theme-preview"
           data-theme-key="stock"
           :class="{ toggled: isStyleActive('stock'), disabled: switchInProgress }"
@@ -92,6 +107,65 @@
           class="palettes-container"
           aria-labelledby="palette-header"
         >
+          <h5
+            id="special-palettes-header">
+            {{ $t('settings.style.themes3.palette.special') }}
+          </h5>
+          <div
+            class="palettes"
+            role="list"
+            aria-labelledby="special-palettes-header"
+          >
+            <button
+              v-if="defaultSource !== 'sync'"
+              class="btn button-default palette-entry"
+              :class="{ toggled: !isPaletteDefined, disabled: switchInProgress }"
+              :disabled="switchInProgress"
+              @click="unsetPalette"
+              role="listitem"
+            >
+              <div class="palette-label">
+                <label>
+                  {{$t('settings.style.themes3.palette.no_override')}}
+                </label>
+              </div>
+            </button>
+            <button
+              class="btn button-default palette-entry"
+              :class="{ toggled: isPaletteDefined && isPaletteActive(undefined), disabled: switchInProgress }"
+              :disabled="switchInProgress"
+              @click="() => setPalette(undefined)"
+              role="listitem"
+            >
+              <div class="palette-label">
+                <label>
+                  {{
+                  autoIsDarkLight
+                    ? $t('settings.style.themes3.palette.auto_dark_light')
+                    : $t('settings.style.themes3.palette.auto')
+                  }}
+                </label>
+              </div>
+              <div class="palette-preview-slice">
+                <div v-if="autoPalettes[0]" class="palette-preview">
+                  <span
+                    v-for="c in palettesKeys"
+                    :key="c"
+                    class="palette-square"
+                    :style="{ backgroundColor: autoPalettes[0][c], border: '1px solid ' + (autoPalettes[0][c] ?? 'var(--text)') }"
+                  />
+                </div>
+                <div  v-if="autoPalettes[1]" class="palette-preview">
+                  <span
+                    v-for="c in palettesKeys"
+                    :key="c"
+                    class="palette-square"
+                    :style="{ backgroundColor: autoPalettes[1][c], border: '1px solid ' + (autoPalettes[1][c] ?? 'var(--text)') }"
+                  />
+                </div>
+              </div>
+            </button>
+          </div>
           <h5
             v-if="stylePalettes?.length > 0"
             id="style-palettes-header"
