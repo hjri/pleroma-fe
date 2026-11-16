@@ -692,10 +692,10 @@ export const useInterfaceStore = defineStore('interface', {
             })
         )
 
-        const allPalettes = {
-          ...stylePalettes,
-          ...useInstanceStore().palettesIndex,
-        }
+        const allPalettes = Object.keys(stylePalettes).length > 0
+          ? stylePalettes
+          : useInstanceStore().palettesIndex
+
         const defaultPalette = (() => {
           if (this.prefersDark === null) return null
           const matchRegex = this.prefersDark ? /dark/i : /light/i
