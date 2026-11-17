@@ -727,7 +727,9 @@ export const useInterfaceStore = defineStore('interface', {
           'palette',
           allPalettes,
           userPaletteCustomData,
-          userPaletteName ?? defaultPalette,
+          (userPaletteName === 'auto' || userPaletteName === undefined)
+            ? defaultPalette
+            : userPaletteName,
         )
 
         this.paletteNameUsed = palette.nameUsed

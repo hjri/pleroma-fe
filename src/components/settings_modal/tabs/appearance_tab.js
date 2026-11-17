@@ -407,13 +407,17 @@ const AppearanceTab = {
       }
     },
     isThemeActive(key) {
-      return key === this.configSource.theme
+      return this.configSource.theme === key
     },
     isStyleActive(key) {
-      return key === this.configSource.style
+      return this.configSource.style === key
     },
     isPaletteActive(key) {
-      return key === this.configSource.palette
+      if (key === 'auto') {
+        return this.configSource.palette === undefined
+          || this.configSource.palette === key
+      }
+      return this.configSource.palette === key
     },
     setStyle(name) {
       useInterfaceStore().setStyle(name, this.defaultSource)
