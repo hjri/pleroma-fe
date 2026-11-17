@@ -99,6 +99,7 @@ const AppearanceTab = {
         'cBlue',
         'cOrange',
       ],
+      palettesLoaded: false,
       stylePalettes: [],
       userPalette: {},
       intersectionObserver: null,
@@ -228,10 +229,12 @@ const AppearanceTab = {
     paletteDataUsed() {
       this.userPalette = this.paletteDataUsed || {}
     },
-    selectedStyleDataFetcher: {
+    selectedStyleDescription: {
       immediate: true,
-      handler() {
-        this.updateStylePalettes()
+      handler(neu, old) {
+        if (neu !== old) {
+          this.updateStylePalettes()
+        }
       },
     },
   },
@@ -251,14 +254,28 @@ const AppearanceTab = {
     availablePalettes() {
       return [...this.bundledPalettes, ...this.stylePalettes]
     },
+    selectedStyleDescription() {
+      return this.configSource.styleCustomData ?? this.configSource.style
+    },
     selectedStyleDataFetcher() {
       if (this.configSource.styleCustomData) {
-        return () => Promise.resolve(this.configSource.styleCustomData)
+        return this.styleCustomDataPromise
       } else if (this.configSource.style) {
-        return useInstanceStore().stylesIndex[this.configSource.style]
+        const fetcher = useInstanceStore().stylesIndex[this.configSource.style]
+        if (fetcher) {
+          return fetcher
+        } else {
+          return this.emptyPalettesPromise
+        }
       } else {
-        return () => Promise.resolve([])
+        return this.emptyPalettesPromise
       }
+    },
+    emptyPalettesPromise() {
+      return () => Promise.resolve([])
+    },
+    styleCustomDataPromise() {
+      return () => Promise.resolve(this.configSource.styleCustomData)
     },
     autoPalettes() {
       const palettesSet = this.stylePalettes.length > 0
@@ -340,11 +357,14 @@ const AppearanceTab = {
       }
     },
     async updateStylePalettes() {
+      this.palettesLoaded = false
       this.stylePalettes = []
 
       const style = await this.selectedStyleDataFetcher()
       const ruleset = style || []
-      if (ruleset.length === 0) return
+      if (ruleset.length === 0) {
+        this.palettesLoaded = true
+      }
       const meta = ruleset.find((x) => x.component === '@meta')
       const result = ruleset
         .filter((x) => x.component.startsWith('@palette'))
@@ -380,6 +400,7 @@ const AppearanceTab = {
           return Object.fromEntries(Object.entries(result).filter(([, v]) => v))
         })
       this.stylePalettes = result
+      this.palettesLoaded = true
     },
     onImport(parsed, filename) {
       if (filename.endsWith('.json')) {
@@ -439,9 +460,6 @@ const AppearanceTab = {
     },
     unsetPalette() {
       useInterfaceStore().resetThemeV3Palette(this.defaultSource)
-    },
-    resetTheming() {
-      useInterfaceStore().setStyle('stock', this.defaultSource)
     },
     previewTheme(key, version, input) {
       let theme3
