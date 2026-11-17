@@ -229,7 +229,7 @@
     .palette-preview:last-child {
       position: absolute;
       inset: 0;
-      mask: linear-gradient(to top right, transparent 50%, white 51%) bottom no-repeat;
+      mask: linear-gradient(to top right, transparent calc(50% - 0.5px), white calc(50% + 0.5px)) bottom no-repeat;
     }
   }
 
