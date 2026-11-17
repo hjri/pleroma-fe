@@ -14,21 +14,6 @@ export const convertDefinitions = (definitions) =>
 /// Put settings here only if it does not make sense for a normal user
 /// to override it.
 export const INSTANCE_IDENTITY_DEFAULT_DEFINITIONS = {
-  style: {
-    description: 'Instance default style name',
-    type: 'string',
-    required: false,
-  },
-  palette: {
-    description: 'Instance default palette name',
-    type: 'string',
-    required: false,
-  },
-  theme: {
-    description: 'Instance default theme name',
-    type: 'string',
-    required: false,
-  },
   defaultAvatar: {
     description: "Default avatar image to use when user doesn't have one set",
     type: 'string',
@@ -135,6 +120,42 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
       'Used to track which settings to show and hide in settings modal',
     type: 'number', // not a boolean so we could potentially make multiple levels of expert-ness
     default: 0,
+  },
+  theme: {
+    description: 'Very old theme store, stores preset name, still in use',
+    default: null,
+  },
+  colors: {
+    description:
+      'VERY old theme store, just colors of V1, probably not even used anymore',
+    default: {},
+  },
+  // V2
+  customTheme: {
+    description:
+      '"Snapshot", previously was used as actual theme store for V2 so it\'s still used in case of PleromaFE downgrade event.',
+    default: null,
+  },
+  customThemeSource: {
+    description: '"Source", stores original theme data',
+    default: null,
+  },
+  // V3
+  style: {
+    description: 'Style name for builtins',
+    default: null,
+  },
+  styleCustomData: {
+    description: 'Custom style data (i.e. not builtin)',
+    default: null,
+  },
+  palette: {
+    description: 'Palette name for builtins',
+    default: null,
+  },
+  paletteCustomData: {
+    description: 'Custom palette data (i.e. not builtin)',
+    default: null,
   },
   hideISP: {
     description: 'Hide Instance-specific panel',
@@ -945,46 +966,6 @@ export const SYNC_DEFAULT_CONFIG = convertDefinitions(
 )
 export const SYNC_ONLY_KEYS = new Set(Object.keys(SYNC_DEFAULT_CONFIG))
 
-export const THEME_CONFIG_DEFINITIONS = {
-  theme: {
-    description: 'Very old theme store, stores preset name, still in use',
-    default: null,
-  },
-  colors: {
-    description:
-      'VERY old theme store, just colors of V1, probably not even used anymore',
-    default: {},
-  },
-  // V2
-  customTheme: {
-    description:
-      '"Snapshot", previously was used as actual theme store for V2 so it\'s still used in case of PleromaFE downgrade event.',
-    default: null,
-  },
-  customThemeSource: {
-    description: '"Source", stores original theme data',
-    default: null,
-  },
-  // V3
-  style: {
-    description: 'Style name for builtins',
-    default: null,
-  },
-  styleCustomData: {
-    description: 'Custom style data (i.e. not builtin)',
-    default: null,
-  },
-  palette: {
-    description: 'Palette name for builtins',
-    default: null,
-  },
-  paletteCustomData: {
-    description: 'Custom palette data (i.e. not builtin)',
-    default: null,
-  },
-}
-export const THEME_CONFIG = convertDefinitions(THEME_CONFIG_DEFINITIONS)
-
 export const makeUndefined = (c) =>
   Object.fromEntries(Object.keys(c).map((key) => [key, undefined]))
 
@@ -995,14 +976,12 @@ export const ROOT_CONFIG = {
   ...INSTANCE_DEFAULT_CONFIG,
   ...LOCAL_DEFAULT_CONFIG,
   ...SYNC_DEFAULT_CONFIG,
-  ...THEME_CONFIG,
 }
 
 export const ROOT_CONFIG_DEFINITIONS = {
   ...INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
   ...LOCAL_DEFAULT_CONFIG_DEFINITIONS,
   ...SYNC_DEFAULT_CONFIG_DEFINITIONS,
-  ...THEME_CONFIG_DEFINITIONS,
 }
 
 const maybeThrow = (doThrow, error, fallback) => {

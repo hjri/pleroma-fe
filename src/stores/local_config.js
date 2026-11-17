@@ -2,8 +2,6 @@ import { cloneDeep, set, unset } from 'lodash-es'
 import { defineStore } from 'pinia'
 
 import {
-  THEME_CONFIG,
-  THEME_CONFIG_DEFINITIONS,
   INSTANCE_DEFAULT_CONFIG,
   INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
   LOCAL_DEFAULT_CONFIG,
@@ -25,8 +23,7 @@ export const useLocalConfigStore = defineStore('local_config', {
     set({ path, value }) {
       const definition =
         LOCAL_DEFAULT_CONFIG_DEFINITIONS[path] ??
-        INSTANCE_DEFAULT_CONFIG_DEFINITIONS[path] ??
-        THEME_CONFIG_DEFINITIONS[path]
+        INSTANCE_DEFAULT_CONFIG_DEFINITIONS[path]
 
       const finalValue = validateSetting({
         path,
@@ -36,7 +33,6 @@ export const useLocalConfigStore = defineStore('local_config', {
         defaultState: {
           ...INSTANCE_DEFAULT_CONFIG,
           ...LOCAL_DEFAULT_CONFIG,
-          ...THEME_CONFIG,
         },
       })
 
