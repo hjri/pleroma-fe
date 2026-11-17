@@ -65,6 +65,7 @@ export const useInterfaceStore = defineStore('interface', {
     paletteDataUsed: null,
     themeNameUsed: null,
     themeDataUsed: null,
+    adminFrontendConfig: null,
     temporaryChangesTimeoutId: null,
     temporaryChangesCountdown: -1, // used for temporary options that revert after a timeout
     temporaryChangesConfirm: () => {
@@ -372,21 +373,10 @@ export const useInterfaceStore = defineStore('interface', {
           return useLocalConfigStore().set({ path, value })
         // Copypasta from setting.js
         case 'fe-admin': {
-          const prefix = [
-            ':pleroma',
-            ':frontend_configurations',
-            ':pleroma_fe',
-          ]
-          const settings = cloneDeep(useAdminSettingsStore().frontendConfig)
-          set(settings, path, value)
-          const formatted = Object.fromEntries(
-            Object.entries(settings).map(([k, v]) => [`:${k}`, v]),
-          )
-
-          return useAdminSettingsStore().pushAdminSetting({
-            path: prefix.join('.'),
-            value: formatted,
-          })
+          if (this.adminFrontendConfig === null) {
+            this.adminFrontendConfig = cloneDeep(useAdminSettingsStore().frontendConfig)
+          }
+          set(this.adminFrontendConfig, path, value)
         }
       }
     },
@@ -398,27 +388,31 @@ export const useInterfaceStore = defineStore('interface', {
           return useLocalConfigStore().unset({ path, value })
         // Copypasta from setting.js
         case 'fe-admin': {
-          const prefix = [
-            ':pleroma',
-            ':frontend_configurations',
-            ':pleroma_fe',
-          ]
-          const settings = cloneDeep(useAdminSettingsStore().frontendConfig)
-          unset(settings, path)
-          const formatted = Object.fromEntries(
-            Object.entries(settings).map(([k, v]) => [`:${k}`, v]),
-          )
-
-          return useAdminSettingsStore().pushAdminSetting({
-            path: prefix.join('.'),
-            value: formatted,
-          })
+          if (this.adminFrontendConfig === null) {
+            this.adminFrontendConfig = cloneDeep(useAdminSettingsStore().frontendConfig)
+          }
+          unset(this.adminFrontendConfig, path)
         }
       }
     },
     async pushPreferences({ store }) {
       if (store === 'sync') {
         return useSyncConfigStore().pushSyncConfig()
+      } else if (store === 'fe-admin') {
+          const path = [
+            ':pleroma',
+            ':frontend_configurations',
+            ':pleroma_fe',
+          ].join('.')
+          const value = Object.fromEntries(
+            Object.entries(this.adminFrontendConfig).map(([k, v]) => [`:${k}`, v]),
+          )
+          return useAdminSettingsStore().pushAdminSetting({
+            path,
+            value,
+          }).then(() => {
+            this.adminFrontendConfig = cloneDeep(useAdminSettingsStore().frontendConfig)
+          })
       } else {
         return
       }

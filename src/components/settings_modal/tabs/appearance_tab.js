@@ -317,7 +317,7 @@ const AppearanceTab = {
     isStyleDefined() {
       if (this.defaultSource === 'local') {
         return Object.hasOwn(useLocalConfigStore().mergedConfig, 'style')
-      } else if (this.defaultSource === 'admin') {
+      } else if (this.defaultSource === 'fe-admin') {
         return Object.hasOwn(useAdminSettingsStore().frontendConfig ?? {}, 'style')
       } else {
         return true
@@ -326,7 +326,7 @@ const AppearanceTab = {
     isPaletteDefined() {
       if (this.defaultSource === 'local') {
         return Object.hasOwn(useLocalConfigStore().mergedConfig, 'palette')
-      } else if (this.defaultSource === 'admin') {
+      } else if (this.defaultSource === 'fe-admin') {
         return Object.hasOwn(useAdminSettingsStore().frontendConfig ?? {}, 'palette')
       } else {
         return true
@@ -364,6 +364,7 @@ const AppearanceTab = {
       const ruleset = style || []
       if (ruleset.length === 0) {
         this.palettesLoaded = true
+        return
       }
       const meta = ruleset.find((x) => x.component === '@meta')
       const result = ruleset
@@ -445,7 +446,9 @@ const AppearanceTab = {
     },
     unsetStyle() {
       useInterfaceStore().resetThemeV3(this.defaultSource)
+      useInterfaceStore().resetThemeV3Palette(this.defaultSource)
       useInterfaceStore().resetThemeV2(this.defaultSource)
+      useInterfaceStore().pushPreferences({ store: this.defaultSource })
     },
     setTheme(name) {
       useInterfaceStore().setTheme(name, this.defaultSource)
@@ -460,6 +463,7 @@ const AppearanceTab = {
     },
     unsetPalette() {
       useInterfaceStore().resetThemeV3Palette(this.defaultSource)
+      useInterfaceStore().pushPreferences({ store: this.defaultSource })
     },
     previewTheme(key, version, input) {
       let theme3

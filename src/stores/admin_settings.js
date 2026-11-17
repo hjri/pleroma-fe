@@ -287,7 +287,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         }
       }
 
-      pushInstanceDBConfig({
+      return pushInstanceDBConfig({
         credentials: useOAuthStore().token,
         payload: {
           configs: [
