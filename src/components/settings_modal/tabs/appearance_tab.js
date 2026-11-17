@@ -316,18 +316,22 @@ const AppearanceTab = {
     },
     isStyleDefined() {
       if (this.defaultSource === 'local') {
-        return Object.hasOwn(useLocalConfigStore().mergedConfig, 'style')
+        const store = useLocalConfigStore().mergedConfig
+        return Object.hasOwn(store, 'style') || Object.hasOwn(store, 'styleCustomData')
       } else if (this.defaultSource === 'fe-admin') {
-        return Object.hasOwn(useAdminSettingsStore().frontendConfig ?? {}, 'style')
+        const store = useAdminSettingsStore().frontendConfig ?? {}
+        return Object.hasOwn(store, 'style') || Object.hasOwn(store, 'styleCustomData')
       } else {
         return true
       }
     },
     isPaletteDefined() {
       if (this.defaultSource === 'local') {
-        return Object.hasOwn(useLocalConfigStore().mergedConfig, 'palette')
+        const store = useLocalConfigStore().mergedConfig
+        return Object.hasOwn(store, 'palette') || Object.hasOwn(store, 'paletteCustomData')
       } else if (this.defaultSource === 'fe-admin') {
-        return Object.hasOwn(useAdminSettingsStore().frontendConfig ?? {}, 'palette')
+        const store = useAdminSettingsStore().frontendConfig ?? {}
+        return Object.hasOwn(store, 'palette') || Object.hasOwn(store, 'paletteCustomData')
       } else {
         return true
       }
