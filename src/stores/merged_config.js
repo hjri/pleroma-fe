@@ -1,9 +1,6 @@
 import { defineStore } from 'pinia'
 
-import {
-  LOCAL_ONLY_KEYS,
-  ROOT_CONFIG,
-} from 'src/stores/default_state/default_config_state.js'
+import { ROOT_CONFIG } from 'src/stores/default_state/default_config_state.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
@@ -40,10 +37,8 @@ export const useMergedConfigStore = defineStore('merged_config', {
           const override = overrides[key]
           const defaultValue = defaults[key]
 
-          return override !== undefined
-            ? [key, override]
-            : [key, defaultValue]
-        })
+          return override !== undefined ? [key, override] : [key, defaultValue]
+        }),
       )
     },
     mergedConfigDefault: () => {
@@ -52,9 +47,7 @@ export const useMergedConfigStore = defineStore('merged_config', {
       const getDefault = (k) => {
         const value = instancePrefs[k]
 
-        return value !== undefined
-          ? value
-          : ROOT_CONFIG[k]
+        return value !== undefined ? value : ROOT_CONFIG[k]
       }
 
       return Object.fromEntries(

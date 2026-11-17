@@ -3,11 +3,9 @@ import { defineStore } from 'pinia'
 
 import {
   convertDefinitions,
-  INSTANCE_DEFAULT_CONFIG,
   INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
   INSTANCE_IDENTITY_DEFAULT,
   INSTANCE_IDENTITY_DEFAULT_DEFINITIONS,
-  LOCAL_DEFAULT_CONFIG,
   LOCAL_DEFAULT_CONFIG_DEFINITIONS,
   validateSetting,
 } from 'src/stores/default_state/default_config_state.js'
@@ -190,8 +188,8 @@ export const useInstanceStore = defineStore('instance', {
           }[subpath]
         } else if (path.startsWith('limits.')) {
           return path === 'limits.pollLimits' || path === 'limits.fieldsLimits'
-              ? { required: true, type: 'object' }
-              : { required: true, type: 'number' }
+            ? { required: true, type: 'object' }
+            : { required: true, type: 'number' }
         } else {
           const definitions = ROOT_STATE_DEFINITIONS
           return definitions[subpath]

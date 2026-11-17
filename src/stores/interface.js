@@ -1,6 +1,6 @@
+import sum from 'hash-sum'
 import { cloneDeep, set, unset } from 'lodash-es'
 import { defineStore } from 'pinia'
-import sum from 'hash-sum'
 
 import {
   applyTheme,
@@ -13,13 +13,13 @@ import {
   windowWidth,
 } from '../services/window_utils/window_utils'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStreamingStore } from 'src/stores/streaming.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
-import { useLocalConfigStore } from 'src/stores/local_config.js'
-import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { WSConnectionStatus } from 'src/api/websocket.js'
@@ -367,30 +367,40 @@ export const useInterfaceStore = defineStore('interface', {
     },
     // Themes stuff
     async setPreference({ path, value, store }) {
-      switch(store) {
+      switch (store) {
         case 'sync':
-          return useSyncConfigStore().setPreference({ path: `simple.${path}`, value })
+          return useSyncConfigStore().setPreference({
+            path: `simple.${path}`,
+            value,
+          })
         case 'local':
           return useLocalConfigStore().set({ path, value })
         // Copypasta from setting.js
         case 'fe-admin': {
           if (this.adminFrontendConfig === null) {
-            this.adminFrontendConfig = cloneDeep(useAdminSettingsStore().frontendConfig)
+            this.adminFrontendConfig = cloneDeep(
+              useAdminSettingsStore().frontendConfig,
+            )
           }
           set(this.adminFrontendConfig, path, value)
         }
       }
     },
     async unsetPreference({ path, value, store }) {
-      switch(store) {
+      switch (store) {
         case 'sync':
-          return useSyncConfigStore().setPreference({ path: `simple.${path}`, value: undefined })
+          return useSyncConfigStore().setPreference({
+            path: `simple.${path}`,
+            value: undefined,
+          })
         case 'local':
           return useLocalConfigStore().unset({ path, value })
         // Copypasta from setting.js
         case 'fe-admin': {
           if (this.adminFrontendConfig === null) {
-            this.adminFrontendConfig = cloneDeep(useAdminSettingsStore().frontendConfig)
+            this.adminFrontendConfig = cloneDeep(
+              useAdminSettingsStore().frontendConfig,
+            )
           }
           unset(this.adminFrontendConfig, path)
         }
@@ -400,19 +410,26 @@ export const useInterfaceStore = defineStore('interface', {
       if (store === 'sync') {
         return useSyncConfigStore().pushSyncConfig()
       } else if (store === 'fe-admin') {
-          const path = [
-            ':pleroma',
-            ':frontend_configurations',
-            ':pleroma_fe',
-          ].join('.')
-          const value = Object.fromEntries(
-            Object.entries(this.adminFrontendConfig).map(([k, v]) => [`:${k}`, v]),
-          )
-          return useAdminSettingsStore().pushAdminSetting({
+        const path = [
+          ':pleroma',
+          ':frontend_configurations',
+          ':pleroma_fe',
+        ].join('.')
+        const value = Object.fromEntries(
+          Object.entries(this.adminFrontendConfig).map(([k, v]) => [
+            `:${k}`,
+            v,
+          ]),
+        )
+        return useAdminSettingsStore()
+          .pushAdminSetting({
             path,
             value,
-          }).then(() => {
-            this.adminFrontendConfig = cloneDeep(useAdminSettingsStore().frontendConfig)
+          })
+          .then(() => {
+            this.adminFrontendConfig = cloneDeep(
+              useAdminSettingsStore().frontendConfig,
+            )
           })
       } else {
         return
@@ -628,16 +645,24 @@ export const useInterfaceStore = defineStore('interface', {
         `Instance V2 name: ${instanceThemeV2Name}, custom: ${!!instanceThemeV2Snapshot}`,
       )
 
-      const userThemeV2Used = Boolean(userThemeV2Name || userThemeV2Source || userThemeV2Snapshot)
+      const userThemeV2Used = Boolean(
+        userThemeV2Name || userThemeV2Source || userThemeV2Snapshot,
+      )
       const userThemeV3Used = Boolean(userStyleName || userStyleCustomData)
       const userThemeUsed = userThemeV2Used || userThemeV3Used
 
-      const instanceThemeV2Used = Boolean(instanceThemeV2Name || instanceThemeV2Source || instanceThemeV2Snapshot)
-      const instanceThemeV3Used = Boolean(instanceStyleName || instanceStyleCustomData)
-      const instanceThemeUsed = instanceThemeV2Used || instanceThemeV3Used
+      const instanceThemeV2Used = Boolean(
+        instanceThemeV2Name || instanceThemeV2Source || instanceThemeV2Snapshot,
+      )
+      // const instanceThemeV3Used = Boolean(
+      //   instanceStyleName || instanceStyleCustomData,
+      // )
+      // const instanceThemeUsed = instanceThemeV2Used || instanceThemeV3Used
 
       const userPaletteUsed = Boolean(userPaletteName || userPaletteCustomData)
-      const instancePaletteUsed = Boolean(instancePaletteName || instancePaletteCustomData)
+      // const instancePaletteUsed = Boolean(
+      //   instancePaletteName || instancePaletteCustomData,
+      // )
 
       if (userStyleName === 'stock') userStyleName = undefined
       if (instanceStyleName === 'stock') instanceStyleName = undefined
@@ -654,9 +679,13 @@ export const useInterfaceStore = defineStore('interface', {
 
       const themeCustomData = (() => {
         if (userThemeUsed) {
-          return userThemeV2Used ? userThemeV2Source ?? userThemeV2Snapshot : userStyleCustomData
+          return userThemeV2Used
+            ? (userThemeV2Source ?? userThemeV2Snapshot)
+            : userStyleCustomData
         } else {
-          return instanceThemeV2Used ? instanceThemeV2Source ?? instanceThemeV2Snapshot : instanceStyleCustomData
+          return instanceThemeV2Used
+            ? (instanceThemeV2Source ?? instanceThemeV2Snapshot)
+            : instanceStyleCustomData
         }
       })()
       const paletteCustomData = userPaletteUsed
@@ -750,10 +779,7 @@ export const useInterfaceStore = defineStore('interface', {
       } = this.getUsedThemeInfo()
 
       if (majorVersionUsed === 'v3') {
-        await Promise.all([
-          this.fetchPalettesIndex(),
-          this.fetchStylesIndex(),
-        ])
+        await Promise.all([this.fetchPalettesIndex(), this.fetchStylesIndex()])
       } else {
         // Promise.all just to be uniform with v3
         await Promise.all([this.fetchThemesIndex()])
@@ -786,14 +812,15 @@ export const useInterfaceStore = defineStore('interface', {
 
               return [
                 x.variant.replace(/\./g, '_'),
-                () => ({ name: x.variant, ...cleanDirectives })
+                () => ({ name: x.variant, ...cleanDirectives }),
               ]
-            })
+            }),
         )
 
-        const allPalettes = Object.keys(stylePalettes).length > 0
-          ? stylePalettes
-          : useInstanceStore().palettesIndex
+        const allPalettes =
+          Object.keys(stylePalettes).length > 0
+            ? stylePalettes
+            : useInstanceStore().palettesIndex
 
         const defaultPalette = (() => {
           if (this.prefersDark === null) return null
@@ -853,8 +880,8 @@ export const useInterfaceStore = defineStore('interface', {
         const theme = await getData(
           'theme',
           useInstanceStore().themesIndex,
-          userThemeV2Source || userThemeV2Snapshot,
-          userThemeV2Name || instanceThemeV2Name,
+          themeCustomData,
+          themeName,
         )
         this.themeNameUsed = theme.nameUsed
         this.themeDataUsed = theme.dataUsed
@@ -964,7 +991,11 @@ export const useInterfaceStore = defineStore('interface', {
           (cache) => {
             this.themeChangeInProgress = false
             if (store) {
-              this.setPreference({ path: 'themeChecksum', value: cache.checksum, store })
+              this.setPreference({
+                path: 'themeChecksum',
+                value: cache.checksum,
+                store,
+              })
               this.pushPreferences({ store })
             }
           },

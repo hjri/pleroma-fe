@@ -2,8 +2,8 @@ import { cloneDeep, get, isEqual, set } from 'lodash-es'
 import { useId } from 'vue'
 
 import DraftButtons from './draft_buttons.vue'
-import SettingIndicators from './setting_indicators.vue'
 import ModifiedIndicator from './modified_indicator.vue'
+import SettingIndicators from './setting_indicators.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import {
@@ -474,11 +474,10 @@ export default {
       )
     },
     isDefined() {
-      if (this.realSource !== 'fe-admin' && this.realSource !== 'local') return false
+      if (this.realSource !== 'fe-admin' && this.realSource !== 'local')
+        return false
       if (this.isLocalOnly) return false
-      return (
-        this.visibleState !== undefined
-      )
+      return this.visibleState !== undefined
     },
     classes() {
       return {

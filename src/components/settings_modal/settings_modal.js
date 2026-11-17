@@ -16,11 +16,11 @@ import {
   ROOT_CONFIG_DEFINITIONS,
   validateSetting,
 } from 'src/stores/default_state/default_config_state.js'
-import { useUsersStore } from 'src/stores/users.js'
 import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import {
   newExporter,
@@ -266,7 +266,7 @@ const SettingsModal = {
       modalMinimized: (store) => store.settingsModalState === 'minimized',
     }),
     ...mapState(useUsersStore, {
-      isAdmin: (store) => store.currentUser?.rights.admin
+      isAdmin: (store) => store.currentUser?.rights.admin,
     }),
     expertLevel: {
       get() {
@@ -294,7 +294,7 @@ const SettingsModal = {
       if (value === 'fe-admin' && this.isAdmin) {
         useAdminSettingsStore().loadAdminStuff()
       }
-    }
+    },
   },
 }
 

@@ -55,7 +55,8 @@ export default {
       return this.options
     },
     localizedPlaceholder() {
-      return this.realOptions.find(({ key }) => key === this.realPlaceholder)?.label
-    }
+      return this.realOptions.find(({ key }) => key === this.realPlaceholder)
+        ?.label
+    },
   },
 }

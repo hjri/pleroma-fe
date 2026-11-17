@@ -1,4 +1,5 @@
-import { useId, computed } from 'vue'
+import { computed, useId } from 'vue'
+
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
 import ContrastRatio from 'src/components/contrast_ratio/contrast_ratio.vue'

@@ -2,9 +2,9 @@ import { mapState } from 'pinia'
 
 import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
 import BooleanSetting from '../helpers/boolean_setting.vue'
-import FontSetting from '../helpers/font_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import FloatSetting from '../helpers/float_setting.vue'
+import FontSetting from '../helpers/font_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
 

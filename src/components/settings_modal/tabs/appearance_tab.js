@@ -1,5 +1,3 @@
-import { mapActions } from 'pinia'
-
 import fileSizeFormatService from 'src/components/../services/file_size_format/file_size_format.js'
 import PaletteEditor from 'src/components/palette_editor/palette_editor.vue'
 import BooleanSetting from '../helpers/boolean_setting.vue'
@@ -10,14 +8,13 @@ import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
 import Preview from './old_theme_tab/theme_preview.vue'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { normalizeThemeData, useInterfaceStore } from 'src/stores/interface.js'
-import { useOAuthStore } from 'src/stores/oauth.js'
-import { useUsersStore } from 'src/stores/users.js'
-import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
+import { useOAuthStore } from 'src/stores/oauth.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
-import { useMergedConfigStore } from 'src/stores/merged_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import { updateProfileImages } from 'src/api/user.js'
 import { newImporter } from 'src/services/export_import/export_import.js'
@@ -278,13 +275,14 @@ const AppearanceTab = {
       return () => Promise.resolve(this.configSource.styleCustomData)
     },
     autoPalettes() {
-      const palettesSet = this.stylePalettes.length > 0
-        ? this.stylePalettes
-        : this.bundledPalettes
+      const palettesSet =
+        this.stylePalettes.length > 0
+          ? this.stylePalettes
+          : this.bundledPalettes
 
       return [
-        palettesSet.find(x => /dark/i.test(x.name)) ?? palettesSet[0],
-        palettesSet.find(x => /light/i.test(x.name)) ?? palettesSet[0],
+        palettesSet.find((x) => /dark/i.test(x.name)) ?? palettesSet[0],
+        palettesSet.find((x) => /light/i.test(x.name)) ?? palettesSet[0],
       ]
     },
     autoIsDarkLight() {
@@ -317,10 +315,16 @@ const AppearanceTab = {
     isStyleDefined() {
       if (this.defaultSource === 'local') {
         const store = useLocalConfigStore().mergedConfig
-        return Object.hasOwn(store, 'style') || Object.hasOwn(store, 'styleCustomData')
+        return (
+          Object.hasOwn(store, 'style') ||
+          Object.hasOwn(store, 'styleCustomData')
+        )
       } else if (this.defaultSource === 'fe-admin') {
         const store = useAdminSettingsStore().frontendConfig ?? {}
-        return Object.hasOwn(store, 'style') || Object.hasOwn(store, 'styleCustomData')
+        return (
+          Object.hasOwn(store, 'style') ||
+          Object.hasOwn(store, 'styleCustomData')
+        )
       } else {
         return true
       }
@@ -328,10 +332,16 @@ const AppearanceTab = {
     isPaletteDefined() {
       if (this.defaultSource === 'local') {
         const store = useLocalConfigStore().mergedConfig
-        return Object.hasOwn(store, 'palette') || Object.hasOwn(store, 'paletteCustomData')
+        return (
+          Object.hasOwn(store, 'palette') ||
+          Object.hasOwn(store, 'paletteCustomData')
+        )
       } else if (this.defaultSource === 'fe-admin') {
         const store = useAdminSettingsStore().frontendConfig ?? {}
-        return Object.hasOwn(store, 'palette') || Object.hasOwn(store, 'paletteCustomData')
+        return (
+          Object.hasOwn(store, 'palette') ||
+          Object.hasOwn(store, 'paletteCustomData')
+        )
       } else {
         return true
       }
@@ -409,7 +419,10 @@ const AppearanceTab = {
     },
     onImport(parsed, filename) {
       if (filename.endsWith('.json')) {
-        useInterfaceStore().setThemeCustom(parsed.source || parsed.theme, this.defaultSource)
+        useInterfaceStore().setThemeCustom(
+          parsed.source || parsed.theme,
+          this.defaultSource,
+        )
       } else if (filename.endsWith('.iss')) {
         useInterfaceStore().setStyleCustom(parsed, this.defaultSource)
       }
@@ -440,8 +453,10 @@ const AppearanceTab = {
     },
     isPaletteActive(key) {
       if (key === 'auto') {
-        return this.configSource.palette === undefined
-          || this.configSource.palette === key
+        return (
+          this.configSource.palette === undefined ||
+          this.configSource.palette === key
+        )
       }
       return this.configSource.palette === key
     },

@@ -6,7 +6,6 @@ import {
   INSTANCE_DEFAULT_CONFIG_DEFINITIONS,
   LOCAL_DEFAULT_CONFIG,
   LOCAL_DEFAULT_CONFIG_DEFINITIONS,
-  makeUndefined,
   validateSetting,
 } from 'src/stores/default_state/default_config_state.js'
 
@@ -66,8 +65,8 @@ export const useLocalConfigStore = defineStore('local_config', {
           key,
           Object.hasOwn(this.tempStorage, key)
             ? this.tempStorage[key]
-            : this.prefsStorage[key]
-        ])
+            : this.prefsStorage[key],
+        ]),
       )
     },
   },
