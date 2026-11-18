@@ -12,7 +12,7 @@ export default {
         return this.guardedState[0]
       },
       set(string) {
-        this.visibleState = { tuple: [string, this.guradredState[1]] }
+        this.visibleState = { tuple: [string, this.guardedState[1]] }
       },
     },
     b: {
@@ -20,7 +20,7 @@ export default {
         return this.guardedState[1]
       },
       set(string) {
-        this.visibleState = { tuple: [this.guradredState[0], string] }
+        this.visibleState = { tuple: [this.guardedState[0], string] }
       },
     },
   },
