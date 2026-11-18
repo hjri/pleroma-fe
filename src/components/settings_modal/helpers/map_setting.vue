@@ -40,14 +40,14 @@
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :value="item[0]"
-            :title="realSuggestions[0][0]"
+            :title="realSuggestions?.[0]?.[0]"
             @change="event => edit({ event, key: item[0], isKey: true })"
           >
           <input
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :value="item[1]"
-            :title="realSuggestions[0][1]"
+            :title="realSuggestions?.[0]?.[1]"
             @change="event => edit({ event, key: item[0], isKey: false })"
           >
           <button
@@ -65,16 +65,16 @@
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :disabled="shouldBeDisabled"
-            :placeholder="realSuggestions[0][0]"
-            :title="realSuggestions[0][0]"
+            :placeholder="realSuggestions?.[0]?.[0]"
+            :title="realSuggestions?.[0]?.[0]"
           >
           <input
             v-model="newValue[1]"
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :disabled="shouldBeDisabled"
-            :placeholder="realSuggestions[0][1]"
-            :title="realSuggestions[0][1]"
+            :placeholder="realSuggestions?.[0]?.[1]"
+            :title="realSuggestions?.[0]?.[1]"
           >
           <button
             class="button-default"
