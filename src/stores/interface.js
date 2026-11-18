@@ -332,8 +332,8 @@ export const useInterfaceStore = defineStore('interface', {
       }
     },
     setPrefersDarkMode(value) {
-      if (this.prefersDark !== value) {
-        this.prefersDark = value
+      if (this.prefersDarkMode !== value) {
+        this.prefersDarkMode = value
         this.applyTheme(null, true)
       }
     },
@@ -851,8 +851,8 @@ export const useInterfaceStore = defineStore('interface', {
             : useInstanceStore().palettesIndex
 
         const defaultPalette = (() => {
-          if (this.prefersDark === null) return null
-          const matchRegex = this.prefersDark ? /dark/i : /light/i
+          if (this.prefersDarkMode === null) return null
+          const matchRegex = this.prefersDarkMode ? /dark/i : /light/i
           const keys = Object.keys(allPalettes)
           return keys.find((x) => matchRegex.test(x)) ?? keys[0]
         })()
