@@ -7,7 +7,6 @@ export default {
   components: {
     Select,
   },
-  inheritAttrs: false,
   props: {
     // List of languages (or just one language)
     modelValue: {
@@ -16,6 +15,8 @@ export default {
     },
     // Whether to support multiple languages or just one
     single: Boolean,
+    id: String,
+    disabled: Boolean,
   },
   emits: ['update:modelValue'],
   setup() {
