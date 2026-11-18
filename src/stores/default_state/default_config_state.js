@@ -375,6 +375,7 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
   interfaceLanguage: {
     description: 'UI language',
     default: [browserLocale],
+    label: 'settings.interfaceLanguage',
   },
   hideScopeNotice: {
     description: 'Hide scope notification',

@@ -3,19 +3,17 @@
     <div class="setting-section">
       <h3>{{ $t('settings.format_and_language') }}</h3>
       <ul class="setting-list">
-        <h4>{{ $t('settings.interfaceLanguage') }}</h4>
-        <interface-language-switcher
-          v-model="language"
-          class="lang-selector"
-          @update="val => language = val"
-        />
-        <h5>{{ $t('settings.email_language') }}</h5>
-        <interface-language-switcher
-          v-model="emailLanguage"
-          class="lang-selector"
-          :profile="true"
-          @update:model-value="updateProfile()"
-        />
+        <li>
+          <LanguageSetting path="interfaceLanguage" />
+        </li>
+        <li>
+          <LanguageSetting
+            path="emailLanguage"
+            source="profile"
+          >
+            {{ $t('settings.email_language') }}
+          </LanguageSetting>
+        </li>
         <li>
           <BooleanSetting path="useAbsoluteTimeFormat" />
         </li>

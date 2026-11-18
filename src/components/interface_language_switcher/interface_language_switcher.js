@@ -1,4 +1,5 @@
 import { useId } from 'vue'
+import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import Select from 'src/components/select/select.vue'
 import localeService from '../../services/locale/locale.service.js'
@@ -12,12 +13,6 @@ export default {
     modelValue: {
       type: [Array, String],
       required: true,
-    },
-    // Is this setting stored in user profile (true) or elsewhere (false)
-    // Doesn't affect storage, just shows an icon if true
-    profile: {
-      type: Boolean,
-      default: false,
     },
   },
   emits: ['update:modelValue'],
