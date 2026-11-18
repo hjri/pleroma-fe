@@ -1,5 +1,4 @@
 import { useId } from 'vue'
-import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import Select from 'src/components/select/select.vue'
 import localeService from '../../services/locale/locale.service.js'

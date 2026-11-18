@@ -56,10 +56,15 @@ export default {
     },
     localizedPlaceholder() {
       if (!this.realOptions) return ''
-      const option = this.realOptions?.find(({ key }) => key === this.realPlaceholder)
+      const option = this.realOptions?.find(
+        ({ key }) => key === this.realPlaceholder,
+      )
       if (!option) return ''
 
-      const defaultString = option.value === this.defaultState ? this.$t('settings.instance_default_simple') : ''
+      const defaultString =
+        option.value === this.defaultState
+          ? this.$t('settings.instance_default_simple')
+          : ''
       return option.label + defaultString
     },
   },
