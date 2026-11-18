@@ -61,7 +61,12 @@ export default {
       }
     },
     valueSet() {
-      return new Set(this.visibleState)
+      const state = this.visibleState
+      if (Array.isArray(this.visibleState)) {
+        return new Set(this.visibleState)
+      } else {
+        return new Set()
+      }
     },
     suggestionsSet() {
       const suggestions = this.realSuggestions

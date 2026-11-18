@@ -9,7 +9,7 @@
         <Select
           :id="index === 0 ? (id ?? (uniqueId + index)) : (uniqueId + index)"
           class="language-select"
-          :disabed="disabled"
+          :disabled="disabled"
           :model-value="controlledLanguage[index]"
           @update:model-value="val => setLanguageAt(index, val)"
         >
