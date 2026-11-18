@@ -708,9 +708,9 @@ export const useInterfaceStore = defineStore('interface', {
 
       const themeName = (() => {
         if (userThemeUsed) {
-          return userThemeV2Used ? userThemeV2Name : userStyleName
+          return majorVersionUsed === 'v2' ? userThemeV2Name : userStyleName
         } else {
-          return instanceThemeV2Used ? instanceThemeV2Name : instanceStyleName
+          return majorVersionUsed === 'v2' ? instanceThemeV2Name : instanceStyleName
         }
       })()
       const themeCustomData = (() => {
