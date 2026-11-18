@@ -20,15 +20,18 @@ export default {
     realStep() {
       return this.step ?? this.definition?.step
     },
+    realTruncate() {
+      return this.truncate ?? this.definition?.truncate ?? 1
+    },
   },
   methods: {
     ...Setting.methods,
     getValue(e) {
       if (e === undefined) return undefined
-      if (this.truncate === 1) {
+      if (this.realTruncate === 1) {
         return Number.parseInt(e)
-      } else if (this.truncate > 1) {
-        return Math.trunc(e / this.truncate) * this.truncate
+      } else if (this.realTruncate > 1) {
+        return Math.trunc(e / this.realTruncate) * this.realTruncate
       }
       return Number.parseFloat(e)
     },
