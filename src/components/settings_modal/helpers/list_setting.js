@@ -42,7 +42,9 @@ export default {
   },
   created() {
     Setting.created()
-    this.extraEntries = this.visibleState.filter((x) => !this.suggestionsSet.has(x))
+    this.extraEntries = this.visibleState.filter(
+      (x) => !this.suggestionsSet.has(x),
+    )
   },
   computed: {
     ...Setting.computed,

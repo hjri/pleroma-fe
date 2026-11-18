@@ -45,17 +45,10 @@ export default {
       }
     },
     setMediaFile({ event, index }) {
-      this.edit(
-        event.url,
-        ':src',
-      )
+      this.edit(event.url, ':src')
     },
     setPurpose({ event, index }) {
-      this.edit(
-        event,
-        ':purpose',
-        index,
-      )
+      this.edit(event, ':purpose', index)
     },
     add() {
       this.visibleState = [...this.visibleState, {}]
