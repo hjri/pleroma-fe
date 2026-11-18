@@ -32,13 +32,11 @@
         :class="{ disabled: shouldBeDisabled }"
         :disabled="shouldBeDisabled"
         :placeholder="realSuggestions[0]"
-        :value="displayState"
       >
       {{ ' ' }}
       <Checkbox
         v-model="socksField"
         :disabled="shouldBeDisabled"
-        :indeterminate="isIndeterminate"
         style="margin-left: 1em"
       >
         SOCKS5
