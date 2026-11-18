@@ -28,7 +28,7 @@ export default {
       return e
     },
     add() {
-      this.visibleSate = {
+      this.visibleState = {
         ...this.visibleState,
         ...Object.fromEntries([this.newValue]),
       }
