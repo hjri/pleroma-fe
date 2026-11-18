@@ -566,7 +566,7 @@ const afterStoreSetup = async ({ pinia, store, storageError, i18n }) => {
       useInterfaceStore().setPrefersDarkMode(matches)
     }
   }
-  darkModeMatcher.addEventListener('change', darkModeHandler)
+  darkModeMatcher?.addEventListener('change', darkModeHandler)
   darkModeHandler(darkModeMatcher)
 
   useInterfaceStore().setLayoutWidth(windowWidth())
