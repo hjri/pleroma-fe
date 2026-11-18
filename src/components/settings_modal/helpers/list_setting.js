@@ -40,6 +40,10 @@ export default {
       default: false,
     },
   },
+  created() {
+    Setting.created()
+    this.extraEntries = this.visibleState.filter((x) => !this.suggestionsSet.has(x))
+  },
   computed: {
     ...Setting.computed,
     showNew() {
@@ -100,9 +104,6 @@ export default {
     },
     resetNew() {
       this.newValue = ''
-    },
-    getValue(e) {
-      return e
     },
     update() {
       this.visibleState = [
