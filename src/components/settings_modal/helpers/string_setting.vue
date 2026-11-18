@@ -31,7 +31,6 @@
       :class="classes"
       :disabled="shouldBeDisabled"
       :placeholder="realSuggestions ?? realPlaceholder"
-      :value="realDraftMode ? draft : state"
     >
     {{ ' ' }}
     <p
