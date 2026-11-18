@@ -37,11 +37,10 @@
       <div class="controls control-field">
         <label for="path">{{ $t('settings.url') }}</label>
         <input
+          v-model="visibleState"
           :id="idPrefix + 'file'"
           class="input string-input"
           :disabled="shouldBeDisabled"
-          :value="realDraftMode ? draft : state"
-          @change="update"
         >
         {{ ' ' }}
       </div>

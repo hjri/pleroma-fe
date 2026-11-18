@@ -45,7 +45,7 @@ export default {
       }
     },
     setMediaFile({ event, index }) {
-      this.update(
+      this.edit(
         {
           target: {
             value: event.url,
