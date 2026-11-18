@@ -66,7 +66,7 @@
                 class="input string-input"
                 :disabled="shouldBeDisabled"
                 :value="item[':src']"
-                @change="event => edit(event, index, ':src')"
+                @change="event => edit(event.target.value, ':src', index)"
               >
             </div>
             <MediaUpload
@@ -108,7 +108,7 @@
                 class="input string-input"
                 :class="{ disabled: shouldBeDisabled }"
                 :value="item[':sizes']"
-                @change="e => edit(event, index, ':sizes')"
+                @change="event => edit(event.target.value, ':sizes', index)"
               >
             </dd>
             <dt>
@@ -122,7 +122,7 @@
                 class="input string-input"
                 :class="{ disabled: shouldBeDisabled }"
                 :value="item[':type']"
-                @change="e => edit(event, index, ':type')"
+                @change="event => edit(event.target.value, ':type', index)"
               >
             </dd>
           </dl>
