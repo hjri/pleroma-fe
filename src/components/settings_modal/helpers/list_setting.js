@@ -42,7 +42,8 @@ export default {
   },
   created() {
     Setting.created()
-    this.extraEntries = (this.visibleState ?? []).filter(
+    const array = Array.isArray(this.visibleState) ? this.visibleState : []
+    this.extraEntries = array.filter(
       (x) => !this.suggestionsSet.has(x),
     )
   },
@@ -66,7 +67,7 @@ export default {
     },
     suggestionsSet() {
       const suggestions = this.realSuggestions
-      if (suggestions) {
+      if (Array.isArray(suggestions)) {
         return new Set(suggestions)
       } else {
         return new Set()
