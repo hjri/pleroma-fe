@@ -45,7 +45,7 @@ export default {
       }
     },
     setMediaFile({ event, index }) {
-      this.edit(event.url, ':src')
+      this.edit(event.url, ':src', index)
     },
     setPurpose({ event, index }) {
       this.edit(event, ':purpose', index)
@@ -60,15 +60,14 @@ export default {
       this.visibleState = [...pre, ...post]
     },
     edit(value, field, index) {
-      const string = event.target.value
       const pre = this.visibleState.slice(0, index)
       const post = this.visibleState.slice(index + 1)
       const item = clone(this.visibleState[index])
 
-      if (!string) {
+      if (!value) {
         delete item[field]
       } else {
-        item[field] = string
+        item[field] = value
       }
 
       this.visibleState = [...pre, item, ...post]
