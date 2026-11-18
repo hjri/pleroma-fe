@@ -15,7 +15,7 @@ export default {
       required: true,
     },
     // Whether to support multiple languages or just one
-    single: Boolean
+    single: Boolean,
   },
   emits: ['update:modelValue'],
   setup() {

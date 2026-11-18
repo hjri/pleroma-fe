@@ -710,7 +710,9 @@ export const useInterfaceStore = defineStore('interface', {
         if (userThemeUsed) {
           return majorVersionUsed === 'v2' ? userThemeV2Name : userStyleName
         } else {
-          return majorVersionUsed === 'v2' ? instanceThemeV2Name : instanceStyleName
+          return majorVersionUsed === 'v2'
+            ? instanceThemeV2Name
+            : instanceStyleName
         }
       })()
       const themeCustomData = (() => {
