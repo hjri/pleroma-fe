@@ -62,8 +62,8 @@ export default {
     },
     valueSet() {
       const state = this.visibleState
-      if (Array.isArray(this.visibleState)) {
-        return new Set(this.visibleState)
+      if (Array.isArray(state)) {
+        return new Set(state)
       } else {
         return new Set()
       }
