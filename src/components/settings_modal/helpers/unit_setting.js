@@ -59,7 +59,7 @@ export default {
           : undefined
       },
       set(newUnit) {
-        let value = this.stateValue
+        let value = this.stateValue ?? 0
 
         if (this.realResetDefault) {
           const replaceValue = this.realResetDefault[newUnit]
@@ -79,7 +79,8 @@ export default {
       },
       set(e) {
         const value = Number.parseFloat(e)
-        this.visibleState = value + this.stateUnit
+        if (Number.isNaN(value)) return
+        this.visibleState = value + (this.stateUnit ?? this.realUnits[0])
       },
     },
     placeholderUnit() {
