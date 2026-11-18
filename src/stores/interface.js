@@ -840,7 +840,7 @@ export const useInterfaceStore = defineStore('interface', {
               )
 
               return [
-                x.variant.toLowerCase().replace(/\./g, '_'),
+                x.variant.toLowerCase().replaceAll(/\./g, '_'),
                 () => ({ name: x.variant, ...cleanDirectives }),
               ]
             }),
