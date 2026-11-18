@@ -43,9 +43,7 @@ export default {
   created() {
     Setting.created()
     const array = Array.isArray(this.visibleState) ? this.visibleState : []
-    this.extraEntries = array.filter(
-      (x) => !this.suggestionsSet.has(x),
-    )
+    this.extraEntries = array.filter((x) => !this.suggestionsSet.has(x))
   },
   computed: {
     ...Setting.computed,
