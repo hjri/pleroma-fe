@@ -10,6 +10,7 @@
           <LanguageSetting
             path="emailLanguage"
             source="profile"
+            single
           >
             {{ $t('settings.email_language') }}
           </LanguageSetting>

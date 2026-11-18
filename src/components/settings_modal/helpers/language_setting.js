@@ -3,6 +3,10 @@ import Setting from './setting.js'
 
 export default {
   ...Setting,
+  props: {
+    ...Setting.props,
+    single: Boolean,
+  },
   components: {
     ...Setting.components,
     InterfaceLanguageSwitcher,

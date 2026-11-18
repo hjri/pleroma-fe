@@ -30,6 +30,7 @@
       class="setting-control lang-selector"
       :class="classes"
       :disabled="shouldBeDisabled"
+      :single="single"
       :placeholder="realSuggestions ?? realPlaceholder"
     />
     <DraftButtons />

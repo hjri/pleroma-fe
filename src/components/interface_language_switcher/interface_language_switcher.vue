@@ -5,12 +5,9 @@
       :key="index"
       class="language"
     >
-      <label :for="uniqueId+index">
-        {{ index === 0 ? $t('settings.primary_language') : $t('settings.fallback_language', { index }, index) }}
-      </label>
       <span class="btn-group">
         <Select
-          :id="uniqueId+index"
+          :id="$attrs.id"
           class="language-select"
           :model-value="controlledLanguage[index]"
           @update:model-value="val => setLanguageAt(index, val)"
@@ -32,7 +29,10 @@
         </button>
       </span>
     </li>
-    <li class="add-button">
+    <li
+      v-if="!single"
+      class="add-button"
+    >
       <button
         class="button-default btn"
         @click="addLanguage"

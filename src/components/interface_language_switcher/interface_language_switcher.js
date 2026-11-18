@@ -7,12 +7,15 @@ export default {
   components: {
     Select,
   },
+  inheritAttrs: false,
   props: {
     // List of languages (or just one language)
     modelValue: {
       type: [Array, String],
       required: true,
     },
+    // Whether to support multiple languages or just one
+    single: Boolean
   },
   emits: ['update:modelValue'],
   setup() {
@@ -33,7 +36,11 @@ export default {
           : [this.modelValue]
       },
       set: function (val) {
-        this.$emit('update:modelValue', val)
+        if (this.single) {
+          this.$emit('update:modelValue', val[0])
+        } else {
+          this.$emit('update:modelValue', val)
+        }
       },
     },
   },
@@ -43,6 +50,7 @@ export default {
       return localeService.getLanguageName(code)
     },
     addLanguage() {
+      if (this.single) return
       this.controlledLanguage = [...this.controlledLanguage, '']
     },
     setLanguageAt(index, val) {
@@ -51,6 +59,7 @@ export default {
       this.controlledLanguage = lang
     },
     removeLanguageAt(index) {
+      if (this.single) return
       const lang = [...this.controlledLanguage]
       lang.splice(index, 1)
       this.controlledLanguage = lang
