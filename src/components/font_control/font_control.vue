@@ -16,7 +16,8 @@
       </button>
       <input
         :id="id"
-        v-model="modelValue"
+        :value="modelValue"
+        @change="$emit('update:modelValue', $event.target.value)"
         class="input custom-font"
         type="text"
       >

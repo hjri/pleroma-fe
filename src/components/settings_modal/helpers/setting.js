@@ -206,7 +206,7 @@ export default {
         }
       },
       set(value) {
-        this.$emit('update:modelValue')
+        this.$emit('update:modelValue', value)
         this.configSink(this.path, value)
       },
     },
