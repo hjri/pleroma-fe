@@ -741,7 +741,7 @@ export const useInterfaceStore = defineStore('interface', {
       })()
       const paletteIdentifier = (() => {
         if (majorVersionUsed === 'v2') return 'none'
-        if (userPaletteUsed) {
+        if (paletteCustomData) {
           return `<custom: ${sum(paletteCustomData)}>`
         } else {
           return paletteName
