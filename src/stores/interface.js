@@ -578,6 +578,7 @@ export const useInterfaceStore = defineStore('interface', {
       this.setPreference({
         path: 'customThemeSource',
         value,
+        store,
       })
       await this.pushPreferences({ store })
       const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()
