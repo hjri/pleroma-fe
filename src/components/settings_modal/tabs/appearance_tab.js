@@ -467,6 +467,10 @@ const AppearanceTab = {
       useInterfaceStore().resetThemeV3(this.defaultSource)
       useInterfaceStore().resetThemeV3Palette(this.defaultSource)
       useInterfaceStore().resetThemeV2(this.defaultSource)
+      useInterfaceStore().unsetPreference({
+        path: 'themeVersionUse',
+        store: this.defaultSource,
+      })
       useInterfaceStore().pushPreferences({ store: this.defaultSource })
     },
     setTheme(name) {

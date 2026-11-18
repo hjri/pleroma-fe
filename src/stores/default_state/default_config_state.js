@@ -121,6 +121,11 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
     type: 'number', // not a boolean so we could potentially make multiple levels of expert-ness
     default: 0,
   },
+  themeVersionUse: {
+    description:
+      'Helper for disambiguation of situations where merged config has both theme stuff and style stuff defined',
+    default: null,
+  },
   theme: {
     description: 'Very old theme store, stores preset name, still in use',
     default: null,
