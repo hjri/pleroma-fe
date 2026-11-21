@@ -228,7 +228,6 @@ const SettingsModal = {
           'styleCustomData',
           'palette',
           'paletteCustomData',
-          'themeChecksum',
         ])
 
         sample = Object.fromEntries(

@@ -717,11 +717,6 @@ export const INSTANCE_DEFAULT_CONFIG_DEFINITIONS = {
     options: ['24h', '12h'],
     optionLabel: (key) => `settings.absolute_time_format_12h_${key}`,
   },
-  themeChecksum: {
-    description: 'Checksum of theme used',
-    type: 'string',
-    required: false,
-  },
   highlights: {
     description: 'User highlights',
     type: 'object',

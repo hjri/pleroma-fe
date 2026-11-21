@@ -334,7 +334,7 @@ export const useInterfaceStore = defineStore('interface', {
     setPrefersDarkMode(value) {
       if (this.prefersDarkMode !== value) {
         this.prefersDarkMode = value
-        this.applyTheme(null, true)
+        this.applyTheme()
       }
     },
     setFontsList(value) {
@@ -463,7 +463,7 @@ export const useInterfaceStore = defineStore('interface', {
       const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()
 
       if (themeIdentifierNew !== themeIdentifierOld) {
-        this.applyTheme(store, true)
+        this.applyTheme(true)
       }
     },
     async setPaletteCustom(value, store) {
@@ -481,7 +481,7 @@ export const useInterfaceStore = defineStore('interface', {
       const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()
 
       if (themeIdentifierNew !== themeIdentifierOld) {
-        this.applyTheme(store, true)
+        this.applyTheme(true)
       }
     },
     async fetchStylesIndex() {
@@ -514,7 +514,7 @@ export const useInterfaceStore = defineStore('interface', {
       const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()
 
       if (themeIdentifierNew !== themeIdentifierOld) {
-        this.applyTheme(store, true)
+        this.applyTheme(true)
       }
     },
     async setStyleCustom(value, store) {
@@ -534,7 +534,7 @@ export const useInterfaceStore = defineStore('interface', {
       const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()
 
       if (themeIdentifierNew !== themeIdentifierOld) {
-        this.applyTheme(store, true)
+        this.applyTheme(true)
       }
     },
     async fetchThemesIndex() {
@@ -564,7 +564,7 @@ export const useInterfaceStore = defineStore('interface', {
       const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()
 
       if (themeIdentifierNew !== themeIdentifierOld) {
-        this.applyTheme(store, true)
+        this.applyTheme(true)
       }
     },
     async setThemeCustom(value, store) {
@@ -584,7 +584,7 @@ export const useInterfaceStore = defineStore('interface', {
       const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()
 
       if (themeIdentifierNew !== themeIdentifierOld) {
-        this.applyTheme(store, true)
+        this.applyTheme(true)
       }
     },
     resetThemeV3(store) {
@@ -921,7 +921,7 @@ export const useInterfaceStore = defineStore('interface', {
     async setThemeApplied() {
       this.themeApplied = true
     },
-    async applyTheme(store, recompile) {
+    async applyTheme(recompile) {
       const { mergedConfig } = useMergedConfigStore()
       const { forceThemeRecompilation, themeDebug } = mergedConfig
 
@@ -933,11 +933,6 @@ export const useInterfaceStore = defineStore('interface', {
 
       await this.getThemeData()
 
-      if (!forceRecompile && !themeDebug && (await tryLoadCache())) {
-        this.themeChangeInProgress = false
-        return this.setThemeApplied()
-      }
-      window.splashUpdate('splash.theme')
 
       try {
         const paletteIss = (() => {
@@ -1014,21 +1009,19 @@ export const useInterfaceStore = defineStore('interface', {
           this.styleDataUsed,
           paletteIss,
           hacks,
-        ].filter(Boolean)
+        ].filter(Boolean).flat()
+
+        if (!forceRecompile && !themeDebug && (await tryLoadCache(rulesetArray))) {
+          this.themeChangeInProgress = false
+          return this.setThemeApplied()
+        }
+        window.splashUpdate('splash.theme')
 
         return applyTheme(
-          rulesetArray.flat(),
+          rulesetArray,
           () => this.setThemeApplied(),
           (cache) => {
             this.themeChangeInProgress = false
-            if (store) {
-              this.setPreference({
-                path: 'themeChecksum',
-                value: cache.checksum,
-                store,
-              })
-              this.pushPreferences({ store })
-            }
           },
           themeDebug,
         )

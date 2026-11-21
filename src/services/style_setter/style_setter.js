@@ -147,15 +147,16 @@ const generateTheme = (inputRuleset, callbacks, debug) => {
   return { lazyProcessFunc: processChunk }
 }
 
-export const tryLoadCache = async () => {
+export const tryLoadCache = async (input) => {
   console.info('Trying to load compiled theme data from cache')
   const cache = await localforage.getItem('pleromafe-theme-cache')
   if (!cache) return null
+  const inputChecksum = sum(input)
   try {
     if (
       cache.engineChecksum === getEngineChecksum() &&
       cache.checksum !== undefined &&
-      cache.checksum === useMergedConfigStore().mergedConfig.themeChecksum &&
+      cache.inputChecksum === inputChecksum &&
       !hasInvalidCachedThemeRules(cache.data)
     ) {
       const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
@@ -180,6 +181,7 @@ export const tryLoadCache = async () => {
 }
 
 export const applyTheme = (input, onEagerFinish, onFinish, debug = false) => {
+  const inputChecksum = sum(input)
   const eagerStyles = createStyleSheet(EAGER_STYLE_ID, 10)
   const lazyStyles = createStyleSheet(LAZY_STYLE_ID, 20)
 
@@ -211,6 +213,7 @@ export const applyTheme = (input, onEagerFinish, onFinish, debug = false) => {
         const checksum = sum(data)
         const cache = {
           checksum,
+          inputChecksum,
           engineChecksum: getEngineChecksum(),
           data,
         }
