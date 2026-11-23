@@ -28,6 +28,7 @@ export default {
       return e
     },
     add() {
+      if (!this.newValue[0]) return
       this.visibleState = {
         ...this.visibleState,
         ...Object.fromEntries([this.newValue]),
