@@ -963,7 +963,6 @@ export const useInterfaceStore = defineStore('interface', {
 
       await this.getThemeData()
 
-
       try {
         const paletteIss = (() => {
           if (!this.paletteDataUsed) return null
@@ -1039,9 +1038,15 @@ export const useInterfaceStore = defineStore('interface', {
           this.styleDataUsed,
           paletteIss,
           hacks,
-        ].filter(Boolean).flat()
+        ]
+          .filter(Boolean)
+          .flat()
 
-        if (!forceRecompile && !themeDebug && (await tryLoadCache(rulesetArray))) {
+        if (
+          !forceRecompile &&
+          !themeDebug &&
+          (await tryLoadCache(rulesetArray))
+        ) {
           this.themeChangeInProgress = false
           return this.setThemeApplied()
         }

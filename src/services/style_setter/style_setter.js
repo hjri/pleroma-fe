@@ -6,7 +6,6 @@ import { getCssRules } from '../theme_data/css_utils.js'
 import { getEngineChecksum, init } from '../theme_data/theme_data_3.service.js'
 
 import { ROOT_CONFIG } from 'src/stores/default_state/default_config_state.js'
-import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
 import { promisedRequest } from 'src/api/helpers.js'
 

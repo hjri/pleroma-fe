@@ -516,15 +516,18 @@ export default {
       }
     },
     setCustomTheme() {
-      useInterfaceStore().setTheme({
-        themeFileVersion: this.selectedVersion,
-        themeEngineVersion: CURRENT_VERSION,
-        shadows: this.shadowsLocal,
-        fonts: this.fontsLocal,
-        opacity: this.currentOpacity,
-        colors: this.currentColors,
-        radii: this.currentRadii,
-      }, this.defaultSource)
+      useInterfaceStore().setTheme(
+        {
+          themeFileVersion: this.selectedVersion,
+          themeEngineVersion: CURRENT_VERSION,
+          shadows: this.shadowsLocal,
+          fonts: this.fontsLocal,
+          opacity: this.currentOpacity,
+          colors: this.currentColors,
+          radii: this.currentRadii,
+        },
+        this.defaultSource,
+      )
     },
     updatePreviewColors() {
       const result = generateColors({

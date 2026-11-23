@@ -99,29 +99,33 @@ export default {
     extraEntries: {
       get() {
         if (!Array.isArray(this.visibleState)) return []
-        return this
-          .visibleState
+        return this.visibleState
           .map((value, index) => ({ value, index }))
-          .reduce(({ result, filtered }, { value, index }) => {
-            // This basically filters out only the first match to builtins
-            if (this.builtinEntriesValueSet.has(value) && !filtered.has(value)) {
-              filtered.add(value)
-              return { filtered, result }
-            } else {
-              return {
-                filtered,
-                result: [...result, { value, index }]
+          .reduce(
+            ({ result, filtered }, { value, index }) => {
+              // This basically filters out only the first match to builtins
+              if (
+                this.builtinEntriesValueSet.has(value) &&
+                !filtered.has(value)
+              ) {
+                filtered.add(value)
+                return { filtered, result }
+              } else {
+                return {
+                  filtered,
+                  result: [...result, { value, index }],
+                }
               }
-            }
-          }, { result: [], filtered: new Set() })
-          .result
+            },
+            { result: [], filtered: new Set() },
+          ).result
       },
       set(value) {
         this.visibleState = [
           ...this.builtinEntriesSelected.values(),
           ...value.map(({ value }) => value),
         ]
-      }
+      },
     },
     newValid() {
       return Boolean(this.newValue)
@@ -150,13 +154,15 @@ export default {
         ...this.extraEntries,
         {
           value: this.newValue,
-          index: this.visibleState.length
-        }
+          index: this.visibleState.length,
+        },
       ]
       this.resetNew()
     },
     remove(removeIndex) {
-      this.extraEntries = this.extraEntries.filter(({ index }) => index !== removeIndex)
+      this.extraEntries = this.extraEntries.filter(
+        ({ index }) => index !== removeIndex,
+      )
     },
     edit(event, editIndex) {
       const string = event.target.value
