@@ -484,6 +484,20 @@ export const useInterfaceStore = defineStore('interface', {
         this.applyTheme(true)
       }
     },
+    async unsetPalette(store) {
+      const { fullIdentifier: themeIdentifierOld } = this.getUsedThemeInfo()
+      this.resetThemeV3Palette(store)
+      this.resetThemeV2(store)
+
+      this.unsetPreference({ path: 'palette', store })
+      await this.pushPreferences({ store })
+
+      const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()
+
+      if (themeIdentifierNew !== themeIdentifierOld) {
+        this.applyTheme(true)
+      }
+    },
     async fetchStylesIndex() {
       try {
         const value = await getResourcesIndex(
@@ -529,6 +543,22 @@ export const useInterfaceStore = defineStore('interface', {
         value,
         store,
       })
+      await this.pushPreferences({ store })
+
+      const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()
+
+      if (themeIdentifierNew !== themeIdentifierOld) {
+        this.applyTheme(true)
+      }
+    },
+    async unsetStyle(store) {
+      const { fullIdentifier: themeIdentifierOld } = this.getUsedThemeInfo()
+      this.resetThemeV3(store)
+      this.resetThemeV2(store)
+      this.resetThemeV3Palette(store)
+
+      this.unsetPreference({ path: 'themeVersionUse', store })
+      this.unsetPreference({ path: 'style', store })
       await this.pushPreferences({ store })
 
       const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()

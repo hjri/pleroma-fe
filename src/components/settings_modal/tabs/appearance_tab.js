@@ -464,14 +464,7 @@ const AppearanceTab = {
       useInterfaceStore().setStyle(name, this.defaultSource)
     },
     unsetStyle() {
-      useInterfaceStore().resetThemeV3(this.defaultSource)
-      useInterfaceStore().resetThemeV3Palette(this.defaultSource)
-      useInterfaceStore().resetThemeV2(this.defaultSource)
-      useInterfaceStore().unsetPreference({
-        path: 'themeVersionUse',
-        store: this.defaultSource,
-      })
-      useInterfaceStore().pushPreferences({ store: this.defaultSource })
+      useInterfaceStore().unsetStyle(this.defaultSource)
     },
     setTheme(name) {
       useInterfaceStore().setTheme(name, this.defaultSource)
@@ -485,8 +478,8 @@ const AppearanceTab = {
       this.userPalette = data
     },
     unsetPalette() {
-      useInterfaceStore().resetThemeV3Palette(this.defaultSource)
-      useInterfaceStore().pushPreferences({ store: this.defaultSource })
+      useInterfaceStore().unsetPalette(this.defaultSource)
+      this.userPalette = null
     },
     previewTheme(key, version, input) {
       let theme3
