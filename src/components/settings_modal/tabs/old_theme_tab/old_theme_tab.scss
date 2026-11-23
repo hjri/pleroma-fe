@@ -73,7 +73,6 @@
     flex-wrap: wrap;
   }
 
-  .fonts-container,
   .reset-container,
   .apply-container,
   .radius-container,
@@ -81,7 +80,6 @@
     display: flex;
   }
 
-  .fonts-container,
   .radius-container {
     flex-direction: column;
   }
@@ -101,6 +99,29 @@
   .radius-container,
   .presets-container {
     margin: 1em 1em 0;
+  }
+
+  .fonts-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-auto-rows: auto;
+    gap: 0.5em;
+
+    .tab-header {
+      grid-column: 1 / -1;
+    }
+
+    .font-setting {
+      display: grid;
+      grid-column: 1 / -1;
+      grid-template-columns: subgrid;
+      place-items: baseline stretch;
+
+      > label {
+        justify-self: end;
+        white-space: nowrap;
+      }
+    }
   }
 
   .tab-header {

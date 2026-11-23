@@ -5,42 +5,44 @@
     :class="{ '-compact': compact }"
   >
     <label
+      v-if="!hideLabel"
+      :for="idPrefix + 'file'"
       class="setting-label"
-      :for="path"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="classes"
     >
-      <template v-if="backendDescriptionLabel">
-        {{ backendDescriptionLabel + ' ' }}
+      <SettingIndicators
+        :is-changed="isChanged"
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
+      />
+      {{ ' ' }}
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
       </template>
       <template v-else-if="source === 'admin'">
         MISSING LABEL FOR {{ path }}
       </template>
       <slot v-else />
-
     </label>
+    {{ ' ' }}
     <p
-      v-if="backendDescriptionDescription"
+      v-if="realDescription"
       class="setting-description"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="classes"
     >
-      {{ backendDescriptionDescription + ' ' }}
+      {{ realDescription + ' ' }}
     </p>
+    <DraftButtons v-if="!hideDraftButtons" />
     <div class="attachment-input">
       <div class="controls control-field">
         <label for="path">{{ $t('settings.url') }}</label>
         <input
-          :id="path"
+          v-model="visibleState"
+          :id="idPrefix + 'file'"
           class="input string-input"
           :disabled="shouldBeDisabled"
-          :value="realDraftMode ? draft : state"
-          @change="update"
         >
         {{ ' ' }}
-        <ModifiedIndicator
-          :changed="isChanged"
-          :onclick="reset"
-        />
-        <LocalSettingIndicator :is-local="isLocalSetting" />
       </div>
       <div v-if="!compact">{{ $t('settings.preview') }}</div>
       <Attachment
@@ -60,7 +62,6 @@
         />
       </div>
     </div>
-    <DraftButtons />
   </span>
 </template>
 

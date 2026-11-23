@@ -4,11 +4,18 @@
     class="MapSetting setting-item"
   >
     <legend
+      v-if="!hideLabel"
       class="setting-label"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="classes"
     >
-      <template v-if="backendDescriptionLabel">
-        {{ backendDescriptionLabel + ' ' }}
+      <SettingIndicators
+        :is-changed="isChanged"
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
+      />
+      {{ ' ' }}
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
       </template>
       <template v-else-if="source === 'admin'">
         MISSING LABEL FOR {{ path }}
@@ -16,12 +23,13 @@
       <slot v-else />
     </legend>
     <p
-      v-if="backendDescriptionDescription"
+      v-if="realDescription"
       class="setting-description"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="classes"
     >
-      {{ backendDescriptionDescription + ' ' }}
+      {{ realDescription + ' ' }}
     </p>
+    <DraftButtons v-if="!hideDraftButtons" />
     <ul class="setting-list">
       <li
         v-for="(item, i) in displayState"
@@ -32,19 +40,19 @@
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :value="item[0]"
-            :title="backendDescriptionSuggestions[0][0]"
-            @change="e => update({ event: e, key: item[0], eventType: 'edit', isKey: true })"
+            :title="realSuggestions?.[0]?.[0]"
+            @change="event => edit({ event, key: item[0], isKey: true })"
           >
           <input
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :value="item[1]"
-            :title="backendDescriptionSuggestions[0][1]"
-            @change="e => update({ event: e, key: item[0], eventType: 'edit', isKey: false })"
+            :title="realSuggestions?.[0]?.[1]"
+            @change="event => edit({ event, key: item[0], isKey: false })"
           >
           <button
             class="button-default"
-            @click="e => update({ key: item[0], eventType: 'remove' })"
+            @click="e => remove(item[0])"
           >
             <FAIcon icon="times" />
           </button>
@@ -57,32 +65,26 @@
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :disabled="shouldBeDisabled"
-            :placeholder="backendDescriptionSuggestions[0][0]"
-            :title="backendDescriptionSuggestions[0][0]"
+            :placeholder="realSuggestions?.[0]?.[0]"
+            :title="realSuggestions?.[0]?.[0]"
           >
           <input
             v-model="newValue[1]"
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
             :disabled="shouldBeDisabled"
-            :placeholder="backendDescriptionSuggestions[0][1]"
-            :title="backendDescriptionSuggestions[0][1]"
+            :placeholder="realSuggestions?.[0]?.[1]"
+            :title="realSuggestions?.[0]?.[1]"
           >
           <button
             class="button-default"
-            @click="e => update({ eventType: 'add' })"
+            @click="add"
           >
             <FAIcon icon="plus" />
           </button>
         </div>
       </li>
     </ul>
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
-    <LocalSettingIndicator :is-local="isLocalSetting" />
-    <DraftButtons />
   </fieldset>
 </template>
 

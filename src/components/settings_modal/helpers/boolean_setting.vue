@@ -3,44 +3,45 @@
     v-if="matchesExpertLevel"
     class="BooleanSetting setting-item"
   >
-    <span
+    <label
+      v-if="!hideLabel"
+      :for="idPrefix + 'checkbox'"
       class="setting-label"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="classes"
     >
-      <ModifiedIndicator
-        :changed="isChanged"
-        :onclick="reset"
+      <SettingIndicators
+        :is-changed="isChanged"
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
       />
-      <LocalSettingIndicator :is-local="isLocalSetting" />
       {{ ' ' }}
-      <label :for="idPrefix + 'checkbox'">
-        <template v-if="backendDescriptionLabel">
-          {{ backendDescriptionLabel }}
-        </template>
-        <template v-else-if="source === 'admin'">
-          MISSING LABEL FOR {{ path }}
-        </template>
-        <slot v-else />
-      </label>
-    </span>
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
+      </template>
+      <template v-else-if="source === 'admin'">
+        MISSING LABEL FOR {{ path }}
+      </template>
+      <slot v-else />
+    </label>
+    {{ ' ' }}
     <Checkbox
       :id="idPrefix + 'checkbox'"
+      v-model="visibleState"
       class="setting-control"
-      :model-value="visibleState"
-      :disabled="shouldBeDisabled"
       :indeterminate="isIndeterminate"
-      @update:model-value="update"
+      :disabled="shouldBeDisabled"
     />
+    {{ ' ' }}
+    <DraftButtons v-if="!hideDraftButtons" />
     <p
-      v-if="backendDescriptionDescription || showDescription"
+      v-if="realDescription"
       class="setting-description"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="classes"
     >
       <slot name="description">
-        {{ backendDescriptionDescription + ' ' }}
+        {{ realDescription + ' ' }}
       </slot>
     </p>
-    <DraftButtons />
   </div>
 </template>
 

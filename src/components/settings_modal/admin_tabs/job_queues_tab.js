@@ -9,12 +9,6 @@ import StringSetting from '../helpers/string_setting.vue'
 import TupleSetting from '../helpers/tuple_setting.vue'
 
 const JobQueuesTab = {
-  provide() {
-    return {
-      defaultDraftMode: true,
-      defaultSource: 'admin',
-    }
-  },
   components: {
     BooleanSetting,
     ChoiceSetting,

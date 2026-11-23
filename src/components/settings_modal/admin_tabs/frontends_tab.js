@@ -16,12 +16,6 @@ import { faGlobe } from '@fortawesome/free-solid-svg-icons'
 library.add(faGlobe)
 
 const FrontendsTab = {
-  provide() {
-    return {
-      defaultDraftMode: true,
-      defaultSource: 'admin',
-    }
-  },
   data() {
     return {
       working: false,

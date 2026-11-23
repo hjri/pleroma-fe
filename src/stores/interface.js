@@ -1,3 +1,5 @@
+import sum from 'hash-sum'
+import { cloneDeep, set, unset } from 'lodash-es'
 import { defineStore } from 'pinia'
 
 import {
@@ -11,7 +13,9 @@ import {
   windowWidth,
 } from '../services/window_utils/window_utils'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useInstanceStore } from 'src/stores/instance.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
 import { useStreamingStore } from 'src/stores/streaming.js'
@@ -51,6 +55,7 @@ const GENERIC_FONT_NAMES = new Set([
 export const useInterfaceStore = defineStore('interface', {
   state: () => ({
     localFonts: null,
+    prefersDarkMode: null,
     themeApplied: false,
     themeChangeInProgress: false,
     themeVersion: 'v3',
@@ -61,6 +66,7 @@ export const useInterfaceStore = defineStore('interface', {
     paletteDataUsed: null,
     themeNameUsed: null,
     themeDataUsed: null,
+    adminFrontendConfig: null,
     temporaryChangesTimeoutId: null,
     temporaryChangesCountdown: -1, // used for temporary options that revert after a timeout
     temporaryChangesConfirm: () => {
@@ -325,6 +331,12 @@ export const useInterfaceStore = defineStore('interface', {
         this.layoutType = wideLayout ? 'wide' : normalOrMobile
       }
     },
+    setPrefersDarkMode(value) {
+      if (this.prefersDarkMode !== value) {
+        this.prefersDarkMode = value
+        this.applyTheme()
+      }
+    },
     setFontsList(value) {
       this.localFonts = [...new Set(value.map(({ family }) => family)).values()]
     },
@@ -353,6 +365,76 @@ export const useInterfaceStore = defineStore('interface', {
     setLastTimeline(value) {
       this.lastTimeline = value
     },
+    // Themes stuff
+    async setPreference({ path, value, store }) {
+      switch (store) {
+        case 'sync':
+          return useSyncConfigStore().setPreference({
+            path: `simple.${path}`,
+            value,
+          })
+        case 'local':
+          return useLocalConfigStore().set({ path, value })
+        // Copypasta from setting.js
+        case 'fe-admin': {
+          if (this.adminFrontendConfig === null) {
+            this.adminFrontendConfig = cloneDeep(
+              useAdminSettingsStore().frontendConfig,
+            )
+          }
+          set(this.adminFrontendConfig, path, value)
+        }
+      }
+    },
+    async unsetPreference({ path, value, store }) {
+      switch (store) {
+        case 'sync':
+          return useSyncConfigStore().setPreference({
+            path: `simple.${path}`,
+            value: undefined,
+          })
+        case 'local':
+          return useLocalConfigStore().unset({ path, value })
+        // Copypasta from setting.js
+        case 'fe-admin': {
+          if (this.adminFrontendConfig === null) {
+            this.adminFrontendConfig = cloneDeep(
+              useAdminSettingsStore().frontendConfig,
+            )
+          }
+          unset(this.adminFrontendConfig, path)
+        }
+      }
+    },
+    async pushPreferences({ store }) {
+      if (store === 'sync') {
+        return useSyncConfigStore().pushSyncConfig()
+      } else if (store === 'fe-admin') {
+        const path = [
+          ':pleroma',
+          ':frontend_configurations',
+          ':pleroma_fe',
+        ].join('.')
+        const value = Object.fromEntries(
+          Object.entries(this.adminFrontendConfig).map(([k, v]) => [
+            `:${k}`,
+            v,
+          ]),
+        )
+        return useAdminSettingsStore()
+          .pushAdminSetting({
+            path,
+            value,
+          })
+          .then(() => {
+            this.adminFrontendConfig = cloneDeep(
+              useAdminSettingsStore().frontendConfig,
+            )
+          })
+      } else {
+        return
+      }
+    },
     async fetchPalettesIndex() {
       try {
         const value = await getResourcesIndex('/static/palettes/index.json')
@@ -370,26 +452,51 @@ export const useInterfaceStore = defineStore('interface', {
         return {}
       }
     },
-    setPalette(value) {
-      this.resetThemeV3Palette()
-      this.resetThemeV2()
+    async setPalette(value, store) {
+      const { fullIdentifier: themeIdentifierOld } = this.getUsedThemeInfo()
+      this.resetThemeV3Palette(store)
+      this.resetThemeV2(store)
 
-      useSyncConfigStore().setPreference({ path: 'simple.palette', value })
-      useSyncConfigStore().pushSyncConfig()
+      this.setPreference({ path: 'palette', value, store })
+      await this.pushPreferences({ store })
 
-      this.applyTheme({ recompile: true })
+      const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()
+
+      if (themeIdentifierNew !== themeIdentifierOld) {
+        this.applyTheme(true)
+      }
     },
-    setPaletteCustom(value) {
-      this.resetThemeV3Palette()
-      this.resetThemeV2()
+    async setPaletteCustom(value, store) {
+      const { fullIdentifier: themeIdentifierOld } = this.getUsedThemeInfo()
+      this.resetThemeV3Palette(store)
+      this.resetThemeV2(store)
 
-      useSyncConfigStore().setPreference({
-        path: 'simple.paletteCustomData',
+      this.setPreference({
+        path: 'paletteCustomData',
         value,
+        store,
       })
-      useSyncConfigStore().pushSyncConfig()
+      await this.pushPreferences({ store })
 
-      this.applyTheme({ recompile: true })
+      const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()
+
+      if (themeIdentifierNew !== themeIdentifierOld) {
+        this.applyTheme(true)
+      }
+    },
+    async unsetPalette(store) {
+      const { fullIdentifier: themeIdentifierOld } = this.getUsedThemeInfo()
+      this.resetThemeV3Palette(store)
+      this.resetThemeV2(store)
+
+      this.unsetPreference({ path: 'palette', store })
+      await this.pushPreferences({ store })
+
+      const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()
+
+      if (themeIdentifierNew !== themeIdentifierOld) {
+        this.applyTheme(true)
+      }
     },
     async fetchStylesIndex() {
       try {
@@ -408,34 +515,57 @@ export const useInterfaceStore = defineStore('interface', {
         return {}
       }
     },
-    setStyle(value) {
-      this.resetThemeV3()
-      this.resetThemeV2()
-      this.resetThemeV3Palette()
+    async setStyle(value, store) {
+      const { fullIdentifier: themeIdentifierOld } = this.getUsedThemeInfo()
+      this.resetThemeV3(store)
+      this.resetThemeV2(store)
+      this.resetThemeV3Palette(store)
 
-      useSyncConfigStore().setPreference({ path: 'simple.style', value })
-      useSyncConfigStore().pushSyncConfig()
-      this.useStylePalette = true
+      this.setPreference({ path: 'themeVersionUse', value: 'v3', store })
+      this.setPreference({ path: 'style', value, store })
+      await this.pushPreferences({ store })
 
-      this.applyTheme({ recompile: true }).then(() => {
-        this.useStylePalette = false
-      })
+      const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()
+
+      if (themeIdentifierNew !== themeIdentifierOld) {
+        this.applyTheme(true)
+      }
     },
-    setStyleCustom(value) {
-      this.resetThemeV3()
-      this.resetThemeV2()
-      this.resetThemeV3Palette()
+    async setStyleCustom(value, store) {
+      const { fullIdentifier: themeIdentifierOld } = this.getUsedThemeInfo()
+      this.resetThemeV3(store)
+      this.resetThemeV2(store)
+      this.resetThemeV3Palette(store)
 
-      useSyncConfigStore().setPreference({
-        path: 'simple.styleCustomData',
+      this.setPreference({ path: 'themeVersionUse', value: 'v3', store })
+      this.setPreference({
+        path: 'styleCustomData',
         value,
+        store,
       })
-      useSyncConfigStore().pushSyncConfig()
+      await this.pushPreferences({ store })
 
-      this.useStylePalette = true
-      this.applyTheme({ recompile: true }).then(() => {
-        this.useStylePalette = false
-      })
+      const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()
+
+      if (themeIdentifierNew !== themeIdentifierOld) {
+        this.applyTheme(true)
+      }
+    },
+    async unsetStyle(store) {
+      const { fullIdentifier: themeIdentifierOld } = this.getUsedThemeInfo()
+      this.resetThemeV3(store)
+      this.resetThemeV2(store)
+      this.resetThemeV3Palette(store)
+
+      this.unsetPreference({ path: 'themeVersionUse', store })
+      this.unsetPreference({ path: 'style', store })
+      await this.pushPreferences({ store })
+
+      const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()
+
+      if (themeIdentifierNew !== themeIdentifierOld) {
+        this.applyTheme(true)
+      }
     },
     async fetchThemesIndex() {
       try {
@@ -451,57 +581,215 @@ export const useInterfaceStore = defineStore('interface', {
         return {}
       }
     },
-    setTheme(value) {
-      this.resetThemeV3()
-      this.resetThemeV3Palette()
-      this.resetThemeV2()
+    async setTheme(value, store) {
+      const { fullIdentifier: themeIdentifierOld } = this.getUsedThemeInfo()
+      this.resetThemeV3(store)
+      this.resetThemeV3Palette(store)
+      this.resetThemeV2(store)
 
-      useSyncConfigStore().setPreference({ path: 'simple.theme', value })
-      useSyncConfigStore().pushSyncConfig()
+      this.setPreference({ path: 'themeVersionUse', value: 'v2', store })
+      this.setPreference({ path: 'theme', value, store })
+      await this.pushPreferences({ store })
 
-      this.applyTheme({ recompile: true })
+      const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()
+
+      if (themeIdentifierNew !== themeIdentifierOld) {
+        this.applyTheme(true)
+      }
     },
-    setThemeCustom(value) {
-      this.resetThemeV3()
-      this.resetThemeV3Palette()
-      this.resetThemeV2()
+    async setThemeCustom(value, store) {
+      const { fullIdentifier: themeIdentifierOld } = this.getUsedThemeInfo()
+      this.resetThemeV3(store)
+      this.resetThemeV3Palette(store)
+      this.resetThemeV2(store)
 
-      useSyncConfigStore().setPreference({ path: 'simple.customTheme', value })
-      useSyncConfigStore().setPreference({
-        path: 'simple.customThemeSource',
+      this.setPreference({ path: 'themeVersionUse', value: 'v2', store })
+      this.setPreference({ path: 'customTheme', value, store })
+      this.setPreference({
+        path: 'customThemeSource',
         value,
+        store,
       })
-      useSyncConfigStore().pushSyncConfig()
+      await this.pushPreferences({ store })
+      const { fullIdentifier: themeIdentifierNew } = this.getUsedThemeInfo()
 
-      this.applyTheme({ recompile: true })
+      if (themeIdentifierNew !== themeIdentifierOld) {
+        this.applyTheme(true)
+      }
     },
-    resetThemeV3() {
-      useSyncConfigStore().setPreference({ path: 'simple.style', value: null })
-      useSyncConfigStore().setPreference({
-        path: 'simple.styleCustomData',
-        value: null,
-      })
-    },
-    resetThemeV3Palette() {
-      useSyncConfigStore().setPreference({
-        path: 'simple.palette',
-        value: null,
-      })
-      useSyncConfigStore().setPreference({
-        path: 'simple.paletteCustomData',
-        value: null,
+    resetThemeV3(store) {
+      this.unsetPreference({ path: 'style', store })
+      this.unsetPreference({
+        path: 'styleCustomData',
+        store,
       })
     },
-    resetThemeV2() {
-      useSyncConfigStore().setPreference({ path: 'simple.theme', value: null })
-      useSyncConfigStore().setPreference({
-        path: 'simple.customTheme',
-        value: null,
+    resetThemeV3Palette(store) {
+      this.unsetPreference({
+        path: 'palette',
+        store,
       })
-      useSyncConfigStore().setPreference({
-        path: 'simple.customThemeSource',
-        value: null,
+      this.unsetPreference({
+        path: 'paletteCustomData',
+        store,
       })
+    },
+    resetThemeV2(store) {
+      this.unsetPreference({
+        path: 'theme',
+        store,
+      })
+      this.unsetPreference({
+        path: 'customTheme',
+        store,
+      })
+      this.unsetPreference({
+        path: 'customThemeSource',
+        store,
+      })
+    },
+    getUsedThemeInfo() {
+      let {
+        theme: instanceThemeV2Name,
+        customTheme: instanceThemeV2Snapshot,
+        customThemeSource: instanceThemeV2Source,
+        style: instanceStyleName,
+        styleCustomData: instanceStyleCustomData,
+        palette: instancePaletteName,
+        paletteCustomData: instancePaletteCustomData,
+        themeVersionUse: instanceThemeVersionUse,
+      } = useMergedConfigStore().mergedConfigDefault
+
+      let {
+        theme: userThemeV2Name,
+        customTheme: userThemeV2Snapshot,
+        customThemeSource: userThemeV2Source,
+        style: userStyleName,
+        styleCustomData: userStyleCustomData,
+        palette: userPaletteName,
+        paletteCustomData: userPaletteCustomData,
+        themeVersionUse: userThemeVersionUse,
+      } = useMergedConfigStore().mergedConfigWithoutDefaults
+
+      console.debug(
+        `User V3 palette: ${userPaletteName}, style: ${userStyleName}, custom: ${!!userStyleCustomData}`,
+      )
+      console.debug(
+        `User V2 name: ${userThemeV2Name}, source: ${!!userThemeV2Source}, snapshot: ${!!userThemeV2Snapshot}`,
+      )
+
+      console.debug(
+        `Instance V3 palette: ${instancePaletteName}, style: ${instanceStyleName}, custom: ${!!instanceStyleCustomData}`,
+      )
+      console.debug(
+        `Instance V2 name: ${instanceThemeV2Name}, custom: ${!!instanceThemeV2Snapshot}`,
+      )
+
+      const userThemeV2CustomData = userThemeV2Source ?? userThemeV2Snapshot
+      const instanceThemeV2CustomData =
+        instanceThemeV2Source ?? instanceThemeV2Snapshot
+
+      const userThemeV2Used = Boolean(userThemeV2Name || userThemeV2CustomData)
+      const userThemeV3Used = Boolean(userStyleName || userStyleCustomData)
+      const userThemeUsed = userThemeV2Used || userThemeV3Used
+      userThemeVersionUse = (() => {
+        if (userThemeV2Used && userThemeV3Used) {
+          return userThemeVersionUse
+        } else if (userThemeV2Used) {
+          return 'v2'
+        } else if (userThemeV3Used) {
+          return 'v3'
+        } else {
+          return undefined
+        }
+      })()
+
+      const instanceThemeV2Used = Boolean(
+        instanceThemeV2Name || instanceThemeV2CustomData,
+      )
+      const instanceThemeV3Used = Boolean(
+        instanceStyleName || instanceStyleCustomData,
+      )
+      // const instanceThemeUsed = instanceThemeV2Used || instanceThemeV3Used
+      instanceThemeVersionUse = (() => {
+        if (instanceThemeV2Used && instanceThemeV3Used) {
+          return instanceThemeVersionUse
+        } else if (instanceThemeV2Used) {
+          return 'v2'
+        } else if (instanceThemeV3Used) {
+          return 'v3'
+        } else {
+          return undefined
+        }
+      })()
+
+      const userPaletteUsed = Boolean(userPaletteName || userPaletteCustomData)
+      // const instancePaletteUsed = Boolean(
+      //   instancePaletteName || instancePaletteCustomData,
+      // )
+
+      if (userStyleName === 'stock') userStyleName = undefined
+      if (instanceStyleName === 'stock') instanceStyleName = undefined
+      if (userPaletteName === 'auto') userPaletteName = undefined
+      if (instancePaletteName === 'auto') instancePaletteName = undefined
+
+      const majorVersionUsed =
+        (userThemeUsed ? userThemeVersionUse : instanceThemeVersionUse) ?? 'v3'
+
+      const themeName = (() => {
+        if (userThemeUsed) {
+          return majorVersionUsed === 'v2' ? userThemeV2Name : userStyleName
+        } else {
+          return majorVersionUsed === 'v2'
+            ? instanceThemeV2Name
+            : instanceStyleName
+        }
+      })()
+      const themeCustomData = (() => {
+        if (userThemeUsed) {
+          return majorVersionUsed === 'v2'
+            ? userThemeV2CustomData
+            : userStyleCustomData
+        } else {
+          return majorVersionUsed === 'v2'
+            ? instanceThemeV2CustomData
+            : instanceStyleCustomData
+        }
+      })()
+
+      const paletteName = userPaletteUsed
+        ? userPaletteName
+        : instancePaletteName
+      const paletteCustomData = userPaletteUsed
+        ? userPaletteCustomData
+        : instancePaletteCustomData
+
+      const themeIdentifier = (() => {
+        if (themeCustomData) {
+          return `<custom: ${sum(themeCustomData)}>`
+        } else {
+          return themeName
+        }
+      })()
+      const paletteIdentifier = (() => {
+        if (majorVersionUsed === 'v2') return 'none'
+        if (paletteCustomData) {
+          return `<custom: ${sum(paletteCustomData)}>`
+        } else {
+          return paletteName
+        }
+      })()
+      const fullIdentifier = `${majorVersionUsed}:${themeIdentifier}:${paletteIdentifier}`
+
+      console.debug(`Final identifier: ${fullIdentifier}`)
+      return {
+        fullIdentifier,
+        majorVersionUsed,
+        themeName,
+        themeCustomData,
+        paletteName,
+        paletteCustomData,
+      }
     },
     async getThemeData() {
       const getData = async (resource, index, customData, name) => {
@@ -543,83 +831,19 @@ export const useInterfaceStore = defineStore('interface', {
         return result
       }
 
-      let {
-        theme: instanceThemeName,
-        style: instanceStyleName,
-        palette: instancePaletteName,
-      } = useInstanceStore().instanceIdentity
-
-      let { themesIndex, stylesIndex, palettesIndex } = useInstanceStore()
-
       const {
-        style: userStyleName,
-        styleCustomData: userStyleCustomData,
-        palette: userPaletteName,
-        paletteCustomData: userPaletteCustomData,
-      } = useMergedConfigStore().mergedConfig
-
-      let {
-        theme: userThemeV2Name,
-        customTheme: userThemeV2Snapshot,
-        customThemeSource: userThemeV2Source,
-      } = useMergedConfigStore().mergedConfig
-
-      let majorVersionUsed
-
-      console.debug(
-        `User V3 palette: ${userPaletteName}, style: ${userStyleName} , custom: ${!!userStyleCustomData}`,
-      )
-      console.debug(
-        `User V2 name: ${userThemeV2Name}, source: ${!!userThemeV2Source}, snapshot: ${!!userThemeV2Snapshot}`,
-      )
-
-      console.debug(
-        `Instance V3 palette: ${instancePaletteName}, style: ${instanceStyleName}`,
-      )
-      console.debug('Instance V2 theme: ' + instanceThemeName)
-
-      if (
-        userPaletteName ||
-        userPaletteCustomData ||
-        userStyleName ||
-        userStyleCustomData ||
-        // User V2 overrides instance V3
-        ((instancePaletteName || instanceStyleName) &&
-          instanceThemeName == null &&
-          userThemeV2Name == null)
-      ) {
-        // Palette and/or style overrides V2 themes
-        instanceThemeName = null
-        userThemeV2Name = null
-        userThemeV2Source = null
-        userThemeV2Snapshot = null
-
-        majorVersionUsed = 'v3'
-      } else if (
-        userThemeV2Name ||
-        userThemeV2Snapshot ||
-        userThemeV2Source ||
-        instanceThemeName
-      ) {
-        majorVersionUsed = 'v2'
-      } else {
-        // if all fails fallback to v3
-        majorVersionUsed = 'v3'
-      }
+        majorVersionUsed,
+        themeName,
+        themeCustomData,
+        paletteName,
+        paletteCustomData,
+      } = this.getUsedThemeInfo()
 
       if (majorVersionUsed === 'v3') {
-        const result = await Promise.all([
-          this.fetchPalettesIndex(),
-          this.fetchStylesIndex(),
-        ])
-
-        palettesIndex = result[0]
-        stylesIndex = result[1]
+        await Promise.all([this.fetchPalettesIndex(), this.fetchStylesIndex()])
       } else {
         // Promise.all just to be uniform with v3
-        const result = await Promise.all([this.fetchThemesIndex()])
-
-        themesIndex = result[0]
+        await Promise.all([this.fetchThemesIndex()])
       }
 
       this.themeVersion = majorVersionUsed
@@ -632,46 +856,46 @@ export const useInterfaceStore = defineStore('interface', {
 
         const style = await getData(
           'style',
-          stylesIndex,
-          userStyleCustomData,
-          userStyleName || instanceStyleName,
+          useInstanceStore().stylesIndex,
+          themeCustomData,
+          themeName,
         )
         this.styleNameUsed = style.nameUsed
         this.styleDataUsed = style.dataUsed
 
-        let firstStylePaletteName = null
-        style.dataUsed
-          ?.filter((x) => x.component === '@palette')
-          .map((x) => {
-            const cleanDirectives = Object.fromEntries(
-              Object.entries(x.directives).filter(([k]) => k),
-            )
+        const stylePalettes = Object.fromEntries(
+          (style.dataUsed ?? [])
+            .filter((x) => x.component === '@palette')
+            .map((x) => {
+              const cleanDirectives = Object.fromEntries(
+                Object.entries(x.directives).filter(([k]) => k),
+              )
 
-            return { name: x.variant, ...cleanDirectives }
-          })
-          .forEach((palette) => {
-            const key =
-              'style.' + palette.name.toLowerCase().replaceAll(' ', '_')
-            if (!firstStylePaletteName) firstStylePaletteName = key
-            palettesIndex[key] = () => Promise.resolve(palette)
-          })
+              return [
+                'style_' + x.variant.toLowerCase().replaceAll(/\./g, '_'),
+                () => ({ name: x.variant, ...cleanDirectives }),
+              ]
+            }),
+        )
+
+        const allPalettes =
+          Object.keys(stylePalettes).length > 0
+            ? stylePalettes
+            : useInstanceStore().palettesIndex
+
+        const defaultPalette = (() => {
+          if (this.prefersDarkMode === null) return null
+          const matchRegex = this.prefersDarkMode ? /dark/i : /light/i
+          const keys = Object.keys(allPalettes)
+          return keys.find((x) => matchRegex.test(x)) ?? keys[0]
+        })()
 
         const palette = await getData(
           'palette',
-          palettesIndex,
-          userPaletteCustomData,
-          this.useStylePalette
-            ? firstStylePaletteName
-            : userPaletteName || instancePaletteName,
+          allPalettes,
+          paletteCustomData,
+          paletteName ?? defaultPalette,
         )
-
-        if (this.useStylePalette) {
-          useSyncConfigStore().setPreference({
-            path: 'simple.palette',
-            value: firstStylePaletteName,
-          })
-          useSyncConfigStore().pushSyncConfig()
-        }
 
         this.paletteNameUsed = palette.nameUsed
         this.paletteDataUsed = palette.dataUsed
@@ -716,9 +940,9 @@ export const useInterfaceStore = defineStore('interface', {
 
         const theme = await getData(
           'theme',
-          themesIndex,
-          userThemeV2Source || userThemeV2Snapshot,
-          userThemeV2Name || instanceThemeName,
+          useInstanceStore().themesIndex,
+          themeCustomData,
+          themeName,
         )
         this.themeNameUsed = theme.nameUsed
         this.themeDataUsed = theme.dataUsed
@@ -727,7 +951,7 @@ export const useInterfaceStore = defineStore('interface', {
     async setThemeApplied() {
       this.themeApplied = true
     },
-    async applyTheme({ recompile = false } = {}) {
+    async applyTheme(recompile) {
       const { mergedConfig } = useMergedConfigStore()
       const { forceThemeRecompilation, themeDebug } = mergedConfig
 
@@ -738,12 +962,6 @@ export const useInterfaceStore = defineStore('interface', {
       const forceRecompile = forceThemeRecompilation || recompile
 
       await this.getThemeData()
-
-      if (!forceRecompile && !themeDebug && (await tryLoadCache())) {
-        this.themeChangeInProgress = false
-        return this.setThemeApplied()
-      }
-      window.splashUpdate('splash.theme')
 
       try {
         const paletteIss = (() => {
@@ -820,12 +1038,24 @@ export const useInterfaceStore = defineStore('interface', {
           this.styleDataUsed,
           paletteIss,
           hacks,
-        ].filter(Boolean)
+        ]
+          .filter(Boolean)
+          .flat()
+
+        if (
+          !forceRecompile &&
+          !themeDebug &&
+          (await tryLoadCache(rulesetArray))
+        ) {
+          this.themeChangeInProgress = false
+          return this.setThemeApplied()
+        }
+        window.splashUpdate('splash.theme')
 
         return applyTheme(
-          rulesetArray.flat(),
+          rulesetArray,
           () => this.setThemeApplied(),
-          () => {
+          (cache) => {
             this.themeChangeInProgress = false
           },
           themeDebug,

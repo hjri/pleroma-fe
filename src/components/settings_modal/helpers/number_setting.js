@@ -4,36 +4,36 @@ export default {
   ...Setting,
   props: {
     ...Setting.props,
-    min: {
-      type: Number,
-      required: false,
-      default: 1,
+    min: Number,
+    max: Number,
+    step: Number,
+    truncate: Number,
+  },
+  computed: {
+    ...Setting.computed,
+    realMin() {
+      return this.min ?? this.definition?.min ?? 0
     },
-    max: {
-      type: Number,
-      required: false,
-      default: 1,
+    realMax() {
+      return this.max ?? this.definition?.max
     },
-    step: {
-      type: Number,
-      required: false,
-      default: 1,
+    realStep() {
+      return this.step ?? this.definition?.step
     },
-    truncate: {
-      type: Number,
-      required: false,
-      default: 1,
+    realTruncate() {
+      return this.truncate ?? this.definition?.truncate ?? 1
     },
   },
   methods: {
     ...Setting.methods,
     getValue(e) {
-      if (this.truncate === 1) {
-        return Number.parseInt(e.target.value)
-      } else if (this.truncate > 1) {
-        return Math.trunc(e.target.value / this.truncate) * this.truncate
+      if (e === undefined) return undefined
+      if (this.realTruncate === 1) {
+        return Number.parseInt(e)
+      } else if (this.realTruncate > 1) {
+        return Math.trunc(e / this.realTruncate) * this.realTruncate
       }
-      return Number.parseFloat(e.target.value)
+      return Number.parseFloat(e)
     },
   },
 }

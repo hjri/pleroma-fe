@@ -2,12 +2,12 @@ import { mapState } from 'pinia'
 
 import FontControl from 'src/components/font_control/font_control.vue'
 import InterfaceLanguageSwitcher from 'src/components/interface_language_switcher/interface_language_switcher.vue'
-import ScopeSelector from 'src/components/scope_selector/scope_selector.vue'
 import Select from 'src/components/select/select.vue'
 import BooleanSetting from '../helpers/boolean_setting.vue'
 import ChoiceSetting from '../helpers/choice_setting.vue'
 import FloatSetting from '../helpers/float_setting.vue'
 import IntegerSetting from '../helpers/integer_setting.vue'
+import ScopeSetting from '../helpers/scope_setting.vue'
 import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
 
@@ -38,47 +38,6 @@ library.add(faGlobe, faMessage, faPenAlt, faDatabase, faSliders)
 const ComposingTab = {
   data() {
     return {
-      subjectLineOptions: ['email', 'noop', 'masto'].map((mode) => ({
-        key: mode,
-        value: mode,
-        label: this.$t(
-          `settings.subject_line_${mode === 'masto' ? 'mastodon' : mode}`,
-        ),
-      })),
-      conversationDisplayOptions: ['tree', 'linear'].map((mode) => ({
-        key: mode,
-        value: mode,
-        label: this.$t(`settings.conversation_display_${mode}`),
-      })),
-      absoluteTime12hOptions: ['24h', '12h'].map((mode) => ({
-        key: mode,
-        value: mode,
-        label: this.$t(`settings.absolute_time_format_12h_${mode}`),
-      })),
-      conversationOtherRepliesButtonOptions: ['below', 'inside'].map(
-        (mode) => ({
-          key: mode,
-          value: mode,
-          label: this.$t(`settings.conversation_other_replies_button_${mode}`),
-        }),
-      ),
-      mentionLinkDisplayOptions: ['short', 'full_for_remote', 'full'].map(
-        (mode) => ({
-          key: mode,
-          value: mode,
-          label: this.$t(`settings.mention_link_display_${mode}`),
-        }),
-      ),
-      userPopoverAvatarActionOptions: ['close', 'zoom', 'open'].map((mode) => ({
-        key: mode,
-        value: mode,
-        label: this.$t(`settings.user_popover_avatar_action_${mode}`),
-      })),
-      unsavedPostActionOptions: ['save', 'discard', 'confirm'].map((mode) => ({
-        key: mode,
-        value: mode,
-        label: this.$t(`settings.unsaved_post_action_${mode}`),
-      })),
       loopSilentAvailable:
         // Firefox
         Object.getOwnPropertyDescriptor(
@@ -105,14 +64,11 @@ const ComposingTab = {
     FloatSetting,
     UnitSetting,
     InterfaceLanguageSwitcher,
-    ScopeSelector,
+    ScopeSetting,
     Select,
     FontControl,
   },
   computed: {
-    defaultScope() {
-      return useProfileConfigStore().config.defaultScope
-    },
     postFormats() {
       return useInstanceCapabilitiesStore().postFormats
     },

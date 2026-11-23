@@ -4,17 +4,18 @@
     class="RateSetting setting-item"
   >
     <legend
+      v-if="!hideLabel"
       class="setting-label"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="classes"
     >
-      <ModifiedIndicator
-        :changed="isChanged"
-        :onclick="reset"
+      <SettingIndicators
+        :is-changed="isChanged"
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
       />
-      <LocalSettingIndicator :is-local="isLocalSetting" />
       {{ ' ' }}
-      <template v-if="backendDescriptionLabel">
-        {{ backendDescriptionLabel + ' ' }}
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
       </template>
       <template v-else-if="source === 'admin'">
         MISSING LABEL FOR {{ path }}
@@ -22,12 +23,13 @@
       <slot v-else />
     </legend>
     <p
-      v-if="backendDescriptionDescription"
+      v-if="realDescription"
       class="setting-description"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="classes"
     >
-      {{ backendDescriptionDescription + ' ' }}
+      {{ realDescription + ' ' }}
     </p>
+    <DraftButtons v-if="!hideDraftButtons" />
     <div class="setting-control">
       <table>
         <thead>
@@ -53,7 +55,7 @@
                 class="input string-input"
                 type="number"
                 :value="normalizedState[0][0]"
-                @change="e => update({ event: e, index: 0, side: 0, eventType: 'edit' })"
+                @change="event => edit({ event, index: 0, side: 0 })"
               >
             </td>
             <td>
@@ -63,7 +65,7 @@
                 class="input string-input"
                 type="number"
                 :value="normalizedState[0][1]"
-                @change="e => update({ event: e, index: 1, side: 0, eventType: 'edit' })"
+                @change="event => edit({ event, index: 1, side: 0 })"
               >
             </td>
           </tr>
@@ -78,7 +80,7 @@
                 class="input string-input"
                 type="number"
                 :value="normalizedState[1][0]"
-                @change="e => update({ event: e, index: 0, side: 1, eventType: 'edit' })"
+                @change="event => edit({ event, index: 0, side: 1 })"
               >
             </td>
             <td>
@@ -88,7 +90,7 @@
                 class="input string-input"
                 type="number"
                 :value="normalizedState[1][1]"
-                @change="e => update({ event: e, index: 1, side: 1, eventType: 'edit' })"
+                @change="event => edit({ event, index: 1, side: 1 })"
               >
             </td>
           </tr>
@@ -96,12 +98,11 @@
       </table>
       <Checkbox
         :model-value="isSeparate"
-        @update:model-value="event => update({ event: event ? 'split' : 'join', eventType: 'toggleMode' })"
+        @update:model-value="event => toggleMode(event ? 'split' : 'join')"
       >
         {{ $t('admin_dash.rate_limit.separate') }}
       </Checkbox>
     </div>
-    <DraftButtons />
   </fieldset>
 </template>
 

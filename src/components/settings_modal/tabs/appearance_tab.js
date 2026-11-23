@@ -1,5 +1,3 @@
-import { mapActions } from 'pinia'
-
 import fileSizeFormatService from 'src/components/../services/file_size_format/file_size_format.js'
 import PaletteEditor from 'src/components/palette_editor/palette_editor.vue'
 import BooleanSetting from '../helpers/boolean_setting.vue'
@@ -10,9 +8,12 @@ import SharedComputedObject from '../helpers/shared_computed_object.js'
 import UnitSetting from '../helpers/unit_setting.vue'
 import Preview from './old_theme_tab/theme_preview.vue'
 
+import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import { useInstanceStore } from 'src/stores/instance.js'
 import { normalizeThemeData, useInterfaceStore } from 'src/stores/interface.js'
+import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useOAuthStore } from 'src/stores/oauth.js'
+import { useSyncConfigStore } from 'src/stores/sync_config.js'
 import { useUsersStore } from 'src/stores/users.js'
 
 import { updateProfileImages } from 'src/api/user.js'
@@ -95,24 +96,10 @@ const AppearanceTab = {
         'cBlue',
         'cOrange',
       ],
+      palettesLoaded: false,
+      stylePalettes: [],
       userPalette: {},
       intersectionObserver: null,
-      forcedRoundnessOptions: ['disabled', 'sharp', 'nonsharp', 'round'].map(
-        (mode, i) => ({
-          key: mode,
-          value: i - 1,
-          label: this.$t(
-            `settings.style.themes3.hacks.forced_roundness_mode_${mode}`,
-          ),
-        }),
-      ),
-      underlayOverrideModes: ['none', 'opaque', 'transparent'].map((mode) => ({
-        key: mode,
-        value: mode,
-        label: this.$t(
-          `settings.style.themes3.hacks.underlay_override_mode_${mode}`,
-        ),
-      })),
       backgroundUploading: false,
       background: null,
       backgroundError: null,
@@ -127,6 +114,11 @@ const AppearanceTab = {
     UnitSetting,
     Preview,
     PaletteEditor,
+  },
+  inject: {
+    defaultSource: {
+      default: 'sync',
+    },
   },
   mounted() {
     useInterfaceStore().getThemeData()
@@ -234,6 +226,14 @@ const AppearanceTab = {
     paletteDataUsed() {
       this.userPalette = this.paletteDataUsed || {}
     },
+    selectedStyleDescription: {
+      immediate: true,
+      handler(neu, old) {
+        if (neu !== old) {
+          this.updateStylePalettes()
+        }
+      },
+    },
   },
   computed: {
     isDefaultBackground() {
@@ -251,9 +251,135 @@ const AppearanceTab = {
     availablePalettes() {
       return [...this.bundledPalettes, ...this.stylePalettes]
     },
-    stylePalettes() {
-      const ruleset = useInterfaceStore().styleDataUsed || []
-      if (ruleset.length === 0) return
+    selectedStyleDescription() {
+      return this.configSource.styleCustomData ?? this.configSource.style
+    },
+    selectedStyleDataFetcher() {
+      if (this.configSource.styleCustomData) {
+        return this.styleCustomDataPromise
+      } else if (this.configSource.style) {
+        const fetcher = useInstanceStore().stylesIndex[this.configSource.style]
+        if (fetcher) {
+          return fetcher
+        } else {
+          return this.emptyPalettesPromise
+        }
+      } else {
+        return this.emptyPalettesPromise
+      }
+    },
+    emptyPalettesPromise() {
+      return () => Promise.resolve([])
+    },
+    styleCustomDataPromise() {
+      return () => Promise.resolve(this.configSource.styleCustomData)
+    },
+    autoPalettes() {
+      const palettesSet =
+        this.stylePalettes.length > 0
+          ? this.stylePalettes
+          : this.bundledPalettes
+
+      return [
+        palettesSet.find((x) => /dark/i.test(x.name)) ?? palettesSet[0],
+        palettesSet.find((x) => /light/i.test(x.name)) ?? palettesSet[0],
+      ]
+    },
+    autoIsDarkLight() {
+      return this.autoPalettes?.[0]?.name !== this.autoPalettes?.[1]?.name
+    },
+    noIntersectionObserver() {
+      return !window.IntersectionObserver
+    },
+    instanceWallpaper() {
+      return useInstanceStore().instanceIdentity.background
+    },
+    instanceWallpaperUsed() {
+      return (
+        useInstanceStore().instanceIdentity.background &&
+        !useUsersStore().currentUser?.background_image
+      )
+    },
+    customThemeVersion() {
+      const { themeVersion } = useInterfaceStore()
+      return themeVersion
+    },
+    isCustomThemeUsed() {
+      const { customTheme, customThemeSource } = this.configSource
+      return customTheme != null || customThemeSource != null
+    },
+    isCustomStyleUsed() {
+      const { styleCustomData } = this.configSource
+      return styleCustomData != null
+    },
+    isStyleDefined() {
+      if (this.defaultSource === 'local') {
+        const store = useLocalConfigStore().mergedConfig
+        return (
+          Object.hasOwn(store, 'style') ||
+          Object.hasOwn(store, 'styleCustomData')
+        )
+      } else if (this.defaultSource === 'fe-admin') {
+        const store = useAdminSettingsStore().frontendConfig ?? {}
+        return (
+          Object.hasOwn(store, 'style') ||
+          Object.hasOwn(store, 'styleCustomData')
+        )
+      } else {
+        return true
+      }
+    },
+    isPaletteDefined() {
+      if (this.defaultSource === 'local') {
+        const store = useLocalConfigStore().mergedConfig
+        return (
+          Object.hasOwn(store, 'palette') ||
+          Object.hasOwn(store, 'paletteCustomData')
+        )
+      } else if (this.defaultSource === 'fe-admin') {
+        const store = useAdminSettingsStore().frontendConfig ?? {}
+        return (
+          Object.hasOwn(store, 'palette') ||
+          Object.hasOwn(store, 'paletteCustomData')
+        )
+      } else {
+        return true
+      }
+    },
+    // Data access
+    configSource() {
+      switch (this.defaultSource) {
+        case 'fe-admin':
+          return useAdminSettingsStore().frontendConfig ?? {}
+        case 'local':
+          return useLocalConfigStore().mergedConfig
+        default:
+          return useSyncConfigStore().prefsStorage.simple
+      }
+    },
+    ...SharedComputedObject(),
+  },
+  methods: {
+    importFile() {
+      this.fileImporter.importData()
+    },
+    importParser(file, filename) {
+      if (filename.endsWith('.json')) {
+        return JSON.parse(file)
+      } else if (filename.endsWith('.iss')) {
+        return deserialize(file)
+      }
+    },
+    async updateStylePalettes() {
+      this.palettesLoaded = false
+      this.stylePalettes = []
+
+      const style = await this.selectedStyleDataFetcher()
+      const ruleset = style || []
+      if (ruleset.length === 0) {
+        this.palettesLoaded = true
+        return
+      }
       const meta = ruleset.find((x) => x.component === '@meta')
       const result = ruleset
         .filter((x) => x.component.startsWith('@palette'))
@@ -274,7 +400,7 @@ const AppearanceTab = {
 
           const result = {
             name: `${meta.directives.name || this.$t('settings.style.themes3.palette.imported')}: ${variant}`,
-            key: `style.${variant.toLowerCase().replaceAll(' ', '_')}`,
+            key: `style_${variant.toLowerCase().replaceAll(/\./g, '_')}`,
             bg,
             fg,
             text,
@@ -288,50 +414,17 @@ const AppearanceTab = {
           }
           return Object.fromEntries(Object.entries(result).filter(([, v]) => v))
         })
-      return result
-    },
-    noIntersectionObserver() {
-      return !window.IntersectionObserver
-    },
-    instanceWallpaper() {
-      return useInstanceStore().instanceIdentity.background
-    },
-    instanceWallpaperUsed() {
-      return (
-        useInstanceStore().instanceIdentity.background &&
-        !useUsersStore().currentUser?.background_image
-      )
-    },
-    customThemeVersion() {
-      const { themeVersion } = useInterfaceStore()
-      return themeVersion
-    },
-    isCustomThemeUsed() {
-      const { customTheme, customThemeSource } = this.mergedConfig
-      return customTheme != null || customThemeSource != null
-    },
-    isCustomStyleUsed() {
-      const { styleCustomData } = this.mergedConfig
-      return styleCustomData != null
-    },
-    ...SharedComputedObject(),
-  },
-  methods: {
-    importFile() {
-      this.fileImporter.importData()
-    },
-    importParser(file, filename) {
-      if (filename.endsWith('.json')) {
-        return JSON.parse(file)
-      } else if (filename.endsWith('.iss')) {
-        return deserialize(file)
-      }
+      this.stylePalettes = result
+      this.palettesLoaded = true
     },
     onImport(parsed, filename) {
       if (filename.endsWith('.json')) {
-        useInterfaceStore().setThemeCustom(parsed.source || parsed.theme)
+        useInterfaceStore().setThemeCustom(
+          parsed.source || parsed.theme,
+          this.defaultSource,
+        )
       } else if (filename.endsWith('.iss')) {
-        useInterfaceStore().setStyleCustom(parsed)
+        useInterfaceStore().setStyleCustom(parsed, this.defaultSource)
       }
     },
     onImportFailure(result) {
@@ -353,35 +446,40 @@ const AppearanceTab = {
       }
     },
     isThemeActive(key) {
-      return (
-        key ===
-        (this.mergedConfig.theme || useInstanceStore().instanceIdentity.theme)
-      )
+      return this.configSource.theme === key
     },
     isStyleActive(key) {
-      return (
-        key ===
-        (this.mergedConfig.style || useInstanceStore().instanceIdentity.style)
-      )
+      return this.configSource.style === key
     },
     isPaletteActive(key) {
-      return (
-        key ===
-        (this.mergedConfig.palette ||
-          useInstanceStore().instanceIdentity.palette)
-      )
+      if (key === 'auto') {
+        return (
+          this.configSource.palette === undefined ||
+          this.configSource.palette === key
+        )
+      }
+      return this.configSource.palette === key
     },
-    ...mapActions(useInterfaceStore, ['setStyle', 'setTheme']),
+    setStyle(name) {
+      useInterfaceStore().setStyle(name, this.defaultSource)
+    },
+    unsetStyle() {
+      useInterfaceStore().unsetStyle(this.defaultSource)
+    },
+    setTheme(name) {
+      useInterfaceStore().setTheme(name, this.defaultSource)
+    },
     setPalette(name, data) {
-      useInterfaceStore().setPalette(name)
+      useInterfaceStore().setPalette(name, this.defaultSource)
       this.userPalette = data
     },
     setPaletteCustom(data) {
-      useInterfaceStore().setPaletteCustom(data)
+      useInterfaceStore().setPaletteCustom(data, this.defaultSource)
       this.userPalette = data
     },
-    resetTheming() {
-      useInterfaceStore().setStyle('stock')
+    unsetPalette() {
+      useInterfaceStore().unsetPalette(this.defaultSource)
+      this.userPalette = null
     },
     previewTheme(key, version, input) {
       let theme3

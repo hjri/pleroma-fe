@@ -15,12 +15,6 @@ import TupleSetting from '../helpers/tuple_setting.vue'
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 
 const HTTPTab = {
-  provide() {
-    return {
-      defaultDraftMode: true,
-      defaultSource: 'admin',
-    }
-  },
   components: {
     BooleanSetting,
     ChoiceSetting,

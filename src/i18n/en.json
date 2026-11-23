@@ -444,6 +444,9 @@
     "mobile_center_dialog": "Vertically center dialogs on mobile",
     "app_name": "App name",
     "expert_mode": "Show advanced",
+    "sync_mode": "Synchronized",
+    "local_mode": "Local Overrides",
+    "fe_admin_mode": "Admin Defaults",
     "save": "Save changes",
     "reset": "Reset changes",
     "security": "Security",
@@ -453,6 +456,7 @@
     "setting_changed": "Setting is different from default",
     "setting_server_side": "This setting is tied to your profile and affects all sessions and clients",
     "setting_local_side": "This setting is tied to current session and doesn't affects other devices and browsers",
+    "setting_local_override": "This setting is overriden in current session, see your Local config",
     "enter_current_password_to_confirm": "Enter your current password to confirm your identity",
     "post_look_feel": "Posts Look & Feel",
     "posts": "Posts",
@@ -470,6 +474,10 @@
     "text_size_tip2": "Values other than {0} might break some things and themes",
     "emoji_size": "Emoji size",
     "navbar_size": "Top bar size",
+    "interface_font": "Interface font",
+    "input_font": "Input fields font",
+    "post_font": "Post font",
+    "monospace_font": "Monospaced font",
     "panel_header_size": "Panel header size",
     "visual_tweaks": "Minor visual tweaks",
     "theme_debug": "Show what background theme engine assumes when dealing with transparancy",
@@ -931,6 +939,7 @@
       "custom_theme_used": "(Custom theme)",
       "custom_style_used": "(Custom style)",
       "stock_theme_used": "(Stock theme)",
+      "default_theme_used": "(Default / No override)",
       "themes2_outdated": "Editor for Themes V2 is being phased out and will eventually be replaced with a new one that takes advantage of new Themes V3 engine. It should still work but experience might be degraded and inconsistent.",
       "appearance_tab_note": "Changes on this tab do not affect the theme used, so exported theme will be different from what seen in the UI",
       "visual_tweaks_section_note": "Changes in this section do not affect the theme used, exported theme will be different from what seen in the UI",
@@ -957,7 +966,11 @@
           "v2_unsupported": "Older v2 themes don't support palettes. Switch to v3 theme to make use of palettes",
           "bundled": "Bundled palettes",
           "style": "Palettes provided by selected style",
+          "special": "Special palettes",
           "user": "Custom palette",
+          "auto": "(Automatic)",
+          "auto_dark_light": "(Automatic Dark/Light)",
+          "no_override": "(Default / No override)",
           "imported": "Imported"
         },
         "editor": {
@@ -1018,6 +1031,7 @@
           "forced_roundness_mode_round": "Force round edges"
         },
         "font": {
+          "default": "Default",
           "group-builtin": "Browser default fonts",
           "builtin": {
             "serif": "Serif",

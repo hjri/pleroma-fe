@@ -1,12 +1,13 @@
 import { cloneDeep, isEqual } from 'lodash-es'
 import { mapActions, mapState } from 'pinia'
-import { defineAsyncComponent } from 'vue'
+import { computed, defineAsyncComponent } from 'vue'
 
 import AsyncComponentError from 'src/components/async_component_error/async_component_error.vue'
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import Modal from 'src/components/modal/modal.vue'
 import PanelLoading from 'src/components/panel_loading/panel_loading.vue'
 import Popover from 'src/components/popover/popover.vue'
+import Select from 'src/components/select/select.vue'
 
 import { useAdminSettingsStore } from 'src/stores/admin_settings.js'
 import {
@@ -19,6 +20,7 @@ import { useInterfaceStore } from 'src/stores/interface.js'
 import { useLocalConfigStore } from 'src/stores/local_config.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 import { useSyncConfigStore } from 'src/stores/sync_config.js'
+import { useUsersStore } from 'src/stores/users.js'
 
 import {
   newExporter,
@@ -62,12 +64,14 @@ const SettingsModal = {
         filename: 'pleromafe_settings',
         getExportedObject: () => this.generateExport(),
       }),
+      mode: 'sync',
     }
   },
   components: {
     Modal,
     Popover,
     Checkbox,
+    Select,
     ConfirmModal: defineAsyncComponent(
       () => import('src/components/confirm_modal/confirm_modal.vue'),
     ),
@@ -88,6 +92,11 @@ const SettingsModal = {
         delay: 0,
       },
     ),
+  },
+  provide() {
+    return {
+      defaultSource: computed(() => this.mode),
+    }
   },
   methods: {
     closeModal() {
@@ -219,7 +228,6 @@ const SettingsModal = {
           'styleCustomData',
           'palette',
           'paletteCustomData',
-          'themeChecksum',
         ])
 
         sample = Object.fromEntries(
@@ -256,6 +264,9 @@ const SettingsModal = {
       modalOpenedOnceAdmin: (store) => store.settingsModalLoadedAdmin,
       modalMinimized: (store) => store.settingsModalState === 'minimized',
     }),
+    ...mapState(useUsersStore, {
+      isAdmin: (store) => store.currentUser?.rights.admin,
+    }),
     expertLevel: {
       get() {
         return useMergedConfigStore().mergedConfig.expertLevel > 0
@@ -277,6 +288,11 @@ const SettingsModal = {
   watch: {
     $route(r) {
       this.minimizeModal()
+    },
+    mode(value) {
+      if (value === 'fe-admin' && this.isAdmin) {
+        useAdminSettingsStore().loadAdminStuff()
+      }
     },
   },
 }

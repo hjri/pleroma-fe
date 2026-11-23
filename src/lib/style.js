@@ -42,7 +42,7 @@ export const piniaStylePlugin = ({ store, options }) => {
         const { path } = args[0]
         if (MIXED_KEYS.has(path)) {
           after(() => applyStyleConfig(useMergedConfigStore().mergedConfig))
-          after(() => useInterfaceStore().applyTheme({ recompile: true }))
+          after(() => useInterfaceStore().applyTheme(null, true))
         }
       }
     })

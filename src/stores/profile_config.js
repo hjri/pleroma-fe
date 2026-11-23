@@ -45,6 +45,10 @@ const notificationsApi = async ({ path, value, oldValue }) => {
 export const settingsMap = {
   defaultScope: 'source.privacy',
   defaultNSFW: 'source.sensitive', // BROKEN: pleroma/pleroma#2837
+  emailLanguage: {
+    get: 'source.pleroma.language',
+    set: 'language',
+  },
   stripRichContent: {
     get: 'source.pleroma.no_rich_text',
     set: 'no_rich_text',

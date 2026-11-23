@@ -4,11 +4,18 @@
     class="ListSetting setting-item"
   >
     <legend
+      v-if="!hideLabel"
       class="setting-label"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="classes"
     >
-      <template v-if="backendDescriptionLabel">
-        {{ backendDescriptionLabel + ' ' }}
+      <SettingIndicators
+        :is-changed="isChanged"
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
+      />
+      {{ ' ' }}
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
       </template>
       <template v-else-if="source === 'admin'">
         MISSING LABEL FOR {{ path }}
@@ -16,12 +23,13 @@
       <slot v-else />
     </legend>
     <p
-      v-if="backendDescriptionDescription"
+      v-if="realDescription"
       class="setting-description"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="classes"
     >
-      {{ backendDescriptionDescription + ' ' }}
+      {{ realDescription + ' ' }}
     </p>
+    <DraftButtons v-if="!hideDraftButtons" />
     <ul class="setting-list">
       <li
         v-for="(item, i) in builtinEntries"
@@ -30,25 +38,25 @@
         <Checkbox
           :disabled="shouldBeDisabled"
           :model-value="optionPresent(item.value)"
-          @update:model-value="event => update({ event, value: item.value, eventType: 'toggle' })"
+          @update:model-value="event => toggle(event, item.value)"
         >
           {{ item.label }}
         </Checkbox>
       </li>
       <li
-        v-for="(item, index) in extraEntries"
+        v-for="({value, index}) in extraEntries"
         :key="index"
       >
         <div class="btn-group">
           <input
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
-            :value="item"
-            @change="e => update({ event: e, index, eventType: 'edit' })"
+            :value="value"
+            @change="event => edit(event, index)"
           >
           <button
             class="button-default"
-            @click="e => update({ index, eventType: 'remove' })"
+            @click="e => remove(index)"
           >
             <FAIcon icon="times" />
           </button>
@@ -64,19 +72,13 @@
           >
           <button
             class="button-default"
-            @click="e => update({ eventType: 'add' })"
+            @click="e => add()"
           >
             <FAIcon icon="plus" />
           </button>
         </div>
       </li>
     </ul>
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
-    <LocalSettingIndicator :is-local="isLocalSetting" />
-    <DraftButtons />
   </fieldset>
 </template>
 

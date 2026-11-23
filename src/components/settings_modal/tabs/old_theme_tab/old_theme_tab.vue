@@ -959,40 +959,56 @@
           :label="$t('settings.style.fonts._tab_label')"
           class="fonts-container"
         >
-          <div class="tab-header">
-            <p>{{ $t('settings.style.fonts.help') }}</p>
-            <button
-              class="btn button-default"
-              @click="clearFonts"
-            >
-              {{ $t('settings.style.switcher.clear_all') }}
-            </button>
-          </div>
-          <FontControl
-            v-model="fontsLocal.interface"
-            name="ui"
-            :label="$t('settings.style.fonts.components.interface')"
-            :fallback="previewTheme.fonts?.interface"
-            no-inherit="1"
-          />
-          <FontControl
-            v-model="fontsLocal.input"
-            name="input"
-            :label="$t('settings.style.fonts.components.input')"
-            :fallback="previewTheme.fonts?.input"
-          />
-          <FontControl
-            v-model="fontsLocal.post"
-            name="post"
-            :label="$t('settings.style.fonts.components.post')"
-            :fallback="previewTheme.fonts?.post"
-          />
-          <FontControl
-            v-model="fontsLocal.postCode"
-            name="postCode"
-            :label="$t('settings.style.fonts.components.postCode')"
-            :fallback="previewTheme.fonts?.postCode"
-          />
+            <div class="tab-header">
+              <p>{{ $t('settings.style.fonts.help') }}</p>
+              <button
+                class="btn button-default"
+                @click="clearFonts"
+              >
+                {{ $t('settings.style.switcher.clear_all') }}
+              </button>
+            </div>
+            <div class="font-setting">
+              <label :for="idPrefix + 'font-ui'">
+                {{ $t('settings.style.fonts.components.interface') }}
+              </label>
+              <FontControl
+                v-model="fontsLocal.interface"
+                :id="idPrefix + 'font-ui'"
+                :fallback="previewTheme.fonts?.interface"
+                no-inherit
+              />
+            </div>
+            <div class="font-setting">
+              <label :for="idPrefix + 'font-input'">
+                {{ $t('settings.style.fonts.components.input') }}
+              </label>
+              <FontControl
+                v-model="fontsLocal.input"
+                :id="idPrefix + 'font-input'"
+                :fallback="previewTheme.fonts?.input"
+              />
+            </div>
+            <div class="font-setting">
+              <label :for="idPrefix + 'font-post'">
+                {{ $t('settings.style.fonts.components.post') }}
+              </label>
+              <FontControl
+                v-model="fontsLocal.post"
+                :id="idPrefix + 'font-post'"
+                :fallback="previewTheme.fonts?.post"
+              />
+            </div>
+            <div class="font-setting">
+              <label :for="idPrefix + 'font-post-code'">
+                {{ $t('settings.style.fonts.components.monospace') }}
+              </label>
+              <FontControl
+                v-model="fontsLocal.postCode"
+                :id="idPrefix + 'font-post-code'"
+                :fallback="previewTheme.fonts?.postCode"
+              />
+            </div>
         </div>
       </tab-switcher>
     </keep-alive>

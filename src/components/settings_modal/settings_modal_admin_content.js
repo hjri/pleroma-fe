@@ -96,6 +96,12 @@ const SettingsModalAdminContent = {
     OtherTab,
     PostsTab,
   },
+  provide() {
+    return {
+      defaultDraftMode: true,
+      defaultSource: 'admin',
+    }
+  },
   computed: {
     user() {
       return useUsersStore().currentUser

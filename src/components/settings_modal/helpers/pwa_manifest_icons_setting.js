@@ -45,58 +45,32 @@ export default {
       }
     },
     setMediaFile({ event, index }) {
-      this.update({
-        event: {
-          target: {
-            value: event.url,
-          },
-        },
-        index,
-        eventType: 'edit',
-        field: ':src',
-      })
+      this.edit(event.url, ':src', index)
     },
     setPurpose({ event, index }) {
-      this.update({
-        event: {
-          target: {
-            value: event,
-          },
-        },
-        index,
-        eventType: 'edit',
-        field: ':purpose',
-      })
+      this.edit(event, ':purpose', index)
     },
-    getValue({ event, field, index, eventType }) {
-      switch (eventType) {
-        case 'add': {
-          const res = [...this.visibleState, {}]
-          return res
-        }
+    add() {
+      this.visibleState = [...this.visibleState, {}]
+    },
+    remove(index) {
+      const pre = this.visibleState.slice(0, index)
+      const post = this.visibleState.slice(index + 1)
 
-        case 'remove': {
-          const pre = this.visibleState.slice(0, index)
-          const post = this.visibleState.slice(index + 1)
+      this.visibleState = [...pre, ...post]
+    },
+    edit(value, field, index) {
+      const pre = this.visibleState.slice(0, index)
+      const post = this.visibleState.slice(index + 1)
+      const item = clone(this.visibleState[index])
 
-          return [...pre, ...post]
-        }
-
-        case 'edit': {
-          const pre = this.visibleState.slice(0, index)
-          const post = this.visibleState.slice(index + 1)
-          const item = clone(this.visibleState[index])
-          const string = event.target.value
-
-          if (!string) {
-            delete item[field]
-          } else {
-            item[field] = string
-          }
-
-          return [...pre, item, ...post]
-        }
+      if (!value) {
+        delete item[field]
+      } else {
+        item[field] = value
       }
+
+      this.visibleState = [...pre, item, ...post]
     },
   },
 }

@@ -1,10 +1,6 @@
 .appearance-tab {
   margin: 1em;
 
-  h3 {
-    border: none
-  }
-
   .palette,
   .theme-notice {
     padding: 0.5em;
@@ -133,6 +129,7 @@
   }
 
   .palettes-container {
+    position: relative;
     height: 15em;
     overflow: hidden auto;
     scrollbar-gutter: stable;
@@ -141,6 +138,21 @@
     margin-bottom: 0.5em;
     margin-top: 0;
     padding: 0.5em;
+
+    .palettes-loading-spinner {
+      display: grid;
+      place-self: center;
+      position: absolute;
+      inset: 0;
+    }
+
+    h5 {
+      margin-bottom: 0;
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
   }
 
   .palettes {
@@ -149,11 +161,8 @@
     gap: 0.5em;
     padding: 0.5em;
     width: 100%;
-
-    h5 {
-      grid-column: 1 / span 2;
-      margin-bottom: 0;
-    }
+    place-items: stretch;
+    box-sizing: border-box;
   }
 
   .palette-entry {
@@ -162,7 +171,6 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 0.5em;
-    height: max-content;
 
     .palette-label {
       height: auto;
@@ -213,6 +221,16 @@
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-template-rows: 1em 1em;
     margin: 0.5em 0;
+  }
+
+  .palette-preview-slice {
+    position: relative;
+
+    .palette-preview:last-child {
+      position: absolute;
+      inset: 0;
+      mask: linear-gradient(to top right, transparent calc(50% - 0.5px), white calc(50% + 0.5px)) bottom no-repeat;
+    }
   }
 
   .theme-list {

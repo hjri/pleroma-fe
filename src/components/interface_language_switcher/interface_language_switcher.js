@@ -13,12 +13,10 @@ export default {
       type: [Array, String],
       required: true,
     },
-    // Is this setting stored in user profile (true) or elsewhere (false)
-    // Doesn't affect storage, just shows an icon if true
-    profile: {
-      type: Boolean,
-      default: false,
-    },
+    // Whether to support multiple languages or just one
+    single: Boolean,
+    id: String,
+    disabled: Boolean,
   },
   emits: ['update:modelValue'],
   setup() {
@@ -39,7 +37,11 @@ export default {
           : [this.modelValue]
       },
       set: function (val) {
-        this.$emit('update:modelValue', val)
+        if (this.single) {
+          this.$emit('update:modelValue', val[0])
+        } else {
+          this.$emit('update:modelValue', val)
+        }
       },
     },
   },
@@ -49,6 +51,7 @@ export default {
       return localeService.getLanguageName(code)
     },
     addLanguage() {
+      if (this.single) return
       this.controlledLanguage = [...this.controlledLanguage, '']
     },
     setLanguageAt(index, val) {
@@ -57,6 +60,7 @@ export default {
       this.controlledLanguage = lang
     },
     removeLanguageAt(index) {
+      if (this.single) return
       const lang = [...this.controlledLanguage]
       lang.splice(index, 1)
       this.controlledLanguage = lang

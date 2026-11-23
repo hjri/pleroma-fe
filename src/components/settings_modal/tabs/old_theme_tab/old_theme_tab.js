@@ -1,3 +1,5 @@
+import { computed, useId } from 'vue'
+
 import Checkbox from 'src/components/checkbox/checkbox.vue'
 import ColorInput from 'src/components/color_input/color_input.vue'
 import ContrastRatio from 'src/components/contrast_ratio/contrast_ratio.vue'
@@ -122,6 +124,16 @@ export default {
       tooltipRadiusLocal: '',
       chatMessageRadiusLocal: '',
     }
+  },
+  setup() {
+    const uniqueId = useId()
+    const idPrefix = computed(() => `themetab-${uniqueId}-`)
+    return { idPrefix }
+  },
+  inject: {
+    defaultSource: {
+      default: 'sync',
+    },
   },
   created() {
     const currentIndex = useInstanceStore().themesIndex
@@ -504,15 +516,18 @@ export default {
       }
     },
     setCustomTheme() {
-      useInterfaceStore().setTheme({
-        themeFileVersion: this.selectedVersion,
-        themeEngineVersion: CURRENT_VERSION,
-        shadows: this.shadowsLocal,
-        fonts: this.fontsLocal,
-        opacity: this.currentOpacity,
-        colors: this.currentColors,
-        radii: this.currentRadii,
-      })
+      useInterfaceStore().setTheme(
+        {
+          themeFileVersion: this.selectedVersion,
+          themeEngineVersion: CURRENT_VERSION,
+          shadows: this.shadowsLocal,
+          fonts: this.fontsLocal,
+          opacity: this.currentOpacity,
+          colors: this.currentColors,
+          radii: this.currentRadii,
+        },
+        this.defaultSource,
+      )
     },
     updatePreviewColors() {
       const result = generateColors({

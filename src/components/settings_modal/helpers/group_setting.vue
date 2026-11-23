@@ -3,12 +3,12 @@
     v-if="matchesExpertLevel"
     class="GroupSetting setting-item"
   >
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
+    <SettingIndicators
+      :is-changed="isChanged"
+      :is-local="isLocalOnly"
+      :is-overriden="isOverriden"
     />
-    <LocalSettingIndicator :is-local="isLocalSetting" />
-    <DraftButtons />
+    <DraftButtons v-if="!hideDraftButtons" />
   </span>
 </template>
 

@@ -27,11 +27,6 @@ const SUPPORTED_TYPES = new Set(['word', 'regexp', 'user', 'user_regexp'])
 const FilteringTab = {
   data() {
     return {
-      replyVisibilityOptions: ['all', 'following', 'self'].map((mode) => ({
-        key: mode,
-        value: mode,
-        label: this.$t(`settings.reply_visibility_${mode}`),
-      })),
       muteBlockLv1Options: ['ask', 'forever', 'temporarily'].map((mode) => ({
         key: mode,
         value: mode,

@@ -1,21 +1,15 @@
 <template>
-  <ul class="interface-language-switcher setting-list">
+  <ul class="InterfaceLanguageSwitcher">
     <li
       v-for="index of controlledLanguage.keys()"
       :key="index"
-      class="setting-item"
+      class="language"
     >
-      <label
-        class="setting-label"
-        :for="uniqueId+index"
-      >
-        {{ index === 0 ? $t('settings.primary_language') : $t('settings.fallback_language', { index }, index) }}
-      </label>
-      <span class="setting-control btn-group">
+      <span class="btn-group">
         <Select
-          :id="uniqueId+index"
-          :name="uniqueId+index"
+          :id="index === 0 ? (id ?? (uniqueId + index)) : (uniqueId + index)"
           class="language-select"
+          :disabled="disabled"
           :model-value="controlledLanguage[index]"
           @update:model-value="val => setLanguageAt(index, val)"
         >
@@ -36,7 +30,10 @@
         </button>
       </span>
     </li>
-    <li class="add-button">
+    <li
+      v-if="!single"
+      class="add-button"
+    >
       <button
         class="button-default btn"
         @click="addLanguage"
@@ -50,11 +47,26 @@
 <script src="./interface_language_switcher.js"></script>
 
 <style lang="scss">
-.interface-language-switcher {
-  .setting-list {
-    .setting-item {
-      display: grid;
-      grid-template-columns: subgrid;
+.InterfaceLanguageSwitcher {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 0.75em;
+  place-items: stretch;
+
+  .language {
+    display: flex;
+    flex-direction: column;
+
+    > label {
+      text-align: center;
+      margin-bottom: 0.5em;
+    }
+
+    .Select {
+      width: 100%;
     }
   }
 
@@ -66,20 +78,6 @@
     .default-button {
       display: block;
       width: auto;
-    }
-  }
-
-  .-mobile & {
-    li.setting-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5em;
-      align-items: stretch;
-      border-bottom: none;
-    }
-
-    .add-button {
-      border-bottom: 1px solid var(--border);
     }
   }
 }

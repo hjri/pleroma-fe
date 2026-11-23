@@ -5,12 +5,18 @@
   >
     <label
       v-if="!hideLabel"
-      :for="path"
+      :for="idPrefix + 'color'"
       class="setting-label"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="classes"
     >
-      <template v-if="backendDescriptionLabel">
-        {{ backendDescriptionLabel + ' ' }}
+      <SettingIndicators
+        :is-changed="isChanged"
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
+      />
+      {{ ' ' }}
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
       </template>
       <template v-else-if="source === 'admin'">
         MISSING LABEL FOR {{ path }}
@@ -19,29 +25,23 @@
     </label>
     {{ ' ' }}
     <ColorInput
-      :id="path"
+      v-model="visibleState"
+      :id="idPrefix + 'color'"
       :name="path"
       class="setting-control color-setting-input"
       :class="{ disabled: shouldBeDisabled }"
       :disabled="shouldBeDisabled"
-      :placeholder="backendDescriptionSuggestions"
-      :model-value="realDraftMode ? draft : state"
-      @update:model-value="update"
+      :placeholder="realSuggestions"
     />
     {{ ' ' }}
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
-    <LocalSettingIndicator :is-local="isLocalSetting" />
-    <DraftButtons v-if="!hideDraftButtons" />
     <p
-      v-if="backendDescriptionDescription"
+      v-if="realDescription"
       class="setting-description"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="classes"
     >
-      {{ backendDescriptionDescription + ' ' }}
+      {{ realDescription + ' ' }}
     </p>
+    <DraftButtons v-if="!hideDraftButtons" />
   </label>
 </template>
 
@@ -61,7 +61,11 @@
     }
 
     .setting-control {
-      align-self: end;
+      place-self: end start;
+    }
+
+    legend {
+      display: none;
     }
   }
 

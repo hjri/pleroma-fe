@@ -4,25 +4,16 @@
       <h3>{{ $t('settings.notification_setting_annoyance') }}</h3>
       <ul class="setting-list">
         <li>
-          <BooleanSetting path="closingDrawerMarksAsSeen">
-            {{ $t('settings.notification_setting_drawer_marks_as_seen') }}
-          </BooleanSetting>
+          <BooleanSetting path="closingDrawerMarksAsSeen" />
         </li>
         <li>
-          <BooleanSetting path="ignoreInactionableSeen">
-            {{ $t('settings.notification_setting_ignore_inactionable_seen') }}
-          </BooleanSetting>
+          <BooleanSetting path="ignoreInactionableSeen" />
           <p class="sidenote">
             {{ $t('settings.notification_setting_ignore_inactionable_seen_tip') }}
           </p>
         </li>
         <li>
-          <BooleanSetting
-            path="unseenAtTop"
-            expert="1"
-          >
-            {{ $t('settings.notification_setting_unseen_at_top') }}
-          </BooleanSetting>
+          <BooleanSetting path="unseenAtTop" />
         </li>
       </ul>
     </div>
@@ -199,41 +190,19 @@
           </ul>
         </li>
         <li>
-          <BooleanSetting path="showExtraNotifications">
-            {{ $t('settings.notification_show_extra') }}
-          </BooleanSetting>
+          <BooleanSetting path="showExtraNotifications" />
           <ul class="setting-list suboptions">
             <li>
-              <BooleanSetting
-                path="showChatsInExtraNotifications"
-                :disabled="!mergedConfig.showExtraNotifications"
-              >
-                {{ $t('settings.notification_extra_chats') }}
-              </BooleanSetting>
+              <BooleanSetting path="showChatsInExtraNotifications" />
             </li>
             <li>
-              <BooleanSetting
-                path="showAnnouncementsInExtraNotifications"
-                :disabled="!mergedConfig.showExtraNotifications"
-              >
-                {{ $t('settings.notification_extra_announcements') }}
-              </BooleanSetting>
+              <BooleanSetting path="showAnnouncementsInExtraNotifications" />
             </li>
             <li>
-              <BooleanSetting
-                path="showFollowRequestsInExtraNotifications"
-                :disabled="!mergedConfig.showExtraNotifications"
-              >
-                {{ $t('settings.notification_extra_follow_requests') }}
-              </BooleanSetting>
+              <BooleanSetting path="showFollowRequestsInExtraNotifications" />
             </li>
             <li>
-              <BooleanSetting
-                path="showExtraNotificationsTip"
-                :disabled="!mergedConfig.showExtraNotifications"
-              >
-                {{ $t('settings.notification_extra_tip') }}
-              </BooleanSetting>
+              <BooleanSetting path="showExtraNotificationsTip" />
             </li>
           </ul>
         </li>
@@ -247,22 +216,10 @@
       <h3>{{ $t('settings.notification_setting_privacy') }}</h3>
       <ul class="setting-list">
         <li>
-          <BooleanSetting
-            path="webPushNotifications"
-            :local="true"
-            expert="1"
-          >
-            {{ $t('settings.enable_web_push_notifications') }}
-          </BooleanSetting>
+          <BooleanSetting path="webPushNotifications" />
           <ul class="setting-list suboptions">
             <li>
-              <BooleanSetting
-                path="webPushAlwaysShowNotifications"
-                :local="true"
-                :disabled="!mergedConfig.webPushNotifications"
-              >
-                {{ $t('settings.enable_web_push_always_show') }}
-              </BooleanSetting>
+              <BooleanSetting path="webPushAlwaysShowNotifications" />
               <p
                 :class="{ faint: !mergedConfig.webPushNotifications }"
                 class="sidenote"
@@ -275,10 +232,9 @@
         <li>
           <BooleanSetting
             source="profile"
-            :local="true"
             path="webPushHideContents"
-            expert="1"
-          >
+            :expert="1"
+           >
             {{ $t('settings.notification_setting_hide_notification_contents') }}
           </BooleanSetting>
         </li>

@@ -1,0 +1,47 @@
+<template>
+  <span
+    v-if="matchesExpertLevel"
+    class="FontSetting setting-item"
+  >
+    <label
+      v-if="!hideLabel"
+      :for="idPrefix + 'text'"
+      class="setting-label"
+      :class="classes"
+    >
+      <SettingIndicators
+        :is-changed="isChanged"
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
+      />
+      {{ ' ' }}
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
+      </template>
+      <template v-else-if="source === 'admin'">
+        MISSING LABEL FOR {{ path }}
+      </template>
+      <slot v-else />
+    </label>
+    {{ ' ' }}
+    <FontControl
+      :id="idPrefix + 'text'"
+      v-model="visibleState"
+      class="setting-control font-input"
+      :class="classes"
+      :disabled="shouldBeDisabled"
+      :placeholder="realSuggestions ?? realPlaceholder"
+    />
+    {{ ' ' }}
+    <p
+      v-if="realDescription"
+      class="setting-description"
+      :class="classes"
+    >
+      {{ realDescription + ' ' }}
+    </p>
+    <DraftButtons v-if="!hideDraftButtons" />
+  </span>
+</template>
+
+<script src="./font_setting.js"></script>

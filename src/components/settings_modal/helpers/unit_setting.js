@@ -30,58 +30,71 @@ export default {
   props: {
     ...Setting.props,
     min: Number,
-    units: {
-      type: Array,
-      default: () => allCssUnits,
-    },
-    unitSet: {
-      type: String,
-      default: 'none',
-    },
-    step: {
-      type: Number,
-      default: 1,
-    },
-    resetDefault: {
-      type: Object,
-      default: null,
-    },
+    step: Number,
+    units: Array,
+    unitSet: String,
+    resetDefault: Object,
   },
   computed: {
     ...Setting.computed,
-    stateUnit() {
-      return typeof this.state === 'string'
-        ? this.state.replace(/[0-9,.]+/, '')
-        : ''
+    realUnits() {
+      return this.units ?? this.definition?.units ?? allCssUnits
     },
-    stateValue() {
-      return typeof this.state === 'string'
-        ? this.state.replace(/[^0-9,.]+/, '')
-        : ''
+    realUnitSet() {
+      return this.unitSet ?? this.definition?.unitSet ?? 'none'
+    },
+    realMin() {
+      return this.min ?? this.definition?.min ?? 0
+    },
+    realStep() {
+      return this.step ?? this.definition?.step ?? 1
+    },
+    realResetDefault() {
+      return this.resetDefault ?? this.definition?.resetDefault
+    },
+    stateUnit: {
+      get() {
+        return typeof this.visibleState === 'string'
+          ? this.visibleState.replace(/[0-9,.]+/, '')
+          : undefined
+      },
+      set(newUnit) {
+        let value = this.stateValue ?? 0
+
+        if (this.realResetDefault) {
+          const replaceValue = this.realResetDefault[newUnit]
+          if (replaceValue != null) {
+            value = replaceValue
+          }
+        }
+
+        this.visibleState = value + newUnit
+      },
+    },
+    stateValue: {
+      get() {
+        return typeof this.visibleState === 'string'
+          ? this.visibleState.replace(/[^0-9,.]+/, '')
+          : undefined
+      },
+      set(e) {
+        const value = Number.parseFloat(e)
+        if (Number.isNaN(value)) return
+        this.visibleState = value + (this.stateUnit ?? this.realUnits[0])
+      },
+    },
+    placeholderUnit() {
+      return this.realPlaceholder?.replace(/[0-9,.]+/, '')
+    },
+    placeholderValue() {
+      return this.realPlaceholder?.replace(/[^0-9,.]+/, '')
     },
   },
   methods: {
     ...Setting.methods,
     getUnitString(value) {
-      if (this.unitSet === 'none') return value
-      return this.$t(['settings', 'units', this.unitSet, value].join('.'))
-    },
-    updateValue(e) {
-      this.configSink(
-        this.path,
-        Number.parseFloat(e.target.value) + this.stateUnit,
-      )
-    },
-    updateUnit(e) {
-      let value = this.stateValue
-      const newUnit = e.target.value
-      if (this.resetDefault) {
-        const replaceValue = this.resetDefault[newUnit]
-        if (replaceValue != null) {
-          value = replaceValue
-        }
-      }
-      this.configSink(this.path, value + newUnit)
+      if (this.realUnitSet === 'none') return value
+      return this.$t(['settings', 'units', this.realUnitSet, value].join('.'))
     },
   },
 }

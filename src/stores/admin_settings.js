@@ -42,6 +42,7 @@ export const defaultState = {
   loaded: false,
   needsReboot: null,
   config: null,
+  frontendConfig: null,
   modifiedPaths: null,
   descriptions: null,
   draft: null,
@@ -67,6 +68,13 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
       this.dbConfigEnabled = true
       this.config = config
       this.modifiedPaths = modifiedPaths
+
+      const frontendConfigRaw =
+        get(config, [':pleroma', ':frontend_configurations', ':pleroma_fe']) ??
+        {}
+      this.frontendConfig = Object.fromEntries(
+        Object.entries(frontendConfigRaw).map(([k, v]) => [k.substring(1), v]),
+      )
     },
     updateAdminDescriptions({ descriptions }) {
       this.descriptions = descriptions
@@ -279,7 +287,7 @@ export const useAdminSettingsStore = defineStore('adminSettings', {
         }
       }
 
-      pushInstanceDBConfig({
+      return pushInstanceDBConfig({
         credentials: useOAuthStore().token,
         payload: {
           configs: [

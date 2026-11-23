@@ -5,19 +5,18 @@
   >
     <label
       v-if="!hideLabel"
-      :for="path"
+      :for="idPrefix + 'text'"
       class="setting-label"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="classes"
     >
-      <ModifiedIndicator
-        :changed="isChanged"
-        :onclick="reset"
+      <SettingIndicators
+        :is-changed="isChanged"
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
       />
-      <LocalSettingIndicator :is-local="isLocalSetting" />
       {{ ' ' }}
-      <DraftButtons v-if="!hideDraftButtons" />
-      <template v-if="backendDescriptionLabel">
-        {{ backendDescriptionLabel + ' ' }}
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
       </template>
       <template v-else-if="source === 'admin'">
         MISSING LABEL FOR {{ path }}
@@ -26,23 +25,25 @@
     </label>
     {{ ' ' }}
     <input
-      :id="path"
+      v-model="visibleState"
+      :id="idPrefix + 'text'"
       class="input number-input setting-control"
+      :class="classes"
       type="number"
-      :step="step || 1"
+      :step="realStep"
       :disabled="shouldBeDisabled"
-      :placeholder="backendDescriptionSuggestions"
-      :min="min || 0"
-      :value="realDraftMode ? draft :state"
-      @change="update"
+      :placeholder="realSuggestions ?? realPlaceholder"
+      :min="realMin"
     >
+    {{ ' ' }}
     <p
-      v-if="backendDescriptionDescription"
+      v-if="realDescription"
       class="setting-description"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="classes"
     >
-      {{ backendDescriptionDescription + ' ' }}
+      {{ realDescription + ' ' }}
     </p>
+    <DraftButtons v-if="!hideDraftButtons" />
   </span>
 </template>
 

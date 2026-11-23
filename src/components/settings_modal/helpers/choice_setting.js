@@ -31,24 +31,41 @@ export default {
       }
       if (this.realSource === 'admin') {
         if (
-          !this.backendDescriptionSuggestions?.length ||
-          this.backendDescriptionSuggestions?.length === 0
+          !this.realSuggestions?.length ||
+          this.realSuggestions?.length === 0
         ) {
           return this.options
         }
-        return this.backendDescriptionSuggestions.map((x) => ({
+        return this.realSuggestions.map((x) => ({
           key: x,
           value: x,
           label: this.optionLabelMap[x] || x,
         }))
       }
+      if (this.definition?.options) {
+        return this.definition.options.map((option) => {
+          const [key, value] = Array.isArray(option) ? option : [option, option]
+          return {
+            key,
+            value,
+            label: this.$t(this.definition.optionLabel(key, value)),
+          }
+        })
+      }
       return this.options
     },
-  },
-  methods: {
-    ...Setting.methods,
-    getValue(e) {
-      return e
+    localizedPlaceholder() {
+      if (!this.realOptions) return ''
+      const option = this.realOptions?.find(
+        ({ key }) => key === this.realPlaceholder,
+      )
+      if (!option) return ''
+
+      const defaultString =
+        option.value === this.defaultState
+          ? this.$t('settings.instance_default_simple')
+          : ''
+      return option.label + defaultString
     },
   },
 }

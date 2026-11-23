@@ -6,12 +6,17 @@
     <label
       v-if="!hideLabel"
       :for="idPrefix + 'input'"
-      :id="idPrefix + 'label'"
       class="setting-label"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="classes"
     >
-      <template v-if="backendDescriptionLabel">
-        {{ backendDescriptionLabel + ' ' }}
+      <SettingIndicators
+        :is-changed="isChanged"
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
+      />
+      {{ ' ' }}
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
       </template>
       <template v-else-if="source === 'admin'">
         MISSING LABEL FOR {{ path }}
@@ -22,38 +27,31 @@
     <div class="setting-control">
       <input
         :id="idPrefix + 'input'"
+        v-model="urlField"
         class="input string-input"
         :class="{ disabled: shouldBeDisabled }"
         :disabled="shouldBeDisabled"
-        :placeholder="backendDescriptionSuggestions[0]"
-        :value="displayState"
-        @change="event => update({ event })"
+        :placeholder="realSuggestions[0]"
       >
       {{ ' ' }}
       <Checkbox
-        :model-value="socksState"
+        v-model="socksField"
         :disabled="shouldBeDisabled"
-        :indeterminate="isIndeterminate"
         style="margin-left: 1em"
-        @update:model-value="event => update({ event, isProxy: true})"
       >
         SOCKS5
         {{ ' ' }}
       </Checkbox>
     </div>
     {{ ' ' }}
-    <ModifiedIndicator
-      :changed="isChanged"
-      :onclick="reset"
-    />
-    <DraftButtons v-if="!hideDraftButtons" />
     <p
-      v-if="backendDescriptionDescription"
+      v-if="realDescription"
       class="setting-description"
-      :class="{ 'faint': shouldBeDisabled }"
+      :class="classes"
     >
-      {{ backendDescriptionDescription + ' ' }}
+      {{ realDescription + ' ' }}
     </p>
+    <DraftButtons v-if="!hideDraftButtons" />
   </label>
 </template>
 

@@ -2,35 +2,35 @@
   <div
     v-if="matchesExpertLevel"
     class="ChoiceSetting setting-item"
-    :class="{ 'faint': shouldBeDisabled }"
   >
-    <div
+    <label
+      v-if="!hideLabel"
+      :for="idPrefix + 'select'"
       class="setting-label"
+      :class="classes"
     >
-      <ModifiedIndicator
-        :changed="isChanged"
-        :onclick="reset"
+      <SettingIndicators
+        :is-changed="isChanged"
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
       />
-      <LocalSettingIndicator :is-local="isLocalSetting" />
       {{ ' ' }}
-      <label
-        :for="idPrefix + 'select'"
-        :id="idPrefix + 'label'"
-      >
-        <template v-if="backendDescriptionLabel">
-          {{ backendDescriptionLabel }}
-        </template>
-        <template v-else>
-          <slot />
-        </template>
-      </label>
-    </div>
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
+      </template>
+      <template v-else-if="source === 'admin'">
+        MISSING LABEL FOR {{ path }}
+      </template>
+      <slot v-else />
+    </label>
+    {{ ' ' }}
     <Select
+      v-model="visibleState"
       class="setting-control"
+      :class="classes"
       :id="idPrefix + 'select'"
-      :model-value="realDraftMode ? draft : state"
       :disabled="shouldBeDisabled"
-      @update:model-value="update"
+      :placeholder="localizedPlaceholder"
     >
       <option
         v-for="option in realOptions"
@@ -43,10 +43,10 @@
     </Select>
     <DraftButtons />
     <p
-      v-if="backendDescriptionDescription"
+      v-if="realDescription"
       class="setting-description"
     >
-      {{ backendDescriptionDescription + ' ' }}
+      {{ realDescription + ' ' }}
     </p>
   </div>
 </template>

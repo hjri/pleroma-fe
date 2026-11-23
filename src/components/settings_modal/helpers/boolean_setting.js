@@ -14,7 +14,14 @@ export default {
   computed: {
     ...Setting.computed,
     isIndeterminate() {
-      return this.visibleState === this.indeterminateState
+      if (this.isLocalOnly) return false
+      switch (this.realSource) {
+        case 'local':
+        case 'fe-admin':
+          return this.state === undefined
+        default:
+          return this.visibleState === this.indeterminateState
+      }
     },
   },
   methods: {

@@ -4,111 +4,52 @@
       <h3>{{ $t('settings.general') }}</h3>
       <ul class="setting-list">
         <li>
-          <BooleanSetting path="modalMobileCenter">
-            {{ $t('settings.mobile_center_dialog') }}
-          </BooleanSetting>
+          <BooleanSetting path="modalMobileCenter" />
         </li>
         <li>
-          <BooleanSetting
-            path="alwaysShowNewPostButton"
-            expert="1"
-          >
-            {{ $t('settings.always_show_post_button') }}
-          </BooleanSetting>
+          <BooleanSetting path="alwaysShowNewPostButton" />
         </li>
         <li>
-          <BooleanSetting
-            path="autohideFloatingPostButton"
-            expert="1"
-          >
-            {{ $t('settings.autohide_floating_post_button') }}
-          </BooleanSetting>
+          <BooleanSetting path="autohideFloatingPostButton" />
         </li>
         <li>
-          <BooleanSetting
-            path="userPopoverOverlay"
-            expert="1"
-          >
-            {{ $t('settings.user_popover_avatar_overlay') }}
-          </BooleanSetting>
+          <BooleanSetting path="userPopoverOverlay" />
         </li>
         <li>
-          <BooleanSetting path="userCardLeftJustify">
-            {{ $t('settings.user_card_left_justify') }}
-          </BooleanSetting>
+          <ChoiceSetting path="userPopoverAvatarAction" />
         </li>
         <li>
-          <UnitSetting
-            path="themeEditorMinWidth"
-            :local="true"
-            :units="['px', 'rem']"
-            expert="1"
-          >
-            {{ $t('settings.theme_editor_min_width') }}
-          </UnitSetting>
+          <BooleanSetting path="userCardLeftJustify" />
         </li>
         <li>
-          <UnitSetting
-            path="navbarSize"
-            :step="0.1"
-            :local="true"
-            :units="['px', 'rem']"
-            :reset-default="{ 'px': 55, 'rem': 3.5 }"
-          >
-            {{ $t('settings.navbar_size') }}
-          </UnitSetting>
+          <UnitSetting path="themeEditorMinWidth" />
+        </li>
+        <li>
+          <UnitSetting path="navbarSize" />
         </li>
       </ul>
       <h3>{{ $t('settings.columns') }}</h3>
       <ul class="setting-list">
         <li>
-          <BooleanSetting path="disableStickyHeaders">
-            {{ $t('settings.disable_sticky_headers') }}
-          </BooleanSetting>
+          <BooleanSetting path="disableStickyHeaders" />
         </li>
         <li>
-          <BooleanSetting path="showScrollbars">
-            {{ $t('settings.show_scrollbars') }}
-          </BooleanSetting>
+          <BooleanSetting path="showScrollbars" />
         </li>
         <li>
-          <UnitSetting
-            path="panelHeaderSize"
-            :local="true"
-            :step="0.1"
-            :units="['px', 'rem']"
-            :reset-default="{ 'px': 52, 'rem': 3.2 }"
-            timed-apply-mode
-          >
-            {{ $t('settings.panel_header_size') }}
-          </UnitSetting>
+          <UnitSetting path="panelHeaderSize" />
         </li>
         <li>
-          <BooleanSetting
-            :local="true"
-            path="sidebarRight"
-          >
-            {{ $t('settings.right_sidebar') }}
-          </BooleanSetting>
+          <BooleanSetting path="sidebarRight" />
         </li>
         <li>
-          <BooleanSetting
-            :local="true"
-            path="navbarColumnStretch"
-          >
-            {{ $t('settings.navbar_column_stretch') }}
-          </BooleanSetting>
+          <BooleanSetting path="navbarColumnStretch" />
         </li>
-        <li>
+        <li v-if="user">
           <ChoiceSetting
-            v-if="user"
-            id="thirdColumnMode"
             path="thirdColumnMode"
-            :options="thirdColumnModeOptions"
             @change="updateLayout"
-          >
-            {{ $t('settings.third_column_mode') }}
-          </ChoiceSetting>
+           />
         </li>
         <li v-if="expertLevel > 0">
           <h4> {{ $t('settings.column_sizes') }} </h4>
@@ -116,12 +57,8 @@
             <UnitSetting
               v-for="column in columns"
               :key="column"
-              :local="true"
               :path="column + 'ColumnWidth'"
-              expert="1"
-            >
-              {{ $t('settings.column_sizes_' + column) }}
-            </UnitSetting>
+             />
           </div>
         </li>
       </ul>

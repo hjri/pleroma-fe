@@ -4,39 +4,49 @@
     class="UnitSetting setting-item"
   >
     <label
+      v-if="!hideLabel"
       :for="idPrefix + 'value'"
-      class="setting-label size-label"
+      class="setting-label"
+      :class="classes"
     >
-      <LocalSettingIndicator :is-local="isLocalSetting" />
-      <ModifiedIndicator
-        :changed="isChanged"
-        :onclick="reset"
+      <SettingIndicators
+        :is-changed="isChanged"
+        :is-local="isLocalOnly"
+        :is-overriden="isOverriden"
       />
       {{ ' ' }}
-      <slot />
+      <template v-if="realLabel">
+        {{ realLabel + ' ' }}
+      </template>
+      <template v-else-if="source === 'admin'">
+        MISSING LABEL FOR {{ path }}
+      </template>
+      <slot v-else />
     </label>
+    {{ ' ' }}
     <span class="no-break setting-control">
       <input
+        v-model="stateValue"
         :id="idPrefix + 'value'"
         class="input number-input"
+        :class="classes"
         type="number"
-        :step="step"
+        :step="realStep"
         :disabled="disabled"
-        :min="min || 0"
-        :value="stateValue"
-        @change="updateValue"
+        :placeholder="realSuggestions ?? placeholderValue"
+        :min="realMin"
       >
       <Select
+        v-model="stateUnit"
         :id="idPrefix + 'unit'"
-        :model-value="stateUnit"
         :disabled="disabled"
         class="unit-input unstyled"
         unstyled
-        @change="updateUnit"
+        :placeholder="placeholderUnit"
         :aria-label="$t('settings.style.common.unit')"
       >
         <option
-          v-for="option in units"
+          v-for="option in realUnits"
           :key="option"
           :value="option"
         >
@@ -45,6 +55,14 @@
       </Select>
     </span>
     {{ ' ' }}
+    <p
+      v-if="realDescription"
+      class="setting-description"
+      :class="classes"
+    >
+      {{ realDescription + ' ' }}
+    </p>
+    <DraftButtons v-if="!hideDraftButtons" />
   </span>
 </template>
 
