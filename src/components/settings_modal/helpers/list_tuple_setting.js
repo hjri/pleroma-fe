@@ -25,7 +25,6 @@ export default {
       const clone = [...this.extraEntries]
       const subject = clone.find(({ index }) => index === editIndex)
 
-
       if (tuple === 0) {
         subject.value = [string, subject.value[1]]
       } else {
