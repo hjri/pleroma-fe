@@ -7,7 +7,6 @@ export default {
   ...Setting,
   data() {
     return {
-      extraEntries: [],
       newValue: '',
     }
   },
@@ -42,8 +41,6 @@ export default {
   },
   created() {
     Setting.created()
-    const array = Array.isArray(this.visibleState) ? this.visibleState : []
-    this.extraEntries = array.filter((x) => !this.suggestionsSet.has(x))
   },
   computed: {
     ...Setting.computed,
@@ -99,6 +96,33 @@ export default {
         }),
       )
     },
+    extraEntries: {
+      get() {
+        if (!Array.isArray(this.visibleState)) return []
+        return this
+          .visibleState
+          .map((value, index) => ({ value, index }))
+          .reduce(({ result, filtered }, { value, index }) => {
+            // This basically filters out only the first match to builtins
+            if (this.builtinEntriesValueSet.has(value) && !filtered.has(value)) {
+              filtered.add(value)
+              return { filtered, result }
+            } else {
+              return {
+                filtered,
+                result: [...result, { value, index }]
+              }
+            }
+          }, { result: [], filtered: new Set() })
+          .result
+      },
+      set(value) {
+        this.visibleState = [
+          ...this.builtinEntriesSelected.values(),
+          ...value.map(({ value }) => value),
+        ]
+      }
+    },
     newValid() {
       return Boolean(this.newValue)
     },
@@ -111,12 +135,6 @@ export default {
     resetNew() {
       this.newValue = ''
     },
-    update() {
-      this.visibleState = [
-        ...this.builtinEntriesSelected.values(),
-        ...this.extraEntries,
-      ]
-    },
     toggle(event, value) {
       const newSet = new Set(this.builtinEntriesSelected)
       if (event) {
@@ -128,23 +146,25 @@ export default {
     },
     add() {
       if (!this.newValid) return
-      this.extraEntries = [...this.extraEntries, this.newValue]
-      this.update()
+      this.extraEntries = [
+        ...this.extraEntries,
+        {
+          value: this.newValue,
+          index: this.visibleState.length
+        }
+      ]
       this.resetNew()
     },
-    remove(index) {
-      const pre = [...this.extraEntries].slice(0, index)
-      const post = [...this.extraEntries].slice(index + 1)
-      this.extraEntries = [...pre, ...post]
-      this.update()
+    remove(removeIndex) {
+      this.extraEntries = this.extraEntries.filter(({ index }) => index !== removeIndex)
     },
-    edit(event, index) {
+    edit(event, editIndex) {
       const string = event.target.value
       if (!string) return
-      const pre = [...this.extraEntries].slice(0, index)
-      const post = [...this.extraEntries].slice(index + 1)
-      this.extraEntries = [...pre, string, ...post]
-      this.update()
+      const clone = [...this.extraEntries]
+      const subject = clone.find(({ index }) => index === editIndex)
+      subject.value = string
+      this.extraEntries = clone
     },
   },
 }

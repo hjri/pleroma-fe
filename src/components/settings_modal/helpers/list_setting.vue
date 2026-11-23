@@ -44,14 +44,14 @@
         </Checkbox>
       </li>
       <li
-        v-for="(item, index) in extraEntries"
+        v-for="({value, index}) in extraEntries"
         :key="index"
       >
         <div class="btn-group">
           <input
             class="input string-input"
             :class="{ disabled: shouldBeDisabled }"
-            :value="item"
+            :value="value"
             @change="event => edit(event, index)"
           >
           <button
