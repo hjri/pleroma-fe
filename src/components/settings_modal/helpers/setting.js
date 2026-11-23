@@ -441,7 +441,7 @@ export default {
 
       if (parentValue === undefined) return this.disabled
 
-      return this.realParentInvert ? parentValue : !parentValue
+      return this.disabled ?? (this.realParentInvert ? parentValue : !parentValue)
     },
     isProfileSetting() {
       return this.realSource === 'profile'
