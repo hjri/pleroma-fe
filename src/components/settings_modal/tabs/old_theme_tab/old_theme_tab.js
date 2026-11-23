@@ -130,6 +130,11 @@ export default {
     const idPrefix = computed(() => `themetab-${uniqueId}-`)
     return { idPrefix }
   },
+  inject: {
+    defaultSource: {
+      default: 'sync',
+    },
+  },
   created() {
     const currentIndex = useInstanceStore().themesIndex
 
@@ -519,7 +524,7 @@ export default {
         opacity: this.currentOpacity,
         colors: this.currentColors,
         radii: this.currentRadii,
-      })
+      }, this.defaultSource)
     },
     updatePreviewColors() {
       const result = generateColors({
