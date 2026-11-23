@@ -146,7 +146,10 @@ export default {
       } else {
         newSet.delete(value)
       }
-      this.visibleState = [...newSet.values(), ...this.extraEntries]
+      this.visibleState = [
+        ...newSet.values(),
+        ...this.extraEntries.map(({ value }) => value),
+      ]
     },
     add() {
       if (!this.newValid) return

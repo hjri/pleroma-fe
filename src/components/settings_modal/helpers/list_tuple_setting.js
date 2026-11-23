@@ -18,20 +18,20 @@ export default {
     resetNew() {
       this.newValue = ['', '']
     },
-    edit(event, index, tuple) {
+    edit(event, editIndex, tuple) {
       const string = event.target.value
       if (!string) return
 
-      const pre = this.extraEntries.slice(0, index)
-      const post = this.extraEntries.slice(index + 1)
-      const item = this.extraEntries[index]
+      const clone = [...this.extraEntries]
+      const subject = clone.find(({ index }) => index === editIndex)
+
 
       if (tuple === 0) {
-        this.extraEntries = [...pre, [string, item[1]], ...post]
+        subject.value = [string, subject.value[1]]
       } else {
-        this.extraEntries = [...pre, [item[0], string], ...post]
+        subject.value = [subject.value[0], string]
       }
-      this.update()
+      this.extraEntries = clone
     },
   },
 }

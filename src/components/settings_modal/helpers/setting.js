@@ -75,7 +75,7 @@ export default {
     },
     disabled: {
       type: Boolean,
-      default: false,
+      default: null,
     },
 
     // # Admin settings labels/descriptions
