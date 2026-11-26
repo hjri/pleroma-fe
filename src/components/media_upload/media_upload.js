@@ -4,6 +4,8 @@ import statusPosterService from '../../services/status_poster/status_poster.serv
 import { useInstanceStore } from 'src/stores/instance.js'
 import { useMergedConfigStore } from 'src/stores/merged_config.js'
 
+import { isAnimated } from 'src/services/animated_image/animated_image.js'
+
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCircleNotch, faUpload } from '@fortawesome/free-solid-svg-icons'
 
@@ -28,8 +30,12 @@ const mediaUpload = {
       }
     },
     async resizeImage(file) {
-      // Skip if not an image or if it's a GIF
-      if (!file.type.startsWith('image/') || file.type === 'image/gif') {
+      // Skip if not an image, a GIF or an SVG
+      if (
+        !file.type.startsWith('image/') ||
+        file.type === 'image/gif' ||
+        file.type === 'image/svg+xml'
+      ) {
         return file
       }
 
@@ -38,17 +44,20 @@ const mediaUpload = {
         return file
       }
 
-      // For PNGs, check if animated
-      if (file.type === 'image/png') {
-        const isAnimated = await this.isAnimatedPng(file)
-        if (isAnimated) {
-          return file
-        }
+      // Animated pictures would lose their animation on the canvas
+      if (await isAnimated(file)) {
+        return file
       }
 
       return new Promise((resolve) => {
         const img = new Image()
+        // The browser cannot read it (e.g. HEIC in Chrome): upload it as it is
+        img.onerror = () => {
+          URL.revokeObjectURL(img.src)
+          resolve(file)
+        }
         img.onload = () => {
+          URL.revokeObjectURL(img.src)
           // Calculate new dimensions
           let width = img.width
           let height = img.height
@@ -89,6 +98,11 @@ const mediaUpload = {
 
           canvas.toBlob(
             (blob) => {
+              // Keep the original if compressing failed or did not make it smaller
+              if (!blob || blob.size >= file.size) {
+                resolve(file)
+                return
+              }
               resolve(
                 new File([blob], newFileName, {
                   type,
@@ -102,23 +116,6 @@ const mediaUpload = {
         }
         img.src = URL.createObjectURL(file)
       })
-    },
-    async isAnimatedPng(file) {
-      const buffer = await file.arrayBuffer()
-      const view = new Uint8Array(buffer)
-      // Look for animated PNG chunks (acTL)
-      for (let i = 0; i < view.length - 8; i++) {
-        if (
-          view[i] === 0x61 && // a
-          view[i + 1] === 0x63 && // c
-          view[i + 2] === 0x54 && // T
-          view[i + 3] === 0x4c
-        ) {
-          // L
-          return true
-        }
-      }
-      return false
     },
     async uploadFile(file) {
       if (file.size > useInstanceStore().uploadlimit) {

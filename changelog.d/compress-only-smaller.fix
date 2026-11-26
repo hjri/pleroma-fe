@@ -1,0 +1,1 @@
+Compressed pictures are uploaded only when they got smaller. The original keeps its metadata (EXIF) then, which the canvas used to remove
