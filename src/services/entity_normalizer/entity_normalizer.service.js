@@ -278,7 +278,6 @@ export const parseStatus = (data) => {
     output.is_local = pleroma.local
     output.in_reply_to_screen_name = pleroma.in_reply_to_account_acct
     output.thread_muted = pleroma.thread_muted
-    output.emoji_reactions = pleroma.emoji_reactions
     output.parent_visible =
       pleroma.parent_visible === undefined ? true : pleroma.parent_visible
     output.quote_visible = pleroma.quote_visible || true
@@ -288,6 +287,8 @@ export const parseStatus = (data) => {
     output.text = data.content
     output.summary = data.spoiler_text
   }
+
+  output.emoji_reactions = pleroma?.emoji_reactions ?? []
 
   // `quote` is a status (Akkoma) or a Mastodon 4.4+ quote entity
   // ({ state, quoted_status } or, one level deep, { state, quoted_status_id }).
